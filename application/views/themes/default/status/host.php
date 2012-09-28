@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $nacoma_link = nacoma::link()===true;
-$has_pnp_path = Kohana::config('config.pnp4nagios_path')!==false;
 $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>

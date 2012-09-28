@@ -64,7 +64,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# save us some typing
 		$content = $this->template->content;
 
-		$result_data = Host_Model::object_status($host, $service);
+		$ls = Livestatus::instance();
+		if(empty($service)) {
+			$result_data = $ls->getHosts(array('filter' => array('name' => $host)));
+		} else {
+			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service)));
+		}
 		if (count($result_data) === 0) {
 			return url::redirect('extinfo/unauthorized/'.$type);
 		}
@@ -168,7 +173,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					);
 		}
 
-		if (Kohana::config('config.pnp4nagios_path') !== false && pnp::has_graph($host, urlencode($service))) {
+		if($result->pnpgraph_present) {
 			$label = _('Show performance graph');
 			$url = url::site() . 'pnp/?host=' . urlencode($host);
 			if ($type ===  'service') {
