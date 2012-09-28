@@ -740,7 +740,7 @@ class Status_Controller extends Authenticated_Controller {
 			$g['hosts_down_and_disabled_passive']        = 0;
 			$g['hosts_unreachable']                      = 0;
 			$g['hosts_unreachable_and_unhandled']        = 0;
-			$g['hosts_unreachable_and_downtime']         = 0;
+			$g['hosts_unreachable_and_scheduled']        = 0;
 			$g['hosts_unreachable_and_ack']              = 0;
 			$g['hosts_unreachable_and_disabled_active']  = 0;
 			$g['hosts_unreachable_and_disabled_passive'] = 0;
@@ -1626,18 +1626,18 @@ class Status_Controller extends Authenticated_Controller {
 		elseif ( $host[$prefix.'state'] == 1 ) { $group['hosts_down']++; }
 		elseif ( $host[$prefix.'state'] == 2 ) { $group['hosts_unreachable']++; }
 
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'scheduled_downtime_depth'] > 0 ) { $group['hosts_down_downtime']++; }
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'acknowledged'] == 1 )            { $group['hosts_down_ack']++; }
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_down_unhandled']++; }
+		if( $host[$prefix.'state'] == 1 and $host[$prefix.'scheduled_downtime_depth'] > 0 ) { $group['hosts_down_and_scheduled']++; }
+		if( $host[$prefix.'state'] == 1 and $host[$prefix.'acknowledged'] == 1 )            { $group['hosts_down_and_ack']++; }
+		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_down_and_unhandled']++; }
 
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 0 ) { $group['hosts_down_disabled_active']++; }
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 1 ) { $group['hosts_down_disabled_passive']++; }
+		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 0 ) { $group['hosts_down_and_disabled_active']++; }
+		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 1 ) { $group['hosts_down_and_disabled_passive']++; }
 
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'scheduled_downtime_depth'] > 0 ) { $group['hosts_unreachable_downtime']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'acknowledged'] == 1 )            { $group['hosts_unreachable_ack']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 0 ) { $group['hosts_unreachable_disabled_active']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 1 ) { $group['hosts_unreachable_disabled_passive']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_unreachable_unhandled']++; }
+		if( $host[$prefix.'state'] == 2 and $host[$prefix.'scheduled_downtime_depth'] > 0 ) { $group['hosts_unreachable_and_scheduled']++; }
+		if( $host[$prefix.'state'] == 2 and $host[$prefix.'acknowledged'] == 1 )            { $group['hosts_unreachable_and_ack']++; }
+		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 0 ) { $group['hosts_unreachable_and_disabled_active']++; }
+		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 1 ) { $group['hosts_unreachable_and_disabled_passive']++; }
+		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_unreachable_and_unhandled']++; }
 
 		return 1;
 	}
