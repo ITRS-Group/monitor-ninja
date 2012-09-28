@@ -9,8 +9,8 @@ class Trends_graph_Model extends Model
 	/**
 	* Fetch data to be used in the trends graph
 	*
-	* @param array $data Data from get_sla_data
-	* @return array $data_chart Formated data to fit trends graph
+	* @param $data Data from get_sla_data
+	* @return $data_chart Formated data to fit trends graph
 	*/
 	
 	public function format_graph_data ($data){

@@ -84,9 +84,9 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jmenu.js');
 			echo html::script('application/media/js/jquery.contextMenu.js');
-			echo html::script($this->add_path('js/collapse_menu.js'));
-			echo html::script($this->add_path('js/global_search.js'));
-			echo html::script($this->add_path('js/pagination.js'));
+			echo html::script('application/views/themes/default/js/collapse_menu.js');
+			echo html::script('application/views/themes/default/js/global_search.js');
+			echo html::script('application/views/themes/default/js/pagination.js');
 			if (!isset($disable_refresh) || $disable_refresh === false) {
 				refresh::control();
 			} else {
@@ -161,9 +161,9 @@ if (isset($this->template->js_header))
 				?>
 			//-->
 		</script>
-		<?php echo html::script($this->add_path('js/common.js')); ?>
+		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
 		<?php echo (!empty($js_header)) ? $js_header : '';
-		echo html::script($this->add_path('noc/js/noc'));?>
+		echo html::script('application/views/themes/default/noc/js/noc');?>
 
 	</head>
 
