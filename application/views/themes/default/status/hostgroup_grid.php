@@ -102,7 +102,7 @@ $state_map = array(
 						$first = false;
 					}
 					?>
-					<a href="extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service['description'])?>" class="status-<?php echo $service_state ?>"><?php echo $service['description'] ?></a>
+					<a href="<?php echo url::base() ?>extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service['description'])?>" class="status-<?php echo $service_state ?>"><?php echo $service['description'] ?></a>
 				<?php } ?>
 				<br />
 			<?php } ?>
