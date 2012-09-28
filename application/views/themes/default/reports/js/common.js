@@ -112,6 +112,34 @@ $(document).ready(function() {
 			$("#saved_report_form").trigger('submit');
 		}
 	});
+
+	$('.save_report_btn').bind('click', function() {
+		loopElements();
+		if (!(check_form_values(this.form))) {
+			return;
+		}
+		var btn = $(this);
+		btn.after(loadimg);
+		$.ajax({
+			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
+			type: 'POST',
+			data: $(this.form).serialize(),
+			complete: function() {
+				btn.parent().find('img:last').remove();
+			},
+			success: function(data) {
+				jgrowl_message(data.status_msg, _reports_success);
+				// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
+				if (!btn[0].form.report_id)
+					document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.report_id
+			},
+			error: function(data) {
+				jgrowl_message(data.responseText, _reports_error);
+				btn.parent().find('img:last').remove();
+			},
+			dataType: 'json'
+		});
+	});
 });
 
 var loadimg = new Image(16,16);
@@ -286,13 +314,12 @@ function get_members(filter, type, cb) {
 		url: url,
 		type: 'POST',
 		data: {input: filter, type: type},
+		error: function(data) {
+			jgrowl_message('Unable to fetch objects: ' + data.responseText, _reports_error);
+		},
 		success: function(data) {
-			if (data.error) {
-				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
-				return;
-			}
 			empty_list(field_name);
-			populate_options(field_name, empty_field, data.result);
+			populate_options(field_name, empty_field, data);
 			empty_list(empty_field);
 			if(typeof cb == 'function')
 				cb();
@@ -955,23 +982,28 @@ function init_regexpfilter() {
 	MyRegexp.selectFilterData = new Object();
 	MyRegexp.selectFilter = function(selectId, filter) {
 		var list = document.getElementById(selectId);
-		if(!MyRegexp.selectFilterData[selectId]) { //if we don't have a list of all the options, cache them now'
+		if(!MyRegexp.selectFilterData[selectId]) {
+			//if we don't have a list of all the options, cache them now'
 			MyRegexp.selectFilterData[selectId] = new Array();
-			for(var i = 0; i < list.options.length; i++) MyRegexp.selectFilterData[selectId][i] = list.options[i];
+			for(var i = 0; i < list.options.length; i++)
+				MyRegexp.selectFilterData[selectId][i] = list.options[i];
 		}
 		list.options.length = 0;   //remove all elements from the list
 		var r = new RegExp(filter, 'i');
-		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
+		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) {
+			//add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
 			//if(o.text.toLowerCase().indexOf(filter.toLowerCase()) >= 0) list.add(o, null);
-			if(r.test(o.text)) list.add(o, null);
+			if(!o.parentNode && r.test(o.text)) list.add(o, null);
 		}
 	}
 	MyRegexp.resetFilter = function(selectId) {
-		if (typeof MyRegexp.selectFilterData[selectId] == 'undefined' || !MyRegexp.selectFilterData[selectId].length) return;
+		if (typeof MyRegexp.selectFilterData[selectId] == 'undefined' || !MyRegexp.selectFilterData[selectId].length)
+			return;
 		var list = document.getElementById(selectId);
 		list.options.length = 0;   //remove all elements from the list
-		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
+		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) {
+			//add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
 			if (!o.parentNode)
 				list.add(o, null);

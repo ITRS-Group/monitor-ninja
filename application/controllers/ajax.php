@@ -23,8 +23,6 @@ class Ajax_Controller extends Authenticated_Controller {
 		if(!request::is_ajax()) {
 			url::redirect(Kohana::config('routes.logged_in_default'));
 		}
-
-		$this->auto_render=false;
 	}
 
 	/**
@@ -185,9 +183,6 @@ class Ajax_Controller extends Authenticated_Controller {
 	 */
 	public function widget($widget)
 	{
-		// Disable auto-rendering
-		$this->auto_render = FALSE;
-
 		$instance_id = $this->input->get('instance_id', false);
 		$page = $this->input->get('page', false);
 

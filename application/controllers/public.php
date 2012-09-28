@@ -66,19 +66,4 @@ class Public_Controller extends Controller {
 		$graph->draw();
 		$graph->display();
 	}
-
-	/**
-	 * Display chart for $chart_key
-	 *
-	 * Warning: this is actually potentially secret, but we need it from localhost
-	 * for reports, so we must manually check for source IP or username.
-	 *
-	 * @param string $chart_key
-	 */
-	public function line_point_chart($chart_key)
-	{
-		$this->auto_render = false;
-		$trends_graph_model = new Trends_graph_Model();
-		$trends_graph_model->display_chart($chart_key);
-	}
 }

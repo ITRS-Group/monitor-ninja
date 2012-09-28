@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	adjust_height();
-	collapse_menu('');
 });
 
 function adjust_height() {
@@ -10,11 +9,6 @@ function adjust_height() {
 	$('#hypermap').css('height', new_height+'px');
 	$('#content').css('height', new_height+'px');
 	$('body').css('overflow-y', 'hidden');
-};
-
-window.onload = function(){
-	adjust_height();
-	collapse_menu('');
 };
 
 window.onresize = function (){

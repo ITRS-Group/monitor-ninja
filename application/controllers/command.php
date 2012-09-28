@@ -552,11 +552,8 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function _is_authorized_for_command($params = false, $cmd = false)
 	{
+		$type = false;
 		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : $cmd;
-
-		if (empty($cmd)) {
-			return -1;
-		}
 
 		# first see if this is a contact and, if so, if that contact
 		# is allowed to submit commands. If it isn't, we can bail out
@@ -569,16 +566,29 @@ class Command_Controller extends Authenticated_Controller
 			}
 		}
 
+		$services = arr::search($params, 'services');
+		$host_names = arr::search($params, 'host_name');
+
+		if (strstr($cmd, '_HOST_') !== false) {
+			$type = 'host';
+		} else if (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
+			$type = 'service';
+		} else if ($host_names) {
+			$type = 'hosts';
+		} else if ($services) {
+			$type = 'service';
+		}
+
 		# second we check if this contact is allowed to submit
 		# the type of command we're looking at and, if so, if
 		# we can bypass fetching all the objects we're authorized
 		# to see
 		$auth = Nagios_auth_Model::instance();
-		if (strstr($cmd, '_HOST_') !== false) {
+		if ($type == 'hosts') {
 			if ($auth->command_hosts_root) {
 				return true;
 			}
-		} elseif (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
+		} elseif ($type == 'services') {
 			if ($auth->command_services_root) {
 				return true;
 			}
@@ -596,15 +606,12 @@ class Command_Controller extends Authenticated_Controller
 		if (empty($contact))
 			return -3;
 
-		$services = isset($params['service']) ? $params['service'] : false;
-		$host_names = isset($params['host_name']) ? $params['host_name'] : false;
-
 		# FIXME handle host/servicegroup commands as well
 
 		# neither host_name nor service description. Either the user
 		# hasn't filled out the form yet, or this regards hostgroups
 		# or servicegroups
-		if (!$services && !$host_names) {
+		if (!$type) {
 			return true;
 		}
 

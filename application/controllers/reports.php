@@ -16,7 +16,6 @@
 class Reports_Controller extends Base_reports_Controller
 {
 	private $status_link = "status/host/";
-	private $trend_link = "trends/generate";
 	private $history_link = "showlog/alert_history";
 	private $notifications_link = "notifications/host";
 
@@ -65,7 +64,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
-
+		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
@@ -82,6 +81,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
@@ -202,6 +202,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
 
@@ -213,6 +214,7 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header = $this->add_view('css_header');
@@ -498,8 +500,6 @@ class Reports_Controller extends Base_reports_Controller
 					$backtrack = 1;
 
 					$links = array();
-					$trends_img_params = '';
-					$trends_link_params = '';
 					$downtime       = $this->options['scheduleddowntimeasuptime'];
 					$not_running    = $this->options['assumestatesduringnotrunning'];
 					$soft_states    = $this->options['includesoftstates'];
@@ -509,35 +509,6 @@ class Reports_Controller extends Base_reports_Controller
 						case 'hosts':
 							$host = $this->options['host_name'][0];
 							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
-
-							$trends_params = "host=$host".
-								"&amp;t1=$t1".
-								"&amp;t2=$t2".
-								"&amp;includesoftstates=".$soft_states.
-								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-								"&amp;backtrack=$backtrack";
-
-							$trends_img_params = $this->trend_link."?".
-								"host=$host".
-								"&amp;createimage&amp;smallimage".
-								"&amp;t1=$t1".
-								"&amp;t2=$t2".
-								"&amp;includesoftstates=".$soft_states.
-								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-								"&amp;backtrack=$backtrack";
-
-							$trends_link_params = $this->trend_link."?".
-								"host=$host".
-								"&amp;t1=$t1".
-								"&amp;t2=$t2".
-								"&amp;includesoftstates=".$soft_states.
-								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-								"&amp;backtrack=$backtrack";
-
-
-
-							$links[$this->trend_link."?".$trends_params] = _('Trends');
-
 							$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
 
 							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
@@ -557,38 +528,11 @@ class Reports_Controller extends Base_reports_Controller
 								$template->content->service = $service;
 							}
 
-							$trends_params = "service_description=$host;$service".
-								"&amp;t1=$t1".
-								"&amp;t2=$t2".
-								"&amp;includesoftstates=".$soft_states.
-								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-								"&amp;backtrack=$backtrack";
-
-							$trends_img_params = $this->trend_link."?".
-								"host=$host".
-								"&amp;service=$service".
-								"&amp;createimage&amp;smallimage".
-								"&amp;t1=$t1".
-								"&amp;t2=$t2".
-								"&amp;includesoftstates=".$soft_states.
-								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-								"&amp;backtrack=$backtrack";
-
-							$trends_link_params = $this->trend_link."?".
-								"host=$host".
-								"&amp;service=$service".
-								"&amp;t1=$t1".
-								"&amp;t2=$t2".
-								"&amp;includesoftstates=".$soft_states.
-								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-								"&amp;backtrack=$backtrack";
-
 							$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2";
 							$history_params       = "host=$host&amp;service=$service";
 							$notifications_params = "host=$host&amp;service=$service";
 
 
-							$links[$this->trend_link . "?" . $trends_params] = _('Trends');
 							$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
 							$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
 							$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
@@ -597,8 +541,6 @@ class Reports_Controller extends Base_reports_Controller
 					}
 
 					$template->links = $links;
-					$template->trends = $trends_img_params;
-					$template->trends_link = $trends_link_params;
 					$template->source = $data['source'];
 					$template->header_string = sprintf(_("State breakdown for %s"), $data['source']);
 				} else {
@@ -627,13 +569,14 @@ class Reports_Controller extends Base_reports_Controller
 			}
 
 			$template->trends_graph = $this->add_view('trends/new_report');
-			$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-				$graph_data,
-				$this->options['start_time'],
-				$this->options['end_time'],
-				$template->title
+
+			/* New JS trend graph */
+			
+			$template->trends_graph->graph_start_date = $this->options['start_time'];
+			$template->trends_graph->graph_end_date = $this->options['end_time'];
+			$template->trends_graph->graph_pure_data = $this->trends_graph_model->format_graph_data(
+				$graph_data
 			);
-			$template->trends_graph->is_avail = true;
 		}
 
 		$this->template->inline_js = $this->inline_js;

@@ -285,9 +285,8 @@ table.extinfo tr td.status.icon img {
 	margin-left: 1%;
 	width: 32%;
 	float: left;
-	min-height: 5px;
+	min-height: 25px;
 	height: auto !important;
-	height: 5px;
 }
 .widget-place.w98{
 	width: 98%;
@@ -297,8 +296,9 @@ table.extinfo tr td.status.icon img {
 	clear: none;
 }
 .widget-placeholder {
+	background: #cdcdcd;
+	border: 1px dashed #ccc;
 	margin-top: 11px;
-  border: 1px dashed #ccc;
 }
 .widget-editbox{
 	z-index: 9999;
@@ -383,18 +383,9 @@ a > img { border: 0px; }
 	font-style: italic;
 	margin-left: 5px;
 }
-tr.even {
+tr td {
 	border: 1px solid #ccc;
 	border-left: 0px;
-	border-top: 0px;
-	background: #fafafa;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-tr.odd {
-	border: 1px solid #ccc;
-	border-left: 0px;
-	background: #fafafa;
 	border-top: 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;

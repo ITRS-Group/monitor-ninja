@@ -6,16 +6,20 @@ $(document).ready(function () {
 			$(this).find('.default').click(function() {
 				var src = $(this).closest('div').next('div').find('img').attr('src');
 				var match = src.match(/\?(.*)&view=(\d)&source=(\d)/);
-				var param = match[1];
-				var view = match[2];
-				var source = match[3];
-				$.post(_site_domain + _index_page + '/ajax/pnp_default/', {
-					param: param,
-					view: view,
-					source: source
-				}, function () {
-					$.jGrowl(_settings_msg, {header: _success_header});
-				});
+				$.ajax(
+					_site_domain + _index_page + '/ajax/pnp_default/',
+					{
+						data: {
+							param: match[1],
+							view: match[2],
+							source: match[3]
+						},
+						complete: function () {
+							$.jGrowl(_settings_msg, {header: _success_header});
+						},
+						type: 'POST'
+					}
+				);
 				return false;
 			});
 		});

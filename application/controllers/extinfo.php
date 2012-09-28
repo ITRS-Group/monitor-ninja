@@ -226,7 +226,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->last_check = $result->last_check;
 		$content->lable_last_check = _('Last check time');
 		$content->lable_check_type = _('Check type');
-		$content->lable_last_update = _('Last update');
 
 		$str_active = _('ACTIVE');
 		$str_passive = _('PASSIVE');
@@ -256,18 +255,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$content->lable_in_scheduled_dt = _('In scheduled downtime?');
 		$content->scheduled_downtime_depth = $result->scheduled_downtime_depth ? $yes : $no;
-		/* TODO: remove, its useless now */
-		$last_update_ago_arr = date::timespan(time(), time(), 'days,hours,minutes,seconds');
-		$ago = _('ago');
-		$last_update_ago = false;
-		$last_update_ago_str = '';
-		if (is_array($last_update_ago_arr) && !empty($last_update_ago_arr)) {
-			foreach ($last_update_ago_arr as $key => $val) {
-				$last_update_ago[] = $val.substr($key, 0, 1);
-			}
-			$last_update_ago_str = '('.implode(' ', $last_update_ago) . ' ' . $ago . ')';
-		}
-		$content->last_update_ago = $last_update_ago_str !='' ? $last_update_ago_str : $na_str;
 		$content->lable_active_checks = _('Active checks');
 		$content->lable_passive_checks = _('Passive checks');
 		$content->lable_obsessing = _('Obsessing');
@@ -455,7 +442,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					 _('Status detail') => 'status/service/?name='.urlencode($host),
 					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
-					 _('Trends') => 'trends/generate?host_name[]='.$host,
 					 _('Alert histogram') => 'histogram/generate?host_name[]='.$host,
 					 _('Availability report') => 'avail/generate/?host_name[]='.$host,
 					 _('Notifications') => '/notifications/host/'.$host
@@ -467,7 +453,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Information for this host') => 'extinfo/details/host/'.$host,
 					_('Status detail for this host') => 'status/service/'.$host,
 					_('Alert history') => 'alert_history/generate?service_description[]='.$host.';'.urlencode($service),
-					_('Trends') => 'trends/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					_('Notifications') => '/notifications/host/'.$host.'?service='.urlencode($service)

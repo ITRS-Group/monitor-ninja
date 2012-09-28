@@ -186,7 +186,8 @@ table.extinfo {
 	border: 1px solid #dcdccd;
 }
 .widget-placeholder {
-  border: 1px dashed #cdcdbc;
+	background: #fcf;
+	border: 1px dashed #cdcdbc;
 }
 .widget-editbox{
 	background-color: #ffccff;
@@ -226,7 +227,7 @@ td.white:first-child table tr td:first-child {
 	border-left: 1px solid #ff66ff;
 }
 .w-table tr td {
-	background: #ff33ff url(images/bg.png) repeat;
+	background: #ff33ff url(images/bg.png) repeat-x;
 	border-right: 1px solid #d0d0d0;
 	border-bottom:1px solid #d0d0d0;
 }
@@ -477,7 +478,7 @@ input.i160 { border: 0px; outline: 0px; }
 }
 
 table.healt tr td div.border {
-	background:#ff66ff url(images/bg.png) repeat;
+	background:#ff66ff url(images/bg.png) repeat-x;
 }
 
 
@@ -486,7 +487,7 @@ table.healt tr td div.border {
 th,
 tr td.dark,
 tr.even td.status {
-	background:#ff33ff url(images/bg.png) repeat;
+	background:#ff33ff url(images/bg.png) repeat-x;
 }
 .w-table,
 table.extinfo {

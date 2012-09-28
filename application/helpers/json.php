@@ -11,12 +11,17 @@ class json_Core
 	 * Kills the request after echoing a structured json response
 	 *
 	 * @param array $response = null
-	 * @param int $exit_code = 0
+	 * @param int $http_status_code = 0
 	 */
-	private static function _send_response($response = null, $exit_code = 0) {
+	private static function _send_response($response = null, $http_status_code = 200) {
 		header('Content-Type: application/json');
+		$exit = 0;
+		if($http_status_code > 299) {
+			$exit = 1;
+			header("HTTP/1.0 $http_status_code");
+		}
 		echo self::encode($response);
-		exit($exit_code);
+		exit($exit);
 	}
 
 	/**
@@ -57,20 +62,24 @@ class json_Core
 	}
 
 	/**
-	 * [error] => message
+	 * Give it anything, it will turn it into JSON
 	 *
 	 * @param $reason string
+	 * @param $http_status_code int = 500
 	 */
-	public static function fail($reason = null) {
-		return self::_send_response(array('error' => $reason), 1);
+	public static function fail($reason = null, $http_status_code = 500) {
+		return self::_send_response($reason, $http_status_code);
+		//return self::_send_response(array('error' => $reason), 1);
 	}
 
 	/**
-	 * [result] => message
+	 * Give it anything, it will turn it into JSON
 	 *
 	 * @param $result string
+	 * @param $http_status_code int = 200
 	 */
-	public static function ok($result = null) {
-		return self::_send_response(array('result' => $result));
+	public static function ok($result = null, $http_status_code = 200) {
+		return self::_send_response($result, $http_status_code);
+		//return self::_send_response(array('result' => $result));
 	}
 }

@@ -18,17 +18,20 @@
 </div>
 <?php
 	if (isset($links)) {
-		echo '<br /><br />'._('View').': ';
+		echo '<div class="report-block">';
+		echo _('View').': ';
 		$html_links = array();
 		foreach($links as $url => $name) {
 			$html_links[] = html::anchor(url::site($url),html::image($this->add_path('/icons/16x16/'.strtolower(str_replace(' ','-',$name))).'.png',array('alt' => $name, 'title' => $name, 'style' => 'margin-bottom: -3px')),array('style' => 'border: 0px')).
 			' <a href="'.url::site($url).'">'.$name.'</a>';
 		}
 		echo implode(', &nbsp;', $html_links);
+		echo '</div>';
 	}
 	if (!empty($trends_graph)) {
-		echo '<strong style="margin-top: 25px;display: block">'.help::render('trends').' '._('Trends').'</strong>';
+		echo '<div class="report-block">'.help::render('trends').' '._('Trends');
 		echo $trends_graph;
+		echo '</div>';
 	}
 	if (!empty($content)) {
 		echo $content;

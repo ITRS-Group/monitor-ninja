@@ -169,10 +169,16 @@ function set_widget_refresh()
 */
 function save_widget_order(order_str)
 {
-	var url = _site_domain + _index_page + "/ajax/save_widgets_order/";
-	var page_name = _current_uri;
-	var data = {page: escape(page_name), widget_str: order_str};
-	$.post(url, data);
+	$.ajax(
+		_site_domain + _index_page + "/ajax/save_widgets_order/",
+		{
+			data: {
+				page: escape(_current_uri),
+				widget_str: order_str
+			},
+			type: 'POST'
+		}
+	 );
 }
 
 function control_widgets(item) {
@@ -217,18 +223,31 @@ function copy_widget_instance(name, instance_id, cb) {
 
 function save_widget_state(what, widget_name, instance_id)
 {
-	var url = _site_domain + _index_page + "/ajax/save_widget_state/";
-	var page_name = _current_uri;
-	var data = {page: escape(page_name), method: what, name: widget_name, 'instance_id': instance_id};
-	$.post(url, data);
+	$.ajax(
+		_site_domain + _index_page + "/ajax/save_widget_state/",
+		{
+			data: {
+				page: escape(_current_uri),
+				method: what,
+				name: widget_name,
+				instance_id: instance_id
+			},
+			type: 'POST'
+		}
+	);
 }
 
 function restore_widgets()
 {
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	$.post(ajax_url + 'factory_reset_widgets', false, function() {
-		window.location.reload();
-	});
+	$.ajax(
+		_site_domain + _index_page + '/ajax/factory_reset_widgets',
+		{
+			complete: function() {
+				window.location.reload();
+			},
+			type: 'POST'
+		}
+	);
 }
 
 var loaded_widgets = {};
@@ -362,9 +381,16 @@ widget.prototype.update_display = function() {
 *	Save widget settings to db
 */
 widget.prototype.save_settings = function(data) {
-	var url = this.ajax_url + "save_widget_setting/";
-	$.post(url, data);
-	$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+	$.ajax(
+		this.ajax_url + "save_widget_setting/",
+		{
+			type: 'POST',
+			data: data,
+			complete: function() {
+				$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+			}
+		}
+	);
 };
 
 /*
@@ -372,13 +398,25 @@ widget.prototype.save_settings = function(data) {
 */
 widget.prototype.save_custom_val = function(newval, fieldname, cb) {
 	var self = this;
-	var url = this.ajax_url + "save_dynamic_widget_setting/";
-	var data = {page: this.current_uri, fieldvalue: newval, fieldname:fieldname, widget: this.name, instance_id: this.instance_id};
-	$.post(url, data, function(data) {
-		if (typeof cb == 'function')
-			cb.call(self, data);
-	});
-	$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+	$.ajax(
+		this.ajax_url + "save_dynamic_widget_setting/",
+		{
+			data: {
+				page: this.current_uri,
+				fieldvalue: newval,
+				fieldname: fieldname,
+				widget: this.name,
+				instance_id: this.instance_id
+			},
+			complete: function(data) {
+				if (typeof cb == 'function') {
+					cb.call(self, data);
+				}
+				$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+			},
+			type: 'POST'
+		}
+	);
 };
 
 widget.widgets = {};
