@@ -71,7 +71,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			</tr>
 			<?php
 			foreach ($group_info->hosts as $host_name => $host ) {
-				if(!isset($group_info->hosts[$host_name]['services'])) { continue; }
+				if(!isset($group_info->services[$host_name]) && !isset($group_info->hosts[$host_name]['services'])) { continue; }
 				$host = (object) $host;
 				$host_icon = false;
 				if (!empty($host->icon_image)) {
@@ -84,27 +84,31 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				<td style="width: 180px"><a href="<?php echo url::base(true).'status/service?name='.urlencode($host->name).'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;servicestatustypes='.(int)$servicestatustypes ?>" title="<?php echo $host->address ?>"><?php echo html::specialchars($host->name) ?></a></td>
 				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
 				<td><?php
-					$services_ok = count($group_info->hosts[$host_name]['services']['0']);
+					if(isset($group_info->services[$host_name]))
+						$services = $group_info->services[$host_name];
+					if(isset($group_info->hosts[$host_name]['services']))
+						$services = $group_info->hosts[$host_name]['services'];
+					$services_ok = count($services['0']);
 					if ($services_ok) {
 						echo '<img src="'.ninja::add_path('icons/12x12/shield-ok.png').'" alt="" title="'._('OK').'" class="status-default" />';
 						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_OK.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-ok">'.$services_ok.' '._('OK').'</a> &nbsp; ';
 					}
-					$services_warning = count($group_info->hosts[$host_name]['services']['1']);
+					$services_warning = count($services['1']);
 					if ($services_warning) {
 						echo '<img src="'.ninja::add_path('icons/12x12/shield-warning.png').'" alt="" title="'._('Warning').'" class="status-default" />';
 						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_WARNING.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-warning">'.$services_warning.' '._('Warning').'</a> &nbsp; ';
 					}
-					$services_critical = count($group_info->hosts[$host_name]['services']['2']);
+					$services_critical = count($services['2']);
 					if ($services_critical) {
 						echo '<img src="'.ninja::add_path('icons/12x12/shield-critical.png').'" alt="" title="'._('Critical').'" class="status-default" />';
 						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_CRITICAL.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-critical">'.$services_critical.' '._('Critical').'</a> &nbsp; ';
 					}
-					$services_unknown = count($group_info->hosts[$host_name]['services']['3']);
+					$services_unknown = count($services['3']);
 					if ($services_unknown) {
 						echo '<img src="'.ninja::add_path('icons/12x12/shield-unknown.png').'" alt="" title="'._('Unknown').'" class="status-default" />';
 						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-unknown">'.$services_unknown.' '._('Unknown').'</a> &nbsp; ';
 					}
-					$services_pending = count($group_info->hosts[$host_name]['services']['4']);
+					$services_pending = count($services['4']);
 					if ($services_pending) {
 						echo '<img src="'.ninja::add_path('icons/12x12/shield-pending.png').'" alt="" title="'._('Pending').'" class="status-default" />';
 						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_PENDING.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-pending">'.$services_pending.' '._('Pending').'</a> &nbsp; ';
