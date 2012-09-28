@@ -346,6 +346,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		# avail, more than one object
 		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
+			$template_values = array();
 			if ($is_group) {
 				foreach ($data_arr as $data) {
 					if (empty($data))
