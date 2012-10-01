@@ -1037,7 +1037,7 @@ class Reports_Controller extends Base_reports_Controller
 			'sla_graph' => _("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled."),
 			'sla_breakdown' => _("Breakdown of the SLA report in actual figures."),
 			'sla_group_members' => _("Members of the selected group that the report is generated for. All members are links to individual reports."),
-			'trends' => _("Shows trends during selected report period"),
+			'trends' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 
