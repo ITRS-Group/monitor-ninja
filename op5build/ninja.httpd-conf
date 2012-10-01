@@ -1,3 +1,13 @@
+Alias /monitor/stylesheets /opt/monitor/share/stylesheets
+Alias /monitor/cgi-bin /opt/monitor/sbin
+Alias /monitor/GraphXML.dtd /opt/monitor/share/GraphXML.dtd
+Alias /monitor/js /opt/monitor/share/js
+Alias /monitor/images /opt/monitor/share/images
+Alias /monitor/css /opt/monitor/share/css
+Alias /monitor/op5 /opt/monitor/op5
+Alias /monitor /opt/monitor/op5/ninja
+Alias /ninja /opt/monitor/op5/ninja
+
 <Location /monitor>
 	Options -Indexes
 	Order allow,deny

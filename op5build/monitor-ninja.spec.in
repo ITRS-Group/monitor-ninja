@@ -79,12 +79,6 @@ done
 # The custom_widgets dir need to be writable by the apache user
 chmod 775 %buildroot%prefix/application/custom_widgets
 
-mkdir -p %buildroot/var/www/html
-ln -sfT %prefix %buildroot/var/www/html/monitor
-ln -sfT %prefix %buildroot/var/www/html/ninja
-# recursive symbolic link, so must be after all 'find' stuff above
-ln -s ../ %buildroot%prefix/op5
-
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 
@@ -109,12 +103,24 @@ if [ -f /opt/op5sys/etc/ldapserver ]; then
   sed -i "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/" %prefix/application/config/auth.php
 fi
 
+# Cleanup symlinks we don't use anymore
+if [ -f /var/www/html/monitor ]; then
+  rm -rf /var/www/html/monitor
+fi
+
+if [ -f /var/www/html/ninja ]; then
+  rm -rf /var/www/html/ninja
+fi
+
+if [ -f /opt/monitor/op5/ninja/op5 ]; then
+  rm -rf /opt/monitor/op5/ninja/op5
+fi
+
+
 %files
 %defattr(-,monitor,apache)
 %prefix
 %attr(644,root,root) /etc/cron.d/*
-/var/www/html/monitor
-/var/www/html/ninja
 /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py*
 %attr(-,root,apache) /etc/httpd/conf.d/monitor-ninja.conf
 
