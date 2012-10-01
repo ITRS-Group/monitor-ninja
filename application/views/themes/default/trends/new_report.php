@@ -1,33 +1,41 @@
 <?php
 
-	$GRAPHS_T_WIDTH = 700;
-		
 	$HOST_STATES = array (
-		"-1" => 'Undetermined',
+		"-2" => 'Excluded',
+		"-1" => 'Pending',
 		"0" => 'Up',
-		"1" => 'Unreachable',
-		"2" => 'Down'
+		"1" => 'Down',
+		"2" => 'Unreachable',
+		"7" => 'All',
 	);
 	
 	$HOST_COLORS = array (
-		"-1" => '#aaa',
-		"0" => '#9e0',
-		"1" => '#fb4',
-		"2" => '#f50'
+		"-2" => '#fff',
+		"-1" => '#a19e95',
+		"0" => '#aade53',
+		"1" => '#f7261b',
+		"2" => '#ffd92f',
+		"7" => '#f4d',
 	);
 	
 	$SERVICE_STATES = array (
-		"-1" => 'Undetermined',
-		"0" => 'Up',
-		"1" => 'Unreachable',
-		"2" => 'Down'
+		"-2" => 'Excluded',
+		"-1" => 'Pending',
+		"0" => 'Ok',
+		"1" => 'Warning',
+		"2" => 'Critical',
+		"3" => 'Unknown',
+		"15" => 'All',
 	);
 	
 	$SERVICE_COLORS = array (
-		"-1" => '#aaa',
-		"0" => '#9e0',
-		"1" => '#fb4',
-		"2" => '#f50'
+		"-2" => '#fff',
+		"-1" => '#a19e95',
+		"0" => '#aade53',
+		"1" => '#ffd92f',
+		"2" => '#f7261b',
+		"3" => '#ff9d08',
+		"15" => '#f4d',
 	);
 	
 ?>
