@@ -54,6 +54,11 @@ class Livestatus {
     private $program_start   = false;
     private static $instance = false;
 
+    private function calc_duration($row) {
+        $now = time();
+        return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start);
+    }
+
     /* constructor */
     public function __construct($config = null) {
         $config           = $config ? $config : 'livestatus';
@@ -95,9 +100,8 @@ class Livestatus {
                 'retry_interval', 'scheduled_downtime_depth', 'state', 'state_type', 'modified_attributes_list',
                 'pnpgraph_present'
             );
-            $now = time();
             $options['callbacks'] = array(
-                'duration' => function($row) use ($now) { return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start); }
+                'duration' => array('self', 'calc_duration')
             );
         }
         return $this->getTable('hosts', $options);
@@ -147,9 +151,8 @@ class Livestatus {
                 'plugin_output', 'process_performance_data', 'retry_interval', 'scheduled_downtime_depth',
                 'state', 'state_type', 'modified_attributes_list', 'pnpgraph_present'
             );
-            $now = time();
             $options['callbacks'] = array(
-                'duration' => function($row) use ($now) { return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start); }
+                'duration' => array('self', 'calc_duration')
             );
         }
         return $this->getTable('services', $options);
@@ -741,7 +744,7 @@ TODO: implement
             }
             if($callbacks != null) {
                 foreach($callbacks as $key => $cb) {
-                    $n[$key] = $cb($n);
+                    $n[$key] = call_user_func($cb, $n);
                 }
             }
             array_push($result, $n);
