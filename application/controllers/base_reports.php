@@ -9,7 +9,8 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		'red' 	=> '#f7261b',
 		'grey' 	=> '#a19e95',
 		'lightblue' => '#EAF0F2', # actual color is #ddeceb, but it is hardly visible
-		'white' => '#ffffff'
+		'white' => '#ffffff',
+		'transparent' => 'transparent'
 	);
 
 	protected static $sla_field_names = array(
@@ -193,14 +194,16 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			Reports_Model::HOST_UP => static::$colors['green'],
 			Reports_Model::HOST_DOWN => static::$colors['red'],
 			Reports_Model::HOST_UNREACHABLE => static::$colors['orange'],
-			Reports_Model::HOST_PENDING => static::$colors['grey']
+			Reports_Model::HOST_PENDING => static::$colors['grey'],
+			Reports_Model::HOST_EXCLUDED => static::$colors['transparent']
 		);
 		$colors['service'] = array(
 			Reports_Model::SERVICE_OK => static::$colors['green'],
-			Reports_Model::SERVICE_WARNING => static::$colors['orange'],
+			Reports_Model::SERVICE_WARNING => static::$colors['yellow'],
 			Reports_Model::SERVICE_CRITICAL => static::$colors['red'],
-			Reports_Model::SERVICE_UNKNOWN => static::$colors['grey'],
-			Reports_Model::SERVICE_PENDING => static::$colors['grey']
+			Reports_Model::SERVICE_UNKNOWN => static::$colors['orange'],
+			Reports_Model::SERVICE_PENDING => static::$colors['grey'],
+			Reports_Model::SERVICE_EXCLUDED => static::$colors['transparent']
 		);
 		return $colors[$type][$state];
 	}
