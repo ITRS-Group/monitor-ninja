@@ -41,7 +41,6 @@ var TGraph = function (stops, type, name, max) {
 		this.container.style.overflow = 'auto';
 		this.container.style.width = '100%';
 		this.create();
-		this.hookMouseMove();
 		
 		document.body.appendChild(this.hoverbox);
 		
@@ -55,8 +54,26 @@ TGraph.prototype = {
 	
 		var that = this;
 	
-		TGraphEventBinder(block, 'mouseover', function () {
+		TGraphEventBinder(block, 'mouseover', function (e) {
+		
+			e = e || window.event;
+		
 			that.hoverbox.style.display = 'block';
+			
+			console.log(e.target);
+			
+			var posx = 0, posy = 0;
+			
+			if (e.pageX || e.pageY) {
+				posy = e.pageY;
+				posx = e.pageX;
+			} else {
+				posy = document.body.scrollTop + e.clientY;
+				posx = document.body.scrollLeft + e.clientX;
+			}
+			
+			that.hoverbox.style.left = posx + 'px';
+			that.hoverbox.style.top = posy + 'px';
 			
 			that.hoverbox.innerHTML = '<b class="title">' + stop['label'] +'</b><br />'+ 
 				'<small>' + that.parseNiceTime(new Date(time)) + ' - ' + 
@@ -66,34 +83,12 @@ TGraph.prototype = {
 				
 		});
 		
-		TGraphEventBinder(block, 'mouseout', function () {
+		TGraphEventBinder(block, 'mouseout', function (e) {
+		
+			e = e || window.event;
+		
 			that.hoverbox.style.display = 'none';
 			that.hoverbox.innerHTML = '';
-		});
-		
-	},
-	
-	hookMouseMove: function () {
-	
-		var that = this;
-	
-		TGraphEventBinder(window, 'mousemove', function (e) {
-			var posx = 0;
-			var posy = 0;
-			if (!e) var e = window.event;
-			if (e.pageX || e.pageY) 	{
-				posx = e.pageX;
-				posy = e.pageY;
-			}
-			else if (e.clientX || e.clientY) 	{
-				posx = e.clientX + document.body.scrollLeft
-					+ document.documentElement.scrollLeft;
-				posy = e.clientY + document.body.scrollTop
-					+ document.documentElement.scrollTop;
-			}
-			
-			that.hoverbox.style.left = (posx + 15) + 'px';
-			that.hoverbox.style.top = (posy + 15) + 'px';
 		});
 		
 	},
@@ -226,7 +221,8 @@ TGraph.prototype = {
 			laststate = '';
 			
 			this.height += 40;
-			for (i; i < this.stops[y].length; i += 1) {
+			
+			for (i; this.stops[y] && i < this.stops[y].length; i += 1) {
 			
 				this.stops[y][i].duration = this.stops[y][i].duration * 1000;	
 				this.stops[y][i].index = i;
