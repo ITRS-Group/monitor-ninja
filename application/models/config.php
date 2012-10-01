@@ -63,7 +63,7 @@ class Config_Model extends Model {
 				 h.id, h.host_name, h.alias, h.address,  h.max_check_attempts, h.check_interval,
 				 h.retry_interval, h.check_command, h.check_period, h.notification_interval,
 				 h.notes, h.notes_url, h.action_url, h.icon_image, h.icon_image_alt,
-				 h.obsess_over_host, h.active_checks_enabled, h.passive_checks_enabled, h.check_freshness,
+				 h.obsess, h.active_checks_enabled, h.passive_checks_enabled, h.check_freshness,
 				 h.freshness_threshold, h.last_host_notification, h.next_host_notification,
 				 h.first_notification_delay, h.event_handler, h.notification_options, h.notification_period,
 				 h.event_handler_enabled, h.stalking_options, h.flap_detection_enabled, h.low_flap_threshold,
@@ -79,7 +79,7 @@ class Config_Model extends Model {
 				$sql = "SELECT
 				id, host_name, service_description, max_check_attempts, check_interval,
 				retry_interval, check_command, check_period, parallelize_check, is_volatile,
-				obsess_over_service, active_checks_enabled, passive_checks_enabled,
+				obsess, active_checks_enabled, passive_checks_enabled,
 				check_freshness, freshness_threshold, notifications_enabled,
 				notes, notes_url, action_url, icon_image, icon_image_alt,
 				notification_interval, notification_options, notification_period,

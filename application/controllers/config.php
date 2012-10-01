@@ -174,7 +174,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= time::to_string($row->retry_interval*60);
 						$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->check_command, $row->check_command);
 						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
-						$result[$i][]= $row->obsess_over_host == 1 ? _('Yes') : _('No');
+						$result[$i][]= $row->obsess == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->active_checks_enabled == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->passive_checks_enabled == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->check_freshness == 1 ? _('Yes') : _('No');
@@ -284,7 +284,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
 						$result[$i][]= $row->parallelize_check == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->is_volatile == 1 ? _('Yes') : _('No');
-						$result[$i][]= $row->obsess_over_service == 1 ? _('Yes') : _('No');
+						$result[$i][]= $row->obsess == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->active_checks_enabled == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->passive_checks_enabled == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->check_freshness == 1 ? _('Yes') : _('No');

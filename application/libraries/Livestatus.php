@@ -90,7 +90,7 @@ class Livestatus {
                 'latency', 'long_plugin_output', 'low_flap_threshold', 'max_check_attempts', 'name',
                 'next_check', 'notes', 'notes_expanded', 'notes_url', 'notes_url_expanded', 'notification_interval',
                 'notification_period', 'notifications_enabled', 'num_services_crit', 'num_services_ok',
-                'num_services_pending', 'num_services_unknown', 'num_services_warn', 'num_services', 'obsess_over_host',
+                'num_services_pending', 'num_services_unknown', 'num_services_warn', 'num_services', 'obsess',
                 'parents', 'percent_state_change', 'perf_data', 'plugin_output', 'process_performance_data',
                 'retry_interval', 'scheduled_downtime_depth', 'state', 'state_type', 'modified_attributes_list',
                 'pnpgraph_present'
@@ -143,7 +143,7 @@ class Livestatus {
                 'last_check', 'last_notification', 'last_state_change', 'latency', 'long_plugin_output',
                 'low_flap_threshold', 'max_check_attempts', 'next_check', 'notes', 'notes_expanded',
                 'notes_url', 'notes_url_expanded', 'notification_interval', 'notification_period',
-                'notifications_enabled', 'obsess_over_service', 'percent_state_change', 'perf_data',
+                'notifications_enabled', 'obsess', 'percent_state_change', 'perf_data',
                 'plugin_output', 'process_performance_data', 'retry_interval', 'scheduled_downtime_depth',
                 'state', 'state_type', 'modified_attributes_list', 'pnpgraph_present'
             );
