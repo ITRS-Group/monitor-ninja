@@ -19,46 +19,46 @@ class Tac_acknowledged_Widget extends widget_Base {
 		$problem = array();
 		$i = 0;
 
-		if ($current_status->hosts_down_acknowledged) {
+		if ($current_status->hst->down_and_ack) {
 			$problem[$i]['type'] = _('Host');
 			$problem[$i]['status'] = _('Down');
 			$problem[$i]['url'] = 'status/host/all/'.nagstat::HOST_DOWN.'/?hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED;
-			$problem[$i]['title'] = $current_status->hosts_down_acknowledged.' '._('Acknowledged hosts');
+			$problem[$i]['title'] = $current_status->hst->down_and_ack.' '._('Acknowledged hosts');
 			$i++;
 		}
 
-		if ($current_status->hosts_unreachable_acknowledged) {
+		if ($current_status->hst->unreachable_and_ack) {
 			$problem[$i]['type'] = _('Host');
 			$problem[$i]['status'] = _('Unreachable');
 			$problem[$i]['url'] = 'status/host/all/'.nagstat::HOST_UNREACHABLE.'/?hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED;
-			$problem[$i]['title'] = $current_status->hosts_unreachable_acknowledged.' '._('Acknowledged hosts');
+			$problem[$i]['title'] = $current_status->hst->unreachable_and_ack.' '._('Acknowledged hosts');
 			$i++;
 		}
 
-		if ($current_status->services_critical_acknowledged) {
+		if ($current_status->svc->critical_and_ack) {
 			$problem[$i]['type'] = _('Service');
 			$problem[$i]['status'] = _('Critical');
 			$problem[$i]['url'] = 'status/service/all/'.(nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING).
 				'/'.nagstat::SERVICE_CRITICAL.'/'.nagstat::SERVICE_STATE_ACKNOWLEDGED;
-			$problem[$i]['title'] = $current_status->services_critical_acknowledged.' '._('Acknowledged services');
+			$problem[$i]['title'] = $current_status->svc->critical_and_ack.' '._('Acknowledged services');
 			$i++;
 		}
 
-		if ($current_status->services_warning_acknowledged) {
+		if ($current_status->svc->warning_and_ack) {
 			$problem[$i]['type'] = _('Service');
 			$problem[$i]['status'] = _('Warning');
 			$problem[$i]['url'] = 'status/service/all/'.(nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING).
 				'/'.nagstat::SERVICE_WARNING.'/'.nagstat::SERVICE_STATE_ACKNOWLEDGED;
-			$problem[$i]['title'] = $current_status->services_warning_acknowledged.' '._('Acknowledged services');
+			$problem[$i]['title'] = $current_status->svc->warning_and_ack.' '._('Acknowledged services');
 			$i++;
 		}
 
-		if ($current_status->services_unknown_acknowledged) {
+		if ($current_status->svc->unknown_and_ack) {
 			$problem[$i]['type'] = _('Service');
 			$problem[$i]['status'] = _('Unknown');
 			$problem[$i]['url'] = 'status/service/all/'.(nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING).
 				'/'.nagstat::SERVICE_UNKNOWN.'/'.nagstat::SERVICE_STATE_ACKNOWLEDGED;
-			$problem[$i]['title'] = $current_status->services_unknown_acknowledged.' '._('Acknowledged services');
+			$problem[$i]['title'] = $current_status->svc->unknown_and_ack.' '._('Acknowledged services');
 			$i++;
 		}
 

@@ -53,23 +53,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		# is user authenticated to view details on current object?
-		$auth = Nagios_auth_Model::instance();
-		$is_authenticated = false;
-		switch ($type) {
-			case 'host':
-				$is_authenticated = $auth->is_authorized_for_host($host);
-				break;
-			case 'service':
-				$is_authenticated = $auth->is_authorized_for_service($host);
-				break;
-			case 'servicegroup': case 'hostgroup':
-				return $this->group_details($type, $host);
-		}
-		if ($is_authenticated === false) {
-			return url::redirect('extinfo/unauthorized/'.$type);
-		}
-
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -81,15 +64,26 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# save us some typing
 		$content = $this->template->content;
 
-		$result_data = Host_Model::object_status($host, $service);
-		$result = $result_data[0];
+		$ls = Livestatus::instance();
+		if(empty($service)) {
+			$result_data = $ls->getHosts(array('filter' => array('name' => $host)));
+		} else {
+			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service)));
+		}
+		if (count($result_data) === 0) {
+			return url::redirect('extinfo/unauthorized/'.$type);
+		}
+		$result = (object)$result_data[0];
+		/* TODO: implement */
 		switch($type) {
+		/*
 			case 'host':
 				$content->custom_variables = Custom_variable_Model::get_for($type, $result->id);
 				break;
 			case 'service':
 				$content->custom_variables = Custom_variable_Model::get_for($type, $result->service_id);
 				break;
+		*/
 			default:
 				$content->custom_variables = array();
 
@@ -118,30 +112,30 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->parents = false;
 
 		if ($type == 'host') {
-			$group_info = Group_Model::get_groups_for_object($type, $result->id);
+			#$group_info = Group_Model::get_groups_for_object($type, $result->id);
 			$content->title = _('Host State Information');
 			$content->no_group_lable = _('No hostgroups');
 			$check_compare_value = Current_status_Model::HOST_CHECK_ACTIVE;
-			$last_notification = $result->last_host_notification;
+			$last_notification = $result->last_notification;
 			$content->lable_next_scheduled_check = _('Next scheduled active check');
 			$content->lable_flapping = _('Is this host flapping?');
 			$obsessing = $result->obsess_over_host;
 			$content->notes = $result->notes !='' ? nagstat::process_macros($result->notes, $result) : false;
 
 			# check for parents
-			$host_obj = new Host_Model();
-			$parents = $host_obj->get_parents($host);
-			if (count($parents)) {
-				$content->parents = $parents;
-			}
+			#$host_obj = new Host_Model();
+			#$parents = $host_obj->get_parents($host);
+			#if (count($parents)) {
+		#		$content->parents = $parents;
+		#	}
 
 			$back_link = '/extinfo/details/?host='.urlencode($host);
-			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
+			if ($result->state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
 				$message_str = _('This host has not yet been checked, so status information is not available.');
 			}
 		} else {
-			$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
+			#$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
 			$content->title = _('Service State Information');
 			$content->no_group_lable = _('No servicegroups');
 			$content->lable_next_scheduled_check = _('Next scheduled check');
@@ -151,15 +145,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = _('Is this service flapping?');
 			$obsessing = $result->obsess_over_service;
-			$content->notes = $result->service_notes !='' ? nagstat::process_macros($result->service_notes, $result) : false;
-			if ($result->current_state == Current_status_Model::SERVICE_PENDING ) {
+			$content->notes = $result->notes_expanded;
+			if ($result->state == Current_status_Model::SERVICE_PENDING ) {
 				$is_pending = true;
 				$message_str = _('This service has not yet been checked, so status information is not available.');
 			}
 		}
 
-		$content->notes_url = $result->notes_url !='' ? nagstat::process_macros($result->notes_url, $result) : false;
-		$content->action_url = $result->action_url !='' ? nagstat::process_macros($result->action_url, $result) : false;
+		$content->notes_url = $result->notes_url_expanded;
+		$content->action_url = $result->action_url_expanded;
 
 		$xaction = array();
 		if (nacoma::link()===true) {
@@ -179,7 +173,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					);
 		}
 
-		if (Kohana::config('config.pnp4nagios_path') !== false && pnp::has_graph($host, urlencode($service))) {
+		if($result->pnpgraph_present) {
 			$label = _('Show performance graph');
 			$url = url::site() . 'pnp/?host=' . urlencode($host);
 			if ($type ===  'service') {
@@ -197,10 +191,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->extra_action_links = $xaction;
 
 		$groups = false;
-		if ($group_info !== false && count($group_info) > 0) {
-			foreach ($group_info as $group_row) {
-				$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
-					html::specialchars($group_row->{$type.'group_name'}));
+		if(count($result->groups) > 0) {
+			foreach ($result->groups as $group) {
+				$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group)),
+					html::specialchars($group));
 			}
 		}
 
@@ -219,20 +213,21 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->host = $host;
 		$content->lable_current_status = _('Current status');
 		$content->lable_status_information = _('Status information');
-		$content->current_status_str = $this->current->status_text($result->current_state, $type);
+		$content->current_status_str = $this->current->status_text($result->state, $type);
 		$content->duration = $result->duration;
 		$content->groups = $groups;
-		$content->host_address = $result->address;
+		$content->host_address = $type == 'host' ? $result->address : $result->host_address;
 		$content->icon_image = $result->icon_image;
 		$content->icon_image_alt = $result->icon_image_alt;
-		$content->status_info = htmlspecialchars($result->output).'<br />'.nl2br(htmlspecialchars($result->long_output));
+		$content->status_info = htmlspecialchars($result->plugin_output).'<br />'.nl2br(htmlspecialchars($result->long_plugin_output));
 		$content->lable_perf_data = _('Performance data');
 		$content->perf_data = $result->perf_data;
 		$content->lable_current_attempt = _('Current attempt');
 		$content->current_attempt = $result->current_attempt;
 		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
 		$content->main_object_alias = $type=='host' ? $result->alias : false;
-		$content->max_attempts = $result->max_attempts;
+		$content->max_attempts = $result->max_check_attempts;
+		$content->last_update = time();
 		$content->last_check = $result->last_check;
 		$content->lable_last_check = _('Last check time');
 		$content->lable_check_type = _('Check type');
@@ -275,25 +270,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$str_disabled = _('DISABLED');
 		$content->active_checks_enabled = $result->active_checks_enabled ? $str_enabled : $str_disabled;
 		$content->active_checks_enabled_val = $result->active_checks_enabled ? true : false;
-		$content->passive_checks_enabled = $result->passive_checks_enabled ? $str_enabled : $str_disabled;
+		$content->passive_checks_enabled = $result->accept_passive_checks ? $str_enabled : $str_disabled;
 		$content->obsessing = $obsessing ? $str_enabled : $str_disabled;
 		$content->notifications_enabled = $result->notifications_enabled ? $str_enabled : $str_disabled;
 		$content->event_handler_enabled = $result->event_handler_enabled ? $str_enabled : $str_disabled;
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
-		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_local();
-		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
-		if (empty($status) || !$is_running) {
-			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
-			$this->template->content->commands->info_message_extra = sprintf(_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars(_('here'))), Kohana::config('config.product_name'));
-		} else if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
-			$this->template->content->commands = $this->add_view('extinfo/commands');
-		} else {
-			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = _("You're not authorized to run commands");
-		}
+		$this->template->content->commands = $this->add_view('extinfo/commands');
 
 		$commands = $this->template->content->commands;
 		if ($type == 'host') {
@@ -323,7 +306,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$cmd = $type == 'host' ? nagioscmd::command_id('SCHEDULE_HOST_CHECK') : nagioscmd::command_id('SCHEDULE_SVC_CHECK');
 		$commands->link_reschedule_check = $this->command_link($cmd, $host, $service, $commands->lable_link_reschedule_check);
 
-		if ($result->passive_checks_enabled) {
+		if ($result->accept_passive_checks) {
 			$commands->lable_submit_passive_checks = $type == 'host' ? _('Submit passive check result for this host') : _('Submit passive check result for this service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('PROCESS_HOST_CHECK_RESULT') : nagioscmd::command_id('PROCESS_SERVICE_CHECK_RESULT');
 			$commands->link_submit_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_submit_passive_checks);
@@ -349,10 +332,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# acknowledgements
 		$commands->show_ackinfo = false;
 		if ($type == 'host') {
-			if ($result->current_state == Current_status_Model::HOST_DOWN || $result->current_state == Current_status_Model::HOST_UNREACHABLE) {
+			if ($result->state == Current_status_Model::HOST_DOWN || $result->state == Current_status_Model::HOST_UNREACHABLE) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
-				if (!$result->problem_has_been_acknowledged) {
+				if (!$result->acknowledged) {
 					$commands->lable_acknowledge_problem = _('Acknowledge this host problem');
 					$commands->link_acknowledge_problem = $this->command_link(nagioscmd::command_id('ACKNOWLEDGE_HOST_PROBLEM'),
 						$host, false, $commands->lable_acknowledge_problem);
@@ -363,7 +346,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 			}
 		} else {
-			if (($result->current_state == Current_status_Model::SERVICE_WARNING || $result->current_state == Current_status_Model::SERVICE_UNKNOWN || $result->current_state == Current_status_Model::SERVICE_CRITICAL) && $result->state_type) {
+			if (($result->state == Current_status_Model::SERVICE_WARNING || $result->state == Current_status_Model::SERVICE_UNKNOWN || $result->state == Current_status_Model::SERVICE_CRITICAL) && $result->state_type) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
 				if (!$result->problem_has_been_acknowledged) {
@@ -396,14 +379,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$commands->show_delay = false;
 		if ($type == 'host') {
-			if ($result->current_state != Current_status_Model::HOST_UP) {
+			if ($result->state != Current_status_Model::HOST_UP) {
 				$commands->show_delay = true;
 				$commands->lable_delay_notification = _('Delay next host notification');
 				$commands->link_delay_notifications = $this->command_link(nagioscmd::command_id('DELAY_HOST_NOTIFICATION'),
 				$host, false, $commands->lable_delay_notification);
 			}
 		} else {
-			if ($result->notifications_enabled && $result->current_state != Current_status_Model::SERVICE_OK) {
+			if ($result->notifications_enabled && $result->state != Current_status_Model::SERVICE_OK) {
 				$commands->show_delay = true;
 				$commands->lable_delay_notification = _('Delay next service notification');
 				$commands->link_delay_notifications = $this->command_link(nagioscmd::command_id('DELAY_SVC_NOTIFICATION'),
@@ -542,6 +525,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 
 		# check if nagios is running, will affect wich template to use
+/*
 		$status = Program_status_Model::get_local();
 		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
 		if (!$is_running) {
@@ -560,11 +544,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 			$this->template->content->commands->info_message_extra = $info_message;
 		} else {
+*/
 			$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
+/*
 		}
-
-		# instance_name = NULL
-		# instance_id = NULL
+*/
 
 		$commands = $this->template->content->commands;
 
@@ -580,97 +564,33 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status_res = Program_status_Model::get_local();
+		$status = Current_status_Model::instance()->program_status();
 
-		# --------------------------------------
-		# Fetch program version from status.log
-		# --------------------------------------
-		# where is status.log on this system?
-		$nagios_config = System_Model::parse_config_file('nagios.cfg');
-		$status_file = $nagios_config['status_file'];
+		$content->program_status = $status;
+		$content->run_time = time::to_string(time() - $status->program_start);
+		$content->program_start = date($date_format_str, $status->program_start);
+		$content->last_log_rotation = $status->last_log_rotation ? date($date_format_str, $status->last_log_rotation) : 'never';
 
-		# use grep + awk to find version
-		exec("/bin/grep -m1 version= ".$status_file."|/bin/awk -F = {'print $2'}", $version_output, $result);
-
-		# check return values
-		if ($result==0 && !empty($version_output)) {
-			$version = $version_output[0];
-		} else {
-			$version = $na_str;
-		}
-
-		# assign program version to template
-		$this->template->content->program_version = $version;
-
-		if (!empty($status_res) && count($status_res) > 0) {
-			$status = $status_res->current();
-			$content->program_start = date($date_format_str, $status->program_start);
-			$run_time_str = time::to_string(time() - $status->program_start);
-			$content->run_time = $run_time_str;
-
-			$content->last_command_check = $status->last_command_check;
-			$content->last_log_rotation = $status->last_log_rotation;
-			$content->nagios_pid = $status->pid;
-			$content->notifications_enabled = $status->notifications_enabled;
-			$content->execute_service_checks = $status->active_service_checks_enabled;
-			$content->accept_passive_service_checks = $status->passive_service_checks_enabled;
-			$content->execute_host_checks = $status->active_host_checks_enabled;
-			$content->accept_passive_host_checks = $status->passive_service_checks_enabled;
-			$content->enable_event_handlers = $status->event_handlers_enabled;
-			$content->obsess_over_services = $status->obsess_over_services;
-			$content->obsess_over_hosts = $status->obsess_over_hosts;
-			$content->flap_detection_enabled = $status->flap_detection_enabled;
-			$content->enable_failure_prediction = $status->failure_prediction_enabled;
-			$content->process_performance_data = $status->process_performance_data;
-		} else {
-			# nothing found in program_status
-			# fetch what we can find from nagios.cfg for now
-
-			$content->notifications_enabled = isset($nagios_config['enable_notifications']) ? $nagios_config['enable_notifications'] : false;
-			$content->flap_detection_enabled = isset($nagios_config['enable_flap_detection']) ? $nagios_config['enable_flap_detection'] : false;
-			$content->enable_event_handlers = isset($nagios_config['enable_event_handlers']) ? $nagios_config['enable_event_handlers'] : false;
-			$content->execute_service_checks = isset($nagios_config['execute_service_checks']) ? $nagios_config['execute_service_checks'] : false;
-			$content->accept_passive_service_checks = isset($nagios_config['accept_passive_service_checks']) ? $nagios_config['accept_passive_service_checks'] : false;
-			$content->obsess_over_services = isset($nagios_config['obsess_over_services']) ? $nagios_config['obsess_over_services'] : false;
-			$content->execute_host_checks = isset($nagios_config['execute_host_checks']) ? $nagios_config['execute_host_checks'] : false;
-			$content->accept_passive_host_checks = isset($nagios_config['accept_passive_host_checks']) ? $nagios_config['accept_passive_host_checks'] : false;
-			$content->obsess_over_hosts = isset($nagios_config['obsess_over_hosts']) ? $nagios_config['obsess_over_hosts'] : false;
-			$content->process_performance_data = isset($nagios_config['process_performance_data']) ? $nagios_config['process_performance_data'] : false;
-
-			# set the following values to some default since we can't seem to determine
-			# the correct value at the moment
-			$content->enable_failure_prediction = false;
-			$content->program_start = $na_str;
-			$content->run_time = $na_str;
-			$run_time = false;
-			$content->last_command_check = $na_str;
-			$content->last_log_rotation = $na_str;
-
-			# are we runnig monitor or nagios?
-			$process_name = strstr(__FILE__, 'op5') ? 'monitor' : 'nagios';
-			$content->nagios_pid = exec("pidof ".$process_name."|awk {'print $1'}");
-		}
-
-		$content->notifications_class = $content->notifications_enabled ? 'notificationsENABLED' : 'notificationsDISABLED';
-		$content->notifications_str = $content->notifications_enabled ? $yes : $no;
-		$content->servicechecks_class = $content->execute_service_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->servicechecks_str = $content->execute_service_checks ? $yes : $no;
-		$content->passive_servicechecks_class = $content->accept_passive_service_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->passive_servicechecks_str = $content->accept_passive_service_checks ? $yes : $no;
-		$content->hostchecks_class = $content->execute_host_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->hostchecks_str = $content->execute_host_checks ? $yes : $no;
-		$content->passive_hostchecks_class = $content->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->passive_hostchecks_str = $content->accept_passive_host_checks ? $yes : $no;
-		$content->eventhandler_class = $content->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
-		$content->eventhandler_str = $content->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_services_class = $content->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
-		$content->obsess_services_str = $content->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_host_class = $content->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
-		$content->obsess_hosts_str = $content->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->flap_detection_class = $content->flap_detection_enabled ? 'checksENABLED' : 'checksDISABLED';
-		$content->flap_detection_str = $content->flap_detection_enabled ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->performance_data_class = $content->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
-		$content->performance_data_str = $content->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->notifications_class = $status->enable_notifications ? 'notificationsENABLED' : 'notificationsDISABLED';
+		$content->notifications_str = $status->enable_notifications ? $yes : $no;
+		$content->servicechecks_class = $status->execute_service_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->servicechecks_str = $status->execute_service_checks ? $yes : $no;
+		$content->passive_servicechecks_class = $status->accept_passive_service_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->passive_servicechecks_str = $status->accept_passive_service_checks ? $yes : $no;
+		$content->hostchecks_class = $status->execute_host_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->hostchecks_str = $status->execute_host_checks ? $yes : $no;
+		$content->passive_hostchecks_class = $status->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->passive_hostchecks_str = $status->accept_passive_host_checks ? $yes : $no;
+		$content->eventhandler_class = $status->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
+		$content->eventhandler_str = $status->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_services_class = $status->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
+		$content->obsess_services_str = $status->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_host_class = $status->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
+		$content->obsess_hosts_str = $status->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->flap_detection_class = $status->enable_flap_detection ? 'checksENABLED' : 'checksDISABLED';
+		$content->flap_detection_str = $status->enable_flap_detection ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->performance_data_class = $status->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
+		$content->performance_data_str = $status->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 
 		# Assign commands variables
 		$commands->title = _('Process Commands');
@@ -679,7 +599,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$commands->label_restart_nagios = sprintf(_('Restart the %s process'), Kohana::config('config.product_name'));
 		$commands->link_restart_nagios = $this->command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
 
-		if ($content->notifications_enabled) {
+		if ($status->enable_notifications) {
 			$commands->label_notifications = _('Disable notifications');
 			$commands->link_notifications = $this->command_link(nagioscmd::command_id('DISABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
 		} else {
@@ -687,7 +607,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_notifications = $this->command_link(nagioscmd::command_id('ENABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
 		}
 
-		if ($content->execute_service_checks) {
+		if ($status->execute_service_checks) {
 			$commands->label_execute_service_checks = _('Stop executing service checks');
 			$commands->link_execute_service_checks = $this->command_link(nagioscmd::command_id('STOP_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
 		} else {
@@ -695,7 +615,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_execute_service_checks = $this->command_link(nagioscmd::command_id('START_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
 		}
 
-		if ($content->accept_passive_service_checks) {
+		if ($status->accept_passive_service_checks) {
 			$commands->label_passive_service_checks = _('Stop accepting passive service checks');
 			$commands->link_passive_service_checks = $this->command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
 		} else {
@@ -703,7 +623,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_passive_service_checks = $this->command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
 		}
 
-		if ($content->execute_host_checks) {
+		if ($status->execute_host_checks) {
 			$commands->label_execute_host_checks = _('Stop executing host checks');
 			$commands->link_execute_host_checks = $this->command_link(nagioscmd::command_id('STOP_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
 		} else {
@@ -711,7 +631,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_execute_host_checks = $this->command_link(nagioscmd::command_id('START_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
 		}
 
-		if ($content->accept_passive_host_checks) {
+		if ($status->accept_passive_host_checks) {
 			$commands->label_accept_passive_host_checks = _('Stop accepting passive host checks');
 			$commands->link_accept_passive_host_checks = $this->command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
 		} else {
@@ -719,7 +639,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_accept_passive_host_checks = $this->command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
 		}
 
-		if ($content->enable_event_handlers) {
+		if ($status->enable_event_handlers) {
 			$commands->label_enable_event_handlers = _('Disable event handlers');
 			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('DISABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		} else {
@@ -727,7 +647,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('ENABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		}
 
-		if ($content->obsess_over_services) {
+		if ($status->obsess_over_services) {
 			$commands->label_obsess_over_services = _('Stop obsessing over services');
 			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		} else {
@@ -735,7 +655,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		}
 
-		if ($content->obsess_over_hosts) {
+		if ($status->obsess_over_hosts) {
 			$commands->label_obsess_over_hosts = _('Stop obsessing over hosts');
 			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		} else {
@@ -743,7 +663,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		}
 
-		if ($content->flap_detection_enabled) {
+		if ($status->enable_flap_detection) {
 			$commands->label_flap_detection_enabled = _('Disable flap detection');
 			$commands->link_flap_detection_enabled = $this->command_link(nagioscmd::command_id('DISABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
 		} else {
@@ -751,7 +671,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_flap_detection_enabled = $this->command_link(nagioscmd::command_id('ENABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
 		}
 
-		if ($content->process_performance_data) {
+		if ($status->process_performance_data) {
 			$commands->label_process_performance_data = _('Disable performance data');
 			$commands->link_process_performance_data = $this->command_link(nagioscmd::command_id('DISABLE_PERFORMANCE_DATA'), false, false, $commands->label_process_performance_data);
 		} else {
@@ -1144,170 +1064,136 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = _('Monitoring').' » '._('Performance info');
 		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
-		$service_model = new Service_Model();
-		$host_model = new Host_Model();
 
 		$content->title = _("Program-wide performance information");
 
 		# Values
-		$service_model->get_performance_data();
-		$host_model->get_performance_data();
+		$program_status = Current_status_Model::instance()->program_status();
+		$ls = Livestatus::instance();
+		$hoststats    = $ls->getHostPerformance($program_status->program_start);
+		$servicestats = $ls->getServicePerformance($program_status->program_start);
+
+		$content->program_status = $program_status;
 
 		# active service checks
-		$content->svc_active_1min = $service_model->active_service_checks_1min;
-		$content->svc_active_5min = $service_model->active_service_checks_5min;
-		$content->svc_active_15min = $service_model->active_service_checks_15min;
-		$content->svc_active_1hour = $service_model->active_service_checks_1hour;
-		$content->svc_active_start = $service_model->active_service_checks_start;
-		$content->svc_active_ever = $service_model->active_service_checks_ever;
+		$content->svc_active_1min  = $servicestats->active_1_sum;
+		$content->svc_active_5min  = $servicestats->active_5_sum;
+		$content->svc_active_15min = $servicestats->active_15_sum;
+		$content->svc_active_1hour = $servicestats->active_60_sum;
+		$content->svc_active_start = $servicestats->active_all_sum;
+		$content->svc_active_ever  = $servicestats->active_sum;
 
 		# active service checks, percentages
-		$content->svc_active_1min_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_1min*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_5min_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_5min*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_15min_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_15min*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_1hour_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_1hour*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_start_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_start*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		#$content->svc_active_ever_perc = $service_model->total_active_service_checks > 0 ?
-		#	 number_format(($service_model->active_service_checks_ever*100)/$service_model->total_active_service_checks, 1) : '0.0';
+		$content->svc_active_1min_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_1_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_5min_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_5_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_15min_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_15_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_1hour_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_60_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_start_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_all_sum*100)/$servicestats->active_sum, 1) : '0.0';
 
 		# passive service checks
-		$content->svc_passive_1min = $service_model->passive_service_checks_1min;
-		$content->svc_passive_5min = $service_model->passive_service_checks_5min;
-		$content->svc_passive_15min = $service_model->passive_service_checks_15min;
-		$content->svc_passive_1hour = $service_model->passive_service_checks_1hour;
-		$content->svc_passive_start = $service_model->passive_service_checks_start;
-		$content->svc_passive_ever = $service_model->passive_service_checks_ever;
+		$content->svc_passive_1min = $servicestats->passive_1_sum;
+		$content->svc_passive_5min = $servicestats->passive_5_sum;
+		$content->svc_passive_15min = $servicestats->passive_15_sum;
+		$content->svc_passive_1hour = $servicestats->passive_60_sum;
+		$content->svc_passive_start = $servicestats->passive_all_sum;
+		$content->svc_passive_ever = $servicestats->passive_sum;
 
 		# passive service checks, percentages
-		$content->svc_passive_1min_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_1min*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_5min_perc =  $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_5min*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_15min_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_15min*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_1hour_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_1hour*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_start_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_start*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_ever_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_ever*100)/$service_model->total_passive_service_checks, 1) : '0.0';
+		$content->svc_passive_1min_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_1_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_5min_perc =  $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_5_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_15min_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_15_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_1hour_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_60_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_start_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_all_sum*100)/$servicestats->passive_sum, 1) : '0.0';
 
 		# service execution time
-		$content->min_service_execution_time = number_format($service_model->min_service_execution_time, 2);
-		$content->max_service_execution_time = number_format($service_model->max_service_execution_time, 2);
-		$content->svc_average_execution_time = $service_model->total_active_service_checks > 0 ?
-			number_format(($service_model->total_service_execution_time/$service_model->total_active_service_checks), 3) : 0;
+		$content->min_service_execution_time = number_format($servicestats->execution_time_min, 2);
+		$content->max_service_execution_time = number_format($servicestats->execution_time_max, 2);
+		$content->svc_average_execution_time = number_format($servicestats->execution_time_avg, 3);
 
 		# service latency
-		$content->min_service_latency = number_format($service_model->min_service_latency, 2);
-		$content->max_service_latency = number_format($service_model->max_service_latency, 2);
-		$content->average_service_latency = $service_model->total_active_service_checks > 0 ?
-			number_format($service_model->total_service_latency/$service_model->total_active_service_checks, 3) : 0;
+		$content->min_service_latency = number_format($servicestats->latency_min, 2);
+		$content->max_service_latency = number_format($servicestats->latency_max, 2);
+		$content->average_service_latency = number_format($servicestats->latency_avg, 3);
 
 		# service state change - active
-		$content->min_service_percent_change_a = number_format($service_model->min_service_percent_change_a, 2);
-		$content->max_service_percent_change_a = number_format($service_model->max_service_percent_change_a, 2);
-		$content->average_service_percent_change = $service_model->total_active_service_checks > 0 ?
-			number_format($service_model->total_service_percent_change_a/$service_model->total_active_service_checks, 3) : '0.00';
+		$content->min_service_percent_change_a = number_format($servicestats->active_state_change_min, 2);
+		$content->max_service_percent_change_a = number_format($servicestats->active_state_change_max, 2);
+		$content->average_service_percent_change = number_format($servicestats->active_state_change_avg, 3);
 
 		# service state change - passive
-		$content->min_service_percent_change_b = number_format($service_model->min_service_percent_change_b, 2);
-		$content->max_service_percent_change_b = number_format($service_model->max_service_percent_change_b, 2);
-		$content->average_service_percent_change = $service_model->total_passive_service_checks > 0 ?
-			number_format($service_model->total_service_percent_change_b/$service_model->total_passive_service_checks, 3) : '0.00';
+		$content->min_service_percent_change_b = number_format($servicestats->passive_state_change_min, 2);
+		$content->max_service_percent_change_b = number_format($servicestats->passive_state_change_max, 2);
+		$content->average_service_percent_change = number_format($servicestats->passive_state_change_avg, 3);
 
 		# active host checks
-		$content->hst_active_1min = $host_model->active_host_checks_1min;
-		$content->hst_active_5min = $host_model->active_host_checks_5min;
-		$content->hst_active_15min = $host_model->active_host_checks_15min;
-		$content->hst_active_1hour = $host_model->active_host_checks_1hour;
-		$content->hst_active_start = $host_model->active_host_checks_start;
-		$content->hst_active_ever = $host_model->active_host_checks_ever;
+		$content->hst_active_1min = $hoststats->active_1_sum;
+		$content->hst_active_5min = $hoststats->active_5_sum;
+		$content->hst_active_15min = $hoststats->active_15_sum;
+		$content->hst_active_1hour = $hoststats->active_60_sum;
+		$content->hst_active_start = $hoststats->active_all_sum;
+		$content->hst_active_ever = $hoststats->active_sum;
 
 		# active host checks, percentages
-		$content->hst_active_1min_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_1min*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_5min_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_5min*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_15min_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_15min*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_1hour_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_1hour*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_start_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_start*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_ever_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_ever*100)/$host_model->total_active_host_checks, 1) : '0.0';
+		$content->hst_active_1min_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_1_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_5min_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_5_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_15min_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_15_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_1hour_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_60_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_start_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_all_sum*100)/$hoststats->active_sum, 1) : '0.0';
 
 		# passive host checks
-		$content->hst_passive_1min = $host_model->passive_host_checks_1min;
-		$content->hst_passive_5min = $host_model->passive_host_checks_5min;
-		$content->hst_passive_15min = $host_model->passive_host_checks_15min;
-		$content->hst_passive_1hour = $host_model->passive_host_checks_1hour;
-		$content->hst_passive_start = $host_model->passive_host_checks_start;
-		$content->hst_passive_ever = $host_model->passive_host_checks_ever;
+		$content->hst_passive_1min = $hoststats->passive_1_sum;
+		$content->hst_passive_5min = $hoststats->passive_5_sum;
+		$content->hst_passive_15min = $hoststats->passive_15_sum;
+		$content->hst_passive_1hour = $hoststats->passive_60_sum;
+		$content->hst_passive_start = $hoststats->passive_all_sum;
+		$content->hst_passive_ever = $hoststats->passive_sum;
 
 		# passive host checks, percentages
-		$content->hst_passive_1min_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_1min*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_5min_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_5min*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_15min_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_15min*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_1hour_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_1hour*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_start_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_start*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_ever_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_ever*100)/$host_model->total_passive_host_checks, 1) : '0.0';
+		$content->hst_passive_1min_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_1_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_5min_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_5_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_15min_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_15_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_1hour_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_60_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_start_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_all_sum*100)/$hoststats->passive_sum, 1) : '0.0';
 
 		# host execution time
-		$content->min_host_execution_time = number_format($host_model->min_host_execution_time, 2);
-		$content->max_host_execution_time = number_format($host_model->max_host_execution_time, 2);
-		$content->average_host_execution_time = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->total_host_execution_time/$host_model->total_active_host_checks), 3) : 0;
+		$content->min_host_execution_time = number_format($hoststats->execution_time_min, 2);
+		$content->max_host_execution_time = number_format($hoststats->execution_time_max, 2);
+		$content->average_host_execution_time = number_format($hoststats->execution_time_avg, 3);
 
 		# host latency
-		$content->min_host_latency = number_format($host_model->min_host_latency, 2);
-		$content->max_host_latency = number_format($host_model->max_host_latency, 2);
-		$content->average_host_latency = $host_model->total_active_host_checks > 0 ?
-			number_format($host_model->total_host_latency/$host_model->total_active_host_checks, 3) : 0;
+		$content->min_host_latency = number_format($hoststats->latency_min, 2);
+		$content->max_host_latency = number_format($hoststats->latency_max, 2);
+		$content->average_host_latency = number_format($hoststats->latency_avg, 3);
 
 		# host state change - active
-		$content->min_host_percent_change_a = number_format($host_model->min_host_percent_change_a, 2);
-		$content->max_host_percent_change_a = number_format($host_model->max_host_percent_change_a, 2);
-		$content->average_host_percent_change = $host_model->total_active_host_checks > 0 ?
-			number_format($host_model->total_host_percent_change_a/$host_model->total_active_host_checks, 3) : '0.00';
+		$content->min_host_percent_change_a = number_format($hoststats->active_state_change_min, 2);
+		$content->max_host_percent_change_a = number_format($hoststats->active_state_change_max, 2);
+		$content->average_host_percent_change = number_format($hoststats->active_state_change_avg, 3);
 
 		# host state change - passive
-		$content->min_host_percent_change_b = number_format($host_model->min_host_percent_change_b, 2);
-		$content->max_host_percent_change_b = number_format($host_model->max_host_percent_change_b, 2);
-		$content->average_host_percent_change = $host_model->total_passive_host_checks > 0 ?
-			number_format($host_model->total_host_percent_change_b/$host_model->total_passive_host_checks, 3) : '0.00';
-
-		$stats_key = 'programstatus';
-		$check_stats = System_Model::get_status_info('status.log', $stats_key);
-		if ($check_stats !== false && isset($check_stats[$stats_key])) {
-			$stats = $check_stats[$stats_key];
-			$content->active_scheduled_host_check_stats = System_Model::extract_stat_key('active_scheduled_host_check_stats', $stats);
-			$content->active_ondemand_host_check_stats = System_Model::extract_stat_key('active_ondemand_host_check_stats', $stats);
-			$content->parallel_host_check_stats = System_Model::extract_stat_key('parallel_host_check_stats', $stats);
-			$content->serial_host_check_stats = System_Model::extract_stat_key('serial_host_check_stats', $stats);
-			$content->cached_host_check_stats = System_Model::extract_stat_key('cached_host_check_stats', $stats);
-			$content->passive_host_check_stats = System_Model::extract_stat_key('passive_host_check_stats', $stats);
-			$content->active_scheduled_service_check_stats = System_Model::extract_stat_key('active_scheduled_service_check_stats', $stats);
-			$content->active_ondemand_service_check_stats = System_Model::extract_stat_key('active_ondemand_service_check_stats', $stats);
-			$content->cached_service_check_stats = System_Model::extract_stat_key('cached_service_check_stats', $stats);
-			$content->passive_service_check_stats = System_Model::extract_stat_key('passive_service_check_stats', $stats);
-			$content->external_command_stats = System_Model::extract_stat_key('external_command_stats', $stats);
-			$content->total_external_command_buffer_slots = System_Model::extract_stat_key('total_external_command_buffer_slots', $stats);
-			$content->used_external_command_buffer_slots = System_Model::extract_stat_key('used_external_command_buffer_slots', $stats);
-			$content->high_external_command_buffer_slots = System_Model::extract_stat_key('high_external_command_buffer_slots', $stats);
-		}
+		$content->min_host_percent_change_b = number_format($hoststats->passive_state_change_min, 2);
+		$content->max_host_percent_change_b = number_format($hoststats->passive_state_change_max, 2);
+		$content->average_host_percent_change = number_format($hoststats->passive_state_change_avg, 3);
 	}
 
 	/**

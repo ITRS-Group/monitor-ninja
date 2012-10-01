@@ -7,10 +7,10 @@
 		<col style="width: 25%" />
 	</colgroup>
 	<tr>
-		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_DOWN , $current_status->hosts_down.' '._('Down')) ?></th>
-		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_UNREACHABLE , $current_status->hosts_unreachable.' '._('Unreachable')) ?></th>
-		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_UP, $current_status->hosts_up.' '._('Up') )?></th>
-		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_PENDING, $current_status->hosts_pending.' '._('Pending')) ?></th>
+		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_DOWN , $current_status->hst->down.' '._('Down')) ?></th>
+		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_UNREACHABLE , $current_status->hst->unreachable.' '._('Unreachable')) ?></th>
+		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_UP, $current_status->hst->up.' '._('Up') )?></th>
+		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_PENDING, $current_status->hst->pending.' '._('Pending')) ?></th>
 	</tr>
 	<tr>
 		<td class="white">
@@ -55,17 +55,17 @@
 		</td>
 		<td class="white">
 			<table>
-					<?php	if ($current_status->hosts_up > 0) { ?>
+					<?php	if ($current_status->hst->up > 0) { ?>
 					<tr>
 						<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-ok.png'),_('Up')) ?></td>
-						<td class="status-up"><?php echo html::anchor('status/host/all/1/', html::specialchars($current_status->hosts_up.' '._('Up'))) ?></td>
+						<td class="status-up"><?php echo html::anchor('status/host/all/1/', html::specialchars($current_status->hst->up.' '._('Up'))) ?></td>
 					</tr>
 					<?php } if (count($hosts_up_disabled) > 0) { foreach ($hosts_up_disabled as $url => $title) { ?>
 						<tr>
 						<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-disabled.png'),_('Disabled')) ?></td>
 						<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 					</tr>
-					<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { ?>
+					<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hst->up == 0) { ?>
 					<tr>
 						<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-up.png'),_('Up')) ?></td>
 						<td><?php echo html::anchor($default_links['up'], _('N/A')) ?></td>

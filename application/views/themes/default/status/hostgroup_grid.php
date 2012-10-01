@@ -49,14 +49,14 @@ $state_map = array(
 
 <?php if (count($group_details) && !empty($group_details)) {
 	$nacoma_link = nacoma::link()===true;
-	foreach ($group_details as $hostgroup) { ?>
+	foreach ($group_details as $hostgroup) { $hostgroup = (object) $hostgroup; ?>
 	<table class="group_grid_table">
 		<caption>
 			<?php
 				if ($nacoma_link)
-					echo nacoma::link('configuration/configure/hostgroup/'.urlencode($hostgroup->hostgroup_name), 'icons/16x16/nacoma.png', _('Configure this hostgroup')).' &nbsp;';
-				echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', html::specialchars($hostgroup->alias));
-				echo ' <span>('.html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->hostgroup_name), html::specialchars($hostgroup->hostgroup_name)).')</span>';
+					echo nacoma::link('configuration/configure/hostgroup/'.urlencode($hostgroup->name), 'icons/16x16/nacoma.png', _('Configure this hostgroup')).' &nbsp;';
+				echo html::anchor('status/hostgroup/'.$hostgroup->name.'?style=detail', html::specialchars($hostgroup->alias));
+				echo ' <span>('.html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->name), html::specialchars($hostgroup->name)).')</span>';
 			?>
 		</caption>
 		<tr>
@@ -74,8 +74,7 @@ $state_map = array(
 		$tmp = 0;
 		$j = 0;
 
-		$hosts = Hostgroup_Model::get_group_hosts($hostgroup->hostgroup_name);
-		foreach ($hosts as $host) {
+		foreach ($hostgroup->hosts as $host) {
 		?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<td class="icon bl">
@@ -89,23 +88,21 @@ $state_map = array(
 			<td style="white-space: normal; line-height: 20px">
 			<?php
 
-			$service_map = array('pending' => array(), 'ok' => array(), 'warning' => array(), 'critical' => array(), 'unknown' => array());
-			foreach ($host['services_with_state'] as $service) {
-				$state_name = '';
-				if ($service[2] == 0) {
-					$state_name = 'pending';
-				} else {
-					$state_name = $state_map[$service[1]];
-				}
-				$service_map[$state_name][] = $service[0];
-			}
-			foreach ($service_map as $service_state => $services) {
-				if (empty($services))
+			foreach ($host['services'] as $state => $services) {
+				$first = true;
+				if (count($services) == 0)
 					continue;
+				usort($services, Livestatus::build_sorter(array('description', 'ASC')));
 				?>
-				<img src="<?php echo ninja::add_path('icons/12x12/shield-'.$service_state.'.png') ?>" alt="<?php echo $service_state ?>" title="<?php echo $service_state ?>" class="status=<?php echo $service_state ?>" />
-				<?php foreach ($services as $service) { ?>
-					<a href="<?php echo url::base() ?>extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service)?>" class="status-<?php echo $service_state ?>"><?php echo $service ?></a>
+				<?php foreach ($services as $description => $service) {
+					$service_state = strtolower(Current_status_Model::status_text($service['state'], 'service'));
+					if($first) { ?>
+						<img src="<?php echo ninja::add_path('icons/12x12/shield-'.$service_state.'.png') ?>" alt="<?php echo $service_state ?>" title="<?php echo $service_state ?>" class="status=<?php echo $service_state ?>" />
+					<?php
+						$first = false;
+					}
+					?>
+					<a href="<?php echo url::base() ?>extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service['description'])?>" class="status-<?php echo $service_state ?>"><?php echo $service['description'] ?></a>
 				<?php } ?>
 				<br />
 			<?php } ?>
@@ -175,4 +172,3 @@ $state_map = array(
 	<br /><span id="multi_object_submit_progress" class="item_select"></span>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
-

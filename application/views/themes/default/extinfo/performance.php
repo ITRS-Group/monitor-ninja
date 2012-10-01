@@ -219,117 +219,20 @@
 		<strong><?php echo _('Check statistics') ?></strong>
 		<table style="margin-bottom: 15px">
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Type') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Last 1 min') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Last 5 min') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Last 15 min') ?></th>
+				<th style="width: 50%" class="headerNone"><?php echo _('Type') ?></th>
+				<th style="width: 25%" class="headerNone"><?php echo _('Total') ?></th>
+				<th style="width: 25%" class="headerNone"><?php echo _('Rate') ?></th>
 			</tr>
 			<tr class="even">
-				<td><?php echo _('Active scheduled host checks') ?></td>
-				<?php if (isset($active_scheduled_host_check_stats) && !empty($active_scheduled_host_check_stats)) {
-					foreach ($active_scheduled_host_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
+				<td><?php echo _('Servicechecks') ?></td>
+				<td><?php echo $program_status->service_checks ?></td>
+				<td><?php echo number_format($program_status->service_checks_rate, 2) ?>/s</td>
 			</tr>
 			<tr class="odd">
-				<td><?php echo _('Active on-demand host checks') ?></td>
-				<?php if (isset($active_ondemand_host_check_stats) && !empty($active_ondemand_host_check_stats)) {
-					foreach ($active_ondemand_host_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Parallel host checks') ?></td>
-				<?php if (isset($parallel_host_check_stats) && !empty($parallel_host_check_stats)) {
-					foreach ($parallel_host_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Serial host checks') ?></td>
-				<?php if (isset($serial_host_check_stats) && !empty($serial_host_check_stats)) {
-					foreach ($serial_host_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Cached host checks') ?></td>
-				<?php if (isset($cached_host_check_stats) && !empty($cached_host_check_stats)) {
-					foreach ($cached_host_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Passive host checks') ?></td>
-				<?php if (isset($passive_host_check_stats) && !empty($passive_host_check_stats)) {
-					foreach ($passive_host_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Active scheduled service checks') ?></td>
-				<?php if (isset($active_scheduled_service_check_stats) && !empty($active_scheduled_service_check_stats)) {
-					foreach ($active_scheduled_service_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Active on-demand service checks') ?></td>
-				<?php if (isset($active_ondemand_service_check_stats) && !empty($active_ondemand_service_check_stats)) {
-					foreach ($active_ondemand_service_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Cached service checks') ?></td>
-				<?php if (isset($cached_service_check_stats) && !empty($cached_service_check_stats)) {
-					foreach ($cached_service_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Passive service checks') ?></td>
-				<?php if (isset($passive_service_check_stats) && !empty($passive_service_check_stats)) {
-					foreach ($passive_service_check_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('External commands') ?></td>
-				<?php if (isset($external_command_stats) && !empty($external_command_stats)) {
-					foreach ($external_command_stats as $val) {?>
-					<td><?php echo $val ?></td>
-				<?php }
-					} else echo '<td>0</td><td>0</td><td>0</td>' ?>
+				<td><?php echo _('Hostchecks') ?></td>
+				<td><?php echo $program_status->host_checks ?></td>
+				<td><?php echo number_format($program_status->host_checks_rate, 2) ?>/s</td>
 			</tr>
 		</table>
 	</div>
 
-		<div class="widget left w49">
-		<br />
-		<strong><?php echo _('Buffer usage') ?></strong>
-		<table>
-			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Type') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('In use') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Max used') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Total available') ?></th>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('External commands') ?></td>
-				<td><?php echo isset($used_external_command_buffer_slots) && !empty($used_external_command_buffer_slots) ? $used_external_command_buffer_slots : 0 ?></td>
-				<td><?php echo isset($high_external_command_buffer_slots) && !empty($high_external_command_buffer_slots) ? $high_external_command_buffer_slots : 0 ?></td>
-				<td><?php echo isset($total_external_command_buffer_slots) && !empty($total_external_command_buffer_slots) ? $total_external_command_buffer_slots : 0 ?></td>
-			</tr>
-		</table>
-	</div>

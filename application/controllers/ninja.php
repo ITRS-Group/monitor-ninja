@@ -159,7 +159,6 @@ class Ninja_Controller extends Template_Controller {
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
 
-			$this->_is_alive();
 			$this->_global_notification_checks();
 
 			# fetch info on saved searches and assign to master template
@@ -255,44 +254,20 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	*	Check that we are still getting data from merlin.
-	*	If not, user should be alerted
-	*/
-	public function _is_alive()
-	{
-		$last_alive = Program_status_Model::last_alive();
-		$stale_data_limit = Kohana::config('config.stale_data_limit');
-		$diff = time() - $last_alive;;
-		if ($diff  > $stale_data_limit) {
-			$this->stale_data = $diff;
-			$this->inline_js .= "$('#infobar-sml').show();";
-			$this->template->inline_js = "$('#infobar-sml').show();";
-		}
-	}
-
-	/**
 	*	Check for notifications to be displayed to user
 	* 	Each notification should be an array with (text, link)
 	*/
 	public function _global_notification_checks()
 	{
-		$data = Program_status_Model::notifications_checks();
 		$notifications = false;
-		$data = $data ? $data->current() : false;
-		if ($data !== false) {
-			$this->notifications_disabled = !$data->notifications_enabled;
-			if ($this->notifications_disabled == true) {
-				$notifications[] = array(_('Notifications are disabled'), false);
-			}
-
-			$this->checks_disabled = !$data->active_service_checks_enabled;
-			if ($this->checks_disabled == true) {
-				$notifications[] = array(_('Service checks are disabled'), false);
-			}
-		} else {
-			$notifications[] = array(_('Unable to determine if notifications or service checks are disabled'), false);
+		$status = Current_status_Model::instance()->program_status();
+		if ($status->enable_notifications !== 1) {
+			$notifications[] = array(_('Notifications are disabled'), false);
 		}
-		unset($data);
+		if ($status->execute_service_checks !== 1) {
+			$notifications[] = array(_('Service checks are disabled'), false);
+		}
+		unset($status);
 
 		# check permissions
 		$auth = Nagios_auth_Model::instance();

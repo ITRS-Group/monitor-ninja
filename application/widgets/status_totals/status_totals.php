@@ -48,33 +48,16 @@ class Status_totals_Widget extends widget_Base {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$current_status = $this->get_current_status();
-		$host_cols = array(
-			'total_hosts',
-			'hosts_up',
-			'hosts_down',
-			'hosts_unreachable',
-			'hosts_pending',
-			'hosts_problem'
-		);
-		$svc_cols = array(
-			'total_services',
-			'services_ok',
-			'services_warning',
-			'services_critical',
-			'services_unknown',
-			'services_pending',
-			'services_problem'
-		);
-
 		$stats = new Stats_Model();
 		if (empty($this->grouptype) || $this->host == 'all' || !$this->host) {
-			$hosts = $stats->get_stats('hosts', $host_cols);
-			$services = $stats->get_stats('services', $svc_cols);
+			$hosts    = $stats->get_stats('host_totals');
+			$services = $stats->get_stats('service_totals');
 		} else if ($this->grouptype == 'host') {
-			$hosts = $stats->get_stats('hostsbygroup', $host_cols, array('Filter: hostgroup_name = '.$this->host));
-			$services = $stats->get_stats('servicesbyhostgroup', $svc_cols, array('Filter: hostgroup_name = '.$this->host));
+			$hosts    = $stats->get_stats('host_totals',    array('filter' => array(      'groups' => array('>=' => $this->host))));
+			$services = $stats->get_stats('service_totals', array('filter' => array( 'host_groups' => array('>=' => $this->host))));
 		} else {
+throw new Exception('implement');
+/* TODO: implement */
 			$services = $stats->get_stats('servicesbygroup', $svc_cols, array('Filter: servicegroup_name = '.$this->host), array('servicegroup_name'));
 			$ls = Livestatus::instance();
 			foreach ($services as $service) {
@@ -91,8 +74,6 @@ Filter: servicegroup_name = $group");
 			}
 			$hosts = $stats->get_stats('hosts', $host_cols, $this_match);
 		}
-		$hosts = $hosts[0];
-		$services = $services[0];
 
 		$grouptype = !empty($this->grouptype) ? $this->grouptype.'group' : false;
 
@@ -110,18 +91,18 @@ Filter: servicegroup_name = $group");
 
 		$grouptype_arg = $grouptype ? 'group_type='.$grouptype : '';
 		$host_header = array(
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UP.'&'.$grouptype_arg, 'lable' => $hosts['hosts_up'], 'status' => _('Up'), 'status_id' => nagstat::HOST_UP),
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&'.$grouptype_arg, 'lable' => $hosts['hosts_down'], 'status' => _('Down'), 'status_id' => nagstat::HOST_DOWN),
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&'.$grouptype_arg, 'lable' => $hosts['hosts_unreachable'], 'status' => _('Unreachable'), 'status_id' => nagstat::HOST_UNREACHABLE),
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&'.$grouptype_arg, 'lable' => $hosts['hosts_pending'], 'status' => _('Pending'), 'status_id' => nagstat::HOST_PENDING)
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UP.'&'.$grouptype_arg, 'lable' => $hosts->up, 'status' => _('Up'), 'status_id' => nagstat::HOST_UP),
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&'.$grouptype_arg, 'lable' => $hosts->down, 'status' => _('Down'), 'status_id' => nagstat::HOST_DOWN),
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&'.$grouptype_arg, 'lable' => $hosts->unreachable, 'status' => _('Unreachable'), 'status_id' => nagstat::HOST_UNREACHABLE),
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&'.$grouptype_arg, 'lable' => $hosts->pending, 'status' => _('Pending'), 'status_id' => nagstat::HOST_PENDING)
 		);
 
 		$service_header = array(
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_OK.'&'.$grouptype_arg, 'lable' => $services['services_ok'], 'status' => _('Ok'), 'status_id' => nagstat::SERVICE_OK),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&'.$grouptype_arg, 'lable' => $services['services_warning'], 'status' => _('Warning'), 'status_id' => nagstat::SERVICE_WARNING),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&'.$grouptype_arg, 'lable' => $services['services_unknown'], 'status' => _('Unknown'), 'status_id' => nagstat::SERVICE_UNKNOWN),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $services['services_critical'], 'status' => _('Critical'), 'status_id' => nagstat::SERVICE_CRITICAL),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $services['services_pending'], 'status' => _('Pending'), 'status_id' => nagstat::SERVICE_PENDING)
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_OK.'&'.$grouptype_arg, 'lable' => $services->ok, 'status' => _('Ok'), 'status_id' => nagstat::SERVICE_OK),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&'.$grouptype_arg, 'lable' => $services->warning, 'status' => _('Warning'), 'status_id' => nagstat::SERVICE_WARNING),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&'.$grouptype_arg, 'lable' => $services->unknown, 'status' => _('Unknown'), 'status_id' => nagstat::SERVICE_UNKNOWN),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $services->critical, 'status' => _('Critical'), 'status_id' => nagstat::SERVICE_CRITICAL),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $services->pending, 'status' => _('Pending'), 'status_id' => nagstat::SERVICE_PENDING)
 		);
 
 		$this->js = array('js/status_totals');

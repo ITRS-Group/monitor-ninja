@@ -8,6 +8,17 @@ class Ninja_Unit_Test {
 		ob_end_clean();
 		$main_tap = new phptap("Ninja unit test suite");
 
+		$argv  = isset($argv) ? $argv : $GLOBALS['argv'];
+		$argc  = isset($argc) ? $argc : $GLOBALS['argc'];
+		$files = array();
+		for ($i = 1; $i < $argc; $i++) {
+			switch ($argv[$i]) {
+			 case '--file':
+				$files[] = $argv[$i + 1];
+				break;
+			}
+		}
+
 		foreach ($paths as $path) {
 			foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::KEY_AS_PATHNAME)) as $path => $file) {
 				// Skip files without "_Test" suffix
@@ -19,6 +30,10 @@ class Ninja_Unit_Test {
 
 				// Skip hidden files
 				if (substr($class, 0, 1) === '.')
+					continue;
+
+				// skip unless defined specific one on cli
+				if(count($files) > 0 and !in_array($class, $files))
 					continue;
 
 				// Check for duplicate test class name

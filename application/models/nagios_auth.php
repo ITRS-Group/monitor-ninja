@@ -9,16 +9,7 @@ class Nagios_auth_Model extends Model
 {
 	private static $instance = false;
 	public $session = false; /**< FIXME: Another user session variable, that the ninja model already provides, except we've decided not to use it */
-	public $id = false; /**< The user id */
 	public $user = ''; /**< The username */
-	public $hosts = array(); /**< An id->host_name map of hosts the user is authorized to see */
-	public $hosts_r = array(); /**< An host_name->id map of hosts the user is authorized to see */
-	public $services = array(); /**< An id->service map of servicesthe user is authorized to see */
-	public $services_r = array(); /**< An service->id map of servicesthe user is authorized to see */
-	public $hostgroups = array(); /**< An id->hostgroup_name map of hostgroups the user is authorized to see */
-	public $hostgroups_r = array(); /**< An hostgroup_name->id map of hostgroups the user is authorized to see */
-	public $servicegroups = array(); /**< An id->servicegroup_name map of servicegroups the user is authorized to see */
-	public $servicegroups_r = array(); /**< An servicegroup_name->id map of servicegroups the user is authorized to see */
 	public $view_hosts_root = false; /**< Is user authorized to see all hosts? */
 	public $view_services_root = false; /**< Is user authorized to see all services? */
 	public $command_hosts_root = false; /**< Is user authorized to issue all host commands? WARNING: we ignore this way too much */
@@ -56,8 +47,6 @@ class Nagios_auth_Model extends Model
 
 		if (empty($this->user))
 			return false;
-
-		$this->get_contact_id();
 	}
 
 	/**
@@ -139,6 +128,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_contact_id()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		$contact_id = Session::instance()->get('contact_id', false);
 		if (empty($contact_id)) {
 			$query = "SELECT id FROM contact WHERE contact_name = " .
@@ -159,6 +150,11 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_hosts()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
+		#$this->hosts = Session::instance()->get('auth_hosts', false);
+		#$this->hosts_r = Session::instance()->get('auth_hosts_r', false);
+
 		if (!empty($this->hosts))
 			return $this->hosts;
 
@@ -186,6 +182,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_hosts_r()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		$this->get_authorized_hosts();
 		return $this->hosts_r;
 	}
@@ -195,6 +193,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_services_r()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		$this->get_authorized_services();
 		return $this->services_r;
 	}
@@ -204,6 +204,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_hostgroups_r()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		$this->get_authorized_hostgroups();
 		return $this->hostgroups_r;
 	}
@@ -213,6 +215,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_servicegroups_r()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		$this->get_authorized_servicegroups();
 		return $this->hostgroups_r;
 	}
@@ -223,6 +227,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_services()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		if (!empty($this->services))
 			return $this->services;
 
@@ -254,6 +260,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_hostgroups()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		if (!empty($this->hostgroups))
 			return $this->hostgroups;
 
@@ -328,6 +336,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_servicegroups()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		if (!empty($this->servicegroups))
 			return $this->servicegroups;
 
@@ -400,6 +410,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function is_authorized_for_host($host)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if ($this->view_hosts_root === true)
 			return true;
 
@@ -432,6 +444,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function is_authorized_for_service($service, $desc = false)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if ($this->view_services_root === true)
 			return true;
 
@@ -464,6 +478,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function is_authorized_for_hostgroup($hostgroup)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if ($this->view_hosts_root === true)
 			return true;
 
@@ -486,6 +502,8 @@ class Nagios_auth_Model extends Model
 	 */
 	public function is_authorized_for_servicegroup($servicegroup)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if ($this->view_services_root === true)
 			return true;
 

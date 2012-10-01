@@ -403,15 +403,12 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function is_alive()
 	{
-		$last_alive = Program_status_Model::last_alive();
-		$stale_data_limit = Kohana::config('config.stale_data_limit');
-		$diff = time() - $last_alive;
-		$return = 0;
-		if ($diff <= $stale_data_limit) {
+		try {
+			Current_status_Model::instance()->program_status();
 			echo json::ok(date(nagstat::date_format()));
-		} else {
-			echo json::fail(date(nagstat::date_format()));
-		}
+			return;
+		} catch (LivestatusException $ex) {}
+		echo json::fail(date(nagstat::date_format()));
 	}
 
 	/**
@@ -770,4 +767,3 @@ class Ajax_Controller extends Authenticated_Controller {
 		echo '<script type="text/javascript">'.$this->inline_js.'</script>';
 	}
 }
-
