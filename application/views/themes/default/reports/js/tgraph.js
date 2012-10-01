@@ -232,10 +232,10 @@ TGraph.prototype = {
 				
 				this.stops[y][i].block = this.createBlock(this.stops[y][i]);
 				
-				if ((this.stops[y][i].duration / this.max) < 0.05) {
+				if ((this.stops[y][i].duration / this.max) < 0.03) {
 					
 					clone = this.stops[y][i].block.cloneNode(true);
-					swidth = (parseFloat(this.stops[y][i].block.style.width) * 100);
+					swidth = (parseFloat(this.stops[y][i].block.style.width) * 20);
 					if (swidth < 2) swidth = 2;
 					
 					clone.style.width =  swidth + '%';
