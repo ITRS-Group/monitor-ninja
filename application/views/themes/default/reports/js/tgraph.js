@@ -21,8 +21,6 @@ var TGraph = function (stops, type, name, max) {
 		
 		var w = document.getElementById('tgraph').clientWidth;
 		
-		console.log(Math.floor(w / 50) * 50);
-		
 		this.name = name || 'Graph';
 		this.stops = stops;
 		this.type = type || 'bar';
@@ -48,8 +46,6 @@ var TGraph = function (stops, type, name, max) {
 		document.body.appendChild(this.hoverbox);
 		
 		document.getElementById('tgraph').appendChild(this.container);
-	
-	 //console.log(this.graph.offsetWidth);
 	
 };
 
