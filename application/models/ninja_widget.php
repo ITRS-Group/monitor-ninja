@@ -414,4 +414,14 @@ class Ninja_widget_Model extends Model
 		$sql = 'UPDATE ninja_widgets SET name='.$db->escape($new_name).' WHERE name='.$db->escape($old_name);
 		$db->query($sql);
 	}
+
+	/**
+	 * Renames the friendly name of widgets. Friendly name is the name shown on widget title bar.
+	 */
+	public static function rename_friendly_widget($old_name, $new_name)
+	{
+		$db = Database::instance();
+		$sql = 'UPDATE ninja_widgets SET friendly_name='.$db->escape($new_name).' WHERE friendly_name='.$db->escape($old_name);
+		$db->query($sql);
+	}
 }
