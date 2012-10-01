@@ -1480,7 +1480,12 @@ class Reports_Model extends Model
 	 */
 	public function test_summary_queries()
 	{
-		$this->options['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
+		$out = array();
+		$res = Livestatus::instance()->getHosts(array('columns' => array('name')));
+		foreach ($res as $row) {
+			$out[] = $row['name'];
+		}
+		$this->options['host_name'] = $out;
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
 			$this->options['host_states'] = $host_state;
