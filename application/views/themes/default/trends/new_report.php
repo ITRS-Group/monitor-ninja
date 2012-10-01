@@ -16,7 +16,23 @@
 		"2" => '#f50'
 	);
 	
+	$SERVICE_STATES = array (
+		"-1" => 'Undetermined',
+		"0" => 'Up',
+		"1" => 'Unreachable',
+		"2" => 'Down'
+	);
+	
+	$SERVICE_COLORS = array (
+		"-1" => '#aaa',
+		"0" => '#9e0',
+		"1" => '#fb4',
+		"2" => '#f50'
+	);
+	
 ?>
+
+
 <br />
 
 <?php if (!isset($is_avail)) { ?>
@@ -44,11 +60,21 @@
 							$labels = $labels."'$service',";
 							
 							for ($i = 0; $i < count($statechanges); $i++) {
+								
+								$type = $statechanges[$i]['object_type'];
 									
+								$color = ($type === 'host') ? 
+									$HOST_COLORS[$statechanges[$i]['state']]: 
+									$SERVICE_COLORS[$statechanges[$i]['state']];
+								
+								$label = ($type === 'host') ? 
+									$HOST_STATES[$statechanges[$i]['state']]: 
+									$SERVICE_STATES[$statechanges[$i]['state']];
+																	
 								$str = $str."{".
 									"'duration': ".$statechanges[$i]['duration'].",".
-									"'label': '".$HOST_STATES[$statechanges[$i]['state']]."',".
-									"'color': '".$HOST_COLORS[$statechanges[$i]['state']]."',".
+									"'label': '".$label."',".
+									"'color': '".$color."',".
 									"'short': '".addslashes($statechanges[$i]['output'])."'".
 									"}";
 									
