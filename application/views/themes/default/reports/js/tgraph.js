@@ -153,8 +153,10 @@ TGraph.prototype = {
 		var line = null, 
 			graph = document.createElement('div'),
 			el = null,
+			clear = document.createElement('div'),
 			shigh = ((new Date(this.start)).getFullYear() == (new Date(this.start + this.max)).getFullYear());
 			
+		clear.style.clear = 'both';
 		graph.className = 'tgraph';
 		//graph.style.width = this.width + 'px';
 		graph.style.height = '40px';
@@ -185,6 +187,7 @@ TGraph.prototype = {
 			graph.appendChild(el);
 		}
 		
+		this.container.appendChild(clear);
 		this.container.appendChild(clone);
 		this.container.appendChild(graph);
 		
@@ -198,9 +201,11 @@ TGraph.prototype = {
 			graph = null,
 			lclone = null,
 			subline = document.createElement('div'),
+			clear = document.createElement('div'),
 			skew = 0,
 			i = 0;
-			
+		
+		clear.style.clear = 'both';
 		this.start = this.max * 1000;
 		this.height = 0;
 
@@ -290,6 +295,8 @@ TGraph.prototype = {
 			graph.appendChild(line);
 			this.container.appendChild(lclone);
 			this.container.appendChild(graph);
+			this.container.appendChild(clear.cloneNode());
+			
 		}
 		
 		this.drawScale();
