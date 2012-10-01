@@ -132,8 +132,8 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			<label for="include_trends"><?php echo _('Include trends graph') ?></label>
 		</td>
 	</tr>
-	<?php if (isset($extra_options)) {
-		echo $extra_options;
+	<?php if (isset($extra_content)) {
+		echo $extra_content;
 	} ?>
 	<tr>
 		<td>
