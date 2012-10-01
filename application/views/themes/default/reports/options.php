@@ -17,12 +17,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 	<tr>
 		<td><?php echo form::dropdown(array('name' => 'report_period'), $options->get_alternatives('report_period'), $options['report_period']); ?></td>
 		<td>&nbsp;</td>
-		<td>
-			<select name="rpttimeperiod">
-				<option value=""></option>
-				<?php echo $reporting_periods ?>
-			</select>
-		</td>
+		<td><?php echo form::dropdown(array('name' => 'rpttimeperiod'), $options->get_alternatives('rpttimeperiod'), $options['rpttimeperiod']); ?></td>
 	</tr>
 	<tr id="display" style="display: none; clear: both;">
 		<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('start-date').' '._('Start date') ?> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />

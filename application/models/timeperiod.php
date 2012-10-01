@@ -1143,10 +1143,13 @@ class Timeperiod_Model extends Model
 	 */
 	public static function get_all()
 	{
-		$return = "";
+		$result = array();
 		$sql = "SELECT timeperiod_name FROM timeperiod ORDER BY timeperiod_name";
 		$db = Database::instance();
 		$res = $db->query($sql);
-		return $res ? $res : false;
+		foreach ($res as $row) {
+			$result[$row->timeperiod_name] = $row->timeperiod_name;
+		}
+		return $result;
 	}
 }

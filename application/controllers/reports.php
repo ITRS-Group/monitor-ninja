@@ -150,7 +150,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
-		$template->report_options->reporting_periods = $this->_get_reporting_periods();
 		$template->report_options->months = reports::abbr_month_names();
 
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
@@ -296,7 +295,6 @@ class Reports_Controller extends Base_reports_Controller
 		$template->report_options = $this->add_view('reports/options');
 
 		$tpl_options = $template->report_options;
-		$tpl_options->reporting_periods = $this->_get_reporting_periods();
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$tpl_options->saved_reports = $saved_reports;
 		$tpl_options->months = reports::abbr_month_names();

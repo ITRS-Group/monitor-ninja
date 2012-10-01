@@ -449,21 +449,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Fetch and print information on saved timperiods
-	*/
-	protected function _get_reporting_periods()
-	{
-		$res = Timeperiod_Model::get_all();
-		if (!$res)
-			return false;
-		$return = false;
-		foreach ($res as $row) {
-			$return .= '<option value="'.$row->timeperiod_name.'">'.$row->timeperiod_name.'</option>';
-		}
-		return $return;
-	}
-
-	/**
 	 * Print one alert totals table. Since they all look more or
 	 * less the same, we can re-use the same function for all of
 	 * them, provided we get the statenames (OK, UP etc) from the

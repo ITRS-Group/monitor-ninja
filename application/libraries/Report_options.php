@@ -26,7 +26,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'cluster_mode' => array('type' => 'bool', 'default' => false), /**< Whether to use best or worst case metrics */
 		'keep_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether to keep logs around - this turns on if (for example) include_trends is activated */
 		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
-		'rpttimeperiod' => array('type' => 'string', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
+		'rpttimeperiod' => array('type' => 'enum', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
@@ -113,6 +113,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 				2 => _('Service Warning States'),
 				4 => _('Service Critical States'),
 				8 => _('Service Unknown States'));
+		if (isset($this->vtypes['rpttimeperiod']))
+			$this->vtypes['rpttimeperiod']['options'] = Timeperiod_Model::get_all();
 		if (isset($this->vtypes['skin']))
 			$this->vtypes['skin']['default'] = config::get('config.current_skin', '*');
 		if (isset($this->vtypes['report_period']) && isset($this->vtypes['report_period']['default']))
