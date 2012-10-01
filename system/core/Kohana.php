@@ -921,16 +921,18 @@ final class Kohana {
 
 			if ( ! headers_sent())
 			{
-				// Send the 500 header
 				header('HTTP/1.1 500 Internal Server Error');
 			}
 		}
 		else
 		{
-			if (method_exists($exception, 'sendHeaders') AND ! headers_sent())
-			{
-				// Send the headers if they have not already been sent
-				$exception->sendHeaders();
+			if(!headers_sent()) {
+				if (method_exists($exception, 'sendHeaders'))
+				{
+					$exception->sendHeaders();
+				} else {
+					header('HTTP/1.1 500 Internal Server Error');
+				}
 			}
 		}
 
