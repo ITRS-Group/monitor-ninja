@@ -1,43 +1,22 @@
 <?php
 
 	$HOST_STATES = array (
-		"-2" => 'Excluded',
-		"-1" => 'Pending',
-		"0" => 'Up',
-		"1" => 'Down',
-		"2" => 'Unreachable',
-		"7" => 'All',
+		'-2' => '',
+		"-1" => _('Undetermined'),
+		"0" => _('Up'),
+		"1" => _('Down'),
+		"2" => _('Unreachable'),
 	);
-	
-	$HOST_COLORS = array (
-		"-2" => '#fff',
-		"-1" => '#a19e95',
-		"0" => '#aade53',
-		"1" => '#f7261b',
-		"2" => '#ffd92f',
-		"7" => '#f4d',
-	);
-	
+
 	$SERVICE_STATES = array (
-		"-2" => 'Excluded',
-		"-1" => 'Pending',
-		"0" => 'Ok',
-		"1" => 'Warning',
-		"2" => 'Critical',
-		"3" => 'Unknown',
-		"15" => 'All',
+		'-2' => '',
+		"-1" => _('Undetermined'),
+		"0" => _('OK'),
+		"1" => _('Warning'),
+		"2" => _('Critical'),
+		'3' => _('Unknown')
 	);
-	
-	$SERVICE_COLORS = array (
-		"-2" => '#fff',
-		"-1" => '#a19e95',
-		"0" => '#aade53',
-		"1" => '#ffd92f',
-		"2" => '#f7261b',
-		"3" => '#ff9d08',
-		"15" => '#f4d',
-	);
-	
+
 ?>
 
 
@@ -71,9 +50,7 @@
 								
 								$type = $statechanges[$i]['object_type'];
 									
-								$color = ($type === 'host') ? 
-									$HOST_COLORS[$statechanges[$i]['state']]: 
-									$SERVICE_COLORS[$statechanges[$i]['state']];
+								$color = $this->_state_colors($type, $statechanges[$i]['state']);
 								
 								$label = ($type === 'host') ? 
 									$HOST_STATES[$statechanges[$i]['state']]: 
