@@ -477,10 +477,8 @@ TODO: implement
 
         $query  = "Columns: ".$columns."\n";
         $query .= $filter;
-        $objects = $this->query($table, $query, $options['columns']);
-        $objects = $this->page_step2($objects, $options);
+        $objects = $this->query($table, $query, $options['columns'], $options);
         $objects = $this->objects2Assoc($objects, $options['columns'], isset($options['callbacks']) ? $options['callbacks'] : null);
-        $objects = $this->sort($objects, $table, $options);
         return $objects;
     }
 
@@ -495,7 +493,7 @@ TODO: implement
             array_push($columns, $key);
         }
         $queryFilter .= $this->auth($table, $options);
-        $objects = $this->query($table, $queryFilter, $columns);
+        $objects = $this->query($table, $queryFilter, $columns, $options);
         $objects = $this->objects2Assoc($objects, $columns);
         return $objects[0];
     }
@@ -513,7 +511,7 @@ TODO: implement
         return "AuthUser: ".$this->auth->user."\n";
     }
 
-    private function page_step1($table, $options = null) {
+    private function page_step1($table, &$options) {
         if(isset($options['paging'])) {
             $page = $options['paging'];
             $items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
@@ -540,71 +538,13 @@ TODO: implement
         $page->template->content->total_items    = $total;
         $page->template->content->items_per_page = $items_per_page;
         $page->template->content->page           = $current_page;
-        return;
-    }
-
-    private function page_step2($result, $options = null) {
-        if(isset($options['paging'])) {
-            $page = $options['paging'];
-        }
-        elseif(isset($options['paginggroup'])) {
-            $page = $options['paginggroup'];
-        } else {
-            return $result;
-        }
-        $items_per_page = $page->template->content->items_per_page;
-        $current_page   = $page->template->content->page;
-        $offset         = ($current_page-1) * $items_per_page;
-        if($offset >= $page->template->content->total_items) { $offset = 0; }
-        $result         = array_splice($result, $offset, $items_per_page);
-        return $result;
-    }
-
-    private function sort($objects, $table, $options = null) {
-        if($options == null || !isset($options['order'])) {
-            return $objects;
-        }
-
-        $orderby = array();
-        foreach($options['order'] as $field => $order) {
-            $orderby[] = $field;
-            $orderby[] = $order;
-        }
-
-        # don't sort when using the default order already
-        if(count($orderby) == 2) {
-            switch($table) {
-                case 'hosts':    if($orderby[0] == 'name' && $orderby[1] == 'ASC') { return $objects; }
-                                 break;
-                case 'services': if($orderby[0] == 'description' && $orderby[1] == 'ASC') { return $objects; }
-                                 break;
-                default:         throw new LivestatusException("unsupported table $table in sort()");
-                                 break;
-            }
-        }
-
-        usort($objects, $this->build_sorter($orderby));
-        return $objects;
-    }
-
-    public function build_sorter($orderby) {
-/* TODO: support multiple sort fields */
-        $key   = $orderby[0];
-        $order = $orderby[1];
-        if($order == 'DESC') {
-            return function ($a, $b) use ($key) {
-                return -1*strnatcmp($a[$key], $b[$key]);
-            };
-
-        }
-        return function ($a, $b) use ($key) {
-            return strnatcmp($a[$key], $b[$key]);
-        };
+        
+        $options['offset'] = ($current_page-1) * $items_per_page;
+        $options['limit']  = $items_per_page;
     }
 
     private function get_query_size($table, $options = null) {
         if(!isset($options['paging']) and !isset($options['paginggroup'])) { return; }
-/* TODO: use paging only when using default sorting */
 
         switch($table) {
             case 'services':
@@ -621,23 +561,36 @@ TODO: implement
         return $data['total'];
     }
 
-    private function query($table, $filter, $columns) {
+    private function query($table, $filter, $columns, $options) {
         $query  = "GET $table\n";
         $query .= "OutputFormat:json\n";
         $query .= "KeepAlive: on\n";
         $query .= "ResponseHeader: fixed16\n";
+        
+        if( isset( $options['order'] ) ) {
+	        foreach( $options['order'] as $column => $direction ) {
+	        	$query .= "Sort: $column $direction\n";
+	        }
+        }
+        if( isset( $options['offset'] ) ) {
+        	$query .= "Offset: ".$options['offset']."\n";
+        }
+        if( isset( $options['limit'] ) ) {
+        	$query .= "Limit: ".$options['limit']."\n";
+        }
+        
         $query .= $filter."\n";
-
+        
         $start   = microtime(true);
         $rc      = $this->rawQuery($query);
         $head    = $this->connection->readSocket(16);
         $status  = substr($head, 0, 3);
-        if($status != 200)
-            throw new LivestatusException("Invalid request: $head");
         $len     = intval(trim(substr($head, 4, 15)));
         $body    = $this->connection->readSocket($len);
         if(empty($body))
-            throw new LivestatusException("empty body");
+            throw new LivestatusException("empty body for query: <pre>".$query."</pre>");
+        if($status != 200)
+            throw new LivestatusException("Invalid request: $body");
         $objects = json_decode(utf8_encode($body));
 
         $stop = microtime(true);
