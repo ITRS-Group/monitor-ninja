@@ -11,7 +11,6 @@ if (isset($data_str)) {
 				<tr class="even"><td><img src="<?php echo url::site() ?>public/piechart/<?php echo $data_str[$i]['img'] ?>" alt="<?php echo _('Uptime');?>" /></td></tr>
 			</table>
 		</div>
-		</div>
 		<?php
 		}
 	} else if(!empty($data_str)) { ?>
