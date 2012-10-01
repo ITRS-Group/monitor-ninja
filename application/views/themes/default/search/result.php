@@ -53,7 +53,7 @@ if (isset($host_result) ) {
 			<?php } ?>
 			<div style="float: right"><?php
 				$properties = 0;
-				if ($host->problem_has_been_acknowledged) {
+				if ($host->acknowledged) {
 					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged'))), array('style' => 'border: 0px'));
 					$properties++;
 				}
@@ -194,7 +194,7 @@ if (isset($service_result) ) {
 			<span style="float: right">
 			<?php
 			$properties = 0;
-			if ($service->problem_has_been_acknowledged) {
+			if ($service->acknowledged) {
 				$properties++;
 				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged')).' &nbsp;'), array('style' => 'border: 0px'));
 			}

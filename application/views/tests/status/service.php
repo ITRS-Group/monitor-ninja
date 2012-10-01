@@ -43,7 +43,7 @@ if (!empty($result)) {
 		if ($comments !== false && array_key_exists($row->host_name.';'.$row->service_description, $comments)) {
 			$service_comments++;
 		}
-		if ($row->problem_has_been_acknowledged) {
+		if ($row->acknowledged) {
 			$acknowledged_services++;
 		}
 		if (empty($row->notifications_enabled)) {

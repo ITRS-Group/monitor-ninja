@@ -349,7 +349,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			if (($result->state == Current_status_Model::SERVICE_WARNING || $result->state == Current_status_Model::SERVICE_UNKNOWN || $result->state == Current_status_Model::SERVICE_CRITICAL) && $result->state_type) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
-				if (!$result->problem_has_been_acknowledged) {
+				if (!$result->acknowledged) {
 					$commands->lable_acknowledge_problem = _('Acknowledge this service problem');
 					$commands->link_acknowledge_problem = $this->command_link(nagioscmd::command_id('ACKNOWLEDGE_SVC_PROBLEM'),
 						$host, $service, $commands->lable_acknowledge_problem);
