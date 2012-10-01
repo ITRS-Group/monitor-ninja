@@ -117,7 +117,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		}
 
 		$this->sub_reports = 0;
-		$opts = new Avail_options();
+		$opts = new Test_report_options();
 		foreach ($params as $k => $v) {
 			if (!$this->sub_reports && is_array($v)) {
 				if ($k === 'host_name' || $k === 'service_description')
@@ -126,6 +126,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 			if (!$opts->set($k, $v))
 				echo "Failed to set option '$k' to '$v'\n";
 		}
+		$opts->vtype_copy['rpttimeperiod']['options'][$timeperiod['timeperiod_name']] = $timeperiod['timeperiod_name'];
 		$opts['rpttimeperiod'] = $timeperiod['timeperiod_name'];
 
 		# force logs to be kept so we can analyze them and make
