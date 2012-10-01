@@ -495,35 +495,32 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * @param $object_type string = false
+	 * @param $type string = false
 	 */
-	public function group_member($object_type=false)
+	public function group_member($type=false)
 	{
-		$object_type = $this->input->post('type', false);
+		$type = $this->input->get('type', false);
 
-		if (empty($object_type)) {
-			json::fail("No object type given");
-		}
-
-		$lib = Livestatus::instance();
 		$result = array();
-		switch ($object_type) {
+		switch ($type) {
 			case 'hostgroup':
 			case 'servicegroup':
 			case 'host':
-				foreach($lib->{'get'.$object_type.'s'}(array(
+				foreach(Livestatus::instance()->{'get'.$type.'s'}(array(
 					'columns' => array('name')
 				)) as $row) {
 					$result[] = $row['name'];
 				}
 				break;
 			case 'service':
-				foreach($lib->getServices(array(
+				foreach(Livestatus::instance()->getServices(array(
 					'columns' => array('host_name', 'service_description')
 				)) as $row) {
 					$result[] = $row['host_name'].";".$row['service_description'];
 				}
 				break;
+			default:
+				json::fail("No object type given");
 		}
 
 		json::ok($result);
