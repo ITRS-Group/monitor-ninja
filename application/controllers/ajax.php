@@ -495,47 +495,38 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Fetch requested items for a user depending on type (host, service or groups)
-	* 	Found data is returned as json data
-	*/
-	public function group_member($input=false, $type=false)
+	 * @param $object_type string = false
+	 */
+	public function group_member($object_type=false)
 	{
-		$input = $this->input->post('input', false);
-		$type = $this->input->post('type', false);
+		$object_type = $this->input->post('type', false);
 
-		if (empty($type)) {
-			json::fail('"type" must be provided');
+		if (empty($object_type)) {
+			json::fail("No object type given");
 		}
 
-		$auth = Nagios_auth_Model::instance();
-
-		$items = array();
-		switch ($type) {
-			case 'hostgroup': case 'servicegroup':
-				$field_name = $type."_tmp";
-				$empty_field = $type;
-				$res = $auth->{'get_authorized_'.$type.'s'}();
-				if (!$res) {
-					json::fail("The current user could not be authorized for checking '$type'. Check your configuration.");
-				}
-				foreach ($res as $name) {
-					$items[] = $name;
-				}
-				break;
+		$lib = Livestatus::instance();
+		$result = array();
+		switch ($object_type) {
+			case 'hostgroup':
+			case 'servicegroup':
 			case 'host':
-				$field_name = "host_tmp";
-				$empty_field = 'host_name';
-				$items = $auth->get_authorized_hosts();
+				foreach($lib->{'get'.$object_type.'s'}(array(
+					'columns' => array('name')
+				)) as $row) {
+					$result[] = $row['name'];
+				}
 				break;
 			case 'service':
-				$field_name = "service_tmp";
-				$empty_field = 'service_description';
-				$items = $auth->get_authorized_services();
+				foreach($lib->getServices(array(
+					'columns' => array('host_name', 'service_description')
+				)) as $row) {
+					$result[] = $row['host_name'].";".$row['service_description'];
+				}
 				break;
 		}
 
-		sort($items);
-		json::ok(array_values($items));
+		json::ok($result);
 	}
 
 	/**

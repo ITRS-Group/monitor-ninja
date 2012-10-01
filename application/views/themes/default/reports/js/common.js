@@ -264,23 +264,23 @@ function set_selection(val, cb) {
 	show_progress('progress', _wait_str);
 	switch (val) {
 		case 'servicegroups':
-			get_members('', 'servicegroup', cb);
+			get_members('servicegroup', cb);
 			$('#servicegroup_row, #block_service_states, #display_service_status').show();
 			$('#block_host_states').hide();
 			break;
 		case 'hosts':
-			get_members('', 'host', cb);
+			get_members('host', cb);
 			$('#host_row_2, #block_host_states, #display_host_status').show();
 			$('#block_service_states').hide();
 			break;
 		case 'services':
-			get_members('', 'service', cb);
+			get_members('service', cb);
 			$('#service_row_2, #block_service_states, #display_service_status').show();
 			$('#block_host_states').hide();
 			break;
 		case 'hostgroups':
 		default:
-			get_members('', 'hostgroup', cb);
+			get_members('hostgroup', cb);
 			$('#hostgroup_row, #block_host_states, #display_host_status').show();
 			$('#block_service_states').hide();
 			break;
@@ -288,10 +288,8 @@ function set_selection(val, cb) {
 	$('#submit_button').show();
 }
 
-function get_members(filter, type, cb) {
+function get_members(type, cb) {
 	if (type=='') return;
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "group_member/";
 	var field_name = false;
 	var empty_field = false;
 
@@ -311,9 +309,8 @@ function get_members(filter, type, cb) {
 	}
 
 	$.ajax({
-		url: url,
-		type: 'POST',
-		data: {input: filter, type: type},
+		url: _site_domain + _index_page + '/ajax/group_member',
+		data: {type: type},
 		error: function(data) {
 			jgrowl_message('Unable to fetch objects: ' + data.responseText, _reports_error);
 		},
@@ -323,12 +320,13 @@ function get_members(filter, type, cb) {
 			empty_list(empty_field);
 			if(typeof cb == 'function')
 				cb();
-			setup_hide_content('progress');
+			$('#progress').hide();
+		},
+		complete: function() {
+			$('#settings_table, #submit_button').show();
 		},
 		dataType: 'json'
 	});
-
-	$('#settings_table, #submit_button').show();
 }
 
 /**
@@ -347,7 +345,6 @@ function get_report_periods(type)
 
 	$.ajax({
 		url: url,
-		type: 'POST',
 		data: data,
 		success: function(data) {
 			if (data != '') {
