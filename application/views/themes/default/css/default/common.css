@@ -191,6 +191,7 @@ tr td.white {
 	padding: 0px;
 	background: #fafafa;
 	vertical-align: top;
+	border: 0;
 }
 /* health css *************************************************************************************/
 table.health {
