@@ -421,6 +421,27 @@ class Cli_Controller extends Authenticated_Controller {
 		Ninja_widget_Model::rename_widget($params['from'], $params['to']);
 	}
 
+	public function rename_friendly_widget()
+	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+		$this->auto_render=false;
+		$cli_access = Kohana::config('config.cli_access');
+
+		if (empty($cli_access)) {
+			# CLI access is turned off in config/config.php
+			echo "no cli access\n";
+			return false;
+		}
+
+		$params = $this->_parse_parameters();
+		if (!isset($params['from']) || !isset($params['to']))
+			die("Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n");
+
+		Ninja_widget_Model::rename_friendly_widget($params['from'], $params['to']);
+	}
+
 	public function upgrade_excluded()
 	{
 		ob_end_clean();
