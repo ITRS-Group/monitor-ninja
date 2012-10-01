@@ -41,6 +41,7 @@ var TGraph = function (stops, type, name, max) {
 		this.container.style.overflow = 'auto';
 		this.container.style.width = '100%';
 		this.create();
+		this.addHover();
 		
 		document.body.appendChild(this.hoverbox);
 		
@@ -50,40 +51,42 @@ var TGraph = function (stops, type, name, max) {
 
 TGraph.prototype = {
 	
-	addHover: function (stop, block, time) {
+	addHover: function () {
 	
 		var that = this;
 	
-		TGraphEventBinder(block, 'mouseover', function (e) {
-		
+		TGraphEventBinder(this.container, 'mouseover', function (e) {
+			
 			e = e || window.event;
-		
-			that.hoverbox.style.display = 'block';
 			
-			console.log(e.target);
-			
-			var posx = 0, posy = 0;
-			
-			if (e.pageX || e.pageY) {
-				posy = e.pageY;
-				posx = e.pageX;
-			} else {
-				posy = document.body.scrollTop + e.clientY;
-				posx = document.body.scrollLeft + e.clientX;
+			if (!e.target) {
+				e.target = e.srcElement;
 			}
 			
-			that.hoverbox.style.left = posx + 'px';
-			that.hoverbox.style.top = posy + 'px';
+			if (e.target.value) {
+		
+				that.hoverbox.style.display = 'block';
+				
+				var posx = 0, posy = 0;
+				
+				if (e.pageX || e.pageY) {
+					posy = e.pageY;
+					posx = e.pageX;
+				} else {
+					posy = document.body.scrollTop + e.clientY;
+					posx = document.body.scrollLeft + e.clientX;
+				}
+				
+				that.hoverbox.style.left = posx + 'px';
+				that.hoverbox.style.top = posy + 'px';
+				
+				that.hoverbox.innerHTML = e.target.value;
 			
-			that.hoverbox.innerHTML = '<b class="title">' + stop['label'] +'</b><br />'+ 
-				'<small>' + that.parseNiceTime(new Date(time)) + ' - ' + 
-				that.parseNiceTime(new Date(time + stop.duration)) + 
-				'</small>' +
-				((stop['short']) ? '<br />' + stop['short'] : '');
+			}
 				
 		});
 		
-		TGraphEventBinder(block, 'mouseout', function (e) {
+		TGraphEventBinder(this.container, 'mouseout', function (e) {
 		
 			e = e || window.event;
 		
@@ -91,6 +94,14 @@ TGraph.prototype = {
 			that.hoverbox.innerHTML = '';
 		});
 		
+	},
+	
+	hoverText: function (stop, time) {
+		return '<b class="title">' + stop['label'] +'</b><br />'+ 
+			'<small>' + this.parseNiceTime(new Date(time)) + ' - ' + 
+			this.parseNiceTime(new Date(time + stop.duration)) + 
+			'</small>' +
+			((stop['short']) ? '<br />' + stop['short'] : '');
 	},
 	
 	formatNumber: function (n) {
@@ -239,8 +250,10 @@ TGraph.prototype = {
 					subline.appendChild(clone);
 	
 					this.stops[y][i].block.style.background = "#333";
-
-					this.addHover(this.stops[y][i], clone, time);
+					
+					clone.value = this.hoverText(this.stops[y][i], time);
+					
+					//this.addHover(this.stops[y][i], clone, time);
 					
 				} else {
 	
@@ -269,7 +282,8 @@ TGraph.prototype = {
 						subline.className = 'tgraph-subline';
 					}
 					
-					this.addHover(this.stops[y][i], this.stops[y][i].block, time);
+					this.stops[y][i].block.value = this.hoverText(this.stops[y][i], time);
+					//this.addHover(this.stops[y][i], this.stops[y][i].block, time);
 				}
 				
 				line.appendChild(this.stops[y][i].block);
