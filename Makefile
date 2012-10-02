@@ -21,6 +21,7 @@ test-ci-cleanup:
 	/bin/sleep 5 # give nagios some time to read
 	rm -rf /tmp/ninja-test # 'pparently, sockets can't always be created otherwise. Weird.
 	rm -f application/config/custom/config.php
+	rm -f application/config/custom/database.php
 	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
 
 test-ci-prepare: test-ci-cleanup prepare-config
@@ -66,5 +67,6 @@ wipe:
 prepare-config:
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
+	echo "$$config['livestatus'] = array('benchmark' => true, 'path' => 'unix:///opt/monitor/var/rw/live')" > application/config/custom/database.php
 
 .PHONY: test help test-reports clean
