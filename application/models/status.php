@@ -46,10 +46,10 @@ class Status_Model extends Model {
 			$servicegroupfilter[]  = array( 'name' => $servicegroup );
 		}
 
-		$hostfilter         = Livestatus::combineFilter( '-and', $hostfilter );
-		$hostgroupfilter    = Livestatus::combineFilter( '-or',  $hostgroupfilter );
-		$servicefilter      = Livestatus::combineFilter( '-and', $servicefilter );
-		$servicegroupfilter = Livestatus::combineFilter( '-or',  $servicegroupfilter );
+		$hostfilter         = LivestatusBackend::combineFilter( '-and', $hostfilter );
+		$hostgroupfilter    = LivestatusBackend::combineFilter( '-or',  $hostgroupfilter );
+		$servicefilter      = LivestatusBackend::combineFilter( '-and', $servicefilter );
+		$servicegroupfilter = LivestatusBackend::combineFilter( '-or',  $servicegroupfilter );
 
 		list( $hostfilter, $servicefilter, $host_statustype_filtervalue, $host_prop_filtervalue, $service_statustype_filtervalue, $service_prop_filtervalue ) = $this->extend_filter( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
 
@@ -91,8 +91,8 @@ class Status_Model extends Model {
 
 		$service_prop_filter_service && $this->show_filter_table = 1;
 
-		$hostfilter    = Livestatus::combineFilter( '-and', $hostfilterlist );
-		$servicefilter = Livestatus::combineFilter( '-and', $servicefilterlist );
+		$hostfilter    = LivestatusBackend::combineFilter( '-and', $hostfilterlist );
+		$servicefilter = LivestatusBackend::combineFilter( '-and', $servicefilterlist );
 
 		return array( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
 	}
@@ -131,8 +131,8 @@ class Status_Model extends Model {
 		if($number == nagstat::HOST_PROBLEM) { $hoststatusfiltername = 'All problems'; };
 		}
 
-		$hostfilter    = Livestatus::combineFilter( '-or', $hoststatusfilter );
-		$servicefilter = Livestatus::combineFilter( '-or', $servicestatusfilter );
+		$hostfilter    = LivestatusBackend::combineFilter( '-or', $hoststatusfilter );
+		$servicefilter = LivestatusBackend::combineFilter( '-or', $servicestatusfilter );
 
 		return ( array($number, $hoststatusfiltername, $hostfilter, $servicefilter ));
 	}
@@ -251,8 +251,8 @@ class Status_Model extends Model {
 		$host_prop_filtername = join( ' &amp; ', $host_prop_filtername_list );
 		}
 
-		$hostfilter    = Livestatus::combineFilter( '-and', $host_prop_filter );
-		$servicefilter = Livestatus::combineFilter( '-and', $host_prop_filter_service );
+		$hostfilter    = LivestatusBackend::combineFilter( '-and', $host_prop_filter );
+		$servicefilter = LivestatusBackend::combineFilter( '-and', $host_prop_filter_service );
 
 		return ( array( $number, $host_prop_filtername, $hostfilter, $servicefilter ));
 	}
@@ -291,7 +291,7 @@ class Status_Model extends Model {
 		if($number == nagstat::SERVICE_PROBLEM) { $servicestatusfiltername = 'All problems'; }
 		}
 
-		$servicefilter = Livestatus::combineFilter( '-or', $servicestatusfilter );
+		$servicefilter = LivestatusBackend::combineFilter( '-or', $servicestatusfilter );
 
 		return(array( $number, $servicestatusfiltername, $servicefilter ));
 	}
@@ -387,7 +387,7 @@ class Status_Model extends Model {
 		$service_prop_filtername = join( ' &amp; ', $service_prop_filtername_list );
 		}
 
-		$servicefilter = Livestatus::combineFilter( '-and', $service_prop_filter );
+		$servicefilter = LivestatusBackend::combineFilter( '-and', $service_prop_filter );
 
 		return (array( $number, $service_prop_filtername, $servicefilter ));
 	}

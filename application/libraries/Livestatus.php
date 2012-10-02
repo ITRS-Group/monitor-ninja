@@ -53,7 +53,7 @@ class LivestatusException extends Exception {}
  *
  */
 
-class Livestatus extends LivestatusBackend {
+class Livestatus {
 	private static $instance = false;
 
 	/* singleton */
@@ -65,6 +65,15 @@ class Livestatus extends LivestatusBackend {
 	}
 
 	private $program_start = false;
+	private $backend = false;
+	
+	public function __construct($config = null) {
+		$this->backend = new LiveStatusBackend($config);
+	}
+	
+	public function getBackend() {
+		return $this->backend;
+	}
 	
 	public function calc_duration($row) {
 		$now = time();
@@ -95,7 +104,7 @@ class Livestatus extends LivestatusBackend {
 					'duration' => array($this, 'calc_duration')
 			);
 		}
-		return $this->getTable('hosts', $options);
+		return $this->backend->getTable('hosts', $options);
 	}
 	
 	/* getHostgroups */
@@ -105,7 +114,7 @@ class Livestatus extends LivestatusBackend {
 					'name', 'alias', 'members', 'action_url', 'notes', 'notes_url',
 			);
 		}
-		return $this->getTable('hostgroups', $options);
+		return $this->backend->getTable('hostgroups', $options);
 	}
 	
 	/* getHostsByGroup */
@@ -116,7 +125,7 @@ class Livestatus extends LivestatusBackend {
 					'action_url', 'notes_url','pnpgraph_present'
 			);
 		}
-		return $this->getTable('hostsbygroup', $options);
+		return $this->backend->getTable('hostsbygroup', $options);
 	}
 	
 	/* getServices */
@@ -146,7 +155,7 @@ class Livestatus extends LivestatusBackend {
 					'duration' => array($this, 'calc_duration')
 			);
 		}
-		return $this->getTable('services', $options);
+		return $this->backend->getTable('services', $options);
 	}
 	
 	/* getServicegroups */
@@ -156,7 +165,7 @@ class Livestatus extends LivestatusBackend {
 					'name', 'alias', 'members', 'action_url', 'notes notes_url',
 			);
 		}
-		return $this->getTable('servicegroups', $options);
+		return $this->backend->getTable('servicegroups', $options);
 	}
 	
 	/* getContacts */
@@ -166,7 +175,7 @@ class Livestatus extends LivestatusBackend {
 					'name', ' alias', 'email', 'pager', 'service_notification_period', 'host_notification_period',
 			);
 		}
-		return $this->getTable('contacts', $options);
+		return $this->backend->getTable('contacts', $options);
 	}
 	
 	/* getContactgroups */
@@ -176,7 +185,7 @@ class Livestatus extends LivestatusBackend {
 					'name', 'alias', 'members',
 			);
 		}
-		return $this->getTable('contactgroups', $options);
+		return $this->backend->getTable('contactgroups', $options);
 	}
 	
 	/* getCommands */
@@ -186,7 +195,7 @@ class Livestatus extends LivestatusBackend {
 					'name', 'line',
 			);
 		}
-		return $this->getTable('commands', $options);
+		return $this->backend->getTable('commands', $options);
 	}
 	
 	/* getTimeperiods */
@@ -196,7 +205,7 @@ class Livestatus extends LivestatusBackend {
 					'name', 'alias',
 			);
 		}
-		return $this->getTable('timeperiods', $options);
+		return $this->backend->getTable('timeperiods', $options);
 	}
 	
 	/* getLogs */
@@ -208,7 +217,7 @@ class Livestatus extends LivestatusBackend {
 					'current_service_groups',
 			);
 		}
-		return $this->getTable('log', $options);
+		return $this->backend->getTable('log', $options);
 	}
 	
 	/* getComments */
@@ -220,7 +229,7 @@ class Livestatus extends LivestatusBackend {
 					'source', 'type',
 			);
 		}
-		return $this->getTable('comments', $options);
+		return $this->backend->getTable('comments', $options);
 	}
 	
 	/* getDowntimes */
@@ -231,7 +240,7 @@ class Livestatus extends LivestatusBackend {
 					'id', 'start_time', 'service_description', 'triggered_by',
 			);
 		}
-		return $this->getTable('downtimes', $options);
+		return $this->backend->getTable('downtimes', $options);
 	}
 	
 	/* getProcessInfo */
@@ -248,7 +257,7 @@ class Livestatus extends LivestatusBackend {
 					'service_checks_rate', 'neb_callbacks', 'neb_callbacks_rate',
 			);
 		}
-		$objects = $this->getTable('status', $options);
+		$objects = $this->backend->getTable('status', $options);
 		$this->program_start = $objects[0]['program_start'];
 		return (object) $objects[0];
 	}
@@ -298,7 +307,7 @@ class Livestatus extends LivestatusBackend {
 				'passive_checks_disabled'           => array( 'accept_passive_checks' => 0 ),
 				'outages'                           => array( 'state' => 1, 'childs' => array( '!=' => '' ) ),
 		);
-		return (object) $this->getStats('hosts', $stats, $options);
+		return (object) $this->backend->getStats('hosts', $stats, $options);
 	}
 	
 	
@@ -354,7 +363,7 @@ class Livestatus extends LivestatusBackend {
 				'active_checks_disabled_passive'    => array( 'check_type' => 1, 'active_checks_enabled' => 0 ),
 				'passive_checks_disabled'           => array( 'accept_passive_checks' => 0 ),
 		);
-		return (object) $this->getStats('services', $stats, $options);
+		return (object) $this->backend->getStats('services', $stats, $options);
 	}
 	
 	/* getHostPerformance */
@@ -393,7 +402,7 @@ class Livestatus extends LivestatusBackend {
 				'passive_60_sum'  => array( 'check_type' => 1, 'has_been_checked' => 1, 'last_check' => array( '>=' => $min60 ) ),
 				'passive_all_sum' => array( 'check_type' => 1, 'has_been_checked' => 1, 'last_check' => array( '>=' => $minall ) ),
 		);
-		$data   = $this->getStats($type, $stats);
+		$data   = $this->backend->getStats($type, $stats);
 		$result = array_merge($result, $data);
 	
 		/* add stats for active checks */
@@ -412,7 +421,7 @@ class Livestatus extends LivestatusBackend {
 				'active_state_change_avg' => array( '-avg' => 'percent_state_change' ),
 		);
 	
-		$data   = $this->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 0)));
+		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 0)));
 		$result = array_merge($result, $data);
 	
 		/* add stats for passive checks */
@@ -422,13 +431,16 @@ class Livestatus extends LivestatusBackend {
 				'passive_state_change_max' => array( '-max' => 'percent_state_change' ),
 				'passive_state_change_avg' => array( '-avg' => 'percent_state_change' ),
 		);
-		$data   = $this->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 1)));
+		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 1)));
 		$result = array_merge($result, $data);
 	
 		return (object) $result;
 	}
 }
 
+/**
+ * Livetatus interaface.
+ */
 class LivestatusBackend {
 	private $auth            = false;
 	private $connection      = null;
@@ -443,7 +455,7 @@ class LivestatusBackend {
 	}
 
 	/* combineFilter */
-	public function combineFilter($operator, $filter) {
+	public static function combineFilter($operator, $filter) {
 
 		if(!isset($operator) and $operator != '-or' and $operator != '-and') {
 			throw new LivestatusException("unknown operator in combine_filter(): ".$operator);
