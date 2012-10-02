@@ -82,7 +82,11 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->title = $title;
 
 		$this->template->content = $this->add_view('status/host');
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = Status_Model::classic_filter('host', $host, false, false, $hoststatustypes, $hostprops, false, $serviceprops);
+		$status = new Status_Model();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', $host, false, false, $hoststatustypes, $hostprops, false, $serviceprops);
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
+
 		$this->template->content->noheader = $noheader;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -248,7 +252,10 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->title = $title;
 
 		$this->template->content = $this->add_view('status/service');
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = Status_Model::classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
+		$status = new Status_Model();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		$this->template->content->noheader = $noheader;
 		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
@@ -712,11 +719,14 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		$ls = Livestatus::instance();
+		$status = new Status_Model();
 		if($grouptype == 'host') {
-			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = Status_Model::classic_filter('service', false, $group, false, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $group, false, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
 		} else {
-			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = Status_Model::classic_filter('service', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
 		}
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 
 		# get all host/service groups
 		if( $grouptype == 'host' ) {
@@ -1241,7 +1251,10 @@ class Status_Controller extends Authenticated_Controller {
 
 	private function _hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
 		$ls = Livestatus::instance();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) Status_Model::classic_filter('host', false, $group, false, $hoststatustypes, false, $servicestatustypes, false);
+		$status = new Status_Model();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', false, $group, false, $hoststatustypes, false, $servicestatustypes, false);
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		$groups   = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
 		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
 		$services = $ls->getServices(array('filter' => $servicefilter));
@@ -1271,7 +1284,10 @@ class Status_Controller extends Authenticated_Controller {
 
 	private function _servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
 		$ls = Livestatus::instance();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = Status_Model::classic_filter('service', false, false, $group, $hoststatustypes, false, $servicestatustypes, false);
+		$status = new Status_Model();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, false, $servicestatustypes, false);
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		$groups   = $ls->getServicegroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
 		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
 		$services = $ls->getServices(array('filter' => $servicefilter));

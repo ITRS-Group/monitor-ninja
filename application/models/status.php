@@ -4,6 +4,12 @@
  * A model for generating status filters from livestatus
  */
 class Status_Model extends Model {
+	public $show_filter_table; /**< Whether to show the filter table */
+	public $host_statustype_filtername; /**< A string describing the host states included */
+	public $host_prop_filtername; /**< A string describing the host flags used for filtering */
+	public $service_statustype_filtername; /**< A string describing the servicestates included */
+	public $service_prop_filtername; /**< A string describing the service flags used for filtering */
+
 	/**
 	 * Livestatus port of the classic ninja bitmask-based filters
 	 */
@@ -45,11 +51,7 @@ class Status_Model extends Model {
 		$servicefilter      = Livestatus::combineFilter( '-and', $servicefilter );
 		$servicegroupfilter = Livestatus::combineFilter( '-or',  $servicegroupfilter );
 
-		list( $show_filter_table, $hostfilter, $servicefilter, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername, $host_statustype_filtervalue, $host_prop_filtervalue, $service_statustype_filtervalue, $service_prop_filtervalue ) = $this->extend_filter( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
-
-		if($show_filter_table) {
-			$this->template->content->filters = $this->_show_filters($type, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername);
-		}
+		list( $hostfilter, $servicefilter, $host_statustype_filtervalue, $host_prop_filtervalue, $service_statustype_filtervalue, $service_prop_filtervalue ) = $this->extend_filter( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
 
 		return (array( $hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter ));
 	}
@@ -61,38 +63,38 @@ class Status_Model extends Model {
 		$hostfilter    && $hostfilterlist[]    = $hostfilter;
 		$servicefilter && $servicefilterlist[] = $servicefilter;
 
-		$show_filter_table = 0;
+		$this->show_filter_table = 0;
 
 		# host statustype filter (up,down,...)
-		list( $hoststatustypes, $host_statustype_filtername, $host_statustype_filter, $host_statustype_filter_service ) = $this->get_host_statustype_filter($hoststatustypes);
+		list( $hoststatustypes, $this->host_statustype_filtername, $host_statustype_filter, $host_statustype_filter_service ) = $this->get_host_statustype_filter($hoststatustypes);
 		$host_statustype_filter         && $hostfilterlist[]    = $host_statustype_filter;
 		$host_statustype_filter_service && $servicefilterlist[] = $host_statustype_filter_service;
 
-		$host_statustype_filter && $show_filter_table = 1;
+		$host_statustype_filter && $this->show_filter_table = 1;
 
 		# host props filter (downtime, acknowledged...)
-		list( $hostprops, $host_prop_filtername, $host_prop_filter, $host_prop_filter_service ) = $this->get_host_prop_filter($hostprops);
+		list( $hostprops, $this->host_prop_filtername, $host_prop_filter, $host_prop_filter_service ) = $this->get_host_prop_filter($hostprops);
 		$host_prop_filter         && $hostfilterlist[] =    $host_prop_filter;
 		$host_prop_filter_service && $servicefilterlist[] = $host_prop_filter_service;
 
-		$host_prop_filter && $show_filter_table = 1;
+		$host_prop_filter && $this->show_filter_table = 1;
 
 		# service statustype filter (ok,warning,...)
-		list( $servicestatustypes, $service_statustype_filtername, $service_statustype_filter_service ) = $this->get_service_statustype_filter($servicestatustypes);
+		list( $servicestatustypes, $this->service_statustype_filtername, $service_statustype_filter_service ) = $this->get_service_statustype_filter($servicestatustypes);
 		$service_statustype_filter_service && $servicefilterlist[] = $service_statustype_filter_service;
 
-		$service_statustype_filter_service && $show_filter_table = 1;
+		$service_statustype_filter_service && $this->show_filter_table = 1;
 
 		# service props filter (downtime, acknowledged...)
-		list( $serviceprops, $service_prop_filtername, $service_prop_filter_service ) = $this->get_service_prop_filter($serviceprops);
+		list( $serviceprops, $this->service_prop_filtername, $service_prop_filter_service ) = $this->get_service_prop_filter($serviceprops);
 		$service_prop_filter_service && $servicefilterlist[] = $service_prop_filter_service;
 
-		$service_prop_filter_service && $show_filter_table = 1;
+		$service_prop_filter_service && $this->show_filter_table = 1;
 
 		$hostfilter    = Livestatus::combineFilter( '-and', $hostfilterlist );
 		$servicefilter = Livestatus::combineFilter( '-and', $servicefilterlist );
 
-		return array( $show_filter_table, $hostfilter, $servicefilter, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
+		return array( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
 	}
 
 	private function get_host_statustype_filter($number) {
