@@ -50,7 +50,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			<th><em><?php echo _('Status'); ?></em></th>
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
-				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
+				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'host_name';
 				$n = 0;
 				foreach($header_links as $row) {
 					$n++;
