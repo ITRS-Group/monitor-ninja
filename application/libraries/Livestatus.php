@@ -43,6 +43,11 @@ class LivestatusException extends Exception {}
  *                                          # nested filter:
  *                                          #   array('-or' => array('name' => 'value', 'address' => array('~~' => 'othervalue')))
  *                                          #
+ *                                          # filter can also be a string containing an expression with livestatus operations,
+ *                                          # grouped with logical operators. Example:
+ *                                          #
+ *                                          # 'host_name ~~ "name regexp" and (status = 1 or status = 2)'
+ *                                          # 
  *                                          # see livestatus docs for details about available operators
  *  );
  *
