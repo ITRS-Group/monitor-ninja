@@ -465,10 +465,10 @@ TODO: implement
      *******************************************************/
     private function getTable($table, $options = null) {
         $filter = "";
-        if(isset($options['filter'])) {
-            $filter = $this->getQueryFilter(false, $options['filter']);
+        if(!empty($options['filter'])) {
+            $filter = $this->getQueryFilter($options['filter'], false);
         }
-        $this->page_step1($table, $options);
+        $this->prepare_pagination($table, $options);
 
         if(isset($options['extracolumns']) and is_array($options['extracolumns'])) {
             $options['columns'] = array_merge($options['columns'], $options['extracolumns']);
@@ -485,11 +485,11 @@ TODO: implement
     private function getStats($table, $stats, $options = null) {
         $queryFilter = "";
         if(isset($options['filter'])) {
-            $queryFilter = $this->getQueryFilter(false, $options['filter']);
+            $queryFilter = $this->getQueryFilter($options['filter'], false);
         }
         $columns     = array();
         foreach($stats as $key => $filter) {
-            $queryFilter .= $this->getQueryFilter(true, $filter, null, null, 'And');
+            $queryFilter .= $this->getQueryFilter($filter, true);
             array_push($columns, $key);
         }
         $queryFilter .= $this->auth($table, $options);
@@ -511,7 +511,7 @@ TODO: implement
         return "AuthUser: ".$this->auth->user."\n";
     }
 
-    private function page_step1($table, &$options) {
+    private function prepare_pagination($table, &$options) {
         if(isset($options['paging'])) {
             $page = $options['paging'];
             $items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
@@ -603,7 +603,20 @@ TODO: implement
         return $objects;
     }
 
-    public function getQueryFilter($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
+    private function getQueryFilter($filter, $stats = false ) {
+    	if( empty( $filter ) ) {
+    		return "";
+    	}
+    	if( is_string( $filter ) ) {
+            $expparser = new ExpParser_SearchFilter();
+            if($stats)
+            	$expparser->setStats();
+            return $expparser->parse($filter);
+    	}
+    	return $this->parseQueryFilterArray($stats, $filter, null, null, $stats?'And':null);
+    }
+    
+    private function parseQueryFilterArray($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
         if($filter === null) { return ""; }
 /* TODO: implement proper escaping */
 
@@ -616,9 +629,9 @@ TODO: implement
             foreach($filter as $key => $val) {
                 $iter++;
                 switch($key) {
-                    case '-or':  $query .= $this->getQueryFilter($stats, $val, $op, $name, 'Or');
+                    case '-or':  $query .= $this->parseQueryFilterArray($stats, $val, $op, $name, 'Or');
                                  break;
-                    case '-and': $query .= $this->getQueryFilter($stats, $val, $op, $name, 'And');
+                    case '-and': $query .= $this->parseQueryFilterArray($stats, $val, $op, $name, 'And');
                                  break;
                     case  '=':
                     case  '~':
@@ -632,14 +645,14 @@ TODO: implement
                     case '!=':
                     case '!~':
                     case '!=~':
-                    case '!~~':  $query .= $this->getQueryFilter($stats, $val, $key, $name, 'And');
+                    case '!~~':  $query .= $this->parseQueryFilterArray($stats, $val, $key, $name, 'And');
                                  break;
                     case '-sum':
                     case '-avg':
                     case '-min':
-                    case '-max': $query .= $this->getQueryFilter($stats, $val, substr($key, 1), '');
+                    case '-max': $query .= $this->parseQueryFilterArray($stats, $val, substr($key, 1), '');
                                  break;
-                    default:     $query .= $this->getQueryFilter($stats, $val, '=', $key, 'And');
+                    default:     $query .= $this->parseQueryFilterArray($stats, $val, '=', $key, 'And');
                                  break;
                 }
             }
@@ -661,7 +674,7 @@ TODO: implement
             else {
                 foreach($filter as $val) {
                     if(is_array($val)) {
-                        $query .= $this->getQueryFilter($stats, $val, $op, $name);
+                        $query .= $this->parseQueryFilterArray($stats, $val, $op, $name);
                     } else {
                         $query .= ($stats ? 'Stats' : 'Filter').": $name $op $val\n";
                     }
