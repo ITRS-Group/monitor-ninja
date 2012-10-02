@@ -102,11 +102,9 @@ class Status_Model extends Model {
 		$servicestatusfilter = array();
 
 		$hoststatusfiltername = 'All';
-		define('HOST_ALL', (nagstat::HOST_UP | nagstat::HOST_DOWN | nagstat::HOST_UNREACHABLE | nagstat::HOST_PENDING));
-		define('HOST_PROBLEM', ( nagstat::HOST_DOWN | nagstat::HOST_UNREACHABLE ));
-		if(!isset($number) or !is_numeric($number)) { return ( array(HOST_ALL, $hoststatusfiltername, "", "" )); }
+		if(!isset($number) or !is_numeric($number)) { return ( array(nagstat::HOST_ALL, $hoststatusfiltername, "", "" )); }
 
-		if( $number and $number != HOST_ALL ) {
+		if( $number and $number != nagstat::HOST_ALL ) {
 		$hoststatusfiltername_list = array();
 
 		if( $number & nagstat::HOST_PENDING ) {    # 1 - pending
@@ -130,7 +128,7 @@ class Status_Model extends Model {
 			$hoststatusfiltername_list[] = 'Unreachable';
 		}
 		$hoststatusfiltername = join( ' | ', $hoststatusfiltername_list );
-		if($number == HOST_PROBLEM) { $hoststatusfiltername = 'All problems'; };
+		if($number == nagstat::HOST_PROBLEM) { $hoststatusfiltername = 'All problems'; };
 		}
 
 		$hostfilter    = Livestatus::combineFilter( '-or', $hoststatusfilter );
@@ -264,12 +262,10 @@ class Status_Model extends Model {
 		$servicestatusfilter     = array();
 		$servicestatusfilternamelist = array();
 
-		define('SERVICE_ALL', (nagstat::SERVICE_OK | nagstat::SERVICE_WARNING | nagstat::SERVICE_CRITICAL | nagstat::SERVICE_UNKNOWN | nagstat::SERVICE_PENDING));
-		define('SERVICE_PROBLEM', ( nagstat::SERVICE_WARNING | nagstat::SERVICE_CRITICAL | nagstat::SERVICE_UNKNOWN ));
 		$servicestatusfiltername = 'All';
-		if(!isset($number) or !is_numeric($number)) { return(array( SERVICE_ALL, $servicestatusfiltername, "" )); }
+		if(!isset($number) or !is_numeric($number)) { return(array( nagstat::SERVICE_ALL, $servicestatusfiltername, "" )); }
 
-		if( $number and $number != SERVICE_ALL ) {
+		if( $number and $number != nagstat::SERVICE_ALL ) {
 
 		if( $number & nagstat::SERVICE_PENDING ) {    # 1 - pending
 			$servicestatusfilter[] = array( 'has_been_checked' => 0 );
@@ -292,7 +288,7 @@ class Status_Model extends Model {
 			$servicestatusfilternamelist[] = 'Critical';
 		}
 		$servicestatusfiltername = join( ' | ', $servicestatusfilternamelist );
-		if($number == SERVICE_PROBLEM) { $servicestatusfiltername = 'All problems'; }
+		if($number == nagstat::SERVICE_PROBLEM) { $servicestatusfiltername = 'All problems'; }
 		}
 
 		$servicefilter = Livestatus::combineFilter( '-or', $servicestatusfilter );

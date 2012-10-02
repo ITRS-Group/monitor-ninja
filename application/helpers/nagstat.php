@@ -16,6 +16,8 @@ class nagstat_Core {
 	const HOST_DOWN	= 2; /**< Nagios host down code as a bit flag */
 	const HOST_UNREACHABLE = 4; /**< Nagios host unreachable code as a bit flag */
 	const HOST_PENDING = 64; /**< Our arbitrary code for not-yet-checked hosts */
+	const HOST_PROBLEM = 6; /**< DOWN or UNREACHABLE */
+	const HOST_ALL = 71; /**< All of the above ORed together */
 
 	const SERVICE_DOWNTIME= 1;	/**< service downtime */
 	const HOST_DOWNTIME = 2;	/**< host downtime */
@@ -54,6 +56,8 @@ class nagstat_Core {
 	const SERVICE_CRITICAL = 4; /**< Nagios service critical code as a bit flag */
 	const SERVICE_UNKNOWN = 8; /**< Nagios service unknown code as a bit flag */
 	const SERVICE_PENDING = 64; /**< Our arbitrary code for not-yet-checked services */
+	const SERVICE_PROBLEM = 14; /**< WARNING or CRITICAL or UNKNOWN */
+	const SERVICE_ALL = 79; /**< All of the above, ORed together */
 
 	const SERVICE_SCHEDULED_DOWNTIME = 1; /**< Code for services in scheduled downtime, bit flag */
 	const SERVICE_NO_SCHEDULED_DOWNTIME	= 2; /**< Code for services not in scheduled downtime, bit flag */
