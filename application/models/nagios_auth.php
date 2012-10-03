@@ -410,33 +410,19 @@ throw new Exception('deprecated');
 	 */
 	public function is_authorized_for_host($host)
 	{
-throw new Exception('implement');
-/* TODO: implement */
+		if (is_numeric($host) && !IN_PRODUCTION)
+			throw new Exception("Merlin IDs are gone, and numeric host $host - ya sure?");
 		if ($this->view_hosts_root === true)
 			return true;
-
-		// should always return "0" or "1"
-		if (is_numeric($host))
-			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$host.' AND contact = '.$this->id;
-		else
-			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN host ON host.id = ca.host WHERE host_name = '.$this->db->escape($host).' AND contact = '.$this->id;
-		$res = $this->db->query($query);
-		return ($res->current()->cnt != '0');
+		$out = Livestatus::instance()->getHosts(array('columns' => array('name'), 'filter' => array('name' => $host)));
+		return !empty($out);
 	}
 
 	/**
 	 * Return a boolean saying if we're authorized for the service name or id provided
 	 *
-	 * This function can be called with one numeric argument, in which case
-	 * it's assumed to be a service ID - the resulting query is quick.
-	 *
-	 * It can be called with two arguments, where the first is host name, and the
-	 * second is service description. This is quite quick, but not quite as quick
-	 * as the first option.
-	 *
-	 * Or it can be called with a string containing ';' representing the
-	 * complete host_name/service_description in one argument, which is
-	 * slightly slower than both the other two.
+	 * This function can be called with two arguments, where the first is host name, and the
+	 * second is service description, or with one argument where host and service is ';' separated.
 	 *
 	 * @param $service string hostname if second arg is given, otherwize "host;service"
 	 * @param $desc string = false see previous arg
@@ -444,32 +430,18 @@ throw new Exception('implement');
 	 */
 	public function is_authorized_for_service($service, $desc = false)
 	{
-throw new Exception('implement');
-/* TODO: implement */
+		if (is_numeric($service) && !IN_PRODUCTION)
+			throw new Exception("Merlin IDs are gone, and numeric service $service - ya sure?");
+		if (!$desc) {
+			if (strpos($service, ';') !== false)
+				list($service, $desc) = explode(';', $service);
+			else
+				return false;
+		}
 		if ($this->view_services_root === true)
 			return true;
-
-		/*
-		 * we must check if $desc is false here so we properly
-		 * handle hosts named '1', '2' etc.
-		 */
-		if ((is_int($service) || is_numeric($service)) && $desc === false) {
-			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$service.' AND contact = '.$this->id;
-		} else {
-			if ($desc === false) {
-				if (strpos($service, ';') < 1)
-					return false; /* bogus input */
-
-				$ary = explode(';', $service, 2);
-				$desc = $ary[1];
-				$service = $ary[0];
-			}
-
-			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description = '.$this->db->escape($desc).' AND contact = '.$this->id;
-		}
-
-		$res = $this->db->query($query);
-		return ($res->current()->cnt != '0');
+		$out = Livestatus::instance()->getServices(array('columns' => array('description'), 'filter' => array('host_name' => $service, 'descritpion' => $desc)));
+		return !empty($out);
 	}
 
 	/**
@@ -478,22 +450,12 @@ throw new Exception('implement');
 	 */
 	public function is_authorized_for_hostgroup($hostgroup)
 	{
-throw new Exception('implement');
-/* TODO: implement */
+		if (is_numeric($hostgroup) && !IN_PRODUCTION)
+			throw new Exception("Merlin IDs are gone, and numeric hostgroup $hostgroup - ya sure?");
 		if ($this->view_hosts_root === true)
 			return true;
-
-		if (!$this->hostgroups)
-			$this->get_authorized_hostgroups();
-
-		if (is_numeric($hostgroup)) {
-			if (isset($this->hostgroups[$hostgroup]))
-			return true;
-		}
-		if (isset($this->hostgroups_r[$hostgroup]))
-			return true;
-
-		return false;
+		$out = Livestatus::instance()->getHostgroups(array('columns' => array('name'), 'filter' => array('name' => $hostgroup)));
+		return !empty($out);
 	}
 
 	/**
@@ -502,21 +464,11 @@ throw new Exception('implement');
 	 */
 	public function is_authorized_for_servicegroup($servicegroup)
 	{
-throw new Exception('implement');
-/* TODO: implement */
+		if (is_numeric($servicegroup) && !IN_PRODUCTION)
+			throw new Exception("Merlin IDs are gone, and numeric servicegroup $servicegroup - ya sure?");
 		if ($this->view_services_root === true)
 			return true;
-
-		if (!$this->servicegroups)
-			$this->get_authorized_servicegroups();
-
-		if (is_numeric($servicegroup)) {
-			if (isset($this->servicegroups[$servicegroup]))
-			return true;
-		}
-		if (isset($this->servicegroups_r[$servicegroup]))
-			return true;
-
-		return false;
+		$out = Livestatus::instance()->getHostgroups(array('columns' => array('name'), 'filter' => array('name' => $servicegroup)));
+		return !empty($out);
 	}
 }
