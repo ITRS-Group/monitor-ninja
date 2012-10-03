@@ -779,7 +779,7 @@ class LivestatusConnection {
 			if(!file_exists($address)) {
 				throw new LivestatusException("connection failed, make sure $address exists\n");
 			}
-			$this->connection = fsockopen('unix://'.$address, NULL, $errno, $errstr, $this->timeout);
+			$this->connection = fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
 		}
 		else {
 			throw new LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
