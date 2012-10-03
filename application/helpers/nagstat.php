@@ -327,7 +327,7 @@ class nagstat_Core {
 */
 function status_text($db_status=false, $type='host')
 {
-	return Current_status_Model::status_text($db_status, $type);
+	return Current_status_Model::status_text($db_status, 1, $type);
 }
 
 /**

@@ -95,7 +95,7 @@ $state_map = array(
 				usort($services, Livestatus::build_sorter(array('description', 'ASC')));
 				?>
 				<?php foreach ($services as $description => $service) {
-					$service_state = strtolower(Current_status_Model::status_text($service['state'], 'service'));
+					$service_state = strtolower(Current_status_Model::status_text($service['state'], $service['has_been_checked'], 'service'));
 					if($first) { ?>
 						<img src="<?php echo ninja::add_path('icons/12x12/shield-'.$service_state.'.png') ?>" alt="<?php echo $service_state ?>" title="<?php echo $service_state ?>" class="status=<?php echo $service_state ?>" />
 					<?php

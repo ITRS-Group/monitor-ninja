@@ -79,7 +79,7 @@ foreach ($result as $row) {
 	$a++;
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, 'host')); ?>" id="<?php echo 'host|'.$row->name ?>" title="<?php echo Current_status_Model::status_text($row->state); ?>"><em><?php echo Current_status_Model::status_text($row->state); ?></em></td>
+				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$row->name ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked); ?>"><em><?php echo Current_status_Model::status_text($row->state, $row->has_been_checked); ?></em></td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->name); ?></td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/?host='.urlencode($row->name), html::specialchars($row->name), array('title' => $row->address)); ?></div>

@@ -79,7 +79,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				}
 			?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $host->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($host->state, 'host')); ?>" id="<?php echo 'host|'.$host->name ?>"><em><?php echo Current_status_Model::status_text($host->state, 'host');?></em></td>
+				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $host->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($host->state, $host->has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$host->name ?>"><em><?php echo Current_status_Model::status_text($host->state, $host->has_been_checked, 'host');?></em></td>
 				<td class="item_select"><input type="checkbox" name="object_select[]" value="<?php echo $host->name ?>" class="checkbox_group_<?php echo $j; ?>" /></td>
 				<td style="width: 180px"><a href="<?php echo url::base(true).'status/service?name='.urlencode($host->name).'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;servicestatustypes='.(int)$servicestatustypes ?>" title="<?php echo $host->address ?>"><?php echo html::specialchars($host->name) ?></a></td>
 				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>

@@ -38,7 +38,7 @@ if (isset($host_result) ) {
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->current_state)); ?>"><em><?php echo Current_status_Model::status_text($host->current_state); ?></em></td>
+		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->current_state, $host->has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($host->current_state, $host->has_been_checked); ?></em></td>
 		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->host_name); ?></td>
 		<td>
 			<div style="float: left"><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), $host->host_name) ?></div>
@@ -169,7 +169,7 @@ if (isset($service_result) ) {
 	foreach ($service_result as $service) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
-		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state); ?></em></td>
+		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state, $service->host_has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state, $service->host_has_been_checked); ?></em></td>
 		<td><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($service->host_name), $service->host_name);
 			if (nacoma::link()===true) {
 				echo '&nbsp;'.nacoma::link('configuration/configure/?type=host&name='.urlencode($service->host_name), 'icons/16x16/nacoma.png', _('Configure this host')).' &nbsp;';
@@ -178,7 +178,7 @@ if (isset($service_result) ) {
 		<?php } else { ?>
 		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->current_state, 'service'); ?></em></td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, $service->has_been_checked, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->current_state, $service->has_been_checked, 'service'); ?></em></td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->service_description); ?></td>
 		<td><span style="float: left">
 			<?php echo html::anchor('/extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), $service->service_description) ?></span>

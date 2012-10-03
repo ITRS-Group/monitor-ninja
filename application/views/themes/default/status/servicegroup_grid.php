@@ -83,7 +83,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 			foreach($details->services[$host->name] as $state => $services) {
 				$num = count($services);
 				if($num == 0) { continue; }
-				$service_state = strtolower(Current_status_Model::status_text($state, 'service'));
+				$service_state = strtolower(Current_status_Model::status_text($state, 1, 'service')); # FIXME: lies in terms of pending
 				echo html::image($this->add_path('icons/12x12/shield-'.$service_state.'.png'), array('alt' => $service_state, 'title' => $service_state, 'class' => 'status-default'));
 				$service_class = 'status-'.$service_state;
 				$j = 1;

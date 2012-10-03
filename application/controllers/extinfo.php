@@ -213,7 +213,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->host = $host;
 		$content->lable_current_status = _('Current status');
 		$content->lable_status_information = _('Status information');
-		$content->current_status_str = $this->current->status_text($result->state, $type);
+		$content->current_status_str = $this->current->status_text($result->status, $result->has_been_checked, $type);
 		$content->duration = $result->duration;
 		$content->groups = $groups;
 		$content->host_address = $type == 'host' ? $result->address : $result->host_address;
