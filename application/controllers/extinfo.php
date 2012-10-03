@@ -588,10 +588,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->passive_hostchecks_str = $status->accept_passive_host_checks ? $yes : $no;
 		$content->eventhandler_class = $status->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
 		$content->eventhandler_str = $status->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_services_class = $status->obsess ? 'checksENABLED' : 'checksDISABLED';
-		$content->obsess_services_str = $status->obsess ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_host_class = $status->host_obsess ? 'checksENABLED' : 'checksDISABLED';
-		$content->obsess_hosts_str = $status->host_obsess ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_services_class = $status->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
+		$content->obsess_services_str = $status->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_host_class = $status->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
+		$content->obsess_hosts_str = $status->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 		$content->flap_detection_class = $status->enable_flap_detection ? 'checksENABLED' : 'checksDISABLED';
 		$content->flap_detection_str = $status->enable_flap_detection ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 		$content->performance_data_class = $status->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
@@ -652,7 +652,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('ENABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		}
 
-		if ($status->obsess) {
+		if ($status->obsess_over_services) {
 			$commands->label_obsess_over_services = _('Stop obsessing over services');
 			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		} else {
@@ -660,7 +660,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		}
 
-		if ($status->host_obsess) {
+		if ($status->obsess_over_hosts) {
 			$commands->label_obsess_over_hosts = _('Stop obsessing over hosts');
 			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		} else {
