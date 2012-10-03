@@ -3,6 +3,10 @@
 class Sla_options_Core extends Report_options {
 	public function __construct($options) {
 		unset($this->vtypes['include_trends']);
+		// Warning! months is 1-indexed
+		$this->vtypes['months'] = array('type' => 'array', 'default' => false);
+
+		parent::__construct($options);
 		$this->vtypes['report_period'] = array('type' => 'enum', 'default' => 'thisyear', 'options' => array(
 			"thisyear" => _('This Year'),
 			"lastyear" => _('Last Year'),
@@ -12,10 +16,6 @@ class Sla_options_Core extends Report_options {
 			"lastquarter" => _('Last Quarter'),
 			"last12months" => _('Last 12 months')
 		));
-		// Warning! months is 1-indexed
-		$this->vtypes['months'] = array('type' => 'array', 'default' => false);
-
-		parent::__construct($options);
 	}
 
 	public function set($name, $value)
