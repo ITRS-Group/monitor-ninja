@@ -1,7 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-if ($service_filter_status_show)
-	echo reports::get_included_states('services', $options);
 $sg_no = 0;
 $prev_host = false;
 $prev_group = false;

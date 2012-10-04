@@ -1,7 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-echo reports::get_included_states($options['report_type'], $options);
-
 $nr = 0;
 foreach($report_data as $i =>  $report) {
 	$nr++;

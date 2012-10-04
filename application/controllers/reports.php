@@ -366,7 +366,6 @@ class Reports_Controller extends Base_reports_Controller
 			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
 			$template->content->multiple_states = $template_values;
 			$template->content->hide_host = false;
-			$template->content->service_filter_status_show = true;
 
 			$template->pie = $this->add_view('reports/pie_chart');
 
@@ -487,7 +486,6 @@ class Reports_Controller extends Base_reports_Controller
 							$content->header_string = $header_str;
 							$content->multiple_states = $template_values;
 							$content->hide_host = true;
-							$content->service_filter_status_show = false;
 							$content->source = $data['source'];
 						}
 					}
