@@ -719,7 +719,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		$ls = Livestatus::instance();
-		$lsb = $ls->getBackend();
+
 		$status = new Status_Model();
 		if($grouptype == 'host') {
 			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $group, false, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
@@ -745,58 +745,19 @@ class Status_Controller extends Authenticated_Controller {
 		# set defaults for all groups
 		$all_groups = array();
 		foreach($groups as &$g) {
-			$hosts_stats = array();
 			if( $grouptype != 'service' ) {
-				$hosts_stats = $lsb->getStats( 'hosts', array(
-						'hosts_total'                            => 'name != ""',
-						'hosts_pending'                          => 'has_been_checked = 0',
-						'hosts_up'                               => 'state = 0',
-						'hosts_down'                             => 'state = 1',
-						'hosts_down_and_unhandled'               => 'state = 1 and checks_enabled = 1 and acknowledged = 1 and scheduled_downtime_depth = 0',
-						'hosts_down_and_scheduled'               => 'state = 1 and scheduled_downtime_depth > 0',
-						'hosts_down_and_ack'                     => 'state = 1 and acknowledged = 1',
-						'hosts_down_and_disabled_active'         => 'state = 1 and checks_enabled = 0 and check_type = 0',
-						'hosts_down_and_disabled_passive'        => 'state = 1 and checks_enabled = 0 and check_type = 1',
-						'hosts_unreachable'                      => 'state = 2',
-						'hosts_unreachable_and_unhandled'        => 'state = 2 and checks_enabled = 1 and acknowledged = 1 and scheduled_downtime_depth = 0',
-						'hosts_unreachable_and_scheduled'        => 'state = 2 and scheduled_downtime_depth > 0',
-						'hosts_unreachable_and_ack'              => 'state = 2 and acknowledged = 1',
-						'hosts_unreachable_and_disabled_active'  => 'state = 2 and checks_enabled = 0 and check_type = 0',
-						'hosts_unreachable_and_disabled_passive' => 'state = 2 and checks_enabled = 0 and check_type = 1'
-				),array(
-						'filter' => $groupsname . ' >= "' . $g['name'] .'"'
-				));
+				$hosts_stats = (array)$ls->getHostTotals(array( 'filter' => $groupsname . ' >= "' . $g['name'] .'"' ));
+				foreach( $hosts_stats as $key => $value ) {
+					$g['hosts_'.$key] = $value;
+				}
 			}
 			
-			$services_stats = $lsb->getStats( 'services', array(
-				'services_total'                         => 'state != 999',
-				'services_pending'                       => 'has_been_checked = 0',
-				'services_ok'                            => 'state = 0',
-				'services_warning'                       => 'state = 1',
-				'services_warning_and_unhandled'         => 'state = 1 and checks_enabled = 1 and host_state = 0 and acknowledged = 0 and scheduled_downtime_depth = 0',
-				'services_warning_and_scheduled'         => 'state = 1 and scheduled_downtime_depth > 0',
-				'services_warning_on_down_host'          => 'state = 1 and host_state = 1',
-				'services_warning_and_ack'               => 'state = 1 and acknowledged = 1',
-				'services_warning_and_disabled_active'   => 'state = 1 and checks_enabled = 0 and check_type = 0',
-				'services_warning_and_disabled_passive'  => 'state = 1 and checks_enabled = 0 and check_type = 1',
-				'services_critical'                      => 'state = 2',
-				'services_critical_and_unhandled'        => 'state = 2 and checks_enabled = 1 and host_state = 0 and acknowledged = 0 and scheduled_downtime_depth = 0',
-				'services_critical_and_scheduled'        => 'state = 2 and scheduled_downtime_depth > 0',
-				'services_critical_on_down_host'         => 'state = 2 and host_state = 1',
-				'services_critical_and_ack'              => 'state = 2 and acknowledged = 1',
-				'services_critical_and_disabled_active'  => 'state = 2 and checks_enabled = 0 and check_type = 0',
-				'services_critical_and_disabled_passive' => 'state = 2 and checks_enabled = 0 and check_type = 1',
-				'services_unknown'                       => 'state = 3',
-				'services_unknown_and_unhandled'         => 'state = 3 and checks_enabled = 1 and host_state = 0 and acknowledged = 0 and scheduled_downtime_depth = 0',
-				'services_unknown_and_scheduled'         => 'state = 3 and scheduled_downtime_depth > 0',
-				'services_unknown_on_down_host'          => 'state = 3 and host_state = 1',
-				'services_unknown_and_ack'               => 'state = 3 and acknowledged = 1',
-				'services_unknown_and_disabled_active'   => 'state = 3 and checks_enabled = 0 and check_type = 0',
-				'services_unknown_and_disabled_passive'  => 'state = 3 and checks_enabled = 0 and check_type = 1',
-				),array(
-					'filter' => $groupsname . ' >= "' . $g['name'] . '"'
-				));
-			$all_groups[$g['name']] = array_merge( $g, $hosts_stats, $services_stats );
+			$services_stats = (array)$ls->getServiceTotals(array( 'filter' => $groupsname . ' >= "' . $g['name'] . '"' ));
+			foreach( $services_stats as $key => $value ) {
+				$g['services_'.$key] = $value;
+			}
+			
+			$all_groups[$g['name']] = $g;
 		}
 
 
@@ -1173,7 +1134,7 @@ class Status_Controller extends Authenticated_Controller {
 		else
 			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
-
+/*
 	private function _hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
 		$ls = Livestatus::instance();
 		$status = new Status_Model();
@@ -1239,4 +1200,5 @@ class Status_Controller extends Authenticated_Controller {
 		}
 		return $groups;
 	}
+	*/
 }
