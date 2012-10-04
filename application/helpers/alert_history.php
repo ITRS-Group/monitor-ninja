@@ -85,11 +85,11 @@ class alert_history_Core {
 			break;
 		 case 1103:
 		 case 1104:
-			if ($entry->service_description)
+			if ($entry['service_description'])
 				$ret['type'] = 'Service Downtime Alert';
 			else
 				$ret['type'] = 'Host Downtime Alert';
-			$ret['state'] = $entry->event_type == 1103 ? 'Started' : 'Stopped';
+			$ret['state'] = $entry['event_type'] == 1103 ? 'Started' : 'Stopped';
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/scheduled-downtime.png'), array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')));
 			break;
 		 default:
