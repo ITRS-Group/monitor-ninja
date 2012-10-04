@@ -782,7 +782,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('unauthorized');
 		$this->template->disable_refresh = true;
 
-		$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
+		$this->template->content->error_description = _('If you believe this is an error, check the authorization requirements for accessing this page and your given authorization points.');
 		switch ($type) {
 			case 'host':
 				$this->template->content->error_message = _('It appears as though you do not have permission to view information for this host or it doesn\'t exist...');
