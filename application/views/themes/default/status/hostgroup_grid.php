@@ -92,7 +92,6 @@ $state_map = array(
 				$first = true;
 				if (count($services) == 0)
 					continue;
-				usort($services, Livestatus::build_sorter(array('description', 'ASC')));
 				?>
 				<?php foreach ($services as $description => $service) {
 					$service_state = strtolower(Current_status_Model::status_text($service['state'], $service['has_been_checked'], 'service'));

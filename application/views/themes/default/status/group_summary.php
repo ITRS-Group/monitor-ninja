@@ -40,7 +40,9 @@
 		<thead>
 			<tr>
 				<th colspan="2"><?php echo $label_group_name ?></th>
+				<?php if( $grouptype == 'host' ) { ?>
 				<th class="no-sort"><?php echo _('Host Status Summary') ?></th>
+				<?php } ?>
 				<th class="no-sort"><?php echo _('Service Status Summary') ?></th>
 			</tr>
 		</thead>
@@ -56,6 +58,7 @@
 						echo nacoma::link('configuration/configure/?type='.$grouptype.'group&name='.urlencode($details['name']), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));
 					?>
 				</td>
+				<?php if( $grouptype == 'host' ) { ?>
 				<td style="line-height: 20px; white-space: normal">
 					<?php
 						if ($details['hosts_up'] > 0) {
@@ -114,9 +117,10 @@
 						if($details['hosts_pending'] > 0) {
 							# @@@FIXME: host_properties?
 							echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => _('PENDING'), 'title' => _('PENDING'), 'class' => 'status-default'));
-							echo html::anchor('status/'.$grouptype.'/?group='.urlencode($details['name']).'&group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_PENDING.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details['num_hosts_pending'].' '._('PENDING'), array('class' => 'status-pending'));
+							echo html::anchor('status/'.$grouptype.'/?group='.urlencode($details['name']).'&group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_PENDING.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details['hosts_pending'].' '._('PENDING'), array('class' => 'status-pending'));
 						} ?>
 					</td>
+					<?php } ?>
 
 					<td style="line-height: 20px; white-space: normal">
 						<?php
