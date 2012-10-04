@@ -127,7 +127,7 @@ class Reports_Model extends Model
 	public $sub_reports = array(); /**< An array of sub-reports for this report */
 	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
 	public $states = array(); /**< The final array of report states */
-	private $st_state_calculator = 'st_best';
+	private $st_state_calculator = 'invalid'; /**< The calculatior method - defaults to invalid value to discover invalid use (I just spend 8 hours debugging one such instance, so change at your own risk) */
 
 	/** A map of state ID => state name for hosts. FIXME: one of a gazillion */
 	static public $host_states = array(
@@ -799,6 +799,7 @@ class Reports_Model extends Model
 				if (empty($this->st_sub[$state][$in_dt]))
 					continue;
 				// This would look OK but isn't, go look for non-OK
+				// (remember, we sorted, so $in_dt is only true after passing false)
 				if ($this->options['scheduleddowntimeasuptime'] && $in_dt)
 					break 1;
 				// Else, we're done, this is the worst.
@@ -906,12 +907,13 @@ class Reports_Model extends Model
 		$this->st_text = empty($this->st_is_service) ? self::$host_states : self::$service_states;
 		$this->st_text = array_map('strtoupper', $this->st_text);
 
+		$this->st_state_calculator = $this->options['cluster_mode'] ? 'st_best' : 'st_worst';
+
 		# prime the state counter for sub-objects
 		if (!empty($this->sub_reports)) {
 			foreach ($this->st_text as $st => $discard)
 				$this->st_sub[$st] = array();
 			foreach ($this->sub_reports as $idx => $rpt) {
-				$rpt->calculate_object_state();
 				$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
 			}
 			$this->calculate_object_state();
@@ -958,8 +960,6 @@ class Reports_Model extends Model
 			if (!empty($servicename) && is_string($servicename))
 				$this->st_prev_row['service_description'] = $servicename;
 		}
-
-		$this->st_state_calculator = $this->options['cluster_mode'] ? 'st_best' : 'st_worst';
 	}
 
 	/**
