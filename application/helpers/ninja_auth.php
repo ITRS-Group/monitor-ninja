@@ -71,9 +71,8 @@ class ninja_auth_Core
 			}
 
 			if ($redirect !== false) {
-				$translate = zend::instance('Registry')->get('Zend_Translate');
 				Session::instance()->set_flash('error_msg',
-					$translate->_("You have been denied access since you aren't authorized for any objects."));
+					_("You have been denied access since you aren't authorized for any objects."));
 				return 'default/show_login';
 			}
 		}
