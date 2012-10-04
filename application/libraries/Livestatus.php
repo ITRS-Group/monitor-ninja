@@ -546,6 +546,7 @@ class LivestatusBackend {
 		}
 		$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
 		$current_page   = $page->input->get('page', 1);
+		if(!is_numeric($current_page)) { $current_page = 1; }
 		$total          = $this->get_query_size($table, $options);
 		if(isset($total)) {
 			/* then set the limit for the real query */
