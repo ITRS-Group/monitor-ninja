@@ -1,6 +1,6 @@
 <?php
 
-class ExpParser_SearchFilter_Core extends ExpParser_Core {
+class ExpParser_LivestatusFilter_Core extends ExpParser_Core {
 	protected $columns     = false;
 	protected $head_and    = "And:";
 	protected $head_or     = "Or:";
@@ -82,11 +82,11 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 	protected function filter_entry() {
 		$column   = $this->expectKeyword( $this->columns );
 
-		$operator = $this->acceptSym( array('~~','=~','~') );
+		$operator = $this->acceptSym( array('!~~','!=~','!~','~~','=~','~') );
 		if( $operator !== false ) {
 			$value = $this->expectString();
 		} else {
-			$operator = $this->expectSym( array('>=','<=','>','<','=') );
+			$operator = $this->expectSym( array('!>=','!<=','!>','!<','!=','>=','<=','>','<','=') );
 			$value = $this->acceptString();
 			if( $value === false ) {
 				$value = $this->expectNum();
