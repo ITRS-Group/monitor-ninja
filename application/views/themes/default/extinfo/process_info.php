@@ -16,10 +16,6 @@
 		<td><?php echo $run_time ?></td>
 	</tr>
 	<tr>
-		<td class="dark"><?php echo _('Last external command check') ?></td>
-		<td><?php echo $program_status->last_command_check != 0 ? date(cal::get_calendar_format(true).' H:i:s', $program_status->last_command_check) : _('N/A') ?></td>
-	</tr>
-	<tr>
 		<td class="dark"><?php echo _('Last log file rotation') ?></td>
 		<td><?php echo $last_log_rotation ?></td>
 	</tr>

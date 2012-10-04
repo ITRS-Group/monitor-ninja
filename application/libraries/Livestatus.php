@@ -47,7 +47,7 @@ class LivestatusException extends Exception {}
  *                                          # grouped with logical operators. Example:
  *                                          #
  *                                          # 'host_name ~~ "name regexp" and (status = 1 or status = 2)'
- *                                          # 
+ *                                          #
  *                                          # see livestatus docs for details about available operators
  *  );
  *
@@ -66,15 +66,15 @@ class Livestatus {
 
 	private $program_start = false;
 	private $backend = false;
-	
+
 	public function __construct($config = null) {
 		$this->backend = new LiveStatusBackend($config);
 	}
-	
+
 	public function getBackend() {
 		return $this->backend;
 	}
-	
+
 	public function calc_duration($row) {
 		$now = time();
 		return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start);
@@ -106,7 +106,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('hosts', $options);
 	}
-	
+
 	/* getHostgroups */
 	public function getHostgroups($options = null) {
 		if(!isset($options['columns'])) {
@@ -116,7 +116,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('hostgroups', $options);
 	}
-	
+
 	/* getHostsByGroup */
 	public function getHostsByGroup($options = null) {
 		if(!isset($options['columns'])) {
@@ -127,7 +127,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('hostsbygroup', $options);
 	}
-	
+
 	/* getServices */
 	public function getServices($options = null) {
 		if(!isset($options['columns'])) {
@@ -157,7 +157,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('services', $options);
 	}
-	
+
 	/* getServicegroups */
 	public function getServicegroups($options = null) {
 		if(!isset($options['columns'])) {
@@ -167,7 +167,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('servicegroups', $options);
 	}
-	
+
 	/* getContacts */
 	public function getContacts($options = null) {
 		if(!isset($options['columns'])) {
@@ -177,7 +177,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('contacts', $options);
 	}
-	
+
 	/* getContactgroups */
 	public function getContactgroups($options = null) {
 		if(!isset($options['columns'])) {
@@ -187,7 +187,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('contactgroups', $options);
 	}
-	
+
 	/* getCommands */
 	public function getCommands($options = null) {
 		if(!isset($options['columns'])) {
@@ -197,7 +197,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('commands', $options);
 	}
-	
+
 	/* getTimeperiods */
 	public function getTimeperiods($options = null) {
 		if(!isset($options['columns'])) {
@@ -207,7 +207,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('timeperiods', $options);
 	}
-	
+
 	/* getLogs */
 	public function getLogs($options = null) {
 		if(!isset($options['columns'])) {
@@ -219,7 +219,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('log', $options);
 	}
-	
+
 	/* getComments */
 	public function getComments($options = null) {
 		if(!isset($options['columns'])) {
@@ -231,7 +231,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('comments', $options);
 	}
-	
+
 	/* getDowntimes */
 	public function getDowntimes($options = null) {
 		if(!isset($options['columns'])) {
@@ -242,7 +242,7 @@ class Livestatus {
 		}
 		return $this->backend->getTable('downtimes', $options);
 	}
-	
+
 	/* getProcessInfo */
 	public function getProcessInfo($options = null) {
 		if(!isset($options['columns'])) {
@@ -261,8 +261,8 @@ class Livestatus {
 		$this->program_start = $objects[0]['program_start'];
 		return (object) $objects[0];
 	}
-	
-	
+
+
 	/* getHostTotals */
 	public function getHostTotals($options = null) {
 		/*
@@ -309,8 +309,8 @@ class Livestatus {
 		);
 		return (object) $this->backend->getStats('hosts', $stats, $options);
 	}
-	
-	
+
+
 	/* getServiceTotals */
 	public function getServiceTotals($options = null) {
 		/*
@@ -365,18 +365,18 @@ class Livestatus {
 		);
 		return (object) $this->backend->getStats('services', $stats, $options);
 	}
-	
+
 	/* getHostPerformance */
 	public function getHostPerformance($last_program_start, $options = null) {
 		return $this->getPerformanceStats('hosts', $last_program_start, $options);
 	}
-	
+
 	/* getServicePerformance */
 	public function getServicePerformance($last_program_start, $options = null) {
 		$stats = $this->getPerformanceStats('services', $last_program_start, $options);
 		return $stats;
 	}
-	
+
 	/* getPerformanceStats */
 	public function getPerformanceStats($type, $last_program_start, $options = null) {
 		$result = array();
@@ -386,7 +386,7 @@ class Livestatus {
 		$min15  = $now - 900;
 		$min60  = $now - 3600;
 		$minall = $last_program_start;
-	
+
 		$stats = array(
 				'active_sum'      => array( 'check_type' => 0 ),
 				'active_1_sum'    => array( 'check_type' => 0, 'has_been_checked' => 1, 'last_check' => array( '>=' => $min1 ) ),
@@ -394,7 +394,7 @@ class Livestatus {
 				'active_15_sum'   => array( 'check_type' => 0, 'has_been_checked' => 1, 'last_check' => array( '>=' => $min15 ) ),
 				'active_60_sum'   => array( 'check_type' => 0, 'has_been_checked' => 1, 'last_check' => array( '>=' => $min60 ) ),
 				'active_all_sum'  => array( 'check_type' => 0, 'has_been_checked' => 1, 'last_check' => array( '>=' => $minall ) ),
-	
+
 				'passive_sum'     => array( 'check_type' => 1 ),
 				'passive_1_sum'   => array( 'check_type' => 1, 'has_been_checked' => 1, 'last_check' => array( '>=' => $min1 ) ),
 				'passive_5_sum'   => array( 'check_type' => 1, 'has_been_checked' => 1, 'last_check' => array( '>=' => $min5 ) ),
@@ -404,7 +404,7 @@ class Livestatus {
 		);
 		$data   = $this->backend->getStats($type, $stats);
 		$result = array_merge($result, $data);
-	
+
 		/* add stats for active checks */
 		$stats = array(
 				'execution_time_sum'      => array( '-sum' => 'execution_time' ),
@@ -420,10 +420,10 @@ class Livestatus {
 				'latency_avg'             => array( '-avg' => 'latency' ),
 				'active_state_change_avg' => array( '-avg' => 'percent_state_change' ),
 		);
-	
+
 		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 0)));
 		$result = array_merge($result, $data);
-	
+
 		/* add stats for passive checks */
 		$stats = array(
 				'passive_state_change_sum' => array( '-sum' => 'percent_state_change' ),
@@ -433,7 +433,7 @@ class Livestatus {
 		);
 		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 1)));
 		$result = array_merge($result, $data);
-	
+
 		return (object) $result;
 	}
 }
