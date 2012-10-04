@@ -127,7 +127,7 @@ class Reports_Model extends Model
 	public $sub_reports = array(); /**< An array of sub-reports for this report */
 	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
 	public $states = array(); /**< The final array of report states */
-	private $st_state_calculator = 'st_best';
+	private $st_state_calculator = 'invalid'; /**< The calculatior method - defaults to invalid value to discover invalid use (I just spend 8 hours debugging one such instance, so change at your own risk) */
 
 	/** A map of state ID => state name for hosts. FIXME: one of a gazillion */
 	static public $host_states = array(
@@ -260,18 +260,23 @@ class Reports_Model extends Model
 
 		$this->get_last_shutdown();
 
-		$servicename = $this->options['service_description'];
-		$hostname = $this->options['host_name'];
+		$servicename = $hostname = false;
 		$res_group = false;
 
-		if ($this->options['hostgroup']) {
-			$hostname = $this->options->get_report_members();
-		} elseif ($this->options['servicegroup']) {
+		switch ($this->options['report_type']) {
+		 case 'services':
+		 case 'servicegroups':
 			$servicename = $this->options->get_report_members();
+			break;
+		 case 'hosts':
+		 case 'hostgroups':
+			$hostname = $this->options->get_report_members();
+			break;
 		}
 
 		if ($servicename) {
 			foreach ($servicename as $service) {
+				$srv = explode(';', $service);
 				$optclass = get_class($this->options);
 				$opts = new $optclass($this->options);
 				$opts['service_description'] = $service;
@@ -281,7 +286,6 @@ class Reports_Model extends Model
 				$sub_class->register_db_time($opts['start_time']);
 				$sub_class->register_db_time($opts['end_time']);
 				$sub_class->st_source = $service;
-				$srv = explode(';', $service);
 				$sub_class->host_name =  $srv[0];
 				$sub_class->service_description = $srv[1];
 				$sub_class->last_shutdown = $this->last_shutdown;
@@ -795,6 +799,7 @@ class Reports_Model extends Model
 				if (empty($this->st_sub[$state][$in_dt]))
 					continue;
 				// This would look OK but isn't, go look for non-OK
+				// (remember, we sorted, so $in_dt is only true after passing false)
 				if ($this->options['scheduleddowntimeasuptime'] && $in_dt)
 					break 1;
 				// Else, we're done, this is the worst.
@@ -902,12 +907,13 @@ class Reports_Model extends Model
 		$this->st_text = empty($this->st_is_service) ? self::$host_states : self::$service_states;
 		$this->st_text = array_map('strtoupper', $this->st_text);
 
+		$this->st_state_calculator = $this->options['cluster_mode'] ? 'st_best' : 'st_worst';
+
 		# prime the state counter for sub-objects
 		if (!empty($this->sub_reports)) {
 			foreach ($this->st_text as $st => $discard)
 				$this->st_sub[$st] = array();
 			foreach ($this->sub_reports as $idx => $rpt) {
-				$rpt->calculate_object_state();
 				$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
 			}
 			$this->calculate_object_state();
@@ -954,8 +960,6 @@ class Reports_Model extends Model
 			if (!empty($servicename) && is_string($servicename))
 				$this->st_prev_row['service_description'] = $servicename;
 		}
-
-		$this->st_state_calculator = $this->options['cluster_mode'] ? 'st_best' : 'st_worst';
 	}
 
 	/**
@@ -1294,19 +1298,18 @@ class Reports_Model extends Model
 		$services = false;
 		if ($this->options['servicegroup']) {
 			$hosts = $services = array();
-			$smod = new Service_Model();
 			foreach ($this->options['servicegroup'] as $sg) {
-				$res = $smod->get_services_for_group($sg);
+				$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
-					$name = $o->host_name . ';' . $o->service_description;
+					$name = implode(';', $o);
 					if (empty($services[$name])) {
 						$services[$name] = array();
 					}
 					$services[$name][$sg] = $sg;
-					if (empty($hosts[$o->host_name])) {
-						$hosts[$o->host_name] = array();
+					if (empty($hosts[$o['host_name']])) {
+						$hosts[$o['host_name']] = array();
 					}
-					$hosts[$o->host_name][$sg] = $sg;
+					$hosts[$o['host_name']][$sg] = $sg;
 				}
 			}
 			$this->service_servicegroup['host'] = $hosts;
@@ -1316,9 +1319,9 @@ class Reports_Model extends Model
 			$hosts = array();
 			$hmod = new Host_Model();
 			foreach ($this->options['hostgroup'] as $hg) {
-				$res = $hmod->get_hosts_for_group($hg);
+				$res = Livestatus::instance()->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
-					$name = $o->host_name;
+					$name = $o['name'];
 					if (empty($hosts[$name])) {
 						$hosts[$name] = array();
 					}

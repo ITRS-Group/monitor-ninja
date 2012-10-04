@@ -86,8 +86,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 	</tr>
 	<tr>
 		<td>
-			<?php echo help::render('scheduled_downtime').' '._('Count scheduled downtime as')?><br />
-			<?php echo form::dropdown(array('name' => 'scheduleddowntimeasuptime'), $options->get_alternatives('scheduleddowntimeasuptime'), $options['scheduleddowntimeasuptime']) ?>
+			<?php echo help::render('scheduled_downtime').' '._('Count scheduled downtime as')?>
 		</td>
 		<td>&nbsp;</td>
 		<td>
@@ -95,6 +94,18 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			<input type="checkbox" class="checkbox" value="1" id="use_alias" name="use_alias"
 					onchange="toggle_label_weight(this.checked, 'usealias');" <?php print $options['use_alias']?'checked="checked"':'' ?> />
 			<label for="use_alias" id="usealias"><?php echo _('Use alias') ?></label>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<?php echo form::dropdown(array('name' => 'scheduleddowntimeasuptime'), $options->get_alternatives('scheduleddowntimeasuptime'), $options['scheduleddowntimeasuptime']) ?>
+		</td>
+		<td>&nbsp;</td>
+		<td>
+			<?php echo help::render('cluster_mode') ?>
+			<input type="checkbox" class="checkbox" value="1" id="cluster_mode" name="cluster_mode"
+				onchange="toggle_label_weight(this.checked, 'clusterlbl');" <?php print $options['cluster_mode']?'checked="checked"':'' ?> />
+			<label for="cluster_mode" id="clusterlbl"><?php echo _('Use cluster mode') ?></label>
 		</td>
 	</tr>
 	<tr>

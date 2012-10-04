@@ -1,7 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-if ($service_filter_status_show)
-	echo reports::get_included_states('services', $options);
 $sg_no = 0;
 $prev_host = false;
 $prev_group = false;
@@ -90,7 +88,7 @@ foreach ($multiple_states as $data) {
 	$sg_no = $sg_no + $no;
 
 	if (!empty($data['groupname'])) {
-		if ($options['use_average']==0 && $sg_no == 0) { ?>
+		if ($sg_no == 0) { ?>
 		<tr class="<?php echo (++$i%2==0 ? 'even' : 'odd') ?>">
 			<td><?php echo _('Average') ?></td>
 			<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -104,9 +102,7 @@ foreach ($multiple_states as $data) {
 			<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
-<?php }
-
-		if ($sg_no == 0) { ?>
+		<?php if (!$options['use_average']) { ?>
 		<tr class="<?php echo (++$i%2==0 ? 'even' : 'odd') ?>">
 			<td><?php if ($options['use_average']==0) { ?><?php echo _('Group availability (SLA)') ?> <?php } else { ?><?php echo _('Average') ?><?php } ?></td>
 			<td class="data_green"><?php echo $data['group_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -120,7 +116,8 @@ foreach ($multiple_states as $data) {
 			<td class="data_red"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
-<?php }
+<?php	}
+		}
 	}
 
 	if ($sg_no > 0 && $no == 0) { ?>
@@ -133,20 +130,16 @@ foreach ($multiple_states as $data) {
 	</table>
 </div>
 
-<?php
-		$sg_no = 0;
-	} # end foreach  ?>
 <div class="state_services report-block">
-	<table summary="<?php echo _('State breakdown for host services') ?>" class="multiple_services">
+	<table summary="<?php echo _('State breakdown for services') ?>" class="multiple_services">
 		<tr>
-			<th class="headerNone left"><?php echo help::render('average_and_sla').' '._('Average and Group availability for all selected services') ?></th>
+			<th class="headerNone left"><?php echo help::render('average_and_sla').' '.sprintf(_('Average and Group availability for %s'), $data['groupname']) ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('OK') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Warning') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unknown') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Critical') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Undetermined') ?></th>
 		</tr>
-		<?php if ($options['use_average']==0) { ?>
 		<tr class="<?php echo (++$i%2 == 0) ? 'even' : 'odd'; ?>">
 			<td><?php echo _('Average');?></td>
 			<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -160,9 +153,9 @@ foreach ($multiple_states as $data) {
 			<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
-		<?php } ?>
+		<?php if (!$options['use_average']) { ?>
 		<tr class="<?php echo (++$i%2 == 0) ? 'even' : 'odd'; ?>">
-			<td><?php if ($options['use_average']==0) { ?><?php echo _('Group availability (SLA)') ?> <?php } else { ?><?php echo _('Average') ?><?php } ?></td>
+			<td><?php echo _('Group availability (SLA)') ?></td>
 			<td class="data_green"><?php echo $data['group_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_ok'] > 0 ? '' : 'not-').'ok.png'),
 						array( 'alt' => _('Ok'), 'title' => _('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td class="data_red"><?php echo $data['group_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_warning'] > 0 ? '' : 'not-').'warning.png'),
@@ -174,5 +167,9 @@ foreach ($multiple_states as $data) {
 			<td class="data_red"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
+		<?php } ?>
 	</table>
 </div>
+<?php
+		$sg_no = 0;
+} # end foreach  ?>

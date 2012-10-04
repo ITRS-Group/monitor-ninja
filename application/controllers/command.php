@@ -239,27 +239,45 @@ class Command_Controller extends Authenticated_Controller
 
 		// Some Assembly Required
 		if ($selector_type != $target_type) {
-			if (strpos($selector_type, 'group')) {
-				$svc = new Service_Model();
-				$method = 'get_'.$target_type.'s_for_group';
-				$individual_objs = array();
-				foreach ($obj_names as $obj) {
-					foreach ($svc->$method($obj, $selector_type) as $row) {
-						$individual_objs[] = $row->host_name.($target_type === 'service' ? ';'.$row->service_description : '');
+			$ls = Livestatus::instance();
+			$individual_objs = array();
+			if ($target_type === 'service' && $selector_type === 'servicegroup') {
+				foreach ($obj_names as $gname) {
+					foreach ($ls->getServices(array('filter' => array('groups' => array('>=' => $gname), 'columns' => array('host_name', 'description')))) as $row) {
+						$individual_objs[] = $row['host_name'].';'.$row['description'];
 					}
 				}
-				$obj_names = $individual_objs;
+			}
+			else if ($target_type === 'service' && $selector_type === 'hostgroup') {
+				foreach ($obj_names as $gname) {
+					foreach ($ls->getServices(array('filter' => array('host_groups' => array('>=' => $gname), 'columns' => array('host_name', 'description')))) as $row) {
+						$individual_objs[] = $row['host_name'].';'.$row['description'];
+					}
+				}
+			}
+			else if ($target_type === 'host' && $selector_type === 'hostgroup') {
+				foreach ($obj_names as $gname) {
+					foreach ($ls->getHosts(array('filter' => array('groups' => array('>=' => $gname), 'columns' => array('name')))) as $row) {
+						$individual_objs[] = $row['host_name'];
+					}
+				}
+			}
+			else if ($target_type === 'host' && $selector_type === 'servicegroup') {
+				foreach ($obj_names as $gname) {
+					foreach ($ls->getServices(array('filter' => array('groups' => array('>=' => $gname), 'columns' => array('host_name')))) as $row) {
+						$individual_objs[$row['host_name']] = 1;
+					}
+				}
+				$individual_objs = array_keys($individual_objs);
 			}
 			else if ($target_type === 'service' && $selector_type === 'host') {
-				$individual_objs = array();
-				$host = new Host_Model();
-				foreach ($individual_objs as $hname) {
-					foreach ($host->get_services($hname) as $row) {
-						$individual_objs[] = $row->host_name.';'.$row->service_description;
+				foreach ($obj_names as $hname) {
+					foreach ($ls->getServices(array('filter' => array('host_name' => $hname), 'columns' => array('host_name', 'description'))) as $row) {
+						$individual_objs[] = $row['host_name'].';'.$row['description'];
 					}
 				}
-				$obj_names = $individual_objs;
 			}
+			$obj_names = $individual_objs;
 		}
 
 		$db = Database::instance();
@@ -444,17 +462,17 @@ class Command_Controller extends Authenticated_Controller
 			if (!empty($param['_services-too'])) {
 				unset($param['_services-too']);
 				$xcmd = str_replace('HOST', 'SVC', $cmd);
-				$host = new Host_Model();
+				$ls = Livestatus::instance();
 				$host_names = $param['host_name'];
 				if (!is_array($host_names))
 					$host_names = array($host_names);
 				$xparam = $param;
 				unset($xparam['host_name']);
 				foreach ($host_names as $host_name) {
-					$services = $host->get_services($host_name);
+					$services = $ls->getServices(array('filter' => array('host_name' => $host_name), 'columns' => array('description')));
 					if($services) {
 						foreach($services as $service) {
-							$xparam['service'] = $host_name.';'.$service->service_description;
+							$xparam['service'] = $host_name.';'.$service['description'];
 							$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
 						}
 					}

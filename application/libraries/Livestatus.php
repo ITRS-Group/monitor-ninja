@@ -112,6 +112,29 @@ class Livestatus {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
 					'name', 'alias', 'members', 'action_url', 'notes', 'notes_url',
+
+					/* Slow, skip by default
+					'members_with_state',
+					'worst_host_state',
+					'num_hosts',
+					'num_hosts_pending',
+					'num_hosts_up',
+					'num_hosts_down',
+					'num_hosts_unreach',
+					'num_services',
+					'worst_service_state',
+					'num_services_pending',
+					'num_services_ok',
+					'num_services_warn',
+					'num_services_crit',
+					'num_services_unknown',
+					'worst_service_hard_state',
+					'num_services_hard_ok',
+					'num_services_hard_warn',
+					'num_services_hard_crit',
+					'num_services_hard_unknown'
+					*/
+						
 			);
 		}
 		return $this->backend->getTable('hostgroups', $options);
@@ -162,7 +185,21 @@ class Livestatus {
 	public function getServicegroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
-					'name', 'alias', 'members', 'action_url', 'notes notes_url',
+					'name', 'alias', 'members', 'action_url', 'notes', 'notes_url',
+					/* Slow, skip by default
+					'members_with_state',
+					'worst_service_state',
+					'num_services',
+					'num_services_ok',
+					'num_services_warn',
+					'num_services_crit',
+					'num_services_unknown',
+					'num_services_pending',
+					'num_services_hard_ok',
+					'num_services_hard_warn',
+					'num_services_hard_crit',
+					'num_services_hard_unknown'
+					*/
 			);
 		}
 		return $this->backend->getTable('servicegroups', $options);
@@ -509,11 +546,15 @@ class LivestatusBackend {
 		if(isset($options['filter'])) {
 			$queryFilter = $this->getQueryFilter($options['filter'], false);
 		}
+		
 		$columns     = array();
 		foreach($stats as $key => $filter) {
 			$queryFilter .= $this->getQueryFilter($filter, true);
 			array_push($columns, $key);
 		}
+		
+		$this->prepare_pagination($table, $options);
+		
 		$queryFilter .= $this->auth($table, $options);
 		$objects = $this->query($table, $queryFilter, $columns, $options);
 		$objects = $this->objects2Assoc($objects, $columns);
@@ -567,23 +608,29 @@ class LivestatusBackend {
 	}
 
 	private function get_query_size($table, $options = null) {
-		if(!isset($options['paging']) and !isset($options['paginggroup'])) {
-			return;
+		$queryFilter = "";
+		if(isset($options['filter'])) {
+			$queryFilter = $this->getQueryFilter($options['filter'], false);
 		}
-
+		
 		switch($table) {
 			case 'services':
-			case 'hosts':           $filter = array('state' => array('!=' => 999));
-			break;
+			case 'hosts':
+				$queryFilter .= "Stats: state != 999\n";
+				break;
 			case 'servicegroups':
-			case 'hostgroups':      $filter = array('name' => array('!=' => ""));
-			break;
-			default:                throw new LivestatusException("table $table not implemented in get_query_size()");
-
+			case 'hostgroups':
+				$queryFilter .= "Stats: name != \n";
+				break;
+			default:
+				throw new LivestatusException("table $table not implemented in get_query_size()");
 		}
-		$stats = array( 'total' => $filter );
-		$data  = $this->getStats($table, $stats, $options);
-		return $data['total'];
+		
+		$queryFilter .= "ColumnHeaders: off\n";
+		
+		$queryFilter .= $this->auth($table, $options);
+		$objects = $this->query($table, $queryFilter, array(), $options);
+		return $objects[0][0];
 	}
 
 	private function query($table, $filter, $columns, $options) {
@@ -633,7 +680,7 @@ class LivestatusBackend {
 			return "";
 		}
 		if( is_string( $filter ) ) {
-			$expparser = new ExpParser_SearchFilter();
+			$expparser = new ExpParser_LivestatusFilter();
 			if($stats)
 				$expparser->setStats();
 			return $expparser->parse($filter);

@@ -366,7 +366,6 @@ class Reports_Controller extends Base_reports_Controller
 			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
 			$template->content->multiple_states = $template_values;
 			$template->content->hide_host = false;
-			$template->content->service_filter_status_show = true;
 
 			$template->pie = $this->add_view('reports/pie_chart');
 
@@ -487,7 +486,6 @@ class Reports_Controller extends Base_reports_Controller
 							$content->header_string = $header_str;
 							$content->multiple_states = $template_values;
 							$content->hide_host = true;
-							$content->service_filter_status_show = false;
 							$content->source = $data['source'];
 						}
 					}
@@ -680,15 +678,14 @@ class Reports_Controller extends Base_reports_Controller
 		if (empty($host_name)) {
 			return false;
 		}
-		$host_model = new Host_Model();
-		$res = $host_model->get_services($host_name);
+		$res = Livestatus::instance()->getServices(array('columns' => array('description'), 'filter' => array('host_name' => $host_name)));
 		if (!empty($res)) {
 			$service_arr = array();
 
 			$classname = get_class($this->options);
 			$opts = new $classname($this->options);
 			foreach ($res as $row)
-				$service_arr[] = $host_name . ';' . $row->service_description;
+				$service_arr[] = $host_name . ';' . $row['description'];
 			$opts['service_description'] = $service_arr;
 			$report_class = new Reports_Model($opts);
 
