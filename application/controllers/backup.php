@@ -82,7 +82,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$files = @scandir($this->backups_location);
 		if ($files === false)
-			throw new Exception('Cannot get directory contents: /var/www/html/backup');
+			throw new Exception('Cannot get directory contents: ' . $this->backups_location);
 
 		$suffix_len = strlen($this->backup_suffix);
 		$backupfiles = array();
@@ -92,6 +92,16 @@ class Backup_Controller extends Authenticated_Controller {
 
 		rsort($backupfiles);
 		$this->template->content->files = $backupfiles;
+	}
+
+	public function download($file) {
+		$file_path = $this->backups_location . "/" . $file . ".tar.gz";
+		$fp = fopen($file_path, "r");
+		header("Content-Type:application/octet-stream");
+		header("Content-Disposition:attachment;	filename=".$file.".tar.gz");
+		header("Content-Transfer-Encoding:binary");
+		fpassthru($fp);
+		$this->index();		
 	}
 
 	public function view($file)

@@ -8,7 +8,7 @@ function backup(){
 			var file = $('#backupfilename').text();
 			if ($('#backups tbody tr:first a:first').text() != file)
 				$('#backups tbody tr:first').before('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
-					+ '<td><a class="download" href="/backup/' + file + '<?php echo $suffix; ?>">' + file + '</a></td>'
+					+ '<td><a class="download" href="<?php echo url::base(); ?>index.php/backup/download/' + file + '">' + file + '</a></td>'
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
 						array('alt' => _('View'), 'title' => _('View'))); ?></a>'
@@ -96,7 +96,7 @@ var status = '';
 		<tbody>
 		<?php $i = 0; foreach ($files as $file): $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td><a class="download" href="/backup/<?php echo $file . $suffix; ?>"><?php echo $file; ?></a></td>
+			<td><a class="download" href="<?php echo url::base() . 'index.php/backup/download/' . $file; ?>"><?php echo $file; ?></a></td>
 			<td>
 				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => _('View'), 'title' => _('View'))); ?></a>
 				<a class="restore" href="#restore-status" title="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => _('Restore'), 'title' => _('Restore'))); ?></a>
