@@ -260,18 +260,23 @@ class Reports_Model extends Model
 
 		$this->get_last_shutdown();
 
-		$servicename = $this->options['service_description'];
-		$hostname = $this->options['host_name'];
+		$servicename = $hostname = false;
 		$res_group = false;
 
-		if ($this->options['hostgroup']) {
-			$hostname = $this->options->get_report_members();
-		} elseif ($this->options['servicegroup']) {
+		switch ($this->options['report_type']) {
+		 case 'services':
+		 case 'servicegroups':
 			$servicename = $this->options->get_report_members();
+			break;
+		 case 'hosts':
+		 case 'hostgroups':
+			$hostname = $this->options->get_report_members();
+			break;
 		}
 
 		if ($servicename) {
 			foreach ($servicename as $service) {
+				$srv = explode(';', $service);
 				$optclass = get_class($this->options);
 				$opts = new $optclass($this->options);
 				$opts['service_description'] = $service;
@@ -281,7 +286,6 @@ class Reports_Model extends Model
 				$sub_class->register_db_time($opts['start_time']);
 				$sub_class->register_db_time($opts['end_time']);
 				$sub_class->st_source = $service;
-				$srv = explode(';', $service);
 				$sub_class->host_name =  $srv[0];
 				$sub_class->service_description = $srv[1];
 				$sub_class->last_shutdown = $this->last_shutdown;
@@ -1294,19 +1298,18 @@ class Reports_Model extends Model
 		$services = false;
 		if ($this->options['servicegroup']) {
 			$hosts = $services = array();
-			$smod = new Service_Model();
 			foreach ($this->options['servicegroup'] as $sg) {
-				$res = $smod->get_services_for_group($sg);
+				$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
-					$name = $o->host_name . ';' . $o->service_description;
+					$name = implode(';', $o);
 					if (empty($services[$name])) {
 						$services[$name] = array();
 					}
 					$services[$name][$sg] = $sg;
-					if (empty($hosts[$o->host_name])) {
-						$hosts[$o->host_name] = array();
+					if (empty($hosts[$o['host_name']])) {
+						$hosts[$o['host_name']] = array();
 					}
-					$hosts[$o->host_name][$sg] = $sg;
+					$hosts[$o['host_name']][$sg] = $sg;
 				}
 			}
 			$this->service_servicegroup['host'] = $hosts;
@@ -1316,9 +1319,9 @@ class Reports_Model extends Model
 			$hosts = array();
 			$hmod = new Host_Model();
 			foreach ($this->options['hostgroup'] as $hg) {
-				$res = $hmod->get_hosts_for_group($hg);
+				$res = Livestatus::instance()->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
-					$name = $o->host_name;
+					$name = $o['name'];
 					if (empty($hosts[$name])) {
 						$hosts[$name] = array();
 					}

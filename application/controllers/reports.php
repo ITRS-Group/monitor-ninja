@@ -678,15 +678,14 @@ class Reports_Controller extends Base_reports_Controller
 		if (empty($host_name)) {
 			return false;
 		}
-		$host_model = new Host_Model();
-		$res = $host_model->get_services($host_name);
+		$res = Livestatus::instance()->getServices(array('columns' => array('description'), 'filter' => array('host_name' => $host_name)));
 		if (!empty($res)) {
 			$service_arr = array();
 
 			$classname = get_class($this->options);
 			$opts = new $classname($this->options);
 			foreach ($res as $row)
-				$service_arr[] = $host_name . ';' . $row->service_description;
+				$service_arr[] = $host_name . ';' . $row['description'];
 			$opts['service_description'] = $service_arr;
 			$report_class = new Reports_Model($opts);
 

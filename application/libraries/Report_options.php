@@ -170,11 +170,21 @@ class Report_options_core implements ArrayAccess, Iterator {
 		 case 'services':
 			return $this[$this->get_value('report_type')];
 		 case 'hostgroups':
+			$ls = Livestatus::instance();
+			$out = $ls->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $this['hostgroup']))));
+			$res = array();
+			foreach ($out as $arr) {
+				$res[] = $arr['name'];
+			}
+			return $res;
 		 case 'servicegroups':
 			$ls = Livestatus::instance();
-			$res = $ls->{'get'.ucfirst($this['report_type'])}(array('columns' => array('members'), 'filter' => array('name' => $this[$this->get_value('report_type')])));
-			if (count($res))
-				return $res[0]['members'];
+			$out = $ls->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $this['servicegroup']))));
+			$res = array();
+			foreach ($out as $arr) {
+				$res[] = implode(';', array_values($arr));
+			}
+			return $res;
 		}
 		return false;
 	}
