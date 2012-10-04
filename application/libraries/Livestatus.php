@@ -111,7 +111,7 @@ class Livestatus {
 	public function getHostgroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
-					'name', 'alias', 'members', 'action_url', 'notes', 'notes_url',
+					'name', 'alias', /*'members',*/ 'action_url', 'notes', 'notes_url',
 
 					/* Slow, skip by default
 					'members_with_state',
@@ -185,7 +185,7 @@ class Livestatus {
 	public function getServicegroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
-					'name', 'alias', 'members', 'action_url', 'notes', 'notes_url',
+					'name', 'alias', /*'members',*/ 'action_url', 'notes', 'notes_url',
 					/* Slow, skip by default
 					'members_with_state',
 					'worst_service_state',
@@ -219,7 +219,7 @@ class Livestatus {
 	public function getContactgroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
-					'name', 'alias', 'members',
+					'name', 'alias', /*'members',*/
 			);
 		}
 		return $this->backend->getTable('contactgroups', $options);
