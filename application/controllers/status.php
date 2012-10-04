@@ -255,7 +255,7 @@ class Status_Controller extends Authenticated_Controller {
 		$status = new Status_Model();
 		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
 		if ($status->show_filter_table)
-			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
+			$this->template->content->filters = $this->_show_filters('service', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		$this->template->content->noheader = $noheader;
 		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
