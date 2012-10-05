@@ -521,15 +521,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops = $this->input->get('serviceprops', $serviceprops);
-		$hostprops = $this->input->get('hostprops', $hostprops);
-		$style = $this->input->get('style', $style);
-		$grouptype = 'service';
-		$this->template->title = 'Servicegroup';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+		return $this->group('service', $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -542,14 +534,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops = $this->input->get('serviceprops', $serviceprops);
-		$hostprops = $this->input->get('hostprops', $hostprops);
-		$style = $this->input->get('style', $style);
-		$grouptype = 'host';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+		return $this->group('host', $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -563,15 +548,17 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$grouptype = $this->input->get('grouptype', $grouptype);
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$items_per_page     = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
+		$grouptype          = $this->input->get('grouptype', $grouptype);
+		$group              = $this->input->get('group', $group);
+		$hoststatustypes    = $this->input->get('hoststatustypes', $hoststatustypes);
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops = $this->input->get('serviceprops', $serviceprops);
-		$hostprops = $this->input->get('hostprops', $hostprops);
-		$style = $this->input->get('style', $style);
-		$noheader = $this->input->get('noheader', false);
+		$serviceprops       = $this->input->get('serviceprops', $serviceprops);
+		$hostprops          = $this->input->get('hostprops', $hostprops);
+		$style              = $this->input->get('style', $style);
+		$noheader           = $this->input->get('noheader', false);
+		
+		
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -593,20 +580,47 @@ class Status_Controller extends Authenticated_Controller {
 			case 'summary':
 				return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 		}
-
+		
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
+		$ls = Livestatus::instance();
+		
 		$content = $this->template->content;
 
 		if ($grouptype == 'service') {
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Service Groups") : _("Service Overview For Service Group");
-			$groups = $this->_servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes);
+			$groupfilter = 'groups >= "'.$group.'"';
 		} else {
-			$groups = $this->_hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Host Groups") : _("Service Overview For Host Group");
+			$groupfilter = 'host_groups >= "'.$group.'"';
 		}
-		$content->group_details = $groups;
+
+		$content->host_details = $ls->getBackend()->getStats( 'services', array(
+				'services_ok'       => 'has_been_checked = 1 and state = 0',
+				'services_warning'  => 'has_been_checked = 1 and state = 1',
+				'services_critical' => 'has_been_checked = 1 and state = 2',
+				'services_unknown'  => 'has_been_checked = 1 and state = 3',
+				'services_pending'  => 'has_been_checked = 0'
+				),array(
+				'filter' => $groupfilter,
+				'columns' => array(
+						'host_name',
+						'host_address',
+						'host_state',
+						'host_icon_image',
+						'host_icon_image_alt',
+						'host_has_been_checked',
+						'host_pnpgraph_present',
+						'host_action_url',
+						'host_notes_url'
+						),
+				'paginggroup' => $this
+				));
+		
+		$content->group_name = 'FIXMEFIXME';
+		$content->group_alias = 'FIXME2';
+		
 		$content->lable_host = _('Host');
 		$content->lable_status = _('Status');
 		$content->lable_services = _('Services');
@@ -719,140 +733,48 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		$ls = Livestatus::instance();
+
 		$status = new Status_Model();
+		
+		# get all host/service groups
 		if($grouptype == 'host') {
 			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $group, false, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+		    $groups = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
 		} else {
 			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
-		}
-		if ($status->show_filter_table)
-			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
-
-		# get all host/service groups
-		if( $grouptype == 'host' ) {
-		    $groups = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
-		}
-		else {
 		    $groups = $ls->getServicegroups(array('filter' => $servicegroupfilter, 'paginggroup' => $this ) );
 		}
 
-		# set defaults for all groups
-		$all_groups = array();
-		foreach($groups as &$g) {
-			$g['hosts_total']                            = 0;
-			$g['hosts_pending']                          = 0;
-			$g['hosts_up']                               = 0;
-			$g['hosts_down']                             = 0;
-			$g['hosts_down_and_unhandled']               = 0;
-			$g['hosts_down_and_scheduled']               = 0;
-			$g['hosts_down_and_ack']                     = 0;
-			$g['hosts_down_and_disabled_active']         = 0;
-			$g['hosts_down_and_disabled_passive']        = 0;
-			$g['hosts_unreachable']                      = 0;
-			$g['hosts_unreachable_and_unhandled']        = 0;
-			$g['hosts_unreachable_and_scheduled']        = 0;
-			$g['hosts_unreachable_and_ack']              = 0;
-			$g['hosts_unreachable_and_disabled_active']  = 0;
-			$g['hosts_unreachable_and_disabled_passive'] = 0;
-
-			$g['services_total']                         = 0;
-			$g['services_pending']                       = 0;
-			$g['services_ok']                            = 0;
-			$g['services_warning']                       = 0;
-			$g['services_warning_and_unhandled']         = 0;
-			$g['services_warning_and_scheduled']         = 0;
-			$g['services_warning_on_down_host']          = 0;
-			$g['services_warning_and_ack']               = 0;
-			$g['services_warning_and_disabled_active']   = 0;
-			$g['services_warning_and_disabled_passive']  = 0;
-			$g['services_unknown']                       = 0;
-			$g['services_unknown_and_unhandled']         = 0;
-			$g['services_unknown_and_scheduled']         = 0;
-			$g['services_unknown_on_down_host']          = 0;
-			$g['services_unknown_and_ack']               = 0;
-			$g['services_unknown_and_disabled_active']   = 0;
-			$g['services_unknown_and_disabled_passive']  = 0;
-			$g['services_critical']                      = 0;
-			$g['services_critical_and_unhandled']        = 0;
-			$g['services_critical_and_scheduled']        = 0;
-			$g['services_critical_on_down_host']         = 0;
-			$g['services_critical_and_ack']              = 0;
-			$g['services_critical_and_disabled_active']  = 0;
-			$g['services_critical_and_disabled_passive'] = 0;
-			$all_groups[$g['name']]                      = $g;
-		}
-
-		if( $grouptype == 'host' ) {
-			# we need the hosts data
-			$host_data = $ls->getHosts(array( 'filter' => $hostfilter ) );
-			foreach($host_data as &$host) {
-				foreach($host['groups'] as $g) {
-					if(!isset($all_groups[$g])) { continue; }
-					$this->_summary_add_host_stats( "", $all_groups[$g], $host );
-				}
-			}
-		}
-
-		# create a hash of all services
-		$services_data = $ls->getServices(array( 'filter' => $servicefilter ) );
-
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
+		
+		
 		$groupsname = "host_groups";
 		if( $grouptype == 'service' ) {
 			$groupsname = "groups";
 		}
+		
+		# set defaults for all groups
+		$all_groups = array();
+		foreach($groups as &$g) {
+			if( $grouptype != 'service' ) {
+				$hosts_stats = (array)$ls->getHostTotals(array( 'filter' => $groupsname . ' >= "' . $g['name'] .'"' ));
+				foreach( $hosts_stats as $key => $value ) {
+					$g['hosts_'.$key] = $value;
+				}
+			}
+			
+			$services_stats = (array)$ls->getServiceTotals(array( 'filter' => $groupsname . ' >= "' . $g['name'] . '"' ));
+			foreach( $services_stats as $key => $value ) {
+				$g['services_'.$key] = $value;
+			}
+			
+			$all_groups[$g['name']] = $g;
+		}
+
 
 		$host_already_added = array();
 		$uniq_services      = array();
-		foreach($services_data as &$service) {
-			if(isset($uniq_services[$service['host_name']][$service['description']])) { continue; }
-			$uniq_services[$service['host_name']][$service['description']] = 1;
-
-			foreach($service[$groupsname] as &$g) {
-				if(!isset($all_groups[$g])) { continue; }
-				if( $grouptype == 'service' ) {
-					if( !isset($host_already_added[$g][$service['host_name']] )) {
-						$this->_summary_add_host_stats( "host_", $all_groups[$g], $service );
-						$host_already_added[$g][$service['host_name']] = 1;
-					}
-				}
-
-				$all_groups[$g]['services_total']++;
-
-				if( $service['has_been_checked'] == 0 ) { $all_groups[$g]['services_pending']++; }
-				elseif ( $service['state'] == 0 ) { $all_groups[$g]['services_ok']++; }
-				elseif ( $service['state'] == 1 ) { $all_groups[$g]['services_warning']++; }
-				elseif ( $service['state'] == 2 ) { $all_groups[$g]['services_critical']++; }
-				elseif ( $service['state'] == 3 ) { $all_groups[$g]['services_unknown']++; }
-
-				if( $service['state'] == 1 and $service['scheduled_downtime_depth'] > 0 ) { $all_groups[$g]['services_warning_and_scheduled']++; }
-				if( $service['state'] == 1 and $service['acknowledged'] == 1 )            { $all_groups[$g]['services_warning_and_ack']++; }
-				if( $service['state'] == 1 and $service['checks_enabled'] == 0 and $service['check_type'] == 0 ) { $all_groups[$g]['services_warning_and_disabled_active']++; }
-				if( $service['state'] == 1 and $service['checks_enabled'] == 0 and $service['check_type'] == 1 ) { $all_groups[$g]['services_warning_and_disabled_passive']++; }
-				if( $service['state'] == 1 and $service['host_state'] > 0 )               { $all_groups[$g]['services_warning_on_down_host']++; }
-				elseif ( $service['state'] == 1 and $service['checks_enabled'] == 1 and $service['host_state'] == 0 and $service['acknowledged'] == 0 and $service['scheduled_downtime_depth'] == 0 ) { $all_groups[$g]['services_warning_and_unhandled']++; }
-
-				if( $service['state'] == 2 and $service['scheduled_downtime_depth'] > 0 ) { $all_groups[$g]['services_critical_and_scheduled']++; }
-				if( $service['state'] == 2 and $service['acknowledged'] == 1 )            { $all_groups[$g]['services_critical_and_ack']++; }
-				if( $service['state'] == 2 and $service['checks_enabled'] == 0 and $service['check_type'] == 0 ) { $all_groups[$g]['services_critical_and_disabled_active']++; }
-				if( $service['state'] == 2 and $service['checks_enabled'] == 0 and $service['check_type'] == 1 ) { $all_groups[$g]['services_critical_and_disabled_passive']++; }
-				if( $service['state'] == 2 and $service['host_state'] > 0 )               { $all_groups[$g]['services_critical_on_down_host']++; }
-				elseif ( $service['state'] == 2 and $service['checks_enabled'] == 1 and $service['host_state'] == 0 and $service['acknowledged'] == 0 and $service['scheduled_downtime_depth'] == 0 ) { $all_groups[$g]['services_critical_and_unhandled']++; }
-
-				if( $service['state'] == 3 and $service['scheduled_downtime_depth'] > 0 ) { $all_groups[$g]['services_unknown_and_scheduled']++; }
-				if( $service['state'] == 3 and $service['acknowledged'] == 1 )            { $all_groups[$g]['services_unknown_and_ack']++; }
-				if( $service['state'] == 3 and $service['checks_enabled'] == 0 and $service['check_type'] == 0 ) { $all_groups[$g]['services_unknown_and_disabled_active']++; }
-				if( $service['state'] == 3 and $service['checks_enabled'] == 0 and $service['check_type'] == 1 ) { $all_groups[$g]['services_unknown_and_disabled_passive']++; }
-				if( $service['state'] == 3 and $service['host_state'] > 0 )               { $all_groups[$g]['services_unknown_on_down_host']++; }
-				elseif ( $service['state'] == 3 and $service['checks_enabled'] == 1 and $service['host_state'] == 0 and $service['acknowledged'] == 0 and $service['scheduled_downtime_depth'] == 0 ) { $all_groups[$g]['services_unknown_and_unhandled']++; }
-			}
-		}
-
-		foreach($all_groups as &$g) {
-			# remove empty groups
-			if( $g['hosts_total'] + $g['services_total'] == 0 ) {
-				unset($all_groups[$g['name']]);
-			}
-		}
 
 		if(!count($all_groups)) {
 			$this->template->content = $this->add_view('error');
@@ -1225,30 +1147,6 @@ class Status_Controller extends Authenticated_Controller {
 			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
 
-	private function _summary_add_host_stats( $prefix, &$group, $host ) {
-		$group['hosts_total']++;
-
-		if( $host[$prefix.'has_been_checked'] == 0 ) { $group['hosts_pending']++; }
-		elseif ( $host[$prefix.'state'] == 0 ) { $group['hosts_up']++; }
-		elseif ( $host[$prefix.'state'] == 1 ) { $group['hosts_down']++; }
-		elseif ( $host[$prefix.'state'] == 2 ) { $group['hosts_unreachable']++; }
-
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'scheduled_downtime_depth'] > 0 ) { $group['hosts_down_and_scheduled']++; }
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'acknowledged'] == 1 )            { $group['hosts_down_and_ack']++; }
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_down_and_unhandled']++; }
-
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 0 ) { $group['hosts_down_and_disabled_active']++; }
-		if( $host[$prefix.'state'] == 1 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 1 ) { $group['hosts_down_and_disabled_passive']++; }
-
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'scheduled_downtime_depth'] > 0 ) { $group['hosts_unreachable_and_scheduled']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'acknowledged'] == 1 )            { $group['hosts_unreachable_and_ack']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 0 ) { $group['hosts_unreachable_and_disabled_active']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 0 and $host[$prefix.'check_type'] == 1 ) { $group['hosts_unreachable_and_disabled_passive']++; }
-		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_unreachable_and_unhandled']++; }
-
-		return 1;
-	}
-
 	private function _hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
 		$ls = Livestatus::instance();
 		$status = new Status_Model();
@@ -1314,4 +1212,5 @@ class Status_Controller extends Authenticated_Controller {
 		}
 		return $groups;
 	}
+	
 }

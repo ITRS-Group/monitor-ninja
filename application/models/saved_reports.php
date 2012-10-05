@@ -60,17 +60,6 @@ class Saved_reports_Model extends Model
 
 		$db = Database::instance();
 
-		# check options for start_time or end_time
-		# and convert to timestamp before save
-		if (isset($options['report_period']) && $options['report_period'] == 'custom') {
-			if (isset($options['start_time']) && !is_numeric($options['start_time'])) {
-				$options['start_time'] = strtotime($options['start_time']);
-			}
-			if (isset($options['end_time']) && !is_numeric($options['end_time'])) {
-				$options['end_time'] = strtotime($options['end_time']);
-			}
-		}
-
 		# Don't save start- or end_time when we have report_period != custom
 		if (isset($options['report_period']) && $options['report_period'] != 'custom') {
 			unset($options['start_time']);

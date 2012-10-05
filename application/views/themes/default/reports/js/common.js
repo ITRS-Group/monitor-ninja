@@ -132,6 +132,8 @@ $(document).ready(function() {
 				// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
 				if (!btn[0].form.report_id)
 					document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.report_id
+				else
+					$('#save_report_form').hide();
 			},
 			error: function(data) {
 				jgrowl_message(data.responseText, _reports_error);
@@ -555,7 +557,7 @@ function check_form_values(form)
 		}
 	}
 
-	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all').is(':checked') && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("#" + field_obj.map[rpt_type], form).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
@@ -664,19 +666,22 @@ function check_form_values(form)
 
 		if (curval_starttime) {
 			curval_starttime = ' ' + curval_starttime;
+			$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
 		}
 		if (curval_endtime) {
 			curval_endtime = ' ' + curval_endtime;
+			$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
 		}
-		$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
-		$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
 		$('#response', form).hide();
 		return true;
 	}
 
 	// clear all style info from progress
-	$('#response', form).attr("style", "");
-	$('#response', form).html("<ul class=\"error\">" + err_str + "</ul>");
+	var resp = $('#response', form);
+	if (!resp.length)
+		resp = $('#response');
+	resp.attr("style", "");
+	resp.html("<ul class=\"error\">" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
 }

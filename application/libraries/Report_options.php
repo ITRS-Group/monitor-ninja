@@ -117,8 +117,6 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->vtypes['rpttimeperiod']['options'] = Timeperiod_Model::get_all();
 		if (isset($this->vtypes['skin']))
 			$this->vtypes['skin']['default'] = config::get('config.current_skin', '*');
-		if (isset($this->vtypes['report_period']) && isset($this->vtypes['report_period']['default']))
-			$this->calculate_time($this['report_period']);
 		if ($options)
 			$this->set_options($options);
 	}
@@ -601,6 +599,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 					$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 			}
 		}
+		if (isset($options->vtypes['report_period']) && !isset($options->options['report_period']) && isset($options->vtypes['report_period']['default']))
+			$options->calculate_time($options['report_period']);
 		return $options;
 	}
 

@@ -185,6 +185,24 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		return $data_arr;
 	}
 
+
+	/**
+	*	Determine the name of the state 
+	*/
+	protected function _state_string_name($type='host', $state=false) {
+		
+		$type = strtolower($type);
+
+		if ($type === "host") {
+			return Reports_Model::$host_states[$state];
+		} elseif ($type === "service") {
+			return Reports_Model::$service_states[$state];
+		}
+
+		return "N/A";
+
+	}
+
 	/**
 	*	Determine what color to assign to an event
 	*/

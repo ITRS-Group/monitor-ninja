@@ -13,7 +13,7 @@ $style = empty($row['style']) ? '' : ' style="'.$row['style'].'"';
 			$class = empty($column['class']) ? '' : ' class="'.$column['class'].'"';
 			$style = empty($column['style']) ? '' : ' style="'.$column['style'].'"';
 			$value = $row['data'][$index];
-			$value = (is_array($value) OR is_object($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value);
+			$value = (is_array($value) OR is_object($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : nl2br(html::specialchars($value));
 			echo '<td', $style, $class, '>', $value, '</td>';
 		}
 		?>

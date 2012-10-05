@@ -1,26 +1,3 @@
-<?php
-
-	$HOST_STATES = array (
-		'-2' => '',
-		"-1" => _('Undetermined'),
-		"0" => _('Up'),
-		"1" => _('Down'),
-		"2" => _('Unreachable'),
-	);
-
-	$SERVICE_STATES = array (
-		'-2' => '',
-		"-1" => _('Undetermined'),
-		"0" => _('OK'),
-		"1" => _('Warning'),
-		"2" => _('Critical'),
-		'3' => _('Unknown')
-	);
-
-?>
-
-
-<br />
 
 <?php if (!isset($is_avail)) { ?>
 
@@ -49,17 +26,11 @@
 							for ($i = 0; $i < count($statechanges); $i++) {
 								
 								$type = $statechanges[$i]['object_type'];
-									
-								$color = $this->_state_colors($type, $statechanges[$i]['state']);
-								
-								$label = ($type === 'host') ? 
-									$HOST_STATES[$statechanges[$i]['state']]: 
-									$SERVICE_STATES[$statechanges[$i]['state']];
 																	
 								$str = $str."{".
 									"'duration': ".$statechanges[$i]['duration'].",".
-									"'label': '".$label."',".
-									"'color': '".$color."',".
+									"'label': '".ucfirst($this->_state_string_name($type, $statechanges[$i]['state']))."',".
+									"'color': '".$this->_state_colors($type, $statechanges[$i]['state'])."',".
 									"'short': '".addslashes($statechanges[$i]['output'])."'".
 									"}";
 									
