@@ -21,12 +21,12 @@ $menu_items['host_detail'] = _('Host detail');
 $menu_items['service_detail'] = _('Service detail');
 
 $menu_items['hostgroup_summary'] = _('Hostgroup summary');
-$menu_items['hostgroup_overview'] = _('Hostgroup overview');
-$menu_items['hostgroup_grid'] = _('Hostgroup grid');
+//$menu_items['hostgroup_overview'] = _('Hostgroup overview');
+//$menu_items['hostgroup_grid'] = _('Hostgroup grid');
 
 $menu_items['servicegroup_summary'] = _('Servicegroup summary');
-$menu_items['servicegroup_overview'] = _('Servicegroup overview');
-$menu_items['servicegroup_grid'] = _('Servicegroup grid');
+//$menu_items['servicegroup_overview'] = _('Servicegroup overview');
+//$menu_items['servicegroup_grid'] = _('Servicegroup grid');
 
 $menu_items['network_outages'] = _('Network outages');
 $menu_items['host_problems'] = _('Host problems');
@@ -110,12 +110,12 @@ $menu_base = array(
 		$menu_items['service_detail'] 			=> array('/status/service/all', 'service',0),
 		//'hr1' 														=> array('', ''),
 		$menu_items['hostgroup_summary']		=> array('/status/hostgroup_summary', 'hostgroupsummary',0),
-		$menu_items['hostgroup_overview'] 		=> array('/status/hostgroup', 'hostgroup',0),
-		$menu_items['hostgroup_grid']			=> array('/status/hostgroup_grid', 'hostgroupgrid',0),
+//		$menu_items['hostgroup_overview'] 		=> array('/status/hostgroup', 'hostgroup',0),
+//		$menu_items['hostgroup_grid']			=> array('/status/hostgroup_grid', 'hostgroupgrid',0),
 		//'hr2'														=> array('', ''),
 		$menu_items['servicegroup_summary'] 	=> array('/status/servicegroup_summary', 'servicegroupsummary',0),
-		$menu_items['servicegroup_overview'] 	=> array('/status/servicegroup', 'servicegroup',0),
-		$menu_items['servicegroup_grid'] 		=> array('/status/servicegroup_grid', 'servicegroupgrid',0),
+//		$menu_items['servicegroup_overview'] 	=> array('/status/servicegroup', 'servicegroup',0),
+//		$menu_items['servicegroup_grid'] 		=> array('/status/servicegroup_grid', 'servicegroupgrid',0),
 		//'hr3' 														=> array('', ''),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
 		$menu_items['host_problems'] 			=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),
