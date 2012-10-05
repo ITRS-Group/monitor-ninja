@@ -1317,9 +1317,8 @@ class Reports_Model extends Model
 			$services = false;
 		} elseif ($this->options['hostgroup']) {
 			$hosts = array();
-			$hmod = new Host_Model();
 			foreach ($this->options['hostgroup'] as $hg) {
-				$res = Livestatus::instance()->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $sg))));
+				$res = Livestatus::instance()->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $hg))));
 				foreach ($res as $o) {
 					$name = $o['name'];
 					if (empty($hosts[$name])) {
