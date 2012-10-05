@@ -117,13 +117,6 @@ function expand_and_populate(data)
 		if ($('input[name=type]').attr('value') == 'sla') {
 			js_print_date_ranges(reportObj.start_time, 'start', 'month');
 			js_print_date_ranges(reportObj.end_time, 'end', 'month');
-		} else {
-			startDate = epoch_to_human(reportObj.start_time);
-			//$('#cal_start').text(format_date_str(startDate));
-			document.forms.report_form.start_time.value = format_date_str(startDate);
-			endDate = epoch_to_human(reportObj.end_time);
-			//$('#cal_end').text(format_date_str(endDate));
-			document.forms.report_form.end_time.value = format_date_str(endDate);
 		}
 	}
 	current_obj_type = field_str;

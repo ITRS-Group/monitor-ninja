@@ -23,11 +23,13 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('start-date').' '._('Start date') ?> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
 			<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('start_time') ?>" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />
 			<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $options->get_time('start_time') ?>">
+			<input type="hidden" name="start_time" id="start_time" value="<?php echo $options['start_time'] ?>" />
 		</td>
 		<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>&nbsp;</td>
 		<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '._('End date') ?> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
 			<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('end_time') ?>" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" />
 			<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo $options->get_time('end_time') ?>">
+			<input type="hidden" name="end_time" id="end_time" value="<?php echo $options['end_time'] ?>" />
 		</td>
 		<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>
 			<?php echo help::render('start-date').' '._('Start date') ?>
@@ -42,8 +44,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		</td>
 		<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>&nbsp;</td>
 		<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '._('End date') ?>
-			<input type="hidden" name="start_time" id="start_time" value="" />
-			<input type="hidden" name="end_time" id="end_time" value="" />
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
 					<td><?php echo _('End year') ?></td>

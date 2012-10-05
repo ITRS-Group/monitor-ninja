@@ -664,12 +664,12 @@ function check_form_values(form)
 
 		if (curval_starttime) {
 			curval_starttime = ' ' + curval_starttime;
+			$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
 		}
 		if (curval_endtime) {
 			curval_endtime = ' ' + curval_endtime;
+			$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
 		}
-		$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
-		$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
 		$('#response', form).hide();
 		return true;
 	}
