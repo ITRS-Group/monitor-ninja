@@ -199,7 +199,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			return Reports_Model::$service_states[$state];
 		}
 
-		return "Unknown;
+		return "Unknown";
 
 	}
 
