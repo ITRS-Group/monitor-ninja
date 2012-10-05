@@ -555,7 +555,7 @@ function check_form_values(form)
 		}
 	}
 
-	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all').is(':checked') && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("#" + field_obj.map[rpt_type], form).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
@@ -675,8 +675,11 @@ function check_form_values(form)
 	}
 
 	// clear all style info from progress
-	$('#response', form).attr("style", "");
-	$('#response', form).html("<ul class=\"error\">" + err_str + "</ul>");
+	var resp = $('#response', form);
+	if (!resp.length)
+		resp = $('#response');
+	resp.attr("style", "");
+	resp.html("<ul class=\"error\">" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
 }
