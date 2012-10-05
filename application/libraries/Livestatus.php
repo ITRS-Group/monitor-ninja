@@ -666,7 +666,7 @@ class LivestatusBackend {
 
 		$stop = microtime(true);
 		if ($this->config['benchmark'] == TRUE) {
-			Database::$benchmarks[] = array('query' => $query, 'time' => $stop - $start, 'rows' => count($objects));
+			Database::$benchmarks[] = array('query' => $this->formatQueryForDebug($query), 'time' => $stop - $start, 'rows' => count($objects));
 		}
 		if ($objects === null) {
 			throw new LivestatusException("Invalid output");
@@ -795,6 +795,78 @@ class LivestatusBackend {
 			array_push($result, $n);
 		}
 		return $result;
+	}
+	
+	
+	
+	private function formatQueryForDebug( $query ) {
+		$querylines = explode( "\n", $query );
+		$result = array();
+		$stats = array();
+		$filter = array();
+		
+		$result[] = array_shift( $querylines ); /* GET-line */
+		foreach( $querylines as $line ) {
+			if( empty( $line ) ) continue;
+			$fields = explode( ":", $line, 2 );
+			if( count($fields) != 2 ) {
+				$result[] = $line;
+				continue;
+			}
+			$header = trim($fields[0]);
+			$param  = trim($fields[1]);
+			switch( $header ) {
+				case 'Filter':
+					$filter[] = $param;
+					break;
+				case 'And':
+					$merge = array();
+					for( $i=0; $i<intval($param); $i++ ) {
+						$merge[] = array_pop($filter);
+					}
+					$filter[] = '(' . implode(' and ', $merge) . ')';
+					break;
+				case 'Or':
+					$merge = array();
+					for( $i=0; $i<intval($param); $i++ ) {
+						$merge[] = array_pop($filter);
+					}
+					$filter[] = '(' . implode(' or ', $merge) . ')';
+					break;
+				case 'Stats':
+					$stats[] = $param;
+					break;
+				case 'StatsAnd':
+					$merge = array();
+					for( $i=0; $i<intval($param); $i++ ) {
+						$merge[] = array_pop($stats);
+					}
+					$stats[] = '(' . implode(' and ', $merge) . ')';
+					break;
+				case 'StatsOr':
+					$merge = array();
+					for( $i=0; $i<intval($param); $i++ ) {
+						$merge[] = array_pop($stats);
+					}
+					$stats[] = '(' . implode(' or ', $merge) . ')';
+					break;
+				case 'Columns':
+					foreach( explode(" ", $param) as $column ) {
+						if( !empty( $column ) ) {
+							$result[] = "Column: ".trim($column);
+						}
+					}
+					break;
+				default:
+					$result[] = "$header: $param";
+			}
+		}
+		if( count($filter) )
+			$result[] = "Filter: ".implode(' and ', $filter);
+		foreach( $stats as $statline ) {
+			$result[] = "Stats: $statline";
+		}
+		return implode("\n", $result);
 	}
 }
 
