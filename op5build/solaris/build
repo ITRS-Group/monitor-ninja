@@ -8,6 +8,7 @@ fi
 
 prefix='/opt/monitor/op5/ninja'
 AP2CONFDIR='/etc/opt/csw/apache2/extra'
+gsed=/opt/csw/bin/gsed
 PATH_DEF=`echo $PATH`
 PATH=/usr/sbin:/usr/bin:/opt/csw/bin/:/opt/csw/gcc3/bin:/usr/ccs/bin
 
@@ -43,12 +44,14 @@ $ninja_dir
 # to use it *for* packaging, not include it *in* the package.
 cp -r op5build $builddir
 
-/opt/csw/bin/gsed -i \
+$gsed -i \
         -e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
         -e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
         -e 's/^\(.config..show_cgi_links.. = .\)true/\1false/' \
         -e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
         $ninja_dir/application/config/config.php
+
+$gsed -i -e "s/'IN_PRODUCTION', FALSE/'IN_PRODUCTION', TRUE/" $ninja_dir/index.php
 
 # Used for the enterprise edition of Ninja
 cp $builddir/op5build/login.png   $ninja_dir/application/views/themes/default/css/default/images
