@@ -344,7 +344,8 @@ class Livestatus {
 				'passive_checks_disabled'           => array( 'accept_passive_checks' => 0 ),
 				'outages'                           => array( 'state' => 1, 'childs' => array( '!=' => '' ) ),
 		);
-		return (object) $this->backend->getStats('hosts', $stats, $options);
+		$data = $this->backend->getStats('hosts', $stats, $options);
+		return (object) $data[0];
 	}
 	
 	
@@ -400,7 +401,8 @@ class Livestatus {
 				'active_checks_disabled_passive'    => array( 'check_type' => 1, 'active_checks_enabled' => 0 ),
 				'passive_checks_disabled'           => array( 'accept_passive_checks' => 0 ),
 		);
-		return (object) $this->backend->getStats('services', $stats, $options);
+		$data = $this->backend->getStats('services', $stats, $options);
+		return (object) $data[0];
 	}
 	
 	/* getHostPerformance */
@@ -440,7 +442,7 @@ class Livestatus {
 				'passive_all_sum' => array( 'check_type' => 1, 'has_been_checked' => 1, 'last_check' => array( '>=' => $minall ) ),
 		);
 		$data   = $this->backend->getStats($type, $stats);
-		$result = array_merge($result, $data);
+		$result = array_merge($result, $data[0]);
 	
 		/* add stats for active checks */
 		$stats = array(
@@ -459,7 +461,7 @@ class Livestatus {
 		);
 	
 		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 0)));
-		$result = array_merge($result, $data);
+		$result = array_merge($result, $data[0]);
 	
 		/* add stats for passive checks */
 		$stats = array(
@@ -469,7 +471,7 @@ class Livestatus {
 				'passive_state_change_avg' => array( '-avg' => 'percent_state_change' ),
 		);
 		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 1)));
-		$result = array_merge($result, $data);
+		$result = array_merge($result, $data[0]);
 	
 		return (object) $result;
 	}
@@ -522,43 +524,35 @@ class LivestatusBackend {
 	 * INTERNAL FUNCTIONS
 	 *******************************************************/
 	public function getTable($table, $options = null) {
-		$filter = "";
-		if(!empty($options['filter'])) {
-			$filter = $this->getQueryFilter($options['filter'], false);
-		}
-		$this->prepare_pagination($table, $options);
-
-		if(isset($options['extracolumns']) and is_array($options['extracolumns'])) {
-			$options['columns'] = array_merge($options['columns'], $options['extracolumns']);
-		}
-		$columns = join(" ", $options['columns']);
-
-		$query  = "Columns: ".$columns."\n";
-		$query .= $filter;
-		$query .= $this->auth($table, $options);
-		$objects = $this->query($table, $query, $options['columns'], $options);
-		$objects = $this->objects2Assoc($objects, $options['columns'], isset($options['callbacks']) ? $options['callbacks'] : null);
-		return $objects;
+		return $this->getStats($table, false, $options);
 	}
 
 	public function getStats($table, $stats, $options = null) {
-		$queryFilter = "";
+		$query = "";
 		if(isset($options['filter'])) {
-			$queryFilter = $this->getQueryFilter($options['filter'], false);
+			$query = $this->getQueryFilter($options['filter'], false);
+		}
+
+		$columns = array();
+		if( isset( $options['columns'] ) ) {
+			$query  .= "Columns: ".join(" ", $options['columns'])."\n";
+			$columns = $options['columns'];
 		}
 		
-		$columns     = array();
-		foreach($stats as $key => $filter) {
-			$queryFilter .= $this->getQueryFilter($filter, true);
-			array_push($columns, $key);
+		if( $stats !== false ) {
+			foreach($stats as $key => $filter) {
+				$query .= $this->getQueryFilter($filter, true);
+				array_push($columns, $key);
+			}
 		}
 		
-		$this->prepare_pagination($table, $options);
+		$query .= $this->auth($table, $options);
+
+		$this->prepare_pagination($options);
+		list($objects,$count) = $this->query($table, $query, $columns, $options);
+		$this->postprocess_pagination($options, $count);
 		
-		$queryFilter .= $this->auth($table, $options);
-		$objects = $this->query($table, $queryFilter, $columns, $options);
-		$objects = $this->objects2Assoc($objects, $columns);
-		return $objects[0];
+		return $this->objects2Assoc($objects, $columns, isset($options['callbacks']) ? $options['callbacks'] : null);
 	}
 
 	private function auth($table, $options = null) {
@@ -574,7 +568,7 @@ class LivestatusBackend {
 		return "AuthUser: ".$this->auth->user."\n";
 	}
 
-	private function prepare_pagination($table, &$options) {
+	private function prepare_pagination(&$options) {
 		if(isset($options['paging'])) {
 			$page = $options['paging'];
 			$items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
@@ -586,55 +580,40 @@ class LivestatusBackend {
 			return;
 		}
 		$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
-		$current_page   = $page->input->get('page') || 1;
-		$total          = $this->get_query_size($table, $options);
-		if(isset($total)) {
-			/* then set the limit for the real query */
-			$options['options']['limit'] = $current_page * $items_per_page + 1;
-		}
+		$current_page   = $page->input->get('page',1);
 
+		/* Set parameters to query */
+		$options['offset'] = ($current_page-1) * $items_per_page;
+		$options['limit']  = $items_per_page;
+
+		/* Store to postprocess method */
+		$options['page_enabled']        = true;
+		$options['page_items_per_page'] = $items_per_page;
+		$options['page_current_page']   = $current_page;
+		$options['page_obj']            = $page;
+	}
+	
+	private function postprocess_pagination($options, $count) {
+		if( !isset($options['page_enabled']) || !$options['page_enabled'] )
+			return;
+
+		$page           = $options['page_obj'];
+		$items_per_page = $options['page_items_per_page'];
+		$current_page   = $options['page_current_page'];
+		
 		$pagination = new Pagination(array(
-				'total_items'     => $total,
+				'total_items'     => $count,
 				'items_per_page'  => $items_per_page,
 		));
 		$page->template->content->pagination     = $pagination;
-		$page->template->content->total_items    = $total;
+		$page->template->content->total_items    = $count;
 		$page->template->content->items_per_page = $items_per_page;
 		$page->template->content->page           = $current_page;
-
-		$options['offset'] = ($current_page-1) * $items_per_page;
-		$options['limit']  = $items_per_page;
-	}
-
-	private function get_query_size($table, $options = null) {
-		$queryFilter = "";
-		if(isset($options['filter'])) {
-			$queryFilter = $this->getQueryFilter($options['filter'], false);
-		}
-		
-		switch($table) {
-			case 'services':
-			case 'hosts':
-				$queryFilter .= "Stats: state != 999\n";
-				break;
-			case 'servicegroups':
-			case 'hostgroups':
-				$queryFilter .= "Stats: name != \n";
-				break;
-			default:
-				throw new LivestatusException("table $table not implemented in get_query_size()");
-		}
-		
-		$queryFilter .= "ColumnHeaders: off\n";
-		
-		$queryFilter .= $this->auth($table, $options);
-		$objects = $this->query($table, $queryFilter, array(), $options);
-		return $objects[0][0];
 	}
 
 	private function query($table, $filter, $columns, $options) {
 		$query  = "GET $table\n";
-		$query .= "OutputFormat:json\n";
+		$query .= "OutputFormat: wrapped_json\n";
 		$query .= "KeepAlive: on\n";
 		$query .= "ResponseHeader: fixed16\n";
 
@@ -662,16 +641,19 @@ class LivestatusBackend {
 			throw new LivestatusException("empty body for query: <pre>".$query."</pre>");
 		if($status != 200)
 			throw new LivestatusException("Invalid request: $body");
-		$objects = json_decode(utf8_encode($body));
-
+		$result = json_decode(utf8_encode($body));
+		
+		$objects = $result->data;
+		$count = $result->total_count;
+		
 		$stop = microtime(true);
 		if ($this->config['benchmark'] == TRUE) {
-			Database::$benchmarks[] = array('query' => $this->formatQueryForDebug($query), 'time' => $stop - $start, 'rows' => count($objects));
+			Database::$benchmarks[] = array('query' => $this->formatQueryForDebug($query), 'time' => $stop - $start, 'rows' => $count);//count($objects));
 		}
 		if ($objects === null) {
 			throw new LivestatusException("Invalid output");
 		}
-		return $objects;
+		return array($objects,$count);
 	}
 
 	private function getQueryFilter($filter, $stats = false ) {
