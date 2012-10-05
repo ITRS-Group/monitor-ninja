@@ -54,7 +54,35 @@ TGraph.prototype = {
 	addHover: function () {
 	
 		var that = this;
-	
+		
+		
+		TGraphEventBinder(this.container, 'mousemove', function (e) {
+			
+			var posx = 0, posy = 0;
+				
+			if (e.pageX || e.pageY) {
+				posy = e.pageY;
+				posx = e.pageX;
+			} else {
+				posy = document.body.scrollTop + e.clientY;
+				posx = document.body.scrollLeft + e.clientX;
+			}
+
+			if (posx - that.container.offsetParent.offsetLeft > that.container.offsetWidth / 2) {
+				posx -= that.hoverbox.offsetWidth;
+				posx -= 10;
+			} else {
+				posx += 15;	
+			}
+
+			posy += 15;
+			
+			that.hoverbox.style.left = posx + 'px';
+			that.hoverbox.style.top = posy + 'px';
+
+		})
+
+
 		TGraphEventBinder(this.container, 'mouseover', function (e) {
 			
 			e = e || window.event;
@@ -64,24 +92,8 @@ TGraph.prototype = {
 			}
 			
 			if (e.target.value) {
-		
 				that.hoverbox.style.display = 'block';
-				
-				var posx = 0, posy = 0;
-				
-				if (e.pageX || e.pageY) {
-					posy = e.pageY;
-					posx = e.pageX;
-				} else {
-					posy = document.body.scrollTop + e.clientY;
-					posx = document.body.scrollLeft + e.clientX;
-				}
-				
-				that.hoverbox.style.left = posx + 'px';
-				that.hoverbox.style.top = posy + 'px';
-				
 				that.hoverbox.innerHTML = e.target.value;
-			
 			}
 				
 		});
