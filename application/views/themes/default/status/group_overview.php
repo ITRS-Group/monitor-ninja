@@ -50,125 +50,92 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	# make sure we have something to iterate over
 	$check = false;
 	$i = 0;
-	if (!empty($group_details))
-	foreach ($group_details as $group_info) {
-		$group_info = (object) $group_info;
-		$groupname = $group_info->name;
+	?>
+	<table class="group_overview_table">
+		<caption>
+		<a href="<?php echo url::base(true).'status/'.$grouptype.'group/'.$group_name.'?style=detail' ?>"><?php echo htmlspecialchars($group_alias) ?></a>
+		<span>(<a href="<?php echo url::base(true).'extinfo/details?type='.$grouptype.'group&amp;host='.$group_name ?>"><?php echo $group_name ?></a>)</span>
+		<?php if ($nacoma_link===true)
+			echo nacoma::link('configuration/configure/?type='.$grouptype.'group&amp;name='.urlencode($group_name), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));?>
+	</caption>
+		<tr>
+			<th><em><?php echo _('Status');?></em></th>
+			<th class="item_select"><input type="checkbox" class="select_group_items" title="Click to select/deselect group" value="<?php echo $j; ?>" /></th>
+			<th colspan="2"><?php echo $lable_host ?></th>
+			<th class="no-sort"><?php echo $lable_services ?></th>
+			<th class="no-sort"><?php echo $lable_actions ?></th>
+		</tr>
+		<?php
+		foreach ($host_details as $host ) {
+			$host = (object) $host;
+			$host_icon = false;
+			if (!empty($host->host_icon_image)) {
+				$host_icon = html::image(Kohana::config('config.logos_path').$host->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $host->host_icon_image_alt, 'title' => $host->host_icon_image_alt));
+			}
 		?>
-		<table class="group_overview_table">
-			<caption>
-			<a href="<?php echo url::base(true).'status/'.$grouptype.'group/'.$groupname.'?style=detail' ?>"><?php echo htmlspecialchars($group_info->alias) ?></a>
-			<span>(<a href="<?php echo url::base(true).'extinfo/details?type='.$grouptype.'group&amp;host='.$groupname ?>"><?php echo $groupname ?></a>)</span>
-			<?php if ($nacoma_link===true)
-				echo nacoma::link('configuration/configure/?type='.$grouptype.'group&amp;name='.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));?>
-		</caption>
-			<tr>
-				<th><em><?php echo _('Status');?></em></th>
-				<th class="item_select"><input type="checkbox" class="select_group_items" title="Click to select/deselect group" value="<?php echo $j; ?>" /></th>
-				<th colspan="2"><?php echo $lable_host ?></th>
-				<th class="no-sort"><?php echo $lable_services ?></th>
-				<th class="no-sort"><?php echo $lable_actions ?></th>
-			</tr>
-			<?php
-			foreach ($group_info->hosts as $host_name => $host ) {
-				if(!isset($group_info->services[$host_name]) && !isset($group_info->hosts[$host_name]['services'])) { continue; }
-				$host = (object) $host;
-				$host_icon = false;
-				if (!empty($host->icon_image)) {
-					$host_icon = html::image(Kohana::config('config.logos_path').$host->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $host->icon_image_alt, 'title' => $host->icon_image_alt));
+		<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
+			<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $host->host_name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($host->host_state, $host->host_has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$host->host_name ?>"><em><?php echo Current_status_Model::status_text($host->host_state, $host->host_has_been_checked, 'host');?></em></td>
+			<td class="item_select"><input type="checkbox" name="object_select[]" value="<?php echo $host->host_name ?>" class="checkbox_group_<?php echo $j; ?>" /></td>
+			<td style="width: 180px"><a href="<?php echo url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;servicestatustypes='.(int)$servicestatustypes ?>" title="<?php echo $host->host_address ?>"><?php echo html::specialchars($host->host_name) ?></a></td>
+			<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
+			<td><?php
+				if ($host->services_ok) {
+					echo '<img src="'.ninja::add_path('icons/12x12/shield-ok.png').'" alt="" title="'._('OK').'" class="status-default" />';
+					echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;servicestatustypes='.nagstat::SERVICE_OK.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-ok">'.$host->services_ok.' '._('OK').'</a> &nbsp; ';
 				}
-			?>
-			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $host->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($host->state, $host->has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$host->name ?>"><em><?php echo Current_status_Model::status_text($host->state, $host->has_been_checked, 'host');?></em></td>
-				<td class="item_select"><input type="checkbox" name="object_select[]" value="<?php echo $host->name ?>" class="checkbox_group_<?php echo $j; ?>" /></td>
-				<td style="width: 180px"><a href="<?php echo url::base(true).'status/service?name='.urlencode($host->name).'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;servicestatustypes='.(int)$servicestatustypes ?>" title="<?php echo $host->address ?>"><?php echo html::specialchars($host->name) ?></a></td>
-				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
-				<td><?php
-					if(isset($group_info->services[$host_name]))
-						$services = $group_info->services[$host_name];
-					if(isset($group_info->hosts[$host_name]['services']))
-						$services = $group_info->hosts[$host_name]['services'];
-					$services_ok = count($services['0']);
-					if ($services_ok) {
-						echo '<img src="'.ninja::add_path('icons/12x12/shield-ok.png').'" alt="" title="'._('OK').'" class="status-default" />';
-						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_OK.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-ok">'.$services_ok.' '._('OK').'</a> &nbsp; ';
-					}
-					$services_warning = count($services['1']);
-					if ($services_warning) {
-						echo '<img src="'.ninja::add_path('icons/12x12/shield-warning.png').'" alt="" title="'._('Warning').'" class="status-default" />';
-						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_WARNING.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-warning">'.$services_warning.' '._('Warning').'</a> &nbsp; ';
-					}
-					$services_critical = count($services['2']);
-					if ($services_critical) {
-						echo '<img src="'.ninja::add_path('icons/12x12/shield-critical.png').'" alt="" title="'._('Critical').'" class="status-default" />';
-						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_CRITICAL.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-critical">'.$services_critical.' '._('Critical').'</a> &nbsp; ';
-					}
-					$services_unknown = count($services['3']);
-					if ($services_unknown) {
-						echo '<img src="'.ninja::add_path('icons/12x12/shield-unknown.png').'" alt="" title="'._('Unknown').'" class="status-default" />';
-						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-unknown">'.$services_unknown.' '._('Unknown').'</a> &nbsp; ';
-					}
-					$services_pending = count($services['4']);
-					if ($services_pending) {
-						echo '<img src="'.ninja::add_path('icons/12x12/shield-pending.png').'" alt="" title="'._('Pending').'" class="status-default" />';
-						echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'&amp;servicestatustypes='.nagstat::SERVICE_PENDING.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-pending">'.$services_pending.' '._('Pending').'</a> &nbsp; ';
-					} ?>
-				</td>
-				<td style="text-align: left; width: 133px">
-					<?php
-					if ($nacoma_link===true) {
-						$lable_nacoma = _('Configure this host using NACOMA (Nagios Configuration Manager)');
-						echo '<a href="'.url::base(true).'configuration/configure?type=host&amp;name='.urlencode($host->name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/nacoma.png').'" alt="'.$lable_nacoma.'" title="'.$lable_nacoma.'" /></a> ';
-					}
+				if ($host->services_warning) {
+					echo '<img src="'.ninja::add_path('icons/12x12/shield-warning.png').'" alt="" title="'._('Warning').'" class="status-default" />';
+					echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;servicestatustypes='.nagstat::SERVICE_WARNING.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-warning">'.$host->services_warning.' '._('Warning').'</a> &nbsp; ';
+				}
+				if ($host->services_critical) {
+					echo '<img src="'.ninja::add_path('icons/12x12/shield-critical.png').'" alt="" title="'._('Critical').'" class="status-default" />';
+					echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;servicestatustypes='.nagstat::SERVICE_CRITICAL.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-critical">'.$host->services_critical.' '._('Critical').'</a> &nbsp; ';
+				}
+				if ($host->services_unknown) {
+					echo '<img src="'.ninja::add_path('icons/12x12/shield-unknown.png').'" alt="" title="'._('Unknown').'" class="status-default" />';
+					echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-unknown">'.$host->services_unknown.' '._('Unknown').'</a> &nbsp; ';
+				}
+				if ($host->services_pending) {
+					echo '<img src="'.ninja::add_path('icons/12x12/shield-pending.png').'" alt="" title="'._('Pending').'" class="status-default" />';
+					echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;servicestatustypes='.nagstat::SERVICE_PENDING.'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;hostproperties='.$this->hostprops.'&amp;serviceprops='.$this->serviceprops.'" class="status-pending">'.$host->services_pending.' '._('Pending').'</a> &nbsp; ';
+				} ?>
+			</td>
+			<td style="text-align: left; width: 133px">
+				<?php
+				if ($nacoma_link===true) {
+					$lable_nacoma = _('Configure this host using NACOMA (Nagios Configuration Manager)');
+					echo '<a href="'.url::base(true).'configuration/configure?type=host&amp;name='.urlencode($host->host_name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/nacoma.png').'" alt="'.$lable_nacoma.'" title="'.$lable_nacoma.'" /></a> ';
+				}
 
-					if ($host->pnpgraph_present) {
-						$label_perf = _('Show performance graph');
-						echo '<a href="'.url::base(true) . 'pnp?host='.urlencode($host->name).'&amp;srv=_HOST_" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/pnp.png').'" alt="'.$label_perf.'" title="'.$label_perf.'" class="pnp_graph_icon" /></a> ';
-					}
+				if ($host->host_pnpgraph_present) {
+					$label_perf = _('Show performance graph');
+					echo '<a href="'.url::base(true) . 'pnp?host='.urlencode($host->host_name).'&amp;srv=_HOST_" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/pnp.png').'" alt="'.$label_perf.'" title="'.$label_perf.'" class="pnp_graph_icon" /></a> ';
+				}
 
-					$lable_extinfo_host = _('View Extended Information For This Host');
-					echo '<a href="'.url::base(true).'extinfo/details?type=host&amp;host='.urlencode($host->name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/extended-information.gif').'" alt="'.$lable_extinfo_host.'" title="'.$lable_extinfo_host.'" /></a> ';
+				$lable_extinfo_host = _('View Extended Information For This Host');
+				echo '<a href="'.url::base(true).'extinfo/details?type=host&amp;host='.urlencode($host->host_name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/extended-information.gif').'" alt="'.$lable_extinfo_host.'" title="'.$lable_extinfo_host.'" /></a> ';
 
-					if ( Kohana::config('config.nagvis_path') ) {
-						$lable_statusmap = _('Locate Host On Map');
-						echo '<a href="'.url::base(true).'statusmap/host/'.urlencode($host->name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/locate-host-on-map.png').'" alt="'.$lable_statusmap.'" title="'.$lable_statusmap.'" /></a> ';
-					}
+				if ( Kohana::config('config.nagvis_path') ) {
+					$lable_statusmap = _('Locate Host On Map');
+					echo '<a href="'.url::base(true).'statusmap/host/'.urlencode($host->host_name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/locate-host-on-map.png').'" alt="'.$lable_statusmap.'" title="'.$lable_statusmap.'" /></a> ';
+				}
 
-					$lable_svc_status = _('View Service Details For This Host');
-					echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/service-details.gif').'" alt="'.$lable_svc_status.'" title="'.$lable_svc_status.'" /></a> ';
+				$lable_svc_status = _('View Service Details For This Host');
+				echo '<a href="'.url::base(true).'status/service?name='.urlencode($host->host_name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/service-details.gif').'" alt="'.$lable_svc_status.'" title="'.$lable_svc_status.'" /></a> ';
 
-					if (!is_null($host->action_url)) {
-						$lable_host_action = _('Perform Extra Host Actions');
-						echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="'.$action_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-actions.png').'" alt="'.$lable_host_action.'" title="'.$lable_host_action.'" /></a> ';
-					}
+				if (!is_null($host->host_action_url)) {
+					$lable_host_action = _('Perform Extra Host Actions');
+					echo '<a href="'.nagstat::process_macros($host->host_action_url, $host).'" style="border: 0px" target="'.$action_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-actions.png').'" alt="'.$lable_host_action.'" title="'.$lable_host_action.'" /></a> ';
+				}
 
-					if (!is_null($host->notes_url)) {
-						$lable_host_notes = _('View Extra Host Notes');
-						echo '<a href="'.nagstat::process_macros($host->notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-notes.png').'" alt="'.$lable_host_notes.'" title="'.$lable_host_notes.'" /></a> ';
-					} ?>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
-<?php $j++; }
-	else { ?>
-		<table class="group_overview_table">
-			<thead>
-				<tr>
-					<th>&nbsp;</th>
-					<th><?php echo $lable_host ?></th>
-					<th class="no-sort"><?php echo $lable_services ?></th>
-					<th class="no-sort"><?php echo $lable_actions ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<tr class="even">
-				<td colspan="4"><?php echo $error_message ?></td>
-			</tr>
-			</tbody>
-		</table>
-
-<?php } ?>
+				if (!is_null($host->host_notes_url)) {
+					$lable_host_notes = _('View Extra Host Notes');
+					echo '<a href="'.nagstat::process_macros($host->host_notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-notes.png').'" alt="'.$lable_host_notes.'" title="'.$lable_host_notes.'" /></a> ';
+				} ?>
+			</td>
+		</tr>
+		<?php } ?>
+	</table>
 <?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
 		array(
 			'' => _('Select action'),

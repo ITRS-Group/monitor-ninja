@@ -521,15 +521,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops = $this->input->get('serviceprops', $serviceprops);
-		$hostprops = $this->input->get('hostprops', $hostprops);
-		$style = $this->input->get('style', $style);
-		$grouptype = 'service';
-		$this->template->title = 'Servicegroup';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+		return $this->group('service', $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -542,14 +534,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops = $this->input->get('serviceprops', $serviceprops);
-		$hostprops = $this->input->get('hostprops', $hostprops);
-		$style = $this->input->get('style', $style);
-		$grouptype = 'host';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+		return $this->group('host', $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -563,15 +548,17 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$grouptype = $this->input->get('grouptype', $grouptype);
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$items_per_page     = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
+		$grouptype          = $this->input->get('grouptype', $grouptype);
+		$group              = $this->input->get('group', $group);
+		$hoststatustypes    = $this->input->get('hoststatustypes', $hoststatustypes);
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops = $this->input->get('serviceprops', $serviceprops);
-		$hostprops = $this->input->get('hostprops', $hostprops);
-		$style = $this->input->get('style', $style);
-		$noheader = $this->input->get('noheader', false);
+		$serviceprops       = $this->input->get('serviceprops', $serviceprops);
+		$hostprops          = $this->input->get('hostprops', $hostprops);
+		$style              = $this->input->get('style', $style);
+		$noheader           = $this->input->get('noheader', false);
+		
+		
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -593,20 +580,47 @@ class Status_Controller extends Authenticated_Controller {
 			case 'summary':
 				return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 		}
-
+		
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
+		$ls = Livestatus::instance();
+		
 		$content = $this->template->content;
 
 		if ($grouptype == 'service') {
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Service Groups") : _("Service Overview For Service Group");
-			$groups = $this->_servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes);
+			$groupfilter = 'groups >= "'.$group.'"';
 		} else {
-			$groups = $this->_hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Host Groups") : _("Service Overview For Host Group");
+			$groupfilter = 'host_groups >= "'.$group.'"';
 		}
-		$content->group_details = $groups;
+
+		$content->host_details = $ls->getBackend()->getStats( 'services', array(
+				'services_ok'       => 'has_been_checked = 1 and state = 0',
+				'services_warning'  => 'has_been_checked = 1 and state = 1',
+				'services_critical' => 'has_been_checked = 1 and state = 2',
+				'services_unknown'  => 'has_been_checked = 1 and state = 3',
+				'services_pending'  => 'has_been_checked = 0'
+				),array(
+				'filter' => $groupfilter,
+				'columns' => array(
+						'host_name',
+						'host_address',
+						'host_state',
+						'host_icon_image',
+						'host_icon_image_alt',
+						'host_has_been_checked',
+						'host_pnpgraph_present',
+						'host_action_url',
+						'host_notes_url'
+						),
+				'paginggroup' => $this
+				));
+		
+		$content->group_name = 'FIXMEFIXME';
+		$content->group_alias = 'FIXME2';
+		
 		$content->lable_host = _('Host');
 		$content->lable_status = _('Status');
 		$content->lable_services = _('Services');
@@ -721,22 +735,20 @@ class Status_Controller extends Authenticated_Controller {
 		$ls = Livestatus::instance();
 
 		$status = new Status_Model();
+		
+		# get all host/service groups
 		if($grouptype == 'host') {
 			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $group, false, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+		    $groups = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
 		} else {
 			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
-		}
-		if ($status->show_filter_table)
-			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
-
-		# get all host/service groups
-		if( $grouptype == 'host' ) {
-		    $groups = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
-		}
-		else {
 		    $groups = $ls->getServicegroups(array('filter' => $servicegroupfilter, 'paginggroup' => $this ) );
 		}
 
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
+		
+		
 		$groupsname = "host_groups";
 		if( $grouptype == 'service' ) {
 			$groupsname = "groups";
@@ -1134,7 +1146,7 @@ class Status_Controller extends Authenticated_Controller {
 		else
 			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
-/*
+
 	private function _hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
 		$ls = Livestatus::instance();
 		$status = new Status_Model();
@@ -1200,5 +1212,5 @@ class Status_Controller extends Authenticated_Controller {
 		}
 		return $groups;
 	}
-	*/
+	
 }
