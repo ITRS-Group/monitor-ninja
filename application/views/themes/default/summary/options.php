@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <form action="<?php echo url::base(true) ?>summary/generate" method="post" class="to_check">
+	<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 	<table class="setup-tbl standard">
 		<tr>
 			<td>
@@ -27,6 +28,7 @@
 	</table>
 </form>
 <form action="<?php echo url::base(true) ?>summary/generate" method="post" class="to_check">
+	<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 	<table class="setup-tbl custom">
 		<tr>
 			<td colspan="3">
