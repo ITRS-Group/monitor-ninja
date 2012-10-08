@@ -227,10 +227,13 @@ table.health tr td div.border img {
 	margin-bottom: 0px;
 	height: 30px;
 }
+.host-totals {
+	float: left;
+	width: 50%;
+}
 .service-totals {
-	margin-left: 249px;
-	margin-top:-72px;
-	width: 251px;
+	float: right;
+	width: 50%;
 }
 .service-totals tr td.status:first-child,
 .w-table.w50 tr td.status:first-child { border-left: 1px solid #d0d0d0;}

@@ -56,30 +56,8 @@ class Status_totals_Widget extends widget_Base {
 			$hosts    = $stats->get_stats('host_totals',    array('filter' => array(      'groups' => array('>=' => $this->host))));
 			$services = $stats->get_stats('service_totals', array('filter' => array( 'host_groups' => array('>=' => $this->host))));
 		} else {
-/*throw new Exception('implement');
-// TODO: implement
-			$services = $stats->get_stats('servicesbygroup', $svc_cols, array('Filter: servicegroup_name = '.$this->host), array('servicegroup_name'));
-			$ls = Livestatus::instance();
-			foreach ($services as $service) {
-				$group = $service['servicegroup_name'];
-				$ret[$group] = $service;
-				$host_names = $ls->query("GET servicesbygroup
-Columns: host_name
-Filter: servicegroup_name = $group");
-				$this_match = array();
-				foreach ($host_names as $host) {
-					$this_match[] = "Filter: host_name = {$host[0]}";
-				}
-				$this_match[] = 'Or: '.count($host_names);
-			}
-			$hosts = $stats->get_stats('hosts', $host_cols, $this_match);*/
-			$hosts = (object)array(
-					'up'=>0,
-					'down'=>0,
-					'unreachable'=>0,
-					'pending'=>0,
-					'total'=>0);
-			$services = $stats->get_stats('service_totals', array('filter' => array( 'groups' => array('>=' => $this->host))));
+			$hosts    = false; // Not possible in livestatus. Livestatus actually doesn't support hostsbyservicegroup
+			$services = $stats->get_stats('service_totals', array('filter' => array(      'groups' => array('>=' => $this->host))));
 		}
 
 		$grouptype = !empty($this->grouptype) ? $this->grouptype.'group' : false;
@@ -97,14 +75,14 @@ Filter: servicegroup_name = $group");
 		$target_method = 'host';
 
 		$grouptype_arg = $grouptype ? 'group_type='.$grouptype : '';
-		$host_header = array(
+		$host_header = $hosts===false ? false : array(
 			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UP.'&'.$grouptype_arg, 'lable' => $hosts->up, 'status' => _('Up'), 'status_id' => nagstat::HOST_UP),
 			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&'.$grouptype_arg, 'lable' => $hosts->down, 'status' => _('Down'), 'status_id' => nagstat::HOST_DOWN),
 			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&'.$grouptype_arg, 'lable' => $hosts->unreachable, 'status' => _('Unreachable'), 'status_id' => nagstat::HOST_UNREACHABLE),
 			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&'.$grouptype_arg, 'lable' => $hosts->pending, 'status' => _('Pending'), 'status_id' => nagstat::HOST_PENDING)
 		);
 
-		$service_header = array(
+		$service_header = $services===false ? false : array(
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_OK.'&'.$grouptype_arg, 'lable' => $services->ok, 'status' => _('Ok'), 'status_id' => nagstat::SERVICE_OK),
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&'.$grouptype_arg, 'lable' => $services->warning, 'status' => _('Warning'), 'status_id' => nagstat::SERVICE_WARNING),
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&'.$grouptype_arg, 'lable' => $services->unknown, 'status' => _('Unknown'), 'status_id' => nagstat::SERVICE_UNKNOWN),

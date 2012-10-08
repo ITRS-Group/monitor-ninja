@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <?php if( $host_header !== false ) {?>
-<table class="w-table w50">
+<table class="w-table host-totals">
 <?php $i=0; foreach ($host_header as $row) { ?>
 	<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
 		<td class="status icon" style="padding: 4px 7px;">
