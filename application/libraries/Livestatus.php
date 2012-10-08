@@ -566,13 +566,13 @@ class LivestatusBackend {
 		if(isset($options['auth']) && $options['auth'] === true) {
 			return "";
 		}
-		if($table == 'hosts' && $this->auth->view_hosts_root) {
-			return "";
+		if(strpos($table, 'services') !== false && !$this->auth->view_services_root) {
+			return "AuthUser: ".$this->auth->user."\n";
 		}
-		if($table == 'services' && $this->auth->view_services_root) {
-			return "";
+		elseif(strpos($table, 'hosts') !== false && !$this->auth->view_hosts_root) {
+			return "AuthUser: ".$this->auth->user."\n";
 		}
-		return "AuthUser: ".$this->auth->user."\n";
+		return "";
 	}
 
 	private function prepare_pagination(&$options) {
