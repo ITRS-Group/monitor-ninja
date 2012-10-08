@@ -35,25 +35,25 @@ class Command_Model extends Model
 		$ary = false;
 		switch ($param_name) {
 		 case 'host_name':
-			$ary = $this->auth->get_authorized_hosts();
+			$ary = Livestatus::instance()->getHosts(array('columns' => array('name')));
 			break;
 		 case 'service':
 		 case 'service_description':
-			$ary = $this->auth->get_authorized_services();
+			$ary = Livestatus::instance()->getServices(array('columns' => array('name')));
 			break;
 		 case 'hostgroup_name':
-			$ary = $this->auth->get_authorized_hostgroups();
+			$ary = Livestatus::instance()->getHostgroups(array('columns' => array('name')));
 			break;
 		 case 'servicegroup_name':
-			$ary = $this->auth->get_authorized_servicegroups();
+			$ary = Livestatus::instance()->getServicegroups(array('columns' => array('name')));
 			break;
 		}
 
 
 		if ($ary) {
 			$ret_ary = array();
-			foreach ($ary as $k => $v) {
-				$ret_ary[$v] = $v;
+			foreach ($ary as $v) {
+				$ret_ary[$v['name']] = $v['name'];
 			}
 			ksort($ret_ary);
 			return $ret_ary;
