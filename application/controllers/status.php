@@ -32,7 +32,7 @@ class Status_Controller extends Authenticated_Controller {
 		# that the current user is authorized for
 		$contact = Contact_Model::get_contact();
 		if (!empty($contact)) {
-			$contact = $contact->current();
+			//$contact = $contact->current();
 			$this->cmd_ok = $contact->can_submit_commands;
 		}
 		unset($contact);

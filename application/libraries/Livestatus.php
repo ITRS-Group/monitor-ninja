@@ -209,7 +209,13 @@ class Livestatus {
 	public function getContacts($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
-					'name', ' alias', 'email', 'pager', 'service_notification_period', 'host_notification_period',
+					'name',
+					'alias',
+					'email',
+					'pager',
+					'service_notification_period',
+					'host_notification_period',
+					'can_submit_commands'
 			);
 		}
 		return $this->backend->getTable('contacts', $options);

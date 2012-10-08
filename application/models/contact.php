@@ -10,25 +10,18 @@ class Contact_Model extends Model
 	*/
 	public static function get_contact($id = false, $username=false)
 	{
-		$sql = false;
-		$db = Database::instance();
-		if (empty($id) && empty($username)) {
-			$sql = "SELECT * FROM contact WHERE contact_name = " .
-				$db->escape(Auth::instance()->get_user()->username);
-		} else {
-			if (!empty($id)) {
-				$sql = "SELECT * FROM contact WHERE id = " . (int)($id);
-			} elseif (!empty($username)) {
-				$sql = "SELECT * FROM contact WHERE contact_name = " .
-					$db->escape($username);
-			}
-		}
-		if (empty($sql)) {
+		if( $id !== false )
+			throw new Exception( 'Contact id isn\'t supported, use name instead' );
+		if( $username === false )
+			$username = Auth::instance()->get_user()->username;
+		
+		$ls = Livestatus::instance();
+		$results = $ls->getContacts( array( 'filter' => array( 'name' => $username ) ) );
+		
+		if( count( $results ) != 1 )
 			return false;
-		}
-
-		$result = $db->query($sql);
-		return $result->count() ? $result: false;
+		
+		return (object)$results[0];
 	}
 
 	/**

@@ -578,7 +578,6 @@ class Command_Controller extends Authenticated_Controller
 		# early.
 		$contact = Contact_Model::get_contact();
 		if (!empty($contact)) {
-			$contact = $contact->current();
 			if (!$contact->can_submit_commands) {
 				return -2;
 			}
