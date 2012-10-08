@@ -703,12 +703,10 @@ class Reports_Controller extends Base_reports_Controller
 		if (empty($host_name))
 			return false;
 
-		$host_name = trim($host_name);
-		$res = Host_Model::get_where('host_name', $host_name);
+		$res = Livestatus::instance()->getHosts(array('columns' => array('alias'), 'filter' => array('name' => $host_name)));
 		if (!$res)
 			return false;
-		$row = $res->current();
-		return $row->alias;
+		return $res[0]['alias'];
 	}
 
 	/**
