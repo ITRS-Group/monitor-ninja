@@ -663,8 +663,9 @@ class LivestatusBackend {
 		}
 		return array($objects,$count);
 	}
-
-	private function getQueryFilter($filter, $stats = false ) {
+	
+	/* Public, just to make it testable */
+	public function getQueryFilter($filter, $stats = false ) {
 		if( empty( $filter ) ) {
 			return "";
 		}
