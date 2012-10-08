@@ -1144,11 +1144,9 @@ class Timeperiod_Model extends Model
 	public static function get_all()
 	{
 		$result = array();
-		$sql = "SELECT timeperiod_name FROM timeperiod ORDER BY timeperiod_name";
-		$db = Database::instance();
-		$res = $db->query($sql);
+		$res = Livestatus::instance()->getTimeperiods(array('columns'=>array('name')));
 		foreach ($res as $row) {
-			$result[$row->timeperiod_name] = $row->timeperiod_name;
+			$result[$row['name']] = $row['name'];
 		}
 		return $result;
 	}
