@@ -175,27 +175,37 @@ class Comment_Model extends Model {
 	*/
 	public static function count_all_comments_by_object($service=false)
 	{
-		if ($service === false) { # only host comments
-			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".static::TABLE_NAME." WHERE ".
-			"service_description = '' OR service_description is NULL ".
-			"GROUP BY host_name ORDER BY host_name";
-		} else { # service comments
-			$sql = "SELECT count(*) as cnt, obj_name FROM (SELECT ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".static::TABLE_NAME." WHERE ".
-			"service_description != '' OR service_description is not NULL) tmpname ".
-			"GROUP BY obj_name ORDER BY obj_name";
+		$ls = Livestatus::instance();
+		if( $service ) {
+			$comments = $ls->getBackend()->getStats( 'comments',
+					array(
+							'count' => array('service_state' => array( '!=' => 999 ))
+							),
+					array(
+							'columns' => array('service_description')
+							)
+					);
+			$name_column = 'service_description';
+		} else {
+			$comments = $ls->getBackend()->getStats( 'comments',
+					array(
+							'count' => array('host_name' => array( '!=' => '' ))
+							),
+					array(
+							'columns' => array('host_name')
+							)
+					);
+			$name_column = 'host_name';
 		}
-
-		$db = Database::instance();
-		$result = $db->query($sql);
-		if (!$result || count($result) == 0) {
+		
+		$data = array();
+		foreach( $comments as $row ) {
+			$data[$row[$name_column]] = $row['count'];
+		}
+		if( empty( $data ) ) {
 			return false;
 		}
-		$data = false;
-		foreach ($result as $row) {
-			if ($row->cnt != 0) {
-				$data[$row->obj_name] = $row->cnt;
-			}
-		}
+		
 		return $data;
 	}
 

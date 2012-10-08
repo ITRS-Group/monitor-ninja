@@ -186,10 +186,6 @@ class Status_Controller extends Authenticated_Controller {
 			}
 		}
 
-		# fetch all comments to be able to detect if we should display comment icon
-		$host_comments = Comment_Model::count_all_comments_by_object();
-		$this->template->content->host_comments = $host_comments;
-
 
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
@@ -463,13 +459,6 @@ class Status_Controller extends Authenticated_Controller {
 				}
 			}
 		}
-
-		# fetch all comments to be able to detect if we should display comment icon
-		$host_comments = Comment_Model::count_all_comments_by_object();
-		$this->template->content->host_comments = $host_comments;
-
-		$svc_comments = Comment_Model::count_all_comments_by_object(true);
-		$this->template->content->comments = $svc_comments;
 
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;

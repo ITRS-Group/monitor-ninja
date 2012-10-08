@@ -107,11 +107,12 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 8;
 						}
-						if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) {
+						$num_host_comments = count($row->host_comments);
+						if ($num_host_comments > 0) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
-								'title' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name)).'&nbsp; ';
+								array('alt' => sprintf(_('This host has %s comment(s) associated with it'), $num_host_comments),
+								'title' => sprintf(_('This host has %s comment(s) associated with it'), $num_host_comments))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name)).'&nbsp; ';
 						}
 						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
 							$host_props += 16;
@@ -134,12 +135,14 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		<td style="white-space: normal">
 			<span style="float: left">
 				<?php echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description), html::specialchars($row->description)) ?></span>
-				<?php	if ($comments !== false && array_key_exists($row->host_name.';'.$row->description, $comments)) { ?>
+				<?php
+				$num_comments = count($row->comments);
+				if ($num_comments>0) { ?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->description]),
-								'title' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name.';'.$row->description)); ?>
+								array('alt' => sprintf(_('This service has %s comment(s) associated with it'), $num_comments),
+								'title' => sprintf(_('This service has %s comment(s) associated with it'), $num_comments))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name.';'.$row->description)); ?>
 					</span>
 					<?php } ?>
 			<span style="float: right">

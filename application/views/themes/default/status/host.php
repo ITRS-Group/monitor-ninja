@@ -106,11 +106,12 @@ foreach ($result as $row) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->name), html::image($this->add_path('icons/16x16/scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime'))), array('style' => 'border: 0px'));
 							$properties += 8;
 						}
-						if ($host_comments !== false && array_key_exists($row->name, $host_comments)) {
+						$num_comments = count($row->comments);
+						if ( $num_comments > 0 ) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->name).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments[$row->name]),
-								'title' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments[$row->name]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->name));
+								array('alt' => sprintf(_('This host has %s comment(s) associated with it'), $num_comments),
+								'title' => sprintf(_('This host has %s comment(s) associated with it'), $num_comments))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->name));
 						}
 						if ($row->state == Current_status_Model::HOST_DOWN || $row->state == Current_status_Model::HOST_UNREACHABLE) {
 							$properties += 16;
