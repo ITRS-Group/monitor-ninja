@@ -5,7 +5,6 @@
  */
 class Downtime_Model extends Comment_Model
 {
-	const TABLE_NAME = 'scheduled_downtime';
 	/**
 	 * Fetch current downtime information
 	 * 
@@ -13,7 +12,7 @@ class Downtime_Model extends Comment_Model
 	 * @param $order_by Field name
 	 * @param $generate_links_for_downtime_id If true, do extra work to find the downtime trigger/source
 	 */
-	public static function get_downtime_data($filter=3, $order_by='downtime_id', $generate_links_for_downtime_id = false)
+	public static function get_downtime_data($filter=3, $order_by=array('id'=>'ASC'), $generate_links_for_downtime_id = false)
 	{
 		$db = Database::instance();
 		$filter = empty($filter) ? 3 : $filter;
@@ -26,173 +25,58 @@ class Downtime_Model extends Comment_Model
 		}
 		$bits = substr($bits, 1);
 		$auth = Nagios_auth_Model::instance();
-		if ($auth->view_hosts_root) {
-			if($generate_links_for_downtime_id) {
-				$query = "SELECT
-						d.*,
-						d2.host_name AS triggering_host,
-						d2.service_description AS triggering_service
-					FROM
-						scheduled_downtime d
-					LEFT JOIN
-						scheduled_downtime d2
-						ON
-							d.triggered_by = d2.downtime_id
-					WHERE
-						d.downtime_type IN ($bits)";
-			} else {
-				$query = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type IN ($bits)";
-			}
-		} else {
-			# hosts
-			$sql = "SELECT d.* ";
-			if($generate_links_for_downtime_id) {
-				$sql .= ", d2.host_name AS triggering_host, d2.service_description AS triggering_service ";
-			}
-			$sql .= "FROM scheduled_downtime d 
-				INNER JOIN host ON host.host_name=d.host_name 
-				INNER JOIN contact_access ON contact_access.host=host.id ";
-			if($generate_links_for_downtime_id) {
-				$sql .= "LEFT JOIN
-						scheduled_downtime AS d2
-						ON
-							d.triggered_by = d2.downtime_id ";
-			}
-			$sql .= "WHERE contact_access.service IS NULL 
-				AND d.service_description IS NULL 
-				AND contact_access.contact=".$auth->id."
-				AND d.downtime_type IN ($bits)";
-
-			# services
-			$query_svc = "SELECT d.* ";
-			if($generate_links_for_downtime_id) {
-				$query_svc .= ", d2.host_name AS triggering_host, d2.service_description AS triggering_service ";
-			}
-			$query_svc .=
-				"FROM scheduled_downtime d ".
-				"INNER JOIN host ON host.host_name=d.host_name ".
-				"INNER JOIN service ON service.host_name=d.host_name ".
-				"INNER JOIN contact_access ON contact_access.service=service.id ";
-			if($generate_links_for_downtime_id) {
-				$query_svc .= "LEFT JOIN
-						scheduled_downtime AS d2
-						ON
-							d.triggered_by = d2.downtime_id ";
-			}
-			$query_svc .=
-				"WHERE d.service_description=service.service_description ".
-				"AND d.host_name=service.host_name ".
-				"AND contact_access.contact=".$auth->id.
-				" AND d.downtime_type IN (".$bits.")";
-
-			switch ($bits) {
-				case 2:
-					$query = $sql." ORDER BY d.host_name";
-					break;
-				case 1:
-					$query = $query_svc." ORDER BY d.host_name";
-					break;
-				default:
-					$query = '(' . $sql . ') UNION ALL (' . $query_svc . ')';
+		$ls_filter = '';
+		if ($filter == nagstat::HOST_DOWNTIME)
+			$ls_filter = 'is_service = 0';
+		else if ($filter == nagstat::SERVICE_DOWNTIME)
+			$ls_filter = 'is_service = 1';
+		$ls = Livestatus::instance();
+		$res = $ls->getDowntimes(array('filter' => $ls_filter, 'order' => $order_by));
+		if ($generate_links_for_downtime_id) {
+			foreach ($res as &$row) {
+				$out = $ls->getDowntimes(array('filter' => 'id = '.$row['id'], 'columns' => array('host_name', 'service_description')));
+				$row['trigger'] = $out[0];
 			}
 		}
-
-		$result = $db->query($query);
-		return $result;
+		return $res;
 	}
 
 	/**
 	*	Try to figure out if an object already has been scheduled
 	*/
-	public function check_if_scheduled($type=false, $name=false, $start_time=false, $duration=false)
+	public static function check_if_scheduled($type=false, $name=false, $start_time=false, $duration=false)
 	{
 		if (empty($type) || empty($start_time) || empty($duration)) {
 			return false;
 		}
 
-		$db = Database::instance();
-		$sql = false;
+		$ls = Livestatus::instance();
 		switch ($type) {
 			case 'hosts':
-				$sql = "SELECT * FROM scheduled_downtime WHERE host_name=".$db->escape($name).
-					" AND start_time=".$start_time." AND downtime_type=2 ".
-					"AND duration=".(int)$duration;
+				$res = $ls->getDowntimes(array('filter' => 'is_service = 0 and host_name = '.$name.' and start_time = '.$start_time.' and end_time = '.$end_time.' and duration = '.$duration));
 				break;
 			case 'services':
-				if (strstr($name, ';')) {
-					$parts = explode(';', $name);
-					$host = $parts[0];
-					$service = $parts[1];
-					$sql = "SELECT * FROM scheduled_downtime WHERE host_name=".$db->escape($host)." AND service_description=".$db->escape($service).
-						" AND start_time=".$start_time." AND downtime_type=1 ".
-						"AND duration=".(int)$duration;
-				}
+				if (!strstr($name, ';'))
+					return false;
+
+				$parts = explode(';', $name);
+				$host = $parts[0];
+				$service = $parts[1];
+				$res = $ls->getDowntimes(array('filter' => 'is_service = 0 and host_name = '.$host.' and service_description = '.$service.' and start_time = '.$start_time.' and end_time = '.$end_time.' and duration = '.$duration));
 				break;
 			case 'hostgroups':
-				# find members
-				$membels = array();
-				if (PHP_SAPI == 'cli') {
-					# if using cli, get all hosts in host group
-					$sql = 'SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id ' .
-						'FROM host h, hostgroup hg, host_hostgroup hhg ' .
-						'WHERE hg.hostgroup_name = '.$db->escape($name) .
-						' AND hhg.hostgroup = hg.id AND h.id = hhg.host)';
-					$db  = Database::instance();
-					$members = $db->query($sql);
-				}
-				else {
-					$members = Host_Model::get_hosts_for_group($name);
-				}
-				$found = 0;
-				$member_cnt = count($members);
-				if (count($members)) {
-					foreach ($members as $member) {
-						if (self::check_if_scheduled('hosts', $member->host_name, $start_time, $duration)) {
-							$found++;
-						}
-					}
-
-					if ($found == $member_cnt) {
-						return true;
-					}
-				}
-				return false;
+				$hosts = $ls->getHosts(array('columns' => array('host_name'), 'filter' => 'groups >= '.$name));
+				$in_dtime = $ls->getDowntimes(array('columns' => array('host_name'), 'filter' => 'is_service = 0 and host_groups >= '.$name.' and start_time = '.$start_time.' and end_time = '.$end_time.' and duration = '.$duration));
+				return (count($hosts) == count($in_dtime));
 				break;
 
 			case 'servicegroups':
-				$members = array();
-				if (PHP_SAPI == 'cli') {
-					# if using cli, get all hosts in host group
-					$sql = 'SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id ' .
-						'FROM host h, hostgroup hg, host_hostgroup hhg ' .
-						'WHERE hg.hostgroup_name = '.$db->escape($name) .
-						' AND hhg.hostgroup = hg.id AND h.id = hhg.host)';
-					$db  = Database::instance();
-					$members = $db->query($sql);
-				}
-				else {
-					$members = Service_Model::get_services_for_group($name, 'service');
-				}
-				$member_cnt = count($members);
-				$found = 0;
-				if (count($members)) {
-					foreach ($members as $member) {
-						if (self::check_if_scheduled('services', $member->host_name.';'.$member->service_description, $start_time, $duration)) {
-							$found++;
-						}
-					}
-
-					if ($found == $member_cnt) {
-						return true;
-					}
-				}
-				return false;
+				$services = $ls->getServices(array('columns' => array('description'), 'filter' => 'groups >= '.$name));
+				$in_dtime = $ls->getDowntimes(array('filter' => 'is_service = 0 and service_groups >= '.$name.' and start_time = '.$start_time.' and end_time = '.$end_time.' and duration = '.$duration));
+				return (count($hosts) == count($in_dtime));
+				break;
 		}
 
-		if (!empty($sql)) {
-			$res = $db->query($sql);
-			return count($res) ? true : false;
-		}
-		return false;
+		return (!empty($res));
 	}
 }

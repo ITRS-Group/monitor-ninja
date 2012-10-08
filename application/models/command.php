@@ -109,7 +109,7 @@ class Command_Model extends Model
 		if ($downtime_data !== false) {
 			foreach ($downtime_data as $data) {
 				if (strstr($command_name, 'HOST_DOWNTIME')) {
-					$options[$data->downtime_id] = _(sprintf("ID: %s, Host '%s' starting @ %s\n", $data->downtime_id, $data->host_name, date(nagstat::date_format(), $data->start_time)));
+					$options[$data['id']] = _(sprintf("ID: %s, Host '%s' starting @ %s\n", $data['id'], $data['host_name'], date(nagstat::date_format(), $data['start_time'])));
 				} elseif (strstr($command_name, 'SVC_DOWNTIME')) {
 					if (!empty($data->service_description))
 						$options[$data->downtime_id] = sprintf("ID: %s, Service '%s' on host '%s' starting @ %s \n", $data->downtime_id, $data->service_description, $data->host_name, date(nagstat::date_format(), $data->start_time));

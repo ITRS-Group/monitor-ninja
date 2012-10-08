@@ -57,13 +57,13 @@ if (!empty($command_result)) {
 			</tr>
 		</thead>
 		<tbody>
-		<?php $i=0; foreach ($host_data as $row) { $i++; ?>
+		<?php $i=0; foreach ($host_data as $row) { $i++; $row = (object)$row; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td class="item_select" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_host[]', 'class' => 'deletecommentbox_host'), $row->downtime_id); ?></td>
+			<td class="item_select" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_host[]', 'class' => 'deletecommentbox_host'), $row->id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo date($date_format, $row->entry_time) ?></td>
-			<td><?php echo $row->author_name ?></td>
-			<td><?php echo $row->comment_data ?></td>
+			<td><?php echo $row->author ?></td>
+			<td><?php echo $row->comment ?></td>
 			<td><?php echo date($date_format, $row->start_time) ?></td>
 			<td><?php echo date($date_format, $row->end_time) ?></td>
 			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
@@ -72,17 +72,18 @@ if (!empty($command_result)) {
 		if(empty($row->triggered_by)) {
 			echo _('N/A');
 		} else {
-			if(!empty($row->triggering_service)) {
-				echo html::anchor('extinfo/details/service/'.$row->triggering_service, $row->triggering_service." (ID $row->triggered_by)");
-			} elseif(!empty($row->triggering_host)) {
-				echo html::anchor('extinfo/details/host/'.$row->triggering_host, $row->triggering_host." (ID $row->triggered_by)");
+			if(!empty($row->trigger['service_description'])) {
+				$svc_name = $row->trigger['host_name'].$row->trigger['service_description'];
+				echo html::anchor('extinfo/details/service/'.$svc_name, $svc_name." (ID $row->triggered_by)");
+			} elseif(!empty($row->trigger['host_name'])) {
+				echo html::anchor('extinfo/details/host/'.$row->trigger['host_name'], $row->trigger['host_name']." (ID $row->triggered_by)");
 			} else {
 				echo _('N/A');
 			}
 		} ?></td>
 			<td style="text-align: center">
 				<?php
-					echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('recurring_downtime?host='.$row->host_name, html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px'));
 				?>
 			</td>
@@ -148,14 +149,14 @@ if (!empty($command_result)) {
 			</tr>
 		</thead>
 		<tbody>
-		<?php $i = 0; foreach ($service_data as $row) { $i++; ?>
+		<?php $i = 0; foreach ($service_data as $row) { $i++; $row = (object)$row ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td class="item_select_service" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_service[]', 'class' => 'deletecommentbox_service'), $row->downtime_id); ?></td>
+			<td class="item_select_service" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_service[]', 'class' => 'deletecommentbox_service'), $row->id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
 			<td><?php echo date($date_format, $row->entry_time) ?></td>
-			<td><?php echo $row->author_name ?></td>
-			<td><?php echo $row->comment_data ?></td>
+			<td><?php echo $row->author ?></td>
+			<td><?php echo $row->comment ?></td>
 			<td><?php echo date($date_format, $row->start_time) ?></td>
 			<td><?php echo date($date_format, $row->end_time) ?></td>
 			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
@@ -164,17 +165,18 @@ if (!empty($command_result)) {
 			if(empty($row->triggered_by)) {
 				echo _('N/A');
 			} else {
-				if(!empty($row->triggering_service)) {
-					echo html::anchor('extinfo/details/service/'.$row->triggering_service, $row->triggering_service." (ID $row->triggered_by)");
-				} elseif(!empty($row->triggering_host)) {
-					echo html::anchor('extinfo/details/host/'.$row->triggering_host, $row->triggering_host." (ID $row->triggered_by)");
+				if(!empty($row->trigger['service_description'])) {
+					$svc_name = $row->trigger['host_name'].$row->trigger['service_description'];
+					echo html::anchor('extinfo/details/service/'.$svc_name, $svc_name." (ID $row->triggered_by)");
+				} elseif(!empty($row->trigger['host_name'])) {
+					echo html::anchor('extinfo/details/host/'.$row->trigger['host_name'], $row->trigger['host_name']." (ID $row->triggered_by)");
 				} else {
 					echo _('N/A');
 				}
 			} ?></td>
 			<td style="text-align: center">
 				<?php
-					echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('recurring_downtime?host='.$row->host_name.'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px'));
 				?>
 			</td>
