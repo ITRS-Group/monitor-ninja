@@ -9,7 +9,7 @@ class Livestatus_Test extends TapUnit {
     public function setUp() {
         $this->ls = Livestatus::instance();
         $this->ok(is_object($this->ls), 'created livestatus object');
-        $this->lsb = $ls->getBackend();
+        $this->lsb = $this->ls->getBackend();
         $this->ok(is_object($this->lsb), 'fetched livestatus backend');
     }
 
