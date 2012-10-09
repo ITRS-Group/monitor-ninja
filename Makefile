@@ -7,8 +7,9 @@ help:
 
 test: test-php-lint test-reports test-unittest
 
-test-reports: prepare-config
+test-reports: test-ci-prepare
 	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst
+	make test-ci-cleanup
 
 test-unittest: test-ci-prepare
 	php index.php ninja_unit_test
@@ -29,7 +30,6 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	chmod 777 test/configs/all-host_service-states/var/
 	/opt/monitor/op5/merlin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
-	php index.php 'cli/insert_user_data'
 	/bin/sleep 5
 
 test-ci: test-ci-prepare
