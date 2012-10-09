@@ -1318,9 +1318,8 @@ class Reports_Model extends Model
 		} elseif ($this->options['hostgroup']) {
 			$hosts = array();
 			foreach ($this->options['hostgroup'] as $hg) {
-				$res = Livestatus::instance()->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $hg))));
-				foreach ($res as $o) {
-					$name = $o['name'];
+				$res = Livestatus::instance()->getHosts(array('columns' => 'name', 'filter' => array('groups' => array('>=' => $hg))));
+				foreach ($res as $name) {
 					if (empty($hosts[$name])) {
 						$hosts[$name] = array();
 					}
@@ -1482,11 +1481,7 @@ class Reports_Model extends Model
 	 */
 	public function test_summary_queries()
 	{
-		$out = array();
-		$res = Livestatus::instance()->getHosts(array('columns' => array('name')));
-		foreach ($res as $row) {
-			$out[] = $row['name'];
-		}
+		$out = Livestatus::instance()->getHosts(array('columns' => 'name'));
 		$this->options['host_name'] = $out;
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {

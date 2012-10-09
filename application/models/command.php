@@ -35,36 +35,28 @@ class Command_Model extends Model
 		$ary = false;
 		switch ($param_name) {
 		 case 'host_name':
-			$ary = Livestatus::instance()->getHosts(array('columns' => array('name')));
+			$ary = Livestatus::instance()->getHosts(array('columns' => 'name'));
 			break;
 		 case 'service':
 		 case 'service_description':
-			$ary = Livestatus::instance()->getServices(array('columns' => array('name')));
+			$ary = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description')));
+			if ($ary) {
+				$ret_ary = array();
+				foreach ($ary as $v) {
+					$ret_ary[] = $v['host_name'].';'.$v['description'];
+				}
+				$ary = $ret_ary;
+			}
 			break;
 		 case 'hostgroup_name':
-			$ary = Livestatus::instance()->getHostgroups(array('columns' => array('name')));
+			$ary = Livestatus::instance()->getHostgroups(array('columns' => 'name'));
 			break;
 		 case 'servicegroup_name':
-			$ary = Livestatus::instance()->getServicegroups(array('columns' => array('name')));
+			$ary = Livestatus::instance()->getServicegroups(array('columns' => 'name'));
 			break;
 		}
 
-
-		if ($ary) {
-			$ret_ary = array();
-			foreach ($ary as $v) {
-				$ret_ary[$v['name']] = $v['name'];
-			}
-			ksort($ret_ary);
-			return $ret_ary;
-		}
-
-		if ($this->dryrun)
-			return array(1 => 'random object');
-
-		$obj_type = substr($param_name, 0, -5);
-		$query = "SELECT $param_name FROM $obj_type";
-		return $this->db->query($query);
+		return $ary;
 	}
 
 	/**

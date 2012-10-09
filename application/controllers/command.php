@@ -257,9 +257,7 @@ class Command_Controller extends Authenticated_Controller
 			}
 			else if ($target_type === 'host' && $selector_type === 'hostgroup') {
 				foreach ($obj_names as $gname) {
-					foreach ($ls->getHosts(array('filter' => array('groups' => array('>=' => $gname), 'columns' => array('name')))) as $row) {
-						$individual_objs[] = $row['host_name'];
-					}
+					$individual_objs = $ls->getHosts(array('filter' => array('groups' => array('>=' => $gname), 'columns' => 'name')));
 				}
 			}
 			else if ($target_type === 'host' && $selector_type === 'servicegroup') {
