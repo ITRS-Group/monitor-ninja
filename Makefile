@@ -7,7 +7,7 @@ help:
 
 test: test-php-lint test-reports test-unittest
 
-test-reports:
+test-reports: prepare-config
 	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst
 
 test-unittest: test-ci-prepare
