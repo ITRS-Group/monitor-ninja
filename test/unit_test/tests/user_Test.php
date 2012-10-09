@@ -10,44 +10,6 @@
  * @license    http://kohanaphp.com/license.html
  */
 class User_Test extends TapUnit {
-	public function test_user_model_exists()
-	{
-		$user = new User_Model();
-		$this->ok(is_object($user), "User model exists");
-		unset($user);
-	}
-
-	public function test_user_model_complete_login_exists()
-	{
-		$user = new User_Model();
-		$this->ok(method_exists($user, 'complete_login'), "Complete login method exists");
-		unset($user);
-	}
-
-	public function test_table_users_exists()
-	{
-		$db = Database::instance();
-		$table = 'users';
-		$this->ok($db->table_exists($table), "Unable to find table $table");
-		$this->ok(!$db->table_exists('foo'), "Random tables doesn't exist");
-	}
-
-	public function test_create_user()
-	{
-		User_Model::add_user(array('username' => 'monitor'));
-		Ninja_user_authorization_Model::insert_user_auth_data('monitor', array('system_information'=>1));
-	}
-
-	public function test_users_exists()
-	{
-		$db = Database::instance();
-		$table = 'users';
-		$sql = "SELECT COUNT(*) as cnt FROM users";
-		$result = $db->query($sql);
-
-		$this->ok(count($result) > 0, "There are users");
-	}
-
 	public function test_table_ninja_settings_exists()
 	{
 		$db = Database::instance();
