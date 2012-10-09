@@ -539,7 +539,12 @@ class LivestatusBackend {
 		if(isset($options['filter'])) {
 			$query = $this->getQueryFilter($options['filter'], false);
 		}
-
+		if( isset( $options['extra_columns'] ) ) {
+			if( !isset( $options['columns'] ) )
+				$options['columns'] = array();
+			$options['columns'] = array_unique( array_merge( $options['columns'], $options['extra_columns'] ) );
+		}
+		
 		$columns = array();
 		if( isset( $options['columns'] ) ) {
 			$query  .= "Columns: ".join(" ", $options['columns'])."\n";
