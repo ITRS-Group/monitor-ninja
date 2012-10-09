@@ -547,7 +547,10 @@ class LivestatusBackend {
 		
 		$columns = array();
 		if( isset( $options['columns'] ) ) {
-			$query  .= "Columns: ".join(" ", $options['columns'])."\n";
+			if (is_array($options['columns']))
+				$query  .= "Columns: ".join(" ", $options['columns'])."\n";
+			else
+				$query  .= "Columns: {$options['columns']}\n";
 			$columns = $options['columns'];
 		}
 		
@@ -771,21 +774,21 @@ class LivestatusBackend {
 	}
 
 	private function objects2Assoc($objects, $columns, $callbacks = null) {
-		$cols = $columns;
-		if(!is_array($cols)) {
-			$cols = array($columns);
-		}
 		$result = array();
 		foreach($objects as $o) {
 			$n = array();
-			$i = 0;
-			foreach($cols as $c) {
-				$n[$c] = $o[$i];
-				$i++;
-			}
-			if($callbacks != null) {
-				foreach($callbacks as $key => $cb) {
-					$n[$key] = call_user_func($cb, $n);
+			if (!is_array($columns)) {
+				$n = $o[0];
+			} else {
+				$i = 0;
+				foreach($columns as $c) {
+					$n[$c] = $o[$i];
+					$i++;
+				}
+				if($callbacks != null) {
+					foreach($callbacks as $key => $cb) {
+						$n[$key] = call_user_func($cb, $n);
+					}
 				}
 			}
 			array_push($result, $n);
