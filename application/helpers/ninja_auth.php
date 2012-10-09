@@ -7,69 +7,6 @@
 class ninja_auth_Core
 {
 	/**
-	 * Generates a password hash
-	 * @param $pass Plaintext password
-	 * @return Password hash
-	 */
-	public static function hash_password($pass)
-	{
-		return base64_encode(sha1($pass, true));
-	}
-
-	/**
-	 * Validates a password using apr's md5 hash algorithm
-	 */
-	private static function apr_md5_validate($pass, $hash)
-	{
-		$pass = escapeshellarg($pass);
-		$hash = escapeshellarg($hash);
-		$cmd = realpath(APPPATH.'/../cli-helpers')."/apr_md5_validate $pass $hash";
-		$ret = $output = false;
-		exec($cmd, $output, $ret);
-		return $ret === 0;
-	}
-
-	/**
-	 * Validates a password using the given algorithm
-	 */
-	public static function valid_password($pass, $hash, $algo = '')
-	{
-		if ($algo === false || !is_string($algo))
-			return false;
-		if (empty($pass) || empty($hash))
-			return false;
-		if (!is_string($pass) || !is_string($hash))
-			return false;
-
-		switch ($algo) {
-		 case 'sha1':
-			return sha1($pass) === $hash;
-
-		 case 'b64_sha1':
-			# Passwords can be one of
-			# ... base64 encoded raw sha1
-			return base64_encode(sha1($pass, true)) === $hash;
-
-		 case 'crypt':
-			# ... crypt() encrypted
-			return crypt($pass, $hash) === $hash;
-
-		 case 'plain':
-			# ... plaintext (stupid, but true)
-			return $pass === $hash;
-
-		 case 'apr_md5':
-			# ... or a mad and weird aberration of md5
-			return ninja_auth::apr_md5_validate($pass, $hash);
-		 default:
-			return false;
-		}
-
-		# not-reached
-		return false;
-	}
-
-	/**
 	 * Does the required steps to log in a user via the specified auth_method
 	 * (the last bit means you have to make sure that session/config has properly
 	 * stringified auth_method).
@@ -78,30 +15,14 @@ class ninja_auth_Core
 	 * @param $password The user's password
 	 * @returns TRUE if everything was OK, or a string controller you're suggested to redirect to
 	 */
-	public static function login_user($username, $password) {
-		$auth = Auth::factory();
+	public static function login_user($username, $password, $auth_method = false) {
+		$auth = Auth::instance();
 
-		# check if new authorization data is available in cgi.cfg
-		# this enables incremental import
-		Cli_Controller::insert_user_data();
+		$result = $auth->login($username, $password, $auth_method);
 
-		# Kohana is stupid (well, it's Auth module is anyways) and
-		# refuses to *not* hash the password it passes on to the
-		# driver. However, that doesn't fly well with our need to
-		# support multiple password hash algorithms, so if we're
-		# using the Ninja authenticator we must call the driver
-		# explicitly
-		switch (Kohana::config('auth.driver')) {
-		 case 'Ninja':
-		 case 'LDAP':
-		 case 'apache':
-			$result = $auth->driver->login($username, $password, false);
-			break;
-		 default:
-			$result = $auth->login($username, $password);
-			break;
-		}
-
+		/*
+		 * If no user: Not authenticated, handle event...
+		 */
 		if (!$result) {
 			# This brute force protection is absolutely fool-proof, as long
 			# as nobody uses evil hacker tools like curl or "Clean History"
@@ -126,6 +47,50 @@ class ninja_auth_Core
 			$session->set_flash('error_msg', $error_msg);
 			return 'default/show_login';
 		}
-		return User_Model::complete_login();
+		else {
+			/* FIXME: Is limited user? Treat all as limited for now...
+			 * above else should be: else if(limited user) {
+			 */
+	
+			/**
+			 * Take care of access for limited users
+			 * 
+			 * Check that user has access to view some objects
+			 * or logout with a message
+			 */
+			
+			$nagauth = Nagios_auth_Model::instance();
+			$hosts = $nagauth->get_authorized_hosts();
+
+			$redirect = false;
+			if (empty($hosts)) {
+				$services = $nagauth->get_authorized_services();
+				if (empty($services)) {
+					$redirect = true;
+				}
+			}
+
+			if ($redirect !== false) {
+				Session::instance()->set_flash('error_msg',
+					_("You have been denied access since you aren't authorized for any objects."));
+				return 'default/show_login';
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Check if the user has tried
+	 * to login too many times
+	 *
+	 * @return bool
+	 */
+	public static function is_locked_out()
+	{
+		$session = Session::instance();
+		if ($session->get('locked_out') && Kohana::config('auth.max_attempts')) {
+			return true;
+		}
+		return false;
 	}
 }

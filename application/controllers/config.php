@@ -24,9 +24,7 @@ class Config_Controller extends Authenticated_Controller {
 	 */
 	public function index()
 	{
-
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_system_information) {
+		if (!Auth::instance()->authorized_for('system_information')) {
 			return url::redirect('extinfo/unauthorized/0');
 		}
 
@@ -47,6 +45,7 @@ class Config_Controller extends Authenticated_Controller {
 			)
 		);
 		$offset = $pagination->sql_offset;
+		
 		$data = $config_model->list_config($this->type, $items_per_page, $offset, false, $filter);
 		$result = array();
 		$this->template->title = _('Configuration').' » '._('View config');

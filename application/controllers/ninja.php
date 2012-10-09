@@ -129,21 +129,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$saved_searches = false;
 
-		Kohana::config_set('auth.auth_methods', Kohana::config('auth.driver'));
-		// set auth.driver to the currently used authentication method
-		$auth_methods = Kohana::config('auth.auth_methods');
-		if (isset($_SESSION['auth_method']))
-			Kohana::config_set('auth.driver', $_SESSION['auth_method']);
-		else if (is_array($auth_methods) && count($auth_methods) == 1)
-			Kohana::config_set('auth.driver', array_pop(array_keys($auth_methods)));
-		else if (!is_array($auth_methods))
-			Kohana::config_set('auth.driver', $auth_methods);
-		else {
-			// this can never be unset, so find some nice default
-			// (should only happen when user is logged out)
-			Kohana::config_set('auth.driver', "Ninja");
-		}
-
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			# warning! do not set anything in xlinks, as it isn't working properly
 			# and cannot (easily) be fixed
@@ -152,9 +137,6 @@ class Ninja_Controller extends Template_Controller {
 
 			# create the user menu
 			$this->template->links = $this->create_menu();
-
-			if (Kohana::config('auth.driver') == 'LDAP')
-				unset ($this->template->links[_('Configuration')][_('Change password')]);
 
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
@@ -196,15 +178,8 @@ class Ninja_Controller extends Template_Controller {
 			}
 		}
 
-		# user might not be logged in due to CLI scripts, be quiet
-		$current_skin = @config::get('config.current_skin', '*', true);
-		if (!$current_skin) {
-			$current_skin = 'default/';
-		}
-		else if (substr($current_skin, -1, 1) != '/') {
-			$current_skin .= '/';
-		}
-		$this->template->current_skin = $current_skin;
+		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
+		$this->template->current_skin = Kohana::config('config.current_skin');
 	}
 
 
@@ -270,9 +245,9 @@ class Ninja_Controller extends Template_Controller {
 		unset($status);
 
 		# check permissions
-		$auth = Nagios_auth_Model::instance();
-		if (nacoma::link()===true && $auth->authorized_for_configuration_information
-			&& $auth->authorized_for_system_commands && $auth->view_hosts_root) {
+		$user = Auth::instance()->get_user();
+		if (nacoma::link()===true && $user->authorized_for('configuration_information')
+			&& $user->authorized_for('system_commands') && $user->authorized_for('host_view_all')) {
 			$nacoma = Database::instance('nacoma');
 			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results WHERE visibility != 0');
 			$query->result(false);

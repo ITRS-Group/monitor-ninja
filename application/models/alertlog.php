@@ -26,7 +26,6 @@ class Alertlog_Model extends Model
 	 */
 	function get_log_entries($options=false, $limit=false, $offset=0, $count=false)
 	{
-		$auth = Nagios_auth_Model::instance();
 		$db = Database::instance();
 		if ($count !== true)
 			$sql = 'SELECT report_data.* FROM report_data';
@@ -46,7 +45,7 @@ class Alertlog_Model extends Model
 		# Don't think this auth stuff makes that much sense - whaddabout services and system_information for restarts?
 		# Also think it's gosh darn slow already, and would be unusable if done Right™, so I don't want to be the one
 		# to break it.
-		if (!$auth->view_hosts_root) {
+		if (!Auth::instance()->authorized_for('host_view_all')) {
 			$sql_join['host'] = 'host.host_name = report_data.host_name';
 			$sql_join['contact_access'] = 'contact_access.host=host.id AND contact_access.contact='.(int)$auth->id;
 		}

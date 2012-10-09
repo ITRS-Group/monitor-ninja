@@ -23,6 +23,7 @@ class Backup_Controller extends Authenticated_Controller {
 		'/opt/monitor/var/archives',
 		'/opt/monitor/var/errors',
 		'/opt/monitor/var/traffic',
+		'/opt/op5sys/etc/*.yml',
 	);
 	
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
@@ -55,8 +56,9 @@ class Backup_Controller extends Authenticated_Controller {
 				$this->files2backup[]=trim($cfg_dir[1]) . " ";
 		}
 
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_configuration_information || !$auth->authorized_for_system_commands) {
+		$user = Auth::instance()->get_user();
+		if (!$user->authorized_for('configuration_information') || !$user->authorized_for('system_commands')) {
+
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = _("It appears as though you aren't authorized to access the backup interface.");
 			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization for more information.');

@@ -24,7 +24,7 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function index()
 	{
-		if ($this->is_locked_out()) {
+		if (ninja_auth::is_locked_out()) {
 			url::redirect('default/locked_out');
 		}
 		//$this->template-> = $this->add_view('menu');
@@ -34,16 +34,6 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
-		if (Kohana::config('auth.driver') == 'apache') {
-			if (isset($_SESSION['username'])) {
-				Auth::instance()->driver->login($_SESSION['username'], false, false);
-				$this->apache_login();
-			} else {
-				header('location: ' . Kohana::config('auth.apache_login'));
-			}
-			exit;
-		}
-
 		$this->session->delete('auth_user');
 		$this->session->delete('nagios_access');
 		$this->session->delete('contact_id');
@@ -68,20 +58,6 @@ class Default_Controller extends Ninja_Controller  {
 	public function locked_out()
 	{
 		echo $this->session->get('error_msg');
-	}
-
-	/**
-	 * Check if the user has tried
-	 * to login too many times
-	 *
-	 * @return bool
-	 */
-	public function is_locked_out()
-	{
-		if ($this->session->get('locked_out') && Kohana::config('auth.max_attempts')) {
-			return true;
-		}
-		return false;
 	}
 	/**
 	 * Collect user input from login form, authenticate against
@@ -115,16 +91,11 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
-			$username = $this->input->post('username', false);
-			$password = $this->input->post('password', false);
-
+			$username    = $this->input->post('username', false);
+			$password    = $this->input->post('password', false);
 			$auth_method = $this->input->post('auth_method', false);
-			if (!empty($auth_method)) {
-				$_SESSION['auth_method'] = $auth_method;
-				Kohana::config_set('auth.driver', $auth_method);
-			}
 
-			$res = ninja_auth::login_user($username, $password);
+			$res = ninja_auth::login_user($username, $password, $auth_method);
 			if ($res !== true) {
 				url::redirect($res);
 			}
@@ -162,31 +133,8 @@ class Default_Controller extends Ninja_Controller  {
 	 */
 	public function logout()
 	{
-		User_Model::logout_user();
-		if (Kohana::config('auth.driver') == 'apache') {
-			# unset some session variables
-			$this->session->delete('username');
-			$this->session->delete('auth_user');
-			$this->session->delete('nagios_access');
-			$this->session->delete('contact_id');
-			$this->template = $this->add_view('logged_out');
-			return;
-		}
-		url::redirect('default/');
-	}
-
-	/**
-	*	Finalize login using the apache driver
-	*/
-	public function apache_login()
-	{
-		if (empty($_SESSION['username']) || !Auth::instance()->logged_in()) {
-			die('Error!');
-		}
-
-		if (User_Model::complete_login()) {
-			url::redirect('default/do_login');
-		}
+		Auth::instance()->logout();
+		url::redirect('default/show_login');
 	}
 
 	/**

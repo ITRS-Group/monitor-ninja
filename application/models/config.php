@@ -38,14 +38,12 @@ class Config_Model extends Model {
 	 */
 	public function list_config($type = 'hosts', $num_per_page=false, $offset=false, $count=false, $free_text=null)
 	{
-
-		$auth = Nagios_auth_Model::instance();
-		if(!$auth->view_hosts_root) {
-			return false;
-		}
-
 		$db = Database::instance();
 		$result_mod = array();
+
+		if (!Auth::instance()->authorized_for('host_view_all')) {
+			return false;
+		}
 
 		$num_per_page = (int)$num_per_page;
 

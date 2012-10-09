@@ -78,7 +78,7 @@ class Comment_Model extends Model {
 	 * @param $count bool Completely ignore the two previous options - return the total number of comments instead of the comments themselves
 	 * @returns If $count is true, then the number of rows as an int, otherwise the database result of comments
 	 */
-	public static function fetch_comments_by_user($for_services=false, $num_per_page=false, $offset=false, $count=false)
+	public static function fetch_comments_by_user($host, $for_services=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$num_per_page = (int)$num_per_page;
 		$offset = (int)$offset;
@@ -141,7 +141,7 @@ class Comment_Model extends Model {
 	*/
 	public static function count_comments_by_object($host=false, $service=false)
 	{
-		return static::fetch_comments_by_object($host, $service, false, false, true);
+		return Comment_Model::fetch_comments_by_object($host, $service, false, false, true);
 	}
 
 	/**

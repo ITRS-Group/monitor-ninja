@@ -58,10 +58,8 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 
 		# check if user is an admin
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
+		$is_admin = Auth::instance()->authorized_for('host_view_all');
 		$template->is_admin = $is_admin;
-		unset($auth);
 
 		$this->template->content->widgets = $this->widgets;
 
@@ -336,9 +334,7 @@ class User_Controller extends Authenticated_Controller {
 		$item_str=false, $link_info=false)
 	{
 		# check if current user is an admin
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
-		unset($auth);
+		$is_admin = Auth::instance()->authorized_for('host_view_all');
 
 		if (!$is_admin
 			|| empty($menu_links)
@@ -369,16 +365,14 @@ class User_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 
 		# check if current user is an admin
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
+		$is_admin = Auth::instance()->authorized_for('host_view_all');
 		$content->is_admin = $is_admin;
-		unset($auth);
 
 		$content->noadmin_msg = _("You don't have access to this page. Only visible to administrators.");
 		$content->select_user_message = _("Select the user below to edit the menu for.");
 		$content->description = _("Check the menu items that the should not be visible to the selected user.");
 
-		# fetch all users that aren't admin (authorized_for_all_hosts)
+		# fetch all users that aren't admin (host_view_all)
 
 		$empty = array('' => _('Select user'));
 		$limited_users = User_Model::get_limited_users();
@@ -480,9 +474,7 @@ class User_Controller extends Authenticated_Controller {
 	{
 		# check if current user is an admin
 		# and prevent access if not
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
-		unset($auth);
+		$is_admin = Auth::instance()->authorized_for('host_view_all');
 		if (!$is_admin) {
 			url::redirect(Router::$controller.'/index');
 		}

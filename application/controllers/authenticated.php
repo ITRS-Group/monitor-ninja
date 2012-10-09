@@ -18,6 +18,7 @@ class Authenticated_Controller extends Ninja_Controller {
 
 	public function __construct()
 	{
+		parent::__construct();
 		# make sure user is authenticated
 
 		# Check if user is accessing through PHP CLI
@@ -36,15 +37,13 @@ class Authenticated_Controller extends Ninja_Controller {
 			}
 		} else {
 			if (!Auth::instance()->logged_in()) {
-				if (Kohana::config('auth.use_get_auth') === true && isset($_GET['username']) && isset($_GET['password'])) {
-					$auth_method = $this->input->get('auth_method', false);
-					if (!empty($auth_method)) {
-						$_SESSION['auth_method'] = $auth_method;
-						Kohana::config_set('auth.driver', $auth_method);
-					}
-					$res = ninja_auth::login_user($_GET['username'], $_GET['password']);
+				$auth_method = $this->input->get('auth_method', false);
+				$username    = $this->input->get('username', false);
+				$password    = $this->input->get('password', false);
+				if (Kohana::config('auth.use_get_auth') === true && $username !== false && $password !== false) {
+					$res = ninja_auth::login_user($username, $password, $auth_method);
 					if ($res !== true)
-						die('The provided authorization is invalid');
+						die('The provided authentication is invalid');
 				} else {
 					# store requested uri in session for later redirect
 					if ($this->session)
@@ -70,7 +69,16 @@ class Authenticated_Controller extends Ninja_Controller {
 				$this->user = Auth::instance()->get_user();
 			}
 		}
-		parent::__construct();
+		
+		# user might not be logged in due to CLI scripts, be quiet
+		$current_skin = config::get('config.current_skin', '*', true);
+		if (!$current_skin) {
+			$current_skin = 'default/';
+		}
+		else if (substr($current_skin, -1, 1) != '/') {
+			$current_skin .= '/';
+		}
+		$this->template->current_skin = $current_skin;
 	}
 
 	public function is_authenticated()

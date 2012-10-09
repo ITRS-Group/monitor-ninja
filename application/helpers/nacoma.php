@@ -24,8 +24,7 @@ class nacoma_Core {
 		if (!Auth::instance()->logged_in()) {
 			return null;
 		}
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_configuration_information || Kohana::config('config.nacoma_path')===false) {
+		if (!Auth::instance()->authorized_for('configuration_information') || Kohana::config('config.nacoma_path')===false) {
 			return false;
 		}
 		# create the link.
@@ -49,8 +48,7 @@ class nacoma_Core {
 			return null;
 		}
 
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_configuration_information || Kohana::config('config.nacoma_path')===false) {
+		if (!Auth::instance()->authorized_for('configuration_information') || Kohana::config('config.nacoma_path')===false) {
 			return false;
 		}
 

@@ -92,8 +92,7 @@ class showlog_Core
 			zend::instance('Registry')->get('theme_path') .
 			'/icons/16x16/';
 
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_system_information) {
+		if (!Auth::instance()->authorized_for('system_information')) {
 			$cmd .= ' --hide-process --hide-commands ';
 		}
 

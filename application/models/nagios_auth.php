@@ -37,15 +37,14 @@ class Nagios_auth_Model extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		$this->session = Session::instance();
 
 		if (!Auth::instance()->logged_in()) {
 			return false;
 		}
-		$this->user = Auth::instance()->get_user()->username;
+		$this->user = Auth::instance()->get_user();
 		$this->check_rootness();
 
-		if (empty($this->user))
+		if ($this->user === false)
 			return false;
 	}
 
@@ -66,47 +65,39 @@ class Nagios_auth_Model extends Model
 	 */
 	public function check_rootness()
 	{
-		$access = System_Model::nagios_access($this->user);
-		if (empty($access))
-			return;
-
-		if (is_array($access) && !empty($access)) {
-			$user_access = array_keys($access);
-		}
-
-		if (in_array('authorized_for_all_hosts', $user_access)) {
+		if ($this->user->authorized_for('host_view_all')) {
 			$this->view_hosts_root = true;
 		}
 
-		if (in_array('authorized_for_all_services', $user_access)) {
+		if ($this->user->authorized_for('service_view_all')) {
 			$this->view_services_root = true;
 		}
 
-		if (in_array('authorized_for_system_information', $user_access)) {
+		if ($this->user->authorized_for('system_information')) {
 			$this->authorized_for_system_information = true;
 		}
 
-		if (in_array('authorized_for_system_commands', $user_access)) {
+		if ($this->user->authorized_for('system_commands')) {
 			$this->authorized_for_system_commands = true;
 		}
 
-		if (in_array('authorized_for_all_host_commands', $user_access)) {
+		if ($this->user->authorized_for('host_edit_all')) {
 			$this->authorized_for_all_host_commands = true;
 		}
 
-		if (in_array('authorized_for_all_service_commands', $user_access)) {
+		if ($this->user->authorized_for('service_edit_all')) {
 			$this->authorized_for_all_service_commands = true;
 		}
 
-		if (in_array('authorized_for_all_host_commands', $user_access)) {
+		if ($this->user->authorized_for('host_edit_all')) {
 			$this->command_hosts_root = true;
 		}
 
-		if (in_array('authorized_for_all_service_commands', $user_access)) {
+		if ($this->user->authorized_for('service_edit_all')) {
 			$this->command_services_root = true;
 		}
 
-		if (in_array('authorized_for_configuration_information', $user_access)) {
+		if ($this->user->authorized_for('configuration_information')) {
 			$this->authorized_for_configuration_information = true;
 		}
 
@@ -133,7 +124,7 @@ throw new Exception('deprecated');
 		$contact_id = Session::instance()->get('contact_id', false);
 		if (empty($contact_id)) {
 			$query = "SELECT id FROM contact WHERE contact_name = " .
-				$this->db->escape($this->user);
+				$this->db->escape($this->user->username);
 
 			$result = $this->db->query($query);
 			$contact_id = $result->count() ? $result->current()->id : -1;

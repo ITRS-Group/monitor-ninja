@@ -81,13 +81,13 @@ class Cli_Controller extends Authenticated_Controller {
 		$user_list = array();
 		$return = false;
 		$access_levels = array(
-			'authorized_for_system_information',
-			'authorized_for_configuration_information',
-			'authorized_for_system_commands',
-			'authorized_for_all_services',
-			'authorized_for_all_hosts',
-			'authorized_for_all_service_commands',
-			'authorized_for_all_host_commands'
+			'system_information',
+			'configuration_information',
+			'system_commands',
+			'all_services',
+			'all_hosts',
+			'all_service_commands',
+			'all_host_commands'
 		);
 
 		if(empty($auth_data)) {
@@ -116,158 +116,6 @@ class Cli_Controller extends Authenticated_Controller {
 		$return['user_data'] = $user_data;
 		$return['user_list'] = $user_list;
 		return $return;
-	}
-
-	private static function clean_old_users($old_ary, $new_ary)
-	{
-		$db = Database::instance();
-		# check for users that has been removed
-		foreach ($old_ary as $old => $skip) {
-			if (!array_key_exists($old, $new_ary)) {
-				# delete this user as it is no longer available in
-				# the received list of users
-				$db->query("DELETE FROM users ".
-				" WHERE username=".$db->escape($old));
-			}
-		}
-		$db->query('DELETE FROM roles_users WHERE user_id NOT IN (SELECT id FROM users)');
-	}
-
-	/**
-	 * Insert user data from cgi.cfg into db
-	 */
-	public static function insert_user_data()
-	{
-		$auth_types = Kohana::config('auth.auth_methods');
-		if (!is_array($auth_types))
-			$auth_types = array($auth_types => $auth_types);
-
-		// We *only* want LDAP auth, we aren't running this on CLI, and we do allow
-		// CLI access - we can skip this, and let update-users.php deal with it.
-		if (count($auth_types) === 1 && isset($auth_types['LDAP']) &&
-			Kohana::config('config.cli_access') !== false &&
-			PHP_SAPI !== 'cli')
-		{
-			return true;
-		}
-
-		# don't assume any authorized users - start by removing all auth data
-		User_Model::truncate_auth_data();
-
-		$passwd_import = new Htpasswd_importer_Model();
-
-		$passwd_import->get_existing_users();
-		$old_users = $passwd_import->existing_ary;
-		$new_users = array();
-
-		$config_data = self::get_cgi_config();
-
-		$abort = true;
-		if (isset($auth_types['LDAP'])) {
-			$contacts = Contact_Model::get_contact_names();
-			foreach ($contacts as $name) {
-				User_Model::add_user(array('username' => $name));
-			}
-
-			if (isset($config_data['user_list']) && !empty($config_data['user_list'])) {
-				# We need to make sure LDAP/AD users exists in merlin.users
-				foreach ($config_data['user_list'] as $user) {
-					if ($user) {
-						User_Model::add_user(array('username' => $user));
-						$new_users[$user] = 1;
-					}
-				}
-			}
-			$abort = false;
-		}
-
-		if (count($auth_types) > 1 || !isset($auth_types['LDAP'])) {
-			# first import new users from cgi.cfg if there is any
-			$passwd_import->overwrite = true;
-			$base_path = System_Model::get_nagios_base_path();
-			$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
-			if (substr($etc_path, -1, 1) != '/') {
-				$etc_path .= '/';
-			}
-			$passwd_import->import_hashes($etc_path.'htpasswd.users');
-
-
-			if (!empty($passwd_import->passwd_ary)) {
-				$new_users = array_merge($new_users, $passwd_import->passwd_ary);
-				$abort = false;
-			}
-		}
-		if ($abort)
-			return false;
-
-		self::clean_old_users($old_users, $new_users);
-
-		# fetch all usernames from users table
-		$users = User_Model::get_all_usernames();
-
-		# there are no users in db
-		if ($users == false) {
-			return false;
-		}
-
-		# All db fields that should be set
-		# according to data in cgi.cfg
-		$auth_fields = Ninja_user_authorization_Model::$auth_fields;
-		if (empty($config_data['user_list'])) {
-			return false;
-		} else {
-			if (in_array('*', $config_data['user_list']) && sizeof($config_data['user_list'])==1) {
-				# we don't have named users from cgi.cfg but ONLY one item
-				# since all users has been assigned all access rights (*)
-				# Instead we use the list from the htpasswd importer
-				# and assign all user the correct Nagios credentials
-				foreach ($users as $username) {
-					self::_edit_user_authorization($username, array(1, 1, 1, 1, 1, 1, 1));
-				}
-			} else {
-				$auth_users = false;
-				foreach ($auth_fields as $field) {
-					if (isset($config_data['user_data']['authorized_for_'.$field])) {
-						foreach ($config_data['user_data']['authorized_for_'.$field] as $username) {
-							if ($username === '*') {
-								foreach ($users as $u) {
-									$auth_users[$u][$field] = 1;
-								}
-							} else {
-								# named user - set current access right
-								$auth_users[$username][$field] = 1;
-								foreach ($users as $u) {
-									# check all other users
-									if ($u === $username || isset($auth_users[$u][$field])) {
-										# discard users already been checked for this access right
-										continue;
-									} else {
-										# prevent the rest from getting this access
-										$auth_users[$u][$field] = 0;
-									}
-								} # end foreach
-							}
-						} # end foreach
-					} else {
-						# unset access rights for all users for this key
-						foreach ($users as $u) {
-							$auth_users[$u][$field] = 0;
-						}
-					}
-				}
-				if (!empty($auth_users)) {
-					# take all the users in auth_users where keys are usernames
-					# and contained array has 'autorized_for'<field> as key and boolean
-					# value indicatingn if user has this access or not
-					foreach ($auth_users as $user => $options) {
-						self::_edit_user_authorization($user, array_values($options));
-					}
-				} else {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	/**

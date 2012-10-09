@@ -1,20 +1,20 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
+require_once( 'auth/Op5Auth.php' );
+require_once( 'auth/Op5User_NoAuth.php' );
+
 /**
- * User authorization library. Handles user login and logout, as well as secure
- * password hashing.
+ * User authentication and authorization library.
  *
  * @package    Auth
- * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @author     
+ * @copyright  
+ * @license    
  */
 class Auth_Core {
+	private $op5auth = false; /* Op5Auth object */
 
-	// Session instance
-	protected $session;
-
-	// Configuration
-	protected $config;
+	private static $instance = false;
 
 	/**
 	 * Create an instance of Auth.
@@ -23,7 +23,7 @@ class Auth_Core {
 	 */
 	public static function factory($config = array())
 	{
-		return new Auth($config);
+		return new self();
 	}
 
 	/**
@@ -33,46 +33,23 @@ class Auth_Core {
 	 */
 	public static function instance($config = array())
 	{
-		static $instance;
-
 		// Load the Auth instance
-		empty($instance) and $instance = new Auth($config);
+		if (empty(self::$instance)) {
+			try {
+				self::$instance = self::factory($config);
+			}
+			catch( Exception $e ) {
+				self::$instance = new Auth_NoAuth_Core();
+				throw $e;
+			}
+		}
 
-		return $instance;
+		return self::$instance;
 	}
 
-	/**
-	 * Loads Session and configuration options.
-	 *
-	 * @return  void
-	 */
-	public function __construct($config = array())
+	public function __construct( $config = NULL )
 	{
-		// Append default auth configuration
-		$config += Kohana::config('auth');
-
-		// Clean up the salt pattern and split it into an array
-		$config['salt_pattern'] = preg_split('/,\s*/', Kohana::config('auth.salt_pattern'));
-
-		// Save the config in the object
-		$this->config = $config;
-
-		// Set the driver class name
-		$driver = 'Auth_'.$config['driver'].'_Driver';
-
-		if ( ! Kohana::auto_load($driver))
-			throw new Kohana_Exception('core.driver_not_found', $config['driver'], get_class($this));
-
-		// Load the driver
-		$driver = new $driver($config);
-
-		if ( ! ($driver instanceof Auth_Driver))
-			throw new Kohana_Exception('core.driver_implements', $config['driver'], get_class($this), 'Auth_Driver');
-
-		// Load the driver for access
-		$this->driver = $driver;
-
-		Kohana::log('debug', 'Auth Library loaded');
+		$this->op5auth = Op5Auth::factory( $config );
 	}
 
 	/**
@@ -84,44 +61,36 @@ class Auth_Core {
 	 */
 	public function logged_in($role = NULL)
 	{
-		return $this->driver->logged_in($role);
+		return $this->op5auth->logged_in();
 	}
 
 	/**
-	 * Returns the currently logged in user, or FALSE.
+	 * Returns the currently logged in user, or NoAuth user.
 	 *
 	 * @return  mixed
 	 */
 	public function get_user()
 	{
-		return $this->driver->get_user();
+		$user = $this->op5auth->get_user();
+		Kohana::log( 'debug', 'User: ' . var_export( $user, true ) );
+		return $user;
 	}
-
+	
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
 	 * @param   string   username to log in
 	 * @param   string   password to check against
 	 * @param   boolean  enable auto-login
-	 * @return  boolean
+	 * @return  boolean	True on success
 	 */
-	public function login($username, $password, $remember = FALSE)
+	public function login($username, $password, $auth_method = false)
 	{
-		if (empty($password))
-			return FALSE;
-
-		if (is_string($password))
-		{
-			// Get the salt from the stored password
-			$salt = $this->find_salt($this->driver->password($username));
-
-			// Create a hashed password using the salt from the stored password
-			$password = $this->hash_password($password, $salt);
-		}
-
-		return $this->driver->login($username, $password, $remember);
+		$res = $this->op5auth->login( $username, $password, $auth_method );
+		Kohana::log( 'debug', 'Login: ' . var_export( $res, true ) );
+		return $res;
 	}
-
+	
 	/**
 	 * Attempt to automatically log a user in.
 	 *
@@ -129,7 +98,7 @@ class Auth_Core {
 	 */
 	public function auto_login()
 	{
-		return $this->driver->auto_login();
+		return false;
 	}
 
 	/**
@@ -140,7 +109,7 @@ class Auth_Core {
 	 */
 	public function force_login($username)
 	{
-		return $this->driver->force_login($username);
+		return false;
 	}
 
 	/**
@@ -151,83 +120,123 @@ class Auth_Core {
 	 */
 	public function logout($destroy = FALSE)
 	{
-		return $this->driver->logout($destroy);
+		return $this->op5auth->logout();
 	}
 
 	/**
-	 * Creates a hashed password from a plaintext password, inserting salt
-	 * based on the configured salt pattern.
+	 * Verify password for a logged in user.
 	 *
-	 * @param   string  plaintext password
-	 * @return  string  hashed password string
+	 * Usable for form validation of critical user data, for example validate a
+	 * password change.
+	 *
+	 * This method doesn't use APC
+	 *
+	 * @param $user     Op5User User object to verify
+	 * @param $password string  Password to test
+	 * @return          boolean true if password is ok
 	 */
-	public function hash_password($password, $salt = FALSE)
+	public function verify_password( $user, $password )
 	{
-		if ($salt === FALSE)
-		{
-			// Create a salt seed, same length as the number of offsets in the pattern
-			$salt = substr($this->hash(uniqid(NULL, TRUE)), 0, count($this->config['salt_pattern']));
-		}
-
-		// Password hash that the salt will be inserted into
-		$hash = $this->hash($salt.$password);
-
-		// Change salt to an array
-		$salt = str_split($salt, 1);
-
-		// Returned password
-		$password = '';
-
-		// Used to calculate the length of splits
-		$last_offset = 0;
-
-		foreach ($this->config['salt_pattern'] as $offset)
-		{
-			// Split a new part of the hash off
-			$part = substr($hash, 0, $offset - $last_offset);
-
-			// Cut the current part out of the hash
-			$hash = substr($hash, $offset - $last_offset);
-
-			// Add the part to the password, appending the salt character
-			$password .= $part.array_shift($salt);
-
-			// Set the last offset to the current offset
-			$last_offset = $offset;
-		}
-
-		// Return the password, with the remaining hash appended
-		return $password.$hash;
+		return $this->op5auth->verify_password( $user, $password );
 	}
 
 	/**
-	 * Perform a hash, using the configured method.
+	 * Update password for a given user.
 	 *
-	 * @param   string  string to hash
-	 * @return  string
+	 * @param $user     Op5User User object to verify
+	 * @param $password string  New password
+	 * @return          boolean true if password is ok
 	 */
-	public function hash($str)
+	public function update_password( $user, $password )
 	{
-		return hash($this->config['hash_method'], $str);
+		return $this->op5auth->update_password( $user, $password );
 	}
 
 	/**
-	 * Finds the salt from a password, based on the configured salt pattern.
+	 * Returns true if current session has access for a given authorization point
 	 *
-	 * @param   string  hashed password
-	 * @return  string
+	 * @param   string   authorization point
+     * @return  boolean  true if access
 	 */
-	public function find_salt($password)
+	public function authorized_for( $authorization_point )
 	{
-		$salt = '';
-
-		foreach ($this->config['salt_pattern'] as $i => $offset)
-		{
-			// Find salt characters, take a good long look...
-			$salt .= substr($password, $offset + $i, 1);
-		}
-
-		return $salt;
+		return $this->op5auth->authorized_for( $authorization_point );
 	}
 
+	/**
+	 * Returns an array of authentication methods.
+	 *
+	 * @return  array  list of authentication methods, or false if only a single
+	 *                 is avalible
+	 */
+	public function get_authentication_methods()
+	{
+		return $this->op5auth->get_authentication_methods();
+	}
+
+	/**
+	 * Returns name of default authentication method.
+	 *
+	 * @return 	string 	default authentication method
+	 *
+	 */
+	public function get_default_auth()
+	{
+		return $this->op5auth->get_default_auth();
+	}
 } // End Auth
+
+
+/**
+ * This class is just to fill in as Auth_Core if exception if thrown in factory.
+ *
+ * When showing an error page (as from exception in factory method), the instance
+ * needs to be set, so not a new exception will be thrown when rendering the error
+ * page
+ */
+class Auth_NoAuth_Core extends Auth_Core {
+
+	public function __construct($config = NULL)
+	{
+	}
+	
+	public function logged_in($role = NULL)
+	{
+		return false;
+	}
+	
+	public function get_user()
+	{
+		return new Op5User_NoAuth();
+	}
+	
+	public function login($username, $password, $auth_method = false)
+	{
+		return false;
+	}
+	
+	public function logout()
+	{
+		return false;
+	}
+
+	public function verify_password( $user, $password )
+	{
+		return false;
+	}
+
+	public function update_password( $user, $password )
+	{
+		return false;
+	}
+	
+	public function authorized_for( $authorization_point )
+	{
+		return false;
+	}
+	
+	public function get_authentication_methods()
+	{
+		return false;
+	}
+}

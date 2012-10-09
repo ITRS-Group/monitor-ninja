@@ -26,8 +26,7 @@ class Configuration_Controller extends Authenticated_Controller {
 	 */
 	public function configure($type=false, $name=false)
 	{
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_configuration_information) {
+		if( !Auth::instance()->authorized_for('configuration_information')) {
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = _("It appears as though you aren't authorized to access the configuration interface.");
 			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
@@ -65,7 +64,6 @@ class Configuration_Controller extends Authenticated_Controller {
 		}
 
 		# set the username so Nacoma can pick it up
-		$_SESSION['nacoma_user'] = user::session('username');
 		$this->template->disable_refresh = true;
 		$this->template->content = '<iframe src="'.Kohana::config('config.nacoma_path').'/'.$target_link.'" style="width: 100%; height: 768px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = _('Configuration » Configure');

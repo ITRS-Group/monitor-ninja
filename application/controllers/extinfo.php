@@ -503,8 +503,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function show_process_info()
 	{
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->authorized_for_system_information) {
+		if (!Auth::instance()->authorized_for('system_information')) {
 			url::redirect('extinfo/unauthorized/0');
 		}
 
@@ -684,7 +683,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('unauthorized');
 		$this->template->disable_refresh = true;
 
-		$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
+		$this->template->content->error_description = _('If you believe this is an error, check the authorization requirements for accessing this page and your given authorization points.');
 		switch ($type) {
 			case 'host':
 				$this->template->content->error_message = _('It appears as though you do not have permission to view information for this host or it doesn\'t exist...');
@@ -1174,8 +1173,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_order = $this->input->get('sort_order', $sort_order);
 		$sq_model->sort_field = $this->input->get('sort_field', $sort_field);
 
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->view_hosts_root) {
+		if (!Auth::instance()->authorized_for('host_view_all')) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
