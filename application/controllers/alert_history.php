@@ -24,6 +24,7 @@ class Alert_history_Controller extends Summary_Controller
 		parent::generate();
 		$this->template->content->report_options = $this->add_view('alert_history/options');
 		$this->template->title = _('Alert history');
+		$this->template->content->header->standard_header->skip_save = true;
 		$this->template->content->header->standard_header->title = _('Alert history');
 		if ($this->options['summary_items']) {
 			$this->template->content->content->pagination = new CountlessPagination(array('style' => 'digg-pageless'));

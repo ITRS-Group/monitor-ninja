@@ -26,8 +26,9 @@
 		$pdf_alt = _('Show as pdf');
 		echo '<input type="image" src="'.$this->add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
 		echo '</form>';
-		?>
+		if (!isset($skip_save)) { ?>
 		<a href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
+		<?php } ?>
 		<a href="#options" class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>
 		<?php if ($options['report_id']) { ?>
 		<a id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
