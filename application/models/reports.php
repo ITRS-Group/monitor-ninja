@@ -1494,7 +1494,7 @@ class Reports_Model extends Model
 						$this->options['alert_types'] = $alert_types;
 						$query = $this->build_alert_summary_query(false);
 						if (!$query)
-							return "FAIL: host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
+							return "FAIL: No query returned for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
 						$result[$query] = $this->test_summary_query($query);
 					}
 				}
