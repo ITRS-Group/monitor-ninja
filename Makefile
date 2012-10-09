@@ -20,7 +20,6 @@ test-ci-cleanup:
 	if [ -f /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; fi
 	/bin/sleep 5 # give nagios some time to read
 	rm -rf /tmp/ninja-test # 'pparently, sockets can't always be created otherwise. Weird.
-	rm -f application/config/custom/config.php
 	rm -f application/config/custom/database.php
 	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
 
@@ -31,7 +30,6 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	/opt/monitor/op5/merlin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
 	php index.php 'cli/insert_user_data'
-	sed -e 's#/opt/monitor/var/rw/live#/tmp/ninja-test/live#' application/config/config.php > application/config/custom/config.php
 	/bin/sleep 5
 
 test-ci: test-ci-prepare
@@ -67,6 +65,6 @@ wipe:
 prepare-config:
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
-	echo "$$config['livestatus'] = array('benchmark' => true, 'path' => 'unix:///opt/monitor/var/rw/live')" > application/config/custom/database.php
+	echo "<?php \$$config['livestatus'] = array('benchmark' => true, 'path' => 'unix:///opt/monitor/var/rw/live');" > application/config/custom/database.php
 
 .PHONY: test help test-reports clean
