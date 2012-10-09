@@ -196,6 +196,8 @@ class Default_Controller extends Ninja_Controller  {
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
+		set_time_limit(0);
+		ini_set('memory_limit', '-1');
 		$this->auto_render=false;
 		$cli_access = Kohana::config('config.cli_access');
 
