@@ -496,7 +496,7 @@ class LivestatusBackend {
 	public function __construct($config = null) {
 		$config           = $config ? $config : 'livestatus';
 		$this->config     = Kohana::config('database.'.$config);
-		$this->auth       = Nagios_auth_Model::instance();
+		$this->auth       = Auth::instance();
 		$this->connection = new LivestatusConnection(array('path' => $this->config['path']));
 	}
 
@@ -574,10 +574,10 @@ class LivestatusBackend {
 		if(isset($options['auth']) && $options['auth'] === true) {
 			return "";
 		}
-		if(strpos($table, 'services') !== false && !$this->auth->view_services_root) {
+		if(strpos($table, 'services') !== false && !$this->auth->authorized_for('service_view_all') ) {
 			return "AuthUser: ".$this->auth->user."\n";
 		}
-		elseif(strpos($table, 'hosts') !== false && !$this->auth->view_hosts_root) {
+		elseif(strpos($table, 'hosts') !== false && !$this->auth->authorized_for('host_view_all') ) {
 			return "AuthUser: ".$this->auth->user."\n";
 		}
 		return "";
