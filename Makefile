@@ -8,12 +8,10 @@ help:
 test: test-php-lint test-reports test-unittest
 
 test-reports: test-ci-prepare
-	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst
-	make test-ci-cleanup
+	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst; res=$$?; make test-ci-cleanup; exit $$res
 
 test-unittest: test-ci-prepare
-	php index.php ninja_unit_test
-	make test-ci-cleanup
+	php index.php ninja_unit_test; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
 	git checkout test/configs/all-host_service-states/var/status.sav || :
