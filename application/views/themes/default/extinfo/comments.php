@@ -66,11 +66,11 @@ if (!empty($command_result)) {
 				<?php }
 				} ?>
 				<td style="white-space: normal"><?php echo !empty($row['entry_time']) ? date($date_format_str, $row['entry_time']) : '' ?></td>
-				<td style="white-space: normal"><?php echo $row['author_name'] ?></td>
+				<td style="white-space: normal"><?php echo $row['author'] ?></td>
 				<td style="white-space:normal">
 					<?php echo htmlspecialchars($row['comment']); ?>
 				</td>
-				<td><?php echo $row['comment_id'] ?></td>
+				<td><?php echo $row['id'] ?></td>
 				<td><?php
 					if ($row['persistent'] === false) {
 						echo _('N/A');
@@ -104,10 +104,10 @@ if (!empty($command_result)) {
 				<td><?php echo $row['expires'] ? date($date_format_str, $row['expire_time']) : _('N/A') ?></td>
 				<td class="icon">
 			<?php 	if ($row['comment_type'] == 'downtime') {
-						echo html::anchor('command/submit?cmd_typ='.$cmd_delete_downtime.'&downtime_id='.$row['comment_id'],
+						echo html::anchor('command/submit?cmd_typ='.$cmd_delete_downtime.'&downtime_id='.$row['id'],
 						html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => _('Delete this downtime'), 'title' => _('Delete this downtime'))),array('style' => 'border: 0px'));
 					} else {
-						echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row['comment_id'],
+						echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row['id'],
 						html::image($this->add_path('icons/16x16/delete-comment.png'), array('alt' => _('Delete this comment'), 'title' => _('Delete this comment'))),array('style' => 'border: 0px'));
 					} ?>
 				</td>

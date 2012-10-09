@@ -83,14 +83,14 @@ if (!empty($widgets)) {
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Email') ?></th>
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
 					</tr>
-					<?php	foreach ($contacts[$cgroup] as $cmember) { ?>
+					<?php	/*foreach ($contacts[$cgroup] as $cmember) { ?>
 					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
 						<td><?php echo $cmember->contact_name ?></td>
 						<td><?php echo $cmember->alias ?></td>
 						<td><?php echo $cmember->email ?></td>
 						<td><?php echo $cmember->pager ?></td>
 					</tr>
-					<?php	} ?>
+					<?php	}*/ ?>
 				</table>
 					<?php	# needed to assign unique IDs to extinfo_contacts_ table
 						$c++; 	# and extinfo_contactgroup_ table cells

@@ -5,6 +5,9 @@
  */
 class Downtime_Model extends Comment_Model
 {
+	/* This is a livestatus table name... */
+	const TABLE_NAME = 'downtimes'; /**< The name of the downtimes table */
+	
 	/**
 	 * Fetch current downtime information
 	 * 

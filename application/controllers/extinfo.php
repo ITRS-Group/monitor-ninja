@@ -66,7 +66,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$ls = Livestatus::instance();
 		if(empty($service)) {
-			$result_data = $ls->getHosts(array('filter' => array('name' => $host)));
+			$result_data = $ls->getHosts(array('filter' => array('name' => $host), 'extra_columns' => array('contact_groups')));
 		} else {
 			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service)));
 		}
@@ -91,22 +91,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$host_link = false;
 		$yes = _('YES');
 		$no = _('NO');
-		$contactgroups_res = Contactgroup_Model::get_contactgroup($host, $service);
-		$contacts = false;
-		$contactgroups = false;
-		if ($contactgroups_res !== false) {
-			foreach ($contactgroups_res as $c_group) {
-				$contactgroups[] = $c_group->contactgroup_name;
-				$c_members = Contactgroup_Model::get_members($c_group->contactgroup_name);
-				if ($c_members !== false) {
-					foreach ($c_members as $member) {
-						$contacts[$c_group->contactgroup_name][] = $member;
-					}
-				}
-			}
-		}
-		$content->contactgroups = $contactgroups;
-		$content->contacts = $contacts;
+		
+		$content->contactgroups = $result->contact_groups;
 		$is_pending = false;
 		$back_link = false;
 		$content->parents = false;
@@ -480,7 +466,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# show comments for hosts and services
 		if ($type == 'host' || $type == 'service')
-			$comments = $this->_comments($host, $service);
+			$this->_comments($host, $service);
 	}
 
 	/**
@@ -954,47 +940,20 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$i = 0;
 
 		$comment_type = 'comment';
-		if (!empty($comment_data)) {
-			foreach ($comment_data as $row) {
-				$comment[$i]['host_name'] = $row->host_name;
-				$comment[$i]['service_description'] = $row->service_description;
-				$comment[$i]['entry_time'] = $row->entry_time;
-				$comment[$i]['author_name'] = $row->author_name;
-				$comment[$i]['entry_time'] = $row->entry_time;
-				$comment[$i]['comment_id'] = $row->comment_id;
-				$comment[$i]['persistent'] = $row->persistent;
-				$comment[$i]['entry_type'] = $row->entry_type;
-				$comment[$i]['expires'] = $row->expires;
-				$comment[$i]['expire_time'] = $row->expire_time;
-				$comment[$i]['comment'] = $row->comment_data;
-				$comment[$i]['comment_type'] = $comment_type;
-				$i++;
-			}
-		}
-		else {
-			$comment = $comment_data;
+		foreach ($comment_data as $row) {
+			$comment[$i] = $row;
+			$comment[$i]['comment_type'] = $comment_type;
+			$i++;
 		}
 
 		$comment_type = 'downtime';
-		if (!empty($schedule_downtime_comments) && count($schedule_downtime_comments) > 0) {
-			foreach ($schedule_downtime_comments as $row) {
-				if (empty($row->comment_data)) {
-					continue;
-				}
-				$comment[$i]['host_name'] = $row->host_name;
-				$comment[$i]['service_description'] = $row->service_description;
-				$comment[$i]['entry_time'] = $row->entry_time;
-				$comment[$i]['author_name'] = $row->author_name;
-				$comment[$i]['entry_time'] = $row->entry_time;
-				$comment[$i]['comment_id'] = $row->downtime_id;
-				$comment[$i]['persistent'] = false;
-				$comment[$i]['entry_type'] = $row->downtime_type;
-				$comment[$i]['expires'] = false;
-				$comment[$i]['expire_time'] = false;
-				$comment[$i]['comment'] = $row->comment_data;
-				$comment[$i]['comment_type'] = $comment_type;
-				$i++;
-			}
+		foreach ($schedule_downtime_comments as $row) {
+//			if (empty($row->comment_data)) {
+//				continue;
+//			}
+			$comment[$i] = $row;
+			$comment[$i]['comment_type'] = $comment_type;
+			$i++;
 		}
 
 		if (!$all && is_array($comment)) {

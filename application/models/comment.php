@@ -14,35 +14,9 @@ class Comment_Model extends Model {
 	const FLAPPING_COMMENT = 3; /**< Comment is generated because object is flapping */
 	const ACKNOWLEDGEMENT_COMMENT = 4; /**< Comment is generated from an acknowledgement */
 
-	const TABLE_NAME = 'comment_tbl'; /**< The name of the comment table */
+	const TABLE_NAME = 'comments'; /**< The name of the comment table */
 
-	/**
-	 * Generate basic SQL for fetching comments. Takes care to join correctly with contact_access
-	 *
-	 * Used by both fetch_comments_by_* methods.
-	 */
-	protected static function gen_fetch_comment_query($for_services = false, $count = false) {
-		$auth = Nagios_auth_Model::instance();
-
-		if ($auth->{'view_'.($for_services?'services':'hosts').'_root'}) {
-			$filter = '';
-		} else if ($for_services) {
-			$filter = 'INNER JOIN service s ON c.host_name = s.host_name '.
-				'AND c.service_description = s.service_description '.
-				'INNER JOIN contact_access ca ON s.id = ca.service '.
-				'AND ca.contact = '.$auth->id;
-		} else {
-			$filter = 'INNER JOIN host h ON c.host_name = h.host_name '.
-				'INNER JOIN contact_access ca ON h.id = ca.host '.
-				'AND ca.contact = '.$auth->id;
-		}
-
-		$fields = $count? 'COUNT(1) AS cnt' : 'c.*';
-
-		$sql = 'SELECT '.$fields.' FROM '.static::TABLE_NAME.' c '.$filter.' ';
-
-		return $sql;
-	}
+	
 	/**
 	 * Fetch saved comments for host or service
 	 *
@@ -62,26 +36,36 @@ class Comment_Model extends Model {
 		if (empty($host)) {
 			return false;
 		}
-		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
-
-		$base_sql = static::gen_fetch_comment_query($service != false, $count);
-
-		$svc_selection = empty($service) ?
-			'AND c.service_description IS NULL' :
-			'AND c.service_description='.$db->escape($service);
-
-		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-
-		$sql = $base_sql.'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
-		if (!$count)
-			$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
-
-		$result = $db->query($sql)->result();
-		if ($count !== false) {
-			return $result ? $result->current()->cnt : 0;
+		$ls = Livestatus::instance();
+		$lsb = $ls->getBackend();
+		
+		if( $service === false ) {
+			$filter = array( 'type' => 0, 'host_name' => $host );
+		} else {
+			$filter = array( 'type' => 1, 'host_name' => $host, 'service_description' => $service );
 		}
+		if( $count ) {
+			$result = $lsb->getStats( 'comments', array(
+					'count' => array('author' => array( '!=' => '' ))
+					), array(
+					'filter' => $filter
+					) );
+			return $result[0]['count'];
+		}
+		if( static::TABLE_NAME == 'comments' ) {
+			$result = $ls->getComments( array(
+					'filter' => $filter,
+					'offset' => $offset,
+					'limit'  => $num_per_page
+					) );
+		} else {
+			$result = $ls->getDowntimes( array(
+					'filter' => $filter,
+					'offset' => $offset,
+					'limit'  => $num_per_page
+					) );
+		}
+		
 		return $result;
 	}
 
