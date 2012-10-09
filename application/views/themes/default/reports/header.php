@@ -61,7 +61,7 @@
 	<?php echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
 	if ($options['use_average']) echo " <strong>("._('using averages').")</strong>"; ?>
 	</p>
-	<p><?php echo reports::get_included_states($options['report_type'], $options); ?></p>
+	<?php if ($type == 'avail' || $type == 'sla') { echo '<p>'.reports::get_included_states($options['report_type'], $options).'</p>'; } ?>
 	<div class="description">
 		<p><?php echo nl2br($options['description']) ?></p>
 	</div>
