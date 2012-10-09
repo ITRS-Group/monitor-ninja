@@ -17,10 +17,9 @@ test-unittest:
 
 test-ci-cleanup:
 	git checkout test/configs/all-host_service-states/var/status.sav || :
-	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); fi
-	if [ -f /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; fi
-	/bin/sleep 5 # give nagios some time to read
-	rm -rf /tmp/ninja-test # 'pparently, sockets can't always be created otherwise. Weird.
+	if [ -e test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); fi
+	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; fi
+	rm -rf /tmp/ninja-test
 	rm -f application/config/custom/database.php
 	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
 
