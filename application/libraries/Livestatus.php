@@ -575,10 +575,10 @@ class LivestatusBackend {
 			return "";
 		}
 		if(strpos($table, 'services') !== false && !$this->auth->authorized_for('service_view_all') ) {
-			return "AuthUser: ".$this->auth->user."\n";
+			return "AuthUser: ".$this->auth->get_user()->username."\n";
 		}
 		elseif(strpos($table, 'hosts') !== false && !$this->auth->authorized_for('host_view_all') ) {
-			return "AuthUser: ".$this->auth->user."\n";
+			return "AuthUser: ".$this->auth->get_user()->username."\n";
 		}
 		return "";
 	}
