@@ -8,7 +8,7 @@ class report_Test extends TapUnit {
 		$report = Timeperiod_Model::instance($opts);
 		$report->resolve_timeperiods();
 		$this->pass('Could resolve timperiod torture-test');
-		$this->ok(!empty($report->tp_exceptions), 'There are exceptions');
+		$this->ok(!empty($report->tp_exceptions), 'There are timeperiod exceptions');
 		// fixme: validate output
 	}
 
@@ -37,9 +37,6 @@ class report_Test extends TapUnit {
 		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
 		$this->rpt = new Reports_Model($opts);
 		$auth = Nagios_auth_Model::instance();
-		$res = Database::instance()->query('SELECT id FROM contact LIMIT 1');
-		//whatever, as long as it's valid (and has at least one of each)
-		$auth->id = $res->current()->id;
 
 		$auth->view_hosts_root = false;
 		$auth->view_services_root = false;
