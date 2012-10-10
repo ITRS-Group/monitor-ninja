@@ -9,6 +9,7 @@ target_sched_version=8
 
 db_user=merlin
 db_pass=merlin
+db_name=merlin
 
 progname="$0"
 
@@ -22,6 +23,7 @@ Where options can be any combination of:
   --help|-h                            Print this cruft and exit
   --db-user=<username>                 User merlin should use with db
   --db-pass=<password>                 Password for the db user
+  --db-name=<name>                     Database name
 
 END_OF_HELP
         exit 1
@@ -34,29 +36,36 @@ get_arg ()
 
 while test "$1"; do
 	case "$1" in
-                --db-user=*)
-                        db_user=$(get_arg "$1")
-                        ;;
-                --db-user)
-                        shift
-                        db_user="$1"
+		--db-user=*)
+			db_user=$(get_arg "$1")
 			;;
-                --db-pass=*)
-                        db_pass=$(get_arg "$1")
-                        ;;
-                --db-pass)
-                        shift
-                        db_pass="$1"
-                        ;;
-                --help|-h)
-                        show_usage
-                        ;;
-                *)
-                        echo "Illegal argument. I have no idea what to make of '$1'"
-                        exit 1
-                        ;;
-        esac
-        shift
+		--db-user)
+			shift
+			db_user="$1"
+			;;
+		--db-pass=*)
+			db_pass=$(get_arg "$1")
+			;;
+		--db-pass)
+			shift
+			db_pass="$1"
+			;;
+		--db-name=*)
+			db_name=$(get_arg "$1")
+			;;
+		--db-name)
+			shift
+			db_name="$1"
+			;;
+		--help|-h)
+			show_usage
+			;;
+		*)
+			echo "Illegal argument. I have no idea what to make of '$1'"
+			exit 1
+			;;
+	esac
+	shift
 done
 
 
@@ -67,24 +76,24 @@ run_sql_file () # (db_login_opts, sql_script_path)
 	db_login_opts=$1
 	sql_script_path=$2
 
-	mysql $db_login_opts merlin < $sql_script_path >/dev/null 2>/dev/null
+	mysql $db_login_opts < $sql_script_path >/dev/null 2>/dev/null
 }
 
 if [ "$db_pass" != "" ]
 then
-	db_login_opts="-u$db_user -p$db_pass"
+	db_login_opts="-u$db_user -p$db_pass $db_name"
 else
-	db_login_opts="-u$db_user"
+	db_login_opts="-u$db_user $db_name"
 fi
 
-db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)
+db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" 2>/dev/null | sed -n \$p)
 
 if [ "$db_ver" = '' ]
 then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
 	run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja.sql"
-	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)
+	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" 2>/dev/null | sed -n \$p)
 fi
 
 if [[ "$db_ver" = '' ]]
@@ -134,19 +143,19 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		new_ver=`expr $db_ver + 1`
 		echo "Upgrading ninja db from v${db_ver} to v${new_ver}"
 		run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
-		mysql $db_login_opts merlin -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
+		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
 		db_ver=$new_ver
 		;;
 	esac
 done
 
-sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" merlin 2>/dev/null | sed -n \$p)
+sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/null | sed -n \$p)
 
 if [ "$sla_ver" = "" ]
 then
 	echo "Installing database tables for SLA report configuration"
 	run_sql_file "$db_login_opts" "$prefix/sql/mysql/sla_v1.sql"
-	sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version"   merlin 2>/dev/null | sed -n \$p)
+	sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/null | sed -n \$p)
 fi
 
 
@@ -167,7 +176,7 @@ do
 	if [ -r "$upgrade_script" ]
 	then
 		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '$new_ver'" merlin 2>/dev/null
+		mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '$new_ver'" 2>/dev/null
 		echo "done."
 	else
 		echo "SCRIPT MISSING."
@@ -178,13 +187,13 @@ do
 done
 
 
-avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merlin 2>/dev/null | sed -n \$p)
+avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
 
 if [ "$avail_ver" = "" ]
 then
 	echo "Installing database tables for AVAIL report configuration"
 	run_sql_file "$db_login_opts" "$prefix/sql/mysql/avail_v1.sql"
-	avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merlin 2>/dev/null | sed -n \$p)
+	avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
 fi
 
 
@@ -215,7 +224,7 @@ do
 	if [ -r "$upgrade_script" ]
 	then
 		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '$new_ver'" merlin 2>/dev/null
+		mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '$new_ver'" 2>/dev/null
 		echo "done."
 	else
 		echo "SCRIPT MISSING."
@@ -226,7 +235,7 @@ do
 done
 
 # check that we have the scheduled reports tables in merlin
-sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" merlin 2>/dev/null | sed -n \$p)
+sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
 
 if [ "$sched_db_ver" = "" ]
 then
@@ -235,7 +244,7 @@ then
 	echo "Installing database tables for scheduled reports configuration"
 	upgrade_script="$prefix/sql/mysql/scheduled_reports.sql"
 	run_sql_file "$db_login_opts" $upgrade_script
-	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version"   merlin 2>/dev/null | sed -n \$p)
+	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
 fi
 
 sched_db_ver=$(echo $sched_db_ver | cut -d '.' -f1)
@@ -256,7 +265,7 @@ while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	if [ -r "$upgrade_script" ]
 	then
 		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '${new_ver}'" merlin 2>/dev/null
+		mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '${new_ver}'" 2>/dev/null
 		echo "done."
 	else
 		echo "SCRIPT MISSING."
@@ -267,10 +276,10 @@ while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 done;
 
 # make sure we have enabled scheduled summary reports
-summary_schedules=$(mysql $db_login_opts -Be "SELECT identifier FROM scheduled_report_types WHERE identifier='summary'" merlin 2>/dev/null | sed -n \$p)
+summary_schedules=$(mysql $db_login_opts -Be "SELECT identifier FROM scheduled_report_types WHERE identifier='summary'" 2>/dev/null | sed -n \$p)
 if [ "$summary_schedules" = "" ]
 then
-	mysql $db_login_opts -Be "INSERT INTO scheduled_report_types (name, identifier) VALUES('Alert Summary Reports', 'summary');" merlin 2>/dev/null
+	mysql $db_login_opts -Be "INSERT INTO scheduled_report_types (name, identifier) VALUES('Alert Summary Reports', 'summary');" 2>/dev/null
 fi
 
 # check if old tables exists and should be imported
