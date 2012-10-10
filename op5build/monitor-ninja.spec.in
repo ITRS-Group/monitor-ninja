@@ -13,6 +13,7 @@ Requires: merlin-apps >= 0.8.0
 Requires: merlin
 Requires: op5auth >= 1.2.0
 Requires: php >= 5.3
+Requires: php-op5lib
 %if 0%{?rhel} >= 6
 Requires: php-process
 %else
