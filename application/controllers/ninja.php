@@ -118,7 +118,7 @@ class Ninja_Controller extends Template_Controller {
 
 		if (PHP_SAPI != 'cli') {
 			$locales = $this->locale->getOrder();
-			foreach ($locales as $locale) {
+			foreach (array_keys($locales) as $locale) {
 				putenv('LC_ALL='.$locale);
 				setlocale(LC_ALL, $locale);
 				break;
