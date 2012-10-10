@@ -120,8 +120,6 @@ class Reports_Model extends Model
 	   );
 
 	public $initial_dt_depth = false; /**< The initial downtime depth. NOTE: this is scary, what if there's a dozen 365 day long downtimes active at once or bugs caused us to forget to end downtimes? */
-	public $db_name = 'merlin'; /**< Report database name */
-	const db_name = 'merlin'; /**< Report database name, FIXME: again, 4 teh lulz */
 	public $db_table = 'report_data'; /**< Report table name */
 	const db_table = 'report_data'; /**< Report table name, FIXME: again, 4 teh lulz */
 	public $sub_reports = array(); /**< An array of sub-reports for this report */
@@ -154,10 +152,9 @@ class Reports_Model extends Model
 	/**
 	 * Constructor
 	 * @param $options An instance of Report_options
-	 * @param $db_name Database name
 	 * @param $db_table Database name
 	 */
-	public function __construct(Report_options $options, $db_name='merlin', $db_table='report_data')
+	public function __construct(Report_options $options, $db_table='report_data')
 	{
 		parent::__construct();
 		if (self::DEBUG === true) {
@@ -171,7 +168,6 @@ class Reports_Model extends Model
 		}
 
 		$this->db_table = $db_table;
-		$this->db_name = $db_name;
 		$this->st_obj_state = self::STATE_PENDING;
 
 		/** The real state of the object */
@@ -282,7 +278,7 @@ class Reports_Model extends Model
 				$opts['service_description'] = $service;
 				$opts['master'] = $this;
 				$opts['keep_logs'] = $this->options['keep_sub_logs'];
-				$sub_class = new Reports_Model($opts, $this->db_name, $this->db_table);
+				$sub_class = new Reports_Model($opts, $this->db_table);
 				$sub_class->register_db_time($opts['start_time']);
 				$sub_class->register_db_time($opts['end_time']);
 				$sub_class->st_source = $service;
@@ -300,7 +296,7 @@ class Reports_Model extends Model
 				$opts['keep_logs'] = $this->options['keep_sub_logs'];
 				$opts['host_name'] = $host;
 				$opts['master'] = $this;
-				$sub_class = new Reports_Model($opts, $this->db_name, $this->db_table);
+				$sub_class = new Reports_Model($opts, $this->db_table);
 				$sub_class->register_db_time($opts['start_time']);
 				$sub_class->register_db_time($opts['end_time']);
 				$sub_class->st_source = $host;
@@ -362,7 +358,7 @@ class Reports_Model extends Model
 		}
 
 		$query = "SELECT timestamp, event_type FROM ".
-			$this->db_name.".".$this->db_table.
+			$this->db_table.
 			" WHERE timestamp <".$this->options['start_time'].
 			" ORDER BY timestamp DESC LIMIT 1";
 		$dbr = $this->db->query($query)->result(false);
@@ -1117,7 +1113,7 @@ class Reports_Model extends Model
 		if ($this->options['keep_logs'])
 			$sql .= ", output";
 
-		$sql .= " FROM ".$this->db_name.".".$this->db_table." ";
+		$sql .= " FROM ".$this->db_table." ";
 
 		$time_first = 'timestamp >='.$this->options['start_time'];
 		$time_last = 'timestamp <='.$this->options['end_time'];
@@ -1204,7 +1200,7 @@ class Reports_Model extends Model
 		}
 
 		$sql = "SELECT timestamp, event_type FROM " .
-			$this->db_name . "." . $this->db_table . " " .
+			$this->db_table . " " .
 			"WHERE timestamp <= " . $this->options['start_time'] . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
 			" OR event_type = " .self::DOWNTIME_STOP . ") " .
@@ -1241,7 +1237,7 @@ class Reports_Model extends Model
 			return false;
 
 		$sql = "SELECT timestamp, state FROM " .
-			$this->db_name . "." . $this->db_table .
+			$this->db_table .
 			" WHERE host_name = ".$this->db->escape($this->host_name);
 		if (!$this->service_description)
 			$sql .= " AND (service_description = '' OR service_description IS NULL)";

@@ -6,7 +6,6 @@
  */
 class Saved_reports_Model extends Model
 {
-	const db_name = 'merlin'; /**< Name of reports database */
 	const USERFIELD = 'username'; /**< Name of the user field in database */
 
 	/**

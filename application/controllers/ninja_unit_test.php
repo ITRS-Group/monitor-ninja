@@ -24,11 +24,6 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 		#Auth::instance()->force_login($user);
 
 		$test_results = array();
-		$db_name = 'merlin';
-		$db_user = 'merlin';
-		$db_pass = 'merlin';
-		$db_host = 'localhost';
-		$db_type = 'mysql';
 		$config = Kohana::config('database.default');
 		if (isset($config['connection'])) {
 			$connection = $config['connection'];

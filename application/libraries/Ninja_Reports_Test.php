@@ -134,7 +134,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		$opts['keep_logs'] = true;
 		$opts['keep_sub_logs'] = true;
 
-		$rpt = new Reports_Model($opts, 'merlin', $this->table_name);
+		$rpt = new Reports_Model($opts, $this->table_name);
 		$return_arr = $rpt->get_uptime();
 		$this->result = $return_arr;
 		$this->report_objects[$this->cur_test] = $rpt;
