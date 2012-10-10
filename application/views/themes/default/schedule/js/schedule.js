@@ -133,8 +133,9 @@ $(document).ready(function() {
 	});
 });
 
-function schedule_delete()
+function schedule_delete(ev)
 {
+	ev.preventDefault();
 	if (!confirm(_reports_confirm_delete_schedule)) {
 		return false;
 	}
@@ -169,8 +170,9 @@ function schedule_delete()
 	});
 }
 
-function send_report_now()
+function send_report_now(ev)
 {
+	ev.preventDefault();
 	var elem = $(this);
 	var type = elem.data('type');
 	var sched_id = elem.data('schedule');
