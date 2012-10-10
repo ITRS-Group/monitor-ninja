@@ -68,7 +68,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if(empty($service)) {
 			$result_data = $ls->getHosts(array('filter' => array('name' => $host), 'extra_columns' => array('contact_groups')));
 		} else {
-			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service)));
+			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'extra_columns' => array('contact_groups')));
 		}
 		if (count($result_data) === 0) {
 			return url::redirect('extinfo/unauthorized/'.$type);
