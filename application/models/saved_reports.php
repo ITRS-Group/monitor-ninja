@@ -99,6 +99,7 @@ class Saved_reports_Model extends Model
 				foreach ($options as $key => $val) {
 					// fuck you, special cases
 					switch ($key) {
+					 case 'description':
 					 case 'host_name':
 					 case 'service_description':
 					 case 'hostgroup':
@@ -124,6 +125,7 @@ class Saved_reports_Model extends Model
 				foreach ($options as $key => $value) {
 					// fuck you, special cases
 					switch ($key) {
+					 case 'description':
 					 case 'host_name':
 					 case 'service_description':
 					 case 'hostgroup':
@@ -141,7 +143,6 @@ class Saved_reports_Model extends Model
 				$sql .= " WHERE id=".$id;
 			}
 		}
-		#echo $sql;
 		$res = $db->query($sql);
 
 		unset($res);
