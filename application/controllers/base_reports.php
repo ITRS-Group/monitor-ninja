@@ -78,6 +78,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 		if (is_resource($process)) {
 			$this->auto_render = false;
+			$filename = $this->type;
 			if ($this->options['schedule_id']) {
 				$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
 				if ($schedule_info)
@@ -85,8 +86,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			}
 			$months = date::abbr_month_names();
 			$month = $months[date('m')-1]; // January is [0]
-			$filename = $this->type."_".date("Y_").$month.date("_d").'.pdf';
-			//$filename = $this->type.'.pdf';
+			$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
 
 			fwrite($pipes[0], "\n");
 			fclose($pipes[0]);
