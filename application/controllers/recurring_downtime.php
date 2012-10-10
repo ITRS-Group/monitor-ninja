@@ -13,11 +13,6 @@
  */
 class recurring_downtime_Controller extends Authenticated_Controller {
 
-	public static $week = array('sun','mon','tue','wed','thu','fri','sat');
-	private $abbr_month_names = false;
-	private $month_names = false;
-	private $day_names = false;
-	private $abbr_day_names = false;
 	private $downtime_commands = false;
 	private $downtime_types = false;
 	private $schedule_id = false;
@@ -31,56 +26,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 				url::redirect('recurring_downtime/unauthorized');
 			}
 		}
-
-		$this->abbr_month_names = array(
-			_('Jan'),
-			_('Feb'),
-			_('Mar'),
-			_('Apr'),
-			_('May'),
-			_('Jun'),
-			_('Jul'),
-			_('Aug'),
-			_('Sep'),
-			_('Oct'),
-			_('Nov'),
-			_('Dec')
-		);
-
-		$this->month_names = array(
-			_('January'),
-			_('February'),
-			_('March'),
-			_('April'),
-			_('May'),
-			_('June'),
-			_('July'),
-			_('August'),
-			_('September'),
-			_('October'),
-			_('November'),
-			_('December')
-		);
-
-		$this->abbr_day_names = array(
-			_('Sun'),
-			_('Mon'),
-			_('Tue'),
-			_('Wed'),
-			_('Thu'),
-			_('Fri'),
-			_('Sat')
-		);
-
-		$this->day_names = array(
-			_('Sunday'),
-			_('Monday'),
-			_('Tuesday'),
-			_('Wednesday'),
-			_('Thursday'),
-			_('Friday'),
-			_('Saturday')
-		);
 
 		$this->downtime_commands = array(
 			'hosts' => 'SCHEDULE_HOST_DOWNTIME',
@@ -96,7 +41,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			'servicegroups' => _('Servicegroup'),
 		);
 	}
-
 
 
 	/**
@@ -223,11 +167,11 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _form_field_time = '"._("time")."';\n";
 		$this->js_strings .= "var _form_field_duration = '"._("duration")."';\n";
 
-		$template->day_names = $this->day_names;
+		$template->day_names = date::day_names();
 		$template->day_index = array(1, 2, 3, 4, 5, 6, 0);
-		$template->abbr_day_names = $this->abbr_day_names;
-		$template->month_names = $this->month_names;
-		$template->abbr_month_names = $this->abbr_month_names;
+		$template->abbr_day_names = date::abbr_day_names();
+		$template->month_names = date::month_names();
+		$template->abbr_month_names = date::abbr_month_names();
 		$template->current_dt_type = $current_dt_type;
 
 		$template->schedule_id = $this->schedule_id;
@@ -337,8 +281,9 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		if (!empty($recurring_day)) {
 			$dayarr = false;
+			$abbr_day_names = date::abbr_day_names();
 			foreach ($recurring_day as $dayval) {
-				$dayarr[] = strtolower($this->abbr_day_names[$dayval]);
+				$dayarr[] = strtolower($abbr_day_names[$dayval]);
 			}
 			$days = implode(',', $dayarr);
 		}

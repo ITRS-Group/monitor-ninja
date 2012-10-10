@@ -150,7 +150,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
-		$template->report_options->months = reports::abbr_month_names();
+		$template->report_options->months = date::abbr_month_names();
 
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$template->report_options->saved_reports = $saved_reports;
@@ -297,7 +297,7 @@ class Reports_Controller extends Base_reports_Controller
 		$tpl_options = $template->report_options;
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$tpl_options->saved_reports = $saved_reports;
-		$tpl_options->months = reports::abbr_month_names();
+		$tpl_options->months = date::abbr_month_names();
 
 		if ($this->type == 'avail') {
 			$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";

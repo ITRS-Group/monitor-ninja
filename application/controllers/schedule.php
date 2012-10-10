@@ -204,6 +204,9 @@ class Schedule_Controller extends Authenticated_Controller
 		}
 		$save = false;
 		$mail = false;
+		$months = date::abbr_month_names();
+		$month = $months[date('m')-1]; // January is [0]
+		$filename = preg_replace("~\.pdf$~", null, $opt_obj['filename'])."_".date("Y_").$month.date("_d").'.pdf';
 		if ($code != 0) {
 			if (request::is_ajax()) {
 				return json::fail(sprintf(_("Failed to run %s: %s"), $cmd, $out));
@@ -218,7 +221,7 @@ class Schedule_Controller extends Authenticated_Controller
 			$save = true;
 		}
 		if ($opt_obj['recipients']) {
-			Send_report_Model::send($out, $opt_obj['filename'], $opt_obj['output_format'], $opt_obj['recipients']);
+			Send_report_Model::send($out, $filename, $opt_obj['output_format'], $opt_obj['recipients']);
 			$mail = true;
 		}
 		if (request::is_ajax()) {

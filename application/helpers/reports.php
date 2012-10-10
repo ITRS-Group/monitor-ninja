@@ -153,26 +153,6 @@ class reports_Core
 	}
 
 	/**
-	 * Return array of shortened month names
-	 */
-	public static function abbr_month_names()
-	{
-		return array(
-			_('Jan'),
-			_('Feb'),
-			_('Mar'),
-			_('Apr'),
-			_('May'),
-			_('Jun'),
-			_('Jul'),
-			_('Aug'),
-			_('Sep'),
-			_('Oct'),
-			_('Nov'),
-			_('Dec')
-		);
-	}
-	/**
 	*	Create common translated javascript strings
 	*/
 	public static function js_strings()
@@ -204,45 +184,10 @@ class reports_Core
 			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 		$js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 
-		$month_names = array(
-			_('January'),
-			_('February'),
-			_('March'),
-			_('April'),
-			_('May'),
-			_('June'),
-			_('July'),
-			_('August'),
-			_('September'),
-			_('October'),
-			_('November'),
-			_('December')
-		);
-
-		$day_names = array(
-			_('Sunday'),
-			_('Monday'),
-			_('Tuesday'),
-			_('Wednesday'),
-			_('Thursday'),
-			_('Friday'),
-			_('Saturday')
-		);
-
-		$abbr_day_names = array(
-			_('Sun'),
-			_('Mon'),
-			_('Tue'),
-			_('Wed'),
-			_('Thu'),
-			_('Fri'),
-			_('Sat')
-		);
-
-		$js_strings .= "Date.monthNames = ".json::encode($month_names).";\n";
-		$js_strings .= 'Date.abbrMonthNames = '.json::encode(self::abbr_month_names()).";\n";
-		$js_strings .= 'Date.dayNames = '.json::encode($day_names).";\n";
-		$js_strings .= 'Date.abbrDayNames = '.json::encode($abbr_day_names).";\n";
+		$js_strings .= "Date.monthNames = ".json::encode(date::month_names()).";\n";
+		$js_strings .= 'Date.abbrMonthNames = '.json::encode(date::abbr_month_names()).";\n";
+		$js_strings .= 'Date.dayNames = '.json::encode(date::day_names()).";\n";
+		$js_strings .= 'Date.abbrDayNames = '.json::encode(date::abbr_day_names()).";\n";
 		$js_strings .= 'Date.firstDayOfWeek = '.$first_day_of_week.";\n";
 		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
 		$js_strings .= "_start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
