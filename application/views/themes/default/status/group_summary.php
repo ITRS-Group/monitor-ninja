@@ -50,12 +50,13 @@
 			<?php $i=0; foreach ($group_details as $details) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'?>">
 				<td class="bl" style="white-space: normal">
-					<?php echo html::anchor('status/'.$grouptype.'group/?group='.urlencode($details['name']).'&style=overview', htmlspecialchars($details['alias'])) ?><br />
-					(<?php echo html::anchor('extinfo/details/?type='.$grouptype.'group&host='.urlencode($details['name']), $details['name']) ?>)
+					<?php echo html::anchor('status/'.$grouptype.'group/?group='.urlencode($details['name']).'&style=overview', htmlspecialchars($details['alias'] . " (".$details['name'].")")) ?><br />
 				</td>
 				<td class="icon">
-					<?php if (nacoma::link()===true)
+					<?php
+					if (nacoma::link()===true)
 						echo nacoma::link('configuration/configure/?type='.$grouptype.'group&name='.urlencode($details['name']), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));
+					echo html::anchor('extinfo/details/?'.$grouptype.'group='.urlencode($details['name']),html::image($this->add_path('icons/16x16/extended-information.gif'), array('alt' => _('View Extended Information for this group'), 'title' => _('View Extended Information for this group'))));
 					?>
 				</td>
 				<?php if( $grouptype == 'host' ) { ?>

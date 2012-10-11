@@ -33,13 +33,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		// If customers have non-utf8 service names, $this->input
 		// will not contain a usefull name. Workaround.
 		if (PHP_SAPI !== 'cli') {
-			$type = getparams::get_raw_param('type', $type);
 			$host = getparams::get_raw_param('host', $host);
 			$service = getparams::get_raw_param('service', $service);
+			$hostgroup = getparams::get_raw_param('hostgroup', false);
+			$servicegroup = getparams::get_raw_param('servicegroup', false);
 		} else {
-			$type = $this->input->get('type', $type);
 			$host = $this->input->get('host', $host);
 			$service = $this->input->get('service', $service);
+			$hostgroup = $this->input->get('hostgroup', false);
+			$servicegroup = $this->input->get('servicegroup', false);
 		}
 
 		$this->template->title = 'Monitoring » Extinfo';
@@ -48,8 +50,26 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->current = new Current_status_Model();
 
 		$host = trim($host);
-		$type = strtolower($type);
-		if (empty($host)) {
+		$service = trim($service);
+		$hostgroup = trim($hostgroup);
+		$servicegroup = trim($servicegroup);
+
+		$ls = Livestatus::instance();
+		if(!empty($host) && empty($service)) {
+			$type='host';
+			$result_data = $ls->getHosts(array('filter' => array('name' => $host), 'extra_columns' => array('contact_groups')));
+		}
+		else if(!empty($host) && !empty($service)) {
+			$type='service';
+			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'extra_columns' => array('contact_groups')));
+		}
+		else if(!empty($hostgroup)) {
+			return $this->group_details('hostgroup', $hostgroup);
+		}
+		else if(!empty($servicegroup)) {
+			return $this->group_details('servicegroup', $servicegroup);
+		}
+		else {
 			return false;
 		}
 
@@ -60,20 +80,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->template->js_header->js = $this->xtra_js;
-
+		
 		# save us some typing
 		$content = $this->template->content;
-
-		$ls = Livestatus::instance();
-		if(empty($service)) {
-			$result_data = $ls->getHosts(array('filter' => array('name' => $host), 'extra_columns' => array('contact_groups')));
-		} else {
-			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'extra_columns' => array('contact_groups')));
-		}
+		
 		if (count($result_data) === 0) {
 			return url::redirect('extinfo/unauthorized/'.$type);
 		}
 		$result = (object)$result_data[0];
+		
 		/* TODO: implement */
 		switch($type) {
 		/*
@@ -92,7 +107,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$yes = _('YES');
 		$no = _('NO');
 		
-		$content->contactgroups = $result->contact_groups;
+		$content->contactgroups = isset($result->contact_groups)?$result->contact_groups:false;
 		$is_pending = false;
 		$back_link = false;
 		$content->parents = false;
@@ -715,46 +730,41 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = _("Error: No group name specified");
 			return;
 		}
+		
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
+		$this->template->js_strings = $this->js_strings;
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->title = _('Monitoring » Group detail');
 
-		$authorized = false;
-		switch ($grouptype) {
-			case 'hostgroup':
-				$authorized = Hostgroup_Model::check_group_access($group);
-				break;
-			case 'servicegroup':
-				$authorized = Servicegroup_Model::check_group_access($group);
-				break;
-		}
-
-		if (!$authorized) {
-			url::redirect('extinfo/unauthorized/'.$grouptype);
-		}
-
+		$ls = Livestatus::instance();
+		
 		$group_info_res = $grouptype == 'servicegroup' ?
-			Servicegroup_Model::get($group) :
-			Hostgroup_Model::get($group);
-
-		if ($group_info_res === false) {
+			$ls->getServicegroups(array('filter' => array('name' => $group))) :
+			$ls->getHostgroups(array('filter' => array('name' => $group)));
+		
+		if ($group_info_res === false || count($group_info_res)==0) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
 			return;
 		} else {
-			$group_info_res = $group_info_res->current();
+			$group_info_res = (object)$group_info_res[0];
 		}
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_local();
-		if (empty($status) || !$status->current()->is_running) {
+/*		$status = $ls->getProcessInfo();
+		if (empty($status) || !$status->is_running) {
 			$this->template->content = $this->add_view('extinfo/not_running');
 			$this->template->content->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
 			$this->template->content->info_message_extra = sprintf(_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars(_('here'))), Kohana::config('config.product_name'));
 			return;
-		} else {
-			$this->template->content = $this->add_view('extinfo/groups');
 		}
-
+*/
+		$this->template->content = $this->add_view('extinfo/groups');
 		$content = $this->template->content;
 
 		$content->label_grouptype = $grouptype=='servicegroup' ? _('servicegroup') : _('hostgroup');

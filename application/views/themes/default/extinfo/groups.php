@@ -38,7 +38,7 @@ if (!empty($notes)) {?>
 ?>
 
 <div class="widget left w98">
-<table style="border-spacing: 1px; background-color: #dcdccd">
+<table class="ext">
 	<caption><?php echo ucfirst($label_grouptype) ?> <?php echo _('Commands').' '._('for').': '.htmlspecialchars($group_alias).' ('.$groupname.')'; ?>
 		<?php if (nacoma::link()===true)
 			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));?>

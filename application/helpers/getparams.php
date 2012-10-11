@@ -10,15 +10,15 @@ class getparams_Core {
 	 * Given a parameter and a default value, return the parameter value if
 	 * available from the query string.
 	 */
-	static function get_raw_param ($desired_param, $default) {
+	static function get_raw_param ($desired_param, $default=false) {
+		/* FIXME: This method needs to be rewritten... There should be a better way to do this... */
 		$querypieces = explode('&', $_SERVER['QUERY_STRING']);
+		$desired_param .= "="; /* Search with "=" */
 		foreach ($querypieces as $param) {
 			if (!strncmp($desired_param, $param, strlen($desired_param))) {
-				return urldecode(substr($param, strlen($desired_param) + 1));
+				return urldecode(substr($param, strlen($desired_param)));
 			}
 		}
-		if (isset($default))
-			return $default;
-		return false;
+		return $default;
 	}
 }
