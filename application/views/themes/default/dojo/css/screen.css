@@ -602,34 +602,43 @@ input[type="text"] {
   clear: both; }
 
 /* line 160, ../sass/screen.sass */
+.left {
+  float: left; }
+
+/* line 163, ../sass/screen.sass */
+.right {
+  float: right;
+  width: auto !important; }
+
+/* line 167, ../sass/screen.sass */
 .indent {
   margin-left: 16px; }
 
-/* line 163, ../sass/screen.sass */
+/* line 170, ../sass/screen.sass */
 .image-link {
   border: none !important;
   outline: none !important; }
 
-/* line 169, ../sass/screen.sass */
+/* line 176, ../sass/screen.sass */
 #page_links {
   margin-top: 0px;
   margin-left: 0px;
   font-size: 70%;
   width: 100%;
   vertical-align: middle; }
-  /* line 176, ../sass/screen.sass */
+  /* line 183, ../sass/screen.sass */
   #page_links .page-links-label {
     float: left;
     max-width: 30%;
     padding-top: 8px; }
-  /* line 181, ../sass/screen.sass */
+  /* line 188, ../sass/screen.sass */
   #page_links ul {
     float: left;
     margin: 0px;
     padding: 0px;
     width: 100%;
     max-width: 60%; }
-    /* line 188, ../sass/screen.sass */
+    /* line 195, ../sass/screen.sass */
     #page_links ul li {
       list-style: none;
       display: inline-block;
@@ -638,24 +647,24 @@ input[type="text"] {
       border-radius: 3px;
       box-shadow: 0 0 3px #afafaf; }
 
-/* line 198, ../sass/screen.sass */
+/* line 205, ../sass/screen.sass */
 .pagination {
   max-width: 34%;
   float: left; }
-  /* line 201, ../sass/screen.sass */
+  /* line 208, ../sass/screen.sass */
   .pagination img {
     vertical-align: middle; }
 
-/* line 204, ../sass/screen.sass */
+/* line 211, ../sass/screen.sass */
 .pagination_form {
   max-width: 60%;
   float: left;
   padding: 3px; }
 
-/* line 209, ../sass/screen.sass */
+/* line 216, ../sass/screen.sass */
 #content form {
   overflow-x: auto; }
 
-/* line 213, ../sass/screen.sass */
+/* line 220, ../sass/screen.sass */
 #service_table td {
   font-size: 80%; }

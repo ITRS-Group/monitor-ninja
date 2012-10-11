@@ -8,6 +8,7 @@
  * @license    GPL
  */
 class Status_totals_Widget extends widget_Base {
+
 	protected $movable=false;
 	protected $removable=false;
 	protected $closeconfirm=false;
@@ -22,6 +23,7 @@ class Status_totals_Widget extends widget_Base {
 		$model->friendly_name = 'Host Status Totals | Service Status Totals';
 		parent::__construct($model);
 		$this->hoststatus = nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING;
+		$this->add_css_class('right');
 	}
 
 	public function set_host($host) {
@@ -89,7 +91,7 @@ class Status_totals_Widget extends widget_Base {
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $services->critical, 'status' => _('Critical'), 'status_id' => nagstat::SERVICE_CRITICAL),
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $services->pending, 'status' => _('Pending'), 'status_id' => nagstat::SERVICE_PENDING)
 		);
-
+		
 		$this->js = array('js/status_totals');
 		require($view_path);
 	}

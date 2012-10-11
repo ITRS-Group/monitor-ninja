@@ -94,6 +94,13 @@ class widget_Base
 		);
 	}
 
+	public function add_css_class ($class)
+	{
+		if (!isset($this->added_classes))
+			$this->added_classes = array();
+		$this->added_classes[] = $class;
+	}
+
 	/**
 	 * Method to render a widget
 	 *
@@ -109,10 +116,19 @@ class widget_Base
 			$options = $this->options();
 			$widget_legal_classes = array('editable', 'movable', 'collapsable', 'removable', 'closeconfirm', 'duplicatable');
 			$widget_classes = array();
+			
 			foreach ($widget_legal_classes as $class) {
-				if ($this->$class)
+				if ($this->$class) {
 					$widget_classes[] = $class;
+				}
 			}
+
+			if (isset($this->added_classes)) {
+				for($i = 0; $i < count($this->added_classes); $i++) {
+					$widget_classes[] = $this->added_classes[$i];
+				}
+			}
+
 			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'" data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
 			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span>';
 			if (!empty($options) && $this->editable) {

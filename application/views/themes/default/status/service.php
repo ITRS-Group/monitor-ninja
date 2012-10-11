@@ -20,7 +20,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		</ul>
 		<div class="clear"></div>
 	</div>
-<div class="clearservice"> </div>
+<div class="clear"> </div>
 
 	<?php
 	if (!empty($widgets)) {
@@ -37,7 +37,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	}
 	?>
 	</div>
-    <div class="clearservice"> </div>
+    <div class="clear"></div>
 </div>
 
 <div class="widget left w98" id="status_service">

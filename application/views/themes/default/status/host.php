@@ -20,7 +20,6 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 		</ul>
 		<div class="clear"></div>
 	</div>
-<div class="clearservice"> </div>
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
@@ -36,14 +35,13 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 	}
 	?>
 	</div>
-    <div class="clearservice"> </div>
 </div>
 
 <div class="widget left w98" id="status_host">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<?php echo form::open('command/multi_action'); ?><br />
+	<?php echo form::open('command/multi_action'); ?>
 	<table id="host_table" style="margin-bottom: 10px">
-	<caption style="margin-top: 0px"><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a><br /></caption>
+	<caption style="margin-top: 0px"><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a></caption>
 
 			<tr>
 				<?php
@@ -189,9 +187,8 @@ foreach ($result as $row) {
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'), $options);
 ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => _('Submit'))); ?>
-	<br /><span id="multi_object_submit_progress" class="item_select"></span>
+	<span id="multi_object_submit_progress" class="item_select"></span>
 	<?php echo form::hidden('obj_type', 'host'); ?>
 	<?php echo form::close(); ?>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<br /><br />
 </div>
