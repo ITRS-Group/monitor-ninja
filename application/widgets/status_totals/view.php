@@ -1,9 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<table class="w-table">
+
 <?php if( $host_header !== false ) {?>
-<table class="w-table host-totals">
+<tr><td colspan="4">Host Totals</td></tr>
 <?php $i=0; foreach ($host_header as $row) { ?>
 	<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
+		
 		<td class="status icon" style="padding: 4px 7px;">
 			<?php
 			if ($row['lable'] > 0)
@@ -12,7 +15,7 @@
 				echo html::image($this->add_path('icons/12x12/shield-not-'.strtolower($row['status']).'.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
 			?>
 		</td>
-		<td style="width: 85px"><?php echo ($row['status_id'] == $this->hoststatus ? '<strong>' : '').html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status']), array('class' => 'status-'.strtolower($row['status']))).($row['status_id'] == $this->hoststatus ? '</strong>' : '') ?></td>
+		<td><?php echo ($row['status_id'] == $this->hoststatus ? '<strong>' : '').html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status']), array('class' => 'status-'.strtolower($row['status']))).($row['status_id'] == $this->hoststatus ? '</strong>' : '') ?></td>
 	<?php echo ($i%2 == 1) ? '</tr>' : '' ?>
 	<?php	 $i++; } ?>
 	<tr>
@@ -28,10 +31,8 @@
 		</td>
 		<td><?php echo html::anchor('status/host/'.$this->host.'/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&'.$grouptype_arg, html::specialchars(($hosts->down + $hosts->unreachable).' Problems'), array('class' => 'status-warning')) ?></td>
 	</tr>
-</table>
 <?php } ?>
-
-<table class="w-table service-totals">
+	<tr><td colspan="4">Service Totals</td></tr>
 	<?php $i = 0;foreach ($service_header as $row) { ?>
 	<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
 		<td class="status icon" style="padding: 4px 7px">
@@ -42,7 +43,7 @@
 					echo html::image($this->add_path('icons/12x12/shield-not-'.strtolower($row['status']).'.png'), array('alt' => $row['status'],'title' => $row['status'],'style' => 'margin-bottom: -2px')) ;
 			?>
 		</td>
-		<td style="width: 85px"><?php echo ($row['status_id'] == $this->servicestatus ? '<strong>' : '').html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status']), array('class' => 'status-'.strtolower($row['status']))).($row['status_id'] == $this->servicestatus ? '</strong>' : '') ?></td>
+		<td><?php echo ($row['status_id'] == $this->servicestatus ? '<strong>' : '').html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status']), array('class' => 'status-'.strtolower($row['status']))).($row['status_id'] == $this->servicestatus ? '</strong>' : '') ?></td>
 	<?php echo ($i%2 == 1) ? '</tr>' : ''; ?>
 	<?php  $i++; } ?>
 		<td class="status icon" style="padding: 4px 7px"><?php echo html::image($this->add_path('icons/12x12/shield-info.png'),array('title' => $label_all_types, 'alt' => $label_all_types, 'style' => 'margin-bottom: -2px')); ?></td>

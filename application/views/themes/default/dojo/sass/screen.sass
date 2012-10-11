@@ -1,0 +1,201 @@
+
+@import "config"
+
+@import "compass"
+@import "compass/reset"
+@import "compass/css3/images"
+@import "compass/css3/user-interface"
+@import "compass/typography/text/force-wrap"
+
+// Import header SASS
+@import "header"
+
+
+// Import nav SASS
+@import "nav"
+
+
+// Import widget SASS
+@import "widget"
+
+// Import filter SASS
+@import "filter"
+
+// Import pagespecific SASS
+@import "pagespecific"
+
+
+html
+	height: 100%
+
+body
+	margin: 0
+	padding: 0
+	font: normal normal 100% 'Century Gothic', helvetica, arial, tahoma, sans-serif
+	color: $font_color
+	height: 100%
+	background: $general_background_color
+
+form
+	width: 100%
+	display: block
+
+table
+	font-size: 90%
+	margin: 0 0
+	width: 100%
+
+	caption
+		padding: 8px
+		font-size: 90%
+
+	tbody
+		border-top: 1px solid #ddd
+
+	th
+		font-size: 90%
+
+	.header //Same name as general page header, null some properties
+		background: none
+		box-shadow: none
+		border: none
+		height: auto
+		min-width: 0
+		position: relative
+		font-size: 90%
+		width: auto
+		z-index: 0
+
+	.icon
+		width: 40px
+
+	tr.odd
+		background: #eee
+
+	tr.even
+		background: #f5f5f5
+
+	td
+		font-size: 100%
+		border: 1px solid #ddd
+		padding: 2px
+		text-align: left
+		vertical-align: middle
+
+h1, h2, h3, h4, h5, h6
+	font: normal normal 120% 'Century Gothic', helvetica, arial, tahoma, sans-serif
+	margin: 1px 0
+
+h2
+	font-size: 110%
+
+h3
+	font-size: 100%
+
+h4
+	font-size: 90%
+
+h5
+	font-size: 80%
+
+h6
+	font-size: 70%
+
+a
+	color: $link_color
+	text-decoration: none
+	border-bottom: 1px dotted $link_color
+
+	&:hover
+		color: $link_color_hover
+		border-bottom: 1px dotted $link_color_hover
+
+.container 
+	overflow: auto
+	min-width: 600px
+
+section.content
+	padding: 0 10px
+	margin-top: $header_height
+	margin-left: 180px
+	padding: 16px 16px 0 10px
+	overflow: auto
+	z-index: 0
+
+	p
+		font-size: 80%
+		width: 90%
+		margin: 8px 8px
+
+input
+	&[type="text"]
+		border-radius: 3px
+		border: 1px solid #bbb
+		padding: 3px 6px
+
+// Auxiliary selectors
+// used by javascript/php to add specific dynamic styles
+
+.alpha
+	opacity: $inactive_opacity
+	filter: alpha(opacity=#{$inactive_opacity * 100})
+
+.clear
+	clear: both
+
+.indent
+	margin-left: 16px
+
+.image-link
+	border: none !important
+	outline: none !important
+
+//
+
+#page_links
+	margin-top: 0px
+	margin-left: 0px
+	font-size: 70%
+	width: 100%
+	vertical-align: middle
+
+	.page-links-label
+		float: left
+		max-width: 30%
+		padding-top: 8px
+
+	ul
+		float: left 
+		margin: 0px
+		padding: 0px
+		width: 100%
+		max-width: 60%
+
+		li
+			list-style: none
+			display: inline-block
+			margin: 4px 2px 0 6px
+			padding: 5px
+			border-radius: 3px
+			box-shadow: 0 0 3px #afafaf
+
+// Pagination
+
+.pagination
+	max-width: 34%
+	float: left
+	img
+		vertical-align: middle
+
+.pagination_form
+	max-width: 60%
+	float: left
+	padding: 3px
+
+#content form
+	overflow-x: auto
+
+#service_table
+	td
+		font-size: 80%
+		@include force-wrap

@@ -114,7 +114,7 @@ class widget_Base
 					$widget_classes[] = $class;
 			}
 			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'" data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
-			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
+			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span>';
 			if (!empty($options) && $this->editable) {
 				$content .= '<div class="widget-editbox">';
 				$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
@@ -140,7 +140,7 @@ class widget_Base
 				$content .= form::close();
 				$content .= '</div>';
 			}
-			$content .= '<div class="widget-content">';
+			$content .= '<div class="clear"></div></div><div class="widget-content">'; 	// Clear and end widget header and start widget content
 		}
 		ob_start();
 		$this->$method();

@@ -23,7 +23,7 @@
 if (!empty($total_items)) {
 $label_previous = html::image(
 	$this->add_path('icons/16x16/arrow-left.png'),
-	array('alt' => _('previous'),'title' => _('previous'), 'style' => 'margin-bottom: -4px')
+	array('alt' => _('previous'),'title' => _('previous'))
 );//_('previous');
 $label_next = html::image(
 	$this->add_path('icons/16x16/arrow-right.png'),

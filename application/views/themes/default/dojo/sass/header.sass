@@ -1,0 +1,66 @@
+.header
+	@include background(linear-gradient(top, #fbfcfa, #e5e5e5))
+	box-shadow: 0 0 6px rgba(0,0,0,0.3)
+	border-bottom: 1px solid #c6c8c4
+	height: $header_height
+	min-width: 768px
+	position: fixed
+	font-size: 70%
+	width: 100%
+	z-index: 2
+
+	.supermenu
+
+		height: $header_height
+		float: left
+
+		ul
+			margin: 0
+			padding: 0
+			width: 100%
+			display: block
+
+			li
+				@include background(linear-gradient(top, #f9faf8, #eaebe9))
+				margin: 0
+				height: 28px
+				width: 18px
+				padding: 18px 18px
+				float: left
+				border-right: 1px solid #ccc
+				display: block
+
+				&:hover 
+					@include background(linear-gradient(top, #fefffd, #dedfdd))
+	
+	.headercontent
+		float: left
+		margin-left: 20px
+		width: 300px
+		padding: 8px 4px
+
+		.header-search
+			width: 120px
+			margin: 3px 2px 2px 2px
+
+		ul
+			margin: 0
+			padding: 0
+
+			li
+				margin: 0
+				padding: 4px 6px 0 0
+				display: block
+				float: left
+
+			.list-separator
+				background: url('./images/menu-arrow.png') no-repeat
+				background-size: contain
+				width: 10px
+				height: 20px
+				float: left
+
+	.header-action
+		margin: 0
+		border: none
+		padding: 2px 4px

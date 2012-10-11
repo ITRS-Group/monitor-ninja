@@ -19,7 +19,7 @@ class Status_totals_Widget extends widget_Base {
 	private $grouptype = false;
 
 	public function __construct($model) {
-		$model->friendly_name = '<span>Host Status Totals</span><span style="margin-left: 145px">Service Status Totals</span>';
+		$model->friendly_name = 'Host Status Totals | Service Status Totals';
 		parent::__construct($model);
 		$this->hoststatus = nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING;
 	}

@@ -2,7 +2,7 @@
 <html>
 	
 	<?php
-		include_once('/dojo/head.php');
+		include_once('head.php');
 	?>
 
 	<body>
@@ -12,14 +12,14 @@
 			<div class="logo"><img src="icons/op5.gif" style="float: left; margin-left: 15px" /></div>
 
 			<?php
-				include_once('/dojo/header.php');
+				include_once('header.php');
 			?>
 
 			<section class="navigation" id="navigation">
 				<div class="menu" id="main-menu">
 
 				<?php
-					include_once('/dojo/menu.php');
+					include_once('menu.php');
 				?>
 
 				</div>
