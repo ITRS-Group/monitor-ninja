@@ -530,7 +530,10 @@ class Status_Controller extends Authenticated_Controller {
 			$groupresult = $ls->getHostgroups(array('filter'=>$hostgroupfilter));
 		}
 		
-		if(isset($groupresult[0])) {
+		if( empty($group) || $group == 'all' ) {
+			$content->group_name = '';//Overview over all hosts';
+			$content->group_alias = _('Status overview');
+		} else if(isset($groupresult[0])) {
 			$content->group_name = $groupresult[0]['name'];
 			$content->group_alias = $groupresult[0]['alias'];
 		} else {
@@ -754,8 +757,8 @@ class Status_Controller extends Authenticated_Controller {
 			if ($group == 'all') {
 				$label_view_for = _('For all host groups');
 				$page_links = array(
-					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					_('Host status detail') => Router::$controller.'/host/all?group_type='.$grouptype.'group',
+//					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
+//					_('Host status detail') => Router::$controller.'/host/all?group_type='.$grouptype.'group',
 					_('Status overview') => Router::$controller.'/'.$grouptype.'group/all',
 //					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
@@ -775,7 +778,7 @@ class Status_Controller extends Authenticated_Controller {
 			if ($group == 'all') {
 				$label_view_for = _('For all service groups');
 				$page_links = array(
-					_('Service status detail') => Router::$controller.'/servicegroup/all?style=detail',
+//					_('Service status detail') => Router::$controller.'/servicegroup/all?style=detail',
 					_('Status overview') => Router::$controller.'/servicegroup/all',
 //					_('Service status grid') => Router::$controller.'/servicegroup_grid/all'
 				);
