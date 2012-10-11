@@ -142,7 +142,12 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->pending_output = _('Host check scheduled for %s');
 
 		$ls         = Livestatus::instance();
-		$result     = $ls->getHosts(array('filter' => $hostfilter, 'paging' => $this, 'order' => array($sort_field => $sort_order)));
+		$options    = array();
+		$options['filter'] = $hostfilter;
+		$options['paging'] = $this;
+		if( !empty( $sort_field) )
+			$options['order']  = array($sort_field => $sort_order);
+		$result     = $ls->getHosts($options);
 
 		$this->template->content->date_format_str = nagstat::date_format();
 		$this->template->content->result = $result;
@@ -249,7 +254,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('status/service');
 		$status = new Status_Model();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
+
 		if ($status->show_filter_table)
 			$this->template->content->filters = $this->_show_filters('service', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		$this->template->content->noheader = $noheader;
@@ -307,95 +312,29 @@ class Status_Controller extends Authenticated_Controller {
 
 		$shown = strtolower($name) == 'all' ? _('All hosts') : _('Host')." '".$name."'";
 
+		if(empty($group_type)) {
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
+		} else {
+			if($group_type=='servicegroup') {
+				list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $name, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
+			} else {
+				list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $name, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
+			}
+		}
+		
 		$ls         = Livestatus::instance();
-		$result     = $ls->getServices(array('filter' => $servicefilter, 'paging' => $this, 'order' => array($sort_field => $sort_order)));
+		$options    = array();
+		$options['filter'] = $servicefilter;
+		$options['paging'] = $this;
+		if( !empty( $sort_field) )
+			$options['order']  = array($sort_field => $sort_order);
+		$result     = $ls->getServices($options);
 
 		$this->template->content->is_svc_details = false;
 
 		if (!empty($group_type)) {
 			$shown = $group_type == 'servicegroup' ? _('Service Group') : _('Host Group');
 			$shown .= " '".$name."'";
-			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
-			$grouptype = str_replace('group', '', $group_type);
-			$hostlist = Group_Model::get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes);
-			$group_hosts = false;
-			if ($hostlist !== false)
-				foreach ($hostlist as $host_info) {
-					$group_hosts[] = $host_info->host_name;
-				}
-
-			# servicegroups should only show services in the group
-			if ($group_type == 'servicegroup') {
-				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
-				$tot = $result !== false ? count($result) : 0;
-				unset($result);
-				$pagination = new Pagination(
-					array(
-						'total_items'=> $tot,
-						'items_per_page' => $items_per_page
-					)
-				);
-				$limit = $pagination->sql_limit;
-				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes,
-					$servicestatustypes, $service_props, $hostprops, $limit, $sort_field, $sort_order);
-				$this->template->content->is_svc_details = true;
-			} else {
-				$host_model->num_per_page = false;
-				$host_model->offset = false;
-				$host_model->count = true;
-
-				$host_model->set_host_list($group_hosts);
-				$result_cnt = $host_model->get_host_status();
-
-				$tot = $result_cnt !== false ? $result_cnt : 0;
-				$pagination = new Pagination(
-					array(
-						'total_items'=> $tot,
-						'items_per_page' => $items_per_page
-					)
-				);
-				$offset = $pagination->sql_offset;
-				$host_model->count = false;
-				$host_model->num_per_page = $items_per_page;
-				$host_model->offset = $offset;
-
-				$host_model->set_host_list($group_hosts);
-				$host_model->set_sort_field($sort_field);
-				$host_model->set_sort_order($sort_order);
-
-				$result = $host_model->get_host_status();
-			}
-		} else {
-/* TODO: implement */
-/*
-			$host_model->num_per_page = false;
-			$host_model->offset = false;
-			$host_model->count = true;
-
-			if (strstr($name, ',')) {
-				$name = explode(',', $name);
-			}
-
-			$host_model->set_host_list($name);
-			$result_cnt = $host_model->get_host_status();
-			$tot = $result_cnt !== false ? $result_cnt : 0;
-			$pagination = new Pagination(
-				array(
-					'total_items'=> $tot,
-					'items_per_page' => $items_per_page
-				)
-			);
-			$offset = $pagination->sql_offset;
-			$host_model->count = false;
-			$host_model->num_per_page = $items_per_page;
-			$host_model->offset = $offset;
-
-			$host_model->set_sort_field($sort_field);
-			$host_model->set_sort_order($sort_order);
-
-			$host_model->set_host_list($name);
-			$result = $host_model->get_host_status();
-*/
 		}
 		$sub_title = _('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
@@ -427,7 +366,7 @@ class Status_Controller extends Authenticated_Controller {
 						_('Host status detail') => Router::$controller.'/host/all',
 						_('Status overview') => Router::$controller.'/'.$group_type.'/all',
 						_('Status summary') => Router::$controller.'/'.$group_type.'/all?style=summary',
-						_('Status grid') => Router::$controller.'/'.$group_type.'_grid/all',
+//						_('Status grid') => Router::$controller.'/'.$group_type.'_grid/all',
 					);
 				} else {
 					$label_view_for = _('for this host group');
@@ -436,7 +375,7 @@ class Status_Controller extends Authenticated_Controller {
 						_('Host status detail') => Router::$controller.'/host/'.$name.'?group_type='.$group_type,
 						_('Status overview') => Router::$controller.'/'.$group_type.'/'.$name,
 						_('Status summary') => Router::$controller.'/'.$group_type.'_summary/'.$name,
-						_('Status grid') => Router::$controller.'/'.$group_type.'_grid/'.$name,
+//						_('Status grid') => Router::$controller.'/'.$group_type.'_grid/'.$name,
 					);
 				}
 			} else {
@@ -446,14 +385,14 @@ class Status_Controller extends Authenticated_Controller {
 					$page_links = array(
 						_('Status overview') => Router::$controller.'/'.$group_type.'/all',
 						_('Status summary') => Router::$controller.'/'.$group_type.'/all?style=summary',
-						_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/all'
+//						_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/all'
 					);
 				} else {
 					$label_view_for = _('for this service group');
 					$page_links = array(
 						_('Status overview') => Router::$controller.'/'.$group_type.'/'.$name,
 						_('Status summary') => Router::$controller.'/'.$group_type.'/'.$name.'?style=summary',
-						_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/'.$name,
+//						_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/'.$name,
 						_('Service status detail for all service groups') => Router::$controller.'/'.$group_type.'/all'
 					);
 				}
@@ -576,13 +515,28 @@ class Status_Controller extends Authenticated_Controller {
 		$ls = Livestatus::instance();
 		
 		$content = $this->template->content;
-
+		$status = new Status_Model();
+		
 		if ($grouptype == 'service') {
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Service Groups") : _("Service Overview For Service Group");
-			$groupfilter = 'groups >= "'.$group.'"';
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+			$groupfilter = $servicefilter;
+			$groupresult = $ls->getServicegroups(array('filter'=>$servicegroupfilter));
+			
 		} else {
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Host Groups") : _("Service Overview For Host Group");
-			$groupfilter = 'host_groups >= "'.$group.'"';
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $group, false, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+			$groupfilter = $servicefilter;
+			$groupresult = $ls->getHostgroups(array('filter'=>$hostgroupfilter));
+		}
+		
+		if(isset($groupresult[0])) {
+			$content->group_name = $groupresult[0]['name'];
+			$content->group_alias = $groupresult[0]['alias'];
+		} else {
+			/* should never happen normally */
+			$content->group_name = 'unknown group';
+			$content->group_alias = 'unknown group';
 		}
 
 		$content->host_details = $ls->getBackend()->getStats( 'services', array(
@@ -607,8 +561,6 @@ class Status_Controller extends Authenticated_Controller {
 				'paginggroup' => $this
 				));
 		
-		$content->group_name = 'FIXMEFIXME';
-		$content->group_alias = 'FIXME2';
 		
 		$content->lable_host = _('Host');
 		$content->lable_status = _('Status');
@@ -639,7 +591,7 @@ class Status_Controller extends Authenticated_Controller {
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
 					_('Host status detail') => Router::$controller.'/host/all',
 					_('Status summary') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
-					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
+//					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
 				$label_view_for = _('for this host groups');
@@ -648,7 +600,7 @@ class Status_Controller extends Authenticated_Controller {
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
 					_('Host status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 					_('Status summary') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
-					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group.'?style=summary'
+//					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group.'?style=summary'
 				);
 			}
 		} else {
@@ -657,14 +609,15 @@ class Status_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
 					_('Status summary') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
-					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
+//					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
 				$label_view_for = _('for this service groups');
 				$page_links = array(
 					_('Status overview') => Router::$controller.'/'.$grouptype.'group/'.$group,
+					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
 					_('Status summary') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
-					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
+//					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
 					_('Service status detail for all service groups') => Router::$controller.'/'.$grouptype.'/all'
 				);
 			}
@@ -804,7 +757,7 @@ class Status_Controller extends Authenticated_Controller {
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
 					_('Host status detail') => Router::$controller.'/host/all?group_type='.$grouptype.'group',
 					_('Status overview') => Router::$controller.'/'.$grouptype.'group/all',
-					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
+//					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
 				$label_view_for = _('For this host groups');
@@ -813,7 +766,7 @@ class Status_Controller extends Authenticated_Controller {
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
 					_('Host status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 					_('Status overview') => Router::$controller.'/'.$grouptype.'group/'.$group,
-					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group
+//					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group
 				);
 			}
 
@@ -824,220 +777,17 @@ class Status_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Service status detail') => Router::$controller.'/servicegroup/all?style=detail',
 					_('Status overview') => Router::$controller.'/servicegroup/all',
-					_('Service status grid') => Router::$controller.'/servicegroup_grid/all'
+//					_('Service status grid') => Router::$controller.'/servicegroup_grid/all'
 				);
 			} else {
 				$label_view_for = _('For this service group');
 				$page_links = array(
 						_('Service status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 						_('Status overview') => Router::$controller.'/'.$grouptype.'group/'.$group,
-						_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
+//						_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
 						_('Status summary for all service groups') => Router::$controller.'/'.$grouptype.'group/all?style=summary'
 					);
 			}
-		}
-		if (isset($page_links)) {
-			$this->template->content->page_links = $page_links;
-			$this->template->content->label_view_for = $label_view_for;
-		}
-	}
-
-	/**
-	*	Show a grid of hostgroup(s)
-	* 	A wrapper for group_grid('host')
-	*
-	*/
-	public function hostgroup_grid($group='all', $hoststatustypes=false, $servicestatustypes=false)
-	{
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$noheader = $this->input->get('noheader', false);
-
-		$this->template->content = $this->add_view('status/hostgroup_grid');
-		$this->template->content->noheader = $noheader;
-		$content = $this->template->content;
-
-		$this->hoststatustypes = $hoststatustypes;
-		$this->servicestatustypes = $servicestatustypes;
-
-		$this->template->title = _('Monitoring » ')._('servicegroup grid');
-
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
-
-		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
-		$widget->set_host($group);
-		$widget->set_hoststatus($hoststatustypes);
-		$widget->set_servicestatus($servicestatustypes);
-		$widget->set_grouptype('host');
-		$this->template->content->widgets = array($widget->render());
-		widget::set_resources($widget, $this);
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
-		$this->template->inline_js = $this->inline_js;
-
-		$content->label_host = _('Host');
-		$content->label_services = _('Services');
-		$content->label_actions = _('Actions');
-
-		$groups = $this->_hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes);
-		$content->group_details = $groups;
-
-		if (strtolower($group) == 'all') {
-			$content->label_header = _('Status Grid For All Host Groups');
-		} else {
-			# make sure we have the correct hostgroup
-			$group_info_res = Hostgroup_Model::get($group);
-			$label_header = _('Status Grid For Host Group ');
-			$content->label_header = $label_header."'".$group."'";
-		}
-
-		$content->error_message = _('No hostgroup data found');
-		$content->grouptype = 'host';
-		$content->icon_path	= $this->img_path('icons/16x16/');
-		$content->label_host_extinfo = _('View Extended Information For This Host');
-		$content->label_service_status = _('View Service Details For This Host');
-		$content->label_status_map = _('Locate Host On Map');
-		$nacoma_link = false;
-		/**
-		 * Modify config/config.php to enable NACOMA
-		 * and set the correct path in config/config.php,
-		 * if installed, to use this
-		 */
-		if (nacoma::link()===true) {
-			$content->label_nacoma = _('Configure this host using NACOMA (Nagios Configuration Manager)');
-			$content->nacoma_path = Kohana::config('config.nacoma_path');
-		}
-
-		/**
-		 * Enable PNP4Nagios integration
-		 * Set correct path in config/config.php
-		 */
-		$pnp_link = false;
-		if (Kohana::config('config.pnp4nagios_path')!==false) {
-			$content->label_pnp = _('Show performance graph');
-			$content->pnp_path = url::base(true) . 'pnp/?';
-		}
-
-		if ($group == 'all') {
-			$label_host_status_details = _('Service status detail');
-			$label_group_status_details = _('Host status detail');
-			$label_group_status_overview = _('Status overview');
-			$label_group_status_summary = _('Status summary');
-			$label_view_for = _('for all host groups');
-			$page_links	 = array(
-				$label_host_status_details => Router::$controller.'/hostgroup/all?style=detail',
-				$label_group_status_details => Router::$controller.'/host/all',
-				$label_group_status_overview => Router::$controller.'/hostgroup/all',
-				$label_group_status_summary => Router::$controller.'/hostgroup/all?style=summary'
-			);
-		} else {
-			$label_host_status_grid = _('Status grid for all host groups');
-			$label_group_service_status_details = _('Service status detail');
-			$label_group_host_status_details = _('Host status detail');
-			$label_group_status_overview = _('Status overview');
-			$label_group_status_summary = _('Status summary');
-			$label_view_for = _('for this host group');
-			$page_links = array(
-				$label_host_status_grid => Router::$controller.'/hostgroup_grid/all',
-				$label_group_service_status_details => Router::$controller.'/hostgroup/'.$group.'?style=detail',
-				$label_group_host_status_details => Router::$controller.'/host/'.$group.'?group_type=hostgroup',
-				$label_group_status_overview => Router::$controller.'/hostgroup/'.$group,
-				$label_group_status_summary => Router::$controller.'/hostgroup/'.$group.'?style=summary'
-			);
-		}
-		if (isset($page_links)) {
-			$this->template->content->page_links = $page_links;
-			$this->template->content->label_view_for = $label_view_for;
-		}
-	}
-
-	/**
-	*	Show a grid of servicegroup(s)
-	* 	A wrapper for group_grid('services')
-	*
-	*/
-	public function servicegroup_grid($group='all', $hoststatustypes=false, $servicestatustypes=false)
-	{
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$group = $this->input->get('group', $group);
-		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$noheader = $this->input->get('noheader', false);
-
-		$this->template->content = $this->add_view('status/servicegroup_grid');
-		$this->template->content->noheader = $noheader;
-		$content = $this->template->content;
-
-		$this->hoststatustypes = $hoststatustypes;
-		$this->servicestatustypes = $servicestatustypes;
-
-		$this->template->title = _('Monitoring » ')._('servicegroup grid');
-
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
-
-		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
-		$widget->set_host($group);
-		$widget->set_hoststatus($hoststatustypes);
-		$widget->set_servicestatus($servicestatustypes);
-		$widget->set_grouptype('service');
-		$this->template->content->widgets = array($widget->render());
-		widget::set_resources($widget, $this);
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
-		$this->template->inline_js = $this->inline_js;
-
-		$groups = $this->_servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes);
-		$content->group_details = $groups;
-
-		if (strtolower($group) == 'all') {
-			$content->label_header = _('Status Grid For All Service Groups');
-		} else {
-			# make sure we have the correct servicegroup
-			$label_header = _('Status Grid For Service Group ');
-			$content->label_header = $label_header."'".$group."'";
-		}
-
-		$content->error_message = _('No servicegroup data found');
-		$content->grouptype = 'service';
-		$content->icon_path	= $this->img_path('icons/16x16/');
-		$nacoma_link = false;
-		/**
-		 * Modify config/config.php to enable NACOMA
-		 * and set the correct path in config/config.php,
-		 * if installed, to use this
-		 */
-		if (nacoma::link()===true) {
-			$content->nacoma_path = Kohana::config('config.nacoma_path');
-		}
-
-		/**
-		 * Enable PNP4Nagios integration
-		 * Set correct path in config/config.php
-		 */
-		$pnp_link = false;
-		if (Kohana::config('config.pnp4nagios_path')!==false) {
-			$content->pnp_path = url::base(true) . 'pnp/?';
-		}
-
-		if ($group == 'all') {
-			$label_view_for = _('for all service groups');
-			$page_links = array(
-				_('Service status detail') => Router::$controller.'/servicegroup/all?style=detail',
-				_('Status overview') => Router::$controller.'/servicegroup/all',
-				_('Status summary') => Router::$controller.'/servicegroup/all?style=summary'
-			);
-		} else {
-			$label_view_for = _('for this service group');
-			$page_links = array(
-					_('Service status detail') => Router::$controller.'/host/'.$group.'?group_type=servicegroup',
-					_('Status overview') => Router::$controller.'/servicegroup/'.$group,
-					_('Status summary') => Router::$controller.'/servicegroup/'.$group.'?style=summary',
-					_('Service status grid for all service groups') => Router::$controller.'/servicegroup_grid/all'
-				);
 		}
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
@@ -1135,71 +885,4 @@ class Status_Controller extends Authenticated_Controller {
 		else
 			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
-
-	private function _hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
-		$ls = Livestatus::instance();
-		$status = new Status_Model();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', false, $group, false, $hoststatustypes, false, $servicestatustypes, false);
-		if ($status->show_filter_table)
-			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
-		$groups   = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
-		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
-		$services = $ls->getServices(array('filter' => $servicefilter));
-
-		$groupshash = array();
-		foreach($groups as &$gr) {
-			$groupshash[$gr['name']] =& $gr;
-		}
-
-		$hostshash = array();
-		foreach($hosts as &$host) {
-			$hostshash[$host['name']] =& $host;
-			foreach($host['groups'] as $g) {
-				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
-				$groupshash[$g]['hosts'][$host['name']] =& $host;
-			}
-		}
-
-		foreach($services as &$svc) {
-			if(!isset($hostshash[$svc['host_name']]['services'])) { $hostshash[$svc['host_name']]['services'] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
-			if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
-			$hostshash[$svc['host_name']]['services'][$state][$svc['description']] =& $svc;
-		}
-
-		return $groups;
-	}
-
-	private function _servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
-		$ls = Livestatus::instance();
-		$status = new Status_Model();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, false, $servicestatustypes, false);
-		if ($status->show_filter_table)
-			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
-		$groups   = $ls->getServicegroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
-		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
-		$services = $ls->getServices(array('filter' => $servicefilter));
-
-		$groupshash = array();
-		foreach($groups as &$gr) {
-			$groupshash[$gr['name']] =& $gr;
-		}
-
-		$hostshash = array();
-		foreach($hosts as &$host) {
-			$hostshash[$host['name']] =& $host;
-		}
-
-		foreach($services as &$svc) {
-			foreach($svc['groups'] as $g) {
-				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
-				$groupshash[$g]['hosts'][$svc['host_name']] =& $hostshash[$svc['host_name']];
-
-				if(!isset($groupshash[$g]['services'][$svc['host_name']])) { $groupshash[$g]['services'][$svc['host_name']] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
-				if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
-				$groupshash[$g]['services'][$svc['host_name']][$state][$svc['description']] =& $svc;
-			}
-		}
-		return $groups;
-	}
-	
 }
