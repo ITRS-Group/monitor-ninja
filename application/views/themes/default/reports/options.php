@@ -58,8 +58,8 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<td>
 			<?php echo help::render('use_average').' '._('SLA calculation method') ?><br />
 			<select name='use_average'>
-				<option value='0' <?php print $options['use_average']?'':'checked="checked"' ?>><?php echo _('Group availability (SLA)') ?></option>
-				<option value='1' <?php print $options['use_average']?'checked="checked"':'' ?>><?php echo _('Average') ?></option>
+				<option value='0' <?php print $options['use_average']?'':'selected="selected"' ?>><?php echo _('Group availability (SLA)') ?></option>
+				<option value='1' <?php print $options['use_average']?'selected="selected"':'' ?>><?php echo _('Average') ?></option>
 			</select>
 		</td>
 		<td>&nbsp;</td>

@@ -387,7 +387,7 @@ class html_Core {
 		{
 			$attributes += $alt;
 		}
-		elseif ( ! empty($alt))
+		else
 		{
 			// Add alt to attributes
 			$attributes['alt'] = $alt;

@@ -141,24 +141,24 @@ if (isset($this) && isset($this->template->js_header))
 		</div>
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/icons/icon.png',array('alt' => '')); ?>
-				<div id="navigation">
-					<ul>
-					<?php
-					if (isset($breadcrumb) && !empty($breadcrumb)){
-						$link = explode(' » ',$breadcrumb);
-						for($i = 0; $i < count($link); $i++) {
-							echo '<li>'.$link[$i].'</li>';
-						}
-					} elseif (isset($title)) {
-						$link = explode(' » ',$title);
-						for($i = 0; $i < count($link); $i++) {
-							echo '<li>'.$link[$i].'</li>';
-						}
+			<div id="navigation">
+				<ul>
+				<?php
+				if (isset($breadcrumb) && !empty($breadcrumb)){
+					$link = explode(' » ',$breadcrumb);
+					for($i = 0; $i < count($link); $i++) {
+						echo '<li>'.$link[$i].'</li>';
 					}
-					?>
-					</ul>
-					<p><?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?></p>
-					<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
+				} elseif (isset($title)) {
+					$link = explode(' » ',$title);
+					for($i = 0; $i < count($link); $i++) {
+						echo '<li>'.$link[$i].'</li>';
+					}
+				}
+				?>
+				</ul>
+				<p><?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?></p>
+				<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 					<?php
 					$query = arr::search($_REQUEST, 'query');
 					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
@@ -167,8 +167,8 @@ if (isset($this) && isset($this->template->js_header))
 					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 			<?php	} ?>
 					<p><?php echo _('Welcome'); ?> <?php echo Auth::instance()->get_user()->realname ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?></p>
-				</div>
-			</form>
+				</form>
+			</div>
 		</div>
 
 		<div id="quickbar">
