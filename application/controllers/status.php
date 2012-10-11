@@ -593,13 +593,13 @@ class Status_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
 					_('Host status detail') => Router::$controller.'/host/all',
-					_('Status summary') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Status summary') => Router::$controller.'/'.$grouptype.'group_summary',
 //					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
 				$label_view_for = _('for this host groups');
 				$page_links = array(
-					_('Status overview for all host groups') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Status overview for all host groups') => Router::$controller.'/'.$grouptype.'group_summary',
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
 					_('Host status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 					_('Status summary') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
@@ -611,7 +611,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_view_for = _('for all service groups');
 				$page_links = array(
 					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					_('Status summary') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Status summary') => Router::$controller.'/'.$grouptype.'group_summary',
 //					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
