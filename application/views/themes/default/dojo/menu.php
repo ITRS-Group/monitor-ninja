@@ -38,7 +38,28 @@
 
 					$i++;
 
-				}
+				} // common external links
+						elseif($data[2] == 1) {
+
+							echo "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
+								html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+								"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
+
+						}
+						// local external links
+						elseif($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') {
+							
+							echo "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
+								html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+								"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
+
+						}
+						// ninja external links
+						elseif ($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/') {
+							echo "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
+								html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+								"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
+						}
 
 				/*} elseif (gettype($entries[$i]) == 'string') {
 					

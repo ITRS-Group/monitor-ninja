@@ -36,9 +36,6 @@
 				<div class="menu" id="main-menu">
 
 				<?php
-					/*if (isset($links)) {
-						var_dump($links);
-					}*/
 					include_once(__DIR__.'/dojo/menu.php');
 				?>
 

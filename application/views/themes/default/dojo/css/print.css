@@ -1,16 +1,20 @@
 /* line 2, ../sass/print.sass */
+body {
+  box-shadow: none !important; }
+
+/* line 5, ../sass/print.sass */
 .navigation {
   display: none !important; }
 
-/* line 5, ../sass/print.sass */
+/* line 8, ../sass/print.sass */
 .header {
   display: none !important; }
 
-/* line 8, ../sass/print.sass */
+/* line 11, ../sass/print.sass */
 .content {
   width: 94%;
   margin: 10px 2% !important; }
 
-/* line 12, ../sass/print.sass */
+/* line 15, ../sass/print.sass */
 .logo {
   width: 100% !important; }

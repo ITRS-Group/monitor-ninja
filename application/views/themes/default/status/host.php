@@ -6,20 +6,20 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
     <div class="widget left w32" id="page_links">
     <em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
-		<ul>
-		<?php
-		if (isset($page_links)) {
-			foreach ($page_links as $label => $link) {
-				?>
+			<ul>
+			<?php
+			if (isset($page_links)) {
+				foreach ($page_links as $label => $link) {
+					?>
 
-				<li><?php echo html::anchor($link, $label) ?></li>
-				<?php
+					<li><?php echo html::anchor($link, $label) ?></li>
+					<?php
+				}
 			}
-		}
-		?>
-		</ul>
-		<div class="clear"></div>
-	</div>
+			?>
+			</ul>
+		</div>
+	<div class="clear"></div>
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {

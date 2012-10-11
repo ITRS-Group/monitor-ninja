@@ -172,7 +172,7 @@ if (Kohana::config('config.site_domain') != '/monitor/') {
 	unset($menu['section_about']['support']);
 } else {
 	# remove community links
-	unset($menu_base[$menu_items['section_about']][$menu_items['project_documentation']]);
+	/*unset($menu_base[$menu_items['section_about']][$menu_items['project_documentation']]);
 	unset($menu_items['project_documentation']);
 	unset($menu['section_about']['project_documentation']);
 
@@ -182,7 +182,7 @@ if (Kohana::config('config.site_domain') != '/monitor/') {
 
 	unset($menu_base[$menu_items['merlin_project']]);
 	unset($menu_items['merlin_project']);
-	unset($menu['section_about']['merlin_project']);
+	unset($menu['section_about']['merlin_project']);*/
 }
 
 # master menu section

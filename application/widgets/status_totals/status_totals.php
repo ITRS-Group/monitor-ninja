@@ -91,8 +91,7 @@ class Status_totals_Widget extends widget_Base {
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $services->critical, 'status' => _('Critical'), 'status_id' => nagstat::SERVICE_CRITICAL),
 			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $services->pending, 'status' => _('Pending'), 'status_id' => nagstat::SERVICE_PENDING)
 		);
-		
-		$this->js = array('js/status_totals');
+
 		require($view_path);
 	}
 }

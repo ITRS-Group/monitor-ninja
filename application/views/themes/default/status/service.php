@@ -18,7 +18,6 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		}
 		?>
 		</ul>
-		<div class="clear"></div>
 	</div>
 <div class="clear"> </div>
 
@@ -43,7 +42,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 
-<?php echo form::open('command/multi_action'); ?><br />
+<?php echo form::open('command/multi_action'); ?>
 <table style="margin-bottom: 2px" id="service_table">
 <caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo _('Select multiple items') ?></a></caption>
 		<tr>
@@ -286,9 +285,8 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service auto', 'id' => 'multi_action_select_service'), $options);
 ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit_service', 'class' => 'item_select_service', 'value' => _('Submit'))); ?>
-	<br /><span id="multi_object_submit_progress_service" class="item_select_service"></span>
+	<span id="multi_object_submit_progress_service" class="item_select_service"></span>
 	<?php echo form::hidden('obj_type', 'service'); ?>
 	<?php echo form::close(); ?>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
-<br /><br />
 </div>
