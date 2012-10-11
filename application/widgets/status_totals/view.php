@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<table class="w-table">
+<table class="w-table width-50">
 
 <?php if( $host_header !== false ) {?>
-<tr><td colspan="4">Host Totals</td></tr>
+<caption>Host Totals</caption>
 <?php $i=0; foreach ($host_header as $row) { ?>
 	<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
 		
@@ -31,8 +31,10 @@
 		</td>
 		<td><?php echo html::anchor('status/host/'.$this->host.'/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&'.$grouptype_arg, html::specialchars(($hosts->down + $hosts->unreachable).' Problems'), array('class' => 'status-warning')) ?></td>
 	</tr>
+</table>
 <?php } ?>
-	<tr><td colspan="4">Service Totals</td></tr>
+<table class="w-table width-50">
+	<caption>Service Totals</caption>
 	<?php $i = 0;foreach ($service_header as $row) { ?>
 	<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
 		<td class="status icon" style="padding: 4px 7px">
@@ -62,3 +64,4 @@
 		<td colspan="2">&nbsp;</td>
 	</tr>
 </table>
+<div class="clear"></div>

@@ -54,6 +54,7 @@ table
 
 	th
 		font-size: 90%
+		padding: 2px
 
 	.header //Same name as general page header, null some properties
 		background: none
@@ -68,6 +69,7 @@ table
 
 	.icon
 		width: 40px
+		text-align: center
 
 	tr.odd
 		background: #eee
@@ -76,7 +78,7 @@ table
 		background: #f5f5f5
 
 	td
-		font-size: 100%
+		font-size: 80%
 		border: 1px solid #ddd
 		padding: 2px
 		text-align: left
@@ -132,6 +134,18 @@ input
 		border-radius: 3px
 		border: 1px solid #bbb
 		padding: 3px 6px
+
+// Aux grid SASS
+
+.width-33
+	float: left !important
+	width: 31% !important
+	margin: 0 1% !important
+
+.width-50
+	float: left !important
+	width: 46% !important
+	margin: 0 2% !important
 
 // Auxiliary selectors
 // used by javascript/php to add specific dynamic styles
@@ -198,4 +212,3 @@ input
 #service_table
 	td
 		font-size: 80%
-		@include force-wrap

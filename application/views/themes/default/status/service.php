@@ -80,7 +80,38 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->host_name)) === true) { ?>obj_properties <?php } ?> <?php echo strtolower(Current_status_Model::status_text($row->host_state, $row->host_has_been_checked)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?> id="<?php echo 'host|'.$row->host_name ?>" title="<?php echo Current_status_Model::status_text($row->host_state, $row->host_has_been_checked); ?>"><em><?php echo Current_status_Model::status_text($row->host_state, $row->host_has_been_checked); ?></em></td>
+		
+		<?php
+			$is_authed_for_command = (Command_Controller::_is_authorized_for_command(array('host_name' => $row->host_name)) === true);
+			$service_status_model = Current_status_Model::status_text($row->host_state, $row->host_has_been_checked);
+			$is_current_host = ($curr_host != $row->host_name);
+		?>
+
+		<td class="icon 
+			
+			// Designate conditional class
+
+			<?php 
+				if ($is_authed_for_command) { echo 'obj_properties'; } 
+			?>
+			<?php 
+				echo strtolower($service_status_model).' '.(($is_current_host) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white').'"';
+			?>
+
+			// Designate conditional colspan
+			<?php
+
+			if ($is_current_host) {
+				echo 'colspan="1"';
+			}
+
+			?> 
+
+			id="<?php echo 'host|'.$row->host_name ?>" title="<?php $service_status_model; ?>">
+
+			<?php echo html::image('application/views/themes/default/icons/16x16/shield-'.$service_status_model.'.png'); ?>
+		</td>
+		
 		<?php if ($curr_host != $row->host_name) { ?>
 		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::specialchars($row->host_name), array('title' => $row->host_address)) ?></span>
