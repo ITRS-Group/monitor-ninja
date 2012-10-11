@@ -44,7 +44,7 @@ test-cucumber:
 	HEADLESS=1 cucumber -f Cucumber::Formatter::Nagios -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber
 
 test-php-lint:
-	 for i in `find . -name "*.php"`; do php -l $$i || exit "Syntax error in $$i"; done
+	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
 
 docs: Documentation
 
