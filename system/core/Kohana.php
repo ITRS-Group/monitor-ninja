@@ -1584,7 +1584,7 @@ final class Kohana {
 
 				while ($arg = array_shift($entry['args']))
 				{
-					if (is_string($arg) AND is_file($arg))
+					if (is_string($arg) AND substr($arg, 0, 4) !== "unix" AND is_file($arg))
 					{
 						// Remove docroot from filename
 						$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
