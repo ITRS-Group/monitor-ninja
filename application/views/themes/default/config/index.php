@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget w98 left config_header" style="top: 57px; position: fixed; background-color: #ffffff; padding: 10px 1%">
-	<div class="ie-pag-config" style="position: absolute; right: 235px;"><?php echo (isset($pagination)) ? $pagination : ''; ?></div>
 	<form method="get" action="">
 	<?php echo _('Object type'); ?>:
 	<select class="auto" name="type" onchange="submit()">
@@ -14,8 +13,7 @@
 		<option value="commands"<?php echo $type == 'commands' ? ' selected="selected"' : '';?>><?php echo _('Commands');?>
 	</select>
 	<input type="text" id="filterbox" name="filterbox" value="<?php echo $filter_string ?>" />
-	<input type="submit" value="Search through all result pages"  />
-	<?php echo help::render('filterbox', 'search'); ?>
+	<input type="submit" value="<?php echo _("Filter") ?>"  />
 	</form>
 </div>
 <div class="widget w98 left" style="margin-top: 40px">
