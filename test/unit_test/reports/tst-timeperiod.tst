@@ -66,8 +66,8 @@ timeperiod with simple exception {
 		2008-02-11 = 22:00-23:30
 	}
 	correct {
-		TIME_UP_UNSCHEDULED = 3600
-		TIME_DOWN_UNSCHEDULED = 1800
+		TIME_UP_UNSCHEDULED = 4200
+		TIME_DOWN_UNSCHEDULED = 1200
 		TIME_INACTIVE = 81000
 	}
 }
@@ -83,8 +83,8 @@ timeperiod with simple exception and three days {
 		2008-02-11 = 22:00-23:30
 	}
 	correct {
-		TIME_UP_UNSCHEDULED = 3600
-		TIME_DOWN_UNSCHEDULED = 1800
+		TIME_UP_UNSCHEDULED = 4200
+		TIME_DOWN_UNSCHEDULED = 1200
 		TIME_INACTIVE = 253800
 	}
 }
@@ -100,5 +100,18 @@ timeperiod with simple excludes {
 		TIME_UP_UNSCHEDULED = 79200
 		TIME_DOWN_UNSCHEDULED = 1800
 		TIME_INACTIVE = 5400
+	}
+}
+
+# apparently, some versions have failed to set the "down" event's stop to the
+# timeperiod end, rather than the report period end.
+another timeperiod {
+	timeperiod {
+		monday = 23:00-23:30
+	}
+	correct {
+		TIME_UP_UNSCHEDULED = 600
+		TIME_DOWN_UNSCHEDULED = 1200
+		TIME_INACTIVE = 84600
 	}
 }

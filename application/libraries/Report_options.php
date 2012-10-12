@@ -29,7 +29,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'rpttimeperiod' => array('type' => 'enum', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
-		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
+		'includesoftstates' => array('type' => 'bool', 'default' => false), /**< Include soft states, yes/no? */
 		'host_name' => array('type' => 'objsel', 'default' => array()), /**< Hosts to include (note: array) */
 		'service_description' => array('type' => 'objsel', 'default' => array()), /**< Services to include (note: array) */
 		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include (note: array) */
