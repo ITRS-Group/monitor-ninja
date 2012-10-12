@@ -5,15 +5,11 @@
 	<?php echo _('Object type'); ?>:
 	<select class="auto" name="type" onchange="submit()">
 		<option value="hosts"<?php echo $type == 'hosts' ? ' selected="selected"' : '';?>><?php echo _('Hosts');?>
-		<option value="host_dependencies"<?php echo $type == 'host_dependencies' ? ' selected="selected"' : '';?>><?php echo _('Host Dependencies');?>
-		<option value="host_escalations"<?php echo $type == 'host_escalations' ? ' selected="selected"' : '';?>><?php echo _('Host Escalations');?>
-		<option value="host_groups"<?php echo $type == 'host_groups' ? ' selected="selected"' : '';?>><?php echo _('Host Groups');?>
+		<option value="hostgroups"<?php echo $type == 'hostgroups' ? ' selected="selected"' : '';?>><?php echo _('Host Groups');?>
 		<option value="services"<?php echo $type == 'services' ? ' selected="selected"' : '';?>><?php echo _('Services');?>
-		<option value="service_groups"<?php echo $type == 'service_groups' ? ' selected="selected"' : '';?>><?php echo _('Service Groups');?>
-		<option value="service_dependencies"<?php echo $type == 'service_dependencies' ? ' selected="selected"' : '';?>><?php echo _('Service Dependencies');?>
-		<option value="service_escalations"<?php echo $type == 'service_escalations' ? ' selected="selected"' : '';?>><?php echo _('Service Escalations');?>
+		<option value="servicegroups"<?php echo $type == 'servicegroups' ? ' selected="selected"' : '';?>><?php echo _('Service Groups');?>
 		<option value="contacts"<?php echo $type == 'contacts' ? ' selected="selected"' : '';?>><?php echo _('Contacts');?>
-		<option value="contact_groups"<?php echo $type == 'contact_groups' ? ' selected="selected"' : '';?>><?php echo _('Contact Groups');?>
+		<option value="contactgroups"<?php echo $type == 'contactgroups' ? ' selected="selected"' : '';?>><?php echo _('Contact Groups');?>
 		<option value="timeperiods"<?php echo $type == 'timeperiods' ? ' selected="selected"' : '';?>><?php echo _('Timeperiods');?>
 		<option value="commands"<?php echo $type == 'commands' ? ' selected="selected"' : '';?>><?php echo _('Commands');?>
 	</select>
