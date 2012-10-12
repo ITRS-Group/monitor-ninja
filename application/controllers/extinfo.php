@@ -793,7 +793,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
+//					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'alert_history/generate?'.$grouptype.'[]='.$group
 				);
@@ -803,7 +803,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
+//					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'alert_history/generate??'.$grouptype.'[]='.$group
 				);
