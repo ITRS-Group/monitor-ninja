@@ -1,6 +1,10 @@
 description = Group availability for services
 logfile = groups_service.log
 
+global_vars {
+	includesoftstates = 1
+}
+
 Group availability including soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800
