@@ -280,7 +280,7 @@ class Livestatus {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
 					'author', 'comment', 'end_time', 'entry_time', 'duration', 'fixed', 'host_name',
-					'id', 'start_time', 'service_description', 'triggered_by',
+					'id', 'start_time', 'service_description', 'triggered_by', 'type'
 			);
 		}
 		return $this->backend->getTable('downtimes', $options);

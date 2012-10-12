@@ -32,7 +32,7 @@ class Command_Model extends Model
 	 */
 	protected function get_object_list($param_name)
 	{
-		$ary = false;
+		$ary = array();
 		switch ($param_name) {
 		 case 'host_name':
 			$ary = Livestatus::instance()->getHosts(array('columns' => 'name'));
@@ -55,8 +55,12 @@ class Command_Model extends Model
 			$ary = Livestatus::instance()->getServicegroups(array('columns' => 'name'));
 			break;
 		}
+		$res = array();
+		foreach ($ary as $val) {
+			$res[$val] = $val;
+		}
 
-		return $ary;
+		return $res;
 	}
 
 	/**
@@ -262,15 +266,15 @@ class Command_Model extends Model
 					if(isset($defaults['host_name'])) {
 						if(isset($defaults['service'])) {
 							if($this->auth->is_authorized_for_service($defaults['host_name'], $defaults['service'])) {
-								$ary['options'] = array($defaults['host_name'].":".$defaults['service']);
+								$ary['options'] = array($defaults['host_name'].";".$defaults['service'] => $defaults['host_name'].";".$defaults['service']);
 							}
 						} elseif($this->auth->is_authorized_for_host($defaults['host_name'])) {
-							$ary['options'] = array($defaults['host_name']);
+							$ary['options'] = array($defaults['host_name'] => $defaults['host_name']);
 						}
 					} elseif(isset($defaults['hostgroup_name']) && $this->auth->is_authorized_for_hostgroup($defaults['hostgroup_name'])) {
-						$ary['options'] = array($defaults['hostgroup_name']);
+						$ary['options'] = array($defaults['hostgroup_name'] => $defaults['hostgroup_name']);
 					} elseif(isset($defaults['servicegroup_name']) && $this->auth->is_authorized_for_servicegroup($defaults['servicegroup_name'])) {
-						$ary['options'] = array($defaults['servicegroup_name']);
+						$ary['options'] = array($defaults['servicegroup_name'] => $defaults['servicegroup_name']);
 					}
 				}
 				if(!isset($ary['options'])) {

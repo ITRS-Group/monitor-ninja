@@ -822,8 +822,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
 	{
 		$items_per_page = !empty($items_per_page) ? $items_per_page : config::get('pagination.default.items_per_page', '*');
-		$host = trim($host);
-		$service = trim($service);
 		$type = $service ? 'service' : 'host';
 		if (empty($all) && empty($host)) {
 			return false;
@@ -942,7 +940,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service, $items_per_page, $offset) :Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
+		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 		$schedule_downtime_comments = $all ? Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 
 		$comment = false;
@@ -991,9 +989,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->cmd_delete_all_comments =
 			$type=='host' ? nagioscmd::command_id('DEL_ALL_HOST_COMMENTS')
 			: nagioscmd::command_id('DEL_ALL_SVC_COMMENTS');
-		$comments->host = $host;
 		$comments->label_title = $type == 'host' ? _('Host Comments') : _('Service Comments');
-		$comments->service = $service;
+		if (!$all) {
+			$comments->host = $host;
+			$comments->service = $service;
+		}
+		$comments->type = $type;
 
 		$comments->data = $comment;
 		$nagios_config = System_Model::parse_config_file('nagios.cfg');

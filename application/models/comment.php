@@ -14,7 +14,7 @@ class Comment_Model extends Model {
 	const FLAPPING_COMMENT = 3; /**< Comment is generated because object is flapping */
 	const ACKNOWLEDGEMENT_COMMENT = 4; /**< Comment is generated from an acknowledgement */
 
-	const TABLE_NAME = 'comments'; /**< The name of the comment table */
+	const TABLE_NAME = 'comments'; /**< The name of the comment livestatus table */
 
 	
 	/**
@@ -29,8 +29,6 @@ class Comment_Model extends Model {
 	 */
 	public static function fetch_comments_by_object($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
-		$host = trim($host);
-		$service = trim($service);
 		$num_per_page = (int)$num_per_page;
 		$offset = (int)$offset;
 		if (empty($host)) {
@@ -39,13 +37,13 @@ class Comment_Model extends Model {
 		$ls = Livestatus::instance();
 		$lsb = $ls->getBackend();
 		
-		if( $service === false ) {
-			$filter = array( 'type' => 0, 'host_name' => $host );
+		if( $service == false ) {
+			$filter = array('service_description' => '', 'host_name' => $host);
 		} else {
-			$filter = array( 'type' => 1, 'host_name' => $host, 'service_description' => $service );
+			$filter = array('host_name' => $host, 'service_description' => $service);
 		}
 		if( $count ) {
-			$result = $lsb->getStats( 'comments', array(
+			$result = $lsb->getStats(static::TABLE_NAME, array(
 					'count' => array('author' => array( '!=' => '' ))
 					), array(
 					'filter' => $filter
@@ -55,14 +53,10 @@ class Comment_Model extends Model {
 		if( static::TABLE_NAME == 'comments' ) {
 			$result = $ls->getComments( array(
 					'filter' => $filter,
-					'offset' => $offset,
-					'limit'  => $num_per_page
 					) );
 		} else {
 			$result = $ls->getDowntimes( array(
 					'filter' => $filter,
-					'offset' => $offset,
-					'limit'  => $num_per_page
 					) );
 		}
 		
@@ -78,29 +72,35 @@ class Comment_Model extends Model {
 	 * @param $count bool Completely ignore the two previous options - return the total number of comments instead of the comments themselves
 	 * @returns If $count is true, then the number of rows as an int, otherwise the database result of comments
 	 */
-	public static function fetch_comments_by_user($host, $for_services=false, $num_per_page=false, $offset=false, $count=false)
+	public static function fetch_comments_by_user($for_services=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$num_per_page = (int)$num_per_page;
 		$offset = (int)$offset;
 
-		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
+		$ls = Livestatus::instance();
+		$lsb = $ls->getBackend();
 
-		$sql = static::gen_fetch_comment_query($for_services, $count);
-
-		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-
-		if (!$count) {
-			if($for_services) {
-				$sql .= " WHERE c.service_description IS NOT NULL ";
-			} else {
-				$sql .= " WHERE c.service_description IS NULL ";
-			}
-			$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
+		if ($for_services) {
+			$filter = array('service_description' => array('!=' => ''));
+		} else {
+			$filter = array('service_description' => '');
 		}
-		$result = $db->query($sql)->result();
-		if ($count !== false) {
-			return $result ? $result->current()->cnt : 0;
+		if ($count) {
+			$result = $lsb->getStats(static::TABLE_NAME, array(
+					'count' => array('author' => array( '!=' => '' ))
+					), array(
+					'filter' => $filter
+					) );
+			return $result[0]['count'];
+		}
+		if (static::TABLE_NAME == 'comments') {
+			$result = $ls->getComments( array(
+					'filter' => $filter,
+					) );
+		} else {
+			$result = $ls->getDowntimes( array(
+					'filter' => $filter,
+					) );
 		}
 
 		return $result;
