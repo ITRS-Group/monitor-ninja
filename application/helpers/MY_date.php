@@ -31,6 +31,10 @@ class date extends date_Core {
 		return $duration;
 	}
 
+	/**
+	 * Return array of abbrivated weekday names
+	 * NOTE: Are you Really Sure you need this?
+	 */
 	static function abbr_day_names()
 	{
 		return array(
@@ -44,6 +48,10 @@ class date extends date_Core {
 		);
 	}
 
+	/**
+	 * Return array of abbrivated month names
+	 * NOTE: Are you Really Sure you need this?
+	 */
 	static function abbr_month_names()
 	{
 		return array(
@@ -62,6 +70,10 @@ class date extends date_Core {
 		);
 	}
 
+	/**
+	 * Return array of full weekday names
+	 * NOTE: Are you Really Sure you need this?
+	 */
 	static function day_names()
 	{
 		return array(
@@ -75,6 +87,10 @@ class date extends date_Core {
 		);
 	}
 
+	/**
+	 * Return array of full month names
+	 * NOTE: Are you Really Sure you need this?
+	 */
 	static function month_names()
 	{
 		return array(

@@ -11,8 +11,11 @@ class ninja_auth_Core
 	 * (the last bit means you have to make sure that session/config has properly
 	 * stringified auth_method).
 	 *
+	 * FIXME: what's an auth method in this context?
+	 *
 	 * @param $username The user's username
 	 * @param $password The user's password
+	 * @param $auth_method optional, authentication method to use
 	 * @returns TRUE if everything was OK, or a string controller you're suggested to redirect to
 	 */
 	public static function login_user($username, $password, $auth_method = false) {
