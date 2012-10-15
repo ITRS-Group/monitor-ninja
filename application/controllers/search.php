@@ -131,7 +131,7 @@ class Search_Controller extends Authenticated_Controller {
 		
 		
 		if( !$match ) {
-			$content->no_data = "BLKARHGOIHOAEG";
+			$content->no_data = _("Nothing found");
 		}
 		
 		
