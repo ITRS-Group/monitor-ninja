@@ -2,6 +2,7 @@
 
 require_once( 'auth/Op5Auth.php' );
 require_once( 'auth/Op5User_NoAuth.php' );
+require_once( 'auth/Op5User_AlwaysAuth.php' );
 
 /**
  * User authentication and authorization library.
@@ -183,6 +184,15 @@ class Auth_Core {
 	public function get_default_auth()
 	{
 		return $this->op5auth->get_default_auth();
+	}
+
+	/**
+	 * Take an op5User object, and force the auth module to recognize it as the
+	 * currently logged in user
+	 */
+	public function force_user($user)
+	{
+		return $this->op5auth->force_user($user);
 	}
 } // End Auth
 
