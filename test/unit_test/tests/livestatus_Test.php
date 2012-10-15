@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-Auth::instance()->force_login('monitor');
 /**
  * @package    NINJA
  * @author     op5
@@ -7,6 +6,7 @@ Auth::instance()->force_login('monitor');
  */
 class Livestatus_Test extends TapUnit {
     public function setUp() {
+		Auth::instance()->force_user(new Op5User_AlwaysAuth());
         $this->ls = Livestatus::instance();
         $this->ok(is_object($this->ls), 'created livestatus object');
         $this->lsb = $this->ls->getBackend();
@@ -37,7 +37,6 @@ class Livestatus_Test extends TapUnit {
         $expect = 'Filter: num_hosts > 0';
         $filter = chop($this->lsb->getQueryFilter($filter));
         $this->ok($filter === $expect, "basic filter 4: \nexpect:\n".$expect."\n\ngot:\n".$filter);
-
     }
 
     public function test_and_filter() {

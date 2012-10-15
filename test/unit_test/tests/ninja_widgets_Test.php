@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-Auth::instance()->force_login('monitor');
 /**
  * @package    NINJA
  * @author     op5
@@ -7,6 +6,7 @@ Auth::instance()->force_login('monitor');
  */
 class Ninja_widgets_Test extends TapUnit {
 	public function setUp() {
+		Auth::instance()->force_user(new Op5User_AlwaysAuth());
 		$this->orig_widgets = Ninja_widget_Model::fetch_all('tac/index');
 		$this->ok(is_array($this->orig_widgets), "Fetch widgets returns an array");
 		$this->ok(!empty($this->orig_widgets), "Fetch widgets returns widgets");
