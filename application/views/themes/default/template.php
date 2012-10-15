@@ -162,7 +162,7 @@ if (isset($this) && isset($this->template->js_header))
 					<?php
 					$query = arr::search($_REQUEST, 'query');
 					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo $query ?>" />
+					<input type="text" name="query" id="query" class="textbox" value="<?php echo htmlentities($query, ENT_QUOTES); ?>" />
 					<?php } else { ?>
 					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 			<?php	} ?>

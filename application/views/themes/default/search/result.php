@@ -36,44 +36,44 @@ if (isset($host_result) ) {
 		<th class="header"><?php echo _('Notes'); ?></th>
 	<?php } ?>
 	</tr>
-<?php	$i = 0; foreach ($host_result as $host) { ?>
+<?php	$i = 0; foreach ($host_result as $host) { $host = (object)$host;?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->current_state, $host->has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($host->current_state, $host->has_been_checked); ?></em></td>
-		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->host_name); ?></td>
+		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->state, $host->has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($host->state, $host->has_been_checked); ?></em></td>
+		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->name); ?></td>
 		<td>
-			<div style="float: left"><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), $host->host_name) ?></div>
-			<?php	$host_comments = Comment_Model::count_comments_by_object($host->host_name);
+			<div style="float: left"><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), $host->name) ?></div>
+			<?php	$host_comments = Comment_Model::count_comments_by_object($host->name);
 				if ($host_comments!=0) { ?>
 			<span style="float: right">
-				<?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name).'#comments',
+				<?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name).'#comments',
 						html::image($this->add_path('icons/16x16/add-comment.png'),
 						array('alt' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments),
-						'title' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $host->host_name)); ?>
+						'title' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $host->name)); ?>
 			</span>
 			<?php } ?>
 			<div style="float: right"><?php
 				$properties = 0;
 				if ($host->acknowledged) {
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged'))), array('style' => 'border: 0px'));
 					$properties++;
 				}
 				if (empty($host->notifications_enabled)) {
 					$properties += 2;
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px'));
 				}
 				if (!$host->active_checks_enabled && !$show_passive_as_active) {
 					$properties += 4;
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
 				if (isset($host->is_flapping) && $host->is_flapping) {
 					$properties += 32;
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 				}
 				if ($host->scheduled_downtime_depth > 0) {
 					$properties += 8;
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime'))), array('style' => 'border: 0px'));
 				}
-				if ($host->current_state == Current_status_Model::SERVICE_CRITICAL || $host->current_state == Current_status_Model::SERVICE_UNKNOWN || $host->current_state == Current_status_Model::SERVICE_WARNING ) {
+				if ($host->state == Current_status_Model::SERVICE_CRITICAL || $host->state == Current_status_Model::SERVICE_UNKNOWN || $host->state == Current_status_Model::SERVICE_WARNING ) {
 					$properties += 16;
 				}
 
@@ -82,11 +82,11 @@ if (isset($host_result) ) {
 		</td>
 		<td style="text-align: left">
 			<?php
-				echo html::anchor('status/service/?name='.urlencode($host->host_name),html::image($this->add_path('icons/16x16/service-details.gif'), _('View service details for this host')), array('style' => 'border: 0px')).' &nbsp;';
+				echo html::anchor('status/service/?name='.urlencode($host->name),html::image($this->add_path('icons/16x16/service-details.gif'), _('View service details for this host')), array('style' => 'border: 0px')).' &nbsp;';
 				if (isset ($nacoma_link))
-					echo html::anchor($nacoma_link.'/?type=host&name='.urlencode($host->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => _('Configure this object using NACOMA (Nagios Configuration Manager)'), 'title' => _('Configure this object using NACOMA (Nagios Configuration Manager)'))), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor($nacoma_link.'/?type=host&name='.urlencode($host->name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => _('Configure this object using NACOMA (Nagios Configuration Manager)'), 'title' => _('Configure this object using NACOMA (Nagios Configuration Manager)'))), array('style' => 'border: 0px')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false)
-					echo (pnp::has_graph($host->host_name))  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->host_name).'&srv=_HOST_" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;' : '';
+					echo (pnp::has_graph($host->name))  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->name).'&srv=_HOST_" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;' : '';
 				if (!empty($host->action_url)) {
 					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'), _('Perform extra host actions'));
@@ -97,8 +97,12 @@ if (isset($host_result) ) {
 					echo html::image($this->add_path('icons/16x16/host-notes.png'), _('View extra host notes'));
 					echo '</a>';
 				}
-
-				$output = $host->output;
+				if ($host->state == Current_status_Model::HOST_PENDING) {
+					$output = $host->should_be_scheduled ? sprintf($pending_output, date($date_format_str, $host->next_check)) : _('Host is not scheduled to be checked...');
+				}
+				else {
+					$output = $host->plugin_output;
+				}
 			?>
 		</td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
@@ -166,7 +170,7 @@ if (isset($service_result) ) {
 	$i = 0;
 	$prev_host = false;
 	$comments = Comment_Model::count_comments_by_object(true);
-	foreach ($service_result as $service) { ?>
+	foreach ($service_result as $service) { $service = (object)$service; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
 		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state, $service->host_has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state, $service->host_has_been_checked); ?></em></td>
@@ -178,16 +182,16 @@ if (isset($service_result) ) {
 		<?php } else { ?>
 		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, $service->has_been_checked, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->current_state, $service->has_been_checked, 'service'); ?></em></td>
-		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->service_description); ?></td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->state, $service->has_been_checked, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->state, $service->has_been_checked, 'service'); ?></em></td>
+		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->description); ?></td>
 		<td><span style="float: left">
-			<?php echo html::anchor('/extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), $service->service_description) ?></span>
-			<?php	if (is_array($comments) && array_key_exists($service->host_name.';'.$service->service_description, $comments)) { ?>
+			<?php echo html::anchor('/extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), $service->description) ?></span>
+			<?php	if (is_array($comments) && array_key_exists($service->host_name.';'.$service->description, $comments)) { ?>
 					<span style="float: right">
-						<?php echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description).'#comments',
+						<?php echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]),
-								'title' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $service->host_name.';'.$service->service_description)); ?>
+								array('alt' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->description]),
+								'title' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $service->host_name.';'.$service->description)); ?>
 					</span>
 					<?php } ?>
 			</span>
@@ -196,25 +200,25 @@ if (isset($service_result) ) {
 			$properties = 0;
 			if ($service->acknowledged) {
 				$properties++;
-				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged')).' &nbsp;'), array('style' => 'border: 0px'));
+				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
 			if (empty($service->notifications_enabled)) {
 				$properties += 2;
-				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled')).' &nbsp;'), array('style' => 'border: 0px'));
+				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
 			if (!$service->active_checks_enabled && !$show_passive_as_active) {
 				$properties += 4;
-				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled')).' &nbsp;'), array('style' => 'border: 0px'));
+				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
 			if (isset($service->service_is_flapping) && $service->service_is_flapping) {
 				$properties += 32;
-				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping')).' &nbsp;'), array('style' => 'border: 0px'));
+				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
 			if ($service->scheduled_downtime_depth > 0) {
 				$properties += 8;
-				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')).' &nbsp;'), array('style' => 'border: 0px'));
+				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
-			if ($service->current_state == Current_status_Model::SERVICE_CRITICAL || $service->current_state == Current_status_Model::SERVICE_UNKNOWN || $service->current_state == Current_status_Model::SERVICE_WARNING ) {
+			if ($service->state == Current_status_Model::SERVICE_CRITICAL || $service->state == Current_status_Model::SERVICE_UNKNOWN || $service->state == Current_status_Model::SERVICE_WARNING ) {
 				$properties += 16;
 			}
 			?></span><span class="obj_prop_service" style="display:none"><?php echo $properties ?></span>
@@ -222,10 +226,10 @@ if (isset($service_result) ) {
 		<td style="text-align: left">
 			<?php
 				if (nacoma::link()===true)
-					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($service->host_name).'&service='.urlencode($service->service_description), 'icons/16x16/nacoma.png', _('Configure this service')).' &nbsp;';
+					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($service->host_name).'&service='.urlencode($service->description), 'icons/16x16/nacoma.png', _('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
-					if (pnp::has_graph($service->host_name, urlencode($service->service_description)))
-						echo '<a href="' . url::site() . 'pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;';
+					if (pnp::has_graph($service->host_name, urlencode($service->description)))
+						echo '<a href="' . url::site() . 'pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;';
 				}
 				if (!empty($service->action_url)) {
 					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px" target="'.$action_url_target.'">';
@@ -240,7 +244,7 @@ if (isset($service_result) ) {
 			?>
 		</td>
 		<td><?php echo $service->last_check ? date($date_format_str,$service->last_check) : _('N/A')?></td>
-		<td><?php echo $service->output ?></td>
+		<td><?php echo $service->plugin_output ?></td>
 	<?php if ($show_display_name) { ?>
 		<td><?php echo $service->display_name ?></td>
 	<?php }
@@ -291,14 +295,14 @@ if (isset($servicegroup_result) ) {
 		<th class="header"><?php echo _('Alias'); ?></th>
 		<th class="headerNone"><?php echo _('Actions'); ?></th>
 	</tr>
-<?php	$i = 0; foreach ($servicegroup_result as $servicegroup) { ?>
+<?php	$i = 0; foreach ($servicegroup_result as $servicegroup) { $servicegroup=(object)$servicegroup; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl"><?php echo html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($servicegroup->servicegroup_name), $servicegroup->servicegroup_name) ?></td>
-		<td><?php echo html::anchor('status/servicegroup/?group='.urlencode($servicegroup->servicegroup_name).'&style=detail', $servicegroup->alias) ?></td>
+		<td class="bl"><?php echo html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($servicegroup->name), $servicegroup->name) ?></td>
+		<td><?php echo html::anchor('status/servicegroup/?group='.urlencode($servicegroup->name).'&style=detail', $servicegroup->alias) ?></td>
 		<td style="text-align: left">
 		<?php
-			echo html::anchor('status/servicegroup/?group='.urlencode($servicegroup->servicegroup_name).'&style=detail', html::image($this->add_path('icons/16x16/service-details.gif')), array('style' => 'border: 0px')).' &nbsp;';
-			echo html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($servicegroup->servicegroup_name), html::image($this->add_path('icons/16x16/extended-information.gif')), array('style' => 'border: 0px'));
+			echo html::anchor('status/servicegroup/?group='.urlencode($servicegroup->name).'&style=detail', html::image($this->add_path('icons/16x16/service-details.gif')), array('style' => 'border: 0px')).' &nbsp;';
+			echo html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($servicegroup->name), html::image($this->add_path('icons/16x16/extended-information.gif')), array('style' => 'border: 0px'));
 		?>
 		</td>
 	</tr>
@@ -316,14 +320,14 @@ if (isset($hostgroup_result) ) {
 		<th class="header"><?php echo _('Alias'); ?></th>
 		<th class="headerNone"><?php echo _('Actions'); ?></th>
 	</tr>
-<?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { ?>
+<?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { $hostgroup=(object)$hostgroup; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl"><?php echo html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->hostgroup_name), $hostgroup->hostgroup_name) ?></td>
-		<td><?php echo html::anchor('status/hostgroup/?group='.urlencode($hostgroup->hostgroup_name).'&style=detail', $hostgroup->alias) ?></td>
+		<td class="bl"><?php echo html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->name), $hostgroup->name) ?></td>
+		<td><?php echo html::anchor('status/hostgroup/?group='.urlencode($hostgroup->name).'&style=detail', $hostgroup->alias) ?></td>
 		<td style="text-align: left">
 		<?php
-			echo html::anchor('status/hostgroup/?group='.urlencode($hostgroup->hostgroup_name).'&style=detail', html::image($this->add_path('icons/16x16/service-details.gif')), array('style' => 'border: 0px')).' &nbsp;';
-			echo html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->hostgroup_name), html::image($this->add_path('icons/16x16/extended-information.gif')), array('style' => 'border: 0px'));
+			echo html::anchor('status/hostgroup/?group='.urlencode($hostgroup->name).'&style=detail', html::image($this->add_path('icons/16x16/service-details.gif')), array('style' => 'border: 0px')).' &nbsp;';
+			echo html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->name), html::image($this->add_path('icons/16x16/extended-information.gif')), array('style' => 'border: 0px'));
 		?>
 		</td>
 	</tr>
@@ -354,7 +358,7 @@ if (isset($comment_result)) {
 			<th class="headerNone"><?php echo _('Expires'); ?></th>
 		</tr>
 	<?php
-		foreach ($comment_result as $row) {
+		foreach ($comment_result as $row) { $row = (object)$row;
 			#echo Kohana::debug($row);
 			switch ($row->entry_type) {
 				case Comment_Model::USER_COMMENT:
@@ -374,13 +378,13 @@ if (isset($comment_result)) {
 			}
 			$i = 0; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-			<td class="item_selectcomment"><?php echo form::checkbox(array('name' => 'del_comment_'.(isset($row->service_description) ? 'service' : 'host').'[]', 'class' => 'deletecommentbox', 'title' => _('Click to select/unselect all')), $row->comment_id); ?></td>
+			<td class="item_selectcomment"><?php echo form::checkbox(array('name' => 'del_comment_'.(isset($row->service_description) ? 'service' : 'host').'[]', 'class' => 'deletecommentbox', 'title' => _('Click to select/unselect all')), $row->id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($row->host_name), $row->host_name) ?></td>
 			<td><?php echo !empty($row->service_description) ? html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) : '' ?></td>
 			<td style="white-space: normal"><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
-			<td style="white-space: normal"><?php echo $row->author_name ?></td>
-			<td style="white-space: normal"><?php echo $row->comment_data ?></td>
-			<td style="white-space: normal"><?php echo $row->comment_id ?></td>
+			<td style="white-space: normal"><?php echo $row->author ?></td>
+			<td style="white-space: normal"><?php echo $row->comment; ?></td>
+			<td style="white-space: normal"><?php echo $row->id ?></td>
 			<td style="white-space: normal"><?php
 			if ($row->persistent === false) {
 				echo _('N/A');

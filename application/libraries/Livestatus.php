@@ -19,20 +19,20 @@ class LivestatusException extends Exception {}
  *  $hosts = getHosts($options)
  *
  *  options = array(
- *      'auth'      => <bool>,              # authentication is enabled by default.
+ *      'auth'       => <bool>,             # authentication is enabled by default.
  *                                          # use this switch to disable it
  *
- *      'limit'     => <nr of records>,     # limit result set
+ *      'limit'      => <nr of records>,    # limit result set
  *
- *      'paging'    => $this,               # use paging. $this is a reference to
+ *      'paging'     => $this,              # use paging. $this is a reference to
  *                                          # a kohana object to access the input
  *                                          # and template reference
  *
- *      'order'     => $order,              # sorting / order by structure, ex.:
+ *      'order'      => $order,             # sorting / order by structure, ex.:
  *                                          # array('name' => 'DESC')
  *                                          # array('host_name' => 'DESC', 'description' => 'DESC')
  *
- *      'filter'    => $filter,             # filter structure used to filter the
+ *      'filter'     => $filter,            # filter structure used to filter the
  *                                          # resulting objects
  *                                          # simple filter:
  *                                          #   array('name' => 'value')
@@ -49,6 +49,7 @@ class LivestatusException extends Exception {}
  *                                          # 'host_name ~~ "name regexp" and (status = 1 or status = 2)'
  *                                          #
  *                                          # see livestatus docs for details about available operators
+ *      'extra_header' =>                   # A raw livestatus header block, useful for example to raw filters.
  *  );
  *
  */
@@ -537,7 +538,10 @@ class LivestatusBackend {
 	public function getStats($table, $stats, $options = null) {
 		$query = "";
 		if(isset($options['filter'])) {
-			$query = $this->getQueryFilter($options['filter'], false);
+			$query .= $this->getQueryFilter($options['filter'], false);
+		}
+		if(isset($options['extra_header'])) {
+			$query .= trim( $options['extra_header'] ) . "\n";
 		}
 		if( isset( $options['extra_columns'] ) ) {
 			if( !isset( $options['columns'] ) )
@@ -641,7 +645,7 @@ class LivestatusBackend {
 		if( isset( $options['offset'] ) ) {
 			$query .= "Offset: ".$options['offset']."\n";
 		}
-		if( isset( $options['limit'] ) ) {
+		if( isset( $options['limit'] ) && $options['limit'] !== false ) {
 			$query .= "Limit: ".$options['limit']."\n";
 		}
 

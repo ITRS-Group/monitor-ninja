@@ -60,10 +60,11 @@ class ninja_auth_Core
 			 */
 			
 			$nagauth = Nagios_auth_Model::instance();
-			$hosts = $nagauth->get_authorized_hosts();
+			$ls = Livestatus::instance();
+			$host_totals = $ls->getHostTotals();
 
 			$redirect = false;
-			if (empty($hosts)) {
+			if ($host_totals->total == 0) {
 				$services = $nagauth->get_authorized_services();
 				if (empty($services)) {
 					$redirect = true;

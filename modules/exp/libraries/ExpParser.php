@@ -1,8 +1,10 @@
 <?php
 
+class ExpParserException extends Exception {}
+
 abstract class ExpParser_Core {
-	private $expr;
-	private $ptr;
+	protected $expr; /* Protected, just so we can add custom acceptors... */
+	protected $ptr;
 	
 	public function parse( $expr ) {
 		$this->expr = $expr;
@@ -123,6 +125,6 @@ abstract class ExpParser_Core {
 	}
 	
 	protected function error( $msg ) {
-		throw new Exception($msg . ' at ' . $this->ptr);
+		throw new ExpParserException($msg . ' at ' . $this->ptr);
 	}
 }
