@@ -2,7 +2,7 @@
 if (!$user_has_access) { ?>
 <table class="w-table">
 	<tr>
-		<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-critical.png'), array('alt' => $label)) ?></td>
+		<td class="icon dark"><span class="icon-16 x16-shield-not-critical"></span></td>
 		<td><?php echo $no_access_msg; ?></td>
 	</tr>
 </table>
@@ -10,12 +10,12 @@ if (!$user_has_access) { ?>
 <table class="w-table">
 	<?php if ($total_blocking_outages > 0) { ?>
 	<tr>
-		<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-critical.png'), array('alt' => $label)) ?></td>
+		<td class="icon dark"><span class="icon-16 x16-shield-critical"></span></td>
 		<td class="status-outages"><?php echo html::anchor('outages/index/', html::specialchars($total_blocking_outages.' '.$label)); ?></td>
 	</tr>
 	<?php } else { ?>
 	<tr>
-		<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-critical.png'), array('alt' => $label)) ?></td>
+		<td class="icon dark"><span class="icon-16 x16-shield-not-critical"></span></td>
 		<td><?php echo html::anchor('outages/index/', html::specialchars(_('N/A'))); ?></td>
 	</tr>
 	<?php } ?>

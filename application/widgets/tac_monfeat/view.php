@@ -72,23 +72,23 @@
 				<?php	if ($enable_notifications) { ?>
 					<?php if ($notification_disabled_services > 0) { ?>
 					<tr>
-						<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
+						<td class="icon dark"><span class="icon-12 x12-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
 						<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_NOTIFICATIONS_DISABLED, $notification_disabled_services.' '.($notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 					</tr>
 					<?php	} else { ?>
 					<tr>
-						<td class="dark"><span class="icon-12 x12-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
+						<td class="icon dark"><span class="icon-12 x12-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
 						<td style="white-space: normal"><?php echo $lable_all_services.' '.$lable_enabled ?></td>
 					</tr>
 					<?php	} ?>
 					<?php if ($notification_disabled_hosts > 0) { ?>
 					<tr>
-						<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
+						<td class="icon dark"><span class="icon-12 x12-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
 						<td style="white-space: normal"><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_NOTIFICATIONS_DISABLED, $notification_disabled_hosts.' '.($notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 					</tr>
 					<?php	} else { ?>
 					<tr>
-						<td class="dark"><span class="icon-12 x12-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
+						<td class="icon dark"><span class="icon-12 x12-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
 						<td style="white-space: normal"><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
 					</tr>
 					<?php	} ?>
