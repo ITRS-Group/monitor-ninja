@@ -97,7 +97,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 /* line 63, sass/common.sass */
 .nullify, table, table tbody, table th, table tr, table td {
-  background: #f9f9f9;
+  background: transparent;
   border-spacing: 0;
   vertical-align: top;
   outline: none;
@@ -263,24 +263,30 @@ input[type="text"] {
   padding: 3px 6px; }
 
 /* line 216, sass/common.sass */
+#global_search {
+  background: #f9f9f9;
+  padding: 4px;
+  border-bottom: 1px solid #bbbbbb; }
+
+/* line 221, sass/common.sass */
 #page_links {
   margin-top: 0px;
   margin-left: 0px;
   width: 100%;
   vertical-align: middle; }
-  /* line 222, sass/common.sass */
+  /* line 227, sass/common.sass */
   #page_links .page-links-label {
     float: left;
     max-width: 30%;
     padding-top: 8px; }
-  /* line 227, sass/common.sass */
+  /* line 232, sass/common.sass */
   #page_links ul {
     float: left;
     margin: 0px;
     padding: 0px;
     width: 100%;
     max-width: 60%; }
-    /* line 234, sass/common.sass */
+    /* line 239, sass/common.sass */
     #page_links ul li {
       list-style: none;
       display: inline-block;
@@ -290,18 +296,18 @@ input[type="text"] {
       border-radius: 3px;
       box-shadow: 0 0 3px #bbbbbb; }
 
-/* line 243, sass/common.sass */
+/* line 248, sass/common.sass */
 .report-links {
   float: right; }
-  /* line 246, sass/common.sass */
+  /* line 251, sass/common.sass */
   .report-links a, .report-links form {
     float: left;
     width: auto; }
-  /* line 250, sass/common.sass */
+  /* line 255, sass/common.sass */
   .report-links img {
     margin: 2px 0 2px 8px; }
 
-/* line 253, sass/common.sass */
+/* line 258, sass/common.sass */
 #infobar-sml {
   position: fixed;
   top: 0;
@@ -312,7 +318,7 @@ input[type="text"] {
   border: 1px solid #ffcc44;
   display: none; }
 
-/* line 263, sass/common.sass */
+/* line 268, sass/common.sass */
 #version_info {
   position: absolute;
   display: none;
@@ -320,15 +326,15 @@ input[type="text"] {
   left: 220px;
   width: 200px;
   z-index: 10;
-  background: #f0f0f0;
+  background: #f9f9f9;
   border: 1px solid #dddddd;
   box-shadow: 0 0 3px #bbbbbb; }
-  /* line 274, sass/common.sass */
+  /* line 279, sass/common.sass */
   #version_info li {
     padding: 2px 4px;
     border-bottom: #eeeeee; }
 
-/* line 278, sass/common.sass */
+/* line 283, sass/common.sass */
 #page_settings {
   position: absolute;
   display: none;
@@ -336,10 +342,10 @@ input[type="text"] {
   left: 220px;
   width: 200px;
   z-index: 10;
-  background: #f0f0f0;
+  background: #f9f9f9;
   border: 1px solid #dddddd;
   box-shadow: 0 0 3px #bbbbbb; }
-  /* line 289, sass/common.sass */
+  /* line 294, sass/common.sass */
   #page_settings li {
     padding: 2px 4px;
     border-bottom: #bbbbbb; }
@@ -1597,34 +1603,21 @@ input[type="text"] {
   .header .headercontent {
     float: left;
     margin-left: 20px;
+    margin-top: 6px;
     width: 300px;
-    padding: 8px 4px; }
-    /* line 44, sass/header.sass */
-    .header .headercontent .header-search {
-      width: 120px;
-      margin: 3px 2px 2px 2px; }
-    /* line 48, sass/header.sass */
-    .header .headercontent ul {
-      margin: 0;
-      padding: 0; }
-      /* line 52, sass/header.sass */
-      .header .headercontent ul li {
-        margin: 0;
-        padding: 4px 6px 0 0;
-        display: block;
-        float: left; }
-      /* line 58, sass/header.sass */
-      .header .headercontent ul .list-separator {
-        background: url("./images/menu-arrow.png") no-repeat;
-        background-size: contain;
-        width: 10px;
-        height: 20px;
-        float: left; }
-  /* line 65, sass/header.sass */
-  .header .header-action {
-    margin: 0;
-    border: none;
-    padding: 2px 4px; }
+    padding: 6px 0 0px 4px;
+    font-size: 0.9em; }
+    /* line 46, sass/header.sass */
+    .header .headercontent .header-action {
+      border: none; }
+    /* line 51, sass/header.sass */
+    .header .headercontent a span {
+      margin-top: 6px;
+      cursor: pointer;
+      border-right: 1px solid #dddddd;
+      padding-right: 6px;
+      background-repeat: no-repeat;
+      overflow: auto; }
 
 /* line 4, sass/nav.sass */
 .navigation, .navigation-collapsed, .navigation-collapsed-double {

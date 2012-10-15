@@ -23,36 +23,29 @@
 	<div class="headercontent">
 
 		<?php echo _('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
-		
-
-
-		<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
-			<?php
-			$query = arr::search($_REQUEST, 'query');
-			if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-				<input type="text" name="query" id="query" class="textbox" value="<?php echo $query ?>" />
-			<?php } else { ?>
-				<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
-			<?php	} ?>
-			<?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?>
-		</form>
-
 
 		
 		<a onclick="window.location.reload()" class="image-link">
-			<span class="icon-16 x16-refresh"></span>
+			<span title="Refresh" class="icon-24 x24-refresh"></span>
 		</a>
 		<a onclick="show_info()" class="image-link">
-			<span class="icon-16 x16-versioninfo"></span>
+			<span title="Version Info." class="icon-24 x24-info"></span>
 		</a>
 		<a class="image-link">
-			<span id="settings_icon" class="icon-16 x16-settings"></span>
+			<span title="Settings" id="settings_icon" class="icon-24 x24-settings"></span>
 
 			
 		</a>
+		
 		<a target="_blank" href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/dojo/index.html'; ?>" class="header-action">
-			<span class="icon-16 x16-status-detail"></span>
+			<span title="DOJO Dev. Information" class="icon-24 x24-link"></span>
 		</a>
+
+		<?php
+			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
+			echo html::anchor('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types,
+				'<span class="icon-24 x24-shield-warning"></span>', array('title' => 'Unhandled Problems', 'class' => 'image-link'));
+		?>
 	</div>
 </div>
 

@@ -204,13 +204,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				}
 				if (!$row->active_checks_enabled) {
 					$properties += 4;
-<<<<<<< HEAD
-					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks disabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
-=======
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description),
 						'<span class="icon-16 x16-active-checks-disabled" title="'._('Active checks enabled').'"></span>',
 						array('style' => 'border: 0px')).'&nbsp; ';
->>>>>>> Multiple fast changes to many many documents, sorry for mass-updates but im in a hurry
 				}
 				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
 					$properties += 32;

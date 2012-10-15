@@ -29,9 +29,9 @@ $menu_items['servicegroup_summary'] = _('Servicegroup summary');
 //$menu_items['servicegroup_grid'] = _('Servicegroup grid');
 
 $menu_items['network_outages'] = _('Network outages');
-$menu_items['host_problems'] = _('Host problems');
-$menu_items['service_problems'] = _('Service problems');
-$menu_items['unhandled_problems'] = _('Unhandled problems');
+//$menu_items['host_problems'] = _('Host problems');
+//$menu_items['service_problems'] = _('Service problems');
+//$menu_items['unhandled_problems'] = _('Unhandled problems');
 
 $menu_items['comments'] = _('Comments');
 $menu_items['schedule_downtime'] = _('Schedule downtime');
@@ -74,7 +74,7 @@ $menu = array(
 	'section_monitoring' => array('tac', 'host_detail', 'service_detail',
 		'hostgroup_summary', 'hostgroup_overview', 'hostgroup_grid',
 		'servicegroup_summary', 'servicegroup_overview', 'servicegroup_grid',
-		'network_outages', 'host_problems', 'service_problems', 'unhandled_problems',
+		'network_outages', //'host_problems', 'service_problems', 'unhandled_problems',
 		'comments', 'schedule_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'hyper_map', 'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'pnp', 'alert_history', 'alert_summary', 'notifications', 'event_log',
 		'availability', 'sla', 'schedule_reports', 'statistics'),
@@ -120,9 +120,9 @@ $menu_base = array(
 //		$menu_items['servicegroup_grid'] 		=> array('/status/servicegroup_grid', 'servicegroupgrid',0),
 		//'hr3' 														=> array('', ''),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
-		$menu_items['host_problems'] 			=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),
-		$menu_items['service_problems'] 		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems',0),
-		$menu_items['unhandled_problems']  		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems',0),
+		//$menu_items['host_problems'] 			=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),
+		//$menu_items['service_problems'] 		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems',0),
+		//$menu_items['unhandled_problems']  		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems',0),
 		//'hr5' 														=> array('', ''),
 		$menu_items['comments'] 				=> array('/extinfo/show_comments', 'comments',0),
 		$menu_items['schedule_downtime']		=> array('/extinfo/scheduled_downtime', 'scheduledowntime',0),
