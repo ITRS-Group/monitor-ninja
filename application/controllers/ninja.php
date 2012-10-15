@@ -102,15 +102,6 @@ class Ninja_Controller extends Template_Controller {
 			$_SESSION['sort_options'][$sort_key] = $cur_data;
 		}
 
-		# check for sort options in session and use those if found
-		$sort_options = $this->session->get('sort_options', false);
-
-		if (!empty($sort_options) && isset($_SESSION['sort_options'][$sort_key])) {
-			# found sort options in session for requested page
-			$_GET['sort_field'] = $_SESSION['sort_options'][$sort_key]['sort_field'];
-			$_GET['sort_order'] = $_SESSION['sort_options'][$sort_key]['sort_order'];
-		}
-
 		$this->locale = zend::instance('locale');
 
 		$this->registry = zend::instance('Registry');
@@ -158,13 +149,6 @@ class Ninja_Controller extends Template_Controller {
 			$_GET['items_per_page'] = ($items_per_page !== false && $items_per_page < 0)
 				? ($items_per_page * -1)
 				: (int)$items_per_page;
-		}
-
-		$custom_per_page = arr::search($_GET, 'custom_pagination_field');
-		if ($custom_per_page !== false) {
-			$_GET['custom_pagination_field'] = ($custom_per_page !== false && $custom_per_page < 0)
-				? ($custom_per_page * -1)
-				: (int)$custom_per_page;
 		}
 
 		# convert test params to $_REQUEST to enable more
