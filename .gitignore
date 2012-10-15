@@ -14,3 +14,4 @@ application/widgets/cloudinfo
 modules/op5reports
 modules/reports
 application/views/themes/default/dojo/.sass-cache
+*.dojod

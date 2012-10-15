@@ -20,13 +20,15 @@ if (!window.mlib) {
 	window.mlib = {};
 }
 
+var u = mlib;
+
 mlib.store = (function () {
 
 	var canSessionStore = (window.sessionStorage) ? true : false,
 
 		storageblock = function (data, exp) {
 
-			var that = Object.create(null);
+			var that = {};
 			
 			that.data = data || '';
 			that.expires = exp || '';

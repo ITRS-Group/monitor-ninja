@@ -1,0 +1,21 @@
+/* line 2, sass/print.sass */
+body {
+  box-shadow: none !important;
+  text-shadow: none !important; }
+
+/* line 6, sass/print.sass */
+.navigation {
+  display: none !important; }
+
+/* line 9, sass/print.sass */
+.header {
+  display: none !important; }
+
+/* line 12, sass/print.sass */
+.content {
+  width: 94%;
+  margin: 10px 2% !important; }
+
+/* line 16, sass/print.sass */
+.logo {
+  width: 100% !important; }

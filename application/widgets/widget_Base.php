@@ -156,7 +156,7 @@ class widget_Base
 				$content .= form::close();
 				$content .= '</div>';
 			}
-			$content .= '<div class="clear"></div></div><div class="widget-content">'; 	// Clear and end widget header and start widget content
+			$content .= '</div><div class="clear"></div><div class="widget-content">'; 	// Clear and end widget header and start widget content
 		}
 		ob_start();
 		$this->$method();

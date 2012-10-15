@@ -15,7 +15,7 @@
 		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_PENDING, $current_status->svc->pending.' '._('Pending')) ?></th>
 	</tr>
 	<tr>
-		<td style="padding:0px; white-space:normal;" class="white">
+		<td>
 			<table>
 					<?php if (count($services_critical) > 0) { foreach ($services_critical as $url => $title) { ?>
 					<tr>
@@ -35,7 +35,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td style="padding:0px; white-space:normal;" class="white" >
+		<td >
 			<table>
 					<?php	if (count($services_warning) > 0) { foreach ($services_warning as $url => $title) { ?>
 					<tr>
@@ -55,7 +55,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td style="padding:0px; white-space:normal;" class="white">
+		<td>
 			<table>
 					<?php	if (count($services_unknown) > 0) { foreach ($services_unknown as $url => $title) { ?>
 					<tr>
@@ -75,7 +75,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td style="padding:0px; white-space:normal;" class="white">
+		<td>
 			<table>
 					<?php	if ($current_status->svc->ok > 0) { ?>
 					<tr>
@@ -95,7 +95,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td style="padding:0px; white-space:normal;" class="white">
+		<td>
 			<table>
 					<?php	if (count($services_pending) > 0) {	foreach ($services_pending as $url => $title) { ?>
 					<tr>

@@ -21,14 +21,8 @@
  * @preview  « Previous  1 2 … 5 6 7 8 9 10 11 12 13 14 … 25 26  Next »
  */
 if (!empty($total_items)) {
-$label_previous = html::image(
-	$this->add_path('icons/16x16/arrow-left.png'),
-	array('alt' => _('previous'),'title' => _('previous'))
-);//_('previous');
-$label_next = html::image(
-	$this->add_path('icons/16x16/arrow-right.png'),
-	array('alt' => _('next'),'title' => _('next'))
-);//_('next');
+$label_previous = '<span class="icon-16 x16-arrow-left" title="'._('Previous').'"></span>';
+$label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></span>';
 ?>
 
 <?php

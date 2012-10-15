@@ -13,7 +13,7 @@
 		<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_PENDING, $current_status->hst->pending.' '._('Pending')) ?></th>
 	</tr>
 	<tr>
-		<td class="white">
+		<td>
 			<table>
 					<?php if (count($hosts_down) > 0) { foreach ($hosts_down as $url => $title) { ?>
 					<tr>
@@ -33,7 +33,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td class="white">
+		<td>
 			<table>
 					<?php if (count($hosts_unreachable) > 0) { foreach ($hosts_unreachable as $url => $title) { ?>
 					<tr>
@@ -53,7 +53,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td class="white">
+		<td>
 			<table>
 					<?php	if ($current_status->hst->up > 0) { ?>
 					<tr>
@@ -73,7 +73,7 @@
 					<?php } ?>
 			</table>
 		</td>
-		<td class="white">
+		<td>
 			<table>
 					<?php if (count($hosts_pending) > 0) { foreach ($hosts_pending as $url => $title) { ?>
 					<tr>

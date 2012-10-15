@@ -1,12 +1,14 @@
 .header
-	@include background(linear-gradient(top, #fbfcfa, #e5e5e5))
+	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+	@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 	box-shadow: 0 0 6px rgba(0,0,0,0.3)
 	border-bottom: 1px solid #c6c8c4
 	height: $header_height
 	min-width: 768px
 	position: fixed
-	font-size: 70%
 	width: 100%
+	top: 0
+	left: 0
 	z-index: 2
 
 	.supermenu
@@ -21,17 +23,17 @@
 			display: block
 
 			li
-				@include background(linear-gradient(top, #f9faf8, #eaebe9))
 				margin: 0
 				height: 28px
 				width: 18px
-				padding: 18px 18px
+				padding: 18px 20px 18px 10px
 				float: left
 				border-right: 1px solid #ccc
 				display: block
 
 				&:hover 
 					@include background(linear-gradient(top, #fefffd, #dedfdd))
+					@include filter-gradient(#fefffd, #dedfdd, vertical)
 	
 	.headercontent
 		float: left

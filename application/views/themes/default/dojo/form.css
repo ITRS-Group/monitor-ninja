@@ -1,0 +1,6 @@
+/* line 2, sass/form.sass */
+.content form {
+  overflow-x: auto; }
+  /* line 5, sass/form.sass */
+  .content form input, .content form select {
+    margin: 2px 0 2px 8px; }

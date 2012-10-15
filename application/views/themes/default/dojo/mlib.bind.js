@@ -52,7 +52,18 @@ mlib.bind = (function () {
 			/**
 			* Check all events of this type against conditions
 			*/
+
+			e = e || window.event;
+
+			console.log(e.target);
+
+			if (!e.target) {
+				console.log(e.srcElement);
+				e.target = e.srcElement;
+			}
 			
+			console.log(e.target);
+
 			var i = events[e.type].length;
 			
 			for (i; i--;) {
@@ -93,7 +104,7 @@ mlib.bind = (function () {
 			
 			try {
 				if (node.removeEventListener) {
-					node.removeEventListener(event, multiCall, false);
+					node.removeEventListener(event, callback, false);
 				} else if (node.detachEvent) {
 					node.detachEvent('on' + event, callback);
 				} else {
@@ -104,7 +115,7 @@ mlib.bind = (function () {
 			}
 		},
 		
-		hook = function (event, callback, node) {
+		hook = function (e, callback, node) {
 
 			/**
 			* Hook the condition to an event and add it to the
@@ -119,23 +130,23 @@ mlib.bind = (function () {
 
 			node = node || document;
 
-			if (events[event]) {
+			if (events[e]) {
 			
-				events[event].push(callback);
+				events[e].push(callback);
 				
 			} else {
 
-				events[event] = [];
-				events[event].push(callback);
-				addEvent(node, event, multiCall);
+				events[e] = [];
+				events[e].push(callback);
+				addEvent(node, e, multiCall);
 				
 			}
 
-			return events[event].length - 1;
+			return events[e].length - 1;
 			
 		},
 		
-		resolveCondition = function (event, condition) {
+		resolveCondition = function (e, condition) {
 			
 			/**
 			*	Check if the conditions of the event are met
@@ -164,33 +175,33 @@ mlib.bind = (function () {
 					// is the same as the selectors
 					
 					(type == ID_CONDITION) ? 
-					(event.target.id == selector.substr(1)): 
+					(e.target.id == selector.substr(1)): 
 					
 					// If selector is a Class selector, '.', check if target class 
 					// contains the selectors
 					
 					(type == CLASS_CONDITION) ? 	
-					( event.target.className.indexOf(selector.substr(1)) >= 0 ? true : 
+					( e.target.className.indexOf(selector.substr(1)) >= 0 ? true : 
 						false):
 					
 					// If selector is a Type selector, '=', check if target type 
 					// is the same as the selectors
 					
 					(type == TYPE_VALUE_CONDITION) ? 
-					( event.target.type && 
-						event.target.type.toLowerCase() == selector.substr(1) ):
+					( e.target.type && 
+						e.target.type.toLowerCase() == selector.substr(1) ):
 					
 					// If selector is an Attribute selector, '@', check if target has 
 					// attribute given by selector
 					
 					(type == ATTRIBUTE_CONDITION) ? 
-					event.target.hasAttribute(selector.substr(1)):
+					e.target.hasAttribute(selector.substr(1)):
 					
 					// If no selector type is given, assume tag selector, check if  
 					// target tag is the same as the selectors
 					
 					(true) ? 
-					(event.target.tagName.toLowerCase() == selector) : false ) {
+					(e.target.tagName.toLowerCase() == selector) : false ) {
 					continue;				
 				} else {
 					result = false;
@@ -202,10 +213,14 @@ mlib.bind = (function () {
 		
 		};
 
+	mlib.fire = function (event) {
+		multiCall(event);
+	};
+
 	mlib.unbind = function () {
 		
 		if (arguments.length === 1) {
-
+			delete events[arguments[0]];
 		} else if (arguments.length === 2) {
 
 		}

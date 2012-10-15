@@ -32,7 +32,7 @@
 				include_once(__DIR__.'/dojo/header.php');
 			?>
 
-			<section class="navigation" id="navigation">
+			<div class="navigation" id="navigation">
 				<div class="menu" id="main-menu">
 
 				<?php
@@ -46,13 +46,14 @@
 					</div>
 				</div>
 
-			</section>
+			</div>
 
-			<section class="content" id="content">
+			<div class="content" id="content">
 				
-				<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
+				
 					<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
-				</div>
+				
+			</div>
 
 		</div>
 		<?php

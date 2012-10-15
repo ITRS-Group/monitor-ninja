@@ -1,20 +1,20 @@
-<section class="header" id="header">
+<div class="header" id="header">
 	<div class="supermenu">
 		<ul>
 
 			<!-- Classes are used by javascript navigation -->
 
 			<li class="supermenu-button" id="about-button" title="About">
-				<?php echo html::image('application/views/themes/default/icons/24x24/info.png'); ?>
+				<span class="icon-24 x24-info"></span>
 			</li>
 			<li class="supermenu-button" id="monitoring-button" title="Monitoring">
-				<?php echo html::image('application/views/themes/default/icons/24x24/link.png'); ?>
+				<span class="icon-24 x24-link"></span>
 			</li>
 			<li class="supermenu-button" id="reporting-button" title="Reporting">
-				<?php echo html::image('application/views/themes/default/icons/24x24/news.png'); ?>
+				<span class="icon-24 x24-news"></span>
 			</li>
 			<li class="supermenu-button" id="configuration-button" title="Configuration">
-				<?php echo html::image('application/views/themes/default/icons/24x24/settings.png'); ?>
+				<span class="icon-24 x24-settings"></span>
 			</li>
 
 		</ul>
@@ -26,13 +26,16 @@
 		<input class="header-search" type="text" style="height: 10px;" value="Search" />
 		<input type="submit" value="Search" /><br />
 		<a href="widgets.php" class="image-link">
-				<?php echo html::image('application/views/themes/default/icons/16x16/refresh.png', array('class' => 'header-action')); ?>
+			<span class="icon-16 x16-refresh"></span>
 		</a>
 		<a href="index.php" class="image-link">
-			<?php echo html::image('application/views/themes/default/icons/16x16/versioninfo.png', array('class' => 'header-action')); ?>
+			<span class="icon-16 x16-versioninfo"></span>
 		</a>
 		<a href="widgets.php" class="image-link">
-			<?php echo html::image('application/views/themes/default/icons/16x16/settings.png', array('class' => 'header-action')); ?>
+			<span class="icon-16 x16-settings"></span>
+		</a>
+		<a href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/dojo/index.html'; ?>" class="header-action">
+			<span class="icon-16 x16-status-detail"></span>
 		</a>
 	</div>
-</section>
+</div>

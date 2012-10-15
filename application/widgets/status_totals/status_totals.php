@@ -23,7 +23,10 @@ class Status_totals_Widget extends widget_Base {
 		$model->friendly_name = 'Host Status Totals | Service Status Totals';
 		parent::__construct($model);
 		$this->hoststatus = nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING;
-		$this->add_css_class('right');
+		
+		$this->add_css_class('right');			// Set floating to upper right corner, previously done in javascript
+		$this->add_css_class('width-50');		// Set width to not collide with filters
+	
 	}
 
 	public function set_host($host) {

@@ -31,8 +31,10 @@
 
 					// Do not add white-space, line-feeds or carriage returns in here, it will scres up JavaScript .children's and .nextSibling's
 
+					//html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+					
 					echo html::anchor($data[0], "<li class='nav-seg'>".
-						html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+						"<span class='icon-menu menu-".$data[1]."'></span>".
 						"<span class='nav-seg-span'>".ucwords($name)."</span></li>",
 						array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links'));
 
@@ -42,7 +44,7 @@
 						elseif($data[2] == 1) {
 
 							echo "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
-								html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+								"<span class='icon-menu menu-".$data[1]."'></span>".
 								"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
 
 						}
@@ -50,14 +52,14 @@
 						elseif($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') {
 							
 							echo "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
-								html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+								"<span class='icon-menu menu-".$data[1]."'></span>".
 								"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
 
 						}
 						// ninja external links
 						elseif ($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/') {
 							echo "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
-								html::image('application/views/themes/default/icons/menu/'.$data[1].'.png', array('class' => 'nav-seg-img')).
+								"<span class='icon-menu menu-".$data[1]."'></span>".
 								"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
 						}
 

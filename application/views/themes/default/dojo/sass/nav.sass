@@ -9,7 +9,8 @@
 	overflow-y: auto
 	height: 85%
 	z-index: 1
-	font-size: 72%
+	left: 0
+	font-size: 0.9em
 	
 	text-shadow: 1px 1px 1px #fff
 	background: url('./images/stripe.png')
@@ -33,9 +34,13 @@
 		width: 100%
 		margin-bottom: 20px
 
+	span
+		vertical-align: middle
+
 	.slider 
-		@include background(linear-gradient(left, #eeefec, #f8f9f7))
-		box-shadow: 0 0 4px rgba(60,50,30,0.4)
+		@include background(linear-gradient(left, $gradient-dark-lo, $gradient-dark-hi))
+		@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, 'horizontal')
+		box-shadow: 0 0 4px #aaa
 		border-left: 1px solid #b6b8b4
 		border-right: 1px solid #d6d8d4
 		position: absolute
@@ -46,7 +51,8 @@
 		cursor: pointer
 
 		.slide-button
-			@include background(linear-gradient(left, #ebecea, #f2f3f1))
+			@include background(linear-gradient(left, $gradient-dark-lo, $gradient-dark-hi))
+			@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, 'horizontal')
 			position: absolute
 			top: 40%
 			z-index: 1
@@ -56,8 +62,8 @@
 			width: 10px
 			color: #bbb
 			text-align: center
-			border-top: 1px solid #d5d5d5
-			border-bottom: 1px solid #d5d5d5
+			border-top: 1px solid #d0d0d0
+			border-bottom: 1px solid #d0d0d0
 
 			&:hover 
 				color: #666
@@ -80,13 +86,11 @@
 			width: 100%
 			border-top: 1px solid #f2f2f2
 			@include background(linear-gradient(top, #f7f8f6, #e4e5e3))
+			@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 
 			&:hover
+				@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 				@include background(linear-gradient(top, #fcfdfb, #eeefed))
-
-			img
-				vertical-align: -30%
-				margin-right: 6px
 
 .navigation-collapsed
 	@extend .navigation
@@ -100,7 +104,7 @@
 	li
 		padding: 6px 10px 6px 10px !important
 		width: 26px !important
-	span
+	.nav-seg-span
 		display: none
 
 .navigation-collapsed-double
@@ -118,14 +122,5 @@
 	.slide-button
 		width: 10px !important
 		border-radius: 0 0 0 0 !important
-	span
+	.nav-seg-span
 		display: none
-
-.menu .list-separator
-	border: none !important
-	background: #000 !important
-	float: none !important
-	clear: both !important
-	opacity: 0.2
-	padding: 0px !important
-	height: 3px !important
