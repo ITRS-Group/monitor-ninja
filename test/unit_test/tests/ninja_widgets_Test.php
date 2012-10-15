@@ -126,8 +126,9 @@ class Ninja_widgets_Test extends TapUnit {
 
 	/** there were no instance_ids in the past */
 	function test_edit_legacy() {
+		$username = Auth::instance()->get_user()->username;
 		$db = Database::instance();
-		$db->query("INSERT INTO ninja_widgets (name, username, page, instance_id) VALUES ('foobar2', 'monitor', 'tac/index', null)");
+		$db->query("INSERT INTO ninja_widgets (name, username, page, instance_id) VALUES ('foobar2', '$username', 'tac/index', null)");
 		$widgets = Ninja_widget_Model::fetch_all('tac/index');
 		$foobar = false;
 		foreach ($widgets as $widget) {
