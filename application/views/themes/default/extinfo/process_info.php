@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w66" id="extinfo_current" style="width: 350px">
+<div class="widget left width-50" id="extinfo_current">
 <table class="ext">
 	<tr><th class="headerNone" colspan="2" style="border-left:0px"><?php echo _('Process Information'); ?></th></tr>
 	<tr>

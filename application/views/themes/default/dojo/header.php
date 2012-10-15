@@ -24,6 +24,8 @@
 
 		<?php echo _('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
 		
+
+
 		<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 			<?php
 			$query = arr::search($_REQUEST, 'query');
@@ -32,7 +34,10 @@
 			<?php } else { ?>
 				<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 			<?php	} ?>
+			<?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?>
 		</form>
+
+
 		
 		<a onclick="window.location.reload()" class="image-link">
 			<span class="icon-16 x16-refresh"></span>

@@ -1,15 +1,16 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 <div class="report-block">
 <?php echo isset($pagination)?$pagination:'' ?>
+<div class="clear"></div>
 <table>
 	<tr>
-		<th class="headerNone left"><?php //echo _('State'); ?></th>
-		<th class="headerNone left"><?php echo _('Time'); ?></th>
-		<th class="headerNone left"><?php echo _('Alert Types'); ?></th>
-		<th class="headerNone left"><?php echo _('Host'); ?></th>
-		<th class="headerNone left"><?php echo _('Service'); ?></th>
-		<th class="headerNone left"><?php echo _('State Types'); ?></th>
-		<th class="headerNone left"><?php echo _('Information'); ?></th>
+		<th class="headerNone "><?php //echo _('State'); ?></th>
+		<th class="headerNone "><?php echo _('Time'); ?></th>
+		<th class="headerNone "><?php echo _('Alert Types'); ?></th>
+		<th class="headerNone "><?php echo _('Host'); ?></th>
+		<th class="headerNone "><?php echo _('Service'); ?></th>
+		<th class="headerNone "><?php echo _('State Types'); ?></th>
+		<th class="headerNone "><?php echo _('Information'); ?></th>
 	</tr>
 	<?php
 	$i = 0;

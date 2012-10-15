@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div id="schedules_area" class="left w98">
+<div id="schedules_area">
 	<?php echo isset($new_schedule) ? $new_schedule : '' ?>
 	<?php foreach(array('Availability' => 'avail', 'SLA' => 'sla', 'Summary' => 'summary') as $report_type_label => $report_type) { ?>
 	<br /><br />
@@ -8,13 +8,13 @@
 			<caption><?php echo _($report_type_label.' Reports') ?></caption>
 			<thead id="<?php echo $report_type ?>_headers">
 				<tr class="setup">
-					<th class="headerNone left"><?php echo _('Interval') ?></th>
-					<th class="headerNone left"><?php echo _('Report') ?></th>
-					<th class="headerNone left"><?php echo _('Recipients') ?></th>
-					<th class="headerNone left"><?php echo _('Filename') ?></th>
-					<th class="headerNone left"><?php echo _('Description') ?></th>
-					<th class="headerNone left"><?php echo _("Local persistent filepath") ?></th>
-					<th class="headerNone left"><?php echo _('Actions'); ?></th>
+					<th><?php echo _('Interval') ?></th>
+					<th><?php echo _('Report') ?></th>
+					<th><?php echo _('Recipients') ?></th>
+					<th><?php echo _('Filename') ?></th>
+					<th><?php echo _('Description') ?></th>
+					<th><?php echo _("Local persistent filepath") ?></th>
+					<th><?php echo _('Actions'); ?></th>
 				</tr>
 			</thead>
 			<tbody>

@@ -10,7 +10,8 @@
 					'title' => _('Print report'),
 					'onclick' => 'window.print()'
 				)
-			)
+			),
+			array('class' => 'image-link')
 		);
 
 		echo form::open($type.'/generate');
@@ -27,20 +28,27 @@
 		echo '<input type="image" src="'.$this->add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
 		echo '</form>';
 		if (!isset($skip_save)) { ?>
-		<a href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
+		<a class="image-link" href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
 		<?php } ?>
-		<a href="#options" class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>
+		<a class="image-link" href="#options" class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>
 		<?php if ($options['report_id']) { ?>
-		<a id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
+		<a class="image-link" id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
 		<?php }
 		if (Session::instance()->get('main_report_params', false)
 			!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
 			# we have main_report_params and we are NOT showing the report (i.e we are showing a sub report)
 			# => show backlink
-			echo '&nbsp;'.html::anchor($type.'/generate?'.Session::instance()->get('main_report_params'), html::image($this->add_path('/icons/32x32/square-back.png'), array('title' => _('Back'), 'alt' => '')), array('title' => _('Back to original report'))).'&nbsp;';
+			echo html::anchor($type.'/generate?'.Session::instance()->get('main_report_params'), 
+				html::image($this->add_path('/icons/32x32/square-back.png'), 
+					array('class' => 'image-link', 'title' => _('Back'), 'alt' => '')), array('title' => _('Back to original report'))
+			);
 		}
 			# make it possible to get the link (GET) to the current report
-			echo '&nbsp;'.html::anchor($type.'/generate?'.$options->as_keyval_string(), html::image($this->add_path('/icons/32x32/square-link.png'),array('alt' => '','title' => _('Direct link'))), array('id' => 'current_report_params', 'title' => _('Direct link to this report. Right click to copy or click to view.')));
+			echo html::anchor($type.'/generate?'.$options->as_keyval_string(), 
+				html::image($this->add_path('/icons/32x32/square-link.png'),
+					array('alt' => '','title' => _('Direct link'))), 
+				array('class' => 'image-link', 'id' => 'current_report_params', 'title' => _('Direct link to this report. Right click to copy or click to view.'))
+			);
 		?>
 	</div>
 	<div id="link_container" class="form-dropdown"></div>

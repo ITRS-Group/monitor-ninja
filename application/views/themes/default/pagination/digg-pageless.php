@@ -4,14 +4,8 @@
  *
  * @preview  « Previous  Next »
  */
-$label_previous = html::image(
-	$this->add_path('icons/16x16/arrow-left.png'),
-	array('alt' => _('previous'),'title' => _('previous'), 'style' => 'margin-bottom: -4px')
-);//_('previous');
-$label_next = html::image(
-	$this->add_path('icons/16x16/arrow-right.png'),
-	array('alt' => _('next'),'title' => _('next'))
-);//_('next');
+$label_previous = '<span class="icon-16 x16-arrow-left" title="'._('Previous').'"></span>';
+$label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></span>';
 ?>
 
 <?php
@@ -27,13 +21,13 @@ $label_next = html::image(
 <p class="pagination">
 	<?php $url = str_replace('&','&amp;',$url);	?>
 	<?php if ($previous_page): ?>
-		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>" class="img prevpage"><?php echo $label_previous ?></a>
+		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>" class="prevpage"><?php echo $label_previous ?></a>
 	<?php else: ?>
 		<?php echo $label_previous ?>
 	<?php endif ?>
 
 	<?php if ($next_page): ?>
-		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>" class="img nextpage"><?php echo $label_next ?></a>
+		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>" class="nextpage"><?php echo $label_next ?></a>
 	<?php else: ?>
 		<?php echo $label_next ?>
 	<?php endif ?>

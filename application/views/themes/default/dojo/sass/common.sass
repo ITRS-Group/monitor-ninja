@@ -33,7 +33,7 @@ $legacy-support-for-ie: true
 	margin: 0 1% !important
 
 .width-50
-	width: 46% !important
+	width: 45% !important
 	margin: 0 2% !important
 
 .alpha
@@ -131,13 +131,18 @@ table
 		width: 40px
 		text-align: center
 
+	.comments
+		width: 40px
+		text-align: center
+
 	tr
 		@extend .nullify
 		background: none
 
 		&:hover
-			@include background(linear-gradient(top, $gradient-dark-lo, $gradient-dark-hi))
-			@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, vertical)
+			td
+				@include background(linear-gradient(top, $gradient-dark-lo, $gradient-dark-hi))
+				@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, vertical)
 
 	tr.odd
 		background: #eee
@@ -234,6 +239,16 @@ input
 			font-size: 0.9em
 			border-radius: 3px
 			box-shadow: 0 0 3px $weak_shadow_color
+
+.report-links
+	float: right
+
+	a, form
+		float: left
+		width: auto
+
+	img
+		margin: 2px 0 2px 8px
 
 #infobar-sml
 	position: fixed

@@ -56,6 +56,29 @@
 					<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
 				
 			</div>
+			
+			<?php 
+
+				if (isset($saved_searches) && !empty($saved_searches)) {
+					echo $saved_searches;
+				}
+				
+			?>
+
+			<div id="save-search-form" title="<?php echo _('Save search') ?>" style="display:none">
+				<form>
+				<p class="validateTips"></p>
+				<fieldset>
+					<label for="search_query"><?php echo _('Search string') ?></label>
+					<input type="text" name="search_query" id="search_query" value="<?php echo isset($query_str) ? $query_str : '' ?>" class="texts search_query ui-widget-content ui-corner-all" />
+					<label for="search_name"><?php echo _('Name') ?></label>
+					<input type="text" name="search_name" id="search_name" class="texts ui-widget-content ui-corner-all" />
+					<label for="search_description"><?php echo _('Description') ?></label>
+					<textarea cols="30" rows="3" name="search_description" id="search_description" class="texts ui-widget-content ui-corner-all"></textarea>
+					<input type="hidden" name="search_id" id="search_id" value="0">
+				</fieldset>
+				</form>
+			</div>
 
 		</div>
 		<?php
