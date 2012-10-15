@@ -11,7 +11,7 @@ class report_Test extends TapUnit {
 		$report = Timeperiod_Model::instance($opts);
 		$report->resolve_timeperiods();
 		$this->pass('Could resolve timperiod torture-test');
-		$this->ok(!empty($report->tp_exceptions), 'There are timeperiod exceptions', TAP_TODO);
+		$this->ok(!empty($report->tp_exceptions), 'There are timeperiod exceptions');
 		// fixme: validate output
 	}
 
