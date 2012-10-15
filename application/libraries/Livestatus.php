@@ -607,8 +607,7 @@ class LivestatusBackend {
 		} else {
 			return;
 		}
-		$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
-		$current_page   = $page->input->get('page',1);
+		$current_page = $page->input->get('page',1);
 		if(!is_numeric($current_page)) { $current_page = 1; }
 
 		/* Set parameters to query */
