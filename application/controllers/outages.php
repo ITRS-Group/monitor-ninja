@@ -36,19 +36,12 @@ class Outages_Controller extends Authenticated_Controller
 
 
 		if(count($outages) > 0) {
-			$all_hosts = array();
-			$hosts = $ls->getHosts();
-			foreach($hosts as &$h) {
-				$all_hosts[$h['name']] =& $h;
-			}
-
 			foreach($outages as &$host) {
 				# count number of affected hosts / services
-				list($affected_hosts,$affected_services) = _count_affected_hosts_and_services($host['name'], $all_hosts);
+				list($affected_hosts,$affected_services,$severity) = $this->count_affected_hosts_and_services($host['name']);
 				$host['affected_hosts']    = $affected_hosts;
 				$host['affected_services'] = $affected_services;
-
-				$host['severity'] = round($affected_hosts + $affected_services/self::SERVICE_SEVERITY_DIVISOR);
+				$host['severity']          = $severity;
 			}
 		}
 
@@ -61,28 +54,47 @@ class Outages_Controller extends Authenticated_Controller
 		$content->outage_data = $outages;
 		$this->template->title = _('Monitoring » Network outages');
 	}
-}
+	
 
-function _count_affected_hosts_and_services($host, $all_hosts) {
-	$affected_hosts    = 0;
-	$affected_services = 0;
-
-	if(!isset($all_hosts[$host]))
-		return(array(0,0));
-
-	if(isset($all_hosts[$host]['childs']) && $all_hosts[$host]['childs'] != '') {
-		foreach($all_hosts[$host]['childs'] as $child) {
-			list($child_affected_hosts,$child_affected_services) = _count_affected_hosts_and_services($child, $all_hosts);
-			$affected_hosts    += $child_affected_hosts;
-			$affected_services += $child_affected_services;
+	private function count_affected_hosts_and_services($host) {
+		/* FIXME: This method needs to be partly implemented in livestatus.
+		 * That can be done by allowing the recursion in childs/parents-column
+		 * to be handled within livestatus, and do a simple Stats-request instead
+		 */
+		$affected_hosts    = 0;
+		$affected_services = 0;
+	
+		$hosts_to_test = array($host);
+		$hosts_services = array();
+	
+		$ls = Livestatus::instance();
+		$lsb = $ls->getBackend();
+		
+		$severity_value = 0;
+	
+		/* Iterate through all hosts with children. */
+		while( !empty( $hosts_to_test ) ) {
+			$host_name = array_shift($hosts_to_test);
+	
+			/* Skip if already tested... */
+			if(isset($hosts_services[$host_name]))
+				continue;
+	
+			$host = $ls->getHosts(array(
+					'filter'=>array('name'=>$host_name),
+					'columns' => array('name', 'childs', 'hourly_value', 'num_services')
+			));
+			$service_value = $lsb->getStats('services', array('value' => 'sum hourly_value'), array(
+					'filter' => array('host_name'=>$host[0]['name'])
+					));
+	
+			$hosts_services[$host_name] = $host[0]['num_services'];
+			$hosts_to_test += $host[0]['childs'];
+	
+			$severity_value += $host[0]['hourly_value'] + $service_value[0]['value'];
 		}
+	
+		return array(count($hosts_services), array_sum($hosts_services), $severity_value);
 	}
-
-	# add number of directly affected hosts
-	$affected_hosts++;
-
-	# add number of directly affected services
-	$affected_services += $all_hosts[$host]['num_services'];
-
-	return(array($affected_hosts, $affected_services));
+	
 }

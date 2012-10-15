@@ -89,7 +89,7 @@ class Livestatus {
 					'active_checks_enabled', 'address', 'alias', 'check_command', 'check_freshness', 'check_interval',
 					'check_options', 'check_period', 'check_type', 'checks_enabled', 'childs', 'comments', 'current_attempt',
 					'current_notification_number', 'display_name', 'event_handler_enabled', 'execution_time',
-					'custom_variable_names', 'custom_variable_values',
+					'custom_variable_names', 'custom_variable_values', 'hourly_value',
 					'first_notification_delay', 'flap_detection_enabled', 'groups', 'has_been_checked',
 					'high_flap_threshold', 'icon_image', 'icon_image_alt', 'icon_image_expanded',
 					'is_executing', 'is_flapping', 'last_check', 'last_notification', 'last_state_change',
@@ -560,7 +560,11 @@ class LivestatusBackend {
 		
 		if( $stats !== false ) {
 			foreach($stats as $key => $filter) {
-				$query .= $this->getQueryFilter($filter, true);
+				if( is_string( $filter ) ) {
+					$query .= "Stats: $filter\n";
+				} else {
+					$query .= $this->getQueryFilter($filter, true);
+				}
 				array_push($columns, $key);
 			}
 		}
