@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="response"></div>
 
-<div class="w98 left">
+<div>
 	<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 		echo form::open('summary/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
 	 ?>

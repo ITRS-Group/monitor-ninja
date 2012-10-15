@@ -136,10 +136,8 @@ table
 		background: none
 
 		&:hover
-			td
-				@include background(linear-gradient(top, $gradient-dark-lo, $gradient-dark-hi))
-				@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, vertical)
-				border: 1px solid $border-color-dark
+			@include background(linear-gradient(top, $gradient-dark-lo, $gradient-dark-hi))
+			@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, vertical)
 
 	tr.odd
 		background: #eee
@@ -153,6 +151,11 @@ table
 		padding: 2px
 		text-align: left
 		vertical-align: middle
+
+.no-borders
+	table
+		td
+			border: none
 
 h1, h2, h3, h4, h5, h6
 	font: normal normal 120% 'Century Gothic', helvetica, arial, tahoma, sans-serif

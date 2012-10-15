@@ -7,7 +7,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 }
 ?>
 
-<div class="left w98">
+<div class="no-borders">
 	<div class="report-page-setup availsla">
 		<div id="response"></div>
 		<div class="setup-table">

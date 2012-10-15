@@ -4,3 +4,9 @@
   /* line 5, sass/form.sass */
   .content form input, .content form select {
     margin: 2px 0 2px 8px; }
+  /* line 9, sass/form.sass */
+  .content form td select {
+    width: 90%; }
+  /* line 12, sass/form.sass */
+  .content form .move-buttons {
+    width: 50px; }

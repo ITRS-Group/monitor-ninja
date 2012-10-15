@@ -172,23 +172,22 @@ table {
   /* line 134, sass/common.sass */
   table tr {
     background: none; }
-    /* line 139, sass/common.sass */
-    table tr:hover td {
+    /* line 138, sass/common.sass */
+    table tr:hover {
       background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e8e9e7), color-stop(100%, #f9faf8));
       background: -webkit-linear-gradient(top, #e8e9e7, #f9faf8);
       background: -moz-linear-gradient(top, #e8e9e7, #f9faf8);
       background: -o-linear-gradient(top, #e8e9e7, #f9faf8);
       background: linear-gradient(top, #e8e9e7, #f9faf8);
       *zoom: 1;
-      filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFE8E9E7', endColorstr='#FFF9FAF8');
-      border: 1px solid #bbbbbb; }
-  /* line 144, sass/common.sass */
+      filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFE8E9E7', endColorstr='#FFF9FAF8'); }
+  /* line 142, sass/common.sass */
   table tr.odd {
     background: #eeeeee; }
-  /* line 147, sass/common.sass */
+  /* line 145, sass/common.sass */
   table tr.even {
     background: whitesmoke; }
-  /* line 150, sass/common.sass */
+  /* line 148, sass/common.sass */
   table td {
     border: 1px solid #dddddd;
     padding: 2px;
@@ -196,46 +195,50 @@ table {
     vertical-align: middle; }
 
 /* line 157, sass/common.sass */
+.no-borders table td {
+  border: none; }
+
+/* line 160, sass/common.sass */
 h1, h2, h3, h4, h5, h6 {
   font: normal normal 120% "Century Gothic", helvetica, arial, tahoma, sans-serif;
   margin: 1px 0; }
 
-/* line 161, sass/common.sass */
+/* line 164, sass/common.sass */
 h2 {
   font-size: 1.2em; }
 
-/* line 164, sass/common.sass */
+/* line 167, sass/common.sass */
 h3 {
   font-size: 1.15em; }
 
-/* line 167, sass/common.sass */
+/* line 170, sass/common.sass */
 h4 {
   font-size: 1.1em; }
 
-/* line 170, sass/common.sass */
+/* line 173, sass/common.sass */
 h5 {
   font-size: 1.05em; }
 
-/* line 173, sass/common.sass */
+/* line 176, sass/common.sass */
 h6 {
   font-size: 1.05em; }
 
-/* line 176, sass/common.sass */
+/* line 179, sass/common.sass */
 a {
   color: #888888;
   text-decoration: none;
   border-bottom: 1px dotted #888888; }
-  /* line 181, sass/common.sass */
+  /* line 184, sass/common.sass */
   a:hover {
     color: #555555;
     border-bottom: 1px dotted #555555; }
 
-/* line 185, sass/common.sass */
+/* line 188, sass/common.sass */
 .container {
   overflow: auto;
   min-width: 600px; }
 
-/* line 189, sass/common.sass */
+/* line 192, sass/common.sass */
 .content {
   position: absolute;
   padding: 0 10px;
@@ -244,36 +247,36 @@ a {
   padding: 16px 16px 32px 10px;
   overflow: auto;
   z-index: 0; }
-  /* line 198, sass/common.sass */
+  /* line 201, sass/common.sass */
   .content p {
     width: 90%;
     margin: 8px 8px; }
 
-/* line 203, sass/common.sass */
+/* line 206, sass/common.sass */
 input[type="text"] {
   border-radius: 3px;
   border: 1px solid #bbbbbb;
   padding: 3px 6px; }
 
-/* line 208, sass/common.sass */
+/* line 211, sass/common.sass */
 #page_links {
   margin-top: 0px;
   margin-left: 0px;
   width: 100%;
   vertical-align: middle; }
-  /* line 214, sass/common.sass */
+  /* line 217, sass/common.sass */
   #page_links .page-links-label {
     float: left;
     max-width: 30%;
     padding-top: 8px; }
-  /* line 219, sass/common.sass */
+  /* line 222, sass/common.sass */
   #page_links ul {
     float: left;
     margin: 0px;
     padding: 0px;
     width: 100%;
     max-width: 60%; }
-    /* line 226, sass/common.sass */
+    /* line 229, sass/common.sass */
     #page_links ul li {
       list-style: none;
       display: inline-block;
@@ -283,7 +286,7 @@ input[type="text"] {
       border-radius: 3px;
       box-shadow: 0 0 3px #bbbbbb; }
 
-/* line 235, sass/common.sass */
+/* line 238, sass/common.sass */
 #infobar-sml {
   position: fixed;
   top: 0;
@@ -294,7 +297,7 @@ input[type="text"] {
   border: 1px solid #ffcc44;
   display: none; }
 
-/* line 245, sass/common.sass */
+/* line 248, sass/common.sass */
 #version_info {
   position: absolute;
   display: none;
@@ -305,12 +308,12 @@ input[type="text"] {
   background: #f0f0f0;
   border: 1px solid #dddddd;
   box-shadow: 0 0 3px #bbbbbb; }
-  /* line 256, sass/common.sass */
+  /* line 259, sass/common.sass */
   #version_info li {
     padding: 2px 4px;
     border-bottom: #eeeeee; }
 
-/* line 260, sass/common.sass */
+/* line 263, sass/common.sass */
 #page_settings {
   position: absolute;
   display: none;
@@ -321,7 +324,7 @@ input[type="text"] {
   background: #f0f0f0;
   border: 1px solid #dddddd;
   box-shadow: 0 0 3px #bbbbbb; }
-  /* line 271, sass/common.sass */
+  /* line 274, sass/common.sass */
   #page_settings li {
     padding: 2px 4px;
     border-bottom: #bbbbbb; }
@@ -1883,3 +1886,9 @@ input[type="text"] {
   /* line 5, sass/form.sass */
   .content form input, .content form select {
     margin: 2px 0 2px 8px; }
+  /* line 9, sass/form.sass */
+  .content form td select {
+    width: 90%; }
+  /* line 12, sass/form.sass */
+  .content form .move-buttons {
+    width: 50px; }
