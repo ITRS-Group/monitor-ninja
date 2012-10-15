@@ -283,6 +283,49 @@ input[type="text"] {
       border-radius: 3px;
       box-shadow: 0 0 3px #bbbbbb; }
 
+/* line 235, sass/common.sass */
+#infobar-sml {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  padding: 8px;
+  background: #ffdd99;
+  border: 1px solid #ffcc44;
+  display: none; }
+
+/* line 245, sass/common.sass */
+#version_info {
+  position: absolute;
+  display: none;
+  top: 64px;
+  left: 220px;
+  width: 200px;
+  z-index: 10;
+  background: #f0f0f0;
+  border: 1px solid #dddddd;
+  box-shadow: 0 0 3px #bbbbbb; }
+  /* line 256, sass/common.sass */
+  #version_info li {
+    padding: 2px 4px;
+    border-bottom: #eeeeee; }
+
+/* line 260, sass/common.sass */
+#page_settings {
+  position: absolute;
+  display: none;
+  top: 64px;
+  left: 220px;
+  width: 200px;
+  z-index: 10;
+  background: #f0f0f0;
+  border: 1px solid #dddddd;
+  box-shadow: 0 0 3px #bbbbbb; }
+  /* line 271, sass/common.sass */
+  #page_settings li {
+    padding: 2px 4px;
+    border-bottom: #bbbbbb; }
+
 /* line 2, sass/sprites.sass */
 .icon-all, .icon-12, .icon-16, .icon-20, .icon-24, .icon-32, .icon-menu, .icon-menu-dark {
   display: inline-block;

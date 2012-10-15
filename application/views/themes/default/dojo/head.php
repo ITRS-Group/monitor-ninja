@@ -1,8 +1,15 @@
+<?php
+	if (isset($this) && isset($this->template->js_header))
+		$this->template->js_header->js = $this->xtra_js;
+?>
 <head>
 
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>Monitor - DOJO</title>
-	<link rel="icon" type="image/icon" href="./icons/16x16/favicon.ico" />
+
+	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
+
+	<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
+
 	<link href="<?php echo url::base().'application/views/themes/default/dojo/common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo url::base().'application/views/themes/default/dojo/print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
 	<link href="<?php echo url::base().'application/views/themes/default/dojo/handheld.css'; ?>" type="text/css" rel="stylesheet" media="handheld" />
@@ -26,6 +33,11 @@
 		echo html::script('application/views/themes/default/js/pagination.js');
 		echo html::script('application/views/themes/default/js/global_search.js');
 	?>
+
+	<!--[If IE]>
+	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/ie7.css' ?>" />
+	<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
+	<![endif]-->
 
 	<script type="text/javascript">
 		//<!--

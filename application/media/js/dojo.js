@@ -7,6 +7,19 @@
 * @requires		mlib.store
 */
 
+function show_info() {
+
+	if ($('#version_info').is(':visible')) {
+		$('#version_info').hide();
+	} else {
+		if ($('#infobar').is(':visible')) {
+			var top = 125;
+			$('#version_info').css('top', (top + 3) + 'px');
+		}
+		$('#version_info').show();
+	}
+}
+
 (function () {
 
 	var config = {
@@ -19,7 +32,6 @@
 
 		mc = null,		// The current menu list
 		bc = null,		// The current supermenu-button
-		bsub = null,	// The current menu sub-button
 		tmk = null,		// The temporary menu list key
 
 		content = $('#content')[0],
@@ -29,7 +41,7 @@
 
 		e = e || window.event;
 
-		var menu = document.getElementById('navigation');
+		var menu = $('#navigation')[0];
 
 		if (menu.className.indexOf('navigation-collapsed') >= 0) {
 
@@ -71,47 +83,12 @@
 
 	}
 
-	function displayMenuStyle (e) {
-		
-		e = e || window.event;
-
-		var oldicon = bsub.children[0].children[0],
-			icon = null,
-			span = null,
-			key = null;
-
-		oldicon.className = oldicon.className.replace(/menu-dark/g, 'menu');
-
-		if (e.target.tagName.toLowerCase() === 'span') { // Pressed text/icon
-			icon = e.target.parentNode.children[0];
-			span = e.target.parentNode.children[1];
-			key = e.target.parentNode.parentNode.id;
-		} else { // Pressed list item
-			icon = e.target.children[0];
-			span = e.target.children[1];
-			key = e.target.parentNode.id;
-		}
-
-		u.store('menu', tmk);
-
-		icon.className = icon.className.replace(/menu/g, 'menu-dark');
-
-		bsub.className = 'inactive';
-		u.store('button', key);
-
-		bsub = e.target.parentNode;
-		bsub.className = 'active';
-
-	}
-
 	$('.supermenu-button').click(function (e) {
 		
 		e = e || window.event;
 
 		var target = e.currentTarget,
 			key = target.title.toLowerCase();
-
-		tmk = key;
 
 		mc.style.display = 'none';
 		bc.style.boxShadow = 'none';
@@ -132,29 +109,20 @@
 	});
 
 	$(window).resize(fixContentOffset);
-	$('li, .nav-seg').click(displayMenuStyle);
+
 	$('.slider').click(toggleCollapse);
 
 	$(document).ready(function (e) {
 
-		if (!u.stored('menu')) u.store('menu', 'monitoring');
-		if (!u.stored('button')) u.store('button', $('#' + u.stored('menu').data + '-menu')[0].children[0].id);
-		if (u.stored('menu').data == '') u.store('menu', 'monitoring');
-
-		var config = {
-			limit_for_collapsed_double_col: 8		// Includes list separators
-		};
-
-		mc = $('#' + u.stored('menu').data + '-menu')[0];
-		bc = $('#' + u.stored('menu').data + '-button')[0];
-		bsub = $('#' + u.stored('button').data)[0];
-		tmk = mc.title;
+		mc = $('.current-sup-menu');
+		mc.removeClass('.current-sup-menu');
 
 		// Set onload styles
 
-		var tmp = bsub.children[0].children[0];
-		tmp.className = tmp.className.replace('menu', 'menu-dark');
-		tmp.parentNode.className = 'active';
+		mc = mc[0];
+		bc = $('#' + mc.id.replace('-menu', '') + '-button');
+		bc = bc[0];
+
 		mc.style.display = 'block';
 		bc.style.boxShadow = 'inset 0 0 8px #ccc';
 
@@ -164,7 +132,6 @@
 		}
 
 		fixContentOffset(e);
-		displayMenuStyle({target: bsub.children[0]});
 
 	});
 
