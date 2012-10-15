@@ -19,9 +19,9 @@ class report_Test extends TapUnit {
 		$auth->hosts = false;
 		$auth->services = false;
 		$msg = 'Run summary test queries without syntax errors';
-		if ($auth->view_hosts_root)
+		if ($auth->authorized_for('view_hosts_root'))
 			$msg .= ' with view_hosts_root';
-		if ($auth->view_services_root)
+		if ($auth->authorized_for('view_services_root'))
 			$msg .= ' with view_services_root';
 		try {
 			$res = $this->rpt->test_summary_queries();
@@ -39,24 +39,21 @@ class report_Test extends TapUnit {
 		// run this so it'll yell at me for next time
 		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
 		$this->rpt = new Reports_Model($opts);
-		$auth = Nagios_auth_Model::instance();
 
-		$auth->view_hosts_root = false;
-		$auth->view_services_root = false;
-		$this->run_and_diag($auth);
+		$this->auth->set_authorized_for('view_hosts_root', false);
+		$this->auth->set_authorized_for('view_services_root', false);
+		$this->run_and_diag($this->auth);
 
-		$auth->view_hosts_root = true;
-		$auth->view_services_root = false;
-		$this->run_and_diag($auth);
+		$this->auth->set_authorized_for('view_hosts_root', true);
+		$this->auth->set_authorized_for('view_services_root', false);
+		$this->run_and_diag($this->auth);
 
-		$auth->view_hosts_root = true;
-		$auth->view_services_root = true;
-		$this->run_and_diag($auth);
+		$this->auth->set_authorized_for('view_hosts_root', true);
+		$this->auth->set_authorized_for('view_services_root', true);
+		$this->run_and_diag($this->auth);
 
-		$auth->view_hosts_root = false;
-		$auth->view_services_root = true;
-		$auth->hosts = false;
-		$auth->services = false;
-		$this->run_and_diag($auth);
+		$this->auth->set_authorized_for('view_hosts_root', false);
+		$this->auth->set_authorized_for('view_services_root', true);
+		$this->run_and_diag($this->auth);
 	}
 }
