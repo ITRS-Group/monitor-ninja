@@ -35,6 +35,7 @@
 			?>
 
 			<div class="navigation" id="navigation">
+				
 				<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 					<?php
 					$query = arr::search($_REQUEST, 'query');

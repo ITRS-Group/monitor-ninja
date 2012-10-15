@@ -91,6 +91,11 @@ form
 	top: 0
 	left: 0
 
+hr
+	height: 0px
+	border: none
+	border-bottom: 1px solid $border-color-light
+
 table
 	@extend .nullify
 	font-size: 0.9em
@@ -213,16 +218,13 @@ input
 		border: 1px solid $border-color-dark
 		padding: 3px 6px
 
-#global_search
-	background: $general_background_color
-	padding: 4px
-	border-bottom: 1px solid $border-color-dark
-
 #page_links
 	margin-top: 0px
 	margin-left: 0px
 	width: 100%
 	vertical-align: middle
+	border: none
+	box-shadow: none
 
 	.page-links-label
 		float: left

@@ -5,6 +5,7 @@
 	position: fixed
 	width: 200px
 	top: $header_height
+	padding-top: 32px
 	overflow: hidden
 	overflow-y: auto
 	height: 85%
@@ -14,6 +15,18 @@
 	
 	text-shadow: 1px 1px 1px #fff
 	background: url('./images/stripe.png')
+
+	#global_search
+		height: 24px
+		background: $general_background_color
+		padding: 4px
+		border-bottom: 1px solid $border-color-dark
+		border-right: 1px solid $border-color-dark
+		position: fixed
+		width: 180px
+		z-index: 2
+		top: $header_height
+		left: 0
 
 	a
 		border-bottom: 1px dotted $link_color

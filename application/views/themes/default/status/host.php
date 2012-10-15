@@ -20,6 +20,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 			</ul>
 		</div>
 	<div class="clear"></div>
+	<hr />
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
