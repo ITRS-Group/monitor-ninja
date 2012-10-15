@@ -1175,81 +1175,42 @@ class Extinfo_Controller extends Authenticated_Controller {
 	/**
 	*	Show scheduling queue
 	*/
-	public function scheduling_queue($sort_field='next_check', $sort_order='ASC')
+	public function scheduling_queue()
 	{
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$back_link = '/extinfo/scheduling_queue/';
 
-		$sq_model = new Scheduling_queue_Model($items_per_page, true, true);
-		$sq_model->sort_order = $this->input->get('sort_order', $sort_order);
-		$sq_model->sort_field = $this->input->get('sort_field', $sort_field);
+		$sort_order = $this->input->get('sort_order', 'next_check');
+		$sort_column = $this->input->get('sort_column', 'ASC');
+		$host = $this->input->get('host');
+		$service = $this->input->get('service');
+		$sq_model = new Scheduling_queue_Model();
 
 		if (!Auth::instance()->authorized_for('host_view_all')) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
-		$host_qry = false;
-		$svc_qry = false;
-		$search_active = false;
-		if (arr::search($_REQUEST, 'host_name')) {
-			$sq_model->set_host_search_term($_REQUEST['host_name']);
-			$search_active = true;
-		}
-		if (arr::search($_REQUEST, 'service')) {
-			$sq_model->set_service_search_term($_REQUEST['service']);
-			$search_active = true;
-		}
-
-		$pagination = new Pagination(
-			array(
-				'total_items'=> $sq_model->count_queue(),
-				'items_per_page' => $items_per_page
-			)
-		);
-
-		$sq_model->offset = $pagination->sql_offset;
-		$result = $sq_model->show_scheduling_queue($items_per_page, $pagination->sql_offset);
-
-		$header_links = array(
-			array(
-				'title' => _('Host'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=host_name',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=host_name',
-			),
-			array(
-				'title' => _('Service'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=service_description',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=service_description',
-			),
-			array(
-				'title' => _('Last check'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=last_check',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=last_check',
-			),
-			array(
-				'title' => _('Next check'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=next_check',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=next_check',
-			)
-		);
-
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$filter_string = _('Enter text to filter');
-		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 
 		$this->template->js_header->js = $this->xtra_js;
+		$this->session->set('back_extinfo',$back_link);
 
 		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
-		$this->template->content->data = $result;
-		$this->template->content->search_active = $search_active;
-		$this->template->content->filter_string = $filter_string;
-		$this->template->content->back_link = $back_link;
-		$this->template->content->header_links = $header_links;
-		$this->template->content->pagination = isset($pagination) ? $pagination : false;
+		$this->template->content->data = $sq_model->show_scheduling_queue($sort_order, $sort_column, $service, $host);
+		$this->template->content->host_search = $host;
+		$this->template->content->service_search = $service;
+		$this->template->content->sort_order = $sort_order;
+		$this->template->content->sort_column = $sort_column;
+		$this->template->content->header_links = array(
+			'host_name' => _('Host'),
+			'description' => _('Service'),
+			'last_check' => _('Last check'),
+			'next_check' => _('Next check')
+		);
 		$this->template->content->date_format_str = nagstat::date_format();
 	}
 

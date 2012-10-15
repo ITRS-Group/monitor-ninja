@@ -423,6 +423,11 @@ class Livestatus {
 		return $stats;
 	}
 
+	public function getSchedulingQueue($last_program_start, $options = null) {
+		$stats = $this->getPerformanceStats('services', $last_program_start, $options);
+		return $stats;
+	}
+
 	/* getPerformanceStats */
 	public function getPerformanceStats($type, $last_program_start, $options = null) {
 		$result = array();
