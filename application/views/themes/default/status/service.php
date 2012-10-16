@@ -1,7 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $style = isset($style) ? $style : false;
 $link_to_nacoma = nacoma::link()===true;
-$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');?>
@@ -95,7 +94,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification disabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 2;
 						}
-						if (!$row->host_active_checks_enabled && !$show_passive_as_active) {
+						if (!$row->host_active_checks_enabled) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 4;
 						}
@@ -156,7 +155,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					$properties += 2;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
-				if (!$row->active_checks_enabled && !$show_passive_as_active) {
+				if (!$row->active_checks_enabled) {
 					$properties += 4;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}

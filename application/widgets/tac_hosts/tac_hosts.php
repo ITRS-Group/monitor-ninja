@@ -25,14 +25,13 @@ class Tac_hosts_Widget extends widget_Base {
 		# HOSTS DOWN
 		$hosts_down = array();
 
-		# alter filter depending on config.show_passive_as_active value in config/checks.php
-		$host_fiiter =
-			config::get('checks.show_passive_as_active')
+		$host_filter =
+			config::get('checks.show_passive_as_active', '*')
 			? (nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED)
 			: (nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED);
 
 		if ($current_status->hst->down_and_unhandled) {
-			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.$host_fiiter] =
+			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.$host_filter] =
 				$current_status->hst->down_and_unhandled.' '._('Unhandled Problems');
 		}
 
@@ -45,7 +44,6 @@ class Tac_hosts_Widget extends widget_Base {
 		}
 
 		if ($current_status->hst->down_and_disabled_active) {
-/* TODO: check passive setting */
 			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hst->down_and_disabled_active.' '._('Disabled');
 		}
 
@@ -53,7 +51,7 @@ class Tac_hosts_Widget extends widget_Base {
 		$hosts_unreachable = array();
 
 		if ($current_status->hst->unreachable_and_unhandled) {
-			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.$host_fiiter] =
+			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.$host_filter] =
 				$current_status->hst->unreachable_and_unhandled.' '._('Unhandled Problems');
 		}
 
@@ -66,7 +64,6 @@ class Tac_hosts_Widget extends widget_Base {
 		}
 
 		if ($current_status->hst->unreachable_and_disabled_active) {
-/* TODO: check passive setting */
 			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hst->unreachable_and_disabled_active.' '._('Disabled');
 		}
 
@@ -74,7 +71,6 @@ class Tac_hosts_Widget extends widget_Base {
 		# HOSTS UP DISABLED
 		$hosts_up_disabled = array();
 		if ($current_status->hst->up_and_disabled_active) {
-/* TODO: check passive setting */
 			$hosts_up_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_UP .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hst->up_and_disabled.' '._('Disabled');
 		}
 

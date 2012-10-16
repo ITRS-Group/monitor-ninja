@@ -81,6 +81,28 @@ class Livestatus {
 		return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start);
 	}
 
+	public function handle_passive_as_active($row) {
+		static $passive_as_active = null;
+		if ($passive_as_active === null)
+			$passive_as_active = config::get('checks.show_passive_as_active', '*');
+
+		if ($passive_as_active)
+			return $row['active_checks_enabled'] || $row['accept_passive_checks'];
+		else
+			return $row['active_checks_enabled'];
+	}
+
+	public function handle_host_passive_as_active($row) {
+		static $passive_as_active = null;
+		if ($passive_as_active === null)
+			$passive_as_active = config::get('checks.show_passive_as_active', '*');
+
+		if ($passive_as_active)
+			return $row['host_active_checks_enabled'] || $row['host_accept_passive_checks'];
+		else
+			return $row['host_active_checks_enabled'];
+	}
+
 	/* getHosts */
 	public function getHosts($options = null) {
 		if(!isset($options['columns'])) {
@@ -102,7 +124,8 @@ class Livestatus {
 					'pnpgraph_present'
 			);
 			$options['callbacks'] = array(
-					'duration' => array($this, 'calc_duration')
+				'duration' => array($this, 'calc_duration'),
+				'active_checks_enabled' => array($this, 'handle_passive_as_active')
 			);
 		}
 		return $this->backend->getTable('hosts', $options);
@@ -176,7 +199,9 @@ class Livestatus {
 					'state', 'state_type', 'modified_attributes_list', 'pnpgraph_present'
 			);
 			$options['callbacks'] = array(
-					'duration' => array($this, 'calc_duration')
+				'duration' => array($this, 'calc_duration'),
+				'active_checks_enabled' => array($this, 'handle_passive_as_active'),
+				'host_active_checks_enabled' => array($this, 'handle_host_passive_as_active')
 			);
 		}
 		return $this->backend->getTable('services', $options);
@@ -309,39 +334,36 @@ class Livestatus {
 
 	/* getHostTotals */
 	public function getHostTotals($options = null) {
-		/*
-		TODO: implement
 		if (config::get('checks.show_passive_as_active', '*')) {
-		$active_checks_condition = "Stats: active_checks_enabled = 1\nStats: accept_passive_checks = 1\nStatsOr: 2";
-		$disabled_checks_condition = "Stats: active_checks_enabled != 1\nStats: accept_passive_checks != 1\nStatsAnd: 2";
+			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
+			$disabled_checks_condition = array('active_checks_enabled' => 0, 'accept_passive_checks' => 0);
 		} else {
-		$active_checks_condition = "Stats: active_checks_enabled = 1";
-		$disabled_checks_condition = "Stats: active_checks_enabled != 1";
+			$active_checks_condition = array('active_checks_enabled' => 1);
+			$disabled_checks_condition = array('active_checks_enabled' => 0);
 		}
-		*/
 		$stats = array(
 				'total'                             => array( 'state' => array( '!=' => 999 )),
 				'total_active'                      => array( 'check_type' => 0 ),
 				'total_passive'                     => array( 'check_type' => 1 ),
 				'pending'                           => array( 'has_been_checked' => 0 ),
-				'pending_and_disabled'              => array( 'has_been_checked' => 0, 'active_checks_enabled' => 0 ),
+				'pending_and_disabled'              => array_merge(array('has_been_checked' => 0), $disabled_checks_condition),
 				'pending_and_scheduled'             => array( 'has_been_checked' => 0, 'scheduled_downtime_depth' => array('>' => 0 )),
 				'up'                                => array( 'has_been_checked' => 1, 'state' => 0 ),
-				'up_and_disabled_active'            => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 0, 'active_checks_enabled' => 0 ),
-				'up_and_disabled_passive'           => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 0, 'active_checks_enabled' => 0 ),
+				'up_and_disabled_active'            => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 0), $disabled_checks_condition),
+				'up_and_disabled_passive'           => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 0), $disabled_checks_condition),
 				'up_and_scheduled'                  => array( 'has_been_checked' => 1, 'state' => 0, 'scheduled_downtime_depth' => array( '>' => 0 )),
 				'down'                              => array( 'has_been_checked' => 1, 'state' => 1 ),
 				'down_and_ack'                      => array( 'has_been_checked' => 1, 'state' => 1, 'acknowledged' => 1 ),
 				'down_and_scheduled'                => array( 'has_been_checked' => 1, 'state' => 1, 'scheduled_downtime_depth' => array( '>' => 0 )),
-				'down_and_disabled_active'          => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 1, 'active_checks_enabled' => 0 ),
-				'down_and_disabled_passive'         => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 1, 'active_checks_enabled' => 0 ),
-				'down_and_unhandled'                => array( 'has_been_checked' => 1, 'state' => 1, 'active_checks_enabled' => 1, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0 ),
+				'down_and_disabled_active'          => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 1), $disabled_checks_condition),
+				'down_and_disabled_passive'         => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 1), $disabled_checks_condition),
+				'down_and_unhandled'                => array_merge(array('has_been_checked' => 1, 'state' => 1, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0), $active_checks_condition),
 				'unreachable'                       => array( 'has_been_checked' => 1, 'state' => 2 ),
 				'unreachable_and_ack'               => array( 'has_been_checked' => 1, 'state' => 2, 'acknowledged' => 1 ),
 				'unreachable_and_scheduled'         => array( 'has_been_checked' => 1, 'state' => 2, 'scheduled_downtime_depth' => array( '>' => 0 ) ),
-				'unreachable_and_disabled_active'   => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 2, 'active_checks_enabled' => 0 ),
-				'unreachable_and_disabled_passive'  => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 2, 'active_checks_enabled' => 0 ),
-				'unreachable_and_unhandled'         => array( 'has_been_checked' => 1, 'state' => 2, 'active_checks_enabled' => 1, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0 ),
+				'unreachable_and_disabled_active'   => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 2), $disabled_checks_condition),
+				'unreachable_and_disabled_passive'  => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 2), $disabled_checks_condition),
+				'unreachable_and_unhandled'         => array_merge(array('has_been_checked' => 1, 'state' => 2, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0), $active_checks_condition),
 				'flapping'                          => array( 'is_flapping' => 1 ),
 				'flapping_disabled'                 => array( 'flap_detection_enabled' => 0 ),
 				'notifications_disabled'            => array( 'notifications_enabled' => 0 ),
@@ -358,48 +380,45 @@ class Livestatus {
 
 	/* getServiceTotals */
 	public function getServiceTotals($options = null) {
-		/*
-		TODO: implement
 		if (config::get('checks.show_passive_as_active', '*')) {
-		$active_checks_condition = "Stats: active_checks_enabled = 1\nStats: accept_passive_checks = 1\nStatsOr: 2";
-		$disabled_checks_condition = "Stats: active_checks_enabled != 1\nStats: accept_passive_checks != 1\nStatsAnd: 2";
+			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
+			$disabled_checks_condition = array('active_checks_enabled' => 0, 'accept_passive_checks' => 0);
 		} else {
-		$active_checks_condition = "Stats: active_checks_enabled = 1";
-		$disabled_checks_condition = "Stats: active_checks_enabled != 1";
+			$active_checks_condition = array('active_checks_enabled' => 1);
+			$disabled_checks_condition = array('active_checks_enabled' => 0);
 		}
-		*/
 		$stats = array(
 				'total'                             => array( 'description' => array( '!=' => '' ) ),
 				'total_active'                      => array( 'check_type' => 0 ),
 				'total_passive'                     => array( 'check_type' => 1 ),
 				'pending'                           => array( 'has_been_checked' => 0 ),
-				'pending_and_disabled'              => array( 'has_been_checked' => 0, 'active_checks_enabled' => 0 ),
+				'pending_and_disabled'              => array_merge(array('has_been_checked' => 0), $disabled_checks_condition),
 				'pending_and_scheduled'             => array( 'has_been_checked' => 0, 'scheduled_downtime_depth' => array( '>' => 0 ) ),
 				'ok'                                => array( 'has_been_checked' => 1, 'state' => 0 ),
 				'ok_and_scheduled'                  => array( 'has_been_checked' => 1, 'state' => 0, 'scheduled_downtime_depth' => array( '>' => 0 ) ),
-				'ok_and_disabled_active'            => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 0, 'active_checks_enabled' => 0 ),
-				'ok_and_disabled_passive'           => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 0, 'active_checks_enabled' => 0 ),
+				'ok_and_disabled_active'            => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 0), $disabled_checks_condition),
+				'ok_and_disabled_passive'           => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 0), $disabled_checks_condition),
 				'warning'                           => array( 'has_been_checked' => 1, 'state' => 1 ),
 				'warning_and_scheduled'             => array( 'has_been_checked' => 1, 'state' => 1, 'scheduled_downtime_depth' => array( '>' => 0 ) ),
-				'warning_and_disabled_active'       => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 1, 'active_checks_enabled' => 0 ),
-				'warning_and_disabled_passive'      => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 1, 'active_checks_enabled' => 0 ),
+				'warning_and_disabled_active'       => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 1), $disabled_checks_condition),
+				'warning_and_disabled_passive'      => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 1), $disabled_checks_condition),
 				'warning_and_ack'                   => array( 'has_been_checked' => 1, 'state' => 1, 'acknowledged' => 1 ),
 				'warning_on_down_host'              => array( 'has_been_checked' => 1, 'state' => 1, 'host_state' => array( '!=' => 0 ) ),
-				'warning_and_unhandled'             => array( 'has_been_checked' => 1, 'state' => 1, 'host_state' => 0, 'active_checks_enabled' => 1, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0 ),
+				'warning_and_unhandled'             => array_merge(array('has_been_checked' => 1, 'state' => 1, 'host_state' => 0, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0), $active_checks_condition),
 				'critical'                          => array( 'has_been_checked' => 1, 'state' => 2 ),
 				'critical_and_scheduled'            => array( 'has_been_checked' => 1, 'state' => 2, 'scheduled_downtime_depth' => array( '>' => 0 ) ),
-				'critical_and_disabled_active'      => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 2, 'active_checks_enabled' => 0 ),
-				'critical_and_disabled_passive'     => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 2, 'active_checks_enabled' => 0 ),
+				'critical_and_disabled_active'      => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 2), $disabled_checks_condition),
+				'critical_and_disabled_passive'     => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 2), $disabled_checks_condition),
 				'critical_and_ack'                  => array( 'has_been_checked' => 1, 'state' => 2, 'acknowledged' => 1 ),
 				'critical_on_down_host'             => array( 'has_been_checked' => 1, 'state' => 2, 'host_state' => array( '!=' => 0 ) ),
-				'critical_and_unhandled'            => array( 'has_been_checked' => 1, 'state' => 2, 'host_state' => 0, 'active_checks_enabled' => 1, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0 ),
+				'critical_and_unhandled'            => array_merge(array('has_been_checked' => 1, 'state' => 2, 'host_state' => 0, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0), $active_checks_condition),
 				'unknown'                           => array( 'has_been_checked' => 1, 'state' => 3 ),
 				'unknown_and_scheduled'             => array( 'has_been_checked' => 1, 'state' => 3, 'scheduled_downtime_depth' => array( '>' => 0 ) ),
-				'unknown_and_disabled_active'       => array( 'check_type' => 0, 'has_been_checked' => 1, 'state' => 3, 'active_checks_enabled' => 0 ),
-				'unknown_and_disabled_passive'      => array( 'check_type' => 1, 'has_been_checked' => 1, 'state' => 3, 'active_checks_enabled' => 0 ),
+				'unknown_and_disabled_active'       => array_merge(array('check_type' => 0, 'has_been_checked' => 1, 'state' => 3), $disabled_checks_condition),
+				'unknown_and_disabled_passive'      => array_merge(array('check_type' => 1, 'has_been_checked' => 1, 'state' => 3), $disabled_checks_condition),
 				'unknown_and_ack'                   => array( 'has_been_checked' => 1, 'state' => 3, 'acknowledged' => 1 ),
 				'unknown_on_down_host'              => array( 'has_been_checked' => 1, 'state' => 3, 'host_state' => array( '!=' => 0 ) ),
-				'unknown_and_unhandled'             => array( 'has_been_checked' => 1, 'state' => 3, 'host_state' => 0, 'active_checks_enabled' => 1, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0 ),
+				'unknown_and_unhandled'             => array_merge(array('has_been_checked' => 1, 'state' => 3, 'host_state' => 0, 'acknowledged' => 0, 'scheduled_downtime_depth' => 0), $active_checks_condition),
 				'flapping'                          => array( 'is_flapping' => 1 ),
 				'flapping_disabled'                 => array( 'flap_detection_enabled' => 0 ),
 				'notifications_disabled'            => array( 'notifications_enabled' => 0 ),

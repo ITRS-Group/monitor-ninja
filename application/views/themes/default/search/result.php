@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $notes_chars = config::get('config.show_notes_chars', '*');
-$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
@@ -61,7 +60,7 @@ if (isset($host_result) ) {
 					$properties += 2;
 					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px'));
 				}
-				if (!$host->active_checks_enabled && !$show_passive_as_active) {
+				if (!$host->active_checks_enabled) {
 					$properties += 4;
 					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
@@ -206,7 +205,7 @@ if (isset($service_result) ) {
 				$properties += 2;
 				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
-			if (!$service->active_checks_enabled && !$show_passive_as_active) {
+			if (!$service->active_checks_enabled) {
 				$properties += 4;
 				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled')).' &nbsp;'), array('style' => 'border: 0px'));
 			}

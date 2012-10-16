@@ -22,8 +22,7 @@ class Tac_services_Widget extends widget_Base {
 			'pending' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING
 		);
 
-		# alter filter depending on config.show_passive_as_active value in config/checks.php
-		$service_fiiter =
+		$service_filter =
 			config::get('checks.show_passive_as_active')
 			? ((nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED))
 			: (nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED);
@@ -33,7 +32,7 @@ class Tac_services_Widget extends widget_Base {
 		# SERVICES CRITICAL
 		$services_critical = array();
 		if ($current_status->svc->critical_and_unhandled) {
-			$services_critical['status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&service_props='.$service_fiiter] =
+			$services_critical['status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&service_props='.$service_filter] =
 				$current_status->svc->critical_and_unhandled.' '._('Unhandled Problems');
 		}
 
@@ -50,7 +49,6 @@ class Tac_services_Widget extends widget_Base {
 		}
 
 		if ($current_status->svc->critical_and_disabled_active) {
-/* TODO: check passive setting */
 			$services_critical['status/service/all/0/?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&service_props='.nagstat::SERVICE_CHECKS_DISABLED ] = $current_status->svc->critical_and_disabled_active.' '._('Disabled');
 		}
 
@@ -60,7 +58,7 @@ class Tac_services_Widget extends widget_Base {
 		# HOST_UP|HOST_PENDING
 		# SERVICE_NO_SCHEDULED_DOWNTIME|SERVICE_STATE_UNACKNOWLEDGED|SERVICE_CHECKS_ENABLED
 		if ($current_status->svc->warning_and_unhandled) {
-			$services_warning['status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_WARNING.'&service_props='.$service_fiiter] =
+			$services_warning['status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_WARNING.'&service_props='.$service_filter] =
 				$current_status->svc->warning_and_unhandled.' '._('Unhandled Problems');
 		}
 
@@ -77,7 +75,6 @@ class Tac_services_Widget extends widget_Base {
 		}
 
 		if ($current_status->svc->warning_and_disabled_active) {
-/* TODO: check passive setting */
 			$services_warning['status/service/all/?servicestatustypes='.nagstat::SERVICE_WARNING.'&service_props='.nagstat::SERVICE_CHECKS_DISABLED ] = $current_status->svc->warning_and_disabled_active.' '._('Disabled');
 		}
 
@@ -85,7 +82,7 @@ class Tac_services_Widget extends widget_Base {
 		# SERVICES UNKNOWN
 		$services_unknown = array();
 		if ($current_status->svc->unknown_and_unhandled) {
-			$services_unknown['status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&service_props='.$service_fiiter] =
+			$services_unknown['status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&service_props='.$service_filter] =
 				$current_status->svc->unknown_and_unhandled.' '._('Unhandled Problems');
 		}
 
@@ -102,7 +99,6 @@ class Tac_services_Widget extends widget_Base {
 		}
 
 		if ($current_status->svc->unknown_and_disabled_active) {
-/* TODO: check passive setting */
 			$services_unknown['status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&service_props='.nagstat::SERVICE_CHECKS_DISABLED ] = $current_status->svc->unknown_and_disabled_active.' '._('Disabled');
 		}
 
@@ -110,7 +106,6 @@ class Tac_services_Widget extends widget_Base {
 		# SERVICES OK DISABLED
 		$services_ok_disabled = array();
 		if ($current_status->svc->ok_and_disabled_active) {
-/* TODO: check passive setting */
 			$services_ok_disabled['status/service/all/?servicestatustypes='.nagstat::SERVICE_OK.'&service_props='.nagstat::SERVICE_CHECKS_DISABLED] = $current_status->svc->ok_and_disabled_active.' '._('Disabled');
 		}
 
