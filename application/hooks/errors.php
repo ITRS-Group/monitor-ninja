@@ -10,15 +10,15 @@ class errors {
 	public function show_403() {
 		header('HTTP/1.1 403 Forbidden');
 		Kohana::$instance = new Error_Controller;
-		Kohana::$instance->template = new View('403');
+		Kohana::$instance->template->content = new View('403');
 		Kohana::$instance->template->render(TRUE);
 		die();
 	}
 
 	public function show_404() {
-		header('HTTP/1.1 404 File Not Found');
+		header('HTTP/1.1 404 Not Found');
 		Kohana::$instance = new Error_Controller;
-		Kohana::$instance->template = new View('404');
+		Kohana::$instance->template->content = new View('404');
 		Kohana::$instance->template->render(TRUE);
 		die();
 	}
