@@ -37,17 +37,18 @@
 						$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
 					}
 
-					if ($uri == $siteuri || $uri == $siteuri.'/index') {
-						$linkstring .= html::anchor($data[0], "<li class='active'>".
-							"<span class='icon-menu-dark menu-dark-".$data[1]."'></span>".
-							"<span class='nav-seg-span'>".ucwords($name)."</span></li>",
-							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links'));
-						$in_menu = true;
-					} else {
+					
+					if (strpos($uri, $siteuri) === false) {
 						$linkstring .= html::anchor($data[0], "<li class='nav-seg'>".
 							"<span class='icon-menu menu-".$data[1]."'></span>".
 							"<span class='nav-seg-span'>".ucwords($name)."</span></li>",
 							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links'));
+					} else {
+						$linkstring .= html::anchor($data[0], "<li class='active'>".
+							"<span class='icon-menu-dark menu-dark-".$data[1]."'></span>".
+							"<span class='nav-seg-span'>".ucwords($name)."</span></li>",
+							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links'));
+						$in_menu = true;	
 					}
 
 					$i++;
