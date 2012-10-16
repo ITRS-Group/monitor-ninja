@@ -32,7 +32,7 @@
 			<span title="Version Info." class="icon-24 x24-info"></span>
 		</a>
 		<a class="image-link">
-			<span title="Settings" id="settings_icon" class="icon-24 x24-settings"></span>
+			<span title="Settings" <?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?> id="settings_icon" class="icon-24 x24-settings"></span>
 
 			
 		</a>
