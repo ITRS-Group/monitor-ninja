@@ -49,26 +49,31 @@ class Hypermap_Controller extends Authenticated_Controller {
 		$content->dtd = Kohana::config('config.site_domain')
 			.'application/'.Kohana::config('hypergraph.hyper_dtd');
 
-		$host_model = new Host_Model();
-		$host_model->show_services = false;
-		$host_parents = false;
-		$no_parents = false;
+		$ls = Livestatus::instance();
+		$hosts = $ls->getHosts(array(
+			'columns' => array(
+				'name',
+				'state',
+				'parents',
+				'has_been_checked'
+			)
+		));
 
-		$result = $host_model->get_host_status();
-		$content->result = $result;
+		$host_parents = array();
+		$no_parents = array();
+		$content->hosts = $hosts;
 
-		foreach ($result as $host) {
-			$parents = $host_model->get_parents($host->host_name);
-			if (!empty($parents)) {
-				$host_parents[$host->host_name] = array();
-				foreach ($parents as $p)
-					$host_parents[$host->host_name][] = $p->host_name;
+		foreach ($hosts as $host) {
+			if ($host['parents']) {
+				foreach ($host['parents'] as $parent) {
+					$host_parents[$host['name']][] = $parent;
+				}
 			} else {
-				$no_parents[] = $host->host_name;
+				$no_parents[] = $host['name'];
 			}
 		}
 
-		$content->data = $host_parents;
+		$content->host_parents = $host_parents;
 		$content->no_parents = $no_parents;
 		echo $content->render();
 
