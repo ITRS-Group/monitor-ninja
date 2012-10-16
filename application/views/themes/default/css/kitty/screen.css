@@ -1,9 +1,0 @@
-@import url("../default/screen.css");
-
-#icons {
-	background: #ffccff url(images/bg.png) repeat-x;
-	border-bottom: 1px solid #d0d0d0;
-}
-#icons ul li {
-	background: url(images/menu-divider.gif) 0px 0px no-repeat;
-}

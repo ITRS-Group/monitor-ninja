@@ -1,77 +1,21 @@
-/*
- * NOTE: we'll be able to do way cooler things here when
- * https://bugs.webkit.org/show_bug.cgi?id=85062 is resolved.
- *
- * (so when you look at this in the future, go ahead an click and see what you
- * find)
- */
+/* line 2, sass/print.sass */
 body {
-	color: #000;
-	background-color: #fff;
-}
-table {
-	border-spacing: 10;
-}
+  box-shadow: none !important;
+  text-shadow: none !important; }
 
-h1 {
-	font-size: 16px;
-	font-weight: bold;
-	margin-bottom: 10px;
-}
-/* content ****************************************************************************************/
-#license-bar,
-#top-bar,
-#navigation,
-#quickbar,
-#icons,
-#status,
-#menu,
-#close-menu,
-#show-menu,
-#page_settings,
-.report-links,
-.testcase,
-.helptext_target,
-#version_info,
-.pagination,
-.comments img
-{
-	display: none;
-}
+/* line 6, sass/print.sass */
+.navigation {
+  display: none !important; }
 
-#content {
-	position: relative;
-	top: 0px;
-	margin: 0px 0px 0px 0px !important;
-	padding-top: 0px;
-}
-#page_links ul {
-	margin: 0px;
-	padding: 0px;
-}
-#page_links ul li {
-	list-style: none;
-	line-height: 17px;
-	background: url(images/arrow.gif) 0px 7px no-repeat;
-	padding-left: 10px;
-}
+/* line 9, sass/print.sass */
+.header {
+  display: none !important; }
 
-.even {
-	background: #fff !important;
-}
+/* line 12, sass/print.sass */
+.content {
+  width: 94%;
+  margin: 10px 2% !important; }
 
-td {
-	border: 0 !important;
-}
-
-th,
-.setup-table,
-.pie-chart,
-.sla_table {
-	page-break-inside: avoid;
-}
-
-#content a {
-	color: #000;
-	border: 0;
-}
+/* line 16, sass/print.sass */
+.logo {
+  width: 100% !important; }

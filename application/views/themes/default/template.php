@@ -10,12 +10,15 @@
 		}
 	}
 
+	if (isset($this) && isset($this->template->js_header))
+		$this->template->js_header->js = $this->xtra_js;
+
 ?>
 <!DOCTYPE html>
 <html>
 	
 	<?php
-		include_once(__DIR__.'/dojo/head.php');
+		include_once(__DIR__.'/template_head.php');
 	?>
 
 	<body>
@@ -31,7 +34,7 @@
 			</div>
 
 			<?php
-				include_once(__DIR__.'/dojo/header.php');
+				include_once(__DIR__.'/template_header.php');
 			?>
 
 			<div class="navigation" id="navigation">
@@ -49,7 +52,7 @@
 				<div class="menu" id="main-menu">
 
 				<?php
-					include_once(__DIR__.'/dojo/menu.php');
+					include_once(__DIR__.'/template_menu.php');
 				?>
 
 				</div>
