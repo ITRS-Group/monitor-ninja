@@ -7,13 +7,10 @@ class Nagvis_Maps_Model extends Model
 {
 	/**
 	 * Access Control List
-	 * 
-	 * @var Nagvis_acl_Model
 	 */
 	public $acl = null;
 	/**
 	 * Path to maps storage dir
-	 * @var string
 	 */
 	protected $_path = "/nagvis/userfiles/images/maps/";
 

@@ -11,7 +11,6 @@ class Nagvis_acl_Model {
 	static private $__instance = NULL;
 	/**
 	 * Get singleton instance
-	 * @static
 	 * @return Nagvis_acl_Model
 	 */
 	static public function getInstance() {

@@ -10,7 +10,6 @@ class Nagvis_config_Model {
 
 	/**
 	 * Get singleton instance
-	 * @static
 	 * @return Nagvis_config_Model
 	 */
 	static public function getInstance() {
@@ -23,7 +22,6 @@ class Nagvis_config_Model {
 	private $__data = null;
 	/**
 	 * Path to nagvis.ini.php
-	 * @var string
 	 */
 	protected $_path = null;
 
@@ -40,7 +38,7 @@ class Nagvis_config_Model {
 
 	/**
 	 * Get value from nagvis config file.
-	 * @param string $key string like <section>.<key>
+	 * @param string $key string like section.key
 	 * @param mixed $default
 	 * @return null|mixed
 	 */
