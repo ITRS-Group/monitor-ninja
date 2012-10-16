@@ -16,7 +16,23 @@ class Error_Controller extends Ninja_Controller  {
 	{
 		try {
 			parent::__construct();
-		} catch (Exception $ex) {
-		}
+		} catch (Exception $ex) {}
+	}
+
+	public function show_403() {
+		header('HTTP/1.1 403 Forbidden');
+		$this->template->content = $this->add_view('403');
+		$this->template->title = _('Forbidden');
+	}
+
+	public function show_404() {
+		header('HTTP/1.1 404 Not Found');
+		$this->template->content = $this->add_view('404');
+		$this->template->title = _('Page Not Found');
+	}
+
+	public function show_livestatus() {
+		$this->template->content = $this->add_view('livestatus');
+		$this->template->title = _('Livestatus error');
 	}
 }
