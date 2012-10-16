@@ -253,10 +253,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->title = $title;
 
 		$this->template->content = $this->add_view('status/service');
-		$status = new Status_Model();
-
-		if ($status->show_filter_table)
-			$this->template->content->filters = $this->_show_filters('service', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		$this->template->content->noheader = $noheader;
 		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
@@ -312,6 +308,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$shown = strtolower($name) == 'all' ? _('All hosts') : _('Host')." '".$name."'";
 
+		$status = new Status_Model();
 		if(empty($group_type)) {
 			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
 		} else {
@@ -321,6 +318,8 @@ class Status_Controller extends Authenticated_Controller {
 				list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('service', false, $name, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
 			}
 		}
+		if ($status->show_filter_table)
+			$this->template->content->filters = $this->_show_filters('service', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 		
 		$ls         = Livestatus::instance();
 		$options    = array();
