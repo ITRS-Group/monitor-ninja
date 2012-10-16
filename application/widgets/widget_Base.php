@@ -130,9 +130,9 @@ class widget_Base
 			}
 
 			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'" data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
-			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span>';
+			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
 			if (!empty($options) && $this->editable) {
-				$content .= '</div><div class="clear"></div><div class="widget-editbox">';
+				$content .= '<div class="clear"></div><div class="widget-editbox">';
 				$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
 				$content .= '<fieldset>';
 				if (!isset(self::$loaded_widgets[$this->model->name]))
