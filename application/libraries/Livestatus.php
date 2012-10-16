@@ -890,7 +890,6 @@ class LivestatusConnection {
 
 	public function __construct($options) {
 		$this->connectionString = $options['path'];
-		$this->connect();
 		return $this;
 	}
 
@@ -928,6 +927,8 @@ class LivestatusConnection {
 	}
 
 	public function writeSocket($str) {
+		if ($this->connection === null)
+			$this->connect();
 		return fwrite($this->connection, $str);
 	}
 
