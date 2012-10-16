@@ -1,9 +1,17 @@
+all: generate-css
+
 help:
 	@echo
 	@echo Available make targets:
 	@echo -----------------------
 	@$(MAKE) --print-data-base --question | sed -n -e '/^Makefile/d' -e 's/^\([A-Za-z0-9_-]*\):.*/\1/p'
 	@echo
+
+install-sass:
+	gem install compass
+
+generate-css:
+	compass compile application/views/themes/default/css/default || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
 
 test: test-php-lint test-reports test-unittest
 
