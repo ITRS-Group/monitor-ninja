@@ -24,11 +24,6 @@
 	<body>
 
 		<div class="container">
-			
-			<div id="infobar-sml">
-				<p><?php echo html::image('application/views/themes/default/icons/16x16/shield-warning.png',array('style' => 'float: left; margin-right: 5px', 'alt' => 'Warning')).' '.sprintf(_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
-			</div>
-
 			<div class="logo">
 				<?php echo html::image('application/views/themes/default/icons/op5.gif', array('style' => 'float: left; margin-left: 15px;')); ?>
 			</div>
