@@ -33,13 +33,17 @@
 		</a>
 		<a class="image-link">
 			<span title="Settings" <?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?> id="settings_icon" class="icon-24 x24-settings"></span>
+		</a>
+		<?php
 
-			
-		</a>
-		
-		<a target="_blank" href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/css/default/index.html'; ?>" class="header-action">
-			<span title="DOJO Dev. Information" class="icon-24 x24-link"></span>
-		</a>
+			if (Kohana::config('config.site_domain') === '/ninja/') {
+				?>
+					<a target="_blank" href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/css/default/index.html'; ?>" class="header-action">
+						<span title="DOJO Dev. Information" class="icon-24 x24-link"></span>
+					</a>
+				<?php
+			}
+		?>
 
 		<?php
 			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
