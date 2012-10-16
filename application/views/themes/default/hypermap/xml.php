@@ -22,7 +22,7 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>'; echo "\n"; ?>
 <?php
 foreach ($hosts as $node) {
 	$title_str = sprintf(_('Host: %s Status: %s (Click for detail)'), $node['name'], Current_status_Model::status_text($node['state'], $node['has_been_checked']));
-	echo sprintf("<node class=\"hs%u\" name=\"%s\"><label>%s</label><dataref><ref xlink:show=\"replace\" xlink:href=\"status/host/%s\" xlink:title=\"%s\"/></dataref></node>\n",
+	echo sprintf("<node class=\"hs%u\" name=\"%s\"><label>%s</label><dataref><ref xlink:show=\"replace\" xlink:href=\"extinfo/details?host=%s\" xlink:title=\"%s\"/></dataref></node>\n",
 		       $node['state'], $node['name'], $node['name'], urlencode($node['name']), $title_str);
 }
 
