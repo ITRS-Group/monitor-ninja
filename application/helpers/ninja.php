@@ -52,7 +52,7 @@ class ninja_Core {
 	 */
 	public static function get_skins() {
 		$available_skins = array();
-		$required_css = array('common.css', 'status.css', 'reports.css');
+		$required_css = array('common.css');
 		$skins = glob(APPPATH.'views/'.self::get_theme_path().'css/*', GLOB_ONLYDIR);
 		if (count($skins) > 1) {
 			foreach ($skins as $skin) {
