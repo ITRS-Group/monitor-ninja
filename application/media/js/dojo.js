@@ -120,8 +120,14 @@ function show_info() {
 		// Set onload styles
 
 		mc = mc[0];
-		bc = $('#' + mc.id.replace('-menu', '') + '-button');
-		bc = bc[0];
+
+		if (!mc && !bc) {
+				mc = $('#monitoring-menu')[0];
+				bc = mc.firstChild;
+		} else {
+			bc = $('#' + mc.id.replace('-menu', '') + '-button');
+			bc = bc[0];
+		}
 
 		mc.style.display = 'block';
 		bc.style.boxShadow = 'inset 0 0 8px #ccc';
@@ -130,6 +136,7 @@ function show_info() {
 			menu.className = (mc.children.length > config.limit_for_collapsed_double_col) ?
 				'navigation-collapsed-double' :'navigation-collapsed';
 		}
+
 
 		fixContentOffset(e);
 
