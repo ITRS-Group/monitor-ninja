@@ -1179,8 +1179,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	{
 		$back_link = '/extinfo/scheduling_queue/';
 
-		$sort_order = $this->input->get('sort_order', 'next_check');
-		$sort_column = $this->input->get('sort_column', 'ASC');
+		$sort_order = $this->input->get('sort_order', 'ASC');
+		$sort_column = $this->input->get('sort_column', 'next_check');
 		$host = $this->input->get('host');
 		$service = $this->input->get('service');
 		$sq_model = new Scheduling_queue_Model();
