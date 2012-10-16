@@ -14,6 +14,9 @@
 class Error_Controller extends Ninja_Controller  {
 	public function __construct()
 	{
-		parent::__construct();
+		try {
+			parent::__construct();
+		} catch (Exception $ex) {
+		}
 	}
 }
