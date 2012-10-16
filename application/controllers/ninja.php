@@ -53,6 +53,9 @@ class Ninja_Controller extends Template_Controller {
 			unittest::instance();
 		}
 
+		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
+		$this->template->current_skin = Kohana::config('config.current_skin');
+
 		# Load session library
 		# If any current session data exists, it will become available.
 		# If no session data exists, a new session is automatically started
@@ -161,9 +164,6 @@ class Ninja_Controller extends Template_Controller {
 				parse_str($params[1], $_REQUEST);
 			}
 		}
-
-		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
-		$this->template->current_skin = Kohana::config('config.current_skin');
 	}
 
 
