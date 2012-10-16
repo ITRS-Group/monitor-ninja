@@ -21,6 +21,10 @@ class Nagvis_config_Model {
 	}
 
 	private $__data = null;
+	/**
+	 * Path to nagvis.ini.php
+	 * @var string
+	 */
 	protected $_path = null;
 
 	private function __clone() {}

@@ -1,7 +1,16 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for nagvis rotation pools
+ * 
+ */
 class Nagvis_Rotation_Pools_Model extends Model
 {
+	/**
+	 * get a list of rotation pools
+	 * 
+	 * @return array
+	 */
 	public function get_list()
 	{
 		$acl = Nagvis_acl_Model::getInstance();

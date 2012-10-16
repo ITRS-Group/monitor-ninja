@@ -1,14 +1,32 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for nagvis maps
+ */
 class Nagvis_Maps_Model extends Model
 {
+	/**
+	 * Access Control List
+	 * 
+	 * @var Nagvis_acl_Model
+	 */
 	public $acl = null;
+	/**
+	 * Path to maps storage dir
+	 * @var string
+	 */
 	protected $_path = "/nagvis/userfiles/images/maps/";
 
 	public function __construct() {
 		$this->acl = Nagvis_acl_Model::getInstance();
 	}
 
+	/**
+	 * Get a list of maps in nagvis
+	 * 
+	 * @param string $key_as_mapname
+	 * @return array list of maps
+	 */
 	public function get_list($key_as_mapname = false)
 	{
 		$maps = array();
@@ -33,6 +51,12 @@ class Nagvis_Maps_Model extends Model
 		return $maps;
 	}
 
+	/**
+	 * Get the path to map image.
+	 * 
+	 * @param string $name name of map
+	 * @return boolean|string
+	 */
 	public function getImage($name) {
 		$path = Kohana::config("nagvis.nagvis_real_path") . "etc/maps/$name.cfg";
 		if(!file_exists($path)) {
@@ -51,10 +75,23 @@ class Nagvis_Maps_Model extends Model
 		return $file_name;
 	}
 
+	/**
+	 * Get the path to map thumbnail
+	 * 
+	 * @param string $name
+	 * @return string
+	 */
 	public function get_thumbnail($name) {
 		return "/nagvis/var/$name-thumb.png";
 	}
 
+	/**
+	 * create a nagvis map
+	 * 
+	 * @param string $map
+	 * @throws Kohana_Exception
+	 * @return boolean if successful
+	 */
 	public function create($map)
 	{
         if(!preg_match('/^[0-9A-Za-z_\-]+$/', $map)) {
@@ -76,6 +113,12 @@ EOD;
 			return false;
 	}
 
+	/**
+	 * Delete a nagvis map
+	 * 
+	 * @param string $map
+	 * @throws Kohana_Exception
+	 */
 	public function delete($map)
 	{
 		if(!$this->acl->isPermitted('Map', 'delete')) {

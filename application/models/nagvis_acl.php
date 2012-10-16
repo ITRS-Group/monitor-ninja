@@ -143,6 +143,14 @@ class Nagvis_acl_Model {
 		return array_merge_recursive( $perm, $overlay );
 	}
 
+	/**
+	 * test if a module is permitted to do an action
+	 * 
+	 * @param unknown $sModule
+	 * @param unknown $sAction
+	 * @param string $sObj
+	 * @return boolean
+	 */
 	public function isPermitted($sModule, $sAction, $sObj = null) {
 		// Module access?
 		$access = Array();
