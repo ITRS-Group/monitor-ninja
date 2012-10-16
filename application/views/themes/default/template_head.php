@@ -36,8 +36,6 @@
 		echo html::script('application/views/themes/default/js/global_search.js');
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();
-		} else {
-			refresh::is_alive();
 		}
 	?>
 
