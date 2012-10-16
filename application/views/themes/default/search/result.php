@@ -85,7 +85,7 @@ if (isset($host_result) ) {
 				if (isset ($nacoma_link))
 					echo html::anchor($nacoma_link.'/?type=host&name='.urlencode($host->name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => _('Configure this object using NACOMA (Nagios Configuration Manager)'), 'title' => _('Configure this object using NACOMA (Nagios Configuration Manager)'))), array('style' => 'border: 0px')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false)
-					echo (pnp::has_graph($host->name))  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->name).'&srv=_HOST_" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;' : '';
+					echo ($host->pnpgraph_present)  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->name).'&srv=_HOST_" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;' : '';
 				if (!empty($host->action_url)) {
 					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'), _('Perform extra host actions'));
@@ -227,7 +227,7 @@ if (isset($service_result) ) {
 				if (nacoma::link()===true)
 					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($service->host_name).'&service='.urlencode($service->description), 'icons/16x16/nacoma.png', _('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
-					if (pnp::has_graph($service->host_name, urlencode($service->description)))
+					if ($service->pnpgraph_present)
 						echo '<a href="' . url::site() . 'pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;';
 				}
 				if (!empty($service->action_url)) {
