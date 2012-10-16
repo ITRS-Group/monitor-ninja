@@ -21,7 +21,7 @@ class Nagvis_Maps_Model extends Model
 	/**
 	 * Get a list of maps in nagvis
 	 * 
-	 * @param string $key_as_mapname
+	 * @param $key_as_mapname
 	 * @return array list of maps
 	 */
 	public function get_list($key_as_mapname = false)
@@ -51,7 +51,7 @@ class Nagvis_Maps_Model extends Model
 	/**
 	 * Get the path to map image.
 	 * 
-	 * @param string $name name of map
+	 * @param $name name of map
 	 * @return boolean|string
 	 */
 	public function getImage($name) {
@@ -75,7 +75,7 @@ class Nagvis_Maps_Model extends Model
 	/**
 	 * Get the path to map thumbnail
 	 * 
-	 * @param string $name
+	 * @param $name
 	 * @return string
 	 */
 	public function get_thumbnail($name) {
@@ -85,7 +85,7 @@ class Nagvis_Maps_Model extends Model
 	/**
 	 * create a nagvis map
 	 * 
-	 * @param string $map
+	 * @param $map
 	 * @throws Kohana_Exception
 	 * @return boolean if successful
 	 */
@@ -113,7 +113,7 @@ EOD;
 	/**
 	 * Delete a nagvis map
 	 * 
-	 * @param string $map
+	 * @param $map
 	 * @throws Kohana_Exception
 	 */
 	public function delete($map)

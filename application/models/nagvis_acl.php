@@ -145,9 +145,9 @@ class Nagvis_acl_Model {
 	/**
 	 * test if a module is permitted to do an action
 	 * 
-	 * @param unknown $sModule
-	 * @param unknown $sAction
-	 * @param string $sObj
+	 * @param $sModule
+	 * @param $sAction
+	 * @param $sObj
 	 * @return boolean
 	 */
 	public function isPermitted($sModule, $sAction, $sObj = null) {

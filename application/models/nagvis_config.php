@@ -38,8 +38,8 @@ class Nagvis_config_Model {
 
 	/**
 	 * Get value from nagvis config file.
-	 * @param string $key string like section.key
-	 * @param mixed $default
+	 * @param $key string like section.key
+	 * @param $default
 	 * @return null|mixed
 	 */
 	public function getValue($key, $default = NULL) {
