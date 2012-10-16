@@ -19,7 +19,7 @@
 
 		</ul>
 	</div>
-	<?php echo html::image('application/views/themes/default/icons/op5.gif', array('width' => '80', 'style' => 'float: left; margin: 10px 0 0 20px;')); ?>
+	<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'float: left; margin: 20px 0 0 20px;')); ?>
 	<div class="headercontent">
 
 		<?php echo _('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />

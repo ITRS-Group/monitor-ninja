@@ -346,7 +346,7 @@ input[type="text"] {
   z-index: 10;
   background: #f9f9f9;
   border: 1px solid #dddddd;
-  box-shadow: 0 3px 3px #bbbbbb; }
+  box-shadow: 0 2px 3px #bbbbbb; }
   /* line 295, sass/common.sass */
   #page_settings .widget-selector {
     margin-left: 10px; }
@@ -1798,13 +1798,28 @@ input[type="text"] {
   margin: 8px 0;
   border: 1px solid #bbbbbb;
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 0 6px #bbbbbb; }
+  box-shadow: 0 0 6px #bbbbbb;
+  position: relative; }
 
-/* line 10, sass/widget.sass */
+/* line 11, sass/widget.sass */
 .widget-content {
   padding-bottom: 10px; }
 
-/* line 13, sass/widget.sass */
+/* line 14, sass/widget.sass */
+.widget-editbox {
+  display: none;
+  position: absolute;
+  font-size: 0.9em;
+  width: 80%;
+  right: 2px;
+  padding: 8px;
+  top: 32px;
+  background: #f9f9f9;
+  border: 1px solid #dddddd;
+  box-shadow: 0 2px 3px #bbbbbb;
+  z-index: 2; }
+
+/* line 27, sass/widget.sass */
 .widget-header {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f9faf8), color-stop(100%, #e8e9e7));
   background: -webkit-linear-gradient(top, #f9faf8, #e8e9e7);
@@ -1816,7 +1831,7 @@ input[type="text"] {
   padding: 6px 0 2px 6px;
   overflow: auto;
   position: relative; }
-  /* line 20, sass/widget.sass */
+  /* line 34, sass/widget.sass */
   .widget-header span {
     white-space: pre;
     white-space: pre-wrap;
@@ -1828,31 +1843,25 @@ input[type="text"] {
     word-wrap: break-word;
     float: left;
     max-width: 50%; }
-  /* line 25, sass/widget.sass */
-  .widget-header .widget-editbox {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 64px; }
-  /* line 31, sass/widget.sass */
+  /* line 39, sass/widget.sass */
   .widget-header .widget-menu {
     float: right;
     padding-right: 3px;
     max-width: 40%; }
-    /* line 37, sass/widget.sass */
+    /* line 45, sass/widget.sass */
     .widget-header .widget-menu .widget-copylink, .widget-header .widget-menu .widget-collapselink, .widget-header .widget-menu .widget-editlink, .widget-header .widget-menu .widget-closelink {
       border: none !important;
       margin: 0 2px; }
-    /* line 41, sass/widget.sass */
+    /* line 49, sass/widget.sass */
     .widget-header .widget-menu img {
       opacity: 0.4;
       filter: alpha(opacity=40); }
-      /* line 44, sass/widget.sass */
+      /* line 52, sass/widget.sass */
       .widget-header .widget-menu img:hover {
         opacity: 1;
         filter: alpha(opacity=100); }
 
-/* line 50, sass/widget.sass */
+/* line 58, sass/widget.sass */
 .widget-content-error {
   background: url("./images/stripe.png");
   box-shadow: inset 0 0 8px #888888;
@@ -1862,7 +1871,7 @@ input[type="text"] {
   color: #f9f9f9;
   font-size: 1; }
 
-/* line 59, sass/widget.sass */
+/* line 67, sass/widget.sass */
 .widget-placeholder {
   border: 1px dashed #bbbbbb;
   background: #dddddd url("./images/stripe.png");
@@ -1870,24 +1879,24 @@ input[type="text"] {
   border-radius: 0 0 4px 4px;
   margin: 8px 0; }
 
-/* line 66, sass/widget.sass */
+/* line 74, sass/widget.sass */
 #widget-placeholder, #widget-placeholder1, #widget-placeholder2, #widget-placeholder3 {
   min-height: 100px;
   width: 31%;
   margin: 0 1.1%;
   float: left; }
 
-/* line 72, sass/widget.sass */
+/* line 80, sass/widget.sass */
 #widget-placeholder3 {
   width: 97.2%; }
 
-/* line 79, sass/widget.sass */
+/* line 87, sass/widget.sass */
 #content-header .widget-header {
   border: 1px solid #dddddd; }
-/* line 84, sass/widget.sass */
+/* line 92, sass/widget.sass */
 #content-header .health td {
   padding: 0 !important; }
-  /* line 87, sass/widget.sass */
+  /* line 95, sass/widget.sass */
   #content-header .health td div {
     text-align: center; }
 

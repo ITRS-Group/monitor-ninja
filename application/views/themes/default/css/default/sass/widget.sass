@@ -6,9 +6,23 @@
 	border: 1px solid $border-color-dark
 	border-radius: 0 0 8px 8px
 	box-shadow: 0 0 6px $weak_shadow_color
+	position: relative
 
 .widget-content
 	padding-bottom: 10px
+
+.widget-editbox
+	display: none
+	position: absolute
+	font-size: 0.9em
+	width: 80%
+	right: 2px
+	padding: 8px
+	top: 32px
+	background: $general_background_color
+	border: 1px solid $border_color_light
+	box-shadow: 0 2px 3px $weak_shadow_color
+	z-index: 2
 
 .widget-header
 	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
@@ -21,12 +35,6 @@
 		@include force-wrap
 		float: left
 		max-width: 50%
-
-	.widget-editbox
-		display: none
-		position: absolute
-		right: 0
-		top: 64px
 
 	.widget-menu
 		

@@ -13,6 +13,7 @@
 	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
 	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'handheld.css'; ?>" type="text/css" rel="stylesheet" media="handheld" />
+	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'reports.css' ?>" media="all" />
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
 
 	<script type="text/javascript" src="<?php echo url::base().'application/media/js/mlib.aux.js'; ?>"></script>
