@@ -62,7 +62,7 @@ if (isset($host_result) ) {
 				}
 				if (!$host->active_checks_enabled) {
 					$properties += 4;
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks disabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
 				if (isset($host->is_flapping) && $host->is_flapping) {
 					$properties += 32;
@@ -207,7 +207,7 @@ if (isset($service_result) ) {
 			}
 			if (!$service->active_checks_enabled) {
 				$properties += 4;
-				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled')).' &nbsp;'), array('style' => 'border: 0px'));
+				echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks disabled'), 'title' => _('Active checks disabled')).' &nbsp;'), array('style' => 'border: 0px'));
 			}
 			if (isset($service->service_is_flapping) && $service->service_is_flapping) {
 				$properties += 32;

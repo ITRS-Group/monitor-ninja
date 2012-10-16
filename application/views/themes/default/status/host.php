@@ -94,7 +94,7 @@ foreach ($result as $row) {
 							$properties += 2;
 						}
 						if (!$row->active_checks_enabled) {
-							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks disabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px'));
 							$properties += 4;
 						}
 						if (isset($row->is_flapping) && $row->is_flapping) {
