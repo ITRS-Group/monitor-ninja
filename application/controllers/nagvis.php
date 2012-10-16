@@ -14,19 +14,16 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function index()
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
-		$maps = new Nagvis_Maps_Model;
-		$pools = new Nagvis_Rotation_Pools_Model;
+		$maps = new Nagvis_Maps_Model();
+		$pools = new Nagvis_Rotation_Pools_Model();
 
 		$this->template->title = _('Monitoring') . ' » NagVis';
 		$this->template->breadcrumb = _('Monitoring') . ' » NagVis';
 		$this->template->content = $this->add_view('nagvis/index');
-		$this->template->content->maps = $maps->get_list();
+		$this->template->content->maps = $mps = $maps->get_list();
 		$this->template->content->pools = $pools->get_list();
-		$this->template->disable_refresh = true;
 
-  		$this->template->js_header = $this->add_view('js_header');
+		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
@@ -35,10 +32,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function view($map)
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
-		$maps = new Nagvis_Maps_Model;
-
 		$this->template->title = _('Monitoring') . ' » NagVis » '
 			. _('View') . ' » ' . $map;
 		$this->template->breadcrumb = _('Monitoring') . ' » '
@@ -60,8 +53,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function edit($map)
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
 		$this->template->title = _('Monitoring') . ' » NagVis » '
 		. _('Edit') . ' » ' . $map;
 		$this->template->breadcrumb = _('Monitoring') . ' » '
@@ -83,11 +74,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function create()
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
 		$map = isset($_POST['name']) ? $_POST['name'] : 'new_map';
 
-		$maps = new Nagvis_Maps_Model;
+		$maps = new Nagvis_Maps_Model();
 
 		if ($maps->create($map))
 			url::redirect('nagvis/edit/' . $map);
@@ -98,9 +87,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function delete($map)
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
-		$maps = new Nagvis_Maps_Model;
+		$maps = new Nagvis_Maps_Model();
 
 		$maps->delete($map);
 
@@ -109,8 +96,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function automap($object_type = '', $object_name = '')
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
 		$this->template->title = _('Monitoring') . ' » NagVis » '
 			. _('Automap');
 		$this->template->breadcrumb = _('Monitoring') . ' » '
@@ -119,27 +104,21 @@ class Nagvis_Controller extends Authenticated_Controller {
 			_('Automap');
 
 		// Read from config and see if we have any default params set in nagvis.ini.php
-		$preset = nagvisconfig::get(Kohana::config("config.nagvis_real_path") . "etc/nagvis.ini.php");
+		$preset = nagvisconfig::get(Kohana::config("nagvis.nagvis_real_path") . "etc/nagvis.ini.php");
 		if (isset($preset['automap']['defaultparams'])) {
 			$querystring = $preset['automap']['defaultparams'];
 		} else {
 			$querystring = '';
 		}
 
-		if (isset($_GET['renderMode']))
-			$querystring .= '&renderMode=' . $_GET['renderMode'];
-		if (isset($_GET['root']))
-			$querystring .= '&root=' . $_GET['root'];
-		if (isset($_GET['maxLayers']))
-			$querystring .= '&maxLayers=' . $_GET['maxLayers'];
-		if (isset($_GET['width']))
-			$querystring .= '&width=' . $_GET['width'];
-		if (isset($_GET['height']))
-			$querystring .= '&height=' . $_GET['height'];
-		if (isset($_GET['ignoreHosts']))
-			$querystring .= '&ignoreHosts=' . $_GET['ignoreHosts'];
-		if (isset($_GET['filterGroup']))
-			$querystring .= '&filterGroup=' . $_GET['filterGroup'];
+		$supported_args = array('show', 'root', 'childLayers', 'parentLayers', 'renderMode',
+					'width', 'height', 'ignoreHosts', 'filterByState', 'filterGroup',
+					'search', 'rotation', 'enableHeader', 'enableHover', 'enableContext');
+
+		foreach ($supported_args as $arg) {
+			if (isset($_GET[$arg]))
+				$querystring .= "&$arg=" . $_GET[$arg];
+		}
 
 		$this->template->content = $this->add_view('nagvis/automap');
 		$this->template->content->mark_object_type = $object_type;
@@ -155,32 +134,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 	}
 
-	public function geomap($object_type = '', $object_name = '')
-	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
-		$this->template->title = _('Monitoring') . ' » NagVis » '
-			. _('Geomap');
-		$this->template->breadcrumb = _('Monitoring') . ' » '
-			. '<a href="' . Kohana::config('config.site_domain') .
-			'index.php/nagvis/index">NagVis</a> » '
-			. _('Geomap');
-		$this->template->content = $this->add_view('nagvis/geomap');
-		$this->template->content->mark_object_type = $object_type;
-		$this->template->content->mark_object_name = $object_name;
-		$this->template->disable_refresh = true;
-
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
-
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
-		$this->template->css_header->css = $this->xtra_css;
-	}
-
 	public function rotate($pool, $first_map)
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
 		$this->template->title = _('Monitoring') . ' » NagVis » '
 			. _('Rotate') . ' » ' . $pool;
 		$this->template->breadcrumb = _('Monitoring') . ' » '
@@ -203,8 +158,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function configure()
 	{
-		$_SESSION['nagvis_user'] = user::session('username');
-
 		$this->template->title = _('Monitoring') . ' » NagVis » '
 			. _('Configure');
 		$this->template->breadcrumb = _('Monitoring') . ' » '
@@ -222,3 +175,4 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 	}
 }
+

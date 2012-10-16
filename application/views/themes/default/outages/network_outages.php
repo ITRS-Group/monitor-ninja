@@ -37,7 +37,7 @@
 				<td>
 					<?php
 						echo html::anchor('status/service/'.$details['name'], html::image($this->add_path('icons/16x16/service-details.gif'),array('alt' => _('View status detail for this host'), 'title' => _('View status detail for this host'))),array('style' => 'border: 0px')).'&nbsp;';
-						if ( Kohana::config('config.nagvis_path') ) {
+						if ( Kohana::config('nagvis.nagvis_path') ) {
 							echo html::anchor('statusmap/host/'.$details['name'], html::image($this->add_path('icons/16x16/locate-host-on-map.png'),array('alt' => _('View status map for this host and its children'), 'title' => _('View status map for this host and its children'))),array('style' => 'border: 0px')).'&nbsp;';
 						}
 						echo html::anchor('trends/generate?host_name[]='.$details['name'], html::image($this->add_path('icons/16x16/trends.png'),array('alt' => _('View trends for this host'), 'title' => _('View trends for this host'))),array('style' => 'border: 0px')).'&nbsp;';

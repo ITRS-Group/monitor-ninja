@@ -113,7 +113,7 @@ $state_map = array(
 					if (isset($pnp_path) && $host['pnpgraph_present'])
 						echo '<a href="'.$pnp_path.'host='.$host['name'].'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp, 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
 					echo html::anchor('extinfo/details/?type=host&host='.$host['name'], html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).'&nbsp;';
-					if ( Kohana::config('config.nagvis_path') ) {
+					if ( Kohana::config('nagvis.nagvis_path') ) {
 						echo html::anchor('statusmap/host/'.$host['name'], html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).'&nbsp;';
 					}
 					echo html::anchor('status/host/?host='.urlencode($host['name']), html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')).'&nbsp;';

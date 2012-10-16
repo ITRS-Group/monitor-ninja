@@ -110,7 +110,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 					if ($host->pnpgraph_present)
 						echo '<a href="'.$pnp_path.'host='.$host->name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
 					echo html::anchor('extinfo/details/?type=host&host='.$host->name, html::image($icon_path.'extended-information.gif', array('alt' => _('View Extended Information For This Host'), 'title' => _('View Extended Information For This Host'))), array('style' => 'border: 0px')).'&nbsp;';
-					if ( Kohana::config('config.nagvis_path') ) {
+					if ( Kohana::config('nagvis.nagvis_path') ) {
 						echo html::anchor('statusmap/host/'.$host->name, html::image($icon_path.'locate-host-on-map.png', array('alt' => _('Locate Host On Map'), 'title' => _('Locate Host On Map'))), array('style' => 'border: 0px')).'&nbsp;';
 					}
 					echo html::anchor('status/host/?host='.urlencode($host->name), html::image($icon_path.'service-details.gif', array('alt' => _('View Service Details For This Host'), 'title' => _('View Service Details For This Host'))), array('style' => 'border: 0px')).'&nbsp;';

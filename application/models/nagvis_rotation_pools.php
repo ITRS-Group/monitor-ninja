@@ -1,28 +1,25 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-/**
- * Model for old nagvis rotation pools. Not used in monitor.
- */
 class Nagvis_Rotation_Pools_Model extends Model
 {
-	/**
-	 * Return list of nagvis rotation pools
-	 */
 	public function get_list()
 	{
+		$acl = Nagvis_acl_Model::getInstance();
 		$pools = array();
 		$matches = array();
 
 		$current_pool = false;
 
-		$lines = @file(Kohana::config('config.nagvis_real_path') . '/etc/nagvis.ini.php');
+		$lines = @file(Kohana::config('nagvis.nagvis_real_path') . '/etc/nagvis.ini.php');
 
 		foreach ($lines as $line)
 		{
 			if (preg_match('/^\[rotation_(([a-zA-Z0-9_-])+)\]$/', $line, $matches))
 			{
-				$current_pool = $matches[1];
-				continue;
+				if($acl->isPermitted('Rotation', 'view', $matches[1])) {
+					$current_pool = $matches[1];
+					continue;
+				}
 			}
 			elseif ($current_pool !== false
 				&& preg_match('/^maps="(([a-zA-Z0-9_:-])+)(,.*)*"$/', $line, $matches))
