@@ -111,9 +111,12 @@ else
   echo "to complete the setup of %name"
 fi
 
-# Set driver to LDAP if ad or ldap is configured
-if [ -f /opt/op5sys/etc/ldapserver ]; then
-  sed -i "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/" %prefix/application/config/auth.php
+$(php %prefix/index.php cli/save_widget --page 'tac/index' --name nagvis --friendly_name "Nagvis" &> /dev/null)
+if [ "$?" -ne 0 ]; then
+	echo "WARNING: mysql-server is not installed or not running."
+	echo "If Oracle database is to be used this is ok."
+	echo "If MySQL database is to be used you need to maually"
+	echo "setup the merlin database to complete the setup of %name"
 fi
 
 # Cleanup symlinks we don't use anymore
