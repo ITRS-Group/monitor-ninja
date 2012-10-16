@@ -5,7 +5,7 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
-	<div class="widget left w32" id="page_links">
+	<div class="widget left" id="page_links">
 		<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
 		<ul>
 		<?php
@@ -40,9 +40,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 </div>
 
-<div class="widget left w98" id="status_service">
+<div id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
-
+<div class="clear"></div>
 <?php echo form::open('command/multi_action'); ?>
 <table id="service_table">
 <caption><?php echo $sub_title ?>: <?php echo '<span class="icon-16 x16-check-boxes"></span>';?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo _('Select multiple items') ?></a></caption>

@@ -38,8 +38,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 	</div>
 </div>
 
-<div class="widget left" id="status_host">
+<div id="status_host">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
+	<div class="clear"></div>
 	<?php echo form::open('command/multi_action'); ?>
 	<table id="host_table">
 	<caption style="margin-top: 0px"><?php echo $sub_title ?>: 

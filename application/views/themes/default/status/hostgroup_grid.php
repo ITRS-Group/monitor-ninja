@@ -8,7 +8,7 @@ $state_map = array(
 	Current_status_Model::SERVICE_UNKNOWN => 'unknown');
 ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
-	<div class="widget left w32" id="page_links">
+	<div class="widget left" id="page_links">
 		<ul>
 		<li><?php echo _('View').', '.$label_view_for.':'; ?></li>
 		<?php
@@ -22,8 +22,8 @@ $state_map = array(
 		?>
 		</ul>
 	</div>
-<div class="clearservice"> </div>
-
+<div class="clear"></div>
+<hr />
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
@@ -39,10 +39,11 @@ $state_map = array(
 	}
 	?>
 	</div>
-    <div class="clearservice"> </div>
+  
+  <div class="clear"></div>
 </div>
 
-<div class="widget left w98" id="status_group-grid">
+<div id="status_group-grid">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <?php echo form::open('command/multi_action'); ?>
 <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>

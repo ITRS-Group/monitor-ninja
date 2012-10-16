@@ -14,7 +14,10 @@
 		?>
 		</ul>
 	</div>
-    <div class="clearservice"> </div>
+  <div class="clear"></div>
+	
+	<hr />
+
 	<?php
 		if (!empty($widgets)) {
 			foreach ($widgets as $widget) {
@@ -30,12 +33,13 @@
 	}
 	?>
 	</div>
-    <div class="clearservice"> </div>
+  <div class="clear"> </div>
 </div>
 
-<div class="widget left w98" id="status_group-summary">
+<div id="status_group-summary">
 	<?php if (!empty($group_details)) { ?>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
+	<div class="clear"> </div>
 	<table id="group_summary_table">
 		<thead>
 			<tr>
