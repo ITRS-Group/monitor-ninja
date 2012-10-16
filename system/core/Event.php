@@ -23,6 +23,8 @@ final class Event {
 	// Data that can be processed during events
 	public static $data;
 
+	public static $name;
+
 	/**
 	 * Add a callback to an event queue.
 	 *
@@ -202,6 +204,7 @@ final class Event {
 		{
 			// So callbacks can access Event::$data
 			self::$data =& $data;
+			self::$name =& $name;
 			$callbacks  =  self::get($name);
 
 			foreach ($callbacks as $callback)
