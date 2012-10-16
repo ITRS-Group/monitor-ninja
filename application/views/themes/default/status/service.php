@@ -44,7 +44,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 
 <?php echo form::open('command/multi_action'); ?>
-<table style="margin-bottom: 2px" id="service_table">
+<table id="service_table">
 <caption><?php echo $sub_title ?>: <?php echo '<span class="icon-16 x16-check-boxes"></span>';?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo _('Select multiple items') ?></a></caption>
 		<tr>
 			<th><em><?php echo _('Status'); ?></em></th>
@@ -104,7 +104,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 			$tmp_td .= 'id="host|'.$row->host_name.'" title="'.$service_status_model.'">';
 			echo $tmp_td;
-			echo '<span class="icon-16 x16-shield-'.$service_status_model.'"></span>';
+			echo '<span class="icon-16 x16-shield-'.strtolower($service_status_model).'"></span>';
 			echo '</td>';
 
 		?>
@@ -172,7 +172,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
 		<?php } ?>
 
-		<td class="icon <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->host_name, 'service' => $row->description)) === true) { ?>svc_obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'service')); ?>" id="<?php echo 'service|'.$row->host_name.'|'.(str_replace(' ', '_', $row->description).'|'.$row->description) ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked, 'service'); ?>"><em><?php echo Current_status_Model::status_text($row->state, $row->has_been_checked, 'service'); ?></em></td>
+		<td class="icon <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->host_name, 'service' => $row->description)) === true) { ?>svc_obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'service')); ?>" id="<?php echo 'service|'.$row->host_name.'|'.(str_replace(' ', '_', $row->description).'|'.$row->description) ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked, 'service'); ?>">
+			<span class="icon-16 x16-shield-<?php echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'service')); ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked, 'service'); ?>"></span>
+		</td>
 		
 
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->description); ?></td>
@@ -195,31 +197,31 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					$properties++;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description), 
 						'<span class="icon-16 x16-acknowledged" title="'._('Acknowledged').'"></span>',
-						array('style' => 'border: 0px')).'&nbsp; ';
+						array('style' => 'border: 0px'));
 				}
 				if (empty($row->notifications_enabled)) {
 					$properties += 2;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description), 
 						'<span class="icon-16 x16-notify-disabled" title="'._('Notification disabled').'"></span>',
-						array('style' => 'border: 0px')).'&nbsp; ';
+						array('style' => 'border: 0px'));
 				}
 				if (!$row->active_checks_enabled) {
 					$properties += 4;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description),
 						'<span class="icon-16 x16-active-checks-disabled" title="'._('Active checks enabled').'"></span>',
-						array('style' => 'border: 0px')).'&nbsp; ';
+						array('style' => 'border: 0px'));
 				}
 				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
 					$properties += 32;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description),
 						html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping'))), 
-						array('style' => 'border: 0px')).'&nbsp; ';
+						array('style' => 'border: 0px'));
 				}
 				if ($row->scheduled_downtime_depth > 0) {
 					$properties += 8;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description),
 						'<span class="icon-16 x16-scheduled-downtime" title="'._('Scheduled downtime').'"></span>',
-						array('style' => 'border: 0px')).'&nbsp; ';
+						array('style' => 'border: 0px'));
 				}
 				if ($row->state == Current_status_Model::SERVICE_CRITICAL || $row->state == Current_status_Model::SERVICE_UNKNOWN || $row->state == Current_status_Model::SERVICE_WARNING ) {
 					$properties += 16;

@@ -82,7 +82,11 @@ foreach ($result as $row) {
 	$a++;
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$row->name ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked); ?>"><em><?php echo Current_status_Model::status_text($row->state, $row->has_been_checked); ?></em></td>
+				<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$row->name ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked); ?>">
+						<em>
+							<?php echo '<span class="icon-16 x16-shield-'.strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked)).'"></span>'; ?>
+						</em>
+					</td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->name); ?></td>
 				<td>
 					<div class="left"><?php echo html::anchor('extinfo/details/?host='.urlencode($row->name), html::specialchars($row->name), array('title' => $row->address)); ?></div>
@@ -135,7 +139,7 @@ foreach ($result as $row) {
 					echo html::anchor('extinfo/details/?host='.urlencode($row->name),html::image(Kohana::config('config.logos_path').$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
-				<td style="width: 105px">
+				<td>
 					<?php
 						echo html::anchor('status/service/?name='.urlencode($row->name), html::image($this->add_path('icons/16x16/service-details.gif'), array('alt' => _('View service details for this host'), 'title' => _('View service details for this host'))), array('style' => 'border: 0px')).' &nbsp;';
 						if ($nacoma_link)
