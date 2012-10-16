@@ -29,46 +29,4 @@ class refresh_Core {
 		</script>
 		<?php
 	}
-
-	/**
-	*	Add ajax checks for freshness to be ued when page
-	*	refresh is disabled.
-	*/
-	public static function is_alive()
-	{
-		$interval = Kohana::config('config.stale_data_limit');
-		?>
-			<script>
-				var _stale_check_interval = <?php echo $interval ?>;
-				$(document).ready(function() {
-					setTimeout('check_alive()', 1200);
-				});
-
-				function check_alive()
-				{
-					if (typeof _is_refreshing != 'undefined' && _is_refreshing) {
-						return;
-					}
-
-					var url = _site_domain + _index_page + "/ajax/is_alive/";
-					$.ajax({
-						url: url,
-						type: 'GET',
-						dataType: 'json',
-						success: function(data) {
-							$('#page_last_updated').html(data);
-							$('#infobar-sml').hide();
-						},
-						error: function(data) {
-							$('#infobar-sml').show();
-							$('#page_last_updated').html(data.responseText);
-						}
-					});
-
-					setTimeout('check_alive()', _stale_check_interval * 1000);
-				}
-			</script>
-
-		<?php
-	}
 }

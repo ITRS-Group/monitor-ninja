@@ -63,10 +63,6 @@ input.textbox {
 	color: #444444;
 	background: #333333 url(images/licensebarbg.png);
 }
-#infobar-sml {
-	background: #333 url(images/licensebarbg.png);
-	/*display: none;*/
-}
 #top-bar {
 	border-left:1px solid #855e36;
 	border-right:1px solid #855e36;

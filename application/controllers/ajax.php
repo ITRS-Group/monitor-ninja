@@ -395,23 +395,6 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Check that we are still getting data from merlin.
-	*
-	*	Wrapped in a json object for indicating success,
-	*	returns either the current time, or the time
-	*	since merlin last fed data into the database.
-	*/
-	public function is_alive()
-	{
-		try {
-			Current_status_Model::instance()->program_status();
-			echo json::ok(date(nagstat::date_format()));
-			return;
-		} catch (LivestatusException $ex) {}
-		echo json::fail(date(nagstat::date_format()));
-	}
-
-	/**
 	*	Fetch PNP image from supplied params
 	*/
 	public function pnp_image()

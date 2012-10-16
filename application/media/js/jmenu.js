@@ -38,7 +38,6 @@ var jmenu={
             //$(elem).children('ul').eq(0).css({'top':$(elem).offset().top+$(elem).height(),'left':$(elem).offset().left});
             $(elem).children('ul').eq(0).css({'top':'15px','left':$(elem).offset().left});
             // make sure that the warning message doesn't appear on top of menu
-            $('#infobar-sml').css('z-index', 1);
         }
     },
     show:function(elem)
