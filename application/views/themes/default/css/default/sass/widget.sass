@@ -1,0 +1,88 @@
+
+.widget
+	width: 100%
+	height: auto
+	margin: 8px 0
+	border: 1px solid $border-color-dark
+	border-radius: 0 0 8px 8px
+	box-shadow: 0 0 6px $weak_shadow_color
+
+.widget-content
+	padding-bottom: 10px
+
+.widget-header
+	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+	@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+	padding: 6px 0 2px 6px
+	overflow: auto
+	position: relative
+
+	span
+		@include force-wrap
+		float: left
+		max-width: 50%
+
+	.widget-editbox
+		display: none
+		position: absolute
+		right: 0
+		top: 64px
+
+	.widget-menu
+		
+		float: right
+		padding-right: 3px
+		max-width: 40%
+
+		.widget-copylink, .widget-collapselink, .widget-editlink, .widget-closelink
+			border: none !important
+			margin: 0 2px
+
+		img
+			opacity: $inactive_opacity
+			filter: alpha(opacity=#{$inactive_opacity * 100})
+			&:hover
+				opacity: 1.0
+				filter: alpha(opacity=100)
+
+
+
+.widget-content-error
+	background: url('./images/stripe.png')
+	box-shadow: inset 0 0 8px $hard_shadow_color
+	padding: 24px 4px 
+	text-align: center
+	text-shadow: 0 0 6px #000
+	color: #f9f9f9
+	font-size: 1.0
+
+.widget-placeholder
+	border: 1px dashed $border-color-dark
+	background: #ddd url('./images/stripe.png')
+	box-shadow: inset 0 0 8px $hard_shadow_color
+	border-radius: 0 0 4px 4px
+	margin: 8px 0
+
+#widget-placeholder, #widget-placeholder1, #widget-placeholder2, #widget-placeholder3
+	min-height: 100px
+	width: 31%
+	margin: 0 1.1%
+	float: left
+
+#widget-placeholder3
+	width: 97.2%
+
+// If widget is in content header handle differently
+#content-header
+	
+
+	.widget-header
+		border: 1px solid #ddd
+
+		// Network Health
+
+	.health td
+		padding: 0 !important
+
+		div
+			text-align: center
