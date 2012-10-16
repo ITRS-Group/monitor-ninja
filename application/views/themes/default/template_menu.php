@@ -8,6 +8,7 @@
 
 		$uri = str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 		$uri = str_replace('?', '', $uri);
+		$uri = preg_replace('~/+~', '/', $uri);
 
 		foreach ($links as $section => $entry) {
 			
@@ -23,8 +24,6 @@
 
 			foreach ($entry as $name => $data) {
 
-				//if (gettype(da) == 'array') {
-
 				$id = strtolower($section)."-".$data[1]."-".$i;
 
 				if ($data[2] == 0) {
@@ -32,6 +31,7 @@
 					// Do not add white-space, line-feeds or carriage returns in here, it will screw up JavaScript .children's and .nextSibling's
 
 					$siteuri = url::site($data[0], null);
+					$siteuri = preg_replace('~/+~', '/', $siteuri);
 					
 					if (strpos($siteuri, '?')) {
 						$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
