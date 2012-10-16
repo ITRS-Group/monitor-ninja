@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			body {
+				font: normal normal 11pt 'Century Gothic', 'Lucida Grande', sans-serif;
+				padding: 16px 32px;
+				margin: 0;
+				width: 768px;
+				background: #f5f5f5;
+			}
+			h1, h2, h3, h4 {
+				color: #666;
+				font-weight: normal;
+				margin: 8px 0;
+			}
+			p {
+				color: #444;
+				margin: 4px 16px;
+			}
+			code {
+				display: block;
+				margin: 16px 32px;
+				padding: 8px;
+				font-size: 80%;
+				border: 1px dashed #999;
+				color: #666;
+			}
+
+			table {
+				border: 1px solid #aaa;
+				margin: 16px 32px;
+				padding: 0;
+				border-spacing: 0;
+			}
+
+			tr {
+				padding: 0;
+				margin: 0;
+				border-spacing: 0;
+			}
+
+			td {
+				border-spacing: 0;
+				margin: 0;
+				padding: 4px;
+				color: #666;
+				border-right: 1px solid #aaa;
+				border-bottom: 1px solid #aaa;
+				font-size: 80%;
+			}
+
+			div {
+				margin-left: 16px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<h1>Ninja &raquo; DOJO - Layout</h1>
+		
+		<p>
+			This manual is about the new layout DOJO for the Nagios GUI NINJA.
+		</p>
+
+		<p>
+			DOJO aims to improve the structure, style and semantics of NINJA. Making the layout more dynamic, responsive and remove deprecated
+			ways of handling layout.
+		</p>
+
+		<div>
+
+			<h2>CSS</h2>
+			
+			<div>
+				
+				<h3>Configuration</h3>
+
+				<p>
+					The new CSS is generated using the SASS 'pre-processor', giving it far more power while developing.
+					One of these powers is variables, and with variables DOJO includes a configuration file, found under 
+					themes/default/dojo/config.sass.
+				</p>
+
+				<p>
+					In this file you can set general configurations, such as the header height, fonts, different colors and more.
+				</p>
+
+				<h3>All img tag icons should be replaced by sprite spans</h3>
+
+				<p>
+					Ninja now uses CSS sprites instead of independent icon images, a first glance test lowered the request count from 94 -> 36 and uncached 
+					load-time by 1.4 seconds. Icon images can be replaced everywhere an icon is used from the icon folders and is a PNG image, GIF icons cannot
+					be included in spritesheets by compass.
+				</p>
+
+				<p>
+					In order to utilize this development feature all img tags relating to icons should move from the old e.g. 
+				</p>
+				
+				<code>
+					echo html::image($this->add_path('icons/12x12/shield-'.strtolower($row['status']).'.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
+				</code>
+
+				<p>
+					To the new
+				</p>
+
+				<code>
+					echo '&lt;span class="icon-12 x12-'.strtolower($row['status']).'" title="'.$row['status'].'"&gt;&lt;/span&gt;';<br /><br />
+					// The style is omitted because inline style is no-no
+				</code>
+
+				<p>
+					Resulting in, maybe something like this
+				</p>
+
+				<code>
+					&lt;span class="icon-12 x12-up" title="up"&gt;&lt;/span&gt;';<br />
+				</code>
+
+				<p>
+					The class is broken down to
+				</p>
+
+				<table>
+					<tr>
+						<td>icon-12</td><td>x12-</td><td>up</td>
+					</tr>
+					<tr>
+						<td>This is an icon and it is of size 12x12</td>
+						<td>It is part of the spritesheet x12 (like all 12x12 icons)</td>
+						<td>And it's the one formerly named up (up.png)</td>
+					</tr>
+				</table>
+
+				<p>
+					The class for icons such as shield-not-disabled would hence become:
+				</p>
+
+				<table>
+					<tr>
+						<td>icon-16</td><td>x16-</td><td>shield-not-disabled</td>
+					</tr>
+					<tr>
+						<td>This is an icon and it is of size 16x16</td>
+						<td>It is part of the spritesheet x16 (like all 16x16 icons)</td>
+						<td>And it's the one formerly named shield-not-disabled (shield-not-disabled.png)</td>
+					</tr>
+				</table>
+
+				<h3>Global Auxiliary Selectors</h3>
+				
+				<h4>.alpha</h4>
+				<p>
+					Sets the opacity of the element to 0.4 by default and nothing else, the amount it sets can be configured in the SASS configuration file.
+				</p>
+
+				<h4>.right</h4>
+				<p>
+					Floats the elements to the right and nothing else. Use .clear to restore.
+				</p>
+
+				<h4>.left</h4>
+				<p>
+					Floats the elements to the left and nothing else. Use .clear to restore.
+				</p>
+
+				<h4>.clear</h4>
+				<p>
+					Clears both on the element and nothing else. Always use after floated elements to restore normal flow.
+				</p>
+
+				<h4>.none (legacy .white)</h4>
+				<p>
+					Makes the element completely transparent by setting 0 opacity.
+				</p>
+
+				<h4>.nullify (legacy .white)</h4>
+				<p>
+					Removes a lot of things, this one is already in use by all tables by default.
+				</p>
+				<ul>
+						<li>background: transparent</li>
+						<li>border-spacing: 0</li>
+						<li>vertical-align: top</li>
+						<li>outline: none</li>
+						<li>border: none</li>
+						<li>margin: 0</li>
+						<li>padding: 0</li>
+					</ul>
+
+			</div>
+		</div>
+
+	</body>
+</html>
