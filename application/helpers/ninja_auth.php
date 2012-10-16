@@ -62,22 +62,17 @@ class ninja_auth_Core
 			 * or logout with a message
 			 */
 			
-			$nagauth = Nagios_auth_Model::instance();
 			$ls = Livestatus::instance();
 			$host_totals = $ls->getHostTotals();
 
 			$redirect = false;
 			if ($host_totals->total == 0) {
-				$services = $nagauth->get_authorized_services();
-				if (empty($services)) {
-					$redirect = true;
+				$service_totals = $ls->getServiceTotals();
+				if ($service_totals->total == 0) {
+					Session::instance()->set_flash('error_msg',
+						_("You have been denied access since you aren't authorized for any objects."));
+					return 'default/show_login';
 				}
-			}
-
-			if ($redirect !== false) {
-				Session::instance()->set_flash('error_msg',
-					_("You have been denied access since you aren't authorized for any objects."));
-				return 'default/show_login';
 			}
 		}
 		return true;
