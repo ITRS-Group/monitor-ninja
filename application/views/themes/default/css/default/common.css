@@ -1657,29 +1657,35 @@ input[type="text"] {
     z-index: 2;
     top: 64px;
     left: 0; }
-  /* line 31, sass/nav.sass */
+    /* line 31, sass/nav.sass */
+    .navigation #global_search input, .navigation-collapsed #global_search input, .navigation-collapsed-double #global_search input {
+      width: 70%;
+      color: #444444;
+      padding: 4px 2px 0 20px;
+      background: url("../../icons/x16/use_search.png") no-repeat; }
+  /* line 37, sass/nav.sass */
   .navigation a, .navigation-collapsed a, .navigation-collapsed-double a {
     border-bottom: 1px dotted #888888;
     color: #888888;
     text-decoration: none; }
-    /* line 36, sass/nav.sass */
+    /* line 42, sass/nav.sass */
     .navigation a:hover, .navigation-collapsed a:hover, .navigation-collapsed-double a:hover {
       border-bottom: 1px dotted #555555;
       color: #555555; }
-  /* line 40, sass/nav.sass */
+  /* line 46, sass/nav.sass */
   .navigation .active, .navigation-collapsed .active, .navigation-collapsed-double .active {
     color: #555555;
     font-weight: bold;
     font-size: 99%; }
-  /* line 45, sass/nav.sass */
+  /* line 51, sass/nav.sass */
   .navigation .menu, .navigation-collapsed .menu, .navigation-collapsed-double .menu {
     position: relative;
     width: 100%;
     margin-bottom: 20px; }
-  /* line 50, sass/nav.sass */
+  /* line 56, sass/nav.sass */
   .navigation span, .navigation-collapsed span, .navigation-collapsed-double span {
     vertical-align: middle; }
-  /* line 53, sass/nav.sass */
+  /* line 59, sass/nav.sass */
   .navigation .slider, .navigation-collapsed .slider, .navigation-collapsed-double .slider {
     background: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #e8e9e7), color-stop(100%, #f9faf8));
     background: -webkit-linear-gradient(left, #e8e9e7, #f9faf8);
@@ -1697,7 +1703,7 @@ input[type="text"] {
     width: 10px;
     height: 100%;
     cursor: pointer; }
-    /* line 66, sass/nav.sass */
+    /* line 72, sass/nav.sass */
     .navigation .slider .slide-button, .navigation-collapsed .slider .slide-button, .navigation-collapsed-double .slider .slide-button {
       background: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #e8e9e7), color-stop(100%, #f9faf8));
       background: -webkit-linear-gradient(left, #e8e9e7, #f9faf8);
@@ -1717,10 +1723,10 @@ input[type="text"] {
       text-align: center;
       border-top: 1px solid #d0d0d0;
       border-bottom: 1px solid #d0d0d0; }
-      /* line 81, sass/nav.sass */
+      /* line 87, sass/nav.sass */
       .navigation .slider .slide-button:hover, .navigation-collapsed .slider .slide-button:hover, .navigation-collapsed-double .slider .slide-button:hover {
         color: #666666; }
-  /* line 84, sass/nav.sass */
+  /* line 90, sass/nav.sass */
   .navigation ul, .navigation-collapsed ul, .navigation-collapsed-double ul {
     padding: 0;
     margin: 0;
@@ -1728,7 +1734,7 @@ input[type="text"] {
     overflow: auto;
     overflow-x: hidden;
     height: auto; }
-    /* line 92, sass/nav.sass */
+    /* line 98, sass/nav.sass */
     .navigation ul li, .navigation-collapsed ul li, .navigation-collapsed-double ul li {
       padding: 6px 0 6px 10%;
       margin: 0;
@@ -1745,7 +1751,7 @@ input[type="text"] {
       background: linear-gradient(top, #f9faf8, #e8e9e7);
       *zoom: 1;
       filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFF9FAF8', endColorstr='#FFE8E9E7'); }
-      /* line 104, sass/nav.sass */
+      /* line 110, sass/nav.sass */
       .navigation ul li:hover, .navigation-collapsed ul li:hover, .navigation-collapsed-double ul li:hover {
         *zoom: 1;
         filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFF9FAF8', endColorstr='#FFE8E9E7');
@@ -1755,39 +1761,69 @@ input[type="text"] {
         background: -o-linear-gradient(top, #f9faf8, #e8e9e7);
         background: linear-gradient(top, #f9faf8, #e8e9e7); }
 
-/* line 108, sass/nav.sass */
+/* line 114, sass/nav.sass */
 .navigation-collapsed {
   overflow: hidden;
   min-width: 0;
   width: 46px; }
-  /* line 115, sass/nav.sass */
+  /* line 117, sass/nav.sass */
+  .navigation-collapsed #global_search {
+    height: 24px;
+    background: #f9f9f9;
+    padding: 4px;
+    border-bottom: 1px solid #bbbbbb;
+    border-right: none;
+    position: fixed;
+    width: 36px;
+    z-index: 2;
+    top: 64px;
+    left: 0; }
+    /* line 129, sass/nav.sass */
+    .navigation-collapsed #global_search:hover {
+      width: 180px;
+      border-right: 1px solid #bbbbbb; }
+      /* line 133, sass/nav.sass */
+      .navigation-collapsed #global_search:hover input {
+        color: #444444;
+        width: 70%; }
+      /* line 137, sass/nav.sass */
+      .navigation-collapsed #global_search:hover a {
+        display: inline; }
+    /* line 140, sass/nav.sass */
+    .navigation-collapsed #global_search a {
+      display: none; }
+    /* line 143, sass/nav.sass */
+    .navigation-collapsed #global_search input {
+      width: 20%;
+      color: #aaaaaa; }
+  /* line 151, sass/nav.sass */
   .navigation-collapsed .menu {
     width: 36px; }
-  /* line 117, sass/nav.sass */
+  /* line 153, sass/nav.sass */
   .navigation-collapsed li {
     padding: 6px 10px 6px 10px !important;
     width: 26px !important; }
-  /* line 120, sass/nav.sass */
+  /* line 156, sass/nav.sass */
   .navigation-collapsed .nav-seg-span {
     display: none; }
 
-/* line 123, sass/nav.sass */
+/* line 159, sass/nav.sass */
 .navigation-collapsed-double {
   width: 82px;
   min-width: 0; }
-  /* line 129, sass/nav.sass */
+  /* line 165, sass/nav.sass */
   .navigation-collapsed-double .menu {
     width: 72px; }
-  /* line 131, sass/nav.sass */
+  /* line 167, sass/nav.sass */
   .navigation-collapsed-double .nav-seg {
     padding: 6px 10px 6px 10px !important;
     width: 15px !important;
     outline: 1px solid #cccccc; }
-  /* line 135, sass/nav.sass */
+  /* line 171, sass/nav.sass */
   .navigation-collapsed-double .slide-button {
     width: 10px !important;
     border-radius: 0 0 0 0 !important; }
-  /* line 138, sass/nav.sass */
+  /* line 174, sass/nav.sass */
   .navigation-collapsed-double .nav-seg-span {
     display: none; }
 

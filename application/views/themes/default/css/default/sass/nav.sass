@@ -28,6 +28,12 @@
 		top: $header_height
 		left: 0
 
+		input
+			width: 70%
+			color: #444
+			padding: 4px 2px 0 20px
+			background: url('../../icons/x16/use_search.png') no-repeat
+
 	a
 		border-bottom: 1px dotted $link_color
 		color: $link_color
@@ -107,6 +113,36 @@
 
 .navigation-collapsed
 	@extend .navigation
+
+	#global_search
+		height: 24px
+		background: $general_background_color
+		padding: 4px
+		border-bottom: 1px solid $border-color-dark
+		border-right: none
+		position: fixed
+		width: 36px
+		z-index: 2
+		top: $header_height
+		left: 0
+
+		&:hover
+			width: 180px
+			border-right: 1px solid $border-color-dark
+
+			input
+				color: #444
+				width: 70%
+
+			a
+				display: inline
+
+		a
+			display: none
+
+		input
+			width: 20%
+			color: #aaa
 
 	overflow: hidden
 	min-width: 0
