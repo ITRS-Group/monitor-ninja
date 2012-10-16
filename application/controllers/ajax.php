@@ -13,10 +13,6 @@
 
  */
 class Ajax_Controller extends Authenticated_Controller {
-
-	const FILTER_CHAR = ':';
-	const DELIM_CHAR = ':';
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -30,151 +26,69 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function global_search($q=false)
 	{
+		$q = $this->input->get('query', $q);
+		
 		if(!request::is_ajax()) {
 			$msg = _('Only Ajax calls are supported here');
 			die($msg);
 		} else {
-			# we handle queries by trying to locate wanted filtering options separated by colon (:)
-			$q = $this->input->get('query', $q);
-			$divider_str = '========================================';
-			if (strstr($q, self::FILTER_CHAR)) {
-				# some extra filtering option detected
-				$options = explode(self::FILTER_CHAR, $q);
-				$obj_type = false;
-				$obj_class_name = false;
-				$obj_class = false;
-				$obj_name = false;
-				$obj_data = false;
-				$obj_info = false;
-				if (is_array($options) && !empty($options[0])) {
-					$obj_type = trim($options[0]);
-					if (isset($options[1])) {
-						$obj_name = $options[1];
-					} else {
-						return false;
-					}
-					switch ($obj_type) {
-						case 'host': case 'h':
-							$settings = array(
-								'class' => 'Host_Model',
-								'name_field' => 'host_name',
-								'data' => 'host_name',
-								'path' => '/status/service/?name=%s'
-								);
-							break;
-						case 'service': case 's':
-							$obj_type = 'service';
-							$settings = array(
-								'class' => 'Service_Model',
-								'name_field' => 'service_description',
-								'data' => 'host_name',
-								'path' => '/extinfo/details/?type=service&host=%s&service=%s'
-							);
-							break;
-						case 'hostgroup': case 'hg':
-							$settings = array(
-								'class' => 'Hostgroup_Model',
-								'name_field' => 'hostgroup_name',
-								'data' => 'hostgroup_name',
-								'path' => '/status/hostgroup/?group=%s'
-							);
-							break;
-						case 'servicegroup': case 'sg':
-							$settings = array(
-								'class' => 'Servicegroup_Model',
-								'name_field' => 'servicegroup_name',
-								'data' => 'servicegroup_name',
-								'path' => '/status/servicegroup/?group=%s'
-							);
-							break;
-						case 'comment': case 'c':
-							$obj_type = 'comment';
-							$settings = array(
-								'class' => 'Comment_Model',
-								'name_field' => 'comment_data',
-								'data' => 'host_name',
-								'path' => '/extinfo/details/?type=host&host=%s'
-							);
-							break;
-
-						default:
-							return false;
-					}
-					$obj_class_name = $settings['class'];
-					$obj_class = new $obj_class_name();
-					# find requested object
-					$limit = 0;
-					$data = $obj_class->get_where($settings['name_field'], $obj_name, $limit);
-					$obj_info = false;
-					$max_rows = Kohana::config('config.autocomplete_limit');
-					$cnt = 0;
-					$found_rows = 0;
-					$found_str = '';
-					if ($data!==false) {
-						$found_rows = count($data);
-						if ($found_rows > $max_rows) {
-							$found_str = sprintf(_('Search returned %s rows total'), $found_rows);
-						}
-						foreach ($data as $row) {
-							if ($cnt++ > $max_rows) {
-								break;
-							}
-							$obj_info[] = $obj_type == 'service' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
-							$obj_data[] = array($settings['path'], $row->{$settings['data']});
-						}
-						if (!empty($obj_data) && !empty($found_str)) {
-							$obj_info[] = $divider_str;
-							$obj_data[] = array('', $divider_str);
-							$obj_info[] = $found_str;
-							$obj_data[] = array('', $found_str);
-						}
-
-					} else {
-						$host_info = _('Nothing found');
-					}
-					$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
-					$json_str = json::encode($var);
-					echo $json_str;
-
-				} else {
-					return false;
-				}
-			} else {
-				# assuming we want host data
-				$host_model = new Host_Model();
-				$limit = 0;
-				$data = $host_model->get_where('host_name', $q, $limit);
-				$host_info = false;
-				$host_data = false;
-				$max_rows = Kohana::config('config.autocomplete_limit');
-				$cnt = 0;
-				$found_rows = 0;
-				$found_str = '';
-				if ($data!==false) {
-					$found_rows = count($data);
-					if ($found_rows > $max_rows) {
-						$found_str = sprintf(_('Search returned %s rows total'),$found_rows);
-					}
-					foreach ($data as $row) {
-						if ($cnt++ > $max_rows) {
-							break;
-						}
-						$host_info[] = $row->host_name;
-						$host_data[] = array('/status/service/?name=%s', $row->host_name);
-					}
-					if (!empty($host_data) && !empty($found_str)) {
-						$host_info[] = $divider_str;
-						$host_data[] = array('', $divider_str);
-						$host_info[] = $found_str;
-						$host_data[] = array('', $found_str);
-					}
-				} else {
-					$host_info = array(_('Nothing found'));
-				}
-				$var = array('query' => $q, 'suggestions' => $host_info, 'data' => $host_data);
-				$json_str = json::encode($var);
-				echo $json_str;
+			
+			$parser = new ExpParser_SearchFilter();
+			
+			try {
+				$parser->parse($q);
+			} catch( ExpParserException $e ) {
+				return false;
+			} catch( Exception $e ) {
 			}
+			
+			$obj_type = $parser->getLastObject();
+			$obj_name = $parser->getLastString();
+			$obj_data = array();
+			$obj_info = array();
+			
+			if ($obj_type !== false) {
+				switch ($obj_type) {
+					case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/service/?name=%s'                          ); break;
+					case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'description', 'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
+					case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/hostgroup/?group=%s'                       ); break;
+					case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/servicegroup/?group=%s'                    ); break;
+					case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
+					default: return false;
+				}
+				
+				$ls = Livestatus::instance();
+				$lsb = $ls->getBackend();
+				
+				$max_rows = Kohana::config('config.autocomplete_limit');
+				
+				$data = $lsb->getTable($obj_type, array(
+						'columns' => array($settings['name_field'], $settings['data']),
+						'filter' => array($settings['name_field'] => array( '~~' => $obj_name.'.*' )),
+						'limit' => $max_rows
+						));
+				
+				
+				if ($data!==false) {
+					foreach ($data as $row) {
+						$row = (object)$row;
+						$obj_info[] = $obj_type == 'services' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
+						$obj_data[] = array($settings['path'], $row->{$settings['data']});
+					}
+					if (!empty($obj_data) && !empty($found_str)) {
+						$obj_info[] = $divider_str;
+						$obj_data[] = array('', $divider_str);
+						$obj_info[] = $found_str;
+						$obj_data[] = array('', $found_str);
+					}
+				}
+				$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
+
+			} else {
+				$var = array('query' => $q, 'suggestions' => array(), 'data' => array());
+			}
+			$json_str = json::encode($var);
+			echo $json_str;
 		}
 	}
 

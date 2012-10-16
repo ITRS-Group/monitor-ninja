@@ -5,7 +5,7 @@ $(document).ready(function() {
     //delimiter: /(,|;)\s*/, // regex or character
     maxHeight:500,
     width:269,
-    deferRequestBy: 0, //miliseconds
+    deferRequestBy: 300, //miliseconds
     // callback function:
     onSelect: function(value, data){ do_redirect(value, data); }
   });

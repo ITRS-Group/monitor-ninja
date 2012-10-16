@@ -10,6 +10,9 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			'sg' => 'servicegroups'
 			);
 	
+	protected $last_object = false;
+	protected $last_string = false;
+	
 	/* Expression entry point */
 	protected function run() {
 		$filters = array();
@@ -25,6 +28,10 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 				'filters' => $filters
 				);
 		while( false!==($arg=$this->acceptKeyword( array('limit') )) ) {
+			/* For auto-complete */
+			$this->last_string = false;
+			$this->last_object = false;
+			
 			$this->expectSym(array('='));
 			$value = $this->expectNum();
 			$params[$arg] = $value;
@@ -34,6 +41,10 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 	}
 	
 	protected function criteria() {
+		/* For auto-complete */
+		$this->last_string = false;
+		$this->last_object = false;
+		
 		$object = $this->expectKeyword(
 				array_merge(
 						array_keys($this->objects),
@@ -50,12 +61,43 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 		$args = array();
 		
 		do {
-			$args[] = $this->expectUnquotedUntil( array( 'and', 'or', 'limit', false ) );
+			$objstr = $this->expectUnquotedUntil( array( 'and', 'or', 'limit', false ) );
+			$args[] = $objstr;
+			
+			if( trim($objstr) != "" ) {
+				/* For auto-complete */
+				$this->last_string = $objstr;
+				$this->last_object = $object;
+			} else {
+				$this->last_string = false;
+				$this->last_object = false;
+			}
 		} while( $this->acceptKeyword(array('or') ) );
 		
 		return array( $object, $args );
 	}
 	
+	/**
+	 * Return the type of last string/name specified in the query.
+	 *
+	 * Useful for autocomplete
+	 *
+	 * @return string
+	 */
+	public function getLastString() {
+		return $this->last_string;
+	}
+	
+	/**
+	 * Return the type of last object specified in the query.
+	 * 
+	 * Useful for autocomplete
+	 * 
+	 * @return string
+	 */
+	public function getLastObject() {
+		return $this->last_object;
+	}
 	
 	/* Custom string acceptor */
 

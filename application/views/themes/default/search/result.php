@@ -3,7 +3,7 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
-<div class="widget left w98" id="search_result">
+<div id="search_result">
 <?php echo help::render('search_help') ?>&nbsp;
 <?php echo isset($no_data) ? $no_data.'<br />' : '<strong>'.$limit_str.'</strong><br><br>';
 
