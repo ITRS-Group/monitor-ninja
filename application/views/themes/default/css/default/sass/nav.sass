@@ -46,9 +46,10 @@
 			color: $link_color_hover
 
 	.active
-		color: $link_color_hover
-		font-weight: bold
-		font-size: 99%
+		a
+			color: $link_color_hover
+			font-weight: bold
+			font-size: 99%
 
 	.menu
 		position: relative
@@ -112,6 +113,12 @@
 			&:hover
 				@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 				@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+
+			a
+				border: none
+
+				&:hover
+					border: none
 
 .navigation-collapsed
 	@extend .navigation

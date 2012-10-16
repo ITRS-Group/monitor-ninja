@@ -39,15 +39,15 @@
 
 					
 					if (strpos($uri, $siteuri) === false) {
-						$linkstring .= html::anchor($data[0], "<li class='nav-seg'>".
+						$linkstring .= "<li class='nav-seg'>".html::anchor($data[0], 
 							"<span class='icon-menu menu-".$data[1]."'></span>".
-							"<span class='nav-seg-span'>".ucwords($name)."</span></li>",
-							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links'));
+							"<span class='nav-seg-span'>".ucwords($name)."</span>",
+							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links')).'</li>';
 					} else {
-						$linkstring .= html::anchor($data[0], "<li class='active'>".
+						$linkstring .= "<li class='active'>".html::anchor($data[0], 
 							"<span class='icon-menu-dark menu-dark-".$data[1]."'></span>".
 							"<span class='nav-seg-span'>".ucwords($name)."</span></li>",
-							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links'));
+							array('id' => $id, 'title' => ucwords($name), 'class' => 'ninja_menu_links')).'</li>';
 						$in_menu = true;	
 					}
 
@@ -58,9 +58,9 @@
 						($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') || 
 						($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/')) {
 
-					$linkstring .= "<a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'><li class='nav-seg'>".
+					$linkstring .= "<li class='nav-seg'><a href='".$data[0]." id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'>".
 						"<span class='icon-menu menu-".$data[1]."'></span>".
-						"<span class='nav-seg-span'>".ucwords($name)."</span></li></a>";
+						"<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
 
 				}
 
