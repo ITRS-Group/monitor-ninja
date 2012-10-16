@@ -1,7 +1,7 @@
 
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-	<div class="widget left w98"><h2><?php echo $title ?></h2></div>
+	<h2><?php echo $title ?></h2>
 
 	<div class="widget left w48">
 		<strong><?php echo _('Services actively checked') ?></strong>
