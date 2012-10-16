@@ -58,8 +58,6 @@ if (isset($this->template->js_header))
 			echo html::script($this->add_path('js/pagination.js'));
 			if (!isset($disable_refresh) || $disable_refresh === false) {
 				refresh::control();
-			} else {
-				refresh::is_alive();
 			}
 		?>
 
