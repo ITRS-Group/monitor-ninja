@@ -322,7 +322,7 @@ input[type="text"] {
 
 /* line 269, sass/common.sass */
 #version_info {
-  position: absolute;
+  position: fixed;
   display: none;
   top: 64px;
   left: 220px;
@@ -330,7 +330,7 @@ input[type="text"] {
   z-index: 10;
   background: #f9f9f9;
   border: 1px solid #dddddd;
-  box-shadow: 0 0 3px #bbbbbb; }
+  box-shadow: 0 2px 3px #bbbbbb; }
   /* line 280, sass/common.sass */
   #version_info li {
     padding: 2px 4px;
@@ -338,7 +338,7 @@ input[type="text"] {
 
 /* line 284, sass/common.sass */
 #page_settings {
-  position: absolute;
+  position: fixed;
   display: none;
   top: 64px;
   left: 220px;
@@ -346,7 +346,7 @@ input[type="text"] {
   z-index: 10;
   background: #f9f9f9;
   border: 1px solid #dddddd;
-  box-shadow: 0 0 3px #bbbbbb; }
+  box-shadow: 0 3px 3px #bbbbbb; }
   /* line 295, sass/common.sass */
   #page_settings .widget-selector {
     margin-left: 10px; }

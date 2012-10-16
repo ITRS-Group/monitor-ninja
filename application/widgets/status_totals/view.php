@@ -21,7 +21,7 @@
 	<tr>
 		<td class="status">
 			<?php 
-				echo '<span class="icon-12 x12-shield-info" title="'.$label_all_types.'">'; ?>
+				echo '<span class="icon-12 x12-shield-info" title="'.$label_all_types.'">';
 			?>
 		</td>
 		<td><?php echo html::anchor('status/'.$target_method.'/'.$this->host.'?'.$grouptype_arg, html::specialchars($hosts->total.' Hosts'), array('class' => 'status-total')) ?></td>
