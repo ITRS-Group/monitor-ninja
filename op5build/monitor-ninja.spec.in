@@ -4,7 +4,7 @@ Release: @@RELEASE@@
 License: op5 Software License
 Packager: build@op5
 Vendor: op5 AB
-BuildRoot: /tmp/%name-%version
+BuildRoot: %{_tmppath}/%{name}-%{version}
 Summary: op5 monitor ninja
 Group: op5/Monitor
 Prefix: /opt/monitor/op5/ninja
@@ -20,6 +20,7 @@ Requires: php-process
 Requires: php-json
 %endif
 Requires: wkhtmltopdf
+BuildRequires: php >= 5.3
 
 Source: %name-%version.tar.gz
 %description
