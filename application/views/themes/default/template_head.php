@@ -16,7 +16,7 @@ if (PHP_SAPI == 'cli') {
 
 	<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 
-	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
+	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" />
 	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
 	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'handheld.css'; ?>" type="text/css" rel="stylesheet" media="handheld" />
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'reports.css' ?>" media="all" />
