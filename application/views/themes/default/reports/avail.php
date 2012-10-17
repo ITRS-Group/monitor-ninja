@@ -3,15 +3,15 @@
 	<table summary="<?php echo _('Result table') ?>">
 		<!--<caption><?php echo str_replace(': ', ' '._('for').' '.$source.': ', $header_string); ?></caption>-->
 		<tr>
-			<th class="headerNone left"><?php echo help::render('availability') ?></th>
-			<th class="headerNone left"><?php echo _('Type / Reason') ?></th>
+			<th><?php echo help::render('availability') ?></th>
+			<th><?php echo _('Type / Reason') ?></th>
 			<th class="headerNone"><?php echo _('Time') ?></th>
 			<th class="headerNone"><?php echo _('Total time') ?></th>
-			<th class="headerNone left"><?php echo _('Status overview') ?></th>
+			<th><?php echo _('Status overview') ?></th>
 		</tr>
 		<?php $no_types = count($avail_data['var_types'] ); $i = 0; foreach ($avail_data['var_types'] as $var_type) { $i++; ?>
 		<tr class="even" >
-			<th class="headerNone left" style="border-top: 0px; vertical-align: bottom; width: 110px" rowspan="3">
+			<th style="border-top: 0px; vertical-align: bottom; width: 110px" rowspan="3">
 					<?php echo ucfirst(strtolower($state_values[$var_type])); ?>
 			</th>
 			<td><?php echo _('Unscheduled') ?></td>
@@ -46,7 +46,7 @@
 		</tr>
 		<?php } ?>
 		<tr class="even">
-			<th class="headerNone left" style="vertical-align: bottom; border-top: 0px" rowspan="3">
+			<th style="vertical-align: bottom; border-top: 0px" rowspan="3">
 				<?php echo _('Undetermined') ?>
 			</th>
 			<td><?php echo _('Not running') ?></td>
@@ -70,7 +70,7 @@
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
 		</tr>
 		<tr class="even total">
-			<th class="headerNone left" style="border-top: 0px"><?php echo _('All') ?></th>
+			<th style="border-top: 0px"><?php echo _('All') ?></th>
 			<td><?php echo _('Total') ?></td>
 			<td class="data"><?php echo time::to_string($avail_data['tot_time']) ?></td>
 			<td class="data"><?php echo reports::format_report_value($avail_data['tot_time_perc']) ?> %</td>

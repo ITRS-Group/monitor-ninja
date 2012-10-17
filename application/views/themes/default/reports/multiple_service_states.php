@@ -22,7 +22,7 @@ foreach ($multiple_states as $data) {
 			<?php } ?>
 	<table summary="<?php echo _('State breakdown for host services') ?>" class="multiple_services" border="1">
 		<tr>
-			<th class="headerNone left">
+			<th>
 			<?php
 			echo help::render('servicegroup_breakdown').' ';
 			if(!empty($data['groupname'])) {
@@ -133,7 +133,7 @@ foreach ($multiple_states as $data) {
 <div class="state_services report-block">
 	<table summary="<?php echo _('State breakdown for services') ?>" class="multiple_services">
 		<tr>
-			<th class="headerNone left"><?php echo help::render('average_and_sla').' '.sprintf(_('Average and Group availability for %s'), $data['groupname']) ?></th>
+			<th><?php echo help::render('average_and_sla').' '.sprintf(_('Average and Group availability for %s'), $data['groupname']) ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('OK') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Warning') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unknown') ?></th>

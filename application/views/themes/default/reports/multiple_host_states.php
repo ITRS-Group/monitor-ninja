@@ -2,7 +2,7 @@
 <?php foreach ($multiple_states as $data) { ?>
 		<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host" class="report-block">
 			<tr>
-				<th class="headerNone left"><?php echo help::render('hostgroup_breakdown').' '.(!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
+				<th><?php echo help::render('hostgroup_breakdown').' '.(!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
 				<th class="headerNone" style="width: 80px"><?php echo _('Up') ?></th>
 				<th class="headerNone" style="width: 80px"><?php echo _('Unreachable') ?></th>
 				<th class="headerNone" style="width: 80px"><?php echo _('Down') ?></th>
