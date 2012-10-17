@@ -122,18 +122,12 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # Cleanup symlinks we don't use anymore
-if [ -f /var/www/html/monitor ]; then
-  rm -rf /var/www/html/monitor
-fi
-
-if [ -f /var/www/html/ninja ]; then
-  rm -rf /var/www/html/ninja
-fi
-
-if [ -f /opt/monitor/op5/ninja/op5 ]; then
-  rm -rf /opt/monitor/op5/ninja/op5
-fi
-
+for link in /var/www/html/monitor /var/www/html/ninja /op5/monitor/op5/ninja/op5 /opt/monitor/op5/ninja/css /opt/monitor/op5/ninja/js /opt/monitor/op5/ninja/images /opt/monitor/op5/ninja/stylesheets
+do
+	if [ -f $link ]; then
+		rm -f $link
+	fi
+done
 
 %files
 %defattr(-,monitor,apache)
