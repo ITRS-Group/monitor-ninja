@@ -4,6 +4,12 @@
 ?>
 <head>
 
+<?php
+if (PHP_SAPI == 'cli') {
+	echo "<base href=\"https://localhost".url::base()."\" />";
+}
+?>
+
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
 	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
