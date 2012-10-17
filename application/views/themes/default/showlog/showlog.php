@@ -3,7 +3,7 @@
 <div id="response"></div>
 <?php echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get')); ?>
 <div>
-	<table class="showlog">
+	<table class="showlog no-borders">
 		<tr>
 			<td>
 	<h3><?php echo _('State type options'); ?></h3>
