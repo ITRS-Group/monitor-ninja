@@ -4,7 +4,7 @@
 		<tr>
 			<td class="icon dark">
 			<?php 
-				echo '<span class="icon-24 x24-shield-'.strtolower($problem[$i]['status']).'"></span>';
+				echo '<span class="icon-16 x16-shield-'.strtolower($problem[$i]['status']).'"></span>';
 			?>
 			</td>
 			<td class="status-<?php echo strtolower($problem[$i]['status']); ?>" id="<?php echo $problem[$i]['html_id']?>">
