@@ -38,19 +38,26 @@ function show_info() {
 		var target = e.currentTarget,
 			key = target.title.toLowerCase();
 
-		menu.style.left = (target.offsetLeft - 10) + 'px';
+		if (menu.style.display === 'block' && e.type === 'click') {
 
-		menu.style.display = 'block';
+			menu.style.display = 'none';
 
-		mc.style.display = 'none';
-		bc.style.boxShadow = 'none';
+		} else {
 
-		mc = $('#' + key + '-menu')[0];
-		bc = $('#' + key + '-button')[0];
+			menu.style.left = (target.offsetLeft - 10) + 'px';
 
-		mc.style.display = 'block';
-		bc.style.boxShadow = 'inset 0 0 8px #ccc';
+			menu.style.display = 'block';
 
+			mc.style.display = 'none';
+			bc.style.boxShadow = 'none';
+
+			mc = $('#' + key + '-menu')[0];
+			bc = $('#' + key + '-button')[0];
+
+			mc.style.display = 'block';
+			bc.style.boxShadow = 'inset 0 0 8px #ccc';
+
+		}
 	};
 
 	var hideMenu = function (e) {
