@@ -68,6 +68,31 @@
 			ways of handling layout.
 		</p>
 
+		<h2>Install SASS</h2>
+
+		<p>
+			All developer must install SASS and Compass since we don't keep the compiled CSS in the repos, only SASS.
+		</p>
+
+		<code>
+			gem install sass (may need to sudo)<br />
+			gem install compass (may need to sudo)<br />
+		</code>
+
+		<p>
+			Once installed you can proceed to browse to the application/views/themes/default/css/default/ folder and type 
+			in the command:
+		</p>
+
+		<code>
+			compass watch
+		</code>
+
+		<p>
+			Compass will poll for any changes to the SASS and compile to CSS, if no CSS is found it will do a first time 
+			compilation aswell.
+		</p>
+
 		<div>
 
 			<h2>CSS</h2>
@@ -81,6 +106,8 @@
 					One of these powers is variables, and with variables DOJO includes a configuration file, found under 
 					themes/default/dojo/config.sass.
 				</p>
+
+				
 
 				<p>
 					In this file you can set general configurations, such as the header height, fonts, different colors and more.

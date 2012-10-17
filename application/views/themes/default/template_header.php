@@ -22,34 +22,54 @@
 	<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'float: left; margin: 20px 0 0 20px;')); ?>
 
 	<div class="headercontent">
+		<ul>
+			<li>
+				<a onclick="window.location.reload()" class="image-link">
+					<span title="Refresh" class="icon-16 x16-refresh" id="refresh"></span>
+				</a>
+			</li>
+		<li>
+			<a onclick="show_info()" class="image-link">
+				<span title="Version Info." class="icon-16 x16-info"></span>
+			</a>
+		</li>
+
+		<li>
+			<a class="image-link">
+				<span title="Settings" <?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?> id="settings_icon" class="icon-16 x16-settings"></span>
+			</a>
+		</li>
+
 		
-		<a onclick="window.location.reload()" class="image-link">
-			<span title="Refresh" class="icon-16 x16-refresh" id="refresh"></span>
-		</a>
-		<a onclick="show_info()" class="image-link">
-			<span title="Version Info." class="icon-16 x16-info"></span>
-		</a>
-		<a class="image-link">
-			<span title="Settings" <?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?> id="settings_icon" class="icon-16 x16-settings"></span>
-		</a>
+
+			<li>
+				<?php
+					$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
+					echo html::anchor('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types,
+						'<span class="icon-16 x16-shield-not-warning"></span>', array('title' => 'Unhandled Problems', 'class' => 'image-link'));
+				?>
+			</li>
+
+			<li>
+
+				<?php
+					echo html::anchor('/tac', '<span title="Tactical Overview" class="icon-menu menu-tac"></span>', array('class' => 'image-link'));
+				?>
+			</li>
+
+			<li>
 		<?php
 
 			if (Kohana::config('config.site_domain') === '/ninja/') {
 				?>
-					<a target="_blank" href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/css/default/index.html'; ?>" class="image-link header-action">
+					<a target="_blank" href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/dojo/index.html'; ?>" class="image-link header-action">
 						<span title="DOJO Dev. Information" class="icon-16 x16-edit"></span>
 					</a>
 				<?php
 			}
 		?>
-
-		<?php
-			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
-			echo html::anchor('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types,
-				'<span class="icon-16 x16-shield-warning"></span>', array('title' => 'Unhandled Problems', 'class' => 'image-link'));
-
-			echo html::anchor('/tac', '<span title="Tactical Overview" class="icon-menu menu-tac"></span>', array('class' => 'image-link'));
-		?>
+			</li>
+		</ul>
 
 	</div>
 
