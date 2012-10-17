@@ -1,0 +1,60 @@
+@import "compass/css3/images"
+@import "config"
+
+.header
+	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+	@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+	box-shadow: 0 0 6px rgba(0,0,0,0.3)
+	border-bottom: 1px solid $border-color-dark
+	height: $header_height
+	min-width: 768px
+	position: fixed
+	width: 100%
+	top: 0
+	left: 0
+	z-index: 2
+
+	.supermenu
+
+		height: $header_height
+		float: left
+
+		ul
+			margin: 0
+			padding: 0
+			width: 100%
+			display: block
+
+			li
+				margin: 0
+				height: 28px
+				width: 18px
+				padding: 10px 20px 10px 10px
+				float: left
+				border-right: 1px solid $border-color-dark
+				display: block
+
+				&:hover 
+					@include background(linear-gradient(top, #fefffd, #dedfdd))
+					@include filter-gradient(#fefffd, #dedfdd, vertical)
+	
+	.headercontent
+		float: left
+		margin-left: 20px
+		margin-top: 18px
+		padding: 0
+		border-radius: 6px 6px 0 0
+		border: 1px solid $border-color-dark
+		border-bottom: none
+		font-size: 0.9em
+		
+		.header-action
+			border-right: 1px solid $border-color-light
+		
+		a 
+
+			span
+				cursor: pointer
+				margin: 6px
+				background-repeat: no-repeat
+				overflow: auto
