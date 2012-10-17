@@ -100,4 +100,15 @@
 			}
 		?>
 	</ul>
+	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
+		<?php
+		$query = arr::search($_REQUEST, 'query');
+		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
+			<input type="text" name="query" id="query" class="textbox" value="<?php echo $query ?>" />
+		<?php } else { ?>
+			<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
+		<?php	} ?>
+		<?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?>
+	</form>
+	
 </div>

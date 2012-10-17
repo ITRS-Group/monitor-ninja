@@ -7,7 +7,6 @@
 	position: fixed
 	width: 200px
 	top: $header_height
-	padding-top: 32px
 	overflow: hidden
 	overflow-y: auto
 	height: 85%
@@ -17,26 +16,6 @@
 	
 	text-shadow: 1px 1px 1px #fff
 	background: url('./images/stripe.png')
-
-	#global_search
-		text-align: center
-		height: 24px
-		background: $general_background_color
-		padding: 4px
-		border-bottom: 1px solid $border-color-dark
-		border-right: 1px solid $border-color-dark
-		position: fixed
-		width: 180px
-		z-index: 2
-		top: $header_height
-		left: 0
-
-		input
-			width: 70%
-			color: #444
-			padding: 2px 2px 2px 20px
-			background: url('../../icons/x16/use_search.png') no-repeat
-			background-position: left center
 
 	a
 		border-bottom: 1px dotted $link_color
@@ -124,38 +103,6 @@
 
 .navigation-collapsed
 	@extend .navigation
-
-	#global_search
-		height: 24px
-		background: $general_background_color
-		padding: 4px
-		border-bottom: 1px solid $border-color-dark
-		border-right: none
-		position: fixed
-		width: 36px
-		z-index: 2
-		top: $header_height
-		left: 0
-
-		&:hover
-			width: 180px
-			border-right: 1px solid $border-color-dark
-
-			input
-				color: #444
-				width: 70%
-				background-position: left center
-
-			a
-				display: inline
-
-		a
-			display: none
-
-		input
-			width: 20%
-			color: transparent
-			background-position: center center
 
 	overflow: hidden
 	min-width: 0

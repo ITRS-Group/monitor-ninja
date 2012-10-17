@@ -1,5 +1,5 @@
 /* line 2, sass/print.sass */
-body {
+div {
   box-shadow: none !important;
   text-shadow: none !important; }
 
@@ -19,3 +19,7 @@ body {
 /* line 16, sass/print.sass */
 .logo {
   width: 100% !important; }
+
+/* line 19, sass/print.sass */
+.dark, .widget-header, th {
+  background: none !important; }
