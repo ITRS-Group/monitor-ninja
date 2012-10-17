@@ -6,8 +6,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo Kohana::config('config.product_name').' '._('login'); ?></title>
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/common.css' ?>" media="all" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/screen.css' ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/status.css' ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/print.css' ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/jquery-ui-custom.css' ?>" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
