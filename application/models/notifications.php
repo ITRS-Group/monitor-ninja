@@ -38,11 +38,11 @@ class Notifications_Model extends Model {
 			$where_string .= " WHERE ";
 		}
 
-		$where_string .= " contact_name IS NOT NULL AND notification.command_name IS NOT NULL ";
+		$where_string .= " contact_name IS NOT NULL AND command_name IS NOT NULL ";
 
-		$fields = " notification.host_name, notification.service_description, notification.start_time, ".
-			"notification.end_time, notification.reason_type, notification.state, notification.contact_name, ".
-			"notification.notification_type, notification.output, notification.command_name ";
+		$fields = " host_name, service_description, start_time, ".
+			"end_time, reason_type, state, contact_name, ".
+			"notification_type, output, command_name ";
 
 		$where_order = " ORDER BY ".$this->sort_field." ".$this->sort_order.$offset_limit;
 
@@ -52,22 +52,28 @@ class Notifications_Model extends Model {
 		# make joins with contact_access to get all notifications
 		# for user's hosts and services
 		if (!$auth->view_hosts_root) {
-			$sql_host = "SELECT ".($count === true ? 'count(1)' : 'notification.id')." FROM notification ".
-				"INNER JOIN host ON host.host_name=notification.host_name ".
-				"INNER JOIN contact_access ON contact_access.host=host.id ".
-				"WHERE contact_access.contact=".$auth->id." AND ".
-				"notification.service_description IS NULL ".
-				"AND notification.command_name IS NOT NULL";
+			$hosts = Livestatus::instance()->getHosts(array('columns' => 'name'));
+			$sql_host = "SELECT ".($count === true ? 'count(1)' : 'id')." FROM notification ".
+				"WHERE host_name IN ('".implode("' ,'", $hosts) .
+				"') AND service_description IS NULL ".
+				"AND command_name IS NOT NULL";
 
-			if (!$auth->view_services_root)
-				$sqlsvc = "SELECT ".($count === true ? 'count(1)' : 'notification.id')." FROM notification ".
-					"INNER JOIN host ON host.host_name=notification.host_name ".
-					"INNER JOIN service ON service.host_name=notification.host_name AND service.service_description=notification.service_description ".
-					"INNER JOIN contact_access ON contact_access.service=service.id ".
-					"WHERE contact_access.contact=".$auth->id." AND ".
-					"notification.command_name IS NOT NULL";
-			else
-				$sqlsvc = 'SELECT '.($count === true ? 'count(1)' : 'notification.id').' FROM notification WHERE notification.service_description IS NOT NULL';
+			if (!$auth->view_services_root) {
+				$services = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description')));
+				$sqlsvc = "SELECT ".($count === true ? 'count(1)' : 'id')." FROM notification ".
+					"WHERE command_name IS NOT NULL AND (";
+				$first = true;
+				foreach ($services as $row) {
+					if (!$first)
+						$sqlsvc .= ' OR ';
+					$sqlsvc .= "(host_name = '{$row['host_name']}' AND service_description = ".$db->escape($row['description']).")";
+					$first = false;
+				}
+				$sqlsvc .= ')';
+			}
+			else {
+				$sqlsvc = 'SELECT '.($count === true ? 'count(1)' : 'id').' FROM notification WHERE notification.service_description IS NOT NULL';
+			}
 			if ($count !== true)
 				$sql = "SELECT $fields FROM notification WHERE id IN ($sql_host) OR id IN ($sqlsvc)";
 			else
