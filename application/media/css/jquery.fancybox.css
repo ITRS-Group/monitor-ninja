@@ -103,6 +103,7 @@
 	cursor: pointer;
 	z-index: 1103;
 	display: none;
+	border-bottom: 0;
 }
 
 #fancybox-error {
