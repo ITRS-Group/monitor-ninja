@@ -38,11 +38,6 @@
 				?>
 
 				</div>
-				<div class="slider" id="slider" title="Collapse Navigation">
-					<div class="slide-button">
-						::
-					</div>
-				</div>
 
 			</div>
 
