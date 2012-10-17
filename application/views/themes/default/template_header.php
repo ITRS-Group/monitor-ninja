@@ -112,8 +112,8 @@
 		</li>
 		<li id="ninja_refresh_edit">
 			<?php echo _('Edit global refresh rate') ?><br />
-			<div id="ninja_page_refresh_slider" style="width:200px; margin-top: 8px;">
-				<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 160px; padding: 1px; margin-top:-25px;z-index: 500" /> <div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
+			<div id="ninja_page_refresh_slider" style="width: 160px; margin-top: 8px;">
+				<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 130px; padding: 1px; margin-top:-25px;z-index: 500" /> <div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
 			</div>
 		</li>
 

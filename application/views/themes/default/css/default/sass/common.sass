@@ -311,6 +311,9 @@ input
 	border: 1px solid $border_color_light
 	box-shadow: 0 2px 3px $weak_shadow_color
 
+	.ninja_page_refresh_value
+		display: none
+
 	.widget-selector
 		margin-left: 10px
 
@@ -337,6 +340,41 @@ input
 	background: $general_background_color
 	border: 1px solid $border_color_dark
 	z-index: 20
+
+#jGrowl
+
+	position: fixed
+	top: 32px
+	right: 40%
+	z-index: 100
+	width: 20%
+	color: #fff
+
+	.header //Same name as general page header, null some properties
+		background: none
+		box-shadow: none
+		border: none
+		height: auto
+		min-width: 0
+		position: relative
+		width: auto
+		z-index: 0
+		color: #fff
+		background-color: #000
+		background-color: rgba(0,0,0,0.5)
+		border-color: #000
+		padding: 4px
+	.message
+		color: #fff
+		background-color: #000
+		background-color: rgba(0,0,0,0.5)
+		border-color: #000
+		padding: 4px
+	.close
+		color: #fff
+		background-color: #000
+		background-color: rgba(0,0,0,0.5)
+		border-color: #000
 
 // Import form SASS
 @import "sprites"
