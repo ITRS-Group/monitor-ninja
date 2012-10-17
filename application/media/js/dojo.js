@@ -72,6 +72,7 @@ function show_info() {
 	$('.supermenu-button').click(showMenu);
 
 	$('.content').mouseover(hideMenu);
+	$('.headercontent').mouseover(hideMenu);
 
 	$(document).ready(function (e) {
 
