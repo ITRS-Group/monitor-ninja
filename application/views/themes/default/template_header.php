@@ -20,6 +20,7 @@
 		</ul>
 	</div>
 	<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'float: left; margin: 20px 0 0 20px;')); ?>
+
 	<div class="headercontent">
 		
 		<a onclick="window.location.reload()" class="image-link">
@@ -46,7 +47,10 @@
 			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 			echo html::anchor('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types,
 				'<span class="icon-16 x16-shield-warning"></span>', array('title' => 'Unhandled Problems', 'class' => 'image-link'));
+
+			echo html::anchor('/tac', '<span title="Tactical Overview" class="icon-menu menu-tac"></span>', array('class' => 'image-link'));
 		?>
+
 	</div>
 
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
