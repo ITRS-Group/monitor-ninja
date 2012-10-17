@@ -219,16 +219,14 @@ input
 
 #global_search
 	position: fixed
-	top: $header_height
-	left: 100px
+	top: 4px
+	right: 100px
 	width: 180px
-	z-index: 2
+	z-index: 4
 	text-align: center
 	height: 24px
-	background: $general_background_color
+	background: transparent
 	padding: 4px
-	border-bottom: 1px solid $border-color-dark
-	border-right: 1px solid $border-color-dark
 
 	input
 		width: 70%
@@ -294,8 +292,8 @@ input
 #version_info
 	position: fixed
 	display: none
-	top: 64px
-	left: 220px
+	top: $header_height
+	left: 230px
 	width: 200px
 	z-index: 10
 	background: $general_background_color
@@ -309,8 +307,8 @@ input
 .page_settings
 	position: fixed
 	display: none
-	top: 64px
-	left: 220px
+	top: $header_height
+	left: 230px
 	width: 200px
 	z-index: 10
 	background: $general_background_color

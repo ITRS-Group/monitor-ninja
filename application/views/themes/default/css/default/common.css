@@ -252,7 +252,7 @@ a {
 .content {
   position: absolute;
   padding: 0 10px;
-  margin-top: 64px;
+  margin-top: 48px;
   margin-left: 180px;
   padding: 16px 16px 32px 10px;
   overflow: auto;
@@ -271,17 +271,15 @@ input[type="text"] {
 /* line 220, sass/common.sass */
 #global_search {
   position: fixed;
-  top: 64px;
-  left: 100px;
+  top: 4px;
+  right: 100px;
   width: 180px;
-  z-index: 2;
+  z-index: 4;
   text-align: center;
   height: 24px;
-  background: #f9f9f9;
-  padding: 4px;
-  border-bottom: 1px solid #bbbbbb;
-  border-right: 1px solid #bbbbbb; }
-  /* line 233, sass/common.sass */
+  background: transparent;
+  padding: 4px; }
+  /* line 231, sass/common.sass */
   #global_search input {
     width: 70%;
     color: #444444;
@@ -289,18 +287,18 @@ input[type="text"] {
     background: url("../../icons/x16/use_search.png") no-repeat;
     background-position: left center; }
 
-/* line 240, sass/common.sass */
+/* line 238, sass/common.sass */
 #login-table {
   background: url("images/login.png") no-repeat;
   background-position: center top;
   padding-top: 66px;
   margin: 10% auto;
   width: 300px; }
-  /* line 247, sass/common.sass */
+  /* line 245, sass/common.sass */
   #login-table td, #login-table tbody, #login-table tr {
     border: none !important; }
 
-/* line 250, sass/common.sass */
+/* line 248, sass/common.sass */
 #page_links {
   margin-top: 0px;
   margin-left: 0px;
@@ -308,19 +306,19 @@ input[type="text"] {
   vertical-align: middle;
   border: none;
   box-shadow: none; }
-  /* line 258, sass/common.sass */
+  /* line 256, sass/common.sass */
   #page_links .page-links-label {
     float: left;
     max-width: 30%;
     padding-top: 8px; }
-  /* line 263, sass/common.sass */
+  /* line 261, sass/common.sass */
   #page_links ul {
     float: left;
     margin: 0px;
     padding: 0px;
     width: 100%;
     max-width: 60%; }
-    /* line 270, sass/common.sass */
+    /* line 268, sass/common.sass */
     #page_links ul li {
       list-style: none;
       display: inline-block;
@@ -330,68 +328,68 @@ input[type="text"] {
       border-radius: 3px;
       box-shadow: 0 0 3px #bbbbbb; }
 
-/* line 279, sass/common.sass */
+/* line 277, sass/common.sass */
 .report-links {
   float: right; }
-  /* line 283, sass/common.sass */
+  /* line 281, sass/common.sass */
   .report-links form input {
     border: 0;
     padding: 0; }
-  /* line 287, sass/common.sass */
+  /* line 285, sass/common.sass */
   .report-links a, .report-links form {
     float: left;
     width: auto; }
-  /* line 291, sass/common.sass */
+  /* line 289, sass/common.sass */
   .report-links img {
     margin: 2px 0 2px 8px; }
 
-/* line 294, sass/common.sass */
+/* line 292, sass/common.sass */
 #version_info {
   position: fixed;
   display: none;
-  top: 64px;
-  left: 220px;
+  top: 48px;
+  left: 230px;
   width: 200px;
   z-index: 10;
   background: #f9f9f9;
   border: 1px solid #dddddd;
   box-shadow: 0 2px 3px #bbbbbb; }
-  /* line 305, sass/common.sass */
+  /* line 303, sass/common.sass */
   #version_info li {
     padding: 2px 4px;
     border-bottom: #eeeeee; }
 
-/* line 309, sass/common.sass */
+/* line 307, sass/common.sass */
 .page_settings {
   position: fixed;
   display: none;
-  top: 64px;
-  left: 220px;
+  top: 48px;
+  left: 230px;
   width: 200px;
   z-index: 10;
   background: #f9f9f9;
   border: 1px solid #dddddd;
   box-shadow: 0 2px 3px #bbbbbb; }
-  /* line 320, sass/common.sass */
+  /* line 318, sass/common.sass */
   .page_settings .widget-selector {
     margin-left: 10px; }
-  /* line 323, sass/common.sass */
+  /* line 321, sass/common.sass */
   .page_settings .unselected {
     background: url("images/checkbox.png") no-repeat; }
-  /* line 326, sass/common.sass */
+  /* line 324, sass/common.sass */
   .page_settings .selected {
     background: url("images/checkbox-selected.png") no-repeat; }
-  /* line 329, sass/common.sass */
+  /* line 327, sass/common.sass */
   .page_settings li {
     padding: 4px 4px 4px 25px;
     border-bottom: #bbbbbb;
     background-color: #f9faf8; }
 
-/* line 334, sass/common.sass */
+/* line 332, sass/common.sass */
 .item_select_service {
   display: none; }
 
-/* line 337, sass/common.sass */
+/* line 335, sass/common.sass */
 .autocomplete {
   display: none;
   position: fixed;
@@ -1615,7 +1613,7 @@ input[type="text"] {
   filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFF9FAF8', endColorstr='#FFE8E9E7');
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
   border-bottom: 1px solid #c6c8c4;
-  height: 64px;
+  height: 48px;
   min-width: 768px;
   position: fixed;
   width: 100%;
@@ -1624,7 +1622,7 @@ input[type="text"] {
   z-index: 2; }
   /* line 17, sass/header.sass */
   .header .supermenu {
-    height: 64px;
+    height: 48px;
     float: left; }
     /* line 22, sass/header.sass */
     .header .supermenu ul {
@@ -1637,9 +1635,9 @@ input[type="text"] {
         margin: 0;
         height: 28px;
         width: 18px;
-        padding: 18px 20px 18px 10px;
+        padding: 10px 20px 10px 10px;
         float: left;
-        border-right: 1px solid #cccccc;
+        border-right: 1px solid #bbbbbb;
         display: block; }
         /* line 37, sass/header.sass */
         .header .supermenu ul li:hover {
@@ -1654,19 +1652,19 @@ input[type="text"] {
   .header .headercontent {
     float: left;
     margin-left: 20px;
-    margin-top: 6px;
-    width: 300px;
-    padding: 6px 0 0px 4px;
+    margin-top: 18px;
+    padding: 0;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid #bbbbbb;
+    border-bottom: none;
     font-size: 0.9em; }
-    /* line 49, sass/header.sass */
+    /* line 51, sass/header.sass */
     .header .headercontent .header-action {
-      border: none; }
-    /* line 54, sass/header.sass */
+      border-right: 1px solid #dddddd; }
+    /* line 56, sass/header.sass */
     .header .headercontent a span {
-      margin-top: 6px;
       cursor: pointer;
-      border-right: 1px solid #dddddd;
-      padding-right: 6px;
+      margin: 6px;
       background-repeat: no-repeat;
       overflow: auto; }
 
@@ -1674,7 +1672,7 @@ input[type="text"] {
 .navigation, .navigation-collapsed, .navigation-collapsed-double {
   position: fixed;
   width: 200px;
-  top: 64px;
+  top: 48px;
   overflow: hidden;
   overflow-y: auto;
   height: 85%;

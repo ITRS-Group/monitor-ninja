@@ -29,9 +29,9 @@
 				margin: 0
 				height: 28px
 				width: 18px
-				padding: 18px 20px 18px 10px
+				padding: 10px 20px 10px 10px
 				float: left
-				border-right: 1px solid #ccc
+				border-right: 1px solid $border-color-dark
 				display: block
 
 				&:hover 
@@ -41,20 +41,20 @@
 	.headercontent
 		float: left
 		margin-left: 20px
-		margin-top: 6px
-		width: 300px
-		padding: 6px 0 0px 4px
+		margin-top: 18px
+		padding: 0
+		border-radius: 6px 6px 0 0
+		border: 1px solid $border-color-dark
+		border-bottom: none
 		font-size: 0.9em
 		
 		.header-action
-			border: none
+			border-right: 1px solid $border-color-light
 		
 		a 
 
 			span
-				margin-top: 6px
 				cursor: pointer
-				border-right: 1px solid $border-color-light
-				padding-right: 6px
+				margin: 6px
 				background-repeat: no-repeat
 				overflow: auto
