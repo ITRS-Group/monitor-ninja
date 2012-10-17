@@ -12,6 +12,8 @@ install-sass:
 
 generate-css:
 	compass compile application/views/themes/default/css/default || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
+	compass compile application/views/themes/default/css/hello_kitty || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
+	compass compile application/views/themes/default/css/classic || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
 
 test: test-php-lint test-reports test-unittest
 
