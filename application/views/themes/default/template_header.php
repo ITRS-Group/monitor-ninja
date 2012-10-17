@@ -26,7 +26,7 @@
 
 		
 		<a onclick="window.location.reload()" class="image-link">
-			<span title="Refresh" class="icon-24 x24-refresh"></span>
+			<span title="Refresh" class="icon-24 x24-refresh" id="refresh"></span>
 		</a>
 		<a onclick="show_info()" class="image-link">
 			<span title="Version Info." class="icon-24 x24-info"></span>
@@ -61,7 +61,7 @@
 	</ul>
 </div>
 
-<div id="page_settings">
+<div id="page_settings" class="page_settings">
 	<ul>
 		<li id="menu_global_settings" <?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
 		<li id="noheader_ctrl" style="display:none">

@@ -267,7 +267,7 @@ if (isset($this->template->js_header))
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
 
-		<div id="page_settings" style="top:35px">
+		<div id="page_settings" style="top:35px" class="page_settings">
 			<ul>
 				<li id="menu_global_settings" class="header"<?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
 				<li id="noheader_ctrl" style="display:none">
