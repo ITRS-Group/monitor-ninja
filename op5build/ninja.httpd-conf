@@ -14,6 +14,12 @@ Alias /ninja /opt/monitor/op5/ninja
 	Allow from all
 	DirectoryIndex index.php
 </Location>
+<Location /monitor/images>
+        Options -Indexes
+        Order allow,deny
+        Allow from all
+        DirectoryIndex index.php
+</Location>
 <Location /ninja>
 	Options -Indexes
 	Order allow,deny
