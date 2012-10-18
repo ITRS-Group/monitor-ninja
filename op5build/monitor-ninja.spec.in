@@ -14,13 +14,14 @@ Requires: merlin
 Requires: op5auth >= 1.2.0
 Requires: php >= 5.3
 Requires: php-op5lib
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
 Requires: php-process
 %else
 Requires: php-json
 %endif
 Requires: wkhtmltopdf
 BuildRequires: php >= 5.3
+BuildRequires: rubygems
 
 Source: %name-%version.tar.gz
 %description
@@ -33,6 +34,9 @@ Webgui for Nagios 3.
 pushd cli-helpers
 make
 popd
+%if 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
+	make install-sass
+%endif
 make generate-css
 make docs test
 
