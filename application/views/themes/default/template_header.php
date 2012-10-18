@@ -1,5 +1,10 @@
 <div class="header" id="header">
 	<div class="supermenu">
+
+		<div class="logo">
+			<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'margin: 8px;')); ?>
+		</div>
+
 		<ul>
 
 			<!-- Classes are used by javascript navigation -->
@@ -19,7 +24,6 @@
 
 		</ul>
 	</div>
-	<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'float: left; margin: 20px 0 0 20px;')); ?>
 
 	<div class="headercontent">
 		<ul>
