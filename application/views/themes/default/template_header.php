@@ -5,16 +5,16 @@
 			<!-- Classes are used by javascript navigation -->
 
 			<li class="supermenu-button" id="about-button" title="About">
-				<span class="icon-24 x24-info"></span>
+				<span class="icon-32 x32-info"></span>
 			</li>
 			<li class="supermenu-button" id="monitoring-button" title="Monitoring">
-				<span class="icon-24 x24-link"></span>
+				<span class="icon-32 x32-monitoring"></span>
 			</li>
 			<li class="supermenu-button" id="reporting-button" title="Reporting">
-				<span class="icon-24 x24-news"></span>
+				<span class="icon-32 x32-reporting"></span>
 			</li>
 			<li class="supermenu-button" id="configuration-button" title="Configuration">
-				<span class="icon-24 x24-settings"></span>
+				<span class="icon-32 x32-settings"></span>
 			</li>
 
 		</ul>
