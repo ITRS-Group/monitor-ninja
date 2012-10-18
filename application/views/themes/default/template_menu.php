@@ -22,6 +22,10 @@
 
 			$linkstring = '';
 
+			if (strtolower($section) == 'about') {
+				$linkstring .= '<li style="background: none">'.Kohana::config('config.product_name') . ":" . config::get_version_info().'</li>';
+			}
+
 			foreach ($entry as $name => $data) {
 
 				$id = strtolower($section)."-".$data[1]."-".$i;

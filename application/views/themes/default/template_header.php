@@ -32,11 +32,6 @@
 					<span title="Refresh" class="icon-16 x16-refresh" id="refresh"></span>
 				</a>
 			</li>
-		<li>
-			<a onclick="show_info()" class="image-link">
-				<span title="Version Info." class="icon-16 x16-info"></span>
-			</a>
-		</li>
 
 		<li>
 			<a class="image-link">
@@ -91,24 +86,12 @@
 
 </div>
 
-<div id="version_info">
-	<ul>
-		<li>
-		<?php echo  Kohana::config('config.product_name') . ":" . config::get_version_info(); ?>
-		</li>
-	</ul>
-</div>
-
 <div id="page_settings" class="page_settings">
 	<ul>
 		<li id="menu_global_settings" <?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
 		<li id="noheader_ctrl" style="display:none">
 			<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo _('Hide page header')?></label>
 		</li>
-		<!--<li id="ninja_use_noc">
-			<input type="checkbox" id="ninja_noc_control" />
-			<label id="ninja_noc_lable" for="ninja_noc_control"> <?php echo _('Use noc (experimental)') ?></label>
-		</li>-->
 	<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
 		<li id="ninja_page_refresh">
 			<input type="checkbox" id="ninja_refresh_control" />
