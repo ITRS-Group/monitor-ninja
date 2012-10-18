@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>NINJA &raquo; DOJO &raquo; Dev. Manual</title>
 		<style type="text/css">
 			body {
 				font: normal normal 11pt 'Century Gothic', 'Lucida Grande', sans-serif;
@@ -22,13 +23,16 @@
 				display: block;
 				margin: 16px 32px;
 				padding: 8px;
-				font-size: 80%;
-				border: 1px dashed #999;
-				color: #666;
+				font-size: 90%;
+				border: 2px solid #444;
+				background: #666;
+				color: #eee;
 			}
 
 			table {
-				border: 1px solid #aaa;
+				border: 2px solid #ccc;
+				border-right: none;
+				border-bottom: none;
 				margin: 16px 32px;
 				padding: 0;
 				border-spacing: 0;
@@ -44,14 +48,55 @@
 				border-spacing: 0;
 				margin: 0;
 				padding: 4px;
-				color: #666;
-				border-right: 1px solid #aaa;
-				border-bottom: 1px solid #aaa;
-				font-size: 80%;
+				color: #444;
+				background: #eee;
+				border-right: 2px solid #ccc;
+				border-bottom: 2px solid #ccc;
+				font-size: 90%;
 			}
 
 			div {
 				margin-left: 16px;
+			}
+
+			.warning, .note, .critical {
+				font-style: normal;
+				color: #222;
+				margin: 16px 32px;
+				padding: 8px;
+				overflow: auto;
+			}
+
+			a, a:visited, a:active {
+				color: #47f;
+				text-decoration: none;
+			}
+
+			a:hover {
+				border-bottom: 1px dotted #47f;
+			}
+
+			.warning {
+				background: #fd9;
+				border: 2px solid #fa7;
+			}
+
+			.note {
+				background: #ada;
+				border: 2px solid #7b7;
+			}
+
+			.critical {
+				background: #daa;
+				border: 2px solid #c44;
+			}
+
+			.warning em, .note em, .critical em {
+				font-style: normal;
+				font-weight: bold;
+				font-size: 11pt;
+				padding: 0 6px;
+				float: left;
 			}
 
 		</style>
@@ -68,10 +113,27 @@
 			ways of handling layout.
 		</p>
 
+		<div class="critical">
+			<em>(X) Critical: </em>
+				DOJO will effectively make all custom skins unusable due to its enourmous changes to CSS, newly released skins for
+				ninja include default, classic and hello kitty.
+		</div>
+
+		<div class="critical">
+			<em>(X) Critical: </em>
+				DOJO enforces the earlier experimental NOC behaviour on ninja, it cannot be switched back to the older sidebar menu.
+		</div>
+
 		<h2>Install SASS</h2>
 
+		<div class="note">
+					<em>Note: </em>
+					All developers must install SASS and Compass since we don't keep the compiled CSS in the repos, only SASS.
+				</div>
+		</div>
+
 		<p>
-			All developers must install SASS and Compass since we don't keep the compiled CSS in the repos, only SASS.
+			In order to install sass and compass, the simplest way is through ruby gem installs:
 		</p>
 
 		<code>
@@ -80,29 +142,48 @@
 		</code>
 
 		<p>
-			Once installed you can proceed to browse to the application/views/themes/default/css/default/ folder and type 
-			in the command:
+			Once installed you can proceed to browse to the skin folder of your choice and type 
+			in the compass command.
 		</p>
 
 		<code>
+			cd ~/&lt;repo&gt;/monitor/ninja/application/views/themes/default/css/default<br />
 			compass watch
 		</code>
 
 		<p>
 			Compass will poll for any changes to the SASS and compile to CSS, if no CSS is found it will do a first time 
-			compilation aswell. 
+			compilation initially.
 		</p>
 
-		<ul>
-			<li>Never push CSS, only SASS</li>
-			<li>Never change CSS only SASS</li>
-		</ul>
-
+		<div class="critical">
+					<em>(X) Critical: </em><br />
+					<ul>
+						<li>Never push CSS, only SASS</li>
+						<li>Never change CSS only SASS</li>
+					</ul>
+				</div>
 		<div>
 
 			<h2>CSS</h2>
 			
 			<div>
+
+				<h3>SASS syntax</h3>
+
+				<p>
+					SASS is a white-space sensitive indentation hierarchy language that does not use curly brackets or semi-colons as in regular CSS.
+					It has support for inheritance, nesting, variables, functions and "mixins".
+				</p>
+
+				<ul>
+					<li>Inheritance: Is used via the command @extend, e.g. @extend the_selector_it_inherits</li>
+					<li>Nesting: Nesting is used by putting subselectors under the main-selector indentation level.</li>
+				</ul>
+
+				<p>
+					Read more on SASS <a href="www.sass-lang.com">website</a>, and more about compass and its support mixins on <a href="compass-style.com">theirs</a>.
+				</p>
 				
 				<h3>Configuration</h3>
 
@@ -112,8 +193,6 @@
 					themes/default/dojo/config.sass.
 				</p>
 
-				
-
 				<p>
 					In this file you can set general configurations, such as the header height, fonts, different colors and more.
 				</p>
@@ -122,16 +201,26 @@
 
 				<p>
 					Ninja now uses CSS sprites instead of independent icon images, a first glance test lowered the request count from 94 -> 36 and uncached 
-					load-time by 1.4 seconds. Icon images can be replaced everywhere an icon is used from the icon folders and is a PNG image, GIF icons cannot
-					be included in spritesheets by compass.
+					load-time by 1.4 seconds. Icon images can be replaced everywhere an icon is used from the icon folders and is a PNG image.
 				</p>
+
+				<div class="warning">
+					<em>(!) Warning: </em>
+					GIF icons cannot be included in spritesheets by compass, use the old icon images for icons, gif icons will be updated to PNG.
+				</div>
 
 				<p>
 					In order to utilize this development feature all img tags relating to icons should move from the old e.g. 
 				</p>
 				
 				<code>
-					echo html::image($this->add_path('icons/12x12/shield-'.strtolower($row['status']).'.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
+					echo html::image(<br />
+					&nbsp;&nbsp;$this->add_path('icons/12x12/shield-'.strtolower($row['status']).'.png'),<br />
+					&nbsp;&nbsp;array(<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;'title' => $row['status'], 'alt' => $row['status'], <br />
+						&nbsp;&nbsp;&nbsp;&nbsp;'style' => 'margin-bottom: -2px'<br />
+					&nbsp;&nbsp;)<br />
+					);
 				</code>
 
 				<p>
@@ -139,7 +228,9 @@
 				</p>
 
 				<code>
-					echo '&lt;span class="icon-12 x12-'.strtolower($row['status']).'" title="'.$row['status'].'"&gt;&lt;/span&gt;';<br /><br />
+					echo '&lt;span class="icon-12 x12-'.
+						<br />&nbsp;&nbsp;strtolower($row['status']).'" '.
+						<br />&nbsp;&nbsp;'	title="'.$row['status'].'"&gt;&lt;/span&gt;';<br /><br />
 					// The style is omitted because inline style is no-no
 				</code>
 
