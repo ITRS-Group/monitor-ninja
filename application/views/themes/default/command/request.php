@@ -1,14 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 //echo Kohana::debug($info);
 
-echo '<div class="widget left w98">';
+echo '<div>';
 if (!$info) {
 	echo "Unknown command: $requested_command<br />\n";
 	return;
 }
 
 echo "<h2>$brief</h2>\n";
-echo "<p style=\"width: 550px\">$description</p>\n";
+echo "<p>$description</p>\n";
 echo form::open('command/commit', array('id' => 'command_form'));
 
 $params = $info['params'];
@@ -23,7 +23,7 @@ foreach ($params as $pname => $ary) {
 }
 
 if (!empty($params)) {
-	echo "<table style=\"margin-top: 20px; width: auto\" class=\"white-table\">\n";
+	echo "<table style=\"margin-top: 20px;\">\n";
 }
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
