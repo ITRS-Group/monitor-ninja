@@ -216,11 +216,11 @@ input
 #global_search
 	position: fixed
 	top: 4px
-	right: 100px
-	width: 180px
+	right: 40px
 	z-index: 4
-	text-align: center
+	text-align: right
 	height: 24px
+	width: 260px
 	background: transparent
 	padding: 4px
 
@@ -228,8 +228,21 @@ input
 		width: 70%
 		color: #444
 		padding: 2px 2px 2px 20px
-		background: url('../../icons/x16/use_search.png') no-repeat
+		background: #fff url('../../icons/x16/use_search.png') no-repeat
 		background-position: left center
+
+.autocomplete
+	display: none
+	position: fixed
+	top: 48px
+	right: 40px
+	width: 230px !important
+	background: $general_background_color
+	border: 1px solid $border_color_dark
+	z-index: 20
+	
+	div
+		padding: 2px
 
 #login-table
 	background: url('images/login.png') no-repeat
@@ -331,15 +344,6 @@ input
 .item_select_service,
 .item_select
 	display: none
-
-.autocomplete
-	display: none
-	position: fixed
-	top: 48px
-	right: 100px
-	background: $general_background_color
-	border: 1px solid $border_color_dark
-	z-index: 20
 
 #jGrowl
 
