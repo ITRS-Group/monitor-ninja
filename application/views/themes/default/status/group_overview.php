@@ -38,7 +38,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
     <div class="clearservice"> </div>
 </div>
 
-<div class="widget left w98" id="status_group-overview">
+<div id="status_group-overview">
 <?php if (nacoma::link()===true)
 	echo sprintf(_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf(_('Add new %sgroup'), $grouptype));
 	echo (isset($pagination)) ? $pagination : '';
