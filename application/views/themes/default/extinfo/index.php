@@ -2,9 +2,9 @@
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
 ?>
-<div class="widget left w33" id="page_links">
+<div id="page_links">
+	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
 	<ul>
-	<li><?php echo _('View').', '.$label_view_for.':'; ?></li>
 	<?php
 	if (isset($page_links)) {
 		foreach ($page_links as $label => $link) {
@@ -15,6 +15,8 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 	}
 	?>
 	</ul>
+	<div class="clear"></div>
+	<hr />
 </div>
 
 <?php
@@ -25,10 +27,10 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left" id="extinfo_host-info" style="width: 495px">
+<div class="widget left" id="extinfo_host-info">
 	<table>
 		<tr>
-			<td class="white" colspan="2" style="padding: 7px 0px" >
+			<td colspan="2" style="padding: 7px 0px" >
 				<?php echo !empty($icon_image) ? html::image(Kohana::config('config.logos_path').$icon_image, array('alt' => $icon_image_alt, 'title' => $icon_image_alt, 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
 				<h1 style="display: inline"><?php echo ($main_object_alias ? $main_object_alias.' ('.$main_object.')' : $main_object) ?></h1>
 			</td>
@@ -36,8 +38,8 @@ if (!empty($widgets)) {
 		<?php
 			if ($type == 'service') {
 				echo '<tr>';
-				echo '<td class="white" style="width: 80px"><strong>'.$lable_on_host.'</strong></td>';
-				echo '<td class="white">'.(isset($host) ? $host : '');
+				echo '<td style="width: 80px"><strong>'.$lable_on_host.'</strong></td>';
+				echo '<td>'.(isset($host) ? $host : '');
 				echo isset($host_alias) ? ' ('.$host_alias.')' : '';
 				echo !empty($host_link) ? ' ('.$host_link.')' : '';
 				echo '</td>';
@@ -45,13 +47,13 @@ if (!empty($widgets)) {
 			}
 		?>
 		<tr>
-			<td class="white" style="width: 80px"><strong><?php echo _('Address');?></strong></td>
-			<td class="white"><?php echo isset($host_address) ? $host_address : ''; ?></td>
+			<td style="width: 80px"><strong><?php echo _('Address');?></strong></td>
+			<td><?php echo isset($host_address) ? $host_address : ''; ?></td>
 		</tr>
 		<?php if ($parents !== false && count($parents)) { ?>
 		<tr>
-			<td class="white"><strong><?php echo _('Parents') ?></strong></td>
-			<td class="white">
+			<td><strong><?php echo _('Parents') ?></strong></td>
+			<td>
 				<?php
 					$cnt = 0;
 					foreach ($parents as $parent) {
@@ -64,12 +66,12 @@ if (!empty($widgets)) {
 		</tr>
 		<?php } ?>
 		<tr>
-			<td class="white"><strong><?php echo $lable_member_of ?></strong></td>
-			<td class="white" style="white-space: normal"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
+			<td><strong><?php echo $lable_member_of ?></strong></td>
+			<td style="white-space: normal"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
 		</tr>
 		<tr>
-			<td class="white"><strong><?php echo _('Notifies to') ?></strong></td>
-			<td class="white">
+			<td><strong><?php echo _('Notifies to') ?></strong></td>
+			<td>
 				<?php	if (!empty($contactgroups)) {
 					$c = 0;
 					foreach ($contactgroups as $cgroup) {
@@ -103,12 +105,12 @@ if (!empty($widgets)) {
 		</tr>
 		<?php if (!empty($notes)) {?>
 		<tr>
-			<td class="white"><strong><?php echo _('Notes') ?></strong></td>
-			<td class="white"><?php echo $notes ?></td>
+			<td><strong><?php echo _('Notes') ?></strong></td>
+			<td><?php echo $notes ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
-			<td class="white" colspan="2"style="padding-top: 7px">
+			<td colspan="2" style="padding-top: 7px">
 				<?php
 					if (!empty($action_url)) {
 						echo '<a href="'.$action_url.'" style="border: 0px" target="'.$action_url_target.'">';

@@ -179,7 +179,7 @@ if (isset($service_result) ) {
 			} ?>
 		</td>
 		<?php } else { ?>
-		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
+		<td colspan="2"></td>
 		<?php } ?>
 		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->state, $service->has_been_checked, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->state, $service->has_been_checked, 'service'); ?></em></td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->description); ?></td>

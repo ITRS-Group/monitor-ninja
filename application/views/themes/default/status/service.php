@@ -112,7 +112,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			
 		
 		<?php if ($curr_host != $row->host_name) { ?>
-		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
+		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::specialchars($row->host_name), array('title' => $row->host_address)) ?></span>
 				<span style="float: right">
 					<?php
@@ -169,7 +169,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				</span>
 		</td>
 		<?php } else { $c = 0;?>
-			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
+			<td class="service_hostname white">&nbsp;</td>
 		<?php } ?>
 
 		<td class="icon <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $row->host_name, 'service' => $row->description)) === true) { ?>svc_obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->state, $row->has_been_checked, 'service')); ?>" id="<?php echo 'service|'.$row->host_name.'|'.(str_replace(' ', '_', $row->description).'|'.$row->description) ?>" title="<?php echo Current_status_Model::status_text($row->state, $row->has_been_checked, 'service'); ?>">
