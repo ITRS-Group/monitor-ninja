@@ -50,7 +50,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			if ($obj_type !== false) {
 				switch ($obj_type) {
 					case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/service/?name=%s'                          ); break;
-					case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'description', 'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
+					case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
 					case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/hostgroup/?group=%s'                       ); break;
 					case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/servicegroup/?group=%s'                    ); break;
 					case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
@@ -64,7 +64,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				
 				$data = $lsb->getTable($obj_type, array(
 						'columns' => array($settings['name_field'], $settings['data']),
-						'filter' => array($settings['name_field'] => array( '~~' => $obj_name.'.*' )),
+						'filter' => array($settings['name_field'] => array( '~~' => $obj_name )),
 						'limit' => $max_rows
 						));
 				
