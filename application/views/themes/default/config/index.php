@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="widget w98 left config_header" style="top: 57px; position: fixed; background-color: #ffffff; padding: 10px 1%">
+<div>
 	<form method="get" action="">
 	<?php echo _('Object type'); ?>:
 	<select class="auto" name="type" onchange="submit()">
@@ -16,18 +16,18 @@
 	<input type="submit" value="<?php echo _("Filter") ?>"  />
 	</form>
 </div>
-<div class="widget w98 left" style="margin-top: 40px">
+<div style="margin-top: 20px">
 	<table id="config_table">
 		<thead>
-		<tr>
-			<?php $i = 0; foreach ($header as $item) {
-				if ($i == 0)
-					echo '<th class="headerSortDown">'.$item.'</th>'."\n";
-				else
-					echo '<th class="header">'.$item.'</th>'."\n";
-				$i++;
-			} ?>
-		</tr>
+			<tr>
+				<?php $i = 0; foreach ($header as $item) {
+					if ($i == 0)
+						echo '<th class="headerSortDown">'.$item.'</th>'."\n";
+					else
+						echo '<th class="header">'.$item.'</th>'."\n";
+					$i++;
+				} ?>
+			</tr>
 		</thead>
 		<tbody>
 		<?php
