@@ -46,7 +46,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	$j = 0;
 	echo (isset($pagination)) ? $pagination : '';
 ?>
-	<form action="<?php echo url::base(true) ?>command/mrulti_action" method="post">
+	<form action="<?php echo url::base(true) ?>command/multi_action" method="post">
 	<?php
 	# make sure we have something to iterate over
 	$check = false;
