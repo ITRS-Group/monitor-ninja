@@ -119,7 +119,7 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_contact_id()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		$contact_id = Session::instance()->get('contact_id', false);
 		if (empty($contact_id)) {
@@ -141,7 +141,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_hosts()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		#$this->hosts = Session::instance()->get('auth_hosts', false);
 		#$this->hosts_r = Session::instance()->get('auth_hosts_r', false);
@@ -173,7 +173,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_hosts_r()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		$this->get_authorized_hosts();
 		return $this->hosts_r;
@@ -184,7 +184,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_services_r()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		$this->get_authorized_services();
 		return $this->services_r;
@@ -195,7 +195,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_hostgroups_r()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		$this->get_authorized_hostgroups();
 		return $this->hostgroups_r;
@@ -206,7 +206,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_servicegroups_r()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		$this->get_authorized_servicegroups();
 		return $this->hostgroups_r;
@@ -218,7 +218,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_services()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		if (!empty($this->services))
 			return $this->services;
@@ -251,7 +251,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_hostgroups()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		if (!empty($this->hostgroups))
 			return $this->hostgroups;
@@ -327,7 +327,7 @@ throw new Exception('deprecated');
 	 */
 	public function get_authorized_servicegroups()
 	{
-throw new Exception('deprecated');
+throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 /* TODO: deprecate */
 		if (!empty($this->servicegroups))
 			return $this->servicegroups;
