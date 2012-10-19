@@ -32,26 +32,25 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	if (isset($filters) && !empty($filters)) {
 		echo $filters;
 	}
-
-	$pnp4nagios_path = Kohana::config('config.pnp4nagios_path');
-	$nacoma_link = nacoma::link();
 	?>
 	</div>
     <div class="clear"> </div>
 </div>
 
 <div id="status_group-overview">
-<?php if (nacoma::link()===true)
-	echo (isset($pagination)) ? $pagination : '';
+<?php
+	$pnp4nagios_path = Kohana::config('config.pnp4nagios_path');
+	$nacoma_link = nacoma::link();
+	if ($nacoma_link===true)
+		echo sprintf(_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf(_('Add new %sgroup'), $grouptype));
 	$j = 0;
-	echo '<div class="clear"> </div>';
-	echo sprintf(_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf(_('Add new %sgroup'), $grouptype));
 ?>
 	<form action="<?php echo url::base(true) ?>command/multi_action" method="post">
 	<?php
 	# make sure we have something to iterate over
 	$check = false;
 	$i = 0;
+	echo (isset($pagination)) ? $pagination : '';
 	?>
 	<table class="group_overview_table">
 		<caption>
@@ -69,14 +68,14 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			<th class="no-sort"><?php echo $lable_actions ?></th>
 		</tr>
 		<?php
-		foreach ($host_details as $host ) {
+		$i=0; foreach ($host_details as $host ) { $i++;
 			$host = (object) $host;
 			$host_icon = false;
 			if (!empty($host->host_icon_image)) {
 				$host_icon = html::image(Kohana::config('config.logos_path').$host->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $host->host_icon_image_alt, 'title' => $host->host_icon_image_alt));
 			}
 		?>
-		<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
+		<tr class="<?php echo ($i % 2 == 0) ? 'odd' : 'even' ?>">
 			<td class="icon bl <?php if (Command_Controller::_is_authorized_for_command(array('host_name' => $host->host_name)) === true) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($host->host_state, $host->host_has_been_checked, 'host')); ?>" id="<?php echo 'host|'.$host->host_name ?>"><em><?php echo Current_status_Model::status_text($host->host_state, $host->host_has_been_checked, 'host');?></em></td>
 			<td class="item_select"><input type="checkbox" name="object_select[]" value="<?php echo $host->host_name ?>" class="checkbox_group_<?php echo $j; ?>" /></td>
 			<td style="width: 180px"><a href="<?php echo url::base(true).'status/service?name='.urlencode($host->host_name).'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;servicestatustypes='.(int)$servicestatustypes ?>" title="<?php echo $host->host_address ?>"><?php echo html::specialchars($host->host_name) ?></a></td>

@@ -25,6 +25,7 @@ $label_previous = '<span class="icon-16 x16-arrow-left" title="'._('Previous').'
 $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></span>';
 ?>
 
+<div class="pagination_container">
 <?php
 	$paging_step = config::get('pagination.paging_step', '*'); # step used below to print nr of items per page
 	$max_items_per_page = config::get('pagination.max_items_per_page', '*'); # maximum items per page to show
@@ -35,7 +36,36 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 	?>
 	<span class="pagination_entries_str" style="display:none"><?php echo $entries ?></span>
 
-<p class="pagination">
+<div class="pagination_form">
+<form  action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
+		<fieldset>
+		<select class="auto" id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
+	<?php
+		if ($total_items < $paging_step) {
+			?>
+			<option value="<?php echo $total_items ?>" selected="selected"><?php echo $total_items ?> <?php echo $entries ?></option>
+			<?php
+		} else {
+			?>
+			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo _('All').' '.$entries ?></option>
+			<?php
+		}
+		for ($i=$paging_step ; $i<$total_items && $i<=$max_items_per_page; $i+=$paging_step ) {
+			?><option value="<?php echo $i ?>"<?php if ($items_per_page == $i) { ?> selected='selected'<?php } ?>><?php echo $i ?> <?php echo $entries ?></option><?php
+		}
+	?>
+		</select>
+
+			<input
+				type="text" size="4" name="custom_pagination_field" id="pagination_id_<?php echo $_SESSION['_pagination_id_'] ?>" class="custom_pagination_field"
+				title="<?php echo _('Enter number of items to show on each page or select from the drop-down on the left') ?>"
+				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
+			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo _('Go') ?>" />
+			</fieldset>
+	</form>
+	</div>
+	
+<div class="pagination">
 	<?php $url = str_replace('&','&amp;',$url);	?>
 	<?php if ($previous_page): ?>
 		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>" class="img prevpage"><?php echo $label_previous ?></a>
@@ -110,33 +140,8 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 	<?php endif ?>
 	<?php //echo '&nbsp; (' . _('total') . ': ' . $total_items . ' ' . _('entries') . ')' ?>
 
-</p>
 
 
-<form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
-		<fieldset>
-		<select class="auto" id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
-	<?php
-		if ($total_items < $paging_step) {
-			?>
-			<option value="<?php echo $total_items ?>" selected="selected"><?php echo $total_items ?> <?php echo $entries ?></option>
-			<?php
-		} else {
-			?>
-			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo _('All').' '.$entries ?></option>
-			<?php
-		}
-		for ($i=$paging_step ; $i<$total_items && $i<=$max_items_per_page; $i+=$paging_step ) {
-			?><option value="<?php echo $i ?>"<?php if ($items_per_page == $i) { ?> selected='selected'<?php } ?>><?php echo $i ?> <?php echo $entries ?></option><?php
-		}
-	?>
-		</select>
-
-			<input
-				type="text" size="4" name="custom_pagination_field" id="pagination_id_<?php echo $_SESSION['_pagination_id_'] ?>" class="custom_pagination_field"
-				title="<?php echo _('Enter number of items to show on each page or select from the drop-down on the left') ?>"
-				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
-			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo _('Go') ?>" />
-			</fieldset>
-	</form>
+</div>
+</div>
 <?php } ?>

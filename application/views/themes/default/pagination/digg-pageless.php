@@ -7,6 +7,7 @@
 $label_previous = '<span class="icon-16 x16-arrow-left" title="'._('Previous').'"></span>';
 $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></span>';
 ?>
+<div class="pagination_container">
 
 <?php
 	$paging_step = config::get('pagination.paging_step', '*'); # step used below to print nr of items per page
@@ -18,7 +19,7 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 	?>
 	<span class="pagination_entries_str" style="display:none"><?php echo $entries ?></span>
 
-<p class="pagination">
+<div class="pagination">
 	<?php $url = str_replace('&','&amp;',$url);	?>
 	<?php if ($previous_page): ?>
 		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>" class="prevpage"><?php echo $label_previous ?></a>
@@ -33,4 +34,5 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 	<?php endif ?>
 	<?php //echo '&nbsp; (' . _('total') . ': ' . $total_items . ' ' . _('entries') . ')' ?>
 
-</p>
+</div>
+</div>
