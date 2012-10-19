@@ -12,8 +12,6 @@ $(document).ready(function() {
 		_save_scroll = false;
 	});
 
-	if (window.collapse_menu)
-		collapse_menu(_ninja_menu_state);
 	/**
 	*	Show the checkbox to show/hide "page header" if
 	*	we find the content-header div in the current page
@@ -439,11 +437,11 @@ $(document).ready(function() {
 	$("#settings_icon").click(function() {
 		if ($("#page_settings").is(':hidden')) {
 			$("#page_settings").show();
-			if ($('#infobar').is(':visible')) {
-				var top = 125;
-				$('#version_info').css('top', (top + 3) + 'px');
-				$('#page_settings').css('top', (top + 3) + 'px');
-			}
+				var top = 49;
+
+				$('#page_settings').css('top', (top) + 'px');
+				$('#page_settings').css('left', ($('#settings_icon').offset().left - 10) + 'px');
+
 		} else {
 			$("#page_settings").hide();
 		}

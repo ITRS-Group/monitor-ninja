@@ -24,9 +24,9 @@
 				margin: 16px 32px;
 				padding: 8px;
 				font-size: 90%;
-				border: 2px solid #444;
-				background: #666;
-				color: #eee;
+				border: 2px dotted #ddd;
+				background: #eee;
+				color: #555;
 			}
 
 			table {
@@ -102,7 +102,7 @@
 		</style>
 	</head>
 	<body>
-		<h1>Ninja &raquo; DOJO - Layout</h1>
+		<h1>Ninja &raquo; DOJO &raquo; Dev. Manual</h1>
 		
 		<p>
 			This manual is about the new layout DOJO for the Nagios GUI NINJA.
@@ -133,7 +133,15 @@
 		</div>
 
 		<p>
-			In order to install sass and compass, the simplest way is through ruby gem installs:
+			In order to install sass and compass, run the make:
+		</p>
+
+		<code>
+			make install-sass
+		</code>
+
+		<p>
+			Or install the gems manually through
 		</p>
 
 		<code>
@@ -156,6 +164,14 @@
 			compilation initially.
 		</p>
 
+		<p>
+			Or you can run the command make in the root directory after each SASS change
+		</p>
+
+		<code>
+			make
+		</code>
+
 		<div class="critical">
 					<em>(X) Critical: </em><br />
 					<ul>
@@ -173,13 +189,120 @@
 
 				<p>
 					SASS is a white-space sensitive indentation hierarchy language that does not use curly brackets or semi-colons as in regular CSS.
-					It has support for inheritance, nesting, variables, functions and "mixins".
+					It has support for inheritance, nesting, variables and "mixins".
 				</p>
 
-				<ul>
-					<li>Inheritance: Is used via the command @extend, e.g. @extend the_selector_it_inherits</li>
-					<li>Nesting: Nesting is used by putting subselectors under the main-selector indentation level.</li>
-				</ul>
+				<div>
+					
+					<h3>SASS quick guide</h3>
+					
+					<h4>
+						Variables
+					</h4>
+
+					<h4>
+						Nesting
+					</h4>
+
+					<p>
+						In regular CSS there is no nesting, if we want to declare a style to a parent, its children and their children, we have to create 
+						three independent scopes
+					</p>
+
+					<code>
+						.container {<br />
+						&nbsp;&nbsp;properties...<br />
+						}<br />
+						.container .content {<br />
+						&nbsp;&nbsp;properties...<br />
+						}<br />
+						.container .content span {<br />
+						&nbsp;&nbsp;properties...<br />
+						}<br />
+					</code>
+
+					<p>
+						In SASS we have a nested way of doing this using the indentation hierarchy
+					</p>
+
+					<code>
+						.container<br />
+						&nbsp;&nbsp;properties...<br /><br />
+						&nbsp;&nbsp;.content <br />
+						&nbsp;&nbsp;&nbsp;&nbsp;properties...<br /><br />
+						&nbsp;&nbsp;&nbsp;&nbsp;span <br />
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;properties...<br />
+						<br />
+					</code>
+
+					<h4>
+						Sub-property nesting
+					</h4>
+
+					<p>
+						SASS takes CSS nesting to another level, allowing sub-properties to be declared as nests, here we want to declare font properties
+						to a p tag.
+					</p>
+
+					<code>
+						p<br />
+						&nbsp;&nbsp;font<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;family: "Verdana"<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;size: 12pt<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;weight: normal<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;style: italic<br />
+					</code>
+
+					<h4>
+						Mixins
+					</h4>
+
+					<p>
+						Sort of like functions that can take 0 or more arguments and return a set of (possibly dynamic) CSS properties.
+					</p>
+
+					<code>
+						@mixin demo<br />
+						&nbsp;&nbsp;font<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;family: "Verdana"<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;size: 12pt<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;weight: normal<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;style: italic<br />
+					</code>
+
+					<p>
+						In and of itself it does nothing, if it is not used it will not be in the resulting CSS, but if we want this font style to be used
+						in all table cells, p tags and spans but with different colors we use it as such.
+					</p>
+
+					<code>
+						p<br />
+						&nbsp;&nbsp;@include demo<br />
+						&nbsp;&nbsp;color: #444<br />
+						td<br />
+						&nbsp;&nbsp;@include demo<br />
+						&nbsp;&nbsp;color: #666<br />
+						span<br />
+						&nbsp;&nbsp;@include demo<br />
+						&nbsp;&nbsp;color: #888<br />
+					</code>
+
+					<h4>
+						Inheritance
+					</h4>
+
+					<p>
+						Inheritance is used in much the same way as mixins except that they take existing selectors instead of the compilation level
+						mixin definition. Here we declare a p tag style and a span tag 
+					</p>
+
+					<code>
+						span
+							@extend 
+					</code>
+
+				
+				</div>
 
 				<p>
 					Read more on SASS <a href="www.sass-lang.com">website</a>, and more about compass and its support mixins on <a href="compass-style.com">theirs</a>.
