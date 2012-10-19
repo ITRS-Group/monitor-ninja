@@ -1,3 +1,51 @@
+<?php
+
+	$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
+	$all_service_status_types = nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING;
+	$host_props = nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED;
+	$service_props = nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED;
+
+	/** Shortcut format 
+	*
+	*	href, icon (in x16 sheet), attributes
+	*		string, string, array
+	*
+	* @param href is an adress, if external; use the full adress from protocol and up,
+	*		if internal; give the relative adress, e.g. /tac, /status/service/all etc.
+	*
+	* @param icon is the name and only the name of the icon not the extension and not the path.
+	*		must be in the x16 spritesheet
+	*
+	*	@param attribute An assoc. array containing additional attributes for the anchor, the class
+	*		will always be image-link and nothing else.
+	*
+	*/
+
+	$shortcuts = array('internal' => array(), 'external' => array());
+
+	$shortcuts['internal'][] = array('#', 'refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
+	$shortcuts['internal'][] = array('#', 'settings', array('title' => 'Settings', 'id' => 'settings_icon'));
+	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes='.($all_service_status_types).'&hostprops='.($host_props).'&service_props='.($service_props).'&hoststatustypes='.$all_host_status_types, 'shield-not-warning', array('title' => 'Unhandled Problems'));
+	$shortcuts['internal'][] = array('/tac', 'hoststatus', array('title' => 'Tactical Overview'));
+
+	if (Kohana::config('config.site_domain') === '/ninja/') {
+		$shortcuts['external'][] = array('https://'.$_SERVER['HTTP_HOST'].'/ninja/dojo/index.html', 'edit', array('title' => 'DOJO Dev. Manual', 'target' => '_blank'));
+	}
+	
+	if (isset($int_shortcuts)) {
+		for ($i = 0; $i < count($int_shortcuts); $i++) {
+			$shortcuts['internal'][] = $int_shortcuts[$i];
+		}
+	}
+
+	if (isset($ext_shortcuts)) {
+		for ($i = 0; $i < count($ext_shortcuts); $i++) {
+			$shortcuts['external'][] = $ext_shortcuts[$i];
+		}	
+	}
+
+?>
+
 <div class="header" id="header">
 	<div class="supermenu">
 
@@ -26,49 +74,26 @@
 	</div>
 
 	<div class="headercontent">
-		<ul>
-			<li>
-				<a onclick="window.location.reload()" class="image-link">
-					<span title="Refresh" class="icon-16 x16-refresh" id="refresh"></span>
-				</a>
-			</li>
-
-		<li>
-			<a class="image-link">
-				<span title="Settings" <?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?> id="settings_icon" class="icon-16 x16-settings"></span>
-			</a>
-		</li>
-
 		
 
-			<li>
-				<?php
-					$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
-					echo html::anchor('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types,
-						'<span class="icon-16 x16-shield-not-warning"></span>', array('title' => 'Unhandled Problems', 'class' => 'image-link'));
-				?>
-			</li>
+			<?php
+				foreach ($shortcuts as $category => $buttons) {
 
-			<li>
+					echo '<ul>';
 
-				<?php
-					echo html::anchor('/tac', '<span title="Tactical Overview" class="icon-menu menu-tac"></span>', array('class' => 'image-link'));
-				?>
-			</li>
+					for($i = 0; $i < count($buttons); $i++) {
 
-			<li>
-		<?php
+						$attributes = $buttons[$i][2];
+						$attributes['class'] = 'image-link';
 
-			if (Kohana::config('config.site_domain') === '/ninja/') {
-				?>
-					<a target="_blank" href="<?php echo '//'.$_SERVER['HTTP_HOST'].'/ninja/dojo/index.html'; ?>" class="image-link header-action">
-						<span title="DOJO Dev. Information" class="icon-16 x16-edit"></span>
-					</a>
-				<?php
-			}
-		?>
-			</li>
-		</ul>
+						echo '<li>'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
+
+					}
+
+					echo '</ul>';
+
+				}
+			?>
 
 	</div>
 
