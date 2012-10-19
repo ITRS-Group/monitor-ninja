@@ -3,20 +3,22 @@ $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 <div id="page_links">
-		<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
-		<ul>
-		<?php
-		if (isset($page_links)) {
-			foreach ($page_links as $label => $link) {
-				?>
-				<li><a href="<?php echo url::base(true) . $link ?>"><?php echo $label ?></a></li>
-				<?php
-			}
+	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
+	<ul>
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><a href="<?php echo url::base(true) . $link ?>"><?php echo $label ?></a></li>
+			<?php
 		}
-		?>
-		</ul>
-	</div>
-    <div class="clearservice"> </div>
+	}
+	?>
+	</ul>
+</div>
+<div class="clear"></div>
+<hr />
+
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
@@ -35,17 +37,17 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	$nacoma_link = nacoma::link();
 	?>
 	</div>
-    <div class="clearservice"> </div>
+    <div class="clear"> </div>
 </div>
 
 <div id="status_group-overview">
 <?php if (nacoma::link()===true)
-	echo sprintf(_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf(_('Add new %sgroup'), $grouptype));
 	echo (isset($pagination)) ? $pagination : '';
 	$j = 0;
+	echo '<div class="clear"> </div>';
+	echo sprintf(_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf(_('Add new %sgroup'), $grouptype));
 ?>
 	<form action="<?php echo url::base(true) ?>command/multi_action" method="post">
-	<img src="<?php echo ninja::add_path('icons/16x16/check-boxes.png') ?>" style="margin-bottom: -3px" /> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 	<?php
 	# make sure we have something to iterate over
 	$check = false;
@@ -53,8 +55,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	?>
 	<table class="group_overview_table">
 		<caption>
-		<a href="<?php echo url::base(true).'status/'.$grouptype.'group/'.$group_name.'?style=detail' ?>"><?php echo htmlspecialchars($group_alias) ?></a>
-		<span>(<a href="<?php echo url::base(true).'extinfo/details?type='.$grouptype.'group&amp;host='.$group_name ?>"><?php echo $group_name ?></a>)</span>
+			<img src="<?php echo ninja::add_path('icons/16x16/check-boxes.png') ?>" style="margin-bottom: -3px" /> <a href="#" id="select_multiple_items"><?php echo _('Select Multiple Items') ?></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo url::base(true).'status/'.$grouptype.'group/'.$group_name.'?style=detail' ?>"><?php echo htmlspecialchars($group_alias) ?></a>
+			<span>(<a href="<?php echo url::base(true).'extinfo/details?type='.$grouptype.'group&amp;host='.$group_name ?>"><?php echo $group_name ?></a>)</span>
 		<?php if ($nacoma_link===true)
 			echo nacoma::link('configuration/configure/?type='.$grouptype.'group&amp;name='.urlencode($group_name), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));?>
 	</caption>
