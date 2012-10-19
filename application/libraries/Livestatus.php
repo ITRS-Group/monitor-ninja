@@ -619,10 +619,12 @@ class LivestatusBackend {
 		if(isset($options['paging'])) {
 			$page = $options['paging'];
 			$items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+			$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
 		}
 		elseif(isset($options['paginggroup'])) {
 			$page = $options['paginggroup'];
 			$items_per_page = $page->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
+			$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
 		} else {
 			return;
 		}
