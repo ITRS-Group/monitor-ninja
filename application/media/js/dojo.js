@@ -1,25 +1,4 @@
 
-
-/* JavaScripted Session-persistent Menu
-*
-*	@requires		mlib.bind
-*	@requires		mlib.get
-* @requires		mlib.store
-*/
-
-function show_info() {
-
-	if ($('#version_info').is(':visible')) {
-		$('#version_info').hide();
-	} else {
-		if ($('#infobar').is(':visible')) {
-			var top = 125;
-			$('#version_info').css('top', (top + 3) + 'px');
-		}
-		$('#version_info').show();
-	}
-}
-
 (function () {
 
 	var menu = null,

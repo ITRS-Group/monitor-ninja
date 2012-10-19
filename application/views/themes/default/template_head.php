@@ -22,9 +22,6 @@ if (PHP_SAPI == 'cli') {
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'reports.css' ?>" media="all" />
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
 
-	<script type="text/javascript" src="<?php echo url::base().'application/media/js/mlib.aux.js'; ?>"></script>
-	<script type="text/javascript" src="<?php echo url::base().'application/media/js/mlib.store.js'; ?>"></script>
-
 	<?php
 		echo (!empty($css_header)) ? $css_header : '';
 		echo html::script('application/media/js/jquery.min.js');
