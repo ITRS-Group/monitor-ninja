@@ -23,7 +23,7 @@ class Backup_Controller extends Authenticated_Controller {
 		'/opt/monitor/var/archives',
 		'/opt/monitor/var/errors',
 		'/opt/monitor/var/traffic',
-		'/opt/op5sys/etc/*.yml',
+		'/etc/op5/*.yml',
 	);
 	
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';

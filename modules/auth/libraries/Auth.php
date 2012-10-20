@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-require_once( 'auth/Op5Auth.php' );
-require_once( 'auth/Op5User_NoAuth.php' );
-require_once( 'auth/Op5User_AlwaysAuth.php' );
+require_once('op5/auth/Auth.php');
+require_once('op5/auth/User_NoAuth.php');
+require_once('op5/auth/User_AlwaysAuth.php');
 
 /**
  * User authentication and authorization library.
