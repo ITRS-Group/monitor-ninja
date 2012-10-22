@@ -5,14 +5,14 @@
 		<caption><?php echo $title ?></caption>
 		<thead>
 			<tr>
-				<th class="headerNone"><em>Status</em></th>
-				<th class="headerNone"><?php echo _('Host') ?></th>
-				<th class="headerNone" style="width: 57px"><?php echo _('Notes') ?></th>
-				<th class="headerNone"><?php echo _('Severity') ?></th>
-				<th class="headerNone"><?php echo _('State Duration') ?></th>
-				<th class="headerNone"><?php echo _('# Hosts Affected') ?></th>
-				<th class="headerNone"><?php echo _('# Services Affected') ?></th>
-				<th class="headerNone"><?php echo _('Actions') ?></th>
+				<th><em>Status</em></th>
+				<th><?php echo _('Host') ?></th>
+				<th style="width: 57px"><?php echo _('Notes') ?></th>
+				<th><?php echo _('Severity') ?></th>
+				<th><?php echo _('State Duration') ?></th>
+				<th><?php echo _('# Hosts Affected') ?></th>
+				<th><?php echo _('# Services Affected') ?></th>
+				<th><?php echo _('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
