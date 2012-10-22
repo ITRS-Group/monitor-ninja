@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="left width-50" id="extinfo_info">
+<div class="right width-50" id="extinfo_info">
 
 	<table class="ext">
 		<tr>
