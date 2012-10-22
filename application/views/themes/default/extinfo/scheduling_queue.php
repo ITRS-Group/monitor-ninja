@@ -1,4 +1,4 @@
-<div class="widget w98 left">
+<div>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<h2><?php echo (isset($label_title)) ? $label_title : _('Scheduling queue'); ?></h2>
 	<?php if(!$data) { ?>

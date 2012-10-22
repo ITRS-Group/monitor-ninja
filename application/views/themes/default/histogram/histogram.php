@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="w98 left">
+<div>
 <h1><?php echo $title ?></h1>
 <?php
 $print_limit = 3;

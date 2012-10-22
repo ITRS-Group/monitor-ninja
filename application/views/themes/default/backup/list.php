@@ -77,7 +77,7 @@ window.onbeforeunload = function(event){
 var status = '';
 </script>
 
-<div class="widget left w98">
+<div	>
 	<h2><?php echo _('Backup/Restore'); ?></h2>
 	<div id="backupstatus">&nbsp;</div>
 	<div style="display: none">

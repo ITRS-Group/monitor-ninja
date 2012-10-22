@@ -8,7 +8,7 @@ if (!empty($command_result)) {
 		$command_result.'<br /></div>'."\n";
 }
 ?>
-<div class="widget left w98">
+<div>
 
 	<h2><?php echo $host_title_str ?></h2>
 	<?php if (!empty($host_data)) { ?>

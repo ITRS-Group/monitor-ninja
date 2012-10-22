@@ -10,7 +10,7 @@ if (!empty($widgets)) {
 <div id="response"></div>
 <div id="progress"></div>
 
-<div class="widget w98 left">
+<div>
 
 	<h1><?php echo _('Event History Report') ?></h1>
 

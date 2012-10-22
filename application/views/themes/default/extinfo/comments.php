@@ -10,7 +10,7 @@ if (!empty($command_result)) {
 
 ?>
 
-<div class="widget left w98">
+<div class="left">
 	<form action="">
 	<?php
 	echo form::input(array('id' => $type.'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);

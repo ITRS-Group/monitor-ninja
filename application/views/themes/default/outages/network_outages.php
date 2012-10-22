@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w98" id="network_outages">
+<div id="network_outages">
 	<table id="network_outages_table">
 		<caption><?php echo $title ?></caption>
 		<thead>

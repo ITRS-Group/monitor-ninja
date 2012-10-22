@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w98">
+<div>
 	<h2><?php echo _('View') . ' ' . $backup; ?></h2>
 	<table class="white-table">
 		<?php foreach ($files as $file): ?>

@@ -2,7 +2,7 @@
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
 ?>
-<div class="widget left w33" id="page_links">
+<div id="page_links">
 	<ul>
 	<?php
 	if (isset($page_links)) {
@@ -15,7 +15,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 	?>
 	</ul>
 </div>
-<div class="clearservice"> </div>
+<div class="clear"> </div>
 
 <?php if (!empty($action_url)) { ?>
 <a href="<?php echo $action_url ?>" style="border: 0px" target="<?php echo $action_url_target ?>">
@@ -37,7 +37,7 @@ if (!empty($notes)) {?>
 }
 ?>
 
-<div class="widget left w98">
+<div>
 <table class="ext">
 	<caption><?php echo ucfirst($label_grouptype) ?> <?php echo _('Commands').' '._('for').': '.htmlspecialchars($group_alias).' ('.$groupname.')'; ?>
 		<?php if (nacoma::link()===true)

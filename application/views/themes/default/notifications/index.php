@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="widget w98 left">
+<div>
 	<div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<?php echo form::open('notifications/'.Router::$method.(isset($host_name) ? '/'.$host_name : '').(isset($service) ? '?service='.$service : ''), array('method' => 'get', 'id' => 'notification_form')); ?>
 		<?php echo form::dropdown(array('name' => 'type', 'class' => 'auto'), $select_strings, $selected_val); ?>
