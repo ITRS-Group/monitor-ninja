@@ -36,18 +36,22 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 	}
 	?>
 	</div>
+
+	<div class="clear"></div>
 </div>
 
 <div id="status_host">
-	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<div class="clear"></div>
+	
 	<?php echo form::open('command/multi_action'); ?>
 	<table id="host_table">
 	<caption style="margin-top: 0px"><?php echo $sub_title ?>: 
 	<?php 
 		echo '<span class="icon-16 x16-check-boxes"></span>';
 	?> 
-	<a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a></caption>
+	<a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
+	<div class="clear"></div>
+</caption>
 
 			<tr>
 				<?php
