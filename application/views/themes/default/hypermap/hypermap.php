@@ -6,7 +6,7 @@ if (!isset($hyperapplet_path)) {
 }
 ?>
 
-<div class="widget w32" id="page_links">
+<div id="page_links">
 	<ul>
 		<li><?php echo _('View, for all hosts') ?>:</li>
 		<li><?php echo html::anchor('status/host/all', _('Status Detail')) ?></li>
