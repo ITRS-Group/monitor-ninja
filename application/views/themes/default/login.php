@@ -59,8 +59,7 @@
 				}?>
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
-					<td>&nbsp;</td>
-					<td>
+					<td colspan="2" style="text-align: center">
 						<?php
 							echo csrf::form_field();
 							echo form::submit('login', $login_btn_txt, 'style="margin-left: 5px"');
