@@ -200,6 +200,20 @@
 						Variables
 					</h4>
 
+					<p>
+						Variables in SASS are denoted using the dollar-sign and are assigned using the colon, they contain CSS values, i.e. not pure
+						numbers and text but type-specific values and can be used in place of any comparative value type.
+					</p>
+
+					<code>
+						$fontF: "Verdana"<br />
+						$fontS: 16pt<br />
+						$fontW: bold<br />
+						<br />
+						p<br />
+						&nbsp;&nbsp;font: $fontS $fontW normal $fontF<br />
+					</code>
+
 					<h4>
 						Nesting
 					</h4>
@@ -270,10 +284,12 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;style: italic<br />
 					</code>
 
-					<p>
-						In and of itself it does nothing, if it is not used it will not be in the resulting CSS, but if we want this font style to be used
+
+					<div class="note">
+						<em>Note: </em>
+							In and of itself it does nothing, if it is not used it will <b>not be in the resulting CSS</b>, but if we want this font style to be used
 						in all table cells, p tags and spans but with different colors we use it as such.
-					</p>
+					</div>
 
 					<code>
 						p<br />
@@ -287,18 +303,59 @@
 						&nbsp;&nbsp;color: #888<br />
 					</code>
 
+					<p>
+						The reason for using mixins and not only inherited selectors is that mixins can take arguments and return dynamic sets of properties.
+						Here we declare a global font and size but we want the selector using the mixin to determine the color and style of the font.
+					</p>
+
+					<code>
+
+						$font: "Verdana"<br />
+						$size: 12pt<br />
+						<br />
+						@mixin demo($color, $style)<br />
+						&nbsp;&nbsp;font<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;family: $font<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;size: $size<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;weight: normal<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;style: $style<br />
+						&nbsp;&nbsp;color: $color
+					</code>
+
+					<code>
+						p<br />
+						&nbsp;&nbsp;@include demo(#444, normal)<br />
+						td<br />
+						&nbsp;&nbsp;@include demo(#666, oblique)<br />
+						span<br />
+						&nbsp;&nbsp;@include demo(#888, italic)<br />
+					</code>
+
 					<h4>
 						Inheritance
 					</h4>
 
 					<p>
 						Inheritance is used in much the same way as mixins except that they take existing selectors instead of the compilation level
-						mixin definition. Here we declare a p tag style and a span tag 
+						mixin definition. Here we declare a p tag style and a span tag that inherits the style of the p tag and declares its own.
 					</p>
 
+					<div class="note">
+						<em>Note: </em>
+							Both the p and span selectors <b>will be contained in the resulting stylesheet</b>!
+					</div>
+
 					<code>
-						span
-							@extend 
+						p<br />
+						&nbsp;&nbsp;font<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;family: "Verdana"<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;size: 12pt<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;weight: normal<br />
+						&nbsp;&nbsp;&nbsp;&nbsp;style: italic<br />
+						<br />
+						span<br />
+						&nbsp;&nbsp;@extend p<br />
+						&nbsp;&nbsp;color: #567
 					</code>
 
 				
