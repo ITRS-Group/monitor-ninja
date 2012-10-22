@@ -26,6 +26,7 @@ $legacy-support-for-ie: true
 //
 //	Exception is .nullify which removes a lot of styling
 
+
 .width-33
 	width: 31% !important
 	margin: 0 1% !important
@@ -154,7 +155,7 @@ hr
 
 table
 	@extend .nullify
-	font-size: 0.9em
+	font-size: 0.95em
 	margin: 0 0
 	width: 100%
 
@@ -250,24 +251,27 @@ a
 		color: $link_color_hover
 		border-bottom: 1px dotted $link_color_hover
 
-.container 
+.container
 	overflow: auto
 	min-width: 600px
 
 .content
-	position: relative
 	padding: 0 10px
 	margin-top: $header_height
 	padding: 16px 32px 32px 32px
-	overflow: auto
 	z-index: 0
+
+	#iframe, #hypermap, #geomap, #nagvis
+		position: fixed
+		top: $header_height
+		left: 0
 
 	p
 		width: 90%
 		margin: 8px 8px
 
 input
-	&[type="text"]
+	&[type="text"], &[type="password"]
 		border-radius: 3px
 		border: 1px solid $border-color-dark
 		padding: 3px 6px
@@ -275,11 +279,11 @@ input
 #global_search
 	position: fixed
 	top: 4px
-	right: 100px
-	width: 180px
+	right: 40px
 	z-index: 4
-	text-align: center
+	text-align: right
 	height: 24px
+	width: 260px
 	background: transparent
 	padding: 4px
 
@@ -287,8 +291,21 @@ input
 		width: 70%
 		color: #444
 		padding: 2px 2px 2px 20px
-		background: url('../../icons/x16/use_search.png') no-repeat
+		background: #fff url('../../icons/x16/use_search.png') no-repeat
 		background-position: left center
+
+.autocomplete
+	display: none
+	position: fixed
+	top: 48px
+	right: 40px
+	width: 230px !important
+	background: $general_background_color
+	border: 1px solid $border_color_dark
+	z-index: 20
+	
+	div
+		padding: 2px
 
 #login-table
 	background: url('images/login.png') no-repeat
@@ -370,6 +387,9 @@ input
 	border: 1px solid $border_color_light
 	box-shadow: 0 2px 3px $weak_shadow_color
 
+	.ninja_page_refresh_value
+		display: none
+
 	.widget-selector
 		margin-left: 10px
 
@@ -384,17 +404,44 @@ input
 		border-bottom: $border_color_dark
 		background-color: $gradient-dark-hi
 
-.item_select_service
+.item_select_service,
+.item_select
 	display: none
 
-.autocomplete
-	display: none
+#jGrowl
+
 	position: fixed
-	top: 48px
-	right: 100px
-	background: $general_background_color
-	border: 1px solid $border_color_dark
-	z-index: 20
+	top: 32px
+	right: 40%
+	z-index: 100
+	width: 20%
+	color: #fff
+
+	.header //Same name as general page header, null some properties
+		background: none
+		box-shadow: none
+		border: none
+		height: auto
+		min-width: 0
+		position: relative
+		width: auto
+		z-index: 0
+		color: #fff
+		background-color: #000
+		background-color: rgba(0,0,0,0.5)
+		border-color: #000
+		padding: 4px
+	.message
+		color: #fff
+		background-color: #000
+		background-color: rgba(0,0,0,0.5)
+		border-color: #000
+		padding: 4px
+	.close
+		color: #fff
+		background-color: #000
+		background-color: rgba(0,0,0,0.5)
+		border-color: #000
 
 // Import form SASS
 @import "sprites"
