@@ -266,63 +266,6 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*
-	*
-	*/
-	public function _populate_services()
-	{
-		$services = false;
-
-		if (!empty($this->options['service_description'])) {
-			$services = $this->options['service_description'];
-		}
-		else if (!empty($this->options['host_name'])) {
-			foreach ($this->options['host_name'] as $host_name) {
-				$service_res = Host_Model::get_services($host_name);
-				if ($service_res !== false && count($service_res)) {
-					foreach ($service_res as $svc) {
-						$services[] = $host_name.';'.$svc->service_description;
-					}
-				}
-			}
-		}
-		else if (!empty($this->options['hostgroup'])) {
-			foreach ($this->options['hostgroup'] as $group) {
-				$hg = new Hostgroup_Model();
-				$hg_res = $hg->get_hosts_for_group($group);
-				if ($hg_res !== false && count($hg_res)) {
-					foreach ($hg_res as $row) {
-						$service_res = Host_Model::get_services($row->host_name);
-						if ($service_res !== false && count($service_res)) {
-							foreach ($service_res as $svc) {
-								$services[] = $row->host_name.';'.$svc->service_description;
-							}
-						}
-					}
-				}
-			}
-		}
-		elseif (!empty($this->options['servicegroup'])) {
-			foreach ($this->options['servicegroup'] as $group) {
-				$sg = new Servicegroup_Model();
-				$sg_res = $sg->get_services_for_group($group);
-				if ($sg_res !== false && count($sg_res)) {
-					foreach ($sg_res as $row) {
-						$service_res = Host_Model::get_services($row->host_name);
-						if ($service_res !== false && count($service_res)) {
-							foreach ($service_res as $svc) {
-								$services[] = $row->host_name.';'.$svc->service_description;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $services;
-	}
-
-	/**
 	* Translated helptexts for this controller
 	*/
 	public static function _helptexts($id)
