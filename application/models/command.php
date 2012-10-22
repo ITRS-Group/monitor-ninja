@@ -265,11 +265,25 @@ class Command_Model extends Model
 				if($defaults) {
 					if(isset($defaults['host_name'])) {
 						if(isset($defaults['service'])) {
-							if($this->auth->is_authorized_for_service($defaults['host_name'], $defaults['service'])) {
+							if(is_array($defaults['service'])) {
+								foreach($defaults['service'] as $service) {
+									if($this->auth->is_authorized_for_service($service)) {
+										$ary['options']['service'][] = array($service => $service);
+									}
+								}
+							} else {
 								$ary['options'] = array($defaults['host_name'].";".$defaults['service'] => $defaults['host_name'].";".$defaults['service']);
 							}
-						} elseif($this->auth->is_authorized_for_host($defaults['host_name'])) {
-							$ary['options'] = array($defaults['host_name'] => $defaults['host_name']);
+						} else {
+							if(is_array($defaults['host_name'])) {
+								foreach($defaults['host_name'] as $host) {
+									if($this->auth->is_authorized_for_host($host)) {
+										$ary['options']['host_name'][] = $host;
+									}
+								}
+							} else {
+								$ary['options'] = array($defaults['host_name'] => $defaults['host_name']);
+							}
 						}
 					} elseif(isset($defaults['hostgroup_name']) && $this->auth->is_authorized_for_hostgroup($defaults['hostgroup_name'])) {
 						$ary['options'] = array($defaults['hostgroup_name'] => $defaults['hostgroup_name']);
