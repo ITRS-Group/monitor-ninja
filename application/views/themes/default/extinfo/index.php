@@ -27,7 +27,7 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left" id="extinfo_host-info">
+<div id="extinfo_host-info">
 	<table>
 		<tr>
 			<td colspan="2" style="padding: 7px 0px" >
@@ -138,8 +138,10 @@ if (!empty($widgets)) {
 <?php $this->session->set('back_extinfo',$back_link);?>
 
 
-<div style="clear:both"></div>
-<div class="widget left width-50" id="extinfo_current">
+<div class="clear"></div>
+
+<br /><br />
+<div class="left width-50" id="extinfo_current">
 	<?php
 	if (isset($pending_msg)) {
 		echo $title."<br /><br />";
@@ -147,7 +149,7 @@ if (!empty($widgets)) {
 	} else { ?>
 	<table class="ext">
 		<tr>
-			<th colspan="2" class="headerNone" style="border: 0px"><?php echo $title ?></th>
+			<th colspan="2" style="border: 0px"><?php echo $title ?></th>
 		</tr>
 		<tr>
 			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
@@ -259,6 +261,9 @@ if (!empty($widgets)) {
 if (!empty($commands))
 	echo $commands;
 ?>
+
+<div class="clear"></div>
+<br /><br />
 
 <?php
 if (isset($comments))
