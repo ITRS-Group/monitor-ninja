@@ -15,9 +15,6 @@ class Alert_history_Controller extends Summary_Controller
 	public function generate($input = false)
 	{
 		$this->setup_options_obj($input);
-		if ($this->options['output_format'] == 'pdf') {
-			return $this->generate_pdf($input);
-		}
 
 		$this->options['summary_type'] = self::RECENT_ALERTS;
 		$this->xtra_js[] = $this->add_path('alert_history/js/alert_history.js');
@@ -28,6 +25,9 @@ class Alert_history_Controller extends Summary_Controller
 		$this->template->content->header->standard_header->title = _('Alert history');
 		if ($this->options['summary_items']) {
 			$this->template->content->content->pagination = new CountlessPagination(array('style' => 'digg-pageless'));
+		}
+		if ($this->options['output_format'] == 'pdf') {
+			return $this->generate_pdf();
 		}
 	}
 	

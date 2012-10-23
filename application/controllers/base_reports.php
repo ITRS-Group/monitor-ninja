@@ -54,30 +54,30 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	abstract public function generate($input = false);
 
 	/**
-	 * Generate a PDF, via shell. Should be called by the regular generate
-	 * method based on the output_format setting, if applicable. Assumes
-	 * $this->options has been set.
+	 * Generate PDF instead of normal rendering. Uses shell
+	 * 
+	 * Assumes that $this->template is set up correctly
 	 */
 	protected function generate_pdf()
 	{
-		// for fun infinite loops, remove these:
-		$this->options['output_format'] = 'html';
-		unset($this->options['filename']);
-
-		$stropts = $this->options->as_keyval_string(false);
-
+		$this->template->base_href = 'http://127.0.0.1'.url::base();
+		
 		# not using exec, so STDERR (used for status info) will be loggable
 		$pipe_desc = array(
 			0 => array('pipe', 'r'),
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		$command = '/usr/bin/php '.DOCROOT.KOHANA.' '.escapeshellarg($this->type.'/generate?'.$stropts).' '.escapeshellarg(Auth::instance()->get_user()->username).' | '.Kohana::config('reports.pdf_command');
+		
+		$command = Kohana::config('reports.pdf_command');
 		Kohana::log('debug', "Running pdf generation command '$command'");
 		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
 
 		if (is_resource($process)) {
+			// Render and store output
+			$content = $this->template->render();
 			$this->auto_render = false;
+			
 			$filename = $this->type;
 			if ($this->options['schedule_id']) {
 				$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
@@ -88,8 +88,9 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			$month = $months[date('m')-1]; // January is [0]
 			$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
 
-			fwrite($pipes[0], "\n");
+			fwrite($pipes[0], $content);
 			fclose($pipes[0]);
+			
 			$out = stream_get_contents($pipes[1]);
 			$err = stream_get_contents($pipes[2]);
 			if (trim($out)) {

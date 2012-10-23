@@ -8,6 +8,9 @@
 if (PHP_SAPI == 'cli') {
 	echo "<base href=\"https://localhost".url::base()."\" />";
 }
+else {
+	echo (!empty($base_href)) ? '<base href="'.$base_href.'" />' : '';
+}
 ?>
 
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">

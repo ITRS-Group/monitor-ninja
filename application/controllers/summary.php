@@ -153,9 +153,6 @@ class Summary_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
-		if ($this->options['output_format'] == 'pdf') {
-			return $this->generate_pdf($input);
-		}
 
 		$this->reports_model = new Reports_Model($this->options);
 
@@ -263,6 +260,10 @@ class Summary_Controller extends Base_reports_Controller
 		$content->result = $result;
 		$this->template->title = _("Reporting » Alert summary » Report");
 		$header->title = $this->options->get_value('summary_type');
+
+		if ($this->options['output_format'] == 'pdf') {
+			return $this->generate_pdf();
+		}
 	}
 
 	/**
