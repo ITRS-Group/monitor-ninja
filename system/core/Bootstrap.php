@@ -52,11 +52,11 @@ Event::run('system.routing');
 Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 
 // Make the magic happen!
-try {
+//try {
 	Event::run('system.execute');
-} catch (LivestatusException $ex) {
+/*} catch (LivestatusException $ex) {
 	Event::run('application.livestatus');
-}
+}*/
 
 // Clean up and exit
 Event::run('system.shutdown');

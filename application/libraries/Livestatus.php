@@ -31,6 +31,8 @@ class LivestatusException extends Exception {}
  *      'order'      => $order,             # sorting / order by structure, ex.:
  *                                          # array('name' => 'DESC')
  *                                          # array('host_name' => 'DESC', 'description' => 'DESC')
+ *      'order_mappings' => $map,           # Makes it possible to map a fictive column name to a real
+ *                                          # column name for sorting. Useful when using 'callback' columns.
  *
  *      'filter'     => $filter,            # filter structure used to filter the
  *                                          # resulting objects
@@ -127,6 +129,13 @@ class Livestatus {
 				'duration' => array($this, 'calc_duration'),
 				'active_checks_enabled' => array($this, 'handle_passive_as_active')
 			);
+
+			$options['order_mappings'] = array(
+				'duration'              => array( '!last_state_change' ),
+				
+				/* This is not actually correct... But isn't possible to do better in LS*/
+				'active_checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
+			);
 		}
 		return $this->backend->getTable('hosts', $options);
 	}
@@ -202,6 +211,13 @@ class Livestatus {
 				'duration' => array($this, 'calc_duration'),
 				'active_checks_enabled' => array($this, 'handle_passive_as_active'),
 				'host_active_checks_enabled' => array($this, 'handle_host_passive_as_active')
+			);
+
+			$options['order_mappings'] = array(
+				'duration'              => array( '!last_state_change' ),
+				
+				/* This is not actually correct... But isn't possible to do better in LS*/
+				'active_checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
 			);
 		}
 		return $this->backend->getTable('services', $options);
@@ -667,8 +683,20 @@ class LivestatusBackend {
 		$query .= "ResponseHeader: fixed16\n";
 
 		if( isset( $options['order'] ) ) {
+			$order_mappings = !empty($options['order_mappings'])?$options['order_mappings']:array();
 			foreach( $options['order'] as $column => $direction ) {
-				$query .= "Sort: $column $direction\n";
+				if( isset($order_mappings[$column]) ) {
+					foreach( $order_mappings[$column] as $mapping ) {
+						$column = $mapping;
+						if( $column[0] == '!' ) {
+							$column = substr($column,1);
+							$direction = strtolower($direction)=='asc'?'desc':'asc';
+						}
+						$query .= "Sort: $column $direction\n";
+					}
+				} else {
+					$query .= "Sort: $column $direction\n";
+				}
 			}
 		}
 		if( isset( $options['offset'] ) ) {
@@ -679,7 +707,7 @@ class LivestatusBackend {
 		}
 
 		$query .= $filter."\n";
-
+		
 		$start   = microtime(true);
 		$rc      = $this->connection->writeSocket($query);;
 		$head    = $this->connection->readSocket(16);
