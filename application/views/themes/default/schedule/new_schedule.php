@@ -1,8 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<h1><?php echo _('New Schedule'); ?></h1>
+<hr />
+
 <div id="new_schedule_area">
 	<form action="schedule/schedule" id="new_schedule_report_form">
-		<h1><?php echo _('New schedule') ?></h1>
 		
 		<div class="left w-50">
 			<label for="type"><?php echo help::render('report-type-save', 'reports').' '._('Select report type') ?></label><br />

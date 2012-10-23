@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 	$date_format = cal::get_calendar_format(true); ?>
 <div id="response"></div>
+<h1><?php echo _('Event Log'); ?></h1>
 <?php echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get')); ?>
 <div>
 	<table class="showlog no-borders">
