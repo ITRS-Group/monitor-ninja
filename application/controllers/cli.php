@@ -25,18 +25,6 @@ class Cli_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Takes input from commandline import of cgi.cfg
-	*/
-	public static function _edit_user_authorization($username=false, $options=false)
-	{
-		if (empty($username) || empty($options)) {
-			return false;
-		}
-		$result = User_Model::user_auth_data($username, $options);
-		return $result;
-	}
-
-	/**
 	 * Parse input data from commandline and stores in an array
 	 * An equivalent to getopt() but easier for us in this environment
 	 */
@@ -69,53 +57,6 @@ class Cli_Controller extends Authenticated_Controller {
 			}
 		}
 		return $result;
-	}
-
-	/**
-	 * fetch data from cgi.cfg and return to calling script
-	 */
-	public static function get_cgi_config()
-	{
-		$auth_data = System_Model::parse_config_file('cgi.cfg');
-		$user_data = false;
-		$user_list = array();
-		$return = false;
-		$access_levels = array(
-			'system_information',
-			'configuration_information',
-			'system_commands',
-			'all_services',
-			'all_hosts',
-			'all_service_commands',
-			'all_host_commands'
-		);
-
-		if(empty($auth_data)) {
-			return false;
-		}
-
-		foreach($auth_data as $k => $v) {
-			if(substr($k, 0, 14) === 'authorized_for') {
-				$auth_data[$k] = explode(',', $v);
-			}
-		}
-
-		# fetch defined access data for users
-		foreach ($access_levels as $level) {
-			$users = $auth_data[$level];
-			foreach ($users as $user) {
-				$user_data[$level][] = $user;
-				if (!in_array($user, $user_list)) {
-					$user_list[] = $user;
-				}
-			}
-		}
-		if (array_key_exists('refresh_rate', $auth_data)) {
-			$return['refresh_rate'] = $auth_data['refresh_rate'];
-		}
-		$return['user_data'] = $user_data;
-		$return['user_list'] = $user_list;
-		return $return;
 	}
 
 	/**
