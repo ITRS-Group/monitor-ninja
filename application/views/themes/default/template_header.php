@@ -28,7 +28,7 @@
 	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes='.($all_service_status_types).'&hostprops='.($host_props).'&service_props='.($service_props).'&hoststatustypes='.$all_host_status_types, 'shield-not-warning', array('title' => 'Unhandled Problems'));
 	$shortcuts['internal'][] = array('/tac', 'hoststatus', array('title' => 'Tactical Overview'));
 
-	if (Kohana::config('config.site_domain') === '/ninja/') {
+	if (Kohana::config('config.site_domain') === '/ninja/' && PHP_SAPI != 'cli') {
 		$shortcuts['external'][] = array('https://'.$_SERVER['HTTP_HOST'].'/ninja/dojo/index.html', 'edit', array('title' => 'DOJO Dev. Manual', 'target' => '_blank'));
 	}
 	
