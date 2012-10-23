@@ -1047,7 +1047,7 @@ class Reports_Controller extends Base_reports_Controller
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
 			'include_trends' => _("Check this to include a trends graph in your report."),
-			'status_to_display' => _('Uncheck a status to exclude log entries of that kind from the report.')
+			'status_to_display' => _('Check a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
