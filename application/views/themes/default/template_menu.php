@@ -41,7 +41,24 @@
 						$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
 					}
 
-					
+					if ($uri == $siteuri) {
+						$linkstring .= "<li class='active'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
+						if (strpos($data[1], '.') !== false)
+							$linkstring .= "<img class='icon-menu-dark' src='".ninja::add_path('icons/menu-dark/'.$data[1])."' />";
+						else
+							$linkstring .= "<span class='icon-menu-dark menu-dark-".$data[1]."'></span>";
+						$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
+						$in_menu = true;
+					} else {
+						$linkstring .= "<li class='nav-seg'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
+						if (strpos($data[1], '.') !== false)
+							$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
+						else
+							$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
+						$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
+					}
+
+					/*
 					if (strpos($uri, $siteuri) === false) {
 						$linkstring .= "<li class='nav-seg'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
 						if (strpos($data[1], '.') !== false)
@@ -57,7 +74,7 @@
 							$linkstring .= "<span class='icon-menu-dark menu-dark-".$data[1]."'></span>";
 						$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
 						$in_menu = true;
-					}
+					}*/
 
 					$i++;
 
