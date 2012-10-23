@@ -375,6 +375,7 @@ class User_Controller extends Authenticated_Controller {
 		# fetch all users that aren't admin (host_view_all)
 
 		$empty = array('' => _('Select user'));
+		// @todo: list all groups that does *not* have the access_rights flag set
 		$limited_users = User_Model::get_limited_users();
 		if (!empty($limited_users)) {
 			$limited_users = array_merge($empty, $limited_users);
