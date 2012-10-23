@@ -273,23 +273,23 @@ The class for icons such as shield-not-disabled would hence become:
 
 @subsection css-aux-selectors Global Auxiliary Selectors
 
-@subsubsection css-aux-nullify .alpha
+@subsubsection css-aux-alpha .alpha
 
 Sets the opacity of the element to 0.4 by default and nothing else, the amount it sets can be configured in the SASS configuration file.
 
-@subsubsection css-aux-nullify .right
+@subsubsection css-aux-right .right
 
 Floats the elements to the right and nothing else. Use .clear to restore.
 
-@subsubsection css-aux-nullify .left
+@subsubsection css-aux-left .left
 
 Floats the elements to the left and nothing else. Use .clear to restore.
 
-@subsubsection css-aux-nullify .clear
+@subsubsection css-aux-clear .clear
 
 Clears both on the element and nothing else. Always use after floated elements to restore normal flow.
 
-@subsubsection css-aux-nullify .none (legacy .white)
+@subsubsection css-aux-none .none (legacy .white)
 
 Makes the element completely transparent by setting 0 opacity.
 
@@ -297,12 +297,12 @@ Makes the element completely transparent by setting 0 opacity.
 
 Removes a lot of things, this one is already in use by all tables by default.
 
-@libackground: transparent
-@liborder-spacing: 0
-@livertical-align: top
-@lioutline: none
-@liborder: none
-@limargin: 0
-@lipadding: 0
+@li background: transparent
+@li border-spacing: 0
+@li vertical-align: top
+@li outline: none
+@li border: none
+@li margin: 0
+@li padding: 0
 
 */
