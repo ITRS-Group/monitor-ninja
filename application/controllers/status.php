@@ -158,8 +158,7 @@ class Status_Controller extends Authenticated_Controller {
 				$page_links = array(
 					 _('Service status detail') => Router::$controller.'/hostgroup/all?style=detail',
 					 _('Status overview') => Router::$controller.'/hostgroup/all',
-					 _('Status summary') => Router::$controller.'/hostgroup/all?style=summary',
-					 _('Status grid') => Router::$controller.'/hostgroup_grid/all'
+					 _('Status summary') => Router::$controller.'/hostgroup/all?style=summary'
 				);
 			} else {
 				$label_view_for = _('for this host');
