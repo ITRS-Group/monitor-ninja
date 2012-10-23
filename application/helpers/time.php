@@ -40,11 +40,11 @@ class time_Core
 		}
 		if ($hrs) {
 			$timestring .= $hrs.$h;
-			if ($mins && $secs) $timestring .= " ";
+			if ($mins || $secs) $timestring .= " ";
 		}
 		if ($mins) {
 			$timestring .= $mins.$m;
-			if ($mins && $secs) $timestring .= " ";
+			if ($secs) $timestring .= " ";
 		}
 		if ($secs) $timestring .= $secs.$s;
 		return $timestring;
