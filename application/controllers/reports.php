@@ -183,7 +183,7 @@ class Reports_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
-*/
+		
 		$this->reports_model = new Reports_Model($this->options);
 		$this->trends_graph_model = new Trends_graph_Model();
 
