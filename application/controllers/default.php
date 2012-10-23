@@ -155,24 +155,6 @@ class Default_Controller extends Ninja_Controller  {
 	}
 
 	/**
-	*	If called by PHP CLI this will return a username
-	*	of the first user with login access. This is needed
-	* 	for the install script to be able to import authorization
-	* 	data from cgi.cfg
-	*/
-	public function get_a_user()
-	{
-		ob_end_clean();
-		if (PHP_SAPI !== "cli") {
-			url::redirect('default/index');
-		} else {
-			$this->auto_render=false;
-			$user = User_Model::get_user();
-			echo $user->username;
-		}
-	}
-
-	/**
 	*	Used from CLI calls to detect cli setting and
 	* 	possibly default access from config file
 	*/
@@ -191,7 +173,7 @@ class Default_Controller extends Ninja_Controller  {
 	 * Accept a call from cron to look for scheduled reports to send
 	 * @param string $period_str [Daily, Weekly, Monthly, downtime]
 	 */
-	public function cron($period_str=false)
+	public function cron($period_str)
 	{
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
@@ -203,36 +185,26 @@ class Default_Controller extends Ninja_Controller  {
 
 		if (empty($cli_access)) {
 			# CLI access is turned off in config/config.php
-			echo "no cli access\n";
-			return false;
+			fwrite(STDERR, "No cli access\n");
+			exit(1);
 		}
 
-		# figure out path from argv
-		$path = $GLOBALS['argv'][0];
+		$op5_auth = Op5Auth::factory();
+		$op5_auth->force_user(new Op5User_AlwaysAuth());
 
-		$user = false;
-		if ($cli_access == 1) {
-			exec('/usr/bin/php '.$path.' default/get_a_user ', $user, $retval);
-			$user = $user[0];
-		} else {
-			# username is hard coded so let's use this
-			$user = $cli_access;
-		}
-
-		if (empty($user)) {
-			# we failed to detect a valid user so there's no use in continuing
-			echo "Couldn't find valid user, exiting\n";
-			return false;
-		}
-
-		$retval = 0;
 		if ($period_str === 'downtime') {
-			exec('/usr/bin/php '.$path.' recurring_downtime/check_schedules/ '.$user, $return);
-		} else {
-			exec('/usr/bin/php '.$path.' schedule/cron/'.$period_str.' '.$user, $return);
-			$sent_mail = array_sum($return);
-			$retval = !empty($sent_mail) ? 0:1;
+			$controller = new recurring_downtime_Controller();
+			$controller->check_schedules();
+			exit(0);
 		}
-		exit($retval);
+
+		$controller = new Schedule_Controller();
+		try {
+			$controller->cron($period_str);
+		} catch(Exception $e) {
+			fwrite(STDERR, $e->getMessage()."\n");
+			exit(1);
+		}
+		exit(0);
 	}
 }

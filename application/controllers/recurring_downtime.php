@@ -311,20 +311,23 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Check if there's something new to schedule
-	*/
+	 * Check if there's something new to schedule
+	 *
+	 * @param $id int = false
+	 * @throws Exception
+	 * @return void (redirection, die or nothing, pick your poision.....)
+	 */
 	public function check_schedules($id=false)
 	{
 		if (PHP_SAPI !== "cli") {
-			url::redirect(Router::$controller);
+			return url::redirect(Router::$controller);
 		}
 
 		$this->auto_render=false;
 		$res = ScheduleDate_Model::get_schedule_data($id);
-
-		if ($res === false) {
+		if (!$res) {
 			# no saved schedules
-			return false;
+			return;
 		}
 
 		foreach ($res as $row) {
@@ -332,8 +335,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$data['author'] = $row->author;
 
 			$pattern = $this->_create_pattern($data);
-			#echo Kohana::debug($pattern);
-			#echo Kohana::debug($data);
 			$nagios_cmd = $this->_determine_downtimetype(arr::search($data, 'report_type'));
 
 			$startTime = date('Y-m-d H.i:s', time());
@@ -341,7 +342,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$counter = time();
 			$end = strtotime('tomorrow'); # look one day ahead
 			$next_day = strtotime('tomorrow +1 day');
-			#echo Kohana::debug(date('Y-m-d H:i:s', $end));
 
 			$inc = 60*60; // 60= +1 minute; 60*60= +1 hour; 24*60*60=+1 day; 30*24*60*60=+30 days; 365*24*60*60=+1 year
 
@@ -350,16 +350,12 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$date = false;
 			$time = false;
 			if(ScheduleDate_Model::Parse($pattern,$matches) === false) {
-			    die(_("malformed pattern"));
+				throw new Exception (_("Malformed pattern"));
 			}
-			#echo "renewing pattern: [".$matches[2][0].']-['.$matches[4][0].']-['.$matches[6][0].'] ['.$matches[8][0].']:['.$matches[10][0]."]<br />";
-			#echo "simulating from: [".date("Y-m-d D H:i:s",strtotime($startTime))."]<br />";
 
 			$sd = new ScheduleDate_Model();
 
 			$date = $sd->GetFirstRun($pattern,$startTime);
-			#echo "first run [".date("Y-m-d D H:i:s",$date)."]<br />";
-			#echo "last run [".date("Y-m-d D H:i:s",$sd->GetLastRun())."]<br /><br />";
 			unset($sd);
 
 			$date = date("Y-m-d H:i:s",$date);
@@ -368,27 +364,19 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					continue;
 				}
 				// date is expired, check if it can be renewed
-				#echo "checking [".date("Y-m-d D H:i:s",$counter)."] <br />";
-				#echo "EXPIRED [".date("Y-m-d D H:i:s",strtotime($date))." ] <br />";
 				$sd = new ScheduleDate_Model();
 				$time = $sd->Renew($pattern, $date, $counter);
 				if($time !== false) {    // renewed to next valid date
 					$date = $sd->date;   // $date = date("Y-m-d H:i:s",$time);
-					#echo "renewed date to [".date("Y-m-d D H:i:s",$time)."] <br />"; /* ."pattern [$sd->pattern]";*/
 				} else {                 // reached end of date interval, quit
-					#  echo "END\n";
 					break;
 				}
 				unset($sd);
 			}
 
 			if ($time !== false && $time < $next_day) {
-				#echo 'Should renew schedule ID '.$row->id.' ('.$row->downtime_type.') to '.$date."\n";
 				ScheduleDate_Model::add_downtime($data, $nagios_cmd, $time);
-			} else {
-				#echo "Nothing to schedule<br />";
 			}
-			#echo "<hr />";
 		}
 	}
 

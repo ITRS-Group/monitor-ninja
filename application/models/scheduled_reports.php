@@ -369,18 +369,18 @@ class Scheduled_reports_Model extends Model
 	 * period (daily/weekly/monthly)
 	 *
 	 * @param $period_str string: { daily, weekly, monthly }
-	 * @return Array of schedules for the specific period type
+	 * @return array
 	 */
-	public function get_period_schedules($period_str=false)
+	public static function get_period_schedules($period_str)
 	{
 		$period_str = trim(ucfirst($period_str));
 		$db = Database::instance();
 
-		$sql = "SELECT rt.identifier, r.id FROM scheduled_report_types rt " .
-			"INNER JOIN scheduled_reports r ON rt.id=r.report_type_id " .
-			"INNER JOIN scheduled_report_periods p ON r.period_id=p.id ".
-			"WHERE p.periodname=".$db->escape($period_str);
+		$sql = "SELECT r.id FROM scheduled_report_types rt
+			INNER JOIN scheduled_reports r ON rt.id=r.report_type_id
+			INNER JOIN scheduled_report_periods p ON r.period_id=p.id
+			WHERE p.periodname=".$db->escape($period_str);
 		$res = $db->query($sql);
-		return count($res) != 0 ? $res : false;
+		return $res;
 	}
 }

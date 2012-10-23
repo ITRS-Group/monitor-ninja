@@ -483,7 +483,11 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
-	 *	Fetch specific schedule from db
+	 * Fetch row(s) from db
+	 *
+	 * @param $id int = false
+	 * @param $type string = false
+	 * @return array
 	 */
 	public function get_schedule_data($id = false, $type=false)
 	{
@@ -502,8 +506,7 @@ class ScheduleDate_Model extends Model
 		}
 
 		$res = $db->query($sql);
-
-		return count($res) > 0 ? $res : false;
+		return $res;
 	}
 
 	/**

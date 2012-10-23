@@ -177,6 +177,12 @@ class Schedule_Controller extends Authenticated_Controller
 		return json::ok(array('id' => $ok));
 	}
 
+	/**
+	 * Used in (at least) both CLI and XHR environments. That means you should be
+	 * paranoid about where to output.
+	 *
+	 * @param $schedule_id int
+	 */
 	public function send_now($schedule_id) {
 		$this->auto_render = false;
 		$type = Scheduled_reports_Model::get_typeof_report($schedule_id);
@@ -222,6 +228,9 @@ class Schedule_Controller extends Authenticated_Controller
 		}
 		if ($opt_obj['recipients']) {
 			Send_report_Model::send($out, $filename, $opt_obj['output_format'], $opt_obj['recipients']);
+			if(PHP_SAPI == 'cli') {
+				echo "Mailing schedule id $schedule_id\n";
+			}
 			$mail = true;
 		}
 		if (request::is_ajax()) {
@@ -241,26 +250,24 @@ class Schedule_Controller extends Authenticated_Controller
 
 	/**
 	 * Receive call from cron to check for scheduled reports
+	 *
+	 * @param $period_str string
 	 */
-	public function cron($period_str=false)
+	public function cron($period_str)
 	{
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
-		if (!$period_str)
-			die("Missing period string");
 		$this->auto_render=false;
 
-		$res = Scheduled_reports_Model::get_period_schedules($period_str);
-		if ($res === false) {
-			return false;
-		}
+		$schedules = Scheduled_reports_Model::get_period_schedules($period_str);
 
-		$return = false;
-		foreach ($res as $row) {
+		if(!$schedules) {
+			return;
+		}
+		foreach ($schedules as $row) {
 			$this->send_now($row->id);
 		}
-		return $return;
 	}
 
 	/**
