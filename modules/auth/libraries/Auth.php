@@ -62,6 +62,9 @@ class Auth_Core {
 	 */
 	public function logged_in($role = NULL)
 	{
+		if( $role !== NULL ) {
+			return false;
+		}
 		return $this->op5auth->logged_in();
 	}
 
