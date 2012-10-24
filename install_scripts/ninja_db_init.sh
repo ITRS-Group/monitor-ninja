@@ -111,6 +111,9 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" 2>/dev/null
 		db_ver=2
 		;;
+	4)
+		php index.php cli/upgrade_auth
+		# fallthrough
 	*)
 		new_ver=`expr $db_ver + 1`
 		echo "Upgrading ninja db from v${db_ver} to v${new_ver}"

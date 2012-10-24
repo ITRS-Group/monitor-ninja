@@ -231,6 +231,9 @@ class Cli_Controller extends Authenticated_Controller {
 		Ninja_widget_Model::rename_friendly_widget($params['from'], $params['to']);
 	}
 
+	/**
+	 * Migrate avail < 10 = ninja < 2.1 = monitor < 6.0 where the meaning of filter is inverted
+	 */
 	public function upgrade_excluded()
 	{
 		ob_end_clean();
@@ -294,5 +297,54 @@ class Cli_Controller extends Authenticated_Controller {
 
 			Saved_reports_Model::edit_report_info('avail', $report->id, $opts);
 		}
+	}
+
+	/**
+	 * Migrate auth for ninja < 2.1 = monitor < 6.0 to op5lib backed auth
+	 */
+	public function upgrade_auth()
+	{
+		$cfg = new Op5Config();
+		$users = $cfg->getConfig('auth_users');
+		$groups = $cfg->getConfig('auth_groups');
+		$db = Database::instance();
+		$res = $db->query('SELECT username, realname, email, password, password_algo, system_information, configuration_information,
+			system_commands, all_services, all_hosts, all_service_commands, all_host_commands
+			FROM users LEFT JOIN ninja_user_authorization ON users.id = ninja_user_authorization.user_id');
+		foreach ($res->result(false) as $row) {
+			$username = $row['username'];
+			if (isset($users[$username]))
+				$user = $users[$username];
+			else
+				$user = array();
+
+			foreach (array('username', 'realname', 'email', 'password', 'password_algo') as $param) {
+				if (!isset($user[$param]))
+					$user[$param] = $row[$param];
+				unset($row[$param]);
+			}
+			$levels = array_filter(array_keys($row), function($arg) use ($row) {return (bool)$row[$arg];});
+			if (empty($levels)) {
+				// no levels, no group, no action
+			} else if (count($levels) === count($row)) {
+				// all levels, superuser
+				$user['groups'] = array('op5_admins');
+			} else {
+				if (isset($groups['user_'.$username]))
+					$group = $groups['user_'.$username];
+				else
+					$group = array();
+				$group = array_merge($group, Op5Authorization::nagios_rights_to_op5auth($levels));
+				$groups['user_'.$username] = $group;
+				if (!isset($user['groups']))
+					$user['groups'] = array();
+				$user['groups'][] = 'user_'.$username;
+				$user['groups'] = array_unique($user['groups']);
+			}
+
+			$users[$username] = $user;
+		}
+		$cfg->setConfig('auth_users', $users);
+		$cfg->setConfig('auth_groups', $groups);
 	}
 }
