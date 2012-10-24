@@ -9,8 +9,8 @@
 		<strong><?php echo _('Services actively checked') ?></strong>
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Time frame') ?></th>
-				<th class="headerNone"><?php echo _('Services checked') ?></th>
+				<th style="width: 40%"><?php echo _('Time frame') ?></th>
+				<th><?php echo _('Services checked') ?></th>
 			</tr>
 			<tr class="even">
 				<td>&le; 1 <?php echo _('minute') ?></td>
@@ -33,13 +33,13 @@
 				<td><?php echo $svc_active_start ?> (<?php echo $svc_active_start_perc ?> %)</td>
 			</tr>
 		</table>
-		<br /><br />
+		<br />
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Metric') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Min.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Max.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Average') ?></th>
+				<th style="width: 40%"><?php echo _('Metric') ?></th>
+				<th style="width: 20%"><?php echo _('Min.') ?></th>
+				<th style="width: 20%"><?php echo _('Max.') ?></th>
+				<th style="width: 20%"><?php echo _('Average') ?></th>
 			</tr>
 			<tr class="even">
 				<td><?php echo _('Check execution Time') ?></td>
@@ -61,13 +61,13 @@
 			</tr>
 		</table>
 	</div>
-
+	<br />
 	<div>
 		<strong><?php echo _('Services passively checked') ?></strong>
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Time frame') ?></th>
-				<th class="headerNone"><?php echo _('Services checked') ?></th>
+				<th style="width: 40%"><?php echo _('Time frame') ?></th>
+				<th><?php echo _('Services checked') ?></th>
 			</tr>
 			<tr class="even">
 				<td>&le; 1 <?php echo _('minute') ?></td>
@@ -94,10 +94,10 @@
 		<br />
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Metric') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Min.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Max.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Average') ?></th>
+				<th style="width: 40%"><?php echo _('Metric') ?></th>
+				<th style="width: 20%"><?php echo _('Min.') ?></th>
+				<th style="width: 20%"><?php echo _('Max.') ?></th>
+				<th style="width: 20%"><?php echo _('Average') ?></th>
 			</tr>
 			<tr class="even">
 				<td><?php echo _('Percent state change') ?>&nbsp;&nbsp;</td>
@@ -114,8 +114,8 @@
 		<strong><?php echo _('Hosts actively checked') ?></strong>
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Time frame') ?></th>
-				<th class="headerNone"><?php echo _('Hosts checked') ?></th>
+				<th style="width: 40%"><?php echo _('Time frame') ?></th>
+				<th><?php echo _('Hosts checked') ?></th>
 			</tr>
 			<tr class="even">
 				<td>&le; 1 <?php echo _('minute') ?></td>
@@ -141,10 +141,10 @@
 		<br />
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Metric') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Min.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Max.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Average') ?></th>
+				<th style="width: 40%"><?php echo _('Metric') ?></th>
+				<th style="width: 20%"><?php echo _('Min.') ?></th>
+				<th style="width: 20%"><?php echo _('Max.') ?></th>
+				<th style="width: 20%"><?php echo _('Average') ?></th>
 			</tr>
 			<tr class="even">
 				<td><?php echo _('Check execution Time') ?></td>
@@ -166,13 +166,13 @@
 			</tr>
 		</table>
 	</div>
-
+	<br />
 	<div>
 		<strong><?php echo _('Hosts passively checked') ?></strong>
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Time frame') ?></th>
-				<th class="headerNone"><?php echo _('Hosts checked') ?></th>
+				<th style="width: 40%"><?php echo _('Time frame') ?></th>
+				<th><?php echo _('Hosts checked') ?></th>
 			</tr>
 			<tr class="even">
 				<td>&le; 1 <?php echo _('minute') ?></td>
@@ -198,10 +198,10 @@
 		<br />
 		<table>
 			<tr>
-				<th style="width: 40%" class="headerNone"><?php echo _('Metric') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Min.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Max.') ?></th>
-				<th style="width: 20%" class="headerNone"><?php echo _('Average') ?></th>
+				<th style="width: 40%"><?php echo _('Metric') ?></th>
+				<th style="width: 20%"><?php echo _('Min.') ?></th>
+				<th style="width: 20%"><?php echo _('Max.') ?></th>
+				<th style="width: 20%"><?php echo _('Average') ?></th>
 			</tr>
 			<tr class="even">
 				<td><?php echo _('Percent state change') ?>&nbsp;&nbsp;</td>
@@ -217,9 +217,9 @@
 		<strong><?php echo _('Check statistics') ?></strong>
 		<table style="margin-bottom: 15px">
 			<tr>
-				<th style="width: 50%" class="headerNone"><?php echo _('Type') ?></th>
-				<th style="width: 25%" class="headerNone"><?php echo _('Total') ?></th>
-				<th style="width: 25%" class="headerNone"><?php echo _('Rate') ?></th>
+				<th style="width: 50%"><?php echo _('Type') ?></th>
+				<th style="width: 25%"><?php echo _('Total') ?></th>
+				<th style="width: 25%"><?php echo _('Rate') ?></th>
 			</tr>
 			<tr class="even">
 				<td><?php echo _('Servicechecks') ?></td>
