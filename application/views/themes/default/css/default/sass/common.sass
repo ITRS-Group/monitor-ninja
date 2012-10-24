@@ -148,9 +148,7 @@ table
 		background: none
 
 		&:hover
-			td
-				@include background(linear-gradient(top, $gradient-dark-lo, $gradient-dark-hi))
-				@include filter-gradient($gradient-dark-lo, $gradient-dark-hi, vertical)
+			outline: 1px solid $border-color-dark
 
 	tr.odd
 		background: $table-odd-color
