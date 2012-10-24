@@ -45,10 +45,10 @@ class Change_Password_Controller extends Authenticated_Controller {
 			if ($auth->verify_password($user, $current_password))
 			{
 				if( $auth->update_password($user, $new_password) ) {
-					$this->template->content->status_msg = $this->translate->_('The password has been changed.');
+					$this->template->content->status_msg = _('The password has been changed.');
 				}
 				else {
-					$this->template->content->status_msg = $this->translate->_('Authentication backend reported that password could not be updated.');
+					$this->template->content->status_msg = _('Authentication backend reported that password could not be updated.');
 				}
 			}
 			else
