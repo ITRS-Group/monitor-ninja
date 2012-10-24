@@ -304,7 +304,7 @@ class Cli_Controller extends Authenticated_Controller {
 	 */
 	public function upgrade_auth()
 	{
-		$cfg = new Op5Config();
+		$cfg = Op5Config::instance();
 		$users = $cfg->getConfig('auth_users');
 		$groups = $cfg->getConfig('auth_groups');
 		$db = Database::instance();
@@ -344,6 +344,10 @@ class Cli_Controller extends Authenticated_Controller {
 
 			$users[$username] = $user;
 		}
+		$now = time();
+		@exec('cp /etc/op5/auth_users.yml /etc/op5/auth_users_' . $now . '.yml');
+		@exec('cp /etc/op5/auth_groups.yml /etc/op5/auth_groups_' . $now . '.yml');
+
 		$cfg->setConfig('auth_users', $users);
 		$cfg->setConfig('auth_groups', $groups);
 	}
