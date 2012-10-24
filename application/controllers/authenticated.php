@@ -80,14 +80,4 @@ class Authenticated_Controller extends Ninja_Controller {
 		}
 		$this->template->current_skin = $current_skin;
 	}
-
-	public function is_authenticated()
-	{
-		return !Auth::instance()->logged_in();
-	}
-
-	public function to_template(array $content)
-	{
-		$this->output = array_merge($content, $this->output);
-	}
 }
