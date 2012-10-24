@@ -13,6 +13,11 @@ application/widgets/cloudinfo
 *.swp
 modules/op5reports
 modules/reports
-application/views/themes/default/dojo/.sass-cache
 *.dojod
-application/views/themes/default/css/default/.sass-cache
+.sass-cache
+application/views/themes/default/css/*/*.css
+application/views/themes/default/icons/x*-*.png
+application/views/themes/default/icons/menu-*.png
+!application/views/themes/default/css/default/ie7.css
+!application/views/themes/default/css/default/jquery-ui-custom.css
+!application/views/themes/default/css/default/reports.css
