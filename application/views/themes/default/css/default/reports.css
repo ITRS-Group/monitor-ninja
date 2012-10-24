@@ -1,14 +1,12 @@
 /* progress bar ****************************************************************/
 
 #progress{
-	float: right;
-	margin-right: 260px;
-	margin-top: -42px; /* looks ok in firefox, but not in chrome */
+	margin-left: 40%;
 }
 
 #progress em,
 #progress img {
-	float: left;
+	
 }
 #progress em {
 	/*display: block;*/

@@ -76,7 +76,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 							<option value="services"><?php echo _('Services') ?></option>
 						</select>
 						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo _('Select') ?>" />
-						<div id="progress"></div>
 					</td>
 				</tr>
 				<tr id="filter_row">
@@ -84,6 +83,11 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('filter').' '._('Filter') ?><br />
 						<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
 						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo _('Clear') ?>">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div id="progress"></div>
 					</td>
 				</tr>
 				<tr id="hostgroup_row">
