@@ -98,7 +98,7 @@
 	</div>
 
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
-		<?php echo _('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
+		<?php echo _('Welcome'); ?> <?php echo user::session('realname') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
 		<?php
 		$query = arr::search($_REQUEST, 'query');
 		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
