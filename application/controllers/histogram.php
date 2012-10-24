@@ -105,10 +105,10 @@ class Histogram_Controller extends Base_reports_Controller
 				$hostname = $this->options['host_name'];
 				$title .= _('Host(s): ');
 				$this->object_varname = 'host_name';
-				if (is_array($options['host_name'])) {
-					$objects = $options['host_name'];
+				if (is_array($this->options['host_name'])) {
+					$objects = $this->options['host_name'];
 				} else {
-					$objects[] = $options['host_name'];
+					$objects[] = $this->options['host_name'];
 				}
 				break;
 			case 'services':
