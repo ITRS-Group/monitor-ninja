@@ -111,7 +111,6 @@ table
 
 	tbody
 		@extend .nullify
-		//border-top: 1px solid $border-color-light
 
 	.dark
 		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
@@ -311,6 +310,9 @@ input
 		width: auto
 
 	img
+		margin: 2px 0 2px 8px
+
+	input[type="image"]
 		margin: 2px 0 2px 8px
 
 #version_info
