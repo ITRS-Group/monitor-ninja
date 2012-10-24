@@ -13,7 +13,7 @@
 </div><br />
 	<table id="host_table" style="margin-top: 0px;">
 		<tr>
-			<th class="headerNone"><?php echo _('&nbsp;'); ?></th>
+			<th><?php echo _('&nbsp;'); ?></th>
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
@@ -21,7 +21,7 @@
 				foreach($header_links as $row) {
 					$n++;
 					if (isset($row['url_desc'])) {
-						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
+						echo '<th class="'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
 							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
 						echo $row['title'];
 						echo '</th>';

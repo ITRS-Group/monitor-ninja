@@ -6,7 +6,7 @@
 	<div id="scheduled_<?php echo $report_type ?>_reports">
 		<h2><?php echo _($report_type_label.' Reports') ?></h2>
 		<table id="<?php echo $report_type ?>_scheduled_reports_table">
-			<caption><?php echo _('You scheduled '.$report_type_label.' Reports') ?></caption>
+			<caption><?php echo _('Your scheduled '.$report_type_label.' Reports') ?></caption>
 			<thead id="<?php echo $report_type ?>_headers">
 				<tr class="setup">
 					<th><?php echo _('Interval') ?></th>
