@@ -721,7 +721,16 @@ class Status_Controller extends Authenticated_Controller {
 
 		if(!count($all_groups)) {
 			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = sprintf(_("The requested group ('%s') wasn't found"), $group);
+			if( $group == 'all' ) {
+				if( $grouptype == 'service' ) {
+					$this->template->content->error_message = _("No service groups found");
+				} else {
+					$this->template->content->error_message = _("No host groups found");
+				}
+			}
+			else {
+				$this->template->content->error_message = sprintf(_("The requested group ('%s') wasn't found"), $group);
+			}
 			return;
 		}
 		$content->group_details = $all_groups;
