@@ -1,9 +1,5 @@
 <?php
-if (isset($user_auth)) {
-	$auth = $user_auth;
-} else {
-	$auth = Nagios_auth_Model::instance();
-}
+$auth = Auth::instance();
 
 # translate menu labels
 $menu_items = false;
@@ -21,17 +17,10 @@ $menu_items['host_detail'] = _('Host detail');
 $menu_items['service_detail'] = _('Service detail');
 
 $menu_items['hostgroup_summary'] = _('Hostgroup summary');
-//$menu_items['hostgroup_overview'] = _('Hostgroup overview');
-//$menu_items['hostgroup_grid'] = _('Hostgroup grid');
 
 $menu_items['servicegroup_summary'] = _('Servicegroup summary');
-//$menu_items['servicegroup_overview'] = _('Servicegroup overview');
-//$menu_items['servicegroup_grid'] = _('Servicegroup grid');
 
 $menu_items['network_outages'] = _('Network outages');
-//$menu_items['host_problems'] = _('Host problems');
-//$menu_items['service_problems'] = _('Service problems');
-//$menu_items['unhandled_problems'] = _('Unhandled problems');
 
 $menu_items['comments'] = _('Comments');
 $menu_items['schedule_downtime'] = _('Schedule downtime');
@@ -59,7 +48,7 @@ if (Kohana::config('config.cacti_path')) {
 	$menu_items['statistics'] = _('Statistics');
 }
 
-if ($auth->authorized_for_configuration_information && Kohana::config('config.nacoma_path') !== false) {
+if ($auth->authorized_for('configuration_information') && Kohana::config('config.nacoma_path') !== false) {
 	$menu_items['configure'] = _('Configure');
 }
 
@@ -80,8 +69,6 @@ $menu = array(
 		'availability', 'sla', 'schedule_reports', 'statistics'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
 );
-
-$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
 $section_reporting = array();
@@ -110,20 +97,9 @@ $menu_base = array(
 		$menu_items['tac'] 						=> array('/tac', 'tac',0),
 		$menu_items['host_detail'] 				=> array('/status/host/all', 'host',0),
 		$menu_items['service_detail'] 			=> array('/status/service/all', 'service',0),
-		//'hr1' 														=> array('', ''),
 		$menu_items['hostgroup_summary']		=> array('/status/hostgroup_summary', 'hostgroupsummary',0),
-//		$menu_items['hostgroup_overview'] 		=> array('/status/hostgroup', 'hostgroup',0),
-//		$menu_items['hostgroup_grid']			=> array('/status/hostgroup_grid', 'hostgroupgrid',0),
-		//'hr2'														=> array('', ''),
 		$menu_items['servicegroup_summary'] 	=> array('/status/servicegroup_summary', 'servicegroupsummary',0),
-//		$menu_items['servicegroup_overview'] 	=> array('/status/servicegroup', 'servicegroup',0),
-//		$menu_items['servicegroup_grid'] 		=> array('/status/servicegroup_grid', 'servicegroupgrid',0),
-		//'hr3' 														=> array('', ''),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
-		//$menu_items['host_problems'] 			=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),
-		//$menu_items['service_problems'] 		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems',0),
-		//$menu_items['unhandled_problems']  		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems',0),
-		//'hr5' 														=> array('', ''),
 		$menu_items['comments'] 				=> array('/extinfo/show_comments', 'comments',0),
 		$menu_items['schedule_downtime']		=> array('/extinfo/scheduled_downtime', 'scheduledowntime',0),
 
@@ -170,19 +146,6 @@ if (Kohana::config('config.site_domain') != '/monitor/') {
 	unset($menu_base[$menu_items['section_about']][$menu_items['support']]);
 	unset($menu_items['support']);
 	unset($menu['section_about']['support']);
-} else {
-	# remove community links
-	/*unset($menu_base[$menu_items['section_about']][$menu_items['project_documentation']]);
-	unset($menu_items['project_documentation']);
-	unset($menu['section_about']['project_documentation']);
-
-	unset($menu_base[$menu_items['ninja_project']]);
-	unset($menu_items['ninja_project']);
-	unset($menu['section_about']['ninja_project']);
-
-	unset($menu_base[$menu_items['merlin_project']]);
-	unset($menu_items['merlin_project']);
-	unset($menu['section_about']['merlin_project']);*/
 }
 
 # master menu section

@@ -9,7 +9,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#editmenu_username').change(function() {
+	$('#usergroup').change(function() {
 		if ($(this).val() == '') return;
 		$("#editmenu_form").trigger('submit');
 	});

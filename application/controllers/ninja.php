@@ -130,7 +130,8 @@ class Ninja_Controller extends Template_Controller {
 			$this->_addons();
 
 			# create the user menu
-			$this->template->links = $this->create_menu();
+			$menu = new Menu_Model();
+			$this->template->links = $menu->create($this->theme_path);
 
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
@@ -162,52 +163,6 @@ class Ninja_Controller extends Template_Controller {
 			if (strstr($params, '?')) {
 				$params = explode('?', $params);
 				parse_str($params[1], $_REQUEST);
-			}
-		}
-	}
-
-
-	/**
-	*	Build menu structure and possibly remove some items
-	*/
-	public function create_menu()
-	{
-		include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
-		$removed_items = config::get('removed_menu_items', '*');
-		if (!empty($removed_items)) {
-			$remove_items = unserialize($removed_items);
-			$this->remove_menu_items($menu_base, $menu_items, $remove_items);
-		}
-		return $menu_base;
-	}
-
-	/**
-	*	Remove menu item by index
-	* 	Both section string ['about', 'monitoring', etc]
-	* 	and item string ['portal', 'manual', 'support', etc] are required.
-	* 	As a consequence, all menu items has to be explicitly removed before removing the section
-	*/
-	public function remove_menu_items(&$menu_links=false, &$menu_items=false, $section_str=false,
-		$item_str=false)
-	{
-		if (empty($menu_links) || empty($menu_items) || empty($section_str)) {
-			return false;
-		}
-
-		if (is_array($section_str)) {
-			# we have to make recursive calls
-			foreach ($section_str as $section => $items) {
-				foreach ($items as $item) {
-					$this->remove_menu_items($menu_links, $menu_items, $section, $item);
-				}
-			}
-		} else {
-			if (empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]])
-				&& empty($menu_links[$menu_items['section_'.$section_str]])) {
-				# remove the section
-				unset($menu_links[$menu_items['section_'.$section_str]]);
-			} elseif (!empty($item_str) && isset($menu_items['section_'.$section_str]) && isset($menu_links[$menu_items['section_'.$section_str]]) && isset($menu_items[$item_str]) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
-				unset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]]);
 			}
 		}
 	}

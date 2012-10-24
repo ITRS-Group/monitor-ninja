@@ -28,6 +28,21 @@ class Auth_Core {
 	}
 
 	/**
+	 * @param $rights_to_exclude array
+	 * @return array
+	 */
+	public static function get_groups_without_rights(array $rights_to_exclude)
+	{
+		$groups = Op5Config::instance()->getConfig('auth_groups');
+		foreach($groups as $group => $rights) {
+			if(array_intersect($rights_to_exclude, $rights)) {
+				unset($groups[$group]);
+			}
+		}
+		return $groups;
+	}
+
+	/**
 	 * Return a static instance of Auth.
 	 *
 	 * @return  object

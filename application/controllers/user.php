@@ -294,8 +294,7 @@ class User_Controller extends Authenticated_Controller {
 	* 	and item string ['portal', 'manual', 'support', etc] are required.
 	* 	As a consequence, all menu items has to be explicitly removed before removing the section
 	*/
-	public function menu_remove(&$menu_links=false, &$menu_items=false, $section_str=false, $username=false,
-		$item_str=false, $save=true)
+	public function menu_remove(&$menu_links=false, &$menu_items=false, $section_str=false, $group=false, $item_str=false, $save=true)
 	{
 		if (empty($menu_links) || empty($menu_items) || empty($section_str)) {
 			return false;
@@ -303,16 +302,16 @@ class User_Controller extends Authenticated_Controller {
 
 		if (is_array($section_str)) {
 			if ($save === true) {
-				# call from menu_edit - save all in one call as serialized array
-				Ninja_setting_Model::save_page_setting('removed_menu_items', '*', serialize($section_str), $username);
-				#config::get('removed_menu_items', '*', true);
-				#Session::instance()->set('removed_menu_items.*', serialize($section_str));
+				$config = Op5Config::instance();
+				$ninja_menu = $config->getConfig('ninja_menu');
+				$ninja_menu[$group] = $section_str;
+				$config->setConfig('ninja_menu', $ninja_menu);
 			}
 
 			# we have to make recursive calls
 			foreach ($section_str as $section => $items) {
 				foreach ($items as $item) {
-					$this->menu_remove($menu_links, $menu_items, $section, $item, $username);
+					$this->menu_remove($menu_links, $menu_items, $section, $item, $group);
 				}
 			}
 		} else {
@@ -326,28 +325,6 @@ class User_Controller extends Authenticated_Controller {
 		}
 	}
 
-	/**
-	* Add menu item
-	* $link_info should be an array containing the link info
-	*/
-	public function menu_add(&$menu_links=false, &$menu_items=false, $section_str=false,
-		$item_str=false, $link_info=false)
-	{
-		# check if current user is an admin
-		$is_admin = Auth::instance()->authorized_for('host_view_all');
-
-		if (!$is_admin
-			|| empty($menu_links)
-			|| empty($menu_items)
-			|| empty($section_str)
-			|| empty($link_info)
-			|| !isset($menu_items['section_'.$section_str])
-			|| !is_array($link_info)) {
-			return false;
-		}
-
-		$menu_links[$menu_items['section_'.$section_str]][$item_str] = $link_info;
-	}
 
 	/**
 	*	Edit menu items
@@ -355,7 +332,16 @@ class User_Controller extends Authenticated_Controller {
 	*/
 	public function menu_edit()
 	{
-		$selected_user = $this->input->post('username', false);
+		if(!Auth::instance()->authorized_for('access_rights')) {
+			// @todo add "you're not authed" flash message
+			//_("You don't have access to this page. Only visible to administrators.");
+			return url::redirect(Router::$controller.'/index');
+		}
+		$groups = Auth::get_groups_without_rights(array('access_rights'));
+		$selected_group = $this->input->get('usergroup', false);
+		if($selected_group && !isset($groups[$selected_group])) {
+			return url::redirect(Router::$controller.'/menu_edit');
+		}
 		$this->template->disable_refresh = true;
 
 		$this->template->content = $this->add_view('user/edit_menu');
@@ -364,47 +350,24 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 		$content = $this->template->content;
 
-		# check if current user is an admin
-		$is_admin = Auth::instance()->authorized_for('host_view_all');
-		$content->is_admin = $is_admin;
-
-		$content->noadmin_msg = _("You don't have access to this page. Only visible to administrators.");
 		$content->select_user_message = _("Select the user below to edit the menu for.");
 		$content->description = _("Check the menu items that the should not be visible to the selected user.");
 
-		# fetch all users that aren't admin (host_view_all)
-
-		$empty = array('' => _('Select user'));
-		// @todo: list all groups that does *not* have the access_rights flag set
-		$limited_users = User_Model::get_limited_users();
-		if (!empty($limited_users)) {
-			$limited_users = array_merge($empty, $limited_users);
-		}
-		$content->limited_users = $limited_users;
+		$content->groups = $groups;
 
 		$remove_items = false;
 		$all_items = false;
-		if (!empty($selected_user)) {
-			#
-			#	We need to fetch auth info for the selcted user to
-			#	be able to get correct menu items
-			#	This could probably be done by fetch ninja_user_authorization
-			# 	data for the selected user and assign this to a $auth object
-			#	before including the menu
-			#
-
-			$user_auth = $this->_convert_user_auth($selected_user);
-
+		if ($selected_group) {
 			include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
-			$removed_items = Ninja_setting_Model::fetch_user_page_setting('removed_menu_items', '*', $selected_user);
-			if ($removed_items !== false) {
-				$remove_items = unserialize($removed_items->setting);
+			$config = Op5Config::instance()->getConfig('ninja_menu');
+			if(isset($config[$selected_group])) {
+				$remove_items = $config[$selected_group];
 			}
 
+			// disallowing manually giving someone the right to access nacoma,
+			// it's really controlled by system_information (an access right)
+			unset($menu_base['Configuration']['Configure'], $menu_items['configure']);
 			$all_items = $menu_base;
-			if (!empty($remove_items)) {
-				$this->menu_remove($menu_base, $menu_items, $remove_items, $selected_user, false, false);
-			}
 
 			$content->menu_base = $menu_base;
 			$content->menu_items = $menu_items;
@@ -412,7 +375,7 @@ class User_Controller extends Authenticated_Controller {
 			$content->menu = $menu;
 		}
 
-		$content->selected_user = $selected_user;
+		$content->selected_group = $selected_group;
 
 		$content->remove_items = $remove_items;
 		$content->all_items = $all_items;
@@ -420,51 +383,6 @@ class User_Controller extends Authenticated_Controller {
 		# protected menu items
 		$untouchable_items = array('my_account');
 		$content->untouchable_items = $untouchable_items;
-
-		$content->title = _('Edit menu');
-	}
-
-	/**
-	*	Convert info from ninja_user_authentication table into
-	*	an object that can hold the same info like in nagios_auth_model
-	*/
-	public function _convert_user_auth($username=false)
-	{
-		$user_access = Ninja_user_authorization_Model::get_auth_data($username);
-
-		$fields = array(
-			'authorized_for_all_hosts' => 'view_hosts_root',
-			'authorized_for_all_services' => 'view_services_root',
-			'authorized_for_system_information' => 'authorized_for_system_information',
-			'authorized_for_system_commands' => 'authorized_for_system_commands',
-			'authorized_for_all_service_commands' => 'authorized_for_all_service_commands',
-			'authorized_for_all_host_commands' => 'command_hosts_root',
-			'authorized_for_all_service_commands' => 'command_services_root',
-			'authorized_for_configuration_information' => 'authorized_for_configuration_information'
-		);
-
-		foreach ($fields as $f => $internal) {
-			if ($user_access && array_key_exists($f, $user_access)) {
-				$access[$internal] = true;
-			} else {
-				$access[$internal] = false;
-			}
-		}
-
-		# special cased
-		if ($user_access && in_array('authorized_for_configuration_information', $user_access)) {
-			$access['authorized_for_configuration_information'] = true;
-		}
-
-		# according to http://nagios.sourceforge.net/docs/3_0/configcgi.html
-		# regarding authorized_for_all_host_commands
-		# "Users in this list are also automatically authorized to
-		#  issue commands for all services."
-		if ($access['command_hosts_root']) {
-			$access['command_services_root'] = true;
-		}
-
-		return (object)$access;
 	}
 
 	/**
@@ -473,27 +391,31 @@ class User_Controller extends Authenticated_Controller {
 	*/
 	public function menu_update()
 	{
-		# check if current user is an admin
-		# and prevent access if not
-		$is_admin = Auth::instance()->authorized_for('host_view_all');
-		if (!$is_admin) {
-			url::redirect(Router::$controller.'/index');
+		if(!Auth::instance()->authorized_for('access_rights')) {
+			// @todo add "you're not authed" flash message
+			//_("You don't have access to this page. Only visible to administrators.");
+			return url::redirect(Router::$controller.'/index');
 		}
-		#die(Kohana::debug($_REQUEST));
-		$username = $this->input->post('username', false);
+		$group = $this->input->post('group', false);
 		$remove_items = $this->input->post('remove_items', false);
+		if($_SERVER['REQUEST_METHOD'] != 'POST' || !$group) {
+			return url::redirect(Router::$controller.'/menu_edit');
+		}
 
 		include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
 
 		$all_items = $menu_base;
-		if (!empty($remove_items) && !empty($username)) {
-			$this->menu_remove($menu_base, $menu_items, $remove_items, $username);
+		if ($remove_items) {
+			$this->menu_remove($menu_base, $menu_items, $remove_items, $group);
 		} else {
-			# nothing to remove - set removed setting as false
-			Ninja_setting_Model::save_page_setting('removed_menu_items', '*', false, $username);
-			#config::get('removed_menu_items', '*', true, true);
+			$config = Op5Config::instance();
+			$ninja_menu = $config->getConfig('ninja_menu');
+			if(isset($ninja_menu[$group])) {
+				unset($ninja_menu[$group]);
+			}
+			$config->setConfig('ninja_menu', $ninja_menu);
 		}
 
-		url::redirect(Router::$controller.'/menu_edit');
+		return url::redirect(Router::$controller."/menu_edit?usergroup=$group");
 	}
 }

@@ -34,7 +34,6 @@
 			$shortcuts['external'][] = $ext_shortcuts[$i];
 		}	
 	}
-
 ?>
 
 <div class="header" id="header">
@@ -45,30 +44,24 @@
 		</div>
 
 		<ul>
-
 			<!-- Classes are used by javascript navigation -->
 
-			<li class="supermenu-button" id="about-button" title="About">
-				<span class="icon-32 x32-info"></span>
+			<?php foreach($links as $section => $sections_links) {
+				if(empty($sections_links) && strtolower($section) != "about") {
+					// we want to whitelist the 'about' link since the ninja/nagios version is displayed there
+					continue;
+				} ?>
+			<li class="supermenu-button" id="<?php echo strtolower($section); ?>-button" title="<?php echo $section; ?>">
+				<span class="icon-32 x32-<?php echo strtolower($section); ?>"></span>
 			</li>
-			<li class="supermenu-button" id="monitoring-button" title="Monitoring">
-				<span class="icon-32 x32-monitoring"></span>
-			</li>
-			<li class="supermenu-button" id="reporting-button" title="Reporting">
-				<span class="icon-32 x32-reporting"></span>
-			</li>
-			<li class="supermenu-button" id="configuration-button" title="Configuration">
-				<span class="icon-32 x32-settings"></span>
-			</li>
+			<?php } ?>
 
 		</ul>
 	</div>
 
 	<div class="headercontent">
-		
 
 			<?php
-
 				$quri = '/'.url::current();
 
 				foreach ($shortcuts as $category => $buttons) {
@@ -84,7 +77,7 @@
 
 						if ($quri == $stripped)
 							echo '<li style="box-shadow: inset 0 0 5px #888; border-radius: 2px 4px  0 0; ">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
-						else 
+						else
 							echo '<li>'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
 					}
 
