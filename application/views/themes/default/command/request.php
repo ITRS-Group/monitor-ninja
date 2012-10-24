@@ -40,27 +40,25 @@ foreach ($params as $pname => $ary) {
 	switch ($ary['type']) {
 		case 'select':
 			if (!is_array($dflt) && $requested_command != 'DEL_ALL_HOST_COMMENTS' && $requested_command != 'DEL_ALL_SVC_COMMENTS') {
-				if ($dflt && array_search($dflt, $ary['options'])) {
+				if ($dflt && false !== array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
 				echo form::dropdown(array('name' => $form_name, 'id' => 'field_'.$pname), $ary['options'], $dflt);
 			} elseif ($requested_command == 'DEL_ALL_SVC_COMMENTS' || $requested_command == 'DEL_ALL_HOST_COMMENTS') {
-				if ($dflt && array_search($dflt, $ary['options'])) {
+				if ($dflt && false !== array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
 				echo form::dropdown(array('name' => $form_name.'[]', 'id' => 'field_'.$pname, 'multiple' => 'multiple'), $ary['options'], $dflt);
-			} else {
-				if (!empty($dflt)) {
-					$tmp_obj = false;
-					foreach($dflt as $tmp) {
-						$tmp_obj[$tmp] = isset($ary['options'][$tmp]) ? $ary['options'][$tmp] : $tmp;
-					}
-					$size = count($tmp_obj);
-					if($size > 15) {
-						$size = 15;
-					}
-					echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size), $tmp_obj);
+			} else if (!empty($dflt)) {
+				$tmp_obj = false;
+				foreach($dflt as $tmp) {
+					$tmp_obj[$tmp] = isset($ary['options'][$tmp]) ? $ary['options'][$tmp] : $tmp;
 				}
+				$size = count($tmp_obj);
+				if($size > 15) {
+					$size = 15;
+				}
+				echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size), $tmp_obj);
 			}
 			break;
 		case 'checkbox':
