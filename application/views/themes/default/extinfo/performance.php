@@ -3,7 +3,9 @@
 
 	<h2><?php echo $title ?></h2>
 
-	<div class="widget left w48">
+	<hr />
+
+	<div>
 		<strong><?php echo _('Services actively checked') ?></strong>
 		<table>
 			<tr>
@@ -31,7 +33,7 @@
 				<td><?php echo $svc_active_start ?> (<?php echo $svc_active_start_perc ?> %)</td>
 			</tr>
 		</table>
-		<br />
+		<br /><br />
 		<table>
 			<tr>
 				<th style="width: 40%" class="headerNone"><?php echo _('Metric') ?></th>
@@ -60,7 +62,7 @@
 		</table>
 	</div>
 
-	<div class="widget left w49">
+	<div>
 		<strong><?php echo _('Services passively checked') ?></strong>
 		<table>
 			<tr>
@@ -106,10 +108,9 @@
 		</table>
 	</div>
 
-	<div style="clear: both"></div>
 	<br />
 
-	<div class="widget w48 left">
+	<div>
 		<strong><?php echo _('Hosts actively checked') ?></strong>
 		<table>
 			<tr>
@@ -166,7 +167,7 @@
 		</table>
 	</div>
 
-	<div class="widget left w49">
+	<div>
 		<strong><?php echo _('Hosts passively checked') ?></strong>
 		<table>
 			<tr>
@@ -211,10 +212,7 @@
 		</table>
 	</div>
 
-
-<div style="clear: both"></div>
-
-	<div class="widget left w48">
+	<div>
 		<br />
 		<strong><?php echo _('Check statistics') ?></strong>
 		<table style="margin-bottom: 15px">
