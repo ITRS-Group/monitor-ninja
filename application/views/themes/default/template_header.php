@@ -1,10 +1,5 @@
 <?php
 
-	$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
-	$all_service_status_types = nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING;
-	$host_props = nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED;
-	$service_props = nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED;
-
 	/** Shortcut format 
 	*
 	*	href, icon (in x16 sheet), attributes
@@ -25,7 +20,7 @@
 
 	$shortcuts['internal'][] = array('#', 'refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
 	$shortcuts['internal'][] = array('#', 'settings', array('title' => 'Settings', 'id' => 'settings_icon'));
-	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes='.($all_service_status_types).'&hostprops='.($host_props).'&service_props='.($service_props).'&hoststatustypes='.$all_host_status_types, 'shield-not-warning', array('title' => 'Unhandled Problems'));
+	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes=78&hostprops=10&service_props=10&hoststatustypes=71', 'shield-not-warning', array('title' => 'Unhandled Problems'));
 	$shortcuts['internal'][] = array('/tac', 'hoststatus', array('title' => 'Tactical Overview'));
 	
 	if (isset($int_shortcuts)) {
@@ -46,7 +41,7 @@
 	<div class="supermenu">
 
 		<div class="logo">
-			<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'margin: 8px;')); ?>
+			<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'margin: 7px 9px 7px 7px;')); ?>
 		</div>
 
 		<ul>
@@ -73,6 +68,9 @@
 		
 
 			<?php
+
+				$quri = '/'.url::current();
+
 				foreach ($shortcuts as $category => $buttons) {
 
 					echo '<ul>';
@@ -81,9 +79,13 @@
 
 						$attributes = $buttons[$i][2];
 						$attributes['class'] = 'image-link';
+						$stripped = explode('?', $buttons[$i][0]);
+						$stripped = $stripped[0];
 
-						echo '<li>'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
-
+						if ($quri == $stripped)
+							echo '<li style="box-shadow: inset 0 0 5px #888; border-radius: 2px 4px  0 0; ">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
+						else 
+							echo '<li>'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
 					}
 
 					echo '</ul>';

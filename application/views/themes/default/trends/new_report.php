@@ -12,7 +12,6 @@
 				echo "<div id='tgraph'></div>";
 				?>
 				<script>
-					
 					<?php
 
 						$str = '';
@@ -52,12 +51,14 @@
 					var data = [<?php echo $str; ?>],
 						labels = [<?php echo $labels; ?>];
 
-					new TGraph(
-						data, 'timeline', 
-						labels,
-						<?php echo $graph_start_date ?>,
-						<?php echo ($use_scaling) ? 'true':'false'; ?>
-					);
+					$(window).load(function () {
+						new TGraph(
+							data, 'timeline', 
+							labels,
+							<?php echo $graph_start_date ?>,
+							<?php echo ($use_scaling) ? 'true':'false'; ?>
+						);
+					});
 					
 				</script>
 				<?php
