@@ -7,8 +7,10 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 ?>
 <div class="setup-table" id="settings_table">
 <input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
+<h2><?php echo _('Report Settings'); ?></h2>
+<hr />
 <table id="report" class="setup-tbl">
-	<caption><?php echo _('Report settings') ?></caption>
+	<caption><?php echo _('Enter the settings for your report') ?></caption>
 	<tr>
 		<td><?php echo help::render('reporting_period').' '._('Reporting period') ?></td>
 		<td style="width: 18px">&nbsp;</td>

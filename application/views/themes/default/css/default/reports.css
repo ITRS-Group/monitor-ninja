@@ -218,7 +218,7 @@ tr.none td {
 }
 
 table.setup-tbl {
-	width: auto;
+	width: 100%;
 }
 
 table.setup-tbl tr td  {
