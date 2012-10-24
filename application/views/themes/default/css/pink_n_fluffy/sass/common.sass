@@ -159,6 +159,11 @@ table
 		text-align: left
 		vertical-align: middle
 
+#host_table, #service_table, .host_table, .service_table
+	tr
+		&:hover
+			outline: 1px solid $border-color-dark
+
 .no-borders
 	td
 		border: none

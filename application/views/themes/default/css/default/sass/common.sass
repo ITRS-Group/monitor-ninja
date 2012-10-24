@@ -147,9 +147,6 @@ table
 		@extend .nullify
 		background: none
 
-		&:hover
-			outline: 1px solid $border-color-dark
-
 	tr.odd
 		background: $table-odd-color
 
@@ -163,10 +160,10 @@ table
 		text-align: left
 		vertical-align: middle
 
-.report-page-setup
+#host_table, #service_table, .host_table, .service_table
 	tr
 		&:hover
-			outline: none !important
+			outline: 1px solid $border-color-dark
 
 .no-borders
 	td
