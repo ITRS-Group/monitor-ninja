@@ -40,11 +40,6 @@ class Default_Controller extends Ninja_Controller  {
 		$this->session->delete('auth_method');
 		$this->template = $this->add_view('login');
 		$this->template->error_msg = $this->session->get('error_msg', false);
-		$this->template->form_title =_('Login');
-		$this->template->username =_('Username');
-		$this->template->password =_('Password');
-		$this->template->login_btn_txt =_('Login');
-		$this->template->title = _('Ninja Login');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = array('application/media/js/jquery.min.js', $this->add_path('/js/login.js'));
 

@@ -39,11 +39,11 @@
 			<table border="1">
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
-					<td><?php echo $username ?></td>
+					<td><label for="username"><?php echo _('Username') ?></label></td>
 					<td><?php echo form::input('username','','class="i160"') ?></td>
 				</tr>
 				<tr>
-					<td><?php echo $password ?></td>
+					<td><label for="password"><?php echo _('Password') ?></label></td>
 					<td><?php echo form::password('password','','class="i160"') ?></td>
 				</tr>
 				<?php
@@ -62,7 +62,7 @@
 					<td colspan="2" style="text-align: center">
 						<?php
 							echo csrf::form_field();
-							echo form::submit('login', $login_btn_txt, 'style="margin-left: 5px"');
+							echo form::submit('login', _('Login'), 'style="margin-left: 5px"');
 						?><br /><br />
 						<div id="loading" style="display:none;">
 							<?php echo html::image('application/media/images/loading.gif') ?>
