@@ -4,8 +4,9 @@ $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 <div id="search_result">
-<?php echo help::render('search_help') ?>&nbsp;
-<?php echo isset($no_data) ? $no_data.'<br />' : '<strong>'.$limit_str.'</strong><br><br>';
+<h2><?php echo _("Search results"); ?>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo help::render('search_help') ?></h2>
+<hr />
+<?php echo isset($no_data) ? $no_data.'<br />' : '<strong>'.$limit_str.'</strong><br>';
 
 $save_id = isset($save_id) ? (int)$save_id : false;
 $save_label = $save_id ? _('Update this search') : _('Save this search');
@@ -21,23 +22,25 @@ if (isset($host_result) ) {
 <table id="host_table">
 	<caption><?php echo _('Host results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a><br /></caption>
 	<tr>
-		<th class="header"><em><?php echo _('Status'); ?></em></th>
+		<th class=""><em><?php echo _('Status'); ?></em></th>
 		<th class="item_select"><input type="checkbox" class="select_all_items" title="<?php echo _('Click to select/unselect all') ?>"></th>
-		<th class="header"><?php echo _('Host'); ?></th>
+		<th><?php echo _('Host'); ?></th>
 		<th class="no-sort"><?php echo _('Actions'); ?></th>
-		<th class="header"><?php echo _('Alias'); ?></th>
-		<th class="header" style="width: 70px"><?php echo _('Address'); ?></th>
-		<th class="header"><?php echo _('Status Information'); ?></th>
+		<th><?php echo _('Alias'); ?></th>
+		<th style="width: 70px"><?php echo _('Address'); ?></th>
+		<th><?php echo _('Status Information'); ?></th>
 	<?php if ($show_display_name) { ?>
-		<th class="header"><?php echo _('Display Name'); ?></th>
+		<th><?php echo _('Display Name'); ?></th>
 	<?php }
 		 if ($show_notes) { ?>
-		<th class="header"><?php echo _('Notes'); ?></th>
+		<th><?php echo _('Notes'); ?></th>
 	<?php } ?>
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { $host = (object)$host;?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->state, $host->has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($host->state, $host->has_been_checked); ?></em></td>
+		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->state, $host->has_been_checked)); ?>">
+			<span class="icon-16 x16-shield-<?php echo strtolower(Current_status_Model::status_text($host->state, $host->has_been_checked)); ?>"></span>
+		</td>
 		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->name); ?></td>
 		<td>
 			<div style="float: left"><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), $host->name) ?></div>
@@ -150,19 +153,19 @@ if (isset($service_result) ) {
 <table>
 <caption><?php echo _('Service results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a></caption>
 	<tr>
-		<th class="header">&nbsp;</th>
-		<th class="header"><?php echo _('Host'); ?></th>
-		<th class="header">&nbsp;</th>
+		<th>&nbsp;</th>
+		<th><?php echo _('Host'); ?></th>
+		<th>&nbsp;</th>
 		<th class="item_select_service"><input type="checkbox" class="select_all_items_service" title="<?php echo _('Click to select/unselect all') ?>"></th>
-		<th class="header"><?php echo _('Service'); ?></th>
-		<th class="headerNone"><?php echo _('Actions'); ?></th>
-		<th class="header"><?php echo _('Last Check'); ?></th>
-		<th class="header"><?php echo _('Status Information'); ?></th>
+		<th><?php echo _('Service'); ?></th>
+		<th><?php echo _('Actions'); ?></th>
+		<th><?php echo _('Last Check'); ?></th>
+		<th><?php echo _('Status Information'); ?></th>
 	<?php if ($show_display_name) { ?>
-		<th class="header"><?php echo _('Display name'); ?></th>
+		<th><?php echo _('Display name'); ?></th>
 	<?php }
 		 if ($show_notes) { ?>
-		<th class="header"><?php echo _('Notes'); ?></th>
+		<th><?php echo _('Notes'); ?></th>
 	<?php } ?>
 	</tr>
 <?php
@@ -172,7 +175,9 @@ if (isset($service_result) ) {
 	foreach ($service_result as $service) { $service = (object)$service; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
-		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state, $service->host_has_been_checked)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state, $service->host_has_been_checked); ?></em></td>
+		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state, $service->host_has_been_checked)); ?>">
+			<span class="icon-16 x16-shield-<?php echo strtolower(Current_status_Model::status_text($service->host_state, $service->host_has_been_checked)); ?>"></span>
+		</td>
 		<td><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($service->host_name), $service->host_name);
 			if (nacoma::link()===true) {
 				echo '&nbsp;'.nacoma::link('configuration/configure/?type=host&name='.urlencode($service->host_name), 'icons/16x16/nacoma.png', _('Configure this host')).' &nbsp;';
@@ -181,7 +186,9 @@ if (isset($service_result) ) {
 		<?php } else { ?>
 		<td colspan="2"></td>
 		<?php } ?>
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->state, $service->has_been_checked, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->state, $service->has_been_checked, 'service'); ?></em></td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->state, $service->has_been_checked, 'service')); ?>">
+			<span class="icon-16 x16-shield-<?php echo strtolower(Current_status_Model::status_text($service->state, $service->has_been_checked, 'service')); ?>"></span>
+		</td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->description); ?></td>
 		<td><span style="float: left">
 			<?php echo html::anchor('/extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->description), $service->description) ?></span>
