@@ -40,6 +40,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'host_filter_status' => array('type' => 'array', 'default' => array()), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
 		'service_filter_status' => array('type' => 'array', 'default' => array()), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
 		'include_trends' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
+		'include_trends_scaling' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
 		'master' => array('type' => 'object', 'default' => false, 'generated' => true), /**< The master report, if one */
 		'schedule_id' => array('type' => 'int', 'default' => false), /**< A schedule id we're currently running as, not to be confused with report_id. This cannot be calculated, so it must be included */
 		'output_format' => array('type' => 'enum', 'default' => 'html', 'options' => array( /**< What type of report to generate (manually selected in web UI, generated from filename for saved reports) */

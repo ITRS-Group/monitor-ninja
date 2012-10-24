@@ -10,7 +10,7 @@ TGraphEventBinder = function (node, event, callback) {
 	}
 }
 
-var TGraph = function (stops, type, name, max) {
+var TGraph = function (stops, type, name, max, upscale) {
 		
 		/**
 		* @param object stops
@@ -21,6 +21,7 @@ var TGraph = function (stops, type, name, max) {
 		
 		var w = document.getElementById('tgraph').clientWidth;
 		
+		this.upscale = upscale || false;
 		this.name = name || 'Graph';
 		this.stops = stops;
 		this.type = type || 'bar';
@@ -252,7 +253,7 @@ TGraph.prototype = {
 				
 				this.stops[y][i].block = this.createBlock(this.stops[y][i]);
 				
-				if ((this.stops[y][i].duration / this.max) < 0.03) {
+				if ((this.stops[y][i].duration / this.max) < 0.03 && this.upscale === true) {
 					
 					clone = this.stops[y][i].block.cloneNode(true);
 					swidth = (parseFloat(this.stops[y][i].block.style.width) * 20);

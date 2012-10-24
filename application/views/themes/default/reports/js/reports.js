@@ -19,6 +19,15 @@ $(document).ready(function() {
 		return check_form_values();
 	});
 
+	$('#include_trends').click(function() {
+		if (this.checked) {
+			$('#include_trends_scaling').attr('disabled', false);
+		} else {
+			$('#include_trends_scaling').attr('disabled', true);
+			$('#include_trends_scaling').attr('checked', false);
+		}
+	});
+
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
 	});

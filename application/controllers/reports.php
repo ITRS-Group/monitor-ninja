@@ -569,6 +569,7 @@ class Reports_Controller extends Base_reports_Controller
 			
 			$template->trends_graph->graph_start_date = $this->options['start_time'];
 			$template->trends_graph->graph_end_date = $this->options['end_time'];
+			$template->trends_graph->use_scaling = $this->options['include_trends_scaling'];
 			$template->trends_graph->graph_pure_data = $this->trends_graph_model->format_graph_data(
 				$graph_data
 			);
@@ -1032,6 +1033,7 @@ class Reports_Controller extends Base_reports_Controller
 			'sla_breakdown' => _("Breakdown of the SLA report in actual figures."),
 			'sla_group_members' => _("Members of the selected group that the report is generated for. All members are links to individual reports."),
 			'trends' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
+			'trends_scaling' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 
@@ -1047,6 +1049,7 @@ class Reports_Controller extends Base_reports_Controller
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
 			'include_trends' => _("Check this to include a trends graph in your report."),
+			'include_trends_scaling' => _("Check this to get upscaled values on your trends graph for small segments of time that would otherwise be hidden."),
 			'status_to_display' => _('Check a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {

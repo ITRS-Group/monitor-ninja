@@ -8,13 +8,13 @@
 
 <div id="trends_graphs" style="margin: 20px auto 0 auto;">
 		<?php
-				
+
 				echo "<div id='tgraph'></div>";
 				?>
 				<script>
 					
 					<?php
-					
+
 						$str = '';
 						$labels = '';
 						
@@ -55,7 +55,8 @@
 					new TGraph(
 						data, 'timeline', 
 						labels,
-						<?php echo $graph_start_date ?>
+						<?php echo $graph_start_date ?>,
+						<?php echo ($use_scaling) ? 'true':'false'; ?>
 					);
 					
 				</script>
