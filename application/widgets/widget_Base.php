@@ -70,15 +70,17 @@ class widget_Base
 	 */
 	public function view_path($view=false)
 	{
+
 		if (empty($view))
 			return false;
 
 		$widget = $this->model->name;
 		# first try custom path
+
 		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->model->name, $view, false);
 		if ($path === false) {
 			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->model->name, $view, true);
+			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->model->name, $view, false);
 		}
 
 		return $path;
@@ -156,10 +158,21 @@ class widget_Base
 				$content .= form::close();
 				$content .= '</div>';
 			}
-			$content .= '<div class="widget-content">'; 	// Clear and end widget header and start widget content
+
+			$content .= '<div class="%%WIDGET_CLASS%%">'; 	// Clear and end widget header and start widget content
+			
 		}
 		ob_start();
 		$this->$method();
+		
+		if (strpos(ob_get_contents(), 'could not be found') > 0 && 
+				strpos(ob_get_contents(), 'The requested core.widgets') > 0) {
+			$content .= '<h2>Widget Error</h2><br />';
+			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content-error', $content);
+		} else {
+			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content', $content);
+		}
+
 		$content .= ob_get_contents();
 		ob_end_clean();
 		if ($with_chrome) {
