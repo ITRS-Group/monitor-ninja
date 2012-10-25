@@ -129,7 +129,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 								array('style' => 'border: 0px'));
 							$host_props += 2;
 						}
-						if (!$row->host_active_checks_enabled && !$show_passive_as_active) {
+						if (!$row->host_active_checks_enabled) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name),
 								'<span class="icon-16 x16-active-checks-disabled" title="'._('Active checks enabled').'"></span>',
 								array('style' => 'border: 0px'));
