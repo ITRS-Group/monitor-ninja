@@ -8,7 +8,7 @@
 	height: 40px;
 	color: #333;
 	float: left;
-	padding-left: 2%;
+	padding-left: 1%;
 	font: normal normal 8pt Helvetica, Arial, Verdana, sans-serif;
 }
 
@@ -48,8 +48,8 @@
 
 .tgraph-label {
 	float: left;
-	width: 9%;
-	padding: 15px 1% 0 0;
+	width: 10%;
+	padding: 15px 0 0 0;
 	text-align: right;
 }
 

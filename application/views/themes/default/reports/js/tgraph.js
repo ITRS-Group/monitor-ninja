@@ -228,6 +228,8 @@ TGraph.prototype = {
 		for (i; i < this.stops[0].length; i += 1) {
 			this.max += this.stops[0][i].duration * 1000;
 		}
+
+		var lastHost = '';
 		
 		for (var y = 0; y < this.stops.length; y += 1) {
 			
@@ -239,8 +241,19 @@ TGraph.prototype = {
 			subline.className = 'tgraph-subline';
 			line.className = 'tgraph-block-line';
 			
+			var cHost = this.name[y].split(';')[0],
+				sName = this.name[y].split(';')[1];
+
 			lclone = this.label.cloneNode();
-			lclone.innerHTML = this.name[y];
+
+			if (cHost === lastHost) {
+				lclone.innerHTML = sName;
+			} else {
+				lclone.innerHTML = '<strong>' + cHost + '</strong> ; ' + sName;
+			}
+
+			lastHost = cHost;
+
 			time = this.start;
 			laststate = '';
 			
