@@ -71,60 +71,69 @@ $legacy-support-for-ie: true
 // Classic auxiliary selectors
 
 .status-critical, .status-down
-	@include background(linear-gradient(top, #dd4433, #ee5544))
-	@include filter-gradient(#dd4433, #ee5544, vertical)
+	@include background(linear-gradient(top, #d33f2f, #942d23))
+	@include filter-gradient(#d33f2f, #942d23, vertical)
 	color: #000 !important
-	font-weight: bold
+	text-shadow: 0 0 3px #f00
+	border: 1px solid #44100a !important
 
 	a
+		text-shadow: 0 0 3px #f00
 		color: #000 !important
 		font-weight: normal
 
 .status-warning, .status-unreachable
-	@include background(linear-gradient(top, #ccbb00, #eedd00))
-	@include filter-gradient(#ccbb00, #eedd00, vertical)
+	@include background(linear-gradient(top, #fad460, #d1bd3a))
+	@include filter-gradient(#fad460, #d1bd3a, vertical)
 	color: #000 !important
-	font-weight: bold
+	text-shadow: 0 0 3px #ff0
+	border: 1px solid #a67b28 !important
 
 	a
+		text-shadow: 0 0 3px #ff0
 		color: #000 !important
 		font-weight: normal
 
 .status-unknown
-	@include background(linear-gradient(top, #ddaa00, #ffbb00))
-	@include filter-gradient(#ddaa00, #ffbb00, vertical)
+	@include background(linear-gradient(top, #ee983d, #bf6720))
+	@include filter-gradient(#ee983d, #bf6720, vertical)
 	color: #000 !important
-	font-weight: bold
+	font-weight: normal
+	border: 1px solid #9d440e !important
+	text-shadow: 0 0 3px #fc0
 
 	a
+		text-shadow: 0 0 3px #fc0
 		color: #000 !important
 		font-weight: normal
 
 .status-ok, .status-up
-	@include background(linear-gradient(top, #00bb33, #00dd22))
-	@include filter-gradient(#00bb33, #00dd22, vertical)
+	@include background(linear-gradient(top, #a7d690, #5ba238))
+	@include filter-gradient(#a7d690, #5ba238, vertical)
 	color: #000 !important
-	font-weight: bold
+	text-shadow: 0 0 3px #0f0
+	border: 1px solid #4a862d !important
 
 	a
+		text-shadow: 0 0 3px #0f0
 		color: #000 !important
 		font-weight: normal
 
 td.up, td.ok
-	@include background(linear-gradient(top, #00bb33, #00dd22))
-	@include filter-gradient(#00bb33, #00dd22, vertical)
+	@include background(linear-gradient(top, #a7d690, #5ba238))
+	@include filter-gradient(#a7d690, #5ba238, vertical)
 
 td.critical
-	@include background(linear-gradient(top, #dd4433, #ee5544))
-	@include filter-gradient(#dd4433, #ee5544, vertical)
+	@include background(linear-gradient(top, #d33f2f, #942d23))
+	@include filter-gradient(#d33f2f, #942d23, vertical)
 
 td.unknown
-	@include background(linear-gradient(top, #ddaa00, #ffbb00))
-	@include filter-gradient(#ddaa00, #ffbb00, vertical)
+	@include background(linear-gradient(top, #ee983d, #bf6720))
+	@include filter-gradient(#ee983d, #bf6720, vertical)
 
 td.warning
-	@include background(linear-gradient(top, #ccbb00, #eedd00))
-	@include filter-gradient(#ccbb00, #eedd00, vertical)
+	@include background(linear-gradient(top, #fad460, #d1bd3a))
+	@include filter-gradient(#fad460, #d1bd3a, vertical)
 
 // Common SASS
 

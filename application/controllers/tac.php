@@ -57,8 +57,14 @@ class Tac_Controller extends Authenticated_Controller {
 			# right column
 			$widgets['widget-placeholder2'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
 
+			# right column
+			$widgets['widget-placeholder3'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+
+			# right column
+			$widgets['widget-placeholder4'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+
 			# full width (placed at bottom)
-			$widgets['widget-placeholder3'] = $widgets['unknown'];
+			$widgets['widget-placeholder5'] = $widgets['unknown'];
 			unset($widgets['unknown']);
 		} else if (isset($widgets['unknown'])) {
 			if(!isset($widgets['widget-placeholder'])) {
@@ -72,7 +78,9 @@ class Tac_Controller extends Authenticated_Controller {
 			'widget-placeholder' => array(),
 			'widget-placeholder1' => array(),
 			'widget-placeholder2' => array(),
-			'widget-placeholder3' => array()
+			'widget-placeholder3' => array(),
+			'widget-placeholder4' => array(),
+			'widget-placeholder5' => array()
 		), $widgets);
 
 		$this->template->content->widgets = $widgets;
