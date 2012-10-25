@@ -4,13 +4,13 @@
 <div class="clear"></div>
 <table>
 	<tr>
-		<th class="headerNone "><?php //echo _('State'); ?></th>
-		<th class="headerNone "><?php echo _('Time'); ?></th>
-		<th class="headerNone "><?php echo _('Alert Types'); ?></th>
-		<th class="headerNone "><?php echo _('Host'); ?></th>
-		<th class="headerNone "><?php echo _('Service'); ?></th>
-		<th class="headerNone "><?php echo _('State Types'); ?></th>
-		<th class="headerNone "><?php echo _('Information'); ?></th>
+		<th><?php //echo _('State'); ?></th>
+		<th><?php echo _('Time'); ?></th>
+		<th><?php echo _('Alert Types'); ?></th>
+		<th><?php echo _('Host'); ?></th>
+		<th><?php echo _('Service'); ?></th>
+		<th><?php echo _('State Types'); ?></th>
+		<th><?php echo _('Information'); ?></th>
 	</tr>
 	<?php
 	$i = 0;
