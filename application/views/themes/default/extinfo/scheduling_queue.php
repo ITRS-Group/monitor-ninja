@@ -18,7 +18,7 @@
 		<tr>
 			<?php
 				foreach($header_links as $column => $title) {
-					echo '<th class="header'.
+					echo '<th class="'.
 					(($sort_order == 'DESC' && $sort_column == $column) ? 'SortUp' :
 					(($sort_order == 'ASC' && $sort_column == $column) ? 'SortDown' :
 					'')) . '">';
@@ -27,9 +27,9 @@
 					</th>
 				<?php }
 			?>
-			<th class="headerNone"><?php echo _('Type'); ?></th>
-			<th class="headerNone"><?php echo _('Active checks'); ?></th>
-			<th class="headerNone"><?php echo _('Actions'); ?></th>
+			<th><?php echo _('Type'); ?></th>
+			<th><?php echo _('Active checks'); ?></th>
+			<th><?php echo _('Actions'); ?></th>
 		</tr>
 		<?php
 			$total_rows_printed = 0;

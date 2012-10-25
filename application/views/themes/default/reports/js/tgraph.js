@@ -249,7 +249,7 @@ TGraph.prototype = {
 			if (cHost === lastHost) {
 				lclone.innerHTML = sName;
 			} else {
-				lclone.innerHTML = '<strong>' + cHost + '</strong> ; ' + sName;
+				lclone.innerHTML = '<strong>' + cHost + '</strong>' + ((sName) ? ' ; ' + sName: '');
 			}
 
 			lastHost = cHost;
