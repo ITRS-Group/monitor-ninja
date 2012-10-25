@@ -13,7 +13,7 @@ function backup(){
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
 						array('alt' => _('View'), 'title' => _('View'))); ?></a>'
 					+ ' <a class="restore" href="<?php echo url::base(); ?>index.php/backup/restore/' + file
-					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'),
+					+ '" style="border: 0px" title="index.php/backup/restore/'+file+'"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'),
 						array('alt' => _('Restore'), 'title' => _('Restore'))); ?></a>'
 					+ ' <a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'),
@@ -48,12 +48,10 @@ $('#verify').live('click', function(){
 $('a.restore').live('click', function(){
 	var link = $(this);
 	if (confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?')) {
-		$('#backupstatus').text('Restoring backup');
+		$('#backupstatus').text('Restoring backup...');
 		status = 'restoring';
-		$('#fancybox-content').load($(link).attr('title'), function() {
-			$('#fancybox-close').show();
+		$('#backupstatus').load($(link).attr('title'), function() {
 			status = '';
-			$('#backupstatus').text($('#fancybox-content').text());			
 		});
 	}
 	return false;
@@ -81,7 +79,7 @@ var status = '';
 	<h2><?php echo _('Backup/Restore'); ?></h2>
 	<div id="backupstatus">&nbsp;</div>
 	<div style="display: none">
-		<div id="restore-status"><img src="../application/media/images/loading.gif" /></div>
+		<div id="restore-status"><img src="/ninja/application/media/images/loading.gif" /></div>
 	</div>
 	<p><a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?></a>
 	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo _('Save your current op5 Monitor configuration'); ?></a></p>
@@ -96,7 +94,7 @@ var status = '';
 		<tbody>
 		<?php $i = 0; foreach ($files as $file): $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td><a class="download" href="<?php echo url::base() . 'index.php/backup/download/' . $file; ?>"><?php echo $file; ?></a></td>
+			<td><a class="download" href="<?php echo url::base() . 'index.php/backup/download/' . $file; ?>" target="_blank"><?php echo $file; ?></a></td>
 			<td>
 				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => _('View'), 'title' => _('View'))); ?></a>
 				<a class="restore" href="#restore-status" title="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => _('Restore'), 'title' => _('Restore'))); ?></a>

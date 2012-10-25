@@ -41,6 +41,7 @@ class Backup_Controller extends Authenticated_Controller {
 	{
 		parent::__construct();
 		$this->template->disable_refresh = true;
+		$this->auto_render = true;
 
 		$nagioscfg = "/opt/monitor/etc/nagios.cfg";
 		$handle = fopen($nagioscfg, 'r');
@@ -64,6 +65,7 @@ class Backup_Controller extends Authenticated_Controller {
 			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization for more information.');
 			$this->unauthorized = true;
 		}
+
 	}
 
 	public function index()
@@ -95,13 +97,26 @@ class Backup_Controller extends Authenticated_Controller {
 	}
 
 	public function download($file) {
+		
 		$file_path = $this->backups_location . "/" . $file . ".tar.gz";
 		$fp = fopen($file_path, "r");
-		header("Content-Type:application/octet-stream");
-		header("Content-Disposition:attachment;	filename=".$file.".tar.gz");
+		if ($fp === false) {
+			$this->template->content = $this->add_view('backup/view');
+			$this->template->message = "Couldn't create filehandle.";
+			return;
+		}
+		$hs = headers_sent();
+		header('Content-Description: File Transfer');
+		header("Content-Type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=".$file.".tar.gz");
 		header("Content-Transfer-Encoding:binary");
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length: ' . filesize($file_path));
 		fpassthru($fp);
-		$this->index();		
+		fclose($fp);
+		$this->index();
 	}
 
 	public function view($file)
@@ -132,6 +147,8 @@ class Backup_Controller extends Authenticated_Controller {
 		exec($this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
+			var_dump($output);
+			die();
 			$this->template->status = false;
 			$this->template->message = "The current configuration is invalid";
 		}
@@ -197,7 +214,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
 		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
-		exec('nohup ' .$this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		exec($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status == 0)
 			$this->template->message = "Could not reload the configuration '{$file}'";
 		else
