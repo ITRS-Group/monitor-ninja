@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+require_once('auth/Auth.php');
 
 /**
  * Model providing access to the authorization system in nagios
