@@ -244,6 +244,10 @@ TGraph.prototype = {
 			var cHost = this.name[y].split(';')[0],
 				sName = this.name[y].split(';')[1];
 
+			if (sName) {
+				sName = sName.replace(/ /g, '&nbsp;');
+			}
+
 			lclone = this.label.cloneNode();
 
 			if (cHost === lastHost) {
