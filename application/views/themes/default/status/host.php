@@ -154,7 +154,7 @@ foreach ($result as $row) {
 							// $row->name in urlencode()
 							echo nacoma::link('configuration/configure/?type=host&name='.urlencode($row->name), 'icons/16x16/nacoma.png', _('Configure this host')).' &nbsp;';
 							echo $row->pnpgraph_present ? html::anchor('pnp/?host='.urlencode($row->name).'&srv=_HOST_', 
-								'<span class="pnp_graph_icon icon-16 x16-pnp'._('Show performance graph').'"></span>',
+								'<span class="pnp_graph_icon icon-16 x16-pnp pnp_graph_icon'._('Show performance graph').'"></span>',
 								array('style' => 'border: 0px')): '';
 						if (!empty($row->action_url)) {
 							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">'.
