@@ -10,69 +10,68 @@
 
 		foreach ($links as $section => $entry) {
 			
-			if (empty($entry)) {
-					continue;
+			$linkstring = '';
+			if (strtolower($section) == 'about') {
+				$linkstring .= '<li style="background: none">'.Kohana::config('config.product_name') . ":" . config::get_version_info().'</li>';
+			} elseif (empty($entry)) {
+				continue;
 			}
 
 			$i = 0;
 
 			$in_menu = false;
 
-			$linkstring = '';
+			if($entry) {
+				foreach ($entry as $name => $data) {
 
-			if (strtolower($section) == 'about') {
-				$linkstring .= '<li style="background: none">'.Kohana::config('config.product_name') . ":" . config::get_version_info().'</li>';
-			}
+					$id = strtolower($section)."-".$data[1]."-".$i;
 
-			foreach ($entry as $name => $data) {
+					if ($data[2] == 0) {
 
-				$id = strtolower($section)."-".$data[1]."-".$i;
+						// Do not add white-space, line-feeds or carriage returns in here, it will screw up JavaScript .children's and .nextSibling's
 
-				if ($data[2] == 0) {
+						$siteuri = url::site($data[0], null);
+						$siteuri = preg_replace('~/+~', '/', $siteuri);
 
-					// Do not add white-space, line-feeds or carriage returns in here, it will screw up JavaScript .children's and .nextSibling's
+						if (strpos($siteuri, '?')) {
+							$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
+						}
 
-					$siteuri = url::site($data[0], null);
-					$siteuri = preg_replace('~/+~', '/', $siteuri);
-					
-					if (strpos($siteuri, '?')) {
-						$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
+						if ($uri == $siteuri) {
+							$linkstring .= "<li class='active'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
+							if (strpos($data[1], '.') !== false)
+								$linkstring .= "<img class='icon-menu-dark' src='".ninja::add_path('icons/menu-dark/'.$data[1])."' />";
+							else
+								$linkstring .= "<span class='icon-menu-dark menu-dark-".$data[1]."'></span>";
+							$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
+							$in_menu = true;
+						} else {
+							$linkstring .= "<li class='nav-seg'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
+							if (strpos($data[1], '.') !== false)
+								$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
+							else
+								$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
+							$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
+						}
+
+						$i++;
+
+					} // common external links
+						elseif($data[2] == 1 ||
+							($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') ||
+							($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/')) {
+
+						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'>";
+							if (strpos($data[1], '.') !== false)
+								$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
+							else
+								$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
+							$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
+
 					}
 
-					if ($uri == $siteuri) {
-						$linkstring .= "<li class='active'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
-						if (strpos($data[1], '.') !== false)
-							$linkstring .= "<img class='icon-menu-dark' src='".ninja::add_path('icons/menu-dark/'.$data[1])."' />";
-						else
-							$linkstring .= "<span class='icon-menu-dark menu-dark-".$data[1]."'></span>";
-						$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
-						$in_menu = true;
-					} else {
-						$linkstring .= "<li class='nav-seg'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
-						if (strpos($data[1], '.') !== false)
-							$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
-						else
-							$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
-						$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
-					}
-
-					$i++;
-
-				} // common external links
-					elseif($data[2] == 1 ||
-						($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') ||
-						($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/')) {
-
-					$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' title='".ucwords($name)."' target='_blank' class='ninja_menu_links'>";
-						if (strpos($data[1], '.') !== false)
-							$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
-						else
-							$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
-						$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
 
 				}
-
-
 			}
 
 			if ($in_menu == true) {

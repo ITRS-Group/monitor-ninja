@@ -27,13 +27,17 @@
 
 			menu.style.display = 'block';
 
-			mc.style.display = 'none';
+			if(mc) {
+				mc.style.display = 'none'; // @todo fix
+			}
 			bc.style.boxShadow = 'none';
 
 			mc = $('#' + key + '-menu')[0];
 			bc = $('#' + key + '-button')[0];
 
-			mc.style.display = 'block';
+			if(mc) {
+				mc.style.display = 'block'; // @todo fix
+			}
 			bc.style.boxShadow = 'inset 0 0 8px #ccc';
 
 		}
@@ -42,7 +46,9 @@
 	var hideMenu = function (e) {
 
 		menu.style.display = 'none';
-		mc.style.display = 'none';
+		if(mc) {
+			mc.style.display = 'none'; // @todo fix
+		}
 		bc.style.boxShadow = 'none';
 		
 	};
@@ -65,8 +71,8 @@
 		mc = mc[0];
 
 		if (!mc && !bc) {
-				mc = $('#monitoring-menu')[0];
-				bc = mc.firstChild;
+			mc = $('#monitoring-menu')[0];
+			bc = mc.firstChild;
 		} else {
 			bc = $('#' + mc.id.replace('-menu', '') + '-button');
 			bc = bc[0];
