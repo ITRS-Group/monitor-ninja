@@ -63,6 +63,7 @@ class Status_Controller extends Authenticated_Controller {
 		$sort_field = $this->input->get('sort_field', $sort_field);
 		#$show_services = $this->input->get('show_services', $show_services);
 		$group_type = $this->input->get('group_type', $group_type);
+		$group = $this->input->get('group', false);
 		#$serviceprops = $this->input->get('serviceprops', $serviceprops);
 		$hostprops = $this->input->get('hostprops', $hostprops);
 		$noheader = $this->input->get('noheader', false);
@@ -83,7 +84,16 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('status/host');
 		$status = new Status_Model();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', $host, false, false, $hoststatustypes, $hostprops, false, $serviceprops);
+
+		if( !empty($group_type) && $group_type=='hostgroup' ) {
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', $host, $group, false, $hoststatustypes, $hostprops, false, $serviceprops);
+		}
+		else if( !empty($group_type) && $group_type=='servicegroup' ) {
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', $host, false, $group, $hoststatustypes, $hostprops, false, $serviceprops);
+		}
+		else {
+			list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $status->classic_filter('host', $host, false, false, $hoststatustypes, $hostprops, false, $serviceprops);
+		}
 		if ($status->show_filter_table)
 			$this->template->content->filters = $this->_show_filters('host', $status->host_statustype_filtername, $status->host_prop_filtername, $status->service_statustype_filtername, $status->service_prop_filtername);
 
