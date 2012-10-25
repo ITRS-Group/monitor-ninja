@@ -1,0 +1,72 @@
+@import "compass/css3/images"
+@import "config"
+
+// Menu/Navigation SASS
+
+.navigation
+	position: fixed
+	width: 190px
+	top: $header_height
+	overflow: hidden
+	overflow-y: auto
+	height: auto
+	display: none
+	z-index: 1
+	left: 0
+	padding: 5px
+	font-size: 0.9em
+	text-shadow: 1px 1px 1px #fff
+	background: $general_background_color
+	box-shadow: 0 0 3px $hard_shadow_color
+
+	a
+		border-bottom: 1px dotted $link_color
+		color: $link_color
+		text-decoration: none
+
+		&:hover
+			border-bottom: 1px dotted $link_color_hover
+			color: $link_color_hover
+
+	.active
+		a
+			color: $link_color_hover
+			font-weight: bold
+			font-size: 99%
+
+	.menu
+		position: relative
+		width: 100%
+
+	span
+		vertical-align: middle
+
+	ul
+		padding: 0
+		margin: 0
+		display: none
+		overflow: auto
+		overflow-x: hidden
+		height: auto
+
+		li
+			padding: 6px 0 6px 10%
+			margin: 0
+			height: 16px
+			border-bottom: 1px solid #ccc
+			float: left
+			display: block
+			width: 100%
+			border-top: 1px solid #f2f2f2
+			@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+			@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+
+			&:hover
+				@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+				@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+
+			a
+				border: none
+
+				&:hover
+					border: none
