@@ -102,6 +102,16 @@ then
 	exit 1
 fi
 
+function all_versions()
+{
+	db_ver="$1"
+	new_ver=`expr $db_ver + 1`
+	echo "Upgrading ninja db from v${db_ver} to v${new_ver}"
+	run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
+	mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
+	db_ver=$new_ver
+}
+
 while [ "$db_ver" -lt "$target_db_version" ]; do
 	case "$db_ver" in
 	1)
@@ -113,13 +123,10 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		;;
 	4)
 		php index.php cli/upgrade_auth
-		# fallthrough
+		all_versions 4
+		;;
 	*)
-		new_ver=`expr $db_ver + 1`
-		echo "Upgrading ninja db from v${db_ver} to v${new_ver}"
-		run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
-		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
-		db_ver=$new_ver
+		all_versions "$db_ver"
 		;;
 	esac
 done
