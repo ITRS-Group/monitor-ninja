@@ -1048,8 +1048,9 @@ class Reports_Controller extends Base_reports_Controller
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
-			'include_trends' => _("Check this to include a trends graph in your report."),
+			'include_trends' => _("Check this to include a trends graph in your report.<br>Warning: This can make your reports slow!"),
 			'include_trends_scaling' => _("Check this to get upscaled values on your trends graph for small segments of time that would otherwise be hidden."),
+			'include_alerts' => _('Include a log of all alerts for all objects in your report.<br>Warning: This can make your reports slow!'),
 			'status_to_display' => _('Check a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
