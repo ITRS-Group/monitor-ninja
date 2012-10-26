@@ -2,11 +2,11 @@
 <div class="report-block">
 <table>
 	<tr>
-		<th class="headerNone left"><?php echo _('Rank'); ?></th>
-		<th class="headerNone left"><?php echo _('Producer Type'); ?></th>
-		<th class="headerNone left"><?php echo _('Host'); ?></th>
-		<th class="headerNone left"><?php echo _('Service'); ?></th>
-		<th class="headerNone left"><?php echo _('Total Alerts'); ?></th>
+		<th><?php echo _('Rank'); ?></th>
+		<th><?php echo _('Producer Type'); ?></th>
+		<th><?php echo _('Host'); ?></th>
+		<th><?php echo _('Service'); ?></th>
+		<th><?php echo _('Total Alerts'); ?></th>
 	</tr>
 	<?php
 	$i=0;
