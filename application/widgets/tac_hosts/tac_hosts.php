@@ -71,7 +71,7 @@ class Tac_hosts_Widget extends widget_Base {
 		# HOSTS UP DISABLED
 		$hosts_up_disabled = array();
 		if ($current_status->hst->up_and_disabled_active) {
-			$hosts_up_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_UP .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hst->up_and_disabled.' '._('Disabled');
+			$hosts_up_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_UP .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hst->up_and_disabled_active.' '._('Disabled');
 		}
 
 		# HOSTS PENDING
