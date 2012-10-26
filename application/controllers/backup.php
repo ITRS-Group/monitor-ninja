@@ -194,16 +194,14 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$status = 0;
 		$output = array();
-		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
-		exec('nohup ' .$this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}'";
 			return;
 		}
 
-		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
-		exec('nohup ' .$this->cmd_verify, $output, $status);
+		exec($this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
@@ -213,8 +211,8 @@ class Backup_Controller extends Authenticated_Controller {
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
-		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
-		exec($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+
+		exec($this->cmd_reload . ' ' . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status == 0)
 			$this->template->message = "Could not reload the configuration '{$file}'";
 		else
@@ -229,8 +227,8 @@ class Backup_Controller extends Authenticated_Controller {
 					}
 				}
 			}
-
 		}
+		return;
 	}
 
 	public function delete($file)

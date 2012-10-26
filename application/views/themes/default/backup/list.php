@@ -25,16 +25,16 @@ function backup(){
 
 $(document).ready(function() {
 	$('a.restore').fancybox({
-			'overlayOpacity'	:	0.7,
-			'overlayColor'		:	'#ffffff',
-			'hideOnContentClick' : false,
-			'hideOnOverlayClick' : false,
-			'titleShow' : false,
-			'showCloseButton' : false,
-			'enableEscapeButton' : false,
-			'autoDimensions' : false,
-			'width' : 250,
-			'height' : 70
+			'overlayOpacity': 0.7,
+			'overlayColor' : '#ffffff',
+			'hideOnContentClick': false,
+			'hideOnOverlayClick': false,
+			'titleShow': false,
+			'showCloseButton': false,
+			'enableEscapeButton': false,
+			'autoDimensions': false,
+			'width': 250,
+			'height': 70
 	});
 });
 $('#verify').live('click', function(){
@@ -50,8 +50,10 @@ $('a.restore').live('click', function(){
 	if (confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?')) {
 		$('#backupstatus').text('Restoring backup...');
 		status = 'restoring';
-		$('#backupstatus').load($(link).attr('title'), function() {
+		$('#fancybox-content').load($(link).attr('title'), function() {
+			$('#fancybox-close').show();
 			status = '';
+			$('#backupstatus').text($('#fancybox-content').text());
 		});
 	}
 	return false;
@@ -67,10 +69,10 @@ $('a.delete').live('click', function(){
 });
 
 window.onbeforeunload = function(event){
-  event = event || window.event;
-  if(status == 'restoring'){
-    return event.returnValue = "The process of restoring a backup is underway!"
-  }
+	event = event || window.event;
+	if(status == 'restoring'){
+		return event.returnValue = "A backup is being restored!"
+	}
 }
 var status = '';
 </script>
