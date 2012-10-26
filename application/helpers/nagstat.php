@@ -162,7 +162,7 @@ class nagstat_Core {
 			'$MAXHOSTATTEMPTS$' => 'max_check_attempts',
 			'$HOSTGROUPNAME$' => 'hostgroup_name',
 			'$HOSTGROUPALIAS$' => 'alias',
-			'$SERVICEDESC$' => 'service_description',
+			'$SERVICEDESC$' => 'description',
 			'$SERVICEDISPLAYNAME$' => 'display_name',
 			'$SERVICEGROUPNAME$' => 'servicegroup_name',
 			'$SERVICESTATE$' => array("status_text[%s, service]", 'current_state'),
