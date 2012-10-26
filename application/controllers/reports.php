@@ -338,6 +338,7 @@ class Reports_Controller extends Base_reports_Controller
 		$graph_filter = ${$sub_type.'_graph_items'};
 
 		$template->header = $this->add_view('reports/header');
+		$template->header->title = $template->title;
 		$template->header->report_time_formatted = $report_time_formatted;
 
 		# avail, more than one object
