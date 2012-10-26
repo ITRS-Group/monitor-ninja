@@ -41,19 +41,19 @@ if (!empty($command_result)) {
 		</caption>-->
 		<thead>
 			<tr>
-				<th class="headerNone item_select" style="display:none">
+				<th class="item_select" style="display:none">
 					<?php echo form::checkbox(array('name' => 'selectall_host', 'class' => 'select_all_items'), ''); ?>
 				</th>
-				<th class="headerNone"><?php echo _('Host name') ?></th>
-				<th class="headerNone"><?php echo _('Entry Time') ?></th>
-				<th class="headerNone"><?php echo _('Author') ?></th>
-				<th class="headerNone"><?php echo _('Comment') ?></th>
-				<th class="headerNone"><?php echo _('Start time') ?></th>
-				<th class="headerNone"><?php echo _('End time') ?></th>
-				<th class="headerNone"><?php echo _('Type') ?></th>
-				<th class="headerNone"><?php echo _('Duration') ?></th>
-				<th class="headerNone"><?php echo _('Trigger ID') ?></th>
-				<th class="headerNone" style="width: 45px"><?php echo _('Actions') ?></th>
+				<th><?php echo _('Host name') ?></th>
+				<th><?php echo _('Entry Time') ?></th>
+				<th><?php echo _('Author') ?></th>
+				<th><?php echo _('Comment') ?></th>
+				<th><?php echo _('Start time') ?></th>
+				<th><?php echo _('End time') ?></th>
+				<th><?php echo _('Type') ?></th>
+				<th><?php echo _('Duration') ?></th>
+				<th><?php echo _('Trigger ID') ?></th>
+				<th style="width: 45px"><?php echo _('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
