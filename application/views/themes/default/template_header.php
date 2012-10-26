@@ -46,15 +46,20 @@
 		<ul>
 			<!-- Classes are used by javascript navigation -->
 
-			<?php foreach($links as $section => $sections_links) {
-				if(empty($sections_links) && strtolower($section) != "about") {
-					// we want to whitelist the 'about' link since the ninja/nagios version is displayed there
-					continue;
-				} ?>
-			<li class="supermenu-button" id="<?php echo strtolower($section); ?>-button" title="<?php echo $section; ?>">
-				<span class="icon-32 x32-<?php echo strtolower($section); ?>"></span>
-			</li>
-			<?php } ?>
+		<?php
+			if(isset($links)) {
+				foreach($links as $section => $sections_links) {
+					if(empty($sections_links) && strtolower($section) != "about") {
+						// we want to whitelist the 'about' link since the ninja/nagios version is displayed there
+						continue;
+					} ?>
+				<li class="supermenu-button" id="<?php echo strtolower($section); ?>-button" title="<?php echo $section; ?>">
+					<span class="icon-32 x32-<?php echo strtolower($section); ?>"></span>
+				</li>
+		<?php
+				}
+			}
+		?>
 
 		</ul>
 	</div>
