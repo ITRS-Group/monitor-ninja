@@ -127,11 +127,9 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 		$this->auto_render=false;
 
-		$objects = $this->options[$this->options->get_value('report_type')];
-
 		$return = false;
 		if ($this->options['report_name'] !== false) {
-			$report_id = Saved_reports_Model::edit_report_info($this->type, $this->options['report_id'], $this->options, $objects, $this->options['months']);
+			$report_id = Saved_reports_Model::edit_report_info($this->type, $this->options['report_id'], $this->options);
 			if ($report_id) {
 				return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $report_id));
 			}
