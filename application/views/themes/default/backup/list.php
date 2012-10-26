@@ -89,8 +89,8 @@ var status = '';
 	<table id="backups">
 		<thead>
 		<tr>
-			<th class="headerNone"><?php echo _('Backups'); ?></th>
-			<th class="headerNone" style="width: 50px"><?php echo _('Actions'); ?></th>
+			<th><?php echo _('Backups'); ?></th>
+			<th style="width: 50px"><?php echo _('Actions'); ?></th>
 		</tr>
 		</thead>
 		<tbody>
