@@ -372,6 +372,10 @@ input
 .item_select
 	display: none
 
+.jGrowl-notification
+	background-color: #000
+	background-color: rgba(0,0,0,0.5)
+
 #jGrowl
 
 	position: fixed
@@ -391,21 +395,22 @@ input
 		width: auto
 		z-index: 0
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
+		font-weight: bold
 		border-color: #000
 		padding: 4px
+		float: left
+
 	.message
+		clear: both
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
 		border-color: #000
 		padding: 4px
+
 	.close
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
+		float: right
 		border-color: #000
+		margin: 2px 6px
 
 // Import form SASS
 @import "sprites"
