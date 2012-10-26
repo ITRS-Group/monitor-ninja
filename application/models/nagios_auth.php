@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-require_once('auth/Auth.php');
+
+//var_dump(get_include_path());
+//var_dump(glob('/usr/share/php/*'));
+require_once('op5/auth/Auth.php');
 
 /**
  * Model providing access to the authorization system in nagios
