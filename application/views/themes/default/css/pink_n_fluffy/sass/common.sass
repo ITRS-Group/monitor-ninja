@@ -105,6 +105,9 @@ hr
 	border: none
 	border-bottom: 1px solid $border-color-light
 
+strong
+	font-weight: bold
+
 table
 	@extend .nullify
 	font-size: 0.95em
@@ -116,7 +119,6 @@ table
 
 	tbody
 		@extend .nullify
-		border-top: 1px solid $border-color-light
 
 	.dark
 		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
@@ -231,6 +233,19 @@ input
 		border: 1px solid $border-color-dark
 		padding: 3px 6px
 
+#global_notifications
+	border-radius: 0 0 3px 3px
+	position: fixed
+	width: 50%
+	top: 0
+	z-index: 800
+	left: 22%
+	padding: 2px 0
+	font-size: 90%
+
+	ul
+		list-style: none
+
 #global_search
 	position: fixed
 	top: 4px
@@ -279,6 +294,7 @@ input
 	vertical-align: middle
 	border: none
 	box-shadow: none
+	z-index: 1
 
 	.page-links-label
 		float: left
@@ -314,6 +330,9 @@ input
 		width: auto
 
 	img
+		margin: 2px 0 2px 8px
+
+	input[type="image"]
 		margin: 2px 0 2px 8px
 
 #version_info
@@ -382,21 +401,22 @@ input
 		width: auto
 		z-index: 0
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
+		font-weight: bold
 		border-color: #000
 		padding: 4px
+		float: left
+
 	.message
+		clear: both
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
 		border-color: #000
 		padding: 4px
+
 	.close
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
+		float: right
 		border-color: #000
+		margin: 2px 6px
 
 // Import form SASS
 @import "sprites"

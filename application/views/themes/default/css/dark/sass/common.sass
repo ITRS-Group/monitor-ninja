@@ -232,6 +232,19 @@ input
 		border: 1px solid $border-color-dark
 		padding: 3px 6px
 
+#global_notifications
+	border-radius: 0 0 3px 3px
+	position: fixed
+	width: 50%
+	top: 0
+	z-index: 800
+	left: 22%
+	padding: 2px 0
+	font-size: 90%
+
+	ul
+		list-style: none
+
 #global_search
 	position: fixed
 	top: 4px
@@ -272,10 +285,6 @@ input
 
 	td, tbody, tr
 		border: none !important
-
-	&:hover
-		td
-			background: transparent
 
 #page_links
 	margin-top: 0px
@@ -391,21 +400,22 @@ input
 		width: auto
 		z-index: 0
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
+		font-weight: bold
 		border-color: #000
 		padding: 4px
+		float: left
+
 	.message
+		clear: both
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
 		border-color: #000
 		padding: 4px
+
 	.close
 		color: #fff
-		background-color: #000
-		background-color: rgba(0,0,0,0.5)
+		float: right
 		border-color: #000
+		margin: 2px 6px
 
 // Import form SASS
 @import "sprites"
