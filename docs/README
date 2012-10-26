@@ -4,7 +4,7 @@ Requirements
 ------------
 Ninja requieres the following softwares to be installed:
 
-php, php-pdo and php-cli 5.1.6+
+php, php-pdo and php-cli 5.3+
 MySQL 5+ (4 might also work but is not tested)
 Nagios 3.0.x+ (needs to run on the same server)
 Merlin
