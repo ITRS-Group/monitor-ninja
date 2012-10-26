@@ -16,14 +16,20 @@ if (Auth::instance()->authorized_for('own_user_change_password')) {
 	echo '<div style="float: right">'.html::anchor('change_password', _('Change Password')).'</div>';
 }
 
-if (!empty($available_setting_sections)) {
+echo "<h1>".$title."</h1><br />";
 
-	echo "<h1>".$title."</h1>";
+if ($is_admin) {
+	echo '<div style="padding-bottom:20px">'.help::render('edit_menu').' &nbsp;'.
+	html::anchor(Router::$controller.'/menu_edit', _('Edit user menu')).'</div>';
+}
+
+if (!empty($available_setting_sections)) {	
+
 	echo form::open('user/save', array('id' => 'user_settings'));
 	foreach ($available_setting_sections as $name => $setting_key) { ?>
 		<div id="settings_<?php echo $name ?>">
 			<table>
-			<tr><th colspan="2" class="headerNone"><?php echo $name ?></th></tr>
+			<tr><th colspan="2"><?php echo $name ?></th></tr>
 			<?php
 				$i = 0;
 				foreach ($settings[$setting_key] as $setting_name => $cfgkey) {
@@ -58,10 +64,5 @@ if (!empty($available_setting_sections)) {
 	echo form::close();
 }?>
 <br />
-<?php
-if ($is_admin) {
-	echo '<div style="padding-bottom:20px">'.help::render('edit_menu').' &nbsp;'.
-	html::anchor(Router::$controller.'/menu_edit', _('Edit user menu')).'</div>';
-}
-?>
+
 </div>
