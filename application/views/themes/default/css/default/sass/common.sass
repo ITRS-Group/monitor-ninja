@@ -217,7 +217,7 @@ a
 	padding: 16px 32px 32px 32px
 	z-index: 0
 
-	#iframe, #hypermap, object#geomap, #nagvis
+	iframe#iframe, iframe#hypermap, object#geomap, iframe#nagvis
 		position: fixed
 		top: $header_height
 		left: 0
@@ -231,6 +231,19 @@ input
 		border-radius: 3px
 		border: 1px solid $border-color-dark
 		padding: 3px 6px
+
+#global_notifications
+	border-radius: 0 0 3px 3px
+	position: fixed
+	width: 50%
+	top: 0
+	z-index: 800
+	left: 22%
+	padding: 2px 0
+	font-size: 90%
+
+	ul
+		list-style: none
 
 #global_search
 	position: fixed

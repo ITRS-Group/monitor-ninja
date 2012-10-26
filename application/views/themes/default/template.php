@@ -42,6 +42,19 @@
 			</div>
 
 			<div class="content" id="content">
+
+				<?php
+						if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
+							echo "<div id='global_notifications'><ul>";
+
+							foreach ($global_notifications as $gn) {
+								echo "<li class='left'>";
+								echo (!$gn[1]) ? '<span class="icon-12 x12-shield-warning" style="vertical-align: middle;"></span>': '';
+								echo $gn[0]."</li>";
+							}
+							echo "</ul><div class='clear'></div></div>";
+						}
+					?>		
 				
 				
 					<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
