@@ -5,7 +5,7 @@ $shieldoff = '<span class="icon-16 x16-shield-critical"></span>';
 ?>
 <div class="left width-50" id="extinfo_current">
 <table class="ext">
-	<tr><th class="headerNone" colspan="2" style="border-left:0px"><?php echo _('Process Information'); ?></th></tr>
+	<tr><th colspan="2"><?php echo _('Process Information'); ?></th></tr>
 	<tr>
 		<td class="dark"><?php echo _('Program version') ?></td>
 		<td><?php echo $program_status->program_version ?></td>

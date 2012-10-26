@@ -2,7 +2,7 @@
 
 <div class="left width-50" id="nagios_commands">
 	<table class="ext">
-	<tr><th colspan="2" class="headerNone" style="border-left:0px"><?php echo $title ?></th></tr>
+	<tr><th colspan="2"><?php echo $title ?></th></tr>
 		<tr>
 			<td class="icon dark">
 					<?php echo html::image($this->add_path('icons/16x16/stop.png'), array('alt' => $label_shutdown_nagios, 'title' => $label_shutdown_nagios, 'style' => 'height: 16px')); ?>

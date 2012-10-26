@@ -4,7 +4,7 @@
 
 	<table class="ext">
 		<tr>
-			<th colspan="2" style="border: 0px"><?php echo $lable_command_title ?></th>
+			<th colspan="2"><?php echo $lable_command_title ?></th>
 		</tr>
 		<?php # only for hosts!
 			$i =0;
