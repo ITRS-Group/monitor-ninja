@@ -229,7 +229,7 @@ class Schedule_Controller extends Authenticated_Controller
 		if ($opt_obj['recipients']) {
 			Send_report_Model::send($out, $filename, $opt_obj['output_format'], $opt_obj['recipients']);
 			if(PHP_SAPI == 'cli') {
-				echo "Mailing schedule id $schedule_id\n";
+				echo "Mailing schedule id $schedule_id to ".$opt_obj['recipients']."\n";
 			}
 			$mail = true;
 		}
@@ -263,6 +263,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$schedules = Scheduled_reports_Model::get_period_schedules($period_str);
 
 		if(!$schedules) {
+			echo "No scheduled reports found, not sending any emails.\n";
 			return;
 		}
 		foreach ($schedules as $row) {
