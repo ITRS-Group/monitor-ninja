@@ -154,7 +154,7 @@ if (!empty($widgets)) {
 		<tr>
 			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
-				<span class="status-<?php echo strtolower($current_status_str) ?>"><?php echo ucfirst(strtolower($current_status_str)) ?></span>
+				<span class="status-<?php echo strtolower($current_status_str) ?>"><span class="icon-12 x12-shield-<?php echo strtolower($current_status_str); ?>"></span><?php echo ucfirst(strtolower($current_status_str)) ?></span>
 				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : _('N/A') ?>)
 			</td>
 		</tr>
