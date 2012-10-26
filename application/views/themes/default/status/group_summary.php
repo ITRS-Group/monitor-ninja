@@ -122,7 +122,7 @@
 						if($details['hosts_pending'] > 0) {
 							# @@@FIXME: host_properties?
 							echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => _('PENDING'), 'title' => _('PENDING'), 'class' => 'status-default'));
-							echo html::anchor('status/'.$grouptype.'/?group='.urlencode($details['name']).'&group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_PENDING.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details['hosts_pending'].' '._('PENDING'), array('class' => 'status-pending'));
+							echo html::anchor('status/'.$grouptype.'/?group='.urlencode($details['name']).'&group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_PENDING.'&hostprops=0', $details['hosts_pending'].' '._('PENDING'), array('class' => 'status-pending'));
 						} ?>
 					</td>
 					<?php } ?>
