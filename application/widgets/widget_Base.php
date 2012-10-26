@@ -135,7 +135,7 @@ class widget_Base
 			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
 			if (!empty($options) && $this->editable) {
 				$content .= '<div class="clear"></div><div class="widget-editbox">';
-				$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
+				$content .= form::open('widget/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
 				$content .= '<fieldset>';
 				if (!isset(self::$loaded_widgets[$this->model->name]))
 					$this->inline_js .= "widget.register_widget_load('".$this->model->name."', function() {";

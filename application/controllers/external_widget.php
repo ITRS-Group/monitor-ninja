@@ -14,12 +14,13 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class External_widget_Controller extends Ninja_Controller {
+class External_widget_Controller extends Widget_Controller {
 	public $widgets = array();
 	public function __construct()
 	{
 		parent::__construct();
 		$this->template = $this->add_view('external_widget');
+		$this->template->current_skin = 'default/';
 	}
 
 	/**
@@ -28,17 +29,6 @@ class External_widget_Controller extends Ninja_Controller {
 	*/
 	public function show_widget($name = null, $instance_id = null)
 	{
-		$username = Kohana::config('external_widget.username');
-		if (!Auth::instance()->logged_in() && !empty($username)) {
-			Auth::instance()->force_login($username);
-		} else {
-			if (empty($username)) {
-				die(_('You are trying to access an '.
-					'external widget but the system isn\'t configured properly for this!'.
-					'<br />Please configure the config/external_widget.php config file first.'));
-			}
-		}
-
 		if (is_null($name)) {
 			$name = Kohana::config('external_widget.widget_name');
 			if (empty($name)) {
@@ -69,6 +59,6 @@ class External_widget_Controller extends Ninja_Controller {
 		$this->template->content->widget = $widget;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
-		$this->template->render();
+		$this->template->disable_refresh = true;
 	}
 }

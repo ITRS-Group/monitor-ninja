@@ -139,7 +139,7 @@ function set_widget_refresh()
 {
 	_is_refreshing = true;
 
-	var url = _site_domain + _index_page + "/ajax/set_widget_refresh/";
+	var url = _site_domain + _index_page + "/widget/set_widget_refresh/";
 	var page_name = _current_uri;
 	var value = global_refresh;
 	var data = {page: escape(page_name), value: value, type: 'refresh_interval'};
@@ -170,7 +170,7 @@ function set_widget_refresh()
 function save_widget_order(order_str)
 {
 	$.ajax(
-		_site_domain + _index_page + "/ajax/save_widgets_order/",
+		_site_domain + _index_page + "/widget/save_widgets_order/",
 		{
 			data: {
 				page: escape(_current_uri),
@@ -199,7 +199,7 @@ function control_widgets(item) {
 
 function copy_widget_instance(name, instance_id, cb) {
 	$.ajax({
-		url: _site_domain + _index_page + '/ajax/copy_widget_instance',
+		url: _site_domain + _index_page + '/widget/copy_widget_instance',
 		dataType: 'html',
 		type: 'POST',
 		data: {page: _current_uri, widget: name, 'instance_id': instance_id},
@@ -224,7 +224,7 @@ function copy_widget_instance(name, instance_id, cb) {
 function save_widget_state(what, widget_name, instance_id)
 {
 	$.ajax(
-		_site_domain + _index_page + "/ajax/save_widget_state/",
+		_site_domain + _index_page + "/widget/save_widget_state/",
 		{
 			data: {
 				page: escape(_current_uri),
@@ -240,7 +240,7 @@ function save_widget_state(what, widget_name, instance_id)
 function restore_widgets()
 {
 	$.ajax(
-		_site_domain + _index_page + '/ajax/factory_reset_widgets',
+		_site_domain + _index_page + '/widget/factory_reset_widgets',
 		{
 			complete: function() {
 				window.location.reload();
@@ -258,7 +258,7 @@ var loaded_widgets = {};
 function widget(name, instance_id)
 {
 	var self = this;
-	this.ajax_url = _site_domain + _index_page + '/ajax/';
+	this.ajax_url = _site_domain + _index_page + '/widget/';
 
 	this._refresh_interval = 0;
 	this.save_interval = 0;
