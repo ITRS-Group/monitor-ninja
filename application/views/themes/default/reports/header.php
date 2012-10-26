@@ -66,7 +66,7 @@
 			echo '<input class="wide" type="text" name="report_name" value="'.$report_name.'" />';
 			$options['report_name'] = $report_name;
 			?>
-			<input type="button" class="save_report_btn" value="<?php echo _('Save report') ?>" />
+			<input type="submit" class="save_report_btn" value="<?php echo _('Save report') ?>" />
 		</form>
 	</div>
 	<h1><?php echo $title ?></h1>

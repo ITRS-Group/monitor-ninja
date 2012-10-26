@@ -135,8 +135,9 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			if ($report_id) {
 				return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $report_id));
 			}
+			return json::fail(_('Unable to save this report.'));
 		}
-		return json::fail(_('Unable to save this report.'));
+		return json::fail(_('Unable to save this report, report name missing.'));
 	}
 
 	public function delete() {

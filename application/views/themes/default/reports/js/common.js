@@ -113,17 +113,19 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.save_report_btn').bind('click', function() {
+	$('.save_report_btn').parents('form').submit(function(ev) {
+		ev.preventDefault();
 		loopElements();
-		if (!(check_form_values(this.form))) {
+		var form = $(this);
+		if (!(check_form_values(this[0]))) {
 			return;
 		}
-		var btn = $(this);
+		var btn = form.find('.save_report_btn');
 		btn.after(loadimg);
 		$.ajax({
 			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
 			type: 'POST',
-			data: $(this.form).serialize(),
+			data: form.serialize(),
 			complete: function() {
 				btn.parent().find('img:last').remove();
 			},
