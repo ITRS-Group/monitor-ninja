@@ -6,3 +6,4 @@ ALTER TABLE sla_config ADD COLUMN description TEXT DEFAULT NULL;
 ALTER TABLE sla_config DROP COLUMN assumeinitialstates;
 ALTER TABLE sla_config DROP COLUMN initialassumedhoststate;
 ALTER TABLE sla_config DROP COLUMN initialassumedservicestate;
+ALTER TABLE sla_config ADD COLUMN include_alerts int(1) DEFAULT 0;
