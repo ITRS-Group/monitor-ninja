@@ -40,7 +40,7 @@
 						if ($uri == $siteuri) {
 							$linkstring .= "<li class='active'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
 							if (strpos($data[1], '.') !== false)
-								$linkstring .= "<img class='icon-menu-dark' src='".ninja::add_path('icons/menu-dark/'.$data[1])."' />";
+								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$data[1]).")'></span>";
 							else
 								$linkstring .= "<span class='icon-menu-dark menu-dark-".$data[1]."'></span>";
 							$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
@@ -48,7 +48,7 @@
 						} else {
 							$linkstring .= "<li class='nav-seg'><a href='".url::base(true).$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
 							if (strpos($data[1], '.') !== false)
-								$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
+								$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$data[1]).")'></span>";
 							else
 								$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
 							$linkstring .= "<span class='nav-seg-span'>".ucwords($name)."</span></a></li>";
