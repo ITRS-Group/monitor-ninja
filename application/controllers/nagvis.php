@@ -26,8 +26,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
-		$this->template->css_header->css = $this->xtra_css;
+		//$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		//$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function view($map)
@@ -45,8 +45,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
-		$this->template->css_header->css = $this->xtra_css;
+		//$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		//$this->template->css_header->css = $this->xtra_css;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}
@@ -66,8 +66,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
-		$this->template->css_header->css = $this->xtra_css;
+		//$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		//$this->template->css_header->css = $this->xtra_css;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}
@@ -128,8 +128,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
-		$this->template->css_header->css = $this->xtra_css;
+		//$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		//$this->template->css_header->css = $this->xtra_css;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}
@@ -150,7 +150,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		//$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
@@ -169,8 +169,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
-		$this->template->css_header->css = $this->xtra_css;
+		//$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		//$this->template->css_header->css = $this->xtra_css;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}
