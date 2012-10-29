@@ -33,12 +33,22 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 	if (!isset($items_per_page)) {
 		$items_per_page = config::get('pagination.items_per_page', '*');
 	}
+	
+	$other_get_params = $_GET;
+	unset( $other_get_params['page'] );
+	unset( $other_get_params['items_per_page'] );
+	unset( $other_get_params['custom_pagination_field'] );
+	unset( $other_get_params['show_pagination'] );
+	
 	?>
 	<span class="pagination_entries_str" style="display:none"><?php echo $entries ?></span>
 
 <div class="pagination_form">
 <form  action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
 		<fieldset>
+<?php foreach( $other_get_params as $key => $val ) { ?>
+<input type="hidden" name="<?php echo htmlentities($key); ?>" value="<?php echo htmlentities($val) ?>" />
+<?php } ?>
 		<select class="auto" id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
 	<?php
 		if ($total_items < $paging_step) {
