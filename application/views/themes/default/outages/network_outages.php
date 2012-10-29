@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<h1><?php echo _('Network Outages'); ?></h1>
+
 <div id="network_outages">
 	<table id="network_outages_table">
 		<caption><?php echo $title ?></caption>
