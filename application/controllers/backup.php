@@ -17,7 +17,6 @@ class Backup_Controller extends Authenticated_Controller {
 	private $files2backup = array(
 		'/opt/monitor/etc/nagios.cfg',
 		'/opt/monitor/etc/cgi.cfg',
-		'/opt/monitor/etc/*.users',
 		'/opt/monitor/var/*.log',
 		'/opt/monitor/var/status.sav',
 		'/opt/monitor/var/archives',
