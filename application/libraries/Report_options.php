@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Report_options_core implements ArrayAccess, Iterator {
+class Report_options_core implements ArrayAccess, Iterator, Countable {
 	protected static $rename_options = array(
 		't1' => 'start_time',
 		't2' => 'end_time',
@@ -570,6 +570,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		} while ($x !== false && isset($this->vtypes[key($this->options)]['generated']));
 	}
 	function valid() { return array_key_exists(key($this->options), $this->options); }
+	function count() { return count($this->options); }
 
 	protected static function discover_options($type, $input = false)
 	{
@@ -588,11 +589,17 @@ class Report_options_core implements ArrayAccess, Iterator {
 	protected static function create_options_obj($type, $report_info = false) {
 		$options = new static($report_info);
 
+		$keep_boolean_values = false;
 		if (isset($options['report_id'])) {
+			if(count($options) == 1) {
+				// only report id is set, which means we're not *basing* our options
+				// on a saved report, but rather *fetching a persisted, complete report*
+				$keep_boolean_values = true;
+			}
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $options['report_id']);
 			if ($saved_report_info) {
 				foreach ($saved_report_info as $key => $sri) {
-					if (isset($options->vtypes[$key]) && $options->vtypes[$key]['type'] !== 'bool' && (!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])) {
+					if (isset($options->vtypes[$key]) && ($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) && (!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])) {
 						$options[$key] = $sri;
 					}
 				}
@@ -605,6 +612,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 		return $options;
 	}
 
+	/**
+	 * @param $type string avail|sla|summary
+	 * @param $input array = false
+	 * @return Report_options
+	 */
 	public static function setup_options_obj($type, $input = false)
 	{
 		if (is_a($input, 'Report_options')) {

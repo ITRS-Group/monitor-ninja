@@ -334,10 +334,10 @@ class Saved_reports_Model extends Model
 	 * Fetch info on single saved report
 	 *
 	 * @param $type string: Report type { avail, sla }
-	 * @param $id Id of the report.
+	 * @param $id int Id of the report.
 	 * @return false on error. Report info as array on success.
 	 */
-	public static function get_report_info($type='avail', $id=false)
+	public static function get_report_info($type='avail', $id)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
