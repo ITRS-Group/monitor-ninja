@@ -60,8 +60,14 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo _('All').' '.$entries ?></option>
 			<?php
 		}
+		if( $items_per_page < $paging_step ) {
+		?><option value="<?php echo $items_per_page; ?>" selected='selected'><?php echo $items_per_page; ?> <?php echo $entries ?></option><?php
+		}
 		for ($i=$paging_step ; $i<$total_items && $i<=$max_items_per_page; $i+=$paging_step ) {
 			?><option value="<?php echo $i ?>"<?php if ($items_per_page == $i) { ?> selected='selected'<?php } ?>><?php echo $i ?> <?php echo $entries ?></option><?php
+			if( $items_per_page > $i && $items_per_page < ($i+$paging_step) ) {
+			?><option value="<?php echo $items_per_page; ?>" selected='selected'><?php echo $items_per_page; ?> <?php echo $entries ?></option><?php
+			}
 		}
 	?>
 		</select>
