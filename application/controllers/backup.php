@@ -17,7 +17,6 @@ class Backup_Controller extends Authenticated_Controller {
 	private $files2backup = array(
 		'/opt/monitor/etc/nagios.cfg',
 		'/opt/monitor/etc/cgi.cfg',
-		'/opt/monitor/etc/*.users',
 		'/opt/monitor/var/*.log',
 		'/opt/monitor/var/status.sav',
 		'/opt/monitor/var/archives',
@@ -170,11 +169,18 @@ class Backup_Controller extends Authenticated_Controller {
 		$output = array();
 		exec($this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
 			. ' ' . implode(' ', $this->files2backup) . ' 2>/dev/null', $output, $status);
+		$nofile = array();
+		foreach ($this->files2backup as $fil) {
+			if (!is_file($fil)) {
+				$nofile[] = $fil;
+			}
+		}
+		var_dump($nofile);
 		if ($status != 0)
 		{
 			$this->template->status = false;
 			$this->template->file = '';
-			$this->template->message = "Could not backup the current configuration";
+			$this->template->message = "Could not backup the current configuration . $output";
 		}
 		else
 		{
