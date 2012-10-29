@@ -448,6 +448,21 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$("#global_notifications_icon").click(function() {
+		console.log($("#global_notifications"));
+		if ($("#global_notifications").is(':hidden')) {
+			$("#global_notifications").show();
+				var top = 49;
+
+				$('#global_notifications').css('top', (top) + 'px');
+				$('#global_notifications').css('left', ($('#global_notifications_icon').offset().left - 10) + 'px');
+
+		} else {
+			$("#global_notifications").hide();
+		}
+		return false;
+	});
+
 	$('#page_settings').click(function(e) {
 		e.stopPropagation();
 	});

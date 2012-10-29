@@ -20,6 +20,9 @@
 
 	$shortcuts['internal'][] = array('#', 'refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
 	$shortcuts['internal'][] = array('#', 'settings', array('title' => 'Settings', 'id' => 'settings_icon'));
+	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
+		$shortcuts['internal'][] = array('#', 'notifications', array('title' => 'Global Notifications', 'id' => 'global_notifications_icon'));
+	}
 	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes=78&hostprops=10&service_props=10&hoststatustypes=71', 'shield-warning', array('title' => 'Unhandled Problems'));
 	$shortcuts['internal'][] = array('/tac', 'hoststatus', array('title' => 'Tactical Overview'));
 	
@@ -90,7 +93,10 @@
 
 				}
 			?>
-
+	</div>
+	
+	<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">
+		<?php echo _('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated" onclick="window.location.reload()">'.date(nagstat::date_format()).'</span>' : ''; ?>
 	</div>
 
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
@@ -104,8 +110,20 @@
 		<?php	} ?>
 		<?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?>
 	</form>
-
 </div>
+
+<?php
+	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
+		echo "<div id='global_notifications'><ul>";
+
+		foreach ($global_notifications as $gn) {
+			echo "<li>";
+			echo (!$gn[1]) ? '<span class="icon-12 x12-shield-warning" style="vertical-align: middle;"></span>': '';
+			echo $gn[0]."</li>";
+		}
+		echo "</ul><div class='clear'></div></div>";
+	}
+?>
 
 <div id="page_settings" class="page_settings">
 	<ul>
