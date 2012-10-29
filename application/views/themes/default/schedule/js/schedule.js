@@ -279,12 +279,24 @@ function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id,
 	template_row = template_row.clone()
 	$('#' + rep_type + '_scheduled_reports_table .no-result').hide();
 	template_row.attr('id', 'report-'+schedule_id);
-	$('.report_name', template_row).text(report_name);
-	$('.description', template_row).text(description);
-	$('.period_select', template_row).text(report_period);
-	$('.recipients', template_row).text(recipients);
-	$('.filename', template_row).text(filename);
-	$('.local-path', template_row).text(local_persistent_filepath);
+	$('.report_name', template_row)
+		.text(report_name)
+		.attr('id', '' + report_type_id + '.report_id-'+schedule_id);
+	$('.description', template_row)
+		.text(description)
+		.attr('id', 'description-'+schedule_id);
+	$('.period_select', template_row)
+		.text(report_period)
+		.attr('id', 'period_id-'+schedule_id);
+	$('.recipients', template_row)
+		.text(recipients)
+		.attr('id', 'recipients-'+schedule_id);
+	$('.filename', template_row)
+		.text(filename)
+		.attr('id', 'filename-'+schedule_id);
+	$('.local-path', template_row)
+		.text(local_persistent_filepath)
+		.attr('id', 'local_persistent_filepath-'+schedule_id);
 	var actions = $('.action', template_row);
 	$('.direct_link', actions).attr('href', _site_domain + _index_page + '/' + rep_type + '/generate?report_id=' + report_id);
 	$('.send_report_now, .delete_schedule', actions).data('schedule', schedule_id).data('report_id', report_id).data('type', rep_type);
