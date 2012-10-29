@@ -297,9 +297,9 @@ if (isset($servicegroup_result) ) {
 <table>
 <caption><?php echo _('Servicegroup results for').': &quot;'.$query.'&quot'; ?></caption>
 	<tr>
-		<th class="header"><?php echo _('Servicegroup'); ?></th>
-		<th class="header"><?php echo _('Alias'); ?></th>
-		<th class="headerNone"><?php echo _('Actions'); ?></th>
+		<th><?php echo _('Servicegroup'); ?></th>
+		<th><?php echo _('Alias'); ?></th>
+		<th><?php echo _('Actions'); ?></th>
 	</tr>
 <?php	$i = 0; foreach ($servicegroup_result as $servicegroup) { $servicegroup=(object)$servicegroup; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
@@ -322,9 +322,9 @@ if (isset($hostgroup_result) ) {
 <table>
 <caption><?php echo _('Hostgroup results for').': &quot;'.$query.'&quot'; ?></caption>
 	<tr>
-		<th class="header"><?php echo _('Hostgroup'); ?></th>
-		<th class="header"><?php echo _('Alias'); ?></th>
-		<th class="headerNone"><?php echo _('Actions'); ?></th>
+		<th><?php echo _('Hostgroup'); ?></th>
+		<th><?php echo _('Alias'); ?></th>
+		<th><?php echo _('Actions'); ?></th>
 	</tr>
 <?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { $hostgroup=(object)$hostgroup; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
@@ -353,15 +353,15 @@ if (isset($comment_result)) {
 			<th class="item_selectcomment headerNone">
 				<?php echo form::checkbox(array('name' => 'selectall_comments', 'class' => 'select_all_items'), ''); ?>
 			</th>
-			<th class="header"><?php echo _('Host'); ?></th>
-			<th class="header"><?php echo _('Service'); ?></th>
-			<th class="headerNone"><?php echo _('Entry time'); ?></th>
-			<th class="headerNone"><?php echo _('Author'); ?></th>
-			<th class="headerNone"><?php echo _('Comment'); ?></th>
-			<th class="headerNone"><?php echo _('ID'); ?></th>
-			<th class="headerNone"><?php echo _('Persistent'); ?></th>
-			<th class="headerNone"><?php echo _('Type'); ?></th>
-			<th class="headerNone"><?php echo _('Expires'); ?></th>
+			<th><?php echo _('Host'); ?></th>
+			<th><?php echo _('Service'); ?></th>
+			<th><?php echo _('Entry time'); ?></th>
+			<th><?php echo _('Author'); ?></th>
+			<th><?php echo _('Comment'); ?></th>
+			<th><?php echo _('ID'); ?></th>
+			<th><?php echo _('Persistent'); ?></th>
+			<th><?php echo _('Type'); ?></th>
+			<th><?php echo _('Expires'); ?></th>
 		</tr>
 	<?php
 		foreach ($comment_result as $row) { $row = (object)$row;
