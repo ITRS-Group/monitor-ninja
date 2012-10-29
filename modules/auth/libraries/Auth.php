@@ -13,10 +13,6 @@ require_once('op5/auth/User_AlwaysAuth.php');
  * @license    
  */
 class Auth_Core {
-	private $op5auth = false; /* Op5Auth object */
-
-	private static $instance = false;
-
 	/**
 	 * Create an instance of Auth.
 	 *
@@ -50,22 +46,19 @@ class Auth_Core {
 	public static function instance($config = array())
 	{
 		// Load the Auth instance
-		if (empty(self::$instance)) {
 			try {
-				self::$instance = self::factory($config);
+				$instance = self::factory($config);
 			}
 			catch( Exception $e ) {
-				self::$instance = new Auth_NoAuth_Core();
+				$instance = new Auth_NoAuth_Core();
 				throw $e;
 			}
-		}
-
-		return self::$instance;
+			return $instance;
 	}
 
 	public function __construct( $config = NULL )
 	{
-		$this->op5auth = Op5Auth::factory( $config );
+		Op5Auth::instance( $config );
 	}
 
 	/**
@@ -80,7 +73,7 @@ class Auth_Core {
 		if( $role !== NULL ) {
 			return false;
 		}
-		return $this->op5auth->logged_in();
+		return op5auth::instance()->logged_in();
 	}
 
 	/**
@@ -90,7 +83,7 @@ class Auth_Core {
 	 */
 	public function get_user()
 	{
-		$user = $this->op5auth->get_user();
+		$user = op5auth::instance()->get_user();
 		Kohana::log( 'debug', 'User: ' . var_export( $user, true ) );
 		return $user;
 	}
@@ -105,7 +98,7 @@ class Auth_Core {
 	 */
 	public function login($username, $password, $auth_method = false)
 	{
-		$res = $this->op5auth->login( $username, $password, $auth_method );
+		$res = op5auth::instance()->login( $username, $password, $auth_method );
 		Kohana::log( 'debug', 'Login: ' . var_export( $res, true ) );
 		return $res;
 	}
@@ -139,7 +132,7 @@ class Auth_Core {
 	 */
 	public function logout($destroy = FALSE)
 	{
-		return $this->op5auth->logout();
+		return op5auth::instance()->logout();
 	}
 
 	/**
@@ -156,7 +149,7 @@ class Auth_Core {
 	 */
 	public function verify_password( $user, $password )
 	{
-		return $this->op5auth->verify_password( $user, $password );
+		return op5auth::instance()->verify_password( $user, $password );
 	}
 
 	/**
@@ -168,7 +161,7 @@ class Auth_Core {
 	 */
 	public function update_password( $user, $password )
 	{
-		return $this->op5auth->update_password( $user, $password );
+		return op5auth::instance()->update_password( $user, $password );
 	}
 
 	/**
@@ -179,7 +172,7 @@ class Auth_Core {
 	 */
 	public function authorized_for( $authorization_point )
 	{
-		return $this->op5auth->authorized_for( $authorization_point );
+		return op5auth::instance()->authorized_for( $authorization_point );
 	}
 
 	/**
@@ -190,7 +183,7 @@ class Auth_Core {
 	 */
 	public function get_authentication_methods()
 	{
-		return $this->op5auth->get_authentication_methods();
+		return op5auth::instance()->get_authentication_methods();
 	}
 
 	/**
@@ -201,7 +194,7 @@ class Auth_Core {
 	 */
 	public function get_default_auth()
 	{
-		return $this->op5auth->get_default_auth();
+		return op5auth::instance()->get_default_auth();
 	}
 
 	/**
@@ -210,7 +203,7 @@ class Auth_Core {
 	 */
 	public function force_user($user)
 	{
-		return $this->op5auth->force_user($user);
+		return op5auth::instance()->force_user($user);
 	}
 } // End Auth
 

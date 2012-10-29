@@ -21,12 +21,10 @@ class Nagvis_acl_Model {
 	}
 
 	
-	private $op5auth = null;
 	private $config = null;
 	private $aPermissions = null;
 	
 	public function __construct() {
-		$this->op5auth      = Op5Auth::factory(); // Using multiple auth instances is bad for your health, but this is just for reading...
 		$this->op5conf     = Op5Config::instance();
 		$this->config      = $this->op5conf->getConfig('nagvis'); // Using multiple auth instances is bad for your health, but this is just for reading...
 		$this->custom_conf = $this->op5conf->getConfig('nagvis_custom');
@@ -76,20 +74,21 @@ class Nagvis_acl_Model {
 	 */
 	public function parsePermissions() {
 		$map_perm = array();
-		if( $this->op5auth->authorized_for( 'nagvis_view' ) ) {
+		$op5auth = op5auth::instance();
+		if( $op5auth->authorized_for( 'nagvis_view' ) ) {
 			$map_perm['view']   = array('*'=>array());
 		}
-		if( $this->op5auth->authorized_for( 'nagvis_edit' ) ) {
+		if( $op5auth->authorized_for( 'nagvis_edit' ) ) {
 			$map_perm['edit']   = array('*'=>array());
 		}
-		if( $this->op5auth->authorized_for( 'nagvis_add_del' ) ) {
+		if( $op5auth->authorized_for( 'nagvis_add_del' ) ) {
 			$map_perm['add']    = array('*'=>array());
 			$map_perm['delete'] = array('*'=>array());
 		}
 		
 		$groups_per_type = array(
-				'auth_groups'    => $this->op5auth->get_user()->groups,
-				'contact_groups' => $this->op5auth->get_contact_groups()
+				'auth_groups'    => $op5auth->get_user()->groups,
+				'contact_groups' => $op5auth->get_contact_groups()
 				);
 		
 		/* Iterate through auth groups and contact groups (grouptypes) */
