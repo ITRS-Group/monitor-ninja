@@ -22,9 +22,9 @@
 			<tr>
 				<?php $i = 0; foreach ($header as $item) {
 					if ($i == 0)
-						echo '<th class="headerSortDown">'.$item.'</th>'."\n";
+						echo '<th>'.$item.'</th>'."\n";
 					else
-						echo '<th class="header">'.$item.'</th>'."\n";
+						echo '<th>'.$item.'</th>'."\n";
 					$i++;
 				} ?>
 			</tr>
