@@ -18,7 +18,7 @@
 <html>
 	
 	<?php
-		include_once(__DIR__.'/template_head.php');
+		require __DIR__.'/template_head.php';
 	?>
 
 	<body>
@@ -26,7 +26,7 @@
 		<div class="container">
 
 			<?php
-				include_once(__DIR__.'/template_header.php');
+				require __DIR__.'/template_header.php';
 			?>
 
 			<div class="navigation" id="navigation">
@@ -34,7 +34,7 @@
 				<div class="menu" id="main-menu">
 
 				<?php
-					include_once(__DIR__.'/template_menu.php');
+					require __DIR__.'/template_menu.php';
 				?>
 
 				</div>
