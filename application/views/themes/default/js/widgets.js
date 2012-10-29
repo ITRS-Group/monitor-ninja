@@ -1,3 +1,4 @@
+// FUN FACT: This depends on global_search.js for sprintf
 init_easywidgets();
 $(document).ready(function() {
 	$(".widget-place").bind('click', function() {
@@ -381,13 +382,14 @@ widget.prototype.update_display = function() {
 *	Save widget settings to db
 */
 widget.prototype.save_settings = function(data) {
+	var self = this;
 	$.ajax(
 		this.ajax_url + "save_widget_setting/",
 		{
 			type: 'POST',
 			data: data,
 			complete: function() {
-				$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+				$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
 			}
 		}
 	);
@@ -412,7 +414,7 @@ widget.prototype.save_custom_val = function(newval, fieldname, cb) {
 				if (typeof cb == 'function') {
 					cb.call(self, data);
 				}
-				$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+				$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
 			},
 			type: 'POST'
 		}
