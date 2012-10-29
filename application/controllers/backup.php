@@ -24,7 +24,7 @@ class Backup_Controller extends Authenticated_Controller {
 		'/opt/monitor/var/errors',
 		'/opt/monitor/var/traffic',
 	);
-	
+	private $asmonitor = '/usr/bin/asmonitor -q ';
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
 	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg 2>/dev/null';
@@ -112,7 +112,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template = $this->add_view('backup/verify');
 
 		$output = array();
-		exec($this->cmd_verify, $output, $status);
+		exec($this->asmonitor . $this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->status = false;
@@ -167,7 +167,7 @@ class Backup_Controller extends Authenticated_Controller {
 			return;
 		}
 
-		exec($this->cmd_verify, $output, $status);
+		exec($this->asmonitor . $this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
