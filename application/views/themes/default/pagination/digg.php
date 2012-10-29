@@ -60,7 +60,7 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 				type="text" size="4" name="custom_pagination_field" id="pagination_id_<?php echo $_SESSION['_pagination_id_'] ?>" class="custom_pagination_field"
 				title="<?php echo _('Enter number of items to show on each page or select from the drop-down on the left') ?>"
 				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
-			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo _('Go') ?>" />
+			<input type="submit" name="show_pagination" class="show_pagination" value="<?php echo _('Go') ?>" />
 			</fieldset>
 	</form>
 	</div>
