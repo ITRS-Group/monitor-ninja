@@ -6,19 +6,15 @@ class Widget_Controller extends Authenticated_Controller {
 		if (!Auth::instance()->logged_in()) {
 			$external_widget_user = Kohana::config('external_widget.username');
 			$external_widget_groups = Kohana::config('external_widget.groups');
-			if ($external_widget_user) {
-				$user = new Op5User(array('username' => $external_widget_user, 'groups' => $external_widget_groups));
-				Op5Authorization::factory()->authorize($user);
-				Auth::instance()->force_user($user);
-			}
+			if ($external_widget_user)
+				Auth::instance()->force_user(new Op5User(array('username' => $external_widget_user, 'groups'=> $external_widget_groups)));
 			// this is so ugly - we'll just redirect to the login page if we don't catch this here,
 			// however we do want that for any URL that isn't the front page of the external widget
 			// feature
-			else if (get_called_class() == 'External_widget_Controller') {
+			else if (get_called_class() == 'External_widget_Controller')
 				die(_('You are trying to access an '.
 					'external widget but the system isn\'t configured properly for this!'.
 					'<br />Please configure the config/external_widget.php config file first.'));
-			}
 		}
 		parent::__construct();
 	}
