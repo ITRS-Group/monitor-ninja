@@ -33,7 +33,7 @@ foreach ($params as $pname => $ary) {
 //	echo '<tr>';
 
 	# help column only printed if we really have a help key
-	echo $use_help ? '<td style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>' : '';
+	echo $use_help ? '<span style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</span>' : '';
 
 	echo '<div class="left" style="padding-right: 20px; border: none;" id="'.$pname.'">'.$ary['name'].'</div><div class="left">';
 
