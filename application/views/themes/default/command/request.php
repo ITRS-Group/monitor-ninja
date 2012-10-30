@@ -23,19 +23,19 @@ foreach ($params as $pname => $ary) {
 }
 
 if (!empty($params)) {
-	echo "<table style=\"margin-top: 20px;\">\n";
+	//echo "<table style=\"margin-top: 20px;\">\n";
 }
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
 	$dflt = false;
 	if (isset($ary['default']))
 		$dflt = $ary['default'];
-	echo '<tr>';
+//	echo '<tr>';
 
 	# help column only printed if we really have a help key
 	echo $use_help ? '<td style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>' : '';
 
-	echo '<td style="padding-right: 30px" id="'.$pname.'">'.$ary['name'].'</td><td>';
+	echo '<div class="left" style="padding-right: 20px; border: none;" id="'.$pname.'">'.$ary['name'].'</div><div class="left">';
 
 	switch ($ary['type']) {
 		case 'select':
@@ -93,15 +93,15 @@ foreach ($params as $pname => $ary) {
 			break;
 	}
 
-	echo "</td></tr>\n";
+	echo "</div>\n";
 }
 
-echo '<tr><td colspan="'.($use_help ? 2 : 1).'">&nbsp;</td><td>';
+echo '<div class="left" style="border: none;">&nbsp;</div><div class="clear"></div><div class="left width-50">';
 echo form::hidden('requested_command', $requested_command);
 echo form::submit('Commit', _('Submit'), 'class="submit"');
 if (!empty($params)) {
 	echo " &nbsp;<input type='reset' value='" . _("Reset") . "'>\n";
 }
-echo '</td></tr></table>';
+echo '</div>';
 echo form::close();
 echo '</div>';

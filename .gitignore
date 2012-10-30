@@ -21,3 +21,12 @@ application/views/themes/default/icons/menu-*.png
 !application/views/themes/default/css/default/ie7.css
 !application/views/themes/default/css/default/jquery-ui-custom.css
 !application/views/themes/default/css/default/reports.css
+!application/views/themes/default/css/dark/ie7.css
+!application/views/themes/default/css/dark/jquery-ui-custom.css
+!application/views/themes/default/css/dark/reports.css
+!application/views/themes/default/css/pink_n_fluffy/ie7.css
+!application/views/themes/default/css/pink_n_fluffy/jquery-ui-custom.css
+!application/views/themes/default/css/pink_n_fluffy/reports.css
+!application/views/themes/default/css/classic/ie7.css
+!application/views/themes/default/css/classic/jquery-ui-custom.css
+!application/views/themes/default/css/classic/reports.css
