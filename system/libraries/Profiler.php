@@ -35,8 +35,6 @@ class Profiler_Core {
 
 		// Add profiler to page output automatically
 		Event::add('system.display', array($this, 'render'));
-
-		Kohana::log('debug', 'Profiler Library initialized');
 	}
 
 	/**

@@ -29,8 +29,6 @@ class Database_Mysql_Driver extends Database_Driver {
 	public function __construct($config)
 	{
 		$this->db_config = $config;
-
-		Kohana::log('debug', 'MySQL Database Driver Initialized');
 	}
 
 	/**

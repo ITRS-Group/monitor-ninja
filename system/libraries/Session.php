@@ -86,8 +86,6 @@ class Session_Core {
 			// Singleton instance
 			self::$instance = $this;
 		}
-
-		Kohana::log('debug', 'Session Library initialized');
 	}
 
 	/**

@@ -204,8 +204,6 @@ class Database_Core {
 		// Validate the driver
 		if ( ! ($this->driver instanceof Database_Driver))
 			throw new Kohana_Database_Exception('core.driver_implements', $this->config['connection']['type'], get_class($this), 'Database_Driver');
-
-		Kohana::log('debug', 'Database Library initialized');
 	}
 
 	/**

@@ -141,8 +141,6 @@ class Input_Core {
 
 			// Create a singleton
 			self::$instance = $this;
-
-			Kohana::log('debug', 'Global GET, POST and COOKIE data sanitized');
 		}
 	}
 
