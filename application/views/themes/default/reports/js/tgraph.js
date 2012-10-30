@@ -46,7 +46,11 @@ var TGraph = function (stops, type, name, max, upscale) {
 		
 		document.body.appendChild(this.hoverbox);
 		
-		document.getElementById('tgraph').appendChild(this.container);
+		var tgraph_el = document.getElementById('tgraph');
+		while( tgraph_el.firstChild ) { /* Remove all children */
+			tgraph_el.removeChild(tgraph_el.firstChild);
+		}
+		tgraph_el.appendChild(this.container);
 	
 };
 
