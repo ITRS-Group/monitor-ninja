@@ -1273,6 +1273,11 @@ class Reports_Model extends Model
 		$sql .= " ON lsc.host_name = report_data.host_name";
 		$sql .= " AND lsc.service_description = report_data.service_description";
 		$sql .= " AND lsc.timestamp = report_data.timestamp";
+		if ( $type == 'service' ) {
+			$sql .= " AND event_type = ".self::SERVICECHECK;
+		} else {
+			$sql .= " AND event_type = ".self::HOSTCHECK;
+		}
 		
 		$dbr = $this->db->query($sql)->result(false);
 		
