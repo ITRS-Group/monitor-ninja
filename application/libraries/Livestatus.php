@@ -910,13 +910,6 @@ class LivestatusBackend {
 					}
 					$stats[] = '(' . implode(' or ', $merge) . ')';
 					break;
-				case 'Columns':
-					foreach( explode(" ", $param) as $column ) {
-						if( !empty( $column ) ) {
-							$result[] = "Column: ".trim($column);
-						}
-					}
-					break;
 				default:
 					$result[] = "$header: $param";
 			}
