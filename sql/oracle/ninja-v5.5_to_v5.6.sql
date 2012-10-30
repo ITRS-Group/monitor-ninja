@@ -6,7 +6,7 @@ UPDATE ninja_widgets SET instance_id=1 WHERE username IS NOT NULL;
 UPDATE ninja_settings SET setting=REPLACE(REPLACE(setting, '|', '-1|'), ',', '-1,') WHERE type='widget_order';
 UPDATE ninja_db_version SET version=5;
 
-ALTER TABLE avail_config ADD include_trends NUMBER(1) DEFAULT 1;
+ALTER TABLE avail_config ADD include_trends NUMBER(1) DEFAULT 0;
 UPDATE avail_db_version SET version=9;
 
 INSERT INTO ninja_widgets ( page, name, friendly_name, setting) VALUES ('tac/index', 'nagvis', 'Nagvis', '');
