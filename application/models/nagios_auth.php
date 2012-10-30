@@ -432,7 +432,7 @@ throw new Exception(__CLASS__.":".__METHOD__." (".__LINE__.'): deprecated');
 		}
 		if ($this->view_services_root === true)
 			return true;
-		$out = Livestatus::instance()->getServices(array('columns' => array('description'), 'filter' => array('host_name' => $service, 'descritpion' => $desc)));
+		$out = Livestatus::instance()->getServices(array('columns' => array('description'), 'filter' => array('host_name' => $service, 'description' => $desc)));
 		return !empty($out);
 	}
 

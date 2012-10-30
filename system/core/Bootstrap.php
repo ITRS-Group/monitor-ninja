@@ -55,6 +55,7 @@ Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 try {
 	Event::run('system.execute');
 } catch (LivestatusException $ex) {
+	Kohana::log('error', $ex->getMessage());
 	Event::run('application.livestatus');
 }
 
