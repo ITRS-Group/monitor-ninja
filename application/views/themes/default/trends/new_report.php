@@ -40,7 +40,7 @@
 						$output_id /* 2: short */
 						);
 					
-					$state_names[$statechanges[$i]['state']] = ucfirst($this->_state_string_name($type, $statechanges[$i]['state']));
+					$state_names[$statechanges[$i]['state']] = ucfirst($this->_state_string_name($obj_type, $statechanges[$i]['state']));
 					
 				}
 				$rawdata[] = $servicerow;
