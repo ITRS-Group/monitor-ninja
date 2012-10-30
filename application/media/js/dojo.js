@@ -23,7 +23,7 @@
 
 		} else {
 
-			menu.style.left = (target.offsetLeft - 10) + 'px';
+			menu.style.left = (target.offsetLeft - 2) + 'px';
 
 			menu.style.display = 'block';
 
