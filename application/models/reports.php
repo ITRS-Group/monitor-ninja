@@ -271,6 +271,7 @@ class Reports_Model extends Model
 		}
 
 		if ($servicename) {
+			$initial_states = $this->get_initial_states('service', $servicename);
 			foreach ($servicename as $service) {
 				$srv = explode(';', $service);
 				$optclass = get_class($this->options);
@@ -285,11 +286,17 @@ class Reports_Model extends Model
 				$sub_class->host_name =  $srv[0];
 				$sub_class->service_description = $srv[1];
 				$sub_class->last_shutdown = $this->last_shutdown;
+				if( isset( $initial_states[$service] ) ) {
+					$sub_class->initial_state = $initial_states[$service];
+				} else {
+					$sub_class->initial_state = self::STATE_PENDING;
+				}
 				$sub_class->st_init();
 				$this->sub_reports[$service] = $sub_class;
 			}
 			$this->st_source = $servicename;
 		} else if ($hostname) {
+			$initial_states = $this->get_initial_states('host', $hostname);
 			foreach ($hostname as $host) {
 				$optclass = get_class($this->options);
 				$opts = new $optclass($this->options);
@@ -302,6 +309,11 @@ class Reports_Model extends Model
 				$sub_class->st_source = $host;
 				$sub_class->host_name = $host;
 				$sub_class->last_shutdown = $this->last_shutdown;
+				if( isset( $initial_states[$host] ) ) {
+					$sub_class->initial_state = $initial_states[$host];
+				} else {
+					$sub_class->initial_state = self::STATE_PENDING;
+				}
 				$sub_class->st_init();
 				$this->sub_reports[$host] = $sub_class;
 			}
@@ -916,7 +928,8 @@ class Reports_Model extends Model
 		}
 		else {
 			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth());
-			$this->st_real_state = $this->filter_excluded_state($this->get_initial_state());
+			$initial_state = $this->get_initial_state();
+			$this->st_real_state = $this->filter_excluded_state($initial_state);
 			$this->calculate_object_state($this->st_real_state);
 		}
 
@@ -1223,6 +1236,60 @@ class Reports_Model extends Model
 		return $this->initial_dt_depth;
 	}
 
+	
+	public function get_initial_states( $type = 'host', $names = array() ) {
+		
+		$objectmatches = array();
+		if( $type == 'service' ) {
+			foreach( $names as $name ) {
+				list( $host, $srv ) = explode( ';', $name, 2 );
+				$objectmatches[] = '(host_name = '
+						. $this->db->escape($host)
+						. ' AND service_description = '
+						. $this->db->escape($srv)
+						. ')';
+			}
+		} else {
+			foreach( $names as $name ) {
+				$objectmatches[] = 'host_name = '
+						. $this->db->escape($name);
+			}
+		}
+		
+		$sql  = "SELECT DISTINCT lsc.host_name as host_name, lsc.service_description as service_description, report_data.state as state FROM (";
+		$sql .= "SELECT host_name, service_description, max( timestamp ) as timestamp FROM ".$this->db_table;
+		$sql .= " WHERE (".implode(' OR ',$objectmatches).")";
+		if ( $type == 'service' ) {
+			$sql .= " AND event_type = ".self::SERVICECHECK;
+		} else {
+			$sql .= " AND event_type = ".self::HOSTCHECK;
+		}
+		if (!$this->options['includesoftstates'])
+			$sql .= " AND hard = 1";
+		$sql .= " AND timestamp < ".$this->options['start_time'];
+		$sql .= " GROUP BY host_name,service_description";
+		$sql .= ") AS lsc";
+		$sql .= " LEFT JOIN ".$this->db_table;
+		$sql .= " ON lsc.host_name = report_data.host_name";
+		$sql .= " AND lsc.service_description = report_data.service_description";
+		$sql .= " AND lsc.timestamp = report_data.timestamp";
+		
+		$dbr = $this->db->query($sql)->result(false);
+		
+		$states = array();
+		if ( $type == 'service' ) {
+			foreach( $dbr as $staterow ) {
+				$states[ $staterow['host_name'] . ';' . $staterow['service_description'] ] = $staterow['state'];
+			}
+		} else {
+			foreach( $dbr as $staterow ) {
+				$states[ $staterow['host_name'] ] = $staterow['state'];
+			}
+		}
+		
+		return $states;
+	}
+	
 	/**
 	 * Get initital state from db. This is usually required when
 	 * selecting states for a host/service when the selected start
@@ -1235,6 +1302,11 @@ class Reports_Model extends Model
 	{
 		if (empty($this->host_name) && empty($this->service_description))
 			return false;
+
+		/* Someone force-pushed a initial_state to us, so we don't need to look for it... */
+		if( isset( $this->initial_state ) ) {
+			return $this->initial_state;
+		}
 
 		$sql = "SELECT timestamp, state FROM " .
 			$this->db_table .
@@ -1266,6 +1338,7 @@ class Reports_Model extends Model
 		} else {
 			$initial_state = self::STATE_PENDING;
 		}
+		
 		return $initial_state;
 	}
 
