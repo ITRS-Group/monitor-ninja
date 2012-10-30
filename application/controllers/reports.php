@@ -571,6 +571,7 @@ class Reports_Controller extends Base_reports_Controller
 			$template->trends_graph->graph_start_date = $this->options['start_time'];
 			$template->trends_graph->graph_end_date = $this->options['end_time'];
 			$template->trends_graph->use_scaling = $this->options['include_trends_scaling'];
+			$template->trends_graph->obj_type = $sub_type;
 			$template->trends_graph->graph_pure_data = $this->trends_graph_model->format_graph_data(
 				$graph_data
 			);

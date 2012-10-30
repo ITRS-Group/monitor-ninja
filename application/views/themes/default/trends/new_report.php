@@ -13,6 +13,10 @@
 
 			$rawdata = array();
 			$labels = array();
+			$state_names = array();
+			$outputs = array();
+			$outputs_r = array();
+			
 			foreach ($graph_pure_data as $service => $statechanges) {
 			
 				$labels[] = $service;
@@ -21,27 +25,36 @@
 				
 				for ($i = 0; $i < count($statechanges); $i++) {
 					
-					$type = $statechanges[$i]['object_type'];
-														
+					$cur_out = $statechanges[$i]['output'];
+					if( isset( $outputs_r[$cur_out] ) ) {
+						$output_id = $outputs_r[$cur_out];
+					} else {
+						$output_id = count($outputs);
+						$outputs[] = $cur_out;
+						$outputs_r[$cur_out] = $output_id;
+					}
+					
 					$servicerow[] = array(
-						$statechanges[$i]['duration'], /* 0: Duration */
-						ucfirst($this->_state_string_name($type, $statechanges[$i]['state'])), /* 1: Label */
-						$statechanges[$i]['output'] /* 2: short */
+						$statechanges[$i]['duration'], /* 0: duration */
+						$statechanges[$i]['state'], /* 1: state */
+						$output_id /* 2: short */
 						);
+					
+					$state_names[$statechanges[$i]['state']] = ucfirst($this->_state_string_name($type, $statechanges[$i]['state']));
 					
 				}
 				$rawdata[] = $servicerow;
 				
 			}
-
-			$colors = array();
-			foreach( $this->_state_color_table($type) as $state => $color ) {
-				$colors[ucfirst($this->_state_string_name($type,$state))] = $color;
-			}
+			$colors = $this->_state_color_table($obj_type);
+			
 		?>
+
 		
 		var rawdata = <?php echo json_encode($rawdata); ?>,
+			short_names = <?php echo json_encode($outputs); ?>,
 			labels = <?php echo json_encode($labels); ?>,
+			state_names = <?php echo json_encode($state_names); ?>,
 			colors = <?php echo json_encode($colors); ?>;
 
 
@@ -51,8 +64,8 @@
 			for( var j=0; j<rawdata[i].length; j++ ) {
 				data[i][j] = {
 					'duration': rawdata[i][j][0],
-					'label': rawdata[i][j][1],
-					'short': rawdata[i][j][2],
+					'label': state_names[rawdata[i][j][1]],
+					'short': short_names[rawdata[i][j][2]],
 					'color': colors[rawdata[i][j][1]]
 				};
 			}
