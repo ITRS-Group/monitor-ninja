@@ -461,10 +461,6 @@ input#summary_items{
 	background: none;
 }
 
-.iseditable_txtarea {
-	width: 80%;
-}
-
 td.iseditable input {
 	width: auto;
 	display: block;
