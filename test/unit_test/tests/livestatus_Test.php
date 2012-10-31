@@ -6,7 +6,7 @@
  */
 class Livestatus_Test extends TapUnit {
     public function setUp() {
-		Auth::instance()->force_user(new Op5User_AlwaysAuth());
+		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
         $this->ls = Livestatus::instance();
         $this->ok(is_object($this->ls), 'created livestatus object');
         $this->lsb = $this->ls->getBackend();

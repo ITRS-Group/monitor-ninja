@@ -184,7 +184,7 @@ class Default_Controller extends Ninja_Controller  {
 			exit(1);
 		}
 
-		$op5_auth = Op5Auth::factory();
+		$op5_auth = Op5Auth::factory(array('session_key' => false));
 		$op5_auth->force_user(new Op5User_AlwaysAuth());
 
 		if ($period_str === 'downtime') {

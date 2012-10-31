@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 class report_Test extends TapUnit {
 	public function setUp() {
-		$this->auth = Auth::instance()->force_user(new Op5User_AlwaysAuth());
+		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 	}
 	public function test_overlapping_timeperiods() {
 		$opts = array(
