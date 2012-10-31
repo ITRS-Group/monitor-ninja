@@ -328,7 +328,7 @@ class Cli_Controller extends Authenticated_Controller {
 				// no levels, no group, no action
 			} else if (count($levels) === count($row)) {
 				// all levels, superuser
-				$user['groups'] = array('op5_admins');
+				$user['groups'] = array('admins');
 			} else {
 				if (isset($groups['user_'.$username]))
 					$group = $groups['user_'.$username];
