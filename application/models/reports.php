@@ -1271,10 +1271,10 @@ class Reports_Model extends Model
 	 */
 	public function get_initial_dt_depth()
 	{
-		if( isset($this->prefetched_dt_depth) ) {
+		/*if( isset($this->prefetched_dt_depth) ) {
 			$this->initial_dt_depth = $this->prefetched_dt_depth;
 			return $this->initial_dt_depth;
-		}
+		}*/
 		if ($this->initial_dt_depth != false)
 			return $this->initial_dt_depth;
 
