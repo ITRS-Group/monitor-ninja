@@ -276,7 +276,12 @@ class Summary_Controller extends Base_reports_Controller
 
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
-		$helptexts = array();
+		$helptexts = array(
+			"standardreport" => _("Choose the type of report you want from the list of predefined summary reports."),
+			"skin" => _("Choose a skin for your summary report."),
+			"summary_items" => _("Enter the number of items you wish the report to contain."),
+			"description" => _("Optional. Enter a text description of the generated report."),
+			);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
