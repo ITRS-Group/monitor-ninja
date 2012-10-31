@@ -84,7 +84,6 @@ class Auth_Core {
 	public function get_user()
 	{
 		$user = op5auth::instance()->get_user();
-		Kohana::log( 'debug', 'User: ' . var_export( $user, true ) );
 		return $user;
 	}
 	
