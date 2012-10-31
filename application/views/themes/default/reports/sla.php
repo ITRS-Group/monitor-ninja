@@ -44,13 +44,13 @@ foreach($report_data as $i =>  $report) {
 		<table class="auto" border="1">
 
 			<tr>
-				<th class="headerNone"></th>
+				<th></th>
 				<?php
 					$n = 0;
 					foreach ($data as $month => $values) {
 					$n++;
 				?>
-				<th class="headerNone"><?php echo date('M', $month) ?></th>
+				<th><?php echo date('M', $month) ?></th>
 				<?php } ?>
 			</tr>
 			<tr class="even">
@@ -81,11 +81,11 @@ foreach($report_data as $i =>  $report) {
 		</table>
 	</div>
 	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0) { ?>
-	<div class="setup-table members">
+	<div class="members">
 
 		<table style="margin-bottom: 20px;">
 			<caption style="margin-top: 15px;"><?php echo help::render('sla_group_members').' '._('Group members');?></caption>
-			<tr><th class="headerNone"><?php echo is_string($report['name']) ? $report['name'] : _('Custom group') ?></th></tr>
+			<tr><th><?php echo is_string($report['name']) ? $report['name'] : _('Custom group') ?></th></tr>
 			<?php
 				$x = 0;
 				foreach($report['member_links'] as $member_link) {
