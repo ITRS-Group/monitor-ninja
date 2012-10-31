@@ -65,8 +65,6 @@ $(document).ready(function() {
 
 	// delete the report (and all the schedules if any)
 	$("#delete_report").click(confirm_delete_report);
-
-	get_sla_values();
 });
 
 function populate_saved_sla_data(json_data) {
