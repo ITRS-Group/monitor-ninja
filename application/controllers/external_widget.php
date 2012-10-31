@@ -52,6 +52,9 @@ class External_widget_Controller extends Widget_Controller {
 		}
 		if (!isset($model->id) || !$model->id)
 			$model->save();
+		$user = Auth::instance()->get_user();
+		$_SESSION['external_widget_username'] = $user->username;
+		$_SESSION['external_widget_groups'] = $user->groups;
 		$widget = widget::add($model, $this);
 
 		$this->template->inline_js = $this->inline_js;
