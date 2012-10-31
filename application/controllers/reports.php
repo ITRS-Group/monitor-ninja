@@ -271,8 +271,6 @@ class Reports_Controller extends Base_reports_Controller
 				$objects[] = $obj;
 		}
 
-		$get_vars = $this->options->as_keyval_string(true);
-
 		# fetch data
 		if ($this->type == 'avail') {
 			$data_arr = $is_group
@@ -346,6 +344,7 @@ class Reports_Controller extends Base_reports_Controller
 		$template->header->report_time_formatted = $report_time_formatted;
 
 		# avail, more than one object
+		$get_vars = $this->options->as_keyval_string(true);
 		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
 			$template_values = array();
 			if ($is_group) {

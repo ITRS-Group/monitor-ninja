@@ -19,6 +19,18 @@ class Sla_options_Core extends Report_options {
 
 	}
 
+	/**
+	 * Special case the prevalidation of weird month-column names in
+	 * parent::create_options_obj()
+	 *
+	 * @param $key string a key that could be in the vtypes array but isn't,
+	 * but we still need to know about it
+	 * @return boolean
+	 */
+	public function always_allow_option_to_be_set($key) {
+		return preg_match('/^month/', trim($key));
+	}
+
 	public function set($name, $value)
 	{
 		$resp = parent::set($name, $value);

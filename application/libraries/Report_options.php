@@ -145,6 +145,15 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		unset($this->options[$key]);
 	}
 
+	/**
+	 * @param $key string a key that could be in the vtypes array but isn't,
+	 * but we still need to know about it
+	 * @return boolean
+	 */
+	public function always_allow_option_to_be_set($key) {
+		return false;
+	}
+
 	public function get_alternatives($key) {
 		if (!isset($this->vtypes[$key]))
 			return false;
@@ -591,7 +600,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 		$keep_boolean_values = false;
 		if (isset($options['report_id'])) {
-			//if(count($options) == 1) {
 			if(
 				count($options) == 1 ||
 				(isset($options['output_format']) && $options['output_format'] == 'pdf' && count($options) == 2)
@@ -605,9 +613,12 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			if ($saved_report_info) {
 				foreach ($saved_report_info as $key => $sri) {
 					if (
-						isset($options->vtypes[$key]) &&
-						($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) &&
-						(!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])
+						$options->always_allow_option_to_be_set($key) ||
+						(
+							isset($options->vtypes[$key]) &&
+							($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) &&
+							(!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])
+						)
 					) {
 						$options[$key] = $sri;
 					}
