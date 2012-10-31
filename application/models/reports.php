@@ -292,11 +292,11 @@ class Reports_Model extends Model
 				} else {
 					$sub_class->initial_state = self::STATE_PENDING;
 				}
-				if( isset( $downtimes[$service] ) ) {
-					$sub_class->prefetched_dt_depth = $downtimes[$service];
-				} else {
-					$sub_class->prefetched_dt_depth = false;
-				}
+				$sub_class->prefetched_dt_depth = false;
+				if( isset( $downtimes[$service] ) && $downtimes[$service] )
+					$sub_class->prefetched_dt_depth = true;
+				if( isset( $downtimes[$srv[0].';'] ) && $downtimes[$srv[0].';'] ) /* Host scheduled */
+					$sub_class->prefetched_dt_depth = true;
 				$sub_class->st_init();
 				$this->sub_reports[$service] = $sub_class;
 			}
@@ -1271,10 +1271,10 @@ class Reports_Model extends Model
 	 */
 	public function get_initial_dt_depth()
 	{
-		/*if( isset($this->prefetched_dt_depth) ) {
+		if( isset($this->prefetched_dt_depth) ) {
 			$this->initial_dt_depth = $this->prefetched_dt_depth;
 			return $this->initial_dt_depth;
-		}*/
+		}
 		if ($this->initial_dt_depth != false)
 			return $this->initial_dt_depth;
 
