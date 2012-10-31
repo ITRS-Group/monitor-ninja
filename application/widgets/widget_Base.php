@@ -159,14 +159,13 @@ class widget_Base
 				$content .= '</div>';
 			}
 
-			$content .= '<div class="%%WIDGET_CLASS%%">'; 	// Clear and end widget header and start widget content
+			$content .= '<div class="%%WIDGET_CLASS%%" style="overflow: auto;">'; 	// Clear and end widget header and start widget content
 			
 		}
 		ob_start();
 		$this->$method();
 		
-		if (strpos(ob_get_contents(), 'could not be found') > 0 && 
-				strpos(ob_get_contents(), 'The requested core.widgets') > 0) {
+		if (gettype($this->widget_base_path) === 'boolean') {
 			$content .= '<h2>Widget Error</h2><br />';
 			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content-error', $content);
 		} else {
