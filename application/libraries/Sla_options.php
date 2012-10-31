@@ -2,7 +2,7 @@
 
 class Sla_options_Core extends Report_options {
 	public function __construct($options) {
-		unset($this->vtypes['include_trends']);
+		unset($this->vtypes['include_trends'], $this->vtypes['include_trends_scaling']);
 		// Warning! months is 1-indexed
 		$this->vtypes['months'] = array('type' => 'array', 'default' => false);
 
@@ -16,6 +16,7 @@ class Sla_options_Core extends Report_options {
 			"lastquarter" => _('Last Quarter'),
 			"last12months" => _('Last 12 months')
 		));
+
 	}
 
 	public function set($name, $value)
