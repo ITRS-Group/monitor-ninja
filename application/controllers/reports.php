@@ -1062,7 +1062,7 @@ class Reports_Controller extends Base_reports_Controller
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
-			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
 	}
 }
 

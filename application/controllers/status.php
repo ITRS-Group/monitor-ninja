@@ -903,6 +903,6 @@ class Status_Controller extends Authenticated_Controller {
 			echo $helptexts[$id];
 		}
 		else
-			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
 	}
 }
