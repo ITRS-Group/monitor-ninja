@@ -121,7 +121,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 				if ( Kohana::config('nagvis.nagvis_path') ) {
 					$lable_statusmap = _('Locate Host On Map');
-					echo '<a href="'.url::base(true).'statusmap/host/'.urlencode($host->host_name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/locate-host-on-map.png').'" alt="'.$lable_statusmap.'" title="'.$lable_statusmap.'" /></a> ';
+					echo '<a href="'.url::base(true).'nagvis/automap/host/'.urlencode($host->host_name).'" style="border: 0px"><img src="'.ninja::add_path('icons/16x16/locate-host-on-map.png').'" alt="'.$lable_statusmap.'" title="'.$lable_statusmap.'" /></a> ';
 				}
 
 				$lable_svc_status = _('View Service Details For This Host');
