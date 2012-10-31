@@ -120,7 +120,7 @@ class Router_Core {
 					    AND is_file($c) AND (!IN_PRODUCTION || (strpos($c, $dir) === 0)))
 					{
 						// Set controller name
-						self::$controller = $segment;
+						self::$controller = str_replace('op5', null, $segment);
 
 						// Change controller path
 						self::$controller_path = $c;
