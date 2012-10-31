@@ -180,7 +180,7 @@ class Default_Controller extends Ninja_Controller  {
 
 		if (empty($cli_access)) {
 			# CLI access is turned off in config/config.php
-			fwrite(STDERR, "No cli access\n");
+			Kohana::log('error', 'No cli access');
 			exit(1);
 		}
 
@@ -197,7 +197,7 @@ class Default_Controller extends Ninja_Controller  {
 		try {
 			$controller->cron($period_str);
 		} catch(Exception $e) {
-			fwrite(STDERR, $e->getMessage()."\n");
+			Kohana::log('error', $e->getMessage());
 			exit(1);
 		}
 		exit(0);

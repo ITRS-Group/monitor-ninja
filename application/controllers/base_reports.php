@@ -55,20 +55,20 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 	/**
 	 * Generate PDF instead of normal rendering. Uses shell
-	 * 
+	 *
 	 * Assumes that $this->template is set up correctly
 	 */
 	protected function generate_pdf()
 	{
 		$this->template->base_href = 'http://127.0.0.1'.url::base();
-		
+
 		# not using exec, so STDERR (used for status info) will be loggable
 		$pipe_desc = array(
 			0 => array('pipe', 'r'),
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		
+
 		$command = Kohana::config('reports.pdf_command');
 		Kohana::log('debug', "Running pdf generation command '$command'");
 		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
@@ -77,7 +77,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			// Render and store output
 			$content = $this->template->render();
 			$this->auto_render = false;
-			
+
 			$filename = $this->type;
 			if ($this->options['schedule_id']) {
 				$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
@@ -90,24 +90,22 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 			fwrite($pipes[0], $content);
 			fclose($pipes[0]);
-			
+
 			$out = stream_get_contents($pipes[1]);
 			$err = stream_get_contents($pipes[2]);
 			if (trim($out)) {
 				header("Content-disposition: attachment; filename=$filename");
 				header('Content-Type: application/pdf');
 				echo $out;
-			}
-			else {
-				echo $err;
-			}
-			if ($err)
+			} else {
 				Kohana::log('error', $err);
+			}
 			fclose($pipes[1]);
 			fclose($pipes[2]);
 			proc_close($process);
 		} else {
-			echo "Tried running command $command but was unsuccessful";
+			Kohana::log('error', "Tried running the following command but was unsuccessful:");
+			Kohana::log('error', $command);
 		}
 	}
 
@@ -128,14 +126,14 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		$this->auto_render=false;
 
 		$return = false;
-		if ($this->options['report_name'] !== false) {
-			$report_id = Saved_reports_Model::edit_report_info($this->type, $this->options['report_id'], $this->options);
-			if ($report_id) {
-				return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $report_id));
-			}
-			return json::fail(_('Unable to save this report.'));
+		if (!$this->options['report_name']) {
+			return json::fail(_('Unable to save this report, report name missing.'));
 		}
-		return json::fail(_('Unable to save this report, report name missing.'));
+		$report_id = Saved_reports_Model::edit_report_info($this->type, $this->options['report_id'], $this->options);
+		if ($report_id) {
+			return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $report_id));
+		}
+		return json::fail(_('Unable to save this report.'));
 	}
 
 	public function delete() {

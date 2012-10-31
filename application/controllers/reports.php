@@ -182,6 +182,10 @@ class Reports_Controller extends Base_reports_Controller
 	 */
 	public function generate($input=false)
 	{
+		if(!Auth::instance()->get_user()->logged_in() && PHP_SAPI == 'cli') {
+			$op5_auth = Op5Auth::factory();
+			$op5_auth->force_user(new Op5User_AlwaysAuth());
+		}
 		$this->setup_options_obj($input);
 		
 		$this->reports_model = new Reports_Model($this->options);

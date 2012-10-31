@@ -193,19 +193,24 @@ class Schedule_Controller extends Authenticated_Controller
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?'.$opts).' '.escapeshellarg(Auth::instance()->get_user()->username);
+		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?output_format=pdf&report_id='.$opt_obj['report_id']);
 		$process = proc_open($cmd, $pipe_desc, $pipes, DOCROOT);
+		Kohana::log('debug', $cmd);
 		if (is_resource($process)) {
 			fwrite($pipes[0], "\n");
 			fclose($pipes[0]);
 			$out = stream_get_contents($pipes[1]);
 			$err = stream_get_contents($pipes[2]);
+			if($err) {
+				Kohana::log('error', $err);
+			}
 			fclose($pipes[1]);
 			fclose($pipes[2]);
 			$code = proc_close($process);
 		}
 		else {
-			$err = "Couldn't execute cmd";
+			Kohana::log('error', "Couldn't successfully execute this command:");
+			Kohana::log('error', $cmd);
 			$code = -128;
 		}
 		$save = false;

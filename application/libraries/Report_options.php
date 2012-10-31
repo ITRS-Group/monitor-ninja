@@ -591,15 +591,24 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 		$keep_boolean_values = false;
 		if (isset($options['report_id'])) {
-			if(count($options) == 1) {
-				// only report id is set, which means we're not *basing* our options
-				// on a saved report, but rather *fetching a persisted, complete report*
+			//if(count($options) == 1) {
+			if(
+				count($options) == 1 ||
+				(isset($options['output_format']) && $options['output_format'] == 'pdf' && count($options) == 2)
+			) {
+				Kohana::log('debug', 'This appears to be a saved report. Am I wrong?');
+				// this means we're not *basing* our options on a saved report,
+				// but rather *fetching a persisted, complete report*
 				$keep_boolean_values = true;
 			}
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $options['report_id']);
 			if ($saved_report_info) {
 				foreach ($saved_report_info as $key => $sri) {
-					if (isset($options->vtypes[$key]) && ($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) && (!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])) {
+					if (
+						isset($options->vtypes[$key]) &&
+						($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) &&
+						(!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])
+					) {
 						$options[$key] = $sri;
 					}
 				}
