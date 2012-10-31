@@ -1236,7 +1236,12 @@ class Reports_Model extends Model
 		return $this->initial_dt_depth;
 	}
 
-	
+
+	/**
+	 * @param $type string = 'host'
+	 * @param $names array = array()
+	 * @return array
+	 */
 	public function get_initial_states( $type = 'host', $names = array() ) {
 		
 		$objectmatches = array();
