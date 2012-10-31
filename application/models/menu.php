@@ -18,7 +18,7 @@ class Menu_Model extends Model
 		include(APPPATH.'views/'.$theme_path.'menu/menu.php');
 		$logged_in_users_groups = Op5Auth::instance()->get_groups();
 		$ninja_menu = Op5Config::instance()->getConfig('ninja_menu');
-		foreach(array_intersect($logged_in_users_groups, array_keys((array) $ninja_menu)) as $section) {
+		foreach(array_intersect((array)$logged_in_users_groups, array_keys((array) $ninja_menu)) as $section) {
 			$this->remove_menu_items($menu_base, $menu_items, $ninja_menu[$section]);
 		}
 		return $menu_base;
