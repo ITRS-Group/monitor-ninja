@@ -33,9 +33,10 @@ foreach ($params as $pname => $ary) {
 //	echo '<tr>';
 
 	# help column only printed if we really have a help key
-	echo $use_help ? '<span style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</span>' : '';
 
-	echo '<div class="left" style="padding-right: 20px; border: none;" id="'.$pname.'">'.$ary['name'].'</div><div class="left">';
+	echo '<div class="" style="padding: 2px 0 0 10px; " id="'.$pname.'">';
+	echo $use_help ? '<span style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</span>&nbsp;' : '';
+	echo $ary['name'].'&nbsp;&nbsp;';
 
 	switch ($ary['type']) {
 		case 'select':
@@ -43,12 +44,12 @@ foreach ($params as $pname => $ary) {
 				if ($dflt && false !== array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
-				echo form::dropdown(array('name' => $form_name, 'id' => 'field_'.$pname), $ary['options'], $dflt);
+				echo form::dropdown(array('name' => $form_name, 'id' => 'field_'.$pname, 'style' => 'width: auto;'), $ary['options'], $dflt);
 			} elseif ($requested_command == 'DEL_ALL_SVC_COMMENTS' || $requested_command == 'DEL_ALL_HOST_COMMENTS') {
 				if ($dflt && false !== array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
-				echo form::dropdown(array('name' => $form_name.'[]', 'id' => 'field_'.$pname, 'multiple' => 'multiple'), $ary['options'], $dflt);
+				echo form::dropdown(array('name' => $form_name.'[]', 'id' => 'field_'.$pname, 'multiple' => 'multiple', 'style' => 'width: auto;'), $ary['options'], $dflt);
 			} else if (!empty($dflt)) {
 				$tmp_obj = false;
 				foreach($dflt as $tmp) {
@@ -58,7 +59,7 @@ foreach ($params as $pname => $ary) {
 				if($size > 15) {
 					$size = 15;
 				}
-				echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size), $tmp_obj);
+				echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size, 'style' => 'width: auto;'), $tmp_obj);
 			}
 			break;
 		case 'checkbox':
@@ -82,7 +83,7 @@ foreach ($params as $pname => $ary) {
 				$dflt = current($dflt);
 			}
 			echo form::hidden($form_name, $dflt);
-			echo $dflt;
+			echo '<b style="font-weight: bold;">'.$dflt.'</b>';
 			break;
 		case 'string':
 		default:
