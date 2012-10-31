@@ -16,10 +16,16 @@
 	*
 	*/
 
+	$show_settings = ((isset($widgets) && is_array($widgets)) || (!isset($disable_refresh) || $disable_refresh === false));
+
 	$shortcuts = array('internal' => array(), 'external' => array());
 
 	$shortcuts['internal'][] = array('#', 'refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
-	$shortcuts['internal'][] = array('#', 'settings', array('title' => 'Settings', 'id' => 'settings_icon'));
+
+	if ($show_settings) {
+		$shortcuts['internal'][] = array('#', 'settings', array('title' => 'Settings', 'id' => 'settings_icon'));
+	}
+
 	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
 		$shortcuts['internal'][] = array('#', 'notifications', array('title' => 'Global Notifications', 'id' => 'global_notifications_icon'));
 	}
@@ -125,6 +131,9 @@
 	}
 ?>
 
+<?php
+	if ($show_settings) {
+?>
 <div id="page_settings" class="page_settings">
 	<ul>
 		<li id="menu_global_settings" <?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
@@ -162,3 +171,7 @@
 	</ul>
 	
 </div>
+
+<?php
+	}
+?>
