@@ -98,7 +98,14 @@ $(document).ready(function() {
 				.css('position', 'absolute')
 				.css('top', this.offsetHeight + this.offsetTop + 5)
 				.css('right', '0')
-				.show();
+				.show()
+				.find('input[name=report_name]')
+					.map(function() {
+						var input = this;
+						if(input.value == "") {
+							input.focus();
+						}
+					});
 				direct_link_visible = true;
 		} else {
 			$('#save_report_form').hide();
