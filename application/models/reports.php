@@ -272,6 +272,7 @@ class Reports_Model extends Model
 
 		if ($servicename) {
 			$initial_states = $this->get_initial_states('service', $servicename);
+			$downtimes = $this->get_initial_dt_depths('service', $servicename);
 			foreach ($servicename as $service) {
 				$srv = explode(';', $service);
 				$optclass = get_class($this->options);
@@ -291,12 +292,18 @@ class Reports_Model extends Model
 				} else {
 					$sub_class->initial_state = self::STATE_PENDING;
 				}
+				if( isset( $downtimes[$service] ) ) {
+					$sub_class->prefetched_dt_depth = $downtimes[$service];
+				} else {
+					$sub_class->prefetched_dt_depth = false;
+				}
 				$sub_class->st_init();
 				$this->sub_reports[$service] = $sub_class;
 			}
 			$this->st_source = $servicename;
 		} else if ($hostname) {
 			$initial_states = $this->get_initial_states('host', $hostname);
+			$downtimes = $this->get_initial_dt_depths('host', $hostname);
 			foreach ($hostname as $host) {
 				$optclass = get_class($this->options);
 				$opts = new $optclass($this->options);
@@ -313,6 +320,11 @@ class Reports_Model extends Model
 					$sub_class->initial_state = $initial_states[$host];
 				} else {
 					$sub_class->initial_state = self::STATE_PENDING;
+				}
+				if( isset( $downtimes[$host] ) ) {
+					$sub_class->prefetched_dt_depth = $downtimes[$host];
+				} else {
+					$sub_class->prefetched_dt_depth = false;
 				}
 				$sub_class->st_init();
 				$this->sub_reports[$host] = $sub_class;
@@ -1197,7 +1209,61 @@ class Reports_Model extends Model
 
 		return $this->db->query($sql)->result(false);
 	}
-
+	
+	/**
+	 * Fetch information about SCHEDULED_DOWNTIME status for multiple objects
+	 *
+	 * @return array of Depth of initial downtime.
+	 */
+	public function get_initial_dt_depths( $type = 'host', $names = array() )
+	{
+		$objectmatches = array();
+		if( $type == 'service' ) {
+			foreach( $names as $name ) {
+				list( $host, $srv ) = explode( ';', $name, 2 );
+				$objectmatches[] = '(host_name = '
+						. $this->db->escape($host)
+						. ' AND (service_description = "" OR service_description IS NULL'
+						. ' OR service_description = '
+						. $this->db->escape($srv)
+						. '))';
+			}
+		} else {
+			foreach( $names as $name ) {
+				$objectmatches[] = '(host_name = '
+						. $this->db->escape($name)
+						. ' AND (service_description = "" OR service_description IS NULL))';
+			}
+		}
+		
+		$sql  = "SELECT DISTINCT lsc.host_name as host_name, lsc.service_description as service_description, rd.event_type as event_type FROM (";
+		$sql .= "SELECT host_name, service_description, max( timestamp ) as timestamp FROM ".$this->db_table;
+		$sql .= " WHERE (".implode(' OR ',$objectmatches).")";
+		$sql .= " AND (event_type = ".self::DOWNTIME_START." OR event_type = ".self::DOWNTIME_STOP.")";
+		$sql .= " AND timestamp < ".$this->options['start_time'];
+		$sql .= " GROUP BY host_name,service_description";
+		$sql .= ") AS lsc";
+		$sql .= " LEFT JOIN ".$this->db_table." AS rd";
+		$sql .= " ON lsc.host_name = rd.host_name";
+		$sql .= " AND lsc.service_description = rd.service_description";
+		$sql .= " AND lsc.timestamp = rd.timestamp";
+		$sql .= " AND (event_type = ".self::DOWNTIME_START." OR event_type = ".self::DOWNTIME_STOP.")";
+		
+		$dbr = $this->db->query($sql)->result(false);
+		
+		$downtimes = array();
+		foreach( $dbr as $staterow ) {
+			$in_downtime = ($staterow['event_type'] == self::DOWNTIME_START);
+			if ( $type == 'service' ) {
+				$downtimes[ $staterow['host_name'] . ';' . $staterow['service_description'] ] = $in_downtime;
+			} else {
+				$downtimes[ $staterow['host_name'] ] = $in_downtime;
+			}
+		}
+		
+		return $downtimes;
+	}
+	
 	/**
 	 * Fetch information about SCHEDULED_DOWNTIME status
 	 *
@@ -1205,6 +1271,10 @@ class Reports_Model extends Model
 	 */
 	public function get_initial_dt_depth()
 	{
+		if( isset($this->prefetched_dt_depth) ) {
+			$this->initial_dt_depth = $this->prefetched_dt_depth;
+			return $this->initial_dt_depth;
+		}
 		if ($this->initial_dt_depth != false)
 			return $this->initial_dt_depth;
 
@@ -1220,7 +1290,7 @@ class Reports_Model extends Model
 			" AND host_name = ".$this->db->escape($this->host_name);
 
 		if (empty($this->service_description))
-			$sql .= " AND service_description IS NULL OR service_description = ''";
+			$sql .= " AND (service_description IS NULL OR service_description = '')";
 		else
 			$sql .= " AND (service_description IS NULL OR service_description = '' " .
 				"OR service_description = ".$this->db->escape($this->service_description).')';
@@ -1233,17 +1303,17 @@ class Reports_Model extends Model
 
 		$this->register_db_time($row['timestamp']);
 		$this->initial_dt_depth = $row['event_type'] == self::DOWNTIME_START;
+		
 		return $this->initial_dt_depth;
 	}
 
-
 	/**
-	 * @param $type string = 'host'
-	 * @param $names array = array()
-	 * @return array
+     * Get inital states of a set of objects
+     *
+	 * @return array of initial states
 	 */
-	public function get_initial_states( $type = 'host', $names = array() ) {
-		
+	public function get_initial_states( $type = 'host', $names = array() )
+	{
 		$objectmatches = array();
 		if( $type == 'service' ) {
 			foreach( $names as $name ) {
@@ -1256,12 +1326,13 @@ class Reports_Model extends Model
 			}
 		} else {
 			foreach( $names as $name ) {
-				$objectmatches[] = 'host_name = '
-						. $this->db->escape($name);
+				$objectmatches[] = '(host_name = '
+						. $this->db->escape($name)
+						. ' AND (service_description = "" OR service_description IS NULL))';
 			}
 		}
 		
-		$sql  = "SELECT DISTINCT lsc.host_name as host_name, lsc.service_description as service_description, report_data.state as state FROM (";
+		$sql  = "SELECT DISTINCT lsc.host_name as host_name, lsc.service_description as service_description, rd.state as state FROM (";
 		$sql .= "SELECT host_name, service_description, max( timestamp ) as timestamp FROM ".$this->db_table;
 		$sql .= " WHERE (".implode(' OR ',$objectmatches).")";
 		if ( $type == 'service' ) {
@@ -1274,10 +1345,10 @@ class Reports_Model extends Model
 		$sql .= " AND timestamp < ".$this->options['start_time'];
 		$sql .= " GROUP BY host_name,service_description";
 		$sql .= ") AS lsc";
-		$sql .= " LEFT JOIN ".$this->db_table;
-		$sql .= " ON lsc.host_name = report_data.host_name";
-		$sql .= " AND lsc.service_description = report_data.service_description";
-		$sql .= " AND lsc.timestamp = report_data.timestamp";
+		$sql .= " LEFT JOIN ".$this->db_table." AS rd";
+		$sql .= " ON lsc.host_name = rd.host_name";
+		$sql .= " AND lsc.service_description = rd.service_description";
+		$sql .= " AND lsc.timestamp = rd.timestamp";
 		if ( $type == 'service' ) {
 			$sql .= " AND event_type = ".self::SERVICECHECK;
 		} else {
