@@ -168,7 +168,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 * @param string $type The type of objects in $arr. Valid values are "hostgroup" or "servicegroup".
 	 * @return array Calculated uptimes.
 	 */
-	protected function _expand_group_request($arr, $type, $options = false)
+	protected function _expand_group_request(array $arr, $type, $options = false)
 	{
 		if (!$options) {
 			$optclass = get_class($this->options);
