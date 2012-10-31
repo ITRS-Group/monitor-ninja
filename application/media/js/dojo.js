@@ -49,8 +49,9 @@
 		if(mc) {
 			mc.style.display = 'none'; // @todo fix
 		}
-		bc.style.boxShadow = 'none';
-		
+		if (bc) {
+			bc.style.boxShadow = 'none';
+		}
 	};
 
 	$('.supermenu-button').mouseover(showMenu);
