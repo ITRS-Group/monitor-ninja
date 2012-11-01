@@ -18,8 +18,9 @@ class Auth_Core {
 	 *
 	 * @return  object
 	 */
-	public static function factory($config = array())
+	public static function factory($config = array(), $driver_config = array())
 	{
+		Op5Auth::factory($config, $driver_config);
 		return new self();
 	}
 
@@ -43,22 +44,22 @@ class Auth_Core {
 	 *
 	 * @return  object
 	 */
-	public static function instance($config = array())
+	public static function instance($config = array(), $driver_config = array())
 	{
 		// Load the Auth instance
-			try {
-				$instance = self::factory($config);
-			}
-			catch( Exception $e ) {
-				$instance = new Auth_NoAuth_Core();
-				throw $e;
-			}
-			return $instance;
+		try {
+			$instance = Op5Auth::instance($config, $driver_config);
+		}
+		catch( Exception $e ) {
+			$instance = new Auth_NoAuth_Core();
+			throw $e;
+		}
+		return $instance;
 	}
 
-	public function __construct( $config = NULL )
+	public function __construct( $config = NULL, $driver_config = array() )
 	{
-		Op5Auth::instance( $config );
+		Op5Auth::instance( $config, $driver_config );
 	}
 
 	/**
