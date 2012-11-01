@@ -86,10 +86,11 @@ class Scheduling_queue_Model extends Model {
 			/* No more objects */
 			if( $host === false && $service === false ) break;
 			
-			if( $host === false || $host['next_check'] > $service['next_check'] ) {
+			if( $host === false || ($service !== false && $host['next_check'] > $service['next_check'] )) {
 				/* Service */
-				if( $i >= $this->offset )
+				if( $i >= $this->offset ) {
 					$output[] = (object)$service;
+				}
 				$service_ptr++;
 			} else {
 				/* Host */
