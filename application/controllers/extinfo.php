@@ -1178,13 +1178,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 	public function scheduling_queue()
 	{
 		$back_link = '/extinfo/scheduling_queue/';
-
-		$sort_order = $this->input->get('sort_order', 'ASC');
-		$sort_column = $this->input->get('sort_column', 'next_check');
+		
 		$host = $this->input->get('host');
 		$service = $this->input->get('service');
 		$sq_model = new Scheduling_queue_Model();
 
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+		$pagination = new CountlessPagination(array('style' => 'digg-pageless', 'items_per_page' => $items_per_page));
+		
+		$sq_model->set_range(
+				$pagination->items_per_page,
+				$pagination->current_page*$pagination->items_per_page
+				);
+		
 		if (!Auth::instance()->authorized_for('host_view_all')) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
@@ -1200,11 +1206,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
-		$this->template->content->data = $sq_model->show_scheduling_queue($sort_order, $sort_column, $service, $host);
+		$this->template->content->pagination = $pagination;
+		$this->template->content->data = $sq_model->show_scheduling_queue($service, $host);
 		$this->template->content->host_search = $host;
 		$this->template->content->service_search = $service;
-		$this->template->content->sort_order = $sort_order;
-		$this->template->content->sort_column = $sort_column;
 		$this->template->content->header_links = array(
 			'host_name' => _('Host'),
 			'description' => _('Service'),

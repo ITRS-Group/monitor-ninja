@@ -16,25 +16,16 @@
 	</form>
 	<table id="hostcomments_table">
 		<tr>
-			<?php
-				foreach($header_links as $column => $title) {
-					echo '<th class="'.
-					(($sort_order == 'DESC' && $sort_column == $column) ? 'SortUp' :
-					(($sort_order == 'ASC' && $sort_column == $column) ? 'SortDown' :
-					'')) . '">';
-					?>
-						<a href="<?php echo Kohana::config('config.site_domain') . 'index.php/'.Router::$controller.'/'.Router::$method.'?sort_order='.($sort_order != 'DESC' ? 'DESC' : 'ASC')."&amp;sort_column=$column&amp;host=$host_search&amp;service=$service_search" ?>"><?php echo $title; ?></a>
+			<?php foreach($header_links as $column => $title) { ?>
+					<th>
+						<?php echo $title; ?>
 					</th>
-				<?php }
-			?>
+			<?php } ?>
 			<th><?php echo _('Type'); ?></th>
 			<th><?php echo _('Active checks'); ?></th>
 			<th><?php echo _('Actions'); ?></th>
 		</tr>
 		<?php
-			$total_rows_printed = 0;
-			$host_pointer = 0;
-			$service_pointer = 0;
 			$check_types = array(
 				nagstat::CHECK_OPTION_NONE => _('Normal'),
 				nagstat::CHECK_OPTION_FORCE_EXECUTION => _('Forced'),
@@ -45,32 +36,8 @@
 			/**
 			 * @return object $row | false
 			 */
-			function sort_service_with_row($data, $service_pointer, $host_pointer, $sort_column, $sort_order) {
-				$row = false;
-				if(isset($data['host'][$host_pointer])) {
-					$row = $data['host'][$host_pointer];
-				}
-				if(isset($data['service'][$service_pointer])) {
-					if(!$row) {
-						return (object) $data['service'][$service_pointer];
-					}
-					if(in_array($sort_column, array('next_check', 'last_check')) && (
-						($sort_order == 'ASC' && $row[$sort_column] <= $data['service'][$service_pointer][$sort_column]) ||
-						($sort_order == 'DESC' && $row[$sort_column] >= $data['service'][$service_pointer][$sort_column])
-					)) {
-						return (object) $data['service'][$service_pointer];
-					} elseif($sort_column == 'description') {
-						return (object) $data['service'][$service_pointer];
-					}
-					// @todo handle sorting on all different columns
-				}
-				return $row ? (object) $row : false;
-			}
-			while(true) {
-				$row = sort_service_with_row($data, $service_pointer, $host_pointer, $sort_column, $sort_order);
-				if(!$row) {
-					break;
-				}
+			$total_rows_printed = -1;
+			foreach( $data as $row ) {
 				$total_rows_printed++;
 				$host = isset($row->host_name) ? $row->host_name : $row->name;
 		?>
@@ -102,8 +69,6 @@
 				?>
 			</td>
 		</tr>
-		<?php
-			isset($row->description) ? $service_pointer++ : $host_pointer++;
-		} ?>
+		<?php } ?>
 	</table>
 </div>
