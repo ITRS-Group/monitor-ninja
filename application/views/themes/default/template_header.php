@@ -101,9 +101,13 @@
 			?>
 	</div>
 	
-	<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">
-		<?php echo _('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated" onclick="window.location.reload()">'.date(nagstat::date_format()).'</span>' : ''; ?>
-	</div>
+	<?php if(Auth::instance()->logged_in()) {
+		$timezone = date_default_timezone_get();
+?>
+		<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">
+			<?php echo _('Updated') ?>: <a id="page_last_updated" data-utc_offset="<?php echo (1000 * date::utc_offset($timezone)) ?>" title="Your timezone is set to <?php echo $timezone ?>. Click to reload page." href="<?php echo $_SERVER['REQUEST_URI'] ?>"><?php echo date(nagstat::date_format()) ?></a>
+		</div>
+	<?php } ?>
 
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 		<?php echo _('Welcome'); ?> <?php echo user::session('realname') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />

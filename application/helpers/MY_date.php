@@ -108,4 +108,26 @@ class date extends date_Core {
 			_('December')
 		);
 	}
+
+	/**
+	 * Offset from UTC
+	 *
+	 * @param $timezone string = null, defaults to php.ini's value
+	 * @return int seconds
+	 */
+	static function utc_offset($timezone = null) {
+		if(!$timezone) {
+			$timezone = date_default_timezone_get();
+		}
+		if($timezone == 'UTC') {
+			return 0;
+		}
+		$utc = new DateTimeZone('UTC');
+		$remote_dtz = new DateTimeZone($timezone);
+
+		$origin_dt = new DateTime("now", $utc);
+		$remote_dt = new DateTime("now", $remote_dtz);
+
+		return $remote_dtz->getOffset($remote_dt);
+	}
 }
