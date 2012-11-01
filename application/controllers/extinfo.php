@@ -1188,7 +1188,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		
 		$sq_model->set_range(
 				$pagination->items_per_page,
-				$pagination->current_page*$pagination->items_per_page
+				($pagination->current_page-1)*$pagination->items_per_page
 				);
 		
 		if (!Auth::instance()->authorized_for('host_view_all')) {

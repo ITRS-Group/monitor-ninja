@@ -74,15 +74,21 @@ class Scheduling_queue_Model extends Model {
 		$service_ptr = 0;
 		$output = array();
 		for( $i=0; $i<$this->limit + $this->offset; $i++ ) {
-			if( $host_checks[$i]['next_check'] > $host_checks[$i]['next_check'] ) {
+			$host    = isset($host_checks[$host_ptr]) ? $host_checks[$host_ptr] : false;
+			$service = isset($service_checks[$service_ptr]) ? $service_checks[$service_ptr] : false;
+			
+			/* No more objects */
+			if( $host === false && $service === false ) break;
+			
+			if( $host === false || $host['next_check'] > $service['next_check'] ) {
 				/* Service */
 				if( $i >= $this->offset )
-					$output[] = (object)$service_checks[$i];
+					$output[] = (object)$service;
 				$service_ptr++;
 			} else {
 				/* Host */
 				if( $i >= $this->offset )
-					$output[] = (object)$host_checks[$i];
+					$output[] = (object)$host;
 				$host_ptr++;
 			}
 		}
