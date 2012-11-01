@@ -61,17 +61,6 @@ class Ninja_Controller extends Template_Controller {
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
 
-		# load reduced (noc) master template
-		# if param 'noc' is found in $_REQUEST (status controller) or if we are showing the noc controller
-		#if ((isset($_REQUEST['noc']) && Router::$controller === 'status') || Router::$controller === 'noc') {
-		if (isset($_REQUEST['noc'])) {
-			$this->session->set('use_noc', !empty($_REQUEST['noc']) );
-		}
-
-		if (Router::$controller === 'noc' || $this->session->get('use_noc', false) !== false) {
-			$this->template = $this->add_view('noc');
-		}
-
 		if (isset($_REQUEST['noheader'])) {
 			$this->session->set('noheader', !empty($_REQUEST['noheader']));
 		}

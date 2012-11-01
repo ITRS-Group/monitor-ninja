@@ -31,39 +31,6 @@ $(document).ready(function() {
 		}
 	}
 
-	if (_current_uri == 'noc/index') {
-		$('#ninja_noc_control').attr('checked', true);
-	}
-	$('#ninja_noc_control').click(function() {
-		var new_url = $.query;
-		new_url = $.query.REMOVE('d');
-
-		var noheader_val= $('#noheader_chbx').attr('checked') ? 1 : 0;
-		/*
-		if (!$.query.get('noc')) {
-			new_url = $.query.set('noc', true).set('noheader', noheader_val);
-		} else {
-			new_url = $.query.set('noc', false).set('noheader', noheader_val);
-
-			// adding dummy param to be able to reload page without ?noc
-			new_url = $.query.set('d', true).set('noheader', noheader_val);
-		}
-		*/
-		var noc_val = $('#ninja_noc_control').attr('checked') ? 1 : 0;
-		new_url = $.query.set('noc', noc_val).set('noheader', noheader_val);
-
-		// special handling for tac and noc
-		if (_current_uri == 'tac/index') {
-			if ($('#ninja_noc_control').attr('checked')) {
-				new_url = _site_domain + _index_page + '/noc';
-			}
-		} else if (_current_uri == 'noc/index') {
-			new_url = _site_domain + _index_page + '/tac/index' + new_url.toString();
-		}
-
-		window.location.href = new_url.toString();
-	});
-
 	// stop widgets from trying to reload once user clicked
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});

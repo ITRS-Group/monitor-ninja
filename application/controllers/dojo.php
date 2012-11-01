@@ -19,7 +19,6 @@ class Dojo_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 		$this->template->disable_refresh = true;
 
-		#$this->xtra_js[] = $this->add_path('noc/js/noc');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
 
