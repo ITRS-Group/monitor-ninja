@@ -1184,7 +1184,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model = new Scheduling_queue_Model();
 
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
-		$pagination = new CountlessPagination(array('style' => 'digg-pageless', 'items_per_page' => $items_per_page));
+		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
 		
 		$sq_model->set_range(
 				$pagination->items_per_page,

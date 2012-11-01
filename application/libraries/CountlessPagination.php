@@ -8,6 +8,9 @@ class CountlessPagination extends Pagination_Core {
 		if( isset( $config['items_per_page'] ) ) {
 			$this->items_per_page = $config['items_per_page'];
 		}
+		if(!isset($config['style'])) {
+			$config['style'] = 'digg-pageless';
+		}
 		$config['total_items'] = ($this->current_page + 1) * $this->items_per_page;
 		parent::initialize($config);
 	}
