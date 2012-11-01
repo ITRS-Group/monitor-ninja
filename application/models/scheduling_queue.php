@@ -8,6 +8,12 @@ class Scheduling_queue_Model extends Model {
 	private $limit = 1000;
 	private $offset = 0;
 	
+	/**
+	 * Sets how many objects show_schduling_queue should return
+	 * 
+	 * @param $limit
+	 * @param $offset
+	 */
 	public function set_range( $limit, $offset ) {
 		$this->limit = $limit;
 		$this->offset = $offset;
