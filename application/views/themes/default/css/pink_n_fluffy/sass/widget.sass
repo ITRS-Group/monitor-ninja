@@ -12,7 +12,8 @@
 	position: relative
 
 .widget-content
-	padding-bottom: 10px
+	margin-bottom: 10px
+	overflow: auto
 
 .widget-editbox
 	display: none
@@ -26,6 +27,9 @@
 	border: 1px solid $border_color_light
 	box-shadow: 0 2px 3px $weak_shadow_color
 	z-index: 2
+
+	select:
+		width: auto !important
 
 .widget-header
 	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
