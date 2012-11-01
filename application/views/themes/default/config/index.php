@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<form method="get" action="">
 	<?php echo _('Object type'); ?>:
 	<select class="auto" name="type" onchange="submit()">

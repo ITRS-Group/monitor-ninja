@@ -5,6 +5,20 @@
  */
 class Config_Model extends Model {
 
+	private $limit = 1000;
+	private $offset = 0;
+
+	/**
+	 * Sets how many objects show_schduling_queue should return
+	 *
+	 * @param $limit
+	 * @param $offset
+	 */
+	public function set_range( $limit, $offset ) {
+		$this->limit = $limit;
+		$this->offset = $offset;
+	}
+
 	/**
 	 Workaround for PDO queries: runs $db->query($sql), copies
 	 the resultset to an array, closes the resultset, and returns
@@ -32,8 +46,10 @@ class Config_Model extends Model {
 	 */
 	public function list_config($type = 'hosts', $free_text=null)
 	{
-		$db = Database::instance();
-		$options = array();
+		$options = array(
+			'limit' => $this->limit + $this->offset,
+			'offset' => $this->offset
+		);
 
 		switch($type) {
 			case 'hosts':
@@ -66,10 +82,10 @@ class Config_Model extends Model {
 		}
 
 		if($type != 'timeperiods') {
-			$res = Livestatus::instance()->{'get'.$type}($options);
-			return $res;
+			return Livestatus::instance()->{'get'.$type}($options);
 		}
 
+		$db = Database::instance();
 		$table = "timeperiod";
 		$primary = "timeperiod_name";
 		$sql = "SELECT

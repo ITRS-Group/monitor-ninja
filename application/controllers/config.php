@@ -29,8 +29,14 @@ class Config_Controller extends Authenticated_Controller {
 		}
 
 		$this->type = isset($_GET['type']) ? $_GET['type'] : $this->type;
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+		$pagination = new CountlessPagination(array('style' => 'digg-pageless', 'items_per_page' => $items_per_page));
 
 		$config_model = new Config_Model();
+		$config_model->set_range(
+			$pagination->items_per_page,
+			($pagination->current_page-1)*$pagination->items_per_page
+		);
 
 		$filter = $this->input->get('filterbox', null);
 		if($filter && $filter == _('Enter text to filter')) {
@@ -40,6 +46,7 @@ class Config_Controller extends Authenticated_Controller {
 		$result = array();
 		$this->template->title = _('Configuration').' » '._('View config');
 		$this->template->content = $this->add_view('config/index');
+		$this->template->content->pagination = $pagination;
 
 		switch ($this->type) {
 			case 'hosts': // *****************************************************************************
