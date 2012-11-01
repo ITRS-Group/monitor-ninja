@@ -55,8 +55,8 @@ if(extension_loaded('xhprof')) {
 	if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && 0 !== strpos($_SERVER['REQUEST_URI'], "/api")) {
 		$profiler_url = sprintf('/xhprof/?source=%s&run=%s', $profiler_namespace, $run_id);
 		$js = '<script>$(document).ready(function() {
-		$("#quicklinks")
-			.append("<ul><li><a href=\"'.$profiler_url.'\">Profiler output</a></li></ul>");
+			$(".headercontent ul:first")
+			.append("<li id=\"xhprof_loaded\"><a href=\"'.$profiler_url.'\">Profiler output</a></li>");
 		});</script>';
 		echo $js;
 	}
