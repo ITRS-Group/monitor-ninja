@@ -130,8 +130,8 @@ $(document).ready(function() {
 		var btn = form.find('.save_report_btn');
 		btn.after(loadimg);
 		$.ajax({
-			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
-			type: 'POST',
+			url: form[0].action,
+			type: form[0].method,
 			data: form.serialize(),
 			complete: function() {
 				btn.parent().find('img:last').remove();

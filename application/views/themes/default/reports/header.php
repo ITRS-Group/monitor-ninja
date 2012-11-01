@@ -58,7 +58,7 @@
 	</div>
 	<div id="link_container" class="form-dropdown"></div>
 	<div id="save_report_form" class="form-dropdown">
-		<form>
+		<form method="post" action="<?php echo url::base(true).Router::$controller."/save" ?>">
 			<?php
 			$report_name = $options['report_name'];
 			unset($options['report_name']);
