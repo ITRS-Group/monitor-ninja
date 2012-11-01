@@ -4,6 +4,12 @@
  */
 class CountlessPagination extends Pagination_Core {
 	public function initialize($config = array()) {
+		if( isset( $config['query_string'] ) ) {
+			$this->query_string = $config['query_string'];
+		} else {
+			$this->query_string = 'page'; /* Ehum... TODO? This is ugly... */
+		}
+
 		$this->current_page = isset($_GET[$this->query_string]) ? (int) $_GET[$this->query_string] : 1;
 		if( isset( $config['items_per_page'] ) ) {
 			$this->items_per_page = $config['items_per_page'];
