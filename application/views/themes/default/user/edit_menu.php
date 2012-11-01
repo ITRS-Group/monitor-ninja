@@ -42,8 +42,13 @@ foreach ($sections as $section) {
 				# removed items - dim out
 				$url = $all_items[$menu_items[$section_str]][$menu_items[$pages]];
 				$title = $menu_items[$pages];
+				
+				$icon = 'icons/menu/'.$url[1];
+				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
+				if( false === strpos($icon,'.') ) $icon .= '.png';
+				
 				echo '<tr style="color:#c0c0c0" id="'.$pages.'"><td style="border-bottom:1px dotted black"><li style="list-style-type:none">'.
-					html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
+					html::image($this->add_path($icon),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
 					' '.html::specialchars($title).'</li></td>'."\n";
 				echo '<td>'.form::checkbox(array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox'), $pages, true).'</td></tr>';
 			} else {
@@ -56,9 +61,13 @@ foreach ($sections as $section) {
 				}
 				$url = $menu_base[$menu_items[$section_str]][$menu_items[$pages]];
 				$title = $menu_items[$pages];
+				
+				$icon = 'icons/menu/'.$url[1];
+				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
+				if( false === strpos($icon,'.') ) $icon .= '.png';
 
 				echo '<tr id="'.$pages.'"><td style="border-bottom:1px dotted black"><li style="list-style-type:none">'.
-					html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
+					html::image($this->add_path($icon),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
 					' '.html::specialchars($title).'</li></td>'."\n";
 				echo '<td>'.form::checkbox($cb_settings, $pages).'</td></tr>';
 			}
