@@ -973,7 +973,9 @@ class LivestatusConnection {
 	public function writeSocket($str) {
 		if ($this->connection === null)
 			$this->connect();
-		return fwrite($this->connection, $str);
+		$out = @fwrite($this->connection, $str);
+		if ($out === false)
+			throw new LivestatusException("Couldn't write to livestatus socket $address");
 	}
 
 	public function readSocket($len) {
