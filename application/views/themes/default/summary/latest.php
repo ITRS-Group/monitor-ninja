@@ -34,7 +34,7 @@
 		<?php if (isset($ary['user_comment']))
 			echo $ary['user_comment'].'<br /><span class="author">/'.$ary['username'].'</span>';
 		else
-			echo '<img src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>'
+			echo '<img class="right" src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>'
 		?>
 </td></tr></table>
 		</td>
