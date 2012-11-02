@@ -56,6 +56,7 @@ class Scheduling_queue_Model extends Model {
 		$service_checks = $ls->getServices($service_options);
 
 		$host_options = $service_options;
+
 		$host_options['columns'] = array(
 			'name',
 			'last_check',
@@ -63,12 +64,12 @@ class Scheduling_queue_Model extends Model {
 			'check_type', // 0 == active, 1 == passive
 			'active_checks_enabled'
 		);
-		if($host_filter) {
-			$host_options['filter'] = array(
-				'host_name' => array("~~" => ".*$host_filter.*")
+		$host_options['filter'] = array(
+			'filter' => array( 'should_be_scheduled' => 1 )
 			);
-		} else {
-			unset($host_options['filter']);
+
+		if($host_filter) {
+			$host_options['filter']['host_name'] = array("~~" => ".*$host_filter.*");
 		}
 		$host_checks = $ls->getHosts($host_options);
 		if(!$host_checks && !$service_checks) {
