@@ -48,6 +48,6 @@ class Alert_history_Controller extends Summary_Controller
 		$username = Auth::instance()->get_user()->username;
 
 		if (Reports_Model::add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username))
-			echo '<div class="content">'.$comment.'</div><div class="author">/'.$username.'</div>';
+			echo '<div class="content">'.htmlspecialchars($comment).'</div><div class="author">/'.$username.'</div>';
 	}
 }

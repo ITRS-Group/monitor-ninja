@@ -32,7 +32,7 @@
 <table class="output">
 <tr><td><?php echo htmlspecialchars($ary['output']); ?></td><td style="border:0" class="comments">
 		<?php if (isset($ary['user_comment']))
-			echo $ary['user_comment'].'<br /><span class="author">/'.$ary['username'].'</span>';
+			echo htmlspecialchars($ary['user_comment']).'<br /><span class="author">/'.htmlspecialchars($ary['username']).'</span>';
 		else
 			echo '<img class="right" src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>'
 		?>
