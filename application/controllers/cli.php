@@ -10,7 +10,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
 */
-class Cli_Controller extends Authenticated_Controller {
+class Cli_Controller extends Ninja_Controller {
 
 	public function __construct()
 	{
@@ -22,6 +22,8 @@ class Cli_Controller extends Authenticated_Controller {
 		}
 		parent::__construct();
 		$this->auto_render = false;
+		$op5_auth = Op5Auth::factory(array('session_key' => false));
+		$op5_auth->force_user(new Op5User_AlwaysAuth());
 	}
 
 	/**
