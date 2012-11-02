@@ -24,15 +24,20 @@ class Alert_history_Controller extends Summary_Controller
 		
 		$this->options['summary_type'] = self::RECENT_ALERTS;
 		$this->xtra_js[] = $this->add_path('alert_history/js/alert_history.js');
+		$real_output_format = $this->options['output_format'];
+		if ($this->options['output_format'] === 'pdf')
+			$this->options['output_format'] = 'html';
 		parent::generate();
-		$this->template->content->report_options = $this->add_view('alert_history/options');
-		$this->template->title = _('Alert history');
-		$this->template->content->header->standard_header->skip_save = true;
-		$this->template->content->header->standard_header->title = _('Alert history');
-		if ($this->options['summary_items']) {
-			$this->template->content->content->pagination = $pagination;
+		if ($this->options['output_format'] !== 'csv') {
+			$this->template->content->report_options = $this->add_view('alert_history/options');
+			$this->template->title = _('Alert history');
+			$this->template->content->header->standard_header->skip_save = true;
+			$this->template->content->header->standard_header->title = _('Alert history');
+			if ($this->options['summary_items']) {
+				$this->template->content->content->pagination = $pagination;
+			}
 		}
-		if ($this->options['output_format'] == 'pdf') {
+		if ($real_output_format == 'pdf') {
 			return $this->generate_pdf();
 		}
 	}
