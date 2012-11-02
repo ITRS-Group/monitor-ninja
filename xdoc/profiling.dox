@@ -52,7 +52,7 @@ if(extension_loaded('xhprof')) {
 	$xhprof_data = xhprof_disable();
 	$xhprof_runs = new XHProfRuns_Default();
 	$run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-	if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && 0 !== strpos($_SERVER['REQUEST_URI'], "/api")) {
+	if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && 0 !== strpos($_SERVER['REQUEST_URI'], "/api") && false === strpos($_SERVER['HTTP_USER_AGENT'], 'python-requests')) {
 		$profiler_url = sprintf('/xhprof/?source=%s&run=%s', $profiler_namespace, $run_id);
 		$js = '<script>$(document).ready(function() {
 			$(".headercontent ul:first")
