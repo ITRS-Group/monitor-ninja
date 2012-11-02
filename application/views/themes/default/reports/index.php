@@ -18,7 +18,7 @@
 </div>
 <?php
 	if (isset($links)) {
-		echo '<div class="report-block">';
+		echo '<div class="report-block" id="report-links-internal">';
 		echo _('View').': ';
 		$html_links = array();
 		foreach($links as $url => $name) {
