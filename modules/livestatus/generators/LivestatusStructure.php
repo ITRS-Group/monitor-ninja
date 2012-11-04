@@ -1,7 +1,5 @@
 <?php
 
-require_once( 'op5/livestatus.php' );
-
 class LivestatusStructure {
 	private static $tables = array (
 		'columns' => 

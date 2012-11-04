@@ -32,10 +32,16 @@ abstract class LivestatusClassGenerator {
 		$this->write( "$visibility \$$name = " . var_export( $default, true ) . ";" );
 	}
 	
-	protected function init_function( $name, $args = array() ) {
+	protected function init_function( $name, $args = array(), $modifiers = array() ) {
+		if( is_array( $modifiers ) ) {
+			$modifiers = implode( ' ', $modifiers );
+		}
+		if( !empty( $modifiers ) ) {
+			$modifiers = trim($modifiers)." ";
+		}
 		$argstr = implode(', ', array_map(function($n){return '$'.$n;},$args));
 		$this->write();
-		$this->write( "public function $name($argstr) {" );
+		$this->write( "${modifiers}public function $name($argstr) {" );
 	}
 	
 	protected function finish_function() {
