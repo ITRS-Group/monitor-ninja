@@ -3,6 +3,14 @@
 class LivestatusFilterAnd extends LivestatusFilterBase {
 	private $sub_filters = array();
 	
+	function __clone() {
+		$this->sub_filters = array_map(
+				function($filt) {
+					return clone $filt;
+				},
+				$this->sub_filters );
+	}
+	
 	function generateFilter() {
 		$result = "";
 		foreach( $this->sub_filters as $subf ) {
