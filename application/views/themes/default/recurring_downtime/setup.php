@@ -72,67 +72,80 @@ if (!empty($widgets)) {
 							</td>
 						</tr>
 						<tr id="hostgroup_row">
-							<td>
+							<td colspan="3">
+
+							<div class="left" style="width: 40%">
 								<?php echo _('Available').' '._('Hostgroups') ?><br />
-								<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
+								<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' style="width: 100%;" class="multiple">
 								</select>
-							</td>
-							<td class="move-buttons">
+							</div>
+							<div class="left" style="padding-top: 40px;">
 								<input type="button" value="&gt;" id="mv_hg_r" class="button arrow-right" /><br />
 								<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
-							</td>
-							<td>
+							</div>
+							<div class="left" style="width: 40%">
 								<?php echo _('Selected').' '._('Hostgroups') ?><br />
-								<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" class="multiple">
+								<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" style="width: 100%;" class="multiple">
 								</select>
+							</div>
+							<div class="clear"></div>
 							</td>
 						</tr>
 						<tr id="servicegroup_row">
-							<td>
+							<td colspan="3">
+							<div class="left" style="width: 40%">
 								<?php echo _('Available').' '._('Servicegroups') ?><br />
-								<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
+								<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' style="width: 100%;" class="multiple">
 								</select>
-							</td>
-							<td class="move-buttons">
+							</div>
+							<div class="left" style="padding-top: 40px;">
 								<input type="button" value="&gt;" id="mv_sg_r" class="button arrow-right" /><br />
 								<input type="button" value="&lt;" id="mv_sg_l" class="button arrow-left" />
-							</td>
-							<td>
+							</div>
+							<div class="left" style="width: 40%">
 								<?php echo _('Selected').' '._('Servicegroups') ?><br />
-								<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
+								<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" style="width: 100%;" class="multiple">
 								</select>
+							</div>
+							<div class="clear"></div>
 							</td>
 						</tr>
 						<tr id="host_row_2">
-							<td>
+							<td colspan="3">
+							<div class="left" style="width: 40%">
 								<?php echo _('Available').' '._('Hosts') ?><br />
-								<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
+								<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" style="width: 100%;" class="multiple">
 								</select>
-							</td>
-							<td class="move-buttons">
+							</div>
+							<div class="left" style="padding-top: 40px;">
 								<input type="button" value="&gt;" id="mv_h_r" class="button arrow-right" /><br />
 								<input type="button" value="&lt;" id="mv_h_l" class="button arrow-left" />
-							</td>
-							<td>
+							</div>
+							<div class="left" style="width: 40%">
 								<?php echo _('Selected').' '._('Hosts') ?><br />
-								<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
+								<select name="host_name[]" id="host_name" multiple="multiple" size="8" style="width: 100%;" class="multiple">
 								</select>
+							</div>
+							<div class="clear"></div>
 							</td>
 						</tr>
 						<tr id="service_row_2">
-							<td>
+							<td colspan="3">
+							<div class="left" style="width: 40%">
 								<?php echo _('Available').' '._('Services') ?><br />
-								<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
+								<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" style="width: 100%;" class="multiple">
 								</select>
-							</td>
-							<td class="move-buttons">
+							</div>
+							<div class="left" style="padding-top: 40px;">
 								<input type="button" value="&gt;" id="mv_s_r" class="button arrow-right" /><br />
 								<input type="button" value="&lt;" id="mv_s_l" class="button arrow-left"  />
-							</td>
-							<td>
+							</div>
+							<div class="left" style="width: 40%">
 								<?php echo _('Selected').' '._('Services') ?><br />
-								<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
+								<select name="service_description[]" id="service_description" multiple="multiple" size="8" style="width: 100%;" class="multiple">
 								</select>
+							</div>
+							<div class="clear"></div>
 							</td>
 						</tr>
 					</table>
