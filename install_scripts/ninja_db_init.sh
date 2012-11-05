@@ -221,8 +221,6 @@ sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_d
 
 if [ "$sched_db_ver" = "" ]
 then
-	# old scheduled reports hasn't yet been moved into merlin
-	# from monitor_gui so let's do so and set the db_version properly
 	echo "Installing database tables for scheduled reports configuration"
 	upgrade_script="$prefix/sql/mysql/scheduled_reports.sql"
 	run_sql_file "$db_login_opts" $upgrade_script
@@ -262,35 +260,6 @@ summary_schedules=$(mysql $db_login_opts -Be "SELECT identifier FROM scheduled_r
 if [ "$summary_schedules" = "" ]
 then
 	mysql $db_login_opts -Be "INSERT INTO scheduled_report_types (name, identifier) VALUES('Alert Summary Reports', 'summary');" 2>/dev/null
-fi
-
-# check if old tables exists and should be imported
-old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
-
-if [ "$old_sched_db_ver" != "" ]
-then
-	# import old schedules if any
-	echo "Importing old scheduled reports"
-	/usr/bin/env php "$prefix/op5-upgradescripts/import_schedules.php"
-fi
-
-# move old data from monitor_reports -> merlin if monitor_reports exists
-is_old_reports=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" monitor_reports 2>/dev/null)
-if [ $? -ne 0 ]
-then
-	echo "monitor_reports db was not found which is OK.";
-else
-	/usr/bin/env php $prefix/op5-upgradescripts/move_reports_tables.php $prefix $db_user $db_pass
-fi
-
-# let's check this once more to be sure
-is_reports=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null)
-if [ $? -ne 0 ]
-then
-	echo "Ooops - this is bad. All the info from old monitor_reports should have been transferred"
-	echo "but this doesn't seem to be the case."
-else
-	mysql $db_login_opts -Be "DROP database monitor_reports" 2>/dev/null
 fi
 
 echo "Database upgrade complete."
