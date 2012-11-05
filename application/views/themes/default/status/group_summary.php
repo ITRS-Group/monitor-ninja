@@ -60,7 +60,7 @@
 					<?php
 					if (nacoma::link()===true)
 						echo nacoma::link('configuration/configure/?type='.$grouptype.'group&name='.urlencode($details['name']), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));
-					echo html::anchor('extinfo/details/?'.$grouptype.'group='.urlencode($details['name']),html::image($this->add_path('icons/16x16/extended-information.gif'), array('alt' => _('View Extended Information for this group'), 'title' => _('View Extended Information for this group'))));
+					echo html::anchor('extinfo/details/?'.$grouptype.'group='.urlencode($details['name']),html::image($this->add_path('icons/16x16/extended-information.gif'), array('alt' => _('View Extended Information for this group'), 'title' => _('View Extended Information for this group'))), array('class' => 'image-link'));
 					?>
 				</td>
 				<?php if( $grouptype == 'host' ) { ?>
