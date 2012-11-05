@@ -44,7 +44,7 @@
 			<div class="content" id="content">	
 				
 				
-					<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
+					<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); }?>
 				
 			</div>
 			

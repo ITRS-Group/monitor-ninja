@@ -122,7 +122,7 @@ class Command_Controller extends Authenticated_Controller
 		}
 		$auth_check = $this->_is_authorized_for_command($params);
 		if ($auth_check === false || $auth_check <0 ) {
-			url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
+			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
 		$command = new Command_Model;
@@ -216,7 +216,7 @@ class Command_Controller extends Authenticated_Controller
 				}
 			}
 
-			url::redirect('/configuration/configure?page=export.php');
+			return url::redirect('/configuration/configure?page=export.php');
 			break;
 		}
 		$info['params'] = $param;

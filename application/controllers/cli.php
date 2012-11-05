@@ -18,7 +18,7 @@ class Cli_Controller extends Ninja_Controller {
 		# user has been given the ADMIN role
 		if (PHP_SAPI !== "cli" &&
 			!Auth::instance()->logged_in(Ninja_Controller::ADMIN)) {
-			url::redirect('default/index');
+			return url::redirect('default/index');
 		}
 		parent::__construct();
 		$this->auto_render = false;

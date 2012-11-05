@@ -22,7 +22,7 @@ class Upload_Controller extends Authenticated_Controller
 		if (!Auth::instance()->authorized_for('host_view_all')) {
 			# redirect to default start page if not
 			# properly authorized
-			url::redirect(Kohana::config('routes.logged_in_default'));
+			return url::redirect(Kohana::config('routes.logged_in_default'));
 		}
 	}
 
@@ -55,7 +55,7 @@ class Upload_Controller extends Authenticated_Controller
 		$this->template->disable_refresh = true;
 
 		if (!isset($_FILES['upload_file'])) {
-			url::redirect(Router::$controller.'/file_upload');
+			return url::redirect(Router::$controller.'/file_upload');
 		}
 
 		# assumes upload directory exists with read/write permissions

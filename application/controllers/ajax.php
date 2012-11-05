@@ -17,7 +17,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		parent::__construct();
 		if(!request::is_ajax()) {
-			url::redirect(Kohana::config('routes.logged_in_default'));
+			return url::redirect(Kohana::config('routes.logged_in_default'));
 		}
 	}
 

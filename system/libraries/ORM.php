@@ -673,7 +673,7 @@ class ORM_Core {
 				if (is_string($save))
 				{
 					// Redirect to the saved page
-					url::redirect($save);
+					return url::redirect($save);
 				}
 			}
 		}

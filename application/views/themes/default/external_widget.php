@@ -126,7 +126,7 @@ if (isset($this->template->js_header))
 
 	<body>
 		<div align="center">
-			<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); } ?>
+			<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); } ?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
 	</body>

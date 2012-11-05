@@ -33,7 +33,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
-			url::redirect(Router::$controller.'/invalid_setup');
+			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
 		if(isset($_SESSION['report_err_msg'])) {
@@ -193,7 +193,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
-			url::redirect(Router::$controller.'/invalid_setup');
+			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
 		$this->_stash_params();
@@ -261,7 +261,7 @@ class Reports_Controller extends Base_reports_Controller
 				$is_group = false;
 				break;
 			default:
-				url::redirect(Router::$controller.'/index');
+				return url::redirect(Router::$controller.'/index');
 		}
 		$var = $this->options->get_value('report_type');
 		$objects = false;

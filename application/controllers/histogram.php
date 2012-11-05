@@ -139,7 +139,7 @@ class Histogram_Controller extends Base_reports_Controller
 				$this->object_varname = 'service_description';
 				break;
 			default:
-				url::redirect(Router::$controller.'/index');
+				return url::redirect(Router::$controller.'/index');
 		}
 
 		$breakdown_keys = false;

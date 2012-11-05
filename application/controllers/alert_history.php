@@ -9,7 +9,7 @@ class Alert_history_Controller extends Summary_Controller
 
 	public function index($input = false)
 	{
-		url::redirect('alert_history/generate');
+		return url::redirect('alert_history/generate');
 	}
 
 	public function generate($input = false)

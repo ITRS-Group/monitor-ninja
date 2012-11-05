@@ -50,7 +50,7 @@ class Summary_Controller extends Base_reports_Controller
 
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
-			url::redirect('reports/invalid_setup');
+			return url::redirect('reports/invalid_setup');
 		}
 
 		# what scheduled reports are there?

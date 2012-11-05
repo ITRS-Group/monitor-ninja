@@ -79,9 +79,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$maps = new Nagvis_Maps_Model();
 
 		if ($maps->create($map))
-			url::redirect('nagvis/edit/' . $map);
+			return url::redirect('nagvis/edit/' . $map);
 		else
-			url::redirect('nagvis/index');
+			return url::redirect('nagvis/index');
 
 	}
 
@@ -91,7 +91,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$maps->delete($map);
 
-		url::redirect('nagvis/index');
+		return url::redirect('nagvis/index');
 	}
 
 	public function automap($object_type = '', $object_name = '')

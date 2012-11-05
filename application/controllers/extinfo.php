@@ -20,7 +20,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function index()
 	{
-		url::redirect(Router::$controller.'/show_process_info');
+		return url::redirect(Router::$controller.'/show_process_info');
 	}
 
 	/**
@@ -519,7 +519,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	public function show_process_info()
 	{
 		if (!Auth::instance()->authorized_for('system_information')) {
-			url::redirect('extinfo/unauthorized/0');
+			return url::redirect('extinfo/unauthorized/0');
 		}
 
 		$this->template->content = $this->add_view('extinfo/process_info');
@@ -850,7 +850,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			if (isset($_POST['del_comment'])) {
 				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
-					url::redirect('command/unauthorized');
+					return url::redirect('command/unauthorized');
 				}
 				foreach ($_POST['del_comment'] as $param) {
 					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
@@ -861,7 +861,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			if (isset($_POST['del_comment_host'])) {
 				$comment_cmd = 'DEL_HOST_COMMENT';
 				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
-					url::redirect('command/unauthorized');
+					return url::redirect('command/unauthorized');
 				}
 				foreach ($_POST['del_comment_host'] as $param) {
 					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
@@ -871,7 +871,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			if (isset($_POST['del_comment_service'])) {
 				$comment_cmd = 'DEL_SVC_COMMENT';
 				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
-					url::redirect('command/unauthorized');
+					return url::redirect('command/unauthorized');
 				}
 				foreach ($_POST['del_comment_service'] as $param) {
 					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
@@ -880,7 +880,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			if (isset($_POST['del_downtime'])) {
 				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $downtime_cmd))) {
-					url::redirect('command/unauthorized');
+					return url::redirect('command/unauthorized');
 				}
 				foreach ($_POST['del_downtime'] as $param) {
 					$nagios_commands = Command_Controller::_build_command($downtime_cmd, array('downtime_id' => $param), $nagios_commands);
@@ -915,9 +915,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 				# reload controller to prevent it from trying to submit
 				# the POST data on refresh
-				url::redirect(Router::$controller.'/'.Router::$method);
+				return url::redirect(Router::$controller.'/'.Router::$method);
 			} else {
-				url::redirect($redirect);
+				return url::redirect($redirect);
 			}
 		}
 
@@ -1192,7 +1192,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				);
 		
 		if (!Auth::instance()->authorized_for('host_view_all')) {
-			url::redirect('extinfo/unauthorized/scheduling_queue');
+			return url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -1258,14 +1258,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 
 				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
-					url::redirect('command/unauthorized');
+					return url::redirect('command/unauthorized');
 				}
 
 				if (isset($_POST['del_submithost_svc']) && !empty($_POST['del_service'])) {
 					# service comments
 					$cmd = 'DEL_SVC_DOWNTIME';
 					if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
-						url::redirect('command/unauthorized');
+						return url::redirect('command/unauthorized');
 					}
 					foreach ($_POST['del_service'] as $param) {
 						$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
@@ -1280,7 +1280,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 
 				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
-					url::redirect('command/unauthorized');
+					return url::redirect('command/unauthorized');
 				}
 
 			}
@@ -1311,7 +1311,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			# reload controller to prevent it from trying to submit
 			# the POST data on refresh
-			url::redirect(Router::$controller.'/'.Router::$method);
+			return url::redirect(Router::$controller.'/'.Router::$method);
 		}
 
 		$command_result_msg = $this->session->get('error_msg', $command_result_msg);

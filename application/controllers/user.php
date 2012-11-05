@@ -227,7 +227,7 @@ class User_Controller extends Authenticated_Controller {
 			$this->template->content->widgets = $this->widgets;
 			$template->errors = $errors;
 		} else {
-			url::redirect('user/index?updated=true');
+			return url::redirect('user/index?updated=true');
 		}
 
 	}

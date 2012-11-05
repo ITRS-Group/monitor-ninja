@@ -25,7 +25,7 @@ class Default_Controller extends Ninja_Controller  {
 	public function index()
 	{
 		if (ninja_auth::is_locked_out()) {
-			url::redirect('default/locked_out');
+			return url::redirect('default/locked_out');
 		}
 		//$this->template-> = $this->add_view('menu');
 		$this->template->title = _('Ninja');
@@ -77,13 +77,13 @@ class Default_Controller extends Ninja_Controller  {
 			if (!$post->validate() ) {
 				$error_msg = _("Please supply both username and password");
 				$this->session->set_flash('error_msg', $error_msg);
-				url::redirect('default/show_login');
+				return url::redirect('default/show_login');
 			}
 
 			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($this->input->post($this->csrf_config['csrf_token']))) {
 				$error_msg = _("CSRF tokens did not match.<br />This often happen when your browser opens cached windows (after restarting the browser, for example).<br />Try to login again.");
 				$this->session->set_flash('error_msg', $error_msg);
-				url::redirect('default/show_login');
+				return url::redirect('default/show_login');
 			}
 
 			$username    = $this->input->post('username', false);
@@ -92,7 +92,7 @@ class Default_Controller extends Ninja_Controller  {
 
 			$res = ninja_auth::login_user($username, $password, $auth_method);
 			if ($res !== true) {
-				url::redirect($res);
+				return url::redirect($res);
 			}
 			
 			$requested_uri = Session::instance()->get('requested_uri', false);
@@ -104,21 +104,21 @@ class Default_Controller extends Ninja_Controller  {
 			if ($requested_uri !== false) {
 				# remove 'requested_uri' from session
 				Session::instance()->delete('requested_uri');
-				url::redirect($requested_uri);
+				return url::redirect($requested_uri);
 			} else {
 				# we have no requested uri
 				# using logged_in_default from routes config
 				#die('going to default');
-				url::redirect(Kohana::config('routes.logged_in_default'));
+				return url::redirect(Kohana::config('routes.logged_in_default'));
 			}
 		}
 
 		# trying to login without $_POST is not allowed and shouldn't
 		# even happen - redirecting to default routes
 		if (!isset($auth) || !$auth->logged_in()) {
-			url::redirect($this->route_config['_default']);
+			return url::redirect($this->route_config['_default']);
 		} else {
-			url::redirect($this->route_config['logged_in_default']);
+			return url::redirect($this->route_config['logged_in_default']);
 		}
 	}
 
@@ -129,7 +129,7 @@ class Default_Controller extends Ninja_Controller  {
 	public function logout()
 	{
 		Auth::instance()->logout();
-		url::redirect('default/show_login');
+		return url::redirect('default/show_login');
 	}
 
 	/**
@@ -156,7 +156,7 @@ class Default_Controller extends Ninja_Controller  {
 	public function get_cli_status()
 	{
 		if (PHP_SAPI !== "cli") {
-			url::redirect('default/index');
+			return url::redirect('default/index');
 		} else {
 			$this->auto_render=false;
 			$cli_access =Kohana::config('config.cli_access');
