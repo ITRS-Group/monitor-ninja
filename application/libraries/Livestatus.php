@@ -389,6 +389,13 @@ class Livestatus {
 				'passive_checks_disabled'           => array( 'accept_passive_checks' => 0 ),
 				'outages'                           => array( 'state' => 1, 'childs' => array( '!=' => '' ) ),
 		);
+		if (is_array($options) && isset($options['stats']) && is_array($options['stats'])) {
+			$newstats = array();
+			foreach( $options['stats'] as $statcol ) {
+				$newstats[$statcol] = $stats[$statcol];
+			}
+			$stats = $newstats;
+		}
 		$data = $this->backend->getStats('hosts', $stats, $options);
 		return (object) $data[0];
 	}
@@ -443,6 +450,13 @@ class Livestatus {
 				'active_checks_disabled_passive'    => array( 'check_type' => 1, 'active_checks_enabled' => 0 ),
 				'passive_checks_disabled'           => array( 'accept_passive_checks' => 0 ),
 		);
+		if (is_array($options) && isset($options['stats']) && is_array($options['stats'])) {
+			$newstats = array();
+			foreach( $options['stats'] as $statcol ) {
+				$newstats[$statcol] = $stats[$statcol];
+			}
+			$stats = $newstats;
+		}
 		$data = $this->backend->getStats('services', $stats, $options);
 		return (object) $data[0];
 	}

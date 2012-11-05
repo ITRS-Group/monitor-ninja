@@ -54,15 +54,32 @@ class Status_totals_Widget extends widget_Base {
 		$view_path = $this->view_path('view');
 
 		$stats = new Stats_Model();
+		$stats_hosts    = array( 'up', 'down', 'unreachable', 'pending', 'total' );
+		$stats_services = array( 'ok', 'warning', 'unknown', 'critical', 'pending', 'total' );
 		if (empty($this->grouptype) || $this->host == 'all' || !$this->host) {
-			$hosts    = $stats->get_stats('host_totals');
-			$services = $stats->get_stats('service_totals');
+			$hosts    = $stats->get_stats('host_totals', array(
+					'stats' => $stats_hosts
+					));
+			$services = $stats->get_stats('service_totals', array(
+					'stats' => $stats_services
+					));
+			
 		} else if ($this->grouptype == 'host') {
-			$hosts    = $stats->get_stats('host_totals',    array('filter' => array(      'groups' => array('>=' => $this->host))));
-			$services = $stats->get_stats('service_totals', array('filter' => array( 'host_groups' => array('>=' => $this->host))));
+			$hosts    = $stats->get_stats('host_totals',    array(
+					'stats' => $stats_hosts,
+					'filter' => array( 'groups' => array('>=' => $this->host))
+					));
+			$services = $stats->get_stats('service_totals', array(
+					'stats' => $stats_services,
+					'filter' => array( 'host_groups' => array('>=' => $this->host))
+					));
+			
 		} else {
 			$hosts    = false; // Not possible in livestatus. Livestatus actually doesn't support hostsbyservicegroup
-			$services = $stats->get_stats('service_totals', array('filter' => array(      'groups' => array('>=' => $this->host))));
+			$services = $stats->get_stats('service_totals', array(
+					'stats' => $stats_services,
+					'filter' => array( 'groups' => array('>=' => $this->host))
+					));
 		}
 
 		$grouptype = !empty($this->grouptype) ? $this->grouptype.'group' : false;
