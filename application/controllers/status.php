@@ -551,11 +551,11 @@ class Status_Controller extends Authenticated_Controller {
 		}
 
 		$content->host_details = $ls->getBackend()->getStats( 'services', array(
-				'services_ok'       => 'has_been_checked = 1 and state = 0',
-				'services_warning'  => 'has_been_checked = 1 and state = 1',
-				'services_critical' => 'has_been_checked = 1 and state = 2',
-				'services_unknown'  => 'has_been_checked = 1 and state = 3',
-				'services_pending'  => 'has_been_checked = 0'
+				'services_ok'       => array( 'has_been_checked' => 1, 'state' => 0 ),
+				'services_warning'  => array( 'has_been_checked' => 1, 'state' => 1 ),
+				'services_critical' => array( 'has_been_checked' => 1, 'state' => 2 ),
+				'services_unknown'  => array( 'has_been_checked' => 1, 'state' => 3 ),
+				'services_pending'  => array( 'has_been_checked' => 0 )
 				),array(
 				'filter' => $groupfilter,
 				'columns' => array(
