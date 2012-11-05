@@ -48,7 +48,7 @@ class Auth_Core {
 	{
 		// Load the Auth instance
 		try {
-			$instance = Op5Auth::instance($config, $driver_config);
+			$instance = new Auth_Core($config, $driver_config);
 		}
 		catch( Exception $e ) {
 			$instance = new Auth_NoAuth_Core();

@@ -50,7 +50,7 @@ class Authenticated_Controller extends Ninja_Controller {
 						$this->session->set('requested_uri', url::current(true));
 
 					if (Router::$controller != 'default') {
-						url::redirect(Kohana::config('routes.log_in_form'));
+						return url::redirect(Kohana::config('routes.log_in_form'));
 					}
 				}
 			}
