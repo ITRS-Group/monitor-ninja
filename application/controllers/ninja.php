@@ -171,6 +171,9 @@ class Ninja_Controller extends Template_Controller {
 			if ($status->execute_service_checks !== 1) {
 				$notifications[] = array(_('Service checks are disabled'), false);
 			}
+			if ($status->execute_host_checks !== 1) {
+				$notifications[] = array(_('Host checks are disabled'), false);
+			}
 			unset($status);
 		}
 		catch( LivestatusException $e ) {
