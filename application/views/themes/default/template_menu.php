@@ -24,7 +24,7 @@
 			if($entry) {
 				foreach ($entry as $name => $data) {
 
-					$id = strtolower($section)."-".$data[1]."-".$i;
+					$id = strtolower($section)."-".$data[1];
 
 					if ($data[2] == 0) {
 
