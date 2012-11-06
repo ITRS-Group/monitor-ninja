@@ -16,7 +16,10 @@ class LivestatusBaseClassGenerator extends LivestatusClassGenerator {
 	
 	public function generate( $fp ) {
 		parent::generate( $fp );
-		$this->init_class( 'ObjectRoot' );
+		$this->init_class( 'ObjectRoot', array('abstract') );
+		
+		$this->write( 'protected $_table = '.var_export($this->name,true).';' );
+		$this->write();
 		
 		/* Storage */
 		foreach( $this->structure as $field => $type ) {
@@ -159,7 +162,7 @@ class LivestatusBaseClassGenerator extends LivestatusClassGenerator {
 		$this->finish_function();
 	}
 	
-	/* List */
+	/* Dict */
 	
 	private function storage_dict( $name ) {
 		$this->write( "private \$$name = false;" );

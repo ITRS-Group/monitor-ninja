@@ -19,9 +19,15 @@ abstract class LivestatusClassGenerator {
 		$this->write( 'requrire_once( '. var_export($path, true) . ' );' );
 	}
 	
-	protected function init_class( $parent = false ) {
+	protected function init_class( $parent = false, $modifiers = array() ) {
+		if( is_array( $modifiers ) ) {
+			$modifiers = implode( ' ', $modifiers );
+		}
+		if( !empty( $modifiers ) ) {
+			$modifiers = trim($modifiers)." ";
+		}
 		$this->write();
-		$this->write( "class ".$this->classname.($parent===false?"":" extends $parent")." {" );
+		$this->write( $modifiers."class ".$this->classname.($parent===false?"":" extends $parent")." {" );
 	}
 	
 	protected function finish_class() {
