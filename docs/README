@@ -9,6 +9,7 @@ MySQL 5+ (4 might also work but is not tested)
 Nagios 3.0.x+ (needs to run on the same server)
 Merlin
 mk_livestatus
+op5lib
 
 
 Installation
@@ -29,12 +30,15 @@ Here is a longer and a bit more exact version on how to install it
    status, similar to the objects.cache file. For more info about Merlin,
    check out http://www.op5.org/
 
-2. download ninja from http://www.op5.org/
+   The op5lib dependency is required since version 3.0.0 of Ninja. You can
+   find it at http://git.op5.org/git. Refer to its README.
 
-3. untar
+2. Download ninja from http://www.op5.org/
+
+3. Untar
 tar zxvf ninja-x.x.x.tar.gz
 
-4. copy the ninja dir to a suitable location. Will vary between installations.
+4. Copy the ninja dir to a suitable location. Will vary between installations.
 mkdir /usr/local/nagios/addons/
 cp -a ninja /usr/local/nagios/addons/
 
@@ -68,8 +72,8 @@ ninja/install_scripts/ninja_db_init.sh
 
 8. Point your browser to https://yourip/ninja and try your installation
 
-congratulations! you now (hopfully) have a working Ninja installation
+Congratulations! You now (hopefully) have a working Ninja installation
 
 Questions, feedback, patches etc are best sent to op5-users@lists.op5.com
-subscription (http://lists.op5.com/mailman/listinfo/op5-users) is needed
+A subscription (http://lists.op5.com/mailman/listinfo/op5-users) is needed
 to post. Check out www.op5.org for more info about Ninja.
