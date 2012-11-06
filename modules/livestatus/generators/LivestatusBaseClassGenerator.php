@@ -16,7 +16,7 @@ class LivestatusBaseClassGenerator extends LivestatusClassGenerator {
 	
 	public function generate( $fp ) {
 		parent::generate( $fp );
-		$this->init_class();
+		$this->init_class( 'ObjectRoot' );
 		
 		/* Storage */
 		foreach( $this->structure as $field => $type ) {
