@@ -11,6 +11,14 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 				$this->sub_filters );
 	}
 	
+	function prefix( $prefix ) {
+		$res = new LivestatusFilterOr();
+		foreach( $this->sub_filters as $subf ) {
+			$res->add( $subf->prefix( $prefix ) );
+		}
+		return $res;
+	}
+	
 	function generateFilter() {
 		$result = "";
 		foreach( $this->sub_filters as $subf ) {
@@ -20,10 +28,11 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 		$count = count($this->sub_filters);
 		if( $count != 1 )
 			$result .= "Or: $count\n";
+		return $result;
 	}
 	
 	function add( $filter ) {
-		if( $filter instanceof LivestatusOr ) {
+		if( $filter instanceof self ) {
 			foreach( $filter->sub_filters as $subf ) {
 				$this->sub_filters[] = $subf;
 			}

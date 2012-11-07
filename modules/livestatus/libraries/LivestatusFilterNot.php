@@ -11,6 +11,10 @@ class LivestatusFilterNot extends LivestatusFilterBase {
 		$this->filter;
 	}
 	
+	function prefix( $prefix ) {
+		return new LivestatusFilterNot( $this->filter->prefix( $prefix ) );
+	}
+	
 	function generateFilter() {
 		return $this->filter->generateFilter()."Negate: \n";
 	}

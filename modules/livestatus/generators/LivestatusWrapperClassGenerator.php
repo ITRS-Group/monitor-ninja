@@ -16,7 +16,6 @@ class LivestatusWrapperClassGenerator extends LivestatusClassGenerator {
 	
 	public function generate( $fp ) {
 		parent::generate( $fp );
-		$this->classfile( "base/".'Base'.$this->classname.".php" );
 		$this->init_class( 'Base'.$this->classname, $this->modifiers );
 		$this->finish_class();
 	}

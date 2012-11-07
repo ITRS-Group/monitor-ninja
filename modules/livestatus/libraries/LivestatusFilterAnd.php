@@ -11,6 +11,14 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 				$this->sub_filters );
 	}
 	
+	function prefix( $prefix ) {
+		$res = new LivestatusFilterAnd();
+		foreach( $this->sub_filters as $subf ) {
+			$res->add( $subf->prefix( $prefix ) );
+		}
+		return $res;
+	}
+	
 	function generateFilter() {
 		$result = "";
 		foreach( $this->sub_filters as $subf ) {
@@ -20,10 +28,11 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 		$count = count($this->sub_filters);
 		if( $count != 1 )
 			$result .= "And: $count\n";
+		return $result;
 	}
 	
 	function add( $filter ) {
-		if( $filter instanceof LivestatusAnd ) {
+		if( $filter instanceof self ) {
 			foreach( $filter->sub_filters as $subf ) {
 				$this->sub_filters[] = $subf;
 			}
@@ -31,4 +40,5 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 			$this->sub_filters[] = $filter;
 		}
 	}
+
 }
