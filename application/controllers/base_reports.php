@@ -161,6 +161,14 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	}
 
 	/**
+	 * @param $options Report_options
+	 */
+	function set_options(Report_options $options)
+	{
+		$this->options = $options;
+	}
+
+	/**
 	 * Expands a series of groupnames (host or service) into its member objects, and calculate uptime for each
 	 *
 	 * @uses Reports_Model::get_uptime()

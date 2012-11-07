@@ -588,10 +588,11 @@ class Reports_Controller extends Base_reports_Controller
 
 		if ($this->options['include_alerts']) {
 			$this->xtra_js[] = $this->add_path('summary/js/summary.js');
-			$alerts = new Alert_history_Controller();
 			$alrt_opts = new Alert_history_options($this->options);
 			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
-			$alerts->options = $alrt_opts;
+
+			$alerts = new Alert_history_Controller();
+			$alerts->set_options($alrt_opts);
 			$alerts->auto_render = false;
 			$alerts->generate();
 			$this->template->content->log_content = $alerts->template->content->content;

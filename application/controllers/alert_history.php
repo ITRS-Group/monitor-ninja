@@ -15,12 +15,15 @@ class Alert_history_Controller extends Summary_Controller
 	public function generate($input = false)
 	{
 		$this->setup_options_obj($input);
-		
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
-		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
 
-		$this->options['summary_items'] = $pagination->items_per_page;
-		$this->options['page'] = $pagination->current_page;
+
+		if($this->options['summary_items']) {
+			// summary_items' set to 0 if it's disabled
+			$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+			$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
+			$this->options['summary_items'] = $pagination->items_per_page;
+			$this->options['page'] = $pagination->current_page;
+		}
 		
 		$this->options['summary_type'] = self::RECENT_ALERTS;
 		$this->xtra_js[] = $this->add_path('alert_history/js/alert_history.js');
