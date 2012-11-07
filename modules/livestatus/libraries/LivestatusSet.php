@@ -60,7 +60,17 @@ class LivestatusSet implements IteratorAggregate, Countable {
 	
 	/* For IteratorAggregate */
 	public function getIterator() {
+		$ls = LivestatusAccess::instance();
 		
+		$columns = false;
+		
+		list($columns, $objects, $count) = $ls->query(
+				$this->table,
+				$this->filter->generateFilter(),
+				$columns
+				);
+		
+		return new LivestatusSetIterator($objects, $columns, $this->class);
 	}
 	
 	/* For testing */

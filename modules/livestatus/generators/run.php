@@ -12,12 +12,14 @@ $outdir_base = $outdir . 'base/';
 $outdir_lib = 'libraries/';
 
 $classpaths = array(
-		'LivestatusFilterOr' => 'libraries/LivestatusFilterOr.php',
-		'LivestatusFilterAnd' => 'libraries/LivestatusFilterAnd.php',
-		'LivestatusFilterBase' => 'libraries/LivestatusFilterBase.php',
+		'LivestatusAccess'      => 'libraries/LivestatusAccess.php',
+		'LivestatusFilterOr'    => 'libraries/LivestatusFilterOr.php',
+		'LivestatusFilterAnd'   => 'libraries/LivestatusFilterAnd.php',
+		'LivestatusFilterBase'  => 'libraries/LivestatusFilterBase.php',
 		'LivestatusFilterMatch' => 'libraries/LivestatusFilterMatch.php',
-		'LivestatusFilterNot' => 'libraries/LivestatusFilterNot.php',
-		'LivestatusSet' => 'libraries/LivestatusSet.php'
+		'LivestatusFilterNot'   => 'libraries/LivestatusFilterNot.php',
+		'LivestatusSet'         => 'libraries/LivestatusSet.php',
+		'LivestatusSetIterator' => 'libraries/LivestatusSetIterator.php'
 		);
 
 /* Generate base root class */
