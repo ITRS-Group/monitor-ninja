@@ -118,7 +118,7 @@ class Cli_Controller extends Ninja_Controller {
 	/**
 	 * Perform post-deletion cleanup
 	 */
-	public function handle_deletion($type, $name)
+	public function handle_deletion($type, $old_name)
 	{
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
