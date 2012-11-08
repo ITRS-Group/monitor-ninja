@@ -1,12 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-require_once( 'expparser_livestatusfilter_Test.php' );
+require_once( 'expparser_livestatusfilter_TestBase.php' );
 
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class ExpParser_LivestatusFilter_Stats_Test extends ExpParser_LivestatusFilter_Test {
+class ExpParser_LivestatusFilter_Stats_Test extends ExpParser_LivestatusFilter_TestBase {
 	/* Runs the standard livestatus tests, but in stats mode */
 
 	protected function run_test( $query, $expect ) {

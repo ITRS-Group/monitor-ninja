@@ -4,7 +4,7 @@
  * @author     op5
  * @license    GPL
  */
-class ExpParser_LivestatusFilter_Test extends TapUnit {
+abstract class ExpParser_LivestatusFilter_TestBase extends TapUnit {
 	/* ******
 	 * Tests for all operators
 	 */
@@ -196,16 +196,7 @@ class ExpParser_LivestatusFilter_Test extends TapUnit {
 	/* ******
 	 * Internal library
 	 */
-	protected function run_test( $query, $expect ) {
-		if( is_array( $expect ) ) {
-			$expect = implode("\n",$expect)."\n";
-		}
-
-		$parser = new ExpParser_LivestatusFilter();
-		$result = $parser->parse( $query );
-		$this->ok_eq( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
-		return $parser;
-	}
+	abstract protected function run_test( $query, $expect );
 
 	private function run_fail( $query, $exception_match ) {
 		try {
