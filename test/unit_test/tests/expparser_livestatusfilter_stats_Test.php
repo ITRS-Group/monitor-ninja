@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+require_once( 'expparser_livestatusfilter_Test.php' );
+
 /**
  * @package    NINJA
  * @author     op5
