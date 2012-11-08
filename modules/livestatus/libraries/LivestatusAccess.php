@@ -1,11 +1,6 @@
 <?php
 
 /**
- * Custom exception for Livestatus errors
- */
-class LivestatusException extends Exception {}
-
-/**
  * Livetatus interaface.
  */
 class LivestatusAccess {
@@ -25,10 +20,9 @@ class LivestatusAccess {
 	/* constructor */
 	public function __construct($config = null) {
 		$config           = $config ? $config : 'livestatus';
-		$this->config     = array('benchmark' => false, 'path' => 'unix:///opt/monitor/var/rw/live');
-		//Kohana::config('database.'.$config);
-		$this->auth       = false;//Auth::instance();
-		$this->connection = new LivestatusAccessConnection(array('path' => $this->config['path']));
+		$this->config     = Kohana::config('database.'.$config);
+		$this->auth       = Auth::instance();
+		$this->connection = new LivestatusConnection(array('path' => $this->config['path']));
 	}
 
 

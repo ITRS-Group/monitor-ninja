@@ -11,6 +11,9 @@ class LivestatusSet implements IteratorAggregate, Countable {
 		$this->filter = new LivestatusFilterAnd();
 	}
 	
+	public function get_class() {
+		return $this->class;
+	}
 	
 	/*
 	 * Set combinings
@@ -41,10 +44,10 @@ class LivestatusSet implements IteratorAggregate, Countable {
 		return $result;
 	}
 	
-	public function reduceBy( $filter ) {
+	public function reduceBy( $column, $value, $op='=' ) {
 		$newfilter = new LivestatusFilterAnd();
 		$newfilter->add( $this->filter );
-		$newfilter->add( $filter );
+		$newfilter->add( new LivestatusFilterMatch( $column, $value, $op ) );
 		$this->filter = $newfilter;
 	}
 	
@@ -55,18 +58,41 @@ class LivestatusSet implements IteratorAggregate, Countable {
 	
 	/* For Countable */
 	public function count() {
-		
-	}
-	
-	/* For IteratorAggregate */
-	public function getIterator() {
 		$ls = LivestatusAccess::instance();
 		
 		$columns = false;
 		
+		$filter  = "Limit: 0\n";
+		$filter .= $this->filter->generateFilter();
+		
 		list($columns, $objects, $count) = $ls->query(
 				$this->table,
-				$this->filter->generateFilter(),
+				$filter,
+				$columns
+				);
+		
+		return $count;
+	}
+	
+	/* For IteratorAggregate */
+	public function getIterator()
+	{
+		return $this->it(false,array());
+	}
+	
+	public function it($columns,$order)
+	{
+		$ls = LivestatusAccess::instance();
+
+		$filter  = "";
+		foreach( $order as $col ) {
+			$filter .= "Sort: $col\n";
+		}
+		$filter .= $this->filter->generateFilter();
+		
+		list($columns, $objects, $count) = $ls->query(
+				$this->table,
+				$filter,
 				$columns
 				);
 		
