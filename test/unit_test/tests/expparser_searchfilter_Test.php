@@ -151,7 +151,7 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 	/* ******
 	 * Internal library
 	 */
-	public function run_test( $query, $expect ) {
+	private function run_test( $query, $expect ) {
 		$parser = new ExpParser_SearchFilter();
 		$result = $parser->parse( $query );
 		$this->ok_eq( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
