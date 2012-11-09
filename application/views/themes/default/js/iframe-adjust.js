@@ -34,7 +34,8 @@ $(document).ready(function() {
 });
 
 function adjust_height() {
-	var new_height = parseInt(document.documentElement.clientHeight) - 49;
+	var iframe_pos = $('#iframe').position();
+	var new_height = parseInt(document.documentElement.clientHeight) - iframe_pos.top;
 	$('#iframe').css('height', new_height+'px');
 	$('#nagvis').css('height', new_height+'px');
 	$('#hypermap').css('height', new_height+'px');
