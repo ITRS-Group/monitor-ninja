@@ -60,12 +60,21 @@
 			<td><span class="<?php echo ($row->active_checks_enabled ? 'enabled' : 'disabled');?>"><?php echo $row->active_checks_enabled ? _('ENABLED') : _('DISABLED');?></span></td>
 			<td class="icon">
 				<?php
-					if ($row->active_checks_enabled == true)
-						echo html::anchor('command/submit?cmd_typ=DISABLE_HOST_CHECK&host='.urlencode($host),html::image($this->add_path('icons/16x16/disable-active-checks.png'), array('alt' => _('Disable active checks of this host'), 'title' => _('Disable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
-					else
-						echo html::anchor('command/submit?cmd_typ=ENABLE_HOST_CHECK&host='.urlencode($host),html::image($this->add_path('icons/16x16/enable.png'), array('alt' => _('Enable active checks of this host'), 'title' => _('Enable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+					if(isset($row->description)) {
+						if ($row->active_checks_enabled == true)
+							echo html::anchor('command/submit?cmd_typ=DISABLE_SVC_CHECK&host='.urlencode($host).'&service='.urlencode($row->description), html::image($this->add_path('icons/16x16/disable-active-checks.png'), array('alt' => _('Disable active checks of this service'), 'title' => _('Disable active checks of this service'))),array('style' => 'border: 0px')).'&nbsp; ';
+						else
+							echo html::anchor('command/submit?cmd_typ=ENABLE_SVC_CHECK&host='.urlencode($host).'&service='.urlencode($row->description), html::image($this->add_path('icons/16x16/enable.png'), array('alt' => _('Enable active checks of this service'), 'title' => _('Enable active checks of this service'))),array('style' => 'border: 0px')).'&nbsp; ';
 
-					echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_CHECK&host='.urlencode($host),html::image($this->add_path('icons/16x16/re-schedule.png'), array('alt' => _('Re-schedule this host check'), 'title' => _('Re-schedule this host check'))),array('style' => 'border: 0px'));
+						echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_CHECK&host='.urlencode($host).'&service='.urlencode($row->description), html::image($this->add_path('icons/16x16/re-schedule.png'), array('alt' => _('Re-schedule this service check'), 'title' => _('Re-schedule this service check'))),array('style' => 'border: 0px'));
+					} else {
+						if ($row->active_checks_enabled == true)
+							echo html::anchor('command/submit?cmd_typ=DISABLE_HOST_CHECK&host='.urlencode($host),html::image($this->add_path('icons/16x16/disable-active-checks.png'), array('alt' => _('Disable active checks of this host'), 'title' => _('Disable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+						else
+							echo html::anchor('command/submit?cmd_typ=ENABLE_HOST_CHECK&host='.urlencode($host),html::image($this->add_path('icons/16x16/enable.png'), array('alt' => _('Enable active checks of this host'), 'title' => _('Enable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+
+						echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_CHECK&host='.urlencode($host),html::image($this->add_path('icons/16x16/re-schedule.png'), array('alt' => _('Re-schedule this host check'), 'title' => _('Re-schedule this host check'))),array('style' => 'border: 0px'));
+					}
 				?>
 			</td>
 		</tr>
