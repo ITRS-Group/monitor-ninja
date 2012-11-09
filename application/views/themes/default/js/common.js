@@ -952,6 +952,8 @@ function create_slider(the_id)
 		step: 10,
 		slide: function(event, ui) {
 			$("#" + the_id + "_value").val(ui.value);
+		},
+		stop: function(event, ui) {
 			current_interval = ui.value;
 			if(last_update_request !== false) {
 				last_update_request.abort();
@@ -977,6 +979,7 @@ function create_slider(the_id)
 			ninja_refresh(ui.value);
 		}
 	});
+	$("#" + the_id + "_value").val($("#" + the_id + "_slider").slider("value"));
 
 }
 
