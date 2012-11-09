@@ -74,6 +74,8 @@
 		</div>
 		<?php
 			echo html::script('application/media/js/dojo.js');
+			if (isset($context_menu))
+				echo $context_menu;
 		?>
 
 	</body>

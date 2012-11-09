@@ -35,7 +35,7 @@ $(document).ready(function() {
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
 
-	if ($.contextMenu) {
+	if ($.fn.contextMenu) {
 		$("body").contextMenu({
 				menu: 'property_menu', use_prop:true
 			},
