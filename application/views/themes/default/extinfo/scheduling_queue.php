@@ -42,7 +42,7 @@
 				$host = isset($row->host_name) ? $row->host_name : $row->name;
 		?>
 		<tr class="<?php echo $total_rows_printed%2 == 0 ? 'odd' : 'even'; ?>">
-			<td><a href="extinfo/details/host/<?php echo $host ?>"><?php echo $host ?></a></td>
+			<td><a href="<?php echo url::base(true); ?>/extinfo/details/host/<?php echo $host ?>"><?php echo $host ?></a></td>
 			<td style="white-space: normal"><?php if(isset($row->description)) {echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->description, $row->description);} ?>&nbsp;</td>
 			<td><?php echo $row->last_check ? date($date_format_str,$row->last_check) : _('Never checked'); ?></td>
 			<td><?php echo $row->next_check ? date($date_format_str,$row->next_check) : _('No check scheduled'); ?></td>
