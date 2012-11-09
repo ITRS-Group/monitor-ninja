@@ -5,7 +5,7 @@
 	<div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<?php echo form::open('notifications/'.Router::$method.(isset($host_name) ? '/'.$host_name : '').(isset($service) ? '?service='.$service : ''), array('method' => 'get', 'id' => 'notification_form')); ?>
 		<?php echo form::dropdown(array('name' => 'type', 'class' => 'auto'), $select_strings, $selected_val); ?>
-		<input type="checkbox" name="sort_order" value="asc" /> <?php echo _('Older Entries First');?> &nbsp;
+		<input type="checkbox" name="sort_order" value="asc" <?php if(isset($_GET['sort_order']) && strtolower($_GET['sort_order'])=='asc') echo 'checked="checked"'; ?>/> <?php echo _('Older Entries First');?> &nbsp;
 		<input type="submit" value="<?php echo _('Update');?>" />
 		<input type="hidden" name="service" value="<?php echo $service;?>" />
 	</form>
