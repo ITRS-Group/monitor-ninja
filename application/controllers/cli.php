@@ -88,10 +88,6 @@ class Cli_Controller extends Ninja_Controller {
 			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if ($report_type == 'summary') {
-					$report_data = unserialize($report_data['setting']);
-					$report_data['report_type'] = $report_data['obj_type'];
-				}
 				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
 					foreach ($report_data['objects'] as $idx => $svc) {
@@ -118,7 +114,7 @@ class Cli_Controller extends Ninja_Controller {
 	/**
 	 * Perform post-deletion cleanup
 	 */
-	public function handle_deletion($type, $name)
+	public function handle_deletion($type, $old_name)
 	{
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
@@ -142,10 +138,6 @@ class Cli_Controller extends Ninja_Controller {
 			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if ($report_type == 'summary') {
-					$report_data = unserialize($report_data['setting']);
-					$report_data['report_type'] = $report_data['obj_type'];
-				}
 				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
 					foreach ($report_data['objects'] as $idx => $svc) {

@@ -23,7 +23,7 @@ class Notifications_Model extends Model {
 
 		# only use LIMIT when NOT counting
 		if ($offset !== false)
-			$offset_limit = $count === true ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
+			$offset_limit = $count === true ? "" : " LIMIT " . intval($num_per_page)." OFFSET ".intval($offset);
 		else
 			$offset_limit = '';
 
@@ -44,7 +44,10 @@ class Notifications_Model extends Model {
 			"end_time, reason_type, state, contact_name, ".
 			"notification_type, output, command_name ";
 
-		$where_order = " ORDER BY ".$this->sort_field." ".$this->sort_order.$offset_limit;
+		$where_order = $offset_limit;
+		if( preg_match( '/^[a-zA-Z0-9_]+$/', $this->sort_field ) ) {
+			$where_order = " ORDER BY ".$this->sort_field." ".(strtolower($this->sort_order)=='asc'?'ASC':'DESC').$where_order;
+		}
 
 		$sql = "SELECT ".($count === true ? 'count(1) AS cnt' : $fields)." FROM notification ".$where_string;
 

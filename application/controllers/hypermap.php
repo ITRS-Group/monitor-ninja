@@ -28,7 +28,7 @@ class Hypermap_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('hypermap/hypermap');
 		$content = $this->template->content;
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
 		$this->template->js_header->js = $this->xtra_js;
 
 		if (Kohana::config('hypergraph.hyperapplet_path'))

@@ -33,12 +33,22 @@ $(document).ready(function() {
 
 });
 
+function adjust_height_frame( selector ) {
+	var iframe = $(selector);
+	if( iframe ) {
+		var top = 49;
+		if( $('#infobar') ) top = 85;
+		var new_height = parseInt(document.documentElement.clientHeight) - top;
+		$(selector).css('height', new_height+'px');
+	}
+}
+
 function adjust_height() {
-	var new_height = parseInt(document.documentElement.clientHeight) - 49;
-	$('#iframe').css('height', new_height+'px');
-	$('#nagvis').css('height', new_height+'px');
-	$('#hypermap').css('height', new_height+'px');
-	$('#content').css('height', new_height+'px');
+	adjust_height_frame('#iframe');
+	adjust_height_frame('#nagvis');
+	adjust_height_frame('#hypermap');
+	adjust_height_frame('#content');
+	
 	$('body').css('overflow-y', 'hidden');
 };
 

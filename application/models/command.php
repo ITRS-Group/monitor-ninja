@@ -271,7 +271,7 @@ class Command_Model extends Model
 										$ary['options']['service'][] = array($service => $service);
 									}
 								}
-							} else {
+							} elseif($defaults['host_name'] && $defaults['service']) {
 								$ary['options'] = array($defaults['host_name'].";".$defaults['service'] => $defaults['host_name'].";".$defaults['service']);
 							}
 						} else {
@@ -281,7 +281,7 @@ class Command_Model extends Model
 										$ary['options']['host_name'][] = $host;
 									}
 								}
-							} else {
+							} elseif($defaults['host_name']) {
 								$ary['options'] = array($defaults['host_name'] => $defaults['host_name']);
 							}
 						}

@@ -44,7 +44,7 @@ abstract class ExpParser_Core {
 		return $sym;
 	}
 	
-	protected function acceptKeyword( $keywordlist = false ) {
+	protected function acceptKeyword( $keywordlist = false, $case_insensitive = false ) {
 		/* Trim left */
 		while( ctype_space( substr( $this->expr, $this->ptr, 1 ) ) ) $this->ptr++;
 		
@@ -55,7 +55,8 @@ abstract class ExpParser_Core {
 			$curptr++;
 			$buffer .= $c;
 		}
-		
+		if( $case_insensitive )
+			$buffer = strtolower( $buffer );
 		if( $keywordlist === false || in_array( $buffer, $keywordlist ) ) {
 			$this->ptr = $curptr;
 			return $buffer;

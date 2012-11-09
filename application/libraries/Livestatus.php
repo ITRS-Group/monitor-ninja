@@ -733,6 +733,9 @@ class LivestatusBackend {
 		if($status != 200)
 			throw new LivestatusException("Invalid request: $body");
 		$result = json_decode(utf8_encode($body));
+		if (!$result) {
+			throw new LivestatusException("Invalid response: $body");
+		}
 		
 		$objects = $result->data;
 		$count = $result->total_count;
@@ -941,7 +944,7 @@ class LivestatusBackend {
  * Livestatus Connection Class
 */
 class LivestatusConnection {
-	private $connection  = null;
+	private $connection  = false;
 	private $timeout     = 10;
 
 	public function __construct($options) {
@@ -961,12 +964,13 @@ class LivestatusConnection {
 			$this->connection = fsockopen($address, $port, $errno, $errstr, $this->timeout);
 		}
 		elseif($type == 'unix') {
-			if(!file_exists($address)) {
-				throw new LivestatusException("connection failed, make sure $address exists\n");
+			$this->connection = @fsockopen($this->connectionString, NULL, $errno, $errstr, $this->timeout);
+			$i = 0;
+			while ($this->connection === false && $i < $this->timeout * 10) {
+				usleep(100000);
+				$i++;
+				$this->connection = @fsockopen($this->connectionString, NULL, $errno, $errstr, $this->timeout);
 			}
-			$this->connection = @fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
-			if (!$this->connection)
-				throw new LivestatusException("connection failed, make sure $address exists\n");
 		}
 		else {
 			throw new LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
@@ -978,14 +982,14 @@ class LivestatusConnection {
 	}
 
 	public function close() {
-		if($this->connection != null) {
+		if($this->connection != false) {
 			fclose($this->connection);
-			$this->connection = null;
+			$this->connection = false;
 		}
 	}
 
 	public function writeSocket($str) {
-		if ($this->connection === null)
+		if ($this->connection === false)
 			$this->connect();
 		$out = @fwrite($this->connection, $str);
 		if ($out === false)
@@ -993,24 +997,17 @@ class LivestatusConnection {
 	}
 
 	public function readSocket($len) {
-		$offset     = 0;
 		$socketData = '';
 
-		while($offset < $len) {
-			if(($data = fread($this->connection, $len - $offset)) === false) {
+		while($len) {
+			if(($data = fread($this->connection, $len)) == false) {
 				return false;
 			}
 
-			if(($dataLen = strlen($data)) === 0) {
-				break;
-			}
-
-			$offset     += $dataLen;
+			$len -= strlen($data);
 			$socketData .= $data;
 		}
 
 		return $socketData;
 	}
 }
-
-?>

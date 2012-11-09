@@ -93,14 +93,18 @@ class Comment_Model extends Model {
 					) );
 			return $result[0]['count'];
 		}
+
+		$options = array(
+			'filter' => $filter
+		);
+		if($num_per_page) {
+			$options['limit'] = $num_per_page;
+			$options['offset'] = $num_per_page*$offset;
+		}
 		if (static::TABLE_NAME == 'comments') {
-			$result = $ls->getComments( array(
-					'filter' => $filter,
-					) );
+			$result = $ls->getComments($options);
 		} else {
-			$result = $ls->getDowntimes( array(
-					'filter' => $filter,
-					) );
+			$result = $ls->getDowntimes($options);
 		}
 
 		return $result;

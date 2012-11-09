@@ -89,25 +89,44 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$result = (object)$result_data[0];
 		
-		/* TODO: implement */
+
+		$content->custom_variables = array();
 		switch($type) {
-		/*
 			case 'host':
-				$content->custom_variables = Custom_variable_Model::get_for($type, $result->id);
+				if($result->custom_variable_names) {
+					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
+				}
 				break;
 			case 'service':
-				$content->custom_variables = Custom_variable_Model::get_for($type, $result->service_id);
+				if($result->custom_variable_names) {
+					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
+				}
 				break;
-		*/
-			default:
-				$content->custom_variables = array();
 
 		}
 		$host_link = false;
 		$yes = _('YES');
 		$no = _('NO');
 		
-		$content->contactgroups = isset($result->contact_groups)?$result->contact_groups:false;
+		$content->contactgroups = false;
+		if(isset($result->contact_groups)) {
+			$groups = $ls->getContactgroups(
+				array(
+					'filter' => 'name = "'.implode('" or name = "', $result->contact_groups).'"',
+					'extra_columns' => array('members')
+				)
+			);
+			$complete_groups = false;
+			foreach($groups as $group) {
+				$complete_groups[$group['name']] = $ls->getContacts(
+					array(
+						'columns' => array('name', 'alias', 'email', 'pager'),
+						'filter' => 'name = "'.implode('" or name = "', $group['members']).'"'
+					)
+				);
+			}
+			$content->contactgroups = $complete_groups;
+		}
 		$is_pending = false;
 		$back_link = false;
 		$content->parents = false;
@@ -821,7 +840,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
 	{
-		$items_per_page = !empty($items_per_page) ? $items_per_page : config::get('pagination.default.items_per_page', '*');
 		$type = $service ? 'service' : 'host';
 		if (empty($all) && empty($host)) {
 			return false;
@@ -931,6 +949,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		//Setup pagination
+		$items_per_page = $this->input->get('custom_pagination_field', config::get('pagination.default.items_per_page', '*'));
 		$pagination = new Pagination(
 			array(
 				'uri_segment' => 3,

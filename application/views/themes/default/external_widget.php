@@ -14,7 +14,7 @@ if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 	$ninja_menu_state = 'show';
 }
 if (isset($this->template->js_header))
-	$this->template->js_header->js = $this->xtra_js;
+	$this->template->js_header->js = array_unique($this->xtra_js);
 ?>
 <!DOCTYPE html>
 

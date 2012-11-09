@@ -35,7 +35,7 @@ $(document).ready(function() {
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
 
-	if ($.contextMenu) {
+	if ($.fn.contextMenu) {
 		$("body").contextMenu({
 				menu: 'property_menu', use_prop:true
 			},
@@ -952,6 +952,8 @@ function create_slider(the_id)
 		step: 10,
 		slide: function(event, ui) {
 			$("#" + the_id + "_value").val(ui.value);
+		},
+		stop: function(event, ui) {
 			current_interval = ui.value;
 			if(last_update_request !== false) {
 				last_update_request.abort();
@@ -977,6 +979,7 @@ function create_slider(the_id)
 			ninja_refresh(ui.value);
 		}
 	});
+	$("#" + the_id + "_value").val($("#" + the_id + "_slider").slider("value"));
 
 }
 
@@ -1059,11 +1062,14 @@ function saveScroll() {
 		return;
 	}
 
-	var x = (document.pageXOffset?document.pageXOffset:document.body.scrollLeft);
-	var y = (document.pageYOffset?document.pageYOffset:document.body.scrollTop);
+	var x = $(window).scrollLeft();
+	var y = $(window).scrollTop();
 	Data = x + "_" + y;
+
 	setCookie(cookieName,Data,expdate);
 }
+
+$(window).bind('beforeunload', saveScroll);
 
 function loadScroll() { // added function
 	inf = getCookie(cookieName);
@@ -1072,9 +1078,13 @@ function loadScroll() { // added function
 	}
 	var ar = inf.split("_");
 	if (ar.length == 2) {
-		window.scrollTo(parseInt(ar[0]), parseInt(ar[1]));
+		console.log(ar);
+		$(window).scrollLeft(parseInt(ar[0], 10))
+		$(window).scrollTop(parseInt(ar[1], 10));
 	}
 }
+
+$(window).bind('load', loadScroll);
 
 function trigger_cb_on_nth_call(cb, n) {
 	return function() {
@@ -1082,4 +1092,3 @@ function trigger_cb_on_nth_call(cb, n) {
 			cb();
 	};
 }
-

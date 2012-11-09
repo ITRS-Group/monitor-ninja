@@ -146,8 +146,6 @@ class Backup_Controller extends Authenticated_Controller {
 		exec($this->asmonitor . $this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
-			var_dump($output);
-			die();
 			$this->template->status = false;
 			$this->template->message = "The current configuration is invalid";
 		}

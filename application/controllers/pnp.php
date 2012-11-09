@@ -35,7 +35,8 @@ class Pnp_Controller extends Authenticated_Controller {
 		$this->template->title = _('Reporting » Graphs');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->disable_refresh = true;
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'), $this->add_path('/js/pnp.js'));
+		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
+		$this->xtra_js[] = $this->add_path('/js/pnp.js');
 		$this->template->js_header->js = $this->xtra_js;
 	}
 }

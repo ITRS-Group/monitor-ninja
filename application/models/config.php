@@ -104,7 +104,7 @@ class Config_Model extends Model {
 		if($free_text) {
 			$sql .= " WHERE $primary LIKE '%$free_text%'";
 		}
-		$sql .= "ORDER BY
+		$sql .= " ORDER BY
 				timeperiod_name";
 
 		return $this->query($db,$sql);
