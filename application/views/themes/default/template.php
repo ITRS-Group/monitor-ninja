@@ -11,12 +11,12 @@
 	}
 
 	if (isset($this) && isset($this->template->js_header))
-		$this->template->js_header->js = $this->xtra_js;
+		$this->template->js_header->js = array_unique($this->xtra_js);
 
 ?>
 <!DOCTYPE html>
 <html>
-	
+
 	<?php
 		require __DIR__.'/template_head.php';
 	?>
@@ -41,19 +41,19 @@
 
 			</div>
 
-			<div class="content" id="content">	
-				
-				
+			<div class="content" id="content">
+
+
 					<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); }?>
-				
+
 			</div>
-			
-			<?php 
+
+			<?php
 
 				if (isset($saved_searches) && !empty($saved_searches)) {
 					echo $saved_searches;
 				}
-				
+
 			?>
 
 			<div id="save-search-form" title="<?php echo _('Save search') ?>" style="display:none">

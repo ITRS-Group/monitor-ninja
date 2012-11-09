@@ -1,6 +1,6 @@
 <?php
 	if (isset($this) && isset($this->template->js_header))
-		$this->template->js_header->js = $this->xtra_js;
+		$this->template->js_header->js = array_unique($this->xtra_js);
 ?>
 <head>
 

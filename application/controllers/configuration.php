@@ -69,7 +69,8 @@ class Configuration_Controller extends Authenticated_Controller {
 		$this->template->title = _('Configuration » Configure');
 		$this->template->nacoma = true;
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'), $this->add_path('/js/nacoma-urls.js'));
+		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
+		$this->xtra_js[] = $this->add_path('/js/nacoma-urls.js');
 		$this->template->js_header->js = $this->xtra_js;
 	}
 }
