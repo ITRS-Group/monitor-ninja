@@ -839,7 +839,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
 	{
-		$items_per_page = !empty($items_per_page) ? $items_per_page : config::get('pagination.default.items_per_page', '*');
 		$type = $service ? 'service' : 'host';
 		if (empty($all) && empty($host)) {
 			return false;
@@ -949,6 +948,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		//Setup pagination
+		$items_per_page = $this->input->get('custom_pagination_field', config::get('pagination.default.items_per_page', '*'));
 		$pagination = new Pagination(
 			array(
 				'uri_segment' => 3,
