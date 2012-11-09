@@ -1059,11 +1059,14 @@ function saveScroll() {
 		return;
 	}
 
-	var x = (document.pageXOffset?document.pageXOffset:document.body.scrollLeft);
-	var y = (document.pageYOffset?document.pageYOffset:document.body.scrollTop);
+	var x = $(window).scrollLeft();
+	var y = $(window).scrollTop();
 	Data = x + "_" + y;
+
 	setCookie(cookieName,Data,expdate);
 }
+
+$(window).bind('beforeunload', saveScroll);
 
 function loadScroll() { // added function
 	inf = getCookie(cookieName);
@@ -1072,9 +1075,13 @@ function loadScroll() { // added function
 	}
 	var ar = inf.split("_");
 	if (ar.length == 2) {
-		window.scrollTo(parseInt(ar[0]), parseInt(ar[1]));
+		console.log(ar);
+		$(window).scrollLeft(parseInt(ar[0], 10))
+		$(window).scrollTop(parseInt(ar[1], 10));
 	}
 }
+
+$(window).bind('load', loadScroll);
 
 function trigger_cb_on_nth_call(cb, n) {
 	return function() {
@@ -1082,4 +1089,3 @@ function trigger_cb_on_nth_call(cb, n) {
 			cb();
 	};
 }
-
