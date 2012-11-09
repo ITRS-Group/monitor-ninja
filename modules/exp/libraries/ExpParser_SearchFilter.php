@@ -22,12 +22,12 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			if( !isset( $filters[$object] ) )
 				$filters[$object] = array();
 			$filters[$object][] = $criteria;
-		} while( $this->acceptKeyword(array('and') ) );
+		} while( $this->acceptKeyword(array('and'), true) );
 		
 		$params = array(
 				'filters' => $filters
 				);
-		while( false!==($arg=$this->acceptKeyword( array('limit') )) ) {
+		while( false!==($arg=$this->acceptKeyword( array('limit'), true )) ) {
 			/* For auto-complete */
 			$this->last_string = false;
 			$this->last_object = false;
@@ -72,7 +72,7 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 				$this->last_string = false;
 				$this->last_object = false;
 			}
-		} while( $this->acceptKeyword(array('or') ) );
+		} while( $this->acceptKeyword(array('or'), true) );
 		
 		return array( $object, $args );
 	}
@@ -111,7 +111,7 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			}
 			else {
 				$pos = false;
-				if( preg_match( ':[^a-z0-9]('.$keyword.')[^a-z0-9]:', $this->expr, $matches, PREG_OFFSET_CAPTURE, $this->ptr) ) {
+				if( preg_match( '/[^a-zA-Z0-9]('.$keyword.')[^a-zA-Z0-9]/i', $this->expr, $matches, PREG_OFFSET_CAPTURE, $this->ptr) ) {
 					$pos=$matches[1][1]; /* Second match (the keyword), second index (=position, not match) */
 				}
 			}
