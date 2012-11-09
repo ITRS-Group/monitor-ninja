@@ -89,18 +89,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$result = (object)$result_data[0];
 		
-		/* TODO: implement */
+
+		$content->custom_variables = array();
 		switch($type) {
-		/*
 			case 'host':
-				$content->custom_variables = Custom_variable_Model::get_for($type, $result->id);
+				if($result->custom_variable_names) {
+					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
+				}
 				break;
 			case 'service':
-				$content->custom_variables = Custom_variable_Model::get_for($type, $result->service_id);
+				if($result->custom_variable_names) {
+					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
+				}
 				break;
-		*/
-			default:
-				$content->custom_variables = array();
 
 		}
 		$host_link = false;

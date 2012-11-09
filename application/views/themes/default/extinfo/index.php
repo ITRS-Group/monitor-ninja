@@ -245,10 +245,10 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<?php if($custom_variables) {
-			foreach($custom_variables as $custom_variable) { ?>
+			foreach($custom_variables as $variable => $value) { ?>
 				<tr>
-					<td class="dark"><?php echo $custom_variable['variable'] ?></td>
-					<td><?php echo link::linkify($custom_variable['value']) ?></td>
+					<td class="dark"><?php echo $variable ?></td>
+					<td><?php echo link::linkify($value) ?></td>
 				</tr>
 		<?php
 			}
