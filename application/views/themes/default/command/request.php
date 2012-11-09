@@ -35,8 +35,8 @@ foreach ($params as $pname => $ary) {
 	# help column only printed if we really have a help key
 
 	echo '<div class="" style="padding: 2px 0 0 10px; " id="'.$pname.'">';
-	echo $use_help ? '<span style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</span>&nbsp;' : '';
-	echo $ary['name'].'&nbsp;&nbsp;';
+	echo $use_help ? (isset($ary['help']) ? '<span style="width: 16px">'.$ary['help'].'</span>&nbsp;' : '') : '';
+	echo '<label><span style="display: inline-block; margin-right: 8px;">'.$ary['name'].'</span>';
 
 	switch ($ary['type']) {
 		case 'select':
@@ -59,7 +59,7 @@ foreach ($params as $pname => $ary) {
 				if($size > 15) {
 					$size = 15;
 				}
-				echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size, 'style' => 'width: auto;'), $tmp_obj);
+				echo '<br />' . form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size, 'style' => 'width: 350px;'), $tmp_obj);
 			}
 			break;
 		case 'checkbox':
@@ -94,7 +94,7 @@ foreach ($params as $pname => $ary) {
 			break;
 	}
 
-	echo "</div>\n";
+	echo "</label></div>\n";
 }
 
 echo '<div class="left" style="border: none;">&nbsp;</div><div class="clear"></div><div class="left width-50">';
