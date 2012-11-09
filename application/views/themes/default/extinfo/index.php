@@ -74,9 +74,9 @@ if (!empty($widgets)) {
 			<td>
 				<?php	if (!empty($contactgroups)) {
 					$c = 0;
-					foreach ($contactgroups as $cgroup) {
-						echo '<a title="'._('Contactgroup').': '.$cgroup.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.$c.'">';
-						echo $cgroup.'</a>';
+					foreach ($contactgroups as $group => $members) {
+						echo '<a title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
+						echo $group.'</a>';
 				?>
 				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
 					<tr>
@@ -85,17 +85,17 @@ if (!empty($widgets)) {
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Email') ?></th>
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
 					</tr>
-					<?php	/*foreach ($contacts[$cgroup] as $cmember) { ?>
+					<?php
+					foreach ($members as $member) { ?>
 					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
-						<td><?php echo $cmember->contact_name ?></td>
-						<td><?php echo $cmember->alias ?></td>
-						<td><?php echo $cmember->email ?></td>
-						<td><?php echo $cmember->pager ?></td>
+						<td><?php echo $member['name'] ?></td>
+						<td><?php echo $member['alias'] ?></td>
+						<td><?php echo $member['email'] ?></td>
+						<td><?php echo $member['pager'] ?></td>
 					</tr>
-					<?php	}*/ ?>
+					<?php	} ?>
 				</table>
-					<?php	# needed to assign unique IDs to extinfo_contacts_ table
-						$c++; 	# and extinfo_contactgroup_ table cells
+					<?php
 					}
 				} else {
 					echo _('No contactgroup');
