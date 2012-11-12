@@ -1078,7 +1078,6 @@ function loadScroll() { // added function
 	}
 	var ar = inf.split("_");
 	if (ar.length == 2) {
-		console.log(ar);
 		$(window).scrollLeft(parseInt(ar[0], 10))
 		$(window).scrollTop(parseInt(ar[1], 10));
 	}

@@ -43,7 +43,7 @@ class Configuration_Controller extends Authenticated_Controller {
 		$type = trim($type);
 		$name = trim($name);
 
-		$target_link = null;
+		$target_link = 'configure.php';
 
 		if ($page)
 			$target_link = $page;
