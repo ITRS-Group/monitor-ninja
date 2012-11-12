@@ -400,6 +400,11 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['_force']);
 				$options |= 2;
 			}
+			if (isset($param['_increment'])) {
+				unset($param['_increment']);
+				$options |= 4;
+			}
+
 			$param['options'] = $options;
 			break;
 
