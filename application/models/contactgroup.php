@@ -98,6 +98,34 @@ class Contactgroup_Model extends Model
 	}
 
 	/**
+	 *	Static method to return if user's contact is a member of a certain contactgroup
+	 */
+	public static function is_user_member($group=false, $user=false)
+	{
+		if (empty($user)) {
+			$user = Auth::instance()->get_user()->username;
+		}
+		if (empty($group)) {
+			return false;
+		}
+		$db = Database::instance();
+		$group = trim($group);
+		$sql = "SELECT ".
+				"c.contact_name ".
+			"FROM ".
+				"contact c, ".
+				"contactgroup cg, ".
+				"contact_contactgroup ccg ".
+			"WHERE ".
+				"cg.contactgroup_name= ".$db->escape($group)." AND ".
+				"ccg.contactgroup=cg.id AND ".
+				"c.id=ccg.contact AND ".
+				"c.contact_name=".$db->escape($user);
+		$result = $db->query($sql);
+		return count($result) ? true : false;
+	}
+
+	/**
 	 * Given an escalation, return all contactgroups, or false on error or empty
 	 * @param $type 'host' or 'service'
 	 * @param $id The escalation id
