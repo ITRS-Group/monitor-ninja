@@ -245,12 +245,15 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<?php if($custom_variables) {
-			foreach($custom_variables as $custom_variable) { ?>
-				<tr>
-					<td class="dark"><?php echo $custom_variable['variable'] ?></td>
-					<td><?php echo $custom_variable['value'] ?></td>
-				</tr>
-		<?php
+			foreach($custom_variables as $custom_variable) { 
+				if (substr($custom_variable['variable'], 0, 7) !== '_OP5H__') {
+					?>
+					<tr>
+						<td class="dark"><?php echo $custom_variable['variable'] ?></td>
+						<td><?php echo $custom_variable['value'] ?></td>
+					</tr>
+					<?php
+				}
 			}
 		} ?>
 			</table>
