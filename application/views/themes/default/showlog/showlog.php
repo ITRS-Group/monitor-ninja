@@ -6,12 +6,12 @@
 <div>
 	<table class="showlog no-borders">
 		<tr>
-			<td>
+			<td class="showlog_options">
 	<h3><?php echo _('State type options'); ?></h3>
 	<label><?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '._('Soft states'); ?></label><br />
 	<label><?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '._('Hard states'); ?></label>
 	</td>
-	<td>
+	<td class="showlog_options">
 	<h3><?php echo _('Host state options'); ?></h3>
 		<?php
 			$i = 0;
@@ -24,7 +24,7 @@
 				//echo ($i%2 == 0) ? '</tr>': ''."\n";
 			}
 		?>
-		</td><td>
+		</td><td class="showlog_options">
 		<h3><?php echo _('Service state options'); ?></h3>
 		<?php
 			$i = 0;
@@ -37,7 +37,7 @@
 				//echo ($i%2 == 0) ? '</tr>': ''."\n";
 			}
 		?>
-		</td><td>
+		</td><td class="showlog_options">
 		<h3><?php echo _('General options'); ?></h3>
 		<label><?php echo form::checkbox('hide_flapping', 1, isset($options['hide_flapping'])).' '._('Hide flapping alerts'); ?></label><br />
 		<label><?php echo form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '._('Hide downtime alerts'); ?></label><br />
@@ -49,15 +49,21 @@
 		</td>
 		</tr>
 		<tr>
-			<td colspan="2">
-				<h3><?php echo _('First time') ?></h3> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-				<input type="text" value="<?php echo isset($options['first']) && !empty($options['first']) ? date($date_format, $options['first']) : ''; ?>" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Start date') ?>" />
-				<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($options['first']) && !empty($options['first']) ? date('H:i', $options['first']) : ''; ?>">
-			</td>
-			<td colspan="2">
-				<h3><?php echo _('Last time') ?></h3> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-				<input type="text" value="<?php echo isset($options['last']) && !empty($options['last']) ? date($date_format, $options['last']) : ''; ?>" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Start date') ?>" />
-				<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($options['last']) && !empty($options['last']) ? date('H:i', $options['last']) : ''; ?>">
+			<td colspan="4">
+				<table style="width: 50%">
+					<tr>
+						<td>
+							<h3><?php echo _('First time') ?></h3> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+							<input type="text" value="<?php echo isset($options['first']) && !empty($options['first']) ? date($date_format, $options['first']) : ''; ?>" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Start date') ?>" />
+							<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($options['first']) && !empty($options['first']) ? date('H:i', $options['first']) : ''; ?>">
+						</td>
+						<td>
+							<h3><?php echo _('Last time') ?></h3> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+							<input type="text" value="<?php echo isset($options['last']) && !empty($options['last']) ? date($date_format, $options['last']) : ''; ?>" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Start date') ?>" />
+							<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($options['last']) && !empty($options['last']) ? date('H:i', $options['last']) : ''; ?>">
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 		<tr>
