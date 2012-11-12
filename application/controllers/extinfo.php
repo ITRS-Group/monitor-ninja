@@ -500,6 +500,17 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
 
+		// Catch special cases 
+		$content->custom_commands = Custom_variable_Model::parse_custom_variables($content->custom_variables);
+		if ($content->custom_commands) {
+			$commands->custom_commands = array();
+			// Create links.
+			foreach ($content->custom_commands as $command_name => $action) {
+				$linktext = ucwords(strtolower(str_replace('_', ' ', $command_name)));
+				$commands->custom_commands[$command_name] = $this->command_link($action, $host, $service, $linktext);
+			}
+		}
+
 		# create page links
 		switch ($type) {
 			case 'host':
