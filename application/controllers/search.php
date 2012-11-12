@@ -153,7 +153,15 @@ class Search_Controller extends Authenticated_Controller {
 		}
 	}
 	
-	private function queryToLSFilter($query)
+	/**
+	 * This is an internal function to generate a livestatus query from a filter string.
+	 * 
+	 * This method is public so it can be accessed from tests.
+	 * 
+	 * @param $query Search query for string
+	 * @return Livstatus query as string
+	 */
+	public function queryToLSFilter($query)
 	{
 		$parser = new ExpParser_SearchFilter();
 		try {
