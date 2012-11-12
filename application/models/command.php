@@ -174,14 +174,14 @@ class Command_Model extends Model
 				if (isset($defaults['service']) && is_array($defaults['service'])) {
 					$downtime_data = Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME);
 					foreach ($downtime_data as $downtime)
-						if (in_array($downtime->host_name . ';' . $downtime->service_description, $defaults['service']))
-							$ary['default'][] = $downtime->downtime_id;
+						if (in_array($downtime['host_name'] . ';' . $downtime['service_description'], $defaults['service']))
+							$ary['default'][] = $downtime['id'];
 				}
 				if (isset($defaults['host_name']) && is_array($defaults['host_name'])) {
 					$downtime_data = Downtime_Model::get_downtime_data(nagstat::HOST_DOWNTIME);
 					foreach ($downtime_data as $downtime)
-						if (in_array($downtime->host_name, $defaults['host_name']))
-							$ary['default'][] = $downtime->downtime_id;
+						if (in_array($downtime['host_name'], $defaults['host_name']))
+							$ary['default'][] = $downtime['id'];
 				}
 				$ary['name'] = _('Triggered By');
 				$ary['help'] = help::render('triggered_by');
