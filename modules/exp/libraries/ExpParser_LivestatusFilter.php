@@ -33,7 +33,7 @@ class ExpParser_LivestatusFilter_Core extends ExpParser_Core {
 		$res = $this->bool_and();
 		$count = 1;
 		do {
-			$sym = $this->acceptSym( array('or') );
+			$sym = $this->acceptKeyword( array('or'), true );
 			if( $sym !== false ) {
 				$res .= $this->bool_and();
 				$count++;
@@ -48,7 +48,7 @@ class ExpParser_LivestatusFilter_Core extends ExpParser_Core {
 		$res = $this->bool_expr();
 		$count = 1;
 		do {
-			$sym = $this->acceptSym( array('and') );
+			$sym = $this->acceptKeyword( array('and'), true );
 			if( $sym !== false ) {
 				$res .= $this->bool_expr();
 				$count++;
@@ -61,7 +61,7 @@ class ExpParser_LivestatusFilter_Core extends ExpParser_Core {
 	
 	protected function bool_expr() {
 		$neg = false;
-		if( $this->acceptKeyword( array( 'not' ) ) ) {
+		if( $this->acceptKeyword( array( 'not' ), true ) ) {
 			$neg = true;
 		}
 		

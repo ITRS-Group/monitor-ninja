@@ -5,7 +5,7 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			'h'  => 'hosts',
 			's'  => 'services',
 			'c'  => 'comments',
-			'si' => 'statuss',
+			'si' => 'status',
 			'hg' => 'hostgroups',
 			'sg' => 'servicegroups'
 			);
@@ -127,7 +127,7 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 		if( $minpos !== false ) {
 			$outp = substr( $this->expr, $this->ptr, $minpos-$this->ptr );
 			$this->ptr = $minpos;
-			return $outp;
+			return trim($outp);
 		}
 		return false;
 	}

@@ -64,8 +64,8 @@ abstract class ExpParser_Core {
 		return false;
 	}
 	
-	protected function expectKeyword( $keywordlist = false ) {
-		$sym = $this->acceptKeyword( $keywordlist );
+	protected function expectKeyword( $keywordlist = false, $case_insensitive = false ) {
+		$sym = $this->acceptKeyword( $keywordlist, $case_insensitive );
 		if( $sym === false )
 			$this->error('Unexpected token, expected '.(($keywordlist===false)?('keyword'):implode(',',$keywordlist)));
 		return $sym;
