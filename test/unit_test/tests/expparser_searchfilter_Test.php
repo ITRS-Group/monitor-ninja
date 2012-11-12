@@ -149,6 +149,30 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 	}
 	
 	/* ******
+	 * Test case sensitivity
+	 */
+	public function test_case_uppercase_and() {
+		$parser = $this->run_test('h:hostkaka AND h:hostkoko', array( 'filters'=>array(
+				'hosts'=>array(array('hostkaka'),array('hostkoko')),
+				) ) );
+	}
+	public function test_case_uppercase_or() {
+		$parser = $this->run_test('h:hostkaka OR hostkoko', array( 'filters'=>array(
+				'hosts'=>array(array('hostkaka', 'hostkoko'))
+				) ) );
+	}
+	public function test_case_mixcase_and() {
+		$parser = $this->run_test('h:hostkaka aNd h:hostkoko', array( 'filters'=>array(
+				'hosts'=>array(array('hostkaka'),array('hostkoko')),
+				) ) );
+	}
+	public function test_case_mixcase_or() {
+		$parser = $this->run_test('h:hostkaka oR hostkoko', array( 'filters'=>array(
+				'hosts'=>array(array('hostkaka', 'hostkoko'))
+				) ) );
+	}
+	
+	/* ******
 	 * Internal library
 	 */
 	private function run_test( $query, $expect ) {

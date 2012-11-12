@@ -161,6 +161,50 @@ abstract class ExpParser_LivestatusFilter_TestBase extends TapUnit {
 				"Or: 2"
 				));
 	}
+	
+	/* ******
+	 * Test case sensitivity
+	 */
+	public function test_case_uppercase_or() {
+		$this->run_test( 'cola = "vala" OR colb = "valb"', array(
+				"Filter: cola = vala",
+				"Filter: colb = valb",
+				"Or: 2"
+				));
+	}
+	public function test_case_uppercase_and() {
+		$this->run_test( 'cola = "vala" AND colb = "valb"', array(
+				"Filter: cola = vala",
+				"Filter: colb = valb",
+				"And: 2"
+				));
+	}
+	public function test_case_uppercase_not() {
+		$this->run_test( 'NOT cola = "vala"', array(
+				"Filter: cola = vala",
+				"Negate:",
+		));
+	}
+	public function test_case_mixcase_or() {
+		$this->run_test( 'cola = "vala" oR colb = "valb"', array(
+				"Filter: cola = vala",
+				"Filter: colb = valb",
+				"Or: 2"
+				));
+	}
+	public function test_case_mixcase_and() {
+		$this->run_test( 'cola = "vala" aNd colb = "valb"', array(
+				"Filter: cola = vala",
+				"Filter: colb = valb",
+				"And: 2"
+				));
+	}
+	public function test_case_mixcase_not() {
+		$this->run_test( 'nOT cola = "vala"', array(
+				"Filter: cola = vala",
+				"Negate:",
+		));
+	}
 
 	/* ******
 	 * Fail test: double ops
