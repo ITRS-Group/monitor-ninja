@@ -37,13 +37,15 @@ class Ajax_Controller extends Authenticated_Controller {
 			
 			try {
 				$parser->parse($q);
+				$obj_type = $parser->getLastObject();
+				$obj_name = $parser->getLastString();
 			} catch( ExpParserException $e ) {
-				return false;
+				$obj_type = 'hosts';
+				$obj_name = $q;
 			} catch( Exception $e ) {
+				return false;
 			}
 			
-			$obj_type = $parser->getLastObject();
-			$obj_name = $parser->getLastString();
 			$obj_data = array();
 			$obj_info = array();
 			
