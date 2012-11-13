@@ -64,7 +64,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				
 				$data = $lsb->getTable($obj_type, array(
 						'columns' => array($settings['name_field'], $settings['data']),
-						'filter' => array($settings['name_field'] => array( '~~' => $obj_name )),
+						'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) )),
 						'limit' => $max_rows
 						));
 				
