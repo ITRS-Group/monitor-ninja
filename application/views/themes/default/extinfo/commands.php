@@ -12,9 +12,9 @@
 		?>
 		<tr>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_host_map, 'title' => $lable_host_map)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/locate-host-on-map.png'), array('alt' => _('Locate host on map'), 'title' => _('Locate host on map'))); ?>
 			</td>
-			<td class="bt"><?php echo html::anchor('nagvis/automap/host/'.$host, $lable_host_map) ?></td>
+			<td class="bt"><?php echo html::anchor('nagvis/automap/host/'.$host, _('Locate host on map')) ?></td>
 		</tr>
 		<?php } ?>
 		<tr>

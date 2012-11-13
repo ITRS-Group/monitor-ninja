@@ -38,7 +38,7 @@ if (!empty($widgets)) {
 		<?php
 			if ($type == 'service') {
 				echo '<tr>';
-				echo '<td style="width: 80px"><strong>'.$lable_on_host.'</strong></td>';
+				echo '<td style="width: 80px"><strong>'._('On host').'</strong></td>';
 				echo '<td>'.(isset($host) ? $host : '');
 				echo isset($host_alias) ? ' ('.$host_alias.')' : '';
 				echo !empty($host_link) ? ' ('.$host_link.')' : '';
@@ -66,7 +66,7 @@ if (!empty($widgets)) {
 		</tr>
 		<?php } ?>
 		<tr>
-			<td><strong><?php echo $lable_member_of ?></strong></td>
+			<td><strong><?php echo _('Member of'); ?></strong></td>
 			<td style="white-space: normal"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
 		</tr>
 		<tr>
@@ -152,49 +152,49 @@ if (!empty($widgets)) {
 			<th colspan="2"><?php echo $title ?></th>
 		</tr>
 		<tr>
-			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
+			<td style="width: 160px" class="dark bt"><?php echo _('Current status'); ?></td>
 			<td class="bt">
 				<span class="status-<?php echo strtolower($current_status_str) ?>"><span class="icon-12 x12-shield-<?php echo strtolower($current_status_str); ?>"></span><?php echo ucfirst(strtolower($current_status_str)) ?></span>
-				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : _('N/A') ?>)
+				(<?php echo _('for'); ?> <?php echo $duration ? time::to_string($duration) : _('N/A') ?>)
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_status_information ?></td>
+			<td class="dark"><?php echo _('Status information'); ?></td>
 			<td style="white-space: normal"><?php echo $status_info ?></td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_perf_data ?></td>
+			<td class="dark"><?php echo _('Performance data'); ?></td>
 			<td style="white-space: normal"><?php echo htmlspecialchars($perf_data) ?></td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_current_attempt ?></td>
+			<td class="dark"><?php echo _('Current attempt'); ?></td>
 			<td><?php echo $current_attempt ?>/<?php echo $max_attempts ?> (<?php echo $state_type ?>)</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_last_check ?></td>
+			<td class="dark"><?php echo _('Last check time'); ?></td>
 			<td><?php echo $last_check ? date($date_format_str, $last_check) : _('N/A') ?></td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_check_type ?></td>
+			<td class="dark"><?php echo _('Check type'); ?></td>
 			<td>
 				<span class="<?php echo strtolower($check_type) ?>"><?php echo ucfirst(strtolower($check_type)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_check_latency_duration ?></td>
-			<td><?php echo $check_latency ?> / <?php echo number_format($execution_time, 3) ?> <?php echo $lable_seconds ?></td>
+			<td class="dark"><?php echo _('Check latency / duration'); ?></td>
+			<td><?php echo $check_latency ?> / <?php echo number_format($execution_time, 3) ?> <?php echo _('seconds'); ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_next_scheduled_check ?></td>
 			<td><?php echo $next_check && $active_checks_enabled_val ? date($date_format_str, $next_check) : _('N/A') ?></td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_last_state_change ?></td>
+			<td class="dark"><?php echo _('Last state change'); ?></td>
 			<td><?php echo $last_state_change ? date($date_format_str, $last_state_change) : _('N/A') ?></td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_last_notification ?></td>
-			<td><?php echo $last_notification ?>&nbsp;(<?php echo $lable_notifications ?> <?php echo $current_notification_number ?>)</td>
+			<td class="dark"><?php echo _('Last notification'); ?></td>
+			<td><?php echo $last_notification ?>&nbsp;(<?php echo _('Notifications'); ?>: <?php echo $current_notification_number ?>)</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_flapping ?></td>
@@ -203,43 +203,44 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_in_scheduled_dt ?></td>
+			<td class="dark"><?php echo _('In scheduled downtime?'); ?></td>
 			<td>
 				<span class="downtime-<?php echo strtolower($scheduled_downtime_depth); ?>"><?php echo ucfirst(strtolower($scheduled_downtime_depth)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td  class="dark" style="width: 160px"><?php echo $lable_active_checks ?></td>
+			<td  class="dark" style="width: 160px"><?php echo _('Active checks'); ?></td>
 			<td>
 				<span class="<?php echo strtolower($active_checks_enabled); ?>"><?php echo ucfirst(strtolower($active_checks_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_passive_checks ?></td>
+			<td class="dark"><?php echo _('Passive checks'); ?></td>
 			<td>
 				<span class="<?php echo strtolower($passive_checks_enabled); ?>"><?php echo ucfirst(strtolower($passive_checks_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_obsessing ?></td>
+			<td class="dark"><?php echo _('Obsessing'); ?></td>
 			<td>
 				<span class="<?php echo strtolower($obsessing); ?>"><?php echo ucfirst(strtolower($obsessing)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_notifications ?></td>
+			<td class="dark"><?php echo _('Notifications'); ?></td>
 			<td>
 				<span class="<?php echo strtolower($notifications_enabled); ?>"><?php echo ucfirst(strtolower($notifications_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_event_handler ?></td>
+			<td class="dark"><?php echo _('Event handler'); ?></td>
 			<td>
 				<span class="<?php echo strtolower($event_handler_enabled); ?>"><?php echo ucfirst(strtolower($event_handler_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_flap_detection ?></td>
+
+			<td class="dark"><?php echo _('Flap detection') ?></td>
 			<td>
 				<span class="<?php echo strtolower($flap_detection_enabled); ?>"><?php echo ucfirst(strtolower($flap_detection_enabled)) ?></span>
 			</td>
@@ -268,4 +269,3 @@ if (!empty($commands))
 <?php
 if (isset($comments))
 	echo $comments;
-?>

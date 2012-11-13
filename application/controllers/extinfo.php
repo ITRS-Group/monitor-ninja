@@ -80,7 +80,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->template->js_header->js = $this->xtra_js;
-		
+
 		# save us some typing
 		$content = $this->template->content;
 		
@@ -105,9 +105,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		}
 		$host_link = false;
-		$yes = _('YES');
-		$no = _('NO');
-		
+
 		$content->contactgroups = false;
 		if(isset($result->contact_groups)) {
 			$groups = $ls->getContactgroups(
@@ -226,13 +224,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->back_link = $back_link;
 		$content->date_format_str = nagstat::date_format();
 		$content->host_link = $host_link;
-		$content->lable_member_of = _('Member of');
-		$content->lable_for = _('for');
-		$content->lable_on_host = _('On host');
 		$content->main_object = $type=='host' ? $host : $service;
 		$content->host = $host;
-		$content->lable_current_status = _('Current status');
-		$content->lable_status_information = _('Status information');
 		$content->current_status_str = $this->current->status_text($result->state, $result->has_been_checked, $type);
 		$content->duration = $result->duration;
 		$content->groups = $groups;
@@ -242,56 +235,39 @@ class Extinfo_Controller extends Authenticated_Controller {
 		// "Why the str_replace, it looks stupid?" Well, because nagios (livestatus?) stores data with newlines replaced with a backslash and an 'n'.
 		// "So why the nl2br, then, huh?" Uhm, it was there when I found it...
 		$content->status_info = htmlspecialchars($result->plugin_output).'<br />'.str_replace('\n', '<br />', nl2br(htmlspecialchars($result->long_plugin_output)));
-		$content->lable_perf_data = _('Performance data');
 		$content->perf_data = $result->perf_data;
-		$content->lable_current_attempt = _('Current attempt');
 		$content->current_attempt = $result->current_attempt;
 		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
 		$content->main_object_alias = $type=='host' ? $result->alias : false;
 		$content->max_attempts = $result->max_check_attempts;
 		$content->last_update = time();
 		$content->last_check = $result->last_check;
-		$content->lable_last_check = _('Last check time');
-		$content->lable_check_type = _('Check type');
 
-		$str_active = _('ACTIVE');
-		$str_passive = _('PASSIVE');
-		$content->check_type = $result->check_type == $check_compare_value ? $str_active: $str_passive;
-		$content->lable_check_latency_duration = _('Check latency / duration');
+		$content->check_type = $result->check_type == $check_compare_value ? _('ACTIVE'): _('PASSIVE');
 		$na_str = _('N/A');
-		$content->check_latency =
-		$result->check_type == $check_compare_value ? $result->latency : $na_str;
+		$content->check_latency = $check_compare_value ? $result->latency : $na_str;
 		$content->execution_time = $result->execution_time;
-		$content->lable_seconds = _('seconds');
 
 		$content->next_check = (int)$result->next_check;
-		$content->lable_last_state_change = _('Last state change');
 		$content->last_state_change = (int)$result->last_state_change;
-		$content->lable_last_notification = _('Last notification');
 		$content->last_notification = $last_notification!=0 ? date(nagstat::date_format(), $last_notification) : $na_str;
-		$content->lable_notifications = _('notification');
 		$content->current_notification_number = $result->current_notification_number;
 		$lable_flapping_state_change = _('state change');
 		$content->percent_state_change_str = '';
 		$is_flapping = $result->is_flapping;
+		$yes = _('YES');
+		$no = _('NO');
 		if (!$result->flap_detection_enabled) {
 			$content->flap_value = $na_str;
 		} else {
 			$content->flap_value = $is_flapping ? $yes : $no;
 			$content->percent_state_change_str = '('.number_format((int)$result->percent_state_change, 2).'% '.$lable_flapping_state_change.')';
 		}
-		$content->lable_in_scheduled_dt = _('In scheduled downtime?');
 		$content->scheduled_downtime_depth = $result->scheduled_downtime_depth ? $yes : $no;
-		$content->lable_active_checks = _('Active checks');
-		$content->lable_passive_checks = _('Passive checks');
-		$content->lable_obsessing = _('Obsessing');
-		$content->lable_notifications = _('Notifications');
-		$content->lable_event_handler = _('Event handler');
-		$content->lable_flap_detection = _('Flap detection');
 		$str_enabled = _('ENABLED');
 		$str_disabled = _('DISABLED');
 		$content->active_checks_enabled = $result->active_checks_enabled ? $str_enabled : $str_disabled;
-		$content->active_checks_enabled_val = $result->active_checks_enabled ? true : false;
+		$content->active_checks_enabled_val = (boolean) $result->active_checks_enabled;
 		$content->passive_checks_enabled = $result->accept_passive_checks ? $str_enabled : $str_disabled;
 		$content->obsessing = $obsessing ? $str_enabled : $str_disabled;
 		$content->notifications_enabled = $result->notifications_enabled ? $str_enabled : $str_disabled;
@@ -312,7 +288,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->lable_command_title = _('Service Commands');
 		}
 
-		$commands->lable_host_map = _('Locate host on map');
 		$commands->type = $type;
 		$commands->host = $host;
 
