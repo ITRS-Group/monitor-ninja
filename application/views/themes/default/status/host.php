@@ -101,13 +101,13 @@ foreach ($result as $row) {
 						$properties = 0;
 						if ($row->acknowledged) {
 							echo html::anchor('extinfo/details/?host='.urlencode($row->name),
-								'<span class="icon-16 x16-acknowledged'._('Acknowledged').'"></span>',
+								'<span class="icon-16 x16-acknowledged" title="'._('Acknowledged').'"></span>',
 								array('style' => 'border: 0px'));
 							$properties++;
 						}
 						if (empty($row->notifications_enabled)) {
 							echo html::anchor('extinfo/details/?host='.urlencode($row->name), 
-								'<span class="icon-16 x16-notify-disabled'._('Notification disabled').'"></span>',
+								'<span class="icon-16 x16-notify-disabled" title="'._('Notification disabled').'"></span>',
 								array('style' => 'border: 0px'));
 							$properties += 2;
 						}
@@ -116,7 +116,7 @@ foreach ($result as $row) {
 							$show_passive_as_active = false;
 						if (!$row->active_checks_enabled && !$show_passive_as_active) {
 							echo html::anchor('extinfo/details/?host='.urlencode($row->name), 
-								'<span class="icon-16 x16-checks-disabled'._('Active checks disabled').'"></span>',
+								'<span class="icon-16 x16-checks-disabled" title="'._('Active checks disabled').'"></span>',
 								array('style' => 'border: 0px'));
 							$properties += 4;
 						}
@@ -127,14 +127,14 @@ foreach ($result as $row) {
 						}
 						if ($row->scheduled_downtime_depth > 0) {
 							echo html::anchor('extinfo/details/?host='.urlencode($row->name),
-								'<span class="icon-16 x16-scheduled-downtime'._('Scheduled downtime').'"></span>',
+								'<span class="icon-16 x16-scheduled-downtime" title="'._('Scheduled downtime').'"></span>',
 								array('style' => 'border: 0px'));
 							$properties += 8;
 						}
 						$num_comments = count($row->comments);
 						if ( $num_comments > 0 ) {
 							echo html::anchor('extinfo/details/?host='.urlencode($row->name).'#comments',
-								'<span class="icon-16 x16-add-comment'.sprintf(_('This host has %s comment(s) associated with it'), $num_comments).'"></span>',
+								'<span class="icon-16 x16-add-comment" title="'.sprintf(_('This host has %s comment(s) associated with it'), $num_comments).'"></span>',
 								array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->name));
 						}
 						if ($row->state == Current_status_Model::HOST_DOWN || $row->state == Current_status_Model::HOST_UNREACHABLE) {
@@ -156,16 +156,16 @@ foreach ($result as $row) {
 							// $row->name in urlencode()
 							echo nacoma::link('configuration/configure/?type=host&name='.urlencode($row->name), 'icons/16x16/nacoma.png', _('Configure this host')).' &nbsp;';
 							echo $row->pnpgraph_present ? html::anchor('pnp/?host='.urlencode($row->name).'&srv=_HOST_', 
-								'<span class="pnp_graph_icon icon-16 x16-pnp pnp_graph_icon'._('Show performance graph').'"></span>',
+								'<span class="pnp_graph_icon icon-16 x16-pnp pnp_graph_icon" title="'._('Show performance graph').'"></span>',
 								array('style' => 'border: 0px')): '';
 						if (!empty($row->action_url)) {
 							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">'.
-								'<span class="icon-16 x16-host-actions'._('perform extra host actions').'"></span>'.
+								'<span class="icon-16 x16-host-actions" title="'._('perform extra host actions').'"></span>'.
 								'</a>';
 						}
 						if (!empty($row->notes_url)) {
 							echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="'.$notes_url_target.'">'.
-								'<span class="icon-16 x16-host-notes'._('View extra host notes').'"></span>'.
+								'<span class="icon-16 x16-host-notes" title="'._('View extra host notes').'"></span>'.
 								'</a>';
 						}
 					?>

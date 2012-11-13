@@ -37,13 +37,15 @@ class Ajax_Controller extends Authenticated_Controller {
 			
 			try {
 				$parser->parse($q);
+				$obj_type = $parser->getLastObject();
+				$obj_name = $parser->getLastString();
 			} catch( ExpParserException $e ) {
-				return false;
+				$obj_type = 'hosts';
+				$obj_name = $q;
 			} catch( Exception $e ) {
+				return false;
 			}
 			
-			$obj_type = $parser->getLastObject();
-			$obj_name = $parser->getLastString();
 			$obj_data = array();
 			$obj_info = array();
 			
@@ -64,7 +66,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				
 				$data = $lsb->getTable($obj_type, array(
 						'columns' => array($settings['name_field'], $settings['data']),
-						'filter' => array($settings['name_field'] => array( '~~' => $obj_name )),
+						'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) )),
 						'limit' => $max_rows
 						));
 				
