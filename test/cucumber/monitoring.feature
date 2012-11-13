@@ -3,7 +3,7 @@ Feature: Monitoring
 
 	Background:
 		Given A configuration like this:
-			| Host			| Service
+			| Host			|
 			| linux-server1 |
 			| linux-server2 |
 			| linux-server3 |
