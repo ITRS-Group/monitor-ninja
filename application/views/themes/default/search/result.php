@@ -303,7 +303,7 @@ if (isset($servicegroup_result) ) {
 	</tr>
 <?php	$i = 0; foreach ($servicegroup_result as $servicegroup) { $servicegroup=(object)$servicegroup; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl"><?php echo html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($servicegroup->name), $servicegroup->name) ?></td>
+		<td class="bl"><?php echo html::anchor('extinfo/details/?servicegroup='.urlencode($servicegroup->name), $servicegroup->name) ?></td>
 		<td><?php echo html::anchor('status/servicegroup/?group='.urlencode($servicegroup->name).'&style=detail', $servicegroup->alias) ?></td>
 		<td style="text-align: left">
 		<?php
@@ -328,7 +328,7 @@ if (isset($hostgroup_result) ) {
 	</tr>
 <?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { $hostgroup=(object)$hostgroup; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl"><?php echo html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->name), $hostgroup->name) ?></td>
+		<td class="bl"><?php echo html::anchor('extinfo/details/?hostgroup='.urlencode($hostgroup->name), $hostgroup->name) ?></td>
 		<td><?php echo html::anchor('status/hostgroup/?group='.urlencode($hostgroup->name).'&style=detail', $hostgroup->alias) ?></td>
 		<td style="text-align: left">
 		<?php
