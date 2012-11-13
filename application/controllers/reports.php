@@ -1007,14 +1007,8 @@ class Reports_Controller extends Base_reports_Controller
 				"and click on the left pointing arrow."),
 			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
-			'initial_states' => sprintf(_("Whether to assume logging of initial states or not. Default values are YES. ".
-				"%sFor advanced users the value can be modified by editing the nagios.cfg config file located in the %s directory."), '<br /><br />', $nagios_etc_path),
-			'first_assumed_host' => _("If there is no information about the host or service in the current log file, ".
-				"the status of the host/service will be assumed. Default value is &quot;First Real State&quot;."),
-			'first_assumed_service' => _("If there is no information about the host or service in the current log file, ".
-				"the status of the host/service will be assumed. Default value is &quot;First Real State&quot;."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
-				"option decide to assume states for hosts and services during the downtime. Default value is YES."),
+				"option decide to assume states for hosts and services during the downtime."),
 			'includesoftstates' => _("A problem is classified as a SOFT problem until the number of checks has reached the ".
 				"configured max_check_attempts value. When max_check_attempts is reached the problem is reclassified as HARD."),
 			'use_average' => sprintf(_("What calculation method to use for the report. %s".
