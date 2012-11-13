@@ -62,8 +62,8 @@
 			@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 
 			&:hover
-				@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
-				@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+				@include filter-gradient($gradient-dark-lo - #222, $gradient-dark-hi - #222, vertical)
+				@include background(linear-gradient(top, $gradient-dark-lo - #222, $gradient-dark-hi - #222))
 
 			a
 				border: none
