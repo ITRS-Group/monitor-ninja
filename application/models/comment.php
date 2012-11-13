@@ -99,7 +99,9 @@ class Comment_Model extends Model {
 		);
 		if($num_per_page) {
 			$options['limit'] = $num_per_page;
-			$options['offset'] = $num_per_page*$offset;
+		}
+		if($offset) {
+			$options['offset'] = $offset;
 		}
 		if (static::TABLE_NAME == 'comments') {
 			$result = $ls->getComments($options);
