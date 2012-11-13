@@ -32,6 +32,11 @@
 	select
 		width: auto !important
 
+.widget-selector
+	&:hover
+		cursor: pointer
+		background-color: $gradient-dark-lo
+
 .widget-header
 	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
 	@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
