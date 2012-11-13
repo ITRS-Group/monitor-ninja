@@ -95,6 +95,8 @@ install -m 640 op5build/ninja.httpd-conf %buildroot/etc/httpd/conf.d/monitor-nin
 # we don't need the git directories
 rm -rf %buildroot%prefix/application/vendor/phptap/.git
 
+sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
+
 
 %pre
 # This needs to be removed for us to be able to upgrade ninja 2.0.7
