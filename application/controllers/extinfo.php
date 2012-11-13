@@ -132,7 +132,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->parents = false;
 
 		if ($type == 'host') {
-			#$group_info = Group_Model::get_groups_for_object($type, $result->id);
 			$content->title = _('Host State Information');
 			$content->no_group_lable = _('No hostgroups');
 			$check_compare_value = Current_status_Model::HOST_CHECK_ACTIVE;
@@ -142,12 +141,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$obsessing = $result->obsess;
 			$content->notes = $result->notes !='' ? nagstat::process_macros($result->notes, $result) : false;
 
-			# check for parents
-			#$host_obj = new Host_Model();
-			#$parents = $host_obj->get_parents($host);
-			#if (count($parents)) {
-		#		$content->parents = $parents;
-		#	}
+			$content->parents = $result->parents;
 
 			$back_link = '/extinfo/details/?host='.urlencode($host);
 			if ($result->state == Current_status_Model::HOST_PENDING ) {
@@ -155,7 +149,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$message_str = _('This host has not yet been checked, so status information is not available.');
 			}
 		} else {
-			#$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
 			$content->title = _('Service State Information');
 			$content->no_group_lable = _('No servicegroups');
 			$content->lable_next_scheduled_check = _('Next scheduled check');

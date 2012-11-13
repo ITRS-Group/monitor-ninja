@@ -50,17 +50,20 @@ if (!empty($widgets)) {
 			<td style="width: 80px"><strong><?php echo _('Address');?></strong></td>
 			<td><?php echo isset($host_address) ? $host_address : ''; ?></td>
 		</tr>
-		<?php if ($parents !== false && count($parents)) { ?>
+		<?php if ($parents) { ?>
 		<tr>
 			<td><strong><?php echo _('Parents') ?></strong></td>
 			<td>
 				<?php
-					$cnt = 0;
-					foreach ($parents as $parent) {
-						$cnt++;
-						echo html::anchor('status/service/'.$parent->host_name, $parent->host_name);
-						echo $cnt < count($parents) ? ', ': '';
-					}
+					echo implode(
+						',',
+						array_map(
+							function($parent) {
+								return html::anchor('status/service/'.$parent, $parent);
+							},
+							$parents
+						)
+					);
 				?>
 			</td>
 		</tr>
