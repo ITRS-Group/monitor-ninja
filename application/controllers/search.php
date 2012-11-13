@@ -153,7 +153,15 @@ class Search_Controller extends Authenticated_Controller {
 		}
 	}
 	
-	private function queryToLSFilter($query)
+	/**
+	 * This is an internal function to generate a livestatus query from a filter string.
+	 * 
+	 * This method is public so it can be accessed from tests.
+	 * 
+	 * @param $query Search query for string
+	 * @return Livstatus query as string
+	 */
+	public function queryToLSFilter($query)
 	{
 		$parser = new ExpParser_SearchFilter();
 		try {
@@ -198,8 +206,9 @@ class Search_Controller extends Authenticated_Controller {
 			$orcount = 0;
 			foreach( $and as $or ) {
 				$or = trim($or);
+				$or = str_replace('%','.*',$or);
 				foreach( $columns as $col ) {
-					$result .= "Filter: $col ~~ .*$or.*\n";
+					$result .= "Filter: $col ~~ $or\n";
 					$orcount++;
 				}
 			}
@@ -210,15 +219,24 @@ class Search_Controller extends Authenticated_Controller {
 		
 		return $result;
 	}
-	
-	private function queryToLSFilter_MatchAll($query)
+
+	/**
+	 * This is an internal function to generate a livestatus query from a filter string.
+	 *
+	 * This method is public so it can be accessed from tests.
+	 *
+	 * @param $query Search query for string
+	 * @return Livstatus query as string
+	 */
+	public function queryToLSFilter_MatchAll($query)
 	{
-		
+
+		$query = str_replace('%','.*',$query);
 		$filters = array();
 		foreach( $this->search_columns as $table => $cols ) {
 			$filters[$table] = "";
 			foreach( $cols as $col ) {
-				$filters[$table] .= "Filter: $col ~~ .*$query.*\n";
+				$filters[$table] .= "Filter: $col ~~ $query\n";
 			}
 			if( count( $cols ) > 1 ) {
 				$filters[$table] .= "Or: ".count( $cols )."\n";
