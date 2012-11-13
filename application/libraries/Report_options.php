@@ -28,7 +28,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
 		'rpttimeperiod' => array('type' => 'enum', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
-		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
+		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => true), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => false), /**< Include soft states, yes/no? */
 		'host_name' => array('type' => 'objsel', 'default' => array()), /**< Hosts to include (note: array) */
 		'service_description' => array('type' => 'objsel', 'default' => array()), /**< Services to include (note: array) */

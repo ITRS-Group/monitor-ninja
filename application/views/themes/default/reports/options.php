@@ -93,10 +93,7 @@ if(isset($options['report_id'])) { ?>
 		</td>
 		<td>&nbsp;</td>
 		<td>
-			<?php echo help::render('use_alias') ?>
-			<input type="checkbox" class="checkbox" value="1" id="use_alias" name="use_alias"
-					onchange="toggle_label_weight(this.checked, 'usealias');" <?php print $options['use_alias']?'checked="checked"':'' ?> />
-			<label for="use_alias" id="usealias"><?php echo _('Use alias') ?></label>
+			<?php echo help::render('stated_during_downtime').' '._('Count program downtime as')?>
 		</td>
 	</tr>
 	<tr>
@@ -105,25 +102,24 @@ if(isset($options['report_id'])) { ?>
 		</td>
 		<td>&nbsp;</td>
 		<td>
-			<?php echo help::render('cluster_mode') ?>
-			<input type="checkbox" class="checkbox" value="1" id="cluster_mode" name="cluster_mode"
-				onchange="toggle_label_weight(this.checked, 'clusterlbl');" <?php print $options['cluster_mode']?'checked="checked"':'' ?> />
-			<label for="cluster_mode" id="clusterlbl"><?php echo _('Use cluster mode') ?></label>
+		<?php
+			echo form::dropdown(array('name' => 'assumestatesduringnotrunning'), array(0 => 'Undetermined', 1 => 'Assume previous state'), (int)$options['assumestatesduringnotrunning']);
+		?>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<?php echo help::render('stated_during_downtime') ?>
-			<input type="checkbox" class="checkbox" value="1" id="assumestatesduringnotrunning" name="assumestatesduringnotrunning"
-					onchange="toggle_label_weight(this.checked, 'assume_progdown');" <?php echo $options['assumestatesduringnotrunning']?'checked="checked"':''; ?> />
-			<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo _('Assume states during program downtime') ?></label>
-		</td>
-		<td>&nbsp;</td>
-		<td style="vertical-align:top">
 			<?php echo help::render('includesoftstates') ?>
 			<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
 					onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $options['includesoftstates']?'checked="checked"':''; ?> />
 			<label for="includesoftstates" id="include_softstates"><?php echo _('Include soft states') ?></label>
+		</td>
+		<td>&nbsp;</td>
+		<td style="vertical-align:top">
+			<?php echo help::render('cluster_mode') ?>
+			<input type="checkbox" class="checkbox" value="1" id="cluster_mode" name="cluster_mode"
+				onchange="toggle_label_weight(this.checked, 'clusterlbl');" <?php print $options['cluster_mode']?'checked="checked"':'' ?> />
+			<label for="cluster_mode" id="clusterlbl"><?php echo _('Use cluster mode') ?></label>
 		</td>
 	</tr>
 	<tr>
@@ -134,6 +130,14 @@ if(isset($options['report_id'])) { ?>
 			<label for="include_alerts"><?php echo _('Include alerts log') ?></label>
 		</td>
 		<td></td>
+		<td>
+			<?php echo help::render('use_alias') ?>
+			<input type="checkbox" class="checkbox" value="1" id="use_alias" name="use_alias"
+					onchange="toggle_label_weight(this.checked, 'usealias');" <?php print $options['use_alias']?'checked="checked"':'' ?> />
+			<label for="use_alias" id="usealias"><?php echo _('Use alias') ?></label>
+		</td>
+	</tr>
+	<tr>
 		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
 			<?php echo help::render('include_trends') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
