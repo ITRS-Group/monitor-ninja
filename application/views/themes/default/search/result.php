@@ -90,12 +90,12 @@ if (isset($host_result) ) {
 				if (Kohana::config('config.pnp4nagios_path')!==false)
 					echo ($host->pnpgraph_present)  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->name).'&srv=_HOST_" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;' : '';
 				if (!empty($host->action_url)) {
-					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="'.$action_url_target.'">';
+					echo '<a href="'.nagstat::process_macros($host->action_url, $host, 'host').'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'), _('Perform extra host actions'));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($host->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($host->notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'">';
+					echo '<a href="'.nagstat::process_macros($host->notes_url, $host, 'host').'" style="border: 0px" target="'.$notes_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'), _('View extra host notes'));
 					echo '</a>';
 				}
@@ -238,12 +238,12 @@ if (isset($service_result) ) {
 						echo '<a href="' . url::site() . 'pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;';
 				}
 				if (!empty($service->action_url)) {
-					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px" target="'.$action_url_target.'">';
+					echo '<a href="'.nagstat::process_macros($service->action_url, $service, 'service').'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra host actions'),'title' => _('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($service->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($service->notes_url, $service).'" style="border: 0px" target="'.$notes_url_target.'">';
+					echo '<a href="'.nagstat::process_macros($service->notes_url, $service, 'service').'" style="border: 0px" target="'.$notes_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra host notes'),'title' => _('View extra host notes')));
 					echo '</a> &nbsp;';
 				}

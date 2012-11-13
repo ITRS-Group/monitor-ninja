@@ -139,7 +139,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_next_scheduled_check = _('Next scheduled active check');
 			$content->lable_flapping = _('Is this host flapping?');
 			$obsessing = $result->obsess;
-			$content->notes = $result->notes !='' ? nagstat::process_macros($result->notes, $result) : false;
+			$content->notes = $result->notes !='' ? nagstat::process_macros($result->notes, $result, 'host') : false;
 
 			$content->parents = $result->parents;
 
@@ -795,9 +795,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->cmd_disable_active_host_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_HOST_CHECKS');
 		$content->cmd_enable_active_host_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_HOST_CHECKS');
 
-		$content->notes_url = $group_info_res->notes_url !='' ? nagstat::process_macros($group_info_res->notes_url, $group_info_res) : false;
-		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res) : false;
-		$content->notes = $group_info_res->notes !='' ? nagstat::process_macros($group_info_res->notes, $group_info_res) : false;
+		$content->notes_url = $group_info_res->notes_url !='' ? nagstat::process_macros($group_info_res->notes_url, $group_info_res, $grouptype) : false;
+		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res, $grouptype) : false;
+		$content->notes = $group_info_res->notes !='' ? nagstat::process_macros($group_info_res->notes, $group_info_res, $grouptype) : false;
 
 		switch ($grouptype) {
 			case 'servicegroup':

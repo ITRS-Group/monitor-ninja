@@ -242,12 +242,12 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					array('style' => 'border: 0px')) : '';
 				
 				if (!empty($row->action_url)) {
-					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">'.
+					echo '<a href="'.nagstat::process_macros($row->action_url, $row, 'service').'" style="border: 0px" target="'.$action_url_target.'">'.
 						'<span class="icon-16 x16-host-actions" title="'._('Perform extra host actions').'"></span>'.
 						'</a>';
 				}
 				if (!empty($row->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="'.$notes_url_target.'">'.
+					echo '<a href="'.nagstat::process_macros($row->notes_url, $row, 'service').'" style="border: 0px" target="'.$notes_url_target.'">'.
 						'<span class="icon-16 x16-host-notes" title="'._('View extra host notes').'"></span>'.
 					'</a>';
 				}

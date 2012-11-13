@@ -144,31 +144,58 @@ class nagstat_Core {
 	/**
 	 * Process macros for host- or service objects
 	 */
-	public static function process_macros($string=false, &$obj=false)
+	public static function process_macros($string=false, $obj=false, $objtype=false)
 	{
-		if (empty($string) || empty($obj)) {
+		if (empty($string) || empty($obj) || empty($objtype)) {
 			return false;
 		}
-
+		
+				
 		$macros = array(
-			'$HOSTNAME$' => 'host_name',
-			'$HOSTADDRESS$' => 'address',
-			'$HOSTDISPLAYNAME$' => 'display_name',
-			'$HOSTALIAS$' => 'alias',
-			'$HOSTSTATE$' => array("status_text[%s, host]", 'current_state'), /* UP/DOWN/UNREACHABLE - callback */
-			'$HOSTSTATEID$' => 'current_state',
-			'$HOSTSTATETYPE$' => array('array[%s,SOFT,HARD]', 'state_type'), /* HARD/SOFT - callback */
-			'$HOSTATTEMPT$' => 'current_attempt',
-			'$MAXHOSTATTEMPTS$' => 'max_check_attempts',
-			'$HOSTGROUPNAME$' => 'hostgroup_name',
-			'$HOSTGROUPALIAS$' => 'alias',
-			'$SERVICEDESC$' => 'description',
-			'$SERVICEDISPLAYNAME$' => 'display_name',
-			'$SERVICEGROUPNAME$' => 'servicegroup_name',
-			'$SERVICESTATE$' => array("status_text[%s, service]", 'current_state'),
-			'$SERVICEGROUPALIAS$' => 'alias',
-			'$CURRENT_USER$' => array('current_user', 'host_name')
+				'host' => array(
+					'$HOSTNAME$' => 'name',
+					'$HOSTADDRESS$' => 'address',
+					'$HOSTDISPLAYNAME$' => 'display_name',
+					'$HOSTALIAS$' => 'alias',
+					'$HOSTSTATE$' => array(array('UP','DOWN','UNREACHABLE'), 'state'), /* UP/DOWN/UNREACHABLE - callback */
+					'$HOSTSTATEID$' => 'state',
+					'$HOSTSTATETYPE$' => array(array('SOFT','HARD'), 'state_type'), /* HARD/SOFT - callback */
+					'$HOSTATTEMPT$' => 'current_attempt',
+					'$MAXHOSTATTEMPTS$' => 'max_check_attempts',
+					'$HOSTGROUPNAME$' => array('array_first','groups'),
+					'$CURRENT_USER$' => array('current_user')
+				),
+				'service' => array(
+					'$HOSTNAME$' => 'host_name',
+					'$HOSTADDRESS$' => 'host_address',
+					'$HOSTDISPLAYNAME$' => 'host_display_name',
+					'$HOSTALIAS$' => 'host_alias',
+					'$HOSTSTATE$' => array(array('UP','DOWN','UNREACHABLE'), 'host_state'), /* UP/DOWN/UNREACHABLE - callback */
+					'$HOSTSTATEID$' => 'host_state',
+					'$HOSTSTATETYPE$' => array(array('SOFT','HARD'), 'host_state_type'), /* HARD/SOFT - callback */
+					'$HOSTATTEMPT$' => 'host_current_attempt',
+					'$MAXHOSTATTEMPTS$' => 'host_max_check_attempts',
+					'$HOSTGROUPNAME$' => array('array_first','host_groups'),
+					'$SERVICEDESC$' => 'description',
+					'$SERVICEDISPLAYNAME$' => 'display_name',
+					'$SERVICEGROUPNAME$' => array('array_first','groups'),
+					'$SERVICESTATE$' => array(array('OK','WARNING','CRITICAL','UNKNOWN'), 'state'),
+					'$CURRENT_USER$' => array('current_user')
+				),
+				'hostgroup' => array(
+					'$HOSTGROUPNAME$' => 'name',
+					'$HOSTGROUPALIAS$' => 'alias',
+				),
+				'servicegroup' => array(
+					'$SERVICEGROUPNAME$' => 'name',
+					'$SERVICEGROUPALIAS$' => 'alias',
+				)
 		);
+		
+		if( !isset( $macros[$objtype] ) ) {
+			return $string; /* No macros defined for object type, no macros can be replaced */
+		}
+		$macros = $macros[$objtype];
 
 		$regexp = '/\$[A-Z_]*\$/';
 		$hits = preg_match_all($regexp, $string, $res);
@@ -180,9 +207,15 @@ class nagstat_Core {
 						$field = $macros[$match];
 
 						if (is_array($field)) {
-							$val = isset($obj->{$field[1]}) ? self::do_callback(sprintf($field[0], $obj->{$field[1]})) : false;
-							if ($val !== false) {
-								$string = str_replace($match, $val, $string);
+							if( is_array($field[0]) ) {
+								if( isset($obj->{$field[1]}) ) {
+									$string = str_replace($match, $field[0][$obj->{$field[1]}], $string);
+								}
+							} else {
+								$func = array_shift( $field );
+								$replace = call_user_func( $func, $obj, $field );
+								if( $replace !== false )
+									$string = str_replace($match, $replace, $string);
 							}
 						} else {
 							if (isset($obj->{$field})) {
@@ -195,64 +228,6 @@ class nagstat_Core {
 		}
 
 		return $string;
-	}
-
-	/**
-	* Try to figure out what (and how) to call methods/functions
-	* from the callbacks passed from process_macros()
-	*/
-	public function do_callback(&$callback)
-	{
-		$args = false;
-		if (is_string($callback)) {
-			if (preg_match('/^([^\[]++)\[(.+)\]$/', $callback, $matches)) {
-				// Split the function and args
-				$callback = $matches[1];
-				$args = preg_split('/(?<!\\\\),\s*/', $matches[2]);
-			}
-		}
-
-		if (is_string($callback)) {
-			if (strpos($callback, '::') !== FALSE) {
-				$callback = explode('::', $callback);
-			} elseif (function_exists($callback)) {
-				// No need to check if the callback is a method
-				$callback = $callback;
-			}
-		}
-
-		if ($callback === 'array' && is_array($args) && !empty($args)) {
-			$val = $args[0];
-			# remove first element which is the value to be "translated"
-			array_shift($args);
-			if (array_key_exists($val, $args)) {
-				return $args[$val];
-			} else {
-				return false;
-			}
-		}
-
-		$value = false;
-		$name = false;
-		if (is_callable($callback)) {
-			if (is_array($callback)) {
-				if (is_object($callback[0])) {
-					// Object instance syntax
-					$name = get_class($callback[0]).'->'.$callback[1];
-				} else {
-					// Static class syntax
-					$name = $callback[0].'::'.$callback[1];
-				}
-			} else {
-				// Function syntax
-				$name = $callback;
-			}
-		}
-
-		if (function_exists($name)) {
-			$value = call_user_func_array($name, $args);
-		}
-		return $value;
 	}
 
 
@@ -320,14 +295,16 @@ class nagstat_Core {
 	}
 }
 
-
 /**
-* Helper function to get status text from current status model
-* Used in callbacks in process_macros
+*	Callback to return first of a list field
 */
-function status_text($db_status=false, $type='host')
+function array_first( $obj, $fields )
 {
-	return Current_status_Model::status_text($db_status, 1, $type);
+	if( !isset( $obj->{$fields[0]} ) || !is_array( $obj->{$fields[0]} ) )
+		return false;
+	$arr = $obj->{$fields[0]};
+	if( count($arr) == 0 ) return '';
+	return $arr[0];
 }
 
 /**

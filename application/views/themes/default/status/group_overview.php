@@ -129,12 +129,12 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 				if (!is_null($host->host_action_url)) {
 					$lable_host_action = _('Perform Extra Host Actions');
-					echo '<a href="'.nagstat::process_macros($host->host_action_url, $host).'" style="border: 0px" target="'.$action_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-actions.png').'" alt="'.$lable_host_action.'" title="'.$lable_host_action.'" /></a> ';
+					echo '<a href="'.nagstat::process_macros($host->host_action_url, $host, 'service').'" style="border: 0px" target="'.$action_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-actions.png').'" alt="'.$lable_host_action.'" title="'.$lable_host_action.'" /></a> ';
 				}
 
 				if (!is_null($host->host_notes_url)) {
 					$lable_host_notes = _('View Extra Host Notes');
-					echo '<a href="'.nagstat::process_macros($host->host_notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-notes.png').'" alt="'.$lable_host_notes.'" title="'.$lable_host_notes.'" /></a> ';
+					echo '<a href="'.nagstat::process_macros($host->host_notes_url, $host, 'service').'" style="border: 0px" target="'.$notes_url_target.'"><img src="'.ninja::add_path('icons/16x16/host-notes.png').'" alt="'.$lable_host_notes.'" title="'.$lable_host_notes.'" /></a> ';
 				} ?>
 			</td>
 		</tr>

@@ -159,12 +159,12 @@ foreach ($result as $row) {
 								'<span class="pnp_graph_icon icon-16 x16-pnp pnp_graph_icon" title="'._('Show performance graph').'"></span>',
 								array('style' => 'border: 0px')): '';
 						if (!empty($row->action_url)) {
-							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">'.
+							echo '<a href="'.nagstat::process_macros($row->action_url, $row, 'host').'" style="border: 0px" target="'.$action_url_target.'">'.
 								'<span class="icon-16 x16-host-actions" title="'._('perform extra host actions').'"></span>'.
 								'</a>';
 						}
 						if (!empty($row->notes_url)) {
-							echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="'.$notes_url_target.'">'.
+							echo '<a href="'.nagstat::process_macros($row->notes_url, $row, 'host').'" style="border: 0px" target="'.$notes_url_target.'">'.
 								'<span class="icon-16 x16-host-notes" title="'._('View extra host notes').'"></span>'.
 								'</a>';
 						}
