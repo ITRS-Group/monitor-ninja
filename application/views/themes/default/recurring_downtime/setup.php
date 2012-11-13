@@ -238,17 +238,17 @@ if (isset($saved_info) && !empty($saved_info)) {
 			continue;
 		} ?>
 	<h1><?php echo sprintf(_('Recurring %s Downtime'), $translated); ?></h1>
-	<table class="recurrence_table" id="table_<?php echo $dt_type ?>" style="margin-top: -5px">
+	<table class="recurrence_table" id="table_<?php echo $dt_type ?>">
 		<tr>
-			<th class="headerNone left"><?php echo sprintf(_('%s Name'), $translated); ?></th>
-			<th class="headerNone left"><?php echo _('Author'); ?></th>
-			<th class="headerNone left"><?php echo _('Comment'); ?></th>
-			<th class="headerNone left"><?php echo _('Time'); ?></th>
-			<th class="headerNone left"><?php echo _('Duration'); ?></th>
-			<th class="headerNone left"><?php echo _('Type'); ?></th>
-			<th class="headerNone left"><?php echo _('Weekdays'); ?></th>
-			<th class="headerNone left"><?php echo _('Months'); ?></th>
-			<th class="headerNone left" style="width: 40px"><?php echo _('Actions'); ?></th>
+			<th><?php echo sprintf(_('%s Name'), $translated); ?></th>
+			<th><?php echo _('Author'); ?></th>
+			<th><?php echo _('Comment'); ?></th>
+			<th><?php echo _('Time'); ?></th>
+			<th><?php echo _('Duration'); ?></th>
+			<th><?php echo _('Type'); ?></th>
+			<th><?php echo _('Weekdays'); ?></th>
+			<th><?php echo _('Months'); ?></th>
+			<th style="width: 40px"><?php echo _('Actions'); ?></th>
 		</tr>
 	<?php	foreach ($saved_info[$dt_type] as $data) {
 				$days = isset($data['data']['recurring_day']) ? $data['data']['recurring_day'] : '';
