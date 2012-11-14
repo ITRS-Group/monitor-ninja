@@ -291,42 +291,41 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$commands->type = $type;
 		$commands->host = $host;
 
+		$commands->lable_active_checks = _("Disable active checks of this $type");
 		if ($result->active_checks_enabled ) {
-			$commands->lable_active_checks = $type == 'host' ? _('Disable active checks of this host') : _('Disable active checks of this service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_CHECK') : nagioscmd::command_id('DISABLE_SVC_CHECK');
 			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'true';
 		} else {
-			$commands->lable_active_checks = $type == 'host' ? _('Enable active checks of this host') : _('Enable active checks of this service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_CHECK') : nagioscmd::command_id('ENABLE_SVC_CHECK');
 			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'false';
 		}
 
-		$commands->lable_reschedule_check = $type == 'host' ? _('Re-schedule next host check') : _('Re-schedule next service check');
-		$commands->lable_link_reschedule_check = $type == 'host' ? _('Re-schedule the next check of this host') : _('Re-schedule the next check of this service');
+		$commands->lable_reschedule_check = _("Re-schedule next $type check");
+		$commands->lable_link_reschedule_check = _("Re-schedule the next check of this $type");
 		$cmd = $type == 'host' ? nagioscmd::command_id('SCHEDULE_HOST_CHECK') : nagioscmd::command_id('SCHEDULE_SVC_CHECK');
 		$commands->link_reschedule_check = $this->command_link($cmd, $host, $service, $commands->lable_link_reschedule_check);
 
 		if ($result->accept_passive_checks) {
-			$commands->lable_submit_passive_checks = $type == 'host' ? _('Submit passive check result for this host') : _('Submit passive check result for this service');
+			$commands->lable_submit_passive_checks = _("Submit passive check result for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('PROCESS_HOST_CHECK_RESULT') : nagioscmd::command_id('PROCESS_SERVICE_CHECK_RESULT');
 			$commands->link_submit_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_submit_passive_checks);
 
-			$commands->lable_stop_start_passive_checks = $type == 'host' ? _('Stop accepting passive checks for this host') : _('Stop accepting passive checks for this service');
+			$commands->lable_stop_start_passive_checks = _("Stop accepting passive checks for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('DISABLE_PASSIVE_SVC_CHECKS');
 			$commands->link_stop_start_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_stop_start_passive_checks);
 		} else {
-			$commands->lable_stop_start_passive_checks = $type == 'host' ? _('Start accepting passive checks for this host') : _('Start accepting passive checks for this service');
+			$commands->lable_stop_start_passive_checks = _("Start accepting passive checks for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('ENABLE_PASSIVE_SVC_CHECKS');
 			$commands->link_stop_start_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_stop_start_passive_checks);
 		}
 		if ($obsessing) {
-			$commands->lable_obsessing = $type == 'host' ? _('Stop obsessing over this host') : _('Stop obsessing over this service');
+			$commands->lable_obsessing = _("Stop obsessing over this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('STOP_OBSESSING_OVER_HOST') : nagioscmd::command_id('STOP_OBSESSING_OVER_SVC');
 			$commands->link_obsessing = $this->command_link($cmd, $host, $service, $commands->lable_obsessing);
 		} else {
-			$commands->lable_obsessing = $type == 'host' ? _('Start obsessing over this host') : _('Start obsessing over this service');
+			$commands->lable_obsessing = _('Start obsessing over this host');
 			$cmd = $type == 'host' ? nagioscmd::command_id('START_OBSESSING_OVER_HOST') : nagioscmd::command_id('START_OBSESSING_OVER_SVC');
 			$commands->link_obsessing = $this->command_link($cmd, $host, $service, $commands->lable_obsessing);
 		}
@@ -366,11 +365,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# notifications
 		if ($result->notifications_enabled) {
-			$commands->lable_notifications = $type == 'host' ? _('Disable notifications for this host') : _('Disable notifications for this service');
+			$commands->lable_notifications = _("Disable notifications for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_NOTIFICATIONS') : nagioscmd::command_id('DISABLE_SVC_NOTIFICATIONS');
 			$commands->link_notifications = $this->command_link($cmd, $host, $service, $commands->lable_notifications);
 		} else {
-			$commands->lable_notifications = $type == 'host' ? _('Enable notifications for this host') : _('Enable notifications for this service');
+			$commands->lable_notifications = _("Enable notifications for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_NOTIFICATIONS') : nagioscmd::command_id('ENABLE_SVC_NOTIFICATIONS');
 			$commands->link_notifications = $this->command_link($cmd, $host, $service, $commands->lable_notifications);
 		}
@@ -395,7 +394,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$host, $service, $commands->lable_delay_notification);
 			}
 		}
-		$commands->lable_schedule_dt = $type == 'host' ? _('Schedule downtime for this host') : _('Schedule downtime for this service');
+		$commands->lable_schedule_dt = _("Schedule downtime for this $type");
 		$cmd = $type == 'host' ?  nagioscmd::command_id('SCHEDULE_HOST_DOWNTIME') : nagioscmd::command_id('SCHEDULE_SVC_DOWNTIME');
 		$commands->link_schedule_dt = $this->command_link($cmd, $host, $service, $commands->lable_schedule_dt);
 
@@ -423,21 +422,21 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 
 		if ($result->event_handler_enabled) {
-			$commands->lable_enable_disable_event_handler = $type == 'host' ? _('Disable event handler for this host') : _('Disable event handler for this service');
+			$commands->lable_enable_disable_event_handler = _("Disable event handler for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_EVENT_HANDLER') : nagioscmd::command_id('DISABLE_SVC_EVENT_HANDLER');
 			$commands->link_enable_disable_event_handler = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_event_handler);
 		} else {
-			$commands->lable_enable_disable_event_handler = $type == 'host' ? _('Enable event handler for this host') : _('Enable event handler for this service');
+			$commands->lable_enable_disable_event_handler = _("Enable event handler for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_EVENT_HANDLER') : nagioscmd::command_id('ENABLE_SVC_EVENT_HANDLER');
 			$commands->link_enable_disable_event_handler = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_event_handler);
 		}
 
 		if ($result->flap_detection_enabled) {
-			$commands->lable_enable_disable_flapdetection = $type == 'host' ? _('Disable flap detection for this host') : _('Disable flap detection for this service');
+			$commands->lable_enable_disable_flapdetection = _("Disable flap detection for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_FLAP_DETECTION') : nagioscmd::command_id('DISABLE_SVC_FLAP_DETECTION');
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		} else {
-			$commands->lable_enable_disable_flapdetection = $type == 'host' ? _('Enable flap detection for this host') : _('Enable flap detection for this service');
+			$commands->lable_enable_disable_flapdetection = _("Enable flap detection for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_FLAP_DETECTION') : nagioscmd::command_id('ENABLE_SVC_FLAP_DETECTION');
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
@@ -445,7 +444,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# create page links
 		switch ($type) {
 			case 'host':
-				$label_view_for = _('for this host');
 				$page_links = array(
 					 _('Status detail') => 'status/service/?name='.urlencode($host),
 					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
@@ -455,7 +453,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				);
 				break;
 			case 'service':
-				$label_view_for = _('for this service');
 				$page_links = array(
 					_('Information for this host') => 'extinfo/details/host/'.$host,
 					_('Status detail for this host') => 'status/service/'.$host,
@@ -469,7 +466,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
-			$this->template->content->label_view_for = $label_view_for;
+			$this->template->content->label_view_for = _("for this $type");
 		}
 
 
@@ -724,7 +721,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = _("Error: No group name specified");
 			return;
 		}
-		
+
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -736,11 +733,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = _('Monitoring » Group detail');
 
 		$ls = Livestatus::instance();
-		
+
 		$group_info_res = $grouptype == 'servicegroup' ?
 			$ls->getServicegroups(array('filter' => array('name' => $group))) :
 			$ls->getHostgroups(array('filter' => array('name' => $group)));
-		
+
 		if ($group_info_res === false || count($group_info_res)==0) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
@@ -1308,14 +1305,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return url::redirect(Router::$controller.'/'.Router::$method);
 		}
 
-		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
-		$command_success = $this->session->get('error_msg', $command_success);
-
-
-
-		$host_title_str = _('Scheduled host downtime');
-		$service_title_str = _('Scheduled service downtime');
-		$title = _('Scheduled downtime');
 		$type_str = false;
 		$host_data = false;
 		$service_data = false;
@@ -1347,19 +1336,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->template->js_header->js = $this->xtra_js;
 
-		$content->title = $title;
-		$content->filter_string = $filter_string;
-		$content->fixed = _('Fixed');
-		$content->flexible = _('Flexible');
-		$content->host_link_text = _('Schedule host downtime');
-		$content->service_link_text = _('Schedule service downtime');
-		$content->link_titlestring = _('Delete/cancel this scheduled downtime entry');
-		$content->date_format = nagstat::date_format();
 		$content->host_data = $host_data;
-		$content->host_title_str = $host_title_str;
 
 		$content->service_data = $service_data;
-		$content->service_title_str = $service_title_str;
 		$this->template->title = _("Monitoring » Scheduled downtime");
 		$content->command_result = arr::search($_SESSION, 'command_result_msg');
 		$content->command_success = arr::search($_SESSION, 'command_success');
