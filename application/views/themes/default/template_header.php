@@ -111,6 +111,7 @@
 
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 		<?php echo _('Welcome'); ?> <?php echo user::session('realname') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
+		<span id="my_saved_searches" style="padding: 4px; vertical-align: text-bottom; cursor: pointer;"><img id="my_saved_searches_img" title="Click to view your saved searches" src="/monitor/application/views/themes/default/icons/16x16/save_search.png" /></span>
 		<?php
 		$query = arr::search($_REQUEST, 'query');
 		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>

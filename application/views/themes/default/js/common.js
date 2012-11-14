@@ -6,6 +6,7 @@ var edit_visible = 0;
 var _save_scroll = true;
 
 $(document).ready(function() {
+
 	// make scroll memory cookie to be reset
 	// when actively clicking on a link.
 	$('body').on('click', 'a', function() {
@@ -541,7 +542,7 @@ $(document).ready(function() {
 
 	// ======== Saved search handling ==========
 	var name = $("#search_name"),
-		query = $('#search_query'),
+		query = $('#query'),
 		allFields = $([]).add(name).add(query),
 		tips = $(".validateTips"),
 		description = $('#search_description');
@@ -655,6 +656,7 @@ $(document).ready(function() {
 				},
 				error: function(data) {
 					jgrowl_message(data.responseText);
+					$('#search_query').attr('value', old_query)
 				},
 				complete: function(data) {
 					// set fetched values to edit dialog
@@ -1078,7 +1080,6 @@ function loadScroll() { // added function
 	}
 	var ar = inf.split("_");
 	if (ar.length == 2) {
-		console.log(ar);
 		$(window).scrollLeft(parseInt(ar[0], 10))
 		$(window).scrollTop(parseInt(ar[1], 10));
 	}
