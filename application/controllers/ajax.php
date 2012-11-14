@@ -198,9 +198,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function fetch_comments()
 	{
-		$host = $this->input->post('host', false);
+		$host = $this->input->get('host', false);
 		$service = false;
-		$data = false;
 		$model = new Comment_Model();
 		if (strstr($host, ';')) {
 			# we have a service - needs special handling
@@ -211,19 +210,17 @@ class Ajax_Controller extends Authenticated_Controller {
 			}
 		}
 
+		$data = _('Found no data');
 		$res = $model->fetch_comments_by_object($host, $service);
 		if ($res !== false) {
 			$data = "<table><tr><td><strong>"._('Author')."</strong></td><td><strong>"._('Comment')."</strong></td></tr>";
 			foreach ($res as $row) {
-				$data .= '<tr><td valign="top">'.$row->author_name.'</td><td width="400px">'.wordwrap($row->comment_data, '50', '<br />').'</td></tr>';
+				$data .= '<tr><td valign="top">'.$row['author'].'</td><td width="400px">'.wordwrap($row['comment'], '50', '<br />').'</td></tr>';
 			}
+			$data .= '</table>';
 		}
 
-		if (!empty($data)) {
-			echo $data.'</table>';
-		} else {
-			echo _('Found no data');
-		}
+		echo $data;
 	}
 
 	/**

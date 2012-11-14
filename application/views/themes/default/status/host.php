@@ -4,21 +4,21 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
-		<div id="page_links">
+	<div id="page_links">
 		<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
-			<ul>
-			<?php
-			if (isset($page_links)) {
-				foreach ($page_links as $label => $link) {
-					?>
+		<ul>
+		<?php
+		if (isset($page_links)) {
+			foreach ($page_links as $label => $link) {
+				?>
 
-					<li><?php echo html::anchor($link, $label) ?></li>
-					<?php
-				}
+				<li><?php echo html::anchor($link, $label) ?></li>
+				<?php
 			}
-			?>
-			</ul>
-		</div>
+		}
+		?>
+		</ul>
+	</div>
 	<div class="clear"></div>
 	<hr />
 	<?php
@@ -46,10 +46,10 @@ $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 
 	<?php echo form::open('command/multi_action'); ?>
 	<table id="host_table">
-	<caption style="margin-top: 0px"><?php echo $sub_title ?>: 
+	<caption style="margin-top: 0px"><?php echo $sub_title ?>:
 	<?php 
 		echo '<span class="icon-16 x16-check-boxes"></span>';
-	?> 
+	?>
 	<a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 	
 	<div class="clear"></div>

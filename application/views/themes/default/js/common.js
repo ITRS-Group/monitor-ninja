@@ -181,58 +181,61 @@ $(document).ready(function() {
 		//});
 	});
 
-	$('.host_comment').each(function() {
-			if (typeof _use_popups == 'undefined' || !_use_popups) {
-				return;
-			}
-			var obj_name = $(this).data('obj_name');
+	if (typeof _use_popups !== 'undefined' && _use_popups) {
+		$('.host_comment').each(function() {
+			var anchor = $(this);
+			var obj_name = anchor.data('obj_name');
 			if (!obj_name) {
 				return false;
 			}
 
 			var loading_img = '/application/media/images/loading.gif';
 
-			$(this).qtip({
-			content: {
-				url: _site_domain + _index_page + "/ajax/fetch_comments/",
-				data: {host: obj_name},
-				method: 'post',
-				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
-			},
-			position: {
-				corner: {
-				target: 'rightTop', // Position the tooltip
-				tooltip: 'bottomLeft'
-			},
-			adjust: {
-					screen: true, // Keep the tooltip on-screen at all times
-					x: 10,
-					y: -5
-				}
-			},
-			show: {
-				when: 'mouseover',
-				solo:true,
-				delay:_popup_delay
-			},
-			hide: {
-				effect: 'slide',
-				when: {
-					event: 'mouseout',
-					delay:2000
-				}
-			},
-			style: {
-				width: 500,
-				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
-					border: {
-					width: 0,
-					radius: 4
+			// Remove the tooltip of the inner element since it overlays qtip
+			anchor.find('span').attr('title', '');
+
+			anchor.qtip({
+				content: {
+					url: _site_domain + _index_page + "/ajax/fetch_comments/",
+					data: {host: obj_name},
+					method: 'get',
+					text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
 				},
-				name: 'light' // Use the default light style
-			}
+				position: {
+					corner: {
+					target: 'rightTop', // Position the tooltip
+					tooltip: 'bottomLeft'
+				},
+				adjust: {
+						screen: true, // Keep the tooltip on-screen at all times
+						x: 10,
+						y: -5
+					}
+				},
+				show: {
+					when: 'mouseover',
+					solo:true,
+					delay:_popup_delay
+				},
+				hide: {
+					effect: 'slide',
+					when: {
+						event: 'mouseout',
+						delay:2000
+					}
+				},
+				style: {
+					width: 500,
+					tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
+						border: {
+						width: 0,
+						radius: 4
+					},
+					name: 'light' // Use the default light style
+				}
+			});
 		});
-	});
+	}
 
 	$(".helptext_target").each(function(){
 
