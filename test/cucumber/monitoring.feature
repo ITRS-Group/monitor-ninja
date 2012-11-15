@@ -42,5 +42,4 @@ Feature: Monitoring
 		Then I should see the configured services
 		When I have submitted a passive host check result "linux-server2;1;some output"
 		And I click "Down"
-		#And Refresh the page
 		Then I should see "linux-server2"
