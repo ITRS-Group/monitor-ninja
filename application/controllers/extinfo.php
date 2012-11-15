@@ -521,7 +521,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 			foreach ($content->custom_commands as $command_name => $action) {
 				$linktext = ucwords(strtolower(str_replace('_', ' ', $command_name)));
-				$commands->custom_commands[$command_name] = "<span title='$command_name $type $host_id $service_id'>" . $linktext . "</span>";
+				$commands->custom_commands[$command_name] = "<a href='#' title='$command_name $type $host_id $service_id'>" . $linktext . "</a>";
 			}
 		}
 
