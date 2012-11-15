@@ -99,6 +99,9 @@ class Contactgroup_Model extends Model
 
 	/**
 	 *	Static method to return if user's contact is a member of a certain contactgroup
+	 *	@param $group string
+	 *	@param $user string
+	 *	@return bool
 	 */
 	public static function is_user_member($group=false, $user=false)
 	{
