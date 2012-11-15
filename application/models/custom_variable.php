@@ -27,16 +27,22 @@ class Custom_variable_Model extends Model
 
 	/**
 	 * @param $custom_variables array
+	 * @param $specific string
 	 * @return array
 	 */
-	public static function parse_custom_variables($custom_variables) {
+	public static function parse_custom_variables($custom_variables, $specific=false) {
 		$custom_commands = array();
+		// Need at least 2 custom variables for this to make any sense.
 		if (count($custom_variables) >= 2) {
 			foreach ($custom_variables as $custom_variable) {
 				// Does custom variable name match pattern?
 				if (substr($custom_variable['variable'], 0, 4) === '_OP5') {
 					$parts = explode('__', $custom_variable['variable']);
 					$command_name = $parts[count($parts)-1];
+					if ($specific !== false && $specific !== $command_name) {
+						// We wanted a specific command which doesn't exist. Go to next loop.
+						continue;
+					}
 					if (!isset($custom_commands[$command_name])) {
 						$custom_commands[$command_name] = array();
 					}
@@ -55,15 +61,21 @@ class Custom_variable_Model extends Model
 				$authenticated = false;
 				// Check authorization.
 				$members = array();
-				foreach ($custom_commands[$command_name]['access'] as $contactgroup) {
-					$members[$contactgroup] = Contactgroup_Model::is_user_member($contactgroup);
-					if ($members[$contactgroup] === true) {
-						$authenticated = true;
+				if (isset($custom_commands[$command_name]['access']) && isset($custom_commands[$command_name]['action'])) {
+					foreach ($custom_commands[$command_name]['access'] as $contactgroup) {
+						$members[$contactgroup] = Contactgroup_Model::is_user_member($contactgroup);
+						if ($members[$contactgroup] === true) {
+							$authenticated = true;
+						}
 					}
-				}
-				if ($authenticated) {
-					$custom_commands[$command_name] = $custom_commands[$command_name]['action'];
+					if ($authenticated) {
+						$custom_commands[$command_name] = $custom_commands[$command_name]['action'];
+					} else {
+						// Authentication failed so unset this command
+						unset($custom_commands[$command_name]);
+					}
 				} else {
+					// Inclomplete custom command due to not having both ACCESS and ACTION with the same name. Unset
 					unset($custom_commands[$command_name]);
 				}
 			}
