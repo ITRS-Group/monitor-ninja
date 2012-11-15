@@ -765,4 +765,41 @@ class Command_Controller extends Authenticated_Controller
 
 		return $nagios_commands;
 	}
+
+	/**
+	 * Executes custom commands and return output to ajax call.
+	 * @param $cmd string
+	 * @return string
+	 */
+	public function exec_custom_command($command_name, $type=false, $host=false, $service=false)
+	{
+		// Stop redirects
+		$this->auto_render=false;
+		if ($host == false) {
+			echo "No object type or id was set. Aborting.";
+			return;
+		}
+		// Get relevant custom variable for authorization.
+		$object_id = $type === 'host' ? $host : $service;
+		$custom_variables = Custom_variable_Model::get_for($type, $object_id);
+		$custom_commands = Custom_variable_Model::parse_custom_variables($custom_variables, $command_name);
+		if (empty($custom_commands)) {
+			$output = "You are not authorized to run this command or it doesn't exist.";
+		} else {
+			// Fetch object data to be able to process macros
+			$result_data = Host_Model::object_status_by_id($host, $service);
+			$obj = $result_data[0];
+			$command = $custom_commands[$command_name];
+			$command = nagstat_Core::process_macros($command, $obj);
+			exec($command, $output, $status);
+		}
+		if ($status === 0) {
+			if (is_array($output)) {
+				$output = implode('\n', $output);
+			}
+			echo $output;
+		} else {
+			echo "Script failed with status: " . $status;
+		}
+	}
 }
