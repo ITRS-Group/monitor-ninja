@@ -860,6 +860,34 @@ class Host_Model extends Model {
 	}
 
 	/**
+	 *	Wrapper to get object status by id instead of name
+	 */
+	public function object_status_by_id($host_id=false, $service_id=false)
+	{
+		if (!$host_id) {
+			return false;
+		}
+		$db = Database::instance();
+		if ($service_id === false) {
+			$sql = "SELECT h.host_name FROM host h WHERE h.id = ".$db->escape($host_id);
+			$names = self::query($db,$sql);
+			$names = $names[0];
+			$service_description = false;
+		} else {
+			$sql = "SELECT h.host_name, s.service_description 
+					FROM host h
+					INNER JOIN service s ON h.host_name=s.host_name
+					WHERE h.id =".$db->escape($host_id)." 
+					AND s.id =".$db->escape($service_id);
+			$names = self::query($db,$sql);
+			$names = $names[0];
+			$service_description = $names->service_description;
+		}
+		$result = self::object_status($names->host_name, $service_description);
+		return $result;
+	}
+
+	/**
 	*	Fetch performance data for checks (active/passive)
 	*/
 	public function performance_data($checks_state=1)
