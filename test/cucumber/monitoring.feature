@@ -1,4 +1,3 @@
-@configuration
 Feature: Monitoring
 
 	Background:
@@ -12,9 +11,10 @@ Feature: Monitoring
 			| System Load	| linux-server1 | check_nrpe!load	| 
 			| System Load	| linux-server2 | check_nrpe!load	| 
 			| PING			| win-server1 	| check_ping		| 
-			| PING			| win-server2 	| check_ping		| 
+			| PING			| win-server2 	| check_ping		|
+		And I have activated the configuration
 
-	@asmonitor @case-642
+	@configuration @asmonitor @case-642
 	Scenario: Host details page links
 
 		Ensure that all links on the host details
