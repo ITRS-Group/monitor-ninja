@@ -126,8 +126,6 @@ $(document).ready(function() {
 		}
 	});
 
-
-
 	$('.extinfo_contactgroup').each(function() {
 		$(this).bind('click', function() {
 			var the_id = $(this).attr('id');
@@ -200,6 +198,29 @@ $(document).ready(function() {
 			$('.service_feedback').text('');
 		}
 	});
+	$('.custom_command span').fancybox({
+			'overlayOpacity': 0.7,
+			'overlayColor' : '#ffffff',
+			'hideOnContentClick': false,
+			'hideOnOverlayClick': false,
+			'titleShow': false,
+			'showCloseButton': false,
+			'enableEscapeButton': false,
+			'autoDimensions': true,
+			'width': 250,
+			'height': 10
+	})
+	.css('border-bottom', '1px dotted #777')
+	.css('cursor', 'pointer');
+	$('.custom_command').click(function() {
+		var cmd = $(this).find('span').attr('title');
+		cmd = cmd.replace(/\s/g, "/");
+		$('#fancybox-content').text('Executing command, please wait for acknowledgement.');
+		// Load executing function with custom var name as parameter
+		$('#fancybox-content').load(_site_domain+'index.php/command/exec_custom_command/'+encodeURI(cmd), function() {
+			$('#fancybox-close').show();
+		});
+	});
 });
 
 function hide_del_msg() {
@@ -226,4 +247,4 @@ function filter_table (phrase, _id){
 		}
 		table.rows[r].style.display = displayStyle;
 	}
-};
+}
