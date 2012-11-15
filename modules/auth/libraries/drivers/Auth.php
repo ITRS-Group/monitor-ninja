@@ -131,7 +131,9 @@ abstract class Auth_Driver {
 	protected function complete_login($user)
 	{
 		// Regenerate session_id
-		$this->session->regenerate();
+		if (PHP_SAPI !== 'cli') {
+			$this->session->regenerate();
+		}
 
 		// Store username in session
 		$_SESSION[$this->config['session_key']] = $user;
