@@ -92,7 +92,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
 
 		# save us some typing
 		$content = $this->template->content;
@@ -501,13 +504,24 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		// Catch special cases 
-		$content->custom_commands = Custom_variable_Model::parse_custom_variables($content->custom_variables);
+		$content->custom_commands = Custom_variable_Model::parse_custom_variables($content->custom_variables, false);
 		if ($content->custom_commands) {
 			$commands->custom_commands = array();
 			// Create links.
+			switch($type)
+			{
+				case 'host':
+					$host_id = $result->id;
+					$service_id = "";
+					break;
+				case 'service':
+					$host_id = $result->host_id;
+					$service_id = $result->service_id;
+					break;
+			}
 			foreach ($content->custom_commands as $command_name => $action) {
 				$linktext = ucwords(strtolower(str_replace('_', ' ', $command_name)));
-				$commands->custom_commands[$command_name] = $this->command_link($action, $host, $service, $linktext);
+				$commands->custom_commands[$command_name] = "<span title='$command_name $type $host_id $service_id'>" . $linktext . "</span>";
 			}
 		}
 
