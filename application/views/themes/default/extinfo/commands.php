@@ -133,7 +133,7 @@
 				?>
 				<tr>
 					<td class="dark">
-						<?php echo html::image($this->add_path('icons/16x16/disabled.png'), array('alt' => $command_name, 'title' => $command_name)); ?>
+						<?php echo html::image($this->add_path('icons/16x16/cli.png'), array('alt' => $command_name, 'title' => $command_name)); ?>
 					</td>
 					<td class="custom_command"><?php echo $link ?></td>
 				</tr>
