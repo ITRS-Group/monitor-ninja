@@ -28,3 +28,19 @@ Feature: Monitoring
 		Then I should see the configured hosts
 		When I click "Status summary"
 		Then I should see the configured hostgroups
+
+	@configuration @asmonitor @case-643
+	Scenario: Host details filter
+
+		Ensure that the filters on the host details
+		page works as expected.
+
+		When I am on the Host details page
+		And I click "4 Hosts"
+		Then I should see the configured hosts
+		When I click "4 Services"
+		Then I should see the configured services
+		When I have submitted a passive host check result "linux-server2;1;some output"
+		And I click "Down"
+		#And Refresh the page
+		Then I should see "linux-server2"
