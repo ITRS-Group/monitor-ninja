@@ -61,11 +61,7 @@ class Cli_Controller extends Ninja_Controller {
 		return $result;
 	}
 
-	/**
-	 * When an object is renamed, things like scheduled reports and rrdtool data must be renamed as well
-	 */
-	public function handle_rename($type, $old_name, $new_name)
-	{
+	private function _handle_nacoma_trigger($type, $old_name, $new_name = null) {
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
@@ -73,8 +69,7 @@ class Cli_Controller extends Ninja_Controller {
 		$cli_access = Kohana::config('config.cli_access');
 
 		if (empty($cli_access)) {
-			# CLI access is turned off in config/config.php
-			echo "no cli access\n";
+			echo "no cli access, it's turned off in config/config.php\n";
 			return false;
 		}
 
@@ -88,77 +83,71 @@ class Cli_Controller extends Ninja_Controller {
 			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if ($report_data['report_type'] === 'services' && $type === 'host') {
+				if(!$report_data) {
+					continue;
+				}
+				if (arr::search($report_data, 'report_type') === 'services' && $type === 'host') {
 					$savep = false;
+					if(!is_array($report_data['objects'])) {
+						continue;
+					}
 					foreach ($report_data['objects'] as $idx => $svc) {
 						$parts = explode(';', $svc);
 						if ($parts[0] === $old_name) {
-							$report_data['objects'][$idx] = $new_name.';'.$parts[1];
+							if($new_name) {
+								// rename
+								$report_data['objects'][$idx] = $new_name.';'.$parts[1];
+							} else {
+								// delete
+								unset($report_data['objects'][$idx]);
+							}
 							$savep = true;
 						}
 					}
-					if ($savep)
+					if ($savep) {
 						$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
+					}
 				}
-				if ($report_data['report_type'] !== ($type . 's'))
+				if (arr::search($report_data, 'report_type') !== ($type . 's')) {
 					continue;
+				}
 				$key = array_search($old_name, $report_data['objects']);
-				if ($key === false)
+				if ($key === false) {
 					continue;
-				$report_data['objects'][$key] = $new_name;
+				}
+				if($new_name) {
+					// rename
+					$report_data['objects'][$key] = $new_name;
+				} else {
+					// delete
+					unset($report_data['objects'][$key]);
+				}
 				$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
 			}
 		}
 	}
 
 	/**
+	 * When an object is renamed, things like scheduled reports and rrdtool data must be renamed as well
+	 *
+	 * @param $type string
+	 * @param $old_name string
+	 * @param $new_name string
+	 */
+	public function handle_rename($type, $old_name, $new_name)
+	{
+		return $this->_handle_nacoma_trigger($type, $old_name, $new_name);
+	}
+
+	/**
 	 * Perform post-deletion cleanup
+	 *
+	 * @param $type string
+	 * @param $old_name string
 	 */
 	public function handle_deletion($type, $old_name)
 	{
-		if (PHP_SAPI !== "cli") {
-			die("illegal call\n");
-		}
-		$this->auto_render=false;
-		$cli_access = Kohana::config('config.cli_access');
-
-		if (empty($cli_access)) {
-			# CLI access is turned off in config/config.php
-			echo "no cli access\n";
-			return false;
-		}
-
-		# figure out path from argv
-		$path = $GLOBALS['argv'][0];
-
-		// Saved reports:
-		$saved_reports_model = new Saved_reports_Model();
-		$report_types = array('avail', 'sla', 'summary');
-		foreach ($report_types as $report_type) {
-			$reports = $saved_reports_model->get_saved_reports($report_type);
-			foreach ($reports as $report) {
-				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if ($report_data['report_type'] === 'services' && $type === 'host') {
-					$savep = false;
-					foreach ($report_data['objects'] as $idx => $svc) {
-						$parts = explode(';', $svc);
-						if ($parts[0] === $old_name) {
-							unset($report_data['objects'][$idx]);
-							$savep = true;
-						}
-					}
-					if ($savep)
-						$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
-				}
-				if ($report_data['report_type'] !== ($type . 's'))
-					continue;
-				$key = array_search($old_name, $report_data['objects']);
-				if ($key === false)
-					continue;
-				unset($report_data['objects'][$key]);
-				$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
-			}
-		}
+		return $this->_handle_nacoma_trigger($type, $old_name);
 	}
 
 	public function save_widget()
