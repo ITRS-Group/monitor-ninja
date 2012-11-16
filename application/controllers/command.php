@@ -773,7 +773,7 @@ class Command_Controller extends Authenticated_Controller
 		}
 		if ($status === 0) {
 			if (is_array($output)) {
-				$output = implode('\n', $output);
+				$output = implode('<br/>', $output);
 			}
 			echo $output;
 		} else {
