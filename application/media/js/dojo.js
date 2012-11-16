@@ -224,10 +224,17 @@
 			type: 'POST',
 			complete: function (xhr) {
 
-				var links = JSON.parse(JSON.parse(xhr.responseText)['dojo-quicklinks']);
+				var obj = JSON.parse(xhr.responseText),
+						links = {};
+
+				if (obj['dojo-quicklinks']) {
+					links = JSON.parse(JSON.parse(xhr.responseText)['dojo-quicklinks']);
+				}
+				
 				for (var i = 0; i < links.length; i += 1) {
 					$('#dojo-quicklink-external').append($('<li><a target="_BLANK" class="image-link" href="' + links[i].href + '"><span title="'+links[i].title+'" class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
 				}
+
 				global_quicklinks = links;
 
 			}
