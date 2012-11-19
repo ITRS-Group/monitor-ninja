@@ -769,6 +769,22 @@ class Command_Controller extends Authenticated_Controller
 			$obj = $result_data[0];
 			$command = $custom_commands[$command_name];
 			$command = nagstat_Core::process_macros($command, $obj);
+			// Get hostname for logs
+			$host_name = nagstat_Core::process_macros('$HOSTNAME$', $obj);
+			switch($type) {
+				case 'host':
+					$comment = "ADD_HOST_COMMENT;".$host_name.";1;".Auth::instance()->get_user()->username.";Executed custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name)));
+					break;
+				case 'service':
+					// Get service description for logs
+					$svc_desc = nagstat_Core::process_macros('$SERVICEDESC$', $obj);
+					$comment = "ADD_SVC_COMMENT;".$host_name.";".$svc_desc.";1;".Auth::instance()->get_user()->username.";Executed custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name)));
+					break;
+			}
+			// Submit logs to nagios as comments.
+			$nagios_base_path = Kohana::config('config.nagios_base_path');
+			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+			nagioscmd::submit_to_nagios($comment, $pipe);
 			exec($command, $output, $status);
 		}
 		if ($status === 0) {
