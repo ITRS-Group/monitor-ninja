@@ -472,6 +472,11 @@ final class Kohana {
 
 		if ($files = self::find_file('config', $name, $required))
 		{
+
+			// Modules config reports should overwrite original config PDF path
+			if ($name == 'reports')
+				$files = array_reverse($files);
+
 			foreach ($files as $file)
 			{
 				require $file;
