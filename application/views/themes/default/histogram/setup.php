@@ -10,13 +10,19 @@ if (!empty($widgets)) {
 <div id="response"></div>
 <div id="progress"></div>
 
+<style>
+	table td {
+		border: none;
+	}
+</style>
+
 <div>
 
 	<h1><?php echo _('Event History Report') ?></h1>
 
 	<div id="histogram_report">
 	<?php	echo form::open('histogram/generate', array('id' => 'histogram_form')); ?>
-			<table id="history_report_table" style="width: auto">
+			<table style="border: none;" id="history_report_table" style="width: auto">
 				<tr>
 					<td colspan="3">
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
