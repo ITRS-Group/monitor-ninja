@@ -89,19 +89,19 @@ var status = '';
 	<table id="backups">
 		<thead>
 		<tr>
+			<th style="width: 64px"><?php echo _('Actions'); ?></th>
 			<th><?php echo _('Backups'); ?></th>
-			<th style="width: 50px"><?php echo _('Actions'); ?></th>
 		</tr>
 		</thead>
 		<tbody>
 		<?php $i = 0; foreach ($files as $file): $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td><a class="download" href="<?php echo url::base() . 'index.php/backup/download/' . $file; ?>" target="_blank"><?php echo $file; ?></a></td>
 			<td>
 				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => _('View'), 'title' => _('View'))); ?></a>
 				<a class="restore" href="#restore-status" title="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => _('Restore'), 'title' => _('Restore'))); ?></a>
 				<a class="delete" href="<?php echo url::base() . 'index.php/backup/delete/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'), array('alt' => _('Delete'), 'title' => _('Delete'))); ?></a>
 			</td>
+			<td><a class="download" href="<?php echo url::base() . 'index.php/backup/download/' . $file; ?>" target="_blank"><?php echo $file; ?></a></td>
 		</tr>
 		<?php endforeach; ?>
 		</tbody>
