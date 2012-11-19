@@ -153,6 +153,7 @@ if(isset($options['report_id'])) { ?>
 	} ?>
 	<tr>
 		<td>
+			<br />
 			<?php echo help::render('skin') ?>
 			<label for="skin" id="skin_lbl"><?php echo _('Skin') ?></label>
 		</td>
@@ -163,7 +164,7 @@ if(isset($options['report_id'])) { ?>
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td style="vertical-align: top;">
 			<?php echo form::dropdown(array('name' => 'skin'), ninja::get_skins(), $options['skin']); ?>
 		</td>
 		<td></td>
