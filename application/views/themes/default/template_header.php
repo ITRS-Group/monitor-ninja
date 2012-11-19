@@ -105,7 +105,7 @@
 		$timezone = date_default_timezone_get();
 ?>
 		<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">
-			<?php echo _('Updated') ?>: <a id="page_last_updated" data-utc_offset="<?php echo (1000 * date::utc_offset($timezone)) ?>" title="Your timezone is set to <?php echo $timezone ?>. Click to reload page." href="<?php echo $_SERVER['REQUEST_URI'] ?>"><?php echo date(nagstat::date_format()) ?></a>
+			<?php echo _('Updated') ?>: <a id="page_last_updated" data-utc_offset="<?php echo (1000 * date::utc_offset($timezone)) ?>" title="Your timezone is set to <?php echo $timezone ?>. Click to reload page." href="<?php echo isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : "#" /* For CLI */ ?>"><?php echo date(nagstat::date_format()) ?></a>
 		</div>
 	<?php } ?>
 
