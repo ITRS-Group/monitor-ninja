@@ -40,8 +40,8 @@
 
 	<h1><?php echo _('Alert Summary Report') ?></h1>
 	<h2><?php echo _('Report Mode') ?></h2>
-	<form id="report_mode_form">
-	<label><?php echo form::radio(array('name' => 'report_mode'), 'standard', !$options['report_type'] || $options['standardreport']); ?> <?php echo _('Standard') ?></label><label><?php echo form::radio(array('name' => 'report_mode'), 'custom', $options['report_type'] && !$options['standardreport']); ?> <?php echo _('Custom') ?></label>
+	<form id="report_mode_form"><br />
+	<label><?php echo form::radio(array('name' => 'report_mode'), 'standard', !$options['report_type'] || $options['standardreport']); ?> <?php echo _('Standard') ?></label> &nbsp; &nbsp; <label><?php echo form::radio(array('name' => 'report_mode'), 'custom', $options['report_type'] && !$options['standardreport']); ?> <?php echo _('Custom') ?></label>
 	</form>
 <br />
 
