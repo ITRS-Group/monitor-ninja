@@ -1,0 +1,53 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+/**
+ * @package    NINJA
+ * @author     op5
+ * @license    GPL
+ */
+class Backup_Test extends TapUnit {
+	public function setUp() {
+		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		$this->pre_backups = array();
+		$this->backup_location = "/var/www/html/backup";
+		if ($handle = opendir($this->backup_location)) {
+			while (false !== ($entry = readdir($handle))) {
+				$this->pre_backups[] = $entry;
+			}
+		}
+	}
+
+	public function tearDown() {
+		#Remove any backups created since we started
+		if ($handle = opendir($this->backup_location)) {
+			while (false !== ($entry = readdir($handle))) {
+				if(!in_array($entry, $this->pre_backups))
+					unlink($this->backup_location.'/'.$entry);
+			}
+		}
+	}
+
+	public function test_backup() {
+		$controller = new Backup_Controller();
+		$controller->backup();
+		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting backup success");
+		$this->ok($controller->template->file != '', "asserting backup file has been set");
+	}
+
+	public function test_backup_restore() {
+		$controller = new Backup_Controller();
+		$controller->backup();
+		$this_backup = $controller->template->file;
+		$controller->restore($this_backup);
+		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting restore success");
+	}
+
+	public function test_backup_delete() {
+		$controller = new Backup_Controller();
+		$controller->backup();
+		$this_backup = $controller->template->file;
+
+		$this->ok(file_exists($this->backup_location . '/' . $this_backup . '.tar.gz'), "asserting backup file exists where we expect it");
+		$controller->delete($this_backup);
+		$this->ok(!file_exists($this->backup_location . '/' . $this_backup . '.tar.gz'), "asserting backup file has been deleted");
+	}
+}
