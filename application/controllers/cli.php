@@ -138,7 +138,7 @@ class Cli_Controller extends Ninja_Controller {
 			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if (arr::search($report_data, 'report_type') === 'services' && $type === 'host') {
+				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
 					foreach ($report_data['objects'] as $idx => $svc) {
 						$parts = explode(';', $svc);
@@ -150,7 +150,7 @@ class Cli_Controller extends Ninja_Controller {
 					if ($savep)
 						$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
 				}
-				if (arr::search($report_data, 'report_type') !== ($type . 's'))
+				if ($report_data['report_type'] !== ($type . 's'))
 					continue;
 				$key = array_search($old_name, $report_data['objects']);
 				if ($key === false)
