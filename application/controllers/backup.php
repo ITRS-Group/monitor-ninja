@@ -28,7 +28,6 @@ class Backup_Controller extends Authenticated_Controller {
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
 	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg 2>/dev/null';
-	private $cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
 	private $cmd_view = 'tar tfz ';
 
 	private $backup_suffix = '.tar.gz';
@@ -41,6 +40,7 @@ class Backup_Controller extends Authenticated_Controller {
 		parent::__construct();
 		$this->template->disable_refresh = true;
 		$this->auto_render = true;
+		$this->cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> ' . System_Model::get_pipe() . ' && touch /opt/monitor/etc/misccommands.cfg';
 
 		$nagioscfg = "/opt/monitor/etc/nagios.cfg";
 		$handle = fopen($nagioscfg, 'r');
