@@ -109,7 +109,7 @@ if (isset($host_result) ) {
 		</td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
-		<td style="white-space: normal"><?php echo htmlspecialchars($output) ?></td>
+		<td style="white-space: normal"><?php echo security::xss_clean($output) ?></td>
 	<?php if ($show_display_name) { ?>
 		<td><?php echo $host->display_name ?></td>
 	<?php }

@@ -55,7 +55,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	<table class="group_overview_table">
 		<caption>
 			<img src="<?php echo ninja::add_path('icons/16x16/check-boxes.png') ?>" style="margin-bottom: -3px" /> <a href="#" id="select_multiple_items"><?php echo _('Select Multiple Items') ?></a>
-			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo url::base(true).'status/'.$grouptype.'group/'.$group_name.'?style=detail' ?>"><?php echo htmlspecialchars($group_alias) ?></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo url::base(true).'status/'.$grouptype.'group/'.$group_name.'?style=detail' ?>"><?php echo security::xss_clean($group_alias) ?></a>
 			<?php /*Comment this out for now. Might not be used for anything anymore ?>
 			<span>(<a href="<?php echo url::base(true).'extinfo/details?type='.$grouptype.'group&amp;host='.$group_name ?>"><?php echo $group_name ?></a>)</span>
 		<?php */ 

@@ -164,7 +164,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
-			<td style="white-space: normal"><?php echo htmlspecialchars($perf_data) ?></td>
+			<td style="white-space: normal"><?php echo security::xss_clean($perf_data) ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Current attempt'); ?></td>

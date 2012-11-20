@@ -234,7 +234,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->icon_image_alt = $result->icon_image_alt;
 		// "Why the str_replace, it looks stupid?" Well, because nagios (livestatus?) stores data with newlines replaced with a backslash and an 'n'.
 		// "So why the nl2br, then, huh?" Uhm, it was there when I found it...
-		$content->status_info = htmlspecialchars($result->plugin_output).'<br />'.str_replace('\n', '<br />', nl2br(htmlspecialchars($result->long_plugin_output)));
+		$content->status_info = security::xss_clean($result->plugin_output).'<br />'.str_replace('\n', '<br />', nl2br(security::xss_clean($result->long_plugin_output)));
 		$content->perf_data = $result->perf_data;
 		$content->current_attempt = $result->current_attempt;
 		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
