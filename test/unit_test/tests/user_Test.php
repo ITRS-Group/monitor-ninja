@@ -37,26 +37,6 @@ class User_Test extends TapUnit {
 		unset( $ldapauth );
 	}
 
-	/**
-	 * Check that we have the ninja_user_authorization table
-	 */
-	public function test_table_ninja_user_authorization_exists()
-	{
-		$db = Database::instance();
-		$table = 'ninja_user_authorization';
-		$this->ok($db->table_exists($table), "Unable to find table $table");
-	}
-
-	public function test_table_ninja_user_authorization()
-	{
-		$db = Database::instance();
-		$table = 'ninja_user_authorization';
-		#$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
-		$sql = "SELECT * FROM ".$table;
-		$result = $db->query($sql);
-		$this->ok(count($result) > 0, 'No data exists for '.$table);
-	}
-
 	public function test_menu_icons_exists()
 	{
 		$menu_path = APPPATH.'views/themes/default/icons/menu/*.png';
