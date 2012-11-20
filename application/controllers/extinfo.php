@@ -877,12 +877,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 			}
 
-			$nagios_base_path = Kohana::config('config.nagios_base_path');
-			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
-			$nagconfig = System_Model::parse_config_file("nagios.cfg");
-			if (isset($nagconfig['command_file'])) {
-				$pipe = $nagconfig['command_file'];
-			}
+			$pipe = System_Model::get_pipe();
 
 			while ($ncmd = array_pop($nagios_commands)) {
 				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
@@ -1276,13 +1271,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			}
 
-			$nagios_base_path = Kohana::config('config.nagios_base_path');
-			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
-			$nagconfig = System_Model::parse_config_file("nagios.cfg");
-			if (isset($nagconfig['command_file'])) {
-				$pipe = $nagconfig['command_file'];
-			}
-
+			$pipe = System_Model::get_pipe();
 			while ($ncmd = array_pop($nagios_commands)) {
 				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
 			}

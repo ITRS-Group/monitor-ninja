@@ -550,13 +550,7 @@ class ScheduleDate_Model extends Model
 		$author = $data['author'];
 		$comment = $data['comment'];
 
-		$nagios_base_path = Kohana::config('config.nagios_base_path');
-		$pipe = $nagios_base_path."/var/rw/nagios.cmd";
-		$nagconfig = System_Model::parse_config_file("nagios.cfg");
-		if (isset($nagconfig['command_file'])) {
-			$pipe = $nagconfig['command_file'];
-		}
-
+		$pipe = System_Model::get_pipe();
 		foreach ($obj_arr as $obj) {
 			# check if object already scheduled for same start time and duration?
 			if (Downtime_Model::check_if_scheduled($data['report_type'], $obj, $start_time, $duration)) {
