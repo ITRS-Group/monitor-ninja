@@ -92,4 +92,28 @@ Feature: Monitoring
 
 		When I click "linux-server1"
 		And I click "Notifications"
-		Then I should be on url "/monitor/index.php/notifications/host/linux-server1"
+		Then I should be on address "/monitor/index.php/notifications/host/linux-server1"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Locate host on map
+
+		Verify that the "Locate host on map" host command
+		works correctly.
+
+		When I click "linux-server1"
+		And I click "Locate host on map"
+		Then I should be on address "/monitor/index.php/nagvis/automap/host/linux-server1"
+		And I should see "linux-server1"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Disable active checks
+
+		Verify that the "Disable active checks" host command
+		works correctly.
+
+		When I click "linux-server1"
+		And I click "Disable active checks"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Active checks" should be shown as "Disabled"
