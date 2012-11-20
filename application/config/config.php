@@ -121,6 +121,11 @@ $config['autoload'] = array
 $config['nagios_base_path'] = '/opt/monitor';
 
 /**
+ *	Path to Nagios command pipe (FIFO).
+ */
+$config['nagios_pipe'] = $config['nagios_base_path'].'/var/rw/nagios.cmd';
+
+/**
  *	If the nagios etc directory is to be found outside
  * 	the nagios base path, please specify here.
  *
