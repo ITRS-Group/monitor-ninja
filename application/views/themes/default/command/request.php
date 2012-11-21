@@ -7,9 +7,12 @@ if (!$info) {
 	return;
 }
 
+echo "<style>table td {vertical-align: top;border: none;} input, select {margin: 0 0 6px 0;} b {margin: 0 0 6px 0; display: inline-block;}</style>";
+
 echo "<h2>$brief</h2>\n";
 echo "<p>$description</p>\n";
 echo form::open('command/commit', array('id' => 'command_form'));
+echo "<table>";
 
 $params = $info['params'];
 
@@ -34,9 +37,11 @@ foreach ($params as $pname => $ary) {
 
 	# help column only printed if we really have a help key
 
-	echo '<div class="" style="padding: 2px 0 0 10px; " id="'.$pname.'">';
+	echo "<tr><td style='width: 100px'>";
 	echo $use_help ? (isset($ary['help']) ? '<span style="width: 16px">'.$ary['help'].'</span>&nbsp;' : '') : '';
-	echo '<label><span style="display: inline-block; margin-right: 8px;">'.$ary['name'].'</span>';
+	echo '<span style="display: inline-block; margin-right: 8px;">'.$ary['name'].'</span>';
+	echo "</td><td>";
+
 
 	switch ($ary['type']) {
 		case 'select':
@@ -88,21 +93,31 @@ foreach ($params as $pname => $ary) {
 		case 'string':
 		default:
 			if ($form_name == 'cmd_param[comment]')
-				echo form::input(array('name' => $form_name, 'title' => _('Required field'), 'style' => 'width: 280px'), $dflt, '');
-			else
-				echo form::input(array('name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				echo form::input(array('class' => 'autotest-required', 'name' => $form_name, 'title' => _('Required field'), 'style' => 'width: 280px'), $dflt, '');
+			else {
+				if ($pname == "start_time")
+					echo form::input(array('class' => 'autotest-date', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				elseif ($pname == "end_time")
+					echo form::input(array('class' => 'autotest-date', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				elseif ($pname == "check_time")
+					echo form::input(array('class' => 'autotest-date', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				elseif ($pname == "duration")
+					echo form::input(array('class' => 'autotest-float', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				else
+					echo form::input(array('class' => 'autotest-required', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+			}
 			break;
 	}
 
-	echo "</label></div>\n";
+	echo "</td></tr>\n";
 }
 
-echo '<div class="left" style="border: none;">&nbsp;</div><div class="clear"></div><div class="left width-50">';
+echo "<tr><td colspan='2'>";
 echo form::hidden('requested_command', $requested_command);
 echo form::submit('Commit', _('Submit'), 'class="submit"');
 if (!empty($params)) {
 	echo " &nbsp;<input type='reset' value='" . _("Reset") . "'>\n";
 }
-echo '</div>';
+echo "</td></tr></table>";
 echo form::close();
 echo '</div>';
