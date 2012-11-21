@@ -14,17 +14,15 @@ if (is_array($data_arr)) {
 		if (!is_numeric($k))
 			continue;
 		$table = $data['table_data'];
-		foreach ($table as $table_data) {
-			foreach ($table_data as $start => $result) {
-				$csv = array();
-				$csv[] = '"'.implode(',', $data['source']).'"';
-				$csv[] = date('Y', $start);
-				$csv[] = date('M', $start);
-				$csv[] = $result[1];
-				$csv[] = $result[0];
-				$csv[] = (int)($result[1] >= $result[0]);
-				echo implode(', ', $csv)."\n";
-			}
+		foreach ($table as $start => $result) {
+			$csv = array();
+			$csv[] = '"'.implode(',', $data['source']).'"';
+			$csv[] = date('Y', $start);
+			$csv[] = '"'.date('M', $start).'"';
+			$csv[] = (int)$result[0];
+			$csv[] = (int)$result[1];
+			$csv[] = (int)($result[0] >= $result[1]);
+			echo implode(', ', $csv) . "\n";
 		}
 	}
 }
