@@ -590,6 +590,7 @@ class Reports_Controller extends Base_reports_Controller
 			$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 			$alrt_opts = new Alert_history_options($this->options);
 			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
+			$alrt_opts['include_downtime'] = true; // and we want downtime messages
 
 			$alerts = new Alert_history_Controller();
 			$alerts->set_options($alrt_opts);
