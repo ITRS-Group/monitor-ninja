@@ -4,7 +4,7 @@ $saved_reports_exists = false;
 if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 	$saved_reports_exists = true;
 }
-if(isset($options['report_id'])) { ?>
+if($options['report_id']) { ?>
 <input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 <?php } ?>
 <div class="setup-table" id="settings_table">
