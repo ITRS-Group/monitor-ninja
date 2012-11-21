@@ -117,3 +117,17 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		Then "Active checks" should be shown as "Disabled"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Reschedule check
+
+		Verify that the "Reschedule next check" host command
+		works correctly.
+
+		When I click "linux-server1"
+		And I click "Re-schedule the next check"
+		And I note the value of "field_check_time"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Next scheduled active check" should be shown as the value of "field_check_time"
