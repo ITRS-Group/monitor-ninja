@@ -179,7 +179,12 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			return $this[$this->get_value('report_type')];
 		 case 'hostgroups':
 			$ls = Livestatus::instance();
-			$out = $ls->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $this['hostgroup']))));
+			$filter = array();
+			foreach ($this['hostgroup'] as $group) {
+				$filter[] = 'groups >= "'.$group.'"';
+			}
+			$filter = implode(' or ', $filter);
+			$out = $ls->getHosts(array('columns' => array('name'), 'filter' => $filter));
 			$res = array();
 			foreach ($out as $arr) {
 				$res[] = $arr['name'];
@@ -187,7 +192,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			return $res;
 		 case 'servicegroups':
 			$ls = Livestatus::instance();
-			$out = $ls->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $this['servicegroup']))));
+			$filter = array();
+			foreach ($this['servicegroup'] as $group) {
+				$filter[] = 'groups >= "'.$group.'"';
+			}
+			$out = $ls->getServices(array('columns' => array('host_name', 'description'), 'filter' => $filter));
 			$res = array();
 			foreach ($out as $arr) {
 				$res[] = implode(';', array_values($arr));
