@@ -63,7 +63,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 							echo '<th class="no-sort">'._('Actions').'</th>';
 						echo ($n == 3 ? '<th class="item_select_service"><input type="checkbox" class="select_all_items_service" title="'._('Click to select/unselect all').'"></th>' : '');
 						echo '<th class="'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .'">';
-						echo '<a href="'.url::site() . ((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'&items_per_page='.$items_per_page.'&page='.$page.'">'.$row['title'].'</a>';
+						echo '<a href="'.url::site() . ((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'&items_per_page='.$items_per_page.'&page='.$page.'&style='.$style.'">'.$row['title'].'</a>';
 						echo '</th>';
 					}
 				}
