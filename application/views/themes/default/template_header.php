@@ -106,7 +106,8 @@
 ?>
 		<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">
 			<?php
-				echo 'Host: ' . htmlentities($_SERVER['SERVER_NAME']) . ' &nbsp ';
+				if (isset($_SERVER['SERVER_NAME']))
+					echo 'Host: ' . htmlentities($_SERVER['SERVER_NAME']) . ' &nbsp ';
 			?>
 			<?php echo _('Updated') ?>: <a id="page_last_updated" data-utc_offset="<?php echo (1000 * date::utc_offset($timezone)) ?>" title="Your timezone is set to <?php echo $timezone ?>. Click to reload page." href="<?php echo isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : "#" /* For CLI */ ?>"><?php echo date(nagstat::date_format()) ?></a>
 		</div>
