@@ -2,12 +2,16 @@
 
 class Summary_options_Core extends Report_options
 {
+	const RECENT_ALERTS = 1;
+	const ALERT_TOTALS = 2;
+	const TOP_ALERT_PRODUCERS = 3;
+
 	public function __construct($options=false)
 	{
-		$this->vtypes['summary_type'] = array('type' => 'enum', 'default' => Summary_Controller::TOP_ALERT_PRODUCERS, 'options' => array(
-			Summary_Controller::RECENT_ALERTS => _('Most Recent Alerts'),
-			Summary_Controller::ALERT_TOTALS => _('Alert Totals'),
-			Summary_Controller::TOP_ALERT_PRODUCERS => _('Top Alert Producers')));
+		$this->vtypes['summary_type'] = array('type' => 'enum', 'default' => self::TOP_ALERT_PRODUCERS, 'options' => array(
+			self::RECENT_ALERTS => _('Most Recent Alerts'),
+			self::ALERT_TOTALS => _('Alert Totals'),
+			self::TOP_ALERT_PRODUCERS => _('Top Alert Producers')));
 		$this->vtypes['standardreport'] = array('type' => 'enum', 'default' => '', 'options' => array(
 			1 => _('Most Recent Hard Alerts'),
 			2 => _('Most Recent Hard Host Alerts'),
@@ -35,9 +39,9 @@ class Summary_options_Core extends Report_options
 					return false;
 				$this['report_period'] = 'last7days';
 				if ($value < 4)
-					$this['summary_type'] = Summary_Controller::RECENT_ALERTS;
+					$this['summary_type'] = self::RECENT_ALERTS;
 				else
-					$this['summary_type'] = Summary_Controller::TOP_ALERT_PRODUCERS;
+					$this['summary_type'] = self::TOP_ALERT_PRODUCERS;
 				switch ($value) {
 					// By utilizing Report_options::ALL_AUTHORIZED, we pass on the
 					// explicit selection to the report model
