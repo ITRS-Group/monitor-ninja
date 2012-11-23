@@ -83,6 +83,41 @@ class Livestatus {
 		return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start);
 	}
 
+	/**
+	 * Fugly but the right place to .. place it.
+	 * Originally intended for config listing.
+	 *
+	 * @todo this only suits string columns, not lists, not ints
+	 *
+	 * @return array
+	 */
+	function filterable_columns() {
+		return array(
+			'services' => array(
+				'host_name',
+				'description'
+			),
+			'hosts' => array(
+				'name'
+			),
+			'hostgroups' => array(
+				'name'
+			),
+			'servicegroups' => array(
+				'name'
+			),
+			'contacts' => array(
+				'name'
+			),
+			'contactgroups' => array(
+				'name'
+			),
+			'commands' => array(
+				'name'
+			)
+		);
+	}
+
 	public function handle_passive_as_active($row) {
 		static $passive_as_active = null;
 		if ($passive_as_active === null)
