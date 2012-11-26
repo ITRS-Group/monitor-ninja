@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ *	Schedule downtime
+ */
+
 class ScheduleDate_Model extends Model
 {
 	/**
