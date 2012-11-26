@@ -13,10 +13,6 @@
  */
 class Summary_Controller extends Base_reports_Controller
 {
-	const RECENT_ALERTS = 1;
-	const ALERT_TOTALS = 2;
-	const TOP_ALERT_PRODUCERS = 3;
-
 	public $type = 'summary';
 	public $reports_model = false;
 
@@ -158,15 +154,15 @@ class Summary_Controller extends Base_reports_Controller
 
 		$result = false;
 		switch ($this->options['summary_type']) {
-		 case self::TOP_ALERT_PRODUCERS:
+		 case Summary_options::TOP_ALERT_PRODUCERS:
 			$result = $this->reports_model->top_alert_producers();
 			break;
 
-		 case self::RECENT_ALERTS:
+		 case Summary_options::RECENT_ALERTS:
 			$result = $this->reports_model->recent_alerts();
 			break;
 
-		 case self::ALERT_TOTALS:
+		 case Summary_options::ALERT_TOTALS:
 			$result = $this->reports_model->alert_totals();
 			break;
 
@@ -222,9 +218,9 @@ class Summary_Controller extends Base_reports_Controller
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
 
 		$views = array(
-			self::TOP_ALERT_PRODUCERS => 'toplist',
-			self::RECENT_ALERTS => 'latest',
-			self::ALERT_TOTALS => 'alert_totals',
+			Summary_options::TOP_ALERT_PRODUCERS => 'toplist',
+			Summary_options::RECENT_ALERTS => 'latest',
+			Summary_options::ALERT_TOTALS => 'alert_totals',
 		);
 
 		$this->template->content = $this->add_view('reports/index');

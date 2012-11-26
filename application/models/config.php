@@ -47,8 +47,8 @@ class Config_Model extends Model {
 	public function list_config($type = 'hosts', $free_text=null)
 	{
 		$options = array(
-			'limit' => $this->limit + $this->offset,
-			'offset' => $this->offset
+			'limit' => $this->limit,
+			'offset' => $this->offset + $this->limit
 		);
 
 		switch($type) {
@@ -82,7 +82,14 @@ class Config_Model extends Model {
 		}
 
 		if($type != 'timeperiods') {
-			return Livestatus::instance()->{'get'.$type}($options);
+			$ls = Livestatus::instance();
+			$filterable_keys = $ls->filterable_columns();
+			$filter = array();
+			foreach($filterable_keys[$type] as $column) {
+				$filter[] = $column.' ~~ "'.$free_text.'"';
+			}
+			$options['filter'] = implode(' or ', $filter);
+			return $ls->{'get'.$type}($options);
 		}
 
 		$db = Database::instance();

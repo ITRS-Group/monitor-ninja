@@ -456,7 +456,6 @@ class Config_Controller extends Authenticated_Controller {
 		}
 
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$this->xtra_js[] = $this->add_path('config/js/config.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;

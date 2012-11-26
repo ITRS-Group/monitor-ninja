@@ -6,7 +6,7 @@ $csv_content = array('"'.implode('", "', array(
 	'Duration: '.($options['end_time'] - $options['start_time'])
 )).'"');
 
-if(Summary_Controller::RECENT_ALERTS == $options['summary_type']) {
+if(Summary_options::RECENT_ALERTS == $options['summary_type']) {
 	// headers
 	$csv_content[] = '"'.implode('", "', array(
 		'TIME',
@@ -28,7 +28,7 @@ if(Summary_Controller::RECENT_ALERTS == $options['summary_type']) {
 			$log_entry['output']
 		)).'"';
 	}
-} elseif(Summary_Controller::TOP_ALERT_PRODUCERS == $options['summary_type']) {
+} elseif(Summary_options::TOP_ALERT_PRODUCERS == $options['summary_type']) {
 	// summary of services
 	// headers
 	$csv_content[] = '"'.implode('", "', array(
