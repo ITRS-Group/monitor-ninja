@@ -16,6 +16,24 @@ class System_Model extends Model
 	}
 
 	/**
+	 * 	Fetch nagios command pipe as configured by the
+	 * 	nagios_pipe setting. If the pipe does not exist
+	 * 	or is not writable, fetch pipe as configured by
+	 * 	command_file in nagios.cfg.
+	 * 	@return string path to the configured pipe
+	 * */
+	public static function get_pipe()
+	{
+		$pipe = Kohana::config('config.nagios_pipe');
+		if( !file_exists($pipe) || !is_writable($pipe) ) {
+			$nagconfig = self::parse_config_file("nagios.cfg");
+			if (isset($nagconfig['command_file'])) {
+				$pipe = $nagconfig['command_file'];
+			}
+		}
+		return $pipe;
+	}
+	/**
 	 * Reads a configuration file in the format variable=value
 	 * and returns it in an array.
 	 * lines beginning with # are considered to be comments

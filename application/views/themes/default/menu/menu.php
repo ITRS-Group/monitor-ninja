@@ -27,6 +27,7 @@ $menu_items['schedule_downtime'] = _('Schedule downtime');
 $menu_items['process_info'] = _('Process info');
 $menu_items['performance_info'] = _('Performance info');
 $menu_items['scheduling_queue'] = _('Scheduling queue');
+$menu_items['rotation'] = _('Rotation');
 
 $menu_items['nagvis'] = _('NagVis');
 
@@ -105,7 +106,8 @@ $menu_base = array(
 
 		$menu_items['process_info'] 			=> array('/extinfo/show_process_info', 'processinfo',0),
 		$menu_items['performance_info'] 		=> array('/extinfo/performance', 'performanceinfo',0),
-		$menu_items['scheduling_queue'] 		=> array('/extinfo/scheduling_queue', 'schedulingqueue',0)
+		$menu_items['scheduling_queue'] 		=> array('/extinfo/scheduling_queue', 'schedulingqueue',0),
+		$menu_items['rotation'] 		=> array('/rotation/index', 'nagvis',0)
 	),
 	$menu_items['section_reporting'] => $section_reporting,
 	$menu_items['section_configuration'] => array(

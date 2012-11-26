@@ -68,7 +68,7 @@ if (!empty($command_result)) {
 				<td style="white-space: normal"><?php echo !empty($row['entry_time']) ? date($date_format_str, $row['entry_time']) : '' ?></td>
 				<td style="white-space: normal"><?php echo $row['author'] ?></td>
 				<td style="white-space:normal">
-					<?php echo htmlspecialchars($row['comment']); ?>
+					<?php echo security::xss_clean($row['comment']); ?>
 				</td>
 				<td><?php echo $row['id'] ?></td>
 				<td><?php

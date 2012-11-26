@@ -80,7 +80,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->template->js_header->js = $this->xtra_js;
-		
+
 		# save us some typing
 		$content = $this->template->content;
 		
@@ -105,9 +105,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		}
 		$host_link = false;
-		$yes = _('YES');
-		$no = _('NO');
-		
+
 		$content->contactgroups = false;
 		if(isset($result->contact_groups)) {
 			$groups = $ls->getContactgroups(
@@ -219,13 +217,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->back_link = $back_link;
 		$content->date_format_str = nagstat::date_format();
 		$content->host_link = $host_link;
-		$content->lable_member_of = _('Member of');
-		$content->lable_for = _('for');
-		$content->lable_on_host = _('On host');
 		$content->main_object = $type=='host' ? $host : $service;
 		$content->host = $host;
-		$content->lable_current_status = _('Current status');
-		$content->lable_status_information = _('Status information');
 		$content->current_status_str = $this->current->status_text($result->state, $result->has_been_checked, $type);
 		$content->duration = $result->duration;
 		$content->groups = $groups;
@@ -234,57 +227,40 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->icon_image_alt = $result->icon_image_alt;
 		// "Why the str_replace, it looks stupid?" Well, because nagios (livestatus?) stores data with newlines replaced with a backslash and an 'n'.
 		// "So why the nl2br, then, huh?" Uhm, it was there when I found it...
-		$content->status_info = htmlspecialchars($result->plugin_output).'<br />'.str_replace('\n', '<br />', nl2br(htmlspecialchars($result->long_plugin_output)));
-		$content->lable_perf_data = _('Performance data');
+		$content->status_info = security::xss_clean($result->plugin_output).'<br />'.str_replace('\n', '<br />', nl2br(security::xss_clean($result->long_plugin_output)));
 		$content->perf_data = $result->perf_data;
-		$content->lable_current_attempt = _('Current attempt');
 		$content->current_attempt = $result->current_attempt;
 		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
 		$content->main_object_alias = $type=='host' ? $result->alias : false;
 		$content->max_attempts = $result->max_check_attempts;
 		$content->last_update = time();
 		$content->last_check = $result->last_check;
-		$content->lable_last_check = _('Last check time');
-		$content->lable_check_type = _('Check type');
 
-		$str_active = _('ACTIVE');
-		$str_passive = _('PASSIVE');
-		$content->check_type = $result->check_type == $check_compare_value ? $str_active: $str_passive;
-		$content->lable_check_latency_duration = _('Check latency / duration');
+		$content->check_type = $result->check_type == $check_compare_value ? _('ACTIVE'): _('PASSIVE');
 		$na_str = _('N/A');
-		$content->check_latency =
-		$result->check_type == $check_compare_value ? $result->latency : $na_str;
+		$content->check_latency = $check_compare_value ? $result->latency : $na_str;
 		$content->execution_time = $result->execution_time;
-		$content->lable_seconds = _('seconds');
 
 		$content->next_check = (int)$result->next_check;
-		$content->lable_last_state_change = _('Last state change');
 		$content->last_state_change = (int)$result->last_state_change;
-		$content->lable_last_notification = _('Last notification');
 		$content->last_notification = $last_notification!=0 ? date(nagstat::date_format(), $last_notification) : $na_str;
-		$content->lable_notifications = _('notification');
 		$content->current_notification_number = $result->current_notification_number;
 		$lable_flapping_state_change = _('state change');
 		$content->percent_state_change_str = '';
 		$is_flapping = $result->is_flapping;
+		$yes = _('YES');
+		$no = _('NO');
 		if (!$result->flap_detection_enabled) {
 			$content->flap_value = $na_str;
 		} else {
 			$content->flap_value = $is_flapping ? $yes : $no;
 			$content->percent_state_change_str = '('.number_format((int)$result->percent_state_change, 2).'% '.$lable_flapping_state_change.')';
 		}
-		$content->lable_in_scheduled_dt = _('In scheduled downtime?');
 		$content->scheduled_downtime_depth = $result->scheduled_downtime_depth ? $yes : $no;
-		$content->lable_active_checks = _('Active checks');
-		$content->lable_passive_checks = _('Passive checks');
-		$content->lable_obsessing = _('Obsessing');
-		$content->lable_notifications = _('Notifications');
-		$content->lable_event_handler = _('Event handler');
-		$content->lable_flap_detection = _('Flap detection');
 		$str_enabled = _('ENABLED');
 		$str_disabled = _('DISABLED');
 		$content->active_checks_enabled = $result->active_checks_enabled ? $str_enabled : $str_disabled;
-		$content->active_checks_enabled_val = $result->active_checks_enabled ? true : false;
+		$content->active_checks_enabled_val = (boolean) $result->active_checks_enabled;
 		$content->passive_checks_enabled = $result->accept_passive_checks ? $str_enabled : $str_disabled;
 		$content->obsessing = $obsessing ? $str_enabled : $str_disabled;
 		$content->notifications_enabled = $result->notifications_enabled ? $str_enabled : $str_disabled;
@@ -305,46 +281,44 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->lable_command_title = _('Service Commands');
 		}
 
-		$commands->lable_host_map = _('Locate host on map');
 		$commands->type = $type;
 		$commands->host = $host;
 
+		$commands->lable_active_checks = _("Disable active checks of this $type");
 		if ($result->active_checks_enabled ) {
-			$commands->lable_active_checks = $type == 'host' ? _('Disable active checks of this host') : _('Disable active checks of this service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_CHECK') : nagioscmd::command_id('DISABLE_SVC_CHECK');
 			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'true';
 		} else {
-			$commands->lable_active_checks = $type == 'host' ? _('Enable active checks of this host') : _('Enable active checks of this service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_CHECK') : nagioscmd::command_id('ENABLE_SVC_CHECK');
 			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'false';
 		}
 
-		$commands->lable_reschedule_check = $type == 'host' ? _('Re-schedule next host check') : _('Re-schedule next service check');
-		$commands->lable_link_reschedule_check = $type == 'host' ? _('Re-schedule the next check of this host') : _('Re-schedule the next check of this service');
+		$commands->lable_reschedule_check = _("Re-schedule next $type check");
+		$commands->lable_link_reschedule_check = _("Re-schedule the next check of this $type");
 		$cmd = $type == 'host' ? nagioscmd::command_id('SCHEDULE_HOST_CHECK') : nagioscmd::command_id('SCHEDULE_SVC_CHECK');
 		$commands->link_reschedule_check = $this->command_link($cmd, $host, $service, $commands->lable_link_reschedule_check);
 
 		if ($result->accept_passive_checks) {
-			$commands->lable_submit_passive_checks = $type == 'host' ? _('Submit passive check result for this host') : _('Submit passive check result for this service');
+			$commands->lable_submit_passive_checks = _("Submit passive check result for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('PROCESS_HOST_CHECK_RESULT') : nagioscmd::command_id('PROCESS_SERVICE_CHECK_RESULT');
 			$commands->link_submit_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_submit_passive_checks);
 
-			$commands->lable_stop_start_passive_checks = $type == 'host' ? _('Stop accepting passive checks for this host') : _('Stop accepting passive checks for this service');
+			$commands->lable_stop_start_passive_checks = _("Stop accepting passive checks for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('DISABLE_PASSIVE_SVC_CHECKS');
 			$commands->link_stop_start_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_stop_start_passive_checks);
 		} else {
-			$commands->lable_stop_start_passive_checks = $type == 'host' ? _('Start accepting passive checks for this host') : _('Start accepting passive checks for this service');
+			$commands->lable_stop_start_passive_checks = _("Start accepting passive checks for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('ENABLE_PASSIVE_SVC_CHECKS');
 			$commands->link_stop_start_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_stop_start_passive_checks);
 		}
 		if ($obsessing) {
-			$commands->lable_obsessing = $type == 'host' ? _('Stop obsessing over this host') : _('Stop obsessing over this service');
+			$commands->lable_obsessing = _("Stop obsessing over this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('STOP_OBSESSING_OVER_HOST') : nagioscmd::command_id('STOP_OBSESSING_OVER_SVC');
 			$commands->link_obsessing = $this->command_link($cmd, $host, $service, $commands->lable_obsessing);
 		} else {
-			$commands->lable_obsessing = $type == 'host' ? _('Start obsessing over this host') : _('Start obsessing over this service');
+			$commands->lable_obsessing = _('Start obsessing over this host');
 			$cmd = $type == 'host' ? nagioscmd::command_id('START_OBSESSING_OVER_HOST') : nagioscmd::command_id('START_OBSESSING_OVER_SVC');
 			$commands->link_obsessing = $this->command_link($cmd, $host, $service, $commands->lable_obsessing);
 		}
@@ -384,11 +358,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# notifications
 		if ($result->notifications_enabled) {
-			$commands->lable_notifications = $type == 'host' ? _('Disable notifications for this host') : _('Disable notifications for this service');
+			$commands->lable_notifications = _("Disable notifications for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_NOTIFICATIONS') : nagioscmd::command_id('DISABLE_SVC_NOTIFICATIONS');
 			$commands->link_notifications = $this->command_link($cmd, $host, $service, $commands->lable_notifications);
 		} else {
-			$commands->lable_notifications = $type == 'host' ? _('Enable notifications for this host') : _('Enable notifications for this service');
+			$commands->lable_notifications = _("Enable notifications for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_NOTIFICATIONS') : nagioscmd::command_id('ENABLE_SVC_NOTIFICATIONS');
 			$commands->link_notifications = $this->command_link($cmd, $host, $service, $commands->lable_notifications);
 		}
@@ -413,7 +387,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$host, $service, $commands->lable_delay_notification);
 			}
 		}
-		$commands->lable_schedule_dt = $type == 'host' ? _('Schedule downtime for this host') : _('Schedule downtime for this service');
+		$commands->lable_schedule_dt = _("Schedule downtime for this $type");
 		$cmd = $type == 'host' ?  nagioscmd::command_id('SCHEDULE_HOST_DOWNTIME') : nagioscmd::command_id('SCHEDULE_SVC_DOWNTIME');
 		$commands->link_schedule_dt = $this->command_link($cmd, $host, $service, $commands->lable_schedule_dt);
 
@@ -441,21 +415,21 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 
 		if ($result->event_handler_enabled) {
-			$commands->lable_enable_disable_event_handler = $type == 'host' ? _('Disable event handler for this host') : _('Disable event handler for this service');
+			$commands->lable_enable_disable_event_handler = _("Disable event handler for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_EVENT_HANDLER') : nagioscmd::command_id('DISABLE_SVC_EVENT_HANDLER');
 			$commands->link_enable_disable_event_handler = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_event_handler);
 		} else {
-			$commands->lable_enable_disable_event_handler = $type == 'host' ? _('Enable event handler for this host') : _('Enable event handler for this service');
+			$commands->lable_enable_disable_event_handler = _("Enable event handler for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_EVENT_HANDLER') : nagioscmd::command_id('ENABLE_SVC_EVENT_HANDLER');
 			$commands->link_enable_disable_event_handler = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_event_handler);
 		}
 
 		if ($result->flap_detection_enabled) {
-			$commands->lable_enable_disable_flapdetection = $type == 'host' ? _('Disable flap detection for this host') : _('Disable flap detection for this service');
+			$commands->lable_enable_disable_flapdetection = _("Disable flap detection for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_FLAP_DETECTION') : nagioscmd::command_id('DISABLE_SVC_FLAP_DETECTION');
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		} else {
-			$commands->lable_enable_disable_flapdetection = $type == 'host' ? _('Enable flap detection for this host') : _('Enable flap detection for this service');
+			$commands->lable_enable_disable_flapdetection = _("Enable flap detection for this $type");
 			$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_FLAP_DETECTION') : nagioscmd::command_id('ENABLE_SVC_FLAP_DETECTION');
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
@@ -463,7 +437,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# create page links
 		switch ($type) {
 			case 'host':
-				$label_view_for = _('for this host');
 				$page_links = array(
 					 _('Status detail') => 'status/service/?name='.urlencode($host),
 					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
@@ -473,7 +446,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				);
 				break;
 			case 'service':
-				$label_view_for = _('for this service');
 				$page_links = array(
 					_('Information for this host') => 'extinfo/details/host/'.$host,
 					_('Status detail for this host') => 'status/service/'.$host,
@@ -487,7 +459,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
-			$this->template->content->label_view_for = $label_view_for;
+			$this->template->content->label_view_for = _("for this $type");
 		}
 
 
@@ -742,7 +714,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = _("Error: No group name specified");
 			return;
 		}
-		
+
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -754,11 +726,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = _('Monitoring » Group detail');
 
 		$ls = Livestatus::instance();
-		
+
 		$group_info_res = $grouptype == 'servicegroup' ?
 			$ls->getServicegroups(array('filter' => array('name' => $group))) :
 			$ls->getHostgroups(array('filter' => array('name' => $group)));
-		
+
 		if ($group_info_res === false || count($group_info_res)==0) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
@@ -898,12 +870,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 			}
 
-			$nagios_base_path = Kohana::config('config.nagios_base_path');
-			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
-			$nagconfig = System_Model::parse_config_file("nagios.cfg");
-			if (isset($nagconfig['command_file'])) {
-				$pipe = $nagconfig['command_file'];
-			}
+			$pipe = System_Model::get_pipe();
 
 			while ($ncmd = array_pop($nagios_commands)) {
 				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
@@ -1297,13 +1264,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			}
 
-			$nagios_base_path = Kohana::config('config.nagios_base_path');
-			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
-			$nagconfig = System_Model::parse_config_file("nagios.cfg");
-			if (isset($nagconfig['command_file'])) {
-				$pipe = $nagconfig['command_file'];
-			}
-
+			$pipe = System_Model::get_pipe();
 			while ($ncmd = array_pop($nagios_commands)) {
 				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
 			}
@@ -1326,14 +1287,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return url::redirect(Router::$controller.'/'.Router::$method);
 		}
 
-		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
-		$command_success = $this->session->get('error_msg', $command_success);
-
-
-
-		$host_title_str = _('Scheduled host downtime');
-		$service_title_str = _('Scheduled service downtime');
-		$title = _('Scheduled downtime');
 		$type_str = false;
 		$host_data = false;
 		$service_data = false;
@@ -1365,19 +1318,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->template->js_header->js = $this->xtra_js;
 
-		$content->title = $title;
-		$content->filter_string = $filter_string;
-		$content->fixed = _('Fixed');
-		$content->flexible = _('Flexible');
-		$content->host_link_text = _('Schedule host downtime');
-		$content->service_link_text = _('Schedule service downtime');
-		$content->link_titlestring = _('Delete/cancel this scheduled downtime entry');
-		$content->date_format = nagstat::date_format();
 		$content->host_data = $host_data;
-		$content->host_title_str = $host_title_str;
 
 		$content->service_data = $service_data;
-		$content->service_title_str = $service_title_str;
 		$this->template->title = _("Monitoring » Scheduled downtime");
 		$content->command_result = arr::search($_SESSION, 'command_result_msg');
 		$content->command_success = arr::search($_SESSION, 'command_success');

@@ -10,18 +10,18 @@ if (!empty($command_result)) {
 ?>
 <div>
 
-	<h2><?php echo $host_title_str ?></h2>
+	<h2><?php echo _('Scheduled host downtime') ?></h2>
 	<?php if (!empty($host_data)) { ?>
 	<form action="">
 		<?php
-		echo form::input(array('id' => 'hostfilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
+		echo form::input(array('id' => 'hostfilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), _('Enter text to filter'));
 		echo form::button(array('id' => 'clearhostsearch_sched', 'class' => 'clearbtn'), _('Clear'));
 		?>
 	</form>
 	<?php } ?><br />
 
 	<span style="float: right; margin-top: -30px"><?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).
-				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME',$host_link_text).' &nbsp; ';
+				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', _('Schedule host downtime')).' &nbsp; ';
 				  echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
 	echo html::anchor('recurring_downtime', 'Schedule recurring downtime').'&nbsp; ';
 	if (!empty($host_data)) {
@@ -37,7 +37,7 @@ if (!empty($command_result)) {
 	if (!empty($host_data)) {?>
 	<table id="scheduled_host_downtime">
 		<!--<caption>
-			<?php echo $host_title_str ?>
+			<?php echo _('Scheduled host downtime') ?>
 		</caption>-->
 		<thead>
 			<tr>
@@ -61,12 +61,12 @@ if (!empty($command_result)) {
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td class="item_select" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_host[]', 'class' => 'deletecommentbox_host'), $row->id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
-			<td><?php echo date($date_format, $row->entry_time) ?></td>
+			<td><?php echo date(nagstat::date_format(), $row->entry_time) ?></td>
 			<td><?php echo $row->author ?></td>
 			<td><?php echo $row->comment ?></td>
-			<td><?php echo date($date_format, $row->start_time) ?></td>
-			<td><?php echo date($date_format, $row->end_time) ?></td>
-			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
+			<td><?php echo date(nagstat::date_format(), $row->start_time) ?></td>
+			<td><?php echo date(nagstat::date_format(), $row->end_time) ?></td>
+			<td><?php echo $row->fixed ? _('Fixed') : _('Flexible') ?></td>
 			<td><?php echo time::to_string($row->duration) ?></td>
 			<td><?php
 		if(empty($row->triggered_by)) {
@@ -83,7 +83,7 @@ if (!empty($command_result)) {
 		} ?></td>
 			<td style="text-align: center">
 				<?php
-					echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => _('Delete/cancel this scheduled downtime entry'), 'title' => _('Delete/cancel this scheduled downtime entry'))), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('recurring_downtime?host='.$row->host_name, html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px'));
 				?>
 			</td>
@@ -102,12 +102,12 @@ if (!empty($command_result)) {
 	<?php
 	} else { echo _('No hosts scheduled for downtime') . "<br/><br/>"; }
 
-	echo '<h2>'.$service_title_str.'</h2>';
+	echo '<h2>'._('Scheduled service downtime').'</h2>';
 
 	if (!empty($service_data)) { ?>
 	<form action="">
 		<?php
-		echo form::input(array('id' => 'servicefilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
+		echo form::input(array('id' => 'servicefilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), _('Enter text to filter'));
 		echo form::button(array('id' => 'clearservicesearch_sched', 'class' => 'clearbtn'), _('Clear'));
 		?>
 	</form>
@@ -116,7 +116,7 @@ if (!empty($command_result)) {
 
 	echo '<span style="float: right; margin-top: -30px; ">';
 
-	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME',$service_link_text).' &nbsp; ';
+	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME',_('Schedule service downtime')).' &nbsp; ';
 	echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
 	echo html::anchor('recurring_downtime', 'Schedule recurring downtime').'&nbsp; ';
 	if (!empty($service_data)) {
@@ -129,7 +129,7 @@ if (!empty($command_result)) {
 	if (!empty($service_data)) {?>
 
 	<table id="scheduled_service_downtime" style="margin-bottom: 15px">
-		<!--<caption><?php echo $service_title_str ?></caption>-->
+		<!--<caption><?php echo _('Scheduled host downtime') ?></caption>-->
 		<thead>
 			<tr>
 				<th class="headerNone item_select_service" style="display:none">
@@ -154,12 +154,12 @@ if (!empty($command_result)) {
 			<td class="item_select_service" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_service[]', 'class' => 'deletecommentbox_service'), $row->id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
-			<td><?php echo date($date_format, $row->entry_time) ?></td>
+			<td><?php echo date(nagstat::date_format(), $row->entry_time) ?></td>
 			<td><?php echo $row->author ?></td>
 			<td><?php echo $row->comment ?></td>
-			<td><?php echo date($date_format, $row->start_time) ?></td>
-			<td><?php echo date($date_format, $row->end_time) ?></td>
-			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
+			<td><?php echo date(nagstat::date_format(), $row->start_time) ?></td>
+			<td><?php echo date(nagstat::date_format(), $row->end_time) ?></td>
+			<td><?php echo $row->fixed ? _('Fixed') : _('Flexible') ?></td>
 			<td><?php echo time::to_string($row->duration) ?></td>
 			<td><?php
 			if(empty($row->triggered_by)) {
@@ -176,7 +176,7 @@ if (!empty($command_result)) {
 			} ?></td>
 			<td style="text-align: center">
 				<?php
-					echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => _('Delete/cancel this scheduled downtime entry'), 'title' => _('Delete/cancel this scheduled downtime entry'))), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('recurring_downtime?host='.$row->host_name.'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px'));
 				?>
 			</td>

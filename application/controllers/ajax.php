@@ -16,9 +16,11 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		if(!request::is_ajax()) {
-			return url::redirect(Kohana::config('routes.logged_in_default'));
-		}
+		
+		/* Ajax calls shouldn't be rendered. This doesn't, because some unknown
+		 * magic doesn't render templates in ajax requests, but for debugging
+		 */
+		$this->auto_render = false;
 	}
 
 	/**
@@ -28,70 +30,85 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		$q = $this->input->get('query', $q);
 		
-		if(!request::is_ajax()) {
-			$msg = _('Only Ajax calls are supported here');
-			die($msg);
-		} else {
+		$result = $this->global_search_build_filter($q);
+		
+		if( $result !== false ) {
+			$obj_type = $result[0];
+			$obj_name = $result[1];
+			$settings = $result[2];
+			$livestatus_options = $result[3];
 			
-			$parser = new ExpParser_SearchFilter();
+			$ls = Livestatus::instance();
+			$lsb = $ls->getBackend();
 			
-			try {
-				$parser->parse($q);
-				$obj_type = $parser->getLastObject();
-				$obj_name = $parser->getLastString();
-			} catch( ExpParserException $e ) {
-				$obj_type = 'hosts';
-				$obj_name = $q;
-			} catch( Exception $e ) {
-				return false;
+			$livestatus_options['limit'] = Kohana::config('config.autocomplete_limit');
+			
+			$data = $lsb->getTable($obj_type, $livestatus_options);
+			
+			
+			if ($data!==false) {
+				foreach ($data as $row) {
+					$row = (object)$row;
+					$obj_info[] = $obj_type == 'services' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
+					$obj_data[] = array($settings['path'], $row->{$settings['data']});
+				}
+				if (!empty($obj_data) && !empty($found_str)) {
+					$obj_info[] = $divider_str;
+					$obj_data[] = array('', $divider_str);
+					$obj_info[] = $found_str;
+					$obj_data[] = array('', $found_str);
+				}
 			}
-			
-			$obj_data = array();
-			$obj_info = array();
-			
-			if ($obj_type !== false) {
-				switch ($obj_type) {
-					case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/service/?name=%s'                          ); break;
-					case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
-					case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/hostgroup/?group=%s'                       ); break;
-					case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/servicegroup/?group=%s'                    ); break;
-					case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
-					default: return false;
-				}
-				
-				$ls = Livestatus::instance();
-				$lsb = $ls->getBackend();
-				
-				$max_rows = Kohana::config('config.autocomplete_limit');
-				
-				$data = $lsb->getTable($obj_type, array(
-						'columns' => array($settings['name_field'], $settings['data']),
-						'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) )),
-						'limit' => $max_rows
-						));
-				
-				
-				if ($data!==false) {
-					foreach ($data as $row) {
-						$row = (object)$row;
-						$obj_info[] = $obj_type == 'services' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
-						$obj_data[] = array($settings['path'], $row->{$settings['data']});
-					}
-					if (!empty($obj_data) && !empty($found_str)) {
-						$obj_info[] = $divider_str;
-						$obj_data[] = array('', $divider_str);
-						$obj_info[] = $found_str;
-						$obj_data[] = array('', $found_str);
-					}
-				}
-				$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
+			$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
 
-			} else {
-				$var = array('query' => $q, 'suggestions' => array(), 'data' => array());
-			}
-			$json_str = json::encode($var);
-			echo $json_str;
+		} else {
+			$var = array('query' => $q, 'suggestions' => array(), 'data' => array());
 		}
+		$json_str = json::encode($var);
+		echo $json_str;
+	}
+	
+	/**
+	 * This is actually a local method for global_search to build the search query for live search.
+	 * 
+	 * This method is public to make it testable. It doesn't interact with anything external, or take time, so it's no security issue...
+	 * 
+	 * @param $q Search query
+	 */
+	public function global_search_build_filter($q)
+	{
+		$parser = new ExpParser_SearchFilter();
+		
+		try {
+			$parser->parse($q);
+			$obj_type = $parser->getLastObject();
+			$obj_name = $parser->getLastString();
+		} catch( ExpParserException $e ) {
+			$obj_type = 'hosts';
+			$obj_name = $q;
+		} catch( Exception $e ) {
+			return false;
+		}
+		
+		$obj_data = array();
+		$obj_info = array();
+		
+		if ($obj_type !== false) {
+			switch ($obj_type) {
+				case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/service/?name=%s'                          ); break;
+				case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
+				case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/hostgroup/?group=%s'                       ); break;
+				case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/status/servicegroup/?group=%s'                    ); break;
+				case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
+				default: return false;
+			}
+				
+			return array( $obj_type, $obj_name, $settings, array(
+					'columns' => array_unique( array($settings['name_field'], $settings['data']) ),
+					'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) ))
+			) );
+		}
+		return false;
 	}
 
 	/**

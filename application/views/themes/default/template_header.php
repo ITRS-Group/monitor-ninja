@@ -8,8 +8,7 @@
 	* @param href is an adress, if external; use the full adress from protocol and up,
 	*		if internal; give the relative adress, e.g. /tac, /status/service/all etc.
 	*
-	* @param icon is the name and only the name of the icon not the extension and not the path.
-	*		must be in the x16 spritesheet
+	* @param icon is the class of the spritesheet icon
 	*
 	*	@param attribute An assoc. array containing additional attributes for the anchor, the class
 	*		will always be image-link and nothing else.
@@ -20,29 +19,24 @@
 
 	$shortcuts = array('internal' => array(), 'external' => array());
 
-	$shortcuts['internal'][] = array('#', 'refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
+	$shortcuts['internal'][] = array('#', 'icon-16 x16-refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
 
 	if ($show_settings) {
-		$shortcuts['internal'][] = array('#', 'settings', array('title' => 'Settings', 'id' => 'settings_icon'));
+		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'settings_icon'));
 	}
 
 	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
-		$shortcuts['internal'][] = array('#', 'notifications', array('title' => 'Global Notifications', 'id' => 'global_notifications_icon'));
+		$shortcuts['internal'][] = array('#', 'icon-16 x16-notifications', array('title' => 'Global Notifications', 'id' => 'global_notifications_icon'));
 	}
-	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes=78&hostprops=10&service_props=10&hoststatustypes=71', 'shield-warning', array('title' => 'Unhandled Problems'));
-	$shortcuts['internal'][] = array('/tac', 'hoststatus', array('title' => 'Tactical Overview'));
+	$shortcuts['internal'][] = array('/status/service/all?servicestatustypes=78&hostprops=10&service_props=10&hoststatustypes=71', 'icon-16 x16-shield-warning', array('title' => 'Unhandled Problems'));
+	$shortcuts['internal'][] = array('/tac', 'icon-16 x16-hoststatus', array('title' => 'Tactical Overview'));
 	
 	if (isset($int_shortcuts)) {
 		for ($i = 0; $i < count($int_shortcuts); $i++) {
 			$shortcuts['internal'][] = $int_shortcuts[$i];
 		}
 	}
-
-	if (isset($ext_shortcuts)) {
-		for ($i = 0; $i < count($ext_shortcuts); $i++) {
-			$shortcuts['external'][] = $ext_shortcuts[$i];
-		}	
-	}
+	
 ?>
 
 <div class="header" id="header">
@@ -78,9 +72,11 @@
 			<?php
 				$quri = '/'.url::current();
 
-				foreach ($shortcuts as $category => $buttons) {
+				
 
-					echo '<ul>';
+					$buttons = $shortcuts['internal'];
+
+					echo '<ul id="dojo-quicklink-internal">';
 
 					for($i = 0; $i < count($buttons); $i++) {
 
@@ -92,16 +88,43 @@
 						if ($quri == $stripped)
 							echo '<li style="box-shadow: inset 0 0 5px #888; border-radius: 2px 4px  0 0; background-color: #ccc; border-right: 1px solid #777; border-left: 1px solid #777; ">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
 						else
-							echo '<li>'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
+							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span>', $attributes).'</li>';
 					}
 
 					echo '</ul>';
 
-				}
 			?>
 	</div>
-	
-	<?php if(Auth::instance()->logged_in()) {
+	<div class="headercontent" style="margin-left: 8px;">
+		<ul id="dojo-quicklink-external">
+		</ul>
+	</div>
+	<span title="Manage quickbar" class="icon-12 x12-box-config" id="dojo-add-quicklink" style="cursor: pointer; opacity: 0.5; margin-top: 22px; display: inline-block;"></span>
+	<div id="dojo-add-quicklink-menu" style="display: none;">
+		<h1>Add new quicklink</h1>
+		<hr />
+		URI: <input type="text" id="dojo-add-quicklink-href"><br />
+		Title: <input type="text" id="dojo-add-quicklink-title"><br />
+		Icon: <select id="dojo-add-quicklink-icon">
+		<?php
+			$icons = glob((__DIR__) . '/icons/x16/*.png');
+			foreach ($icons as $icon) {
+				$fname = end(explode('/',$icon));
+				$name = end(explode('/',$icon));
+				$name = explode('.', $name);
+				$name = $name[0];
+				echo "<option value='$name'>$name</option>";
+			}
+		?>
+		</select><span style="vertical-align: middle; padding: 12px 4px 0px 4px; background: #ccc; width: 16px; height: 16px;"><span id="dojo-add-quicklink-preview"></span></span><br />
+		Remove slected quicklinks:
+		<ul id="dojo-quicklink-remove"></ul>
+		<input type="button" id="dojo-add-quicklink-submit" value="Save" />
+		<input type="button" id="dojo-add-quicklink-close" value="Close" />
+
+	</div>
+	<?php
+	if(Auth::instance()->logged_in()) {
 		$timezone = date_default_timezone_get();
 ?>
 		<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">

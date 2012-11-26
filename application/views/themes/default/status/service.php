@@ -267,10 +267,10 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			} else {
 				$output = $row->plugin_output;
 				$output = str_replace('','', $output);
-				echo str_replace('\n','<br />', htmlspecialchars($output));
+				echo str_replace('\n','<br />', security::xss_clean($output));
 				if (config::get('config.service_long_output_enabled', '*')) {
 					if ($row->long_output) {
-						echo '<br />' . str_replace('\n','</br />', htmlspecialchars($row->long_output));
+						echo '<br />' . str_replace('\n','</br />', security::xss_clean($row->long_output));
 					}
 				}
 			}
@@ -282,7 +282,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <?php	}
 
 		if ($show_notes) { ?>
-		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer" title="<?php echo htmlspecialchars($row->notes) ?>"><?php echo htmlspecialchars(!empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes); } ?></td>
+		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer" title="<?php echo security::xss_clean($row->notes) ?>"><?php echo security::xss_clean(!empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes); } ?></td>
 <?php 	} ?>
 	</tr>
 

@@ -51,8 +51,12 @@ test-coverage:
 	@make test-ci-prepare &> /dev/null
 	@php test/all_coverage.php $$(pwd)
 
-test-cucumber:
-	HEADLESS=1 cucumber -f Cucumber::Formatter::Nagios -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber
+prepare-config-templates:
+	mkdir -m 0777 -p test/configs/templates/var/spool/checkresults
+	chmod 777 test/configs/templates/var/
+
+test-cucumber: prepare-config-templates
+	cucumber -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done

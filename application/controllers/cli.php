@@ -91,6 +91,9 @@ class Cli_Controller extends Ninja_Controller {
 				}
 				if (arr::search($report_data, 'report_type') === 'services' && $type === 'host') {
 					$savep = false;
+					if(!is_array($report_data['objects'])) {
+						continue;
+					}
 					foreach ($report_data['objects'] as $idx => $svc) {
 						$parts = explode(';', $svc);
 						if ($parts[0] === $old_name) {

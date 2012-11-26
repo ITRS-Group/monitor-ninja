@@ -30,9 +30,9 @@
 		<td><?php echo $row['softorhard']; ?></td>
 		<td>
 <table class="output">
-<tr><td><?php echo htmlspecialchars($ary['output']); ?></td><td style="border:0" class="comments">
+<tr><td><?php echo security::xss_clean($ary['output']); ?></td><td style="border:0" class="comments">
 		<?php if (isset($ary['user_comment']))
-			echo htmlspecialchars($ary['user_comment']).'<br /><span class="author">/'.htmlspecialchars($ary['username']).'</span>';
+			echo security::xss_clean($ary['user_comment']).'<br /><span class="author">/'.security::xss_clean($ary['username']).'</span>';
 		else
 			echo '<img class="right" src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>'
 		?>
