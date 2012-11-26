@@ -7,7 +7,7 @@ function backup(){
 		{
 			var file = $('#backupfilename').text();
 			if ($('#backups tbody tr:first a:first').text() != file)
-				$('#backups tbody tr:first').before('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
+				$('#backups tbody tr:nth-child(2)').before('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
 						array('alt' => _('View'), 'title' => _('View'))); ?></a>'
@@ -24,16 +24,16 @@ function backup(){
 
 $(document).ready(function() {
 	$('a.restore').fancybox({
-			'overlayOpacity': 0.7,
-			'overlayColor' : '#ffffff',
-			'hideOnContentClick': false,
-			'hideOnOverlayClick': false,
-			'titleShow': false,
-			'showCloseButton': false,
-			'enableEscapeButton': false,
-			'autoDimensions': false,
-			'width': 250,
-			'height': 70
+		'overlayOpacity': 0.7,
+		'overlayColor' : '#ffffff',
+		'hideOnContentClick': false,
+		'hideOnOverlayClick': false,
+		'titleShow': false,
+		'showCloseButton': false,
+		'enableEscapeButton': false,
+		'autoDimensions': false,
+		'width': 250,
+		'height': 70
 	});
 });
 $('#verify').live('click', function(){
@@ -44,9 +44,12 @@ $('#verify').live('click', function(){
 	});
 	return false;
 });
+
 $('a.restore').live('click', function(){
-	var link = $(this);
-	if (confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?')) {
+	var link = $(this),
+		confirmation = confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?');
+
+	if (confirmation) {
 		$('#backupstatus').text('Restoring backup...');
 		status = 'restoring';
 		$('#fancybox-content').load($(link).attr('title'), function() {
@@ -54,9 +57,13 @@ $('a.restore').live('click', function(){
 			status = '';
 			$('#backupstatus').text($('#fancybox-content').text());
 		});
+	} else {
+		$.fancybox.close();
 	}
+
 	return false;
 });
+
 $('a.delete').live('click', function(){
 	var link = $(this);
 	if (confirm('Do you really want to delete ' + $(link).closest('tr').find('.download').text() + ' ?'))
@@ -93,7 +100,10 @@ var status = '';
 		</tr>
 		</thead>
 		<tbody>
-		<?php $i = 0; foreach ($files as $file): $i++; ?>
+		<?php 
+			$i = 0;
+			foreach ($files as $file): $i++; 
+		?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td>
 				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => _('View'), 'title' => _('View'))); ?></a>
