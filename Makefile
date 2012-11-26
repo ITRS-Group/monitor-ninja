@@ -1,3 +1,5 @@
+SHELL = /bin/bash
+
 all: generate-css
 
 help:
