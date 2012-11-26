@@ -8,7 +8,6 @@ function backup(){
 			var file = $('#backupfilename').text();
 			if ($('#backups tbody tr:first a:first').text() != file)
 				$('#backups tbody tr:first').before('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
-					+ '<td><a class="download" href="<?php echo url::base(); ?>index.php/backup/download/' + file + '">' + file + '</a></td>'
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
 						array('alt' => _('View'), 'title' => _('View'))); ?></a>'
@@ -18,7 +17,7 @@ function backup(){
 					+ ' <a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'),
 						array('alt' => _('Delete'), 'title' => _('Delete'))); ?></a>'
-					+ '</td></tr>');
+					+ '</td>' + '<td><a class="download" href="<?php echo url::base(); ?>index.php/backup/download/' + file + '">' + file + '</a></td></tr>');
 		}
 	});
 }
