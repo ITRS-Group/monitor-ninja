@@ -13,9 +13,9 @@ class livestatusorm_generator extends generator_module {
 		$outdir_base = $this->mod_dir . 'models/base/';
 		$outdir_lib  = $this->mod_dir . 'libraries/';
 		
-		if( !is_dir( $outdir      ) && !mkdir( $outdir,      0755 ) ) gen_error( "Could not create $outdir" );
-		if( !is_dir( $outdir_base ) && !mkdir( $outdir_base, 0755 ) ) gen_error( "Could not create $outdir_base" );
-		if( !is_dir( $outdir_lib  ) && !mkdir( $outdir_lib,  0755 ) ) gen_error( "Could not create $outdir_lib" );
+		if( !is_dir( $outdir      ) && !mkdir( $outdir,      0755 ) ) $this->gen_error( "Could not create $outdir" );
+		if( !is_dir( $outdir_base ) && !mkdir( $outdir_base, 0755 ) ) $this->gen_error( "Could not create $outdir_base" );
+		if( !is_dir( $outdir_lib  ) && !mkdir( $outdir_lib,  0755 ) ) $this->gen_error( "Could not create $outdir_lib" );
 		
 		$classpaths = array(
 				'LivestatusAccess'      => 'libraries/LivestatusAccess.php',
