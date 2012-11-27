@@ -271,7 +271,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		if (ScheduleDate_Model::delete_schedule($this->schedule_id) !== false) {
 			echo "OK";
 		} else {
-			echo "ERROR";
+			echo "Not authorized to delete schedule or it doesn't exist.";
 		}
 	}
 
