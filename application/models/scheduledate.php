@@ -70,7 +70,9 @@ class ScheduleDate_Model extends Model
 
 	/**
 	 *	Save/update a recurring schedule
-	 * 	$data should be an array
+	 * 	@param $data array
+	 *	@param $id int
+	 *	@return bool
 	 */
 	public function edit_schedule($data = false, $id=false)
 	{
@@ -96,7 +98,7 @@ class ScheduleDate_Model extends Model
 		}
 
 		$db->query($sql);
-		return $db->last_query();
+		return true;
 	}
 
 	/**
@@ -128,6 +130,10 @@ class ScheduleDate_Model extends Model
 
 	/**
 	 *	Send downtime command to nagios
+	 *	@param $data array
+	 *	@param $nagioscmd string
+	 *	@param $start_time int
+	 *	@return void
 	 */
 	public function add_downtime($data=false, $nagioscmd=false, $start_time=false)
 	{
@@ -185,14 +191,15 @@ class ScheduleDate_Model extends Model
 	/**
 	 * Delete a scheduled recurring downtime
 	 *
-	 * FIXME: why is there no authorization here?
-	 *
 	 * @param $id ID of the downtime to delete
 	 * @returns true on success, false otherwise
-	 *
 	 */
 	public function delete_schedule($id=false)
 	{
+		if (!Auth::instance()->authorized_for('system_commands')) {
+			return false;
+		}
+
 		if (empty($id) || !(int)$id) {
 			return false;
 		}
