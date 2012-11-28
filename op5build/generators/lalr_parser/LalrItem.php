@@ -17,12 +17,31 @@ class LalrItem {
 		return $this->name;
 	}
 	
+	public function generates() {
+		return $this->generate;
+	}
+	
+	public function produces( $symbol ) {
+		return $this->generate == $symbol;
+	}
+	
+	/**
+	 * Returns the next symbol to match
+	 * 
+	 * @return symbol name, or false
+	 */
 	public function next() {
 		if( !isset( $this->symbols[$this->ptr] ) )
 			return false;
 		return $this->symbols[$this->ptr];
 	}
 	
+	/**
+	 * Returns a copy of the current rule, where a symbol is matched. If not matched, returns false
+	 * 
+	 * @param symbol name
+	 * @return lalr item, or false
+	 */
 	public function take( $symbol ) {
 		if( $this->ptr == count( $this->symbols ) )
 			return false;
@@ -35,10 +54,6 @@ class LalrItem {
 		return $rule;
 	}
 	
-	public function generates() {
-		return $this->generate;
-	}
-	
 	public function complete() {
 		return $this->ptr == count( $this->symbols );
 	}
@@ -47,12 +62,22 @@ class LalrItem {
 		return count( $this->symbols );
 	}
 	
-	public function produces( $symbol ) {
-		return $this->generate == $symbol;
-	}
-	
 	public function equals( $item ) {
 		return ($item->name == $this->name) && ($item->ptr == $this->ptr);
+	}
+	
+	public function follow( $symbol ) {
+		$next = array();
+		for( $i=0; $i<count($this->symbols); $i++ ) {
+			if( $this->symbols[$i] == $symbol ) {
+				if( !isset($this->symbols[$i+1]) ) {
+					$next[] = false;
+				} else  {
+					$next[] = $this->symbols[$i+1];
+				}
+			}
+		}
+		return $next;
 	}
 	
 	public function __toString() {

@@ -35,11 +35,12 @@ class LalrGrammar {
 	}
 	
 	public function is_terminal( $symbol ) {
+		if( $symbol == 'end' ) return true;
 		return isset( $this->tokens[$symbol] );
 	}
 	
 	public function terminals() {
-		$symbols = array();
+		$symbols = array('end');
 		foreach( $this->tokens as $sym => $re ) {
 			if( $sym[0] != '.' ) {
 				$symbols[] = $sym;
@@ -63,7 +64,43 @@ class LalrGrammar {
 	}
 	
 	public function follow( $symbol ) {
-		/* FIXME: everything doesn't follow... */
-		return $this->terminals();
+		$next = array();
+		$search_list = array($symbol);
+		
+		/* Exctract next */
+		for( $i=0; $i < count( $search_list ); $i++ ) {
+			foreach( $this->rules as $rule ) {
+				foreach( $rule->follow( $symbol ) as $sym ) {
+					if( $sym === false ) {
+						$gen = $rule->generates();
+						if( !in_array( $gen, $search_list ) ) {
+							$search_list[] = $gen;
+						}
+					} else {
+						$next[] = $sym;
+					}
+				}
+			}
+		}
+		
+		/* Reduce to next terminal */
+		$next_term = array();
+		for( $i=0; $i<count($next);$i++ ) {
+			if( $this->is_terminal() ) {
+				if( !in_array( $sym, $next_term ) ) {
+					$next_term[] = $sym;
+				}
+			} else {
+				foreach( $this->productions($sym) as $rule ) {
+					$next_sym = $rule->next();
+					if( !in_array( $next_sym, $next ) ) {
+						$next[] = $next_sym;
+					}
+				}
+			}
+		}
+		
+		/* FIXME: non-terminals should be reduced to it's first terminal... */
+		return $next_term;
 	}
 }

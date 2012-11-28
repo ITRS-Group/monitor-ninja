@@ -100,12 +100,10 @@ class LalrStateMachine {
 			$outp .= $state;
 			$outp .= "\n";
 
-			foreach( $this->grammar->symbols() as $sym ) {
+			foreach( $this->statetable[$i] as $sym => $action ) {
 				$outp .= sprintf( "%20s: ", $sym );
-				if( isset( $this->statetable[$i][$sym] ) ) {
-					list( $a, $t ) = $this->statetable[$i][$sym];
-					$outp .= "$a $t";
-				}
+				list( $a, $t ) = $action;
+				$outp .= "$a $t";
 				$outp .= "\n";
 			}
 			$outp .= "\n";
