@@ -14,6 +14,8 @@ class LalrItem {
 	}
 	
 	public function next() {
+		if( !isset( $this->symbols[$this->ptr] ) )
+			return false;
 		return $this->symbols[$this->ptr];
 	}
 	
@@ -35,5 +37,25 @@ class LalrItem {
 	
 	public function count() {
 		return count( $this->symbols );
+	}
+	
+	public function produces( $symbol ) {
+		return $this->generate == $symbol;
+	}
+	
+	public function equals( $item ) {
+		return ($item->name == $this->name) && ($item->ptr == $this->ptr);
+	}
+	
+	public function __toString() {
+		$outp = sprintf( "%s: %s :=", $this->name, $this->generate );
+		foreach( $this->symbols as $i=>$sym ) {
+			if( $i == $this->ptr )
+				$outp .= ' *';
+			$outp .= " $sym";
+		}
+		if( count($this->symbols) == $this->ptr )
+			$outp .= ' *';
+		return $outp;
 	}
 }

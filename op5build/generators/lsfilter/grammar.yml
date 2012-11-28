@@ -38,8 +38,16 @@ tokens:
 rules:
 	entry:
 		generate: program
-		tokens:   [query, end]
+		symbols:  [query, end]
 	
 	query:
 		generate: query
-		tokens:   [brace_l, name, brace_r]
+		symbols:  [brace_l, name, brace_r, expr]
+	
+	expr_and:
+		generate: expr
+		symbols:  [expr, and, expr]
+	
+	expr_name:
+		generate: expr
+		symbols:  [name]
