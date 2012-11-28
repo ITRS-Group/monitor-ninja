@@ -1,5 +1,5 @@
 <?php
 
 
-class ContactGroup extends BaseContactGroup {
+class ContactGroup_Model extends BaseContactGroup_Model {
 }

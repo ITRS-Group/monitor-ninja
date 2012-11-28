@@ -1,8 +1,6 @@
 <?php
 
-require_once( 'LivestatusClassGenerator.php' );
-
-class LivestatusWrapperClassGenerator extends LivestatusClassGenerator {
+class LivestatusWrapperClassGenerator extends class_generator {
 	
 	private $structure;
 	private $modifiers = array();
@@ -12,10 +10,11 @@ class LivestatusWrapperClassGenerator extends LivestatusClassGenerator {
 		if (isset($descr['modifiers'])) {
 			$this->modifiers = $descr['modifiers'];
 		}
+		$this->set_model();
 	}
 	
-	public function generate( $fp ) {
-		parent::generate( $fp );
+	public function generate() {
+		parent::generate( true );
 		$this->init_class( 'Base'.$this->classname, $this->modifiers );
 		$this->finish_class();
 	}

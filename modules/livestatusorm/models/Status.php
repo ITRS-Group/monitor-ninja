@@ -1,5 +1,5 @@
 <?php
 
 
-class Status extends BaseStatus {
+class Status_Model extends BaseStatus_Model {
 }

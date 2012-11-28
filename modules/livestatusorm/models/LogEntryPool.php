@@ -1,5 +1,5 @@
 <?php
 
 
-class LogEntryPool extends BaseLogEntryPool {
+class LogEntryPool_Model extends BaseLogEntryPool_Model {
 }

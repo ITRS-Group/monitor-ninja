@@ -1,5 +1,5 @@
 <?php
 
 
-class Host extends BaseHost {
+class Host_Model extends BaseHost_Model {
 }

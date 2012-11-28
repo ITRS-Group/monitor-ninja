@@ -1,5 +1,5 @@
 <?php
 
 
-class StatusPool extends BaseStatusPool {
+class StatusPool_Model extends BaseStatusPool_Model {
 }

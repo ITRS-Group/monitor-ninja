@@ -1,8 +1,6 @@
 <?php
 
-require_once( 'LivestatusClassGenerator.php' );
-
-class LivestatusBaseClassGenerator extends LivestatusClassGenerator {
+class LivestatusBaseClassGenerator extends class_generator {
 
 	private $name;
 	private $structure;
@@ -12,10 +10,11 @@ class LivestatusBaseClassGenerator extends LivestatusClassGenerator {
 		$this->structure = $descr['structure'];
 		
 		$this->classname = 'Base'.$descr['class'];
+		$this->set_model();
 	}
 	
-	public function generate( $fp ) {
-		parent::generate( $fp );
+	public function generate() {
+		parent::generate();
 		$this->init_class( 'ObjectRoot', array('abstract') );
 		
 		$this->write( 'protected $_table = '.var_export($this->name,true).';' );

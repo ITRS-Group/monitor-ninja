@@ -1,5 +1,5 @@
 <?php
 
 
-class Column extends BaseColumn {
+class Column_Model extends BaseColumn_Model {
 }

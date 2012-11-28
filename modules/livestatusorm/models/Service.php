@@ -1,5 +1,5 @@
 <?php
 
 
-class Service extends BaseService {
+class Service_Model extends BaseService_Model {
 }

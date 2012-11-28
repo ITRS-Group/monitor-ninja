@@ -1,5 +1,5 @@
 <?php
 
 
-class ServicePool extends BaseServicePool {
+class ServicePool_Model extends BaseServicePool_Model {
 }

@@ -1,5 +1,5 @@
 <?php
 
 
-class HostGroup extends BaseHostGroup {
+class HostGroup_Model extends BaseHostGroup_Model {
 }

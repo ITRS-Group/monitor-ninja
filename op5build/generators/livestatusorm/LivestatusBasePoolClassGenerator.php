@@ -1,8 +1,6 @@
 <?php
 
-require_once( 'LivestatusClassGenerator.php' );
-
-class LivestatusBasePoolClassGenerator extends LivestatusClassGenerator {
+class LivestatusBasePoolClassGenerator extends class_generator {
 	
 	private $structure;
 	private $objectclass;
@@ -11,10 +9,11 @@ class LivestatusBasePoolClassGenerator extends LivestatusClassGenerator {
 		$this->name = $name;
 		$this->objectclass = $descr['class'];
 		$this->classname = 'Base'.$descr['class'].'Pool';
+		$this->set_model();
 	}
 	
-	public function generate( $fp ) {
-		parent::generate( $fp );
+	public function generate() {
+		parent::generate();
 		$this->init_class( false, array('abstract') );
 		$this->generate_setbuilder_all();
 		$this->finish_class();

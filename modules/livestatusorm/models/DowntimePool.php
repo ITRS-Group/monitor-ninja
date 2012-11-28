@@ -1,5 +1,5 @@
 <?php
 
 
-class DowntimePool extends BaseDowntimePool {
+class DowntimePool_Model extends BaseDowntimePool_Model {
 }

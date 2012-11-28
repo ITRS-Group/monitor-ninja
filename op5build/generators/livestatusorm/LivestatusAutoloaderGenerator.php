@@ -1,17 +1,16 @@
 <?php
 
-require_once( 'LivestatusClassGenerator.php' );
-
-class LivestatusAutoloaderGenerator extends LivestatusClassGenerator {
+class LivestatusAutoloaderGenerator extends class_generator {
 	private $classes = array();
 	
 	public function __construct( $classes ) {
 		$this->classname = "LivestatusAutoloader";
 		$this->classes = $classes;
+		$this->set_library();
 	}
 	
-	public function generate( $fp ) {
-		parent::generate( $fp );
+	public function generate() {
+		parent::generate();
 		
 		$this->init_class();
 		$this->write( 'private $classes = '.var_export($this->classes, true).";" );

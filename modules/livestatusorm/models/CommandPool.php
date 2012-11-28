@@ -1,5 +1,5 @@
 <?php
 
 
-class CommandPool extends BaseCommandPool {
+class CommandPool_Model extends BaseCommandPool_Model {
 }

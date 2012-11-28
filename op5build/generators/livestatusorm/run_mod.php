@@ -9,13 +9,6 @@ require_once( 'LivestatusAutoloaderGenerator.php' );
 
 class livestatusorm_generator extends generator_module {
 	public function run() {
-		$outdir      = $this->mod_dir . 'models/';
-		$outdir_base = $this->mod_dir . 'models/base/';
-		$outdir_lib  = $this->mod_dir . 'libraries/';
-		
-		if( !is_dir( $outdir      ) && !mkdir( $outdir,      0755 ) ) $this->gen_error( "Could not create $outdir" );
-		if( !is_dir( $outdir_base ) && !mkdir( $outdir_base, 0755 ) ) $this->gen_error( "Could not create $outdir_base" );
-		if( !is_dir( $outdir_lib  ) && !mkdir( $outdir_lib,  0755 ) ) $this->gen_error( "Could not create $outdir_lib" );
 		
 		$classpaths = array(
 				'LivestatusAccess'      => 'libraries/LivestatusAccess.php',
@@ -30,58 +23,35 @@ class livestatusorm_generator extends generator_module {
 		
 		/* Generate base root class */
 		$generator = new LivestatusBaseClassRootGenerator( 'root', array('class'=>'ObjectRoot') );
-		$filename = $outdir_base.$generator->get_classname().'.php';
-		$classpaths[$generator->get_classname()] = $filename;
-		$outp = fopen( $filename,'w' );
-		$generator->generate( $outp );
+		$generator->generate();
 		
 		/* Generate root class wrapper */
 		$generator = new LivestatusWrapperClassGenerator( 'root', array('class'=>'ObjectRoot', 'modifiers'=>array('abstract')) );
-		$filename = $outdir.$generator->get_classname().'.php';
-		$classpaths[$generator->get_classname()] = $filename;
-		if( !file_exists( $filename ) ) {
-			$outp = fopen( $filename,'w' );
-			$generator->generate( $outp );
-		}
+		if( !$generator->exists() )
+			$generator->generate();
 		
 		foreach( LivestatusStructure::getTables() as $name => $structure ) {
 			/* Generate base class */
 			$generator = new LivestatusBaseClassGenerator( $name, $structure );
-			$filename = $outdir_base.$generator->get_classname().'.php';
-			$classpaths[$generator->get_classname()] = $filename;
-			$outp = fopen( $filename,'w' );
-			$generator->generate( $outp );
+			$generator->generate();
 			
 			/* Generate base pool class */
 			$generator = new LivestatusBasePoolClassGenerator( $name, $structure );
-			$filename = $outdir_base.$generator->get_classname().'.php';
-			$classpaths[$generator->get_classname()] = $filename;
-			$outp = fopen( $filename,'w' );
-			$generator->generate( $outp );
+			$generator->generate();
 		
 			/* Generate wrapper if not exists */
 			$generator = new LivestatusWrapperClassGenerator( $name, $structure );
-			$filename = $outdir.$generator->get_classname().'.php';
-			$classpaths[$generator->get_classname()] = $filename;
-			if( !file_exists( $filename ) ) {
-				$outp = fopen( $filename,'w' );
-				$generator->generate( $outp );
-			}
+			if( !$generator->exists() )
+				$generator->generate();
 			
 			/* Generate pool wrapper if not exists */
 			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sPool" );
-			$filename = $outdir.$generator->get_classname().'.php';
-			$classpaths[$generator->get_classname()] = $filename;
-			if( !file_exists( $filename ) ) {
-				$outp = fopen( $filename,'w' );
-				$generator->generate( $outp );
-			}
+			if( !$generator->exists() )
+				$generator->generate();
 		}
 		
-		/* Generate wrapper if not exists */
-		$generator = new LivestatusAutoloaderGenerator( $classpaths );
-		$filename = $outdir_lib.$generator->get_classname().'.php';
-		$outp = fopen( $filename,'w' );
-		$generator->generate( $outp );
+		/* Generate autoloader */
+		//$generator = new LivestatusAutoloaderGenerator( $classpaths );
+		//$generator->generate();
 	}
 }

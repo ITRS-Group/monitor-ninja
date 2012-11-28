@@ -1,5 +1,5 @@
 <?php
 
 
-class HostGroupPool extends BaseHostGroupPool {
+class HostGroupPool_Model extends BaseHostGroupPool_Model {
 }

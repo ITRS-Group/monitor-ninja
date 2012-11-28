@@ -1,5 +1,5 @@
 <?php
 
 
-class ColumnPool extends BaseColumnPool {
+class ColumnPool_Model extends BaseColumnPool_Model {
 }

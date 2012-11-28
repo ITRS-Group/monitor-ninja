@@ -1,5 +1,5 @@
 <?php
 
 
-class Contact extends BaseContact {
+class Contact_Model extends BaseContact_Model {
 }

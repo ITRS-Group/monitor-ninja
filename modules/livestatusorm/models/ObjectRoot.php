@@ -1,5 +1,5 @@
 <?php
 
 
-abstract class ObjectRoot extends BaseObjectRoot {
+abstract class ObjectRoot_Model extends BaseObjectRoot_Model {
 }

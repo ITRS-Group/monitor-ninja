@@ -1,5 +1,5 @@
 <?php
 
 
-class Command extends BaseCommand {
+class Command_Model extends BaseCommand_Model {
 }

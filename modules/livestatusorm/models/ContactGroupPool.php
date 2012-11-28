@@ -1,5 +1,5 @@
 <?php
 
 
-class ContactGroupPool extends BaseContactGroupPool {
+class ContactGroupPool_Model extends BaseContactGroupPool_Model {
 }

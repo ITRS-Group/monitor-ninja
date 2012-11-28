@@ -1,5 +1,5 @@
 <?php
 
 
-class Comment extends BaseComment {
+class Comment_Model extends BaseComment_Model {
 }

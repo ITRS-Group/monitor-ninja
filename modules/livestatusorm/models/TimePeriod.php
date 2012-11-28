@@ -1,5 +1,5 @@
 <?php
 
 
-class TimePeriod extends BaseTimePeriod {
+class TimePeriod_Model extends BaseTimePeriod_Model {
 }

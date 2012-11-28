@@ -1,5 +1,5 @@
 <?php
 
 
-class TimePeriodPool extends BaseTimePeriodPool {
+class TimePeriodPool_Model extends BaseTimePeriodPool_Model {
 }
