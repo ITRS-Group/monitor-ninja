@@ -56,7 +56,6 @@ class LalrStateMachine {
 				if( $this->grammar->is_terminal($sym) ) {
 					$transistions[$sym] = array('shift', $j);
 				}
-				print "Take: $sym: $j\n";
 			}
 			
 			/* reduce */
@@ -87,6 +86,7 @@ class LalrStateMachine {
 		foreach( $this->states as $i => $state ) {
 			$outp .= "===== State $i =====\n";
 			$outp .= $state;
+			$outp .= "\n";
 
 			foreach( $this->statetable[$i] as $sym => $action ) {
 				list( $a, $t ) = $action;

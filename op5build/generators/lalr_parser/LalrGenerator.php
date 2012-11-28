@@ -14,8 +14,8 @@ class LalrGenerator {
 	}
 	
 	public function generate() {
-/*		$generator = new LalrLexerPHPGenerator( $this->name, $this->grammar );
-		$generator->generate();*/
+		$generator = new LalrLexerPHPGenerator( $this->name, $this->grammar );
+		$generator->generate();
 		
 		$generator = new LalrStateMachine( $this->name, $this->grammar );
 		print $generator;

@@ -5,7 +5,7 @@ class LalrLexerPHPGenerator extends class_generator {
 	
 	public function __construct( $parser_name, $grammar ) {
 		$this->classname = $parser_name . "Lexer";
-		$this->grammar = $grammar;
+		$this->grammar = $grammar->get_tokens();
 		$this->set_library();
 	}
 	
@@ -43,7 +43,7 @@ class LalrLexerPHPGenerator extends class_generator {
 		$this->write('$token = \'end\';');
 		$this->write('}');
 		
-		foreach( $this->grammar['tokens'] as $name => $match ) {
+		foreach( $this->grammar as $name => $match ) {
 			$this->write();
 			$this->comment( "Match token: $name" );
 			$this->write( 'if( $length === false && preg_match( '.var_export( $match, true ).', $this->buffer, $matches ) ) {' );
