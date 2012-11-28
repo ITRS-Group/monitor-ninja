@@ -38,22 +38,32 @@ class LalrGrammar {
 		return isset( $this->tokens[$symbol] );
 	}
 	
-	public function symbols() {
+	public function terminals() {
 		$symbols = array();
 		foreach( $this->tokens as $sym => $re ) {
 			if( $sym[0] != '.' ) {
 				$symbols[] = $sym;
 			}
 		}
+		return $symbols;
+	}
+	
+	public function non_terminals() {
+		$symbols = array();
 		foreach( $this->rules as $rule ) {
-			if( !in_array( $rule['generate'], $symbols ) ) {
-				$symbols[] = $rule['generate'];
+			if( !in_array( $rule->generates(), $symbols ) ) {
+				$symbols[] = $rule->generates();
 			}
 		}
 		return $symbols;
 	}
 	
+	public function symbols() {
+		return array_merge( $this->terminals(), $this->non_terminals() );
+	}
+	
 	public function follow( $symbol ) {
-		
+		/* FIXME: everything doesn't follow... */
+		return $this->terminals();
 	}
 }

@@ -46,6 +46,15 @@ class LalrStateMachine {
 		foreach( $this->states as $i => $state ) {
 			$transistions = array();
 			
+			/* reduce */
+			foreach( $state->closure() as $item ) {
+				if( $item->complete() ) {
+					foreach( $this->grammar->follow( $item->generates() ) as $sym ) {
+						$transistions[$sym] = array('reduce', $item->get_name());
+					}
+				}
+			}
+			
 			/* shift */
 			foreach( $state->next_symbols() as $sym ) {
 				$next_state = $state->take( $sym );
@@ -58,12 +67,15 @@ class LalrStateMachine {
 				}
 			}
 			
-			/* reduce */
-			foreach( $state->closure() as $item ) {
-				if( $item->complete() ) {
-					
+			/* goto */
+			foreach( $this->grammar->non_terminals() as $sym ) {
+				$next_state = $state->take( $sym );
+				$j = $this->get_state_id( $next_state );
+				if( $j !== false ) {
+					$transistions[$sym] = array( 'goto', $j );
 				}
 			}
+			
 			$this->statetable[$i] = $transistions;
 		}
 	}
@@ -88,9 +100,13 @@ class LalrStateMachine {
 			$outp .= $state;
 			$outp .= "\n";
 
-			foreach( $this->statetable[$i] as $sym => $action ) {
-				list( $a, $t ) = $action;
-				$outp .= "$sym: $a $t\n";
+			foreach( $this->grammar->symbols() as $sym ) {
+				$outp .= sprintf( "%20s: ", $sym );
+				if( isset( $this->statetable[$i][$sym] ) ) {
+					list( $a, $t ) = $this->statetable[$i][$sym];
+					$outp .= "$a $t";
+				}
+				$outp .= "\n";
 			}
 			$outp .= "\n";
 		}

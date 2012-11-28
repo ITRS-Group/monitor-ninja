@@ -13,6 +13,10 @@ class LalrItem {
 		$this->ptr = 0;
 	}
 	
+	public function get_name() {
+		return $this->name;
+	}
+	
 	public function next() {
 		if( !isset( $this->symbols[$this->ptr] ) )
 			return false;
