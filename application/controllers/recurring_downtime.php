@@ -13,10 +13,8 @@
  */
 class recurring_downtime_Controller extends Authenticated_Controller {
 
-	private $downtime_commands = false;
 	private $downtime_types = false;
 	private $schedule_id = false;
-	private $first_day_of_week = 1;
 
 	public function __construct()
 	{
@@ -249,10 +247,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$timestamp = time();
 		}
 
-		$scheduled = ScheduleDate_Model::schedule_downtime($id, $timestamp);
-		if ($scheduled) {
-			// asdfg
-		}
+		ScheduleDate_Model::schedule_downtime($id, $timestamp);
 	}
 
 	/**
