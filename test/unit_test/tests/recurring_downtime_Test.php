@@ -122,8 +122,8 @@ class Recurring_downtime_Test extends TapUnit {
 		// Remove downtimes when tests are done.
 		$downtime_data = Downtime_Model::get_downtime_data();
 		$cmd = "DEL_HOST_DOWNTIME;";
+		$pipe = System_Model::get_pipe();
 		foreach ($downtime_data as $data) {
-			$pipe = System_Model::get_pipe();
 			nagioscmd::submit_to_nagios($cmd . $data['id'], $pipe);
 		}
 	}
