@@ -223,6 +223,32 @@ class Reports_Model extends Model
 	}
 
 	/**
+	 * @return Mysql_Result
+	 */
+	function get_raw()
+	{
+		$end_time = $this->options['end_time'];
+		if($end_time) {
+			// @todo maybe this should be the default value in all
+			// other cases as well
+			$end_time = $this->db->escape($end_time);
+		} else {
+			$end_time = "UNIX_TIMESTAMP()";
+		}
+		$wheres = sql::combine(
+			'and',
+			'timestamp >= '.$this->db->escape($this->options['start_time']),
+			'timestamp <= '.$end_time
+		);
+		// @todo hardlimit + offset
+		$query = "SELECT * FROM $this->db_table WHERE $wheres ORDER BY timestamp LIMIT 1000";
+		//echo "<pre>";
+		//var_dump(__METHOD__.':'.__LINE__, $query);
+		//die;
+		return $this->db->query($query)->result(false);
+	}
+
+	/**
 	 * Adjust report start and end time so that the provided timestamp is included
 	 *
 	 * @param $t A timestamp
