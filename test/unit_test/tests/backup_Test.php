@@ -29,16 +29,18 @@ class Backup_Test extends TapUnit {
 	public function test_backup() {
 		$controller = new Backup_Controller();
 		$controller->backup();
-		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting backup success");
+		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting backup success: returned " . $controller->template->message);
 		$this->ok($controller->template->file != '', "asserting backup file has been set");
 	}
 
 	public function test_backup_restore() {
 		$controller = new Backup_Controller();
 		$controller->backup();
+		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting backup success: returned " . $controller->template->message);
+		$this->ok($controller->template->file != '', "asserting backup file has been set");
 		$this_backup = $controller->template->file;
 		$controller->restore($this_backup);
-		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting restore success");
+		$this->ok(isset($controller->template->status) && $controller->template->status, "asserting restore success: returned " . $controller->template->message);
 	}
 
 	public function test_backup_delete() {
