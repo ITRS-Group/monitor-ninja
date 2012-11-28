@@ -172,15 +172,17 @@ class Ajax_Controller extends Authenticated_Controller {
 		if ($pnp_path != '') {
 			$pnp_path .= '/image?'.$param;
 
+			$setting_key = $pnp_path;
+
 			if (strpos($param, 'source') === false) {
-				$source = Ninja_setting_Model::fetch_page_setting('source', $pnp_path);
+				$source = Ninja_setting_Model::fetch_page_setting('source', $setting_key);
 				if ($source)
 					$pnp_path .= '&source='.$source->setting;
 				else
 					$pnp_path .= '&source=0';
 			}
 
-			$view = Ninja_setting_Model::fetch_page_setting('view', $pnp_path);
+			$view = Ninja_setting_Model::fetch_page_setting('view', $setting_key, 1);
 			if ($view)
 				$pnp_path .= '&view='.$view->setting;
 			else
