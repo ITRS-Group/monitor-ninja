@@ -36,28 +36,31 @@ require SYSPATH.'core/Kohana'.EXT;
 // Prepare the environment
 Kohana::setup();
 
-// End kohana_loading
-Benchmark::stop(SYSTEM_BENCHMARK.'_kohana_loading');
+if(!defined('SKIP_KOHANA')) {
 
-// Start system_initialization
-Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
+	// End kohana_loading
+	Benchmark::stop(SYSTEM_BENCHMARK.'_kohana_loading');
 
-// Prepare the system
-Event::run('system.ready');
+	// Start system_initialization
+	Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
 
-// Determine routing
-Event::run('system.routing');
+	// Prepare the system
+	Event::run('system.ready');
 
-// End system_initialization
-Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
+	// Determine routing
+	Event::run('system.routing');
 
-// Make the magic happen!
-try {
-	Event::run('system.execute');
-} catch (LivestatusException $ex) {
-	Kohana::log('error', $ex->getMessage());
-	Event::run('application.livestatus');
+	// End system_initialization
+	Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
+
+	// Make the magic happen!
+	try {
+		Event::run('system.execute');
+	} catch (LivestatusException $ex) {
+		Kohana::log('error', $ex->getMessage());
+		Event::run('application.livestatus');
+	}
+
+	// Clean up and exit
+	Event::run('system.shutdown');
 }
-
-// Clean up and exit
-Event::run('system.shutdown');
