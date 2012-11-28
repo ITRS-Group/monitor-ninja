@@ -31,7 +31,11 @@ class LalrItem {
 		return $rule;
 	}
 	
-	public function done() {
+	public function generates() {
+		return $this->generate;
+	}
+	
+	public function complete() {
 		return $this->ptr == count( $this->symbols );
 	}
 	

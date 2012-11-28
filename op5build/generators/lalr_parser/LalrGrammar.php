@@ -33,4 +33,27 @@ class LalrGrammar {
 		}
 		return $items;
 	}
+	
+	public function is_terminal( $symbol ) {
+		return isset( $this->tokens[$symbol] );
+	}
+	
+	public function symbols() {
+		$symbols = array();
+		foreach( $this->tokens as $sym => $re ) {
+			if( $sym[0] != '.' ) {
+				$symbols[] = $sym;
+			}
+		}
+		foreach( $this->rules as $rule ) {
+			if( !in_array( $rule['generate'], $symbols ) ) {
+				$symbols[] = $rule['generate'];
+			}
+		}
+		return $symbols;
+	}
+	
+	public function follow( $symbol ) {
+		
+	}
 }

@@ -18,5 +18,6 @@ class LalrGenerator {
 		$generator->generate();*/
 		
 		$generator = new LalrStateMachine( $this->name, $this->grammar );
+		print $generator;
 	}
 }
