@@ -9,7 +9,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		'hostgroup_name' => 'hostgroup',
 		'servicegroup_name' => 'servicegroup'
 	);
-	protected $vtypes = array(
+	protected $properties = array(
 		'report_id' => array('type' => 'int', 'default' => false), /**< Saved report id - not to be confused with schedule_id */
 		'report_name' => array('type' => 'string', 'default' => false), /**< Name of the report */
 		'report_type' => array('type' => 'enum', 'default' => false, 'options' => array( /**< The type of objects in the report, set automatically by setting the actual objects */
@@ -66,8 +66,8 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	public $options = array();
 
 	public function __construct($options=false) {
-		if (isset($this->vtypes['report_period']))
-			$this->vtypes['report_period']['options'] = array(
+		if (isset($this->properties['report_period']))
+			$this->properties['report_period']['options'] = array(
 				"today" => _('Today'),
 				"last24hours" => _('Last 24 Hours'),
 				"yesterday" => _('Yesterday'),
@@ -80,54 +80,54 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				"thisyear" => _('This Year'),
 				"lastyear" => _('Last Year'),
 				'custom' => _('Custom'));
-		if (isset($this->vtypes['scheduleddowntimeasuptime']))
-			$this->vtypes['scheduleddowntimeasuptime']['options'] = array(
+		if (isset($this->properties['scheduleddowntimeasuptime']))
+			$this->properties['scheduleddowntimeasuptime']['options'] = array(
 				0 => _('Actual state'),
 				1 => _('Uptime'),
 				2 => _('Uptime, with difference'));
-		if (isset($this->vtypes['use_average']))
-			$this->vtypes['use_average']['options'] = array(
+		if (isset($this->properties['use_average']))
+			$this->properties['use_average']['options'] = array(
 				0 => _('Group availability (SLA)'),
 				1 => _('Average'));
-		if (isset($this->vtypes['alert_types']))
-			$this->vtypes['alert_types']['options'] = array(
+		if (isset($this->properties['alert_types']))
+			$this->properties['alert_types']['options'] = array(
 				3 => _('Host and Service Alerts'),
 				1 => _('Host Alerts'),
 				2 => _('Service Alerts'));
-		if (isset($this->vtypes['state_types']))
-			$this->vtypes['state_types']['options'] = array(
+		if (isset($this->properties['state_types']))
+			$this->properties['state_types']['options'] = array(
 				3 => _('Hard and Soft States'),
 				2 => _('Hard States'),
 				1 => _('Soft States'));
-		if (isset($this->vtypes['host_states']))
-			$this->vtypes['host_states']['options'] = array(
+		if (isset($this->properties['host_states']))
+			$this->properties['host_states']['options'] = array(
 				7 => _('All Host States'),
 				6 => _('Host Problem States'),
 				1 => _('Host Up States'),
 				2 => _('Host Down States'),
 				4 => _('Host Unreachable States'));
-		if (isset($this->vtypes['service_states']))
-			$this->vtypes['service_states']['options'] = array(
+		if (isset($this->properties['service_states']))
+			$this->properties['service_states']['options'] = array(
 				15 => _('All Service States'),
 				14 => _('Service Problem States'),
 				1 => _('Service Ok States'),
 				2 => _('Service Warning States'),
 				4 => _('Service Critical States'),
 				8 => _('Service Unknown States'));
-		if (isset($this->vtypes['rpttimeperiod']))
-			$this->vtypes['rpttimeperiod']['options'] = Timeperiod_Model::get_all();
-		if (isset($this->vtypes['skin']))
-			$this->vtypes['skin']['default'] = config::get('config.current_skin', '*');
+		if (isset($this->properties['rpttimeperiod']))
+			$this->properties['rpttimeperiod']['options'] = Timeperiod_Model::get_all();
+		if (isset($this->properties['skin']))
+			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
 		if ($options)
 			$this->set_options($options);
 	}
 
 	public function offsetGet($str)
 	{
-		if (!isset($this->vtypes[$str]))
+		if (!isset($this->properties[$str]))
 			return false;
 
-		return arr::search($this->options, $str, $this->vtypes[$str]['default']);
+		return arr::search($this->options, $str, $this->properties[$str]['default']);
 	}
 
 	public function offsetSet($key, $val)
@@ -137,7 +137,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 	public function offsetExists($key)
 	{
-		return isset($this->vtypes[$key]);
+		return isset($this->properties[$key]);
 	}
 
 	public function offsetUnset($key)
@@ -145,8 +145,13 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		unset($this->options[$key]);
 	}
 
+	function properties()
+	{
+		return $this->properties;
+	}
+
 	/**
-	 * @param $key string a key that could be in the vtypes array but isn't,
+	 * @param $key string a key that could be in the properties array but isn't,
 	 * but we still need to know about it
 	 * @return boolean
 	 */
@@ -155,21 +160,21 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	}
 
 	public function get_alternatives($key) {
-		if (!isset($this->vtypes[$key]))
+		if (!isset($this->properties[$key]))
 			return false;
-		if ($this->vtypes[$key]['type'] !== 'enum')
+		if ($this->properties[$key]['type'] !== 'enum')
 			return false;
-		return $this->vtypes[$key]['options'];
+		return $this->properties[$key]['options'];
 	}
 
 	public function get_value($key) {
-		if (!$this[$key] || !isset($this->vtypes[$key]))
+		if (!$this[$key] || !isset($this->properties[$key]))
 			return false;
-		if ($this->vtypes[$key]['type'] !== 'enum')
+		if ($this->properties[$key]['type'] !== 'enum')
 			return false;
-		if (!isset($this->vtypes[$key]['options'][$this[$key]]))
+		if (!isset($this->properties[$key]['options'][$this[$key]]))
 			return $key;
-		return $this->vtypes[$key]['options'][$this[$key]];
+		return $this->properties[$key]['options'][$this[$key]];
 	}
 
 	public function get_report_members() {
@@ -354,9 +359,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 	protected function validate_value($key, &$value)
 	{
-		if (!isset($this->vtypes[$key]))
+		if (!isset($this->properties[$key]))
 			return false;
-		switch ($this->vtypes[$key]['type']) {
+		switch ($this->properties[$key]['type']) {
 		 case 'bool':
 			if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
 				$value = true;
@@ -396,7 +401,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			}
 			break;
 		 case 'enum':
-			if (!isset($this->vtypes[$key]['options'][$value]))
+			if (!isset($this->properties[$key]['options'][$value]))
 				return false;
 			break;
 		 default:
@@ -510,7 +515,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		 default:
 			break;
 		}
-		if (!isset($this->vtypes[$name]))
+		if (!isset($this->properties[$name]))
 			return false;
 		$this->options[$name] = $value;
 		return true;
@@ -560,10 +565,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	}
 
 	public function as_json() {
-		// because the person who wrote the js became sick of all our special cases,
-		// it expects the objects to be called 'objects'. Which makes sense, really...
 		$opts = $this->options;
 		if ($this->get_value('report_type')) {
+			// because the person who wrote the js became sick of all our special cases,
+			// it expects the objects to be called 'objects'. Which makes sense, really...
 			$opts['objects'] = $opts[$this->get_value('report_type')];
 			unset($opts[$this->get_value('report_type')]);
 		}
@@ -585,7 +590,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	function next() {
 		do {
 			$x = next($this->options);
-		} while ($x !== false && isset($this->vtypes[key($this->options)]['generated']));
+		} while ($x !== false && isset($this->properties[key($this->options)]['generated']));
 	}
 	function valid() { return array_key_exists(key($this->options), $this->options); }
 	function count() { return count($this->options); }
@@ -624,9 +629,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 					if (
 						$options->always_allow_option_to_be_set($key) ||
 						(
-							isset($options->vtypes[$key]) &&
-							($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) &&
-							(!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])
+							isset($options->properties[$key]) &&
+							($options->properties[$key]['type'] !== 'bool' || $keep_boolean_values) &&
+							(!isset($options->options[$key]) || $options->options[$key] === $options->properties[$key]['default'])
 						)
 					) {
 						$options[$key] = $sri;
@@ -636,7 +641,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 					$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 			}
 		}
-		if (isset($options->vtypes['report_period']) && !isset($options->options['report_period']) && isset($options->vtypes['report_period']['default']))
+		if (isset($options->properties['report_period']) && !isset($options->options['report_period']) && isset($options->properties['report_period']['default']))
 			$options->calculate_time($options['report_period']);
 		return $options;
 	}

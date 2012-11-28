@@ -8,11 +8,11 @@ class Summary_options_Core extends Report_options
 
 	public function __construct($options=false)
 	{
-		$this->vtypes['summary_type'] = array('type' => 'enum', 'default' => self::TOP_ALERT_PRODUCERS, 'options' => array(
+		$this->properties['summary_type'] = array('type' => 'enum', 'default' => self::TOP_ALERT_PRODUCERS, 'options' => array(
 			self::RECENT_ALERTS => _('Most Recent Alerts'),
 			self::ALERT_TOTALS => _('Alert Totals'),
 			self::TOP_ALERT_PRODUCERS => _('Top Alert Producers')));
-		$this->vtypes['standardreport'] = array('type' => 'enum', 'default' => '', 'options' => array(
+		$this->properties['standardreport'] = array('type' => 'enum', 'default' => '', 'options' => array(
 			1 => _('Most Recent Hard Alerts'),
 			2 => _('Most Recent Hard Host Alerts'),
 			3 => _('Most Recent Hard Service Alerts'),
@@ -21,14 +21,14 @@ class Summary_options_Core extends Report_options
 			6 => _('Top Hard Service Alert Producers')));
 		// Currently only used by alert history subreports, but we add them
 		// here so build_alert_summary_query can depend on them being around
-		$this->vtypes['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */
-		$this->vtypes['include_downtime'] = array('type' => 'bool', 'default' => false);
-		$this->vtypes['include_process'] = array('type' => 'bool', 'default' => false);
-		$this->vtypes['oldest_first'] = array('type' => 'bool', 'default' => false);
+		$this->properties['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */
+		$this->properties['include_downtime'] = array('type' => 'bool', 'default' => false);
+		$this->properties['include_process'] = array('type' => 'bool', 'default' => false);
+		$this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
 
 		static::$rename_options['displaytype'] = 'summary_type';
 		parent::__construct($options);
-		$this->vtypes['report_period']['options']['forever'] = _('Forever');
+		$this->properties['report_period']['options']['forever'] = _('Forever');
 	}
 
 	protected function update_value($name, $value)

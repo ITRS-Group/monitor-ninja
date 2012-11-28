@@ -2,12 +2,12 @@
 
 class Sla_options_Core extends Report_options {
 	public function __construct($options) {
-		unset($this->vtypes['include_trends'], $this->vtypes['include_trends_scaling']);
+		unset($this->properties['include_trends'], $this->properties['include_trends_scaling']);
 		// Warning! months is 1-indexed
-		$this->vtypes['months'] = array('type' => 'array', 'default' => false);
+		$this->properties['months'] = array('type' => 'array', 'default' => false);
 
 		parent::__construct($options);
-		$this->vtypes['report_period'] = array('type' => 'enum', 'default' => 'thisyear', 'options' => array(
+		$this->properties['report_period'] = array('type' => 'enum', 'default' => 'thisyear', 'options' => array(
 			"thisyear" => _('This Year'),
 			"lastyear" => _('Last Year'),
 			"lastmonth" => _('Last Month'),
@@ -23,7 +23,7 @@ class Sla_options_Core extends Report_options {
 	 * Special case the prevalidation of weird month-column names in
 	 * parent::create_options_obj()
 	 *
-	 * @param $key string a key that could be in the vtypes array but isn't,
+	 * @param $key string a key that could be in the properties array but isn't,
 	 * but we still need to know about it
 	 * @return boolean
 	 */

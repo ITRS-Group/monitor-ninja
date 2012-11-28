@@ -4,12 +4,12 @@ class Histogram_options_Core extends Report_options
 {
 	public function __construct($options=false)
 	{
-		$this->vtypes['breakdown'] = array('type' => 'enum', 'default' => 'hourly', 'options' => array(
+		$this->properties['breakdown'] = array('type' => 'enum', 'default' => 'hourly', 'options' => array(
 			"monthly" => _('Monthly'),
 			"dayofmonth" => _('Day of month'),
 			"dayofweek" => _('Day of week'),
 			"hourly" => _('Hourly')));
-		$this->vtypes['newstatesonly'] = array('type' => 'bool', 'default' => false);
+		$this->properties['newstatesonly'] = array('type' => 'bool', 'default' => false);
 		parent::__construct($options);
 	}
 	protected function update_value($name, $value)
