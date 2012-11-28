@@ -237,7 +237,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				if ($link_to_nacoma)
 					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($row->host_name).'&service='.urlencode($row->description), 'icons/16x16/nacoma.png', _('Configure this service')).' &nbsp;';
 				
-				echo $row->pnpgraph_present ? html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->description), 
+				echo $row->pnpgraph_present ? html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode(pnp::clean($row->description)),
 					'<span class="icon-16 x16-pnp pnp_graph_icon" title="'._('Show performance graph').'"></span>', 
 					array('style' => 'border: 0px')) : '';
 				
