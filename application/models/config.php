@@ -77,10 +77,6 @@ class Config_Model extends Model {
 				break;
 		}
 
-		if (!Auth::instance()->authorized_for('host_view_all')) {
-			return false;
-		}
-
 		if($type != 'timeperiods') {
 			$ls = Livestatus::instance();
 			$filterable_keys = $ls->filterable_columns();
