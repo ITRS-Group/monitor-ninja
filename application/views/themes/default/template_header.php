@@ -105,6 +105,10 @@
 		<hr />
 		URI: <input type="text" id="dojo-add-quicklink-href"><br />
 		Title: <input type="text" id="dojo-add-quicklink-title"><br />
+		Open in: <select id="dojo-add-quicklink-target">
+			<option value="">This window</option>
+			<option value="_BLANK">New window</option>
+		</select><br />
 		Icon: <select id="dojo-add-quicklink-icon">
 		<?php
 			$icons = glob((__DIR__) . '/icons/x16/*.png');

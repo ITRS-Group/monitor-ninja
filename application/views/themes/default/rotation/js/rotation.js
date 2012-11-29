@@ -21,7 +21,7 @@ $(window).bind('load', function onmainload () {
 	/* Static */
 
 	var parser = new DOMParser(),
-			basepath = _site_domain + _index_page;
+		basepath = _site_domain + _index_page;
 
 	/* Private */
 
@@ -38,8 +38,8 @@ $(window).bind('load', function onmainload () {
 
 		max_interval = 30000,				// Maximum time between swaps
 		min_interval = 5000,				// Minimum time between swaps
-		interval_increment = 1000,	// How much one click in the GUI increments/decrements from interval
-		interval = 10000;						// The current time between swaps
+		interval_increment = 1000,			// How much one click in the GUI increments/decrements from interval
+		interval = 10000;					// The current time between swaps
 
 	$('#page-rotation-fields').find('input').each(function () {
 		if (this.checked) {
@@ -265,7 +265,7 @@ $(window).bind('load', function onmainload () {
 			type: 'POST',
 			complete: function (xhr) {
 
-				pages = JSON.parse(JSON.parse(xhr.responseText)['rotation_queue']);
+				pages = JSON.parse(JSON.parse(xhr.responseText)['rotation_queue']) || [];
 
 				if (pages.length >= 1) {
 					$('#page-rotation-play').css('opacity','1.0');

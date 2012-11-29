@@ -120,7 +120,8 @@
 			'position': 'fixed',
 			'top': '15%',
 			'background': '#f5f5f5',
-			'box-shadow': '1px 1px 3px rgba(0,0,0,0.5)',
+			'border': '1px solid #aaa',
+			'box-shadow': '1px 1px 5px rgba(0,0,0,0.5)',
 			'border-radius': '2px',
 			'color': '#222',
 			'padding': '8px'
@@ -164,6 +165,7 @@
 		var href = $('#dojo-add-quicklink-href').attr('value'),
 				title = $('#dojo-add-quicklink-title').attr('value'),
 				icon = $('#dojo-add-quicklink-icon').attr('value'),
+				target = $('#dojo-add-quicklink-target').attr('value'),
 				changed = false;
 
 		if (href && title && icon) { 
@@ -184,8 +186,8 @@
 			}
 
 			if (error.length == 0) {
-				global_quicklinks.push({'href': href,'title': title,'icon': icon})		
-				$('#dojo-quicklink-external').append($('<li><a target="_BLANK" class="image-link" href="' + href + '"><span title="' + title + '" class="icon-16 x16-' + icon + '"></span></a></li>'));
+				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target})		
+				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '"><span title="' + title + '" class="icon-16 x16-' + icon + '"></span></a></li>'));
 				$('#dojo-add-quicklink-menu').fadeOut(500);
 				changed = true;
 			} else {
@@ -209,8 +211,6 @@
 
 		});
 
-
-
 		if (changed) 
 			quicklinks_save_all();
 		
@@ -225,12 +225,12 @@
 			complete: function (xhr) {
 
 				var obj = JSON.parse(xhr.responseText),
-						links = {};
+						links = [];
 
 				if (obj['dojo-quicklinks']) {
 					links = JSON.parse(JSON.parse(xhr.responseText)['dojo-quicklinks']);
 					for (var i = 0; i < links.length; i += 1) {
-						$('#dojo-quicklink-external').append($('<li><a target="_BLANK" class="image-link" href="' + links[i].href + '"><span title="'+links[i].title+'" class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
+						$('#dojo-quicklink-external').append($('<li><a target="' + links[i].target + '" class="image-link" href="' + links[i].href + '"><span title="'+links[i].title+'" class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
 					}
 				}
 
