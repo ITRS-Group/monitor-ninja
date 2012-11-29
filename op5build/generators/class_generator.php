@@ -84,15 +84,19 @@ abstract class class_generator {
 	}
 	
 	protected function init_function( $name, $args = array(), $modifiers = array() ) {
-		if( is_array( $modifiers ) ) {
-			$modifiers = implode( ' ', $modifiers );
+		if( !is_array( $modifiers ) ) {
+			$modifiers = array_filter( array_map( 'trim', explode(' ',$modifiers) ) );
 		}
+		if( !in_array('public',$modifiers) && !in_array('private',$modifiers) && !in_array('protected',$modifiers) ) {
+			$modifiers[] = 'public';
+		}
+		$modifiers = implode( ' ', $modifiers );
 		if( !empty( $modifiers ) ) {
 			$modifiers = trim($modifiers)." ";
 		}
 		$argstr = implode(', ', array_map(function($n){return '$'.$n;},$args));
 		$this->write();
-		$this->write( "${modifiers}public function $name($argstr) {" );
+		$this->write( "${modifiers}function $name($argstr) {" );
 	}
 	
 	protected function finish_function() {
@@ -106,6 +110,11 @@ abstract class class_generator {
 		}
 	}
 	protected function write( $block = '' ) {
+		$args = func_get_args();
+		$block = array_shift( $args );
+		$args_str = array_map( function($var){return var_export($var,true);}, $args );
+		$block = vsprintf($block,$args_str);
+		
 		$lines = explode( "\n", $block );
 		foreach( $lines as $line ) {
 			$this->indent_lvl -= substr_count( $line, '}' );

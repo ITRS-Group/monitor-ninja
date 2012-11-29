@@ -21,8 +21,9 @@ class LalrLexerPHPGenerator extends class_generator {
 	}
 	
 	private function generate_constructor() {
-		$this->init_function( '__construct', array( 'buffer' ) );
+		$this->init_function( '__construct', array( 'buffer', 'visitor' ) );
 		$this->write( '$this->buffer = $buffer;' );
+		$this->write( '$this->visitor = $visitor;' );
 		$this->finish_function();
 	}
 	
@@ -48,9 +49,9 @@ class LalrLexerPHPGenerator extends class_generator {
 			$this->comment( "Match token: $name" );
 			$this->write( 'if( $length === false && preg_match( '.var_export( $match, true ).', $this->buffer, $matches ) ) {' );
 			$this->write(     '$length = strlen( $matches[1] );' );
-			if( substr($name,0,1) != '.' ) {
+			if( substr($name,0,1) != '_' ) {
 				$this->write(     '$token = '.var_export( $name, true ).';' );
-				$this->write(     '$value = $matches[1];' );
+				$this->write(     '$value = $this->visitor->preprocess_'.$name.'($matches[1]);' );
 			}
 			$this->write( '}' );
 		}

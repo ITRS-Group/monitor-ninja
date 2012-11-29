@@ -1,6 +1,7 @@
 <?php
 
-require_once( 'LalrLexerPHPGenerator.php' );
+require_once( 'php/LalrLexerPHPGenerator.php' );
+require_once( 'php/LalrParserPHPGenerator.php' );
 require_once( 'LalrStateMachine.php' );
 require_once( 'LalrGrammar.php' );
 
@@ -17,7 +18,9 @@ class LalrGenerator {
 		$generator = new LalrLexerPHPGenerator( $this->name, $this->grammar );
 		$generator->generate();
 		
-		$generator = new LalrStateMachine( $this->name, $this->grammar );
-		print $generator;
+		$fsm = new LalrStateMachine( $this->grammar );
+		
+		$generator = new LalrParserPHPGenerator( $this->name, $fsm, $this->grammar );
+		$generator->generate();
 	}
 }

@@ -66,7 +66,8 @@ try {
 			}
 		}
 		catch( GeneratorException $e ) {
-			fprintf( "Generator exception in module %s: %s\nExiting module...\n".$mod_name,$e->getMessage() );
+			fprintf( STDERR, "Generator exception in module %s: %s\nExiting module...\n", $mod_name, $e->getMessage() );
+			fprintf( STDERR, "%s @ %s\n%s\n", $e->getFile(), $e->getLine(), $e->getTraceAsString());
 			$exit_code = 2;
 		}
 	}

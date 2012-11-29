@@ -69,8 +69,9 @@ class LalrGrammar {
 		
 		/* Exctract next */
 		for( $i=0; $i < count( $search_list ); $i++ ) {
+			$cur_symbol = $search_list[$i];
 			foreach( $this->rules as $rule ) {
-				foreach( $rule->follow( $symbol ) as $sym ) {
+				foreach( $rule->follow( $cur_symbol ) as $sym ) {
 					if( $sym === false ) {
 						$gen = $rule->generates();
 						if( !in_array( $gen, $search_list ) ) {
@@ -86,21 +87,24 @@ class LalrGrammar {
 		/* Reduce to next terminal */
 		$next_term = array();
 		for( $i=0; $i<count($next);$i++ ) {
-			if( $this->is_terminal() ) {
-				if( !in_array( $sym, $next_term ) ) {
-					$next_term[] = $sym;
+			if( $this->is_terminal($next[$i]) ) {
+				if( !in_array( $next[$i], $next_term ) ) {
+					$next_term[] = $next[$i];
 				}
 			} else {
-				foreach( $this->productions($sym) as $rule ) {
+				foreach( $this->productions($next[$i]) as $rule ) {
 					$next_sym = $rule->next();
-					if( !in_array( $next_sym, $next ) ) {
-						$next[] = $next_sym;
+					if( $next_sym === false ) {
+						print_r( $rule );
+					} else {
+						if( !in_array( $next_sym, $next ) ) {
+							$next[] = $next_sym;
+						}
 					}
 				}
 			}
 		}
 		
-		/* FIXME: non-terminals should be reduced to it's first terminal... */
 		return $next_term;
 	}
 }

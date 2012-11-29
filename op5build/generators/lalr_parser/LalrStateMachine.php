@@ -6,12 +6,10 @@ require_once( 'LalrGrammar.php' );
 
 class LalrStateMachine {
 	private $grammar;
-	private $parser_name;
 	private $states;
 	private $statetable;
 	
-	public function __construct( $parser_name, LalrGrammar $grammar ) {
-		$this->parser_name = $parser_name;
+	public function __construct( LalrGrammar $grammar ) {
 		$this->grammar = $grammar;
 		
 		$this->build_states();
@@ -50,6 +48,9 @@ class LalrStateMachine {
 			foreach( $state->closure() as $item ) {
 				if( $item->complete() ) {
 					foreach( $this->grammar->follow( $item->generates() ) as $sym ) {
+						if( isset( $transistions[$sym] ) ) {
+							throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
+						}
 						$transistions[$sym] = array('reduce', $item->get_name());
 					}
 				}
@@ -60,10 +61,17 @@ class LalrStateMachine {
 				$next_state = $state->take( $sym );
 				$j = $this->get_state_id( $next_state );
 				if( $j === false ) {
-					print "ERROR\n";
+					throw new GeneratorException( "ERROR in parser generator, should never happend...");
 				}
 				if( $this->grammar->is_terminal($sym) ) {
-					$transistions[$sym] = array('shift', $j);
+					if( isset( $transistions[$sym] ) ) {
+						throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
+					}
+					if( $sym == 'end' ) {
+						$transistions[$sym] = array('accept', $j);
+					} else {
+						$transistions[$sym] = array('shift', $j);
+					}
 				}
 			}
 			
@@ -72,6 +80,9 @@ class LalrStateMachine {
 				$next_state = $state->take( $sym );
 				$j = $this->get_state_id( $next_state );
 				if( $j !== false ) {
+					if( isset( $transistions[$sym] ) ) {
+						throw new GeneratorException( "Disambigous grammar");
+					}
 					$transistions[$sym] = array( 'goto', $j );
 				}
 			}
@@ -91,6 +102,14 @@ class LalrStateMachine {
 			}
 		}
 		return false;
+	}
+	
+	public function get_statetable() {
+		return $this->statetable;
+	}
+	
+	public function get_state( $state_id ) {
+		return $this->states[$state_id];
 	}
 	
 	public function __toString() {

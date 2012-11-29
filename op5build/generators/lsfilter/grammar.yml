@@ -1,53 +1,72 @@
 tokens:
-	.whitespace: /^(\s+)/
-	.comment:    ~^(/\*(?:[^\*]|\*[^/])*\*/)~
-	
-	string:      ~^("(?:[^"\\]|\\.)*")~
-	
-	and:         /^(and)(?:[^a-z0-9_].*|)$/i
-	not:         /^(not)(?:[^a-z0-9_].*|)$/i
-	or:          /^(or)(?:[^a-z0-9_].*|)$/i
-	in:          /^(in)(?:[^a-z0-9_].*|)$/i
-	
-	name:        /^([a-z][a-z0-9_]*)/i
-	
-	not_re_ci:   /^(!~~)/
-	not_re_cs:   /^(!~)/
-	re_ci:       /^(~~)/
-	re_cs:       /^(~)/
-	
-	not_eq_ci:   /^(!=~)/
-	eq_ci:       /^(=~)/
-	
-	not_gt_eq:   /^(!>=)/
-	not_lt_eq:   /^(!<=)/
-	not_gt:      /^(!>)/
-	not_lt:      /^(!<)/
-	not_eq:      /^(!=)/
-	gt_eq:       /^(>=)/
-	lt_eq:       /^(<=)/
-	gt:          /^(>)/
-	lt:          /^(<)/
-	eq:          /^(=)/
-	
-	par_l:       /^(\()/
-	par_r:       /^(\))/
-	brace_l:     /^(\[)/
-	brace_r:     /^(\])/
+  _whitespace: /^(\s+)/
+  _comment:    ~^(/\*(?:[^\*]|\*[^/])*\*/)~
+  
+  string:      ~^("(?:[^"\\]|\\.)*")~
+  
+  and:         /^(and)(?:[^a-z0-9_].*|)$/i
+  not:         /^(not)(?:[^a-z0-9_].*|)$/i
+  or:          /^(or)(?:[^a-z0-9_].*|)$/i
+  in:          /^(in)(?:[^a-z0-9_].*|)$/i
+  
+  name:        /^([a-z][a-z0-9_]*)/i
+  
+  integer:     /^((?:\+|-|)[0-9]+)/
+  
+  not_re_ci:   /^(!~~)/
+  not_re_cs:   /^(!~)/
+  re_ci:       /^(~~)/
+  re_cs:       /^(~)/
+  
+  not_eq_ci:   /^(!=~)/
+  eq_ci:       /^(=~)/
+  
+  not_gt_eq:   /^(!>=)/
+  not_lt_eq:   /^(!<=)/
+  not_gt:      /^(!>)/
+  not_lt:      /^(!<)/
+  not_eq:      /^(!=)/
+  gt_eq:       /^(>=)/
+  lt_eq:       /^(<=)/
+  gt:          /^(>)/
+  lt:          /^(<)/
+  eq:          /^(=)/
+  
+  par_l:       /^(\()/
+  par_r:       /^(\))/
+  brace_l:     /^(\[)/
+  brace_r:     /^(\])/
 
 rules:
-	entry:
-		generate: program
-		symbols:  [query, end]
-	
-	query:
-		generate: query
-		symbols:  [brace_l, name, brace_r, expr]
-	
-	expr_and:
-		generate: expr
-		symbols:  [expr, and, expr]
-	
-	expr_name:
-		generate: expr
-		symbols:  [name]
+  entry:
+    generate: program
+    symbols:  [query, _end]
+  
+  query:
+    generate: query
+    symbols:  [_brace_l, name, _brace_r, expr]
+  
+  expr_and:
+    generate: expr
+    symbols:  [expr, _and, sym]
+    
+  expr_sym:
+    generate: expr
+    symbols:  [sym]
+  
+  sym_name:
+    generate: sym
+    symbols:  [name]
+  
+  sym_int:
+    generate: sym
+    symbols:  [integer]
+    
+  sym_string:
+    generate: sym
+    symbols:  [string]
+    
+    
+    
+    
+   
