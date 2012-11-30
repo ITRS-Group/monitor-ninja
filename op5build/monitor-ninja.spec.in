@@ -82,7 +82,7 @@ chmod 775 %buildroot%prefix/application/custom_widgets
 mkdir -p %buildroot/var/www/html
 ln -sfT %prefix %buildroot/var/www/html/monitor
 ln -sfT %prefix %buildroot/var/www/html/ninja
-# recursive symbolic link, so must be after all 'find' stuff above
+# recursive symbolic link, so must be after all "find" stuff above
 ln -s ../ %buildroot%prefix/op5
 
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
