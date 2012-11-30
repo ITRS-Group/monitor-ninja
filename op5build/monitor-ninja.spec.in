@@ -47,8 +47,7 @@ do
 	rm -rf %buildroot%prefix/$d
 done
 
-sed -i 's/\(IN_PRODUCTION\', \)FALSE/\1TRUE/' \
-	%buildroot%prefix/index.php
+sed -i "s/\('IN_PRODUCTION', \)FALSE/\1TRUE/" %buildroot%prefix/index.php
 sed -i \
 	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
 	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
