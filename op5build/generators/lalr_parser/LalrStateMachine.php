@@ -81,7 +81,7 @@ class LalrStateMachine {
 				$j = $this->get_state_id( $next_state );
 				if( $j !== false ) {
 					if( isset( $transistions[$sym] ) ) {
-						throw new GeneratorException( "Disambigous grammar");
+						throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state);
 					}
 					$transistions[$sym] = array( 'goto', $j );
 				}

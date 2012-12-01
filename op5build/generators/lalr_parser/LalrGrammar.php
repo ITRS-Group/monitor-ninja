@@ -7,15 +7,21 @@ class LalrGrammar {
 	private $rules;
 	
 	public function __construct( $grammar ) {
-		$this->tokens = $grammar['tokens'];
+		$this->tokens = array_map( 'trim', $grammar['tokens'] );
 		$this->rules = array();
 		foreach( $grammar['rules'] as $name => $rule ) {
-			$this->rules[$name] = new LalrItem( $name, $rule['generate'], $rule['symbols'] );
+			$rule = array_map( 'trim', $rule );
+			$generates = array_shift( $rule );
+			$this->rules[$name] = new LalrItem( $name, $generates, $rule );
 		}
 	}
 	
 	public function get_tokens() {
 		return $this->tokens;
+	}
+	
+	public function get_rules() {
+		return $this->rules;
 	}
 	
 	public function get( $name ) {

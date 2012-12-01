@@ -20,6 +20,7 @@ abstract class generator_module {
 }
 
 require_once( 'class_generator.php' );
+require_once( 'js_class_generator.php' );
 
 $exit_code = 0;
 

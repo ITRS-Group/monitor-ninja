@@ -1,6 +1,6 @@
 <?php
 
-class LalrParserPHPGenerator extends class_generator {
+class LalrParserJSGenerator extends js_class_generator {
 	private $fsm;
 	private $grammar;
 	
@@ -21,8 +21,6 @@ class LalrParserPHPGenerator extends class_generator {
 				}
 			}
 		}
-		
-		$this->set_library();
 	}
 	
 	public function generate() {
@@ -107,7 +105,7 @@ class LalrParserPHPGenerator extends class_generator {
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
-		$this->write( 'throw new Exception( "Error at state %s, got token ".var_export($token,true) );', $state_id );
+		$this->write( 'throw new Exception( "Error at state %s\n".%s."\nGot token ".var_export($token,true) );', $state_id, strval( $this->fsm->get_state($state_id) ) );
 		$this->write( 'return false;' );
 		$this->finish_function();
 	}

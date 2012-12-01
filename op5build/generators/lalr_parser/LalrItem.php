@@ -15,10 +15,10 @@ class LalrItem {
 		foreach( $symbols as $sym ) {
 			if( $sym[0] == '_' ) {
 				$this->symbols[] = substr($sym,1);
-				$this->symbol_state[substr($sym,1)] = false;
+				$this->symbol_state[] = false;
 			} else {
 				$this->symbols[] = $sym;
-				$this->symbol_state[$sym] = true;
+				$this->symbol_state[] = true;
 			}
 		}
 		$this->ptr = 0;
@@ -28,6 +28,9 @@ class LalrItem {
 		return $this->name;
 	}
 	
+	public function get_ptr() {
+		return $this->ptr;
+	}
 	public function generates() {
 		return $this->generate;
 	}
@@ -95,8 +98,8 @@ class LalrItem {
 		return $this->symbols;
 	}
 	
-	public function symbol_enabled( $symbol ) {
-		return $this->symbol_state[$symbol];
+	public function symbol_enabled( $symbol_id ) {
+		return $this->symbol_state[$symbol_id];
 	}
 	
 	public function __toString() {

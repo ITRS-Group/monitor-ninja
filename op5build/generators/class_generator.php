@@ -2,7 +2,7 @@
 
 abstract class class_generator {
 	protected $fp;
-	protected $indent_lvl = 0;
+	protected $indent_lvl = array();
 	protected $class_suffix = '';
 	protected $class_dir = '.';
 	protected $class_basedir = '.';
@@ -83,6 +83,22 @@ abstract class class_generator {
 		$this->write( "$visibility \$$name = " . var_export( $default, true ) . ";" );
 	}
 	
+	protected function abstract_function( $name, $args = array(), $modifiers = array() ) {
+		if( !is_array( $modifiers ) ) {
+			$modifiers = array_filter( array_map( 'trim', explode(' ',$modifiers) ) );
+		}
+		if( !in_array('public',$modifiers) && !in_array('private',$modifiers) && !in_array('protected',$modifiers) ) {
+			$modifiers[] = 'public';
+		}
+		$modifiers = implode( ' ', $modifiers );
+		if( !empty( $modifiers ) ) {
+			$modifiers = trim($modifiers)." ";
+		}
+		$argstr = implode(', ', array_map(function($n){return '$'.$n;},$args));
+		$this->write( "abstract ${modifiers}function $name($argstr);" );
+		$this->write();
+	}
+	
 	protected function init_function( $name, $args = array(), $modifiers = array() ) {
 		if( !is_array( $modifiers ) ) {
 			$modifiers = array_filter( array_map( 'trim', explode(' ',$modifiers) ) );
@@ -95,18 +111,19 @@ abstract class class_generator {
 			$modifiers = trim($modifiers)." ";
 		}
 		$argstr = implode(', ', array_map(function($n){return '$'.$n;},$args));
-		$this->write();
 		$this->write( "${modifiers}function $name($argstr) {" );
 	}
 	
 	protected function finish_function() {
 		$this->write( "}" );
+		$this->write();
 	}
 	
 	protected function comment( $comment ) {
 		$lines = explode( "\n", $comment );
+		$curlvl = array_sum( $this->indent_lvl );
 		foreach( $lines as $line ) {
-			fwrite( $this->fp, str_repeat( "\t", $this->indent_lvl ) . "// " . trim($line) . "\n" );
+			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . "// " . trim($line) . "\n" );
 		}
 	}
 	protected function write( $block = '' ) {
@@ -117,9 +134,13 @@ abstract class class_generator {
 		
 		$lines = explode( "\n", $block );
 		foreach( $lines as $line ) {
-			$this->indent_lvl -= substr_count( $line, '}' );
-			fwrite( $this->fp, str_repeat( "\t", $this->indent_lvl ) . $line . "\n" );
-			$this->indent_lvl += substr_count( $line, '{' );
+			for($i=substr_count( $line, '}' ); $i>0; $i--)
+				array_pop( $this->indent_lvl ); 
+			$curlvl = array_sum( $this->indent_lvl );
+			if( substr( trim($line), 0, 4) == 'case' ) $curlvl--;
+			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . $line . "\n" );
+			for($i=substr_count( $line, '{' ); $i>0; $i--)
+				$this->indent_lvl[] = (strpos( $line, "switch" ) !== false) ? 2 : 1; 
 		}
 	}
 }
