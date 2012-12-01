@@ -94,7 +94,7 @@ class testvisit extends LSFilterVisitor_Core {
 	}
 
 	public function accept($result) {
-		print_r( $result );
+		return $result;
 	}
 
 }
@@ -103,24 +103,13 @@ class lalrtest_Controller extends Ninja_Controller {
 	public function index() {
 		$string = $GLOBALS['argv'][2];
 		try {
-			print "Starting\n";
 			print "Parsing: $string\n";
 			
-			$preprocessor = new LSFilterPreprocessor_Core();
-			$visitor = new testvisit();
-			$lexer = new LSFilterLexer_Core( $string, $preprocessor );
-			$parser = new LSFilterParser_Core( $visitor );
-			do {
-				$tok = $lexer->fetch_token();
-				vprintf("%20s %20s %5d %5d\n", $tok );
-				if( $tok === false ) {
-					print "Unexpected token\n";
-					break;
-				}
-				$parser->process($tok);
-			} while( $tok[0] != 'end' );
+			$parser = new LSFilter( new LSFilterPreprocessor_Core(), new testvisit() );
+			print_r( $parser->parse( $string ) );
+			
 		} catch( Exception $e ) {
-			print "Exception: ".$e->getMessage();
+			print "Exception: ".$e->getMessage()."\n\n";
 		}
 		die();
 	}

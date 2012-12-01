@@ -129,8 +129,7 @@ td.mark {
 <h2>LR Parser table</h2>
 <table class="visible" cellspacing="0">
 <tr>
-<th></th>
-<th></th>
+<th colspan="2">State</th>
 <th class="bar"></th>
 <?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue;?>
 <th><?php echo htmlentities($sym); ?></th>
@@ -154,6 +153,7 @@ td.mark {
 <?php foreach( $item->get_symbols() as $i=>$sym ): ?>
 <td<?php if( $item->get_ptr() == $i ) echo ' class="mark"';?>><?php echo $sym; ?></td>
 <?php endforeach; ?>
+<?php if( $item->complete() ):?><td class="mark">&nbsp;</td><?php endif;?>
 </tr>
 <?php endforeach; ?>
 </table>

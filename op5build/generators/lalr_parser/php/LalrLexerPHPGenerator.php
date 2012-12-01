@@ -58,7 +58,7 @@ class LalrLexerPHPGenerator extends class_generator {
 		
 		$this->write();
 		$this->comment( 'Exit if no match' );
-		$this->write( 'if( $length === false ) return false;' );
+		$this->write( 'if( $length === false ) throw new Exception( "Lexer error: unknown token: ".substr($this->buffer,0,10));' );
 		$this->write();
 		$this->comment( 'Remove token from buffer, and move length forward' );
 		$this->write( '$this->buffer = substr( $this->buffer, $length );');

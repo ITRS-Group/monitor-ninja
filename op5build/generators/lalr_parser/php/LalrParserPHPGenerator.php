@@ -32,7 +32,10 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->variable( 'visitor' );
 		$this->variable( 'state_stack', array(0) );
 		$this->variable( 'token_stack', array('start') );
+		$this->variable( 'continue', false );
+		$this->variable( 'done', false );
 		$this->generate_constructor();
+		$this->generate_parse();
 		$this->generate_process();
 		
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
@@ -50,11 +53,28 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->finish_function();
 	}
 	
+	private function generate_parse() {
+		$this->init_function( 'parse', array( 'lexer' ) );
+		$this->write( '$this->state_stack = %s;', array(0) );
+		$this->write( '$this->token_stack = %s;', array('start') );
+		$this->write( '$this->continue = %s;', false );
+		$this->write( '$this->done = %s;', false );
+		$this->write( 'while( !$this->done ) {' );
+		$this->write( '$result=$this->process($lexer->fetch_token());' );
+		$this->write( '}' );
+		$this->write( 'return $result;' );
+		$this->finish_function();
+	}
+	
 	private function generate_process() {
-		$this->init_function( 'process', array('token') );
+		$this->init_function( 'process', array('token'), 'private' );
+		$this->write('$this->continue = false;');
+		$this->write('$result = null;');
 		$this->write('do {');
 		$this->write('$state_handler = "state_".end($this->state_stack);');
-		$this->write('} while( $this->$state_handler($token) );');
+		$this->write('$result = $this->$state_handler($token);');
+		$this->write('} while( $this->continue );');
+		$this->write('return $result;');
 		$this->finish_function();
 	}
 	
@@ -71,7 +91,8 @@ class LalrParserPHPGenerator extends class_generator {
 					$this->comment( implode( ': ', $action_arr ) );
 					$this->write( 'array_push( $this->state_stack, %s );', $target );
 					$this->write( 'array_push( $this->token_stack, $token );' );
-					$this->write( 'return false;' );
+					$this->write( '$this->continue = false;' );
+					$this->write( 'return null;' );
 					break;
 				case 'reduce':
 					$this->write( 'case %s:', $token );
@@ -91,15 +112,17 @@ class LalrParserPHPGenerator extends class_generator {
 					
 					$this->write( 'array_push( $this->state_stack, $this->goto_'.$item->generates().'(end($this->state_stack)) );' );//$map[$item->generates()] );
 					$this->write( 'array_push( $this->token_stack, $new_token );' );
-					$this->write( 'return true;' );
+					$this->write( '$this->continue = true;' );
+					$this->write( 'return null;' );
 					break;
 				case 'accept': // To be implemented
 					$this->write( 'case %s:', $token );
 					$this->comment( implode( ': ', $action_arr ) );
 					$this->write( '$program = array_pop($this->token_stack);');
 					$this->write( 'array_pop($this->token_stack);');
-					$this->write( '$this->visitor->accept($program[1]);');
-					$this->write( 'return false;' );
+					$this->write( '$this->continue = false;' );
+					$this->write( '$this->done = true;' );
+					$this->write( 'return $this->visitor->accept($program[1]);');
 					break;
 				case 'error': // To be implemented
 					break;
@@ -108,7 +131,7 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
 		$this->write( 'throw new Exception( "Error at state %s, got token ".var_export($token,true) );', $state_id );
-		$this->write( 'return false;' );
+		$this->write( 'return null;' );
 		$this->finish_function();
 	}
 	
