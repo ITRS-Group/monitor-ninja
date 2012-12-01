@@ -57,7 +57,7 @@ rules:
   search_query:       [ search_query, expr ]
   
   expr_add:           [ expr,         expr2, _op_add, expr ]
-  expr_sub:           [ expr,         expr2, _ap_sub, expr ]
+  expr_sub:           [ expr,         expr2, _op_sub, expr ]
   expr_end:           [ expr,         expr2 ]
   
   expr_mult:          [ expr2,        expr3, _op_mult, expr2 ]

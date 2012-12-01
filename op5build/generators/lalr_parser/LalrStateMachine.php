@@ -30,6 +30,7 @@ class LalrStateMachine {
 			$next_symbols = $state->next_symbols();
 			
 			foreach( $next_symbols as $sym ) {
+				if( $sym == 'end' ) continue;
 				$sub_state = $state->take( $sym );
 				
 				if( !$this->has_state( $sub_state ) ) {
@@ -58,18 +59,18 @@ class LalrStateMachine {
 			
 			/* shift */
 			foreach( $state->next_symbols() as $sym ) {
-				$next_state = $state->take( $sym );
-				$j = $this->get_state_id( $next_state );
-				if( $j === false ) {
-					throw new GeneratorException( "ERROR in parser generator, should never happend...");
-				}
-				if( $this->grammar->is_terminal($sym) ) {
-					if( isset( $transistions[$sym] ) ) {
-						throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
+				if( $sym == 'end' ) {
+					$transistions[$sym] = array('accept', '');
+				} else {
+					$next_state = $state->take( $sym );
+					$j = $this->get_state_id( $next_state );
+					if( $j === false ) {
+						throw new GeneratorException( "ERROR in parser generator, should never happend...");
 					}
-					if( $sym == 'end' ) {
-						$transistions[$sym] = array('accept', $j);
-					} else {
+					if( $this->grammar->is_terminal($sym) ) {
+						if( isset( $transistions[$sym] ) ) {
+							throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
+						}
 						$transistions[$sym] = array('shift', $j);
 					}
 				}
