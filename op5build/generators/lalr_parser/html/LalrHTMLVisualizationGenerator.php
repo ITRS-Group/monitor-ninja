@@ -53,10 +53,19 @@ class LalrHTMLVisualizationGenerator {
 <title>Visualization of parser <?php echo htmlentities($this->name);?></title>
 <style type="text/css">
 td, th {
-	border-bottom: 1px solid #bbbbbb;
-	border-right: 1px solid #bbbbbb;
 	margin: 0;
-	padding: 2px;
+}
+
+.bordered {
+	border-right: 1px solid #bbbbbb;
+}
+
+td, th {
+	vertical-align: top;
+	text-align: left;
+}
+.hard_top {
+	border-top: 3px solid black;
 }
 
 .inner_table {
@@ -89,6 +98,8 @@ td.mark {
 </head>
 <body>
 <h1>Visualization of parser <?php echo htmlentities($this->name);?></h1>
+<table>
+<tr><td style="width: 50%;">
 <h2>Lexical analysis</h2>
 <table>
 <?php foreach( $this->grammar->get_tokens() as $token => $match ): ?>
@@ -98,9 +109,25 @@ td.mark {
 </tr>
 <?php endforeach; ?>
 </table>
+</td><td style="width: 50%;">
+<h2>Grammar</h2>
+<table>
+<?php foreach( $this->grammar->get_rules() as $item ):?>
+<tr>
+<th><?php echo htmlentities($item->get_name());?></th>
+<td class="target"><?php echo htmlentities($item->generates());?></td>
+<td>=</td>
+<?php foreach( $item->get_symbols() as $i=>$sym ): ?>
+<td><?php echo $sym; ?></td>
+<?php endforeach; ?>
+</tr>
+<?php endforeach; ?>
+</table>
+</td></tr>
+</table>
 
 <h2>LR Parser table</h2>
-<table>
+<table class="visible" cellspacing="0">
 <tr>
 <th></th>
 <th></th>
@@ -116,8 +143,8 @@ td.mark {
 
 <?php foreach( $this->fsm->get_statetable() as $state_id => $map ):?>
 <tr>
-<th><?php echo htmlentities($state_id); ?></th>
-<td class="inner_table">
+<th class="hard_top bordered"><?php echo htmlentities($state_id); ?></th>
+<td class="inner_table hard_top bordered">
 <table>
 <?php foreach( $this->fsm->get_state($state_id)->closure() as $item ):?>
 <tr>
@@ -131,18 +158,18 @@ td.mark {
 <?php endforeach; ?>
 </table>
 </td>
-<td class="bar"></td>
+<td class="bar hard_top bordered"></td>
 <?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue; ?>
-<td><?php
+<td class="hard_top bordered"><?php
 if( isset( $map[$sym] ) ) {
 	list($action, $target) = $map[$sym];
 	print $action.'<br/>'.$target;
 }
 ?></td>
 <?php endforeach; ?>
-<td class="bar"></td>
+<td class="bar hard_top bordered"></td>
 <?php foreach( $this->grammar->non_terminals() as $sym ): ?>
-<td><?php
+<td class="hard_top bordered"><?php
 if( isset( $map[$sym] ) ) {
 	list($action, $target) = $map[$sym];
 	print $action.'<br/>'.$target;
