@@ -105,7 +105,7 @@ td.mark {
 <th></th>
 <th></th>
 <th class="bar"></th>
-<?php foreach( $this->grammar->terminals() as $sym ): ?>
+<?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue;?>
 <th><?php echo htmlentities($sym); ?></th>
 <?php endforeach; ?>
 <th class="bar"></th>
@@ -132,7 +132,7 @@ td.mark {
 </table>
 </td>
 <td class="bar"></td>
-<?php foreach( $this->grammar->terminals() as $sym ): ?>
+<?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue; ?>
 <td><?php
 if( isset( $map[$sym] ) ) {
 	list($action, $target) = $map[$sym];
