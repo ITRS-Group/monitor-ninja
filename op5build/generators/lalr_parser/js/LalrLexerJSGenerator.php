@@ -11,30 +11,25 @@ class LalrLexerJSGenerator extends js_class_generator {
 	public function generate() {
 		parent::generate();
 		
-		$this->init_class();
-		$this->variable( 'buffer', '' );
+		$this->init_class( array( 'buffer', 'visitor' ));
+		$this->write( 'this.buffer = buffer;' );
+		$this->write( 'this.visitor = visitor;' );
 		$this->variable( 'position', 0 );
-		$this->generate_constructor();
+		
 		$this->generate_fetch_token();
 		$this->finish_class();
 	}
 	
-	private function generate_constructor() {
-		$this->init_function( '__construct', array( 'buffer', 'visitor' ) );
-		$this->write( 'this.buffer = buffer;' );
-		$this->write( 'this.visitor = visitor;' );
-		$this->finish_function();
-	}
 	
 	private function generate_fetch_token() {
 		$this->init_function( 'fetch_token', array() );
 		
 		$this->write('do {'); /* Until token is found */
 		
-		$this->write('length = -1;');
-		$this->write('token = 0;');
-		$this->write('value = 0;');
-		$this->write('token_pos = this.position;');
+		$this->write('var length = -1;');
+		$this->write('var token = 0;');
+		$this->write('var value = 0;');
+		$this->write('var token_pos = this.position;');
 
 		$this->write();
 		$this->comment( "Match end token" );
@@ -48,24 +43,25 @@ class LalrLexerJSGenerator extends js_class_generator {
 			$this->comment( "Match token: $name" );
 			$this->write( 'var matches = this.buffer.match('.$match.');');
 			$this->write( 'if( length == -1 ) {' );
-			//$this-&& this.buffer.'.$match.', $this->buffer, $matches ) ) {' );
-			$this->write(     '$length = strlen( $matches[1] );' );
+			$this->write( 'if( matches != null ) {' );
+			$this->write(     'length = matches[1].length;' );
 			if( substr($name,0,1) != '_' ) {
-				$this->write(     '$token = '.var_export( $name, true ).';' );
-				$this->write(     '$value = $this->visitor->preprocess_'.$name.'($matches[1]);' );
+				$this->write(     'token = '.json_encode( $name ).';' );
+				$this->write(     'value = this.visitor.preprocess_'.$name.'(matches[1]);' );
 			}
+			$this->write( '}' );
 			$this->write( '}' );
 		}
 		
 		$this->write();
 		$this->comment( 'Exit if no match' );
-		$this->write( 'if( $length === false ) return false;' );
+		$this->write( 'if( length < 0 ) return null;' );
 		$this->write();
 		$this->comment( 'Remove token from buffer, and move length forward' );
-		$this->write( '$this->buffer = substr( $this->buffer, $length );');
-		$this->write( '$this->position += $length; ');
-		$this->write( '} while( $token === false );');
-		$this->write( 'return array( $token, $value, $token_pos, $length );');
+		$this->write( 'this.buffer = this.buffer.substr( length );');
+		$this->write( 'this.position += length; ');
+		$this->write( '} while( token == 0 );');
+		$this->write( 'return [token, value, token_pos, length ];');
 		
 		$this->finish_function();
 	}

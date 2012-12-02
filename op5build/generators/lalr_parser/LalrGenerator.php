@@ -6,7 +6,9 @@ require_once( 'php/LalrParserPHPGenerator.php' );
 require_once( 'php/LalrVisitorPHPGenerator.php' );
 require_once( 'php/LalrPHPGenerator.php' );
 require_once( 'js/LalrLexerJSGenerator.php' );
+require_once( 'js/LalrPreprocessorJSGenerator.php' );
 require_once( 'js/LalrParserJSGenerator.php' );
+require_once( 'js/LalrVisitorJSGenerator.php' );
 require_once( 'html/LalrHTMLVisualizationGenerator.php' );
 require_once( 'LalrStateMachine.php' );
 require_once( 'LalrGrammar.php' );
@@ -27,24 +29,32 @@ class LalrGenerator {
 		print "- Building PHP Lexer\n";
 		$generator = new LalrLexerPHPGenerator( $this->name, $this->grammar );
 		$generator->generate();
+		print "- Building PHP Preprocessor\n";
 		$generator = new LalrPreprocessorPHPGenerator( $this->name, $this->grammar );
 		$generator->generate();
 		print "- Building PHP Parser\n";
 		$generator = new LalrParserPHPGenerator( $this->name, $fsm, $this->grammar );
 		$generator->generate();
+		print "- Building PHP Visitor\n";
 		$generator = new LalrVisitorPHPGenerator( $this->name, $this->grammar );
 		$generator->generate();
 		print "- Building PHP Wrapper\n";
 		$generator = new LalrPHPGenerator( $this->name );
 		$generator->generate();
-/*
+
 		print "- Building Javascript Lexer\n";
 		$generator = new LalrLexerJSGenerator( $this->name, $this->grammar );
 		$generator->generate();
-		print "- Building Javascript parser\n";
+		print "- Building Javascript Preprocessor\n";
+		$generator = new LalrPreprocessorJSGenerator( $this->name, $this->grammar );
+		$generator->generate();
+		print "- Building Javascript Parser\n";
 		$generator = new LalrParserJSGenerator( $this->name, $fsm, $this->grammar );
 		$generator->generate();
-*/
+		print "- Building Javascript Visitor\n";
+		$generator = new LalrVisitorJSGenerator( $this->name, $this->grammar );
+		$generator->generate();
+
 		print "- Building HTML visualization of parser state table, and lexer\n";
 		$generator = new LalrHTMLVisualizationGenerator( $this->name, $fsm, $this->grammar );
 		$generator->generate();

@@ -2,7 +2,7 @@
 
 abstract class js_class_generator {
 	protected $fp;
-	protected $indent_lvl = 0;
+	protected $indent_lvl = array();
 	protected $class_suffix = '';
 	protected $class_dir = 'js';
 	protected $class_basedir = '.';
@@ -47,15 +47,10 @@ abstract class js_class_generator {
 		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . $this->classname . '.js';
 	}
 	
-	protected function init_class( $parent = false, $modifiers = array() ) {
-		if( is_array( $modifiers ) ) {
-			$modifiers = implode( ' ', $modifiers );
-		}
-		if( !empty( $modifiers ) ) {
-			$modifiers = trim($modifiers)." ";
-		}
+	protected function init_class( $args = array() ) {
+		$argstr = implode(', ', $args);
 		$this->write();
-		$this->write( 'var '.$this->get_classname() . ' = {' );
+		$this->write( 'var '.$this->get_classname() . ' = function '.$this->get_classname().'('.$argstr.'){' );
 	}
 	
 	protected function finish_class() {
@@ -63,36 +58,46 @@ abstract class js_class_generator {
 	}
 	
 	protected function variable( $name, $default = null ) {
-		$this->write( "\"$name\": " . json_encode( $default ) . "," );
+		$this->write( "this.$name = %s;", $default );
 	}
 	
 	protected function init_function( $name, $args = array() ) {
 		$argstr = implode(', ', $args);
-		$this->write();
-		$this->write( "\"$name\": function($argstr) {" );
+		if( $name === false ) {
+			$this->write( "function($argstr) {" );
+		} else {
+			$this->write( "this.$name = function($argstr) {" );
+		}
 	}
 	
 	protected function finish_function() {
-		$this->write( "}," );
+		$this->write( "};" );
+		$this->write();
 	}
 	
 	protected function comment( $comment ) {
 		$lines = explode( "\n", $comment );
+		$curlvl = array_sum( $this->indent_lvl );
 		foreach( $lines as $line ) {
-			fwrite( $this->fp, str_repeat( "\t", $this->indent_lvl ) . "// " . trim($line) . "\n" );
+			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . "// " . trim($line) . "\n" );
 		}
 	}
 	protected function write( $block = '' ) {
 		$args = func_get_args();
 		$block = array_shift( $args );
-		$args_str = array_map( function($var){return var_export($var,true);}, $args );
+		$args_str = array_map( function($var){return json_encode($var);}, $args );
 		$block = vsprintf($block,$args_str);
-		
+
 		$lines = explode( "\n", $block );
 		foreach( $lines as $line ) {
-			$this->indent_lvl -= substr_count( $line, '}' );
-			fwrite( $this->fp, str_repeat( "\t", $this->indent_lvl ) . $line . "\n" );
-			$this->indent_lvl += substr_count( $line, '{' );
+			for($i=substr_count( $line, '}' ); $i>0; $i--)
+				array_pop( $this->indent_lvl );
+			$curlvl = array_sum( $this->indent_lvl );
+			if( substr( trim($line), 0, 4) == 'case' )
+				$curlvl--;
+			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . $line . "\n" );
+			for($i=substr_count( $line, '{' ); $i>0; $i--)
+				$this->indent_lvl[] = (strpos( $line, "switch" ) !== false) ? 2 : 1;
 		}
 	}
 }

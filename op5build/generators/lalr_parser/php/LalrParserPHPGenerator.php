@@ -36,7 +36,6 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->variable( 'done', false );
 		$this->generate_constructor();
 		$this->generate_parse();
-		$this->generate_process();
 		
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			$this->generate_state( $state_id, $map );
@@ -67,11 +66,6 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->write(   '} while( $this->continue );' );
 		$this->write( '} while( !$this->done );' );
 		$this->write( 'return $result;' );
-		$this->finish_function();
-	}
-	
-	private function generate_process() {
-		$this->init_function( 'process', array('token'), 'private' );
 		$this->finish_function();
 	}
 	
