@@ -56,33 +56,29 @@ class LalrParserPHPGenerator extends class_generator {
 	private function generate_parse() {
 		$this->init_function( 'parse', array( 'lexer' ) );
 		$this->write( '$this->stack = array(array(0,"start"));');
-		$this->write( '$this->continue = %s;', false );
-		$this->write( '$this->done = %s;', false );
-		$this->write( 'while( !$this->done ) {' );
-		$this->write( '$result=$this->process($lexer->fetch_token());' );
-		$this->write( '}' );
+		$this->write( '$this->done = false;' );
+		$this->write( 'do {' );
+		$this->write(   '$token = $lexer->fetch_token();' );
+		$this->write(   'do {' );
+		$this->write(     '$this->continue = false;' );
+		$this->write(     '$head = end($this->stack);' );
+		$this->write(     '$state_handler = "state_".$head[0];' );
+		$this->write(     '$result = $this->$state_handler($token);' );
+		$this->write(   '} while( $this->continue );' );
+		$this->write( '} while( !$this->done );' );
 		$this->write( 'return $result;' );
 		$this->finish_function();
 	}
 	
 	private function generate_process() {
 		$this->init_function( 'process', array('token'), 'private' );
-		$this->write('$this->continue = false;');
-		$this->write('$result = null;');
-		$this->write('do {');
-		$this->write('$head = end($this->stack);');
-		$this->write('$state_handler = "state_".$head[0];');
-		$this->write('$result = $this->$state_handler($token);');
-		$this->write('} while( $this->continue );');
-		$this->write('return $result;');
 		$this->finish_function();
 	}
 	
 	private function generate_state( $state_id, $map ) {
 		$this->init_function( 'state_'.$state_id, array('token'), 'private' );
 		$this->comment( strval( $this->fsm->get_state($state_id) ) );
-		$this->write( 'list($name,$content,$start,$length) = $token;' );
-		$this->write( 'switch( $name ) {' );
+		$this->write( 'switch( $token[0] ) {' );
 		
 		/* Merge cases per action... many cases use same action... */
 		$map_r = array();
@@ -100,17 +96,14 @@ class LalrParserPHPGenerator extends class_generator {
 			switch( $action ) {
 				case 'shift':
 					$this->write( 'array_push( $this->stack, array(%s,$token) );', intval($target) );
-					$this->write( '$this->continue = false;' );
 					$this->write( 'return null;' );
 					break;
 				case 'reduce':
 					$this->write( '$this->reduce_'.$target.'();');
-					$this->write( '$this->continue = true;' );
 					$this->write( 'return null;' );
 					break;
 				case 'accept':
 					$this->write( '$program = array_pop($this->stack);');
-					$this->write( '$this->continue = false;' );
 					$this->write( '$this->done = true;' );
 					$this->write( 'return $this->visitor->accept($program[1][1]);');
 					break;
@@ -126,7 +119,14 @@ class LalrParserPHPGenerator extends class_generator {
 	}
 	
 	private function generate_reduce( $item ) {
+		if( isset($this->goto_map[$item->generates()]) ) {
+			$targets = $this->goto_map[$item->generates()];
+		} else {
+			return; /* This method isn't used appearently */
+		}
+		
 		$this->init_function( 'reduce_'.$item->get_name(), array(), 'private' );
+		$this->write( '$this->continue = true;' );
 
 		$args = array();
 		foreach( array_reverse($item->get_symbols(),true) as $i => $symbol ) {
@@ -137,12 +137,14 @@ class LalrParserPHPGenerator extends class_generator {
 				$this->write( 'array_pop($this->stack);');
 			}
 		}
-		$this->write( '$new_token = array(%s, $this->visitor->visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), 0, 0);', $item->generates());
-		
-		if( isset($this->goto_map[$item->generates()]) ) {
-			$targets = $this->goto_map[$item->generates()];
+		$item_name = $item->get_name();
+		if( $item_name[0] == '_' ) {
+			if( count( $args ) != 1 ) {
+				throw new GeneratorException( "Rule $item_name can not be used as transparent more than one usable argument" );
+			}
+			$this->write( '$new_token = array(%s, '.$args[0].', 0, 0);', $item->generates());
 		} else {
-			$targets = array();
+			$this->write( '$new_token = array(%s, $this->visitor->visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), 0, 0);', $item->generates());
 		}
 		$this->write( '$head = end($this->stack);' );
 		$this->write( 'switch( $head[0] ) {' );

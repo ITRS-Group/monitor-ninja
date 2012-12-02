@@ -23,6 +23,12 @@ class LalrVisitorPHPGenerator extends class_generator {
 	}
 	
 	private function generate_visitor( $name, $item ) {
+		$item_name = $item->get_name();
+		
+		/* Transparent rules doesn't have a visitor method */
+		if( $item_name[0] == '_' )
+			return;
+		
 		$args = array();
 		foreach( $item->get_symbols() as $i => $symbol ) {
 			if( $item->symbol_enabled($i) ) {

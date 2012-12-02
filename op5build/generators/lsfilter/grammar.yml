@@ -57,11 +57,11 @@ rules:
   search_query:       [ search_query, filter ]
   
   filter_or:          [ filter,       filter2, _or, filter ]
-  filter_1_2:         [ filter,       filter2 ]
+  _filter_1_2:         [ filter,       filter2 ]
   filter_and:         [ filter2,      filter3, _and, filter2 ]
-  filter_2_3:         [ filter2,      filter3 ]
+  _filter_2_3:         [ filter2,      filter3 ]
   filter_not:         [ filter3,      _not, filter3 ]
-  filter_parentesis:  [ filter3,      _par_l, filter, _par_r ]
+  _filter_parentesis:  [ filter3,      _par_l, filter, _par_r ]
   
   filter_in:          [ filter3,      _in, string ]
   filter_field_in:    [ filter3,      name, _in, string ]
@@ -87,16 +87,16 @@ rules:
   
   expr_add:           [ expr,         expr2, _op_add, expr ]
   expr_sub:           [ expr,         expr2, _op_sub, expr ]
-  expr_end:           [ expr,         expr2 ]
+  _expr_end:           [ expr,         expr2 ]
   
   expr_mult:          [ expr2,        expr3, _op_mult, expr2 ]
   expr_div:           [ expr2,        expr3, _op_div, expr2 ]
-  expr_end2:          [ expr2,        expr3 ]
+  _expr_end2:          [ expr2,        expr3 ]
   
-  expr_par:           [ expr3,        _par_l, expr, _par_r ]
+  _expr_par:           [ expr3,        _par_l, expr, _par_r ]
 #  expr_func:          [ expr3,        name, _par_l, expr, _par_r ]
-  expr_num:           [ expr3,        integer ]
-  expr_name:          [ expr3,        name ]
+  _expr_num:           [ expr3,        integer ]
+  _expr_name:          [ expr3,        name ]
   
   
     
