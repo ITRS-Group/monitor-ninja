@@ -3,6 +3,7 @@
 class LalrParserPHPGenerator extends class_generator {
 	private $fsm;
 	private $grammar;
+	private $goto_map;
 	
 	public function __construct( $parser_name, $fsm, $grammar ) {
 		$this->classname = $parser_name . "Parser";
@@ -13,7 +14,7 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->goto_map = array();
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			foreach( $map as $symbol => $action_arr ) {
-				list( $action, $target ) = $action_arr;
+				list( $action, $target ) = explode(':',$action_arr,2);
 				if( $action == 'goto' ) {
 					if( !isset( $this->goto_map[$symbol] ) )
 						$this->goto_map[$symbol] = array();
@@ -30,7 +31,7 @@ class LalrParserPHPGenerator extends class_generator {
 		
 		$this->init_class();
 		$this->variable( 'visitor' );
-		$this->variable( 'state_stack', array(0) );
+		$this->variable( 'stack', array(0) );
 		$this->variable( 'token_stack', array('start') );
 		$this->variable( 'continue', false );
 		$this->variable( 'done', false );
@@ -41,8 +42,8 @@ class LalrParserPHPGenerator extends class_generator {
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			$this->generate_state( $state_id, $map );
 		}
-		foreach( $this->goto_map as $symbol => $targets ) {
-			$this->generate_goto( $symbol, $targets );
+		foreach( $this->grammar->get_rules() as $name => $item ) {
+			$this->generate_reduce( $item );
 		}
 		$this->finish_class();
 	}
@@ -83,41 +84,33 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->comment( strval( $this->fsm->get_state($state_id) ) );
 		$this->write( 'list($name,$content,$start,$length) = $token;' );
 		$this->write( 'switch( $name ) {' );
+		
+		/* Merge cases per action... many cases use same action... */
+		$map_r = array();
 		foreach( $map as $token => $action_arr ) {
-			list( $action, $target ) = $action_arr;
+			if(!isset($map_r[$action_arr])) $map_r[$action_arr] = array();
+			$map_r[$action_arr][] = $token;
+		}
+		foreach( $map_r as $action_arr => $tokens ) {
+			list( $action, $target ) = explode(':',$action_arr,2);
+			if( $action == 'goto' ) continue;
+			foreach( $tokens as $token ) {
+				$this->write( 'case %s:', $token );
+			}
+			$this->comment( $action_arr );
 			switch( $action ) {
 				case 'shift':
-					$this->write( 'case %s:', $token );
-					$this->comment( implode( ': ', $action_arr ) );
-					$this->write( 'array_push( $this->state_stack, %s );', $target );
+					$this->write( 'array_push( $this->state_stack, %s );', intval($target) );
 					$this->write( 'array_push( $this->token_stack, $token );' );
 					$this->write( '$this->continue = false;' );
 					$this->write( 'return null;' );
 					break;
 				case 'reduce':
-					$this->write( 'case %s:', $token );
-					$this->comment( implode( ': ', $action_arr ) );
-					$item = $this->grammar->get($target);
-					$args = array();
-					foreach( array_reverse($item->get_symbols(),true) as $i => $symbol ) {
-						if( $item->symbol_enabled($i) ) {
-							$this->write( '$arg'.$i.' = array_pop($this->token_stack);');
-							$args[] = '$arg'.$i.'[1]';
-						} else {
-							$this->write( 'array_pop($this->token_stack);');
-						}
-					}
-					$this->write( '$this->state_stack = array_slice($this->state_stack, 0, %s);', -count($item->get_symbols()) );
-					$this->write( '$new_token = array(%s, $this->visitor->visit_'.$target.'('.implode(',',array_reverse($args)).'), 0, 0);', $item->generates());
-					
-					$this->write( 'array_push( $this->state_stack, $this->goto_'.$item->generates().'(end($this->state_stack)) );' );//$map[$item->generates()] );
-					$this->write( 'array_push( $this->token_stack, $new_token );' );
+					$this->write( '$this->reduce_'.$target.'();');
 					$this->write( '$this->continue = true;' );
 					$this->write( 'return null;' );
 					break;
-				case 'accept': // To be implemented
-					$this->write( 'case %s:', $token );
-					$this->comment( implode( ': ', $action_arr ) );
+				case 'accept':
 					$this->write( '$program = array_pop($this->token_stack);');
 					$this->write( 'array_pop($this->token_stack);');
 					$this->write( '$this->continue = false;' );
@@ -135,11 +128,42 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->finish_function();
 	}
 	
-	private function generate_goto( $symbol, $targets ) {
-		$this->init_function( 'goto_'.$symbol, array('state'), 'private' );
-		$this->write( 'switch( $state ) {' );
+	private function generate_reduce( $item ) {
+		$this->init_function( 'reduce_'.$item->get_name(), array(), 'private' );
+
+		$args = array();
+		foreach( array_reverse($item->get_symbols(),true) as $i => $symbol ) {
+			if( $item->symbol_enabled($i) ) {
+				$this->write( '$arg'.$i.' = array_pop($this->token_stack);');
+				$args[] = '$arg'.$i.'[1]';
+			} else {
+				$this->write( 'array_pop($this->token_stack);');
+			}
+		}
+		$this->write( '$this->state_stack = array_slice($this->state_stack, 0, %s);', -count($item->get_symbols()) );
+		$this->write( '$new_token = array(%s, $this->visitor->visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), 0, 0);', $item->generates());
+			
+		$this->write( 'array_push( $this->token_stack, $new_token );' );
+		
+		if( isset($this->goto_map[$item->generates()]) ) {
+			$targets = $this->goto_map[$item->generates()];
+		} else {
+			$targets = array();
+		}
+		$this->write( 'switch( end($this->state_stack) ) {' );
+		
+		/* Merge cases */
+		$cases = array();
 		foreach( $targets as $old_state => $new_state ) {
-					$this->write( 'case %s: return %s;', $old_state, $new_state );
+			if( !isset( $cases[$new_state] ) ) $cases[$new_state] = array();
+			$cases[$new_state][] = $old_state;
+		}
+		
+		foreach( $cases as $new_state => $old_states ) {
+			foreach( $old_states as $old_state ) {
+				$this->write( 'case %s:', $old_state );
+			}
+			$this->write( 'array_push( $this->state_stack, %s ); break;', $new_state );
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );

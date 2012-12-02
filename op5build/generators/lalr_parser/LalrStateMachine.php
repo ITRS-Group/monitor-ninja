@@ -52,7 +52,7 @@ class LalrStateMachine {
 						if( isset( $transistions[$sym] ) ) {
 							throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
 						}
-						$transistions[$sym] = array('reduce', $item->get_name());
+						$transistions[$sym] = 'reduce:'.$item->get_name();
 					}
 				}
 			}
@@ -60,7 +60,7 @@ class LalrStateMachine {
 			/* shift */
 			foreach( $state->next_symbols() as $sym ) {
 				if( $sym == 'end' ) {
-					$transistions[$sym] = array('accept', '');
+					$transistions[$sym] = 'accept:';
 				} else {
 					$next_state = $state->take( $sym );
 					$j = $this->get_state_id( $next_state );
@@ -71,7 +71,7 @@ class LalrStateMachine {
 						if( isset( $transistions[$sym] ) ) {
 							throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
 						}
-						$transistions[$sym] = array('shift', $j);
+						$transistions[$sym] = 'shift:'.$j;
 					}
 				}
 			}
@@ -84,7 +84,7 @@ class LalrStateMachine {
 					if( isset( $transistions[$sym] ) ) {
 						throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state);
 					}
-					$transistions[$sym] = array( 'goto', $j );
+					$transistions[$sym] = 'goto:'.$j;
 				}
 			}
 			

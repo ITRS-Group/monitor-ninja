@@ -54,7 +54,36 @@ rules:
   column_list_end:    [ column_list,  name ]
   column_list_cont:   [ column_list,  column_list, _comma, name ]
   
-  search_query:       [ search_query, expr ]
+  search_query:       [ search_query, filter ]
+  
+  filter_or:          [ filter,       filter2, _or, filter ]
+  filter_1_2:         [ filter,       filter2 ]
+  filter_and:         [ filter2,      filter3, _and, filter2 ]
+  filter_2_3:         [ filter2,      filter3 ]
+  filter_not:         [ filter3,      _not, filter3 ]
+  filter_parentesis:  [ filter3,      _par_l, filter, _par_r ]
+  
+  filter_in:          [ filter3,      _in, string ]
+  filter_field_in:    [ filter3,      name, _in, string ]
+  
+  filter_not_re_ci:   [ filter3,      name, _not_re_ci, expr ]
+  filter_not_re_cs:   [ filter3,      name, _not_re_cs, expr ]
+  filter_re_ci:       [ filter3,      name, _re_ci, expr ]
+  filter_re_cs:       [ filter3,      name, _re_cs, expr ]
+  
+  filter_not_eq_ci:   [ filter3,      name, _not_eq_ci, expr ]
+  filter_eq_ci:       [ filter3,      name, _eq_ci, expr ]
+  
+  filter_not_gt_eq:   [ filter3,      name, _not_gt_eq, expr ]
+  filter_not_lt_eq:   [ filter3,      name, _not_lt_eq, expr ]
+  filter_not_gt:      [ filter3,      name, _not_gt, expr ]
+  filter_not_lt:      [ filter3,      name, _not_lt, expr ]
+  filter_not_eq:      [ filter3,      name, _not_eq, expr ]
+  filter_gt_eq:       [ filter3,      name, _gt_eq, expr ]
+  filter_lt_eq:       [ filter3,      name, _lt_eq, expr ]
+  filter_gt:          [ filter3,      name, _gt, expr ]
+  filter_lt:          [ filter3,      name, _lt, expr ]
+  filter_eq:          [ filter3,      name, _eq, expr ]
   
   expr_add:           [ expr,         expr2, _op_add, expr ]
   expr_sub:           [ expr,         expr2, _op_sub, expr ]

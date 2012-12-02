@@ -37,14 +37,14 @@ class LalrGenerator {
 		print "- Building PHP Wrapper\n";
 		$generator = new LalrPHPGenerator( $this->name );
 		$generator->generate();
-
+/*
 		print "- Building Javascript Lexer\n";
 		$generator = new LalrLexerJSGenerator( $this->name, $this->grammar );
 		$generator->generate();
 		print "- Building Javascript parser\n";
 		$generator = new LalrParserJSGenerator( $this->name, $fsm, $this->grammar );
 		$generator->generate();
-
+*/
 		print "- Building HTML visualization of parser state table, and lexer\n";
 		$generator = new LalrHTMLVisualizationGenerator( $this->name, $fsm, $this->grammar );
 		$generator->generate();

@@ -18,7 +18,7 @@ class LalrHTMLVisualizationGenerator {
 		$this->goto_map = array();
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			foreach( $map as $symbol => $action_arr ) {
-				list( $action, $target ) = $action_arr;
+				list( $action, $target ) = explode(':',$action_arr,2);
 				if( $action == 'goto' ) {
 					if( !isset( $this->goto_map[$symbol] ) )
 						$this->goto_map[$symbol] = array();
@@ -162,7 +162,7 @@ td.mark {
 <?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue; ?>
 <td class="hard_top bordered"><?php
 if( isset( $map[$sym] ) ) {
-	list($action, $target) = $map[$sym];
+	list($action, $target) = explode(':',$map[$sym],2);
 	print $action.'<br/>'.$target;
 }
 ?></td>
@@ -171,7 +171,7 @@ if( isset( $map[$sym] ) ) {
 <?php foreach( $this->grammar->non_terminals() as $sym ): ?>
 <td class="hard_top bordered"><?php
 if( isset( $map[$sym] ) ) {
-	list($action, $target) = $map[$sym];
+	list($action, $target) = explode(':',$map[$sym],2);
 	print $action.'<br/>'.$target;
 }
 ?></td>
