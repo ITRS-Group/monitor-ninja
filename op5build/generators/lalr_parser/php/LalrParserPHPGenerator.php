@@ -31,8 +31,7 @@ class LalrParserPHPGenerator extends class_generator {
 		
 		$this->init_class();
 		$this->variable( 'visitor' );
-		$this->variable( 'stack', array(0) );
-		$this->variable( 'token_stack', array('start') );
+		$this->variable( 'stack', null );
 		$this->variable( 'continue', false );
 		$this->variable( 'done', false );
 		$this->generate_constructor();
@@ -56,8 +55,7 @@ class LalrParserPHPGenerator extends class_generator {
 	
 	private function generate_parse() {
 		$this->init_function( 'parse', array( 'lexer' ) );
-		$this->write( '$this->state_stack = %s;', array(0) );
-		$this->write( '$this->token_stack = %s;', array('start') );
+		$this->write( '$this->stack = array(array(0,"start"));');
 		$this->write( '$this->continue = %s;', false );
 		$this->write( '$this->done = %s;', false );
 		$this->write( 'while( !$this->done ) {' );
@@ -72,7 +70,8 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->write('$this->continue = false;');
 		$this->write('$result = null;');
 		$this->write('do {');
-		$this->write('$state_handler = "state_".end($this->state_stack);');
+		$this->write('$head = end($this->stack);');
+		$this->write('$state_handler = "state_".$head[0];');
 		$this->write('$result = $this->$state_handler($token);');
 		$this->write('} while( $this->continue );');
 		$this->write('return $result;');
@@ -100,8 +99,7 @@ class LalrParserPHPGenerator extends class_generator {
 			$this->comment( $action_arr );
 			switch( $action ) {
 				case 'shift':
-					$this->write( 'array_push( $this->state_stack, %s );', intval($target) );
-					$this->write( 'array_push( $this->token_stack, $token );' );
+					$this->write( 'array_push( $this->stack, array(%s,$token) );', intval($target) );
 					$this->write( '$this->continue = false;' );
 					$this->write( 'return null;' );
 					break;
@@ -111,11 +109,10 @@ class LalrParserPHPGenerator extends class_generator {
 					$this->write( 'return null;' );
 					break;
 				case 'accept':
-					$this->write( '$program = array_pop($this->token_stack);');
-					$this->write( 'array_pop($this->token_stack);');
+					$this->write( '$program = array_pop($this->stack);');
 					$this->write( '$this->continue = false;' );
 					$this->write( '$this->done = true;' );
-					$this->write( 'return $this->visitor->accept($program[1]);');
+					$this->write( 'return $this->visitor->accept($program[1][1]);');
 					break;
 				case 'error': // To be implemented
 					break;
@@ -134,23 +131,21 @@ class LalrParserPHPGenerator extends class_generator {
 		$args = array();
 		foreach( array_reverse($item->get_symbols(),true) as $i => $symbol ) {
 			if( $item->symbol_enabled($i) ) {
-				$this->write( '$arg'.$i.' = array_pop($this->token_stack);');
-				$args[] = '$arg'.$i.'[1]';
+				$this->write( '$arg'.$i.' = array_pop($this->stack);');
+				$args[] = '$arg'.$i.'[1][1]';
 			} else {
-				$this->write( 'array_pop($this->token_stack);');
+				$this->write( 'array_pop($this->stack);');
 			}
 		}
-		$this->write( '$this->state_stack = array_slice($this->state_stack, 0, %s);', -count($item->get_symbols()) );
 		$this->write( '$new_token = array(%s, $this->visitor->visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), 0, 0);', $item->generates());
-			
-		$this->write( 'array_push( $this->token_stack, $new_token );' );
 		
 		if( isset($this->goto_map[$item->generates()]) ) {
 			$targets = $this->goto_map[$item->generates()];
 		} else {
 			$targets = array();
 		}
-		$this->write( 'switch( end($this->state_stack) ) {' );
+		$this->write( '$head = end($this->stack);' );
+		$this->write( 'switch( $head[0] ) {' );
 		
 		/* Merge cases */
 		$cases = array();
@@ -163,7 +158,7 @@ class LalrParserPHPGenerator extends class_generator {
 			foreach( $old_states as $old_state ) {
 				$this->write( 'case %s:', $old_state );
 			}
-			$this->write( 'array_push( $this->state_stack, %s ); break;', $new_state );
+			$this->write( 'array_push( $this->stack, array(%s,$new_token) ); break;', $new_state );
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
