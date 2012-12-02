@@ -106,7 +106,7 @@ class LalrParserJSGenerator extends js_class_generator {
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
-//		$this->write( 'throw new Exception( "Error at state %s, got token ".var_export($token,true) );', $state_id );
+		$this->write( 'throw "Error at state '.$state_id.', got token " + token[0];' );
 		$this->write( 'return null;' );
 		$this->write( '},' ); // FIXME: Should be finish_function, but with , instead of ;
 	}

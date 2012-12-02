@@ -107,7 +107,7 @@ class LalrParserPHPGenerator extends class_generator {
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
-		$this->write( 'throw new Exception( "Error at state %s, got token ".var_export($token,true) );', $state_id );
+		$this->write( 'throw new Exception( "Error at state '.$state_id.', got token ".$token[0] );' );
 		$this->write( 'return null;' );
 		$this->finish_function();
 	}
