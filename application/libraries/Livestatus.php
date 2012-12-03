@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Custom exception for Livestatus errors
- */
-class LivestatusException extends Exception {}
-
 /*
  * Livestatus Class
  *
@@ -596,7 +591,7 @@ class LivestatusBackend {
 	public static function combineFilter($operator, $filter) {
 
 		if(!isset($operator) and $operator != '-or' and $operator != '-and') {
-			throw new LivestatusException("unknown operator in combine_filter(): ".$operator);
+			throw new Op5LivestatusException("unknown operator in combine_filter(): ".$operator);
 		}
 
 		if(!isset($filter)) {
@@ -604,7 +599,7 @@ class LivestatusBackend {
 		}
 
 		if(!is_array($filter)) {
-			throw new LivestatusException("expected array in combine_filter(): ");
+			throw new Op5LivestatusException("expected array in combine_filter(): ");
 		}
 
 		if(count($filter) == 0) {
@@ -766,12 +761,12 @@ class LivestatusBackend {
 		$len     = intval(trim(substr($head, 4, 15)));
 		$body    = $this->connection->readSocket($len);
 		if(empty($body))
-			throw new LivestatusException("empty body for query: <pre>".$query."</pre>");
+			throw new Op5LivestatusException("empty body for query: <pre>".$query."</pre>");
 		if($status != 200)
-			throw new LivestatusException("Invalid request: $body");
+			throw new Op5LivestatusException("Invalid request: $body");
 		$result = json_decode(utf8_encode($body));
 		if (!$result) {
-			throw new LivestatusException("Invalid response: $body");
+			throw new Op5LivestatusException("Invalid response: $body");
 		}
 		
 		$objects = $result->data;
@@ -782,7 +777,7 @@ class LivestatusBackend {
 			Database::$benchmarks[] = array('query' => $this->formatQueryForDebug($query), 'time' => $stop - $start, 'rows' => $count);//count($objects));
 		}
 		if ($objects === null) {
-			throw new LivestatusException("Invalid output");
+			throw new Op5LivestatusException("Invalid output");
 		}
 		return array($objects,$count);
 	}
@@ -881,7 +876,7 @@ class LivestatusBackend {
 			return "";
 		}
 
-		throw new LivestatusException("broken filter");
+		throw new Op5LivestatusException("broken filter");
 	}
 
 	private function is_assoc($array) {
@@ -1010,11 +1005,11 @@ class LivestatusConnection {
 			}
 		}
 		else {
-			throw new LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
+			throw new Op5LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
 		}
 
 		if(!$this->connection) {
-			throw new LivestatusException("connection ".$this->connectionString." failed: ".$errstr);
+			throw new Op5LivestatusException("connection ".$this->connectionString." failed: ".$errstr);
 		}
 	}
 
@@ -1030,7 +1025,7 @@ class LivestatusConnection {
 			$this->connect();
 		$out = @fwrite($this->connection, $str);
 		if ($out === false)
-			throw new LivestatusException("Couldn't write to livestatus socket $address");
+			throw new Op5LivestatusException("Couldn't write to livestatus socket $address");
 	}
 
 	public function readSocket($len) {
