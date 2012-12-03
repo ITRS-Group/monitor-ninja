@@ -19,4 +19,24 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		$lview->query = '[hosts] name ~~ "kaka"';
 	}
+	
+	public function fetch_ajax() {
+		$query = $this->input->get('q','');
+		
+		$preprocessor = new LSFilterPP_Core();
+		
+		$metadata = new LSFilterMetadataVisitor_Core();
+		
+		$parser = new LSFilter_Core($preprocessor, $metadata);
+		$parser->parse( $query );
+		
+		$setbuilder = new LSFilterSetBuilderVisitor_Core($metadata);
+		$parser = new LSFilter_Core($preprocessor, $setbuilder);
+		$set = $parser->parse( $query );
+		
+		foreach( $set->it($metadata->get_columns(),array()) as $elem ) {
+			var_dump( $elem );
+		}
+		die();
+	}
 }

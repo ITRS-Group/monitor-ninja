@@ -3,6 +3,7 @@
 require_once( 'LivestatusBaseClassGenerator.php' );
 require_once( 'LivestatusBaseClassRootGenerator.php' );
 require_once( 'LivestatusBasePoolClassGenerator.php' );
+require_once( 'LivestatusBaseRootPoolClassGenerator.php' );
 require_once( 'LivestatusWrapperClassGenerator.php' );
 require_once( 'LivestatusStructure.php' );
 require_once( 'LivestatusAutoloaderGenerator.php' );
@@ -21,6 +22,8 @@ class livestatusorm_generator extends generator_module {
 				'LivestatusSetIterator' => 'libraries/LivestatusSetIterator.php'
 				);
 		
+		$full_structure = LivestatusStructure::getTables();
+		
 		/* Generate base root class */
 		$generator = new LivestatusBaseClassRootGenerator( 'root', array('class'=>'ObjectRoot') );
 		$generator->generate();
@@ -29,8 +32,17 @@ class livestatusorm_generator extends generator_module {
 		$generator = new LivestatusWrapperClassGenerator( 'root', array('class'=>'ObjectRoot', 'modifiers'=>array('abstract')) );
 		if( !$generator->exists() )
 			$generator->generate();
+			
+		/* Generate base pool class */
+		$generator = new LivestatusBaseRootPoolClassGenerator( 'root', $full_structure );
+		$generator->generate();
+			
+		/* Generate pool wrapper if not exists */
+		$generator = new LivestatusWrapperClassGenerator( 'root', array('class'=>'ObjectPool', 'modifiers'=>array('abstract')) );
+		if( !$generator->exists() )
+			$generator->generate();
 		
-		foreach( LivestatusStructure::getTables() as $name => $structure ) {
+		foreach( $full_structure as $name => $structure ) {
 			/* Generate base class */
 			$generator = new LivestatusBaseClassGenerator( $name, $structure );
 			$generator->generate();

@@ -44,11 +44,22 @@ class LivestatusSet implements IteratorAggregate, Countable {
 		return $result;
 	}
 	
+	public function complement() {
+		$filter = new LivestatusFileNot($this->filter);
+		
+		$result = new LivestatusSet( $this->table, $this->class );
+		$result->filter = $filter;
+		return $result;
+	}
+	
 	public function reduceBy( $column, $value, $op='=' ) {
 		$newfilter = new LivestatusFilterAnd();
 		$newfilter->add( $this->filter );
 		$newfilter->add( new LivestatusFilterMatch( $column, $value, $op ) );
-		$this->filter = $newfilter;
+		
+		$result = new LivestatusSet( $this->table, $this->class );
+		$result->filter = $newfilter;
+		return $result;
 	}
 	
 	/*
