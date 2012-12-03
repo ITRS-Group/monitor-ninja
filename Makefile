@@ -19,7 +19,7 @@ generate-css:
 	compass compile --boring application/views/themes/default/css/dark || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
 
 generate-php:
-	php op5build/generators/run.php
+	php src/generators/run.php
 
 test: test-php-lint test-reports test-unittest
 
