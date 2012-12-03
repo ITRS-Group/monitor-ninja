@@ -761,7 +761,7 @@ class LivestatusBackend {
 		$len     = intval(trim(substr($head, 4, 15)));
 		$body    = $this->connection->readSocket($len);
 		if(empty($body))
-			throw new Op5LivestatusException("empty body for query: <pre>".$query."</pre>");
+			throw new Op5LivestatusException("empty body for query to {$this->config['path']}: <pre>".$query."</pre>");
 		if($status != 200)
 			throw new Op5LivestatusException("Invalid request: $body");
 		$result = json_decode(utf8_encode($body));
