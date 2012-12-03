@@ -9,6 +9,7 @@ require_once( 'js/LalrLexerJSGenerator.php' );
 require_once( 'js/LalrPreprocessorJSGenerator.php' );
 require_once( 'js/LalrParserJSGenerator.php' );
 require_once( 'js/LalrVisitorJSGenerator.php' );
+require_once( 'js/LalrJSGenerator.php' );
 require_once( 'html/LalrHTMLVisualizationGenerator.php' );
 require_once( 'LalrStateMachine.php' );
 require_once( 'LalrGrammar.php' );
@@ -54,8 +55,11 @@ class LalrGenerator {
 		print "- Building Javascript Visitor\n";
 		$generator = new LalrVisitorJSGenerator( $this->name, $this->grammar );
 		$generator->generate();
+		print "- Building Javascript Wrapper\n";
+		$generator = new LalrJSGenerator( $this->name );
+		$generator->generate();
 
-		print "- Building HTML visualization of parser state table, and lexer\n";
+		print "- Building HTML visualization of parser state table and lexer\n";
 		$generator = new LalrHTMLVisualizationGenerator( $this->name, $fsm, $this->grammar );
 		$generator->generate();
 	}

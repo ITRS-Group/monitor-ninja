@@ -41,13 +41,13 @@ class LalrLexerJSGenerator extends js_class_generator {
 		foreach( $this->grammar as $name => $match ) {
 			$this->write();
 			$this->comment( "Match token: $name" );
+			$this->write( 'if( length < 0 ) {' );
 			$this->write( 'var matches = this.buffer.match('.$match.');');
-			$this->write( 'if( length == -1 ) {' );
 			$this->write( 'if( matches != null ) {' );
-			$this->write(     'length = matches[1].length;' );
+			$this->write( 'length = matches[1].length;' );
 			if( substr($name,0,1) != '_' ) {
-				$this->write(     'token = '.json_encode( $name ).';' );
-				$this->write(     'value = this.visitor.preprocess_'.$name.'(matches[1]);' );
+				$this->write( 'token = '.json_encode( $name ).';' );
+				$this->write( 'value = this.visitor.preprocess_'.$name.'(matches[1]);' );
 			}
 			$this->write( '}' );
 			$this->write( '}' );

@@ -71,7 +71,6 @@ class LalrParserPHPGenerator extends class_generator {
 	
 	private function generate_state( $state_id, $map ) {
 		$this->init_function( 'state_'.$state_id, array('token'), 'private' );
-		$this->comment( strval( $this->fsm->get_state($state_id) ) );
 		$this->write( 'switch( $token[0] ) {' );
 		
 		/* Merge cases per action... many cases use same action... */

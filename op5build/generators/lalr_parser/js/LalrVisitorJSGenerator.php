@@ -31,7 +31,7 @@ class LalrVisitorJSGenerator extends js_class_generator {
 		$args = array();
 		foreach( $item->get_symbols() as $i => $symbol ) {
 			if( $item->symbol_enabled($i) ) {
-				$args[] = $symbol.$i;
+				$args[] = rtrim($symbol,'0123456789').$i;
 			}
 		}
 		

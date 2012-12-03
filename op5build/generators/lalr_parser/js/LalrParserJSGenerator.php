@@ -70,7 +70,8 @@ class LalrParserJSGenerator extends js_class_generator {
 	
 	private function generate_state( $state_id, $map ) {
 		$this->init_function( false, array('token'), 'private' );
-		$this->comment( "State: $state_id\n".trim(strval( $this->fsm->get_state($state_id) )) );
+//		$this->comment( "State: $state_id\n".trim(strval( $this->fsm->get_state($state_id) )) );
+		$this->comment( "State: $state_id" );
 		$this->write( 'switch( token[0] ) {' );
 		
 		/* Merge cases per action... many cases use same action... */

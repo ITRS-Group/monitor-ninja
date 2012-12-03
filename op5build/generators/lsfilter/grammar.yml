@@ -21,10 +21,6 @@ tokens:
   not_eq_ci:   /^(!=~)/
   eq_ci:       /^(=~)/
   
-  not_gt_eq:   /^(!>=)/
-  not_lt_eq:   /^(!<=)/
-  not_gt:      /^(!>)/
-  not_lt:      /^(!<)/
   not_eq:      /^(!=)/
   gt_eq:       /^(>=)/
   lt_eq:       /^(<=)/
@@ -34,11 +30,6 @@ tokens:
   
   colon:       /^(:)/
   comma:       /^(,)/
-  
-  op_add:      /^(\+)/
-  op_sub:      /^(\-)/
-  op_mult:     /^(\*)/
-  op_div:      /^(\/)/
   
   par_l:       /^(\()/
   par_r:       /^(\))/
@@ -56,47 +47,42 @@ rules:
   
   search_query:       [ search_query, filter ]
   
-  filter_or:          [ filter,       filter2, _or, filter ]
-  _filter_1_2:        [ filter,       filter2 ]
-  filter_and:         [ filter2,      filter3, _and, filter2 ]
-  _filter_2_3:        [ filter2,      filter3 ]
-  filter_not:         [ filter3,      _not, filter3 ]
-  _filter_parentesis: [ filter3,      _par_l, filter, _par_r ]
+  filter_or:          [ filter,         filter, _or, filter2 ]
+  _filter_1_2:        [ filter,         filter2 ]
   
-  filter_in:          [ filter3,      _in, string ]
-  filter_field_in:    [ filter3,      name, _in, string ]
+  filter_and:         [ filter2,        filter2, _and, filter3 ]
+  _filter_2_3:        [ filter2,        filter3 ]
   
-  filter_not_re_ci:   [ filter3,      name, _not_re_ci, expr ]
-  filter_not_re_cs:   [ filter3,      name, _not_re_cs, expr ]
-  filter_re_ci:       [ filter3,      name, _re_ci, expr ]
-  filter_re_cs:       [ filter3,      name, _re_cs, expr ]
+  filter_not:         [ filter3,        _not, filter4 ]
+  _filter_3_4:        [ filter3,        filter4 ]
   
-  filter_not_eq_ci:   [ filter3,      name, _not_eq_ci, expr ]
-  filter_eq_ci:       [ filter3,      name, _eq_ci, expr ]
+  filter_ok:          [ filter4,        match ]
+  _filter_parentesis: [ filter4,        _par_l, filter, _par_r ]
   
-  filter_not_gt_eq:   [ filter3,      name, _not_gt_eq, expr ]
-  filter_not_lt_eq:   [ filter3,      name, _not_lt_eq, expr ]
-  filter_not_gt:      [ filter3,      name, _not_gt, expr ]
-  filter_not_lt:      [ filter3,      name, _not_lt, expr ]
-  filter_not_eq:      [ filter3,      name, _not_eq, expr ]
-  filter_gt_eq:       [ filter3,      name, _gt_eq, expr ]
-  filter_lt_eq:       [ filter3,      name, _lt_eq, expr ]
-  filter_gt:          [ filter3,      name, _gt, expr ]
-  filter_lt:          [ filter3,      name, _lt, expr ]
-  filter_eq:          [ filter3,      name, _eq, expr ]
+  match_in:           [ match,          _in, string ]
+  match_field_in:     [ match,          name, _in, string ]
   
-  expr_add:           [ expr,         expr, _op_add, expr2 ]
-  expr_sub:           [ expr,         expr, _op_sub, expr2 ]
-  _expr_end:          [ expr,         expr2 ]
+  match_not_re_ci:    [ match,          name, _not_re_ci, arg_string ]
+  match_not_re_cs:    [ match,          name, _not_re_cs, arg_string ]
+  match_re_ci:        [ match,          name, _re_ci, arg_string ]
+  match_re_cs:        [ match,          name, _re_cs, arg_string ]
   
-  expr_mult:          [ expr2,        expr2, _op_mult, expr3 ]
-  expr_div:           [ expr2,        expr2, _op_div, expr3 ]
-  _expr_end2:         [ expr2,        expr3 ]
+  match_not_eq_ci:    [ match,          name, _not_eq_ci, arg_string ]
+  match_eq_ci:        [ match,          name, _eq_ci, arg_string ]
   
-  _expr_par:          [ expr3,        _par_l, expr, _par_r ]
-#  expr_func:         [ expr3,        name, _par_l, expr, _par_r ]
-  _expr_num:          [ expr3,        integer ]
-  _expr_name:         [ expr3,        name ]
+  match_not_eq:       [ match,          name, _not_eq, arg_num ]
+  match_gt_eq:        [ match,          name, _gt_eq, arg_num ]
+  match_lt_eq:        [ match,          name, _lt_eq, arg_num ]
+  match_gt:           [ match,          name, _gt, arg_num ]
+  match_lt:           [ match,          name, _lt, arg_num ]
+  
+  match_eq:           [ match,          name, _eq, arg_num_string ]
+  
+  _arg_num_str_num:   [ arg_num_string, arg_num ]
+  _arg_num_str_str:   [ arg_num_string, arg_string ]
+  
+  _arg_num:           [ arg_num,        integer ]
+  _arg_string:        [ arg_string,     string ]
   
   
     

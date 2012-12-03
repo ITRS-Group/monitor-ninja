@@ -1,8 +1,6 @@
 <?php
 
 class LalrPHPGenerator extends class_generator {
-	private $grammar;
-	
 	public function __construct( $parser_name ) {
 		$this->classname = $parser_name;
 		$this->set_library();
