@@ -7,9 +7,9 @@ class LivestatusBasePoolClassGenerator extends class_generator {
 	
 	public function __construct( $name, $descr ) {
 		$this->name = $name;
-		$this->set_model();
-		$this->objectclass = $descr['class'].$this->class_suffix;
+		$this->objectclass = $descr['class'].self::$model_suffix;
 		$this->classname = 'Base'.$descr['class'].'Pool';
+		$this->set_model();
 	}
 	
 	public function generate() {

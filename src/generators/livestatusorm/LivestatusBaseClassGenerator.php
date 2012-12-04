@@ -62,7 +62,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	
 	private function fetch_object( $name, $type ) {
 		list( $class, $prefix ) = $type;
-		$this->write( "\$this->$name = new $class( \$values, \$prefix.".var_export($prefix,true)." );" );
+		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, \$prefix.".var_export($prefix,true)." );" );
 	}
 	
 	private function getset_object( $name, $type ) {

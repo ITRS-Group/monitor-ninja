@@ -8,6 +8,9 @@ abstract class class_generator {
 	protected $class_basedir = '.';
 	protected $classname;
 	
+	protected static $model_suffix = '_Model';
+	protected static $library_suffix = '_Core';
+	
 	public function generate( $skip_generated_note = false ) {
 		$class_dir = dirname( $this->get_filename() );
 		
@@ -39,12 +42,12 @@ abstract class class_generator {
 	}
 	
 	public function set_library() {
-		$this->set_class_suffix( '_Core' );
+		$this->set_class_suffix( self::$library_suffix );
 		$this->set_class_dir( 'libraries' );
 	}
 	
 	public function set_model() {
-		$this->set_class_suffix( '_Model' );
+		$this->set_class_suffix( self::$model_suffix );
 		$this->set_class_dir( 'models' );
 	}
 	

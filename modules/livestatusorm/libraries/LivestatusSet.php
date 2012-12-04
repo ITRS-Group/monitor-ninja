@@ -16,7 +16,7 @@ class LivestatusSet implements IteratorAggregate, Countable {
 	}
 	
 	/*
-	 * Set combinings
+	 * Set operations
 	 */
 	public function union( $set ) {
 		if( $this->table != $set->table )

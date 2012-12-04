@@ -24,7 +24,7 @@ class LivestatusBaseRootPoolClassGenerator extends class_generator {
 		$this->write( 'switch( $name ) {' );
 		foreach( $this->full_structure as $name => $struct ) {
 			$this->write( 'case %s:', $name );
-			$this->write( 'return new '.$struct['class'].'Pool'.$this->class_suffix.'();' );
+			$this->write( 'return new '.$struct['class'].'Pool'.self::$model_suffix.'();' );
 		}
 		$this->write( '}' );
 		$this->write( 'return null;' );
