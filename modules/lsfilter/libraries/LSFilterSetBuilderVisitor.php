@@ -13,7 +13,7 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	
 	public function __construct( $metadata ) {
 		$this->metadata = $metadata;
-		$this->pool = ObjectPool_Model::pool($this->metadata->get_table());
+		$this->pool = ObjectPool_Model::pool($this->metadata['name']);
 		$this->all_set = $this->pool->all();
 	}
 

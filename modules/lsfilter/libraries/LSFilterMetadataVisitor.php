@@ -1,8 +1,5 @@
 <?php
 class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
-	private $table = null;
-	private $columns = null;
-	
 	public function get_table() {
 		return $this->table;
 	}
@@ -13,24 +10,22 @@ class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
 	
 	// entry: program := * query end
 	public function visit_entry($query0) {
-		return null;
+		return $query0;
 	}
 
 	// query: query := * brace_l table_def brace_r search_query
 	public function visit_query($table_def1, $search_query3) {
-		return null;
+		return $table_def1;
 	}
 
 	// table_def_simple: table_def := * name
 	public function visit_table_def_simple($name0) {
-		$this->table = $name0;
-		$this->columns = false;
+		return array('name' => $name0);
 	}
 
 	// table_def_columns: table_def := * name colon column_list
 	public function visit_table_def_columns($name0, $column_list2) {
-		$this->table = $name0;
-		$this->columns = $column_list2;
+		return array('name' => $name0, 'columns' => $column_list2);
 	}
 
 	// column_list_end: column_list := * name
@@ -140,6 +135,6 @@ class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
 	}
 
 	public function accept($result) {
-		return null;
+		return $result;
 	}
 }
