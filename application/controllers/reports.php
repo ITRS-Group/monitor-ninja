@@ -264,7 +264,7 @@ class Reports_Controller extends Base_reports_Controller
 				return url::redirect(Router::$controller.'/index');
 		}
 		$var = $this->options->get_value('report_type');
-		$objects = false;
+		$objects = array();
 		$mon_auth = Nagios_auth_Model::instance();
 		foreach ($this->options[$var] as $obj) {
 			if ($mon_auth->{'is_authorized_for_'.substr($this->options['report_type'], 0, -1)}($obj))
