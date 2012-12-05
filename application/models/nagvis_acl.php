@@ -73,6 +73,16 @@ class Nagvis_acl_Model {
 	 * @return array Nagvis permission table
 	 */
 	public function parsePermissions() {
+		if( $this->op5auth->authorized_for( 'nagvis_admin' ) ) {
+			/* don't auth to logout, change password, manage users/roles */
+			return array(
+				'AutoMap'=>array('*'=>array('*'=>array())),
+				'General'=>array('*'=>array('*'=>array())),
+				'Map'=>array('*'=>array('*'=>array())),
+				'Rotation'=>array('*'=>array('*'=>array())),
+				'Overview'=>array('*'=>array('*'=>array())),
+			);
+		}
 		$map_perm = array();
 		$op5auth = op5auth::instance();
 		if( $op5auth->authorized_for( 'nagvis_view' ) ) {
