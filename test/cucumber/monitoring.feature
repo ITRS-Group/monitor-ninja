@@ -319,3 +319,21 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Flap detection" should be shown as "Disabled"
 		And I should see "Enable flap detection"
+
+	@configuration @asmonitor @case-647
+	Scenario: Host details host extinfo page configure
+
+		Verify that the "Configure" link works correctly.
+
+		When I click "linux-server1"
+		And I click "Configure"
+		Then I should be on the Configure page
+
+	@configuration @asmonitor @case-647
+	Scenario: Host details host extinfo page show performance graph
+
+		Verify that the "Show performance graph" link works correctly.
+
+		When I click "linux-server1"
+		And I click "Show performance graph"
+		Then I should be on the PNP page
