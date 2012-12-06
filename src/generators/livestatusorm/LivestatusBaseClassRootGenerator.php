@@ -20,7 +20,7 @@ class LivestatusBaseClassRootGenerator extends class_generator {
 	
 	private function generate_export() {
 		$this->init_function('export');
-		$this->write( '$result=array();');
+		$this->write( '$result=array("_table" => $this->_table);');
 		$this->write( 'foreach( $this->export as $field) {' );
 		$this->write(     '$value = $this->{"get_$field"}();');
 		$this->write(     'if( $value instanceof ObjectRoot'.self::$model_suffix.' ) {');
