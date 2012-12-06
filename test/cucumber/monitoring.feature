@@ -7,11 +7,11 @@ Feature: Monitoring
 			| WindowsServers    | win-server1,win-server2		|
 
 		And I have these services:
-			| Description	| Host 			| CheckCommand		| Notifications |
-			| System Load	| linux-server1 | check_nrpe!load	| Enabled		|
-			| System Load	| linux-server2 | check_nrpe!load	| Enabled		|
-			| PING			| win-server1 	| check_ping		| Enabled		|
-			| PING			| win-server2 	| check_ping		| Disabled		|
+			| Description	| Host 			| Check command		| Notifications | Active checks |
+			| System Load	| linux-server1 | check_nrpe!load	| Enabled		| Enabled		|
+			| System Load	| linux-server2 | check_nrpe!load	| Enabled		| Enabled		|
+			| PING			| win-server1 	| check_ping		| Enabled		| Disabled		|
+			| PING			| win-server2 	| check_ping		| Disabled		| Enabled		|
 		And I have activated the configuration
 		And I am on the Host details page
 
@@ -150,6 +150,20 @@ Feature: Monitoring
 
 
 	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Stop obsessing
+
+		Verify that the "Stop obsessing" host command
+		works correctly.
+
+		When I click "linux-server1"
+		And I click "Stop obsessing"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Obsessing" should be shown as "Disabled"
+
+
+	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable passive check
 
 		Verify that the "Disable passive check" host command
@@ -204,20 +218,7 @@ Feature: Monitoring
 		When I click "Done"
 		And I click "Refresh"
 		Then I should see "This host has been scheduled for fixed downtime"
-
-	@configuration @asmonitor @case-646
-	Scenario: Host details host commands - Stop obsessing
-
-		Verify that the "Stop obsessing" host command
-		works correctly.
-
-		When I click "linux-server1"
-		And I click "Stop obsessing"
-		And I click "Submit"
-		Then I should see "Your command was successfully submitted"
-		When I click "Done"
-		Then "Obsessing" should be shown as "Disabled"
-
+	
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable notifications for services
 
@@ -239,11 +240,82 @@ Feature: Monitoring
 		Verify that the "Enable notifications for all services"
 		host command works correctly.
 
-		When I click "linux-server1"
+		When I click "win-server2"
 		And I click "Enable notifications for all services"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		And I click "Status detail"
-		And I click "System Load"
+		And I click "PING"
 		Then "Notifications" should be shown as "Enabled"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Schedule check for all services
+
+		Verify that the "Schedule check for all services" host command
+		works correctly.
+
+		When I click "linux-server1"
+		And I click "Schedule a check of all services"
+		And I note the value of "field_check_time"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I click "Status detail"
+		And I click "System Load"
+		Then "Next scheduled check" should be shown as the value of "field_check_time"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Disable checks of all services
+
+		Verify that the "Disable checks of all services" host command works correctly.
+
+		When I click "linux-server1"
+		And I click "Disable checks of all services"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I click "Status detail"
+		And I click "System Load"
+		Then "Active checks" should be shown as "Disabled"
+
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Enable checks of all services
+
+		Verify that the "Enable checks of all services" host command works correctly.
+
+		When I click "win-server1"
+		And I click "Enable checks of all services"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I click "Status detail"
+		And I click "PING"
+		Then "Active checks" should be shown as "Enabled"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Disable event handler
+
+		Verify that the "Disable event handler" host command works correctly.
+
+		When I click "linux-server1"
+		And I click "Disable event handler"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Event handler" should be shown as "Disabled"
+		And I should see "Enable event handler"
+
+	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Disable flap detection
+
+		Verify that the "Disable flap detection" host command works correctly.
+
+		When I click "linux-server1"
+		And I click "Disable flap detection"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Flap detection" should be shown as "Disabled"
+		And I should see "Enable flap detection"
