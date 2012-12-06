@@ -16,8 +16,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	public function generate() {
 		parent::generate();
 		$this->init_class( 'ObjectRoot', array('abstract') );
-		
-		$this->write( 'protected $_table = '.var_export($this->name,true).';' );
+		$this->variable( '_table', $this->name, 'protected' );
 		$this->write();
 		
 		/* Storage */
@@ -63,6 +62,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_object( $name, $type ) {
 		list( $class, $prefix ) = $type;
 		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, \$prefix.".var_export($prefix,true)." );" );
+		$this->write( "\$this->export[] = %s;", $name );
 	}
 	
 	private function getset_object( $name, $type ) {
@@ -80,6 +80,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_string( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) { ");
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
+		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 	
@@ -98,6 +99,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_time( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) { ");
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
+		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 	
@@ -116,6 +118,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_int( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = intval( \$values[\$prefix.'$name'] );" );
+		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 	
@@ -134,6 +137,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_float( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
+		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 	
@@ -152,6 +156,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_list( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
+		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 	
@@ -170,6 +175,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function fetch_dict( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
+		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 	

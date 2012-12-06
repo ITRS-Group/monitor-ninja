@@ -35,9 +35,16 @@ class ListView_Controller extends Authenticated_Controller {
 		if( isset( $metadata['columns'] ) )
 			$columns = $metadata['columns'];
 		
+		$data = array();
 		foreach( $set->it($columns,array()) as $elem ) {
-			var_dump( $elem );
+			$data[] = $elem->export();
 		}
-		die();
+
+		$this->output_ajax( $data );
+	}
+	
+	private function output_ajax( $data ) {
+		$this->auto_render = false;
+		echo json_encode( $data );
 	}
 }
