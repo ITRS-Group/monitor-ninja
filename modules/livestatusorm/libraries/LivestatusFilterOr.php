@@ -31,6 +31,18 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 		return $result;
 	}
 	
+	function generateStats() {
+		$result = "";
+		foreach( $this->sub_filters as $subf ) {
+			$result .= $subf->generateStats();
+		}
+
+		$count = count($this->sub_filters);
+		if( $count != 1 )
+			$result .= "StatsOr: $count\n";
+		return $result;
+	}
+	
 	function add( $filter ) {
 		if( $filter instanceof self ) {
 			foreach( $filter->sub_filters as $subf ) {

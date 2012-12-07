@@ -31,6 +31,17 @@ class LivestatusAccess {
 	/********************************************************
 	 * INTERNAL FUNCTIONS
 	 *******************************************************/
+	public function stats_single($table, $filter, $stats) {
+		$columns = array();
+		foreach( $stats as $name => $query ) {
+			$columns[] = $name;
+			$filter .= $query;
+		}
+		list($res_columns,$objects,$res_count) = $this->query($table,$filter,array());
+		
+		return array_combine($columns, $objects[0]);
+	}
+	
 	public function query($table, $filter, $columns) {
 		$query  = "GET $table\n";
 		$query .= "OutputFormat: wrapped_json\n";
@@ -42,7 +53,8 @@ class LivestatusAccess {
 			$query .= "Columns: ".implode(' ',$columns)."\n";
 		}
 
-		$query .= $filter."\n";
+		$query .= $filter;
+		$query .= "\n";
 		
 		$start   = microtime(true);
 		$rc      = $this->connection->writeSocket($query);;

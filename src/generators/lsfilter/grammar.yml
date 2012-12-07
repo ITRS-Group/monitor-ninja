@@ -71,7 +71,7 @@ rules:
   match_not_eq_ci:    [ match,          field, _not_eq_ci, arg_string ]
   match_eq_ci:        [ match,          field, _eq_ci, arg_string ]
   
-  match_not_eq:       [ match,          field, _not_eq, arg_num ]
+  match_not_eq:       [ match,          field, _not_eq, arg_num_string ]
   match_gt_eq:        [ match,          field, _gt_eq, arg_num ]
   match_lt_eq:        [ match,          field, _lt_eq, arg_num ]
   match_gt:           [ match,          field, _gt, arg_num ]

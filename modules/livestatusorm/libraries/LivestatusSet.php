@@ -75,6 +75,33 @@ class LivestatusSet implements IteratorAggregate, Countable {
 	 * Access
 	 */
 	
+	/* Stats */
+	public function stats( $intersections ) {
+		// Fetch Livestatus instance
+		$ls = LivestatusAccess::instance();
+		
+		// Handle case of single stats field fetch
+		$single = !is_array( $intersections );
+		if($single) $intersections = array($intersections);
+		
+		// Prepare filter
+		$ls_filter = $this->filter->generateFilter();
+		
+		// Generate stats filter
+		$ls_intersections = array();
+		foreach( $intersections as $name => $intersection ) {
+			if( $intersection->table == $this->table ) {
+				$ls_intersections[$name] = $intersection->filter->generateStats();
+			} // TODO: Error handling
+		}
+		
+		// Run stats
+		$result = $ls->stats_single($this->table, $ls_filter, $ls_intersections);
+
+		// Return in correct format
+		if($single) return $result[0];
+		return $result;
+	}
 	
 	/* For Countable */
 	public function count() {

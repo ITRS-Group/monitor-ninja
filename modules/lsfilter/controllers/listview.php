@@ -2,7 +2,6 @@
 
 class ListView_Controller extends Authenticated_Controller {
 	public function index($default_query = "[hosts] state = 0") {
-		
 		$this->xtra_js = array();
 		$basepath = 'modules/lsfilter/';
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';
@@ -24,31 +23,63 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->template->title = _('List view');
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
-		
+
 		$lview->query = $this->input->get('filter_query', $default_query);
 	}
-	
+
 	public function fetch_ajax() {
 		$query = $this->input->get('q','');
-		
+
 		try {
-			$set = ObjectPool_Model::get_by_query( $query );
-			
+			$result_set = ObjectPool_Model::get_by_query( $query );
+
 			$columns = false;
 			if( isset( $metadata['columns'] ) )
 				$columns = $metadata['columns'];
-			
+
 			$data = array();
-			foreach( $set->it($columns,array()) as $elem ) {
+			foreach( $result_set->it($columns,array()) as $elem ) {
 				$data[] = $elem->export();
 			}
-	
-			$this->output_ajax( array( 'status' => 'success', 'data' => $data ) );
+
+
+			/* TODO: fixa till stats bŠttre */
+			$hostpool = new HostPool_Model();
+			$servicepool = new ServicePool_Model();
+
+			$hoststats = array(
+					'host_state_up'          => $hostpool->get_by_name('std host state up'),
+					'host_state_down'        => $hostpool->get_by_name('std host state down'),
+					'host_state_unreachable' => $hostpool->get_by_name('std host state unreachable'),
+					'host_pending'           => $hostpool->get_by_name('std host pending'),
+					'host_all'               => $hostpool->get_by_name('std host all')
+			);
+			$servicestats = array(
+					'service_state_ok'       => $servicepool->get_by_name('std service state ok'),
+					'service_state_warning'  => $servicepool->get_by_name('std service state warning'),
+					'service_state_critical' => $servicepool->get_by_name('std service state critical'),
+					'service_state_unknown'  => $servicepool->get_by_name('std service state unknown'),
+					'service_pending'        => $servicepool->get_by_name('std service pending'),
+					'service_all'            => $servicepool->get_by_name('std service all')
+			);
+
+			$stats = array();
+			switch( $result_set->get_table() ) {
+				case 'hosts':
+					$stats = $result_set->stats( $hoststats )
+					       + $result_set->convert_to_object('services','host')->stats( $servicestats );
+					break;
+				case 'services':
+					$stats = $result_set->stats( $servicestats );
+					break;
+			}
+
+			$this->output_ajax( array( 'status' => 'success', 'stats' => $stats, 'data' => $data ) );
 		} catch( Exception $e ) {
 			$this->output_ajax( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
 	}
-	
+
 	private function output_ajax( $data ) {
 		$this->auto_render = false;
 		echo json_encode( $data );

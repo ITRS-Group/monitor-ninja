@@ -14,9 +14,13 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	function prefix( $prefix ) {
 		return new LivestatusFilterMatch( $prefix.$this->field, $this->value, $this->op );
 	}
-	
+
 	function generateFilter() {
 		/* TODO: escape */
 		return "Filter: ".$this->field." ".$this->op. " ".$this->value."\n";
+	}
+	function generateStats() {
+		/* TODO: escape */
+		return "Stats: ".$this->field." ".$this->op. " ".$this->value."\n";
 	}
 }
