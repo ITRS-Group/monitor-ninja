@@ -1,5 +1,7 @@
 <?php
 
+require_once("op5/auth/Auth.php");
+
 /**
  * Livetatus interaface.
  */
@@ -22,7 +24,7 @@ class LivestatusAccess {
 		$config           = $config ? $config : 'livestatus';
 		$this->config     = Kohana::config('database.'.$config);
 		$this->auth       = Auth::instance();
-		$this->connection = new LivestatusConnection(array('path' => $this->config['path']));
+		$this->connection = new LivestatusAccessConnection(array('path' => $this->config['path']));
 	}
 
 
@@ -34,8 +36,7 @@ class LivestatusAccess {
 		$query .= "OutputFormat: wrapped_json\n";
 		$query .= "KeepAlive: on\n";
 		$query .= "ResponseHeader: fixed16\n";
-
-		/* FIXME: Auth */
+		$query .= $this->auth($table);
 		
 		if(is_array( $columns )) {
 			$query .= "Columns: ".implode(' ',$columns)."\n";
@@ -74,6 +75,17 @@ class LivestatusAccess {
 			throw new LivestatusException("Invalid output");
 		}
 		return array($columns,$objects,$count);
+	}
+	
+	private function auth($table) {
+		$user = op5auth::instance()->get_user();
+		if(strpos($table, 'services') !== false && !$user->authorized_for('service_view_all') ) {
+			return "AuthUser: ".$user->username."\n";
+		}
+		elseif(strpos($table, 'hosts') !== false && !$user->authorized_for('host_view_all') ) {
+			return "AuthUser: ".$user->username."\n";
+		}
+		return "";
 	}
 	
 	private function formatQueryForDebug( $query ) {
@@ -215,5 +227,3 @@ class LivestatusAccessConnection {
 		return $socketData;
 	}
 }
-
-?>

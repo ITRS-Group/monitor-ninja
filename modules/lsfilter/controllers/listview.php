@@ -32,11 +32,7 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		$preprocessor = new LSFilterPP_Core();
 		
-		$parser = new LSFilter_Core($preprocessor, new LSFilterMetadataVisitor_Core());
-		$metadata = $parser->parse( $query );
-		
-		$parser = new LSFilter_Core($preprocessor, new LSFilterSetBuilderVisitor_Core($metadata));
-		$set = $parser->parse( $query );
+		$set = ObjectPool::get_by_query( $query );
 		
 		$columns = false;
 		if( isset( $metadata['columns'] ) )

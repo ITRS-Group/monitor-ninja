@@ -95,7 +95,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	};
 	
 	this.visit_entry = function(query0) {
-		return $('<form action="#" />').append(query0);
+		return query0;
 	};
 	
 	this.visit_query = function(table_def1, search_query3) {
@@ -190,20 +190,20 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		return result;
 	};
 	
-	this.visit_match_in        = function(name0, expr2) { return this.match('in',       name0,expr2); };
-	this.visit_match_field_in  = function(name0, expr2) { return this.match('field_in', name0,expr2); };
-	this.visit_match_not_re_ci = function(name0, expr2) { return this.match('not_re_ci',name0,expr2); };
-	this.visit_match_not_re_cs = function(name0, expr2) { return this.match('not_re_cs',name0,expr2); };
-	this.visit_match_re_ci     = function(name0, expr2) { return this.match('re_ci',    name0,expr2); };
-	this.visit_match_re_cs     = function(name0, expr2) { return this.match('re_cs',    name0,expr2); };
-	this.visit_match_not_eq_ci = function(name0, expr2) { return this.match('not_eq_ci',name0,expr2); };
-	this.visit_match_eq_ci     = function(name0, expr2) { return this.match('eq_ci',    name0,expr2); };
-	this.visit_match_not_eq    = function(name0, expr2) { return this.match('not_eq',   name0,expr2); };
-	this.visit_match_gt_eq     = function(name0, expr2) { return this.match('gt_eq',    name0,expr2); };
-	this.visit_match_lt_eq     = function(name0, expr2) { return this.match('lt_eq',    name0,expr2); };
-	this.visit_match_gt        = function(name0, expr2) { return this.match('gt',       name0,expr2); };
-	this.visit_match_lt        = function(name0, expr2) { return this.match('lt',       name0,expr2); };
-	this.visit_match_eq        = function(name0, expr2) { return this.match('eq',       name0,expr2); };
+	this.visit_match_in        = function(set_descr1)    { return this.match('in',       "FIXME",  set_descr1); };
+	this.visit_match_field_in  = function(field0, expr2) { return this.match('field_in', field0,expr2); };
+	this.visit_match_not_re_ci = function(field0, expr2) { return this.match('not_re_ci',field0,expr2); };
+	this.visit_match_not_re_cs = function(field0, expr2) { return this.match('not_re_cs',field0,expr2); };
+	this.visit_match_re_ci     = function(field0, expr2) { return this.match('re_ci',    field0,expr2); };
+	this.visit_match_re_cs     = function(field0, expr2) { return this.match('re_cs',    field0,expr2); };
+	this.visit_match_not_eq_ci = function(field0, expr2) { return this.match('not_eq_ci',field0,expr2); };
+	this.visit_match_eq_ci     = function(field0, expr2) { return this.match('eq_ci',    field0,expr2); };
+	this.visit_match_not_eq    = function(field0, expr2) { return this.match('not_eq',   field0,expr2); };
+	this.visit_match_gt_eq     = function(field0, expr2) { return this.match('gt_eq',    field0,expr2); };
+	this.visit_match_lt_eq     = function(field0, expr2) { return this.match('lt_eq',    field0,expr2); };
+	this.visit_match_gt        = function(field0, expr2) { return this.match('gt',       field0,expr2); };
+	this.visit_match_lt        = function(field0, expr2) { return this.match('lt',       field0,expr2); };
+	this.visit_match_eq        = function(field0, expr2) { return this.match('eq',       field0,expr2); };
 	
 	this.match = function(op,name,expr) {
 
@@ -236,13 +236,89 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 		fields.change(function () {that.swapinput(fields, val);})
 		that.swapinput(fields, val);
-
 		return result;
 	}
+	
+	// set_descr_name: Êset_descr := * string
+	this.visit_set_descr_name = function(string0) {
+		var result = $('<ul />');
+		result.append($('<li><strong>set_descr_name</strong></li>'));
+		result.append($('<li class="resultvisual" />').append(string0));
+		return result;
+	};
+	
+	// set_descr_query: Êset_descr := * query
+	this.visit_set_descr_query = function(query0) {
+		console.log("call visit_set_descr_query");
+		var result = $('<ul />');
+		result.append($('<li><strong>set_descr_query</strong></li>'));
+		result.append($('<li class="resultvisual" />').append(query0));
+		return result;
+	};
+	
+	// field_name: field := * name
+	this.visit_field_name = function(name0) {
+		var result = $('<ul />');
+		result.append($('<li><strong>field_name</strong></li>'));
+		result.append($('<li class="resultvisual" />').append(name0));
+		return result;
+	};
+	
+	// field_obj: field := * name dot field
+	this.visit_field_obj = function(name0, field2) {
+		var result = $('<ul />');
+		result.append($('<li><strong>field_obj</strong></li>'));
+		result.append($('<li class="resultvisual" />').append(name0));
+		result.append($('<li class="resultvisual" />').append(field2));
+		return result;
+	};
 };
 
+var render = {
+		"hosts": function(obj) {
+			return $('<li />').text(obj.name);
+		},
+		"services": function(obj) {
+			return $('<li />').text(obj.host.name+";"+obj.description);
+		}
+};
+
+var query_timer = null;
+var query_string = "";
+var current_request = null;
+
+var doAjaxSearch = function() {
+	if( current_request != null ) {
+		current_request.abort();
+	}
+	console.log( "Query: "+query_string );
+	current_request = $.ajax({
+		url: _site_domain + _index_page + "/" + _controller_name + "/fetch_ajax",
+		dataType: 'json',
+		data: {
+			"q": query_string
+		},
+		success: function(data) {
+			console.log( "Got "+data.length+" objects" );
+			var tbl = $('<ul />');
+			for( var i=0; i<data.length; i++ ) {
+				var obj = data[i];
+				tbl.append( render[obj._table](obj) );
+			}
+			$('#filter_result').empty().append(tbl);
+		}
+	});
+}
+
+function sendAjaxSearch(query) {
+	if (query_timer != null) {
+		clearTimeout( query_timer );
+	}
+	query_string = query;
+	query_timer = setTimeout( doAjaxSearch, 500 );
+}
+
 var visualizeSearchFilter = function(evt) {
-	
 	var filter_string = [];
 
 	var traverse = function (dom) {
@@ -311,13 +387,13 @@ var visualizeSearchFilter = function(evt) {
 	$('#filter_visual_form').bind('change', dotraverse);
 
 	try {
-		
 		var result = parser.parse(string);
 		$('#filter_visual').empty().append(result);
 		$('#filter_query').css("border", "2px solid #5d2");
 
 		dotraverse();
 
+		sendAjaxSearch(string);
 	} catch( ex ) {
 		$('#filter_query').css("border", "2px solid #f40")
 		//console.log(ex);

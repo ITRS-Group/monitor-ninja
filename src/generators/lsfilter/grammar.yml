@@ -30,6 +30,7 @@ tokens:
   
   colon:       /^(:)/
   comma:       /^(,)/
+  dot:         /^(\.)/
   
   par_l:       /^(\()/
   par_r:       /^(\))/
@@ -59,24 +60,30 @@ rules:
   filter_ok:          [ filter4,        match ]
   _filter_parentesis: [ filter4,        _par_l, filter, _par_r ]
   
-  match_in:           [ match,          _in, string ]
-  match_field_in:     [ match,          name, _in, string ]
+  match_in:           [ match,          _in, set_descr ]
+  match_field_in:     [ match,          field, _in, set_descr ]
   
-  match_not_re_ci:    [ match,          name, _not_re_ci, arg_string ]
-  match_not_re_cs:    [ match,          name, _not_re_cs, arg_string ]
-  match_re_ci:        [ match,          name, _re_ci, arg_string ]
-  match_re_cs:        [ match,          name, _re_cs, arg_string ]
+  match_not_re_ci:    [ match,          field, _not_re_ci, arg_string ]
+  match_not_re_cs:    [ match,          field, _not_re_cs, arg_string ]
+  match_re_ci:        [ match,          field, _re_ci, arg_string ]
+  match_re_cs:        [ match,          field, _re_cs, arg_string ]
   
-  match_not_eq_ci:    [ match,          name, _not_eq_ci, arg_string ]
-  match_eq_ci:        [ match,          name, _eq_ci, arg_string ]
+  match_not_eq_ci:    [ match,          field, _not_eq_ci, arg_string ]
+  match_eq_ci:        [ match,          field, _eq_ci, arg_string ]
   
-  match_not_eq:       [ match,          name, _not_eq, arg_num ]
-  match_gt_eq:        [ match,          name, _gt_eq, arg_num ]
-  match_lt_eq:        [ match,          name, _lt_eq, arg_num ]
-  match_gt:           [ match,          name, _gt, arg_num ]
-  match_lt:           [ match,          name, _lt, arg_num ]
+  match_not_eq:       [ match,          field, _not_eq, arg_num ]
+  match_gt_eq:        [ match,          field, _gt_eq, arg_num ]
+  match_lt_eq:        [ match,          field, _lt_eq, arg_num ]
+  match_gt:           [ match,          field, _gt, arg_num ]
+  match_lt:           [ match,          field, _lt, arg_num ]
   
-  match_eq:           [ match,          name, _eq, arg_num_string ]
+  match_eq:           [ match,          field, _eq, arg_num_string ]
+  
+  set_descr_name:     [ set_descr,      string ]
+#  set_descr_query:    [ set_descr,      _par_l, query, _par_r ]
+  
+  field_name:         [ field,          name ]
+  field_obj:          [ field,          name, _dot, field ]
   
   _arg_num_str_num:   [ arg_num_string, arg_num ]
   _arg_num_str_str:   [ arg_num_string, arg_string ]

@@ -11,6 +11,10 @@ class LivestatusSet implements IteratorAggregate, Countable {
 		$this->filter = new LivestatusFilterAnd();
 	}
 	
+	public function get_table() {
+		return $this->table;
+	}
+	
 	public function get_class() {
 		return $this->class;
 	}

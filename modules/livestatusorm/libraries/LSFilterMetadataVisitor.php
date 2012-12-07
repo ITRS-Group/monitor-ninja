@@ -65,12 +65,12 @@ class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
 	}
 
 	// match_in: match := * in string
-	public function visit_match_in($string1) {
+	public function visit_match_in($set_descr1) {
 		return null;
 	}
 
 	// match_field_in: match := * name in string
-	public function visit_match_field_in($name0, $string2) {
+	public function visit_match_field_in($name0, $set_descr2) {
 		return null;
 	}
 
@@ -131,6 +131,26 @@ class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
 
 	// match_eq: match := * name eq arg_num_string
 	public function visit_match_eq($name0, $arg_num_string2) {
+		return null;
+	}
+	
+	// set_descr_name: Êset_descr := * string
+	public function visit_set_descr_name($string0) {
+		return null;
+	}
+	
+	// set_descr_query: Êset_descr := * query
+	public function visit_set_descr_query($query0) {
+		return null;
+	}
+	
+	// field_name: field := * name
+	public function visit_field_name($name0) {
+		return null;
+	}
+	
+	// field_obj: field := * name dot field
+	public function visit_field_obj($name0, $field2) {
 		return null;
 	}
 
