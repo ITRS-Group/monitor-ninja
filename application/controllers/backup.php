@@ -40,7 +40,7 @@ class Backup_Controller extends Authenticated_Controller {
 		parent::__construct();
 		$this->template->disable_refresh = true;
 		$this->auto_render = true;
-		$this->cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> ' . System_Model::get_pipe() . ' && touch /opt/monitor/etc/misccommands.cfg';
+		$this->cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM" >> ' . System_Model::get_pipe() . ' && touch /opt/monitor/etc/misccommands.cfg';
 
 		$nagioscfg = "/opt/monitor/etc/nagios.cfg";
 		$handle = fopen($nagioscfg, 'r');
@@ -207,7 +207,6 @@ class Backup_Controller extends Authenticated_Controller {
 		
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
-		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
 
 		exec($this->cmd_reload . ' ' . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
 		if ($status != 0)
