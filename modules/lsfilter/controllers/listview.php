@@ -10,6 +10,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterVisitor.js';
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterSearch.js';
 		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisualizer.js';
 
 		$this->template->js_header = $this->add_view('js_header');
