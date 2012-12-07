@@ -1,7 +1,8 @@
 <?php
 
 class ListView_Controller extends Authenticated_Controller {
-	public function index() {
+	public function index($default_query = "[hosts] state = 7") {
+		
 		$this->xtra_js = array();
 		$basepath = 'modules/lsfilter/';
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';
@@ -13,11 +14,17 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
+
+		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css = array();
+		$this->xtra_css[] = $basepath.'views/themes/default/css/LSFilterStyle.css';
+		$this->template->css_header->css = $this->xtra_css;
+
 		$this->template->title = _('List view');
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
 		
-		$lview->query = '[hosts] name ~~ "kaka"';
+		$lview->query = $this->input->get('filter_query', $default_query);
 	}
 	
 	public function fetch_ajax() {
