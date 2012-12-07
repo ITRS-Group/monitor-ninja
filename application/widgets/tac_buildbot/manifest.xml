@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget_content>
+	<author>alofgren@op5.com</author>
+	<version>0.1</version>
+	<Friendly_name>Buildbot</Friendly_name>
+	<description>A widget that retrieves build status via buildbot/json for op5 Monitor Tactical Overeview.</description>
+	<page>tac/index</page>
+</widget_content>
