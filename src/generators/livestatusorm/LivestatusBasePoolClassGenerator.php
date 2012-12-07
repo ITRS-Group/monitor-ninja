@@ -1,7 +1,7 @@
 <?php
 
 class LivestatusBasePoolClassGenerator extends class_generator {
-	
+	private $name;
 	private $structure;
 	private $objectclass;
 	
@@ -16,6 +16,7 @@ class LivestatusBasePoolClassGenerator extends class_generator {
 	public function generate() {
 		parent::generate();
 		$this->init_class( 'ObjectPool', array('abstract') );
+		$this->variable('table',$this->name,'protected');
 		$this->generate_pool();
 		$this->generate_table_for_field();
 		$this->generate_setbuilder_all();

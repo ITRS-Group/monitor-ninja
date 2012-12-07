@@ -19,9 +19,9 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 		return $parser->parse( $query );
 	}
 	
-	public static function get_by_name( $name, $table ) {
-		if( !isset( self::$saved_queries[$table] ) ) return false;
-		if( !isset( self::$saved_queries[$table][$name] ) ) return false;
-		return self::get_by_query(self::$saved_queries[$table][$name]);
+	public function get_by_name( $name ) {
+		if( !isset( self::$saved_queries[$this->table] ) ) return false;
+		if( !isset( self::$saved_queries[$this->table][$name] ) ) return false;
+		return self::get_by_query(self::$saved_queries[$this->table][$name]);
 	}
 }

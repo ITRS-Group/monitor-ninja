@@ -15,6 +15,7 @@ class LivestatusBaseRootPoolClassGenerator extends class_generator {
 	public function generate() {
 		parent::generate();
 		$this->init_class( false, array('abstract') );
+		$this->variable('table',false,'protected');
 		$this->generate_pool();
 		$this->finish_class();
 	}

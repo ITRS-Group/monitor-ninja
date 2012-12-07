@@ -70,7 +70,7 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 
 	// match_in: match := * in string
 	public function visit_match_in($set_descr1) {
-		return ObjectPool_Model::get_by_name($set_descr1, $this->metadata['name'] );
+		return $this->pool->get_by_name($set_descr1);
 	}
 
 	// match_field_in: match := * name in string
@@ -78,7 +78,9 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 		$table = $this->pool->get_table_for_field($field0);
 		if( $table === false ) return null;
 		
-		$set = ObjectPool_Model::get_by_name($set_descr2, $table);
+		$pool = ObjectPool_Model::pool($table);
+		
+		$set = $pool->get_by_name($set_descr2);
 		if( $set === false ) return null;
 		
 		return $set->convert_to_object( $this->metadata['name'], $field0 );
