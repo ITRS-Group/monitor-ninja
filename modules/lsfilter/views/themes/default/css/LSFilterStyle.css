@@ -51,9 +51,13 @@
 	width: 126px;
 }
 
+.lsfilter-or-text {
+	margin: 0 8px;
+	vertical-align: middle;
+	display: inline-block;
+}
+
 .lsfilter-and {
-	//background: #f0f0f0;
-	//border: 1px solid #999;
 	display: block !important;
 	border-radius: 4px;
 	overflow: auto;
@@ -66,14 +70,10 @@
 }
 
 .lsfilter-or {
-	//background: #f8f8f8;
-	//border: 1px dashed #bbb;
 	position: relative;
 	border-radius: 4px;
 	display: inline-block;
 	border-radius: 4px;
-	//margin: 2px 4px;
-	//padding: 4px;
 }
 
 .lsfilter-peak {
@@ -85,7 +85,7 @@
 
 .lsfilter-leaf {
 	display: inline-block;
-	vertical-align: top;	
+	vertical-align: middle;
 }
 
 .lsfilter-gui-or {

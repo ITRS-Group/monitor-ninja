@@ -159,7 +159,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	this.visit_filter_or = function(filter0, filter2) {	
 		var result = $('<ul class="lsfilter-or" />');
 		result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter0));
-		result.append($('<li style="margin: 34px 6px; display: inline-block;"><strong>OR</strong></li>'));
+		result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
 		result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
 		return result;
 	};
@@ -167,11 +167,11 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	this.visit_filter_and = function(filter0, filter2) {
 		var result = $('<ul class="lsfilter-and" />');
 		result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
-		result.append($('<li style="margin: 3px 6px"><strong>AND</strong></li>'));
+		result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
 		result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		
-		result.append($('<button class="lsfilter-and-btn" />').append("AND"));
-		result.append($('<button class="lsfilter-or-btn" />').append("OR"));
+		//result.append($('<button class="lsfilter-and-btn" />').append("AND"));
+		//result.append($('<button class="lsfilter-or-btn" />').append("OR"));
 		
 		return result;
 	};
