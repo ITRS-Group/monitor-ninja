@@ -50,7 +50,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	this.swapinput = function (select, field) {
 		
 		var that = this,
-			nfield = null;
+			new_field = null;
 
 		switch(
 			typeof(this.fields[select.attr('value')])
@@ -58,33 +58,33 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			case 'object':
 
 				if (this.fields[select.attr('value')] instanceof Date) {
-					nfield = $('<input class="lsfilter-type-string" type="text" value="' + this.fields[select.attr('value')].toString() + '">');
+					new_field = $('<input class="lsfilter-type-string" type="text" value="' + this.fields[select.attr('value')].toString() + '">');
 				} else {
-					nfield = $('<select />');
+					new_field = $('<select />');
 					for (var v in this.fields[select.attr('value')]) {
 						if (v == field.attr('value')) {
-							nfield.append($('<option selected="true" value="'+ v +'">'+ this.fields[select.attr('value')][v] +'</option>'));
+							new_field.append($('<option selected="true" value="'+ v +'">'+ this.fields[select.attr('value')][v] +'</option>'));
 						} else {
-							nfield.append($('<option value="'+ v +'">'+ this.fields[select.attr('value')][v] +'</option>'));
+							new_field.append($('<option value="'+ v +'">'+ this.fields[select.attr('value')][v] +'</option>'));
 						}
 					}
 				}
 
-				field.replaceWith(nfield);
+				field.replaceWith(new_field);
 
 				break;
 			case 'string': 
-				nfield = $('<input class="lsfilter-type-string" type="text" value="' + field.attr('value') + '">');
-				field.replaceWith(nfield);
+				new_field = $('<input class="lsfilter-type-string" type="text" value="' + field.attr('value') + '">');
+				field.replaceWith(new_field);
 				break;
 			case 'number': 
-				nfield = $('<input type="text" value="' + field.attr('value') + '">');
-				field.replaceWith(nfield);
+				new_field = $('<input type="text" value="' + field.attr('value') + '">');
+				field.replaceWith(new_field);
 				break;
 		}
 
-		if (nfield)
-			select.change(function () {that.swapinput(select, nfield);});
+		if (new_field)
+			select.change(function () {that.swapinput(select, new_field);});
 
 	};
 
@@ -296,20 +296,16 @@ var visualizeSearchFilter = function(evt) {
 
 	var dotraverse = function () {
 		
-		if ($(document.activeElement).attr('id') == 'filter_query') {
+		filter_string = ['[', $('#lsfilter-query-object').attr('value') , '] '];
+		traverse($('#filter_visual'));
 
-		} else {
-
-			filter_string = ['[', $('#lsfilter-query-object').attr('value') , '] '];
-			traverse($('#filter_visual'));
-			
+		if ($(document.activeElement).attr('id') != 'filter_query') {
 			$('#filter_query').val(filter_string.join(''));
-
-			$('#filter_visual_result').html(
-				'<strong>URI: </strong><input type="text" onclick="this.select()" value="/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
-			);
-			
-		}
+		} 
+		
+		$('#filter_visual_result').html(
+			'<strong>URI: </strong><input type="text" onclick="this.select()" value="/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
+		);
 	}
 
 	$('#filter_visual_form').bind('change', dotraverse);

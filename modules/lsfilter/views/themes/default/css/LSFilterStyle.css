@@ -1,0 +1,108 @@
+
+#content.content {
+	padding: 16px 2px 0 2px;
+}
+
+#filter-query-builder-graphical, #filter-query-builder-manual {
+	background: #f5f5f5;
+	box-shadow: 1px 1px 1px 2px rgba(0,0,0,0.1);
+	position: absolute;
+	top: 100px;
+	display: none;
+	width: 80%;
+	right: 2%;
+	border: 1px solid #bbb;
+	padding: 8px;
+}
+
+#filter_visual_result {
+	margin: 4px 8px;
+}
+
+#filter_visual_result strong {
+	display: inline-block;
+	width: 100px;
+}
+
+#filter_visual {
+	border-radius: 6px;
+	padding: 6px;
+	font-size: 9pt;
+	text-align: center;
+}
+
+#lsfilter-query-object {
+	width: 200px;
+}
+
+.lsfilter-comp {
+	position: relative;
+	width: 140px;
+	height: 64px;
+}
+
+.lsfilter-comp select, .lsfilter-comp input {
+	width: 140px;
+	margin: 0 4px 0 0;
+	display: block;
+}
+
+.lsfilter-comp input {
+	width: 126px;
+}
+
+.lsfilter-and {
+	//background: #f0f0f0;
+	//border: 1px solid #999;
+	display: block !important;
+	border-radius: 4px;
+	overflow: auto;
+	margin: 2px 4px;
+	text-align: center;
+}
+
+.lsfilter-and-expr {
+	margin: 3px 0;
+}
+
+.lsfilter-or {
+	//background: #f8f8f8;
+	//border: 1px dashed #bbb;
+	position: relative;
+	border-radius: 4px;
+	display: inline-block;
+	border-radius: 4px;
+	//margin: 2px 4px;
+	//padding: 4px;
+}
+
+.lsfilter-peak {
+	display: inline-block;
+	border-radius: 6px;
+	padding: 2px;
+	margin: 2px;
+}
+
+.lsfilter-leaf {
+	display: inline-block;
+	vertical-align: top;	
+}
+
+.lsfilter-gui-or {
+	position: absolute;
+	right: 16px;
+	top: 40%;
+}
+
+.lsfilter-gui-and {
+	clear: both;
+	position: absolute;
+	bottom: 0px;
+	left: 40%;
+}
+
+.lsfilter-gui-or:hover, .lsfilter-gui-and:hover {
+	font-weight: bold;
+	border-color: #999;
+	cursor: pointer;
+}
