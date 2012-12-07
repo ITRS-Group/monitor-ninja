@@ -8,7 +8,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 		'hosts': {
 
-			'status': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'UP', 1: 'DOWN', 2: 'UNREACHABLE', 7: 'ALL'},
+			'state': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'UP', 1: 'DOWN', 2: 'UNREACHABLE', 7: 'ALL'},
 			'name': "name",
 
 			'lastcheck': (new Date()),
@@ -19,7 +19,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		'services': {
 
 			'name': "name",
-			'status': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'OK', 1: 'WARNING', 2: 'CRITICAL', 3: 'UNKNOWN', 15: 'ALL'},
+			'state': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'OK', 1: 'WARNING', 2: 'CRITICAL', 3: 'UNKNOWN', 15: 'ALL'},
 
 			'hostname': "name",
 			'hoststatus': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'UP', 1: 'DOWN', 2: 'UNREACHABLE', 7: 'ALL'},
@@ -276,10 +276,14 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 var render = {
 		"hosts": function(obj) {
-			return $('<li />').text(obj.name);
+			console.log(obj);
+			var row = $('<tr />');
+			return row.append($('<td />').text(obj.name));
 		},
 		"services": function(obj) {
-			return $('<li />').text(obj.host.name+";"+obj.description);
+			console.log(obj);
+			var row = $('<tr />');
+			return row.append($('<td />').text(obj.host.name+";"+obj.description));
 		}
 };
 
@@ -301,7 +305,7 @@ var doAjaxSearch = function() {
 		success: function(data) {
 			if( data.status == 'success' ) {
 				console.log( "Got "+data.data.length+" objects" );
-				var tbl = $('<ul />');
+				var tbl = $('<table />');
 				for( var i=0; i<data.data.length; i++ ) {
 					var obj = data.data[i];
 					tbl.append( render[obj._table](obj) );
@@ -384,6 +388,8 @@ var visualizeSearchFilter = function(evt) {
 			$('#filter_query').val(filter_string.join(''));
 		} 
 		
+		sendAjaxSearch(filter_string.join(''));
+
 		$('#filter_visual_result').html(
 			'<strong>URI: </strong><input type="text" onclick="this.select()" value="/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
 		);
@@ -398,7 +404,6 @@ var visualizeSearchFilter = function(evt) {
 
 		dotraverse();
 
-		sendAjaxSearch(string);
 	} catch( ex ) {
 		$('#filter_query').css("border", "2px solid #f40")
 		//console.log(ex);
