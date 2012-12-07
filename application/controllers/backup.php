@@ -212,7 +212,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 
-		exec($this->cmd_reload . ' ' . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
+		exec($this->cmd_reload, $output, $status);
 		if ($status != 0) {
 			$this->template->message = "Could not reload the configuration '{$file}'";
 			$this->debug = implode("\n", $output);
@@ -225,7 +225,7 @@ class Backup_Controller extends Authenticated_Controller {
 				$onefile = trim($onefile);
 				if(pathinfo($onefile, PATHINFO_EXTENSION) === "cfg") {
 					if(file_exists($onefile) && is_writable($onefile)) {
-						exec("touch $onefile");
+						touch($onefile);
 					}
 				}
 			}
