@@ -30,7 +30,7 @@ class Backup_Test extends TapUnit {
 		$controller = new Backup_Controller();
 		$controller->backup();
 		$this->ok(isset($controller->template->status) && $controller->template->status,
-			"asserting backup success: returned $controller->template->message\nFull output: $controller->debug");
+			"asserting backup success: returned $controller->template->message\nFull output: ".implode("\n", $controller->debug));
 		$this->ok($controller->template->file != '', "asserting backup file has been set");
 	}
 
@@ -38,12 +38,12 @@ class Backup_Test extends TapUnit {
 		$controller = new Backup_Controller();
 		$controller->backup();
 		$this->ok(isset($controller->template->status) && $controller->template->status,
-			"asserting backup success: returned $controller->template->message\nFull output: $controller->debug");
+			"asserting backup success: returned $controller->template->message\nFull output: ".implode("\n", $controller->debug));
 		$this->ok($controller->template->file != '', "asserting backup file has been set");
 		$this_backup = $controller->template->file;
 		$controller->restore($this_backup);
 		$this->ok(isset($controller->template->status) && $controller->template->status,
-			"asserting restore success: returned $controller->template->message\nFull output: $controller->debug");
+			"asserting restore success: returned $controller->template->message\nFull output: ".implode("\n", $controller->debug));
 	}
 
 	public function test_backup_delete() {
