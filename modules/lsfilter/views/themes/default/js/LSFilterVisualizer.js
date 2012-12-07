@@ -300,10 +300,10 @@ var doAjaxSearch = function() {
 		},
 		success: function(data) {
 			if( data.status == 'success' ) {
-				console.log( "Got "+data.length+" objects" );
+				console.log( "Got "+data.data.length+" objects" );
 				var tbl = $('<ul />');
-				for( var i=0; i<data.length; i++ ) {
-					var obj = data[i];
+				for( var i=0; i<data.data.length; i++ ) {
+					var obj = data.data[i];
 					tbl.append( render[obj._table](obj) );
 				}
 				$('#filter_result').empty().append(tbl);

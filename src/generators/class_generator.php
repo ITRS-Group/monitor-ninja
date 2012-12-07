@@ -10,6 +10,7 @@ abstract class class_generator {
 	
 	protected static $model_suffix = '_Model';
 	protected static $library_suffix = '_Core';
+	protected $filename_lowercase = true;
 	
 	public function generate( $skip_generated_note = false ) {
 		$class_dir = dirname( $this->get_filename() );
@@ -44,6 +45,7 @@ abstract class class_generator {
 	public function set_library() {
 		$this->set_class_suffix( self::$library_suffix );
 		$this->set_class_dir( 'libraries' );
+		$this->filename_lowercase = false;
 	}
 	
 	public function set_model() {
@@ -60,7 +62,11 @@ abstract class class_generator {
 	}
 	
 	protected function get_filename() {
-		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . strtolower($this->classname) . '.php';
+		$filename = $this->classname;
+		if( $this->filename_lowercase ) {
+			$filename = strtolower( $this->classname );
+		}
+		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . $filename . '.php';
 	}
 	
 	protected function classfile( $path ) {
