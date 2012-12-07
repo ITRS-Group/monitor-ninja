@@ -299,13 +299,18 @@ var doAjaxSearch = function() {
 			"q": query_string
 		},
 		success: function(data) {
-			console.log( "Got "+data.length+" objects" );
-			var tbl = $('<ul />');
-			for( var i=0; i<data.length; i++ ) {
-				var obj = data[i];
-				tbl.append( render[obj._table](obj) );
+			if( data.status == 'success' ) {
+				console.log( "Got "+data.length+" objects" );
+				var tbl = $('<ul />');
+				for( var i=0; i<data.length; i++ ) {
+					var obj = data[i];
+					tbl.append( render[obj._table](obj) );
+				}
+				$('#filter_result').empty().append(tbl);
 			}
-			$('#filter_result').empty().append(tbl);
+			if( data.status == 'error' ) {
+				$('#filter_result').empty().text( "Error: "+data.data );
+			}
 		}
 	});
 }

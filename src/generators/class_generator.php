@@ -60,7 +60,7 @@ abstract class class_generator {
 	}
 	
 	protected function get_filename() {
-		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . $this->classname . '.php';
+		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . strtolower($this->classname) . '.php';
 	}
 	
 	protected function classfile( $path ) {

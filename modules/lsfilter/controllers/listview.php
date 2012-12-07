@@ -30,20 +30,22 @@ class ListView_Controller extends Authenticated_Controller {
 	public function fetch_ajax() {
 		$query = $this->input->get('q','');
 		
-		$preprocessor = new LSFilterPP_Core();
-		
-		$set = ObjectPool::get_by_query( $query );
-		
-		$columns = false;
-		if( isset( $metadata['columns'] ) )
-			$columns = $metadata['columns'];
-		
-		$data = array();
-		foreach( $set->it($columns,array()) as $elem ) {
-			$data[] = $elem->export();
+		try {
+			$set = ObjectPool_Model::get_by_query( $query );
+			
+			$columns = false;
+			if( isset( $metadata['columns'] ) )
+				$columns = $metadata['columns'];
+			
+			$data = array();
+			foreach( $set->it($columns,array()) as $elem ) {
+				$data[] = $elem->export();
+			}
+	
+			$this->output_ajax( array( 'status' => 'success', 'data' => $data ) );
+		} catch( Exception $e ) {
+			$this->output_ajax( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
-
-		$this->output_ajax( $data );
 	}
 	
 	private function output_ajax( $data ) {
