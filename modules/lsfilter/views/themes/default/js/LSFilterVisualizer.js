@@ -161,14 +161,13 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 		if (filter0.is('.lsfilter-or')) {
 			var result = filter0;
-			result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
-			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
 		} else {
 			var result = $('<ul class="lsfilter-or" />');
-			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter0));
-			result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
-			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
+			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter0));	
 		}
+
+		result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
+		result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
 
 		return result;
 	};
@@ -177,28 +176,25 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 		if (filter0.is('.lsfilter-and')) {
 			var result = filter0;
-			result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
-			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		} else {
 			var result = $('<ul class="lsfilter-and" />');
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
-			result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
-			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		}
+
+		result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
+		result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		
 		return result;
 	};
 	
 	this.visit_filter_ok = function(match) {
-		var result = $('<ul class="lsfilter-peak" />');
-		//result.append($('<li><strong>IF TRUE</strong></li>'));
+		var result = $('<ul class="lsfilter-peak-true" />');
 		result.append($('<li class="resultvisual" />').append(match));
 		return result;
 	};
 	
 	this.visit_filter_not = function(match) {
-		var result = $('<ul  class="lsfilter-peak" />');
-		result.append($('<li class="lsfilter-not"><strong>!</strong></li>'));
+		var result = $('<ul  class="lsfilter-peak-false" />');
 		result.append($('<li class="resultvisual" />').append(match));
 		return result;
 	};
@@ -246,6 +242,29 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		
 		result.append(ops);
 		result.append(val);
+
+		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+
+			var or_block = $(this).parent().parent().parent().parent(),
+				clone = or_block.clone(true);
+
+			or_block.after(clone);
+			clone.before($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
+
+			e.preventDefault();
+
+		}));
+
+		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+			
+			var or_block = $(this).parent().parent().parent().parent(),
+				clone = or_block.clone(true);
+
+			or_block.after(clone);
+			clone.before($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
+
+			e.preventDefault();
+		}));
 
 		fields.change(function () {that.swapinput(fields, val);})
 		that.swapinput(fields, val);
@@ -416,11 +435,10 @@ var visualizeSearchFilter = function(evt) {
 			$('#filter_query').val(filter_string.join(''));
 		} 
 		
-		console.log(filter_string.join(''));
 		sendAjaxSearch(filter_string.join(''));
 
 		$('#filter_visual_result').html(
-			'<strong>URI: </strong><input type="text" onclick="this.select()" value="/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
+			'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
 		);
 	}
 
@@ -428,6 +446,7 @@ var visualizeSearchFilter = function(evt) {
 
 	try {
 		var result = parser.parse(string);
+
 		$('#filter_visual').empty().append(result);
 		$('#filter_query').css("border", "2px solid #5d2");
 
@@ -435,7 +454,7 @@ var visualizeSearchFilter = function(evt) {
 
 	} catch( ex ) {
 		$('#filter_query').css("border", "2px solid #f40")
-		console.log(ex);
+		//console.log(ex);
 	}
 }
 

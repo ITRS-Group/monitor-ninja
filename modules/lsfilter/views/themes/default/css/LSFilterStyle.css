@@ -38,7 +38,7 @@
 .lsfilter-comp {
 	position: relative;
 	width: 140px;
-	height: 64px;
+	//height: 64px;
 }
 
 .lsfilter-comp select, .lsfilter-comp input {
@@ -76,11 +76,16 @@
 	border-radius: 4px;
 }
 
-.lsfilter-peak {
+.lsfilter-peak-true, 
+.lsfilter-peak-false {
 	display: inline-block;
 	border-radius: 6px;
 	padding: 2px;
 	margin: 2px;
+}.lsfilter-peak-true {
+	border: 2px dashed #6d2;
+}.lsfilter-peak-false {
+	border: 2px dashed #d62;
 }
 
 .lsfilter-leaf {

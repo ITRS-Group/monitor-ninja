@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div class="right">
+	<input type="hidden" id="server_name" value="<?php echo $_SERVER['SERVER_NAME']; ?>" />
 	<span id="filter_visual_result"></span>
 	<button id="show-filter-query-builder-manual-button">Text Query Builder</button>
 	<button id="show-filter-query-builder-graphical-button">Graphical Query Builder</button>
@@ -19,9 +20,7 @@
 
 <div id="filter-query-builder-graphical">
 
-	<h2>Graphical input</h2>	
-	
-	<p>Dashed lines wrap OR clauses, solid lines wrap AND clauses</p>
+	<h2>Graphical input</h2>
 
 	<form id="filter_visual_form">
 		<div id="filter_visual">Filter</div>

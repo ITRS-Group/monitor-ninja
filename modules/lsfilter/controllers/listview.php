@@ -1,7 +1,7 @@
 <?php
 
 class ListView_Controller extends Authenticated_Controller {
-	public function index($default_query = "[hosts] state = 7") {
+	public function index($default_query = "[hosts] state = 0") {
 		
 		$this->xtra_js = array();
 		$basepath = 'modules/lsfilter/';
