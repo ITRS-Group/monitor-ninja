@@ -176,13 +176,36 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 		if (filter0.is('.lsfilter-and')) {
 			var result = filter0;
+			//result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
+			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		} else {
 			var result = $('<ul class="lsfilter-and" />');
+			
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
-		}
+			//result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
+			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
+			
+			/*result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
 
-		result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
-		result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
+				var or_block = $(this).parent().parent().parent().parent(),
+					clone = or_block.clone(true);
+				or_block.after(clone);
+				e.preventDefault();
+
+			}));
+
+			result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+				
+				var or_block = $(this).parent().parent().parent().parent(),
+					clone = or_block.clone(true);
+
+				or_block.after(clone);
+				clone.before($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
+
+				e.preventDefault();
+			}));*/
+
+		}
 		
 		return result;
 	};
@@ -220,7 +243,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			val = $('<input type="text" value="' + expr.replace(/['"]/g,'') + '" />'),
 			result = $('<ul class="lsfilter-comp" />'),
 			fields = $('<select />'),
-			ops = $('<select />');
+			ops = $('<select class="lsfilter-operator-select" />');
 
 		for (var f in this.fields) {
 			if (f == name) {
@@ -242,29 +265,6 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		
 		result.append(ops);
 		result.append(val);
-
-		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
-
-			var or_block = $(this).parent().parent().parent().parent(),
-				clone = or_block.clone(true);
-
-			or_block.after(clone);
-			clone.before($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
-
-			e.preventDefault();
-
-		}));
-
-		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
-			
-			var or_block = $(this).parent().parent().parent().parent(),
-				clone = or_block.clone(true);
-
-			or_block.after(clone);
-			clone.before($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
-
-			e.preventDefault();
-		}));
 
 		fields.change(function () {that.swapinput(fields, val);})
 		that.swapinput(fields, val);
