@@ -27,7 +27,7 @@ class Backup_Controller extends Authenticated_Controller {
 	private $asmonitor = '/usr/bin/asmonitor -q ';
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
 	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
-	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg 2>/dev/null';
+	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg';
 	private $cmd_view = 'tar tfz ';
 
 	private $backup_suffix = '.tar.gz';
@@ -129,7 +129,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$contents = array();
 		$status = 0;
-		exec($this->cmd_view . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $contents, $status);
+		exec($this->cmd_view . $this->backups_location . '/' . $file . $this->backup_suffix, $contents, $status);
 		sort($contents);
 
 		$this->template->content->files = $contents;
@@ -166,7 +166,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$file = strftime('backup-%Y-%m-%d_%H.%M');
 		$output = array();
 		exec($this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
-			. ' ' . implode(' ', $this->files2backup) . ' 2>/dev/null', $output, $status);
+			. ' ' . implode(' ', $this->files2backup), $output, $status);
 		if ($status != 0)
 		{
 			$this->template->status = false;
@@ -191,7 +191,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$status = 0;
 		$output = array();
-		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}': ".implode("\n",$output);
@@ -209,7 +209,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
 
-		exec($this->cmd_reload . ' ' . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		exec($this->cmd_reload . ' ' . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
 		if ($status != 0)
 			$this->template->message = "Could not reload the configuration '{$file}'".implode("\n",$output);
 		else
