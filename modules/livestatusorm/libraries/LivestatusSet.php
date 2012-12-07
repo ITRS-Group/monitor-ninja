@@ -66,6 +66,11 @@ class LivestatusSet implements IteratorAggregate, Countable {
 		return $result;
 	}
 	
+	public function convert_to_object( $table, $field ) {
+		$result = ObjectPool_Model::pool($table)->all();
+		$result->filter = $this->filter->prefix($field . '_');
+		return $result;
+	}
 	/*
 	 * Access
 	 */

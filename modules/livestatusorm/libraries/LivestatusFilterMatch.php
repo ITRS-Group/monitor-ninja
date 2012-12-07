@@ -12,7 +12,7 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	}
 	
 	function prefix( $prefix ) {
-		return new LivestatusFilterMatch( $prefix.$this->field, $this->op, $this->match );
+		return new LivestatusFilterMatch( $prefix.$this->field, $this->value, $this->op );
 	}
 	
 	function generateFilter() {

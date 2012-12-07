@@ -70,14 +70,18 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 
 	// match_in: match := * in string
 	public function visit_match_in($set_descr1) {
-		if( $set_descr1->get_table() != $this->metadata['name'])
-			return null;
-		return $set_descr1;
+		return ObjectPool_Model::get_by_name($set_descr1, $this->metadata['name'] );
 	}
 
 	// match_field_in: match := * name in string
 	public function visit_match_field_in($field0, $set_descr2) {
-		return null;
+		$table = $this->pool->get_table_for_field($field0);
+		if( $table === false ) return null;
+		
+		$set = ObjectPool_Model::get_by_name($set_descr2, $table);
+		if( $set === false ) return null;
+		
+		return $set->convert_to_object( $this->metadata['name'], $field0 );
 	}
 
 	// match_not_re_ci: match := * name not_re_ci arg_string
@@ -142,12 +146,7 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	
 	// set_descr_name: Êset_descr := * string
 	public function visit_set_descr_name($string0) {
-		return null;
-	}
-	
-	// set_descr_query: Êset_descr := * query
-	public function visit_set_descr_query($query0) {
-		return $query0;
+		return $string0;
 	}
 
 	// field_name: field := * name

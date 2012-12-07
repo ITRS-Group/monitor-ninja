@@ -49,7 +49,7 @@ class livestatusorm_generator extends generator_module {
 			$generator->generate();
 			
 			/* Generate base pool class */
-			$generator = new LivestatusBasePoolClassGenerator( $name, $structure );
+			$generator = new LivestatusBasePoolClassGenerator( $name, $full_structure );
 			$generator->generate();
 		
 			/* Generate wrapper if not exists */
