@@ -382,7 +382,7 @@ var visualizeSearchFilter = function(evt) {
 			$('#filter_query').val(filter_string.join(''));
 		} 
 		
-		sendAjaxSearch(filter_string.join(''));
+		console.log(filter_string.join(''));
 
 		$('#filter_visual_result').html(
 			'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
@@ -392,6 +392,7 @@ var visualizeSearchFilter = function(evt) {
 	$('#filter_visual_form').bind('change', dotraverse);
 
 	try {
+		sendAjaxSearch($('#filter_query').val());
 		var result = parser.parse(string);
 
 		$('#filter_visual').empty().append(result);

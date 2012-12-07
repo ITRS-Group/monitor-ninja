@@ -3,41 +3,60 @@ var query_string = "";
 var current_request = null;
 
 var render = {
-		"hosts": function(obj) {
+	"hosts" : {
+		"container": function() {
+			return $('<table><tr><td>Hosts</td></tr></table>');
+		},
+		"row" : function(obj) {
 			console.log(obj);
 			var row = $('<tr />');
 			return row.append($('<td />').text(obj.name));
+		}
+	},
+	"services" : {
+		"container": function() {
+			return $('<table><tr><td>Services</td></tr></table>');
 		},
-		"services": function(obj) {
+		"row" : function(obj) {
 			console.log(obj);
 			var row = $('<tr />');
-			return row.append($('<td />').text(obj.host.name+";"+obj.description));
+			return row.append($('<td />').text(
+					obj.host.name + ";" + obj.description));
 		}
+	}
 };
 
 var doAjaxSearch = function() {
-	if( current_request != null ) {
+	if (current_request != null) {
 		current_request.abort();
 	}
-	console.log( "Query: "+query_string );
+	console.log("Query: " + query_string);
 	current_request = $.ajax({
-		url: _site_domain + _index_page + "/" + _controller_name + "/fetch_ajax",
-		dataType: 'json',
-		data: {
-			"q": query_string
+		url : _site_domain + _index_page + "/" + _controller_name
+				+ "/fetch_ajax",
+		dataType : 'json',
+		data : {
+			"q" : query_string
 		},
-		success: function(data) {
-			if( data.status == 'success' ) {
-				console.log( "Got "+data.data.length+" objects" );
-				var tbl = $('<table />');
-				for( var i=0; i<data.data.length; i++ ) {
+		success : function(data) {
+			if (data.status == 'success') {
+				var result = $('#filter_result').empty();
+				var last_table = '';
+				var container = '';
+				
+				console.log("Got " + data.data.length + " objects");
+				for ( var i = 0; i < data.data.length; i++) {
 					var obj = data.data[i];
-					tbl.append( render[obj._table](obj) );
+					if( last_table != obj._table ) {
+						last_table = obj._table;
+						container = render[obj._table].container();
+						result.append(container);
+					}
+					container.append(render[obj._table].row(obj));
 				}
-				$('#filter_result').empty().append(tbl);
 			}
-			if( data.status == 'error' ) {
-				$('#filter_result').empty().text( "Error: "+data.data );
+			if (data.status == 'error') {
+				$('#filter_result').empty().text("Error: " + data.data);
 			}
 		}
 	});
@@ -45,8 +64,8 @@ var doAjaxSearch = function() {
 
 function sendAjaxSearch(query) {
 	if (query_timer != null) {
-		clearTimeout( query_timer );
+		clearTimeout(query_timer);
 	}
 	query_string = query;
-	query_timer = setTimeout( doAjaxSearch, 500 );
+	query_timer = setTimeout(doAjaxSearch, 500);
 }
