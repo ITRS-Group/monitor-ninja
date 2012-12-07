@@ -344,10 +344,12 @@ var visualizeSearchFilter = function(evt) {
 	
 	var filter_string = [];
 
-	var traverse = function (dom) {
+	var traverse = function (dom, priority) {
 
-		var seg = [],
-			tmp = null;
+		var seg = [];
+		var tmp = null;
+		var result = "";
+		var out_priority;
 
 		if (dom.hasClass('lsfilter-comp')) {
 
@@ -359,34 +361,46 @@ var visualizeSearchFilter = function(evt) {
 				}
 			});
 
-			return seg.join('');
+			result = seg.join('');
+			out_priority = 3;
 
 		} else if (dom.is('.lsfilter-not')) {
-		
-			return ' not ';
+			// FIXME
+			result = ' not ';
+			out_priority = priority;
 		
 		} else if (dom.hasClass('lsfilter-and') || dom.hasClass('lsfilter-or')) {
 
+			if (dom.hasClass('lsfilter-and')) {
+				out_priority = 2;
+			} else if (dom.hasClass('lsfilter-or')) {
+				out_priority = 1;
+			}
+			
 			dom.children().each(function () {
-				tmp = traverse($(this));
+				tmp = traverse($(this), out_priority);
 				if (tmp) seg.push(tmp);
 			});
 
-			if (dom.hasClass('lsfilter-and'))
-				return "(" + seg.join(' and ') + ")";
-			else if (dom.hasClass('lsfilter-or'))
-				return "(" + seg.join(' or ') + ")";
+			if (dom.hasClass('lsfilter-and')) {
+				result = seg.join(' and ');
+			} else if (dom.hasClass('lsfilter-or')) {
+				result = seg.join(' or ');
+			}
 
 		} else {
 
 			dom.children().each(function () {
-				seg.push(traverse($(this)));
+				seg.push(traverse($(this), priority));
 			});
 
-			return seg.join('');
+			result = seg.join('');
+			out_priority = priority;
 
 		}
-
+		if( out_priority < priority )
+			result = "(" + result + ")";
+		return result;
 	};
 
 	var string = $('#filter_query').val();
@@ -396,7 +410,7 @@ var visualizeSearchFilter = function(evt) {
 		
 		filter_string = ['[', $('#lsfilter-query-object').attr('value') , '] '];
 
-		filter_string.push(traverse($('#filter_visual .lsfilter-root')));
+		filter_string.push(traverse($('#filter_visual .lsfilter-root'),0));
 
 		if ($(document.activeElement).attr('id') != 'filter_query') {
 			$('#filter_query').val(filter_string.join(''));
