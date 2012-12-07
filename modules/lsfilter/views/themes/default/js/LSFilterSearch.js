@@ -4,24 +4,25 @@ var current_request = null;
 
 var render = {
 	"hosts" : {
-		"container": function() {
-			return $('<table><tr><td>Hosts</td></tr></table>');
-		},
-		"row" : function(obj) {
-			console.log(obj);
-			var row = $('<tr />');
-			return row.append($('<td />').text(obj.name));
+		"name" : {
+			"header" : '<th>Name</th>',
+			"cell" : function(obj) {
+				return $('<td />').text(obj.name);
+			}
 		}
 	},
 	"services" : {
-		"container": function() {
-			return $('<table><tr><td>Services</td></tr></table>');
+		"host_name" : {
+			"header" : '<th>Host name</th>',
+			"cell" : function(obj) {
+				return $('<td />').text(obj.host.name);
+			}
 		},
-		"row" : function(obj) {
-			console.log(obj);
-			var row = $('<tr />');
-			return row.append($('<td />').text(
-					obj.host.name + ";" + obj.description));
+		"description" : {
+			"header" : '<th>Description</th>',
+			"cell" : function(obj) {
+				return $('<td />').text(obj.description);
+			}
 		}
 	}
 };
@@ -31,35 +32,62 @@ var doAjaxSearch = function() {
 		current_request.abort();
 	}
 	console.log("Query: " + query_string);
-	current_request = $.ajax({
-		url : _site_domain + _index_page + "/" + _controller_name
-				+ "/fetch_ajax",
-		dataType : 'json',
-		data : {
-			"q" : query_string
-		},
-		success : function(data) {
-			if (data.status == 'success') {
-				var result = $('#filter_result').empty();
-				var last_table = '';
-				var container = '';
-				
-				console.log("Got " + data.data.length + " objects");
-				for ( var i = 0; i < data.data.length; i++) {
-					var obj = data.data[i];
-					if( last_table != obj._table ) {
-						last_table = obj._table;
-						container = render[obj._table].container();
-						result.append(container);
+	current_request = $
+			.ajax({
+				url : _site_domain + _index_page + "/" + _controller_name
+						+ "/fetch_ajax",
+				dataType : 'json',
+				data : {
+					"q" : query_string
+				},
+				success : function(data) {
+					if (data.status == 'success') {
+						var table = false;
+						var last_table = '';
+						var container = '';
+						var columns = null;
+						var output = $('<span />'); /*
+													 * temporary offline
+													 * container
+													 */
+
+						console.log("Got " + data.data.length + " objects");
+						if (data.data.length == 0) {
+							output.append('<h2>Empty result set</h2>');
+						} else {
+							for ( var i = 0; i < data.data.length; i++) {
+								var obj = data.data[i];
+
+								if (last_table != obj._table) {
+									table = $('<table />');
+									output.append(table);
+
+									last_table = obj._table;
+									columns = new Array();
+									var header = $('<tr />');
+									for ( var key in render[obj._table]) {
+										columns
+												.push(render[obj._table][key].cell);
+										header
+												.append($(render[obj._table][key].header));
+									}
+									table.append(header);
+								}
+
+								var row = $('<tr />');
+								for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
+									row.append(columns[cur_col](obj));
+								}
+								table.append(row);
+							}
+						}
+						$('#filter_result').empty().append(output);
 					}
-					container.append(render[obj._table].row(obj));
+					if (data.status == 'error') {
+						$('#filter_result').empty().text("Error: " + data.data);
+					}
 				}
-			}
-			if (data.status == 'error') {
-				$('#filter_result').empty().text("Error: " + data.data);
-			}
-		}
-	});
+			});
 }
 
 function sendAjaxSearch(query) {
