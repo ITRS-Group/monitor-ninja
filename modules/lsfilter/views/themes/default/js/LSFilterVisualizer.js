@@ -151,27 +151,40 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	
 	this.visit_search_query = function(filter0) {
 		var result = $('<ul />');
+		filter0.addClass('lsfilter-root');
 		result.append($('<li style="margin: 3px 0"><strong>With filter: </strong></li>'));
 		result.append($('<li class="resultvisual" />').append(filter0));
 		return result;
 	};
 	
-	this.visit_filter_or = function(filter0, filter2) {	
-		var result = $('<ul class="lsfilter-or" />');
-		result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter0));
-		result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
-		result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
+	this.visit_filter_or = function(filter0, filter2) {
+
+		if (filter0.is('.lsfilter-or')) {
+			var result = filter0;
+			result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
+			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
+		} else {
+			var result = $('<ul class="lsfilter-or" />');
+			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter0));
+			result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
+			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
+		}
+
 		return result;
 	};
 	
 	this.visit_filter_and = function(filter0, filter2) {
-		var result = $('<ul class="lsfilter-and" />');
-		result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
-		result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
-		result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
-		
-		//result.append($('<button class="lsfilter-and-btn" />').append("AND"));
-		//result.append($('<button class="lsfilter-or-btn" />').append("OR"));
+
+		if (filter0.is('.lsfilter-and')) {
+			var result = filter0;
+			result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
+			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
+		} else {
+			var result = $('<ul class="lsfilter-and" />');
+			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
+			result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
+			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
+		}
 		
 		return result;
 	};
@@ -328,52 +341,52 @@ function sendAjaxSearch(query) {
 }
 
 var visualizeSearchFilter = function(evt) {
+	
 	var filter_string = [];
 
 	var traverse = function (dom) {
 
-		var child = null,
+		var seg = [],
 			tmp = null;
 
-		dom.children().each(function () {
-			
-			child = $(this);
+		if (dom.hasClass('lsfilter-comp')) {
 
-			if (child.is('.lsfilter-comp')) {
-				
-				child.children().each(function () {
-					if ($(this).is('.lsfilter-type-string')) {
-						filter_string.push('"' + this.value + '"');	
-					} else {
-						filter_string.push(this.value);	
-					}
-				});
-				
-			} else if (child.is('.lsfilter-not')) {
+			dom.children().each(function () {
+				if ($(this).hasClass('lsfilter-type-string')) {
+					seg.push('"' + this.value + '"');	
+				} else {
+					seg.push(this.value);	
+				}
+			});
 
-				filter_string.push(' not ');
+			return seg.join('');
 
-			} else if (child.is('.lsfilter-and') || child.is('.lsfilter-or')) {
-	
-				tmp = child.children();
+		} else if (dom.is('.lsfilter-not')) {
+		
+			return ' not ';
+		
+		} else if (dom.hasClass('lsfilter-and') || dom.hasClass('lsfilter-or')) {
 
-				filter_string.push("(");
-				traverse($(tmp[0]));
+			dom.children().each(function () {
+				tmp = traverse($(this));
+				if (tmp) seg.push(tmp);
+			});
 
-				if (child.is('.lsfilter-and'))
-					filter_string.push(" and ");
-				else
-					filter_string.push(" or ");
+			if (dom.hasClass('lsfilter-and'))
+				return "(" + seg.join(' and ') + ")";
+			else if (dom.hasClass('lsfilter-or'))
+				return "(" + seg.join(' or ') + ")";
 
-				traverse($(tmp[2]));
-				filter_string.push(")");
+		} else {
 
-			} else {
+			dom.children().each(function () {
+				seg.push(traverse($(this)));
+			});
 
-				traverse(child);
-			}
+			return seg.join('');
 
-		});
+		}
+
 	};
 
 	var string = $('#filter_query').val();
@@ -382,12 +395,14 @@ var visualizeSearchFilter = function(evt) {
 	var dotraverse = function () {
 		
 		filter_string = ['[', $('#lsfilter-query-object').attr('value') , '] '];
-		traverse($('#filter_visual'));
+
+		filter_string.push(traverse($('#filter_visual .lsfilter-root')));
 
 		if ($(document.activeElement).attr('id') != 'filter_query') {
 			$('#filter_query').val(filter_string.join(''));
 		} 
 		
+		console.log(filter_string.join(''));
 		sendAjaxSearch(filter_string.join(''));
 
 		$('#filter_visual_result').html(
@@ -406,7 +421,7 @@ var visualizeSearchFilter = function(evt) {
 
 	} catch( ex ) {
 		$('#filter_query').css("border", "2px solid #f40")
-		//console.log(ex);
+		console.log(ex);
 	}
 }
 
