@@ -5,6 +5,7 @@ require_once( 'LivestatusBaseClassRootGenerator.php' );
 require_once( 'LivestatusBasePoolClassGenerator.php' );
 require_once( 'LivestatusBaseRootPoolClassGenerator.php' );
 require_once( 'LivestatusWrapperClassGenerator.php' );
+require_once( 'LivestatusJSStructureGenerator.php' );
 require_once( 'LivestatusStructure.php' );
 require_once( 'LivestatusAutoloaderGenerator.php' );
 
@@ -61,6 +62,10 @@ class livestatusorm_generator extends generator_module {
 			if( !$generator->exists() )
 				$generator->generate();
 		}
+		
+		/* Generate JS structure description */
+		$generator = new LivestatusJSStructureGenerator( $full_structure );
+		$generator->generate();
 		
 		/* Generate autoloader */
 		//$generator = new LivestatusAutoloaderGenerator( $classpaths );
