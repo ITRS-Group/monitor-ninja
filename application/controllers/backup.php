@@ -11,7 +11,7 @@
  *  PARTICULAR PURPOSE.
  */
 class Backup_Controller extends Authenticated_Controller {
-
+	public $debug = false;
 	public $model = false;
 	
 	private $files2backup = array(
@@ -148,6 +148,7 @@ class Backup_Controller extends Authenticated_Controller {
 		{
 			$this->template->status = false;
 			$this->template->message = "The current configuration is invalid";
+			$this->debug = $output;
 		}
 		else
 		{
@@ -172,6 +173,7 @@ class Backup_Controller extends Authenticated_Controller {
 			$this->template->status = false;
 			$this->template->file = '';
 			$this->template->message = "Could not backup the current configuration";
+			$this->debug = $output;
 		}
 		else
 		{
@@ -194,7 +196,8 @@ class Backup_Controller extends Authenticated_Controller {
 		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
 		if ($status != 0)
 		{
-			$this->template->message = "Could not restore the configuration '{$file}': ".implode("\n",$output);
+			$this->template->message = "Could not restore the configuration '{$file}'";
+			$this->debug = $output;
 			return;
 		}
 
@@ -202,6 +205,7 @@ class Backup_Controller extends Authenticated_Controller {
 		if ($status != 0)
 		{
 			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
+			$this->debug = $output;
 			return;
 		}
 		
@@ -209,8 +213,10 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 
 		exec($this->cmd_reload . ' ' . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
-		if ($status != 0)
-			$this->template->message = "Could not reload the configuration '{$file}'".implode("\n",$output);
+		if ($status != 0) {
+			$this->template->message = "Could not reload the configuration '{$file}'";
+			$this->debug = $output;
+		}
 		else
 		{
 			$this->template->status = true;
