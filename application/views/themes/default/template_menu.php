@@ -38,7 +38,7 @@
 						}
 
 						if ($uri == $siteuri) {
-							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
+							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
 							if (strpos($data[1], '.') !== false)
 								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$data[1]).")'></span>";
 							else

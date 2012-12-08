@@ -201,6 +201,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			foreach ($this['servicegroup'] as $group) {
 				$filter[] = 'groups >= "'.$group.'"';
 			}
+			$filter = implode(' or ', $filter);
 			$out = $ls->getServices(array('columns' => array('host_name', 'description'), 'filter' => $filter));
 			$res = array();
 			foreach ($out as $arr) {

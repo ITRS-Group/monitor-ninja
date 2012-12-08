@@ -85,5 +85,6 @@ prepare-config:
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
 	echo "<?php \$$config['livestatus'] = array('benchmark' => true, 'path' => 'unix:///tmp/ninja-test/live');" > application/config/custom/database.php
+	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';" > application/config/custom/config.php
 
 .PHONY: test help test-reports clean

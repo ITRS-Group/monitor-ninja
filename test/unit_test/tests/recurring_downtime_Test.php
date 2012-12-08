@@ -14,7 +14,7 @@ class Recurring_downtime_Test extends TapUnit {
 	/**
 	 *	Set up prerequisities for this test
 	 */
-	public function prereq() {
+	public function setUp() {
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 	}
 
@@ -23,7 +23,6 @@ class Recurring_downtime_Test extends TapUnit {
 	 *	This will create a schedule for every day in every month. 
 	 */
 	public function test_create_recurring_schedule() {
-		$this->prereq();
 		$data = array("report_type" => "hosts", "host_name" => array("monitor"), "comment" => "Recurring Downtime Test Schedule", "time" => "12:00", "duration" => "2:00", "fixed" => "1", "triggered_by" =>"0", "recurring_day" => array("1","2","3","4","5","6","0"), "recurring_month" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
 		@ScheduleDate_Model::edit_schedule($data, false);
 		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
@@ -41,82 +40,82 @@ class Recurring_downtime_Test extends TapUnit {
 	public function disabled_test_is_scheduled() {
 		// Test if the host/service is scheduled on a Monday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 11, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Monday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on a Tuesday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 12, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Tuesday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on a Wednesday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 13, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Wednesday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on a Thursday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 14, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Thursday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on a Friday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 15, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Friday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on a Saturday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 16, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Saturday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on a Sunday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 17, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Sunday");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on the 1 of the following month. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 30, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on the first of a new month");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on the 29 of February. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 2, 28, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a leap day");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Test if the host/service is scheduled on the 1 of January the following year. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 12, 31, 2036);
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a new years day");
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-		exec('/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime/'.$this->test_time, $output, $status);
+		exec('/usr/bin/php '.$argv[0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Remove downtimes when tests are done.

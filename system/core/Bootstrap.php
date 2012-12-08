@@ -56,7 +56,7 @@ if(!defined('SKIP_KOHANA')) {
 	// Make the magic happen!
 	try {
 		Event::run('system.execute');
-	} catch (LivestatusException $ex) {
+	} catch (Op5LivestatusException $ex) {
 		Kohana::log('error', $ex->getMessage());
 		Event::run('application.livestatus');
 	}
