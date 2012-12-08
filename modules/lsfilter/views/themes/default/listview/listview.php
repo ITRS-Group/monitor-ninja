@@ -6,6 +6,7 @@
 	<button id="show-filter-query-builder-manual-button">Text Query Builder</button>
 	<button id="show-filter-query-builder-graphical-button">Graphical Query Builder</button>
 </div>
+<div id="filter_result_totals">Loading...</div>
 <div class="clear"></div>
 
 <div id="filter-query-builder-manual">	
@@ -28,4 +29,4 @@
 
 </div>
 
-<div class="clear" id="filter_result">Result</div>
+<div class="clear" id="filter_result">Loading...</div>
