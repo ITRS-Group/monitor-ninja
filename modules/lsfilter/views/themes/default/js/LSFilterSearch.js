@@ -2,37 +2,141 @@ var query_timer = null;
 var query_string = "";
 var current_request = null;
 
+function icon16(name, title, link) {
+	var img = $('<span />');
+	img.addClass('icon-16');
+	img.addClass('x16-' + name);
+	if (title)
+		img.attr('title', title);
+	if (link) {
+		img = link.clone().append(img);
+		img.css('border', '0');
+	}
+	return img;
+}
+function icon(url, link) {
+	var img = $('<img />');
+	img.attr('src', '/monitor/images/logos/' + url); // FIXME
+	img.css('height', '16px');
+	img.css('width', '16px');
+	if (link) {
+		img = link.clone().append(img);
+		img.css('border', '0');
+	}
+	return img;
+}
+function link(rel_url, args) {
+	var get_data = "";
+	var delim = "?";
+	for ( var key in args) {
+		get_data += delim + key + "=" + encodeURIComponent(args[key]);
+		delim = "&";
+	}
+
+	var el = $('<a />');
+	el.attr('href', _site_domain + _index_page + "/" + rel_url + get_data);
+	return el;
+}
+function extinfo_link(type, name) {
+	var args = {};
+	args[type] = name;
+	return link('extinfo/details', args);
+}
+
 var render = {
 	"hosts" : {
 		"status" : {
-			"header" : '<th>&nbsp;</th>',
+			"header" : '',
 			"cell" : function(obj) {
-				return $('<td><span class="icon-16 x16-shield-'
-						+ obj.state_text + '"></span></td>');
+				return $('<td />').append(
+						icon16('shield-' + obj.state_text, obj.state_text));
 
 			}
 		},
 		"name" : {
-			"header" : '<th>Name</th>',
+			"header" : 'Name',
 			"cell" : function(obj) {
-				return $('<td />').text(obj.name);
+				var cell = $('<td />');
+				cell.append(extinfo_link('host', obj.name).text(obj.name));
+
+				if (obj.icon_image)
+					cell.append(icon(obj.icon_image,
+							extinfo_link('host', obj.name)).css('float',
+							'right'));
+
+				return cell;
+			}
+		},
+		"actions" : {
+			"header" : 'Actions',
+			"cell" : function(obj) {
+				var cell = $('<td />');
+
+				// FIXME: icon for service-details
+				cell.append(icon16('service-details',
+						'View service details for this host', link(
+								_current_uri, {
+									'filter_query' : '[services] host.name = "'
+											+ obj.name + '"' // FIXME: escape
+								})));
+
+				if (obj.acknowledged)
+					cell.append(icon16('acknowledged', 'Acknowledged'));
+
+				if (!obj.notifications_enabled)
+					cell.append(icon16('notify-disabled',
+							'Notification disabled'));
+
+				if (obj.checks_disabled)
+					cell.append(icon16('active-checks-disabled',
+							'Checks Disabled'));
+
+				if (obj.is_flapping) // FIXME: Needs icon in compass
+					cell.append(icon16('flapping', 'Flapping'));
+
+				if (obj.scheduled_downtime_depth > 0)
+					cell.append(icon16('scheduled-downtime',
+							'Scheduled Downtime'));
+
+				if (obj.comments > 0)
+					cell.append(icon16('add-comment', 'Comments'));
+
+				// FIXME: Add nacoma link
+
+				if (obj.pnpgraph_present)
+					cell.append(icon16('pnp', 'Show performance graph', link(
+							'pnp', {
+								"srv" : "_HOST_",
+								"host" : obj.name
+							})));
+
+				if (obj.action_url)
+					cell.append(icon16('host-actions',
+							'perform extra host actions', $('<a />').attr(
+									'href', obj.action_url)));
+
+				if (obj.notes_url)
+					cell.append(icon16('host-notes', 'View extra host notes',
+							$('<a />').attr('href', obj.notes_url)));
+
+				return cell;
 			}
 		},
 		"last_check" : {
-			"header" : '<th>Last Checked</th>',
+			"header" : 'Last Checked',
 			"cell" : function(obj) {
-				return $('<td />').text(
-						new Date(obj.last_check * 1000).toString());
+				var last_check = new Date(obj.last_check * 1000);
+				return $('<td />').text(last_check.toLocaleTimeString());
 			}
 		},
 		"status_info" : {
-			"header" : '<th>Status Information</th>',
+			"header" : 'Status Information',
 			"cell" : function(obj) {
 				return $('<td />').text(obj.plugin_output);
 			}
 		},
 		"display_name" : {
-			"header" : '<th>Display name</th>',
+			"header" : 'Display name',
 			"cell" : function(obj) {
 				return $('<td />').text(obj.display_name);
 			}
@@ -40,7 +144,7 @@ var render = {
 	},
 	"services" : {
 		"host_status" : {
-			"header" : '<th>&nbsp;</th>',
+			"header" : '',
 			"cell" : function(obj) {
 				return $('<td><span class="icon-16 x16-shield-'
 						+ obj.host.state_text + '"></span></td>');
@@ -48,47 +152,46 @@ var render = {
 			}
 		},
 		"host_name" : {
-			"header" : '<th>Host</th>',
+			"header" : 'Host',
 			"cell" : function(obj) {
 				return $('<td />').text(obj.host.name);
 			}
 		},
 		"status" : {
-			"header" : '<th>&nbsp;</th>',
+			"header" : '',
 			"cell" : function(obj) {
 				return $('<td><span class="icon-16 x16-shield-'
 						+ obj.state_text + '"></span></td>');
-
 			}
 		},
 		"description" : {
-			"header" : '<th>Description</th>',
+			"header" : 'Description',
 			"cell" : function(obj) {
 				return $('<td />').text(obj.description);
 			}
 		},
 		"last_check" : {
-			"header" : '<th>Last Checked</th>',
+			"header" : 'Last Checked',
 			"cell" : function(obj) {
-				return $('<td />').text(
-						new Date(obj.last_check * 1000).toString());
+				var last_check = new Date(obj.last_check * 1000);
+				return $('<td />').text(last_check.toLocaleTimeString());
 			}
 		},
 		"attempt" : {
-			"header" : '<th>Attempt</th>',
+			"header" : 'Attempt',
 			"cell" : function(obj) {
 				return $('<td />').text(
 						obj.current_attempt + "/" + obj.max_check_attempts);
 			}
 		},
 		"status_info" : {
-			"header" : '<th>Status Information</th>',
+			"header" : 'Status Information',
 			"cell" : function(obj) {
 				return $('<td />').text(obj.plugin_output);
 			}
 		},
 		"display_name" : {
-			"header" : '<th>Display name</th>',
+			"header" : 'Display name',
 			"cell" : function(obj) {
 				return $('<td />').text(obj.display_name);
 			}
@@ -138,10 +241,12 @@ var doAjaxSearch = function() {
 										columns
 												.push(render[obj._table][key].cell);
 										header
-												.append($(render[obj._table][key].header));
+												.append($('<th />')
+														.text(
+																render[obj._table][key].header));
 									}
 									table.append($('<thead />').append(header));
-									
+
 									tbody = $('<tbody />');
 									table.append(tbody);
 								}
