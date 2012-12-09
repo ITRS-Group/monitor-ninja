@@ -32,10 +32,19 @@ class ListView_Controller extends Authenticated_Controller {
 		$query = $this->input->get('query','');
 		$columns = $this->input->get('columns',false);
 		$sort = $this->input->get('sort',array());
+		$sort_asc = $this->input->get('sort_asc',true);
 
+		/* TODO: Fix sorting better sometime
+		 * Do it though ORM more orm-ly
+		 * Check if columns exists and so on...
+		 */
+		$sort = array_map(function($el){return str_replace('.','_',$el);},$sort);
+		if(!$sort_asc)
+			$sort = array_map(function($el){return $el.' desc';},$sort);
+		
 		try {
 			$result_set = ObjectPool_Model::get_by_query( $query );
-
+			
 			$data = array();
 			foreach( $result_set->it(false,$sort) as $elem ) {
 				$data[] = $elem->export();

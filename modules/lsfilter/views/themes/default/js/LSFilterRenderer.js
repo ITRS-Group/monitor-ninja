@@ -400,8 +400,14 @@ function listview_render_table(data) {
 					columns.push(col_render.cell);
 					var th = $('<th />');
 					th.text(col_render.header);
-					if (col_render.sort)
-						listview_add_sort(th, key, col_render.sort, (listview_sort_vis_column==key)?1:0);
+					if (col_render.sort) {
+						var sort_dir = 0;
+						if (listview_sort_vis_column == key)
+							sort_dir = -1;
+						if (listview_sort_ascending)
+							sort_dir = -sort_dir;
+						listview_add_sort(th, key, col_render.sort, sort_dir);
+					}
 					header.append(th);
 				}
 				table.append($('<thead />').append(header));
