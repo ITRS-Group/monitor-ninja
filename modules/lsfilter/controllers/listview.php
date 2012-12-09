@@ -29,17 +29,15 @@ class ListView_Controller extends Authenticated_Controller {
 	}
 
 	public function fetch_ajax() {
-		$query = $this->input->get('q','');
+		$query = $this->input->get('query','');
+		$columns = $this->input->get('columns',false);
+		$sort = $this->input->get('sort',array());
 
 		try {
 			$result_set = ObjectPool_Model::get_by_query( $query );
 
-			$columns = false;
-			if( isset( $metadata['columns'] ) )
-				$columns = $metadata['columns'];
-
 			$data = array();
-			foreach( $result_set->it($columns,array()) as $elem ) {
+			foreach( $result_set->it(false,$sort) as $elem ) {
 				$data[] = $elem->export();
 			}
 

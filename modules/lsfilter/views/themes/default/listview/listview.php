@@ -1,20 +1,28 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="right">
-	<input type="hidden" id="server_name" value="<?php echo $_SERVER['SERVER_NAME']; ?>" />
-	<span id="filter_visual_result"></span>
-	<button id="show-filter-query-builder-manual-button">Text Query Builder</button>
-	<button id="show-filter-query-builder-graphical-button">Graphical Query Builder</button>
+<div class="extra_toolbar">
+	<div class="right">
+		<input type="hidden" id="server_name"
+			value="<?php echo $_SERVER['SERVER_NAME']; ?>" /> <span
+			id="filter_visual_result"></span>
+		<button id="show-filter-query-builder-manual-button">Text Query
+			Builder</button>
+		<button id="show-filter-query-builder-graphical-button">Graphical
+			Query Builder</button>
+	</div>
+	<div id="filter_result_totals"></div>
 </div>
-<div id="filter_result_totals">Loading...</div>
-<div class="clear"></div>
+<div class="extra_toolbar_spacer"></div>
 
-<div id="filter-query-builder-manual">	
+<div id="filter-query-builder-manual">
 
 	<h2>Manual input</h2>
 
 	<form action="#" onsubmit="dosubmit();">
-		<textarea style="width: 98%; height: 30px" name="filter_query" id="filter_query"><?php echo htmlentities($query); ?></textarea>
+		<textarea style="width: 98%; height: 30px" name="filter_query"
+			id="filter_query">
+			<?php echo htmlentities($query); ?>
+		</textarea>
 	</form>
 
 </div>

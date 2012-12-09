@@ -111,3 +111,45 @@
 	border-color: #999;
 	cursor: pointer;
 }
+
+
+
+
+
+.extra_toolbar {
+	border-bottom: 1px solid #ccc;
+	position: fixed;
+	top: 48px;
+	height: 24px;
+	left: 0;
+	width: 100%;
+	background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fafbf9),
+		color-stop(100%, #e3e4e2) );
+	background: -webkit-linear-gradient(top, #fafbf9, #e3e4e2);
+	background: -moz-linear-gradient(top, #fafbf9, #e3e4e2);
+	background: -o-linear-gradient(top, #fafbf9, #e3e4e2);
+	background: linear-gradient(top, #fafbf9, #e3e4e2);
+
+	overflow: hidden;
+	
+	/*    outline: 1px dashed red;
+    z-index: 100;
+    opacity: 0.3;*/
+}
+
+.extra_toolbar ul li {
+	border-left: 1px solid #fff;
+	border-right: 1px solid #ccc;
+	height: 24px;
+	float: left;
+	padding: 2px 0.25em;
+	line-height: 24px;
+}
+
+.extra_toolbar ul li * {
+	vertical-align: middle;
+}
+
+.extra_toolbar_spacer {
+	height: 11px;
+}

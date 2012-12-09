@@ -2,6 +2,8 @@
 
 require_once("op5/auth/Auth.php");
 
+class LivestatusAccessException extends Exception {}
+
 /**
  * Livetatus interaface.
  */
@@ -63,9 +65,9 @@ class LivestatusAccess {
 		$len     = intval(trim(substr($head, 4, 15)));
 		$body    = $this->connection->readSocket($len);
 		if(empty($body))
-			throw new LivestatusException("empty body for query: <pre>".$query."</pre>");
+			throw new LivestatusAccessException("empty body for query: <pre>".$query."</pre>");
 		if($status != 200)
-			throw new LivestatusException("Invalid request: $body");
+			throw new LivestatusAccessException("Invalid request: $body");
 		
 		$body = str_replace( '"data":[,', '"data":[', $body ); /* FIXME: (after livestatus is fixed) */
 		
@@ -84,7 +86,7 @@ class LivestatusAccess {
 		}
 		
 		if ($objects === null) {
-			throw new LivestatusException("Invalid output");
+			throw new LivestatusAccessException("Invalid output");
 		}
 		return array($columns,$objects,$count);
 	}

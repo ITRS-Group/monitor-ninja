@@ -42,9 +42,9 @@ rules:
   query:              [ query,        _brace_l, table_def, _brace_r, search_query ]
   
   table_def_simple:   [ table_def,    name ]
-  table_def_columns:  [ table_def,    name, _colon, column_list ]
-  column_list_end:    [ column_list,  name ]
-  column_list_cont:   [ column_list,  column_list, _comma, name ]
+#  table_def_columns:  [ table_def,    name, _colon, column_list ]
+#  column_list_end:    [ column_list,  name ]
+#  column_list_cont:   [ column_list,  column_list, _comma, name ]
   
   search_query:       [ search_query, filter ]
   
