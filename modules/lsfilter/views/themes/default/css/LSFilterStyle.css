@@ -153,3 +153,7 @@
 .extra_toolbar_spacer {
 	height: 11px;
 }
+
+#filter_result {
+	margin: -2px -2px 0 -2px;
+}

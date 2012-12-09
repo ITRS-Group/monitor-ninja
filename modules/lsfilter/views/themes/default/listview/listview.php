@@ -12,6 +12,7 @@
 	</div>
 	<div id="filter_result_totals"></div>
 </div>
+
 <div class="extra_toolbar_spacer"></div>
 
 <div id="filter-query-builder-manual">

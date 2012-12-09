@@ -392,7 +392,7 @@ var visualizeSearchFilter = function(evt) {
 	$('#filter_visual_form').bind('change', dotraverse);
 
 	try {
-		sendAjaxSearch($('#filter_query').val());
+		listview_update($('#filter_query').val());
 		var result = parser.parse(string);
 
 		$('#filter_visual').empty().append(result);

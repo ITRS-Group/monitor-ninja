@@ -44,7 +44,27 @@ function extinfo_link(host, service) {
 	return link('extinfo/details', args);
 }
 
-var lsfilter_totals_renderer = {
+function listview_add_sort(element, vis_column, db_columns, current) {
+	if (current == 0) { // No sort
+		element.prepend($('<span style="float:right;">x</span>'));
+	} else if (current > 0) { // Ascending?
+		element.prepend($('<span style="float:right;">^</span>'));
+	} else {
+		element.prepend($('<span style="float:right;">v</span>'));
+	}
+	element.click({
+		vis_column : vis_column,
+		db_columns : db_columns
+	}, function(evt) {
+		listview_update_sort(evt.data.vis_column, evt.data.db_columns);
+	});
+}
+
+/*******************************************************************************
+ * Totals renderer
+ ******************************************************************************/
+
+var listview_renderer_totals = {
 	"host_all" : function(cnt) {
 		var container = $('<li />');
 		container.append("Hosts:");
@@ -54,25 +74,29 @@ var lsfilter_totals_renderer = {
 	},
 	"host_state_up" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-up', "Hosts up"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield') + '-up',
+				"Hosts up"));
 		container.append(cnt);
 		return container;
 	},
 	"host_state_down" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-down', "Hosts down"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-down', "Hosts down"));
 		container.append(cnt);
 		return container;
 	},
 	"host_state_unreachable" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-unreachable', "Hosts unreachable"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-unreachable', "Hosts unreachable"));
 		container.append(cnt);
 		return container;
 	},
 	"host_pending" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-pending', "Hosts pending"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-pending', "Hosts pending"));
 		container.append(cnt);
 		return container;
 	},
@@ -80,43 +104,53 @@ var lsfilter_totals_renderer = {
 	"service_all" : function(cnt) {
 		var container = $('<li />');
 		container.append("Services:");
-		container.append(icon16('shield-info', "Services total"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-info', "Services total"));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_ok" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-ok', "Services ok"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield') + '-ok',
+				"Services ok"));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_warning" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-warning', "Services warning"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-warning', "Services warning"));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_critical" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-critical', "Services critical"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-critical', "Services critical"));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_unknown" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-unknown', "Services unknown"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-unknown', "Services unknown"));
 		container.append(cnt);
 		return container;
 	},
 	"service_pending" : function(cnt) {
 		var container = $('<li />');
-		container.append(icon16('shield-pending', "Services pending"));
+		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
+				+ '-pending', "Services pending"));
 		container.append(cnt);
 		return container;
 	},
 };
 
-var lsfilter_result_renderer = {
+/*******************************************************************************
+ * Table renderer
+ ******************************************************************************/
+
+var listview_renderer_table = {
 
 	/*
 	 * Render Hosts
@@ -314,3 +348,79 @@ var lsfilter_result_renderer = {
 		}
 	}
 };
+
+/*******************************************************************************
+ * Renderer methods
+ ******************************************************************************/
+
+function listview_render_totals(totals) {
+	var container = $('<ul />');
+	if (totals) {
+		for ( var field in listview_renderer_totals) {
+			if (field in totals) {
+				container.append(listview_renderer_totals[field](totals[field])
+						.css('float', 'left'));
+			}
+		}
+	}
+	$('#filter_result_totals').empty().append(container);
+}
+
+function listview_render_table(data) {
+	var tbody = false;
+	var last_table = '';
+	var container = '';
+	var columns = null;
+	/*
+	 * temporary offline container
+	 */
+	var output = $('<span />');
+
+	console.log("Got " + data.length + " objects");
+	if (data.length == 0) {
+		output.append('<h2>Empty result set</h2>');
+	} else {
+
+		/*
+		 * Render table
+		 */
+		for ( var i = 0; i < data.length; i++) {
+			var obj = data[i];
+
+			if (last_table != obj._table) {
+				var table = $('<table />');
+				output.append(table);
+				console.log(listview_columns_for_table(obj._table));
+
+				last_table = obj._table;
+				columns = new Array();
+				var header = $('<tr />');
+				for ( var key in listview_renderer_table[obj._table]) {
+					var col_render = listview_renderer_table[obj._table][key]
+					columns.push(col_render.cell);
+					var th = $('<th />');
+					th.text(col_render.header);
+					if (col_render.sort)
+						listview_add_sort(th, key, col_render.sort, (listview_sort_vis_column==key)?1:0);
+					header.append(th);
+				}
+				table.append($('<thead />').append(header));
+
+				tbody = $('<tbody />');
+				table.append(tbody);
+			}
+
+			var row = $('<tr />');
+			if (i % 2 == 0)
+				row.addClass('even');
+			else
+				row.addClass('odd');
+
+			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
+				row.append(columns[cur_col](obj));
+			}
+			tbody.append(row);
+		}
+	}
+	$('#filter_result').empty().append(output);
+}
