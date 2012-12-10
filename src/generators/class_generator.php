@@ -73,13 +73,18 @@ abstract class class_generator {
 		$this->write( 'requrire_once( '. var_export($path, true) . ' );' );
 	}
 	
-	protected function init_class( $parent = false, $modifiers = array() ) {
+	protected function init_class( $parent = false, $modifiers = array(), $interfaces = false ) {
 		if( is_array( $modifiers ) ) {
 			$modifiers = implode( ' ', $modifiers );
 		}
 		if( !empty( $modifiers ) ) {
 			$modifiers = trim($modifiers)." ";
 		}
+		$interface_str = "";
+		if( $interfaces !== false ) {
+			$interface_str = " implements ".implode(', ',$interfaces);
+		}
+		
 		$this->write();
 		$this->write( $modifiers."class ".$this->get_classname().($parent===false?"":" extends ".$parent.$this->class_suffix)." {" );
 	}

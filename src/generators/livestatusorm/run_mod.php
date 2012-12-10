@@ -1,13 +1,19 @@
 <?php
 
 require_once( 'LivestatusBaseClassGenerator.php' );
-require_once( 'LivestatusBaseClassRootGenerator.php' );
+require_once( 'LivestatusBaseClassRootGenerator.php' )
+;
 require_once( 'LivestatusBasePoolClassGenerator.php' );
 require_once( 'LivestatusBaseRootPoolClassGenerator.php' );
+
+require_once( 'LivestatusBaseSetClassGenerator.php' );
+require_once( 'LivestatusBaseRootSetClassGenerator.php' );
+
 require_once( 'LivestatusWrapperClassGenerator.php' );
 require_once( 'LivestatusJSStructureGenerator.php' );
-require_once( 'LivestatusStructure.php' );
 require_once( 'LivestatusAutoloaderGenerator.php' );
+
+require_once( 'LivestatusStructure.php' );
 
 class livestatusorm_generator extends generator_module {
 	public function run() {
@@ -28,18 +34,27 @@ class livestatusorm_generator extends generator_module {
 		/* Generate base root class */
 		$generator = new LivestatusBaseClassRootGenerator( 'root', array('class'=>'ObjectRoot') );
 		$generator->generate();
+			
+		/* Generate base pool class */
+		$generator = new LivestatusBaseRootPoolClassGenerator( 'root', $full_structure );
+		$generator->generate();
+		
+		/* Generate base set class */
+		$generator = new LivestatusBaseRootSetClassGenerator( 'root', $full_structure );
+		$generator->generate();
 		
 		/* Generate root class wrapper */
 		$generator = new LivestatusWrapperClassGenerator( 'root', array('class'=>'ObjectRoot', 'modifiers'=>array('abstract')) );
 		if( !$generator->exists() )
 			$generator->generate();
 			
-		/* Generate base pool class */
-		$generator = new LivestatusBaseRootPoolClassGenerator( 'root', $full_structure );
-		$generator->generate();
-			
-		/* Generate pool wrapper if not exists */
+		/* Generate pool class wrapper if not exists */
 		$generator = new LivestatusWrapperClassGenerator( 'root', array('class'=>'ObjectPool', 'modifiers'=>array('abstract')) );
+		if( !$generator->exists() )
+			$generator->generate();
+		
+		/* Generate set class wrapper if not exists */ 
+		$generator = new LivestatusWrapperClassGenerator( 'root', array('class'=>'ObjectSet', 'modifiers'=>array('abstract')) );
 		if( !$generator->exists() )
 			$generator->generate();
 		
@@ -51,7 +66,11 @@ class livestatusorm_generator extends generator_module {
 			/* Generate base pool class */
 			$generator = new LivestatusBasePoolClassGenerator( $name, $full_structure );
 			$generator->generate();
-		
+			
+			/* Generate base set class */
+			$generator = new LivestatusBaseSetClassGenerator( $name, $structure );
+			$generator->generate();
+			
 			/* Generate wrapper if not exists */
 			$generator = new LivestatusWrapperClassGenerator( $name, $structure );
 			if( !$generator->exists() )
@@ -61,6 +80,13 @@ class livestatusorm_generator extends generator_module {
 			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sPool" );
 			if( !$generator->exists() )
 				$generator->generate();
+			
+			/* Generate set wrapper if not exists */
+			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sSet" );
+			if( !$generator->exists() )
+				$generator->generate();
+				
+				
 		}
 		
 		/* Generate JS structure description */
