@@ -242,9 +242,11 @@ class LivestatusStructure {
 				'total_services' => 'int',
 				'worst_service_hard_state' => 'int',
 				'worst_service_state' => 'int',
+/*
 				'x_3d' => 'float',
 				'y_3d' => 'float',
 				'z_3d' => 'float',
+*/
 			),
 		),
 		
