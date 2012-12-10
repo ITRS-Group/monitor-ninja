@@ -39,6 +39,7 @@ class ListView_Controller extends Authenticated_Controller {
 		 * Check if columns exists and so on...
 		 */
 		$sort = array_map(function($el){return str_replace('.','_',$el);},$sort);
+		
 		if(!$sort_asc)
 			$sort = array_map(function($el){return $el.' desc';},$sort);
 		
@@ -46,7 +47,7 @@ class ListView_Controller extends Authenticated_Controller {
 			$result_set = ObjectPool_Model::get_by_query( $query );
 			
 			$data = array();
-			foreach( $result_set->it(false,$sort) as $elem ) {
+			foreach( $result_set->it($columns,$sort) as $elem ) {
 				$data[] = $elem->export();
 			}
 

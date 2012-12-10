@@ -144,6 +144,9 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->write('$ls_filter .= "Sort: $col\n";');
 		$this->write('}');
 		
+		$this->write('$columns = $this->validate_columns($columns);');
+		$this->write('if($columns === false) return false;');
+		
 		$this->write('list($columns, $objects, $count) = $ls->query($this->table, $ls_filter, $columns);');
 		$this->write('return new LivestatusSetIterator($objects, $columns, $this->class);');
 		$this->finish_function();

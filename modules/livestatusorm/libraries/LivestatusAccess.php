@@ -52,6 +52,7 @@ class LivestatusAccess {
 		$query .= $this->auth($table);
 		
 		if(is_array( $columns )) {
+			$columns = array_map( function($col){return str_replace('.','_',$col);}, $columns);
 			$query .= "Columns: ".implode(' ',$columns)."\n";
 		}
 
