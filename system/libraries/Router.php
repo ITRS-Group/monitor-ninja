@@ -116,8 +116,8 @@ class Router_Core {
 					// The controller must be a file that exists with the search path
 					// Allow break the $dir-jail with symlinks outside production.
 					// (not in production due to possible security issues)
-					if ($c = str_replace('\\', '/', realpath($dir.$controller_path.EXT)) 
-					    AND is_file($c) AND (!IN_PRODUCTION || (strpos($c, $dir) === 0)))
+					if ($c = str_replace('\\', '/', realpath($dir.$controller_path.EXT))
+						AND is_file($c))
 					{
 						// Set controller name
 						self::$controller = $segment;
