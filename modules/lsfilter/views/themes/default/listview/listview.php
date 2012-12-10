@@ -15,27 +15,29 @@
 
 <div class="extra_toolbar_spacer"></div>
 
-<div id="filter-query-builder-manual">
+<div id="filter-query-builder">
+	<div id="filter-query-builder-manual">
 
-	<h2>Manual input</h2>
+		<h2>Manual input</h2>
 
-	<form action="#" onsubmit="dosubmit();">
-		<textarea style="width: 98%; height: 30px" name="filter_query"
-			id="filter_query">
-			<?php echo htmlentities($query); ?>
-		</textarea>
-	</form>
+		<form action="#" onsubmit="dosubmit();">
+			<textarea style="width: 98%; height: 30px" name="filter_query"
+				id="filter_query">
+				<?php echo htmlentities($query); ?>
+			</textarea>
+		</form>
 
-</div>
+	</div>
 
-<div id="filter-query-builder-graphical">
+	<div id="filter-query-builder-graphical">
 
-	<h2>Graphical input</h2>
+		<h2>Graphical input</h2>
 
-	<form id="filter_visual_form">
-		<div id="filter_visual">Filter</div>
-	</form>
+		<form id="filter_visual_form">
+			<div id="filter_visual">Filter</div>
+		</form>
 
+	</div>
 </div>
 
 <div class="clear" id="filter_result">Loading...</div>

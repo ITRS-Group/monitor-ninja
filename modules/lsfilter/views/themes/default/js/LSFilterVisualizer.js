@@ -408,25 +408,35 @@ var visualizeSearchFilter = function(evt) {
 
 $().ready(function() {
 
+	var hide_main_box = function () {
+
+		if ($('#filter-query-builder-manual').css('display') == 'none' && $('#filter-query-builder-graphical').css('display') == 'none') {
+			$('#filter-query-builder').hide();
+		}
+	}
+
 	$('#show-filter-query-builder-manual-button').click(function () {
-		$('#filter-query-builder-manual').toggle(300, function () {
+
+		$('#filter-query-builder-manual').toggle(100, function () {
 			switch ($(this).css('display')) {
 				case "block":
-					$('#filter-query-builder-graphical').hide(200);
+					$('#filter-query-builder').show(200);
 					break;
 				case "none":
+					hide_main_box();
 					break;
 			}
 		});
 	});
 
 	$('#show-filter-query-builder-graphical-button').click(function () {
-		$('#filter-query-builder-graphical').toggle(300, function () {
+		$('#filter-query-builder-graphical').toggle(100, function () {
 			switch ($(this).css('display')) {
 				case "block":
-					$('#filter-query-builder-manual').hide(200);
+					$('#filter-query-builder').show(200);
 					break;
 				case "none":
+					hide_main_box();
 					break;
 			}
 		});
