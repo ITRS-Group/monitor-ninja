@@ -353,6 +353,11 @@ var listview_renderer_table = {
  * Renderer methods
  ******************************************************************************/
 
+function listview_render_start_loading() {
+}
+function listview_render_stop_loading() {
+}
+
 function listview_render_totals(totals) {
 	var container = $('<ul />');
 	if (totals) {

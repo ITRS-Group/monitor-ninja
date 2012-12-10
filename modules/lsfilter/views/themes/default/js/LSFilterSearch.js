@@ -43,6 +43,7 @@ function listview_do_request() {
 		listview_ajax_active_request.abort();
 	}
 	console.log("Query: " + listview_ajax_query);
+	listview_render_start_loading();
 	listview_ajax_active_request = $.ajax({
 		url : _site_domain + _index_page + "/" + _controller_name
 				+ "/fetch_ajax",
@@ -53,6 +54,7 @@ function listview_do_request() {
 			"sort_asc" : (listview_sort_ascending?1:0)
 		},
 		success : function(data) {
+			listview_render_stop_loading();
 			if (data.status == 'success') {
 				listview_render_totals(data.totals);
 				listview_render_table(data.data);
