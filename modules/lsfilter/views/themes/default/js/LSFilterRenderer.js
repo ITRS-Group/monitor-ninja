@@ -487,6 +487,14 @@ var listview_renderer_table = {
 	 * Render Comments
 	 **************************************************************************/
 	"comments" : {
+		"is_service" : {
+			"header" : 'Type',
+			"depends" : [ 'is_service' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				return $('<td />').text(obj.is_service ? 'Service' : 'Host');
+			}
+		},
 		"host_status" : {
 			"header" : '',
 			"depends" : [ 'host.state_text' ],
