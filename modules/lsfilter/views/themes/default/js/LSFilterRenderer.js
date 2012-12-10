@@ -353,9 +353,11 @@ var listview_renderer_table = {
  * Renderer methods
  ******************************************************************************/
 
-function listview_render_start_loading() {
+function listview_render_start_loading(loader) {
+	$('#filter_visual_result').prepend(loader);
 }
-function listview_render_stop_loading() {
+function listview_render_stop_loading(loader) {
+	loader.remove();
 }
 
 function listview_render_totals(totals) {
@@ -383,7 +385,7 @@ function listview_render_table(data) {
 
 	console.log("Got " + data.length + " objects");
 	if (data.length == 0) {
-		output.append('<h2>Empty result set</h2>');
+		output.append('<h2 class="lsfilter-noresult">Empty result set</h2>');
 	} else {
 
 		/*

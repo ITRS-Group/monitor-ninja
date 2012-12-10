@@ -164,6 +164,13 @@ function listview_do_request() {
 	if (listview_ajax_active_request != null) {
 		listview_ajax_active_request.abort();
 	}
+
+	var loader = $('<span class="lsfilter-loader" />').append($('<span>Loading...</span>'));
+
+	console.log("Query: " + listview_ajax_query);
+	
+	listview_render_start_loading(loader);
+	
 	listview_ajax_active_request = $.ajax({
 		url : _site_domain + _index_page + "/" + _controller_name
 				+ "/fetch_ajax",
@@ -175,7 +182,7 @@ function listview_do_request() {
 			"columns" : listview_columns_for_table(metadata['table'])
 		},
 		success : function(data) {
-			listview_render_stop_loading();
+			listview_render_stop_loading(loader);
 			if (data.status == 'success') {
 				listview_render_totals(data.totals);
 				listview_render_table(data.data);

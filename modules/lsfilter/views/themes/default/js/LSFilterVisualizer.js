@@ -4,33 +4,6 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 	this.fields = null;
 
-	this.demo_fields = {
-
-		'hosts': {
-
-			'state': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'UP', 1: 'DOWN', 2: 'UNREACHABLE', 7: 'ALL'},
-			'name': "name",
-
-			'lastcheck': (new Date()),
-			'duration': 0
-
-		},
-
-		'services': {
-
-			'name': "name",
-			'state': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'OK', 1: 'WARNING', 2: 'CRITICAL', 3: 'UNKNOWN', 15: 'ALL'},
-
-			'hostname': "name",
-			'hoststatus': {'-2': 'EXCLUDED', '-1': 'PENDING', 0: 'UP', 1: 'DOWN', 2: 'UNREACHABLE', 7: 'ALL'},
-			
-			'lastcheck': (new Date()),
-			'duration': 0
-
-		}
-
-	};
-
 	this.op_replacements = {
 		'in': 'in',
 		'not_re_ci': '!~~',
@@ -45,47 +18,6 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		'gt': '>',
 		'lt': '<',
 		'eq': '='
-	};
-
-	this.swapinput = function (select, field) {
-		
-		var that = this,
-			new_field = null;
-
-		switch(
-			typeof(this.fields[select.attr('value')])
-		) {
-			case 'object':
-
-				if (this.fields[select.attr('value')] instanceof Date) {
-					new_field = $('<input class="lsfilter-type-string" type="text" value="' + this.fields[select.attr('value')].toString() + '">');
-				} else {
-					new_field = $('<select />');
-					for (var v in this.fields[select.attr('value')]) {
-						if (v == field.attr('value')) {
-							new_field.append($('<option selected="true" value="'+ v +'">'+ this.fields[select.attr('value')][v] +'</option>'));
-						} else {
-							new_field.append($('<option value="'+ v +'">'+ this.fields[select.attr('value')][v] +'</option>'));
-						}
-					}
-				}
-
-				field.replaceWith(new_field);
-
-				break;
-			case 'string': 
-				new_field = $('<input class="lsfilter-type-string" type="text" value="' + field.attr('value') + '">');
-				field.replaceWith(new_field);
-				break;
-			case 'number': 
-				new_field = $('<input type="text" value="' + field.attr('value') + '">');
-				field.replaceWith(new_field);
-				break;
-		}
-
-		if (new_field)
-			select.change(function () {that.swapinput(select, new_field);});
-
 	};
 
 	// End of just some demo data
@@ -108,19 +40,23 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	
 	this.visit_table_def_simple = function(name0) {
 
-		var result = $('<ul />'),
+		var that = this,
+			result = $('<ul />'),
 			groups = $('<select id="lsfilter-query-object" />');
 
-		for (var type in this.demo_fields) {
+		for (var type in livestatus_structure) {
 			if (type == name0) {
 				groups.append($('<option selected="true" value="' + type + '">' + type + '</option>'));
-				this.fields = this.demo_fields[type];
+				this.fields = livestatus_structure[type];
 			} else {
 				groups.append($('<option value="' + type + '">' + type + '</option>'))
 			}
 		}
 
-		//result.append($('<li><strong>table_def_simple</strong></li>'));
+		groups.change(function () {
+			that.fields = livestatus_structure[$(this).val()];
+		});
+
 		result.append($('<li class="resultvisual" />').append(groups));
 		return result;
 
@@ -163,11 +99,10 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			var result = filter0;
 		} else {
 			var result = $('<ul class="lsfilter-or" />');
-			result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter0));	
+			result.append($('<li class="resultvisual lsfilter-or-expr" />').append(filter0));	
 		}
-
 		result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
-		result.append($('<li class="resultvisual lsfilter-leaf" />').append(filter2));
+		result.append($('<li class="resultvisual lsfilter-or-expr" />').append(filter2));
 
 		return result;
 	};
@@ -176,35 +111,11 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 		if (filter0.is('.lsfilter-and')) {
 			var result = filter0;
-			//result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		} else {
 			var result = $('<ul class="lsfilter-and" />');
-			
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
-			//result.append($('<li style="margin: 3px 6px"><strong>|<br />AND<br />|</strong></li>'));
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
-			
-			/*result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
-
-				var or_block = $(this).parent().parent().parent().parent(),
-					clone = or_block.clone(true);
-				or_block.after(clone);
-				e.preventDefault();
-
-			}));
-
-			result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
-				
-				var or_block = $(this).parent().parent().parent().parent(),
-					clone = or_block.clone(true);
-
-				or_block.after(clone);
-				clone.before($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
-
-				e.preventDefault();
-			}));*/
-
 		}
 		
 		return result;
@@ -266,8 +177,48 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		result.append(ops);
 		result.append(val);
 
-		fields.change(function () {that.swapinput(fields, val);})
-		that.swapinput(fields, val);
+		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+
+			var and_block = $(this).parent().parent().parent().parent().parent(),
+				clone = that.match('eq', 'state', '0');
+
+			if (!and_block.is('.lsfilter-and')) {
+
+				var tmp = $('<div />');
+				result.after(tmp);
+
+				var and_block = that.visit_filter_and(result, clone);
+				tmp.replaceWith(and_block);
+
+			} else {
+				that.visit_filter_and(and_block, clone);
+			}
+
+			e.preventDefault();
+
+		}));
+
+		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+			
+			var or_block = $(this).parent().parent().parent().parent().parent(),
+				clone = that.match('eq', 'state', '0');
+			
+			if (!or_block.is('.lsfilter-or')) {
+				
+				var tmp = $('<div />');
+				result.after(tmp);
+
+				var or_block = that.visit_filter_or(result, clone);
+				tmp.replaceWith(or_block);
+
+			} else {
+				that.visit_filter_or(or_block, clone);
+			}
+			
+
+			e.preventDefault();
+		}));
+
 		return result;
 	}
 	
@@ -380,18 +331,19 @@ var visualizeSearchFilter = function(evt) {
 
 		if ($(document.activeElement).attr('id') != 'filter_query') {
 			$('#filter_query').val(filter_string.join(''));
-		} 
-		
-		console.log(filter_string.join(''));
+		}
+
+		listview_update($('#filter_query').val());
 
 		$('#filter_visual_result').html(
-			'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ encodeURIComponent(filter_string.join('')) +'">'
+			'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ filter_string.join('') +'">'
 		);
 	}
 
 	$('#filter_visual_form').bind('change', dotraverse);
 
 	try {
+
 		listview_update($('#filter_query').val());
 		var result = parser.parse(string);
 

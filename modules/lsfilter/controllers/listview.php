@@ -4,6 +4,10 @@ class ListView_Controller extends Authenticated_Controller {
 	public function index($default_query = "[hosts] state = 0") {
 		$this->xtra_js = array();
 		$basepath = 'modules/lsfilter/';
+		$ormpath = 'modules/livestatusorm/';
+
+		$this->xtra_js[] = $ormpath.'js/LivestatusStructure.js';
+
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterLexer.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';
