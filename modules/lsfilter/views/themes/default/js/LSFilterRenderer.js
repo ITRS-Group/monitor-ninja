@@ -152,9 +152,9 @@ var listview_renderer_totals = {
 
 var listview_renderer_table = {
 
-	/*
+	/***************************************************************************
 	 * Render Hosts
-	 */
+	 **************************************************************************/
 
 	"hosts" : {
 		"status" : {
@@ -269,9 +269,9 @@ var listview_renderer_table = {
 		}
 	},
 
-	/*
+	/***************************************************************************
 	 * Render Services
-	 */
+	 **************************************************************************/
 
 	"services" : {
 		"host_status" : {
@@ -279,18 +279,25 @@ var listview_renderer_table = {
 			"depends" : [ 'host.state_text' ],
 			"sort" : [ 'host.state' ],
 			"cell" : function(obj) {
-				return $('<td><span class="icon-16 x16-shield-'
-						+ obj.host.state_text + '"></span></td>');
+				return $('<td />').append(
+						icon16('shield-' + obj.host.state_text,
+								obj.host.state_text));
 
 			}
 		},
 		"host_name" : {
-			"header" : 'Host',
-			"depends" : [ 'host.name' ],
+			"header" : 'Host Name',
+			"depends" : [ 'host.name', 'host.icon_image' ],
 			"sort" : [ 'host.name' ],
 			"cell" : function(obj) {
-				return $('<td />').append(
-						extinfo_link(obj.host.name).text(obj.host.name));
+				var cell = $('<td />');
+				cell.append(extinfo_link(obj.host.name).text(obj.host.name));
+
+				if (obj.host.icon_image)
+					cell.append(icon(obj.host.icon_image,
+							extinfo_link(obj.host.name)).css('float', 'right'));
+
+				return cell;
 			}
 		},
 		"status" : {
@@ -303,13 +310,68 @@ var listview_renderer_table = {
 			}
 		},
 		"description" : {
-			"header" : 'Description',
+			"header" : 'Service',
 			"depends" : [ 'host.name', 'description' ],
 			"sort" : [ 'description' ],
 			"cell" : function(obj) {
 				return $('<td />').append(
 						extinfo_link(obj.host.name, obj.description).text(
 								obj.description));
+			}
+		},
+		"actions" : {
+			"header" : "Actions",
+			"depends" : [ 'acknowledged', 'comments', 'notifications_enabled',
+					'checks_disabled', 'is_flapping',
+					'scheduled_downtime_depth', 'pnpgraph_present',
+					'action_url', 'notes_url' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />');
+
+				if (obj.acknowledged)
+					cell.append(icon16('acknowledged', 'Acknowledged'));
+
+				if (obj.comments > 0)
+					cell.append(icon16('add-comment', 'Comments'));
+
+				if (!obj.notifications_enabled)
+					cell.append(icon16('notify-disabled',
+							'Notification disabled'));
+
+				if (obj.checks_disabled)
+					cell.append(icon16('active-checks-disabled',
+							'Checks Disabled'));
+
+				if (obj.is_flapping) // FIXME: Needs icon in compass
+					cell.append(icon16('flapping', 'Flapping'));
+
+				if (obj.scheduled_downtime_depth > 0)
+					cell.append(icon16('scheduled-downtime',
+							'Scheduled Downtime'));
+
+				/***************************************************************
+				 * 
+				 */
+
+				// FIXME: Add nacoma link
+				if (obj.pnpgraph_present)
+					cell.append(icon16('pnp', 'Show performance graph', link(
+							'pnp', {
+								"srv" : "_HOST_",
+								"host" : obj.name
+							})));
+
+				if (obj.action_url)
+					cell.append(icon16('host-actions',
+							'perform extra host actions', $('<a />').attr(
+									'href', obj.action_url)));
+
+				if (obj.notes_url)
+					cell.append(icon16('host-notes', 'View extra host notes',
+							$('<a />').attr('href', obj.notes_url)));
+
+				return cell;
 			}
 		},
 		"last_check" : {
@@ -344,6 +406,225 @@ var listview_renderer_table = {
 			"sort" : [ 'display_name' ],
 			"cell" : function(obj) {
 				return $('<td />').text(obj.display_name);
+			}
+		}
+	},
+	/***************************************************************************
+	 * Render Host groups
+	 **************************************************************************/
+	"hostgroups" : {
+		"name" : {
+			"header" : 'Host Group',
+			"depends" : [ 'alias', 'name' ],
+			"sort" : [ 'alias', 'name' ],
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				cell.text(obj.alias);
+				cell.text(' (' + obj.name + ')');
+				return cell;
+			}
+		},
+		"actions" : {
+			"header" : 'Actions',
+			"depends" : [],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				return cell;
+			}
+		},
+		"host_status_summary" : {
+			"header" : 'Host Status Summary',
+			"depends" : [ 'host_stats' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				return $('<td / >').text(obj.host_stats);
+			}
+		},
+		"service_status_summary" : {
+			"header" : 'Service Status Summary',
+			"depends" : [ 'service_stats' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				return $('<td / >').text(obj.service_stats);
+			}
+		}
+	},
+	/***************************************************************************
+	 * Render Service groups
+	 **************************************************************************/
+	"servicegroups" : {
+		"name" : {
+			"header" : 'Service Group',
+			"depends" : [ 'alias', 'name' ],
+			"sort" : [ 'alias', 'name' ],
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				cell.text(obj.alias);
+				cell.text(' (' + obj.name + ')');
+				return cell;
+			}
+		},
+		"actions" : {
+			"header" : 'Actions',
+			"depends" : [],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				return cell;
+			}
+		},
+		"service_status_summary" : {
+			"header" : 'Service Status Summary',
+			"depends" : [ 'service_stats' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				return $('<td / >').text(obj.service_stats);
+			}
+		}
+	},
+	/***************************************************************************
+	 * Render Comments
+	 **************************************************************************/
+	"comments" : {
+		"host_status" : {
+			"header" : '',
+			"depends" : [ 'host.state_text' ],
+			"sort" : [ 'host.state' ],
+			"cell" : function(obj) {
+				return $('<td />').append(
+						icon16('shield-' + obj.host.state_text,
+								obj.host.state_text));
+
+			}
+		},
+		"host_name" : {
+			"header" : 'Host Name',
+			"depends" : [ 'host.name', 'host.icon_image' ],
+			"sort" : [ 'host.name' ],
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				cell.append(extinfo_link(obj.host.name).text(obj.host.name));
+
+				if (obj.host.icon_image)
+					cell.append(icon(obj.host.icon_image,
+							extinfo_link(obj.host.name)).css('float', 'right'));
+
+				return cell;
+			}
+		},
+		"service_status" : {
+			"header" : '',
+			"depends" : [ 'service.state_text', 'service.description' ],
+			"sort" : [ 'service.state' ],
+			"cell" : function(obj) {
+				if (!obj.service.description)
+					return $('<td />');
+
+				return $('<td><span class="icon-16 x16-shield-'
+						+ obj.service.state_text + '"></span></td>');
+			}
+		},
+		"service_description" : {
+			"header" : 'Service',
+			"depends" : [ 'host.name', 'service.description' ],
+			"sort" : [ 'service.description' ],
+			"cell" : function(obj) {
+				if (!obj.service.description)
+					return $('<td />');
+				return $('<td />').append(
+						extinfo_link(obj.host.name, obj.service.description)
+								.text(obj.service.description));
+			}
+		},
+		"time" : {
+			"header" : 'Entry Time',
+			"depends" : [ 'entry_time' ],
+			"sort" : [ 'entry_time' ],
+			"cell" : function(obj) {
+				var time = new Date(obj.entry_time * 1000);
+				return $('<td />').text(time.toLocaleTimeString());
+			}
+		},
+		"author" : {
+			"header" : 'Author',
+			"depends" : [ 'author' ],
+			"sort" : [ 'author' ],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.author);
+			}
+		},
+		"comment" : {
+			"header" : 'Comment',
+			"depends" : [ 'comment' ],
+			"sort" : [ 'comment' ],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.comment);
+			}
+		},
+		"id" : {
+			"header" : 'ID',
+			"depends" : [ 'id' ],
+			"sort" : [ 'id' ],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.id);
+			}
+		},
+		"persistent" : {
+			"header" : 'Persistent',
+			"depends" : [ 'persistent' ],
+			"sort" : [ 'persistent' ],
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				if (obj.persistent)
+					cell.text("Yes");
+				else
+					cell.text("No");
+				return cell;
+			}
+		},
+		"entry_type" : {
+			"header" : 'Type',
+			"depends" : [ 'entry_type' ],
+			"sort" : [ 'entry_type' ],
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				switch (obj.entry_type) {
+				case 1:
+					cell.text("User comment");
+					break;
+				case 2:
+					cell.text("Scheduled downtime");
+					break;
+				case 3:
+					cell.text("Flapping");
+					break;
+				case 4:
+					cell.text("Acknowledgement");
+					break;
+				}
+				return cell;
+			}
+		},
+		"expires" : {
+			"header" : 'Expires',
+			"depends" : [ 'expires', 'expire_time' ],
+			"sort" : [ 'expires', 'expire_time' ],
+			"cell" : function(obj) {
+				var cell = $('<td />');
+				if (obj.expires)
+					cell.text(obj.expire_time);
+				else
+					cell.text('N/A');
+				return cell;
+			}
+		},
+		"actions" : {
+			"header" : 'Actions',
+			"depends" : [],
+			"sort" : false,
+			"cell" : function(obj) {
+				return $('<td />');
 			}
 		}
 	}
