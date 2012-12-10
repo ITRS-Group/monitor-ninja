@@ -55,39 +55,7 @@ class ListView_Controller extends Authenticated_Controller {
 				$data[] = $elem->export();
 			}
 
-
-			/* TODO: fixa till stats bŠttre */
-			$hostpool = new HostPool_Model();
-			$servicepool = new ServicePool_Model();
-
-			$hoststats = array(
-					'host_state_up'          => $hostpool->get_by_name('std host state up'),
-					'host_state_down'        => $hostpool->get_by_name('std host state down'),
-					'host_state_unreachable' => $hostpool->get_by_name('std host state unreachable'),
-					'host_pending'           => $hostpool->get_by_name('std host pending'),
-					'host_all'               => $hostpool->get_by_name('std host all')
-			);
-			$servicestats = array(
-					'service_state_ok'       => $servicepool->get_by_name('std service state ok'),
-					'service_state_warning'  => $servicepool->get_by_name('std service state warning'),
-					'service_state_critical' => $servicepool->get_by_name('std service state critical'),
-					'service_state_unknown'  => $servicepool->get_by_name('std service state unknown'),
-					'service_pending'        => $servicepool->get_by_name('std service pending'),
-					'service_all'            => $servicepool->get_by_name('std service all')
-			);
-
-			$stats = array();
-			switch( $result_set->get_table() ) {
-				case 'hosts':
-					$stats = $result_set->stats( $hoststats )
-					       + $result_set->convert_to_object('services','host')->stats( $servicestats );
-					break;
-				case 'services':
-					$stats = $result_set->stats( $servicestats );
-					break;
-			}
-
-			$this->output_ajax( array( 'status' => 'success', 'totals' => $stats, 'data' => $data ) );
+			$this->output_ajax( array( 'status' => 'success', 'totals' => $result_set->get_totals(), 'data' => $data ) );
 		} catch( Exception $e ) {
 			$this->output_ajax( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
