@@ -1,3 +1,7 @@
+.lsfilter-root li {
+	display: inline-block;
+}
+
 #content.content {
 	padding: 22px 2px 0 2px;
 }
