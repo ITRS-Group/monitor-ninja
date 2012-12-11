@@ -1,6 +1,57 @@
 
 var saved_filters = {};
 
+function resolve_type (query) {
+	query = query.split('[')[1];
+	query = query.split(']')[0];
+	query = query.replace(/^\s+/, '');
+	
+	for (var i = query.length - 1; i >= 0; i--) {
+		if (/\S/.test(query.charAt(i))) {
+			query = query.substring(0, i + 1);
+			break;
+		}
+	}
+
+	return query;
+};
+
+function add_saved_filter_list ( list, save ) {
+
+	var type = resolve_type(save['query']),
+		icon = "";
+
+	switch (type) {
+		case "hosts":
+			icon = '<span class="icon-menu menu-host"></span>'
+			break;
+		case "services":
+			icon = '<span class="icon-menu menu-service"></span>'
+			break;
+		case "hostgroups":
+			icon = '<span class="icon-menu menu-hostgroupsummary"></span>'
+			break;
+		case "servicegroups":
+			icon = '<span class="icon-menu menu-servicegroupsummary"></span>'
+			break;
+		default:
+			icon = '<span class="icon-menu menu-eventlog"></span>'
+			break;
+	}
+
+	list.append( 
+		
+		$('<li class="saved-filter-'+save['scope']+'" />').html(
+			icon + '<a href="?filter_query=' + save['query'] + '">' + save['scope'].toUpperCase() + ' - ' + save['name'] + '</a>'
+		).hover(function () {
+			$('#filter-query-saved-preview').html( save['query'] );
+		}, function () {
+			$('#filter-query-saved-preview').empty();
+		})
+
+	);
+}
+
 function listview_load_filters () {
 	
 	var basepath = _site_domain + _index_page;
@@ -14,7 +65,13 @@ function listview_load_filters () {
 		complete: function (xhr) {
 
 			saved_filters = JSON.parse(xhr.responseText);
-			console.log(saved_filters);
+
+			$('#filter-query-saved-hide-static, #filter-query-saved-hide-global, #filter-query-saved-hide-user').removeAttr('checked');
+			var list = $("#filter-query-saved-filters").empty();
+
+			for (var filter in saved_filters.data) {
+				add_saved_filter_list(list, saved_filters.data[filter])						
+			}
 
 		}
 	});
@@ -39,6 +96,7 @@ function listview_save_filter (filter) {
 			type: 'GET',
 			complete: function (xhr) {
 				$('#lsfilter_save_filter').removeClass().text('Save');
+				listview_load_filters();
 			}
 		});
 	
@@ -54,20 +112,29 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 	this.fields = null;
 
-	this.op_replacements = {
-		'in': 'in',
-		'not_re_ci': '!~~',
-		'not_re_cs': '!~',
-		're_ci': '~~',
-		're_cs': '~',
-		'not_eq_ci': '!=~',
-		'eq_ci': '=~',
-		'not_eq': '!=',
-		'gt_eq': '>=',
-		'lt_eq': '<=',
-		'gt': '>',
-		'lt': '<',
-		'eq': '='
+	this.operators = {
+
+		"string": {
+			'in': 'in',
+			'not_re_ci': '!~~',
+			'not_re_cs': '!~',
+			're_ci': '~~',
+			're_cs': '~',
+			'not_eq_ci': '!=~',
+			'eq_ci': '=~',
+			'not_eq': '!=',
+			'eq': '='
+		},
+
+		"int": {
+			'not_eq': '!=',
+			'gt_eq': '>=',
+			'lt_eq': '<=',
+			'gt': '>',
+			'lt': '<',
+			'eq': '='
+		}
+
 	};
 
 	// End of just some demo data
@@ -98,6 +165,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			if (type == name0) {
 				groups.append($('<option selected="true" value="' + type + '">' + type + '</option>'));
 				this.fields = livestatus_structure[type];
+				this.fields['this'] = ['string'];
 			} else {
 				groups.append($('<option value="' + type + '">' + type + '</option>'))
 			}
@@ -183,7 +251,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		return result;
 	};
 	
-	this.visit_match_in        = function(set_descr1)    { return this.match('in',       "FIXME",  set_descr1); };
+	this.visit_match_in        = function(set_descr1)    { return this.match('in',       "this", set_descr1); };
 	this.visit_match_field_in  = function(field0, expr2) { return this.match('field_in', field0,expr2); };
 	this.visit_match_not_re_ci = function(field0, expr2) { return this.match('not_re_ci',field0,expr2); };
 	this.visit_match_not_re_cs = function(field0, expr2) { return this.match('not_re_cs',field0,expr2); };
@@ -200,6 +268,10 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	
 	this.match = function(op,name,expr) {
 
+		console.log(arguments);
+
+		name = name.find('.resultvisual').html();
+
 		var that = this,
 			val = $('<input type="text" value="' + expr.replace(/['"]/g,'') + '" />'),
 			result = $('<ul class="lsfilter-comp" />'),
@@ -207,24 +279,54 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			ops = $('<select class="lsfilter-operator-select" />');
 
 		for (var f in this.fields) {
+			console.log(name);
 			if (f == name) {
 				fields.append($('<option value="' + f + '" selected="true">' + f + '</option>'));
 			} else {
 				fields.append($('<option value="' + f + '">' + f + '</option>'));
 			}
 		}
-
-		result.append(fields);
 		
-		for (var operator in this.op_replacements) {
+		result.append(fields);
+
+		for (var operator in this.operators[that.fields[fields.val()]]) {
+			var possibles = this.operators[that.fields[fields.val()].join('')];
 			if (operator == op) {
-				ops.append($('<option selected="true" value="' + this.op_replacements[operator] + '">' + this.op_replacements[operator] + '</option>'));
+				ops.append($('<option selected="true" value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
 			} else {
-				ops.append($('<option value="' + this.op_replacements[operator] + '">' + this.op_replacements[operator] + '</option>'));
+				ops.append($('<option value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
 			}
 		}
 		
 		result.append(ops);
+
+		fields.change(function () {
+			val.removeClass().addClass('lsfilter-type-' + that.fields[this.value].join(''));
+
+			ops.empty();
+			for (var operator in that.operators[that.fields[fields.val()]]) {
+				var possibles = that.operators[that.fields[fields.val()].join('')];
+
+				if (operator == op) {
+					ops.append($('<option selected="true" value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
+				} else {
+					ops.append($('<option value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
+				}
+			}
+
+		});
+
+		if (name == "this") {
+			fields.empty();
+			fields.append( $('<option />').val('this').text('this') );
+			fields.attr('disabled', true);
+		}
+
+		
+
+		val.removeClass().addClass('lsfilter-type-' + this.fields[fields.val()].join(''));
+
+		//console.log(this.fields);
 		result.append(val);
 
 		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
@@ -274,19 +376,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	
 	// set_descr_name: Êset_descr := * string
 	this.visit_set_descr_name = function(string0) {
-		var result = $('<ul />');
-		result.append($('<li><strong>set_descr_name</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(string0));
-		return result;
-	};
-	
-	// set_descr_query: Êset_descr := * query
-	this.visit_set_descr_query = function(query0) {
-		console.log("call visit_set_descr_query");
-		var result = $('<ul />');
-		result.append($('<li><strong>set_descr_query</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(query0));
-		return result;
+		return string0;
 	};
 	
 	// field_name: field := * name
@@ -321,10 +411,17 @@ var visualizeSearchFilter = function(evt) {
 		if (dom.hasClass('lsfilter-comp')) {
 
 			dom.children().each(function () {
-				if ($(this).hasClass('lsfilter-type-string')) {
-					seg.push('"' + this.value + '"');	
-				} else {
-					seg.push(this.value);	
+				if (this.value != 'this') {
+					
+
+					if ($(this).hasClass('lsfilter-type-string')) {
+						seg.push('"' + this.value + '"');	
+					} else if( $(this).hasClass('lsfilter-operator-select') ) {
+						seg.push(' ' + this.value + ' ');
+					} else {
+						seg.push(this.value);	
+					}
+
 				}
 			});
 
@@ -402,11 +499,13 @@ var visualizeSearchFilter = function(evt) {
 
 	} catch( ex ) {
 		$('#filter_query').css("border", "2px solid #f40")
-		//console.log(ex);
+		console.log(ex);
 	}
 }
 
 $().ready(function() {
+
+	listview_load_filters();
 
 	var hide_main_box = function () {
 
@@ -418,8 +517,6 @@ $().ready(function() {
 
 		}
 	}
-
-	listview_load_filters();
 
 	$('#lsfilter_save_filter').click(function () {
 		$(this).addClass('saving').text('Saving...');
@@ -440,57 +537,6 @@ $().ready(function() {
 		});
 	});
 
-	function resolve_type (query) {
-		query = query.split('[')[1];
-		query = query.split(']')[0];
-		query = query.replace(/^\s+/, '');
-		
-		for (var i = query.length - 1; i >= 0; i--) {
-			if (/\S/.test(query.charAt(i))) {
-				query = query.substring(0, i + 1);
-				break;
-			}
-		}
-
-		return query;
-	};
-
-	function add_saved_filter_list ( list, save ) {
-
-		var type = resolve_type(save['query']),
-			icon = "";
-
-		switch (type) {
-			case "hosts":
-				icon = '<span class="icon-menu menu-host"></span>'
-				break;
-			case "services":
-				icon = '<span class="icon-menu menu-service"></span>'
-				break;
-			case "hostgroups":
-				icon = '<span class="icon-menu menu-hostgroupsummary"></span>'
-				break;
-			case "servicegroups":
-				icon = '<span class="icon-menu menu-servicegroupsummary"></span>'
-				break;
-			default:
-				icon = '<span class="icon-menu menu-eventlog"></span>'
-				break;
-		}
-
-		list.append( 
-			
-			$('<li class="saved-filter-'+save['scope']+'" />').html(
-				icon + '<a href="?filter_query=' + save['query'] + '">' + save['scope'].toUpperCase() + ' - ' + save['name'] + '</a>'
-			).hover(function () {
-				$('#filter-query-saved-preview').html( save['query'] );
-			}, function () {
-				$('#filter-query-saved-preview').empty();
-			})
-
-		);
-	}
-
 	function toggle_filter_type (type) {
 		$('#filter-query-saved-filters .saved-filter-' + type).toggle(200);
 	}
@@ -506,12 +552,6 @@ $().ready(function() {
 			switch ($(this).css('display')) {
 				case "block":
 					$('#filter-query-builder').show(200);
-					var list = $("#filter-query-saved-filters").empty();
-
-					for (var filter in saved_filters.data) {
-						add_saved_filter_list(list, saved_filters.data[filter])						
-					}
-
 					break;
 				case "none":
 					hide_main_box();
