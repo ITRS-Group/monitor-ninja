@@ -34,10 +34,7 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
-		$this->session->delete('auth_user');
-		$this->session->delete('nagios_access');
-		$this->session->delete('contact_id');
-		$this->session->delete('auth_method');
+		Session::regenerate();
 		$this->template = $this->add_view('login');
 		$this->template->error_msg = $this->session->get('error_msg', false);
 		$this->template->js_header = $this->add_view('js_header');
@@ -129,6 +126,7 @@ class Default_Controller extends Ninja_Controller  {
 	public function logout()
 	{
 		Auth::instance()->logout();
+		Session::destroy();
 		return url::redirect('default/show_login');
 	}
 
