@@ -179,7 +179,9 @@ function listview_do_request() {
 			"query" : listview_ajax_query,
 			"sort" : listview_sort_db_columns,
 			"sort_asc" : (listview_sort_ascending?1:0),
-			"columns" : listview_columns_for_table(metadata['table'])
+			"columns" : listview_columns_for_table(metadata['table']),
+			"limit" : 100,
+			"offset" : 0
 		},
 		success : function(data) {
 			listview_render_stop_loading(loader);

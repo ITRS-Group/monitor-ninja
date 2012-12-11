@@ -1,8 +1,11 @@
 <?php
 
 class ListView_Controller extends Authenticated_Controller {
-	public function index($default_query = "[hosts] state = 0") {
+	public function index($q = "[hosts] state = 0") {
 		$this->xtra_js = array();
+		$query = $this->input->get('q', $q);
+		
+		
 		$basepath = 'modules/lsfilter/';
 		$ormpath = 'modules/livestatusorm/';
 
@@ -29,7 +32,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
 
-		$lview->query = $this->input->get('filter_query', $default_query);
+		$lview->query = $query;
 	}
 
 	public function fetch_ajax() {
@@ -37,7 +40,13 @@ class ListView_Controller extends Authenticated_Controller {
 		$columns = $this->input->get('columns',false);
 		$sort = $this->input->get('sort',array());
 		$sort_asc = $this->input->get('sort_asc',true);
+		
+		$limit = $this->input->get('limit',false);
+		$offset = $this->input->get('offset',false);
 
+		if( $limit === false )
+			json::ok( array( 'status' => 'error', 'data' => "No limit specified") );
+		
 		/* TODO: Fix sorting better sometime
 		 * Do it though ORM more orm-ly
 		 * Check if columns exists and so on...
@@ -51,7 +60,7 @@ class ListView_Controller extends Authenticated_Controller {
 			$result_set = ObjectPool_Model::get_by_query( $query );
 			
 			$data = array();
-			foreach( $result_set->it($columns,$sort) as $elem ) {
+			foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
 				$data[] = $elem->export();
 			}
 

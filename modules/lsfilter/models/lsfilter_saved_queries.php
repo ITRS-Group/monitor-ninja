@@ -5,19 +5,23 @@ class LSFilter_Saved_Queries_Model extends Model {
 
 	private static $saved_queries = array(
 			'hosts' => array(
-					'std host state up'          => '[hosts] state=0 and has_been_checked=1',
-					'std host state down'        => '[hosts] state=1 and has_been_checked=1',
-					'std host state unreachable' => '[hosts] state=2 and has_been_checked=1',
-					'std host pending'           => '[hosts] has_been_checked=0',
-					'std host all'               => '[hosts] state!=999'
+					'std host state up'              => '[hosts] state=0 and has_been_checked=1',
+					'std host state down'            => '[hosts] state=1 and has_been_checked=1',
+					'std host state unreachable'     => '[hosts] state=2 and has_been_checked=1',
+					'std host pending'               => '[hosts] has_been_checked=0',
+					'std host all'                   => '[hosts] state!=999',
+					'std host problems'              => '[hosts] has_been_checked != 0 and state != 0',
+					'std host unhandled problems'    => '[hosts] has_been_checked != 0 and state != 0 and scheduled_downtime_depth = 0 and acknowledged = 0'
 			),
 			'services' => array(
-					'std service state ok'       => '[services] state=0 and has_been_checked=1',
-					'std service state warning'  => '[services] state=1 and has_been_checked=1',
-					'std service state critical' => '[services] state=2 and has_been_checked=1',
-					'std service state unknown'  => '[services] state=3 and has_been_checked=1',
-					'std service pending'        => '[services] has_been_checked=0',
-					'std service all'            => '[services] description!=""'
+					'std service state ok'           => '[services] state=0 and has_been_checked=1',
+					'std service state warning'      => '[services] state=1 and has_been_checked=1',
+					'std service state critical'     => '[services] state=2 and has_been_checked=1',
+					'std service state unknown'      => '[services] state=3 and has_been_checked=1',
+					'std service pending'            => '[services] has_been_checked=0',
+					'std service all'                => '[services] description!=""',
+					'std service problems'           => '[services] has_been_checked != 0 and state != 0',
+					'std service unhandled problems' => '[services] has_been_checked != 0 and state != 0 and scheduled_downtime_depth = 0 and acknowledged = 0'
 			)
 	);
 
