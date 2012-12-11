@@ -57,7 +57,7 @@ class ListView_Controller extends Authenticated_Controller {
 
 			json::ok( array( 'status' => 'success', 'totals' => $result_set->get_totals(), 'data' => $data ) );
 		} catch( Exception $e ) {
-			json::fail( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+			json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
 	}
 
@@ -76,13 +76,13 @@ class ListView_Controller extends Authenticated_Controller {
 			$result = LSFilter_Saved_Queries_Model::save_query($name, $query, $scope);
 			
 			if( $result !== false )
-				json::fail( array('status'=>'error', 'data' => $result) );
+				json::ok( array('status'=>'error', 'data' => $result) );
 			
 			
 			json::ok( array( 'status' => 'success', 'data' => 'success' ) );
 		}
 		catch( Exception $e ) {
-			json::fail( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+			json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
 	}
 }
