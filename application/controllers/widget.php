@@ -3,6 +3,7 @@
 class Widget_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
+		$this->session = Session::instance();
 		if (!Auth::instance()->logged_in()) {
 			$external_widget_user = Kohana::config('external_widget.username');
 			$external_widget_groups = Kohana::config('external_widget.groups');
