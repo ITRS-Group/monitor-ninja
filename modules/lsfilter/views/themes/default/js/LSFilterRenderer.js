@@ -65,6 +65,14 @@ function listview_add_sort(element, vis_column, db_columns, current) {
  ******************************************************************************/
 
 var listview_renderer_totals = {
+	"count" : function(cnt) {
+		var container = $('<li class="extra_toolbar_category" />');
+		container.append("Count: &nbsp; ");
+		container.append(icon16('shield-info', "Matching"));
+		container.append(cnt);
+		return container;
+	},
+
 	"host_all" : function(cnt) {
 		var container = $('<li class="extra_toolbar_category" />');
 		container.append("Hosts: &nbsp; ");
@@ -104,8 +112,7 @@ var listview_renderer_totals = {
 	"service_all" : function(cnt) {
 		var container = $('<li class="extra_toolbar_category" />');
 		container.append("Services: &nbsp; ");
-		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-info', "Services total"));
+		container.append(icon16('shield-info', "Services total"));
 		container.append(cnt);
 		return container;
 	},
