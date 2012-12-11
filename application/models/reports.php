@@ -646,25 +646,42 @@ class Reports_Model extends Model
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */
-	public static function event_type_to_string($event_type, $object_type = null) {
-		switch($event_type) {
-			case self::PROCESS_SHUTDOWN:
-				return _('Monitor shut down');
-			case self::PROCESS_RESTART:
-				return _('Monitor restart');
-			case self::PROCESS_START:
-				return _('Monitor started');
-			case self::SERVICECHECK:
-				return _('Service alert');
-			case self::HOSTCHECK:
-				return _('Host alert');
-			case self::DOWNTIME_START:
-				return _($object_type . ' has entered a period of scheduled downtime');
-			case self::DOWNTIME_STOP:
-				return _($object_type . ' has exited a period of scheduled downtime');
-			default:
-				throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
+	public static function event_type_to_string($event_type, $object_type = null, $short = false) {
+		$events = array(
+			self::PROCESS_SHUTDOWN => array(
+				'short' => 'monitor_shut_down',
+				'full' => _('Monitor shut down')
+			),
+			self::PROCESS_RESTART => array(
+				'short' => 'monitor_restart',
+				'full' => _('Monitor restart')
+			),
+			self::PROCESS_START => array(
+				'short' => 'monitor_start',
+				'full' => _('Monitor started')
+			),
+			self::SERVICECHECK => array(
+				'short' => 'service_alert',
+				'full' => _('Service alert')
+			),
+			self::HOSTCHECK => array(
+				'short' => 'host_alert',
+				'full' => _('Host alert')
+			),
+			self::DOWNTIME_START => array(
+				'short' => 'scheduled_downtime_start',
+				'full' => _($object_type . ' has entered a period of scheduled downtime')
+			),
+			self::DOWNTIME_STOP => array(
+				'short' => 'scheduled_downtime_stop',
+				'full' => _($object_type . ' has exited a period of scheduled downtime')
+			)
+		);
+		// todo we need a unit test for this since the http api relies on the shortcodes
+		if(!isset($events[$event_type])) {
+			throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
 		}
+		return $events[$event_type][$short ? 'short' : 'full'];
 	}
 
 	/**

@@ -56,4 +56,24 @@ class report_Test extends TapUnit {
 		$this->auth->set_authorized_for('view_services_root', true);
 		$this->run_and_diag($this->auth);
 	}
+
+	/**
+	 * Very important to not change, since the HTTP API
+	 * relies on this.
+	 */
+	function test_event_types()
+	{
+		$events = array(
+			Reports_Model::PROCESS_SHUTDOWN => 'monitor_shut_down',
+			Reports_Model::PROCESS_RESTART => 'monitor_restart',
+			Reports_Model::PROCESS_START => 'monitor_start',
+			Reports_Model::SERVICECHECK => 'service_alert',
+			Reports_Model::HOSTCHECK => 'host_alert',
+			Reports_Model::DOWNTIME_START => 'scheduled_downtime_start',
+			Reports_Model::DOWNTIME_STOP => 'scheduled_downtime_stop'
+		);
+		foreach($events as $code => $event) {
+			$this->eq($event, Reports_Model::event_type_to_string($event, null, true));
+		}
+	}
 }
