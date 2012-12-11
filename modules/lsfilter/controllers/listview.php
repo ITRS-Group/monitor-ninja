@@ -61,6 +61,28 @@ class ListView_Controller extends Authenticated_Controller {
 		}
 	}
 
+	public function fetch_saved_queries() {
+		$queries = array(
+					array('std host state up'          ,'[hosts] state=0 and has_been_checked=1',    'static'),
+					array('std host state down'        ,'[hosts] state=1 and has_been_checked=1',    'static'),
+					array('std host state unreachable' ,'[hosts] state=2 and has_been_checked=1',    'static'),
+					array('std host pending'           ,'[hosts] has_been_checked=0',                'static'),
+					array('std host all'               ,'[hosts] state!=999',                        'static'),
+					array('std service state ok'       ,'[services] state=0 and has_been_checked=1', 'static'),
+					array('std service state warning'  ,'[services] state=1 and has_been_checked=1', 'static'),
+					array('std service state critical' ,'[services] state=2 and has_been_checked=1', 'static'),
+					array('std service state unknown'  ,'[services] state=3 and has_been_checked=1', 'static'),
+					array('std service pending'        ,'[services] has_been_checked=0',             'static'),
+					array('std service all'            ,'[services] description!=""',                'static')
+				);
+		$mapped_queries = array_map(function($q){return array_combine(array('name','query','scope'),$q);},$queries);
+		$this->output_ajax( array( 'status' => 'success', 'data' => $mapped_queries ) );
+	}
+
+	public function save_query() {
+			$this->output_ajax( array( 'status' => 'success', 'data' => 'something something' ) );
+	}
+
 	private function output_ajax( $data ) {
 		$this->auto_render = false;
 		echo json_encode( $data );
