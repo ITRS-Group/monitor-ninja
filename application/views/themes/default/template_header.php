@@ -88,7 +88,7 @@
 						if ($quri == $stripped)
 							echo '<li style="box-shadow: inset 0 0 5px #888; border-radius: 2px 4px  0 0; background-color: #ccc; border-right: 1px solid #777; border-left: 1px solid #777; ">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
 						else
-							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span>', $attributes).'</li>';
+							echo '<li style="position: relative;">'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span>', $attributes).'</li>';
 					}
 
 					echo '</ul>';
