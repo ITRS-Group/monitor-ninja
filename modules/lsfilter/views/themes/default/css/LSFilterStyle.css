@@ -4,6 +4,7 @@
 }
 
 #filter-query-builder {
+	background: #f5f5f5;
 	box-shadow: 0 2px 2px 3px rgba(0,0,0,0.1);
 	border: 1px solid #999;
 	position: fixed;
@@ -14,7 +15,6 @@
 }
 
 #filter-query-builder-graphical, #filter-query-builder-manual {
-	background: #f5f5f5;
 	display: none;
 	padding: 8px;
 }

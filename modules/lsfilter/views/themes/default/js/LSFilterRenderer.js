@@ -162,7 +162,7 @@ var listview_renderer_table = {
 			"depends" : [ 'state_text' ],
 			"sort" : [ 'state' ],
 			"cell" : function(obj) {
-				return $('<td />').append(
+				return $('<td class="icon" />').append(
 						icon16('shield-' + obj.state_text, obj.state_text));
 
 			}
@@ -282,7 +282,6 @@ var listview_renderer_table = {
 				return $('<td />').append(
 						icon16('shield-' + obj.host.state_text,
 								obj.host.state_text));
-
 			}
 		},
 		"host_name" : {
@@ -305,7 +304,7 @@ var listview_renderer_table = {
 			"depends" : [ 'state_text' ],
 			"sort" : [ 'state' ],
 			"cell" : function(obj) {
-				return $('<td><span class="icon-16 x16-shield-'
+				return $('<td class="icon"><span class="icon-16 x16-shield-'
 						+ obj.state_text + '"></span></td>');
 			}
 		},

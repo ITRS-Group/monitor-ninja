@@ -1,3 +1,47 @@
+
+var saved_filters = {};
+
+function listview_load_filters () {
+	
+	var basepath = _site_domain + _index_page;
+
+	$.ajax(basepath + '/listview/fetch_saved_queries', {
+		data: {
+			'type': 'lsfilters_saved',
+			'page': 'listview'
+		},
+		type: 'POST',
+		complete: function (xhr) {
+
+			saved_filters = JSON.parse(xhr.responseText);
+			console.log(saved_filters);
+
+		}
+	});
+}
+
+function listview_save_filter (filter) {
+	
+	var basepath = _site_domain + _index_page,
+		save = {"query": filter, "scope": "user"};
+
+	if ($('#lsfilter_save_filter_global').attr('checked')) {
+		save["scope"] = "global";
+	}
+	
+	$.ajax(basepath + '/listview/save_query', {
+		data: {
+			'type': 'lsfilters_saved',
+			'page': 'listview',
+			'setting': JSON.stringify(save)
+		},
+		type: 'POST',
+		complete: function (xhr) {
+			console.log(save);
+		}
+	});
+}
+
 var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 	// Just some demo data
@@ -333,8 +377,6 @@ var visualizeSearchFilter = function(evt) {
 			$('#filter_query').val(filter_string.join(''));
 		}
 
-		listview_update($('#filter_query').val());
-
 		$('#filter_visual_result').html(
 			'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ filter_string.join('') +'">'
 		);
@@ -366,6 +408,12 @@ $().ready(function() {
 			$('#filter-query-builder').hide();
 		}
 	}
+
+	listview_load_filters();
+
+	$('#lsfilter_save_filter').click(function () {
+		listview_save_filter($('#filter_query').val());	
+	})
 
 	$('#show-filter-query-builder-manual-button').click(function () {
 

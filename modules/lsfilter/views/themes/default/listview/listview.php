@@ -14,6 +14,12 @@
 <div class="extra_toolbar_spacer"></div>
 
 <div id="filter-query-builder">
+
+	<div style="margin: 8px 0 0 8px">
+		<button id="lsfilter_save_filter">Save Filter</button>
+		<input type="checkbox" id="lsfilter_save_filter_global" /> Make global
+	</div>
+
 	<div id="filter-query-builder-manual">
 
 		<h2>Manual input</h2>
@@ -38,4 +44,4 @@
 	</div>
 </div>
 
-<div class="clear" id="filter_result">Loading...</div>
+<div class="clear" id="filter_result"><div style="text-align: center; margin: 32px;"><span class="lsfilter-loader">Loading...</span></div></div>
