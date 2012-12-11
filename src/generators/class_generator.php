@@ -97,7 +97,7 @@ abstract class class_generator {
 		$this->write( "$visibility \$$name = " . var_export( $default, true ) . ";" );
 	}
 	
-	protected function abstract_function( $name, $args = array(), $modifiers = array() ) {
+	protected function abstract_function( $name, $args = array(), $modifiers = array(), $defaults = array() ) {
 		if( !is_array( $modifiers ) ) {
 			$modifiers = array_filter( array_map( 'trim', explode(' ',$modifiers) ) );
 		}
@@ -108,12 +108,19 @@ abstract class class_generator {
 		if( !empty( $modifiers ) ) {
 			$modifiers = trim($modifiers)." ";
 		}
-		$argstr = implode(', ', array_map(function($n){return '$'.$n;},$args));
+		$argstr = "";
+		$argdelim = "";
+		foreach( $args as $arg ) {
+			$argstr .= $argdelim.'$'.$arg;
+			if( isset($defaults[$arg]) )
+				$argstr .= '='.var_export($defaults[$n],true);
+			$argdelim = ", ";
+		}
 		$this->write( "abstract ${modifiers}function $name($argstr);" );
 		$this->write();
 	}
 	
-	protected function init_function( $name, $args = array(), $modifiers = array() ) {
+	protected function init_function( $name, $args = array(), $modifiers = array(), $defaults = array() ) {
 		if( !is_array( $modifiers ) ) {
 			$modifiers = array_filter( array_map( 'trim', explode(' ',$modifiers) ) );
 		}
@@ -124,7 +131,14 @@ abstract class class_generator {
 		if( !empty( $modifiers ) ) {
 			$modifiers = trim($modifiers)." ";
 		}
-		$argstr = implode(', ', array_map(function($n){return '$'.$n;},$args));
+		$argstr = "";
+		$argdelim = "";
+		foreach( $args as $arg ) {
+			$argstr .= $argdelim.'$'.$arg;
+			if( isset($defaults[$arg]) )
+				$argstr .= '='.var_export($defaults[$arg],true);
+			$argdelim = ", ";
+		}
 		$this->write( "${modifiers}function $name($argstr) {" );
 	}
 	

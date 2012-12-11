@@ -135,13 +135,21 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 	}
 	
 	public function generate_it() {
-		$this->init_function('it',array('columns','order'));
+		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$ls = LivestatusAccess::instance();');
 
 		$this->write('$ls_filter = $this->filter->generateFilter();');
 		
 		$this->write('foreach($order as $col) {');
 		$this->write('$ls_filter .= "Sort: $col\n";');
+		$this->write('}');
+
+		$this->write('if( $offset !== false ) {');
+		$this->write('$ls_filter .= "Offset: ".intval($offset)."\n";');
+		$this->write('}');
+		
+		$this->write('if( $limit !== false ) {');
+		$this->write('$ls_filter .= "Limit: ".intval($limit)."\n";');
 		$this->write('}');
 		
 		$this->write('$columns = $this->validate_columns($columns);');
