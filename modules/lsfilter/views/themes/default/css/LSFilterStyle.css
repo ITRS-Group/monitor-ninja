@@ -14,9 +14,18 @@
 	right: 0;
 }
 
-#filter-query-builder-graphical, #filter-query-builder-manual {
+#filter-query-builder-graphical, #filter-query-builder-manual, #filter-query-saved {
 	display: none;
 	padding: 8px;
+}
+
+#filter-query-saved-filters {
+	height: 96px;
+	width: 50%;
+	overflow: auto;
+	padding: 4px;
+	border: 1px solid #bbb;
+	background: #fff;
 }
 
 #filter-query-builder-manual {

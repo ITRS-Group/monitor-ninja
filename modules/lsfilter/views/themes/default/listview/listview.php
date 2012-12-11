@@ -7,6 +7,7 @@
 			id="filter_visual_result"></span>
 		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-edit"></span></button>
 		<button id="show-filter-query-builder-graphical-button" title="Show/Edit Graphical Filter"><span class="icon-16 x16-command"></span></button>
+		<button id="show-filter-query-saved" title="Show saved filters"><span class="icon-16 x16-status-detail"></span></button>
 	</div>
 	<div id="filter_result_totals"></div>
 </div>
@@ -18,6 +19,15 @@
 	<div style="margin: 8px 0 0 8px">
 		<button id="lsfilter_save_filter">Save Filter</button>
 		<input type="checkbox" id="lsfilter_save_filter_global" /> Make global
+	</div>
+
+	<div id="filter-query-saved">
+
+		<h2>Saved filters</h2>
+
+		<ul id="filter-query-saved-filters">
+		<ul>
+
 	</div>
 
 	<div id="filter-query-builder-manual">
