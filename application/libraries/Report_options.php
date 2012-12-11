@@ -10,50 +10,201 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		'servicegroup_name' => 'servicegroup'
 	);
 	protected $properties = array(
-		'report_id' => array('type' => 'int', 'default' => false), /**< Saved report id - not to be confused with schedule_id */
-		'report_name' => array('type' => 'string', 'default' => false), /**< Name of the report */
-		'report_type' => array('type' => 'enum', 'default' => false, 'options' => array( /**< The type of objects in the report, set automatically by setting the actual objects */
-			'hosts' => 'host_name',
-			'services' => 'service_description',
-			'hostgroups' => 'hostgroup',
-			'servicegroups' => 'servicegroup')),
-		'report_period' => array('type' => 'enum', 'default' => 'last7days'), /**< A report period to generate the report over, may automatically set {start,end}_time */
-		'alert_types' => array('type' => 'enum', 'default' => 3), /**< Bitmap of the types of alerts to include (host, service, both) */
-		'state_types' => array('type' => 'enum', 'default' => 3), /**< Bitmap of the types of states to include (soft, hard, both) */
-		'host_states' => array('type' => 'enum', 'default' => 7), /**< Bitmap of the host states to include (up, down, unreachable, etc) */
-		'service_states' => array('type' => 'enum', 'default' => 15), /**< Bitmap of the service states to include (ok, warning, critical, etc) */
-		'summary_items' => array('type' => 'int', 'default' => 25), /**< Number of summary items to include in reports */
-		'cluster_mode' => array('type' => 'bool', 'default' => false), /**< Whether to use best or worst case metrics */
-		'keep_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether to keep logs around - this turns on if (for example) include_trends is activated */
-		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
-		'rpttimeperiod' => array('type' => 'enum', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
-		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
-		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => true), /**< Whether to assume states during not running */
-		'includesoftstates' => array('type' => 'bool', 'default' => false), /**< Include soft states, yes/no? */
-		'host_name' => array('type' => 'objsel', 'default' => array()), /**< Hosts to include (note: array) */
-		'service_description' => array('type' => 'objsel', 'default' => array()), /**< Services to include (note: array) */
-		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include (note: array) */
-		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include (note: array) */
-		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
-		'end_time' => array('type' => 'timestamp', 'default' => 0), /**< End time for report, timestamp or date-like string */
-		'use_average' => array('type' => 'enum', 'default' => 0), /**< Whether to hide any SLA values and stick to averages */
-		'host_filter_status' => array('type' => 'array', 'default' => array()), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
-		'service_filter_status' => array('type' => 'array', 'default' => array()), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
-		'include_trends' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
-		'include_trends_scaling' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
-		'master' => array('type' => 'object', 'default' => false, 'generated' => true), /**< The master report, if one */
-		'schedule_id' => array('type' => 'int', 'default' => false), /**< A schedule id we're currently running as, not to be confused with report_id. This cannot be calculated, so it must be included */
-		'output_format' => array('type' => 'enum', 'default' => 'html', 'options' => array( /**< What type of report to generate (manually selected in web UI, generated from filename for saved reports) */
-			'html' => 'html',
-			'csv' => 'csv',
-			'pdf' => 'csv'), 'generated' => true),
-		'skin' => array('type' => 'string', 'default' => ''), /**< Use the following skin for rendering the report */
-		'recipients' => array('type' => 'string', 'default' => ''), /**< Comma separated email addresses to report recipients */
-		'filename' => array('type' => 'string', 'default' => ''), /**< Filename to use for saving the report, used to set output_format */
-		'local_persistent_filepath' => array('type' => 'string', 'default' => ''), /**< Directory (not filename) to store the filename in locally */
-		'use_alias' => array('type' => 'bool', 'default' => false),
-		'description' => array('type' => 'string', 'default' => false),
-		'include_alerts' => array('type' => 'bool', 'default' => false),
+		'report_id' => array(
+			'type' => 'int',
+			'default' => false,
+			'description' => 'Saved report id - not to be confused with schedule_id'
+		),
+		'report_name' => array(
+			'type' => 'string',
+			'default' => false,
+			'description' => 'Name of the report'
+		),
+		'report_type' => array(
+			'type' => 'enum',
+			'default' => false,
+			'options' => array(
+				'hosts' => 'host_name',
+				'services' => 'service_description',
+				'hostgroups' => 'hostgroup',
+				'servicegroups' => 'servicegroup'
+			),
+			'description' => 'The type of objects in the report, set automatically by setting the actual objects'
+		),
+		'report_period' => array(
+			'type' => 'enum',
+			'default' => 'last7days',
+			'description' => 'A report period to generate the report over, may automatically set {start,end}_time'
+		),
+		'alert_types' => array(
+			'type' => 'enum',
+			'default' => 3,
+			'description' => 'Bitmap of the types of alerts to include'
+		),
+		'state_types' => array(
+			'type' => 'enum',
+			'default' => 3,
+                        'description' => 'Bitmap of the types of states to include (soft, hard, both)'
+                ),
+		'host_states' => array(
+			'type' => 'enum',
+			'default' => 7,
+                        'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)'
+		),
+		'service_states' => array(
+			'type' => 'enum',
+			'default' => 15,
+                        'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)'
+		),
+		'summary_items' => array(
+			'type' => 'int',
+			'default' => 25,
+			'description' => 'Number of summary items to include in reports'
+		),
+		'cluster_mode' => array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Whether to use best or worst case metrics'
+		),
+		'keep_logs' => array(
+			'type' => 'bool',
+			'default' => false,
+			'generated' => true,
+			'description' => 'Whether to keep logs around - this turns on if (for example) include_trends is activated'
+		),
+		'keep_sub_logs' => array(
+			'type' => 'bool',
+			'default' => false,
+			'generated' => true,
+			'description' => 'Whether sub-reports should keep their logs around too - report_model generally keeps track of this'
+		),
+		'rpttimeperiod' => array(
+			'type' => 'enum',
+			'default' => false,
+			'description' => 'If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one'
+		),
+		'scheduleddowntimeasuptime' => array(
+			'type' => 'enum',
+			'default' => 0,
+			'description' => 'Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated"'
+		),
+		'assumestatesduringnotrunning' => array(
+			'type' => 'bool',
+			'default' => true,
+			'description' => 'Whether to assume states during not running'
+		),
+		'includesoftstates' => array(
+			'type' => 'bool',
+			'default' => false, 'description' => 'Include soft states, yes/no?'
+		),
+		'host_name' => array(
+			'type' => 'objsel',
+			'default' => array(),
+			'description' => 'Hosts to include (note: array)'
+		),
+		'service_description' => array(
+			'type' => 'objsel',
+			'default' => array(),
+			'description' => 'Services to include (note: array)'
+		),
+		'hostgroup' => array(
+			'type' => 'array',
+			'default' => array(),
+			'description' => 'Hostgroups to include (note: array)'
+		),
+		'servicegroup' => array(
+			'type' => 'array',
+			'default' => array(),
+			'description' => 'Servicegroups to include (note: array)'
+		),
+		'start_time' => array(
+			'type' => 'timestamp',
+			'default' => 0,
+			'description' => 'Start time for report, timestamp or date-like string'
+		),
+		'end_time' => array(
+			'type' => 'timestamp',
+			'default' => 0,
+			'description' => 'End time for report, timestamp or date-like string'
+		),
+		'use_average' => array(
+			'type' => 'enum',
+			'default' => 0,
+			'description' => 'Whether to hide any SLA values and stick to averages'
+		),
+		'host_filter_status' => array(
+			'type' => 'array',
+			'default' => array(),
+			'description' => 'Key: hide these. Value: map them to this instead (-2 means "secret")'
+		),
+		'service_filter_status' => array(
+			'type' => 'array',
+			'default' => array(),
+			'description' => 'Key: hide these. Value: map them to this instead (-2 means "secret")'
+		),
+		'include_trends' => array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Include trends graph (if possible for this report type)'
+		),
+		'include_trends_scaling' => array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Include trends graph (if possible for this report type)'
+		),
+		'master' => array(
+			'type' => 'object',
+			'default' => false, 'generated' => true,
+			'description' => 'The master report, if one'
+		),
+		'schedule_id' => array(
+			'type' => 'int',
+			'default' => false,
+			'description' => "A schedule id we're currently running as, not to be confused with report_id. This cannot be calculated, so it must be included"
+		),
+		'output_format' => array(
+			'type' => 'enum',
+			'default' => 'html',
+			'options' => array(
+				'html' => 'html',
+				'csv' => 'csv',
+				'pdf' => 'csv'
+			),
+			'generated' => true,
+			'description' => 'What type of report to generate (manually selected in web UI, generated from filename for saved reports)'
+		),
+		'skin' => array(
+			'type' => 'string',
+			'default' => '',
+			'description' => 'Use the following skin for rendering the report'
+		),
+		'recipients' => array(
+			'type' => 'string',
+			'default' => '',
+			'description' => 'Comma separated email addresses to report recipients'
+		),
+		'filename' => array(
+			'type' => 'string',
+			'default' => '',
+			'description' => 'Filename to use for saving the report, used to set output_format'
+		),
+		'local_persistent_filepath' => array(
+			'type' => 'string',
+			'default' => '',
+			'description' => 'Directory (not filename) to store the filename in locally'
+		),
+		'use_alias' => array(
+			'type' => 'bool',
+			'default' => false
+		),
+		'description' => array(
+			'type' => 'string',
+			'default' => false
+		),
+		'include_alerts' => array(
+			'type' => 'bool',
+			'default' => false
+		)
 	);
 
 	/**
@@ -412,7 +563,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		}
 		return true;
 	}
-	
+
 	protected function update_value($name, $value)
 	{
 		switch ($name) {
