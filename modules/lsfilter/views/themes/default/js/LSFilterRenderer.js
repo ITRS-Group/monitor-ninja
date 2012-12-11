@@ -46,11 +46,11 @@ function extinfo_link(host, service) {
 
 function listview_add_sort(element, vis_column, db_columns, current) {
 	if (current == 0) { // No sort
-		element.prepend($('<span style="float:right;">x</span>'));
+		element.prepend($('<span class="lsfilter-sort-span">&minus;</span>'));
 	} else if (current > 0) { // Ascending?
-		element.prepend($('<span style="float:right;">^</span>'));
+		element.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
 	} else {
-		element.prepend($('<span style="float:right;">v</span>'));
+		element.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
 	}
 	element.click({
 		vis_column : vis_column,
