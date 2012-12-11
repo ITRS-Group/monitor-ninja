@@ -223,28 +223,14 @@ class Reports_Model extends Model
 	}
 
 	/**
+         * Used from the HTTP API
+         *
 	 * @return Mysql_Result
 	 */
 	function get_raw()
 	{
-		$end_time = $this->options['end_time'];
-		if($end_time) {
-			// @todo maybe this should be the default value in all
-			// other cases as well
-			$end_time = $this->db->escape($end_time);
-		} else {
-			$end_time = "UNIX_TIMESTAMP()";
-		}
-		$wheres = sql::combine(
-			'and',
-			'timestamp >= '.$this->db->escape($this->options['start_time']),
-			'timestamp <= '.$end_time
-		);
-		// @todo hardlimit + offset
-		$query = "SELECT * FROM $this->db_table WHERE $wheres ORDER BY timestamp LIMIT 1000";
-		//echo "<pre>";
-		//var_dump(__METHOD__.':'.__LINE__, $query);
-		//die;
+                $query = $this->build_alert_summary_query('*', true).
+                        " LIMIT 1000";
 		return $this->db->query($query)->result(false);
 	}
 
@@ -1459,8 +1445,10 @@ class Reports_Model extends Model
 	 * sorting and limit options as necessary.
 	 *
 	 * @param $fields Database fields the caller needs
+         * @param $is_api_call boolean = false
+         * @return string (sql)
 	 */
-	private function build_alert_summary_query($fields = false)
+	private function build_alert_summary_query($fields = false, $is_api_call = false)
 	{
 		# default to the most commonly used fields
 		if (!$fields) {
@@ -1530,7 +1518,7 @@ class Reports_Model extends Model
 			}
 		}
 
-		if (empty($hosts) && empty($services)) {
+		if (empty($hosts) && empty($services) && !$is_api_call) {
 			return false;
 		}
 
@@ -1562,7 +1550,7 @@ class Reports_Model extends Model
 		} elseif ($hosts && $hosts !== true) {
 			$object_selection = "host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
-		}
+                }
 
 		switch ($this->options['state_types']) {
 		 case 0: case 3: default:
@@ -1604,15 +1592,15 @@ class Reports_Model extends Model
 		}
 
 		switch ($this->options['alert_types']) {
-		case 1:
-			$alert_types = $host_states_sql;
-			break;
-		case 2:
-			$alert_types = $service_states_sql;
-			break;
-		 case 3:
-			$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
-			break;
+                        case 1:
+                                $alert_types = $host_states_sql;
+                                break;
+                        case 2:
+                                $alert_types = $service_states_sql;
+                                break;
+                        case 3:
+                                $alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
+                                break;
 		}
 
 		if ($this->options['include_downtime'])
