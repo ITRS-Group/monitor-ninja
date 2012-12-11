@@ -82,6 +82,35 @@
 
 	/* QUICKLINK EXTENSION */
 
+	function query_for_states () {
+	
+		var basepath = _site_domain + _index_page,
+			link = $('.image-link[title="Unhandled Problems"]'),
+			query = link.attr('href');
+
+		query = query.split('filter_query=')[1];
+
+		$.ajax({
+			url : basepath + "/listview/fetch_ajax",
+			dataType : 'json',
+			data : {
+				"query" : query,
+				"columns": ['description']
+			},
+			success : function(data) {
+				console.log(link.find(':first-child'));
+				if (data.totals.service_critical > 0) {
+					link.find(':first-child').toggleClass('icon-16 x16-shield-critical');
+				} else if (data.totals.service_warning > 0) {
+					link.find(':first-child').toggleClass('icon-16 x16-shield-warning');
+				}
+			}
+		});
+	}
+
+	setInterval(query_for_states, 10000);
+	query_for_states();
+
 	var global_quicklinks = [];
 
 	function quicklinks_save_all () {

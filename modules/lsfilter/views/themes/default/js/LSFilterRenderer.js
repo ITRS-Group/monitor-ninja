@@ -279,7 +279,7 @@ var listview_renderer_table = {
 			"depends" : [ 'host.state_text' ],
 			"sort" : [ 'host.state' ],
 			"cell" : function(obj) {
-				return $('<td />').append(
+				return $('<td class="icon" />').append(
 						icon16('shield-' + obj.host.state_text,
 								obj.host.state_text));
 			}

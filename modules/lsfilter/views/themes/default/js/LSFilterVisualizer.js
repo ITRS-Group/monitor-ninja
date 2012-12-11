@@ -35,12 +35,8 @@ function listview_save_filter (filter) {
 		save['name'] = name;
 		
 		$.ajax(basepath + '/listview/save_query', {
-			data: {
-				'type': 'lsfilters_saved',
-				'page': 'listview',
-				'setting': JSON.stringify(save)
-			},
-			type: 'POST',
+			data: save,
+			type: 'GET',
 			complete: function (xhr) {
 				console.log(save);
 			}
