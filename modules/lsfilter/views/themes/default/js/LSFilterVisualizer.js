@@ -38,12 +38,13 @@ function listview_save_filter (filter) {
 			data: save,
 			type: 'GET',
 			complete: function (xhr) {
-				console.log(save);
+				$('#lsfilter_save_filter').removeClass().text('Save');
 			}
 		});
 	
 	} else {
 		$.jGrowl('You must give the filter a name!');
+		$('#lsfilter_save_filter').removeClass().text('Save');
 	}
 }
 
@@ -421,6 +422,7 @@ $().ready(function() {
 	listview_load_filters();
 
 	$('#lsfilter_save_filter').click(function () {
+		$(this).addClass('saving').text('Saving...');
 		listview_save_filter($('#filter_query').val());	
 	})
 
@@ -481,7 +483,6 @@ $().ready(function() {
 			$('<li class="saved-filter-'+save['scope']+'" />').html(
 				icon + '<a href="?filter_query=' + save['query'] + '">' + save['scope'].toUpperCase() + ' - ' + save['name'] + '</a>'
 			).hover(function () {
-				console.log($('#filter-query-saved-preview'));
 				$('#filter-query-saved-preview').html( save['query'] );
 			}, function () {
 				$('#filter-query-saved-preview').empty();
@@ -491,7 +492,6 @@ $().ready(function() {
 	}
 
 	function toggle_filter_type (type) {
-		console.log('#filter-query-saved-filters .saved-filter-' + type);
 		$('#filter-query-saved-filters .saved-filter-' + type).toggle(200);
 	}
 

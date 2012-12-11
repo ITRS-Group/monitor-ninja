@@ -40,6 +40,12 @@
 
 }
 
+#lsfilter_save_filter.saving {
+	background: url('loading_small.gif') no-repeat;
+	background-position: left center;
+	padding-left: 22px !important;
+}
+
 #filter-query-saved-filters li a {
 	vertical-align: 50%;
 }
@@ -69,8 +75,8 @@
 	vertical-align: middle;
 	margin-right: 32px;
 	background: url('loading_small.gif') no-repeat;
-	height: 16px;
 	padding-left: 22px;
+	height: 16px;
 }
 
 .lsfilter-loader span {
