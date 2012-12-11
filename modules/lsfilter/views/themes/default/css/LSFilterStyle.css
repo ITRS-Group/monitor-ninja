@@ -26,6 +26,7 @@
 }
 
 #filter-query-saved-filters {
+	vertical-align: top;
 	display: inline-block;
 	height: 96px;
 	width: 45%;
@@ -45,6 +46,7 @@
 
 #filter-query-saved-preview {
 	display: inline-block;
+	vertical-align: top;
 	height: 96px;
 	width: 45%;
 	overflow: auto;
