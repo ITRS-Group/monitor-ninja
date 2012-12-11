@@ -26,8 +26,12 @@
 
 		<h2>Saved filters</h2>
 
-		<ul id="filter-query-saved-filters">
-		<ul>
+		<input type="checkbox" id="filter-query-saved-hide-static" /> Hide static
+		<input type="checkbox" id="filter-query-saved-hide-global" /> Hide global
+		<input type="checkbox" id="filter-query-saved-hide-user" /> Hide user<br />
+		<ul id="filter-query-saved-filters"></ul>
+
+		<pre id="filter-query-saved-preview"></pre>
 
 	</div>
 

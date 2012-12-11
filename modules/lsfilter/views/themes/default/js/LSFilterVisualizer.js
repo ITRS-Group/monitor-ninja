@@ -442,13 +442,68 @@ $().ready(function() {
 		});
 	});
 
+	function resolve_type (query) {
+		query = query.split('[')[1];
+		query = query.split(']')[0];
+		query = query.replace(/^\s+/, '');
+		
+		for (var i = query.length - 1; i >= 0; i--) {
+			if (/\S/.test(query.charAt(i))) {
+				query = query.substring(0, i + 1);
+				break;
+			}
+		}
+
+		return query;
+	};
+
 	function add_saved_filter_list ( list, save ) {
+
+		var type = resolve_type(save['query']),
+			icon = "";
+
+		switch (type) {
+			case "hosts":
+				icon = '<span class="icon-menu menu-host"></span>'
+				break;
+			case "services":
+				icon = '<span class="icon-menu menu-service"></span>'
+				break;
+			case "hostgroups":
+				icon = '<span class="icon-menu menu-hostgroupsummary"></span>'
+				break;
+			case "servicegroups":
+				icon = '<span class="icon-menu menu-servicegroupsummary"></span>'
+				break;
+			default:
+				icon = '<span class="icon-menu menu-eventlog"></span>'
+				break;
+		}
+
 		list.append( 
-			$("<li />").html(
-				'<a href="#">' + save['name'] + '</a>'
-			)
+			
+			$('<li class="saved-filter-'+save['scope']+'" />').html(
+				icon + '<a href="?filter_query=' + save['query'] + '">' + save['scope'].toUpperCase() + ' - ' + save['name'] + '</a>'
+			).hover(function () {
+				console.log($('#filter-query-saved-preview'));
+				$('#filter-query-saved-preview').html( save['query'] );
+			}, function () {
+				$('#filter-query-saved-preview').empty();
+			})
+
 		);
 	}
+
+	function toggle_filter_type (type) {
+		console.log('#filter-query-saved-filters .saved-filter-' + type);
+		$('#filter-query-saved-filters .saved-filter-' + type).toggle(200);
+	}
+
+	$('#filter-query-saved-hide-static, #filter-query-saved-hide-global, #filter-query-saved-hide-user').click(function () {
+		var type = $(this).attr('id').split('-');
+		type = type[type.length - 1];
+		toggle_filter_type(type);
+	});
 
 	$('#show-filter-query-saved').click(function () {
 		$('#filter-query-saved').toggle(100, function () {
