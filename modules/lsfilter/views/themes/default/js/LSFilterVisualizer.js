@@ -523,20 +523,6 @@ $().ready(function() {
 		listview_save_filter($('#filter_query').val());	
 	})
 
-	$('#show-filter-query-builder-manual-button').click(function () {
-
-		$('#filter-query-builder-manual').toggle(100, function () {
-			switch ($(this).css('display')) {
-				case "block":
-					$('#filter-query-builder').show(200);
-					break;
-				case "none":
-					hide_main_box();
-					break;
-			}
-		});
-	});
-
 	function toggle_filter_type (type) {
 		$('#filter-query-saved-filters .saved-filter-' + type).toggle(200);
 	}
@@ -551,9 +537,27 @@ $().ready(function() {
 		$('#filter-query-saved').toggle(100, function () {
 			switch ($(this).css('display')) {
 				case "block":
+					$('#show-filter-query-saved').css('background', 'rgba(0,0,0,0.1)');
 					$('#filter-query-builder').show(200);
 					break;
 				case "none":
+					$('#show-filter-query-saved').css('background', 'transparent');
+					hide_main_box();
+					break;
+			}
+		});
+	});
+
+	$('#show-filter-query-builder-manual-button').click(function () {
+
+		$('#filter-query-builder-manual').toggle(100, function () {
+			switch ($(this).css('display')) {
+				case "block":
+					$('#show-filter-query-builder-manual-button').css('background', 'rgba(0,0,0,0.1)');
+					$('#filter-query-builder').show(200);
+					break;
+				case "none":
+					$('#show-filter-query-builder-manual-button').css('background', 'transparent');
 					hide_main_box();
 					break;
 			}
@@ -564,9 +568,11 @@ $().ready(function() {
 		$('#filter-query-builder-graphical').toggle(100, function () {
 			switch ($(this).css('display')) {
 				case "block":
+					$('#show-filter-query-builder-graphical-button').css('background', 'rgba(0,0,0,0.1)');
 					$('#filter-query-builder').show(200);
 					break;
 				case "none":
+					$('#show-filter-query-builder-graphical-button').css('background', 'transparent');
 					hide_main_box();
 					break;
 			}
