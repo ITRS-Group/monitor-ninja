@@ -43,31 +43,6 @@ class HttpApiRaw_options_core extends Report_options {
         );
 
         /**
-         * @param $value mixed
-         * @param $type string
-         * @return string
-         */
-        function format_default($value, $type)
-        {
-                if($type == 'bool') {
-                        return (int) $value;
-                }
-                if($type == 'array' || $type == 'objsel') {
-                        if(empty($value)) {
-                                return "[empty]";
-                        }
-                        return implode(", ", $value);
-                }
-                if($type == 'string' && !$value) {
-                        return '[empty]';
-                }
-                if($type == 'enum') {
-                        return "'$value'";
-                }
-                return $value;
-        }
-
-        /**
          * Overload properties to enable input such as spelled out keys ("service")
          * instead of magic ints/bitmapped values ('3')
          *
@@ -101,4 +76,34 @@ class HttpApiRaw_options_core extends Report_options {
                 }
                 return $options;
         }
+
+        /**
+         * @param $value mixed
+         * @param $type string
+         * @return string
+         */
+        function format_default($value, $type)
+        {
+                if($type == 'bool') {
+                        return (int) $value;
+                }
+                if($type == 'array' || $type == 'objsel') {
+                        if(empty($value)) {
+                                return "[empty]";
+                        }
+                        return implode(", ", $value);
+                }
+                if($type == 'string' && !$value) {
+                        return '[empty]';
+                }
+                if($type == 'enum') {
+                        return "'$value'";
+                }
+                return $value;
+        }
+
+	function to_output($row)
+	{
+		return $row;
+	}
 }
