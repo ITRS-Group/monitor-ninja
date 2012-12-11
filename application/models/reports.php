@@ -227,7 +227,7 @@ class Reports_Model extends Model
          *
 	 * @return Mysql_Result
 	 */
-	function get_raw()
+	function get_event()
 	{
                 $query = $this->build_alert_summary_query('*', true).
                         " LIMIT 1000";

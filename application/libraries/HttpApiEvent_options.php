@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class HttpApiRaw_options_core extends Report_options {
+class HttpApiEvent_options_core extends Report_options {
 
         /**
          * Means to translate options back and forth between Report_options
