@@ -23,23 +23,32 @@ function listview_load_filters () {
 function listview_save_filter (filter) {
 	
 	var basepath = _site_domain + _index_page,
-		save = {"query": filter, "scope": "user"};
+		save = {"query": filter, "scope": "user"},
+		name = $('#lsfilter_save_filter_name').val();
 
-	if ($('#lsfilter_save_filter_global').attr('checked')) {
-		save["scope"] = "global";
-	}
-	
-	$.ajax(basepath + '/listview/save_query', {
-		data: {
-			'type': 'lsfilters_saved',
-			'page': 'listview',
-			'setting': JSON.stringify(save)
-		},
-		type: 'POST',
-		complete: function (xhr) {
-			console.log(save);
+	if (name) {
+
+		if ($('#lsfilter_save_filter_global').attr('checked')) {
+			save["scope"] = "global";
 		}
-	});
+
+		save['name'] = name;
+		
+		$.ajax(basepath + '/listview/save_query', {
+			data: {
+				'type': 'lsfilters_saved',
+				'page': 'listview',
+				'setting': JSON.stringify(save)
+			},
+			type: 'POST',
+			complete: function (xhr) {
+				console.log(save);
+			}
+		});
+	
+	} else {
+		$.jGrowl('You must give the filter a name!');
+	}
 }
 
 var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){

@@ -19,6 +19,10 @@
 	padding: 8px;
 }
 
+#lsfilter_save_filter_name {
+	margin-bottom: 0;
+}
+
 #filter-query-saved-filters {
 	height: 96px;
 	width: 50%;

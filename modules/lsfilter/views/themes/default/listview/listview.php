@@ -17,6 +17,7 @@
 <div id="filter-query-builder">
 
 	<div style="margin: 8px 0 0 8px">
+		<input type="text" id="lsfilter_save_filter_name" placeholder="Filter Name" />
 		<button id="lsfilter_save_filter">Save Filter</button>
 		<input type="checkbox" id="lsfilter_save_filter_global" /> Make global
 	</div>
