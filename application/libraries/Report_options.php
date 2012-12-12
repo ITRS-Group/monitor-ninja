@@ -168,7 +168,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'options' => array(
 				'html' => 'html',
 				'csv' => 'csv',
-				'pdf' => 'csv'
+				'pdf' => 'pdf'
 			),
 			'generated' => true,
 			'description' => 'What type of report to generate (manually selected in web UI, generated from filename for saved reports)'
