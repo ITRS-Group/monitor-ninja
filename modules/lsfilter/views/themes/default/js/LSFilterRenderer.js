@@ -263,7 +263,7 @@ var listview_renderer_table = {
 			"depends" : [ 'plugin_output' ],
 			"sort" : [ 'plugin_output' ],
 			"cell" : function(obj) {
-				return $('<td />').text(obj.plugin_output);
+				return $('<td style="max-width: 300px;" />').text(obj.plugin_output);
 			}
 		},
 		"display_name" : {
@@ -403,7 +403,7 @@ var listview_renderer_table = {
 			"depends" : [ 'plugin_output' ],
 			"sort" : [ 'plugin_output' ],
 			"cell" : function(obj) {
-				return $('<td />').text(obj.plugin_output);
+				return $('<td style="max-width: 300px;" />').text(obj.plugin_output);
 			}
 		},
 		"display_name" : {
@@ -677,8 +677,9 @@ function listview_render_table(data) {
 	 * temporary offline container
 	 */
 	var output = $('<span />');
+	
+	//console.log("Got " + data.length + " objects");
 
-	console.log("Got " + data.length + " objects");
 	if (data.length == 0) {
 		output.append('<h2 class="lsfilter-noresult">Empty result set</h2>');
 	} else {
@@ -690,9 +691,10 @@ function listview_render_table(data) {
 			var obj = data[i];
 
 			if (last_table != obj._table) {
-				var table = $('<table />');
+				var table = $('<table class="' + data[0]['_table'] + '-table" />');
 				output.append(table);
-				console.log(listview_columns_for_table(obj._table));
+				
+				//console.log(listview_columns_for_table(obj._table));
 
 				last_table = obj._table;
 				columns = new Array();

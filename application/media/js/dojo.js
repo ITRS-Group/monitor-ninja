@@ -97,6 +97,7 @@
 			dataType : 'json',
 			data : {
 				"query" : query,
+				"limit" : 100,
 				"columns": ['description']
 			},
 			success : function(data) {

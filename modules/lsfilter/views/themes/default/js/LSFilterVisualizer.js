@@ -266,11 +266,43 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	this.visit_match_lt        = function(field0, expr2) { return this.match('lt',       field0,expr2); };
 	this.visit_match_eq        = function(field0, expr2) { return this.match('eq',       field0,expr2); };
 	
+	this.field_change = function (field, op, val, ops) {
+
+		var operators = this.operators[this.fields[field]];
+		val.removeClass().addClass('lsfilter-type-' + this.fields[field].join(''));
+		ops.empty();
+		
+		for (var operator in operators) {
+			if (operator == op) {
+				ops.append($('<option selected="true" value="' + operators[operator] + '">' + operators[operator] + '</option>'));
+			} else {
+				ops.append($('<option value="' + operators[operator] + '">' + operators[operator] + '</option>'));
+			}
+		}
+	};
+
+	this.gui_stmnt_button = function (stmnt, enclosing) {
+		
+		var stmnt_block = $(this).parent().parent().parent().parent().parent(),
+			clone = this.match('eq', 'state', '0'),
+			tmp = null;
+
+		if (!stmnt_block.is('.lsfilter-' + stmnt)) {
+
+			tmp = $('<div />');
+			enclosing.after(tmp);
+
+			var stmnt_block = this.visit_filter_and(enclosing, clone);
+			tmp.replaceWith(stmnt_block);
+
+		} else {
+			this.visit_filter_and(stmnt_block, clone);
+		}
+	};
+
 	this.match = function(op,name,expr) {
 
-		console.log(arguments);
-
-		name = name.find('.resultvisual').html();
+		//console.log(name);
 
 		var that = this,
 			val = $('<input type="text" value="' + expr.replace(/['"]/g,'') + '" />'),
@@ -278,8 +310,10 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			fields = $('<select />'),
 			ops = $('<select class="lsfilter-operator-select" />');
 
+		if (name.find)
+			name = name.find('.resultvisual').html();
+
 		for (var f in this.fields) {
-			console.log(name);
 			if (f == name) {
 				fields.append($('<option value="' + f + '" selected="true">' + f + '</option>'));
 			} else {
@@ -288,41 +322,16 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		}
 		
 		result.append(fields);
-
-		for (var operator in this.operators[that.fields[fields.val()]]) {
-			var possibles = this.operators[that.fields[fields.val()].join('')];
-			if (operator == op) {
-				ops.append($('<option selected="true" value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
-			} else {
-				ops.append($('<option value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
-			}
-		}
-		
 		result.append(ops);
 
-		fields.change(function () {
-			val.removeClass().addClass('lsfilter-type-' + that.fields[this.value].join(''));
-
-			ops.empty();
-			for (var operator in that.operators[that.fields[fields.val()]]) {
-				var possibles = that.operators[that.fields[fields.val()].join('')];
-
-				if (operator == op) {
-					ops.append($('<option selected="true" value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
-				} else {
-					ops.append($('<option value="' + possibles[operator] + '">' + possibles[operator] + '</option>'));
-				}
-			}
-
-		});
+		that.field_change( fields.val(), op, val, ops );
+		fields.change(function () { that.field_change( $(this).val(), op, val, ops ); });
 
 		if (name == "this") {
 			fields.empty();
 			fields.append( $('<option />').val('this').text('this') );
 			fields.attr('disabled', true);
-		}
-
-		
+		}		
 
 		val.removeClass().addClass('lsfilter-type-' + this.fields[fields.val()].join(''));
 
@@ -330,6 +339,8 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		result.append(val);
 
 		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+
+			e.preventDefault();
 
 			var and_block = $(this).parent().parent().parent().parent().parent(),
 				clone = that.match('eq', 'state', '0');
@@ -346,12 +357,12 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 				that.visit_filter_and(and_block, clone);
 			}
 
-			e.preventDefault();
-
 		}));
 
 		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
 			
+			e.preventDefault();
+
 			var or_block = $(this).parent().parent().parent().parent().parent(),
 				clone = that.match('eq', 'state', '0');
 			
@@ -367,8 +378,6 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 				that.visit_filter_or(or_block, clone);
 			}
 			
-
-			e.preventDefault();
 		}));
 
 		return result;
@@ -397,110 +406,135 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	};
 };
 
-var visualizeSearchFilter = function(evt) {
-	
-	var filter_string = [];
+var traverse = function (dom, priority) {
 
-	var traverse = function (dom, priority) {
+	var seg = [];
+	var tmp = null;
+	var result = "";
+	var out_priority;
 
-		var seg = [];
-		var tmp = null;
-		var result = "";
-		var out_priority;
+	if (dom.hasClass('lsfilter-comp')) {
 
-		if (dom.hasClass('lsfilter-comp')) {
+		dom.children().each(function () {
+			if (this.value != 'this') {					
 
-			dom.children().each(function () {
-				if (this.value != 'this') {
-					
-
-					if ($(this).hasClass('lsfilter-type-string')) {
-						seg.push('"' + this.value + '"');	
-					} else if( $(this).hasClass('lsfilter-operator-select') ) {
-						seg.push(' ' + this.value + ' ');
-					} else {
-						seg.push(this.value);	
-					}
-
+				if ($(this).hasClass('lsfilter-type-string')) {
+					seg.push('"' + this.value + '"');	
+				} else if( $(this).hasClass('lsfilter-operator-select') ) {
+					seg.push(' ' + this.value + ' ');
+				} else {
+					seg.push(this.value);	
 				}
-			});
 
-			result = seg.join('');
-			out_priority = 3;
-
-		} else if (dom.is('.lsfilter-not')) {
-			// FIXME
-			result = ' not ';
-			out_priority = priority;
-		
-		} else if (dom.hasClass('lsfilter-and') || dom.hasClass('lsfilter-or')) {
-
-			if (dom.hasClass('lsfilter-and')) {
-				out_priority = 2;
-			} else if (dom.hasClass('lsfilter-or')) {
-				out_priority = 1;
 			}
-			
-			dom.children().each(function () {
-				tmp = traverse($(this), out_priority);
-				if (tmp) seg.push(tmp);
-			});
+		});
 
-			if (dom.hasClass('lsfilter-and')) {
-				result = seg.join(' and ');
-			} else if (dom.hasClass('lsfilter-or')) {
-				result = seg.join(' or ');
-			}
+		result = seg.join('');
+		out_priority = 3;
 
-		} else {
+	} else if (dom.is('.lsfilter-not')) {
+		// FIXME
+		result = ' not ';
+		out_priority = priority;
+	
+	} else if (dom.hasClass('lsfilter-and') || dom.hasClass('lsfilter-or')) {
 
-			dom.children().each(function () {
-				seg.push(traverse($(this), priority));
-			});
-
-			result = seg.join('');
-			out_priority = priority;
-
+		if (dom.hasClass('lsfilter-and')) {
+			out_priority = 2;
+		} else if (dom.hasClass('lsfilter-or')) {
+			out_priority = 1;
 		}
-		if( out_priority < priority )
-			result = "(" + result + ")";
-		return result;
-	};
+		
+		dom.children().each(function () {
+			tmp = traverse($(this), out_priority);
+			if (tmp) seg.push(tmp);
+		});
 
-	var string = $('#filter_query').val();
+		if (dom.hasClass('lsfilter-and')) {
+			result = seg.join(' and ');
+		} else if (dom.hasClass('lsfilter-or')) {
+			result = seg.join(' or ');
+		}
+
+	} else {
+
+		dom.children().each(function () {
+			seg.push(traverse($(this), priority));
+		});
+
+		result = seg.join('');
+		out_priority = priority;
+
+	}
+	if( out_priority < priority )
+		result = "(" + result + ")";
+	return result;
+};
+
+var dotraverse = function () {
+		
+	var filter_string = ['[', $('#lsfilter-query-object').attr('value') , '] '];
+
+	filter_string.push(
+		traverse($('#filter_visual .lsfilter-root'), 0)
+	);
+
+	if ($(document.activeElement).attr('id') != 'filter_query') {
+		$('#filter_query').val(filter_string.join(''));
+	}
+
+	$('#filter_visual_result').html(
+		'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ filter_string.join('') +'">'
+	);
+}
+
+var parsing = false;
+var parsenext = false;
+var parsetimer = null;
+
+var visualizeSearchFilter = function(evt) {
+
 	var parser = new LSFilter(new LSFilterPreprocessor(), new LSFilterVisualizerVisitor());
+	parsenext = $('#filter_query').val();
 
-	var dotraverse = function () {
-		
-		filter_string = ['[', $('#lsfilter-query-object').attr('value') , '] '];
+	if (!parsing) {
 
-		filter_string.push(traverse($('#filter_visual .lsfilter-root'),0));
+		parsing = true;
 
-		if ($(document.activeElement).attr('id') != 'filter_query') {
-			$('#filter_query').val(filter_string.join(''));
+		$('#filter_visual_form').bind('change', dotraverse);
+
+		try {
+
+			parsing = parsenext;
+			parsenext = false;
+
+			listview_update(parsing);
+			var result = parser.parse(parsing);
+
+			$('#filter_visual').empty().append(result);
+			$('#filter_query').css("border", "2px solid #5d2");
+
+			dotraverse();
+
+		} catch( ex ) {
+			$('#filter_query').css("border", "2px solid #f40")
+			console.log(ex);
 		}
-
-		$('#filter_visual_result').html(
-			'<strong>URI: </strong><input type="text" onclick="this.select()" value="' + $('#server_name').val() + '/ninja/index.php/listview?filter_query='+ filter_string.join('') +'">'
-		);
 	}
 
-	$('#filter_visual_form').bind('change', dotraverse);
+	if (parsing && parsenext) {
+		
+		if (parsetimer)
+			clearTimeout(parsetimer);
 
-	try {
+		parsetimer = setTimeout(function () {
+			parsing = false;
+			clearTimeout(parsetimer);
+			visualizeSearchFilter();
+		}, 200);
 
-		listview_update($('#filter_query').val());
-		var result = parser.parse(string);
-
-		$('#filter_visual').empty().append(result);
-		$('#filter_query').css("border", "2px solid #5d2");
-
-		dotraverse();
-
-	} catch( ex ) {
-		$('#filter_query').css("border", "2px solid #f40")
-		console.log(ex);
 	}
+	
 }
 
 $().ready(function() {
@@ -580,5 +614,6 @@ $().ready(function() {
 	});
 
 	visualizeSearchFilter(false);
-	$('#filter_query').bind('input propertychange',visualizeSearchFilter);
+	$('#filter_query').bind('input propertychange',	visualizeSearchFilter);
+
 });
