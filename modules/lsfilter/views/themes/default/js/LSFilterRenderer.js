@@ -1,3 +1,15 @@
+function icon12(name, title, link) {
+	var img = $('<span />');
+	img.addClass('icon-12');
+	img.addClass('x12-' + name);
+	if (title)
+		img.attr('title', title);
+	if (link) {
+		img = link.clone().append(img);
+		img.css('border', '0');
+	}
+	return img;
+}
 function icon16(name, title, link) {
 	var img = $('<span />');
 	img.addClass('icon-16');
@@ -264,6 +276,90 @@ var listview_renderer_table = {
 			"sort" : [ 'plugin_output' ],
 			"cell" : function(obj) {
 				return $('<td style="max-width: 300px;" />').text(obj.plugin_output);
+			}
+		},
+		"services_num_all" : {
+			"header" : icon12('shield-info').addClass('header-icon'),
+			"depends" : [ 'num_services' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services > 0) {
+					cell.append(obj.num_services);
+				}
+				return cell;
+			}
+		},
+		"services_num_all" : {
+			"header" : icon12('shield-info').addClass('header-icon'),
+			"depends" : [ 'num_services' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services > 0) {
+					cell.append(obj.num_services);
+				}
+				return cell;
+			}
+		},
+		"services_num_ok" : {
+			"header" : icon12('shield-ok').addClass('header-icon'),
+			"depends" : [ 'num_services_ok' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services_ok > 0) {
+					cell.append(obj.num_services_ok);
+				}
+				return cell;
+			}
+		},
+		"services_num_warning" : {
+			"header" : icon12('shield-warning').addClass('header-icon'),
+			"depends" : [ 'num_services_warn' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services_warn > 0) {
+					cell.append(obj.num_services_warn);
+				}
+				return cell;
+			}
+		},
+		"services_num_critical" : {
+			"header" : icon12('shield-critical').addClass('header-icon'),
+			"depends" : [ 'num_services_crit' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services_crit > 0) {
+					cell.append(obj.num_services_crit);
+				}
+				return cell;
+			}
+		},
+		"services_num_unknown" : {
+			"header" : icon12('shield-unknown').addClass('header-icon'),
+			"depends" : [ 'num_services_unknown' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services_unknown > 0) {
+					cell.append(obj.num_services_unknown);
+				}
+				return cell;
+			}
+		},
+		"services_num_pending" : {
+			"header" : icon12('shield-pending').addClass('header-icon'),
+			"depends" : [ 'num_services_pending' ],
+			"sort" : false,
+			"cell" : function(obj) {
+				var cell = $('<td />').css('text-align','center');
+				if (obj.num_services_pending > 0) {
+					cell.append(obj.num_services_pending);
+				}
+				return cell;
 			}
 		},
 		"display_name" : {
@@ -703,7 +799,7 @@ function listview_render_table(data) {
 					var col_render = listview_renderer_table[obj._table][key]
 					columns.push(col_render.cell);
 					var th = $('<th />');
-					th.text(col_render.header);
+					th.append(col_render.header);
 					if (col_render.sort) {
 						var sort_dir = 0;
 						if (listview_sort_vis_column == key)
