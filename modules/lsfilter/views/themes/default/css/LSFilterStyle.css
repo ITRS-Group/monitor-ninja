@@ -12,6 +12,7 @@
 	width: 75%;
 	top: 76px;
 	right: 0;
+	z-index: 1;
 }
 
 #filter-query-builder-graphical, #filter-query-builder-manual, #filter-query-saved {
@@ -234,7 +235,7 @@ th span.header-icon {
 	background: -moz-linear-gradient(top, #fafbf9, #e3e4e2);
 	background: -o-linear-gradient(top, #fafbf9, #e3e4e2);
 	background: linear-gradient(top, #fafbf9, #e3e4e2);
-
+	z-index: 1;
 	overflow: hidden;
 	
 }
@@ -284,4 +285,15 @@ th span.header-icon {
 
 #filter_result {
 	margin: -2px -2px 0 -2px;
+}
+
+.floatingHeader {
+	position: fixed;
+	z-index: 0;
+	top: 77px;
+}
+
+.floatingHeader tr {
+	width: 100%;
+	display: block;
 }

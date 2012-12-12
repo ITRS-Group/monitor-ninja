@@ -773,7 +773,7 @@ function listview_render_table(data) {
 	 * temporary offline container
 	 */
 	var output = $('<span />');
-	
+
 	//console.log("Got " + data.length + " objects");
 
 	if (data.length == 0) {
@@ -828,5 +828,42 @@ function listview_render_table(data) {
 			tbody.append(row);
 		}
 	}
+
 	$('#filter_result').empty().append(output);
+	
+
+	var header = $("thead", table),
+		clone = header.clone(true);
+
+	clone.css('visibility', 'hidden');
+	header.after(clone);
+
+	var head = clone.find("tr").children();
+	head.each(function () {
+		$(this).width($(this).width());
+	});
+
+	function UpdateTableHeaders() {
+		table.each(function() {
+	   
+			var el 			= $(this),
+				offset		= el.offset(),
+				scrollTop	= $(window).scrollTop();
+	       
+			if (scrollTop > 5) {
+
+				clone.addClass('floatingHeader');
+				clone.css('visibility', 'visible');
+
+			} else {
+				clone.css('visibility', 'hidden');
+			};
+
+	   });
+	}
+
+	$(window)
+		.scroll(UpdateTableHeaders)
+		.trigger("scroll");
+
 }
