@@ -831,39 +831,40 @@ function listview_render_table(data) {
 
 	$('#filter_result').empty().append(output);
 	
+	if (table) {
+		var header = $("thead", table),
+			clone = header.clone(true);
 
-	var header = $("thead", table),
-		clone = header.clone(true);
+		clone.css('visibility', 'hidden');
+		header.after(clone);
 
-	clone.css('visibility', 'hidden');
-	header.after(clone);
+		var head = clone.find("tr").children();
+		head.each(function () {
+			$(this).width($(this).width());
+		});
 
-	var head = clone.find("tr").children();
-	head.each(function () {
-		$(this).width($(this).width());
-	});
+		function UpdateTableHeaders() {
+			table.each(function() {
+		   
+				var el 			= $(this),
+					offset		= el.offset(),
+					scrollTop	= $(window).scrollTop();
+		       
+				if (scrollTop >= 0) {
 
-	function UpdateTableHeaders() {
-		table.each(function() {
-	   
-			var el 			= $(this),
-				offset		= el.offset(),
-				scrollTop	= $(window).scrollTop();
-	       
-			if (scrollTop >= 0) {
+					clone.addClass('floatingHeader');
+					clone.css('visibility', 'visible');
 
-				clone.addClass('floatingHeader');
-				clone.css('visibility', 'visible');
+				} else {
+					clone.css('visibility', 'hidden');
+				};
 
-			} else {
-				clone.css('visibility', 'hidden');
-			};
+		   });
+		}
 
-	   });
+		$(window)
+			.scroll(UpdateTableHeaders)
+			.trigger("scroll");
 	}
-
-	$(window)
-		.scroll(UpdateTableHeaders)
-		.trigger("scroll");
 
 }

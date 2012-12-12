@@ -191,6 +191,7 @@ function listview_do_request() {
 			}
 			if (data.status == 'error') {
 				$('#filter_result').empty().text("Error: " + data.data);
+				$('#filter_result_totals').empty();
 			}
 		}
 	});
