@@ -590,28 +590,28 @@ class Command_Controller extends Authenticated_Controller
 			}
 		}
 
-		$services = arr::search($params, 'services');
+		$services = arr::search($params, 'service');
 		$host_names = arr::search($params, 'host_name');
 
 		if (strstr($cmd, '_HOST_') !== false) {
 			$type = 'host';
 		} else if (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
 			$type = 'service';
-		} else if ($host_names) {
-			$type = 'hosts';
 		} else if ($services) {
 			$type = 'service';
+		} else if ($host_names) {
+			$type = 'hosts';
 		}
 
 		# second we check if this contact is allowed to submit
 		# the type of command we're looking at and, if so, if
 		# we can bypass fetching all the objects we're authorized
 		# to see
-		if (strstr($cmd, '_HOST_') !== false) {
+		if ($type === 'hosts') {
 			if (Auth::instance()->authorized_for('host_edit_all')) {
 				return true;
 			}
-		} elseif (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
+		} elseif ($type === 'service') {
 			if (Auth::instance()->authorized_for('service_edit_all')) {
 				return true;
 			}
@@ -635,11 +635,10 @@ class Command_Controller extends Authenticated_Controller
 		# hasn't filled out the form yet, or this regards hostgroups
 		# or servicegroups
 		if (!$type) {
-			return true;
+			return false;
 		}
 
-		# ensure host_names is an array, as services might append more elements
-		# to the array
+		# ensure host_names is an array, as services will want to read it
 		if (!$host_names)
 			$host_names = array();
 		else if (!is_array($host_names))
@@ -655,7 +654,6 @@ class Command_Controller extends Authenticated_Controller
 					if (!empty($parts) && sizeof($parts)==2) {
 						$service = $parts[1];
 						$host_name = $parts[0];
-						$host_names[] = $parts[0];
 					}
 				}
 				else {
@@ -663,16 +661,18 @@ class Command_Controller extends Authenticated_Controller
 				}
 				# if the user isn't specifically configured for the service, he/she
 				# can still submit commands for it if he/she is a contact for the host
-				if ($auth->is_authorized_for_service($host_name, $service))
-					return true;
+				if (!(Auth::instance()->authorized_for('service_edit_contact') && Nagios_auth_Model::instance()->is_authorized_for_service($host_name, $service)))
+					return false;
 			}
+			return true;
 		}
 
 		if ($host_names) {
 			foreach ($host_names as $host_name) {
-				if ($auth->is_authorized_for_host($host_name))
-					return true;
+				if (!(Auth::instance()->authorized_for('host_edit_contact') && Nagios_auth_Model::instance()->is_authorized_for_host($host_name)))
+					return false;
 			}
+			return true;
 		}
 		return false;
 	}
