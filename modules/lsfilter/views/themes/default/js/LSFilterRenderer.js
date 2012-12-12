@@ -831,19 +831,16 @@ function listview_render_table(data) {
 
 	$('#filter_result').empty().append(output);
 	
+
 	if (table) {
+		
 		var header = $("thead", table),
 			clone = header.clone(true);
 
 		clone.css('visibility', 'hidden');
 		header.after(clone);
 
-		var head = clone.find("tr").children();
-		head.each(function () {
-			$(this).width($(this).width());
-		});
-
-		function UpdateTableHeaders() {
+		function update_float_header() {
 			table.each(function() {
 		   
 				var el 			= $(this),
@@ -852,10 +849,20 @@ function listview_render_table(data) {
 		       
 				if (scrollTop >= 0) {
 
+					var head = header.find("tr").children(),
+						cloneHead = clone.find("tr").children(),
+						index = 0;
+
+					head.each(function () {
+						$(cloneHead[index]).css('width', $(this).css('width'));
+						index++;
+					});
+
 					clone.addClass('floatingHeader');
 					clone.css('visibility', 'visible');
 
 				} else {
+					clone.removeClass('floatingHeader');
 					clone.css('visibility', 'hidden');
 				};
 
@@ -863,8 +870,10 @@ function listview_render_table(data) {
 		}
 
 		$(window)
-			.scroll(UpdateTableHeaders)
+			.resize(update_float_header)
+			.scroll(update_float_header)
 			.trigger("scroll");
+
 	}
 
 }
