@@ -227,11 +227,20 @@ class Reports_Model extends Model
          *
 	 * @return Mysql_Result
 	 */
-	function get_event()
+	function get_events()
 	{
-                $query = $this->build_alert_summary_query('*', true).
-                        " LIMIT 1000";
-		return $this->db->query($query)->result(false);
+		$limit = (int) Op5Config::instance()->getConfig('http_api.report.limit');
+		$absolute_max = 10000; // hardcoded, deal with it
+		if($limit > $absolute_max || $limit < 1) {
+			$limit = $absolute_max;
+		}
+                $query = $this->build_alert_summary_query('*', true)." LIMIT ".$limit;;
+                $count = $this->db->query($this->build_alert_summary_query('COUNT(*)', true))->result();
+		return array(
+			'events' => $this->db->query($query)->result(false),
+			'count' => current($count[0]),
+			'limit' => $limit
+		);
 	}
 
 	/**
@@ -677,7 +686,7 @@ class Reports_Model extends Model
 				'full' => _($object_type . ' has exited a period of scheduled downtime')
 			)
 		);
-		// todo we need a unit test for this since the http api relies on the shortcodes
+		// @todo we need a unit test for this since the http api relies on the shortcodes
 		if(!isset($events[$event_type])) {
 			throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
 		}
@@ -1626,8 +1635,12 @@ class Reports_Model extends Model
 		if ($this->options['include_process'])
 			$process = 'event_type < 200';
 
-		$time_first = 'timestamp >= ' . $this->options['start_time'];
-		$time_last = 'timestamp <= ' . $this->options['end_time'];
+		if($this->options['start_time']) {
+			$time_first = 'timestamp >= ' . $this->options['start_time'];
+		}
+		if($this->options['end_time']) {
+			$time_last = 'timestamp <= ' . $this->options['end_time'];
+		}
 
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
 		$query .= ' WHERE '.
