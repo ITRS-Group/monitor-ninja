@@ -850,7 +850,7 @@ function listview_render_table(data) {
 				offset		= el.offset(),
 				scrollTop	= $(window).scrollTop();
 	       
-			if (scrollTop > 5) {
+			if (scrollTop >= 0) {
 
 				clone.addClass('floatingHeader');
 				clone.css('visibility', 'visible');
