@@ -83,7 +83,7 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	protected function cb($description, $name)
 	{
-		$value = Command_Model::get_setting($name);
+		$value = Execute_Command_Model::get_setting($name);
 		return array('type' => 'checkbox', 'name' => $description, 'default' => $value);
 	}
 
@@ -125,7 +125,7 @@ class Command_Controller extends Authenticated_Controller
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
-		$command = new Command_Model;
+		$command = new Execute_Command_Model;
 		$info = $command->get_command_info($cmd, $params);
 		$param = $info['params'];
 		switch ($cmd) {
@@ -577,9 +577,9 @@ class Command_Controller extends Authenticated_Controller
 		# first see if this is a contact and, if so, if that contact
 		# is allowed to submit commands. If it isn't, we can bail out
 		# early.
-		$contact = Contact_Model::get_contact();
-		if (!empty($contact)) {
-			if (!$contact->can_submit_commands) {
+		$contact = ContactPool_Model::get_current_contact();
+		if ($contact !== false) {
+			if (!$contact->get_can_submit_commands()) {
 				return -2;
 			}
 		}
@@ -620,7 +620,7 @@ class Command_Controller extends Authenticated_Controller
 
 		# not authorized from cgi.cfg, and not a configured contact,
 		# so bail out early
-		if (empty($contact))
+		if ($contact === false)
 			return -3;
 
 		# FIXME handle host/servicegroup commands as well

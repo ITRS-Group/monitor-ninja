@@ -84,16 +84,16 @@ if (!empty($command_result)) {
 						$entry_type = _('Scheduled downtime').' ('._('User').')';
 					} else {
 						switch ($row['entry_type']) {
-						 case Comment_Model::USER_COMMENT:
+						 case Old_Comment_Model::USER_COMMENT:
 							$entry_type = _('User');
 							break;
-						 case Comment_Model::DOWNTIME_COMMENT:
+						 case Old_Comment_Model::DOWNTIME_COMMENT:
 							$entry_type = _('Scheduled downtime');
 							break;
-						 case Comment_Model::FLAPPING_COMMENT:
+						 case Old_Comment_Model::FLAPPING_COMMENT:
 							$entry_type = _('Flap detection');
 							break;
-						 case Comment_Model::ACKNOWLEDGEMENT_COMMENT:
+						 case Old_Comment_Model::ACKNOWLEDGEMENT_COMMENT:
 							$entry_type = _('Acknowledgement');
 							break;
 						 default:

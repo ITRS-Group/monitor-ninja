@@ -180,7 +180,7 @@ class Reports_Model extends Model
 		);
 
 		$this->options = $options;
-		$this->timeperiod = Timeperiod_Model::instance($options);
+		$this->timeperiod = Old_Timeperiod_Model::instance($options);
 	}
 
 	/**

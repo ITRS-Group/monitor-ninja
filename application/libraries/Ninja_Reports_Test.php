@@ -106,12 +106,12 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		if (!$this->verify_correct($end_time - $start_time, $correct))
 			return -1;
 
-		Timeperiod_Model::$precreated = array();
+		Old_Timeperiod_Model::$precreated = array();
 		foreach ($timeperiods as $idx => &$tp) {
 			if (!isset($tp['timeperiod_name']))
 				$tp['timeperiod_name'] = 'the_timeperiod'.$idx;
 
-			$tpobj = Timeperiod_Model::instance(array('start_time' => $start_time, 'end_time' => $end_time, 'rpttimeperiod' => $tp['timeperiod_name']));
+			$tpobj = Old_Timeperiod_Model::instance(array('start_time' => $start_time, 'end_time' => $end_time, 'rpttimeperiod' => $tp['timeperiod_name']));
 			$tpobj->set_timeperiod_data($tp);
 			$tpobj->resolve_timeperiods();
 		}

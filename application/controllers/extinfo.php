@@ -903,7 +903,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$command_success = $this->session->get('error_msg', $command_success);
 
 		if ($all === true) {
-			$tot = Comment_Model::count_comments_by_user($host, $service);
+			$tot = Old_Comment_Model::count_comments_by_user($host, $service);
 		} else {
 			$tot = 0;
 		}
@@ -919,8 +919,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
-		$schedule_downtime_comments = $all ? Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
+		$comment_data = $all ? Old_Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Old_Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
+		$schedule_downtime_comments = $all ? Old_Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Old_Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 
 		$comment = false;
 		$i = 0;
@@ -1294,15 +1294,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		switch ($downtime_type) {
 			case nagstat::HOST_DOWNTIME:
 				$type_str = $types[$downtime_type];
-				$host_data = Downtime_Model::get_downtime_data($downtime_type, array('type' => 'DESC'), true);
+				$host_data = Old_Downtime_Model::get_downtime_data($downtime_type, array('type' => 'DESC'), true);
 				break;
 			case nagstat::SERVICE_DOWNTIME:
 				$type_str = $types[$downtime_type];
-				$service_data = Downtime_Model::get_downtime_data($downtime_type, array('type' => 'DESC'), true);
+				$service_data = Old_Downtime_Model::get_downtime_data($downtime_type, array('type' => 'DESC'), true);
 				break;
 			case nagstat::ANY_DOWNTIME:
-				$host_data = Downtime_Model::get_downtime_data(nagstat::HOST_DOWNTIME, array('type' => 'DESC'), true);
-				$service_data = Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME, array('type' => 'DESC'), true);
+				$host_data = Old_Downtime_Model::get_downtime_data(nagstat::HOST_DOWNTIME, array('type' => 'DESC'), true);
+				$service_data = Old_Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME, array('type' => 'DESC'), true);
 				break;
 		}
 		$this->template->content = $this->add_view('extinfo/scheduled_downtime');

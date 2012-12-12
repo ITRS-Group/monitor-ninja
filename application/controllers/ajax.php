@@ -219,7 +219,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		$host = $this->input->get('host', false);
 		$service = false;
-		$model = new Comment_Model();
+		$model = new Old_Comment_Model();
 		if (strstr($host, ';')) {
 			# we have a service - needs special handling
 			$parts = explode(';', $host);

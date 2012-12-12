@@ -9,7 +9,7 @@
  * which might be shared with other users. This class will call instance()
  * itself, so exceptions to exceptions work.
  */
-class Timeperiod_Model extends Model
+class Old_Timeperiod_Model extends Model
 {
 	/** Please do not touch this outside of tests, it's a cache for performance purposes */
 	static public $precreated = array();
@@ -95,7 +95,7 @@ class Timeperiod_Model extends Model
 		{
 			foreach($period['excludes'] as $exclude)
 			{
-				$this->tp_excludes[] = Timeperiod_Model::instance(array('start_time' => $this->start_time, 'end_time' => $this->end_time, 'rpttimeperiod' => $exclude));
+				$this->tp_excludes[] = Old_Timeperiod_Model::instance(array('start_time' => $this->start_time, 'end_time' => $this->end_time, 'rpttimeperiod' => $exclude));
 			}
 		}
 

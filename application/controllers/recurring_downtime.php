@@ -177,7 +177,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template->time = isset($data) && $this->schedule_id ? $data['time'] : '12:00';
 
 		# fetch info on existing downtime to be used when using flexible downtime
-		$command_model = new Command_Model();
+		$command_model = new Execute_Command_Model();
 		$host_downtime_ids = $command_model->get_command_info('SCHEDULE_HOST_DOWNTIME', array('SCHEDULE_HOST_DOWNTIME'));
 		$svc_downtime_ids = $command_model->get_command_info('SCHEDULE_SVC_DOWNTIME', array('SCHEDULE_SVC_DOWNTIME'));
 		$template->host_downtime_ids = $host_downtime_ids['params']['trigger_id']['options'];

@@ -3,7 +3,7 @@
 /**
  * Sends external commands to Nagios command FIFO
  */
-class Command_Model extends Model
+class Execute_Command_Model extends Model
 {
 	private $auth = false;
 	protected $dryrun = false; /**< Set to true to make it not actually do anything */
@@ -101,7 +101,7 @@ class Command_Model extends Model
 
 		$options = false;
 		$options = array(0 => _('N/A'));
-		$downtime_data = Downtime_Model::get_downtime_data();
+		$downtime_data = Old_Downtime_Model::get_downtime_data();
 		if ($downtime_data !== false) {
 			foreach ($downtime_data as $data) {
 				if (strstr($command_name, 'HOST_DOWNTIME')) {
@@ -172,13 +172,13 @@ class Command_Model extends Model
 			 case 'trigger_id':
 				$ary = array('type' => 'select', 'options' => $this->get_downtime_ids($cmd, $defaults));
 				if (isset($defaults['service']) && is_array($defaults['service'])) {
-					$downtime_data = Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME);
+					$downtime_data = Old_Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME);
 					foreach ($downtime_data as $downtime)
 						if (in_array($downtime['host_name'] . ';' . $downtime['service_description'], $defaults['service']))
 							$ary['default'][] = $downtime['id'];
 				}
 				if (isset($defaults['host_name']) && is_array($defaults['host_name'])) {
-					$downtime_data = Downtime_Model::get_downtime_data(nagstat::HOST_DOWNTIME);
+					$downtime_data = Old_Downtime_Model::get_downtime_data(nagstat::HOST_DOWNTIME);
 					foreach ($downtime_data as $downtime)
 						if (in_array($downtime['host_name'], $defaults['host_name']))
 							$ary['default'][] = $downtime['id'];

@@ -151,9 +151,11 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->write('if( $limit !== false ) {');
 		$this->write('$ls_filter .= "Limit: ".intval($limit)."\n";');
 		$this->write('}');
-		
+
+		$this->write('if( $columns != false ) {');
 		$this->write('$columns = $this->validate_columns($columns);');
 		$this->write('if($columns === false) return false;');
+		$this->write('}');
 		
 		$this->write('list($columns, $objects, $count) = $ls->query($this->table, $ls_filter, $columns);');
 		$this->write('return new LivestatusSetIterator($objects, $columns, $this->class);');

@@ -176,7 +176,7 @@ class ScheduleDate_Model extends Model
 		$pipe = System_Model::get_pipe();
 		foreach ($obj_arr as $obj) {
 			# check if object already scheduled for same start time and duration?
-			if (Downtime_Model::check_if_scheduled($data['report_type'], $obj, $start_time, $duration)) {
+			if (Old_Downtime_Model::check_if_scheduled($data['report_type'], $obj, $start_time, $duration)) {
 				fwrite(STDERR, "skipping");
 				continue;
 			}

@@ -3,7 +3,7 @@
 /**
  * Handle comments for hosts and services
  */
-class Comment_Model extends Model {
+class Old_Comment_Model extends Model {
 	/***************************** COMMENT TYPES *******************************/
 	const HOST_COMMENT = 1; /**< Comment applies to host */
 	const SERVICE_COMMENT = 2; /**< Comment applies to service */
@@ -147,7 +147,7 @@ class Comment_Model extends Model {
 	*/
 	public static function count_comments_by_object($host=false, $service=false)
 	{
-		return Comment_Model::fetch_comments_by_object($host, $service, false, false, true);
+		return Old_Comment_Model::fetch_comments_by_object($host, $service, false, false, true);
 	}
 
 	/**

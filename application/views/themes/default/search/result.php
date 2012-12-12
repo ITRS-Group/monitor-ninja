@@ -44,7 +44,7 @@ if (isset($host_result) ) {
 		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->name); ?></td>
 		<td>
 			<div style="float: left"><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name), $host->name) ?></div>
-			<?php	$host_comments = Comment_Model::count_comments_by_object($host->name);
+			<?php	$host_comments = Old_Comment_Model::count_comments_by_object($host->name);
 				if ($host_comments!=0) { ?>
 			<span style="float: right">
 				<?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->name).'#comments',
@@ -171,7 +171,7 @@ if (isset($service_result) ) {
 <?php
 	$i = 0;
 	$prev_host = false;
-	$comments = Comment_Model::count_comments_by_object(true);
+	$comments = Old_Comment_Model::count_comments_by_object(true);
 	foreach ($service_result as $service) { $service = (object)$service; ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
@@ -367,16 +367,16 @@ if (isset($comment_result)) {
 		foreach ($comment_result as $row) { $row = (object)$row;
 			#echo Kohana::debug($row);
 			switch ($row->entry_type) {
-				case Comment_Model::USER_COMMENT:
+				case Old_Comment_Model::USER_COMMENT:
 					$entry_type = _('User');
 					break;
-				case Comment_Model::DOWNTIME_COMMENT:
+				case Old_Comment_Model::DOWNTIME_COMMENT:
 					$entry_type = _('Scheduled Downtime');
 					break;
-				case Comment_Model::FLAPPING_COMMENT:
+				case Old_Comment_Model::FLAPPING_COMMENT:
 					$entry_type = _('Flap Detection');
 					break;
-				case Comment_Model::ACKNOWLEDGEMENT_COMMENT:
+				case Old_Comment_Model::ACKNOWLEDGEMENT_COMMENT:
 					$entry_type = _('Acknowledgement');
 					break;
 				default:

@@ -86,7 +86,7 @@ abstract class class_generator {
 		}
 		
 		$this->write();
-		$this->write( $modifiers."class ".$this->get_classname().($parent===false?"":" extends ".$parent.$this->class_suffix)." {" );
+		$this->write( $modifiers."class ".$this->get_classname().($parent===false?"":" extends ".$parent.$this->class_suffix).$interface_str." {" );
 	}
 	
 	protected function finish_class() {

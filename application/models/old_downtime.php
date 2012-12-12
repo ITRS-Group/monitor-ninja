@@ -3,7 +3,7 @@
 /**
  * Fetch downtime info from downtime table
  */
-class Downtime_Model extends Comment_Model
+class Old_Downtime_Model extends Old_Comment_Model
 {
 	const TABLE_NAME = 'downtimes'; /**< The name of the downtimes livestatus table */
 	

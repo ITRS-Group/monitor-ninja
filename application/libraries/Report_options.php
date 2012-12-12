@@ -115,7 +115,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				4 => _('Service Critical States'),
 				8 => _('Service Unknown States'));
 		if (isset($this->properties['rpttimeperiod']))
-			$this->properties['rpttimeperiod']['options'] = Timeperiod_Model::get_all();
+			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
 		if (isset($this->properties['skin']))
 			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
 		if ($options)
