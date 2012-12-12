@@ -113,11 +113,16 @@ class Current_status_Model extends Model
 		$this->program_status();
 		$this->host_status();
 		$this->service_status();
-		return empty($errors) ? true : false;
+		return empty($errors);
 	}
 
 	/**
 	 * Translates a given status from db to a readable string
+	 *
+	 * @param $db_status int
+	 * @param $db_checked boolean
+	 * @param $type string = host
+	 * @return string
 	 */
 	public static function status_text($db_status, $db_checked, $type='host')
 	{

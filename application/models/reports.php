@@ -105,19 +105,19 @@ class Reports_Model extends Model
 
 	/** The state template for services */
 	private $state_tpl_svc = array(
-	   'HOST_NAME' => '',
-	   'SERVICE_DESCRIPTION' => '',
-	   'TIME_OK_SCHEDULED' => 0,
-	   'TIME_OK_UNSCHEDULED' => 0,
-	   'TIME_WARNING_SCHEDULED' => 0,
-	   'TIME_WARNING_UNSCHEDULED' => 0,
-	   'TIME_UNKNOWN_SCHEDULED' => 0,
-	   'TIME_UNKNOWN_UNSCHEDULED' => 0,
-	   'TIME_CRITICAL_SCHEDULED' => 0,
-	   'TIME_CRITICAL_UNSCHEDULED' => 0,
-	   'TIME_UNDETERMINED_NOT_RUNNING' => 0,
-	   'TIME_UNDETERMINED_NO_DATA' => 0,
-	   );
+		'HOST_NAME' => '',
+		'SERVICE_DESCRIPTION' => '',
+		'TIME_OK_SCHEDULED' => 0,
+		'TIME_OK_UNSCHEDULED' => 0,
+		'TIME_WARNING_SCHEDULED' => 0,
+		'TIME_WARNING_UNSCHEDULED' => 0,
+		'TIME_UNKNOWN_SCHEDULED' => 0,
+		'TIME_UNKNOWN_UNSCHEDULED' => 0,
+		'TIME_CRITICAL_SCHEDULED' => 0,
+		'TIME_CRITICAL_UNSCHEDULED' => 0,
+		'TIME_UNDETERMINED_NOT_RUNNING' => 0,
+		'TIME_UNDETERMINED_NO_DATA' => 0,
+	);
 
 	public $initial_dt_depth = false; /**< The initial downtime depth. NOTE: this is scary, what if there's a dozen 365 day long downtimes active at once or bugs caused us to forget to end downtimes? */
 	public $db_table = 'report_data'; /**< Report table name */
