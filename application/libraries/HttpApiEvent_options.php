@@ -64,6 +64,12 @@ class HttpApiEvent_options_core extends Report_options {
                 if(isset($options['start_time']) && !isset($options['end_time'])) {
                         $options['end_time'] = time();
                 }
+		if(isset($options['host_name'])) {
+			$options['host_name'] = (array) $options['host_name'];
+		}
+		if(isset($options['service_description'])) {
+			$options['service_description'] = (array) $options['service_description'];
+		}
 
                 // translate "all" to valid int, for example
                 foreach($options as $key => $value) {
@@ -102,8 +108,24 @@ class HttpApiEvent_options_core extends Report_options {
                 return $value;
         }
 
+	/**
+	 * Final step in the "from merlin.report_data row to API-output" process
+	 *
+	 * @param $row array
+	 * @return array
+	 */
 	function to_output($row)
 	{
+		// transform value
+		$type = $row['service_description'] ? 'service' : 'host';
+		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
+		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
+
+		// rename property
+		$row['in_scheduled_downtime'] = $row['downtime_depth'];
+
+		// remove property (should not be exposed)
+		unset($row['flags'], $row['downtime_depth'], $row['attrib']);
 		return $row;
 	}
 }
