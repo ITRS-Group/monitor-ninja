@@ -131,7 +131,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 								array('style' => 'border: 0px'));
 							$host_props += 2;
 						}
-						if (!$row->host_active_checks_enabled) {
+						if (!$row->host_checks_enabled) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name),
 								'<span class="icon-16 x16-active-checks-disabled" title="'._('Active checks disabled').'"></span>',
 								array('style' => 'border: 0px'));
@@ -207,7 +207,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 						'<span class="icon-16 x16-notify-disabled" title="'._('Notification disabled').'"></span>',
 						array('style' => 'border: 0px'));
 				}
-				if (!$row->active_checks_enabled) {
+				if (!$row->checks_enabled) {
 					$properties += 4;
 					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->description),
 						'<span class="icon-16 x16-active-checks-disabled" title="'._('Active checks disabled').'"></span>',

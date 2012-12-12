@@ -114,7 +114,7 @@ foreach ($result as $row) {
 						/* @FIXME: Read this from nagios- or cgi.cfg */
 						if(!isset($show_passive_as_active))
 							$show_passive_as_active = false;
-						if (!$row->active_checks_enabled && !$show_passive_as_active) {
+						if (!$row->checks_enabled) {
 							echo html::anchor('extinfo/details/?host='.urlencode($row->name), 
 								'<span class="icon-16 x16-checks-disabled" title="'._('Active checks disabled').'"></span>',
 								array('style' => 'border: 0px'));
