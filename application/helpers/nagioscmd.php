@@ -1200,4 +1200,34 @@ class nagioscmd_Core
 
 		return true;
 	}
+
+
+	/**
+	 * Helper function to save us from typing
+	 * the links to the cmd controller
+	 *
+	 */
+	public function command_link($command_type=false, $host=false, $service=false, $lable='', $method='submit', $force=false)
+	{
+		$host = trim($host);
+
+		$lable = trim($lable);
+		$method = trim($method);
+		if ($command_type===false || empty($lable) || empty($method)) {
+			return false;
+		}
+		$lnk = "command/$method?cmd_typ=$command_type";
+		# only print extra params when present
+		if (!empty($host)) {
+			$lnk .= '&host_name=' . urlencode($host);
+		}
+		if (!empty($service)) {
+			$lnk .= '&service=' . urlencode($service);
+		}
+		if ($force === true) {
+			$lnk .= '&force=true';
+		}
+
+		return html::anchor($lnk, html::specialchars($lable));
+	}	
 }
