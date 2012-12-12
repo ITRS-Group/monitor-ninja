@@ -6,7 +6,7 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	private $value;
 	
 	function __construct( $field, $value, $op = "=" ) {
-		$this->field = $field;
+		$this->field = str_replace('.','_',$field); //TODO: Do this in some fancy way...
 		$this->op = $op;
 		$this->value = $value;
 	}

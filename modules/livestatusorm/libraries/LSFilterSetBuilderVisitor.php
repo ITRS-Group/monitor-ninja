@@ -157,6 +157,6 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	}
 	// field_obj: field := * name dot field
 	public function visit_field_obj($name0, $field2) {
-		return $name0."_".$field2;
+		return $name0.".".$field2;
 	}
 }

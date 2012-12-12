@@ -5,6 +5,7 @@ class LivestatusStructure {
 		'columns' => 
 		array (
 			'class' => 'Column',
+			'key' => array('name', 'table'),
 			'structure' => 
 			array (
 				'description' => 'string',
@@ -16,6 +17,7 @@ class LivestatusStructure {
 		'commands' => 
 		array (
 			'class' => 'Command',
+			'key' => array('line','name'),
 			'structure' => 
 			array (
 				'line' => 'string',
@@ -25,6 +27,7 @@ class LivestatusStructure {
 		'comments' => 
 		array (
 			'class' => 'Comment',
+			'key' => array('id'),
 			'structure' => 
 			array (
 				'author' => 'string',
@@ -45,6 +48,7 @@ class LivestatusStructure {
 		'contactgroups' => 
 		array (
 			'class' => 'ContactGroup',
+			'key' => array('name'),
 			'structure' => 
 			array (
 				'alias' => 'string',
@@ -55,6 +59,7 @@ class LivestatusStructure {
 		'contacts' => 
 		array (
 			'class' => 'Contact',
+			'key' => array('name'),
 			'structure' => 
 			array (
 				'address1' => 'string',
@@ -84,6 +89,7 @@ class LivestatusStructure {
 		'downtimes' => 
 		array (
 			'class' => 'Downtime',
+			'key' => array('id'),
 			'structure' => 
 			array (
 				'author' => 'string',
@@ -104,6 +110,7 @@ class LivestatusStructure {
 		'hostgroups' => 
 		array (
 			'class' => 'HostGroup',
+			'key' => array('name'),
 			'structure' => 
 			array (
 				'action_url' => 'string',
@@ -136,6 +143,7 @@ class LivestatusStructure {
 		'hosts' => 
 		array (
 			'class' => 'Host',
+			'key' => array('name'),
 			'structure' => 
 			array (
 				'accept_passive_checks' => 'int',
@@ -249,37 +257,10 @@ class LivestatusStructure {
 */
 			),
 		),
-		
-		'log' => 
-		array (
-			'class' => 'LogEntry',
-			'structure' => 
-			array (
-				'attempt' => 'int',
-				'class' => 'int',
-				'command_name' => 'string',
-				'comment' => 'string',
-				'contact_name' => 'string',
-				'current_command_line' => 'string',
-				'current_command_name' => 'string',
-				'current_contact' => array( 'Contact', 'current_contact_' ),
-				'current_host' => array( 'Host', 'current_host_' ),
-				'current_service' => array( 'Service', 'current_service_' ),
-				'host_name' => 'string',
-				'lineno' => 'int',
-				'message' => 'string',
-				'options' => 'string',
-				'plugin_output' => 'string',
-				'service_description' => 'string',
-				'state' => 'int',
-				'state_type' => 'string',
-				'time' => 'time',
-				'type' => 'string',
-			),
-		),
 		'servicegroups' => 
 		array (
 			'class' => 'ServiceGroup',
+			'key' => array('name'),
 			'structure' => 
 			array (
 				'action_url' => 'string',
@@ -305,6 +286,7 @@ class LivestatusStructure {
 		'services' => 
 		array (
 			'class' => 'Service',
+			'key' => array('host.name', 'description'),
 			'structure' => 
 			array (
 				'accept_passive_checks' => 'int',
@@ -393,6 +375,7 @@ class LivestatusStructure {
 		'status' => 
 		array (
 			'class' => 'Status',
+			'key' => array(),
 			'structure' => 
 			array (
 				'accept_passive_host_checks' => 'int',
@@ -440,6 +423,7 @@ class LivestatusStructure {
 		'timeperiods' => 
 		array (
 			'class' => 'TimePeriod',
+			'key' => array('name'),
 			'structure' => 
 			array (
 				'alias' => 'string',
@@ -448,6 +432,34 @@ class LivestatusStructure {
 			),
 		),
 /*
+		
+		'log' => 
+		array (
+			'class' => 'LogEntry',
+			'structure' => 
+			array (
+				'attempt' => 'int',
+				'class' => 'int',
+				'command_name' => 'string',
+				'comment' => 'string',
+				'contact_name' => 'string',
+				'current_command_line' => 'string',
+				'current_command_name' => 'string',
+				'current_contact' => array( 'Contact', 'current_contact_' ),
+				'current_host' => array( 'Host', 'current_host_' ),
+				'current_service' => array( 'Service', 'current_service_' ),
+				'host_name' => 'string',
+				'lineno' => 'int',
+				'message' => 'string',
+				'options' => 'string',
+				'plugin_output' => 'string',
+				'service_description' => 'string',
+				'state' => 'int',
+				'state_type' => 'string',
+				'time' => 'time',
+				'type' => 'string',
+			),
+		),
 		'hostsbygroup' =>
 		array (
 			'class' => 'HostByGroup',

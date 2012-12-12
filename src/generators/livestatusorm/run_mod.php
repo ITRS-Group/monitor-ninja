@@ -60,7 +60,7 @@ class livestatusorm_generator extends generator_module {
 		
 		foreach( $full_structure as $name => $structure ) {
 			/* Generate base class */
-			$generator = new LivestatusBaseClassGenerator( $name, $structure );
+			$generator = new LivestatusBaseClassGenerator( $name, $full_structure );
 			$generator->generate();
 			
 			/* Generate base pool class */
