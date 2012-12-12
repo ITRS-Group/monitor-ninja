@@ -10,13 +10,18 @@
 class Nagvis_Widget extends widget_Base {
 	protected $duplicatable = true;
 	public function options() {
-		$nagvis_maps = new Nagvis_Maps_Model();
-		$maps = $nagvis_maps->get_list(true);
+		$maps = nagvisconfig::get_map_list();
 		$default = false;
 		if (count($maps)) {
+			$default = $maps[0];
+			foreach (array_keys($maps) as $key) {
+				$name = $maps[$key];
+				unset($maps[$key]);
+				$maps[$name] = $name;
+			}
 			$tmp = array_values($maps);
-			$default = $tmp[0];
 		}
+
 		# don't call parent, nagvis reloads itself
 		$map = new option('nagvis', 'map', 'Map', 'dropdown', array('options' => $maps), $default);
 		$height = new option('nagvis', 'height', 'Height (px)', 'input', array('size'=>3), 400);

@@ -14,6 +14,11 @@ require_once('op5/auth/User_AlwaysAuth.php');
  */
 class Auth_Core {
 	/**
+	 * Used to override instance, to break exception loop
+	 */
+	private static $fake_instance = false;
+
+	/**
 	 * Create an instance of Auth.
 	 *
 	 * @return  object
@@ -46,12 +51,13 @@ class Auth_Core {
 	 */
 	public static function instance($config = array(), $driver_config = array())
 	{
+		if (self::$fake_instance !== false) return self::$fake_instance;
 		// Load the Auth instance
 		try {
 			$instance = new Auth_Core($config, $driver_config);
 		}
 		catch( Exception $e ) {
-			$instance = new Auth_NoAuth_Core();
+			self::$fake_instance = new Auth_NoAuth_Core();
 			throw $e;
 		}
 		return $instance;

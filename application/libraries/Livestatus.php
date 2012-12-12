@@ -157,14 +157,14 @@ class Livestatus {
 			);
 			$options['callbacks'] = array(
 				'duration' => array($this, 'calc_duration'),
-				'active_checks_enabled' => array($this, 'handle_passive_as_active')
+				'checks_enabled' => array($this, 'handle_passive_as_active')
 			);
 
 			$options['order_mappings'] = array(
 				'duration'              => array( '!last_state_change' ),
 				
 				/* This is not actually correct... But isn't possible to do better in LS*/
-				'active_checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
+				'checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
 			);
 		}
 		return $this->backend->getTable('hosts', $options);
@@ -241,15 +241,15 @@ class Livestatus {
 			);
 			$options['callbacks'] = array(
 				'duration' => array($this, 'calc_duration'),
-				'active_checks_enabled' => array($this, 'handle_passive_as_active'),
-				'host_active_checks_enabled' => array($this, 'handle_host_passive_as_active')
+				'checks_enabled' => array($this, 'handle_passive_as_active'),
+				'host_checks_enabled' => array($this, 'handle_host_passive_as_active')
 			);
 
 			$options['order_mappings'] = array(
 				'duration'              => array( '!last_state_change' ),
 				
 				/* This is not actually correct... But isn't possible to do better in LS*/
-				'active_checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
+				'checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
 			);
 		}
 		return $this->backend->getTable('services', $options);

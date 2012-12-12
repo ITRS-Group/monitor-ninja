@@ -279,7 +279,14 @@ class User_Controller extends Authenticated_Controller {
 			'config.show_notes_chars' => _('Control how many characters of the note to be displayed in the GUI. The entire note will be displayed on mouseover or click. <br />Use 0 to display everything. Default: 80.'),
 			'edit_menu' => _('Edit menu item visibility for limited users.'),
 			'nagdefault.notes_url_target' => _('This option determines the name of the frame target that notes URLs should be displayed in.'),
-			'nagdefault.action_url_target' => _('This option determines the name of the frame target that action URLs should be displayed in.')
+			'nagdefault.action_url_target' => _('This option determines the name of the frame target that action URLs should be displayed in.'),
+			'nagdefault.sticky' => _('Configure the default value for the nagios "sticky" command option'),
+			'nagdefault.persistent' => _('Configure the default value for the nagios "persistent" command option'),
+			'nagdefault.force' => _('Configure the default value for the nagios "force" command option'),
+			'nagdefault.services-too' => _('Configure the default value for the nagios "services-too" command option'),
+			'nagdefault.fixed' => _('Configure the default value for the nagios "fixed" command option'),
+			'nagdefault.duration' => _('Configure the default value for the nagios "duration" command option'),
+			'nagdefault.comment' => _('Configure the default value for the nagios "comment" command option'),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
