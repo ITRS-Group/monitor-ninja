@@ -2,6 +2,10 @@
 
 class LivestatusFilterOr extends LivestatusFilterBase {
 	private $sub_filters = array();
+
+	function get_sub_filters() {
+		return $this->sub_filters;
+	}
 	
 	function __clone() {
 		$this->sub_filters = array_map(
@@ -51,5 +55,9 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 		} else {
 			$this->sub_filters[] = $filter;
 		}
+	}
+	
+	function visit( LivestatusFilterVisitor $visitor ) {
+		return $visitor->visit_or($this);
 	}
 }

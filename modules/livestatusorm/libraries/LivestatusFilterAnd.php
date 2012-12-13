@@ -3,6 +3,10 @@
 class LivestatusFilterAnd extends LivestatusFilterBase {
 	private $sub_filters = array();
 	
+	function get_sub_filters() {
+		return $this->sub_filters;
+	}
+	
 	function __clone() {
 		$this->sub_filters = array_map(
 				function($filt) {
@@ -53,4 +57,7 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 		}
 	}
 
+	function visit( LivestatusFilterVisitor $visitor ) {
+		return $visitor->visit_and($this);
+	}
 }
