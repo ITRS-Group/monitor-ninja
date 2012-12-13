@@ -32,9 +32,15 @@ class Status_Controller extends Authenticated_Controller {
 	 * List status details for hosts and services
 	 *
 	 */
-	public function service()
+	public function service($host='all')
 	{
-		return $this->_redirect_to_query('[services] description!=""');
+		$host = $this->input->get('host', $host);
+		if( $host == 'all' ) {
+			$query = '[services] description != ""';
+		} else {
+			$query = '[services] host.name = "'.addslashes($host).'"';
+		}
+		return $this->_redirect_to_query($query);
 	}
 
 	/**
