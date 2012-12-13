@@ -90,7 +90,7 @@
 			link = $('.image-link[title="' + uh_prob_title + '"]'),
 			query = link.attr('href');
 
-		query = query.split('filter_query=')[1];
+		query = query.split('q=')[1];
 
 		$.ajax({
 			url : basepath + "/listview/fetch_ajax",

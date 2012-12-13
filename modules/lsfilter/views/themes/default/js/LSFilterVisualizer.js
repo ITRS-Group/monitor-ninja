@@ -204,14 +204,19 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	};
 	
 	this.visit_search_query = function(filter0) {
+
 		var result = $('<ul />');
 		filter0.addClass('lsfilter-root');
+		
 		result.append($('<li style="margin: 3px 0"><strong>With filter: </strong></li>'));
 		result.append($('<li class="resultvisual" />').append(filter0));
+
 		return result;
 	};
 	
 	this.visit_filter_or = function(filter0, filter2) {
+
+		var that = this;
 
 		if (filter0.is('.lsfilter-or')) {
 			var result = filter0;
@@ -222,10 +227,20 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
 		result.append($('<li class="resultvisual lsfilter-or-expr" />').append(filter2));
 
+		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+			that.gui_stmnt_button('and', result, e, $(this));
+		}));
+
+		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+			that.gui_stmnt_button('or', result, e, $(this));
+		}));
+
 		return result;
 	};
 	
 	this.visit_filter_and = function(filter0, filter2) {
+
+		var that = this;
 
 		if (filter0.is('.lsfilter-and')) {
 			var result = filter0;
@@ -235,6 +250,14 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter0));
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		}
+
+		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+			that.gui_stmnt_button('and', result, e, $(this));
+		}));
+
+		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+			that.gui_stmnt_button('or', result, e, $(this));
+		}));
 		
 		return result;
 	};
@@ -281,9 +304,21 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		}
 	};
 
-	this.gui_stmnt_button = function (stmnt, enclosing) {
+	this.find_root_node = function (node) {
+		if (node.hasClass('lsfilter-and') || 
+			node.hasClass('lsfilter-or') ||
+			node.hasClass('lsfilter-root')) {
+			return node;
+		} else {
+			return this.find_root_node(node.parent());
+		}
+	};
+
+	this.gui_stmnt_button = function (stmnt, enclosing, evt, btn) {
 		
-		var stmnt_block = $(this).parent().parent().parent().parent().parent(),
+		evt.preventDefault();
+
+		var stmnt_block = this.find_root_node(btn),
 			clone = this.match('eq', 'state', '0'),
 			tmp = null;
 
@@ -292,21 +327,22 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			tmp = $('<div />');
 			enclosing.after(tmp);
 
-			var stmnt_block = this.visit_filter_and(enclosing, clone);
+			if (stmnt == 'and') {
+				stmnt_block = this.visit_filter_and(enclosing, clone);
+			} else if (stmnt == 'or') {
+				stmnt_block = this.visit_filter_or(enclosing, clone);
+			}
+			
 			tmp.replaceWith(stmnt_block);
 
 		} else {
-			this.visit_filter_and(stmnt_block, clone);
-		}
-	};
-
-	this.find_root_node = function (node) {
-		if (node.hasClass('lsfilter-and') || 
-			node.hasClass('lsfilter-or') ||
-			node.hasClass('lsfilter-root')) {
-			return node;
-		} else {
-			return this.find_root_node(node.parent());
+			if (stmnt == 'and') {
+				stmnt_block.children('button').remove();
+				stmnt_block = this.visit_filter_and(stmnt_block, clone);
+			} else if (stmnt == 'or') {
+				stmnt_block.children('button').remove();
+				stmnt_block = this.visit_filter_or(stmnt_block, clone);
+			}
 		}
 	};
 
@@ -349,45 +385,11 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		result.append(val);
 
 		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
-
-			e.preventDefault();
-
-			var and_block = that.find_root_node($(this)),
-				clone = that.match('eq', 'state', '0');
-
-			if (!and_block.is('.lsfilter-and')) {
-
-				var tmp = $('<div />');
-				result.after(tmp);
-
-				var and_block = that.visit_filter_and(result, clone);
-				tmp.replaceWith(and_block);
-
-			} else {
-				that.visit_filter_and(and_block, clone);
-			}
-
+			that.gui_stmnt_button('and', result, e, $(this));
 		}));
 
 		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
-			
-			e.preventDefault();
-
-			var or_block = that.find_root_node($(this)),
-				clone = that.match('eq', 'state', '0');
-			
-			if (!or_block.is('.lsfilter-or')) {
-				
-				var tmp = $('<div />');
-				result.after(tmp);
-
-				var or_block = that.visit_filter_or(result, clone);
-				tmp.replaceWith(or_block);
-
-			} else {
-				that.visit_filter_or(or_block, clone);
-			}
-			
+			that.gui_stmnt_button('or', result, e, $(this));
 		}));
 
 		return result;

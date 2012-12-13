@@ -58,10 +58,13 @@ function extinfo_link(host, service) {
 
 function listview_add_sort(element, vis_column, db_columns, current) {
 	if (current == 0) { // No sort
+		
 		element.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
 	} else if (current > 0) { // Ascending?
+		element.attr('title', 'Sort descending');
 		element.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
 	} else {
+		element.attr('title', 'Sort ascending');
 		element.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
 	}
 	element.click({
@@ -764,6 +767,14 @@ function listview_render_totals(totals) {
 	$('#filter_result_totals').empty().append(container);
 }
 
+var listview_table_col_index = 0;
+
+function listview_table_col_name(c) {
+	var name = listview_table_col_index;
+	listview_table_col_index += 1;
+	return 'listview-col-' + name;
+}
+
 function listview_render_table(data) {
 	var tbody = false;
 	var last_table = '';
@@ -776,6 +787,7 @@ function listview_render_table(data) {
 
 	//console.log("Got " + data.length + " objects");
 
+	listview_table_col_index = 0;
 	if (data.length == 0) {
 		output.append('<h2 class="lsfilter-noresult">Empty result set</h2>');
 	} else {
@@ -796,9 +808,9 @@ function listview_render_table(data) {
 				columns = new Array();
 				var header = $('<tr />');
 				for ( var key in listview_renderer_table[obj._table]) {
-					var col_render = listview_renderer_table[obj._table][key]
+					var col_render = listview_renderer_table[obj._table][key];
 					columns.push(col_render.cell);
-					var th = $('<th />');
+					var th = $('<th />').attr('id', listview_table_col_name(col_render.header));
 					th.append(col_render.header);
 					if (col_render.sort) {
 						var sort_dir = 0;
@@ -823,7 +835,7 @@ function listview_render_table(data) {
 				row.addClass('odd');
 
 			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
-				row.append(columns[cur_col](obj));
+				row.append(columns[cur_col](obj).addClass('listview-cell-' + cur_col));
 			}
 			tbody.append(row);
 		}
@@ -834,6 +846,20 @@ function listview_render_table(data) {
 
 	if (table) {
 		
+		table.find('[id^=listview-col-]').hover(function () {
+			
+			var self = $(this),
+				index = self.attr('id').split('-col-')[1];
+
+			table.find('.listview-cell-' + index).addClass('listview-col-hover');
+		}, function () {
+			
+			var self = $(this),
+				index = self.attr('id').split('-col-')[1];
+
+			table.find('.listview-cell-' + index).removeClass('listview-col-hover');
+		});
+
 		var header = $("thead", table),
 			clone = header.clone(true);
 
