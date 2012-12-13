@@ -543,7 +543,11 @@ var listview_renderer_table = {
 			"depends" : [ 'host_stats' ],
 			"sort" : false,
 			"cell" : function(obj) {
-				return $('<td / >').text(obj.host_stats);
+				var cell = $('<td / >');
+				for( var name in obj.host_stats ) {
+					cell.append($('<div />').text( name + ": " + obj.host_stats[name] ) );
+				}
+				return cell;
 			}
 		},
 		"service_status_summary" : {
@@ -551,7 +555,11 @@ var listview_renderer_table = {
 			"depends" : [ 'service_stats' ],
 			"sort" : false,
 			"cell" : function(obj) {
-				return $('<td / >').text(obj.service_stats);
+				var cell = $('<td / >');
+				for( var name in obj.service_stats ) {
+					cell.append($('<div />').text( name + ": " + obj.service_stats[name] ) );
+				}
+				return cell;
 			}
 		}
 	},
@@ -584,7 +592,11 @@ var listview_renderer_table = {
 			"depends" : [ 'service_stats' ],
 			"sort" : false,
 			"cell" : function(obj) {
-				return $('<td / >').text(obj.service_stats);
+				var cell = $('<td / >');
+				for( var name in obj.service_stats ) {
+					cell.append($('<div />').text( name + ": " + obj.service_stats[name] ) );
+				}
+				return cell;
 			}
 		}
 	},
