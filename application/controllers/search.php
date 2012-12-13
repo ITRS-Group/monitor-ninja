@@ -17,7 +17,7 @@ class Search_Controller extends Authenticated_Controller {
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-				'hosts' => array( 'name' ),
+				'hosts' => array( 'name' , 'address' ),
 				'services' => array( 'description', 'display_name' ),
 				'hostgroups' => array( 'name', 'alias' ),
 				'servicegroups' => array( 'name', 'alias' ),
