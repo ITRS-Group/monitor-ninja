@@ -40,6 +40,7 @@ class Default_Controller extends Ninja_Controller  {
 				Auth::instance()->driver->login($_SESSION['username'], false, false);
 				$this->apache_login();
 			} else {
+				Cli_Controller::insert_user_data();
 				header('location: ' . Kohana::config('auth.apache_login'));
 			}
 			exit;
