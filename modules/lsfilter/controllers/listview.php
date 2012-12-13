@@ -35,6 +35,12 @@ class ListView_Controller extends Authenticated_Controller {
 		$lview->query = $query;
 	}
 
+	public function test_q() {
+		$query = $this->input->get('query','');
+		$set = ObjectPool_Model::get_by_query( $query );
+		json::ok( $set->get_query() );
+	}
+	
 	public function fetch_ajax() {
 		$query = $this->input->get('query','');
 		$columns = $this->input->get('columns',false);

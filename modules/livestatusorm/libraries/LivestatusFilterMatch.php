@@ -16,7 +16,7 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	}
 	
 	function __construct( $field, $value, $op = "=" ) {
-		$this->field = str_replace('.','_',$field); //TODO: Do this in some fancy way...
+		$this->field = $field; //TODO: Do this in some fancy way...
 		$this->op = $op;
 		$this->value = $value;
 	}
@@ -27,14 +27,16 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 
 	function generateFilter() {
 		/* TODO: escape */
-		return "Filter: ".$this->field." ".$this->op. " ".$this->value."\n";
+		$field = str_replace('.','_',$field); //TODO: Do this in some fancy way...
+		return "Filter: ".$field." ".$this->op. " ".$this->value."\n";
 	}
 	function generateStats() {
 		/* TODO: escape */
-		return "Stats: ".$this->field." ".$this->op. " ".$this->value."\n";
+		$field = str_replace('.','_',$field); //TODO: Do this in some fancy way...
+		return "Stats: ".$field." ".$this->op. " ".$this->value."\n";
 	}
 
-	function visit( LivestatusFilterVisitor $visitor ) {
-		return $visitor->visit_match($this);
+	function visit( LivestatusFilterVisitor $visitor, $data ) {
+		return $visitor->visit_match($this, $data);
 	}
 }

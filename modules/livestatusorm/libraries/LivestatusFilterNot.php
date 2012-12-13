@@ -12,7 +12,7 @@ class LivestatusFilterNot extends LivestatusFilterBase {
 	}
 	
 	function __construct( $filter ) {
-		$this->filter;
+		$this->filter = $filter;
 	}
 	
 	function prefix( $prefix ) {
@@ -27,7 +27,7 @@ class LivestatusFilterNot extends LivestatusFilterBase {
 		return $this->filter->generateStats()."StatsNegate: \n";
 	}
 
-	function visit( LivestatusFilterVisitor $visitor ) {
-		return $visitor->visit_not($this);
+	function visit( LivestatusFilterVisitor $visitor, $data ) {
+		return $visitor->visit_not($this, $data);
 	}
 }

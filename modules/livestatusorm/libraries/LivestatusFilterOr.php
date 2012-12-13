@@ -57,7 +57,7 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 		}
 	}
 	
-	function visit( LivestatusFilterVisitor $visitor ) {
-		return $visitor->visit_or($this);
+	function visit( LivestatusFilterVisitor $visitor, $data ) {
+		return $visitor->visit_or($this, $data);
 	}
 }
