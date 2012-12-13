@@ -894,13 +894,10 @@ function listview_render_table(data) {
 						index++;
 					});
 
-					clone.addClass('floatingHeader');
+					clone.addClass('floating-header');
 					clone.css('visibility', 'visible');
 
-				} else {
-					//clone.removeClass('floatingHeader');
-					//clone.css('visibility', 'hidden');
-				};
+				}
 
 		   });
 		}

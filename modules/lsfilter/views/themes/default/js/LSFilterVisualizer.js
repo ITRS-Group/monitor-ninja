@@ -42,7 +42,7 @@ function add_saved_filter_list ( list, save ) {
 	list.append( 
 		
 		$('<li class="saved-filter-'+save['scope']+'" />').html(
-			icon + '<a href="?filter_query=' + save['query'] + '">' + save['scope'].toUpperCase() + ' - ' + save['name'] + '</a>'
+			icon + '<a href="?q=' + save['query'] + '">' + save['scope'].toUpperCase() + ' - ' + save['name'] + '</a>'
 		).hover(function () {
 			$('#filter-query-saved-preview').html( save['query'] );
 		}, function () {
@@ -347,8 +347,6 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	};
 
 	this.match = function(op,name,expr) {
-
-		//console.log(name);
 
 		var that = this,
 			val = $('<input type="text" value="' + expr.replace(/['"]/g,'') + '" />'),
