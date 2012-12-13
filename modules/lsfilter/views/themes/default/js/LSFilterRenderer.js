@@ -787,7 +787,7 @@ function listview_render_table(data) {
 			var obj = data[i];
 
 			if (last_table != obj._table) {
-				var table = $('<table class="' + data[0]['_table'] + '-table" />');
+				var table = $('<table cellspacing="0" cellpadding="0" border="0" />');
 				output.append(table);
 				
 				//console.log(listview_columns_for_table(obj._table));
@@ -810,7 +810,7 @@ function listview_render_table(data) {
 					}
 					header.append(th);
 				}
-				table.append($('<thead />').append(header));
+				table.append($('<thead cellspacing="0" cellpadding="0" border="0" />').append(header));
 
 				tbody = $('<tbody />');
 				table.append(tbody);
@@ -837,7 +837,6 @@ function listview_render_table(data) {
 		var header = $("thead", table),
 			clone = header.clone(true);
 
-		clone.css('visibility', 'hidden');
 		header.after(clone);
 
 		function update_float_header() {
@@ -846,15 +845,26 @@ function listview_render_table(data) {
 				var el 			= $(this),
 					offset		= el.offset(),
 					scrollTop	= $(window).scrollTop();
-		       
+
 				if (scrollTop >= 0) {
 
 					var head = header.find("tr").children(),
 						cloneHead = clone.find("tr").children(),
 						index = 0;
 
+					clone.css('min-width', header.width());
+
 					head.each(function () {
-						$(cloneHead[index]).css('width', $(this).css('width'));
+
+						if ($.browser.webkit) {
+							$(cloneHead[index]).css('width', (parseInt($(this).css('width'), 10) + 1) + 'px');
+						} else {
+							$(cloneHead[index]).css('width', $(this).css('width'));
+						}
+						
+						$(cloneHead[index]).css('padding', $(this).css('padding'));
+						$(cloneHead[index]).css('margin', $(this).css('margin'));
+						$(cloneHead[index]).css('border', $(this).css('border'));
 						index++;
 					});
 
@@ -862,8 +872,8 @@ function listview_render_table(data) {
 					clone.css('visibility', 'visible');
 
 				} else {
-					clone.removeClass('floatingHeader');
-					clone.css('visibility', 'hidden');
+					//clone.removeClass('floatingHeader');
+					//clone.css('visibility', 'hidden');
 				};
 
 		   });
