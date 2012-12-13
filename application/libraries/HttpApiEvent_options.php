@@ -125,7 +125,7 @@ class HttpApiEvent_options_core extends Report_options {
 		$row['in_scheduled_downtime'] = $row['downtime_depth'];
 
 		// remove property (should not be exposed)
-		unset($row['flags'], $row['downtime_depth'], $row['attrib']);
+		unset($row['downtime_depth']);
 		return $row;
 	}
 }

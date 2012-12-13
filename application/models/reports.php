@@ -56,6 +56,8 @@ class Reports_Model extends Model
 	const PERC_DEC = 3; /**< Nr of decimals in returned percentage */
 	const DEBUG = true; /**< Debug bool - can't see this is ever false */
 
+	const MAX_API_EVENTS = 10000; /**< Pagination limit for events retrieved from HTTP API. Hardcoded, deal with it */
+
 	var $db_start_time = 0; /**< earliest database timestamp we look at */
 	var $db_end_time = 0;   /**< latest database timestamp we look at */
 	var $debug = array(); /**< Array of the debug information that we print during unit tests */
@@ -225,21 +227,38 @@ class Reports_Model extends Model
 	/**
          * Used from the HTTP API
          *
+	 * @param $limit int = 10000
+	 * @param $offset int = 0
 	 * @return Mysql_Result
 	 */
-	function get_events()
+	function get_events($limit = self::MAX_API_EVENTS, $offset = 0)
 	{
-		$limit = (int) Op5Config::instance()->getConfig('http_api.report.limit');
-		$absolute_max = 10000; // hardcoded, deal with it
-		if($limit > $absolute_max || $limit < 1) {
-			$limit = $absolute_max;
+		$limit = (int) $limit;
+		if($limit > self::MAX_API_EVENTS || $limit < 1) {
+			$limit = self::MAX_API_EVENTS;
 		}
-                $query = $this->build_alert_summary_query('*', true)." LIMIT ".$limit;;
+
+		$offset = (int) $offset;
+		if($offset < 0) {
+			$offset = 0;
+		}
+
+                $query = $this->build_alert_summary_query("timestamp,
+			event_type,
+			host_name,
+			service_description,
+			state,
+			hard,
+			retry,
+			downtime_depth,
+			output", true).
+			" LIMIT $limit OFFSET $offset";
                 $count = $this->db->query($this->build_alert_summary_query('COUNT(*)', true))->result();
 		return array(
 			'events' => $this->db->query($query)->result(false),
 			'count' => current($count[0]),
-			'limit' => $limit
+			'limit' => $limit,
+			'offset' => $offset
 		);
 	}
 
