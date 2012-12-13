@@ -42,6 +42,32 @@ class HttpApiEvent_options_core extends Report_options {
                 )
         );
 
+	function __construct($options = false)
+	{
+		parent::__construct($options);
+
+		// whitelist properties to use
+		$this->properties = array_intersect_key(
+			$this->properties,
+			array_flip(array(
+				'report_period',
+				'alert_types',
+				'state_types',
+				'host_states',
+				'service_states',
+				'includesoftstates',
+				'host_name',
+				'service_description',
+				'hostgroup',
+				'servicegroup',
+				'start_time',
+				'end_time',
+				'host_filter_status',
+				'service_filter_status'
+			))
+		);
+	}
+
         /**
          * Overload properties to enable input such as spelled out keys ("service")
          * instead of magic ints/bitmapped values ('3')

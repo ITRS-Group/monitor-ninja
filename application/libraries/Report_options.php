@@ -195,7 +195,8 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		),
 		'use_alias' => array(
 			'type' => 'bool',
-			'default' => false
+			'default' => false,
+			'description' => "Use object's aliases instead of their names"
 		),
 		'description' => array(
 			'type' => 'string',
