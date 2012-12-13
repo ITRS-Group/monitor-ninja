@@ -98,13 +98,13 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		
 		$this->write('$single = !is_array($intersections);');
 		$this->write('if($single) $intersections = array($intersections);');
-		
-		$this->write('$ls_filter = $this->filter->generateFilter();');
+
+		$this->write('$ls_filter = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
 		
 		$this->write('$ls_intersections = array();');
 		$this->write('foreach( $intersections as $name => $intersection ) {');
 		$this->write('if($intersection->table == $this->table) {');
-		$this->write('$ls_intersections[$name] = $intersection->filter->generateStats();');
+		$this->write('$ls_intersections[$name] = $intersection->filter->visit(new LivestatusStatsBuilderVisitor(), false);');
 		$this->write('}'); // TODO: Error handling...
 		$this->write('}');
 		
@@ -119,7 +119,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->init_function('count');
 		$this->write('$ls = LivestatusAccess::instance();');
 
-		$this->write('$ls_filter = $this->filter->generateFilter();');
+		$this->write('$ls_filter = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
 		$this->write('$ls_filter .= "Limit: 0\n";');
 		
 		$this->write('$result = $ls->query($this->table, $ls_filter, false);');
@@ -138,7 +138,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$ls = LivestatusAccess::instance();');
 
-		$this->write('$ls_filter = $this->filter->generateFilter();');
+		$this->write('$ls_filter = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
 		
 		$this->write('foreach($order as $col) {');
 		$this->write('$ls_filter .= "Sort: $col\n";');

@@ -19,14 +19,6 @@ class LivestatusFilterNot extends LivestatusFilterBase {
 		return new LivestatusFilterNot( $this->filter->prefix( $prefix ) );
 	}
 
-	function generateFilter() {
-		return $this->filter->generateFilter()."Negate: \n";
-	}
-	
-	function generateStats() {
-		return $this->filter->generateStats()."StatsNegate: \n";
-	}
-
 	function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_not($this, $data);
 	}

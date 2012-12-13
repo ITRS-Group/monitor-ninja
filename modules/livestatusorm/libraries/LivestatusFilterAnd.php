@@ -23,30 +23,6 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 		return $res;
 	}
 	
-	function generateFilter() {
-		$result = "";
-		foreach( $this->sub_filters as $subf ) {
-			$result .= $subf->generateFilter();
-		}
-
-		$count = count($this->sub_filters);
-		if( $count != 1 )
-			$result .= "And: $count\n";
-		return $result;
-	}
-
-	function generateStats() {
-		$result = "";
-		foreach( $this->sub_filters as $subf ) {
-			$result .= $subf->generateStats();
-		}
-	
-		$count = count($this->sub_filters);
-		if( $count != 1 )
-			$result .= "StatsAnd: $count\n";
-		return $result;
-	}
-	
 	function add( $filter ) {
 		if( $filter instanceof self ) {
 			foreach( $filter->sub_filters as $subf ) {

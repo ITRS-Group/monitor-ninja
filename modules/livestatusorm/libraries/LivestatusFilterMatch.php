@@ -25,17 +25,6 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 		return new LivestatusFilterMatch( $prefix.$this->field, $this->value, $this->op );
 	}
 
-	function generateFilter() {
-		/* TODO: escape */
-		$field = str_replace('.','_',$field); //TODO: Do this in some fancy way...
-		return "Filter: ".$field." ".$this->op. " ".$this->value."\n";
-	}
-	function generateStats() {
-		/* TODO: escape */
-		$field = str_replace('.','_',$field); //TODO: Do this in some fancy way...
-		return "Stats: ".$field." ".$this->op. " ".$this->value."\n";
-	}
-
 	function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_match($this, $data);
 	}
