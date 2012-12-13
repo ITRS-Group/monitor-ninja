@@ -229,7 +229,7 @@ class Reports_Model extends Model
          *
 	 * @param $limit int = 10000
 	 * @param $offset int = 0
-	 * @return Mysql_Result
+	 * @return array
 	 */
 	function get_events($limit = self::MAX_API_EVENTS, $offset = 0)
 	{
@@ -1124,7 +1124,7 @@ class Reports_Model extends Model
 	 */
 	private function st_finalize()
 	{
-		# gather remaining time. If they match, it'll be 0
+		// gather remaining time. If they match, it'll be 0
 		$this->st_update($this->options['end_time']);
 		$this->st_update_log();
 

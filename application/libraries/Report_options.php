@@ -389,97 +389,97 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 */
 	protected function calculate_time($report_period)
 	{
-		$year_now 	= date('Y', time());
-		$month_now 	= date('m', time());
-		$day_now	= date('d', time());
-		$week_now 	= date('W', time());
-		$weekday_now = date('w', time())-1;
+		$now = time();
+		$year_now 	= date('Y', $now);
+		$month_now 	= date('m', $now);
+		$day_now	= date('d', $now);
+		$week_now 	= date('W', $now);
+		$weekday_now = date('w', $now)-1;
 		$time_start	= false;
 		$time_end	= false;
-		$now = time();
 
 		switch ($report_period) {
-		 case 'today':
-			$time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			$time_end 	= time();
-			break;
-		 case 'last24hours':
-			$time_start = mktime(date('H', time()), date('i', time()), date('s', time()), $month_now, $day_now -1, $year_now);
-			$time_end 	= time();
-			break;
-		 case 'yesterday':
-			$time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
-			$time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			break;
-		 case 'thisweek':
-			$time_start = strtotime('today - '.$weekday_now.' days');
-			$time_end 	= time();
-			break;
-		 case 'last7days':
-			$time_start	= strtotime('now - 7 days');
-			$time_end	= time();
-			break;
-		 case 'lastweek':
-			$time_start = strtotime('midnight last monday -7 days');
-			$time_end	= strtotime('midnight last monday');
-			break;
-		 case 'thismonth':
-			$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			$time_end	= time();
-			break;
-		 case 'last31days':
-			$time_start = strtotime('now - 31 days');
-			$time_end	= time();
-			break;
-		 case 'lastmonth':
-			$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'thisyear':
-			$time_start = strtotime('midnight '.$year_now.'-01-01');
-			$time_end	= time();
-			break;
-		 case 'lastyear':
-			$time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
-			$time_end	= strtotime('midnight '.$year_now.'-01-01');
-			break;
-		 case 'last12months':
-			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'last3months':
-			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'last6months':
-			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'lastquarter':
-			$t = getdate();
-			if($t['mon'] <= 3){
+			case 'today':
+			       $time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
+			       $time_end 	= $now;
+			       break;
+			case 'last24hours':
+			       $time_start = mktime(date('H', $now), date('i', $now), date('s', $now), $month_now, $day_now -1, $year_now);
+			       $time_end 	= $now;
+			       break;
+			case 'yesterday':
+			       $time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
+			       $time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
+			       break;
+			case 'thisweek':
+			       $time_start = strtotime('today - '.$weekday_now.' days');
+			       $time_end 	= $now;
+			       break;
+			case 'last7days':
+			       $time_start	= strtotime('now - 7 days');
+			       $time_end	= $now;
+			       break;
+			case 'lastweek':
+			       $time_start = strtotime('midnight last monday -7 days');
+			       $time_end	= strtotime('midnight last monday');
+			       break;
+			case 'thismonth':
+			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       $time_end	= $now;
+			       break;
+			case 'last31days':
+			       $time_start = strtotime('now - 31 days');
+			       $time_end	= $now;
+			       break;
+			case 'lastmonth':
+			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
+			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       break;
+			case 'thisyear':
+			       $time_start = strtotime('midnight '.$year_now.'-01-01');
+			       $time_end	= $now;
+			       break;
+			case 'lastyear':
+			       $time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
+			       $time_end	= strtotime('midnight '.$year_now.'-01-01');
+			       break;
+			case 'last12months':
+			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
+			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       break;
+			case 'last3months':
+			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
+			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       break;
+			case 'last6months':
+			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
+			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       break;
+			case 'lastquarter':
+			       $t = getdate();
+			       if($t['mon'] <= 3){
 				$lqstart = ($t['year']-1)."-10-01";
 				$lqend = ($t['year']-1)."-12-31";
-			} elseif ($t['mon'] <= 6) {
+			       } elseif ($t['mon'] <= 6) {
 				$lqstart = $t['year']."-01-01";
 				$lqend = $t['year']."-03-31";
-			} elseif ($t['mon'] <= 9){
+			       } elseif ($t['mon'] <= 9){
 				$lqstart = $t['year']."-04-01";
 				$lqend = $t['year']."-06-30";
-			} else {
+			       } else {
 				$lqstart = $t['year']."-07-01";
 				$lqend = $t['year']."-09-30";
-			}
-			$time_start = strtotime($lqstart);
-			$time_end = strtotime($lqend);
-			break;
-		 case 'custom':
-			# we'll have "start_time" and "end_time" in
-			# the options when this happens
-			return true;
-		 default:
-			# unknown option, ie bogosity
-			return false;
+			       }
+			       $time_start = strtotime($lqstart);
+			       $time_end = strtotime($lqend);
+			       break;
+			case 'custom':
+			       # we'll have "start_time" and "end_time" in
+			       # the options when this happens
+			       return true;
+			default:
+				# unknown option, ie bogosity
+				return false;
 		}
 
 		if($time_start > $now)
