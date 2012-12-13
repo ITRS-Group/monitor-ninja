@@ -86,10 +86,13 @@ class HttpApiEvent_options_core extends Report_options {
                 } elseif($_GET) {
                         $options = $_GET;
                 }
-                $options['report_period'] = 'custom';
                 if(isset($options['start_time']) && !isset($options['end_time'])) {
                         $options['end_time'] = time();
                 }
+		if(isset($options['start_time']) || isset($options['end_time'])) {
+			// @todo workaround a nasty bug, implement this in Report_options directly
+			$options['report_period'] = 'custom';
+		}
 		if(isset($options['host_name'])) {
 			$options['host_name'] = (array) $options['host_name'];
 		}
