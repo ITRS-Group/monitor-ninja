@@ -300,6 +300,16 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		}
 	};
 
+	this.find_root_node = function (node) {
+		if (node.hasClass('lsfilter-and') || 
+			node.hasClass('lsfilter-or') ||
+			node.hasClass('lsfilter-root')) {
+			return node;
+		} else {
+			return this.find_root_node(node.parent());
+		}
+	};
+
 	this.match = function(op,name,expr) {
 
 		//console.log(name);
@@ -342,7 +352,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 			e.preventDefault();
 
-			var and_block = $(this).parent().parent().parent().parent().parent(),
+			var and_block = that.find_root_node($(this)),
 				clone = that.match('eq', 'state', '0');
 
 			if (!and_block.is('.lsfilter-and')) {
@@ -363,7 +373,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			
 			e.preventDefault();
 
-			var or_block = $(this).parent().parent().parent().parent().parent(),
+			var or_block = that.find_root_node($(this)),
 				clone = that.match('eq', 'state', '0');
 			
 			if (!or_block.is('.lsfilter-or')) {
