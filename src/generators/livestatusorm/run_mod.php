@@ -68,7 +68,7 @@ class livestatusorm_generator extends generator_module {
 			$generator->generate();
 			
 			/* Generate base set class */
-			$generator = new LivestatusBaseSetClassGenerator( $name, $structure );
+			$generator = new LivestatusBaseSetClassGenerator( $name, $full_structure );
 			$generator->generate();
 			
 			/* Generate wrapper if not exists */

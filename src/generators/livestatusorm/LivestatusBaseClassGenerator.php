@@ -4,6 +4,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 
 	private $name;
 	private $structure;
+	private $associations;
 
 	public function __construct( $name, $structure ) {
 		$this->name = $name;

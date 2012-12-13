@@ -12,7 +12,7 @@ class HostSet_Model extends BaseHostSet_Model {
 				'host_all'               => $pool->get_by_name('std host all')
 		);
 		
-		$service_set = $this->convert_to_object('services', 'host');
+		$service_set = $this->get_services();
 		return $this->stats($stats) + $service_set->get_totals();
 	}
 
