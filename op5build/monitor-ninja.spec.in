@@ -37,7 +37,7 @@ popd
 %if 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
 	make install-sass
 %endif
-make generate-css
+make
 make docs test
 
 
