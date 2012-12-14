@@ -53,7 +53,11 @@ class HostGroup_Model extends BaseHostGroup_Model {
 				'unreachable_and_unhandled'         => $unreachable->intersect($unhandled)
 				);
 		
-		return $set->stats($stats);
+		$queries = array();
+		foreach( $stats as $name => $stat ) {
+			$queries[$name] = $set->intersect($stat)->get_query();
+		}
+		return array( 'stats' => $set->stats($stats), 'queries' => $queries );
 	}
 	public function get_service_stats() {
 		$set = ServicePool_Model::all()->reduceBy('host.groups', $this->get_name(), '>=');
@@ -103,7 +107,12 @@ class HostGroup_Model extends BaseHostGroup_Model {
 				'unknown_on_down_host'         => $unknown->intersect($down_host),
 				'pending'                      => $pending
 				);
-		
-		return $set->stats($stats);
+
+
+		$queries = array();
+		foreach( $stats as $name => $stat ) {
+			$queries[$name] = $set->intersect($stat)->get_query();
+		}
+		return array( 'stats' => $set->stats($stats), 'queries' => $queries );
 	}
 }

@@ -55,7 +55,12 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 				'unknown_on_down_host'         => $unknown->intersect($down_host),
 				'pending'                      => $pending
 				);
-		
-		return $set->stats($stats);
+
+
+		$queries = array();
+		foreach( $stats as $name => $stat ) {
+			$queries[$name] = $set->intersect($stat)->get_query();
+		}
+		return array( 'stats' => $set->stats($stats), 'queries' => $queries );
 	}
 }
