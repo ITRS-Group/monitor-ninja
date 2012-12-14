@@ -175,7 +175,6 @@
 
 #filter_result tbody tr:hover > td {
 	border-color: #999;
-	border-bottom: none;
 	border-top: none;
 }
 
@@ -194,6 +193,11 @@
 th span.header-icon {
 	display: block;
 	margin: 0 auto;
+}
+
+.listview-empty-cell {
+	border: none !important;
+	background: transparent !important;
 }
 
 #filter_result thead th {
@@ -289,4 +293,8 @@ th span.header-icon {
 .floating-header tr {
 	width: 100%;
 	display: block;
+}
+
+.listview-summary li span {
+	vertical-align: middle;
 }

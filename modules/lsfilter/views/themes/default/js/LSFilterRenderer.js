@@ -172,6 +172,68 @@ var listview_renderer_totals = {
  * Table renderer
  ******************************************************************************/
 
+function render_summary_state (state, stats, type, group) {
+
+	/*
+		@FIXME - INTERNET EXPLODER SUCKS - No support for either Object.keys or Array.prototype.filter pre IE 9
+	*/
+
+	var li = $('<li />').append(
+			$('<a />').attr('href', "?q=query_placeholder")
+				.append(icon16('shield-' + state) ).append( $('<span />').html(stats[state]) )
+		),
+		
+		subchecks = Object.keys(stats).filter(function (e, i, a) {
+			return (e.indexOf(state + '_') >= 0);
+		});
+
+	if (subchecks.length > 0) {
+
+		li.append( $('<span />').html(' ( '));
+
+		for (var check in subchecks) {
+			var key = subchecks[check];
+			if (stats[key]) {
+				li.append(
+					$('<a />').attr('href', '?q=query_placeholder').append(
+						$('<span style="text-transform: capitalize;" />').text(stats[key] + ' ' + (key.split('_and_')[1]).replace(/_/g, ' '))
+					)
+				)
+			}
+		}
+
+		li.append( $('<span />').html(' ) '));
+
+	}
+
+	return li;
+}
+
+function render_service_status_summary (stats, group) {
+	var ul = $('<ul class="listview-summary" />');
+
+	ul.append( render_summary_state('ok', stats, 'services', group) );
+	ul.append( render_summary_state('warning', stats, 'services', group) );
+	ul.append( render_summary_state('critical', stats, 'services', group) );
+	ul.append( render_summary_state('unknown', stats, 'services', group) );
+	ul.append( render_summary_state('pending', stats, 'services', group) );
+
+	return ul;
+}
+
+function render_host_status_summary (stats, group) {
+	var ul = $('<ul class="listview-summary" />');
+
+	ul.append( render_summary_state('up', stats, 'hosts', group) );
+	ul.append( render_summary_state('down', stats, 'hosts', group) );
+	ul.append( render_summary_state('unreachable', stats, 'hosts', group) );
+	ul.append( render_summary_state('pending', stats, 'hosts', group) );
+	
+
+	return ul;
+}
+
+var listview_last_host = '';
 var listview_renderer_table = {
 
 	/***************************************************************************
@@ -196,7 +258,6 @@ var listview_renderer_table = {
 			"cell" : function(obj) {
 				var cell = $('<td />');
 				cell.append(extinfo_link(obj.name).text(obj.name));
-
 				if (obj.icon_image)
 					cell.append(icon(obj.icon_image, extinfo_link(obj.name))
 							.css('float', 'right'));
@@ -385,9 +446,13 @@ var listview_renderer_table = {
 			"depends" : [ 'host.state_text' ],
 			"sort" : [ 'host.state' ],
 			"cell" : function(obj) {
-				return $('<td class="icon" />').append(
+				if (obj.host && obj.host.name != listview_last_host) {
+					return $('<td class="icon" />').append(
 						icon16('shield-' + obj.host.state_text,
 								obj.host.state_text));
+				} else {
+					return $('<td class="icon" />').addClass('listview-empty-cell');
+				}
 			}
 		},
 		"host_name" : {
@@ -396,11 +461,17 @@ var listview_renderer_table = {
 			"sort" : [ 'host.name' ],
 			"cell" : function(obj) {
 				var cell = $('<td />');
-				cell.append(extinfo_link(obj.host.name).text(obj.host.name));
 
-				if (obj.host.icon_image)
-					cell.append(icon(obj.host.icon_image,
+				if (obj.host && obj.host.name != listview_last_host) {
+					cell.append(extinfo_link(obj.host.name).text(obj.host.name));
+
+					if (obj.host.icon_image)
+						cell.append(icon(obj.host.icon_image,
 							extinfo_link(obj.host.name)).css('float', 'right'));
+					listview_last_host = obj.host.name;
+				} else {
+					cell.addClass('listview-empty-cell');
+				}
 
 				return cell;
 			}
@@ -524,8 +595,11 @@ var listview_renderer_table = {
 			"sort" : [ 'alias', 'name' ],
 			"cell" : function(obj) {
 				var cell = $('<td />');
-				cell.text(obj.alias);
-				cell.text(' (' + obj.name + ')');
+				cell.append(
+					$('<a />').attr('href', '?q=[hosts] in "' + obj.name + '"').text(
+						obj.alias + ' (' + obj.name + ')'
+					)
+				);
 				return cell;
 			}
 		},
@@ -544,9 +618,7 @@ var listview_renderer_table = {
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td / >');
-				for( var name in obj.host_stats ) {
-					cell.append($('<div />').text( name + ": " + obj.host_stats[name] ) );
-				}
+				cell.append(render_host_status_summary(obj.host_stats, obj.name));
 				return cell;
 			}
 		},
@@ -556,9 +628,7 @@ var listview_renderer_table = {
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td / >');
-				for( var name in obj.service_stats ) {
-					cell.append($('<div />').text( name + ": " + obj.service_stats[name] ) );
-				}
+				cell.append(render_service_status_summary(obj.service_stats, obj.name));
 				return cell;
 			}
 		}
@@ -593,9 +663,7 @@ var listview_renderer_table = {
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td / >');
-				for( var name in obj.service_stats ) {
-					cell.append($('<div />').text( name + ": " + obj.service_stats[name] ) );
-				}
+				cell.append(render_service_status_summary(obj.service_stats, obj.name));
 				return cell;
 			}
 		}
@@ -800,6 +868,8 @@ function listview_render_table(data) {
 	//console.log("Got " + data.length + " objects");
 
 	listview_table_col_index = 0;
+	listview_last_host = '';
+
 	if (data.length == 0) {
 		output.append('<h2 class="lsfilter-noresult">Empty result set</h2>');
 	} else {
