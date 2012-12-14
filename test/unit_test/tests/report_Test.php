@@ -8,7 +8,7 @@ class report_Test extends TapUnit {
 			'start_time' => strtotime('1999-01-01'),
 			'end_time' => strtotime('2012-01-01'),
 			'rpttimeperiod' => 'weird-stuff');
-		$report = Timeperiod_Model::instance($opts);
+		$report = Old_Timeperiod_Model::instance($opts);
 		$report->resolve_timeperiods();
 		$this->pass('Could resolve timperiod torture-test');
 		$this->ok(!empty($report->tp_exceptions), 'There are timeperiod exceptions');

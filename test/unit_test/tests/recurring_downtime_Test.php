@@ -119,7 +119,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
 
 		// Remove downtimes when tests are done.
-		$downtime_data = Downtime_Model::get_downtime_data();
+		$downtime_data = Old_Downtime_Model::get_downtime_data();
 		$cmd = "DEL_HOST_DOWNTIME;";
 		$pipe = System_Model::get_pipe();
 		foreach ($downtime_data as $data) {
