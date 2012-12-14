@@ -5,6 +5,23 @@ global_vars {
 	includesoftstates = 1
 }
 
+Group availability including soft states (servicegroups) {
+	start_time = 1202684400
+	end_time = 1202770800
+	servicegroup {
+		group1 {
+			testhost;PING
+		}
+		group2 {
+			testhost2;PING
+		}
+	}
+	correct {
+		TIME_OK_UNSCHEDULED = 82800
+		TIME_WARNING_UNSCHEDULED = 3600
+	}
+}
+
 Group availability including soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800

@@ -1100,9 +1100,6 @@ class Reports_Model extends Model
 
 		$this->states = $converted_state;
 		$total_time = $this->options['end_time'] - $this->options['start_time'];
-		$groupname = $this->options['hostgroup'] ? $this->options['hostgroup'] : $this->options['servicegroup'];
-		if (count($groupname) === 1)
-			$groupname = $groupname[0];
 		if (!empty($this->sub_reports)) {
 			$log = array();
 			foreach ($this->sub_reports as $sr) {
@@ -1113,7 +1110,14 @@ class Reports_Model extends Model
 			$log = array($this->st_source => $this->st_log);
 		}
 
-		return array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
+		$res =  array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time);
+		$groupname = $this->options['hostgroup'] ? $this->options['hostgroup'] : $this->options['servicegroup'];
+		if (count($groupname) === 1)
+			$res['groupname'] = $groupname[0];
+		else if (empty($this->options['master']))
+			$res['groupname'] = $groupname;
+
+		return $res;
 	}
 
 	/**

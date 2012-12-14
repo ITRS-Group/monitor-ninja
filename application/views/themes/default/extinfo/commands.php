@@ -12,7 +12,7 @@
 		?>
 		<tr>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/locate-host-on-map.png'), array('alt' => _('Locate host on map'), 'title' => _('Locate host on map'))); ?>
+				<span class="icon-16 x16-locate-host-on-map" title="<?php echo  _('Locate host on map') ?>"></span>
 			</td>
 			<td class="bt"><?php echo html::anchor('nagvis/automap/host/'.$host, _('Locate host on map')) ?></td>
 		</tr>
@@ -20,16 +20,16 @@
 		<tr>
 			<?php
 			if ($result->active_checks_enabled) {
-				$img = 'disable';
+				$img = 'disabled';
 				$label = _("Disable active checks of this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_CHECK') : nagioscmd::command_id('DISABLE_SVC_CHECK');
 			} else {
-				$img = 'enable';
+				$img = 'enabled';
 				$label = _("Enable active checks of this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_CHECK') : nagioscmd::command_id('ENABLE_SVC_CHECK');
 			} ?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td>
 				<?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?>
@@ -50,7 +50,7 @@
 				$cmd = $type == 'host' ? nagioscmd::command_id('PROCESS_HOST_CHECK_RESULT') : nagioscmd::command_id('PROCESS_SERVICE_CHECK_RESULT') ?>
 			<tr>
 				<td class="icon dark">
-					<?php echo html::image($this->add_path('icons/16x16/checks-passive.png'), array('alt' => $label, 'title' => $label)); ?>
+					<span class="icon-16 x16-checks-passive" title="<?php echo $label ?>"></span>
 				</td>
 				<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 			</tr>
@@ -58,32 +58,32 @@
 		<tr>
 			<?php
 			if ($result->accept_passive_checks) {
-				$img = 'disable';
+				$img = 'disabled';
 				$label = _("Stop accepting passive checks for this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('DISABLE_PASSIVE_SVC_CHECKS');
 			} else {
-				$img = 'enable';
+				$img = 'enabled';
 				$label= _("Start accepting passive checks for this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('ENABLE_PASSIVE_SVC_CHECKS');
 			} ?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
 		<tr>
 			<?php
 			if ($result->obsess) {
-				$img = 'disable';
+				$img = 'disabled';
 				$label = _("Stop obsessing over this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('STOP_OBSESSING_OVER_HOST') : nagioscmd::command_id('STOP_OBSESSING_OVER_SVC');
 			} else {
-				$img = 'enable';
+				$img = 'enabled';
 				$label = _('Start obsessing over this host');
 				$type == 'host' ? nagioscmd::command_id('START_OBSESSING_OVER_HOST') : nagioscmd::command_id('START_OBSESSING_OVER_SVC');
 			} ?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -99,7 +99,7 @@
 			} ?>
 		<tr>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -115,7 +115,7 @@
 				$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_NOTIFICATIONS') : nagioscmd::command_id('ENABLE_SVC_NOTIFICATIONS');
 			} ?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -125,18 +125,17 @@
 			$cmd = $type == 'host' ? nagioscmd::command_id('SEND_CUSTOM_HOST_NOTIFICATION') : nagioscmd::command_id('SEND_CUSTOM_SVC_NOTIFICATION');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/notify-send.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-notify-send" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
 		<?php if ($result->state && $result->notifications_enabled) {
 			$label = _("Delay next $type notification");
-			$img = 'notify-delay';
 			$cmd = $type == 'host' ? nagioscmd::command_id('DELAY_HOST_NOTIFICATION') : nagioscmd::command_id('DELAY_SVC_NOTIFICATION');
 		?>
 		<tr>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/notify-delay.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-notify-delay" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -147,7 +146,7 @@
 			$cmd = $type == 'host' ?  nagioscmd::command_id('SCHEDULE_HOST_DOWNTIME') : nagioscmd::command_id('SCHEDULE_SVC_DOWNTIME');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/scheduled-downtime.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-scheduled-downtime" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -158,7 +157,7 @@
 			$cmd = nagioscmd::command_id('DISABLE_HOST_SVC_NOTIFICATIONS');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/notify-disabled.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-notify-disabled" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -168,7 +167,7 @@
 			$cmd = nagioscmd::command_id('ENABLE_HOST_SVC_NOTIFICATIONS');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-notify" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -178,7 +177,7 @@
 			$cmd = nagioscmd::command_id('SCHEDULE_HOST_SVC_CHECKS');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/schedule.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-schedule" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -188,7 +187,7 @@
 			$cmd = nagioscmd::command_id('DISABLE_HOST_SVC_CHECKS');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/disabled.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-disabled" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -198,7 +197,7 @@
 			$cmd = nagioscmd::command_id('ENABLE_HOST_SVC_CHECKS');
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-enabled" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
@@ -206,34 +205,34 @@
 		<tr>
 			<?php
 			if ($result->event_handler_enabled) {
-				$img = 'disable';
+				$img = 'disabled';
 				$label = _("Disable event handler for this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_EVENT_HANDLER') : nagioscmd::command_id('DISABLE_SVC_EVENT_HANDLER');
 			} else {
-				$img = 'enable';
+				$img = 'enabled';
 				$label = _("Enable event handler for this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_EVENT_HANDLER') : nagioscmd::command_id('ENABLE_SVC_EVENT_HANDLER');
 			}
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
 		<tr>
 			<?php
 			if ($result->flap_detection_enabled) {
-				$img = 'disable';
+				$img = 'disabled';
 				$label = _("Disable flap detection for this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_FLAP_DETECTION') : nagioscmd::command_id('DISABLE_SVC_FLAP_DETECTION');
 			} else {
-				$img = 'enable';
+				$img = 'enabled';
 				$label = _("Enable flap detection for this $type");
 				$cmd = $type == 'host' ? nagioscmd::command_id('ENABLE_HOST_FLAP_DETECTION') : nagioscmd::command_id('ENABLE_SVC_FLAP_DETECTION');
 			}
 			?>
 			<td class="icon dark">
-				<?php echo html::image($this->add_path('icons/16x16/'.$img.'.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>

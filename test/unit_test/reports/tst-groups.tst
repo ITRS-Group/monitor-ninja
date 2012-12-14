@@ -17,6 +17,22 @@ Group availability including soft states {
 		TIME_DOWN_UNSCHEDULED = 3600
 	}
 }
+Group availability including soft states (hostgroups) {
+	start_time = 1202684400
+	end_time = 1202770800
+	hostgroup {
+		group1 {
+			testhost
+		}
+		group2 {
+			testhost2
+		}
+	}
+	correct {
+		TIME_UP_UNSCHEDULED = 82800
+		TIME_DOWN_UNSCHEDULED = 3600
+	}
+}
 
 Group availability including soft states, reversed host order {
 	start_time = 1202684400

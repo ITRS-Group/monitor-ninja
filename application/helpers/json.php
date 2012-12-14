@@ -35,11 +35,7 @@ class json_Core
 		if (empty($var)) {
 			return false;
 		}
-		if (function_exists('json_decode')) {
-			return json_decode($var);
-		}
-		$json = zend::instance('json');
-		return $json->decode($var);
+		return json_decode($var);
 	}
 
 	/**
@@ -53,12 +49,7 @@ class json_Core
 		if (empty($var) && !is_array($var)) {
 			return false;
 		}
-		if (function_exists('json_encode')) {
-			return json_encode($var);
-		}
-
-		$json = zend::instance('json');
-		return $json->encode($var);
+		return json_encode($var);
 	}
 
 	/**
