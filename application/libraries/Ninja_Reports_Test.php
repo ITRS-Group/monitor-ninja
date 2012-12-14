@@ -123,6 +123,13 @@ class Ninja_Reports_Test_Core extends Reports_Model
 				if ($k === 'host_name' || $k === 'service_description')
 					$this->sub_reports = count($v);
 			}
+			if ($k === 'hostgroup' || $k === 'servicegroup') {
+				foreach ($v as $groupname => $members) {
+					$opts->members = array_merge($opts->members, $members);
+				}
+				$v = array_keys($v);
+				$this->sub_reports = count($opts->members);
+			}
 			if (!$opts->set($k, $v))
 				echo "Failed to set option '$k' to '$v'\n";
 		}
