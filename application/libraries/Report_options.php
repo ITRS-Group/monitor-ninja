@@ -502,8 +502,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 */
 	public function set($name, $value)
 	{
-		if (isset(static::$rename_options[$name]))
+		if (isset(static::$rename_options[$name])) {
 			$name = static::$rename_options[$name];
+		}
 
 		if (!$this->validate_value($name, $value)) {
 			return false;
@@ -513,54 +514,55 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 	protected function validate_value($key, &$value)
 	{
-		if (!isset($this->properties[$key]))
+		if (!isset($this->properties[$key])) {
 			return false;
+		}
 		switch ($this->properties[$key]['type']) {
-		 case 'bool':
-			if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
+			case 'bool':
+			       if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
 				$value = true;
-			else
+			       else
 				$value = false;
-			if (!is_bool($value))
+			       if (!is_bool($value))
 				return false;
-			break;
-		 case 'int':
-			if (!is_numeric($value) || $value != intval($value))
+			       break;
+			case 'int':
+			       if (!is_numeric($value) || $value != intval($value))
 				return false;
-			$value = intval($value);
-			break;
-		 case 'string':
-			if (!is_string($value))
+			       $value = intval($value);
+			       break;
+			case 'string':
+			       if (!is_string($value))
 				return false;
-			break;
-		 case 'objsel':
-			if ($value == self::ALL_AUTHORIZED)
+			       break;
+			case 'objsel':
+			       if ($value == self::ALL_AUTHORIZED)
 				return true;
-		 case 'array':
-			if (!is_array($value))
+			case 'array':
+			       if (!is_array($value))
 				return false;
-			break;
-		 case 'timestamp':
-			if (!is_numeric($value)) {
+			       break;
+			case 'timestamp':
+			       if (!is_numeric($value)) {
 				if (strstr($value, '-') === false)
 					return false;
 				$value = strtotime($value);
 				if ($value === false)
 					return false;
-			}
-			break;
-		 case 'object':
-			if (!is_object($value)) {
+			       }
+			       break;
+			case 'object':
+			       if (!is_object($value)) {
 				return false;
-			}
-			break;
-		 case 'enum':
-			if (!isset($this->properties[$key]['options'][$value]))
+			       }
+			       break;
+			case 'enum':
+			       if (!isset($this->properties[$key]['options'][$value]))
 				return false;
-			break;
-		 default:
-			# this is an exception and should never ever happen
-			return false;
+			       break;
+			default:
+			       # this is an exception and should never ever happen
+			       return false;
 		}
 		return true;
 	}
