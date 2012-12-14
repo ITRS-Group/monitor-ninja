@@ -39,14 +39,20 @@ class HttpApiEvent_options_core extends Report_options {
                                 'critical' => 4,
                                 'unknown' => 8
                         )
-                )
+		)
         );
 
+	/**
+	 * Specify properties to expose, adjusted for the HTTP API
+	 *
+	 * @param $options array = false
+	 */
 	function __construct($options = false)
 	{
-		parent::__construct($options);
+		parent::__construct(false); // allright, this is a bit hackish, but parent's constructor tries to set options
+		// but we're not actually ready for that yet (see below? we modify the properties which are used by set_options
 
-		// whitelist properties to use
+		// whitelist properties to use, reuse the previous definitions
 		$this->properties = array_intersect_key(
 			$this->properties,
 			array_flip(array(
@@ -63,14 +69,25 @@ class HttpApiEvent_options_core extends Report_options {
 				'start_time',
 				'end_time',
 				'host_filter_status',
-				'service_filter_status'
+				'service_filter_status',
+				'include_comments'
 			))
 		);
+		$this->properties['include_comments'] = array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => "Include events' comments"
+		);
+
+		if($options) {
+			// finally make the call which *can not* be set in parent::__construct() until all properties and
+			// other boilerplate is set up
+			$this->set_options($options);
+		}
 	}
 
         /**
-         * Overload properties to enable input such as spelled out keys ("service")
-         * instead of magic ints/bitmapped values ('3')
+	 * Listen for "http api" options/properties, instead of "report" options
          *
          * @param $type string
          * @param $report_info array = false
@@ -100,7 +117,7 @@ class HttpApiEvent_options_core extends Report_options {
 			$options['service_description'] = (array) $options['service_description'];
 		}
 
-                // translate "all" to valid int, for example
+                // translate "all" to valid int-bitmap, for example
                 foreach($options as $key => $value) {
                         if(isset(self::$http_api_options[$key]) &&
                                 isset(self::$http_api_options[$key]['options']) &&
@@ -145,16 +162,25 @@ class HttpApiEvent_options_core extends Report_options {
 	 */
 	function to_output($row)
 	{
-		// transform value
+		// transform values
 		$type = $row['service_description'] ? 'service' : 'host';
 		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
 		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
 
-		// rename property
+		// rename properties
 		$row['in_scheduled_downtime'] = $row['downtime_depth'];
-
-		// remove property (should not be exposed)
 		unset($row['downtime_depth']);
+		if(isset($row['username'])) {
+			// comments are included and we've got one of them!
+			// let's produce some hierarchy
+			$row['comment'] = array(
+				'username' => $row['username'],
+				'comment' => $row['user_comment'],
+				'timestamp' => $row['comment_timestamp'],
+			);
+		}
+		unset($row['username'], $row['user_comment'], $row['comment_timestamp']);
+
 		return $row;
 	}
 }

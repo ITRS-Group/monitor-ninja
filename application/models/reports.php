@@ -243,7 +243,7 @@ class Reports_Model extends Model
 			$offset = 0;
 		}
 
-                $query = $this->build_alert_summary_query("timestamp,
+                $query = $this->build_alert_summary_query('timestamp,
 			event_type,
 			host_name,
 			service_description,
@@ -251,9 +251,34 @@ class Reports_Model extends Model
 			hard,
 			retry,
 			downtime_depth,
-			output", true).
-			" LIMIT $limit OFFSET $offset";
+			output', true);
                 $count = $this->db->query($this->build_alert_summary_query('COUNT(*)', true))->result();
+
+		if($this->options['include_comments']) {
+			$query = "
+			SELECT
+				data.timestamp,
+				data.event_type,
+				data.host_name,
+				data.service_description,
+				data.state,
+				data.hard,
+				data.retry,
+				data.downtime_depth,
+				data.output,
+				comments.username,
+				comments.user_comment,
+				comments.comment_timestamp
+			FROM ($query) data
+			LEFT JOIN
+				ninja_report_comments comments
+				ON data.timestamp = comments.timestamp
+				AND data.host_name = comments.host_name
+				AND data.service_description = comments.service_description
+				AND data.event_type = comments.event_type";
+		}
+		$query .= " LIMIT $limit OFFSET $offset";
+
 		return array(
 			'events' => $this->db->query($query)->result(false),
 			'count' => current($count[0]),
@@ -2012,7 +2037,18 @@ class Reports_Model extends Model
 				$query .= ' OFFSET ' . ($this->options['summary_items'] * ($this->options['page'] - 1));
 		}
 
-		$query = 'SELECT data.*, comments.username, comments.user_comment FROM ('.$query.') data LEFT JOIN ninja_report_comments comments ON data.timestamp = comments.timestamp AND data.host_name = comments.host_name AND data.service_description = comments.service_description AND data.event_type = comments.event_type';
+		$query = '
+			SELECT
+				data.*,
+				comments.username,
+				comments.user_comment
+			FROM ('.$query.') data
+			LEFT JOIN
+				ninja_report_comments comments
+				ON data.timestamp = comments.timestamp
+				AND data.host_name = comments.host_name
+				AND data.service_description = comments.service_description
+				AND data.event_type = comments.event_type';
 
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
