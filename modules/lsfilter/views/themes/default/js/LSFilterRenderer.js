@@ -820,6 +820,27 @@ var listview_renderer_table = {
 				return $('<td />');
 			}
 		}
+	},
+	/***************************************************************************
+	 * Render contacts
+	 **************************************************************************/
+	"contacts" : {
+		"name" : {
+			"header" : 'Name',
+			"depends" : [ 'name' ],
+			"sort" : [ 'name' ],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.name);
+			}
+		},
+		"alias" : {
+			"header" : 'Alias',
+			"depends" : [ 'alias' ],
+			"sort" : [ 'alias' ],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.alias);
+			}
+		}
 	}
 };
 
