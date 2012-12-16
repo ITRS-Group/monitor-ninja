@@ -500,7 +500,7 @@ var listview_renderer_table = {
 			"depends" : [ 'acknowledged', 'comments', 'notifications_enabled',
 					'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
-					'action_url', 'notes_url' ],
+					'action_url', 'notes_url', 'host.name', 'description' ],
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td />');
@@ -534,8 +534,8 @@ var listview_renderer_table = {
 				if (obj.pnpgraph_present)
 					cell.append(icon16('pnp', 'Show performance graph', link(
 							'pnp', {
-								"srv" : "_HOST_",
-								"host" : obj.name
+								"srv" : obj.description,
+								"host" : obj.host.name
 							})));
 
 				if (obj.action_url)
