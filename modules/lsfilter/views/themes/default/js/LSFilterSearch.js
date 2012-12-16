@@ -6,6 +6,10 @@ var listview_sort_vis_column = null;
 var listview_sort_db_columns = [];
 var listview_sort_ascending = true;
 
+var listview_autorefresh_enabled = true;
+var listview_autorefresh_timeout = 30000;
+var listview_autorefresh_timer = false;
+
 function listview_update_sort(vis_column, db_columns) {
 	if (listview_sort_vis_column != vis_column) {
 		listview_sort_ascending = true;
@@ -148,11 +152,18 @@ var LSFilterMetadataVisitor = function LSFilterMetadataVisitor(){
 	
 };
 
-
+var listview_autorefresh_handler = function listview_autorefresh_handler() {
+	listview_autorefresh_timer = false;
+	listview_refresh();
+}
 
 
 
 function listview_do_request() {
+	if( listview_autorefresh_timer ) {
+		clearTimeout( listview_autorefresh_timer );
+	}
+	
 	console.log("Query: " + listview_ajax_query);
 
 	var parser = new LSFilter(new LSFilterPreprocessor(), new LSFilterMetadataVisitor());
@@ -193,6 +204,7 @@ function listview_do_request() {
 				$('#filter_result').empty().text("Error: " + data.data);
 				$('#filter_result_totals').empty();
 			}
+			listview_autorefresh_timer = setTimeout( listview_autorefresh_handler, listview_autorefresh_timeout);
 		}
 	});
 	
