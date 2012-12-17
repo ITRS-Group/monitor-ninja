@@ -119,8 +119,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
 		if($this->options['assumestatesduringnotrunning'])
 			$this->inline_js .= "toggle_label_weight(true, 'assume_progdown');\n";
-		if($this->options['csv_output'])
-			$this->inline_js .= "toggle_label_weight(true, 'csvout');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		$label_avail = _('Availability');
