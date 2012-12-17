@@ -21,7 +21,7 @@ class Status_Controller extends Authenticated_Controller {
 	{
 		$host = $this->input->get('host', $host);
 		if( $host == 'all' ) {
-			$query = '[hosts] state != 999';
+			$query = '[hosts] all';
 		} else {
 			$query = '[services] host.name = "'.addslashes($host).'"';
 		}
@@ -36,7 +36,7 @@ class Status_Controller extends Authenticated_Controller {
 	{
 		$host = $this->input->get('host', $host);
 		if( $host == 'all' ) {
-			$query = '[services] description != ""';
+			$query = '[services] all';
 		} else {
 			$query = '[services] host.name = "'.addslashes($host).'"';
 		}
@@ -86,7 +86,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function servicegroup_summary()
 	{
-		return $this->_redirect_to_query('[servicegroups] name != ""');
+		return $this->_redirect_to_query('[servicegroups] all');
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function hostgroup_summary()
 	{
-		return $this->_redirect_to_query('[hostgroups] name != ""');
+		return $this->_redirect_to_query('[hostgroups] all');
 	}
 	
 	private function _redirect_to_query( $query ) {

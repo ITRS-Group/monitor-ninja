@@ -172,62 +172,76 @@ var listview_renderer_totals = {
  * Table renderer
  ******************************************************************************/
 
-function render_summary_state (state, stats, type, group) {
+function render_summary_state ( ul, state, stats, substates ) {
 
 	/*
 		@FIXME - INTERNET EXPLODER SUCKS - No support for either Object.keys or Array.prototype.filter pre IE 9
 	*/
 
 	var li = $('<li />').append(
-			$('<a />').attr('href', "?q=query_placeholder")
-				.append(icon16('shield-' + state) ).append( $('<span />').html(stats[state]) )
-		),
-		
-		subchecks = Object.keys(stats).filter(function (e, i, a) {
-			return (e.indexOf(state + '_') >= 0);
-		});
+			$('<a />').attr('href', "?q="+escape(stats.queries[state]))
+				.append(icon16('shield-' + state) ).append( $('<span />').text(stats.stats[state] + " " + state) )
+		);
 
-	if (subchecks.length > 0) {
+	var delim = ' ( ';
+	var suffix = '';
+	
+	for (var tag in substates) {
+		var key = state + tag;
+		var type = substates[tag];
 
-		li.append( $('<span />').html(' ( '));
-
-		for (var check in subchecks) {
-			var key = subchecks[check];
-			if (stats[key]) {
-				li.append(
-					$('<a />').attr('href', '?q=query_placeholder').append(
-						$('<span style="text-transform: capitalize;" />').text(stats[key] + ' ' + (key.split('_and_')[1]).replace(/_/g, ' '))
-					)
-				)
-			}
+		if (stats.stats[key]) {
+			li.append(delim);
+			li.append(
+				$('<a />').attr('href', '?q='+escape(stats.queries[key])).text(stats.stats[key] + ' ' + type)
+			);
+			delim = ', ';
+			suffix = ' ) ';
 		}
-
-		li.append( $('<span />').html(' ) '));
-
 	}
+	
+	li.append(suffix);
 
-	return li;
+	ul.append( li );
 }
 
-function render_service_status_summary (stats, group) {
+function render_service_status_summary (stats) {
 	var ul = $('<ul class="listview-summary" />');
 
-	ul.append( render_summary_state('ok', stats, 'services', group) );
-	ul.append( render_summary_state('warning', stats, 'services', group) );
-	ul.append( render_summary_state('critical', stats, 'services', group) );
-	ul.append( render_summary_state('unknown', stats, 'services', group) );
-	ul.append( render_summary_state('pending', stats, 'services', group) );
+	render_summary_state(ul, 'ok', stats, {});
+	render_summary_state(ul, 'warning', stats, {
+		'_and_ack': 'acknowledged',
+		'_and_disabled_active': 'disabled active',
+		'_and_scheduled': 'scheduled',
+		'_and_unhandled': 'unhandled',
+		'_on_down_host': 'on down host'
+			});
+	render_summary_state(ul, 'critical', stats, {
+		'_and_ack': 'acknowledged',
+		'_and_disabled_active': 'disabled active',
+		'_and_scheduled': 'scheduled',
+		'_and_unhandled': 'unhandled',
+		'_on_down_host': 'on down host'
+			});
+	render_summary_state(ul, 'unknown', stats, {
+		'_and_ack': 'acknowledged',
+		'_and_disabled_active': 'disabled active',
+		'_and_scheduled': 'scheduled',
+		'_and_unhandled': 'unhandled',
+		'_on_down_host': 'on down host'
+			});
+	render_summary_state(ul, 'pending', stats, {});
 
 	return ul;
 }
 
-function render_host_status_summary (stats, group) {
+function render_host_status_summary (stats) {
 	var ul = $('<ul class="listview-summary" />');
 
-	ul.append( render_summary_state('up', stats, 'hosts', group) );
-	ul.append( render_summary_state('down', stats, 'hosts', group) );
-	ul.append( render_summary_state('unreachable', stats, 'hosts', group) );
-	ul.append( render_summary_state('pending', stats, 'hosts', group) );
+	render_summary_state(ul, 'up', stats, {});
+	render_summary_state(ul, 'down', stats, {});
+	render_summary_state(ul, 'unreachable', stats, {});
+	render_summary_state(ul, 'pending', stats, {});
 	
 
 	return ul;
@@ -634,7 +648,7 @@ var listview_renderer_table = {
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td / >');
-				cell.append(render_host_status_summary(obj.host_stats, obj.name));
+				cell.append(render_host_status_summary(obj.host_stats));
 				return cell;
 			}
 		},
@@ -644,7 +658,7 @@ var listview_renderer_table = {
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td / >');
-				cell.append(render_service_status_summary(obj.service_stats, obj.name));
+				cell.append(render_service_status_summary(obj.service_stats));
 				return cell;
 			}
 		}
@@ -679,7 +693,7 @@ var listview_renderer_table = {
 			"sort" : false,
 			"cell" : function(obj) {
 				var cell = $('<td / >');
-				cell.append(render_service_status_summary(obj.service_stats, obj.name));
+				cell.append(render_service_status_summary(obj.service_stats));
 				return cell;
 			}
 		}

@@ -39,10 +39,25 @@ class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
 	}
 	
 	public function visit_match( LivestatusFilterMatch $filt, $prio ) {
+		$op    = $filt->get_op();
+		$field = $filt->get_field();
 		$value = $filt->get_value();
-		if( !is_numeric($value) ) $value = '"'.addslashes($value).'"';
 		
-		return $filt->get_field().$filt->get_op().$value;
+		if( !is_numeric($value) ) {
+			$value = '"'.addslashes($value).'"';
+			
+			if( $op == '>=' ) {
+				/* Special case for groups */
+				$field_parts = explode('.', $field);
+				if( end($field_parts) == 'groups' ) {
+					$op = ' in ';
+					array_pop($field_parts);
+					$field = implode('.', $field_parts);
+				}
+			}
+		}
+		
+		return $field.$op.$value;
 	}
 
 	
