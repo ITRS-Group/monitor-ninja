@@ -274,6 +274,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		return result;
 	};
 	
+	this.visit_match_all       = function()              { return this.match('all',      "this", ""); }
 	this.visit_match_in        = function(set_descr1)    { return this.match('in',       "this", set_descr1); };
 	this.visit_match_field_in  = function(field0, expr2) { return this.match('field_in', field0,expr2); };
 	this.visit_match_not_re_ci = function(field0, expr2) { return this.match('not_re_ci',field0,expr2); };

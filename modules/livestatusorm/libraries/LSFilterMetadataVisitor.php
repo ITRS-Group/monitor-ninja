@@ -69,6 +69,11 @@ class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
 		return null;
 	}
 
+	// match_all: match := * all
+	public function visit_match_all() {
+		return null;
+	}
+	
 	// match_field_in: match := * name in string
 	public function visit_match_field_in($name0, $set_descr2) {
 		return null;

@@ -68,6 +68,11 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 		return $match0;
 	}
 
+	// match_all: match := * all
+	public function visit_match_all() {
+		return $this->pool->all();
+	}
+	
 	// match_in: match := * in string
 	public function visit_match_in($set_descr1) {
 		return $this->pool->get_by_name($set_descr1);

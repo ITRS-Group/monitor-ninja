@@ -78,6 +78,10 @@ var LSFilterMetadataVisitor = function LSFilterMetadataVisitor(){
 	this.visit_filter_ok = function(match0) {
 	};
 	
+	// match_all: match := * all
+	this.visit_match_all = function() {
+	};
+	
 	// match_in: match := * in set_descr
 	this.visit_match_in = function(set_descr1) {
 	};

@@ -4,6 +4,8 @@ tokens:
   
   string:      /^("(?:[^"\\]|\\.)*")/
   
+  all:         /^(all)(?:[^a-z0-9_].*|)$/i
+  
   and:         /^(and)(?:[^a-z0-9_].*|)$/i
   not:         /^(not)(?:[^a-z0-9_].*|)$/i
   or:          /^(or)(?:[^a-z0-9_].*|)$/i
@@ -59,6 +61,8 @@ rules:
   
   filter_ok:          [ filter4,        match ]
   _filter_parentesis: [ filter4,        _par_l, filter, _par_r ]
+  
+  match_all:          [ match,          _all ]
   
   match_in:           [ match,          _in, set_descr ]
   match_field_in:     [ match,          field, _in, set_descr ]
