@@ -26,6 +26,10 @@ class ServiceSet_Model extends BaseServiceSet_Model {
 			$columns = array_diff( $columns, array('checks_disabled') );
 			if(!in_array('active_checks_enabled',$columns)) $columns[] = 'active_checks_enabled';
 		}
+		if( in_array( 'duration', $columns ) ) {
+			$columns = array_diff( $columns, array('duration') );
+			if(!in_array('last_state_change',$columns)) $columns[] = 'last_state_change';
+		}
 
 		return parent::validate_columns($columns);
 	}

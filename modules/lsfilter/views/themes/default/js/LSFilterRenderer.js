@@ -334,6 +334,14 @@ var listview_renderer_table = {
 				return $('<td />').text(last_check.toLocaleTimeString());
 			}
 		},
+		"duration" : {
+			"header" : 'Duration',
+			"depends" : ['duration'],
+			"sort" : ['last_state_change'],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.duration);
+			}
+		},
 		"status_info" : {
 			"header" : 'Status Information',
 			"depends" : [ 'plugin_output' ],
@@ -557,6 +565,14 @@ var listview_renderer_table = {
 			"cell" : function(obj) {
 				var last_check = new Date(obj.last_check * 1000);
 				return $('<td />').text(last_check.toLocaleTimeString());
+			}
+		},
+		"duration" : {
+			"header" : 'Duration',
+			"depends" : ['duration'],
+			"sort" : ['last_state_change'],
+			"cell" : function(obj) {
+				return $('<td />').text(obj.duration);
 			}
 		},
 		"attempt" : {
