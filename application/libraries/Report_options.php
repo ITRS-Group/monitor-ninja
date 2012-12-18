@@ -433,13 +433,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				return false;
 			break;
 		 # fallthrough end
-		 case 'host_filter_status':
-		 case 'service_filter_status':
-			if ($value === null)
-				$value = array();
-			else if (!is_array($value))
-				$value = i18n::unserialize($value);
-			break;
 		 case 'include_trends':
 			if ($value === true) {
 				$this->set('keep_logs', true);

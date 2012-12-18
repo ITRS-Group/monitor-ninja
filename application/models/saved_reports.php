@@ -359,6 +359,11 @@ class Saved_reports_Model extends Model
 			return $ret;
 		}
 
+		if ($type !== 'summary') {
+			$return['host_filter_status'] = i18n::unserialize($return['host_filter_status']);
+			$return['service_filter_status'] = i18n::unserialize($return['service_filter_status']);
+		}
+
 		if ($type == 'sla') {
 			$period_info = self::get_period_info($id);
 			if ($period_info !== false) {
