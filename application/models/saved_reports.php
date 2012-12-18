@@ -17,9 +17,7 @@ class Saved_reports_Model extends Model
 	 */
 	public static function get_saved_reports($type='avail')
 	{
-		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 		$db = Database::instance();
 		$auth = Nagios_auth_Model::instance();
 
@@ -49,13 +47,8 @@ class Saved_reports_Model extends Model
 	public static function edit_report_info($type, $id, Report_options $options)
 	{
 		$update = false;
-		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
-
-		if (empty($options)) {
-			return false;
-		}
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
+		assert(!empty($options));
 
 		$db = Database::instance();
 
@@ -149,11 +142,15 @@ class Saved_reports_Model extends Model
 
 		// insert/update <type>_config_objects
 		if ($type!= 'summary' && !self::save_config_objects($type, $id, $objects)) {
+			if (!IN_PRODUCTION)
+				print "Couldn't save objects";
 			return false;
 		}
 
 		// Insert/Update sla_periods
 		if($type == 'sla' && !self::save_period_info($id, $months)) {
+			if (!IN_PRODUCTION)
+				print "Couldn't save period info";
 			return false;
 		}
 
@@ -169,6 +166,7 @@ class Saved_reports_Model extends Model
 	 */
 	private function get_report_id($type='avail', $name=false)
 	{
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 		$name = trim($name);
 		if (empty($name)) {
 			return false;
@@ -226,9 +224,7 @@ class Saved_reports_Model extends Model
 	 */
 	public static function save_config_objects($type = 'avail', $id=false, $objects=false)
 	{
-		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 
 		if (empty($objects) || empty($id)) return false;
 
@@ -269,9 +265,7 @@ class Saved_reports_Model extends Model
 	 */
 	public function delete_report($type='avail', $id)
 	{
-		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 
 		if (empty($id)) return false;
 		$err = false;
@@ -309,9 +303,7 @@ class Saved_reports_Model extends Model
 	 */
 	public static function get_all_report_names($type='avail')
 	{
-		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 
 		$db = Database::instance();
 
@@ -334,21 +326,18 @@ class Saved_reports_Model extends Model
 	 *
 	 * @param $type string: Report type { avail, sla }
 	 * @param $id int Id of the report.
-	 * @return false on error. Report info as array on success.
+	 * @return Report info as array on success, empty array when no info was found.
 	 */
 	public static function get_report_info($type='avail', $id)
 	{
-		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
-
-		if (empty($id)) return false;
+		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
+		assert(!empty($id));
 
 		$sql = "SELECT * FROM ".$type."_config WHERE id=".(int)$id;
 		$db = Database::instance();
 		$res = $db->query($sql);
 		if (!$res || count($res)==0)
-			return false;
+			return array();
 
 		$res->result(false);
 		$return = $res->current();
@@ -492,8 +481,8 @@ class Saved_reports_Model extends Model
 	 */
 	public static function get_config_objects($type='avail', $id=false)
 	{
-		$type = strtolower($type);
-		if (($type != 'avail' && $type != 'sla') || empty($id))
+		assert($type == 'avail' || $type == 'sla');
+		if (empty($id))
 			return false;
 
 		$sql = "SELECT * FROM ".$type."_config_objects WHERE ".$type."_id=".(int)$id;

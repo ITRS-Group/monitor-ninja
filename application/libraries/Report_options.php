@@ -346,6 +346,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @param $name Option name
 	 * @param $value Option value
+	 * @return false on error, else true
 	 */
 	public function set($name, $value)
 	{

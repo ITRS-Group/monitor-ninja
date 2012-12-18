@@ -83,9 +83,6 @@ class Cli_Controller extends Ninja_Controller {
 			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if(!$report_data) {
-					continue;
-				}
 				if(!is_array(arr::search($report_data, 'objects'))) {
 					continue;
 				}
