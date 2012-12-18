@@ -2,6 +2,9 @@ var listview_ajax_timer = null;
 var listview_ajax_query = "";
 var listview_ajax_active_request = null;
 
+var listview_length = 0;
+var listview_length_step = 100;
+
 var listview_current_table = "";
 
 var listview_sort_vis_column = null;
@@ -166,6 +169,19 @@ var listview_autorefresh_handler = function listview_autorefresh_handler() {
 	listview_refresh();
 }
 
+function listview_set_length( count ) {
+	listview_length = count;
+	listview_refresh();
+}
+
+var listview_increase_length = function listview_increase_length() {
+	listview_set_length( listview_length + listview_length_step );
+}
+
+var listview_reset_length = function listview_reset_length() {
+	listview_set_length( listview_length_step );
+}
+
 
 
 function listview_do_request() {
@@ -185,7 +201,7 @@ function listview_do_request() {
 		listview_ajax_active_request.abort();
 	}
 
-	var loader = $('<span class="lsfilter-loader" />').append($('<span>Loading...</span>'));
+	var loader = $('<span class="lsfilter-loader" />').append($('<span>'+_('Loading...')+'</span>'));
 
 	console.log("Query: " + listview_ajax_query);
 	
@@ -200,7 +216,7 @@ function listview_do_request() {
 			"sort" : listview_sort_db_columns,
 			"sort_asc" : (listview_sort_ascending?1:0),
 			"columns" : listview_columns_for_table(metadata['table']),
-			"limit" : 100,
+			"limit" : listview_length,
 			"offset" : 0
 		},
 		success : function(data) {
@@ -209,7 +225,7 @@ function listview_do_request() {
 				listview_current_table = data.table;
 				listview_render_totals(data.totals);
 				
-				listview_render_table(data.data);
+				listview_render_table(data.data, data.count);
 				multi_select_refresh();
 			}
 			if (data.status == 'error') {
@@ -236,6 +252,7 @@ function listview_update(query) {
 	listview_sort_vis_column = null;
 	listview_sort_db_columns = [];
 	listview_sort_ascending = true;
+	listview_reset_length();
 	listview_ajax_timer = setTimeout(function() {
 		listview_refresh();
 	}, 500);

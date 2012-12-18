@@ -299,7 +299,11 @@ th span.header-icon {
 	vertical-align: middle;
 }
 
-
+.table_pagination td {
+	font-size: 12pt;
+	padding: 0.1em;
+	text-align: center;
+}
 
 
 

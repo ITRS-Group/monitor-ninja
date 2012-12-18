@@ -953,7 +953,7 @@ function listview_table_col_name(c) {
 	return 'listview-col-' + name;
 }
 
-function listview_render_table(data) {
+function listview_render_table(data, total_count) {
 	var tbody = false;
 	var last_table = '';
 	var container = '';
@@ -1021,6 +1021,17 @@ function listview_render_table(data) {
 		}
 	}
 
+	if( data.length < total_count)
+		tbody.append(
+				$('<tr class="table_pagination"/>')
+					.append(
+							$('<td />')
+							.attr('colspan', columns.length)
+							.append(_('Load more rows'))
+							.click(listview_increase_length)
+						)
+					);
+	
 	$('#filter_result').empty().append(output);
 	
 
