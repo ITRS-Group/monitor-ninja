@@ -199,13 +199,11 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
-		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
-
-		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
-
-		# get all saved reports for user
-		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
+		if ($this->type == 'summary') {
+			$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
+			$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+			$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
+		}
 
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
