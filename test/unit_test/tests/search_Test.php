@@ -24,7 +24,9 @@ class Search_Test extends TapUnit {
 	public function test_host() {
 		$this->run_test('h:kaka', array(
 				'hosts' =>
-					"Filter: name ~~ kaka\n"
+					"Filter: name ~~ kaka\n".
+					"Filter: address ~~ kaka\n".
+					"Or: 2\n"
 		) );
 	}
 	public function test_service() {
@@ -58,7 +60,9 @@ class Search_Test extends TapUnit {
 	public function test_wildcard() {
 		$this->run_test('h:aaa%bbb', array(
 				'hosts' =>
-					"Filter: name ~~ aaa.*bbb\n"
+					"Filter: name ~~ aaa.*bbb\n".
+					"Filter: address ~~ aaa.*bbb\n".
+					"Or: 2\n"
 				) );
 	}
 	
@@ -72,7 +76,9 @@ class Search_Test extends TapUnit {
 					"Filter: description ~~ pong\n".
 					"Filter: display_name ~~ pong\n".
 					"Or: 2\n".
-					"Filter: host_name ~~ kaka\n",
+					"Filter: host_name ~~ kaka\n".
+					"Filter: host_address ~~ kaka\n".
+					"Or: 2\n"
 		) );
 	}
 	
@@ -82,7 +88,9 @@ class Search_Test extends TapUnit {
 	public function test_host_limit() {
 		$this->run_test('h:kaka limit=24', array(
 				'hosts' =>
-					"Filter: name ~~ kaka\n",
+					"Filter: name ~~ kaka\n".
+					"Filter: address ~~ kaka\n".
+					"Or: 2\n",
 				'limit' => 24
 		) );
 	}
