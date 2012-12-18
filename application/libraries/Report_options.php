@@ -603,36 +603,31 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	}
 
 	protected static function create_options_obj($type, $report_info = false) {
+
 		$options = new static($report_info);
 
-		$keep_boolean_values = false;
-		if (isset($options['report_id'])) {
-			if(
-				count($options) == 1 ||
-				(isset($options['output_format']) && $options['output_format'] == 'pdf' && count($options) == 2)
-			) {
-				Kohana::log('debug', 'This appears to be a saved report. Am I wrong?');
-				// this means we're not *basing* our options on a saved report,
-				// but rather *fetching a persisted, complete report*
-				$keep_boolean_values = true;
+		if (isset($report_info['report_id'])) {
+			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
+
+			if (count($report_info) == 1) {
+				$options = new static($saved_report_info);
 			}
-			$saved_report_info = Saved_reports_Model::get_report_info($type, $options['report_id']);
-			if ($saved_report_info) {
+			else if (isset($options['output_format']) && count($report_info) == 2) {
+				$saved_report_info['output_format'] = $options['output_format'];
+				$options = new static($saved_report_info);
+			}
+			else {
 				foreach ($saved_report_info as $key => $sri) {
-					if (
-						$options->always_allow_option_to_be_set($key) ||
-						(
-							isset($options->vtypes[$key]) &&
-							($options->vtypes[$key]['type'] !== 'bool' || $keep_boolean_values) &&
-							(!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])
-						)
-					) {
+					if ($options->always_allow_option_to_be_set($key) ||
+						($options->vtypes[$key]['type'] !== 'bool' && $options[$key] === $options->vtypes[$key]['default']))
+					{
 						$options[$key] = $sri;
 					}
 				}
-				if (isset($saved_report_info['objects']) && empty($options[$options->get_value('report_type')]))
-					$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 			}
+
+			if (isset($saved_report_info['objects']))
+				$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 		}
 		if (isset($options->vtypes['report_period']) && !isset($options->options['report_period']) && isset($options->vtypes['report_period']['default']))
 			$options->calculate_time($options['report_period']);
