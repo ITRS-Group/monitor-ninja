@@ -1,5 +1,6 @@
 function _(text) {
-	return "-- " + text + " --";
+	console.log('To translate: '+ text);
+	return text;
 }
 
 function icon12(name, title, link) {
@@ -86,87 +87,87 @@ function listview_add_sort(element, vis_column, db_columns, current) {
 var listview_renderer_totals = {
 	"count" : function(cnt) {
 		var container = $('<li class="extra_toolbar_category" />');
-		container.append("Count: &nbsp; ");
-		container.append(icon16('shield-info', "Matching"));
+		container.append(_("Count")+": &nbsp; ");
+		container.append(icon16('shield-info', _("Matching")));
 		container.append(cnt);
 		return container;
 	},
 
 	"host_all" : function(cnt) {
 		var container = $('<li class="extra_toolbar_category" />');
-		container.append("Hosts: &nbsp; ");
-		container.append(icon16('host', "Hosts total"));
+		container.append(_("Hosts")+": &nbsp; ");
+		container.append(icon16('host', _("Hosts total")));
 		container.append(cnt);
 		return container;
 	},
 	"host_state_up" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield') + '-up',
-				"Hosts up"));
+				_("Hosts up")));
 		container.append(cnt);
 		return container;
 	},
 	"host_state_down" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-down', "Hosts down"));
+				+ '-down', _("Hosts down")));
 		container.append(cnt);
 		return container;
 	},
 	"host_state_unreachable" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-unreachable', "Hosts unreachable"));
+				+ '-unreachable', _("Hosts unreachable")));
 		container.append(cnt);
 		return container;
 	},
 	"host_pending" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-pending', "Hosts pending"));
+				+ '-pending', _("Hosts pending")));
 		container.append(cnt);
 		return container;
 	},
 
 	"service_all" : function(cnt) {
 		var container = $('<li class="extra_toolbar_category" />');
-		container.append("Services: &nbsp; ");
-		container.append(icon16('shield-info', "Services total"));
+		container.append(_("Services")+": &nbsp; ");
+		container.append(icon16('shield-info', _("Services total")));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_ok" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield') + '-ok',
-				"Services ok"));
+				_("Services ok")));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_warning" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-warning', "Services warning"));
+				+ '-warning', _("Services warning")));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_critical" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-critical', "Services critical"));
+				+ '-critical', _("Services critical")));
 		container.append(cnt);
 		return container;
 	},
 	"service_state_unknown" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-unknown', "Services unknown"));
+				+ '-unknown', _("Services unknown")));
 		container.append(cnt);
 		return container;
 	},
 	"service_pending" : function(cnt) {
 		var container = $('<li />');
 		container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-				+ '-pending', "Services pending"));
+				+ '-pending', _("Services pending")));
 		container.append(cnt);
 		return container;
 	},
@@ -214,25 +215,25 @@ function render_service_status_summary (stats) {
 
 	render_summary_state(ul, 'ok', stats, {});
 	render_summary_state(ul, 'warning', stats, {
-		'_and_ack': 'acknowledged',
-		'_and_disabled_active': 'disabled active',
-		'_and_scheduled': 'scheduled',
-		'_and_unhandled': 'unhandled',
-		'_on_down_host': 'on down host'
+		'_and_ack': _('acknowledged'),
+		'_and_disabled_active': _('disabled active'),
+		'_and_scheduled': _('scheduled'),
+		'_and_unhandled': _('unhandled'),
+		'_on_down_host': _('on down host')
 			});
 	render_summary_state(ul, 'critical', stats, {
-		'_and_ack': 'acknowledged',
-		'_and_disabled_active': 'disabled active',
-		'_and_scheduled': 'scheduled',
-		'_and_unhandled': 'unhandled',
-		'_on_down_host': 'on down host'
+		'_and_ack': _('acknowledged'),
+		'_and_disabled_active': _('disabled active'),
+		'_and_scheduled': _('scheduled'),
+		'_and_unhandled': _('unhandled'),
+		'_on_down_host': _('on down host')
 			});
 	render_summary_state(ul, 'unknown', stats, {
-		'_and_ack': 'acknowledged',
-		'_and_disabled_active': 'disabled active',
-		'_and_scheduled': 'scheduled',
-		'_and_unhandled': 'unhandled',
-		'_on_down_host': 'on down host'
+		'_and_ack': _('acknowledged'),
+		'_and_disabled_active': _('disabled active'),
+		'_and_scheduled': _('scheduled'),
+		'_and_unhandled': _('unhandled'),
+		'_on_down_host': _('on down host')
 			});
 	render_summary_state(ul, 'pending', stats, {});
 
@@ -306,7 +307,7 @@ var listview_renderer_table = {
 			}
 		},
 		"name" : {
-			"header" : 'Name',
+			"header" : _('Name'),
 			"depends" : [ 'name', 'icon_image' ],
 			"sort" : [ 'name' ],
 			"cell" : function(obj, tr) {
@@ -320,7 +321,7 @@ var listview_renderer_table = {
 			}
 		},
 		"actions" : {
-			"header" : 'Actions',
+			"header" : _('Actions'),
 			"depends" : [ 'name', 'acknowledged', 'notifications_enabled',
 					'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
@@ -331,14 +332,14 @@ var listview_renderer_table = {
 
 				// FIXME: icon for service-details
 				cell.append(icon16('service-details',
-						'View service details for this host', link(
+						_('View service details for this host'), link(
 								_current_uri, {
 									'filter_query' : '[services] host.name = "'
 											+ obj.name + '"' // FIXME: escape
 								})));
 
 				if (obj.acknowledged)
-					cell.append(icon16('acknowledged', 'Acknowledged'));
+					cell.append(icon16('acknowledged', _('Acknowledged')));
 
 				if (!obj.notifications_enabled)
 					cell.append(icon16('notify-disabled',
@@ -346,19 +347,19 @@ var listview_renderer_table = {
 
 				if (obj.checks_disabled)
 					cell.append(icon16('active-checks-disabled',
-							'Checks Disabled'));
+							_('Checks Disabled')));
 
 				if (obj.is_flapping) // FIXME: Needs icon in compass
-					cell.append(icon16('flapping', 'Flapping'));
+					cell.append(icon16('flapping', _('Flapping')));
 
 				if (obj.scheduled_downtime_depth > 0)
 					cell.append(icon16('scheduled-downtime',
-							'Scheduled Downtime'));
+							_('Scheduled Downtime')));
 
 				// FIXME: Add nacoma link
 
 				if (obj.pnpgraph_present)
-					cell.append(icon16('pnp', 'Show performance graph', link(
+					cell.append(icon16('pnp', _('Show performance graph'), link(
 							'pnp', {
 								"srv" : "_HOST_",
 								"host" : obj.name
@@ -366,21 +367,21 @@ var listview_renderer_table = {
 
 				if (obj.action_url)
 					cell.append(icon16('host-actions',
-							'perform extra host actions', $('<a />').attr(
+							_('perform extra host actions'), $('<a />').attr(
 									'href', obj.action_url)));
 
 				if (obj.notes_url)
-					cell.append(icon16('host-notes', 'View extra host notes',
+					cell.append(icon16('host-notes', _('View extra host notes'),
 							$('<a />').attr('href', obj.notes_url)));
 
 				if (obj.comments > 0)
-					cell.append(icon16('add-comment', 'Comments'));
+					cell.append(icon16('add-comment', _('Comments')));
 
 				return cell;
 			}
 		},
 		"last_check" : {
-			"header" : 'Last Checked',
+			"header" : _('Last Checked'),
 			"depends" : [ 'last_check' ],
 			"sort" : [ 'last_check' ],
 			"cell" : function(obj, tr) {
@@ -389,7 +390,7 @@ var listview_renderer_table = {
 			}
 		},
 		"duration" : {
-			"header" : 'Duration',
+			"header" : _('Duration'),
 			"depends" : ['duration'],
 			"sort" : ['last_state_change'],
 			"cell" : function(obj, tr) {
@@ -397,7 +398,7 @@ var listview_renderer_table = {
 			}
 		},
 		"status_info" : {
-			"header" : 'Status Information',
+			"header" : _('Status Information'),
 			"depends" : [ 'plugin_output' ],
 			"sort" : [ 'plugin_output' ],
 			"cell" : function(obj, tr) {
@@ -489,7 +490,7 @@ var listview_renderer_table = {
 			}
 		},
 		"display_name" : {
-			"header" : 'Display name',
+			"header" : _('Display name'),
 			"depends" : [ 'display_name' ],
 			"sort" : [ 'display_name' ],
 			"cell" : function(obj, tr) {
@@ -524,7 +525,7 @@ var listview_renderer_table = {
 			}
 		},
 		"host_name" : {
-			"header" : 'Host Name',
+			"header" : _('Host Name'),
 			"depends" : [ 'host.name', 'host.icon_image' ],
 			"sort" : [ 'host.name' ],
 			"cell" : function(obj, tr) {
@@ -554,7 +555,7 @@ var listview_renderer_table = {
 			}
 		},
 		"description" : {
-			"header" : 'Service',
+			"header" : _('Service'),
 			"depends" : [ 'host.name', 'description' ],
 			"sort" : [ 'description' ],
 			"cell" : function(obj, tr) {
@@ -564,7 +565,7 @@ var listview_renderer_table = {
 			}
 		},
 		"actions" : {
-			"header" : "Actions",
+			"header" : _('Actions'),
 			"depends" : [ 'acknowledged', 'comments', 'notifications_enabled',
 					'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
@@ -574,25 +575,25 @@ var listview_renderer_table = {
 				var cell = $('<td />');
 
 				if (obj.acknowledged)
-					cell.append(icon16('acknowledged', 'Acknowledged'));
+					cell.append(icon16('acknowledged', _('Acknowledged')));
 
 				if (obj.comments > 0)
-					cell.append(icon16('add-comment', 'Comments'));
+					cell.append(icon16('add-comment', _('Comments')));
 
 				if (!obj.notifications_enabled)
 					cell.append(icon16('notify-disabled',
-							'Notification disabled'));
+							_('Notification disabled')));
 
 				if (obj.checks_disabled)
 					cell.append(icon16('active-checks-disabled',
-							'Checks Disabled'));
+							_('Checks Disabled')));
 
 				if (obj.is_flapping) // FIXME: Needs icon in compass
-					cell.append(icon16('flapping', 'Flapping'));
+					cell.append(icon16('flapping', _('Flapping')));
 
 				if (obj.scheduled_downtime_depth > 0)
 					cell.append(icon16('scheduled-downtime',
-							'Scheduled Downtime'));
+							_('Scheduled Downtime')));
 
 				/***************************************************************
 				 * 
@@ -600,7 +601,7 @@ var listview_renderer_table = {
 
 				// FIXME: Add nacoma link
 				if (obj.pnpgraph_present)
-					cell.append(icon16('pnp', 'Show performance graph', link(
+					cell.append(icon16('pnp', _('Show performance graph'), link(
 							'pnp', {
 								"srv" : obj.description,
 								"host" : obj.host.name
@@ -608,18 +609,18 @@ var listview_renderer_table = {
 
 				if (obj.action_url)
 					cell.append(icon16('host-actions',
-							'perform extra host actions', $('<a />').attr(
+							_('perform extra host actions'), $('<a />').attr(
 									'href', obj.action_url)));
 
 				if (obj.notes_url)
-					cell.append(icon16('host-notes', 'View extra host notes',
+					cell.append(icon16('host-notes', _('View extra host notes'),
 							$('<a />').attr('href', obj.notes_url)));
 
 				return cell;
 			}
 		},
 		"last_check" : {
-			"header" : 'Last Checked',
+			"header" : _('Last Checked'),
 			"depends" : [ 'last_check' ],
 			"sort" : [ 'last_check' ],
 			"cell" : function(obj, tr) {
@@ -628,7 +629,7 @@ var listview_renderer_table = {
 			}
 		},
 		"duration" : {
-			"header" : 'Duration',
+			"header" : _('Duration'),
 			"depends" : ['duration'],
 			"sort" : ['last_state_change'],
 			"cell" : function(obj, tr) {
@@ -636,7 +637,7 @@ var listview_renderer_table = {
 			}
 		},
 		"attempt" : {
-			"header" : 'Attempt',
+			"header" : _('Attempt'),
 			"depends" : [ 'current_attempt', 'max_check_attempts' ],
 			"sort" : [ 'current_attempt' ],
 			"cell" : function(obj, tr) {
@@ -645,7 +646,7 @@ var listview_renderer_table = {
 			}
 		},
 		"status_info" : {
-			"header" : 'Status Information',
+			"header" : _('Status Information'),
 			"depends" : [ 'plugin_output' ],
 			"sort" : [ 'plugin_output' ],
 			"cell" : function(obj, tr) {
@@ -653,7 +654,7 @@ var listview_renderer_table = {
 			}
 		},
 		"display_name" : {
-			"header" : 'Display name',
+			"header" : _('Display name'),
 			"depends" : [ 'display_name' ],
 			"sort" : [ 'display_name' ],
 			"cell" : function(obj, tr) {
@@ -666,7 +667,7 @@ var listview_renderer_table = {
 	 **************************************************************************/
 	"hostgroups" : {
 		"name" : {
-			"header" : 'Host Group',
+			"header" : _('Host Group'),
 			"depends" : [ 'alias', 'name' ],
 			"sort" : [ 'alias', 'name' ],
 			"cell" : function(obj, tr) {
@@ -680,7 +681,7 @@ var listview_renderer_table = {
 			}
 		},
 		"actions" : {
-			"header" : 'Actions',
+			"header" : _('Actions'),
 			"depends" : [],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -689,7 +690,7 @@ var listview_renderer_table = {
 			}
 		},
 		"host_status_summary" : {
-			"header" : 'Host Status Summary',
+			"header" : _('Host Status Summary'),
 			"depends" : [ 'host_stats' ],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -699,7 +700,7 @@ var listview_renderer_table = {
 			}
 		},
 		"service_status_summary" : {
-			"header" : 'Service Status Summary',
+			"header" : _('Service Status Summary'),
 			"depends" : [ 'service_stats' ],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -714,7 +715,7 @@ var listview_renderer_table = {
 	 **************************************************************************/
 	"servicegroups" : {
 		"name" : {
-			"header" : 'Service Group',
+			"header" : _('Service Group'),
 			"depends" : [ 'alias', 'name' ],
 			"sort" : [ 'alias', 'name' ],
 			"cell" : function(obj, tr) {
@@ -725,7 +726,7 @@ var listview_renderer_table = {
 			}
 		},
 		"actions" : {
-			"header" : 'Actions',
+			"header" : _('Actions'),
 			"depends" : [],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -734,7 +735,7 @@ var listview_renderer_table = {
 			}
 		},
 		"service_status_summary" : {
-			"header" : 'Service Status Summary',
+			"header" : _('Service Status Summary'),
 			"depends" : [ 'service_stats' ],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -749,7 +750,7 @@ var listview_renderer_table = {
 	 **************************************************************************/
 	"comments" : {
 		"is_service" : {
-			"header" : 'Type',
+			"header" : _('Type'),
 			"depends" : [ 'is_service' ],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -768,7 +769,7 @@ var listview_renderer_table = {
 			}
 		},
 		"host_name" : {
-			"header" : 'Host Name',
+			"header" : _('Host Name'),
 			"depends" : [ 'host.name', 'host.icon_image' ],
 			"sort" : [ 'host.name' ],
 			"cell" : function(obj, tr) {
@@ -795,7 +796,7 @@ var listview_renderer_table = {
 			}
 		},
 		"service_description" : {
-			"header" : 'Service',
+			"header" : _('Service'),
 			"depends" : [ 'host.name', 'service.description' ],
 			"sort" : [ 'service.description' ],
 			"cell" : function(obj, tr) {
@@ -807,7 +808,7 @@ var listview_renderer_table = {
 			}
 		},
 		"time" : {
-			"header" : 'Entry Time',
+			"header" : _('Entry Time'),
 			"depends" : [ 'entry_time' ],
 			"sort" : [ 'entry_time' ],
 			"cell" : function(obj, tr) {
@@ -816,7 +817,7 @@ var listview_renderer_table = {
 			}
 		},
 		"author" : {
-			"header" : 'Author',
+			"header" : _('Author'),
 			"depends" : [ 'author' ],
 			"sort" : [ 'author' ],
 			"cell" : function(obj, tr) {
@@ -824,7 +825,7 @@ var listview_renderer_table = {
 			}
 		},
 		"comment" : {
-			"header" : 'Comment',
+			"header" : _('Comment'),
 			"depends" : [ 'comment' ],
 			"sort" : [ 'comment' ],
 			"cell" : function(obj, tr) {
@@ -832,7 +833,7 @@ var listview_renderer_table = {
 			}
 		},
 		"id" : {
-			"header" : 'ID',
+			"header" : _('ID'),
 			"depends" : [ 'id' ],
 			"sort" : [ 'id' ],
 			"cell" : function(obj, tr) {
@@ -840,43 +841,43 @@ var listview_renderer_table = {
 			}
 		},
 		"persistent" : {
-			"header" : 'Persistent',
+			"header" : _('Persistent'),
 			"depends" : [ 'persistent' ],
 			"sort" : [ 'persistent' ],
 			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				if (obj.persistent)
-					cell.text("Yes");
+					cell.text(_('Yes'));
 				else
-					cell.text("No");
+					cell.text(_('No'));
 				return cell;
 			}
 		},
 		"entry_type" : {
-			"header" : 'Type',
+			"header" : _('Type'),
 			"depends" : [ 'entry_type' ],
 			"sort" : [ 'entry_type' ],
 			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				switch (obj.entry_type) {
 				case 1:
-					cell.text("User comment");
+					cell.text(_("User comment"));
 					break;
 				case 2:
-					cell.text("Scheduled downtime");
+					cell.text(_("Scheduled downtime"));
 					break;
 				case 3:
-					cell.text("Flapping");
+					cell.text(_("Flapping"));
 					break;
 				case 4:
-					cell.text("Acknowledgement");
+					cell.text(_("Acknowledgement"));
 					break;
 				}
 				return cell;
 			}
 		},
 		"expires" : {
-			"header" : 'Expires',
+			"header" : _('Expires'),
 			"depends" : [ 'expires', 'expire_time' ],
 			"sort" : [ 'expires', 'expire_time' ],
 			"cell" : function(obj, tr) {
@@ -884,12 +885,12 @@ var listview_renderer_table = {
 				if (obj.expires)
 					cell.text(obj.expire_time);
 				else
-					cell.text('N/A');
+					cell.text(_('N/A'));
 				return cell;
 			}
 		},
 		"actions" : {
-			"header" : 'Actions',
+			"header" : _('Actions'),
 			"depends" : [],
 			"sort" : false,
 			"cell" : function(obj, tr) {
@@ -902,7 +903,7 @@ var listview_renderer_table = {
 	 **************************************************************************/
 	"contacts" : {
 		"name" : {
-			"header" : 'Name',
+			"header" : _('Name'),
 			"depends" : [ 'name' ],
 			"sort" : [ 'name' ],
 			"cell" : function(obj, tr) {
@@ -910,7 +911,7 @@ var listview_renderer_table = {
 			}
 		},
 		"alias" : {
-			"header" : 'Alias',
+			"header" : _('Alias'),
 			"depends" : [ 'alias' ],
 			"sort" : [ 'alias' ],
 			"cell" : function(obj, tr) {
@@ -968,7 +969,7 @@ function listview_render_table(data) {
 	listview_last_host = '';
 
 	if (data.length == 0) {
-		output.append('<h2 class="lsfilter-noresult">Empty result set</h2>');
+		output.append('<h2 class="lsfilter-noresult">'+_('Empty result set')+'</h2>');
 	} else {
 
 		/*

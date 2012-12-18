@@ -95,14 +95,14 @@ function listview_save_filter (filter) {
 			data: save,
 			type: 'GET',
 			complete: function (xhr) {
-				$('#lsfilter_save_filter').removeClass().text('Save');
+				$('#lsfilter_save_filter').removeClass().text(_('Save'));
 				listview_load_filters();
 			}
 		});
 	
 	} else {
-		$.jGrowl('You must give the filter a name!');
-		$('#lsfilter_save_filter').removeClass().text('Save');
+		$.jGrowl(_('You must give the filter a name!'));
+		$('#lsfilter_save_filter').removeClass().text(_('Save'));
 	}
 }
 
@@ -149,7 +149,7 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	
 	this.visit_query = function(table_def1, search_query3) {
 		var result = $('<ul />');
-		result.append($('<li style="margin: 3px 0"><strong>Query</strong></li>'));
+		result.append($('<li style="margin: 3px 0"><strong>'+_('Query')+'</strong></li>'));
 		result.append($('<li class="resultvisual" />').append(table_def1));
 		result.append($('<li class="resultvisual" />').append(search_query3));
 		return result;
@@ -180,35 +180,12 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 
 	};
 	
-	this.visit_table_def_columns = function(name0, column_list2) {
-		var result = $('<ul />');
-		result.append($('<li><strong>table_def_columns</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(name0));
-		result.append($('<li class="resultvisual" />').append(column_list2));
-		return result;
-	};
-	
-	this.visit_column_list_end = function(name0) {
-		var result = $('<ul />');
-		result.append($('<li><strong>column_list_end</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(name0));
-		return result;
-	};
-	
-	this.visit_column_list_cont = function(column_list0, name2) {
-		var result = $('<ul />');
-		result.append($('<li><strong>column_list_cont</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(column_list0));
-		result.append($('<li class="resultvisual" />').append(name2));
-		return result;
-	};
-	
 	this.visit_search_query = function(filter0) {
 
 		var result = $('<ul />');
 		filter0.addClass('lsfilter-root');
 		
-		result.append($('<li style="margin: 3px 0"><strong>With filter: </strong></li>'));
+		result.append($('<li style="margin: 3px 0"><strong>'+_('With filter')+': </strong></li>'));
 		result.append($('<li class="resultvisual" />').append(filter0));
 
 		return result;
@@ -227,11 +204,11 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		result.append($('<li class="lsfilter-or-text"><strong>- OR -</strong></li>'));
 		result.append($('<li class="resultvisual lsfilter-or-expr" />').append(filter2));
 
-		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+		result.append($('<button class="lsfilter-add-and" />').text(_('And')).click(function (e) {
 			that.gui_stmnt_button('and', result, e, $(this));
 		}));
 
-		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+		result.append($('<button class="lsfilter-add-or" />').text(_('Or')).click(function (e) {
 			that.gui_stmnt_button('or', result, e, $(this));
 		}));
 
@@ -251,11 +228,11 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			result.append($('<li class="resultvisual lsfilter-and-expr" />').append(filter2));
 		}
 
-		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+		result.append($('<button class="lsfilter-add-and" />').text(_('And')).click(function (e) {
 			that.gui_stmnt_button('and', result, e, $(this));
 		}));
 
-		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+		result.append($('<button class="lsfilter-add-or" />').text(_('Or')).click(function (e) {
 			that.gui_stmnt_button('or', result, e, $(this));
 		}));
 		
@@ -355,9 +332,6 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 			fields = $('<select />'),
 			ops = $('<select class="lsfilter-operator-select" />');
 
-		if (name.find)
-			name = name.find('.resultvisual').html();
-
 		for (var f in this.fields) {
 			if (f == name) {
 				fields.append($('<option value="' + f + '" selected="true">' + f + '</option>'));
@@ -383,11 +357,11 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 		//console.log(this.fields);
 		result.append(val);
 
-		result.append($('<button class="lsfilter-add-and" />').text('And').click(function (e) {
+		result.append($('<button class="lsfilter-add-and" />').text(_('And')).click(function (e) {
 			that.gui_stmnt_button('and', result, e, $(this));
 		}));
 
-		result.append($('<button class="lsfilter-add-or" />').text('Or').click(function (e) {
+		result.append($('<button class="lsfilter-add-or" />').text(_('Or')).click(function (e) {
 			that.gui_stmnt_button('or', result, e, $(this));
 		}));
 
@@ -401,19 +375,12 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor(){
 	
 	// field_name: field := * name
 	this.visit_field_name = function(name0) {
-		var result = $('<ul />');
-		result.append($('<li><strong>field_name</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(name0));
-		return result;
+		return name0;
 	};
 	
 	// field_obj: field := * name dot field
 	this.visit_field_obj = function(name0, field2) {
-		var result = $('<ul />');
-		result.append($('<li><strong>field_obj</strong></li>'));
-		result.append($('<li class="resultvisual" />').append(name0));
-		result.append($('<li class="resultvisual" />').append(field2));
-		return result;
+		return name0 + "." + field2;
 	};
 };
 
