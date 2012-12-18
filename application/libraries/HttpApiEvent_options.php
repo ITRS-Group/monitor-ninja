@@ -19,7 +19,7 @@ class HttpApiEvent_options_core extends Report_options {
                                 'both' => 3,
                                 'hard' => 2,
                                 'soft' => 1
-                        )
+			)
                 ),
                 'host_states' => array(
                         'options' => array(
@@ -61,7 +61,6 @@ class HttpApiEvent_options_core extends Report_options {
 				'state_types',
 				'host_states',
 				'service_states',
-				'includesoftstates',
 				'host_name',
 				'service_description',
 				'hostgroup',
