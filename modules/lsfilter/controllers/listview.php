@@ -70,7 +70,7 @@ class ListView_Controller extends Authenticated_Controller {
 				$data[] = $elem->export();
 			}
 
-			json::ok( array( 'status' => 'success', 'totals' => $result_set->get_totals(), 'data' => $data ) );
+			json::ok( array( 'status' => 'success', 'totals' => $result_set->get_totals(), 'data' => $data, 'table' => $result_set->get_table() ) );
 		} catch( Exception $e ) {
 			json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}

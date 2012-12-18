@@ -1,3 +1,7 @@
+function _(text) {
+	return "-- " + text + " --";
+}
+
 function icon12(name, title, link) {
 	var img = $('<span />');
 	img.addClass('icon-12');
@@ -247,19 +251,55 @@ function render_host_status_summary (stats) {
 	return ul;
 }
 
+var listview_multi_select_cell_renderer = function(obj, tr) {
+	var checkbox = $('<input type="checkbox" name="object_select[]" />').attr('value',obj.key);
+	if( listview_selection[obj.key] ) {
+		checkbox.prop('checked', true);
+		
+		if( tr.hasClass('odd') )
+			tr.addClass( 'selected_odd' );
+		else
+			tr.addClass( 'selected_even' );
+	}
+	checkbox.change(function(evt) {
+		var tgt = $(evt.target);
+		listview_selection[tgt.attr('value')] = tgt.prop('checked');
+		
+		var tr = tgt.closest('tr');
+		var classname = ""
+		if( tr.hasClass('odd') )
+			classname = 'selected_odd';
+		else
+			classname = 'selected_even';
+		
+		if( tgt.prop('checked') ) {
+			tr.addClass(classname);
+		} else {
+			tr.removeClass(classname);
+		}
+	});
+	return $('<td style="width: 1em;" />').append(checkbox);
+};
+
 var listview_last_host = '';
 var listview_renderer_table = {
 
 	/***************************************************************************
 	 * Render Hosts
 	 **************************************************************************/
-
+		
 	"hosts" : {
+		"select" : {
+			"header" : '',
+			"depends" : [],
+			"sort" : false,
+			"cell" : listview_multi_select_cell_renderer
+		},
 		"status" : {
 			"header" : '',
 			"depends" : [ 'state_text' ],
 			"sort" : [ 'state' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td class="icon" />').append(
 						icon16('shield-' + obj.state_text, obj.state_text));
 
@@ -269,7 +309,7 @@ var listview_renderer_table = {
 			"header" : 'Name',
 			"depends" : [ 'name', 'icon_image' ],
 			"sort" : [ 'name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				cell.append(extinfo_link(obj.name).text(obj.name));
 				if (obj.icon_image)
@@ -286,7 +326,7 @@ var listview_renderer_table = {
 					'scheduled_downtime_depth', 'pnpgraph_present',
 					'action_url', 'notes_url', 'comments' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 
 				// FIXME: icon for service-details
@@ -343,7 +383,7 @@ var listview_renderer_table = {
 			"header" : 'Last Checked',
 			"depends" : [ 'last_check' ],
 			"sort" : [ 'last_check' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var last_check = new Date(obj.last_check * 1000);
 				return $('<td />').text(last_check.toLocaleTimeString());
 			}
@@ -352,7 +392,7 @@ var listview_renderer_table = {
 			"header" : 'Duration',
 			"depends" : ['duration'],
 			"sort" : ['last_state_change'],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.duration);
 			}
 		},
@@ -360,7 +400,7 @@ var listview_renderer_table = {
 			"header" : 'Status Information',
 			"depends" : [ 'plugin_output' ],
 			"sort" : [ 'plugin_output' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td style="max-width: 300px;" />').text(obj.plugin_output);
 			}
 		},
@@ -368,7 +408,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-info').addClass('header-icon'),
 			"depends" : [ 'num_services' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services > 0) {
 					cell.append(obj.num_services);
@@ -380,7 +420,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-info').addClass('header-icon'),
 			"depends" : [ 'num_services' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services > 0) {
 					cell.append(obj.num_services);
@@ -392,7 +432,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-ok').addClass('header-icon'),
 			"depends" : [ 'num_services_ok' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services_ok > 0) {
 					cell.append(obj.num_services_ok);
@@ -404,7 +444,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-warning').addClass('header-icon'),
 			"depends" : [ 'num_services_warn' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services_warn > 0) {
 					cell.append(obj.num_services_warn);
@@ -416,7 +456,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-critical').addClass('header-icon'),
 			"depends" : [ 'num_services_crit' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services_crit > 0) {
 					cell.append(obj.num_services_crit);
@@ -428,7 +468,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-unknown').addClass('header-icon'),
 			"depends" : [ 'num_services_unknown' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services_unknown > 0) {
 					cell.append(obj.num_services_unknown);
@@ -440,7 +480,7 @@ var listview_renderer_table = {
 			"header" : icon12('shield-pending').addClass('header-icon'),
 			"depends" : [ 'num_services_pending' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />').css('text-align','center');
 				if (obj.num_services_pending > 0) {
 					cell.append(obj.num_services_pending);
@@ -452,7 +492,7 @@ var listview_renderer_table = {
 			"header" : 'Display name',
 			"depends" : [ 'display_name' ],
 			"sort" : [ 'display_name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.display_name);
 			}
 		}
@@ -463,11 +503,17 @@ var listview_renderer_table = {
 	 **************************************************************************/
 
 	"services" : {
+		"select" : {
+			"header" : '',
+			"depends" : [],
+			"sort" : false,
+			"cell" : listview_multi_select_cell_renderer
+		},
 		"host_status" : {
 			"header" : '',
 			"depends" : [ 'host.state_text' ],
 			"sort" : [ 'host.state' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				if (obj.host && obj.host.name != listview_last_host) {
 					return $('<td class="icon" />').append(
 						icon16('shield-' + obj.host.state_text,
@@ -481,7 +527,7 @@ var listview_renderer_table = {
 			"header" : 'Host Name',
 			"depends" : [ 'host.name', 'host.icon_image' ],
 			"sort" : [ 'host.name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 
 				if (obj.host && obj.host.name != listview_last_host) {
@@ -502,7 +548,7 @@ var listview_renderer_table = {
 			"header" : '',
 			"depends" : [ 'state_text' ],
 			"sort" : [ 'state' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td class="icon"><span class="icon-16 x16-shield-'
 						+ obj.state_text + '"></span></td>');
 			}
@@ -511,7 +557,7 @@ var listview_renderer_table = {
 			"header" : 'Service',
 			"depends" : [ 'host.name', 'description' ],
 			"sort" : [ 'description' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').append(
 						extinfo_link(obj.host.name, obj.description).text(
 								obj.description));
@@ -524,7 +570,7 @@ var listview_renderer_table = {
 					'scheduled_downtime_depth', 'pnpgraph_present',
 					'action_url', 'notes_url', 'host.name', 'description' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 
 				if (obj.acknowledged)
@@ -576,7 +622,7 @@ var listview_renderer_table = {
 			"header" : 'Last Checked',
 			"depends" : [ 'last_check' ],
 			"sort" : [ 'last_check' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var last_check = new Date(obj.last_check * 1000);
 				return $('<td />').text(last_check.toLocaleTimeString());
 			}
@@ -585,7 +631,7 @@ var listview_renderer_table = {
 			"header" : 'Duration',
 			"depends" : ['duration'],
 			"sort" : ['last_state_change'],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.duration);
 			}
 		},
@@ -593,7 +639,7 @@ var listview_renderer_table = {
 			"header" : 'Attempt',
 			"depends" : [ 'current_attempt', 'max_check_attempts' ],
 			"sort" : [ 'current_attempt' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(
 						obj.current_attempt + "/" + obj.max_check_attempts);
 			}
@@ -602,7 +648,7 @@ var listview_renderer_table = {
 			"header" : 'Status Information',
 			"depends" : [ 'plugin_output' ],
 			"sort" : [ 'plugin_output' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td style="max-width: 300px;" />').text(obj.plugin_output);
 			}
 		},
@@ -610,7 +656,7 @@ var listview_renderer_table = {
 			"header" : 'Display name',
 			"depends" : [ 'display_name' ],
 			"sort" : [ 'display_name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.display_name);
 			}
 		}
@@ -623,7 +669,7 @@ var listview_renderer_table = {
 			"header" : 'Host Group',
 			"depends" : [ 'alias', 'name' ],
 			"sort" : [ 'alias', 'name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				cell.append(
 					$('<a />').attr('href', '?q=[hosts] in "' + obj.name + '"').text(
@@ -637,7 +683,7 @@ var listview_renderer_table = {
 			"header" : 'Actions',
 			"depends" : [],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				return cell;
 			}
@@ -646,7 +692,7 @@ var listview_renderer_table = {
 			"header" : 'Host Status Summary',
 			"depends" : [ 'host_stats' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td / >');
 				cell.append(render_host_status_summary(obj.host_stats));
 				return cell;
@@ -656,7 +702,7 @@ var listview_renderer_table = {
 			"header" : 'Service Status Summary',
 			"depends" : [ 'service_stats' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td / >');
 				cell.append(render_service_status_summary(obj.service_stats));
 				return cell;
@@ -671,7 +717,7 @@ var listview_renderer_table = {
 			"header" : 'Service Group',
 			"depends" : [ 'alias', 'name' ],
 			"sort" : [ 'alias', 'name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				cell.text(obj.alias);
 				cell.text(' (' + obj.name + ')');
@@ -682,7 +728,7 @@ var listview_renderer_table = {
 			"header" : 'Actions',
 			"depends" : [],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				return cell;
 			}
@@ -691,7 +737,7 @@ var listview_renderer_table = {
 			"header" : 'Service Status Summary',
 			"depends" : [ 'service_stats' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td / >');
 				cell.append(render_service_status_summary(obj.service_stats));
 				return cell;
@@ -706,7 +752,7 @@ var listview_renderer_table = {
 			"header" : 'Type',
 			"depends" : [ 'is_service' ],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.is_service ? 'Service' : 'Host');
 			}
 		},
@@ -714,7 +760,7 @@ var listview_renderer_table = {
 			"header" : '',
 			"depends" : [ 'host.state_text' ],
 			"sort" : [ 'host.state' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').append(
 						icon16('shield-' + obj.host.state_text,
 								obj.host.state_text));
@@ -725,7 +771,7 @@ var listview_renderer_table = {
 			"header" : 'Host Name',
 			"depends" : [ 'host.name', 'host.icon_image' ],
 			"sort" : [ 'host.name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				cell.append(extinfo_link(obj.host.name).text(obj.host.name));
 
@@ -740,7 +786,7 @@ var listview_renderer_table = {
 			"header" : '',
 			"depends" : [ 'service.state_text', 'service.description' ],
 			"sort" : [ 'service.state' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				if (!obj.service.description)
 					return $('<td />');
 
@@ -752,7 +798,7 @@ var listview_renderer_table = {
 			"header" : 'Service',
 			"depends" : [ 'host.name', 'service.description' ],
 			"sort" : [ 'service.description' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				if (!obj.service.description)
 					return $('<td />');
 				return $('<td />').append(
@@ -764,7 +810,7 @@ var listview_renderer_table = {
 			"header" : 'Entry Time',
 			"depends" : [ 'entry_time' ],
 			"sort" : [ 'entry_time' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var time = new Date(obj.entry_time * 1000);
 				return $('<td />').text(time.toLocaleTimeString());
 			}
@@ -773,7 +819,7 @@ var listview_renderer_table = {
 			"header" : 'Author',
 			"depends" : [ 'author' ],
 			"sort" : [ 'author' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.author);
 			}
 		},
@@ -781,7 +827,7 @@ var listview_renderer_table = {
 			"header" : 'Comment',
 			"depends" : [ 'comment' ],
 			"sort" : [ 'comment' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.comment);
 			}
 		},
@@ -789,7 +835,7 @@ var listview_renderer_table = {
 			"header" : 'ID',
 			"depends" : [ 'id' ],
 			"sort" : [ 'id' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.id);
 			}
 		},
@@ -797,7 +843,7 @@ var listview_renderer_table = {
 			"header" : 'Persistent',
 			"depends" : [ 'persistent' ],
 			"sort" : [ 'persistent' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				if (obj.persistent)
 					cell.text("Yes");
@@ -810,7 +856,7 @@ var listview_renderer_table = {
 			"header" : 'Type',
 			"depends" : [ 'entry_type' ],
 			"sort" : [ 'entry_type' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				switch (obj.entry_type) {
 				case 1:
@@ -833,7 +879,7 @@ var listview_renderer_table = {
 			"header" : 'Expires',
 			"depends" : [ 'expires', 'expire_time' ],
 			"sort" : [ 'expires', 'expire_time' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				var cell = $('<td />');
 				if (obj.expires)
 					cell.text(obj.expire_time);
@@ -846,7 +892,7 @@ var listview_renderer_table = {
 			"header" : 'Actions',
 			"depends" : [],
 			"sort" : false,
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />');
 			}
 		}
@@ -859,7 +905,7 @@ var listview_renderer_table = {
 			"header" : 'Name',
 			"depends" : [ 'name' ],
 			"sort" : [ 'name' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.name);
 			}
 		},
@@ -867,7 +913,7 @@ var listview_renderer_table = {
 			"header" : 'Alias',
 			"depends" : [ 'alias' ],
 			"sort" : [ 'alias' ],
-			"cell" : function(obj) {
+			"cell" : function(obj, tr) {
 				return $('<td />').text(obj.alias);
 			}
 		}
@@ -968,7 +1014,7 @@ function listview_render_table(data) {
 				row.addClass('odd');
 
 			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
-				row.append(columns[cur_col](obj).addClass('listview-cell-' + cur_col));
+				row.append(columns[cur_col](obj, row).addClass('listview-cell-' + cur_col));
 			}
 			tbody.append(row);
 		}

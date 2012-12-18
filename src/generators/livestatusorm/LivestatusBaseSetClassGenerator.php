@@ -63,8 +63,10 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 				$this->write('foreach($subcolumns as $col) {');
 				$this->write('$columns[] = %s.$col;', $name.'.');
 				$this->write('}');
-				
 			}
+		}
+		foreach($this->structure['key'] as $keypart ) {
+			$this->write('if( !in_array(%s, $columns) ) $columns[] = %s;', $keypart, $keypart);
 		}
 		$this->write('return $columns;');
 		$this->finish_function();

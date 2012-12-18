@@ -13,9 +13,15 @@ class LivestatusBaseClassRootGenerator extends class_generator {
 		parent::generate();
 		$this->init_class();
 		$this->variable( '_table', null, 'protected' );
-		$this->variable( 'export', array(), 'protected' );
+		$this->variable( 'export', array('key'), 'protected' );
 		$this->generate_export();
+		$this->generate_construct();
 		$this->finish_class();
+	}
+
+	private function generate_construct() {
+		$this->init_function( "__construct", array( 'values', 'prefix' ) );
+		$this->finish_function();
 	}
 	
 	private function generate_export() {

@@ -694,9 +694,11 @@ class Command_Controller extends Authenticated_Controller
 		$param_name = false;
 		switch ($this->obj_type) {
 			case 'host':
+			case 'hosts':
 				$param_name = 'host_name';
 				break;
 			case 'service':
+			case 'services':
 				$param_name = 'service';
 				break;
 		}

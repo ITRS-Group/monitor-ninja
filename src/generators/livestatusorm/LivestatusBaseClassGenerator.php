@@ -47,13 +47,14 @@ class LivestatusBaseClassGenerator extends class_generator {
 		}
 
 		$this->generate_construct();
-
+		$this->generate_get_key();
+		
 		/* Getters and setters */
 		foreach( $this->structure['structure'] as $field => $type ) {
 			if( is_array($type) ) {
-				$this->{"getset_object"}( $field, $type );
+				$this->{"get_object"}( $field, $type );
 			} else {
-				$this->{"getset_$type"}( $field );
+				$this->{"get_$type"}( $field );
 			}
 		}
 
@@ -72,6 +73,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 				$this->{"fetch_$type"}( $field );
 			}
 		}
+		$this->write( 'parent::__construct( $values, $prefix ); ');
 		$this->finish_function();
 	}
 
@@ -85,6 +87,24 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->finish_function();
 	}
 
+	private function generate_get_key() {
+		$this->init_function("get_key");
+		$matchline = '$key = $this%s;';
+		foreach( $this->key as $keypart ) {
+			// Build getter sequence
+			$call = "";
+			foreach( explode('.',$keypart) as $part ) {
+				$call .= "->get_$part()";
+			}
+			
+			// Use sprintf instead of embedded in write. write escapes
+			$this->write( sprintf( $matchline, $call ) );
+			$matchline = '$key .= ";".$this%s;';
+		}
+		$this->write('return $key;');
+		$this->finish_function();
+	}
+	
 	/* Object */
 
 	private function storage_object( $name, $type ) {
@@ -97,7 +117,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "\$this->export[] = %s;", $name );
 	}
 
-	private function getset_object( $name, $type ) {
+	private function get_object( $name, $type ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
@@ -116,7 +136,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
-	private function getset_string( $name ) {
+	private function get_string( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
@@ -135,7 +155,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
-	private function getset_time( $name ) {
+	private function get_time( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
@@ -154,7 +174,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
-	private function getset_int( $name ) {
+	private function get_int( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
@@ -173,7 +193,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
-	private function getset_float( $name ) {
+	private function get_float( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
@@ -192,7 +212,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
-	private function getset_list( $name ) {
+	private function get_list( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
@@ -211,7 +231,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
-	private function getset_dict( $name ) {
+	private function get_dict( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();

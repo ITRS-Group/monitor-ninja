@@ -3,8 +3,8 @@
 <div class="extra_toolbar">
 	<div class="right lsfilter-edit-bar">
 		<input type="hidden" id="server_name"
-			value="<?php echo $_SERVER['SERVER_NAME']; ?>" /> <span
-			id="filter_visual_result"></span>
+			value="<?php echo $_SERVER['SERVER_NAME']; ?>" /> <span id="filter_visual_result"></span>
+		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
 		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-edit"></span></button>
 		<button id="show-filter-query-builder-graphical-button" title="Show/Edit Graphical Filter"><span class="icon-16 x16-command"></span></button>
 		<button id="show-filter-query-saved" title="Show saved filters"><span class="icon-16 x16-status-detail"></span></button>
@@ -13,6 +13,12 @@
 </div>
 
 <div class="extra_toolbar_spacer"></div>
+
+<?php echo form::open('command/multi_action', array('id'=>'listview_multi_action_form')); ?>
+<div class="clear" id="filter_result"><div style="text-align: center; margin: 32px;"><span class="lsfilter-loader">Loading...</span></div></div>
+<input type="hidden" id="listview_multi_action_obj_action" name="multi_action" value="" />
+<input type="hidden" id="listview_multi_action_obj_type" name="obj_type" value="" />
+<?php echo form::close(); ?>
 
 <div id="filter-query-builder">
 
@@ -57,6 +63,11 @@
 		</form>
 
 	</div>
-</div>
+	
+	<div id="filter-query-multi-action">
+		<h2>Multi Action</h2>
+		<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'), array(''=>'Table doesnt allow multi select')); ?>
+		<button id="multi_action_select_send">Submit</button>
 
-<div class="clear" id="filter_result"><div style="text-align: center; margin: 32px;"><span class="lsfilter-loader">Loading...</span></div></div>
+	</div>
+</div>

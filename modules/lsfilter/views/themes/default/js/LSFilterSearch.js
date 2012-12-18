@@ -2,6 +2,8 @@ var listview_ajax_timer = null;
 var listview_ajax_query = "";
 var listview_ajax_active_request = null;
 
+var listview_current_table = "";
+
 var listview_sort_vis_column = null;
 var listview_sort_db_columns = [];
 var listview_sort_ascending = true;
@@ -9,6 +11,9 @@ var listview_sort_ascending = true;
 var listview_autorefresh_enabled = true;
 var listview_autorefresh_timeout = 30000;
 var listview_autorefresh_timer = false;
+
+var listview_selection = [];
+var listview_selection_type = "";
 
 function listview_update_sort(vis_column, db_columns) {
 	if (listview_sort_vis_column != vis_column) {
@@ -201,13 +206,17 @@ function listview_do_request() {
 		success : function(data) {
 			listview_render_stop_loading(loader);
 			if (data.status == 'success') {
+				listview_current_table = data.table;
 				listview_render_totals(data.totals);
+				
 				listview_render_table(data.data);
+				multi_select_refresh();
 			}
 			if (data.status == 'error') {
 				$('#filter_result').empty().text("Error: " + data.data);
 				$('#filter_result_totals').empty();
 			}
+			
 			listview_autorefresh_timer = setTimeout( listview_autorefresh_handler, listview_autorefresh_timeout);
 		}
 	});
@@ -230,4 +239,58 @@ function listview_update(query) {
 	listview_ajax_timer = setTimeout(function() {
 		listview_refresh();
 	}, 500);
+}
+
+function populate_select(elem, values) {
+	elem.empty();
+	for( var val in values ) {
+		var tag = values[val];
+		elem.append($('<option />').text(tag).attr('value',val));
+	}
+}
+
+var multiselect_commands = {
+		'hosts': {
+			'': _('Select action'),
+			'SCHEDULE_HOST_DOWNTIME': _('Schedule downtime'),
+			'DEL_HOST_DOWNTIME': _('Cancel Scheduled downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM': _('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT': _('Remove problem acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS': _('Disable host notifications'),
+			'ENABLE_HOST_NOTIFICATIONS': _('Enable host notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS': _('Disable notifications for all services'),
+			'DISABLE_HOST_CHECK': _('Disable active checks'),
+			'ENABLE_HOST_CHECK': _('Enable active checks'),
+			'SCHEDULE_HOST_CHECK': _('Reschedule host checks'),
+			'ADD_HOST_COMMENT': _('Add host comment')
+		},
+		'services': {
+			'': _('Select action'),
+			'SCHEDULE_SVC_DOWNTIME': _('Schedule downtime'),
+			'DEL_SVC_DOWNTIME': _('Cancel Scheduled downtime'),
+			'ACKNOWLEDGE_SVC_PROBLEM': _('Acknowledge'),
+			'REMOVE_SVC_ACKNOWLEDGEMENT': _('Remove problem acknowledgement'),
+			'DISABLE_SVC_NOTIFICATIONS': _('Disable service notifications'),
+			'ENABLE_SVC_NOTIFICATIONS': _('Enable service notifications'),
+			'DISABLE_SVC_CHECK': _('Disable active checks'),
+			'ENABLE_SVC_CHECK': _('Enable active checks'),
+			'SCHEDULE_SVC_CHECK': _('Reschedule service checks'),
+			'ADD_SVC_COMMENT': _('Add service comment')
+		},
+		'other': {
+			'': _('Table doesn\'t support multi action')
+		}
+};
+
+function multi_select_refresh() {
+	if( listview_current_table && listview_selection_type != listview_current_table ) {
+		listview_selection_type = listview_current_table;
+		listview_selection = [];
+		if( multiselect_commands[listview_current_table] ) {
+			populate_select($('#multi_action_select'), multiselect_commands[listview_current_table] );
+		} else {
+			populate_select($('#multi_action_select'), multiselect_commands['other'] );
+		}
+		$('#listview_multi_action_obj_type').attr('value',listview_current_table);
+	}
 }

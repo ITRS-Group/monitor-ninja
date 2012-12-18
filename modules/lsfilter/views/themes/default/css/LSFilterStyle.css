@@ -20,7 +20,7 @@
 	z-index: 1;
 }
 
-#filter-query-builder-graphical, #filter-query-builder-manual, #filter-query-saved {
+#filter-query-builder-graphical, #filter-query-builder-manual, #filter-query-saved, #filter-query-multi-action {
 	max-height: 500px;
 	overflow: auto;
 	display: none;
@@ -297,4 +297,15 @@ th span.header-icon {
 
 .listview-summary li span {
 	vertical-align: middle;
+}
+
+
+
+
+
+.selected_odd {
+	background-color: #EEE4E4 !important;
+}
+.selected_even {
+	background-color: #FFEEEE !important;
 }
