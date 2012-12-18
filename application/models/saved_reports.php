@@ -86,7 +86,7 @@ class Saved_reports_Model extends Model
 		if (!empty($id))
 			$update = true;
 		else {
-			$id = self::insert_id($type, $options['report_name']);
+			$id = self::get_report_id($type, $options['report_name']);
 			$update = $id !== false;
 		}
 		if (!$update) {
@@ -145,7 +145,7 @@ class Saved_reports_Model extends Model
 
 		unset($res);
 		// continue with objects
-		if (!$update) $id = (int)self::insert_id($type, $options['report_name']);
+		if (!$update) $id = (int)self::get_report_id($type, $options['report_name']);
 
 		// insert/update <type>_config_objects
 		if ($type!= 'summary' && !self::save_config_objects($type, $id, $objects)) {
@@ -167,7 +167,7 @@ class Saved_reports_Model extends Model
 	 * @param $name The report name
 	 * @return The id of the report
 	 */
-	public function insert_id($type='avail', $name=false)
+	private function get_report_id($type='avail', $name=false)
 	{
 		$name = trim($name);
 		if (empty($name)) {
