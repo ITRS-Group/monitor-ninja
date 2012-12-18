@@ -187,7 +187,6 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->auto_render = false;
 		$type = Scheduled_reports_Model::get_typeof_report($schedule_id);
 		$opt_obj = Scheduled_reports_Model::get_scheduled_data($schedule_id);
-		$opts = $opt_obj->as_keyval_string();
 		$pipe_desc = array(
 			0 => array('pipe', 'r'),
 			1 => array('pipe', 'w'),
