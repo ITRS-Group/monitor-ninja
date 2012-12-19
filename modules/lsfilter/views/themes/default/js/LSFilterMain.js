@@ -7,6 +7,9 @@ var lsfilter_main = {
 
 		if (source != 'list')
 			lsfilter_list.update(query);
+		
+		if (source != 'multiselect')
+			lsfilter_multiselect.update(query);
 
 		if (source != 'saved')
 			lsfilter_saved.update(query);
@@ -22,6 +25,7 @@ var lsfilter_main = {
 	init : function() {
 		lsfilter_history.init();
 		lsfilter_list.init();
+		lsfilter_multiselect.init();
 		lsfilter_saved.init();
 		lsfilter_textarea.init();
 		lsfilter_visual.init();
