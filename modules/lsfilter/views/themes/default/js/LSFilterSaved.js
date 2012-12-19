@@ -74,6 +74,7 @@ var lsfilter_saved = {
 	},
 
 	save : function() {
+		var self = this; // To be able to access it from within handlers
 
 		var basepath = _site_domain + _index_page;
 		var save = {
@@ -98,7 +99,7 @@ var lsfilter_saved = {
 				type : 'GET',
 				complete : function(xhr) {
 					$('#lsfilter_save_filter').removeClass().text(_('Save'));
-					listview_load_filters();
+					self.refresh_filter_list();
 				}
 			});
 
