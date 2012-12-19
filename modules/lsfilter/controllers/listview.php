@@ -23,6 +23,7 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterMain.js';
 
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterHistory.js';
 		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterList.js';
 		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterSaved.js';
 		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterTextarea.js';

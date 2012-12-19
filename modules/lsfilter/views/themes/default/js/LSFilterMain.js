@@ -1,6 +1,9 @@
 var lsfilter_main = {
 	update : function(query, source) {
 		console.log('update <' + query + '> from <' + source + '>');
+		
+		if (source != 'history')
+			lsfilter_history.update(query);
 
 		if (source != 'list')
 			lsfilter_list.update(query);
@@ -17,6 +20,7 @@ var lsfilter_main = {
 		return true;
 	},
 	init : function() {
+		lsfilter_history.init();
 		lsfilter_list.init();
 		lsfilter_saved.init();
 		lsfilter_textarea.init();
