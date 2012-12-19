@@ -2,6 +2,10 @@
 
 class HttpApiEvent_options_core extends Report_options {
 
+	const MAX_EVENTS = 10000; /**< Pagination limit for events retrieved from HTTP API. Hardcoded, deal with it */
+
+	private $limit;
+
         /**
          * Means to translate options back and forth between Report_options
          * terms and HTTP API parameters. Handles both input and output translation.
@@ -78,6 +82,24 @@ class HttpApiEvent_options_core extends Report_options {
 			'description' => "Include events' comments"
 		);
 
+		$limit = $this->limit = (int) Op5Config::instance()->getConfig('http_api.report.limit');
+		if($limit > self::MAX_EVENTS || $limit < 1) {
+			$this->limit = self::MAX_EVENTS;
+			$limit = $this->limit."; you can decrease this value in http_api.yml";
+		} else {
+			$limit .= "; you can increase this value in http_api.yml";
+		}
+		$this->properties['limit'] = array(
+			'type' => 'int',
+			'default' => null,
+			'description' => 'Include at most this many events (between 1 and '.$limit.')'
+		);
+		$this->properties['offset'] = array(
+			'type' => 'int',
+			'default' => 0,
+			'description' => 'Skip the first <em>offset</em> events matching the rest of the query, well suited for pagination'
+		);
+
 		if($options) {
 			// finally make the call which *can not* be set in parent::__construct() until all properties and
 			// other boilerplate is set up
@@ -150,8 +172,25 @@ class HttpApiEvent_options_core extends Report_options {
                 if($type == 'enum') {
                         return "'$value'";
                 }
-                return $value;
+		if($type == 'int' && empty($value) && $value !== 0) {
+			return "[empty]";
+		}
+                return (string) $value;
         }
+
+	/**
+	 * Not as forgiving as the parent. (Why is parent forgiving?)
+	 *
+	 * @param $options array
+	 * @throws Api_Error_Response
+	 */
+	function set_options($options) {
+		foreach($options as $name => $value) {
+			if(!$this->set($name, $value)) {
+				throw new Api_Error_Response("Invalid value for option '$name'", 400);
+			}
+		}
+	}
 
 	/**
 	 * Final step in the "from merlin.report_data row to API-output" process
@@ -181,5 +220,33 @@ class HttpApiEvent_options_core extends Report_options {
 		unset($row['username'], $row['user_comment'], $row['comment_timestamp']);
 
 		return $row;
+	}
+
+	/**
+	 * @todo be able to throw exceptions here to give feedback of
+	 * *which* error we experienced, since, you know, there's at
+	 * least one user (you) exposed to this API.. Help yourself
+	 *
+	 * @param $key string
+	 * @param $value mixed
+	 * @return boolean
+	 */
+	protected function validate_value($key, &$value)
+	{
+		if($key == 'limit') {
+			if(!$value) {
+				$value = $this->limit;
+				return true;
+			}
+			if(!is_numeric($value)) {
+				return false;
+			}
+			$value = (int) $value;
+			if($value > $this->limit || $value < 1) {
+				return false;
+			}
+			return true;
+		}
+		return parent::validate_value($key, $value);
 	}
 }

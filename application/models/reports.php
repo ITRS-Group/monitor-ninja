@@ -56,8 +56,6 @@ class Reports_Model extends Model
 	const PERC_DEC = 3; /**< Nr of decimals in returned percentage */
 	const DEBUG = true; /**< Debug bool - can't see this is ever false */
 
-	const MAX_API_EVENTS = 10000; /**< Pagination limit for events retrieved from HTTP API. Hardcoded, deal with it */
-
 	var $db_start_time = 0; /**< earliest database timestamp we look at */
 	var $db_end_time = 0;   /**< latest database timestamp we look at */
 	var $debug = array(); /**< Array of the debug information that we print during unit tests */
@@ -227,22 +225,10 @@ class Reports_Model extends Model
 	/**
          * Used from the HTTP API
          *
-	 * @param $limit int = 10000
-	 * @param $offset int = 0
 	 * @return array
 	 */
-	function get_events($limit = self::MAX_API_EVENTS, $offset = 0)
+	function get_events()
 	{
-		$limit = (int) $limit;
-		if($limit > self::MAX_API_EVENTS || $limit < 1) {
-			$limit = self::MAX_API_EVENTS;
-		}
-
-		$offset = (int) $offset;
-		if($offset < 0) {
-			$offset = 0;
-		}
-
                 $query = $this->build_alert_summary_query('timestamp,
 			event_type,
 			host_name,
@@ -277,13 +263,13 @@ class Reports_Model extends Model
 				AND data.service_description = comments.service_description
 				AND data.event_type = comments.event_type";
 		}
-		$query .= " LIMIT $limit OFFSET $offset";
+		$query .= " LIMIT ".$this->options['limit']." OFFSET ". $this->options['offset'];
 
 		return array(
 			'events' => $this->db->query($query)->result(false),
 			'count' => current($count[0]),
-			'limit' => $limit,
-			'offset' => $offset
+			'limit' => $this->options['limit'],
+			'offset' => $this->options['offset'],
 		);
 	}
 
