@@ -26,7 +26,8 @@ var lsfilter_main = {
 		lsfilter_textarea.init();
 		lsfilter_visual.init();
 
-		this.update('[services] all', false);
+		// when frist loaded, the textarea contains the query from the controller
+		lsfilter_textarea.load();
 	}
 };
 

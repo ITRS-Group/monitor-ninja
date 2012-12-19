@@ -15,6 +15,10 @@ var lsfilter_textarea = {
 			self.handle_propertychange(query);
 		});
 	},
+	load : function() {
+		query = this.element.val();
+		this.handle_propertychange(query);
+	},
 
 	// Internal veriables
 	element : false,
