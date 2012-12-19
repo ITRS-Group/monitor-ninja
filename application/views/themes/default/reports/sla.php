@@ -80,7 +80,9 @@ foreach($report_data as $i =>  $report) {
 			</tr>
 		</table>
 	</div>
-	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0) { ?>
+	<?php }
+	$members = $options->get_report_members();
+	if (count($members) > 1) { ?>
 	<div class="members">
 
 		<table style="margin-bottom: 20px;">
@@ -88,9 +90,19 @@ foreach($report_data as $i =>  $report) {
 			<tr><th><?php echo is_string($report['name']) ? $report['name'] : _('Custom group') ?></th></tr>
 			<?php
 				$x = 0;
-				foreach($report['member_links'] as $member_link) {
+				if (strpos('service', $options['report_type']) !== false) {
+					$type = 'services';
+					$objname = 'service_description';
+				}
+				else {
+					$type = 'hosts';
+					$objname= 'host_name';
+				}
+				foreach($members as $member) {
 					$x++;
-					echo "<tr class=\"".($x%2 == 0 ? 'odd' : 'even')."\"><td style=\" border-right: 1px solid #dcdcdc\">".$member_link."</td></tr>\n";
+					echo '<tr class="'.($x%2 == 0 ? 'odd' : 'even').'"><td>';
+					echo '<a href="'.url::site().'sla/generate?'.$objname.'[]='. $member. '&report_type='.$type.'&amp;'.$options->as_keyval_string(true).'">'.$member.'</a>';
+					echo "</td></tr>\n";
 				}
 				?>
 			</table>

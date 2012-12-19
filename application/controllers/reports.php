@@ -240,22 +240,18 @@ class Reports_Controller extends Base_reports_Controller
 		switch ($this->options['report_type']) {
 			case 'hostgroups':
 				$sub_type = "host";
-				$object_varname = 'host_name';
 				$is_group = true;
 				break;
 			case 'servicegroups':
 				$sub_type = "service";
-				$object_varname = 'service_description';
 				$is_group = true;
 				break;
 			case 'hosts':
 				$sub_type = "host";
-				$object_varname = 'host_name';
 				$is_group = false;
 				break;
 			case 'services':
 				$sub_type = "service";
-				$object_varname = 'service_description';
 				$is_group = false;
 				break;
 			default:
@@ -275,7 +271,7 @@ class Reports_Controller extends Base_reports_Controller
 				? $this->_expand_group_request($objects, $this->options->get_value('report_type'))
 				: $this->reports_model->get_uptime();
 		} else {
-			$data_arr = $this->get_sla_data($this->options['months'], $objects, $object_varname);
+			$data_arr = $this->get_sla_data($this->options['months'], $objects);
 		}
 
 		if ($this->options['output_format'] == 'csv') {
@@ -784,7 +780,7 @@ class Reports_Controller extends Base_reports_Controller
 	 * @param $objects = false
 	 * @return array
 	 */
-	public function get_sla_data($months, $objects, $object_varname)
+	public function get_sla_data($months, $objects)
 	{
 		if (empty($months) || empty($objects)) {
 			return false;
@@ -820,7 +816,7 @@ class Reports_Controller extends Base_reports_Controller
 						}
 					}
 			}
-			$report_data = $this->_sla_group_data($data, $object_varname);
+			$report_data = $this->_sla_group_data($data);
 			break;
 		 case 'hosts':
 		 case 'services':
@@ -839,7 +835,7 @@ class Reports_Controller extends Base_reports_Controller
 				);
 				unset($report_class);
 			}
-			$report_data = $this->_sla_group_data($data, $object_varname);
+			$report_data = $this->_sla_group_data($data);
 			break;
 		 default:
 			die("ooops, didn't see {$this->options['report_type']} comming");
@@ -850,7 +846,7 @@ class Reports_Controller extends Base_reports_Controller
 	/**
 	*	Mangle SLA data for host- and servicegroups
 	*/
-	public function _sla_group_data($sla_data, $object_varname)
+	public function _sla_group_data($sla_data)
 	{
 		if (empty($sla_data))
 			return false;
@@ -894,65 +890,15 @@ class Reports_Controller extends Base_reports_Controller
 
 			$data_str = base64_encode(serialize($data));
 
-			$member_links = array();
-			foreach($source as $member) {
-				$member_links[] = $this->_generate_sla_member_link($member, $object_varname);
-			}
-
 			$report_data[] = array(
 				'name' => $name,
 				'table_data' => $table_data,
 				'data_str' => $data_str,
 				'source' => $source,
-				'member_links' => $member_links,
 				'avail_link' => $this->_generate_avail_member_link(),
 			);
 		}
 		return $report_data;
-	}
-
-	/**
-	 * @param string $member
-	 * @return array HTML containing a link to SLA report for the one member
-	 */
-	private function _generate_sla_member_link($member, $varname)
-	{
-		$return = '<a href="'.url::site().'sla/generate?'.$varname.'[]='.$member;
-		foreach($this->options as $key => $val) {
-			switch ($key) {
-				case 'start_time': case 'end_time':
-					if (is_numeric($val)) {
-						$val = date('Y-m-d H:i', $val);
-					}
-					break;
-			}
-			$return .= "&amp;$key=$val";
-		}
-		foreach($this->options['months'] as $month => $sla) {
-			$return .= '&amp;month_'.$month.'='.$sla;
-		}
-		$host_alias = '';
-		$service_description = '';
-		$host_name = '';
-		if ($this->options['use_alias']) {
-			# use alias with host_name
-			if (strstr($member, ';')) {
-				# we have host_name;service_description so we neeed to split this
-				$member_parts = explode(';', $member);
-				if (is_array($member_parts) && sizeof($member_parts)==2) {
-					$host_name = $member_parts[0];
-					$host_alias = $this->_get_host_alias($host_name);
-					$service_description = $member_parts[1];
-					$member = sprintf(_('%s on %s(%s)'), $service_description, $host_alias, $host_alias);
-				}
-			} else {
-				$host_alias = $this->_get_host_alias($member);
-				$member = $host_alias.' (' . $member . ')';
-			}
-		}
-		$return .= '">'.$member.'</a>';
-
-		return $return;
 	}
 
 	/**
