@@ -32,9 +32,9 @@
 
 		<h2><?php echo _('Saved filters');?></h2>
 
-		<input type="checkbox" id="filter-query-saved-hide-static" /> <?php echo _('Hide static'); ?>
-		<input type="checkbox" id="filter-query-saved-hide-global" /> <?php echo _('Hide global'); ?>
-		<input type="checkbox" id="filter-query-saved-hide-user" /> <?php echo _('Hide user'); ?><br />
+		<input type="checkbox" id="filter-query-saved-hide-static" class="filter-query-saved-hide-x" /> <?php echo _('Hide static'); ?>
+		<input type="checkbox" id="filter-query-saved-hide-global" class="filter-query-saved-hide-x" /> <?php echo _('Hide global'); ?>
+		<input type="checkbox" id="filter-query-saved-hide-user" class="filter-query-saved-hide-x" /> <?php echo _('Hide user'); ?><br />
 		<ul id="filter-query-saved-filters"></ul>
 
 		<pre id="filter-query-saved-preview"></pre>
@@ -47,9 +47,7 @@
 
 		<form action="#" onsubmit="dosubmit();">
 			<textarea style="width: 98%; height: 30px" name="filter_query"
-				id="filter_query">
-				<?php echo htmlentities($query); ?>
-			</textarea>
+				id="filter_query"><?php echo htmlentities($query); ?></textarea>
 		</form>
 
 	</div>

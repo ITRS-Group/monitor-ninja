@@ -1,0 +1,31 @@
+var lsfilter_main = {
+	update : function(query, source) {
+		console.log('update <' + query + '> from <' + source + '>');
+
+		if (source != 'list')
+			lsfilter_list.update(query);
+
+		if (source != 'saved')
+			lsfilter_saved.update(query);
+
+		if (source != 'textarea')
+			lsfilter_textarea.update(query);
+
+		if (source != 'visual')
+			lsfilter_visual.update(query);
+
+		return true;
+	},
+	init : function() {
+		lsfilter_list.init();
+		lsfilter_saved.init();
+		lsfilter_textarea.init();
+		lsfilter_visual.init();
+
+		this.update('[services] all', false);
+	}
+};
+
+$().ready(function() {
+	lsfilter_main.init();
+});

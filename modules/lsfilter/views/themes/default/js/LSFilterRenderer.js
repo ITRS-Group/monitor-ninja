@@ -1,65 +1,5 @@
-function _(text) {
-	console.log('To translate: '+ text);
-	return text;
-}
-
-function icon12(name, title, link) {
-	var img = $('<span />');
-	img.addClass('icon-12');
-	img.addClass('x12-' + name);
-	if (title)
-		img.attr('title', title);
-	if (link) {
-		img = link.clone().append(img);
-		img.css('border', '0');
-	}
-	return img;
-}
-function icon16(name, title, link) {
-	var img = $('<span />');
-	img.addClass('icon-16');
-	img.addClass('x16-' + name);
-	if (title)
-		img.attr('title', title);
-	if (link) {
-		img = link.clone().append(img);
-		img.css('border', '0');
-	}
-	return img;
-}
-function icon(url, link) {
-	var img = $('<img />');
-	img.attr('src', '/monitor/images/logos/' + url); // FIXME
-	img.css('height', '16px');
-	img.css('width', '16px');
-	if (link) {
-		img = link.clone().append(img);
-		img.css('border', '0');
-	}
-	return img;
-}
-function link(rel_url, args) {
-	var get_data = "";
-	var delim = "?";
-	for ( var key in args) {
-		get_data += delim + key + "=" + encodeURIComponent(args[key]);
-		delim = "&";
-	}
-
-	var el = $('<a />');
-	el.attr('href', _site_domain + _index_page + "/" + rel_url + get_data);
-	return el;
-}
-function link_fnc(fnc) {
-	return $('<a />').click(fnc);
-}
-function extinfo_link(host, service) {
-	var args = {};
-	args['host'] = host;
-	if (service)
-		args['service'] = service;
-	return link('extinfo/details', args);
-}
+var listview_sort_vis_column = false;
+var listview_sort_ascending = false;
 
 function listview_add_sort(element, vis_column, db_columns, current) {
 	if (current == 0) { // No sort
@@ -79,6 +19,30 @@ function listview_add_sort(element, vis_column, db_columns, current) {
 		listview_update_sort(evt.data.vis_column, evt.data.db_columns);
 	});
 }
+
+
+function listview_columns_for_table(table) {
+	if (!listview_renderer_table[table])
+		return false;
+
+	var renderer = listview_renderer_table[table];
+	var columns = [];
+	var columns_dict = {};
+
+	for ( var tblcol in renderer) {
+		var deps = renderer[tblcol].depends;
+		for ( var i = 0; i < deps.length; i++) {
+			if (!columns_dict[deps[i]]) {
+				columns.push(deps[i]);
+				columns_dict[deps[i]] = true;
+			}
+		}
+	}
+
+	return columns;
+}
+
+
 
 /*******************************************************************************
  * Totals renderer
@@ -178,13 +142,8 @@ var listview_renderer_totals = {
  ******************************************************************************/
 
 function render_summary_state ( ul, state, stats, substates ) {
-
-	/*
-		@FIXME - INTERNET EXPLODER SUCKS - No support for either Object.keys or Array.prototype.filter pre IE 9
-	*/
-
 	var li = $('<li />').append(
-			$('<a />').attr('href', "?q="+escape(stats.queries[state]))
+			link_query(stats.queries[state])
 				.append(icon16('shield-' + state) ).append( $('<span />').text(stats.stats[state] + " " + state) )
 		);
 
@@ -198,7 +157,7 @@ function render_summary_state ( ul, state, stats, substates ) {
 		if (stats.stats[key]) {
 			li.append(delim);
 			li.append(
-				$('<a />').attr('href', '?q='+escape(stats.queries[key])).text(stats.stats[key] + ' ' + type)
+				link_query(stats.queries[key]).text(stats.stats[key] + ' ' + type)
 			);
 			delim = ', ';
 			suffix = ' ) ';
@@ -1031,7 +990,7 @@ function listview_render_table(data, total_count) {
 							.click(listview_increase_length)
 						)
 					);
-	
+
 	$('#filter_result').empty().append(output);
 	
 
@@ -1097,7 +1056,6 @@ function listview_render_table(data, total_count) {
 			.resize(update_float_header)
 			.scroll(update_float_header)
 			.trigger("scroll");
-
 	}
 
 }

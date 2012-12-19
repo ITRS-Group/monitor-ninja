@@ -16,9 +16,22 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterVisitor.js';
+		
+		$this->xtra_js[] = $basepath.'views/themes/default/js/lib.js';
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisitors.js';
 		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterRenderer.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterSearch.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisualizer.js';
+		
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterMain.js';
+
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterList.js';
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterSaved.js';
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterTextarea.js';
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisual.js';
+		
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterMultiselect.js';
+		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterInputWindow.js';
+		
+//		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisualizer.js';
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
@@ -33,12 +46,6 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->template->disable_refresh = true;
 
 		$lview->query = $query;
-	}
-
-	public function test_q() {
-		$query = $this->input->get('query','');
-		$set = ObjectPool_Model::get_by_query( $query );
-		json::ok( $set->get_query() );
 	}
 	
 	public function fetch_ajax() {
