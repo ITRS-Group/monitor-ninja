@@ -16,7 +16,7 @@ function listview_add_sort(element, vis_column, db_columns, current) {
 		vis_column : vis_column,
 		db_columns : db_columns
 	}, function(evt) {
-		listview_update_sort(evt.data.vis_column, evt.data.db_columns);
+		lsfilter_list.set_sort(evt.data.vis_column, evt.data.db_columns);
 	});
 }
 
@@ -905,7 +905,7 @@ function listview_table_col_name(c) {
 	return 'listview-col-' + name;
 }
 
-function listview_render_table(data, total_count) {
+function listview_render_table(data, total_count, sort_col, sort_asc) {
 	var tbody = false;
 	var last_table = '';
 	var container = '';
@@ -946,9 +946,9 @@ function listview_render_table(data, total_count) {
 					th.append(col_render.header);
 					if (col_render.sort) {
 						var sort_dir = 0;
-						if (listview_sort_vis_column == key)
+						if (sort_col == key)
 							sort_dir = -1;
-						if (listview_sort_ascending)
+						if (sort_asc)
 							sort_dir = -sort_dir;
 						listview_add_sort(th, key, col_render.sort, sort_dir);
 					}

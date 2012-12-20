@@ -1,5 +1,5 @@
 var lsfilter_main = {
-	update_delay : 500,
+	update_delay : 300,
 
 	/***************************************************************************
 	 * Trigger update of ListView
@@ -31,13 +31,10 @@ var lsfilter_main = {
 		var query = this.update_query;
 
 		this.update_timer = false;
-		console.log('update <' + query + '> from <' + source + '>');
 		try {
 			var parser = new LSFilter(new LSFilterPreprocessor(),
 					new LSFilterMetadataVisitor());
 			var metadata = parser.parse(query);
-
-			console.log(metadata);
 
 			lsfilter_history.update(query, source, metadata);
 			lsfilter_list.update(query, source, metadata);

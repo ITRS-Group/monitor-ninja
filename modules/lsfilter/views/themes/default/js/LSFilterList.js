@@ -4,12 +4,18 @@ var lsfilter_list = {
 
 	autorefresh_delay : 30000,
 
-	// External methods
+	/***************************************************************************
+	 * External methods
+	 **************************************************************************/
 	update : function(query, source, metadata) {
-		if( source == 'list' ) return;
+		if (source == 'list')
+			return;
 		var self = this; // To be able to access it from within handlers
 		this.request_query = query;
 		this.request_metadata = metadata;
+		this.sort_vis_column = null;
+		this.sort_db_columns = [];
+		this.sort_ascending = true;
 		if (this.request_timer) {
 			clearTimeout(this.request_timer);
 		}
@@ -22,8 +28,20 @@ var lsfilter_list = {
 	init : function() {
 
 	},
+	set_sort : function(vis_column, db_columns) {
+		if (this.sort_vis_column == vis_column) {
+			this.sort_ascending = !this.sort_ascending;
+		} else {
+			this.sort_vis_column = vis_column;
+			this.sort_db_columns = db_columns;
+			this.sort_ascending = true;
+		}
+		this.send_request();
+	},
 
-	// Internal veriables
+	/***************************************************************************
+	 * Internal veriables
+	 **************************************************************************/
 	request_query : '',
 	request_metadata : {},
 	resuest_timer : false,
@@ -34,26 +52,29 @@ var lsfilter_list = {
 
 	autorefresh_timer : false,
 
-	// Internal methods
+	/***************************************************************************
+	 * Internal methods
+	 **************************************************************************/
 	send_request : function() {
 		var self = this; // To be able to access it from within handlers
 
-		listview_ajax_active_request = $.ajax({
-			url : _site_domain + _index_page + "/" + _controller_name
-					+ "/fetch_ajax",
-			dataType : 'json',
-			data : {
-				"query" : this.request_query,
-				"sort" : [],
-				"sort_asc" : (1 ? 1 : 0),
-				"columns" : listview_columns_for_table(this.request_metadata['table']),
-				"limit" : 100,
-				"offset" : 0
-			},
-			success : function(data) {
-				self.handle_ajax_response(data);
-			}
-		});
+		listview_ajax_active_request = $
+				.ajax({
+					url : _site_domain + _index_page + "/" + _controller_name
+							+ "/fetch_ajax",
+					dataType : 'json',
+					data : {
+						"query" : this.request_query,
+						"sort" : this.sort_db_columns,
+						"sort_asc" : (this.sort_ascending ? 1 : 0),
+						"columns" : listview_columns_for_table(this.request_metadata['table']),
+						"limit" : 100,
+						"offset" : 0
+					},
+					success : function(data) {
+						self.handle_ajax_response(data);
+					}
+				});
 	},
 
 	handle_autorefresh : function() {
@@ -68,7 +89,7 @@ var lsfilter_list = {
 			listview_current_table = data.table;
 			listview_render_totals(data.totals);
 
-			listview_render_table(data.data, data.count);
+			listview_render_table(data.data, data.count, this.sort_vis_column, this.sort_ascending);
 			multi_select_refresh();
 		}
 
@@ -82,7 +103,8 @@ var lsfilter_list = {
 	},
 
 	loading_start : function() {
-		var loader = $('<span class="lsfilter-loader" />').append($('<span>'+_('Loading...')+'</span>'));
+		var loader = $('<span class="lsfilter-loader" />').append(
+				$('<span>' + _('Loading...') + '</span>'));
 		$('#filter_loading_status').append(loader);
 	},
 
