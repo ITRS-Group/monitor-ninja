@@ -9,7 +9,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 					'std host state down'            => '[hosts] state=1 and has_been_checked=1',
 					'std host state unreachable'     => '[hosts] state=2 and has_been_checked=1',
 					'std host pending'               => '[hosts] has_been_checked=0',
-					'std host all'                   => '[hosts] state!=999',
+					'std host all'                   => '[hosts] all',
 					'std host problems'              => '[hosts] has_been_checked != 0 and state != 0',
 					'std host unhandled problems'    => '[hosts] has_been_checked != 0 and state != 0 and scheduled_downtime_depth = 0 and acknowledged = 0'
 			),
@@ -19,7 +19,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 					'std service state critical'     => '[services] state=2 and has_been_checked=1',
 					'std service state unknown'      => '[services] state=3 and has_been_checked=1',
 					'std service pending'            => '[services] has_been_checked=0',
-					'std service all'                => '[services] description!=""',
+					'std service all'                => '[services] all',
 					'std service problems'           => '[services] has_been_checked != 0 and state != 0',
 					'std service unhandled problems' => '[services] has_been_checked != 0 and state != 0 and scheduled_downtime_depth = 0 and acknowledged = 0'
 			)

@@ -326,7 +326,8 @@ var LSFilterVisualizerVisitor = function LSFilterVisualizerVisitor() {
 };
 
 var lsfilter_visual = {
-	update : function(query) {
+	update : function(query, source, metadata) {
+		if( source == 'visual' ) return;
 		var parser = new LSFilter(new LSFilterPreprocessor(),
 				new LSFilterVisualizerVisitor());
 		try {

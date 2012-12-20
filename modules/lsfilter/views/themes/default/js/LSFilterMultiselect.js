@@ -1,9 +1,6 @@
 var lsfilter_multiselect = {
-	update : function(query) {
-		var parser = new LSFilter(new LSFilterPreprocessor(),
-				new LSFilterMetadataVisitor());
-		var metadata = parser.parse(query);
-
+	update : function(query, source, metadata) {
+		if( source == 'multiselect' ) return;
 		if (metadata.table && metadata.table != this.selection_table) {
 			this.selection_table = metadata.table;
 			this.selection = [];

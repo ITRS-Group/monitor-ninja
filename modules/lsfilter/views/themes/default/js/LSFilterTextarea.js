@@ -2,8 +2,9 @@ var lsfilter_textarea = {
 	// Configuration
 
 	// External methods
-	update : function(query) {
+	update : function(query, source, metadata) {
 		this.element.css("border", "2px solid #5d2"); // green
+		if( source == 'textarea' ) return;
 		this.element.val(query);
 	},
 	init : function() {
@@ -25,15 +26,8 @@ var lsfilter_textarea = {
 
 	// Internal methods
 	handle_propertychange : function(query) {
-		try {
-			var parser = new LSFilter(new LSFilterPreprocessor(),
-					new LSFilterMetadataVisitor());
-			var metadata = parser.parse(query);
-
-			this.element.css("border", "2px solid #5d2"); // green
-			lsfilter_main.update(query, 'textarea');
-		} catch (ex) {
-			this.element.css("border", "2px solid #f40"); // red
-		}
+		// Set red until parsed...
+		this.element.css("border", "2px solid #f40"); // red
+		lsfilter_main.update(query, 'textarea');
 	}
 };

@@ -1,6 +1,7 @@
 var lsfilter_saved = {
 
-	update : function(query) {
+	update : function(query, source, metadata) {
+		if( source == 'saved' ) return;
 		this.last_query = query;
 	},
 	init : function() {

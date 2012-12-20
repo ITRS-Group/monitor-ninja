@@ -5,9 +5,11 @@ var lsfilter_list = {
 	autorefresh_delay : 30000,
 
 	// External methods
-	update : function(query) {
+	update : function(query, source, metadata) {
+		if( source == 'list' ) return;
 		var self = this; // To be able to access it from within handlers
 		this.request_query = query;
+		this.request_metadata = metadata;
 		if (this.request_timer) {
 			clearTimeout(this.request_timer);
 		}
@@ -22,6 +24,7 @@ var lsfilter_list = {
 
 	// Internal veriables
 	request_query : '',
+	request_metadata : {},
 	resuest_timer : false,
 
 	sort_vis_column : null,
@@ -33,9 +36,6 @@ var lsfilter_list = {
 	// Internal methods
 	send_request : function() {
 		var self = this; // To be able to access it from within handlers
-		var parser = new LSFilter(new LSFilterPreprocessor(),
-				new LSFilterMetadataVisitor());
-		var metadata = parser.parse(this.request_query);
 
 		this.loading_start();
 
@@ -47,7 +47,7 @@ var lsfilter_list = {
 				"query" : this.request_query,
 				"sort" : [],
 				"sort_asc" : (1 ? 1 : 0),
-				"columns" : listview_columns_for_table(metadata['table']),
+				"columns" : listview_columns_for_table(this.request_metadata['table']),
 				"limit" : 100,
 				"offset" : 0
 			},

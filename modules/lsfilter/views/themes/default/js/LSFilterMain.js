@@ -1,26 +1,21 @@
 var lsfilter_main = {
 	update : function(query, source) {
 		console.log('update <' + query + '> from <' + source + '>');
-		
-		if (source != 'history')
-			lsfilter_history.update(query);
+		try {
+			var parser = new LSFilter(new LSFilterPreprocessor(),
+					new LSFilterMetadataVisitor());
+			var metadata = parser.parse(query);
 
-		if (source != 'list')
-			lsfilter_list.update(query);
-		
-		if (source != 'multiselect')
-			lsfilter_multiselect.update(query);
-
-		if (source != 'saved')
-			lsfilter_saved.update(query);
-
-		if (source != 'textarea')
-			lsfilter_textarea.update(query);
-
-		if (source != 'visual')
-			lsfilter_visual.update(query);
-
-		return true;
+			lsfilter_history.update(query,source,metadata);
+			lsfilter_list.update(query,source,metadata);
+			lsfilter_multiselect.update(query,source,metadata);
+			lsfilter_saved.update(query,source,metadata);
+			lsfilter_textarea.update(query,source,metadata);
+			lsfilter_visual.update(query,source,metadata);
+			
+		} catch (ex) {
+			this.handle_parse_exception(ex);
+		}
 	},
 	init : function() {
 		lsfilter_history.init();
@@ -30,8 +25,11 @@ var lsfilter_main = {
 		lsfilter_textarea.init();
 		lsfilter_visual.init();
 
-		// when frist loaded, the textarea contains the query from the controller
+		// when frist loaded, the textarea contains the query from the
+		// controller
 		lsfilter_textarea.load();
+	},
+	handle_parse_exception : function(ex) {
 	}
 };
 
