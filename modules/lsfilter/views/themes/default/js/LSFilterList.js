@@ -13,6 +13,7 @@ var lsfilter_list = {
 		if (this.request_timer) {
 			clearTimeout(this.request_timer);
 		}
+		this.loading_start();
 		this.request_timer = setTimeout(function() {
 			self.resuest_timer = false;
 			self.send_request();
@@ -36,8 +37,6 @@ var lsfilter_list = {
 	// Internal methods
 	send_request : function() {
 		var self = this; // To be able to access it from within handlers
-
-		this.loading_start();
 
 		listview_ajax_active_request = $.ajax({
 			url : _site_domain + _index_page + "/" + _controller_name
@@ -84,7 +83,7 @@ var lsfilter_list = {
 
 	loading_start : function() {
 		var loader = $('<span class="lsfilter-loader" />').append($('<span>'+_('Loading...')+'</span>'));
-		$('#filter_visual_result').append(loader);
+		$('#filter_loading_status').append(loader);
 	},
 
 	loading_stop : function() {

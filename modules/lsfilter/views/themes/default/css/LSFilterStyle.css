@@ -76,13 +76,7 @@
 	background: rgba(255, 255, 255, 0.4);
 }
 
-#filter_visual_result {
-	vertical-align: middle;
-	display: inline-block;
-} #filter_visual_result strong {
-	display: inline-block;
-	width: 40px;
-} #filter_visual {
+#filter_visual {
 	border-radius: 6px;
 	padding: 6px;
 	font-size: 9pt;

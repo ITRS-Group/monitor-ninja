@@ -18,7 +18,8 @@ var lsfilter_textarea = {
 	},
 	load : function() {
 		query = this.element.val();
-		this.handle_propertychange(query);
+		this.element.css("border", "2px solid #f40"); // red
+		lsfilter_main.update(query, 'textarea');
 	},
 
 	// Internal veriables
@@ -28,6 +29,6 @@ var lsfilter_textarea = {
 	handle_propertychange : function(query) {
 		// Set red until parsed...
 		this.element.css("border", "2px solid #f40"); // red
-		lsfilter_main.update(query, 'textarea');
+		lsfilter_main.update_delayed(query, 'textarea');
 	}
 };
