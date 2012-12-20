@@ -83,11 +83,11 @@ var lsfilter_list = {
 	},
 
 	loading_start : function() {
-		// var loader = $('<span class="lsfilter-loader"
-		// />').append($('<span>'+_('Loading...')+'</span>'));
+		var loader = $('<span class="lsfilter-loader" />').append($('<span>'+_('Loading...')+'</span>'));
+		$('#filter_visual_result').append(loader);
 	},
 
 	loading_stop : function() {
-
+		$('.lsfilter-loader').remove();
 	}
 };
