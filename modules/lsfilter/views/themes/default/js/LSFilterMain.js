@@ -6,6 +6,8 @@ var lsfilter_main = {
 					new LSFilterMetadataVisitor());
 			var metadata = parser.parse(query);
 
+			console.log(metadata);
+			
 			lsfilter_history.update(query, source, metadata);
 			lsfilter_list.update(query, source, metadata);
 			lsfilter_multiselect.update(query, source, metadata);
