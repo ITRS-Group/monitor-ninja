@@ -7,10 +7,10 @@ var lsfilter_history = {
 	},
 	init : function() {
 		window.onpopstate = function(evt) {
-			if (evt.state.query) {
+			if (evt.state && evt.state.query) {
 				lsfilter_main.update(evt.state.query, 'history');
 			} else {
-				alert('think about the history');
+				console.log('think about the history');
 				console.log(evt);
 			}
 		}
