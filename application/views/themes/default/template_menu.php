@@ -37,8 +37,9 @@
 							$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
 						}
 
-						if ($uri == $siteuri) {
-							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
+						if ($uri == $siteuri && false===strpos($data[0],'?')) {
+							// Only highlight link if not containing a "?"-mark. Otherwise links to listview (which can change without page reload) behave strange.
+							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' title='".ucwords($name)."' class='ninja_menu_links'>";
 							if (strpos($data[1], '.') !== false)
 								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$data[1]).")'></span>";
 							else
