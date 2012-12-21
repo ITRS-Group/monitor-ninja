@@ -68,6 +68,7 @@ var lsfilter_main = {
 	 * Handler for parsing exception
 	 **************************************************************************/
 	handle_parse_exception : function(ex) {
+		console.log(ex.stack);
 	},
 
 	/***************************************************************************

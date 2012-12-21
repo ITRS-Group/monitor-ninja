@@ -74,3 +74,8 @@ var LSFilterASTVisitor = function LSFilterASTVisit() {
 		return {'obj':obj, 'sub':list};
 	};
 };
+
+function LSFilterASTVisit( obj, visitor ) {
+	var method_name = 'visit_'+obj.obj;
+	return visitor[method_name](obj);
+}
