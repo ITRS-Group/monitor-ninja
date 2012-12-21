@@ -10,10 +10,10 @@ var lsfilter_extra_andor = {
 			'obj' : 'query',
 			'table' : obj.table
 		};
-		var query = this.visit(obj.query, 'and');
-		var newop = 'and';
-		if (query.obj == 'and') {
-			newop = 'or';
+		var query = this.visit(obj.query, 'or');
+		var newop = 'or';
+		if (query.obj == 'or') {
+			newop = 'and';
 		}
 		result['query'] = {
 			'obj' : newop,
@@ -94,6 +94,7 @@ var lsfilter_graphics_visitor = {
 	},
 
 	visit_andor : function(obj, op) {
+		var self = this; // To be able to access it from within handlers
 		var list = $('<ul class="lsfilter-' + op + '">');
 		for ( var i in obj.sub) {
 			list.append($(
@@ -101,9 +102,10 @@ var lsfilter_graphics_visitor = {
 					.append(this.visit(obj.sub[i])));
 		}
 		var button = $('<button class="lsfilter-add-' + op + '" />')
-				.text(_(op)).click(function(e) {
-					that.gui_stmnt_button(op, result, e, $(this));
-				});
+				.text(_(op));
+		button.click(function(e) {
+			self.gui_stmnt_button(e, op, $(this));
+		});
 		list
 				.append($('<li class="lsfilter-' + op + '-expr" />').append(
 						button));
@@ -124,7 +126,7 @@ var lsfilter_graphics_visitor = {
 		var val = $('<input type="text" value="' + obj.value + '" />');
 
 		for ( var f in this.fields) {
-			if (f == name) {
+			if (f == obj.field || (f=='this' && !obj.field)) {
 				fields.append($('<option value="' + f + '" selected="true">'
 						+ f + '</option>'));
 			} else {
@@ -168,6 +170,42 @@ var lsfilter_graphics_visitor = {
 		}
 	},
 
+	gui_stmnt_button : function(evt, op, btn) {
+		var self = this;
+		var newop = (op == 'and') ? ('or') : ('and');
+		evt.preventDefault();
+
+		var clone = this.visit({
+			'obj' : newop,
+			'sub' : [ {
+				'obj' : 'match',
+				'op' : 'in',
+				'field' : 'this',
+				'value' : ''
+			} ]
+		});
+		var tmp = null;
+
+		var match_field = btn.closest('li').siblings('.lsfilter-expr')
+				.children('.lsfilter-comp');
+
+		match_field.wrap('<ul class="lsfilter-' + newop
+				+ '"><li class="lsfilter-expr lsfilter-' + newop
+				+ '-expr"/></ul>');
+
+		var button = $('<button class="lsfilter-add-' + newop + '" />').text(
+				_(newop));
+		button.click(function(e) {
+			self.gui_stmnt_button(e, newop, $(this));
+		});
+
+		match_field.parent().parent().append($(
+				'<li class="lsfilter-' + newop + '-expr" />').append(button));
+
+		$('<li class="lsfilter-expr lsfilter-' + op + '-expr" />')
+				.append(clone).insertBefore(btn.closest('li'));
+	},
+
 	visit : function(obj) {
 		return LSFilterASTVisit(obj, this);
 	}
@@ -178,7 +216,7 @@ var lsfilter_visual = {
 	update : function(query, source, metadata) {
 		if (source == 'visual')
 			return;
-		var parser = new LSFilter(new LSFilterPreprocessor(),
+		var parser = new LSFilter(new LSFilterPP(),
 				new LSFilterASTVisitor());
 		try {
 			var ast = parser.parse(query);

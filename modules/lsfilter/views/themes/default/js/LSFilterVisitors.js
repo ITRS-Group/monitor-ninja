@@ -1,3 +1,12 @@
+var LSFilterPP = function LSFilterPP() {
+	this.parent = LSFilterPreprocessor;
+	this.parent();
+
+	this.preprocess_string = function(value) {
+		return value.substring(1,value.length-1);
+	};
+}
+
 var LSFilterMetadataVisitor = function LSFilterMetadataVisitor(){
 	this.visit_entry            = function(query0)                    { return query0; };
 	this.visit_query            = function(table_def1, search_query3) {
