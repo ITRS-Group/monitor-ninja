@@ -12,8 +12,14 @@ class HostSet_Model extends BaseHostSet_Model {
 				'host_all'               => $pool->get_by_name('std host all')
 		);
 		
+		$stats_result = $this->stats($stats);
+		$totals = array();
+		foreach( $stats as $name => $set ) {
+			$totals[$name] = array($this->intersect($set)->get_query(), $stats_result[$name]);
+		}
+		
 		$service_set = $this->get_services();
-		return $this->stats($stats) + $service_set->get_totals();
+		return $totals + $service_set->get_totals();
 	}
 
 	public function validate_columns($columns) {

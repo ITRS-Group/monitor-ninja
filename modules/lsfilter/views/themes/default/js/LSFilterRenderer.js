@@ -889,8 +889,8 @@ function listview_render_totals(totals) {
 	if (totals) {
 		for ( var field in listview_renderer_totals) {
 			if (field in totals) {
-				container.append(listview_renderer_totals[field](totals[field])
-						.css('float', 'left'));
+				container.append(listview_renderer_totals[field](totals[field][1])
+						.css('float', 'left').wrapInner(link_query(totals[field][0])));
 			}
 		}
 	}

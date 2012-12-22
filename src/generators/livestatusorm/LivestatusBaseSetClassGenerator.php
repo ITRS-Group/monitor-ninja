@@ -75,7 +75,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 	private function generate_association_get_set($table, $class, $field) {
 		$this->init_function('get_'.$table);
 		$this->write('$result = '.$class.'Pool'.self::$model_suffix.'::all();');
-		$this->write('$result->filter = $this->filter->prefix(%s . "_");', $field);
+		$this->write('$result->filter = $this->filter->prefix(%s);', $field.'.');
 		$this->write('return $result;');
 		$this->finish_function();
 	}

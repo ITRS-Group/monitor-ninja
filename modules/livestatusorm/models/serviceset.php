@@ -12,7 +12,13 @@ class ServiceSet_Model extends BaseServiceSet_Model {
 				'service_pending'        => $pool->get_by_name('std service pending'),
 				'service_all'            => $pool->get_by_name('std service all')
 		);
-		return $this->stats($stats);
+		$stats_result = $this->stats($stats);
+		$totals = array();
+		foreach( $stats as $name => $set ) {
+			$totals[$name] = array($this->intersect($set)->get_query(), $stats_result[$name]);
+		}
+		
+		return $totals;
 	}
 
 	public function validate_columns($columns) {

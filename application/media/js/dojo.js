@@ -101,21 +101,20 @@
 				"columns": ['description']
 			},
 			success : function(data) {
-				console.log();
 
-				if (data.totals.service_all > 0) {
+				if (data.totals.service_all[1] > 0) {
 					
 					uh_prob_title = data.totals.service_all + ' unacknowledged services in Critical/Warning state!';
 					link.attr('title', uh_prob_title);
 
 					if (uh_prob_state_element)
 						uh_prob_state_element.remove();
-					uh_prob_state_element = $("<span style='margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;' />").html(data.totals.service_all);
+					uh_prob_state_element = $("<span style='margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;' />").html(data.totals.service_all[1]);
 					link.parent().append(uh_prob_state_element);
 					
-					if (data.totals.service_state_critical > 0) {
+					if (data.totals.service_state_critical[1] > 0) {
 						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-critical');
-					} else if (data.totals.service_state_warning > 0) {
+					} else if (data.totals.service_state_warning[1] > 0) {
 						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-warning');
 					}
 				}

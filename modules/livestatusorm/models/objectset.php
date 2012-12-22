@@ -3,7 +3,7 @@
 
 abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	public function get_totals() {
-		return array('count' => $this->count());
+		return array('count' => array($this->get_query(), count($this)));
 	}
 	
 	public function get_query() {
