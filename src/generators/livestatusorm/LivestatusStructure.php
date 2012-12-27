@@ -5,6 +5,7 @@ class LivestatusStructure {
 		'columns' => 
 		array (
 			'class' => 'Column',
+			'source' => 'LS',
 			'key' => array('name', 'table'),
 			'structure' => 
 			array (
@@ -17,6 +18,7 @@ class LivestatusStructure {
 		'commands' => 
 		array (
 			'class' => 'Command',
+			'source' => 'LS',
 			'key' => array('line','name'),
 			'structure' => 
 			array (
@@ -27,6 +29,7 @@ class LivestatusStructure {
 		'comments' => 
 		array (
 			'class' => 'Comment',
+			'source' => 'LS',
 			'key' => array('id'),
 			'structure' => 
 			array (
@@ -48,6 +51,7 @@ class LivestatusStructure {
 		'contactgroups' => 
 		array (
 			'class' => 'ContactGroup',
+			'source' => 'LS',
 			'key' => array('name'),
 			'structure' => 
 			array (
@@ -59,6 +63,7 @@ class LivestatusStructure {
 		'contacts' => 
 		array (
 			'class' => 'Contact',
+			'source' => 'LS',
 			'key' => array('name'),
 			'structure' => 
 			array (
@@ -89,6 +94,7 @@ class LivestatusStructure {
 		'downtimes' => 
 		array (
 			'class' => 'Downtime',
+			'source' => 'LS',
 			'key' => array('id'),
 			'structure' => 
 			array (
@@ -110,6 +116,7 @@ class LivestatusStructure {
 		'hostgroups' => 
 		array (
 			'class' => 'HostGroup',
+			'source' => 'LS',
 			'key' => array('name'),
 			'structure' => 
 			array (
@@ -143,6 +150,7 @@ class LivestatusStructure {
 		'hosts' => 
 		array (
 			'class' => 'Host',
+			'source' => 'LS',
 			'key' => array('name'),
 			'structure' => 
 			array (
@@ -260,6 +268,7 @@ class LivestatusStructure {
 		'servicegroups' => 
 		array (
 			'class' => 'ServiceGroup',
+			'source' => 'LS',
 			'key' => array('name'),
 			'structure' => 
 			array (
@@ -286,6 +295,7 @@ class LivestatusStructure {
 		'services' => 
 		array (
 			'class' => 'Service',
+			'source' => 'LS',
 			'key' => array('host.name', 'description'),
 			'structure' => 
 			array (
@@ -375,6 +385,7 @@ class LivestatusStructure {
 		'status' => 
 		array (
 			'class' => 'Status',
+			'source' => 'LS',
 			'key' => array(),
 			'structure' => 
 			array (
@@ -423,6 +434,7 @@ class LivestatusStructure {
 		'timeperiods' => 
 		array (
 			'class' => 'TimePeriod',
+			'source' => 'LS',
 			'key' => array('name'),
 			'structure' => 
 			array (
@@ -431,6 +443,31 @@ class LivestatusStructure {
 				'name' => 'string',
 			),
 		),
+		'notifications' =>
+		array(
+			'class' => 'Notification',
+			'source' => 'SQL',
+			'table' => 'notification',
+			'key' => array('id'),
+			'structure' => array(
+				'instance_id' => 'int',
+				'id' => 'int',
+				'notification_type' => 'int',
+				'start_time' => 'int',
+				'end_time' => 'int',
+				'contact_name' => 'string',
+				'host_name' => 'string',
+				'service_description' => 'string',
+				'command_name' => 'string',
+				'reason_type' => 'int',
+				'state' => 'int',
+				'output' => 'string',
+				'ack_author' => 'string',
+				'ack_data' => 'string',
+				'escalated' => 'int',
+				'contacts_notified' => 'int',
+				),
+			),
 /*
 		
 		'log' => 

@@ -113,7 +113,7 @@ abstract class class_generator {
 		foreach( $args as $arg ) {
 			$argstr .= $argdelim.'$'.$arg;
 			if( isset($defaults[$arg]) )
-				$argstr .= '='.var_export($defaults[$n],true);
+				$argstr .= '='.var_export($defaults[$arg],true);
 			$argdelim = ", ";
 		}
 		$this->write( "abstract ${modifiers}function $name($argstr);" );

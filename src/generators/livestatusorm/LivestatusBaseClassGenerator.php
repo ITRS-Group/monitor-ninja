@@ -33,7 +33,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 
 	public function generate() {
 		parent::generate();
-		$this->init_class( 'ObjectRoot', array('abstract') );
+		$this->init_class( 'Object', array('abstract') );
 		$this->variable( '_table', $this->name, 'protected' );
 		$this->write();
 

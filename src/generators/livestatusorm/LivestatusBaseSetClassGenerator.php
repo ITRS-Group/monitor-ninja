@@ -33,7 +33,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 	
 	public function generate() {
 		parent::generate();
-		$this->init_class( 'ObjectSet', array('abstract') );
+		$this->init_class( 'Object'.$this->structure['source'].'Set', array('abstract') );
 		$this->variable('table',$this->name,'protected');
 		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
 		$this->generate_validate_columns();

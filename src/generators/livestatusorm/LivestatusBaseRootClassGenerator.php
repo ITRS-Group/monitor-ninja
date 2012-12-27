@@ -1,11 +1,11 @@
 <?php
 
-class LivestatusBaseClassRootGenerator extends class_generator {
+class LivestatusBaseRootClassGenerator extends class_generator {
 	
 	private $structure;
 	
-	public function __construct( $name, $descr ) {
-		$this->classname = 'Base'.$descr['class'];
+	public function __construct( $name, $structure ) {
+		$this->classname = 'BaseObject';
 		$this->set_model();
 	}
 	
@@ -29,7 +29,7 @@ class LivestatusBaseClassRootGenerator extends class_generator {
 		$this->write( '$result=array("_table" => $this->_table);');
 		$this->write( 'foreach( $this->export as $field) {' );
 		$this->write(     '$value = $this->{"get_$field"}();');
-		$this->write(     'if( $value instanceof ObjectRoot'.self::$model_suffix.' ) {');
+		$this->write(     'if( $value instanceof Object'.self::$model_suffix.' ) {');
 		$this->write(          '$value = $value->export();');
 		$this->write(     '}');
 		$this->write(     '$result[$field] = $value;');
