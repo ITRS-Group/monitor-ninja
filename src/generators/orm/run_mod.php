@@ -16,7 +16,7 @@ require_once( 'LivestatusAutoloaderGenerator.php' );
 
 require_once( 'LivestatusStructure.php' );
 
-class livestatusorm_generator extends generator_module {
+class orm_generator extends generator_module {
 	public function run() {
 
 		$classpaths = array(
