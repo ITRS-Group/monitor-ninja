@@ -7,6 +7,9 @@ class LivestatusSetIterator implements Iterator {
 	private $class;
 	
 	public function __construct( $data, $columns, $class ) {
+		if( is_array($data) ) {
+			$data = new ArrayIterator($data);
+		}
 		$this->data = $data;
 		$this->columns = $columns;
 		$this->ptr = 0;
@@ -15,31 +18,32 @@ class LivestatusSetIterator implements Iterator {
 	
 	public function current()
 	{
+		$cur_arr = $this->data->current();
 		$varmap = array_combine(
 				$this->columns,
-				$this->data[$this->ptr]
+				$cur_arr
 				);
 		return new $this->class( $varmap, '' );
 	}
 	
 	public function key()
 	{
-		return $this->ptr;
+		return $this->data->key();
 	}
 	
 	public function next()
 	{
-		$this->ptr++;
+		$this->data->next();
 	}
 	
 	public function rewind()
 	{
-		$this->ptr = 0;
+		$this->ptr = $this->data->rewind();
 	}
 	
 	public function valid()
 	{
-		return isset($this->data[$this->ptr]);
+		return $this->data->valid();
 	}
 }
 

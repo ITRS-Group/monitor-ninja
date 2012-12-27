@@ -5,7 +5,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 	private $structure;
 	private $objectclass;
 	private $associations;
-	
+
 	public function __construct( $name, $structure ) {
 		$this->name = $name;
 		$this->structure = $structure[$name];
@@ -13,28 +13,32 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 		$this->classname = 'Base'.$this->structure['class'].'Set';
 
 		$this->associations = array();
-		
+
 		foreach( $structure as $table => $tbl_struct ) {
 			foreach( $tbl_struct['structure'] as $name => $type ) {
 				if( is_array( $type ) ) {
 					if( $type[0] == $this->structure['class'] ) {
 						$this->associations[] = array(
-								$table,
-								$tbl_struct['class'],
-								substr( $type[1], 0, -1 ) // Drop last _
+							$table,
+							$tbl_struct['class'],
+							substr( $type[1], 0, -1 ) // Drop last _
 						);
 					}
 				}
 			}
 		}
-		
+
 		$this->set_model();
 	}
-	
+
 	public function generate() {
 		parent::generate();
 		$this->init_class( 'Object'.$this->structure['source'].'Set', array('abstract') );
 		$this->variable('table',$this->name,'protected');
+		$dbtable = $this->name;
+		if( isset($this->structure['table']) )
+			$dbtable = $this->structure['table'];
+		$this->variable('dbtable',$dbtable,'protected');
 		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
 		$this->generate_validate_columns();
 		foreach( $this->associations as $assoc ) {
@@ -42,7 +46,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 		}
 		$this->finish_class();
 	}
-	
+
 	public function generate_validate_columns() {
 		$this->init_function('validate_columns', array('columns'));
 		foreach($this->structure['structure'] as $name => $type ) {
@@ -71,7 +75,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 		$this->write('return $columns;');
 		$this->finish_function();
 	}
-	
+
 	private function generate_association_get_set($table, $class, $field) {
 		$this->init_function('get_'.$table);
 		$this->write('$result = '.$class.'Pool'.self::$model_suffix.'::all();');

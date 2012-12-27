@@ -17,6 +17,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->init_class( false, array('abstract'), array("IteratorAggregate", "Countable") );
 		$this->generate_construct();
 		$this->variable('table',null,'protected');
+		$this->variable('dbtable',null,'protected');
 		$this->variable('class',null,'protected');
 		$this->variable('filter',null,'protected');
 		$this->generate_getter('table');

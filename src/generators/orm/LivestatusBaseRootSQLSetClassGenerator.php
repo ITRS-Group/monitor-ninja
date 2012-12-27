@@ -1,17 +1,48 @@
 <?php
 
+/*
+ public function stats($intersections) {
+return array();
+}
+
+public function count() {
+$db = Database::instance();
+$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable." WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);
+$q = $db->query($sql);
+$q->result(false);
+$row = $q->current();
+return $row['count'];
+}
+
+public function it($columns, $order, $limit=false, $offset=false) {
+$db = Database::instance();
+$limitstr = '';
+if( $limit !== false ) {
+$limitstr = ' LIMIT ';
+if( $offset !== false ) {
+$limitstr .= intval($offset) . ', ';
+}
+$limitstr .= intval($limit);
+}
+$sql = "SELECT * FROM ".$this->dbtable." WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false).$limitstr;
+$q = $db->query($sql);
+$q->result(false);
+return new LivestatusSetIterator($q, $q->list_fields(), $this->class);
+}
+*/
+
 class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 	private $name;
 	private $structure;
 	private $objectclass;
-	
+
 	public function __construct( $name, $descr ) {
 		$this->name = $name;
 		$this->structure = $descr;
 		$this->classname = "BaseObjectSQLSet";
 		$this->set_model();
 	}
-	
+
 	public function generate() {
 		parent::generate();
 		$this->init_class( 'ObjectSet', array('abstract') );
@@ -20,24 +51,41 @@ class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 		$this->generate_it();
 		$this->finish_class();
 	}
-	
+
 	public function generate_stats() {
 		$this->init_function('stats',array('intersections'));
 		$this->write('return array();');
 		$this->finish_function();
 	}
-	
+
 	public function generate_count() {
 		$this->init_function('count');
-		$this->write('return 0;');
+		$this->write('$db = Database::instance();');
+		$this->write('$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable;');
+		$this->write('$sql .= " WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		$this->write('$q = $db->query($sql);');
+		$this->write('$q->result(false);');
+		$this->write('$row = $q->current();');
+		$this->write('return $row["count"];');
 		$this->finish_function();
 	}
-	
+
 	public function generate_it() {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
-		$this->write('$sql = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
+		$this->write('$db = Database::instance();');
 
-		$this->write('return new LivestatusSetIterator(array(), array(), $this->class);');
+		$this->write('$sql = "SELECT * FROM ".$this->dbtable;');
+		$this->write('$sql .= " WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		$this->write('if( $limit !== false ) {');
+		$this->write(    '$sql .= " LIMIT ";');
+		$this->write(    'if( $offset !== false ) {');
+		$this->write(        '$sql .= intval($offset) . ", ";');
+		$this->write(    '}');
+		$this->write(    '$sql .= intval($limit);');
+		$this->write('}');
+		$this->write('$q = $db->query($sql);');
+		$this->write('$q->result(false);');
+		$this->write('return new LivestatusSetIterator($q, $q->list_fields(), $this->class);');
 		$this->finish_function();
 	}
 }
