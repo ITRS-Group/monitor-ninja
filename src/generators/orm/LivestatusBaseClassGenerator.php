@@ -19,9 +19,9 @@ class LivestatusBaseClassGenerator extends class_generator {
 				if( is_array( $type ) ) {
 					if( $type[0] == $this->structure['class'] ) {
 						$this->associations[] = array(
-								$table,
-								$tbl_struct['class'],
-								substr( $type[1], 0, -1 ) // Drop last _
+							$table,
+							$tbl_struct['class'],
+							substr( $type[1], 0, -1 ) // Drop last _
 						);
 					}
 				}
@@ -48,7 +48,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 
 		$this->generate_construct();
 		$this->generate_get_key();
-		
+
 		/* Getters and setters */
 		foreach( $this->structure['structure'] as $field => $type ) {
 			if( is_array($type) ) {
@@ -96,7 +96,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 			foreach( explode('.',$keypart) as $part ) {
 				$call .= "->get_$part()";
 			}
-			
+				
 			// Use sprintf instead of embedded in write. write escapes
 			$this->write( sprintf( $matchline, $call ) );
 			$matchline = '$key .= ";".$this%s;';
@@ -104,7 +104,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 		$this->write('return $key;');
 		$this->finish_function();
 	}
-	
+
 	/* Object */
 
 	private function storage_object( $name, $type ) {
@@ -113,7 +113,9 @@ class LivestatusBaseClassGenerator extends class_generator {
 
 	private function fetch_object( $name, $type ) {
 		list( $class, $prefix ) = $type;
-		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, \$prefix.".var_export($prefix,true)." );" );
+		//		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, \$prefix.".var_export($prefix,true)." );" );
+		// Livestatus handles only one level of prefixes... might change in future? (for example comments: service.host.name should be host.name
+		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, ".var_export($prefix,true)." );" );
 		$this->write( "\$this->export[] = %s;", $name );
 	}
 

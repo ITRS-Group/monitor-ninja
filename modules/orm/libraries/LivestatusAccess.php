@@ -52,13 +52,22 @@ class LivestatusAccess {
 		$query .= $this->auth($table);
 		
 		if(is_array( $columns )) {
-			$columns = array_map( function($col){return str_replace('.','_',$col);}, $columns);
-			$query .= "Columns: ".implode(' ',$columns)."\n";
+			$column_txt = "";
+			$fetch_columns = array();
+			foreach($columns as $column ) {
+				$parts = explode('.',$column);
+				$colname = implode('_',array_slice($parts, -2)); /* service.host.name is not possible... host.name in livestatus... */
+				$column_txt .= " ".$colname;
+				$fetch_columns[] = $colname;
+			}
+			$columns = $fetch_columns;
+			$query .= "Columns: $column_txt\n";
 		}
 
 		$query .= $filter;
 		$query .= "\n";
 		
+//		throw new LivestatusAccessException($column_txt);
 		$start   = microtime(true);
 		$rc      = $this->connection->writeSocket($query);;
 		$head    = $this->connection->readSocket(16);
@@ -69,8 +78,6 @@ class LivestatusAccess {
 			throw new LivestatusAccessException("empty body for query: <pre>".$query."</pre>");
 		if($status != 200)
 			throw new LivestatusAccessException("Invalid request: $body");
-		
-		$body = str_replace( '"data":[,', '"data":[', $body ); /* FIXME: (after livestatus is fixed) */
 		
 		$result = json_decode(utf8_encode($body), true);
 		
