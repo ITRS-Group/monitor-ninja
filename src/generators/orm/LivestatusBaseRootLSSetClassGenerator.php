@@ -48,7 +48,8 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 		$this->init_function('count');
 		$this->write('$ls = LivestatusAccess::instance();');
 
-		$this->write('$ls_filter = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
+		$this->write('$filter = $this->get_auth_filter();');
+		$this->write('$ls_filter = $filter->visit(new LivestatusFilterBuilderVisitor(), false);');
 		$this->write('$ls_filter .= "Limit: 0\n";');
 		
 		$this->write('$result = $ls->query($this->table, $ls_filter, false);');
@@ -61,7 +62,8 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$ls = LivestatusAccess::instance();');
 
-		$this->write('$ls_filter = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
+		$this->write('$filter = $this->get_auth_filter();');
+		$this->write('$ls_filter = $filter->visit(new LivestatusFilterBuilderVisitor(), false);');
 		
 		$this->write('foreach($order as $col) {');
 		$this->write('$ls_filter .= "Sort: $col\n";');

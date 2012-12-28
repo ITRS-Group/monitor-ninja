@@ -20,6 +20,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->variable('dbtable',null,'protected');
 		$this->variable('class',null,'protected');
 		$this->variable('filter',null,'protected');
+		$this->variable('default_sort',null,'protected');
 		$this->generate_getter('table');
 		$this->generate_getter('class');
 		$this->generate_binary_operator('union', 'LivestatusFilterOr');
@@ -30,6 +31,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->generate_stats();
 		$this->generate_getIterator();
 		$this->generate_it();
+		$this->generate_get_auth_filter();
 		$this->finish_class();
 	}
 	
@@ -104,5 +106,11 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 	
 	public function generate_it() {
 		$this->abstract_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
+	}
+	
+	public function generate_get_auth_filter() {
+		$this->init_function('get_auth_filter',array(),array('protected'));
+		$this->write('return $this->filter;');
+		$this->finish_function();
 	}
 }

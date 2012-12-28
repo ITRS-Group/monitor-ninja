@@ -61,8 +61,9 @@ class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 	public function generate_count() {
 		$this->init_function('count');
 		$this->write('$db = Database::instance();');
+		$this->write('$filter = $this->get_auth_filter();');
 		$this->write('$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable;');
-		$this->write('$sql .= " WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(), false);');
 		$this->write('$q = $db->query($sql);');
 		$this->write('$q->result(false);');
 		$this->write('$row = $q->current();');
@@ -74,8 +75,21 @@ class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$db = Database::instance();');
 		$this->write('$columns = $this->validate_columns($columns);');
+		
+		$this->write('$filter = $this->get_auth_filter();');
+		
 		$this->write('$sql = "SELECT ".str_replace(".","_",implode(",",$columns))." FROM ".$this->dbtable;');
-		$this->write('$sql .= " WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		
+		$this->write('$sort = array();');
+		$this->write('foreach($order as $col) {');
+		$this->write('$sort[] = $col;');
+		$this->write('}');
+		$this->write('foreach($this->default_sort as $col) {');
+		$this->write('$sort[] = $col;');
+		$this->write('}');
+		$this->write('$sql .= " ORDER BY ".implode(", ",$sort);');
+		
 		$this->write('if( $limit !== false ) {');
 		$this->write(    '$sql .= " LIMIT ";');
 		$this->write(    'if( $offset !== false ) {');
@@ -83,6 +97,7 @@ class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 		$this->write(    '}');
 		$this->write(    '$sql .= intval($limit);');
 		$this->write('}');
+		
 		$this->write('$q = $db->query($sql);');
 		$this->write('$q->result(false);');
 		$this->write('return new LivestatusSetIterator($q, $q->list_fields(), $this->class);');

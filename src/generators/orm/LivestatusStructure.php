@@ -449,6 +449,7 @@ class LivestatusStructure {
 			'source' => 'SQL',
 			'table' => 'notification',
 			'key' => array('id'),
+			'default_sort' => array('id desc'),
 			'structure' => array(
 				'instance_id' => 'int',
 				'id' => 'int',
