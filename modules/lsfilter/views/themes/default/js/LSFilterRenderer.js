@@ -414,10 +414,8 @@ var listview_renderer_table =
 					"sort": [ 'last_check' ],
 					"cell": function(obj, tr)
 					{
-						var last_check =
-								new Date(obj.last_check * 1000);
-						return $('<td />')
-								.text(last_check.toLocaleTimeString());
+						return $('<td />').text(
+								format_timestamp(obj.last_check));
 					}
 				},
 				"duration": {
@@ -690,10 +688,8 @@ var listview_renderer_table =
 					"sort": [ 'last_check' ],
 					"cell": function(obj, tr)
 					{
-						var last_check =
-								new Date(obj.last_check * 1000);
-						return $('<td />')
-								.text(last_check.toLocaleTimeString());
+						return $('<td />').text(
+								format_timestamp(obj.last_check));
 					}
 				},
 				"duration": {
@@ -837,6 +833,12 @@ var listview_renderer_table =
 			 * Render Comments
 			 ******************************************************************/
 			"comments": {
+				"select": {
+					"header": '',
+					"depends": [],
+					"sort": false,
+					"cell": listview_multi_select_cell_renderer
+				},
 				"is_service": {
 					"header": _('Type'),
 					"depends": [ 'is_service' ],
@@ -909,9 +911,8 @@ var listview_renderer_table =
 					"sort": [ 'entry_time' ],
 					"cell": function(obj, tr)
 					{
-						var time =
-								new Date(obj.entry_time * 1000);
-						return $('<td />').text(time.toLocaleTimeString());
+						return $('<td />').text(
+								format_timestamp(obj.entry_time));
 					}
 				},
 				"author": {
@@ -994,6 +995,148 @@ var listview_renderer_table =
 						else
 							cell.text(_('N/A'));
 						return cell;
+					}
+				},
+				"actions": {
+					"header": _('Actions'),
+					"depends": [],
+					"sort": false,
+					"cell": function(obj, tr)
+					{
+						return $('<td />');
+					}
+				}
+			},
+			/*******************************************************************
+			 * Render Downtimes
+			 ******************************************************************/
+			"downtimes": {
+				"select": {
+					"header": '',
+					"depends": [],
+					"sort": false,
+					"cell": listview_multi_select_cell_renderer
+				},
+				"is_service": {
+					"header": _('Type'),
+					"depends": [ 'is_service' ],
+					"sort": false,
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(
+								obj.is_service ? 'Service' : 'Host');
+					}
+				},
+				"host_status": {
+					"header": '',
+					"depends": [ 'host.state_text' ],
+					"sort": [ 'host.state' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').append(
+								icon16('shield-' + obj.host.state_text,
+										obj.host.state_text));
+						
+					}
+				},
+				"host_name": {
+					"header": _('Host Name'),
+					"depends": [ 'host.name', 'host.icon_image' ],
+					"sort": [ 'host.name' ],
+					"cell": function(obj, tr)
+					{
+						var cell =
+								$('<td />');
+						cell.append(extinfo_link(obj.host.name).text(
+								obj.host.name));
+						
+						if (obj.host.icon_image)
+							cell.append(icon(obj.host.icon_image,
+									extinfo_link(obj.host.name)).css('float',
+									'right'));
+						
+						return cell;
+					}
+				},
+				"service_status": {
+					"header": '',
+					"depends": [ 'service.state_text', 'service.description' ],
+					"sort": [ 'service.state' ],
+					"cell": function(obj, tr)
+					{
+						if (!obj.service.description) return $('<td />');
+						
+						return $('<td><span class="icon-16 x16-shield-'
+								+ obj.service.state_text + '"></span></td>');
+					}
+				},
+				"service_description": {
+					"header": _('Service'),
+					"depends": [ 'host.name', 'service.description' ],
+					"sort": [ 'service.description' ],
+					"cell": function(obj, tr)
+					{
+						if (!obj.service.description) return $('<td />');
+						return $('<td />').append(
+								extinfo_link(obj.host.name,
+										obj.service.description).text(
+										obj.service.description));
+					}
+				},
+				"time": {
+					"header": _('Entry Time'),
+					"depends": [ 'entry_time' ],
+					"sort": [ 'entry_time' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(
+								format_timestamp(obj.entry_time));
+					}
+				},
+				"author": {
+					"header": _('Author'),
+					"depends": [ 'author' ],
+					"sort": [ 'author' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(obj.author);
+					}
+				},
+				"comment": {
+					"header": _('Comment'),
+					"depends": [ 'comment' ],
+					"sort": [ 'comment' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(obj.comment);
+					}
+				},
+				"id": {
+					"header": _('ID'),
+					"depends": [ 'id' ],
+					"sort": [ 'id' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(obj.id);
+					}
+				},
+				"start_time": {
+					"header": _("Start Time"),
+					"depends": [ 'start_time' ],
+					"sort": [ 'start_time' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(
+								format_timestamp(obj.start_time));
+					}
+				},
+				"end_time": {
+					"header": _("End Time"),
+					"depends": [ 'end_time' ],
+					"sort": [ 'end_time' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(format_timestamp(obj.end_time));
 					}
 				},
 				"actions": {
