@@ -7,7 +7,7 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		
 		$basepath = 'modules/lsfilter/';
-		$ormpath = 'modules/livestatusorm/';
+		$ormpath = 'modules/orm/';
 
 		$this->xtra_js[] = $ormpath.'js/LivestatusStructure.js';
 

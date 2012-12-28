@@ -73,8 +73,8 @@ class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 	public function generate_it() {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$db = Database::instance();');
-
-		$this->write('$sql = "SELECT * FROM ".$this->dbtable;');
+		$this->write('$columns = $this->validate_columns($columns);');
+		$this->write('$sql = "SELECT ".str_replace(".","_",implode(",",$columns))." FROM ".$this->dbtable;');
 		$this->write('$sql .= " WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);');
 		$this->write('if( $limit !== false ) {');
 		$this->write(    '$sql .= " LIMIT ";');
