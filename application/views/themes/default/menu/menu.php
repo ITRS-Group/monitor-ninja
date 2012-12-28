@@ -78,7 +78,7 @@ if(Kohana::config('config.pnp4nagios_path') !== false) {
 }
 $section_reporting[$menu_items['alert_history']] = array('/alert_history/generate', 'alerthistory',0);
 $section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
-$section_reporting[$menu_items['notifications']]  = array('/notifications', 'notifications',0);
+$section_reporting[$menu_items['notifications']]  = array('/listview?q=[notifications] all', 'notifications',0);
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
 $section_reporting[$menu_items['availability']] = array('/avail/index', 'availability',0);
 $section_reporting[$menu_items['sla']] = array('/sla/index', 'sla',0);
