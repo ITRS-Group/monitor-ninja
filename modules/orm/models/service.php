@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/baseservice.php' );
 
 class Service_Model extends BaseService_Model {
 	public function __construct($values, $prefix) {

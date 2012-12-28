@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/basenotification.php' );
 
 class Notification_Model extends BaseNotification_Model {
 	public function __construct($values, $prefix) {

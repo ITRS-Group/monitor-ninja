@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/basehostgroup.php' );
 
 class HostGroup_Model extends BaseHostGroup_Model {
 	public function __construct($values, $prefix) {

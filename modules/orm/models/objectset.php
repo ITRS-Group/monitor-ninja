@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/baseobjectset.php' );
 
 abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	public function get_totals() {

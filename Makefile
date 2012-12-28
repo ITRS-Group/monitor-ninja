@@ -1,4 +1,5 @@
 SHELL = /bin/bash
+GENERATE_PHP_MODS=
 
 all: generate-css generate-php
 
@@ -19,7 +20,7 @@ generate-css:
 	compass compile --boring application/views/themes/default/css/dark || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
 
 generate-php:
-	php src/generators/run.php
+	php src/generators/run.php $(GENERATE_PHP_MODS)
 
 test: test-php-lint test-reports test-unittest
 

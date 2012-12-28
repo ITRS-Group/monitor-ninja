@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/basecontactpool.php' );
 
 class ContactPool_Model extends BaseContactPool_Model {
 	/**

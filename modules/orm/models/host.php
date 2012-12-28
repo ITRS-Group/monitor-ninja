@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/basehost.php' );
 
 class Host_Model extends BaseHost_Model {
 	public function __construct($values, $prefix) {

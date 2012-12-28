@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/baseobjectpool.php' );
 
 abstract class ObjectPool_Model extends BaseObjectPool_Model {
 

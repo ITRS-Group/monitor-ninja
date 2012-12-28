@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/basehostset.php' );
 
 class HostSet_Model extends BaseHostSet_Model {
 	public function get_totals() {

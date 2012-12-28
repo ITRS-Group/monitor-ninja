@@ -37,80 +37,92 @@ class orm_generator extends generator_module {
 			$sources[$structure['source']] = 1;
 		}
 		$sources = array_keys($sources);
-		
+
 		/* Generate base root class */
 		$generator = new LivestatusBaseRootClassGenerator( 'root', $full_structure );
+		$generator->set_class_dir('base');
 		$generator->generate();
+		$classpaths[$generator->get_classname()] = $generator->get_include_path();
 			
 		/* Generate base pool class */
 		$generator = new LivestatusBaseRootPoolClassGenerator( 'root', $full_structure );
+		$generator->set_class_dir('base');
 		$generator->generate();
+		$classpaths[$generator->get_classname()] = $generator->get_include_path();
 
 		/* Generate base set class */
 		$generator = new LivestatusBaseRootSetClassGenerator( 'root', $full_structure );
+		$generator->set_class_dir('base');
 		$generator->generate();
-		
+		$classpaths[$generator->get_classname()] = $generator->get_include_path();
+
 		foreach( $sources as $source ) {
 			/* Generate base Livestatus set class */
 			$classname = "LivestatusBaseRoot".$source ."SetClassGenerator";
 			require_once( "$classname.php" );
 			$generator = new $classname( 'root', $full_structure );
+			$generator->set_class_dir('base');
 			$generator->generate();
+			$classpaths[$generator->get_classname()] = $generator->get_include_path();
 		}
 
 		foreach( $full_structure as $name => $structure ) {
 			/* Generate base class */
 			$generator = new LivestatusBaseClassGenerator( $name, $full_structure );
+			$generator->set_class_dir('base');
 			$generator->generate();
+			$classpaths[$generator->get_classname()] = $generator->get_include_path();
 
 			/* Generate base pool class */
 			$generator = new LivestatusBasePoolClassGenerator( $name, $full_structure );
+			$generator->set_class_dir('base');
 			$generator->generate();
+			$classpaths[$generator->get_classname()] = $generator->get_include_path();
 
 			/* Generate base set class */
 			$generator = new LivestatusBaseSetClassGenerator( $name, $full_structure );
+			$generator->set_class_dir('base');
 			$generator->generate();
+			$classpaths[$generator->get_classname()] = $generator->get_include_path();
 		}
-
-		
 		
 		$base_structure = array('class'=>'Object', 'modifiers'=>array('abstract'));
-		
+
 		/* Generate root class wrapper */
-		$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure );
+		$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%s", $classpaths );
 		if( !$generator->exists() )
 			$generator->generate();
 			
 		/* Generate pool class wrapper if not exists */
-		$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%sPool" );
+		$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%sPool", $classpaths );
 		if( !$generator->exists() )
 			$generator->generate();
-		
+
 		/* Generate set class wrapper if not exists */
-		$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%sSet" );
+		$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%sSet", $classpaths );
 		if( !$generator->exists() )
 			$generator->generate();
 
 		foreach( $sources as $source ) {
 			/* Generate set class wrapper if not exists */
-			$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%s".$source."Set" );
+			$generator = new LivestatusWrapperClassGenerator( 'root', $base_structure, "%s".$source."Set", $classpaths );
 			if( !$generator->exists() )
 				$generator->generate();
 		}
 
 		foreach( $full_structure as $name => $structure ) {
 			/* Generate wrapper if not exists */
-			$generator = new LivestatusWrapperClassGenerator( $name, $structure );
+			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%s", $classpaths );
 			if( !$generator->exists() )
 				$generator->generate();
 
 			/* Generate pool wrapper if not exists */
-			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sPool" );
+			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sPool", $classpaths );
 			if( !$generator->exists() )
 				$generator->generate();
 
 			/* Generate set wrapper if not exists */
-			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sSet" );
+			$generator = new LivestatusWrapperClassGenerator( $name, $structure, "%sSet", $classpaths );
 			if( !$generator->exists() )
 				$generator->generate();
 

@@ -1,5 +1,6 @@
 <?php
 
+require_once( dirname(__FILE__).'/base/baseserviceset.php' );
 
 class ServiceSet_Model extends BaseServiceSet_Model {
 	public function get_totals() {

@@ -15,6 +15,12 @@ modules/op5reports
 modules/reports
 *.dojod
 .sass-cache
+
+# Generated code
+modules/*/js
+modules/*/html
+modules/*/models/base
+
 application/views/themes/default/css/*/*.css
 application/views/themes/default/icons/x*-*.png
 application/views/themes/default/icons/menu-*.png
