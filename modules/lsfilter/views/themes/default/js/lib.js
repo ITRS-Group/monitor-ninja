@@ -97,3 +97,15 @@ function format_timestamp(timestamp)
 			new Date(timestamp * 1000);
 	return dateobj.toLocaleDateString() + " " + dateobj.toLocaleTimeString();
 }
+function format_interval(interval) {
+	if( interval < 0 ) return "N/A";
+	var str = "";
+	if( interval%60 != 0 ) str = (interval%60) + "s "+str;
+	interval = Math.floor(interval/60);
+	if( interval%60 != 0 ) str = (interval%60) + "m "+str;
+	interval = Math.floor(interval/60);
+	if( interval%24 != 0 ) str = (interval%24) + "h "+str;
+	interval = Math.floor(interval/24);
+	if( interval != 0 ) str = (interval) + "d "+str;
+	return str;
+}

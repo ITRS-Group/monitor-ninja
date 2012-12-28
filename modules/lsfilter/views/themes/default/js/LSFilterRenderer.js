@@ -424,7 +424,7 @@ var listview_renderer_table =
 					"sort": [ 'last_state_change' ],
 					"cell": function(obj, tr)
 					{
-						return $('<td />').text(obj.duration);
+						return $('<td />').text(format_interval(obj.duration));
 					}
 				},
 				"status_info": {
@@ -698,7 +698,7 @@ var listview_renderer_table =
 					"sort": [ 'last_state_change' ],
 					"cell": function(obj, tr)
 					{
-						return $('<td />').text(obj.duration);
+						return $('<td />').text(format_interval(obj.duration));
 					}
 				},
 				"attempt": {
@@ -1137,6 +1137,16 @@ var listview_renderer_table =
 					"cell": function(obj, tr)
 					{
 						return $('<td />').text(format_timestamp(obj.end_time));
+					}
+				},
+				"duration": {
+					"header": _("Duration"),
+					"depends": [ 'start_time', 'end_time' ],
+					"sort": false,
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(
+								format_interval(obj.end_time - obj.start_time));
 					}
 				},
 				"actions": {
