@@ -21,7 +21,7 @@ Requires: php-json
 %endif
 Requires: wkhtmltopdf
 BuildRequires: php >= 5.3
-BuildRequires: rubygems
+BuildRequires: rubygem(compass)
 
 Source: %name-%version.tar.gz
 %description
@@ -34,9 +34,6 @@ Webgui for Nagios 3.
 pushd cli-helpers
 make
 popd
-%if 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
-	make install-sass
-%endif
 make
 make docs test
 
