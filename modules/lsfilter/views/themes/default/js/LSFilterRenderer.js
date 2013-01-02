@@ -1271,10 +1271,12 @@ var listview_renderer_table =
  * Renderer methods
  ******************************************************************************/
 
-function listview_render_totals(totals)
+function listview_render_totals(table, totals)
 {
 	var container =
 			$('<ul />');
+	container.append($('<li />').text(table.charAt(0).toUpperCase()+table.slice(1)).css('float', 'left').css(
+			'font-weight', 'bold'));
 	if (totals) {
 		for ( var field in listview_renderer_totals) {
 			if (field in totals) {

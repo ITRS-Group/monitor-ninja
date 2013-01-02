@@ -87,7 +87,7 @@ var lsfilter_list = {
 
 		if (data.status == 'success') {
 			listview_current_table = data.table;
-			listview_render_totals(data.totals);
+			listview_render_totals(data.table, data.totals);
 
 			listview_render_table(data.data, data.count, this.sort_vis_column, this.sort_ascending);
 			multi_select_refresh();
