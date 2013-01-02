@@ -25,19 +25,11 @@ class ServiceSet_Model extends BaseServiceSet_Model {
 	public function validate_columns($columns) {
 		$columns = parent::validate_columns($columns);
 
-		if( in_array( 'state_text', $columns ) ) {
-			$columns = array_diff( $columns, array('state_text') );
-			$columns[] = 'state';
-			$columns[] = 'has_been_checked';
-		}
-		if( in_array( 'checks_disabled', $columns ) ) {
-			$columns = array_diff( $columns, array('checks_disabled') );
-			$columns[] = 'active_checks_enabled';
-		}
-		if( in_array( 'duration', $columns ) ) {
-			$columns = array_diff( $columns, array('duration') );
-			$columns[] = 'last_state_change';
-		}
+		$this->do_column_rewrite($columns, 'state_text_uc',array('state_text'));
+		$this->do_column_rewrite($columns, 'state_text',array('state','has_been_checked'));
+		$this->do_column_rewrite($columns, 'first_group', array('groups'));
+		$this->do_column_rewrite($columns, 'checks_disabled',array('active_checks_enabled'));
+		$this->do_column_rewrite($columns, 'duration',array('last_state_change'));
 
 		return $columns;
 	}

@@ -10,8 +10,14 @@ abstract class Object_Model extends BaseObject_Model {
 		$fields  = array_values(static::$macros);
 		$values  = array();
 		foreach($fields as $field) {
-			$getter = "get_".$field;
-			$values[] = $this->$getter();
+			$value = $this;
+			foreach( explode('.',$field) as $subfield ) {
+				if( $value ) {
+					$getter = "get_".$field;
+					$value = $value->$getter();
+				}
+			}
+			$values[] = $value;
 		}
 		return str_replace($matches, $values, $str);
 	}
