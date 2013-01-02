@@ -58,8 +58,9 @@ class ListView_Controller extends Authenticated_Controller {
 		$limit = $this->input->get('limit',false);
 		$offset = $this->input->get('offset',false);
 
-		if( $limit === false )
-			json::ok( array( 'status' => 'error', 'data' => "No limit specified") );
+		if( $limit === false ) {
+			return json::ok( array( 'status' => 'error', 'data' => "No limit specified") );
+		}
 		
 		/* TODO: Fix sorting better sometime
 		 * Do it though ORM more orm-ly
@@ -78,7 +79,7 @@ class ListView_Controller extends Authenticated_Controller {
 				$data[] = $elem->export();
 			}
 
-			json::ok( array(
+			return json::ok( array(
 				'status' => 'success',
 				'totals' => $result_set->get_totals(),
 				'data' => $data,
@@ -86,13 +87,13 @@ class ListView_Controller extends Authenticated_Controller {
 				'count' => count($result_set)
 			) );
 		} catch( Exception $e ) {
-			json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+			return json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
 	}
 
 	public function fetch_saved_queries() {
 		$queries = LSFilter_Saved_Queries_Model::get_queries();
-		json::ok( array( 'status' => 'success', 'data' => $queries ) );
+		return json::ok( array( 'status' => 'success', 'data' => $queries ) );
 	}
 
 	public function save_query() {
@@ -105,13 +106,13 @@ class ListView_Controller extends Authenticated_Controller {
 			$result = LSFilter_Saved_Queries_Model::save_query($name, $query, $scope);
 			
 			if( $result !== false )
-				json::ok( array('status'=>'error', 'data' => $result) );
+				return json::ok( array('status'=>'error', 'data' => $result) );
 			
 			
-			json::ok( array( 'status' => 'success', 'data' => 'success' ) );
+			return json::ok( array( 'status' => 'success', 'data' => 'success' ) );
 		}
 		catch( Exception $e ) {
-			json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+			return json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
 	}
 }
