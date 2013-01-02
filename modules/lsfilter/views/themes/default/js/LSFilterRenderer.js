@@ -1380,187 +1380,193 @@ function listview_table_col_name(c)
 
 function listview_render_table(data, total_count, sort_col, sort_asc)
 {
-	var tbody =
-			false;
-	var last_table =
-			'';
-	var container =
-			'';
-	var columns =
-			null;
+	var tbody = false;
+	var last_table = '';
+	var container = '';
+	var columns = null;
 	/*
 	 * temporary offline container
 	 */
-	var output =
-			$('<span />');
+	var output = $('<span />');
 	
-	// console.log("Got " + data.length + " objects");
 	
-	listview_table_col_index =
-			0;
-	listview_last_host =
-			'';
+	listview_table_col_index = 0;
+	listview_last_host = '';
 	
 	if (data.length == 0) {
-		output.append('<h2 class="lsfilter-noresult">' + _('Empty result set')
-				+ '</h2>');
+		// @todo will this ever be shown?
+		output.append('<h2 class="lsfilter-noresult">'+_('Empty result set')+'</h2>');
+		return;
 	}
-	else {
-		
-		/*
-		 * Render table
-		 */
-		for ( var i =
-				0; i < data.length; i++) {
-			var obj =
-					data[i];
-			
-			if (last_table != obj._table) {
-				var table =
-						$('<table cellspacing="0" cellpadding="0" border="0" />');
+
+	/*
+	 * Render table
+	 */
+	var table;
+	var insert_rows = function(data, total_count, append) {
+		if(typeof append === "undefined") {
+			append = false;
+		} else {
+			append = Boolean(append);
+		}
+		// #load_more is a tr>td>a node
+		var last_row = $('#load_more').parent().parent();
+		for ( var i = 0; i < data.length; i++) {
+			var obj = data[i];
+
+			if (last_table != obj._table && !append) {
+				// we need to add headers (th)
+				table = $('<table cellspacing="0" cellpadding="0" border="0" />');
 				output.append(table);
 				
-				// console.log(listview_columns_for_table(obj._table));
 				
-				last_table =
-						obj._table;
-				columns =
-						new Array();
-				var header =
-						$('<tr />');
+				last_table = obj._table;
+				columns = new Array();
+				var header = $('<tr />');
 				for ( var key in listview_renderer_table[obj._table]) {
-					var col_render =
-							listview_renderer_table[obj._table][key];
+					var col_render = listview_renderer_table[obj._table][key];
 					columns.push(col_render.cell);
-					var th =
-							$('<th />').attr('id',
-									listview_table_col_name(col_render.header));
+					var th = $('<th />').attr('id', listview_table_col_name(col_render.header));
 					th.append(col_render.header);
 					if (col_render.sort) {
-						var sort_dir =
-								0;
-						if (sort_col == key) sort_dir =
-								-1;
-						if (sort_asc) sort_dir =
-								-sort_dir;
+						var sort_dir = 0;
+						if (sort_col == key) sort_dir = -1;
+						if (sort_asc) sort_dir = -sort_dir;
 						listview_add_sort(th, key, col_render.sort, sort_dir);
 					}
 					header.append(th);
 				}
-				table.append($(
-						'<thead cellspacing="0" cellpadding="0" border="0" />')
-						.append(header));
+				table.append($('<thead cellspacing="0" cellpadding="0" border="0" />').append(header));
 				
-				tbody =
-						$('<tbody />');
+				tbody = $('<tbody />');
 				table.append(tbody);
 			}
-			
-			var row =
-					$('<tr />');
-			if (i % 2 == 0)
-				row.addClass('even');
-			else
-				row.addClass('odd');
-			
-			for ( var cur_col =
-					0; cur_col < columns.length; cur_col++) {
-				row.append(columns[cur_col](obj, row).addClass(
-						'listview-cell-' + cur_col));
+
+			var row = $('<tr />');
+			row.addClass(i % 2 ? 'odd' : 'even');
+			row.data('key', obj.key);
+
+			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
+				row.append(columns[cur_col](obj, row).addClass('listview-cell-' + cur_col));
 			}
-			tbody.append(row);
+			if(append) {
+				row.insertBefore(last_row);
+			} else {
+				tbody.append(row);
+			}
 		}
-	}
-	
-	if (data.length < total_count)
-		tbody.append($('<tr class="table_pagination"/>').append(
-				$('<td />').attr('colspan', columns.length).append(
-						_('Load more rows')).click(100))); // FIXME
-		
+		if( data.length < total_count && !$('#load_more').length) {
+			tbody.append(
+				$('<tr class="table_pagination"/>')
+					.append(
+						$('<td />')
+							.attr('colspan', columns.length)
+							.append(
+								$('<a id="load_more" href="#">'+_('Load '+lsfilter_list.config.per_page+' more rows')+'</a>')
+									.click(function(ev) {
+										ev.preventDefault();
+										// from http://upshots.org/javascript/jquery-test-if-element-is-in-viewport-visible-on-screen
+										// but the constants are moved outside of the repeating calculation
+										var win = $(window);
+										var viewport = {
+											top : win.scrollTop(),
+										};
+										viewport.bottom = viewport.top + win.height();
+										$.fn.isOnScreen = function(){
+											var bounds = this.offset();
+											bounds.bottom = bounds.top + this.outerHeight();
+
+											return (!(viewport.bottom < bounds.top || viewport.top > bounds.bottom));
+										};
+
+										var found = false;
+										var visible = $('#filter_result tbody tr')
+											.filter(function(index){
+												if(found !== false) {
+													return false;
+												}
+												var me = $(this);
+												var visible = me.isOnScreen();
+												if(visible) {
+													found = me.data('key');
+												}
+												return visible;
+											});
+										lsfilter_list.send_request({
+											callback: function(result) {
+												insert_rows.call(this, result.data, result.count, true);
+											},
+											increment_items_in_view: true
+										});
+									})
+							)
+					)
+			);
+		} else if($('#load_more').length && tbody.find('tr').length >= total_count) {
+			$('#load_more').remove();
+		}
+	};
+	insert_rows(data, total_count);
+
 	$('#filter_result').empty().append(output);
-	
-	if (table) {
-		
-		table.find('[id^=listview-col-]').hover(
-				function()
-				{
-					
-					var self =
-							$(this), index =
-							self.attr('id').split('-col-')[1];
-					
-					table.find('.listview-cell-' + index).addClass(
-							'listview-col-hover');
-				},
-				function()
-				{
-					
-					var self =
-							$(this), index =
-							self.attr('id').split('-col-')[1];
-					
-					table.find('.listview-cell-' + index).removeClass(
-							'listview-col-hover');
-				});
-		
-		var header =
-				$("thead", table), clone =
-				header.clone(true);
-		
-		header.after(clone);
-		
-		function update_float_header()
-		{
-			table.each(function()
-			{
-				
-				var el =
-						$(this), offset =
-						el.offset(), scrollTop =
-						$(window).scrollTop();
-				
-				if (scrollTop >= 0) {
-					
-					var head =
-							header.find("tr").children(), cloneHead =
-							clone.find("tr").children(), index =
-							0;
-					
-					clone.css('min-width', header.width());
-					
-					head.each(function()
-					{
-						
-						if ($.browser.webkit) {
-							$(cloneHead[index]).css(
-									'width',
-									(parseInt($(this).css('width'), 10) + 1)
-											+ 'px');
-						}
-						else {
-							$(cloneHead[index]).css('width',
-									$(this).css('width'));
-						}
-						
-						$(cloneHead[index]).css('padding',
-								$(this).css('padding'));
-						$(cloneHead[index])
-								.css('margin', $(this).css('margin'));
-						$(cloneHead[index])
-								.css('border', $(this).css('border'));
-						index++;
-					});
-					
-					clone.addClass('floating-header');
-					clone.css('visibility', 'visible');
-					
-				}
-				
-			});
+
+	table.find('[id^=listview-col-]').hover(
+		function () {
+			var self = $(this),
+				index = self.attr('id').split('-col-')[1];
+			table.find('.listview-cell-' + index).addClass('listview-col-hover');
+		},
+		function () {
+			var self = $(this),
+				index = self.attr('id').split('-col-')[1];
+			table.find('.listview-cell-' + index).removeClass('listview-col-hover');
 		}
-		
-		$(window).resize(update_float_header).scroll(update_float_header)
-				.trigger("scroll");
+	);
+
+	var header = $("thead", table),
+		clone = header.clone(true);
+
+	header.after(clone);
+
+	function update_float_header() {
+		table.each(function() {
+
+			var el 			= $(this),
+				offset		= el.offset(),
+				scrollTop	= $(window).scrollTop();
+
+			if (scrollTop >= 0) {
+
+				var head = header.find("tr").children(),
+					cloneHead = clone.find("tr").children(),
+					index = 0;
+
+				clone.css('min-width', header.width());
+
+				head.each(function () {
+
+					if ($.browser.webkit) {
+						$(cloneHead[index]).css('width', (parseInt($(this).css('width'), 10) + 1) + 'px');
+					} else {
+						$(cloneHead[index]).css('width', $(this).css('width'));
+					}
+
+					$(cloneHead[index]).css('padding', $(this).css('padding'));
+					$(cloneHead[index]).css('margin', $(this).css('margin'));
+					$(cloneHead[index]).css('border', $(this).css('border'));
+					index++;
+				});
+
+				clone.addClass('floating-header');
+				clone.css('visibility', 'visible');
+
+			}
+
+	   });
 	}
-	
+
+	$(window)
+		.resize(update_float_header)
+		.scroll(update_float_header)
+		.trigger("scroll");
 }

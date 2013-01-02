@@ -60,7 +60,7 @@ var lsfilter_main = {
 		lsfilter_textarea.init();
 		lsfilter_visual.init();
 
-		// when frist loaded, the textarea contains the query from the
+		// when first loaded, the textarea contains the query from the
 		// controller
 		lsfilter_textarea.load();
 	},
