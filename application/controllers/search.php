@@ -29,16 +29,6 @@ class Search_Controller extends Authenticated_Controller {
 	*/
 	public function lookup($query=false, $obj_type=false)
 	{
-		/* FIXME: implement these, maybe...
-		$obj_type = $this->input->get('obj_type', $obj_type);
-
-		$host = trim($this->input->get('host', false));
-		$hostgroup = trim($this->input->get('hostgroup', false));
-		$service = trim($this->input->get('service', false));
-		$servicegroup = trim($this->input->get('servicegroup', false));
-		$comment = trim($this->input->get('comment', false));
-		$status = trim($this->input->get('status', false));
-		*/
 		$query = trim($this->input->get('query', $query));
 		
 		$this->template->content = $this->add_view('search/result');
@@ -53,12 +43,14 @@ class Search_Controller extends Authenticated_Controller {
 		$ls = Livestatus::instance();
 		
 		$filters = $this->queryToLSFilter( $query );
-		if( $filters === false ) /* If no advanced query found, fall through */
-			$filters = $this->queryToLSFilter_MatchAll( $query );
+		if($filters !== false) {
+			return url::redirect('listview?'.http_build_query(array('q'=>$filters)));
+		}
+		
+		$filters = $this->queryToLSFilter_MatchAll( $query );
 		
 		$match = false;
 		$limit = isset($filters['limit']) ? $filters['limit'] : false;
-		
 		
 		try {
 			if( isset( $filters['hosts'] ) ) {
@@ -170,36 +162,66 @@ class Search_Controller extends Authenticated_Controller {
 			return false;
 		}
 		
-		$lsfilter = array();
+		$table = false;
+		$query = array();
 		
-		if( isset( $filter['filters']['services'] ) )  {
-			$lsfilter['services'] = $this->andOrToLivestatus( $filter['filters']['services'], $this->search_columns['services'] );
+		if( isset( $filter['filters']['comments'] ) ) {
+			$table = 'comments';
+			$query[] = $this->andOrToQuery( $filter['filters']['comments'], $this->search_columns['comments'] );
+			if( isset( $filter['filters']['services'] ) )
+				$query[] = $this->andOrToQuery( $filter['filters']['services'],
+						array_map( function($col){return 'service.'.$col;}, $this->search_columns['services'] ) );
 			if( isset( $filter['filters']['hosts'] ) )
-				$lsfilter['services'] .= $this->andOrToLivestatus( $filter['filters']['hosts'],
-						array_map( function($col){return 'host_'.$col;}, $this->search_columns['hosts'] ) );
+				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
+						array_map( function($col){return 'host.'.$col;}, $this->search_columns['hosts'] ) );
+		}
+		else if( isset( $filter['filters']['services'] ) )  {
+			$table = 'services';
+			$query[] = $this->andOrToQuery( $filter['filters']['services'], $this->search_columns['services'] );
+			if( isset( $filter['filters']['hosts'] ) )
+				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
+						array_map( function($col){return 'host.'.$col;}, $this->search_columns['hosts'] ) );
 		}
 		else if( isset( $filter['filters']['hosts'] ) ) {
-			$lsfilter['hosts'] = $this->andOrToLivestatus( $filter['filters']['hosts'], $this->search_columns['hosts'] );
+			$table = 'hosts';
+			$query[] = $this->andOrToQuery( $filter['filters']['hosts'], $this->search_columns['hosts'] );
 		}
 		
 		
-		if( isset( $filter['filters']['hostgroups'] ) ) {
-			$lsfilter['hostgroups'] = $this->andOrToLivestatus( $filter['filters']['hostgroups'], $this->search_columns['hostgroups'] );
+		else if( isset( $filter['filters']['hostgroups'] ) ) {
+			$table = 'hostgorups';
+			$query[] = $this->andOrToQuery( $filter['filters']['hostgroups'], $this->search_columns['hostgroups'] );
 		}
 		
-		if( isset( $filter['filters']['servicegroups'] ) ) {
-			$lsfilter['servicegroups'] = $this->andOrToLivestatus( $filter['filters']['servicegroups'], $this->search_columns['servicegroups'] );
+		else if( isset( $filter['filters']['servicegroups'] ) ) {
+			$table = 'servicegroups';
+			$query[] = $this->andOrToQuery( $filter['filters']['servicegroups'], $this->search_columns['servicegroups'] );
 		}
 		
 		
+		if( $table === false )
+			return false;
 		
-		if( isset( $filter['limit'] ) ) {
-			$lsfilter['limit'] = $filter['limit'];
-		}
-		
-		return $lsfilter;
+		return '['.$table.'] '.implode(' and ',$query);
 	}
+
+	private function andOrToQuery( $matches, $columns ) {
+		$result = array();
+		foreach( $matches as $and ) {
+			$orresult = array();
+			foreach( $and as $or ) {
+				$or = trim($or);
+				$or = str_replace('%','.*',$or);
+				$or = addslashes($or);
+				foreach( $columns as $col ) {
+					$orresult[] = "$col ~~ \"$or\"";
+				}
+			}
+			$result[] = '(' . implode(' or ', $orresult) . ')';
+		}
 	
+		return implode(' and ',$result);
+	}
 	private function andOrToLivestatus( $matches, $columns ) {
 		$result = '';
 		foreach( $matches as $and ) {
