@@ -1008,27 +1008,32 @@ var listview_renderer_table =
 				},
 				"actions": {
 					"header": _('Actions'),
-					"depends": ['id', 'entry_type', 'is_service'],
+					"depends": [ 'id', 'entry_type', 'is_service' ],
 					"sort": false,
 					"cell": function(obj, tr)
 					{
-						var cell = $('<td />');
+						var cell =
+								$('<td />');
 						
-						var del_icon = icon16('delete-comment');
-						if( obj.entry_type == 2 ) { /* Scheduled downtime */
-							del_icon = icon16('delete-downtime');
+						var del_icon =
+								icon16('delete-comment');
+						if (obj.entry_type == 2) { /* Scheduled downtime */
+							del_icon =
+									icon16('delete-downtime');
 						}
 						
-						var del_command = 'DEL_HOST_COMMENT';
-						if( obj.is_service ) {
-							del_command = 'DEL_SVC_COMMENT';
+						var del_command =
+								'DEL_HOST_COMMENT';
+						if (obj.is_service) {
+							del_command =
+									'DEL_SVC_COMMENT';
 						}
 						
-						cell.append(link('command/submit',{
+						cell.append(link('command/submit', {
 							cmd_typ: del_command,
 							com_id: obj.id
 						}).append(del_icon));
-						// https://192.168.56.10/ninja/index.php/command/submit?cmd_typ=DEL_SVC_COMMENT&com_id=3
+						
 						return cell;
 					}
 				}
@@ -1137,15 +1142,6 @@ var listview_renderer_table =
 						return $('<td />').text(obj.comment);
 					}
 				},
-				"id": {
-					"header": _('ID'),
-					"depends": [ 'id' ],
-					"sort": [ 'id' ],
-					"cell": function(obj, tr)
-					{
-						return $('<td />').text(obj.id);
-					}
-				},
 				"start_time": {
 					"header": _("Start Time"),
 					"depends": [ 'start_time' ],
@@ -1165,6 +1161,16 @@ var listview_renderer_table =
 						return $('<td />').text(format_timestamp(obj.end_time));
 					}
 				},
+				"type": {
+					"header": _("Type"),
+					"depends": [ 'fixed' ],
+					"sort": [ 'fixed' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(
+								obj.fixed ? _("Fixed") : _("Flexible"));
+					}
+				},
 				"duration": {
 					"header": _("Duration"),
 					"depends": [ 'start_time', 'end_time' ],
@@ -1175,13 +1181,57 @@ var listview_renderer_table =
 								format_interval(obj.end_time - obj.start_time));
 					}
 				},
+				"triggered_by": {
+					"header": _("Triggered by"),
+					"depends": [ 'triggered_by_text' ],
+					"sort": [ 'triggered_by' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(obj.triggered_by_text);
+					}
+				},
 				"actions": {
 					"header": _('Actions'),
-					"depends": [],
+					"depends": [ 'id', 'is_service', 'host.name',
+							'service.description' ],
 					"sort": false,
 					"cell": function(obj, tr)
 					{
-						return $('<td />');
+						var cell =
+								$('<td />');
+						
+						// Delete
+						var del_icon =
+								icon16(
+										'delete-downtime',
+										_("Delete/cancel this scheduled downtime entry"));
+						
+						var del_command =
+								'DEL_HOST_DOWNTIME';
+						if (obj.is_service) {
+							del_command =
+									'DEL_SVC_DOWNTIME';
+						}
+						
+						cell.append(link('command/submit', {
+							cmd_typ: del_command,
+							downtime_id: obj.id
+						}).append(del_icon));
+						
+						// Schedule recurring
+						
+						var recurring_args =
+								{
+									host: obj.host.name
+								};
+						if (obj.service.description) {
+							recurring_args.service =
+									obj.service.description;
+						}
+						cell.append(link('recurring_downtime', recurring_args)
+								.append(icon16('recurring-downtime')));
+						
+						return cell;
 					}
 				}
 			},

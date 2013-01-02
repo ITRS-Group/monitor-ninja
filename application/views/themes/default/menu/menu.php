@@ -102,7 +102,7 @@ $menu_base = array(
 		$menu_items['servicegroup_summary'] 	=> array('/listview?q=[servicegroups] all', 'servicegroupsummary',0),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
 		$menu_items['comments'] 				=> array('/listview?q=[comments] all', 'comments',0),
-		$menu_items['schedule_downtime']		=> array('/extinfo/scheduled_downtime', 'scheduledowntime',0),
+		$menu_items['schedule_downtime']		=> array('/listview?q=[downtimes] all', 'scheduledowntime',0),
 
 		$menu_items['process_info'] 			=> array('/extinfo/show_process_info', 'processinfo',0),
 		$menu_items['performance_info'] 		=> array('/extinfo/performance', 'performanceinfo',0),
