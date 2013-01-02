@@ -20,6 +20,7 @@ Requires: php-process
 Requires: php-json
 %endif
 Requires: wkhtmltopdf
+BuildRequires: php-op5lib
 BuildRequires: php >= 5.3
 BuildRequires: rubygem(compass)
 
