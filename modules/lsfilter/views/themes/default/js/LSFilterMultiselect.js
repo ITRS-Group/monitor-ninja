@@ -69,6 +69,11 @@ var lsfilter_multiselect =
 					'SCHEDULE_SVC_CHECK': _('Reschedule service checks'),
 					'ADD_SVC_COMMENT': _('Add service comment')
 				},
+				'comments': {
+					'': _('Select action'),
+					// DEL_COMMENT has a special case in command controller to send SVC and HOST
+					'DEL_COMMENT': _('Delete comments')
+				},
 				'other': {
 					'': _('Table doesn\'t support multi action')
 				}

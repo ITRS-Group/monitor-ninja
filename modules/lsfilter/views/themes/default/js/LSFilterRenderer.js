@@ -839,6 +839,15 @@ var listview_renderer_table =
 					"sort": false,
 					"cell": listview_multi_select_cell_renderer
 				},
+				"id": {
+					"header": _('ID'),
+					"depends": [ 'id' ],
+					"sort": [ 'id' ],
+					"cell": function(obj, tr)
+					{
+						return $('<td />').text(obj.id);
+					}
+				},
 				"is_service": {
 					"header": _('Type'),
 					"depends": [ 'is_service' ],
@@ -999,11 +1008,28 @@ var listview_renderer_table =
 				},
 				"actions": {
 					"header": _('Actions'),
-					"depends": [],
+					"depends": ['id', 'entry_type', 'is_service'],
 					"sort": false,
 					"cell": function(obj, tr)
 					{
-						return $('<td />');
+						var cell = $('<td />');
+						
+						var del_icon = icon16('delete-comment');
+						if( obj.entry_type == 2 ) { /* Scheduled downtime */
+							del_icon = icon16('delete-downtime');
+						}
+						
+						var del_command = 'DEL_HOST_COMMENT';
+						if( obj.is_service ) {
+							del_command = 'DEL_SVC_COMMENT';
+						}
+						
+						cell.append(link('command/submit',{
+							cmd_typ: del_command,
+							com_id: obj.id
+						}).append(del_icon));
+						// https://192.168.56.10/ninja/index.php/command/submit?cmd_typ=DEL_SVC_COMMENT&com_id=3
+						return cell;
 					}
 				}
 			},
@@ -1275,8 +1301,9 @@ function listview_render_totals(table, totals)
 {
 	var container =
 			$('<ul />');
-	container.append($('<li />').text(table.charAt(0).toUpperCase()+table.slice(1)).css('float', 'left').css(
-			'font-weight', 'bold'));
+	container.append($('<li />').text(
+			table.charAt(0).toUpperCase() + table.slice(1))
+			.css('float', 'left').css('font-weight', 'bold'));
 	if (totals) {
 		for ( var field in listview_renderer_totals) {
 			if (field in totals) {
