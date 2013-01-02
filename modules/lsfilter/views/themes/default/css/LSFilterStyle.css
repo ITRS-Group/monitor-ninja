@@ -178,7 +178,6 @@
 
 #filter_result tbody tr:hover > td {
 	border-color: #999;
-	border-top: none;
 }
 
 
