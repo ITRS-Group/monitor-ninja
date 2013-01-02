@@ -24,21 +24,15 @@ class HostSet_Model extends BaseHostSet_Model {
 	}
 
 	public function validate_columns($columns) {
+		$columns = parent::validate_columns($columns);
 
-		if( in_array( 'state_text', $columns ) ) {
-			$columns = array_diff( $columns, array('state_text') );
-			if(!in_array('state',$columns)) $columns[] = 'state';
-			if(!in_array('has_been_checked',$columns)) $columns[] = 'has_been_checked';
-		}
-		if( in_array( 'checks_disabled', $columns ) ) {
-			$columns = array_diff( $columns, array('checks_disabled') );
-			if(!in_array('active_checks_enabled',$columns)) $columns[] = 'active_checks_enabled';
-		}
-		if( in_array( 'duration', $columns ) ) {
-			$columns = array_diff( $columns, array('duration') );
-			if(!in_array('last_state_change',$columns)) $columns[] = 'last_state_change';
-		}
+		$this->do_column_rewrite($columns, 'state_text_uc', array('state_text'));
+		$this->do_column_rewrite($columns, 'state_type_text_uc', array('state_type'));
+		$this->do_column_rewrite($columns, 'state_text', array('state','has_been_checked'));
+		$this->do_column_rewrite($columns, 'first_group', array('groups'));
+		$this->do_column_rewrite($columns, 'checks_disabled', array('active_checks_enabled'));
+		$this->do_column_rewrite($columns, 'duration', array('last_state_change'));
 
-		return parent::validate_columns($columns);
+		return $columns;
 	}
 }

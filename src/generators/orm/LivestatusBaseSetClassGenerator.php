@@ -80,7 +80,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 		foreach($this->structure['key'] as $keypart ) {
 			$this->write('if( !in_array(%s, $columns) ) $columns[] = %s;', $keypart, $keypart);
 		}
-		$this->write('return $columns;');
+		$this->write('return parent::validate_columns($columns);');
 		$this->finish_function();
 	}
 

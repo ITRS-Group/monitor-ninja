@@ -32,6 +32,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->generate_getIterator();
 		$this->generate_it();
 		$this->generate_get_auth_filter();
+		$this->generate_validate_columns();
 		$this->finish_class();
 	}
 	
@@ -111,6 +112,12 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 	public function generate_get_auth_filter() {
 		$this->init_function('get_auth_filter',array(),array('protected'));
 		$this->write('return $this->filter;');
+		$this->finish_function();
+	}
+
+	public function generate_validate_columns() {
+		$this->init_function('validate_columns', array('columns'));
+		$this->write('return $columns;');
 		$this->finish_function();
 	}
 }

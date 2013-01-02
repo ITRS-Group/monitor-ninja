@@ -75,6 +75,8 @@ class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$db = Database::instance();');
 		$this->write('$columns = $this->validate_columns($columns);');
+		$this->write('if( $columns === false) return false;');
+		$this->write('$columns = array_unique($columns);');
 		
 		$this->write('$filter = $this->get_auth_filter();');
 		

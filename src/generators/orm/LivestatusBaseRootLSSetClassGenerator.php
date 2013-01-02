@@ -80,6 +80,7 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 		$this->write('if( $columns != false ) {');
 		$this->write('$columns = $this->validate_columns($columns);');
 		$this->write('if($columns === false) return false;');
+		$this->write('$columns = array_unique($columns);');
 		$this->write('}');
 		
 		$this->write('list($columns, $objects, $count) = $ls->query($this->table, $ls_filter, $columns);');
