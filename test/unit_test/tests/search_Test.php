@@ -53,8 +53,7 @@ class Search_Test extends TapUnit {
 	 * Test limit
 	 */
 	public function test_host_limit() {
-		// Limit should be ignored...
-		$this->run_test('h:kaka limit=24', array('hosts'=>'[hosts] (name ~~ "kaka" or address ~~ "kaka")') );
+		$this->run_test('h:kaka limit=24', array('hosts'=>'[hosts] (name ~~ "kaka" or address ~~ "kaka")', 'limit'=>24) );
 	}
 
 	protected function run_test( $query, $expect ) {

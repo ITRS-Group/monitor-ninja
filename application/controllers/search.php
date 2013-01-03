@@ -50,8 +50,14 @@ class Search_Controller extends Authenticated_Controller {
 		if(count($filters)==1) {
 			return url::redirect('listview?'.http_build_query(array('q'=>reset($filters))));
 		}
+		
+		$limit = false;
+		if(isset($filters['limit'])) {
+			$limit = $filters['limit'];
+			unset($filters['limit']);
+		}
 
-		$this->render_queries( $filters );
+		$this->render_queries( $filters, $limit );
 	}
 
 	/**
@@ -59,7 +65,7 @@ class Search_Controller extends Authenticated_Controller {
 	 *
 	 * @param $queries list of queries
 	 */
-	private function render_queries( $queries ) {
+	private function render_queries( $queries, $limit=false ) {
 		if( !is_array($queries) ) {
 			$queries = array($queries);
 		}
@@ -74,6 +80,8 @@ class Search_Controller extends Authenticated_Controller {
 		$this->xtra_js = array();
 		$this->xtra_css = array();
 		$this->template->content->widgets = array();
+		
+		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$username = Auth::instance()->get_user()->username;
 
@@ -85,7 +93,8 @@ class Search_Controller extends Authenticated_Controller {
 				'username' => $username,
 				'friendly_name' => ucfirst($table),
 				'setting' => array(
-					'query' => $query
+					'query' => $query,
+					'limit' => $limit
 				)
 			));
 				
@@ -159,8 +168,14 @@ class Search_Controller extends Authenticated_Controller {
 
 		if( $table === false )
 			return false;
-
-		return array($table => '['.$table.'] '.implode(' and ',$query));
+		
+		$result = array($table => '['.$table.'] '.implode(' and ',$query));
+		
+		if( isset($filter['limit']) ) {
+			$result['limit'] = intval($filter['limit']);
+		}
+		
+		return $result;
 	}
 
 	private function andOrToQuery( $matches, $columns ) {

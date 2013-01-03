@@ -118,6 +118,7 @@ else
 fi
 
 $(php %prefix/index.php cli/save_widget --page 'tac/index' --name nagvis --friendly_name "Nagvis" &> /dev/null)
+$(php %prefix/index.php cli/save_widget --page 'tac/index' --name listview --friendly_name "List view" &> /dev/null)
 if [ "$?" -ne 0 ]; then
 	echo "WARNING: mysql-server is not installed or not running."
 	echo "If Oracle database is to be used this is ok."

@@ -8,11 +8,8 @@
  * @license    GPL
  */
 class Listview_Widget extends widget_Base {
-	protected $movable=false;
-	protected $removable=false;
-	protected $closeconfirm=false;
-	protected $editable=false;
-
+	protected $duplicatable = true;
+	
 	private $query=false;
 	
 	public function __construct($model) {
@@ -21,6 +18,18 @@ class Listview_Widget extends widget_Base {
 	}
 	
 	public function set_fixed() {
+		$this->movable = false;
+		$this->removable = false;
+		$this->closeconfirm = false;
+		$this->editable=false;
+		$this->duplicatable=false;
+	}
+	
+	public function options() {
+		$options = parent::options();
+		$options[] = new option('listview','query',_('Query'),'textarea',array(),'[hosts] all');
+		$options[] = new option('listview','limit',_('Limit'),'input',array(),20);
+		return $options;
 	}
 	
 	public function index() {
