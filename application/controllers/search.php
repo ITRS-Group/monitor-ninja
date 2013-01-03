@@ -165,7 +165,7 @@ class Search_Controller extends Authenticated_Controller {
 		if( $table === false )
 			return false;
 
-		return array('['.$table.'] '.implode(' and ',$query));
+		return array($table => '['.$table.'] '.implode(' and ',$query));
 	}
 
 	private function andOrToQuery( $matches, $columns ) {
@@ -205,7 +205,7 @@ class Search_Controller extends Authenticated_Controller {
 			foreach( $cols as $col ) {
 				$subfilters[] = "$col ~~ \"$query\"";
 			}
-			$filters[] = "[$table] ".implode(' or ', $subfilters);
+			$filters[$table] = "[$table] ".implode(' or ', $subfilters);
 		}
 
 		return $filters;
