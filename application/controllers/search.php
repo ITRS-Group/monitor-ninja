@@ -9,147 +9,89 @@
  *  The information contained herein is provided AS IS with NO WARRANTY OF ANY
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
- */
+*/
 class Search_Controller extends Authenticated_Controller {
 	/**
 	 * Contains a list of columns to search in, depending on table.
-	 * 
+	 *
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-				'hosts' => array( 'name' , 'address' ),
-				'services' => array( 'description', 'display_name' ),
-				'hostgroups' => array( 'name', 'alias' ),
-				'servicegroups' => array( 'name', 'alias' ),
-				'comments' => array( 'author', 'comment' )
-				);
+		'hosts' => array( 'name' , 'address' ),
+		'services' => array( 'description', 'display_name' ),
+		'hostgroups' => array( 'name', 'alias' ),
+		'servicegroups' => array( 'name', 'alias' ),
+		'comments' => array( 'author', 'comment' )
+	);
 
 	/**
-	*	Provide search functionality for all object types
-	*/
-	public function lookup($query=false, $obj_type=false)
-	{
-		$query = trim($this->input->get('query', $query));
-		
-		$this->template->content = $this->add_view('search/result');
+	 * Do a search of a string
+	 * (actually, call index...)
+	 * 
+	 * @param $query search string
+	 */
+	public function lookup($query=false) {
+		return $this->index($query);
+	}
 
-		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
-		$this->template->css_header->css = $this->xtra_css;
+	/**
+	 * Do a search of a string
+	 *
+	 * @param $query search string
+	 */
+	public function index($query=false) {
+		$query = trim($this->input->get('query', $query));
+
+		$filters = $this->queryToLSFilter( $query );
+		if($filters === false) {
+			$filters = $this->queryToLSFilter_MatchAll( $query );
+		}
+
+		if(count($filters)==1) {
+			return url::redirect('listview?'.http_build_query(array('q'=>$filters[0])));
+		}
+
+		$this->render_queries( $filters );
+	}
+
+	/**
+	 * Render a list of queries as a page containing listview widgets
+	 * 
+	 * @param $queries list of queries
+	 */
+	private function render_queries( $queries ) {
+		if( !is_array($queries) ) {
+			$queries = array($queries);
+		}
+
+		$this->template->content         = $this->add_view('search/result');
+		$this->template->css_header      = $this->add_view('css_header');
+		$this->template->js_header       = $this->add_view('js_header');
 
 		$content = $this->template->content;
 		$content->date_format_str = nagstat::date_format();
-		
-		$filters = $this->queryToLSFilter( $query );
-		if($filters !== false) {
-			return url::redirect('listview?'.http_build_query(array('q'=>$filters)));
-		}
-		
-		$filters = $this->queryToLSFilter_MatchAll( $query );
 
-		$ls = Livestatus::instance();
-		
-		$match = false;
-		$limit = isset($filters['limit']) ? $filters['limit'] : false;
-		
-		try {
-			if( isset( $filters['hosts'] ) ) {
-				$res = $ls->getHosts(array(
-						'extra_header'=>$filters['hosts'],
-						'limit'=>$limit
-						));
-				if( count($res) ) {
-					$content->host_result = $res;
-					$match = true;
-				}
-			}
-		} catch( LivestatusException $e ) {}
-		
-		
-		try {
-			if( isset( $filters['services'] ) ) {
-				$res = $ls->getServices(array(
-						'extra_header'=>$filters['services'],
-						'limit'=>$limit
-						));
-				if( count($res) ) {
-					$content->service_result = $res;
-					$match = true;
-				}
-			}
-		} catch( LivestatusException $e ) {}
-		
-		
-		try {
-			if( isset( $filters['hostgroups'] ) ) {
-				$res = $ls->getHostgroups(array(
-						'extra_header'=>$filters['hostgroups'],
-						'limit'=>$limit
-						));
-				if( count($res) ) {
-					$content->hostgroup_result = $res;
-					$match = true;
-				}
-			}
-		} catch( LivestatusException $e ) {}
-		
-		
-		try {
-			if( isset( $filters['servicegroups'] ) ) {
-				$res = $ls->getServicegroups(array(
-						'extra_header'=>$filters['servicegroups'],
-						'limit'=>$limit
-						));
-				if( count($res) ) {
-					$content->servicegroup_result = $res;
-					$match = true;
-				}
-			}
-		} catch( LivestatusException $e ) {}
-		
-		
-		try {
-			if( isset( $filters['comments'] ) ) {
-				$res = $ls->getComments(array(
-						'extra_header'=>$filters['comments'],
-						'limit'=>$limit
-						));
-				if( count($res) ) {
-					$content->comment_result = $res;
-					$match = true;
-				}
-			}
-		} catch( LivestatusException $e ) {}
-		
-		
-		if( !$match ) {
-			$content->no_data = _("Nothing found");
-		}
-		
-		
-		$content->limit_str = false;
-		$content->query = $query;
-		$content->show_display_name = true;
-		$content->show_notes = true;
-		
-		/**
-		 * Modify config/config.php to enable NACOMA
-		 * and set the correct path in config/config.php,
-		 * if installed, to use this
-		 */
-		if (nacoma::link()!==false) {
+		$this->xtra_js = array();
+		$this->xtra_css = array();
+		$this->template->content->widgets = array();
 
-			$label_nacoma = _('Configure this object using NACOMA (Nagios Configuration Manager)');
-			$content->nacoma_link = 'configuration/configure/';
-		
+		foreach( $queries as $query ) {
+			$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'listview'), $this);
+			widget::set_resources($widget, $this);
+			$widget->set_query($query);
+			$this->template->content->widgets[] = $widget->render();
 		}
+
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 	}
-	
+
 	/**
 	 * This is an internal function to generate a livestatus query from a filter string.
-	 * 
+	 *
 	 * This method is public so it can be accessed from tests.
-	 * 
+	 *
 	 * @param $query Search query for string
 	 * @return Livstatus query as string
 	 */
@@ -161,48 +103,54 @@ class Search_Controller extends Authenticated_Controller {
 		} catch( ExpParserException $e ) {
 			return false;
 		}
-		
+
 		$table = false;
 		$query = array();
-		
+
 		if( isset( $filter['filters']['comments'] ) ) {
 			$table = 'comments';
 			$query[] = $this->andOrToQuery( $filter['filters']['comments'], $this->search_columns['comments'] );
 			if( isset( $filter['filters']['services'] ) )
 				$query[] = $this->andOrToQuery( $filter['filters']['services'],
-						array_map( function($col){return 'service.'.$col;}, $this->search_columns['services'] ) );
-			if( isset( $filter['filters']['hosts'] ) )
-				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
-						array_map( function($col){return 'host.'.$col;}, $this->search_columns['hosts'] ) );
+					array_map( function($col){
+						return 'service.'.$col;
+					}, $this->search_columns['services'] ) );
+					if( isset( $filter['filters']['hosts'] ) )
+						$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
+							array_map( function($col){
+								return 'host.'.$col;
+							}, $this->search_columns['hosts'] ) );
 		}
 		else if( isset( $filter['filters']['services'] ) )  {
 			$table = 'services';
 			$query[] = $this->andOrToQuery( $filter['filters']['services'], $this->search_columns['services'] );
 			if( isset( $filter['filters']['hosts'] ) )
 				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
-						array_map( function($col){return 'host.'.$col;}, $this->search_columns['hosts'] ) );
+					array_map( function($col){
+						return 'host.'.$col;
+					}, $this->search_columns['hosts'] ) );
 		}
 		else if( isset( $filter['filters']['hosts'] ) ) {
 			$table = 'hosts';
 			$query[] = $this->andOrToQuery( $filter['filters']['hosts'], $this->search_columns['hosts'] );
 		}
-		
-		
+
+
 		else if( isset( $filter['filters']['hostgroups'] ) ) {
 			$table = 'hostgorups';
 			$query[] = $this->andOrToQuery( $filter['filters']['hostgroups'], $this->search_columns['hostgroups'] );
 		}
-		
+
 		else if( isset( $filter['filters']['servicegroups'] ) ) {
 			$table = 'servicegroups';
 			$query[] = $this->andOrToQuery( $filter['filters']['servicegroups'], $this->search_columns['servicegroups'] );
 		}
-		
-		
+
+
 		if( $table === false )
 			return false;
-		
-		return '['.$table.'] '.implode(' and ',$query);
+
+		return array('['.$table.'] '.implode(' and ',$query));
 	}
 
 	private function andOrToQuery( $matches, $columns ) {
@@ -219,27 +167,8 @@ class Search_Controller extends Authenticated_Controller {
 			}
 			$result[] = '(' . implode(' or ', $orresult) . ')';
 		}
-	
+
 		return implode(' and ',$result);
-	}
-	private function andOrToLivestatus( $matches, $columns ) {
-		$result = '';
-		foreach( $matches as $and ) {
-			$orcount = 0;
-			foreach( $and as $or ) {
-				$or = trim($or);
-				$or = str_replace('%','.*',$or);
-				foreach( $columns as $col ) {
-					$result .= "Filter: $col ~~ $or\n";
-					$orcount++;
-				}
-			}
-			if( $orcount > 1)
-				$result .= "Or: ".$orcount."\n";
-		}
-		/* Implicit and; don't add "And: $andcount\n" to $result */
-		
-		return $result;
 	}
 
 	/**
@@ -254,29 +183,28 @@ class Search_Controller extends Authenticated_Controller {
 	{
 
 		$query = str_replace('%','.*',$query);
+
 		$filters = array();
 		foreach( $this->search_columns as $table => $cols ) {
-			$filters[$table] = "";
+			$subfilters = array();
 			foreach( $cols as $col ) {
-				$filters[$table] .= "Filter: $col ~~ $query\n";
+				$subfilters[] = "$col ~~ \"$query\"";
 			}
-			if( count( $cols ) > 1 ) {
-				$filters[$table] .= "Or: ".count( $cols )."\n";
-			}
+			$filters[] = "[$table] ".implode(' or ', $subfilters);
 		}
-		
+
 		return $filters;
 	}
 
 	/**
-	* Translated helptexts for this controller
-	*/
+	 * Translated helptexts for this controller
+	 */
 	public static function _helptexts($id)
 	{
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'search_help' => sprintf(_("You may perform an AND search on hosts and services: 'h:web AND s:ping' will search for	all services called something like ping on hosts called something like web.<br /><br />
+		'search_help' => sprintf(_("You may perform an AND search on hosts and services: 'h:web AND s:ping' will search for	all services called something like ping on hosts called something like web.<br /><br />
 			Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail in any of the searchable fields.<br /><br />
 			Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br /><br />
 			Use si:critical to search for status information like critical<br /><br />
@@ -284,9 +212,9 @@ class Search_Controller extends Authenticated_Controller {
 
 			The search result is currently limited to %s rows (for each object type).<br /><br />
 			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page', '*')
-			),
-			'saved_search_help' => _('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
-			'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
+		),
+		'saved_search_help' => _('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
+		'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
