@@ -46,7 +46,7 @@ class Search_Test extends TapUnit {
 	 * Test combined host/service (services by hosts)
 	 */
 	public function test_host_serivce() {
-		$this->run_test('h:kaka and s:pong', array('servies'=>'[services] (description ~~ "pong" or display_name ~~ "pong") and (host.name ~~ "kaka" or host.address ~~ "kaka")') );
+		$this->run_test('h:kaka and s:pong', array('services'=>'[services] (host.name ~~ "kaka" or host.address ~~ "kaka") and (description ~~ "pong" or display_name ~~ "pong")') );
 	}
 	
 	/* ******

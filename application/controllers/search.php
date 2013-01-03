@@ -27,9 +27,9 @@ class Search_Controller extends Authenticated_Controller {
 	/**
 	 * Do a search of a string
 	 * (actually, call index...)
-	 * 
+	 *
 	 * @param $query search string
-	 */
+	*/
 	public function lookup($query=false) {
 		return $this->index($query);
 	}
@@ -56,7 +56,7 @@ class Search_Controller extends Authenticated_Controller {
 
 	/**
 	 * Render a list of queries as a page containing listview widgets
-	 * 
+	 *
 	 * @param $queries list of queries
 	 */
 	private function render_queries( $queries ) {
@@ -76,7 +76,7 @@ class Search_Controller extends Authenticated_Controller {
 		$this->template->content->widgets = array();
 
 		$username = Auth::instance()->get_user()->username;
-		
+
 		foreach( $queries as $table => $query ) {
 			$model = new Ninja_widget_Model(array(
 				'page' => Router::$controller,
@@ -86,14 +86,14 @@ class Search_Controller extends Authenticated_Controller {
 				'friendly_name' => ucfirst($table),
 				'setting' => array(
 					'query' => $query
-					)
-				));
-			
+				)
+			));
+				
 			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
-			
+				
 			$widget->set_fixed($query);
-			
+				
 			$this->template->content->widgets[] = $widget->render();
 		}
 
@@ -124,16 +124,18 @@ class Search_Controller extends Authenticated_Controller {
 
 		if( isset( $filter['filters']['comments'] ) ) {
 			$table = 'comments';
-			if( isset( $filter['filters']['services'] ) )
+			if( isset( $filter['filters']['services'] ) ) {
 				$query[] = $this->andOrToQuery( $filter['filters']['services'],
 					array_map( function($col){
 						return 'service.'.$col;
 					}, $this->search_columns['services'] ) );
-					if( isset( $filter['filters']['hosts'] ) )
-						$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
-							array_map( function($col){
-								return 'host.'.$col;
-							}, $this->search_columns['hosts'] ) );
+			}
+			if( isset( $filter['filters']['hosts'] ) ) {
+				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
+					array_map( function($col){
+						return 'host.'.$col;
+					}, $this->search_columns['hosts'] ) );
+			}
 		}
 		else if( isset( $filter['filters']['services'] ) )  {
 			$table = 'services';
