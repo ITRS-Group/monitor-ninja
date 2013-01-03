@@ -4,6 +4,7 @@ require_once( 'php/LalrLexerPHPGenerator.php' );
 require_once( 'php/LalrPreprocessorPHPGenerator.php' );
 require_once( 'php/LalrParserPHPGenerator.php' );
 require_once( 'php/LalrVisitorPHPGenerator.php' );
+require_once( 'php/LalrExceptionPHPGenerator.php' );
 require_once( 'php/LalrPHPGenerator.php' );
 require_once( 'js/LalrLexerJSGenerator.php' );
 require_once( 'js/LalrPreprocessorJSGenerator.php' );
@@ -38,6 +39,9 @@ class LalrGenerator {
 		$generator->generate();
 		print "- Building PHP Visitor\n";
 		$generator = new LalrVisitorPHPGenerator( $this->name, $this->grammar );
+		$generator->generate();
+		print "- Building PHP Exception\n";
+		$generator = new LalrExceptionPHPGenerator( $this->name );
 		$generator->generate();
 		print "- Building PHP Wrapper\n";
 		$generator = new LalrPHPGenerator( $this->name );

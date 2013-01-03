@@ -1,4 +1,5 @@
 LSFilter.php
+LSFilterException.php
 LSFilterLexer.php
 LSFilterParser.php
 LSFilterPreprocessor.php

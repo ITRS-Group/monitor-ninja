@@ -86,8 +86,13 @@ class ListView_Controller extends Authenticated_Controller {
 				'table' => $result_set->get_table(),
 				'count' => count($result_set)
 			) );
-		} catch( Exception $e ) {
-			return json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+		} catch( LSFilterException $e ) {
+			return json::ok( array(
+				'status' => 'error',
+				'data' => $e->getMessage().' at "'.substr($e->get_query(), $e->get_position()).'"',
+				'query' => $e->get_query(),
+				'position' => $e->get_position()
+				));
 		}
 	}
 

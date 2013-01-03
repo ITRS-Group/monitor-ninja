@@ -5,6 +5,7 @@ class LalrLexerPHPGenerator extends class_generator {
 	
 	public function __construct( $parser_name, $grammar ) {
 		$this->classname = $parser_name . "Lexer";
+		$this->exception = $parser_name . "Exception";
 		$this->grammar = $grammar->get_tokens();
 		$this->set_library();
 	}
@@ -14,6 +15,7 @@ class LalrLexerPHPGenerator extends class_generator {
 		
 		$this->init_class();
 		$this->variable( 'buffer' );
+		$this->variable( 'query' );
 		$this->variable( 'position', 0 );
 		$this->generate_constructor();
 		$this->generate_fetch_token();
@@ -23,6 +25,7 @@ class LalrLexerPHPGenerator extends class_generator {
 	private function generate_constructor() {
 		$this->init_function( '__construct', array( 'buffer', 'visitor' ) );
 		$this->write( '$this->buffer = $buffer;' );
+		$this->write( '$this->query = $buffer;' ); // For exception generation
 		$this->write( '$this->visitor = $visitor;' );
 		$this->finish_function();
 	}
@@ -58,7 +61,7 @@ class LalrLexerPHPGenerator extends class_generator {
 		
 		$this->write();
 		$this->comment( 'Exit if no match' );
-		$this->write( 'if( $length === false ) throw new Exception( "Lexer error: unknown token: ".substr($this->buffer,0,10));' );
+		$this->write( 'if( $length === false ) throw new '.$this->exception.'( "Lexer error: unknown token: ".substr($this->buffer,0,10), $this->query, $this->position);' );
 		$this->write();
 		$this->comment( 'Remove token from buffer, and move length forward' );
 		$this->write( '$this->buffer = substr( $this->buffer, $length );');

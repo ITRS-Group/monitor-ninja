@@ -28,7 +28,7 @@ class LalrPHPGenerator extends class_generator {
 		$this->init_function( 'parse', array( 'string' ) );
 		$this->write( '$lexer = new '.$this->classname.'Lexer( $string, $this->preprocessor );' );
 		$this->write( '$parser = new '.$this->classname.'Parser( $this->visitor );' );
-		$this->write( 'return $parser->parse( $lexer );' );
+		$this->write( 'return $parser->parse( $lexer, $string );' );
 		$this->finish_function();
 	}
 }

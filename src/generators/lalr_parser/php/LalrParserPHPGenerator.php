@@ -4,9 +4,11 @@ class LalrParserPHPGenerator extends class_generator {
 	private $fsm;
 	private $grammar;
 	private $goto_map;
+	private $exception;
 	
 	public function __construct( $parser_name, $fsm, $grammar ) {
 		$this->classname = $parser_name . "Parser";
+		$this->exception = $parser_name . "Exception";
 		$this->grammar = $grammar;
 		$this->fsm = $fsm;
 		
@@ -34,6 +36,7 @@ class LalrParserPHPGenerator extends class_generator {
 		$this->variable( 'stack', null );
 		$this->variable( 'continue', false );
 		$this->variable( 'done', false );
+		$this->variable( 'query', '' );
 		$this->generate_constructor();
 		$this->generate_parse();
 		
@@ -53,8 +56,9 @@ class LalrParserPHPGenerator extends class_generator {
 	}
 	
 	private function generate_parse() {
-		$this->init_function( 'parse', array( 'lexer' ) );
+		$this->init_function( 'parse', array( 'lexer', 'query' ) );
 		$this->write( '$this->stack = array(array(0,"start"));');
+		$this->write( '$this->query = $query;' ); // Only for generating exceptions
 		$this->write( '$this->done = false;' );
 		$this->write( 'do {' );
 		$this->write(   '$token = $lexer->fetch_token();' );
@@ -106,7 +110,7 @@ class LalrParserPHPGenerator extends class_generator {
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
-		$this->write( 'throw new Exception( "Error at state '.$state_id.', got token ".$token[0] );' );
+		$this->write( 'throw new '.$this->exception.'( "Error at state '.$state_id.'", $this->query, $token[2] );' );
 		$this->write( 'return null;' );
 		$this->finish_function();
 	}
