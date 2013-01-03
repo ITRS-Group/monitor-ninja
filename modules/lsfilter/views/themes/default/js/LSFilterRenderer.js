@@ -1465,33 +1465,6 @@ function listview_render_table(data, total_count, sort_col, sort_asc)
 								$('<a id="load_more" href="#">'+_('Load '+lsfilter_list.config.per_page+' more rows')+'</a>')
 									.click(function(ev) {
 										ev.preventDefault();
-										// from http://upshots.org/javascript/jquery-test-if-element-is-in-viewport-visible-on-screen
-										// but the constants are moved outside of the repeating calculation
-										var win = $(window);
-										var viewport = {
-											top : win.scrollTop(),
-										};
-										viewport.bottom = viewport.top + win.height();
-										$.fn.isOnScreen = function(){
-											var bounds = this.offset();
-											bounds.bottom = bounds.top + this.outerHeight();
-
-											return (!(viewport.bottom < bounds.top || viewport.top > bounds.bottom));
-										};
-
-										var found = false;
-										var visible = $('#filter_result tbody tr')
-											.filter(function(index){
-												if(found !== false) {
-													return false;
-												}
-												var me = $(this);
-												var visible = me.isOnScreen();
-												if(visible) {
-													found = me.data('key');
-												}
-												return visible;
-											});
 										lsfilter_list.send_request({
 											callback: function(result) {
 												insert_rows.call(this, result.data, result.count, true);
@@ -1512,13 +1485,11 @@ function listview_render_table(data, total_count, sort_col, sort_asc)
 
 	table.find('[id^=listview-col-]').hover(
 		function () {
-			var self = $(this),
-				index = self.attr('id').split('-col-')[1];
+			var index = $(this).attr('id').split('-col-')[1];
 			table.find('.listview-cell-' + index).addClass('listview-col-hover');
 		},
 		function () {
-			var self = $(this),
-				index = self.attr('id').split('-col-')[1];
+			var index = $(this).attr('id').split('-col-')[1];
 			table.find('.listview-cell-' + index).removeClass('listview-col-hover');
 		}
 	);
