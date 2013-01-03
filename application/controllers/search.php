@@ -39,8 +39,6 @@ class Search_Controller extends Authenticated_Controller {
 
 		$content = $this->template->content;
 		$content->date_format_str = nagstat::date_format();
-
-		$ls = Livestatus::instance();
 		
 		$filters = $this->queryToLSFilter( $query );
 		if($filters !== false) {
@@ -48,6 +46,8 @@ class Search_Controller extends Authenticated_Controller {
 		}
 		
 		$filters = $this->queryToLSFilter_MatchAll( $query );
+
+		$ls = Livestatus::instance();
 		
 		$match = false;
 		$limit = isset($filters['limit']) ? $filters['limit'] : false;

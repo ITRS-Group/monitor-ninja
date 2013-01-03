@@ -22,48 +22,23 @@ class Search_Test extends TapUnit {
 	 * Test simple table access
 	 */
 	public function test_host() {
-		$this->run_test('h:kaka', array(
-				'hosts' =>
-					"Filter: name ~~ kaka\n".
-					"Filter: address ~~ kaka\n".
-					"Or: 2\n"
-		) );
+		$this->run_test('h:kaka', '[hosts] (name ~~ "kaka" or address ~~ "kaka")' );
 	}
 	public function test_service() {
-		$this->run_test('s:kaka', array(
-				'services' =>
-					"Filter: description ~~ kaka\n".
-					"Filter: display_name ~~ kaka\n".
-					"Or: 2\n"
-				) );
+		$this->run_test('s:kaka', '[services] (description ~~ "kaka" or display_name ~~ "kaka")' );
 	}
 	public function test_hostgroups() {
-		$this->run_test('hg:kaka', array(
-				'hostgroups' =>
-					"Filter: name ~~ kaka\n".
-					"Filter: alias ~~ kaka\n".
-					"Or: 2\n"
-				) );
+		$this->run_test('hg:kaka', '[hostgorups] (name ~~ "kaka" or alias ~~ "kaka")' );
 	}
 	public function test_servicegroups() {
-		$this->run_test('sg:kaka', array(
-				'servicegroups' =>
-					"Filter: name ~~ kaka\n".
-					"Filter: alias ~~ kaka\n".
-					"Or: 2\n"
-				) );
+		$this->run_test('sg:kaka', '[servicegroups] (name ~~ "kaka" or alias ~~ "kaka")' );
 	}
 	
 	/* ******
 	 * Test wildcard search
 	 */
 	public function test_wildcard() {
-		$this->run_test('h:aaa%bbb', array(
-				'hosts' =>
-					"Filter: name ~~ aaa.*bbb\n".
-					"Filter: address ~~ aaa.*bbb\n".
-					"Or: 2\n"
-				) );
+		$this->run_test('h:aaa%bbb', '[hosts] (name ~~ "aaa.*bbb" or address ~~ "aaa.*bbb")' );
 	}
 	
 	
@@ -71,28 +46,15 @@ class Search_Test extends TapUnit {
 	 * Test combined host/service (services by hosts)
 	 */
 	public function test_host_serivce() {
-		$this->run_test('h:kaka and s:pong', array(
-				'services' =>
-					"Filter: description ~~ pong\n".
-					"Filter: display_name ~~ pong\n".
-					"Or: 2\n".
-					"Filter: host_name ~~ kaka\n".
-					"Filter: host_address ~~ kaka\n".
-					"Or: 2\n"
-		) );
+		$this->run_test('h:kaka and s:pong', '[services] (description ~~ "pong" or display_name ~~ "pong") and (host.name ~~ "kaka" or host.address ~~ "kaka")' );
 	}
 	
 	/* ******
 	 * Test limit
 	 */
 	public function test_host_limit() {
-		$this->run_test('h:kaka limit=24', array(
-				'hosts' =>
-					"Filter: name ~~ kaka\n".
-					"Filter: address ~~ kaka\n".
-					"Or: 2\n",
-				'limit' => 24
-		) );
+		// Limit should be ignored...
+		$this->run_test('h:kaka limit=24', '[hosts] (name ~~ "kaka" or address ~~ "kaka")' );
 	}
 
 	protected function run_test( $query, $expect ) {
