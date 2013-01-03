@@ -16,18 +16,16 @@ class Listview_Widget extends widget_Base {
 	private $query=false;
 	
 	public function __construct($model) {
-		$model->friendly_name = 'List view';
 		parent::__construct($model);
 		
 	}
 	
-	public function set_query($query) {
-		$this->query = $query;
+	public function set_fixed() {
 	}
 	
 	public function index() {
 		try {
-			$set = ObjectPool_Model::get_by_query($this->query);
+			$set = ObjectPool_Model::get_by_query($this->model->setting['query']);
 		} catch(LSFilterException $e) {
 			array(
 				'status' => 'error',

@@ -75,10 +75,25 @@ class Search_Controller extends Authenticated_Controller {
 		$this->xtra_css = array();
 		$this->template->content->widgets = array();
 
-		foreach( $queries as $query ) {
-			$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'listview'), $this);
+		$username = Auth::instance()->get_user()->username;
+		
+		foreach( $queries as $table => $query ) {
+			$model = new Ninja_widget_Model(array(
+				'page' => Router::$controller,
+				'name' => 'listview',
+				'widget' => 'listview',
+				'username' => $username,
+				'friendly_name' => ucfirst($table),
+				'setting' => array(
+					'query' => $query
+					)
+				));
+			
+			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
-			$widget->set_query($query);
+			
+			$widget->set_fixed($query);
+			
 			$this->template->content->widgets[] = $widget->render();
 		}
 

@@ -59,7 +59,6 @@ class Ninja_widget_Model extends Model
 	 */
 	function __construct($db_row) {
 		parent::__construct();
-		$db_row['setting'] = i18n::unserialize(trim($db_row['setting']));
 		if (isset($db_row['setting']['widget_title']))
 			$db_row['friendly_name'] = $db_row['setting']['widget_title'];
 		$this->db_row = $db_row;
@@ -140,8 +139,10 @@ class Ninja_widget_Model extends Model
 
 		if (!count($result))
 			return false;
-
-		$obj = new Ninja_widget_Model($result->result(false)->current());
+		
+		$db_row=$result->result(false)->current();
+		$db_row['setting'] = i18n::unserialize(trim($db_row['setting']));
+		$obj = new Ninja_widget_Model($db_row);
 		if ($instance_id !== null && $obj->instance_id === null) {
 			// we were asked for a specific widget, but it could not be found
 			return false;
