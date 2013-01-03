@@ -48,7 +48,7 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		if(count($filters)==1) {
-			return url::redirect('listview?'.http_build_query(array('q'=>$filters[0])));
+			return url::redirect('listview?'.http_build_query(array('q'=>reset($filters))));
 		}
 
 		$this->render_queries( $filters );
@@ -124,7 +124,6 @@ class Search_Controller extends Authenticated_Controller {
 
 		if( isset( $filter['filters']['comments'] ) ) {
 			$table = 'comments';
-			$query[] = $this->andOrToQuery( $filter['filters']['comments'], $this->search_columns['comments'] );
 			if( isset( $filter['filters']['services'] ) )
 				$query[] = $this->andOrToQuery( $filter['filters']['services'],
 					array_map( function($col){
@@ -138,7 +137,6 @@ class Search_Controller extends Authenticated_Controller {
 		}
 		else if( isset( $filter['filters']['services'] ) )  {
 			$table = 'services';
-			$query[] = $this->andOrToQuery( $filter['filters']['services'], $this->search_columns['services'] );
 			if( isset( $filter['filters']['hosts'] ) )
 				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
 					array_map( function($col){
@@ -147,20 +145,15 @@ class Search_Controller extends Authenticated_Controller {
 		}
 		else if( isset( $filter['filters']['hosts'] ) ) {
 			$table = 'hosts';
-			$query[] = $this->andOrToQuery( $filter['filters']['hosts'], $this->search_columns['hosts'] );
 		}
-
-
 		else if( isset( $filter['filters']['hostgroups'] ) ) {
-			$table = 'hostgorups';
-			$query[] = $this->andOrToQuery( $filter['filters']['hostgroups'], $this->search_columns['hostgroups'] );
+			$table = 'hostgroups';
 		}
-
 		else if( isset( $filter['filters']['servicegroups'] ) ) {
 			$table = 'servicegroups';
-			$query[] = $this->andOrToQuery( $filter['filters']['servicegroups'], $this->search_columns['servicegroups'] );
 		}
 
+		$query[] = $this->andOrToQuery( $filter['filters'][$table], $this->search_columns[$table] );
 
 		if( $table === false )
 			return false;

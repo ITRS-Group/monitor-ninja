@@ -28,7 +28,7 @@ class Search_Test extends TapUnit {
 		$this->run_test('s:kaka', array('services'=>'[services] (description ~~ "kaka" or display_name ~~ "kaka")') );
 	}
 	public function test_hostgroups() {
-		$this->run_test('hg:kaka', array('hostgroups'=>'[hostgorups] (name ~~ "kaka" or alias ~~ "kaka")') );
+		$this->run_test('hg:kaka', array('hostgroups'=>'[hostgroups] (name ~~ "kaka" or alias ~~ "kaka")') );
 	}
 	public function test_servicegroups() {
 		$this->run_test('sg:kaka', array('servicegroups'=>'[servicegroups] (name ~~ "kaka" or alias ~~ "kaka")') );
