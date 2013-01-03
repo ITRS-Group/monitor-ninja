@@ -339,12 +339,12 @@ class Schedule_Controller extends Authenticated_Controller
 				}
 				break;
 			case 'filename': // remove spaces
-				if (strlen($new_value)>40) {
-					echo sprintf(_('The entered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
+				$new_value = $this->_convert_special_chars($new_value);
+				if (strlen($new_value)>255) {
+					echo sprintf(_('The entered value is too long. Only 255 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
 						_('Please').' <a title="'._('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'._('click here').'</a> '._('to view saved value').'.';
 					exit;
 				}
-				$new_value = $this->_convert_special_chars($new_value);
 				$new_value = $this->_check_filename($new_value);
 				break;
 		}
