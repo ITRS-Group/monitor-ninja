@@ -48,7 +48,8 @@ class Ninja_widgets_Test extends TapUnit {
 			'error', // Internal implementation detail, should never be visible in widget listings
 			'geomap', // In ninja, not in monitor - it's relationship status is It's Complicated
 			'tac_services_common', // Implementation detail for tac_services_critical_(un)?acknowledged widgets
-			'nagvis' // Installs through post-hook in spec file... Needs to be installed on build server...
+			'nagvis', // Installs through post-hook in spec file... Needs to be installed on build server...
+			'listview' // Isn't fetched through database, but constant settings when called. (Might change later)
 		);
 		$db = Database::instance();
 		$table = 'ninja_widgets';
