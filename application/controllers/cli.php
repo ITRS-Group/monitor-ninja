@@ -30,7 +30,7 @@ class Cli_Controller extends Ninja_Controller {
 	 * Parse input data from commandline and stores in an array
 	 * An equivalent to getopt() but easier for us in this environment
 	 */
-	public function _parse_parameters($noopt = array())
+	private function _parse_parameters($noopt = array())
 	{
 		$result = array();
 		$params = $GLOBALS['argv'];
