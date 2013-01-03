@@ -22,6 +22,8 @@ Requires: php-json
 Requires: wkhtmltopdf
 BuildRequires: php >= 5.3
 BuildRequires: rubygem(compass)
+BuildRequires: doxygen
+BuildRequires: graphviz
 
 Source: %name-%version.tar.gz
 %description
