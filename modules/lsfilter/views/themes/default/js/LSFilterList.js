@@ -4,7 +4,6 @@ function lsfilter_list(config)
 	this.defaults = {
 		per_page: 100,
 		autorefresh_delay: 30000,
-		request_delay: 500,
 		request_url: _site_domain + _index_page + "/" + _controller_name
 				+ "/fetch_ajax"
 	};
@@ -205,6 +204,9 @@ function lsfilter_list(config)
 			loadcell.click(function(ev)
 			{
 				ev.preventDefault();
+				var loadingcell = $('<td>Loading...</td>');
+				loadingcell.attr('colspan', columns.length);
+				loadrow.empty().append(loadingcell);
 				self.send_request({
 					callback: function(result)
 					{

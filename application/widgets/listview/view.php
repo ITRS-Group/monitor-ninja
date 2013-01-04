@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $id = uniqid('listview_'); /* ID of span for this widget */
 ?>
-<span id="<?php echo $id ?>"></span>
+<span id="<?php echo $id ?>">Loading...</span>
 <script type="text/javascript">
 
 $(function(){
