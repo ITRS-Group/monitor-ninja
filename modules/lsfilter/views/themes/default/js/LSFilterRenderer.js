@@ -234,19 +234,32 @@ function render_host_status_summary(stats)
 
 var listview_multi_select_cell_renderer = function(args)
 {
-	/*
-	 * var checkbox = $('<input type="checkbox" name="object_select[]"
-	 * />').attr( 'value', args.obj.key); if (listview_selection[args.obj.key]) {
-	 * checkbox.prop('checked', true); if (tr.hasClass('odd'))
-	 * tr.addClass('selected_odd'); else tr.addClass('selected_even'); }
-	 * checkbox.change(function(evt) { var tgt = $(evt.target);
-	 * listview_selection[tgt.attr('value')] = tgt.prop('checked'); var tr =
-	 * tgt.closest('tr'); var classname = "" if (tr.hasClass('odd')) classname =
-	 * 'selected_odd'; else classname = 'selected_even'; if
-	 * (tgt.prop('checked')) { tr.addClass(classname); } else {
-	 * tr.removeClass(classname); } });
-	 */
-	var checkbox = 'x';
+	var checkbox = $('<input type="checkbox" name="object_select[]" />').attr(
+			'value', args.obj.key);
+	if (false /*listview_selection[args.obj.key]*/) {
+		checkbox.prop('checked', true);
+		if (tr.hasClass('odd'))
+			tr.addClass('selected_odd');
+		else
+			tr.addClass('selected_even');
+	}
+	checkbox.change(function(evt)
+	{
+		var tgt = $(evt.target);
+//		listview_selection[tgt.attr('value')] = tgt.prop('checked');
+		var tr = tgt.closest('tr');
+		var classname = ""
+		if (tr.hasClass('odd'))
+			classname = 'selected_odd';
+		else
+			classname = 'selected_even';
+		if (tgt.prop('checked')) {
+			tr.addClass(classname);
+		}
+		else {
+			tr.removeClass(classname);
+		}
+	});
 	return $('<td style="width: 1em;" />').append(checkbox);
 };
 
@@ -261,6 +274,10 @@ var listview_renderer_table = {
 			"header": '',
 			"depends": [],
 			"sort": false,
+			"avalible": function(args)
+			{
+				return _controller_name == 'listview';
+			},
 			"cell": listview_multi_select_cell_renderer
 		},
 		"status": {
@@ -492,6 +509,10 @@ var listview_renderer_table = {
 			"header": '',
 			"depends": [],
 			"sort": false,
+			"avalible": function(args)
+			{
+				return _controller_name == 'listview';
+			},
 			"cell": listview_multi_select_cell_renderer
 		},
 		"host_status": {
@@ -520,7 +541,7 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
-
+				
 				if (args.obj.host
 						&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 					cell.append(extinfo_link(args.obj.host.name).text(
@@ -764,6 +785,10 @@ var listview_renderer_table = {
 			"header": '',
 			"depends": [],
 			"sort": false,
+			"avalible": function(args)
+			{
+				return _controller_name == 'listview';
+			},
 			"cell": listview_multi_select_cell_renderer
 		},
 		"id": {
@@ -963,6 +988,10 @@ var listview_renderer_table = {
 			"header": '',
 			"depends": [],
 			"sort": false,
+			"avalible": function(args)
+			{
+				return _controller_name == 'listview';
+			},
 			"cell": listview_multi_select_cell_renderer
 		},
 		"is_service": {

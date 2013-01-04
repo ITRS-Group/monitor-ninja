@@ -14,24 +14,28 @@ function lsfilter_list(config)
 	 **************************************************************************/
 	this.update = function(query, source, metadata)
 	{
+		var self = this; // To be able to access it from within handlers
+		
 		if (typeof metadata === "undefined") {
 			var parser = new LSFilter(new LSFilterPreprocessor(),
 					new LSFilterMetadataVisitor());
 			metadata = parser.parse(query);
 		}
-		var self = this; // To be able to access it from within handlers
+		
 		if (this.request_metadata && this.request_metadata !== metadata) {
 			// we're switching from one type of view to another,
 			// reset unwanted state
 			this.config.offset = 0;
-			this.config.previous_obj = {};
+			this.previous_obj = {};
 		}
+		
 		this.request_query = query;
 		this.request_metadata = metadata;
 		this.sort_vis_column = null;
 		this.sort_db_columns = [];
 		this.sort_ascending = true;
 		this.send_request({
+			append: false,
 			callback: function(data)
 			{
 				self.handle_ajax_response(data);
@@ -43,6 +47,8 @@ function lsfilter_list(config)
 	this.set_sort = function(vis_column, db_columns)
 	{
 		var self = this; // To be able to access it from within handlers
+		this.config.offset = 0;
+		this.previous_obj = 0;
 		if (this.sort_vis_column == vis_column) {
 			this.sort_ascending = !this.sort_ascending;
 		}
@@ -52,6 +58,7 @@ function lsfilter_list(config)
 			this.sort_ascending = true;
 		}
 		this.send_request({
+			append: false,
 			callback: function(data)
 			{
 				self.handle_ajax_response(data);
@@ -175,13 +182,14 @@ function lsfilter_list(config)
 			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
 				row.append(columns[cur_col]({
 					obj: obj,
-					last_obj: this.config.previous_obj,
-					row: row
+					last_obj: this.previous_obj,
+					row: row,
+					listview: this
 				}));
 				// .addClass( 'listview-cell-' + cur_col));
 			}
 			tbody.append(row);
-			this.config.previous_obj = obj;
+			this.previous_obj = obj;
 		}
 	};
 	
@@ -208,6 +216,7 @@ function lsfilter_list(config)
 				loadingcell.attr('colspan', columns.length);
 				loadrow.empty().append(loadingcell);
 				self.send_request({
+					append: true,
 					callback: function(result)
 					{
 						loadrow.remove();
@@ -252,6 +261,16 @@ function lsfilter_list(config)
 		var header = $('<tr />');
 		for ( var key in listview_renderer_table[data.table]) {
 			var col_render = listview_renderer_table[data.table][key];
+			
+			/*
+			 * Check if column is avalible in current view.
+			 */
+			if(col_render.avalible) {
+				if(!col_render.avalible({}) ) {
+					continue;
+				}
+			}
+			
 			columns.push(col_render.cell);
 			
 			var th = $('<th />');
@@ -262,7 +281,7 @@ function lsfilter_list(config)
 				var sort_dir = 0;
 				if (sort_col == key) sort_dir = -1;
 				if (sort_asc) sort_dir = -sort_dir;
-				listview_add_sort(th, key, col_render.sort, sort_dir);
+				this.add_sort(th, key, col_render.sort, sort_dir);
 			}
 			header.append(th);
 		}
@@ -333,5 +352,30 @@ function lsfilter_list(config)
 		 * .trigger("scroll");
 		 */
 		return table;
+	}
+	
+	this.add_sort = function(element, vis_column, db_columns, current)
+	{
+		var self = this; // To be able to access it from within handlers
+		
+		if (current == 0) { // No sort
+		
+			element.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
+		}
+		else if (current > 0) { // Ascending?
+			element.attr('title', 'Sort descending');
+			element.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
+		}
+		else {
+			element.attr('title', 'Sort ascending');
+			element.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
+		}
+		element.click({
+			vis_column: vis_column,
+			db_columns: db_columns
+		}, function(evt)
+		{
+			self.set_sort(evt.data.vis_column, evt.data.db_columns); // FIXME
+		});
 	}
 }
