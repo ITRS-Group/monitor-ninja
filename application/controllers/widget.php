@@ -26,6 +26,7 @@ class Widget_Controller extends Authenticated_Controller {
 	/**
 	 *	wrapper for widget ajax calls
 	 */
+	
 	public function widget($widget)
 	{
 		$instance_id = $this->input->get('instance_id', false);
@@ -148,10 +149,12 @@ class Widget_Controller extends Authenticated_Controller {
 	{
 		$page = $this->input->post('page', false);
 		$widget = $this->input->post('widget', false);
+		$iid = $this->input->post('instance_id', false);
 		$page = trim($page);
 		$widget = trim($widget);
-		$data = Ninja_widget_Model::get_widget($page, $widget, true);
+		$data = Ninja_widget_Model::get($page, $widget, $iid);
 		$setting = $data!==false ? $data->setting : serialize(array(false));
+		var_dump($data);
 		echo json::encode(i18n::unserialize($setting));
 	}
 

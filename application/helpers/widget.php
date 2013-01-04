@@ -143,7 +143,7 @@ class widget_Core
 		$master->inline_js .= $widget->inline_js;
 		if ($widget->model) {
 			$widget_id = 'widget-'.$widget->model->name.'-'.$widget->model->instance_id;
-			$master->inline_js .= "$.fn.AddEasyWidget('#$widget_id', \$('#$widget_id').parent().id, window.easywidgets_obj);";
+			//$master->inline_js .= "$.fn.AddEasyWidget('#$widget_id', \$('#$widget_id').parent().id, window.easywidgets_obj);";
 		}
 	}
 

@@ -30,12 +30,12 @@ class json_Core
 	 * @param $var json-encoded string to decode
 	 * @return false on error, json-decoded data on success
 	 */
-	public static function decode($var = false)
+	public static function decode($var = false, $assoc = false)
 	{
 		if (empty($var)) {
 			return false;
 		}
-		return json_decode($var);
+		return json_decode($var, $assoc);
 	}
 
 	/**

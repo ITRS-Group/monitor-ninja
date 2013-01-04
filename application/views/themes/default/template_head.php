@@ -30,7 +30,8 @@ else {
 		echo html::script('application/media/js/jquery.min.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
 		echo html::script('application/media/js/jquery.form.js');
-		echo html::script('application/media/js/jquery.easywidgets.min.js');
+		echo html::script('application/media/js/jquery.dashinq.js');
+		//echo html::script('application/media/js/jquery.easywidgets.min.js');
 		echo html::script('application/media/js/jquery.autocomplete.min');
 		echo html::script('application/media/js/jquery.selectboxes.min.js');
 		echo html::script('application/media/js/jquery.jeditable.min');

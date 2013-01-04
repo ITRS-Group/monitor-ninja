@@ -15,7 +15,10 @@
 	*
 	*/
 
-	$show_settings = ((isset($widgets) && is_array($widgets)) || (!isset($disable_refresh) || $disable_refresh === false));
+	$show_settings = ((isset($dashinq_widgets) && is_array($dashinq_widgets)) || (!isset($disable_refresh) || $disable_refresh === false));
+
+	//var_dump($dashinq_widgets);
+	//die;
 
 	$shortcuts = array('internal' => array(), 'external' => array());
 

@@ -123,7 +123,7 @@
 		});
 	}
 
-	setInterval(query_for_states, 10000);
+	//setInterval(query_for_states, 10000);
 	query_for_states();
 
 	var global_quicklinks = [];

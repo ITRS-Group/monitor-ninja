@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+require_once(Kohana::find_file(Kohana::config('widget.dirname'), 'widget_Base'));
+
 /**
  * Tactical overview controller
  * Requires authentication
@@ -12,19 +14,20 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Authenticated_Controller {
+
 	public function index()
 	{
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
-		$this->xtra_js[] = $this->add_path('/js/widgets.js');
-		$this->template->disable_refresh = true;
-
+		$this->xtra_css[] = $this->add_path('/css/dashinq.css');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
+		$this->template->disable_refresh = true;
+
 		$this->template->content->links = array
 		(
-			_('logout')     => 'default/logout'
+			_('logout') => 'default/logout'
 		);
 
 		# make sure we have this done before letting widgets near
@@ -33,60 +36,52 @@ class Tac_Controller extends Authenticated_Controller {
 
 		# fetch data for all widgets
 		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method);
-		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+		//$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 
-		if (empty($widgets)) {
-			# probably a new user, we should populate the widget list
-			# yeah, this does Weird Things™ if a user should try to hide everything
-			# but that is a silly thing to do, so just blame the user.
-			foreach ($widget_objs as $obj) {
-				$obj->save();
+		$dashinq_widgets = array();
+
+		foreach ($widget_objs as $key => $widget) {
+			$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget->name, $widget->name, false);
+			if ($path === false) {
+				# try core path if not found in custom
+				$path = Kohana::find_file(Kohana::config('widget.dirname').$widget->name, $widget->name, false);
 			}
-			$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+
+			if (is_file($path)) { # Widget resource exists
+
+				$settings = Ninja_setting_Model::fetch_page_setting($key, 'tac/index');
+
+				require_once($path);
+				$classname = ucfirst($widget->name).'_Widget';
+				$wb = new $classname($widget);
+
+				$options = $wb->get_arguments();
+
+				if ($settings) {
+
+					$settings = array($key => $settings);
+					$settings = json_decode($settings[$key]->setting, true);
+
+					foreach($settings as $k => $v) {
+						$widget->setting[$k] = $v;
+					}
+
+				}
+
+				$dashinq_widgets[] = array(
+					"friendly_name" => $widget->friendly_name, 
+					"name" => $widget->name, 
+					"settings" => json_encode($settings), 
+					"id" => $key,
+					"options" => json_encode($options)
+				);
+			}
 		}
 
-		if (array_keys($widgets) == array('unknown')) {
-			$nwidgets = count($widgets['unknown']);
-
-			# left column
-			$widgets['widget-placeholder'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# middle column
-			$widgets['widget-placeholder1'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# right column
-			$widgets['widget-placeholder2'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# right column
-			$widgets['widget-placeholder3'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# right column
-			$widgets['widget-placeholder4'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# full width (placed at bottom)
-			$widgets['widget-placeholder5'] = $widgets['unknown'];
-			unset($widgets['unknown']);
-		} else if (isset($widgets['unknown'])) {
-			if(!isset($widgets['widget-placeholder'])) {
-				$widgets['widget-placeholder'] = array();
-			}
-			$widgets['widget-placeholder'] = array_merge($widgets['widget-placeholder'], $widgets['unknown']);
-			unset($widgets['unknown']);
-		}
-
-		$widgets = array_merge(array(
-			'widget-placeholder' => array(),
-			'widget-placeholder1' => array(),
-			'widget-placeholder2' => array(),
-			'widget-placeholder3' => array(),
-			'widget-placeholder4' => array(),
-			'widget-placeholder5' => array()
-		), $widgets);
-
-		$this->template->content->widgets = $widgets;
-		$this->template->widgets = $widget_objs;
+		$this->template->content->dashinq_widgets = $dashinq_widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
+
 	}
 }

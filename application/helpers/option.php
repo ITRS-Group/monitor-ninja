@@ -5,13 +5,13 @@
  */
 class option_Core
 {
-	private $should_render_js = true; /**< True to auto-render javascript to handle changes */
+	public $should_render_js = true; /**< True to auto-render javascript to handle changes */
 	public $ns; /**< A unique namespace, usually the widget name */
 	public $name; /**< A field name, should be "code-friendly" */
 	public $label; /**< The label text, should be translated */
-	private $type; /**< The widget type, ie "input", "checkbox", "textarea", etc - must exist in kohana's form helper */
-	private $args; /**< Arguments to send to the form helper to render it properly */
-	private $default; /**< A default value to fall back on */
+	public $type; /**< The widget type, ie "input", "checkbox", "textarea", etc - must exist in kohana's form helper */
+	public $args; /**< Arguments to send to the form helper to render it properly */
+	public $default; /**< A default value to fall back on */
 
 	/**
 	 * Constructor
