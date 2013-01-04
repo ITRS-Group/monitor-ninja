@@ -1,7 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $id = uniqid('listview_'); /* ID of span for this widget */
 ?>
-<span id="<?php echo $id ?>">Loading...</span>
+<div id="<?php echo $id ?>">Loading...</div>
+<div><a href="<?php echo url::base(true).'listview?q='.urlencode($this->args['query']); ?>">View in listview</a></div>
 <script type="text/javascript">
 
 $(function(){

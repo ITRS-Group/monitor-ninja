@@ -46,7 +46,7 @@ class Listview_Widget extends widget_Base {
 	}
 	
 	public function options() {
-		$options = parent::options();
+		$options = array();
 		$options[] = new option('listview','query',_('Query'),'textarea',array(),'[hosts] all');
 		$options[] = new option('listview','limit',_('Limit'),'input',array(),20);
 		return $options;
