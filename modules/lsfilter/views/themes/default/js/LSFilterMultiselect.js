@@ -106,7 +106,3 @@ var listview_selection =
 		[];
 var listview_selection_type =
 		"";
-
-function multi_select_refresh()
-{
-}

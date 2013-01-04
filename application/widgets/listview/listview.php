@@ -12,17 +12,35 @@ class Listview_Widget extends widget_Base {
 	
 	private $query=false;
 	
-	public function __construct($model) {
-		parent::__construct($model);
+	public function __construct($widget_model) {
+		parent::__construct($widget_model);
+		$basepath = 'modules/lsfilter/';
+		$ormpath = 'modules/orm/';
 		
+		$this->js[] = $ormpath.'js/LivestatusStructure';
+		
+		$this->js[] = $basepath.'js/LSFilter';
+		$this->js[] = $basepath.'js/LSFilterLexer';
+		$this->js[] = $basepath.'js/LSFilterParser';
+		$this->js[] = $basepath.'js/LSFilterPreprocessor';
+		$this->js[] = $basepath.'js/LSFilterVisitor';
+		
+		$this->js[] = $basepath.'views/themes/default/js/lib';
+		$this->js[] = $basepath.'views/themes/default/js/LSFilterVisitors';
+		$this->js[] = $basepath.'views/themes/default/js/LSFilterRenderer';
+		
+		$this->js[] = $basepath.'views/themes/default/js/LSFilterList';
 	}
 	
+	/**
+	 * Disable everything configurable. This is useful when including the widget with generetated parameters from a controller.
+	 */
 	public function set_fixed() {
-		$this->movable = false;
-		$this->removable = false;
+		$this->movable      = false;
+		$this->removable    = false;
 		$this->closeconfirm = false;
-		$this->editable=false;
-		$this->duplicatable=false;
+		$this->editable     = false;
+		$this->duplicatable = false;
 	}
 	
 	public function options() {
@@ -33,8 +51,10 @@ class Listview_Widget extends widget_Base {
 	}
 	
 	public function index() {
+		
+		$this->args = $this->get_arguments();
 		try {
-			$set = ObjectPool_Model::get_by_query($this->model->setting['query']);
+			$set = ObjectPool_Model::get_by_query($this->args['query']);
 		} catch(LSFilterException $e) {
 			array(
 				'status' => 'error',

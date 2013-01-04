@@ -1,3 +1,5 @@
+var lsfilter_storage = {};
+
 var lsfilter_main = {
 	update_delay : 300,
 
@@ -37,7 +39,7 @@ var lsfilter_main = {
 			var metadata = parser.parse(query);
 
 			lsfilter_history.update(query, source, metadata);
-			lsfilter_list.update(query, source, metadata);
+			lsfilter_storage.list.update(query, source, metadata);
 			lsfilter_multiselect.update(query, source, metadata);
 			lsfilter_saved.update(query, source, metadata);
 			lsfilter_textarea.update(query, source, metadata);
@@ -54,7 +56,10 @@ var lsfilter_main = {
 		this.update_page_links();
 
 		lsfilter_history.init();
-		lsfilter_list.init();
+		lsfilter_storage.list = new lsfilter_list({
+			table: $('#filter_result'),
+			totals: $('#filter_result_totals')
+		});
 		lsfilter_multiselect.init();
 		lsfilter_saved.init();
 		lsfilter_textarea.init();

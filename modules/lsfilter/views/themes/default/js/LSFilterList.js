@@ -1,120 +1,318 @@
-var lsfilter_list = {
+function lsfilter_list(config)
+{
 	// Configuration
-	request_delay : 500,
-
-	autorefresh_delay : 30000,
-
-	config: {
-		offset: 0, // watch out, we've got state
-		per_page: 100
-	},
-
+	this.defaults = {
+		per_page: 100,
+		autorefresh_delay: 30000,
+		request_delay: 500,
+		request_url: _site_domain + _index_page + "/" + _controller_name
+				+ "/fetch_ajax"
+	};
+	this.config = $.extend({}, this.defaults, config);
+	
 	/***************************************************************************
 	 * External methods
 	 **************************************************************************/
-	update : function(query, source, metadata) {
-		if(this.request_metadata && this.request_metadata !== metadata) {
+	this.update = function(query, source, metadata)
+	{
+		if (typeof metadata === "undefined") {
+			var parser = new LSFilter(new LSFilterPreprocessor(),
+					new LSFilterMetadataVisitor());
+			metadata = parser.parse(query);
+		}
+		var self = this; // To be able to access it from within handlers
+		if (this.request_metadata && this.request_metadata !== metadata) {
 			// we're switching from one type of view to another,
 			// reset unwanted state
 			this.config.offset = 0;
 		}
-		if (source == 'list')
-			return;
-		var self = this; // To be able to access it from within handlers
 		this.request_query = query;
 		this.request_metadata = metadata;
 		this.sort_vis_column = null;
 		this.sort_db_columns = [];
 		this.sort_ascending = true;
-		self.send_request(this.config);
-	},
-	init : function() {
-	},
-	set_sort : function(vis_column, db_columns) {
+		this.send_request({
+			callback: function(data)
+			{
+				self.handle_ajax_response(data);
+				// get the scope right
+			}
+		});
+	};
+	
+	this.set_sort = function(vis_column, db_columns)
+	{
+		var self = this; // To be able to access it from within handlers
 		if (this.sort_vis_column == vis_column) {
 			this.sort_ascending = !this.sort_ascending;
-		} else {
+		}
+		else {
 			this.sort_vis_column = vis_column;
 			this.sort_db_columns = db_columns;
 			this.sort_ascending = true;
 		}
-		this.send_request(this.config);
-	},
-
-	send_request : function(config) {
+		this.send_request({
+			callback: function(data)
+			{
+				self.handle_ajax_response(data);
+				// get the scope right
+			}
+		});
+	};
+	
+	this.send_request = function(config)
+	{
 		var self = this; // To be able to access it from within handlers
-
-		if(typeof config.increment_items_in_view !== "undefined" && Boolean(config.increment_items_in_view)) {
+		
+		if (typeof config.increment_items_in_view !== "undefined"
+				&& Boolean(config.increment_items_in_view)) {
 			delete config.increment_items_in_view;
 			self.config.offset += self.config.per_page;
 		}
-
-		var options = $.extend(
-			self.config,
-			{
-				callback: self.handle_ajax_response // get the scope right
-			}
-		);
-		$.extend(options, config);
-
-
-		var loader = $('<span class="lsfilter-loader" />').append(
-				$('<span>' + _('Loading...') + '</span>'));
-		$('#filter_loading_status').append(loader);
-		listview_ajax_active_request = $.ajax({
-			url : _site_domain + _index_page + "/" + _controller_name + "/fetch_ajax",
-			dataType : 'json',
-			data : {
-				"query" : this.request_query,
-				"sort" : this.sort_db_columns,
-				"sort_asc" : (this.sort_ascending ? 1 : 0),
-				"columns" : listview_columns_for_table(this.request_metadata['table']),
-				"limit" : options.per_page,
-				"offset" : options.offset
-			},
-			success : function(data) {
-				options.callback(data);
-			},
-			complete: function() {
-				$('.lsfilter-loader').remove();
-			}
-		});
-	},
-
+		
+		var options = $.extend({}, self.config, config);
+		
+		/*
+		 * var loader = $('<span class="lsfilter-loader" />').append( $('<span>' +
+		 * _('Loading...') + '</span>')); this.loader.append(loader);
+		 */
+		listview_ajax_active_request = $
+				.ajax({
+					url: this.config.request_url,
+					dataType: 'json',
+					data: {
+						"query": this.request_query,
+						"sort": this.sort_db_columns,
+						"sort_asc": (this.sort_ascending ? 1 : 0),
+						"columns": listview_columns_for_table(this.request_metadata['table']),
+						"limit": options.per_page,
+						"offset": options.offset
+					},
+					success: function(data)
+					{
+						options.callback(data);
+					},
+					complete: function()
+					{
+						// $('.lsfilter-loader').remove();
+					}
+				});
+	};
+	
 	/***************************************************************************
 	 * Internal veriables
 	 **************************************************************************/
-	request_query : '',
-	request_metadata : {},
-	resuest_timer : false,
-
-	sort_vis_column : null,
-	sort_db_columns : [],
-	sort_ascending : true,
-
-	autorefresh_timer : false,
-
+	this.request_query = '';
+	this.request_metadata = {};
+	this.resuest_timer = false;
+	
+	this.sort_vis_column = null;
+	this.sort_db_columns = [];
+	this.sort_ascending = true;
+	
+	this.autorefresh_timer = false;
+	
 	/***************************************************************************
 	 * Internal methods
 	 **************************************************************************/
-
-	handle_autorefresh : function() {
-
-	},
-
-	handle_ajax_response : function(data) {
+	
+	this.handle_autorefresh = function()
+	{
+		
+	};
+	
+	this.handle_ajax_response = function(data)
+	{
+		var new_table = $('<span />');
+		var new_totals = $('<span />');
 		if (data.status == 'success') {
-			listview_current_table = data.table;
-			listview_render_totals(data.table, data.totals);
-
-			listview_render_table(data.data, data.count, this.sort_vis_column, this.sort_ascending);
-			multi_select_refresh();
-		} else if (data.status == 'error') {
-			$('#filter_result').empty().text("Error: " + data.data);
-			$('#filter_result_totals').empty();
+			new_totals = this.render_totals(data.table, data.totals);
+			new_table = this.render_table(data, this.sort_vis_column,
+					this.sort_ascending);
 		}
-
+		else if (data.status == 'error') {
+			new_table.text("Error: " + data.data);
+		}
+		
+		if (this.config.table) this.config.table.empty().append(new_table);
+		if (this.config.totals) this.config.totals.empty().append(new_totals);
+		
 		this.autorefresh_timer = setTimeout(this.handle_autorefresh,
 				this.autorefresh_delay);
+	};
+	
+	this.render_totals = function(table, totals)
+	{
+		var container = $('<ul />');
+		container.append($('<li />').text(
+				table.charAt(0).toUpperCase() + table.slice(1)).css('float',
+				'left').css('font-weight', 'bold'));
+		if (totals) {
+			for ( var field in listview_renderer_totals) {
+				if (field in totals) {
+					container.append(listview_renderer_totals[field](
+							totals[field][1]).css('float', 'left').wrapInner(
+							link_query(totals[field][0])));
+				}
+			}
+		}
+		return container;
+	};
+	
+	this.render_table = function(data, sort_col, sort_asc)
+	{
+		listview_table_col_index = 0;
+		listview_last_host = '';
+		
+		if (data.length == 0) { return $('<h2 class="lsfilter-noresult">'
+				+ _('Empty result set') + '</h2>'); }
+		
+		/*
+		 * Render table
+		 */
+
+		var table = $('<table cellspacing="0" cellpadding="0" border="0" />');
+		var thead = $('<thead />');
+		var tbody = $('<tbody />');
+		table.append(thead);
+		table.append(tbody);
+		
+		/*
+		 * Render table header
+		 */
+
+		var columns = new Array();
+		var header = $('<tr />');
+		for ( var key in listview_renderer_table[data.table]) {
+			var col_render = listview_renderer_table[data.table][key];
+			columns.push(col_render.cell);
+			
+			var th = $('<th />');
+			// .attr('id', listview_table_col_name(col_render.header));
+			th.append(col_render.header);
+			
+			if (col_render.sort) {
+				var sort_dir = 0;
+				if (sort_col == key) sort_dir = -1;
+				if (sort_asc) sort_dir = -sort_dir;
+				listview_add_sort(th, key, col_render.sort, sort_dir);
+			}
+			header.append(th);
+		}
+		thead.append(header);
+		
+		var insert_rows = function(data, total_count, append)
+		{
+			if (typeof append === "undefined") {
+				append = false;
+			}
+			else {
+				append = Boolean(append);
+			}
+			/*
+			 * // #load_more is a tr>td>a node var last_row =
+			 * $('#load_more').parent().parent();
+			 */
+			var last_obj = {};
+			for ( var i = 0; i < data.length; i++) {
+				var obj = data[i];
+				
+				var row = $('<tr />');
+				row.addClass(i % 2 ? 'odd' : 'even');
+				row.data('key', obj.key);
+				
+				for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
+					row.append(columns[cur_col]({
+						obj: obj,
+						last_obj: last_obj,
+						row: row
+					}));
+					// .addClass( 'listview-cell-' + cur_col));
+				}
+				if (append) {
+					row.insertBefore(last_row);
+				}
+				else {
+					tbody.append(row);
+				}
+				last_obj = obj;
+			}
+			/*
+			 * if( data.length < total_count && !$('#load_more').length) {
+			 * tbody.append( $('<tr class="table_pagination"/>') .append( $('<td />')
+			 * .attr('colspan', columns.length) .append( $('<a id="load_more"
+			 * href="#">'+_('Load '+lsfilter_list.config.per_page+' more
+			 * rows')+'</a>') .click(function(ev) { ev.preventDefault();
+			 * lsfilter_list.send_request({ callback: function(result) {
+			 * insert_rows.call(this, result.data, result.count, true); },
+			 * increment_items_in_view: true }); }) ) ) ); } else
+			 * if($('#load_more').length && tbody.find('tr').length >=
+			 * total_count) { $('#load_more').remove(); }
+			 */
+		};
+		insert_rows(data.data, data.count);
+		
+		/*
+		 * table.find('[id^=listview-col-]').hover( function () { var index =
+		 * $(this).attr('id').split('-col-')[1]; table.find('.listview-cell-' +
+		 * index).addClass('listview-col-hover'); }, function () { var index =
+		 * $(this).attr('id').split('-col-')[1]; table.find('.listview-cell-' +
+		 * index).removeClass('listview-col-hover'); } );
+		 */
+		/*
+		 * var header = $("thead", table), clone = header.clone(true);
+		 * header.after(clone);
+		 */
+
+		var update_float_header = function()
+		{
+			table.each(function()
+			{
+				
+				var el = $(this);
+				var offset = el.offset();
+				var scrollTop = $(window).scrollTop();
+				
+				if (scrollTop >= 0) {
+					
+					var head = header.find("tr").children();
+					var cloneHead = clone.find("tr").children();
+					var index = 0;
+					
+					clone.css('min-width', header.width());
+					
+					head.each(function()
+					{
+						
+						if ($.browser.webkit) {
+							$(cloneHead[index]).css(
+									'width',
+									(parseInt($(this).css('width'), 10) + 1)
+											+ 'px');
+						}
+						else {
+							$(cloneHead[index]).css('width',
+									$(this).css('width'));
+						}
+						
+						$(cloneHead[index]).css('padding',
+								$(this).css('padding')).css('margin',
+								$(this).css('margin')).css('border',
+								$(this).css('border'));
+						index++;
+					});
+					
+					clone.addClass('floating-header');
+					clone.css('visibility', 'visible');
+					
+				}
+				
+			});
+		}
+		/*
+		 * $(window).resize(update_float_header).scroll(update_float_header)
+		 * .trigger("scroll");
+		 */
+		return table;
 	}
-};
+}

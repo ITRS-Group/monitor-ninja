@@ -84,18 +84,19 @@ class Search_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$username = Auth::instance()->get_user()->username;
-
+		
 		foreach( $queries as $table => $query ) {
+			$setting = array('query'=>$query);
+			if($limit !== false) {
+				$setting['limit'] = $limit;
+			}
 			$model = new Ninja_widget_Model(array(
 				'page' => Router::$controller,
 				'name' => 'listview',
 				'widget' => 'listview',
 				'username' => $username,
 				'friendly_name' => ucfirst($table),
-				'setting' => array(
-					'query' => $query,
-					'limit' => $limit
-				)
+				'setting' => $setting
 			));
 				
 			$widget = widget::get($model, $this);
