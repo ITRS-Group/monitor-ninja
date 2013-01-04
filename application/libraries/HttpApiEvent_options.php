@@ -16,7 +16,7 @@ class HttpApiEvent_options_core extends Report_options {
                                 'both' => 3,
                                 'host' => 1,
                                 'service' => 2
-                        )
+			)
                 ),
                 'state_types' => array(
                         'options' => array(
@@ -47,7 +47,8 @@ class HttpApiEvent_options_core extends Report_options {
         );
 
 	/**
-	 * Specify properties to expose, adjusted for the HTTP API
+	 * Select report options' properties to include and adjust
+	 * them for the HTTP API
 	 *
 	 * @param $options array = false
 	 */
@@ -79,6 +80,10 @@ class HttpApiEvent_options_core extends Report_options {
 			'default' => false,
 			'description' => "Include events' comments"
 		);
+		$this->properties['alert_types']['description'] = 'Show events for this kind of objects';
+		$this->properties['host_states']['description'] = 'Limit the result set to a certain kind of host states';
+		$this->properties['service_states']['description'] = 'Limit the result set to a certain kind of service states';
+		$this->properties['state_types']['description'] = 'Restrict events based on which state the event is in (soft vs hard)';
 
 		$limit = $this->limit = (int) Op5Config::instance()->getConfig('http_api.report.limit');
 		if($limit > self::MAX_EVENTS || $limit < 1) {
