@@ -91,7 +91,7 @@ class HttpApiEvent_options_core extends Report_options {
 		}
 		$this->properties['limit'] = array(
 			'type' => 'int',
-			'default' => null,
+			'default' => $this->limit,
 			'description' => 'Include at most this many events (between 1 and '.$limit.')'
 		);
 		$this->properties['offset'] = array(
