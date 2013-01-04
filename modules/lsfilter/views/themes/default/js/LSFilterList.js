@@ -25,6 +25,7 @@ function lsfilter_list(config)
 			// we're switching from one type of view to another,
 			// reset unwanted state
 			this.config.offset = 0;
+			this.config.previous_obj = {};
 		}
 		this.request_query = query;
 		this.request_metadata = metadata;
@@ -159,8 +160,72 @@ function lsfilter_list(config)
 		return container;
 	};
 	
+	this.insert_rows = function(columns, data, tbody)
+	{
+		/*
+		 * // #load_more is a tr>td>a node var last_row =
+		 * $('#load_more').parent().parent();
+		 */
+		for ( var i = 0; i < data.data.length; i++) {
+			var obj = data.data[i];
+			
+			var row = $('<tr />');
+			row.addClass(i % 2 ? 'odd' : 'even');
+			row.data('key', obj.key);
+			
+			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
+				row.append(columns[cur_col]({
+					obj: obj,
+					last_obj: this.config.previous_obj,
+					row: row
+				}));
+				// .addClass( 'listview-cell-' + cur_col));
+			}
+			tbody.append(row);
+			this.config.previous_obj = obj;
+		}
+	};
+	
+	this.add_fill_bar = function(columns, data, tbody)
+	{
+		var self = this; // To be able to access it from within handlers
+		var more_rows = data.count - tbody.children().length;
+		if (more_rows > this.config.per_page) {
+			more_rows = this.config.per_page;
+		}
+		if (more_rows > 0) {
+			var loadcell = $('<td/>');
+			var loadrow = $('<tr class="table_pagination" />')
+			loadrow.append(loadcell)
+			tbody.append(loadrow);
+			
+			loadcell.attr('colspan', columns.length);
+			loadcell.append($('<a id="load_more" href="#">'
+					+ _('Load ' + more_rows + ' more rows') + '</a>'));
+			loadcell.click(function(ev)
+			{
+				ev.preventDefault();
+				self.send_request({
+					callback: function(result)
+					{
+						loadrow.remove();
+						self.insert_rows(columns, result, tbody);
+						self.add_fill_bar(columns, result, tbody);
+					},
+					increment_items_in_view: true
+				});
+			});
+		}
+		/*
+		 * } else if ($('#load_more').length && tbody.find('tr').length >=
+		 * data.data.length) { $('#load_more').remove(); }
+		 */
+	}
+
 	this.render_table = function(data, sort_col, sort_asc)
 	{
+		var self = this; // To be able to access it from within handlers
+		
 		listview_table_col_index = 0;
 		listview_last_host = '';
 		
@@ -201,56 +266,8 @@ function lsfilter_list(config)
 		}
 		thead.append(header);
 		
-		var insert_rows = function(data, total_count, append)
-		{
-			if (typeof append === "undefined") {
-				append = false;
-			}
-			else {
-				append = Boolean(append);
-			}
-			/*
-			 * // #load_more is a tr>td>a node var last_row =
-			 * $('#load_more').parent().parent();
-			 */
-			var last_obj = {};
-			for ( var i = 0; i < data.length; i++) {
-				var obj = data[i];
-				
-				var row = $('<tr />');
-				row.addClass(i % 2 ? 'odd' : 'even');
-				row.data('key', obj.key);
-				
-				for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
-					row.append(columns[cur_col]({
-						obj: obj,
-						last_obj: last_obj,
-						row: row
-					}));
-					// .addClass( 'listview-cell-' + cur_col));
-				}
-				if (append) {
-					row.insertBefore(last_row);
-				}
-				else {
-					tbody.append(row);
-				}
-				last_obj = obj;
-			}
-			/*
-			 * if( data.length < total_count && !$('#load_more').length) {
-			 * tbody.append( $('<tr class="table_pagination"/>') .append( $('<td />')
-			 * .attr('colspan', columns.length) .append( $('<a id="load_more"
-			 * href="#">'+_('Load '+lsfilter_list.config.per_page+' more
-			 * rows')+'</a>') .click(function(ev) { ev.preventDefault();
-			 * lsfilter_list.send_request({ callback: function(result) {
-			 * insert_rows.call(this, result.data, result.count, true); },
-			 * increment_items_in_view: true }); }) ) ) ); } else
-			 * if($('#load_more').length && tbody.find('tr').length >=
-			 * total_count) { $('#load_more').remove(); }
-			 */
-		};
-		insert_rows(data.data, data.count);
+		this.insert_rows(columns, data, tbody);
+		this.add_fill_bar(columns, data, tbody);
 		
 		/*
 		 * table.find('[id^=listview-col-]').hover( function () { var index =
