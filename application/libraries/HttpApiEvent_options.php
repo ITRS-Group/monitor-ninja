@@ -71,8 +71,6 @@ class HttpApiEvent_options_core extends Report_options {
 				'servicegroup',
 				'start_time',
 				'end_time',
-				'host_filter_status',
-				'service_filter_status',
 				'include_comments'
 			))
 		);
