@@ -3,12 +3,13 @@
  * expandable
  ******************************************************************************/
 var lsfilter_extra_andor = {
-	last_op : false,
-
-	visit_query : function(obj) {
+	last_op: false,
+	
+	visit_query: function(obj)
+	{
 		var result = {
-			'obj' : 'query',
-			'table' : obj.table
+			'obj': 'query',
+			'table': obj.table
 		};
 		var query = this.visit(obj.query, 'or');
 		var newop = 'or';
@@ -16,37 +17,42 @@ var lsfilter_extra_andor = {
 			newop = 'and';
 		}
 		result['query'] = {
-			'obj' : newop,
-			'sub' : [ query ]
+			'obj': newop,
+			'sub': [ query ]
 		};
 		return result;
 	},
-
-	visit_and : function(obj) {
+	
+	visit_and: function(obj)
+	{
 		return this.visit_andor(obj, 'and');
 	},
-	visit_or : function(obj) {
+	visit_or: function(obj)
+	{
 		return this.visit_andor(obj, 'or');
 	},
-	visit_andor : function(obj, op) {
+	visit_andor: function(obj, op)
+	{
 		var list = [];
 		for ( var i in obj.sub) {
 			list.push(this.visit(obj.sub[i], op));
 		}
 		return {
-			'obj' : op,
-			'sub' : list
+			'obj': op,
+			'sub': list
 		};
 	},
-	visit_match : function(obj) {
+	visit_match: function(obj)
+	{
 		var op = (this.last_op == 'and') ? ('or') : ('and');
 		return {
-			'obj' : op,
-			'sub' : [ obj ]
+			'obj': op,
+			'sub': [ obj ]
 		};
 	},
-
-	visit : function(obj, last_op) {
+	
+	visit: function(obj, last_op)
+	{
 		this.last_op = last_op;
 		return LSFilterASTVisit(obj, this);
 	}
@@ -56,44 +62,87 @@ var lsfilter_extra_andor = {
  * Convert a lsfilter AST to html
  ******************************************************************************/
 var lsfilter_graphics_visitor = {
-	fields : null,
-	operators : {
-		"string" : {
-			'in' : 'in',
-			'not_re_ci' : '!~~',
-			'not_re_cs' : '!~',
-			're_ci' : '~~',
-			're_cs' : '~',
-			'not_eq_ci' : '!=~',
-			'eq_ci' : '=~',
-			'not_eq' : '!=',
-			'eq' : '='
+	fields: null,
+	operators: {
+		"string": {
+			'not_re_ci': '!~~',
+			'not_re_cs': '!~',
+			're_ci': '~~',
+			're_cs': '~',
+			'not_eq_ci': '!=~',
+			'eq_ci': '=~',
+			'not_eq': '!=',
+			'eq': '='
 		},
-		"int" : {
-			'not_eq' : '!=',
-			'gt_eq' : '>=',
-			'lt_eq' : '<=',
-			'gt' : '>',
-			'lt' : '<',
-			'eq' : '='
+		"int": {
+			'not_eq': '!=',
+			'gt_eq': '>=',
+			'lt_eq': '<=',
+			'gt': '>',
+			'lt': '<',
+			'eq': '='
+		},
+		"float": {
+			'not_eq': '!=',
+			'gt_eq': '>=',
+			'lt_eq': '<=',
+			'gt': '>',
+			'lt': '<',
+			'eq': '='
+		},
+		"object": {
+			'in': 'in'
 		}
 	},
-
-	visit_query : function(obj) {
+	
+	visit_query: function(obj)
+	{
 		this.fields = livestatus_structure[obj.table];
-		this.fields['this'] = [ 'string' ];
-		return this.visit(obj.query);
+		this.fields['this'] = [ 'object', obj.table ];
+		var list = $('<ul class="lsfilter-query" />');
+		
+		var table_select = $('<select class="lsfilter-table-select" />');
+		for ( var table in livestatus_structure) {
+			if (table == obj.table) {
+				table_select.append($('<option value="' + table
+						+ '" selected="true">' + table + '</option>'));
+			}
+			else {
+				table_select.append($('<option value="' + table + '">' + table
+						+ '</option>'));
+			}
+		}
+		
+		table_select.change(function(evt)
+		{
+			var table = $(evt.target).val();
+			console.log( table );
+			var query = '[' + table + '] all';
+			console.log( query );
+			lsfilter_main.update(query, false);
+			evt.preventDefault();
+			return false;
+		});
+		
+		list.append($('<li class="lsfilter-expr lsfilter-table-expr" />')
+				.append(table_select));
+		list.append($('<li class="lsfilter-expr lsfilter-query-expr" />')
+				.append(this.visit(obj.query)));
+		return list;
 	},
-
-	visit_and : function(obj) {
+	
+	visit_and: function(obj)
+	{
 		return this.visit_andor(obj, 'and');
 	},
-
-	visit_or : function(obj) {
+	
+	visit_or: function(obj)
+	{
 		return this.visit_andor(obj, 'or');
 	},
-
-	visit_andor : function(obj, op) {
+	
+	visit_andor: function(obj, op)
+	{
 		var self = this; // To be able to access it from within handlers
 		var list = $('<ul class="lsfilter-' + op + '">');
 		for ( var i in obj.sub) {
@@ -103,209 +152,236 @@ var lsfilter_graphics_visitor = {
 		}
 		var button = $('<button class="lsfilter-add-' + op + '" />')
 				.text(_(op));
-		button.click(function(e) {
+		button.click(function(e)
+		{
 			self.gui_stmnt_button(e, op, $(this));
 		});
 		list
 				.append($('<li class="lsfilter-' + op + '-expr" />').append(
 						button));
 		return list;
-
+		
 	},
-
-	visit_not : function(obj) {
+	
+	visit_not: function(obj)
+	{
 		return this.visit(obj.sub);
 	},
-
-	visit_match : function(obj) {
+	
+	visit_match: function(obj)
+	{
 		var self = this;
-		var result = $('<ul class="lsfilter-comp" />');
-
-		var fields = $('<select />');
+		var result = $('<ul class="lsfilter-expr lsfilter-comp" />');
+		
+		var fields = $('<select class="lsfilter-field-select" />');
 		var ops = $('<select class="lsfilter-operator-select" />');
 		var val = $('<input type="text" value="' + obj.value + '" />');
-
+		
 		for ( var f in this.fields) {
-			if (f == obj.field || (f=='this' && !obj.field)) {
+			if (f == obj.field || (f == 'this' && !obj.field)) {
 				fields.append($('<option value="' + f + '" selected="true">'
 						+ f + '</option>'));
-			} else {
+			}
+			else {
 				fields
 						.append($('<option value="' + f + '">' + f
 								+ '</option>'));
 			}
 		}
-
+		
 		result.append($('<li />').append(fields));
 		result.append($('<li />').append(ops));
-
+		
 		self.field_change(fields.val(), obj.op, val, ops);
-		fields.change(function() {
+		fields.change(function()
+		{
 			self.field_change($(this).val(), obj.op, val, ops);
+			lsfilter_visual.update_query();
 		});
-
-		val.removeClass().addClass(
+		
+		val.removeClass().addClass('lsfilter-value-field').addClass(
 				'lsfilter-type-' + this.fields[fields.val()].join(''));
-
+		
+		this.add_delayed_update(ops);
+		this.add_delayed_update(val);
+		
 		result.append($('<li />').append(val));
-
+		
 		return result;
 	},
-
-	field_change : function(field, op, val, ops) {
-		var operators = this.operators[this.fields[field]];
-		val.removeClass().addClass(
-				'lsfilter-type-' + this.fields[field].join(''));
+	
+	field_change: function(field, op, val, ops)
+	{
+		console.log(this.fields[field]);
+		var operators = this.operators[this.fields[field][0]];
+		val.removeClass().addClass('lsfilter-value-field').addClass(
+				'lsfilter-type-' + this.fields[field][0]);
 		ops.empty();
-
+		
 		for ( var operator in operators) {
 			if (operator == op) {
 				ops.append($('<option selected="true" value="'
 						+ operators[operator] + '">' + operators[operator]
 						+ '</option>'));
-			} else {
+			}
+			else {
 				ops.append($('<option value="' + operators[operator] + '">'
 						+ operators[operator] + '</option>'));
 			}
 		}
 	},
-
-	gui_stmnt_button : function(evt, op, btn) {
+	
+	gui_stmnt_button: function(evt, op, btn)
+	{
 		var self = this;
 		var newop = (op == 'and') ? ('or') : ('and');
 		evt.preventDefault();
-
+		
 		var clone = this.visit({
-			'obj' : newop,
-			'sub' : [ {
-				'obj' : 'match',
-				'op' : 'in',
-				'field' : 'this',
-				'value' : ''
+			'obj': newop,
+			'sub': [ {
+				'obj': 'match',
+				'op': 'in',
+				'field': 'this',
+				'value': ''
 			} ]
 		});
 		var tmp = null;
-
+		
 		var match_field = btn.closest('li').siblings('.lsfilter-expr')
 				.children('.lsfilter-comp');
-
+		
 		match_field.wrap('<ul class="lsfilter-' + newop
 				+ '"><li class="lsfilter-expr lsfilter-' + newop
 				+ '-expr"/></ul>');
-
+		
 		var button = $('<button class="lsfilter-add-' + newop + '" />').text(
 				_(newop));
-		button.click(function(e) {
+		button.click(function(e)
+		{
 			self.gui_stmnt_button(e, newop, $(this));
 		});
-
-		match_field.parent().parent().append($(
-				'<li class="lsfilter-' + newop + '-expr" />').append(button));
-
+		
+		match_field.parent().parent().append(
+				$('<li class="lsfilter-' + newop + '-expr" />').append(button));
+		
 		$('<li class="lsfilter-expr lsfilter-' + op + '-expr" />')
 				.append(clone).insertBefore(btn.closest('li'));
+		
+		lsfilter_visual.update_query();
 	},
-
-	visit : function(obj) {
+	
+	visit: function(obj)
+	{
 		return LSFilterASTVisit(obj, this);
+	},
+	
+	add_delayed_update: function(node)
+	{
+		node.bind('change', function()
+		{
+			lsfilter_visual.update_query_delayed();
+		});
+	}
+};
+
+var lsfilter_dom_to_query = {
+	visit: function(node, prio)
+	{
+		node = $(node);
+		if (node.hasClass('lsfilter-and')) {
+			return this.visit_binary(' and ', 2, node
+					.children('.lsfilter-expr').children(), prio);
+		}
+		else if (node.hasClass('lsfilter-or')) {
+			return this.visit_binary(' or ', 1, node.children('.lsfilter-expr')
+					.children(), prio);
+		}
+		else if (node.hasClass('lsfilter-query')) {
+			return this.visit_query(node, prio);
+		}
+		else if (node.hasClass('lsfilter-comp')) { return this.visit_comp(node,
+				prio); }
+		
+	},
+	visit_all: function(nodes, prio)
+	{
+		var self = this;
+		var result = $.map(nodes, function(elem, idx)
+		{
+			return self.visit(elem, prio);
+		});
+		return result;
+	},
+	visit_query: function(node, prio)
+	{
+		var table = node.find('.lsfilter-table-select').val();
+		return "[" + table + "] "
+				+ this.visit(node.children('.lsfilter-query-expr').children());
+	},
+	visit_binary: function(op, op_prio, nodes, prio)
+	{
+		if (nodes.length == 1) { return this.visit_all(nodes, prio).join(); }
+		var result = this.visit_all(nodes, op_prio).join(op);
+		if (prio > op_prio) {
+			result = "(" + result + ")";
+		}
+		return result;
+		
+	},
+	visit_comp: function(node, prio)
+	{
+		var field = node.find('.lsfilter-field-select').val();
+		var op = node.find('.lsfilter-operator-select').val();
+		var value_el = node.find('.lsfilter-value-field');
+		var value = value_el.val();
+		if (value_el.hasClass('lsfilter-type-int')) {
+			value = parseInt(value);
+		}
+		else if (value_el.hasClass('lsfilter-type-float')) {
+			value = parseFloat(value);
+		}
+		else {
+			value = '"' + value.replace(/([\\"'])/g, "\\$1") + '"';
+		}
+		
+		if (field == 'this') field = "";
+		return field + " " + op + " " + value;
 	}
 };
 
 var lsfilter_visual = {
-
-	update : function(query, source, metadata) {
-		if (source == 'visual')
-			return;
-		var parser = new LSFilter(new LSFilterPP(),
-				new LSFilterASTVisitor());
+	
+	update: function(query, source, metadata)
+	{
+		if (source == 'visual') return;
+		var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
 		try {
 			var ast = parser.parse(query);
 			ast = lsfilter_extra_andor.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
-		} catch (ex) {
+		}
+		catch (ex) {
 			console.log(ex.stack);
 			console.log(query);
 		}
 	},
-	init : function() {
-		/*
-		 * $('#filter_visual_form').bind('change', dotraverse); dotraverse();
-		 */
+	init: function()
+	{
 	},
-
-	fields : null,
-
-	/*
-	 * 
-	 * var filter_string = ['[', $('#lsfilter-query-object').attr('value') , ']
-	 * '];
-	 * 
-	 * filter_string.push( traverse($('#filter_visual .lsfilter-root'), 0) );
-	 */
-	traverse : function(dom, priority) {
-
-		var seg = [];
-		var tmp = null;
-		var result = "";
-		var out_priority;
-
-		if (dom.hasClass('lsfilter-comp')) {
-
-			dom.children().each(function() {
-				if (this.value != 'this') {
-
-					if ($(this).hasClass('lsfilter-type-string')) {
-						seg.push('"' + this.value + '"');
-					} else if ($(this).hasClass('lsfilter-operator-select')) {
-						seg.push(' ' + this.value + ' ');
-					} else {
-						seg.push(this.value);
-					}
-
-				}
-			});
-
-			result = seg.join('');
-			out_priority = 3;
-
-		} else if (dom.is('.lsfilter-not')) {
-			// FIXME
-			result = ' not ';
-			out_priority = priority;
-
-		} else if (dom.hasClass('lsfilter-and') || dom.hasClass('lsfilter-or')) {
-
-			if (dom.hasClass('lsfilter-and')) {
-				out_priority = 2;
-			} else if (dom.hasClass('lsfilter-or')) {
-				out_priority = 1;
-			}
-
-			dom.children().each(function() {
-				tmp = traverse($(this), out_priority);
-				if (tmp)
-					seg.push(tmp);
-			});
-
-			if (dom.hasClass('lsfilter-and')) {
-				result = seg.join(' and ');
-			} else if (dom.hasClass('lsfilter-or')) {
-				result = seg.join(' or ');
-			}
-
-		} else {
-
-			dom.children().each(function() {
-				seg.push(traverse($(this), priority));
-			});
-
-			result = seg.join('');
-			out_priority = priority;
-
-		}
-		if (out_priority < priority)
-			result = "(" + result + ")";
-		return result;
+	
+	fields: null,
+	
+	update_query: function()
+	{
+		var query = lsfilter_dom_to_query.visit($('#filter_visual').children(),
+				0);
+		lsfilter_main.update(query, 'visual');
+	},
+	
+	update_query_delayed: function()
+	{
+		this.update_query();
 	}
 };
