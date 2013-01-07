@@ -102,7 +102,9 @@ var lsfilter_graphics_visitor = {
 		var list = $('<ul class="lsfilter-query" />');
 		
 		var table_select = $('<select class="lsfilter-table-select" />');
-		for ( var table in livestatus_structure) {
+		
+		/* Only accept tables we can render, otherwise livestatus_structure would be used as list */
+		for ( var table in listview_renderer_table) {
 			if (table == obj.table) {
 				table_select.append($('<option value="' + table
 						+ '" selected="true">' + table + '</option>'));
