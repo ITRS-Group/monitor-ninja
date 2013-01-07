@@ -93,12 +93,13 @@ function extinfo_link(host, service)
 }
 function format_timestamp(timestamp)
 {
+	if( timestamp == 0 ) return _('N/A');
 	var dateobj =
 			new Date(timestamp * 1000);
 	return dateobj.toLocaleDateString() + " " + dateobj.toLocaleTimeString();
 }
 function format_interval(interval) {
-	if( interval < 0 ) return "N/A";
+	if( interval < 0 ) return _('N/A');
 	var str = "";
 	if( interval%60 != 0 ) str = (interval%60) + "s "+str;
 	interval = Math.floor(interval/60);
