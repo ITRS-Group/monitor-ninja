@@ -83,13 +83,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$this->translate->_('Saturday')
 		);
 
-		$this->downtime_commands = array(
-			'hosts' => 'SCHEDULE_HOST_DOWNTIME',
-			'services' => 'SCHEDULE_SVC_DOWNTIME',
-			'hostgroups' => 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME',
-			'servicegroups' => 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME'
-		); # will schedule downtime for all services - not their hosts!
-
 		$this->downtime_types = array(
 			'hosts' => $this->translate->_('Host'),
 			'services' => $this->translate->_('Service'),
@@ -321,163 +314,34 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$id = arr::search($_REQUEST, 'schedule_id');
 
 		$ok = ScheduleDate_Model::edit_schedule($data, $id);
-		#$pattern = $this->_create_pattern($data);
 
 		url::redirect(Router::$controller);
 	}
 
 	/**
-	*
-	*
-	*/
-	public function _create_pattern($data=false)
-	{
-		if (empty($data)) {
-			return false;
-		}
-
-		$time = arr::search($data, 'time');
-		$duration = arr::search($data, 'duration');
-		$recurring_day = arr::search($data, 'recurring_day');
-		$recurring_month = arr::search($data, 'recurring_month');
-
-		$time_hours = '*';
-		$time_minutes = '*';
-		$duration_hours = '*';
-		$duration_minutes = '*';
-		$year = date('Y', time());
-		$months = '*';
-		$days = '*';
-
-		if (strstr($time, ':')) {
-			# we have hh::mm
-			$timeparts = explode(':', $time);
-			$time_hours = $timeparts[0];
-			$time_minutes = $timeparts[1];
-		} else {
-			$time_hours = (int)$time;
-			$time_minutes = '00';
-		}
-
-		if (strstr($duration, ':')) {
-			# we have hh::mm
-			$timeparts = explode(':', $time);
-			$duration_hours = $timeparts[0];
-			$duration_minutes = $timeparts[1];
-		} else {
-			$duration_hours = (int)$duration;
-			$duration_minutes = '00';
-		}
-
-		if (!empty($recurring_day)) {
-			$dayarr = false;
-			foreach ($recurring_day as $dayval) {
-				$dayarr[] = strtolower($this->abbr_day_names[$dayval]);
-			}
-			$days = implode(',', $dayarr);
-		}
-
-		if (!empty($recurring_month)) {
-			$months = implode(',', $recurring_month);
-		}
-
-		# year month day hour mniute
-		$pattern = ' %s %s %s %s %s';
-		$pattern = sprintf($pattern, $year, $months, $days, $time_hours, $time_minutes);
-		return $pattern;
-	}
-
-	/**
-	*
-	*
-	*/
-	public function _determine_downtimetype($report_type=false)
-	{
-		if (empty($report_type)) {
-			return false;
-		}
-		return $this->downtime_commands[$report_type];
-	}
-
-	/**
-	*	Check if there's something new to schedule
-	*/
-	public function check_schedules($id=false)
+	 * Check if there's something new to schedule
+	 *
+	 * @param $id int = false
+	 * @throws Exception
+	 * @return void (redirection, die or nothing, pick your poision.....)
+	 */
+	public function check_schedules($id=false, $timestamp=false)
 	{
 		if (PHP_SAPI !== "cli") {
 			url::redirect(Router::$controller);
 		}
 
 		$this->auto_render=false;
-		$res = ScheduleDate_Model::get_schedule_data($id);
 
-		if ($res === false) {
-			# no saved schedules
-			return false;
+		// Check if a date was injected
+		if (!$timestamp) {
+			// No date was injected, $timestamp is current timestamp instead.
+			$timestamp = time();
 		}
 
-		foreach ($res as $row) {
-			$data = i18n::unserialize($row->data);
-			$data['author'] = $row->author;
-
-			$pattern = $this->_create_pattern($data);
-			#echo Kohana::debug($pattern);
-			#echo Kohana::debug($data);
-			$nagios_cmd = $this->_determine_downtimetype(arr::search($data, 'report_type'));
-
-			$startTime = date('Y-m-d H.i:s', time());
-
-			$counter = time();
-			$end = strtotime('tomorrow'); # look one day ahead
-			$next_day = strtotime('tomorrow +1 day');
-			#echo Kohana::debug(date('Y-m-d H:i:s', $end));
-
-			$inc = 60*60; // 60= +1 minute; 60*60= +1 hour; 24*60*60=+1 day; 30*24*60*60=+30 days; 365*24*60*60=+1 year
-
-			// do a simple check to control pattern format
-			$matches = false;
-			$date = false;
-			$time = false;
-			if(ScheduleDate_Model::Parse($pattern,$matches) === false) {
-			    die($this->translate->_("malformed pattern"));
-			}
-			#echo "renewing pattern: [".$matches[2][0].']-['.$matches[4][0].']-['.$matches[6][0].'] ['.$matches[8][0].']:['.$matches[10][0]."]<br />";
-			#echo "simulating from: [".date("Y-m-d D H:i:s",strtotime($startTime))."]<br />";
-
-			$sd = new ScheduleDate_Model();
-
-			$date = $sd->GetFirstRun($pattern,$startTime);
-			#echo "first run [".date("Y-m-d D H:i:s",$date)."]<br />";
-			#echo "last run [".date("Y-m-d D H:i:s",$sd->GetLastRun())."]<br /><br />";
-			unset($sd);
-
-			$date = date("Y-m-d H:i:s",$date);
-			for(; $counter < $end; $counter+=$inc) {
-				if($counter < strtotime($date)) { // date is not expired yet
-					continue;
-				}
-				// date is expired, check if it can be renewed
-				#echo "checking [".date("Y-m-d D H:i:s",$counter)."] <br />";
-				#echo "EXPIRED [".date("Y-m-d D H:i:s",strtotime($date))." ] <br />";
-				$sd = new ScheduleDate_Model();
-				$time = $sd->Renew($pattern, $date, $counter);
-				if($time !== false) {    // renewed to next valid date
-					$date = $sd->date;   // $date = date("Y-m-d H:i:s",$time);
-					#echo "renewed date to [".date("Y-m-d D H:i:s",$time)."] <br />"; /* ."pattern [$sd->pattern]";*/
-				} else {                 // reached end of date interval, quit
-					#  echo "END\n";
-					break;
-				}
-				unset($sd);
-			}
-
-			if ($time !== false && $time < $next_day) {
-				#echo 'Should renew schedule ID '.$row->id.' ('.$row->downtime_type.') to '.$date."\n";
-				ScheduleDate_Model::add_downtime($data, $nagios_cmd, $time);
-			} else {
-				#echo "Nothing to schedule<br />";
-			}
-			#echo "<hr />";
+		$scheduled = ScheduleDate_Model::schedule_downtime($id, $timestamp);
+		if ($scheduled) {
+			// asdfg
 		}
 	}
 
@@ -509,5 +373,4 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to scheduled recurring downtimes');
 		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
-
 }
