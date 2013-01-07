@@ -7,8 +7,6 @@
  * Methods in this files is internal helpers used by above methods.
  */
 
-
-
 function listview_columns_for_table(table)
 {
 	if (!listview_renderer_table[table]) return false;
@@ -215,7 +213,7 @@ var listview_multi_select_cell_renderer = function(args)
 {
 	var checkbox = $('<input type="checkbox" name="object_select[]" />').attr(
 			'value', args.obj.key);
-	if (false /*listview_selection[args.obj.key]*/) {
+	if (false /* listview_selection[args.obj.key] */) {
 		checkbox.prop('checked', true);
 		if (tr.hasClass('odd'))
 			tr.addClass('selected_odd');
@@ -225,7 +223,7 @@ var listview_multi_select_cell_renderer = function(args)
 	checkbox.change(function(evt)
 	{
 		var tgt = $(evt.target);
-//		listview_selection[tgt.attr('value')] = tgt.prop('checked');
+		// listview_selection[tgt.attr('value')] = tgt.prop('checked');
 		var tr = tgt.closest('tr');
 		var classname = ""
 		if (tr.hasClass('odd'))
@@ -326,12 +324,18 @@ var listview_renderer_table = {
 				
 				// FIXME: Add nacoma link
 				
-				if (args.obj.pnpgraph_present)
-					cell.append(icon16('pnp', _('Show performance graph'),
+				if (args.obj.pnpgraph_present) {
+					var pnp_link = icon16('pnp', _('Show performance graph'),
 							link('pnp', {
 								"srv": "_HOST_",
 								"host": args.obj.name
-							})));
+							}));
+					pnp_popup( pnp_link, {
+								"srv": "_HOST_",
+								"host": args.obj.name
+							});
+					cell.append(pnp_link);
+				}
 				
 				if (args.obj.action_url)
 					cell.append(icon16('host-actions',
@@ -562,8 +566,8 @@ var listview_renderer_table = {
 		},
 		"actions": {
 			"header": _('Actions'),
-			"depends": [ 'acknowledged', 'comments_count', 'notifications_enabled',
-					'checks_disabled', 'is_flapping',
+			"depends": [ 'acknowledged', 'comments_count',
+					'notifications_enabled', 'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
 					'action_url', 'notes_url', 'host.name', 'description' ],
 			"sort": false,
@@ -597,12 +601,18 @@ var listview_renderer_table = {
 				 */
 				
 				// FIXME: Add nacoma link
-				if (args.obj.pnpgraph_present)
-					cell.append(icon16('pnp', _('Show performance graph'),
+				if (args.obj.pnpgraph_present) {
+					var pnp_link = icon16('pnp', _('Show performance graph'),
 							link('pnp', {
 								"srv": args.obj.description,
 								"host": args.obj.host.name
-							})));
+							}));
+					pnp_popup( pnp_link, {
+								"srv": args.obj.description,
+								"host": args.obj.host.name
+							});
+					cell.append(pnp_link);
+				}
 				
 				if (args.obj.action_url)
 					cell.append(icon16('host-actions',
