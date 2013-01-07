@@ -91,7 +91,6 @@ var lsfilter_main = {
 	 **************************************************************************/
 	handle_parse_exception: function(ex)
 	{
-		console.log(ex.message);
 		console.log(ex.stack);
 	},
 	

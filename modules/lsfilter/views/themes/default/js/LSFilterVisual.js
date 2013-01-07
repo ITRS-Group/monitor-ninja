@@ -121,9 +121,7 @@ var lsfilter_graphics_visitor = {
 		table_select.change(function(evt)
 		{
 			var table = $(evt.target).val();
-			console.log(table);
 			var query = '[' + table + '] all';
-			console.log(query);
 			lsfilter_main.update(query, false);
 			evt.preventDefault();
 			return false;
@@ -217,7 +215,6 @@ var lsfilter_graphics_visitor = {
 	
 	field_change: function(field, op, val, ops)
 	{
-		console.log(this.fields[field]);
 		var operators = this.operators[this.fields[field][0]];
 		val.removeClass().addClass('lsfilter-value-field').addClass(
 				'lsfilter-type-' + this.fields[field][0]);
