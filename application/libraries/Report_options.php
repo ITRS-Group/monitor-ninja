@@ -79,6 +79,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				"lastmonth" => _('Last Month'),
 				"thisyear" => _('This Year'),
 				"lastyear" => _('Last Year'),
+				'last3months' => _('Last 3 Months'),
+				'last12months' => _('Last 12 Months'),
+				'last6months' => _('Last 6 Months'),
+				'lastquarter' => _('Last Quarter'),
 				'custom' => _('Custom'));
 		if (isset($this->vtypes['scheduleddowntimeasuptime']))
 			$this->vtypes['scheduleddowntimeasuptime']['options'] = array(
