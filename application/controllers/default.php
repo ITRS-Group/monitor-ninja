@@ -241,7 +241,7 @@ class Default_Controller extends Ninja_Controller  {
 	 * Accept a call from cron to look for scheduled reports to send
 	 * @param string $period_str [Daily, Weekly, Monthly, downtime]
 	 */
-	public function cron($period_str=false)
+	public function cron($period_str, $timestamp=false)
 	{
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
@@ -274,7 +274,9 @@ class Default_Controller extends Ninja_Controller  {
 
 		$retval = 0;
 		if ($period_str === 'downtime') {
-			exec('/usr/bin/php '.$path.' recurring_downtime/check_schedules/ '.$user, $return);
+			$controller = new recurring_downtime_Controller();
+			$controller->check_schedules(false, $timestamp);
+			exit(0);
 		} else {
 			exec('/usr/bin/php '.$path.' reports/cron/'.$period_str.' '.$user, $return);
 			$sent_mail = array_sum($return);
