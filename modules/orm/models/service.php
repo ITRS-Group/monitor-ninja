@@ -26,6 +26,7 @@ class Service_Model extends BaseService_Model {
 		$this->export[] = 'state_text';
 		$this->export[] = 'checks_disabled';
 		$this->export[] = 'duration';
+		$this->export[] = 'comments_count';
 	}
 
 	public function get_state_text() {
@@ -61,5 +62,9 @@ class Service_Model extends BaseService_Model {
 		if( $last_state_change == 0 )
 			return -1;
 		return $now - $last_state_change;
+	}
+	
+	public function get_comments_count() {
+		return count($this->get_comments());
 	}
 }

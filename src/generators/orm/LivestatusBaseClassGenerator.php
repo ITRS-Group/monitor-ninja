@@ -209,7 +209,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 
 	private function fetch_list( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
-		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
+		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
@@ -228,7 +228,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 
 	private function fetch_dict( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
-		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
+		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}

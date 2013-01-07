@@ -7,28 +7,7 @@
  * Methods in this files is internal helpers used by above methods.
  */
 
-function listview_add_sort(element, vis_column, db_columns, current)
-{
-	if (current == 0) { // No sort
-	
-		element.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
-	}
-	else if (current > 0) { // Ascending?
-		element.attr('title', 'Sort descending');
-		element.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
-	}
-	else {
-		element.attr('title', 'Sort ascending');
-		element.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
-	}
-	element.click({
-		vis_column: vis_column,
-		db_columns: db_columns
-	}, function(evt)
-	{
-		lsfilter_list.set_sort(evt.data.vis_column, evt.data.db_columns); // FIXME
-	});
-}
+
 
 function listview_columns_for_table(table)
 {
@@ -312,7 +291,7 @@ var listview_renderer_table = {
 			"depends": [ 'name', 'acknowledged', 'notifications_enabled',
 					'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
-					'action_url', 'notes_url', 'comments' ],
+					'action_url', 'notes_url', 'comments_count' ],
 			"sort": false,
 			"cell": function(args)
 			{
@@ -364,7 +343,7 @@ var listview_renderer_table = {
 							_('View extra host notes'), $('<a />').attr('href',
 									args.obj.notes_url)));
 				
-				if (args.obj.comments > 0)
+				if (args.obj.comments_count > 0)
 					cell.append(icon16('add-comment', _('Comments')));
 				
 				return cell;
@@ -583,7 +562,7 @@ var listview_renderer_table = {
 		},
 		"actions": {
 			"header": _('Actions'),
-			"depends": [ 'acknowledged', 'comments', 'notifications_enabled',
+			"depends": [ 'acknowledged', 'comments_count', 'notifications_enabled',
 					'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
 					'action_url', 'notes_url', 'host.name', 'description' ],
@@ -595,7 +574,7 @@ var listview_renderer_table = {
 				if (args.obj.acknowledged)
 					cell.append(icon16('acknowledged', _('Acknowledged')));
 				
-				if (args.obj.comments > 0)
+				if (args.obj.comments_count > 0)
 					cell.append(icon16('add-comment', _('Comments')));
 				
 				if (!args.obj.notifications_enabled)

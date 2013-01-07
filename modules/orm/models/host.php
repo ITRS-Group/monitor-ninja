@@ -22,6 +22,7 @@ class Host_Model extends BaseHost_Model {
 		$this->export[] = 'state_text';
 		$this->export[] = 'checks_disabled';
 		$this->export[] = 'duration';
+		$this->export[] = 'comments_count';
 	}
 	
 	public function get_state_text() {
@@ -68,5 +69,9 @@ class Host_Model extends BaseHost_Model {
 	
 	public function get_action_url() {
 		return $this->expand_macros(parent::get_action_url());
+	}
+	
+	public function get_comments_count() {
+		return count($this->get_comments());
 	}
 }
