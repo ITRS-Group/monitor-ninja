@@ -103,7 +103,10 @@ var lsfilter_graphics_visitor = {
 		
 		var table_select = $('<select class="lsfilter-table-select" />');
 		
-		/* Only accept tables we can render, otherwise livestatus_structure would be used as list */
+		/*
+		 * Only accept tables we can render, otherwise livestatus_structure
+		 * would be used as list
+		 */
 		for ( var table in listview_renderer_table) {
 			if (table == obj.table) {
 				table_select.append($('<option value="' + table
@@ -118,9 +121,9 @@ var lsfilter_graphics_visitor = {
 		table_select.change(function(evt)
 		{
 			var table = $(evt.target).val();
-			console.log( table );
+			console.log(table);
 			var query = '[' + table + '] all';
-			console.log( query );
+			console.log(query);
 			lsfilter_main.update(query, false);
 			evt.preventDefault();
 			return false;
@@ -287,6 +290,9 @@ var lsfilter_graphics_visitor = {
 	}
 };
 
+/*******************************************************************************
+ * Parse DOM structure down to a query
+ ******************************************************************************/
 var lsfilter_dom_to_query = {
 	visit: function(node, prio)
 	{
@@ -352,6 +358,9 @@ var lsfilter_dom_to_query = {
 	}
 };
 
+/*******************************************************************************
+ * Main object for graphical visualization
+ ******************************************************************************/
 var lsfilter_visual = {
 	
 	update: function(query, source, metadata)

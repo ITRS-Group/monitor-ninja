@@ -5,7 +5,13 @@ function lsfilter_list(config)
 		per_page: 100,
 		autorefresh_delay: 30000,
 		request_url: _site_domain + _index_page + "/" + _controller_name
-				+ "/fetch_ajax"
+				+ "/fetch_ajax",
+		loading_start: function()
+		{
+		},
+		loading_stop: function()
+		{
+		},
 	};
 	this.config = $.extend({}, this.defaults, config);
 	
@@ -77,13 +83,14 @@ function lsfilter_list(config)
 			self.config.offset += self.config.per_page;
 		}
 		
+		if(this.active_ajax_request) {
+			this.active_ajax_request.abort();
+		}
+		
 		var options = $.extend({}, self.config, config);
 		
-		/*
-		 * var loader = $('<span class="lsfilter-loader" />').append( $('<span>' +
-		 * _('Loading...') + '</span>')); this.loader.append(loader);
-		 */
-		listview_ajax_active_request = $
+		var loading_id = self.config.loading_start();
+		this.active_ajax_request = $
 				.ajax({
 					url: this.config.request_url,
 					dataType: 'json',
@@ -101,6 +108,8 @@ function lsfilter_list(config)
 					},
 					complete: function()
 					{
+						this.active_ajax_request = false;
+						self.config.loading_stop( loading_id );
 						// $('.lsfilter-loader').remove();
 					}
 				});
@@ -112,6 +121,8 @@ function lsfilter_list(config)
 	this.request_query = '';
 	this.request_metadata = {};
 	this.resuest_timer = false;
+	
+	this.active_ajax_request = false;
 	
 	this.sort_vis_column = null;
 	this.sort_db_columns = [];
@@ -265,8 +276,8 @@ function lsfilter_list(config)
 			/*
 			 * Check if column is avalible in current view.
 			 */
-			if(col_render.avalible) {
-				if(!col_render.avalible({}) ) {
+			if (col_render.avalible) {
+				if (!col_render.avalible({})) {
 					continue;
 				}
 			}
@@ -353,22 +364,25 @@ function lsfilter_list(config)
 		 */
 		return table;
 	}
-	
+
 	this.add_sort = function(element, vis_column, db_columns, current)
 	{
 		var self = this; // To be able to access it from within handlers
 		
 		if (current == 0) { // No sort
 		
-			element.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
+			element
+					.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
 		}
 		else if (current > 0) { // Ascending?
 			element.attr('title', 'Sort descending');
-			element.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
+			element
+					.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
 		}
 		else {
 			element.attr('title', 'Sort ascending');
-			element.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
+			element
+					.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
 		}
 		element.click({
 			vis_column: vis_column,
