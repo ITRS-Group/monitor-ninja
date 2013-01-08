@@ -34,6 +34,13 @@
 	z-index: 9999;
 }
 
+#page-rotation-initial {
+	position: fixed;
+	top: 30%;
+	left: 30%;
+	width: 40%;
+}
+
 #page-rotation-opts {
 	user-select: none;
 	-moz-user-select: none;

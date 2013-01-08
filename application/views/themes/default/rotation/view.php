@@ -8,6 +8,14 @@
 	NiRV experimental
 </div>
 
+<div id="page-rotation-initial">
+	<h1>Welcome to the Rotational View</h1>
+	<p>This view is in fullscreen mode and only when making configurations to it will the GUI show, move your mouse and it will come alive!</p>
+
+	<p>Add new views to the rotation by entering their URL in the bottom right box and press the add (+) button, you can then press the
+		play button in the midle box and you will begin to rotate through the views you've added.</p>
+</div>
+
 <div id="page-rotation-views">
 	
 	These are the views you will rotate through. Add new views by entering their URI in this box and press the add (+) button.<br /><br />
