@@ -91,7 +91,8 @@ var lsfilter_graphics_visitor = {
 			'eq': '='
 		},
 		"object": {
-			'in': 'in'
+			'in': 'in',
+			'all': 'all'
 		}
 	},
 	
@@ -351,6 +352,7 @@ var lsfilter_dom_to_query = {
 		}
 		
 		if (field == 'this') field = "";
+		if( op == 'all' ) return 'all';
 		return field + " " + op + " " + value;
 	}
 };

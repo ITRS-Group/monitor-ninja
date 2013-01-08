@@ -51,7 +51,7 @@ var LSFilterASTVisitor = function LSFilterASTVisit() {
 	this.visit_filter_and       = function(filter0, filter2)          { return this.addto('and',[filter0,filter2]); };
 	this.visit_filter_not       = function(filter1)                   { if(filter1.obj=='not') return filter1.sub; return {'obj':'not','sub':filter1}; };
 	this.visit_filter_ok        = function(match0)                    { return match0; };
-	this.visit_match_all        = function()                          { return {'obj':'match',                                          'op':'all'};       };
+	this.visit_match_all        = function()                          { return {'obj':'match',                 'value':'',              'op':'all'};       };
 	this.visit_match_in         = function(set_descr1)                { return {'obj':'match',                 'value':set_descr1,      'op':'in'};        };
 	this.visit_match_field_in   = function(field0, set_descr2)        { return {'obj':'match', 'field':field0, 'value':set_descr2,      'op':'in'};        };
 	this.visit_match_not_re_ci  = function(field0, arg_string2)       { return {'obj':'match', 'field':field0, 'value':arg_string2,     'op':'not_re_ci'}; };
