@@ -404,88 +404,88 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# Assign commands variables
 		$commands->title = _('Process Commands');
 		$commands->label_shutdown_nagios = sprintf(_('Shutdown the %s process'), Kohana::config('config.product_name'));
-		$commands->link_shutdown_nagios = $this->command_link(nagioscmd::command_id('SHUTDOWN_PROCESS'), false, false, $commands->label_shutdown_nagios);
+		$commands->link_shutdown_nagios = nagioscmd::command_link(nagioscmd::command_id('SHUTDOWN_PROCESS'), false, false, $commands->label_shutdown_nagios);
 		$commands->label_restart_nagios = sprintf(_('Restart the %s process'), Kohana::config('config.product_name'));
-		$commands->link_restart_nagios = $this->command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
+		$commands->link_restart_nagios = nagioscmd::command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
 
 		if ($status->enable_notifications) {
 			$commands->label_notifications = _('Disable notifications');
-			$commands->link_notifications = $this->command_link(nagioscmd::command_id('DISABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
+			$commands->link_notifications = nagioscmd::command_link(nagioscmd::command_id('DISABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
 		} else {
 			$commands->label_notifications = _('Enable notifications');
-			$commands->link_notifications = $this->command_link(nagioscmd::command_id('ENABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
+			$commands->link_notifications = nagioscmd::command_link(nagioscmd::command_id('ENABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
 		}
 
 		if ($status->execute_service_checks) {
 			$commands->label_execute_service_checks = _('Stop executing service checks');
-			$commands->link_execute_service_checks = $this->command_link(nagioscmd::command_id('STOP_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
+			$commands->link_execute_service_checks = nagioscmd::command_link(nagioscmd::command_id('STOP_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
 		} else {
 			$commands->label_execute_service_checks = _('Start executing service checks');
-			$commands->link_execute_service_checks = $this->command_link(nagioscmd::command_id('START_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
+			$commands->link_execute_service_checks = nagioscmd::command_link(nagioscmd::command_id('START_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
 		}
 
 		if ($status->accept_passive_service_checks) {
 			$commands->label_passive_service_checks = _('Stop accepting passive service checks');
-			$commands->link_passive_service_checks = $this->command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
+			$commands->link_passive_service_checks = nagioscmd::command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
 		} else {
 			$commands->label_passive_service_checks = _('Start accepting passive service checks');
-			$commands->link_passive_service_checks = $this->command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
+			$commands->link_passive_service_checks = nagioscmd::command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
 		}
 
 		if ($status->execute_host_checks) {
 			$commands->label_execute_host_checks = _('Stop executing host checks');
-			$commands->link_execute_host_checks = $this->command_link(nagioscmd::command_id('STOP_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
+			$commands->link_execute_host_checks = nagioscmd::command_link(nagioscmd::command_id('STOP_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
 		} else {
 			$commands->label_execute_host_checks = _('Start executing host checks');
-			$commands->link_execute_host_checks = $this->command_link(nagioscmd::command_id('START_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
+			$commands->link_execute_host_checks = nagioscmd::command_link(nagioscmd::command_id('START_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
 		}
 
 		if ($status->accept_passive_host_checks) {
 			$commands->label_accept_passive_host_checks = _('Stop accepting passive host checks');
-			$commands->link_accept_passive_host_checks = $this->command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
+			$commands->link_accept_passive_host_checks = nagioscmd::command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
 		} else {
 			$commands->label_accept_passive_host_checks = _('Start accepting passive host checks');
-			$commands->link_accept_passive_host_checks = $this->command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
+			$commands->link_accept_passive_host_checks = nagioscmd::command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
 		}
 
 		if ($status->enable_event_handlers) {
 			$commands->label_enable_event_handlers = _('Disable event handlers');
-			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('DISABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
+			$commands->link_enable_event_handlers = nagioscmd::command_link(nagioscmd::command_id('DISABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		} else {
 			$commands->label_enable_event_handlers = _('Enable event handlers');
-			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('ENABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
+			$commands->link_enable_event_handlers = nagioscmd::command_link(nagioscmd::command_id('ENABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		}
 
 		if ($status->obsess_over_services) {
 			$commands->label_obsess_over_services = _('Stop obsessing over services');
-			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
+			$commands->link_obsess_over_services = nagioscmd::command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		} else {
 			$commands->label_obsess_over_services = _('Start obsessing over services');
-			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
+			$commands->link_obsess_over_services = nagioscmd::command_link(nagioscmd::command_id('START_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		}
 
 		if ($status->obsess_over_hosts) {
 			$commands->label_obsess_over_hosts = _('Stop obsessing over hosts');
-			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
+			$commands->link_obsess_over_hosts = nagioscmd::command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		} else {
 			$commands->label_obsess_over_hosts = _('Start obsessing over hosts');
-			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
+			$commands->link_obsess_over_hosts = nagioscmd::command_link(nagioscmd::command_id('START_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		}
 
 		if ($status->enable_flap_detection) {
 			$commands->label_flap_detection_enabled = _('Disable flap detection');
-			$commands->link_flap_detection_enabled = $this->command_link(nagioscmd::command_id('DISABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
+			$commands->link_flap_detection_enabled = nagioscmd::command_link(nagioscmd::command_id('DISABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
 		} else {
 			$commands->label_flap_detection_enabled = _('Enable flap detection');
-			$commands->link_flap_detection_enabled = $this->command_link(nagioscmd::command_id('ENABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
+			$commands->link_flap_detection_enabled = nagioscmd::command_link(nagioscmd::command_id('ENABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
 		}
 
 		if ($status->process_performance_data) {
 			$commands->label_process_performance_data = _('Disable performance data');
-			$commands->link_process_performance_data = $this->command_link(nagioscmd::command_id('DISABLE_PERFORMANCE_DATA'), false, false, $commands->label_process_performance_data);
+			$commands->link_process_performance_data = nagioscmd::command_link(nagioscmd::command_id('DISABLE_PERFORMANCE_DATA'), false, false, $commands->label_process_performance_data);
 		} else {
 			$commands->label_process_performance_data = _('Enable performance data');
-			$commands->link_process_performance_data = $this->command_link(nagioscmd::command_id('ENABLE_PERFORMANCE_DATA'), false, false, $commands->label_process_performance_data);
+			$commands->link_process_performance_data = nagioscmd::command_link(nagioscmd::command_id('ENABLE_PERFORMANCE_DATA'), false, false, $commands->label_process_performance_data);
 		}
 
 	}
