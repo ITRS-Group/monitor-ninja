@@ -297,12 +297,11 @@ var listview_renderer_table = {
 				
 				// FIXME: icon for service-details
 				cell.append(icon16('service-details',
-						_('View service details for this host'), link(
-								_current_uri, {
-									'filter_query': '[services] host.name = "'
-											+ args.obj.name + '"' // FIXME:
-											// escape
-								})));
+						_('View service details for this host'),
+						link_query('[services] host.name = "' + args.obj.name
+								+ '"' // FIXME:
+								// escape
+						)));
 				
 				if (args.obj.acknowledged)
 					cell.append(icon16('acknowledged', _('Acknowledged')));
@@ -330,10 +329,10 @@ var listview_renderer_table = {
 								"srv": "_HOST_",
 								"host": args.obj.name
 							}));
-					pnp_popup( pnp_link, {
-								"srv": "_HOST_",
-								"host": args.obj.name
-							});
+					pnp_popup(pnp_link, {
+						"srv": "_HOST_",
+						"host": args.obj.name
+					});
 					cell.append(pnp_link);
 				}
 				
@@ -607,10 +606,10 @@ var listview_renderer_table = {
 								"srv": args.obj.description,
 								"host": args.obj.host.name
 							}));
-					pnp_popup( pnp_link, {
-								"srv": args.obj.description,
-								"host": args.obj.host.name
-							});
+					pnp_popup(pnp_link, {
+						"srv": args.obj.description,
+						"host": args.obj.host.name
+					});
 					cell.append(pnp_link);
 				}
 				

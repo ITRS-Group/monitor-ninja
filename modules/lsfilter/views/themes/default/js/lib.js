@@ -23,7 +23,7 @@ function icon16(name, title, link)
 	img.addClass('x16-' + name);
 	if (title) img.attr('title', title);
 	if (link) {
-		img = link.clone().append(img);
+		img = link.append(img);
 		img.css('border', '0');
 	}
 	return img;
@@ -35,7 +35,7 @@ function icon(url, link)
 	img.css('height', '16px');
 	img.css('width', '16px');
 	if (link) {
-		img = link.clone().append(img);
+		img = link.append(img);
 		img.css('border', '0');
 	}
 	return img;
@@ -65,6 +65,7 @@ function link_query(query)
 	link.click(function(evt)
 	{
 		lsfilter_main.update(query, false);
+		evt.preventDefault();
 		return false;
 	});
 	return link;
