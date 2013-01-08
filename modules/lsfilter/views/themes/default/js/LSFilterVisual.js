@@ -149,6 +149,7 @@ var lsfilter_graphics_visitor = {
 	{
 		var self = this; // To be able to access it from within handlers
 		var list = $('<ul class="lsfilter-' + op + '">');
+		list.append(this.delete_button().addClass('lsfilter-' + op + '-expr'));
 		for ( var i in obj.sub) {
 			list.append($(
 					'<li class="lsfilter-expr lsfilter-' + op + '-expr"/>')
@@ -244,7 +245,7 @@ var lsfilter_graphics_visitor = {
 			'obj': newop,
 			'sub': [ {
 				'obj': 'match',
-				'op': 'in',
+				'op': 'all',
 				'field': 'this',
 				'value': ''
 			} ]
@@ -254,9 +255,12 @@ var lsfilter_graphics_visitor = {
 		var match_field = btn.closest('li').siblings('.lsfilter-expr')
 				.children('.lsfilter-comp');
 		
-		match_field.wrap('<ul class="lsfilter-' + newop
+		var wrapper = $('<ul class="lsfilter-' + newop
 				+ '"><li class="lsfilter-expr lsfilter-' + newop
 				+ '-expr"/></ul>');
+		match_field.wrap(wrapper);
+		match_field.closest('ul.lsfilter-' + newop).prepend(
+				this.delete_button().addClass('lsfilter-' + newop + '-expr'));
 		
 		var button = $('<button class="lsfilter-add-' + newop + '" />').text(
 				_(newop));
@@ -285,6 +289,19 @@ var lsfilter_graphics_visitor = {
 		{
 			lsfilter_visual.update_query_delayed();
 		});
+	},
+	
+	delete_button: function()
+	{
+		var button = $('<button />').text('X').click(function(evt)
+		{
+			console.log(evt);
+			$(evt.target).closest('ul').remove();
+			lsfilter_visual.update_query();
+			evt.preventDefault();
+			return false;
+		});
+		return $('<li />').append(button);
 	}
 };
 
@@ -352,7 +369,7 @@ var lsfilter_dom_to_query = {
 		}
 		
 		if (field == 'this') field = "";
-		if( op == 'all' ) return 'all';
+		if (op == 'all') return 'all';
 		return field + " " + op + " " + value;
 	}
 };
