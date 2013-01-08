@@ -148,7 +148,7 @@ var lsfilter_graphics_visitor = {
 	visit_andor: function(obj, op)
 	{
 		var self = this; // To be able to access it from within handlers
-		var list = $('<ul class="lsfilter-' + op + '">');
+		var list = $('<ul class="lsfilter-list lsfilter-' + op + '">');
 		list.append(this.delete_button().addClass('lsfilter-' + op + '-expr'));
 		for ( var i in obj.sub) {
 			list.append($(
@@ -255,7 +255,7 @@ var lsfilter_graphics_visitor = {
 		var match_field = btn.closest('li').siblings('.lsfilter-expr')
 				.children('.lsfilter-comp');
 		
-		var wrapper = $('<ul class="lsfilter-' + newop
+		var wrapper = $('<ul class="lsfilter-list lsfilter-' + newop
 				+ '"><li class="lsfilter-expr lsfilter-' + newop
 				+ '-expr"/></ul>');
 		match_field.wrap(wrapper);
@@ -293,15 +293,27 @@ var lsfilter_graphics_visitor = {
 	
 	delete_button: function()
 	{
+		var self = this;
 		var button = $('<button />').text('X').click(function(evt)
 		{
 			console.log(evt);
-			$(evt.target).closest('ul').remove();
+			self.delete_bubble($(evt.target).closest('ul').parent());
+			lsfilter_visual.validate_top_integrity();
 			lsfilter_visual.update_query();
 			evt.preventDefault();
 			return false;
 		});
 		return $('<li />').append(button);
+	},
+	
+	delete_bubble: function(node)
+	{
+		var container_ul = node.closest('ul.lsfilter-list');
+		node.remove();
+		if (container_ul.length > 0
+				&& container_ul.children('.lsfilter-expr').length == 0) {
+			this.delete_bubble(container_ul.parent());
+		}
 	}
 };
 
@@ -386,6 +398,7 @@ var lsfilter_visual = {
 		try {
 			var ast = parser.parse(query);
 			ast = lsfilter_extra_andor.visit(ast);
+			console.log(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 		}
@@ -410,5 +423,25 @@ var lsfilter_visual = {
 	update_query_delayed: function()
 	{
 		this.update_query();
+	},
+	
+	/* Validate that there exist at least one top object */
+	validate_top_integrity: function()
+	{
+		if ($('#filter_visual').find('.lsfilter-query-expr').length == 0) {
+			$('#filter_visual').find('.lsfilter-query').append(
+					$('<li class="lsfilter-expr lsfilter-query-expr" />')
+							.append(lsfilter_graphics_visitor.visit({
+								obj: 'or',
+								sub: [ {
+									obj: 'and',
+									sub: [ {
+										obj: 'match',
+										op: 'all',
+										value: ''
+									} ]
+								} ]
+							})));
+		}
 	}
 };
