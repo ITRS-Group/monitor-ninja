@@ -42,6 +42,9 @@ class Search_Controller extends Authenticated_Controller {
 	public function index($query=false) {
 		$query = trim($this->input->get('query', $query));
 
+		if(preg_match('/^\[[a-zA-Z]+\]/', $query)) {
+			return url::redirect('listview?'.http_build_query(array('q'=>$query)));
+		}
 		$filters = $this->queryToLSFilter( $query );
 		if($filters === false) {
 			$filters = $this->queryToLSFilter_MatchAll( $query );
