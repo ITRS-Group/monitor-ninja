@@ -76,7 +76,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 	}
 	
 	public function generate_reduce() {
-		$this->init_function('reduceBy', array('column', 'value', 'op'));
+		$this->init_function('reduce_by', array('column', 'value', 'op'));
 		$this->write('$filter = new LivestatusFilterAnd();');
 		$this->write('$filter->add( $this->filter );');
 		$this->write('$filter->add( new LivestatusFilterMatch( $column, $value, $op ) );');

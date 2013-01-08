@@ -11,7 +11,7 @@ class ContactPool_Model extends BaseContactPool_Model {
 		$username = Auth::instance()->get_user()->username;
 		
 		$set = ContactPool_Model::all();
-		$set = $set->reduceBy('name', $username, '=');
+		$set = $set->reduce_by('name', $username, '=');
 		
 		
 		$result = iterator_to_array($set,false);

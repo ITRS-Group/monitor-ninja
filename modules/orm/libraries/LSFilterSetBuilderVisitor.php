@@ -93,62 +93,62 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 
 	// match_not_re_ci: match := * name not_re_ci arg_string
 	public function visit_match_not_re_ci($field0, $arg_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_string2, '!~~' );
+		return $this->all_set->reduce_by( $field0, $arg_string2, '!~~' );
 	}
 
 	// match_not_re_cs: match := * name not_re_cs arg_string
 	public function visit_match_not_re_cs($field0, $arg_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_string2, '!~' );
+		return $this->all_set->reduce_by( $field0, $arg_string2, '!~' );
 	}
 
 	// match_re_ci: match := * name re_ci arg_string
 	public function visit_match_re_ci($field0, $arg_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_string2, '~~' );
+		return $this->all_set->reduce_by( $field0, $arg_string2, '~~' );
 	}
 
 	// match_re_cs: match := * name re_cs arg_string
 	public function visit_match_re_cs($field0, $arg_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_string2, '~' );
+		return $this->all_set->reduce_by( $field0, $arg_string2, '~' );
 	}
 
 	// match_not_eq_ci: match := * name not_eq_ci arg_string
 	public function visit_match_not_eq_ci($field0, $arg_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_string2, '!=~' );
+		return $this->all_set->reduce_by( $field0, $arg_string2, '!=~' );
 	}
 
 	// match_eq_ci: match := * name eq_ci arg_string
 	public function visit_match_eq_ci($field0, $arg_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_string2, '=~' );
+		return $this->all_set->reduce_by( $field0, $arg_string2, '=~' );
 	}
 
 	// match_not_eq: match := * name not_eq arg_num
 	public function visit_match_not_eq($field0, $arg_num2) {
-		return $this->all_set->reduceBy( $field0, $arg_num2, '!=' );
+		return $this->all_set->reduce_by( $field0, $arg_num2, '!=' );
 	}
 
 	// match_gt_eq: match := * name gt_eq arg_num
 	public function visit_match_gt_eq($field0, $arg_num2) {
-		return $this->all_set->reduceBy( $field0, $arg_num2, '>=' );
+		return $this->all_set->reduce_by( $field0, $arg_num2, '>=' );
 	}
 
 	// match_lt_eq: match := * name lt_eq arg_num
 	public function visit_match_lt_eq($field0, $arg_num2) {
-		return $this->all_set->reduceBy( $field0, $arg_num2, '<=' );
+		return $this->all_set->reduce_by( $field0, $arg_num2, '<=' );
 	}
 
 	// match_gt: match := * name gt arg_num
 	public function visit_match_gt($field0, $arg_num2) {
-		return $this->all_set->reduceBy( $field0, $arg_num2, '>' );
+		return $this->all_set->reduce_by( $field0, $arg_num2, '>' );
 	}
 
 	// match_lt: match := * name lt arg_num
 	public function visit_match_lt($field0, $arg_num2) {
-		return $this->all_set->reduceBy( $field0, $arg_num2, '<' );
+		return $this->all_set->reduce_by( $field0, $arg_num2, '<' );
 	}
 
 	// match_eq: match := * name eq arg_num_string
 	public function visit_match_eq($field0, $arg_num_string2) {
-		return $this->all_set->reduceBy( $field0, $arg_num_string2, '=' );
+		return $this->all_set->reduce_by( $field0, $arg_num_string2, '=' );
 	}
 	
 	// set_descr_name: Êset_descr := * string

@@ -10,7 +10,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	}
 	
 	public function get_host_stats() {
-		$set = HostPool_Model::all()->reduceBy('groups', $this->get_name(), '>=');
+		$set = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
 
 		if (config::get('checks.show_passive_as_active', '*')) {
 			$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1 or accept_passive_checks = 1');
@@ -61,7 +61,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		return array( 'stats' => $set->stats($stats), 'queries' => $queries );
 	}
 	public function get_service_stats() {
-		$set = ServicePool_Model::all()->reduceBy('host.groups', $this->get_name(), '>=');
+		$set = ServicePool_Model::all()->reduce_by('host.groups', $this->get_name(), '>=');
 
 		if (config::get('checks.show_passive_as_active', '*')) {
 			$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1 or accept_passive_checks = 1');

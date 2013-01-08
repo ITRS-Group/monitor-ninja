@@ -12,7 +12,7 @@ class Downtime_Model extends BaseDowntime_Model {
 		// TODO: Don't nest queries... Preformance!!! (Do this in livestatus?)
 		$trig_id = $this->get_triggered_by();
 		if( !$trig_id ) return 'N/A';
-		$trig = DowntimePool_Model::all()->reduceBy('id', $trig_id, '=')->it(array('host.name', 'service.description'), array(), 1, 0)->current();
+		$trig = DowntimePool_Model::all()->reduce_by('id', $trig_id, '=')->it(array('host.name', 'service.description'), array(), 1, 0)->current();
 		if( !$trig ) return 'Unknown';
 		$host = $trig->get_host()->get_name();
 		$svc = $trig->get_service()->get_description();
