@@ -20,7 +20,7 @@
 	z-index: 1;
 }
 
-#filter-query-builder-graphical, #filter-query-builder-manual, #filter-query-saved, #filter-query-multi-action {
+#filter-query-builder-manual, #filter-query-saved, #filter-query-multi-action {
 	max-height: 500px;
 	overflow: auto;
 	display: none;
