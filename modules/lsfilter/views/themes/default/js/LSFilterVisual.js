@@ -98,8 +98,7 @@ var lsfilter_graphics_visitor = {
 	
 	visit_query: function(obj)
 	{
-		this.fields = livestatus_structure[obj.table];
-		this.fields['this'] = [ 'object', obj.table ];
+		this.fields = lsfilter_visual.fields_for_table(obj.table);
 		var list = $('<ul class="lsfilter-query" />');
 		
 		var table_select = $('<select class="lsfilter-table-select" />');
@@ -201,7 +200,7 @@ var lsfilter_graphics_visitor = {
 		fields.change(function()
 		{
 			self.field_change($(this).val(), obj.op, val, ops);
-			lsfilter_visual.update_query();
+			lsfilter_visual.update_query_delayed();
 		});
 		
 		val.removeClass().addClass('lsfilter-value-field').addClass(
@@ -275,7 +274,7 @@ var lsfilter_graphics_visitor = {
 		$('<li class="lsfilter-expr lsfilter-' + op + '-expr" />')
 				.append(clone).insertBefore(btn.closest('li'));
 		
-		lsfilter_visual.update_query();
+		lsfilter_visual.update_query_delayed();
 	},
 	
 	visit: function(obj)
@@ -298,7 +297,7 @@ var lsfilter_graphics_visitor = {
 		{
 			self.delete_bubble($(evt.target).closest('ul').parent());
 			lsfilter_visual.validate_top_integrity();
-			lsfilter_visual.update_query();
+			lsfilter_visual.update_query_delayed();
 			evt.preventDefault();
 			return false;
 		});
@@ -441,5 +440,34 @@ var lsfilter_visual = {
 								} ]
 							})));
 		}
+	},
+	
+	fields_for_table: function(table)
+	{
+		var fields = $.extend({},livestatus_structure[table]); /* Clone to not modify original structure */
+		var subtables = [];
+		var key;
+		
+		for (key in fields) {
+			if (fields[key][0] == 'object') {
+				subtables.push({
+					field: key,
+					table: fields[key][1]
+				});
+			}
+		}
+		
+		for(key in subtables) {
+			var j;
+			var ref = subtables[key];
+			for( j in livestatus_structure[ref.table] ) {
+				if( livestatus_structure[ref.table][j][0] != 'object' ) {
+					fields[ref.field + '.' + j ] = livestatus_structure[ref.table][j];
+				}
+			}
+		}
+		
+		fields['this'] = [ 'object', table ];
+		return fields;
 	}
 };
