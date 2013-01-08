@@ -5,7 +5,6 @@
 		<span id="filter_loading_status"></span>
 		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
 		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-edit"></span></button>
-		<button id="show-filter-query-builder-graphical-button" title="Show/Edit Graphical Filter"><span class="icon-16 x16-command"></span></button>
 		<button id="show-filter-query-saved" title="Show saved filters"><span class="icon-16 x16-status-detail"></span></button>
 	</div>
 	<div id="filter_result_totals"></div>
@@ -48,10 +47,6 @@
 			<textarea style="width: 98%; height: 30px" name="filter_query"
 				id="filter_query"><?php echo htmlentities($query); ?></textarea>
 		</form>
-
-	</div>
-
-	<div id="filter-query-builder-graphical">
 
 		<h2><?php echo _('Graphical input'); ?></h2>
 
