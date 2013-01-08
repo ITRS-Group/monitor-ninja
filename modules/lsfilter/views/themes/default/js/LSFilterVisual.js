@@ -296,7 +296,6 @@ var lsfilter_graphics_visitor = {
 		var self = this;
 		var button = $('<button />').text('X').click(function(evt)
 		{
-			console.log(evt);
 			self.delete_bubble($(evt.target).closest('ul').parent());
 			lsfilter_visual.validate_top_integrity();
 			lsfilter_visual.update_query();
@@ -398,7 +397,6 @@ var lsfilter_visual = {
 		try {
 			var ast = parser.parse(query);
 			ast = lsfilter_extra_andor.visit(ast);
-			console.log(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 		}
