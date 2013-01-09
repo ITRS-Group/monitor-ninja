@@ -90,6 +90,7 @@ class LivestatusBaseClassGenerator extends class_generator {
 	private function generate_get_key() {
 		$this->init_function("get_key");
 		$matchline = '$key = $this%s;';
+		$got = false;
 		foreach( $this->key as $keypart ) {
 			// Build getter sequence
 			$call = "";
@@ -99,9 +100,14 @@ class LivestatusBaseClassGenerator extends class_generator {
 				
 			// Use sprintf instead of embedded in write. write escapes
 			$this->write( sprintf( $matchline, $call ) );
+			$got = true;
 			$matchline = '$key .= ";".$this%s;';
 		}
-		$this->write('return $key;');
+		if( $got ) {
+			$this->write('return $key;');
+		} else {
+			$this->write('return false;');
+		}
 		$this->finish_function();
 	}
 

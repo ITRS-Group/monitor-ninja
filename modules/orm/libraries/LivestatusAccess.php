@@ -66,7 +66,6 @@ class LivestatusAccess {
 		$query .= $filter;
 		$query .= "\n";
 		
-//		throw new Op5LivestatusException($column_txt);
 		$start   = microtime(true);
 		$rc      = $this->connection->writeSocket($query);;
 		$head    = $this->connection->readSocket(16);
@@ -100,13 +99,45 @@ class LivestatusAccess {
 	
 	private function auth($table) {
 		$user = op5auth::instance()->get_user();
-		if(strpos($table, 'services') !== false && !$user->authorized_for('service_view_all') ) {
-			return "AuthUser: ".$user->username."\n";
+		/* If table is defined, attach AuthUser, unless any of the permissions in the array is avalible for the user */
+		$table_permissions = array(
+			'commands'      => array('command_view_all'),
+			'comments'      => array('host_view_all','service_view_all'),
+			'contacts'      => array('contact_view_all'),
+			'downtime'      => array('host_view_all','service_view_all'),
+			'hosts'         => array('host_view_all'),
+			'hostgroups'    => array('hostgroups_view_all'),
+			'services'      => array('service_view_all'),
+			'servicegroups' => array('serviegroups_view_all'),
+			'status'        => array('system_information'),
+			'timeperiods'   => array('timeperiods_view_all')
+			);
+		
+		/* Tables not handling AuthUser in livestatus... if limited, filter by "Filter: col = username" or "Or: 0" */
+		$table_noauth = array(
+			'contacts' => 'name',
+			'commands' => true,
+			'status' => true,
+			'timeper
+			iods' => true
+			);
+		
+		if( !isset( $table_permissions[$table] ) ) {
+			return "";
 		}
-		elseif(strpos($table, 'hosts') !== false && !$user->authorized_for('host_view_all') ) {
-			return "AuthUser: ".$user->username."\n";
+		foreach( $table_permissions[$table] as $perm ) {
+			if( $user->authorized_for($perm) ) {
+				return "";
+			}
 		}
-		return "";
+		if( isset($table_noauth[$table] ) ) {
+			if( is_string($table_noauth[$table]) ) {
+				return "Filter: ".$table_noauth[$table]. " = ".$user->username."\n";
+			} else {
+				return "Or: 0\n";
+			}
+		}
+		return "AuthUser: ".$user->username."\n";
 	}
 	
 	private function formatQueryForDebug( $query ) {
