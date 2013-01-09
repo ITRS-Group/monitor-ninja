@@ -29,6 +29,7 @@ else {
 		echo (!empty($css_header)) ? $css_header : '';
 		echo html::script('application/media/js/jquery.min.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
+		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');
 		echo html::script('application/media/js/jquery.easywidgets.min.js');
 		echo html::script('application/media/js/jquery.autocomplete.min');

@@ -211,7 +211,7 @@ function render_host_status_summary(stats)
 
 var listview_multi_select_cell_renderer = function(args)
 {
-	var checkbox = $('<input type="checkbox" name="object_select[]" />').attr(
+	var checkbox = $('<input type="checkbox" name="object_select[]" class="listview_multiselect_checkbox" />').attr(
 			'value', args.obj.key);
 	if (false /* listview_selection[args.obj.key] */) {
 		checkbox.prop('checked', true);

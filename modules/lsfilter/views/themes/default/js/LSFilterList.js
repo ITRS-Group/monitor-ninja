@@ -233,6 +233,7 @@ function lsfilter_list(config)
 						loadrow.remove();
 						self.insert_rows(columns, result, tbody);
 						self.add_fill_bar(columns, result, tbody);
+						self.refresh_multi_select(tbody);
 					},
 					increment_items_in_view: true
 				});
@@ -300,6 +301,7 @@ function lsfilter_list(config)
 		
 		this.insert_rows(columns, data, tbody);
 		this.add_fill_bar(columns, data, tbody);
+		this.refresh_multi_select(tbody);
 		
 		/*
 		 * table.find('[id^=listview-col-]').hover( function () { var index =
@@ -363,7 +365,7 @@ function lsfilter_list(config)
 		 * .trigger("scroll");
 		 */
 		return table;
-	}
+	};
 
 	this.add_sort = function(element, vis_column, db_columns, current)
 	{
@@ -391,5 +393,9 @@ function lsfilter_list(config)
 		{
 			self.set_sort(evt.data.vis_column, evt.data.db_columns); // FIXME
 		});
-	}
+	};
+	
+	this.refresh_multi_select = function(baseelem) {
+		baseelem.find('.listview_multiselect_checkbox').createCheckboxRange();
+	};
 }
