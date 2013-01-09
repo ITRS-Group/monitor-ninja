@@ -33,7 +33,7 @@ require SYSPATH.'core/utf8'.EXT;
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 
-require 'op5/log.php';
+require_once 'op5/log.php';
 
 // Prepare the environment
 Kohana::setup();
