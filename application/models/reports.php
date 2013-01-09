@@ -680,7 +680,7 @@ class Reports_Model extends Model
 	/**
 	 * Retrieve a user-friendly representation for nagios codes
 	 *
-	 * @param $event_type
+	 * @param $event_type int
 	 * @param $object_type string = null (host or service)
 	 * @param $short boolean = false (true = key, false = English)
 	 * @return string
@@ -717,7 +717,6 @@ class Reports_Model extends Model
 				'full' => _($object_type . ' has exited a period of scheduled downtime')
 			)
 		);
-		// @todo we need a unit test for this since the http api relies on the shortcodes
 		if(!isset($events[$event_type])) {
 			throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
 		}

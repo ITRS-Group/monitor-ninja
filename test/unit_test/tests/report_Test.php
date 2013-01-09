@@ -73,7 +73,7 @@ class report_Test extends TapUnit {
 			Reports_Model::DOWNTIME_STOP => 'scheduled_downtime_stop'
 		);
 		foreach($events as $code => $event) {
-			$this->ok_eq($event, Reports_Model::event_type_to_string($event, null, true), sprintf("Unmatching strings: [%s] != [%s]", $event, Reports_Model::event_type_to_string($event, null, true)));
+			$this->ok_eq($event, Reports_Model::event_type_to_string($code, null, true), sprintf("Unmatching strings: [%s] != [%s]", $event, Reports_Model::event_type_to_string($code, null, true)));
 		}
 	}
 }
