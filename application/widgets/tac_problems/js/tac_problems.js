@@ -26,6 +26,8 @@ widget.register_widget_load('tac_problems', function() {
 
 function rgb_to_hex(rgb_string) {
 	var parts = rgb_string.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	if (parts == null)
+		return '#000';
 
 	delete (parts[0]);
 	for (var i = 1; i <= 3; ++i) {
