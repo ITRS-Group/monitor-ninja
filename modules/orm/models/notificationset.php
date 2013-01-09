@@ -29,16 +29,4 @@ class NotificationSet_Model extends BaseNotificationSet_Model {
 		$result_filter->add($auth_filter);
 		return $result_filter;
 	}
-
-	public function validate_columns($columns) {
-		$columns = parent::validate_columns($columns);
-
-		if( in_array( 'state_text', $columns ) ) {
-			$columns = array_diff( $columns, array('state_text') );
-			$columns[] = 'state';
-			$columns[] = 'notification_type';
-		}
-
-		return $columns;
-	}
 }

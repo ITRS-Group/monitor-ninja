@@ -14,6 +14,7 @@ class LivestatusBaseRootClassGenerator extends class_generator {
 		$this->init_class();
 		$this->variable( '_table', null, 'protected' );
 		$this->variable( 'export', array('key'), 'protected' );
+		$this->variable( 'rewrite_columns', array(), 'static public' );
 		$this->generate_export();
 		$this->generate_construct();
 		$this->finish_class();

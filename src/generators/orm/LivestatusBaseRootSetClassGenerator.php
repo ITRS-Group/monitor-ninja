@@ -117,6 +117,16 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 
 	public function generate_validate_columns() {
 		$this->init_function('validate_columns', array('columns'));
+		$this->write( '$classname = $this->class;' );
+		$this->write( '$prefix = "";' );
+		$this->write( 'foreach($classname::$rewrite_columns as $column => $rewrites) {');
+		$this->write(   'if( in_array( $column, $columns ) ) {' );
+		$this->write(     '$columns = array_filter( $columns, function($row) use($column) {return $row != $column;} );' );
+		$this->write(     'foreach($rewrites as $rewrite) {' );
+		$this->write(       '$columns[] = $rewrite;' );
+		$this->write(     '}' );
+		$this->write(   '}' );
+		$this->write( '}' );
 		$this->write('return $columns;');
 		$this->finish_function();
 	}

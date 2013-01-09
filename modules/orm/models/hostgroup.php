@@ -3,6 +3,11 @@
 require_once( dirname(__FILE__).'/base/basehostgroup.php' );
 
 class HostGroup_Model extends BaseHostGroup_Model {
+	static public $rewrite_columns = array(
+		'host_stats' => array('name'),
+		'service_stats' => array('name')
+		);
+	
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'host_stats';

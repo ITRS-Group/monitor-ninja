@@ -3,6 +3,10 @@
 require_once( dirname(__FILE__).'/base/basenotification.php' );
 
 class Notification_Model extends BaseNotification_Model {
+	static public $rewrite_columns = array(
+		'state_text' => array('state','notification_type')
+		);
+	
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'state_text';

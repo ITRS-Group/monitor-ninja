@@ -17,6 +17,16 @@ class Host_Model extends BaseHost_Model {
 		'$CURRENT_USER$' => 'current_user'
 		);
 	
+	static public $rewrite_columns = array(
+		'state_text_uc' => array('state_text'),
+		'state_type_text_uc' => array('state_type'),
+		'state_text' => array('state','has_been_checked'),
+		'first_group' => array('groups'),
+		'checks_disabled' => array('active_checks_enabled'),
+		'duration' => array('last_state_change'),
+		'comments_count' => array('comments')
+		);
+	
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'state_text';

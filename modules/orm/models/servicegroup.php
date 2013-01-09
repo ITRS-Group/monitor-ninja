@@ -3,6 +3,10 @@
 require_once( dirname(__FILE__).'/base/baseservicegroup.php' );
 
 class ServiceGroup_Model extends BaseServiceGroup_Model {
+	static public $rewrite_columns = array(
+		'service_stats' => array('name')
+		);
+	
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'service_stats';
