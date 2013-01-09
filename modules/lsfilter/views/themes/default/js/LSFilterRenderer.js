@@ -211,8 +211,9 @@ function render_host_status_summary(stats)
 
 var listview_multi_select_cell_renderer = function(args)
 {
-	var checkbox = $('<input type="checkbox" name="object_select[]" class="listview_multiselect_checkbox" />').attr(
-			'value', args.obj.key);
+	var checkbox = $(
+			'<input type="checkbox" name="object_select[]" class="listview_multiselect_checkbox" />')
+			.attr('value', args.obj.key);
 	if (false /* listview_selection[args.obj.key] */) {
 		checkbox.prop('checked', true);
 		if (tr.hasClass('odd'))
@@ -289,7 +290,7 @@ var listview_renderer_table = {
 			"depends": [ 'name', 'acknowledged', 'notifications_enabled',
 					'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
-					'action_url', 'notes_url', 'comments_count' ],
+					'action_url', 'notes_url', 'config_url', 'comments_count' ],
 			"sort": false,
 			"cell": function(args)
 			{
@@ -345,6 +346,10 @@ var listview_renderer_table = {
 					cell.append(icon16('host-notes',
 							_('View extra host notes'), $('<a />').attr('href',
 									args.obj.notes_url)));
+				
+				if (args.obj.config_url)
+					cell.append(icon16('nacoma', _('Configure this host'), $(
+							'<a />').attr('href', args.obj.config_url)));
 				
 				if (args.obj.comments_count > 0)
 					cell.append(icon16('add-comment', _('Comments')));
@@ -568,7 +573,8 @@ var listview_renderer_table = {
 			"depends": [ 'acknowledged', 'comments_count',
 					'notifications_enabled', 'checks_disabled', 'is_flapping',
 					'scheduled_downtime_depth', 'pnpgraph_present',
-					'action_url', 'notes_url', 'host.name', 'description' ],
+					'action_url', 'notes_url', 'config_url', 'host.name',
+					'description' ],
 			"sort": false,
 			"cell": function(args)
 			{
@@ -622,6 +628,10 @@ var listview_renderer_table = {
 					cell.append(icon16('host-notes',
 							_('View extra host notes'), $('<a />').attr('href',
 									args.obj.notes_url)));
+				
+				if (args.obj.config_url)
+					cell.append(icon16('nacoma', _('Configure this service'),
+							$('<a />').attr('href', args.obj.config_url)));
 				
 				return cell;
 			}

@@ -20,15 +20,16 @@ class Service_Model extends BaseService_Model {
 		'$SERVICESTATE$' => 'state',
 		'$CURRENT_USER$' => 'current_user'
 	);
-	
+
 	static public $rewrite_columns = array(
 		'state_text_uc'   => array('state_text'),
 		'state_text'      => array('state','has_been_checked'),
 		'first_group'     => array('groups'),
 		'checks_disabled' => array('active_checks_enabled'),
 		'duration'        => array('last_state_change'),
-		'comments_count'  => array('comments')
-		);
+		'comments_count'  => array('comments'),
+		'config_url'      => array('host.name', 'description')
+	);
 
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
@@ -36,6 +37,7 @@ class Service_Model extends BaseService_Model {
 		$this->export[] = 'checks_disabled';
 		$this->export[] = 'duration';
 		$this->export[] = 'comments_count';
+		$this->export[] = 'config_url';
 	}
 
 	public function get_state_text() {
@@ -49,11 +51,11 @@ class Service_Model extends BaseService_Model {
 		}
 		return 'unknown'; // should never happen
 	}
-	
+
 	public function get_state_type_text_uc() {
 		return $this->get_state_type()?'HARD':'SOFT';
 	}
-	
+
 	public function get_first_group() {
 		$groups = $this->get_groups();
 		if(isset($groups[0])) return $groups[0];
@@ -72,15 +74,25 @@ class Service_Model extends BaseService_Model {
 			return -1;
 		return $now - $last_state_change;
 	}
-	
+
 	public function get_notes_url() {
 		return $this->expand_macros(parent::get_notes_url());
 	}
-	
+
 	public function get_action_url() {
 		return $this->expand_macros(parent::get_action_url());
 	}
-	
+
+	public function get_config_url() {
+		/* FIXME: escape? */
+		$unexpanded_url = 'configuration/configure/?type=service&name=$HOSTNAME$&service=$SERVICEDESC$';
+		if(nacoma::link()==false)
+			return false;
+		if($unexpanded_url === false)
+			return false;
+		return $this->expand_macros($unexpanded_url);
+	}
+
 	public function get_comments_count() {
 		return count($this->get_comments());
 	}
