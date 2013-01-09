@@ -161,6 +161,11 @@ $config['current_theme'] = 'default/';
 $config['current_skin'] = 'default/';
 
 /**
+ * Url to configuration interface for each table.
+ */
+$config['config_url'] = array();
+
+/**
  * Do we use NACOMA (Nagios Configuration Manager)?
  * If path differs from the one below but still installed
  * you could simply change it.
@@ -168,8 +173,8 @@ $config['current_skin'] = 'default/';
 $nacoma_real_path = '/opt/monitor/op5/nacoma/';
 if (is_dir($nacoma_real_path)) {
 	$config['nacoma_path'] = '/monitor/op5/nacoma/';
-	$config['config_host_url'] = $config['site_domain'] . 'index.php/configuration/configure/?type=host&name=$HOSTNAME$';
-	$config['config_service_url'] = $config['site_domain'] . 'index.php/configuration/configure/?type=service&name=$HOSTNAME$&service=$SERVICEDESC$';
+	$config['config_url']['hosts'] = $config['site_domain'] . 'index.php/configuration/configure/?type=host&name=$HOSTNAME$';
+	$config['config_url']['services'] = $config['site_domain'] . 'index.php/configuration/configure/?type=service&name=$HOSTNAME$&service=$SERVICEDESC$';
 } else {
 	$config['nacoma_path'] = false;
 }

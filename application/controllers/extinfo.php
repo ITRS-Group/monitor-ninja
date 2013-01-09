@@ -284,7 +284,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		switch ($type) {
 			case 'host':
 				$page_links = array(
-					 _('Status detail') => 'status/service/?name='.urlencode($host),
+					 _('Status detail') => 'status/service/?host='.urlencode($host),
 					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
 					 _('Alert histogram') => 'histogram/generate?host_name[]='.$host,
 					 _('Availability report') => 'avail/generate/?host_name[]='.$host,
@@ -294,7 +294,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			case 'service':
 				$page_links = array(
 					_('Information for this host') => 'extinfo/details/host/'.$host,
-					_('Status detail for this host') => 'status/service/'.$host,
+					_('Status detail for this host') => 'status/service/?host='.$host,
 					_('Alert history') => 'alert_history/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',

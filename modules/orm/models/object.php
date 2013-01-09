@@ -30,6 +30,16 @@ abstract class Object_Model extends BaseObject_Model {
 		}
 		return str_replace($matches, $values, $str);
 	}
+
+	public function get_config_url() {
+		/* FIXME: escape? */
+		$unexpanded_url = config::get('config.config_url.'.$this->_table,'*');
+		if(!$unexpanded_url)
+			return false;
+		if(Auth::instance()->authorized_for('configuration_information')==false)
+			return false;
+		return $this->expand_macros($unexpanded_url);
+	}
 	
 	public function get_current_user() {
 		return Auth::instance()->get_user()->username;

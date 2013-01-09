@@ -48,7 +48,7 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function service_problems()
 	{
-		return $this->_redirect_to_query('[services] in "std service problems"');
+		return $this->_redirect_to_query('[services] has_been_checked!=0 and state!=0');
 	}
 
 	/**
@@ -56,7 +56,7 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function host_problems()
 	{
-		return $this->_redirect_to_query('[services] in "std host problems"');
+		return $this->_redirect_to_query('[hosts] has_been_checked!=0 and state!=0');
 	}
 
 	/**

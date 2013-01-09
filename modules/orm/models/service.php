@@ -83,16 +83,6 @@ class Service_Model extends BaseService_Model {
 		return $this->expand_macros(parent::get_action_url());
 	}
 
-	public function get_config_url() {
-		/* FIXME: escape? */
-		$unexpanded_url = config::get('config.config_service_url','*');
-		if(!$unexpanded_url)
-			return false;
-		if(Auth::instance()->authorized_for('configuration_information')==false)
-			return false;
-		return $this->expand_macros($unexpanded_url);
-	}
-
 	public function get_comments_count() {
 		return count($this->get_comments());
 	}
