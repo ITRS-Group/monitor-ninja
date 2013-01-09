@@ -3,6 +3,10 @@
 require_once( dirname(__FILE__).'/base/baseserviceset.php' );
 
 class ServiceSet_Model extends BaseServiceSet_Model {
+	public function validate_columns( $columns ) {
+		$columns[] = 'custom_variables';
+		return parent::validate_columns($columns);
+	}
 	public function get_totals() {
 		$pool = new ServicePool_Model();
 		$stats = array(
