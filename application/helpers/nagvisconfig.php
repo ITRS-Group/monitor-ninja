@@ -22,9 +22,16 @@ class nagvisconfig_Core {
 		$cfg = Op5Config::instance();
 		$nagvis_config = $cfg->getConfig('nagvis');
 
+		$contactgroups = Livestatus::instance()->getContactGroups(array(
+			'columns'=>'name',
+			'filter'=>array(
+				'members'=>array('>='=>$auth->get_user()->username)
+				)
+			));
+		
 		$groups_per_type = array(
 			'auth_groups'    => $auth->get_user()->groups,
-			'contact_groups' => $auth->get_contact_groups()
+			'contact_groups' => $contactgroups
 		);
 
 		foreach($groups_per_type as $grouptype => $groups) {
