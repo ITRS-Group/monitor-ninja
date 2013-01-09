@@ -6,6 +6,7 @@ function lsfilter_list(config)
 		autorefresh_delay: 30000,
 		request_url: _site_domain + _index_page + "/" + _controller_name
 				+ "/fetch_ajax",
+		attach_head: false,
 		loading_start: function()
 		{
 		},
@@ -83,7 +84,7 @@ function lsfilter_list(config)
 			self.config.offset += self.config.per_page;
 		}
 		
-		if(this.active_ajax_request) {
+		if (this.active_ajax_request) {
 			this.active_ajax_request.abort();
 		}
 		
@@ -109,7 +110,7 @@ function lsfilter_list(config)
 					complete: function()
 					{
 						this.active_ajax_request = false;
-						self.config.loading_stop( loading_id );
+						self.config.loading_stop(loading_id);
 						// $('.lsfilter-loader').remove();
 					}
 				});
@@ -152,7 +153,10 @@ function lsfilter_list(config)
 			new_table.text("Error: " + data.data);
 		}
 		
-		if (this.config.table) this.config.table.empty().append(new_table);
+		if (this.config.table) {
+			this.config.table.empty().append(new_table);
+			this.attach_header(new_table);
+		}
 		if (this.config.totals) this.config.totals.empty().append(new_totals);
 		
 		this.autorefresh_timer = setTimeout(this.handle_autorefresh,
@@ -315,6 +319,48 @@ function lsfilter_list(config)
 		 * header.after(clone);
 		 */
 
+		return table;
+	};
+	
+	this.add_sort = function(element, vis_column, db_columns, current)
+	{
+		var self = this; // To be able to access it from within handlers
+		
+		if (current == 0) { // No sort
+		
+			element
+					.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
+		}
+		else if (current > 0) { // Ascending?
+			element.attr('title', 'Sort descending');
+			element
+					.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
+		}
+		else {
+			element.attr('title', 'Sort ascending');
+			element
+					.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
+		}
+		element.click({
+			vis_column: vis_column,
+			db_columns: db_columns
+		}, function(evt)
+		{
+			self.set_sort(evt.data.vis_column, evt.data.db_columns); // FIXME
+		});
+	};
+	
+	this.refresh_multi_select = function(baseelem)
+	{
+		baseelem.find('.listview_multiselect_checkbox').createCheckboxRange();
+	};
+	
+	this.attach_header = function(table)
+	{
+		if (!this.config.attach_head) return;
+		var header = $("thead", table);
+		var clone = header.clone(true);
+		header.after(clone);
 		var update_float_header = function()
 		{
 			table.each(function()
@@ -360,42 +406,7 @@ function lsfilter_list(config)
 				
 			});
 		}
-		/*
-		 * $(window).resize(update_float_header).scroll(update_float_header)
-		 * .trigger("scroll");
-		 */
-		return table;
-	};
-
-	this.add_sort = function(element, vis_column, db_columns, current)
-	{
-		var self = this; // To be able to access it from within handlers
-		
-		if (current == 0) { // No sort
-		
-			element
-					.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
-		}
-		else if (current > 0) { // Ascending?
-			element.attr('title', 'Sort descending');
-			element
-					.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
-		}
-		else {
-			element.attr('title', 'Sort ascending');
-			element
-					.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
-		}
-		element.click({
-			vis_column: vis_column,
-			db_columns: db_columns
-		}, function(evt)
-		{
-			self.set_sort(evt.data.vis_column, evt.data.db_columns); // FIXME
-		});
-	};
-	
-	this.refresh_multi_select = function(baseelem) {
-		baseelem.find('.listview_multiselect_checkbox').createCheckboxRange();
-	};
+		$(window).resize(update_float_header).scroll(update_float_header)
+				.trigger("scroll");
+	}
 }

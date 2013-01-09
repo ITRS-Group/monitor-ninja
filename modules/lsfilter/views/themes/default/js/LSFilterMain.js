@@ -65,6 +65,7 @@ var lsfilter_main = {
 		lsfilter_storage.list = new lsfilter_list({
 			table: $('#filter_result'),
 			totals: $('#filter_result_totals'),
+			attach_head: true,
 			loading_start: function()
 			{
 				var loader = $('<span class="lsfilter-loader" />').append(
