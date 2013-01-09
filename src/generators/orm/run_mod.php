@@ -1,8 +1,9 @@
 <?php
 
+require_once( '../buildlib.php' );
+
 require_once( 'LivestatusBaseClassGenerator.php' );
-require_once( 'LivestatusBaseRootClassGenerator.php' )
-;
+require_once( 'LivestatusBaseRootClassGenerator.php' );
 require_once( 'LivestatusBasePoolClassGenerator.php' );
 require_once( 'LivestatusBaseRootPoolClassGenerator.php' );
 
@@ -17,7 +18,7 @@ require_once( 'LivestatusAutoloaderGenerator.php' );
 require_once( 'LivestatusStructure.php' );
 
 class orm_generator extends generator_module {
-	public function run() {
+	protected function do_run() {
 
 		$classpaths = array(
 			'LivestatusAccess'      => 'libraries/LivestatusAccess.php',
@@ -138,3 +139,6 @@ class orm_generator extends generator_module {
 		//$generator->generate();
 	}
 }
+
+$generator = new orm_generator('orm');
+$generator->run();
