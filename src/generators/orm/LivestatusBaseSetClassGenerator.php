@@ -57,6 +57,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 
 	public function generate_validate_columns() {
 		$this->init_function('validate_columns', array('columns'));
+		$this->write('$columns = parent::validate_columns($columns);');
 		foreach($this->structure['structure'] as $name => $type ) {
 			if( is_array($type) ) {
 				$this->write('$subcolumns = array();');
@@ -80,7 +81,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 		foreach($this->structure['key'] as $keypart ) {
 			$this->write('if( !in_array(%s, $columns) ) $columns[] = %s;', $keypart, $keypart);
 		}
-		$this->write('return parent::validate_columns($columns);');
+		$this->write('return $columns;');
 		$this->finish_function();
 	}
 

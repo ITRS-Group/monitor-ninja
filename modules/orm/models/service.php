@@ -4,7 +4,7 @@ require_once( dirname(__FILE__).'/base/baseservice.php' );
 
 class Service_Model extends BaseService_Model {
 	static public $macros =  array(
-/*		'$HOSTNAME$' => 'host.name',
+		'$HOSTNAME$' => 'host.name',
 		'$HOSTADDRESS$' => 'host.address',
 		'$HOSTDISPLAYNAME$' => 'host.display_name',
 		'$HOSTALIAS$' => 'host.alias',
@@ -13,7 +13,7 @@ class Service_Model extends BaseService_Model {
 		'$HOSTSTATETYPE$' => 'host.state_type_text_uc',
 		'$HOSTATTEMPT$' => 'host.current_attempt',
 		'$MAXHOSTATTEMPTS$' => 'host.max_check_attempts',
-		'$HOSTGROUPNAME$' => 'host.first_group',*/
+		'$HOSTGROUPNAME$' => 'host.first_group',
 		'$SERVICEDESC$' => 'description',
 		'$SERVICEDISPLAYNAME$' => 'display_name',
 		'$SERVICEGROUPNAME$' => 'first_group',
@@ -71,6 +71,14 @@ class Service_Model extends BaseService_Model {
 		if( $last_state_change == 0 )
 			return -1;
 		return $now - $last_state_change;
+	}
+	
+	public function get_notes_url() {
+		return $this->expand_macros(parent::get_notes_url());
+	}
+	
+	public function get_action_url() {
+		return $this->expand_macros(parent::get_action_url());
 	}
 	
 	public function get_comments_count() {

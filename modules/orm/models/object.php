@@ -13,7 +13,7 @@ abstract class Object_Model extends BaseObject_Model {
 			$value = $this;
 			foreach( explode('.',$field) as $subfield ) {
 				if( $value ) {
-					$getter = "get_".$field;
+					$getter = "get_".$subfield;
 					$value = $value->$getter();
 				}
 			}
