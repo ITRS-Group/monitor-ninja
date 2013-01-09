@@ -681,7 +681,8 @@ class Reports_Model extends Model
 	 * Retrieve a user-friendly representation for nagios codes
 	 *
 	 * @param $event_type
-	 * @param $object_type = null (host or service)
+	 * @param $object_type string = null (host or service)
+	 * @param $short boolean = false (true = key, false = English)
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */
