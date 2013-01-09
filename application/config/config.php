@@ -168,6 +168,8 @@ $config['current_skin'] = 'default/';
 $nacoma_real_path = '/opt/monitor/op5/nacoma/';
 if (is_dir($nacoma_real_path)) {
 	$config['nacoma_path'] = '/monitor/op5/nacoma/';
+	$config['config_host_url'] = $config['site_domain'] . 'index.php/configuration/configure/?type=host&name=$HOSTNAME$';
+	$config['config_service_url'] = $config['site_domain'] . 'index.php/configuration/configure/?type=service&name=$HOSTNAME$&service=$SERVICEDESC$';
 } else {
 	$config['nacoma_path'] = false;
 }

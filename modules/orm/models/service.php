@@ -85,10 +85,10 @@ class Service_Model extends BaseService_Model {
 
 	public function get_config_url() {
 		/* FIXME: escape? */
-		$unexpanded_url = 'configuration/configure/?type=service&name=$HOSTNAME$&service=$SERVICEDESC$';
-		if(nacoma::link()==false)
+		$unexpanded_url = config::get('config.config_service_url','*');
+		if(!$unexpanded_url)
 			return false;
-		if($unexpanded_url === false)
+		if(Auth::instance()->authorized_for('configuration_information')==false)
 			return false;
 		return $this->expand_macros($unexpanded_url);
 	}

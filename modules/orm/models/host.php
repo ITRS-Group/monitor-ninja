@@ -85,10 +85,10 @@ class Host_Model extends BaseHost_Model {
 
 	public function get_config_url() {
 		/* FIXME: escape? */
-		$unexpanded_url = 'configuration/configure/?type=host&name=$HOSTNAME$';
-		if(nacoma::link()==false)
+		$unexpanded_url = config::get('config.config_host_url','*');
+		if(!$unexpanded_url)
 			return false;
-		if($unexpanded_url === false)
+		if(Auth::instance()->authorized_for('configuration_information')==false)
 			return false;
 		return $this->expand_macros($unexpanded_url);
 	}
