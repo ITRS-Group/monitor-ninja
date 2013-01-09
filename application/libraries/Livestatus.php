@@ -50,6 +50,7 @@
  *  );
  *
  */
+require_once("op5/livestatus.php"); /* For Op5LivestatusException */
 
 class Livestatus {
 	private static $instance = false;

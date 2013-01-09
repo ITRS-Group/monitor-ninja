@@ -1,4 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
+require_once('op5/log.php');
+
 /**
  * Default controller.
  * Does not require login but should display default page
@@ -10,7 +13,7 @@
  *  The information contained herein is provided AS IS with NO WARRANTY OF ANY
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
- */
+*/
 class Default_Controller extends Ninja_Controller  {
 	public $csrf_config = false;
 	public $route_config = false;
@@ -59,11 +62,11 @@ class Default_Controller extends Ninja_Controller  {
 	{
 		# check if we should allow login by GET params
 		if (Kohana::config('auth.use_get_auth')
-			&& array_key_exists('username', $_GET)
-			&& array_key_exists('password', $_GET)) {
-				$_POST['username'] = $_GET['username'];
-				$_POST['password'] = $_GET['password'];
-				$_POST['auth_method'] = $this->input->get('auth_method', false);
+		&& array_key_exists('username', $_GET)
+		&& array_key_exists('password', $_GET)) {
+			$_POST['username'] = $_GET['username'];
+			$_POST['password'] = $_GET['password'];
+			$_POST['auth_method'] = $this->input->get('auth_method', false);
 		}
 
 		if ($_POST) {
@@ -91,7 +94,7 @@ class Default_Controller extends Ninja_Controller  {
 			if ($res !== true) {
 				return url::redirect($res);
 			}
-			
+				
 			$requested_uri = Session::instance()->get('requested_uri', false);
 			# make sure we don't end up in infinite loop
 			# if user managed to request show_login
@@ -131,10 +134,10 @@ class Default_Controller extends Ninja_Controller  {
 	}
 
 	/**
-	*	Display an error message about no available
-	* 	objects for a valid user. This page is used when
-	* 	we are using login through apache.
-	*/
+	 *	Display an error message about no available
+	 * 	objects for a valid user. This page is used when
+	 * 	we are using login through apache.
+	 */
 	public function no_objects()
 	{
 		# unset some session variables
@@ -148,9 +151,9 @@ class Default_Controller extends Ninja_Controller  {
 	}
 
 	/**
-	*	Used from CLI calls to detect cli setting and
-	* 	possibly default access from config file
-	*/
+	 *	Used from CLI calls to detect cli setting and
+	 * 	possibly default access from config file
+	 */
 	public function get_cli_status()
 	{
 		if (PHP_SAPI !== "cli") {
@@ -178,7 +181,7 @@ class Default_Controller extends Ninja_Controller  {
 
 		if (empty($cli_access)) {
 			# CLI access is turned off in config/config.php
-			Kohana::log('error', 'No cli access');
+			op5log::instance('ninja')->log('error', 'No cli access');
 			exit(1);
 		}
 
@@ -195,7 +198,7 @@ class Default_Controller extends Ninja_Controller  {
 		try {
 			$controller->cron($period_str);
 		} catch(Exception $e) {
-			Kohana::log('error', $e->getMessage());
+			$this->log->log('error', $e->getMessage() . ' at ' . $e->getFile() . '@' . $e->getLine());
 			exit(1);
 		}
 		exit(0);

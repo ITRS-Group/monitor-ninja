@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+require_once('op5/log.php');
+
 /**
  * Base NINJA controller.
  *
@@ -33,10 +35,12 @@ class Ninja_Controller extends Template_Controller {
 	public $notifications_disabled = false;
 	public $checks_disabled = false;
 	public $global_notifications = false;
+	public $log = false;
 	protected $theme_path = false;
 
 	public function __construct()
 	{
+		$this->log = op5log::instance('ninja');
 		parent::__construct();
 		$this->theme_path = ninja::get_theme_path();
 		if(request::is_ajax()) {

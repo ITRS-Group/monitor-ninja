@@ -105,7 +105,6 @@ class Auth_Core {
 	public function login($username, $password, $auth_method = false)
 	{
 		$res = op5auth::instance()->login( $username, $password, $auth_method );
-		Kohana::log( 'debug', 'Login: ' . var_export( $res, true ) );
 		return $res;
 	}
 	

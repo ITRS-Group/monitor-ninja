@@ -70,7 +70,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		$pipes = false;
 
 		$command = Kohana::config('reports.pdf_command');
-		Kohana::log('debug', "Running pdf generation command '$command'");
+		$this->log->log('debug', "Running pdf generation command '$command'");
 		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
 
 		if (is_resource($process)) {
@@ -98,14 +98,14 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 				header('Content-Type: application/pdf');
 				echo $out;
 			} else {
-				Kohana::log('error', $err);
+				$this->log->log('error', $err);
 			}
 			fclose($pipes[1]);
 			fclose($pipes[2]);
 			proc_close($process);
 		} else {
-			Kohana::log('error', "Tried running the following command but was unsuccessful:");
-			Kohana::log('error', $command);
+			$this->log->log('error', "Tried running the following command but was unsuccessful:");
+			$this->log->log('error', $command);
 		}
 	}
 
@@ -296,7 +296,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		if (array_key_exists('states', $data_arr) && !empty($data_arr['states']))
 			$group_averages = $data_arr['states'];
 		else {
-			Kohana::log('error', 'Stuff went belly-up: '.var_export($data_arr, true));
+			$this->log->log('error', 'Stuff went belly-up: '.var_export($data_arr, true));
 			return;
 		}
 

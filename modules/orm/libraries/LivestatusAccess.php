@@ -1,6 +1,7 @@
 <?php
 
 require_once("op5/auth/Auth.php");
+require_once("op5/livestatus.php"); /* For Op5LivestatusException */
 
 /**
  * Livetatus interaface.
@@ -65,7 +66,7 @@ class LivestatusAccess {
 		$query .= $filter;
 		$query .= "\n";
 		
-//		throw new LivestatusException($column_txt);
+//		throw new Op5LivestatusException($column_txt);
 		$start   = microtime(true);
 		$rc      = $this->connection->writeSocket($query);;
 		$head    = $this->connection->readSocket(16);
@@ -73,9 +74,9 @@ class LivestatusAccess {
 		$len     = intval(trim(substr($head, 4, 15)));
 		$body    = $this->connection->readSocket($len);
 		if(empty($body))
-			throw new LivestatusException("empty body for query: <pre>".$query."</pre>");
+			throw new Op5LivestatusException("empty body for query: <pre>".$query."</pre>");
 		if($status != 200)
-			throw new LivestatusException("Invalid request: $body");
+			throw new Op5LivestatusException("Invalid request: ".trim($body));
 		
 		$result = json_decode(utf8_encode($body), true);
 		
@@ -92,7 +93,7 @@ class LivestatusAccess {
 		}
 		
 		if ($objects === null) {
-			throw new LivestatusException("Invalid output");
+			throw new Op5LivestatusException("Invalid output");
 		}
 		return array($columns,$objects,$count);
 	}
@@ -197,18 +198,18 @@ class LivestatusAccessConnection {
 		}
 		elseif($type == 'unix') {
 			if(!file_exists($address)) {
-				throw new LivestatusException("connection failed, make sure $address exists\n");
+				throw new Op5LivestatusException("connection failed, make sure $address exists\n");
 			}
 			$this->connection = @fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
 			if (!$this->connection)
-				throw new LivestatusException("connection failed, make sure $address exists\n");
+				throw new Op5LivestatusException("connection failed, make sure $address exists\n");
 		}
 		else {
-			throw new LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
+			throw new Op5LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
 		}
 
 		if(!$this->connection) {
-			throw new LivestatusException("connection ".$this->connectionString." failed: ".$errstr);
+			throw new Op5LivestatusException("connection ".$this->connectionString." failed: ".$errstr);
 		}
 	}
 
@@ -224,7 +225,7 @@ class LivestatusAccessConnection {
 			$this->connect();
 		$out = @fwrite($this->connection, $str);
 		if ($out === false)
-			throw new LivestatusException("Couldn't write to livestatus socket $address");
+			throw new Op5LivestatusException("Couldn't write to livestatus socket $address");
 	}
 
 	public function readSocket($len) {

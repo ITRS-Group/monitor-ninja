@@ -33,6 +33,8 @@ require SYSPATH.'core/utf8'.EXT;
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 
+require 'op5/log.php';
+
 // Prepare the environment
 Kohana::setup();
 
@@ -57,7 +59,7 @@ if(!defined('SKIP_KOHANA')) {
 	try {
 		Event::run('system.execute');
 	} catch (Op5LivestatusException $ex) {
-		Kohana::log('error', $ex->getMessage());
+		op5log::instance('ninja')->log('error', $ex->getMessage() . ' at ' . $ex->getFile() . '@' . $ex->getLine());
 		Event::run('application.livestatus');
 	}
 
