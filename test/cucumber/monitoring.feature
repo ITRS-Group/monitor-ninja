@@ -337,3 +337,23 @@ Feature: Monitoring
 		When I click "linux-server1"
 		And I click "Show performance graph"
 		Then I should be on the PNP page
+
+	@configuration @asmonitor @case-648
+	Scenario: Host details Add/delete comment
+
+		Verify that adding and deleting comments on hosts
+		works.
+
+		When I click "linux-server1"
+		And I click "Add comment"
+		And I enter "A comment for this host" into "cmd_param[comment]"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I should see "A comment for this host"
+		When I click the delete icon for comment 1
+		Then I should see "You are trying to delete a host comment"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then I shouldn't see "A comment for this host"
