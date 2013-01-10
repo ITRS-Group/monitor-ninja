@@ -59,7 +59,7 @@ if(!defined('SKIP_KOHANA')) {
 	try {
 		Event::run('system.execute');
 	} catch (Op5LivestatusException $ex) {
-		op5log::instance('ninja')->log('error', $ex->getMessage() . ' at ' . $ex->getFile() . '@' . $ex->getLine());
+		op5log::instance('ninja')->log('error', $ex);
 		Event::run('application.livestatus');
 	}
 

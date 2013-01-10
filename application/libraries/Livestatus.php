@@ -788,12 +788,6 @@ class LivestatusBackend {
 		if( empty( $filter ) ) {
 			return "";
 		}
-		if( is_string( $filter ) ) {
-			$expparser = new ExpParser_LivestatusFilter();
-			if($stats)
-				$expparser->setStats();
-			return $expparser->parse($filter);
-		}
 		return $this->parseQueryFilterArray($stats, $filter, null, null, $stats?'And':null);
 	}
 

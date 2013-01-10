@@ -48,7 +48,7 @@ class Config_Model extends Model {
 	{
 		$options = array(
 			'limit' => $this->limit,
-			'offset' => $this->offset + $this->limit
+			'offset' => $this->offset
 		);
 
 		switch($type) {
@@ -82,9 +82,9 @@ class Config_Model extends Model {
 			$filterable_keys = $ls->filterable_columns();
 			$filter = array();
 			foreach($filterable_keys[$type] as $column) {
-				$filter[] = $column.' ~~ "'.$free_text.'"';
+				$filter[$column] = array('~~' => $free_text);
 			}
-			$options['filter'] = implode(' or ', $filter);
+			$options['filter'] = array('-or' => $filter);
 			return $ls->{'get'.$type}($options);
 		}
 
