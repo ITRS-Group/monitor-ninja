@@ -594,7 +594,7 @@ class Command_Controller extends Authenticated_Controller
 		$host_names = arr::search($params, 'host_name');
 
 		if (strstr($cmd, '_HOST_') !== false) {
-			$type = 'host';
+			$type = 'hosts';
 		} else if (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
 			$type = 'service';
 		} else if ($services) {
