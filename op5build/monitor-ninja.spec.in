@@ -34,7 +34,10 @@ Webgui for Nagios 3.
 pushd cli-helpers
 make
 popd
+pushd src/generators
 make
+popd
+make generate-css
 make docs test
 
 
