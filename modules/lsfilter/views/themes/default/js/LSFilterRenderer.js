@@ -285,6 +285,15 @@ var listview_renderer_table = {
 				return cell;
 			}
 		},
+		"alias": {
+			"header": _('Alias'),
+			"depends": [ 'alias' ],
+			"sort": [ 'alias' ],
+			"cell": function(args)
+			{
+				return $('<td />').text(args.obj.alias);
+			}
+		},
 		"actions": {
 			"header": _('Actions'),
 			"depends": [ 'name', 'acknowledged', 'notifications_enabled',
