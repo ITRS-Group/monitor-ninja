@@ -239,14 +239,13 @@ var visualizeCalculator = function(evt) {
 	var string = $('#calculator_query').val();
 	try {
 		var parser = new Calculator(new CalculatorPP(), new CalculatorEval());
-		var result = parser.parse(string);
-		$('#calculator_result').empty().append(result);
+		var result_value = parser.parse(string);
 		
 		var parser = new Calculator(new CalculatorVisualPP(), new CalculatorVisual());
 		var result = parser.parse(string);
-		$('#calculator_visual').empty().append(result);
+		$('#calculator_visual').empty().append($('<span />').append(result).append("= "+result_value));
 	} catch( ex ) {
-		$('#calculator_result').empty().append(ex);
+		$('#calculator_visual').empty().append(ex);
 	}
 }
 
