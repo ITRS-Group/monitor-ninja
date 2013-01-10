@@ -14,7 +14,7 @@ abstract class ExpParser_Core {
 
 		$curptr = $this->ptr; /* Keep $this->ptr for error message */
 		while( ctype_space( substr( $this->expr, $curptr, 1 ) ) ) $this->ptr++;
-		if( $curptr != strlen( $this->expr ) ) {
+		if( $curptr < strlen( $this->expr ) ) {
 			$this->error( 'Expected end' );
 		}
 		
@@ -23,9 +23,12 @@ abstract class ExpParser_Core {
 
 	abstract protected function run();
 	
-	protected function acceptSym( $tokenlist ) {
-		/* Trim left */
+	protected function trimLeft() {
 		while( ctype_space( substr( $this->expr, $this->ptr, 1 ) ) ) $this->ptr++;
+	}
+	
+	protected function acceptSym( $tokenlist ) {
+		$this->trimLeft();
 		
 		/* Test tokens */
 		foreach( $tokenlist as $token ) {
@@ -44,16 +47,17 @@ abstract class ExpParser_Core {
 		return $sym;
 	}
 	
-	protected function acceptKeyword( $keywordlist = false, $case_insensitive = false ) {
-		/* Trim left */
-		while( ctype_space( substr( $this->expr, $this->ptr, 1 ) ) ) $this->ptr++;
+	protected function acceptKeyword( $keywordlist = false, $case_insensitive = false, $numeric = false ) {
+		$this->trimLeft();
 		
 		/* Peek at next keyword */
 		$curptr = $this->ptr;
 		$buffer = '';
-		while( ctype_alpha( $c = substr( $this->expr, $curptr, 1 ) ) || substr( $this->expr, $curptr, 1 ) == '_' ) {
+		$c = substr( $this->expr, $curptr, 1 );
+		while( ctype_alpha( $c ) || $c == '_' || ($buffer !== '' && ctype_digit($c)) ) {
 			$curptr++;
 			$buffer .= $c;
+			$c = substr( $this->expr, $curptr, 1 );
 		}
 		if( $case_insensitive )
 			$buffer = strtolower( $buffer );
@@ -64,16 +68,15 @@ abstract class ExpParser_Core {
 		return false;
 	}
 	
-	protected function expectKeyword( $keywordlist = false, $case_insensitive = false ) {
-		$sym = $this->acceptKeyword( $keywordlist, $case_insensitive );
+	protected function expectKeyword( $keywordlist = false, $case_insensitive = false, $numeric = false ) {
+		$sym = $this->acceptKeyword( $keywordlist, $case_insensitive, $numeric );
 		if( $sym === false )
 			$this->error('Unexpected token, expected '.(($keywordlist===false)?('keyword'):implode(',',$keywordlist)));
 		return $sym;
 	}
 	
 	protected function acceptString( ) {
-		/* Trim left */
-		while( ctype_space( substr( $this->expr, $this->ptr, 1 ) ) ) $this->ptr++;
+		$this->trimLeft();
 		
 		/* Fetch first " */
 		if( substr( $this->expr, $this->ptr, 1 ) != '"' ) {
@@ -100,8 +103,7 @@ abstract class ExpParser_Core {
 	
 	/* FIXME: number should handle more than positive integers */
 	protected function acceptNum() {
-		/* Trim left */
-		while( ctype_space( substr( $this->expr, $this->ptr, 1 ) ) ) $this->ptr++;
+		$this->trimLeft();
 		
 		/* Peek at next integer */
 		$curptr = $this->ptr;

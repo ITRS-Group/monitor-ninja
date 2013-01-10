@@ -3,12 +3,13 @@
 require_once( '../buildlib.php' );
 
 require_once( '../lalr_parser/LalrGenerator.php' );
-
-require_once( 'op5/spyc.php' );
+require_once( '../lalr_parser/LalrGrammarParser.php' );
 
 class Calculator_generator extends generator_module {
 	protected function do_run() {
-		$grammar = Spyc::YAMLLoad( $this->gen_dir.'grammar.yml' );
+		$grammar_file = file_get_contents( $this->gen_dir.'grammar.txt' );
+		$grammar_parser = new LalrGrammarParser();
+		$grammar = $grammar_parser->parse($grammar_file);
 		
 		$generator = new LalrGenerator( 'Calculator', $grammar );
 		$generator->generate();
