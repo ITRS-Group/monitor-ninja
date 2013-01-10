@@ -14,7 +14,8 @@ class Sla_options_Core extends Report_options {
 			"last3months" => _('Last 3 Months'),
 			"last6months" => _('Last 6 months'),
 			"lastquarter" => _('Last Quarter'),
-			"last12months" => _('Last 12 months')
+			"last12months" => _('Last 12 months'),
+			'custom' => _('Custom')
 		));
 
 	}
