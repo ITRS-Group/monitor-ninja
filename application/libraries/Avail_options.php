@@ -3,7 +3,7 @@
 class Avail_options extends Report_options {
 	function __construct($options) {
 		parent::__construct($options);
-		$this->properties['report_period']['options'] = array(
+		$this->vtypes['report_period']['options'] = array(
 			"today" => _('Today'),
 			"last24hours" => _('Last 24 Hours'),
 			"yesterday" => _('Yesterday'),
