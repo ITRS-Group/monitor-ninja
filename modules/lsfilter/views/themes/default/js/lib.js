@@ -70,11 +70,8 @@ function link_query(query)
 	});
 	return link;
 }
-function extinfo_link(host, service)
+function extinfo_link(args)
 {
-	var args = {};
-	args['host'] = host;
-	if (service) args['service'] = service;
 	return link('extinfo/details', args);
 }
 function format_timestamp(timestamp)

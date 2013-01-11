@@ -277,10 +277,13 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
-				cell.append(extinfo_link(args.obj.name).text(args.obj.name));
+				cell.append(extinfo_link({
+					host: args.obj.name
+				}).text(args.obj.name));
 				if (args.obj.icon_image)
-					cell.append(icon(args.obj.icon_image,
-							extinfo_link(args.obj.name)).css('float', 'right'));
+					cell.append(icon(args.obj.icon_image, extinfo_link({
+						host: args.obj.name
+					})).css('float', 'right'));
 				
 				return cell;
 			}
@@ -540,13 +543,15 @@ var listview_renderer_table = {
 				
 				if (args.obj.host
 						&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
-					cell.append(extinfo_link(args.obj.host.name).text(
-							args.obj.host.name));
+					cell.append(extinfo_link({
+						host: args.obj.host.name
+					}).text(args.obj.host.name));
 					
 					if (args.obj.host.icon_image)
 						cell.append(icon(args.obj.host.icon_image,
-								extinfo_link(args.obj.host.name)).css('float',
-								'right'));
+								extinfo_link({
+									host: args.obj.host.name
+								})).css('float', 'right'));
 					
 				}
 				else {
@@ -572,9 +577,10 @@ var listview_renderer_table = {
 			"sort": [ 'description' ],
 			"cell": function(args)
 			{
-				return $('<td />').append(
-						extinfo_link(args.obj.host.name, args.obj.description)
-								.text(args.obj.description));
+				return $('<td />').append(extinfo_link({
+					host: args.obj.host.name,
+					service: args.obj.description
+				}).text(args.obj.description));
 			}
 		},
 		"actions": {
@@ -718,6 +724,10 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
+				cell.append(icon16('extended-information', _('Actions'),
+						extinfo_link({
+							hostgroup: args.obj.name
+						})));
 				return cell;
 			}
 		},
@@ -768,6 +778,10 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
+				cell.append(icon16('extended-information', _('Actions'),
+						extinfo_link({
+							servicegroup: args.obj.name
+						})));
 				return cell;
 			}
 		},
@@ -836,13 +850,14 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
-				cell.append(extinfo_link(args.obj.host.name).text(
-						args.obj.host.name));
+				cell.append(extinfo_link({
+					host: args.obj.host.name
+				}).text(args.obj.host.name));
 				
 				if (args.obj.host.icon_image)
-					cell.append(icon(args.obj.host.icon_image,
-							extinfo_link(args.obj.host.name)).css('float',
-							'right'));
+					cell.append(icon(args.obj.host.icon_image, extinfo_link({
+						host: args.obj.host.name
+					})).css('float', 'right'));
 				
 				return cell;
 			}
@@ -866,10 +881,10 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				if (!args.obj.service.description) return $('<td />');
-				return $('<td />').append(
-						extinfo_link(args.obj.host.name,
-								args.obj.service.description).text(
-								args.obj.service.description));
+				return $('<td />').append(extinfo_link({
+					host: args.obj.host.name,
+					service: args.obj.service.description
+				}).text(args.obj.service.description));
 			}
 		},
 		"time": {
@@ -1060,10 +1075,10 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				if (!args.obj.service.description) return $('<td />');
-				return $('<td />').append(
-						extinfo_link(args.obj.host.name,
-								args.obj.service.description).text(
-								args.obj.service.description));
+				return $('<td />').append(extinfo_link({
+					host: args.obj.host.name,
+					service: args.obj.service.description
+				}).text(args.obj.service.description));
 			}
 		},
 		"time": {
@@ -1225,8 +1240,9 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
-				cell.append(extinfo_link(args.obj.host_name).text(
-						args.obj.host_name));
+				cell.append(extinfo_link({
+					host: args.obj.host_name
+				}).text(args.obj.host_name));
 				
 				return cell;
 			}
@@ -1238,9 +1254,10 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
-				cell.append(extinfo_link(args.obj.host_name,
-						args.obj.service_description).text(
-						args.obj.service_description));
+				cell.append(extinfo_link({
+					host: args.obj.host_name,
+					service: args.obj.service_description
+				}).text(args.obj.service_description));
 				
 				return cell;
 			}
