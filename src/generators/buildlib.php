@@ -1,5 +1,10 @@
 <?php
 
+if( php_sapi_name() != 'cli' ) {
+	print("Builders can only be runned as cli\n");
+	exit(1);
+}
+
 require_once( 'class_generator.php' );
 require_once( 'js_class_generator.php' );
 
