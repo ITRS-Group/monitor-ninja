@@ -254,12 +254,14 @@ class form_Core {
 			{
 				// Use data options
 				$options = $data['options'];
+				unset($data['options']);
 			}
 
 			if (isset($data['selected']))
 			{
 				// Use data selected
 				$selected = $data['selected'];
+				unset($data['selected']);
 			}
 		}
 
