@@ -35,10 +35,16 @@
 }
 
 #page-rotation-initial {
+	font-size: 10pt;
 	position: fixed;
 	top: 30%;
 	left: 30%;
-	width: 40%;
+	width: 35%;
+}
+
+#page-rotation-initial ul, #page-rotation-initial li {
+	list-style: circle inside;
+	margin: 6px 4px;
 }
 
 #page-rotation-opts {
@@ -72,10 +78,6 @@
 
 #page-rotation-pause {
 	display: none;
-}
-
-#page-rotation-play {
-	opacity: 0.5;
 }
 
 #page-rotation-prev {
@@ -128,6 +130,18 @@
 
 #page-rotation-faster {
 	text-align: left;
+}
+
+#page-rotation-new {
+	border-radius: 6px 0 0 6px;
+	border: 1px solid #888;
+	width: 70%;
+}
+
+#page-rotation-add {
+	border-radius: 0 6px 6px 0;
+	border: 1px solid #888;
+	width: 15%;
 }
 
 #page-rotation-goto:hover {

@@ -10,10 +10,15 @@
 
 <div id="page-rotation-initial">
 	<h1>Welcome to the Rotational View</h1>
-	<p>This view is in fullscreen mode and only when making configurations to it will the GUI show, move your mouse and it will come alive!</p>
+	<p>This view enters a "fullscreen" mode once you press play, it will hide the entire monitor GUI, 
+		to show it again, just move your mouse and press the pause button.</p>
 
-	<p>Add new views to the rotation by entering their URL in the bottom right box and press the add (+) button, you can then press the
-		play button in the midle box and you will begin to rotate through the views you've added.</p>
+	<ul>
+		<li><strong>Add new views</strong> to the rotation by entering their full URL in the bottom right box and press the add (+) button.</li>
+		<li><strong>Start</strong> rotating through the views you've added by pressing the play button in the middle box.</li>
+		<li><strong>Save</strong> your rotation pool by pressing the save button in the bottom right box. </li>
+		<li><strong>Remove views</strong> by unchecking them in bottom right box and pressing the save button.</li>
+	</ul>
 </div>
 
 <div id="page-rotation-views">
