@@ -25,16 +25,16 @@ if (!empty($widgets)) {
 			<table style="border: none;" id="history_report_table" style="width: auto">
 				<tr>
 					<td colspan="3">
-						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
+						<select name="report_type" id="report_type">
 							<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
 							<option value="hosts"><?php echo _('Hosts') ?></option>
 							<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
 							<option value="services"><?php echo _('Services') ?></option>
 						</select>
-						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection($('#report_type').val());" value="<?php echo _('Select') ?>" />
+						<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
 					</td>
 				</tr>
-				<tr id="hostgroup_row">
+				<tr data-show-for="hostgroups">
 					<td>
 						<?php echo _('Available').' '._('Hostgroups') ?><br />
 						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
@@ -50,7 +50,7 @@ if (!empty($widgets)) {
 						</select>
 					</td>
 				</tr>
-				<tr id="servicegroup_row">
+				<tr data-show-for="servicegroups">
 					<td>
 						<?php echo _('Available').' '._('Servicegroups') ?><br />
 						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
@@ -66,7 +66,7 @@ if (!empty($widgets)) {
 						</select>
 					</td>
 				</tr>
-				<tr id="host_row_2">
+				<tr data-show-for="hosts">
 					<td>
 						<?php echo _('Available').' '._('Hosts') ?><br />
 						<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
@@ -82,7 +82,7 @@ if (!empty($widgets)) {
 						</select>
 					</td>
 				</tr>
-				<tr id="service_row_2">
+				<tr data-show-for="services">
 					<td>
 						<?php echo _('Available').' '._('Services') ?><br />
 						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
@@ -134,11 +134,11 @@ if (!empty($widgets)) {
 					</td>
 					<td style="width: 18px">&nbsp;</td>
 					<td>
-						<div id="block_host_states">
+						<div data-show-for="hosts hostgroups">
 							<?php echo _('Events To Graph') ?><br />
 							<?php echo form::dropdown('host_states', $options->get_alternatives('host_states')) ?>
 						</div>
-						<div id="block_service_states">
+						<div data-show-for="services servicegroups">
 							<?php echo _('Events To Graph') ?><br />
 							<?php echo form::dropdown('service_states', $options->get_alternatives('service_states')) ?>
 						</div>

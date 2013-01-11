@@ -45,8 +45,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 
-		$this->inline_js .= "set_selection($('#report_type').val());\n";
-
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->title = _('Reporting » Histogram » Setup');

@@ -251,16 +251,16 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		$result = array();
 		switch ($type) {
-			case 'hostgroup':
-			case 'servicegroup':
-			case 'host':
-				foreach(Livestatus::instance()->{'get'.$type.'s'}(array(
+			case 'hostgroups':
+			case 'servicegroups':
+			case 'hosts':
+				foreach(Livestatus::instance()->{'get'.$type}(array(
 					'columns' => array('name')
 				)) as $row) {
 					$result[] = $row['name'];
 				}
 				break;
-			case 'service':
+			case 'services':
 				foreach(Livestatus::instance()->getServices(array(
 					'columns' => array('host_name', 'service_description')
 				)) as $row) {

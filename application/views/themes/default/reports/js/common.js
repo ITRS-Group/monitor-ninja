@@ -1,7 +1,3 @@
-var host_tmp = false;
-var host = false;
-var service_tmp = false;
-var service = false;
 var invalid_report_names = '';
 var current_filename;
 var _time_error = false;
@@ -151,6 +147,21 @@ $(document).ready(function() {
 			dataType: 'json'
 		});
 	});
+
+	$('#report_type').on('change', function() {
+		var value = this.value;
+		set_selection(value);
+		get_members(value);
+	}).each(function() {
+		var val = $(this).val();
+		set_selection(val);
+		get_members(val);
+	});
+	$('#sel_report_type').on('click', function() {
+		var value = this.form.report_type.value;
+		set_selection(value);
+		get_members(value);
+	});
 });
 
 var loadimg = new Image(16,16);
@@ -270,33 +281,11 @@ function show_calendar(val, update) {
 	disable_sla_fields(val);
 }
 
-function set_selection(val, cb) {
-	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #submit_button, #display_service_status, #display_host_status').hide();
-	show_progress('progress', _wait_str);
-	switch (val) {
-		case 'servicegroups':
-			get_members('servicegroup', cb);
-			$('#servicegroup_row, #block_service_states, #display_service_status').show();
-			$('#block_host_states').hide();
-			break;
-		case 'hosts':
-			get_members('host', cb);
-			$('#host_row_2, #block_host_states, #display_host_status').show();
-			$('#block_service_states').hide();
-			break;
-		case 'services':
-			get_members('service', cb);
-			$('#service_row_2, #block_service_states, #display_service_status').show();
-			$('#block_host_states').hide();
-			break;
-		case 'hostgroups':
-		default:
-			get_members('hostgroup', cb);
-			$('#hostgroup_row, #block_host_states, #display_host_status').show();
-			$('#block_service_states').hide();
-			break;
-	}
-	$('#submit_button').show();
+function set_selection(val) {
+	if (['servicegroups', 'hostgroups', 'services', 'hosts'].indexOf(val) < 0)
+		val = 'hostgroups'; // Why? Because I found it like this
+	$('*[data-show-for]').hide()
+	$('*[data-show-for~='+val+']').show()
 }
 
 function get_members(type, cb) {
@@ -304,21 +293,10 @@ function get_members(type, cb) {
 	var field_name = false;
 	var empty_field = false;
 
-	switch(type) {
-		case 'hostgroup': case 'servicegroup':
-			field_name = type + "_tmp";
-			empty_field = type;
-			break;
-		case 'host':
-			field_name = "host_tmp";
-			empty_field = 'host_name';
-			break;
-		case 'service':
-			field_name = "service_tmp";
-			empty_field = 'service_description';
-			break;
-	}
+	field_name = new field_maps3().map[type];
+	empty_field = new field_maps().map[type];
 
+	show_progress('progress', _wait_str);
 	$.ajax({
 		url: _site_domain + _index_page + '/ajax/group_member',
 		data: {type: type},
@@ -332,9 +310,6 @@ function get_members(type, cb) {
 			if(typeof cb == 'function')
 				cb();
 			$('#progress').hide();
-		},
-		complete: function() {
-			$('#settings_table, #submit_button').show();
 		},
 		dataType: 'json'
 	});
@@ -569,14 +544,6 @@ function check_form_values(form)
 	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("#" + field_obj.map[rpt_type], form).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
-	}
-
-	if($('#display_host_status', form).is('visible') && !$('#display_host_status input[type="checkbox"]:checked', form).length) {
-		errors++;
-		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
-	} else if($('#display_service_status', form).is('visible') && !$('#display_service_status input[type="checkbox"]:checked', form).length) {
-		errors++;
-		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
 	}
 
 	if ($("#enter_sla", form).is(":visible")) {
