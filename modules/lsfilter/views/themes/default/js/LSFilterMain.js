@@ -6,7 +6,7 @@ var lsfilter_main = {
 	/***************************************************************************
 	 * Trigger update of ListView
 	 **************************************************************************/
-	update_delayed: function(query, source)
+	update_delayed: function(query, source, order)
 	{
 		var self = this; // To be able to access it from within handlers
 		if (this.update_timer) {
@@ -14,40 +14,62 @@ var lsfilter_main = {
 		}
 		this.update_query = query;
 		this.update_source = source;
+		this.udpate_order = order;
 		this.update_timer = setTimeout(function()
 		{
 			self.update_run();
 		}, this.update_delay);
 	},
 	
-	update: function(query, source)
+	update: function(query, source, order)
 	{
 		this.update_query = query;
 		this.update_source = source;
+		this.update_order = order;
 		this.update_run();
 	},
 	
 	update_timer: false,
 	update_query: false,
 	update_source: false,
+	update_order: false,
+	
+	state: {
+		query: false,
+		order: false
+	},
 	
 	update_run: function()
 	{
 		var source = this.update_source;
 		var query = this.update_query;
+		var order = this.update_order;
 		
 		this.update_timer = false;
 		try {
+			
+			if( query ) {
+				this.state.query = query;
+			}
+			if( order ) {
+				this.state.order = order;
+			}
+			
 			var parser = new LSFilter(new LSFilterPreprocessor(),
 					new LSFilterMetadataVisitor());
-			var metadata = parser.parse(query);
+			var metadata = parser.parse(this.state.query);
 			
-			lsfilter_history.update(query, source, metadata);
-			lsfilter_storage.list.update(query, source, metadata);
-			lsfilter_multiselect.update(query, source, metadata);
-			lsfilter_saved.update(query, source, metadata);
-			lsfilter_textarea.update(query, source, metadata);
-			lsfilter_visual.update(query, source, metadata);
+			var data = $.extend({
+				source: source,
+				metadata: metadata,
+			},this.state);
+			
+			lsfilter_history.update(data);
+			lsfilter_storage.list.update(data);
+			lsfilter_multiselect.update(data);
+			lsfilter_saved.update(data);
+			lsfilter_textarea.update(data);
+			lsfilter_visual.update(data);
 			
 		}
 		catch (ex) {
@@ -109,7 +131,7 @@ var lsfilter_main = {
 			var href = $(this).attr('href');
 			var args = self.parseParams(href);
 			if (args.q) {
-				lsfilter_main.update(args.q, 'external_link');
+				lsfilter_main.update(args.q, 'external_link', '');
 				return false;
 			}
 			return true;

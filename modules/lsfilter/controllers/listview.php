@@ -4,6 +4,7 @@ class ListView_Controller extends Authenticated_Controller {
 	public function index($q = "[hosts] state = 0") {
 		$this->xtra_js = array();
 		$query = $this->input->get('q', $q);
+		$query_order = $this->input->get('s', '');
 		
 		
 		$basepath = 'modules/lsfilter/';
@@ -47,6 +48,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->template->disable_refresh = true;
 
 		$lview->query = $query;
+		$lview->query_order = $query_order;
 	}
 	
 	public function fetch_ajax() {

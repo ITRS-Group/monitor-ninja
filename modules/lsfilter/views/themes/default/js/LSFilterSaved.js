@@ -1,8 +1,8 @@
 var lsfilter_saved = {
 
-	update : function(query, source, metadata) {
-		if( source == 'saved' ) return;
-		this.last_query = query;
+	update : function(data) {
+		if( data.source == 'saved' ) return;
+		this.last_query = data.query;
 	},
 	init : function() {
 		var self = this; // To be able to access it from within handlers

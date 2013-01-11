@@ -1,11 +1,11 @@
 var lsfilter_multiselect =
 		{
-			update: function(query, source, metadata)
+			update: function(data)
 			{
-				if (source == 'multiselect') return;
-				if (metadata.table && metadata.table != this.selection_table) {
+				if (data.source == 'multiselect') return;
+				if (data.metadata.table && data.metadata.table != this.selection_table) {
 					this.selection_table =
-							metadata.table;
+						data.metadata.table;
 					this.selection =
 							[];
 					

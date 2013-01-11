@@ -122,7 +122,7 @@ var lsfilter_graphics_visitor = {
 		{
 			var table = $(evt.target).val();
 			var query = '[' + table + '] all';
-			lsfilter_main.update(query, false);
+			lsfilter_main.update(query, false, '');
 			evt.preventDefault();
 			return false;
 		});
@@ -389,19 +389,19 @@ var lsfilter_dom_to_query = {
  ******************************************************************************/
 var lsfilter_visual = {
 	
-	update: function(query, source, metadata)
+	update: function(data)
 	{
-		if (source == 'visual') return;
+		if (data.source == 'visual') return;
 		var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
 		try {
-			var ast = parser.parse(query);
+			var ast = parser.parse(data.query);
 			ast = lsfilter_extra_andor.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 		}
 		catch (ex) {
 			console.log(ex.stack);
-			console.log(query);
+			console.log(data.query);
 		}
 	},
 	init: function()
@@ -414,7 +414,7 @@ var lsfilter_visual = {
 	{
 		var query = lsfilter_dom_to_query.visit($('#filter_visual').children(),
 				0);
-		lsfilter_main.update(query, 'visual');
+		lsfilter_main.update(query, 'visual', false);
 	},
 	
 	update_query_delayed: function()

@@ -46,6 +46,8 @@
 		<form action="#" onsubmit="dosubmit();">
 			<textarea style="width: 98%; height: 30px" name="filter_query"
 				id="filter_query"><?php echo htmlentities($query); ?></textarea>
+			<input type="hidden" name="filter_query_order"
+				id="filter_query_order" value="<?php echo htmlentities($query_order); ?>" />
 		</form>
 
 		<h2><?php echo _('Graphical input'); ?></h2>

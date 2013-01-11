@@ -64,7 +64,7 @@ function link_query(query)
 			+ encodeURIComponent(query));
 	link.click(function(evt)
 	{
-		lsfilter_main.update(query, false);
+		lsfilter_main.update(query, false, '');
 		evt.preventDefault();
 		return false;
 	});

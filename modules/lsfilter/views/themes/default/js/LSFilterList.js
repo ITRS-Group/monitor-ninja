@@ -19,14 +19,19 @@ function lsfilter_list(config)
 	/***************************************************************************
 	 * External methods
 	 **************************************************************************/
-	this.update = function(query, source, metadata)
+	this.update = function(data)
 	{
 		var self = this; // To be able to access it from within handlers
+		var metadata = data.metadata;
+		
+		if( data.source && data.source == 'list' ) {
+			return;
+		}
 		
 		if (typeof metadata === "undefined") {
 			var parser = new LSFilter(new LSFilterPreprocessor(),
 					new LSFilterMetadataVisitor());
-			metadata = parser.parse(query);
+			metadata = parser.parse(data.query);
 		}
 		
 		if (this.request_metadata && this.request_metadata !== metadata) {
@@ -36,11 +41,34 @@ function lsfilter_list(config)
 			this.previous_obj = {};
 		}
 		
-		this.request_query = query;
+		this.request_query = data.query;
 		this.request_metadata = metadata;
-		this.sort_vis_column = null;
+		this.sort_ascending = true;
+		
+		this.sort_vis_column = false;
 		this.sort_db_columns = [];
 		this.sort_ascending = true;
+		
+		console.log(data);
+		var order_parts = [];
+		if( data.order ) {
+			order_parts = data.order.split(' ');
+		}
+		if(  order_parts.length >= 1 && order_parts.length <= 2 ) {
+			
+			this.sort_vis_column = order_parts[0];
+			
+			this.sort_db_columns = [];
+			for ( var key in listview_renderer_table[data.table]) {
+				if( key == this.sort_vis_column ) {
+					this.sort_db_columns = listview_renderer_table[data.table][key].sort;
+				}
+			}
+		}
+		if( order_parts.length == 2 ) {
+			this.sort_ascending = (order_parts[1].toLowerCase() == 'asc');
+		}
+		
 		this.send_request({
 			append: false,
 			callback: function(data)
@@ -51,19 +79,31 @@ function lsfilter_list(config)
 		});
 	};
 	
-	this.set_sort = function(vis_column, db_columns)
+	this.set_sort = function(table, vis_column)
 	{
+		console.log(table);
+		console.log(vis_column);
 		var self = this; // To be able to access it from within handlers
 		this.config.offset = 0;
 		this.previous_obj = 0;
+
+		
 		if (this.sort_vis_column == vis_column) {
 			this.sort_ascending = !this.sort_ascending;
 		}
 		else {
+			this.sort_db_columns = [];
+			for ( var key in listview_renderer_table[table]) {
+				if( key == vis_column ) {
+					this.sort_db_columns = listview_renderer_table[table][key].sort;
+				}
+			}
 			this.sort_vis_column = vis_column;
-			this.sort_db_columns = db_columns;
 			this.sort_ascending = true;
 		}
+		
+		lsfilter_main.update(false, 'list', this.sort_vis_column + (this.sort_ascending?' asc':' desc'));
+		
 		this.send_request({
 			append: false,
 			callback: function(data)
@@ -128,6 +168,7 @@ function lsfilter_list(config)
 	this.sort_vis_column = null;
 	this.sort_db_columns = [];
 	this.sort_ascending = true;
+	this.sort_columns_table = {};
 	
 	this.autorefresh_timer = false;
 	
@@ -275,6 +316,8 @@ function lsfilter_list(config)
 
 		var columns = new Array();
 		var header = $('<tr />');
+
+		
 		for ( var key in listview_renderer_table[data.table]) {
 			var col_render = listview_renderer_table[data.table][key];
 			
@@ -297,7 +340,7 @@ function lsfilter_list(config)
 				var sort_dir = 0;
 				if (sort_col == key) sort_dir = -1;
 				if (sort_asc) sort_dir = -sort_dir;
-				this.add_sort(th, key, col_render.sort, sort_dir);
+				this.add_sort(data.table, th, key, sort_dir);
 			}
 			header.append(th);
 		}
@@ -322,7 +365,7 @@ function lsfilter_list(config)
 		return table;
 	};
 	
-	this.add_sort = function(element, vis_column, db_columns, current)
+	this.add_sort = function(table, element, vis_column, current)
 	{
 		var self = this; // To be able to access it from within handlers
 		
@@ -342,11 +385,11 @@ function lsfilter_list(config)
 					.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
 		}
 		element.click({
-			vis_column: vis_column,
-			db_columns: db_columns
+			table: table,
+			vis_column: vis_column
 		}, function(evt)
 		{
-			self.set_sort(evt.data.vis_column, evt.data.db_columns); // FIXME
+			self.set_sort(evt.data.table, evt.data.vis_column);
 		});
 	};
 	
