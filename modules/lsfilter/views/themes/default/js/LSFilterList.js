@@ -26,7 +26,7 @@ function lsfilter_list(config)
 		
 		if (data.source && data.source == 'list') { return; }
 		
-		if (typeof metadata === "undefined") {
+		if (!metadata) {
 			var parser = new LSFilter(new LSFilterPreprocessor(),
 					new LSFilterMetadataVisitor());
 			metadata = parser.parse(data.query);
@@ -46,7 +46,6 @@ function lsfilter_list(config)
 		this.sort_db_columns = [];
 		this.sort_ascending = true;
 		
-		console.log(data);
 		var order_parts = [];
 		if (data.order) {
 			order_parts = data.order.split(' ');
@@ -56,9 +55,9 @@ function lsfilter_list(config)
 			this.sort_vis_column = order_parts[0];
 			
 			this.sort_db_columns = [];
-			for ( var key in listview_renderer_table[data.metadata.table] ) {
+			for ( var key in listview_renderer_table[metadata.table] ) {
 				if (key == this.sort_vis_column) {
-					this.sort_db_columns = listview_renderer_table[data.metadata.table][key].sort;
+					this.sort_db_columns = listview_renderer_table[metadata.table][key].sort;
 				}
 			}
 		}
