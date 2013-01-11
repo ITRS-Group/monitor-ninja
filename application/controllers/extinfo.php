@@ -108,18 +108,35 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$content->contactgroups = false;
 		if(isset($result->contact_groups)) {
+			
+			$filter = array();
+			foreach($result->contact_groups as $grp) {
+				$filter[] = 'Filter: name = '.str_replace("\n","",$grp);
+			}
+			$filter[] = "Or: ".count($filter);
+			$filter = implode("\n",$filter);
+			
 			$groups = $ls->getContactgroups(
 				array(
-					'filter' => 'name = "'.implode('" or name = "', $result->contact_groups).'"',
+					'extra_header' => $filter,
 					'extra_columns' => array('members')
 				)
 			);
+			
+
+			
 			$complete_groups = false;
 			foreach($groups as $group) {
+				$filter = array();
+				foreach($group['members'] as $grp) {
+					$filter[] = 'Filter: name = '.str_replace("\n","",$grp);
+				}
+				$filter[] = "Or: ".count($filter);
+				$filter = implode("\n",$filter);
 				$complete_groups[$group['name']] = $ls->getContacts(
 					array(
-						'columns' => array('name', 'alias', 'email', 'pager'),
-						'filter' => 'name = "'.implode('" or name = "', $group['members']).'"'
+						'extra_header' => $filter,
+						'columns' => array('name', 'alias', 'email', 'pager')
 					)
 				);
 			}

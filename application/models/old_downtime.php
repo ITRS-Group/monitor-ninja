@@ -36,7 +36,7 @@ class Old_Downtime_Model extends Old_Comment_Model
 		$res = $ls->getDowntimes(array('filter' => $ls_filter, 'order' => $order_by));
 		if ($generate_links_for_downtime_id) {
 			foreach ($res as &$row) {
-				$out = $ls->getDowntimes(array('filter' => 'id = '.$row['id'], 'columns' => array('host_name', 'service_description')));
+				$out = $ls->getDowntimes(array('filter' => array('id'=>$row['id']), 'columns' => array('host_name', 'service_description')));
 				$row['trigger'] = $out[0];
 			}
 		}
@@ -66,13 +66,13 @@ class Old_Downtime_Model extends Old_Comment_Model
 				$res = $ls->getDowntimes(array('filter' => array('is_service' => array('=' => 1), 'host_name' => array('=' => $host), 'service_description' => array('=' => $service), 'start_time' => array('=' => $start_time), array('duration' => array('=' => $duration)))));
 				break;
 			case 'hostgroups':
-				$hosts = $ls->getHosts(array('columns' => array('host_name'), 'filter' => 'groups >= '.$name));
+				$hosts = $ls->getHosts(array('columns' => array('host_name'), 'filter' => array('groups' => array('>=' => $name))));
 				$in_dtime = $ls->getDowntimes(array('columns' => array('host_name'), 'filter' => array('is_service' => array('=' => 0), 'host_groups' => array('>=' => $name), 'start_time' => array('=' => $start_time), array('duration' => array('=' => $duration)))));
 				return (count($hosts) == count($in_dtime));
 				break;
 
 			case 'servicegroups':
-				$services = $ls->getServices(array('columns' => array('description'), 'filter' => 'groups >= '.$name));
+				$services = $ls->getServices(array('columns' => array('description'), 'filter' => array('groups' => array('>=' => $name))));
 				$in_dtime = $ls->getDowntimes(array('filter' => array('is_service' => array('=' => 1), 'service_groups' => array('>=' => $name), 'start_time' => array('=' => $start_time), array('duration' => array('=' => $duration)))));
 				return (count($hosts) == count($in_dtime));
 				break;
