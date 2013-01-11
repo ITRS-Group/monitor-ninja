@@ -51,7 +51,7 @@ var lsfilter_main = {
 			if( query ) {
 				this.state.query = query;
 			}
-			if( order ) {
+			if( typeof order == 'string' ) {
 				this.state.order = order;
 			}
 			
