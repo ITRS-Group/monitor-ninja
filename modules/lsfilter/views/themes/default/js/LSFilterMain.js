@@ -41,6 +41,7 @@ var lsfilter_main = {
 	
 	update_run: function()
 	{
+		console.log('update_run');
 		var source = this.update_source;
 		var query = this.update_query;
 		var order = this.update_order;
@@ -55,13 +56,12 @@ var lsfilter_main = {
 				this.state.order = order;
 			}
 			
-			var parser = new LSFilter(new LSFilterPreprocessor(),
-					new LSFilterMetadataVisitor());
+			var parser = new LSFilter(new LSFilterPreprocessor(),new LSFilterMetadataVisitor());
 			var metadata = parser.parse(this.state.query);
 			
 			var data = $.extend({
 				source: source,
-				metadata: metadata,
+				metadata: metadata
 			},this.state);
 			
 			lsfilter_history.update(data);
@@ -82,8 +82,9 @@ var lsfilter_main = {
 	init: function()
 	{
 		this.update_page_links();
-		
+
 		lsfilter_history.init();
+		
 		lsfilter_storage.list = new lsfilter_list({
 			table: $('#filter_result'),
 			totals: $('#filter_result_totals'),
@@ -108,12 +109,14 @@ var lsfilter_main = {
 		// when first loaded, the textarea contains the query from the
 		// controller
 		lsfilter_textarea.load();
+		
 	},
 	/***************************************************************************
 	 * Handler for parsing exception
 	 **************************************************************************/
 	handle_parse_exception: function(ex)
 	{
+		console.log(ex);
 		console.log(ex.stack);
 	},
 	
@@ -165,5 +168,6 @@ var lsfilter_main = {
 
 $().ready(function()
 {
+	console.log('init');
 	lsfilter_main.init();
 });

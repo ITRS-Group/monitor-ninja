@@ -12,9 +12,16 @@ function lsfilter_list(config)
 		},
 		loading_stop: function()
 		{
-		},
+		}
 	};
 	this.config = $.extend({}, this.defaults, config);
+	
+	if($.browser.msie) {
+		var parts = $.browser.version.split('.');
+		if( parseInt(parts[0]) < 8 ) {
+			this.config.attach_head = false; /* Don't support attached head in ie7 */
+		}
+	}
 	
 	/***************************************************************************
 	 * External methods

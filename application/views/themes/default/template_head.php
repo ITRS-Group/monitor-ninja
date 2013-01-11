@@ -27,7 +27,7 @@ else {
 
 	<?php
 		echo (!empty($css_header)) ? $css_header : '';
-		echo html::script('application/media/js/jquery.min.js');
+		echo html::script('application/media/js/jquery.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
 		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');

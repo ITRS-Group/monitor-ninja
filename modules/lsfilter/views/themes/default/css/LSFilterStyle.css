@@ -249,7 +249,7 @@ th span.header-icon {
 	background: -moz-linear-gradient(top, #fafbf9, #e3e4e2);
 	background: -o-linear-gradient(top, #fafbf9, #e3e4e2);
 	background: linear-gradient(top, #fafbf9, #e3e4e2);
-	
+	filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFFAFBF9', endColorstr='#FFE3E4E2');	
 	z-index: 1;
 	overflow: hidden;
 

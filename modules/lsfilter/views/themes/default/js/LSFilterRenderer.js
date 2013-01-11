@@ -130,7 +130,7 @@ var listview_renderer_totals = {
 				+ '-pending', _("Services pending")));
 		container.append(cnt);
 		return container;
-	},
+	}
 };
 
 /*******************************************************************************

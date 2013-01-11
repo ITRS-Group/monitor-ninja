@@ -14,8 +14,10 @@ var lsfilter_textarea = {
 		
 		this.element = $('#filter_query');
 		this.orderelement = $('#filter_query_order');
-		this.element.bind('input propertychange', function(evt)
+		console.log('everwhat');
+		this.element.bind('keyup paste cut', function(evt)
 		{
+			console.log('whatever');
 			query = self.element.val();
 			self.handle_propertychange(query);
 		});
