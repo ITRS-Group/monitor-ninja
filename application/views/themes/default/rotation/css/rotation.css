@@ -108,11 +108,11 @@
 }
 
 #page-rotation-slower, #page-rotation-faster {
-	width: 43%;
+	width: 40%;
 	display: inline-block;
+	padding: 1.5%;
 	font-size: 14pt;
 	cursor: pointer;
-	opacity: 0.5;
 }
 
 #page-rotation-speed {
@@ -125,11 +125,11 @@
 }
 
 #page-rotation-slower {
-	text-align: right;
+	text-align: left;
 }
 
 #page-rotation-faster {
-	text-align: left;
+	text-align: right;
 }
 
 #page-rotation-new {

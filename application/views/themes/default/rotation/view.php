@@ -48,9 +48,9 @@
 	<span id="page-rotation-play">PLAY</span>
 	<span id="page-rotation-next">Next &raquo;</span>
 
-	<span id="page-rotation-slower">-</span>
+	<span id="page-rotation-faster">-</span>
 	<input type="text" id="page-rotation-speed" disabled="true" size="3" value="10" />
-	<span id="page-rotation-faster">+</span><br />
+	<span id="page-rotation-slower">+</span><br />
 
 	<div id="page-rotation-goto">Some actions cannot be taken from rotational view, click here (or press space) to go to the real view.</div>
 </div>

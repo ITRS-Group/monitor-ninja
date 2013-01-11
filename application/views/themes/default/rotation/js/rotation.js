@@ -349,6 +349,10 @@
 			}
 		},
 
+		element: function (btn) {
+			return $('#page-rotation-' + btn);
+		},
+
 		events: function () {
 
 			var self = this,
@@ -409,8 +413,20 @@
 				$('#page-rotation-pause').css('display', 'none');
 			});
 
-			$('#page-rotation-goto').bind('click', function () {
+			self.element('goto').bind('click', function () {
 				self.gotoPage();
+			});
+
+			self.element('slower').bind('click', function () {
+				if (self.config.interval + self.config.interval_increment <= self.config.max_interval)
+					self.config.interval += self.config.interval_increment;
+				self.element('speed').val(self.config.interval / 1000);
+			});
+
+			self.element('faster').bind('click', function () {
+				if (self.config.interval - self.config.interval_increment >= self.config.min_interval)
+					self.config.interval -= self.config.interval_increment;
+				self.element('speed').val(self.config.interval / 1000);
 			});
 
 		}
