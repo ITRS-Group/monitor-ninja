@@ -24,9 +24,7 @@ function lsfilter_list(config)
 		var self = this; // To be able to access it from within handlers
 		var metadata = data.metadata;
 		
-		if( data.source && data.source == 'list' ) {
-			return;
-		}
+		if (data.source && data.source == 'list') { return; }
 		
 		if (typeof metadata === "undefined") {
 			var parser = new LSFilter(new LSFilterPreprocessor(),
@@ -43,7 +41,6 @@ function lsfilter_list(config)
 		
 		this.request_query = data.query;
 		this.request_metadata = metadata;
-		this.sort_ascending = true;
 		
 		this.sort_vis_column = false;
 		this.sort_db_columns = [];
@@ -51,21 +48,21 @@ function lsfilter_list(config)
 		
 		console.log(data);
 		var order_parts = [];
-		if( data.order ) {
+		if (data.order) {
 			order_parts = data.order.split(' ');
 		}
-		if(  order_parts.length >= 1 && order_parts.length <= 2 ) {
+		if (order_parts.length >= 1 && order_parts.length <= 2) {
 			
 			this.sort_vis_column = order_parts[0];
 			
 			this.sort_db_columns = [];
-			for ( var key in listview_renderer_table[data.table]) {
-				if( key == this.sort_vis_column ) {
-					this.sort_db_columns = listview_renderer_table[data.table][key].sort;
+			for ( var key in listview_renderer_table[data.metadata.table] ) {
+				if (key == this.sort_vis_column) {
+					this.sort_db_columns = listview_renderer_table[data.metadata.table][key].sort;
 				}
 			}
 		}
-		if( order_parts.length == 2 ) {
+		if (order_parts.length == 2) {
 			this.sort_ascending = (order_parts[1].toLowerCase() == 'asc');
 		}
 		
@@ -81,12 +78,9 @@ function lsfilter_list(config)
 	
 	this.set_sort = function(table, vis_column)
 	{
-		console.log(table);
-		console.log(vis_column);
 		var self = this; // To be able to access it from within handlers
 		this.config.offset = 0;
 		this.previous_obj = 0;
-
 		
 		if (this.sort_vis_column == vis_column) {
 			this.sort_ascending = !this.sort_ascending;
@@ -94,7 +88,7 @@ function lsfilter_list(config)
 		else {
 			this.sort_db_columns = [];
 			for ( var key in listview_renderer_table[table]) {
-				if( key == vis_column ) {
+				if (key == vis_column) {
 					this.sort_db_columns = listview_renderer_table[table][key].sort;
 				}
 			}
@@ -102,7 +96,8 @@ function lsfilter_list(config)
 			this.sort_ascending = true;
 		}
 		
-		lsfilter_main.update(false, 'list', this.sort_vis_column + (this.sort_ascending?' asc':' desc'));
+		lsfilter_main.update(false, 'list', this.sort_vis_column
+				+ (this.sort_ascending ? ' asc' : ' desc'));
 		
 		this.send_request({
 			append: false,
@@ -130,6 +125,19 @@ function lsfilter_list(config)
 		
 		var options = $.extend({}, self.config, config);
 		
+		var db_sort_columns = [];
+		for ( var i = 0; i < this.sort_db_columns.length; i++) {
+			var col = this.sort_db_columns[i];
+			var parts = col.split(' ');
+			var col_asc = true;
+			if (parts.length == 2) {
+				col_asc = parts[1].toLowerCase() == 'asc';
+			}
+			if (!this.sort_ascending) col_asc = !col_asc;
+			db_sort_columns.push(parts[0] + (col_asc ? ' asc' : ' desc'));
+		}
+		console.log(db_sort_columns);
+		
 		var loading_id = self.config.loading_start();
 		this.active_ajax_request = $
 				.ajax({
@@ -137,8 +145,7 @@ function lsfilter_list(config)
 					dataType: 'json',
 					data: {
 						"query": this.request_query,
-						"sort": this.sort_db_columns,
-						"sort_asc": (this.sort_ascending ? 1 : 0),
+						"sort": db_sort_columns,
 						"columns": listview_columns_for_table(this.request_metadata['table']),
 						"limit": options.per_page,
 						"offset": options.offset
@@ -316,7 +323,6 @@ function lsfilter_list(config)
 
 		var columns = new Array();
 		var header = $('<tr />');
-
 		
 		for ( var key in listview_renderer_table[data.table]) {
 			var col_render = listview_renderer_table[data.table][key];

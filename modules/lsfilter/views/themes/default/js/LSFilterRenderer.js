@@ -378,7 +378,7 @@ var listview_renderer_table = {
 		"duration": {
 			"header": _('Duration'),
 			"depends": [ 'duration' ],
-			"sort": [ 'last_state_change' ],
+			"sort": [ 'last_state_change desc' ],
 			"cell": function(args)
 			{
 				return $('<td />').text(format_interval(args.obj.duration));
@@ -657,7 +657,7 @@ var listview_renderer_table = {
 		"duration": {
 			"header": _('Duration'),
 			"depends": [ 'duration' ],
-			"sort": [ 'last_state_change' ],
+			"sort": [ 'last_state_change desc' ],
 			"cell": function(args)
 			{
 				return $('<td />').text(format_interval(args.obj.duration));
