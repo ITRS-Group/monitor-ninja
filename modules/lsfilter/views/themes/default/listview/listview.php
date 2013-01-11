@@ -4,8 +4,8 @@
 	<div class="right lsfilter-edit-bar">
 		<span id="filter_loading_status"></span>
 		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
-		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-edit"></span></button>
-		<button id="show-filter-query-saved" title="Show saved filters"><span class="icon-16 x16-status-detail"></span></button>
+		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-use_search"></span></button>
+		<button id="show-filter-query-saved" title="Show saved filters"><span class="icon-16 x16-save_search"></span></button>
 	</div>
 	<div id="filter_result_totals"></div>
 </div>
