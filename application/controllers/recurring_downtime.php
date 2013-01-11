@@ -149,8 +149,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->inline_js .= "$('#time_input, #duration').timePicker();\n";
 		if ($this->schedule_id) {
 			$this->inline_js .= "expand_and_populate(" . $json_info . ");\n";
-		} else {
-			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
 		$this->js_strings .= reports::js_strings();
 

@@ -168,7 +168,8 @@ function expand_and_populate(data)
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
 	var field_str = reportObj.report_type;
-	set_selection(reportObj.report_type, function() {
+	set_selection(reportObj.report_type);
+	get_members(reportObj.report_type, function() {
 		var mo = new missing_objects();
 		if (reportObj[field_obj.map[field_str]]) {
 			var to_id = field_obj.map[field_str];

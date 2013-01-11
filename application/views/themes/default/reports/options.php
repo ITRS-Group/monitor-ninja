@@ -69,7 +69,7 @@ if($options['report_id']) { ?>
 		<td>
 			<?php echo help::render('status_to_display') ?>
 			<?php echo _('States to hide'); ?><br>
-			<div id="display_host_status">
+			<div data-show-for="hosts hostgroups">
 			<?php
 			foreach (Reports_Model::$host_states as $id => $name) {
 				if ($name === 'excluded')
@@ -77,7 +77,7 @@ if($options['report_id']) { ?>
 				echo "<input type=\"checkbox\" name=\"host_filter_status[$id]\" id=\"host_filter_status[$id]\" value=\"".($type == 'sla'?0:-2).'" '.(isset($options['host_filter_status'][$id])?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_filter_status[$id]\">".ucfirst($name)."</label>\n";
 			} ?>
 			</div>
-			<div id="display_service_status">
+			<div data-show-for="services servicegroups">
 			<?php
 			foreach (Reports_Model::$service_states as $id => $name) {
 				if ($name === 'excluded')

@@ -69,13 +69,13 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				<tr>
 					<td colspan="3">
 						<?php echo help::render('report-type').' '._('Report type'); ?><br />
-						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
+						<select name="report_type" id="report_type">
 							<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
 							<option value="hosts"><?php echo _('Hosts') ?></option>
 							<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
 							<option value="services"><?php echo _('Services') ?></option>
 						</select>
-						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo _('Select') ?>" />
+						<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
 					</td>
 				</tr>
 				<tr id="filter_row">
@@ -90,7 +90,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<div id="progress"></div>
 					</td>
 				</tr>
-				<tr id="hostgroup_row">
+				<tr data-show-for="hostgroups">
 					<td colspan="3">
 
 							<div class="left" style="width: 40%">
@@ -113,7 +113,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 					</td>
 				</tr>
-				<tr id="servicegroup_row">
+				<tr data-show-for="servicegroups">
 					<td colspan="3">
 
 						<div class="left" style="width: 40%">
@@ -135,7 +135,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 					</td>
 				</tr>
-				<tr id="host_row_2">
+				<tr data-show-for="hosts">
 					<td colspan="3">
 
 						<div class="left" style="width: 40%">
@@ -154,7 +154,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 				</tr>
-				<tr id="service_row_2">
+				<tr data-show-for="services">
 					<td colspan="3">
 						<div class="left" style="width: 40%">
 							<?php echo _('Available').' '._('Services') ?><br />

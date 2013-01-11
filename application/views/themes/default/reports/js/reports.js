@@ -107,7 +107,8 @@ function expand_and_populate(data)
 	var tmp_fields = new field_maps3();
 	var field_str = reportObj.report_type;
 	$('#report_type').val(field_str);
-	set_selection(field_str, function() {
+	set_selection(field_str);
+	get_members(field_str, function() {
 		var mo = new missing_objects();
 		if (reportObj.objects) {
 			for (var prop in reportObj.objects) {

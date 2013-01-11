@@ -32,13 +32,13 @@
 	<table class="setup-tbl custom">
 		<tr>
 			<td colspan="3">
-				<select name="report_type" id="report_type" onchange="set_selection(this.value);">
+				<select name="report_type" id="report_type">
 					<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
 					<option value="hosts"><?php echo _('Hosts') ?></option>
 					<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
 					<option value="services"><?php echo _('Services') ?></option>
 				</select>
-				<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo _('Select') ?>" /><div id="progress"></div>
+				<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" /><div id="progress"></div>
 			</td>
 		</tr>
 		<tr id="filter_row">
@@ -48,7 +48,7 @@
 				<input type="button" name="clear_filter" id="clear_filter" value="<?php echo _('Clear') ?>">
 			</td>
 		</tr>
-		<tr id="hostgroup_row">
+		<tr data-show-for="hostgroups">
 			<td>
 				<?php echo _('Available').' '._('Hostgroups') ?><br />
 				<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
@@ -64,7 +64,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr id="servicegroup_row">
+		<tr data-show-for="servicegroups">
 			<td>
 				<?php echo _('Available').' '._('Servicegroups') ?><br />
 				<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
@@ -80,7 +80,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr id="host_row_2">
+		<tr data-show-for="hosts">
 			<td>
 				<?php echo _('Available').' '._('Hosts') ?><br />
 				<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
@@ -96,7 +96,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr id="service_row_2">
+		<tr data-show-for="services">
 			<td>
 				<?php echo _('Available').' '._('Services') ?><br />
 				<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">

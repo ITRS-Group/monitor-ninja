@@ -1,9 +1,3 @@
-var host_tmp = false;
-var host = false;
-var service_tmp = false;
-var service = false;
-var current_obj_type = false; // keep track of what we are viewing
-
 $(document).ready(function() {
 	$('#report_mode_form input').on('change', function() {
 		set_report_mode(this.value);
@@ -65,7 +59,8 @@ function expand_and_populate(data)
 	var tmp_fields = new field_maps3();
 	var field_str = reportObj.report_type;
 	$('#report_type').val(field_str);
-	set_selection(field_str, function() {
+	set_selection(field_str);
+	get_members(field_str, function() {
 		if (reportObj.objects) {
 			var to_id = field_obj.map[field_str];
 			var from_id = tmp_fields.map[field_str];
