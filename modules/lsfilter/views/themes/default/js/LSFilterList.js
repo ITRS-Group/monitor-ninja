@@ -136,7 +136,6 @@ function lsfilter_list(config)
 			if (!this.sort_ascending) col_asc = !col_asc;
 			db_sort_columns.push(parts[0] + (col_asc ? ' asc' : ' desc'));
 		}
-		console.log(db_sort_columns);
 		
 		var loading_id = self.config.loading_start();
 		this.active_ajax_request = $
