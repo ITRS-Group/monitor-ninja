@@ -12,7 +12,7 @@ $(function(){
 		request_url: _site_domain + _index_page + "/listview/fetch_ajax"
 	}).update(<?php echo json_encode(array(
 		'query' => $this->args['query'],
-		'order' => false
+		'order' => $this->args['order']
 		)); ?>);
 });
 </script>

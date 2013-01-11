@@ -49,6 +49,7 @@ class Listview_Widget extends widget_Base {
 		$options = array();
 		$options[] = new option('listview','query',_('Query'),'textarea',array(),'[hosts] all');
 		$options[] = new option('listview','limit',_('Limit'),'input',array(),20);
+		$options[] = new option('listview','order',_('Default order column'),'input',array(),'');
 		return $options;
 	}
 	
