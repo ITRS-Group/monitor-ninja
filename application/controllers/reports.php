@@ -112,7 +112,7 @@ class Reports_Controller extends Base_reports_Controller
 			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
 		}
 		else {
-			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
+			$this->inline_js .= "set_selection(" . $this->options['report_type'] . ");\n";
 		}
 
 		if($this->options['includesoftstates'])
