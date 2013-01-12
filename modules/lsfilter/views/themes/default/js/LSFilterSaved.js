@@ -31,15 +31,14 @@ var lsfilter_saved = {
 				'page' : 'listview'
 			},
 			type : 'POST',
-			complete : function(xhr) {
-				saved_filters = JSON.parse(xhr.responseText);
+			success : function(data) {
 				$('.filter-query-saved-hide-x').removeAttr('checked');
 				var list = $("#filter-query-saved-filters").empty();
-				for ( var filter in saved_filters.data) {
+				for ( var filter in data.data) {
 					(function() {
 						// Crazy hack with function()... why can't I access
 						// save['query'] in the callback? (and how do I fix?)
-						var save = saved_filters.data[filter];
+						var save = data.data[filter];
 						var current_icon = self.icons.other;
 
 						var parser = new LSFilter(new LSFilterPreprocessor(),

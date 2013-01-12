@@ -41,7 +41,6 @@ var lsfilter_main = {
 	
 	update_run: function()
 	{
-		console.log('update_run');
 		var source = this.update_source;
 		var query = this.update_query;
 		var order = this.update_order;
@@ -168,6 +167,5 @@ var lsfilter_main = {
 
 $().ready(function()
 {
-	console.log('init');
 	lsfilter_main.init();
 });

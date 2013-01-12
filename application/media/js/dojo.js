@@ -265,13 +265,12 @@
 					'page': 'tac'
 			},
 			type: 'POST',
-			complete: function (xhr) {
+			success: function (obj) {
 
-				var obj = JSON.parse(xhr.responseText),
-						links = [];
+				var links = [];
 
 				if (obj['dojo-quicklinks']) {
-					links = JSON.parse(JSON.parse(xhr.responseText)['dojo-quicklinks']);
+					links = obj['dojo-quicklinks'];
 					for (var i = 0; i < links.length; i += 1) {
 						$('#dojo-quicklink-external').append($('<li><a target="' + links[i].target + '" class="image-link" href="' + links[i].href + '"><span title="'+links[i].title+'" class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
 					}

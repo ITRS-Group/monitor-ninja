@@ -59,9 +59,9 @@
 
 			type: 'POST',
 
-			complete: function (xhr) {
+			success: function (obj) {
 
-				var pages = JSON.parse(JSON.parse(xhr.responseText)['rotation_queue']) || [];
+				var pages = obj['rotation_queue'] || [];
 
 				if (pages.length >= 1) {
 					$('#page-rotation-play').css('opacity','1.0');

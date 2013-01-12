@@ -24,7 +24,10 @@ else {
 	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'handheld.css'; ?>" type="text/css" rel="stylesheet" media="handheld" />
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'reports.css' ?>" media="all" />
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
-
+<script type="text/javascript">
+/* Hack for lack of console.log() in ie7 */
+    if (!window.console) console = {log: function() {}};
+</script>
 	<?php
 		echo (!empty($css_header)) ? $css_header : '';
 		echo html::script('application/media/js/jquery.js');

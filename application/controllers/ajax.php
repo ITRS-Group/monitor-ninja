@@ -124,7 +124,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$page = trim($page);
 		$data = Ninja_setting_Model::fetch_page_setting($type, $page);
 		$setting = $data!==false ? $data->setting : false;
-		echo json::encode(array($type => $setting));
+		return json::ok(array($type => json_decode($setting)));
 	}
 
 	/**
