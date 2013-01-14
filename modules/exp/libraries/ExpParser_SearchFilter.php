@@ -5,7 +5,6 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			'h'  => 'hosts',
 			's'  => 'services',
 			'c'  => 'comments',
-			'si' => 'status',
 			'hg' => 'hostgroups',
 			'sg' => 'servicegroups',
 			'si' => '_si'

@@ -28,7 +28,7 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 	
 	public function test_status() {
 		$parser = $this->run_test('si:kaka', array( 'filters'=>array(
-				'status'=>array(array('kaka'))
+				'_si'=>array(array('kaka'))
 				)) );
 	}
 	
