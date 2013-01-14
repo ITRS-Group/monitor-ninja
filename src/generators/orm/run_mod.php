@@ -21,7 +21,6 @@ class orm_generator extends generator_module {
 	protected function do_run() {
 
 		$classpaths = array(
-			'LivestatusAccess'      => 'libraries/LivestatusAccess.php',
 			'LivestatusFilterOr'    => 'libraries/LivestatusFilterOr.php',
 			'LivestatusFilterAnd'   => 'libraries/LivestatusFilterAnd.php',
 			'LivestatusFilterBase'  => 'libraries/LivestatusFilterBase.php',

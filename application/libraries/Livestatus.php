@@ -50,7 +50,7 @@
  *  );
  *
  */
-require_once("op5/livestatus.php"); /* For Op5LivestatusException */
+require_once("op5/livestatus.php");
 
 class Livestatus {
 	private static $instance = false;
@@ -376,6 +376,7 @@ class Livestatus {
 			);
 		}
 		$objects = $this->backend->getTable('status', $options);
+		if(count($objects) == 0) return null;
 		$this->program_start = $objects[0]['program_start'];
 		return (object) $objects[0];
 	}
@@ -586,7 +587,7 @@ class LivestatusBackend {
 	public static function combineFilter($operator, $filter) {
 
 		if(!isset($operator) and $operator != '-or' and $operator != '-and') {
-			throw new Op5LivestatusException("unknown operator in combine_filter(): ".$operator);
+			throw new op5LivestatusException("unknown operator in combine_filter(): ".$operator);
 		}
 
 		if(!isset($filter)) {
@@ -594,7 +595,7 @@ class LivestatusBackend {
 		}
 
 		if(!is_array($filter)) {
-			throw new Op5LivestatusException("expected array in combine_filter(): ");
+			throw new op5LivestatusException("expected array in combine_filter(): ");
 		}
 
 		if(count($filter) == 0) {
@@ -697,7 +698,7 @@ class LivestatusBackend {
 	}
 
 	private function query($table, $filter, $columns, $options) {
-		$ls = LivestatusAccess::instance();
+		$ls = op5livestatus::instance();
 
 		if( isset( $options['order'] ) ) {
 			$order_mappings = !empty($options['order_mappings'])?$options['order_mappings']:array();
@@ -815,7 +816,7 @@ class LivestatusBackend {
 			return "";
 		}
 
-		throw new Op5LivestatusException("broken filter");
+		throw new op5LivestatusException("broken filter");
 	}
 
 	private function is_assoc($array) {

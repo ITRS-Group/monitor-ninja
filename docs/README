@@ -29,6 +29,7 @@ installation goes something like this
 3. configure your webserver
 4. configure ninja with basic info such as where it's installed and where
    the database is located.
+5. configure op5lib, such as livestatus socket connection (/etc/op5/*.yml)
 done :)
 
 Here is a longer and a bit more exact version on how to install it

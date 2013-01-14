@@ -72,9 +72,3 @@ $config['nacoma'] = array
 	'cache'         => FALSE,
 	'escape'        => TRUE
 );
-
-$config['livestatus'] = array
-(
-	'benchmark' => true,
-	'path' => 'unix:///opt/monitor/var/rw/live'
-);

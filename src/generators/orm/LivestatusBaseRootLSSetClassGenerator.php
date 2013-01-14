@@ -14,6 +14,7 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 	
 	public function generate() {
 		parent::generate();
+		$this->classfile("op5/livestatus.php");
 		$this->init_class( 'ObjectSet', array('abstract') );
 		$this->generate_stats();
 		$this->generate_count();
@@ -23,7 +24,7 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 	
 	public function generate_stats() {
 		$this->init_function('stats',array('intersections'));
-		$this->write('$ls = LivestatusAccess::instance();');
+		$this->write('$ls = op5livestatus::instance();');
 		
 		$this->write('$single = !is_array($intersections);');
 		$this->write('if($single) $intersections = array($intersections);');
@@ -46,7 +47,7 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 	
 	public function generate_count() {
 		$this->init_function('count');
-		$this->write('$ls = LivestatusAccess::instance();');
+		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
 		$this->write('$ls_filter = $filter->visit(new LivestatusFilterBuilderVisitor(), false);');
@@ -60,7 +61,7 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 	
 	public function generate_it() {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
-		$this->write('$ls = LivestatusAccess::instance();');
+		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
 		$this->write('$ls_filter = $filter->visit(new LivestatusFilterBuilderVisitor(), false);');

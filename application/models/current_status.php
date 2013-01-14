@@ -50,7 +50,7 @@ class Current_status_Model extends Model
 			return $this->ps;
 
 		$ls       = Livestatus::instance();
-		$this->ps = $ls->getProcessInfo();
+		$this->ps = $ls->getProcessInfo(array('auth'=>false));
 		$this->program_data_present = true;
 		return $this->ps;
 	}
