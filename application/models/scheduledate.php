@@ -19,12 +19,15 @@ class ScheduleDate_Model extends Model
 			return;
 		}
 
+		// Set timestamp to the following day.
+		$timestamp = strtotime('+1 day', $timestamp);
+
 		$tomorrow = array();
 		// Gather everything we need to know about tomorrow
-		$tomorrow['year'] = date('Y', $timestamp + (24*60*60));
-		$tomorrow['month'] = date('m', $timestamp + (24*60*60));
-		$tomorrow['day'] = date('d', $timestamp + (24*60*60));
-		$tomorrow['weekday'] = date('w', $timestamp + (24*60*60));
+		$tomorrow['year'] = date('Y', $timestamp);
+		$tomorrow['month'] = date('m', $timestamp);
+		$tomorrow['day'] = date('d', $timestamp);
+		$tomorrow['weekday'] = date('w', $timestamp);
 
 		foreach ($res as $row) {
 			// Unserialize string saved in database
