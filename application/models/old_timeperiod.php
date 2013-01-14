@@ -34,7 +34,7 @@ class Old_Timeperiod_Model extends Model
 	 * Return an instance from a Report_options object
 	 * @param $options Report_options class, or possibly an array mock
 	 */
-	public function instance($options) {
+	public static function instance($options) {
 		$key = $options['rpttimeperiod'].$options['start_time'].$options['end_time'];
 		if (isset(self::$precreated[$key]))
 			return self::$precreated[$key];
