@@ -17,8 +17,8 @@ class Search_Controller extends Authenticated_Controller {
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-		'hosts' => array( 'name' , 'address' ),
-		'services' => array( 'description', 'display_name' ),
+		'hosts' => array( 'name' , 'address', 'plugin_output' ),
+		'services' => array( 'description', 'display_name', 'plugin_output' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' )
@@ -236,7 +236,6 @@ class Search_Controller extends Authenticated_Controller {
 		'search_help' => sprintf(_("You may perform an AND search on hosts and services: 'h:web AND s:ping' will search for	all services called something like ping on hosts called something like web.<br /><br />
 			Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail in any of the searchable fields.<br /><br />
 			Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br /><br />
-			Use si:critical to search for status information like critical<br /><br />
 			Read the manual for more tips on searching.<br /><br />
 
 			The search result is currently limited to %s rows (for each object type).<br /><br />
