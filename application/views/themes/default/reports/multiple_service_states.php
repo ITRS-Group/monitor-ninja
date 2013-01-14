@@ -72,29 +72,29 @@ foreach ($multiple_states as $data) {
 		</tr>
 		<tr class="<?php echo (++$i%2 == 0) ? 'even' : 'odd'; ?>">
 			<td><?php echo _('Average');?></td>
-			<td class="data_green"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
+			<td class="summary ok <?php echo ($data['average_ok']>0?'nonzero':'') ?>"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
 						array( 'alt' => _('OK'), 'title' => _('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
+			<td class="summary warning <?php echo ($data['average_warning']>0?'nonzero':'') ?>"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
 						array( 'alt' => _('Warning'), 'title' => _('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+			<td class="summary unknown <?php echo ($data['average_unknown']>0?'nonzero':'') ?>"><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
 						array( 'alt' => _('Unknown'), 'title' => _('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
+			<td class="summary critical <?php echo ($data['average_critical']>0?'nonzero':'') ?>"><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
 						array( 'alt' => _('Critical'), 'title' => _('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+			<td class="summary undetermined <?php echo ($data['average_undetermined']>0?'nonzero':'') ?>"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 		<?php if (!$options['use_average']) { ?>
 		<tr class="<?php echo (++$i%2 == 0) ? 'even' : 'odd'; ?>">
 			<td><?php echo _('Group availability (SLA)') ?></td>
-			<td class="data_green"><?php echo $data['group_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_ok'] > 0 ? '' : 'not-').'ok.png'),
+			<td class="summary ok <?php echo ($data['group_ok']>0?'nonzero':'') ?>"><?php echo $data['group_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_ok'] > 0 ? '' : 'not-').'ok.png'),
 						array( 'alt' => _('Ok'), 'title' => _('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_warning'] > 0 ? '' : 'not-').'warning.png'),
+			<td class="summary warning <?php echo ($data['group_warning']>0?'nonzero':'') ?>"><?php echo $data['group_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_warning'] > 0 ? '' : 'not-').'warning.png'),
 						array( 'alt' => _('Warning'), 'title' => _('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+			<td class="summary unknown <?php echo ($data['group_unknown']>0?'nonzero':'') ?>"><?php echo $data['group_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_unknown'] > 0 ? '' : 'not-').'unknown.png'),
 						array( 'alt' => _('Unknown'), 'title' => _('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_critical'] > 0 ? '' : 'not-').'critical.png'),
+			<td class="summary critical <?php echo ($data['group_critical']>0?'nonzero':'') ?>"><?php echo $data['group_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_critical'] > 0 ? '' : 'not-').'critical.png'),
 						array( 'alt' => _('Critical'), 'title' => _('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+			<td class="summary undetermined <?php echo ($data['group_undetermined']>0?'nonzero':'') ?>"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 		<?php } ?>

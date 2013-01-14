@@ -43,25 +43,25 @@
 		<?php ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'; $i++?>">
 			<td><?php echo _('Average'); ?></td>
-			<td class="data_green"><?php echo $data['average_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_up'] > 0 ? '' : 'not-').'up.png'),
+			<td class="summary up <?php echo $data['average_up']?'nonzero':'' ?>"><?php echo $data['average_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_up'] > 0 ? '' : 'not-').'up.png'),
 						array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
+			<td class="summary unreachable <?php echo $data['average_unreachable']?'nonzero':'' ?>"><?php echo $data['average_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
 						array( 'alt' => _('Unreachable'), 'title' => _('Unreachable'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_down'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_down'] > 0 ? '' : 'not-').'down.png'),
+			<td class="summary down <?php echo $data['average_down']?'nonzero':'' ?>"><?php echo $data['average_down'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_down'] > 0 ? '' : 'not-').'down.png'),
 						array( 'alt' => _('Down'), 'title' => _('Down'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+			<td class="summary undetermined <?php echo $data['average_undetermined']?'nonzero':'' ?>"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 		<?php if ($options['use_average'] == 0) { ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
 			<td><?php echo _('Group availability (SLA)') ?></td>
-			<td class="data_green"><?php echo $data['group_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_up'] > 0 ? '' : 'not-').'up.png'),
+			<td class="summary up <?php echo $data['group_up']?'nonzero':'' ?>"><?php echo $data['group_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_up'] > 0 ? '' : 'not-').'up.png'),
 						array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
+			<td class="summary unreachable <?php echo $data['group_unreachable'?'nonzero':'' ?>"><?php echo $data['group_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
 						array( 'alt' => _('Unreachable'), 'title' => _('Unreachable'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_down'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_down'] > 0 ? '' : 'not-').'down.png'),
+			<td class="summary down <?php echo $data['group_down'?'nonzero':'' ?>"><?php echo $data['group_down'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_down'] > 0 ? '' : 'not-').'down.png'),
 						array( 'alt' => _('Down'), 'title' => _('Down'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="data_red"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+			<td class="summary undetermined <?php echo $data['group_undetermined'?'nonzero':'' ?>"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 		<?php } ?>
