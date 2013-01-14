@@ -14,10 +14,10 @@ install-sass:
 	gem install compass
 
 generate-css:
-	compass compile --boring application/views/themes/default/css/default || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
-	compass compile --boring application/views/themes/default/css/pink_n_fluffy || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
-	compass compile --boring application/views/themes/default/css/classic || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
-	compass compile --boring application/views/themes/default/css/dark || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
+	which compass || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
+	for skin in application/views/themes/default/css/*; do \
+		compass compile --boring $$skin; \
+	done
 
 regenerate-php:
 	$(MAKE) -C src/generators regenerate
