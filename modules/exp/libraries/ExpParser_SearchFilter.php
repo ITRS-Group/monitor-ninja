@@ -7,7 +7,8 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			'c'  => 'comments',
 			'si' => 'status',
 			'hg' => 'hostgroups',
-			'sg' => 'servicegroups'
+			'sg' => 'servicegroups',
+			'si' => '_si'
 			);
 	
 	protected $last_object = false;

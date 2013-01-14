@@ -17,11 +17,12 @@ class Search_Controller extends Authenticated_Controller {
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-		'hosts' => array( 'name' , 'address', 'plugin_output' ),
-		'services' => array( 'description', 'display_name', 'plugin_output' ),
+		'hosts' => array( 'name' , 'address', 'alias' ),
+		'services' => array( 'description', 'display_name' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
-		'comments' => array( 'author', 'comment' )
+		'comments' => array( 'author', 'comment' ),
+		'_si' => array('plugin_output')
 	);
 
 	/**
@@ -132,48 +133,50 @@ class Search_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		$table = false;
 		$query = array();
+		
+		/* Map default tables to queries */
+		foreach($filter['filters'] as $table => $q ) {
+			$query[$table] = array($this->andOrToQuery($q, $this->search_columns[$table]));
+		}
 
-		if( isset( $filter['filters']['comments'] ) ) {
-			$table = 'comments';
+		if( isset( $filter['filters']['_si'] ) ) {
+			/* Map status information table to hosts and services */
+			$query['hosts'] = $query['_si'];
+			$query['services'] = $query['_si'];
+			unset( $query['_si'] );
+		} else if( isset( $filter['filters']['comments'] ) ) {
+			/* Map subtables for comments (hosts and servies) */
 			if( isset( $filter['filters']['services'] ) ) {
-				$query[] = $this->andOrToQuery( $filter['filters']['services'],
+				$query['comments'][] = $this->andOrToQuery( $filter['filters']['services'],
 					array_map( function($col){
 						return 'service.'.$col;
 					}, $this->search_columns['services'] ) );
 			}
 			if( isset( $filter['filters']['hosts'] ) ) {
-				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
+				$query['comments'][] = $this->andOrToQuery( $filter['filters']['hosts'],
 					array_map( function($col){
 						return 'host.'.$col;
 					}, $this->search_columns['hosts'] ) );
 			}
+			/* Don't search in hosts or servies if searching in comments */
+			unset( $query['hosts'] );
+			unset( $query['services'] );
 		}
 		else if( isset( $filter['filters']['services'] ) )  {
-			$table = 'services';
 			if( isset( $filter['filters']['hosts'] ) )
-				$query[] = $this->andOrToQuery( $filter['filters']['hosts'],
+				$query['services'][] = $this->andOrToQuery( $filter['filters']['hosts'],
 					array_map( function($col){
 						return 'host.'.$col;
 					}, $this->search_columns['hosts'] ) );
+			/* Don't search in hosts if searching for services, just filter on hosts... */
+			unset( $query['hosts'] );
 		}
-		else if( isset( $filter['filters']['hosts'] ) ) {
-			$table = 'hosts';
-		}
-		else if( isset( $filter['filters']['hostgroups'] ) ) {
-			$table = 'hostgroups';
-		}
-		else if( isset( $filter['filters']['servicegroups'] ) ) {
-			$table = 'servicegroups';
-		}
-
-		$query[] = $this->andOrToQuery( $filter['filters'][$table], $this->search_columns[$table] );
-
-		if( $table === false )
-			return false;
 		
-		$result = array($table => '['.$table.'] '.implode(' and ',$query));
+		$result = array();
+		foreach( $query as $table => $filters ) {
+			$result[$table] = '['.$table.'] '.implode(' and ',$filters);
+		}
 		
 		if( isset($filter['limit']) ) {
 			$result['limit'] = intval($filter['limit']);
