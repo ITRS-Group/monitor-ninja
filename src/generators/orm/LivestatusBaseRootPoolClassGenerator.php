@@ -28,7 +28,7 @@ class LivestatusBaseRootPoolClassGenerator extends class_generator {
 			$this->write( 'return new '.$struct['class'].'Pool'.self::$model_suffix.'();' );
 		}
 		$this->write( '}' );
-		$this->write( 'return null;' );
+		$this->write( 'throw new Exception("Unknown table ".$name);' );
 		$this->finish_function();
 	}
 }
