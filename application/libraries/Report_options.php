@@ -335,29 +335,27 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		 case 'services':
 			return $this[$this->get_value('report_type')];
 		 case 'hostgroups':
-			$ls = Livestatus::instance();
 			$filter = array();
 			foreach ($this['hostgroup'] as $group) {
-				$filter[] = 'groups >= "'.$group.'"';
+				$filter[] = 'in "'.$group.'"';
 			}
-			$filter = implode(' or ', $filter);
-			$out = $ls->getHosts(array('columns' => array('name'), 'filter' => $filter));
-			$res = array();
+			$filter = "[hosts] " . implode(' or ', $filter);
+			$out = ObjectPool_Model::get_by_query($filter);
+			$out = $out->it(array('name'), array());
 			foreach ($out as $arr) {
-				$res[] = $arr['name'];
+				$res[] = $arr->get_key();
 			}
 			return $res;
 		 case 'servicegroups':
-			$ls = Livestatus::instance();
 			$filter = array();
 			foreach ($this['servicegroup'] as $group) {
-				$filter[] = 'groups >= "'.$group.'"';
+				$filter[] = 'in "'.$group.'"';
 			}
-			$filter = implode(' or ', $filter);
-			$out = $ls->getServices(array('columns' => array('host_name', 'description'), 'filter' => $filter));
-			$res = array();
+			$filter = "[services] " . implode(' or ', $filter);
+			$out = ObjectPool_Model::get_by_query($filter);
+			$out = $out->it(array('host_name', 'description'), array());
 			foreach ($out as $arr) {
-				$res[] = implode(';', array_values($arr));
+				$res[] = $arr->get_key();
 			}
 			return $res;
 		}
