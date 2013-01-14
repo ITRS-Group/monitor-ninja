@@ -207,6 +207,7 @@ function lsfilter_list(config)
 		}
 		
 		if (this.config.table) {
+			this.config.table.find('*').unbind();
 			this.config.table.empty().append(new_table);
 			this.attach_header(new_table);
 		}
