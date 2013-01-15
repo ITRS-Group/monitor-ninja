@@ -239,7 +239,6 @@ class Reports_Model extends Model
 			retry,
 			downtime_depth,
 			output', true);
-                $count = $this->db->query($this->build_alert_summary_query('COUNT(*)', true))->result();
 
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
@@ -272,6 +271,11 @@ class Reports_Model extends Model
 				)."')) ";
 		}
 
+		// investigate if there are more rows available for this query,
+		// with another set of pagination parameters
+		$limit = $this->options['limit'] + 1;
+		$offset = $this->options['offset'];
+
 		if($this->options['include_comments']) {
 			$query = "
 			SELECT
@@ -295,13 +299,19 @@ class Reports_Model extends Model
 				AND data.service_description = comments.service_description
 				AND data.event_type = comments.event_type";
 		}
-		$query .= " LIMIT ".$this->options['limit']." OFFSET ". $this->options['offset'];
+		$query .= " LIMIT ".$limit." OFFSET ". $offset;
+
+		$events = $this->db->query($query)->result(false);
+		$can_paginate = false;
+		if(count($events) > $this->options['limit']) {
+			$can_paginate = true;
+		}
 
 		return array(
-			'events' => $this->db->query($query)->result(false),
-			'count' => current($count[0]),
-			'limit' => $this->options['limit'],
-			'offset' => $this->options['offset'],
+			'can_paginate' => $can_paginate,
+			'events' => $events, // note that this is the size you asked for, plus one
+			'limit' => (int) $this->options['limit'],
+			'offset' => (int) $this->options['offset']
 		);
 	}
 
@@ -1412,8 +1422,8 @@ class Reports_Model extends Model
 	}
 
 	/**
-     * Get inital states of a set of objects
-     *
+	 * Get inital states of a set of objects
+	 *
 	 * @return array of initial states
 	 */
 	public function get_initial_states( $type = 'host', $names = array() )
