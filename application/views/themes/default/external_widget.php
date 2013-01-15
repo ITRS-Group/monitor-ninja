@@ -45,6 +45,7 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.jgrowl.js');
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
+			echo html::script('application/media/js/jquery.field.js');
 			echo html::script('application/views/themes/default/js/collapse_menu.js');
 			echo html::script('application/views/themes/default/js/global_search.js');
 			echo html::script('application/views/themes/default/js/pagination.js');
@@ -62,6 +63,7 @@ if (isset($this->template->js_header))
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 				var _theme_path = '<?php echo 'application/views/'.$this->theme_path ?>';
+				var _controller_name = '<?php echo Router::$controller ?>';
 				var _widget_refresh_msg = '<?php echo _('Refresh rate for all widgets has been updated to %s sec'); ?>';
 				var _widget_refresh_error = '<?php echo _('Unable to update refresh rate for all widgets.'); ?>';
 				var _widget_global_refresh_error = '<?php echo _('An error was encountered when trying to update refresh rate for all widgets.'); ?>';
