@@ -225,9 +225,10 @@ class Reports_Model extends Model
 	/**
          * Used from the HTTP API
          *
+	 * @param Op5Auth $auth
 	 * @return array
 	 */
-	function get_events()
+	function get_events(Op5Auth $auth)
 	{
                 $query = $this->build_alert_summary_query('timestamp,
 			event_type,
@@ -239,6 +240,37 @@ class Reports_Model extends Model
 			downtime_depth,
 			output', true);
                 $count = $this->db->query($this->build_alert_summary_query('COUNT(*)', true))->result();
+
+		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
+		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
+			$ls = op5Livestatus::instance();
+			$hosts = $ls->query("hosts", null, array("name"), array('auth' => false));
+			$query .= " AND (host_name IN ('".
+				implode(
+					"', '",
+					array_map(
+						function($e) {
+							return current($e);
+						},
+						$hosts[1]
+					)
+				)."')) ";
+		}
+		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
+		if(2 & $this->options["alert_types"] && !$auth->authorized_for("service_view_all")) {
+			$ls = op5Livestatus::instance();
+			$services = $ls->query("services", null, array("description"), array('auth' => false));
+			$query .= " AND (service_description IN ('".
+				implode(
+					"', '",
+					array_map(
+						function($e) {
+							return current($e);
+						},
+						$services[1]
+					)
+				)."')) ";
+		}
 
 		if($this->options['include_comments']) {
 			$query = "
