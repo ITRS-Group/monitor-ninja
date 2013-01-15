@@ -17,11 +17,12 @@ class Search_Controller extends Authenticated_Controller {
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-				'hosts' => array( 'name' , 'address' ),
+				'hosts' => array( 'name' , 'address', 'alias' ),
 				'services' => array( 'description', 'display_name' ),
 				'hostgroups' => array( 'name', 'alias' ),
 				'servicegroups' => array( 'name', 'alias' ),
-				'comments' => array( 'author', 'comment' )
+				'comments' => array( 'author', 'comment' ),
+				'statuss' => array( 'plugin_output' )
 				);
 
 	/**
@@ -177,9 +178,19 @@ class Search_Controller extends Authenticated_Controller {
 			if( isset( $filter['filters']['hosts'] ) )
 				$lsfilter['services'] .= $this->andOrToLivestatus( $filter['filters']['hosts'],
 						array_map( function($col){return 'host_'.$col;}, $this->search_columns['hosts'] ) );
+			if( isset( $filter['filters']['statuss'] ) ) {
+				$lsfilter['services'] .= $this->andOrToLivestatus( $filter['filters']['statuss'], $this->search_columns['statuss'] );
+			}
 		}
 		else if( isset( $filter['filters']['hosts'] ) ) {
 			$lsfilter['hosts'] = $this->andOrToLivestatus( $filter['filters']['hosts'], $this->search_columns['hosts'] );
+			if( isset( $filter['filters']['statuss'] ) ) {
+				$lsfilter['hosts'] .= $this->andOrToLivestatus( $filter['filters']['statuss'], $this->search_columns['statuss'] );
+			}
+		}
+		else if( isset( $filter['filters']['statuss'] ) ) {
+			$lsfilter['hosts'] = $this->andOrToLivestatus( $filter['filters']['statuss'], $this->search_columns['statuss'] );
+			$lsfilter['services'] = $this->andOrToLivestatus( $filter['filters']['statuss'], $this->search_columns['statuss'] );
 		}
 		
 		
@@ -234,6 +245,8 @@ class Search_Controller extends Authenticated_Controller {
 		$query = str_replace('%','.*',$query);
 		$filters = array();
 		foreach( $this->search_columns as $table => $cols ) {
+			if( $table == 'statuss' )
+				continue;
 			$filters[$table] = "";
 			foreach( $cols as $col ) {
 				$filters[$table] .= "Filter: $col ~~ $query\n";
