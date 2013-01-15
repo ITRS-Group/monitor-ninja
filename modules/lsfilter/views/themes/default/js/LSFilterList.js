@@ -102,7 +102,8 @@ function lsfilter_list(config)
 			this.sort_ascending = true;
 		}
 		
-		lsfilter_main.update(false, 'list', this.sort_vis_column
+		if( typeof lsfilter_main != "undefined" )
+			lsfilter_main.update(false, 'list', this.sort_vis_column
 				+ (this.sort_ascending ? ' asc' : ' desc'));
 		
 		this.send_request({
