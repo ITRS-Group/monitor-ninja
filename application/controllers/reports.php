@@ -794,7 +794,7 @@ class Reports_Controller extends Base_reports_Controller
 		$optclass = get_class($this->options);
 		$opts = new $optclass($this->options);
 		$opts[$this->options->get_value('report_type')] = $objects;
-		unset($opts['report_period']);
+		$opts['report_period'] = 'custom';
 		switch ($this->options['report_type']) {
 		 case 'hostgroups':
 		 case 'servicegroups':
