@@ -173,7 +173,7 @@ class Auth_Core {
 	 * Returns true if current session has access for a given authorization point
 	 *
 	 * @param   string   authorization point
-     * @return  boolean  true if access
+	 * @return  boolean  true if access
 	 */
 	public function authorized_for( $authorization_point )
 	{
@@ -241,7 +241,7 @@ class Auth_NoAuth_Core extends Auth_Core {
 		return false;
 	}
 	
-	public function logout()
+	public function logout($destroy = FALSE)
 	{
 		return false;
 	}
