@@ -37,7 +37,7 @@ class Recurring_downtime_Test extends TapUnit {
 	 *	FIXME! Running these tests will not create downtimes on test config. 
 	 *	Instead they remain on installed config with no way to delete them during test.
 	 */
-	public function test_is_scheduled() {
+	public function disabled_test_is_scheduled() {
 		// Test if the host/service is scheduled on a Monday. Inject created test time.
 		$this->test_time = mktime(22, 0, 0, 11, 11, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
