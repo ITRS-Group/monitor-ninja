@@ -113,10 +113,7 @@
 		<?php
 			$icons = glob((__DIR__) . '/icons/x16/*.png');
 			foreach ($icons as $icon) {
-				$fname = end(explode('/',$icon));
-				$name = end(explode('/',$icon));
-				$name = explode('.', $name);
-				$name = $name[0];
+				$name = pathinfo($icon, PATHINFO_FILENAME);
 				echo "<option value='$name'>$name</option>";
 			}
 		?>
