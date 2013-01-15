@@ -250,6 +250,12 @@ class HttpApiEvent_options_core extends Report_options {
 			}
 			return true;
 		}
+		if($key == 'start_time' && isset($this->options['end_time']) && $value >= $this->options['end_time']) {
+			return false;
+		}
+		if($key == 'end_time' && isset($this->options['start_time']) && $value <= $this->options['start_time']) {
+			return false;
+		}
 		return parent::validate_value($key, $value);
 	}
 }
