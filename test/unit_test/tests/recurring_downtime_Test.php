@@ -42,6 +42,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 11, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Monday");
+// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -50,6 +52,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 12, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Tuesday");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -58,6 +62,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 13, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Wednesday");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -66,6 +72,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 14, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Thursday");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -74,6 +82,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 15, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Friday");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -82,6 +92,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 16, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Saturday");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -90,6 +102,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 17, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a Sunday");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -98,6 +112,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 11, 30, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on the first of a new month");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -106,6 +122,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 2, 28, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a leap day");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
@@ -114,6 +132,8 @@ class Recurring_downtime_Test extends TapUnit {
 		$this->test_time = mktime(22, 0, 0, 12, 31, 2036);
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(empty($output), "Successfully scheduled on a new years day");
+		// Sleep a while to let the command register
+		sleep(3);
 		// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
 		exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$this->test_time, $output, $status);
 		$this->ok(!empty($output), "Couldn't create duplicate schedule");
