@@ -225,7 +225,7 @@ class Reports_Model extends Model
 	/**
          * Used from the HTTP API
          *
-	 * @param Op5Auth $auth
+	 * @param $auth Op5Auth
 	 * @return array
 	 */
 	function get_events(Op5Auth $auth)
