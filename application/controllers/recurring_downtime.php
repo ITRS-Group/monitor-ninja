@@ -27,6 +27,13 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			}
 		}
 
+		$this->downtime_commands = array(
+			'hosts' => 'SCHEDULE_HOST_DOWNTIME',
+			'services' => 'SCHEDULE_SVC_DOWNTIME',
+			'hostgroups' => 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME',
+			'servicegroups' => 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME'
+		); # will schedule downtime for all services - not their hosts!
+
 		$this->downtime_types = array(
 			'hosts' => _('Host'),
 			'services' => _('Service'),
@@ -224,8 +231,83 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$id = arr::search($_REQUEST, 'schedule_id');
 
 		$ok = ScheduleDate_Model::edit_schedule($data, $id);
+		#$pattern = $this->_create_pattern($data);
 
 		return url::redirect(Router::$controller);
+	}
+
+	/**
+	*
+	*
+	*/
+	public function _create_pattern($data=false)
+	{
+		if (empty($data)) {
+			return false;
+		}
+
+		$time = arr::search($data, 'time');
+		$duration = arr::search($data, 'duration');
+		$recurring_day = arr::search($data, 'recurring_day');
+		$recurring_month = arr::search($data, 'recurring_month');
+
+		$time_hours = '*';
+		$time_minutes = '*';
+		$duration_hours = '*';
+		$duration_minutes = '*';
+		$year = date('Y', time());
+		$months = '*';
+		$days = '*';
+
+		if (strstr($time, ':')) {
+			# we have hh::mm
+			$timeparts = explode(':', $time);
+			$time_hours = $timeparts[0];
+			$time_minutes = $timeparts[1];
+		} else {
+			$time_hours = (int)$time;
+			$time_minutes = '00';
+		}
+
+		if (strstr($duration, ':')) {
+			# we have hh::mm
+			$timeparts = explode(':', $time);
+			$duration_hours = $timeparts[0];
+			$duration_minutes = $timeparts[1];
+		} else {
+			$duration_hours = (int)$duration;
+			$duration_minutes = '00';
+		}
+
+		if (!empty($recurring_day)) {
+			$dayarr = false;
+			$abbr_day_names = date::abbr_day_names();
+			foreach ($recurring_day as $dayval) {
+				$dayarr[] = strtolower($abbr_day_names[$dayval]);
+			}
+			$days = implode(',', $dayarr);
+		}
+
+		if (!empty($recurring_month)) {
+			$months = implode(',', $recurring_month);
+		}
+
+		# year month day hour mniute
+		$pattern = ' %s %s %s %s %s';
+		$pattern = sprintf($pattern, $year, $months, $days, $time_hours, $time_minutes);
+		return $pattern;
+	}
+
+	/**
+	*
+	*
+	*/
+	public function _determine_downtimetype($report_type=false)
+	{
+		if (empty($report_type)) {
+			return false;
+		}
+		return $this->downtime_commands[$report_type];
 	}
 
 	/**
@@ -235,23 +317,66 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 	 * @throws Exception
 	 * @return void (redirection, die or nothing, pick your poision.....)
 	 */
-	public function check_schedules($id=false, $timestamp=false)
+	public function check_schedules($id=false)
 	{
 		if (PHP_SAPI !== "cli") {
 			return url::redirect(Router::$controller);
 		}
 
 		$this->auto_render=false;
-
-		// Check if a date was injected
-		if (!$timestamp) {
-			// No date was injected, $timestamp is current timestamp instead.
-			$timestamp = time();
+		$res = ScheduleDate_Model::get_schedule_data($id);
+		if (!$res) {
+			# no saved schedules
+			return;
 		}
 
-		$scheduled = ScheduleDate_Model::schedule_downtime($id, $timestamp);
-		if ($scheduled) {
-			// asdfg
+		foreach ($res as $row) {
+			$data = i18n::unserialize($row->data);
+			$data['author'] = $row->author;
+
+			$pattern = $this->_create_pattern($data);
+			$nagios_cmd = $this->_determine_downtimetype(arr::search($data, 'report_type'));
+
+			$startTime = date('Y-m-d H.i:s', time());
+
+			$counter = time();
+			$end = strtotime('tomorrow'); # look one day ahead
+			$next_day = strtotime('tomorrow +1 day');
+
+			$inc = 60*60; // 60= +1 minute; 60*60= +1 hour; 24*60*60=+1 day; 30*24*60*60=+30 days; 365*24*60*60=+1 year
+
+			// do a simple check to control pattern format
+			$matches = false;
+			$date = false;
+			$time = false;
+			if(ScheduleDate_Model::Parse($pattern,$matches) === false) {
+				throw new Exception (_("Malformed pattern"));
+			}
+
+			$sd = new ScheduleDate_Model();
+
+			$date = $sd->GetFirstRun($pattern,$startTime);
+			unset($sd);
+
+			$date = date("Y-m-d H:i:s",$date);
+			for(; $counter < $end; $counter+=$inc) {
+				if($counter < strtotime($date)) { // date is not expired yet
+					continue;
+				}
+				// date is expired, check if it can be renewed
+				$sd = new ScheduleDate_Model();
+				$time = $sd->Renew($pattern, $date, $counter);
+				if($time !== false) {    // renewed to next valid date
+					$date = $sd->date;   // $date = date("Y-m-d H:i:s",$time);
+				} else {                 // reached end of date interval, quit
+					break;
+				}
+				unset($sd);
+			}
+
+			if ($time !== false && $time < $next_day) {
+				ScheduleDate_Model::add_downtime($data, $nagios_cmd, $time);
+			}
 		}
 	}
 
@@ -283,4 +408,5 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->content->error_message = _('It appears as though you do not have permission to scheduled recurring downtimes');
 		$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
+
 }
