@@ -1,7 +1,7 @@
 <?php
 
 class ListView_Controller extends Authenticated_Controller {
-	public function index($q = "[hosts] state = 0") {
+	public function index($q = "[hosts] all") {
 		$this->xtra_js = array();
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
