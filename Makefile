@@ -31,7 +31,7 @@ test-reports:
 	make test-ci-prepare
 	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst; res=$$?; make test-ci-cleanup; exit $$res
 
-test-unittest:
+test-unittest: generate-php
 	make test-ci-prepare
 	php index.php ninja_unit_test; res=$$?; make test-ci-cleanup; exit $$res
 
