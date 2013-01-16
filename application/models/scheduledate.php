@@ -180,7 +180,7 @@ class ScheduleDate_Model extends Model
 		foreach ($obj_arr as $obj) {
 			# check if object already scheduled for same start time and duration?
 			if (Old_Downtime_Model::check_if_scheduled($data['report_type'], $obj, $start_time, $duration)) {
-				fwrite(STDERR, "skipping");
+				fwrite(STDERR, "skipping $obj\n");
 				continue;
 			}
 			$tmp_cmd = "$nagioscmd;$obj;$start_time;$end_time;$fixed;$triggered_by;$duration;$author;AUTO: $comment";
