@@ -18,22 +18,20 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSFilterPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterVisitor.js';
 		
-		$this->xtra_js[] = $basepath.'views/themes/default/js/lib.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisitors.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterRenderer.js';
+		$this->xtra_js[] = $basepath.'media/js/lib.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterRenderer.js';
 		
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterMain.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterMain.js';
 
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterHistory.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterList.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterSaved.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterTextarea.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisual.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterHistory.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterList.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterSaved.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterTextarea.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterVisual.js';
 		
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterMultiselect.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterInputWindow.js';
-		
-//		$this->xtra_js[] = $basepath.'views/themes/default/js/LSFilterVisualizer.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterMultiselect.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterInputWindow.js';
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
