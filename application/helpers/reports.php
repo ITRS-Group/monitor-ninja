@@ -62,7 +62,7 @@ class reports_Core
 	/**
 	 * Assigns color to labels to be used in a piechart
 	 */
-	public function get_color_values($labels=false)
+	static function get_color_values($labels=false)
 	{
 		if (empty($labels)) return false;
 		$green 	= '#88cd18';
@@ -108,7 +108,7 @@ class reports_Core
 	 * Fetch date ranges from reports class
 	 * @return Array of date ranges
 	 */
-	public function get_date_ranges()
+	static function get_date_ranges()
 	{
 		$sql = "SELECT MIN(timestamp) AS min_date, ".
 				"MAX(timestamp) AS max_date ".
