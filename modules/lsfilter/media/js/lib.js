@@ -31,7 +31,7 @@ function icon16(name, title, link)
 function icon(url, link)
 {
 	var img = $('<img />');
-	img.attr('src', '/monitor/images/logos/' + url); // FIXME
+	img.attr('src', _logo_path + url); // FIXME
 	img.css('height', '16px');
 	img.css('width', '16px');
 	if (link) {

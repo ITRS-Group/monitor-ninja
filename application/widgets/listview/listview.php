@@ -25,11 +25,11 @@ class Listview_Widget extends widget_Base {
 		$this->js[] = $basepath.'js/LSFilterPreprocessor';
 		$this->js[] = $basepath.'js/LSFilterVisitor';
 		
-		$this->js[] = $basepath.'views/themes/default/js/lib';
-		$this->js[] = $basepath.'views/themes/default/js/LSFilterVisitors';
-		$this->js[] = $basepath.'views/themes/default/js/LSFilterRenderer';
+		$this->js[] = $basepath.'media/js/lib';
+		$this->js[] = $basepath.'media/js/LSFilterVisitors';
+		$this->js[] = $basepath.'media/js/LSFilterRenderer';
 		
-		$this->js[] = $basepath.'views/themes/default/js/LSFilterList';
+		$this->js[] = $basepath.'media/js/LSFilterList';
 		
 		$this->css[] = $basepath.'views/themes/default/css/LSFilterStyle';
 	}
