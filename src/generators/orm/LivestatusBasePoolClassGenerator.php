@@ -54,7 +54,7 @@ class LivestatusBasePoolClassGenerator extends class_generator {
 	}
 	
 	private function generate_setbuilder_all() {
-		$this->init_function( 'all', array() );
+		$this->init_function( 'all', array(), 'static' );
 		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'();');
 		$this->finish_function();
 	}
