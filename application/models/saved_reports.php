@@ -164,7 +164,7 @@ class Saved_reports_Model extends Model
 	 * @param $name The report name
 	 * @return The id of the report
 	 */
-	private function get_report_id($type='avail', $name=false)
+	private static function get_report_id($type='avail', $name=false)
 	{
 		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 		$name = trim($name);
