@@ -129,7 +129,7 @@ class Default_Controller extends Ninja_Controller  {
 	public function logout()
 	{
 		Auth::instance()->logout();
-		Session::destroy();
+		Session::instance()->destroy();
 		return url::redirect('default/show_login');
 	}
 
