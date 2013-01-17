@@ -92,11 +92,11 @@ class Scheduled_reports_Model extends Model
 	/**
 	 * Checks if a report is scheduled in autoreports
 	 *
-	 * @param $id The report id
 	 * @param $type string: {avail, sla}
+	 * @param $id int The report id
 	 * @return Array on success. False on error.
 	 */
-	public function report_is_scheduled($type='avail', $id=false)
+	static function report_is_scheduled($type='avail', $id=false)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')

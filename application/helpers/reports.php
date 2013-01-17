@@ -51,7 +51,7 @@ class reports_Core
 	 * @param $divisor The part
 	 * @return The percentage
 	 */
-	public function percent($dividend, $divisor)
+	static function percent($dividend, $divisor)
 	{
 		if (!$dividend || !$divisor)
 			return 0;
@@ -127,7 +127,7 @@ class reports_Core
 	/**
 	*	Format report value output
 	*/
-	public function format_report_value($val)
+	static function format_report_value($val)
 	{
 		$return = 0;
 		if ($val == '0.000' || $val == '100.000')
@@ -144,7 +144,7 @@ class reports_Core
 	 * @param $data A data array that should have states
 	 * return true if valid, false otherwise
 	 */
-	public function is_proper_report_item($k, $data)
+	static function is_proper_report_item($k, $data)
 	{
 		if (is_array($data) && !empty($data['states']) && is_array($data['states']))
 			return true;
