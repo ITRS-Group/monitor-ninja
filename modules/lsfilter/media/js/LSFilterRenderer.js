@@ -272,14 +272,14 @@ var listview_renderer_table = {
 		},
 		"name": {
 			"header": _('Name'),
-			"depends": [ 'name', 'icon_image' ],
-			"sort": [ 'name' ],
+			"depends": [ 'display_name', 'name', 'icon_image' ],
+			"sort": [ 'display_name' ],
 			"cell": function(args)
 			{
 				var cell = $('<td />');
 				cell.append(extinfo_link({
 					host: args.obj.name
-				}).text(args.obj.name));
+				}).text(args.obj.display_name));
 				if (args.obj.icon_image)
 					cell.append(icon(args.obj.icon_image, extinfo_link({
 						host: args.obj.name
@@ -487,15 +487,6 @@ var listview_renderer_table = {
 				}
 				return cell;
 			}
-		},
-		"display_name": {
-			"header": _('Display name'),
-			"depends": [ 'display_name' ],
-			"sort": [ 'display_name' ],
-			"cell": function(args)
-			{
-				return $('<td />').text(args.obj.display_name);
-			}
 		}
 	},
 	
@@ -535,8 +526,8 @@ var listview_renderer_table = {
 		},
 		"host_name": {
 			"header": _('Host Name'),
-			"depends": [ 'host.name', 'host.icon_image' ],
-			"sort": [ 'host.name' ],
+			"depends": [ 'host.display_name', 'host.name', 'host.icon_image' ],
+			"sort": [ 'host.display_name' ],
 			"cell": function(args)
 			{
 				var cell = $('<td />');
@@ -545,7 +536,7 @@ var listview_renderer_table = {
 						&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 					cell.append(extinfo_link({
 						host: args.obj.host.name
-					}).text(args.obj.host.name));
+					}).text(args.obj.host.display_name));
 					
 					if (args.obj.host.icon_image)
 						cell.append(icon(args.obj.host.icon_image,
