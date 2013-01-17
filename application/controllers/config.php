@@ -53,6 +53,7 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					_('Host Name'),
 					_('Alias/Description'),
+					_('Display Name'),
 					_('Address'),
 					_('Parent Hosts'),
 					_('Max. Check Attempts'),
@@ -94,6 +95,7 @@ class Config_Controller extends Authenticated_Controller {
 						$row = (object) $row;
 						$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
 						$result[$i][]= $row->alias;
+						$result[$i][]= $row->display_name;
 						$result[$i][]= $row->address;
 						$tmp = array();
 						foreach ($row->parents as $parent) {
