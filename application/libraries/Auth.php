@@ -1,8 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-require_once('op5/auth/Auth.php');
-require_once('op5/auth/User_NoAuth.php');
-require_once('op5/auth/User_AlwaysAuth.php');
+$baseauth = Kohana::config('config.op5lib');
+require_once($baseauth.'/auth/Auth.php');
+require_once($baseauth.'/auth/User_NoAuth.php');
+require_once($baseauth.'/auth/User_AlwaysAuth.php');
 
 /**
  * User authentication and authorization library.

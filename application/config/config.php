@@ -271,3 +271,11 @@ $config['show_notes_chars'] = 80;
 *  in the Service detail view.
 */
 $config['service_long_output_enabled'] = false;
+
+/**
+ * Path to op5lib
+ *
+ * This should be an absolute path, unless you have op5lib in the global
+ * PHP path.
+ */
+$config['op5lib'] = 'op5';

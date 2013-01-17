@@ -1,5 +1,5 @@
-SHELL = /bin/bash
 GENERATE_PHP_MODS=
+OP5LIBCFG=test/configs/all-host_service-states/op5lib
 
 all: generate-css generate-php
 
@@ -29,18 +29,16 @@ test: test-php-lint test-reports test-unittest
 
 test-reports:
 	make test-ci-prepare
-	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/unit_test/reports/*.tst; res=$$?; make test-ci-cleanup; exit $$res
 
 test-unittest: generate-php
 	make test-ci-prepare
-	php index.php ninja_unit_test; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
 	git checkout test/configs/all-host_service-states/var/status.sav || :
 	if [ -e test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid) || :; fi
-	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; fi
-	rm -rf /tmp/ninja-test
-	rm -f application/config/custom/database.php
+	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; rm /tmp/ninja-test/nagios.cmd; fi
 	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
 
 test-ci-prepare: test-ci-cleanup prepare-config
@@ -88,7 +86,6 @@ wipe:
 prepare-config:
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
-	echo "<?php \$$config['livestatus'] = array('benchmark' => true, 'path' => 'unix:///tmp/ninja-test/live');" > application/config/custom/database.php
 	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';" > application/config/custom/config.php
 
 .PHONY: test help test-reports clean

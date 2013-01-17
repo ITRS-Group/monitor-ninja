@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-require_once('op5/log.php');
+require_once(Kohana::config('config.op5lib').'/log.php');
 
 /**
  * Base NINJA controller.

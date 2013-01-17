@@ -1,0 +1,12 @@
+auth:
+  file: /var/log/op5/auth.log
+  level: error
+  reference: true
+synergy:
+  file: /var/log/op5/synergy.log
+  level: error
+  reference: true
+ninja:
+  file: /var/log/op5/ninja.log
+  level: error
+  reference: true
