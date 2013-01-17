@@ -5,7 +5,7 @@
  * @package NINJA
  * @author op5 AB
  * @license GPL
- */
+*/
 class Netw_health_Widget extends widget_Base {
 	protected $duplicatable = true;
 
@@ -19,20 +19,34 @@ class Netw_health_Widget extends widget_Base {
 	private $ok_img = '/images/thermok.png';
 	private $host_val = false;
 	private $service_val = false;
+	
+	private $netw_health_config = <<<EOC
+- HOSTS
+[hosts] all
+[hosts] state = 0
+- SERVICE
+[services] all
+[services] state = 0
+EOC;
 
 	public function __construct($model)
 	{
 		parent::__construct($model);
 
 		$this->health_warning_percentage =
-			isset($this->model->setting['health_warning_percentage'])
-			? $this->model->setting['health_warning_percentage']
-			: $this->health_warning_percentage;
+		isset($this->model->setting['health_warning_percentage'])
+		? $this->model->setting['health_warning_percentage']
+		: $this->health_warning_percentage;
 
 		$this->health_critical_percentage =
-			isset($this->model->setting['health_critical_percentage'])
-			? $this->model->setting['health_critical_percentage']
-			: $this->health_critical_percentage;
+		isset($this->model->setting['health_critical_percentage'])
+		? $this->model->setting['health_critical_percentage']
+		: $this->health_critical_percentage;
+
+		$this->netw_health_config =
+		isset($this->model->setting['netw_health_config'])
+		? $this->model->setting['netw_health_config']
+		: $this->netw_health_config;
 
 	}
 
@@ -45,6 +59,13 @@ class Netw_health_Widget extends widget_Base {
 		$options[] = new option($this->model->name, 'health_critical_percentage', 'Critical Percentage Level', 'input', array(
 			'style' => 'width:20px',
 			'title' => sprintf(_('Default value: %s%%'), 75)), $this->health_warning_percentage);
+/*
+ * Because the configuration is to hard for now to support, this is commented out.
+ * 
+ * Otherwise this can be configured here...
+ */
+		$options[] = new option($this->model->name, 'netw_health_config', 'Configuration', 'textarea', array(), $this->netw_health_config);
+
 		return $options;
 	}
 
@@ -52,51 +73,55 @@ class Netw_health_Widget extends widget_Base {
 	{
 		# fetch widget view path
 		$view_path = $this->view_path('view');
-		$current_status = $this->get_current_status();
-
-		# fetch network health data
-		$this->host_val = $current_status->percent_host_health;
-		$this->service_val = $current_status->percent_service_health;
-
-		# format data according to current values
-		$this->format_health_data();
 
 		$health_warning_percentage = $this->health_warning_percentage;
 		$health_critical_percentage = $this->health_critical_percentage;
 
-		$host_label = _('HOSTS');
-		$service_label = _('SERVICES');
-		$host_value 	= $this->host_val;
-		$service_value 	= $this->service_val;
-		$host_image 	= $this->widget_full_path.$this->host_img;
-		$service_image 	= $this->widget_full_path.$this->service_img;
+		/*
+		 * Parse configuration text
+		 * 
+		 * Sets $bars to an array where each element is a array of three values, containing:
+		 * - Name of bar
+		 * - Query matching elements defining the set to measure on
+		 * - Query matching which elements is included in the percentatage
+		 * 
+		 * Both queries needs to work on the same table. 
+		 */
+		$blocks = array();
+		$bar_configs = array();
+		foreach( explode("\n",$this->netw_health_config) as $line ) {
+			$line = trim($line);
+			if( $line == '' )
+				continue;
+			if( $line[0] == '-' ) {
+				if( count($blocks) == 3 ) {
+					$bar_configs[] = $blocks;
+				}
+				$blocks = array(trim(substr($line,1)));
+			} else {
+				$blocks[] = $line;
+			}
+		}
+		if( count($blocks) == 3 ) {
+			$bar_configs[] = $blocks;
+		}
+		
+		/* Calculate stats */
+		$bars = array();
+		foreach($bar_configs as $bar) {
+			list($name, $all_query, $sel_query) = $bar;
+			$set_all = ObjectPool_Model::get_by_query($all_query);
+			$set_sel = ObjectPool_Model::get_by_query($sel_query);
+			list($count_all, $count_sel) = $set_all->stats(array($set_all, $set_sel));
+			if( $count_all == 0 ) $count_all = 1;
+			$bars[] = array(
+				'label' => $name,
+				'value' => round(100.0*$count_sel/$count_all,1)
+				);
+		}
 
 		# set required extra resources
 		$this->js = array('js/netw_health');
 		require($view_path);
-	}
-
-	/**
-	 * Decide how to present network health
-	 *
-	 */
-	private function format_health_data()
-	{
-		# host bar color
-		if ($this->host_val < $this->health_critical_percentage)
-			$this->host_img = $this->crit_img;
-		elseif ($this->host_val < $this->health_warning_percentage)
-			$this->host_img = $this->warn_img;
-		else
-			$this->host_img = $this->ok_img;
-
-		# service bar color
-		if ($this->service_val < $this->health_critical_percentage)
-			$this->service_img = $this->crit_img;
-		elseif ($this->service_val < $this->health_warning_percentage)
-			$this->service_img = $this->warn_img;
-		else
-			$this->service_img = $this->ok_img;
-		return true;
 	}
 }
