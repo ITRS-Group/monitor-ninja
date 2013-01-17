@@ -10,7 +10,7 @@ class Scheduled_reports_Model extends Model
 	/**
 	 * Given a scheduled report id, delet it from db
 	 */
-	public function delete_scheduled_report($id=false)
+	static function delete_scheduled_report($id=false)
 	{
 		$id = (int)$id;
 		if (empty($id)) return false;
@@ -23,7 +23,7 @@ class Scheduled_reports_Model extends Model
 	/**
 	*	Delete ALL schedules for a certain report_id and type
 	*/
-	public function delete_all_scheduled_reports($type='avail',$id=false)
+	static function delete_all_scheduled_reports($type='avail',$id=false)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary'	)
@@ -122,7 +122,7 @@ class Scheduled_reports_Model extends Model
 	 * Get available report periods
 	 * @return array [id] => string. False on errors.
 	 */
-	public static function get_available_report_periods()
+	static function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
 		$db = Database::instance();
@@ -143,7 +143,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $type the database column
 	 * @param $id the id of the scheduled report
 	 */
-	public function fetch_scheduled_field_value($type=false, $id=false)
+	static function fetch_scheduled_field_value($type=false, $id=false)
 	{
 		$id = (int)$id;
 		$type = trim($type);
@@ -159,40 +159,6 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	 * Delete a schedule from database
-	 *
-	 * @param $id int: The id of the report to delete.
-	 * @param $context string: Enables us to take different actions
-	 * 			depending on where it is called from
-	 * @return ajax output
-	 */
-	public function delete_schedule_ajax($id=false, $context=false)
-	{
-		$id = (int)$id;
-		$xajax = get_xajax::instance();
-		$objResponse = new xajaxResponse();
-
-		$objResponse->call("show_progress", "progress", _('Please wait...'));
-		if (!$id) {
-			$objResponse->assign("err_msg","innerHTML", _("Missing ID so nothing to delete"));
-			return $objResponse;
-		}
-		$sql = "DELETE FROM scheduled_reports WHERE id=".$id;
-		$db = Database::instance();
-		$res = $db->query($sql);
-		$objResponse->call('hide_progress');
-		switch ($context) {
-			case 'setup':
-				$objResponse->call('remove_deleted_rows', $id);
-				break;
-			case 'edit':
-				$objResponse->call('remove_schedule', $id);
-				break;
-		}
-		return $objResponse;
-	}
-
-	/**
 	 * @param $id = false
 	 * @param $rep_type = false
 	 * @param $saved_report_id = false
@@ -203,7 +169,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $local_persistent_filepath = ''
 	 * @return string|int either error string or the report's id
 	 */
-	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')
+	static function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')
 	{
 		$local_persistent_filepath = trim($local_persistent_filepath);
 		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
@@ -263,7 +229,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $value string: The new value.
 	 * @return true on succes. false on errors.
 	 */
-	public function update_report_field($id=false, $field=false, $value=false)
+	static function update_report_field($id=false, $field=false, $value=false)
 	{
 		$id = (int)$id;
 		$field = trim($field);
@@ -285,7 +251,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $id The id of the report.
 	 * @return Report type on success. False on errors.
 	 */
-	public function get_typeof_report($id=false)
+	static function get_typeof_report($id=false)
 	{
 		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE ".
 			"sr.id=".(int)$id." AND t.id=sr.report_type_id";
@@ -305,7 +271,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $identifier string: The name of the report
 	 * @return False on errors. Id of the report on success.
 	 */
-	public function get_report_type_id($identifier=false)
+	static function get_report_type_id($identifier=false)
 	{
 		$db = Database::instance();
 		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($identifier);
@@ -327,7 +293,7 @@ class Scheduled_reports_Model extends Model
 	*	Fetch info on all defined report types, i.e all
 	* 	types we can schedule
 	*/
-	public static function get_all_report_types()
+	static function get_all_report_types()
 	{
 		$db = Database::instance();
 		$sql = "SELECT * FROM scheduled_report_types ORDER BY id";
@@ -343,7 +309,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $schedule_id The id of the schedule we're interested in.
 	 * @return False on errors. Options object on success.
 	 */
-	public function get_scheduled_data($schedule_id=false)
+	static function get_scheduled_data($schedule_id=false)
 	{
 		$schedule_id = (int)$schedule_id;
 		if (!$schedule_id) {
@@ -371,7 +337,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $period_str string: { daily, weekly, monthly }
 	 * @return array
 	 */
-	public static function get_period_schedules($period_str)
+	static function get_period_schedules($period_str)
 	{
 		$period_str = trim(ucfirst($period_str));
 		$db = Database::instance();

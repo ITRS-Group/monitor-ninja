@@ -263,7 +263,7 @@ class Saved_reports_Model extends Model
 	 * @param $id Id of the report to delete.
 	 * @return true on success, false on errors
 	 */
-	public function delete_report($type='avail', $id)
+	static function delete_report($type='avail', $id)
 	{
 		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 
@@ -402,7 +402,7 @@ class Saved_reports_Model extends Model
 	/**
 	*	Make monthly SLA values dynamic
 	*/
-	public function adjust_sla_periods($num=false, &$arr, $is_quarter=false)
+	static function adjust_sla_periods($num=false, &$arr, $is_quarter=false)
 	{
 		if (empty($num)) {
 			return false;
@@ -460,7 +460,7 @@ class Saved_reports_Model extends Model
 	 * @param $sla_id int: Id of the report schedule
 	 * @return false on errors. Database result array on success.
 	 */
-	public function get_period_info($sla_id=false)
+	static function get_period_info($sla_id=false)
 	{
 		if (empty($sla_id))
 			return false;
