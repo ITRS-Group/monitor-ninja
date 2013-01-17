@@ -619,7 +619,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			else {
 				foreach ($saved_report_info as $key => $sri) {
 					if ($options->always_allow_option_to_be_set($key) ||
-						($options->vtypes[$key]['type'] !== 'bool' && $options[$key] === $options->vtypes[$key]['default']))
+						(isset($options->vtypes[$key]) && $options->vtypes[$key]['type'] !== 'bool' && $options[$key] === $options->vtypes[$key]['default']))
 					{
 						$options[$key] = $sri;
 					}
