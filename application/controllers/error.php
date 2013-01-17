@@ -31,8 +31,10 @@ class Error_Controller extends Ninja_Controller  {
 		$this->template->title = _('Page Not Found');
 	}
 
-	public function show_livestatus() {
+	public function show_livestatus($exception) {
 		$this->template->content = $this->add_view('livestatus');
 		$this->template->title = _('Livestatus error');
+		if (!IN_PRODUCTION)
+			$this->template->content->exception = $exception;
 	}
 }

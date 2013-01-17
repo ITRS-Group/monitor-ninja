@@ -20,7 +20,7 @@ class errors {
 			$error->show_404();
 			break;
 		 case 'application.livestatus':
-			$error->show_livestatus();
+			$error->show_livestatus(Event::$data);
 			break;
 		 default:
 			return;
