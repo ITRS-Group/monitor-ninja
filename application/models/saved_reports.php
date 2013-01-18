@@ -189,7 +189,7 @@ class Saved_reports_Model extends Model
 	*	Handle info on SLA period values (monthly)
 	* 	Remove old values and enter the new ones
 	*/
-	function save_period_info($sla_id=false, $months=false)
+	static function save_period_info($sla_id=false, $months=false)
 	{
 		if (empty($sla_id))
 			return false;
