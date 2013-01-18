@@ -265,9 +265,6 @@ class Summary_Controller extends Base_reports_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		$nagios_etc_path = Kohana::config('config.nagios_etc_path');
-		$nagios_etc_path = $nagios_etc_path !== false ? $nagios_etc_path : Kohana::config('config.nagios_base_path').'/etc';
-
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(

@@ -44,6 +44,7 @@ class Backup_Test extends TapUnit {
 		$controller->restore($this_backup);
 		$this->ok(isset($controller->template->status) && $controller->template->status,
 			"asserting restore success: returned {$controller->template->message}\nFull output: ".$controller->debug);
+		sleep(5); // *sigh* Wait for nagios to start again...
 	}
 
 	public function test_backup_delete() {

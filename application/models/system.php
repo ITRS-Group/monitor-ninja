@@ -5,7 +5,6 @@
  */
 class System_Model extends Model
 {
-
 	/**
 	*	Fetch nagios base path as configured in config file
 	*	@return string 'config.nagios_base_path'
@@ -13,6 +12,19 @@ class System_Model extends Model
 	public static function get_nagios_base_path()
 	{
 		return Kohana::config('config.nagios_base_path');
+	}
+
+	/**
+	*	Fetch nagios etc path as configured in config file
+	*	@return string directory where nagios.cfg can be found
+	*/
+	public static function get_nagios_etc_path()
+	{
+		$etc = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : (self::get_nagios_base_path().'/etc');
+		if (substr($etc, -1, 1) != '/') {
+			$etc .= '/';
+		}
+		return $etc;
 	}
 
 	/**
@@ -48,14 +60,8 @@ class System_Model extends Model
 
 		# check if we have a full path as input
 		if (!file_exists($config_file)) {
-			$base_path = self::get_nagios_base_path();
-			$base_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
-			$etc = strstr($base_path, '/etc') ? '' : '/etc/';
-			# check that we have a trailing slash in path
-			if (substr($base_path.$etc, -1, 1) != '/') {
-				$etc .= '/';
-			}
-			$config_file = $base_path.$etc.$config_file;
+			$etc = self::get_nagios_etc_path();
+			$config_file = $etc.$config_file;
 		}
 
 		if (!file_exists($config_file)) {
@@ -88,46 +94,6 @@ class System_Model extends Model
 		}
 
 		return $options;
-	}
-
-	/**
-	 * Call parse_config_file() with cgi.cfg
-	 * and fetch user configuration options (authorized_for)
-	 */
-	public function fetch_nagios_users()
-	{
-		$cgi_config = false;
-		$base_path = self::get_nagios_base_path();
-		$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
-		$cgi_config_file = $etc_path."/cgi.cfg";
-		$user_data = false;
-		$access_levels = array('authorized_for_system_information',
-						'authorized_for_configuration_information',
-						'authorized_for_system_commands',
-						'authorized_for_all_services',
-						'authorized_for_all_hosts',
-						'authorized_for_all_service_commands',
-						'authorized_for_all_host_commands');
-
-		$cgi_config = self::parse_config_file($cgi_config_file);
-		if(empty($cgi_config)) {
-			return false;
-		}
-
-		foreach($cgi_config as $k => $v) {
-			if(substr($k, 0, 14) === 'authorized_for') {
-				$cgi_config[$k] = explode(',', $v);
-			}
-		}
-
-		# fetch defined access data for users
-		foreach ($access_levels as $level) {
-			$users = $cgi_config[$level];
-			foreach ($users as $user) {
-				$user_data[$level][] = $user;
-			}
-		}
-		return $user_data;
 	}
 
 	/**

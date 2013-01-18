@@ -86,6 +86,6 @@ wipe:
 prepare-config:
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
-	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';" > application/config/custom/config.php
+	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '$$(pwd)/test/configs/all-host_service-states/';" > application/config/custom/config.php
 
 .PHONY: test help test-reports clean

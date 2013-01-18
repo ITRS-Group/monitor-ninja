@@ -40,7 +40,7 @@ cfg_file=servicedependencies.cfg
 
 object_cache_file=@@TESTDIR@@/var/objects.cache
 
-resource_file=/opt/monitor/etc/resource.cfg
+resource_file=resource.cfg
 
 temp_file=@@TESTDIR@@/var/nagios.tmp
 

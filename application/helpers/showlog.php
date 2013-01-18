@@ -15,10 +15,7 @@ class showlog_Core
 		# default limit
 		$limit = 2500;
 		$cgi_cfg = false;
-		$nagios_path = Kohana::config('config.nagios_base_path');
-		$etc_path = Kohana::config('config.nagios_etc_path');
-		if (!$etc_path)
-			$etc_path = $nagios_path . '/etc';
+		$etc_path = System_Model::get_nagios_etc_path();
 		$cgi_cfg = $etc_path . '/cgi.cfg';
 
 		$showlog = self::get_path();

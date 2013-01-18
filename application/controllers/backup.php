@@ -14,21 +14,12 @@ class Backup_Controller extends Authenticated_Controller {
 	public $debug = false;
 	public $model = false;
 	
-	private $files2backup = array(
-		'/opt/monitor/etc/nagios.cfg',
-		'/opt/monitor/etc/cgi.cfg',
-		'/opt/monitor/var/*.log',
-		'/opt/monitor/var/status.sav',
-		'/opt/monitor/var/archives',
-		'/opt/monitor/var/errors',
-		'/opt/monitor/var/traffic',
-		'/etc/op5/*.yml',
-	);
+	private $files2backup;
 	private $asmonitor = '/usr/bin/asmonitor -q ';
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
 	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
-	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg';
 	private $cmd_view = 'tar tfz ';
+	private $cmd_verify;
 
 	private $backup_suffix = '.tar.gz';
 	private $backups_location = '/var/www/html/backup';
@@ -38,22 +29,40 @@ class Backup_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		$nagioscfg = System_Model::get_nagios_etc_path()."nagios.cfg";
+		$this->cmd_verify = '/opt/monitor/bin/nagios -v '.$nagioscfg;
+		$this->files2backup = array(
+			System_Model::get_nagios_etc_path().'nagios.cfg',
+			System_Model::get_nagios_etc_path().'cgi.cfg',
+			System_Model::get_nagios_base_path().'/var/*.log',
+			System_Model::get_nagios_base_path().'/var/status.sav',
+			System_Model::get_nagios_base_path().'/var/archives', # Isn't this a config backup?
+			System_Model::get_nagios_base_path().'/var/errors',   # Then why would we want these?
+			System_Model::get_nagios_base_path().'/var/traffic',
+			Kohana::config('core.op5lib').'/*.yml',
+		);
+
+		$len = count($this->files2backup);
+		for ($i = 0; $i < $len; $i++) {
+			if (!file_exists($this->files2backup[$i]))
+				unset($this->files2backup[$i]);
+		}
 		$this->template->disable_refresh = true;
 		$this->auto_render = true;
 		$this->cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM" >> ' . System_Model::get_pipe();
 
-		$nagioscfg = "/opt/monitor/etc/nagios.cfg";
-		$handle = fopen($nagioscfg, 'r');
-		while($line=fgets($handle)) {
-			$cfg_file = preg_split('/^cfg_file[ \t]*=[ \t]*/', $line);
-			if(isset($cfg_file[1]))
-				$this->files2backup[]=trim($cfg_file[1]) . " ";
-			$resource_file = preg_split('/^resource_file[ \t]*=[ \t]*/', $line);
-			if(isset($resource_file[1]))
-				$this->files2backup[]=trim($resource_file[1]) . " ";
-			$cfg_dir = preg_split('/^cfg_dir[ \t]*=[ \t]*/', $line);
-			if(isset($cfg_dir[1]))
-				$this->files2backup[]=trim($cfg_dir[1]) . " ";
+		$nagcfg = System_Model::parse_config_file($nagioscfg);
+		foreach (array('cfg_file', 'resource_file', 'cfg_dir') as $interesting_file) {
+			if (!isset($nagcfg[$interesting_file]))
+				continue;
+			$files = $nagcfg[$interesting_file];
+			if (!is_array($files))
+				$files = array($files);
+			foreach ($files as $file) {
+				if ($file[0] !== '/')
+					$file = System_Model::get_nagios_etc_path().$file;
+				$this->files2backup[] = $file;
+			}
 		}
 
 		$user = Auth::instance()->get_user();
