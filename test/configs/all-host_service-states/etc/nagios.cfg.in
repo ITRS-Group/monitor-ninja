@@ -12,7 +12,7 @@
 ###############################################################################
 
 broker_module=/opt/monitor/op5/merlin/merlin.so @@TESTDIR@@/etc/merlin.conf
-broker_module=/opt/monitor/op5/livestatus/livestatus.o /tmp/ninja-test/live
+broker_module=/opt/monitor/op5/livestatus/livestatus.o /tmp/ninja-test/live debug=1
 
 precached_object_file=@@TESTDIR@@/var/objects.precache
 check_result_path=@@TESTDIR@@/var/spool/checkresults
@@ -71,6 +71,7 @@ check_external_commands=1
 command_check_interval=-1
 
 command_file=/tmp/ninja-test/nagios.cmd
+query_socket=/tmp/ninja-test/nagios.qh
 
 
 
