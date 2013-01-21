@@ -37,6 +37,7 @@ test-unittest: generate-php
 
 test-ci-cleanup:
 	git checkout test/configs/all-host_service-states/var/status.sav || :
+	rm -f application/config/custom/config.php
 	if [ -e test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid) || :; fi
 	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; rm /tmp/ninja-test/nagios.cmd; fi
 	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
