@@ -12,7 +12,7 @@ class Send_report_Model extends Model {
 	 * @throws RuntimeException if file is not readable
 	 * @return boolean
 	 */
-	public function send($data, $filename, $format, $recipient)
+	static function send($data, $filename, $format, $recipient)
 	{
 
 		$to = $recipient;
