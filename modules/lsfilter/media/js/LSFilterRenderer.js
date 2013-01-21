@@ -564,14 +564,14 @@ var listview_renderer_table = {
 		},
 		"description": {
 			"header": _('Service'),
-			"depends": [ 'host.name', 'description' ],
-			"sort": [ 'description' ],
+			"depends": [ 'host.name', 'description', 'display_name' ],
+			"sort": [ 'display_name' ],
 			"cell": function(args)
 			{
 				return $('<td />').append(extinfo_link({
 					host: args.obj.host.name,
 					service: args.obj.description
-				}).text(args.obj.description));
+				}).text(args.obj.display_name));
 			}
 		},
 		"actions": {
@@ -679,15 +679,6 @@ var listview_renderer_table = {
 			{
 				return $('<td style="max-width: 300px;" />').text(
 						args.obj.plugin_output);
-			}
-		},
-		"display_name": {
-			"header": _('Display name'),
-			"depends": [ 'display_name' ],
-			"sort": [ 'display_name' ],
-			"cell": function(args)
-			{
-				return $('<td />').text(args.obj.display_name);
 			}
 		}
 	},
