@@ -6,6 +6,7 @@ function lsfilter_list(config)
 		autorefresh_delay: 30000,
 		request_url: _site_domain + _index_page + "/" + _controller_name
 				+ "/fetch_ajax",
+		columns: false,
 		attach_head: false,
 		loading_start: function()
 		{
@@ -48,6 +49,8 @@ function lsfilter_list(config)
 		
 		this.request_query = data.query;
 		this.request_metadata = metadata;
+		
+		this.table_desc = new lsfilter_list_table_desc(this.request_metadata, this.config.columns);
 		
 		this.sort_vis_column = false;
 		this.sort_db_columns = [];
@@ -92,12 +95,7 @@ function lsfilter_list(config)
 			this.sort_ascending = !this.sort_ascending;
 		}
 		else {
-			this.sort_db_columns = [];
-			for ( var key in listview_renderer_table[table]) {
-				if (key == vis_column) {
-					this.sort_db_columns = listview_renderer_table[table][key].sort;
-				}
-			}
+			this.sort_db_columns = this.table_desc.sort_cols(vis_column);
 			this.sort_vis_column = vis_column;
 			this.sort_ascending = true;
 		}
@@ -152,7 +150,7 @@ function lsfilter_list(config)
 					data: {
 						"query": this.request_query,
 						"sort": db_sort_columns,
-						"columns": listview_columns_for_table(this.request_metadata['table']),
+						"columns": this.table_desc.db_columns,
 						"limit": options.per_page,
 						"offset": options.offset
 					},
@@ -331,8 +329,9 @@ function lsfilter_list(config)
 		var columns = new Array();
 		var header = $('<tr />');
 		
-		for ( var key in listview_renderer_table[data.table]) {
-			var col_render = listview_renderer_table[data.table][key];
+		for ( var key=0; key<this.table_desc.vis_columns.length; key++ ) {
+			var col_name = this.table_desc.vis_columns[key];
+			var col_render = this.table_desc.col_renderers[col_name];
 			
 			/*
 			 * Check if column is avalible in current view.
@@ -351,9 +350,9 @@ function lsfilter_list(config)
 			
 			if (col_render.sort) {
 				var sort_dir = 0;
-				if (sort_col == key) sort_dir = -1;
+				if (sort_col == col_name) sort_dir = -1;
 				if (sort_asc) sort_dir = -sort_dir;
-				this.add_sort(data.table, th, key, sort_dir);
+				this.add_sort(data.table, th, col_name, sort_dir);
 			}
 			header.append(th);
 		}
