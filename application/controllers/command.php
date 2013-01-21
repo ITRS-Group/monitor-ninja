@@ -120,7 +120,7 @@ class Command_Controller extends Authenticated_Controller
 				$params[$k] = $v;
 			}
 		}
-		$auth_check = $this->_is_authorized_for_command($params);
+		$auth_check = self::_is_authorized_for_command($params);
 		if ($auth_check === false || $auth_check <0 ) {
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
@@ -319,7 +319,7 @@ class Command_Controller extends Authenticated_Controller
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
-		$auth_check = $this->_is_authorized_for_command($param, $cmd);
+		$auth_check = self::_is_authorized_for_command($param, $cmd);
 		if ($auth_check === false || $auth_check <0) {
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
@@ -569,7 +569,7 @@ class Command_Controller extends Authenticated_Controller
 	 *	-3:		not authorized from cgi.cfg, and not a configured contact
 	 * false:		fallthrough, not authorized for anything
 	 */
-	public function _is_authorized_for_command($params = false, $cmd = false)
+	static function _is_authorized_for_command($params = false, $cmd = false)
 	{
 		$type = false;
 		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : $cmd;

@@ -1088,7 +1088,7 @@ class nagioscmd_Core
 	 * @value The parameter value
 	 * @return The massaged parameter value
 	 */
-	private function massage_param($name, $value)
+	private static function massage_param($name, $value)
 	{
 		# We only massage *_time fields for now
 		if (strpos($name, '_time') !== false) {
@@ -1122,7 +1122,7 @@ class nagioscmd_Core
 	 * @param $param Parameters to use as macros for the template
 	 * @return A command string on success, false on errors
 	 */
-	public function build_command($cmd, $param)
+	static function build_command($cmd, $param)
 	{
 		if (is_array($cmd))
 			$info = $cmd;
@@ -1207,7 +1207,7 @@ class nagioscmd_Core
 	 * the links to the cmd controller
 	 *
 	 */
-	public function command_link($command_type=false, $host=false, $service=false, $lable='', $method='submit', $force=false)
+	static function command_link($command_type=false, $host=false, $service=false, $lable='', $method='submit', $force=false)
 	{
 		$host = trim($host);
 
