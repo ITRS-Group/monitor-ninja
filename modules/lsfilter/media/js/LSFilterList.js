@@ -64,12 +64,7 @@ function lsfilter_list(config)
 			
 			this.sort_vis_column = order_parts[0];
 			
-			this.sort_db_columns = [];
-			for ( var key in listview_renderer_table[metadata.table] ) {
-				if (key == this.sort_vis_column) {
-					this.sort_db_columns = listview_renderer_table[metadata.table][key].sort;
-				}
-			}
+			this.sort_db_columns = this.table_desc.sort_cols(this.sort_vis_column);
 		}
 		if (order_parts.length == 2) {
 			this.sort_ascending = (order_parts[1].toLowerCase() == 'asc');
