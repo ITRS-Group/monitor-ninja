@@ -8,11 +8,11 @@ if (isset($data_str)) {
 		<div class="pie-chart">
 			<table>
 				<tr><th><?php echo help::render('piechart').' '._('Status overview') ?> <?php echo ($data_str[$i]['host'] != '') ? ': '.$data_str[$i]['host'] : ''; ?></th></tr>
-				<tr class="even"><td><img src="<?php echo url::site() ?>public/piechart/<?php echo $data_str[$i]['img'] ?>" alt="<?php echo _('Uptime');?>" /></td></tr>
+				<tr class="even"><td><img src="<?php echo url::site() ?>public/piechart/?<?php echo $data_str[$i]['img'] ?>" alt="<?php echo _('Uptime');?>" /></td></tr>
 			</table>
 		</div>
 		<?php
 		}
 	} else if(!empty($data_str)) { ?>
-		<img src="<?php echo url::site()?>public/piechart/<?php echo $data_str ?>" alt="<?php echo _('Uptime');?>" id="pie" />
+		<img src="<?php echo url::site()?>public/piechart/?<?php echo $data_str ?>" alt="<?php echo _('Uptime');?>" id="pie" />
 <?php } } ?>

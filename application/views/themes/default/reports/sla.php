@@ -24,7 +24,7 @@ foreach($report_data as $i =>  $report) {
 		$avail_link = html_entity_decode($report['avail_link']);
 		parse_str(substr($avail_link, strpos($avail_link, '?')+1), $avail_link); ?>
 		<form action="<?php echo url::site() ?>avail/generate" method="post">
-			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
+			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
 			<?php foreach($avail_link as $key => $value) {
 				if(is_array($value)) {
 					foreach($value as $value_part) { ?>

@@ -429,7 +429,7 @@ class Reports_Controller extends Base_reports_Controller
 				$charts = false;
 				$page_js = '';
 				for($i = 0; $i < $groups_added; $i++) {
-					$data_str[$i]['img'] = base64_encode(serialize($image_data[$i]));
+					$data_str[$i]['img'] = http_build_query($image_data[$i]);
 					$data_str[$i]['host'] = $pie_groupname[$i];
 				}
 
@@ -464,7 +464,7 @@ class Reports_Controller extends Base_reports_Controller
 					}
 
 					if ($image_data) {
-						$data_str = base64_encode(serialize($image_data));
+						$data_str = http_build_query($image_data);
 						$avail->pie->data_str = $data_str;
 						$avail->pie->source = $data['source'];
 					}
@@ -886,12 +886,10 @@ class Reports_Controller extends Base_reports_Controller
 			if (!$name && count($source) == 1)
 				$name = $source;
 
-			$data_str = base64_encode(serialize($data));
-
 			$report_data[] = array(
 				'name' => $name,
 				'table_data' => $table_data,
-				'data_str' => $data_str,
+				'data_str' => http_build_query($data),
 				'source' => $source,
 				'avail_link' => $this->_generate_avail_member_link(),
 			);

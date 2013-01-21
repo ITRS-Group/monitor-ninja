@@ -23,13 +23,12 @@ class Public_Controller extends Controller {
 	/**
 	*	Create a piechart
 	*/
-	public function piechart($in_data)
+	public function piechart()
 	{
 		$this->auto_render = false;
-		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('Pie');
 		$graph = new PieChart(300, 200);
-		$graph->set_data($data, 'pie');
+		$graph->set_data($_GET, 'pie');
 		$graph->set_margins(30);
 
 		$graph->draw();
@@ -39,16 +38,15 @@ class Public_Controller extends Controller {
 	/**
 	*	Create a barchart
 	*/
-	public function barchart($in_data)
+	public function barchart()
 	{
 		$this->auto_render = false;
-		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('MultipleBar');
 		$graph = new MultipleBarChart(800, 600);
 
 		$barvalues = false;
 		$barcolors = false;
-		foreach ($data as $tmpkey => $tmpval) {
+		foreach ($_GET as $tmpkey => $tmpval) {
 			$barvalues[$tmpkey] = array($tmpval[1], $tmpval[0]);
 			$barcolors[] = false;
 			$barcolors[] = $tmpval[2] ? Reports_Controller::$colors['red'] : Reports_Controller::$colors['green'];

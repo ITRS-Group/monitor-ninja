@@ -124,6 +124,7 @@ class Chart {
 		// to float - "check"
 		foreach ($data as $key => $row)
 		{
+			$key = preg_replace("~[^a-zA-Z0-9 -_]~", null, $key);
 			if ($type === 'pie')
 				$labels[] = $key;
 
