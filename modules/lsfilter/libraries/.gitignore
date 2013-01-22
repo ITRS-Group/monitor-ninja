@@ -4,4 +4,10 @@ LSFilterLexer.php
 LSFilterParser.php
 LSFilterPreprocessor.php
 LSFilterVisitor.php
+LSColumns.php
+LSColumnsException.php
+LSColumnsLexer.php
+LSColumnsParser.php
+LSColumnsPreprocessor.php
+LSColumnsVisitor.php
 
