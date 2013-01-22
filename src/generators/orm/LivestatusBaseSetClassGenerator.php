@@ -31,8 +31,8 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 		$this->set_model();
 	}
 
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		$this->init_class( 'Object'.$this->structure['source'].'Set', array('abstract') );
 		
 		$this->variable('table',$this->name,'protected');

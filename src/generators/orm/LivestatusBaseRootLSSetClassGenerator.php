@@ -12,8 +12,8 @@ class LivestatusBaseRootLSSetClassGenerator extends class_generator {
 		$this->set_model();
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		$this->classfile("op5/livestatus.php");
 		$this->init_class( 'ObjectSet', array('abstract') );
 		$this->generate_stats();

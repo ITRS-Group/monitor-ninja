@@ -15,8 +15,8 @@ class LivestatusWrapperClassGenerator extends class_generator {
 		$this->set_model();
 	}
 
-	public function generate() {
-		parent::generate( true );
+	public function generate($skip_generated_note = true) {
+		parent::generate($skip_generated_note);
 		$baseclassname = 'Base'.$this->get_classname();
 		if( isset( $this->classpaths[$baseclassname] ) ) {
 			$this->classfile($this->classpaths[$baseclassname],true);
