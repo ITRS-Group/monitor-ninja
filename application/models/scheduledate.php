@@ -111,7 +111,7 @@ class ScheduleDate_Model extends Model
 	 * @param $type string = false
 	 * @return array
 	 */
-	public function get_schedule_data($id = false, $type=false)
+	static function get_schedule_data($id = false, $type=false)
 	{
 		$db = Database::instance();
 
