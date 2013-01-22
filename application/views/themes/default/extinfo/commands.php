@@ -236,6 +236,19 @@
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host, $service, $label); ?></td>
 		</tr>
+		<?php
+		if (isset($custom_commands)) {
+			foreach ($custom_commands as $command_name => $link) {
+				?>
+				<tr>
+					<td class="icon dark">
+						<span class="icon-16 x16-cli" title="<?php echo _("$command_name") ?>"></span>
+					</td>
+					<td class="custom_command"><?php echo $link ?></td>
+				</tr>
+			<?php
+			}
+		}?>
 	</table>
 </div>
 
