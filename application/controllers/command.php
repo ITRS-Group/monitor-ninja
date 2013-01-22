@@ -120,8 +120,9 @@ class Command_Controller extends Authenticated_Controller
 				$params[$k] = $v;
 			}
 		}
-		$auth_check = self::_is_authorized_for_command($params);
-		if ($auth_check === false || $auth_check <0 ) {
+
+		$auth_check = $this->_is_authorized_for_command($params);
+		if ($auth_check === false || $auth_check < 0 ) {
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
@@ -781,8 +782,10 @@ class Command_Controller extends Authenticated_Controller
 		}
 		// Get relevant custom variable for authorization.
 		$object_id = $type === 'host' ? $host : $service;
-		$custom_variables = Custom_variable_Model::get_for($type, $object_id);
-		$custom_commands = Custom_variable_Model::parse_custom_variables($custom_variables, $command_name);
+		// FIXME! Custom variable model is removed.
+		// $custom_variables = Custom_variable_Model::get_for($type, $object_id);
+		// $custom_commands = Custom_variable_Model::parse_custom_variables($custom_variables, $command_name);
+		$custom_commands = Array();
 		if (empty($custom_commands)) {
 			$output = "You are not authorized to run this command or it doesn't exist.";
 		} else {
