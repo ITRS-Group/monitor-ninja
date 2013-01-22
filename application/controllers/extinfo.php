@@ -79,16 +79,18 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
 		$this->template->js_header->js = $this->xtra_js;
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->template->css_header->css = $this->xtra_css;
 
 		# save us some typing
 		$content = $this->template->content;
-		
+
 		if (count($result_data) === 0) {
 			return url::redirect('extinfo/unauthorized/'.$type);
 		}
 		$result = (object)$result_data[0];
-		
 
 		$content->custom_variables = array();
 		switch($type) {
@@ -102,7 +104,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
 				}
 				break;
-
 		}
 		$host_link = false;
 
@@ -115,16 +116,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 			$filter[] = "Or: ".count($filter);
 			$filter = implode("\n",$filter);
-			
+
 			$groups = $ls->getContactgroups(
 				array(
 					'extra_header' => $filter,
 					'extra_columns' => array('members')
 				)
 			);
-			
 
-			
 			$complete_groups = false;
 			foreach($groups as $group) {
 				$filter = array();
@@ -298,13 +297,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$commands->result = $result;
 
 		// Catch special cases 
-		$content->custom_commands = Custom_variable_Model::parse_custom_variables($content->custom_variables);
+		$content->custom_commands = Custom_Command_Model::parse_custom_variables($content->custom_variables);
 		if ($content->custom_commands) {
 			$commands->custom_commands = array();
-			// Create links.
 			foreach ($content->custom_commands as $command_name => $action) {
 				$linktext = ucwords(strtolower(str_replace('_', ' ', $command_name)));
-				$commands->custom_commands[$command_name] = $this->command_link($action, $host, $service, $linktext);
+				$commands->custom_commands[$command_name] = "<a href='#' title='$command_name $type $host $service'>" . $linktext . "</a>";
 			}
 		}
 
@@ -547,7 +545,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Display extinfo for host- and servicegroups
+	*   Display extinfo for host- and servicegroups
 	*
 	*/
 	public function group_details($grouptype='servicegroup', $group=false)
@@ -585,7 +583,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		# check if nagios is running, will affect wich template to use
-/*		$status = $ls->getProcessInfo();
+/*      $status = $ls->getProcessInfo();
 		if (empty($status) || !$status->is_running) {
 			$this->template->content = $this->add_view('extinfo/not_running');
 			$this->template->content->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
@@ -622,7 +620,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-//					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
+//                  _('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'alert_history/generate?'.$grouptype.'[]='.$group
 				);
@@ -632,7 +630,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-//					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
+//                  _('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'alert_history/generate??'.$grouptype.'[]='.$group
 				);
@@ -646,7 +644,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Print comments for host or service
+	*   Print comments for host or service
 	*/
 	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
 	{
@@ -779,9 +777,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$comment_type = 'downtime';
 		foreach ($schedule_downtime_comments as $row) {
-//			if (empty($row->comment_data)) {
-//				continue;
-//			}
+//          if (empty($row->comment_data)) {
+//              continue;
+//          }
 			$comment[$i] = $row;
 			$comment[$i]['comment_type'] = $comment_type;
 			$i++;
@@ -841,8 +839,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Show Program-Wide Performance Information
-	*	(Performance Info)
+	*   Show Program-Wide Performance Information
+	*   (Performance Info)
 	*/
 	public function performance()
 	{
@@ -983,7 +981,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Show scheduling queue
+	*   Show scheduling queue
 	*/
 	public function scheduling_queue()
 	{
