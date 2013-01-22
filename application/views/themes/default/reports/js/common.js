@@ -112,7 +112,9 @@ $(document).ready(function() {
 
 	$("#report_id").bind('change', function() {
 		if (check_and_submit($("#saved_report_form"))) {
-			$("#saved_report_form").trigger('submit');
+			$("#saved_report_form")
+				.attr("method", "get")
+				.trigger('submit');
 		}
 	});
 
