@@ -772,7 +772,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 		$options = new static($report_info);
 
-		if (isset($report_info['report_id'])) {
+		if (isset($report_info['report_id']) && $report_info['report_id']) {
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
 
 			if (count($report_info) == 1) {
