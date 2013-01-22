@@ -432,6 +432,18 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			if ($value < 0)
 				return false;
 			break;
+		 case 'host_filter_status':
+			$value = array_intersect_key($value, Reports_Model::$host_states);
+			$value = array_filter($value, function($val) {
+				return is_numeric($val) && $val == Reports_Model::HOST_EXCLUDED;
+			});
+			break;
+		 case 'service_filter_status':
+			$value = array_intersect_key($value, Reports_Model::$service_states);
+			$value = array_filter($value, function($val) {
+				return is_numeric($val) && $val == Reports_Model::SERVICE_EXCLUDED;
+			});
+			break;
 		 # fallthrough end
 		 case 'include_trends':
 			if ($value === true) {
