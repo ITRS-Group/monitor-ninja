@@ -9,6 +9,9 @@ name        /^([a-z0-9_]+)/i
 comma       /^(,)/
 minus       /^(-)/
 eq          /^(=)/
+add      /^(\+)/
+par_l       /^(\()/
+par_r       /^(\))/
 
 entry: definition = column_list end
 
@@ -20,4 +23,12 @@ column_default:     column = name
 column_disable:     column = _minus name
 column_custom:      column = name _eq expr
 
-expr_var:           expr = name
+
+expr_add:           expr     = expr _add expr2
+
+_expr_1_2:          expr     = expr2
+
+expr_var:           expr2    = name
+expr_string:        expr2    = string
+
+_expr_par:          expr2    = _par_l expr _par_r

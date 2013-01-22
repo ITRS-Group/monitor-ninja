@@ -1,10 +1,11 @@
 
 var LSColumnsPP = function(){
+	/*  add preprocessor as parent */
 	this.parent = LSColumnsPreprocessor;
 	this.parent();
 	
 	this.preprocess_string = function(value) {
-		return value;
+		return value.substring(1,value.length-1).replace(/\\(.)/g, '$1');
 	};
 	
 };
@@ -12,6 +13,7 @@ var LSColumnsPP = function(){
 var LSColumnsFilterListVisitor = function(all_columns, all_db_columns){
 	
 	this.custom_cols = {};
+	this.custom_deps = [];
 	
 	// entry: definition := * column_list end
 	this.visit_entry = function(column_list0, end1) {
@@ -75,12 +77,28 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns){
 		};
 	};
 	
-	// expr_var: expr := * name
-	this.visit_expr_var = function(name0) {
+	// expr_add: expr := * expr op_add expr2
+	this.visit_expr_add = function(expr0, expr2) {
 		return function(args) {
-			if( args.obj[name0] )
-				return args.obj[name0];
+			return expr0(args) + expr2(args);
+			};
+	};
+	
+	// expr_var: expr2 := * name
+	this.visit_expr_var = function(name0) {
+		this.custom_deps.push(name0);
+		var name = name0;
+		return function(args) {
+			if( args.obj[name] )
+				return args.obj[name];
 			return '';
+			};
+	};
+
+	// expr_string: expr2 := * string
+	this.visit_expr_string = function(string0) {
+		return function(args) {
+			return string0;
 			};
 	};
 	
@@ -116,6 +134,7 @@ function lsfilter_list_table_desc(metadata, columndesc)
 		try {
 			this.vis_columns = parser.parse(columndesc);
 			custom_columns = columns_line_visitor.custom_cols;
+			this.db_columns = this.db_columns.concat(columns_line_visitor.custom_deps);
 		} catch(e) {
 			console.log(parser);
 			console.log(columndesc);
@@ -129,17 +148,17 @@ function lsfilter_list_table_desc(metadata, columndesc)
 	/* Add custom column renderers */
 	for( var name in custom_columns ) {
 		var content = custom_columns[name];
-		this.col_renderers[name] = {
+		/* Some ugly way to bind variables... there must be a better way? */
+		this.col_renderers[name] = (function(in_content){return {
 			"header": name,
 			"depends": [],
 			"sort": false,
 			"cell": function(args)
 			{
-				return $('<td />').append(content(args));
+				return $('<td />').append(in_content(args));
 			}
-		};
+		};})(content);
 	}
-	console.log(this.col_renderers);
 	
 	for ( var i = 0; i < this.vis_columns.length; i++) {
 		/* Fetch column renderers */

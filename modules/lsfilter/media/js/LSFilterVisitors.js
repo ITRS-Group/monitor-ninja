@@ -3,7 +3,7 @@ var LSFilterPP = function LSFilterPP() {
 	this.parent();
 
 	this.preprocess_string = function(value) {
-		return value.substring(1,value.length-1);
+		return value.substring(1,value.length-1).replace(/\\(.)/g, '$1');
 	};
 }
 
