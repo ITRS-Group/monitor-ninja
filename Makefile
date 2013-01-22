@@ -16,7 +16,7 @@ install-sass:
 generate-css:
 	which compass || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
 	for skin in application/views/themes/default/css/*; do \
-		compass compile --boring $$skin; \
+		compass compile --trace --boring $$skin; \
 	done
 
 regenerate-php:
