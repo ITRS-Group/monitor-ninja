@@ -33,7 +33,7 @@ if (!empty($widgets)) {
 			<th colspan="2" style="padding: 5px 0px" >
 				<?php echo !empty($icon_image) ? html::image(Kohana::config('config.logos_path').$icon_image, array('alt' => $icon_image_alt, 'title' => $icon_image_alt, 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
 				<h1 style="display: inline"><?php echo ($main_object_alias ? $main_object_alias.' ('.$main_object.')' : $main_object) ?></h1>
-			</td>
+			</th>
 		</tr>
 		<?php
 			if ($type == 'service') {
