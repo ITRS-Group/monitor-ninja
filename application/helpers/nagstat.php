@@ -149,8 +149,6 @@ class nagstat_Core {
 		if (empty($string) || empty($obj) || empty($objtype)) {
 			return false;
 		}
-		
-				
 		$macros = array(
 				'host' => array(
 					'$HOSTNAME$' => 'name',
