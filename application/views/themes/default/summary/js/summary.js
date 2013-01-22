@@ -58,6 +58,9 @@ function expand_and_populate(data)
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
 	var field_str = reportObj.report_type;
+	if(!field_str) {
+		return;
+	}
 	$('#report_type').val(field_str);
 	set_selection(field_str);
 	get_members(field_str, function() {
