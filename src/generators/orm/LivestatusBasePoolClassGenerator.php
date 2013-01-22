@@ -20,6 +20,7 @@ class LivestatusBasePoolClassGenerator extends class_generator {
 		$this->generate_pool();
 		$this->generate_table_for_field();
 		$this->generate_setbuilder_all();
+		$this->generate_setbuilder_none();
 		$this->finish_class();
 	}
 	
@@ -55,7 +56,13 @@ class LivestatusBasePoolClassGenerator extends class_generator {
 	
 	private function generate_setbuilder_all() {
 		$this->init_function( 'all', array(), 'static' );
-		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'();');
+		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'(new LivestatusFilterAnd());');
+		$this->finish_function();
+	}
+	
+	private function generate_setbuilder_none() {
+		$this->init_function( 'none', array(), 'static' );
+		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'(new LivestatusFilterOr());');
 		$this->finish_function();
 	}
 }

@@ -70,7 +70,7 @@ class LivestatusBaseSetClassGenerator extends class_generator {
 				$this->write('}');
 				$this->write('}');
 				$this->write('$columns = $tmpcolumns;');
-				$this->write('$tmpset = new '.$type[0].'Set'.self::$model_suffix.'();');
+				$this->write('$tmpset = '.$type[0].'Pool'.self::$model_suffix.'::all();');
 				$this->write('$subcolumns = $tmpset->validate_columns($subcolumns);');
 				$this->write('if($subcolumns === false) return false;');
 				$this->write('foreach($subcolumns as $col) {');

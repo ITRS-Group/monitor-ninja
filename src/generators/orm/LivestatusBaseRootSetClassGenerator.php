@@ -37,8 +37,8 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 	}
 	
 	public function generate_construct() {
-		$this->init_function('__construct');
-		$this->write('$this->filter = new LivestatusFilterAnd();');
+		$this->init_function('__construct', array('filter'));
+		$this->write('$this->filter = $filter;');
 		$this->finish_function();
 	}
 	
@@ -52,10 +52,8 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->init_function($operator);
 		
 		$this->write('$filter = new '.$filterclass.'($this->filter);');
-		
-		$this->write('$result = new static();');
-		$this->write('$result->filter = $filter;');
-		$this->write('return $result;');
+
+		$this->write('return new static($filter);');
 		$this->finish_function();
 	}
 	
@@ -69,9 +67,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->write('$filter->add( $this->filter );');
 		$this->write('$filter->add( $set->filter );');
 		
-		$this->write('$result = new static();');
-		$this->write('$result->filter = $filter;');
-		$this->write('return $result;');
+		$this->write('return new static($filter);');
 		$this->finish_function();
 	}
 	
@@ -80,10 +76,8 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 		$this->write('$filter = new LivestatusFilterAnd();');
 		$this->write('$filter->add( $this->filter );');
 		$this->write('$filter->add( new LivestatusFilterMatch( $column, $value, $op ) );');
-		
-		$this->write('$result = new static();');
-		$this->write('$result->filter = $filter;');
-		$this->write('return $result;');
+
+		$this->write('return new static($filter);');
 		$this->finish_function();
 	}
 	
