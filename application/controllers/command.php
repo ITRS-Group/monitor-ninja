@@ -769,40 +769,61 @@ class Command_Controller extends Authenticated_Controller
 
 	/**
 	 * Executes custom commands and return output to ajax call.
-	 * @param $cmd string
-	 * @return string
+	 *	@param $command_name string
+	 *	@param $type string
+	 *	@param $host string
+	 *	@param $service string
+	 *	@return string
 	 */
 	public function exec_custom_command($command_name, $type=false, $host=false, $service=false)
 	{
 		// Stop redirects
 		$this->auto_render=false;
-		if ($host == false) {
-			echo "No object type or id was set. Aborting.";
+		if ($host === false) {
+			echo "No object type or identifier were set. Aborting.";
 			return;
 		}
-		// Get relevant custom variable for authorization.
-		$object_id = $type === 'host' ? $host : $service;
-		// FIXME! Custom variable model is removed.
-		// $custom_variables = Custom_variable_Model::get_for($type, $object_id);
-		// $custom_commands = Custom_variable_Model::parse_custom_variables($custom_variables, $command_name);
-		$custom_commands = Array();
+		// Get object data.
+		$ls = Livestatus::instance();
+		if(!empty($host) && empty($service)) {
+			$result_data = $ls->getHosts(array('filter' => array('name' => $host)));
+		}
+		else if(!empty($host) && !empty($service)) {
+			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service)));
+		}
+		$obj = (object)$result_data[0];
+
+		$custom_variables = array_combine($obj->custom_variable_names, $obj->custom_variable_values);
+		$custom_commands = Custom_command_Model::parse_custom_variables($custom_variables, $command_name);
 		if (empty($custom_commands)) {
-			$output = "You are not authorized to run this command or it doesn't exist.";
+			echo "You are not authorized to run this command or it doesn't exist.";
+			return;
 		} else {
-			// Fetch object data to be able to process macros
-			$result_data = Host_Model::object_status_by_id($host, $service);
-			$obj = $result_data[0];
 			$command = $custom_commands[$command_name];
-			$command = nagstat_Core::process_macros($command, $obj);
+			$command = nagstat::process_macros($command, $obj, $type);
+			// Set host/service comment that the command has been run
+			switch($type) {
+				case 'host':
+					$comment = "ADD_HOST_COMMENT;".$host.";1;".Auth::instance()->get_user()->username.";Executed custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name)));
+					break;
+				case 'service':
+					$comment = "ADD_SVC_COMMENT;".$host.";".$service.";1;".Auth::instance()->get_user()->username.";Executed custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name)));
+					break;
+			}
+			// Submit logs to nagios as comments.
+			$nagios_base_path = Kohana::config('config.nagios_base_path');
+			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+			nagioscmd::submit_to_nagios($comment, $pipe);
 			exec($command, $output, $status);
 		}
 		if ($status === 0) {
 			if (is_array($output)) {
-				$output = implode('\n', $output);
+				$output = implode('<br />', $output);
 			}
 			echo $output;
 		} else {
 			echo "Script failed with status: " . $status;
+			return;
 		}
 	}
 }
