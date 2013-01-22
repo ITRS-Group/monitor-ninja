@@ -258,6 +258,10 @@ function lsfilter_list(config)
 	
 	this.add_fill_bar = function(columns, data, tbody)
 	{
+		if( columns.length <= 0 ) {
+			/* Don't bother then...*/
+			return;
+		}
 		var self = this; // To be able to access it from within handlers
 		var more_rows = data.count - tbody.children().length;
 		if (more_rows > this.config.per_page) {
@@ -268,7 +272,7 @@ function lsfilter_list(config)
 			var loadrow = $('<tr class="table_pagination" />')
 			loadrow.append(loadcell)
 			tbody.append(loadrow);
-			
+
 			loadcell.attr('colspan', columns.length);
 			loadcell.append($('<a id="load_more" href="#">'
 					+ _('Load ' + more_rows + ' more rows') + '</a>'));

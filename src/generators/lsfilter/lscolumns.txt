@@ -9,7 +9,7 @@ name        /^([a-z0-9_]+)/i
 comma       /^(,)/
 minus       /^(-)/
 eq          /^(=)/
-add      /^(\+)/
+add         /^(\+)/
 par_l       /^(\()/
 par_r       /^(\))/
 
@@ -21,7 +21,10 @@ column_list_multi:  column_list = column_list _comma column
 column_all:         column = _all
 column_default:     column = name
 column_disable:     column = _minus name
-column_custom:      column = name _eq expr
+column_custom:      column = custom_name _eq expr
+
+_custom_name_name:  custom_name = name
+_custom_name_str:   custom_name = string
 
 
 expr_add:           expr     = expr _add expr2
