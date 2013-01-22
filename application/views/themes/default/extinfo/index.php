@@ -249,12 +249,14 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<?php if($custom_variables) {
-			foreach($custom_variables as $variable => $value) { ?>
+			foreach($custom_variables as $variable => $value) { 
+				if (substr($variable, 0, 7) !== '_OP5H__') { ?>
 				<tr>
 					<td class="dark"><?php echo $variable ?></td>
 					<td><?php echo link::linkify($value) ?></td>
 				</tr>
 		<?php
+				}
 			}
 		} ?>
 			</table>
