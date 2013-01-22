@@ -18,12 +18,18 @@ class Listview_Widget extends widget_Base {
 		$ormpath = 'modules/orm/';
 		
 		$this->js[] = $ormpath.'js/LivestatusStructure';
-		
+
 		$this->js[] = $basepath.'js/LSFilter';
 		$this->js[] = $basepath.'js/LSFilterLexer';
 		$this->js[] = $basepath.'js/LSFilterParser';
 		$this->js[] = $basepath.'js/LSFilterPreprocessor';
 		$this->js[] = $basepath.'js/LSFilterVisitor';
+		
+		$this->js[] = $basepath.'js/LSColumns';
+		$this->js[] = $basepath.'js/LSColumnsLexer';
+		$this->js[] = $basepath.'js/LSColumnsParser';
+		$this->js[] = $basepath.'js/LSColumnsPreprocessor';
+		$this->js[] = $basepath.'js/LSColumnsVisitor';
 		
 		$this->js[] = $basepath.'media/js/lib';
 		$this->js[] = $basepath.'media/js/LSFilterVisitors';
@@ -49,6 +55,7 @@ class Listview_Widget extends widget_Base {
 	public function options() {
 		$options = array();
 		$options[] = new option('listview','query',_('Query'),'textarea',array(),'[hosts] all');
+		$options[] = new option('listview','columns',_('Columns'),'textarea',array(),'all');
 		$options[] = new option('listview','limit',_('Limit'),'input',array(),20);
 		$options[] = new option('listview','order',_('Default order column'),'input',array(),'');
 		return $options;
@@ -57,16 +64,6 @@ class Listview_Widget extends widget_Base {
 	public function index() {
 		
 		$this->args = $this->get_arguments();
-		try {
-			$set = ObjectPool_Model::get_by_query($this->args['query']);
-		} catch(LSFilterException $e) {
-			array(
-				'status' => 'error',
-				'data' => $e->getMessage().' at "'.substr($e->get_query(), $e->get_position()).'"',
-				'query' => $e->get_query(),
-				'position' => $e->get_position()
-				);
-		}
 		require($this->view_path('view'));
 	}
 }

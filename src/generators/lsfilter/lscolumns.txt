@@ -1,0 +1,23 @@
+_whitespace /^(\s+)/
+
+string      /^("(?:[^"\\]|\\.)*")/
+
+all         /^(all)(?:[^a-z0-9_].*|)$/i
+
+name        /^([a-z0-9_]+)/i
+
+comma       /^(,)/
+minus       /^(-)/
+eq          /^(=)/
+
+entry: definition = column_list end
+
+column_list_single: column_list = column
+column_list_multi:  column_list = column_list _comma column
+
+column_all:         column = _all
+column_default:     column = name
+column_disable:     column = _minus name
+column_custom:      column = name _eq expr
+
+expr_var:           expr = name

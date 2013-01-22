@@ -1,32 +1,3 @@
-/*
- * This file exports two objects.
- * 
- * One with methods to render list items (<li>) for status totals
- * One with methods to render columns for different tables.
- * 
- * Methods in this files is internal helpers used by above methods.
- */
-
-function listview_columns_for_table(table)
-{
-	if (!listview_renderer_table[table]) return false;
-	
-	var renderer = listview_renderer_table[table];
-	var columns = [];
-	var columns_dict = {};
-	
-	for ( var tblcol in renderer) {
-		var deps = renderer[tblcol].depends;
-		for ( var i = 0; i < deps.length; i++) {
-			if (!columns_dict[deps[i]]) {
-				columns.push(deps[i]);
-				columns_dict[deps[i]] = true;
-			}
-		}
-	}
-	
-	return columns;
-}
 
 /*******************************************************************************
  * Totals renderer
@@ -261,7 +232,7 @@ var listview_renderer_table = {
 		"status": {
 			"header": '',
 			"depends": [ 'state_text' ],
-			"sort": [ 'state' ],
+			"sort": [ 'has_been_checked', 'state' ],
 			"cell": function(args)
 			{
 				return $('<td class="icon" />').append(

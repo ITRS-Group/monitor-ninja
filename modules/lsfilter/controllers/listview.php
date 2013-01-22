@@ -17,6 +17,12 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterVisitor.js';
+
+		$this->xtra_js[] = $basepath.'js/LSColumns.js';
+		$this->xtra_js[] = $basepath.'js/LSColumnsLexer.js';
+		$this->xtra_js[] = $basepath.'js/LSColumnsParser.js';
+		$this->xtra_js[] = $basepath.'js/LSColumnsPreprocessor.js';
+		$this->xtra_js[] = $basepath.'js/LSColumnsVisitor.js';
 		
 		$this->xtra_js[] = $basepath.'media/js/lib.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
@@ -33,6 +39,7 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMultiselect.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterInputWindow.js';
+		
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
