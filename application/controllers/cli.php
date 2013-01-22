@@ -257,7 +257,7 @@ class Cli_Controller extends Ninja_Controller {
 					if ($name == 'pending')
 						$name = 'undetermined';
 					# we need to replace the name with the id, and invert which ones areset
-					if ($id == -2 || isset($report_info['host_filter_status'][$name]))
+					if ($id == Reports_Model::HOST_EXCLUDED || isset($report_info['host_filter_status'][$name]))
 						continue;
 					$new_filter_status[$id] = 0;
 				}
@@ -270,7 +270,7 @@ class Cli_Controller extends Ninja_Controller {
 				$new_filter_status = array();
 				foreach (Reports_Model::$service_states as $id => $name) {
 					# we need to replace the name with the id, and invert which ones areset
-					if ($id == -2 || isset($report_info['service_filter_status'][$name]))
+					if ($id == Reports_Model::SERVICE_EXCLUDED || isset($report_info['service_filter_status'][$name]))
 						continue;
 					$new_filter_status[$id] = 0;
 				}

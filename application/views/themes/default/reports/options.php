@@ -74,7 +74,7 @@ if($options['report_id']) { ?>
 			foreach (Reports_Model::$host_states as $id => $name) {
 				if ($name === 'excluded')
 					continue;
-				echo "<input type=\"checkbox\" name=\"host_filter_status[$id]\" id=\"host_filter_status[$id]\" value=\"".($type == 'sla'?0:-2).'" '.(isset($options['host_filter_status'][$id])?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_filter_status[$id]\">".ucfirst($name)."</label>\n";
+				echo "<input type=\"checkbox\" name=\"host_filter_status[$id]\" id=\"host_filter_status[$id]\" value=\"".($type == 'sla'?0:Reports_Model::HOST_EXCLUDED).'" '.(isset($options['host_filter_status'][$id])?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_filter_status[$id]\">".ucfirst($name)."</label>\n";
 			} ?>
 			</div>
 			<div data-show-for="services servicegroups">
@@ -82,7 +82,7 @@ if($options['report_id']) { ?>
 			foreach (Reports_Model::$service_states as $id => $name) {
 				if ($name === 'excluded')
 					continue;
-				echo "<input type=\"checkbox\" name=\"service_filter_status[$id]\" id=\"service_filter_status[$id]\" value=\"".($type == 'sla'?0:-2).'" '.(isset($options['service_filter_status'][$id])?'checked="checked" ':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"service_filter_status[$id]\">".ucfirst($name)."</label>\n";
+				echo "<input type=\"checkbox\" name=\"service_filter_status[$id]\" id=\"service_filter_status[$id]\" value=\"".($type == 'sla'?0:Reports_Model::SERVICE_EXCLUDED).'" '.(isset($options['service_filter_status'][$id])?'checked="checked" ':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"service_filter_status[$id]\">".ucfirst($name)."</label>\n";
 			} ?>
 			</div>
 		</td>
