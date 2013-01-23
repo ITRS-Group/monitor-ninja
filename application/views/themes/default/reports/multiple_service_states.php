@@ -28,9 +28,9 @@ foreach ($multiple_states as $data) {
 			if (!$hide_host && $previous_hostname != $data['HOST_NAME'][$i]) { ?>
 		<tr class="even">
 		<?php if (!$options['use_alias']) { ?>
-			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
+			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <?php echo '<a href="'.$data['host_link'][$i].'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 		<?php } else { ?>
-			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
+			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.$data['host_link'][$i].'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
 <?php }
 			$previous_hostname = $data['HOST_NAME'][$i];
 ?>
@@ -39,7 +39,7 @@ foreach ($multiple_states as $data) {
 		}?>
 		<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 			<td class="label">
-				<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
+				<a href="<?php echo $data['service_link'][$i]; ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
 			</td>
 			<td class="data"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
 						array( 'alt' => _('OK'), 'title' => _('OK'),'style' => 'height: 12px; width: 12px'));

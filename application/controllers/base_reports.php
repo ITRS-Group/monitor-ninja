@@ -311,8 +311,8 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 				$host_name = $data['states']['HOST_NAME'];
 				$service_description = $data['states']['SERVICE_DESCRIPTION'];
 
-				$return['host_link'][] = $php_self . "?host_name[]=". $host_name . "&report_type=hosts&".$get_vars;
-				$return['service_link'][] = $php_self . '?service_description[]=' . "$host_name;$service_description" . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&'.$get_vars;
+				$return['host_link'][] = $php_self . "?host_name[]=". urlencode($host_name). "&report_type=hosts&".$get_vars;
+				$return['service_link'][] = $php_self . '?service_description[]=' . urlencode("$host_name;$service_description") . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&'.$get_vars;
 
 				$return['HOST_NAME'][] 				= $host_name;
 				$return['SERVICE_DESCRIPTION'][] 	= $service_description;
@@ -351,7 +351,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			if (!reports::is_proper_report_item($k, $data))
 					continue;
 				$host_name = $data['states']['HOST_NAME'];
-				$return['host_link'][] = $php_self . "?host_name[]=". $host_name. "&report_type=hosts" .
+				$return['host_link'][] = $php_self . "?host_name[]=". urlencode($host_name). "&report_type=hosts" .
 				'&start_time=' . $start_time . '&end_time=' . $end_time . '&' . $get_vars;
 				$return['HOST_NAME'][] 		= $host_name;
 				$return['up'][] 			= $data['states']['PERCENT_KNOWN_TIME_UP'];
