@@ -161,9 +161,6 @@ class form_Core {
 			'value' => $value
 		);
 
-		// For safe form data
-		$data['value'] = html::specialchars($data['value'], $double_encode);
-
 		return '<input'.form::attributes($data).' '.$extra.' />';
 	}
 
@@ -467,8 +464,11 @@ class form_Core {
 	}
 
 	/**
-	 * Sorts a key/value array of HTML attributes, putting form attributes first,
-	 * and returns an attribute string.
+	 * Sorts, possibly shuffles, but most likely keeps the order of a
+	 * key/value array of HTML attributes, and returns an attribute string.
+	 * 
+	 * Beacause this is Kohana, this also does some magical stuff... In this
+	 * case, it sets id attribute to the name attribute, if id doesn't exist.
 	 *
 	 * @param   array   HTML attributes array
 	 * @return  string
@@ -502,49 +502,9 @@ class form_Core {
 				break;
 			}
 		}
-
-		$order = array
-		(
-			'action',
-			'method',
-			'type',
-			'id',
-			'name',
-			'value',
-			'src',
-			'size',
-			'maxlength',
-			'rows',
-			'cols',
-			'accept',
-			'tabindex',
-			'accesskey',
-			'align',
-			'alt',
-			'title',
-			'class',
-			'style',
-			'selected',
-			'checked',
-			'readonly',
-			'disabled'
-		);
-
-		$sorted = array();
-		foreach ($order as $key)
-		{
-			if (isset($attr[$key]))
-			{
-				// Move the attribute to the sorted array
-				$sorted[$key] = $attr[$key];
-
-				// Remove the attribute from unsorted array
-				unset($attr[$key]);
-			}
-		}
-
+		
 		// Combine the sorted and unsorted attributes and create an HTML string
-		return html::attributes(array_merge($sorted, $attr));
+		return html::attributes($attr);
 	}
 
 } // End form
