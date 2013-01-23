@@ -7,6 +7,7 @@ all         /^(all)(?:[^a-z0-9_].*|)$/i
 name        /^([a-z0-9_]+)/i
 
 comma       /^(,)/
+dot         /^(\.)/
 minus       /^(-)/
 eq          /^(=)/
 add         /^(\+)/
@@ -31,7 +32,10 @@ expr_add:           expr     = expr _add expr2
 
 _expr_1_2:          expr     = expr2
 
-expr_var:           expr2    = name
+expr_var:           expr2    = var
 expr_string:        expr2    = string
 
 _expr_par:          expr2    = _par_l expr _par_r
+
+var_var:            var      = name
+var_attr:           var      = var _dot name

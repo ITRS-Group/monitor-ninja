@@ -127,9 +127,16 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns){
 			return expr0(args) + expr2(args);
 			};
 	};
+
+	// expr_var: expr2 := * var
+	this.visit_expr_var = function(var0) {
+		return function(args) {
+			return var0(args.obj);
+			};
+	};
 	
-	// expr_var: expr2 := * name
-	this.visit_expr_var = function(name0) {
+	// var_var: var := * name
+	this.visit_var_var = function(name0) {
 		if( !db_column_exists(name0) ) {
 			return function(args) {
 				return "Unknown field " + name0;
@@ -137,10 +144,19 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns){
 		}
 		this.custom_deps.push(name0);
 		var name = name0;
-		return function(args) {
-			if( args.obj[name] )
-				return args.obj[name];
-			return '';
+		return function(variable) {
+			if( variable[name] )
+				return variable[name];
+			return 'Unknown field '+name;
+			};
+	};
+	
+	// var_attr: var := * var dot name
+	this.visit_var_attr = function(var0, name2) {
+		var name = name2;
+		return function(variable) {
+			if( var0(variable)[name] )
+				return var0(variable)[name];
 			};
 	};
 
@@ -192,6 +208,10 @@ function lsfilter_list_table_desc(metadata, columndesc)
 			custom_columns = columns_line_visitor.custom_cols;
 			this.db_columns = this.db_columns.concat(columns_line_visitor.custom_deps);
 		} catch(e) {
+			this.vis_columns = all_columns;
+			this.vis_columns.push('message');
+			custom_columns['message'] = function(args) { return e.message; };
+			
 			console.log(parser);
 			console.log(columndesc);
 			console.log(e);
@@ -212,7 +232,7 @@ function lsfilter_list_table_desc(metadata, columndesc)
 			"sort": false,
 			"cell": function(args)
 			{
-				return $('<td />').append($(in_content(args)));
+				return $('<td />').append(in_content(args));
 			}
 		};})(content);
 	}
