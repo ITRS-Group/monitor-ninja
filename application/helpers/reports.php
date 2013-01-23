@@ -4,6 +4,7 @@
  */
 class reports_Core
 {
+	/** Colors for status in trends graph and such */
 	public static $colors = array(
 		'green' => '#aade53',
 		'yellow' => '#ffd92f',
@@ -248,6 +249,10 @@ class reports_Core
 		return $colors[$state];
 	}
 
+	/**
+	 * @param $type string = 'host'
+	 * @return array
+	 */
 	static function _state_color_table($type='host') {
 		$colors = array(
 				'host' => array(
