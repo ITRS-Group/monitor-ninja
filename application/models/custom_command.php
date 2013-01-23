@@ -41,15 +41,14 @@ class Custom_command_Model extends Model
 				$authorized = false;
 				// Check authorization.
 				if (isset($custom_commands[$command_name]['access']) && isset($custom_commands[$command_name]['action'])) {
+					$set = ContactGroupPool_Model::none();
+					$all_set = ContactGroupPool_Model::all();
 					foreach ($custom_commands[$command_name]['access'] as $contactgroup) {
-						$set = ContactGroupPool_Model::all();
-						$set = $set->reduce_by('name', $contactgroup, '=');
-						$set = $set->reduce_by('members', Auth::instance()->get_user()->username, '>=');
-						if (count($set) > 0) {
-							$authorized = true;
-						}
+						$set = $set->union($all_set->reduce_by('name', $contactgroup, "="));
 					}
-					if ($authorized) {
+					$set = $set->reduce_by('members', Auth::instance()->get_user()->username, '>=');
+					// If we got any matches set action, if not unset custom command
+					if (count($set) > 0) {
 						$custom_commands[$command_name] = $custom_commands[$command_name]['action'];
 					} else {
 						unset($custom_commands[$command_name]);
