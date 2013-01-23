@@ -2,17 +2,6 @@
 
 abstract class Base_reports_Controller extends Authenticated_Controller
 {
-	public static $colors = array(
-		'green' => '#aade53',
-		'yellow' => '#ffd92f',
-		'orange' => '#ff9d08',
-		'red' 	=> '#f7261b',
-		'grey' 	=> '#a19e95',
-		'lightblue' => '#EAF0F2', # actual color is #ddeceb, but it is hardly visible
-		'white' => '#ffffff',
-		'transparent' => 'transparent'
-	);
-
 	protected static $sla_field_names = array(
 		'hosts' => 'PERCENT_TOTAL_TIME_UP',
 		'hostgroups' => 'PERCENT_TOTAL_TIME_UP',
@@ -210,36 +199,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 		return "N/A";
 
-	}
-
-	/**
-	*	Determine what color to assign to an event
-	*/
-	protected function _state_colors($type='host', $state=false)
-	{
-		$colors = $this->_state_color_table($type);
-		return $colors[$state];
-	}
-	
-	protected function _state_color_table($type='host') {
-		$colors = array(
-				'host' => array(
-						Reports_Model::HOST_UP => static::$colors['green'],
-						Reports_Model::HOST_DOWN => static::$colors['red'],
-						Reports_Model::HOST_UNREACHABLE => static::$colors['orange'],
-						Reports_Model::HOST_PENDING => static::$colors['grey'],
-						Reports_Model::HOST_EXCLUDED => static::$colors['transparent']
-						),
-				'service' => array(
-						Reports_Model::SERVICE_OK => static::$colors['green'],
-						Reports_Model::SERVICE_WARNING => static::$colors['yellow'],
-						Reports_Model::SERVICE_CRITICAL => static::$colors['red'],
-						Reports_Model::SERVICE_UNKNOWN => static::$colors['orange'],
-						Reports_Model::SERVICE_PENDING => static::$colors['grey'],
-						Reports_Model::SERVICE_EXCLUDED => static::$colors['transparent']
-						)
-				);
-		return $colors[$type];
 	}
 
 	/**

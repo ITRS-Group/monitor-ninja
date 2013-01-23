@@ -49,7 +49,7 @@ class Public_Controller extends Controller {
 		foreach ($_GET as $tmpkey => $tmpval) {
 			$barvalues[$tmpkey] = array($tmpval[1], $tmpval[0]);
 			$barcolors[] = false;
-			$barcolors[] = $tmpval[2] ? Reports_Controller::$colors['red'] : Reports_Controller::$colors['green'];
+			$barcolors[] = $tmpval[2] ? reports::$colors['red'] : reports::$colors['green'];
 		}
 
 		$graph->add_bar_colors($barcolors);

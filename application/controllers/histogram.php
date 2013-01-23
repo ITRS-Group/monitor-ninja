@@ -206,7 +206,7 @@ class Histogram_Controller extends Base_reports_Controller
 
 		$states = array_keys($state_names);
 		foreach ($data as $key => $val) {
-			$datasets[] = "'".ucfirst(strtolower($state_names[$key]))."': {label: '".ucfirst(strtolower($state_names[$key]))."', data: [".implode(',', $val)."], color:'".Reports_Controller::_state_colors($sub_type, $states[$key])."', bars: { show: true}}";
+			$datasets[] = "'".ucfirst(strtolower($state_names[$key]))."': {label: '".ucfirst(strtolower($state_names[$key]))."', data: [".implode(',', $val)."], color:'".reports::_state_colors($sub_type, $states[$key])."', bars: { show: true}}";
 		}
 
 		$this->inline_js .= implode(',', $datasets).'};';

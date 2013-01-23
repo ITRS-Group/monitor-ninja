@@ -85,7 +85,7 @@ class MultipleBarChart extends BarChart {
 				if (!$col) {
 					# sla color
 					$this->bar_legend = false;
-					$rgb = utilities::hex2rgb(Reports_Controller::$colors['lightblue']);
+					$rgb = utilities::hex2rgb(reports::$colors['lightblue']);
 					$col = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
 				} else {
 					$this->bar_legend = true;
@@ -150,13 +150,13 @@ class MultipleBarChart extends BarChart {
 		#******************************************************************
 
 		# colors
-		$rgb = utilities::hex2rgb(Reports_Controller::$colors['lightblue']);
+		$rgb = utilities::hex2rgb(reports::$colors['lightblue']);
 		$color = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
 
-		$rgb_red = utilities::hex2rgb(Reports_Controller::$colors['red']);
+		$rgb_red = utilities::hex2rgb(reports::$colors['red']);
 		$red_color = imagecolorallocate($this->image, $rgb_red[0], $rgb_red[1], $rgb_red[2]);
 
-		$rgb_green = utilities::hex2rgb(Reports_Controller::$colors['green']);
+		$rgb_green = utilities::hex2rgb(reports::$colors['green']);
 		$green_color = imagecolorallocate($this->image, $rgb_green[0], $rgb_green[1], $rgb_green[2]);
 
 		# black col

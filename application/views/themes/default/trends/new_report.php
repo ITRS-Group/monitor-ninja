@@ -1,11 +1,3 @@
-
-<?php if (!isset($is_avail)) { ?>
-
-<?php
-}
-?>
-
-
 <div id="trends_graphs" style="margin: 20px auto 0 auto;">
 	<div id='tgraph'>Trend graphs loading...</div>
 	<script>
@@ -46,7 +38,7 @@
 				$rawdata[] = $servicerow;
 				
 			}
-			$colors = $this->_state_color_table($obj_type);
+			$colors = reports::_state_color_table($obj_type);
 			
 		?>
 

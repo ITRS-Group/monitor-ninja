@@ -4,6 +4,17 @@
  */
 class reports_Core
 {
+	public static $colors = array(
+		'green' => '#aade53',
+		'yellow' => '#ffd92f',
+		'orange' => '#ff9d08',
+		'red' 	=> '#f7261b',
+		'grey' 	=> '#a19e95',
+		'lightblue' => '#EAF0F2', # actual color is #ddeceb, but it is hardly visible
+		'white' => '#ffffff',
+		'transparent' => 'transparent'
+	);
+
 	/** Array of month_number => days_in_month */
 	public static $days_per_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 	/** Array of weekday names */
@@ -226,5 +237,35 @@ class reports_Core
 			}
 		}
 		return $res;
+	}
+
+	/**
+	*	Determine what color to assign to an event
+	*/
+	static function _state_colors($type='host', $state=false)
+	{
+		$colors = self::_state_color_table($type);
+		return $colors[$state];
+	}
+
+	static function _state_color_table($type='host') {
+		$colors = array(
+				'host' => array(
+						Reports_Model::HOST_UP => self::$colors['green'],
+						Reports_Model::HOST_DOWN => self::$colors['red'],
+						Reports_Model::HOST_UNREACHABLE => self::$colors['orange'],
+						Reports_Model::HOST_PENDING => self::$colors['grey'],
+						Reports_Model::HOST_EXCLUDED => self::$colors['transparent']
+						),
+				'service' => array(
+						Reports_Model::SERVICE_OK => self::$colors['green'],
+						Reports_Model::SERVICE_WARNING => self::$colors['yellow'],
+						Reports_Model::SERVICE_CRITICAL => self::$colors['red'],
+						Reports_Model::SERVICE_UNKNOWN => self::$colors['orange'],
+						Reports_Model::SERVICE_PENDING => self::$colors['grey'],
+						Reports_Model::SERVICE_EXCLUDED => self::$colors['transparent']
+						)
+				);
+		return $colors[$type];
 	}
 }
