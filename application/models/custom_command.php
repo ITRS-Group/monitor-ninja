@@ -38,9 +38,8 @@ class Custom_command_Model extends Model
 		}
 		if (count($custom_commands) > 0) {
 			foreach ($custom_commands as $command_name => $params) {
-				$authorized = false;
-				// Check authorization.
 				if (isset($custom_commands[$command_name]['access']) && isset($custom_commands[$command_name]['action'])) {
+					// Check authorization.
 					$set = ContactGroupPool_Model::none();
 					$all_set = ContactGroupPool_Model::all();
 					foreach ($custom_commands[$command_name]['access'] as $contactgroup) {
