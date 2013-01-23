@@ -30,9 +30,3 @@ $config['paging_step'] = 100;
 # we shouldn't have too large values for this,
 # or things break.
 $config['max_items_per_page'] = 10000;
-
-# Separate paging step for host/service groups.
-# This since groups are generally quite large
-# and having the default paging step (100) for
-# groups will make the pages quite slow
-$config['group_items_per_page'] = 10;

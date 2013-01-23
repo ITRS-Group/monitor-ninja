@@ -1,3 +1,4 @@
+
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * User controller
@@ -16,7 +17,6 @@ class User_Controller extends Authenticated_Controller {
 	private static $var_types = array(
 		'pagination.default.items_per_page' => 'int',
 		'pagination.paging_step' => 'int',
-		'pagination.group_items_per_page' => 'int',
 		'keycommands.activated' => 'bool',
 		'keycommands.search' => 'string',
 		'keycommands.pause' => 'string',
@@ -67,6 +67,7 @@ class User_Controller extends Authenticated_Controller {
 			_('Pagination') => 'pagination',
 			_('Checks') => 'checks',
 			_('Config') => 'config',
+			_('Columns in list view') => 'listview',
 			_('Keyboard Commands') => 'keycommands',
 			_('Pop up graphs') => 'popups',
 			_('Status Pages') => 'status',
@@ -77,7 +78,6 @@ class User_Controller extends Authenticated_Controller {
 		$settings['pagination'] = array(
 			_('Pagination Limit') => array('pagination.default.items_per_page', self::$var_types['pagination.default.items_per_page']),
 			_('Pagination Step') => array('pagination.paging_step', self::$var_types['pagination.paging_step']),
-			_('Group Pagination Limit') => array('pagination.group_items_per_page', self::$var_types['pagination.group_items_per_page'])
 		);
 
 		$settings['keycommands'] = array(
@@ -117,6 +117,12 @@ class User_Controller extends Authenticated_Controller {
 			_('Comment') => array('nagdefault.comment', self::$var_types['nagdefault.comment']));
 
 
+		$listview_settings = array();
+		foreach( Kohana::config('listview.columns') as $table => $value ) {
+			$listview_settings[_('Table '.ucwords($table))] = array('listview.columns.'.$table, 'string');
+		}
+		$settings['listview'] = $listview_settings;
+		
 		$settings['config'] = false;
 		$available_skins = ninja::get_skins();
 		$settings['config'] = array(
@@ -173,6 +179,12 @@ class User_Controller extends Authenticated_Controller {
 		# fetch all param type info
 		$type_info = self::$var_types;
 
+		# Add string to all column types for listview
+		$listview_settings = array();
+		foreach( Kohana::config('listview.columns') as $table => $value ) {
+			$type_info['listview.columns.'.$table] = 'string';
+		}
+		
 		# make sure we have field type info befor continuing
 		if (empty($type_info)) {
 			die(_('Unable to process user settings since field type info is missing'));
@@ -264,7 +276,6 @@ class User_Controller extends Authenticated_Controller {
 		$helptexts = array(
 			'pagination.default.items_per_page' => _('Set number of items shown on each page. Defaults to 100.'),
 			'pagination.paging_step' => _('This value is used to generate drop-down for nr of items per page to show. Defaults to 100.'),
-			'pagination.group_items_per_page' => _('This value is used for the initial items to show on host- and service group pages. Defaults to 10.'),
 			'checks.show_passive_as_active' => _('This setting affects if to show passive checks as active in the GUI'),
 			'config.current_skin' => _('Select the skin to use in the GUI. Affects colors and images.'),
 			'keycommands.activated' => _('Switch keyboard commands ON or OFF. Default is OFF'),
