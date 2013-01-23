@@ -40,6 +40,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMultiselect.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterInputWindow.js';
 		
+		$this->xtra_js[] = 'index.php/listview/columns_config/vars';
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
@@ -55,6 +56,25 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$lview->query = $query;
 		$lview->query_order = $query_order;
+	}
+	
+	public function columns_config($tmp = false) {
+		
+		/* Fetch all column configs for user */
+		$columns = array();
+		foreach( Kohana::config('listview.columns') as $table => $default ) {
+			$columns[$table] = config::get('listview.columns.'.$table, '*');
+		}
+		
+		/* This shouldn't have a standard template */
+		$this->template = $lview = $this->add_view('listview/js');
+		$this->template->vars = array(
+			'lsfilter_list_columns' => $columns
+			);
+		
+		/* Render and die... cant print anything like profiler output here */
+		$this->template->render(true);
+		exit();
 	}
 	
 	public function fetch_ajax() {

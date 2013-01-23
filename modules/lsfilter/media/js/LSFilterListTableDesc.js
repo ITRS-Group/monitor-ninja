@@ -173,6 +173,13 @@ function lsfilter_list_table_desc(metadata, columndesc)
 	var all_db_columns = livestatus_structure[metadata.table];
 	var custom_columns = {};
 	
+	if (!columndesc) {
+		// If not having a column desc, does a user-config exist?
+		if( lsfilter_list_columns && lsfilter_list_columns[metadata.table] ) {
+			columndesc = lsfilter_list_columns[metadata.table];
+		}
+	}
+	
 	if (columndesc) {
 		// TODO: handling of column slection description
 
