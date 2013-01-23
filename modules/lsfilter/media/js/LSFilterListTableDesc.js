@@ -60,8 +60,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns){
 					result.push(tmpresult[i]);
 				}
 			}
-		}
-		if( column2.op == 'sub' ) {
+		} else if( column2.op == 'sub' ) {
 			/* If we didn't have to care about IE7, this would be a simple Array.filter:
 				result = column_list0.filter(function(el,i,a){return column2.cols.indexOf(el) < 0;});
 				*/
@@ -76,6 +75,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns){
 					result.push(column_list0[i]);
 				}
 			}
+		} else {
+			// Do nothing, pass previous list through...
+			result = column_list0;
 		}
 		return result;
 	};
