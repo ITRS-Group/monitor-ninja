@@ -22,7 +22,7 @@ class Search_Test extends TapUnit {
 	 * Test simple table access
 	 */
 	public function test_host() {
-		$this->run_test('h:kaka', array('hosts'=>'[hosts] (name ~~ "kaka" or address ~~ "kaka" or alias ~~ "kaka")') );
+		$this->run_test('h:kaka', array('hosts'=>'[hosts] (name ~~ "kaka" or display_name ~~ "kaka" or address ~~ "kaka" or alias ~~ "kaka")') );
 	}
 	public function test_service() {
 		$this->run_test('s:kaka', array('services'=>'[services] (description ~~ "kaka" or display_name ~~ "kaka")') );
@@ -41,7 +41,7 @@ class Search_Test extends TapUnit {
 	 * Test wildcard search
 	 */
 	public function test_wildcard() {
-		$this->run_test('h:aaa%bbb', array('hosts'=>'[hosts] (name ~~ "aaa.*bbb" or address ~~ "aaa.*bbb" or alias ~~ "aaa.*bbb")') );
+		$this->run_test('h:aaa%bbb', array('hosts'=>'[hosts] (name ~~ "aaa.*bbb" or address ~~ "aaa.*bbb" or display_name ~~ "aaa.*bbb" or alias ~~ "aaa.*bbb")') );
 	}
 	
 	
@@ -49,14 +49,14 @@ class Search_Test extends TapUnit {
 	 * Test combined host/service (services by hosts)
 	 */
 	public function test_host_serivce() {
-		$this->run_test('h:kaka and s:pong', array('services'=>'[services] (description ~~ "pong" or display_name ~~ "pong") and (host.name ~~ "kaka" or host.address ~~ "kaka" or host.alias ~~ "kaka")') );
+		$this->run_test('h:kaka and s:pong', array('services'=>'[services] (description ~~ "pong" or display_name ~~ "pong") and (host.name ~~ "kaka" or host.display_name ~~ "kaka" or host.address ~~ "kaka" or host.alias ~~ "kaka")') );
 	}
 	
 	/* ******
 	 * Test limit
 	 */
 	public function test_host_limit() {
-		$this->run_test('h:kaka limit=24', array('hosts'=>'[hosts] (name ~~ "kaka" or address ~~ "kaka" or alias ~~ "kaka")', 'limit'=>24) );
+		$this->run_test('h:kaka limit=24', array('hosts'=>'[hosts] (name ~~ "kaka" or display_name ~~ "kaka" or address ~~ "kaka" or alias ~~ "kaka")', 'limit'=>24) );
 	}
 
 	protected function run_test( $query, $expect ) {
