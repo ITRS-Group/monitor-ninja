@@ -223,7 +223,7 @@ class Search_Controller extends Authenticated_Controller {
 				continue;
 			$subfilters = array();
 			foreach( $cols as $col ) {
-				$subfilters[] = "$col ~~ \"$query\"";
+				$subfilters[] = "$col ~~ \"".addslashes($query)."\"";
 			}
 			$filters[$table] = "[$table] ".implode(' or ', $subfilters);
 		}
