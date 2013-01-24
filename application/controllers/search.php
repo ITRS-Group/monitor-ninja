@@ -17,12 +17,20 @@ class Search_Controller extends Authenticated_Controller {
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-		'hosts' => array( 'name' , 'address', 'alias' ),
+		'hosts' => array( 'name', 'display_name', 'address', 'alias' ),
 		'services' => array( 'description', 'display_name' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' ),
 		'_si' => array('plugin_output')
+	);
+	
+	protected $search_columns_matchall = array(
+		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output' ),
+		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output' ),
+		'hostgroups' => array( 'name', 'alias' ),
+		'servicegroups' => array( 'name', 'alias' ),
+		'comments' => array( 'author', 'comment' )
 	);
 
 	/**
@@ -217,10 +225,7 @@ class Search_Controller extends Authenticated_Controller {
 		$query = str_replace('%','.*',$query);
 
 		$filters = array();
-		foreach( $this->search_columns as $table => $cols ) {
-			/* Don't search in virtual tables */
-			if( $table[0] == '_' )
-				continue;
+		foreach( $this->search_columns_matchall as $table => $cols ) {
 			$subfilters = array();
 			foreach( $cols as $col ) {
 				$subfilters[] = "$col ~~ \"".addslashes($query)."\"";
