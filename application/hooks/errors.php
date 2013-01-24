@@ -26,6 +26,7 @@ class errors {
 			return;
 		}
 		$error->_render();
+		exit(13);
 	}
 }
 
