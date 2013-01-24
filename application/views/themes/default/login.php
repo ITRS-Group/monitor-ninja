@@ -40,11 +40,11 @@
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
 					<td><label for="username"><?php echo _('Username') ?></label></td>
-					<td><?php echo form::input('username','','class="i160"') ?></td>
+					<td><?php echo form::input(array('name'=>'username', 'class'=>'login_field'),'','class="i160"') ?></td>
 				</tr>
 				<tr>
 					<td><label for="password"><?php echo _('Password') ?></label></td>
-					<td><?php echo form::password('password','','class="i160"') ?></td>
+					<td><?php echo form::password(array('name'=>'password', 'class'=>'login_field'),'','class="i160"') ?></td>
 				</tr>
 				<?php
 				$auth = Auth::instance();
@@ -53,7 +53,7 @@
 				if (!empty($auth_methods) && is_array($auth_methods) && count($auth_methods) > 1) {	?>
 				<tr>
 					<td><?php echo _('Login method') ?></td>
-					<td><?php echo form::dropdown('auth_method', array_combine( $auth_methods, $auth_methods ), $default_auth ) ?></td>
+					<td><?php echo form::dropdown(array('name'=>'auth_method', 'class'=>'login_field'), array_combine( $auth_methods, $auth_methods ), $default_auth ) ?></td>
 				</tr>
 				<?php
 				}?>
