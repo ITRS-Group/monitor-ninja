@@ -16,7 +16,7 @@
 class Reports_Controller extends Base_reports_Controller
 {
 	private $status_link = "status/host/";
-	private $history_link = "showlog/alert_history";
+	private $history_link = "alert_history/generate";
 	private $notifications_link = "notifications/host";
 
 	protected $reports_model = false;
@@ -514,7 +514,7 @@ class Reports_Controller extends Base_reports_Controller
 
 							$links[$this->status_link.$host] = _('Status detail');
 
-							$links[$this->history_link . "/" .$host] = _('Alert history');
+							$links[$this->history_link . '?host_name[]=' . $host] = _('Alert history');
 							$links[$this->notifications_link . "/" . $host] = _('Notifications');
 							break;
 
@@ -528,12 +528,11 @@ class Reports_Controller extends Base_reports_Controller
 							}
 
 							$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2";
-							$history_params       = "host=$host&amp;service=$service";
 							$notifications_params = "host=$host&amp;service=$service";
 
 
 							$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
-							$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
+							$links[$this->history_link . "?service_description[]=$host;$service"] 			= _('Alert history');
 							$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
 
 							break;
