@@ -22,7 +22,7 @@ class Search_Test extends TapUnit {
 	 * Test simple table access
 	 */
 	public function test_host() {
-		$this->run_test('h:kaka', array('hosts'=>'[hosts] (name ~~ "kaka" or display_name ~~ "kaka" or address ~~ "kaka" or alias ~~ "kaka")') );
+		$this->run_test('h:kaka', array('hosts'=>'[hosts] (name ~~ "kaka" or address ~~ "kaka" or display_name ~~ "kaka" or alias ~~ "kaka")') );
 	}
 	public function test_service() {
 		$this->run_test('s:kaka', array('services'=>'[services] (description ~~ "kaka" or display_name ~~ "kaka")') );
