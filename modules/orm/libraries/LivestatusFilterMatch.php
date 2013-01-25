@@ -22,7 +22,17 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	}
 	
 	function prefix( $prefix ) {
-		return new LivestatusFilterMatch( $prefix.$this->field, $this->value, $this->op );
+		$new_field = $prefix.$this->field;
+		
+		/* FIXME: Livestatus should be able to handle service.host.name for comments.. Until then... */
+		$fields = explode('.',$new_field);
+		if( count($fields) > 2 ) {
+			$fields = array_slice($fields, count($fields)-2);
+		}
+		$new_field = implode('.',$fields);
+		
+		
+		return new LivestatusFilterMatch( $new_field, $this->value, $this->op );
 	}
 
 	function visit( LivestatusFilterVisitor $visitor, $data ) {

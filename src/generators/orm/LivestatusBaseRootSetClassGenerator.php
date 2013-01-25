@@ -84,7 +84,7 @@ class LivestatusBaseRootSetClassGenerator extends class_generator {
 	public function generate_convert_to_object() {
 		$this->init_function('convert_to_object', array('table','field'));
 		$this->write('$result = ObjectPool'.self::$model_suffix.'::pool($table)->all();');
-		$this->write('$result->filter = $this->filter->prefix($field . "_");');
+		$this->write('$result->filter = $this->filter->prefix($field . ".");');
 		$this->write('return $result;');
 		$this->finish_function();
 	}
