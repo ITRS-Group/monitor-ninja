@@ -17,7 +17,7 @@ class Custom_command_Model extends Model
 		if (count($custom_variables) >= 2) {
 			foreach ($custom_variables as $key => $value) {
 				// Does custom variable name match pattern?
-				if (substr($key, 0, 4) === '_OP5') {
+				if (substr($key, 0, 3) === 'OP5') {
 					$parts = explode('__', $key);
 					$command_name = $parts[count($parts)-1];
 					if ($specific !== false && $specific !== $command_name) {

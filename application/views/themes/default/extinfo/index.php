@@ -1,6 +1,27 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
+$date_format_str = nagstat::date_format();
+
+/* @var $set ObjectSet_Model */
+$it = $set->it(false, array(), 1, 0);
+/* @var $object Object_Model */
+$object = $it->current();
+
+if( $object instanceof Host_Model ) {
+	$host = $object;
+	$service = false;
+	$type = 'host';
+} else if( $object instanceof Service_Model ) {
+	$host = $object->get_host();
+	$service = $object;
+	$type = 'service';
+}
+/* @var $host Host_Model */
+/* @var $service Service_Model */
+/* @var $object Service_Model */
+
+
 ?>
 <div id="page_links">
 	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
@@ -31,16 +52,17 @@ if (!empty($widgets)) {
 	<table>
 		<tr>
 			<th colspan="2" style="padding: 5px 0px" >
-				<?php echo !empty($icon_image) ? html::image(Kohana::config('config.logos_path').$icon_image, array('alt' => $icon_image_alt, 'title' => $icon_image_alt, 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
-				<h1 style="display: inline"><?php echo ($main_object_alias ? $main_object_alias.' ('.$main_object.')' : $main_object) ?></h1>
+				<?php echo $object->get_icon_image() ? html::image(Kohana::config('config.logos_path').$object->get_icon_image(), array('alt' => $object->get_icon_image_alt(), 'title' => $object->get_icon_image_alt(), 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
+				<h1 style="display: inline"><?php echo ($type=='host' ? $object->get_alias().' ('.$object->get_display_name().')' : $object->get_display_name()) ?></h1>
 			</th>
 		</tr>
 		<?php
-			if ($type == 'service') {
+			if ($service !== false) {
 				echo '<tr>';
 				echo '<td style="width: 80px"><strong>'._('On host').'</strong></td>';
-				echo '<td>'.(isset($host) ? $host : '');
-				echo isset($host_alias) ? ' ('.$host_alias.')' : '';
+				echo '<td>'.$host->get_display_name();
+				echo $host->get_alias() ? ' ('.$host->get_alias().')' : '';
+				$host_link = html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_name()));
 				echo !empty($host_link) ? ' ('.$host_link.')' : '';
 				echo '</td>';
 				echo '</tr>';
@@ -48,9 +70,9 @@ if (!empty($widgets)) {
 		?>
 		<tr>
 			<td style="width: 80px"><strong><?php echo _('Address');?></strong></td>
-			<td><?php echo isset($host_address) ? $host_address : ''; ?></td>
+			<td><?php echo $host->get_address(); ?></td>
 		</tr>
-		<?php if ($parents) { ?>
+		<?php if ($host->get_parents()) { ?>
 		<tr>
 			<td><strong><?php echo _('Parents') ?></strong></td>
 			<td>
@@ -61,7 +83,7 @@ if (!empty($widgets)) {
 							function($parent) {
 								return html::anchor('status/service/'.$parent, $parent);
 							},
-							$parents
+							$host->get_parents()
 						)
 					);
 				?>
@@ -70,17 +92,17 @@ if (!empty($widgets)) {
 		<?php } ?>
 		<tr>
 			<td><strong><?php echo _('Member of'); ?></strong></td>
-			<td style="white-space: normal"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
+			<td style="white-space: normal"><?php echo $host->get_groups() ? implode(', ', $host->get_groups()) : _('No hostgroups') ?></td>
 		</tr>
 		<tr>
 			<td><strong><?php echo _('Notifies to') ?></strong></td>
 			<td>
-				<?php	if (!empty($contactgroups)) {
+				<?php	if ($host->get_contact_groups()) {
 					$c = 0;
-					foreach ($contactgroups as $group => $members) {
+					foreach ($host->get_contact_groups() as $group) {
 						echo '<a title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
 						echo $group.'</a>';
-				?>
+/*				?>
 				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
 					<tr>
 						<th style="border: 1px solid #cdcdcd"><?php echo _('Contact name') ?></th>
@@ -98,7 +120,7 @@ if (!empty($widgets)) {
 					</tr>
 					<?php	} ?>
 				</table>
-					<?php
+					<?php*/
 					}
 				} else {
 					echo _('No contactgroup');
@@ -106,24 +128,24 @@ if (!empty($widgets)) {
 			?>
 			</td>
 		</tr>
-		<?php if (!empty($notes)) {?>
+		<?php if ($host->get_notes()) {?>
 		<tr>
 			<td><strong><?php echo _('Notes') ?></strong></td>
-			<td><?php echo $notes ?></td>
+			<td><?php echo $host->get_notes() ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
 			<td colspan="2" style="padding-top: 7px">
 				<?php
-					if (!empty($action_url)) {
-						echo '<a href="'.$action_url.'" style="border: 0px" target="'.$action_url_target.'">';
+					if ($host->get_action_url()) {
+						echo '<a href="'.$host->get_action_url().'" style="border: 0px" target="'.$action_url_target.'">';
 						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra host actions'),'title' => _('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a href="'.$action_url.'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
+						echo '<a href="'.$host->get_action_url().'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
 					}
-					if (!empty($notes_url)) {
-						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$notes_url.'" style="border: 0px">';
+					if ($host->get_notes_url()) {
+						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$host->get_notes_url().'" style="border: 0px">';
 						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra host notes'),'title' => _('View extra host notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a target="'.$notes_url_target.'" href="'.$notes_url.'">'._('Extra notes').'</a>';
+						echo '<a target="'.$notes_url_target.'" href="'.$host->get_notes_url().'">'._('Extra notes').'</a>';
 					}
 					foreach ($extra_action_links as $label => $ary) {
 						$img_class = isset($ary['img_class']) ? ' class="'.$ary['img_class'].'"' : '';
@@ -138,7 +160,7 @@ if (!empty($widgets)) {
 	</table>
 </div>
 
-<?php $this->session->set('back_extinfo',$back_link);?>
+<?php /* $this->session->set('back_extinfo',$back_link); */ ?>
 
 
 <div class="clear"></div>
@@ -146,113 +168,118 @@ if (!empty($widgets)) {
 <br /><br />
 <div class="left width-50" id="extinfo_current">
 	<?php
-	if (isset($pending_msg)) {
-		echo $title."<br /><br />";
-		echo $pending_msg;
+	if (!$object->get_has_been_checked()) {
+		echo $object->get_key()."<br /><br />";
+		echo _('This '.$type.' has not yet been checked, so status information is not available.');
 	} else { ?>
 	<table class="ext">
 		<tr>
-			<th colspan="2"><?php echo $title ?></th>
+			<th colspan="2"><?php echo $object->get_key() ?></th>
 		</tr>
 		<tr>
 			<td style="width: 160px" class="dark bt"><?php echo _('Current status'); ?></td>
 			<td class="bt">
-				<span class="status-<?php echo strtolower($current_status_str) ?>"><span class="icon-12 x12-shield-<?php echo strtolower($current_status_str); ?>"></span><?php echo ucfirst(strtolower($current_status_str)) ?></span>
-				(<?php echo _('for'); ?> <?php echo $duration ? time::to_string($duration) : _('N/A') ?>)
+				<span class="status-<?php echo strtolower($object->get_state_text()) ?>"><span class="icon-12 x12-shield-<?php echo strtolower($object->get_state_text()); ?>"></span><?php echo ucfirst(strtolower($object->get_state_text())) ?></span>
+				(<?php echo _('for'); ?> <?php echo $object->get_duration()>=0 ? time::to_string($object->get_duration()) : _('N/A') ?>)
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Status information'); ?></td>
-			<td style="white-space: normal"><?php echo $status_info ?></td>
+			<td style="white-space: normal"><?php echo $object->get_plugin_output() ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
-			<td style="white-space: normal"><?php echo security::xss_clean($perf_data) ?></td>
+			<td style="white-space: normal"><?php echo security::xss_clean($object->get_perf_data()) ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Current attempt'); ?></td>
-			<td><?php echo $current_attempt ?>/<?php echo $max_attempts ?> (<?php echo $state_type ?>)</td>
+			<td><?php echo $object->get_current_attempt() ?>/<?php echo $object->get_max_check_attempts() ?> (<?php echo strtolower($object->get_state_type_text_uc()) ?>)</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Last check time'); ?></td>
-			<td><?php echo $last_check ? date($date_format_str, $last_check) : _('N/A') ?></td>
+			<td><?php echo $object->get_last_check() ? date($date_format_str, $object->get_last_check()) : _('N/A') ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Check type'); ?></td>
 			<td>
-				<span class="<?php echo strtolower($check_type) ?>"><?php echo ucfirst(strtolower($check_type)) ?></span>
+				<span class="<?php echo $object->get_check_type_str() ?>"><?php echo ucfirst($object->get_check_type_str()) ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Check latency / duration'); ?></td>
-			<td><?php echo $check_latency ?> / <?php echo number_format($execution_time, 3) ?> <?php echo _('seconds'); ?></td>
+			<td><?php echo $object->get_latency() ?> / <?php echo number_format($object->get_execution_time(), 3) ?> <?php echo _('seconds'); ?></td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_next_scheduled_check ?></td>
-			<td><?php echo $next_check && $active_checks_enabled_val ? date($date_format_str, $next_check) : _('N/A') ?></td>
+			<td class="dark"><?php echo $service!==false?_('Next scheduled active check'):_('Next scheduled check') ?></td>
+			<td><?php echo $object->get_next_check() && $object->get_active_checks_enabled() ? date($date_format_str, $object->get_next_check()) : _('N/A') ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Last state change'); ?></td>
-			<td><?php echo $last_state_change ? date($date_format_str, $last_state_change) : _('N/A') ?></td>
+			<td><?php echo $object->get_last_state_change() ? date($date_format_str, $object->get_last_state_change()) : _('N/A') ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Last notification'); ?></td>
-			<td><?php echo $last_notification ?>&nbsp;(<?php echo _('Notifications'); ?>: <?php echo $current_notification_number ?>)</td>
+			<?php $last_notification = $object->get_last_notification()!=0 ? date(nagstat::date_format(), $object->get_last_notification()) : _('N/A'); ?>
+			<td><?php echo $last_notification ?>&nbsp;(<?php echo _('Notifications'); ?>: <?php echo $object->get_current_notification_number() ?>)</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_flapping ?></td>
+			<td class="dark"><?php echo _('Is this '.$type.' flapping?') ?></td>
 			<td>
-				<span class="flap-<?php echo strtolower($flap_value); ?>"><?php echo ucfirst(strtolower($flap_value)).'</span> '.$percent_state_change_str; ?>
+			<?php
+			$flap_value = $object->get_flap_detection_enabled() && $object->get_is_flapping() ? _('YES') : _('NO');
+			$percent_state_change_str = '('.number_format((int)$object->get_percent_state_change(), 2).'% '._('state change').')';
+			?>
+				<span class="flap-<?php echo strtolower($flap_value); ?>"><?php echo ucfirst(strtolower($flap_value)).'</span> '.$percent_state_change_str; ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('In scheduled downtime?'); ?></td>
 			<td>
-				<span class="downtime-<?php echo strtolower($scheduled_downtime_depth); ?>"><?php echo ucfirst(strtolower($scheduled_downtime_depth)) ?></span>
+				<span class="downtime-<?php echo strtolower($object->get_scheduled_downtime_depth()); ?>"><?php echo $object->get_scheduled_downtime_depth() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td  class="dark" style="width: 160px"><?php echo _('Active checks'); ?></td>
 			<td>
-				<span class="<?php echo strtolower($active_checks_enabled); ?>"><?php echo ucfirst(strtolower($active_checks_enabled)) ?></span>
+				<span class="<?php echo $object->get_active_checks_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_active_checks_enabled() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Passive checks'); ?></td>
 			<td>
-				<span class="<?php echo strtolower($passive_checks_enabled); ?>"><?php echo ucfirst(strtolower($passive_checks_enabled)) ?></span>
+				<span class="<?php echo $object->get_accept_passive_checks() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_accept_passive_checks() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Obsessing'); ?></td>
 			<td>
-				<span class="<?php echo strtolower($obsessing); ?>"><?php echo ucfirst(strtolower($obsessing)) ?></span>
+				<span class="<?php echo $object->get_obsess() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_obsess() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Notifications'); ?></td>
 			<td>
-				<span class="<?php echo strtolower($notifications_enabled); ?>"><?php echo ucfirst(strtolower($notifications_enabled)) ?></span>
+				<span class="<?php echo $object->get_notifications_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_notifications_enabled() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Event handler'); ?></td>
 			<td>
-				<span class="<?php echo strtolower($event_handler_enabled); ?>"><?php echo ucfirst(strtolower($event_handler_enabled)) ?></span>
+				<span class="<?php echo $object->get_event_handler_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_event_handler_enabled() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
 		<tr>
 
 			<td class="dark"><?php echo _('Flap detection') ?></td>
 			<td>
-				<span class="<?php echo strtolower($flap_detection_enabled); ?>"><?php echo ucfirst(strtolower($flap_detection_enabled)) ?></span>
+				<span class="<?php echo $object->get_flap_detection_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_flap_detection_enabled() ? _('Enabled') : _('Disabled'); ?></span>
 			</td>
 		</tr>
-		<?php if($custom_variables) {
-			foreach($custom_variables as $variable => $value) { 
-				if (substr($variable, 0, 7) !== '_OP5H__') { ?>
+		<?php if($object->get_custom_variables()) {
+			foreach($object->get_custom_variables() as $variable => $value) { 
+				if (substr($variable, 0, 6) !== 'OP5H__') { ?>
 				<tr>
-					<td class="dark"><?php echo $variable ?></td>
+					<td class="dark">_<?php echo $variable ?></td>
 					<td><?php echo link::linkify($value) ?></td>
 				</tr>
 		<?php
@@ -272,5 +299,5 @@ if (!empty($commands))
 <br /><br />
 
 <?php
-if (isset($comments))
+if (false && isset($comments))
 	echo $comments;

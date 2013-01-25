@@ -25,7 +25,8 @@ class Host_Model extends BaseHost_Model {
 		'checks_disabled' => array('active_checks_enabled'),
 		'duration' => array('last_state_change'),
 		'comments_count' => array('comments'),
-		'config_url'      => array('name')
+		'config_url'      => array('name'),
+		'check_type_str'  => array('check_type')
 	);
 
 	public function __construct($values, $prefix) {
@@ -35,6 +36,7 @@ class Host_Model extends BaseHost_Model {
 		$this->export[] = 'duration';
 		$this->export[] = 'comments_count';
 		$this->export[] = 'config_url';
+		$this->export[] = 'check_type_str';
 	}
 
 	public function get_state_text() {
@@ -85,5 +87,13 @@ class Host_Model extends BaseHost_Model {
 
 	public function get_comments_count() {
 		return count($this->get_comments());
+	}
+	
+	public function get_check_type_str() {
+		return $this->get_check_type() ? 'passive' : 'active';
+	}
+	
+	public function get_custom_commands() {
+		return Custom_command_Model::parse_custom_variables($this->get_custom_variables());
 	}
 }

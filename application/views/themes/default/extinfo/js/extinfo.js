@@ -221,7 +221,7 @@ $(document).ready(function() {
 		// Don't refresh page while script is running.
 		clearInterval(_interval);
 		var cmd = $(this).attr('title');
-		cmd = cmd.replace(/\s/g, "/");
+		cmd = cmd.replace(/;/g, "/");
 		$('#fancybox-content').text('Executing command, please wait for acknowledgement.');
 		// Load executing function with custom var name as parameter
 		$('#fancybox-content').load(_site_domain+'index.php/command/exec_custom_command/'+encodeURI(cmd), function() {

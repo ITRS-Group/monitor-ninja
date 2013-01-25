@@ -47,7 +47,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = 'Monitoring » Extinfo';
 
 		# load current status for host/service status totals
-		$this->current = new Current_status_Model();
+		//$this->current = new Current_status_Model();
 
 		$host = trim($host);
 		$service = trim($service);
@@ -56,12 +56,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$ls = Livestatus::instance();
 		if(!empty($host) && empty($service)) {
-			$type='host';
-			$result_data = $ls->getHosts(array('filter' => array('name' => $host), 'extra_columns' => array('contact_groups')));
+			$set = HostPool_Model::all()->reduce_by('name', $host, '=');
 		}
 		else if(!empty($host) && !empty($service)) {
-			$type='service';
-			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'extra_columns' => array('contact_groups')));
+			$set = ServicePool_Model::all()
+				->reduce_by('host.name', $host, '=')
+				->reduce_by('description', $service, '=');
 		}
 		else if(!empty($hostgroup)) {
 			return $this->group_details('hostgroup', $hostgroup);
@@ -87,224 +87,20 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# save us some typing
 		$content = $this->template->content;
 
-		if (count($result_data) === 0) {
+		if (count($set) != 1) {
 			return url::redirect('extinfo/unauthorized/'.$type);
 		}
-		$result = (object)$result_data[0];
+		$content->set = $set;
 
-		$content->custom_variables = array();
-		switch($type) {
-			case 'host':
-				if($result->custom_variable_names) {
-					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
-				}
-				break;
-			case 'service':
-				if($result->custom_variable_names) {
-					$content->custom_variables = array_combine($result->custom_variable_names, $result->custom_variable_values);
-				}
-				break;
-		}
-		$host_link = false;
-
-		$content->contactgroups = false;
-		if(isset($result->contact_groups)) {
-			
-			$filter = array();
-			foreach($result->contact_groups as $grp) {
-				$filter[] = 'Filter: name = '.str_replace("\n","",$grp);
-			}
-			$filter[] = "Or: ".count($filter);
-			$filter = implode("\n",$filter);
-
-			$groups = $ls->getContactgroups(
-				array(
-					'extra_header' => $filter,
-					'extra_columns' => array('members')
-				)
-			);
-
-			$complete_groups = false;
-			foreach($groups as $group) {
-				$filter = array();
-				foreach($group['members'] as $grp) {
-					$filter[] = 'Filter: name = '.str_replace("\n","",$grp);
-				}
-				$filter[] = "Or: ".count($filter);
-				$filter = implode("\n",$filter);
-				$complete_groups[$group['name']] = $ls->getContacts(
-					array(
-						'extra_header' => $filter,
-						'columns' => array('name', 'alias', 'email', 'pager')
-					)
-				);
-			}
-			$content->contactgroups = $complete_groups;
-		}
-		$is_pending = false;
-		$back_link = false;
-		$content->parents = false;
-
-		if ($type == 'host') {
-			$content->title = _('Host State Information');
-			$content->no_group_lable = _('No hostgroups');
-			$check_compare_value = Current_status_Model::HOST_CHECK_ACTIVE;
-			$last_notification = $result->last_notification;
-			$content->lable_next_scheduled_check = _('Next scheduled active check');
-			$content->lable_flapping = _('Is this host flapping?');
-			$obsessing = $result->obsess;
-
-			$content->parents = $result->parents;
-
-			$back_link = '/extinfo/details/?host='.urlencode($host);
-			if ($result->state == Current_status_Model::HOST_PENDING ) {
-				$is_pending = true;
-				$message_str = _('This host has not yet been checked, so status information is not available.');
-			}
-		} else {
-			$content->title = _('Service State Information');
-			$content->no_group_lable = _('No servicegroups');
-			$content->lable_next_scheduled_check = _('Next scheduled check');
-			$host_link = html::anchor('extinfo/details/?host='.urlencode($host), html::specialchars($host));
-			$back_link = '/extinfo/details/service/?host='.urlencode($host).'&service='.urlencode($service);
-			$check_compare_value = Current_status_Model::SERVICE_CHECK_ACTIVE;
-			$last_notification = $result->last_notification;
-			$content->lable_flapping = _('Is this service flapping?');
-			$obsessing = $result->obsess;
-			if ($result->state == Current_status_Model::SERVICE_PENDING ) {
-				$is_pending = true;
-				$message_str = _('This service has not yet been checked, so status information is not available.');
-			}
-		}
-
-		$content->notes      = $result->notes      !='' ? nagstat::process_macros($result->notes,      $result, $type) : false;
-		$content->notes_url  = $result->notes_url  !='' ? nagstat::process_macros($result->notes_url,  $result, $type) : false;
-		$content->action_url = $result->action_url !='' ? nagstat::process_macros($result->action_url, $result, $type) : false;
-
-		$xaction = array();
-		if (nacoma::link()===true) {
-			$label = _('Configure');
-			$url = url::site() . "configuration/configure/?type=$type&name=".urlencode($host);
-			if ($type === 'service') {
-				$url .= '&service='.urlencode($service);
-				$alt = _('Configure this service using Nacoma');
-			} else {
-				$alt = _('Configure this host using Nacoma');
-			}
-
-			$xaction[$label] =
-				array('url' => $url,
-					  'img' => $this->img_path('icons/16x16/nacoma.png'),
-					  'alt' => $alt
-					);
-		}
-
-		if($result->pnpgraph_present) {
-			$label = _('Show performance graph');
-			$url = url::site() . 'pnp/?host=' . urlencode($host);
-			if ($type ===  'service') {
-				$url .= '&srv=' . urlencode($service);
-			} else {
-				$url .= '&srv=_HOST_';
-			}
-			$xaction[$label] = array
-				('url' => $url,
-				 'img' => $this->img_path('icons/16x16/pnp.png'),
-				 'alt' => $label,
-				 'img_class' => 'pnp_graph_icon'
-				 );
-		}
-		$content->extra_action_links = $xaction;
-
-		$groups = false;
-		if(count($result->groups) > 0) {
-			foreach ($result->groups as $group) {
-				$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group)),
-					html::specialchars($group));
-			}
-		}
-
-		if ($is_pending) {
-			$content->pending_msg = $message_str;
-		}
-		$content->lable_type = $type == 'host' ? _('Host') : _('Service');
-		$content->type = $type;
-		$content->back_link = $back_link;
-		$content->date_format_str = nagstat::date_format();
-		$content->host_link = $host_link;
-		$content->main_object = $type=='host' ? $host : $service;
-		$content->host = $host;
-		$content->current_status_str = $this->current->status_text($result->state, $result->has_been_checked, $type);
-		$content->duration = $result->duration;
-		$content->groups = $groups;
-		$content->host_address = $type == 'host' ? $result->address : $result->host_address;
-		$content->icon_image = $result->icon_image;
-		$content->icon_image_alt = $result->icon_image_alt;
-		// "Why the str_replace, it looks stupid?" Well, because nagios (livestatus?) stores data with newlines replaced with a backslash and an 'n'.
-		// "So why the nl2br, then, huh?" Uhm, it was there when I found it...
-		$content->status_info = security::xss_clean($result->plugin_output).'<br />'.str_replace('\n', '<br />', nl2br(security::xss_clean($result->long_plugin_output)));
-		$content->perf_data = $result->perf_data;
-		$content->current_attempt = $result->current_attempt;
-		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
-		$content->main_object_alias = $type=='host' ? $result->alias : false;
-		$content->max_attempts = $result->max_check_attempts;
-		$content->last_update = time();
-		$content->last_check = $result->last_check;
-
-		$content->check_type = $result->check_type == $check_compare_value ? _('ACTIVE'): _('PASSIVE');
-		$na_str = _('N/A');
-		$content->check_latency = $check_compare_value ? $result->latency : $na_str;
-		$content->execution_time = $result->execution_time;
-
-		$content->next_check = (int)$result->next_check;
-		$content->last_state_change = (int)$result->last_state_change;
-		$content->last_notification = $last_notification!=0 ? date(nagstat::date_format(), $last_notification) : $na_str;
-		$content->current_notification_number = $result->current_notification_number;
-		$lable_flapping_state_change = _('state change');
-		$content->percent_state_change_str = '';
-		$is_flapping = $result->is_flapping;
-		$yes = _('YES');
-		$no = _('NO');
-		if (!$result->flap_detection_enabled) {
-			$content->flap_value = $na_str;
-		} else {
-			$content->flap_value = $is_flapping ? $yes : $no;
-			$content->percent_state_change_str = '('.number_format((int)$result->percent_state_change, 2).'% '.$lable_flapping_state_change.')';
-		}
-		$content->scheduled_downtime_depth = $result->scheduled_downtime_depth ? $yes : $no;
-		$str_enabled = _('ENABLED');
-		$str_disabled = _('DISABLED');
-		$content->active_checks_enabled = $result->active_checks_enabled ? $str_enabled : $str_disabled;
-		$content->active_checks_enabled_val = (boolean) $result->active_checks_enabled;
-		$content->passive_checks_enabled = $result->accept_passive_checks ? $str_enabled : $str_disabled;
-		$content->obsessing = $obsessing ? $str_enabled : $str_disabled;
-		$content->notifications_enabled = $result->notifications_enabled ? $str_enabled : $str_disabled;
-		$content->event_handler_enabled = $result->event_handler_enabled ? $str_enabled : $str_disabled;
-		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
 		if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
 			$this->template->content->commands = $this->add_view('extinfo/commands');
+			$this->template->content->commands->set = $set;
 		} else {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
 			$this->template->content->commands->info_message = _("You're not authorized to run commands");
 		}
 
-		$commands = $this->template->content->commands;
-
-		$commands->type = $type;
-		$commands->host = $host;
-		$commands->service = $service;
-		$commands->result = $result;
-
-		// Catch special cases 
-		$content->custom_commands = Custom_Command_Model::parse_custom_variables($content->custom_variables);
-		if ($content->custom_commands) {
-			$commands->custom_commands = array();
-			foreach ($content->custom_commands as $command_name => $action) {
-				$linktext = ucwords(strtolower(str_replace('_', ' ', $command_name)));
-				$commands->custom_commands[$command_name] = "<a href='#' title='$command_name $type $host $service'>" . $linktext . "</a>";
-			}
-		}
 
 		# create page links
 		switch ($type) {
@@ -334,6 +130,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->label_view_for = _("for this $type");
 		}
 
+		$content->extra_action_links = array();
 
 		# show comments for hosts and services
 		if ($type == 'host' || $type == 'service')
