@@ -78,7 +78,7 @@ class Service_Model extends BaseService_Model {
 	}
 
 	public function get_notes_url() {
-		return $this->expand_macros(parent::get_notes_url());
+		return $this->expand_macros_url(parent::get_notes_url());
 	}
 
 	public function get_notes() {
@@ -86,7 +86,7 @@ class Service_Model extends BaseService_Model {
 	}
 
 	public function get_action_url() {
-		return $this->expand_macros(parent::get_action_url());
+		return $this->expand_macros_url(parent::get_action_url());
 	}
 
 	public function get_comments_count() {

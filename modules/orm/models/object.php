@@ -10,7 +10,12 @@ abstract class Object_Model extends BaseObject_Model {
 		return array();
 	}
 	
-	public function expand_macros($str) {
+	public function expand_macros_url($str) {
+		return $this->expand_macros($str, function($str) { return urlencode($str); } );
+	}
+	
+	public function expand_macros($str, $value_postprocessor=false) {
+		
 		$matches = array();
 		$values  = array();
 		foreach(static::$macros as $match => $field) {
@@ -21,6 +26,10 @@ abstract class Object_Model extends BaseObject_Model {
 					$value = $value->$getter();
 				}
 			}
+			if ($value_postprocessor !== false) {
+				$value = $value_postprocessor($value);
+			}
+			
 			$matches[] = $match;
 			$values[] = $value;
 		}
@@ -32,13 +41,12 @@ abstract class Object_Model extends BaseObject_Model {
 	}
 
 	public function get_config_url() {
-		/* FIXME: escape? */
 		$unexpanded_url = config::get('config.config_url.'.$this->_table,'*');
 		if(!$unexpanded_url)
 			return false;
 		if(Auth::instance()->authorized_for('configuration_information')==false)
 			return false;
-		return $this->expand_macros($unexpanded_url);
+		return $this->expand_macros_url($unexpanded_url);
 	}
 	
 	public function get_current_user() {
