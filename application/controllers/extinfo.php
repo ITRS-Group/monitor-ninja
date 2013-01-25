@@ -80,9 +80,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->template->js_header->js = $this->xtra_js;
+		
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
-		$this->template->css_header->css = $this->xtra_css;
+		
+		
+		// Widgets
+		$this->template->content->widgets = array();
+		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		# save us some typing
 		$content = $this->template->content;
@@ -91,6 +95,41 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return url::redirect('extinfo/unauthorized/'.$type);
 		}
 		$content->set = $set;
+		
+		/*
+		 * Add comments widget
+		 */
+		
+		
+		$username = Auth::instance()->get_user()->username;
+		
+		$setting = array(
+			'query'=>$set->get_comments()->get_query(),
+			'columns'=>'all, -host_status, -host_name, -service_status, -service_description'
+			);
+		$model = new Ninja_widget_Model(array(
+			'page' => Router::$controller,
+			'name' => 'listview',
+			'widget' => 'listview',
+			'username' => $username,
+			'friendly_name' => 'Comments',
+			'setting' => $setting
+		));
+	
+		$widget = widget::get($model, $this);
+		widget::set_resources($widget, $this);
+	
+		$widget->set_fixed($set->get_comments()->get_query());
+	
+		$this->template->content->comments = $widget->render();
+		
+		/*
+		 * End add comments widget
+		 */
+		
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 
 		if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
@@ -131,10 +170,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$content->extra_action_links = array();
-
-		# show comments for hosts and services
-		if ($type == 'host' || $type == 'service')
-			$this->_comments($host, $service);
 	}
 
 	/**
@@ -438,201 +473,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->label_view_for = $label_view_for;
 		}
 
-	}
-
-	/**
-	*   Print comments for host or service
-	*/
-	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
-	{
-		$type = $service ? 'service' : 'host';
-		if (empty($all) && empty($host)) {
-			return false;
-		}
-
-		$handling_deletes = false;
-		$command_success = false;
-		$command_result_msg = false;
-		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime'])
-			|| !empty($_POST['del_comment_host']) || !empty($_POST['del_comment_service']))) {
-			$handling_deletes = true;
-			$comment_cmd = false;
-			$downtime_cmd = false;
-			$nagios_commands = array();
-			# bulk delete of comments?
-			if (isset($_POST['del_submithost'])) {
-				# host comments
-				$comment_cmd = 'DEL_HOST_COMMENT';
-				$downtime_cmd = 'DEL_HOST_DOWNTIME';
-			} elseif (isset($_POST['del_submitservice'])) {
-				# service comments
-				$comment_cmd = 'DEL_SVC_COMMENT';
-				$downtime_cmd = 'DEL_SVC_DOWNTIME';
-			}
-
-
-			if (isset($_POST['del_comment'])) {
-				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
-					return url::redirect('command/unauthorized');
-				}
-				foreach ($_POST['del_comment'] as $param) {
-					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
-				}
-			}
-
-			# delete host comments from search result
-			if (isset($_POST['del_comment_host'])) {
-				$comment_cmd = 'DEL_HOST_COMMENT';
-				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
-					return url::redirect('command/unauthorized');
-				}
-				foreach ($_POST['del_comment_host'] as $param) {
-					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
-				}
-			}
-			# delete service comments from search result
-			if (isset($_POST['del_comment_service'])) {
-				$comment_cmd = 'DEL_SVC_COMMENT';
-				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
-					return url::redirect('command/unauthorized');
-				}
-				foreach ($_POST['del_comment_service'] as $param) {
-					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
-				}
-			}
-
-			if (isset($_POST['del_downtime'])) {
-				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $downtime_cmd))) {
-					return url::redirect('command/unauthorized');
-				}
-				foreach ($_POST['del_downtime'] as $param) {
-					$nagios_commands = Command_Controller::_build_command($downtime_cmd, array('downtime_id' => $param), $nagios_commands);
-				}
-			}
-
-			$pipe = System_Model::get_pipe();
-
-			while ($ncmd = array_pop($nagios_commands)) {
-				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
-			}
-
-			if ($command_success === true) {
-				# everything was ok
-				$command_result_msg = sprintf(_('Your commands were successfully submitted to %s.'),
-					Kohana::config('config.product_name'));
-			} else {
-				# errors encountered
-				$command_result_msg = sprintf(_('There was an error submitting one or more of your commands to %s.'),
-					Kohana::config('config.product_name'));
-			}
-
-			$redirect = arr::search($_REQUEST, 'redirect_page');
-			if (empty($redirect)) {
-				$_SESSION['command_result_msg'] = $command_result_msg;
-				$_SESSION['command_success'] = $command_success;
-
-				# reload controller to prevent it from trying to submit
-				# the POST data on refresh
-				return url::redirect(Router::$controller.'/'.Router::$method);
-			} else {
-				return url::redirect($redirect);
-			}
-		}
-
-		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
-		$command_success = $this->session->get('error_msg', $command_success);
-
-		if ($all === true) {
-			$tot = Old_Comment_Model::count_comments_by_user($host, $service);
-		} else {
-			$tot = 0;
-		}
-
-		//Setup pagination
-		$items_per_page = $this->input->get('custom_pagination_field', config::get('pagination.default.items_per_page', '*'));
-		$pagination = new Pagination(
-			array(
-				'uri_segment' => 3,
-				'total_items'=> $tot,
-				'items_per_page' => $items_per_page
-			)
-		);
-		$offset = $pagination->sql_offset;
-
-		$comment_data = $all ? Old_Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Old_Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
-		$schedule_downtime_comments = $all ? Old_Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Old_Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
-
-		$comment = false;
-		$i = 0;
-
-		$comment_type = 'comment';
-		foreach ($comment_data as $row) {
-			$comment[$i] = $row;
-			$comment[$i]['comment_type'] = $comment_type;
-			$i++;
-		}
-
-		$comment_type = 'downtime';
-		foreach ($schedule_downtime_comments as $row) {
-//          if (empty($row->comment_data)) {
-//              continue;
-//          }
-			$comment[$i] = $row;
-			$comment[$i]['comment_type'] = $comment_type;
-			$i++;
-		}
-
-		if (!$all && is_array($comment)) {
-			array_multisort($comment, SORT_ASC, SORT_REGULAR, $comment);
-		}
-
-		$filter_string = _('Enter text to filter');
-
-		$this->js_strings .= "var _filter_label = '".$filter_string."';";
-		$this->template->js_strings = $this->js_strings;
-
-		$this->template->content->comments = $this->add_view('extinfo/comments');
-		if (!is_array($this->xtra_js) || !in_array($this->add_path('extinfo/js/extinfo.js'), $this->xtra_js)) {
-			$this->template->js_header = $this->add_view('js_header');
-			$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
-			$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
-			$this->template->js_header->js = $this->xtra_js;
-		}
-
-		$comments = $this->template->content->comments;
-		$comments->filter_string = $filter_string;
-		$comments->label_add_comment = $service ? _('Add a new service comment') : _('Add a new host comment');
-		$comments->cmd_add_comment =
-			$type=='host' ? nagioscmd::command_id('ADD_HOST_COMMENT')
-			: nagioscmd::command_id('ADD_SVC_COMMENT');
-		$comments->cmd_delete_all_comments =
-			$type=='host' ? nagioscmd::command_id('DEL_ALL_HOST_COMMENTS')
-			: nagioscmd::command_id('DEL_ALL_SVC_COMMENTS');
-		$comments->label_title = $type == 'host' ? _('Host Comments') : _('Service Comments');
-		if (!$all) {
-			$comments->host = $host;
-			$comments->service = $service;
-		}
-		$comments->type = $type;
-
-		$comments->data = $comment;
-		$nagios_config = System_Model::parse_config_file('nagios.cfg');
-		$comments->cmd_delete_comment =
-			$type=='host' ? nagioscmd::command_id('DEL_HOST_COMMENT')
-			: nagioscmd::command_id('DEL_SVC_COMMENT');
-		$comments->cmd_delete_downtime =
-			$type=='host' ? nagioscmd::command_id('DEL_HOST_DOWNTIME')
-			: nagioscmd::command_id('DEL_SVC_DOWNTIME');
-
-		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
-		$comments->no_data = $all ? _('No comments found') : sprintf(_('This %s has no comments associated with it'), $type);
-		$comments->pagination = $pagination;
-		$this->template->title = _(sprintf('Monitoring » %s information', ucfirst($type)));
-		$comments->command_result = arr::search($_SESSION, 'command_result_msg');
-		$comments->command_success = arr::search($_SESSION, 'command_success');
-		unset($_SESSION['command_result_msg']);
-		unset($_SESSION['command_success']);
-		return $this->template->content->comments->render();
 	}
 
 	/**

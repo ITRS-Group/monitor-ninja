@@ -29,7 +29,11 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 	}
 	
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
-		$field = str_replace('.','_',$filt->get_field());
+		$fields = explode('.',$filt->get_field());
+		if( count($fields) > 2 ) {
+			$fields = array_slice($fields, count($fields)-2);
+		}
+		$field = implode('_',$fields);
 		$op = $filt->get_op();
 		$value = $filt->get_value();
 		return $this->filter . $field . " " . $op . " " . $value . "\n";

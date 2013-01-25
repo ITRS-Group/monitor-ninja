@@ -25,4 +25,9 @@ class ServiceSet_Model extends BaseServiceSet_Model {
 		
 		return $totals;
 	}
+	
+	public function get_comments() {
+		$set = parent::get_comments();
+		return $set->reduce_by('is_service', true, '=');
+	}
 }

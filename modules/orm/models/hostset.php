@@ -27,4 +27,9 @@ class HostSet_Model extends BaseHostSet_Model {
 		$service_set = $this->get_services();
 		return $totals + $service_set->get_totals();
 	}
+	
+	public function get_comments() {
+		$set = parent::get_comments();
+		return $set->reduce_by('is_service', false, '=');
+	}
 }

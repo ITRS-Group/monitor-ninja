@@ -40,6 +40,19 @@ if( $object instanceof Host_Model ) {
 		<?php } ?>
 		<tr>
 			<?php
+				$img = 'add-comment';
+				$label = _("Submit a $type comment");
+				$cmd = $type == 'host' ? nagioscmd::command_id('ADD_HOST_COMMENT') : nagioscmd::command_id('ADD_SVC_COMMENT');
+			?>
+			<td class="icon dark">
+				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
+			</td>
+			<td>
+				<?php echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label); ?>
+			</td>
+		</tr>
+		<tr>
+			<?php
 			if ($object->get_active_checks_enabled()) {
 				$img = 'disabled';
 				$label = _("Disable active checks of this $type");

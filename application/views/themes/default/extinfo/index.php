@@ -299,5 +299,5 @@ if (!empty($commands))
 <br /><br />
 
 <?php
-if (false && isset($comments))
+if (isset($comments))
 	echo $comments;
