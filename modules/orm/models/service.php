@@ -81,6 +81,10 @@ class Service_Model extends BaseService_Model {
 		return $this->expand_macros(parent::get_notes_url());
 	}
 
+	public function get_notes() {
+		return $this->expand_macros(parent::get_notes());
+	}
+
 	public function get_action_url() {
 		return $this->expand_macros(parent::get_action_url());
 	}
