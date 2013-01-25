@@ -92,14 +92,14 @@ if (!empty($widgets)) {
 		<?php } ?>
 		<tr>
 			<td><strong><?php echo _('Member of'); ?></strong></td>
-			<td style="white-space: normal"><?php echo $host->get_groups() ? implode(', ', $host->get_groups()) : _('No hostgroups') ?></td>
+			<td style="white-space: normal"><?php echo $object->get_groups() ? implode(', ', $object->get_groups()) : _('No '.$type.'groups') ?></td>
 		</tr>
 		<tr>
 			<td><strong><?php echo _('Notifies to') ?></strong></td>
 			<td>
-				<?php	if ($host->get_contact_groups()) {
+				<?php	if ($object->get_contact_groups()) {
 					$c = 0;
-					foreach ($host->get_contact_groups() as $group) {
+					foreach ($object->get_contact_groups() as $group) {
 						echo '<a title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
 						echo $group.'</a>';
 /*				?>
@@ -128,24 +128,40 @@ if (!empty($widgets)) {
 			?>
 			</td>
 		</tr>
-		<?php if ($host->get_notes()) {?>
+		<?php if ($object->get_notes()) {?>
 		<tr>
 			<td><strong><?php echo _('Notes') ?></strong></td>
-			<td><?php echo $host->get_notes() ?></td>
+			<td><?php echo $object->get_notes() ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
 			<td colspan="2" style="padding-top: 7px">
 				<?php
-					if ($host->get_action_url()) {
-						echo '<a href="'.$host->get_action_url().'" style="border: 0px" target="'.$action_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra host actions'),'title' => _('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a href="'.$host->get_action_url().'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
+					if ($url =$object->get_action_url()) {
+						echo '<a href="'.$url.'" style="border: 0px" target="'.$action_url_target.'">';
+						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra '.$type.' actions'),'title' => _('Perform extra '.$type.' actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<a href="'.$url.'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
 					}
-					if ($host->get_notes_url()) {
-						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$host->get_notes_url().'" style="border: 0px">';
-						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra host notes'),'title' => _('View extra host notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a target="'.$notes_url_target.'" href="'.$host->get_notes_url().'">'._('Extra notes').'</a>';
+					if ($url = $object->get_notes_url()) {
+						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$url.'" style="border: 0px">';
+						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra '.$type.' notes'),'title' => _('View extra '.$type.' notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<a target="'.$notes_url_target.'" href="'.$url.'">'._('Extra notes').'</a>';
+					}
+					if ($url = $object->get_config_url()) {
+						echo '&nbsp; <a href="'.$url.'" style="border: 0px">';
+						echo html::image($this->add_path('icons/16x16/nacoma.png'),array('alt' => _('View extra '.$type.' notes'),'title' => _('View extra '.$type.' notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<a href="'.$url.'">'._('Configure').'</a>';
+					}
+					if ($object->get_pnpgraph_present()) {
+						$url = url::site() . 'pnp/?host=' . urlencode($host->get_name());
+						if($service!==false) {
+							$url .= '&srv=' . urlencode($service);
+						} else {
+							$url .= '&srv=_HOST_';
+						}
+						echo '&nbsp; <a href="'.$url.'" style="border: 0px">';
+						echo html::image($this->add_path('icons/16x16/pnp.png'),array('alt' => _('Show performance graph'),'title' => _('Show performance graph'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<a href="'.$url.'">'._('Show performance graph').'</a>';
 					}
 					foreach ($extra_action_links as $label => $ary) {
 						$img_class = isset($ary['img_class']) ? ' class="'.$ary['img_class'].'"' : '';
