@@ -155,7 +155,7 @@ if (!empty($widgets)) {
 					if ($object->get_pnpgraph_present()) {
 						$url = url::site() . 'pnp/?host=' . urlencode($host->get_name());
 						if($service!==false) {
-							$url .= '&srv=' . urlencode($service);
+							$url .= '&srv=' . urlencode($service->get_description());
 						} else {
 							$url .= '&srv=_HOST_';
 						}
