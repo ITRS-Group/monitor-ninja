@@ -163,13 +163,6 @@ if (!empty($widgets)) {
 						echo html::image($this->add_path('icons/16x16/pnp.png'),array('alt' => _('Show performance graph'),'title' => _('Show performance graph'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
 						echo '<a href="'.$url.'">'._('Show performance graph').'</a>';
 					}
-					foreach ($extra_action_links as $label => $ary) {
-						$img_class = isset($ary['img_class']) ? ' class="'.$ary['img_class'].'"' : '';
-						echo '&nbsp; <a href="'.$ary['url'].'" style="border: 0px">';
-						if (!empty($ary['img']))
-							echo '<img src="'.$ary['img'].'" alt="" '.$img_class.' /></a> ';
-						echo '<a href="'.$ary['url'].'">'.$label.'</a>'."\n";
-					}
 				?><div id="pnp_area" style="display:none"></div>
 			</td>
 		</tr>

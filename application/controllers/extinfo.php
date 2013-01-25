@@ -168,8 +168,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->page_links = $page_links;
 			$this->template->content->label_view_for = _("for this $type");
 		}
-
-		$content->extra_action_links = array();
 	}
 
 	/**
