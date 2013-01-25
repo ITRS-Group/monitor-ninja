@@ -22,7 +22,7 @@ class Search_Test extends TapUnit {
 	 * Test simple table access
 	 */
 	public function test_host() {
-		$this->run_test('h:kaka', array('hosts'=>'[hosts] (name ~~ "kaka" or address ~~ "kaka" or display_name ~~ "kaka" or alias ~~ "kaka")') );
+		$this->run_test('h:kaka', array('hosts'=>'[hosts] (name ~~ "kaka" or display_name ~~ "kaka" or address ~~ "kaka" or alias ~~ "kaka")') );
 	}
 	public function test_service() {
 		$this->run_test('s:kaka', array('services'=>'[services] (description ~~ "kaka" or display_name ~~ "kaka")') );
@@ -41,7 +41,7 @@ class Search_Test extends TapUnit {
 	 * Test wildcard search
 	 */
 	public function test_wildcard() {
-		$this->run_test('h:aaa%bbb', array('hosts'=>'[hosts] (name ~~ "aaa.*bbb" or address ~~ "aaa.*bbb" or display_name ~~ "aaa.*bbb" or alias ~~ "aaa.*bbb")') );
+		$this->run_test('h:aaa%bbb', array('hosts'=>'[hosts] (name ~~ "aaa.*bbb" or display_name ~~ "aaa.*bbb" or address ~~ "aaa.*bbb" or alias ~~ "aaa.*bbb")') );
 	}
 	
 	
