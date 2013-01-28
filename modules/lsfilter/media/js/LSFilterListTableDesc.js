@@ -201,6 +201,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			{
 				if (var0.fetch(variable)[name])
 					return var0.fetch(variable)[name];
+				return '';
 			}
 		};
 	};
