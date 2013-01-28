@@ -109,7 +109,7 @@ class Reports_Controller extends Base_reports_Controller
 		$template->scheduled_info = $scheduled_info;
 
 		if ($this->options['report_id']) {
-			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
+			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 		}
 
 		if($this->options['includesoftstates'])

@@ -154,8 +154,12 @@ $(document).ready(function() {
 		get_members(value);
 	}).each(function() {
 		var val = $(this).val();
-		set_selection(val);
-		get_members(val);
+		if (window['_report_data']) {
+			expand_and_populate(_report_data);
+		} else {
+			set_selection(val);
+			get_members(val);
+		}
 	});
 	$('#sel_report_type').on('click', function() {
 		var value = this.form.report_type.value;
