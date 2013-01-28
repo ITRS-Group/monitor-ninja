@@ -222,7 +222,8 @@ function lsfilter_list(config)
 				if (field in totals) {
 					container.append(listview_renderer_totals[field](
 							totals[field][1]).css('float', 'left').wrapInner(
-							link_query(totals[field][0])));
+							link_query(totals[field][0]).addClass('no_uline')
+							));
 				}
 			}
 		}
