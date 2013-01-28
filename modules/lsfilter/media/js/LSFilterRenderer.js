@@ -110,6 +110,9 @@ var listview_renderer_totals = {
 
 function render_summary_state(ul, state, stats, substates)
 {
+	if( stats.stats[state] == 0 )
+		return;
+
 	var li = $('<li />').append(
 			link_query(stats.queries[state]).append(icon16('shield-' + state))
 					.append(
