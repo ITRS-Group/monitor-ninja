@@ -171,7 +171,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		
 		return function(args)
 		{
-			return name.join(';') + '=' + var0.fetch(args.obj);
+			return var0.fetch(args.obj);
 		};
 	};
 	
