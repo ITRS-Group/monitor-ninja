@@ -80,6 +80,12 @@ foreach( $service_set->it(array('host.name', 'description', 'host.status', 'stat
 }
 @endcode
 
+If the set is expected to only have up to one object, direct access to that object is possible through the ->one() method. This method takes one optional argument containing an array of which columns to fetch.
+@code
+$all = HostPool_Model::all();
+$host = $all->reduce_by('name', 'kaka', '=')->one();
+@endcode
+
 @subsection class_pool Pools
 
 A pool class modelles the collection of everything of a certain type. The main function of the pools i to give access to sets. This collection contains two primary static methods: all and non.
@@ -93,8 +99,11 @@ $no_services = ServicePool_Model::none();
 
 All generated code is put in classes with prefix Base. All classes has a corresponding wrapper class with the same name, except the prefix.
 
+The reson of the wrapper class is to put business-specific logic to the model. The base class should never be instanced directly, and therefore is abstract.
+
 @code
 class Host_Model extends BaseHost_Model {
+	/* Return the state as a text instead of code */
 	public function get_state_text() {
 		if( !$this->get_has_been_checked() )
 			return 'pending';
@@ -107,8 +116,6 @@ class Host_Model extends BaseHost_Model {
 	}
 }
 @endcode
-
-The reson of the wrapper class it to put business-specific logic to the model. The base class should never be instanced directly, and therefore is abstract.
 
 All table-specific classes do also extend a generic class, for example:
 
@@ -156,9 +163,5 @@ foreach( $set as $host ) {
 }
 @endcode
 
-- Få ut en objektrad (motsvarande select * from host where host_name = 'bla')
-- Ställa skalbara frågor med många resultat
-  - mängder, front end-komplement (i pseudo-kod, eller iaf angreppssätt mot problemet), pagination
-- Vad skiljer en object-pool mot att fråga databasen sekventiellt ("cache" "inbyggt" o.s.v.)
 
 */
