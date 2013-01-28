@@ -1,0 +1,164 @@
+/** @page orm Ninja - ORM - Dev. Manual
+
+Access to livestatus and some other tables is accessed through an Object Relational abstraction layer, which makes it possible to add logic to the objects.
+
+@section structure Structore
+
+Each table is modelled by three classes: Pool, Set and Object.
+
+@subsection class_object Object
+
+An instance of an object class represents a single object. For example, Host_Model, represents a single host.
+
+The object is only instanced from within a set class. (see below). The user must never instance the class manually.
+
+Each object have getters for it's variables:
+@code
+$host->get_nmae();
+$service->get_description();
+@endcode
+
+Related objects have getters to get the related object
+@code
+$host = $services->get_host(); /* Returns: Host_Model */
+@endcode
+
+..and the other way, but because of multiple related objects, a set is returned (see below for sets)
+@code
+$services = $host->get_services(); /* Returns: ServiceSet_Model */
+@code
+
+@subsection class_set Sets
+
+Set classes models a defined set of objects. A set can be for example the collection of all problem hosts, all services in a servicegroup or all comments related to a certain host.
+
+Sets can be reduced by a filter line, using a livestatus-compatible operator. A new set is always returned:
+@code
+$set = $set->reduce_by('column_name', 'value', 'operator');
+@endcode
+
+Set operations can be applied to sets. All set opertaions returns a new set:
+@code
+$set = $seta->union($setb);
+$set = $seta->intersect($setb);
+$set = $set->complement();
+@endcode
+
+Sets of object can be converted to sets of a related object:
+@code
+$services_on_hosts = $host_set->get_services();
+
+$host_comments_on_problem_hosts = $problem_hosts->get_comments();
+$service_comments_on_problem_hosts = $problem_hosts->get_services()->get_comments();
+$comments_on_problem_hosts = $host_comments_on_problem_hosts->union($service_comments_on_problem_hosts);
+@endcode
+
+A set is countable:
+@code
+$number_problem_hosts = count($problem_hosts_set);
+@endcode
+
+A set is iterable:
+
+The database is queried  for all columns and no limit, so objects can be accessed.
+@code
+foreach( $host_set as $hoset ) {
+	print $host-get_name() . "\n";
+}
+@endcode
+
+Preffered way to iterate over a set is to use the ->it() method, which takes up to four arguments:
+  * An array of columns to fetch. Only those columns contains valid information in the result, or false to fetch everything
+  * An array of columns to order on, with possible order. First column has precedance.
+  * (optional) an integer with the number of elements to fetch
+  * (optional) an integer describing how many objects to skip at the beginning of the result set.
+
+@code
+foreach( $service_set->it(array('host.name', 'description', 'host.status', 'status'), array('host.name', 'description), 100) as $service ) {
+	$host = $service->get_host();
+	print $host->get_name() . ';' . $service->get_description() . ': ' . (($host->get_status()>0) || ($service->get_status()>0) ? ' Problem' : 'OK');
+}
+@endcode
+
+@subsection class_pool Pools
+
+A pool class modelles the collection of everything of a certain type. The main function of the pools i to give access to sets. This collection contains two primary static methods: all and non.
+
+@code
+$all_hosts = HostPool_Model::all();
+$no_services = ServicePool_Model::none();
+@endcode
+
+@section base_classes Base classes
+
+All generated code is put in classes with prefix Base. All classes has a corresponding wrapper class with the same name, except the prefix.
+
+@code
+class Host_Model extends BaseHost_Model {
+	public function get_state_text() {
+		if( !$this->get_has_been_checked() )
+			return 'pending';
+		switch( $this->get_state() ) {
+			case 0: return 'up';
+			case 1: return 'down';
+			case 2: return 'unreachable';
+		}
+		return 'unknown'; // should never happen
+	}
+}
+@endcode
+
+The reson of the wrapper class it to put business-specific logic to the model. The base class should never be instanced directly, and therefore is abstract.
+
+All table-specific classes do also extend a generic class, for example:
+
+@code
+class Host_Model extends BaseHost_Model {...}
+class BaseHost_Model extends Object_Model {...}
+
+class Object_Model extends BaseObject_Model {...}
+class BaseObject_Model {...}
+@endcode
+
+Set classes do also have a driver-specific class:
+
+@code
+class HostSet_Model extends BaseHostSet_Model {...}
+class BaseHostSet_Model extends ObjectLSSet_Model {...}
+
+class ObjectLSSet_Model extends BaseObjectLSSet_Model {...}
+class BaseObjectLSSet_Model extends ObjectSet_Model {...}
+
+class ObjectSet_Model extends BaseObjectSet_Model {...}
+class BaseObjectSet_Model {...}
+@endcode
+
+
+@section examples Examples
+
+@section example_list_of_hosts List of hosts given an array of names
+To iterate over a couple of host, given an array of name, start with a empty set of hosts, and add one host at a time.
+
+To fetch a given host, start with a set of all hosts, and reduce by the name is equal to the expected name. Combine the sets:
+
+@code
+$hostnames = array(...);
+
+$set = HostPool_Model::none();
+$all = HostPool_Model::all();
+foreach( $hostnames as $hostname ) {
+	$this_set = $all->reduce_by( 'name', $hostname, '=' );
+	$set = $set->union($this_set);
+}
+
+foreach( $set as $host ) {
+	do_something( $host );
+}
+@endcode
+
+- Få ut en objektrad (motsvarande select * from host where host_name = 'bla')
+- Ställa skalbara frågor med många resultat
+  - mängder, front end-komplement (i pseudo-kod, eller iaf angreppssätt mot problemet), pagination
+- Vad skiljer en object-pool mot att fråga databasen sekventiellt ("cache" "inbyggt" o.s.v.)
+
+*/
