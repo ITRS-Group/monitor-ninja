@@ -42,6 +42,9 @@ if (!empty($available_setting_sections)) {
 						case 'int': case 'string':
 							echo form::input($fieldname, $current_values[$cfgkey[0]]);
 							break;
+						case 'textarea':
+							echo form::textarea($fieldname, $current_values[$cfgkey[0]]);
+							break;
 						case 'bool':
 							echo form::radio($fieldname, 1, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? true:false, 'id="radio_on_'.$fieldname.'"').' <label for="radio_on_'.$fieldname.'">'._('On').'</label> &nbsp;';
 							echo form::radio($fieldname, 0, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? false:true, 'id="radio_off_'.$fieldname.'"').' <label for="radio_off_'.$fieldname.'">'._('Off').'</label>';

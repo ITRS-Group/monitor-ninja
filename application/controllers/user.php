@@ -119,7 +119,7 @@ class User_Controller extends Authenticated_Controller {
 
 		$listview_settings = array();
 		foreach( Kohana::config('listview.columns') as $table => $value ) {
-			$listview_settings[_('Table '.ucwords($table))] = array('listview.columns.'.$table, 'string');
+			$listview_settings[_('Table '.ucwords($table))] = array('listview.columns.'.$table, 'textarea');
 		}
 		$settings['listview'] = $listview_settings;
 		
