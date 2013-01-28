@@ -11,7 +11,7 @@ var LSColumnsPP = function()
 	
 };
 
-var LSColumnsFilterListVisitor = function(all_columns, all_db_columns)
+var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 {
 	var column_exists = function(col_name)
 	{
@@ -146,25 +146,46 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns)
 	// expr_var: expr2 := * var
 	this.visit_expr_var = function(var0)
 	{
+		/* Fetch table column dependencies */
+		var name = var0.name;
+		var curtbl = metadata.table;
+		for ( var i = 0; i < name.length; i++) {
+			var curname = name[i];
+			if (livestatus_structure[curtbl][curname]) {
+				var type = livestatus_structure[curtbl][curname];
+				if (type[0] == 'object') {
+					curtbl = type[1];
+				}
+				else {
+					this.custom_deps.push(name.slice(0, i + 1).join('.'));
+					break;
+				}
+			}
+			else {
+				return function(variable)
+				{
+					return 'Unknown variable ' + name.slice(0, i + 1).join('.');
+				};
+			}
+		}
+		
 		return function(args)
 		{
-			return var0(args.obj);
+			return name.join(';') + '=' + var0.fetch(args.obj);
 		};
 	};
 	
 	// var_var: var := * name
 	this.visit_var_var = function(name0)
 	{
-		if (!db_column_exists(name0)) { return function(args)
-		{
-			return "Unknown field " + name0;
-		}; }
-		this.custom_deps.push(name0);
 		var name = name0;
-		return function(variable)
-		{
-			if (variable[name]) return variable[name];
-			return 'Unknown field ' + name;
+		return {
+			name: [ name ],
+			fetch: function(variable)
+			{
+				if (variable[name]) return variable[name];
+				return 'Unknown field ' + name;
+			}
 		};
 	};
 	
@@ -172,9 +193,15 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns)
 	this.visit_var_attr = function(var0, name2)
 	{
 		var name = name2;
-		return function(variable)
-		{
-			if (var0(variable)[name]) return var0(variable)[name];
+		var name_list = var0.name;
+		name_list.push(name);
+		return {
+			name: name_list,
+			fetch: function(variable)
+			{
+				if (var0.fetch(variable)[name])
+					return var0.fetch(variable)[name];
+			}
 		};
 	};
 	
@@ -222,7 +249,7 @@ function lsfilter_list_table_desc(metadata, columndesc)
 		// TODO: handling of column slection description
 		
 		var columns_line_visitor = new LSColumnsFilterListVisitor(all_columns,
-				all_db_columns);
+				all_db_columns, metadata);
 		var parser = new LSColumns(new LSColumnsPP(), columns_line_visitor);
 		try {
 			this.vis_columns = parser.parse(columndesc);
