@@ -583,8 +583,8 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 
+		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 		if ($this->options['include_alerts']) {
-			$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 			$alrt_opts = new Alert_history_options($this->options);
 			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
 			$alrt_opts['include_downtime'] = true; // and we want downtime messages
