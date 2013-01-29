@@ -71,7 +71,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
-		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
@@ -102,7 +101,7 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
-		if (!$this->options['standardreport']) {
+		if ($this->options['report_id']) {
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 		}
 
@@ -206,12 +205,10 @@ class Summary_Controller extends Base_reports_Controller
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 
-		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
+		$this->js_strings .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
-
-		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = $this->options->get_value('report_period');
@@ -251,7 +248,7 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
-		if (!$this->options['standardreport']) {
+		if ($this->options['report_id']) {
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 		}
 		$this->template->js_strings = $this->js_strings;

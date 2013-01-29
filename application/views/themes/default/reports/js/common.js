@@ -154,7 +154,7 @@ $(document).ready(function() {
 		var val = $(this).val();
 		if (window['_report_data']) {
 			expand_and_populate(_report_data);
-		} else {
+		} else if (val) {
 			set_selection(val);
 			get_members(val);
 		}
