@@ -120,7 +120,7 @@
 			<td style="width: 18px">&nbsp;</td>
 			<td>
 				<?php echo _('Report Type') ?><br />
-				<?php echo form::dropdown('summary_type', $options->get_alternatives('summary_type')) ?>
+				<?php echo form::dropdown('summary_type', $options->get_alternatives('summary_type'), $options['summary_type']) ?>
 			</td>
 		</tr>
 		<tr id="display" style="display: none; clear: both;">
