@@ -321,11 +321,11 @@ th span.header-icon {
 	text-align: center;
 }
 
-.selected_odd {
+.selected_odd td {
 	background-color: #EEE4E4 !important;
 }
 
-.selected_even {
+.selected_even td {
 	background-color: #FFEEEE !important;
 }
 
