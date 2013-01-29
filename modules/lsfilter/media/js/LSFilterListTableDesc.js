@@ -9,6 +9,16 @@ var LSColumnsPP = function()
 		return value.substring(1, value.length - 1).replace(/\\(.)/g, '$1');
 	};
 	
+	this.preprocess_float = function(value)
+	{
+		return parseFloat(value);
+	};
+	
+	this.preprocess_integer = function(value)
+	{
+		return parseInt(value, 10);
+	};
+	
 };
 
 var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
@@ -143,12 +153,49 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		};
 	};
 	
-	// expr_var: expr2 := * var
+	// expr_sub: expr := * expr op_sub expr2
+	this.visit_expr_sub = function(expr0, expr2)
+	{
+		return function(args)
+		{
+			return expr0(args) - expr2(args);
+		};
+	};
+	
+	// expr_mult: expr2 := * expr2 op_mult expr3
+	this.visit_expr_mult = function(expr0, expr2)
+	{
+		return function(args)
+		{
+			return expr0(args) * expr2(args);
+		};
+	};
+	
+	// expr_div: expr2 := * expr2 op_div expr3
+	this.visit_expr_div = function(expr0, expr2)
+	{
+		return function(args)
+		{
+			return expr0(args) / expr2(args);
+		};
+	};
+	
+	// expr_neg: expr3 := * op_sub expr4
+	this.visit_expr_neg = function(expr1)
+	{
+		return function(args)
+		{
+			return -expr1(args);
+		};
+	};
+	
+	// expr_var: expr3 := * var
 	this.visit_expr_var = function(var0)
 	{
 		/* Fetch table column dependencies */
 		var name = var0.name;
 		var curtbl = metadata.table;
+		var type = '';
 		for ( var i = 0; i < name.length; i++) {
 			var curname = name[i];
 			if (livestatus_structure[curtbl][curname]) {
@@ -158,6 +205,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				}
 				else {
 					this.custom_deps.push(name.slice(0, i + 1).join('.'));
+					type = type[0];
 					break;
 				}
 			}
@@ -168,10 +216,16 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				};
 			}
 		}
+		var defval = '';
+		switch (type) {
+			case 'int':
+				defval = 0;
+				break;
+		}
 		
 		return function(args)
 		{
-			return var0.fetch(args.obj);
+			return var0.fetch(args.obj, defval);
 		};
 	};
 	
@@ -181,10 +235,14 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		var name = name0;
 		return {
 			name: [ name ],
-			fetch: function(variable)
+			fetch: function(variable, defval)
 			{
-				if (variable[name]) return variable[name];
-				return 'Unknown field ' + name;
+				/*
+				 * Should always exists, otherwise a missmatch between
+				 * livstatus_structure javascript and generated code, or invalid
+				 * dependency-lookup code in this class
+				 */
+				return variable[name];
 			}
 		};
 	};
@@ -197,11 +255,11 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		name_list.push(name);
 		return {
 			name: name_list,
-			fetch: function(variable)
+			fetch: function(variable, defval)
 			{
 				if (var0.fetch(variable)[name])
 					return var0.fetch(variable)[name];
-				return '';
+				return defval;
 			}
 		};
 	};
@@ -212,6 +270,33 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		return function(args)
 		{
 			return string0;
+		};
+	};
+	
+	// expr_int: expr4 := * integer
+	this.visit_expr_int = function(integer0)
+	{
+		return function(args)
+		{
+			return integer0;
+		};
+	};
+	
+	// expr_float: expr4 := * float
+	this.visit_expr_float = function(float0)
+	{
+		return function(args)
+		{
+			return float0;
+		};
+	};
+	
+	// expr_func: expr3 := * name par_l expr par_r
+	this.visit_expr_func = function(name0, expr2)
+	{
+		return function(args)
+		{
+			return name0 + '(' + expr2(args) + ')';
 		};
 	};
 	

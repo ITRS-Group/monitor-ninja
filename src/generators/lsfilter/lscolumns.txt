@@ -1,16 +1,21 @@
 _whitespace /^(\s+)/
 
 string      /^("(?:[^"\\]|\\.)*")/
+float       /^([0-9]+\.[0-9]*)/
+integer     /^([0-9]+)/
 
 all         /^(all)(?:[^a-z0-9_][\s\S]*|)$/i
 
 name        /^([a-z0-9_]+)/i
 
+op_sub      /^(-)/
+op_add      /^(\+)/
+op_mult     /^(\*)/
+op_div      /^(\/)/
+
 comma       /^(,)/
 dot         /^(\.)/
-minus       /^(-)/
 eq          /^(=)/
-add         /^(\+)/
 par_l       /^(\()/
 par_r       /^(\))/
 
@@ -28,14 +33,27 @@ _custom_name_name:  custom_name = name
 _custom_name_str:   custom_name = string
 
 
-expr_add:           expr     = expr _add expr2
+expr_add:           expr     = expr _op_add expr2
+expr_sub:           expr     = expr _op_sub expr2
 
 _expr_1_2:          expr     = expr2
 
-expr_var:           expr2    = var
-expr_string:        expr2    = string
+expr_mult:          expr2    = expr2 _op_mult expr3
+expr_div:           expr2    = expr2 _op_div expr3
 
-_expr_par:          expr2    = _par_l expr _par_r
+_expr_2_3:          expr2    = expr3
+
+expr_neg:           expr3    = _op_sub expr4
+_expr_3_4:          expr3    = expr4
+
+expr_var:           expr4    = var
+expr_string:        expr4    = string
+expr_int:           expr4    = integer
+expr_float:         expr4    = float
+
+_expr_par:          expr4    = _par_l expr _par_r
+
+expr_func:          expr4    = name _par_l expr _par_r
 
 var_var:            var      = name
 var_attr:           var      = var _dot name
