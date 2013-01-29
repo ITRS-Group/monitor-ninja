@@ -606,7 +606,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 		$options = new static($report_info);
 
-		if (isset($report_info['report_id'])) {
+		if (isset($report_info['report_id']) && !empty($report_info['report_id'])) {
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
 
 			if (count($report_info) == 1) {
@@ -617,11 +617,13 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				$options = new static($saved_report_info);
 			}
 			else {
-				foreach ($saved_report_info as $key => $sri) {
-					if ($options->always_allow_option_to_be_set($key) ||
-						(isset($options->vtypes[$key]) && $options->vtypes[$key]['type'] !== 'bool' && $options[$key] === $options->vtypes[$key]['default']))
-					{
-						$options[$key] = $sri;
+				if (is_array($saved_report_info)) {
+					foreach ($saved_report_info as $key => $sri) {
+						if ($options->always_allow_option_to_be_set($key) ||
+							(isset($options->vtypes[$key]) && $options->vtypes[$key]['type'] !== 'bool' && $options[$key] === $options->vtypes[$key]['default']))
+						{
+							$options[$key] = $sri;
+						}
 					}
 				}
 			}
