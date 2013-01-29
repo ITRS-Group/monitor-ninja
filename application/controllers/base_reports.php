@@ -60,7 +60,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 */
 	protected function generate_pdf()
 	{
-		$this->template->base_href = 'http://127.0.0.1'.url::base();
+		$this->template->base_href = 'https://localhost'.url::base();
 
 		# not using exec, so STDERR (used for status info) will be loggable
 		$pipe_desc = array(

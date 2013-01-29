@@ -5,10 +5,7 @@
 <head>
 
 <?php
-if (PHP_SAPI == 'cli') {
-	echo "<base href=\"https://localhost".url::base()."\" />";
-}
-else {
+if (!empty($base_href)) {
 	echo (!empty($base_href)) ? '<base href="'.$base_href.'" />' : '';
 }
 ?>
