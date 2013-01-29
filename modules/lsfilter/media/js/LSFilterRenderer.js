@@ -380,19 +380,7 @@ var listview_renderer_table = {
 				var cell = $('<td />').css('text-align', 'center');
 				if (args.obj.num_services > 0) {
 					cell.append(args.obj.num_services);
-				}
-				return cell;
-			}
-		},
-		"services_num_all": {
-			"header": icon12('shield-info').addClass('header-icon'),
-			"depends": [ 'num_services' ],
-			"sort": false,
-			"cell": function(args)
-			{
-				var cell = $('<td />').css('text-align', 'center');
-				if (args.obj.num_services > 0) {
-					cell.append(args.obj.num_services);
+					cell.addClass('cell_svccnt_all');
 				}
 				return cell;
 			}
@@ -406,6 +394,7 @@ var listview_renderer_table = {
 				var cell = $('<td />').css('text-align', 'center');
 				if (args.obj.num_services_ok > 0) {
 					cell.append(args.obj.num_services_ok);
+					cell.addClass('cell_svccnt_ok');
 				}
 				return cell;
 			}
@@ -419,6 +408,7 @@ var listview_renderer_table = {
 				var cell = $('<td />').css('text-align', 'center');
 				if (args.obj.num_services_warn > 0) {
 					cell.append(args.obj.num_services_warn);
+					cell.addClass('cell_svccnt_warning');
 				}
 				return cell;
 			}
@@ -432,6 +422,7 @@ var listview_renderer_table = {
 				var cell = $('<td />').css('text-align', 'center');
 				if (args.obj.num_services_crit > 0) {
 					cell.append(args.obj.num_services_crit);
+					cell.addClass('cell_svccnt_critical');
 				}
 				return cell;
 			}
@@ -445,6 +436,7 @@ var listview_renderer_table = {
 				var cell = $('<td />').css('text-align', 'center');
 				if (args.obj.num_services_unknown > 0) {
 					cell.append(args.obj.num_services_unknown);
+					cell.addClass('cell_svccnt_unknown');
 				}
 				return cell;
 			}
@@ -458,6 +450,7 @@ var listview_renderer_table = {
 				var cell = $('<td />').css('text-align', 'center');
 				if (args.obj.num_services_pending > 0) {
 					cell.append(args.obj.num_services_pending);
+					cell.addClass('cell_svccnt_pending');
 				}
 				return cell;
 			}
