@@ -27,11 +27,11 @@ class Old_Downtime_Model extends Old_Comment_Model
 		}
 		$bits = substr($bits, 1);
 		$auth = Nagios_auth_Model::instance();
-		$ls_filter = '';
+		$ls_filter = array();
 		if ($filter == nagstat::HOST_DOWNTIME)
-			$ls_filter = 'is_service = 0';
+			$ls_filter['is_service'] = 0;
 		else if ($filter == nagstat::SERVICE_DOWNTIME)
-			$ls_filter = 'is_service = 1';
+			$ls_filter['is_service'] = 1;
 		$ls = Livestatus::instance();
 		$res = $ls->getDowntimes(array('filter' => $ls_filter, 'order' => $order_by));
 		if ($generate_links_for_downtime_id) {
