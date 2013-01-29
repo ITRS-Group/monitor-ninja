@@ -4,6 +4,7 @@ function lsfilter_list(config)
 	this.defaults = {
 		per_page: 100,
 		autorefresh_delay: 30000,
+		autorefresh_enabled: true,
 		request_url: _site_domain + _index_page + "/" + _controller_name
 				+ "/fetch_ajax",
 		columns: false,
@@ -168,6 +169,7 @@ function lsfilter_list(config)
 	this.request_query = '';
 	this.request_metadata = {};
 	this.resuest_timer = false;
+	this.visible_count = 0;
 	
 	this.active_ajax_request = false;
 	
@@ -184,8 +186,32 @@ function lsfilter_list(config)
 	
 	this.handle_autorefresh = function()
 	{
-		
+		var self = this; // To be able to access it from within handlers
+
+		this.send_request({
+			append: false,
+			offset: 0,
+			per_page: this.config.offset + this.config.per_page,
+			callback: function(data)
+			{
+				self.handle_ajax_response(data);
+				// get the scope right
+			}
+		});
 	};
+	
+	this.start_autorefresh_timer = function() {
+		var self = this; // To be able to access it from within handlers
+		if( this.config.autorefresh_enabled == false )
+			return;
+		
+		if(this.autorefresh_timer != false ) {
+			clearTimeout( this.autorefresh_timer );
+		}
+		this.autorefresh_timer = setTimeout(function() {
+			self.handle_autorefresh()
+		}, this.config.autorefresh_delay);
+	}
 	
 	this.handle_ajax_response = function(data)
 	{
@@ -207,8 +233,7 @@ function lsfilter_list(config)
 		}
 		if (this.config.totals) this.config.totals.empty().append(new_totals);
 		
-		this.autorefresh_timer = setTimeout(this.handle_autorefresh,
-				this.autorefresh_delay);
+		this.start_autorefresh_timer();
 	};
 	
 	this.render_totals = function(table, totals)
@@ -287,6 +312,7 @@ function lsfilter_list(config)
 					append: true,
 					callback: function(result)
 					{
+						self.start_autorefresh_timer();
 						loadrow.remove();
 						self.insert_rows(columns, result, tbody);
 						self.add_fill_bar(columns, result, tbody);
