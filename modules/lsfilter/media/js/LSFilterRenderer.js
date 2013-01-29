@@ -965,6 +965,15 @@ var listview_renderer_table = {
 			},
 			"cell": listview_multi_select_cell_renderer
 		},
+		"id": {
+			"header": _('ID'),
+			"depends": [ 'id' ],
+			"sort": [ 'id' ],
+			"cell": function(args)
+			{
+				return $('<td />').text(args.obj.id);
+			}
+		},
 		"is_service": {
 			"header": _('Type'),
 			"depends": [ 'is_service' ],
