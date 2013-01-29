@@ -1,9 +1,4 @@
 $(document).ready(function() {
-
-	$("#saved_report_form").bind('submit', function() {
-		return check_and_submit($(this));
-	});
-
 	// reset options and reload page
 	$('#new_report').click(function() {
 		var current_report = $('input[name=type]').val();

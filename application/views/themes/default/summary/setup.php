@@ -3,7 +3,7 @@
 
 <div>
 	<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
-		echo form::open('summary/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
+		echo form::open('summary/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;', 'method' => 'get'));
 	 ?>
 		<div style="width: 100%; padding-left: 0px">
 			<!--	onchange="check_and_submit(this.form)"	-->
@@ -24,7 +24,6 @@
 						' value="'.$info->id.'">'.$info->report_name.$sched_str.'</option>'."\n";
 				}  ?>
 			</select>
-			<input type="hidden" name="summary_type" value="<?php echo $options['summary_type'] ?>" />
 			<input type="submit" class="button select" value="<?php echo _('Select') ?>" name="fetch_report" />
 			<input type="button" class="button new" value="<?php echo _('New') ?>" name="new_report" title="<?php echo _('Create new saved Summary report') ?>" id="new_report" />
 			<input type="button" class="button delete" value="Delete" name="delete_report" title="<?php echo _('Delete report') ?>" id="delete_report" />

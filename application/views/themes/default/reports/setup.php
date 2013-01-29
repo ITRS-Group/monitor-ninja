@@ -26,7 +26,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				</a>
 			</div>
 
-			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block')); ?>
+			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block', 'method' => 'get')); ?>
 				<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
 					<?php echo help::render('saved_reports') ?> <?php echo _('Saved reports') ?><br />
 					<select name="report_id" id="report_id">
@@ -47,7 +47,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 							}
 						} ?>
 					</select>
-					<input type="hidden" name="type" value="<?php echo $type ?>" />
 					<input type="submit" class="button select" value="<?php echo _('Select') ?>" name="fetch_report" />
 					<input type="button" class="button new" value="<?php echo _('New') ?>" name="new_report" title="<?php echo $new_saved_title ?>" id="new_report" />
 					<input type="button" class="button delete" value="Delete" name="delete_report" title="<?php echo _('Delete report') ?>" id="delete_report" />

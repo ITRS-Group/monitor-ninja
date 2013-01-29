@@ -14,10 +14,6 @@ $(document).ready(function() {
 		return check_form_values(this.form);
 	});
 
-	$("#saved_report_form").bind('submit', function() {
-		return check_and_submit($(this));
-	});
-
 	// reset options and reload page
 	$('#new_report').click(function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
