@@ -390,7 +390,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
 						$result[$i][]= $row->alias;
 
-						$travel = Livestatus::instance()->getHostsByGroup(array('columns' => 'name', 'name' => $row->name));
+						$travel = Livestatus::instance()->getHostsByGroup(array('columns' => 'name', 'filter' => array('name' => $row->name)));
 						if ($travel) {
 							$temp = false;
 							foreach ($travel as $trip) {
