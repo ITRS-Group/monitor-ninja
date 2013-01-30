@@ -194,7 +194,7 @@ class Schedule_Controller extends Authenticated_Controller
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?schedule_id='.$schedule_id.'&output_format=pdf&report_id='.$opt_obj['report_id']);
+		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?schedule_id='.$schedule_id.'&output_format='.$opt_obj['output_format'].'&report_id='.$opt_obj['report_id']);
 		$process = proc_open($cmd, $pipe_desc, $pipes, DOCROOT);
 		Kohana::log('debug', $cmd);
 		if (is_resource($process)) {
@@ -218,7 +218,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$mail = false;
 		$months = date::abbr_month_names();
 		$month = $months[date('m')-1]; // January is [0]
-		$filename = preg_replace("~\.pdf$~", null, $opt_obj['filename'])."_".date("Y_").$month.date("_d").'.pdf';
+		$filename = pathinfo($opt_obj['filename'], PATHINFO_FILENAME)."_".date("Y_").$month.date("_d").'.'.pathinfo($opt_obj['filename'], PATHINFO_EXTENSION);
 		if ($code != 0) {
 			if (request::is_ajax()) {
 				return json::fail(sprintf(_("Failed to run %s: %s"), $cmd, $out));
@@ -492,23 +492,9 @@ class Schedule_Controller extends Authenticated_Controller
 		$str = str_replace(',', '_', $str);
 		if (empty($str)) return false;
 		$extensions = array('pdf', 'csv');
-		$extension = 'pdf'; // default
-		if (strstr($str, '.')) {
-			$parts = explode('.', $str);
-			if (is_array($parts)) {
-				$str = '';
-				for ($i=0;$i<(sizeof($parts)-1);$i++) {
-					$str .= $parts[$i];
-				}
-				$wanted_extension = end($parts);
-				if(in_array($wanted_extension, $extensions)) {
-					$extension = $wanted_extension;
-				}
-				$str .= '.'.$extension;
-			}
-		} else {
-			$str .= '.'.$extension;
+		if(in_array(pathinfo($str, PATHINFO_EXTENSION), $extensions)) {
+			return $str;
 		}
-		return $str;
+		return $str.".pdf";
 	}
 }

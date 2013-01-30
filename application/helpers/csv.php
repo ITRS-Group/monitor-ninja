@@ -13,7 +13,7 @@ class csv_Core
 	public static function csv_http_headers($type, $options) {
 		$filename = $type . '.csv';
 		if ($options['schedule_id']) {
-			$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
+			$schedule_info = Scheduled_reports_Model::get_scheduled_data($options['schedule_id']);
 			if ($schedule_info)
 				$filename = $schedule_info['filename'];
 		}
