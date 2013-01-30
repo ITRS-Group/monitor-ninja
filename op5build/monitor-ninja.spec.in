@@ -25,6 +25,8 @@ BuildRequires: php >= 5.3
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
+BuildRequires: merlin monitor-merlin op5-nagios
+BuildRequires: op5-monitor-supported-database
 
 Source: %name-%version.tar.gz
 %description
