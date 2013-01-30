@@ -283,6 +283,7 @@ class Reports_Controller extends Base_reports_Controller
 		# ==========================================
 		# ========= REPORT STARTS HERE =============
 		# ==========================================
+		
 		$template->report_options = $this->add_view('reports/options');
 
 		$tpl_options = $template->report_options;
@@ -361,71 +362,66 @@ class Reports_Controller extends Base_reports_Controller
 			$template->content->multiple_states = $template_values;
 			$template->content->hide_host = false;
 
-			$template->pie = $this->add_view('reports/pie_chart');
-
 			// ===== SETUP PIECHART VALUES =====
-			$image_data = array();
-			foreach($graph_filter as $key => $val) { $image_data[strtoupper($val)] = 0; }
 
-			# We've either got
-			# 1) custom group
-			# 2) hostgroup / servicegroup
+			$template->pie = $this->add_view('reports/pie_chart');
+			
+			$image_data = array();
+			
+			if( $this->options['use_average'] ) {
+				$prefix = 'average_';
+			} else {
+				$prefix = 'group_';
+			}
+			
+			if( $sub_type == 'service' ) {
+				$states_to_chart = array(
+					$prefix.'ok' => 'OK',
+					$prefix.'warning' => 'WARNING',
+					$prefix.'critical' => 'CRITICAL',
+					$prefix.'unknown' => 'UNKNOWN',
+					$prefix.'undetermined' => 'UNDETERMINED'
+				);
+			} else {
+				$states_to_chart = array(
+					$prefix.'up' => 'UP',
+					$prefix.'unreachable' => 'UNREACHABLE',
+					$prefix.'down' => 'DOWN',
+					$prefix.'undetermined' => 'UNDETERMINED'
+				);
+			}
+			foreach($states_to_chart as $key => $val) { $image_data[$val] = array(); }
 
 			$groups_added = 0;
 			$pie_groupname = false;
 			if(!isset($data_arr['groupname'])) { # actual hostgroup/servicegroup.
 				$tmp_title = ucfirst($sub_type)._('group breakdown');
 				$template->header->title = $tmp_title;
-				foreach($data_arr as $data) { # for every group
-					$added_group = false;
-					if (is_array($data['states'])) {
-						foreach ($graph_filter as $key => $val) {
-							if ($data['states'][$key]!=0) {
-								if (isset($image_data[$groups_added][strtoupper($val)])) {
-									$image_data[$groups_added][strtoupper($val)] += $data['states'][$key];
-								} else {
-									$image_data[$groups_added][strtoupper($val)] = $data['states'][$key];
-								}
-								$pie_groupname[$groups_added] = $data['groupname'];
-								$added_group = true;
-							}
-						}
-					}
-					if($added_group)
-						$groups_added++;
-				}
 			} else {
-				$added_group = false;
 				$tmp_title = ucfirst($sub_type).' '._('state breakdown');
 				$template->header->title = $tmp_title;
-				if (is_array($data_arr['states'])) {
-					foreach ($graph_filter as $key => $val) {
-						if ($data_arr['states'][$key]!=0)
-						{
-							if (isset($image_data[0][strtoupper($val)])) {
-								$image_data[0][strtoupper($val)] += $data_arr['states'][$key];
-							} else {
-								$image_data[0][strtoupper($val)] = $data_arr['states'][$key];
-							}
-							$added_group = true;
+			}
+			
+			foreach($template_values as $data) { # for every group
+				$added_group = false;
+				foreach ($states_to_chart as $key => $val) {
+					if ($data[$key]!=0) {
+						if (isset($image_data[$groups_added][$val])) {
+							$image_data[$groups_added][$val] += $data[$key];
+						} else {
+							$image_data[$groups_added][$val] = $data[$key];
 						}
+						$added_group = true;
 					}
 				}
-				if($added_group)
+				if($added_group) {
+					$pie_groupname[$groups_added] = $data['groupname'];
+					$image_data[$groups_added]['EXCLUDE'] = 100 - array_sum($image_data[$groups_added]);
 					$groups_added++;
+				}
 			}
 
 			if ($groups_added > 0) {
-				foreach($graph_filter as $key => $val) {
-					for($i = 0; $i < $groups_added; $i++) {
-						if(isset($image_data[$i][strtoupper($val)]) && $image_data[$i][strtoupper($val)] == 0)
-							unset($image_data[$i][strtoupper($val)]);
-						else {
-							if (isset($image_data[$i][strtoupper($val)]))
-								$image_data[$i][strtoupper($val)] /= $groups_added;
-						}
-					}
-				}
 				$charts = false;
 				$page_js = '';
 				for($i = 0; $i < $groups_added; $i++) {
@@ -461,6 +457,7 @@ class Reports_Controller extends Base_reports_Controller
 							if ($data['states'][$key]!=0)
 								$image_data[strtoupper($val)] = $data['states'][$key];
 						}
+						$image_data['EXCLUDE'] = $data['tot_time'] - array_sum($image_data);
 					}
 
 					if ($image_data) {
