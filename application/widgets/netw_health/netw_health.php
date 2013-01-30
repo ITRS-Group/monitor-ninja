@@ -116,9 +116,11 @@ EOC;
 			if( $count_all == 0 ) $count_all = 1;
 			$bars[] = array(
 				'label' => $name,
-				'value' => round(100.0*$count_sel/$count_all,1)
+				'value' => 100.0*$count_sel/$count_all
 				);
 		}
+		
+		$precision = 1;
 
 		# set required extra resources
 		$this->js = array('js/netw_health');

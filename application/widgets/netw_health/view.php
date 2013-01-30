@@ -11,10 +11,10 @@
 		}
 		?>
 		<td style="text-align: center;">
-			<div style="<?php echo ($bar['value'] > 33) ? 'color: #ffffff;' : ''?>font-size: 140%; position: absolute; padding-top: 62px; padding-left: 10px;"><?php echo $bar['value'] ?> %</div>
+			<div style="<?php echo ($bar['value'] > 33) ? 'color: #ffffff;' : ''?>font-size: 140%; position: absolute; padding-top: 62px; padding-left: 10px;"><?php echo round($bar['value'],$precision) ?> %</div>
 			<div style="<?php echo ($bar['value'] > 12) ? 'color: #ffffff;' : ''?>font-size: 90%; position: absolute; padding-top: 84px; padding-left: 10px;"><?php echo $bar['label'] ?></div>
 			<div class="border">
-				<?php echo html::image($image, array('style' => 'height:'.$bar['value'].'px; width: 100%; padding-top: '.(100-round($bar['value'])).'px', 'alt' => $bar['label'])) ?>
+				<?php echo html::image($image, array('style' => 'height:'.round($bar['value']).'px; width: 100%; padding-top: '.(100-round($bar['value'])).'px', 'alt' => $bar['label'])) ?>
 			</div>
 		</td>
 	<?php endforeach; ?>
