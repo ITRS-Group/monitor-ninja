@@ -12,6 +12,7 @@ class Netw_health_Widget extends widget_Base {
 	# define warning/critical limit
 	private $health_warning_percentage = 90;
 	private $health_critical_percentage = 75;
+	private $visible_precision = 2;
 	private $host_img = false;
 	private $service_img = false;
 	private $crit_img = '/images/thermcrit.png';
@@ -43,6 +44,11 @@ EOC;
 		? $this->model->setting['health_critical_percentage']
 		: $this->health_critical_percentage;
 
+		$this->visible_precision =
+		isset($this->model->setting['visible_precision'])
+		? $this->model->setting['visible_precision']
+		: $this->visible_precision;
+
 		$this->netw_health_config =
 		isset($this->model->setting['netw_health_config'])
 		? $this->model->setting['netw_health_config']
@@ -59,6 +65,9 @@ EOC;
 		$options[] = new option($this->model->name, 'health_critical_percentage', 'Critical Percentage Level', 'input', array(
 			'style' => 'width:20px',
 			'title' => sprintf(_('Default value: %s%%'), 75)), $this->health_warning_percentage);
+		$options[] = new option($this->model->name, 'visible_precision', 'Precision', 'input', array(
+			'style' => 'width:20px',
+			'title' => sprintf(_('Default value: %d'), 1)), $this->visible_precision);
 /*
  * Because the configuration is to hard for now to support, this is commented out.
  * 
@@ -76,6 +85,10 @@ EOC;
 
 		$health_warning_percentage = $this->health_warning_percentage;
 		$health_critical_percentage = $this->health_critical_percentage;
+		
+		$visible_precision = intval( $this->visible_precision );
+		if( $visible_precision < -1 ) $visible_precision = -1;
+		if( $visible_precision > 10 ) $visible_precision = 10;
 
 		/*
 		 * Parse configuration text
@@ -119,8 +132,6 @@ EOC;
 				'value' => 100.0*$count_sel/$count_all
 				);
 		}
-		
-		$precision = 1;
 
 		# set required extra resources
 		$this->js = array('js/netw_health');
