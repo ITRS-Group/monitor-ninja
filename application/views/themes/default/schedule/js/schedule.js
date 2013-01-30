@@ -100,6 +100,7 @@ $(document).ready(function() {
 				recipients: recipients,
 				filename: $('#filename').fieldValue()[0],
 				description: $('#description').fieldValue()[0],
+				attach_description: $('#attach_description').fieldValue()[0],
 				local_persistent_filepath: $.trim($('#local_persistent_filepath').val())
 			},
 			complete: function() {
@@ -122,7 +123,8 @@ $(document).ready(function() {
 				var description = $('#description').attr('value');
 				if (description == '')
 					description = '&nbsp;';
-				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description)
+				var attach_description = $('#attach_description').attr('value');
+				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description, attach_description)
 				setup_editable();
 				$('#new_schedule_report_form').clearForm();
 
@@ -263,9 +265,18 @@ function setup_editable()
 		submit : 'OK',
 		cancel : 'cancel'
 	});
+	$(".attach_description").editable(save_url, {
+		data : {0: "No", 1: "Yes"},
+		id   : 'elementid',
+		name : 'newvalue',
+		event : 'dblclick',
+		type : 'select',
+		submit : _ok_str,
+		cancel : _cancel_str
+	});
 }
 
-function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id, report_period, recipients, filename, local_persistent_filepath, description)
+function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id, report_period, recipients, filename, local_persistent_filepath, description, attach_description)
 {
 	var template_row = $('#schedule_template tr');
 
@@ -297,6 +308,9 @@ function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id,
 	$('.local-path', template_row)
 		.attr('id', 'local_persistent_filepath-'+schedule_id)
 		.text(local_persistent_filepath);
+	$('.attach_description', template_row)
+		.attr('id', 'attach_description-'+schedule_id)
+		.text(parseInt(attach_description) ? 'Yes' : 'No');
 	var actions = $('.action', template_row);
 	$('.direct_link', actions).attr('href', _site_domain + _index_page + '/' + rep_type + '/generate?report_id=' + report_id);
 	$('.send_report_now, .delete_schedule', actions).data('schedule', schedule_id).data('report_id', report_id).data('type', rep_type);
@@ -316,7 +330,7 @@ function fill_scheduled() {
 		}
 		for (var i = 0; i < _scheduled_reports[type].length; i++) {
 			var report = _scheduled_reports[type][i];
-			create_new_schedule_rows(report.id, type, report.reportname, report.report_id, report.periodname, report.recipients, report.filename, report.local_persistent_filepath, report.description);
+			create_new_schedule_rows(report.id, type, report.reportname, report.report_id, report.periodname, report.recipients, report.filename, report.local_persistent_filepath, report.description, report.attach_description);
 		}
 	}
 }

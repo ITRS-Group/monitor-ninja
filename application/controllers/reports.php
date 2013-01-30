@@ -596,6 +596,18 @@ class Reports_Controller extends Base_reports_Controller
 			$this->template->content->log_content = $alerts->template->content->content;
 		}
 		$this->template->js_header->js = $this->xtra_js;
+		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
+		if($scheduled_info) {
+			$schedule_id = $this->input->get('schedule_id', null);
+			if($schedule_id) {
+				$le_schedule = current(array_filter($scheduled_info, function($item) use ($schedule_id) {
+					return $item['id'] == $schedule_id && $item['attach_description'] && $item['description'];
+				}));
+				if($le_schedule) {
+					$template->header->description = $this->options['description'] ? $this->options['description']."\n".$le_schedule['description'] : $le_schedule['description'];
+				}
+			}
+		}
 
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf();
@@ -1046,6 +1058,7 @@ class Reports_Controller extends Base_reports_Controller
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
+			'attach_description' => _("Append this description inside the report's header to the general description given for the report"),
 			'include_trends' => _("Check this to include a trends graph in your report.<br>Warning: This can make your reports slow!"),
 			'include_trends_scaling' => _("Check this to get upscaled values on your trends graph for small segments of time that would otherwise be hidden."),
 			'include_alerts' => _('Include a log of all alerts for all objects in your report.<br>Warning: This can make your reports slow!'),

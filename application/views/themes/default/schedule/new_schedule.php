@@ -30,7 +30,12 @@
 		<div class="right width-50">
 			<label for="filename"><?php echo help::render('filename', 'reports').' '._('Filename (defaults to pdf, may end in .csv)') ?></label><br /><input type="text" class="schedule" name="filename" id="filename" value="" /><br />
 			<label for="description"><?php echo help::render('description', 'reports').' '._('Description') ?></label><br /><textarea cols="31" rows="4" id="description" name="description"></textarea><br />
-			<label for="local_persistent_filepath"><?php echo help::render('local_persistent_filepath', 'reports').' '._("Save report in this local folder") ?></label><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" />
+			<label for="local_persistent_filepath"><?php echo help::render('local_persistent_filepath', 'reports').' '._("Save report in this local folder") ?></label><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" /><br />
+			<label for="attach_description"><?php echo help::render('attach_description', 'reports').' '._("Attach description") ?></label><br />
+			<select name="attach_description" id="attach_description">
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</select>
 		</div>
 
 		<div class="clear"></div>

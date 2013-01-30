@@ -401,6 +401,7 @@ input#duration,
 input#time_input,
 input#filename,
 input#local_persistent_filepath,
+input#attach_description,
 input#recipients {
 	background: #fafafa;
 	border: 1px solid #cccccc;

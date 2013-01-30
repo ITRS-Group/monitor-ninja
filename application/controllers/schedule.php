@@ -144,6 +144,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$filename = arr::search($_REQUEST, 'filename');
 		$description = arr::search($_REQUEST, 'description');
 		$local_persistent_filepath = arr::search($_REQUEST, 'local_persistent_filepath');
+		$attach_description = arr::search($_REQUEST, 'attach_description');
 		$module_save = arr::search($_REQUEST, 'module_save');
 
 		if (!$module_save) {
@@ -169,7 +170,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$filename = $this->_convert_special_chars($filename);
 		$filename = $this->_check_filename($filename);
 
-		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath);
+		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath, $attach_description);
 
 		if (!is_int($ok)) {
 			return json::fail(sprintf(_("An error occurred when saving scheduled report (%s)"), $ok));
@@ -193,7 +194,7 @@ class Schedule_Controller extends Authenticated_Controller
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?output_format=pdf&report_id='.$opt_obj['report_id']);
+		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?schedule_id='.$schedule_id.'&output_format=pdf&report_id='.$opt_obj['report_id']);
 		$process = proc_open($cmd, $pipe_desc, $pipes, DOCROOT);
 		Kohana::log('debug', $cmd);
 		if (is_resource($process)) {
@@ -348,6 +349,12 @@ class Schedule_Controller extends Authenticated_Controller
 				$new_value = $this->_convert_special_chars($new_value);
 				$new_value = $this->_check_filename($new_value);
 				break;
+			case 'attach_description':
+				if(!is_numeric($new_value) || ($new_value != 1 && $new_value != 0)) {
+					echo _("When attaching description, the value must be 0 or 1");
+					return;
+				}
+				break;
 		}
 
 		$ok = Scheduled_reports_Model::update_report_field($report_id, $field, $new_value);
@@ -401,6 +408,9 @@ class Schedule_Controller extends Authenticated_Controller
 			case 'recipients':
 				$new_value = str_replace(',', ', ', $new_value);
 				echo $new_value;
+				break;
+			case 'attach_description':
+				echo $new_value ? 'Yes' : 'No';
 				break;
 			default:
 				echo $new_value;

@@ -15,11 +15,12 @@
 					<th><?php echo _('Filename') ?></th>
 					<th><?php echo _('Description') ?></th>
 					<th><?php echo _("Local persistent filepath") ?></th>
+					<th><?php echo _("Attach description") ?></th>
 					<th><?php echo _('Actions'); ?></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr id="<?php echo $report_type ?>_no_result" class="no-result" style="display: none"><td colspan="7"><center><h3><?php echo _('There are no scheduled reports') ?></h3></center></td></tr>
+				<tr id="<?php echo $report_type ?>_no_result" class="no-result" style="display: none"><td colspan="8"><center><h3><?php echo _('There are no scheduled reports') ?></h3></center></td></tr>
 			</tbody>
 		</table>
 	</div>
@@ -32,6 +33,7 @@
 			<td class="iseditable filename" title="<?php echo _('Double click to edit') ?>"></td>
 			<td class="iseditable_txtarea description" title="<?php echo _('Double click to edit') ?>"></td>
 			<td class="iseditable local-path" title="<?php echo _('Double click to edit') ?>"></td>
+			<td class="attach_description" title="<?php echo _('Double click to edit') ?>"></td>
 			<td class="action">
 				<a href="" class="direct_link"><img src="<?php echo $this->add_path("icons/16x16/status-detail.png") ?>" title="<?php echo _("View report") ?>" alt="<?php echo _("View report") ?>" /></a>
 				<a href="#" class="send_report_now" data-schedule="" data-report_id="" data-type=""><img src="<?php echo $this->add_path('icons/16x16/send-report.png') ?>" alt="<?php echo _('Send this report now') ?>" title="<?php echo _('Send this report now') ?>" /></a>
