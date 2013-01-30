@@ -83,7 +83,7 @@ class reports_Core
 		$red 	= '#f7261b';
 		$grey 	= '#a0a084';
 
-		$return = false;
+		$return = array();
 		$colors = array(
 			'OK' => $green,
 			'UP' => $green,
@@ -92,7 +92,8 @@ class reports_Core
 			'UNKNOWN' => $orange,
 			'DOWN' => $red,
 			'CRITICAL' => $red,
-			'UNDETERMINED' => $grey
+			'UNDETERMINED' => $grey,
+			'EXCLUDE' => null
 		);
 		foreach ($labels as $key) {
 			$return[] = array($colors[strtoupper($key)], NULL, NULL);

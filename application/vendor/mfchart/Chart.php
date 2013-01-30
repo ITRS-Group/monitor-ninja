@@ -353,13 +353,16 @@ class Chart {
 		utilities::imagefillroundedrect($this->image, $legend_x1, $legend_y1, $legend_x2, $legend_y2, 5, $this->get_color('legend_color'));
 
 		$i = 0;
+		$yi = 0;
 		foreach ($this->legend as $l)
 		{
-			$y = $legend_y1 + 5 + $maxheight*$i;
-
-			imagefilledrectangle($this->image, $legend_x1+$border, $y+$maxheight/2-2, $legend_x1+$border+5, $y+$maxheight/2+3, $this->get_color($color_index, $i));
-			utilities::imagestringbox($this->image, $this->font, $font_legend, $legend_x1+$border+10, $y, $legend_x2, $y+$maxheight, ALIGN_LEFT, VALIGN_MIDDLE, 0, $l, $this->get_color('font_color2'));
-
+			$color = $this->get_color($color_index, $i);
+			if( $color !== false ) {
+				$y = $legend_y1 + 5 + $maxheight*$yi;
+				imagefilledrectangle($this->image, $legend_x1+$border, $y+$maxheight/2-2, $legend_x1+$border+5, $y+$maxheight/2+3, $color);
+				utilities::imagestringbox($this->image, $this->font, $font_legend, $legend_x1+$border+10, $y, $legend_x2, $y+$maxheight, ALIGN_LEFT, VALIGN_MIDDLE, 0, $l, $this->get_color('font_color2'));
+				$yi++;
+			}
 			$i++;
 		}
 	}

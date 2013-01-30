@@ -90,14 +90,17 @@ class PieChart extends Chart {
 			foreach ($this->values as $key => $value)
 			{
 				// make the color for 3d darker
-				$color = utilities::hex2rgb($this->get_color('colors', $i, 0));
-				$color[0] = $color[0]-40 < 0 ? 0 : $color[0]-40;
-				$color[1] = $color[1]-40 < 0 ? 0 : $color[1]-40;
-				$color[2] = $color[2]-40 < 0 ? 0 : $color[2]-40;
-
-				$arc = $value/$ratio;
-				$slices[] = array($start, $start+$arc, $color, $substep, round($arc/3.6, $this->legend_precision));
-				$start += $arc;
+				$hexcolor = $this->get_color('colors', $i, 0);
+				if( $hexcolor !== false ) {
+					$colortop = utilities::hex2rgb($hexcolor);
+					$colorbottom[0] = $colortop[0]-40 < 0 ? 0 : $colortop[0]-40;
+					$colorbottom[1] = $colortop[1]-40 < 0 ? 0 : $colortop[1]-40;
+					$colorbottom[2] = $colortop[2]-40 < 0 ? 0 : $colortop[2]-40;
+	
+					$arc = $value/$ratio;
+					$slices[] = array($start, $start+$arc, $colorbottom, $substep, $colortop, round($arc/3.6, $this->legend_precision));
+					$start += $arc;
+				}
 				$i++;
 			}
 
@@ -131,10 +134,12 @@ class PieChart extends Chart {
 							$slices[$i][2][0] = ($slice[2][0]+$slice[3] > 255) ? 255 : $slice[2][0]+$slice[3];
 						else
 							$slices[$i][3] += 1;
+						
 						if ($slice[2][1] != 255)
 							$slices[$i][2][1] = ($slice[2][1]+$slice[3] > 255) ? 255 : $slice[2][1]+$slice[3];
 						else
 							$slices[$i][3] += 1;
+						
 						if ($slice[2][2] != 255)
 							$slices[$i][2][2] = ($slice[2][2]+$slice[3] > 255) ? 255 : $slice[2][2]+$slice[3];
 						else
@@ -143,7 +148,7 @@ class PieChart extends Chart {
 				}
 			}
 
-			foreach ($slices as $i => $slice)
+			foreach ($slices as $slice)
 			{
 				if (round($slice[0]) == round ($slice[1]))
 					continue;
@@ -161,7 +166,8 @@ class PieChart extends Chart {
 				}
 
 				// draw the top
-				$color = utilities::hex2rgb($this->get_color('colors', $i, 0));
+				
+				$color = $slice[4];
 				$color[] = 0;
 
 				imageSmoothArc($this->image, $center_x_spaced, $center_y_spaced, $width, $height, $color, utilities::deg2rad($slice[0]), utilities::deg2rad($slice[1]));
@@ -177,7 +183,7 @@ class PieChart extends Chart {
 				$legend_slice_x = $center_x_spaced + $cos*$r;
 				$legend_slice_y = (($arc_half > 180 AND $arc_half < 360) ? $center_y_spaced+$height_3d : $center_y_spaced) - $sin*$r;
 
-				$text = $slice[4].'%';
+				$text = $slice[5].'%';
 
 				$box_points = imagettfbbox($this->font_size, 0, $this->font, $text);
 				$legend_slice_width = $box_points[4]-$box_points[6];
@@ -200,6 +206,7 @@ class PieChart extends Chart {
 
 				# print percent value
 				utilities::imagestringbox($this->image, $this->font, $this->font_size, $legend_slice_x1, $legend_slice_y1, $legend_slice_x2, $legend_slice_y2, ALIGN_CENTER, VALIGN_MIDDLE, 0, $text, $this->get_color('font_color'));
+
 			}
 		}
 
