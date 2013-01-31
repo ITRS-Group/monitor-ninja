@@ -376,7 +376,7 @@ class User_Controller extends Authenticated_Controller {
 		$remove_items = false;
 		$all_items = false;
 		if ($selected_group) {
-			include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
+			include(APPPATH.'views/menu/menu.php');
 			$config = Op5Config::instance()->getConfig('ninja_menu');
 			if(isset($config[$selected_group])) {
 				$remove_items = $config[$selected_group];
@@ -420,7 +420,7 @@ class User_Controller extends Authenticated_Controller {
 			return url::redirect(Router::$controller.'/menu_edit');
 		}
 
-		include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
+		include(APPPATH.'views/menu/menu.php');
 
 		$all_items = $menu_base;
 		if ($remove_items) {

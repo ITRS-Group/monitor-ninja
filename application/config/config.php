@@ -140,9 +140,8 @@ $config['nagios_etc_path'] = false;
 $config['logos_path'] = '/monitor/images/logos/';
 
 /**
- * current_skin is the subdirectory to 'css' within the
- * theme. a skin a simple way of altering colours etc
- * in the gui.
+ * current_skin is the subdirectory to 'css'. a skin a simple way of altering
+ * colours etc in the gui.
  */
 $config['current_skin'] = 'default/';
 

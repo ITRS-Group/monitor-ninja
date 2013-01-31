@@ -36,13 +36,11 @@ class Ninja_Controller extends Template_Controller {
 	public $checks_disabled = false;
 	public $global_notifications = false;
 	public $log = false;
-	protected $theme_path = false;
 
 	public function __construct()
 	{
 		$this->log = op5log::instance('ninja');
 		parent::__construct();
-		$this->theme_path = ninja::get_theme_path();
 		if(request::is_ajax()) {
 			$this->auto_render = FALSE;
 		}
@@ -124,7 +122,7 @@ class Ninja_Controller extends Template_Controller {
 
 			# create the user menu
 			$menu = new Menu_Model();
-			$this->template->links = $menu->create($this->theme_path);
+			$this->template->links = $menu->create();
 
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
@@ -229,33 +227,19 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	 * Handle paths to current theme etc
-	 *
+	 * Create a View object
 	 */
-	public function add_view($view=false)
+	public function add_view($view)
 	{
 		$view = trim($view);
 		if (empty($view)) {
 			return false;
 		}
-
-		if ($this->run_tests !== false) {
-			if(unittest::get_testfile($view) === false) {
-				$tap = unittest::instance();
-				$tap->fail("Could not find the view file '$view'");
-				exit($tap->done());
-			}
-
-			return new View('tests/'.$view);
-		} else {
-			return new View($this->theme_path.$view);
-		}
-
+		return new View($view);
 	}
 
 	/**
-	 * Set correct image path considering
-	 * the path to current theme.
+	 * Set correct image path.
 	 */
 	public function img_path($rel_path='')
 	{
@@ -263,8 +247,7 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	 * Set correct image path considering
-	 * the path to current theme.
+	 * Set correct image path
 	 */
 	public function add_path($rel_path)
 	{
@@ -272,8 +255,7 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	 * Set correct template path considering
-	 * the path to current theme.
+	 * Set correct template path
 	 */
 	public function add_template_path($rel_path)
 	{
@@ -283,8 +265,8 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		$path = false;
-		# assume rel_path is relative from current theme
-		$path = url::base(false).'application/views/'.$this->theme_path.$rel_path;
+		# assume rel_path is relative to views directory
+		$path = url::base(false).'application/views/'.$rel_path;
 		# make sure we didn't mix up start/end slashes
 		$path = text::reduce_slashes($path);
 		return $path;

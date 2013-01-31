@@ -48,11 +48,11 @@ body { margin: 0px; }
 	list-style: none;
 }
 
-#response ul.ok			{ background-image: url(../../icons/32x32/shield-ok.png); }
-#response ul.error 		{ background-image: url(../../icons/32x32/shield-error.png); }
-#response ul.warning 	{ background-image: url(../../icons/32x32/shield-warning.png); }
-#response ul.info 		{ background-image: url(../../icons/32x32/shield-info.png); }
-#response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
+#response ul.ok			{ background-image: url(icons/32x32/shield-ok.png); }
+#response ul.error 		{ background-image: url(icons/32x32/shield-error.png); }
+#response ul.warning 	{ background-image: url(icons/32x32/shield-warning.png); }
+#response ul.info 		{ background-image: url(icons/32x32/shield-info.png); }
+#response ul.help 		{ background-image: url(icons/32x32/shield-help.png); }
 
 /* nytt */
 

@@ -10,12 +10,11 @@ class Menu_Model extends Model
 	 * @todo previously create_menu, refactor user_controllers' stuff into here as well
 	 * Build menu structure and possibly remove some items
 	 *
-	 * @param $theme_path string
 	 * @return array
 	 */
-	function create($theme_path)
+	function create()
 	{
-		include(APPPATH.'views/'.$theme_path.'menu/menu.php');
+		include(APPPATH.'views/menu/menu.php');
 		$logged_in_users_groups = Op5Auth::instance()->get_groups();
 		$ninja_menu = Op5Config::instance()->getConfig('ninja_menu');
 		foreach(array_intersect((array)$logged_in_users_groups, array_keys((array) $ninja_menu)) as $section) {

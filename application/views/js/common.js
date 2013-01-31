@@ -607,7 +607,7 @@ $(document).ready(function() {
 							// update list of saved searches
 							$('#searchname_' + $('#search_id').val()).html(name.val());
 							$('#searchquery_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a>');
-							$('#searchqueryimg_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a>');
+							$('#searchqueryimg_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + 'icons/16x16/use_search.png" /></a>');
 							$('#searchdescription_' + $('#search_id').val()).html(description.val());
 
 						} else if($('#search_id').val() == 0) {
@@ -618,10 +618,10 @@ $(document).ready(function() {
 							// created new search - add rows
 							var new_data = '<td class="edit_search_query" id="searchquery_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a></td>';
 							new_data += '<td class="edit_search_name" id="searchname_' + data + '">' + name.val() + '</td>';
-							new_data += '<td class="edit_search_description" id="searchdescription_' + data + '">' + description.val() + '</td>'; //_theme_path
-							new_data += '<td id="searchqueryimg_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a></td>';
-							new_data += '<td class="edit_search_item" id="editsearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/edit.png" id="editsearchimg_' + data + '" /></td>';
-							new_data += '<td class="remove_search_item" id="removesearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/remove.png" id="removesearchimg_' + data + '" /></td>';
+							new_data += '<td class="edit_search_description" id="searchdescription_' + data + '">' + description.val() + '</td>';
+							new_data += '<td id="searchqueryimg_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + 'icons/16x16/use_search.png" /></a></td>';
+							new_data += '<td class="edit_search_item" id="editsearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + 'icons/16x16/edit.png" id="editsearchimg_' + data + '" /></td>';
+							new_data += '<td class="remove_search_item" id="removesearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + 'icons/16x16/remove.png" id="removesearchimg_' + data + '" /></td>';
 							$('#saved_searches_table').append('<tr id="saved_searchrow_' + data + '">' + new_data + '</tr>');
 							if (!$('#my_saved_searches').is(':visible')) {
 								$('#my_saved_searches').show();

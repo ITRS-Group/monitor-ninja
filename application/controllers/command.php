@@ -27,7 +27,7 @@ class Command_Controller extends Authenticated_Controller
 
 	/**
 	 * Initializes a page with the correct view, java-scripts and css
-	 * @param $view The name of the theme-page we want to print
+	 * @param $view The name of the page we want to print
 	 */
 	protected function init_page($view)
 	{

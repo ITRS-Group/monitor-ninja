@@ -916,11 +916,11 @@ missing_objects.prototype.display_if_any = function()
 		return;
 
 	var info_str = _reports_missing_objects + ": ";
-	info_str += "<ul><li><img src=\"" + _site_domain + _theme_path + "icons/arrow-right.gif" + "\" /> " + this.objs.join('</li><li><img src="' + _site_domain + _theme_path + 'icons/arrow-right.gif' + '" /> ') + '</li></ul>';
+	info_str += "<ul><li><img src=\"" + _site_domain + "icons/arrow-right.gif" + "\" /> " + this.objs.join('</li><li><img src="' + _site_domain + 'icons/arrow-right.gif' + '" /> ') + '</li></ul>';
 	info_str += _reports_missing_objects_pleaseremove;
-	info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + _theme_path + '' + 'icons/12x12/cross.gif" /></a>';
+	info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + '' + 'icons/12x12/cross.gif" /></a>';
 	$('#response')
-		.css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-info.png) 7px 7px no-repeat')
+		.css('background','#f4f4ed url(' + _site_domain + 'icons/32x32/shield-info.png) 7px 7px no-repeat')
 		.css("position", "relative")
 		.css('top', '0px')
 		.css('width','748px')

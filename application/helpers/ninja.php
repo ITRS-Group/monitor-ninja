@@ -9,14 +9,7 @@
 class ninja_Core {
 
 	/**
-	 * Return the base path to the current theme
-	 */
-	public static function get_theme_path() {
-		return '';
-	}
-
-	/**
-	 * Given a file name that is relative to the current theme, find it and
+	 * Given a file name that is relative to the views directory, find it and
 	 * return the full path.
 	 */
 	public static function add_path($rel_path) {
@@ -28,7 +21,6 @@ class ninja_Core {
 			return false;
 		}
 
-		# assume rel_path is relative from current theme
 		$path = 'application/views/'.$rel_path;
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);

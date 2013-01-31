@@ -23,11 +23,7 @@ class help_Core
 			return false;
 		}
 
-		# fetch current theme path from registry
-		# to make help icon to always be in current theme
-		$theme_path = zend::instance('Registry')->get('theme_path');
-		$img_rel_path = 'icons/12x12/help.png';
-		$img_path = url::base(false).'application/views/'.$theme_path.$img_rel_path;
+		$img_path = url::base(false).'application/views/icons/12x12/help.png';
 
 		$controller = !empty($controller) ? $controller : Router::$controller;
 

@@ -28,8 +28,6 @@ class widget_Base
 		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
 		$this->auto_render = FALSE;
 
-		$this->theme_path = '';
-
 		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget_model->name, $widget_model->name, false);
 		if ($path === false) {
 			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget_model->name, $widget_model->name, false);
@@ -205,8 +203,7 @@ class widget_Base
 	}
 
 	/**
-	 * Set correct paths considering
-	 * the path to current theme.
+	 * Set correct paths
 	 * @param $rel_path string: Relative path
 	 * @return false on errors, "full relative" path on success.
 	 */
@@ -218,8 +215,8 @@ class widget_Base
 		}
 
 		$path = false;
-		# assume rel_path is relative from current theme
-		$path = 'application/views/'.$this->theme_path.$rel_path;
+		# assume rel_path is relative to views directory
+		$path = 'application/views/'.$rel_path;
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
 		return $path;

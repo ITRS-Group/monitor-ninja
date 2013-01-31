@@ -82,8 +82,7 @@ class showlog_Core
 			$cmd .= ' --limit=' . $limit;
 		}
 
-		# Add the proper image url for this theme. Screw the user if he/she
-		# uses a non-standard theme which lacks the images we need
+		# Add the proper image url.
 		$cmd .= " --image-url=" . url::base(false) .
 			'application/views/icons/16x16/';
 

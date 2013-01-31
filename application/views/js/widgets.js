@@ -29,11 +29,11 @@ function init_easywidgets(){
 			useCookies : false
 		},
 		i18n : {
-			editText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-config.png" alt="Settings" />',
-			closeText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-close.png" alt="Close widget" />',
-			collapseText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-maximize.png" alt="Collapse" />',
-			cancelEditText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-config.png" alt="Cancel" />',
-			extendText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-mimimize.png" alt="Extend" />'
+			editText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-config.png" alt="Settings" />',
+			closeText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-close.png" alt="Close widget" />',
+			collapseText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-maximize.png" alt="Collapse" />',
+			cancelEditText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-config.png" alt="Cancel" />',
+			extendText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-mimimize.png" alt="Extend" />'
 		},
 		effects : {
 			effectDuration : 150,
@@ -314,7 +314,7 @@ widget.prototype.init_widget = function(name, instance_id) {
 		$('#' + this.id + '_title').removeClass(this.id + '_editable');
 	}
 
-	$('#' + this.widget_id + '.duplicatable .widget-menu').prepend('<a class="widget-copylink" title="Copy this widget" href="#"><img alt="Copy" src="' + _site_domain + _theme_path + 'icons/12x12/copy.png"/></a>');
+	$('#' + this.widget_id + '.duplicatable .widget-menu').prepend('<a class="widget-copylink" title="Copy this widget" href="#"><img alt="Copy" src="' + _site_domain + 'application/views/icons/12x12/copy.png"/></a>');
 	$('#' + this.widget_id + ' .widget-copylink').click(function(ev) {
 		ev.preventDefault();
 		copy_widget_instance(self.name, self.instance_id, function (new_widget) {
