@@ -31,9 +31,9 @@ function init_easywidgets(){
 		i18n : {
 			editText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-config.png" alt="Settings" />',
 			closeText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-close.png" alt="Close widget" />',
-			collapseText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-maximize.png" alt="Collapse" />',
+			collapseText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-mimimize.png" alt="Collapse" />',
 			cancelEditText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-config.png" alt="Cancel" />',
-			extendText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-mimimize.png" alt="Extend" />'
+			extendText : '<img src="' + _site_domain + 'application/views/icons/12x12/box-maximize.png" alt="Extend" />'
 		},
 		effects : {
 			effectDuration : 150,
