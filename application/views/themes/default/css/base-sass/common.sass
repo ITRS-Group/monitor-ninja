@@ -153,6 +153,10 @@ table
 		td
 			background: $table-even-color
 
+	tr.odd:hover td, tr.even:hover td
+		background: $highlight-bg
+		color: $highlight-fg
+
 	td
 		@extend .nullify
 		border: 1px solid $border-color-light
