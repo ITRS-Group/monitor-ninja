@@ -17,7 +17,7 @@ class Error_Widget extends widget_Base {
 		$this->exception = $exception;
 
 		$this->auto_render = FALSE;
-		$this->theme_path = zend::instance('Registry')->get('theme_path');
+		$this->theme_path = '';
 	}
 	public function index() {
 		require(dirname(__FILE__).'/view.php');

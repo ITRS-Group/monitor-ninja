@@ -7,24 +7,12 @@
  * had needed it.
  */
 class ninja_Core {
-	private static $theme_path = false;
 
 	/**
 	 * Return the base path to the current theme
 	 */
 	public static function get_theme_path() {
-		if (self::$theme_path)
-			return self::$theme_path;
-		$registry = zend::instance('Registry');
-
-		if ($registry->isRegistered('theme_path')) {
-			self::$theme_path = $registry->get('theme_path');
-			return self::$theme_path;
-		}
-
-		self::$theme_path = Kohana::config('config.theme_path').Kohana::config('config.current_theme');
-		$registry->set('theme_path', self::$theme_path);
-		return self::$theme_path;
+		return '';
 	}
 
 	/**
@@ -41,7 +29,7 @@ class ninja_Core {
 		}
 
 		# assume rel_path is relative from current theme
-		$path = 'application/views/'.self::get_theme_path().$rel_path;
+		$path = 'application/views/'.$rel_path;
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
 		return $url_base . $path;
@@ -53,7 +41,7 @@ class ninja_Core {
 	public static function get_skins() {
 		$available_skins = array();
 		$required_css = array('common.css');
-		$skins = glob(APPPATH.'views/'.self::get_theme_path().'css/*', GLOB_ONLYDIR);
+		$skins = glob(APPPATH.'views/css/*', GLOB_ONLYDIR);
 		if (count($skins) > 1) {
 			foreach ($skins as $skin) {
 

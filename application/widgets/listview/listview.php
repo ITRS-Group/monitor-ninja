@@ -38,7 +38,7 @@ class Listview_Widget extends widget_Base {
 		$this->js[] = $basepath.'media/js/LSFilterList';
 		$this->js[] = $basepath.'media/js/LSFilterListTableDesc';
 		
-		$this->css[] = $basepath.'views/themes/default/css/LSFilterStyle';
+		$this->css[] = $basepath.'views/css/LSFilterStyle';
 	}
 	
 	/**

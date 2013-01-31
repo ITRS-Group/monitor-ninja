@@ -39,8 +39,8 @@ class User_Test extends TapUnit {
 
 	public function test_menu_icons_exists()
 	{
-		$menu_path = APPPATH.'views/themes/default/icons/menu/*.png';
-		$menu_path_dark = APPPATH.'views/themes/default/icons/menu-dark/*.png';
+		$menu_path = APPPATH.'views/icons/menu/*.png';
+		$menu_path_dark = APPPATH.'views/icons/menu-dark/*.png';
 		$menu = glob($menu_path);
 		$menu_dark = glob($menu_path_dark);
 		$missing = false;

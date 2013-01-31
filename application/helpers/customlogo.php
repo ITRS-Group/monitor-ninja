@@ -45,7 +45,7 @@ class customlogo_Core {
 	 */
 	function getImage()
 	{
-		$path = 'application/views/themes/default/icons/';
+		$path = 'application/views/icons/';
 		$icon = $path . Kohana::config('customlogo.path') . Kohana::config('customlogo.default_icon');
 
 		/**
@@ -78,7 +78,7 @@ class customlogo_Core {
 	function getCustomImageList()
 	{
 		$images = false;
-		if ($fh = opendir(APPPATH.'views/themes/default/icons/'.Kohana::Config('customlogo.path'))) {
+		if ($fh = opendir(APPPATH.'views/icons/'.Kohana::Config('customlogo.path'))) {
 			while (false !== ($file = readdir($fh))) {
 				if ((substr($file, -4) == '.png') || (substr($file, -4) == '.jpg')) {
 					$images[] = $file;

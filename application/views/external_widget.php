@@ -22,10 +22,10 @@ if (isset($this->template->js_header))
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css'; ?>" media="all" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'screen.css'; ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'status.css'; ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'print.css'; ?>" media="print" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'common.css'; ?>" media="all" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'screen.css'; ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'status.css'; ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'print.css'; ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/jquery-ui-custom.css') ?>" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
@@ -46,9 +46,9 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jquery.field.js');
-			echo html::script('application/views/themes/default/js/collapse_menu.js');
-			echo html::script('application/views/themes/default/js/global_search.js');
-			echo html::script('application/views/themes/default/js/pagination.js');
+			echo html::script('application/views/js/collapse_menu.js');
+			echo html::script('application/views/js/global_search.js');
+			echo html::script('application/views/js/pagination.js');
 			if (!isset($disable_refresh) || $disable_refresh === false) {
 				refresh::control();
 			}
@@ -120,7 +120,7 @@ if (isset($this->template->js_header))
 				}?>
 			//-->
 		</script>
-		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
+		<?php echo html::script('application/views/js/common.js'); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
 	</head>

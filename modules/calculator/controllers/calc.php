@@ -9,7 +9,7 @@ class Calc_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/CalculatorParser.js';
 		$this->xtra_js[] = $basepath.'js/CalculatorPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/CalculatorVisitor.js';
-		$this->xtra_js[] = $basepath.'views/themes/default/js/CalculatorVisualizer.js';
+		$this->xtra_js[] = $basepath.'views/js/CalculatorVisualizer.js';
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;

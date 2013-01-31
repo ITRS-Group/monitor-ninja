@@ -28,7 +28,7 @@ class widget_Base
 		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
 		$this->auto_render = FALSE;
 
-		$this->theme_path = zend::instance('Registry')->get('theme_path');
+		$this->theme_path = '';
 
 		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget_model->name, $widget_model->name, false);
 		if ($path === false) {

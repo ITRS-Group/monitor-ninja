@@ -1,291 +1,82 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+
+	$authorized = false;
+	if (Auth::instance()->logged_in()) {
+		$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
+
+		$auth = Nagios_auth_Model::instance();
+		if ($auth->view_hosts_root) {
+			$authorized = true;
+		}
+	}
+
+	if (isset($this) && isset($this->template->js_header))
+		$this->template->js_header->js = array_unique($this->xtra_js);
+
+?>
 <!DOCTYPE html>
 <html>
-	
+
 	<?php
-		include_once('/dojo/head.php');
+		require __DIR__.'/template_head.php';
 	?>
 
 	<body>
 
 		<div class="container">
-			
-			<div class="logo"><img src="icons/op5.gif" style="float: left; margin-left: 15px" /></div>
 
 			<?php
-				include_once('/dojo/header.php');
+				require __DIR__.'/template_header.php';
 			?>
 
-			<section class="navigation" id="navigation">
+			<div class="navigation" id="navigation">
+
 				<div class="menu" id="main-menu">
 
 				<?php
-					include_once('/dojo/menu.php');
+					require __DIR__.'/template_menu.php';
 				?>
 
 				</div>
-				<div class="slider" id="slider" title="Collapse Navigation">
-					<div class="slide-button">
-						::
-					</div>
-				</div>
 
-			</section>
+			</div>
 
-			<section class="content" id="content">
-				
-				<section class="widget-placeholder">
+			<div class="content" id="content">
 
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Network Outages</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content">
-							<table class="w-table">
-								<tbody>
-									
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/24x24/shield-not-critical.png" />
-										</td>
-										<td>
-											N/A
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
 
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Scheduled Downtime</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content">
-							<table class="w-table">
-								<tbody>
-									
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/24x24/shield-not-critical.png" />
-										</td>
-										<td>
-											N/A
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
+					<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); }?>
 
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Monitoring Performance</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content">
-							<table class="w-table">
-								<tbody>
-									
-									<tr>
-										<td class="dark">
-											<img src="./icons/20x20/time.png" />
-										</td>
-										<td>
-											Service check execution time: <br />
-											-1.00 / -1.00 / 0.0000 sec
-										</td>
-									</tr>
+			</div>
 
-									<tr>
-										<td class="dark">
-											<img src="./icons/20x20/time_latency.png" />
-										</td>
-										<td>
-											Service Check Latency: <br />
-											-1.00 / -1.00 / 0.000 sec
-										</td>
-									</tr>
+			<?php
 
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/20x20/time.png" />
-										</td>
-										<td>
-											Host Check Execution Time:<br />
-											N/A
-										</td>
-									</tr>
+				if (isset($saved_searches) && !empty($saved_searches)) {
+					echo $saved_searches;
+				}
 
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/20x20/time_latency.png" />
-										</td>
-										<td>
-											Host Check Latency:<br />
-											N/A
-										</td>
-									</tr>
+			?>
 
-									<tr>
-										<td class="dark">
-											<img src="./icons/20x20/share.png" />
-										</td>
-										<td>
-											# Active Host / Service Checks:<br />
-											0	/ 0
-										</td>
-									</tr>
-
-									<tr>
-										<td class="dark">
-											<img src="./icons/20x20/share2.png" />
-										</td>
-										<td>
-											# Passive Host / Service Checks:<br />
-											0	/ 0
-										</td>
-									</tr>
-
-									
-
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-				</section>
-
-				<section class="widget-placeholder">
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Disabled Checks</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content">
-							<table class="w-table">
-								<tbody>
-									
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/24x24/shield-not-critical.png" />
-										</td>
-										<td>
-											N/A
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Acknowledged Problems</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content">
-							<table class="w-table">
-								<tbody>
-									
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/24x24/shield-not-critical.png" />
-										</td>
-										<td>
-											N/A
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Geomap</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content widget-content-error">
-							Could not load widget
-						</div>
-					</div>
-				</section>
-
-				<section class="widget-placeholder">
-
-					<div class="widget">
-						<div class="widget-header">
-							<div class="widget-label"><h6>Network Health</h6></div>
-							<div class="widget-menu">
-								<img src="./icons/12x12/copy.png">
-								<img src="./icons/12x12/box-mimimize.png">
-								<img src="./icons/12x12/box-config.png">
-								<img src="./icons/12x12/box-close.png">
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="widget-content">
-							<table class="w-table">
-								<tbody>
-									
-									<tr>
-										<td class="dark">
-											<img class="alpha" src="./icons/24x24/shield-not-critical.png" />
-										</td>
-										<td>
-											N/A
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-				</section>
-
-			</section>
+			<div id="save-search-form" title="<?php echo _('Save search') ?>" style="display:none">
+				<form>
+				<p class="validateTips"></p>
+				<fieldset>
+					<label for="search_query"><?php echo _('Search string') ?></label>
+					<input type="text" name="search_query" id="search_query" value="<?php echo isset($query_str) ? $query_str : '' ?>" class="texts search_query ui-widget-content ui-corner-all" />
+					<label for="search_name"><?php echo _('Name') ?></label>
+					<input type="text" name="search_name" id="search_name" class="texts ui-widget-content ui-corner-all" />
+					<label for="search_description"><?php echo _('Description') ?></label>
+					<textarea cols="30" rows="3" name="search_description" id="search_description" class="texts ui-widget-content ui-corner-all"></textarea>
+					<input type="hidden" name="search_id" id="search_id" value="0">
+				</fieldset>
+				</form>
+			</div>
 
 		</div>
-		
-		<script type="text/javascript" src="script.js"></script>
+		<?php
+			echo html::script('application/media/js/dojo.js');
+			if (isset($context_menu))
+				echo $context_menu;
+		?>
 
 	</body>
 </html>

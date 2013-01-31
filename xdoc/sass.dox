@@ -46,7 +46,7 @@ Once installed you can proceed to browse to the skin folder of your choice and t
 in the compass command.
 
 @verbatim
-cd ~/<repo>/monitor/ninja/application/views/themes/default/css/default
+cd ~/<repo>/monitor/ninja/application/views/css/default
 compass watch
 @endverbatim
 
@@ -207,7 +207,7 @@ Read more on SASS <a href="www.sass-lang.com">website</a>, and more about compas
 
 The new CSS is generated using the SASS 'pre-processor', giving it far more power while developing.
 One of these powers is variables, and with variables DOJO includes a configuration file, found under 
-themes/default/dojo/config.sass.
+dojo/config.sass.
 
 In this file you can set general configurations, such as the header height, fonts, different colors and more.
 

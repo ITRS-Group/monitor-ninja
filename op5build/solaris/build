@@ -54,9 +54,9 @@ $gsed -i \
 $gsed -i -e "s/'IN_PRODUCTION', FALSE/'IN_PRODUCTION', TRUE/" $ninja_dir/index.php
 
 # Used for the enterprise edition of Ninja
-cp $builddir/op5build/login.png   $ninja_dir/application/views/themes/default/css/default/images
-cp $builddir/op5build/favicon.ico $ninja_dir/application/views/themes/default/icons/16x16/
-cp $builddir/op5build/icon.png $ninja_dir/application/views/themes/default/icons/
+cp $builddir/op5build/login.png   $ninja_dir/application/views/css/default/images
+cp $builddir/op5build/favicon.ico $ninja_dir/application/views/icons/16x16/
+cp $builddir/op5build/icon.png $ninja_dir/application/views/icons/
 
 chmod -R a+r $ninja_dir
 

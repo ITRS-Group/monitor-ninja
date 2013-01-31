@@ -43,7 +43,7 @@
 	<div class="supermenu">
 
 		<div class="logo">
-			<?php echo html::image('application/views/themes/default/icons/icon.png', array('style' => 'margin: 7px 9px 7px 7px;')); ?>
+			<?php echo html::image('application/views/icons/icon.png', array('style' => 'margin: 7px 9px 7px 7px;')); ?>
 		</div>
 
 		<ul>
@@ -139,7 +139,7 @@
 
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 		<?php echo _('Welcome'); ?> <?php echo strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
-		<span id="my_saved_searches" style="padding: 4px; vertical-align: text-bottom; cursor: pointer;"><img id="my_saved_searches_img" title="Click to view your saved searches" src="/monitor/application/views/themes/default/icons/16x16/save_search.png" /></span>
+		<span id="my_saved_searches" style="padding: 4px; vertical-align: text-bottom; cursor: pointer;"><img id="my_saved_searches_img" title="Click to view your saved searches" src="/monitor/application/views/icons/16x16/save_search.png" /></span>
 		<?php
 		$query = arr::search($_REQUEST, 'query');
 		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>

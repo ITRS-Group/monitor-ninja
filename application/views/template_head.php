@@ -17,12 +17,12 @@ else {
 
 	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
 
-	<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
+	<?php echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon') ?>
 
-	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
-	<link href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
-	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'reports.css' ?>" media="all" />
-	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
+	<link href="<?php echo url::base().'application/views/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
+	<link href="<?php echo url::base().'application/views/css/'.$current_skin.'print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
+	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'reports.css' ?>" media="all" />
+	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
     if (!window.console) console = {log: function() {}};
@@ -42,15 +42,15 @@ else {
 		echo html::script('application/media/js/jquery.qtip.min.js');
 		echo html::script('application/media/js/jquery.hotkeys.min.js');
 		echo html::script('application/media/js/jquery.contextMenu.js');
-		echo html::script('application/views/themes/default/js/pagination.js');
-		echo html::script('application/views/themes/default/js/global_search.js');
+		echo html::script('application/views/js/pagination.js');
+		echo html::script('application/views/js/global_search.js');
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();
 		}
 	?>
 
 	<!--[If IE]>
-	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/ie7.css' ?>" />
+	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/default/ie7.css' ?>" />
 	<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 	<![endif]-->
 
@@ -64,7 +64,7 @@ else {
 			var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 			var _controller_name = '<?php echo str_replace("op5", null, Router::$controller) ?>';
 			var _logo_path = '<?php echo Kohana::config('config.logos_path') ?>';
-			var _theme_path = '<?php echo 'application/views/themes/default/'; ?>';
+			var _theme_path = '<?php echo 'application/views/'; ?>';
 			var _widget_refresh_msg = '<?php echo _('Refresh rate for all widgets has been updated to %s sec'); ?>';
 			var _widget_refresh_error = '<?php echo _('Unable to update refresh rate for all widgets.'); ?>';
 			var _widget_global_refresh_error = '<?php echo _('An error was encountered when trying to update refresh rate for all widgets.'); ?>';
@@ -119,7 +119,7 @@ else {
 		//-->
 	</script>
 
-	<?php echo html::script('application/views/themes/default/js/common.js'); ?>
+	<?php echo html::script('application/views/js/common.js'); ?>
 	<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
 </head>

@@ -39,11 +39,11 @@ if (IN_PRODUCTION) {
 	unset($tmp_dir);
 }
 $title = 'Error';
-require('themes/default/menu/menu.php');
+require('menu/menu.php');
 $links = $menu_base;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	$disable_refresh = true;
 
 $current_skin = 'default/';
-require('themes/default/template.php');
+require('template.php');

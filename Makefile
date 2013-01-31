@@ -15,7 +15,7 @@ install-sass:
 
 generate-css:
 	which compass || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
-	for skin in application/views/themes/default/css/*; do \
+	for skin in application/views/css/*; do \
 		compass compile --trace --boring $$skin; \
 	done
 

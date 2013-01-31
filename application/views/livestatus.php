@@ -3,7 +3,7 @@ require_once('op5/config.php');
 ?>
 
 <div align="center" style="padding-top:10px;">
-	<?php echo html::image('application/views/themes/default/icons/icon.png',''); ?>
+	<?php echo html::image('application/views/icons/icon.png',''); ?>
 
 	<h1><?php echo _('Livestatus query failed'); ?></h1>
 
