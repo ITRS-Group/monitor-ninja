@@ -272,7 +272,9 @@ function widget(name, instance_id)
 	if (widget_ok == false) {
 		// here we should probably notify user that
 		// the widget isn't found
-		$.jGrowl(sprintf(_widget_notfound_error, name), { header: _error_header });
+		if(name) {
+			$.jGrowl(sprintf(_widget_notfound_error, name), { header: _error_header });
+		}
 		return;
 	}
 
