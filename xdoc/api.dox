@@ -32,6 +32,11 @@ $(document).ready(function() {
 This will make the link.js file to be included in the document header and create
 a link that will point to your intranet.
 
+@subsection menu_item Add a new menu item
+
+Copy any file in the folder application/addons/menu to your_menu_item.php. Modify
+the contents (especially the URI) to suit your needs.
+
 @subsection widget Creating your own widgets
 
 See the documentation section on @ref Widgets.
