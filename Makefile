@@ -46,8 +46,8 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	mkdir -m 0777 -p /tmp/ninja-test/
 	mkdir -m 0777 -p test/configs/all-host_service-states/var/spool/checkresults
 	chmod -R 0777 test/configs/all-host_service-states/var/
-	/opt/monitor/op5/merlin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
-	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
+	/usr/bin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
+	/usr/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
 	/bin/sleep 5
 
 test-ci: test-ci-prepare
