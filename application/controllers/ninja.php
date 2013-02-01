@@ -203,8 +203,10 @@ class Ninja_Controller extends Template_Controller {
 	*/
 	public function _addons()
 	{
-		$addons_dir = APPPATH."addons/";
-		$addons_files = glob($addons_dir.'*', GLOB_ONLYDIR);
+		$addons_files = array_merge(
+			glob(APPPATH.'addons/*', GLOB_ONLYDIR),
+			glob(MODPATH.'*/addons/*', GLOB_ONLYDIR)
+			);
 
 		foreach ($addons_files as $file) {
 			$addons = glob($file.'/*.php');

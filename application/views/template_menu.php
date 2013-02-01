@@ -45,7 +45,13 @@ array(4) {
 					$formatted_name = preg_replace('/op5/i', 'op5', ucwords($name));
 					
 					$id = strtolower($section)."-".$data[1];
-
+					if( is_array($data[1]) ) {
+						$icon_image = $data[1][1];
+						$module_name = $data[1][0];
+					} else {
+						$icon_image = $data[1];
+						$module_name = false;
+					}
 					if ($data[2] == 0) {
 
 						// Do not add white-space, line-feeds or carriage returns in here, it will screw up JavaScript .children's and .nextSibling's
@@ -60,18 +66,18 @@ array(4) {
 						if ($uri == $siteuri && false===strpos($data[0],'?')) {
 							// Only highlight link if not containing a "?"-mark. Otherwise links to listview (which can change without page reload) behave strange.
 							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' title='".$formatted_name."' class='ninja_menu_links'>";
-							if (strpos($data[1], '.') !== false)
-								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$data[1]).")'></span>";
+							if (strpos($icon_image, '.') !== false)
+								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$icon_image, $module_name).")'></span>";
 							else
-								$linkstring .= "<span class='icon-menu-dark menu-dark-".$data[1]."'></span>";
+								$linkstring .= "<span class='icon-menu-dark menu-dark-".$icon_image."'></span>";
 							$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
 							$in_menu = true;
 						} else {
 							$linkstring .= "<li class='nav-seg'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' title='".$formatted_name."' class='ninja_menu_links'>";
-							if (strpos($data[1], '.') !== false)
-								$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$data[1]).")'></span>";
+							if (strpos($icon_image, '.') !== false)
+								$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$icon_image, $module_name).")'></span>";
 							else
-								$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
+								$linkstring .= "<span class='icon-menu menu-".$icon_image."'></span>";
 							$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
 						}
 
@@ -83,10 +89,10 @@ array(4) {
 							($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/')) {
 
 						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' title='".$formatted_name."' target='_blank' class='ninja_menu_links'>";
-							if (strpos($data[1], '.') !== false)
-								$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$data[1])."' />";
+							if (strpos($icon_image, '.') !== false)
+								$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$icon_image, $module_name)."' />";
 							else
-								$linkstring .= "<span class='icon-menu menu-".$data[1]."'></span>";
+								$linkstring .= "<span class='icon-menu menu-".$icon_image."'></span>";
 							$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
 
 					}

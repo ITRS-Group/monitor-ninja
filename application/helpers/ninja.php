@@ -12,7 +12,7 @@ class ninja_Core {
 	 * Given a file name that is relative to the views directory, find it and
 	 * return the full path.
 	 */
-	public static function add_path($rel_path) {
+	public static function add_path($rel_path, $module_name=false) {
 		static $url_base = false;
 		if (!$url_base)
 			$url_base = url::base();
@@ -20,8 +20,11 @@ class ninja_Core {
 		if (empty($rel_path)) {
 			return false;
 		}
-
-		$path = 'application/views/'.$rel_path;
+		if($module_name === false ) {
+			$path = 'application/views/'.$rel_path;
+		} else {
+			$path = 'modules/'.$module_name.'/views/'.$rel_path;
+		}
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
 		return $url_base . $path;
