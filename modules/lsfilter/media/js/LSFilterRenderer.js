@@ -715,8 +715,9 @@ var listview_renderer_table = {
 			"cell": function(args)
 			{
 				var cell = $('<td />');
-				cell.text(args.obj.alias);
-				cell.text(' (' + args.obj.name + ')');
+				cell.append($('<a />').attr('href',
+						'?q=[services] in "' + args.obj.name + '"').text(
+						args.obj.alias + ' (' + args.obj.name + ')'));
 				return cell;
 			}
 		},
