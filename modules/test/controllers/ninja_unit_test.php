@@ -38,7 +38,7 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 			if (isset($connection['type']) && $connection['type'])
 				$db_type = $connection['type'];
 		}
-		$importer = 'mon log --merlin-cfg=/tmp/ninja-test/merlin.conf import';
+		$importer = 'merlin-import --merlin-cfg=/tmp/ninja-test/merlin.conf';
 		$test_file = array();
 		$argv = isset($argv) ? $argv : $GLOBALS['argv'];
 		$argc = isset($argc) ? $argc : $GLOBALS['argc'];
