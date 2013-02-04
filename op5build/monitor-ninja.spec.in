@@ -22,6 +22,7 @@ BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
 BuildRequires: merlin monitor-merlin op5-nagios
+BuildRequires: merlin-apps
 BuildRequires: op5-monitor-supported-database
 BuildRequires: monitor-livestatus
 %if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
