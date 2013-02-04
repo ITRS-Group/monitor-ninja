@@ -341,15 +341,14 @@ class Ninja_Reports_Test_Core extends Reports_Model
 				" --db-host=".$this->db_host." " .
 				" --db-type=".$this->db_type." " .
 				join(" ", $this->logfiles).' 2>&1';
+			$out = array();
 			exec($cmd, $out, $retval);
+			echo "$cmd\n".implode("\n", $out);
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
 				echo $cmd."\n";
 				$db->query("DROP TABLE ".$this->table_name);
 				return -1;
-			}
-			else if ($out) {
-				echo "$cmd\n".implode("\n", $out);
 			}
 		}
 
