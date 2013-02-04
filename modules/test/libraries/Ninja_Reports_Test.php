@@ -340,7 +340,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 				" --db-pass=".$this->db_pass." " .
 				" --db-host=".$this->db_host." " .
 				" --db-type=".$this->db_type." " .
-				join(" ", $this->logfiles);
+				join(" ", $this->logfiles).' 2>&1';
 			exec($cmd, $out, $retval);
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
