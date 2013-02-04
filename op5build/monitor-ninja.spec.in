@@ -11,8 +11,8 @@ Prefix: /opt/monitor/op5/ninja
 Requires: monitor-gui-core
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
-Requires: op5auth >= 1.2.0
 Requires: php >= 5.3
+BuildRequires: php-op5lib >= 1.1.0
 Requires: php-op5lib >= 1.1.0
 %if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
 Requires: php-process
