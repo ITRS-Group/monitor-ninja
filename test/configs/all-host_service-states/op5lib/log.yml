@@ -1,12 +1,12 @@
 auth:
-  file: /var/log/op5/auth.log
+  file: /tmp/auth.log
   level: error
   reference: true
 synergy:
-  file: /var/log/op5/synergy.log
+  file: /tmp/synergy.log
   level: error
   reference: true
 ninja:
-  file: /var/log/op5/ninja.log
+  file: /tmp/ninja.log
   level: error
   reference: true
