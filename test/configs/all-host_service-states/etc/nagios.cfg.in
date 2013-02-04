@@ -12,7 +12,7 @@
 ###############################################################################
 
 broker_module=/opt/monitor/op5/merlin/merlin.so @@TESTDIR@@/merlin.conf
-broker_module=/opt/monitor/op5/livestatus/livestatus.o @@TESTDIR@@/live debug=1
+broker_module=/usr/libexec/livestatus/livestatus.o @@TESTDIR@@/live debug=1
 
 precached_object_file=@@TESTDIR@@/var/objects.precache
 check_result_path=@@TESTDIR@@/var/spool/checkresults
