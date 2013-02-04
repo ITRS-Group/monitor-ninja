@@ -12,22 +12,24 @@ Requires: monitor-gui-core
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
 Requires: php >= 5.3
-BuildRequires: php-op5lib >= 1.1.0
 Requires: php-op5lib >= 1.1.0
-%if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
-Requires: php-process
-BuildRequires: php-process
-%else
-Requires: php-json
-%endif
 Requires: wkhtmltopdf
 Requires: op5-monitor-supported-database
+Requires: monitor-livestatus
+BuildRequires: php-op5lib >= 1.1.0
 BuildRequires: php >= 5.3
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
 BuildRequires: merlin monitor-merlin op5-nagios
 BuildRequires: op5-monitor-supported-database
+BuildRequires: monitor-livestatus
+%if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
+Requires: php-process
+BuildRequires: php-process
+%else
+Requires: php-json
+%endif
 
 Source: %name-%version.tar.gz
 %description
