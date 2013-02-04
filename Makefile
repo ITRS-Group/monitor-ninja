@@ -45,7 +45,7 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	mkdir -m 0777 -p /tmp/ninja-test/var/spool/checkresults
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
 	/usr/bin/monitor -d /tmp/ninja-test/nagios.cfg
-	install_scripts/ninja_db_init.sh
+	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh
 
 test-ci: test-ci-prepare
 	sh test/ci/testsuite.sh .
