@@ -5,7 +5,7 @@
  * @license    GPL
  */
 class Backup_Test extends TapUnit {
-	public function setUp() {
+/*	public function setUp() {
 		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 		$this->pre_backups = array();
 		$this->backup_location = "/var/www/html/backup";
@@ -56,4 +56,4 @@ class Backup_Test extends TapUnit {
 		$controller->delete($this_backup);
 		$this->ok(!file_exists($this->backup_location . '/' . $this_backup . '.tar.gz'), "asserting backup file has been deleted");
 	}
-}
+*/}
