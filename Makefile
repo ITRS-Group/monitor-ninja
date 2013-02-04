@@ -84,6 +84,7 @@ wipe:
 prepare-config:
 	mkdir -m 0777 -p /tmp/ninja-test
 	mkdir -m 0777 -p /tmp/ninja-test/var
+	mkdir -m 0777 -p /tmp/ninja-test/var/archives
 	cp test/configs/all-host_service-states/etc/*.cfg /tmp/ninja-test/
 	sed -e "s|@@TESTDIR@@|/tmp/ninja-test|" -e "s|@@USER@@|$$(id -un)|" -e "s|@@GROUP@@|$$(id -gn)|" test/configs/all-host_service-states/etc/nagios.cfg.in > /tmp/ninja-test/nagios.cfg
 	sed -e "s|@@TESTDIR@@|/tmp/ninja-test|" -e "s|@@USER@@|$$(id -un)|" -e "s|@@GROUP@@|$$(id -gn)|" test/configs/all-host_service-states/etc/merlin.conf.in > /tmp/ninja-test/merlin.conf

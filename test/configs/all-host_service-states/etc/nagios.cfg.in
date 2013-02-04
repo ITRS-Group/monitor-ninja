@@ -65,7 +65,7 @@ enable_event_handlers=1
 #   m   = Monthly rotation (midnight last day of month)
 log_rotation_method=m
 
-log_archive_path=/opt/monitor/var/archives
+log_archive_path=@@TESTDIR@@/var/archives
 
 check_external_commands=1
 
