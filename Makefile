@@ -25,7 +25,7 @@ regenerate-php:
 generate-php:
 	$(MAKE) -C src/generators
 
-test: test-php-lint test-reports test-unittest
+test: test-reports test-unittest
 
 test-reports:
 	make test-ci-prepare
@@ -36,18 +36,14 @@ test-unittest: generate-php
 	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
-	git checkout test/configs/all-host_service-states/var/status.sav || :
 	rm -f application/config/custom/config.php
-	if [ -e test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid) || :; fi
+	if [ -e /tmp/ninja-test/var/merlin.pid ]; then kill $$(cat /tmp/ninja-test/var/merlin.pid) || :; fi
 	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; rm /tmp/ninja-test/nagios.cmd; fi
-	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
 
 test-ci-prepare: test-ci-cleanup prepare-config
-	mkdir -m 0777 -p /tmp/ninja-test/
-	mkdir -m 0777 -p test/configs/all-host_service-states/var/spool/checkresults
-	chmod -R 0777 test/configs/all-host_service-states/var/
-	/usr/bin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
-	/usr/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
+	mkdir -m 0777 -p /tmp/ninja-test/var/spool/checkresults
+	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
+	/usr/bin/monitor -d /tmp/ninja-test/nagios.cfg
 	/bin/sleep 5
 
 test-ci: test-ci-prepare
@@ -85,8 +81,12 @@ wipe:
 	php index.php ninja_unit_test/wipe_tables
 
 prepare-config:
-	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
-	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
-	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '$$(pwd)/test/configs/all-host_service-states/';" > application/config/custom/config.php
+	mkdir -m 0777 -p /tmp/ninja-test
+	mkdir -m 0777 -p /tmp/ninja-test/var
+	cp test/configs/all-host_service-states/etc/*.cfg /tmp/ninja-test/
+	sed -e "s|@@TESTDIR@@|/tmp/ninja-test|" test/configs/all-host_service-states/etc/nagios.cfg.in > /tmp/ninja-test/nagios.cfg
+	sed -e "s|@@TESTDIR@@|/tmp/ninja-test|" test/configs/all-host_service-states/etc/merlin.conf.in > /tmp/ninja-test/merlin.conf
+	cp test/configs/all-host_service-states/var/status.sav /tmp/ninja-test/var/status.sav
+	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '/tmp/ninja-test';\$$config['nagios_etc_path'] = '/tmp/ninja-test';" > application/config/custom/config.php
 
 .PHONY: test help test-reports clean
