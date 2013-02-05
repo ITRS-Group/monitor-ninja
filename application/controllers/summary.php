@@ -268,6 +268,20 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->title = _("Reporting » Alert summary » Report");
 		$header->title = $this->options->get_value('summary_type');
 
+		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
+		if($scheduled_info) {
+			$schedule_id = $this->input->get('schedule_id', null);
+			if($schedule_id) {
+				$le_schedule = current(array_filter($scheduled_info, function($item) use ($schedule_id) {
+					return $item['id'] == $schedule_id && $item['attach_description'] && $item['description'];
+				}));
+				if($le_schedule) {
+					$header->description = $this->options['description'] ? $this->options['description']."\n".$le_schedule['description'] : $le_schedule['description'];
+				}
+			}
+		}
+
+
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf();
 		}
