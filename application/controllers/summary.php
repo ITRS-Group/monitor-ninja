@@ -104,6 +104,11 @@ class Summary_Controller extends Base_reports_Controller
 		if ($this->options['report_id']) {
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 		}
+		else if (!$this->options['standardreport']) {
+			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
+		}
+
+
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
@@ -250,6 +255,9 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 		if ($this->options['report_id']) {
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
+		}
+		else if (!$this->options['standardreport']) {
+			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
 		$this->template->js_strings = $this->js_strings;
 		$this->template->inline_js = $this->inline_js;
