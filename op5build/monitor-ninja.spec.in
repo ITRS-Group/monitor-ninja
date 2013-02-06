@@ -13,7 +13,6 @@ Name: monitor-ninja
 Version: @@VERSION@@
 Release: @@RELEASE@@
 License: op5 Software License
-Packager: build@op5
 Vendor: op5 AB
 BuildRoot: %{_tmppath}/%{name}-%{version}
 Summary: op5 monitor ninja
