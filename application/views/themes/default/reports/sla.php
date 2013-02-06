@@ -19,21 +19,17 @@ foreach($report_data as $i =>  $report) {
 	?>
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
-		<?php
-		// FIXME: find where to by what the person writing this was smoking - looks like good shit
-		$avail_link = html_entity_decode($report['avail_link']);
-		parse_str(substr($avail_link, strpos($avail_link, '?')+1), $avail_link); ?>
 		<form action="<?php echo url::site() ?>avail/generate" method="post">
 			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
-			<?php foreach($avail_link as $key => $value) {
-				if(is_array($value)) {
-					foreach($value as $value_part) { ?>
-					<input type="hidden" name="<?php echo $key ?>[]" value="<?php echo $value_part ?>" />
-					<?php }
-				} else { ?>
-					<input type="hidden" name="<?php echo $key ?>" value="<?php echo $value ?>" />
-				<?php }
-			} ?>
+			<?php
+			echo $options->as_form(true);
+			$names = $report['name'];
+			if (!is_array($names))
+				$names = array($names);
+			foreach ($names as $name) {
+				echo '<input type="hidden" name="'.$options->get_value('report_type').'[]" value="'.$name.'"/>';
+			}
+			?>
 		</form>
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
@@ -105,7 +101,6 @@ foreach($report_data as $i =>  $report) {
 					echo "</td></tr>\n";
 				}
 				?>
-			</table>
-			<br />
-		</div>
+		</table>
+	</div>
 	<?php } } ?>
