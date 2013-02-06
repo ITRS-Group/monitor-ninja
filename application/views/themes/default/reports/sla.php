@@ -77,7 +77,7 @@ foreach($report_data as $i =>  $report) {
 		</table>
 	</div>
 	<?php }
-	$members = $options->get_report_members();
+	$members = $report['source'];
 	if (count($members) > 1) { ?>
 	<div class="members">
 
