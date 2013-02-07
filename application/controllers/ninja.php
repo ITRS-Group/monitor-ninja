@@ -36,6 +36,8 @@ class Ninja_Controller extends Template_Controller {
 	public $checks_disabled = false;
 	public $global_notifications = false;
 	public $log = false;
+	public $help_link = false;
+	public $help_link_url = false;
 
 	public function __construct()
 	{
@@ -114,11 +116,28 @@ class Ninja_Controller extends Template_Controller {
 
 		$saved_searches = false;
 
+		# This should be defined even if not logged in
+		$this->template->help_link = false;
+
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			# warning! do not set anything in xlinks, as it isn't working properly
 			# and cannot (easily) be fixed
 			$this->xlinks = array();
 			$this->_addons();
+
+			# help link
+			# To enable link: create an addon with code:
+			# $this->help_link_url = "http://example.org/$VERSION$/$CONTROLLER$/$METHOD$"
+			if( $this->help_link_url ) {
+				$this->template->help_link = str_replace(
+					array('$VERSION$', '$CONTROLLER$', '$METHOD$'),
+					array_map('urlencode',
+						array(trim(config::get_version_info()), Router::$controller, Router::$method)
+					),
+					$this->help_link_url
+				);
+			}
+
 
 			# create the user menu
 			$menu = new Menu_Model();

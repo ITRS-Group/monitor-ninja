@@ -31,12 +31,15 @@
 	$shortcuts['internal'][] = array('/listview?q=[services] state != 0 and acknowledged = 0', 'icon-16 x16-shield-pending', array('title' => 'Unhandled Problems'));
 	$shortcuts['internal'][] = array('/tac', 'icon-16 x16-hoststatus', array('title' => 'Tactical Overview'));
 	
+	if( $help_link !== false ) {
+		$shortcuts['internal'][] = array($help_link, 'icon-16 x16-help', array('title' => 'Documentation', 'id' => 'help_icon'));
+	}
+
 	if (isset($int_shortcuts)) {
 		for ($i = 0; $i < count($int_shortcuts); $i++) {
 			$shortcuts['internal'][] = $int_shortcuts[$i];
 		}
 	}
-	
 ?>
 
 <div class="header" id="header">
