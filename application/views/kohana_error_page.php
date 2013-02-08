@@ -28,9 +28,9 @@ if (IN_PRODUCTION) {
 	fclose($fd);
 
 	$css_header = false;
-	$content = '<div class="left"><h3>There was an error rendering the page</h3>';
+	$content = '<div><h3>There was an error rendering the page</h3>';
 	if (!$writeerror) {
-		$content .= '<p>Please contact your administrator. Debug information has been saved to "'.$file.'".</p></div>';
+		$content .= '<p>Please contact your administrator.<br />Debug information has been saved to '.$file.'</p></div>';
 	} else {
 		// by special casing this here once, we save some support time every time
 		// log data clobbers a customers hard drive
