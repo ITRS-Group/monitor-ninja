@@ -59,10 +59,12 @@ class op5User {
 
 		switch($object_type) {
 			case 'host':
-				list($columns,$objects,$count) = $ls->query('GET hosts', array(
-						'Filter: host_name '.$lseq.' '.$object_definition,
+			case 'hostgroup':
+			case 'servicegroup':
+				list($columns,$objects,$count) = $ls->query('GET '.$object_type.'s', array(
+						'Filter: name '.$lseq.' '.$object_definition,
 						'AuthUser: ' . $user->username
-					), array('host_name'));
+					), array('name'));
 				if(count($count) > 0) {
 					$access = true;
 				}
@@ -70,9 +72,9 @@ class op5User {
 			case 'service':
 				list($columns,$objects,$count) = $ls->query('GET services', array(
 						'Filter: host_name '.$lseq.' '.$object_definition[0],
-						'Filter: display_name '.$lseq.' '.$object_definition[1],
+						'Filter: description '.$lseq.' '.$object_definition[1],
 						'AuthUser: ' . $user->username
-					), array('host_name'));
+					), array('description'));
 				if (count($count) > 0) {
 					$access = true;
 				}
