@@ -3,7 +3,6 @@
 require_once('op5/auth/User.php');
 
 class op5User_NoAuth extends op5User {
-
 	public function __construct() {
 		$this->username = 'notauthenticated';
 		$this->realname = 'Not Logged in';
@@ -28,4 +27,13 @@ class op5User_NoAuth extends op5User {
 		return false;
 	}
 
+	public function authorized_for_object($object_type, $object_definition, $case_sensitivity=true)
+	{
+		return false;
+	}
+
+	public function get_contact_groups()
+	{
+		return false;
+	}
 } // End Auth Guest User Model

@@ -46,6 +46,42 @@ class op5User {
 	}
 
 	/**
+	 * Test if authorized for viewing a certain object
+	 *»
+	 * @param $authorization_point string Name of authorization point
+	 * @param $object_definition   string object name, or array of names defining a "path"
+	 * @param $object_type         string object type (host/service)
+	 */
+	public function authorized_for_object($object_type, $object_definition, $case_sensitivity=true)
+	{
+		$ls = op5livestatus::instance();
+		$lseq = $case_sensitivity?'=':'=~';
+
+		switch($object_type) {
+			case 'host':
+				list($columns,$objects,$count) = $ls->query('GET hosts', array(
+						'Filter: host_name '.$lseq.' '.$object_definition,
+						'AuthUser: ' . $user->username
+					), array('host_name'));
+				if(count($count) > 0) {
+					$access = true;
+				}
+				break;
+			case 'service':
+				list($columns,$objects,$count) = $ls->query('GET services', array(
+						'Filter: host_name '.$lseq.' '.$object_definition[0],
+						'Filter: display_name '.$lseq.' '.$object_definition[1],
+						'AuthUser: ' . $user->username
+					), array('host_name'));
+				if (count($count) > 0) {
+					$access = true;
+				}
+				break;
+		}
+		return $access;
+	}
+
+	/**
 	 * Updates the password of the user.
 	 *
 	 * @param  string    new password
@@ -66,4 +102,25 @@ class op5User {
 		return true;
 	}
 
+	/**
+	 * List all contact groups I am a member of
+	 *
+	 * TODO: Deprecate?
+	 *
+	 * @return array array of groups
+	 */
+	public function get_contact_groups()
+	{
+		$ls = op5livestatus::instance();
+		list($columns, $objects, $count) = $ls->query('GET contactgroups', array(
+				'Filter: members >= ' . $this->get_user()->username
+			),
+			array('name')
+		);
+		$result = array();
+		foreach ($objects as $row) {
+		        $result[] = $row[0];
+		}
+		return $result;
+	}
 } // End Auth User Model
