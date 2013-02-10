@@ -16,7 +16,7 @@ Requires: php-op5lib >= 1.1.0
 Requires: wkhtmltopdf
 Requires: op5-monitor-supported-database
 Requires: monitor-livestatus
-BuildRequires: php-op5lib >= 1.1.0
+BuildRequires: php-op5lib >= 1.1.0-beta2
 BuildRequires: php >= 5.3
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen

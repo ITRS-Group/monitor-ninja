@@ -109,19 +109,8 @@ class Command_Controller extends Authenticated_Controller
 			$inparams = $_GET;
 		}
 
-		foreach ($inparams as $k => $v) {
-			switch ($k) {
-			 case 'host':
-			 case 'hostgroup':
-			 case 'servicegroup':
-				$params[$k . '_name'] = $v;
-				break;
-			 default:
-				$params[$k] = $v;
-			}
-		}
+		$auth_check = commands::is_authorized_for($inparams);
 
-		$auth_check = $this->_is_authorized_for_command($params);
 		if ($auth_check === false || $auth_check < 0 ) {
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
@@ -561,115 +550,11 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
-	 * Check if user is authorized for the selected command
-	 * http://nagios.sourceforge.net/docs/3_0/configcgi.html controls
-	 * the correctness of this method
-	 * Return codes:
-	 *	-1:		No command passed
-	 *	-2:		Contact can't submit commands
-	 *	-3:		not authorized from cgi.cfg, and not a configured contact
-	 * false:		fallthrough, not authorized for anything
+	 * Stupid wrapper around the commands helper, kept around for legacy reasons.
 	 */
 	static function _is_authorized_for_command($params = false, $cmd = false)
 	{
-		$type = false;
-		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : $cmd;
-
-		# first see if this is a contact and, if so, if that contact
-		# is allowed to submit commands. If it isn't, we can bail out
-		# early.
-		$contact = ContactPool_Model::get_current_contact();
-		if ($contact !== false) {
-			if (!$contact->get_can_submit_commands()) {
-				return -2;
-			}
-		}
-
-		$services = arr::search($params, 'service');
-		$host_names = arr::search($params, 'host_name');
-
-		if (strstr($cmd, '_HOST_') !== false) {
-			$type = 'host';
-		} else if (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
-			$type = 'service';
-		} else if ($services) {
-			$type = 'service';
-		} else if ($host_names) {
-			$type = 'hosts';
-		}
-
-		# second we check if this contact is allowed to submit
-		# the type of command we're looking at and, if so, if
-		# we can bypass fetching all the objects we're authorized
-		# to see
-		if ($type === 'hosts') {
-			if (Auth::instance()->authorized_for('host_edit_all')) {
-				return true;
-			}
-		} elseif ($type === 'service') {
-			if (Auth::instance()->authorized_for('service_edit_all')) {
-				return true;
-			}
-		} else {
-			# must be a system command
-			if (Auth::instance()->authorized_for('system_commands')) {
-				return true;
-			}
-
-			return false;
-		}
-
-		# not authorized from cgi.cfg, and not a configured contact,
-		# so bail out early
-		if ($contact === false)
-			return -3;
-
-		# FIXME handle host/servicegroup commands as well
-
-		# neither host_name nor service description. Either the user
-		# hasn't filled out the form yet, or this regards hostgroups
-		# or servicegroups
-		if (!$type) {
-			return false;
-		}
-
-		# ensure host_names is an array, as services will want to read it
-		if (!$host_names)
-			$host_names = array();
-		else if (!is_array($host_names))
-			$host_names = array($host_names);
-
-		if ($services) {
-			if (!is_array($services))
-				$services = array($services);
-			foreach ($services as $service) {
-				if (strstr($service, ';')) {
-					# we have host_name;service in service field
-					$parts = explode(';', $service);
-					if (!empty($parts) && sizeof($parts)==2) {
-						$service = $parts[1];
-						$host_name = $parts[0];
-					}
-				}
-				else {
-					$host_name = end($host_names);
-				}
-				# if the user isn't specifically configured for the service, he/she
-				# can still submit commands for it if he/she is a contact for the host
-				if (!(Auth::instance()->authorized_for('service_edit_contact') && Nagios_auth_Model::instance()->is_authorized_for_service($host_name, $service)))
-					return false;
-			}
-			return true;
-		}
-
-		if ($host_names) {
-			foreach ($host_names as $host_name) {
-				if (!(Auth::instance()->authorized_for('host_edit_contact') && Nagios_auth_Model::instance()->is_authorized_for_host($host_name)))
-					return false;
-			}
-			return true;
-		}
-		return false;
+		return commands::is_authorized_for($params, $cmd);
 	}
 
 	/**
