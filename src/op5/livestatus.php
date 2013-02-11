@@ -81,7 +81,7 @@ class op5Livestatus {
 		if(empty($body))
 			throw new op5LivestatusException("empty body for query: <pre>".$query."</pre>");
 		if($status != 200)
-			throw new op5LivestatusException("Invalid request: ".trim($body));
+			throw new op5LivestatusException("Invalid request: ".trim($body) . ".<pre>\nQuery: $query</pre>");
 		
 		$result = json_decode(utf8_encode($body), true);
 		
