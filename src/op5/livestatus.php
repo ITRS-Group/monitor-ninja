@@ -48,7 +48,7 @@ class op5Livestatus {
 		$query .= "OutputFormat: wrapped_json\n";
 		$query .= "KeepAlive: on\n";
 		$query .= "ResponseHeader: fixed16\n";
-		if( isset($options['auth']) && $options['auth'] == false ) {
+		if( !isset($options['auth']) || $options['auth'] != false ) {
 			$query .= $this->auth($table);
 		}
 		
