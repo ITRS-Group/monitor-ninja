@@ -127,8 +127,7 @@ class op5Livestatus {
 			'contacts' => 'name',
 			'commands' => true,
 			'status' => true,
-			'timeper
-			iods' => true
+			'timeperiods' => true
 			);
 		
 		if( !isset( $table_permissions[$table] ) ) {
