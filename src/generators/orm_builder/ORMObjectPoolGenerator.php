@@ -1,6 +1,6 @@
 <?php
 
-class LivestatusBasePoolClassGenerator extends class_generator {
+class ORMObjectPoolGenerator extends class_generator {
 	private $name;
 	private $structure;
 	private $objectclass;

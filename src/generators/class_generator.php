@@ -58,6 +58,11 @@ abstract class class_generator {
 		$this->set_class_suffix( self::$model_suffix );
 		$this->set_basedir( 'models' );
 	}
+	
+	public function set_manifest() {
+		$this->set_class_suffix( '' );
+		$this->set_basedir( false );
+	}
 
 	public function exists() {
 		return file_exists( $this->get_filename() );

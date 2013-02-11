@@ -20,6 +20,7 @@ modules/reports
 modules/*/js
 modules/*/html
 modules/*/models/base
+modules/*/orm_manifest.php
 
 application/views/css/*/*.css
 application/views/icons/x*-*.png

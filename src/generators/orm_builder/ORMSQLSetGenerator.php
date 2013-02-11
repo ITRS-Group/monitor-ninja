@@ -1,37 +1,6 @@
 <?php
 
-/*
- public function stats($intersections) {
-return array();
-}
-
-public function count() {
-$db = Database::instance();
-$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable." WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false);
-$q = $db->query($sql);
-$q->result(false);
-$row = $q->current();
-return $row['count'];
-}
-
-public function it($columns, $order, $limit=false, $offset=false) {
-$db = Database::instance();
-$limitstr = '';
-if( $limit !== false ) {
-$limitstr = ' LIMIT ';
-if( $offset !== false ) {
-$limitstr .= intval($offset) . ', ';
-}
-$limitstr .= intval($limit);
-}
-$sql = "SELECT * FROM ".$this->dbtable." WHERE ".$this->filter->visit(new LivestatusSQLBuilderVisitor(), false).$limitstr;
-$q = $db->query($sql);
-$q->result(false);
-return new LivestatusSetIterator($q, $q->list_fields(), $this->class);
-}
-*/
-
-class LivestatusBaseRootSQLSetClassGenerator extends class_generator {
+class ORMSQLSetGenerator extends class_generator {
 	private $name;
 	private $structure;
 	private $objectclass;

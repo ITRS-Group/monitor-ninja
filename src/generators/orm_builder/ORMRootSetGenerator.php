@@ -1,13 +1,9 @@
 <?php
 
-class LivestatusBaseRootSetClassGenerator extends class_generator {
-	private $name;
-	private $structure;
+class ORMRootSetGenerator extends class_generator {
 	private $objectclass;
 	
-	public function __construct( $name, $descr ) {
-		$this->name = $name;
-		$this->structure = $descr;
+	public function __construct() {
 		$this->classname = "BaseObjectSet";
 		$this->set_model();
 	}

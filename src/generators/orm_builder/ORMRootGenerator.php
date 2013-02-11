@@ -1,10 +1,10 @@
 <?php
 
-class LivestatusBaseRootClassGenerator extends class_generator {
+class ORMRootGenerator extends class_generator {
 	
 	private $structure;
 	
-	public function __construct( $name, $structure ) {
+	public function __construct() {
 		$this->classname = 'BaseObject';
 		$this->set_model();
 	}

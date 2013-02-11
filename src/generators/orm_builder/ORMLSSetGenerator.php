@@ -1,6 +1,6 @@
 <?php
 
-class LivestatusBaseRootLSSetClassGenerator extends class_generator {
+class ORMLSSetGenerator extends class_generator {
 	private $name;
 	private $structure;
 	private $objectclass;

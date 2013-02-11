@@ -1,6 +1,6 @@
 <?php
 
-class LivestatusJSStructureGenerator extends js_class_generator {
+class ORMJSStructureGenerator extends js_class_generator {
 	private $structure = array();
 	
 	public function __construct( $structure ) {

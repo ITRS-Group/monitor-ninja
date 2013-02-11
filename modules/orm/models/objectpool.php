@@ -19,4 +19,12 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 		if( $query === false ) return false;
 		return self::get_by_query($query);
 	}
+	
+	static public function load_table_classes() {
+		$tables = array();
+		foreach( glob(MODPATH . '*/orm_manifest.php') as $contentfile ) {
+			require($contentfile);
+		}
+		return $tables;
+	}
 }
