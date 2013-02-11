@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Helper for commands, in particular for command authorization
+ */
 class commands_Core {
 	/**
 	 * Given the name of a command, return the type of the command
@@ -24,7 +27,8 @@ class commands_Core {
 		return $type;
 	}
 
-	/* Check if user is authorized for the selected command
+	/**
+	 * Check if user is authorized for the selected command
 	 * http://nagios.sourceforge.net/docs/3_0/configcgi.html controls
 	 * the correctness of this method
 	 * Return codes:
