@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * User authentication and authorization library.
+ *
+ * @package    Auth
+ * @author     
+ * @copyright  
+ * @license    
+ */
+
+ 
+abstract class op5AuthDriver {
+
+	/**
+	 * Configuration for the module
+	 * @var array
+	 */
+	protected $config = array();
+
+	/**
+	 * Stores a reference to the op5Log object
+	 * @var op5Log
+	 */
+	protected $log = false;
+
+	/**
+	 * Create an instance of Auth.
+	 *
+	 * @return  object
+	 */
+
+	public final function __construct($config)
+	{
+		$this->log = op5Log::instance('auth');
+		$this->config = $config;
+	}
+
+	/**
+	 * Attempt to log in a user by username and password.
+	 *
+	 * @param   string   username to log in
+	 * @param   string   password to check against
+	 * @return  op5User  User object, or false
+	 */
+	public function login($username, $password)
+	{
+		return false;
+	}
+
+	/**
+	 * Attempt to log in a user by static configuration, or external infromation.
+	 *
+	 * Useful for example for HTTP-auth.
+	 *
+	 * @return  op5User  User object, or false
+	 */
+	public function auto_login()
+	{
+		return false;
+	}
+
+	/**
+	 * Log out a user, if
+	 *
+	 * @param   $user    op5User  driver-specific logout-routine, if driver requires.
+	 */
+	public function logout($user)
+	{
+	}
+
+	/**
+	 * Update password for a user.
+	 *
+	 * @param $user     op5User User object
+	 * @param $password string  Password to set
+	 * @return          boolean True if successful, False if error
+	 */
+	public function update_password( $user, $password )
+	{
+		return false;
+	}
+
+	/**
+	 * Given a list of groups, return an associative array with groups as keys and a boolean
+	 * if group is available in the backend. If it is unknown if the user is available, the field
+	 * is unset.
+	 *
+	 * If driver supports multiple backends, the extra auth_method can be set to the backend.
+	 * Otherwise, a superset is should given of all backends
+	 *
+	 * @param $grouplist   List of groups to check
+	 * @param $auth_method Login driver
+	 * @return             Associative array of the groups in $grouplist as keys, boolean as values
+	 */
+	public function groups_available(array $grouplist)
+	{
+		return array();
+	}
+
+	/**
+	 * Given a username, return a list of it's groups. Useful when giving permissions to a user.
+	 *
+	 * @param $username string User to search for
+	 * @return          array  A list of groups, or false if not possible
+	 */
+	public function groups_for_user( $username )
+	{
+		return false;
+	}
+} // End Auth
