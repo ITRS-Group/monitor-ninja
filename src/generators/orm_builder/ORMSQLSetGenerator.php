@@ -43,13 +43,20 @@ class ORMSQLSetGenerator extends class_generator {
 	public function generate_it() {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
 		$this->write('$db = Database::instance();');
+		
+		$this->write('if( $columns != false ) {');
 		$this->write('$columns = $this->validate_columns($columns);');
-		$this->write('if( $columns === false) return false;');
+		$this->write('if($columns === false) return false;');
 		$this->write('$columns = array_unique($columns);');
+		$this->write('}');
 		
 		$this->write('$filter = $this->get_auth_filter();');
 		
-		$this->write('$sql = "SELECT ".str_replace(".","_",implode(",",$columns))." FROM ".$this->dbtable;');
+		$this->write('if($columns === false) {');
+		$this->write(    '$sql = "SELECT * FROM ".$this->dbtable;');
+		$this->write('} else {');	
+		$this->write(    '$sql = "SELECT ".str_replace(".","_",implode(",",$columns))." FROM ".$this->dbtable;');
+		$this->write('}');
 		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(), false);');
 		
 		$this->write('$sort = array();');
