@@ -56,26 +56,27 @@ class op5User {
 	{
 		$ls = op5livestatus::instance();
 		$lseq = $case_sensitivity?'=':'=~';
+		$access = false;
 
 		switch($object_type) {
-			case 'host':
-			case 'hostgroup':
-			case 'servicegroup':
-				list($columns,$objects,$count) = $ls->query('GET '.$object_type.'s', array(
+			case 'hosts':
+			case 'hostgroups':
+			case 'servicegroups':
+				list($columns,$objects,$count) = $ls->query($object_type, array(
 						'Filter: name '.$lseq.' '.$object_definition,
-						'AuthUser: ' . $user->username
+						'AuthUser: ' . $this->username
 					), array('name'));
-				if(count($count) > 0) {
+				if($count > 0) {
 					$access = true;
 				}
 				break;
-			case 'service':
-				list($columns,$objects,$count) = $ls->query('GET services', array(
+			case 'services':
+				list($columns,$objects,$count) = $ls->query('services', array(
 						'Filter: host_name '.$lseq.' '.$object_definition[0],
 						'Filter: description '.$lseq.' '.$object_definition[1],
-						'AuthUser: ' . $user->username
+						'AuthUser: ' . $this->username
 					), array('description'));
-				if (count($count) > 0) {
+				if ($count > 0) {
 					$access = true;
 				}
 				break;
