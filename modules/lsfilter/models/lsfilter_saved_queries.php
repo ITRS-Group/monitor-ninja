@@ -4,7 +4,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 	const tablename = 'ninja_saved_queries'; /**< Name of saved searches table */
 
 	private static $saved_queries = array(
-			'hosts' => array(
+/*			'hosts' => array(
 					'hosts up'                   => '[hosts] state=0 and has_been_checked=1',
 					'hosts down'                 => '[hosts] state=1 and has_been_checked=1',
 					'hosts unreachable'          => '[hosts] state=2 and has_been_checked=1',
@@ -22,7 +22,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 					'services all'               => '[services] all',
 					'problem services'           => '[services] has_been_checked != 0 and state != 0',
 					'unhandled service problems' => '[services] has_been_checked != 0 and state != 0 and scheduled_downtime_depth = 0 and acknowledged = 0'
-			)
+			)*/
 	);
 
 	private static function get_static_queries( $table = false ) {

@@ -27,4 +27,15 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 		}
 		return $tables;
 	}
+	
+	static public function get_js_files() {
+		$js_files = array();
+		foreach( scandir(MODPATH) as $module ) {
+			$path = MODPATH . $module . '/js/orm_structure.js';
+			if( is_file($path) ) {
+				$js_files[] = 'modules/'.$module.'/js/orm_structure.js';
+			}
+		}
+		return $js_files;
+	}
 }

@@ -17,7 +17,9 @@ class Listview_Widget extends widget_Base {
 		$basepath = 'modules/lsfilter/';
 		$ormpath = 'modules/orm/';
 		
-		$this->js[] = $ormpath.'js/LivestatusStructure';
+		foreach( ObjectPool_Model::get_js_files() as $js_file ) {
+			$this->js[] = str_replace('.js','',$js_file);
+		}
 
 		$this->js[] = $basepath.'js/LSFilter';
 		$this->js[] = $basepath.'js/LSFilterLexer';

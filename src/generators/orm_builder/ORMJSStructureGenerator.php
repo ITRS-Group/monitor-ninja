@@ -4,14 +4,14 @@ class ORMJSStructureGenerator extends js_class_generator {
 	private $structure = array();
 	
 	public function __construct( $structure ) {
-		$this->classname = "LivestatusStructure";
+		$this->classname = "orm_structure";
 		$this->structure = $structure;
 	}
 	
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		
-		$this->write( "var livestatus_structure = ".$this->pretty_json($this->generate_array()).";" );
+		$this->write( "var orm_structure = ".$this->pretty_json($this->generate_array()).";" );
 	}
 	
 	private function generate_array() {
