@@ -34,7 +34,15 @@ Requires: php-json
 
 Source: %name-%version.tar.gz
 %description
-Webgui for Nagios 3.
+Webgui for Nagios.
+
+%package test
+Summary: Test files for ninja
+Group: op5/Monitor
+Requires: monitor-ninja = %version
+
+%description test
+Additional test files for ninja
 
 %prep
 %setup -q
@@ -55,8 +63,8 @@ mkdir -p -m 775 %buildroot%prefix/application/logs
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
-for d in test op5build monitor-ninja.spec \
-	php2doxy.sh example.htaccess modules/test
+for d in op5build monitor-ninja.spec \
+	php2doxy.sh example.htaccess
 do
 	rm -rf %buildroot%prefix/$d
 done
@@ -148,6 +156,15 @@ done
 %attr(644,root,root) /etc/cron.d/*
 /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py*
 %attr(-,root,apache) /etc/httpd/conf.d/monitor-ninja.conf
+%exclude %prefix/test
+%exclude %prefix/modules/test
+%exclude %prefix/Makefile
+
+%files test
+%defattr(-,monitor,apache)
+%prefix/test
+%prefix/modules/test
+%prefix/Makefile
 
 %clean
 rm -rf %buildroot
