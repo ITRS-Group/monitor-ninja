@@ -110,6 +110,17 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		$auth_check = commands::is_authorized_for($inparams);
+		foreach ($inparams as $k => $v) {
+			switch ($k) {
+			 case 'host':
+			 case 'hostgroup':
+			 case 'servicegroup':
+				$params[$k . '_name'] = $v;
+				break;
+			 default:
+				$params[$k] = $v;
+			}
+		}
 
 		if ($auth_check === false || $auth_check < 0 ) {
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
