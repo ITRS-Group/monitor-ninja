@@ -18,7 +18,6 @@ class orm_generator extends generator_module {
 			$builder->generate_table($name, $tables);
 		}
 		
-		$builder->generate_js_structure( $tables );
 		$builder->generate_manifest( $tables );
 	}
 }

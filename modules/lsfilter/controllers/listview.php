@@ -9,12 +9,8 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		$basepath = 'modules/lsfilter/';
 
-		ObjectPool_Model::get_js_files();
+		$this->xtra_js[] = 'index.php/manifest/js/orm_structure.js';
 		
-		foreach( ObjectPool_Model::get_js_files() as $js_file ) {
-			$this->xtra_js[] = $js_file;
-		}
-
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterLexer.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';

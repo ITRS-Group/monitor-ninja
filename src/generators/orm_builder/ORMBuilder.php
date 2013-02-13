@@ -12,8 +12,8 @@ require_once( 'ORMWrapperGenerator.php' );
 require_once( 'ORMLSSetGenerator.php' );
 require_once( 'ORMSQLSetGenerator.php' );
 
-require_once( 'ORMManifestGenerator.php' );
-require_once( 'ORMJSStructureGenerator.php' );
+require_once( 'ORMTableManifestGenerator.php' );
+require_once( 'ORMStructureManifestGenerator.php' );
 
 class ORMBuilder {
 	public function generate_base() {
@@ -109,16 +109,14 @@ class ORMBuilder {
 			$generator->generate();
 	}
 	
-	public function generate_js_structure( $full_structure ) {
-		/* Generate JS structure description */
-		$generator = new ORMJSStructureGenerator( $full_structure );
-		$generator->generate();
-	}
-	
 	
 	public function generate_manifest( $full_structure ) {
-		/* Generate JS structure description */
-		$generator = new ORMManifestGenerator( $full_structure );
+		/* Generate Table classes description */
+		$generator = new ORMTableManifestGenerator( $full_structure );
+		$generator->generate();
+		
+		/* Generate Table structure description */
+		$generator = new ORMStructureManifestGenerator( $full_structure );
 		$generator->generate();
 	}
 }
