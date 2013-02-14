@@ -57,11 +57,11 @@ class op5Authorization {
 
 		/* Fetch the name column as an array from the result */
 		$auth_data = array();
-		if(isset($user->auth_data) {
+		if(isset($user->auth_data)) {
 			$auth_data = $user->auth_data;
 		}
 		foreach($groups as $group) {
-			if(isset($this->groups[$group]) {
+			if(isset($this->groups[$group])) {
 				$authorized = true;
 				foreach($this->groups[$group] as $perm) {
 					$auth_data[$perm] = true;
