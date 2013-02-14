@@ -219,7 +219,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		while(count($tosearch) > 0) {
 			$cur = array_pop($tosearch);
 			foreach($this->resolve_groups_nonrecursive($cur) as $group) {
-				if(!in_array($group, $groups) {
+				if(!in_array($group, $groups)) {
 					$groups[] = $group;
 					if($recursive) {
 						$tosearch[] = $group;
@@ -284,7 +284,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 
 		/* Try to bind as user to authenticate */
-		if(!$this->bind($user_info['dn'], $password) {
+		if(!$this->bind($user_info['dn'], $password)) {
 			$this->log->log('debug', 'Could not bind to user, incorrect password?: '.ldap_error($this->conn));
 			return false;
 		}
@@ -304,7 +304,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$upn = $username . '@' . $this->config['upn_suffix'];
 
 		/* Try to bind as user to authenticate */
-		if(!$this->bind($upn, $password) {
+		if(!$this->bind($upn, $password)) {
 			$this->log->log('debug', 'Could not bind using upn/pass: '.ldap_error($this->conn));
 			return false;
 		}
@@ -322,7 +322,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 **/
 	private function get_info_for_user($filter)
 	{
-		if(!is_array($filter) {
+		if(!is_array($filter)) {
 			$username = $filter;
 			if($this->config['userkey_is_upn']) {
 				$username .= '@' . $this->config['upn_suffix'];
@@ -359,12 +359,12 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			return;
 		}
 
-		if(!isset($this->config['server']) {
+		if(!isset($this->config['server'])) {
 			$this->throw_error('Server is not specified');
 		}
 
 		$enctype = false;
-		if(isset($this->config['encryption']) {
+		if(isset($this->config['encryption'])) {
 			$enctype = $this->config['encryption'];
 		}
 
@@ -400,19 +400,19 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 
 		if($enctype == 'start_tls') {
-			if(!ldap_start_tls($this->conn) {
+			if(!ldap_start_tls($this->conn)) {
 				$this->throw_error('Could not use Start TLS for server: '.$url . ': '.ldap_error($this->conn));
 			}
 		}
 
-		if(isset($this->config['protocol_version']) {
+		if(isset($this->config['protocol_version'])) {
 			ldap_set_option($this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['protocol_version']);
 		}
 	}
 
 	/**
 	 * Attempts to bind
-	 * 
+	 *
 	 * @param $dn string
 	 * @param $password string
 	 * @return bool
@@ -453,29 +453,29 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			$secret = $this->config['bind_secret'];
 
 			/* If $secret is an array, it references to another file, for security */
-			if(is_array($secret) {
+			if(is_array($secret)) {
 				/* Reference to file - slow, but simple */
-				if(isset($secret['file']) {
-					$secret = trim(file_get_contents($secret['file']);
+				if(isset($secret['file'])) {
+					$secret = trim(file_get_contents($secret['file']));
 				}
 				/*
 				 * Reference to config, can be cached...
 				* A script having access to the cache also have access to the config,
 				* meaning no major security issue with caching...
 				*/
-				else if(isset($secret['config']) {
+				else if(isset($secret['config'])) {
 					$secret_conf = op5Config::instance()->getConfig($secret['config']);
 					if($secret_conf === false) {
 						$this->throw_error('secret specified as config reference, but referenced config not found');
 					}
-					if(!isset($secret_conf[ $this->config['name'] ]) {
+					if(!isset($secret_conf[ $this->config['name'] ])) {
 						$this->throw_error('section '.$this->config['name'].' not found in config file '.$secret['config']);
 					}
 					$secret = $secret_conf[ $this->config['name'] ];
 				}
 			}
 
-			if(!$this->bind($this->config['bind_dn'], $secret) {
+			if(!$this->bind($this->config['bind_dn'], $secret)) {
 				$this->throw_error('Could not bind using config user to LDAP server');
 			}
 		}
@@ -530,7 +530,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$filter = '';
 		if(count($matches) > 0) {
 			foreach($matches as $key => $value) {
-				$filter .= sprintf('(%s=%s)', $key, $this->ldap_escape($value, true);
+				$filter .= sprintf('(%s=%s)', $key, $this->ldap_escape($value, true));
 			}
 			$filter = '(&'.$filter.')';
 		}
