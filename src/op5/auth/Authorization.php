@@ -7,9 +7,9 @@ require_once('op5/log.php');
  * User authentication and authorization library.
  *
  * @package    Authorization
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 class op5Authorization {
 	/**
@@ -21,16 +21,16 @@ class op5Authorization {
 	{
 		return new self();
 	}
-	
-	
+
+
 	private $groups = false;
-	
+
 	public function __construct()
 	{
 		$this->log = op5Log::instance('auth');
 		$this->groups = op5Config::instance()->getConfig('auth_groups');
 	}
-	
+
 	/**
 	 * Authorizes user. Fill in authorization points for the user given
 	 * the users groups.
@@ -41,42 +41,41 @@ class op5Authorization {
 	 * @param   $user   op5User  The user to authorize
 	 * @return          boolean     If the user is authorized
 	 */
-	public function authorize( op5User $user ) {
+	public function authorize(op5User $user) {
 		/* Fetch groups */
 		$groups = $user->groups;
 
 		/* Also allow the per-user-group */
 		$groups[] = 'user_' . $user->username;
-		
-/*		Kohana::log( 'debug', "Authorization: Got groups:");
-		foreach( $groups as $group ) {
-			Kohana::log( 'debug', "Authorization: group: " . $group);
+
+/*		Kohana::log('debug', "Authorization: Got groups:");
+		foreach($groups as $group) {
+			Kohana::log('debug', "Authorization: group: " . $group);
 		}
 */
-		$authorized = false;	
+		$authorized = false;
 
 		/* Fetch the name column as an array from the result */
 		$auth_data = array();
-		if( isset( $user->auth_data ) ) {
+		if(isset($user->auth_data) {
 			$auth_data = $user->auth_data;
 		}
-		foreach( $groups as $group ) {
-			if( isset( $this->groups[$group] ) ) {
+		foreach($groups as $group) {
+			if(isset($this->groups[$group]) {
 				$authorized = true;
-				foreach( $this->groups[$group] as $perm ) {
-					$auth_data[ $perm ] = true;
+				foreach($this->groups[$group] as $perm) {
+					$auth_data[$perm] = true;
 				}
 			}
 		}
-	
 
-		foreach( $auth_data as $perm => $val ) {
-			$this->log->log( 'debug', $user->username . ": permission: " . $perm);
+		foreach($auth_data as $perm => $val) {
+			$this->log->log('debug', $user->username . ": permission: " . $perm);
 		}
 
 		/* Store as auth_data */
 		$user->auth_data = $auth_data;
-		
+
 		return $authorized;
 	}
 
@@ -122,7 +121,9 @@ class op5Authorization {
 			'servicegroup' => array(
 				'servicegroup_add_delete' => '',
 				'servicegroup_view_all' => '',
-				'servicegroup_edit_all' => ''),
+				'servicegroup_view_contact' => '',
+				'servicegroup_edit_all' => '',
+				'servicegroup_edit_contact' => ''),
 			'hostdependency' => array(
 				'hostdependency_add_delete' => '',
 				'hostdependency_view_all' => '',
