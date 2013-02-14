@@ -362,38 +362,6 @@ class Reports_Controller extends Base_reports_Controller
 			$template->content->multiple_states = $template_values;
 			$template->content->hide_host = false;
 
-			// ===== SETUP PIECHART VALUES =====
-
-			$template->pie = $this->add_view('reports/pie_chart');
-			
-			$image_data = array();
-			
-			if( $this->options['use_average'] ) {
-				$prefix = 'average_';
-			} else {
-				$prefix = 'group_';
-			}
-			
-			if( $sub_type == 'service' ) {
-				$states_to_chart = array(
-					$prefix.'ok' => 'OK',
-					$prefix.'warning' => 'WARNING',
-					$prefix.'critical' => 'CRITICAL',
-					$prefix.'unknown' => 'UNKNOWN',
-					$prefix.'undetermined' => 'UNDETERMINED'
-				);
-			} else {
-				$states_to_chart = array(
-					$prefix.'up' => 'UP',
-					$prefix.'unreachable' => 'UNREACHABLE',
-					$prefix.'down' => 'DOWN',
-					$prefix.'undetermined' => 'UNDETERMINED'
-				);
-			}
-			foreach($states_to_chart as $key => $val) { $image_data[$val] = array(); }
-
-			$groups_added = 0;
-			$pie_groupname = false;
 			if(!isset($data_arr['groupname'])) { # actual hostgroup/servicegroup.
 				$tmp_title = ucfirst($sub_type)._('group breakdown');
 				$template->header->title = $tmp_title;
@@ -402,35 +370,70 @@ class Reports_Controller extends Base_reports_Controller
 				$template->header->title = $tmp_title;
 			}
 			
-			foreach($template_values as $data) { # for every group
-				$added_group = false;
-				foreach ($states_to_chart as $key => $val) {
-					if ($data[$key]!=0) {
-						if (isset($image_data[$groups_added][$val])) {
-							$image_data[$groups_added][$val] += $data[$key];
-						} else {
-							$image_data[$groups_added][$val] = $data[$key];
+			// ===== SETUP PIECHART VALUES =====
+
+			if( $this->options['include_pie_charts'] ) {
+				$template->pie = $this->add_view('reports/pie_chart');
+				
+				$image_data = array();
+				
+				if( $this->options['use_average'] ) {
+					$prefix = 'average_';
+				} else {
+					$prefix = 'group_';
+				}
+				
+				if( $sub_type == 'service' ) {
+					$states_to_chart = array(
+						$prefix.'ok' => 'OK',
+						$prefix.'warning' => 'WARNING',
+						$prefix.'critical' => 'CRITICAL',
+						$prefix.'unknown' => 'UNKNOWN',
+						$prefix.'undetermined' => 'UNDETERMINED'
+					);
+				} else {
+					$states_to_chart = array(
+						$prefix.'up' => 'UP',
+						$prefix.'unreachable' => 'UNREACHABLE',
+						$prefix.'down' => 'DOWN',
+						$prefix.'undetermined' => 'UNDETERMINED'
+					);
+				}
+				foreach($states_to_chart as $key => $val) { $image_data[$val] = array(); }
+	
+				$groups_added = 0;
+				$pie_groupname = false;
+				
+				foreach($template_values as $data) { # for every group
+					$added_group = false;
+					foreach ($states_to_chart as $key => $val) {
+						if ($data[$key]!=0) {
+							if (isset($image_data[$groups_added][$val])) {
+								$image_data[$groups_added][$val] += $data[$key];
+							} else {
+								$image_data[$groups_added][$val] = $data[$key];
+							}
+							$added_group = true;
 						}
-						$added_group = true;
+					}
+					if($added_group) {
+						$pie_groupname[$groups_added] = $data['groupname'];
+						$image_data[$groups_added]['EXCLUDE'] = 100 - array_sum($image_data[$groups_added]);
+						$groups_added++;
 					}
 				}
-				if($added_group) {
-					$pie_groupname[$groups_added] = $data['groupname'];
-					$image_data[$groups_added]['EXCLUDE'] = 100 - array_sum($image_data[$groups_added]);
-					$groups_added++;
+	
+				if ($groups_added > 0) {
+					$charts = false;
+					$page_js = '';
+					for($i = 0; $i < $groups_added; $i++) {
+						$data_str[$i]['img'] = http_build_query($image_data[$i]);
+						$data_str[$i]['host'] = $pie_groupname[$i];
+					}
+	
+					$template->pie->data_str = $data_str;
+					$template->pie->image_data = $image_data;
 				}
-			}
-
-			if ($groups_added > 0) {
-				$charts = false;
-				$page_js = '';
-				for($i = 0; $i < $groups_added; $i++) {
-					$data_str[$i]['img'] = http_build_query($image_data[$i]);
-					$data_str[$i]['host'] = $pie_groupname[$i];
-				}
-
-				$template->pie->data_str = $data_str;
-				$template->pie->image_data = $image_data;
 			}
 		} else { # single avail host/service, or any sla
 			$image_data = false;
@@ -449,21 +452,23 @@ class Reports_Controller extends Base_reports_Controller
 
 					$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
-					$avail->pie = $this->add_view('reports/pie_chart');
-
-					// ===== SETUP PIECHART VALUES =====
-					if (is_array($data['states'])) {
-						foreach ($graph_filter as $key => $val) {
-							if ($data['states'][$key]!=0)
-								$image_data[strtoupper($val)] = $data['states'][$key];
+					if( $this->options['include_pie_charts'] ) {
+						$avail->pie = $this->add_view('reports/pie_chart');
+	
+						// ===== SETUP PIECHART VALUES =====
+						if (is_array($data['states'])) {
+							foreach ($graph_filter as $key => $val) {
+								if ($data['states'][$key]!=0)
+									$image_data[strtoupper($val)] = $data['states'][$key];
+							}
+							$image_data['EXCLUDE'] = $data['tot_time'] - array_sum($image_data);
 						}
-						$image_data['EXCLUDE'] = $data['tot_time'] - array_sum($image_data);
-					}
-
-					if ($image_data) {
-						$data_str = http_build_query($image_data);
-						$avail->pie->data_str = $data_str;
-						$avail->pie->source = $data['source'];
+	
+						if ($image_data) {
+							$data_str = http_build_query($image_data);
+							$avail->pie->data_str = $data_str;
+							$avail->pie->source = $data['source'];
+						}
 					}
 
 					if ($sub_type=='host') {

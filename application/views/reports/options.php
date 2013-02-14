@@ -147,6 +147,13 @@ if($options['report_id']) { ?>
 					onchange="toggle_label_weight(this.checked, 'include_trends_scaling');" disabled="true" <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
 			<label for="include_trends_scaling"><?php echo _('Show trends re-scaling') ?></label>
 		</td>
+		<td></td>
+		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
+			<?php echo help::render('include_pie_charts') ?>
+			<input type="checkbox" class="checkbox" value="1" id="include_pie_charts" name="include_pie_charts"
+					onchange="toggle_label_weight(this.checked, 'include_pie_charts');" <?php print $options['include_pie_charts']?'checked="checked"':'' ?> />
+			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include Pie Charts') ?></label>
+		</td>
 	</tr>
 	<?php if (isset($extra_content)) {
 		echo $extra_content;

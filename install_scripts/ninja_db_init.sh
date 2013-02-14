@@ -4,7 +4,7 @@
 
 target_db_version=7
 target_sla_version=9
-target_avail_version=11
+target_avail_version=12
 target_sched_version=8
 
 db_user=merlin

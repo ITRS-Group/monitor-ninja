@@ -7,7 +7,9 @@
 			<th><?php echo _('Type / Reason') ?></th>
 			<th class="headerNone"><?php echo _('Time') ?></th>
 			<th class="headerNone"><?php echo _('Total time') ?></th>
-			<th><?php echo _('Status overview') ?></th>
+			<?php if( $options['include_pie_charts'] ) { ?>
+				<th><?php echo _('Status overview') ?></th>
+			<?php } ?>
 		</tr>
 		<?php $no_types = count($avail_data['var_types'] ); $i = 0; foreach ($avail_data['var_types'] as $var_type) { $i++; ?>
 		<tr class="even" >

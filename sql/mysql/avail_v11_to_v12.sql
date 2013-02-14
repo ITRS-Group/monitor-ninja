@@ -1,0 +1,1 @@
+ALTER TABLE avail_config ADD COLUMN include_pie_charts int(1) DEFAULT 0;
