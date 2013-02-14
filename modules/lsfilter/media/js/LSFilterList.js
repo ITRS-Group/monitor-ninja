@@ -194,8 +194,10 @@ function lsfilter_list(config)
 			per_page: this.config.offset + this.config.per_page,
 			callback: function(data)
 			{
+				// Don't drop first host line in auto refresh...
+				self.previous_obj = {};
+				
 				self.handle_ajax_response(data);
-				// get the scope right
 			}
 		});
 	};
@@ -388,18 +390,6 @@ function lsfilter_list(config)
 		this.add_fill_bar(columns, data, tbody);
 		this.refresh_multi_select(tbody);
 		
-		/*
-		 * table.find('[id^=listview-col-]').hover( function () { var index =
-		 * $(this).attr('id').split('-col-')[1]; table.find('.listview-cell-' +
-		 * index).addClass('listview-col-hover'); }, function () { var index =
-		 * $(this).attr('id').split('-col-')[1]; table.find('.listview-cell-' +
-		 * index).removeClass('listview-col-hover'); } );
-		 */
-		/*
-		 * var header = $("thead", table), clone = header.clone(true);
-		 * header.after(clone);
-		 */
-
 		return table;
 	};
 	
