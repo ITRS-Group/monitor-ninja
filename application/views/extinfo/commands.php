@@ -272,7 +272,12 @@ if( $object instanceof Host_Model ) {
 		</tr>
 		<?php foreach ($object->get_custom_commands() as $command_name => $action) {
 			$linktext = ucwords(strtolower(str_replace('_', ' ', $command_name)));
-			$link = "<a href='#' title='$command_name;$type;" . $host->get_name() . ';' . $service->get_description() . "'>" . $linktext . "</a>";
+			$title = "$command_name;$type";
+			$title .= ';' . $host->get_name();
+			if( $service !== false ) {
+				$title .= ';' . $service->get_description();
+			}
+			$link = "<a href='#' title='" . $title . "'>" . $linktext . "</a>";
 		?>
 			<tr>
 				<td class="icon dark">
