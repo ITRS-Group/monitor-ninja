@@ -134,7 +134,6 @@ EOC;
 		}
 
 		# set required extra resources
-		$this->js = array('js/netw_health');
 		require($view_path);
 	}
 }
