@@ -67,7 +67,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
-		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
@@ -98,9 +97,16 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
-		if (!$this->options['standardreport']) {
-			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
+		if ($this->options['report_id']) {
+			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 		}
+		else if (!$this->options['standardreport']) {
+			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
+		}
+
+
+
+
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
@@ -205,8 +211,6 @@ class Summary_Controller extends Base_reports_Controller
 			$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 		}
 
-		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
-
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = $this->options->get_value('report_period');
 		else
@@ -246,7 +250,10 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 		if (!$this->options['standardreport']) {
-			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
+			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
+		}
+		else if (!$this->options['standardreport']) {
+			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
 		$this->template->js_strings = $this->js_strings;
 		$this->template->inline_js = $this->inline_js;
@@ -254,6 +261,20 @@ class Summary_Controller extends Base_reports_Controller
 		$content->result = $result;
 		$this->template->title = _("Reporting » Alert summary » Report");
 		$header->title = $this->options->get_value('summary_type');
+
+		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
+		if($scheduled_info) {
+			$schedule_id = $this->input->get('schedule_id', null);
+			if($schedule_id) {
+				$le_schedule = current(array_filter($scheduled_info, function($item) use ($schedule_id) {
+					return $item['id'] == $schedule_id && $item['attach_description'] && $item['description'];
+				}));
+				if($le_schedule) {
+					$header->description = $this->options['description'] ? $this->options['description']."\n".$le_schedule['description'] : $le_schedule['description'];
+				}
+			}
+		}
+
 
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf();

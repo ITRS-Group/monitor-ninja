@@ -167,9 +167,10 @@ class Scheduled_reports_Model extends Model
 	 * @param $filename = ''
 	 * @param $description = ''
 	 * @param $local_persistent_filepath = ''
+	 * @param $attach_description = ''
 	 * @return string|int either error string or the report's id
 	 */
-	static function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')
+	static public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '', $attach_description = 0)
 	{
 		$local_persistent_filepath = trim($local_persistent_filepath);
 		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
@@ -183,6 +184,7 @@ class Scheduled_reports_Model extends Model
 		$recipients = trim($recipients);
 		$filename = trim($filename);
 		$description = trim($description);
+		$attach_description = (int) $attach_description;
 		$user = Auth::instance()->get_user()->username;
 
 		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return _('Missing data');
@@ -202,10 +204,10 @@ class Scheduled_reports_Model extends Model
 
 		if ($id) {
 			// UPDATE
-			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description).", local_persistent_filepath = ".$db->escape($local_persistent_filepath)." WHERE id=".$id;
+			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description).", local_persistent_filepath = ".$db->escape($local_persistent_filepath).", attach_description = ".$db->escape($attach_description)." WHERE id=".$id;
 		} else {
-			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath)
-				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).")";
+			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath, attach_description)
+				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).", ".$db->escape($attach_description).")";
 		}
 
 		try {

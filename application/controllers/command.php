@@ -248,26 +248,26 @@ class Command_Controller extends Authenticated_Controller
 			$individual_objs = array();
 			if ($target_type === 'service' && $selector_type === 'servicegroup') {
 				foreach ($obj_names as $gname) {
-					foreach ($ls->getServices(array('filter' => array('groups' => array('>=' => $gname), 'columns' => array('host_name', 'description')))) as $row) {
+					foreach ($ls->getServices(array('filter' => array('groups' => array('>=' => $gname)), 'columns' => array('host_name', 'description'))) as $row) {
 						$individual_objs[] = $row['host_name'].';'.$row['description'];
 					}
 				}
 			}
 			else if ($target_type === 'service' && $selector_type === 'hostgroup') {
 				foreach ($obj_names as $gname) {
-					foreach ($ls->getServices(array('filter' => array('host_groups' => array('>=' => $gname), 'columns' => array('host_name', 'description')))) as $row) {
+					foreach ($ls->getServices(array('filter' => array('host_groups' => array('>=' => $gname)), 'columns' => array('host_name', 'description'))) as $row) {
 						$individual_objs[] = $row['host_name'].';'.$row['description'];
 					}
 				}
 			}
 			else if ($target_type === 'host' && $selector_type === 'hostgroup') {
 				foreach ($obj_names as $gname) {
-					$individual_objs = $ls->getHosts(array('filter' => array('groups' => array('>=' => $gname), 'columns' => 'name')));
+					$individual_objs = $ls->getHosts(array('filter' => array('groups' => array('>=' => $gname)), 'columns' => 'name'));
 				}
 			}
 			else if ($target_type === 'host' && $selector_type === 'servicegroup') {
 				foreach ($obj_names as $gname) {
-					foreach ($ls->getServices(array('filter' => array('groups' => array('>=' => $gname), 'columns' => array('host_name')))) as $row) {
+					foreach ($ls->getServices(array('filter' => array('groups' => array('>=' => $gname)), 'columns' => array('host_name'))) as $row) {
 						$individual_objs[$row['host_name']] = 1;
 					}
 				}

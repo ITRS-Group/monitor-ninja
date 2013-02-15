@@ -14,10 +14,6 @@ $(document).ready(function() {
 		return check_form_values(this.form);
 	});
 
-	$("#saved_report_form").bind('submit', function() {
-		return check_and_submit($(this));
-	});
-
 	// reset options and reload page
 	$('#new_report').click(function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
@@ -102,9 +98,8 @@ function expand_and_populate(data)
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
 	var field_str = reportObj.report_type;
-	if(!field_str) {
-		return;
-	}
+	if (!field_str)
+		field_str = 'hostgroups';
 	$('#report_type').val(field_str);
 	set_selection(field_str);
 	get_members(field_str, function() {

@@ -76,6 +76,6 @@
 	</p>
 	<?php if ($type == 'avail' || $type == 'sla') { echo '<p>'.reports::get_included_states($options['report_type'], $options).'</p>'; } ?>
 	<div class="description">
-		<p><?php echo nl2br($options['description']) ?></p>
+		<p><?php echo nl2br(isset($description) ? $description : $options['description']) ?></p>
 	</div>
 </div>

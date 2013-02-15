@@ -231,6 +231,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				"lastmonth" => _('Last Month'),
 				"thisyear" => _('This Year'),
 				"lastyear" => _('Last Year'),
+				'last3months' => _('Last 3 Months'),
+				'last12months' => _('Last 12 Months'),
+				'last6months' => _('Last 6 Months'),
+				'lastquarter' => _('Last Quarter'),
 				'custom' => _('Custom'));
 		if (isset($this->properties['scheduleddowntimeasuptime']))
 			$this->properties['scheduleddowntimeasuptime']['options'] = array(
@@ -586,6 +590,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			if ($value < 0)
 				return false;
 			break;
+		 # fallthrough end
 		 case 'host_filter_status':
 			$value = array_intersect_key($value, Reports_Model::$host_states);
 			$value = array_filter($value, function($val) {
@@ -598,7 +603,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				return is_numeric($val) && $val == Reports_Model::SERVICE_EXCLUDED;
 			});
 			break;
-		 # fallthrough end
 		 case 'include_trends':
 			if ($value === true) {
 				$this->set('keep_logs', true);
@@ -772,23 +776,15 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 		$options = new static($report_info);
 
-		if (isset($report_info['report_id']) && $report_info['report_id']) {
+		if (isset($report_info['report_id']) && !empty($report_info['report_id'])) {
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
 
-			if (count($report_info) == 1) {
-				$options = new static($saved_report_info);
-			}
-			else if (isset($options['output_format']) && count($report_info) == 2) {
-				$saved_report_info['output_format'] = $options['output_format'];
-				$options = new static($saved_report_info);
-			}
-			else {
+			$options = new static($report_info);
+			if (is_array($saved_report_info)) {
 				foreach ($saved_report_info as $key => $sri) {
-					if ($options->always_allow_option_to_be_set($key) ||
-						(isset($options->properties[$key]) && $options->properties[$key]['type'] !== 'bool' && $options[$key] === $options->properties[$key]['default']))
-					{
-						$options[$key] = $sri;
-					}
+					if (isset($report_info[$key]) || (isset($options->properties[$key]) && ($options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))))
+						continue;
+					$options[$key] = $sri;
 				}
 			}
 

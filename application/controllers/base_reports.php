@@ -36,6 +36,12 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			'UNREACHABLE' => _('UNREACHABLE')
 		);
 
+		# When run from cron-job, or mailing out reports from gui, we need access
+		if(Router::$method == 'generate' && !Auth::instance()->get_user()->logged_in() && PHP_SAPI == 'cli') {
+			$op5_auth = Op5Auth::factory(array('session_key' => false));
+			$op5_auth->force_user(new Op5User_AlwaysAuth());
+		}
+
 		$this->template->disable_refresh = true;
 	}
 
@@ -49,7 +55,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 */
 	protected function generate_pdf()
 	{
-		$this->template->base_href = 'http://127.0.0.1'.url::base();
+		$this->template->base_href = 'https://localhost'.url::base();
 
 		# not using exec, so STDERR (used for status info) will be loggable
 		$pipe_desc = array(

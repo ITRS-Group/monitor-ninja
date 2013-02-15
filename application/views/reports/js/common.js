@@ -111,11 +111,7 @@ $(document).ready(function() {
 	});
 
 	$("#report_id").bind('change', function() {
-		if (check_and_submit($("#saved_report_form"))) {
-			$("#saved_report_form")
-				.attr("method", "get")
-				.trigger('submit');
-		}
+		$("#saved_report_form").trigger('submit');
 	});
 
 	$('.save_report_btn').parents('form').submit(function(ev) {
@@ -156,8 +152,12 @@ $(document).ready(function() {
 		get_members(value);
 	}).each(function() {
 		var val = $(this).val();
-		set_selection(val);
-		get_members(val);
+		if (window['_report_data']) {
+			expand_and_populate(_report_data);
+		} else if (val) {
+			set_selection(val);
+			get_members(val);
+		}
 	});
 	$('#sel_report_type').on('click', function() {
 		var value = this.form.report_type.value;
@@ -661,16 +661,6 @@ function check_form_values(form)
 	resp.attr("style", "");
 	resp.html("<ul class=\"error\">" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
-	return false;
-}
-
-function check_and_submit(f)
-{
-	if ($("#report_id").attr('value')!="") {
-		return true;
-	} else {
-		$('#is_scheduled').text('');
-	}
 	return false;
 }
 
