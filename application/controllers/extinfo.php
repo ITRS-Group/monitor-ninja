@@ -94,12 +94,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (count($set) != 1) {
 			return url::redirect('extinfo/unauthorized/'.$type);
 		}
-		$content->set = $set;
-		
-		/*
-		 * Add comments widget
-		 */
-		
+		$it = $set->it(false, array(), 1, 0);
+		$object = $it->current();
+
+		$content->object = $object;
 		
 		$username = Auth::instance()->get_user()->username;
 		
@@ -122,10 +120,28 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$widget->set_fixed($set->get_comments()->get_query());
 	
 		$this->template->content->comments = $widget->render();
+
+		if ($object->get_scheduled_downtime_depth()) {
+			$setting = array(
+				'query'=>$set->get_downtimes()->get_query(),
+				'columns'=>'all, -host_status, -host_name, -service_status, -service_description'
+				);
+			$model = new Ninja_widget_Model(array(
+				'page' => Router::$controller,
+				'name' => 'listview',
+				'widget' => 'listview',
+				'username' => $username,
+				'friendly_name' => 'Downtimes',
+				'setting' => $setting
+			));
+
+			$widget = widget::get($model, $this);
+			widget::set_resources($widget, $this);
 		
-		/*
-		 * End add comments widget
-		 */
+			$widget->set_fixed($set->get_downtimes()->get_query());
+
+			$this->template->content->downtimes = $widget->render();
+		}
 		
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;

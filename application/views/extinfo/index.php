@@ -3,11 +3,6 @@ $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
 $date_format_str = nagstat::date_format();
 
-/* @var $set ObjectSet_Model */
-$it = $set->it(false, array(), 1, 0);
-/* @var $object Object_Model */
-$object = $it->current();
-
 if( $object instanceof Host_Model ) {
 	$host = $object;
 	$service = false;
@@ -310,3 +305,6 @@ if (!empty($commands))
 <?php
 if (isset($comments))
 	echo $comments;
+
+if (isset($downtimes))
+	echo $downtimes;

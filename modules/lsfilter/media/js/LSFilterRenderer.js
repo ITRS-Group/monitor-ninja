@@ -933,20 +933,14 @@ var listview_renderer_table = {
 			{
 				var cell = $('<td />');
 				
-				var del_icon = icon16('delete-comment');
-				if (args.obj.entry_type == 2) { /* Scheduled downtime */
-					del_icon = icon16('delete-downtime');
-				}
-				
 				var del_command = 'DEL_HOST_COMMENT';
-				if (args.obj.is_service) {
+				if (args.obj.is_service)
 					del_command = 'DEL_SVC_COMMENT';
-				}
 				
 				cell.append(link('command/submit', {
 					cmd_typ: del_command,
-					com_id: args.obj.id
-				}).append(del_icon));
+					'comment_id': args.obj.id
+				}).append(icon16('delete-comment')));
 				
 				return cell;
 			}
