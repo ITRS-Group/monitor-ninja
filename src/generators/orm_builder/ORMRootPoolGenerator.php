@@ -35,7 +35,7 @@ class ORMRootPoolGenerator extends class_generator {
 		$this->finish_function();
 	}
 	private function generate_load_table_classes() {
-		$this->init_function( 'load_table_classes', array('name'), 'static' );
+		$this->init_function( 'load_table_classes', array(), 'static' );
 		$this->write( 'return array();' );
 		$this->finish_function();
 	}
