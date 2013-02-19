@@ -277,7 +277,7 @@ class nagstat_Core {
 	/**
 	*	Convert a date format string back to a timestamp
 	*/
-	public function timestamp_format($format_str = false, $date_str=false)
+	public static function timestamp_format($format_str = false, $date_str=false)
 	{
 		if (empty($format_str))
 			$format_str = self::date_format(); # fetch if not set
