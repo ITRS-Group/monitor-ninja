@@ -29,7 +29,7 @@ class unittest_Core {
 	/**
 	*	Check if testfile is available
 	*/
-	public function get_testfile($file = false)
+	public static function get_testfile($file = false)
 	{
 		$file = trim($file);
 		if (empty($file))
@@ -41,7 +41,7 @@ class unittest_Core {
 	/**
 	*	Return path to phptap
 	*/
-	public function tap_path()
+	public static function tap_path()
 	{
 		return Kohana::find_file('vendor', 'phptap/tapunit');
 	}

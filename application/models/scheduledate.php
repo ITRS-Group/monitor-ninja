@@ -12,7 +12,7 @@ class ScheduleDate_Model extends Model
 	 *	@param $timestamp int
 	 *	@return bool
 	 */
-	public function schedule_downtime($id=false, $timestamp=false) {
+	static public function schedule_downtime($id=false, $timestamp=false) {
 		$res = self::get_schedule_data($id);
 		if (!$res) {
 			// no saved schedules
@@ -57,7 +57,7 @@ class ScheduleDate_Model extends Model
 	*	@param $report_type string
 	*	@return string
 	*/
-	public function determine_downtimetype($report_type=false)
+	static public function determine_downtimetype($report_type=false)
 	{
 		if (empty($report_type)) {
 			return false;
@@ -77,7 +77,7 @@ class ScheduleDate_Model extends Model
 	 *	@param $id int
 	 *	@return bool
 	 */
-	public function edit_schedule($data = false, $id=false)
+	static public function edit_schedule($data = false, $id=false)
 	{
 		if (!is_array($data)) {
 			return false;
@@ -138,7 +138,7 @@ class ScheduleDate_Model extends Model
 	 *	@param $start_time int
 	 *	@return void
 	 */
-	public function add_downtime($data=false, $nagioscmd=false, $start_time=false)
+	static public function add_downtime($data=false, $nagioscmd=false, $start_time=false)
 	{
 		if (empty($data) || empty($nagioscmd) || empty($start_time)) {
 			return false;
