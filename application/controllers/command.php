@@ -109,7 +109,7 @@ class Command_Controller extends Authenticated_Controller
 			$inparams = $_GET;
 		}
 
-		$auth_check = commands::is_authorized_for($inparams);
+		$auth_check = nagioscmd::is_authorized_for($inparams);
 		foreach ($inparams as $k => $v) {
 			switch ($k) {
 			 case 'host':
@@ -565,7 +565,7 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	static function _is_authorized_for_command($params = false, $cmd = false)
 	{
-		return commands::is_authorized_for($params, $cmd);
+		return nagioscmd::is_authorized_for($params, $cmd);
 	}
 
 	/**

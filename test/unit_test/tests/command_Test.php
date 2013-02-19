@@ -55,7 +55,7 @@ class Command_Test extends TapUnit {
 	public function test_get_command_type() {
 		foreach ($this->types as $type) {
 			foreach ($this->{$type.'_commands'} as $cmd) {
-				$this->ok_eq($type, commands::get_command_type($cmd), "$cmd should be a $type command");
+				$this->ok_eq($type, nagioscmd::get_command_type($cmd), "$cmd should be a $type command");
 			}
 		}
 	}
