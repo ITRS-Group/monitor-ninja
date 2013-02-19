@@ -104,7 +104,7 @@ var lsfilter_graphics_visitor = {
 		var table_select = $('<select class="lsfilter-table-select" />');
 		
 		/*
-		 * Only accept tables we can render, otherwise livestatus_structure
+		 * Only accept tables we can render, otherwise orm_structure
 		 * would be used as list
 		 */
 		for ( var table in listview_renderer_table) {
@@ -444,7 +444,7 @@ var lsfilter_visual = {
 	
 	fields_for_table: function(table)
 	{
-		var fields = $.extend({},livestatus_structure[table]); /* Clone to not modify original structure */
+		var fields = $.extend({},orm_structure[table]); /* Clone to not modify original structure */
 		var subtables = [];
 		var key;
 		
@@ -460,9 +460,9 @@ var lsfilter_visual = {
 		for(key in subtables) {
 			var j;
 			var ref = subtables[key];
-			for( j in livestatus_structure[ref.table] ) {
-				if( livestatus_structure[ref.table][j][0] != 'object' ) {
-					fields[ref.field + '.' + j ] = livestatus_structure[ref.table][j];
+			for( j in orm_structure[ref.table] ) {
+				if( orm_structure[ref.table][j][0] != 'object' ) {
+					fields[ref.field + '.' + j ] = orm_structure[ref.table][j];
 				}
 			}
 		}

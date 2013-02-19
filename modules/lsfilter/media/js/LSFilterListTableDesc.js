@@ -198,8 +198,8 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		var type = '';
 		for ( var i = 0; i < name.length; i++) {
 			var curname = name[i];
-			if (livestatus_structure[curtbl][curname]) {
-				var type = livestatus_structure[curtbl][curname];
+			if (orm_structure[curtbl][curname]) {
+				var type = orm_structure[curtbl][curname];
 				if (type[0] == 'object') {
 					curtbl = type[1];
 				}
@@ -321,7 +321,7 @@ function lsfilter_list_table_desc(metadata, columndesc)
 	for ( var col in all_col_renderers) {
 		all_columns.push(col);
 	}
-	var all_db_columns = livestatus_structure[metadata.table];
+	var all_db_columns = orm_structure[metadata.table];
 	var custom_columns = {};
 	
 	if (!columndesc) {

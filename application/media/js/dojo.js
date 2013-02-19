@@ -102,7 +102,7 @@
 			},
 			success : function(data) {
 
-				if (data.totals.service_all[1] > 0) {
+				if (data && data.totals.service_all[1] > 0) {
 					
 					uh_prob_title = data.totals.service_all + ' unacknowledged services in Critical/Warning state!';
 					link.attr('title', uh_prob_title);

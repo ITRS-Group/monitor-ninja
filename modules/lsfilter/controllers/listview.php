@@ -8,10 +8,9 @@ class ListView_Controller extends Authenticated_Controller {
 		
 		
 		$basepath = 'modules/lsfilter/';
-		$ormpath = 'modules/orm/';
 
-		$this->xtra_js[] = $ormpath.'js/LivestatusStructure.js';
-
+		$this->xtra_js[] = 'index.php/manifest/js/orm_structure.js';
+		
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterLexer.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';

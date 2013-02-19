@@ -1,12 +1,12 @@
 <?php
 
-class ORMManifestGenerator extends class_generator {
+class ORMTableManifestGenerator extends class_generator {
 
 	private $full_structure;
 
 	public function __construct( $full_structure ) {
 		$this->full_structure = $full_structure;
-		$this->classname = "orm_manifest";
+		$this->classname = "orm_table_classes";
 		$this->set_manifest();
 	}
 
@@ -14,7 +14,7 @@ class ORMManifestGenerator extends class_generator {
 		parent::generate($skip_generated_note);
 		
 		foreach( $this->full_structure as $name => $structure ) {
-			$this->write('$tables[%s] = %s;', $name, array(
+			$this->write('$manifest[%s] = %s;', $name, array(
 				'object' => $structure['class'].self::$model_suffix,
 				'set' => $structure['class'].'Set'.self::$model_suffix,
 				'pool' => $structure['class'].'Pool'.self::$model_suffix,

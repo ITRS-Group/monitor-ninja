@@ -189,7 +189,7 @@ class widget_Base
 		foreach ($in_files as $file) {
 			if (file_exists($this->widget_base_path.$this->model->name.'/'.$file.'.'.$type))
 				$files[] = $this->widget_base_path.$this->model->name.'/'.$file.'.'.$type;
-			else if (file_exists($file.'.'.$type))
+			else
 				$files[] = $file.'.'.$type;
 		}
 		switch ($type) {

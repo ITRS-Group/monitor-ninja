@@ -16,8 +16,8 @@ class Listview_Widget extends widget_Base {
 		parent::__construct($widget_model);
 		$basepath = 'modules/lsfilter/';
 		$ormpath = 'modules/orm/';
-		
-		$this->js[] = $ormpath.'js/LivestatusStructure';
+
+		$this->js[] = 'index.php/manifest/js/orm_structure';
 
 		$this->js[] = $basepath.'js/LSFilter';
 		$this->js[] = $basepath.'js/LSFilterLexer';

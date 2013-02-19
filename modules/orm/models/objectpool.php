@@ -21,10 +21,17 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 	}
 	
 	static public function load_table_classes() {
-		$tables = array();
-		foreach( glob(MODPATH . '*/orm_manifest.php') as $contentfile ) {
-			require($contentfile);
+		return Module_Manifest_Model::get('orm_table_classes');
+	}
+	
+	static public function get_js_files() {
+		$js_files = array();
+		foreach( scandir(MODPATH) as $module ) {
+			$path = MODPATH . $module . '/js/orm_structure.js';
+			if( is_file($path) ) {
+				$js_files[] = 'modules/'.$module.'/js/orm_structure.js';
+			}
 		}
-		return $tables;
+		return $js_files;
 	}
 }

@@ -61,7 +61,7 @@ abstract class class_generator {
 	
 	public function set_manifest() {
 		$this->set_class_suffix( '' );
-		$this->set_basedir( false );
+		$this->set_basedir( 'manifest' );
 	}
 
 	public function exists() {
