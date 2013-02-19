@@ -27,13 +27,7 @@ application/views/icons/x*-*.png
 application/views/icons/menu-*.png
 !application/views/css/default/ie7.css
 !application/views/css/default/jquery-ui-custom.css
-!application/views/css/default/reports.css
-!application/views/css/dark/ie7.css
-!application/views/css/dark/jquery-ui-custom.css
-!application/views/css/dark/reports.css
 !application/views/css/pink_n_fluffy/ie7.css
 !application/views/css/pink_n_fluffy/jquery-ui-custom.css
-!application/views/css/pink_n_fluffy/reports.css
 !application/views/css/classic/ie7.css
 !application/views/css/classic/jquery-ui-custom.css
-!application/views/css/classic/reports.css

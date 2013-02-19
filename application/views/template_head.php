@@ -18,7 +18,6 @@ if (!empty($base_href)) {
 
 	<link href="<?php echo url::base().'application/views/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo url::base().'application/views/css/'.$current_skin.'print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
-	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'reports.css' ?>" media="all" />
 	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */

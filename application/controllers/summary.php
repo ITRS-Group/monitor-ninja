@@ -82,7 +82,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->js_strings .= reports::js_strings();
@@ -202,7 +201,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
 		if ($this->type == 'summary') {
