@@ -44,7 +44,8 @@ class Ajax_Controller extends Authenticated_Controller {
 			$livestatus_options['limit'] = Kohana::config('config.autocomplete_limit');
 			
 			$data = $lsb->getTable($obj_type, $livestatus_options);
-			
+			$obj_info = array();
+			$obj_data = array();
 			
 			if ($data!==false) {
 				foreach ($data as $row) {
