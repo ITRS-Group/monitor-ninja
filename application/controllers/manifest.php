@@ -34,6 +34,6 @@ class Manifest_Controller extends Ninja_Controller {
 		
 		header('Content-Type: text/javascript');
 		
-		print "var $name = " . json::encode( $manifest ) . ";";
+		print "var $name = " . json_encode( $manifest ) . ";";
 	}
 }

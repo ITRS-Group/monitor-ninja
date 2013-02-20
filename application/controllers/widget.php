@@ -33,7 +33,7 @@ class Widget_Controller extends Authenticated_Controller {
 
 		$data = Ninja_widget_Model::get($page, $widget, $instance_id);
 		widget::set_show_chrome(false);
-		echo json::encode(widget::add($data, $this));
+		echo json_encode(widget::add($data, $this));
 
 		# return false if no method defined
 		return false;
@@ -69,11 +69,11 @@ class Widget_Controller extends Authenticated_Controller {
 			return false;
 		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page, $default);
 		if (empty($data)) {
-			echo json::encode(array('widget_order' => false));
+			echo json_encode(array('widget_order' => false));
 			return false;
 		}
 		$settings = $data->setting;
-		echo json::encode(array('widget_order' => $settings));
+		echo json_encode(array('widget_order' => $settings));
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Widget_Controller extends Authenticated_Controller {
 		$widget = trim($widget);
 		$data = Ninja_widget_Model::get_widget($page, $widget, true);
 		$setting = $data!==false ? $data->setting : serialize(array(false));
-		echo json::encode(i18n::unserialize($setting));
+		echo json_encode(i18n::unserialize($setting));
 	}
 
 		/**
@@ -164,7 +164,7 @@ class Widget_Controller extends Authenticated_Controller {
 		$value = $this->input->post('value', false);
 		$type = $this->input->post('type', false);
 		$success = Ninja_widget_Model::update_all_widgets($page, $value, $type);
-		echo json::encode(array('success' => $success));
+		echo json_encode(array('success' => $success));
 	}
 
 	/**
@@ -186,7 +186,7 @@ class Widget_Controller extends Authenticated_Controller {
 			$setting = $row->setting;
 		}
 		$db->query('UPDATE ninja_settings SET setting='.$db->escape($setting).' WHERE type = \'widget_order\' AND username = '. $db->escape($username));
-		echo json::encode(array('success' => true));
+		echo json_encode(array('success' => true));
 	 }
 	
 	public function copy_widget_instance() {

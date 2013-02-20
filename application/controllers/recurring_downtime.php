@@ -99,7 +99,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					$this->inline_js .= "set_initial_state('triggered_row', '".$data['fixed']."');\n";
 				}
 				$schedule_info = array_merge($schedule_info, $data);
-				$json_info = json::encode($schedule_info);
+				$json_info = json_encode($schedule_info);
 			}
 		} else {
 			$data['fixed'] = 1;
@@ -179,8 +179,8 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$svc_downtime_ids = $command_model->get_command_info('SCHEDULE_SVC_DOWNTIME', array('SCHEDULE_SVC_DOWNTIME'));
 		$template->host_downtime_ids = $host_downtime_ids['params']['trigger_id']['options'];
 		$template->svc_downtime_ids = $svc_downtime_ids['params']['trigger_id']['options'];
-		$this->js_strings .= "var host_downtime_ids = " . json::encode($template->host_downtime_ids) . ";\n";
-		$this->js_strings .= "var svc_downtime_ids = " . json::encode($template->svc_downtime_ids) . ";\n";
+		$this->js_strings .= "var host_downtime_ids = " . json_encode($template->host_downtime_ids) . ";\n";
+		$this->js_strings .= "var svc_downtime_ids = " . json_encode($template->svc_downtime_ids) . ";\n";
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;

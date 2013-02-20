@@ -64,7 +64,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		} else {
 			$var = array('query' => $q, 'suggestions' => array(), 'data' => array());
 		}
-		$json_str = json::encode($var);
+		$json_str = json_encode($var);
 		echo $json_str;
 	}
 	
@@ -296,7 +296,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		# add custom period
 		$periods[] = array('optionValue' => 'custom', 'optionText' => "* " . _('CUSTOM REPORT PERIOD') . " *");
 
-		echo json::encode($periods);
+		echo json_encode($periods);
 	}
 
 	/**
@@ -346,7 +346,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->report_name.$sched_str);
 		}
 
-		echo json::encode($return);
+		echo json_encode($return);
 		return true;
 	}
 
@@ -431,7 +431,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		$return = array('start_year' => $arr_start, 'end_year' => $arr_end, 'type_item' => $type_item);
-		echo json::encode($return);
+		echo json_encode($return);
 		return true;
 	}
 
@@ -476,7 +476,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$res = Saved_searches_Model::get_search_by_id($search_id);
 		if ($res != false) {
 			$result = $res->current();
-			echo json::encode(array('search_name' => $result->search_name, 'search_query' => $result->search_query, 'search_description' => $result->search_description, 'search_id' => $result->id));
+			echo json_encode(array('search_name' => $result->search_name, 'search_query' => $result->search_query, 'search_description' => $result->search_description, 'search_id' => $result->id));
 			return true;
 		}
 		echo "Error";

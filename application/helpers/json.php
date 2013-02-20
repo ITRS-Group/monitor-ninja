@@ -20,36 +20,8 @@ class json_Core
 			$exit = 1;
 			header("HTTP/1.0 $http_status_code");
 		}
-		echo self::encode($response);
+		echo json_encode($response);
 		exit($exit);
-	}
-
-	/**
-	 * Decode JSON data into PHP
-	 *
-	 * @param $var json-encoded string to decode
-	 * @return false on error, json-decoded data on success
-	 */
-	public static function decode($var = false)
-	{
-		if (empty($var)) {
-			return false;
-		}
-		return json_decode($var);
-	}
-
-	/**
-	 * Encode variable data into JSON
-	 *
-	 * @param $var Variable to encode
-	 * @return false on error, json-encoded string on success.
-	 */
-	public static function encode($var = false)
-	{
-		if (empty($var) && !is_array($var)) {
-			return false;
-		}
-		return json_encode($var);
 	}
 
 	/**
@@ -60,7 +32,6 @@ class json_Core
 	 */
 	public static function fail($reason = null, $http_status_code = 500) {
 		return self::_send_response($reason, $http_status_code);
-		//return self::_send_response(array('error' => $reason), 1);
 	}
 
 	/**
@@ -71,6 +42,5 @@ class json_Core
 	 */
 	public static function ok($result = null, $http_status_code = 200) {
 		return self::_send_response($result, $http_status_code);
-		//return self::_send_response(array('result' => $result));
 	}
 }

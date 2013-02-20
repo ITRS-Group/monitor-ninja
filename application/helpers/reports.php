@@ -197,10 +197,10 @@ class reports_Core
 			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 		$js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 
-		$js_strings .= "Date.monthNames = ".json::encode(date::month_names()).";\n";
-		$js_strings .= 'Date.abbrMonthNames = '.json::encode(date::abbr_month_names()).";\n";
-		$js_strings .= 'Date.dayNames = '.json::encode(date::day_names()).";\n";
-		$js_strings .= 'Date.abbrDayNames = '.json::encode(date::abbr_day_names()).";\n";
+		$js_strings .= "Date.monthNames = ".json_encode(date::month_names()).";\n";
+		$js_strings .= 'Date.abbrMonthNames = '.json_encode(date::abbr_month_names()).";\n";
+		$js_strings .= 'Date.dayNames = '.json_encode(date::day_names()).";\n";
+		$js_strings .= 'Date.abbrDayNames = '.json_encode(date::abbr_day_names()).";\n";
 		$js_strings .= 'Date.firstDayOfWeek = '.$first_day_of_week.";\n";
 		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
 		$js_strings .= "_start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
