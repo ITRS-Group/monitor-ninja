@@ -209,7 +209,7 @@ class HttpApiEvent_options_core extends Report_options {
 		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
 
 		// rename properties
-		$row['in_scheduled_downtime'] = $row['downtime_depth'];
+		$row['in_scheduled_downtime'] = (int) $row['downtime_depth'];
 		unset($row['downtime_depth']);
 		if(isset($row['username'])) {
 			// comments are included and we've got one of them!
