@@ -1,9 +1,3 @@
-function _(text)
-{
-	// console.log('To translate: '+ text);
-	return text;
-}
-
 function icon12(name, title, link)
 {
 	var img = $('<span />');
@@ -76,9 +70,10 @@ function extinfo_link(args)
 }
 function format_timestamp(timestamp)
 {
-	if (timestamp == 0) return _('N/A');
 	var dateobj = new Date(timestamp * 1000);
-	return dateobj.toLocaleDateString() + " " + dateobj.toLocaleTimeString();
+	var ret = dateobj.format(_date_format);
+	dateobj = null;
+	return ret;
 }
 function format_interval(interval)
 {

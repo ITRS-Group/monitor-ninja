@@ -170,11 +170,7 @@ class reports_Core
 	*/
 	public static function js_strings()
 	{
-		$first_day_of_week = 1;
-
-
-		$js_strings = false;
-		$js_strings .= "var _ok_str = '"._('OK')."';\n";
+		$js_strings = "var _ok_str = '"._('OK')."';\n";
 		$js_strings .= "var _cancel_str = '"._('Cancel')."';\n";
 		$js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
 		$js_strings .= "var _reports_err_str_nostatus = '"._("You must provide at least one status to filter on")."';\n";
@@ -201,7 +197,7 @@ class reports_Core
 		$js_strings .= 'Date.abbrMonthNames = '.json_encode(date::abbr_month_names()).";\n";
 		$js_strings .= 'Date.dayNames = '.json_encode(date::day_names()).";\n";
 		$js_strings .= 'Date.abbrDayNames = '.json_encode(date::abbr_day_names()).";\n";
-		$js_strings .= 'Date.firstDayOfWeek = '.$first_day_of_week.";\n";
+		$js_strings .= "Date.firstDayOfWeek = 1;\n";
 		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
 		$js_strings .= "_start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
 

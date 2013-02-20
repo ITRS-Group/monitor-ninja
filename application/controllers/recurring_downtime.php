@@ -47,7 +47,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template = $this->template->content;
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';

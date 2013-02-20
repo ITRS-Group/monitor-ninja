@@ -72,7 +72,6 @@ class Summary_Controller extends Base_reports_Controller
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
@@ -191,7 +190,6 @@ class Summary_Controller extends Base_reports_Controller
 		}
 
 		$this->template->disable_refresh = true;
-		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');

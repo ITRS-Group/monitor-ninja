@@ -62,7 +62,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
@@ -189,7 +188,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->_stash_params();
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
