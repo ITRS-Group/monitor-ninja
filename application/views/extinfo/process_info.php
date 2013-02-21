@@ -23,7 +23,7 @@ $shieldoff = '<span class="icon-16 x16-shield-critical"></span>';
 		<td><?php echo $last_log_rotation ?></td>
 	</tr>
 	<tr>
-		<td class="dark"><?php echo $lable_pid ?></td>
+		<td class="dark"><?php printf(_('%s PID'), Kohana::config('config.product_name')) ?></td>
 		<td><?php echo $program_status->nagios_pid ?></td>
 	</tr>
 	<tr>

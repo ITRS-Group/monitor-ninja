@@ -237,7 +237,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$na_str = _('N/A');
 		$yes = _('YES');
 		$no = _('NO');
-		$content->lable_pid = sprintf(_('%s PID'), Kohana::config('config.product_name'));
 
 		$date_format_str = nagstat::date_format();
 		$content->date_format_str = $date_format_str;
