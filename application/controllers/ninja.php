@@ -185,17 +185,20 @@ class Ninja_Controller extends Template_Controller {
 	{
 		$notifications = false;
 		try {
-			$status = Current_status_Model::instance()->program_status();
-			if ($status->enable_notifications !== 1) {
-				$notifications[] = array(_('Notifications are disabled'), false);
+			$status = StatusPool_Model::status();
+			if($status) {
+				// we've got access
+				if ($status->get_enable_notifications() !== 1) {
+					$notifications[] = array(_('Notifications are disabled'), false);
+				}
+				if ($status->get_execute_service_checks() !== 1) {
+					$notifications[] = array(_('Service checks are disabled'), false);
+				}
+				if ($status->get_execute_host_checks() !== 1) {
+					$notifications[] = array(_('Host checks are disabled'), false);
+				}
+				unset($status);
 			}
-			if ($status->execute_service_checks !== 1) {
-				$notifications[] = array(_('Service checks are disabled'), false);
-			}
-			if ($status->execute_host_checks !== 1) {
-				$notifications[] = array(_('Host checks are disabled'), false);
-			}
-			unset($status);
 		}
 		catch( LivestatusException $e ) {
 			$notifications[] = array(_('Livestatus is not accessable'), false);
