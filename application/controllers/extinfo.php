@@ -250,25 +250,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->program_start = date($date_format_str, $status->program_start);
 		$content->last_log_rotation = $status->last_log_rotation ? date($date_format_str, $status->last_log_rotation) : 'never';
 
-		$content->notifications_class = $status->enable_notifications ? 'notificationsENABLED' : 'notificationsDISABLED';
 		$content->notifications_str = $status->enable_notifications ? $yes : $no;
-		$content->servicechecks_class = $status->execute_service_checks ? 'checksENABLED' : 'checksDISABLED';
 		$content->servicechecks_str = $status->execute_service_checks ? $yes : $no;
-		$content->passive_servicechecks_class = $status->accept_passive_service_checks ? 'checksENABLED' : 'checksDISABLED';
 		$content->passive_servicechecks_str = $status->accept_passive_service_checks ? $yes : $no;
-		$content->hostchecks_class = $status->execute_host_checks ? 'checksENABLED' : 'checksDISABLED';
 		$content->hostchecks_str = $status->execute_host_checks ? $yes : $no;
-		$content->passive_hostchecks_class = $status->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
 		$content->passive_hostchecks_str = $status->accept_passive_host_checks ? $yes : $no;
-		$content->eventhandler_class = $status->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
 		$content->eventhandler_str = $status->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_services_class = $status->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
 		$content->obsess_services_str = $status->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_host_class = $status->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
 		$content->obsess_hosts_str = $status->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->flap_detection_class = $status->enable_flap_detection ? 'checksENABLED' : 'checksDISABLED';
 		$content->flap_detection_str = $status->enable_flap_detection ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->performance_data_class = $status->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
 		$content->performance_data_str = $status->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 
 		# Assign commands variables
