@@ -218,9 +218,9 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	*	Check if any addons should be included
-	*/
-	public function _addons()
+	 * Find and include php files from 'addons' found in defined folders
+	 */
+	protected function _addons()
 	{
 		$addons_files = array_merge(
 			glob(APPPATH.'addons/*', GLOB_ONLYDIR),
