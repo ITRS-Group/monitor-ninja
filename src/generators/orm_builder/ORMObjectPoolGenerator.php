@@ -25,7 +25,7 @@ class ORMObjectPoolGenerator extends class_generator {
 	}
 	
 	private function generate_pool() {
-		$this->init_function( 'pool', array('name'), 'static' );
+		$this->init_function( 'pool', array('name'), 'static', array('name' => false));
 		$this->write( 'if( $name === false ) return new self();');
 		$this->write( 'return parent::pool($name);' );
 		$this->finish_function();
