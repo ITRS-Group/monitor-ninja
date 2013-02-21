@@ -91,23 +91,21 @@ function format_interval(interval)
 
 function pnp_popup(elem, args)
 {
-	var get_data = "";
-	var delim = "";
+	if (!_use_popups) return;
+
+	var get_data = [];
 	for ( var key in args) {
-		get_data += delim + key + "=" + encodeURIComponent(args[key]);
-		delim = "&";
+		get_data.push(key + "=" + encodeURIComponent(args[key].replace(/[ :\/\\]/g, "_")));
 	}
 	
 	var loading_img = '/application/media/images/loading.gif';
-	
-	if (!_use_popups) return;
 	
 	$(elem).qtip(
 			{
 				content: {
 					url: _site_domain + _index_page + "/ajax/pnp_image/",
 					data: {
-						param: get_data
+						param: get_data.join("&")
 					},
 					method: 'post',
 					text: '<img src="' + _site_domain + loading_img + '" alt="'
