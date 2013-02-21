@@ -14,7 +14,7 @@ The object is only instanced from within a set class. (see below). The user must
 
 Each object have getters for it's variables:
 @code
-$host->get_nmae();
+$host->get_name();
 $service->get_description();
 @endcode
 
@@ -26,7 +26,7 @@ $host = $services->get_host(); /* Returns: Host_Model */
 ..and the other way, but because of multiple related objects, a set is returned (see below for sets)
 @code
 $services = $host->get_services(); /* Returns: ServiceSet_Model */
-@code
+@endcode
 
 @subsection class_set Sets
 
