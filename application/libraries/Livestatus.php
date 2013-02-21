@@ -57,10 +57,10 @@ class Livestatus {
 
 	/* singleton */
 	public static function instance($config = null) {
-		if (self::$instance === false)
-			return new self($config);
-		else
-			return $ls;
+		if (self::$instance !== false) {
+			return self::$instance;
+		}
+		return self::$instance = new self($config);
 	}
 
 	private $program_start = false;
