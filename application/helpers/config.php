@@ -81,6 +81,8 @@ class config_Core
 
 	/**
 	 * On a OP5 Monitor system, return the system version
+	 *
+	 * @return string
 	 */
 	public static function get_version_info()
 	{
@@ -89,7 +91,8 @@ class config_Core
 			$handle = fopen($file, 'r');
 			$contents = fread($handle, filesize($file));
 			fclose($handle);
-			return str_replace('VERSION=','',$contents);
+			return trim(str_replace('VERSION=','',$contents));
 		}
+		return null;
 	}
 }

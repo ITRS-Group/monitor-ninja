@@ -38,7 +38,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
-		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->js_strings .= reports::js_strings();

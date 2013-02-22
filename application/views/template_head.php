@@ -16,9 +16,9 @@ if (!empty($base_href)) {
 
 	<?php echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon') ?>
 
-	<link href="<?php echo url::base().'application/views/css/'.$current_skin.'common.css'; ?>" type="text/css" rel="stylesheet" media="all" />
-	<link href="<?php echo url::base().'application/views/css/'.$current_skin.'print.css'; ?>" type="text/css" rel="stylesheet" media="print" />
-	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
+	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
+	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
     if (!window.console) console = {log: function() {}};
@@ -47,7 +47,7 @@ if (!empty($base_href)) {
 	?>
 
 	<!--[If IE]>
-	<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/default/ie7.css' ?>" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
 	<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 	<![endif]-->
 

@@ -277,22 +277,4 @@ class Ninja_Controller extends Template_Controller {
 	{
 		return ninja::add_path($rel_path);
 	}
-
-	/**
-	 * Set correct template path
-	 */
-	public function add_template_path($rel_path)
-	{
-		$rel_path = trim($rel_path);
-		if (empty($rel_path)) {
-			return false;
-		}
-
-		$path = false;
-		# assume rel_path is relative to views directory
-		$path = url::base(false).'application/views/'.$rel_path;
-		# make sure we didn't mix up start/end slashes
-		$path = text::reduce_slashes($path);
-		return $path;
-	}
 }

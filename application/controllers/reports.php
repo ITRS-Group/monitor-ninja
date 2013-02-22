@@ -83,7 +83,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
-		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 
 		# what scheduled reports are there?

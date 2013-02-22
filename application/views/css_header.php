@@ -10,5 +10,3 @@ if (!empty($css)) {
 			echo html::stylesheet($css_file);
 	}
 }
-
-?>

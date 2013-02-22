@@ -8,5 +8,3 @@ if (!empty($js))
 			echo html::script($js_file);
 		}
 	}
-
-?>

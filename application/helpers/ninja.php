@@ -11,6 +11,8 @@ class ninja_Core {
 	/**
 	 * Given a file name that is relative to the views directory, find it and
 	 * return the full path.
+	 *
+	 * @return string
 	 */
 	public static function add_path($rel_path, $module_name=false) {
 		static $url_base = false;
@@ -27,7 +29,7 @@ class ninja_Core {
 		}
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
-		return $url_base . $path;
+		return self::add_version_to_uri($url_base.$path);
 	}
 
 	/**
@@ -60,5 +62,9 @@ class ninja_Core {
 			}
 		}
 		return $available_skins;
+	}
+
+	static function add_version_to_uri($uri) {
+		return $uri .= "?v=".config::get_version_info();
 	}
 }

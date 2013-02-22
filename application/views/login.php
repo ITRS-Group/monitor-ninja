@@ -1,13 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <!DOCTYPE html>
-
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo Kohana::config('config.product_name').' '._('login'); ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/default/common.css' ?>" media="all" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/default/print.css' ?>" media="print" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/css/default/jquery-ui-custom.css' ?>" />
+		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/common.css') ?>" media="all" />
+		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/print.css') ?>" media="print" />
+		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<?php echo html::script('application/media/js/jquery.js'); ?>
 		 <script type="text/javascript">

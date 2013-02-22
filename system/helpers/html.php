@@ -268,7 +268,7 @@ class html_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = FALSE)
 	{
-		return html::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
+		return html::link(ninja::add_version_to_uri($style), 'stylesheet', 'text/css', '.css', $media, $index);
 	}
 
 	/**
@@ -364,6 +364,7 @@ class html_Core {
 				$script .= '.js';
 			}
 
+			$script = ninja::add_version_to_uri($script);
 			$compiled = '<script type="text/javascript" src="'.$script.'"></script>';
 		}
 
