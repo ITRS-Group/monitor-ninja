@@ -109,7 +109,7 @@ if (!empty($base_href)) {
 				}
 			}
 			if (!empty($inline_js)) {
-				echo "$(document).ready(function() {";
+				echo '$(document).ready(function() {';
 				echo $inline_js;
 				echo "});";
 			}?>
