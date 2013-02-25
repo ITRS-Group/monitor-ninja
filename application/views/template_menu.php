@@ -29,7 +29,7 @@ array(4) {
 			
 			$linkstring = '';
 			if (strtolower($section) == 'about') {
-				$linkstring .= '<li style="background: none">'.Kohana::config('config.product_name') . ":" . config::get_version_info().'</li>';
+				$linkstring .= '<li class="meta">'.Kohana::config('config.product_name') . ":" . config::get_version_info().'</li>';
 			} elseif (empty($entry)) {
 				continue;
 			}

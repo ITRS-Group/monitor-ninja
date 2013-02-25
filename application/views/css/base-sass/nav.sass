@@ -22,6 +22,9 @@
 	a
 		border-bottom: 1px dotted $link_color
 		color: $link_color
+		display: block
+		width: 100%
+		padding: 6px 0 6px 10%
 		text-decoration: none
 
 		&:hover
@@ -50,9 +53,8 @@
 		height: auto
 
 		li
-			padding: 6px 0 6px 10%
 			margin: 0
-			height: 16px
+			min-height: 16px
 			border-bottom: 1px solid #ccc
 			float: left
 			display: block
@@ -70,3 +72,6 @@
 
 				&:hover
 					border: none
+			&.meta
+				background: none
+				padding: 6px 0 6px 10%
