@@ -404,9 +404,23 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$this->throw_error('Could not use Start TLS for server: '.$url . ': '.ldap_error($this->conn));
 			}
 		}
-
-		if(isset($this->config['protocol_version'])) {
-			ldap_set_option($this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['protocol_version']);
+	
+		$ldap_opts = array();
+		if( isset( $this->config['ldap_opts'] ) && is_array($this->config['ldap_opts']) ) {
+			$ldap_opts = $this->config['ldap_opts'];
+		}
+		
+		if( isset( $this->config['protocol_version'] ) ) {
+			$ldap_opts['LDAP_OPT_PROTOCOL_VERSION'] = $this->config['protocol_version'];
+		}
+		
+		foreach( $ldap_opts as $opt=>$val ) {
+			if( defined($opt) ) {
+				$this->log->log( 'debug', 'Setting LDAP option: '.$opt.' = '.var_export($val, true) );
+				ldap_set_option( $this->conn, constant($opt), $val );
+			} else {
+				$this->throw_error( 'Unknown LDAP option in configuration: '.$opt );
+			}
 		}
 	}
 
