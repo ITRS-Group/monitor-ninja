@@ -2,8 +2,8 @@
 
 require_once( '../buildlib.php' );
 
-require_once( '../lalr_parser/LalrGenerator.php' );
-require_once( '../lalr_parser/LalrGrammarParser.php' );
+require_once( 'op5/generators/parsegen/LalrGenerator.php' );
+require_once( 'op5/generators/parsegen/LalrGrammarParser.php' );
 
 class LSFilter_generator extends generator_module {
 	protected function do_run() {

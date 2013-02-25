@@ -5,14 +5,17 @@ if( php_sapi_name() != 'cli' ) {
 	exit(1);
 }
 
-require_once( 'class_generator.php' );
-require_once( 'js_class_generator.php' );
-
-class GeneratorException extends Exception {}
-
 define('KOHANA_BASE', dirname(dirname(dirname(__FILE__))) ); // FIXME: make nicer
 define('TARGET_BASE', KOHANA_BASE . DIRECTORY_SEPARATOR . 'modules');
 define('GENERATOR_BASE', KOHANA_BASE . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'generators');
+
+require_once( 'op5/generators/class_generator.php' );
+
+class_generator::$model_suffix = '_Model';
+class_generator::$library_suffix = '_Core';
+class_generator::$library_dir = 'libraries';
+class_generator::$model_dir = 'models';
+class_generator::$manifest_dir = 'manifest';
 
 abstract class generator_module {
 	public $mod_name;
