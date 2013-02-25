@@ -47,12 +47,6 @@ class op5Authorization {
 
 		/* Also allow the per-user-group */
 		$groups[] = 'user_' . $user->username;
-
-/*		Kohana::log('debug', "Authorization: Got groups:");
-		foreach($groups as $group) {
-			Kohana::log('debug', "Authorization: group: " . $group);
-		}
-*/
 		$authorized = false;
 
 		/* Fetch the name column as an array from the result */

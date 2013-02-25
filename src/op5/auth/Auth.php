@@ -352,6 +352,21 @@ class op5auth {
 
 			try {
 				$result[$auth_method] = $driver->groups_available( $grouplist );
+				
+				foreach($grouplist as $group) {
+					$avalible = false;
+					if( $group == 'meta_all_users' ) {
+						$avalible = true;
+					} else if( $group == 'meta_driver_'.$auth_method ) {
+						$avalible = true;
+					}
+					if( !isset($result[$auth_method][$group]) ) {
+						$result[$auth_method][$group] = $avalible;
+					} else {
+						$result[$auth_method][$group] |= $avalible;
+					}
+				}
+				
 			}
 			catch( Exception $e ) {
 				/* If a module fails, make groups unknown... */
@@ -379,6 +394,10 @@ class op5auth {
 			$driver_groups = $driver->groups_for_user( $username );
 			if( $driver_groups !== false ) {
 				$groups[$auth_method] = $driver_groups;
+				if( count($driver_groups) ) {
+					$groups[$auth_method][] = 'meta_all_users';
+					$groups[$auth_method][] = 'meta_driver_'.$auth_method;
+				}
 			}
 		}
 		return $groups;
