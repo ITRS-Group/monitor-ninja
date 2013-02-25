@@ -64,6 +64,13 @@ class ninja_Core {
 		return $available_skins;
 	}
 
+	/**
+	 * Add "?v=3.0.0" (or such) to the parameter, makes for solid
+	 * cache busting.
+	 *
+	 * @param $uri string
+	 * @return string
+	 */
 	static function add_version_to_uri($uri) {
 		return $uri .= "?v=".config::get_version_info();
 	}
