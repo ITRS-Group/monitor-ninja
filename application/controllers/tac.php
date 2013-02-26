@@ -12,7 +12,7 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Authenticated_Controller {
-	public function index()
+	public function __call($method, $args)
 	{
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
@@ -35,14 +35,25 @@ class Tac_Controller extends Authenticated_Controller {
 		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method);
 		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 
-		if (empty($widgets)) {
+		if (empty($widgets) && $method=='index') {
 			# probably a new user, we should populate the widget list
 			# yeah, this does Weird Things™ if a user should try to hide everything
 			# but that is a silly thing to do, so just blame the user.
+			#
+			# But only do it on the main tac...
 			foreach ($widget_objs as $obj) {
 				$obj->save();
 			}
 			$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+		}
+		
+		if(empty($widgets)) {
+			# By some wierd reason, empty arrays doesn't exist in the result of
+			# Kohana methods, beacuse they somehow thought of using the more
+			# explicit way to say empty array, by using "false"
+			# That works quite well with array_keys below, so let's to that
+			# explicitly too...
+			$widgets = array();
 		}
 
 		if (array_keys($widgets) == array('unknown')) {
