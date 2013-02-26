@@ -148,3 +148,116 @@ function pnp_popup(elem, args)
 				}
 			});
 }
+
+
+
+
+
+
+
+
+function render_summary_state(ul, state, stats, substates)
+{
+	if (stats.stats[state] == 0) return;
+	
+	var li = $('<li />').append(
+			link_query(stats.queries[state]).append(icon16('shield-' + state))
+					.append(
+							$('<span />')
+									.text(stats.stats[state] + " " + state)));
+	
+	var delim = ' ( ';
+	var suffix = '';
+	
+	for ( var tag in substates) {
+		var key = state + tag;
+		var type = substates[tag];
+		
+		if (stats.stats[key]) {
+			li.append(delim);
+			li.append(link_query(stats.queries[key]).text(
+					stats.stats[key] + ' ' + type));
+			delim = ', ';
+			suffix = ' ) ';
+		}
+	}
+	
+	li.append(suffix);
+	
+	ul.append(li);
+}
+
+function render_service_status_summary(stats)
+{
+	var ul = $('<ul class="listview-summary" />');
+	
+	render_summary_state(ul, 'ok', stats, {});
+	render_summary_state(ul, 'warning', stats, {
+		'_and_ack': _('acknowledged'),
+		'_and_disabled_active': _('disabled active'),
+		'_and_scheduled': _('scheduled'),
+		'_and_unhandled': _('unhandled'),
+		'_on_down_host': _('on down host')
+	});
+	render_summary_state(ul, 'critical', stats, {
+		'_and_ack': _('acknowledged'),
+		'_and_disabled_active': _('disabled active'),
+		'_and_scheduled': _('scheduled'),
+		'_and_unhandled': _('unhandled'),
+		'_on_down_host': _('on down host')
+	});
+	render_summary_state(ul, 'unknown', stats, {
+		'_and_ack': _('acknowledged'),
+		'_and_disabled_active': _('disabled active'),
+		'_and_scheduled': _('scheduled'),
+		'_and_unhandled': _('unhandled'),
+		'_on_down_host': _('on down host')
+	});
+	render_summary_state(ul, 'pending', stats, {});
+	
+	return ul;
+}
+
+function render_host_status_summary(stats)
+{
+	var ul = $('<ul class="listview-summary" />');
+	
+	render_summary_state(ul, 'up', stats, {});
+	render_summary_state(ul, 'down', stats, {});
+	render_summary_state(ul, 'unreachable', stats, {});
+	render_summary_state(ul, 'pending', stats, {});
+	
+	return ul;
+}
+
+var listview_multi_select_cell_renderer = function(args)
+{
+	var checkbox = $(
+			'<input type="checkbox" name="object_select[]" class="listview_multiselect_checkbox" />')
+			.attr('value', args.obj.key);
+	if (false /* listview_selection[args.obj.key] */) {
+		checkbox.prop('checked', true);
+		if (tr.hasClass('odd'))
+			tr.addClass('selected_odd');
+		else
+			tr.addClass('selected_even');
+	}
+	checkbox.change(function(evt)
+	{
+		var tgt = $(evt.target);
+		// listview_selection[tgt.attr('value')] = tgt.prop('checked');
+		var tr = tgt.closest('tr');
+		var classname = ""
+		if (tr.hasClass('odd'))
+			classname = 'selected_odd';
+		else
+			classname = 'selected_even';
+		if (tgt.prop('checked')) {
+			tr.addClass(classname);
+		}
+		else {
+			tr.removeClass(classname);
+		}
+	});
+	return $('<td style="width: 1em;" />').append(checkbox);
+};

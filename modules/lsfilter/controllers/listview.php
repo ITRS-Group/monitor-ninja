@@ -26,6 +26,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'media/js/lib.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterRenderer.js';
+		$this->xtra_js[] = 'index.php/listview/renderer/table.js';
 		
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMain.js';
 
@@ -148,6 +149,39 @@ class ListView_Controller extends Authenticated_Controller {
 		}
 		catch( Exception $e ) {
 			return json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+		}
+	}
+
+
+	/**
+	 * Return a manifest variable as a javascript file, for loading through a script tag
+	 */
+	public function renderer( $name = false ) {
+		if( substr( $name, -3 ) == '.js' ) {
+			$name = substr( $name, 0, -3 );
+		}
+		
+		$this->auto_render = false;
+		$renderers_files = Module_Manifest_Model::get( 'lsfilter_renderers' );
+	
+		header('Content-Type: text/javascript');
+		
+		print "var listview_renderer_".$name." = {};\n\n";
+		
+		$files = array();
+		if( isset( $renderers_files[$name] ) ) {
+			$files = $renderers_files[$name];
+		}
+		
+		foreach( $files as $renderer ) {
+			print "\n/".str_repeat('*',79)."\n";
+			print " * Output file: ".$renderer."\n";
+			print " ".str_repeat('*',78)."/\n";
+			if( is_readable(DOCROOT.$renderer) ) {
+				readfile(DOCROOT.$renderer);
+			} else {
+				print "// ERROR: Can't open file...\n\n";
+			}
 		}
 	}
 }
