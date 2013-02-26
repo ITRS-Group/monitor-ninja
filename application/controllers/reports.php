@@ -47,7 +47,7 @@ class Reports_Controller extends Base_reports_Controller
 		Session::instance()->set('main_report_params', null);
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", array_map('addslashes', $old_config_names))."');";
 		$type_str = $this->type == 'avail'
 			? _('availability')
 			: _('SLA');
@@ -207,7 +207,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->css_header = $this->add_view('css_header');
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", array_map("addslashes", $old_config_names))."');";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts

@@ -69,7 +69,7 @@ class Summary_Controller extends Base_reports_Controller
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", array_map('addslashes', $old_config_names))."');";
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
@@ -203,7 +203,7 @@ class Summary_Controller extends Base_reports_Controller
 
 		if ($this->type == 'summary') {
 			$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-			$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+			$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", array_map('addslashes', $old_config_names))."');";
 			$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 		}
 
