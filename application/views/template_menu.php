@@ -65,7 +65,7 @@ array(4) {
 
 						if ($uri == $siteuri && false===strpos($data[0],'?')) {
 							// Only highlight link if not containing a "?"-mark. Otherwise links to listview (which can change without page reload) behave strange.
-							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' title='".$formatted_name."' class='ninja_menu_links'>";
+							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
 							if (strpos($icon_image, '.') !== false)
 								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$icon_image, $module_name).")'></span>";
 							else
@@ -73,7 +73,7 @@ array(4) {
 							$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
 							$in_menu = true;
 						} else {
-							$linkstring .= "<li class='nav-seg'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' title='".$formatted_name."' class='ninja_menu_links'>";
+							$linkstring .= "<li class='nav-seg'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
 							if (strpos($icon_image, '.') !== false)
 								$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$icon_image, $module_name).")'></span>";
 							else
@@ -88,7 +88,7 @@ array(4) {
 							($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') ||
 							($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/')) {
 
-						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' title='".$formatted_name."' target='_blank' class='ninja_menu_links'>";
+						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' target='_blank' class='ninja_menu_links'>";
 							if (strpos($icon_image, '.') !== false)
 								$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$icon_image, $module_name)."' />";
 							else
