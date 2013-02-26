@@ -34,7 +34,9 @@ class ORMObjectSetGenerator extends class_generator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'Object'.$this->structure['source'].'Set', array('abstract') );
-		
+		if( isset($this->structure['db_instance']) ) {
+			$this->variable('db_instance',$this->structure['db_instance'],'protected');
+		}
 		$this->variable('table',$this->name,'protected');
 		
 		$dbtable = $this->name;

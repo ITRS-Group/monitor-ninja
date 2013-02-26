@@ -13,6 +13,7 @@ class ORMSQLSetGenerator extends class_generator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'ObjectSet', array('abstract') );
+		$this->variable('db_instance','default','protected');
 		$this->generate_stats();
 		$this->generate_count();
 		$this->generate_it();
@@ -27,7 +28,7 @@ class ORMSQLSetGenerator extends class_generator {
 
 	public function generate_count() {
 		$this->init_function('count');
-		$this->write('$db = Database::instance();');
+		$this->write('$db = Database::instance($this->db_instance);');
 		$this->write('$filter = $this->get_auth_filter();');
 		$this->write('$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable;');
 		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(), false);');
@@ -40,7 +41,7 @@ class ORMSQLSetGenerator extends class_generator {
 
 	public function generate_it() {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
-		$this->write('$db = Database::instance();');
+		$this->write('$db = Database::instance($this->db_instance);');
 		
 		$this->write('if( $columns != false ) {');
 		$this->write('$columns = $this->validate_columns($columns);');
