@@ -1,6 +1,10 @@
 $(document).ready(function() {
 
 	$('#command_form').bind('submit', function() {
+		var form = $(this);
+		if(form.data('already_submitted')) {
+			return false;
+		}
 		/*
 		 *	Since all command input fields are required, we check
 		 *	them all and prompt user in case they are empty.
@@ -48,6 +52,7 @@ $(document).ready(function() {
 			alert(sprintf(_form_error_header, "\n", "\n\n") + err_str);
 			return false;
 		}
+		form.data('already_submitted', true);
 		return true;
 	});
 
