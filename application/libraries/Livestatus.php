@@ -641,7 +641,14 @@ class LivestatusBackend {
 		if(strpos($table, 'services') !== false && !$this->auth->authorized_for('service_view_all') ) {
 			return "AuthUser: ".$this->auth->get_user()->username."\n";
 		}
+		elseif(strpos($table, 'servicegroups') !== false && !$this->auth->authorized_for('servicegroup_view_all') ) {
+			return "AuthUser: ".$this->auth->get_user()->username."\n";
+		}
+
 		elseif(strpos($table, 'hosts') !== false && !$this->auth->authorized_for('host_view_all') ) {
+			return "AuthUser: ".$this->auth->get_user()->username."\n";
+		}
+		elseif(strpos($table, 'hostgroups') !== false && !$this->auth->authorized_for('hostgroup_view_all') ) {
 			return "AuthUser: ".$this->auth->get_user()->username."\n";
 		}
 		return "";
