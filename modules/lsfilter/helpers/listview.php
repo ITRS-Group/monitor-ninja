@@ -6,7 +6,9 @@ class listview {
 	 * 
 	 * Useful for generating, for example a set of all notifications related to a host.
 	 * 
-	 * Example: $set = listview::set('notifications', array('host_name'=>$hostname));
+	 * @code
+	 * $set = listview::set('notifications', array('host_name'=>$hostname));
+	 * @endcode
 	 * 
 	 * @param $table table to search in
 	 * @param $match array of matches
@@ -26,11 +28,13 @@ class listview {
 	 *
 	 * Useful for generating, for example a query of all notifications related to a host.
 	 *
-	 * Example: $query = listview::query('notifications', array('host_name'=>$hostname));
+	 * @code
+	 * $query = listview::query('notifications', array('host_name'=>$hostname));
+	 * @endcode
 	 *
 	 * @param $table table to search in
 	 * @param $match array of matches
-	 * @return string
+	 * @return string such as '[hosts] host_name="host-1"'
 	 */
 	public static function query($table, $match) {
 		return self::set($table, $match)->get_query();
@@ -41,13 +45,15 @@ class listview {
 	 *
 	 * Useful for generating, for example a link to all notifications related to a host.
 	 *
-	 * Example: $url = listview::link('notifications', array('host_name'=>$hostname));
+	 * @code
+	 * $url = listview::link('notifications', array('host_name'=>$hostname));
+	 * @endcode
 	 *
 	 * @param $table table to search in
 	 * @param $match array of matches
 	 * @return string
 	 */
 	public static function link($table, $match) {
-		return url::base(true) . "listview/?q=" . urlencode(self::set($table, $match)->get_query());
+		return url::base(true) . "listview/?q=" . urlencode(self::query($table, $match));
 	}
 }
