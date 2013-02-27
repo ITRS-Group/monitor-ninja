@@ -30,9 +30,9 @@
 
 		<h2><?php echo _('Saved filters');?></h2>
 
-		<input type="checkbox" id="filter-query-saved-hide-static" class="filter-query-saved-hide-x" /> <?php echo _('Hide static'); ?>
-		<input type="checkbox" id="filter-query-saved-hide-global" class="filter-query-saved-hide-x" /> <?php echo _('Hide global'); ?>
-		<input type="checkbox" id="filter-query-saved-hide-user" class="filter-query-saved-hide-x" /> <?php echo _('Hide user'); ?><br />
+		<label><input type="checkbox" id="filter-query-saved-hide-static" class="filter-query-saved-hide-x" /> <?php echo _('Hide static'); ?></label>
+		<label><input type="checkbox" id="filter-query-saved-hide-global" class="filter-query-saved-hide-x" /> <?php echo _('Hide global'); ?></label>
+		<label><input type="checkbox" id="filter-query-saved-hide-user" class="filter-query-saved-hide-x" /> <?php echo _('Hide user'); ?></label><br />
 		<ul id="filter-query-saved-filters"></ul>
 
 		<pre id="filter-query-saved-preview"></pre>
