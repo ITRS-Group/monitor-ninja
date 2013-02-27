@@ -15,14 +15,14 @@ class Nagios_auth_Model extends Model
 	public $session = false; /**< FIXME: Another user session variable, that the ninja model already provides, except we've decided not to use it */
 	public $user = ''; /**< The username */
 	public $view_hosts_root = false; /**< Is user authorized to see all hosts? */
-	public $view_services_root = false; /**< Is user authorized to see all services? */
-	public $command_hosts_root = false; /**< Is user authorized to issue all host commands? WARNING: we ignore this way too much */
-	public $command_services_root = false; /**< Is user authorized to issue all servicecommands? WARNING: we ignore this way too much */
-	public $authorized_for_system_information = false; /**< Is the user authorized to see system information? WARNING: we ignore this way too much */
-	public $authorized_for_system_commands = false; /**< Is the user authorized to issue system-wide commands? WARNING: we ignore this way too much*/
-	public $authorized_for_all_host_commands = false; /**< Alias for command_hosts_root */
-	public $authorized_for_all_service_commands = false; /**< Alias for command_services_root */
-	public $authorized_for_configuration_information = false; /**< Is the user authorized to see information about the global configuration? */
+	private $view_services_root = false; /**< Is user authorized to see all services? */
+	private $command_hosts_root = false; /**< Is user authorized to issue all host commands? WARNING: we ignore this way too much */
+	private $command_services_root = false; /**< Is user authorized to issue all servicecommands? WARNING: we ignore this way too much */
+	private $authorized_for_system_information = false; /**< Is the user authorized to see system information? WARNING: we ignore this way too much */
+	private $authorized_for_system_commands = false; /**< Is the user authorized to issue system-wide commands? WARNING: we ignore this way too much*/
+	private $authorized_for_all_host_commands = false; /**< Alias for command_hosts_root */
+	private $authorized_for_all_service_commands = false; /**< Alias for command_services_root */
+	private $authorized_for_configuration_information = false; /**< Is the user authorized to see information about the global configuration? */
 
 	/**
 	 * Return the singleton instance of the auth model

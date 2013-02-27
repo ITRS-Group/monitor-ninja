@@ -26,7 +26,7 @@ class Old_Downtime_Model extends Old_Comment_Model
 			}
 		}
 		$bits = substr($bits, 1);
-		$auth = Nagios_auth_Model::instance();
+		
 		$ls_filter = array();
 		if ($filter == nagstat::HOST_DOWNTIME)
 			$ls_filter['is_service'] = 0;
