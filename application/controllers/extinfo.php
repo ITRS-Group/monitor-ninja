@@ -203,33 +203,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# save us some typing
 		$content = $this->template->content;
-
-		# check if nagios is running, will affect wich template to use
-/*
-		$status = Program_status_Model::get_local();
-		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
-		if (!$is_running) {
-			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
-
-			# check if nagios_check_command is defined in cgi.cfg
-			$cgi_config = System_Model::parse_config_file('/cgi.cfg');
-			$nagios_check_command = false;
-			if (!empty($cgi_config)) {
-				$nagios_check_command = isset($cgi_config['nagios_check_command']) ? $cgi_config['nagios_check_command'] : false;
-			}
-			$info_message = '';
-			if (empty($nagios_check_command)) {
-				$info_message = _('Hint: It looks as though you have not defined a command for checking the process state by supplying a value for the <b>nagios_check_command</b> option in the CGI configuration file');
-			}
-			$this->template->content->commands->info_message_extra = $info_message;
-		} else {
-*/
-			$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
-/*
-		}
-*/
-
+		$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
 		$commands = $this->template->content->commands;
 
 
@@ -416,16 +390,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		} else {
 			$group_info_res = (object)$group_info_res[0];
 		}
-
-		# check if nagios is running, will affect wich template to use
-/*      $status = $ls->getProcessInfo();
-		if (empty($status) || !$status->is_running) {
-			$this->template->content = $this->add_view('extinfo/not_running');
-			$this->template->content->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
-			$this->template->content->info_message_extra = sprintf(_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars(_('here'))), Kohana::config('config.product_name'));
-			return;
-		}
-*/
 		$this->template->content = $this->add_view('extinfo/groups');
 		$content = $this->template->content;
 
@@ -455,7 +419,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-//                  _('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'alert_history/generate?'.$grouptype.'[]='.$group
 				);
@@ -465,7 +428,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-//                  _('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'alert_history/generate??'.$grouptype.'[]='.$group
 				);
