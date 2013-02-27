@@ -10,14 +10,9 @@
  */
 class Unit_Test_Core {
 
-	// The path(s) to recursively scan for tests
-	protected $paths = array();
-
-	// The results of all tests from every test class
-	protected $results = array();
-
-	// Statistics for every test class
-	protected $stats = array();
+	protected $paths = array(); /**< The path(s) to recursively scan for tests */
+	protected $results = array(); /**< The results of all tests from every test class */
+	protected $stats = array(); /**< Statistics for every test class */
 
 	/**
 	 * Sets the test path(s), runs the tests inside and stores the results.
@@ -180,7 +175,7 @@ class Unit_Test_Core {
 	/**
 	 * Generates nice test results.
 	 *
-	 * @param   boolean  hide passed tests from the report
+	 * @param $hide_passed boolean tests from the report
 	 * @return  string   rendered test results html
 	 */
 	public function report($hide_passed = NULL)
@@ -213,9 +208,8 @@ class Unit_Test_Core {
 	/**
 	 * Magically gets a Unit_Test property.
 	 *
-	 * @param   string  property name
-	 * @return  mixed   variable value if the property is found
-	 * @return  void    if the property is not found
+	 * @param $key string property name
+	 * @return mixed variable value if the property is found
 	 */
 	public function __get($key)
 	{
@@ -228,6 +222,12 @@ class Unit_Test_Core {
 
 abstract class Unit_Test_Case {
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_true($value, $debug = NULL)
 	{
 		if ($value != TRUE)
@@ -236,6 +236,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_true_strict($value, $debug = NULL)
 	{
 		if ($value !== TRUE)
@@ -244,6 +250,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_false($value, $debug = NULL)
 	{
 		if ($value != FALSE)
@@ -252,6 +264,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_false_strict($value, $debug = NULL)
 	{
 		if ($value !== FALSE)
@@ -260,6 +278,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $expected
+	 * @param $actual
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_equal($expected, $actual, $debug = NULL)
 	{
 		if ($expected != $actual)
@@ -268,6 +293,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $expected
+	 * @param $actual
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_equal($expected, $actual, $debug = NULL)
 	{
 		if ($expected == $actual)
@@ -276,6 +308,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $expected
+	 * @param $actual
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_same($expected, $actual, $debug = NULL)
 	{
 		if ($expected !== $actual)
@@ -284,6 +323,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $expected
+	 * @param $actual
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_same($expected, $actual, $debug = NULL)
 	{
 		if ($expected === $actual)
@@ -292,6 +338,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_boolean($value, $debug = NULL)
 	{
 		if ( ! is_bool($value))
@@ -300,6 +352,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_boolean($value, $debug = NULL)
 	{
 		if (is_bool($value))
@@ -308,6 +366,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_integer($value, $debug = NULL)
 	{
 		if ( ! is_int($value))
@@ -316,6 +380,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_integer($value, $debug = NULL)
 	{
 		if (is_int($value))
@@ -324,6 +394,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_float($value, $debug = NULL)
 	{
 		if ( ! is_float($value))
@@ -332,6 +408,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_float($value, $debug = NULL)
 	{
 		if (is_float($value))
@@ -340,6 +422,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_array($value, $debug = NULL)
 	{
 		if ( ! is_array($value))
@@ -348,6 +436,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $key
+	 * @param $array
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_array_key($key, $array, $debug = NULL)
 	{
 		if ( ! array_key_exists($key, $array)) {
@@ -357,6 +452,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $array
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_in_array($value, $array, $debug = NULL)
 	{
 		if ( ! in_array($value, $array)) {
@@ -366,6 +468,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_array($value, $debug = NULL)
 	{
 		if (is_array($value))
@@ -374,6 +482,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_object($value, $debug = NULL)
 	{
 		if ( ! is_object($value))
@@ -382,6 +496,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_object($value, $debug = NULL)
 	{
 		if (is_object($value))
@@ -390,6 +510,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_null($value, $debug = NULL)
 	{
 		if ($value !== NULL)
@@ -398,6 +524,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_null($value, $debug = NULL)
 	{
 		if ($value === NULL)
@@ -406,6 +538,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_empty($value, $debug = NULL)
 	{
 		if ( ! empty($value))
@@ -414,6 +552,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_empty($value, $debug = NULL)
 	{
 		if (empty($value))
@@ -422,6 +566,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $regex
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_pattern($value, $regex, $debug = NULL)
 	{
 		if ( ! is_string($value) OR ! is_string($regex) OR ! preg_match($regex, $value))
@@ -430,6 +581,13 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	/**
+	 * @param $value
+	 * @param $regex
+	 * @param $debug = NULL
+	 * @throws Kohana_Unit_Test_Exception
+	 * @return Unit_Test_Case
+	 */
 	public function assert_not_pattern($value, $regex, $debug = NULL)
 	{
 		if ( ! is_string($value) OR ! is_string($regex) OR preg_match($regex, $value))
@@ -443,14 +601,13 @@ abstract class Unit_Test_Case {
 
 class Kohana_Unit_Test_Exception extends Exception {
 
-	protected $debug = NULL;
+	protected $debug = NULL; /**< Debug message */
 
 	/**
 	 * Sets exception message and debug info.
 	 *
-	 * @param   string  message
-	 * @param   mixed   debug info
-	 * @return  void
+	 * @param $message string
+	 * @param $debug mixed = NULL
 	 */
 	public function __construct($message, $debug = NULL)
 	{
@@ -469,7 +626,7 @@ class Kohana_Unit_Test_Exception extends Exception {
 	/**
 	 * Returns the user-defined debug info
 	 *
-	 * @return  mixed  debug property
+	 * @return mixed debug property
 	 */
 	public function getDebug()
 	{
