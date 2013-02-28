@@ -3,23 +3,38 @@
 class LivestatusFilterNot extends LivestatusFilterBase {
 	private $filter;
 	
-	function get_filter() {
+	/**
+	 * Get the sub filter
+	 */
+	public function get_filter() {
 		return $this->filter;
 	}
 	
-	function __clone() {
+	/**
+	 * Clone the filter
+	 */
+	public function __clone() {
 		$this->filter = clone $this->filter;
 	}
 	
-	function __construct( $filter ) {
+	/**
+	 * Generate a negation filter
+	 */
+	public function __construct( $filter ) {
 		$this->filter = $filter;
 	}
-	
-	function prefix( $prefix ) {
+
+	/**
+	 * Returns a copy of the filter, but with a variables prefixed
+	 */
+	public function prefix( $prefix ) {
 		return new LivestatusFilterNot( $this->filter->prefix( $prefix ) );
 	}
 
-	function visit( LivestatusFilterVisitor $visitor, $data ) {
+	/**
+	 * Visit the filter node with a visitor, to generate a filter query
+	 */
+	public function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_not($this, $data);
 	}
 }
