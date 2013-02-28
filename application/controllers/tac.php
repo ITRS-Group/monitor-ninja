@@ -55,44 +55,37 @@ class Tac_Controller extends Authenticated_Controller {
 			# explicitly too...
 			$widgets = array();
 		}
+		
+		$n_placeholders = 7;
 
 		if (array_keys($widgets) == array('unknown')) {
+			/* If only unknown widgets, spread them equally-ish */
 			$nwidgets = count($widgets['unknown']);
 
-			# left column
-			$widgets['widget-placeholder'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# middle column
-			$widgets['widget-placeholder1'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# right column
-			$widgets['widget-placeholder2'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# right column
-			$widgets['widget-placeholder3'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# right column
-			$widgets['widget-placeholder4'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
-
-			# full width (placed at bottom)
-			$widgets['widget-placeholder5'] = $widgets['unknown'];
+			for( $i=0; $i<$n_placeholders-1; $i++ ) {
+				$widgets[$i] = array_splice($widgets['unknown'], 0, round($nwidgets/$n_placeholders));
+			}
+			# All the rest at the last one
+			$widgets[$n_placeholders-1] = $widgets['unknown'];
+			
 			unset($widgets['unknown']);
 		} else if (isset($widgets['unknown'])) {
-			if(!isset($widgets['widget-placeholder'])) {
-				$widgets['widget-placeholder'] = array();
+			/* If unknown widgets exist, place them at the first box */
+			if(!isset($widgets[0])) {
+				$widgets[0] = array();
 			}
-			$widgets['widget-placeholder'] = array_merge($widgets['widget-placeholder'], $widgets['unknown']);
+			$widgets[0] = array_merge($widgets[0], $widgets['unknown']);
 			unset($widgets['unknown']);
 		}
-
-		$widgets = array_merge(array(
-			'widget-placeholder' => array(),
-			'widget-placeholder1' => array(),
-			'widget-placeholder2' => array(),
-			'widget-placeholder3' => array(),
-			'widget-placeholder4' => array(),
-			'widget-placeholder5' => array()
-		), $widgets);
+		
+		/* Support old-style syntax of placeholders */
+		for( $i=0; $i<$n_placeholders; $i++ ) {
+			$name = 'widget-placeholder' . ($i>0?$i:'');
+			if( isset( $widgets[$name] ) ) {
+				$widgets[$i] = $widgets[$name];
+				unset( $widgets[$name] );
+			}
+		}
 
 		$this->template->content->widgets = $widgets;
 		$this->template->widgets = $widget_objs;
