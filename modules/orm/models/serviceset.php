@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/baseserviceset.php' );
 
+/**
+ * Describes a set of objects from livestatus
+ */
 class ServiceSet_Model extends BaseServiceSet_Model {
 	public function validate_columns( $columns ) {
 		$columns[] = 'custom_variables';

@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/baseobjectpool.php' );
 
+/**
+ * The univese of a objects of a given type in livestatus
+ */
 abstract class ObjectPool_Model extends BaseObjectPool_Model {
 
 	public static function get_by_query( $query ) {

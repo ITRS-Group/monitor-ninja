@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/basehost.php' );
 
+/**
+ * Describes a single object from livestatus
+ */
 class Host_Model extends BaseHost_Model {
 	static public $macros = array(
 		'$HOSTNAME$' => 'name',

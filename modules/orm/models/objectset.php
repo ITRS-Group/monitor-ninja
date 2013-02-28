@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/baseobjectset.php' );
 
+/**
+ * Describes a set of objects from livestatus
+ */
 abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	public function validate_columns( $columns ) {
 		

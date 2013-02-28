@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/basehostset.php' );
 
+/**
+ * Describes a set of objects from livestatus
+ */
 class HostSet_Model extends BaseHostSet_Model {
 	public function validate_columns( $columns ) {
 		$columns[] = 'custom_variables';

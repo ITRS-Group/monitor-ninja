@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/basehostgroup.php' );
 
+/**
+ * Describes a single object from livestatus
+ */
 class HostGroup_Model extends BaseHostGroup_Model {
 	static public $macros =  array(
 		'$HOSTGROUPNAME$' => 'name',

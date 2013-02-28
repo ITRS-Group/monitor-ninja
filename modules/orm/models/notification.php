@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/basenotification.php' );
 
+/**
+ * Describes a single object from livestatus
+ */
 class Notification_Model extends BaseNotification_Model {
 	static public $rewrite_columns = array(
 		'state_text' => array('state','notification_type')

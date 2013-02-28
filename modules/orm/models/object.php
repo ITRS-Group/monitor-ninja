@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/baseobject.php' );
 
+/**
+ * Describes a single object from livestatus
+ */
 abstract class Object_Model extends BaseObject_Model {
 	static public $macros = array();
 	

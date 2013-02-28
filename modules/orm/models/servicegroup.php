@@ -2,6 +2,9 @@
 
 require_once( dirname(__FILE__).'/base/baseservicegroup.php' );
 
+/**
+ * Describes a single object from livestatus
+ */
 class ServiceGroup_Model extends BaseServiceGroup_Model {
 	static public $macros =  array(
 		'$SERVICEGROUPNAME$' => 'name',
