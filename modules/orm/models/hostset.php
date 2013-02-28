@@ -6,11 +6,17 @@ require_once( dirname(__FILE__).'/base/basehostset.php' );
  * Describes a set of objects from livestatus
  */
 class HostSet_Model extends BaseHostSet_Model {
+	/**
+	 * Valideate an array of columns for the given table
+	 */
 	public function validate_columns( $columns ) {
 		$columns[] = 'custom_variables';
 		return parent::validate_columns($columns);
 	}
 	
+	/**
+	 * Get statistics of the hosts in the set
+	 */
 	public function get_totals() {
 		$pool = new HostPool_Model();
 		$stats = array(
@@ -31,6 +37,9 @@ class HostSet_Model extends BaseHostSet_Model {
 		return $totals + $service_set->get_totals();
 	}
 	
+	/**
+	 * Get comments for the hosts in the set
+	 */
 	public function get_comments() {
 		$set = parent::get_comments();
 		return $set->reduce_by('is_service', false, '=');

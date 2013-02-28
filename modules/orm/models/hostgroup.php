@@ -6,21 +6,34 @@ require_once( dirname(__FILE__).'/base/basehostgroup.php' );
  * Describes a single object from livestatus
  */
 class HostGroup_Model extends BaseHostGroup_Model {
+	/**
+	 * A list of macros related to the object
+	 */
 	static public $macros =  array(
 		'$HOSTGROUPNAME$' => 'name',
 		'$HOSTGROUPALIAS$' => 'alias'
 	);
+	
+	/**
+	 * A list of column dependencies for custom columns
+	 */
 	static public $rewrite_columns = array(
 		'host_stats' => array('name'),
 		'service_stats' => array('name')
 	);
 
+	/**
+	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
+	 */
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'host_stats';
 		$this->export[] = 'service_stats';
 	}
 
+	/**
+	 * Get statistics about the hosts in the group
+	 */
 	public function get_host_stats() {
 		$set = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
 
@@ -72,6 +85,10 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		}
 		return array( 'stats' => $set->stats($stats), 'queries' => $queries );
 	}
+	
+	/**
+	 * Get statistics about the services in the group
+	 */
 	public function get_service_stats() {
 		$set = ServicePool_Model::all()->reduce_by('host.groups', $this->get_name(), '>=');
 

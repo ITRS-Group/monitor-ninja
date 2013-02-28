@@ -10,6 +10,9 @@ class Downtime_Model extends BaseDowntime_Model {
 		'triggered_by_text' => array('triggered_by')
 		);
 	
+	/**
+	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
+	 */
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'triggered_by_text';

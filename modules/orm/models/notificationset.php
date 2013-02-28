@@ -6,7 +6,6 @@ require_once( dirname(__FILE__).'/base/basenotificationset.php' );
  * Describes a set of objects from livestatus
  */
 class NotificationSet_Model extends BaseNotificationSet_Model {
-
 	protected function get_auth_filter() {
 		$auth = Auth::instance();
 		$all_hosts    = $auth->authorized_for('host_view_all');
