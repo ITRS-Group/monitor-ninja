@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * Models the interface of saved queries for the listview search filters
+ */
 class LSFilter_Saved_Queries_Model extends Model {
 	const tablename = 'ninja_saved_queries'; /**< Name of saved searches table */
 
+	/**
+	 * An associative array, indexed on table name, values as another associative array,
+	 * which maps a search name to a query, for the class of static saved searches.
+	 */
 	private static $saved_queries = array(
 /*			'hosts' => array(
 					'hosts up'                   => '[hosts] state=0 and has_been_checked=1',
@@ -25,6 +32,9 @@ class LSFilter_Saved_Queries_Model extends Model {
 			)*/
 	);
 
+	/**
+	 * Get the set of static search queries, possible given a table name
+	 */
 	private static function get_static_queries( $table = false ) {
 		if($table==false) {
 			$queries = array_reduce( self::$saved_queries, 'array_merge', array());
@@ -38,6 +48,9 @@ class LSFilter_Saved_Queries_Model extends Model {
 		},array_keys($queries),array_values($queries));
 	}
 	
+	/**
+	 * Get a set of database queries, possible given a table name
+	 */
 	private static function get_db_queries( $table = false ) {
 		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
@@ -58,6 +71,9 @@ class LSFilter_Saved_Queries_Model extends Model {
 		return $queries;
 	}
 	
+	/**
+	 * Get a set of queries, possible given a table name
+	 */
 	public static function get_queries( $table=false ) {
 		$queries = array_merge(
 				self::get_static_queries($table),
@@ -67,14 +83,18 @@ class LSFilter_Saved_Queries_Model extends Model {
 		return $queries;
 	}
 
+	/**
+	 * get a given query by name, possible by table name
+	 */
 	public static function get_query( $name, $table=false ) {
 		foreach( self::get_queries() as $query )
 			if( $query['name'] == $name )
 				return $query['query'];
 		return false;
 	}
-	
-	
+	/**
+	 * Save a query to the database
+	 */
 	public static function save_query( $name, $query, $scope ) {
 		$db = Database::instance();
 		$parser = new LSFilter_Core(new LSFilterPP_Core(), new LSFilterMetadataVisitor_Core());

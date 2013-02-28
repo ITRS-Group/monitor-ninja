@@ -4,9 +4,21 @@
  * Convert a Livestatus Filter tree to a livestatus query
  */
 class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
+	/**
+	 * The query name of a filter
+	 */
 	protected $filter = "Filter: ";
+	/**
+	 * The query name of a and-line
+	 */
 	protected $and    = "And: ";
+	/**
+	 * The query name of a or-line
+	 */
 	protected $or     = "Or: ";
+	/**
+	 * The query name of a negation line
+	 */
 	protected $not    = "Negate:";
 
 	/**
