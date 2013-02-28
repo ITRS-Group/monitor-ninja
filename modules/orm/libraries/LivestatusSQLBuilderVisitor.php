@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Used within the parser as a parse visitor of a lsfilter to generate a ORM object set
+ */
 class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 	private function visit_op( $filt, $data, $op, $default ) {
 		$subfilters = $filt->get_sub_filters();
@@ -12,14 +15,23 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 		return '('.implode(" $op ", $result).')';
 	}
 
+	/**
+	 * Visit an and node
+	 */
 	public function visit_and( LivestatusFilterAnd $filt, $data ) {
 		return $this->visit_op( $filt, $data, 'AND', '1=1' );
 	}
 
+	/**
+	 * Visit an or node
+	 */
 	public function visit_or( LivestatusFilterOr $filt, $data ) {
 		return $this->visit_op( $filt, $data, 'OR', '1=0' );
 	}
 
+	/**
+	 * Visit an value match node
+	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
 		$field = str_replace('.','_',$filt->get_field());
 		$value = Database::instance()->escape($filt->get_value());
@@ -55,6 +67,9 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 		return "($field $op $value)";
 	}
 
+	/**
+	 * Visit an negation node
+	 */
 	public function visit_not( LivestatusFilterNot $filt, $data ) {
 		$subfilter = $filt->get_filter();
 		$result = $subfilter->visit($this,false);

@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * Convert a Livestatus Filter tree to a livestatus query
+ */
 class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 	protected $filter = "Filter: ";
 	protected $and    = "And: ";
 	protected $or     = "Or: ";
 	protected $not    = "Negate:";
-	
+
+	/**
+	 * Visit an and node
+	 */
 	public function visit_and( LivestatusFilterAnd $filt, $data ) {
 		$subfilters = $filt->get_sub_filters();
 		$result = "";
@@ -16,7 +22,10 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 			$result .= $this->and . $count . "\n";
 		return $result;
 	}
-	
+
+	/**
+	 * Visit an or node
+	 */
 	public function visit_or( LivestatusFilterOr $filt, $data ) {
 		$subfilters = $filt->get_sub_filters();
 		$result = "";
@@ -27,7 +36,10 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 			$result .= $this->or . $count . "\n";
 		return $result;
 	}
-	
+
+	/**
+	 * Visit an negation node
+	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
 		$fields = explode('.',$filt->get_field());
 		if( count($fields) > 2 ) {
