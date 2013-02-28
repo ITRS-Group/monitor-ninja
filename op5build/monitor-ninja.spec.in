@@ -17,7 +17,6 @@ Requires: php
 Requires: php-process
 %endif
 
-Conflicts: monitor-gui-core <= 4.0.7
 Source: %name-%version.tar.gz
 %description
 Webgui for Nagios 3.
