@@ -15,20 +15,14 @@ class config_Core
         *       If $page is set it will fetch for a page-specific
         *       setting for current user
         */
-	public static function get($config_str=false, $page='', $save=false, $skip_session=false)
+	public static function get($config_str=false, $page='', $save=false)
 	{
 		$config_str = trim($config_str);
 		if (empty($config_str) || !is_string($config_str)) {
 			return false;
 		}
-		# first check for cached session value
-		$page_val = empty($page) ? '' : '.'.$page;
+		
 		$setting = self::CONFIG_NOT_FOUND;
-		if ($skip_session) {
-			Session::instance()->delete($config_str.$page_val);
-		} else {
-			$setting = Session::instance()->get($config_str.$page_val, self::CONFIG_NOT_FOUND);
-		}
 
 		# then check for database value
 		if ($setting === self::CONFIG_NOT_FOUND) {
@@ -47,11 +41,6 @@ class config_Core
 				# save to database and session as user setting
 				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
 			}
-		}
-
-		# store custom setting in session
-		if (!$skip_session) {
-			Session::instance()->set($config_str.$page_val, $setting);
 		}
 
 		return $setting;

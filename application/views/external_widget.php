@@ -74,10 +74,10 @@ if (isset($this->template->js_header))
 				var _success_header = '<?php echo _('Success'); ?>';
 				var _error_header = '<?php echo _('ERROR'); ?>';
 				var _ninja_menu_state = '<?php echo $ninja_menu_state ?>';
-				var _ninja_menusection_About = '<?php echo config::get('ninja_menusection_About', '/', false, true) ?>';
-				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false, true) ?>';
-				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false, true) ?>';
-				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false, true) ?>';
+				var _ninja_menusection_About = '<?php echo config::get('ninja_menusection_About', '/', false) ?>';
+				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false) ?>';
+				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false) ?>';
+				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false) ?>';
 				var _form_error_header = '<?php echo _("The form couldn\'t be processed since it contains one or more errors.%sPlease correct the following error(s) and try again:%s"); ?>';
 				var _command_empty_field = '<?php echo _("Field \'%s\' is required but empty"); ?>';
 				var _loading_str = '<?php echo _("Loading..."); ?>';
