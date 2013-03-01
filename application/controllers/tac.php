@@ -22,72 +22,62 @@ class Tac_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->template->content->links = array
-		(
-			_('logout')     => 'default/logout'
-		);
-
 		# make sure we have this done before letting widgets near
 		$model = Current_status_Model::instance();
 		$model->analyze_status_data();
 
 		# fetch data for all widgets
 		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method);
-		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+		$db_widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 
-		if (empty($widgets) && $method=='index') {
-			# probably a new user, we should populate the widget list
-			# yeah, this does Weird Things™ if a user should try to hide everything
-			# but that is a silly thing to do, so just blame the user.
-			#
-			# But only do it on the main tac...
+		if (empty($db_widgets) && $method=='index') {
+			/* No Empty defalut tac isn't allowed, populate with the set of widgets */
 			foreach ($widget_objs as $obj) {
 				$obj->save();
 			}
-			$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+			$db_widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 		}
 		
-		if(empty($widgets)) {
-			# By some wierd reason, empty arrays doesn't exist in the result of
-			# Kohana methods, beacuse they somehow thought of using the more
-			# explicit way to say empty array, by using "false"
-			# That works quite well with array_keys below, so let's to that
-			# explicitly too...
-			$widgets = array();
+		if(empty($db_widgets)) {
+			/* Force the widgets variable to be an array...
+			 * empty array kohana-style is defined as false, by some wierd
+			 * reason
+			 */
+			$db_widgets = array();
 		}
 		
-		$n_placeholders = 7;
-
-		if (array_keys($widgets) == array('unknown')) {
-			/* If only unknown widgets, spread them equally-ish */
-			$nwidgets = count($widgets['unknown']);
-
-			for( $i=0; $i<$n_placeholders-1; $i++ ) {
-				$widgets[$i] = array_splice($widgets['unknown'], 0, round($nwidgets/$n_placeholders));
+		$tac_column_count_str = config::get('tac.column_count', 'tac/'.$method);
+		
+		$tac_column_count = array_map('intval',explode(',',$tac_column_count_str));
+		$n_placeholders = array_sum( $tac_column_count );
+		
+		$widgets = array();
+		$unknown_widgets = array();
+		
+		foreach( $db_widgets as $placeholder => $widgetlist ) {
+			$id = false;
+			if( preg_match( '/^widget-placeholder([0-9]*)$/', $placeholder, $matches ) ) {
+				$id = intval($matches[1]);
+			} if( is_numeric( $placeholder ) ) {
+				$id = intval($placeholder);
 			}
-			# All the rest at the last one
-			$widgets[$n_placeholders-1] = $widgets['unknown'];
-			
-			unset($widgets['unknown']);
-		} else if (isset($widgets['unknown'])) {
-			/* If unknown widgets exist, place them at the first box */
-			if(!isset($widgets[0])) {
-				$widgets[0] = array();
+			if( $id !== false && $id >= 0 && $id < $n_placeholders ) {
+				if( !isset( $widgets[$id] ) )
+					$widgets[$id] = array();
+				$widgets[$id] = array_merge( $widgets[$id], $widgetlist );
+			} else {
+				$unknown_widgets = array_merge( $unknown_widgets, $widgetlist );
 			}
-			$widgets[0] = array_merge($widgets[0], $widgets['unknown']);
-			unset($widgets['unknown']);
 		}
 		
-		/* Support old-style syntax of placeholders */
-		for( $i=0; $i<$n_placeholders; $i++ ) {
-			$name = 'widget-placeholder' . ($i>0?$i:'');
-			if( isset( $widgets[$name] ) ) {
-				$widgets[$i] = $widgets[$name];
-				unset( $widgets[$name] );
-			}
+		$placeholder_id = 0;
+		foreach( $unknown_widgets as $name => $widget ) {
+			$widgets[$placeholder_id][$name] = $widget;
+			$placeholder_id = ($placeholder_id+1)%$n_placeholders;
 		}
-
+		
 		$this->template->content->widgets = $widgets;
+		$this->template->content->tac_column_count = $tac_column_count;
 		$this->template->widgets = $widget_objs;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
