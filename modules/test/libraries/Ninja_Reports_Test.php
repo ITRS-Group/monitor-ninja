@@ -1,32 +1,41 @@
 <?php
 
+/**
+ * A model that runs tests on the reports model,
+ * based on a special test-DSL
+ *
+ * Inherits from Reports_Model for "dammit, it's protected!" reasons
+ */
 class Ninja_Reports_Test_Core extends Reports_Model
 {
-	public $test_file = false;
-	public $total = 0;
-	public $description = false;
-	public $tests;
-	public $results = array();
-	public $config_files = false;
-	public $passed = 0;
-	public $failed = 0;
-	public $logfiles = false;
-	public $logfile = false;
-	public $sqlfile = false;
-	public $table_name = false;
-	public $test_globals = array();
-	public $interesting_prefixes = array();
+	private $test_file = false;
+	private $total = 0;
+	private $description = false;
+	private $tests;
+	private $results = array();
+	private $config_files = false;
+	private $passed = 0;
+	private $failed = 0;
+	private $logfiles = false;
+	private $logfile = false;
+	private $sqlfile = false;
+	private $table_name = false;
+	private $test_globals = array();
+	private $interesting_prefixes = array();
 	public $sub_reports = 0;
-	public $color_red   = '';
-	public $color_green = '';
-	public $color_reset = '';
-	public $db_name;
-	public $db_user;
-	public $db_pass;
-	public $db_type;
-	public $db_host;
-	public $importer;
+	private $color_red   = '';
+	private $color_green = '';
+	private $color_reset = '';
+	private $db_name;
+	private $db_user;
+	private $db_pass;
+	private $db_type;
+	private $db_host;
+	private $importer;
 
+	/**
+	 * Run new test file. Will parse the file, but not run it
+	 */
 	public function __construct($test_file)
 	{
 		if (PHP_SAPI === 'cli' && posix_isatty(STDOUT)) {
@@ -42,17 +51,17 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		$this->test_file = $test_file;
 	}
 
-	public function red($str)
+	private function red($str)
 	{
 		return $this->color_red.$str.$this->color_reset;
 	}
 
-	public function green($str)
+	private function green($str)
 	{
 		return $this->color_green.$str.$this->color_reset;
 	}
 
-	public function verify_correct($duration, $correct)
+	private function verify_correct($duration, $correct)
 	{
 		$total = array();
 		$this->interesting_prefixes = array();
@@ -78,7 +87,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return true;
 	}
 
-	public function run_test($params)
+	private function run_test($params)
 	{
 		$timeperiods = array();
 		foreach ($this->test_globals as $k => $v) {
@@ -153,7 +162,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return $this->compare_test_result($return_arr, $correct, $rpt);
 	}
 
-	public function parse_test($test_file = false)
+	private function parse_test($test_file = false)
 	{
 		if (!$test_file)
 			return false;
@@ -256,6 +265,9 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return $params;
 	}
 
+	/**
+	 * Run the actual test file
+	 */
 	public function run_test_series()
 	{
 		echo "Preparing for test-series '" . $this->description . "'\n";
@@ -296,7 +308,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return $this->failed;
 	}
 
-	public function import_logs()
+	private function import_logs()
 	{
 		if (!$this->logfiles) {
 			echo "No logfiles to import\n";
@@ -355,7 +367,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return true;
 	}
 
-	public function count_sub_reports($ary)
+	private function count_sub_reports($ary)
 	{
 		$subs = 0;
 		foreach ($ary as $k => $v) {
@@ -366,7 +378,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return $subs;
 	}
 
-	public function log_duration($st_log)
+	private function log_duration($st_log)
 	{
 		if (!is_array($st_log))
 			return 0;
@@ -379,12 +391,13 @@ class Ninja_Reports_Test_Core extends Reports_Model
 	}
 
 	/**
-	*	@name 	compare_test_result
-	*	@desc 	Compare result from test with correct values
-	* 	@return mixed true or array with diff
+	* compare_test_result
+	*
+	* Compare result from test with correct values
+	* @return mixed true or array with diff
 	*
 	*/
-	public function compare_test_result($full_result, $correct, $rpt)
+	private function compare_test_result($full_result, $correct, $rpt)
 	{
 		if (empty($full_result) || empty($full_result['states']))
 			$this->crash("No test result\n");
@@ -476,7 +489,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		return $failed;
 	}
 
-	public function crash($msg)
+	private function crash($msg)
 	{
 		echo "test.php: $msg\n";
 		exit(1);

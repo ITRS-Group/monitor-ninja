@@ -2,6 +2,9 @@
 
 require_once unittest::tap_path();
 
+/**
+ * Wrapper around the tapunit wrapper around phptap
+ */
 class Ninja_Unit_Test {
 	function __construct() {
 		$paths = array('test/unit_test');

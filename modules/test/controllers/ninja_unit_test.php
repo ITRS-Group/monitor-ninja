@@ -4,19 +4,20 @@
  */
 class Ninja_unit_test_Controller extends Ninja_Controller {
 
-	const ALLOW_PRODUCTION = FALSE;
+	const ALLOW_PRODUCTION = FALSE; /**< No, kohana, don't display us from RPMs */
 
+	/**
+	 * Run unit tests and show results!
+	 */
 	public function index($user=false)
 	{
 		#Auth::instance()->force_login($user);
 
-		// Run tests and show results!
 		echo new Ninja_Unit_Test;
 	}
 
 	/**
-	*
-	*
+	* Run report tests
 	*/
 	public function reports()
 	{
@@ -102,12 +103,6 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 			exit(1);
 		exit(0); //removing this causes ninja to print a 302 to tac
 
-	}
-
-	public function reports_test_crash($msg)
-	{
-		echo "test.php: $msg\n";
-		exit(1);
 	}
 
         /**

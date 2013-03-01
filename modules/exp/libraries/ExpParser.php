@@ -115,7 +115,9 @@ abstract class ExpParser_Core {
 	}
 	
 	/**
-	 * Accept a string, quoted by ", and may have \-escape sequences
+	 * Accept a string
+	 *
+	 * Strings can be quoted by doublequotes, and may have backslash escape sequences
 	 */
 	protected function acceptString( ) {
 		$this->trimLeft();

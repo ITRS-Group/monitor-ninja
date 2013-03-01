@@ -1,5 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Report_options is an object representing the user-selected report
+ *
+ * It's created to improve consistency between report types and frontend/backend
+ */
 class Report_options_core implements ArrayAccess, Iterator, Countable {
 	protected static $rename_options = array(
 		't1' => 'start_time',
@@ -217,6 +222,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 	public $options = array();
 
+	/**
+	 * Public constructor, which optionally takes an iterable with properties to set
+	 */
 	public function __construct($options=false) {
 		if (isset($this->properties['report_period']))
 			$this->properties['report_period']['options'] = array(
