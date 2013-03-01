@@ -96,7 +96,7 @@ class ORMRootSetGenerator extends class_generator {
 	}
 	
 	public function generate_it() {
-		$this->abstract_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
+		$this->abstract_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 	}
 	
 	public function generate_get_auth_filter() {

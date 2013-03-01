@@ -58,7 +58,7 @@ class ORMLSSetGenerator extends class_generator {
 	}
 	
 	public function generate_it() {
-		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('limit'=>false, 'offset'=>false) );
+		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
