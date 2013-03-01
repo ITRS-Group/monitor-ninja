@@ -1,6 +1,11 @@
 <?php
-
+/**
+ * Renders the calculator page
+ */
 class Calc_Controller extends Authenticated_Controller {
+	/**
+	 * Renders the calculator page
+	 */
 	public function index() {
 		$this->xtra_js = array();
 		$basepath = 'modules/calculator/';

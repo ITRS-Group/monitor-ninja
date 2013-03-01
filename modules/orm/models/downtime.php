@@ -6,6 +6,9 @@ require_once( dirname(__FILE__).'/base/basedowntime.php' );
  * Describes a single object from livestatus
  */
 class Downtime_Model extends BaseDowntime_Model {
+	/**
+	 * A list of column dependencies for custom columns
+	 */
 	static public $rewrite_columns = array(
 		'triggered_by_text' => array('triggered_by')
 		);
