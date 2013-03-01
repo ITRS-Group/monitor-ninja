@@ -1,11 +1,26 @@
 <?php
 
+/**
+ * Exception from ExpParser
+ */
 class ExpParserException extends Exception {}
 
+/**
+ * Base class to handle the logic and lexing in a descendent recursive parser
+ */
 abstract class ExpParser_Core {
+	/**
+	 * The expression to parse
+	 */
 	protected $expr; /* Protected, just so we can add custom acceptors... */
+	/**
+	 * The current position during parsing, as an integer
+	 */
 	protected $ptr;
 	
+	/**
+	 * Start parsing of an expression
+	 */
 	public function parse( $expr ) {
 		$this->expr = $expr;
 		$this->ptr  = 0;
@@ -21,12 +36,23 @@ abstract class ExpParser_Core {
 		return $result;
 	}
 
+	/**
+	 * Entry point to start parsing. Runned when the state is set up correctly
+	 */
 	abstract protected function run();
 	
+	/**
+	 * Trim whitespaces at the current pointer
+	 */
 	protected function trimLeft() {
 		while( ctype_space( substr( $this->expr, $this->ptr, 1 ) ) ) $this->ptr++;
 	}
 	
+	/**
+	 * Accept a symbol.
+	 * 
+	 * Takes an array of possible symbols, must be ordered from the longest to the shortest.
+	 */
 	protected function acceptSym( $tokenlist ) {
 		$this->trimLeft();
 		
@@ -40,6 +66,11 @@ abstract class ExpParser_Core {
 		return false;
 	}
 	
+	/**
+	 * Excpect a symbol, but fail if not availible
+	 * 
+	 * @see acceptSym
+	 */
 	protected function expectSym( $tokenlist ) {
 		$sym = $this->acceptSym( $tokenlist );
 		if( $sym === false )
@@ -47,6 +78,9 @@ abstract class ExpParser_Core {
 		return $sym;
 	}
 	
+	/**
+	 * Accept a keyword, finished by a whitespace.
+	 */
 	protected function acceptKeyword( $keywordlist = false, $case_insensitive = false, $numeric = false ) {
 		$this->trimLeft();
 		
@@ -68,6 +102,11 @@ abstract class ExpParser_Core {
 		return false;
 	}
 	
+	/**
+	 * Excpect a keyword
+	 * 
+	 * @see acceptKeyword
+	 */
 	protected function expectKeyword( $keywordlist = false, $case_insensitive = false, $numeric = false ) {
 		$sym = $this->acceptKeyword( $keywordlist, $case_insensitive, $numeric );
 		if( $sym === false )
@@ -75,6 +114,9 @@ abstract class ExpParser_Core {
 		return $sym;
 	}
 	
+	/**
+	 * Accept a string, quoted by ", and may have \-escape sequences
+	 */
 	protected function acceptString( ) {
 		$this->trimLeft();
 		
@@ -94,6 +136,11 @@ abstract class ExpParser_Core {
 		return $buffer;
 	}
 	
+	/**
+	 * Expect a string
+	 * 
+	 * @see acceptString
+	 */
 	protected function expectString() {
 		$sym = $this->acceptString();
 		if( $sym === false )
@@ -101,7 +148,9 @@ abstract class ExpParser_Core {
 		return $sym;
 	}
 	
-	/* FIXME: number should handle more than positive integers */
+	/**
+	 * Accept a number, (only digits)
+	 */
 	protected function acceptNum() {
 		$this->trimLeft();
 		
@@ -120,6 +169,11 @@ abstract class ExpParser_Core {
 		return false;
 	}
 	
+	/**
+	 * Except a number
+	 * 
+	 * @see acceptNumber
+	 */
 	protected function expectNum() {
 		$sym = $this->acceptNum();
 		if( $sym === false )
@@ -127,6 +181,9 @@ abstract class ExpParser_Core {
 		return $sym;
 	}
 	
+	/**
+	 * Trigger a parser error, format the current position and throw an exception.
+	 */
 	protected function error( $msg ) {
 		throw new ExpParserException($msg . ' at ' . $this->ptr);
 	}

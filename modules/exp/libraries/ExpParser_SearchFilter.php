@@ -1,6 +1,9 @@
 <?php
 
 class ExpParser_SearchFilter_Core extends ExpParser_Core {
+	/**
+	 * List of table shortcuts for searching
+	 */
 	protected $objects = array(
 			'h'  => 'hosts',
 			's'  => 'services',
@@ -10,10 +13,19 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 			'si' => '_si'
 			);
 	
+	/**
+	 * Last object found in the search string
+	 */
 	protected $last_object = false;
+	
+	/**
+	 * Last string in the search query, for auto-complete
+	 */
 	protected $last_string = false;
 	
-	/* Expression entry point */
+	/**
+	 * Entrypoint to start the parsing
+	 */
 	protected function run() {
 		$filters = array();
 		
@@ -40,6 +52,9 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 		return $params;
 	}
 	
+	/**
+	 * Parse a criteria (table:string or string or string)
+	 */
 	protected function criteria() {
 		/* For auto-complete */
 		$this->last_string = false;
@@ -99,8 +114,9 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 		return $this->last_object;
 	}
 	
-	/* Custom string acceptor */
-
+	/**
+	 * Get everything to a given token.
+	 */
 	protected function acceptUnquotedUntil( $keywordlist = false ) {
 		/* Peek at next keyword */
 		$minpos = false;
@@ -132,6 +148,9 @@ class ExpParser_SearchFilter_Core extends ExpParser_Core {
 		return false;
 	}
 	
+	/**
+	 * Expect that there is anything left in the buffer, and get everything up until next keyword.
+	 */
 	protected function expectUnquotedUntil( $keywordlist = false ) {
 		$sym = $this->acceptUnquotedUntil( $keywordlist );
 		if( $sym === false )
