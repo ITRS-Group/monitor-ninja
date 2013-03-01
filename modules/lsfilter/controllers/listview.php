@@ -1,6 +1,15 @@
 <?php
 
+/**
+ * List view-related calls
+ * 
+ * Display the listview container, load scripts, and handles ajax-requests
+ */
 class ListView_Controller extends Authenticated_Controller {
+	
+	/**
+	 * Display a listview with a given query, entrypoint for listview
+	 */
 	public function index($q = "[hosts] all") {
 		$this->xtra_js = array();
 		$query = $this->input->get('q', $q);
@@ -58,6 +67,9 @@ class ListView_Controller extends Authenticated_Controller {
 		$lview->query_order = $query_order;
 	}
 	
+	/**
+	 * Fetches the users columns configuration, as a javascript.
+	 */
 	public function columns_config($tmp = false) {
 		
 		/* Fetch all column configs for user */
@@ -77,6 +89,9 @@ class ListView_Controller extends Authenticated_Controller {
 		exit();
 	}
 	
+	/**
+	 * Executes a search in the orm structure for a given query.
+	 */
 	public function fetch_ajax() {
 		$query = $this->input->get('query','');
 		$columns = $this->input->get('columns',false);
@@ -127,11 +142,17 @@ class ListView_Controller extends Authenticated_Controller {
 		}
 	}
 
+	/**
+	 * Fetch a list of the saved queries for use with ajax
+	 */
 	public function fetch_saved_queries() {
 		$queries = LSFilter_Saved_Queries_Model::get_queries();
 		return json::ok( array( 'status' => 'success', 'data' => $queries ) );
 	}
 
+	/**
+	 * Save a named query
+	 */
 	public function save_query() {
 		$name = $this->input->get('name',false);
 		$query = $this->input->get('query','');
@@ -172,6 +193,7 @@ class ListView_Controller extends Authenticated_Controller {
 		if( isset( $renderers_files[$name] ) ) {
 			$files = $renderers_files[$name];
 		}
+		sort($files);
 		
 		foreach( $files as $renderer ) {
 			print "\n/".str_repeat('*',79)."\n";

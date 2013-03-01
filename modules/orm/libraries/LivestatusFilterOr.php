@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * An or-node in the livestatus filter node tree
+ */
 class LivestatusFilterOr extends LivestatusFilterBase {
 	private $sub_filters = array();
 

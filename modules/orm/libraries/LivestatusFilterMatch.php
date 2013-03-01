@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * An match-node in the livestatus filter node tree
+ */
 class LivestatusFilterMatch extends LivestatusFilterBase {
 	private $field;
 	private $op;

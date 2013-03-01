@@ -1,5 +1,11 @@
 <?php
+/**
+ * Visitor to convert a livestatus filter to a search query
+ */
 class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
+	/**
+	 * Visit an and node, to build the subquery
+	 */
 	public function visit_and( LivestatusFilterAnd $filt, $prio ) {
 		$subfilters = $filt->get_sub_filters();
 		$subqueries = array();
@@ -18,7 +24,10 @@ class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
 		if( $prio > 2 ) $query = "($query)";
 		return $query; 
 	}
-	
+
+	/**
+	 * Visit an or node, to build the subquery
+	 */
 	public function visit_or( LivestatusFilterOr $filt, $prio ) {
 	$subfilters = $filt->get_sub_filters();
 		$subqueries = array();
@@ -37,7 +46,10 @@ class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
 		if( $prio > 1 ) $query = "($query)";
 		return $query; 
 	}
-	
+
+	/**
+	 * Visit an match node, to build the subquery
+	 */
 	public function visit_match( LivestatusFilterMatch $filt, $prio ) {
 		$op    = $filt->get_op();
 		$field = $filt->get_field();
@@ -60,7 +72,10 @@ class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
 		return $field.$op.$value;
 	}
 
-	
+
+	/**
+	 * Visit an not node, to build the subquery
+	 */
 	public function visit_not( LivestatusFilterNot $filt, $prio ) {
 		$query = 'not '.$filt->get_filter()->visit($this, 3);
 		if( $prio >= 3 ) $query = "($query)";

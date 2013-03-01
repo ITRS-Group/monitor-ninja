@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Parses a global search string, of syntax similar to: h:linux or windows and s:ping
+ */
 class ExpParser_SearchFilter_Core extends ExpParser_Core {
 	/**
 	 * List of table shortcuts for searching

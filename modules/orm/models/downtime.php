@@ -18,6 +18,9 @@ class Downtime_Model extends BaseDowntime_Model {
 		$this->export[] = 'triggered_by_text';
 	}
 	
+	/**
+	 * Get triggered by object, as a text.
+	 */
 	public function get_triggered_by_text() {
 		// TODO: Don't nest queries... Preformance!!! (Do this in livestatus?)
 		$trig_id = $this->get_triggered_by();

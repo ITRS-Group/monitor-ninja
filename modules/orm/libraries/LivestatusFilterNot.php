@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * An not-node in the livestatus filter node tree
+ */
 class LivestatusFilterNot extends LivestatusFilterBase {
 	private $filter;
 	

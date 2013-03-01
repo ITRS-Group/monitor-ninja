@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Helper methods for easy access to generate queries and links to listview
+ */
 class listview {
 	/**
 	 * A simple tool to fetch a set of elements reduced by a certain paramters
