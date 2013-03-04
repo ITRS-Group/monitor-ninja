@@ -96,6 +96,16 @@ var lsfilter_graphics_visitor = {
 		},
 		"list": {
 			'gt_eq': '>='
+		},
+		"dict": { /* FIXME: This is ugly... better grammar for custom_variables */
+			'not_re_ci': '!~~',
+			'not_re_cs': '!~',
+			're_ci': '~~',
+			're_cs': '~',
+			'not_eq_ci': '!=~',
+			'eq_ci': '=~',
+			'not_eq': '!=',
+			'eq': '='
 		}
 	},
 	
