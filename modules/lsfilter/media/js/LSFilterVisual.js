@@ -93,6 +93,9 @@ var lsfilter_graphics_visitor = {
 		"object": {
 			'in': 'in',
 			'all': 'all'
+		},
+		"list": {
+			'gt_eq': '>='
 		}
 	},
 	
