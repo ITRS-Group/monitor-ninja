@@ -14,6 +14,7 @@ class LalrLexerJSGenerator extends js_class_generator {
 		$this->init_class( array( 'buffer', 'visitor' ));
 		$this->write( 'this.buffer = buffer;' );
 		$this->write( 'this.visitor = visitor;' );
+		$this->write( 'this.expression = buffer;' );
 		$this->variable( 'position', 0 );
 		
 		$this->generate_fetch_token();
@@ -54,8 +55,10 @@ class LalrLexerJSGenerator extends js_class_generator {
 		}
 		
 		$this->write();
-		$this->comment( 'Exit if no match' );
-		$this->write( 'if( length < 0 ) return null;' );
+		$this->comment( 'Error if no match' );
+		$this->write( 'if( length < 0 ) {' );
+		$this->write( 'throw "Unknown token: " + this.buffer.substring(0,30);' );
+		$this->write( '}' );
 		$this->write();
 		$this->comment( 'Remove token from buffer, and move length forward' );
 		$this->write( 'this.buffer = this.buffer.substr( length );');

@@ -2,6 +2,10 @@
 
 class LalrParserJSGenerator extends js_class_generator {
 	private $fsm;
+	/**
+	 * Reference to the grammar object
+	 * @var LalrGrammar
+	 */
 	private $grammar;
 	private $goto_map;
 	
@@ -32,6 +36,7 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->variable( 'stack', array() );
 		$this->variable( 'cont', false );
 		$this->variable( 'done', false );
+		$this->variable( 'lexer', false );
 		$this->write( 'this.visitor = visitor;' );
 		$this->generate_parse();
 		
@@ -51,6 +56,7 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->write( 'this.stack = new Array();' );
 		$this->write( 'this.stack.push( %s );', array(0,"start"));
 		$this->write( 'this.done = false;' );
+		$this->write( 'this.lexer = lexer;' );
 		$this->write( 'var result = false;' );
 		$this->write( 'do {' );
 		$this->write(   'var token = lexer.fetch_token();' );
@@ -69,9 +75,20 @@ class LalrParserJSGenerator extends js_class_generator {
 	}
 	
 	private function generate_state( $state_id, $map ) {
+		$state = $this->fsm->get_state($state_id);
+		/* @var $state LalrState */
+		
 		$this->init_function( false, array('token'), 'private' );
-//		$this->comment( "State: $state_id\n".trim(strval( $this->fsm->get_state($state_id) )) );
+//		$this->comment( "State: $state_id\n".trim(strval( $state )) );
 		$this->comment( "State: $state_id" );
+
+		$nextup = array();
+		foreach( $state->next_symbols() as $sym ) {
+			if( $this->grammar->is_terminal($sym) ) {
+				$nextup[] = $sym;
+			}
+		}
+		
 		$this->write( 'switch( token[0] ) {' );
 		
 		/* Merge cases per action... many cases use same action... */
@@ -107,7 +124,13 @@ class LalrParserJSGenerator extends js_class_generator {
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
-		$this->write( 'throw "Error at state '.$state_id.', got token " + token[0];' );
+		$this->write( 'var nextup = this.lexer.expression.substring(token[2])');
+		$this->write( 'if( nextup ) {');
+		$this->write(     'nextup = "error at: " + nextup.substring(0,20);');
+		$this->write( '} else {' );
+		$this->write(     'nextup = "unexpected end";' );
+		$this->write( '}' );
+		$this->write( 'throw "Invalid query, "+nextup;' );
 		$this->write( 'return null;' );
 		$this->write( '},' ); // FIXME: Should be finish_function, but with , instead of ;
 	}
@@ -123,22 +146,23 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->write( 'this.cont = true;' );
 
 		$args = array();
+		$length_sum = array();
 		foreach( array_reverse($item->get_symbols(),true) as $i => $symbol ) {
+			$this->write( 'var arg'.$i.' = this.stack.pop();');
+			$length_sum[] = 'arg'.$i.'[3]';
 			if( $item->symbol_enabled($i) ) {
-				$this->write( 'var arg'.$i.' = this.stack.pop();');
 				$args[] = 'arg'.$i.'[1][1]';
-			} else {
-				$this->write( 'this.stack.pop();');
 			}
 		}
+		$length_sum = implode('+',$length_sum);
 		$item_name = $item->get_name();
 		if( $item_name[0] == '_' ) {
 			if( count( $args ) != 1 ) {
 				throw new GeneratorException( "Rule $item_name can not be used as transparent more than one usable argument" );
 			}
-			$this->write( 'var new_token = [%s, '.$args[0].', 0, 0];', $item->generates());
+			$this->write( 'var new_token = [%s, '.$args[0].', arg0[2], '.$length_sum.'];', $item->generates());
 		} else {
-			$this->write( 'var new_token = [%s, this.visitor.visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), 0, 0];', $item->generates());
+			$this->write( 'var new_token = [%s, this.visitor.visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), arg0[2], '.$length_sum.'];', $item->generates());
 		}
 		$this->write( 'switch( this.stack[this.stack.length-1][0] ) {' );
 		
