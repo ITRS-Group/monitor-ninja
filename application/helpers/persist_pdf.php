@@ -17,7 +17,7 @@ class persist_pdf_Core
 	 * @throws Exception with reason of failure
 	 * @return string filename of new file
 	 */
-	public function save($data, $save_here) {
+	static function save($data, $save_here) {
 		$save_here = (string) $save_here;
 		if(!is_writable(pathinfo($save_here, PATHINFO_DIRNAME))) {
 			throw new Exception("Can't write output file '$save_here'");
