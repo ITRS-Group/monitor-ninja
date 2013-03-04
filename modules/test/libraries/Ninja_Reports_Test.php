@@ -10,7 +10,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 {
 	private $test_file = false;
 	private $total = 0;
-	private $description = false;
+	public $description = false; /**< A string describing the purpose of this test */
 	private $tests;
 	private $results = array();
 	private $config_files = false;

@@ -79,7 +79,7 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 			$test->db_type = $db_type;
 			$test->db_host = $db_host;
 			if ($test->run_test_series() === -1) {
-				echo "    $test->test_file : '$test->description' failed to run\n";
+				echo "    $tfile : '$test->description' failed to run\n";
 				exit(1);
 			}
 			$all[] = $test;
