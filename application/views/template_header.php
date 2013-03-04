@@ -46,7 +46,7 @@
 	<div class="supermenu">
 
 		<div class="logo">
-			<?php echo html::image('application/views/icons/icon.png', array('style' => 'margin: 7px 9px 7px 7px;')); ?>
+			<div class="logo-image"></div>
 		</div>
 
 		<ul>
