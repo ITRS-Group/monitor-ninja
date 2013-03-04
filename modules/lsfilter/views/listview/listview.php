@@ -49,6 +49,7 @@
 			<input type="hidden" name="filter_query_order"
 				id="filter_query_order" value="<?php echo htmlentities($query_order); ?>" />
 		</form>
+		<div id="filter-query-status"></div>
 
 		<h2><?php echo _('Graphical input'); ?></h2>
 
