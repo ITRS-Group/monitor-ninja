@@ -90,7 +90,7 @@ listview_renderer_table.hosts = {
 			
 			// FIXME: Add nacoma link
 			
-			if (args.obj.pnpgraph_present) {
+			if (args.obj.pnpgraph_present>0) {
 				var pnp_link = icon16('pnp', _('Show performance graph'), link(
 						'pnp', {
 							"srv": "_HOST_",
@@ -351,7 +351,7 @@ listview_renderer_table.services = {
 			 */
 			
 			// FIXME: Add nacoma link
-			if (args.obj.pnpgraph_present) {
+			if (args.obj.pnpgraph_present>0) {
 				var pnp_link = icon16('pnp', _('Show performance graph'), link(
 						'pnp', {
 							"srv": args.obj.description,
