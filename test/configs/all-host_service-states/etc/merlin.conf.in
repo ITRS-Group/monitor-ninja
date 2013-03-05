@@ -35,7 +35,7 @@ daemon {
 	# --db-conn_str=database_connection_string
 	# The database parameters are taken from "database" section if such
 	# a section exists.
-	import_program = /usr/lib/merlin/ocimp
+	import_program = @@LIBDIR@@/merlin/ocimp
 
 	# address to listen to. 0.0.0.0 is default
 	#address = 0.0.0.0;
