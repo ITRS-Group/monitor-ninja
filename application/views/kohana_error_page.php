@@ -12,6 +12,12 @@ if ( ! empty($trace)){
 	$content .= $trace;
 }
 $content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
+foreach(config::get('exception.shell_commands') as $command) {
+	$content .= "<p class='stats'>$command: ".`$command`.'</p>';
+}
+foreach(config::get('exception.extra_info') as $header => $info) {
+	$content .= "<p class='stats'>$header: $info</p>";
+}
 $content .= '</div>';
 
 $css_header = '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
