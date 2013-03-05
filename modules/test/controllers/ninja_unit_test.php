@@ -39,7 +39,7 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 			if (isset($connection['type']) && $connection['type'])
 				$db_type = $connection['type'];
 		}
-		$importer = '/usr/libexec/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg';
+		$importer = '/usr/lib/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg';
 		$test_file = array();
 		$argv = isset($argv) ? $argv : $GLOBALS['argv'];
 		$argc = isset($argc) ? $argc : $GLOBALS['argc'];
