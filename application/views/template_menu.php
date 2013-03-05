@@ -11,7 +11,7 @@ array(4) {
       [0]=>
       string(64) "http://www.op5.org/community/plugin-inventory/op5-projects/ninja" <-- absolute or relative url
       [1]=>
-      string(5) "ninja" <--- "id"
+      string(5) "ninja" <--- "id", or "geomap.png" (ninja/app..), or array('synergy', 'synergy.png') (ninja/modules/..)
       [2]=>
       int(3) <---- 0 indicates internal link, /monitor/index.php will be prepended;
 	     <---- 1 indicates same host, https://monitor-server will be prepended
