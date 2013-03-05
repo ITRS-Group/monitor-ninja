@@ -14,8 +14,8 @@ class Ninja_Reports_Test_Core extends Reports_Model
 	private $tests;
 	private $results = array();
 	private $config_files = false;
-	private $passed = 0;
-	private $failed = 0;
+	public $passed = 0; /**< Number of passed tests */
+	public $failed = 0; /**< Number of failed tests */
 	private $logfiles = false;
 	private $logfile = false;
 	private $sqlfile = false;
@@ -26,12 +26,12 @@ class Ninja_Reports_Test_Core extends Reports_Model
 	private $color_red   = '';
 	private $color_green = '';
 	private $color_reset = '';
-	private $db_name;
-	private $db_user;
-	private $db_pass;
-	private $db_type;
-	private $db_host;
-	private $importer;
+	public $db_name; /**< Database name */
+	public $db_user; /**< Database user */
+	public $db_pass; /**< Database password */
+	public $db_type; /**< Database type */
+	public $db_host; /**< Database hostname */
+	public $importer; /**< The command used to import logs into the database */
 
 	/**
 	 * Run new test file. Will parse the file, but not run it
