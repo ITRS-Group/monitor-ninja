@@ -7,8 +7,8 @@ class LalrExceptionPHPGenerator extends class_generator {
 		$this->class_suffix = ''; // Override class suffix... Exception should not be Exception_Core
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		
 		$this->init_class('Exception');
 		$this->variable('query');

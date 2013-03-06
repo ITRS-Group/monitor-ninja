@@ -6,8 +6,8 @@ class LalrPHPGenerator extends class_generator {
 		$this->set_library();
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		
 		$this->init_class();
 		$this->variable('preprocessor', null);

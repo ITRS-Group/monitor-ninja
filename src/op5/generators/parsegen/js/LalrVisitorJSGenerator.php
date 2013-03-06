@@ -8,8 +8,8 @@ class LalrVisitorJSGenerator extends js_class_generator {
 		$this->grammar = $grammar->get_rules();
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		
 		$this->init_class();
 		foreach( $this->grammar as $name => $item ) {

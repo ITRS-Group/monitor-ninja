@@ -5,8 +5,8 @@ class LalrJSGenerator extends js_class_generator {
 		$this->classname = $parser_name;
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		
 		$this->init_class(array('preprocessor','visitor'));
 		$this->write( 'this.preprocessor = preprocessor;' );

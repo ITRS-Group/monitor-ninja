@@ -8,8 +8,8 @@ class LalrLexerJSGenerator extends js_class_generator {
 		$this->grammar = $grammar->get_tokens();
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		
 		$this->init_class( array( 'buffer', 'visitor' ));
 		$this->write( 'this.buffer = buffer;' );

@@ -28,8 +28,8 @@ class LalrParserJSGenerator extends js_class_generator {
 		}
 	}
 	
-	public function generate() {
-		parent::generate();
+	public function generate($skip_generated_note = false) {
+		parent::generate($skip_generated_note);
 		
 		$this->init_class(array('visitor'));
 		$this->variable( 'visitor' );
