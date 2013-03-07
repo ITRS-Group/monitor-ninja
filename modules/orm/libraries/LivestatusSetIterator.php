@@ -27,6 +27,9 @@ class LivestatusSetIterator implements Iterator {
 	 */
 	public function current()
 	{
+		if(!$this->valid()) {
+			return false;
+		}
 		$cur_arr = $this->data->current();
 		$varmap = array_combine(
 				$this->columns,
