@@ -1542,17 +1542,20 @@ class Reports_Model extends Model
 	 * alert summary. Each caller is responsible for adding
 	 * sorting and limit options as necessary.
 	 *
-	 * @param $fields Database fields the caller needs
+	 * @param $fields string Comma separated list of database columns the caller needs
          * @param $is_api_call boolean = false
+         * @param $blacklisted_criteria array = array()
+         * @param $db_table string = null
          * @return string (sql)
 	 */
-	private function build_alert_summary_query($fields = false, $is_api_call = false)
+	function build_alert_summary_query($fields = 'host_name, service_description, state, hard', $is_api_call = false, $blacklisted_criteria = array(), $db_table = null)
 	{
-		# default to the most commonly used fields
-		if (!$fields) {
-			$fields = 'host_name, service_description, state, hard';
+		if(!$db_table)
+		{
+			// this method ('s purpose) is so good I wanna copy it.. but that's not feasable,
+			// so I'm just gonna pretend it does dependency injection
+			$db_table = $this->db_table;
 		}
-
 		$softorhard = false;
 		$alert_types = false;
 		$downtime = false;
@@ -1648,17 +1651,20 @@ class Reports_Model extends Model
 		} elseif ($hosts && $hosts !== true) {
 			$object_selection = "host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
-                }
-
-		switch ($this->options['state_types']) {
-		 case 0: case 3: default:
-			break;
-		 case 1:
-			$softorhard = 'hard = 0';
-			break;
-		 case 2:
-			$softorhard = 'hard = 1';
-			break;
+		}
+		if(!in_array('state_types', $blacklisted_criteria)) {
+			switch ($this->options['state_types']) {
+				case 0:
+				case 3:
+				default:
+					break;
+				case 1:
+					$softorhard = 'hard = 0';
+					break;
+				case 2:
+					$softorhard = 'hard = 1';
+					break;
+			}
 		}
 
 		if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
@@ -1714,7 +1720,7 @@ class Reports_Model extends Model
 			$time_last = 'timestamp <= ' . $this->options['end_time'];
 		}
 
-		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
+		$query = "SELECT " . $fields . "\nFROM " . $db_table;
 		$query .= ' WHERE '.
 			sql::combine('and',
 				$time_first,

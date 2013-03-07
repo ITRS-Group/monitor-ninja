@@ -7,6 +7,13 @@ class Avail_options extends Report_options {
 			'default' => false,
 			'description' => 'Include pie charts'
 		);
+		if(ninja::has_module('synergy')) {
+			$this->properties['include_synergy_events'] = array(
+				'type' => 'bool',
+				'default' => false,
+				'description' => 'Include BSM events'
+			);
+		}
 		parent::__construct($options);
 		$this->properties['report_period']['options'] = array(
 			"today" => _('Today'),

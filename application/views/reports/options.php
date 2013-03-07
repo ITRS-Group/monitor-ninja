@@ -155,7 +155,20 @@ if($options['report_id']) { ?>
 			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include Pie Charts') ?></label>
 		</td>
 	</tr>
-	<?php if (isset($extra_content)) {
+	<?php
+	if(ninja::has_module('synergy')) { ?>
+	<tr>
+		<td>
+			<?php echo help::render('synergy_events'); ?>
+			<input type="checkbox" name="include_synergy_events" id="include_synergy_events" <?php echo $options['include_synergy_events'] ? 'checked="checked"' : null ?> />
+			<label for="include_synergy_events"><?php echo _('Include BSM events'); ?></label>
+		</td>
+		<td></td>
+		<td></td>
+	</tr>
+	<?php
+	}
+	if (isset($extra_content)) {
 		echo $extra_content;
 	} ?>
 	<tr>

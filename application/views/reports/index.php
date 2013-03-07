@@ -38,6 +38,7 @@
 		echo !empty($svc_content) ? $svc_content : '';
 		echo isset($pie) ? $pie : '';
 		echo !empty($log_content) ? $log_content : '';
+		echo !empty($synergy_content) ? $synergy_content : '';
 		echo isset($extra_content) ? $extra_content: '';
 	}
 ?>

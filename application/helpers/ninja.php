@@ -7,7 +7,7 @@
  * had needed it.
  */
 class ninja_Core {
-
+	private static $loaded_modules = array();
 	/**
 	 * Given a file name that is relative to the views directory, find it and
 	 * return the full path.
@@ -62,6 +62,19 @@ class ninja_Core {
 			}
 		}
 		return $available_skins;
+	}
+
+	/**
+	 * @param $name string
+	 * @return boolean
+	 */
+	static function has_module($name)
+	{
+		$name = (string) $name;
+		if(!isset(self::$loaded_modules[$name])) {
+			self::$loaded_modules[$name] = is_readable(MODPATH.$name);
+		}
+		return self::$loaded_modules[$name];
 	}
 
 	/**

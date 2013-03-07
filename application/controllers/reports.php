@@ -582,6 +582,13 @@ class Reports_Controller extends Base_reports_Controller
 			$alerts->generate();
 			$this->template->content->log_content = $alerts->template->content->content;
 		}
+
+		if(ninja::has_module('synergy') && $this->options['include_synergy_events']) {
+			$synergy_report_model = new Synergy_report_Model;
+			$synergy_content = $this->add_view('reports/synergy');
+			$synergy_content->synergy_events = $synergy_report_model->get_data($this->options);
+			$this->template->content->synergy_content = $synergy_content;
+		}
 		$this->template->js_header->js = $this->xtra_js;
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 		if($scheduled_info) {
@@ -994,6 +1001,7 @@ class Reports_Controller extends Base_reports_Controller
 			'include_trends' => _("Check this to include a trends graph in your report.<br>Warning: This can make your reports slow!"),
 			'include_trends_scaling' => _("Check this to get upscaled values on your trends graph for small segments of time that would otherwise be hidden."),
 			'include_alerts' => _('Include a log of all alerts for all objects in your report.<br>Warning: This can make your reports slow!'),
+			'synergy_events' => _('Include a detailed history of what happened to BSM objects'),
 			'status_to_display' => _('Check a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
