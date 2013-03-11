@@ -600,6 +600,8 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	function valid() { return array_key_exists(key($this->options), $this->options); }
 	function count() { return count($this->options); }
 
+	function __toString() { return var_export($this->options, true); }
+
 	protected static function discover_options($type, $input = false)
 	{
 		# not using $_REQUEST, because that includes weird, scary session vars
@@ -630,7 +632,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				}
 			}
 
-			if (isset($saved_report_info['objects']))
+			if (isset($saved_report_info['objects']) && empty($options[$options->get_value('report_type')]))
 				$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 		}
 		if (isset($options->vtypes['report_period']) && !isset($options->options['report_period']) && isset($options->vtypes['report_period']['default']))
