@@ -233,7 +233,7 @@ class nagstat_Core {
 	*	Format a Nagios date format string to the
 	*	PHP equivalent.
 	*
-	*	NOTE!!! nagstat::date_format has the same thing, without time
+	*	NOTE!!! cal::get_calendar_format has the same thing, without time
 	*/
 	public static function date_format($nagios_format_name=false)
 	{
@@ -268,7 +268,7 @@ class nagstat_Core {
 				$date_format = 'Y-m-d H:i:s';
 				break;
 			case 'strict-iso8601': # YYYY-MM-DDTHH:MM:SS
-				$date_format = 'Y-m-dTH:i:s';
+				$date_format = 'Y-m-d\TH:i:s';
 				break;
 		}
 		return $date_format;
