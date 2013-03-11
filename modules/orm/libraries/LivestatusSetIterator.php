@@ -31,6 +31,9 @@ class LivestatusSetIterator implements Iterator {
 			return false;
 		}
 		$cur_arr = $this->data->current();
+		if( empty($cur_arr) ) {
+			return false;
+		}
 		$varmap = array_combine(
 				$this->columns,
 				$cur_arr
