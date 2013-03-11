@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Avail_options extends Report_options {
-	public function __construct($options) {
+	public function __construct($options=false) {
 		$this->properties['include_pie_charts'] = array(
 			'type' => 'bool',
 			'default' => false,
