@@ -110,5 +110,17 @@ class report_Test extends TapUnit {
 		foreach ($the_modified_opts as $k => $v) {
 			$this->ok_eq($v, $modified_opts[$k], 'Loading a saved report should have option set to what we provided for '. $k);
 		}
+
+		$the_modified_opts['host_name'][] = 'host_pending';
+		$modified_opts->options['host_name'][] = 'host_pending';
+		Saved_Reports_Model::edit_report_info('avail', $id, $modified_opts);
+		$new_modified_opts = Avail_Options::setup_options_obj('avail', array('report_id' => $id));
+		foreach ($the_modified_opts as $k => $v) {
+			if (is_array($v)) {
+				sort($v);
+				sort($new_modified_opts->options[$k]);
+			}
+			$this->ok_eq($v, $new_modified_opts->options[$k], 'Loading a saved report should have option set to what we provided for '. $k);
+		}
 	}
 }
