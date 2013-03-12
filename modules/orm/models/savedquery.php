@@ -27,7 +27,7 @@ class SavedQuery_Model extends BaseSavedQuery_Model {
 	 * Get the scope as a string
 	 */
 	public function get_scope() {
-		if( $this->get_username() === null ) {
+		if( $this->get_username() === false ) {
 			return 'global';
 		}
 		return 'user';

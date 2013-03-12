@@ -1024,7 +1024,7 @@ listview_renderer_table.saved_queries = {
 		"sort" : [ 'username' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			if(!args.obj.username) {
+			if(args.obj.username) {
 				cell.text(args.obj.username)
 			}
 			return cell;
