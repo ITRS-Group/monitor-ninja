@@ -608,6 +608,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 

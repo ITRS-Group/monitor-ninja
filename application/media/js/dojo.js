@@ -29,16 +29,18 @@
 			if(mc) {
 				mc.style.display = 'none'; // @todo fix
 			}
-			bc.style.boxShadow = 'none';
-
+			if(bc) {
+				bc.style.boxShadow = 'none';
+			}
 			mc = $('#' + key + '-menu')[0];
 			bc = $('#' + key + '-button')[0];
 
 			if(mc) {
 				mc.style.display = 'block'; // @todo fix
 			}
-			bc.style.boxShadow = 'inset 0 0 8px #ccc';
-
+			if(bc){
+				bc.style.boxShadow = 'inset 0 0 8px #ccc';
+			}
 		}
 	};
 
