@@ -5,8 +5,10 @@ all: $(MODULES)
 $(MODULES): force
 	$(MAKE) -C $@
 
-regenerate:
-	rm $(MODULES:%=%/build_track)
+regenerate: clean
 	$(MAKE) all
 
-.PHONY: force regenerate all
+clean:
+	rm $(MODULES:%=%/build_track)
+
+.PHONY: force clean regenerate all

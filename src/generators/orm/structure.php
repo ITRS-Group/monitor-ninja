@@ -467,6 +467,22 @@ $tables = array (
 			'escalated' => 'int',
 			'contacts_notified' => 'int',
 			),
+		),
+	'saved_queries' =>
+	array(
+		'class' => 'SavedQueries',
+		'source' => 'SQL',
+		'table' => 'ninja_saved_queries',
+		'key' => array('id'),
+		'default_sort' => array('query_name desc'),
+		'structure' => array(
+			'id' => 'int',
+			'username' => 'string',
+			'query_name' => 'string',
+			'query_table' => 'string',
+			'query' => 'string',
+			'query_description' => 'string'
+			),
 		)
 	);
 /*

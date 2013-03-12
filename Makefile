@@ -25,6 +25,9 @@ regenerate-php:
 generate-php:
 	$(MAKE) -C src/generators
 
+clean-php:
+	$(MAKE) -C src/generators clean
+
 test: test-reports test-unittest
 
 test-reports:
@@ -68,7 +71,7 @@ test-php-lint:
 
 docs: Documentation
 
-clean:
+clean: clean-php
 	rm -rf Documentation
 
 Documentation: clean ninja.doxy application/models/*.php application/helpers/*.php
