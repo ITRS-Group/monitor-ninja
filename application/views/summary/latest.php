@@ -15,6 +15,7 @@
 	<?php
 	$i = 0;
 	if (!empty($result)) {
+		$date_format = nagstat::date_format();
 		foreach ($result as $ary) {
 			$row = alert_history::get_user_friendly_representation($ary);
 			$i++;
@@ -23,7 +24,7 @@
 		<td class="icon status">
 			<?php echo $row['image'] ?>
 		</td>
-		<td><?php echo date(nagstat::date_format(), $ary['timestamp']); ?></td>
+		<td><?php echo date($date_format, $ary['timestamp']); ?></td>
 		<td><?php echo $row['type']; ?></td>
 		<td><?php echo $ary['host_name']?html::anchor(base_url::get().'extinfo/details/?type=host&host='.urlencode($ary['host_name']), $ary['host_name']):'' ?></td>
 		<td><?php echo $ary['service_description']?html::anchor(base_url::get().'extinfo/details/?type=service&host='.urlencode($ary['host_name']).'&service='.$ary['service_description'], $ary['service_description']):'' ?></td>
