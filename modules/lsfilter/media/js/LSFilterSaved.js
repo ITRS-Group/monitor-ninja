@@ -97,6 +97,7 @@ var lsfilter_saved = {
 				complete : function(xhr) {
 					$('#lsfilter_save_filter').removeClass().text(_('Save'));
 					self.refresh_filter_list();
+					lsfilter_main.refresh();
 				}
 			});
 
