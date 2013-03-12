@@ -109,8 +109,8 @@ class LSFilter_Saved_Queries_Model extends Model {
 		switch( $scope ) {
 			case 'user':
 			case 'global':
-				$sql_query = "INSERT INTO ".self::tablename." (username, query_name, query_table, query, query_description) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE query=%s";
-				$args = array($user, $name, $metadata['name'], $query, $name, $query);
+				$sql_query = "INSERT INTO ".self::tablename." (username, query_name, query_table, query, query_description) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE query=%s, query_table=%s";
+				$args = array($user, $name, $metadata['name'], $query, $name, $query, $metadata['name']);
 				break;
 			case 'static':
 				return "Can not save to statis scope";
