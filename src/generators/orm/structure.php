@@ -470,7 +470,7 @@ $tables = array (
 		),
 	'saved_queries' =>
 	array(
-		'class' => 'SavedQueries',
+		'class' => 'SavedQuery',
 		'source' => 'SQL',
 		'table' => 'ninja_saved_queries',
 		'key' => array('id'),

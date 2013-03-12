@@ -974,14 +974,21 @@ listview_renderer_table.saved_queries = {
 				icon = 'notifications';
 				break;
 			default:
-				icon = 'use_search';
-				base = 'x16';
+				icon = false;
 			}
 			if (icon) {
 				cell.append(icon16(icon, false, false, base));
 			}
 			return cell;
 
+		}
+	},
+	"scope" : {
+		"header" : 'Scope',
+		"depends" : [ 'scope' ],
+		"sort" : false,
+		"cell" : function(args) {
+			return $('<td />').text(args.obj.scope);
 		}
 	},
 	"name" : {
@@ -1016,7 +1023,11 @@ listview_renderer_table.saved_queries = {
 		"depends" : [ 'username' ],
 		"sort" : [ 'username' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.username);
+			var cell = $('<td />');
+			if(!args.obj.username) {
+				cell.text(args.obj.username)
+			}
+			return cell;
 
 		}
 	},

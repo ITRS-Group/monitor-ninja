@@ -61,7 +61,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 			$table_filter = " AND query_table = ".$db->escpae($table);
 		}
 		
-		$sql = "SELECT * FROM ".self::tablename." WHERE (username=".$db->escape($user)." OR username='-')$table_filter";
+		$sql = "SELECT * FROM ".self::tablename." WHERE (username=".$db->escape($user)." OR username IN NULL)$table_filter";
 		$res = $db->query($sql);
 		
 		$queries = array();
@@ -104,7 +104,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		if( $metadata === false ) return "Error when type checking";
 		
 		$user = Auth::instance()->get_user()->username;
-		if( $scope == 'global' ) $user = '-'; /* FIXME: no special values! Do a select, then update/insert - make oracle-compatible */
+		if( $scope == 'global' ) $user = null; /* FIXME: no special values! Do a select, then update/insert - make oracle-compatible */
 		
 		switch( $scope ) {
 			case 'user':
@@ -134,7 +134,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		$args = array($user, $id);
 		
 		if( true ) { /* FIXME: Delete from global scope */
-			$sql_query = "DELETE FROM ".self::tablename." WHERE (username = %s OR username = \"-\") AND id = %s";
+			$sql_query = "DELETE FROM ".self::tablename." WHERE (username = %s OR username IS NULL) AND id = %s";
 		}
 		
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );

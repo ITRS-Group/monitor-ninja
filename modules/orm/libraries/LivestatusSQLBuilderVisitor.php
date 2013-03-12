@@ -34,7 +34,7 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
 		$field = str_replace('.','_',$filt->get_field());
-		$value = Database::instance()->escape($filt->get_value());
+		$value = $filt->get_value();
 		$op = $filt->get_op();
 		switch( $filt->get_op() ) {
 			case '!~~':
@@ -56,14 +56,19 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 				$op = '=';
 				break;
 
+			case '=':
+				if($value === null)
+					return "($field IS NULL)";
 			case '!=':
+				if($value === null)
+					return "($field IS NOT NULL)";
 			case '>=':
 			case '<=':
 			case '>':
 			case '<':
-			case '=':
 				break;
 		}
+		$value = Database::instance()->escape($value);
 		return "($field $op $value)";
 	}
 

@@ -1,0 +1,1 @@
+ALTER TABLE ninja_saved_queries MODIFY username varchar(200) DEFAULT NULL;
