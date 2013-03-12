@@ -974,7 +974,7 @@ listview_renderer_table.saved_queries = {
 				icon = 'notifications';
 				break;
 			default:
-				icon = false;
+				icon = 'eventlog';
 			}
 			if (icon) {
 				cell.append(icon16(icon, false, false, base));
