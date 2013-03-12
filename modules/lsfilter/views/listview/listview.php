@@ -5,7 +5,6 @@
 		<span id="filter_loading_status"></span>
 		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
 		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-use_search"></span></button>
-		<button id="show-filter-query-saved" title="Show saved filters"><span class="icon-16 x16-save_search"></span></button>
 	</div>
 	<div id="filter_result_totals"></div>
 </div>
@@ -24,19 +23,6 @@
 		<input type="text" id="lsfilter_save_filter_name" placeholder="<?php echo _('Filter Name');?>" />
 		<button id="lsfilter_save_filter"><?php echo _('Save Filter');?></button>
 		<input type="checkbox" id="lsfilter_save_filter_global" /> <?php echo _('Make global'); ?>
-	</div>
-
-	<div id="filter-query-saved">
-
-		<h2><?php echo _('Saved filters');?></h2>
-
-		<label><input type="checkbox" id="filter-query-saved-hide-static" class="filter-query-saved-hide-x" /> <?php echo _('Hide static'); ?></label>
-		<label><input type="checkbox" id="filter-query-saved-hide-global" class="filter-query-saved-hide-x" /> <?php echo _('Hide global'); ?></label>
-		<label><input type="checkbox" id="filter-query-saved-hide-user" class="filter-query-saved-hide-x" /> <?php echo _('Hide user'); ?></label><br />
-		<ul id="filter-query-saved-filters"></ul>
-
-		<pre id="filter-query-saved-preview"></pre>
-
 	</div>
 
 	<div id="filter-query-builder-manual">

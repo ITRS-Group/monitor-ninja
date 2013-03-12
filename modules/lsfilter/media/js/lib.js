@@ -10,11 +10,12 @@ function icon12(name, title, link)
 	}
 	return img;
 }
-function icon16(name, title, link)
+function icon16(name, title, link, base)
 {
+	if( !base ) base = 'x16';
 	var img = $('<span />');
 	img.addClass('icon-16');
-	img.addClass('x16-' + name);
+	img.addClass(base + '-' + name);
 	if (title) img.attr('title', title);
 	if (link) {
 		img = link.append(img);

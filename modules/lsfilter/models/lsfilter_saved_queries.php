@@ -36,6 +36,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 	 * Get the set of static search queries, possible given a table name
 	 */
 	private static function get_static_queries( $table = false ) {
+		/* TODO: return table names */
 		if($table==false) {
 			$queries = array_reduce( self::$saved_queries, 'array_merge', array());
 		} else if(isset(self::$saved_queries[$table])) {
@@ -65,7 +66,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		
 		$queries = array();
 		foreach($res as $row) {
-			$queries[] = array( 'name' => $row->query_name, 'query' => $row->query, 'scope' => ($row->username?'user':'global') );
+			$queries[] = array( 'name' => $row->query_name, 'table' => $row->query_table, 'query' => $row->query, 'scope' => ($row->username?'user':'global') );
 		}
 
 		return $queries;
@@ -115,6 +116,25 @@ class LSFilter_Saved_Queries_Model extends Model {
 				return "Can not save to statis scope";
 			default:
 				return "Unknown scope";
+		}
+		
+		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
+		$res = $db->query($sql_query);
+		return false;
+	}
+	/**
+	 * Delete a query to the database
+	 */
+	public static function delete_query( $id ) {
+		$db = Database::instance();
+		
+		$user = Auth::instance()->get_user()->username;
+		
+		$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND id = %s";
+		$args = array($user, $id);
+		
+		if( true ) { /* FIXME: Delete from global scope */
+			$sql_query = "DELETE FROM ".self::tablename." WHERE (username = %s OR username = \"-\") AND id = %s";
 		}
 		
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );

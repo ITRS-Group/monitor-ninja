@@ -66,7 +66,9 @@
 				}
 			}
 		?>
-
+			<li class="supermenu-button" id="saved-queries-button" title="Saved-Queries">
+				<span class="icon-32 x32-shield-not-unknown"></span>
+			</li>
 		</ul>
 	</div>
 
@@ -131,7 +133,7 @@
 	if(Auth::instance()->logged_in()) {
 		$timezone = date_default_timezone_get();
 ?>
-		<div style="position: fixed; top: 6px; left: 285px; font-size: 90%; color: #555;">
+		<div style="position: fixed; top: 6px; left: 337px; font-size: 90%; color: #555;">
 			<?php
 				if (isset($_SERVER['SERVER_NAME']))
 					echo 'Host: ' . htmlentities($_SERVER['SERVER_NAME']) . ' &nbsp ';

@@ -32,9 +32,9 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSColumnsPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/LSColumnsVisitor.js';
 		
-		$this->xtra_js[] = $basepath.'media/js/lib.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
+/*		$this->xtra_js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
 		$this->xtra_js[] = $basepath.'media/js/LSFilterRenderer.js';
+		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
 		$this->xtra_js[] = 'index.php/listview/renderer/table.js';
 		
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMain.js';
@@ -42,7 +42,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'media/js/LSFilterHistory.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterList.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterListTableDesc.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterSaved.js';
+/*		$this->xtra_js[] = $basepath.'media/js/LSFilterSaved.js'; saved searched loaded globally */
 		$this->xtra_js[] = $basepath.'media/js/LSFilterTextarea.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisual.js';
 		
@@ -166,6 +166,26 @@ class ListView_Controller extends Authenticated_Controller {
 				return json::ok( array('status'=>'error', 'data' => $result) );
 			
 			
+			return json::ok( array( 'status' => 'success', 'data' => 'success' ) );
+		}
+		catch( Exception $e ) {
+			return json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
+		}
+	}
+
+	/**
+	 * Save a named query
+	 */
+	public function delete_saved_query() {
+		$id = $this->input->get('id',false);
+
+		try {
+
+			$result = LSFilter_Saved_Queries_Model::delete_query($id);
+
+			if( $result !== false )
+				return json::ok( array('status'=>'error', 'data' => $result) );
+
 			return json::ok( array( 'status' => 'success', 'data' => 'success' ) );
 		}
 		catch( Exception $e ) {

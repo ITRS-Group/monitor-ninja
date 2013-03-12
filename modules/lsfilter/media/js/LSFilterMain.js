@@ -36,6 +36,10 @@ var lsfilter_main = {
 		order : false
 	},
 
+	refresh: function() {
+		this.update_run();
+	},
+
 	update_run : function() {
 		var source = this.update_source;
 		var query = this.update_query;

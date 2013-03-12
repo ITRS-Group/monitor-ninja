@@ -1,13 +1,13 @@
 var lsfilter_saved = {
 
 	update : function(data) {
-		if( data.source == 'saved' ) return;
+		if (data.source == 'saved')
+			return;
 		this.last_query = data.query;
 	},
 	init : function() {
 		var self = this; // To be able to access it from within handlers
 
-		this.refresh_filter_list();
 		$('#lsfilter_save_filter').click(function() {
 			$(this).addClass('saving').text(_('Saving...'));
 			self.save($('#filter_query').val());
@@ -32,41 +32,38 @@ var lsfilter_saved = {
 			},
 			type : 'POST',
 			success : function(data) {
-				$('.filter-query-saved-hide-x').removeAttr('checked');
-				var list = $("#filter-query-saved-filters").empty();
+				var list = $("#saved-queries-menu").empty();
 				for ( var filter in data.data) {
+					/* Someone broke the Array prototype, aaarrrrgggghhhh!!! */
+					if (isNaN(parseInt(filter)))
+						continue;
 					(function() {
-						// Crazy hack with function()... why can't I access
-						// save['query'] in the callback? (and how do I fix?)
 						var save = data.data[filter];
 						var current_icon = self.icons.other;
 
-						var parser = new LSFilter(new LSFilterPreprocessor(),
-								new LSFilterMetadataVisitor());
-						var metadata = parser.parse(save.query);
-						if (self.icons[metadata.table])
-							current_icon = self.icons[metadata.table];
+						var table = 'hosts';
+						if (save.table)
+							table = save.table;
 
-						var link = link_query(save.query);
+						if (self.icons[table])
+							current_icon = self.icons[table];
+
+						var link = link_query(save.query).addClass(
+								'ninja_menu_links');
 
 						link.append(current_icon);
-						link.append(save.scope.toUpperCase());
-						link.append(' - ');
-						link.append(save.name);
+						link.append($('<span class="nav-seg-span">').text(
+								save.name));
 
-						link.hover(function() {
-							$('#filter-query-saved-preview')
-									.text(save['query']);
-						}, function() {
-							$('#filter-query-saved-preview').empty();
-						});
-
-						list.append($(
-								'<li class="saved-filter-' + save['scope']
-										+ '" />').append(link));
+						list.append($('<li class="nav-seg" />').append(link));
 					})();
 				}
-
+				var link = link_query('[saved_queries] all').addClass(
+						'ninja_menu_links');
+				link.append(self.icons['other']);
+				link.append($('<span class="nav-seg-span">').text(
+						'Manage and view filters'));
+				list.prepend($('<li class="nav-seg" />').append(link));
 			}
 		};
 		$.ajax(_site_domain + _index_page + '/listview/fetch_saved_queries',
@@ -109,3 +106,7 @@ var lsfilter_saved = {
 		}
 	}
 };
+
+$(document).ready(function() {
+	lsfilter_saved.refresh_filter_list();
+});

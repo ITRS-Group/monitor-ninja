@@ -114,3 +114,7 @@ array(4) {
 		}
 
 	}
+
+echo "<ul id='saved-queries-menu'>";
+echo '<li class="meta">Saved queries loading...</li>';
+echo "</ul>";
