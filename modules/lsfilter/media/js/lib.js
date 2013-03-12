@@ -57,12 +57,14 @@ function link_query(query)
 	var link = $('<a />');
 	link.attr('href', _site_domain + _index_page + '/listview?q='
 			+ encodeURIComponent(query));
-	link.click(function(evt)
-	{
-		lsfilter_main.update(query, false, '');
-		evt.preventDefault();
-		return false;
-	});
+	if( window.lsfilter_main ) {
+		link.click(function(evt)
+		{
+			lsfilter_main.update(query, false, '');
+			evt.preventDefault();
+			return false;
+		});
+	}
 	return link;
 }
 function extinfo_link(args)
