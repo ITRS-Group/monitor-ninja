@@ -1033,25 +1033,26 @@ listview_renderer_table.saved_queries = {
 	},
 	"actions" : {
 		"header" : _('Actions'),
-		"depends" : [ 'id' ],
+		"depends" : [ 'id', 'deletable' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
 
-			// Delete
-			var del_icon = icon16('delete', _("Delete/cancel this saved query"));
-			var del_link = _site_domain + _index_page
-					+ '/listview/delete_saved_query?id=' + args.obj.id;
-
-			cell.append(link_fnc(function() {
-				$.ajax(del_link).done(function() {
-					if (lsfilter_main)
-						lsfilter_main.refresh();
-					if (lsfilter_saved)
-						lsfilter_saved.refresh_filter_list();
-				});
-			}).append(del_icon));
-
+			if( args.obj.deletable ) {
+				// Delete
+				var del_icon = icon16('delete', _("Delete/cancel this saved query"));
+				var del_link = _site_domain + _index_page
+						+ '/listview/delete_saved_query?id=' + args.obj.id;
+	
+				cell.append(link_fnc(function() {
+					$.ajax(del_link).done(function() {
+						if (lsfilter_main)
+							lsfilter_main.refresh();
+						if (lsfilter_saved)
+							lsfilter_saved.refresh_filter_list();
+					});
+				}).append(del_icon));
+			}
 			return cell;
 		}
 	}

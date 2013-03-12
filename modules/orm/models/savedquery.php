@@ -12,7 +12,8 @@ class SavedQuery_Model extends BaseSavedQuery_Model {
 	 * An array containing the custom column dependencies
 	 */
 	static public $rewrite_columns = array(
-		'scope' => array('username')
+		'scope' => array('username'),
+		'deletable' => array('username')
 	);
 
 	/**
@@ -21,6 +22,7 @@ class SavedQuery_Model extends BaseSavedQuery_Model {
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
 		$this->export[] = 'scope';
+		$this->export[] = 'deletable';
 	}
 
 	/**
@@ -31,5 +33,16 @@ class SavedQuery_Model extends BaseSavedQuery_Model {
 			return 'global';
 		}
 		return 'user';
+	}
+
+	/**
+	 * Get if current user is allowed to delete the object
+	 */
+	public function get_deletable() {
+		switch( $this->get_scope() ) {
+			case 'user': return true;
+			case 'global': return op5auth::instance()->authorized_for('saved_queries_global');
+		}
+		return false;
 	}
 }

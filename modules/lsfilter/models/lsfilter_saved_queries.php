@@ -104,7 +104,12 @@ class LSFilter_Saved_Queries_Model extends Model {
 		if( $metadata === false ) return "Error when type checking";
 		
 		$user = Auth::instance()->get_user()->username;
-		if( $scope == 'global' ) $user = null; /* FIXME: no special values! Do a select, then update/insert - make oracle-compatible */
+		if( $scope == 'global' ) {
+			if( !op5auth::instance()->authorized_for('saved_queries_global') ) {
+				return "Not authorized to create global queries";
+			}
+			$user = null;
+		}
 		
 		switch( $scope ) {
 			case 'user':
@@ -133,7 +138,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND id = %s";
 		$args = array($user, $id);
 		
-		if( true ) { /* FIXME: Delete from global scope */
+		if( op5auth::instance()->authorized_for('saved_queries_global') ) { /* FIXME: Delete from global scope */
 			$sql_query = "DELETE FROM ".self::tablename." WHERE (username = %s OR username IS NULL) AND id = %s";
 		}
 		
