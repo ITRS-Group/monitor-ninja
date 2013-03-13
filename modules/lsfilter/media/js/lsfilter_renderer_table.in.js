@@ -223,15 +223,6 @@ listview_renderer_table.hosts = {
 };
 
 listview_renderer_table.services = {
-	"select" : {
-		"header" : '',
-		"depends" : [],
-		"sort" : false,
-		"avalible" : function(args) {
-			return _controller_name == 'listview';
-		},
-		"cell" : listview_multi_select_cell_renderer
-	},
 	"host_status" : {
 		"header" : '',
 		"depends" : [ 'host.state_text' ],
@@ -272,6 +263,15 @@ listview_renderer_table.services = {
 
 			return cell;
 		}
+	},
+	"select" : {
+		"header" : '',
+		"depends" : [],
+		"sort" : false,
+		"avalible" : function(args) {
+			return _controller_name == 'listview';
+		},
+		"cell" : listview_multi_select_cell_renderer
 	},
 	"status" : {
 		"header" : '',
