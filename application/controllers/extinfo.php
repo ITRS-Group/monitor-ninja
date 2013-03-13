@@ -62,6 +62,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$set = ServicePool_Model::all()
 				->reduce_by('host.name', $host, '=')
 				->reduce_by('description', $service, '=');
+			$type = 'service';
 		}
 		else if(!empty($hostgroup)) {
 			return $this->group_details('hostgroup', $hostgroup);
@@ -161,21 +162,21 @@ class Extinfo_Controller extends Authenticated_Controller {
 		switch ($type) {
 			case 'host':
 				$page_links = array(
-					 _('Status detail') => 'status/service/?host='.urlencode($host),
-					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
-					 _('Alert histogram') => 'histogram/generate?host_name[]='.$host,
-					 _('Availability report') => 'avail/generate/?host_name[]='.$host,
-					 _('Notifications') => '/notifications/host/'.$host
+					 _('Status detail') => listview::link('hosts',array('name'=>$host)),
+					 _('Alert history') => 'alert_history/generate?host_name[]='.urlencode($host),
+					 _('Alert histogram') => 'histogram/generate?host_name[]='.urlencode($host),
+					 _('Availability report') => 'avail/generate/?host_name[]='.urlencode($host),
+					 _('Notifications') => listview::link('notifications',array('host_name'=>$host))
 				);
 				break;
 			case 'service':
 				$page_links = array(
-					_('Information for this host') => 'extinfo/details/host/'.$host,
-					_('Status detail for this host') => 'status/service/?host='.$host,
+					_('Information for this host') => 'extinfo/details/host/'.urlencode($host),
+					_('Status detail for this host') => listview::link('hosts',array('name'=>$host)),
 					_('Alert history') => 'alert_history/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
-					_('Notifications') => '/notifications/host/'.$host.'?service='.urlencode($service)
+					_('Notifications') => listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service))
 				);
 
 				break;
