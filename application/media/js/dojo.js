@@ -188,13 +188,7 @@
 
 	});
 
-	$('#dojo-add-quicklink-menu option').hover(function () {
-		$('#dojo-add-quicklink-preview').attr('class', 'icon-16 x16-' + this.value);
-	}, function () {
-		return;
-	});
-
-	$('#dojo-add-quicklink-menu option').click(function () {
+	$('#dojo-add-quicklink-icon').change(function () {
 		$('#dojo-add-quicklink-preview').attr('class', 'icon-16 x16-' + this.value);
 	});
 

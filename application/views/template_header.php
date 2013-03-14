@@ -105,25 +105,52 @@
 	<div id="dojo-add-quicklink-menu" style="display: none;">
 		<h1>Add new quicklink</h1>
 		<hr />
-		URI: <input type="text" id="dojo-add-quicklink-href"><br />
-		Title: <input type="text" id="dojo-add-quicklink-title"><br />
-		Open in: <select id="dojo-add-quicklink-target">
-			<option value="">This window</option>
-			<option value="_BLANK">New window</option>
-		</select><br />
-		Icon: <select id="dojo-add-quicklink-icon">
-		<?php
-			$icons = glob((__DIR__) . '/icons/x16/*.png');
-			foreach ($icons as $icon) {
-				$name = pathinfo($icon, PATHINFO_FILENAME);
-				echo "<option value='$name'>$name</option>";
-			}
-		?>
-		</select><span style="vertical-align: middle; padding: 12px 4px 0px 4px; background: #ccc; width: 16px; height: 16px;"><span id="dojo-add-quicklink-preview"></span></span><br />
-		Remove slected quicklinks:
-		<ul id="dojo-quicklink-remove"></ul>
-		<input type="button" id="dojo-add-quicklink-submit" value="Save" />
-		<input type="button" id="dojo-add-quicklink-close" value="Close" />
+		<table class="no_border">
+			<tr>
+				<td>URI:</td>
+				<td><input type="text" id="dojo-add-quicklink-href"></td>
+			</tr>
+			<tr>
+				<td>Title:</td>
+				<td><input type="text" id="dojo-add-quicklink-title"></td>
+			</tr>
+			<tr>
+				<td>Open in:</td>
+				<td>
+					<select id="dojo-add-quicklink-target">
+						<option value="">This window</option>
+						<option value="_BLANK">New window</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Icon:</td>
+				<td>
+					<select id="dojo-add-quicklink-icon">
+					<?php
+						$icons = glob((__DIR__) . '/icons/x16/*.png');
+						foreach ($icons as $icon) {
+							$name = pathinfo($icon, PATHINFO_FILENAME);
+							echo "<option value='$name'>$name</option>";
+						}
+					?>
+					</select>
+					Preview: <span style="width: 16px; height: 16px;"><span id="dojo-add-quicklink-preview"></span></span>
+				</td>
+			</tr>
+			<tr>
+				<td>Remove slected quicklinks:</td>
+				<td>
+					<ul id="dojo-quicklink-remove"></ul>
+			</td>
+			</tr>
+			<tr>
+				<td colspan=2>
+					<input type="button" id="dojo-add-quicklink-submit" value="Save" />
+					<input type="button" id="dojo-add-quicklink-close" value="Close" />
+			</td>
+			</tr>
+		</table>
 
 	</div>
 	<?php
