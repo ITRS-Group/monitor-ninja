@@ -1548,8 +1548,12 @@ class Reports_Model extends Model
          * @param $db_table string = null
          * @return string (sql)
 	 */
-	function build_alert_summary_query($fields = 'host_name, service_description, state, hard', $is_api_call = false, $blacklisted_criteria = array(), $db_table = null)
+	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $db_table = null)
 	{
+		if(!$fields) {
+			// default to the most commonly used fields
+			$fields = 'host_name, service_description, state, hard';
+		}
 		if(!$db_table)
 		{
 			// this method ('s purpose) is so good I wanna copy it.. but that's not feasable,
