@@ -17,25 +17,20 @@ if( $object instanceof Host_Model ) {
 /* @var $object Service_Model */
 
 
+if (isset($page_links)) {
 ?>
 <div id="page_links">
 	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
 	<ul>
-	<?php
-	if (isset($page_links)) {
-		foreach ($page_links as $label => $link) {
-			?>
-			<li><?php echo html::anchor($link, $label) ?></li>
-			<?php
-		}
-	}
-	?>
+	<?php foreach ($page_links as $label => $link) { ?>
+		<li><?php echo html::anchor($link, $label) ?></li>
+	<?php } ?>
 	</ul>
 	<div class="clear"></div>
 	<hr />
 </div>
-
 <?php
+}
 if (!empty($widgets)) {
 	foreach ($widgets as $widget) {
 		echo $widget;
