@@ -1,7 +1,7 @@
-cucumber:
- steps:
-  - make test-cucumber
-
-quick:
- steps:
-  - make test
+post:
+ steps: |
+  service httpd restart || service apache restart
+  service mysqld restart
+  mon restart
+  make -C /opt/monitor/op5/nacoma test
+  make -C /opt/monitor/op5/nacoma test-cucumber
