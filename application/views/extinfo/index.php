@@ -55,10 +55,9 @@ if (!empty($widgets)) {
 			if ($service !== false) {
 				echo '<tr>';
 				echo '<td style="width: 80px"><strong>'._('On host').'</strong></td>';
-				echo '<td>'.$host->get_display_name();
+				echo '<td>';
+				echo html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_display_name()));
 				echo $host->get_alias() ? ' ('.$host->get_alias().')' : '';
-				$host_link = html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_name()));
-				echo !empty($host_link) ? ' ('.$host_link.')' : '';
 				echo '</td>';
 				echo '</tr>';
 			}
