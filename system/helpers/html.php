@@ -268,10 +268,13 @@ class html_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = FALSE)
 	{
-		if(class_exists('ninja')) {
-			return html::link(ninja::add_version_to_uri($style), 'stylesheet', 'text/css', '.css', $media, $index);
+		if(pathinfo($style, PATHINFO_EXTENSION) !== 'css') {
+			$style .= '.css';
 		}
-		return html::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
+		if(class_exists('ninja')) {
+			return html::link(ninja::add_version_to_uri($style), 'stylesheet', 'text/css', null, $media, $index);
+		}
+		return html::link($style, 'stylesheet', 'text/css', null, $media, $index);
 	}
 
 	/**
