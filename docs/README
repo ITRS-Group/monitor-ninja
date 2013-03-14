@@ -24,34 +24,44 @@ Installation
 Ninja is a web application mainly written in php so in short words the
 installation goes something like this
 
-1. download, untar and put ninja in some nice place on your server
-2. run make
-3. configure your webserver
-4. configure ninja with basic info such as where it's installed and where
+1. download op5lib, which is found in a seperate repository
+2. run "make install" in op5lib
+3. download, untar and put ninja in some nice place on your server
+4. run make
+5. configure your webserver
+6. configure ninja with basic info such as where it's installed and where
    the database is located.
-5. configure op5lib, such as livestatus socket connection (/etc/op5/*.yml)
+7. configure op5lib, such as livestatus socket connection (/etc/op5/*.yml)
 done :)
 
 Here is a longer and a bit more exact version on how to install it
 
-1. Make sure that all Ninja requirements are installed. Make sure op5lib is
+1. Download op5lib from http://git.op5.org/
+
+2. Run "make install", within the op5lib, which installs libraries used by
+   ninja, both for compilation and in runtime 
+
+3. Make sure that all Ninja requirements are installed. Make sure op5lib is
    located in the global PHP path, and that both the merlin and the livestatus
    broker modules are loaded by nagios.
 
-2. Download ninja from http://git.op5.org/
+4. Download ninja from http://git.op5.org/
 
-3. Copy the ninja dir to a suitable location. Will vary between installations.
+5. Within ninja directory, type "make". In case of depenceny issues with gems
+   and compass, follow the instructions in the terminal.
+
+6. Copy the ninja dir to a suitable location. Will vary between installations.
 mkdir /usr/local/nagios/addons/
 cp -a ninja /usr/local/nagios/addons/
 
-4. Configure your webserver. We provide an example config file for apache
+7. Configure your webserver. We provide an example config file for apache
    located at ninja/op5build/ninja.httpd-conf. The example below works for
    CentOS and RedHat
 vim ninja/op5build/ninja.httpd-conf
 cp ninja/op5build/ninja.httpd-conf /etc/httpd/conf.d
 service httpd restart
 
-5. Configure Ninja. An example config file exists in ninja/op5build/index.php,
+8. Configure Ninja. An example config file exists in ninja/op5build/index.php,
    edit the $ninja_base variable and copy it to the ninja root dir.
 
 vim ninja/op5build/index.php
@@ -65,14 +75,20 @@ cp ninja/op5build/index.php ninja/
    There are more configuration files located in ninja/application/config/ but
    you should normally not require to edit them.
 
-6. Setup the db tables required for Ninja by executing
+9. Setup the db tables required for Ninja by executing
 
 ninja/install_scripts/ninja_db_init.sh
 
    This script will also try to import any existing htpasswd users from your
    Nagios config.
 
-7. Point your browser to https://yourip/ninja and try your installation
+10.Configure /etc/op5/*.yml files; livestatus.yml should point to your
+   livestatus socket. Look at the other files so they match your system.
+
+12.Point your browser to https://yourip/ninja and try your installation with
+   default user "monitor" and password "monitor"
+
+13.Use "op5-manage-users" to manage additional user accounts.
 
 Congratulations! You now (hopefully) have a working Ninja installation
 
