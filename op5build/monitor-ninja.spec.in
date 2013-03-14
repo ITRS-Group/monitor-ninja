@@ -1,3 +1,14 @@
+%define daemon_user monitor
+%if 0%{?suse_version}
+%define htmlroot /srv/www/htdocs
+%define httpconfdir apache2/conf.d
+%define daemon_group www
+%else
+%define htmlroot /var/www/html
+%define httpconfdir httpd/conf.d
+%define daemon_group apache
+%endif
+
 Name: monitor-ninja
 Version: @@VERSION@@
 Release: @@RELEASE@@
@@ -11,25 +22,40 @@ Prefix: /opt/monitor/op5/ninja
 Requires: monitor-gui-core
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
-Requires: php >= 5.3
 Requires: php-op5lib >= 1.1.0
 Requires: wkhtmltopdf
 Requires: op5-monitor-supported-database
 Requires: monitor-livestatus
 BuildRequires: php-op5lib >= 1.1.0-beta7
-BuildRequires: php >= 5.3
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
 BuildRequires: merlin monitor-merlin op5-nagios
 BuildRequires: merlin-apps
-BuildRequires: op5-monitor-supported-database
 BuildRequires: monitor-livestatus
+%if 0%{?suse_version}
+Requires: php53
+Requires: php53-gettext
+Requires: php53-json
+Requires: php53-posix
+Requires: php53-ctype
+BuildRequires: php53-json
+BuildRequires: php53-posix
+BuildRequires: php53-ctype
+BuildRequires: util-linux
+BuildRequires: pwdutils
+BuildRequires: graphviz-gnome
+BuildRequires: ghostscript-fonts-std
+%else
+Requires: php >= 5.3
+BuildRequires: php >= 5.3
+BuildRequires: shadow-utils
 %if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
 Requires: php-process
 BuildRequires: php-process
 %else
 Requires: php-json
+%endif
 %endif
 
 Source: %name-%version.tar.gz
@@ -46,13 +72,17 @@ Additional test files for ninja
 
 %prep
 %setup -q
+%if 0%{?suse_version}
+find -type f -exec %{__sed} '{}' -i -e 's#var/www/html#srv/www/htdocs#g'  \;
+find -type f -exec %{__sed} '{}' -i -e 's#var/www#srv/www#g'  \;
+%endif
 
 %build
 pushd cli-helpers
 make
 popd
 make
-make docs test
+make docs
 
 
 %install
@@ -103,8 +133,8 @@ chmod 775 %buildroot%prefix/application/custom_widgets
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 
-mkdir -p %buildroot%_sysconfdir/httpd/conf.d
-install -m 640 op5build/ninja.httpd-conf %buildroot/etc/httpd/conf.d/monitor-ninja.conf
+mkdir -p %buildroot%_sysconfdir/%{httpconfdir}
+install -m 640 op5build/ninja.httpd-conf %buildroot/etc/%{httpconfdir}/monitor-ninja.conf
 
 # we don't need the git directories
 rm -rf %buildroot%prefix/application/vendor/phptap/.git
@@ -122,8 +152,8 @@ fi
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
-$(mysql -Be "quit" 2>/dev/null)
-if [ $? -eq 0 ]; then
+$(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
+if [ -n "$MYSQL_AVAILABLE" ]; then
   sh %prefix/install_scripts/ninja_db_init.sh
 else
   echo "WARNING: mysql-server is not installed or not running."
@@ -143,7 +173,7 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # Cleanup symlinks we don't use anymore
-for link in /var/www/html/monitor /var/www/html/ninja /op5/monitor/op5/ninja/op5 /opt/monitor/op5/ninja/css /opt/monitor/op5/ninja/js /opt/monitor/op5/ninja/images /opt/monitor/op5/ninja/stylesheets
+for link in %{htmlroot}/monitor %{htmlroot}/ninja /op5/monitor/op5/ninja/op5 /opt/monitor/op5/ninja/css /opt/monitor/op5/ninja/js /opt/monitor/op5/ninja/images /opt/monitor/op5/ninja/stylesheets
 do
 	if [ -f $link ]; then
 		rm -f $link
@@ -151,11 +181,11 @@ do
 done
 
 %files
-%defattr(-,monitor,apache)
+%defattr(-,%daemon_user,%daemon_group)
 %prefix
 %attr(644,root,root) /etc/cron.d/*
-/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py*
-%attr(-,root,apache) /etc/httpd/conf.d/monitor-ninja.conf
+%attr(755,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
+%attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
 %exclude %prefix/test
 %exclude %prefix/modules/test
 %exclude %prefix/Makefile
