@@ -153,7 +153,7 @@ class op5Log {
 		 * files can be rotated automatically
 		 */
 		$filename = strftime( $this->config['file'] );
-		$line_prefix = strftime( '%Y-%m-%d %H:%M:%S ' ) . sprintf('%-7s', $level) . $this->config['prefix'] . $reference . ': ';
+		$line_prefix = strftime( '%Y-%m-%d %H:%M:%S ' ) . sprintf('%-7s', $level) . ' ' . $this->config['prefix'] . $reference . ': ';
 		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 		
 		/*
