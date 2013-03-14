@@ -14,7 +14,7 @@
 		e = e || window.event;
 
 		var target = e.currentTarget,
-			key = target.title.toLowerCase();
+			key = target.title.toLowerCase().replace(' ','-');
 
 		if (menu.style.display === 'block' && e.type === 'click') {
 

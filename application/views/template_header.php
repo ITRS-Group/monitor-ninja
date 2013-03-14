@@ -59,16 +59,13 @@
 						// we want to whitelist the 'about' link since the ninja/nagios version is displayed there
 						continue;
 					} ?>
-				<li class="supermenu-button" id="<?php echo strtolower($section); ?>-button" title="<?php echo $section; ?>">
-					<span class="icon-32 x32-<?php echo strtolower($section); ?>"></span>
+				<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button" title="<?php echo $section; ?>">
+					<span class="icon-32 x32-<?php echo str_replace(' ','-',strtolower($section)); ?>"></span>
 				</li>
 		<?php
 				}
 			}
 		?>
-			<li class="supermenu-button" id="saved-queries-button" title="Saved-Queries">
-				<span class="icon-32 x32-shield-not-unknown"></span>
-			</li>
 		</ul>
 	</div>
 

@@ -44,7 +44,7 @@ array(4) {
 					/* Never have a capital o in op5 */
 					$formatted_name = preg_replace('/op5/i', 'op5', ucwords($name));
 					
-					$id = strtolower($section)."-".$data[1];
+					$id = str_replace(' ','-',strtolower($section))."-".$data[1];
 					if( is_array($data[1]) ) {
 						$icon_image = $data[1][1];
 						$module_name = $data[1][0];
@@ -102,9 +102,9 @@ array(4) {
 			}
 
 			if ($in_menu == true) {
-				echo "<ul id='".strtolower($section)."-menu' class='current-sup-menu' style='display: block'>";
+				echo "<ul id='".str_replace(' ','-',strtolower($section))."-menu' class='current-sup-menu' style='display: block'>";
 			} else {
-				echo "<ul id='".strtolower($section)."-menu'>";
+				echo "<ul id='".str_replace(' ','-',strtolower($section))."-menu'>";
 			}
 
 			echo $linkstring;
@@ -114,7 +114,3 @@ array(4) {
 		}
 
 	}
-
-echo "<ul id='saved-queries-menu'>";
-echo '<li class="meta">Saved queries loading...</li>';
-echo "</ul>";

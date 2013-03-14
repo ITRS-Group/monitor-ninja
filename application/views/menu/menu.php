@@ -59,6 +59,14 @@ $menu_items['view_config'] = _('View config');
 $menu_items['my_account'] = _('My Account');
 $menu_items['backup_restore'] = _('Backup/Restore');
 
+/*
+ * Due to strange javascript behaviour, this can't be translated.
+ * The name is converted to id, which is used to populate the menu items
+ * from javascript
+ */
+$menu_items['saved_queries'] = 'Saved Queries';
+$menu_items['loading'] = 'Loading...';
+
 # menu structure using array keys from translated labels above
 $menu = array(
 	'section_about' => array('portal', 'manual', 'support', 'ninja_project', 'merlin_project', 'project_documentation'),
@@ -112,6 +120,9 @@ $menu_base = array(
 		$menu_items['rotation'] 		=> array('/rotation/index', 'nagvis',0)
 	),
 	$menu_items['section_reporting'] => $section_reporting,
+	$menu_items['saved_queries'] => array(
+		$menu_items['loading']					=> array('#','test', 0)
+	),
 	$menu_items['section_configuration'] => array(
 		$menu_items['view_config'] 				=> array('/config', 'viewconfig',0),
 		$menu_items['my_account'] 				=> array('/user', 'password',0),
