@@ -23,8 +23,8 @@ $menu_items['servicegroup_summary'] = _('Servicegroup summary');
 $menu_items['network_outages'] = _('Network outages');
 
 $menu_items['comments'] = _('Comments');
-$menu_items['schedule_downtime'] = _('Schedule downtime');
-$menu_items['recurring_downtime'] = _('Recurring scheduled downtime');
+$menu_items['scheduled_downtime'] = _('Scheduled downtime');
+$menu_items['recurring_downtime'] = _('Recurring downtime');
 $menu_items['process_info'] = _('Process info');
 $menu_items['performance_info'] = _('Performance info');
 $menu_items['scheduling_queue'] = _('Scheduling queue');
@@ -66,7 +66,7 @@ $menu = array(
 		'hostgroup_summary', 'hostgroup_overview', 'hostgroup_grid',
 		'servicegroup_summary', 'servicegroup_overview', 'servicegroup_grid',
 		'network_outages', //'host_problems', 'service_problems', 'unhandled_problems',
-		'comments', 'schedule_downtime', 'recurring_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'hyper_map', 'nagvis'), /* remove hardcoded nagvis menu entry */
+		'comments', 'scheduled_downtime', 'recurring_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'hyper_map', 'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'pnp', 'alert_history', 'alert_summary', 'notifications', 'event_log',
 		'availability', 'sla', 'schedule_reports', 'statistics'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
@@ -103,7 +103,7 @@ $menu_base = array(
 		$menu_items['servicegroup_summary'] 	=> array('/listview?q=[servicegroups] all', 'servicegroupsummary',0),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
 		$menu_items['comments'] 				=> array('/listview?q=[comments] all', 'comments',0),
-		$menu_items['schedule_downtime']		=> array('/listview?q=[downtimes] all', 'scheduledowntime',0),
+		$menu_items['scheduled_downtime']		=> array('/listview?q=[downtimes] all', 'scheduledowntime',0),
 		$menu_items['recurring_downtime']		=> array('/recurring_downtime', 'scheduledowntime', 0),
 
 		$menu_items['process_info'] 			=> array('/extinfo/show_process_info', 'processinfo',0),
