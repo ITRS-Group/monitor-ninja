@@ -238,17 +238,20 @@ var listview_multi_select_cell_renderer = function(args)
 	var checkbox = $(
 			'<input type="checkbox" name="object_select[]" class="listview_multiselect_checkbox" />')
 			.attr('value', args.obj.key);
-	if (false /* listview_selection[args.obj.key] */) {
+	if ( lsfilter_multiselect.box_selected(args.obj.key) ) {
 		checkbox.prop('checked', true);
-		if (tr.hasClass('odd'))
-			tr.addClass('selected_odd');
+		if (args.row.hasClass('odd'))
+			args.row.addClass('selected_odd');
 		else
-			tr.addClass('selected_even');
+			args.row.addClass('selected_even');
 	}
 	checkbox.change(function(evt)
 	{
 		var tgt = $(evt.target);
-		// listview_selection[tgt.attr('value')] = tgt.prop('checked');
+
+		if( lsfilter_multiselect ) {
+			lsfilter_multiselect.box_register(tgt.attr('value'), tgt.prop('checked'));
+		}
 		var tr = tgt.closest('tr');
 		var classname = ""
 		if (tr.hasClass('odd'))
