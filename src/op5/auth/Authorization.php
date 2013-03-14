@@ -173,7 +173,8 @@ class op5Authorization {
 			'misc' => array(
 				'FILE' => '',
 				'access_rights' => '',
-				'pnp' => '')
+				'pnp' => '',
+				'saved_queries_global' => '')
 		);
 	}
 
