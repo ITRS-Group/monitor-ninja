@@ -69,6 +69,7 @@ Requires: monitor-ninja = %version
 Requires: merlin monitor-merlin op5-nagios
 Requires: merlin-apps
 Requires: monitor-livestatus
+Requires: rubygem-cucumber rubygem-capybara rubygem-poltergeist rubygem-rspec phantomjs
 
 %description test
 Additional test files for ninja
