@@ -3,9 +3,6 @@
  * Unit_Test controller.
  */
 class Ninja_unit_test_Controller extends Ninja_Controller {
-
-	const ALLOW_PRODUCTION = FALSE; /**< No, kohana, don't display us from RPMs */
-
 	/**
 	 * Run unit tests and show results!
 	 */
