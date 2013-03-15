@@ -30,9 +30,6 @@ BuildRequires: php-op5lib >= 1.1.0-beta7
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
-BuildRequires: merlin monitor-merlin op5-nagios
-BuildRequires: merlin-apps
-BuildRequires: monitor-livestatus
 %if 0%{?suse_version}
 Requires: php53
 Requires: php53-gettext
@@ -69,6 +66,9 @@ Webgui for Nagios.
 Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
+Requires: merlin monitor-merlin op5-nagios
+Requires: merlin-apps
+Requires: monitor-livestatus
 
 %description test
 Additional test files for ninja
