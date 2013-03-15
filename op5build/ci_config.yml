@@ -1,7 +1,7 @@
 post:
  steps: |
-  service httpd restart || service apache restart
-  service mysqld restart
+  service httpd restart || service apache2 restart
+  service mysqld restart || service mysql restart
   mon restart
-  make -C /opt/monitor/op5/nacoma test
-  make -C /opt/monitor/op5/nacoma test-cucumber
+  make -C /opt/monitor/op5/ninja test
+  make -C /opt/monitor/op5/ninja test-cucumber
