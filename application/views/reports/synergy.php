@@ -1,5 +1,5 @@
 <div style="padding-top: 3em" class="clear"></div>
-<?php if(!$synergy_events) { ?>
+<?php if(count($synergy_events) == 0) { ?>
 <h2><?php echo _('No Business Service Module events matching report criteria'); ?></h2>
 <?php
 return;
