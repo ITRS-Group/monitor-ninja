@@ -5,6 +5,6 @@
 
 	<?php echo _('404 Not Found'); ?><br /><br />
 
-	<?php echo _('Ooops, the page you requested could not be found.'); ?><br />
+	<?php echo _('Ooops, the page you requested - '.Router::$current_uri.' - could not be found.'); ?><br />
 	<?php echo _('Please contact your administrator.'); ?>
 </div>
