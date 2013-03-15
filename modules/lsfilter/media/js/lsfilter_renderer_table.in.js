@@ -26,13 +26,13 @@ listview_renderer_table.hosts = {
 	},
 	"name" : {
 		"header" : _('Name'),
-		"depends" : [ 'display_name', 'name', 'icon_image' ],
+		"depends" : [ 'display_name', 'name', 'icon_image', 'address' ],
 		"sort" : [ 'display_name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
 			cell.append(extinfo_link({
 				host : args.obj.name
-			}).text(args.obj.display_name));
+			}).attr('title', args.obj.address).text(args.obj.display_name));
 			if (args.obj.icon_image)
 				cell.append(icon(args.obj.icon_image, extinfo_link({
 					host : args.obj.name
@@ -241,7 +241,8 @@ listview_renderer_table.services = {
 	},
 	"host_name" : {
 		"header" : _('Host Name'),
-		"depends" : [ 'host.display_name', 'host.name', 'host.icon_image' ],
+		"depends" : [ 'host.display_name', 'host.name', 'host.icon_image',
+				'host.address' ],
 		"sort" : [ 'host.display_name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -250,7 +251,7 @@ listview_renderer_table.services = {
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 				cell.append(extinfo_link({
 					host : args.obj.host.name
-				}).text(args.obj.host.display_name));
+				}).attr('title', args.obj.host.address).text(args.obj.host.display_name));
 
 				if (args.obj.host.icon_image)
 					cell.append(icon(args.obj.host.icon_image, extinfo_link({
@@ -1024,7 +1025,7 @@ listview_renderer_table.saved_queries = {
 		"sort" : [ 'username' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			if(args.obj.username) {
+			if (args.obj.username) {
 				cell.text(args.obj.username)
 			}
 			return cell;
@@ -1038,12 +1039,13 @@ listview_renderer_table.saved_queries = {
 		"cell" : function(args) {
 			var cell = $('<td />');
 
-			if( args.obj.deletable ) {
+			if (args.obj.deletable) {
 				// Delete
-				var del_icon = icon16('delete', _("Delete/cancel this saved query"));
+				var del_icon = icon16('delete',
+						_("Delete/cancel this saved query"));
 				var del_link = _site_domain + _index_page
 						+ '/listview/delete_saved_query?id=' + args.obj.id;
-	
+
 				cell.append(link_fnc(function() {
 					$.ajax(del_link).done(function() {
 						if (lsfilter_main)
