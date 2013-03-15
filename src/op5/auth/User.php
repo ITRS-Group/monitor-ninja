@@ -108,15 +108,15 @@ class op5User {
 	/**
 	 * List all contact groups I am a member of
 	 *
-	 * TODO: Deprecate?
+	 * TODO: Deprecate? (this method is called from Nagvis)
 	 *
 	 * @return array array of groups
 	 */
 	public function get_contact_groups()
 	{
 		$ls = op5livestatus::instance();
-		list($columns, $objects, $count) = $ls->query('GET contactgroups', array(
-				'Filter: members >= ' . $this->get_user()->username
+		list($columns, $objects, $count) = $ls->query('contactgroups', array(
+				'Filter: members >= ' . $this->username
 			),
 			array('name')
 		);
