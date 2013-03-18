@@ -49,7 +49,7 @@ return;
 			} else {
 				// this means we've got kids
 				$info .= sprintf($image, $states[$node->result->status][0], $states[$node->result->status][1]).' '.$node_name.": ".$node->result->msg;
-				$info .= draw_json_tree($node, $image, $states, ++$indent_level);
+				$info .= draw_json_tree($node, $image, $states, $indent_level + 1);
 			}
 		}
 		return $info;
