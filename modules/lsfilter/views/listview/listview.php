@@ -4,7 +4,7 @@
 	<div class="right lsfilter-edit-bar">
 		<span id="filter_loading_status"></span>
 		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
-		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-use_search"></span></button>
+		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-filter"></span></button>
 	</div>
 	<div id="filter_result_totals"></div>
 </div>
