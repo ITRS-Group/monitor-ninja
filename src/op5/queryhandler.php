@@ -94,9 +94,22 @@ class op5queryhandler {
 		return $content;
 	}
 	
+	/**
+	 * Converts an associative array of arguments to a string using kvvec syntax with delimiters = and ;
+	 * 
+	 * If value is an array, it's treated as a set of lines with identical keys
+	 */
 	private function pack_args( $args ) {
-		return implode(';', array_map(function($k,$v) {
-			return $k . '=' . $v;
-		},array_keys($args),array_values($args)));
+		$result = array();
+		foreach( $args as $k => $v ) {
+			if( is_array( $v ) ) {
+				foreach( $v as $vx ) {
+					$result[] = $k . '=' . $vx;
+				}
+			} else {
+				$result[] = $k . '=' . $v;
+			}
+		}
+		return implode(';', $result);
 	}
 }
