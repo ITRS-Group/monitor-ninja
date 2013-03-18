@@ -600,6 +600,10 @@ class Command_Controller extends Authenticated_Controller
 			case 'services':
 				$param_name = 'service';
 				break;
+			case 'comment':
+			case 'comments':
+				$param_name = 'comment_id';
+				break;
 		}
 
 		$params = false;
@@ -657,6 +661,16 @@ class Command_Controller extends Authenticated_Controller
 				$multi_param = $param;
 				$multi_param[$param_str] = $did;
 				$nagios_commands[] = nagioscmd::build_command($cmd, $multi_param);
+			}
+		} else if (isset($param['comment_id']) && is_array($param['comment_id'])) {
+			foreach ($param['comment_id'] as $id) {
+				list($comment_id, $is_service) = explode(';',$id);
+				$multi_param = $param;
+				$multi_param['comment_id'] = $comment_id;
+				$this_cmd = nagioscmd::cmd_info($cmd); /* Needs to be extraced so _HOST_ can be replaced to _SVC_ */
+				if( $is_service && isset($this_cmd['template']) )
+					$this_cmd['template'] = str_replace('_HOST_','_SVC_',$this_cmd['template']);
+				$nagios_commands[] = nagioscmd::build_command($this_cmd, $multi_param);
 			}
 		} else {
 			$nagios_commands[] = nagioscmd::build_command($cmd, $param);

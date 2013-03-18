@@ -62,8 +62,7 @@ var lsfilter_multiselect = {
 		},
 		'comments' : {
 			'' : _('Select action'),
-			// DEL_COMMENT has a special case in command controller to send SVC
-			// and HOST
+			// This is actually a macro of delete svc comments, which can handle both hosts and service comments
 			'DEL_COMMENT' : _('Delete comments')
 		},
 		'other' : {
