@@ -100,7 +100,7 @@ listview_renderer_table.hosts = {
 
 			if (args.obj.action_url)
 				cell.append(icon16('host-actions',
-						_('perform extra host actions'), $('<a />').attr(
+						_('Perform extra host actions'), $('<a />').attr(
 								'href', args.obj.action_url)));
 
 			if (args.obj.notes_url)
@@ -345,7 +345,7 @@ listview_renderer_table.services = {
 
 			if (args.obj.action_url)
 				cell.append(icon16('host-actions',
-						_('perform extra host actions'), $('<a />').attr(
+						_('Perform extra host actions'), $('<a />').attr(
 								'href', args.obj.action_url)));
 
 			if (args.obj.notes_url)
