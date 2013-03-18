@@ -166,32 +166,33 @@ class Old_Comment_Model extends Model {
 	public static function count_all_comments_by_object($service=false)
 	{
 		$ls = Livestatus::instance();
+		$data = array();
 		if( $service ) {
 			$comments = $ls->getBackend()->getStats( 'comments',
-					array(
-							'count' => array('service_state' => array( '!=' => 999 ))
-							),
-					array(
-							'columns' => array('service_description')
-							)
-					);
-			$name_column = 'service_description';
+				array(
+					'count' => array('service_state' => array( '!=' => 999 ))
+				),
+				array(
+					'columns' => array('host_name', 'service_description'),
+					'filter' => array('service_description' => array('!=' => '')),
+			));
+			foreach( $comments as $row ) {
+				$data[$row['host_name'] . ';' . $row['service_description']] = $row['count'];
+			}
 		} else {
 			$comments = $ls->getBackend()->getStats( 'comments',
-					array(
-							'count' => array('host_name' => array( '!=' => '' ))
-							),
-					array(
-							'columns' => array('host_name')
-							)
-					);
-			$name_column = 'host_name';
+				array(
+					'count' => array('host_name' => array( '!=' => '' ))
+				),
+				array(
+					'columns' => array('host_name'),
+					'filter' => array('service_description' => array('=' => '')),
+			));
+			foreach( $comments as $row ) {
+				$data[$row['host_name']] = $row['count'];
+			}
 		}
-		
-		$data = array();
-		foreach( $comments as $row ) {
-			$data[$row[$name_column]] = $row['count'];
-		}
+
 		if( empty( $data ) ) {
 			return false;
 		}
