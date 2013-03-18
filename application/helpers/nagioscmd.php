@@ -1204,6 +1204,7 @@ class nagioscmd_Core
 		if (!$len)
 			return false;
 
+		// @todo return a proper status code here, based on what Nagios actually says
 		return true;
 	}
 
