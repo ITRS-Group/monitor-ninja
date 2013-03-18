@@ -95,16 +95,19 @@ foreach ($params as $pname => $ary) {
 			if ($form_name == 'cmd_param[comment]')
 				echo form::input(array('class' => 'autotest-required', 'name' => $form_name, 'title' => _('Required field'), 'style' => 'width: 280px'), $dflt, '');
 			else {
-				if ($pname == "start_time")
-					echo form::input(array('class' => 'autotest-date', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
-				elseif ($pname == "end_time")
-					echo form::input(array('class' => 'autotest-date', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
-				elseif ($pname == "check_time")
-					echo form::input(array('class' => 'autotest-date', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
-				elseif ($pname == "duration")
-					echo form::input(array('class' => 'autotest-float', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
-				else
-					echo form::input(array('class' => 'autotest-required', 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				switch($pname) {
+					case  "start_time":
+					case  "end_time":
+					case  "check_time":
+						$classname = 'date';
+						break;
+					case "duration":
+						$classname = 'float';
+						break;
+					default:
+						$classname = 'required';
+				}
+				echo form::input(array('class' => "autotest-$classname", 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
 			}
 			break;
 	}
