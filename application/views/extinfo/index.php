@@ -19,6 +19,7 @@ if( $object instanceof Host_Model ) {
 
 if (isset($page_links)) {
 ?>
+<div class="padding_plz">
 <div id="page_links">
 	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
 	<ul>
@@ -27,7 +28,6 @@ if (isset($page_links)) {
 	<?php } ?>
 	</ul>
 	<div class="clear"></div>
-	<hr />
 </div>
 <?php
 }
@@ -302,3 +302,5 @@ if (isset($comments))
 
 if (isset($downtimes))
 	echo $downtimes;
+?>
+</div>
