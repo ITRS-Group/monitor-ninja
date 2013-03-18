@@ -32,7 +32,7 @@ listview_renderer_table.hosts = {
 			var cell = $('<td />');
 			cell.append(extinfo_link({
 				host : args.obj.name
-			}).attr('title', args.obj.address).text(args.obj.display_name));
+			}).attr('title', args.obj.address).update_text(args.obj.display_name));
 			if (args.obj.icon_image)
 				cell.append(icon(args.obj.icon_image, extinfo_link({
 					host : args.obj.name
@@ -46,7 +46,7 @@ listview_renderer_table.hosts = {
 		"depends" : [ 'alias' ],
 		"sort" : [ 'alias' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.alias);
+			return $('<td />').update_text(args.obj.alias);
 		}
 	},
 	"actions" : {
@@ -138,7 +138,7 @@ listview_renderer_table.hosts = {
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
 		"cell" : function(args) {
-			return $('<td style="max-width: 300px;" />').text(
+			return $('<td style="max-width: 300px;" />').update_text(
 					args.obj.plugin_output);
 		}
 	},
@@ -251,7 +251,7 @@ listview_renderer_table.services = {
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 				cell.append(extinfo_link({
 					host : args.obj.host.name
-				}).attr('title', args.obj.host.address).text(args.obj.host.display_name));
+				}).attr('title', args.obj.host.address).update_text(args.obj.host.display_name));
 
 				if (args.obj.host.icon_image)
 					cell.append(icon(args.obj.host.icon_image, extinfo_link({
@@ -291,7 +291,7 @@ listview_renderer_table.services = {
 			return $('<td />').append(extinfo_link({
 				host : args.obj.host.name,
 				service : args.obj.description
-			}).text(args.obj.display_name));
+			}).update_text(args.obj.display_name));
 		}
 	},
 	"actions" : {
@@ -390,7 +390,7 @@ listview_renderer_table.services = {
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
 		"cell" : function(args) {
-			return $('<td style="max-width: 300px;" />').text(
+			return $('<td style="max-width: 300px;" />').update_text(
 					args.obj.plugin_output);
 		}
 	}
@@ -404,7 +404,7 @@ listview_renderer_table.hostgroups = {
 		"cell" : function(args) {
 			var cell = $('<td />');
 			cell.append($('<a />').attr('href',
-					'?q=[hosts] in "' + args.obj.name + '"').text(
+					'?q=[hosts] in "' + args.obj.name + '"').update_text(
 					args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
@@ -452,7 +452,7 @@ listview_renderer_table.servicegroups = {
 		"cell" : function(args) {
 			var cell = $('<td />');
 			cell.append($('<a />').attr('href',
-					'?q=[services] in "' + args.obj.name + '"').text(
+					'?q=[services] in "' + args.obj.name + '"').update_text(
 					args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
@@ -527,7 +527,7 @@ listview_renderer_table.comments = {
 			var cell = $('<td />');
 			cell.append(extinfo_link({
 				host : args.obj.host.name
-			}).text(args.obj.host.name));
+			}).update_text(args.obj.host.name));
 
 			if (args.obj.host.icon_image)
 				cell.append(icon(args.obj.host.icon_image, extinfo_link({
@@ -559,7 +559,7 @@ listview_renderer_table.comments = {
 			return $('<td />').append(extinfo_link({
 				host : args.obj.host.name,
 				service : args.obj.service.description
-			}).text(args.obj.service.description));
+			}).update_text(args.obj.service.description));
 		}
 	},
 	"time" : {
@@ -583,7 +583,7 @@ listview_renderer_table.comments = {
 		"depends" : [ 'comment' ],
 		"sort" : [ 'comment' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.comment);
+			return $('<td />').update_text(args.obj.comment);
 		}
 	},
 	"id" : {
@@ -706,7 +706,7 @@ listview_renderer_table.downtimes = {
 		"sort" : [ 'host.name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(extinfo_link(args.obj.host.name).text(
+			cell.append(extinfo_link(args.obj.host.name).update_text(
 					args.obj.host.name));
 
 			if (args.obj.host.icon_image)
@@ -740,7 +740,7 @@ listview_renderer_table.downtimes = {
 			return $('<td />').append(extinfo_link({
 				host : args.obj.host.name,
 				service : args.obj.service.description
-			}).text(args.obj.service.description));
+			}).update_text(args.obj.service.description));
 		}
 	},
 	"time" : {
@@ -764,7 +764,7 @@ listview_renderer_table.downtimes = {
 		"depends" : [ 'comment' ],
 		"sort" : [ 'comment' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.comment);
+			return $('<td />').update_text(args.obj.comment);
 		}
 	},
 	"start_time" : {
@@ -852,7 +852,7 @@ listview_renderer_table.contacts = {
 		"depends" : [ 'name' ],
 		"sort" : [ 'name' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.name);
+			return $('<td />').update_text(args.obj.name);
 		}
 	},
 	"alias" : {
@@ -860,7 +860,7 @@ listview_renderer_table.contacts = {
 		"depends" : [ 'alias' ],
 		"sort" : [ 'alias' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.alias);
+			return $('<td />').update_text(args.obj.alias);
 		}
 	}
 };
@@ -886,7 +886,7 @@ listview_renderer_table.notifications = {
 			var cell = $('<td />');
 			cell.append(extinfo_link({
 				host : args.obj.host_name
-			}).text(args.obj.host_name));
+			}).update_text(args.obj.host_name));
 
 			return cell;
 		}
@@ -900,7 +900,7 @@ listview_renderer_table.notifications = {
 			cell.append(extinfo_link({
 				host : args.obj.host_name,
 				service : args.obj.service_description
-			}).text(args.obj.service_description));
+			}).update_text(args.obj.service_description));
 
 			return cell;
 		}
@@ -934,7 +934,7 @@ listview_renderer_table.notifications = {
 		"depends" : [ 'output' ],
 		"sort" : [ 'output' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.output);
+			return $('<td />').update_text(args.obj.output);
 		}
 	}
 };

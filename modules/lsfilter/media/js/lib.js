@@ -152,6 +152,13 @@ function pnp_popup(elem, args)
 			});
 }
 
+jQuery.fn.update_text = function(text) {
+	if( _escape_html_tags ) {
+		return this.text(text);
+	} else {
+		return this.html(text);
+	}
+}
 
 
 
