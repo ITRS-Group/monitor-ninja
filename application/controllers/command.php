@@ -325,6 +325,8 @@ class Command_Controller extends Authenticated_Controller
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
+		$param['author'] = Auth::instance()->get_user()->username;
+
 		if (isset($param['comment']) && trim($param['comment'])=='') {
 			# comments shouldn't ever be empty
 			$this->template->content->result = false;
