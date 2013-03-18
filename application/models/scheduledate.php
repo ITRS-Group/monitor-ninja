@@ -173,7 +173,7 @@ class ScheduleDate_Model extends Model
 		}
 
 		$end_time = $start_time + $duration;
-		$author = $data['author'];
+		$author = Auth::instance()->get_user()->username;
 		$comment = $data['comment'];
 
 		$pipe = System_Model::get_pipe();
