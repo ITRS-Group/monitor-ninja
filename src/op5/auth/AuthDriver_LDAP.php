@@ -544,7 +544,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$filter = '';
 		if(count($matches) > 0) {
 			foreach($matches as $key => $value) {
-				$filter .= sprintf('(%s=%s)', $key, $this->ldap_escape($value, true));
+				$filter .= sprintf('(%s=%s)', trim($key), $this->ldap_escape($value, true));
 			}
 			$filter = '(&'.$filter.')';
 		}
