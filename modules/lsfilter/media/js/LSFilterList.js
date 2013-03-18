@@ -400,17 +400,21 @@ function lsfilter_list(config)
 		if (current == 0) { // No sort
 		
 			element
-					.prepend($('<span class="lsfilter-sort-span">&sdot;</span>'));
+					.prepend($('<span class="lsfilter-sort-span">&nbsp;</span>'));
 		}
 		else if (current > 0) { // Ascending?
 			element.attr('title', 'Sort descending');
 			element
-					.prepend($('<span class="lsfilter-sort-span">&darr;</span>'));
+					.prepend($('<span class="lsfilter-sort-span" />').append(
+							$('<img />').attr('src',_site_domain+'application/views/icons/arrow-down.png')
+							));
 		}
 		else {
 			element.attr('title', 'Sort ascending');
 			element
-					.prepend($('<span class="lsfilter-sort-span">&uarr;</span>'));
+					.prepend($('<span class="lsfilter-sort-span" />').append(
+							$('<img />').attr('src',_site_domain+'application/views/icons/arrow-up.png')
+							));
 		}
 		element.click({
 			table: table,
