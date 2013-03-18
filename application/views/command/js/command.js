@@ -24,30 +24,20 @@ $(document).ready(function() {
 		$('select[type="select-multiple"]').each(function() {
 			$(this).children('option').attr('selected', true);
 		});
-		var empty = 0;
 		var err_str = '';
 		inputs.each(function() {
 			var val = $(this).val();
 			var key_str = /\[.*?\]/.exec(this.name);
 			if (key_str) {
-				key_str = key_str[0];
-				key_str = key_str.replace('[', '');
-				key_str = key_str.replace(']', '');
-				if (key_str == 'duration') {
+				key_str = key_str[0].replace('[', '').replace(']', '');
+				if ((key_str == 'duration' && $("input[name='cmd_param\\[fixed\\]']").attr('checked') && $.trim(val) == '') ||
+					( key_str != '_perfdata' && (typeof val == 'string' && $.trim(val) == '') || (typeof val == 'object' && !val.length) )) {
 					// Only require 'duration' when 'fixed' is checked
-					if ($("input[name='cmd_param\\[fixed\\]']").attr('checked') && $.trim(val) == '') {
-						err_str += ' - ' + sprintf(_command_empty_field, $("#" + key_str).text())+"\n";
-						empty++;
-					}
-				} else {
-					if ( key_str != '_perfdata' && (typeof val == 'string' && $.trim(val) == '') || (typeof val == 'object' && !val.length) ) {
-						err_str += ' - ' + sprintf(_command_empty_field, $("#" + key_str).text())+"\n";
-						empty++;
-					}
+					err_str += ' - ' + sprintf(_command_empty_field, key_str)+"\n";
 				}
 			}
 		});
-		if (empty != 0) {
+		if (err_str.length) {
 			// alert user using translated string from master template
 			alert(sprintf(_form_error_header, "\n", "\n\n") + err_str);
 			return false;
