@@ -137,7 +137,16 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 	// column_custom: column := * custom_name eq expr
 	this.visit_column_custom = function(custom_name0, expr2)
 	{
-		this.custom_cols[custom_name0] = expr2;
+		this.custom_cols[custom_name0] = function(args) {
+			var value = expr2(args);
+
+			/* If an array, join the values */
+			if( typeof value == "object" ) {
+				value = value.join(", ");
+			}
+
+			return value;
+		}
 		return {
 			op: 'add',
 			cols: [ custom_name0 ]
@@ -220,6 +229,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		switch (type) {
 			case 'int':
 				defval = 0;
+				break;
+			case 'list':
+				defval = [];
 				break;
 		}
 		
