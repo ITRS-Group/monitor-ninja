@@ -297,8 +297,20 @@ if (!empty($commands))
 <br /><br />
 
 <?php
-if (isset($comments))
+if (isset($comments)) {
+
+	$label = _("Submit a $type comment");
+	$cmd = $type == 'host' ? nagioscmd::command_id('ADD_HOST_COMMENT') : nagioscmd::command_id('ADD_SVC_COMMENT');
+	echo '<span class="icon-16 x16-add-comment" title="' . htmlentities($label) . '"></span>';
+	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label);
+
+	$label = _("Delete all $type comments");
+	$cmd = $type == 'host' ? nagioscmd::command_id('DEL_ALL_HOST_COMMENTS') : nagioscmd::command_id('DEL_ALL_SVC_COMMENTS');
+	echo '<span class="icon-16 x16-delete-comment" title="' . htmlentities($label) . '"></span>';
+	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label);
+
 	echo $comments;
+}
 
 if (isset($downtimes))
 	echo $downtimes;
