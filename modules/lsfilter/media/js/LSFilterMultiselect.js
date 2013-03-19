@@ -65,6 +65,11 @@ var lsfilter_multiselect = {
 			// This is actually a macro of delete svc comments, which can handle both hosts and service comments
 			'DEL_COMMENT' : _('Delete comments')
 		},
+		'downtimes' : {
+			'' : _('Select action'),
+			// This is actually a macro of delete svc comments, which can handle both hosts and service comments
+			'DEL_DOWNTIME' : _('Delete downtimes')
+		},
 		'other' : {
 			'' : _('Table doesn\'t support multi action')
 		}

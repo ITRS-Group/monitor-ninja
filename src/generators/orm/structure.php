@@ -94,7 +94,7 @@ $tables = array (
 	array (
 		'class' => 'Downtime',
 		'source' => 'LS',
-		'key' => array('id'),
+		'key' => array('id', 'is_service'),
 		'structure' => 
 		array (
 			'author' => 'string',

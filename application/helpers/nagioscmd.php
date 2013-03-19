@@ -46,13 +46,13 @@ class nagioscmd_Core
 			  'template' => 'ADD_SVC_COMMENT;service;persistent;author;comment',
 			 ),
 			 'DEL_SVC_COMMENT' => array
-			 ('nagios_id' => 2,
+			 ('nagios_id' => 4,
 			  'description' => _('This command is used to delete a specific service comment. '),
 			  'brief' => _('You are trying to delete a service comment'),
 			  'template' => 'DEL_SVC_COMMENT;comment_id',
 			 ),
 			 'DEL_COMMENT' => array /* Use only in multiselect */
-			 ('nagios_id' => 4,
+			 ('nagios_id' => 2,
 			  'description' => _('This command is used to delete a specific comment. '),
 			  'brief' => _('You are trying to delete a comment'),
 			  'template' => 'DEL_HOST_COMMENT;comment_id', /* This is magically going to be replaces s/_HOST_/_SVC_/ in multi-select... */
@@ -494,6 +494,12 @@ class nagioscmd_Core
 			  'description' => _('This command is used to cancel active or pending scheduled downtime for the specified service. '),
 			  'brief' => _('You are trying to cancel scheduled downtime for a service'),
 			  'template' => 'DEL_SVC_DOWNTIME;downtime_id',
+			 ),
+			 'DEL_DOWNTIME' => array /* Use only in multiselect */
+			 ('nagios_id' => 78,
+			  'description' => _('This command is used to cancel active or pending scheduled downtime. '),
+			  'brief' => _('You are trying to cancel scheduled downtime'),
+			  'template' => 'DEL_HOST_DOWNTIME;downtime_id', /* This is magically going to be replaces s/_HOST_/_SVC_/ in multi-select... */
 			 ),
 			 'ENABLE_FAILURE_PREDICTION' => array
 			 ('nagios_id' => 80,
