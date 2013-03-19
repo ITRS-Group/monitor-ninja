@@ -546,8 +546,10 @@ class Command_Controller extends Authenticated_Controller
 		# No helptexts defined yet - this is just an example
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
-		$helptexts = array
-			('triggered_by' =>
+		$helptexts = array(
+			'downtime_id' =>
+			 _ ("The downtime you want to delete/cancel"),
+			'triggered_by' =>
 			 _ ("With triggered downtime the start of the downtime ".
 					"is triggered by the start of some other scheduled " .
 					"host or service downtime"),

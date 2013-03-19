@@ -170,7 +170,6 @@ class Execute_Command_Model extends Model
 				$ary = array('type' => 'bool', 'default' => self::get_setting('delete'));
 				break;
 			 case 'downtime_id':
-			 case 'trigger_id':
 				$ary = array('type' => 'select', 'options' => $this->get_downtime_ids($cmd, $defaults));
 				if (isset($defaults['service']) && is_array($defaults['service'])) {
 					$downtime_data = Old_Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME);
@@ -184,7 +183,12 @@ class Execute_Command_Model extends Model
 						if (in_array($downtime['host_name'], $defaults['host_name']))
 							$ary['default'][] = $downtime['id'];
 				}
-				$ary['name'] = _('Triggered By');
+				$ary['name'] = _('Downtime ID');
+				$ary['help'] = help::render('downtime_id');
+				break;
+			 case 'trigger_id':
+				$ary = array('type' => 'select', 'options' => $this->get_downtime_ids($cmd, $defaults));
+				$ary['name'] = _('Triggered by');
 				$ary['help'] = help::render('triggered_by');
 				break;
 			 case 'duration':
