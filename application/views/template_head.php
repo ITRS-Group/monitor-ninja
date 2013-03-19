@@ -21,7 +21,7 @@ if (!empty($base_href)) {
 	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
-    if (!window.console) console = {log: function() {}};
+    if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
 </script>
 	<?php
 		echo (!empty($css_header)) ? $css_header : '';
