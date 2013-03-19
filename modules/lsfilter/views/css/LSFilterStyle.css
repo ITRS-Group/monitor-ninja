@@ -329,6 +329,9 @@ th span.header-icon {
 	background-color: #FFEEEE !important;
 }
 
+td.cell_svccnt a {
+	border-bottom: 0;
+}
 
 tr.even td.cell_svccnt_all {
 }

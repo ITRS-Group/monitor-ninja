@@ -160,6 +160,14 @@ jQuery.fn.update_text = function(text) {
 	}
 }
 
+jQuery.fn.querylink = function(text) {
+	if( _escape_html_tags ) {
+		return this.text(text);
+	} else {
+		return this.html(text);
+	}
+}
+
 
 
 
