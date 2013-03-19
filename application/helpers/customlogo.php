@@ -14,14 +14,14 @@ class customlogo_Core {
 		$logo = customlogo::imageExists($image = customlogo::getImage());
 
 		if ($logo) {
-			$height = 30;
+			$height = 42;
 			echo html::image(array(
 						'src' => $image,
 						'height' => $height,
 					),
 					array(
 						'alt' => '',
-						'style' => 'padding: 2px;',
+						'style' => '',
 					)
 				);
 		}
