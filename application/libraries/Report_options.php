@@ -704,7 +704,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
 				continue;
-			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type', 'report_id')))
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $vk => $member) {
@@ -722,7 +722,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
 				continue;
-			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type', 'report_id')))
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $k => $v)
