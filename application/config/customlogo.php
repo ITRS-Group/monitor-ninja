@@ -9,7 +9,7 @@ $config['enable'] = false;
  * Path to where you will store your local customlogo
  * this should be relative to your icons folder for your view
 */
-$config['path'] = 'custom_logos/';
+$config['path'] = 'custom_logo/';
 
 /**
  * Pattern to match against, eg if you name a contact
