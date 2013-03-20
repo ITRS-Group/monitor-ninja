@@ -176,8 +176,8 @@ function expand_and_populate(data)
 			var from_id = tmp_fields.map[field_str];
 			// select report objects
 			for (prop in reportObj[field_obj.map[field_str]]) {
-				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj.objects[prop])) {
-					mo.add(reportObj.objects[prop])
+				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj[field_obj.map[field_str]][prop])) {
+					mo.add(reportObj[field_obj.map[field_str]][prop])
 				} else {
 					$('#' + from_id).selectOptions(reportObj[field_obj.map[field_str]][prop]);
 				}
