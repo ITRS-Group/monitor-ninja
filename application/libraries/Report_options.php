@@ -354,6 +354,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$filter = "[hosts] " . implode(' or ', $filter);
 			$out = ObjectPool_Model::get_by_query($filter);
 			$out = $out->it(array('name'), array());
+			$res = array();
 			foreach ($out as $arr) {
 				$res[] = $arr->get_key();
 			}
@@ -366,6 +367,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$filter = "[services] " . implode(' or ', $filter);
 			$out = ObjectPool_Model::get_by_query($filter);
 			$out = $out->it(array('host_name', 'description'), array());
+			$res = array();
 			foreach ($out as $arr) {
 				$res[] = $arr->get_key();
 			}
