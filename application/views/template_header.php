@@ -22,7 +22,7 @@
 	$shortcuts['internal'][] = array('#', 'icon-16 x16-refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
 
 	if ($show_settings) {
-		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'settings_icon'));
+		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'page_settings_icon'));
 	}
 
 	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {

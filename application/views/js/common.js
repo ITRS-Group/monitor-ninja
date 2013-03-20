@@ -19,7 +19,7 @@ $(document).ready(function() {
 	*/
 	if ($('#content-header').text()!='') {
 		$('#noheader_ctrl').show();
-		$('#settings_icon').show();
+		$('#page_settings_icon').show();
 		$('#menu_global_settings').show();
 
 		// Let checkbox state reflect visibility of the #content-header div
@@ -404,46 +404,23 @@ $(document).ready(function() {
 			});
 		}
 	});
-	// Handle show/hide of settings layer
-	$("#settings_icon").click(function() {
+	// Toggle visibility for quick menu items
+	$("#page_settings_icon, #global_notifications_icon").click(function() {
 		var menu_item = $(this);
 		var li = menu_item.parents('li');
-		var page_settings = $("#page_settings");
-		if (page_settings.is(':hidden')) {
+		var submenu = $('#'+menu_item[0].id.replace(/_icon$/, ''));
+		if (submenu.is(':hidden')) {
 			li.addClass("selected");
-			page_settings
+			submenu
 				.show()
 				.css('top', '49px')
 				.css('left', (menu_item.offset().left - 10) + 'px');
 
 		} else {
 			li.removeClass("selected");
-			page_settings.hide();
+			submenu.hide();
 		}
 		return false;
-	});
-
-	$("#global_notifications_icon").click(function() {
-		console.log($("#global_notifications"));
-		if ($("#global_notifications").is(':hidden')) {
-			$("#global_notifications").show();
-				var top = 49;
-
-				$('#global_notifications').css('top', (top) + 'px');
-				$('#global_notifications').css('left', ($('#global_notifications_icon').offset().left - 10) + 'px');
-
-		} else {
-			$("#global_notifications").hide();
-		}
-		return false;
-	});
-
-	$('#page_settings').click(function(e) {
-		e.stopPropagation();
-	});
-
-	$(document).click(function() {
-		$('#page_settings').hide();
 	});
 
 	// are we using keyboard commands or not
