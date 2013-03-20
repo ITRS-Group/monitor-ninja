@@ -232,7 +232,7 @@
 				if ($authorized === true) {
 					echo '<li onclick="widget_upload();">'._('Upload new widget').'</li>'."\n";
 				}
-				echo '<li id="show_global_widget_refresh">'._('Set widget refresh rate (s.)').'</li>'."\n";
+				echo '<li id="show_global_widget_refresh">'._("Set every widget's refresh rate to (s.)").'</li>'."\n";
 			}
 		?>
 	</ul>
