@@ -2,6 +2,7 @@
 @import "config"
 
 .header
+	background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
 	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
 	@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 	box-shadow: 0 0 6px $weak_shadow_color
@@ -24,6 +25,7 @@
 		border-top: none
 		border-left: none
 		box-shadow: 0 0 3px $weak_shadow_color
+		background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
 		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
 		@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
 		
@@ -54,6 +56,7 @@
 				display: block
 
 				&:hover
+					background-image: -ms-linear-gradient(top, #fefffd, #dedfdd)
 					@include background(linear-gradient(top, #fefffd, #dedfdd))
 					@include filter-gradient(#fefffd, #dedfdd, vertical)
 
@@ -76,6 +79,7 @@
 				border-radius: 5px 5px 0 0
 
 				&:hover
+					background-image: -ms-linear-gradient(top, #f8f8f8, #fff)
 					@include background(linear-gradient(top, #f8f8f8, #fff))
 					@include filter-gradient(#f8f8f8, #fff, vertical)
 		a
