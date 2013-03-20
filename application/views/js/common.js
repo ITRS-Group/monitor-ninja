@@ -406,15 +406,19 @@ $(document).ready(function() {
 	});
 	// Handle show/hide of settings layer
 	$("#settings_icon").click(function() {
-		if ($("#page_settings").is(':hidden')) {
-			$("#page_settings").show();
-				var top = 49;
-
-				$('#page_settings').css('top', (top) + 'px');
-				$('#page_settings').css('left', ($('#settings_icon').offset().left - 10) + 'px');
+		var menu_item = $(this);
+		var li = menu_item.parents('li');
+		var page_settings = $("#page_settings");
+		if (page_settings.is(':hidden')) {
+			li.addClass("selected");
+			page_settings
+				.show()
+				.css('top', '49px')
+				.css('left', (menu_item.offset().left - 10) + 'px');
 
 		} else {
-			$("#page_settings").hide();
+			li.removeClass("selected");
+			page_settings.hide();
 		}
 		return false;
 	});

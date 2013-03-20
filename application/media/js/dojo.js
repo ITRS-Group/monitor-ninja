@@ -149,10 +149,6 @@
 		});
 	};
 
-	function quicklinks_add(href, title, icon, internal) {
-
-	};
-
 	$('#dojo-add-quicklink').hover(function () {
 		this.style.opacity = '1.0';
 	}, function () {
