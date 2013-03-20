@@ -19,8 +19,8 @@ if (is_array($data_arr)) {
 			$csv[] = '"'.implode(',', $data['source']).'"';
 			$csv[] = date('Y', $start);
 			$csv[] = '"'.date('M', $start).'"';
-			$csv[] = (int)$result[0];
-			$csv[] = (int)$result[1];
+			$csv[] = (float)$result[0];
+			$csv[] = (float)$result[1];
 			$csv[] = (int)($result[0] >= $result[1]);
 			echo implode(', ', $csv) . "\n";
 		}
