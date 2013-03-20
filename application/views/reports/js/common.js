@@ -759,7 +759,7 @@ function disable_sla_fields(report_period)
 			// all months. If not, we could end up with all months being
 			// disabled for 'thisyear'
 			disable_months(0, 12);
-			for (i=this_month;i<=12;i++)
+			for (i=this_month + 1;i<=12;i++)
 			{
 				document.forms['report_form'].elements['month_' + i].value='';
 				document.forms['report_form'].elements['month_' + i].disabled=true;
