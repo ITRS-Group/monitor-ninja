@@ -88,10 +88,6 @@ listview_renderer_table.hosts = {
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
 
-			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra host notes'), $(
-						'<a />').attr('href', args.obj.notes_url)));
-
 			if (args.obj.comments_count > 0)
 				cell.append(icon16('add-comment', _('Comments')));
 			
@@ -100,7 +96,7 @@ listview_renderer_table.hosts = {
 	},
 	"actions" : {
 		"header" : _('Actions'),
-		"depends" : [ 'name', 'action_url', 'config_url' ],
+		"depends" : [ 'name', 'action_url', 'config_url', 'notes_url' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -120,6 +116,10 @@ listview_renderer_table.hosts = {
 			if (args.obj.config_url)
 				cell.append(icon16('nacoma', _('Configure this host'), $(
 						'<a />').attr('href', args.obj.config_url)));
+
+			if (args.obj.notes_url)
+				cell.append(icon16('host-notes', _('View extra host notes'), $(
+						'<a />').attr('href', args.obj.notes_url)));
 
 			return cell;
 		}
@@ -316,8 +316,7 @@ listview_renderer_table.services = {
 		"header" : _('Status'),
 		"depends" : [ 'host.name', 'description', 'pnpgraph_present',
 		        'acknowledged', 'comments_count', 'notifications_enabled',
-		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-		        'notes_url' ],
+		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -356,17 +355,12 @@ listview_renderer_table.services = {
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
 			
-
-			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra host notes'), $(
-						'<a />').attr('href', args.obj.notes_url)));
-			
 			return cell;
 		}
 	},
 	"actions" : {
 		"header" : _('Actions'),
-		"depends" : [ 'action_url', 'config_url' ],
+		"depends" : [ 'action_url', 'config_url', 'notes_url' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -381,6 +375,11 @@ listview_renderer_table.services = {
 			if (args.obj.config_url)
 				cell.append(icon16('nacoma', _('Configure this service'), $(
 						'<a />').attr('href', args.obj.config_url)));
+			
+
+			if (args.obj.notes_url)
+				cell.append(icon16('host-notes', _('View extra service notes'), $(
+						'<a />').attr('href', args.obj.notes_url)));
 
 			return cell;
 		}
