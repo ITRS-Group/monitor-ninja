@@ -42,6 +42,7 @@ test-ci-cleanup:
 	rm -f application/config/custom/config.php
 	if [ -e /tmp/ninja-test/var/merlin.pid ]; then kill $$(cat /tmp/ninja-test/var/merlin.pid) || :; fi
 	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; rm /tmp/ninja-test/nagios.cmd; fi
+	rm -rf /tmp/ninja-test/
 
 test-ci-prepare: test-ci-cleanup prepare-config
 	chmod -R 0777 /tmp/ninja-test/var
