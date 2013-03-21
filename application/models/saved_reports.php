@@ -357,17 +357,16 @@ class Saved_reports_Model extends Model
 			$period_info = self::get_period_info($id);
 			if ($period_info !== false) {
 				foreach ($period_info as $row) {
-					$month_key =  $row->name;
+					list($str, $num) = explode('_', $row->name);
 					if ($return['report_period'] == 'lastmonth') {
 						# special case lastmonth report period to work as expected,
 						# i.e to use the entered SLA value for every month
 						# no matter what month it was scheduled
-						$month = date('n');
-						$month = $month == 1 ? 12 : ($month-1);
-						$month_key = 'month_'.$month;
+						$num = date('n');
+						$num = $num == 1 ? 12 : ($num-1);
 					}
 
-					$return[$month_key] = $row->value;
+					$return['months'][$num] = $row->value;
 				}
 
 				# handle dynamic month values
@@ -428,28 +427,26 @@ class Saved_reports_Model extends Model
 		for ($i=$start;$i<=$month;$i++) {
 			$a = $i<0 ? $i + 13 : $i;
 			$a = $a == 0 ? 1 : $a;
-			$new_months[] = 'month_'.$a;
+			$new_months[] = $a;
 		}
 
 		$i = 0;
 		$unset = false;
 		$add = false;
-		foreach ($arr as $key => $val) {
-			if (strstr($key, 'month_')) {
-				$unset[] = $key;
-				$add[$new_months[$i]] = $val;
-				$i++;
-			}
+		foreach ($arr['months'] as $key => $val) {
+			$unset[] = $key;
+			$add[$new_months[$i]] = $val;
+			$i++;
 		}
 		if (!empty($unset)) {
 			foreach ($unset as $k) {
-				unset($arr[$k]);
+				unset($arr['months'][$k]);
 			}
 			unset($unset);
 		}
 		if (!empty($add)) {
 			foreach ($add as $key => $val) {
-				$arr[$key] = $val;
+				$arr['months'][$key] = $val;
 			}
 			unset($add);
 		}
