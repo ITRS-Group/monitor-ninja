@@ -247,10 +247,12 @@ function lsfilter_list(config)
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
 				if (field in totals) {
-					container.append(listview_renderer_totals[field](
-							totals[field][1]).css('float', 'left').wrapInner(
+					var item = listview_renderer_totals[field](totals[field][1])
+						.css('float', 'left').wrapInner(
 							link_query(totals[field][0]).addClass('no_uline')
-							));
+						);
+					item.find('a').attr('title', item.find('span').attr('title'));
+					container.append(item);
 				}
 			}
 		}
