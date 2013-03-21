@@ -6,7 +6,29 @@ require_once('op5/config.php');
 /**
  * Custom exception for Livestatus errors
  */
-class op5LivestatusException extends Exception {}
+class op5LivestatusException extends Exception {
+	private $plain_message;
+	private $query;
+	
+	public function __construct( $plain_message, $query = false ) {
+		$this->query = $query;
+		$this->plain_message = $plain_message;
+		
+		$message = $plain_message;
+		if( $query ) {
+			$message .= ' <pre>'.$query.'</pre>';
+		}
+		parent::__construct( $message );
+	}
+	
+	public function getPlainMessage() {
+		return $this->plain_message;
+	}
+	
+	public function getQuery() {
+		return $this->query;
+	}
+}
 
 class op5Livestatus {
 	static private $instance = null;
@@ -79,9 +101,9 @@ class op5Livestatus {
 		$len     = intval(trim(substr($head, 4, 15)));
 		$body    = $this->connection->readSocket($len);
 		if(empty($body))
-			throw new op5LivestatusException("empty body for query: <pre>".$query."</pre>");
+			throw new op5LivestatusException("empty body for query", $query);
 		if($status != 200)
-			throw new op5LivestatusException("Invalid request: ".trim($body) . ".<pre>\nQuery: $query</pre>");
+			throw new op5LivestatusException(trim($body), $query);
 		
 		$result = json_decode(utf8_encode($body), true);
 		
