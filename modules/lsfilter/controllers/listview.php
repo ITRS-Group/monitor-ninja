@@ -135,6 +135,11 @@ class ListView_Controller extends Authenticated_Controller {
 				'query' => $e->get_query(),
 				'position' => $e->get_position()
 				));
+		} catch( ORMException $e ) {
+			return json::ok( array(
+				'status' => 'error',
+				'data' => $e->getMessage()
+				));
 		} catch( Exception $e ) {
 			$this->log->log('error', $e->getMessage() . ' at ' . $e->getFile() . '@' . $e->getLine());
 			

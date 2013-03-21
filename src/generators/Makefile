@@ -9,6 +9,6 @@ regenerate: clean
 	$(MAKE) all
 
 clean:
-	rm $(MODULES:%=%/build_track)
+	rm -f $(MODULES:%=%/build_track)
 
 .PHONY: force clean regenerate all

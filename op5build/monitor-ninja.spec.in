@@ -26,7 +26,7 @@ Requires: wkhtmltopdf
 Requires: op5-monitor-supported-database
 Requires: monitor-livestatus
 Requires: monitor-nacoma
-BuildRequires: php-op5lib >= 1.1.0-beta7
+BuildRequires: php-op5lib >= 1.1.0-beta9
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
