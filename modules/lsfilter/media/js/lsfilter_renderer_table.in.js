@@ -49,22 +49,27 @@ listview_renderer_table.hosts = {
 			return $('<td />').update_text(args.obj.alias);
 		}
 	},
-	"actions" : {
-		"header" : _('Actions'),
+	"status" : {
+		"header" : _('Status'),
 		"depends" : [ 'name', 'acknowledged', 'notifications_enabled',
-				'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-				'pnpgraph_present', 'action_url', 'notes_url', 'config_url',
-				'comments_count' ],
+		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
+		        'notes_url', 'pnpgraph_present', 'comments_count' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
 
-			// FIXME: icon for service-details
-			cell.append(icon16('service-details',
-					_('View service details for this host'),
-					link_query('[services] host.name = "' + args.obj.name + '"' // FIXME:
-					// escape
-					)));
+			if (args.obj.pnpgraph_present > 0) {
+				var pnp_link = icon16('pnp', _('Show performance graph'), link(
+						'pnp', {
+							"srv" : "_HOST_",
+							"host" : args.obj.name
+						}));
+				pnp_popup(pnp_link, {
+					"srv" : "_HOST_",
+					"host" : args.obj.name
+				});
+				cell.append(pnp_link);
+			}
 
 			if (args.obj.acknowledged)
 				cell.append(icon16('acknowledged', _('Acknowledged')));
@@ -83,36 +88,38 @@ listview_renderer_table.hosts = {
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
 
-			// FIXME: Add nacoma link
+			if (args.obj.notes_url)
+				cell.append(icon16('host-notes', _('View extra host notes'), $(
+						'<a />').attr('href', args.obj.notes_url)));
 
-			if (args.obj.pnpgraph_present > 0) {
-				var pnp_link = icon16('pnp', _('Show performance graph'), link(
-						'pnp', {
-							"srv" : "_HOST_",
-							"host" : args.obj.name
-						}));
-				pnp_popup(pnp_link, {
-					"srv" : "_HOST_",
-					"host" : args.obj.name
-				});
-				cell.append(pnp_link);
-			}
+			if (args.obj.comments_count > 0)
+				cell.append(icon16('add-comment', _('Comments')));
+			
+			return cell;
+		}
+	},
+	"actions" : {
+		"header" : _('Actions'),
+		"depends" : [ 'name', 'action_url', 'config_url' ],
+		"sort" : false,
+		"cell" : function(args) {
+			var cell = $('<td />');
+
+			// FIXME: icon for service-details
+			cell.append(icon16('service-details',
+					_('View service details for this host'),
+					link_query('[services] host.name = "' + args.obj.name + '"' // FIXME:
+					// escape
+					)));
 
 			if (args.obj.action_url)
 				cell.append(icon16('host-actions',
 						_('Perform extra host actions'), $('<a />').attr(
 								'href', args.obj.action_url)));
 
-			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra host notes'), $(
-						'<a />').attr('href', args.obj.notes_url)));
-
 			if (args.obj.config_url)
 				cell.append(icon16('nacoma', _('Configure this host'), $(
 						'<a />').attr('href', args.obj.config_url)));
-
-			if (args.obj.comments_count > 0)
-				cell.append(icon16('add-comment', _('Comments')));
 
 			return cell;
 		}
@@ -305,16 +312,29 @@ listview_renderer_table.services = {
 			}).update_text(args.obj.display_name));
 		}
 	},
-	"actions" : {
-		"header" : _('Actions'),
-		"depends" : [ 'acknowledged', 'comments_count',
-				'notifications_enabled', 'checks_disabled', 'is_flapping',
-				'scheduled_downtime_depth', 'pnpgraph_present', 'action_url',
-				'notes_url', 'config_url', 'host.name', 'description' ],
+	"status" : {
+		"header" : _('Status'),
+		"depends" : [ 'host.name', 'description', 'pnpgraph_present',
+		        'acknowledged', 'comments_count', 'notifications_enabled',
+		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
+		        'notes_url' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
 
+			if (args.obj.pnpgraph_present > 0) {
+				var pnp_link = icon16('pnp', _('Show performance graph'), link(
+						'pnp', {
+							"srv" : args.obj.description,
+							"host" : args.obj.host.name
+						}));
+				pnp_popup(pnp_link, {
+					"srv" : args.obj.description,
+					"host" : args.obj.host.name
+				});
+				cell.append(pnp_link);
+			}
+			
 			if (args.obj.acknowledged)
 				cell.append(icon16('acknowledged', _('Acknowledged')));
 
@@ -335,33 +355,28 @@ listview_renderer_table.services = {
 			if (args.obj.scheduled_downtime_depth > 0)
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
+			
 
-			/*******************************************************************
-			 * 
-			 */
+			if (args.obj.notes_url)
+				cell.append(icon16('host-notes', _('View extra host notes'), $(
+						'<a />').attr('href', args.obj.notes_url)));
+			
+			return cell;
+		}
+	},
+	"actions" : {
+		"header" : _('Actions'),
+		"depends" : [ 'action_url', 'config_url' ],
+		"sort" : false,
+		"cell" : function(args) {
+			var cell = $('<td />');
 
-			// FIXME: Add nacoma link
-			if (args.obj.pnpgraph_present > 0) {
-				var pnp_link = icon16('pnp', _('Show performance graph'), link(
-						'pnp', {
-							"srv" : args.obj.description,
-							"host" : args.obj.host.name
-						}));
-				pnp_popup(pnp_link, {
-					"srv" : args.obj.description,
-					"host" : args.obj.host.name
-				});
-				cell.append(pnp_link);
-			}
 
 			if (args.obj.action_url)
 				cell.append(icon16('host-actions',
 						_('Perform extra host actions'), $('<a />').attr(
 								'href', args.obj.action_url)));
 
-			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra host notes'), $(
-						'<a />').attr('href', args.obj.notes_url)));
 
 			if (args.obj.config_url)
 				cell.append(icon16('nacoma', _('Configure this service'), $(
