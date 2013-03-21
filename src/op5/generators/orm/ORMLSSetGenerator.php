@@ -82,7 +82,11 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$columns = array_unique($columns);');
 		$this->write('}');
 		
+		$this->write('try {');
 		$this->write('list($columns, $objects, $count) = $ls->query($this->table, $ls_filter, $columns);');
+		$this->write('} catch( op5LivestatusException $e ) {');
+		$this->write('throw new ORMException( $e->getPlainMessage() );');
+		$this->write('}');
 		$this->write('return new LivestatusSetIterator($objects, $columns, $this->class);');
 		$this->finish_function();
 	}

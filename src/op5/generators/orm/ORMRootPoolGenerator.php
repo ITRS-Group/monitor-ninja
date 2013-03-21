@@ -31,7 +31,7 @@ class ORMRootPoolGenerator extends class_generator {
 		$this->write(     'return new self::$table_classes[$name]["pool"]();' );
 		$this->write( '}' );
 		
-		$this->write( 'throw new Exception("Unknown table ".$name);' );
+		$this->write( 'throw new ORMException("Unknown table ".$name);' );
 		$this->finish_function();
 	}
 	private function generate_load_table_classes() {
