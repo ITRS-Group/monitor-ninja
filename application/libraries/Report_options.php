@@ -314,15 +314,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return $this->properties;
 	}
 
-	/**
-	 * @param $key string a key that could be in the properties array but isn't,
-	 * but we still need to know about it
-	 * @return boolean
-	 */
-	public function always_allow_option_to_be_set($key) {
-		return false;
-	}
-
 	public function get_alternatives($key) {
 		if (!isset($this->properties[$key]))
 			return false;
