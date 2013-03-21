@@ -63,6 +63,9 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
 
+		// add context menu items (hidden in html body)
+		$this->template->context_menu = $this->add_view('status/context_menu');
+
 		$lview->query = $query;
 		$lview->query_order = $query_order;
 	}

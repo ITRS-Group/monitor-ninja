@@ -14,13 +14,15 @@ listview_renderer_table.hosts = {
 	},
 	"state" : {
 		"header" : '',
-		"depends" : [ 'state_text' ],
+		"depends" : [ 'state_text', 'name' ],
 		"sort" : [ 'has_been_checked', 'state' ],
 		"cell" : function(args) {
-			return $('<td class="icon" />')
+			return $('<td class="icon obj_properties" />')
 					.append(
 							icon16('shield-' + args.obj.state_text,
-									args.obj.state_text));
+									args.obj.state_text))
+					.addClass(args.obj.state_text)
+					.attr('id','host|'+args.obj.name);
 
 		}
 	},
@@ -243,14 +245,16 @@ listview_renderer_table.hosts = {
 listview_renderer_table.services = {
 	"host_state" : {
 		"header" : '',
-		"depends" : [ 'host.state_text' ],
+		"depends" : [ 'host.state_text', 'host.name' ],
 		"sort" : [ 'host.state' ],
 		"cell" : function(args) {
 			if (args.obj.host
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
-				return $('<td class="icon" />').append(
+				return $('<td class="icon obj_properties" />').append(
 						icon16('shield-' + args.obj.host.state_text,
-								args.obj.host.state_text));
+								args.obj.host.state_text))
+						.addClass(args.obj.host.state_text)
+						.attr('id','host|'+args.obj.host.name);
 
 			} else {
 				return $('<td class="icon" />').addClass('listview-empty-cell');
@@ -294,11 +298,13 @@ listview_renderer_table.services = {
 	},
 	"state" : {
 		"header" : '',
-		"depends" : [ 'state_text' ],
+		"depends" : [ 'state_text', 'description', 'host.name' ],
 		"sort" : [ 'state' ],
 		"cell" : function(args) {
-			return $('<td class="icon"><span class="icon-16 x16-shield-'
-					+ args.obj.state_text + '"></span></td>');
+			return $('<td class="icon svc_obj_properties"><span class="icon-16 x16-shield-'
+					+ args.obj.state_text + '"></span></td>')
+					.addClass(args.obj.state_text)
+					.attr('id','service|'+args.obj.host.name+'|'+args.obj.description.replace(' ','_')+'|'+args.obj.description);
 		}
 	},
 	"description" : {
