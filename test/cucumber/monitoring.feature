@@ -21,10 +21,6 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "Services total"
 		Then I should see the configured services
-		When I click "Status overview"
-		Then I should see the configured hosts
-		When I click "Status summary"
-		Then I should see the configured hostgroups
 
 	@configuration @asmonitor @case-643
 	Scenario: Host details filter
