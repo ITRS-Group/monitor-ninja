@@ -114,7 +114,7 @@ if( $object instanceof Host_Model ) {
 			} else {
 				$img = 'enabled';
 				$label = _('Start obsessing over this host');
-				$type == 'host' ? nagioscmd::command_id('START_OBSESSING_OVER_HOST') : nagioscmd::command_id('START_OBSESSING_OVER_SVC');
+				$cmd = $type == 'host' ? nagioscmd::command_id('START_OBSESSING_OVER_HOST') : nagioscmd::command_id('START_OBSESSING_OVER_SVC');
 			} ?>
 			<td class="icon dark">
 				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
