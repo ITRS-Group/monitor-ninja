@@ -12,7 +12,7 @@ listview_renderer_table.hosts = {
 		},
 		"cell" : listview_multi_select_cell_renderer
 	},
-	"status" : {
+	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text' ],
 		"sort" : [ 'has_been_checked', 'state' ],
@@ -133,7 +133,7 @@ listview_renderer_table.hosts = {
 			return $('<td />').text(format_interval(args.obj.duration));
 		}
 	},
-	"status_info" : {
+	"status_information" : {
 		"header" : _('Status Information'),
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
@@ -234,7 +234,7 @@ listview_renderer_table.hosts = {
 };
 
 listview_renderer_table.services = {
-	"host_status" : {
+	"host_state" : {
 		"header" : '',
 		"depends" : [ 'host.state_text' ],
 		"sort" : [ 'host.state' ],
@@ -285,7 +285,7 @@ listview_renderer_table.services = {
 		},
 		"cell" : listview_multi_select_cell_renderer
 	},
-	"status" : {
+	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text' ],
 		"sort" : [ 'state' ],
@@ -396,7 +396,7 @@ listview_renderer_table.services = {
 							+ args.obj.max_check_attempts);
 		}
 	},
-	"status_info" : {
+	"status_information" : {
 		"header" : _('Status Information'),
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
@@ -509,7 +509,7 @@ listview_renderer_table.comments = {
 			return $('<td />').text(args.obj.id);
 		}
 	},
-	"is_service" : {
+	"object_type" : {
 		"header" : _('Type'),
 		"depends" : [ 'is_service' ],
 		"sort" : false,
@@ -517,7 +517,7 @@ listview_renderer_table.comments = {
 			return $('<td />').text(args.obj.is_service ? 'Service' : 'Host');
 		}
 	},
-	"host_status" : {
+	"host_state" : {
 		"header" : '',
 		"depends" : [ 'host.state_text' ],
 		"sort" : [ 'host.state' ],
@@ -546,7 +546,7 @@ listview_renderer_table.comments = {
 			return cell;
 		}
 	},
-	"service_status" : {
+	"service_state" : {
 		"header" : '',
 		"depends" : [ 'service.state_text', 'service.description' ],
 		"sort" : [ 'service.state' ],
@@ -571,7 +571,7 @@ listview_renderer_table.comments = {
 			}).update_text(args.obj.service.description));
 		}
 	},
-	"time" : {
+	"entry_time" : {
 		"header" : _('Entry Time'),
 		"depends" : [ 'entry_time' ],
 		"sort" : [ 'entry_time' ],
@@ -690,7 +690,7 @@ listview_renderer_table.downtimes = {
 			return $('<td />').text(args.obj.id);
 		}
 	},
-	"is_service" : {
+	"object_type" : {
 		"header" : _('Type'),
 		"depends" : [ 'is_service' ],
 		"sort" : false,
@@ -698,7 +698,7 @@ listview_renderer_table.downtimes = {
 			return $('<td />').text(args.obj.is_service ? 'Service' : 'Host');
 		}
 	},
-	"host_status" : {
+	"host_state" : {
 		"header" : '',
 		"depends" : [ 'host.state_text' ],
 		"sort" : [ 'host.state' ],
@@ -727,7 +727,7 @@ listview_renderer_table.downtimes = {
 			return cell;
 		}
 	},
-	"service_status" : {
+	"service_state" : {
 		"header" : '',
 		"depends" : [ 'service.state_text', 'service.description' ],
 		"sort" : [ 'service.state' ],
@@ -752,7 +752,7 @@ listview_renderer_table.downtimes = {
 			}).update_text(args.obj.service.description));
 		}
 	},
-	"time" : {
+	"entry_time" : {
 		"header" : _('Entry Time'),
 		"depends" : [ 'entry_time' ],
 		"sort" : [ 'entry_time' ],
@@ -875,7 +875,7 @@ listview_renderer_table.contacts = {
 };
 
 listview_renderer_table.notifications = {
-	"status" : {
+	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text' ],
 		"sort" : [ 'notification_type', 'state' ],
@@ -938,8 +938,8 @@ listview_renderer_table.notifications = {
 			return $('<td />').text(args.obj.command_name);
 		}
 	},
-	"information" : {
-		"header" : _('Information'),
+	"status_information" : {
+		"header" : _('Status Information'),
 		"depends" : [ 'output' ],
 		"sort" : [ 'output' ],
 		"cell" : function(args) {
@@ -994,7 +994,7 @@ listview_renderer_table.saved_queries = {
 		}
 	},
 	"scope" : {
-		"header" : 'Scope',
+		"header" : _('Scope'),
 		"depends" : [ 'scope' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -1002,7 +1002,7 @@ listview_renderer_table.saved_queries = {
 		}
 	},
 	"name" : {
-		"header" : 'Name',
+		"header" : _('Name'),
 		"depends" : [ 'query_name' ],
 		"sort" : [ 'query_name' ],
 		"cell" : function(args) {
@@ -1011,7 +1011,7 @@ listview_renderer_table.saved_queries = {
 		}
 	},
 	"description" : {
-		"header" : 'Description',
+		"header" : _('Description'),
 		"depends" : [ 'query_description' ],
 		"sort" : [ 'query_description' ],
 		"cell" : function(args) {
@@ -1020,7 +1020,7 @@ listview_renderer_table.saved_queries = {
 		}
 	},
 	"query" : {
-		"header" : 'Query string',
+		"header" : _('Query string'),
 		"depends" : [ 'query' ],
 		"sort" : [ 'query' ],
 		"cell" : function(args) {
@@ -1029,7 +1029,7 @@ listview_renderer_table.saved_queries = {
 		}
 	},
 	"owner" : {
-		"header" : 'Owner',
+		"header" : _('Owner'),
 		"depends" : [ 'username' ],
 		"sort" : [ 'username' ],
 		"cell" : function(args) {
