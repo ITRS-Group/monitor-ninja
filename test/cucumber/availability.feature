@@ -1,10 +1,9 @@
 Feature: Availability reports
-
-	@asmonitor @javascript @calendar
+	@asmonitor @calendar
 	Scenario: Toggle JS-calendars on custom report date
 		When I hover over the "Reporting" button
 		And I click "Availability"
-		And I select "Custom" from "report_period"
+		And I select "Custom" from "Reporting period"
 
 		And I click css "#cal_start"
 		Then I should see css "#dp-popup"
