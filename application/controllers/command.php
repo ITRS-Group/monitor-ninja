@@ -502,8 +502,9 @@ class Command_Controller extends Authenticated_Controller
 		if (empty($nagios_commands))
 			$this->template->content->result = false;
 
+		$this->template->content->result = true;
 		while ($ncmd = array_pop($nagios_commands)) {
-			$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
+			$this->template->content->result = $this->template->content->result && nagioscmd::submit_to_nagios($ncmd, $pipe);
 		}
 	}
 
