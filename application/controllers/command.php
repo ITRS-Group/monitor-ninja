@@ -499,8 +499,11 @@ class Command_Controller extends Authenticated_Controller
 		$nagios_commands = $this->_build_command($cmd, $param, $nagios_commands);
 
 		$pipe = System_Model::get_pipe();
+		if (empty($nagios_commands))
+			$this->template->content->result = false;
+
 		while ($ncmd = array_pop($nagios_commands)) {
-			$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
+			$this->template->content->result &= nagioscmd::submit_to_nagios($ncmd, $pipe);
 		}
 	}
 
