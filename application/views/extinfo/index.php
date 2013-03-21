@@ -84,14 +84,17 @@ if (!empty($widgets)) {
 			<td style="white-space: normal"><?php echo $object->get_groups() ? implode(', ', $object->get_groups()) : _('No '.$type.'groups') ?></td>
 		</tr>
 		<tr>
-			<td><strong><?php echo _('Notifies to') ?></strong></td>
+			<td><strong><?php echo _('Contact groups') ?></strong></td>
 			<td>
-				<?php	if ($object->get_contact_groups()) {
+				<?php 
 					$c = 0;
-					foreach ($object->get_contact_groups() as $group) {
-						echo '<a title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
+					$groups = $object->get_contact_groups();
+					$contacts = $object->get_contacts();
+					
+					foreach ($groups as $group) {
+						echo '<a href="#" title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
 						echo $group.'</a>';
-/*				?>
+				?>
 				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
 					<tr>
 						<th style="border: 1px solid #cdcdcd"><?php echo _('Contact name') ?></th>
@@ -100,21 +103,59 @@ if (!empty($widgets)) {
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
 					</tr>
 					<?php
-					foreach ($members as $member) { ?>
-					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
-						<td><?php echo $member['name'] ?></td>
-						<td><?php echo $member['alias'] ?></td>
-						<td><?php echo $member['email'] ?></td>
-						<td><?php echo $member['pager'] ?></td>
-					</tr>
-					<?php	} ?>
-				</table>
-					<?php*/
+					$gobj = ContactGroupPool_Model::all()->reduce_by('name',$group,'=')->one(array('members'));
+					
+					$gmembers = ContactPool_Model::none();
+					$allcontacts = ContactPool_Model::all();
+
+					$group_member_names = $gobj->get_members();
+					$contacts = array_diff( $contacts, $group_member_names );
+					
+					foreach( $group_member_names as $member ) {
+						$gmembers = $gmembers->union($allcontacts->reduce_by('name', $member, '='));
 					}
-				} else {
-					echo _('No contactgroup');
-				}
-			?>
+					
+					foreach ($gmembers as $member) { ?>
+					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
+						<td><?php echo $member->get_name(); ?></td>
+						<td><?php echo $member->get_alias(); ?></td>
+						<td><?php echo $member->get_email(); ?></td>
+						<td><?php echo $member->get_pager(); ?></td>
+					</tr>
+					<?php } ?>
+				</table>
+				<?php } ?>
+				<?php if( count( $contacts ) ) { ?>
+			</td>
+		</tr>
+		<tr>
+			<td><strong><?php echo _('Contacts') ?></strong></td>
+			<td>
+				<table class="extinfo_contacts" style="display: table;">
+					<tr>
+						<th style="border: 1px solid #cdcdcd"><?php echo _('Contact name') ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Alias') ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Email') ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
+					</tr>
+					<?php
+					
+					$gmembers = ContactPool_Model::none();
+					$allcontacts = ContactPool_Model::all();
+					foreach( $contacts as $member ) {
+						$gmembers = $gmembers->union($allcontacts->reduce_by('name', $member, '='));
+					}
+					
+					foreach ($gmembers as $member) { ?>
+					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
+						<td><?php echo $member->get_name(); ?></td>
+						<td><?php echo $member->get_alias(); ?></td>
+						<td><?php echo $member->get_email(); ?></td>
+						<td><?php echo $member->get_pager(); ?></td>
+					</tr>
+					<?php } ?>
+				</table>
+				<?php } ?>
 			</td>
 		</tr>
 		<?php if ($object->get_notes()) {?>
