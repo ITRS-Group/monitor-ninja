@@ -96,8 +96,14 @@ function comment_icon( host, service ) {
 	var obj_name = service ? host+';'+service : host;
 	var query = '[comments] host.name="' + host + '"' + (service?' and service.description="'+service+'"':'');
 	var loading_img = '/application/media/images/loading.gif';
+	var link_data = {};
+	link_data.host = host;
+	if(service)
+		link_data.service = service;
 	
-	return icon16('add-comment', _('Comments'))
+	return extinfo_link(link_data)
+			.append(icon16('add-comment', _('Comments')))
+			.css('border', '0px')
 			.qtip({
 				content: {
 					url: _site_domain + _index_page + "/ajax/fetch_comments/",
