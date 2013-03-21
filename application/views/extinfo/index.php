@@ -128,17 +128,17 @@ if (!empty($widgets)) {
 				<?php
 					if ($url =$object->get_action_url()) {
 						echo '<a href="'.$url.'" style="border: 0px" target="'.$action_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra '.$type.' actions'),'title' => _('Perform extra '.$type.' actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<span class="icon-16 x16-host-actions" title="'. _('Perform extra '.$type.' actions').'"></span>';
 						echo '<a href="'.$url.'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
 					}
 					if ($url = $object->get_notes_url()) {
 						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$url.'" style="border: 0px">';
-						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra '.$type.' notes'),'title' => _('View extra '.$type.' notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<span class="icon-16 x16-host-notes" title="'. _('View extra '.$type.' notes').'"></span>';
 						echo '<a target="'.$notes_url_target.'" href="'.$url.'">'._('Extra notes').'</a>';
 					}
 					if ($url = $object->get_config_url()) {
 						echo '&nbsp; <a href="'.$url.'" style="border: 0px">';
-						echo html::image($this->add_path('icons/16x16/nacoma.png'),array('alt' => _('View extra '.$type.' notes'),'title' => _('View extra '.$type.' notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<span class="icon-16 x16-nacoma" title="'. _('Configure '.$type).'"></span>';
 						echo '<a href="'.$url.'">'._('Configure').'</a>';
 					}
 					if ($object->get_pnpgraph_present()) {
@@ -149,7 +149,7 @@ if (!empty($widgets)) {
 							$url .= '&srv=_HOST_';
 						}
 						echo '&nbsp; <a href="'.$url.'" style="border: 0px">';
-						echo html::image($this->add_path('icons/16x16/pnp.png'),array('alt' => _('Show performance graph'),'title' => _('Show performance graph'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<span class="icon-16 x16-pnp" title="'. _('Show performance graph').'"></span>';
 						echo '<a href="'.$url.'">'._('Show performance graph').'</a>';
 					}
 				?><div id="pnp_area" style="display:none"></div>
