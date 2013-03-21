@@ -231,11 +231,16 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		$data = _('Found no data');
-		$res = $model->fetch_comments_by_object($host, $service);
-		if ($res !== false) {
+		$set = CommentPool_Model::all();
+		/* @var $set ObjectSet_Model */
+		$set = $set->reduce_by('host.name', $host, '=');
+		if($service !== false)
+			$set = $set->reduce_by('service.description', $service, '=');
+		
+		if (count($set) > 0) {
 			$data = "<table><tr><td><strong>"._('Author')."</strong></td><td><strong>"._('Comment')."</strong></td></tr>";
-			foreach ($res as $row) {
-				$data .= '<tr><td valign="top">'.$row['author'].'</td><td width="400px">'.wordwrap($row['comment'], '50', '<br />').'</td></tr>';
+			foreach ($set->it(array('author', 'comment'),array()) as $row) {
+				$data .= '<tr><td valign="top">'.$row->get_author().'</td><td width="400px">'.wordwrap($row->get_comment(), '50', '<br />').'</td></tr>';
 			}
 			$data .= '</table>';
 		}

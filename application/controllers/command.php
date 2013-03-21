@@ -503,7 +503,7 @@ class Command_Controller extends Authenticated_Controller
 			$this->template->content->result = false;
 
 		while ($ncmd = array_pop($nagios_commands)) {
-			$this->template->content->result &= nagioscmd::submit_to_nagios($ncmd, $pipe);
+			$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
 		}
 	}
 

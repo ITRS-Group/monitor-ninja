@@ -91,7 +91,7 @@ listview_renderer_table.hosts = {
 						_('Scheduled Downtime')));
 
 			if (args.obj.comments_count > 0)
-				cell.append(icon16('add-comment', _('Comments')));
+				cell.append( comment_icon( args.obj.name, null ) )
 			
 			return cell;
 		}
@@ -344,7 +344,7 @@ listview_renderer_table.services = {
 				cell.append(icon16('acknowledged', _('Acknowledged')));
 
 			if (args.obj.comments_count > 0)
-				cell.append(icon16('add-comment', _('Comments')));
+				cell.append(comment_icon(args.obj.host.name, args.obj.description));
 
 			if (!args.obj.notifications_enabled)
 				cell.append(icon16('notify-disabled',
