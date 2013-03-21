@@ -45,7 +45,8 @@ var lsfilter_multiselect = {
 			'DISABLE_HOST_CHECK' : _('Disable active checks'),
 			'ENABLE_HOST_CHECK' : _('Enable active checks'),
 			'SCHEDULE_HOST_CHECK' : _('Reschedule host checks'),
-			'ADD_HOST_COMMENT' : _('Add host comment')
+			'ADD_HOST_COMMENT' : _('Add host comment'),
+			'NACOMA_DEL_HOST' : _('Delete hosts')
 		},
 		'services' : {
 			'' : _('Select action'),
@@ -58,7 +59,8 @@ var lsfilter_multiselect = {
 			'DISABLE_SVC_CHECK' : _('Disable active checks'),
 			'ENABLE_SVC_CHECK' : _('Enable active checks'),
 			'SCHEDULE_SVC_CHECK' : _('Reschedule service checks'),
-			'ADD_SVC_COMMENT' : _('Add service comment')
+			'ADD_SVC_COMMENT' : _('Add service comment'),
+			'NACOMA_DEL_HOST' : _('Delete services')
 		},
 		'comments' : {
 			'' : _('Select action'),
