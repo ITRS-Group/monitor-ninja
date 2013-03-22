@@ -22,15 +22,6 @@ if (!empty($base_href)) {
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
-/* Shim for IE 8 */
-if (!Array.prototype.indexOf) {
-	Array.prototype.indexOf = function(obj, start) {
-		for (var i = (start || 0), j = this.length; i < j; i++) {
-			if (this[i] === obj) { return i; }
-		}
-		return -1;
-	}
-}
 </script>
 
 	<script type="text/javascript">

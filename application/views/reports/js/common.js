@@ -284,7 +284,7 @@ function show_calendar(val, update) {
 }
 
 function set_selection(val) {
-	if (['servicegroups', 'hostgroups', 'services', 'hosts'].indexOf(val) < 0)
+	if ($.inArray(val, ['servicegroups', 'hostgroups', 'services', 'hosts']) === -1)
 		val = 'hostgroups'; // Why? Because I found it like this
 	$('*[data-show-for]').hide()
 	$('*[data-show-for~='+val+']').show()
