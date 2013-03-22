@@ -243,10 +243,14 @@ function lsfilter_list(config)
 	
 	this.handle_ajax_response = function(data)
 	{
-		var new_table = $('<span />');
+		var new_table;
 		var new_totals = $('<span />');
+		if(data.data.length) {
+			new_table = this.render_table(data, this.sort_vis_column, this.sort_ascending);
+		} else {
+			new_table = $('<div class="alert"></div>').text(_("Nothing found for the filter '"+this.request_query+"'"));
+		}
 		new_totals = this.render_totals(data.table, data.totals);
-		new_table = this.render_table(data, this.sort_vis_column, this.sort_ascending);
 
 		if (this.config.table) {
 			this.config.table.find('*').unbind();
