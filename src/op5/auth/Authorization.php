@@ -174,7 +174,7 @@ class op5Authorization {
 				'FILE' => '',
 				'access_rights' => '',
 				'pnp' => '',
-				'saved_queries_global' => '')
+				'saved_filters_global' => '')
 		);
 	}
 
