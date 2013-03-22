@@ -501,11 +501,14 @@ function lsfilter_list(config)
 							$(cloneHead[index]).css('width',
 									$(this).css('width'));
 						}
-						
-						$(cloneHead[index]).css('padding',
-								$(this).css('padding')).css('margin',
-								$(this).css('margin')).css('border',
-								$(this).css('border'));
+
+						$(cloneHead[index]).css('padding-left', $(this).css('padding-left'));
+						$(cloneHead[index]).css('padding-right', $(this).css('padding-right'));
+						$(cloneHead[index]).css('padding-top', $(this).css('padding-top'));
+						$(cloneHead[index]).css('padding-bottom', $(this).css('padding-bottom'));
+						$(cloneHead[index]).css('margin', $(this).css('margin'));
+						$(cloneHead[index]).css('border', $(this).css('border'));
+
 						index++;
 					});
 					

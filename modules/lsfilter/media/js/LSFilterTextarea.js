@@ -16,9 +16,6 @@ var lsfilter_textarea = {
 		this.orderelement = $('#filter_query_order');
 		this.element.bind('keyup paste cut', function(evt)
 		{
-			if(self.element.val() === query) {
-				return;
-			}
 			query = self.element.val();
 			self.handle_propertychange(query);
 		});

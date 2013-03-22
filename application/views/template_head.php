@@ -23,38 +23,6 @@ if (!empty($base_href)) {
 /* Hack for lack of console.log() in ie7 */
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
 </script>
-	<?php
-		echo (!empty($css_header)) ? $css_header : '';
-		echo html::script('application/media/js/jquery.js');
-		echo html::script('application/media/js/jquery-ui.min.js');
-		echo html::script('application/media/js/jquery.field.js');
-		echo html::script('application/media/js/jquery.form.js');
-		echo html::script('application/media/js/jquery.easywidgets.min.js');
-		echo html::script('application/media/js/jquery.autocomplete.min');
-		echo html::script('application/media/js/jquery.selectboxes.min.js');
-		echo html::script('application/media/js/jquery.jeditable.min');
-		echo html::script('application/media/js/jquery.query.js');
-		echo html::script('application/media/js/jquery.jgrowl.js');
-		echo html::script('application/media/js/jquery.qtip.min.js');
-		echo html::script('application/media/js/jquery.hotkeys.min.js');
-		echo html::script('application/media/js/jquery.contextMenu.js');
-		echo html::script('application/media/js/date.js');
-		echo html::script('application/views/js/pagination.js');
-		echo html::script('application/views/js/global_search.js');
-
-		$basepath = 'modules/lsfilter/';
-		echo html::script($basepath.'media/js/lib.js');
-		echo html::script($basepath.'media/js/LSFilterSaved.js');
-
-		if (!isset($disable_refresh) || $disable_refresh === false) {
-			refresh::control();
-		}
-	?>
-
-	<!--[If IE]>
-	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
-	<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
-	<![endif]-->
 
 	<script type="text/javascript">
 		//<!--
@@ -121,6 +89,39 @@ if (!empty($base_href)) {
 			}?>
 		//-->
 	</script>
+	
+	<?php
+		echo (!empty($css_header)) ? $css_header : '';
+		echo html::script('application/media/js/jquery.js');
+		echo html::script('application/media/js/jquery-ui.min.js');
+		echo html::script('application/media/js/jquery.field.js');
+		echo html::script('application/media/js/jquery.form.js');
+		echo html::script('application/media/js/jquery.easywidgets.min.js');
+		echo html::script('application/media/js/jquery.autocomplete.min');
+		echo html::script('application/media/js/jquery.selectboxes.min.js');
+		echo html::script('application/media/js/jquery.jeditable.min');
+		echo html::script('application/media/js/jquery.query.js');
+		echo html::script('application/media/js/jquery.jgrowl.js');
+		echo html::script('application/media/js/jquery.qtip.min.js');
+		echo html::script('application/media/js/jquery.hotkeys.min.js');
+		echo html::script('application/media/js/jquery.contextMenu.js');
+		echo html::script('application/media/js/date.js');
+		echo html::script('application/views/js/pagination.js');
+		echo html::script('application/views/js/global_search.js');
+
+		$basepath = 'modules/lsfilter/';
+		echo html::script($basepath.'media/js/lib.js');
+		echo html::script($basepath.'media/js/LSFilterSaved.js');
+
+		if (!isset($disable_refresh) || $disable_refresh === false) {
+			refresh::control();
+		}
+	?>
+
+	<!--[If IE]>
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
+	<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
+	<![endif]-->
 
 	<?php echo html::script('application/views/js/common.js'); ?>
 	<?php echo (!empty($js_header)) ? $js_header : ''; ?>
