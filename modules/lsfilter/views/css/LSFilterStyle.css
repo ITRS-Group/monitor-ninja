@@ -260,6 +260,7 @@ th span.header-icon {
 	position: fixed;
 	height: 24px;
 	width: 100%;
+	background: -ms-linear-gradient(top, #fafbf9, #e3e4e2);
 	background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fafbf9),
 		color-stop(100%, #e3e4e2) );
 	background: -webkit-linear-gradient(top, #fafbf9, #e3e4e2);
