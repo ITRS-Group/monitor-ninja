@@ -4,7 +4,7 @@
 #lsfilter_save_filter_name {
 	margin-bottom: 0;
 } /* FIX AGAINST REPORT CSS */
-#filter-query-builder {
+#filter-query-builder, #filter-query-multi-action {
 	display: none;
 	box-shadow: 0 2px 2px 3px #ddd;
 	box-shadow: 0 2px 2px 3px rgba(0, 0, 0, 0.1);
@@ -17,8 +17,7 @@
 	z-index: 1;
 }
 
-#filter-query-builder-manual,#filter-query-saved,#filter-query-multi-action
-	{
+#filter-query-builder, #filter-query-saved, #filter-query-multi-action {
 	max-height: 500px;
 	overflow: auto;
 	display: none;
@@ -36,10 +35,6 @@
 	border: 1px solid #bbb;
 	background: #fff;
 	*display: inline;
-}
-
-#filter-query-saved-filters li span {
-	
 }
 
 #lsfilter_save_filter.saving {
@@ -78,6 +73,10 @@
 
 .lsfilter-edit-bar button {
 	background: transparent;
+}
+
+.lsfilter-edit-bar button.active {
+	background: rgba(0,0,0,0.1);
 }
 
 .lsfilter-edit-bar button:hover {

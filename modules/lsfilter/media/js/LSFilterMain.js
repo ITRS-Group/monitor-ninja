@@ -75,7 +75,6 @@ var lsfilter_main = {
 
 		} catch (ex) {
 			this.set_parse_status(ex);
-			$('#filter-query-builder-manual').show()
 			$('#filter-query-builder').show();
 		}
 	},

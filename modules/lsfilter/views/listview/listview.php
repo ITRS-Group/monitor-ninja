@@ -4,7 +4,7 @@
 	<div class="right lsfilter-edit-bar">
 		<span id="filter_loading_status"></span>
 		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
-		<button id="show-filter-query-builder-manual-button" title="Show/Edit Text Filter"><span class="icon-16 x16-filter"></span></button>
+		<button id="show-filter-query-builder-button" title="Show/Edit Text Filter"><span class="icon-16 x16-filter"></span></button>
 	</div>
 	<div id="filter_result_totals"></div>
 </div>
@@ -17,6 +17,12 @@
 <input type="hidden" id="listview_multi_action_obj_type" name="obj_type" value="" />
 <?php echo form::close(); ?>
 
+<div id="filter-query-multi-action">
+	<h2><?php echo _('Multi Action'); ?></h2>
+	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'), array(''=>'Table doesnt allow multi select')); ?>
+	<button id="multi_action_select_send">Submit</button>
+</div>
+
 <div id="filter-query-builder">
 
 	<div style="margin: 8px 0 0 8px">
@@ -27,30 +33,19 @@
 		<?php } ?>
 	</div>
 
-	<div id="filter-query-builder-manual">
+	<h2><?php echo _('Manual input'); ?></h2>
 
-		<h2><?php echo _('Manual input'); ?></h2>
+	<form action="#" onsubmit="dosubmit();">
+		<textarea style="width: 98%; height: 30px" name="filter_query"
+			id="filter_query"><?php echo htmlentities($query); ?></textarea>
+		<input type="hidden" name="filter_query_order"
+			id="filter_query_order" value="<?php echo htmlentities($query_order); ?>" />
+	</form>
+	<div id="filter-query-status"></div>
 
-		<form action="#" onsubmit="dosubmit();">
-			<textarea style="width: 98%; height: 30px" name="filter_query"
-				id="filter_query"><?php echo htmlentities($query); ?></textarea>
-			<input type="hidden" name="filter_query_order"
-				id="filter_query_order" value="<?php echo htmlentities($query_order); ?>" />
-		</form>
-		<div id="filter-query-status"></div>
+	<h2><?php echo _('Graphical input'); ?></h2>
 
-		<h2><?php echo _('Graphical input'); ?></h2>
-
-		<form id="filter_visual_form">
-			<div id="filter_visual">Filter</div>
-		</form>
-
-	</div>
-	
-	<div id="filter-query-multi-action">
-		<h2><?php echo _('Multi Action'); ?></h2>
-		<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'), array(''=>'Table doesnt allow multi select')); ?>
-		<button id="multi_action_select_send">Submit</button>
-
-	</div>
+	<form id="filter_visual_form">
+		<div id="filter_visual">Filter</div>
+	</form>
 </div>
