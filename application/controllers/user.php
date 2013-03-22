@@ -271,6 +271,10 @@ class User_Controller extends Authenticated_Controller {
 			Modifier keys should be entered in alphabetical order. Add a combination of keys
 			with a + sign between like 'Alt+Shift-f' without any spaces. All keys are case insensitive.");
 
+		$parts = explode('.',$id);
+		if( $parts[0] == 'listview' ) {
+			return ListView_Controller::_helptexts($id);
+		}
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(

@@ -230,4 +230,27 @@ class ListView_Controller extends Authenticated_Controller {
 			}
 		}
 	}
+
+	/**
+	 * Translated helptexts for this controller
+	 */
+	public static function _helptexts($id)
+	{
+
+		$parts = explode('.',$id);
+		if( count($parts) == 3 && $parts[0] == 'listview' && $parts[1] == 'columns' ) {
+			printf(_("A comma-seperated list of columns visible in the list view for table %s. Use string \"all\" to see all columns. See documentation for advanced syntax and column names."), $parts[2]);
+			return;
+		}
+
+		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
+		# easier to find those later
+		$helptexts = array();
+
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		}
+		else
+			printf(_("This helptext ('%s') is not translated yet"), $id);
+	}
 }
