@@ -260,18 +260,13 @@ function lsfilter_list(config)
 
 	this.handle_ajax_error_response = function(data)
 	{
-		var new_table = $('<span />');
-		var new_totals = $('<span />');
-		new_table.text("Error: " + data.data);
+		var alert = $('<div class="alert error" />');
+		alert.html("<strong>Error:</strong> " + data.data);
 		
 		if (this.config.table) {
 			this.config.table.find('*').unbind();
-			this.config.table.empty().append(new_table);
-			this.attach_header(new_table);
+			this.config.table.empty().append(alert);
 		}
-		if (this.config.totals) this.config.totals.empty().append(new_totals);
-		
-		this.start_autorefresh_timer();
 	};
 	
 	this.render_totals = function(table, totals)
