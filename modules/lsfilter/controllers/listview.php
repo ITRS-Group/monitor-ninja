@@ -104,7 +104,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$offset = $this->input->get('offset',false);
 
 		if( $limit === false ) {
-			return json::ok( array( 'status' => 'error', 'data' => "No limit specified") );
+			return json::fail( array( 'data' => _("No limit specified")) );
 		}
 		
 		/* TODO: Fix sorting better sometime
@@ -122,29 +122,25 @@ class ListView_Controller extends Authenticated_Controller {
 			}
 
 			return json::ok( array(
-				'status' => 'success',
 				'totals' => $result_set->get_totals(),
 				'data' => $data,
 				'table' => $result_set->get_table(),
 				'count' => count($result_set)
 			) );
 		} catch( LSFilterException $e ) {
-			return json::ok( array(
-				'status' => 'error',
+			return json::fail( array(
 				'data' => $e->getMessage().' at "'.substr($e->get_query(), $e->get_position()).'"',
 				'query' => $e->get_query(),
 				'position' => $e->get_position()
 				));
 		} catch( ORMException $e ) {
-			return json::ok( array(
-				'status' => 'error',
+			return json::fail( array(
 				'data' => $e->getMessage()
 				));
 		} catch( Exception $e ) {
 			$this->log->log('error', $e->getMessage() . ' at ' . $e->getFile() . '@' . $e->getLine());
 			
-			return json::ok( array(
-				'status' => 'error',
+			return json::fail( array(
 				'data' => $e->getMessage().' at '.$e->getFile().'@'.$e->getLine()
 				));
 		}

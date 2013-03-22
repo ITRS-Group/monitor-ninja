@@ -73,10 +73,13 @@ function lsfilter_list(config)
 		
 		this.send_request({
 			append: false,
-			callback: function(data)
+			success: function(data)
 			{
 				self.handle_ajax_response(data);
-				// get the scope right
+			},
+			error: function(data)
+			{
+				self.handle_ajax_error_response(data);
 			}
 		});
 	};
@@ -102,10 +105,13 @@ function lsfilter_list(config)
 		
 		this.send_request({
 			append: false,
-			callback: function(data)
+			success: function(data)
 			{
 				self.handle_ajax_response(data);
-				// get the scope right
+			},
+			error: function(data)
+			{
+				self.handle_ajax_error_response(data);
 			}
 		});
 	};
@@ -124,8 +130,6 @@ function lsfilter_list(config)
 			this.active_ajax_request.abort();
 		}
 		
-		var options = $.extend({}, self.config, config);
-		
 		var db_sort_columns = [];
 		for ( var i = 0; i < this.sort_db_columns.length; i++) {
 			var col = this.sort_db_columns[i];
@@ -139,6 +143,15 @@ function lsfilter_list(config)
 		}
 		
 		var loading_id = self.config.loading_start();
+		var options = $.extend(
+			{
+				error: function() {},
+				success: function() {},
+				complete: function() {}
+			},
+			self.config,
+			config
+		);
 		this.active_ajax_request = $
 				.ajax({
 					url: this.config.request_url,
@@ -152,10 +165,16 @@ function lsfilter_list(config)
 					},
 					success: function(data)
 					{
-						options.callback(data);
+						options.success(data);
 					},
-					complete: function()
+					error: function(data)
 					{
+						// let's just be lazy and pass on the response as JSON, since that's what it was before
+						options.error(JSON.parse(data.responseText));
+					},
+					complete: function(data)
+					{
+						options.complete(data);
 						this.active_ajax_request = false;
 						self.config.loading_stop(loading_id);
 						// $('.lsfilter-loader').remove();
@@ -192,12 +211,19 @@ function lsfilter_list(config)
 			append: false,
 			offset: 0,
 			per_page: this.config.offset + this.config.per_page,
-			callback: function(data)
+			success: function(data)
 			{
 				// Don't drop first host line in auto refresh...
 				self.previous_obj = {};
 				
 				self.handle_ajax_response(data);
+			},
+			error: function(data)
+			{
+				// Don't drop first host line in auto refresh...
+				self.previous_obj = {};
+
+				self.handle_ajax_error_response(data);
 			}
 		});
 	};
@@ -219,14 +245,24 @@ function lsfilter_list(config)
 	{
 		var new_table = $('<span />');
 		var new_totals = $('<span />');
-		if (data.status == 'success') {
-			new_totals = this.render_totals(data.table, data.totals);
-			new_table = this.render_table(data, this.sort_vis_column,
-					this.sort_ascending);
+		new_totals = this.render_totals(data.table, data.totals);
+		new_table = this.render_table(data, this.sort_vis_column, this.sort_ascending);
+
+		if (this.config.table) {
+			this.config.table.find('*').unbind();
+			this.config.table.empty().append(new_table);
+			this.attach_header(new_table);
 		}
-		else if (data.status == 'error') {
-			new_table.text("Error: " + data.data);
-		}
+		if (this.config.totals) this.config.totals.empty().append(new_totals);
+
+		this.start_autorefresh_timer();
+	};
+
+	this.handle_ajax_error_response = function(data)
+	{
+		var new_table = $('<span />');
+		var new_totals = $('<span />');
+		new_table.text("Error: " + data.data);
 		
 		if (this.config.table) {
 			this.config.table.find('*').unbind();
@@ -314,8 +350,10 @@ function lsfilter_list(config)
 				loadrow.empty().append(loadingcell);
 				self.send_request({
 					append: true,
-					callback: function(result)
+					complete: function(xhr)
 					{
+						// let's just pass on some json
+						var result = JSON.parse(xhr.responseText);
 						self.start_autorefresh_timer();
 						loadrow.remove();
 						self.insert_rows(columns, result, tbody);
