@@ -4,7 +4,7 @@
  * Models the interface of saved queries for the listview search filters
  */
 class LSFilter_Saved_Queries_Model extends Model {
-	const tablename = 'ninja_saved_queries'; /**< Name of saved searches table */
+	const tablename = 'ninja_saved_filters'; /**< Name of saved searches table */
 
 	/**
 	 * An associative array, indexed on table name, values as another associative array,
@@ -58,7 +58,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		
 		$table_filter = "";
 		if($table !== false) {
-			$table_filter = " AND query_table = ".$db->escpae($table);
+			$table_filter = " AND filter_table = ".$db->escpae($table);
 		}
 		
 		$sql = "SELECT * FROM ".self::tablename." WHERE (username=".$db->escape($user)." OR username IS NULL)$table_filter";
@@ -66,7 +66,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		
 		$queries = array();
 		foreach($res as $row) {
-			$queries[] = array( 'name' => $row->query_name, 'table' => $row->query_table, 'query' => $row->query, 'scope' => ($row->username?'user':'global') );
+			$queries[] = array( 'name' => $row->filter_name, 'table' => $row->filter_table, 'query' => $row->filter, 'scope' => ($row->username?'user':'global') );
 		}
 
 		return $queries;
@@ -105,7 +105,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		
 		$user = Auth::instance()->get_user()->username;
 		if( $scope == 'global' ) {
-			if( !op5auth::instance()->authorized_for('saved_queries_global') ) {
+			if( !op5auth::instance()->authorized_for('saved_filters_global') ) {
 				return "Not authorized to create global queries";
 			}
 			$user = null;
@@ -114,7 +114,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		switch( $scope ) {
 			case 'user':
 			case 'global':
-				$sql_query = "INSERT INTO ".self::tablename." (username, query_name, query_table, query, query_description) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE query=%s, query_table=%s";
+				$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE filter=%s, filter_table=%s";
 				$args = array($user, $name, $metadata['name'], $query, $name, $query, $metadata['name']);
 				break;
 			case 'static':
@@ -138,7 +138,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND id = %s";
 		$args = array($user, $id);
 		
-		if( op5auth::instance()->authorized_for('saved_queries_global') ) { /* FIXME: Delete from global scope */
+		if( op5auth::instance()->authorized_for('saved_filters_global') ) { /* FIXME: Delete from global scope */
 			$sql_query = "DELETE FROM ".self::tablename." WHERE (username = %s OR username IS NULL) AND id = %s";
 		}
 		

@@ -149,7 +149,7 @@ class ListView_Controller extends Authenticated_Controller {
 	/**
 	 * Fetch a list of the saved queries for use with ajax
 	 */
-	public function fetch_saved_queries() {
+	public function fetch_saved_filters() {
 		$queries = LSFilter_Saved_Queries_Model::get_queries();
 		return json::ok( array( 'status' => 'success', 'data' => $queries ) );
 	}
@@ -157,7 +157,7 @@ class ListView_Controller extends Authenticated_Controller {
 	/**
 	 * Save a named query
 	 */
-	public function save_query() {
+	public function save_filter() {
 		$name = $this->input->get('name',false);
 		$query = $this->input->get('query','');
 		$scope = $this->input->get('scope','user');
@@ -180,7 +180,7 @@ class ListView_Controller extends Authenticated_Controller {
 	/**
 	 * Save a named query
 	 */
-	public function delete_saved_query() {
+	public function delete_saved_filter() {
 		$id = $this->input->get('id',false);
 
 		try {

@@ -468,20 +468,20 @@ $tables = array (
 			'contacts_notified' => 'int',
 			),
 		),
-	'saved_queries' =>
+	'saved_filters' =>
 	array(
-		'class' => 'SavedQuery',
+		'class' => 'SavedFilter',
 		'source' => 'SQL',
-		'table' => 'ninja_saved_queries',
+		'table' => 'ninja_saved_filters',
 		'key' => array('id'),
-		'default_sort' => array('query_name desc'),
+		'default_sort' => array('filter_name desc'),
 		'structure' => array(
 			'id' => 'int',
 			'username' => 'string',
-			'query_name' => 'string',
-			'query_table' => 'string',
-			'query' => 'string',
-			'query_description' => 'string'
+			'filter_name' => 'string',
+			'filter_table' => 'string',
+			'filter' => 'string',
+			'filter_description' => 'string'
 			),
 		)
 	);

@@ -974,17 +974,17 @@ listview_renderer_table.notifications = {
  * 'string'
  */
 
-listview_renderer_table.saved_queries = {
+listview_renderer_table.saved_filters = {
 	"icon" : {
 		"header" : '',
-		"depends" : [ 'query_table' ],
+		"depends" : [ 'filter_table' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td class="icon" />');
 
 			var icon = false;
 			var base = 'menu';
-			switch (args.obj.query_table) {
+			switch (args.obj.filter_table) {
 			case 'hosts':
 				icon = 'host';
 				break;
@@ -1023,29 +1023,23 @@ listview_renderer_table.saved_queries = {
 	},
 	"name" : {
 		"header" : _('Name'),
-		"depends" : [ 'query_name' ],
-		"sort" : [ 'query_name' ],
+		"depends" : [ 'filter_name', 'filter' ],
+		"sort" : [ 'filter_name' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.query_name);
+			return $('<td />').append(
+					link_query(args.obj.filter).text(args.obj.filter_name)
+					);
 
 		}
 	},
-	"description" : {
-		"header" : _('Description'),
-		"depends" : [ 'query_description' ],
-		"sort" : [ 'query_description' ],
+	"filter" : {
+		"header" : _('filter string'),
+		"depends" : [ 'filter' ],
+		"sort" : [ 'filter' ],
 		"cell" : function(args) {
-			return $('<td />').text(args.obj.query_description);
-
-		}
-	},
-	"query" : {
-		"header" : _('Query string'),
-		"depends" : [ 'query' ],
-		"sort" : [ 'query' ],
-		"cell" : function(args) {
-			return $('<td />').text(args.obj.query);
-
+			return $('<td />').append(
+					link_query(args.obj.filter).text(args.obj.filter)
+					);
 		}
 	},
 	"owner" : {
@@ -1071,9 +1065,9 @@ listview_renderer_table.saved_queries = {
 			if (args.obj.deletable) {
 				// Delete
 				var del_icon = icon16('delete',
-						_("Delete/cancel this saved query"));
+						_("Delete/cancel this saved filter"));
 				var del_link = _site_domain + _index_page
-						+ '/listview/delete_saved_query?id=' + args.obj.id;
+						+ '/listview/delete_saved_filter?id=' + args.obj.id;
 
 				cell.append(link_fnc(function() {
 					$.ajax(del_link).done(function() {

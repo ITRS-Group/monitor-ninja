@@ -14,3 +14,4 @@ $config['columns']['comments'] = 'all';
 $config['columns']['downtimes'] = 'all';
 $config['columns']['contacts'] = 'all';
 $config['columns']['notifications'] = 'all';
+$config['columns']['saved_filters'] = 'all';

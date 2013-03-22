@@ -2,7 +2,7 @@
 
 # setup the db tables required for Ninja
 
-target_db_version=8
+target_db_version=9
 target_sla_version=9
 target_avail_version=12
 target_sched_version=10

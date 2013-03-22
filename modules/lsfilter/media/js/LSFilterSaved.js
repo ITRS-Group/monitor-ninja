@@ -32,7 +32,7 @@ var lsfilter_saved = {
 			},
 			type : 'POST',
 			success : function(data) {
-				var list = $("#saved-queries-menu").empty();
+				var list = $("#saved-filters-menu").empty();
 				for ( var filter in data.data) {
 					/* Someone broke the Array prototype, aaarrrrgggghhhh!!! */
 					if (isNaN(parseInt(filter)))
@@ -58,7 +58,7 @@ var lsfilter_saved = {
 						list.append($('<li class="nav-seg" />').append(link));
 					})();
 				}
-				var link = link_query('[saved_queries] all').addClass(
+				var link = link_query('[saved_filters] all').addClass(
 						'ninja_menu_links');
 				link.append(self.icons['other']);
 				link.append($('<span class="nav-seg-span">').text(
@@ -66,7 +66,7 @@ var lsfilter_saved = {
 				list.prepend($('<li class="nav-seg" />').append(link));
 			}
 		};
-		$.ajax(_site_domain + _index_page + '/listview/fetch_saved_queries',
+		$.ajax(_site_domain + _index_page + '/listview/fetch_saved_filters',
 				ajax_obj);
 	},
 
@@ -91,7 +91,7 @@ var lsfilter_saved = {
 
 			save['name'] = name;
 
-			$.ajax(basepath + '/listview/save_query', {
+			$.ajax(basepath + '/listview/save_filter', {
 				data : save,
 				type : 'GET',
 				complete : function(xhr) {

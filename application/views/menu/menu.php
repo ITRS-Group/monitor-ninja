@@ -64,7 +64,7 @@ $menu_items['backup_restore'] = _('Backup/Restore');
  * The name is converted to id, which is used to populate the menu items
  * from javascript
  */
-$menu_items['saved_queries'] = 'Saved Queries';
+$menu_items['saved_filters'] = 'Saved Filters';
 $menu_items['loading'] = 'Loading...';
 
 # menu structure using array keys from translated labels above
@@ -120,7 +120,7 @@ $menu_base = array(
 /*		$menu_items['rotation'] 		=> array('/rotation/index', 'nagvis',0) Disable rotational view for now */
 	),
 	$menu_items['section_reporting'] => $section_reporting,
-	$menu_items['saved_queries'] => array(
+	$menu_items['saved_filters'] => array(
 		$menu_items['loading']					=> array('#','test', 0)
 	),
 	$menu_items['section_configuration'] => array(
