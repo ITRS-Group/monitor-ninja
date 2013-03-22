@@ -24,6 +24,7 @@ if (!empty($base_href)) {
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
 </script>
 
+	<?php echo html::script('application/media/js/jquery.js'); ?>
 	<script type="text/javascript">
 		//<!--
 		<?php
@@ -92,7 +93,6 @@ if (!empty($base_href)) {
 	
 	<?php
 		echo (!empty($css_header)) ? $css_header : '';
-		echo html::script('application/media/js/jquery.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
 		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');
