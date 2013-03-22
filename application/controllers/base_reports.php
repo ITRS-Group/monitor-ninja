@@ -91,6 +91,11 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			if (trim($out)) {
 				header("Content-disposition: attachment; filename=$filename");
 				header('Content-Type: application/pdf');
+				header("Pragma: public");
+				header("Expires: 0");
+				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+				header("Cache-Control: private", false);
+				header("Content-Transfer-Encoding: binary");
 				echo $out;
 			} else {
 				$this->log->log('error', $err);
