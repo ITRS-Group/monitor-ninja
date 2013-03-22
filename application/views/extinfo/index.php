@@ -3,6 +3,13 @@ $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
 $date_format_str = nagstat::date_format();
 
+$green_shield = '<span class="icon-12 x12-shield-up"></span>';
+$red_shield = '<span class="icon-12 x12-shield-down"></span>';
+$enabled =  $green_shield.' '._('Enabled');
+$disabled = $red_shield.' '._('Disabled');
+$yes = _('Yes');
+$no = _('No');
+
 if( $object instanceof Host_Model ) {
 	$host = $object;
 	$service = false;
@@ -199,9 +206,6 @@ if (!empty($widgets)) {
 	</table>
 </div>
 
-<?php /* $this->session->set('back_extinfo',$back_link); */ ?>
-
-
 <div class="clear"></div>
 
 <br /><br />
@@ -241,7 +245,7 @@ if (!empty($widgets)) {
 		<tr>
 			<td class="dark"><?php echo _('Check type'); ?></td>
 			<td>
-				<span class="<?php echo $object->get_check_type_str() ?>"><?php echo ucfirst($object->get_check_type_str()) ?></span>
+				<span class="<?php echo $object->get_check_type_str() ?>"><?php echo ($object->get_check_type_str() == 'active' ? $green_shield : $red_shield).' '.ucfirst($object->get_check_type_str()) ?></span>
 			</td>
 		</tr>
 		<tr>
@@ -265,53 +269,52 @@ if (!empty($widgets)) {
 			<td class="dark"><?php echo _('Is this '.$type.' flapping?') ?></td>
 			<td>
 			<?php
-			$flap_value = $object->get_flap_detection_enabled() && $object->get_is_flapping() ? _('YES') : _('NO');
+			$flap_value = $object->get_flap_detection_enabled() && $object->get_is_flapping() ? $red_shield.' '.$yes : $green_shield.' '.$no;
 			$percent_state_change_str = '('.number_format((int)$object->get_percent_state_change(), 2).'% '._('state change').')';
-			?>
-				<span class="flap-<?php echo strtolower($flap_value); ?>"><?php echo ucfirst(strtolower($flap_value)).'</span> '.$percent_state_change_str; ?></span>
+			echo $flap_value.' '.$percent_state_change_str; ?>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('In scheduled downtime?'); ?></td>
 			<td>
-				<span class="downtime-<?php echo strtolower($object->get_scheduled_downtime_depth()); ?>"><?php echo $object->get_scheduled_downtime_depth() ? _('Enabled') : _('Disabled'); ?></span>
+				<?php echo $object->get_scheduled_downtime_depth() ? $red_shield.' '.$yes : $green_shield.' '.$no; ?>
 			</td>
 		</tr>
 		<tr>
 			<td  class="dark" style="width: 160px"><?php echo _('Active checks'); ?></td>
 			<td>
-				<span class="<?php echo $object->get_active_checks_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_active_checks_enabled() ? _('Enabled') : _('Disabled'); ?></span>
+				<span class="<?php echo $object->get_active_checks_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_active_checks_enabled() ? $enabled : $disabled; ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Passive checks'); ?></td>
 			<td>
-				<span class="<?php echo $object->get_accept_passive_checks() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_accept_passive_checks() ? _('Enabled') : _('Disabled'); ?></span>
+				<span class="<?php echo $object->get_accept_passive_checks() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_accept_passive_checks() ? $enabled : $disabled; ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Obsessing'); ?></td>
 			<td>
-				<span class="<?php echo $object->get_obsess() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_obsess() ? _('Enabled') : _('Disabled'); ?></span>
+				<span class="<?php echo $object->get_obsess() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_obsess() ? $enabled : $disabled; ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Notifications'); ?></td>
 			<td>
-				<span class="<?php echo $object->get_notifications_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_notifications_enabled() ? _('Enabled') : _('Disabled'); ?></span>
+				<span class="<?php echo $object->get_notifications_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_notifications_enabled() ? $enabled : $disabled; ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Event handler'); ?></td>
 			<td>
-				<span class="<?php echo $object->get_event_handler_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_event_handler_enabled() ? _('Enabled') : _('Disabled'); ?></span>
+				<span class="<?php echo $object->get_event_handler_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_event_handler_enabled() ? $enabled : $disabled; ?></span>
 			</td>
 		</tr>
 		<tr>
 
 			<td class="dark"><?php echo _('Flap detection') ?></td>
 			<td>
-				<span class="<?php echo $object->get_flap_detection_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_flap_detection_enabled() ? _('Enabled') : _('Disabled'); ?></span>
+				<span class="<?php echo $object->get_flap_detection_enabled() ? _('enabled') : _('disabled'); ?>"><?php echo $object->get_flap_detection_enabled() ? $enabled : $disabled; ?></span>
 			</td>
 		</tr>
 		<?php if($object->get_custom_variables()) {
