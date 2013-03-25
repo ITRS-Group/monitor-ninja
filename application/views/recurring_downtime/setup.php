@@ -8,10 +8,7 @@ if (!empty($widgets)) {
 }
 ?>
 
-
-<div class="report-page-setup recurring_dt_schedule">
 	<div id="response"></div>
-
 	<div id="schedule-tabs-container">
 		<ul>
 			<li><a href="#create-tab" style="border: 0px"><?php echo _('Create new') ?></a></li>
