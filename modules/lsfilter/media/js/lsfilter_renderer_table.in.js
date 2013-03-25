@@ -685,8 +685,8 @@ listview_renderer_table.comments = {
 
 			cell.append(link('command/submit', {
 				cmd_typ : del_command,
-				'comment_id' : args.obj.id
-			}).append(icon16('delete-comment')));
+				'comment_id' : args.obj.id,
+			}).attr('title', 'Delete comment').append(icon16('delete-comment')));
 
 			return cell;
 		}
@@ -856,8 +856,8 @@ listview_renderer_table.downtimes = {
 
 			cell.append(link('command/submit', {
 				cmd_typ : del_command,
-				downtime_id : args.obj.id
-			}).append(del_icon));
+				downtime_id : args.obj.id,
+			}).attr('title', 'Delete downtime').append(del_icon));
 
 			// Schedule recurring
 
