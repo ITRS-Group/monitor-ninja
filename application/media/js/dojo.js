@@ -83,13 +83,12 @@
 	});
 
 	/* QUICKLINK EXTENSION */
-
 	var uh_prob_title = "Unhandled Problems",
 		uh_prob_state_element = null;
 	function query_for_states () {
-	
+
 		var basepath = _site_domain + _index_page,
-			link = $('.image-link[title="' + uh_prob_title + '"]'),
+			link = $('#uh_problems'),
 			query = link.attr('href');
 
 		query = query.split('q=')[1];
@@ -105,7 +104,7 @@
 			success : function(data) {
 
 				if (data && data.totals.service_all[1] > 0) {
-					
+
 					uh_prob_title = data.totals.service_all[1] + ' unacknowledged services in Critical/Warning state!';
 					link.attr('title', uh_prob_title);
 
@@ -116,7 +115,7 @@
 						uh_prob_state_element.text(data.totals.service_all[1]);
 					}
 					link.append(uh_prob_state_element);
-					
+
 					if (data.totals.service_state_critical[1] > 0) {
 						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-critical');
 					} else if (data.totals.service_state_warning[1] > 0) {
@@ -161,7 +160,7 @@
 				fix_empty_quicklink_border();
 			}
 		});
-	};
+	}
 
 	$('#dojo-add-quicklink').hover(function () {
 		this.style.opacity = '1.0';
