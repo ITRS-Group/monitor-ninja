@@ -28,14 +28,14 @@ Feature: Monitoring
 		page works as expected.
 
 		Given I am on the Host details page
-		When I click "4 Hosts"
+		When I click "Hosts total"
 		Then I should see the configured hosts
-		When I click "4 Services"
-		Then I should see the configured services
 		When I have submitted a passive host check result "linux-server2;1;some output"
 		And I click "Refresh"
-		And I click "1 Down"
+		And I click "Hosts down"
 		Then I should see "linux-server2"
+		When I click "Services total"
+		Then I should see the configured services
 
 	@configuration @asmonitor @case-645
 	Scenario: Host details extinfo page check links
@@ -45,7 +45,9 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Status detail"
-		Then I should be on url "/monitor/index.php/status/service?name=linux-server1"
+		Then I should see this status:
+			| Host Name | Service |
+			| linux-server1 | System Load |
 
 	@configuration @asmonitor @case-645
 	Scenario: Host details extinfo page check links
@@ -85,7 +87,8 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Notifications"
-		Then I should be on address "/monitor/index.php/notifications/host/linux-server1"
+		Then I should see "Notifications"
+		And I should see "Count:"
 
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Locate host on map
@@ -96,7 +99,7 @@ Feature: Monitoring
 		When I click "linux-server1"
 		And I click "Locate host on map"
 		Then I should be on address "/monitor/index.php/nagvis/automap/host/linux-server1"
-		And I should see "linux-server1"
+		And I should see "linux-server1" within frame "nagvis"
 
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable active checks
@@ -117,13 +120,14 @@ Feature: Monitoring
 		works correctly.
 
 		Given I am on the Host details page
+		And I have submitted a passive host check result "linux-server1;0;Everything was OK"
 		When I click "linux-server1"
-		And I click "Re-schedule the next check"
+		And I click "Re-schedule next host check"
 		And I note the value of "field_check_time"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
-		Then "Next scheduled active check" should be shown as the value of "field_check_time"
+		Then "Next scheduled check" should be shown as the value of "field_check_time"
 
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Submit passive check
@@ -183,13 +187,13 @@ Feature: Monitoring
 		Then "Notifications" should be shown as "Disabled"
 
 	@configuration @asmonitor @case-646
-	Scenario: Host details host commands - Send custom host notification
-		Verify that the "Send custom host notification" host command
+	Scenario: Host details host commands - Send custom notification
+		Verify that the "Send custom notification" host command
 		works correctly.
 
 		Given I am on the Host details page
 		When I click "linux-server1"
-		And I click "Send custom host notification"
+		And I click "Send custom notification"
 		And I enter "Some comment" into "cmd_param[comment]"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
@@ -218,6 +222,7 @@ Feature: Monitoring
 		host command works correctly.
 
 		Given I am on the Host details page
+		And I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
 		When I click "linux-server1"
 		And I click "Disable notifications for all services"
 		And I click "Submit"
@@ -233,6 +238,7 @@ Feature: Monitoring
 		host command works correctly.
 
 		Given I am on the Host details page
+		And I have submitted a passive service check result "win-server2;PING;0;Everything was OK"
 		When I click "win-server2"
 		And I click "Enable notifications for all services"
 		And I click "Submit"
@@ -248,6 +254,7 @@ Feature: Monitoring
 		works correctly.
 
 		Given I am on the Host details page
+		And I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
 		When I click "linux-server1"
 		And I click "Schedule a check of all services"
 		And I note the value of "field_check_time"
@@ -256,13 +263,14 @@ Feature: Monitoring
 		When I click "Done"
 		And I click "Status detail"
 		And I click "System Load"
-		Then "Next scheduled check" should be shown as the value of "field_check_time"
+		Then "Next scheduled active check" should be shown as the value of "field_check_time"
 
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable checks of all services
 		Verify that the "Disable checks of all services" host command works correctly.
 
 		Given I am on the Host details page
+		And I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
 		When I click "linux-server1"
 		And I click "Disable checks of all services"
 		And I click "Submit"
@@ -338,13 +346,13 @@ Feature: Monitoring
 
 		Given I am on the Host details page
 		When I click "linux-server1"
-		And I click "Add comment"
+		And I click "Submit a host comment"
 		And I enter "A comment for this host" into "cmd_param[comment]"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		And I should see "A comment for this host"
-		When I click the delete icon for comment 1
+		When I click "Delete comment"
 		Then I should see "You are trying to delete a host comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
