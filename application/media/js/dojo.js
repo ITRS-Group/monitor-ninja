@@ -132,6 +132,19 @@
 
 	var global_quicklinks = [];
 
+	var fix_empty_quicklink_border = function() {
+		// there's a magical dot (about 1x1 pixel) hanging in the air,
+		// disturbing probably just me. It's caused by having a quicklinks
+		// container without any quicklinks
+		var quicklinks = $('#dojo-quicklink-external');
+		var tr = quicklinks.parent();
+		if(quicklinks.find('li').length) {
+			tr.css('borderWidth', 1);
+		} else {
+			tr.css('borderWidth', 0);
+		}
+	};
+
 	function quicklinks_save_all () {
 		$.ajax(_site_domain + _index_page + '/ajax/save_page_setting', {
 			data: {
@@ -145,6 +158,7 @@
 				$('#dojo-add-quicklink-href').attr('value','');
 				$('#dojo-add-quicklink-title').attr('value','');
 				$('#dojo-add-quicklink-icon').attr('value','');
+				fix_empty_quicklink_border();
 			}
 		});
 	};
@@ -271,6 +285,7 @@
 					}
 				}
 
+				fix_empty_quicklink_border();
 				global_quicklinks = links;
 
 			}
