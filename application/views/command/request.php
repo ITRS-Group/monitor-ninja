@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-//echo Kohana::debug($info);
 
 echo '<div>';
 if (!$info) {
@@ -39,7 +38,11 @@ foreach ($params as $pname => $ary) {
 
 	echo "<tr><td style='width: 100px'>";
 	echo $use_help ? (isset($ary['help']) ? '<span style="width: 16px">'.$ary['help'].'</span>&nbsp;' : '') : '';
-	echo '<span style="display: inline-block; margin-right: 8px;">'.$ary['name'].'</span>';
+	if($ary['type'] === 'immutable') {
+		echo $ary['name'];
+	} else {
+		echo "<label for='field_$pname'>".$ary['name'].'</label>';
+	}
 	echo "</td><td>";
 
 
@@ -93,7 +96,7 @@ foreach ($params as $pname => $ary) {
 		case 'string':
 		default:
 			if ($form_name == 'cmd_param[comment]')
-				echo form::input(array('class' => 'autotest-required', 'name' => $form_name, 'title' => _('Required field'), 'style' => 'width: 280px'), $dflt, '');
+				echo form::input(array('class' => 'autotest-required', 'id' => 'field_'.$pname, 'name' => $form_name, 'title' => _('Required field'), 'style' => 'width: 280px'), $dflt, '');
 			else {
 				switch($pname) {
 					case  "start_time":

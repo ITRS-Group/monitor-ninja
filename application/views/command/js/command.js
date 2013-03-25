@@ -46,32 +46,19 @@ $(document).ready(function() {
 		return true;
 	});
 
-	if ($('#field_fixed').is(':checked')) {
-		showhide_some_fields(new Array('duration', 'trigger_id'), 0);
+	var hidden_by_fixed = $('#field_duration, #field_trigger_id').parents('tr');
+	var fixed = $('#field_fixed');
+
+	if (fixed.is(':checked')) {
+		hidden_by_fixed.hide();
 	}
 
-	$('#field_fixed').click(function() {
-		if ($('#field_fixed').is(':checked')) {
-			showhide_some_fields(new Array('duration', 'trigger_id'), 0);
+
+	fixed.click(function() {
+		if (fixed.is(':checked')) {
+			hidden_by_fixed.hide();
 		} else {
-			showhide_some_fields(new Array('duration', 'trigger_id'), 1);
+			hidden_by_fixed.show();
 		}
 	})
 });
-
-
-function showhide_some_fields(fieldarr, state)
-{
-	if (!fieldarr.length) {
-		return false;
-	}
-	if (!state) {
-		for (field in fieldarr) {
-			$('#' + fieldarr[field]).closest('tr').hide();
-		}
-	} else {
-		for (field in fieldarr) {
-			$('#' + fieldarr[field]).closest('tr').show();
-		}
-	}
-}
