@@ -218,30 +218,22 @@
 	});	
 
 	$('#dojo-add-quicklink-submit').click(function () {
-		
 		var href = $('#dojo-add-quicklink-href').attr('value'),
 				title = $('#dojo-add-quicklink-title').attr('value'),
 				icon = $('#dojo-add-quicklink-icon').attr('value'),
 				target = $('#dojo-add-quicklink-target').attr('value'),
 				changed = false;
-
 		if (href && title && icon) { 
-
-			var i = global_quicklinks.length,
-					error = '';
-			
+			var i = global_quicklinks.length;
+			var error = '';
 			for (i; i--;) {
-				
 				if (global_quicklinks[i].href == href) {
 					error += 'This href is already used in a quicklink. <br />';
 				}
-
 				if (global_quicklinks[i].title == title) {
 					error += 'This title is already in use, titles must be unique. <br />';
 				}
-
 			}
-
 			if (error.length == 0) {
 				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target})		
 				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '"><span title="' + title + '" class="icon-16 x16-' + icon + '"></span></a></li>'));
@@ -251,7 +243,6 @@
 				$.jGrowl(error);
 			}
 		}
-		
 		var removal = $('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
 			var i = global_quicklinks.length,
 					vid = '';
@@ -267,10 +258,8 @@
 			}
 
 		});
-
 		if (changed) 
 			quicklinks_save_all();
-		
 	})
 
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
