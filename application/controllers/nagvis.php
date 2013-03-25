@@ -33,6 +33,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 			$this->template->content->params = 'mod=Map&amp;act=view&amp;show='.$args[0].'&amp;'.$queryparams;
 			break;
 		 case 'automap':
+			if (isset($args[1]))
+				$queryparams .= '&amp;root='.$args[1];
 			$this->template->content->params = 'mod=Map&amp;act=view&amp;show=automap&amp;'.$queryparams;
 			break;
 		 case 'rotate':
