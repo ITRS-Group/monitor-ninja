@@ -119,6 +119,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		widget::set_resources($widget, $this);
 	
 		$widget->set_fixed($set->get_comments()->get_query());
+		$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
 	
 		$this->template->content->comments = $widget->render();
 

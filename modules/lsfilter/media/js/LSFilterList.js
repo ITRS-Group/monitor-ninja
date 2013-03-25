@@ -248,7 +248,11 @@ function lsfilter_list(config)
 		if(data.data.length) {
 			new_table = this.render_table(data, this.sort_vis_column, this.sort_ascending);
 		} else {
-			new_table = $('<div class="alert"></div>').text(_("Nothing found for the filter '"+this.request_query+"'"));
+			var empty_text;
+			if(!(empty_text = $(this.config.table).parents('.widget').data('text-if-empty'))) {
+				empty_text = _("Nothing found for the filter '"+this.request_query+"'");
+			}
+			new_table = $('<div class="alert"></div>').text(empty_text);
 		}
 		new_totals = this.render_totals(data.table, data.totals);
 
