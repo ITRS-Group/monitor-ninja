@@ -354,6 +354,7 @@ Feature: Monitoring
 	@configuration @asmonitor @case-649
 	Scenario: Service details check page-links
 		Verify that page-links points to correct address.
+		Information for this host.
 
 		Given I am on the Host details page
 		When I click "linux-server1"
@@ -362,3 +363,42 @@ Feature: Monitoring
 		And I click "Information for this host"
 		Then I should see "linux-server1"
 		And I should see "Current status"
+
+	@configuration @asmonitor @case-649
+	Scenario: Service details check page-links
+		Verify that page-links points to correct address.
+		Information for this host.
+
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Status detail"
+		And I click "System Load"
+		And I click "Alert history"
+		Then I should see "Alert history"
+		And I should see "linux-server1"
+
+	@configuration @asmonitor @case-649
+	Scenario: Service details check page-links
+		Verify that page-links points to correct address.
+		Availability report.
+
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Status detail"
+		And I click "System Load"
+		And I click "Availability report"
+		Then I should see "Services details for: System Load on host: Linux-server1"
+		And I should see "Reporting period: Last 7 Days"
+
+	@configuration @asmonitor @case-649
+	Scenario: Service details check page-links
+		Verify that page-links points to correct address.
+		Notifications.
+
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Status detail"
+		And I click "System Load"
+		And I click "Notifications"
+		Then I should see "Notifications"
+		And I should see "Count:"
