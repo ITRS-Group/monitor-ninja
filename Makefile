@@ -64,7 +64,7 @@ prepare-config-templates:
 	mkdir -m 0777 -p test/configs/templates/var/spool/checkresults
 	chmod 777 test/configs/templates/var/
 
-test-cucumber:
+test-cucumber: prepare-config-templates
 	cucumber
 
 test-php-lint:
