@@ -169,8 +169,7 @@ function lsfilter_list(config)
 					},
 					error: function(data)
 					{
-						// let's just be lazy and pass on the response as JSON, since that's what it was before
-						options.error(JSON.parse(data.responseText));
+						options.error('Error reloading');
 					},
 					complete: function(data)
 					{
