@@ -169,6 +169,10 @@
 		this.style.opacity = '0.5';
 	});
 
+	var display_preview_icon = function() {
+		$('#dojo-add-quicklink-preview').attr('class', 'icon-16 x16-' + $('#dojo-add-quicklink-icon')[0].value);
+	};
+
 	$('#dojo-add-quicklink').click(function () {
 		
 		$('#dojo-add-quicklink-menu').css({
@@ -198,11 +202,12 @@
 			));
 
 		}
+		display_preview_icon();
 
 	});
 
 	$('#dojo-add-quicklink-icon').change(function () {
-		$('#dojo-add-quicklink-preview').attr('class', 'icon-16 x16-' + this.value);
+		display_preview_icon();
 	});
 
 	$('#dojo-add-quicklink-close').click(function () {
