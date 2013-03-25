@@ -350,3 +350,15 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		Then I shouldn't see "A comment for this host"
+
+	@configuration @asmonitor @case-649
+	Scenario: Service details check page-links
+		Verify that page-links points to correct address.
+
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Status detail"
+		And I click "System Load"
+		And I click "Information for this host"
+		Then I should see "linux-server1"
+		And I should see "Current status"
