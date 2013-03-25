@@ -68,7 +68,7 @@ Group: op5/Monitor
 Requires: monitor-ninja = %version
 Requires: merlin monitor-merlin op5-nagios
 Requires: merlin-apps
-Requires: monitor-livestatus
+Requires: monitor-livestatus monitor-nagvis
 Requires: rubygem-cucumber rubygem-capybara rubygem-poltergeist rubygem-rspec phantomjs
 Requires: portal
 
