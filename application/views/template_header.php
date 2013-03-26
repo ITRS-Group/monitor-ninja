@@ -107,24 +107,24 @@
 		<hr />
 		<table class="no_border">
 			<tr>
-				<td>URI:</td>
+				<td><?php echo _('URI') ?>:</td>
 				<td><input type="text" id="dojo-add-quicklink-href"></td>
 			</tr>
 			<tr>
-				<td>Title:</td>
+				<td><?php echo _('Title') ?>:</td>
 				<td><input type="text" id="dojo-add-quicklink-title"></td>
 			</tr>
 			<tr>
-				<td>Open in:</td>
+				<td><?php echo _('Open in') ?>:</td>
 				<td>
 					<select id="dojo-add-quicklink-target">
-						<option value="">This window</option>
-						<option value="_BLANK">New window</option>
+						<option value=""><?php echo _('This window') ?></option>
+							<option value="_BLANK"><?php echo _('New window') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td>Icon:</td>
+				<td><?php echo _('Icon') ?>:</td>
 				<td>
 					<input type='hidden' id='dojo-add-quicklink-icon' name='dojo-add-quicklink-icon' />
 					<table style="width: auto" id="dojo-icon-container">
@@ -146,7 +146,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Remove slected quicklinks:</td>
+				<td><?php echo _('Remove selected quicklinks') ?>:</td>
 				<td>
 					<ul id="dojo-quicklink-remove"></ul>
 			</td>
@@ -167,7 +167,7 @@
 		<div style="position: fixed; top: 6px; left: 337px; font-size: 90%; color: #555;">
 			<?php
 				if (isset($_SERVER['SERVER_NAME']))
-					echo 'Host: ' . htmlentities($_SERVER['SERVER_NAME']) . ' &nbsp; ';
+					echo _('Host').': ' . htmlentities($_SERVER['SERVER_NAME']) . ' &nbsp; ';
 			?>
 			<?php echo _('Updated') ?>: <a id="page_last_updated" data-utc_offset="<?php echo (1000 * date::utc_offset($timezone)) ?>" title="Your timezone is set to <?php echo $timezone ?>. Click to reload page." href="<?php echo isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : "#" /* For CLI */ ?>"><?php echo date(nagstat::date_format()) ?></a>
 		</div>
