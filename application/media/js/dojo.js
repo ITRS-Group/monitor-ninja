@@ -187,7 +187,7 @@
 			var l = global_quicklinks[i];
 			var vid = l.title + ':'+ l.href;
 			$('#dojo-quicklink-remove').append($(
-				'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + '</label></li>'
+				'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + ' (<a target="_blank" class="external" href="'+l.href+'">'+l.href+'</a>)</label></li>'
 			));
 		}
 		$('#dojo-icon-container').on('click', 'span', function(ev) {
@@ -236,13 +236,13 @@
 			}
 		}
 		var removal = $('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
-			var i = global_quicklinks.length,
-					vid = '';
+			var i = global_quicklinks.length;
+			var vid = '';
 			if (this.checked) {
 				for (i; i--;) {
 					vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
 					if (this.value == vid) {
-						$('#dojo-quicklink-external li a span[title="'+this.title+'"]').parent().parent().remove()
+						$('#dojo-quicklink-external li a span[title="'+this.title+'"]').parent().parent().remove();
 						global_quicklinks.splice(i, 1);
 						changed = true;
 					}
