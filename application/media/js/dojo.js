@@ -168,12 +168,7 @@
 		this.style.opacity = '0.5';
 	});
 
-	var display_preview_icon = function() {
-		$('#dojo-add-quicklink-preview').attr('class', 'icon-16 x16-' + $('#dojo-add-quicklink-icon')[0].value);
-	};
-
 	$('#dojo-add-quicklink').click(function () {
-		
 		$('#dojo-add-quicklink-menu').css({
 			'display': 'block',
 			'width': '50%',
@@ -187,26 +182,24 @@
 			'color': '#222',
 			'padding': '8px'
 		});
-		
 		$('#dojo-quicklink-remove').html('');
-
 		for (var i = 0; i < global_quicklinks.length; i += 1) {
-
-			var l = global_quicklinks[i],
-					vid = l.title + ':'+ l.href;
-			
-
+			var l = global_quicklinks[i];
+			var vid = l.title + ':'+ l.href;
 			$('#dojo-quicklink-remove').append($(
 				'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + '</label></li>'
 			));
-
 		}
-		display_preview_icon();
+		$('#dojo-icon-container').on('click', 'span', function(ev) {
+			var span = $(this);
+			$('#dojo-add-quicklink-icon').val(span.data('icon'));
 
-	});
-
-	$('#dojo-add-quicklink-icon').change(function () {
-		display_preview_icon();
+			// we have to change the background of the td, since the span already
+			// has the icon image as its background
+			var all_tds = $('#dojo-icon-container td');
+			all_tds.removeClass('highlight');
+			span.parents('td').addClass('highlight');
+		});
 	});
 
 	$('#dojo-add-quicklink-close').click(function () {

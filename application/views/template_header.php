@@ -126,16 +126,23 @@
 			<tr>
 				<td>Icon:</td>
 				<td>
-					<select id="dojo-add-quicklink-icon">
+					<input type='hidden' id='dojo-add-quicklink-icon' name='dojo-add-quicklink-icon' />
+					<table style="width: auto" id="dojo-icon-container">
+						<tr>
 					<?php
 						$icons = glob((__DIR__) . '/icons/x16/*.png');
+						$counter = 0;
 						foreach ($icons as $icon) {
 							$name = pathinfo($icon, PATHINFO_FILENAME);
-							echo "<option value='$name'>$name</option>";
+							echo "<td><span data-icon='$name' class='icon-16 x16-$name'></span></td>";
+							if(++$counter % 16 === 0) {
+								$counter = 0;
+								echo "</tr><tr>";
+							}
 						}
 					?>
-					</select>
-					Preview: <span style="width: 16px; height: 16px;"><span id="dojo-add-quicklink-preview"></span></span>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>
