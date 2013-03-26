@@ -686,7 +686,10 @@ listview_renderer_table.comments = {
 			cell.append(link('command/submit', {
 				cmd_typ : del_command,
 				'comment_id' : args.obj.id,
-			}).attr('title', 'Delete comment').append(icon16('delete-comment')));
+			})
+			.attr('title', 'Delete comment')
+			.attr('class', 'action_delete_comment')
+			.append(icon16('delete-comment')));
 
 			return cell;
 		}
