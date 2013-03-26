@@ -202,14 +202,16 @@
 		});
 	});
 
-	$('#dojo-add-quicklink-close').click(function () {
+	$('#dojo-add-quicklink-close').click(function (ev) {
+		ev.preventDefault();
 		$('#dojo-add-quicklink-menu').fadeOut(300);
 		$('#dojo-add-quicklink-href').attr('value','');
 		$('#dojo-add-quicklink-title').attr('value','');
 		$('#dojo-add-quicklink-icon').attr('value','');
 	});	
 
-	$('#dojo-add-quicklink-submit').click(function () {
+	$('#dojo-add-quicklink-submit').click(function (ev) {
+		ev.preventDefault();
 		var href = $('#dojo-add-quicklink-href').attr('value'),
 				title = $('#dojo-add-quicklink-title').attr('value'),
 				icon = $('#dojo-add-quicklink-icon').attr('value'),

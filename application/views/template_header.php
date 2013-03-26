@@ -153,8 +153,8 @@
 			</tr>
 			<tr>
 				<td colspan=2>
-					<input type="button" id="dojo-add-quicklink-submit" value="Save" />
-					<input type="button" id="dojo-add-quicklink-close" value="Close" />
+					<input type="submit" id="dojo-add-quicklink-submit" value="Save" />
+					<input type="submit" id="dojo-add-quicklink-close" value="Close" />
 			</td>
 			</tr>
 		</table>
