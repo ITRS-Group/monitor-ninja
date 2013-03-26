@@ -119,13 +119,14 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 *
 	 * @param   string   username of the user
 	 * @param   string   password entered by the user
-	 * @return  array    database result from the user table, or false
+	 * @return false|array database result from the user table
 	 */
 	
 	private function authenticate_user( $username, $password ) {
 		$this->fetch_users();
 	
 		if( !isset( $this->users[$username] ) ) {
+			op5Log::instance('auth')->log('notice', "User '$username' not found");
 			return false;
 		}
 		
@@ -133,6 +134,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		if (self::valid_password($password, $user['password'], $user['password_algo']) === true) { /* FIXME */
 			return $user;
 		}
+		op5Log::instance('auth')->log('notice', "User '$username' found but bad password provided");
 		return false;
 	}
 	
