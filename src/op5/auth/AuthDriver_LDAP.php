@@ -405,16 +405,16 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			}
 		}
 	
-		$ldap_opts = array();
-		if( isset( $this->config['ldap_opts'] ) && is_array($this->config['ldap_opts']) ) {
-			$ldap_opts = $this->config['ldap_opts'];
+		$ldap_options = array();
+		if( isset( $this->config['ldap_options'] ) && is_array($this->config['ldap_options']) ) {
+			$ldap_options = $this->config['ldap_options'];
 		}
 		
 		if( isset( $this->config['protocol_version'] ) ) {
-			$ldap_opts['LDAP_OPT_PROTOCOL_VERSION'] = $this->config['protocol_version'];
+			$ldap_options['LDAP_OPT_PROTOCOL_VERSION'] = $this->config['protocol_version'];
 		}
 		
-		foreach( $ldap_opts as $opt=>$val ) {
+		foreach( $ldap_options as $opt=>$val ) {
 			if( defined($opt) ) {
 				$this->log->log( 'debug', 'Setting LDAP option: '.$opt.' = '.var_export($val, true) );
 				ldap_set_option( $this->conn, constant($opt), $val );
