@@ -48,12 +48,16 @@ EOC;
 		isset($this->model->setting['visible_precision'])
 		? $this->model->setting['visible_precision']
 		: $this->visible_precision;
-
+/* Remove this configuration for now... due to the awfulness of the
+ * configuration interface, this shouldn't be nessecary to support in the
+ * future.
+ * 
+ * There isn't a feature request with this, so let's remove it...
 		$this->netw_health_config =
 		isset($this->model->setting['netw_health_config'])
 		? $this->model->setting['netw_health_config']
 		: $this->netw_health_config;
-
+*/
 	}
 
 	public function options()
@@ -73,7 +77,7 @@ EOC;
  * 
  * Otherwise this can be configured here...
  */
-		$options[] = new option($this->model->name, 'netw_health_config', 'Configuration', 'textarea', array(), $this->netw_health_config);
+//		$options[] = new option($this->model->name, 'netw_health_config', 'Configuration', 'textarea', array(), $this->netw_health_config);
 
 		return $options;
 	}
