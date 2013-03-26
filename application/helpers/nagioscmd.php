@@ -1220,7 +1220,7 @@ class nagioscmd_Core
 	 * the links to the cmd controller
 	 *
 	 */
-	static function command_link($command_type=false, $host=false, $service=false, $lable='', $method='submit', $force=false)
+	static function command_link($command_type=false, $host=false, $service=false, $lable='', $method='submit', $force=false, $attributes=NULL)
 	{
 		$host = trim($host);
 
@@ -1241,7 +1241,7 @@ class nagioscmd_Core
 			$lnk .= '&force=true';
 		}
 
-		return html::anchor($lnk, html::specialchars($lable));
+		return html::anchor($lnk, html::specialchars($lable), $attributes);
 	}	
 
 	/**
