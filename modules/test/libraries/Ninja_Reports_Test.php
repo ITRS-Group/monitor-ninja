@@ -8,7 +8,7 @@
  */
 class Ninja_Reports_Test_Core extends Reports_Model
 {
-	private $test_file = false;
+	public $test_file = false; /**< The file name we're testing */
 	private $total = 0;
 	public $description = false; /**< A string describing the purpose of this test */
 	private $tests;
