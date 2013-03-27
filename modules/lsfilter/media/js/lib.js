@@ -57,14 +57,8 @@ function link_query(query)
 	var link = $('<a />');
 	link.attr('href', _site_domain + _index_page + '/listview?q='
 			+ encodeURIComponent(query));
-	if( window.lsfilter_main ) {
-		link.click(function(evt)
-		{
-			lsfilter_main.update(query, false, '');
-			evt.preventDefault();
-			return false;
-		});
-	}
+	link.attr('data-query', query);
+	link.addClass('query_link');
 	return link;
 }
 function extinfo_link(args)
@@ -302,6 +296,8 @@ function render_host_status_summary(stats)
 	return ul;
 }
 
+var listview_multi_select_header = $('<input type="checkbox" class="listview_multiselect_checkbox_all" />');
+
 var listview_multi_select_cell_renderer = function(args)
 {
 	var checkbox = $(
@@ -314,25 +310,5 @@ var listview_multi_select_cell_renderer = function(args)
 		else
 			args.row.addClass('selected_even');
 	}
-	checkbox.change(function(evt)
-	{
-		var tgt = $(evt.target);
-
-		if( lsfilter_multiselect ) {
-			lsfilter_multiselect.box_register(tgt.attr('value'), tgt.prop('checked'));
-		}
-		var tr = tgt.closest('tr');
-		var classname = ""
-		if (tr.hasClass('odd'))
-			classname = 'selected_odd';
-		else
-			classname = 'selected_even';
-		if (tgt.prop('checked')) {
-			tr.addClass(classname);
-		}
-		else {
-			tr.removeClass(classname);
-		}
-	});
 	return $('<td style="width: 1em;" />').append(checkbox);
 };

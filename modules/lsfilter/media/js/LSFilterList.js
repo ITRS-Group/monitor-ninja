@@ -24,6 +24,11 @@ function lsfilter_list(config)
 			this.config.attach_head = false; /* Don't support attached head in ie7 */
 		}
 	}
+
+	if(this.config.table)
+		lsfilter_list_attach_events( this, this.config.table );
+	if(this.config.totals)
+		lsfilter_list_attach_events( this, this.config.totals );
 	
 	/***************************************************************************
 	 * External methods
@@ -84,7 +89,7 @@ function lsfilter_list(config)
 		});
 	};
 	
-	this.set_sort = function(table, vis_column)
+	this.set_sort = function(vis_column)
 	{
 		var self = this; // To be able to access it from within handlers
 		this.config.offset = 0;
@@ -201,6 +206,8 @@ function lsfilter_list(config)
 	this.resuest_timer = false;
 	this.visible_count = 0;
 	
+	this.current_columns = [];
+	
 	this.active_ajax_request = false;
 	
 	this.sort_vis_column = null;
@@ -252,7 +259,7 @@ function lsfilter_list(config)
 		}, this.config.autorefresh_delay);
 	}
 	
-	this.handle_ajax_response = function(data)
+	this.handle_ajax_response = function(data, append)
 	{
 		var new_table;
 		var new_totals = $('<span />');
@@ -268,7 +275,6 @@ function lsfilter_list(config)
 		new_totals = this.render_totals(data.table, data.totals);
 
 		if (this.config.table) {
-			this.config.table.find('*').unbind();
 			this.config.table.empty().append(new_table);
 			this.attach_header(new_table);
 		}
@@ -283,7 +289,6 @@ function lsfilter_list(config)
 		alert.html("<strong>Error:</strong> " + data.data);
 		
 		if (this.config.table) {
-			this.config.table.find('*').unbind();
 			this.config.table.empty().append(alert);
 		}
 	};
@@ -309,7 +314,7 @@ function lsfilter_list(config)
 		return container;
 	};
 	
-	this.insert_rows = function(columns, data, tbody)
+	this.insert_rows = function(data, tbody)
 	{
 		/*
 		 * // #load_more is a tr>td>a node var last_row =
@@ -322,8 +327,8 @@ function lsfilter_list(config)
 			row.addClass(i % 2 ? 'odd' : 'even');
 			row.data('key', obj.key);
 			
-			for ( var cur_col = 0; cur_col < columns.length; cur_col++) {
-				row.append(columns[cur_col]({
+			for ( var cur_col = 0; cur_col < this.current_columns.length; cur_col++) {
+				row.append(this.current_columns[cur_col]({
 					obj: obj,
 					last_obj: this.previous_obj,
 					row: row,
@@ -336,9 +341,9 @@ function lsfilter_list(config)
 		}
 	};
 	
-	this.add_fill_bar = function(columns, data, tbody)
+	this.add_fill_bar = function(data, tbody)
 	{
-		if( columns.length <= 0 ) {
+		if( this.current_columns.length <= 0 ) {
 			/* Don't bother then...*/
 			return;
 		}
@@ -353,35 +358,38 @@ function lsfilter_list(config)
 			loadrow.append(loadcell)
 			tbody.append(loadrow);
 
-			loadcell.attr('colspan', columns.length);
+			loadcell.attr('colspan', this.current_columns.length);
 			loadcell.append($('<a id="load_more" href="#">'
 					+ _('Load ' + more_rows + ' more rows') + '</a>'));
-			loadcell.click(function(ev)
-			{
-				ev.preventDefault();
-				var loadingcell = $('<td>Loading...</td>');
-				loadingcell.attr('colspan', columns.length);
-				loadrow.empty().append(loadingcell);
-				self.send_request({
-					append: true,
-					complete: function(xhr)
-					{
-						// let's just pass on some json
-						var result = JSON.parse(xhr.responseText);
-						self.start_autorefresh_timer();
-						loadrow.remove();
-						self.insert_rows(columns, result, tbody);
-						self.add_fill_bar(columns, result, tbody);
-						self.refresh_multi_select(tbody);
-					},
-					increment_items_in_view: true
-				});
-			});
+			loadcell.addClass('link_load_more_rows');
 		}
-		/*
-		 * } else if ($('#load_more').length && tbody.find('tr').length >=
-		 * data.data.length) { $('#load_more').remove(); }
-		 */
+	}
+	
+	this.load_more_rows = function(loadingcell)
+	{
+		var self = this;
+
+		loadingcell.removeClass('link_load_more_rows');
+		loadingcell.text('Loading...');
+
+		var loadrow = loadingcell.parent('tr');
+		var tbody = loadrow.parent('tbody');
+		
+		this.send_request({
+			append: true,
+			success: function(data)
+			{
+				loadrow.remove();
+				self.insert_rows(data, tbody);
+				self.add_fill_bar(data, tbody);
+				self.refresh_multi_select(tbody);
+			},
+			error: function(data)
+			{
+				self.handle_ajax_error_response(data);
+			},
+			increment_items_in_view: true
+		});
 	}
 
 	this.render_table = function(data, sort_col, sort_asc)
@@ -390,7 +398,7 @@ function lsfilter_list(config)
 		
 		listview_table_col_index = 0;
 		listview_last_host = '';
-		
+			
 		if (data.length == 0) { return $('<h2 class="lsfilter-noresult">'
 				+ _('Empty result set') + '</h2>'); }
 		
@@ -408,7 +416,7 @@ function lsfilter_list(config)
 		 * Render table header
 		 */
 
-		var columns = new Array();
+		this.current_columns = [];
 		var header = $('<tr />');
 		
 		for ( var key=0; key<this.table_desc.vis_columns.length; key++ ) {
@@ -424,7 +432,7 @@ function lsfilter_list(config)
 				}
 			}
 			
-			columns.push(col_render.cell);
+			this.current_columns.push(col_render.cell);
 			
 			var th = $('<th />');
 			// .attr('id', listview_table_col_name(col_render.header));
@@ -440,8 +448,8 @@ function lsfilter_list(config)
 		}
 		thead.append(header);
 		
-		this.insert_rows(columns, data, tbody);
-		this.add_fill_bar(columns, data, tbody);
+		this.insert_rows(data, tbody);
+		this.add_fill_bar(data, tbody);
 		this.refresh_multi_select(tbody);
 		
 		return table;
@@ -472,13 +480,8 @@ function lsfilter_list(config)
 				.append($('<span class="lsfilter-sort-span" />')
 					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-up-down.png')));
 		}
-		element.click({
-			table: table,
-			vis_column: vis_column
-		}, function(evt)
-		{
-			self.set_sort(evt.data.table, evt.data.vis_column);
-		});
+		element.attr('data-column', vis_column );
+		element.addClass('link_set_sort');
 	};
 	
 	this.refresh_multi_select = function(baseelem)

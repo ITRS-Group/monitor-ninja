@@ -4,7 +4,7 @@
 
 listview_renderer_table.hosts = {
 	"select" : {
-		"header" : '',
+		"header" : listview_multi_select_header,
 		"depends" : [],
 		"sort" : false,
 		"avalible" : function(args) {
@@ -1072,14 +1072,12 @@ listview_renderer_table.saved_filters = {
 				var del_link = _site_domain + _index_page
 						+ '/listview/delete_saved_filter?id=' + args.obj.id;
 
-				cell.append(link_fnc(function() {
-					$.ajax(del_link).done(function() {
-						if (lsfilter_main)
-							lsfilter_main.refresh();
-						if (lsfilter_saved)
-							lsfilter_saved.refresh_filter_list();
-					});
-				}).append(del_icon));
+				var del_elem = $('<a />')
+					.attr('href', del_link)
+					.addClass('link_ajax_refresh')
+					.append(del_icon);
+				
+				cell.append(del_elem);
 			}
 			return cell;
 		}
