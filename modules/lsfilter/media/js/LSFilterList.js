@@ -167,8 +167,14 @@ function lsfilter_list(config)
 					{
 						options.success(data);
 					},
-					error: function(data)
+					error: function(data, text_status)
 					{
+						if(text_status === "abort") {
+							// only continue to display error message if
+							// it's an actual error, not just multiple requests
+							// stacked or something silly like that
+							return;
+						}
 						var message;
 						try {
 							message = JSON.parse(data.responseText);
