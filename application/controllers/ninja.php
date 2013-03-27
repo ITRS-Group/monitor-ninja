@@ -203,6 +203,9 @@ class Ninja_Controller extends Template_Controller {
 		catch( LivestatusException $e ) {
 			$notifications[] = array(_('Livestatus is not accessable'), false);
 		}
+		catch( ORMException $e ) {
+			$notifications[] = array(_('Livestatus is not accessable'), false);
+		}
 		# check permissions
 		$user = Auth::instance()->get_user();
 		if (nacoma::link()===true && $user->authorized_for('configuration_information')

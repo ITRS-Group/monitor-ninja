@@ -169,7 +169,13 @@ function lsfilter_list(config)
 					},
 					error: function(data)
 					{
-						options.error('Error reloading');
+						var message;
+						try {
+							message = JSON.parse(data.responseText);
+						} catch(not_json) {
+							message = _('Error reloading');
+						}
+						options.error(message);
 					},
 					complete: function(data)
 					{
