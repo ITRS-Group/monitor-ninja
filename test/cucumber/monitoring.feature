@@ -410,3 +410,24 @@ Feature: Monitoring
 		And I click "Notifications"
 		Then I should see "Notifications"
 		And I should see "Count:"
+
+	@configuration @asmonitor @bug-6933
+	Scenario: Disable passive checks and obsess over this host
+		Verify that after disable passive checks for this host and
+		stop obsess over this host it is possible to start them both.
+
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Stop accepting passive checks for this host"
+		Then I should see "You are trying to stop accepting passive checks for a host"
+		And I should see "linux-server1"
+		When I click "Submit"
+		And I click "Done"
+		And I click "Stop obsessing over this host"
+		Then I should see "You are trying to stop obsessing over a host"
+		And I should see "linux-server1"
+		When I click "Submit"
+		And I click "Done"
+		And I click "Start obsessing over this host"
+		Then I should be on url "/monitor/index.php/command/submit?cmd_typ=START_OBSESSING_OVER_HOST&host_name=linux-server1"
+		
