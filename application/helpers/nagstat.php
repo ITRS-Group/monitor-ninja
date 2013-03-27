@@ -282,14 +282,10 @@ class nagstat_Core {
 		if (empty($format_str))
 			$format_str = self::date_format(); # fetch if not set
 
-		# use now as date if nothing supplied as input
+		# use now as date if nothing supplied as input FIXME: isn't that extremely anti-useful?
 		$date_str = empty($date_str) ? date($format_str) : $date_str;
-		$format_str = trim($format_str);
-		$timestamp_format = false;
-		if ($format_str == 'm-d-Y H:i:s') {
-			$date_str = str_replace('-', '/', $date_str);
-		}
-		return strtotime($date_str);
+		$dt = DateTime::createFromFormat($format_str, $date_str);
+		return $dt->getTimestamp();
 	}
 }
 
