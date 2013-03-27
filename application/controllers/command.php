@@ -59,8 +59,8 @@ class Command_Controller extends Authenticated_Controller
 	 * @return true | string (string = error message)
 	 */
 	private function _validate_dates($submitted_start_time, $submitted_end_time) {
-		$start_time = strtotime($submitted_start_time);
-		$end_time = strtotime($submitted_end_time);
+		$start_time = nagstat::timestamp_format(nagstat::date_format(), $submitted_start_time);
+		$end_time = nagstat::timestamp_format(nagstat::date_format(), $submitted_end_time);
 		$errors = array();
 		if(!$start_time || !$end_time) {
 			if(!$start_time && !$end_time) {
