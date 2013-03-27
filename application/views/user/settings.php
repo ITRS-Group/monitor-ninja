@@ -34,10 +34,9 @@ if (!empty($available_setting_sections)) {
 				$i = 0;
 				foreach ($settings[$setting_key] as $setting_name => $cfgkey) {
 					$i++;
-					echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'"><td style="width: 200px">'.help::render($cfgkey[0]).' &nbsp;';
-					echo $setting_name.'</td><td>';
-
 					$fieldname = str_replace('.', '_99_', $cfgkey[0]);
+					echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'"><td style="width: 200px">'.help::render($cfgkey[0])." &nbsp; <label for='$fieldname'>$setting_name</label></td><td>";
+
 					switch($cfgkey[1]) {
 						case 'int': case 'string':
 							echo form::input($fieldname, $current_values[$cfgkey[0]]);
