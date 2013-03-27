@@ -288,7 +288,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"select" : {
-		"header" : '',
+		"header" : listview_multi_select_header,
 		"depends" : [],
 		"sort" : false,
 		"avalible" : function(args) {
@@ -513,7 +513,7 @@ listview_renderer_table.servicegroups = {
 
 listview_renderer_table.comments = {
 	"select" : {
-		"header" : '',
+		"header" : listview_multi_select_header,
 		"depends" : [],
 		"sort" : false,
 		"avalible" : function(args) {
@@ -697,7 +697,7 @@ listview_renderer_table.comments = {
 };
 listview_renderer_table.downtimes = {
 	"select" : {
-		"header" : '',
+		"header" : listview_multi_select_header,
 		"depends" : [],
 		"sort" : false,
 		"avalible" : function(args) {
