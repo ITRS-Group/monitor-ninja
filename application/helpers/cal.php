@@ -19,7 +19,7 @@ class cal_Core
 				$date_format = 'mm/dd/yyyy';
 				break;
 			case 'euro': # DD-MM-YYYY
-				$date_format = 'dd-mm-yyyy';
+				$date_format = 'dd/mm/yyyy';
 				break;
 			case 'iso8601': # YYYY-MM-DD
 				$date_format = 'yyyy-mm-dd';
