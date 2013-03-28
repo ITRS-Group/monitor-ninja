@@ -238,16 +238,17 @@ th span.header-icon {
 }
 
 .lsfilter-sort-span {
-	border-left: 1px solid #ccc;
-	box-shadow: inset 0 2px 4px 0 #fff;
-	text-align: center;
-	cursor: pointer;
 	float: right;
-	margin-top: -6px;
-	font-size: 11pt;
-	height: 20px;
-	width: 18px;
-	color: #666;
+	text-align: center;
+	padding-right: 4px;
+}
+
+th.sortable:hover {
+	background: #C6E4EE;
+	cursor: pointer;
+}
+th.sortable.current {
+	background: lightblue;
 }
 
 .extra_toolbar {

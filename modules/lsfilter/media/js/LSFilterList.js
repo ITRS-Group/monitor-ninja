@@ -451,24 +451,26 @@ function lsfilter_list(config)
 	{
 		var self = this; // To be able to access it from within handlers
 		
-		if (current == 0) { // No sort
 		
+		element.addClass('sortable')
+		if (current === 1) { // Ascending?
 			element
-					.prepend($('<span class="lsfilter-sort-span">&nbsp;</span>'));
+				.attr('title', 'Sort descending')
+				.addClass('current')
+				.append($('<span class="lsfilter-sort-span" />')
+					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-up.png')));
 		}
-		else if (current > 0) { // Ascending?
-			element.attr('title', 'Sort descending');
+		else if(current === -1) {
 			element
-					.prepend($('<span class="lsfilter-sort-span" />').append(
-							$('<img />').attr('src',_site_domain+'application/views/icons/arrow-down.png')
-							));
-		}
-		else {
-			element.attr('title', 'Sort ascending');
+				.attr('title', 'Sort ascending')
+				.addClass('current')
+				.append($('<span class="lsfilter-sort-span" />')
+					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-down.png')));
+		} else {
 			element
-					.prepend($('<span class="lsfilter-sort-span" />').append(
-							$('<img />').attr('src',_site_domain+'application/views/icons/arrow-up.png')
-							));
+				.attr('title', 'Sort descending')
+				.append($('<span class="lsfilter-sort-span" />')
+					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-up-down.png')));
 		}
 		element.click({
 			table: table,
