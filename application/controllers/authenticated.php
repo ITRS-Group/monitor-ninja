@@ -46,7 +46,7 @@ class Authenticated_Controller extends Ninja_Controller {
 						die('The provided authentication is invalid');
 				} else {
 					# store requested uri in session for later redirect
-					if ($this->session)
+					if (!request::is_ajax() && $this->session)
 						$this->session->set('requested_uri', url::current(true));
 
 					if (Router::$controller != 'default') {
