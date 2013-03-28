@@ -49,7 +49,7 @@ class Search_Controller extends Authenticated_Controller {
 	 * @param $query search string
 	 */
 	public function index($query=false) {
-		$query = trim($this->input->get('query', $query));
+		$original_query = $query = trim($this->input->get('query', $query));
 
 		if(preg_match('/^\[[a-zA-Z]+\]/', $query)) {
 			return url::redirect('listview?'.http_build_query(array('q'=>$query)));
@@ -69,7 +69,7 @@ class Search_Controller extends Authenticated_Controller {
 			unset($filters['limit']);
 		}
 
-		$this->render_queries( $filters, $limit );
+		$this->render_queries( $filters, $original_query, $limit );
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Search_Controller extends Authenticated_Controller {
 	 *
 	 * @param $queries list of queries
 	 */
-	private function render_queries( $queries, $limit=false ) {
+	private function render_queries($queries, $original_query, $limit=false) {
 		if( !is_array($queries) ) {
 			$queries = array($queries);
 		}
@@ -115,6 +115,8 @@ class Search_Controller extends Authenticated_Controller {
 			widget::set_resources($widget, $this);
 				
 			$widget->set_fixed($query);
+			// abuse the fact that ls-tables are pluralized
+			$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($original_query));
 				
 			$this->template->content->widgets[] = $widget->render();
 		}
