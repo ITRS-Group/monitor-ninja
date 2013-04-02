@@ -29,4 +29,24 @@ class refresh_Core {
 		</script>
 		<?php
 	}
+
+	/**
+	 *	Print javascript to control listview reload
+	 *
+	 * @return void
+	 **/
+	public static function lv_control()
+	{
+		if (!Auth::instance()->logged_in()) {
+			return;
+		}
+		# fetch setting
+		$lv_refresh_key = 'config.listview_refresh_rate';
+		$lv_refresh = (int)config::get($lv_refresh_key, '*', true, true) * 1000;
+		?>
+		<script type="text/javascript">
+		lv_refresh_delay = '<?php echo $lv_refresh ?>';
+		</script>
+		<?php
+	}
 }
