@@ -181,7 +181,7 @@
 		<?php
 		$query = arr::search($_REQUEST, 'query');
 		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-			<input type="text" name="query" id="query" class="textbox" value="<?php echo htmlentities($query) ?>" />
+			<input type="text" name="query" id="query" class="textbox" value="<?php echo htmlentities($query, ENT_COMPAT, 'UTF-8') ?>" />
 		<?php } else { ?>
 			<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 		<?php	} ?>
