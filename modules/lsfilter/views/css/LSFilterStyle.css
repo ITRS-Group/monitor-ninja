@@ -4,7 +4,7 @@
 #lsfilter_save_filter_name {
 	margin-bottom: 0;
 } /* FIX AGAINST REPORT CSS */
-#filter-query-builder, #filter-query-multi-action {
+#filter-query-builder,#filter-query-multi-action {
 	display: none;
 	box-shadow: 0 2px 2px 3px #ddd;
 	box-shadow: 0 2px 2px 3px rgba(0, 0, 0, 0.1);
@@ -17,7 +17,7 @@
 	z-index: 1;
 }
 
-#filter-query-builder, #filter-query-saved, #filter-query-multi-action {
+#filter-query-builder,#filter-query-saved,#filter-query-multi-action {
 	max-height: 500px;
 	overflow: auto;
 	display: none;
@@ -27,7 +27,8 @@
 #filter-query-saved-filters,#filter-query-saved-preview {
 	vertical-align: top;
 	display: inline-block;
-	zoom: 1; *display : inline;
+	zoom: 1;
+	*display: inline;
 	height: 96px;
 	width: 45%;
 	overflow: auto;
@@ -55,7 +56,8 @@
 .lsfilter-loader {
 	background: url('loading_small.gif') no-repeat;
 	display: inline-block;
-	zoom: 1; *display : inline;
+	zoom: 1;
+	*display: inline;
 	vertical-align: middle;
 	margin-right: 32px;
 	padding-left: 22px;
@@ -76,7 +78,7 @@
 }
 
 .lsfilter-edit-bar button.active {
-	background: rgba(0,0,0,0.1);
+	background: rgba(0, 0, 0, 0.1);
 }
 
 .lsfilter-edit-bar button:hover {
@@ -85,122 +87,10 @@
 	background: rgba(255, 255, 255, 0.4);
 }
 
-#filter_visual {
-	border-radius: 6px;
-	padding: 6px;
-	font-size: 9pt;
-	text-align: center;
-}
-
 #lsfilter-query-object {
 	width: 200px;
 }
 
-.lsfilter-comp {
-	position: relative;
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-}
-
-.lsfilter-comp li {
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-}
-
-.lsfilter-comp li select,.lsfilter-comp li input {
-	width: 90px;
-	margin: 0 4px 0 0;
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-}
-
-.lsfilter-comp li input {
-	width: 80px;
-}
-
-.lsfilter-comp li button {
-	width: 80px;
-}
-
-.lsfilter-or-text {
-	margin: 0 8px;
-	vertical-align: middle;
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-}
-
-.lsfilter-operator-select {
-	width: 42px !important;
-}
-
-.lsfilter-and {
-	position: relative;
-	display: inline-block;
-	zoom: 1; *display : inline;
-	border-radius: 4px;
-	background: #dbdbdb;
-	padding: 2px;
-	overflow: auto;
-	margin: 2px 4px;
-	text-align: center;
-	*display: inline;
-}
-
-.lsfilter-and-expr {
-	margin: 2px;
-}
-
-.lsfilter-or {
-	position: relative;
-	border-radius: 4px;
-	display: inline-block;
-	zoom: 1; *display : inline;
-	background: #e9e9e9;
-	*display: inline;
-}
-
-.lsfilter-or-expr {
-	margin: 2px;
-	display: inline-block;
-	zoom: 1; *display : inline;
-	vertical-align: middle;
-	*display: inline;
-}
-
-/* START @FIXME!!! */
-.lsfilter-root .lsfilter-comp .lsfilter-add-or,.lsfilter-root .lsfilter-comp .lsfilter-add-and
-	{
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-}
-
-.lsfilter-and .lsfilter-comp .lsfilter-add-and {
-	display: none !important;
-}
-
-.lsfilter-or .lsfilter-comp .lsfilter-add-or {
-	display: none !important;
-}
-
-.lsfilter-add-and,.lsfilter-add-or {
-	border-radius: 2px 0 0 2px;
-}
-
-.lsfilter-add-or {
-	border-radius: 0 2px 2px 0;
-}
-
-.lsfilter-add-or:hover,.lsfilter-add-and:hover {
-	border-color: #aaa;
-	cursor: pointer;
-}
-
-/* END @FIXME!!! */
 #filter_result tbody tr:hover {
 	background: #fdfdfd;
 	color: #222;
@@ -247,6 +137,7 @@ th.sortable:hover {
 	background: #C6E4EE;
 	cursor: pointer;
 }
+
 th.sortable.current {
 	background: lightblue;
 }
@@ -330,18 +221,25 @@ th.sortable.current {
 	background-color: #FFEEEE !important;
 }
 
+/*
+ * Service count in host detail listing
+ */
 td.cell_svccnt a {
 	border-bottom: 0;
 }
 
 tr.even td.cell_svccnt_all {
+	
 }
+
 tr.odd td.cell_svccnt_all {
+	
 }
 
 tr.even td.cell_svccnt_ok {
 	background-color: #CCFFCC !important;
 }
+
 tr.odd td.cell_svccnt_ok {
 	background-color: #BBEEBB !important;
 }
@@ -349,6 +247,7 @@ tr.odd td.cell_svccnt_ok {
 tr.even td.cell_svccnt_warning {
 	background-color: #FFFFCC !important;
 }
+
 tr.odd td.cell_svccnt_warning {
 	background-color: #EEEEBB !important;
 }
@@ -356,6 +255,7 @@ tr.odd td.cell_svccnt_warning {
 tr.even td.cell_svccnt_critical {
 	background-color: #FFDDCC !important;
 }
+
 tr.odd td.cell_svccnt_critical {
 	background-color: #FFCCC3 !important;
 }
@@ -363,6 +263,7 @@ tr.odd td.cell_svccnt_critical {
 tr.even td.cell_svccnt_unknown {
 	background-color: #FFEEDD !important;
 }
+
 tr.odd td.cell_svccnt_unknown {
 	background-color: #FFE7D4 !important;
 }
@@ -370,6 +271,57 @@ tr.odd td.cell_svccnt_unknown {
 tr.even td.cell_svccnt_pending {
 	background-color: #DDDDDD !important;
 }
+
 tr.odd td.cell_svccnt_pending {
 	background-color: #CCCCCC !important;
+}
+
+/*
+ * Visual filter editor
+ */
+ 
+.lsfilter_visual_group,
+.lsfilter_visual_match {
+	padding: 0;
+	margin: 1em 1em 1em 2em;
+}
+
+.lsfilter_visual_group_and {
+	background-color: #fbfbfb;
+}
+
+.lsfilter_visual_group_or {
+	background-color: #f5f5f5;
+}
+
+.lsfilter_visual_not {
+	margin-left: 3em;
+}
+
+.lsfilter_visual_group_header {
+	display: block;
+	font-weight: bold;
+	vertical-algin: middle;
+}
+
+.lsfilter_visual_node_remove {
+	display: inline-block;
+	float: right;
+	border: 0;
+}
+.lsfilter_visual_node_remove:hover {
+	border: 0;
+}
+
+.lsfilter_visual_node_addrule,
+.lsfilter_visual_node_addgroup,
+.lsfilter_visual_node_negate {
+	display: inline-block;
+	margin: 0 0.5em 0 0;
+}
+
+.lsfilter_visual_field_select,
+.lsfilter_visual_operator_select,
+.lsfilter_visual_value_field {
+	width: 32%;
 }

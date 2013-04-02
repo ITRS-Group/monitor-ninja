@@ -3,56 +3,55 @@
  * expandable
  ******************************************************************************/
 var lsfilter_extra_andor = {
-	last_op: false,
+	last_op : false,
 
-	visit_query: function(obj)
-	{
-		var result = {
-			'obj': 'query',
-			'table': obj.table
-		};
-		var query = this.visit(obj.query, 'or');
-		var newop = 'or';
-		if (query.obj == 'or') {
-			newop = 'and';
+	visit_query : function(obj) {
+		var query = obj.query;
+		if (query.obj != 'and') {
+			query = {
+				'obj' : 'and',
+				'sub' : [ query ]
+			};
 		}
-		result['query'] = {
-			'obj': newop,
-			'sub': [ query ]
+		return {
+			'obj' : 'query',
+			'table' : obj.table,
+			'query' : this.visit(query, 'query'),
 		};
-		return result;
 	},
 
-	visit_and: function(obj)
-	{
+	visit_and : function(obj) {
 		return this.visit_andor(obj, 'and');
 	},
-	visit_or: function(obj)
-	{
+	visit_or : function(obj) {
 		return this.visit_andor(obj, 'or');
 	},
-	visit_andor: function(obj, op)
-	{
+	visit_andor : function(obj, op) {
 		var list = [];
+		var outermost = this.last_op == 'query';
 		for ( var i in obj.sub) {
-			list.push(this.visit(obj.sub[i], op));
+			var sub = this.visit(obj.sub[i], op);
+			console.log(sub);
+			if (!(sub.obj == 'match' && sub.op == 'all'))
+				list.push(sub);
 		}
 		return {
-			'obj': op,
-			'sub': list
+			'obj' : op,
+			'sub' : list,
+			'outermost' : outermost
 		};
 	},
-	visit_match: function(obj)
-	{
-		var op = (this.last_op == 'and') ? ('or') : ('and');
+	visit_match : function(obj) {
+		return obj;
+	},
+	visit_not : function(obj) {
 		return {
-			'obj': op,
-			'sub': [ obj ]
+			'obj' : 'not',
+			'sub' : this.visit(obj.sub)
 		};
 	},
 
-	visit: function(obj, last_op)
-	{
+	visit : function(obj, last_op) {
 		this.last_op = last_op;
 		return LSFilterASTVisit(obj, this);
 	}
@@ -62,261 +61,213 @@ var lsfilter_extra_andor = {
  * Convert a lsfilter AST to html
  ******************************************************************************/
 var lsfilter_graphics_visitor = {
-	fields: null,
-	operators: {
-		"string": {
-			'not_re_ci': '!~~',
-			'not_re_cs': '!~',
-			're_ci': '~~',
-			're_cs': '~',
-			'not_eq_ci': '!=~',
-			'eq_ci': '=~',
-			'not_eq': '!=',
-			'eq': '='
+	fields : null,
+	operators : {
+		"string" : {
+			'not_re_ci' : 'not matching regexp, case insensitive',
+			'not_re_cs' : 'not matching regexp',
+			're_ci' : 'matching regexp, case insensitive',
+			're_cs' : 'matching regexp',
+			'not_eq_ci' : 'not equals, case insensitive',
+			'eq_ci' : 'equals, case insensitive',
+			'not_eq' : 'not equals',
+			'eq' : 'equals'
 		},
-		"int": {
-			'not_eq': '!=',
-			'gt_eq': '>=',
-			'lt_eq': '<=',
-			'gt': '>',
-			'lt': '<',
-			'eq': '='
+		"int" : {
+			'not_eq' : 'not equals',
+			'gt_eq' : 'greater than or equals',
+			'lt_eq' : 'less than or equal',
+			'gt' : 'greater than',
+			'lt' : 'less than',
+			'eq' : 'equal'
 		},
-		"float": {
-			'not_eq': '!=',
-			'gt_eq': '>=',
-			'lt_eq': '<=',
-			'gt': '>',
-			'lt': '<',
-			'eq': '='
+		"float" : {
+			'not_eq' : 'not equals',
+			'gt_eq' : 'greater than or equals',
+			'lt_eq' : 'less than or equals',
+			'gt' : 'greater than',
+			'lt' : 'less than',
+			'eq' : 'equals'
 		},
-		"object": {
-			'in': 'in',
-			'all': 'all'
+		"time" : {
+			'not_eq' : 'not equals',
+			'gt_eq' : 'greater than or equals',
+			'lt_eq' : 'less than or equals',
+			'gt' : 'greater than',
+			'lt' : 'less than',
+			'eq' : 'equals'
 		},
-		"list": {
-			'gt_eq': '>='
+		"object" : {
+			'in' : 'in named set',
+			'all' : 'all'
 		},
-		"dict": { /* FIXME: This is ugly... better grammar for custom_variables */
-			'not_re_ci': '!~~',
-			'not_re_cs': '!~',
-			're_ci': '~~',
-			're_cs': '~',
-			'not_eq_ci': '!=~',
-			'eq_ci': '=~',
-			'not_eq': '!=',
-			'eq': '='
+		"list" : {
+			'gt_eq' : 'contains'
+		},
+		"dict" : { /*
+					 * FIXME: This is ugly... better grammar for
+					 * custom_variables
+					 */
+			'not_re_ci' : 'not matching regexp, case insensitive',
+			'not_re_cs' : 'not matching regexp',
+			're_ci' : 'matching regexp, case insensitive',
+			're_cs' : 'matching regexp',
+			'not_eq_ci' : 'not equals, case insensitive',
+			'eq_ci' : 'equals, case insensitive',
+			'not_eq' : 'not equals',
+			'eq' : 'equals'
 		}
 	},
 
-	visit_query: function(obj)
-	{
+	visit_query : function(obj) {
 		this.fields = lsfilter_visual.fields_for_table(obj.table);
-		var list = $('<ul class="lsfilter-query" />');
+		var container = $('<div />');
 
-		var table_select = $('<select class="lsfilter-table-select" />');
-
-		/*
-		 * Only accept tables we can render, otherwise orm_structure
-		 * would be used as list
-		 */
-		for ( var table in listview_renderer_table) {
-			if (table == obj.table) {
-				table_select.append($('<option value="' + table + '" selected="true">' + table + '</option>'));
-			}
-			else {
-				table_select.append($('<option value="' + table + '">' + table + '</option>'));
-			}
+		var tablesel = $('<select />');
+		tablesel.addClass('lsfilter_visual_table_select');
+		for (table in listview_renderer_table) {
+			var opt = $('<option />');
+			opt.attr('value', table);
+			opt.text(table);
+			tablesel.append(opt);
 		}
+		tablesel.val(obj.table);
+		container.append(tablesel)
 
-		table_select.change(function(evt)
-		{
-			var table = $(evt.target).val();
-			var query = '[' + table + '] all';
-			lsfilter_main.update(query, false, '');
-			evt.preventDefault();
-			return false;
-		});
-
-		list.append($('<li class="lsfilter-expr lsfilter-table-expr" />')
-				.append(table_select));
-		list.append($('<li class="lsfilter-expr lsfilter-query-expr" />')
-				.append(this.visit(obj.query)));
-		return list;
+		container.append(this.visit(obj.query));
+		return container;
 	},
 
-	visit_and: function(obj)
-	{
+	visit_and : function(obj) {
 		return this.visit_andor(obj, 'and');
 	},
 
-	visit_or: function(obj)
-	{
+	visit_or : function(obj) {
 		return this.visit_andor(obj, 'or');
 	},
 
-	visit_andor: function(obj, op)
-	{
-		var self = this; // To be able to access it from within handlers
-		var list = $('<ul class="lsfilter-list lsfilter-' + op + '">');
-		list.append(this.delete_button().addClass('lsfilter-' + op + '-expr'));
+	visit_andor : function(obj, op) {
+		var list = $('<div />');
+
+		var cmplop = (op == 'and') ? ('or') : ('and');
+
+		list.addClass('lsfilter_visual_node');
+		list.addClass('lsfilter_visual_group');
+		list.addClass('lsfilter_visual_group_' + op);
+
+		list.attr('data-op', op);
+
+		var header = $("<div />");
+		header.addClass('lsfilter_visual_group_header')
+
+		list.append(header);
+
+		if (!obj.outermost)
+			header.append($('<a class="lsfilter_visual_node_remove" />')
+					.append(icon12('cross')));
+		header.append($('<span />').text(_(op + " filter group")));
+
 		for ( var i in obj.sub) {
-			list.append($(
-					'<li class="lsfilter-expr lsfilter-' + op + '-expr"/>')
-					.append(this.visit(obj.sub[i])));
+			list.append(this.visit(obj.sub[i]));
 		}
-		var button = $('<button class="lsfilter-add-' + op + '" />')
-				.text(_(op));
-		button.click(function(e)
-		{
-			self.gui_stmnt_button(e, op, $(this));
-		});
-		list
-				.append($('<li class="lsfilter-' + op + '-expr" />').append(
-						button));
+
+		var footer = $('<div />');
+		footer.addClass('lsfilter_visual_newmarker');
+		footer.addClass('lsfilter_visual_group_footer');
+
+		list.append(footer);
+
+		var link;
+
+		link = $('<a />');
+		link.addClass('lsfilter_visual_node_addrule');
+		link.text(_('Add rule'));
+		footer.append(link);
+
+		link = $('<a />');
+		link.addClass('lsfilter_visual_node_addgroup');
+		link.text(_('Add ' + cmplop + ' group'));
+		footer.append(link);
+
+		if (!obj.outermost) {
+			link = $('<a />');
+			link.addClass('lsfilter_visual_node_negate');
+			link.text(_('Negate group'));
+			footer.append(link);
+		}
+
 		return list;
 
 	},
 
-	visit_not: function(obj)
-	{
-		return this.visit(obj.sub);
+	visit_not : function(obj) {
+		var result = this.visit(obj.sub);
+		result.toggleClass('lsfilter_visual_not');
+		return result;
 	},
 
-	visit_match: function(obj)
-	{
-		var self = this;
-		var result = $('<ul class="lsfilter-expr lsfilter-comp" />');
+	visit_match : function(obj) {
+		var result = $('<div />');
 
-		var fields = $('<select class="lsfilter-field-select" />');
-		var ops = $('<select class="lsfilter-operator-select" />');
-		var val = $('<input type="text" value="' + obj.value + '" />');
+		result.addClass('lsfilter_visual_node');
+		result.addClass('lsfilter_visual_match');
 
+		result.append($('<a class="lsfilter_visual_node_remove" />').append(
+				icon12('cross')));
+
+		/* Attribute select box */
+		var attrsel = $('<select />');
+		attrsel.addClass('lsfilter_visual_field_select');
 		for ( var f in this.fields) {
-			if (f == obj.field || (f == 'this' && !obj.field)) {
-				fields.append($('<option value="' + f + '" selected="true">' + f + '</option>'));
-			}
-			else {
-				fields
-						.append($('<option value="' + f + '">' + f + '</option>'));
-			}
+			var opt = $('<option />');
+			opt.attr('value', f);
+			opt.text(f);
+			opt.attr('data-type', this.fields[f].join(";"));
+			attrsel.append(opt);
 		}
+		if (!this.fields[obj.field]) {
+			console.log("Unknown field " + obj.field);
+			var opt = $('<option />');
+			opt.attr('value', obj.field);
+			opt.text(_("Unknown column: ") + obj.field);
+			opt.attr('data-type', "string");
+			attrsel.append(opt);
+		}
+		attrsel.val(obj.field);
+		result.append(attrsel);
 
-		result.append($('<li />').append(fields));
-		result.append($('<li />').append(ops));
+		/* Operator select box */
+		var opsel = $('<select />');
+		opsel.addClass('lsfilter_visual_operator_select');
+		this.fill_operator_select(opsel,
+				this.fields[obj.field] ? this.fields[obj.field] : [ "string" ]);
+		opsel.val(obj.op);
+		result.append(opsel);
 
-		self.field_change(fields.val(), obj.op, val, ops);
-		fields.change(function()
-		{
-			self.field_change($(this).val(), obj.op, val, ops);
-			lsfilter_visual.update_query_delayed();
-		});
-
-		val.removeClass().addClass('lsfilter-value-field').addClass(
-				'lsfilter-type-' + this.fields[fields.val()].join(''));
-
-		this.add_delayed_update(ops);
-		this.add_delayed_update(val);
-
-		result.append($('<li />').append(val));
+		/* Input text field */
+		var valueinp = $('<input />');
+		valueinp.addClass('lsfilter_visual_value_field');
+		valueinp.val(obj.value);
+		result.append(valueinp);
 
 		return result;
 	},
 
-	field_change: function(field, op, val, ops)
-	{
-		var operators = this.operators[this.fields[field][0]];
-		val.removeClass().addClass('lsfilter-value-field').addClass(
-				'lsfilter-type-' + this.fields[field][0]);
-		ops.empty();
-
-		for ( var operator in operators) {
-			if (operator == op) {
-				ops.append($('<option selected="true" value="' + operators[operator] + '">' + operators[operator] + '</option>'));
-			}
-			else {
-				ops.append($('<option value="' + operators[operator] + '">' + operators[operator] + '</option>'));
-			}
-		}
-	},
-
-	gui_stmnt_button: function(evt, op, btn)
-	{
-		var self = this;
-		var newop = (op == 'and') ? ('or') : ('and');
-		evt.preventDefault();
-
-		var clone = this.visit({
-			'obj': newop,
-			'sub': [ {
-				'obj': 'match',
-				'op': 'all',
-				'field': 'this',
-				'value': ''
-			} ]
-		});
-		var tmp = null;
-
-		var match_field = btn.closest('li').siblings('.lsfilter-expr')
-				.children('.lsfilter-comp');
-
-		var wrapper = $('<ul class="lsfilter-list lsfilter-' + newop
-				+ '"><li class="lsfilter-expr lsfilter-' + newop
-				+ '-expr"/></ul>');
-		match_field.wrap(wrapper);
-		match_field.closest('ul.lsfilter-' + newop).prepend(
-				this.delete_button().addClass('lsfilter-' + newop + '-expr'));
-
-		var button = $('<button class="lsfilter-add-' + newop + '" />').text(
-				_(newop));
-		button.click(function(e)
-		{
-			self.gui_stmnt_button(e, newop, $(this));
-		});
-
-		match_field.parent().parent().append(
-				$('<li class="lsfilter-' + newop + '-expr" />').append(button));
-
-		$('<li class="lsfilter-expr lsfilter-' + op + '-expr" />')
-				.append(clone).insertBefore(btn.closest('li'));
-
-		lsfilter_visual.update_query_delayed();
-	},
-
-	visit: function(obj)
-	{
+	visit : function(obj) {
 		return LSFilterASTVisit(obj, this);
 	},
 
-	add_delayed_update: function(node)
-	{
-		node.bind('change', function()
-		{
-			lsfilter_visual.update_query_delayed();
-		});
-	},
-
-	delete_button: function()
-	{
-		var self = this;
-		var button = $('<button />').text('X').click(function(evt)
-		{
-			self.delete_bubble($(evt.target).closest('ul').parent());
-			lsfilter_visual.validate_top_integrity();
-			lsfilter_visual.update_query_delayed();
-			evt.preventDefault();
-			return false;
-		});
-		return $('<li />').append(button);
-	},
-
-	delete_bubble: function(node)
-	{
-		var container_ul = node.closest('ul.lsfilter-list');
-		node.remove();
-		if (container_ul.length > 0
-				&& container_ul.children('.lsfilter-expr').length === 0) {
-			this.delete_bubble(container_ul.parent());
+	fill_operator_select : function(select, type) {
+		select.empty();
+		var ops = [];
+		if (type[0]) {
+			ops = this.operators[type[0]];
+		}
+		for ( var op in ops) {
+			var opt = $('<option />');
+			opt.attr('value', op);
+			opt.text(_(ops[op]));
+			select.append(opt);
 		}
 	}
 };
@@ -325,68 +276,119 @@ var lsfilter_graphics_visitor = {
  * Parse DOM structure down to a query
  ******************************************************************************/
 var lsfilter_dom_to_query = {
-	visit: function(node, prio)
-	{
-		node = $(node);
-		if (node.hasClass('lsfilter-and')) {
-			return this.visit_binary(' and ', 2, node
-					.children('.lsfilter-expr').children(), prio);
-		}
-		else if (node.hasClass('lsfilter-or')) {
-			return this.visit_binary(' or ', 1, node.children('.lsfilter-expr')
-					.children(), prio);
-		}
-		else if (node.hasClass('lsfilter-query')) {
-			return this.visit_query(node, prio);
-		}
-		else if (node.hasClass('lsfilter-comp')) { return this.visit_comp(node,
-				prio); }
-
+	op_prio : {
+		'or' : 1,
+		'and' : 2
 	},
-	visit_all: function(nodes, prio)
-	{
+	operators : {
+		'not_re_ci' : '!~~',
+		'not_re_cs' : '!~',
+		'not_eq_ci' : '!=~',
+		'not_eq' : '!=',
+		're_ci' : '~~',
+		're_cs' : '~',
+		'eq_ci' : '=~',
+		'gt_eq' : '>=',
+		'lt_eq' : '<=',
+		'eq' : '=',
+		'gt' : '>',
+		'lt' : '<',
+		'in' : 'in',
+		'all' : 'all'
+	},
+
+	visit : function(node, prio) {
+		node = $(node);
+		var result;
+		if (node.attr('id') == 'filter_visual') {
+			result = this.visit_query(node, prio);
+		} else if (node.hasClass('lsfilter_visual_group')) {
+			result = this.visit_binary(node, prio);
+		} else if (node.hasClass('lsfilter_visual_match')) {
+			result = this.visit_match(node, prio);
+		}
+		if (node.hasClass('lsfilter_visual_not'))
+			result = "not (" + result + ")";
+		return result;
+	},
+
+	/**
+	 * Visit all children nodes, either direct or indirect, with class
+	 * lsfilter_visual_node. Might be nodes between visited node and root, but
+	 * never a node with class lsfilter_visual_node.
+	 */
+	visit_children : function(root, prio) {
 		var self = this;
-		var result = $.map(nodes, function(elem, idx)
-		{
-			return self.visit(elem, prio);
+		var result = [];
+		root.children().each(function() {
+			if ($(this).hasClass('lsfilter_visual_node')) {
+				result.push(self.visit($(this), prio));
+			} else {
+				result = result.concat(self.visit_children($(this), prio));
+			}
 		});
 		return result;
 	},
-	visit_query: function(node, prio)
-	{
-		var table = node.find('.lsfilter-table-select').val();
-		return "[" + table + "] "
-				+ this.visit(node.children('.lsfilter-query-expr').children());
-	},
-	visit_binary: function(op, op_prio, nodes, prio)
-	{
-		if (nodes.length == 1) { return this.visit_all(nodes, prio).join(); }
-		var result = this.visit_all(nodes, op_prio).join(op);
-		if (prio > op_prio) {
-			result = "(" + result + ")";
+	visit_query : function(node, prio) {
+		var table = node.find('.lsfilter_visual_table_select').val();
+		var subq = this.visit_children(node, prio);
+		if (subq.length != 1) {
+			return "";
 		}
-		return result;
+		return "[" + table + "] " + subq[0];
+	},
+	visit_binary : function(node, prio) {
+		var op = node.attr('data-op');
+		var op_prio = this.op_prio[op];
+
+		var result = this.visit_children(node, op_prio);
+
+		if (prio > op_prio && result.length > 1) {
+			return "(" + result.join(" " + op + " ") + ")";
+		} else if (result.length == 0) {
+			if (op == "and") {
+				return "all";
+			} else {
+				return "not all";
+			}
+		}
+		return result.join(" " + op + " ");
 
 	},
-	visit_comp: function(node, prio)
-	{
-		var field = node.find('.lsfilter-field-select').val();
-		var op = node.find('.lsfilter-operator-select').val();
-		var value_el = node.find('.lsfilter-value-field');
+	visit_match : function(node, prio) {
+		var field_el = node.find('.lsfilter_visual_field_select');
+		var field = field_el.val();
+
+		var opt = field_el.children().filter(function(i) {
+			return $(this).attr('value') == field;
+		}).last();
+		var type = opt.attr('data-type').split(';');
+
+		var op = node.find('.lsfilter_visual_operator_select').val();
+		var op_query = this.operators[op];
+
+		var value_el = node.find('.lsfilter_visual_value_field');
 		var value = value_el.val();
-		if (value_el.hasClass('lsfilter-type-int')) {
+
+		if (type[0] == 'int') {
 			value = parseInt(value);
-		}
-		else if (value_el.hasClass('lsfilter-type-float')) {
+			if (isNaN(value))
+				value = 0;
+		} else if (type[0] == 'float') {
 			value = parseFloat(value);
-		}
-		else {
+		} else {
 			value = '"' + value.replace(/([\\"'])/g, "\\$1") + '"';
 		}
 
-		if (field == 'this') field = "";
-		if (op == 'all') return 'all';
-		return field + " " + op + " " + value;
+		if (field == 'this')
+			field = "";
+		else
+			field = field + " ";
+
+		if (op == 'all')
+			return 'all';
+
+		return field + op_query + " " + value;
 	}
 };
 
@@ -395,80 +397,159 @@ var lsfilter_dom_to_query = {
  ******************************************************************************/
 var lsfilter_visual = {
 
-	update: function(data)
-	{
-		if (data.source == 'visual') return;
+	update : function(data) {
+		if (data.source == 'visual')
+			return;
 		var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
 		try {
 			var ast = parser.parse(data.query);
 			ast = lsfilter_extra_andor.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
-		}
-		catch (ex) {
+		} catch (ex) {
 			console.log(ex.stack);
 			console.log(data.query);
 		}
 	},
-	init: function()
-	{
+	init : function() {
+		var onnode = function(fnc) {
+			return function(e) {
+				e.preventDefault();
+				fnc($(this).closest('.lsfilter_visual_node'), $(this));
+
+				/* Make sure that there always exist a top node */
+				lsfilter_visual.validate_top_integrity();
+
+				/* Something changed. Trigger an update */
+				lsfilter_visual.update_query_delayed();
+				return false;
+			};
+		};
+
+		$('#filter_visual')
+
+		.on('click', '.lsfilter_visual_node_addrule', onnode(function(n, el) {
+			var marker = n.children('.lsfilter_visual_newmarker');
+			var newobj = lsfilter_graphics_visitor.visit({
+				'obj' : 'match',
+				'field' : 'this',
+				'value' : '',
+				'op' : 'all'
+			});
+			marker.before(newobj);
+		}))
+
+		.on('click', '.lsfilter_visual_node_addgroup', onnode(function(n, el) {
+			var marker = n.children('.lsfilter_visual_newmarker');
+			var op = n.attr('data-op');
+			var cmplop = (op == 'and') ? ('or') : ('and');
+			var newobj = lsfilter_graphics_visitor.visit({
+				obj : cmplop,
+				sub : []
+			});
+			marker.before(newobj);
+		}))
+
+		.on('click', '.lsfilter_visual_node_remove', onnode(function(n, el) {
+			/* Never remove outermost group */
+			if (n.closest('.lsfilter_visual_node')) {
+				n.remove();
+			}
+		}))
+
+		.on('click', '.lsfilter_visual_node_negate', onnode(function(n, el) {
+			n.toggleClass('lsfilter_visual_not');
+		}))
+
+		.on('change', '.lsfilter_visual_field_select', onnode(function(n, el) {
+			var opt = el.children().filter(function(i) {
+				return $(this).attr('value') == el.val();
+			}).last();
+			var type = opt.attr('data-type').split(';');
+			var opselect = n.find('.lsfilter_visual_operator_select');
+			if (type)
+				lsfilter_graphics_visitor.fill_operator_select(opselect, type);
+		}))
+
+		.on('change', '.lsfilter_visual_operator_select',
+				onnode(function(n, el) {
+					/* Well... don't do anything here. onnode does what's needed */
+				}))
+
+		.on('change', '.lsfilter_visual_value_field', onnode(function(n, el) {
+			/* Well... don't do anything here. onnode does what's needed */
+		}))
+
+		.on('change', '.lsfilter_visual_table_select', function(e) {
+			e.preventDefault();
+			var n = $(this);
+			var table = n.val();
+
+			var ast = {
+				'obj' : 'query',
+				'table' : table,
+				'query' : {
+					'obj' : 'match',
+					'field' : 'this',
+					'value' : '',
+					'op' : 'all'
+				}
+			};
+			ast = lsfilter_extra_andor.visit(ast);
+			var result = lsfilter_graphics_visitor.visit(ast);
+			$('#filter_visual').empty().append(result);
+
+			lsfilter_visual.update_query_delayed();
+			return false;
+		});
 	},
 
-	fields: null,
+	fields : null,
 
-	update_query: function()
-	{
-		var query = lsfilter_dom_to_query.visit($('#filter_visual').children(),
-				0);
+	update_query : function() {
+		var query = lsfilter_dom_to_query.visit($('#filter_visual'), 0);
+
 		lsfilter_main.update(query, 'visual', false);
 	},
 
-	update_query_delayed: function()
-	{
+	update_query_delayed : function() {
 		this.update_query();
 	},
 
 	/* Validate that there exist at least one top object */
-	validate_top_integrity: function()
-	{
-		if ($('#filter_visual').find('.lsfilter-query-expr').length === 0) {
-			$('#filter_visual').find('.lsfilter-query').append(
-					$('<li class="lsfilter-expr lsfilter-query-expr" />')
-							.append(lsfilter_graphics_visitor.visit({
-								obj: 'or',
-								sub: [ {
-									obj: 'and',
-									sub: [ {
-										obj: 'match',
-										op: 'all',
-										value: ''
-									} ]
-								} ]
-							})));
+	validate_top_integrity : function() {
+		if ($('#filter_visual').children().length == 0) {
+			var ast = {
+				obj : 'and',
+				sub : []
+			};
+			var result = lsfilter_graphics_visitor.visit(ast);
+			$('#filter_visual').empty().append(result);
 		}
 	},
 
-	fields_for_table: function(table)
-	{
-		var fields = $.extend({},orm_structure[table]); /* Clone to not modify original structure */
+	fields_for_table : function(table) {
+		/* Clone to not modify original structure */
+		var fields = $.extend({}, orm_structure[table]);
+
 		var subtables = [];
 		var key;
 
 		for (key in fields) {
 			if (fields[key][0] == 'object') {
 				subtables.push({
-					field: key,
-					table: fields[key][1]
+					field : key,
+					table : fields[key][1]
 				});
 			}
 		}
 
-		for(key in subtables) {
+		for (key in subtables) {
 			var j;
 			var ref = subtables[key];
-			for( j in orm_structure[ref.table] ) {
-				if( orm_structure[ref.table][j][0] != 'object' ) {
-					fields[ref.field + '.' + j ] = orm_structure[ref.table][j];
+			for (j in orm_structure[ref.table]) {
+				if (orm_structure[ref.table][j][0] != 'object') {
+					fields[ref.field + '.' + j] = orm_structure[ref.table][j];
 				}
 			}
 		}
