@@ -29,6 +29,8 @@ class User_Controller extends Authenticated_Controller {
 		'config.show_display_name' => 'bool',
 		'config.show_notes' => 'bool',
 		'config.show_notes_chars' => 'int',
+		'config.page_refresh_rate' => 'int',
+		'config.listview_refresh_rate' => 'int',
 		'nagdefault.sticky' => 'bool',
 		'nagdefault.persistent' => 'bool',
 		'nagdefault.comment' => 'string',
@@ -126,6 +128,8 @@ class User_Controller extends Authenticated_Controller {
 		$settings['config'] = false;
 		$available_skins = ninja::get_skins();
 		$settings['config'] = array(
+			_('Global page refresh rate') => array('config.page_refresh_rate', self::$var_types['config.page_refresh_rate']),
+			_('List view refresh rate') => array('config.listview_refresh_rate', self::$var_types['config.listview_refresh_rate']),
 			_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
 		);
 
