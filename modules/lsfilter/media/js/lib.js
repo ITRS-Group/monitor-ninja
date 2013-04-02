@@ -43,7 +43,7 @@ function link(rel_url, args)
 		get_data += delim + key + "=" + encodeURIComponent(args[key]);
 		delim = "&";
 	}
-	
+
 	var el = $('<a />');
 	el.attr('href', _site_domain + _index_page + "/" + rel_url + get_data);
 	return el;
@@ -76,13 +76,13 @@ function format_interval(interval)
 {
 	if (interval < 0) return _('N/A');
 	var str = "";
-	if (interval % 60 != 0) str = (interval % 60) + "s " + str;
+	if (interval % 60 !== 0) str = (interval % 60) + "s " + str;
 	interval = Math.floor(interval / 60);
-	if (interval % 60 != 0) str = (interval % 60) + "m " + str;
+	if (interval % 60 !== 0) str = (interval % 60) + "m " + str;
 	interval = Math.floor(interval / 60);
-	if (interval % 24 != 0) str = (interval % 24) + "h " + str;
+	if (interval % 24 !== 0) str = (interval % 24) + "h " + str;
 	interval = Math.floor(interval / 24);
-	if (interval != 0) str = (interval) + "d " + str;
+	if (interval !== 0) str = (interval) + "d " + str;
 	return str;
 }
 
@@ -94,7 +94,7 @@ function comment_icon( host, service ) {
 	link_data.host = host;
 	if(service)
 		link_data.service = service;
-	
+
 	return extinfo_link(link_data)
 			.append(icon16('add-comment', _('Comments')))
 			.css('border', '0px')
@@ -148,9 +148,9 @@ function pnp_popup(elem, args)
 	for ( var key in args) {
 		get_data.push(key + "=" + encodeURIComponent(args[key].replace(/[ :\/\\]/g, "_")));
 	}
-	
+
 	var loading_img = '/application/media/images/loading.gif';
-	
+
 	$(elem).qtip(
 			{
 				content: {
@@ -206,7 +206,7 @@ jQuery.fn.update_text = function(text) {
 	} else {
 		return this.html(text);
 	}
-}
+};
 
 jQuery.fn.querylink = function(text) {
 	if( _escape_html_tags ) {
@@ -214,7 +214,7 @@ jQuery.fn.querylink = function(text) {
 	} else {
 		return this.html(text);
 	}
-}
+};
 
 
 
@@ -224,21 +224,21 @@ jQuery.fn.querylink = function(text) {
 
 function render_summary_state(ul, state, stats, substates)
 {
-	if (stats.stats[state] == 0) return;
-	
+	if (stats.stats[state] === 0) return;
+
 	var li = $('<li />').append(
 			link_query(stats.queries[state]).append(icon16('shield-' + state))
 					.append(
 							$('<span />')
 									.text(stats.stats[state] + " " + state)));
-	
+
 	var delim = ' ( ';
 	var suffix = '';
-	
+
 	for ( var tag in substates) {
 		var key = state + tag;
 		var type = substates[tag];
-		
+
 		if (stats.stats[key]) {
 			li.append(delim);
 			li.append(link_query(stats.queries[key]).text(
@@ -247,16 +247,16 @@ function render_summary_state(ul, state, stats, substates)
 			suffix = ' ) ';
 		}
 	}
-	
+
 	li.append(suffix);
-	
+
 	ul.append(li);
 }
 
 function render_service_status_summary(stats)
 {
 	var ul = $('<ul class="listview-summary" />');
-	
+
 	render_summary_state(ul, 'ok', stats, {});
 	render_summary_state(ul, 'warning', stats, {
 		'_and_ack': _('acknowledged'),
@@ -280,19 +280,19 @@ function render_service_status_summary(stats)
 		'_on_down_host': _('on down host')
 	});
 	render_summary_state(ul, 'pending', stats, {});
-	
+
 	return ul;
 }
 
 function render_host_status_summary(stats)
 {
 	var ul = $('<ul class="listview-summary" />');
-	
+
 	render_summary_state(ul, 'up', stats, {});
 	render_summary_state(ul, 'down', stats, {});
 	render_summary_state(ul, 'unreachable', stats, {});
 	render_summary_state(ul, 'pending', stats, {});
-	
+
 	return ul;
 }
 
