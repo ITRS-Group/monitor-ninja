@@ -216,6 +216,12 @@ var lsfilter_graphics_visitor = {
 		result.append($('<a class="lsfilter_visual_node_remove" />').append(
 				icon12('cross')));
 
+		
+		if( obj.op == 'all' || (obj.op == 'in' && !obj.field) ) {
+			obj.field = 'this';
+		}
+		
+
 		/* Attribute select box */
 		var attrsel = $('<select />');
 		attrsel.addClass('lsfilter_visual_field_select');
@@ -408,6 +414,7 @@ var lsfilter_visual = {
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 			this.update_depths();
+			this.update_binary_delimiters();
 		} catch (ex) {
 			console.log(ex.stack);
 			console.log(data.query);
@@ -419,13 +426,9 @@ var lsfilter_visual = {
 				e.preventDefault();
 				fnc($(this).closest('.lsfilter_visual_node'), $(this));
 
-				/* Make sure that there always exist a top node */
 				lsfilter_visual.validate_top_integrity();
-
-				/* Color nodes after depth */
 				lsfilter_visual.update_depths();
-
-				/* Something changed. Trigger an update */
+				lsfilter_visual.update_binary_delimiters();
 				lsfilter_visual.update_query_delayed();
 				return false;
 			};
@@ -526,6 +529,20 @@ var lsfilter_visual = {
 			var depth = $(this).parents('.lsfilter_visual_node').length;
 			$(this).addClass('lsfilter_visual_node_' + depth);
 		});
+	},
+
+	update_binary_delimiters : function() {
+		var do_update = function(delimiter, operator) {
+			var cls = '.lsfilter_visual_group_' + operator;
+			delimiter.addClass('lsfilter_visual_delimiter');
+			$('#filter_visual').find(cls + ' > .lsfilter_visual_node').filter(
+					function(i) {
+						return $(this).prev('.lsfilter_visual_node').length>0;
+					}).before(delimiter);
+		}
+		$('#filter_visual').find('.lsfilter_visual_delimiter').remove();
+		do_update($('<div>OR</div>'), 'or');
+		do_update($('<div>AND</div>'), 'and');
 	},
 
 	/* Validate that there exist at least one top object */
