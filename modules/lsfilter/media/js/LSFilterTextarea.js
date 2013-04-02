@@ -1,6 +1,6 @@
 var lsfilter_textarea = {
 	// Configuration
-	
+
 	// External methods
 	update: function(data)
 	{
@@ -11,7 +11,7 @@ var lsfilter_textarea = {
 	init: function()
 	{
 		var self = this; // To be able to access it from within handlers
-		
+
 		this.element = $('#filter_query');
 		this.orderelement = $('#filter_query_order');
 		this.element.bind('keyup paste cut', function(evt)
@@ -24,15 +24,15 @@ var lsfilter_textarea = {
 	{
 		var query = this.element.val();
 		var order = this.orderelement.val();
-		
+
 		this.element.css("border", "2px solid #f40"); // red
 		lsfilter_main.update(query, 'textarea', order);
 	},
-	
+
 	// Internal veriables
 	element: false,
 	orderelement: false,
-	
+
 	// Internal methods
 	handle_propertychange: function(query)
 	{
