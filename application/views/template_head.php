@@ -110,6 +110,7 @@ if (!empty($base_href)) {
 		echo html::script('application/views/js/pagination.js');
 		echo html::script('application/views/js/global_search.js');
 
+		refresh::lv_control();
 		$basepath = 'modules/lsfilter/';
 		echo html::script($basepath.'media/js/lib.js');
 		echo html::script($basepath.'media/js/LSFilterSaved.js');
