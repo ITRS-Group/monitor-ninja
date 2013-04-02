@@ -58,12 +58,7 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 
 		# check if user is an admin
-		$auth = Auth::instance();
-		if ($auth->authorized_for('host_view_all') && $auth->authorized_for('system_commands') && $auth->authorized_for('configuration_information')) {
-			$is_admin = true;
-		} else {
-			$is_admin = false;
-		}
+		$is_admin = Auth::instance()->authorized_for('host_view_all');
 		$template->is_admin = $is_admin;
 
 		$this->template->content->widgets = $this->widgets;
