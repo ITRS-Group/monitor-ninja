@@ -17,35 +17,17 @@
 	z-index: 1;
 }
 
-#filter-query-builder,#filter-query-saved,#filter-query-multi-action {
+#filter-query-builder,#filter-query-multi-action {
 	max-height: 500px;
 	overflow: auto;
 	display: none;
 	padding: 8px;
 }
 
-#filter-query-saved-filters,#filter-query-saved-preview {
-	vertical-align: top;
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-	height: 96px;
-	width: 45%;
-	overflow: auto;
-	padding: 4px;
-	border: 1px solid #bbb;
-	background: #fff;
-	*display: inline;
-}
-
 #lsfilter_save_filter.saving {
 	background: url('loading_small.gif') no-repeat;
 	background-position: left center;
 	padding-left: 22px !important;
-}
-
-#filter-query-saved-filters li a {
-	vertical-align: 50%;
 }
 
 .lsfilter-noresult {
@@ -85,10 +67,6 @@
 	cursor: pointer;
 	background: #fff;
 	background: rgba(255, 255, 255, 0.4);
-}
-
-#lsfilter-query-object {
-	width: 200px;
 }
 
 #filter_result tbody tr:hover {
@@ -279,9 +257,7 @@ tr.odd td.cell_svccnt_pending {
 /*
  * Visual filter editor
  */
- 
-.lsfilter_visual_group,
-.lsfilter_visual_match {
+.lsfilter_visual_group,.lsfilter_visual_match {
 	padding: 0;
 	margin: 1em 1em 1em 2em;
 }
@@ -309,19 +285,18 @@ tr.odd td.cell_svccnt_pending {
 	float: right;
 	border: 0;
 }
+
 .lsfilter_visual_node_remove:hover {
 	border: 0;
 }
 
-.lsfilter_visual_node_addrule,
-.lsfilter_visual_node_addgroup,
-.lsfilter_visual_node_negate {
+.lsfilter_visual_node_addrule,.lsfilter_visual_node_addgroup,.lsfilter_visual_node_negate
+	{
 	display: inline-block;
 	margin: 0 0.5em 0 0;
 }
 
-.lsfilter_visual_field_select,
-.lsfilter_visual_operator_select,
-.lsfilter_visual_value_field {
+.lsfilter_visual_field_select,.lsfilter_visual_operator_select,.lsfilter_visual_value_field
+	{
 	width: 32%;
 }
