@@ -28,7 +28,7 @@ var lsfilter_extra_andor = {
 	},
 	visit_andor : function(obj, op) {
 		var list = [];
-		var outermost = this.last_op == 'query';
+
 		for ( var i in obj.sub) {
 			var sub = this.visit(obj.sub[i], op);
 			console.log(sub);
@@ -37,8 +37,7 @@ var lsfilter_extra_andor = {
 		}
 		return {
 			'obj' : op,
-			'sub' : list,
-			'outermost' : outermost
+			'sub' : list
 		};
 	},
 	visit_match : function(obj) {
@@ -162,9 +161,8 @@ var lsfilter_graphics_visitor = {
 
 		list.append(header);
 
-		if (!obj.outermost)
-			header.append($('<a class="lsfilter_visual_node_remove" />')
-					.append(icon12('cross')));
+		header.append($('<a class="lsfilter_visual_node_remove" />').append(
+				icon12('cross')));
 		header.append($('<span />').text(_(op + " filter group")));
 
 		for ( var i in obj.sub) {
@@ -196,12 +194,10 @@ var lsfilter_graphics_visitor = {
 		link.text(_('Add or group'));
 		footer.append(link);
 
-		if (!obj.outermost) {
-			link = $('<a />');
-			link.addClass('lsfilter_visual_node_negate');
-			link.text(_('Negate group'));
-			footer.append(link);
-		}
+		link = $('<a />');
+		link.addClass('lsfilter_visual_node_negate');
+		link.text(_('Negate group'));
+		footer.append(link);
 
 		return list;
 
@@ -524,10 +520,16 @@ var lsfilter_visual = {
 
 	/* Validate that there exist at least one top object */
 	validate_top_integrity : function() {
-		if ($('#filter_visual').children().length == 0) {
+		if ($('#filter_visual').find('.lsfilter_visual_node').length == 0) {
+			var table = $('#filter_visual').find(
+					'.lsfilter_visual_table_select').val();
 			var ast = {
-				obj : 'and',
-				sub : []
+				'obj' : 'query',
+				'table' : table,
+				'query' : {
+					'obj' : 'and',
+					'sub' : []
+				}
 			};
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
