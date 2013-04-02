@@ -137,9 +137,9 @@ class op5Livestatus {
 			'contacts'      => array('contact_view_all'),
 			'downtime'      => array('host_view_all','service_view_all'),
 			'hosts'         => array('host_view_all'),
-			'hostgroups'    => array('hostgroups_view_all'),
+			'hostgroups'    => array('hostgroup_view_all'),
 			'services'      => array('service_view_all'),
-			'servicegroups' => array('serviegroups_view_all'),
+			'servicegroups' => array('servicegroup_view_all'),
 			'status'        => array('system_information'),
 			'timeperiods'   => array('timeperiods_view_all')
 			);
