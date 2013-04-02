@@ -101,7 +101,7 @@ class op5Livestatus {
 		$len     = intval(trim(substr($head, 4, 15)));
 		$body    = $this->connection->readSocket($len);
 		if(empty($body))
-			throw new op5LivestatusException("empty body for query", $query);
+			throw new op5LivestatusException("Invalid query, livestatus response was empty", $query);
 		if($status != 200)
 			throw new op5LivestatusException(trim($body), $query);
 		
