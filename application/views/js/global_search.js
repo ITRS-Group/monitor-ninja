@@ -20,7 +20,7 @@ $(document).ready(function() {
 	});
 
 	$('#query').blur(function() {
-		if (current_interval == 0 && search_old_refresh != 0) {
+		if (current_interval === 0 && search_old_refresh !== 0) {
 			current_interval = search_old_refresh;
 			ninja_refresh(current_interval);
 			$("#ninja_refresh_control").attr('checked', false);
