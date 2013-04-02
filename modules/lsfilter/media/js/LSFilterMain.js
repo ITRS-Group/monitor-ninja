@@ -1,6 +1,7 @@
 var lsfilter_storage = {};
 
 var lsfilter_main = {
+
 	update_delay : 300,
 
 	/***************************************************************************
@@ -87,6 +88,7 @@ var lsfilter_main = {
 		lsfilter_history.init();
 
 		lsfilter_storage.list = new lsfilter_list({
+			autorefresh_delay : lv_refresh_delay,
 			table : $('#filter_result'),
 			totals : $('#filter_result_totals'),
 			attach_head : true,
@@ -129,8 +131,7 @@ var lsfilter_main = {
 	update_page_links : function() {
 		var self = this; // To be able to access it from within handlers
 		$(
-				'a[href^="' + _site_domain + _index_page + '/'
-						+ _controller_name + '"]').click(function(evt) {
+				'a[href^="' + _site_domain + _index_page + '/' + _controller_name + '"]').click(function(evt) {
 			var href = $(this).attr('href');
 			var args = self.parseParams(href);
 			if (args.q) {
