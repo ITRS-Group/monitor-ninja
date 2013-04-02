@@ -186,7 +186,14 @@ var lsfilter_graphics_visitor = {
 
 		link = $('<a />');
 		link.addClass('lsfilter_visual_node_addgroup');
-		link.text(_('Add ' + cmplop + ' group'));
+		link.attr('data-op', 'and');
+		link.text(_('Add and group'));
+		footer.append(link);
+
+		link = $('<a />');
+		link.addClass('lsfilter_visual_node_addgroup');
+		link.attr('data-op', 'or');
+		link.text(_('Add or group'));
 		footer.append(link);
 
 		if (!obj.outermost) {
@@ -441,10 +448,9 @@ var lsfilter_visual = {
 
 		.on('click', '.lsfilter_visual_node_addgroup', onnode(function(n, el) {
 			var marker = n.children('.lsfilter_visual_newmarker');
-			var op = n.attr('data-op');
-			var cmplop = (op == 'and') ? ('or') : ('and');
+			var op = el.attr('data-op');
 			var newobj = lsfilter_graphics_visitor.visit({
-				obj : cmplop,
+				obj : op,
 				sub : []
 			});
 			marker.before(newobj);
