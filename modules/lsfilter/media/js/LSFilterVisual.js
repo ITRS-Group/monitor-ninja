@@ -103,10 +103,8 @@ var lsfilter_graphics_visitor = {
 		"list" : {
 			'gt_eq' : 'contains'
 		},
-		"dict" : { /*
-					 * FIXME: This is ugly... better grammar for
-					 * custom_variables
-					 */
+		/* FIXME: This is ugly... better grammar for custom_variables */
+		"dict" : {
 			'not_re_ci' : 'not matching regexp, case insensitive',
 			'not_re_cs' : 'not matching regexp',
 			're_ci' : 'matching regexp, case insensitive',
@@ -409,6 +407,7 @@ var lsfilter_visual = {
 			ast = lsfilter_extra_andor.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
+			this.update_depths();
 		} catch (ex) {
 			console.log(ex.stack);
 			console.log(data.query);
@@ -422,6 +421,9 @@ var lsfilter_visual = {
 
 				/* Make sure that there always exist a top node */
 				lsfilter_visual.validate_top_integrity();
+
+				/* Color nodes after depth */
+				lsfilter_visual.update_depths();
 
 				/* Something changed. Trigger an update */
 				lsfilter_visual.update_query_delayed();
@@ -516,6 +518,14 @@ var lsfilter_visual = {
 
 	update_query_delayed : function() {
 		this.update_query();
+	},
+
+	/* Color nodes after depth */
+	update_depths : function() {
+		$('#filter_visual').find('.lsfilter_visual_node').each(function() {
+			var depth = $(this).parents('.lsfilter_visual_node').length;
+			$(this).addClass('lsfilter_visual_node_' + depth);
+		});
 	},
 
 	/* Validate that there exist at least one top object */
