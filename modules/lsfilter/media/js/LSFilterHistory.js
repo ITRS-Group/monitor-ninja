@@ -6,7 +6,7 @@ var lsfilter_history = {
 		 * function
 		 */
 	},
-	
+
 	update_pushstate: function(data)
 	{
 		if (data.source == 'history') return;
@@ -14,16 +14,15 @@ var lsfilter_history = {
 		if (data.order) {
 			order_query = '&s=' + encodeURIComponent(data.order);
 		}
-		window.history.pushState(data, window.title, '?q='
-				+ encodeURIComponent(data.query) + order_query);
+		window.history.pushState(data, window.title, '?q=' + encodeURIComponent(data.query) + order_query);
 	},
-	
+
 	init: function()
 	{
 		if (window.history.pushState) {
 			/* Set update function to pushstate */
 			this.update = this.update_pushstate;
-			
+
 			window.onpopstate = function(evt)
 			{
 				if (evt.state && evt.state.query) {
@@ -31,14 +30,10 @@ var lsfilter_history = {
 					if (!order) order = '';
 					lsfilter_main.update(evt.state.query, 'history', order);
 				}
-				else {
-					console.log('think about the history');
-					console.log(evt);
-				}
-			}
+			};
 		}
 		else {
 			/* Do update of regular link in toolbar (TODO) */
 		}
 	}
-}
+};
