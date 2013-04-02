@@ -11,6 +11,10 @@ class csv_Core
 	 * This is trickier than it should be, due to IE
 	 */
 	public static function csv_http_headers($type, $options) {
+		if (headers_sent()) {
+			// gosh darnit, now I can't do anything. Oh well...
+			return;
+		}
 		$filename = $type . '.csv';
 		if ($options['schedule_id']) {
 			$schedule_info = Scheduled_reports_Model::get_scheduled_data($options['schedule_id']);
