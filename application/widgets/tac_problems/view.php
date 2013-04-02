@@ -12,7 +12,7 @@
 				<?php
 					echo html::anchor($problem[$i]['url'],$problem[$i]['title']);
 					if ($problem[$i]['no'] > 0)
-						echo ' / '.html::anchor($problem[$i]['onhost'],$problem[$i]['title2']);
+						echo ' + '.html::anchor($problem[$i]['onhost'],$problem[$i]['title2']);
 				?>
 			</td>
 		</tr>
