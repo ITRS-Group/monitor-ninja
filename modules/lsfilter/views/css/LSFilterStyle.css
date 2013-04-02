@@ -271,7 +271,8 @@ tr.odd td.cell_svccnt_pending {
 }
 
 .lsfilter_visual_not {
-	margin-left: 3em;
+	border-left: 0.5em solid #cc0000;
+	padding-left: 0.5em;
 }
 
 .lsfilter_visual_group_header {
