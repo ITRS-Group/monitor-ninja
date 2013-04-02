@@ -1,8 +1,8 @@
 function lsfilter_list_attach_events( listview, base_element ) {
-	
+
 	/* link_query, from lists */
 	$(base_element)
-	
+
 	.on('click', '.query_link', function(e) {
 		var query = $(this).attr('data-query');
 		if( lsfilter_main ) {
@@ -11,7 +11,7 @@ function lsfilter_list_attach_events( listview, base_element ) {
 			return false;
 		}
 	})
-	
+
 	.on('click', 'a.link_ajax_refresh', function(e) {
 		e.preventDefault();
 		var url = $(this).attr('href');
@@ -23,27 +23,27 @@ function lsfilter_list_attach_events( listview, base_element ) {
 		});
 		return false;
 	})
-	
+
 	.on('click', '.link_set_sort', function(e) {
 		e.preventDefault();
 		var column = $(this).attr('data-column');
 		listview.set_sort(column);
 		return false;
 	})
-	
+
 	.on('click', '.link_load_more_rows', function(e) {
 		e.preventDefault();
 		listview.load_more_rows($(this));
 		return false;
 	})
-	
+
 	.on('change', '.listview_multiselect_checkbox', function(e) {
 		var tgt = $(this);
 		if( lsfilter_multiselect ) {
 			lsfilter_multiselect.box_register(tgt.attr('value'), tgt.prop('checked'));
 		}
 		var tr = tgt.closest('tr');
-		var classname = ""
+		var classname = "";
 		if (tr.hasClass('odd'))
 			classname = 'selected_odd';
 		else
@@ -55,7 +55,7 @@ function lsfilter_list_attach_events( listview, base_element ) {
 			tr.removeClass(classname);
 		}
 	})
-	
+
 	.on('change', '.listview_multiselect_checkbox_all', function(e) {
 		listview.config.table.find('.listview_multiselect_checkbox').prop('checked', $(this).prop('checked')).trigger('change');
 	});
