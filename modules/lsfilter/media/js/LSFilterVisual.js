@@ -6,11 +6,45 @@ var lsfilter_visual_ast_preproc = {
 	visit_query : function(obj) {
 		var query = obj.query;
 
-		/* If the outermost query isn't an and statement, enfore it */
 		if (query.obj != 'and') {
+			/* If the outermost query isn't an and statement, enfore it */
 			query = {
 				'obj' : 'and',
 				'sub' : [ query ]
+			};
+		} else {
+			/*
+			 * If it is an and statement, we want to wrap all
+			 * non-group-statements in an and-clause, so it won't become a huge
+			 * amount of and-clauses later. To make it easier to look at, keep
+			 * the order, and just group following clauses
+			 */
+
+			var clauses = [];
+			var current_and = false;
+			for ( var i in query.sub) {
+				var nextobj = query.sub[i];
+				while (nextobj.obj == 'not') {
+					nextobj = nextobj.sub;
+				}
+				if (nextobj.obj != 'and' && nextobj.obj != 'or') {
+					if (current_and) {
+						current_and.push(query.sub[i]);
+					} else {
+						current_and = [ query.sub[i] ];
+						clauses.push({
+							'obj' : 'and',
+							'sub' : current_and
+						});
+					}
+				} else {
+					current_and = false;
+					clauses.push(query.sub[i]);
+				}
+			}
+			query = {
+				'obj' : 'and',
+				'sub' : clauses
 			};
 		}
 
@@ -24,7 +58,6 @@ var lsfilter_visual_ast_preproc = {
 
 			/* Skip over not-nodes, because negated groups are still groups */
 			while (nextobj.obj == 'not') {
-				console.log('notnot');
 				nextobj = nextobj.sub;
 			}
 			if (nextobj.obj != 'and' && nextobj.obj != 'or') {
