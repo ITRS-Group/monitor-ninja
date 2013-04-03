@@ -243,7 +243,7 @@ class Reports_Model extends Model
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
 			$ls = op5Livestatus::instance();
-			$hosts = $ls->query("hosts", null, array("name"), array('auth' => false));
+			$hosts = $ls->query("hosts", null, array("name"), array('auth' => $auth->get_user()));
 			$query .= " AND (host_name IN ('".
 				implode(
 					"', '",
@@ -258,7 +258,7 @@ class Reports_Model extends Model
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(2 & $this->options["alert_types"] && !$auth->authorized_for("service_view_all")) {
 			$ls = op5Livestatus::instance();
-			$services = $ls->query("services", null, array("description"), array('auth' => false));
+			$services = $ls->query("services", null, array("description"), array('auth' => $auth->get_user()));
 			$query .= " AND (service_description IN ('".
 				implode(
 					"', '",
