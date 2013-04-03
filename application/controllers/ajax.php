@@ -10,7 +10,7 @@
  *  The information contained herein is provided AS IS with NO WARRANTY OF ANY
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
-
+ *
  */
 class Ajax_Controller extends Authenticated_Controller {
 	public function __construct()
@@ -137,7 +137,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$page = $this->input->post('page', false);
 		$setting = $this->input->post('setting', false);
 
-		if (empty($type) || empty($page) || empty($setting))
+		if (empty($type) || empty($page) || (empty($setting) && $setting != 0))
 			return false;
 		Ninja_setting_Model::save_page_setting($type, $page, $setting);
 	}
