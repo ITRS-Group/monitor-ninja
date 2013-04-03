@@ -1799,6 +1799,8 @@ class Reports_Model extends Model
 		$start = microtime(true);
 		$host_states = $this->options['host_states'];
 		$service_states = $this->options['service_states'];
+		$this->options['host_states'] = self::HOST_ALL;
+		$this->options['service_states'] = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
