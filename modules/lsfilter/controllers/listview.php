@@ -6,16 +6,16 @@
  * Display the listview container, load scripts, and handles ajax-requests
  */
 class ListView_Controller extends Authenticated_Controller {
-	
+
 	/**
 	 * Display a listview with a given query, entrypoint for listview
 	 */
 	public function index($q = "[hosts] all") {
+		$this->template->listview_refresh = true;
 		$this->xtra_js = array();
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
-		
-		
+
 		$basepath = 'modules/lsfilter/';
 
 		$this->xtra_js[] = 'index.php/manifest/js/orm_structure.js';
@@ -31,7 +31,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSColumnsParser.js';
 		$this->xtra_js[] = $basepath.'js/LSColumnsPreprocessor.js';
 		$this->xtra_js[] = $basepath.'js/LSColumnsVisitor.js';
-		
+
 /*		$this->xtra_js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
 		$this->xtra_js[] = $basepath.'media/js/LSFilterRenderer.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
@@ -70,18 +70,18 @@ class ListView_Controller extends Authenticated_Controller {
 		$lview->query = $query;
 		$lview->query_order = $query_order;
 	}
-	
+
 	/**
 	 * Fetches the users columns configuration, as a javascript.
 	 */
 	public function columns_config($tmp = false) {
-		
+
 		/* Fetch all column configs for user */
 		$columns = array();
 		foreach( Kohana::config('listview.columns') as $table => $default ) {
 			$columns[$table] = config::get('listview.columns.'.$table, '*');
 		}
-		
+
 		/* This shouldn't have a standard template */
 		$this->template = $lview = $this->add_view('listview/js');
 		$this->template->vars = array(
