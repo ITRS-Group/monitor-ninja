@@ -130,6 +130,10 @@ class report_Test extends TapUnit {
 	 * service report, one per host if it's a hostgroup report, one per
 	 * service if it's a servicegroup report.
 	 *
+	 * Unless it's a SLA, then we want one line per month always, unless it's a
+	 * multi-group-thingy, then we want one line per month and group - for the
+	 * record, I'm object to this whole specialcase-multigroup-logic.
+	 *
 	 * When a host belongs to two groups, we will print it once per group. This is
 	 * funny, but anything else becomes weird.
 	 *
@@ -142,10 +146,11 @@ class report_Test extends TapUnit {
 	 * We don't care about output, but almost anything that can go wrong will
 	 * print errors on lines, which we implicitly catch here, so we should be OK
 	 */
-	function test_csv_avail()
+	function test_csv()
 	{
-		$base_opts = array('filename' => 'test.csv', 'report_period' => 'last7days');
-		$tests = array(
+		$Avail_opts = array('filename' => 'test.csv', 'report_period' => 'last7days');
+		$Sla_opts = array('filename' => 'test.csv', 'report_period' => 'lastmonth', 'months' => array((date('n')-1) => 9));
+		$Avail_tests = array(
 			'single host' => array(
 				'obj' => array('host_name' => array('host_pending')),
 				'expected' => 2
@@ -183,17 +188,65 @@ class report_Test extends TapUnit {
 				'expected' => 111,
 			),
 		);
-		foreach ($tests as $test_name => $details) {
-			$avail = new Avail_Controller();
-			$avail->auto_render = false;
-			$option = new Avail_options();
-			$this->ok($option->set_options($base_opts), 'Setting initial options should be fine');
-			foreach ($details['obj'] as $k => $v) {
-				$this->ok($option->set($k, $v), "Setting $k for $test_name should work");
+		// @TODO: This is totally stupid and should be extended by setting report_period and months in
+		// obj below - but that becomes boring due to the current month (and thus its report period) being fluid
+		$Sla_tests = array(
+			'single host' => array(
+				'obj' => array('host_name' => array('host_pending')),
+				'expected' => 2
+			),
+			'multi host' => array(
+				'obj' => array('host_name' => array('host_pending', 'host_up')),
+				'expected' => 2
+			),
+			'single service' => array(
+				'obj' => array('service_description' => array('host_pending;service critical')),
+				'expected' => 2
+			),
+			'multi service, same host' => array(
+				'obj' => array('service_description' => array('host_pending;service critical', 'host_pending;service ok')),
+				'expected' => 2
+			),
+			'multi service, different host' => array(
+				'obj' => array('service_description' => array('host_pending;service critical', 'host_up;service ok')),
+				'expected' => 2
+			),
+			'single hostgroup with two members' => array(
+				'obj' => array('hostgroup' => array('hostgroup_acknowledged')),
+				'expected' => 2
+			),
+			'multi hostgroups' => array(
+				'obj' => array('hostgroup' => array('hostgroup_acknowledged', 'hostgroup_all')),
+				'expected' => 3
+			),
+			'single servicegroup, 88 members' => array(
+				'obj' => array('servicegroup' => array('servicegroup_pending')),
+				'expected' => 2,
+			),
+			'multi servicegroups' => array(
+				'obj' => array('servicegroup' => array('servicegroup_pending', 'servicegroup_ok')),
+				'expected' => 3,
+			),
+		);
+		foreach (array('Avail', 'Sla') as $report_type) {
+			foreach (${$report_type.'_tests'} as $test_name => $details) {
+				$ctrl_class = $report_type.'_Controller';
+				$opt_class = $report_type.'_options';
+				$ctrl = new $ctrl_class();
+				$ctrl->auto_render = false;
+				$option = new $opt_class();
+				$this->ok($option->set_options(${$report_type.'_opts'}), "Setting initial options for $report_type $test_name should be fine");
+				foreach ($details['obj'] as $k => $v) {
+					$this->ok($option->set($k, $v), "Setting $k for $report_type $test_name should work");
+				}
+				$ctrl->generate($option);
+				$out = $ctrl->template->render();
+
+				$this->ok_eq(count(explode("\n", trim($out))), $details['expected'], "Unexpected number of lines generated for $report_type $test_name, output was: $out");
+				$this->ok_id(strpos($out, '""'), false, "Expected no empty parameters for $report_type $test_name, found in $out");
+				if ($report_type != 'Sla' || $option['report_type'] != 'services') # Because that case has comma-separated host-and-description names. Obviously.
+					$this->ok_id(strpos($out, ';'), false, "Expected no semi-colons in output for $report_type $test_name, found in $out");
 			}
-			$avail->generate($option);
-			$out = $avail->template->render();
-			$this->ok_eq(count(explode("\n", trim($out))), $details['expected'], "Unexpected number of lines generated for $test_name, output was: $out");
 		}
 	}
 }

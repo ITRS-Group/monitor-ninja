@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Sla_options_Core extends Report_options {
-	public function __construct($options) {
+	public function __construct($options=false) {
 		unset($this->properties['include_trends'], $this->properties['include_trends_scaling']);
 		// Warning! months is 1-indexed
 		$this->properties['months'] = array('type' => 'array', 'default' => false);

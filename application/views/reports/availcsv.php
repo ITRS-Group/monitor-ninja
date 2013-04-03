@@ -18,9 +18,7 @@ foreach ($data_arr as $sub_report) {
 
 		$csv = false;
 		foreach ($fields as $field_name) {
-			if ($field_name == 'SERVICE_DESCRIPTION') {
-				$csv[] = '"' . ($states['HOST_NAME'] ? $states['HOST_NAME'].';'.$states[$field_name] : $states[$field_name]) . '"';
-			} else if ($field_name == 'HOST_NAME') {
+			if ($field_name == 'HOST_NAME') {
 				$csv[] = '"' . (is_array($states[$field_name]) ? implode(', ', $states[$field_name]) : $states[$field_name]) . '"';
 			} else if ($field_name == 'HOSTGROUPS' || $field_name == 'SERVICEGROUPS') {
 				$csv[] = '"' . $data['groupname'] . '"';
