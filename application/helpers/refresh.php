@@ -22,6 +22,7 @@ class refresh_Core {
 		var _refresh_key = '<?php echo $refresh_key ?>';
 		var _refresh = '<?php echo $refresh ?>';
 		$(document).ready(function() {
+			$('#ninja_page_refresh_value').val(_refresh);
 			ninja_refresh(<?php echo $refresh ?>);
 		});
 
@@ -42,10 +43,14 @@ class refresh_Core {
 		}
 		# fetch setting
 		$lv_refresh_key = 'config.listview_refresh_rate';
-		$lv_refresh = (int)config::get($lv_refresh_key, '*', true, true) * 1000;
+		$lv_refresh = (int)config::get($lv_refresh_key, '*', true, true);
 		?>
 		<script type="text/javascript">
-		lv_refresh_delay = '<?php echo $lv_refresh ?>';
+		_lv_refresh_key = '<?php echo $lv_refresh_key ?>';
+		_lv_refresh_delay = '<?php echo $lv_refresh ?>';
+		$(document).ready(function() {
+			$('#listview_refresh_value').val(_lv_refresh_delay);
+		});
 		</script>
 		<?php
 	}
