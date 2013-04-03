@@ -54,13 +54,13 @@ class op5queryhandler {
 		for ($written = 0; $written < strlen($command); $written += $len) {
 			$len = @fwrite($fp, substr($string, $written));
 			if ($len === false)
-				return "Request failed";
+				return "Request failed: couldn't write query";
 		}
 
 		$content = "";
 		while(($c = @fread($sock,1)) !== "\0"){
 			if($c === false)
-				return "Request failed";
+				return "Request failed: couldn't read response";
 			$content .= $c;
 		}
 		@fclose($sock);
