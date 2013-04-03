@@ -202,7 +202,7 @@ done
 %exclude %prefix/Makefile
 
 %files test
-%defattr(-,monitor,apache)
+%defattr(-,monitor,%daemon_group)
 %prefix/test
 %prefix/modules/test
 %prefix/Makefile
