@@ -46,20 +46,24 @@ class op5queryhandler {
 			return $this->raw_remote_call($command, $node);
 		}
 		$sock = @fsockopen('unix://'.$this->path, NULL, $errno, $errstr, $this->timeout);
-		if ($sock === false) {
-			return "Request failed";
+		if ($sock === false)
+			return "Request failed: $errstr";
+		if ($errno)
+			return "Request failed: $errstr";
+
+		for ($written = 0; $written < strlen($command); $written += $len) {
+			$len = @fwrite($fp, substr($string, $written));
+			if ($len === false)
+				return "Request failed";
 		}
-		$ret = @fwrite($sock, $command);
-		if ($ret === false) {
-			return "Request failed";
-		}
+
 		$content = "";
-		while(($c = @fread($sock,1))!==false){
-			if( $c == "\0" )
-				break;
-			$content.=$c;
+		while(($c = @fread($sock,1)) !== "\0"){
+			if($c === false)
+				return "Request failed";
+			$content .= $c;
 		}
-		fclose($sock);
+		@fclose($sock);
 		return $content;
 	}
 	
