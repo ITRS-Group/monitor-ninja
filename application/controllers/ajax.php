@@ -137,7 +137,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$page = $this->input->post('page', false);
 		$setting = $this->input->post('setting', false);
 
-		if (empty($type) || empty($page) || (empty($setting) && $setting != 0))
+		if (empty($type) || empty($page) || (empty($setting) && $setting !== "0"))
 			return false;
 		Ninja_setting_Model::save_page_setting($type, $page, $setting);
 	}
