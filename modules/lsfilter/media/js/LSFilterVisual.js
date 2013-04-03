@@ -7,12 +7,20 @@ var lsfilter_extra_andor = {
 
 	visit_query : function(obj) {
 		var query = obj.query;
+
+		/* If the outermost query isn't an and statement, enfore it */
 		if (query.obj != 'and') {
 			query = {
 				'obj' : 'and',
 				'sub' : [ query ]
 			};
 		}
+
+		/*
+		 * Make sure second level objects is group statmenets. No signle rules
+		 * should be floating around, and outermost and group isn't a real and
+		 * group
+		 */
 		for ( var i in query.sub) {
 			if (query.sub[i].obj != 'and' || query.sub[i].obj != 'or') {
 				query.sub[i] = {
@@ -21,10 +29,35 @@ var lsfilter_extra_andor = {
 				};
 			}
 		}
+
+		/*
+		 * Reduce the tree. This shouldn't remove operator levels, but just
+		 * unused operators, like stray "all" and empty groups
+		 */
+		query = this.visit(query, 'query');
+
+		/*
+		 * If everything was reduced, just create a simple empty and statment as
+		 * outermost container, to ensure a "Add * group" link exists, mark it
+		 * outermost
+		 */
+		if (!query) {
+			query = {
+				'obj' : 'and',
+				'sub' : []
+			};
+		}
+
+		/*
+		 * We now know that query root is an and statement. Mark it as
+		 * outermost, to remove headers, "Add rule" and "Negate"
+		 */
+		query.outermost = true;
+
 		return {
 			'obj' : 'query',
 			'table' : obj.table,
-			'query' : this.visit(query, 'query'),
+			'query' : query,
 		};
 	},
 
@@ -36,19 +69,18 @@ var lsfilter_extra_andor = {
 	},
 	visit_andor : function(obj, op) {
 		var list = [];
-		var outermost = this.last_op == 'query';
+
 		for ( var i in obj.sub) {
 			var sub = this.visit(obj.sub[i], op);
 
 			if (sub && !(sub.obj == 'match' && sub.op == 'all'))
 				list.push(sub);
 		}
-		if( list.length == 0 )
+		if (list.length == 0)
 			return false;
 		return {
 			'obj' : op,
-			'sub' : list,
-			'outermost' : outermost
+			'sub' : list
 		};
 	},
 	visit_match : function(obj) {
