@@ -91,6 +91,11 @@ $(document).ready(function() {
 	});
 	if ($('#ninja_refresh_edit').text()!=='') {
 		create_slider('ninja_page_refresh');
+		$('#ninja_page_refresh_slider').on('slidechange', function() {
+			var delay = parseInt($('#ninja_page_refresh_value').val(), 10);
+			$.jGrowl(sprintf(_page_refresh_msg, delay), { header: _success_header });
+			ninja_refresh(delay);
+		});
 	}
 	$('#ninja_refresh_edit').bind('click', function() {
 		if (!edit_visible) {
@@ -102,6 +107,42 @@ $(document).ready(function() {
 		}
 	});
 	// -- end refresh helper code
+
+	// listview refresh helper code
+	$("#listview_refresh_control").bind('change', function() {
+		if ($("#listview_refresh_control").attr('checked')) {
+			// save previous refresh rate
+			// to be able to restore it later
+			$('#listview_refresh_lable').css('font-weight', 'bold');
+			clearTimeout(lsfilter_storage.list.autorefresh_timer);
+			$.jGrowl(_listview_refresh_paused_msg, { header: _success_header });
+		} else {
+			// restore previous refresh rate
+			$('#listview_refresh_lable').css('font-weight', '');
+			lsfilter_storage.list.start_autorefresh_timer();
+			$.jGrowl(_listview_refresh_unpaused_msg, { header: _success_header });
+		}
+	});
+	if ($('#listview_refresh_edit').text()!=='') {
+		create_slider('listview_refresh');
+		$('#listview_refresh_slider').on('slidechange', function() {
+			var delay = parseInt($('#listview_refresh_value').val(), 10);
+			$.jGrowl(sprintf(_listview_refresh_msg, delay), { header: _success_header });
+			clearTimeout(lsfilter_storage.list.autorefresh_timer);
+			lsfilter_storage.list.config.autorefresh_delay = delay * 1000;
+			lsfilter_storage.list.start_autorefresh_timer();
+		});
+	}
+	$('#listview_refresh_edit').bind('click', function() {
+		if (!edit_visible) {
+			$('#listview_refresh_slider').show();
+			edit_visible = 1;
+		} else {
+			$('#listview_refresh_slider').hide();
+			edit_visible = 0;
+		}
+	});
+	// -- end listview refresh helper code
 
 	// ==========================
 	// check menu section status
@@ -937,8 +978,11 @@ function multi_action_select(action, type)
 function create_slider(the_id)
 {
 	var last_update_request = false;
+	var id = $('#' + the_id + '_value');
+	var key = id.data('key');
+	var interval = id.val();
 	$("#" + the_id + "_slider").slider({
-		value: current_interval,
+		value: interval,
 		min: 0,
 		max: 500,
 		step: 10,
@@ -946,7 +990,7 @@ function create_slider(the_id)
 			$("#" + the_id + "_value").val(ui.value);
 		},
 		stop: function(event, ui) {
-			current_interval = ui.value;
+			interval = ui.value;
 			if(last_update_request !== false) {
 				last_update_request.abort();
 			}
@@ -955,24 +999,19 @@ function create_slider(the_id)
 				{
 					data: {
 						page: '*',
-						setting: current_interval,
-						type: _refresh_key
+						setting: interval,
+						type: key
 					},
 					complete: function() {
-						$.jGrowl(sprintf(_page_refresh_msg, current_interval), { header: _success_header });
 						last_update_request = false;
-						// set slider position according to current_interval
-						$("#" + the_id + "_slider").slider("value", current_interval);
-						$('input[name=' + the_id + '_value]').val(current_interval);
+						id.val(interval);
 					},
 					type: 'POST'
 				}
 			);
-			ninja_refresh(ui.value);
 		}
 	});
-	$("#" + the_id + "_value").val($("#" + the_id + "_slider").slider("value"));
-
+	id.val($("#" + the_id + "_slider").slider("value"));
 }
 
 function ninja_refresh(val)
