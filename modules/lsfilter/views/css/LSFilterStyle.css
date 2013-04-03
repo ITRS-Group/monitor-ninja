@@ -103,6 +103,7 @@ th span.header-icon {
 	border-bottom: 1px solid #aaa;
 	padding-bottom: 0;
 	padding-right: 0;
+	white-space: nowrap;
 }
 
 .lsfilter-sort-span {
