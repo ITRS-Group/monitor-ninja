@@ -17,8 +17,11 @@ function lsfilter_list(config)
 	};
 	this.config = $.extend({}, this.defaults, config);
 
-	// A delay of 0 means that refresh is disabled.
-	if (isNaN(this.config.autorefresh_delay) || this.config.autorefresh_delay < 1) {
+	if (isNaN(this.config.autorefresh_delay)) {
+		// Invalid autorefresh_delay defaults to 30 seconds
+		this.config.autorefresh_delay = 30000;
+	} else if (this.config.autorefresh_delay === 0) {
+		// A delay of 0 means that refresh is disabled.
 		this.config.autorefresh_enabled = false;
 	}
 
