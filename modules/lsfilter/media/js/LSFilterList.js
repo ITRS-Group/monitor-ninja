@@ -437,8 +437,6 @@ function lsfilter_list(config)
 			this.current_columns.push(col_render.cell);
 
 			var th = $('<th />');
-			// .attr('id', listview_table_col_name(col_render.header));
-			th.append(col_render.header);
 
 			if (col_render.sort) {
 				var sort_dir = 0;
@@ -446,6 +444,8 @@ function lsfilter_list(config)
 				if (sort_asc) sort_dir = -sort_dir;
 				this.add_sort(data.table, th, col_name, sort_dir);
 			}
+
+			th.append(col_render.header);
 			header.append(th);
 		}
 		thead.append(header);
