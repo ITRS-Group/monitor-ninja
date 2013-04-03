@@ -52,7 +52,7 @@ class op5queryhandler {
 			return "Request failed: $errstr";
 
 		for ($written = 0; $written < strlen($command); $written += $len) {
-			$len = @fwrite($fp, substr($string, $written));
+			$len = @fwrite($sock, substr($command, $written));
 			if ($len === false)
 				return "Request failed: couldn't write query";
 		}
