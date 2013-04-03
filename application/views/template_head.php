@@ -45,6 +45,7 @@ if (!empty($base_href)) {
 			var _widget_settings_error = '<?php echo _('Unable to fetch setting for widget %s'); ?>';
 			var _widget_notfound_error = '<?php echo _('Unable to find widget %s'); ?>';
 			var _page_refresh_msg = '<?php echo _('Updated page refresh rate to %s seconds'); ?>';
+			var _listview_refresh_msg = '<?php echo _('Updated list view refresh rate to %s seconds'); ?>';
 			var _settings_msg = '<?php echo _('The settings were updated'); ?>';
 			var _success_header = '<?php echo _('Success'); ?>';
 			var _error_header = '<?php echo _('ERROR'); ?>';
@@ -54,6 +55,8 @@ if (!empty($base_href)) {
 			var _wait_str='<?php echo _('Please wait') ?>';
 			var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 			var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
+			var _listview_refresh_paused_msg='<?php echo _('List view refresh has been paused.') ?>';
+			var _listview_refresh_unpaused_msg='<?php echo _('List view refresh has been restored.') ?>';
 			var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
 			var _search_string_field = '<?php echo _('Search string') ?>';
 			var _search_remove_confirm = '<?php echo _('Are you sure that you wish to remove this saved search?') ?>';
