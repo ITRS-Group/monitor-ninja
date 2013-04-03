@@ -2,9 +2,7 @@
  * Visitor to add extra and/or blocks around innermost objects so all objects is
  * expandable
  ******************************************************************************/
-var lsfilter_extra_andor = {
-	last_op : false,
-
+var lsfilter_visual_ast_preproc = {
 	visit_query : function(obj) {
 		var query = obj.query;
 
@@ -17,12 +15,19 @@ var lsfilter_extra_andor = {
 		}
 
 		/*
-		 * Make sure second level objects is group statmenets. No signle rules
+		 * Make sure second level objects is group statmenets. No single rules
 		 * should be floating around, and outermost and group isn't a real and
 		 * group
 		 */
 		for ( var i in query.sub) {
-			if (query.sub[i].obj != 'and' || query.sub[i].obj != 'or') {
+			var nextobj = query.sub[i];
+
+			/* Skip over not-nodes, because negated groups are still groups */
+			while (nextobj.obj == 'not') {
+				console.log('notnot');
+				nextobj = nextobj.sub;
+			}
+			if (nextobj.obj != 'and' && nextobj.obj != 'or') {
 				query.sub[i] = {
 					'obj' : 'and',
 					'sub' : [ query.sub[i] ]
@@ -62,16 +67,10 @@ var lsfilter_extra_andor = {
 	},
 
 	visit_and : function(obj) {
-		return this.visit_andor(obj, 'and');
-	},
-	visit_or : function(obj) {
-		return this.visit_andor(obj, 'or');
-	},
-	visit_andor : function(obj, op) {
 		var list = [];
 
 		for ( var i in obj.sub) {
-			var sub = this.visit(obj.sub[i], op);
+			var sub = this.visit(obj.sub[i]);
 
 			if (sub && !(sub.obj == 'match' && sub.op == 'all'))
 				list.push(sub);
@@ -79,9 +78,29 @@ var lsfilter_extra_andor = {
 		if (list.length == 0)
 			return false;
 		return {
-			'obj' : op,
+			'obj' : 'and',
 			'sub' : list
 		};
+	},
+	visit_or : function(obj) {
+		var list = [];
+
+		for ( var i in obj.sub) {
+			var sub = this.visit(obj.sub[i]);
+			if (sub)
+				list.push(sub);
+		}
+		if (list.length == 0)
+			return {
+				'obj' : 'match',
+				'op' : 'all',
+				'value' : ''
+			};
+		return {
+			'obj' : 'or',
+			'sub' : list
+		};
+		return this.visit_andor(obj, 'or');
 	},
 	visit_match : function(obj) {
 		return obj;
@@ -93,8 +112,7 @@ var lsfilter_extra_andor = {
 		};
 	},
 
-	visit : function(obj, last_op) {
-		this.last_op = last_op;
+	visit : function(obj) {
 		return LSFilterASTVisit(obj, this);
 	}
 };
@@ -463,7 +481,7 @@ var lsfilter_visual = {
 		var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
 		try {
 			var ast = parser.parse(data.query);
-			ast = lsfilter_extra_andor.visit(ast);
+			ast = lsfilter_visual_ast_preproc.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 			this.update_depths();
@@ -555,7 +573,7 @@ var lsfilter_visual = {
 					'op' : 'all'
 				}
 			};
-			ast = lsfilter_extra_andor.visit(ast);
+			ast = lsfilter_visual_ast_preproc.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 
@@ -613,7 +631,7 @@ var lsfilter_visual = {
 					'sub' : []
 				}
 			};
-			ast = lsfilter_extra_andor.visit(ast);
+			ast = lsfilter_visual_ast_preproc.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 		}
