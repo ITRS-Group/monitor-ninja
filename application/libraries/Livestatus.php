@@ -724,7 +724,7 @@ class LivestatusBackend {
 			$filter .= "Limit: ".$options['limit']."\n";
 		}
 		
-		list($columns, $objects, $count) = $ls->query($table, $filter, $columns);
+		list($columns, $objects, $count) = $ls->query($table, $filter, $columns, $options);
 		return array($objects,$count);
 	}
 	
