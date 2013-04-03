@@ -70,7 +70,9 @@ class op5Livestatus {
 		$query .= "OutputFormat: wrapped_json\n";
 		$query .= "KeepAlive: on\n";
 		$query .= "ResponseHeader: fixed16\n";
-		if( !isset($options['auth']) || $options['auth'] != false ) {
+		if(isset($options['auth']) && $options['auth'] instanceof op5User) {
+			$query .= $this->auth($table, $options['auth']);
+		} else if( !isset($options['auth']) || $options['auth'] != false ) {
 			$query .= $this->auth($table);
 		}
 		
@@ -128,8 +130,10 @@ class op5Livestatus {
 		return array($columns,$objects,$count);
 	}
 	
-	private function auth($table) {
-		$user = op5auth::instance()->get_user();
+	private function auth($table, op5User $user = null) {
+		if(!$user) {
+			$user = op5auth::instance()->get_user();
+		}
 		/* If table is defined, attach AuthUser, unless any of the permissions in the array is avalible for the user */
 		$table_permissions = array(
 			'commands'      => array('command_view_all'),
