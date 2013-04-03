@@ -129,6 +129,11 @@ $(document).ready(function() {
 			var delay = parseInt($('#listview_refresh_value').val(), 10);
 			$.jGrowl(sprintf(_listview_refresh_msg, delay), { header: _success_header });
 			clearTimeout(lsfilter_storage.list.autorefresh_timer);
+			if (delay > 0) {
+				lsfilter_storage.list.config.autorefresh_enabled = true;
+			} else {
+				lsfilter_storage.list.config.autorefresh_enabled = false;
+			}
 			lsfilter_storage.list.config.autorefresh_delay = delay * 1000;
 			lsfilter_storage.list.start_autorefresh_timer();
 		});
