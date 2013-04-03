@@ -257,6 +257,12 @@ var lsfilter_graphics_visitor = {
 		valueinp.val(obj.value);
 		result.append(valueinp);
 
+
+		var link = $('<a />');
+		link.addClass('lsfilter_visual_node_negate');
+		link.text(_('Negate'));
+		result.append(link);
+
 		return result;
 	},
 
