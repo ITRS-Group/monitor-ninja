@@ -88,7 +88,7 @@ var lsfilter_main = {
 		lsfilter_history.init();
 
 		lsfilter_storage.list = new lsfilter_list({
-			autorefresh_delay : lv_refresh_delay,
+			autorefresh_delay : _lv_refresh_delay * 1000,
 			table : $('#filter_result'),
 			totals : $('#filter_result_totals'),
 			attach_head : true,
