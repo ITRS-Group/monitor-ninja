@@ -13,6 +13,14 @@ var lsfilter_extra_andor = {
 				'sub' : [ query ]
 			};
 		}
+		for ( var i in query.sub) {
+			if (query.sub[i].obj != 'and' || query.sub[i].obj != 'or') {
+				query.sub[i] = {
+					'obj' : 'and',
+					'sub' : [ query.sub[i] ]
+				};
+			}
+		}
 		return {
 			'obj' : 'query',
 			'table' : obj.table,
@@ -28,16 +36,19 @@ var lsfilter_extra_andor = {
 	},
 	visit_andor : function(obj, op) {
 		var list = [];
-
+		var outermost = this.last_op == 'query';
 		for ( var i in obj.sub) {
 			var sub = this.visit(obj.sub[i], op);
-			console.log(sub);
-			if (!(sub.obj == 'match' && sub.op == 'all'))
+
+			if (sub && !(sub.obj == 'match' && sub.op == 'all'))
 				list.push(sub);
 		}
+		if( list.length == 0 )
+			return false;
 		return {
 			'obj' : op,
-			'sub' : list
+			'sub' : list,
+			'outermost' : outermost
 		};
 	},
 	visit_match : function(obj) {
@@ -159,9 +170,12 @@ var lsfilter_graphics_visitor = {
 
 		list.append(header);
 
-		header.append($('<a class="lsfilter_visual_node_remove" />').append(
-				icon12('cross')));
-		header.append($('<span />').text(_(op + " filter group")));
+		if (!obj.outermost) {
+			header.append($('<a class="lsfilter_visual_node_remove" />')
+					.append(icon12('cross')));
+
+			header.append($('<span />').text(_(op + " filter group")));
+		}
 
 		for ( var i in obj.sub) {
 			list.append(this.visit(obj.sub[i]));
@@ -175,10 +189,12 @@ var lsfilter_graphics_visitor = {
 
 		var link;
 
-		link = $('<a />');
-		link.addClass('lsfilter_visual_node_addrule');
-		link.text(_('Add rule'));
-		footer.append(link);
+		if (!obj.outermost) {
+			link = $('<a />');
+			link.addClass('lsfilter_visual_node_addrule');
+			link.text(_('Add rule'));
+			footer.append(link);
+		}
 
 		link = $('<a />');
 		link.addClass('lsfilter_visual_node_addgroup');
@@ -192,10 +208,12 @@ var lsfilter_graphics_visitor = {
 		link.text(_('Add or group'));
 		footer.append(link);
 
-		link = $('<a />');
-		link.addClass('lsfilter_visual_node_negate');
-		link.text(_('Negate group'));
-		footer.append(link);
+		if (!obj.outermost) {
+			link = $('<a />');
+			link.addClass('lsfilter_visual_node_negate');
+			link.text(_('Negate group'));
+			footer.append(link);
+		}
 
 		return list;
 
@@ -216,11 +234,9 @@ var lsfilter_graphics_visitor = {
 		result.append($('<a class="lsfilter_visual_node_remove" />').append(
 				icon12('cross')));
 
-		
-		if( obj.op == 'all' || (obj.op == 'in' && !obj.field) ) {
+		if (obj.op == 'all' || (obj.op == 'in' && !obj.field)) {
 			obj.field = 'this';
 		}
-		
 
 		/* Attribute select box */
 		var attrsel = $('<select />');
@@ -256,7 +272,6 @@ var lsfilter_graphics_visitor = {
 		valueinp.addClass('lsfilter_visual_value_field');
 		valueinp.val(obj.value);
 		result.append(valueinp);
-
 
 		var link = $('<a />');
 		link.addClass('lsfilter_visual_node_negate');
@@ -541,10 +556,12 @@ var lsfilter_visual = {
 		var do_update = function(delimiter, operator) {
 			var cls = '.lsfilter_visual_group_' + operator;
 			delimiter.addClass('lsfilter_visual_delimiter');
-			$('#filter_visual').find(cls + ' > .lsfilter_visual_node').filter(
-					function(i) {
-						return $(this).prev('.lsfilter_visual_node').length>0;
-					}).before(delimiter);
+			$('#filter_visual')
+					.find(cls + ' > .lsfilter_visual_node')
+					.filter(
+							function(i) {
+								return $(this).prev('.lsfilter_visual_node').length > 0;
+							}).before(delimiter);
 		}
 		$('#filter_visual').find('.lsfilter_visual_delimiter').remove();
 		do_update($('<div>OR</div>'), 'or');
@@ -564,6 +581,7 @@ var lsfilter_visual = {
 					'sub' : []
 				}
 			};
+			ast = lsfilter_extra_andor.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
 			$('#filter_visual').empty().append(result);
 		}
