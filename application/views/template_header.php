@@ -15,7 +15,7 @@
 	*
 	*/
 
-	$show_settings = ((isset($widgets) && is_array($widgets)) || (!isset($disable_refresh) || $disable_refresh === false));
+	$show_settings = ((isset($widgets) && is_array($widgets)) || (!isset($disable_refresh) || $disable_refresh === false) || (isset($listview_refresh) && $listview_refresh === true));
 
 	$shortcuts = array('internal' => array(), 'external' => array());
 
@@ -210,25 +210,39 @@
 ?>
 <div id="page_settings" class="page_settings">
 	<ul>
-		<li id="menu_global_settings" <?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
+		<li id="menu_global_settings" <?php	if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($listview_refresh)) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
 		<li id="noheader_ctrl" style="display:none">
 			<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo _('Hide page header')?></label>
 		</li>
 	<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
 		<li id="ninja_page_refresh">
 			<input type="checkbox" id="ninja_refresh_control" />
-			<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo _('Pause refresh') ?></label>
+			<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo _('Pause page refresh') ?></label>
 		</li>
 		<li id="ninja_refresh_edit">
 			<?php echo _('Edit global refresh rate') ?><br />
 			<div id="ninja_page_refresh_slider" style="width: 160px; margin-top: 8px;">
-				<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 130px; padding: 1px; margin-top:-25px;z-index: 500" /> <div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
+				<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" data-key="config.page_refresh_rate" style="position: absolute; font-size: 11px; margin-left: 130px; padding: 1px; margin-top:-25px;z-index: 500" />
+				<div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
 			</div>
 		</li>
 
 		<?php
 			} # end if disable_refresh
-
+	if (isset($listview_refresh) && $listview_refresh === true) { ?>
+		<li id="listview_refresh">
+			<input type="checkbox" id="listview_refresh_control" />
+			<label id="listview_refresh_lable" for="listview_refresh_control"> <?php echo _('Pause list view refresh') ?></label>
+		</li>
+		<li id="listview_refresh_edit">
+			<?php echo _('Edit listview refresh rate') ?><br />
+			<div id="listview_refresh_slider" style="width: 160px; margin-top: 8px;">
+				<input type="text" maxlength="3" size="3" id="listview_refresh_value" name="listview_refresh_value" data-key="config.listview_refresh_rate" style="position: absolute; font-size: 11px; margin-left: 130px; padding: 1px; margin-top:-25px;z-index: 500" />
+				<div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
+			</div>
+		</li>
+		<?php
+			} # end if listview_refresh
 			if (isset($widgets) && is_array($widgets)) {
 				echo '<li>'._('Available Widgets').'</li>'."\n";
 				foreach($widgets as $widget) {
