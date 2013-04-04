@@ -556,20 +556,21 @@ function check_form_values(form)
 
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
-			var value = $('input[name=' + field_name + ']', form).attr('value');
+			var input = $('input[id="' + field_name + '"]', form);
+			var value = input.attr('value');
 			value = value.replace(',', '.');
 			if (value > max_val || isNaN(value)) {
-				$('input[name=' + field_name + ']', form).css('background', sla_month_error_color);
+				input.css('background', sla_month_error_color);
 				errors++;
 				red_error = true;
 			} else {
 				if (value != '') {
 					nr_of_slas++;
 				}
-				if ($("input[name='" + field_name + "']", form).attr('disabled'))
-					$('input[name=' + field_name + ']', form).css('background', sla_month_disabled_color);
+				if (input.attr('disabled'))
+					input.css('background', sla_month_disabled_color);
 				else
-					$('input[name=' + field_name + ']', form).css('background', sla_month_enabled_color);
+					input.css('background', sla_month_enabled_color);
 			}
 		}
 		if (red_error) {
@@ -659,7 +660,7 @@ function check_form_values(form)
 	if (!resp.length)
 		resp = $('#response');
 	resp.attr("style", "");
-	resp.html("<ul class=\"error\">" + err_str + "</ul>");
+	resp.html("<ul class='alert error'>" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
 }

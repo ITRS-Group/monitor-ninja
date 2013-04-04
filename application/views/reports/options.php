@@ -220,14 +220,13 @@ if($options['report_id']) { ?>
 			<td style="padding-left: 0px">
 				<?php echo html::image($this->add_path('icons/16x16/copy.png'),
 					array(
-						'id' => 'month['.($key+1).']',
 						'alt' => _('Click to propagate this value to all months'),
 						'title' => _('Click to propagate this value to all months'),
 						'style' => 'cursor: pointer; margin-bottom: -4px',
 						'class' => 'autofill')
 					) ?>
-				<label for="month[<?php echo $key+1 ?>]"><?php echo $month ?></label><br />
-				<input type="text" size="2" class="sla_month" id="month[<?php echo ($key+1) ?>]" name="month[<?php echo ($key+1) ?>]" value="<?php echo arr::search($options['months'], $key + 1, '') ?>" maxlength="6" /> %
+				<label for="month_<?php echo $key+1 ?>"><?php echo $month ?></label><br />
+				<input type="text" size="2" class="sla_month" id="month_<?php echo ($key+1) ?>" name="month[<?php echo ($key+1) ?>]" value="<?php echo arr::search($options['months'], $key + 1, '') ?>" maxlength="6" /> %
 			</td>
 			<?php	} ?>
 		</tr>
