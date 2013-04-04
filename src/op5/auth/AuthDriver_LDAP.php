@@ -8,9 +8,9 @@ require_once('op5/config.php');
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 class op5AuthDriver_LDAP extends op5AuthDriver {
 	private $conn = false;
@@ -18,9 +18,9 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
-	 * @param   string   username to log in
-	 * @param   string   password to check against
-	 * @return  boolean  True if success
+	 * @param $username string
+	 * @param $password string
+	 * @return boolean  True if success
 	 */
 	public function login($username, $password)
 	{
@@ -70,14 +70,13 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 * Otherwise, a superset is should given of all backends
 	 *
 	 * @param $grouplist   List of groups to check
-	 * @param $auth_method Login driver
 	 * @return             Associative array of the groups in $grouplist as keys, boolean as values
 	 */
 	public function groups_available(array $grouplist)
 	{
 		$this->connect();
 		$this->bind_anon();
-		
+
 		if($this->conn === false) {
 			return array();
 		}
@@ -229,7 +228,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 		return $groups;
 	}
-	
+
 	/**
 	 * Returns a list of group DN:s for which contains a certain DN.
 	 *
@@ -556,7 +555,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 
 	/**
 	 * Strips a DN down to the value of the first attribute.
-	 * 
+	 *
 	 * Useful for converting a dn to for example a group name.
 	 * @param $dn string
 	 * @return string

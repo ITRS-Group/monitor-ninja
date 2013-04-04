@@ -1,14 +1,14 @@
 <?php
 
 class ORMRootGenerator extends class_generator {
-	
+
 	private $structure;
-	
+
 	public function __construct() {
 		$this->classname = 'BaseObject';
 		$this->set_model();
 	}
-	
+
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class();
@@ -24,7 +24,7 @@ class ORMRootGenerator extends class_generator {
 		$this->init_function( "__construct", array( 'values', 'prefix' ) );
 		$this->finish_function();
 	}
-	
+
 	private function generate_export() {
 		$this->init_function('export');
 		$this->write( '$result=array("_table" => $this->_table);');

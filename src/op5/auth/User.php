@@ -2,42 +2,76 @@
 
 class op5User {
 
-	/* Only to be accessed from op5Auth */
+	/**
+	 * Holds user definitions
+	 *
+	 * @var $fields array
+	 **/
 	public $fields = array(
 		'username'  => false,
 		'realname'  => false,
 		'email'     => false,
 	);
 
+	/**
+	 * Overload set
+	 *
+	 * @param $key string
+	 * @param $value mixed
+	 * @return void
+	 **/
 	public function __set($key, $value)
 	{
 		$this->fields[$key] = $value;
 	}
 
+	/**
+	 * Overload get
+	 *
+	 * @param $key string
+	 * @return mixed
+	 **/
 	public function __get($key)
 	{
 		return $this->fields[$key];
 	}
-	
+
+	/**
+	 * Overload isset
+	 *
+	 * @param $key string
+	 * @return boolean
+	 **/
 	public function __isset($key)
 	{
 		return isset( $this->fields[$key] );
 	}
-	
+
+	/**
+	 * Overload unset
+	 *
+	 * @param $key string
+	 * @return void
+	 **/
 	public function __unset($key)
 	{
 		unset( $this->fields[$key] );
 	}
 
-
+	/**
+	 * Contruct
+	 *
+	 * @param $fields array
+	 * @return void
+	 **/
 	public function __construct( $fields ) {
-		$this->fields    = $fields;
+		$this->fields = $fields;
 	}
-	
+
 	/**
 	 * Returns if a user is authorized for a certain authorization point
 	 *
-	 * @param 	string 		authorization point
+	 * @param 	$auth_point string
 	 * @return 	boolean 	true if user has access to that authorization point
 	 */
 	public function authorized_for($auth_point)
@@ -48,9 +82,9 @@ class op5User {
 	/**
 	 * Test if authorized for viewing a certain object
 	 *»
-	 * @param $authorization_point string Name of authorization point
-	 * @param $object_definition   string object name, or array of names defining a "path"
-	 * @param $object_type         string object type (host/service)
+	 * @param $object_definition string 	object name, or array of names defining a "path"
+	 * @param $object_type string 			object type (host/service)
+	 * @param $case_insensitivity boolean
 	 */
 	public function authorized_for_object($object_type, $object_definition, $case_sensitivity=true)
 	{
@@ -87,7 +121,7 @@ class op5User {
 	/**
 	 * Updates the password of the user.
 	 *
-	 * @param  string    new password
+	 * @param  $password string
 	 * @return boolean
 	 */
 	public function change_password( $password )

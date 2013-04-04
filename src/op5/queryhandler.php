@@ -2,21 +2,26 @@
 
 class op5queryhandler {
 	static private $instance = false;
-	
+
 	static public function instance() {
 		if( self::$instance === false ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
-	
+
 	private $path;
 	private $timeout = 5;
-	
+
+	/**
+	 * Constructor
+	 *
+	 * @return void
+	 **/
 	private function __construct() {
 		$this->path = '/opt/monitor/var/rw/nagios.qh';
 	}
-	
+
 	public function json_call( $channel, $command, $args, $conv_hash=true, $node = false ) {
 		$data = $this->call($channel, $command, $args, $node);
 		$expanded = @json_decode(trim($data));
@@ -32,15 +37,15 @@ class op5queryhandler {
 		}
 		return $expanded;
 	}
-	
+
 	public function call( $channel, $command, $args, $node = false ) {
 		if( is_array( $args ) ) {
 			$args = $this->pack_args($args);
 		}
-		
+
 		return $this->raw_call( "@$channel $command $args\0", $node );
 	}
-	
+
 	public function raw_call( $command, $node = false ) {
 		if( $node !== false ) {
 			return $this->raw_remote_call($command, $node);
@@ -66,7 +71,7 @@ class op5queryhandler {
 		@fclose($sock);
 		return $content;
 	}
-	
+
 	private function raw_remote_call( $command, $node ) {
 		/* Ehum... this has potential to be made better... It works for now... (TODO) */
 		$descriptorspec = array(
@@ -77,7 +82,7 @@ class op5queryhandler {
 		$process = proc_open('asmonitor ssh '.escapeshellarg($node).' "unixcat /opt/monitor/var/rw/nagios.qh"', $descriptorspec, $pipes);
 		if( $process === false )
 			return false; /* TODO: Error handling */
-		
+
 		/* stdin */
 		fwrite($pipes[0], $command);
 		fflush($pipes[0]);
@@ -90,23 +95,23 @@ class op5queryhandler {
 		}
 		fclose($pipes[0]);
 		fclose($pipes[1]);
-		
+
 		/* stderr */
 		$stderr = stream_get_contents($pipes[2]);
 		fclose($pipes[2]);
-		
+
 		proc_close($process);
-		
+
 		if(!empty($stderr)) {
 			print $stderr; /* FIXME: better logging */
 		}
-		
+
 		return $content;
 	}
-	
+
 	/**
 	 * Converts an associative array of arguments to a string using kvvec syntax with delimiters = and ;
-	 * 
+	 *
 	 * If value is an array, it's treated as a set of lines with identical keys
 	 */
 	private function pack_args( $args ) {

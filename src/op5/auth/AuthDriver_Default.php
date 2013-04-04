@@ -8,37 +8,36 @@ require_once('op5/config.php' );
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 class op5AuthDriver_Default extends op5AuthDriver {
 	private $users = false;
-	
+
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
-	 * @param   string   username to log in
-	 * @param   string   password to check against
-	 * @param   string   specifies the authentication method, if multiple is available, ignore otherwise
-	 * @return  boolean  True if success
+	 * @param $username string
+	 * @param $password string
+	 * @return object
 	 */
 	public function login($username, $password) {
 		if (empty($username) || empty($password))
 			return false;
-		
+
 		$userdata = $this->authenticate_user( $username, $password );
 		if( $userdata === false ) {
 			return false;
 		}
-		
+
 		/* username shuold be part of the user object, but is only the key in auth_users.json */
 		$userdata['username'] = $username;
 		$userdata['auth_data'] = array( 'own_user_change_password'=>true );
-		
+
 		return new op5User( $userdata );
 	}
-	
+
 	/**
 	 * Given a list of groups, return an associative array with groups as keys and a boolean
 	 * if group is available in the backend. If it is unknown if the user is available, the field
@@ -48,13 +47,12 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 * Otherwise, a superset is should given of all backends
 	 *
 	 * @param $grouplist   List of groups to check
-	 * @param $auth_method Login driver
 	 * @return             Associative array of the groups in $grouplist as keys, boolean as values
 	 */
 	public function groups_available(array $grouplist)
 	{
 		$this->fetch_users();
-		
+
 		$groups = array();
 		foreach( $this->users as $user=>$userdata ) {
 			if( isset( $userdata['groups'] ) ) {
@@ -63,7 +61,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 				}
 			}
 		}
-		
+
 		$result = array();
 		foreach( $grouplist as $group ) {
 			if( substr( $group, 0, 5 ) == 'user_' ) {
@@ -72,11 +70,11 @@ class op5AuthDriver_Default extends op5AuthDriver {
 			else {
 				$result[$group] = isset( $groups[$group] );
 			}
-				
+
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Given a username, return a list of it's groups. Useful when giving permissions to a user.
 	 *
@@ -94,42 +92,42 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		}
 		return $this->users[$username]['groups'];
    }
-	
-	
-	
+
+
+
 	private function fetch_users()
 	{
 		if( $this->users === false ) {
 			$this->users = op5Config::instance()->getConfig('auth_users');
 		}
 	}
-	
+
 	private function store_users()
 	{
 		if( is_array( $this->users ) ) {
 			op5Config::instance()->setConfig('auth_users', $this->users);
 		}
 	}
-	
+
 	/***************************** Authentication ****************************/
-	
+
 	/**
-	 * Authenticate user, and return it's row from the database. Return false 
+	 * Authenticate user, and return it's row from the database. Return false
 	 * if authentication failed
 	 *
 	 * @param   string   username of the user
 	 * @param   string   password entered by the user
 	 * @return false|array database result from the user table
 	 */
-	
+
 	private function authenticate_user( $username, $password ) {
 		$this->fetch_users();
-	
+
 		if( !isset( $this->users[$username] ) ) {
 			op5Log::instance('auth')->log('notice', "User '$username' not found");
 			return false;
 		}
-		
+
 		$user = $this->users[$username];
 		if (self::valid_password($password, $user['password'], $user['password_algo']) === true) { /* FIXME */
 			return $user;
@@ -137,7 +135,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		op5Log::instance('auth')->log('notice', "User '$username' found but bad password provided");
 		return false;
 	}
-	
+
 	/**
 	 * Update password for a user.
 	 *
@@ -156,8 +154,8 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Validates a password using the given algorithm
 	 * @param $pass string
@@ -214,5 +212,5 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		exec($cmd, $output, $ret);
 		return $ret === 0;
 	}
-	
+
 } // End Auth

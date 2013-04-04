@@ -4,35 +4,74 @@ require_once("op5/auth/Auth.php");
 require_once('op5/config.php');
 
 /**
- * Custom exception for Livestatus errors
- */
+ * Custom exceptions for livestatus
+ *
+ **/
 class op5LivestatusException extends Exception {
+	/**
+	 * Plain message for exceptions
+	 *
+	 * @var $plain_message string
+	 **/
 	private $plain_message;
+
+	/**
+	 * Executed query
+	 *
+	 * @var $query string
+	 **/
 	private $query;
-	
+
+	/**
+	 * Construct
+	 *
+	 * @param $plain_message string
+	 * @param $query string
+	 * @return void
+	 **/
 	public function __construct( $plain_message, $query = false ) {
 		$this->query = $query;
 		$this->plain_message = $plain_message;
-		
+
 		$message = $plain_message;
 		if( $query ) {
 			$message .= ' <pre>'.$query.'</pre>';
 		}
 		parent::__construct( $message );
 	}
-	
+
+	/**
+	 * Gets plain message
+	 *
+	 * @return string
+	 **/
 	public function getPlainMessage() {
 		return $this->plain_message;
 	}
-	
+
+	/**
+	 * Gets query
+	 *
+	 * @return string
+	 **/
 	public function getQuery() {
 		return $this->query;
 	}
 }
 
+/**
+ * Connects to and queries livestatus
+ *
+ **/
 class op5Livestatus {
 	static private $instance = null;
-	
+
+	/**
+	 * Creates an instance of livestatus
+	 *
+	 * @param $config array
+	 * @return object
+	 **/
 	static public function instance($config = null)
 	{
 		if( self::$instance !== null )
@@ -40,11 +79,15 @@ class op5Livestatus {
 		self::$instance = new self($config);
 		return self::$instance;
 	}
-	
+
 	private $connection      = null;
 	private $config          = false;
 
-	/* constructor */
+	/**
+	 * Constructor
+	 *
+	 * @return void
+	 **/
 	public function __construct() {
 		$this->config     = op5config::instance()->getConfig('livestatus');
 		$this->connection = new op5livestatus_connection(array('path' => $this->config['path']));
@@ -54,6 +97,14 @@ class op5Livestatus {
 	/********************************************************
 	 * INTERNAL FUNCTIONS
 	 *******************************************************/
+	/**
+	 * Performs a filtered query
+	 *
+	 * @param $table string
+	 * @param $filter string
+	 * @param $stats array
+	 * @return array
+	 **/
 	public function stats_single($table, $filter, $stats) {
 		$columns = array();
 		foreach( $stats as $name => $query ) {
@@ -61,10 +112,19 @@ class op5Livestatus {
 			$filter .= $query;
 		}
 		list($res_columns,$objects,$res_count) = $this->query($table,$filter,array());
-		
+
 		return array_combine($columns, $objects[0]);
 	}
-	
+
+	/**
+	 * Queries livestatus
+	 *
+	 * @param $table string
+	 * @param $filter string
+	 * @param $columns array
+	 * @param $options array
+	 * @return array
+	 **/
 	public function query($table, $filter, $columns, $options = array() ) {
 		$query  = "GET $table\n";
 		$query .= "OutputFormat: wrapped_json\n";
@@ -75,7 +135,7 @@ class op5Livestatus {
 		} else if( !isset($options['auth']) || $options['auth'] != false ) {
 			$query .= $this->auth($table);
 		}
-		
+
 		if(is_array( $columns )) {
 			$column_txt = "";
 			$fetch_columns = array();
@@ -95,7 +155,7 @@ class op5Livestatus {
 
 		$query .= $filter;
 		$query .= "\n";
-		
+
 		$start   = microtime(true);
 		$rc      = $this->connection->writeSocket($query);;
 		$head    = $this->connection->readSocket(16);
@@ -106,30 +166,37 @@ class op5Livestatus {
 			throw new op5LivestatusException("Invalid query, livestatus response was empty", $query);
 		if($status != 200)
 			throw new op5LivestatusException(trim($body), $query);
-		
+
 		$result = json_decode(utf8_encode($body), true);
-		
+
 		$objects = $result['data'];
 		$count = $result['total_count'];
-		
+
 		if( !is_array($columns) ) {
 			$columns = $result['columns'][0]; /* FIXME */
 		}
-		
+
 		$stop = microtime(true);
-		
+
 		/* TODO: benchmarks log non-kohana dependent...
 		if (isset($this->config['benchmark']) && $this->config['benchmark']) {
 			Database::$benchmarks[] = array('query' => $this->formatQueryForDebug($query), 'time' => $stop - $start, 'rows' => $count);//count($objects));
 		}
 		*/
-		
+
 		if ($objects === null) {
 			throw new op5LivestatusException("Invalid output");
 		}
 		return array($columns,$objects,$count);
 	}
-	
+
+	/**
+	 * Attaches username to query if the user hasn't got full permission for queried table.
+	 *
+	 * @param $table string
+	 * @param $user object
+	 * @return string
+	 **/
 	private function auth($table, op5User $user = null) {
 		if(!$user) {
 			$user = op5auth::instance()->get_user();
@@ -147,7 +214,7 @@ class op5Livestatus {
 			'status'        => array('system_information'),
 			'timeperiods'   => array('timeperiod_view_all')
 			);
-		
+
 		/* Tables not handling AuthUser in livestatus... if limited, filter by "Filter: col = username" or "Or: 0" */
 		$table_noauth = array(
 			'contacts' => 'name',
@@ -155,7 +222,7 @@ class op5Livestatus {
 			'status' => true,
 			'timeperiods' => true
 			);
-		
+
 		if( !isset( $table_permissions[$table] ) ) {
 			return "";
 		}
@@ -173,13 +240,19 @@ class op5Livestatus {
 		}
 		return "AuthUser: ".$user->username."\n";
 	}
-	
+
+	/**
+	 * Formats query for debugging purposes
+	 *
+	 * @param $query string
+	 * @return string
+	 **/
 	private function formatQueryForDebug( $query ) {
 		$querylines = explode( "\n", $query );
 		$result = array();
 		$stats = array();
 		$filter = array();
-		
+
 		$result[] = array_shift( $querylines ); /* GET-line */
 		foreach( $querylines as $line ) {
 			if( empty( $line ) ) continue;
@@ -245,15 +318,32 @@ class op5livestatus_connection {
 	private $connection  = null;
 	private $timeout     = 10;
 
+	/**
+	 * Constructor
+	 *
+	 * @param $options array
+	 * @return void
+	 **/
 	public function __construct($options) {
 		$this->connectionString = $options['path'];
 		return $this;
 	}
 
+	/**
+	 * Destructor
+	 *
+	 * @return void
+	 **/
 	public function __destruct() {
 		$this->close();
 	}
 
+	/**
+	 * Connects to livestatus socket
+	 *
+	 * @return void
+	 * @throws op5LivestatusException
+	 **/
 	public function connect() {
 		$parts = explode(':', $this->connectionString, 2);
 		if( count($parts) == 2 ) {
@@ -285,6 +375,11 @@ class op5livestatus_connection {
 		}
 	}
 
+	/**
+	 * Closes the socket connection
+	 *
+	 * @return void
+	 **/
 	public function close() {
 		if($this->connection != null) {
 			fclose($this->connection);
@@ -292,6 +387,13 @@ class op5livestatus_connection {
 		}
 	}
 
+	/**
+	 * Writes to livestatus socket
+	 *
+	 * @param $str string
+	 * @return void
+	 * @throws op5LivestatusException
+	 **/
 	public function writeSocket($str) {
 		if ($this->connection === null)
 			$this->connect();
@@ -300,6 +402,12 @@ class op5livestatus_connection {
 			throw new op5LivestatusException("Couldn't write to livestatus socket");
 	}
 
+	/**
+	 * Reads from livestatus socket
+	 *
+	 * @param $len integer
+	 * @return string
+	 **/
 	public function readSocket($len) {
 		$offset     = 0;
 		$socketData = '';

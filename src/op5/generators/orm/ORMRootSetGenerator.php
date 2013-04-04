@@ -2,12 +2,12 @@
 
 class ORMRootSetGenerator extends class_generator {
 	private $objectclass;
-	
+
 	public function __construct() {
 		$this->classname = "BaseObjectSet";
 		$this->set_model();
 	}
-	
+
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( false, array('abstract'), array("IteratorAggregate", "Countable") );
@@ -31,42 +31,42 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_validate_columns();
 		$this->finish_class();
 	}
-	
+
 	public function generate_construct() {
 		$this->init_function('__construct', array('filter'));
 		$this->write('$this->filter = $filter;');
 		$this->finish_function();
 	}
-	
+
 	public function generate_getter($var) {
 		$this->init_function('get_'.$var);
 		$this->write('return $this->'.$var.';');
 		$this->finish_function();
 	}
-	
+
 	public function generate_unary_operator($operator,$filterclass) {
 		$this->init_function($operator);
-		
+
 		$this->write('$filter = new '.$filterclass.'($this->filter);');
 
 		$this->write('return new static($filter);');
 		$this->finish_function();
 	}
-	
+
 	public function generate_binary_operator($operator,$filterclass) {
 		$this->init_function($operator, array('set'));
 		$this->write('if( $this->table != $set->table ) {');
 		$this->write('return false;');
 		$this->write('}');
-		
+
 		$this->write('$filter = new '.$filterclass.'();');
 		$this->write('$filter->add( $this->filter );');
 		$this->write('$filter->add( $set->filter );');
-		
+
 		$this->write('return new static($filter);');
 		$this->finish_function();
 	}
-	
+
 	public function generate_reduce() {
 		$this->init_function('reduce_by', array('column', 'value', 'op'));
 		$this->write('$filter = new LivestatusFilterAnd();');
@@ -76,7 +76,7 @@ class ORMRootSetGenerator extends class_generator {
 		$this->write('return new static($filter);');
 		$this->finish_function();
 	}
-	
+
 	public function generate_convert_to_object() {
 		$this->init_function('convert_to_object', array('table','field'));
 		$this->write('$result = ObjectPool'.self::$model_suffix.'::pool($table)->all();');
@@ -84,21 +84,21 @@ class ORMRootSetGenerator extends class_generator {
 		$this->write('return $result;');
 		$this->finish_function();
 	}
-	
+
 	public function generate_stats() {
 		$this->abstract_function('stats',array('intersections'));
 	}
-	
+
 	public function generate_getIterator() {
 		$this->init_function('getIterator');
 		$this->write('return $this->it(false,array());');
 		$this->finish_function();
 	}
-	
+
 	public function generate_it() {
 		$this->abstract_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 	}
-	
+
 	public function generate_get_auth_filter() {
 		$this->init_function('get_auth_filter',array(),array('protected'));
 		$this->write('return $this->filter;');

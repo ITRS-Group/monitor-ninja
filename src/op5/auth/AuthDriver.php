@@ -4,32 +4,32 @@
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 
- 
+
 abstract class op5AuthDriver {
 
 	/**
 	 * Configuration for the module
-	 * @var array
-	 */
+	 * @var $config array
+	 **/
 	protected $config = array();
 
 	/**
 	 * Stores a reference to the op5Log object
-	 * @var op5Log
-	 */
+	 * @var $log object
+	 **/
 	protected $log = false;
 
 	/**
-	 * Create an instance of Auth.
+	 * Create an instance of auth log and set config.
 	 *
-	 * @return  object
-	 */
-
+	 * @param $config array
+	 * @return void
+	 **/
 	public final function __construct($config)
 	{
 		$this->log = op5Log::instance('auth');
@@ -89,9 +89,8 @@ abstract class op5AuthDriver {
 	 * If driver supports multiple backends, the extra auth_method can be set to the backend.
 	 * Otherwise, a superset is should given of all backends
 	 *
-	 * @param $grouplist   List of groups to check
-	 * @param $auth_method Login driver
-	 * @return             Associative array of the groups in $grouplist as keys, boolean as values
+	 * @param $grouplist array	List of groups to check
+	 * @return array			Associative array of the groups in $grouplist as keys, boolean as values
 	 */
 	public function groups_available(array $grouplist)
 	{
@@ -101,8 +100,8 @@ abstract class op5AuthDriver {
 	/**
 	 * Given a username, return a list of it's groups. Useful when giving permissions to a user.
 	 *
-	 * @param $username string User to search for
-	 * @return          array  A list of groups, or false if not possible
+	 * @param $username string	User to search for
+	 * @return array			A list of groups, or false if not possible
 	 */
 	public function groups_for_user( $username )
 	{

@@ -6,6 +6,11 @@ class ORMObjectGenerator extends class_generator {
 	private $structure;
 	private $associations;
 
+	/**
+	 * Construct
+	 *
+	 * @return void
+	 **/
 	public function __construct( $name, $structure ) {
 		$this->name = $name;
 		$this->structure = $structure[$name];
@@ -31,6 +36,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->set_model();
 	}
 
+	/**
+	 * Generate
+	 *
+	 * @return void
+	 **/
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'Object', array('abstract') );
@@ -64,6 +74,12 @@ class ORMObjectGenerator extends class_generator {
 
 		$this->finish_class();
 	}
+
+	/**
+	 * Generates a class construct
+	 *
+	 * @return void
+	 **/
 	private function generate_construct() {
 		$this->init_function( "__construct", array( 'values', 'prefix' ) );
 		foreach( $this->structure['structure'] as $field => $type ) {
@@ -77,6 +93,14 @@ class ORMObjectGenerator extends class_generator {
 		$this->finish_function();
 	}
 
+	/**
+	 * Generate association get set
+	 *
+	 * @param $table string
+	 * @param $class string
+	 * @param field string
+	 * @return void
+	 **/
 	private function generate_association_get_set($table, $class, $field) {
 		$this->init_function('get_'.$table.'_set');
 		$this->write('$set = '.$class.'Pool'.self::$model_suffix.'::all();');
@@ -87,6 +111,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->finish_function();
 	}
 
+	/**
+	 * Generate get key
+	 *
+	 * @return void
+	 **/
 	private function generate_get_key() {
 		$this->init_function("get_key");
 		$matchline = '$key = $this%s;';
@@ -97,7 +126,7 @@ class ORMObjectGenerator extends class_generator {
 			foreach( explode('.',$keypart) as $part ) {
 				$call .= "->get_$part()";
 			}
-				
+
 			// Use sprintf instead of embedded in write. write escapes
 			$this->write( sprintf( $matchline, $call ) );
 			$got = true;
@@ -111,12 +140,24 @@ class ORMObjectGenerator extends class_generator {
 		$this->finish_function();
 	}
 
-	/* Object */
-
+	/**
+	 * Writes a private variable to class
+	 *
+	 * @param $name string
+	 * @param $type string		Unused?
+	 * @return void
+	 **/
 	private function storage_object( $name, $type ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * Writes an object fetcher
+	 *
+	 * @param $name string
+	 * @param $type string
+	 * @return void
+	 **/
 	private function fetch_object( $name, $type ) {
 		list( $class, $prefix ) = $type;
 		//		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, \$prefix.".var_export($prefix,true)." );" );
@@ -125,18 +166,33 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "\$this->export[] = %s;", $name );
 	}
 
+	/**
+	 * Writes function getting object named $name
+	 *
+	 * @param $name string
+	 * @param $type string		Unused?
+	 * @return void
+	 **/
 	private function get_object( $name, $type ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
 	}
 
-	/* String */
-
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function storage_string( $name ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function fetch_string( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) { ");
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
@@ -144,6 +200,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_string( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
@@ -152,10 +213,20 @@ class ORMObjectGenerator extends class_generator {
 
 	/* Time FIXME */
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function storage_time( $name ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function fetch_time( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) { ");
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
@@ -163,6 +234,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_time( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
@@ -171,10 +247,20 @@ class ORMObjectGenerator extends class_generator {
 
 	/* Int */
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function storage_int( $name ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function fetch_int( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = intval( \$values[\$prefix.'$name'] );" );
@@ -182,6 +268,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_int( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
@@ -190,10 +281,20 @@ class ORMObjectGenerator extends class_generator {
 
 	/* Float */
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function storage_float( $name ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function fetch_float( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
@@ -201,6 +302,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_float( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
@@ -209,10 +315,20 @@ class ORMObjectGenerator extends class_generator {
 
 	/* List */
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function storage_list( $name ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function fetch_list( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
@@ -220,6 +336,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_list( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
@@ -228,10 +349,20 @@ class ORMObjectGenerator extends class_generator {
 
 	/* Dict */
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function storage_dict( $name ) {
 		$this->write( "private \$$name = false;" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function fetch_dict( $name ) {
 		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
@@ -239,6 +370,11 @@ class ORMObjectGenerator extends class_generator {
 		$this->write( "}" );
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_dict( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );

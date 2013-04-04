@@ -5,7 +5,7 @@ require_once( 'LalrItem.php' );
 class LalrGrammar {
 	private $tokens;
 	private $rules;
-	
+
 	public function __construct( $grammar ) {
 		$this->tokens = array_map( 'trim', $grammar['tokens'] );
 		$this->rules = array();
@@ -15,15 +15,15 @@ class LalrGrammar {
 			$this->rules[$name] = new LalrItem( $name, $generates, $rule );
 		}
 	}
-	
+
 	public function get_tokens() {
 		return $this->tokens;
 	}
-	
+
 	public function get_rules() {
 		return $this->rules;
 	}
-	
+
 	public function get( $name ) {
 		if( !isset( $this->rules[$name] ) )
 			return false;
@@ -39,12 +39,12 @@ class LalrGrammar {
 		}
 		return $items;
 	}
-	
+
 	public function is_terminal( $symbol ) {
 		if( $symbol == 'end' ) return true;
 		return isset( $this->tokens[$symbol] );
 	}
-	
+
 	public function terminals() {
 		$symbols = array('end');
 		foreach( $this->tokens as $sym => $re ) {
@@ -54,7 +54,7 @@ class LalrGrammar {
 		}
 		return $symbols;
 	}
-	
+
 	public function non_terminals() {
 		$symbols = array();
 		foreach( $this->rules as $rule ) {
@@ -64,15 +64,15 @@ class LalrGrammar {
 		}
 		return $symbols;
 	}
-	
+
 	public function symbols() {
 		return array_merge( $this->terminals(), $this->non_terminals() );
 	}
-	
+
 	public function follow( $symbol ) {
 		$next = array();
 		$search_list = array($symbol);
-		
+
 		/* Exctract next */
 		for( $i=0; $i < count( $search_list ); $i++ ) {
 			$cur_symbol = $search_list[$i];
@@ -89,7 +89,7 @@ class LalrGrammar {
 				}
 			}
 		}
-		
+
 		/* Reduce to next terminal */
 		$next_term = array();
 		for( $i=0; $i<count($next);$i++ ) {
@@ -110,7 +110,7 @@ class LalrGrammar {
 				}
 			}
 		}
-		
+
 		return $next_term;
 	}
 }

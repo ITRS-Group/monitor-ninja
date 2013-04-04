@@ -11,15 +11,15 @@ require_once( 'op5/livestatus.php' );
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 
 class op5auth {
 	/**
 	 * Defaults is specified here. Parameters is overwritten from config
-	 * 
+	 *
 	 * @var array
 	 */
 	private $config = array(
@@ -48,7 +48,8 @@ class op5auth {
 	 * Create an instance of Auth.
 	 *
 	 * @param $config array Elements in the array overrieds the values in the common block of auth config
-	 * @return  object
+	 * @param $driver_config array
+	 * @return object
 	 */
 	public static function factory( $config = false, $driver_config = false)
 	{
@@ -56,6 +57,13 @@ class op5auth {
 		return self::$instance;
 	}
 
+	/**
+	 * Returns an instance of op5auth
+	 *
+	 * @param $config array
+	 * @param $driver_config array
+	 * @return void
+	 **/
 	public static function instance($config = false, $driver_config = false)
 	{
 		if (self::$instance == false)
@@ -76,7 +84,7 @@ class op5auth {
 
 		/* Retrieve config file */
 		$authconfig = op5Config::instance()->getConfig('auth');
-		
+
 		if( $authconfig === null ) {
 			throw new Exception( 'auth.yml configuration file not found, are the permissions correct?' );
 		}
@@ -277,7 +285,7 @@ class op5auth {
 		$user = $driver->login( $username, $password );
 		if( $user !== false ) {
 			/* Postprocess login */
-			$user->auth_method = $auth_method;	
+			$user->auth_method = $auth_method;
 			$this->authorize_user( $user, $auth_method );
 			$this->user = $user;
 
@@ -325,7 +333,7 @@ class op5auth {
 	/**
 	 * Returns true if current session has access for a given authorization point
 	 *
-	 * @param   $authorization point string
+	 * @param   $authorization_point string
 	 * @return  boolean  true if access
 	 */
 	public function authorized_for( $authorization_point )
@@ -355,7 +363,7 @@ class op5auth {
 
 			try {
 				$result[$auth_method] = $driver->groups_available( $grouplist );
-				
+
 				foreach($grouplist as $group) {
 					$avalible = false;
 					if( $group == 'meta_all_users' ) {
@@ -369,7 +377,7 @@ class op5auth {
 						$result[$auth_method][$group] |= $avalible;
 					}
 				}
-				
+
 			}
 			catch( Exception $e ) {
 				/* If a module fails, make groups unknown... */
@@ -524,7 +532,6 @@ class op5auth {
 	 * Authorize user by updating it's auth_data field
 	 *
 	 * @param $user op5User User to update
-	 * @param $auth_method string the authentication driver used
 	 * @return boolean if authorization was done successfully
 	 */
 	protected function authorize_user( op5User $user )

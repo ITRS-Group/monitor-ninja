@@ -3,15 +3,15 @@
 class LalrState {
 	private $items;
 	private $grammar;
-	
+
 	public function __construct( $items, $grammar ) {
 		if( !is_array( $items ) )
 			$items = array( $items );
-		
+
 		$this->items = $items;
 		$this->grammar = $grammar;
 	}
-	
+
 	public function next_symbols() {
 		$symbols = array();
 		foreach( $this->closure() as $item ) {
@@ -22,7 +22,7 @@ class LalrState {
 		}
 		return $symbols;
 	}
-	
+
 	public function take( $symbol ) {
 		$next_items = array();
 		foreach( $this->closure() as $item ) {
@@ -33,16 +33,16 @@ class LalrState {
 		}
 		return new self( $next_items, $this->grammar );
 	}
-	
+
 	public function closure() {
 		$items = $this->items;
-		
+
 		/* Don't use foreach. $items can grow in the loop, and the new items needs to be handled too */
 		for( $i = 0; $i<count($items); $i++ ) {
 			$cur_item = $items[$i];
 			$next_symbol = $cur_item->next();
 			if( $next_symbol === false ) {
-				
+
 			} else {
 				foreach( $this->grammar->productions( $next_symbol ) as $new_item ) {
 					$add = true;
@@ -59,7 +59,7 @@ class LalrState {
 		}
 		return $items;
 	}
-	
+
 	public function __toString() {
 		$outp = "";
 		foreach( $this->closure() as $item ) {
@@ -67,7 +67,7 @@ class LalrState {
 		}
 		return $outp;
 	}
-	
+
 	public function equals( $state ) {
 		if( count( $this->items ) != count( $state->items ) ) {
 			return false;

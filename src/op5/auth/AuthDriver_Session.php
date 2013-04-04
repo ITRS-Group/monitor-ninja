@@ -8,9 +8,9 @@ require_once('op5/config.php' );
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 class op5AuthDriver_Session extends op5AuthDriver {
 

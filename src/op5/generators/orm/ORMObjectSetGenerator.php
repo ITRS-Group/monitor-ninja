@@ -38,19 +38,19 @@ class ORMObjectSetGenerator extends class_generator {
 			$this->variable('db_instance',$this->structure['db_instance'],'protected');
 		}
 		$this->variable('table',$this->name,'protected');
-		
+
 		$dbtable = $this->name;
 		if( isset($this->structure['table']) )
 			$dbtable = $this->structure['table'];
 		$this->variable('dbtable',$dbtable,'protected');
-		
+
 		if( isset($this->structure['default_sort']) )
 			$this->variable('default_sort',$this->structure['default_sort'],'protected');
-		
+
 		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
-		
+
 		$this->generate_validate_columns();
-		
+
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
 		}

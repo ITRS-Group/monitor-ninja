@@ -7,10 +7,13 @@ class op5User_NoAuth extends op5User {
 		$this->username = 'notauthenticated';
 		$this->realname = 'Not Logged in';
 	}
-	
+
 	/**
-	* @param 	string 		authorization point
-	* @return 	boolean 	
+	* Returns whether user is authorized for $auth_point.
+	* This user has no rights and always returns false
+	*
+	* @param $auth_point string
+	* @return boolean
 	*/
 	public function authorized_for($auth_point)
 	{
@@ -27,11 +30,24 @@ class op5User_NoAuth extends op5User {
 		return false;
 	}
 
+	/**
+	 * Determines whether user is authorized for an object
+	 *
+	 * @param $object_type string
+	 * @param $object_definition
+	 * @param $case_sensitivity boolean
+	 * @return boolean
+	 **/
 	public function authorized_for_object($object_type, $object_definition, $case_sensitivity=true)
 	{
 		return false;
 	}
 
+	/**
+	 * Get "users" contact groups
+	 *
+	 * @return mixed
+	 **/
 	public function get_contact_groups()
 	{
 		return false;

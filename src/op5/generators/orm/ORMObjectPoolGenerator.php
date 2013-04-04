@@ -4,7 +4,12 @@ class ORMObjectPoolGenerator extends class_generator {
 	private $name;
 	private $structure;
 	private $objectclass;
-	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	public function __construct( $name, $descr ) {
 		$this->name = $name;
 		$this->structure = $descr;
@@ -12,7 +17,12 @@ class ORMObjectPoolGenerator extends class_generator {
 		$this->classname = 'Base'.$descr[$name]['class'].'Pool';
 		$this->set_model();
 	}
-	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'ObjectPool', array('abstract') );
@@ -23,14 +33,24 @@ class ORMObjectPoolGenerator extends class_generator {
 		$this->generate_setbuilder_none();
 		$this->finish_class();
 	}
-	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function generate_pool() {
 		$this->init_function( 'pool', array('name'), 'static', array('name' => false));
 		$this->write( 'if( $name === false ) return new static();');
 		$this->write( 'return parent::pool($name);' );
 		$this->finish_function();
 	}
-	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function generate_table_for_field() {
 		$this->init_function( 'get_table_for_field', array('name') );
 		$this->write( 'switch($name) {' );
@@ -45,6 +65,11 @@ class ORMObjectPoolGenerator extends class_generator {
 		$this->finish_function();
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function lookup_class( $class ) {
 		foreach( $this->structure as $table => $struct ) {
 			if( $struct['class'] == $class ) {
@@ -53,13 +78,23 @@ class ORMObjectPoolGenerator extends class_generator {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function generate_setbuilder_all() {
 		$this->init_function( 'all', array(), 'static' );
 		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'(new LivestatusFilterAnd());');
 		$this->finish_function();
 	}
-	
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function generate_setbuilder_none() {
 		$this->init_function( 'none', array(), 'static' );
 		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'(new LivestatusFilterOr());');

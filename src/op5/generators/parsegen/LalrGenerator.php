@@ -21,12 +21,12 @@ require_once( 'LalrGrammar.php' );
 class LalrGenerator {
 	private $name;
 	private $grammar;
-	
+
 	public function __construct( $name, $grammar ) {
 		$this->name = $name;
 		$this->grammar = new LalrGrammar( $grammar );
 	}
-	
+
 	public function generate() {
 		print "- Building parser state table\n";
 		$fsm = new LalrStateMachine( $this->grammar );

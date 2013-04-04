@@ -8,13 +8,13 @@ class LalrParserJSGenerator extends js_class_generator {
 	 */
 	private $grammar;
 	private $goto_map;
-	
+
 	public function __construct( $parser_name, $fsm, $grammar ) {
 		$this->classname = $parser_name . "Parser";
 		$this->grammar = $grammar;
 		$this->fsm = $fsm;
-		
-		
+
+
 		$this->goto_map = array();
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			foreach( $map as $symbol => $action_arr ) {
@@ -27,10 +27,10 @@ class LalrParserJSGenerator extends js_class_generator {
 			}
 		}
 	}
-	
+
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
-		
+
 		$this->init_class(array('visitor'));
 		$this->variable( 'visitor' );
 		$this->variable( 'stack', array() );
@@ -39,7 +39,7 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->variable( 'lexer', false );
 		$this->write( 'this.visitor = visitor;' );
 		$this->generate_parse();
-		
+
 		$this->write( 'this.states = [' );
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			$this->generate_state( $state_id, $map );
@@ -50,7 +50,7 @@ class LalrParserJSGenerator extends js_class_generator {
 		}
 		$this->finish_class();
 	}
-	
+
 	private function generate_parse() {
 		$this->init_function( 'parse', array( 'lexer' ) );
 		$this->write( 'this.stack = new Array();' );
@@ -63,21 +63,21 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->write(   'do {' );
 		$this->write(     'this.cont = false;' );
 		$this->write(     'var head = this.stack[this.stack.length-1];' );
-		
+
 		/* Fixme: How to better call the method and not losing "this"? */
 		$this->write(     'this.tmp = this.states[head[0]];' );
 		$this->write(     'result = this.tmp(token);');
-		
+
 		$this->write(   '} while( this.cont );' );
 		$this->write( '} while( !this.done );' );
 		$this->write( 'return result;' );
 		$this->finish_function();
 	}
-	
+
 	private function generate_state( $state_id, $map ) {
 		$state = $this->fsm->get_state($state_id);
 		/* @var $state LalrState */
-		
+
 		$this->init_function( false, array('token'), 'private' );
 //		$this->comment( "State: $state_id\n".trim(strval( $state )) );
 		$this->comment( "State: $state_id" );
@@ -88,9 +88,9 @@ class LalrParserJSGenerator extends js_class_generator {
 				$nextup[] = $sym;
 			}
 		}
-		
+
 		$this->write( 'switch( token[0] ) {' );
-		
+
 		/* Merge cases per action... many cases use same action... */
 		$map_r = array();
 		foreach( $map as $token => $action_arr ) {
@@ -134,14 +134,14 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->write( 'return null;' );
 		$this->write( '},' ); // FIXME: Should be finish_function, but with , instead of ;
 	}
-	
+
 	private function generate_reduce( $item ) {
 		if( isset($this->goto_map[$item->generates()]) ) {
 			$targets = $this->goto_map[$item->generates()];
 		} else {
 			return; /* This method isn't used appearently */
 		}
-		
+
 		$this->init_function( 'reduce_'.$item->get_name(), array(), 'private' );
 		$this->write( 'this.cont = true;' );
 
@@ -165,14 +165,14 @@ class LalrParserJSGenerator extends js_class_generator {
 			$this->write( 'var new_token = [%s, this.visitor.visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), arg0[2], '.$length_sum.'];', $item->generates());
 		}
 		$this->write( 'switch( this.stack[this.stack.length-1][0] ) {' );
-		
+
 		/* Merge cases */
 		$cases = array();
 		foreach( $targets as $old_state => $new_state ) {
 			if( !isset( $cases[$new_state] ) ) $cases[$new_state] = array();
 			$cases[$new_state][] = $old_state;
 		}
-		
+
 		foreach( $cases as $new_state => $old_states ) {
 			foreach( $old_states as $old_state ) {
 				$this->write( 'case %s:', $old_state );

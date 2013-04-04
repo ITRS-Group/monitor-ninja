@@ -7,14 +7,14 @@ class LalrHTMLVisualizationGenerator {
 	private $fp;
 	private $filename;
 	private $dir = 'html';
-	
+
 	public function __construct( $parser_name, $fsm, $grammar ) {
 		$this->name = $parser_name;
 		$this->filename = $parser_name . "Visualization";
 		$this->grammar = $grammar;
 		$this->fsm = $fsm;
-		
-		
+
+
 		$this->goto_map = array();
 		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
 			foreach( $map as $symbol => $action_arr ) {
@@ -27,24 +27,24 @@ class LalrHTMLVisualizationGenerator {
 			}
 		}
 	}
-	
+
 	public function generate() {
 		if( !is_dir( $this->dir ) && !mkdir( $this->dir, 0755, true ) )
 			throw new GeneratorException( "Could not create dir $class_dir" );
-		
+
 		$this->fp = fopen( $this->dir . DIRECTORY_SEPARATOR . $this->filename.'.html', 'w' );
-		
+
 		ob_start( array( $this, 'write_block'), 1024 );
 		$this->build_html();
 		ob_end_flush();
-		
+
 		fclose( $this->fp );
 	}
-	
+
 	public function write_block( $block ) {
 		fwrite( $this->fp, $block );
 	}
-	
+
 	private function build_html() {
 ?>
 <!DOCTYPE html>

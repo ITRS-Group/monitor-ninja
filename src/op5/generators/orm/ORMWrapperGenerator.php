@@ -11,7 +11,7 @@ class ORMWrapperGenerator extends class_generator {
 		$this->modifiers = $modifiers;
 		$this->baseclasspath = $baseclasspath;
 		$this->set_model();
-		
+
 		if( $this->modifiers === false ) {
 			$this->modifiers = array();
 		}

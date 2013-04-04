@@ -7,9 +7,9 @@ require_once('op5/auth/User.php');
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 class op5AuthDriver_Apache extends op5AuthDriver {
 
@@ -35,7 +35,6 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 * Otherwise, a superset is should given of all backends
 	 *
 	 * @param $grouplist   List of groups to check
-	 * @param $auth_method Login driver
 	 * @return             Associative array of the groups in $grouplist as keys, boolean as values
 	 */
 	public function groups_available(array $grouplist)
