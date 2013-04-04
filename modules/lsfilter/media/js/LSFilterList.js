@@ -37,6 +37,12 @@ function lsfilter_list(config)
 	if(this.config.totals)
 		lsfilter_list_attach_events( this, this.config.totals );
 
+
+	if( this.config.attach_head ) {
+		$(window).on('resize scroll load', function(e) {
+			listview.update_float_header();
+		});
+	}
 	/***************************************************************************
 	 * External methods
 	 **************************************************************************/
