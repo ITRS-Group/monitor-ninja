@@ -23,16 +23,18 @@ class Sla_options_Core extends Report_options {
 	public function set($name, $value)
 	{
 		$resp = parent::set($name, $value);
-		if ($resp === false && preg_match('/^month/', trim($name))) {
-			$id = (int)str_replace('month_', '', $name);
-			if (trim($value) == '')
-				return;
-			$value = str_replace(',', '.', $value);
-			$value = (float)$value;
-			// values greater than 100 doesn't make sense
-			if ($value>100)
-				$value = 100;
-			$this->options['months'][$id] = $value;
+		if ($resp === false && $name == 'month') {
+			$values = $value;
+			foreach($values as $month => $value) {
+				if (trim($value) == '')
+					continue;
+				$value = str_replace(',', '.', $value);
+				$value = (float)$value;
+				// values greater than 100 doesn't make sense
+				if ($value>100)
+					$value = 100;
+				$this->options['months'][$month] = $value;
+			}
 			return true;
 		}
 		return $resp;
