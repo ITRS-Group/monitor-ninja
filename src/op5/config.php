@@ -36,6 +36,12 @@ class op5config {
 		return $instance;
 	}
 
+	/**
+	 * __contruct
+	 *
+	 * @param $options array
+	 * @return void
+	 **/
 	public function __construct($options=false)
 	{
 		$basepath = false;
@@ -53,15 +59,23 @@ class op5config {
 		$this->apc_enabled = function_exists( 'apc_fetch' );
 	}
 
-	/*
-	 * Public access
-	 */
+	/**
+	 * Get config for supplied namespace
+	 *
+	 * @param $parameter mixed
+	 * @return array
+	 **/
 	public function getConfig( $parameter )
 	{
 		return $this->getConfigVar( explode('.',$parameter), $this->basepath );
 	}
 
 	/**
+	 * Set config for supplied namespace
+	 *
+	 * @param $parameter string
+	 * @param $array array
+	 * @return void
  	 * @throws RuntimeException if file is unwritable
 	 */
 	public function setConfig( $parameter, $array )
@@ -72,9 +86,13 @@ class op5config {
 		}
 	}
 
-	/*
-	 * Recursion
-	 */
+	/**
+	 * Get individual config parameters from yml-file
+	 *
+	 * @param $parameter array
+	 * @param $path string
+	 * @return mixed
+	 **/
 	protected function getConfigVar( $parameter, $path )
 	{
 		/* Parameter array is empty; fetch tree */
@@ -128,14 +146,23 @@ class op5config {
 		}
 	}
 
-	/*
-	 * File access
-	 */
+	/**
+	 * Returns the path to supplied namespace
+	 *
+	 * @param $namespace string
+	 * @return string
+	 **/
 	protected function getPathForNamespace( $namespace )
 	{
 		return $this->basepath . $namespace . '.yml';
 	}
 
+	/**
+	 * Returns content of yaml config file as array
+	 *
+	 * @param $path string
+	 * @return array
+	 **/
 	protected function getConfigFile( $path )
 	{
 		if( $this->apc_enabled ) {
@@ -154,8 +181,12 @@ class op5config {
 	}
 
 	/**
- 	 * @return boolean
-	 */
+	 * Writes array to yaml config file
+	 *
+	 * @param $path string
+	 * @param $array array
+	 * @return boolean
+	 **/
 	protected function setConfigFile( $path, $array )
 	{
 		if( $this->apc_enabled ) {
@@ -167,6 +198,12 @@ class op5config {
 		return (bool) file_put_contents( $path, $yaml );
 	}
 
+	/**
+	 * Hashes path tag for apc
+	 *
+	 * @param $path string
+	 * @return string
+	 **/
 	protected function apc_tag_for_path( $path ) {
 		/* Fix path with realpath before hashing. Fixes double slashes and relative paths */
 		$tag = 'op5_config_' . md5( realpath($path) );
