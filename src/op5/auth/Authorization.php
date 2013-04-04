@@ -73,6 +73,11 @@ class op5Authorization {
 		return $authorized;
 	}
 
+	/**
+	 * Returns all available authorization points
+	 *
+	 * @return array
+	 **/
 	public static function get_all_auth_levels()
 	{
 		return array(
@@ -178,6 +183,12 @@ class op5Authorization {
 		);
 	}
 
+	/**
+	 * Translates pre mon6 authorization points to post mon6 authorization points
+	 *
+	 * @param $access_rights array
+	 * @return array
+	 **/
 	public static function nagios_rights_to_op5auth($access_rights)
 	{
 		$translated_access_levels = array();
