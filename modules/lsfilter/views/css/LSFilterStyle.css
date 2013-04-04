@@ -24,10 +24,6 @@
 	width: 75%;
 }
 
-#filter-query-multi-action {
-	width: 400px;
-}
-
 #lsfilter_save_filter.saving {
 	background: url('loading_small.gif') no-repeat;
 	background-position: left center;
