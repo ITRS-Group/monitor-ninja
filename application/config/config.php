@@ -264,3 +264,8 @@ $config['service_long_output_enabled'] = false;
  * PHP path.
  */
 $config['op5lib'] = 'op5';
+
+/**
+ * How often do each listview refresh itself? 0 means it's disabled
+ */
+$config['listview_refresh_rate'] = 30;
