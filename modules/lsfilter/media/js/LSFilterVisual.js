@@ -195,7 +195,9 @@ var lsfilter_graphics_visitor = {
 			'all' : 'all'
 		},
 		"list" : {
-			'gt_eq' : 'contains'
+			'gt_eq' : 'contains',
+			'eq' : 'equals',
+			'not_eq' : 'not equals'
 		},
 		/* FIXME: This is ugly... better grammar for custom_variables */
 		"dict" : {
