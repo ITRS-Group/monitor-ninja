@@ -48,6 +48,7 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 			}
 			/* Otherwise drop through */
 		}
+		$value = Database::instance()->escape($value);
 		switch( $filt->get_op() ) {
 			case '!~~':
 				return "NOT ($field REGEXP $value)";
@@ -80,7 +81,6 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 			case '<':
 				break;
 		}
-		$value = Database::instance()->escape($value);
 		return "($field $op $value)";
 	}
 
