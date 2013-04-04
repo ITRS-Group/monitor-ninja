@@ -175,32 +175,35 @@ if (!empty($widgets)) {
 			<td colspan="2" style="padding-top: 7px">
 				<?php
 					if ($url = $object->get_action_url()) {
-						echo '<a href="'.$url.'" style="border: 0px" target="'.$action_url_target.'">';
+						echo '<a href="'.$url.'" target="'.$action_url_target.'">';
 						echo '<span class="icon-16 x16-host-actions" title="'. _('Perform extra '.$type.' actions').'"></span>';
-						echo '<a href="'.$url.'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
+						echo _('Extra actions').'</a>';
 					}
 					if ($url = $object->get_notes_url()) {
-						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$url.'" style="border: 0px">';
+						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$url.'">';
 						echo '<span class="icon-16 x16-host-notes" title="'. _('View extra '.$type.' notes').'"></span>';
-						echo '<a target="'.$notes_url_target.'" href="'.$url.'">'._('Extra notes').'</a>';
+						echo _('Extra notes').'</a>';
 					}
 					if ($url = $object->get_config_url()) {
-						echo '&nbsp; <a href="'.$url.'" style="border: 0px">';
+						echo '&nbsp; <a href="'.$url.'">';
 						echo '<span class="icon-16 x16-nacoma" title="'. _('Configure '.$type).'"></span>';
-						echo '<a href="'.$url.'">'._('Configure').'</a>';
+						echo _('Configure').'</a>';
 					}
 					if ($object->get_pnpgraph_present()) {
 						$url = url::site() . 'pnp/?host=' . urlencode($host->get_name());
+						$pnp_host = $host->get_name();
+						$pnp_service = "_HOST_";
 						if($service!==false) {
 							$url .= '&srv=' . urlencode($service->get_description());
+							$pnp_service = $service->get_description();
 						} else {
 							$url .= '&srv=_HOST_';
 						}
-						echo '&nbsp; <a href="'.$url.'" style="border: 0px">';
-						echo '<span class="icon-16 x16-pnp" title="'. _('Show performance graph').'"></span>';
-						echo '<a href="'.$url.'">'._('Show performance graph').'</a>';
+						echo '&nbsp; <a class="pnp_graph" data-host="'.$pnp_host.'" data-srv="'.$pnp_service.'" href="'.$url.'">';
+						echo '<span class="icon-16 x16-pnp"></span>';
+						echo _('Show performance graph').'</a>';
 					}
-				?><div id="pnp_area" style="display:none"></div>
+				?>
 			</td>
 		</tr>
 	</table>

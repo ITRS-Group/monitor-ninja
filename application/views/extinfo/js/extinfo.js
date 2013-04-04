@@ -81,6 +81,15 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.pnp_graph').map(function() {
+		var el = $(this);
+		var data = {};
+		$.map(el[0].search.replace(/^\?/, "").split("&"), function(variable) {
+			data[variable.split("=")[0]] = variable.split("=")[1];
+		});
+		pnp_popup(el, data);
+	});
+
 
 	/**
 		========================
