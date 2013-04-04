@@ -48,12 +48,12 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 			}
 			/* Otherwise drop through */
 		}
-		$value = Database::instance()->escape($value);
+		$value_esc = Database::instance()->escape($value);
 		switch( $filt->get_op() ) {
 			case '!~~':
-				return "NOT ($field REGEXP $value)";
+				return "NOT ($field REGEXP $value_esc)";
 			case '!~':
-				return "NOT ($field REGEXP BINARY $value)";
+				return "NOT ($field REGEXP BINARY $value_esc)";
 			case '~~':
 				$op = 'REGEXP';
 				break;
@@ -81,7 +81,7 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 			case '<':
 				break;
 		}
-		return "($field $op $value)";
+		return "($field $op $value_esc)";
 	}
 
 	/**
