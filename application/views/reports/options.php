@@ -226,7 +226,7 @@ if($options['report_id']) { ?>
 						'class' => 'autofill')
 					) ?>
 				<label for="month_<?php echo $key+1 ?>"><?php echo $month ?></label><br />
-				<input type="text" size="2" class="sla_month" id="month_<?php echo ($key+1) ?>" name="month[<?php echo ($key+1) ?>]" value="<?php echo arr::search($options['months'], $key + 1, '') ?>" maxlength="6" /> %
+				<input type="text" size="2" class="sla_month" id="month_<?php echo ($key+1) ?>" name="month_<?php echo ($key+1) ?>" value="<?php echo arr::search($options['months'], $key + 1, '') ?>" maxlength="6" /> %
 			</td>
 			<?php	} ?>
 		</tr>
