@@ -432,7 +432,7 @@ class Reports_Controller extends Base_reports_Controller
 				}
 			}
 		} else { # single avail host/service, or any sla
-			$image_data = false;
+			$image_data = array();
 			$data_str = '';
 			if (!empty($data_arr)) {
 				$data = $data_arr[0];
