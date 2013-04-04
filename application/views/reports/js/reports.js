@@ -29,7 +29,7 @@ $(document).ready(function() {
 	show_calendar($("#report_period").attr('value'));
 
 	$('.autofill').click(function() {
-		var the_val = $("input[name='" + $(this).attr('id') + "']").attr('value');
+		var the_val = $(this).siblings('input').val();
 		if (the_val!='') {
 			if (!confirm(_reports_propagate.replace('this value', the_val+'%'))) {
 				return false;
@@ -82,10 +82,11 @@ function set_report_form_values(the_val)
 {
 	for (i=1;i<=12;i++) {
 		var field_name = 'month_' + i;
-		if ($("input[name='" + field_name + "']").attr('disabled')) {
-			$("input[name='" + field_name + "']").attr('value', '');
+		var input = $("#"+field_name);
+		if (input.attr('disabled')) {
+			input.attr('value', '');
 		} else {
-			$("input[name='" + field_name + "']").attr('value', the_val);
+			input.attr('value', the_val);
 		}
 	}
 }
