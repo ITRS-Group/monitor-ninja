@@ -59,4 +59,10 @@ function lsfilter_list_attach_events( listview, base_element ) {
 	.on('change', '.listview_multiselect_checkbox_all', function(e) {
 		listview.config.table.find('.listview_multiselect_checkbox').prop('checked', $(this).prop('checked')).trigger('change');
 	});
+	
+	if( listview.config.attach_head ) {
+		$(window).on('resize scroll load', function(e) {
+			listview.update_float_header();
+		});
+	}
 }

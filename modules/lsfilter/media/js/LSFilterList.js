@@ -42,7 +42,6 @@ function lsfilter_list(config)
 	 **************************************************************************/
 	this.update = function(data)
 	{
-		var self = this; // To be able to access it from within handlers
 		var metadata = data.metadata;
 
 		if (data.source && data.source == 'list') { return; }
@@ -83,24 +82,13 @@ function lsfilter_list(config)
 			this.sort_ascending = (order_parts[1].toLowerCase() == 'asc');
 		}
 
-		this.send_request({
-			append: false,
-			success: function(data)
-			{
-				self.handle_ajax_response(data);
-			},
-			error: function(data)
-			{
-				self.handle_ajax_error_response(data);
-			}
-		});
+		this.send_request({});
 	};
 
 	this.set_sort = function(vis_column)
 	{
-		var self = this; // To be able to access it from within handlers
 		this.config.offset = 0;
-		this.previous_obj = 0;
+		this.previous_obj = {};
 
 		if (this.sort_vis_column == vis_column) {
 			this.sort_ascending = !this.sort_ascending;
@@ -114,17 +102,7 @@ function lsfilter_list(config)
 		if( typeof lsfilter_main != "undefined" )
 			lsfilter_main.update(false, 'list', this.sort_vis_column + (this.sort_ascending ? ' asc' : ' desc'));
 
-		this.send_request({
-			append: false,
-			success: function(data)
-			{
-				self.handle_ajax_response(data);
-			},
-			error: function(data)
-			{
-				self.handle_ajax_error_response(data);
-			}
-		});
+		this.send_request({});
 	};
 
 	this.send_request = function(config)
@@ -155,11 +133,9 @@ function lsfilter_list(config)
 		var loading_id = self.config.loading_start();
 		var options = $.extend(
 			{
-				error: function() {},
-				success: function() {},
-				complete: function() {}
+				success: false
 			},
-			self.config,
+			this.config,
 			config
 		);
 		this.active_ajax_request = $
@@ -175,7 +151,11 @@ function lsfilter_list(config)
 					},
 					success: function(data)
 					{
-						options.success(data);
+						if(options.success) {
+							options.success(data);
+						} else {
+							self.handle_ajax_response(data);
+						}
 					},
 					error: function(data, text_status)
 					{
@@ -191,14 +171,12 @@ function lsfilter_list(config)
 						} catch(not_json) {
 							message = _('Error reloading');
 						}
-						options.error(message);
+						self.handle_ajax_error_response(message);
 					},
 					complete: function(data)
 					{
-						options.complete(data);
 						this.active_ajax_request = false;
 						self.config.loading_stop(loading_id);
-						// $('.lsfilter-loader').remove();
 					}
 				});
 	};
@@ -226,28 +204,52 @@ function lsfilter_list(config)
 	 * Internal methods
 	 **************************************************************************/
 
+
+	this.update_float_header = function()
+	{
+		var thead =  $(this.config.table).find('thead');
+		var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
+		var clone = $(thead).filter(function(){return $(this).hasClass('floating-header');});
+
+		if( !header || !clone ) return;
+
+		var head = header.find("tr").children();
+		var cloneHead = clone.find("tr").children();
+		var index = 0;
+
+		clone.css('min-width', header.width());
+
+		head.each(function() {
+
+			if ($.browser.webkit) {
+				$(cloneHead[index]).css(
+						'width',
+						(parseInt($(this).css('width'), 10) + 1) + 'px');
+			}
+			else {
+				$(cloneHead[index]).css('width',
+						$(this).css('width'));
+			}
+
+			$(cloneHead[index]).css('padding-left', $(this).css('padding-left'));
+			$(cloneHead[index]).css('padding-right', $(this).css('padding-right'));
+			$(cloneHead[index]).css('padding-top', $(this).css('padding-top'));
+			$(cloneHead[index]).css('padding-bottom', $(this).css('padding-bottom'));
+			$(cloneHead[index]).css('margin', $(this).css('margin'));
+			$(cloneHead[index]).css('border', $(this).css('border'));
+
+			index++;
+		});
+
+	};
+
 	this.handle_autorefresh = function()
 	{
 		var self = this; // To be able to access it from within handlers
 
 		this.send_request({
-			append: false,
 			offset: 0,
-			per_page: this.config.offset + this.config.per_page,
-			success: function(data)
-			{
-				// Don't drop first host line in auto refresh...
-				self.previous_obj = {};
-
-				self.handle_ajax_response(data);
-			},
-			error: function(data)
-			{
-				// Don't drop first host line in auto refresh...
-				self.previous_obj = {};
-
-				self.handle_ajax_error_response(data);
-			}
+			per_page: this.config.offset + this.config.per_page
 		});
 	};
 
@@ -264,7 +266,7 @@ function lsfilter_list(config)
 		}, this.config.autorefresh_delay);
 	};
 
-	this.handle_ajax_response = function(data, append)
+	this.handle_ajax_response = function(data)
 	{
 		var new_table;
 		var new_totals = $('<span />');
@@ -279,11 +281,13 @@ function lsfilter_list(config)
 		}
 		new_totals = this.render_totals(data.table, data.totals);
 
+		if (this.config.totals) {
+			this.config.totals.empty().append(new_totals);
+		}
 		if (this.config.table) {
 			this.config.table.empty().append(new_table);
-			this.attach_header(new_table);
+			this.attach_header();
 		}
-		if (this.config.totals) this.config.totals.empty().append(new_totals);
 
 		this.start_autorefresh_timer();
 	};
@@ -380,17 +384,12 @@ function lsfilter_list(config)
 		var tbody = loadrow.parent('tbody');
 
 		this.send_request({
-			append: true,
 			success: function(data)
 			{
 				loadrow.remove();
 				self.insert_rows(data, tbody);
 				self.add_fill_bar(data, tbody);
 				self.refresh_multi_select(tbody);
-			},
-			error: function(data)
-			{
-				self.handle_ajax_error_response(data);
 			},
 			increment_items_in_view: true
 		});
@@ -453,6 +452,7 @@ function lsfilter_list(config)
 		}
 		thead.append(header);
 
+		this.previous_obj = {};
 		this.insert_rows(data, tbody);
 		this.add_fill_bar(data, tbody);
 		this.refresh_multi_select(tbody);
@@ -493,60 +493,17 @@ function lsfilter_list(config)
 		baseelem.find('.listview_multiselect_checkbox').createCheckboxRange();
 	};
 
-	this.attach_header = function(table)
+	this.attach_header = function()
 	{
 		if (!this.config.attach_head) return;
-		var header = $("thead", table);
+
+		var thead =  $(this.config.table).find('thead');
+		var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
 		var clone = header.clone(true);
 		header.after(clone);
-		var update_float_header = function()
-		{
-			table.each(function()
-			{
+		
+		clone.addClass('floating-header');
 
-				var el = $(this);
-				var offset = el.offset();
-				var scrollTop = $(window).scrollTop();
-
-				if (scrollTop >= 0) {
-
-					var head = header.find("tr").children();
-					var cloneHead = clone.find("tr").children();
-					var index = 0;
-
-					clone.css('min-width', header.width());
-
-					head.each(function()
-					{
-
-						if ($.browser.webkit) {
-							$(cloneHead[index]).css(
-									'width',
-									(parseInt($(this).css('width'), 10) + 1) + 'px');
-						}
-						else {
-							$(cloneHead[index]).css('width',
-									$(this).css('width'));
-						}
-
-						$(cloneHead[index]).css('padding-left', $(this).css('padding-left'));
-						$(cloneHead[index]).css('padding-right', $(this).css('padding-right'));
-						$(cloneHead[index]).css('padding-top', $(this).css('padding-top'));
-						$(cloneHead[index]).css('padding-bottom', $(this).css('padding-bottom'));
-						$(cloneHead[index]).css('margin', $(this).css('margin'));
-						$(cloneHead[index]).css('border', $(this).css('border'));
-
-						index++;
-					});
-
-					clone.addClass('floating-header');
-					clone.css('visibility', 'visible');
-
-				}
-
-			});
-		};
-		$(window).resize(update_float_header).scroll(update_float_header)
-				.trigger("scroll");
+		this.update_float_header();
 	};
 }
