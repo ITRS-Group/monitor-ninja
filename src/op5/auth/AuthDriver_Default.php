@@ -160,6 +160,10 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	
 	/**
 	 * Validates a password using the given algorithm
+	 * @param $pass string
+	 * @param $hash string
+	 * @param $algo string
+	 * @return boolean
 	 */
 	public static function valid_password($pass, $hash, $algo = '')
 	{
