@@ -285,6 +285,8 @@ class User_Controller extends Authenticated_Controller {
 			'pagination.default.items_per_page' => _('Set number of items shown on each page. Defaults to 100.'),
 			'pagination.paging_step' => _('This value is used to generate drop-down for nr of items per page to show. Defaults to 100.'),
 			'checks.show_passive_as_active' => _('This setting affects if to show passive checks as active in the GUI'),
+			'config.page_refresh_rate' => _('Seconds between each automatic page reload (0 disables)'),
+			'config.listview_refresh_rate' => _("Tables including status data ('list views') automatically updates their content. This value indicates seconds between each list view reload (0 disables)"),
 			'config.current_skin' => _('Select the skin to use in the GUI. Affects colors and images.'),
 			'keycommands.activated' => _('Switch keyboard commands ON or OFF. Default is OFF'),
 			'keycommands.search' => _('Keyboard command to set focus to search field. Defaults to Alt+Shift+f.').' '.$keyboard_help,
