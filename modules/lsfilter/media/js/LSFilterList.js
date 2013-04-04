@@ -37,10 +37,12 @@ function lsfilter_list(config)
 	if(this.config.totals)
 		lsfilter_list_attach_events( this, this.config.totals );
 
+	/* Bind this once and for all globally... Needed in lot of callbacks */
+	var self = this;
 
 	if( this.config.attach_head ) {
 		$(window).on('resize scroll load', function(e) {
-			listview.update_float_header();
+			self.update_float_header();
 		});
 	}
 	/***************************************************************************
@@ -113,8 +115,6 @@ function lsfilter_list(config)
 
 	this.send_request = function(config)
 	{
-		var self = this; // To be able to access it from within handlers
-
 		if (typeof config.increment_items_in_view !== "undefined" && Boolean(config.increment_items_in_view)) {
 			delete config.increment_items_in_view;
 			self.config.offset += self.config.per_page;
@@ -244,8 +244,6 @@ function lsfilter_list(config)
 
 	this.handle_autorefresh = function()
 	{
-		var self = this; // To be able to access it from within handlers
-
 		this.send_request({
 			offset: 0,
 			per_page: this.config.offset + this.config.per_page
@@ -253,7 +251,6 @@ function lsfilter_list(config)
 	};
 
 	this.start_autorefresh_timer = function() {
-		var self = this; // To be able to access it from within handlers
 		if( this.config.autorefresh_enabled === false || isNaN(this.config.autorefresh_delay) || this.config.autorefresh_delay < 1 )
 			return;
 
@@ -355,7 +352,7 @@ function lsfilter_list(config)
 			/* Don't bother then...*/
 			return;
 		}
-		var self = this; // To be able to access it from within handlers
+
 		var more_rows = data.count - tbody.children().length;
 		if (more_rows > this.config.per_page) {
 			more_rows = this.config.per_page;
@@ -374,8 +371,6 @@ function lsfilter_list(config)
 
 	this.load_more_rows = function(loadingcell)
 	{
-		var self = this;
-
 		loadingcell.removeClass('link_load_more_rows');
 		loadingcell.text('Loading...');
 
@@ -396,8 +391,6 @@ function lsfilter_list(config)
 
 	this.render_table = function(data, sort_col, sort_asc)
 	{
-		var self = this; // To be able to access it from within handlers
-
 		listview_table_col_index = 0;
 		listview_last_host = '';
 
@@ -461,8 +454,6 @@ function lsfilter_list(config)
 
 	this.add_sort = function(table, element, vis_column, current)
 	{
-		var self = this; // To be able to access it from within handlers
-
 		element.addClass('sortable');
 		if (current === 1) { // Ascending?
 			element
