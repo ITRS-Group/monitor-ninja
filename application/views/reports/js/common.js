@@ -1,7 +1,5 @@
 var invalid_report_names = '';
 var current_filename;
-var _time_error = false;
-var _time_error_start = false;
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
@@ -481,8 +479,8 @@ function check_form_values(form)
 	var errors = 0;
 	var err_str = '';
 	var field_obj = new field_maps();
-	var curval_starttime = '';
-	var curval_endtime = '';
+	var cur_start = '';
+	var cur_end = '';
 
 	var rpt_type = $("input[name=report_type]", form).val();
 	if (rpt_type == '' || rpt_type == undefined) {
@@ -491,38 +489,35 @@ function check_form_values(form)
 	if ($("#report_period", form).val() == 'custom') {
 		if ($('input[name=type]', form).val() != 'sla') {
 			// date validation
-			var cur_startdate = Date.fromString($("input[name=cal_start]", form).attr('value'));
-			var cur_enddate = Date.fromString($("input[name=cal_end]", form).attr('value'));
+			cur_start = Date.fromString($("input[name=cal_start]", form).val());
+			var time =  $(".time_start", form).val().split(':');
+			cur_start.addHours(time[0]);
+			cur_start.addMinutes(time[1]);
+			cur_end = Date.fromString($("input[name=cal_end]", form).val());
+			time = $(".time_end", form).val().split(':');
+			cur_end.addHours(time[0]);
+			cur_end.addMinutes(time[1]);
 			var now = new Date();
-			if (!cur_startdate || !cur_enddate) {
-				if (!cur_startdate) {
+			if (!cur_start || !cur_end) {
+				if (!cur_start) {
 					errors++;
 					err_str += "<li>" + _reports_invalid_startdate + ".</li>";
 				}
-				if (!cur_enddate) {
+				if (!cur_end) {
 					errors++;
 					err_str += "<li>" + _reports_invalid_enddate + ".</li>";
 				}
 			} else {
-				if (cur_enddate > now) {
+				if (cur_end > now) {
 					if (!confirm(_reports_enddate_infuture)) {
 						return false;
 					} else {
-						cur_enddate = now;
+						cur_end = now;
 					}
 				}
 			}
 
-			// time validation: _time_error and _time_error_start
-			if (_time_error || _time_error_start) {
-				errors++;
-				err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
-			}
-
-			curval_starttime = $(".time_start", form).val();
-			curval_endtime = $(".time_end", form).val();
-
-			if (cur_enddate < cur_startdate || ($("input[name=cal_start]", form).val() === $("input[name=cal_end]", form).val() && curval_endtime < curval_starttime) ) {
+			if (cur_end < cur_start) {
 				errors++;
 				err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
 				$(".datepick-start", form).addClass("time_error");
@@ -643,13 +638,11 @@ function check_form_values(form)
 			}
 		}
 
-		if (curval_starttime) {
-			curval_starttime = ' ' + curval_starttime;
-			$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
+		if (cur_start) {
+			$("input[name=start_time]", form).attr('value', cur_start.format('U'));
 		}
-		if (curval_endtime) {
-			curval_endtime = ' ' + curval_endtime;
-			$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
+		if (cur_end) {
+			$("input[name=end_time]", form).attr('value',  cur_end.format('U'));
 		}
 		$('#response', form).hide();
 		return true;
