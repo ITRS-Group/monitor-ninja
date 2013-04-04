@@ -508,6 +508,9 @@ var lsfilter_dom_to_query = {
  ******************************************************************************/
 var lsfilter_visual = {
 
+	type_timeout : 500,
+	current_timeout : false,
+
 	update : function(data) {
 		if (data.source == 'visual')
 			return;
@@ -587,9 +590,10 @@ var lsfilter_visual = {
 					/* Well... don't do anything here. onnode does what's needed */
 				}))
 
-		.on('change', '.lsfilter_visual_value_field', onnode(function(n, el) {
-			/* Well... don't do anything here. onnode does what's needed */
-		}))
+		.on('change keyup', '.lsfilter_visual_value_field',
+				onnode(function(n, el) {
+					/* Well... don't do anything here. onnode does what's needed */
+				}))
 
 		.on('change', '.lsfilter_visual_table_select', function(e) {
 			e.preventDefault();
@@ -624,7 +628,14 @@ var lsfilter_visual = {
 	},
 
 	update_query_delayed : function() {
-		this.update_query();
+		var self = this;
+		if (this.current_timeout) {
+			clearTimeout(this.current_timeout);
+		}
+		this.current_timeout = setTimeout(function() {
+			self.current_timeout = false;
+			self.update_query();
+		}, this.type_timeout);
 	},
 
 	/* Color nodes after depth */
