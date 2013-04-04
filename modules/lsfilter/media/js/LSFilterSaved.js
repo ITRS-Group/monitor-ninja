@@ -52,7 +52,7 @@ var lsfilter_saved = {
 								'ninja_menu_links');
 
 						link.append(current_icon);
-						link.append($('<span class="nav-seg-span">').text(
+						link.append($('<span class="nav-seg-span" />').text(
 								save.name));
 
 						list.append($('<li class="nav-seg" />').append(link));
@@ -61,7 +61,7 @@ var lsfilter_saved = {
 				var link = link_query('[saved_filters] all').addClass(
 						'ninja_menu_links');
 				link.append(self.icons['other']);
-				link.append($('<span class="nav-seg-span">').text(
+				link.append($('<span class="nav-seg-span" />').text(
 						'Manage and view filters'));
 				list.prepend($('<li class="nav-seg" />').append(link));
 			}
