@@ -220,16 +220,9 @@ function lsfilter_list(config)
 		clone.css('min-width', header.width());
 
 		head.each(function() {
-
-			if ($.browser.webkit) {
-				$(cloneHead[index]).css(
-						'width',
-						(parseInt($(this).css('width'), 10) + 1) + 'px');
-			}
-			else {
-				$(cloneHead[index]).css('width',
-						$(this).css('width'));
-			}
+			$(cloneHead[index]).css(
+					'width',
+					(parseInt($(this).css('width'), 10) + 1) + 'px');
 
 			$(cloneHead[index]).css('padding-left', $(this).css('padding-left'));
 			$(cloneHead[index]).css('padding-right', $(this).css('padding-right'));
