@@ -145,7 +145,7 @@ class op5Livestatus {
 			'services'      => array('service_view_all'),
 			'servicegroups' => array('servicegroup_view_all'),
 			'status'        => array('system_information'),
-			'timeperiods'   => array('timeperiods_view_all')
+			'timeperiods'   => array('timeperiod_view_all')
 			);
 		
 		/* Tables not handling AuthUser in livestatus... if limited, filter by "Filter: col = username" or "Or: 0" */
