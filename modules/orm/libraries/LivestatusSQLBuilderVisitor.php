@@ -36,6 +36,18 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 		$field = str_replace('.','_',$filt->get_field());
 		$value = $filt->get_value();
 		$op = $filt->get_op();
+		if( empty($value) ) {
+			/* Special case on empty valued regexp */
+			switch( $filt->get_op() ) {
+				case '!~~':
+				case '!~':
+					return "1=0"; /* Matches nothing */
+				case '~~':
+				case '~':
+					return "1=1"; /* Matches everything */
+			}
+			/* Otherwise drop through */
+		}
 		switch( $filt->get_op() ) {
 			case '!~~':
 				return "NOT ($field REGEXP $value)";
