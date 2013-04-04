@@ -64,12 +64,14 @@ var lsfilter_multiselect = {
 		},
 		'comments' : {
 			'' : _('Select action'),
-			// This is actually a macro of delete svc comments, which can handle both hosts and service comments
+			// This is actually a macro of delete svc comments, which can handle
+			// both hosts and service comments
 			'DEL_COMMENT' : _('Delete comments')
 		},
 		'downtimes' : {
 			'' : _('Select action'),
-			// This is actually a macro of delete svc comments, which can handle both hosts and service comments
+			// This is actually a macro of delete svc comments, which can handle
+			// both hosts and service comments
 			'DEL_DOWNTIME' : _('Delete downtimes')
 		},
 		'other' : {
@@ -86,8 +88,13 @@ var lsfilter_multiselect = {
 	},
 
 	do_send : function() {
-		var action = $('#multi_action_select').attr('value');
-		if (action) {
+		var action = $('#multi_action_select').val();
+		var selcount = $('.listview_multiselect_checkbox:checked').length;
+		if (selcount == 0) {
+			this.notice('No items selected');
+		} else if (!action) {
+			this.notice('No action selected');
+		} else {
 			$('#listview_multi_action_obj_action').attr('value', action);
 			$('#listview_multi_action_obj_action').attr('value', action);
 			$('#listview_multi_action_form').submit();
@@ -100,5 +107,20 @@ var lsfilter_multiselect = {
 		if (this.selection[key])
 			return true;
 		return false;
+	},
+
+	notice_timeout : false,
+
+	notice : function(msg) {
+		var notice_container = $('#multi-action-message');
+		var self = this;
+		if (this.notice_timeout) {
+			clearTimeout(this.notice_timeout);
+		}
+		notice_container.text(msg);
+		this.notice_timeout = setTimeout(function() {
+			this.notice_timeout = false;
+			notice_container.empty();
+		}, 3000);
 	}
 };
