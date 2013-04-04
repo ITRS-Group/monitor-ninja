@@ -66,7 +66,9 @@ class op5auth {
 	/**
 	 * Creates an op5Auth instance.
 	 *
-	 * @param $config array Elements in the array overrieds the values in the common block of auth config
+	 * @param 	$config array 	Elements in the array overrieds the values in the common block of auth config
+	 * @param 	$driver_config array
+	 * @return void
 	 */
 	public function __construct($config = false, $driver_config = false)
 	{
@@ -153,6 +155,8 @@ class op5auth {
 	}
 
 	/**
+	 * Returns the users group memberships
+	 *
 	 * @return array
 	 */
 	public function get_groups()
@@ -203,9 +207,9 @@ class op5auth {
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 * Implicitly logout previsouly logged in user, to clear session.
 	 *
-	 * @param   string   username to log in
-	 * @param   string   password to check against
-	 * @param   string   optional, authentication method to use
+	 * @param   $username string	Username to log in with
+	 * @param   $password string	Password to check against
+	 * @param   $auth_method string optional, authentication method to use
 	 * @return  boolean  True if success
 	 */
 	public function login($username, $password, $auth_method = false)
@@ -300,7 +304,6 @@ class op5auth {
 	/**
 	 * Log out a user by removing the related session variables.
 	 *
-	 * @param   boolean  completely destroy the session
 	 * @return  boolean  if successful
 	 */
 	public function logout()
@@ -322,7 +325,7 @@ class op5auth {
 	/**
 	 * Returns true if current session has access for a given authorization point
 	 *
-	 * @param   string   authorization point
+	 * @param   $authorization point string
 	 * @return  boolean  true if access
 	 */
 	public function authorized_for( $authorization_point )
@@ -338,8 +341,8 @@ class op5auth {
 	 * If driver supports multiple backends, the extra auth_method can be set to the backend.
 	 * Otherwise, a superset is should given of all backends
 	 *
-	 * @param $grouplist   List of groups to check
-	 * @return             An array of all auth_methods as keys, values is an associative array
+	 * @param $grouplist array   List of groups to check
+	 * @return array       An array of all auth_methods as keys, values is an associative array
 	 *                     of the groups in $grouplist as keys, boolean as values
 	 */
 	public function groups_available( array $grouplist )
@@ -492,6 +495,9 @@ class op5auth {
 
 	/**
 	 * Lazy loading of drivers...
+	 *
+	 * @param $auth_method string
+	 * @return auth_method
 	 */
 	private function getAuthModule( $auth_method )
 	{
@@ -535,6 +541,11 @@ class op5auth {
 		return true;
 	}
 
+	/**
+	 * Stores user to session
+	 *
+	 * @return void
+	 **/
 	protected function session_store()
 	{
 		if( $this->config['session_key'] !== false &&
@@ -546,17 +557,29 @@ class op5auth {
 			$this->session_clear();
 		}
 	}
+
+	/**
+	 * Fetches user object from session
+	 *
+	 * @return void
+	 **/
 	protected function session_fetch()
 	{
 		if( $this->config['session_key'] !== false &&
 			isset( $_SESSION[ $this->config['session_key'] ] ) &&
 			is_array( $_SESSION[ $this->config['session_key'] ] ) )
-		{	
+		{
 			$this->user = new op5User( $_SESSION[ $this->config['session_key'] ] );
 		} else {
 			$this->user = false;
 		}
 	}
+
+	/**
+	 * Unsets user from session
+	 *
+	 * @return void
+	 **/
 	protected function session_clear()
 	{
 		if( $this->config['session_key'] !== false && isset ($_SESSION[$this->config['session_key']]) ) {
@@ -564,6 +587,14 @@ class op5auth {
 		}
 	}
 
+	/**
+	 * Forces authentication and authorization of supplied user.
+	 * Authorization of user is optional.
+	 *
+	 * @param $user object
+	 * @param $do_authorization boolean
+	 * @return user
+	 **/
 	public function force_user(op5User $user, $do_authorization = true) {
 		$this->logout();
 		$this->user = $user;
