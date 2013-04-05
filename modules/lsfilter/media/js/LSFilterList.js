@@ -37,7 +37,7 @@ function lsfilter_list(config)
 	if(this.config.totals)
 		lsfilter_list_attach_events( this, this.config.totals );
 
-	/* Bind this once and for all globally... Needed in lot of callbacks */
+	/* Bind this once and for all globally... Needed in lot of callbacks */ 
 	var self = this;
 
 	if( this.config.attach_head ) {
@@ -181,7 +181,7 @@ function lsfilter_list(config)
 					},
 					complete: function(data)
 					{
-						this.active_ajax_request = false;
+						self.active_ajax_request = false;
 						self.config.loading_stop(loading_id);
 					}
 				});
@@ -226,18 +226,20 @@ function lsfilter_list(config)
 		clone.css('min-width', header.width());
 
 		head.each(function() {
-			$(cloneHead[index]).css(
-					'width',
-					(parseInt($(this).css('width'), 10) + 1) + 'px');
-
-			$(cloneHead[index]).css('padding-left', $(this).css('padding-left'));
-			$(cloneHead[index]).css('padding-right', $(this).css('padding-right'));
-			$(cloneHead[index]).css('padding-top', $(this).css('padding-top'));
-			$(cloneHead[index]).css('padding-bottom', $(this).css('padding-bottom'));
-			$(cloneHead[index]).css('margin', $(this).css('margin'));
-			$(cloneHead[index]).css('border', $(this).css('border'));
-
+			var clonehead = $(cloneHead[index]);
+			var thishead = $(this);
 			index++;
+
+			clonehead.css(
+					'width',
+					(parseInt(thishead.css('width'), 10) + 1) + 'px');
+
+			clonehead.css('padding-left', thishead.css('padding-left'));
+			clonehead.css('padding-right', thishead.css('padding-right'));
+			clonehead.css('padding-top', thishead.css('padding-top'));
+			clonehead.css('padding-bottom', thishead.css('padding-bottom'));
+			clonehead.css('margin', thishead.css('margin'));
+			clonehead.css('border', thishead.css('border'));
 		});
 
 	};
@@ -436,7 +438,7 @@ function lsfilter_list(config)
 				var sort_dir = 0;
 				if (sort_col == col_name) sort_dir = -1;
 				if (sort_asc) sort_dir = -sort_dir;
-				this.add_sort(data.table, th, col_name, sort_dir);
+				this.add_sort(th, col_name, sort_dir);
 			}
 
 			th.append(col_render.header);
@@ -452,30 +454,25 @@ function lsfilter_list(config)
 		return table;
 	};
 
-	this.add_sort = function(table, element, vis_column, current)
+	this.add_sort = function(element, vis_column, current)
 	{
+		var img = _site_domain+'application/views/icons/arrow-up-down.png';
+		if (current > 0) { // Ascending?
+			img = _site_domain+'application/views/icons/arrow-up.png';
+			element.addClass('current');
+		}
+		else if(current < 0) {
+			img = _site_domain+'application/views/icons/arrow-down.png';
+			element.addClass('current');
+		}
+
 		element.addClass('sortable');
-		if (current === 1) { // Ascending?
-			element
-				.attr('title', 'Sort descending')
-				.addClass('current')
-				.append($('<span class="lsfilter-sort-span" />')
-					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-up.png')));
-		}
-		else if(current === -1) {
-			element
-				.attr('title', 'Sort ascending')
-				.addClass('current')
-				.append($('<span class="lsfilter-sort-span" />')
-					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-down.png')));
-		} else {
-			element
-				.attr('title', 'Sort descending')
-				.append($('<span class="lsfilter-sort-span" />')
-					.append($('<img />').attr('src',_site_domain+'application/views/icons/arrow-up-down.png')));
-		}
-		element.attr('data-column', vis_column );
 		element.addClass('link_set_sort');
+
+		element.attr('title', 'Sort descending');
+		element.attr('data-column', vis_column );
+
+		element.append($('<span class="lsfilter-sort-span" />').css('background-image', 'url('+img+')'));
 	};
 
 	this.refresh_multi_select = function(baseelem)

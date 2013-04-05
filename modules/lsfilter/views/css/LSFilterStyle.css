@@ -108,8 +108,15 @@ th span.header-icon {
 
 .lsfilter-sort-span {
 	float: right;
+	display: inline-block;
+	width: 7px;
+	height: 14px;
 	text-align: center;
-	padding-right: 4px;
+	padding-right: 0;
+	margin-right: 4px;
+
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 th.sortable:hover {
