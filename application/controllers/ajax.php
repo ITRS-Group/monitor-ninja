@@ -238,9 +238,9 @@ class Ajax_Controller extends Authenticated_Controller {
 			$set = $set->reduce_by('service.description', $service, '=');
 		
 		if (count($set) > 0) {
-			$data = "<table><tr><td><strong>"._('Author')."</strong></td><td><strong>"._('Comment')."</strong></td></tr>";
-			foreach ($set->it(array('author', 'comment'),array()) as $row) {
-				$data .= '<tr><td valign="top">'.$row->get_author().'</td><td width="400px">'.wordwrap($row->get_comment(), '50', '<br />').'</td></tr>';
+			$data = "<table><tr><th>"._("Timestamp")."</th><th>"._('Author')."</th><th>"._('Comment')."</th></tr>";
+			foreach ($set->it(array('entry_time', 'author', 'comment'),array()) as $row) {
+				$data .= '<tr><td>'.date(nagstat::date_format(), $row->get_entry_time()).'</td><td valign="top">'.$row->get_author().'</td><td width="400px">'.wordwrap($row->get_comment(), '50', '<br />').'</td></tr>';
 			}
 			$data .= '</table>';
 		}
