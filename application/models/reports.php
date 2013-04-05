@@ -241,6 +241,7 @@ class Reports_Model extends Model
 			output', true);
 
 		$extra_sql = null;
+		$db = $this->db; // for closures
 		$implode_str = ') OR (';
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
@@ -253,8 +254,8 @@ class Reports_Model extends Model
 					implode(
 						"', '",
 						array_map(
-							function($e) {
-								return $this->db->escape(current($e));
+							function($e) use ($db) {
+								return $db->escape(current($e));
 							},
 							$hosts[1]
 						)
@@ -277,8 +278,8 @@ class Reports_Model extends Model
 					implode(
 						", ",
 						array_map(
-							function($e) {
-								return '('.$this->db->escape($e[0]).', '.$this->db->escape($e[1]).')';
+							function($e) use($db) {
+								return '('.$db->escape($e[0]).', '.$db->escape($e[1]).')';
 							},
 							$services[1]
 						)
