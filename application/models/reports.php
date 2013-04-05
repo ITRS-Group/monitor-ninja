@@ -252,7 +252,7 @@ class Reports_Model extends Model
 					"', '",
 					array_map(
 						function($e) {
-							return $this->db->escape(current($e);
+							return $this->db->escape(current($e));
 						},
 						$hosts[1]
 					)
