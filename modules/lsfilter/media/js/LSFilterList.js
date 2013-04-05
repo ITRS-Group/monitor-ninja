@@ -280,10 +280,10 @@ function lsfilter_list(config)
 		new_totals = this.render_totals(data.table, data.totals);
 
 		if (this.config.totals) {
-			this.config.totals.empty().append(new_totals);
+			this.config.totals.replaceContent(new_totals);
 		}
 		if (this.config.table) {
-			this.config.table.empty().append(new_table);
+			this.config.table.replaceContent(new_table);
 			this.attach_header();
 		}
 
@@ -296,7 +296,7 @@ function lsfilter_list(config)
 		alert.html("<strong>Error:</strong> " + data.data);
 
 		if (this.config.table) {
-			this.config.table.empty().append(alert);
+			this.config.table.replaceContent(alert);
 		}
 	};
 
