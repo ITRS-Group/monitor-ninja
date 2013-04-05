@@ -241,6 +241,7 @@ class Reports_Model extends Model
 			output', true);
 
 		$extra_sql = null;
+		$implode_str = ') OR (';
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
 			$ls = op5Livestatus::instance();
@@ -263,6 +264,7 @@ class Reports_Model extends Model
 			}
 			else {
 				$extra_sql[] = "service_description != ''";
+				$implode_str = ') AND (';
 			}
 		}
 
@@ -284,11 +286,12 @@ class Reports_Model extends Model
 			}
 			else {
 				$extra_sql[] = "service_description = ''";
+				$implode_str = ') AND (';
 			}
 		}
 
 		if($extra_sql) {
-			$query .= "AND (".implode(') OR (', $extra_sql).")";
+			$query .= "AND (".implode($implode_str, $extra_sql).")";
 		}
 
 		// investigate if there are more rows available for this query,
