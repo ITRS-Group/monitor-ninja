@@ -104,7 +104,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		
 		$setting = array(
 			'query'=>$set->get_comments()->get_query(),
-			'columns'=>'all, -host_status, -host_name, -service_status, -service_description'
+			'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
 			);
 		$model = new Ninja_widget_Model(array(
 			'page' => Router::$controller,
@@ -126,7 +126,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if ($object->get_scheduled_downtime_depth()) {
 			$setting = array(
 				'query'=>$set->get_downtimes()->get_query(),
-				'columns'=>'all, -host_status, -host_name, -service_status, -service_description'
+				'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
 				);
 			$model = new Ninja_widget_Model(array(
 				'page' => Router::$controller,
