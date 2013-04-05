@@ -240,11 +240,14 @@ class Reports_Model extends Model
 			downtime_depth,
 			output', true);
 
+		$extra_sql = null;
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
 			$ls = op5Livestatus::instance();
 			$hosts = $ls->query("hosts", null, array("name"), array('auth' => $auth->get_user()));
-			$query .= " AND (host_name IN ('".
+			$extra_sql = sql::combine(
+				"AND",
+				"host_name IN ('".
 				implode(
 					"', '",
 					array_map(
@@ -253,22 +256,33 @@ class Reports_Model extends Model
 						},
 						$hosts[1]
 					)
-				)."')) ";
+				)."')",
+				"service_description = ''"
+			);
 		}
+
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
 		if(2 & $this->options["alert_types"] && !$auth->authorized_for("service_view_all")) {
 			$ls = op5Livestatus::instance();
-			$services = $ls->query("services", null, array("description"), array('auth' => $auth->get_user()));
-			$query .= " AND (service_description IN ('".
+			$services = $ls->query("services", null, array("host.name", "description"), array('auth' => $auth->get_user()));
+			$extra_sql = sql::combine(
+				"OR",
+				"service_description IN ('".
 				implode(
 					"', '",
 					array_map(
 						function($e) {
-							return current($e);
+							return $e[0].";".$e[1];
 						},
 						$services[1]
 					)
-				)."')) ";
+				)."') ",
+				$extra_sql
+			);
+		}
+
+		if($extra_sql) {
+			$query .= "AND (".$extra_sql.")";
 		}
 
 		// investigate if there are more rows available for this query,
