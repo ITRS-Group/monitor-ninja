@@ -101,64 +101,66 @@
 		<ul id="dojo-quicklink-external">
 		</ul>
 	</div>
-	<span title="Manage quickbar" class="icon-12 x12-box-config" id="dojo-add-quicklink" style="cursor: pointer; opacity: 0.5; margin-top: 22px; display: inline-block;"></span>
-	<div id="dojo-add-quicklink-menu" style="display: none;">
-		<h1>Add new quicklink</h1>
-		<hr />
-		<table class="no_border">
-			<tr>
-				<td><?php echo _('URI') ?>:</td>
-				<td><input type="text" id="dojo-add-quicklink-href"></td>
-			</tr>
-			<tr>
-				<td><?php echo _('Title') ?>:</td>
-				<td><input type="text" id="dojo-add-quicklink-title"></td>
-			</tr>
-			<tr>
-				<td><?php echo _('Open in') ?>:</td>
-				<td>
-					<select id="dojo-add-quicklink-target">
-						<option value=""><?php echo _('This window') ?></option>
-							<option value="_BLANK"><?php echo _('New window') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><?php echo _('Icon') ?>:</td>
-				<td>
-					<input type='hidden' id='dojo-add-quicklink-icon' name='dojo-add-quicklink-icon' />
-					<table style="width: auto" id="dojo-icon-container">
-						<tr>
-					<?php
-						$icons = glob((__DIR__) . '/icons/x16/*.png');
-						$counter = 0;
-						foreach ($icons as $icon) {
-							$name = pathinfo($icon, PATHINFO_FILENAME);
-							echo "<td><span data-icon='$name' class='icon-16 x16-$name'></span></td>";
-							if(++$counter % 16 === 0) {
+	<a href="#dojo-add-quicklink-menu" title="Manage quickbar" class="icon-12 x12-box-config no_border" id="dojo-add-quicklink" style="opacity: 0.5; margin-top: 22px; display: inline-block;"></a>
+	<div style="display: none">
+		<div id="dojo-add-quicklink-menu">
+			<form action="">
+				<h1>Add new quicklink</h1>
+				<hr />
+				<table class="no_border">
+					<tr>
+						<td><?php echo _('URI') ?>:</td>
+						<td><input type="text" id="dojo-add-quicklink-href"></td>
+					</tr>
+					<tr>
+						<td><?php echo _('Title') ?>:</td>
+						<td><input type="text" id="dojo-add-quicklink-title"></td>
+					</tr>
+					<tr>
+						<td><?php echo _('Open in') ?>:</td>
+						<td>
+							<select id="dojo-add-quicklink-target">
+								<option value=""><?php echo _('This window') ?></option>
+								<option value="_BLANK"><?php echo _('New window') ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td><?php echo _('Icon') ?>:</td>
+						<td>
+							<input type='hidden' id='dojo-add-quicklink-icon' name='dojo-add-quicklink-icon' />
+							<table style="width: auto" id="dojo-icon-container">
+								<tr>
+							<?php
+								$icons = glob((__DIR__) . '/icons/x16/*.png');
 								$counter = 0;
-								echo "</tr><tr>";
-							}
-						}
-					?>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td><?php echo _('Remove selected quicklinks') ?>:</td>
-				<td>
-					<ul id="dojo-quicklink-remove"></ul>
-			</td>
-			</tr>
-			<tr>
-				<td colspan=2>
-					<input type="submit" id="dojo-add-quicklink-submit" value="Save" />
-					<input type="submit" id="dojo-add-quicklink-close" value="Close" />
-			</td>
-			</tr>
-		</table>
-
+								foreach ($icons as $icon) {
+									$name = pathinfo($icon, PATHINFO_FILENAME);
+									echo "<td><span data-icon='$name' class='icon-16 x16-$name'></span></td>";
+									if(++$counter % 16 === 0) {
+										$counter = 0;
+										echo "</tr><tr>";
+									}
+								}
+							?>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><?php echo _('Remove selected quicklinks') ?>:</td>
+						<td>
+							<ul id="dojo-quicklink-remove"></ul>
+					</td>
+					</tr>
+					<tr>
+						<td colspan=2>
+							<input type="submit" value="<?php echo _('Save') ?>" />
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
 	</div>
 	<?php
 	if(Auth::instance()->logged_in()) {

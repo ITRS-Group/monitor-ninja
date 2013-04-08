@@ -17,6 +17,7 @@ if (!empty($base_href)) {
 
 	<?php echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon') ?>
 
+	<?php echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen') ?>
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
 	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
@@ -98,6 +99,7 @@ if (!empty($base_href)) {
 	<?php
 		echo (!empty($css_header)) ? $css_header : '';
 		echo html::script('application/media/js/jquery-ui.min.js');
+		echo html::script('application/media/js/jquery.fancybox.min.js');
 		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');
 		echo html::script('application/media/js/jquery.easywidgets.min.js');

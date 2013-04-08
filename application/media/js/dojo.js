@@ -153,11 +153,9 @@
 			},
 			type: 'POST',
 			complete: function (xhr) {
-				$('#dojo-add-quicklink-menu').fadeOut(300);
 				$('#dojo-add-quicklink-href').attr('value','');
 				$('#dojo-add-quicklink-title').attr('value','');
 				$('#dojo-add-quicklink-icon').attr('value','');
-				fix_empty_quicklink_border();
 			}
 		});
 	}
@@ -168,58 +166,47 @@
 		this.style.opacity = '0.5';
 	});
 
-	$('#dojo-add-quicklink').click(function () {
-		$('#dojo-add-quicklink-menu').css({
-			'display': 'block',
-			'width': '50%',
-			'left': '25%',
-			'position': 'fixed',
-			'top': '15%',
-			'background': '#f5f5f5',
-			'border': '1px solid #aaa',
-			'box-shadow': '1px 1px 5px rgba(0,0,0,0.5)',
-			'border-radius': '2px',
-			'color': '#222',
-			'padding': '8px'
-		});
-		$('#dojo-quicklink-remove').html('');
-		for (var i = 0; i < global_quicklinks.length; i += 1) {
-			var l = global_quicklinks[i];
-			var vid = l.title + ':'+ l.href;
-			$('#dojo-quicklink-remove').append($(
-				'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + ' (<a target="_blank" class="external" href="'+l.href+'">'+l.href+'</a>)</label></li>'
-			));
-		}
-		$('#dojo-icon-container').on('click', 'span', function(ev) {
-			var span = $(this);
-			$('#dojo-add-quicklink-icon').val(span.data('icon'));
+	$('#dojo-add-quicklink').fancybox({
+		titleShow: false,
+		overlayOpacity: 0,
+		onComplete: function() {
+			$('#dojo-quicklink-remove').html('');
+			for (var i = 0; i < global_quicklinks.length; i += 1) {
+				var l = global_quicklinks[i];
+				var vid = l.title + ':'+ l.href;
+				$('#dojo-quicklink-remove').append($(
+					'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + ' (<a target="_blank" class="external" href="'+l.href+'">'+l.href+'</a>)</label></li>'
+				));
+			}
+			$('#dojo-icon-container').on('click', 'span', function(ev) {
+				var span = $(this);
+				$('#dojo-add-quicklink-icon').val(span.data('icon'));
 
-			// we have to change the background of the td, since the span already
-			// has the icon image as its background
-			var all_tds = $('#dojo-icon-container td');
-			all_tds.removeClass('highlight');
-			span.parents('td').addClass('highlight');
-		});
+				// we have to change the background of the td, since the span already
+				// has the icon image as its background
+				var all_tds = $('#dojo-icon-container td');
+				all_tds.removeClass('highlight');
+				span.parents('td').addClass('highlight');
+			});
+		},
+		onClose: function() {
+			$('#dojo-add-quicklink-href').attr('value','');
+			$('#dojo-add-quicklink-title').attr('value','');
+			$('#dojo-add-quicklink-icon').attr('value','');
+			fix_empty_quicklink_border();
+		}
 	});
 
-	$('#dojo-add-quicklink-close').click(function (ev) {
-		ev.preventDefault();
-		$('#dojo-add-quicklink-menu').fadeOut(300);
-		$('#dojo-add-quicklink-href').attr('value','');
-		$('#dojo-add-quicklink-title').attr('value','');
-		$('#dojo-add-quicklink-icon').attr('value','');
-	});	
-
-	$('#dojo-add-quicklink-submit').click(function (ev) {
+	$('#dojo-add-quicklink-menu form').submit(function (ev) {
 		ev.preventDefault();
 		var href = $('#dojo-add-quicklink-href').attr('value'),
 				title = $('#dojo-add-quicklink-title').attr('value'),
 				icon = $('#dojo-add-quicklink-icon').attr('value'),
 				target = $('#dojo-add-quicklink-target').attr('value'),
 				changed = false;
+		var error = '';
 		if (href && title && icon) { 
 			var i = global_quicklinks.length;
-			var error = '';
 			for (i; i--;) {
 				if (global_quicklinks[i].href == href) {
 					error += 'This href is already used in a quicklink. <br />';
@@ -231,10 +218,10 @@
 			if (error.length == 0) {
 				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target})		
 				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '"><span title="' + title + '" class="icon-16 x16-' + icon + '"></span></a></li>'));
-				$('#dojo-add-quicklink-menu').fadeOut(500);
 				changed = true;
 			} else {
 				$.jGrowl(error);
+				return;
 			}
 		}
 		var removal = $('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
@@ -252,14 +239,18 @@
 			}
 
 		});
-		if (changed) 
+		if (changed)  {
 			quicklinks_save_all();
+		}
+		if(!error) {
+			$.fancybox.close();
+		}
 	})
 
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
 			data: {
 				'type': 'dojo-quicklinks',
-					'page': 'tac'
+				'page': 'tac'
 			},
 			type: 'POST',
 			success: function (obj) {
@@ -272,10 +263,7 @@
 						$('#dojo-quicklink-external').append($('<li><a target="' + links[i].target + '" class="image-link" href="' + links[i].href + '"><span title="'+links[i].title+'" class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
 					}
 				}
-
-				fix_empty_quicklink_border();
 				global_quicklinks = links;
-
 			}
 		});
 
