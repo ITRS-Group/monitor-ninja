@@ -74,7 +74,6 @@ class Showlog_Controller extends Authenticated_Controller
 
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('showlog/js/showlog.js');
 
@@ -82,7 +81,6 @@ class Showlog_Controller extends Authenticated_Controller
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('showlog/css/showlog.css');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
 		$this->template->inline_js = $this->inline_js;

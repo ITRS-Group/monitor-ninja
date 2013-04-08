@@ -62,7 +62,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
@@ -82,7 +81,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header->css = $this->xtra_css;
 
 		# what scheduled reports are there?
@@ -189,7 +187,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
@@ -203,7 +200,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header = $this->add_view('css_header');
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);

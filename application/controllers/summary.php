@@ -75,11 +75,9 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->template->css_header->css = $this->xtra_css;
 
@@ -193,11 +191,9 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->template->css_header->css = $this->xtra_css;
 

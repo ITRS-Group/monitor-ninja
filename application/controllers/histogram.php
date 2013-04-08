@@ -31,7 +31,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
 
@@ -60,9 +59,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.flot.min.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
-
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
