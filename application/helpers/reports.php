@@ -125,7 +125,7 @@ class reports_Core
 	{
 		$sql = "SELECT MIN(timestamp) AS min_date, ".
 				"MAX(timestamp) AS max_date ".
-			"FROM ".self::db_table;
+			"FROM report_data";
 		$db = Database::instance();
 		$res = $db->query($sql);
 
