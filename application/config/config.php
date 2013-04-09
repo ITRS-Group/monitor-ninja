@@ -216,12 +216,6 @@ $config['search_limit'] = 10;
 $config['autocomplete_limit'] = 10;
 
 /**
-* 	Nr of seconds while we still are considering
-* 	merlin to be alive.
-*/
-$config['stale_data_limit'] = 60;
-
-/**
 * Control the use oof pop-ups for PNP graphs and comments
 */
 $config['use_popups'] = 0;
@@ -231,25 +225,6 @@ $config['use_popups'] = 0;
 * Milliseconds before the pop-up is shown
 */
 $config['popup_delay'] = 1500;
-
-/**
-* Control whether to show display_name or not
-*/
-$config['show_display_name'] = 1;
-
-/**
-* Control whether to show {host,service} notes or not
-* Default: 0
-*/
-$config['show_notes'] = 0;
-
-/**
-* 	Control how many characters of the note to be displayed
-* 	in the GUI. The entire note will be displayed on mouseover or click.
-* 	Use 0 to display everything.
-* 	Default: 80
-*/
-$config['show_notes_chars'] = 80;
 
 /**
 *  Controls if you will display multiline output or not
