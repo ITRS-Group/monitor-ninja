@@ -1611,7 +1611,6 @@ class Reports_Model extends Model
 			}
 			$this->service_servicegroup['host'] = $hosts;
 			$this->service_servicegroup['service'] = $services;
-			$services = false;
 		} elseif ($this->options['hostgroup']) {
 			$hosts = array();
 			foreach ($this->options['hostgroup'] as $hg) {
@@ -1666,11 +1665,11 @@ class Reports_Model extends Model
 					$ary = explode(';', $srv);
 					$h = $ary[0];
 					$s = $ary[1];
-					$object_selection .= $orstr . "(host_name = '" . $h . "' ";
-					if (!$s)
-						$object_selection .= "AND (service_description = '' OR service_description IS NULL))";
-					else
-						$object_selection .= "AND service_description = '" . $s . "')";
+					$object_selection .= $orstr . "(host_name = '" . $h . "'\n    AND (" ;
+					if ($s) { /* this if-statement can probably just go away */
+						$object_selection .= "service_description = '" . $s . "' OR ";
+					}
+					$object_selection .= "event_type = 801))";
 					$orstr = "\n OR ";
 				}
 			}
