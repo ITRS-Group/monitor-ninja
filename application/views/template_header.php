@@ -246,16 +246,17 @@
 		<?php
 			} # end if listview_refresh
 			if (isset($widgets) && is_array($widgets)) {
-				echo '<li>'._('Available Widgets').'</li>'."\n";
+				echo '<li><h2>'._('Available Widgets').'</h2></li>'."\n";
 				foreach($widgets as $widget) {
 					$class_name = isset($widget->id) ? 'selected' : 'unselected';
 					echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 				}
-				echo '<li onclick="restore_widgets();">'._('Restore overview to factory settings').'</li>'."\n";
+				echo "<li><h2>"._('Widget settings')."</h2></li>";
+				echo '<li><form action="'.url::base(true).'widget/factory_reset_widgets" method="post"><input type="submit" class="plain" value="'._("Restore overview to factory settings").'" /></form></li>'."\n";
 				if ($authorized === true) {
-					echo '<li onclick="widget_upload();">'._('Upload new widget').'</li>'."\n";
+					echo '<li><a href="'.url::base(true).'upload">'._('Upload new widget').'</a></li>'."\n";
 				}
-				echo '<li id="show_global_widget_refresh">'._("Set every widget's refresh rate to (s.)").'</li>'."\n";
+				echo '<li><a href="#" id="show_global_widget_refresh">'._("Set every widget's refresh rate to (s.)").'</a></li>'."\n";
 			}
 		?>
 	</ul>

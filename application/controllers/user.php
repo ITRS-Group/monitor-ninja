@@ -26,9 +26,6 @@ class User_Controller extends Authenticated_Controller {
 		'config.current_skin' => 'select',
 		'config.use_popups' => 'bool',
 		'config.popup_delay' => 'int',
-		'config.show_display_name' => 'bool',
-		'config.show_notes' => 'bool',
-		'config.show_notes_chars' => 'int',
 		'config.page_refresh_rate' => 'int',
 		'config.listview_refresh_rate' => 'int',
 		'nagdefault.sticky' => 'bool',
@@ -72,7 +69,6 @@ class User_Controller extends Authenticated_Controller {
 			_('Columns in list view') => 'listview',
 			_('Keyboard Commands') => 'keycommands',
 			_('Pop up graphs') => 'popups',
-			_('Status Pages') => 'status',
 			_('URL Targets') => 'url_target',
 			_('Nagios Defaults') => 'nagdefault'
 		);
@@ -91,12 +87,6 @@ class User_Controller extends Authenticated_Controller {
 		);
 		$settings['checks'] = array(
 			_('Show Passive as Active') => array('checks.show_passive_as_active', self::$var_types['checks.show_passive_as_active'])
-		);
-
-		$settings['status'] = array(
-			_('Show display_name') => array('config.show_display_name', self::$var_types['config.show_display_name']),
-			_('Show notes') => array('config.show_notes', self::$var_types['config.show_notes']),
-			_('Note length') => array('config.show_notes_chars', self::$var_types['config.show_notes_chars'])
 		);
 
 		$settings['url_target'] = array(
@@ -295,9 +285,6 @@ class User_Controller extends Authenticated_Controller {
 			'keycommands.back' => _('Keyboard command to move back in a paginated result (except search results). Defaults to Alt+Shift+left.').' '.$keyboard_help,
 			'config.use_popups' => _('Enable or disable the use of pop-ups for performance graphs and comments.'),
 			'config.popup_delay' => _('Set the delay in milliseconds before the pop-ups (performance graphs and comments) will be shown. Defaults to 1500ms (1.5s).'),
-			'config.show_display_name' => _('Use this setting to control whether to show display_name for your hosts and services on status/service and search result pages or not.'),
-			'config.show_notes' => _('Use this setting to control whether to show notes for your services on status/service and search result pages or not.'),
-			'config.show_notes_chars' => _('Control how many characters of the note to be displayed in the GUI. The entire note will be displayed on mouseover or click. <br />Use 0 to display everything. Default: 80.'),
 			'edit_menu' => _('Edit menu item visibility for limited users.'),
 			'nagdefault.notes_url_target' => _('This option determines the name of the frame target that notes URLs should be displayed in.'),
 			'nagdefault.action_url_target' => _('This option determines the name of the frame target that action URLs should be displayed in.'),
