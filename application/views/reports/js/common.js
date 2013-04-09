@@ -267,10 +267,9 @@ function js_print_date_ranges(the_year, type, item)
 				// error
 				jgrowl_message('Unable to fetch date ranges...', _reports_error);
 			}
+			check_custom_months();
 		}
 	});
-
-	setTimeout('check_custom_months()', 1000);
 }
 
 function show_calendar(val, update) {
