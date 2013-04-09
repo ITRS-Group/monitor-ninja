@@ -164,6 +164,12 @@ $(document).ready(function() {
 		set_selection(value);
 		get_members(value);
 	});
+
+	var rpcust = function() {
+		if (this.value == 'custom')
+			js_print_date_ranges();
+	};
+	$('#report_period').on('change', rpcust).each(rpcust);
 });
 
 var loadimg = new Image(16,16);
@@ -270,7 +276,6 @@ function js_print_date_ranges(the_year, type, item)
 }
 
 function show_calendar(val, update) {
-	$('#response').html('');
 	if (val=='custom') {
 		$("#display").show();
 
@@ -536,6 +541,16 @@ function check_form_values(form)
 				//@@@Fixme: Add translated string
 				err_str += "<li>Please select year and month for both start and end. ";
 				err_str += "<br />Please note that SLA reports can only be generated for previous months</li>";
+			}
+			else {
+				// remember: our months are 1-indexed
+				cur_start = new Date(0);
+				cur_start.setYear($("select[name=start_year]", form).val());
+				cur_start.addMonths(Number($("select[name=start_month]", form).val()) - 1);
+
+				cur_end = new Date(0);
+				cur_end.setYear($("select[name=end_year]", form).val());
+				cur_end.addMonths(Number($("select[name=end_month]", form).val()));
 			}
 		}
 	}
