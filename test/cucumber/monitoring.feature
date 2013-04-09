@@ -1,15 +1,21 @@
 Feature: Monitoring
 	Background:
-		Given I have these host groups configured:
-			| Name				| Hosts 					 	|
-			| LinuxServers		| linux-server1,linux-server2	|
-			| WindowsServers    | win-server1,win-server2		|
+		Given I have these hostgroups configured:
+			| hostgroup_name | members                     |
+			| LinuxServers   | linux-server1,linux-server2 |
+			| WindowsServers | win-server1,win-server2     |
+		And I have these hosts:
+			| host_name     |
+			| linux-server1 |
+			| linux-server2 |
+			| win-server1   |
+			| win-server2   |
 		And I have these services:
-			| Description	| Host 			| Check command		| Notifications | Active checks |
-			| System Load	| linux-server1 | check_nrpe!load	| Enabled		| Enabled		|
-			| System Load	| linux-server2 | check_nrpe!load	| Enabled		| Enabled		|
-			| PING			| win-server1 	| check_ping		| Enabled		| Disabled		|
-			| PING			| win-server2 	| check_ping		| Disabled		| Enabled		|
+			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
+			| System Load         | linux-server2 | check_nrpe!load | 1                     | 1                     |
+			| PING                | win-server1   | check_ping      | 1                     | 0                     |
+			| PING                | win-server2   | check_ping      | 0                     | 1                     |
 		And I have activated the configuration
 
 	@configuration @asmonitor @case-642
