@@ -4,7 +4,32 @@ $(document).ready(function() {
 	$(".widget-place").bind('click', function() {
 		$("#page_settings").hide();
 	});
-	$('#show_global_widget_refresh').click(widget_page_refresh);
+	$('#show_global_widget_refresh').click(function (ev) {
+		ev.preventDefault();
+		// maybe someone clicked the input?
+		if (ev.target != this)
+			return;
+
+		if ($('#widget_global_slider').is('div')) {
+			$('#widget_global_slider').remove();
+		} else {
+			var content = '<div id="widget_global_slider"><div style="height:10px;background-color: #ffffff;"></div>';
+			content += '<br /><input style="border:0px; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="global_widget_refresh" id="global_widget_refresh" value="' + global_refresh + '" />';
+			content += '</div>';
+			$("#show_global_widget_refresh").append(content);
+			$("#widget_global_slider div").slider({
+				value: global_refresh,
+				min: 0,
+				max: 500,
+				step: 10,
+				slide: function(event, ui) {
+					$("#global_widget_refresh").val(ui.value);
+					global_refresh = ui.value;
+					update_save_interval();
+				}
+			});
+		}
+	});
 });
 
 // create array prototype to sole the lack of in_array() in javascript
@@ -17,11 +42,6 @@ Array.prototype.has = function(value) {
 	}
 	return false;
 };
-
-function widget_upload()
-{
-	self.location.href=_site_domain + _index_page + "/upload/";
-}
 
 function init_easywidgets(){
 	window.easywidgets_obj = $.fn.EasyWidgets({
@@ -89,35 +109,6 @@ var _is_refreshing = false;
 
 var _global_save = 0; 		// timeout handler variable
 var global_refresh = 60;	// keeps track of the refresh rate set by slider
-/**
-*	Update refresh rate for all widgets on the page
-*/
-function widget_page_refresh(ev)
-{
-	// maybe someone clicked the input?
-	if (ev.target != this)
-		return;
-
-	if ($('#widget_global_slider').is('div')) {
-		$('#widget_global_slider').remove();
-	} else {
-		var content = '<div id="widget_global_slider"><div style="height:10px;background-color: #ffffff;"></div>';
-		content += '<br /><input style="border:0px; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="global_widget_refresh" id="global_widget_refresh" value="' + global_refresh + '" />';
-		content += '</div>';
-		$("#show_global_widget_refresh").append(content);
-		$("#widget_global_slider div").slider({
-			value: global_refresh,
-			min: 0,
-			max: 500,
-			step: 10,
-			slide: function(event, ui) {
-				$("#global_widget_refresh").val(ui.value);
-				global_refresh = ui.value;
-				update_save_interval();
-			}
-		});
-	}
-}
 
 /**
 *	Keep track of the timeout for when to save
@@ -232,19 +223,6 @@ function save_widget_state(what, widget_name, instance_id)
 				method: what,
 				name: widget_name,
 				instance_id: instance_id
-			},
-			type: 'POST'
-		}
-	);
-}
-
-function restore_widgets()
-{
-	$.ajax(
-		_site_domain + _index_page + '/widget/factory_reset_widgets',
-		{
-			complete: function() {
-				window.location.reload();
 			},
 			type: 'POST'
 		}

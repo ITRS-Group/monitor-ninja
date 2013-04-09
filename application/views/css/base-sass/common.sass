@@ -218,7 +218,7 @@ h5
 h6
 	font-size: 1.05em
 
-a
+a, input[type="submit"].plain, button.plain
 	color: $link_color
 	text-decoration: none
 	border-bottom: 1px dotted $link_color
@@ -255,6 +255,14 @@ input
 		border-radius: 3px
 		border: 1px solid $border-color-dark
 		padding: 3px 6px
+	&[type="submit"].plain
+		background: transparent
+		border-width: 0 0 1px
+		-moz-border-radius: 0
+		-webkit-border-radius: 0
+		display: inline
+		margin: 0
+		padding: 0 !important
 
 
 .login_field
@@ -397,7 +405,7 @@ input
 	display: none
 	top: $header_height
 	left: 230px
-	width: 200px
+	width: 300px
 	z-index: 10
 	background: $general_background_color
 	border: 1px solid $border_color_light
