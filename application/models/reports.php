@@ -1347,7 +1347,7 @@ class Reports_Model extends Model
 
 		return $this->db->query($sql)->result(false);
 	}
-	
+
 	/**
 	 * Fetch information about SCHEDULED_DOWNTIME status for multiple objects
 	 *
@@ -1373,7 +1373,7 @@ class Reports_Model extends Model
 						. ' AND (service_description = "" OR service_description IS NULL))';
 			}
 		}
-		
+
 		$sql  = "SELECT DISTINCT lsc.host_name as host_name, lsc.service_description as service_description, rd.event_type as event_type FROM (";
 		$sql .= "SELECT host_name, service_description, max( timestamp ) as timestamp FROM ".$this->db_table;
 		$sql .= " WHERE (".implode(' OR ',$objectmatches).")";
@@ -1386,9 +1386,9 @@ class Reports_Model extends Model
 		$sql .= " AND lsc.service_description = rd.service_description";
 		$sql .= " AND lsc.timestamp = rd.timestamp";
 		$sql .= " AND (event_type = ".self::DOWNTIME_START." OR event_type = ".self::DOWNTIME_STOP.")";
-		
+
 		$dbr = $this->db->query($sql)->result(false);
-		
+
 		$downtimes = array();
 		foreach( $dbr as $staterow ) {
 			$in_downtime = ($staterow['event_type'] == self::DOWNTIME_START);
@@ -1398,10 +1398,10 @@ class Reports_Model extends Model
 				$downtimes[ $staterow['host_name'] ] = $in_downtime;
 			}
 		}
-		
+
 		return $downtimes;
 	}
-	
+
 	/**
 	 * Fetch information about SCHEDULED_DOWNTIME status
 	 *
@@ -1432,7 +1432,7 @@ class Reports_Model extends Model
 		else
 			$sql .= " AND (service_description IS NULL OR service_description = '' " .
 				"OR service_description = ".$this->db->escape($this->service_description).')';
-		
+
 		$sql .= " ORDER BY timestamp DESC LIMIT 1";
 
 		$dbr = $this->db->query($sql)->result(false);
@@ -1441,7 +1441,7 @@ class Reports_Model extends Model
 
 		$this->register_db_time($row['timestamp']);
 		$this->initial_dt_depth = $row['event_type'] == self::DOWNTIME_START;
-		
+
 		return $this->initial_dt_depth;
 	}
 
@@ -1469,7 +1469,7 @@ class Reports_Model extends Model
 						. ' AND (service_description = "" OR service_description IS NULL))';
 			}
 		}
-		
+
 		$sql  = "SELECT DISTINCT lsc.host_name as host_name, lsc.service_description as service_description, rd.state as state FROM (";
 		$sql .= "SELECT host_name, service_description, max( timestamp ) as timestamp FROM ".$this->db_table;
 		$sql .= " WHERE (".implode(' OR ',$objectmatches).")";
@@ -1492,9 +1492,9 @@ class Reports_Model extends Model
 		} else {
 			$sql .= " AND event_type = ".self::HOSTCHECK;
 		}
-		
+
 		$dbr = $this->db->query($sql)->result(false);
-		
+
 		$states = array();
 		if ( $type == 'service' ) {
 			foreach( $dbr as $staterow ) {
@@ -1505,10 +1505,10 @@ class Reports_Model extends Model
 				$states[ $staterow['host_name'] ] = $staterow['state'];
 			}
 		}
-		
+
 		return $states;
 	}
-	
+
 	/**
 	 * Get initital state from db. This is usually required when
 	 * selecting states for a host/service when the selected start
@@ -1557,7 +1557,7 @@ class Reports_Model extends Model
 		} else {
 			$initial_state = self::STATE_PENDING;
 		}
-		
+
 		return $initial_state;
 	}
 
@@ -1723,15 +1723,15 @@ class Reports_Model extends Model
 		}
 
 		switch ($this->options['alert_types']) {
-                        case 1:
-                                $alert_types = $host_states_sql;
-                                break;
-                        case 2:
-                                $alert_types = $service_states_sql;
-                                break;
-                        case 3:
-                                $alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
-                                break;
+		 case 1:
+			$alert_types = $host_states_sql;
+			break;
+		 case 2:
+			$alert_types = $service_states_sql;
+			break;
+		 case 3:
+			$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
+			break;
 		}
 
 		if ($this->options['include_downtime'])
