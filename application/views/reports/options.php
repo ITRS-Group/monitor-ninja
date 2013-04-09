@@ -38,9 +38,9 @@ if($options['report_id']) { ?>
 			<?php echo help::render('start-date').' '._('Start date') ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
-					<td><?php echo _('Start year') ?></td>
+					<td><label for="start_year"><?php echo _('Start year') ?></label></td>
 					<td><select name="start_year" id="start_year"  style="width: 50px" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
-					<td><?php echo _('Start month') ?></td>
+					<td><label for="start_month"><?php echo _('Start month') ?></label></td>
 					<td><select name="start_month" id="start_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
 				</tr>
 			</table>
@@ -49,9 +49,9 @@ if($options['report_id']) { ?>
 		<td<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '._('End date') ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
-					<td><?php echo _('End year') ?></td>
+					<td><label for="end_year"><?php echo _('End year') ?></label></td>
 					<td><select name="end_year" id="end_year" style="width: 50px" onchange="js_print_date_ranges(this.value, 'end', 'month');"><option value=""></option></select></td>
-					<td><?php echo _('End month') ?></td>
+					<td><label for="end_month"><?php echo _('End month') ?></label></td>
 					<td><select name="end_month" id="end_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
 				</tr>
 			</table>
@@ -218,13 +218,9 @@ if($options['report_id']) { ?>
 		<tr>
 			<?php foreach ($months as $key => $month) { ?>
 			<td style="padding-left: 0px">
-				<?php echo html::image($this->add_path('icons/16x16/copy.png'),
-					array(
-						'alt' => _('Click to propagate this value to all months'),
-						'title' => _('Click to propagate this value to all months'),
-						'style' => 'cursor: pointer; margin-bottom: -4px',
-						'class' => 'autofill')
-					) ?>
+				<a href="#" title="Click to propagate this value to all months" class="autofill">
+					<img src="<?php echo $this->add_path('icons/16x16/copy.png') ?>" alt="Click to propagate this value to all months" />
+				</a>
 				<label for="month_<?php echo $key+1 ?>"><?php echo $month ?></label><br />
 				<input type="text" size="2" class="sla_month" id="month_<?php echo ($key+1) ?>" name="month_<?php echo ($key+1) ?>" value="<?php echo arr::search($options['months'], $key + 1, '') ?>" maxlength="6" /> %
 			</td>

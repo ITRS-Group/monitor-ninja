@@ -67,7 +67,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			<table summary="Select report type" class="setup-tbl"><!--id="main_table"-->
 				<tr>
 					<td colspan="3">
-						<?php echo help::render('report-type').' '._('Report type'); ?><br />
+						<label for="report_type"><?php echo help::render('report-type').' '._('Report type'); ?></label><br />
 						<select name="report_type" id="report_type">
 							<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
 							<option value="hosts"><?php echo _('Hosts') ?></option>
@@ -93,7 +93,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<td colspan="3">
 
 							<div class="left" style="width: 40%">
-								<?php echo _('Available').' '._('Hostgroups') ?><br />
+								<label for="hostgroup_tmp"><?php echo _('Available').' '._('Hostgroups') ?></label><br />
 								<select name="hostgroup_tmp[]" style="width: 100%" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 							</div>
 
@@ -103,7 +103,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 							</div>
 
 							<div class="left" style="width: 40%">
-								<?php echo _('Selected').' '._('Hostgroups') ?><br />
+								<label for="hostgroup"><?php echo _('Selected').' '._('Hostgroups') ?></label><br />
 								<select name="hostgroup[]" style="width: 100%" id="hostgroup" multiple="multiple" size="8" class="multiple"></select>
 							</div>
 
@@ -116,7 +116,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<td colspan="3">
 
 						<div class="left" style="width: 40%">
-							<?php echo _('Available').' '._('Servicegroups') ?><br />
+							<label for="servicegroup_tmp"><?php echo _('Available').' '._('Servicegroups') ?></label><br />
 							<select name="servicegroup_tmp[]" style="width: 100%" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 						</div>
 
@@ -126,7 +126,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 						<div class="left" style="width: 40%">
-							<?php echo _('Selected').' '._('Servicegroups') ?><br />
+							<label for="servicegroup"><?php echo _('Selected').' '._('Servicegroups') ?></label><br />
 							<select name="servicegroup[]" style="width: 100%" id="servicegroup" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -138,7 +138,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<td colspan="3">
 
 						<div class="left" style="width: 40%">
-							<?php echo _('Available').' '._('Hosts') ?><br />
+							<label for="host_tmp"><?php echo _('Available').' '._('Hosts') ?></label><br />
 							<select name="host_tmp[]" style="width: 100%" id="host_tmp" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -148,7 +148,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 						<div class="left" style="width: 40%">
-							<?php echo _('Selected').' '._('Hosts') ?><br />
+							<label for="host_name"><?php echo _('Selected').' '._('Hosts') ?></label><br />
 							<select name="host_name[]" style="width: 100%" id="host_name" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -156,7 +156,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				<tr data-show-for="services">
 					<td colspan="3">
 						<div class="left" style="width: 40%">
-							<?php echo _('Available').' '._('Services') ?><br />
+							<label for="service_tmp"><?php echo _('Available').' '._('Services') ?></label><br />
 							<select name="service_tmp[]" style="width: 100%" id="service_tmp" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -166,7 +166,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 						<div class="left" style="width: 40%">
-							<?php echo _('Selected').' '._('Services') ?><br />
+							<label for="service_description"><?php echo _('Selected').' '._('Services') ?></label><br />
 							<select name="service_description[]" style="width: 100%" id="service_description" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 					</td>
