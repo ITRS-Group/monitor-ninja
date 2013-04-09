@@ -383,9 +383,9 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_date_ranges()
 	{
-		$the_year = $this->input->post('the_year', false);
-		$type = $this->input->post('type', 'start');
-		$item = $this->input->post('item', 'year');
+		$the_year = $this->input->get('the_year', false);
+		$type = $this->input->get('type', 'start');
+		$item = $this->input->get('item', 'year');
 		$date_ranges = reports::get_date_ranges();
 
 		if (empty($date_ranges)) return false;
@@ -413,6 +413,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				$arr_start[] = $i;
 				$arr_end[] = $i;
 			}
+			$return = array('start_year' => $arr_start, 'end_year' => $arr_end);
 		} else {
 			// empty month list
 			if (!empty($the_year)) {
@@ -432,11 +433,11 @@ class Ajax_Controller extends Authenticated_Controller {
 			for ($i=$start_num;$i<=$end_num;$i++) {
 				$arr_start = $type == 'start' ? $the_year : false;
 				$arr_end = $type == 'end' ? $the_year : false;
-				$type_item[] = array($type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
+				$type_item[] = array($type."_".$item, date('M', mktime(0, 0, 0, $i, 1, $the_year)), $i);
 			}
+			$return = array('type_item' => $type_item);
 		}
 
-		$return = array('start_year' => $arr_start, 'end_year' => $arr_end, 'type_item' => $type_item);
 		echo json_encode($return);
 		return true;
 	}
