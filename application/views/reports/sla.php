@@ -5,7 +5,7 @@ foreach($report_data as $i =>  $report) {
 	$nr++;
 	if (!empty($report['data_str'])) {
 		if (!$report['name']) {
-			$str_source = 'SLA breakdown for Custom group';
+			$str_source = 'SLA breakdown for custom group';
 		}
 		else {
 			if(is_array($report['name']))
