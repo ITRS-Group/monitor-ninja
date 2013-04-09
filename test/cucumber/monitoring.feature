@@ -401,7 +401,7 @@ Feature: Monitoring
 		And I click "Status detail"
 		And I click "System Load"
 		And I click "Availability report"
-		Then I should see "Services details for: System Load on host: Linux-server1"
+		Then I should see "Service details for System Load on host linux-server1"
 		And I should see "Reporting period: Last 7 Days"
 
 	@configuration @asmonitor @case-649

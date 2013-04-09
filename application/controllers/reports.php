@@ -499,7 +499,7 @@ class Reports_Controller extends Base_reports_Controller
 					switch($this->options['report_type']) {
 						case 'hosts':
 							$host = $this->options['host_name'][0];
-							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
+							$template->header->title = sprintf(_('Host details for %s'), $host);
 							$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
 
 							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
@@ -513,7 +513,7 @@ class Reports_Controller extends Base_reports_Controller
 						case 'services':
 							list($host, $service) = explode(';',$this->options['service_description'][0]);
 
-							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
+							$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
 							if (isset($template->content)) {
 								$template->content->host = $host;
 								$template->content->service = $service;
