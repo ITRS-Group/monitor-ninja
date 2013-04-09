@@ -217,11 +217,13 @@ class Reports_Controller extends Base_reports_Controller
 			$report_time_formatted  = sprintf(
 				_('%s (%s to %s)'),
 				$this->options->get_value('report_period'),
-				"<strong>".date(nagstat::date_format(), $this->options['start_time'])."</strong>",
-				"<strong>".date(nagstat::date_format(), $this->options['end_time'])."</strong>"
+				"<strong>".date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['start_time'])."</strong>",
+				"<strong>".date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['end_time'])."</strong>"
 			);
 		else
-			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
+			$report_time_formatted  = sprintf(_("%s to %s"),
+				date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['start_time']),
+				date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['end_time']));
 
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
