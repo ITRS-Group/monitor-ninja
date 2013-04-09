@@ -232,27 +232,31 @@ function js_print_date_ranges(the_year, type, item)
 
 	$.ajax({
 		url: url,
-		type: 'POST',
+		type: 'GET',
 		data: data,
+		dataType: 'json',
 		success: function(data) {
 			if (data != '') {
 				// OK, continue
 				if (data['start_year']) {
 					for (i in data['start_year']) {
-						addSelectOption('start_year', data['start_year'][i], data['start_year'][i]);
+						$('#start_year').addOption(data['start_year'][i], data['start_year'][i]);
 					}
+					$('#start_year').find('option:first').attr('selected', 'selected');
 				}
 
 				if (data['end_year']) {
 					for (i in data['end_year']) {
-						addSelectOption('end_year', data['end_year'][i], data['end_year'][i]);
+						$('#end_year').addOption(data['end_year'][i], data['end_year'][i]);
 					}
+					$('#end_year').find('option:first').attr('selected', 'selected');
 				}
 
 				if (data['type_item']) {
 					for (i in data['type_item']) {
-						addSelectOption(data['type_item'][i][0], data['type_item'][i][1], data['type_item'][i][1]);
+						$('#' + data['type_item'][i][0]).addOption(data['type_item'][i][2], data['type_item'][i][1]);
 					}
+					$('#' + data['type_item'][0][0]).find('option:first').attr('selected', 'selected');
 				}
 
 			} else {
@@ -406,13 +410,6 @@ function set_selected_period(val)
 function delayed_hide_progress()
 {
 	setup_hide_content('progress');
-}
-
-function addSelectOption(theSel, theText)
-{
-	theSel = theSel.replace('[', '\\[');
-	theSel = theSel.replace(']', '\\]');
-	$("#"+theSel).addOption(theText, theText, false);
 }
 
 function setup_hide_content(d) {
