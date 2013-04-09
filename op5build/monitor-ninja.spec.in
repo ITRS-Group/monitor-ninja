@@ -163,7 +163,9 @@ fi
 # Verify that mysql-server is installed and running before executing sql scripts
 $(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
 if [ -n "$MYSQL_AVAILABLE" ]; then
-  sh %prefix/install_scripts/ninja_db_init.sh
+  pushd %prefix
+    sh install_scripts/ninja_db_init.sh
+  popd
 else
   echo "WARNING: mysql-server is not installed or not running."
   echo "If Oracle database is to be used this is ok."
