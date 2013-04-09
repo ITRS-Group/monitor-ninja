@@ -52,8 +52,6 @@ class Reports_Controller extends Base_reports_Controller
 			? _('availability')
 			: _('SLA');
 		if($this->err_msg) {
-			// @todo make this work work, only handled by js and a very silent redirect
-			// now since the following message never gets printed:
 			$error_msg = $this->err_msg;
 			$this->template->error = $this->add_view('reports/error');
 		}
@@ -254,6 +252,12 @@ class Reports_Controller extends Base_reports_Controller
 		foreach ($this->options[$var] as $obj) {
 			if ($mon_auth->{'is_authorized_for_'.substr($this->options['report_type'], 0, -1)}($obj))
 				$objects[] = $obj;
+		}
+
+		$report_members = $this->options->get_report_members();
+		if (empty($report_members)) {
+			$_SESSION['report_err_msg'] = "No objects could be found in your selected groups to base the report on";
+			return url::redirect(Router::$controller.'/index');
 		}
 
 		# fetch data

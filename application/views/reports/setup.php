@@ -9,7 +9,11 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 <div class="no-borders">
 	<div class="report-page-setup availsla">
-		<div id="response"></div>
+	<div id="response"><?php
+	if ($this->err_msg) {
+		echo '<ul class="alert error"><li>'.$this->err_msg.'</li></ul>';
+	}
+	?></div>
 		<div class="setup-table">
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
 
