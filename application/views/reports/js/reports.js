@@ -119,13 +119,6 @@ function expand_and_populate(data)
 		}
 	});
 	show_calendar(reportObj.report_period);
-	if (reportObj.report_period == 'custom') {
-		if ($('input[name=type]').attr('value') == 'sla') {
-			js_print_date_ranges(reportObj.start_time, 'start', 'month');
-			js_print_date_ranges(reportObj.end_time, 'end', 'month');
-		}
-	}
-	current_obj_type = field_str;
 }
 
 function set_initial_state(what, val)
