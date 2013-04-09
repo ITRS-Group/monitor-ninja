@@ -94,5 +94,6 @@ prepare-config:
 	sed -e "s|@@TESTDIR@@|/tmp/ninja-test|" -e "s|@@USER@@|$$(id -un)|" -e "s|@@GROUP@@|$$(id -gn)|" -e "s|@@LIBDIR@@|$$(rpm --eval %{_libdir})|" test/configs/all-host_service-states/etc/merlin.conf.in > /tmp/ninja-test/merlin.conf
 	cp test/configs/all-host_service-states/var/status.sav /tmp/ninja-test/var/status.sav
 	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '/tmp/ninja-test';\$$config['nagios_etc_path'] = '/tmp/ninja-test';" > application/config/custom/config.php
+	echo "path: /tmp/ninja-test/live" > $(OP5LIBCFG)/livestatus.yml
 
 .PHONY: test help test-reports clean
