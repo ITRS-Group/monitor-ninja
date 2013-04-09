@@ -358,11 +358,11 @@ function empty_list(field) {
 	field = field.replace('[', '\\[');
 	field = field.replace(']', '\\]');
 
-	var select = document.getElementById(field);
-	var child;
-	while(child = select.firstChild) {
-		select.removeChild(child);
-	}
+	var select = $('#' + field);
+	select.children().each(function() {
+		if (this.value)
+			$(this).remove();
+	});
 	// truncate select list
 	//$("#"+field).removeOption(/./);
 }
