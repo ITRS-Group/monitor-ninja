@@ -217,7 +217,7 @@ jQuery.fn.querylink = function(text) {
 };
 
 jQuery.fn.replaceContent = function(new_data) {
-	this.children().remove();
+	this.empty();
 	this.append(new_data);
 	return this;
 };
