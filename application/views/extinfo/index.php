@@ -253,7 +253,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Check latency / duration'); ?></td>
-			<td id="field_latency"><?php echo $object->get_latency() ?> / <?php echo number_format($object->get_execution_time(), 3) ?> <?php echo _('seconds'); ?></td>
+			<td id="field_latency"><?php echo number_format($object->get_latency(), 3) ?> / <?php echo number_format($object->get_execution_time(), 3) ?> <?php echo _('seconds'); ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $service!==false?_('Next scheduled active check'):_('Next scheduled check') ?></td>
