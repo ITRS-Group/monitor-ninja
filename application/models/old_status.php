@@ -44,21 +44,21 @@ class Old_Status_Model extends Model {
 				$searchhost = str_replace('*', '.*', $searchhost);
 				/* TODO: validate regex */
 				#$errors++ unless Livestatus::is_valid_regular_expression( $searchhost );
-				$hostfilter[] 	 = "name ~~ $searchhost";
-				$servicefilter[] = "host.name ~~ $searchhost";
+				$hostfilter[] 	 = "name ~~ \"$searchhost\"";
+				$servicefilter[] = "host.name ~~ \"$searchhost\"";
 			} else {
-				$hostfilter[]    = "name = $host";
-				$servicefilter[] = "host.name = $host";
+				$hostfilter[]    = "name = \"$host\"";
+				$servicefilter[] = "host.name = \"$host\"";
 			}
 		}
 		if ( $hostgroup != 'all' and $hostgroup != '' ) {
-			$hostfilter[]       = "in $hostgroup";
-			$servicefilter[]    = "host in $hostgroup";
-			$hostgroupfilter[]  = "name = $hostgroup";
+			$hostfilter[]       = "in \"$hostgroup\"";
+			$servicefilter[]    = "host in \"$hostgroup\"";
+			$hostgroupfilter[]  = "name = \"$hostgroup\"";
 		}
 		if ( $servicegroup != 'all' and $servicegroup != '' ) {
-			$servicefilter[]       = "in $servicegroup";
-			$servicegroupfilter[]  = "name = $servicegroup";
+			$servicefilter[]       = "in \"$servicegroup\"";
+			$servicegroupfilter[]  = "name = \"$servicegroup\"";
 		}
 
 		$hostfilter         = $this->filter_combine("and", $hostfilter);
