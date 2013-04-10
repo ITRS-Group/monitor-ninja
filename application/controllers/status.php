@@ -100,15 +100,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$grouptype          = $this->input->get('grouptype', $grouptype);
-		$group              = $this->input->get('group', $group);
-		$hoststatustypes    = $this->input->get('hoststatustypes', $hoststatustypes);
-		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
-		$serviceprops       = $this->input->get('serviceprops', $serviceprops);
-		$hostprops          = $this->input->get('hostprops', $hostprops);
-		$status = new Old_Status_Model();
-		list($hostfilter, $servicefilter) = $status->classic_filter('service', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
-		return $this->_redirect_to_query($servicefilter);
+		return $this->group('service', $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -118,6 +110,14 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
+		return $this->group('host', $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+	}
+
+	/**
+	 * Show group status
+	 */
+	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
+	{
 		$grouptype          = $this->input->get('grouptype', $grouptype);
 		$group              = $this->input->get('group', $group);
 		$hoststatustypes    = $this->input->get('hoststatustypes', $hoststatustypes);
@@ -125,8 +125,8 @@ class Status_Controller extends Authenticated_Controller {
 		$serviceprops       = $this->input->get('serviceprops', $serviceprops);
 		$hostprops          = $this->input->get('hostprops', $hostprops);
 		$status = new Old_Status_Model();
-		list($hostfilter, $servicefilter) = $status->classic_filter('host', false, false, $group, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
-		return $this->_redirect_to_query($hostfilter);
+		list($hostfilter, $servicefilter) = $status->classic_filter($grouptype, false, ($grouptype=='host' ? $group : false), ($grouptype=='service' ? $group : false), $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops);
+		return $this->_redirect_to_query(${$grouptype.'filter'});
 	}
 
 	/**

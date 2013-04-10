@@ -55,6 +55,10 @@ if (isset($this->template->js_header))
 		<script type="text/javascript">
 			//<!--
 			<?php
+				$cgi_esc_html_tags = config::get_cgi_cfg_key('escape_html_tags');
+				if (empty($cgi_esc_html_tags)) {
+					$cgi_esc_html_tags = 0;
+				}
 				if (Auth::instance()->logged_in()) { ?>
 
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
@@ -62,7 +66,7 @@ if (isset($this->template->js_header))
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 				var _controller_name = '<?php echo Router::$controller ?>';
 				var _logo_path = '<?php echo Kohana::config('config.logos_path') ?>';
-				var _escape_html_tags = <?php echo config::get_cgi_cfg_key('escape_html_tags') ?>;
+				var _escape_html_tags = <?php echo $cgi_esc_html_tags ?>;
 				var _widget_refresh_msg = '<?php echo _('Refresh rate for all widgets has been updated to %s sec'); ?>';
 				var _widget_refresh_error = '<?php echo _('Unable to update refresh rate for all widgets.'); ?>';
 				var _widget_global_refresh_error = '<?php echo _('An error was encountered when trying to update refresh rate for all widgets.'); ?>';
