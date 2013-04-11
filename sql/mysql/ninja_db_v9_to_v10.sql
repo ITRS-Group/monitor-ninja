@@ -1,8 +1,9 @@
 INSERT INTO `ninja_saved_filters` (`username`, `filter_name`, `filter_table`, `filter`, `filter_description`) VALUES
-(NULL,'Acknowledged hosts','hosts','[hosts] acknowledged = 1','Acknowledged hosts'),
-(NULL,'Acknowledged services','services','[services] acknowledged = 1','Acknowledged services'),
-(NULL,'Host groups with problems','hostgroups','[hostgroups] (worst_host_state != 0 or worst_service_state != 0)','Host groups with problems'),
-(NULL,'Service groups with problems','servicegroups','[servicegroups] worst_service_state != 0','service groups with problems'), (NULL,'unhandled host problems','hosts','[hosts] state != 0 and acknowledged = 0','Unhandled host problems'),
-(NULL,'Unhandled problems','services','[services] in \"unhandled service problems\"\nor host in \"unhandled host problems\"','Unhandled problems'),
-(NULL,'Unhandled service problems','services','[services] state != 0 and acknowledged = 0','Unhandled service problems');
+(NULL,'acknowledged hosts','hosts','[hosts] acknowledged = 1','acknowledged hosts'),
+(NULL,'acknowledged services','services','[services] acknowledged = 1','acknowledged services'),
+(NULL,'host groups with problems','hostgroups','[hostgroups] (worst_host_state != 0 or worst_service_state != 0)','host groups with problems'),
+(NULL,'service groups with problems','servicegroups','[servicegroups] worst_service_state != 0','service groups with problems'),
+(NULL,'unhandled host problems','hosts','[hosts] state != 0 and acknowledged = 0','unhandled host problems'),
+(NULL,'unhandled problems','services','[services] in \"unhandled service problems\"\nor host in \"unhandled host problems\"','unhandled problems'),
+(NULL,'unhandled service problems','services','[services] state != 0 and acknowledged = 0','unhandled service problems');
 
