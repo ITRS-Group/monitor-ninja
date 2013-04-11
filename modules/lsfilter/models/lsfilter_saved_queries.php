@@ -89,7 +89,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 	 */
 	public static function get_query( $name, $table=false ) {
 		foreach( self::get_queries() as $query )
-			if( strtolower($query['name']) == strtolower($name) )
+			if( $query['name'] == $name )
 				return $query['query'];
 		return false;
 	}
