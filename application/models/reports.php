@@ -1922,7 +1922,7 @@ class Reports_Model extends Model
 
 			# only count real state-changes
 			$state = $this->comparable_state($row);
-			if (isset($pstate[$sname]) && $pstate[$sname] === $pstate[$sname]) {
+			if (isset($pstate[$sname]) && $pstate[$sname] === $state) {
 				continue;
 			}
 			$pstate[$sname] = $state;
