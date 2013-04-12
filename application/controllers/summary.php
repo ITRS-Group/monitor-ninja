@@ -65,6 +65,11 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->content->report_options = $this->add_view('summary/options');
 		$template = $this->template->content;
 
+		if(isset($_SESSION['report_err_msg'])) {
+			$template->error_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
+
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 

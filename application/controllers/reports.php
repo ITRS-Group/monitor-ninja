@@ -36,11 +36,6 @@ class Reports_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
-		if(isset($_SESSION['report_err_msg'])) {
-			$this->err_msg = $_SESSION['report_err_msg'];
-			unset($_SESSION['report_err_msg']);
-		}
-
 		# reset current_report_params and main_report_params
 		# just to be sure they're not left behind
 		Session::instance()->set('current_report_params', null);
@@ -51,12 +46,13 @@ class Reports_Controller extends Base_reports_Controller
 		$type_str = $this->type == 'avail'
 			? _('availability')
 			: _('SLA');
-		if($this->err_msg) {
-			$error_msg = $this->err_msg;
-			$this->template->error = $this->add_view('reports/error');
-		}
 		$this->template->content = $this->add_view('reports/setup');
 		$template = $this->template->content;
+
+		if(isset($_SESSION['report_err_msg'])) {
+			$template->error_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
@@ -690,8 +686,6 @@ class Reports_Controller extends Base_reports_Controller
 
 	public function _print_states_for_services($host_name=false, $start_date=false, $end_date=false)
 	{
-		$err_msg = $this->err_msg;
-
 		$host_name = trim($host_name);
 		if (empty($host_name)) {
 			return false;

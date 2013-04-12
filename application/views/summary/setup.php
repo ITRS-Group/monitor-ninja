@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div id="response"></div>
+<div id="response"><?php
+	if (isset($error_msg)) {
+	echo '<ul class="alert error"><li>'.$error_msg.'</li></ul>';
+	}
+?></div>
 
 <div>
 	<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
