@@ -301,7 +301,7 @@ function render_host_status_summary(stats)
 	return ul;
 }
 
-var listview_multi_select_header = $('<input type="checkbox" class="listview_multiselect_checkbox_all" />');
+var listview_multi_select_header = $('<input type="checkbox" id="select_all" class="listview_multiselect_checkbox_all" />');
 
 var listview_multi_select_cell_renderer = function(args)
 {
