@@ -3,13 +3,13 @@
 <?php
 foreach ($result as $name => $ary) {
 	foreach (array('host', 'service') as $objtype) {
-		echo "<br /><table class=\"host_alerts\"><tr>\n";
-		echo "<caption style=\"margin-top: 15px\">".sprintf(($objtype == 'host' ? _('Host alerts for %s') : _('Service alerts for %s')), $name).'</caption>';
-		echo "<th class=\"headerNone\">" . _('State') . "</th>\n";
-		echo "<th class=\"headerNone\">" . _('Soft Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . _('Hard Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . _('Total Alerts') . "</th>\n";
-		echo "</tr>\n";
+		echo "<table class=\"host_alerts\">";
+		echo "<caption>".sprintf(($objtype == 'host' ? _('Host alerts for %s') : _('Service alerts for %s')), $name).'</caption><thead><tr>';
+		echo "<th>" . _('State') . "</th>\n";
+		echo "<th>" . _('Soft Alerts') . "</th>\n";
+		echo "<th>" . _('Hard Alerts') . "</th>\n";
+		echo "<th>" . _('Total Alerts') . "</th>\n";
+		echo "</tr></thead><tbody>\n";
 
 		$total = array(0, 0); # soft and hard
 		$i = 0;
@@ -31,7 +31,7 @@ foreach ($result as $name => $ary) {
 		echo "<td>" . $ary[$objtype.'_totals']['hard'] . "</td>\n";
 		$tot = $ary[$objtype.'_totals']['soft'] + $ary[$objtype.'_totals']['hard'];
 		echo "<td>" . $tot . "</td>\n";
-		echo "</tr></table><br />\n";
+		echo "</tr></tbody></table><br />\n";
 	}
 }
 ?>
