@@ -6,8 +6,9 @@ class Summary_options_Core extends Report_options
 	const ALERT_TOTALS = 2;
 	const TOP_ALERT_PRODUCERS = 3;
 
-	public function __construct($options=false)
+	public function setup_properties()
 	{
+		parent::setup_properties();
 		$this->properties['summary_type'] = array('type' => 'enum', 'default' => self::TOP_ALERT_PRODUCERS, 'options' => array(
 			self::RECENT_ALERTS => _('Most recent alerts'),
 			self::ALERT_TOTALS => _('Alert totals'),
@@ -27,7 +28,6 @@ class Summary_options_Core extends Report_options
 		$this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
 
 		static::$rename_options['displaytype'] = 'summary_type';
-		parent::__construct($options);
 		$this->properties['report_period']['options']['forever'] = _('Forever');
 	}
 

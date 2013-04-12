@@ -326,3 +326,27 @@ Feature: SLA reports
 		When I click "Show report"
 		Then I should see "SLA breakdown"
 		And I should see "Reporting period: 2013-01-01 to 2013-04-01 - 24x7"
+
+	@configuration @asmonitor
+	Scenario: Ensure correct timeperiod is carried over to avail
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "SLA"
+		And I select "LinuxServers" from "Available hostgroups"
+		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		When I select "Last 12 months" from "Reporting period"
+		And I enter "9" into "Jan"
+		And I click "Click to propagate this value to all months"
+		And I click "Show report"
+		Then I should see "SLA breakdown"
+		And I should see "Reporting period: Last 12 months"
+		When I click "Uptime"
+		Then I should see "Hostgroup breakdown"
+		And I should see "LinuxServers"
+		And I should see "linux-server1"
+		And I should see "linux-server2"
+		And I shouldn't see "win-server1"
+		And I shouldn't see "win-server2"
+		And I should see "Group availability (SLA)"
+		And I should see "Reporting period: Last 12 months"

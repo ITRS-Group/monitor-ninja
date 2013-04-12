@@ -223,9 +223,12 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	public $options = array();
 
 	/**
-	 * Public constructor, which optionally takes an iterable with properties to set
+	 * Properties should be completely setup - with translations and all - before
+	 * loading any options, and options are loaded by the construct, so do
+	 * initialization here.
 	 */
-	public function __construct($options=false) {
+	public function setup_properties()
+	{
 		if (isset($this->properties['report_period']))
 			$this->properties['report_period']['options'] = array(
 				"today" => _('Today'),
@@ -282,6 +285,13 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
 		if (isset($this->properties['skin']))
 			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
+	}
+
+	/**
+	 * Public constructor, which optionally takes an iterable with properties to set
+	 */
+	public function __construct($options=false) {
+		$this->setup_properties();
 		if ($options)
 			$this->set_options($options);
 	}
