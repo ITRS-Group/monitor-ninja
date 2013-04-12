@@ -488,8 +488,9 @@ function lsfilter_list(config)
 		var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
 		var clone = header.clone(true);
 		header.after(clone);
-		
+
 		clone.addClass('floating-header');
+		header.find('input').remove();
 
 		this.update_float_header();
 	};
