@@ -152,7 +152,7 @@ if($options['report_id']) { ?>
 			<?php echo help::render('piechart') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_pie_charts" name="include_pie_charts"
 					onchange="toggle_label_weight(this.checked, 'include_pie_charts');" <?php print $options['include_pie_charts']?'checked="checked"':'' ?> />
-			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include Pie Charts') ?></label>
+			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include pie charts') ?></label>
 		</td>
 	</tr>
 	<?php

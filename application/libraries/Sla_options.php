@@ -8,12 +8,12 @@ class Sla_options_Core extends Report_options {
 
 		parent::__construct($options);
 		$this->properties['report_period'] = array('type' => 'enum', 'default' => 'thisyear', 'options' => array(
-			"thisyear" => _('This Year'),
-			"lastyear" => _('Last Year'),
-			"lastmonth" => _('Last Month'),
-			"last3months" => _('Last 3 Months'),
+			"thisyear" => _('This year'),
+			"lastyear" => _('Last year'),
+			"lastmonth" => _('Last month'),
+			"last3months" => _('Last 3 months'),
 			"last6months" => _('Last 6 months'),
-			"lastquarter" => _('Last Quarter'),
+			"lastquarter" => _('Last quarter'),
 			"last12months" => _('Last 12 months'),
 			'custom' => _('Custom')
 		));

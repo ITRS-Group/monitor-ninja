@@ -402,7 +402,7 @@ Feature: Monitoring
 		And I click "System Load"
 		And I click "Availability report"
 		Then I should see "Service details for System Load on host linux-server1"
-		And I should see "Reporting period: Last 7 Days"
+		And I should see "Reporting period: Last 7 days"
 
 	@configuration @asmonitor @case-649
 	Scenario: Service details check page-links

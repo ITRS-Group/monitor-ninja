@@ -9,16 +9,16 @@ class Summary_options_Core extends Report_options
 	public function __construct($options=false)
 	{
 		$this->properties['summary_type'] = array('type' => 'enum', 'default' => self::TOP_ALERT_PRODUCERS, 'options' => array(
-			self::RECENT_ALERTS => _('Most Recent Alerts'),
-			self::ALERT_TOTALS => _('Alert Totals'),
-			self::TOP_ALERT_PRODUCERS => _('Top Alert Producers')));
+			self::RECENT_ALERTS => _('Most recent alerts'),
+			self::ALERT_TOTALS => _('Alert totals'),
+			self::TOP_ALERT_PRODUCERS => _('Top alert producers')));
 		$this->properties['standardreport'] = array('type' => 'enum', 'default' => '', 'options' => array(
-			1 => _('Most Recent Hard Alerts'),
-			2 => _('Most Recent Hard Host Alerts'),
-			3 => _('Most Recent Hard Service Alerts'),
-			4 => _('Top Hard Alert Producers'),
-			5 => _('Top Hard Host Alert Producers'),
-			6 => _('Top Hard Service Alert Producers')));
+			1 => _('Most recent hard alerts'),
+			2 => _('Most recent hard host alerts'),
+			3 => _('Most recent hard service alerts'),
+			4 => _('Top hard alert producers'),
+			5 => _('Top hard host alert producers'),
+			6 => _('Top hard service alert producers')));
 		// Currently only used by alert history subreports, but we add them
 		// here so build_alert_summary_query can depend on them being around
 		$this->properties['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */

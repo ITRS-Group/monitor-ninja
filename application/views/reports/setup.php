@@ -97,7 +97,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<td colspan="3">
 
 							<div class="left" style="width: 40%">
-								<label for="hostgroup_tmp"><?php echo _('Available').' '._('Hostgroups') ?></label><br />
+								<label for="hostgroup_tmp"><?php echo _('Available hostgroups') ?></label><br />
 								<select name="hostgroup_tmp[]" style="width: 100%" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 							</div>
 
@@ -107,7 +107,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 							</div>
 
 							<div class="left" style="width: 40%">
-								<label for="hostgroup"><?php echo _('Selected').' '._('Hostgroups') ?></label><br />
+								<label for="hostgroup"><?php echo _('Selected hostgroups') ?></label><br />
 								<select name="hostgroup[]" style="width: 100%" id="hostgroup" multiple="multiple" size="8" class="multiple"></select>
 							</div>
 
@@ -120,7 +120,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<td colspan="3">
 
 						<div class="left" style="width: 40%">
-							<label for="servicegroup_tmp"><?php echo _('Available').' '._('Servicegroups') ?></label><br />
+							<label for="servicegroup_tmp"><?php echo _('Available servicegroups') ?></label><br />
 							<select name="servicegroup_tmp[]" style="width: 100%" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 						</div>
 
@@ -130,7 +130,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 						<div class="left" style="width: 40%">
-							<label for="servicegroup"><?php echo _('Selected').' '._('Servicegroups') ?></label><br />
+							<label for="servicegroup"><?php echo _('Selected servicegroups') ?></label><br />
 							<select name="servicegroup[]" style="width: 100%" id="servicegroup" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -142,7 +142,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<td colspan="3">
 
 						<div class="left" style="width: 40%">
-							<label for="host_tmp"><?php echo _('Available').' '._('Hosts') ?></label><br />
+							<label for="host_tmp"><?php echo _('Available hosts') ?></label><br />
 							<select name="host_tmp[]" style="width: 100%" id="host_tmp" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -152,7 +152,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 						<div class="left" style="width: 40%">
-							<label for="host_name"><?php echo _('Selected').' '._('Hosts') ?></label><br />
+							<label for="host_name"><?php echo _('Selected hosts') ?></label><br />
 							<select name="host_name[]" style="width: 100%" id="host_name" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -160,7 +160,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				<tr data-show-for="services">
 					<td colspan="3">
 						<div class="left" style="width: 40%">
-							<label for="service_tmp"><?php echo _('Available').' '._('Services') ?></label><br />
+							<label for="service_tmp"><?php echo _('Available services') ?></label><br />
 							<select name="service_tmp[]" style="width: 100%" id="service_tmp" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 
@@ -170,7 +170,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						</div>
 
 						<div class="left" style="width: 40%">
-							<label for="service_description"><?php echo _('Selected').' '._('Services') ?></label><br />
+							<label for="service_description"><?php echo _('Selected services') ?></label><br />
 							<select name="service_description[]" style="width: 100%" id="service_description" multiple="multiple" size="8" class="multiple"></select>
 						</div>
 					</td>

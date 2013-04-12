@@ -229,20 +229,20 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		if (isset($this->properties['report_period']))
 			$this->properties['report_period']['options'] = array(
 				"today" => _('Today'),
-				"last24hours" => _('Last 24 Hours'),
+				"last24hours" => _('Last 24 hours'),
 				"yesterday" => _('Yesterday'),
-				"thisweek" => _('This Week'),
-				"last7days" => _('Last 7 Days'),
-				"lastweek" => _('Last Week'),
-				"thismonth" => _('This Month'),
-				"last31days" => _('Last 31 Days'),
-				"lastmonth" => _('Last Month'),
-				"thisyear" => _('This Year'),
-				"lastyear" => _('Last Year'),
-				'last3months' => _('Last 3 Months'),
-				'last12months' => _('Last 12 Months'),
-				'last6months' => _('Last 6 Months'),
-				'lastquarter' => _('Last Quarter'),
+				"thisweek" => _('This week'),
+				"last7days" => _('Last 7 days'),
+				"lastweek" => _('Last week'),
+				"thismonth" => _('This month'),
+				"last31days" => _('Last 31 days'),
+				"lastmonth" => _('Last month'),
+				'last3months' => _('Last 3 months'),
+				'lastquarter' => _('Last quarter'),
+				'last6months' => _('Last 6 months'),
+				'last12months' => _('Last 12 months'),
+				"thisyear" => _('This year'),
+				"lastyear" => _('Last year'),
 				'custom' => _('Custom'));
 		if (isset($this->properties['scheduleddowntimeasuptime']))
 			$this->properties['scheduleddowntimeasuptime']['options'] = array(
