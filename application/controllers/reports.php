@@ -636,7 +636,7 @@ class Reports_Controller extends Base_reports_Controller
 	*/
 	public function invalid_setup()
 	{
-		$this->template->content = $this->add_view('reports/'.$this->report_prefix.'reports_module');
+		$this->template->content = $this->add_view('reports/reports_module');
 		$template = $this->template->content;
 		$template->error_msg  = _('Some parts in your setup is apparently missing.');
 		$template->info = _("make sure you install the latest version of merlin");
