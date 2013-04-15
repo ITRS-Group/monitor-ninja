@@ -1547,7 +1547,7 @@ class Reports_Model extends Model
 				$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
 					$name = implode(';', $o);
-					# XXX why set values to arrays with group->group?
+					# To be able to sum up alert totals:
 					if (empty($services[$name])) {
 						$services[$name] = array();
 					}
@@ -1565,7 +1565,7 @@ class Reports_Model extends Model
 			foreach ($this->options['hostgroup'] as $hg) {
 				$res = Livestatus::instance()->getHosts(array('columns' => array('host_name'), 'filter' => array('groups' => array('>=' => $hg))));
 				foreach ($res as $row) {
-					# XXX why set values to arrays with group->group?
+					# To be able to sum up alert totals:
 					if (empty($hosts[$row['host_name']])) {
 						$hosts[$row['host_name']] = array();
 					}
