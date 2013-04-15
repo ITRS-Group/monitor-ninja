@@ -743,7 +743,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		if ($this->get_value('report_type')) {
 			// because the person who wrote the js became sick of all our special cases,
 			// it expects the objects to be called 'objects'. Which makes sense, really...
-			$opts['objects'] = $opts[$this->get_value('report_type')];
+			$opts['objects'] = $this[$this->get_value('report_type')];
 			unset($opts[$this->get_value('report_type')]);
 		}
 		return json_encode($opts);
