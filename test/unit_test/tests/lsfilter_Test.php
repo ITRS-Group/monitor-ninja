@@ -96,6 +96,64 @@ class LSFilter_Test extends TapUnit {
 		);
 	}
 
+	public function test_not_and() {
+		$this->run_test_query(
+			'[hosts] not (state=0 and state=1)',
+			'[hosts] not (state=0 and state=1)'
+		);
+	}
+
+	public function test_not_and_left() {
+		$this->run_test_query(
+			'[hosts] (not state=0) and state=1',
+			'[hosts] not state=0 and state=1'
+		);
+	}
+
+	public function test_not_and_left_nopar() {
+		$this->run_test_query('[hosts] not state=0 and state=1');
+	}
+
+	public function test_not_and_right() {
+		$this->run_test_query(
+			'[hosts] not state=0 and (not state=1)',
+			'[hosts] not state=0 and not state=1'
+		);
+	}
+
+	public function test_not_and_right_nopar() {
+		$this->run_test_query('[hosts] state=0 and not state=1');
+	}
+
+	public function test_not_or() {
+		$this->run_test_query(
+			'[hosts] not (state=0 or state=1)',
+			'[hosts] not (state=0 or state=1)'
+		);
+	}
+
+	public function test_not_or_left() {
+		$this->run_test_query(
+			'[hosts] (not state=0) or state=1',
+			'[hosts] not state=0 or state=1'
+		);
+	}
+
+	public function test_not_or_left_nopar() {
+		$this->run_test_query('[hosts] not state=0 or state=1');
+	}
+
+	public function test_not_or_right() {
+		$this->run_test_query(
+			'[hosts] not state=0 or (not state=1)',
+			'[hosts] not state=0 or not state=1'
+		);
+	}
+
+	public function test_not_or_right_nopar() {
+		$this->run_test_query('[hosts] state=0 or not state=1');
+	}
+
 	/*
 	 * Test parse fail
 	*/
