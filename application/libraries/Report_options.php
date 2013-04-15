@@ -352,8 +352,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			foreach ($this['hostgroup'] as $group) {
 				$filter[] = 'in "'.$group.'"';
 			}
-			$filter = "[hosts] " . implode(' or ', $filter);
-			$out = ObjectPool_Model::get_by_query($filter);
+			$filter = implode(' or ', $filter);
+			if (!$filter)
+				$filter = 'all';
+			$out = ObjectPool_Model::get_by_query('[hosts] '.$filter);
 			$out = $out->it(array('name'), array());
 			$res = array();
 			foreach ($out as $arr) {
@@ -365,8 +367,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			foreach ($this['servicegroup'] as $group) {
 				$filter[] = 'in "'.$group.'"';
 			}
-			$filter = "[services] " . implode(' or ', $filter);
-			$out = ObjectPool_Model::get_by_query($filter);
+			$filter = implode(' or ', $filter);
+			if (!$filter)
+				$filter = 'all';
+			$out = ObjectPool_Model::get_by_query('[services] '.$filter);
 			$out = $out->it(array('host_name', 'description'), array());
 			$res = array();
 			foreach ($out as $arr) {
