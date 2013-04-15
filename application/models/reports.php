@@ -237,62 +237,7 @@ class Reports_Model extends Model
 			hard,
 			retry,
 			downtime_depth,
-			output', true);
-
-		$extra_sql = null;
-		$db = $this->db; // for closures
-		$implode_str = ') OR (';
-		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
-		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
-			$ls = op5Livestatus::instance();
-			$hosts = $ls->query("hosts", null, array("name"), array('auth' => $auth->get_user()));
-			if (!empty($hosts[1])) {
-				$extra_sql[] = sql::combine(
-					"AND",
-					"host_name IN (".
-					implode(
-						"', '",
-						array_map(
-							function($e) use ($db) {
-								return $db->escape(current($e));
-							},
-							$hosts[1]
-						)
-					).")",
-					"service_description = ''"
-				);
-			}
-			else {
-				$extra_sql[] = "service_description != ''";
-				$implode_str = ') AND (';
-			}
-		}
-
-		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
-		if(2 & $this->options["alert_types"] && !$auth->authorized_for("service_view_all")) {
-			$ls = op5Livestatus::instance();
-			$services = $ls->query("services", null, array("host_name", "description"), array('auth' => $auth->get_user()));
-			if (!empty($services[1])) {
-				$extra_sql[] = "(host_name, service_description) IN (".
-					implode(
-						", ",
-						array_map(
-							function($e) use($db) {
-								return '('.$db->escape($e[0]).', '.$db->escape($e[1]).')';
-							},
-							$services[1]
-						)
-					).") ";
-			}
-			else {
-				$extra_sql[] = "service_description = ''";
-				$implode_str = ') AND (';
-			}
-		}
-
-		if($extra_sql) {
-			$query .= "AND (".implode($implode_str, $extra_sql).")";
-		}
+			output', true, array(), null, $auth);
 
 		// investigate if there are more rows available for this query,
 		// with another set of pagination parameters
@@ -858,7 +803,6 @@ class Reports_Model extends Model
 				else {
 					$add = 1;
 				}
-
 				if ($add) {
 					$rpt->st_dt_depth++;
 					unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth-1][$idx]);
@@ -1571,7 +1515,7 @@ class Reports_Model extends Model
          * @param $db_table string = null
          * @return string (sql)
 	 */
-	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $db_table = null)
+	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $db_table = null, $auth = null)
 	{
 		if(!$fields) {
 			// default to the most commonly used fields
@@ -1582,6 +1526,9 @@ class Reports_Model extends Model
 			// this method ('s purpose) is so good I wanna copy it.. but that's not feasable,
 			// so I'm just gonna pretend it does dependency injection
 			$db_table = $this->db_table;
+		}
+		if(!$auth) {
+			$auth = op5auth::instance();
 		}
 		$softorhard = false;
 		$alert_types = false;
@@ -1762,6 +1709,53 @@ class Reports_Model extends Model
 							sql::combine('and',
 								$softorhard,
 								$alert_types)))));
+
+
+		$extra_sql = array();
+		$db = $this->db; // for closures
+		$implode_str = ') OR (';
+		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
+		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
+			$ls = op5Livestatus::instance();
+			$hosts = $ls->query("hosts", null, array("name"), array('auth' => $auth->get_user()));
+			$objtosql = function($e) use ($db) {
+							return $db->escape(current($e));
+						};
+			if (!empty($hosts[1])) {
+				$extra_sql[] = sql::combine(
+						"AND",
+						"host_name IN (".
+						implode(", ",array_map($objtosql,$hosts[1])).")",
+						"service_description = ''"
+						);
+			}
+			else {
+				$extra_sql[] = "service_description != ''";
+				$implode_str = ') AND (';
+			}
+		}
+
+		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
+		if(2 & $this->options["alert_types"] && !$auth->authorized_for("service_view_all")) {
+			$ls = op5Livestatus::instance();
+			$services = $ls->query("services", null, array("host_name", "description"), array('auth' => $auth->get_user()));
+			$objtosql = function($e) use ($db) {
+							return '('.$db->escape($e[0]).', '.$db->escape($e[1]).')';
+						};
+			if (!empty($services[1])) {
+				$extra_sql[] = "(host_name, service_description) IN (".
+						implode(", ",array_map($objtosql,$services[1])).")";
+			}
+			else {
+				$extra_sql[] = "service_description = ''";
+				$implode_str = ') AND (';
+			}
+		}
+
+		if(count($extra_sql) > 0) {
+			/* The innermost parenthesis matches the parenthesis in $implode_str */
+			$query .= " AND ((".implode($implode_str, $extra_sql)."))";
+		}
 
 		return $query;
 	}
