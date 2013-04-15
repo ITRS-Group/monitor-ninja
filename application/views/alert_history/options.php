@@ -146,6 +146,11 @@
 		</td>
 	</tr>
 	<tr>
+		<td>
+			<label for="filter_output"><?php echo _('Filter output') ?></label><br />
+			<input type="text" name="filter_output" id="filter_output" value="<?php echo $options['filter_output'] ?>" />
+	</tr>
+	<tr>
 		<td colspan="3">
 		<?php echo form::submit('Update', 'Update'); ?>
 		</td>
