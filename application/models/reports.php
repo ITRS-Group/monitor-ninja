@@ -1952,12 +1952,21 @@ class Reports_Model extends Model
 		$template = $this->summary_result;
 		$result = array();
 		foreach ($this->options['service_description'] as $name) {
+			list($host, $svc) = explode(';', $name);
+			# Assign host first, so it's position in the array is before services
+			$result[$host] = $template;
 			$result[$name] = $template;
 		}
-		$type = 'service';
 		$pstate = array();
 		foreach ($dbr as $row) {
-			$name = $row['host_name'] . ';' . $row['service_description'];
+			if (!$row['service_description']) {
+				$name = $row['host_name'];
+				$type = 'host';
+			}
+			else {
+				$name = $row['host_name'] . ';' . $row['service_description'];
+				$type = 'service';
+			}
 			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
 				continue;
@@ -2021,9 +2030,9 @@ class Reports_Model extends Model
 			} else {
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
-				if (!isset($this->service_servicegroup[$type][$name]))
-					continue;
 			}
+			if (!isset($this->service_servicegroup[$type][$name]))
+				die("Fuck, lost state: $type $name");
 			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
 				continue;
