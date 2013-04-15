@@ -309,6 +309,8 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
 		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
 		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
+		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
+		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 
 		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 		$this->js_strings .= reports::js_strings();
