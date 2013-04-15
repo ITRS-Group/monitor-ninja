@@ -29,7 +29,7 @@
 		</table>
 	</div>
 </form>
-<form action="<?php echo url::base(true) ?>summary/generate" method="post" class="to_check">
+<form action="<?php echo url::base(true) ?>summary/generate" method="post" class="to_check" id="report_form">
 	<div class="custom setup-table">
 		<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 		<table class="setup-tbl custom report_block">
