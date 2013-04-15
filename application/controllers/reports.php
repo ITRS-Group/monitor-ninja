@@ -951,11 +951,6 @@ class Reports_Controller extends Base_reports_Controller
 		# easier to find those later
 		$helptexts = array(
 			'filter' => _("Free text search, matching the objects in the left list below"),
-			'report-type' => _("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
-				"To include objects of the given type in the report, select the objects from the left list and click on ".
-				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
-				"and click on the left pointing arrow."),
-			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
 				"option decide to assume states for hosts and services during the downtime."),
@@ -968,8 +963,6 @@ class Reports_Controller extends Base_reports_Controller
 			'csv_format' => _("The CSV (comma-separated values) format is a file format that stores tabular data. This format is supported ".
 				"by many applications such as MS Excel, OpenOffice and Google Spreadsheets."),
 			'save_report' => _("Check this box if you want to save the configured report for later use."),
-			'reporting_period' => _("Choose from a set of predefined report periods or choose &quot;CUSTOM REPORT PERIOD&quot; ".
-				"to manually specify Start and End date."),
 			'enter-sla' => _("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
 			'report_settings_sml' => _("Here you can modify the report settings for the report you are currently viewing."),
 			'cluster_mode' => _("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
@@ -986,6 +979,7 @@ class Reports_Controller extends Base_reports_Controller
 			'trends_scaling' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
+			'include_pie_charts' => _('If you include this, your availability percentages will be graphed in pie charts'),
 
 			// new scheduled report
 			'report-type-save' => _("Select what type of report you would like to schedule the creation of"),
@@ -994,7 +988,6 @@ class Reports_Controller extends Base_reports_Controller
 			'interval' => _("Select how often the report is to be produced and delivered"),
 			'recipents' => _("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
 			'filename' => _("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
-			'description' => _("Add a description to this report, such as an explanation of what the report conveys. Plain text only."),
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
@@ -1008,7 +1001,7 @@ class Reports_Controller extends Base_reports_Controller
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
-			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
+			parent::_helptexts($id);
 	}
 }
 
