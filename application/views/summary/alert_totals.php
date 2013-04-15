@@ -2,7 +2,24 @@
 <div class="report-block">
 <?php
 foreach ($result as $name => $ary) {
-	foreach (array('host', 'service') as $objtype) {
+	# Services are special. Of course.
+	if ($options['report_type'] == 'services') {
+		if (strpos($name, ';') !== false)
+			$obj_types = array('service' => 'service');
+		else
+			$obj_types = array('host' => 'host');
+	} else {
+		$obj_types = array('host' => 'host', 'service' => 'service');
+	}
+
+	# Hide tables for excluded alert types
+	if (!($options['alert_types'] & 1) && isset($obj_types['host']))
+		unset($obj_types['host']);
+
+	if (!($options['alert_types'] & 2) && isset($obj_types['service']))
+		unset($obj_types['service']);
+
+	foreach ($obj_types as $objtype) {
 		echo "<table class=\"host_alerts\">";
 		echo "<caption>".sprintf(($objtype == 'host' ? _('Host alerts for %s') : _('Service alerts for %s')), $name).'</caption><thead><tr>';
 		echo "<th>" . _('State') . "</th>\n";
