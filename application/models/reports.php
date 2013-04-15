@@ -1514,7 +1514,7 @@ class Reports_Model extends Model
          * @param $is_api_call boolean = false
          * @param $blacklisted_criteria array = array()
          * @param $db_table string = null
-         * @param $args auth module to use, if not using default
+         * @param $auth auth module to use, if not using default
          * @return string (sql)
 	 */
 	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $db_table = null, $auth = null)
