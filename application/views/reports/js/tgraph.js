@@ -181,7 +181,7 @@ TGraph.prototype = {
 		graph.style.height = '40px';
 		graph.style.border = 'none';
 		
-		clone = this.label.cloneNode();
+		clone = this.label.cloneNode(true);
 		clone.innerHTML = "";
 		
 		for (var i = 0; i <= 6; i += 1) {
@@ -248,7 +248,7 @@ TGraph.prototype = {
 			var cHost = this.name[y].split(';')[0],
 				sName = this.name[y].split(';')[1];
 
-			lclone = this.label.cloneNode();
+			lclone = this.label.cloneNode(true);
 
 			if (cHost === lastHost) {
 				lclone.innerHTML = sName;
@@ -331,7 +331,7 @@ TGraph.prototype = {
 			graph.appendChild(line);
 			this.container.appendChild(lclone);
 			this.container.appendChild(graph);
-			this.container.appendChild(clear.cloneNode());
+			this.container.appendChild(clear.cloneNode(true));
 			
 		}
 		
