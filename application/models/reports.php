@@ -1537,6 +1537,7 @@ class Reports_Model extends Model
 		$process = false;
 		$time_first = false;
 		$time_last = false;
+		$output = false;
 
 		$hosts = false;
 		$services = false;
@@ -1696,6 +1697,10 @@ class Reports_Model extends Model
 			$time_last = 'timestamp <= ' . $this->options['end_time'];
 		}
 
+		if($this->options['filter_output']) {
+			$output = 'output LIKE "%'.mysql_real_escape_string($this->options['filter_output']).'%"';
+		}
+
 		$query = "SELECT " . $fields . "\nFROM " . $db_table;
 		$query .= ' WHERE '.
 			sql::combine('and',
@@ -1709,7 +1714,9 @@ class Reports_Model extends Model
 							$downtime,
 							sql::combine('and',
 								$softorhard,
-								$alert_types)))));
+								$alert_types)))),
+				$output
+			);
 
 
 		$extra_sql = array();

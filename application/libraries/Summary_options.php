@@ -26,6 +26,7 @@ class Summary_options_Core extends Report_options
 		$this->properties['include_downtime'] = array('type' => 'bool', 'default' => false);
 		$this->properties['include_process'] = array('type' => 'bool', 'default' => false);
 		$this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
+		$this->properties['filter_output'] = array('type' => 'string', 'default' => false);
 
 		static::$rename_options['displaytype'] = 'summary_type';
 		$this->properties['report_period']['options']['forever'] = _('Forever');
