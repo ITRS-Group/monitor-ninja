@@ -107,13 +107,23 @@
 	</tr>
 	<tr>
 		<td>
-			<?php echo _('Host States') ?><br />
-			<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']) ?>
+			<?php echo help::render('host_states') ?>
+			<?php echo _('Host states to include'); ?><br>
+			<?php
+			foreach ($options->get_alternatives('host_states') as $id => $name) {
+				echo "<input type=\"checkbox\" name=\"host_states[$id]\" id=\"host_states[$id]\" value=\"$id\" ".($options['host_states'] & $id?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_states[$id]\">".ucfirst($name)."</label>\n";
+			} ?>
 		</td>
-		<td>&nbsp;</td>
+		<td></td>
 		<td>
-			<?php echo _('Service States') ?><br />
-			<?php echo form::dropdown('service_states', $options->get_alternatives('service_states'), $options['service_states']) ?>
+			<?php echo help::render('service_states') ?>
+			<?php echo _('Service states to include'); ?><br>
+			<?php
+			foreach ($options->get_alternatives('service_states') as $id => $name) {
+				if ($name === 'excluded')
+						continue;
+				echo "<input type=\"checkbox\" name=\"service_states[$id]\" id=\"service_states[$id]\" value=\"$id\" ".($options['service_states'] & $id?'checked="checked" ':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"service_states[$id]\">".ucfirst($name)."</label>\n";
+			} ?>
 		</td>
 	</tr>
 	<tr>
