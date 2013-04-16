@@ -438,3 +438,13 @@ Feature: Monitoring
 		And I click "Done"
 		When I click "Start obsessing over this host"
 		Then I should be on url "/monitor/index.php/command/submit?cmd_typ=START_OBSESSING_OVER_HOST&host_name=linux-server1"
+
+	@configuration @asmonitor @case-650
+	Scenario: Service details filter
+		Verify that filters work as expected
+
+		Given I am on the Service details page
+		Then I should see the configured services
+		Then Link "Services total" should contain "4"
+		And I click link "Services total"
+		Then I should see the configured services
