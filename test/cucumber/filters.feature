@@ -105,3 +105,4 @@ Feature: Filters & list views
 		And I'm on the list view for query "[services] active_checks_enabled = 0 and notifications_enabled = 1"
 		And I should see "PING"
 		And I should see "linux-server1"
+		And I shouldn't see "linux-server2"
