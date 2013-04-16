@@ -20,7 +20,7 @@ foreach($report_data as $i =>  $report) {
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<form action="<?php echo url::site() ?>avail/generate" method="post">
-			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
+			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Show availability breakdown');?>" />
 			<?php
 			echo $options->as_form(true);
 			$names = $report['name'];

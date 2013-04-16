@@ -341,7 +341,7 @@ Feature: SLA reports
 		And I click "Show report"
 		Then I should see "SLA breakdown"
 		And I should see "Reporting period: Last 12 months"
-		When I click "Uptime"
+		When I click "Show availability breakdown"
 		Then I should see "Hostgroup breakdown"
 		And I should see "LinuxServers"
 		And I should see "linux-server1"
