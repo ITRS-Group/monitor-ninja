@@ -850,7 +850,7 @@ function check_custom_months()
 	var f		 	= document.forms['report_form'];
 	// not SLA?
 	if (!f['start_month'])
-		return
+		return;
 	var start_year 	= f.start_year.value;
 	var start_month = f.start_month.value;
 	var end_year 	= f.end_year.value;
