@@ -449,7 +449,7 @@ Feature: Monitoring
 		And I click link "Services total"
 		Then I should see the configured services
 
-	@configuration @asmonitor @case-650
+	@configuration @asmonitor @case-650 @todo
 	Scenario: Service details filter
 		Verify that I can go back to showing all
 		services after having filtered on Ok ones.
