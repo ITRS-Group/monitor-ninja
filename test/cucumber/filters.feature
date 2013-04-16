@@ -89,7 +89,7 @@ Feature: Filters & list views
 
 
 	@configuration @asmonitor @filters
-	Scenario: List hosts with granular filter
+	Scenario: List services with granular filter
 		Ensure that filters work even when we specify more limiting
 		filters.
 
