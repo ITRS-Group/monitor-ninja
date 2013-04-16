@@ -641,3 +641,59 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Top alert producers"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
+
+	# FIXME: all the standard report tests are crap, because I don't yet have
+	# a way to create alerts for the last 7 days that won't break in a week
+	@configuration @asmonitor
+	Scenario: Standard Most recent hard alerts
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		And I select "Most recent hard alerts" from "Standard type"
+		And I click "Show report"
+		Then I should see "Most recent alerts"
+
+	@configuration @asmonitor
+	Scenario: Standard Most recent hard host alerts
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		And I select "Most recent hard host alerts" from "Standard type"
+		And I click "Show report"
+		Then I should see "Most recent alerts"
+
+	@configuration @asmonitor
+	Scenario: Standard Most recent hard service alerts
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		And I select "Most recent hard host alerts" from "Standard type"
+		And I click "Show report"
+		Then I should see "Most recent alerts"
+
+	@configuration @asmonitor
+	Scenario: Standard Top hard alerts
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		And I select "Top hard alert producers" from "Standard type"
+		And I click "Show report"
+		Then I should see "Top alert producers"
+
+	@configuration @asmonitor
+	Scenario: Standard Top hard host alerts
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		And I select "Top hard host alert producers" from "Standard type"
+		And I click "Show report"
+		Then I should see "Top alert producers"
+
+	@configuration @asmonitor
+	Scenario: Standard Top hard service alerts
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		And I select "Top hard service alert producers" from "Standard type"
+		And I click "Show report"
+		Then I should see "Top alert producers"
