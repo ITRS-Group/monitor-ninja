@@ -449,6 +449,20 @@ Feature: Monitoring
 		And I click link "Services total"
 		Then I should see the configured services
 
+	@configuration @asmonitor @case-650
+	Scenario: Service details filter
+		Verify that filter link counts are correct
+		for various states
+
+		Given I have submitted a passive service check result "linux-server2;System Load;2;some output"
+		And I have submitted a passive service check result "linux-server1;System Load;1;some output"
+		And I am on the Service details page
+		Then I should see the configured services
+		And Link "Services total" should contain "4"
+		And Link "Services critical" should contain "1"
+		And Link "Services warning" should contain "1"
+
+
 	@configuration @asmonitor @case-650 @todo
 	Scenario: Service details filter
 		Verify that I can go back to showing all
