@@ -441,10 +441,28 @@ Feature: Monitoring
 
 	@configuration @asmonitor @case-650
 	Scenario: Service details filter
-		Verify that filters work as expected
+		Verify that filter links work as expected
 
 		Given I am on the Service details page
 		Then I should see the configured services
 		Then Link "Services total" should contain "4"
 		And I click link "Services total"
 		Then I should see the configured services
+
+	@configuration @asmonitor @case-650
+	Scenario: Service details filter
+		Verify that I can go back to showing all
+		services after having filtered on Ok ones.
+
+		Given I have submitted a passive service check result "linux-server2;System Load;2;some output"
+		And I am on the Service details page
+		Then I should see the configured services
+		And Link "Services total" should contain "4"
+		And Link "Services critical" should contain "1"
+		When I click link "Services critical"
+		Then I should see "linux-server2"
+		And I should see "System Load"
+		But I shouldn't see "PING"
+		When I click link "Services total"
+		Then I should see the configured services
+		
