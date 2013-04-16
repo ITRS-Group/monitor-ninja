@@ -69,3 +69,39 @@ Feature: Filters & list views
 		And I'm on the list view for query "[services] all"
 		Then I should see the configured services
 		And I should see the configured hosts
+
+
+	@configuration @asmonitor @filters
+	Scenario: List hosts
+		Given I have these hosts:
+			| host_name |
+			| linux-server1 |
+			| linux-server2 |
+		And I have these services:
+			| service_description | host_name		| check_command	|
+			| PING                | linux-server1   | check_ping	|
+			| PING                | linux-server2   | check_ping	|
+		And I have activated the configuration
+		And I'm on the list view for query "[services] all"
+		Then I should see the configured services
+		And I should see "linux-server1"
+		And I should see "linux-server2"
+
+
+	@configuration @asmonitor @filters
+	Scenario: List hosts with granular filter
+		Ensure that filters work even when we specify more limiting
+		filters.
+
+		Given I have these hosts:
+			| host_name |
+			| linux-server1 |
+			| linux-server2 |
+		And I have these services:
+			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
+			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
+			| PING                | linux-server2   | check_ping      | 0                     | 1                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[services] active_checks_enabled = 0 and notifications_enabled = 1"
+		And I should see "PING"
+		And I should see "linux-server1"
