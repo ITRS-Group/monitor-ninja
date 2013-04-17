@@ -55,6 +55,13 @@ class report_Test extends TapUnit {
 
 		$this->ok(strpos($query, $substr) !== false, 'Could not find permission check substring in query');
 
+		try {
+			$db = Database::instance();
+			$dbr = $db->query('EXPLAIN '.$query);
+		} catch( Kohana_Database_Exception $e ) {
+			$this->fail("Could not run query: ".$e->getMessage());
+		}
+
 
 		/* Reset user */
 		$authmod->force_user($stasheduser);
