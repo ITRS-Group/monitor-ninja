@@ -366,58 +366,6 @@ Feature: Monitoring
 		When I click "Done"
 		Then I shouldn't see "A comment for this host"
 
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Information for this host.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Information for this host"
-		Then I should see "linux-server1"
-		And I should see "Current status"
-
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Information for this host.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Alert history"
-		Then I should see "Alert history"
-		And I should see "linux-server1"
-
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Availability report.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Availability report"
-		Then I should see "Service details for System Load on host linux-server1"
-		And I should see "Reporting period: Last 7 days"
-
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Notifications.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Notifications"
-		Then I should see "Notifications"
-		And I should see "Count:"
-
 	@configuration @asmonitor @bug-6933
 	Scenario: Disable passive checks and obsess over this host
 		Verify that after disable passive checks for this host and
@@ -502,6 +450,8 @@ Feature: Monitoring
 		When I click "System Load"
 		And I click "Alert history"
 		Then I should be on url "/monitor/index.php/alert_history/generate?service_description[]=linux-server1;System+Load"
+		And I should see "Alert history"
+		And I should see "System Load"
 
 	@configuration @asmonitor @case-654
 	Scenario: Service details extinfo page check links
@@ -522,6 +472,8 @@ Feature: Monitoring
 		When I click "System Load"
 		And I click "Availability report"
 		Then I should be on url "/monitor/index.php/avail/generate?service_description[]=linux-server1;System+Load&report_type=services"
+		And I should see "Service details for System Load on host linux-server1"
+		And I should see "Reporting period: Last 7 days"
 
 	@configuration @asmonitor @case-654
 	Scenario: Service details extinfo page check links
