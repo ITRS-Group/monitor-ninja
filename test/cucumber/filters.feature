@@ -153,3 +153,25 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "C-service"
 		When I sort the filter result table by "last_check"
 		And The first row of the filter result table should contain "C-service"
+
+	@configuration @asmonitor @case-653
+	Scenario: Service detail listing column sorting
+		Ensure that it is possible to sort by the columns in the listing.
+		Sort by duration.
+
+		Given I have these hosts:
+			| host_name |
+			| linux-server1 |
+		And I have these services:
+			| service_description	| host_name		| check_command |
+			| A-service				| linux-server1 | check_ping	|
+			| B-service				| linux-server1 | check_ping	|
+			| C-service				| linux-server1 | check_ping	|
+			| D-service				| linux-server1 | check_ping	|
+		And I have activated the configuration
+		Given I have submitted a passive service check result "linux-server1;B-service;0;some output"
+		And I am on the Service details page
+		When I sort the filter result table by "duration"
+		Then The first row of the filter result table should contain "B-service"
+		When I sort the filter result table by "duration"
+		And The last row of the filter result table should contain "B-service"
