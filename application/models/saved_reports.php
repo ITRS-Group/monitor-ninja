@@ -19,10 +19,10 @@ class Saved_reports_Model extends Model
 	{
 		assert($type == 'avail' || $type == 'sla' || $type == 'summary');
 		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
+		$auth = op5auth::instance();
 
 		$sql = "SELECT id, report_name FROM ".$type."_config ";
-		if (!$auth->view_hosts_root) {
+		if (!$auth->authorized_for('host_view_all')) {
 			$user = Auth::instance()->get_user()->username;
 			$sql .= "WHERE ".self::USERFIELD."=".$db->escape($user)." OR ".self::USERFIELD."=''";
 		}
@@ -61,7 +61,7 @@ class Saved_reports_Model extends Model
 		if ($type != 'summary') {
 			$objects = $options[$options->get_value('report_type')];
 			unset($options[$options->get_value('report_type')]);
-			
+
 			$actual_options = array();
 			foreach ($options as $option => $val) {
 				$actual_options[$option] = $val;

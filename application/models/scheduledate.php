@@ -152,7 +152,11 @@ class ScheduleDate_Model extends Model
 				);
 
 		# determine if we should loop over host_name, hostgroups etc
-		$obj_arr = $data[$objfields[$data['report_type']]];
+		if( isset($data[$objfields[$data['report_type']]]) ) {
+			$obj_arr = $data[$objfields[$data['report_type']]];
+		} else {
+			$obj_arr = array();
+		}
 		$cmd = false;
 		$duration = $data['duration'];
 		$fixed = isset($data['fixed']) ? (int)$data['fixed'] : 1;

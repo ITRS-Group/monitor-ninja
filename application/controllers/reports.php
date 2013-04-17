@@ -167,7 +167,7 @@ class Reports_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
-		
+
 		$this->reports_model = new Reports_Model($this->options);
 		$this->trends_graph_model = new Trends_graph_Model();
 
@@ -243,11 +243,15 @@ class Reports_Controller extends Base_reports_Controller
 				return url::redirect(Router::$controller.'/index');
 		}
 		$var = $this->options->get_value('report_type');
-		$objects = array();
-		$mon_auth = Nagios_auth_Model::instance();
-		foreach ($this->options[$var] as $obj) {
-			if ($mon_auth->{'is_authorized_for_'.substr($this->options['report_type'], 0, -1)}($obj))
-				$objects[] = $obj;
+
+		$pool = ObjectPool_Model::pool($this->options['report_type']);
+		$set = $pool->none();
+		/* @var $set ObjectSet_Model */
+		foreach( $this->options[$var] as $obj ) {
+			$set = $set->union( $pool->set_by_key($obj) );
+		}
+		foreach( $set->it(array(),array()) as $obj ) {
+			$objects[] = $obj->get_key();
 		}
 
 		$report_members = $this->options->get_report_members();
@@ -277,7 +281,7 @@ class Reports_Controller extends Base_reports_Controller
 		# ==========================================
 		# ========= REPORT STARTS HERE =============
 		# ==========================================
-		
+
 		$template->report_options = $this->add_view('reports/options');
 
 		$tpl_options = $template->report_options;
@@ -365,20 +369,20 @@ class Reports_Controller extends Base_reports_Controller
 				$tmp_title = ucfirst($sub_type).' '._('state breakdown');
 				$template->header->title = $tmp_title;
 			}
-			
+
 			// ===== SETUP PIECHART VALUES =====
 
 			if( $this->options['include_pie_charts'] ) {
 				$template->pie = $this->add_view('reports/pie_chart');
-				
+
 				$image_data = array();
-				
+
 				if( $this->options['use_average'] ) {
 					$prefix = 'average_';
 				} else {
 					$prefix = 'group_';
 				}
-				
+
 				if( $sub_type == 'service' ) {
 					$states_to_chart = array(
 						$prefix.'ok' => 'OK',
@@ -396,10 +400,10 @@ class Reports_Controller extends Base_reports_Controller
 					);
 				}
 				foreach($states_to_chart as $key => $val) { $image_data[$val] = array(); }
-	
+
 				$groups_added = 0;
 				$pie_groupname = false;
-				
+
 				foreach($template_values as $data) { # for every group
 					$added_group = false;
 					foreach ($states_to_chart as $key => $val) {
@@ -418,7 +422,7 @@ class Reports_Controller extends Base_reports_Controller
 						$groups_added++;
 					}
 				}
-	
+
 				if ($groups_added > 0) {
 					$charts = false;
 					$page_js = '';
@@ -426,7 +430,7 @@ class Reports_Controller extends Base_reports_Controller
 						$data_str[$i]['img'] = http_build_query($image_data[$i]);
 						$data_str[$i]['host'] = $pie_groupname[$i];
 					}
-	
+
 					$template->pie->data_str = $data_str;
 					$template->pie->image_data = $image_data;
 				}
@@ -450,7 +454,7 @@ class Reports_Controller extends Base_reports_Controller
 
 					if( $this->options['include_pie_charts'] ) {
 						$avail->pie = $this->add_view('reports/pie_chart');
-	
+
 						// ===== SETUP PIECHART VALUES =====
 						if (is_array($data['states'])) {
 							foreach ($graph_filter as $key => $val) {
@@ -459,7 +463,7 @@ class Reports_Controller extends Base_reports_Controller
 							}
 							$image_data['EXCLUDE'] = $data['tot_time'] - array_sum($image_data);
 						}
-	
+
 						if ($image_data) {
 							$data_str = http_build_query($image_data);
 							$avail->pie->data_str = $data_str;
@@ -559,7 +563,7 @@ class Reports_Controller extends Base_reports_Controller
 			$template->trends_graph = $this->add_view('trends/new_report');
 
 			/* New JS trend graph */
-			
+
 			$template->trends_graph->graph_start_date = $this->options['start_time'];
 			$template->trends_graph->graph_end_date = $this->options['end_time'];
 			$template->trends_graph->use_scaling = $this->options['include_trends_scaling'];

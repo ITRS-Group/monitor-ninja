@@ -231,8 +231,6 @@ class Cli_Controller extends Ninja_Controller {
 			echo "no cli access\n";
 			return false;
 		}
-		$auth = Nagios_auth_Model::instance();
-		$auth->view_hosts_root = true;
 
 		$db = Database::instance();
 		$res = $db->query('SELECT version FROM avail_db_version');

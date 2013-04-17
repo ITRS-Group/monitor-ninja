@@ -371,7 +371,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			if (!$filter)
 				$filter = 'all';
 			$out = ObjectPool_Model::get_by_query('[services] '.$filter);
-			$out = $out->it(array('host_name', 'description'), array());
+			$out = $out->it(array('host.name', 'description'), array());
 			$res = array();
 			foreach ($out as $arr) {
 				$res[] = $arr->get_key();
