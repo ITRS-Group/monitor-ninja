@@ -303,9 +303,14 @@ function lsfilter_list(config)
 	this.render_totals = function(table, totals)
 	{
 		var container = $('<ul />');
-		container.append($('<li />').text(
-				table.charAt(0).toUpperCase() + table.slice(1)).css('float',
-				'left').css('font-weight', 'bold'));
+		container.append($('<li />').append(
+				link_query('['+table+'] all')
+					.addClass('no_uline')
+					.text(table.charAt(0).toUpperCase() + table.slice(1))
+					)
+				.css('float','left')
+				.css('font-weight', 'bold')
+				);
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
 				if (field in totals) {
