@@ -485,3 +485,48 @@ Feature: Monitoring
 		And I click "Notifications"
 		Then I should see "Notifications"
 		And I should see "Count:"
+
+	@configuration @asmonitor @case-655
+	Scenario: Service extinfo page service commands
+		Test disabling active checks of service from
+		service extinfo page.
+
+		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
+		And I am on the Service details page
+		When I click "System Load"
+		And I click "Disable active checks of this service"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Active checks" should be shown as "Disabled"
+
+	@configuration @asmonitor @case-655
+	Scenario: Service extinfo page service commands
+		Test rescheduling next check from service extinfo page.
+
+		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
+		And I am on the Service details page
+		When I click "System Load"
+		And I click "Re-schedule next service check"
+		And I note the value of "field_check_time"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Next scheduled active check" should be shown as the value of "field_check_time"
+
+	@configuration @asmonitor @case-655
+	Scenario: Service extinfo page service commands
+		Test submitting a passive check result from the service
+		extinfo page.
+
+		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
+		And I am on the Service details page
+		When I click "System Load"
+		And I click "Submit passive check"
+		And I select "Critical" from "field_return_code"
+		And I enter "Something went horribly wrong!" into "field_plugin_output"
+		And I enter "2" into "field__perfdata"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Current status" should be shown as "Critical"
