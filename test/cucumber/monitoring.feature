@@ -222,7 +222,7 @@ Feature: Monitoring
 		When I click "Done"
 		And I click "Refresh"
 		Then I should see "This host has been scheduled for fixed downtime"
-	
+
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable notifications for services
 		Verify that the "Disable notifications for all services"
@@ -480,4 +480,56 @@ Feature: Monitoring
 		But I shouldn't see "PING"
 		When I click link "Services total"
 		Then I should see the configured services
-		
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Status detail link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Status detail"
+		Then I should see this status:
+			| Host Name | Service |
+			| linux-server1 | System Load |
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Alert history link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Alert history"
+		Then I should be on url "/monitor/index.php/alert_history/generate?service_description[]=linux-server1;System+Load"
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given servce
+		point to the right place. Alert histogram link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Alert histogram"
+		Then I should be on url "/monitor/index.php/histogram/generate?service_description[]=linux-server1;System+Load"
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Availability report link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Availability report"
+		Then I should be on url "/monitor/index.php/avail/generate?service_description[]=linux-server1;System+Load&report_type=services"
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Notifications link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Notifications"
+		Then I should see "Notifications"
+		And I should see "Count:"
