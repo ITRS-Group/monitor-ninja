@@ -39,4 +39,15 @@ class ORMRootPoolGenerator extends class_generator {
 		$this->write( 'return array();' );
 		$this->finish_function();
 	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function generate_fetch_by_key() {
+		$this->init_function( 'fetch_by_key', array('key'), 'static' );
+		$this->write( 'return false;' );
+		$this->finish_function();
+	}
 }
