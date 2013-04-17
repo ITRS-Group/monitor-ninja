@@ -451,4 +451,26 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 		return array('tot_time' => $tot_time, 'tot_time_perc' => $tot_time_perc, 'var_types' => $var_types, 'values' => $values);
 	}
+
+	public static function _helptexts($id)
+	{
+		$helptexts = array(
+			'report-type' => _("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
+				"To include objects of the given type in the report, select the objects from the left list and click on ".
+				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
+				"and click on the left pointing arrow."),
+			'reporting_period' => _("Choose from a set of predefined report periods or choose &quot;CUSTOM REPORT PERIOD&quot; ".
+				"to manually specify Start and End date."),
+			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
+			'description' => _("Optionally add a description to this report, such as an explanation of what the report conveys. Plain text only."),
+			"skin" => _("Choose a skin for your summary report."),
+
+		);
+
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		} else {
+			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
+		}
+	}
 }

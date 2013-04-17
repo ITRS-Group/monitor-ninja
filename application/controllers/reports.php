@@ -986,6 +986,7 @@ class Reports_Controller extends Base_reports_Controller
 			'trends_scaling' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
+			'include_pie_charts' => _('If you include this, your availability percentages will be graphed in pie charts'),
 
 			// new scheduled report
 			'report-type-save' => _("Select what type of report you would like to schedule the creation of"),
@@ -1008,7 +1009,7 @@ class Reports_Controller extends Base_reports_Controller
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
-			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
+			parent::_helptexts($id);
 	}
 }
 
