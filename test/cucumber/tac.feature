@@ -1,3 +1,4 @@
+@tac
 Feature: Tactical Overview, TAC
 	Widgets
 

@@ -1,3 +1,4 @@
+@availability
 Feature: Availability reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 

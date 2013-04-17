@@ -1,3 +1,4 @@
+@monitoring
 Feature: Monitoring
 	Background:
 		Given I have these hostgroups configured:

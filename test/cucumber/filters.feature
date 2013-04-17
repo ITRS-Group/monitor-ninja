@@ -1,6 +1,7 @@
+@filters
 Feature: Filters & list views
 
-	@configuration @asmonitor @filters
+	@configuration @asmonitor
 	@bug-7012 @todo
 	Scenario: Service multi-delete
 		Given I have these hosts:
@@ -29,7 +30,7 @@ Feature: Filters & list views
 		Then I should see "Preflight configuration turned out ok." within frame "iframe"
 
 
-	@configuration @asmonitor @filters
+	@configuration @asmonitor
 	Scenario: List hosts
 		Given I have these hosts:
 			| host_name |
@@ -49,7 +50,7 @@ Feature: Filters & list views
 		And I'm on the list view for query "[hosts] all"
 		Then I should see the configured hosts
 
-	@configuration @asmonitor @filters
+	@configuration @asmonitor
 	Scenario: List hosts
 		Given I have these hosts:
 			| host_name |
@@ -71,7 +72,7 @@ Feature: Filters & list views
 		And I should see the configured hosts
 
 
-	@configuration @asmonitor @filters
+	@configuration @asmonitor
 	Scenario: List hosts
 		Given I have these hosts:
 			| host_name |
@@ -88,7 +89,7 @@ Feature: Filters & list views
 		And I should see "linux-server2"
 
 
-	@configuration @asmonitor @filters
+	@configuration @asmonitor
 	Scenario: List services with granular filter
 		Ensure that filters work even when we specify more limiting
 		filters.
