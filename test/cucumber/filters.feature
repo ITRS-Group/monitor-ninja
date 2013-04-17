@@ -1,4 +1,4 @@
-@filters
+@filters @listview
 Feature: Filters & list views
 
 	@configuration @asmonitor
@@ -107,3 +107,25 @@ Feature: Filters & list views
 		And I should see "PING"
 		And I should see "linux-server1"
 		And I shouldn't see "linux-server2"
+
+	@configuration @asmonitor @case-653
+	Scenario: Service detail listing column sorting
+		Ensure that it is possible to sort by the columns in the listing
+
+		Given I have these hosts:
+			| host_name |
+			| linux-server1 |
+		And I have these services:
+			| service_description	| host_name		| check_command |
+			| A-service				| linux-server1 | check_ping	|
+			| B-service				| linux-server1 | check_ping	|
+			| C-service				| linux-server1 | check_ping	|
+			| D-service				| linux-server1 | check_ping	|
+		And I have activated the configuration
+		Given I am on the Service details page
+		When I sort the filter result table by "description"
+		Then The first row of the filter result table should contain "A-service"
+		And The last row of the filter result table should contain "D-service"
+		When I sort the filter result table by "description"
+		Then The first row of the filter result table should contain "D-service"
+		And The last row of the filter result table should contain "A-service"
