@@ -36,15 +36,4 @@ class Alert_history_options extends Summary_options {
 		}
 		parent::update_value($name, $value);
 	}
-
-	protected function update_value($name, $value)
-	{
-		switch ($name) {
-			case 'host_states':
-			case 'service_states':
-				$value = array_sum(array_keys($value));
-				break;
-		}
-		parent::update_value($name, $value);
-	}
 }
