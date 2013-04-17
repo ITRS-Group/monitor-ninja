@@ -17,6 +17,7 @@ class ORMRootPoolGenerator extends class_generator {
 		$this->variable('table_classes',false,'private static');
 		$this->generate_pool();
 		$this->generate_load_table_classes();
+		$this->generate_fetch_by_key();
 		$this->finish_class();
 	}
 
