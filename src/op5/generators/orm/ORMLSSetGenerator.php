@@ -102,7 +102,7 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$ls_filter .= "Limit: ".intval($limit)."\n";');
 		$this->write('}');
 
-		$this->write('if( $columns != false ) {');
+		$this->write('if( $columns !== false ) {');
 		$this->write('$columns = $this->validate_columns($columns);');
 		$this->write('if($columns === false) return false;');
 		$this->write('$columns = array_unique($columns);');
