@@ -3,6 +3,63 @@ class report_Test extends TapUnit {
 	public function setUp() {
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 	}
+
+	public function test_restricted_access() {
+		/* Store old user, so we can reset afterward */
+		$authmod = Auth::instance();
+		$stasheduser = $authmod->get_user();
+
+		/* Setup limited user, we can't replace the user, but only it's
+		 * content. Singleton objects stashes the user object
+		 */
+		$authmod->force_user($user = new Op5User_AlwaysAuth());
+		$user->set_authorized_for('host_view_all', false);
+		$user->set_authorized_for('service_view_all', false);
+		$user->set_authorized_for('hostgroup_view_all', false);
+		$user->set_authorized_for('servicegroup_view_all', false);
+		$user->username = 'limited';
+
+		/* Run test */
+
+		$opts = new Avail_options(array('start_time'=>0, 'end_time'=>time()));
+		$rpts = new Reports_Model($opts);
+
+		/* We're not interested in filtering anything, just see the permissions.
+		 * Therefore, treat it as an API-call
+		 */
+		$query = $rpts->build_alert_summary_query(null,true);
+
+		/* This string should represent the filter to filter out only allowed
+		 * objects
+		 */
+
+		$substr = "AND "
+				."("
+					."((host_name IN ('monitor')) AND (service_description = ''))"
+					." OR "
+					."((host_name, service_description) IN ("
+							."('host_down_acknowledged', 'service critical'), "
+							."('host_down_notifications_disabled', 'service ok scheduled'), "
+							."('monitor', 'Disk usage /'), "
+							."('monitor', 'Local hardware status'), "
+							."('monitor', 'MySQL'), "
+							."('monitor', 'SSH'), "
+							."('monitor', 'Swap Usage'), "
+							."('monitor', 'System Load'), "
+							."('monitor', 'Users'), "
+							."('monitor', 'Zombie Processes'), "
+							."('monitor', 'cron process'), "
+							."('monitor', 'syslogd process')"
+					."))"
+				.")";
+
+		$this->ok(strpos($query, $substr) !== false, 'Could not find permission check substring in query');
+
+
+		/* Reset user */
+		$authmod->force_user($stasheduser);
+	}
+
 	public function test_overlapping_timeperiods() {
 		$opts = array(
 			'start_time' => strtotime('1999-01-01'),
