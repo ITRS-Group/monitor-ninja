@@ -258,29 +258,29 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				1 => _('Average'));
 		if (isset($this->properties['alert_types']))
 			$this->properties['alert_types']['options'] = array(
-				3 => _('Host and Service Alerts'),
-				1 => _('Host Alerts'),
-				2 => _('Service Alerts'));
+				3 => _('Host and service alerts'),
+				1 => _('Host alerts'),
+				2 => _('Service alerts'));
 		if (isset($this->properties['state_types']))
 			$this->properties['state_types']['options'] = array(
-				3 => _('Hard and Soft States'),
-				2 => _('Hard States'),
-				1 => _('Soft States'));
+				3 => _('Hard and soft states'),
+				2 => _('Hard states'),
+				1 => _('Soft states'));
 		if (isset($this->properties['host_states']))
 			$this->properties['host_states']['options'] = array(
-				7 => _('All Host States'),
-				6 => _('Host Problem States'),
-				1 => _('Host Up States'),
-				2 => _('Host Down States'),
-				4 => _('Host Unreachable States'));
+				7 => _('All host states'),
+				6 => _('Host problem states'),
+				1 => _('Host up states'),
+				2 => _('Host down states'),
+				4 => _('Host unreachable states'));
 		if (isset($this->properties['service_states']))
 			$this->properties['service_states']['options'] = array(
-				15 => _('All Service States'),
-				14 => _('Service Problem States'),
-				1 => _('Service Ok States'),
-				2 => _('Service Warning States'),
-				4 => _('Service Critical States'),
-				8 => _('Service Unknown States'));
+				15 => _('All service states'),
+				14 => _('Service problem states'),
+				1 => _('Service OK states'),
+				2 => _('Service warning states'),
+				4 => _('Service critical states'),
+				8 => _('Service unknown states'));
 		if (isset($this->properties['rpttimeperiod']))
 			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
 		if (isset($this->properties['skin']))
