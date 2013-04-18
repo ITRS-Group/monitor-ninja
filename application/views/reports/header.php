@@ -70,12 +70,42 @@
 		</form>
 	</div>
 	<h1><?php echo $title ?></h1>
-	<p><?php echo _('Reporting period').': '.$report_time_formatted; ?>
-	<?php echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
-	if ($options['use_average']) echo " <strong>("._('using averages').")</strong>"; ?>
-	</p>
-	<?php if ($type == 'avail' || $type == 'sla') { echo '<p>'.reports::get_included_states($options['report_type'], $options).'</p>'; } ?>
-	<div class="description">
-		<p><?php echo nl2br(isset($description) ? $description : $options['description']) ?></p>
+	<div class="report_options">
+	<?php
+		echo '<p>'._('Reporting period').': '.$report_time_formatted;
+		echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
+		echo '</p>';
+		if ($type == 'avail' || $type == 'sla') {
+			echo '<p>'.reports::get_included_states($options['report_type'], $options).'</p>';
+			echo '<p>'.sprintf(_('Counting scheduled downtime as %s'), $options->get_value('scheduleddowntimeasuptime')).'</p>';
+		}
+		if (isset($options->options['assumestatesduringnotrunning']) && $options->options['assumestatesduringnotrunning'])
+			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
+		if (isset($options->options['use_average']))
+			echo '<p>'._('Using averages').'</p>';
+		if (isset($options->options['includesoftstates']))
+			echo '<p>'._('Including soft states').'</p>';
+		if (isset($options->options['alert_types'])) {
+			// summary, or op5reports bundled summary:
+			switch ($options['alert_types']) {
+				case 3:
+					echo '<p>'.sprintf(_('Showing alerts for %s and %s, %s'), $options->get_value('host_states'), $options->get_value('service_states'), $options->get_value('state_types')).'</p>';
+					break;
+				case 2:
+				case 1:
+					echo '<p>'.sprintf(_('Showing alerts for %s, %s'), $options->get_value($options['alert_types'] == 1 ? 'host_states' : 'service_states'), $options->get_value('state_types')).'</p>';
+					break;
+				case 0:
+					echo '<p>'._('Showing no alerts').'</p>';
+					break;
+				default:
+					break;
+			}
+		}
+
+?>
+		<div class="description">
+			<p><?php echo nl2br(isset($description) ? $description : $options['description']) ?></p>
+		</div>
 	</div>
 </div>

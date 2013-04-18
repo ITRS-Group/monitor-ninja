@@ -333,7 +333,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	}
 
 	public function get_value($key) {
-		if (!$this[$key] || !isset($this->properties[$key]))
+		if (!isset($this->properties[$key]))
 			return false;
 		if ($this->properties[$key]['type'] !== 'enum')
 			return false;
