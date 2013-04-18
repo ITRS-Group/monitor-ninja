@@ -547,3 +547,16 @@ Feature: Monitoring
 		And I should see "load" within frame "iframe"
 		And I should see "(current template: default-service)" within frame "iframe"
 
+	@configuration @asmonitor @case-656
+	Scenario: Service extinfo page check performance graph link
+		Verify that the performance graph link on the extinfo page for a given service
+		point to the right place.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Show performance graph"
+		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System+Load"
+		Then I should see "Host: linux-server1 Service: System Load" within frame "iframe"
+		Then I should see "Datasource: load1" within frame "iframe"
+		Then I should see "Datasource: load5" within frame "iframe"
+		Then I should see "Datasource: load15" within frame "iframe"
