@@ -23,6 +23,7 @@ Feature: Reports
 
 	@asmonitor @calendar
 	Scenario: Toggle JS-calendars on custom report date
+		Given I am on the Host details page
 		When I hover over the "Reporting" button
 		And I click "Availability"
 		And I select "Custom" from "Reporting period"
