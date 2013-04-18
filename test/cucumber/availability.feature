@@ -36,7 +36,7 @@ Feature: Availability reports
 
 		And I have activated the configuration
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -45,7 +45,7 @@ Feature: Availability reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -57,7 +57,7 @@ Feature: Availability reports
 		Then I should see "No objects could be found in your selected groups to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -70,7 +70,7 @@ Feature: Availability reports
 		Then I should see "No objects could be found in your selected groups to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate single host report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -88,7 +88,7 @@ Feature: Availability reports
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -110,7 +110,7 @@ Feature: Availability reports
 		And I shouldn't see "win-server2"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate single service report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -125,7 +125,7 @@ Feature: Availability reports
 		And I shouldn't see "win-server"
 		And I shouldn't see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -147,7 +147,7 @@ Feature: Availability reports
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -168,7 +168,7 @@ Feature: Availability reports
 		And I shouldn't see "win-server"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -186,7 +186,7 @@ Feature: Availability reports
 		And I shouldn't see "win-server2"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -207,7 +207,7 @@ Feature: Availability reports
 		And I should see "win-server2"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -228,7 +228,7 @@ Feature: Availability reports
 		And I should see "win-server2"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -249,7 +249,7 @@ Feature: Availability reports
 		And I shouldn't see "System Load"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -273,7 +273,7 @@ Feature: Availability reports
 		And I shouldn't see "System Load"
 		And I should see "Group availability (SLA)"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -291,7 +291,7 @@ Feature: Availability reports
 		Then I should see "Hostgroup breakdown"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -337,7 +337,7 @@ Feature: Availability reports
 		Then I should see "Hostgroup breakdown"
 		And I shouldn't see "Save report"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Reporting" button
@@ -372,7 +372,7 @@ Feature: Availability reports
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
