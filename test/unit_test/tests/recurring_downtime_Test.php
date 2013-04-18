@@ -78,7 +78,7 @@ class Recurring_downtime_Test extends TapUnit {
 			$this->ok_empty($output, $description ." returned output: ".implode("\n", $output));
 		}
 
-		sleep(1); # Y U SO SLOW?
+		sleep(3); # Y U SO SLOW?
 
 		$ls = Livestatus::instance();
 		foreach ($tests as $time => $description) {
