@@ -290,3 +290,99 @@ Feature: Availability reports
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
+
+	@configuration @asmonitor
+	Scenario: Save report with misc options
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Availability"
+		Then I should see "Saved reports"
+		And "Saved reports" shouldn't have option "saved test report"
+		When I select "LinuxServers" from "Available hostgroups"
+		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		# Toggle *everything*!
+		When I select "Last month" from "Reporting period"
+		And I select "workhours" from "Report time period"
+		And I check "Down"
+		And I select "Average" from "SLA calculation method"
+		And I select "Uptime, with difference" from "Count scheduled downtime as"
+		And I select "Undetermined" from "Count program downtime as"
+		And I check "Include soft states"
+		And I check "Use alias"
+		And I check "Include trends graph"
+		And I check "Include pie charts"
+		And I select "pink_n_fluffy" from "Skin"
+		And I enter "This is a saved test report" into "Description"
+		And I click "Show report"
+		# I don't care where, but I want everything to be visible somehow
+		Then I should see "Last month"
+		And I should see "workhours"
+		And I should see "Showing hosts in state: up, unreachable, pending"
+		And I should see "Average"
+		And I shouldn't see "SLA"
+		And I should see "Uptime, with difference"
+		And I shouldn't see "Counting program downtime"
+		And I should see "Including soft states"
+		And I should see "HALIAS-ls1"
+		And I should see "HALIAS-ls2"
+		And I should see "HGALIAS-ls"
+		And I should see "This is a saved test report"
+		When I click "Save report"
+		And I enter "saved test report" into "report_name"
+		And I click "Save report" inside "#save_report_form"
+		# <magic page reload/>
+		# ensure we see content before testing for non-content, or we won't
+		# always wait for page to load
+		Then I should see "Hostgroup breakdown"
+		And I shouldn't see "Save report"
+
+	@configuration @asmonitor
+	Scenario: View saved report
+		Given I am on the Host details page
+		When I hover over the "Reporting" button
+		And I click "Availability"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report" from "Saved reports"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		And "Last month" should be selected from "Reporting period"
+		And "workhours" should be selected from "Report time period"
+		And "Down" should be checked
+		And "Average" should be selected from "SLA calculation method"
+		And "Uptime, with difference" should be selected from "Count scheduled downtime as"
+		And "Undetermined" should be selected from "Count program downtime as"
+		And "Include soft states" should be checked
+		And "Use alias" should be checked
+		And "Include trends graph" should be checked
+		And "Include pie charts" should be checked
+		And "pink_n_fluffy" should be selected from "Skin"
+		And "Description" should contain "This is a saved test report"
+		When I click "Show report"
+		Then I should see "Last month"
+		And I should see "workhours"
+		And I should see "Showing hosts in state: up, unreachable, pending"
+		And I should see "Average"
+		And I shouldn't see "SLA"
+		And I should see "Uptime, with difference"
+		And I shouldn't see "Counting program downtime"
+		And I should see "Including soft states"
+		And I should see "HALIAS-ls1"
+		And I should see "HALIAS-ls2"
+		And I should see "HGALIAS-ls"
+		And I should see "This is a saved test report"
+
+	@configuration @asmonitor
+	Scenario: Delete previously created report
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Availability"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		When I click "Delete"
+		# Test available first, to force capybara to wait for page reload
+		Then "Available hostgroups" should have option "LinuxServers"
+		And "Saved reports" shouldn't have option "saved test report"
+		And "Selected hostgroups" shouldn't have option "LinuxServers"

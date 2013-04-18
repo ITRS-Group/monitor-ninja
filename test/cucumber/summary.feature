@@ -643,6 +643,97 @@ Feature: Summary reports
 		Then I should see "Top alert producers"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
 
+	@configuration @asmonitor
+	Scenario: Save report with misc options
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		Then I should see "Saved reports"
+		And "Saved reports" shouldn't have option "saved test report"
+		When I choose "Custom"
+		And I select "LinuxServers" from "Available hostgroups"
+		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		# Toggle *everything*!
+		When I select "Most recent alerts" from "Summary type"
+		And I enter "50" into "Items to show"
+		And I select "Custom" from "Reporting period"
+		And I enter "2013-01-01" into "Start date"
+		And I enter "01:31" into "time_start"
+		And I enter "2013-04-03" into "End date"
+		And I enter "22:32" into "time_end"
+		And I select "workhours" from "Report time period"
+		And I select "Host alerts" from "Alert types"
+		And I select "Hard states" from "State types"
+		And I select "Host up states" from "Host states"
+		And I select "Service problem states" from "Service states"
+		And I select "pink_n_fluffy" from "Skin"
+		And I enter "This is a saved test report" into "Description"
+		And I click "Show report"
+		# I don't care where, but I want everything to be visible somehow
+		Then I should see "2013-01-01 01:31:00 to 2013-04-03 22:32:00"
+		And I should see "workhours"
+		And I should see "Hard states"
+		And I should see "Host up states"
+		And I should see "Sven Melander"
+		# Tänk på pocenten, helge!
+		And I should see "This is a saved test report"
+		When I click "Save report"
+		And I enter "saved test report" into "report_name"
+		And I click "Save report" inside "#save_report_form"
+		# <magic page reload/>
+		# ensure we see content before testing for non-content, or we won't
+		# always wait for page to load
+		Then I should see "Most recent alerts"
+		And I shouldn't see "Save report"
+
+	@configuration @asmonitor
+	Scenario: View saved report
+		Given I am on the Host details page
+		When I hover over the "Reporting" button
+		And I click "Alert Summary"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report" from "Saved reports"
+		Then "Custom" should be checked
+		And "Selected hostgroups" should have option "LinuxServers"
+		And "Most recent alerts" should be selected from "Summary type"
+		And "Items to show" should contain "50"
+		And "Custom" should be selected from "Reporting period"
+		And "Start date" should contain "2013-01-01"
+		And "time_start" should contain "01:31"
+		And "End date" should contain "2013-04-03"
+		And "time_end" should contain "22:32"
+		And "workhours" should be selected from "Report time period"
+		And "Host alerts" should be selected from "Alert types"
+		And "Hard states" should be selected from "State types"
+		And "Host up states" should be selected from "Host states"
+		And "Service problem states" should be selected from "Service states"
+		And "pink_n_fluffy" should be selected from "Skin"
+		And "Description" should contain "This is a saved test report"
+		When I click "Show report"
+		Then I should see "2013-01-01 01:31:00 to 2013-04-03 22:32:00"
+		And I should see "workhours"
+		And I should see "Hard states"
+		And I should see "Host up states"
+		And I should see "Sven Melander"
+		And I should see "This is a saved test report"
+
+	@configuration @asmonitor
+	Scenario: Delete previously created report
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert Summary"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		When I click "Delete"
+		# Test available first, to force capybara to wait for page reload
+		Then "Available hostgroups" should have option "LinuxServers"
+		And "Saved reports" shouldn't have option "saved test report"
+		And "Selected hostgroups" shouldn't have option "LinuxServers"
+
 	# FIXME: all the standard report tests are crap, because I don't yet have
 	# a way to create alerts for the last 7 days that won't break in a week
 	@configuration @asmonitor
