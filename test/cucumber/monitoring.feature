@@ -540,12 +540,7 @@ Feature: Monitoring
 		When I click "System Load"
 		And I click "Configure"
 		Then I should be on url "/monitor//index.php/configuration/configure?page=edit.php%3Fobj_type%3Dservice%26host%3Dlinux-server1%26service%3DSystem%2BLoad"
-		Then I should see "linux-server1;System Load" within frame "iframe"
-		And I should see "service_description" within frame "iframe"
-		And I should see "check_command" within frame "iframe"
-		And I should see "check_command_args" within frame "iframe"
-		And I should see "load" within frame "iframe"
-		And I should see "(current template: default-service)" within frame "iframe"
+		And I should see "linux-server1" within frame "iframe"
 
 	@configuration @asmonitor @case-656
 	Scenario: Service extinfo page check performance graph link
@@ -556,10 +551,7 @@ Feature: Monitoring
 		When I click "System Load"
 		And I click "Show performance graph"
 		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System+Load"
-		Then I should see "Host: linux-server1 Service: System Load" within frame "iframe"
-		Then I should see "Datasource: load1" within frame "iframe"
-		Then I should see "Datasource: load5" within frame "iframe"
-		Then I should see "Datasource: load15" within frame "iframe"
+		And I should see "linux-server1" within frame "iframe"
 
 	@configuration @asmonitor @case-657
 	Scenario: Service details Add/delete comment
