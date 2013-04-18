@@ -32,7 +32,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block', 'method' => 'get')); ?>
 				<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
-					<?php echo help::render('saved_reports') ?> <?php echo _('Saved reports') ?><br />
+					<?php echo help::render('saved_reports') ?> <label for="report_id"><?php echo _('Saved reports') ?></label><br />
 					<select name="report_id" id="report_id">
 						<option value=""> - <?php echo _('Select saved report') ?> - </option>
 						<?php	$sched_str = "";

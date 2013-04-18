@@ -11,7 +11,7 @@
 	 ?>
 		<div style="width: 100%; padding-left: 0px">
 			<!--	onchange="check_and_submit(this.form)"	-->
-			<?php echo help::render('saved_reports', 'reports') ?> <?php echo _('Saved reports') ?><br />
+			<label for="report_id"><?php echo help::render('saved_reports', 'reports') ?> <?php echo _('Saved reports') ?></label><br />
 			<select name="report_id" id="report_id">
 				<option value=""> - <?php echo _('Select saved report') ?> - </option>
 				<?php	$sched_str = "";

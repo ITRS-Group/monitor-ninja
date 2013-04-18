@@ -171,23 +171,23 @@
 
 			<tr>
 				<td>
-					<?php echo help::render('alert_types').' '._('Alert types') ?><br />
+					<label for="alert_types"><?php echo help::render('alert_types').' '._('Alert types') ?></label><br />
 					<?php echo form::dropdown('alert_types', $options->get_alternatives('alert_types'), $options['alert_types']) ?>
 				</td>
 				<td>&nbsp;</td>
 				<td>
-					<?php echo help::render('state_types').' '._('State types') ?><br />
+					<label for="state_types"><?php echo help::render('state_types').' '._('State types') ?></label><br />
 					<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<?php echo help::render('host_states').' '._('Host states') ?><br />
+					<label for="host_states"><?php echo help::render('host_states').' '._('Host states') ?></label><br />
 					<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']) ?>
 				</td>
 				<td>&nbsp;</td>
 				<td>
-					<?php echo help::render('service_states').' '._('Service states') ?><br />
+					<label for="service_states"><?php echo help::render('service_states').' '._('Service states') ?></label><br />
 					<?php echo form::dropdown('service_states', $options->get_alternatives('service_states'), $options['service_states']) ?>
 				</td>
 			</tr>

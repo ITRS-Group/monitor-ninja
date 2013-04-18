@@ -59,8 +59,8 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td>
-			<?php echo help::render('use_average').' '._('SLA calculation method') ?><br />
-			<select name='use_average'>
+			<label for="use_average"><?php echo help::render('use_average').' '._('SLA calculation method') ?></label><br />
+			<select id="use_average" name='use_average'>
 				<option value='0' <?php print $options['use_average']?'':'selected="selected"' ?>><?php echo _('Group availability (SLA)') ?></option>
 				<option value='1' <?php print $options['use_average']?'selected="selected"':'' ?>><?php echo _('Average') ?></option>
 			</select>
@@ -89,11 +89,11 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td>
-			<?php echo help::render('scheduled_downtime').' '._('Count scheduled downtime as')?>
+			<label for="scheduleddowntimeasuptime"><?php echo help::render('scheduled_downtime').' '._('Count scheduled downtime as')?></label>
 		</td>
 		<td>&nbsp;</td>
 		<td>
-			<?php echo help::render('stated_during_downtime').' '._('Count program downtime as')?>
+			<label for="assumestatesduringnotrunning"><?php echo help::render('stated_during_downtime').' '._('Count program downtime as')?></label>
 		</td>
 	</tr>
 	<tr>
