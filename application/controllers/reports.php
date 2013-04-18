@@ -710,14 +710,22 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * Fetch host alias information
+	 * Wrapper around _get_alias for compatibility reasons
 	 */
 	public function _get_host_alias($host_name=false)
 	{
-		if (empty($host_name))
+		$this->_get_alias('hosts', $host_name);
+	}
+
+	/**
+	 * Fetch alias information
+	 */
+	public function _get_alias($type, $name=false)
+	{
+		if (empty($type) || empty($name))
 			return false;
 
-		$res = Livestatus::instance()->getHosts(array('columns' => array('alias'), 'filter' => array('name' => $host_name)));
+		$res = Livestatus::instance()->{'get'.ucfirst($type)}(array('columns' => array('alias'), 'filter' => array('name' => $name)));
 		if (!$res)
 			return false;
 		return $res[0]['alias'];

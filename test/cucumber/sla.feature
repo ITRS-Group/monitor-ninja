@@ -4,17 +4,17 @@ Feature: SLA reports
 
 	Background:
 		Given I have these hostgroups configured:
-			| hostgroup_name |
-			| LinuxServers   |
-			| WindowsServers |
-			| MixedGroup     |
-			| EmptyGroup     |
+			| hostgroup_name | alias      |
+			| LinuxServers   | HGALIAS-ls |
+			| WindowsServers | HGALIAS-ws |
+			| MixedGroup     | HGALIAS-mg |
+			| EmptyGroup     | HGALIAS-eg |
 		And I have these hosts:
-			| host_name      | host_groups               |
-			| linux-server1  | LinuxServers,MixedGroup   |
-			| linux-server2  | LinuxServers              |
-			| win-server1    | WindowsServers            |
-			| win-server2    | WindowsServers,MixedGroup |
+			| host_name      | host_groups               | alias      |
+			| linux-server1  | LinuxServers,MixedGroup   | HALIAS-ls1 |
+			| linux-server2  | LinuxServers              | HALIAS-ls2 |
+			| win-server1    | WindowsServers            | HALIAS-ws1 |
+			| win-server2    | WindowsServers,MixedGroup | HALIAS-ws2 |
 		And I have these servicegroups:
 			| servicegroup_name |
 			| pings             |

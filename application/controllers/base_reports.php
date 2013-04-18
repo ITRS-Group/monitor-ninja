@@ -313,7 +313,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			$return['group_unknown'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNKNOWN']);
 			$return['group_critical'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_CRITICAL']);
 			$return['group_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
-			$return['groupname'] = !empty($data_arr['groupname']) ? 'Servicegroup: '.(is_array($data_arr['groupname'])?implode(', ', $data_arr['groupname']):$data_arr['groupname']) : false;
+			$return['groupname'] = $data_arr['groupname']?:false;
 		} else {
 			// host
 			$sum_up = $sum_down = $sum_unreachable = $sum_undetermined = 0;
@@ -347,7 +347,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			$return['group_down'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_DOWN']);
 			$return['group_unreachable'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNREACHABLE']);
 			$return['group_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
-			$return['groupname'] = !empty($data_arr['groupname']) ? 'Hostgroup: '.(is_array($data_arr['groupname'])?implode(', ', $data_arr['groupname']):$data_arr['groupname']) : false;
+			$return['groupname'] = $data_arr['groupname']?:false;
 		}
 		return $return;
 	}

@@ -1,21 +1,32 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php foreach ($multiple_states as $data) { ?>
+<?php foreach ($multiple_states as $data) {
+	if ($data['groupname']) {
+		if ($options['use_alias'])
+			$groupname = $this->_get_alias('hostgroups', $data['groupname']).' ('.$data['groupname'].')';
+		else
+			$groupname = $data['groupname'];
+	} else {
+		$groupname = false; # Because capitalization
+	}
+?>
 <div class="state_services report-block">
 	<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host" class="report-block">
 		<tr>
-			<th><?php echo help::render('hostgroup_breakdown').' '.(!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
+			<th><?php echo help::render('hostgroup_breakdown').' '.($groupname?:_('Selected hosts')); ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Up') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unreachable') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Down') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Undetermined') ?></th>
 		</tr>
-		<?php for ($i=0;$i<$data['nr_of_items'];$i++) { ?>
+		<?php for ($i=0;$i<$data['nr_of_items'];$i++) {
+			if ($options['use_alias'])
+				$name = $this->_get_alias('hosts', $data['HOST_NAME'][$i]).' ('.$data['HOST_NAME'][$i].')';
+			else
+				$name = $data['HOST_NAME'][$i];
+		?>
+
 		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
-		<?php if (!$options['use_alias']) { ?>
-			<td><?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
-		<?php } else { ?>
-			<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
-		<?php } ?>
+			<td><?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $name . '</a>' ?></td>
 			<td class="data"><?php echo reports::format_report_value($data['up'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['up'][$i]) > 0 ? '' : 'not-').'up.png'),
 				array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 12px'));
 				if (isset($data['counted_as_up'][$i]) && $data['counted_as_up'][$i] > 0) {
@@ -34,7 +45,7 @@
 <div class="state_services report-block">
 	<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host" class="report-block">
 		<tr>
-			<th><?php echo help::render('average_and_sla').' '.('Average and Group availability for ') . ($data['groupname'] ?: _('selected hosts')); ?></th>
+			<th><?php echo help::render('average_and_sla').' '.sprintf(_('Average and group availability for %s'), $groupname?:_('selected hosts')); ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Up') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unreachable') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Down') ?></th>

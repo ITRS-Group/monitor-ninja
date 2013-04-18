@@ -4,21 +4,21 @@ Feature: Availability reports
 
 	Background:
 		Given I have these hostgroups configured:
-			| hostgroup_name |
-			| LinuxServers   |
-			| WindowsServers |
-			| MixedGroup     |
-			| EmptyGroup     |
+			| hostgroup_name | alias      |
+			| LinuxServers   | HGALIAS-ls |
+			| WindowsServers | HGALIAS-ws |
+			| MixedGroup     | HGALIAS-mg |
+			| EmptyGroup     | HGALIAS-eg |
 		And I have these hosts:
-			| host_name      | host_groups               |
-			| linux-server1  | LinuxServers,MixedGroup   |
-			| linux-server2  | LinuxServers              |
-			| win-server1    | WindowsServers            |
-			| win-server2    | WindowsServers,MixedGroup |
+			| host_name      | host_groups               | alias      |
+			| linux-server1  | LinuxServers,MixedGroup   | HALIAS-ls1 |
+			| linux-server2  | LinuxServers              | HALIAS-ls2 |
+			| win-server1    | WindowsServers            | HALIAS-ws1 |
+			| win-server2    | WindowsServers,MixedGroup | HALIAS-ws2 |
 		And I have these servicegroups:
-			| servicegroup_name |
-			| pings             |
-			| empty             |
+			| servicegroup_name | alias     |
+			| pings             | SGALIAS-p |
+			| empty             | SGALIAS-e |
 		And I have these services:
 			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled | service_groups |
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |                |
@@ -137,9 +137,10 @@ Feature: Availability reports
 		And I doubleclick "linux-server1;System Load" from "service_tmp[]"
 		Then "Selected services" should have option "linux-server1;PING"
 		And "Selected services" should have option "linux-server1;System Load"
-		When I click "Show report"
+		When I check "Use alias"
+		And I click "Show report"
 		Then I should see "Service state breakdown"
-		And I should see "Services on host: linux-server1"
+		And I should see "Services on host: HALIAS-ls1 (linux-server1)"
 		And I should see "PING"
 		And I should see "System Load"
 		And I shouldn't see "linux-server2"
@@ -175,11 +176,12 @@ Feature: Availability reports
 		And I select "LinuxServers" from "Available hostgroups"
 		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
 		Then "Selected hostgroups" should have option "LinuxServers"
-		When I click "Show report"
+		When I check "Use alias"
+		And I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "LinuxServers"
-		And I should see "linux-server1"
-		And I should see "linux-server2"
+		And I should see "HGALIAS-ls (LinuxServers)"
+		And I should see "HALIAS-ls1 (linux-server1)"
+		And I should see "HALIAS-ls2 (linux-server2)"
 		And I shouldn't see "win-server1"
 		And I shouldn't see "win-server2"
 		And I should see "Group availability (SLA)"
@@ -197,8 +199,8 @@ Feature: Availability reports
 		And "Selected hostgroups" should have option "WindowsServers"
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "Average and Group availability for Hostgroup: LinuxServers"
-		And I should see "Average and Group availability for Hostgroup: WindowsServers"
+		And I should see "Average and group availability for LinuxServers"
+		And I should see "Average and group availability for WindowsServers"
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I should see "win-server1"
@@ -218,8 +220,8 @@ Feature: Availability reports
 		And "Selected hostgroups" should have option "MixedGroup"
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "Average and Group availability for Hostgroup: LinuxServers"
-		And I should see "Average and Group availability for Hostgroup: MixedGroup"
+		And I should see "Average and group availability for LinuxServers"
+		And I should see "Average and group availability for MixedGroup"
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I shouldn't see "win-server1"
@@ -235,12 +237,13 @@ Feature: Availability reports
 		And I select "pings" from "Available servicegroups"
 		And I doubleclick "pings" from "servicegroup_tmp[]"
 		Then "Selected servicegroups" should have option "pings"
-		When I click "Show report"
+		When I check "Use alias"
+		And I click "Show report"
 		Then I should see "Servicegroup breakdown"
-		And I should see "pings"
-		And I should see "Services on host: linux-server1"
-		And I should see "Services on host: win-server1"
-		And I should see "Services on host: win-server2"
+		And I should see "SGALIAS-p (pings)"
+		And I should see "Services on host: HALIAS-ls1 (linux-server1)"
+		And I should see "Services on host: HALIAS-ws1 (win-server1)"
+		And I should see "Services on host: HALIAS-ws2 (win-server2)"
 		And I should see "PING"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
@@ -260,8 +263,8 @@ Feature: Availability reports
 		And "Selected servicegroups" should have option "empty"
 		When I click "Show report"
 		Then I should see "Servicegroup breakdown"
-		And I should see "Average and Group availability for Servicegroup: pings"
-		And I shouldn't see "Average and Group availability for Servicegroup: empty"
+		And I should see "Average and group availability for pings"
+		And I shouldn't see "Average and group availability for empty"
 		And I should see "Services on host: linux-server1"
 		And I should see "Services on host: win-server1"
 		And I should see "Services on host: win-server2"
