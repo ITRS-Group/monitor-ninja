@@ -26,7 +26,13 @@ foreach($report_data as $i =>  $report) {
 			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Show availability breakdown');?>" />
 			<?php
 			echo $options->as_form(true);
+			# Stupid multi-group reports, why do you insist on making my life complicated?
+			# In case it's a multi-group report we must look at $report['name']
 			$obj_names = $report['name'];
+			# But if it's empty, this must be a multi-host/multi-service.
+			if (!$obj_names)
+				$obj_names = $options[$options->get_value('report_type')];
+			# Oh, but it can also be a string, because loose typing is awesome, I'm telling you!
 			if (!is_array($obj_names))
 				$obj_names = array($obj_names);
 			foreach ($obj_names as $name) {

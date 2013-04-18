@@ -103,6 +103,9 @@ Feature: SLA reports
 		Then I should see "SLA breakdown for: linux-server1"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
+		When I click "Show availability breakdown"
+		Then I should see "Host details"
+		And I should see "linux-server1"
 
 	@configuration @asmonitor
 	Scenario: Generate multi host report
@@ -126,6 +129,10 @@ Feature: SLA reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
 		And I should see "9.000 %"
+		When I click "Show availability breakdown"
+		Then I should see "Host state breakdown"
+		And I should see "linux-server1"
+		And I should see "win-server1"
 
 	@configuration @asmonitor
 	Scenario: Generate single service report
@@ -143,6 +150,8 @@ Feature: SLA reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "win-server"
 		And I should see "9.100 %"
+		When I click "Show availability breakdown"
+		Then I should see "Service details for PING on host linux-server1"
 
 	@configuration @asmonitor
 	Scenario: Generate multi service on same host report
@@ -166,6 +175,11 @@ Feature: SLA reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I should see "9.100 %"
+		When I click "Show availability breakdown"
+		Then I should see "Service state breakdown"
+		And I should see "Services on host: linux-server1"
+		And I should see "PING"
+		And I should see "System Load"
 
 	@configuration @asmonitor
 	Scenario: Generate multi service on different host report
@@ -190,6 +204,12 @@ Feature: SLA reports
 		And I shouldn't see "linux-server1;System Load"
 		And I shouldn't see "win-server1"
 		And I should see "9.990 %"
+		When I click "Show availability breakdown"
+		Then I should see "Service state breakdown"
+		And I should see "Services on host: linux-server1"
+		And I should see "Services on host: linux-server2"
+		And I should see "PING"
+		And I should see "System Load"
 
 	@configuration @asmonitor
 	Scenario: Generate single hostgroup report
@@ -209,6 +229,10 @@ Feature: SLA reports
 		And I shouldn't see "win-server1"
 		And I shouldn't see "win-server2"
 		And I should see "9.990 %"
+		When I click "Show availability breakdown"
+		Then I should see "Hostgroup breakdown"
+		And I should see "linux-server1"
+		And I should see "linux-server2"
 
 	@configuration @asmonitor
 	Scenario: Generate multi hostgroup report
@@ -232,6 +256,11 @@ Feature: SLA reports
 		And I should see "win-server1"
 		And I should see "win-server2"
 		And I should see "99.999 %"
+		# By pure chance (aka "first match"), this will be the top graph, aka the LinuxServers one
+		When I click "Show availability breakdown"
+		Then I should see "Hostgroup breakdown"
+		And I should see "linux-server1"
+		And I should see "linux-server2"
 
 	@configuration @asmonitor
 	Scenario: Generate hostgroup report with overlapping members
@@ -255,6 +284,11 @@ Feature: SLA reports
 		And I shouldn't see "win-server1"
 		And I should see "win-server2"
 		And I should see "99.999 %"
+		# By pure chance (aka "first match"), this will be the top graph, aka the LinuxServers one
+		When I click "Show availability breakdown"
+		Then I should see "Hostgroup breakdown"
+		And I should see "linux-server1"
+		And I should see "linux-server2"
 
 	@configuration @asmonitor
 	Scenario: Generate single servicegroup report
@@ -276,7 +310,12 @@ Feature: SLA reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 		And I should see "100 %"
-
+		When I click "Show availability breakdown"
+		Then I should see "Servicegroup breakdown"
+		And I should see "Services on host: linux-server1"
+		And I should see "Services on host: win-server1"
+		And I should see "Services on host: win-server2"
+		And I should see "PING"
 
 	@configuration @asmonitor
 	Scenario: Generate multi servicegroup report
@@ -301,6 +340,12 @@ Feature: SLA reports
 		And I should see "win-server2;PING"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
+		When I click "Show availability breakdown"
+		Then I should see "Servicegroup breakdown"
+		And I should see "Services on host: linux-server1"
+		And I should see "Services on host: win-server1"
+		And I should see "Services on host: win-server2"
+		And I should see "PING"
 
 	@configuration @asmonitor
 	Scenario: Generate report on custom report date
