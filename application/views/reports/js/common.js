@@ -168,6 +168,8 @@ $(document).ready(function() {
 			js_print_date_ranges();
 	};
 	$('#report_period').on('change', rpcust).each(rpcust);
+
+	$("#delete_report").click(confirm_delete_report);
 });
 
 var loadimg = new Image(16,16);
@@ -940,6 +942,41 @@ function format_date_str(date) {
 	mm = mm<10 ? '0' + mm : mm;
 	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
 	return ret_val;
+}
+
+function confirm_delete_report()
+{
+	var btn = $(this);
+	var id = $("#report_id").attr('value')
+
+	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
+	var msg = _reports_confirm_delete + "\n";
+	var type = $('input[name=type]').attr('value');
+	if (!id)
+		return;
+	if (is_scheduled) {
+		msg += _reports_confirm_delete_warning;
+	}
+	msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
+	if (confirm(msg)) {
+		btn.after(loadimg);
+		$.ajax({
+			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
+			type: 'POST',
+			data: {'id': id},
+			success: function(data) {
+				var a = document.createElement("a");
+				a.href = window.location.href;
+				if(a.search && a.search.indexOf("report_id="+id) !== -1) {
+					window.location.href = a.search.replace(new RegExp("report_id="+id+"&?"), "");
+				}
+			},
+			error: function() {
+				jgrowl_message(_reports_error, _reports_error);
+			},
+			dataType: 'json'
+		});
+	}
 }
 
 jQuery.extend(

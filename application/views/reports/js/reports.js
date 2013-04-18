@@ -57,9 +57,6 @@ $(document).ready(function() {
 		}
 		input.val(filename);
 	});
-
-	// delete the report (and all the schedules if any)
-	$("#delete_report").click(confirm_delete_report);
 });
 
 function populate_saved_sla_data(json_data) {
@@ -222,43 +219,4 @@ function toggle_state(the_id)
 	} else {
 		$('#' + the_id).attr('checked', true);
 	}
-}
-
-function confirm_delete_report()
-{
-	var btn = $(this);
-	var id = $("#report_id").attr('value')
-
-	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = _reports_confirm_delete + "\n";
-	var type = $('input[name=type]').attr('value');
-	if (!id)
-		return;
-	if (is_scheduled) {
-		msg += _reports_confirm_delete_warning;
-	}
-	msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
-	if (confirm(msg)) {
-		btn.after(loadimg);
-		$.ajax({
-			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
-			type: 'POST',
-			data: {'id': id},
-			complete: function() {
-				btn.parent().find('img:last').remove();
-			},
-			success: function(data) {
-				jgrowl_message(data, _reports_success);
-				var input = $('#report_id');
-				$(':selected', input).remove();
-				$('[value=\'\']', input).selected();
-			},
-			error: function() {
-				jgrowl_message(_reports_error, _reports_error);
-			},
-			dataType: 'json'
-		});
-		return true;
-	}
-	return false;
 }
