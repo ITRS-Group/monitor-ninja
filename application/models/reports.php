@@ -2025,8 +2025,6 @@ class Reports_Model extends Model
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
-			if (!isset($this->service_servicegroup[$type][$name]))
-				die("Fuck, lost state: $type $name");
 			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
 				continue;
