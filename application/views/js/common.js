@@ -345,7 +345,6 @@ $(document).ready(function() {
 
 	$('.select_all_items_service').live('click', function() {
 		if ($(this).attr('checked')) {
-			$('.select_all_items_service').attr('checked', true);
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
 				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
 					$(this).attr('checked', true);
@@ -355,7 +354,6 @@ $(document).ready(function() {
 				}
 			});
 		} else {
-			$('.select_all_items_service').attr('checked', false);
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
 				$(this).attr('checked', false);
 			});
