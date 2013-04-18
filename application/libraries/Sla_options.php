@@ -37,25 +37,4 @@ class Sla_options_Core extends Report_options {
 		}
 		return $resp;
 	}
-
-	protected function update_value($name, $value)
-	{
-		switch($name) {
-			case 'host_filter_status':
-				$value = array_intersect_key($value, Reports_Model::$host_states);
-				$value = array_filter($value, function($val) {
-					return is_numeric($val) && $val == 0;
-				});
-				$this->options[$name] = $value;
-				return true;
-			case 'service_filter_status':
-				$value = array_intersect_key($value, Reports_Model::$service_states);
-				$value = array_filter($value, function($val) {
-					return is_numeric($val) && $val == 0;
-				});
-				$this->options[$name] = $value;
-				return true;
-		}
-		return parent::update_value($name, $value);
-	}
 }
