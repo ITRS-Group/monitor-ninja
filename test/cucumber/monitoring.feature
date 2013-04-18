@@ -560,3 +560,23 @@ Feature: Monitoring
 		Then I should see "Datasource: load1" within frame "iframe"
 		Then I should see "Datasource: load5" within frame "iframe"
 		Then I should see "Datasource: load15" within frame "iframe"
+
+	@configuration @asmonitor @case-657
+	Scenario: Service details Add/delete comment
+		Verify that adding and deleting comments on services
+		works.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Submit a service comment"
+		And I enter "A comment for this service" into "cmd_param[comment]"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I should see "A comment for this service"
+		When I click "Delete comment"
+		Then I should see "You are trying to delete a service comment"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then I shouldn't see "A comment for service host"
