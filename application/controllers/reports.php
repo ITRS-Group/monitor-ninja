@@ -813,8 +813,7 @@ class Reports_Controller extends Base_reports_Controller
 		$time_arr = $this->_split_month_data($months, $this->options['start_time'], $this->options['end_time']);
 		// only use month entered by the user regardless of start- or endtime
 		$data = false;
-		$optclass = get_class($this->options);
-		$opts = new $optclass($this->options);
+		$opts = new Avail_options($this->options);
 		$opts[$this->options->get_value('report_type')] = $objects;
 		$opts['report_period'] = 'custom';
 		switch ($this->options['report_type']) {
