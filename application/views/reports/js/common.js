@@ -373,7 +373,6 @@ function empty_list(field) {
 */
 function populate_options(tmp_field, field, json_data)
 {
-	json_data = eval(json_data);
 	show_progress('progress', _wait_str);
 	var fragment = document.createDocumentFragment();
 	for (var i = 0; i < json_data.length; i++) {
