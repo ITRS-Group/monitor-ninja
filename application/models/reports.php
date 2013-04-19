@@ -222,22 +222,17 @@ class Reports_Model extends Model
 	}
 
 	/**
-         * Used from the HTTP API
-         *
+	 * Used from the HTTP API
+	 *
 	 * @param $auth Op5Auth
 	 * @return array
 	 */
 	function get_events(Op5Auth $auth)
 	{
-                $query = $this->build_alert_summary_query('timestamp,
-			event_type,
-			host_name,
-			service_description,
-			state,
-			hard,
-			retry,
-			downtime_depth,
-			output', true, array(), null, $auth);
+		$query = $this->build_alert_summary_query
+			('timestamp, event_type, host_name, service_description, ' .
+		     'state, hard, retry, downtime_depth, output',
+		     true, array(), null, $auth);
 
 		// investigate if there are more rows available for this query,
 		// with another set of pagination parameters
