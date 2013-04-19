@@ -147,7 +147,7 @@ class nagstat_Core {
 	public static function process_macros($string=false, $obj=false, $objtype=false)
 	{
 		if (empty($string) || empty($obj) || empty($objtype)) {
-			return false;
+			return $string;
 		}
 		$macros = array(
 				'host' => array(
