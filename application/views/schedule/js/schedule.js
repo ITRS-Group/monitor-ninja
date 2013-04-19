@@ -286,7 +286,7 @@ function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id,
 	template_row.attr('id', 'report-'+schedule_id);
 	$('.report_name', template_row)
 		.attr('id', '' + report_type_id + '.report_id-'+schedule_id)
-		.text(report_name);
+		.text(report_name.replace(/ \( \*Scheduled\* \)$/, ""));
 	$('.description', template_row)
 		.attr('id', 'description-'+schedule_id)
 		.text(description);
