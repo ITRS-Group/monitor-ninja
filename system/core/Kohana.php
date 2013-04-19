@@ -947,7 +947,7 @@ final class Kohana {
 			// Test if display_errors is on
 			if (self::$configuration['core']['display_errors'] === TRUE)
 			{
-				if ( ! IN_PRODUCTION AND $line != FALSE)
+				if ($line != FALSE)
 				{
 					// Remove the first entry of debug_backtrace(), it is the exception_handler call
 					$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
