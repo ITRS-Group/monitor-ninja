@@ -26,16 +26,11 @@ function create_filename()
 }
 
 $(document).ready(function() {
-	$("#saved_report_id").change(function() {
+	$("#saved_report_id, #period").change(function() {
 		create_filename();
 	});
 	fill_scheduled();
 	setup_editable();
-	$("#period").change(function() {
-		var sel_report = $("#saved_report_id").fieldValue();
-		if (sel_report[0] != '')
-			create_filename();
-	});
 
 		// delete single schedule
 	$('body').on('click', '.delete_schedule', schedule_delete);
