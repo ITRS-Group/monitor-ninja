@@ -1,10 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="schedules_area">
 	<?php echo isset($new_schedule) ? $new_schedule : '' ?>
-	<?php foreach(array('Availability' => 'avail', 'SLA' => 'sla', 'Summary' => 'summary') as $report_type_label => $report_type) { ?>
-	<br /><br />
+	<h1><?php echo _('Scheduled reports') ?></h1>
+	<?php foreach(array('availability' => 'avail', 'SLA' => 'sla', 'summary' => 'summary') as $report_type_label => $report_type) { ?>
 	<div id="scheduled_<?php echo $report_type ?>_reports">
-		<h2><?php echo _($report_type_label.' Reports') ?></h2>
 		<table id="<?php echo $report_type ?>_scheduled_reports_table">
 			<caption><?php echo _('Your scheduled '.$report_type_label.' Reports') ?></caption>
 			<thead id="<?php echo $report_type ?>_headers">
@@ -20,7 +19,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr id="<?php echo $report_type ?>_no_result" class="no-result" style="display: none"><td colspan="8"><center><h3><?php echo _('There are no scheduled reports') ?></h3></center></td></tr>
+				<tr id="<?php echo $report_type ?>_no_result" class="no-result" style="display: none"><td colspan="8"><center><h3><?php echo sprintf(_('There are no scheduled %s reports'), $report_type_label) ?></h3></center></td></tr>
 			</tbody>
 		</table>
 	</div>
