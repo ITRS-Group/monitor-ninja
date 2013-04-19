@@ -46,9 +46,10 @@ $(document).ready(function() {
 				},
 				success: function(response) {
 					var saved_reports = document.getElementById("saved_report_id");
-					var child;
-					while(child = saved_reports.firstChild) {
-						saved_reports.removeChild(child);
+					var children = saved_reports.children;
+					for (var i = 0; i < children.length; i++) {
+						if (children[i].value)
+							saved_reports.removeChild(children[i]);
 					}
 					if(!response.length) {
 						return;
