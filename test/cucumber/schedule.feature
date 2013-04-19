@@ -59,7 +59,6 @@ Feature: Scheduled reports
 		# always wait for page to load
 		Then I should see "Hostgroup breakdown"
 		And I shouldn't see "Save report"
-		And I should see "bananer och bär"
 
 	@configuration @asmonitor @reports
 	Scenario: Schedule avail report
