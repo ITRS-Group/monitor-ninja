@@ -117,8 +117,6 @@ $(document).ready(function() {
 				var filename = $('#filename').attr('value');
 				var local_persistent_filepath = $('#local_persistent_filepath').attr('value');
 				var description = $('#description').attr('value');
-				if (description == '')
-					description = '&nbsp;';
 				var attach_description = $('#attach_description').attr('value');
 				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description, attach_description)
 				setup_editable();
