@@ -36,7 +36,7 @@ test-reports:
 
 test-unittest: generate-php
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test $(UNITTESTARGS); res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
 	rm -f application/config/custom/config.php
