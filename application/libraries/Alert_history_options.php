@@ -4,12 +4,20 @@ class Alert_history_options extends Summary_options {
 	public function setup_properties() {
 		parent::setup_properties();
 		$this->properties['host_states']['type'] = 'array';
+		$this->properties['service_states']['type'] = 'array';
+
+		$this->properties['report_period']['default'] = 'forever';
+		$this->properties['summary_items']['default'] = 100;
+		$this->properties['host_name']['default'] = Report_options::ALL_AUTHORIZED;
+		if(ninja::has_module('synergy')) {
+			$this->properties['synergy_events'] = array('type' => 'boolean', 'default' => false);
+		}
+		parent::__construct($options);
 		$this->properties['host_states']['options'] = array(
 			1 => _('Up'),
 			2 => _('Down'),
 			4 => _('Unreachable'),
 		);
-		$this->properties['service_states']['type'] = 'array';
 		$this->properties['service_states']['options'] = array(
 			1 => _('Ok'),
 			2 => _('Warning'),

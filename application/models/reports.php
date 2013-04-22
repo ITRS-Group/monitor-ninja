@@ -1532,7 +1532,7 @@ class Reports_Model extends Model
 		$process = false;
 		$time_first = false;
 		$time_last = false;
-		$output = false;
+		$wildcard_filter = false;
 
 		$hosts = false;
 		$services = false;
@@ -1693,7 +1693,17 @@ class Reports_Model extends Model
 		}
 
 		if($this->options['filter_output']) {
-			$output = 'output LIKE "%'.mysql_real_escape_string($this->options['filter_output']).'%"';
+			# convert fnmatch wildcards to sql ditos
+			$wc_str = $this->options['filter_output'];
+			$wc_str = preg_replace("/(?!\\\)\*/", '\1%', $wc_str);
+			$wc_str = preg_replace("/(?!\\\)\?/", '\1_', $wc_str);
+			# case insensitive. This also works on oracle
+			$wc_str = strtoupper($wc_str);
+			$wc_str = '%' . $wc_str . '%';
+			$wc_str_esc = $this->db->escape($wc_str);
+			$wildcard_filter = "\n UPPER(output) LIKE $wc_str_esc" .
+				"\n OR UPPER(host_name) LIKE $wc_str_esc " .
+				"\n OR UPPER(service_description) LIKE $wc_str_esc";
 		}
 
 		$query = "SELECT " . $fields . "\nFROM " . $db_table;
@@ -1710,7 +1720,7 @@ class Reports_Model extends Model
 							sql::combine('and',
 								$softorhard,
 								$alert_types)))),
-				$output
+				$wildcard_filter
 			);
 
 

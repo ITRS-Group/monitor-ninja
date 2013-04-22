@@ -146,8 +146,19 @@ class nagstat_Core {
 	 */
 	public static function process_macros($string=false, $obj=false, $objtype=false)
 	{
-		if (empty($string) || empty($obj) || empty($objtype)) {
-			return false;
+		if (empty($string) || empty($obj)) {
+			return $string;
+		}
+
+		# try some heuristics to determine object type
+		if (empty($objtype)) {
+			if (!empty($obj->service_description)) {
+				$objtype = 'service';
+			} elseif (!empty($obj->address) || !empty($obj->state)) {
+				$objtype = 'host';
+			} else {
+				$objtype = 'group';
+			}
 		}
 		$macros = array(
 				'host' => array(
@@ -187,9 +198,18 @@ class nagstat_Core {
 				'servicegroup' => array(
 					'$SERVICEGROUPNAME$' => 'name',
 					'$SERVICEGROUPALIAS$' => 'alias',
-				)
+				),
+				# strictly speaking, this is wrong, but the effect is
+				# hopefully negligible and can easily be avoided by
+				# specifying the objtype at the callsite.
+				'group' => array(
+					'$HOSTGROUPNAME$' => 'name',
+					'$HOSTGROUPALIAS$' => 'alias',
+					'$SERVICEGROUPNAME$' => 'name',
+					'$SERVICEGROUPALIAS$' => 'alias',
+				),
 		);
-		
+
 		if( !isset( $macros[$objtype] ) ) {
 			return $string; /* No macros defined for object type, no macros can be replaced */
 		}
