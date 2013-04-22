@@ -1703,12 +1703,13 @@ class Reports_Model extends Model
 			$wc_str = $this->options['filter_output'];
 			$wc_str = preg_replace("/(?!\\\)\*/", '\1%', $wc_str);
 			$wc_str = preg_replace("/(?!\\\)\?/", '\1_', $wc_str);
-			$wc_str = '"%' . mysql_real_escape_string($wc_str) . '%"';
 			# case insensitive. This also works on oracle
 			$wc_str = strtoupper($wc_str);
-			$wildcard_filter = "\n UPPER(output) LIKE $wc_str" .
-				"\n OR UPPER(host_name) LIKE $wc_str " .
-				"\n OR UPPER(service_description) LIKE $wc_str";
+			$wc_str = '%' . $wc_str . '%';
+			$wc_str_esc = $this->db->escape($wc_str);
+			$wildcard_filter = "\n UPPER(output) LIKE $wc_str_esc" .
+				"\n OR UPPER(host_name) LIKE $wc_str_esc " .
+				"\n OR UPPER(service_description) LIKE $wc_str_esc";
 		}
 
 		$query = "SELECT " . $fields . "\nFROM " . $db_table;
