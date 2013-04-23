@@ -5,13 +5,11 @@
  */
 class Execute_Command_Model extends Model
 {
-	private $auth = false;
 	protected $dryrun = false; /**< Set to true to make it not actually do anything */
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**
@@ -272,7 +270,7 @@ class Execute_Command_Model extends Model
 						if(isset($defaults['service'])) {
 							if(is_array($defaults['service'])) {
 								foreach($defaults['service'] as $service) {
-									if($this->auth->is_authorized_for_service($service)) {
+									if($this->is_authorized_for_obj('services',$service)) {
 										$ary['options']['service'][] = array($service => $service);
 									}
 								}
@@ -282,7 +280,7 @@ class Execute_Command_Model extends Model
 						} else {
 							if(is_array($defaults['host_name'])) {
 								foreach($defaults['host_name'] as $host) {
-									if($this->auth->is_authorized_for_host($host)) {
+									if($this->is_authorized_for_obj('hosts',$host)) {
 										$ary['options']['host_name'][] = $host;
 									}
 								}
@@ -290,9 +288,9 @@ class Execute_Command_Model extends Model
 								$ary['options'] = array($defaults['host_name'] => $defaults['host_name']);
 							}
 						}
-					} elseif(isset($defaults['hostgroup_name']) && $this->auth->is_authorized_for_hostgroup($defaults['hostgroup_name'])) {
+					} elseif(isset($defaults['hostgroup_name']) && $this->is_authorized_for_obj('hostgroups',$defaults['hostgroup_name'])) {
 						$ary['options'] = array($defaults['hostgroup_name'] => $defaults['hostgroup_name']);
-					} elseif(isset($defaults['servicegroup_name']) && $this->auth->is_authorized_for_servicegroup($defaults['servicegroup_name'])) {
+					} elseif(isset($defaults['servicegroup_name']) && $this->is_authorized_for_obj('servicegroups', $defaults['servicegroup_name'])) {
 						$ary['options'] = array($defaults['servicegroup_name'] => $defaults['servicegroup_name']);
 					}
 				}
@@ -349,5 +347,18 @@ class Execute_Command_Model extends Model
 
 		$info['params'] = $params;
 		return $info;
+	}
+
+	/**
+	 * Returns true is the object is avalible and authorized, given a table and
+	 * a key
+	 *
+	 * @todo This needs to be removed, and replaced and batched where it's called.
+	 * @param string $table
+	 * @param string $key
+	 * @return boolean
+	 */
+	private function is_authorized_for_obj($table, $key) {
+		return false !== ObjectPool_Model::pool($table)->fetch_by_key($key);
 	}
 }
