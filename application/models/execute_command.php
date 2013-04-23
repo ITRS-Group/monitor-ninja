@@ -7,11 +7,6 @@ class Execute_Command_Model extends Model
 {
 	protected $dryrun = false; /**< Set to true to make it not actually do anything */
 
-	public function __construct()
-	{
-		parent::__construct();
-	}
-
 	/**
 	 * Get the users/systems configured value for this option
 	 * @param $setting Option name
