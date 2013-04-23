@@ -37,7 +37,7 @@ function lsfilter_list(config)
 	if(this.config.totals)
 		lsfilter_list_attach_events( this, this.config.totals );
 
-	/* Bind this once and for all globally... Needed in lot of callbacks */ 
+	/* Bind this once and for all globally... Needed in lot of callbacks */
 	var self = this;
 
 	if( this.config.attach_head ) {
@@ -466,7 +466,9 @@ function lsfilter_list(config)
 	this.add_sort = function(element, vis_column, current)
 	{
 		var img = _site_domain+'application/views/icons/arrow-up-down.png';
-		if (current > 0) { // Ascending?
+		element.attr('title', 'Sort ascending');
+		if (current > 0) {
+			element.attr('title', 'Sort descending');
 			img = _site_domain+'application/views/icons/arrow-up.png';
 			element.addClass('current');
 		}
@@ -478,7 +480,6 @@ function lsfilter_list(config)
 		element.addClass('sortable');
 		element.addClass('link_set_sort');
 
-		element.attr('title', 'Sort descending');
 		element.attr('data-column', vis_column );
 
 		element.append($('<span class="lsfilter-sort-span" />').css('background-image', 'url('+img+')'));
