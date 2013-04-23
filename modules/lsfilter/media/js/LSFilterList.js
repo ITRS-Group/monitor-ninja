@@ -165,7 +165,11 @@ function lsfilter_list(config)
 					},
 					error: function(data, text_status)
 					{
-						if(text_status === "abort") {
+						if(!data.getAllResponseHeaders() || text_status === "abort") {
+							// getAllResponseHeaders() provided by http://ilikestuffblog.com/2009/11/30/how-to-distinguish-a-user-aborted-ajax-call-from-an-error/
+							// since my tests of === "abort" all are negative, keeping it if jQuery decides to follow its API sometime..
+
+
 							// only continue to display error message if
 							// it's an actual error, not just multiple requests
 							// stacked or something silly like that
