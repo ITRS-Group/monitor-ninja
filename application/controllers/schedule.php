@@ -55,15 +55,6 @@ class Schedule_Controller extends Authenticated_Controller
 
 		# fetch ALL schedules (avail + SLA + Alert Summary)
 		$avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail')->result_array(false);
-
-		foreach ($avail_reports as $idx => $report) {
-			foreach ($avail_schedules as $schedule) {
-				if ($schedule['report_id'] == $report->id) {
-					$avail_reports[$idx]->report_name .= ' ( *'._('Scheduled').'* )';
-					continue 2;
-				}
-			}
-		}
 		$new_schedule->saved_reports = $avail_reports;
 
 		# add new schedule template to available_schedules template
