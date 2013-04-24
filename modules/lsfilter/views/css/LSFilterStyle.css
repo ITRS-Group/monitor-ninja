@@ -128,6 +128,12 @@ th.sortable.current {
 	background: lightblue;
 }
 
+th .listview_multiselect_checkbox_all {
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+}
+
 .extra_toolbar {
 	top: 48px;
 	left: 0;
