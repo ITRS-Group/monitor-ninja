@@ -1,12 +1,12 @@
 <?php
 
 $tables = array (
-	'columns' => 
+	'columns' =>
 	array (
 		'class' => 'Column',
 		'source' => 'LS',
 		'key' => array('name', 'table'),
-		'structure' => 
+		'structure' =>
 		array (
 			'description' => 'string',
 			'name' => 'string',
@@ -14,23 +14,23 @@ $tables = array (
 			'type' => 'string',
 		),
 	),
-	'commands' => 
+	'commands' =>
 	array (
 		'class' => 'Command',
 		'source' => 'LS',
 		'key' => array('line','name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'line' => 'string',
 			'name' => 'string',
 		),
 	),
-	'comments' => 
+	'comments' =>
 	array (
 		'class' => 'Comment',
 		'source' => 'LS',
 		'key' => array('id','is_service'),
-		'structure' => 
+		'structure' =>
 		array (
 			'author' => 'string',
 			'comment' => 'string',
@@ -47,24 +47,24 @@ $tables = array (
 			'type' => 'int',
 		),
 	),
-	'contactgroups' => 
+	'contactgroups' =>
 	array (
 		'class' => 'ContactGroup',
 		'source' => 'LS',
 		'key' => array('name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'alias' => 'string',
 			'members' => 'list',
 			'name' => 'string',
 		),
 	),
-	'contacts' => 
+	'contacts' =>
 	array (
 		'class' => 'Contact',
 		'source' => 'LS',
 		'key' => array('name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'address1' => 'string',
 			'address2' => 'string',
@@ -90,12 +90,12 @@ $tables = array (
 			'service_notifications_enabled' => 'int',
 		),
 	),
-	'downtimes' => 
+	'downtimes' =>
 	array (
 		'class' => 'Downtime',
 		'source' => 'LS',
 		'key' => array('id', 'is_service'),
-		'structure' => 
+		'structure' =>
 		array (
 			'author' => 'string',
 			'comment' => 'string',
@@ -112,12 +112,12 @@ $tables = array (
 			'type' => 'int',
 		),
 	),
-	'hostgroups' => 
+	'hostgroups' =>
 	array (
 		'class' => 'HostGroup',
 		'source' => 'LS',
 		'key' => array('name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'action_url' => 'string',
 			'alias' => 'string',
@@ -146,12 +146,12 @@ $tables = array (
 			'worst_service_state' => 'int',
 		),
 	),
-	'hosts' => 
+	'hosts' =>
 	array (
 		'class' => 'Host',
 		'source' => 'LS',
 		'key' => array('name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
 			'acknowledged' => 'int',
@@ -264,12 +264,12 @@ $tables = array (
 		*/
 		),
 	),
-	'servicegroups' => 
+	'servicegroups' =>
 	array (
 		'class' => 'ServiceGroup',
 		'source' => 'LS',
 		'key' => array('name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'action_url' => 'string',
 			'alias' => 'string',
@@ -291,12 +291,12 @@ $tables = array (
 			'worst_service_state' => 'int',
 		),
 	),
-	'services' => 
+	'services' =>
 	array (
 		'class' => 'Service',
 		'source' => 'LS',
 		'key' => array('host.name', 'description'),
-		'structure' => 
+		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
 			'acknowledged' => 'int',
@@ -381,12 +381,12 @@ $tables = array (
 			'state_type' => 'int',
 		),
 	),
-	'status' => 
+	'status' =>
 	array (
 		'class' => 'Status',
 		'source' => 'LS',
 		'key' => array(),
-		'structure' => 
+		'structure' =>
 		array (
 			'accept_passive_host_checks' => 'int',
 			'accept_passive_service_checks' => 'int',
@@ -430,12 +430,12 @@ $tables = array (
 			'service_checks_rate' => 'float',
 		),
 	),
-	'timeperiods' => 
+	'timeperiods' =>
 	array (
 		'class' => 'TimePeriod',
 		'source' => 'LS',
 		'key' => array('name'),
-		'structure' => 
+		'structure' =>
 		array (
 			'alias' => 'string',
 			'in' => 'int',
@@ -474,7 +474,7 @@ $tables = array (
 		'source' => 'SQL',
 		'table' => 'ninja_saved_filters',
 		'key' => array('id'),
-		'default_sort' => array('filter_name desc'),
+		'default_sort' => array('filter_name asc'),
 		'structure' => array(
 			'id' => 'int',
 			'username' => 'string',
@@ -486,11 +486,11 @@ $tables = array (
 		)
 	);
 /*
-		
-		'log' => 
+
+		'log' =>
 		array (
 			'class' => 'LogEntry',
-			'structure' => 
+			'structure' =>
 			array (
 				'attempt' => 'int',
 				'class' => 'int',
@@ -523,19 +523,19 @@ $tables = array (
 				'hostgroup' => array( 'HostGroup', 'hostgroup_' ),
 			),
 		),
-		'servicesbygroup' => 
+		'servicesbygroup' =>
 		array (
 			'class' => 'ServiceByGroup',
-			'structure' => 
+			'structure' =>
 			array (
 				'service' => array( 'Service', '' ),
 				'servicegroup' => array( 'ServiceGroup', 'servicegroup_' ),
 			),
 		),
-		'servicesbyhostgroup' => 
+		'servicesbyhostgroup' =>
 		array (
 			'class' => 'ServiceByHostGroup',
-			'structure' => 
+			'structure' =>
 			array (
 				'service' => array( 'Service', '' ),
 				'hostgroup' => array( 'HostGroup', 'hostgroup_' ),
