@@ -8,27 +8,53 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	private $op;
 	private $value;
 
+	private $negations = array(
+			'='   => '!=',
+			'!='  => '=',
+
+			'~'   => '!~',
+			'!~'  => '~',
+
+			'=~'  => '!=~',
+			'!=~' => '=~',
+
+			'~~'  => '!~~',
+			'!~~' => '~~',
+
+			'<'   => '>=',
+			'>='  => '<',
+
+			'>'   => '<=',
+			'<='  => '>',
+
+			'<='  => '>',
+			'>'   => '<=',
+
+			'>='  => '<',
+			'<'   => '>='
+			);
+
 	/**
 	 * Get the name of the field to match
 	 */
 	function get_field() {
 		return $this->field;
 	}
-	
+
 	/**
 	 * Get the operator to filter on
 	 */
 	function get_op() {
 		return $this->op;
 	}
-	
+
 	/**
 	 * Get the value to match
 	 */
 	function get_value() {
 		return $this->value;
 	}
-	
+
 	/**
 	 * Generate a match-filter
 	 */
@@ -43,15 +69,15 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	 */
 	function prefix( $prefix ) {
 		$new_field = $prefix.$this->field;
-		
+
 		/* FIXME: Livestatus should be able to handle service.host.name for comments.. Until then... */
 		$fields = explode('.',$new_field);
 		if( count($fields) > 2 ) {
 			$fields = array_slice($fields, count($fields)-2);
 		}
 		$new_field = implode('.',$fields);
-		
-		
+
+
 		return new LivestatusFilterMatch( $new_field, $this->value, $this->op );
 	}
 
@@ -60,5 +86,21 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 	 */
 	function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_match($this, $data);
+	}
+
+	/**
+	 * Negate the current filter
+	 *
+	 * FIXME: This NEEDS to be type aware.
+	 *
+	 * simplify "not (list >= "kaka")" would be simplified to list < "kaka".
+	 * >= in this case is a "contains"-operator
+	 */
+	public function negate() {
+		return new LivestatusFilterMatch(
+				$this->field,
+				$this->value,
+				$this->negations[$this->op]
+				);
 	}
 }
