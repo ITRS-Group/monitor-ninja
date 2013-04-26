@@ -439,11 +439,7 @@ Feature: SLA reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
-		# <magic page reload/>
-		# ensure we see content before testing for non-content, or we won't
-		# always wait for page to load
-		Then I should see "SLA breakdown"
-		And I shouldn't see "Save report"
+		Then I should see "Report was successfully saved"
 
 	@configuration @asmonitor @reports
 	Scenario: View saved report

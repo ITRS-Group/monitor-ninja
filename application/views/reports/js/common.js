@@ -134,9 +134,8 @@ $(document).ready(function() {
 					return;
 				}
 				jgrowl_message(data.status_msg, _reports_success);
-				// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
 				if (!btn[0].form.report_id)
-					document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.report_id
+					$('form').append('<input type="hidden" name="report_id" value="'+data.report_id+'"/>');
 				else
 					$('#save_report_form').hide();
 			},
