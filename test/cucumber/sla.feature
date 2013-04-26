@@ -371,7 +371,7 @@ Feature: SLA reports
 		And "Mar" should contain "9"
 		When I click "Show report"
 		Then I should see "SLA breakdown"
-		And I should see "Reporting period: 2013-01-01 to 2013-04-01 - 24x7"
+		And I should see "Reporting period: 2013-01-01 to 2013-03-31 - 24x7"
 
 	@configuration @asmonitor @reports
 	Scenario: Ensure correct timeperiod is carried over to avail

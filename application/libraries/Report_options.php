@@ -6,14 +6,8 @@
  * It's created to improve consistency between report types and frontend/backend
  */
 class Report_options_core implements ArrayAccess, Iterator, Countable {
-	protected static $rename_options = array(
-		't1' => 'start_time',
-		't2' => 'end_time',
-		'host' => 'host_name',
-		'service' => 'service_description',
-		'hostgroup_name' => 'hostgroup',
-		'servicegroup_name' => 'servicegroup'
-	);
+	protected $rename_options;
+
 	protected $properties = array(
 		'report_id' => array(
 			'type' => 'int',
@@ -285,6 +279,111 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
 		if (isset($this->properties['skin']))
 			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
+
+		$this->rename_options = array(
+			't1' => 'start_time',
+			't2' => 'end_time',
+			'host' => 'host_name',
+			'service' => 'service_description',
+			'hostgroup_name' => 'hostgroup',
+			'servicegroup_name' => 'servicegroup',
+			# Because we have a ton of custom date input formats everywhere in reports...
+			'cal_start' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['time_start'])) {
+					$opts['cal_start'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_start']}:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'cal_end' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['time_end'])) {
+					$opts['cal_end'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_end']}:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'time_start' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['cal_start'])) {
+					$opts['time_start'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_start']} $val:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'time_end' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['cal_end'])) {
+					$opts['time_end'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_end']} $val:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'start_year' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['start_month'])) {
+					$opts['start_year'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				$val = mktime(0, 0, 0, $opts['start_month'], 1, $val);
+				return true;
+			},
+			'start_month' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['start_year'])) {
+					$opts['start_month'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				# First day of month => midnight day 1.
+				$val = mktime(0, 0, 0, $val, 1, $opts['start_year']);
+				return true;
+			},
+			'end_year' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['end_month'])) {
+					$opts['end_year'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$val = mktime(0, 0, -1, $opts['end_month'], 1, $val);
+				return true;
+			},
+			'end_month' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				# End of month = second -1 of the next month
+				$val++;
+				if (!isset($opts['end_year'])) {
+					$opts['end_month'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$val = mktime(0, 0, -1, $val, 1, $opts['end_year']);
+				return true;
+			},
+		);
 	}
 
 	/**
@@ -519,8 +618,14 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 */
 	public function set($name, $value)
 	{
-		if (isset(static::$rename_options[$name])) {
-			$name = static::$rename_options[$name];
+		if (isset($this->rename_options[$name])) {
+			if (is_string($this->rename_options[$name])) {
+				$name = $this->rename_options[$name];
+			}
+			else if (is_callable($this->rename_options[$name])) {
+				if (!$this->rename_options[$name]($name, $value, $this->options))
+					return false;
+			}
 		}
 
 		if (!$this->validate_value($name, $value)) {

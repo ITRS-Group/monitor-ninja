@@ -547,6 +547,16 @@ function check_form_values(form)
 				cur_end.setYear($("select[name=end_year]", form).val());
 				cur_end.addMonths(Number($("select[name=end_month]", form).val()));
 			}
+
+			if (cur_end < cur_start) {
+				errors++;
+				err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
+				$(".datepick-start", form).addClass("time_error");
+				$(".datepick-end", form).addClass("time_error");
+			} else {
+				$(".datepick-start", form).removeClass("time_error");
+				$(".datepick-end", form).removeClass("time_error");
+			}
 		}
 	}
 
@@ -650,12 +660,6 @@ function check_form_values(form)
 			}
 		}
 
-		if (cur_start) {
-			$("input[name=start_time]", form).attr('value', cur_start.format('U'));
-		}
-		if (cur_end) {
-			$("input[name=end_time]", form).attr('value',  cur_end.format('U'));
-		}
 		$('#response', form).hide();
 		return true;
 	}
