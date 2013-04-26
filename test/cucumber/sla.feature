@@ -435,7 +435,6 @@ Feature: SLA reports
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 		And I should see "9.000 %"
-		And Screenshot "foo1.png"
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
@@ -450,7 +449,6 @@ Feature: SLA reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
 		Then "Selected hostgroups" should have option "LinuxServers"
-		And Screenshot "foo2.png"
 		And "Last year" should be selected from "Reporting period"
 		And "workhours" should be selected from "Report time period"
 		And "Down" should be checked
