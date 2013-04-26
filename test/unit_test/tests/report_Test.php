@@ -68,14 +68,17 @@ class report_Test extends TapUnit {
 	}
 
 	public function test_overlapping_timeperiods() {
+		$db = Database::instance();
 		$opts = array(
 			'start_time' => strtotime('1999-01-01'),
 			'end_time' => strtotime('2012-01-01'),
 			'rpttimeperiod' => 'weird-stuff');
+		Old_Timeperiod_Model::$precreated = array();
+		sleep(1); // Give ocimp time to import the timeperiods
 		$report = Old_Timeperiod_Model::instance($opts);
 		$report->resolve_timeperiods();
 		$this->pass('Could resolve timperiod torture-test');
-		$this->ok(!empty($report->tp_exceptions), 'There are timeperiod exceptions');
+		$this->ok(!empty($report->tp_exceptions), 'There should be timeperiod exceptions, based on '.var_export($db->query('SELECT * FROM timeperiod inner join custom_vars on obj_id=id where timeperiod_name="weird-stuff"')->result_array(false), true));
 		// fixme: validate output
 	}
 
