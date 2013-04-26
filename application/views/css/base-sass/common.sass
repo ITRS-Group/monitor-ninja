@@ -1,5 +1,3 @@
-@import "config"
-
 $experimental-support-for-svg: true !default
 $experimental-support-for-mozilla: true !default
 $experimental-support-for-webkit: true !default
@@ -136,7 +134,11 @@ table
 
 	th
 		@extend .nullify
-		@extend .dark
+		background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
+		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
+		@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+		border: 1px solid $border-color-light
+		padding: 5px 3px 2px 3px
 
 		font-size: 1.1em
 
@@ -307,7 +309,7 @@ input
 		width: 70%
 		color: #444
 		padding: 2px 2px 2px 20px
-		background: #fff
+		background: $input_background_color
 		background-position: left center
 
 .autocomplete

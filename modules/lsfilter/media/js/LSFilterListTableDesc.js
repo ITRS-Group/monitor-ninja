@@ -225,7 +225,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 					 * can be a local, as in loop variable in list compherension
 					 */
 					var value = var0.fetch(variable);
-					if(value)
+					if(typeof value != "undefined")
 						return value;
 					/* In this case, it's really unknown */
 					return 'Unknown variable ' + name.slice(0, i + 1).join('.');

@@ -1,5 +1,4 @@
 @import "compass/css3/images"
-@import "config"
 
 // Menu/Navigation SASS
 
@@ -80,11 +79,11 @@
 	li
 		position: relative
 		&.selected
-			box-shadow: inset 0 0 5px #888
+			box-shadow: inset 0 0 5px $hard-shadow-color
 			border-radius: 2px 4px  0 0
 			background-color: #ccc
-			border-right: 1px solid #777
-			border-left: 1px solid #777
+			border-right: 1px solid $border-color-dark
+			border-left: 1px solid $border-color-dark
 
 a
 	&.external
