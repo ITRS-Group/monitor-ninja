@@ -937,20 +937,6 @@ missing_objects.prototype.display_if_any = function()
 		.html(info_str);
 }
 
-function format_date_str(date) {
-	var YY = date.getFullYear();
-	var MM = date.getMonth() + 1;
-	var DD = date.getDate();
-	var hh = date.getHours();
-	var mm = date.getMinutes();
-	MM = MM<10 ? '0' + MM :MM;
-	DD = DD<10 ? '0' + DD : DD;
-	hh = hh<10 ? '0' + hh : hh;
-	mm = mm<10 ? '0' + mm : mm;
-	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
-	return ret_val;
-}
-
 function confirm_delete_report()
 {
 	var btn = $(this);
