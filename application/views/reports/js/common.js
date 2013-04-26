@@ -128,7 +128,11 @@ $(document).ready(function() {
 			complete: function() {
 				btn.parent().find('img:last').remove();
 			},
-			success: function(data) {
+			success: function(data, status_msg, xhr) {
+				if (data == null) {
+					jgrowl_message(xhr.responseText, _reports_error);
+					return;
+				}
 				jgrowl_message(data.status_msg, _reports_success);
 				// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
 				if (!btn[0].form.report_id)
