@@ -98,7 +98,7 @@ listview_renderer_table.hosts = {
 	},
 	"actions" : {
 		"header" : _('Actions'),
-		"depends" : [ 'name', 'action_url', 'config_url', 'notes_url' ],
+		"depends" : [ 'name', 'action_url', 'config_url', 'notes_url', 'config_allowed' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -115,7 +115,7 @@ listview_renderer_table.hosts = {
 						_('Perform extra host actions'), $('<a />').attr(
 								'href', args.obj.action_url)));
 
-			if (args.obj.config_url)
+			if (args.obj.config_url && args.obj.config_allowed)
 				cell.append(icon16('nacoma', _('Configure this host'), $(
 						'<a />').attr('href', args.obj.config_url)));
 
@@ -366,7 +366,7 @@ listview_renderer_table.services = {
 	},
 	"actions" : {
 		"header" : _('Actions'),
-		"depends" : [ 'action_url', 'config_url', 'notes_url' ],
+		"depends" : [ 'action_url', 'config_url', 'notes_url', 'config_allowed' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -378,7 +378,7 @@ listview_renderer_table.services = {
 								'href', args.obj.action_url)));
 
 
-			if (args.obj.config_url)
+			if (args.obj.config_url && args.obj.config_allowed)
 				cell.append(icon16('nacoma', _('Configure this service'), $(
 						'<a />').attr('href', args.obj.config_url)));
 			

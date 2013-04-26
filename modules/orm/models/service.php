@@ -38,7 +38,8 @@ class Service_Model extends BaseService_Model {
 		'duration'        => array('last_state_change'),
 		'comments_count'  => array('comments'),
 		'config_url'      => array('host.name', 'description'),
-		'check_type_str'  => array('check_type')
+		'check_type_str'  => array('check_type'),
+		'config_allowed'  => array('contacts')
 	);
 
 	/**
@@ -52,6 +53,7 @@ class Service_Model extends BaseService_Model {
 		$this->export[] = 'comments_count';
 		$this->export[] = 'config_url';
 		$this->export[] = 'check_type_str';
+		$this->export[] = 'config_allowed';
 	}
 
 	/**
@@ -131,18 +133,40 @@ class Service_Model extends BaseService_Model {
 	public function get_comments_count() {
 		return count($this->get_comments());
 	}
-	
+
 	/**
 	 * Get the check type as string (passive/active)
 	 */
 	public function get_check_type_str() {
 		return $this->get_check_type() ? 'passive' : 'active';
 	}
-	
+
 	/**s
 	 * Get a list of custom commands for the service
 	 */
 	public function get_custom_commands() {
 		return Custom_command_Model::parse_custom_variables($this->get_custom_variables());
+	}
+
+	/**
+	 * Get if having access to configure the host.
+	 * @param op5Auth $auth
+	 */
+	public function get_config_allowed($auth = false) {
+		if( $auth === false ) {
+			$auth = op5auth::instance();
+		}
+		if(!$auth->authorized_for('configuration_information')) {
+			return false;
+		}
+		if($auth->authorized_for('service_edit_all')) {
+			return true;
+		}
+		$cts = $this->get_contacts();
+		if(!is_array($cts)) $cts = array();
+		if($auth->authorized_for('service_edit_contact') && in_array($auth->get_user()->username, $cts)) {
+			return true;
+		}
+		return false;
 	}
 }
