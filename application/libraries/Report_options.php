@@ -43,17 +43,17 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		'state_types' => array(
 			'type' => 'enum',
 			'default' => 3,
-                        'description' => 'Bitmap of the types of states to include (soft, hard, both)'
-                ),
+			'description' => 'Bitmap of the types of states to include (soft, hard, both)'
+		),
 		'host_states' => array(
 			'type' => 'enum',
 			'default' => 7,
-                        'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)'
+			'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)'
 		),
 		'service_states' => array(
 			'type' => 'enum',
 			'default' => 15,
-                        'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)'
+			'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)'
 		),
 		'summary_items' => array(
 			'type' => 'int',
