@@ -791,7 +791,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				}
 			}
 
-			if (isset($saved_report_info['objects']) && empty($options[$options->get_value('report_type')]))
+			if (isset($saved_report_info['objects']) && !$options[$options->get_value('report_type')])
 				$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 		}
 		if (isset($options->properties['report_period']) && !isset($options->options['report_period']) && isset($options->properties['report_period']['default']))
