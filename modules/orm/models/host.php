@@ -153,7 +153,7 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * Get if having access to configure the host.
-	 * @param op5Auth $auth
+	 * @param $auth op5auth module to use, if not default
 	 */
 	public function get_config_allowed($auth = false) {
 		if( $auth === false ) {

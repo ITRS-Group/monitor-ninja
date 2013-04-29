@@ -141,7 +141,7 @@ class Service_Model extends BaseService_Model {
 		return $this->get_check_type() ? 'passive' : 'active';
 	}
 
-	/**s
+	/**
 	 * Get a list of custom commands for the service
 	 */
 	public function get_custom_commands() {
@@ -150,7 +150,7 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Get if having access to configure the host.
-	 * @param op5Auth $auth
+	 * @param $auth op5auth module to use, if not default
 	 */
 	public function get_config_allowed($auth = false) {
 		if( $auth === false ) {
