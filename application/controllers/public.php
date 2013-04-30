@@ -30,6 +30,7 @@ class Public_Controller extends Controller {
 		$graph = new PieChart(300, 200);
 		$graph->set_data($_GET, 'pie');
 		$graph->set_margins(30);
+		$graph->set_legend_precision(3);
 
 		$graph->draw();
 		$graph->display();
