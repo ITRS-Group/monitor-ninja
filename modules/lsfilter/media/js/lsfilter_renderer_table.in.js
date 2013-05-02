@@ -322,7 +322,8 @@ listview_renderer_table.services = {
 		"header" : _('Status'),
 		"depends" : [ 'host.name', 'description', 'pnpgraph_present',
 		        'acknowledged', 'comments_count', 'notifications_enabled',
-		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth' ],
+		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
+		        'host.scheduled_downtime_depth'],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -357,7 +358,7 @@ listview_renderer_table.services = {
 			if (args.obj.is_flapping) // FIXME: Needs icon in compass
 				cell.append(icon16('flapping', _('Flapping')));
 
-			if (args.obj.scheduled_downtime_depth > 0)
+			if ((args.obj.scheduled_downtime_depth > 0) || (args.obj.host.scheduled_downtime_depth > 0))
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
 			

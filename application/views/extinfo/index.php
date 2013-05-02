@@ -93,11 +93,11 @@ if (!empty($widgets)) {
 		<tr>
 			<td><strong><?php echo _('Contact groups') ?></strong></td>
 			<td>
-				<?php 
+				<?php
 					$c = 0;
 					$groups = $object->get_contact_groups();
 					$contacts = $object->get_contacts();
-					
+
 					foreach ($groups as $group) {
 						echo '<a href="#" title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
 						echo $group.'</a>';
@@ -111,17 +111,17 @@ if (!empty($widgets)) {
 					</tr>
 					<?php
 					$gobj = ContactGroupPool_Model::all()->reduce_by('name',$group,'=')->one(array('members'));
-					
+
 					$gmembers = ContactPool_Model::none();
 					$allcontacts = ContactPool_Model::all();
 
 					$group_member_names = $gobj->get_members();
 					$contacts = array_diff( $contacts, $group_member_names );
-					
+
 					foreach( $group_member_names as $member ) {
 						$gmembers = $gmembers->union($allcontacts->reduce_by('name', $member, '='));
 					}
-					
+
 					foreach ($gmembers as $member) { ?>
 					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
 						<td><?php echo $member->get_name(); ?></td>
@@ -146,13 +146,13 @@ if (!empty($widgets)) {
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
 					</tr>
 					<?php
-					
+
 					$gmembers = ContactPool_Model::none();
 					$allcontacts = ContactPool_Model::all();
 					foreach( $contacts as $member ) {
 						$gmembers = $gmembers->union($allcontacts->reduce_by('name', $member, '='));
 					}
-					
+
 					foreach ($gmembers as $member) { ?>
 					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
 						<td><?php echo $member->get_name(); ?></td>
@@ -280,7 +280,18 @@ if (!empty($widgets)) {
 		<tr>
 			<td class="dark"><?php echo _('In scheduled downtime?'); ?></td>
 			<td id="field_scheduled_downtime">
-				<?php echo $object->get_scheduled_downtime_depth() ? $red_shield.' '.$yes : $green_shield.' '.$no; ?>
+				<?php
+				$in_downtime = $object->get_scheduled_downtime_depth();
+				$host_in_downtime = false;
+				if( $type == 'service' && $host->get_scheduled_downtime_depth() ) {
+					$in_downtime = true;
+					$host_in_downtime = true;
+				}
+				echo $in_downtime ? $red_shield.' '.$yes : $green_shield.' '.$no;
+				if( $host_in_downtime ) {
+					echo ' (' . _('host in downtime') . ')';
+				}
+				?>
 			</td>
 		</tr>
 		<tr>
@@ -321,7 +332,7 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<?php if($object->get_custom_variables()) {
-			foreach($object->get_custom_variables() as $variable => $value) { 
+			foreach($object->get_custom_variables() as $variable => $value) {
 				if (substr($variable, 0, 6) !== 'OP5H__') { ?>
 				<tr>
 					<td class="dark">_<?php echo $variable ?></td>
