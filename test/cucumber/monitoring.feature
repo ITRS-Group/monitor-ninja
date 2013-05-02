@@ -412,10 +412,11 @@ Feature: Monitoring
 		And Link "Services warning" should contain "1"
 
 
-	@configuration @asmonitor @case-650 @todo
+	@configuration @asmonitor @case-650
 	Scenario: Service details filter
-		Verify that I can go back to showing all
-		services after having filtered on Ok ones.
+		Verify that I can go back to showing all by
+		services after having filtered on Ok ones
+		by clicking the table name.
 
 		Given I have submitted a passive service check result "linux-server2;System Load;2;some output"
 		And I am on the Service details page
@@ -426,7 +427,7 @@ Feature: Monitoring
 		Then I should see "linux-server2"
 		And I should see "System Load"
 		But I shouldn't see "PING"
-		When I click link "Services total"
+		When I click link "Services"
 		Then I should see the configured services
 
 	@configuration @asmonitor @case-654
