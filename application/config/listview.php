@@ -6,12 +6,12 @@
 if( !isset( $config['columns'] ) )
 	$config['columns'] = array();
 
-$config['columns']['hosts'] = 'all';
-$config['columns']['services'] = 'all';
-$config['columns']['hostgroups'] = 'all';
-$config['columns']['servicegroups'] = 'all';
-$config['columns']['comments'] = 'all';
-$config['columns']['downtimes'] = 'all';
-$config['columns']['contacts'] = 'all';
-$config['columns']['notifications'] = 'all';
-$config['columns']['saved_filters'] = 'all';
+$config['columns']['hosts'] = 'default';
+$config['columns']['services'] = 'default';
+$config['columns']['hostgroups'] = 'default';
+$config['columns']['servicegroups'] = 'default';
+$config['columns']['comments'] = 'default';
+$config['columns']['downtimes'] = 'default';
+$config['columns']['contacts'] = 'default';
+$config['columns']['notifications'] = 'default';
+$config['columns']['saved_filters'] = 'default';
