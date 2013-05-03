@@ -351,7 +351,13 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				var fargs = expr_list2(args);
 				/* FIXME: test variable types */
 				return fargs[1].join(fargs[0]);
-			}
+			};
+		case "time":
+			return function(args) {
+				var fargs = expr_list2(args);
+				/* FIXME: test variable types */
+				return format_timestamp(fargs[0]);
+			};
 		}
 		return function(args) {
 			return "Unknown function "+name0;
