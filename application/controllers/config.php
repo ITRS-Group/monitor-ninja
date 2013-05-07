@@ -46,7 +46,6 @@ class Config_Controller extends Authenticated_Controller {
 		$result = array();
 		$this->template->title = _('Configuration').' » '._('View config');
 		$this->template->content = $this->add_view('config/index');
-		$this->template->content->pagination = $pagination;
 
 		switch ($this->type) {
 			case 'hosts': // *****************************************************************************
@@ -463,6 +462,10 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->content->header = $header;
 		$this->template->content->data = $data;
+		if(!$data || count($data) < $pagination->items_per_page) {
+			$pagination->hide_next = true;
+		}
+		$this->template->content->pagination = $pagination;
 		$this->template->content->filter_string = $this->input->get('filterbox', _('Enter text to filter'));
 		$this->template->content->type = $this->type;
 	}

@@ -27,7 +27,7 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 		<?php echo $label_previous ?>
 	<?php endif ?>
 
-	<?php if ($next_page): ?>
+	<?php if ($next_page && !$hide_next): ?>
 		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>" class="nextpage"><?php echo $label_next ?></a>
 	<?php else: ?>
 		<?php echo $label_next ?>

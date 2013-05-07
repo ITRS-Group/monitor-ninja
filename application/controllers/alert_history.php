@@ -37,6 +37,9 @@ class Alert_history_Controller extends Summary_Controller
 			$this->template->content->header->standard_header->skip_save = true;
 			$this->template->content->header->standard_header->title = _('Alert history');
 			if ($this->options['summary_items']) {
+				if(!$this->template->content->content->result || count($this->template->content->content->result) < $items_per_page) {
+					$pagination->hide_next = true;
+				}
 				$this->template->content->content->pagination = $pagination;
 			}
 		}

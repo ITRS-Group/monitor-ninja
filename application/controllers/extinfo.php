@@ -614,8 +614,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
-		$this->template->content->pagination = $pagination;
 		$this->template->content->data = $sq_model->show_scheduling_queue($service, $host);
+		if(!$this->template->content->data || count($this->template->content->data) < $items_per_page) {
+			$pagination->hide_next = true;
+		}
+		$this->template->content->pagination = $pagination;
 		$this->template->content->host_search = $host;
 		$this->template->content->service_search = $service;
 		$this->template->content->header_links = array(
