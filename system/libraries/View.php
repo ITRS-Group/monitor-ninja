@@ -232,6 +232,9 @@ class View_Core {
 
 		if (isset($this->$key))
 			return $this->$key;
+
+		$this->kohana_local_data[$key] = null;
+		return $this->kohana_local_data[$key];
 	}
 
 	/**
