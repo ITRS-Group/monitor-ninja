@@ -112,15 +112,14 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->accept_passive_checks == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->check_freshness == 1 ? _('Yes') : _('No');
 						//$result[$i][]= $row->freshness_threshold == 0 ? _('Auto-determined value') : $row->freshness_threshold.' '._('seconds');
-						$cg_link = false;
 						$c_link = array();
 						foreach($row->contact_groups as $cg){
-							$cg_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+							$c_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
 						}
 						foreach($row->contacts as $c){
 							$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
 						}
-						$result[$i][] = (($c_link !== false) ? implode(', ', $c_link).', ' : '').(($cg_link !== false) ? implode(', ', $cg_link) : '');
+						$result[$i][] = implode(', ', $c_link);
 
 						$result[$i][]= $row->notification_interval == 0 ? _('No Re-notification') : $row->notification_interval;
 						$result[$i][]= time::to_string($row->first_notification_delay);
