@@ -137,7 +137,7 @@ $config['nagios_etc_path'] = false;
  *	Path to where host logos as stored.
  *	Should be relative to webroot
  */
-$config['logos_path'] = '/monitor/images/logos/';
+$config['logos_path'] = '/ninja/application/media/images/logos';
 
 /**
  * current_skin is the subdirectory to 'css'. a skin a simple way of altering
