@@ -178,7 +178,7 @@
 	<div class="header_right">
 	<div class="global_search">
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
-		<?php echo _('Welcome'); ?> <?php echo strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
+		<?php echo _('Welcome'); ?> <?php echo html::anchor('user', strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username')) ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
 		<span id="my_saved_searches" style="padding: 4px; vertical-align: text-bottom; cursor: pointer;"><img id="my_saved_searches_img" title="Click to view your saved searches" src="/monitor/application/views/icons/16x16/save_search.png" /></span>
 		<?php
 		$query = arr::search($_REQUEST, 'query');
