@@ -180,10 +180,12 @@ class op5Log {
 	 */
 	public static function writeback()
 	{
+		$processUser = posix_getpwuid(posix_geteuid());
+		$user = $processUser['name'];
 		foreach( self::$messages as $file => $messages ) {
 			$dir = dirname( $file );
 			if(!is_dir($dir)) {
-				@mkdir( $dir, 0750, true );
+				@mkdir( $dir, 0775, true );
 			}
 			$res = @file_put_contents(
 				$file,
@@ -192,6 +194,11 @@ class op5Log {
 
 			if( $res === false ) {
 				error_log( 'Could not write to log file: ' . $file );
+			}
+			if ($user === 'root' && posix_getpwuid(fileowner($file)) === 'root') {
+				exec("id monitor -gn", $p_group, $status);
+				chown($file, "monitor");
+				chgrp($file, $p_group[0]);
 			}
 		}
 		self::$messages = array(); /* empty, to make it possible to add more messages afterwards */
