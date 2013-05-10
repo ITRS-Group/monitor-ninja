@@ -55,7 +55,7 @@ listview_renderer_table.hosts = {
 		"header" : _('Status'),
 		"depends" : [ 'name', 'acknowledged', 'notifications_enabled',
 		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-		        'notes_url', 'pnpgraph_present', 'comments_count' ],
+		        'pnpgraph_present', 'comments_count' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
