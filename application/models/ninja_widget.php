@@ -139,7 +139,7 @@ class Ninja_widget_Model extends Model
 
 		if (!count($result))
 			return false;
-		
+
 		$db_row=$result->result(false)->current();
 		$db_row['setting'] = i18n::unserialize(trim($db_row['setting']));
 		$obj = new Ninja_widget_Model($db_row);

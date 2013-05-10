@@ -188,7 +188,7 @@ class Widget_Controller extends Authenticated_Controller {
 		$db->query('UPDATE ninja_settings SET setting='.$db->escape($setting).' WHERE type = \'widget_order\' AND username = '. $db->escape($username));
 		echo json_encode(array('success' => true));
 	 }
-	
+
 	public function copy_widget_instance() {
 		$page = $this->input->post('page');
 		$widget = $this->input->post('widget');
