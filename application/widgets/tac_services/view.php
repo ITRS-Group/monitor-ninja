@@ -16,7 +16,7 @@
 	</tr>
 	<tr>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php if (count($services_critical) > 0) { foreach ($services_critical as $url => $title) { ?>
 					<tr>
 						<td class="icon dark">
@@ -38,7 +38,7 @@
 			</table>
 		</td>
 		<td >
-			<table>
+			<table class="no_border">
 					<?php	if (count($services_warning) > 0) { foreach ($services_warning as $url => $title) { ?>
 					<tr>
 						<td class="icon dark">
@@ -60,7 +60,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php	if (count($services_unknown) > 0) { foreach ($services_unknown as $url => $title) { ?>
 					<tr>
 						<td class="icon dark">
@@ -83,7 +83,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php	if ($current_status->svc->ok > 0) { ?>
 					<tr>
 						<td class="icon dark">
@@ -109,7 +109,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php	if (count($services_pending) > 0) {	foreach ($services_pending as $url => $title) { ?>
 					<tr>
 						<td class="icon dark">

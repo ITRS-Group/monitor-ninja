@@ -14,7 +14,7 @@
 	</tr>
 	<tr>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php if (count($hosts_down) > 0) { foreach ($hosts_down as $url => $title) { ?>
 					<tr>
 						<td class="icon dark">
@@ -36,7 +36,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php if (count($hosts_unreachable) > 0) { foreach ($hosts_unreachable as $url => $title) { ?>
 					<tr>
 						<td class="icon dark">
@@ -58,7 +58,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php	if ($current_status->hst->up > 0) { ?>
 					<tr>
 						<td class="icon dark"><?php echo '<span class="icon-16 x16-shield-ok" title="'._('Up').'"></span>';  ?></td>
@@ -78,7 +78,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php if (count($hosts_pending) > 0) { foreach ($hosts_pending as $url => $title) { ?>
 					<tr>
 						<td class="icon dark"><?php echo '<span class="icon-16 x16-shield-pending" title="'._('Pending').'"></span>';  ?></td>

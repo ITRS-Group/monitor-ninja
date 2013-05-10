@@ -16,7 +16,7 @@
 	</tr>
 	<tr>
 		<td>
-		<table>
+		<table class="no_border">
 			<?php	if ($enable_flap_detection) { ?>
 				<?php if ($flap_disabled_services > 0) {?>
 				<tr>
@@ -68,7 +68,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 				<?php	if ($enable_notifications) { ?>
 					<?php if ($notification_disabled_services > 0) { ?>
 					<tr>
@@ -100,7 +100,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 				<?php	if ($enable_event_handlers) { ?>
 						<?php if ($event_handler_disabled_svcs > 0) { ?>
 						<tr>
@@ -133,7 +133,7 @@
 		</td>
 
 		<td>
-			<table>
+			<table class="no_border">
 				<?php	if ($execute_service_checks) { ?>
 					<?php if ($active_checks_disabled_svcs > 0) { ?>
 						<tr>
@@ -165,7 +165,7 @@
 			</table>
 		</td>
 		<td>
-			<table>
+			<table class="no_border">
 					<?php	if ($accept_passive_service_checks) { ?>
 						<?php if ($passive_checks_disabled_svcs > 0) { ?>
 							<tr>
