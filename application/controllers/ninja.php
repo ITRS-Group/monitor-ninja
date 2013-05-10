@@ -215,7 +215,7 @@ class Ninja_Controller extends Template_Controller {
 			$query->result(false);
 			$row = $query->current();
 			if ($row !== false && $row['cnt'] > 0) {
-				$notifications[] = array($row['cnt'] . _(' unmonitored hosts present.'), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
+				$notifications[] = array(html::anchor('configuration/configure?scan=autoscan_complete', $row['cnt'] . _(' unmonitored hosts present.')), true);
 			}
 		}
 
