@@ -37,9 +37,9 @@ if($options['report_id']) { ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
 					<td><label for="start_year"><?php echo _('Start year') ?></label></td>
-					<td><select name="start_year" id="start_year"  style="width: 50px" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
+					<td><select name="start_year" id="start_year" class="auto" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
 					<td><label for="start_month"><?php echo _('Start month') ?></label></td>
-					<td><select name="start_month" id="start_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
+					<td><select name="start_month" id="start_month" class="auto" onchange="check_custom_months();"><option value=""></option></select></td>
 				</tr>
 			</table>
 		</td>
@@ -48,9 +48,9 @@ if($options['report_id']) { ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
 					<td><label for="end_year"><?php echo _('End year') ?></label></td>
-					<td><select name="end_year" id="end_year" style="width: 50px" onchange="js_print_date_ranges(this.value, 'end', 'month');"><option value=""></option></select></td>
+					<td><select name="end_year" id="end_year" class="auto" onchange="js_print_date_ranges(this.value, 'end', 'month');"><option value=""></option></select></td>
 					<td><label for="end_month"><?php echo _('End month') ?></label></td>
-					<td><select name="end_month" id="end_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
+					<td><select name="end_month" id="end_month" class="auto" onchange="check_custom_months();"><option value=""></option></select></td>
 				</tr>
 			</table>
 		</td>
