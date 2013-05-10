@@ -17,7 +17,6 @@ class Reports_Controller extends Base_reports_Controller
 {
 	private $status_link = "status/host/";
 	private $history_link = "alert_history/generate";
-	private $notifications_link = "notifications/host";
 
 	protected $reports_model = false;
 	protected $trends_graph_model = false;
@@ -509,7 +508,7 @@ class Reports_Controller extends Base_reports_Controller
 							$links[$this->status_link.$host] = _('Status detail');
 
 							$links[$this->history_link . '?host_name[]=' . $host] = _('Alert history');
-							$links[$this->notifications_link . "/" . $host] = _('Notifications');
+							$links[listview::link('notifications', array('host_name' => $host))] = _('Notifications');
 							break;
 
 						case 'services':
@@ -523,11 +522,10 @@ class Reports_Controller extends Base_reports_Controller
 
 							$histogram_params = "service[]=".urlencode("$host;$service")."&amp;t1=$t1&amp;t2=$t2";
 							$history_params = "service[]=".urlencode("$host;$service");
-							$notifications_params = "host=$host&amp;service=$service";
 
 							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
 							$links[$this->history_link . "?" . $history_params] = _('Alert history');
-							$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
+							$links[listview::link('notifications', array('host_name' => $host, 'service_description' => $service))] = _('Notifications');
 
 							break;
 					}
