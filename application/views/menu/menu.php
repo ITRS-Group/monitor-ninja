@@ -131,9 +131,6 @@ $menu_base = array(
 );
 
 
-if (isset($menu_items['statistics']))
-	$menu_base[$menu_items['section_reporting']][$menu_items['statistics']] = array('/statistics', 'statistics',1);
-
 # Add NACOMA link only if enabled in config
 if (isset($menu_items['configure']))
 	$menu_base[$menu_items['section_configuration']][$menu_items['configure']] = array('/configuration/configure','nacoma',0);
