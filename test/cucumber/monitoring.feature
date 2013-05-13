@@ -551,7 +551,7 @@ Feature: Monitoring
 		Given I am on the Service details page
 		When I click "System Load"
 		And I click "Show performance graph"
-		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System+Load"
+		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System%20Load"
 		And I should see "linux-server1" within frame "iframe"
 
 	@configuration @asmonitor @case-657
