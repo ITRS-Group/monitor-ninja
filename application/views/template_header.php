@@ -1,6 +1,6 @@
 <?php
 
-	/** Shortcut format 
+	/** Shortcut format
 	*
 	*	href, icon (in x16 sheet), attributes
 	*		string, string, array
@@ -28,9 +28,9 @@
 	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
 		$shortcuts['internal'][] = array('#', 'icon-16 x16-notifications', array('title' => 'Global Notifications', 'id' => 'global_notifications_icon'));
 	}
-	$shortcuts['internal'][] = array('/listview?q=[services] (state != 0 and acknowledged = 0) or (host.state != 0 and host.acknowledged = 0)', 'icon-16 x16-shield-pending', array('id' => 'uh_problems', 'title' => 'Unhandled Problems'));
+	$shortcuts['internal'][] = array('/listview?q=[services] host.scheduled_downtime_depth = 0 and ((state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0) or (host.state != 0 and host.acknowledged = 0))', 'icon-16 x16-shield-pending', array('id' => 'uh_problems', 'title' => 'Unhandled Problems'));
 	$shortcuts['internal'][] = array('/tac', 'icon-16 x16-hoststatus', array('title' => 'Tactical Overview'));
-	
+
 	if( isset($help_link) && $help_link !== false ) {
 		$shortcuts['internal'][] = array($help_link, 'icon-16 x16-help', array('title' => 'Documentation', 'id' => 'help_icon'));
 	}
@@ -74,7 +74,7 @@
 			<?php
 				$quri = '/'.url::current();
 
-				
+
 
 					$buttons = $shortcuts['internal'];
 
@@ -260,7 +260,7 @@
 			}
 		?>
 	</ul>
-	
+
 </div>
 
 <?php
