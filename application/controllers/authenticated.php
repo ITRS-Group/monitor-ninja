@@ -58,7 +58,7 @@ class Authenticated_Controller extends Ninja_Controller {
 		
 		# user might not be logged in due to CLI scripts, be quiet
 		$current_skin = config::get('config.current_skin', '*', true);
-		if (!file_exists(APPPATH."views/css/".$current_skin) || !$current_skin) {
+		if (!$current_skin) {
 			$current_skin = 'default/';
 		}
 		else if (substr($current_skin, -1, 1) != '/') {
