@@ -573,3 +573,46 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		Then I shouldn't see "A comment for service host"
+
+	@configuration @asmonitor @bug-6780
+	Scenario: Unhandled problems - host in downtime
+		Verify that hosts in downtime doesn't appear in unhandled problems
+
+		Given I am on the main page
+		When I have submitted a passive host check result "linux-server2;1;some output"
+		And I click "uh_problems"
+		Then I should see "linux-server2"
+		When I have host "linux-server2" in downtime
+		And I click "Refresh"
+		Then I shouldn't see "linux-server2"
+
+	@configuration @asmonitor @bug-6780
+	Scenario: Unhandled problems - service in downtime
+		Verify that a service in downtime doesn't appear in unhandled problems
+
+		Given I am on the main page
+		And I have submitted a passive host check result "linux-server1;0;Under load"
+		And I have submitted a passive service check result "linux-server1;System Load;2;Under load"
+		And I click "uh_problems"
+		Then I should see "linux-server1"
+		And I should see "System Load"
+		When I have service "linux-server1;System Load" in downtime
+		And I click "Refresh"
+		Then I shouldn't see "linux-server1"
+		And I shouldn't see "System Load"
+
+
+	@configuration @asmonitor @bug-6780
+	Scenario: Unhandled problems - service on host in downtime
+		Verify that a service on a host in downtime doesn't appear in unhandled problems
+
+		Given I am on the main page
+		And I have submitted a passive host check result "linux-server1;0;Under load"
+		And I have submitted a passive service check result "linux-server1;System Load;2;Under load"
+		And I click "uh_problems"
+		Then I should see "linux-server1"
+		And I should see "System Load"
+		When I have host "linux-server1" in downtime
+		And I click "Refresh"
+		Then I shouldn't see "linux-server1"
+		And I shouldn't see "System Load"
