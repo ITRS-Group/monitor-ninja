@@ -4526,9 +4526,11 @@ class Reports_Controller extends Authenticated_Controller
 					continue;
 			}
 			if ($k == 'host_filter_status' || $k == 'service_filter_status') {
-				$unserialized = unserialize($report_data[$k]);
-				if(is_array($unserialized)) {
-					$report_data[$k] = array_values($unserialized);
+				if(is_string($report_data[$k])) {
+					$unserialized = unserialize($report_data[$k]);
+					if(is_array($unserialized)) {
+						$report_data[$k] = array_values($unserialized);
+					}
 				}
 			}
 			$request[$k] = $report_data[$k];
