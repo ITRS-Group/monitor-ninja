@@ -142,8 +142,6 @@ function comment_icon( host, service ) {
 
 function pnp_popup(elem, args)
 {
-	if (!_use_popups) return;
-
 	var get_data = [];
 	for ( var key in args) {
 		get_data.push(key + "=" + encodeURIComponent(args[key].replace(/[ :\/\\]/g, "_")));

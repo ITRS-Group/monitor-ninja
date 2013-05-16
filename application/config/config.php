@@ -206,15 +206,10 @@ $config['search_limit'] = 10;
 $config['autocomplete_limit'] = 10;
 
 /**
-* Control the use oof pop-ups for PNP graphs and comments
-*/
-$config['use_popups'] = 0;
-
-/**
 * Pop-up delay
 * Milliseconds before the pop-up is shown
 */
-$config['popup_delay'] = 1500;
+$config['popup_delay'] = 150;
 
 /**
 *  Controls if you will display multiline output or not

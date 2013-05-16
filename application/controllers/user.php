@@ -67,7 +67,6 @@ class User_Controller extends Authenticated_Controller {
 			_('Config') => 'config',
 			_('Columns in list view') => 'listview',
 			_('Keyboard Commands') => 'keycommands',
-			_('Pop up graphs') => 'popups',
 			_('URL Targets') => 'url_target',
 			_('Nagios Defaults') => 'nagdefault'
 		);
@@ -91,11 +90,6 @@ class User_Controller extends Authenticated_Controller {
 		$settings['url_target'] = array(
 			_('Notes URL Target') => array('nagdefault.notes_url_target', self::$var_types['nagdefault.notes_url_target'], Kohana::config('nagdefault.available_targets')),
 			_('Action URL Target') => array('nagdefault.action_url_target', self::$var_types['nagdefault.action_url_target'], Kohana::config('nagdefault.available_targets')),
-		);
-
-		$settings['popups'] = array(
-			_('Show pop-up graphs') => array('config.use_popups', self::$var_types['config.use_popups']),
-			_('Popup delay') => array('config.popup_delay', self::$var_types['config.popup_delay'])
 		);
 
 		$settings['nagdefault'] = array(
@@ -282,8 +276,6 @@ class User_Controller extends Authenticated_Controller {
 			'keycommands.pause' => _('Keyboard command to pause/unpause page refresh. Defaults to Alt+Shift+p.').' '.$keyboard_help,
 			'keycommands.forward' => _('Keyboard command to move forward in a paginated result (except search results). Defaults to Alt+Shift+right.').' '.$keyboard_help,
 			'keycommands.back' => _('Keyboard command to move back in a paginated result (except search results). Defaults to Alt+Shift+left.').' '.$keyboard_help,
-			'config.use_popups' => _('Enable or disable the use of pop-ups for performance graphs and comments.'),
-			'config.popup_delay' => _('Set the delay in milliseconds before the pop-ups (performance graphs and comments) will be shown. Defaults to 1500ms (1.5s).'),
 			'edit_menu' => _('Edit menu item visibility for limited users.'),
 			'nagdefault.notes_url_target' => _('This option determines the name of the frame target that notes URLs should be displayed in.'),
 			'nagdefault.action_url_target' => _('This option determines the name of the frame target that action URLs should be displayed in.'),
