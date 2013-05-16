@@ -314,7 +314,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			},
 			'time_start' => function(&$key, &$val, &$opts) {
 				if (!$val)
-					$val = "00:00:00";
+					$val = "00:00";
 				if (!isset($opts['cal_start'])) {
 					$opts['time_start'] = $val;
 					return false;
@@ -326,7 +326,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			},
 			'time_end' => function(&$key, &$val, &$opts) {
 				if (!$val)
-					$val = "23:59:59";
+					$val = "23:59";
 				if (!isset($opts['cal_end'])) {
 					$opts['time_end'] = $val;
 					return false;
