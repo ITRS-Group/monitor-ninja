@@ -322,7 +322,7 @@ class report_Test extends TapUnit {
 	 */
 	function test_default_to_whole_day() {
 		$options = new Report_options(array('time_start' => null, 'time_end' => null));
-		$this->ok_eq($options['time_start'], '00:00', 'Should have expanded nothing to first minute of the day');
-		$this->ok_eq($options['time_end'], '23:59', 'Should have expanded nothing to the last minute of the day');
+		$this->ok_eq($options['time_start'], '00:00:00', 'Should have expanded nothing to first minute of the day');
+		$this->ok_eq($options['time_end'], '23:59:59', 'Should have expanded nothing to the last minute of the day');
 	}
 }
