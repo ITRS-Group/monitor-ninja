@@ -321,6 +321,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				}
 				$key = 'start_time';
 				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_start']} $val:00");
+				unset($opts['cal_start']);
 				$val = $dt->getTimestamp();
 				return true;
 			},
@@ -333,6 +334,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				}
 				$key = 'end_time';
 				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_end']} $val:00");
+				unset($opts['cal_end']);
 				$val = $dt->getTimestamp();
 				return true;
 			},
