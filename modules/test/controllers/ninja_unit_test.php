@@ -6,11 +6,9 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 	/**
 	 * Run unit tests and show results!
 	 */
-	public function index($user=false)
+	public function index()
 	{
-		#Auth::instance()->force_login($user);
-
-		echo new Ninja_Unit_Test;
+		new Ninja_Unit_Test;
 	}
 
 	/**
