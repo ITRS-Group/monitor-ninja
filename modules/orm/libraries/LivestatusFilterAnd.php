@@ -5,7 +5,7 @@
  */
 class LivestatusFilterAnd extends LivestatusFilterBase {
 	private $sub_filters = array();
-	
+
 	/**
 	 * Get a list of sub filters
 	 */
@@ -53,5 +53,16 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 	 */
 	public function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_and($this, $data);
+	}
+
+	/**
+	 * Simplify the filter
+	 */
+	public function simplify() {
+		$out = new static();
+		foreach($this->sub_filters as $subf) {
+			$out->add($subf->simplify());
+		}
+		return $out;
 	}
 }

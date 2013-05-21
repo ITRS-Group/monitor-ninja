@@ -36,11 +36,6 @@ class Reports_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
-		if(isset($_SESSION['report_err_msg'])) {
-			$this->err_msg = $_SESSION['report_err_msg'];
-			unset($_SESSION['report_err_msg']);
-		}
-
 		# reset current_report_params and main_report_params
 		# just to be sure they're not left behind
 		Session::instance()->set('current_report_params', null);
@@ -51,14 +46,13 @@ class Reports_Controller extends Base_reports_Controller
 		$type_str = $this->type == 'avail'
 			? _('availability')
 			: _('SLA');
-		if($this->err_msg) {
-			// @todo make this work work, only handled by js and a very silent redirect
-			// now since the following message never gets printed:
-			$error_msg = $this->err_msg;
-			$this->template->error = $this->add_view('reports/error');
-		}
 		$this->template->content = $this->add_view('reports/setup');
 		$template = $this->template->content;
+
+		if(isset($_SESSION['report_err_msg'])) {
+			$template->error_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
@@ -173,7 +167,7 @@ class Reports_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
-		
+
 		$this->reports_model = new Reports_Model($this->options);
 		$this->trends_graph_model = new Trends_graph_Model();
 
@@ -217,11 +211,13 @@ class Reports_Controller extends Base_reports_Controller
 			$report_time_formatted  = sprintf(
 				_('%s (%s to %s)'),
 				$this->options->get_value('report_period'),
-				"<strong>".date(nagstat::date_format(), $this->options['start_time'])."</strong>",
-				"<strong>".date(nagstat::date_format(), $this->options['end_time'])."</strong>"
+				"<strong>".date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['start_time'])."</strong>",
+				"<strong>".date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['end_time'])."</strong>"
 			);
 		else
-			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
+			$report_time_formatted  = sprintf(_("%s to %s"),
+				date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['start_time']),
+				date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['end_time']));
 
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
@@ -247,11 +243,21 @@ class Reports_Controller extends Base_reports_Controller
 				return url::redirect(Router::$controller.'/index');
 		}
 		$var = $this->options->get_value('report_type');
-		$objects = array();
-		$mon_auth = Nagios_auth_Model::instance();
-		foreach ($this->options[$var] as $obj) {
-			if ($mon_auth->{'is_authorized_for_'.substr($this->options['report_type'], 0, -1)}($obj))
-				$objects[] = $obj;
+
+		$pool = ObjectPool_Model::pool($this->options['report_type']);
+		$set = $pool->none();
+		/* @var $set ObjectSet_Model */
+		foreach( $this->options[$var] as $obj ) {
+			$set = $set->union( $pool->set_by_key($obj) );
+		}
+		foreach( $set->it(array(),array()) as $obj ) {
+			$objects[] = $obj->get_key();
+		}
+
+		$report_members = $this->options->get_report_members();
+		if (empty($report_members)) {
+			$_SESSION['report_err_msg'] = "No objects could be found in your selected groups to base the report on";
+			return url::redirect(Router::$controller.'/index');
 		}
 
 		# fetch data
@@ -275,7 +281,7 @@ class Reports_Controller extends Base_reports_Controller
 		# ==========================================
 		# ========= REPORT STARTS HERE =============
 		# ==========================================
-		
+
 		$template->report_options = $this->add_view('reports/options');
 
 		$tpl_options = $template->report_options;
@@ -307,6 +313,8 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
 		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
 		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
+		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
+		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 
 		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 		$this->js_strings .= reports::js_strings();
@@ -361,20 +369,20 @@ class Reports_Controller extends Base_reports_Controller
 				$tmp_title = ucfirst($sub_type).' '._('state breakdown');
 				$template->header->title = $tmp_title;
 			}
-			
+
 			// ===== SETUP PIECHART VALUES =====
 
 			if( $this->options['include_pie_charts'] ) {
 				$template->pie = $this->add_view('reports/pie_chart');
-				
+
 				$image_data = array();
-				
+
 				if( $this->options['use_average'] ) {
 					$prefix = 'average_';
 				} else {
 					$prefix = 'group_';
 				}
-				
+
 				if( $sub_type == 'service' ) {
 					$states_to_chart = array(
 						$prefix.'ok' => 'OK',
@@ -392,10 +400,10 @@ class Reports_Controller extends Base_reports_Controller
 					);
 				}
 				foreach($states_to_chart as $key => $val) { $image_data[$val] = array(); }
-	
+
 				$groups_added = 0;
 				$pie_groupname = false;
-				
+
 				foreach($template_values as $data) { # for every group
 					$added_group = false;
 					foreach ($states_to_chart as $key => $val) {
@@ -414,7 +422,7 @@ class Reports_Controller extends Base_reports_Controller
 						$groups_added++;
 					}
 				}
-	
+
 				if ($groups_added > 0) {
 					$charts = false;
 					$page_js = '';
@@ -422,7 +430,7 @@ class Reports_Controller extends Base_reports_Controller
 						$data_str[$i]['img'] = http_build_query($image_data[$i]);
 						$data_str[$i]['host'] = $pie_groupname[$i];
 					}
-	
+
 					$template->pie->data_str = $data_str;
 					$template->pie->image_data = $image_data;
 				}
@@ -446,7 +454,7 @@ class Reports_Controller extends Base_reports_Controller
 
 					if( $this->options['include_pie_charts'] ) {
 						$avail->pie = $this->add_view('reports/pie_chart');
-	
+
 						// ===== SETUP PIECHART VALUES =====
 						if (is_array($data['states'])) {
 							foreach ($graph_filter as $key => $val) {
@@ -455,7 +463,7 @@ class Reports_Controller extends Base_reports_Controller
 							}
 							$image_data['EXCLUDE'] = $data['tot_time'] - array_sum($image_data);
 						}
-	
+
 						if ($image_data) {
 							$data_str = http_build_query($image_data);
 							$avail->pie->data_str = $data_str;
@@ -493,7 +501,7 @@ class Reports_Controller extends Base_reports_Controller
 					switch($this->options['report_type']) {
 						case 'hosts':
 							$host = $this->options['host_name'][0];
-							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
+							$template->header->title = sprintf(_('Host details for %s'), $host);
 							$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
 
 							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
@@ -507,7 +515,7 @@ class Reports_Controller extends Base_reports_Controller
 						case 'services':
 							list($host, $service) = explode(';',$this->options['service_description'][0]);
 
-							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
+							$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
 							if (isset($template->content)) {
 								$template->content->host = $host;
 								$template->content->service = $service;
@@ -555,7 +563,7 @@ class Reports_Controller extends Base_reports_Controller
 			$template->trends_graph = $this->add_view('trends/new_report');
 
 			/* New JS trend graph */
-			
+
 			$template->trends_graph->graph_start_date = $this->options['start_time'];
 			$template->trends_graph->graph_end_date = $this->options['end_time'];
 			$template->trends_graph->use_scaling = $this->options['include_trends_scaling'];
@@ -634,7 +642,7 @@ class Reports_Controller extends Base_reports_Controller
 	*/
 	public function invalid_setup()
 	{
-		$this->template->content = $this->add_view('reports/'.$this->report_prefix.'reports_module');
+		$this->template->content = $this->add_view('reports/reports_module');
 		$template = $this->template->content;
 		$template->error_msg  = _('Some parts in your setup is apparently missing.');
 		$template->info = _("make sure you install the latest version of merlin");
@@ -684,8 +692,6 @@ class Reports_Controller extends Base_reports_Controller
 
 	public function _print_states_for_services($host_name=false, $start_date=false, $end_date=false)
 	{
-		$err_msg = $this->err_msg;
-
 		$host_name = trim($host_name);
 		if (empty($host_name)) {
 			return false;
@@ -708,14 +714,22 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * Fetch host alias information
+	 * Wrapper around _get_alias for compatibility reasons
 	 */
 	public function _get_host_alias($host_name=false)
 	{
-		if (empty($host_name))
+		$this->_get_alias('hosts', $host_name);
+	}
+
+	/**
+	 * Fetch alias information
+	 */
+	public function _get_alias($type, $name=false)
+	{
+		if (empty($type) || empty($name))
 			return false;
 
-		$res = Livestatus::instance()->getHosts(array('columns' => array('alias'), 'filter' => array('name' => $host_name)));
+		$res = Livestatus::instance()->{'get'.ucfirst($type)}(array('columns' => array('alias'), 'filter' => array('name' => $name)));
 		if (!$res)
 			return false;
 		return $res[0]['alias'];
@@ -803,8 +817,7 @@ class Reports_Controller extends Base_reports_Controller
 		$time_arr = $this->_split_month_data($months, $this->options['start_time'], $this->options['end_time']);
 		// only use month entered by the user regardless of start- or endtime
 		$data = false;
-		$optclass = get_class($this->options);
-		$opts = new $optclass($this->options);
+		$opts = new Avail_options($this->options);
 		$opts[$this->options->get_value('report_type')] = $objects;
 		$opts['report_period'] = 'custom';
 		switch ($this->options['report_type']) {
@@ -951,11 +964,6 @@ class Reports_Controller extends Base_reports_Controller
 		# easier to find those later
 		$helptexts = array(
 			'filter' => _("Free text search, matching the objects in the left list below"),
-			'report-type' => _("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
-				"To include objects of the given type in the report, select the objects from the left list and click on ".
-				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
-				"and click on the left pointing arrow."),
-			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
 				"option decide to assume states for hosts and services during the downtime."),
@@ -968,8 +976,6 @@ class Reports_Controller extends Base_reports_Controller
 			'csv_format' => _("The CSV (comma-separated values) format is a file format that stores tabular data. This format is supported ".
 				"by many applications such as MS Excel, OpenOffice and Google Spreadsheets."),
 			'save_report' => _("Check this box if you want to save the configured report for later use."),
-			'reporting_period' => _("Choose from a set of predefined report periods or choose &quot;CUSTOM REPORT PERIOD&quot; ".
-				"to manually specify Start and End date."),
 			'enter-sla' => _("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
 			'report_settings_sml' => _("Here you can modify the report settings for the report you are currently viewing."),
 			'cluster_mode' => _("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
@@ -995,7 +1001,6 @@ class Reports_Controller extends Base_reports_Controller
 			'interval' => _("Select how often the report is to be produced and delivered"),
 			'recipents' => _("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
 			'filename' => _("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
-			'description' => _("Add a description to this report, such as an explanation of what the report conveys. Plain text only."),
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),

@@ -26,16 +26,11 @@ function create_filename()
 }
 
 $(document).ready(function() {
-	$("#saved_report_id").change(function() {
+	$("#saved_report_id, #period").change(function() {
 		create_filename();
 	});
 	fill_scheduled();
 	setup_editable();
-	$("#period").change(function() {
-		var sel_report = $("#saved_report_id").fieldValue();
-		if (sel_report[0] != '')
-			create_filename();
-	});
 
 		// delete single schedule
 	$('body').on('click', '.delete_schedule', schedule_delete);
@@ -51,9 +46,10 @@ $(document).ready(function() {
 				},
 				success: function(response) {
 					var saved_reports = document.getElementById("saved_report_id");
-					var child;
-					while(child = saved_reports.firstChild) {
-						saved_reports.removeChild(child);
+					var children = saved_reports.children;
+					for (var i = 0; i < children.length; i++) {
+						if (children[i].value)
+							saved_reports.removeChild(children[i]);
 					}
 					if(!response.length) {
 						return;
@@ -121,8 +117,6 @@ $(document).ready(function() {
 				var filename = $('#filename').attr('value');
 				var local_persistent_filepath = $('#local_persistent_filepath').attr('value');
 				var description = $('#description').attr('value');
-				if (description == '')
-					description = '&nbsp;';
 				var attach_description = $('#attach_description').attr('value');
 				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description, attach_description)
 				setup_editable();
@@ -292,7 +286,7 @@ function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id,
 	template_row.attr('id', 'report-'+schedule_id);
 	$('.report_name', template_row)
 		.attr('id', '' + report_type_id + '.report_id-'+schedule_id)
-		.text(report_name);
+		.text(report_name.replace(/ \( \*Scheduled\* \)$/, ""));
 	$('.description', template_row)
 		.attr('id', 'description-'+schedule_id)
 		.text(description);

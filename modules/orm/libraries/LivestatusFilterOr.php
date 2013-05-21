@@ -12,7 +12,7 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 	public function get_sub_filters() {
 		return $this->sub_filters;
 	}
-	
+
 	/**
 	 * Clone the filter
 	 */
@@ -53,5 +53,16 @@ class LivestatusFilterOr extends LivestatusFilterBase {
 	 */
 	public function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_or($this, $data);
+	}
+
+	/**
+	 * Simplify the filter
+	 */
+	public function simplify() {
+		$out = new static();
+		foreach($this->sub_filters as $subf) {
+			$out->add($subf->simplify());
+		}
+		return $out;
 	}
 }

@@ -128,11 +128,14 @@ $(document).ready(function() {
 			complete: function() {
 				btn.parent().find('img:last').remove();
 			},
-			success: function(data) {
+			success: function(data, status_msg, xhr) {
+				if (data == null) {
+					jgrowl_message(xhr.responseText, _reports_error);
+					return;
+				}
 				jgrowl_message(data.status_msg, _reports_success);
-				// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
 				if (!btn[0].form.report_id)
-					document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.report_id
+					$('form').append('<input type="hidden" name="report_id" value="'+data.report_id+'"/>');
 				else
 					$('#save_report_form').hide();
 			},
@@ -168,6 +171,8 @@ $(document).ready(function() {
 			js_print_date_ranges();
 	};
 	$('#report_period').on('change', rpcust).each(rpcust);
+
+	$("#delete_report").click(confirm_delete_report);
 });
 
 var loadimg = new Image(16,16);
@@ -357,11 +362,11 @@ function empty_list(field) {
 	field = field.replace('[', '\\[');
 	field = field.replace(']', '\\]');
 
-	var select = document.getElementById(field);
-	var child;
-	while(child = select.firstChild) {
-		select.removeChild(child);
-	}
+	var select = $('#' + field);
+	select.children().each(function() {
+		if (this.value)
+			$(this).remove();
+	});
 	// truncate select list
 	//$("#"+field).removeOption(/./);
 }
@@ -371,7 +376,6 @@ function empty_list(field) {
 */
 function populate_options(tmp_field, field, json_data)
 {
-	json_data = eval(json_data);
 	show_progress('progress', _wait_str);
 	var fragment = document.createDocumentFragment();
 	for (var i = 0; i < json_data.length; i++) {
@@ -546,6 +550,16 @@ function check_form_values(form)
 				cur_end.setYear($("select[name=end_year]", form).val());
 				cur_end.addMonths(Number($("select[name=end_month]", form).val()));
 			}
+
+			if (cur_end < cur_start) {
+				errors++;
+				err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
+				$(".datepick-start", form).addClass("time_error");
+				$(".datepick-end", form).addClass("time_error");
+			} else {
+				$(".datepick-start", form).removeClass("time_error");
+				$(".datepick-end", form).removeClass("time_error");
+			}
 		}
 	}
 
@@ -649,12 +663,6 @@ function check_form_values(form)
 			}
 		}
 
-		if (cur_start) {
-			$("input[name=start_time]", form).attr('value', cur_start.format('U'));
-		}
-		if (cur_end) {
-			$("input[name=end_time]", form).attr('value',  cur_end.format('U'));
-		}
 		$('#response', form).hide();
 		return true;
 	}
@@ -848,6 +856,9 @@ function disable_months(start, end)
 function check_custom_months()
 {
 	var f		 	= document.forms['report_form'];
+	// not SLA?
+	if (!f['start_month'])
+		return;
 	var start_year 	= f.start_year.value;
 	var start_month = f.start_month.value;
 	var end_year 	= f.end_year.value;
@@ -925,18 +936,39 @@ missing_objects.prototype.display_if_any = function()
 		.html(info_str);
 }
 
-function format_date_str(date) {
-	var YY = date.getFullYear();
-	var MM = date.getMonth() + 1;
-	var DD = date.getDate();
-	var hh = date.getHours();
-	var mm = date.getMinutes();
-	MM = MM<10 ? '0' + MM :MM;
-	DD = DD<10 ? '0' + DD : DD;
-	hh = hh<10 ? '0' + hh : hh;
-	mm = mm<10 ? '0' + mm : mm;
-	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
-	return ret_val;
+function confirm_delete_report()
+{
+	var btn = $(this);
+	var id = $("#report_id").attr('value')
+
+	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
+	var msg = _reports_confirm_delete + "\n";
+	var type = $('input[name=type]').attr('value');
+	if (!id)
+		return;
+	if (is_scheduled) {
+		msg += _reports_confirm_delete_warning;
+	}
+	msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
+	if (confirm(msg)) {
+		btn.after(loadimg);
+		$.ajax({
+			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
+			type: 'POST',
+			data: {'id': id},
+			success: function(data) {
+				var a = document.createElement("a");
+				a.href = window.location.href;
+				if(a.search && a.search.indexOf("report_id="+id) !== -1) {
+					window.location.href = a.search.replace(new RegExp("report_id="+id+"&?"), "");
+				}
+			},
+			error: function() {
+				jgrowl_message(_reports_error, _reports_error);
+			},
+			dataType: 'json'
+		});
+	}
 }
 
 jQuery.extend(

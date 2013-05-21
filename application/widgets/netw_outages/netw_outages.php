@@ -13,8 +13,6 @@ class Netw_outages_Widget extends widget_Base {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$auth = Nagios_auth_Model::instance();
-
 		# fetch info on outages
 		$current_status = $this->get_current_status();
 		#$outages = new Outages_Model();
@@ -25,7 +23,7 @@ class Netw_outages_Widget extends widget_Base {
 
 		$total_blocking_outages = $current_status->hst->outages;
 
-		$user_has_access = $auth->view_hosts_root ? true : false;
+		$user_has_access = op5auth::instance()->authorized_for('host_view_all');
 
 		require($view_path);
 	}

@@ -1,21 +1,21 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 foreach ($multiple_states as $data) {
+	if ($data['groupname']) {
+		if ($options['use_alias'])
+			$groupname = $this->_get_alias('servicegroups', $data['groupname']).' ('.$data['groupname'].')';
+		else
+			$groupname = $data['groupname'];
+	} else {
+		$groupname = false; # Because capitalization
+	}
+
 	$previous_hostname = false;
 ?>
 <div class="state_services report-block">
 	<table summary="<?php echo _('State breakdown for services') ?>" class="multiple_services" border="1">
 		<tr>
-			<th>
-			<?php
-			echo help::render('servicegroup_breakdown').' ';
-			if(!empty($data['groupname'])) {
-				echo $data['groupname'];
-			} else {
-				echo _('Selected services');
-			}
-			?>
-			</th>
+			<th><?php echo help::render('servicegroup_breakdown').' '.($groupname?:_('Selected services')) ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('OK') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Warning') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unknown') ?></th>
@@ -25,15 +25,18 @@ foreach ($multiple_states as $data) {
 	<?php
 	for ($i=0;$i<$data['nr_of_items'];$i++) { ?>
 <?php
-			if (!$hide_host && $previous_hostname != $data['HOST_NAME'][$i]) { ?>
-		<tr class="even">
-		<?php if (!$options['use_alias']) { ?>
-			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <?php echo '<a href="'.$data['host_link'][$i].'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
-		<?php } else { ?>
-			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.$data['host_link'][$i].'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
-<?php }
+		if (!$hide_host && $previous_hostname != $data['HOST_NAME'][$i]) {
 			$previous_hostname = $data['HOST_NAME'][$i];
-?>
+		?>
+		<tr class="even">
+			<td colspan="6" class="multiple label"><strong><?php echo _('Services on host') ?></strong>: <a href="<?php echo $data['host_link'][$i] ?>">
+			<?php
+			if ($options['use_alias'])
+				echo $this->_get_alias('hosts', $data['HOST_NAME'][$i]).' ('.$data['HOST_NAME'][$i].')';
+			else
+				echo $data['HOST_NAME'][$i];
+			?>
+			</td>
 		</tr>
 <?php
 		}?>
@@ -63,7 +66,7 @@ foreach ($multiple_states as $data) {
 <div class="state_services report-block">
 	<table summary="<?php echo _('State breakdown for services') ?>" class="multiple_services" border="1">
 		<tr>
-			<th><?php echo help::render('average_and_sla').' '.sprintf(_('Average and Group availability for %s'), $data['groupname'] ?: _('selected services')) ?></th>
+			<th><?php echo help::render('average_and_sla').' '.sprintf(_('Average and group availability for %s'), $groupname?:_('selected services')) ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('OK') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Warning') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unknown') ?></th>

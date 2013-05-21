@@ -10,7 +10,7 @@
 			<label for="type"><?php echo help::render('report-type-save', 'reports').' '._('Select report type') ?></label><br />
 					<?php echo form::dropdown(array('name' => 'type'), $defined_report_types); ?><br />
 					<?php if (!empty($available_schedule_periods)) { ?>
-						<label for="period"><?php echo help::render('interval', 'reports').' '._('Report Interval') ?></label><br />
+						<label for="period"><?php echo help::render('interval', 'reports').' '._('Report interval') ?></label><br />
 						<select name="period" id="period">
 						<?php	foreach ($available_schedule_periods as $id => $period) { ?>
 							<option value="<?php echo $id ?>"><?php echo $period ?></option>

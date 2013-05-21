@@ -6,14 +6,8 @@
  * It's created to improve consistency between report types and frontend/backend
  */
 class Report_options_core implements ArrayAccess, Iterator, Countable {
-	protected static $rename_options = array(
-		't1' => 'start_time',
-		't2' => 'end_time',
-		'host' => 'host_name',
-		'service' => 'service_description',
-		'hostgroup_name' => 'hostgroup',
-		'servicegroup_name' => 'servicegroup'
-	);
+	protected $rename_options;
+
 	protected $properties = array(
 		'report_id' => array(
 			'type' => 'int',
@@ -49,17 +43,17 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		'state_types' => array(
 			'type' => 'enum',
 			'default' => 3,
-                        'description' => 'Bitmap of the types of states to include (soft, hard, both)'
-                ),
+			'description' => 'Bitmap of the types of states to include (soft, hard, both)'
+		),
 		'host_states' => array(
 			'type' => 'enum',
 			'default' => 7,
-                        'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)'
+			'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)'
 		),
 		'service_states' => array(
 			'type' => 'enum',
 			'default' => 15,
-                        'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)'
+			'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)'
 		),
 		'summary_items' => array(
 			'type' => 'int',
@@ -223,26 +217,29 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	public $options = array();
 
 	/**
-	 * Public constructor, which optionally takes an iterable with properties to set
+	 * Properties should be completely setup - with translations and all - before
+	 * loading any options, and options are loaded by the construct, so do
+	 * initialization here.
 	 */
-	public function __construct($options=false) {
+	public function setup_properties()
+	{
 		if (isset($this->properties['report_period']))
 			$this->properties['report_period']['options'] = array(
 				"today" => _('Today'),
-				"last24hours" => _('Last 24 Hours'),
+				"last24hours" => _('Last 24 hours'),
 				"yesterday" => _('Yesterday'),
-				"thisweek" => _('This Week'),
-				"last7days" => _('Last 7 Days'),
-				"lastweek" => _('Last Week'),
-				"thismonth" => _('This Month'),
-				"last31days" => _('Last 31 Days'),
-				"lastmonth" => _('Last Month'),
-				"thisyear" => _('This Year'),
-				"lastyear" => _('Last Year'),
-				'last3months' => _('Last 3 Months'),
-				'last12months' => _('Last 12 Months'),
-				'last6months' => _('Last 6 Months'),
-				'lastquarter' => _('Last Quarter'),
+				"thisweek" => _('This week'),
+				"last7days" => _('Last 7 days'),
+				"lastweek" => _('Last week'),
+				"thismonth" => _('This month'),
+				"last31days" => _('Last 31 days'),
+				"lastmonth" => _('Last month'),
+				'last3months' => _('Last 3 months'),
+				'lastquarter' => _('Last quarter'),
+				'last6months' => _('Last 6 months'),
+				'last12months' => _('Last 12 months'),
+				"thisyear" => _('This year'),
+				"lastyear" => _('Last year'),
 				'custom' => _('Custom'));
 		if (isset($this->properties['scheduleddowntimeasuptime']))
 			$this->properties['scheduleddowntimeasuptime']['options'] = array(
@@ -255,33 +252,145 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				1 => _('Average'));
 		if (isset($this->properties['alert_types']))
 			$this->properties['alert_types']['options'] = array(
-				3 => _('Host and Service Alerts'),
-				1 => _('Host Alerts'),
-				2 => _('Service Alerts'));
+				3 => _('Host and service alerts'),
+				1 => _('Host alerts'),
+				2 => _('Service alerts'));
 		if (isset($this->properties['state_types']))
 			$this->properties['state_types']['options'] = array(
-				3 => _('Hard and Soft States'),
-				2 => _('Hard States'),
-				1 => _('Soft States'));
+				3 => _('Hard and soft states'),
+				2 => _('Hard states'),
+				1 => _('Soft states'));
 		if (isset($this->properties['host_states']))
 			$this->properties['host_states']['options'] = array(
-				7 => _('All Host States'),
-				6 => _('Host Problem States'),
-				1 => _('Host Up States'),
-				2 => _('Host Down States'),
-				4 => _('Host Unreachable States'));
+				7 => _('All host states'),
+				6 => _('Host problem states'),
+				1 => _('Host up states'),
+				2 => _('Host down states'),
+				4 => _('Host unreachable states'));
 		if (isset($this->properties['service_states']))
 			$this->properties['service_states']['options'] = array(
-				15 => _('All Service States'),
-				14 => _('Service Problem States'),
-				1 => _('Service Ok States'),
-				2 => _('Service Warning States'),
-				4 => _('Service Critical States'),
-				8 => _('Service Unknown States'));
+				15 => _('All service states'),
+				14 => _('Service problem states'),
+				1 => _('Service OK states'),
+				2 => _('Service warning states'),
+				4 => _('Service critical states'),
+				8 => _('Service unknown states'));
 		if (isset($this->properties['rpttimeperiod']))
 			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
 		if (isset($this->properties['skin']))
 			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
+
+		$this->rename_options = array(
+			't1' => 'start_time',
+			't2' => 'end_time',
+			'host' => 'host_name',
+			'service' => 'service_description',
+			'hostgroup_name' => 'hostgroup',
+			'servicegroup_name' => 'servicegroup',
+			# Because we have a ton of custom date input formats everywhere in reports...
+			'cal_start' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['time_start'])) {
+					$opts['cal_start'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_start']}:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'cal_end' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['time_end'])) {
+					$opts['cal_end'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_end']}:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'time_start' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['cal_start'])) {
+					$opts['time_start'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_start']} $val:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'time_end' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['cal_end'])) {
+					$opts['time_end'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_end']} $val:00");
+				$val = $dt->getTimestamp();
+				return true;
+			},
+			'start_year' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['start_month'])) {
+					$opts['start_year'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				$val = mktime(0, 0, 0, $opts['start_month'], 1, $val);
+				return true;
+			},
+			'start_month' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['start_year'])) {
+					$opts['start_month'] = $val;
+					return false;
+				}
+				$key = 'start_time';
+				# First day of month => midnight day 1.
+				$val = mktime(0, 0, 0, $val, 1, $opts['start_year']);
+				return true;
+			},
+			'end_year' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				if (!isset($opts['end_month'])) {
+					$opts['end_year'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$val = mktime(0, 0, -1, $opts['end_month'], 1, $val);
+				return true;
+			},
+			'end_month' => function(&$key, &$val, &$opts) {
+				if (!$val)
+					return false;
+				# End of month = second -1 of the next month
+				$val++;
+				if (!isset($opts['end_year'])) {
+					$opts['end_month'] = $val;
+					return false;
+				}
+				$key = 'end_time';
+				$val = mktime(0, 0, -1, $val, 1, $opts['end_year']);
+				return true;
+			},
+		);
+	}
+
+	/**
+	 * Public constructor, which optionally takes an iterable with properties to set
+	 */
+	public function __construct($options=false) {
+		$this->setup_properties();
 		if ($options)
 			$this->set_options($options);
 	}
@@ -323,7 +432,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	}
 
 	public function get_value($key) {
-		if (!$this[$key] || !isset($this->properties[$key]))
+		if (!isset($this->properties[$key]))
 			return false;
 		if ($this->properties[$key]['type'] !== 'enum')
 			return false;
@@ -342,8 +451,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			foreach ($this['hostgroup'] as $group) {
 				$filter[] = 'in "'.$group.'"';
 			}
-			$filter = "[hosts] " . implode(' or ', $filter);
-			$out = ObjectPool_Model::get_by_query($filter);
+			$filter = implode(' or ', $filter);
+			if (!$filter)
+				$filter = 'all';
+			$out = ObjectPool_Model::get_by_query('[hosts] '.$filter);
 			$out = $out->it(array('name'), array());
 			$res = array();
 			foreach ($out as $arr) {
@@ -355,9 +466,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			foreach ($this['servicegroup'] as $group) {
 				$filter[] = 'in "'.$group.'"';
 			}
-			$filter = "[services] " . implode(' or ', $filter);
-			$out = ObjectPool_Model::get_by_query($filter);
-			$out = $out->it(array('host_name', 'description'), array());
+			$filter = implode(' or ', $filter);
+			if (!$filter)
+				$filter = 'all';
+			$out = ObjectPool_Model::get_by_query('[services] '.$filter);
+			$out = $out->it(array('host.name', 'description'), array());
 			$res = array();
 			foreach ($out as $arr) {
 				$res[] = $arr->get_key();
@@ -505,8 +618,14 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 */
 	public function set($name, $value)
 	{
-		if (isset(static::$rename_options[$name])) {
-			$name = static::$rename_options[$name];
+		if (isset($this->rename_options[$name])) {
+			if (is_string($this->rename_options[$name])) {
+				$name = $this->rename_options[$name];
+			}
+			else if (is_callable($this->rename_options[$name])) {
+				if (!$this->rename_options[$name]($name, $value, $this->options))
+					return false;
+			}
 		}
 
 		if (!$this->validate_value($name, $value)) {
@@ -733,7 +852,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		if ($this->get_value('report_type')) {
 			// because the person who wrote the js became sick of all our special cases,
 			// it expects the objects to be called 'objects'. Which makes sense, really...
-			$opts['objects'] = $opts[$this->get_value('report_type')];
+			$opts['objects'] = $this[$this->get_value('report_type')];
 			unset($opts[$this->get_value('report_type')]);
 		}
 		return json_encode($opts);

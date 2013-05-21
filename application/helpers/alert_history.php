@@ -27,22 +27,22 @@ class alert_history_Core {
 		);
 		switch ($entry['event_type']) {
 		 case 100:
-			$ret['type'] = 'Process Start';
+			$ret['type'] = 'Process start';
 			$ret['state'] = "Start";
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 102:
-			$ret['type'] = 'Process Restart';
+			$ret['type'] = 'Process restart';
 			$ret['state'] = "Restart";
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.gif'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 103:
-			$ret['type'] = 'Process Shutdown';
+			$ret['type'] = 'Process shutdown';
 			$ret['state'] = 'Stop';
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 701:
-			$ret['type'] = 'Service Alert';
+			$ret['type'] = 'Service alert';
 			switch ($entry['state']) {
 			 case 0:
 				$ret['state'] = 'OK';
@@ -65,7 +65,7 @@ class alert_history_Core {
 			$ret['softorhard'] = $entry['hard'] ? 'Hard' : 'Soft';
 			break;
 		 case 801:
-			$ret['type'] = 'Host Alert';
+			$ret['type'] = 'Host alert';
 			switch ($entry['state']) {
 			 case 0:
 				$ret['state'] = 'Up';
@@ -86,14 +86,14 @@ class alert_history_Core {
 		 case 1103:
 		 case 1104:
 			if ($entry['service_description'])
-				$ret['type'] = 'Service Downtime Alert';
+				$ret['type'] = 'Service downtime alert';
 			else
-				$ret['type'] = 'Host Downtime Alert';
+				$ret['type'] = 'Host downtime alert';
 			$ret['state'] = $entry['event_type'] == 1103 ? 'Started' : 'Stopped';
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/scheduled-downtime.png'), array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')));
 			break;
 		 default:
-			$ret['type'] = "Unknown Event #{$entry['entry_type']}";
+			$ret['type'] = "Unknown event #{$entry['entry_type']}";
 			break;
 		}
 

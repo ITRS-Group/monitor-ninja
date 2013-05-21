@@ -9,3 +9,16 @@ Then /^I should see this status:$/ do |table|
     row.length.should be == 0
   end
 end
+
+# Because all our projects have their own helptext implementation...
+Then /^all helptexts should be defined$/ do
+  all(:css, '.helptext_target', :visible => true).each { | elem |
+    elem.click
+    page.should have_css(".qtip-content", :visible => true)
+    # "This helptext (%s) is not translated yet" is only printed by convention, but it appears we follow it
+    page.should have_no_content "This helptext"
+    # Hide helptext - only doable by clicking elsewhere
+    page.find(".logo").click
+    page.should have_no_css(".qtip-content", :visible => true)
+  }
+end

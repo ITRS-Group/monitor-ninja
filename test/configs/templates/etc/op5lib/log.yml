@@ -1,0 +1,12 @@
+auth:
+  file: /tmp/auth.log
+  level: error
+  reference: true
+synergy:
+  file: /tmp/synergy.log
+  level: error
+  reference: true
+ninja:
+  file: /tmp/ninja.log
+  level: error
+  reference: true

@@ -65,6 +65,11 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->content->report_options = $this->add_view('summary/options');
 		$template = $this->template->content;
 
+		if(isset($_SESSION['report_err_msg'])) {
+			$template->error_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
+
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 
@@ -151,6 +156,12 @@ class Summary_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
+
+		$report_members = $this->options->get_report_members();
+		if (empty($report_members)) {
+			$_SESSION['report_err_msg'] = "No objects could be found in your selected groups to base the report on";
+			return url::redirect(Router::$controller.'/index');
+		}
 
 		$this->reports_model = new Reports_Model($this->options);
 

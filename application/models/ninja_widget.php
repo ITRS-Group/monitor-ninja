@@ -351,6 +351,8 @@ class Ninja_widget_Model extends Model
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
+				if ($widget->setting == false)
+					continue;
 				$widget->merge_settings($new_setting);
 				$widget->save();
 			}

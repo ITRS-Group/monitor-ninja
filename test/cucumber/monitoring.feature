@@ -1,15 +1,22 @@
+@monitoring
 Feature: Monitoring
 	Background:
-		Given I have these host groups configured:
-			| Name				| Hosts 					 	|
-			| LinuxServers		| linux-server1,linux-server2	|
-			| WindowsServers    | win-server1,win-server2		|
+		Given I have these hostgroups configured:
+			| hostgroup_name | members                     |
+			| LinuxServers   | linux-server1,linux-server2 |
+			| WindowsServers | win-server1,win-server2     |
+		And I have these hosts:
+			| host_name     |
+			| linux-server1 |
+			| linux-server2 |
+			| win-server1   |
+			| win-server2   |
 		And I have these services:
-			| Description	| Host 			| Check command		| Notifications | Active checks |
-			| System Load	| linux-server1 | check_nrpe!load	| Enabled		| Enabled		|
-			| System Load	| linux-server2 | check_nrpe!load	| Enabled		| Enabled		|
-			| PING			| win-server1 	| check_ping		| Enabled		| Disabled		|
-			| PING			| win-server2 	| check_ping		| Disabled		| Enabled		|
+			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
+			| System Load         | linux-server2 | check_nrpe!load | 1                     | 1                     |
+			| PING                | win-server1   | check_ping      | 1                     | 0                     |
+			| PING                | win-server2   | check_ping      | 0                     | 1                     |
 		And I have activated the configuration
 
 	@configuration @asmonitor @case-642
@@ -215,7 +222,7 @@ Feature: Monitoring
 		When I click "Done"
 		And I click "Refresh"
 		Then I should see "This host has been scheduled for fixed downtime"
-	
+
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable notifications for services
 		Verify that the "Disable notifications for all services"
@@ -359,58 +366,6 @@ Feature: Monitoring
 		When I click "Done"
 		Then I shouldn't see "A comment for this host"
 
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Information for this host.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Information for this host"
-		Then I should see "linux-server1"
-		And I should see "Current status"
-
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Information for this host.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Alert history"
-		Then I should see "Alert history"
-		And I should see "linux-server1"
-
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Availability report.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Availability report"
-		Then I should see "Services details for: System Load on host: Linux-server1"
-		And I should see "Reporting period: Last 7 Days"
-
-	@configuration @asmonitor @case-649
-	Scenario: Service details check page-links
-		Verify that page-links points to correct address.
-		Notifications.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Status detail"
-		And I click "System Load"
-		And I click "Notifications"
-		Then I should see "Notifications"
-		And I should see "Count:"
-
 	@configuration @asmonitor @bug-6933
 	Scenario: Disable passive checks and obsess over this host
 		Verify that after disable passive checks for this host and
@@ -432,3 +387,188 @@ Feature: Monitoring
 		And I click "Done"
 		When I click "Start obsessing over this host"
 		Then I should be on url "/monitor/index.php/command/submit?cmd_typ=START_OBSESSING_OVER_HOST&host_name=linux-server1"
+
+	@configuration @asmonitor @case-650
+	Scenario: Service details filter
+		Verify that filter links work as expected
+
+		Given I am on the Service details page
+		Then I should see the configured services
+		Then Link "Services total" should contain "4"
+		And I click link "Services total"
+		Then I should see the configured services
+
+	@configuration @asmonitor @case-650
+	Scenario: Service details filter
+		Verify that filter link counts are correct
+		for various states
+
+		Given I have submitted a passive service check result "linux-server2;System Load;2;some output"
+		And I have submitted a passive service check result "linux-server1;System Load;1;some output"
+		And I am on the Service details page
+		Then I should see the configured services
+		And Link "Services total" should contain "4"
+		And Link "Services critical" should contain "1"
+		And Link "Services warning" should contain "1"
+
+
+	@configuration @asmonitor @case-650 @todo
+	Scenario: Service details filter
+		Verify that I can go back to showing all
+		services after having filtered on Ok ones.
+
+		Given I have submitted a passive service check result "linux-server2;System Load;2;some output"
+		And I am on the Service details page
+		Then I should see the configured services
+		And Link "Services total" should contain "4"
+		And Link "Services critical" should contain "1"
+		When I click link "Services critical"
+		Then I should see "linux-server2"
+		And I should see "System Load"
+		But I shouldn't see "PING"
+		When I click link "Services total"
+		Then I should see the configured services
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Status detail link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Status detail"
+		Then I should see this status:
+			| Host Name | Service |
+			| linux-server1 | System Load |
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Alert history link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Alert history"
+		Then I should be on url "/monitor/index.php/alert_history/generate?service_description[]=linux-server1;System+Load"
+		And I should see "Alert history"
+		And I should see "System Load"
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given servce
+		point to the right place. Alert histogram link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Alert histogram"
+		Then I should be on url "/monitor/index.php/histogram/generate?service_description[]=linux-server1;System+Load"
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Availability report link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Availability report"
+		Then I should be on url "/monitor/index.php/avail/generate?service_description[]=linux-server1;System+Load&report_type=services"
+		And I should see "Service details for System Load on host linux-server1"
+		And I should see "Reporting period: Last 7 days"
+
+	@configuration @asmonitor @case-654
+	Scenario: Service details extinfo page check links
+		Verify that all links on the extinfo page for a given service
+		point to the right place. Notifications link.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Notifications"
+		Then I should see "Notifications"
+		And I should see "Count:"
+
+	@configuration @asmonitor @case-655
+	Scenario: Service extinfo page service commands
+		Test disabling active checks of service from
+		service extinfo page.
+
+		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
+		And I am on the Service details page
+		When I click "System Load"
+		And I click "Disable active checks of this service"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Active checks" should be shown as "Disabled"
+
+	@configuration @asmonitor @case-655
+	Scenario: Service extinfo page service commands
+		Test rescheduling next check from service extinfo page.
+
+		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
+		And I am on the Service details page
+		When I click "System Load"
+		And I click "Re-schedule next service check"
+		And I note the value of "field_check_time"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Next scheduled active check" should be shown as the value of "field_check_time"
+
+	@configuration @asmonitor @case-655
+	Scenario: Service extinfo page service commands
+		Test submitting a passive check result from the service
+		extinfo page.
+
+		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
+		And I am on the Service details page
+		When I click "System Load"
+		And I click "Submit passive check"
+		And I select "Critical" from "field_return_code"
+		And I enter "Something went horribly wrong!" into "field_plugin_output"
+		And I enter "2" into "field__perfdata"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then "Current status" should be shown as "Critical"
+
+	@configuration @asmonitor @case-656
+	Scenario: Service extinfo page check configure link
+		Verify that the configuration link on the extinfo page for a given service
+		point to the right place.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Configure"
+		Then I should be on url "/monitor//index.php/configuration/configure?page=edit.php%3Fobj_type%3Dservice%26host%3Dlinux-server1%26service%3DSystem%2BLoad"
+		And I should see "linux-server1" within frame "iframe"
+
+	@configuration @asmonitor @case-656
+	Scenario: Service extinfo page check performance graph link
+		Verify that the performance graph link on the extinfo page for a given service
+		point to the right place.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Show performance graph"
+		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System+Load"
+		And I should see "linux-server1" within frame "iframe"
+
+	@configuration @asmonitor @case-657
+	Scenario: Service details Add/delete comment
+		Verify that adding and deleting comments on services
+		works.
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Submit a service comment"
+		And I enter "A comment for this service" into "cmd_param[comment]"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I should see "A comment for this service"
+		When I click "Delete comment"
+		Then I should see "You are trying to delete a service comment"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then I shouldn't see "A comment for service host"

@@ -6,19 +6,20 @@ class Summary_options_Core extends Report_options
 	const ALERT_TOTALS = 2;
 	const TOP_ALERT_PRODUCERS = 3;
 
-	public function __construct($options=false)
+	public function setup_properties()
 	{
+		parent::setup_properties();
 		$this->properties['summary_type'] = array('type' => 'enum', 'default' => self::TOP_ALERT_PRODUCERS, 'options' => array(
-			self::RECENT_ALERTS => _('Most Recent Alerts'),
-			self::ALERT_TOTALS => _('Alert Totals'),
-			self::TOP_ALERT_PRODUCERS => _('Top Alert Producers')));
+			self::RECENT_ALERTS => _('Most recent alerts'),
+			self::ALERT_TOTALS => _('Alert totals'),
+			self::TOP_ALERT_PRODUCERS => _('Top alert producers')));
 		$this->properties['standardreport'] = array('type' => 'enum', 'default' => '', 'options' => array(
-			1 => _('Most Recent Hard Alerts'),
-			2 => _('Most Recent Hard Host Alerts'),
-			3 => _('Most Recent Hard Service Alerts'),
-			4 => _('Top Hard Alert Producers'),
-			5 => _('Top Hard Host Alert Producers'),
-			6 => _('Top Hard Service Alert Producers')));
+			1 => _('Most recent hard alerts'),
+			2 => _('Most recent hard host alerts'),
+			3 => _('Most recent hard service alerts'),
+			4 => _('Top hard alert producers'),
+			5 => _('Top hard host alert producers'),
+			6 => _('Top hard service alert producers')));
 		// Currently only used by alert history subreports, but we add them
 		// here so build_alert_summary_query can depend on them being around
 		$this->properties['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */
@@ -27,8 +28,7 @@ class Summary_options_Core extends Report_options
 		$this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
 		$this->properties['filter_output'] = array('type' => 'string', 'default' => false);
 
-		static::$rename_options['displaytype'] = 'summary_type';
-		parent::__construct($options);
+		$this->rename_options['displaytype'] = 'summary_type';
 		$this->properties['report_period']['options']['forever'] = _('Forever');
 	}
 
@@ -49,18 +49,21 @@ class Summary_options_Core extends Report_options
 					case 1: case 4:
 						$this['alert_types'] = 3;
 						$this['state_types'] = 2;
+						$this['report_type'] = 'hosts';
 						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 2: case 5:
 						$this['alert_types'] = 1;
 						$this['state_types'] = 2;
+						$this['report_type'] = 'hosts';
 						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 3: case 6:
 						$this['alert_types'] = 2;
 						$this['state_types'] = 2;
+						$this['report_type'] = 'services';
 						$this->options['service_description'] = Report_options::ALL_AUTHORIZED;
 						break;
 

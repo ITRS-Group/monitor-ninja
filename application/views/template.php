@@ -4,8 +4,8 @@
 	if (Auth::instance()->logged_in()) {
 		$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
 
-		$auth = Nagios_auth_Model::instance();
-		if ($auth->view_hosts_root) {
+		$auth = op5auth::instance();
+		if ($auth->authorized_for('host_view_all')) {
 			$authorized = true;
 		}
 	}

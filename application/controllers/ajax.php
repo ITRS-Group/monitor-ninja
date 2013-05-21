@@ -16,7 +16,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		/* Ajax calls shouldn't be rendered. This doesn't, because some unknown
 		 * magic doesn't render templates in ajax requests, but for debugging
 		 */
@@ -29,24 +29,24 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function global_search($q=false)
 	{
 		$q = $this->input->get('query', $q);
-		
+
 		$result = $this->global_search_build_filter($q);
-		
+
 		if( $result !== false ) {
 			$obj_type = $result[0];
 			$obj_name = $result[1];
 			$settings = $result[2];
 			$livestatus_options = $result[3];
-			
+
 			$ls = Livestatus::instance();
 			$lsb = $ls->getBackend();
-			
+
 			$livestatus_options['limit'] = Kohana::config('config.autocomplete_limit');
-			
+
 			$data = $lsb->getTable($obj_type, $livestatus_options);
 			$obj_info = array();
 			$obj_data = array();
-			
+
 			if ($data!==false) {
 				foreach ($data as $row) {
 					$row = (object)$row;
@@ -68,18 +68,18 @@ class Ajax_Controller extends Authenticated_Controller {
 		$json_str = json_encode($var);
 		echo $json_str;
 	}
-	
+
 	/**
 	 * This is actually a local method for global_search to build the search query for live search.
-	 * 
+	 *
 	 * This method is public to make it testable. It doesn't interact with anything external, or take time, so it's no security issue...
-	 * 
+	 *
 	 * @param $q Search query
 	 */
 	public function global_search_build_filter($q)
 	{
 		$parser = new ExpParser_SearchFilter();
-		
+
 		try {
 			$parser->parse($q);
 			$obj_type = $parser->getLastObject();
@@ -90,10 +90,10 @@ class Ajax_Controller extends Authenticated_Controller {
 		} catch( Exception $e ) {
 			return false;
 		}
-		
+
 		$obj_data = array();
 		$obj_info = array();
-		
+
 		if ($obj_type !== false) {
 			switch ($obj_type) {
 				case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] host.name="%s"'            ); break;
@@ -103,7 +103,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
 				default: return false;
 			}
-				
+
 			return array( $obj_type, $obj_name, $settings, array(
 					'columns' => array_unique( array($settings['name_field'], $settings['data']) ),
 					'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) ))
@@ -220,7 +220,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		$host = $this->input->get('host', false);
 		$service = false;
-		$model = new Old_Comment_Model();
+
 		if (strstr($host, ';')) {
 			# we have a service - needs special handling
 			$parts = explode(';', $host);
@@ -236,7 +236,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$set = $set->reduce_by('host.name', $host, '=');
 		if($service !== false)
 			$set = $set->reduce_by('service.description', $service, '=');
-		
+
 		if (count($set) > 0) {
 			$data = "<table><tr><th>"._("Timestamp")."</th><th>"._('Author')."</th><th>"._('Comment')."</th></tr>";
 			foreach ($set->it(array('entry_time', 'author', 'comment'),array()) as $row) {

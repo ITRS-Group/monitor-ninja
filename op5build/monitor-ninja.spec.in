@@ -27,7 +27,7 @@ Requires: op5-monitor-supported-database
 Requires: monitor-livestatus
 Requires: monitor-nacoma
 Requires: monitor-backup
-BuildRequires: php-op5lib >= 1.1.0-beta9
+BuildRequires: php-op5lib >= 1.1.0-beta14
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
@@ -72,6 +72,8 @@ Requires: merlin-apps
 Requires: monitor-livestatus monitor-nagvis
 Requires: rubygem-cucumber rubygem-capybara rubygem-poltergeist rubygem-rspec phantomjs
 Requires: portal
+# For performance graph links on extinfo
+Requires: monitor-pnp
 
 %description test
 Additional test files for ninja

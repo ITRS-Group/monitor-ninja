@@ -121,7 +121,6 @@ class Reports_Model extends Model
 
 	public $initial_dt_depth = false; /**< The initial downtime depth. NOTE: this is scary, what if there's a dozen 365 day long downtimes active at once or bugs caused us to forget to end downtimes? */
 	public $db_table = 'report_data'; /**< Report table name */
-	const db_table = 'report_data'; /**< Report table name, FIXME: again, 4 teh lulz */
 	public $sub_reports = array(); /**< An array of sub-reports for this report */
 	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
 	public $states = array(); /**< The final array of report states */
@@ -198,7 +197,7 @@ class Reports_Model extends Model
 		$table_exists = false;
 		if (isset($db)) {
 			try {
-				$table_exists = $db->table_exists(self::db_table);
+				$table_exists = $db->table_exists($this->db_table);
 			} catch (Kohana_Database_Exception $e) {
 				return false;
 			}
@@ -223,22 +222,17 @@ class Reports_Model extends Model
 	}
 
 	/**
-         * Used from the HTTP API
-         *
+	 * Used from the HTTP API
+	 *
 	 * @param $auth Op5Auth
 	 * @return array
 	 */
 	function get_events(Op5Auth $auth)
 	{
-                $query = $this->build_alert_summary_query('timestamp,
-			event_type,
-			host_name,
-			service_description,
-			state,
-			hard,
-			retry,
-			downtime_depth,
-			output', true, array(), null, $auth);
+		$query = $this->build_alert_summary_query
+			('timestamp, event_type, host_name, service_description, ' .
+		     'state, hard, retry, downtime_depth, output',
+		     true, array(), null, $auth);
 
 		// investigate if there are more rows available for this query,
 		// with another set of pagination parameters
@@ -1548,7 +1542,7 @@ class Reports_Model extends Model
 				$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
 					$name = implode(';', $o);
-					# XXX why set values to arrays with group->group?
+					# To be able to sum up alert totals:
 					if (empty($services[$name])) {
 						$services[$name] = array();
 					}
@@ -1566,7 +1560,7 @@ class Reports_Model extends Model
 			foreach ($this->options['hostgroup'] as $hg) {
 				$res = Livestatus::instance()->getHosts(array('columns' => array('host_name'), 'filter' => array('groups' => array('>=' => $hg))));
 				foreach ($res as $row) {
-					# XXX why set values to arrays with group->group?
+					# To be able to sum up alert totals:
 					if (empty($hosts[$row['host_name']])) {
 						$hosts[$row['host_name']] = array();
 					}
@@ -2036,8 +2030,6 @@ class Reports_Model extends Model
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
-			if (!isset($this->service_servicegroup[$type][$name]))
-				die("Fuck, lost state: $type $name");
 			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
 				continue;

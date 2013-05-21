@@ -221,6 +221,13 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			else {
 				return function(variable)
 				{
+					/* We might not know the variable from strucutre, but it
+					 * can be a local, as in loop variable in list compherension
+					 */
+					var value = var0.fetch(variable);
+					if(typeof value != "undefined")
+						return value;
+					/* In this case, it's really unknown */
 					return 'Unknown variable ' + name.slice(0, i + 1).join('.');
 				};
 			}
@@ -258,6 +265,23 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			}
 		};
 	};
+
+	// var_index: var := * var sq_l integer sq_r
+	this.visit_var_index = function(var0, integer2)
+	{
+		var idx = integer2;
+		var name_list = var0.name;
+		return {
+			name: name_list,
+			fetch: function(variable, defval)
+			{
+				var variable = var0.fetch(variable);
+				if (variable && variable[idx])
+					return variable[idx];
+				return defval;
+			}
+		};
+	};
 	
 	// var_attr: var := * var dot name
 	this.visit_var_attr = function(var0, name2)
@@ -269,8 +293,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			name: name_list,
 			fetch: function(variable, defval)
 			{
-				if (var0.fetch(variable)[name])
-					return var0.fetch(variable)[name];
+				var variable = var0.fetch(variable);
+				if (variable && variable[name])
+					return variable[name];
 				return defval;
 			}
 		};
@@ -303,13 +328,50 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		};
 	};
 	
-	// expr_func: expr3 := * name par_l expr par_r
-	this.visit_expr_func = function(name0, expr2)
-	{
+	// expr_list_comp: expr4 := * sq_l expr for name in expr sq_r
+	this.visit_expr_list_comp = function(expr1, name3, expr5) {
 		return function(args)
 		{
-			return name0 + '(' + expr2(args) + ')';
+			var list = expr5(args);
+			var result = [];
+			var subargs = $.extend({},args);
+			for( var i=0; i<list.length; i++ ) {
+				subargs[name3] = list[i];
+				result.push(expr1(subargs));
+			}
+			return result;
 		};
+	};
+	
+	// expr_func: expr4 := * name par_l expr_list par_r
+	this.visit_expr_func = function(name0, expr_list2) {
+		switch(name0) {
+		case "implode":
+			return function(args) {
+				var fargs = expr_list2(args);
+				/* FIXME: test variable types */
+				return fargs[1].join(fargs[0]);
+			}
+		}
+		return function(args) {
+			return "Unknown function "+name0;
+		}
+	};
+	
+	// expr_list: expr_list := * expr comma expr_list
+	this.visit_expr_list = function(expr0, expr_list2) {
+		return function(args) {
+			var arr = expr_list2(args);
+			arr.unshift(expr0(args));
+			return arr;
+		}
+	};
+	
+	// expr_list_end: expr_list := * expr
+	this.visit_expr_list_end = function(expr0) {
+		return function(args) {
+			return [expr0(args)];
+		}
 	};
 	
 	this.accept = function(result)

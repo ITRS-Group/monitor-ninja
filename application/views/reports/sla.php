@@ -5,22 +5,25 @@ foreach($report_data as $i =>  $report) {
 	$nr++;
 	if (!empty($report['data_str'])) {
 		if (!$report['name']) {
-			$str_source = 'SLA breakdown for Custom group';
+			$str_source = 'SLA breakdown for custom group';
+			$names = array('custom group');
 		}
 		else {
-			if(is_array($report['name']))
-				$report['name'] = implode(', ', $report['name']);
-			if (!$options['use_alias'] || count($report['source']) > 1)
-				$str_source = _('SLA breakdown for').': '.$report['name'];
-			else
-				$str_source = _('SLA breakdown for').': '.$this->_get_host_alias($report['name']).' ('.$report['name'].')';
+			$names = $report['name'];
+			if (!is_array($names))
+				$names = array($names);
+			if ($options['use_alias'] && $options['report_type'] !== 'services') {
+				foreach ($names as $k => $name)
+					$names[$k] = $this->_get_alias($options['report_type'], $name).' ('.$name.')';
+			}
+			$str_source = sprintf(_('SLA breakdown for: %s'), implode(',', $names));
 		}
 	}
 	?>
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<form action="<?php echo url::site() ?>avail/generate" method="post">
-			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
+			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Show availability breakdown');?>" />
 			<?php
 			echo $options->as_form(true);
 			# Stupid multi-group reports, why do you insist on making my life complicated?
@@ -89,7 +92,7 @@ foreach($report_data as $i =>  $report) {
 
 		<table style="margin-bottom: 20px;">
 			<caption style="margin-top: 15px;"><?php echo help::render('sla_group_members').' '._('Group members');?></caption>
-			<tr><th><?php echo is_string($report['name']) ? $report['name'] : _('Custom group') ?></th></tr>
+			<tr><th><?php echo implode(',', $names); ?></th></tr>
 			<?php
 				$x = 0;
 				if (strpos('service', $options['report_type']) !== false) {
@@ -101,9 +104,13 @@ foreach($report_data as $i =>  $report) {
 					$objname= 'host_name';
 				}
 				foreach($members as $member) {
+					if ($options['use_alias'] && $type !== 'services')
+						$name = $this->_get_alias($type, $member).' ('.$member.')';
+					else
+						$name = $member;
 					$x++;
 					echo '<tr class="'.($x%2 == 0 ? 'odd' : 'even').'"><td>';
-					echo '<a href="'.url::site().'sla/generate?'.$objname.'[]='. $member. '&report_type='.$type.'&amp;'.$options->as_keyval_string(true).'">'.$member.'</a>';
+					echo '<a href="'.url::site().'sla/generate?'.$objname.'[]='. $member. '&report_type='.$type.'&amp;'.$options->as_keyval_string(true).'">'.$name.'</a>';
 					echo "</td></tr>\n";
 				}
 				?>

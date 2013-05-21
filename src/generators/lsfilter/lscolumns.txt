@@ -5,6 +5,9 @@ float       /^([0-9]+\.[0-9]*)/
 integer     /^([0-9]+)/
 
 all         /^(all|default)(?:[^a-z0-9_][\s\S]*|)$/i
+for         /^(for)(?:[^a-z0-9_][\s\S]*|)$/i
+in          /^(in)(?:[^a-z0-9_][\s\S]*|)$/i
+if          /^(if)(?:[^a-z0-9_][\s\S]*|)$/i
 
 name        /^([a-z0-9_]+)/i
 
@@ -18,6 +21,8 @@ dot         /^(\.)/
 eq          /^(=)/
 par_l       /^(\()/
 par_r       /^(\))/
+sq_l        /^(\[)/
+sq_r        /^(\])/
 
 entry: definition = column_list end
 
@@ -52,8 +57,13 @@ expr_int:           expr4    = integer
 expr_float:         expr4    = float
 
 _expr_par:          expr4    = _par_l expr _par_r
+expr_list_comp:     expr4    = _sq_l expr _for name _in expr _sq_r
 
-expr_func:          expr4    = name _par_l expr _par_r
+expr_func:          expr4    = name _par_l expr_list _par_r
+
+expr_list:          expr_list = expr _comma expr_list
+expr_list_end:      expr_list = expr
 
 var_var:            var      = name
+var_index:          var      = var _sq_l integer _sq_r
 var_attr:           var      = var _dot name

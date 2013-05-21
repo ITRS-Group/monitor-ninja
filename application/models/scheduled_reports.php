@@ -63,8 +63,8 @@ class Scheduled_reports_Model extends Model
 		$db = Database::instance();
 
 		$sql_xtra = '';
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->view_hosts_root) {
+		$auth = op5auth::instance();
+		if (!$auth->authorized_for('host_view_all')) {
 			$sql_xtra = ' AND sr.'.self::USERFIELD.'='.$db->escape(Auth::instance()->get_user()->username).' ';
 		}
 

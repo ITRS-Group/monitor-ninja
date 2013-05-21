@@ -37,7 +37,7 @@ function lsfilter_list(config)
 	if(this.config.totals)
 		lsfilter_list_attach_events( this, this.config.totals );
 
-	/* Bind this once and for all globally... Needed in lot of callbacks */ 
+	/* Bind this once and for all globally... Needed in lot of callbacks */
 	var self = this;
 
 	if( this.config.attach_head ) {
@@ -165,7 +165,11 @@ function lsfilter_list(config)
 					},
 					error: function(data, text_status)
 					{
-						if(text_status === "abort") {
+						if(!data.getAllResponseHeaders() || text_status === "abort") {
+							// getAllResponseHeaders() provided by http://ilikestuffblog.com/2009/11/30/how-to-distinguish-a-user-aborted-ajax-call-from-an-error/
+							// since my tests of === "abort" all are negative, keeping it if jQuery decides to follow its API sometime..
+
+
 							// only continue to display error message if
 							// it's an actual error, not just multiple requests
 							// stacked or something silly like that
@@ -462,7 +466,9 @@ function lsfilter_list(config)
 	this.add_sort = function(element, vis_column, current)
 	{
 		var img = _site_domain+'application/views/icons/arrow-up-down.png';
-		if (current > 0) { // Ascending?
+		element.attr('title', 'Sort ascending');
+		if (current > 0) {
+			element.attr('title', 'Sort descending');
 			img = _site_domain+'application/views/icons/arrow-up.png';
 			element.addClass('current');
 		}
@@ -474,7 +480,6 @@ function lsfilter_list(config)
 		element.addClass('sortable');
 		element.addClass('link_set_sort');
 
-		element.attr('title', 'Sort descending');
 		element.attr('data-column', vis_column );
 
 		element.append($('<span class="lsfilter-sort-span" />').css('background-image', 'url('+img+')'));
@@ -493,8 +498,9 @@ function lsfilter_list(config)
 		var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
 		var clone = header.clone(true);
 		header.after(clone);
-		
+
 		clone.addClass('floating-header');
+		header.find('input').remove();
 
 		this.update_float_header();
 	};
