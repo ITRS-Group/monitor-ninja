@@ -152,8 +152,8 @@ class Search_Controller extends Authenticated_Controller {
 
 		if( isset( $filter['filters']['_si'] ) ) {
 			/* Map status information table to hosts and services */
-			$query['hosts'] = $query['_si'];
-			$query['services'] = $query['_si'];
+			$query['hosts'] = array_merge(isset($query['hosts'])?$query['hosts']:array(), $query['_si']);
+			$query['services'] = array_merge(isset($query['services'])?$query['services']:array(), $query['_si']);
 			unset( $query['_si'] );
 		} else if( isset( $filter['filters']['comments'] ) ) {
 			/* Map subtables for comments (hosts and servies) */
