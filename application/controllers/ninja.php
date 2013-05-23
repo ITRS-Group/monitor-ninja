@@ -149,12 +149,10 @@ class Ninja_Controller extends Template_Controller {
 			$this->_global_notification_checks();
 
 			# fetch info on saved searches and assign to master template
-			$this->template->saved_searches = $this->add_view('saved_searches');
-			$this->template->is_searches = false;
 			$searches = Saved_searches_Model::get_saved_searches();
 			if ($searches !== false && count($searches)) {
+				$this->template->saved_searches = $this->add_view('saved_searches');
 				$this->template->saved_searches->searches = $searches;
-				$this->template->is_searches = true;
 			}
 		}
 
