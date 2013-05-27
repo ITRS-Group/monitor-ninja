@@ -91,6 +91,8 @@ if (!empty($base_href)) {
 			var _nothing_selected_error = '<?php echo _('Please select at least one item.') ?>';
 			var _no_action_error = '<?php echo _('Please select an action.') ?>';
 			var _date_format = <?php echo json_encode(nagstat::date_format()); ?>;
+			var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
+			/* <?php echo date_default_timezone_get(); ?> */
 
 		<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 

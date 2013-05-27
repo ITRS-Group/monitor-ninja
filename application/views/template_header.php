@@ -25,9 +25,6 @@
 		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'page_settings_icon'));
 	}
 
-	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
-		$shortcuts['internal'][] = array('#', 'icon-16 x16-notifications', array('title' => 'Global Notifications', 'id' => 'global_notifications_icon'));
-	}
 	$shortcuts['internal'][] = array('/listview?q=[services] host.scheduled_downtime_depth = 0 and ((state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0) or (host.state != 0 and host.acknowledged = 0))', 'icon-16 x16-shield-pending', array('id' => 'uh_problems', 'title' => 'Unhandled Problems'));
 	$shortcuts['internal'][] = array('/tac', 'icon-16 x16-hoststatus', array('title' => 'Tactical Overview'));
 
@@ -164,14 +161,20 @@
 	</div>
 	<?php
 	if(Auth::instance()->logged_in()) {
-		$timezone = date_default_timezone_get();
-?>
-		<div style="position: fixed; top: 6px; left: 337px; font-size: 90%; color: #555;">
-			<?php
+?><div style="position: fixed; top: 4px; left: 329px; right: 280px; font-size: 90%; color: #555; overflow: hidden; white-space: nowrap;"><?php
+				$notifications = array();
 				if (isset($_SERVER['SERVER_NAME']))
-					echo _('Host').': ' . htmlentities($_SERVER['SERVER_NAME']) . ' &nbsp; ';
+					$notifications[] = _('Host').': ' . htmlentities($_SERVER['SERVER_NAME']);
+
+				if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
+					foreach ($global_notifications as $gn) {
+						$notifications[] = ($gn[1] ? '' : '<span class="icon-12 x12-shield-warning" style="vertical-align: middle;"></span>') . $gn[0];
+					}
+				}
+				foreach($notifications as $not) {
+					print '<div style="display: inline-block; margin-left: 8px;">'.$not.'</div>';
+				}
 			?>
-			<?php echo _('Updated') ?>: <a id="page_last_updated" data-utc_offset="<?php echo (1000 * date::utc_offset($timezone)) ?>" title="Your timezone is set to <?php echo $timezone ?>. Click to reload page." href="<?php echo isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : "#" /* For CLI */ ?>"><?php echo date(nagstat::date_format()) ?></a>
 		</div>
 	<?php } ?>
 
@@ -192,19 +195,6 @@
 	<?php customlogo::Render(); ?>
 	</div>
 </div>
-
-<?php
-	if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
-		echo "<div id='global_notifications'><ul>";
-
-		foreach ($global_notifications as $gn) {
-			echo "<li>";
-			echo (!$gn[1]) ? '<span class="icon-12 x12-shield-warning" style="vertical-align: middle;"></span>': '';
-			echo $gn[0]."</li>";
-		}
-		echo "</ul><div class='clear'></div></div>";
-	}
-?>
 
 <?php
 	if ($show_settings) {
