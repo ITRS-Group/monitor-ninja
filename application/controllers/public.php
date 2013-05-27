@@ -48,7 +48,10 @@ class Public_Controller extends Controller {
 		$barvalues = false;
 		$barcolors = false;
 		foreach ($_GET as $tmpkey => $tmpval) {
-			$barvalues[$tmpkey] = array($tmpval[1], $tmpval[0]);
+			$barvalues[$tmpkey] = array(
+				str_replace(',', '.', $tmpval[1]),
+				str_replace(',', '.', $tmpval[0])
+			);
 			$barcolors[] = false;
 			$barcolors[] = $tmpval[2] ? reports::$colors['red'] : reports::$colors['green'];
 		}
