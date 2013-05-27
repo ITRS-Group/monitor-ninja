@@ -13,7 +13,8 @@ if ( ! empty($trace)){
 }
 $content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
 foreach(config::get('exception.shell_commands') as $command) {
-	$content .= "<p class='stats'>$command: ".`$command`.'</p>';
+	exec($command, $output, $exit_value);
+	$content .= "<p class='stats'>$command (exit code $exit_value):<br />".implode('<br />', $output).'</p>';
 }
 foreach(config::get('exception.extra_info') as $header => $info) {
 	$content .= "<p class='stats'>$header: $info</p>";
