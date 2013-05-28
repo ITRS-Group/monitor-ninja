@@ -291,9 +291,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'cal_start' => function(&$key, &$val, &$opts) {
 				if (!$val)
 					return false;
-				if (!isset($opts['time_start'])) {
+				if (!isset($opts['time_start']) || !$opts['time_start']) {
 					$opts['cal_start'] = $val;
-					return false;
+					$opts['time_start'] = '00:00';
 				}
 				$key = 'start_time';
 				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_start']}:00");
@@ -303,9 +303,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'cal_end' => function(&$key, &$val, &$opts) {
 				if (!$val)
 					return false;
-				if (!isset($opts['time_end'])) {
+				if (!isset($opts['time_end']) || !$opts['time_end']) {
 					$opts['cal_end'] = $val;
-					return false;
+					$opts['time_end'] = '23:59';
 				}
 				$key = 'end_time';
 				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_end']}:00");
@@ -314,27 +314,25 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			},
 			'time_start' => function(&$key, &$val, &$opts) {
 				if (!$val)
-					$val = "00:00";
+					return false;
 				if (!isset($opts['cal_start'])) {
 					$opts['time_start'] = $val;
 					return false;
 				}
 				$key = 'start_time';
 				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_start']} $val:00");
-				unset($opts['cal_start']);
 				$val = $dt->getTimestamp();
 				return true;
 			},
 			'time_end' => function(&$key, &$val, &$opts) {
 				if (!$val)
-					$val = "23:59";
+					return false;
 				if (!isset($opts['cal_end'])) {
 					$opts['time_end'] = $val;
 					return false;
 				}
 				$key = 'end_time';
 				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_end']} $val:00");
-				unset($opts['cal_end']);
 				$val = $dt->getTimestamp();
 				return true;
 			},

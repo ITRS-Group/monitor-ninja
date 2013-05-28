@@ -91,6 +91,10 @@ class Saved_reports_Model extends Model
 				foreach ($options as $key => $val) {
 					// fuck you, special cases
 					switch ($key) {
+					 case 'cal_start':
+					 case 'cal_end':
+					 case 'time_start':
+					 case 'time_end':
 					 case 'host_name':
 					 case 'service_description':
 					 case 'hostgroup':
@@ -116,6 +120,10 @@ class Saved_reports_Model extends Model
 				foreach ($options as $key => $value) {
 					// fuck you, special cases
 					switch ($key) {
+					 case 'cal_start':
+					 case 'cal_end':
+					 case 'time_start':
+					 case 'time_end':
 					 case 'host_name':
 					 case 'service_description':
 					 case 'hostgroup':
