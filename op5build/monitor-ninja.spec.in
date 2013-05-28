@@ -21,9 +21,11 @@ Prefix: /opt/monitor/op5/ninja
 Requires: monitor-gui-core
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
+Requires: monitor-merlin
 Requires: php-op5lib >= 1.1.0
 Requires: wkhtmltopdf
 Requires: op5-monitor-supported-database
+Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
 Requires: monitor-nacoma
 Requires: monitor-backup
@@ -39,7 +41,6 @@ Requires: php53-posix
 Requires: php53-ctype
 Requires: php53-iconv
 Requires: php53-mbstring
-Requires: apache2
 BuildRequires: php53-json
 BuildRequires: php53-posix
 BuildRequires: php53-ctype
@@ -48,7 +49,6 @@ BuildRequires: pwdutils
 BuildRequires: graphviz-gnome
 BuildRequires: ghostscript-fonts-std
 %else
-Requires: httpd
 Requires: php >= 5.3
 BuildRequires: php >= 5.3
 BuildRequires: shadow-utils
