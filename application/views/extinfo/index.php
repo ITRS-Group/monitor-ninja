@@ -229,9 +229,16 @@ if (!empty($widgets)) {
 				(<?php echo _('for'); ?> <?php echo $object->get_duration()>=0 ? time::to_string($object->get_duration()) : _('N/A') ?>)
 			</td>
 		</tr>
+		<?php
+		$output = $object->get_plugin_output();
+		$long_plugin_output = preg_replace('~^\\\n|\\\n$~', null, $object->get_long_plugin_output());
+		if($long_plugin_output) {
+			$output .= '<br />'.str_replace('\n', '<br />', $long_plugin_output);
+		}
+		?>
 		<tr>
 			<td class="dark"><?php echo _('Status information'); ?></td>
-			<td style="white-space: normal" id="field_plugin_output"><?php echo $object->get_plugin_output() ?></td>
+			<td style="white-space: normal" id="field_plugin_output"><?php echo $output ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
