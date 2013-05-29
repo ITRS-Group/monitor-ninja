@@ -146,7 +146,7 @@ class reports_Core
 		if ($val == '0.000' || $val == '100.000')
 			$return = number_format($val, 0);
 		else
-			$return = number_format($val, 3);
+			$return = number_format(str_replace(',', '.', $val), 3);
 
 		return $return;
 	}
