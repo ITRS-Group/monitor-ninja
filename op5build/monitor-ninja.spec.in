@@ -166,15 +166,6 @@ fi
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
-%if 0%{?suse_version}
-if ! service mysql status; then
-service mysql start
-fi
-%else
-if ! service mysqld status; then
-service mysqld start
-fi
-%endif
 $(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
 if [ -n "$MYSQL_AVAILABLE" ]; then
   pushd %prefix
