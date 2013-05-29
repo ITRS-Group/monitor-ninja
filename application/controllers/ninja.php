@@ -103,14 +103,6 @@ class Ninja_Controller extends Template_Controller {
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
 
-		if (PHP_SAPI != 'cli') {
-			$locales = $this->locale->getOrder();
-			foreach (array_keys($locales) as $locale) {
-				putenv('LC_ALL='.$locale);
-				setlocale(LC_ALL, $locale);
-				break;
-			}
-		}
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
