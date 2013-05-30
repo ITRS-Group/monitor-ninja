@@ -70,7 +70,7 @@ Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
 Requires: merlin monitor-merlin op5-nagios
-Requires: merlin-apps
+Requires: merlin-apps op5-mysql
 Requires: monitor-livestatus monitor-nagvis
 Requires: rubygem-cucumber rubygem-capybara rubygem-poltergeist rubygem-rspec phantomjs
 Requires: portal
