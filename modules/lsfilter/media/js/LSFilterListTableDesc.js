@@ -252,7 +252,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			name : name_list,
 			fetch : function(variable, defval) {
 				var variable = var0.fetch(variable);
-				if (variable && variable[idx])
+				if (variable && (typeof variable[idx] != "undefined"))
 					return variable[idx];
 				return defval;
 			}
@@ -324,6 +324,24 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				var fargs = expr_list2(args);
 				/* FIXME: test variable types */
 				return format_timestamp(fargs[0]);
+			};
+		case "if":
+			return function(args) {
+				var fargs = expr_list2(args);
+				if (fargs[0]) {
+					return fargs[1];
+				} else {
+					return fargs[2];
+				}
+			};
+		case "idx":
+			return function(args) {
+				var fargs = expr_list2(args);
+				var idx = parseInt(fargs[0], 10);
+				if( !( 0 <= idx && idx < fargs.length-1 ) ) {
+					return "Unknown index "+idx;
+				}
+				return fargs[idx+1];
 			};
 		}
 		return function(args) {

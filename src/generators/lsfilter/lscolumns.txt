@@ -7,7 +7,6 @@ integer     /^([0-9]+)/
 all         /^(all|default)(?:[^a-z0-9_][\s\S]*|)$/i
 for         /^(for)(?:[^a-z0-9_][\s\S]*|)$/i
 in          /^(in)(?:[^a-z0-9_][\s\S]*|)$/i
-if          /^(if)(?:[^a-z0-9_][\s\S]*|)$/i
 
 name        /^([a-z0-9_]+)/i
 
