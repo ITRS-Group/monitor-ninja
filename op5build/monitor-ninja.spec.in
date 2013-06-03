@@ -70,7 +70,7 @@ Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
 Requires: merlin monitor-merlin op5-nagios
-Requires: merlin-apps
+Requires: merlin-apps op5-mysql
 Requires: monitor-livestatus monitor-nagvis
 Requires: rubygem-cucumber rubygem-capybara rubygem-poltergeist rubygem-rspec phantomjs
 Requires: portal
@@ -166,15 +166,6 @@ fi
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
-%if 0%{?suse_version}
-if ! service mysql status; then
-service mysql start
-fi
-%else
-if ! service mysqld status; then
-service mysqld start
-fi
-%endif
 $(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
 if [ -n "$MYSQL_AVAILABLE" ]; then
   pushd %prefix
