@@ -1242,7 +1242,7 @@ class nagioscmd_Core
 		}
 
 		return html::anchor($lnk, html::specialchars($lable), $attributes);
-	}	
+	}
 
 	/**
 	 * Given the name of a command, return the type of the command
@@ -1342,6 +1342,8 @@ class nagioscmd_Core
 		if ($objects['service']) {
 			if (!is_array($objects['service']))
 				$objects['service'] = array($objects['service']);
+			if (!is_array($objects['host']))
+				$objects['host'] = array($objects['host']);
 			foreach ($objects['service'] as $service) {
 				if (strstr($service, ';')) {
 					# we have host_name;service in service field
@@ -1350,7 +1352,7 @@ class nagioscmd_Core
 				else {
 					$parts = array(end($objects['host']), $service);
 				}
-				if (!$user->authorized_for_object('service', $parts))
+				if (!$user->authorized_for_object('services', $parts))
 					return false;
 			}
 			return true;
@@ -1358,7 +1360,7 @@ class nagioscmd_Core
 		if (!is_array($objects[$type]))
 			$objects[$type] = array($objects[$type]);
 		foreach ($objects[$type] as $object) {
-			if (!$user->authorized_for_object($type, $object))
+			if (!$user->authorized_for_object($type.'s', $object))
 					return false;
 		}
 		return true;
