@@ -215,7 +215,8 @@ class Cli_Controller extends Ninja_Controller {
 	}
 
 	/**
-	 * Migrate avail < 10 = ninja < 2.1 = monitor < 6.0 where the meaning of filter is inverted
+	 * Migrate avail < 10 = ninja < 2.1 = monitor < 6.0 where the meaning
+	 * of host/service filter status is inverted
 	 */
 	public function upgrade_excluded()
 	{
