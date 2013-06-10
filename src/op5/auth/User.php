@@ -93,9 +93,9 @@ class op5User {
 		$access = false;
 
 		switch($object_type) {
-			case 'hosts':
-			case 'hostgroups':
-			case 'servicegroups':
+			case 'host':          case 'hosts':
+			case 'hostgroup':     case 'hostgroups':
+			case 'servicegroup':  case 'servicegroups':
 				list($columns,$objects,$count) = $ls->query($object_type, array(
 						'Filter: name '.$lseq.' '.$object_definition,
 						'AuthUser: ' . $this->username
@@ -104,7 +104,7 @@ class op5User {
 					$access = true;
 				}
 				break;
-			case 'services':
+			case 'service':       case 'services':
 				list($columns,$objects,$count) = $ls->query('services', array(
 						'Filter: host_name '.$lseq.' '.$object_definition[0],
 						'Filter: description '.$lseq.' '.$object_definition[1],
