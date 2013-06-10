@@ -39,6 +39,7 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jquery.field.js');
+			echo html::script('application/media/js/date.js');
 			echo html::script('application/views/js/collapse_menu.js');
 			echo html::script('application/views/js/global_search.js');
 			echo html::script('application/views/js/pagination.js');
@@ -92,6 +93,8 @@ if (isset($this->template->js_header))
 				var _search_save_error = '<?php echo _('ERROR') ?>';
 				var _search_saved_ok = '<?php echo _('Your search was successfully saved.') ?>';
 				var _search_saved_error = '<?php echo _('An error occured when trying to save your search.') ?>';
+				var _date_format = <?php echo json_encode(nagstat::date_format()); ?>;
+				var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
 
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 

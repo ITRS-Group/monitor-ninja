@@ -26,10 +26,11 @@ array(4) {
 		$uri = preg_replace('~/+~', '/', $uri);
 
 		foreach ($links as $section => $entry) {
-			
+
 			$linkstring = '';
 			if (strtolower($section) == 'about') {
-				$linkstring .= '<li class="meta">'.Kohana::config('config.product_name') . ":" . config::get_version_info().'</li>';
+				$linkstring .= '<li class="meta">'.Kohana::config('config.product_name') . ": " . config::get_version_info().'</li>';
+				$linkstring .= '<li class="meta">'._('Page loaded').': '.date(nagstat::date_format()).'</li>';
 			} elseif (empty($entry)) {
 				continue;
 			}
@@ -43,7 +44,7 @@ array(4) {
 
 					/* Never have a capital o in op5 */
 					$formatted_name = preg_replace('/op5/i', 'op5', ucwords($name));
-					
+
 					$id = str_replace(' ','-',strtolower($section))."-".$data[1];
 					if( is_array($data[1]) ) {
 						$icon_image = $data[1][1];
