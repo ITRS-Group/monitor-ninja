@@ -287,6 +287,40 @@ listview_renderer_table.services = {
 			return cell;
 		}
 	},
+	"host_actions" : {
+		"header" : _('Host Actions'),
+		"depends" : [ 'host.name', 'host.action_url', 'host.config_url', 'host.notes_url', 'host.config_allowed' ],
+		"sort" : false,
+		"cell" : function(args) {
+			var cell = $('<td />');
+
+			if (args.obj.host
+					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
+				cell.append(icon16('service-details',
+						_('View service details for this host'),
+						link_query('[services] host.name = "' + args.obj.host.name + '"' // FIXME:
+						// escape
+						)));
+
+				if (args.obj.host.action_url)
+					cell.append(icon16('host-actions',
+							_('Perform extra host actions'), $('<a />').attr(
+									'href', args.obj.host.action_url)));
+
+				if (args.obj.host.config_url && args.obj.config_allowed)
+					cell.append(icon16('nacoma', _('Configure this host'), $(
+							'<a />').attr('href', args.obj.host.config_url)));
+
+				if (args.obj.host.notes_url)
+					cell.append(icon16('host-notes', _('View extra host notes'), $(
+							'<a />').attr('href', args.obj.host.notes_url)));
+			} else {
+				cell.addClass('listview-empty-cell');
+			}
+
+			return cell;
+		}
+	},
 	"select" : {
 		"header" : listview_multi_select_header,
 		"depends" : [],
