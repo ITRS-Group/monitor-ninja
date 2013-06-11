@@ -18,6 +18,8 @@ if (!empty($base_href)) {
 	<?php echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon') ?>
 
 	<?php echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen') ?>
+	<?php echo html::link('application/media/js/wizard/wizard.css', 'stylesheet', 'text/css', false, 'screen') ?>
+
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
 	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
@@ -44,6 +46,7 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/date.js');
 		echo html::script('application/views/js/pagination.js');
 		echo html::script('application/views/js/global_search.js');
+		echo html::script('application/media/js/wizard/wizard.js');
 	?>
 	<script type="text/javascript">
 		//<!--
@@ -55,6 +58,7 @@ if (!empty($base_href)) {
 			if (Auth::instance()->logged_in()) { ?>
 
 			var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
+			var _wizards_path = '<?php echo Kohana::config('config.site_domain') ?>application/media/js/wizard/';
 			var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 			var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 			var _controller_name = '<?php echo str_replace("op5", null, Router::$controller) ?>';

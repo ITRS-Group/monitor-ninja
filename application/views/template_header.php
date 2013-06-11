@@ -32,6 +32,8 @@
 		$shortcuts['internal'][] = array($help_link, 'icon-16 x16-help', array('title' => 'Documentation', 'id' => 'help_icon'));
 	}
 
+	$shortcuts['internal'][] = array('#', 'icon-16 x16-host', array('title' => 'New Host', 'onclick' => 'new Wizard("host")'));
+
 	if (isset($int_shortcuts)) {
 		for ($i = 0; $i < count($int_shortcuts); $i++) {
 			$shortcuts['internal'][] = $int_shortcuts[$i];

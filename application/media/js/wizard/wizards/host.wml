@@ -1,0 +1,18 @@
+
+<wizard title="setup host">
+
+	<step title="select address">
+
+		<info>
+			IP address or resolvable hostname. This address will be scanned for existence and viable services.
+		</info>
+		<label> Address: <address help="Note: Using DNS names can make monitoring dependent on a working DNS." required name="HOSTADDRESS" /> </label>
+
+		<info> Enter the name of your host. You can have multiple hosts with the same IP but the hostname has to be unique. </info>
+		<label> Hostname: <text required name="HOSTNAME"></text> </label>
+
+		<chain>host_scanning</chain>
+
+	</step>
+
+</wizard>

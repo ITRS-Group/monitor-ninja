@@ -1,0 +1,186 @@
+
+<wizard title="setup host">
+
+	<step title="scanning">
+
+		<info class="wizard-scan-status">Checking if host exists...</info>
+		<div class="wizard-scan-progress-wrapper">
+			<div class="wizard-scan-progress"></div>
+		</div>
+
+		<info class="wizard-scan-list"></info>
+		<chain>host_scanning_select</chain>
+
+		<routine>
+
+			/*
+
+				These checks are named as they are viewed when running NMAP
+
+				E.g.
+
+					80/tcp	open	http
+
+				Would be "http", and while you would like to use "mssql"
+				it is actually displayed as "ms-sql-s" and that is the name you'll 
+				have to use
+
+			*/
+
+			var _checks = [
+				'exists',			// Hidden, but this is the action of checking host existence
+				'ftp',				// What is the state of the port usually connected to FTP
+				'http',				// -''- HTTP
+				'https',			// -''- HTTPS
+				'ssh',				// -''- SSH
+				'smtp',				// -''- SMTP
+				'imap',				// -''- IMAP
+				'imap3',			// -''- IMAP3
+				'imaps',			// -''- IMAPS
+				'pop3',				// -''- POP3
+				'nrpe',				// -''- NRPE
+				'msrpc',			// -''- Microsoft VMI Service
+				'ms-sql-s',			// -''- Microsoft SQL Service
+				'mysql',			// -''- MySQL
+				'nsclient',			// -''- NSClient++
+				'clear',			// Hidden but this is the action of removing the temporary NMAP results file.
+			], _checks_length = _checks.length;
+
+			function setNote ( s ) {
+				var width = 100 - parseInt( (_checks.length / _checks_length) * 100, 10 );
+				$('p.wizard-scan-status').html(s);
+				$('div.wizard-scan-progress').css( 'width', width + '%' );
+			}
+
+			var tmppath = false,
+				exists = false,
+				data;
+
+			function check ( what ) {
+
+				var list = $('.wizard-scan-list');
+				var to = setTimeout( function () {
+
+					clearTimeout( to );
+					$('button.nextbutton').attr('disabled', 'disabled');
+
+					if ( tmppath ) {
+						data = {
+								'address': Wizard.object.HOSTADDRESS.val(),
+								'check': what,
+								'tmp': tmppath
+							};
+					} else {
+						data = {
+								'address': Wizard.object.HOSTADDRESS.val(),
+								'check': what
+							};
+					}
+
+					setNote( 'Checking for: ' + what.toLowerCase() );
+
+					$.ajax( _wizards_path + "scanner.php",
+						{
+							'type': 'GET',
+							'data': data,
+							'complete': function (e) {
+
+								var response = JSON.parse( e.responseText );
+
+								if ( what == 'exists' ) {
+									if (response.state == 'open') {
+										setNote('Host exists...');
+										tmppath = response.tmp;
+									}
+									else {
+										setNote('This host could not be found!');
+										list.html( "You amy still setup this host in premidition or knowing that the host is currently down, no service suggestions will given!" );
+										return;
+									}
+								} else if ( what == 'clear' ) {
+
+								} else {
+
+									list.append( response.service + ' ' + response.state + ' on ' + response.port + ', ' );
+
+									if (response.state == 'open') {
+										setNote( what.toLowerCase() + ' found...' );
+										if (!Wizard.object.ports) Wizard.object.ports = {};
+										Wizard.object.ports[response.service] = response.state;
+										exists = true;
+									} else if ( response.state == 'filtered' ) {
+										setNote( what.toLowerCase() + ' found...' );
+										if (!Wizard.object.ports) Wizard.object.ports = {};
+										Wizard.object.ports[response.service] = response.state;
+									} else {
+										setNote( what.toLowerCase() + ' NOT found...' );
+									}
+								}
+
+								if ( _checks.length >= 1 ) {
+									check( _checks.shift() );
+								} else {
+									$('button.nextbutton').removeAttr('disabled');
+									WizardInstance.next();
+									//setNote( 'Scan complete, you may proceed to the next step!' );
+								}
+
+							}
+
+						}
+					);
+				}, 50);
+			};
+
+			check( _checks.shift() );
+
+		</routine>
+
+	</step>
+
+	<step title="operating system">
+
+		<div style="text-align: left; margin-bottom: 16px;" class="wizard-service-set-os">
+			<h1></h1>
+			<p style="padding-left: 32px;"></p>
+		</div>
+
+		<descision value="unixlike" title="Unixlike" name="OS" image="images/host_nix.png">
+			This is a Unixlike host
+		</descision>
+
+		<descision value="windows" title="Windows" name="OS" image="images/host_windows.png">
+			This is a Windows host
+		</descision>
+
+		<div class="wizard-service-set-list"></div>
+
+		<routine>
+
+			var ports = Wizard.object.ports,
+				list = $('div.wizard-service-set-list'),
+				os;
+
+			if ( ports.msrpc == 'open' || ports.nsclient == 'open' || ports['ms-sql-s'] == 'open' ) {
+				os = "windows";
+			} else {
+				os = "unixlike";
+			}
+
+			$('input[type="radio"][value="' + os + '"]').change();
+			$('input[type="radio"][value="' + os + '"]').attr('checked', 'checked');
+
+			$('div.wizard-service-set-os h1').append(os)
+			$('div.wizard-service-set-os p').append(
+				"We have deduced that this is your operating system, if this is not correct select which one below!"
+			);
+
+			window.WizardInstance.adjust( );
+
+		</routine>
+
+		<chain>host_services_%OS%</chain>
+
+	</step>
+
+</wizard>

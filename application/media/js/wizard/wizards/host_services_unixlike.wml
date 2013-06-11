@@ -1,0 +1,328 @@
+<wizard title="setup host">
+
+	<step title="services">
+
+		<label>
+			<check checked="?Wizard.object.OS.val() == 'unixlike'" name="sets[]" value="service_set_nix" /> Check *NIX Set
+			<info> Use the pre-configured service-set of general checks for unixlike hosts or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific *NIX services</summary>
+
+			<label>
+				<check name="services[]" value="check-host-alive" /> Host Alive
+				<info> Check whether the host is alive by using ICMP (Platform independant) </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check checked="?Wizard.object.ports.mysql == 'open'" name="sets[]" value="service_set_mysql" /> Check MySQL Set
+			<info> Use the pre-configured service-set of MySQL checks or select host-specific ones below. </info>
+		</label>
+
+		<div style="padding: 4px 24px">
+
+			<info>Checks against MSSQL requires database information</info>
+
+			<label> Database name:		<text name="DBNAME" /></label>
+			<label> Database user:		<text name="DBUSER" /></label>
+			<label> Database password:	<password name="DBPASS" /></label>
+			<label> Database port:		<number name="DBNAME" /></label>
+
+		</div>
+
+		<detail>
+
+			<summary>Select specific MySQL Services</summary>
+
+			<info>
+				Which checks should be used on this host, we have selected a few checks that
+				would be useful for webhosts.
+			</info>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql" /> Check MySQL
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_db" /> Check MySQL DB
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_local" /> Check MySQL Local
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_bufferpool-hitrate_custom" /> MySQL Health Bufferpool hit-rate
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_bufferpool-wait-free_custom" /> MySQL Health Bufferpool wait-free
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_connections_custom" /> MySQL Health Connections
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_index-usage_custom" /> MySQL Health Index Usage
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_keycache-hitrate_custom" /> MySQL Health Keycache Hit-rate
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_log-waits_custom" /> MySQL Health Log-waits
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_long-running-procs_custom" /> MySQL Health Long-running processes
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_qcache-hitrate_custom" /> MySQL Health QCache hit-rate
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_qcache-lowmem-prunes_custom" /> MySQL Health QCache Lowmem Prunes
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_slow-queries_custom" /> MySQL Health Slow Queries
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_tablecache-hitrate_custom" /> MySQL Health Tablecache Hitrate
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_threadcache_custom" /> MySQL Health Threadcache
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_threads-connected_custom" /> MySQL Health Threads Connected
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_threads_custom" /> MySQL Health Threads
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_tmp-disk-tables_custom" /> MySQL Health TMP Disk-tables
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" args="%DBPORT%!%DBUSER%!%DBPASS%!%DBNAME%" value="check_mysql_health_uptime_custom" /> MySQL Health Uptime
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check  checked="?Wizard.object.ports.http == 'open'" name="sets[]" value="service_set_http" /> Check HTTP Set
+			<info> Use the pre-configured service-set of HTTP checks or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific HTTP services</summary>
+
+			<label>
+				<check name="services[]" value="check_http" /> Check HTTP
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check  checked="?Wizard.object.ports.https == 'open'" name="sets[]" value="service_set_https" /> Check HTTPS Set
+			<info> Use the pre-configured service-set of HTTPS checks or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific HTTPS services</summary>
+
+			<label>
+				<check name="services[]" value="check_https" /> Check HTTPS
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check  checked="?Wizard.object.ports.pop3 == 'open'" name="sets[]" value="service_set_pop3" /> Check POP3 Set
+			<info> Use the pre-configured service-set of POP3 checks or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific POP3 services</summary>
+
+			<label>
+				<check name="services[]" value="check_http" /> Check HTTP
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check  checked="?Wizard.object.ports.smtp == 'open'" name="sets[]" value="service_set_smtp" /> Check SMTP Set
+			<info> Use the pre-configured service-set of SMTP checks or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific SMTP services</summary>
+
+			<label>
+				<check name="services[]" value="check_http" /> Check HTTP
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check name="sets[]" value="service_set_kvm" /> Check KVM Set
+			<info> Use the pre-configured service-set of KVM checks or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific KVM services</summary>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_cpu" /> KVM Guest CPU
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_cpu_custom" /> KVM Guest CPU (Custom)
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_disk_io" /> KVM Guest Disk IO
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_disk_io_custom" /> KVM Guest Disk IO (Custom)
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_mem" /> KVM Guest Mem
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_net_io" /> KVM Net IO
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_net_io_custom" /> KVM Net IO (Custom)
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_running" /> KVM Guest Running
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_host_running" /> KVM Host Running
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_host_storage_pool" /> KVM Host Storage Pool
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_host_volume" /> KVM Host Volume
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_host_volume_all" /> KVM Host Volume All
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_host_volume_custom2" /> KVM Host Volume (Custom)
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_running" /> KVM Running
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_storage_pool" /> KVM Storage Pool
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_vm_list" /> KVM VM List
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_volume" /> KVM Volume
+				<info> Unknown </info>
+			</label>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_volume_all" /> KVM Volume All
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<label>
+			<check name="sets[]" value="service_set_xen" /> Check Xen Set
+			<info> Use the pre-configured service-set of Xen checks or select host-specific ones below. </info>
+		</label>
+
+		<detail>
+
+			<summary>Select specific Xen services</summary>
+
+			<label>
+				<check name="services[]" value="check_libvirt_kvm_guest_cpu" /> KVM Guest CPU
+				<info> Unknown </info>
+			</label>
+
+		</detail>
+
+		<chain>create</chain>
+
+	</step>
+
+</wizard>

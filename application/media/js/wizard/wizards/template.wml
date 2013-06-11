@@ -1,0 +1,27 @@
+<wizard title="template">
+
+	<step title="insert name">
+
+		<api data-type="host" data-format="select" name="HOST" /><br />
+
+		<info>Hmmm, lets see, yes! enter your name in this here box please!</info>
+
+		<label>
+			Input your name <text help="Input your name in letters using your keyboard!" required name="NAME" />
+		</label>
+
+	</step>
+
+	<step title="insert age">
+
+		<info>And, perhaps enter your age, yeah, do that!</info>
+
+		<label>
+			Input your age <number help="Input your age in numbers using your keyboard!" required name="AGE" />
+		</label>
+
+		<chain>create</chain>
+
+	</step>
+
+</wizard>

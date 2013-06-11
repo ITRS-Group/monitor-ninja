@@ -1,0 +1,213 @@
+
+
+
+
+http://www.phdvirtual.com/sites/all/themes/phdvirtual/favicon.ico
+http://www.phdvirtual.com/sites/all/themes/phdvirtual/images/footer-logo.png
+
+{
+	host: [
+		host1...,
+		host2...,
+		hostN...
+	],
+
+	service: [
+		service1...,
+		service2...,
+		serviceN...
+	]
+}
+
+
+
+
+
+
+Max - Skapa inte genvägar överallt, lägg hellre wizardens utgångspunkt från nacoma, det är vårat configureringverktyg
+
+TS - Första inloggningen kan fortfarande direktlänka till den
+
+TS - Vanliga skapa host sättet kan också ligga kvar
+
+	E.g.      Create host (wizard)     Create host (Configuration)
+
+	Förslagsvis, en per/account flagga för vilken skapning som skall användas
+	by default kanske också kan finnas.
+
+TS - Vilka host-typer skall vara där by default?
+
+TS - Det filer som används som templates i wizarden är lättförståliga och lättskapade och kan
+	också kedjas med varandra, kunder kan skapa egna wizard-templates. Motsatsen är också sann och de
+	kan ta bort templates de inte har nytta av.
+
+	Går det att nyttja host-templates på något sätt kanske?
+
+TS - Ska man kunna ange Poller eller skall wizarden begränsas, detta skulle resultera i ett extra fält på
+	första steget och lite extra kod i scannern både front och back-end.
+
+AE - Lista nätverket att utgå ifrån 
+	TS - Nytt steg före resten?
+
+AE - Tröskelvärden för checkar
+
+RS - Service set viktiga, egna standardvärden
+
+
+
+
+	Kanske en avancerad flik på första steget för att ange 
+
+		poller
+		timeperiods
+		alias
+		contact groups
+		hostgroup
+		parents
+
+	Eller någon kombination av dessa?
+
+
+Elements
+
+All HTML elements are permitted in the wizard XML format, they may however not act as you may expect and will 
+reduce the uniformity of all wizards, therefor I ask you to only use the elements listed here.
+
+The wizards allow for the followings
+
+General: 
+
+	<wizard>
+		Root element of a wizard proccess, required to be there!
+
+			Attributes:
+
+				title 
+					The main-title of the wizard as shown to the far left of the titlebar
+
+	<step>
+		A step in the wizard process
+
+			Attributes:
+
+				title 
+					The step-title as shown to the far left of the titlebar after the main-title
+
+	<info>
+		A text paragraph to complement input fields and inform the user of what is expected
+
+			Attributes: 	none!
+
+	<chain>
+
+		Contains the name of the next wizard which should be called directly after finishing this step.
+
+			Attributes: 	none!
+
+		To create dynamic chains make set the content of a chain tag to an inputs name surrounded på "%" percentage signs
+
+			E.g.
+
+				<text name="CHAINTO">
+				<chain>%CHAINTO%</chain>
+
+		If you use dynamic chain values based on descisions be sure to make that value required or it may
+		break the chain.
+
+	<script>
+
+		A valid tag in wizards, the source-code of scripts is wrapped in an IIFE and have access locally to the
+		valiables
+
+			object ( the current object being created )
+			all ( a list of object already created )
+
+		Do not attempt to fetch elements using jQuery or pure DOM functions, they have already been transformed
+		into valid HTML elements and cannot be fetched using their XML selectors.
+
+		By having scripts in wizards they can define their own outcome instead of creating a host configuration,
+		they simple do not have to chain to host_create at the end and define their own creation.
+
+Inputs
+
+	All inputs can take the following attributes:
+
+		name
+			Maps directly over the object being created as the key for that field
+
+		value 
+			Maps over as the value of the HTML input
+
+		required 
+			Tells the wizard this field is required to proceed
+
+	<text>
+		A text input, it will be validated as a string
+
+	<number>
+		A number input, it will be validated as an integer
+
+	<float>
+		A number input, it will be validated as a a floating number
+
+	<check>
+		A checkbox input, should be used for binary choices (booleans), whether something is true or false.
+
+			Attributes:
+
+				args
+					What arguments should be sent with the checkcommand when creating services.
+
+					As with chains you can make these percentage-sign wrapped to fetch dynamically
+					from fields with that name. Separate arguments in the nagios style of exclamation 
+					marks "!".
+
+					<check name="services[]" value="check_mysql" args="%DBPORT%!%DBUSER%!%DBPASS%" />
+
+					The inputs with the names DBPORT, DBUSER and DBPASS were shown in previous steps and
+					retained on the creation object which makes the accessible to this dynamic input.
+
+		For multi-select checkboxes, such as mass-service creation add square brackets att the end of
+		the checkbox name.
+
+			E.g
+
+				<check name="things[]" value="foo">
+				<check name="things[]" value="bar">
+
+				object.things is now a array with references to the elements checked
+
+	<radio>
+		A radio-button input, radiobuttons with the same name are mutually exclusive.
+
+	<descision>
+		An advanced radio-button input, shows an icon and a description text.
+		Descisions with the same name (as radio buttons) are mutually exclusive.
+
+
+
+
+
+Specification
+
+	op5 Nagios interface - configuration-wizard
+	NaCoWi
+
+	An easier way for new users aswell as older ones to configure objects for the Nagio Core and
+	possibly Ninja (op5 web-interface) objects in any form.
+
+	Framework
+
+		The framework defines the enforced elements of the wizard, the procedural flow and dynamic 
+		inclusions of chained wizards.
+
+		The wizard is in essence a form-data client-side session where each object type should define
+		their own routines for any action outside of the wizard steps and chaining.
+
+
+
+	Modularity
+
+	Extensibility
+
+

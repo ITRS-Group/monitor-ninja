@@ -1,0 +1,11 @@
+
+<wizard title="setup">
+	<step title="summary">
+		<routine>
+
+			Wizard.create( Wizard.object );
+			Wizard.list();
+
+		</routine>
+	</step>
+</wizard>
