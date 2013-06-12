@@ -163,18 +163,19 @@
 	</div>
 	<?php
 	if(Auth::instance()->logged_in()) {
-?><div style="position: fixed; top: 4px; left: 329px; right: 280px; font-size: 90%; color: #555; overflow: hidden; white-space: nowrap;"><?php
+?><div class="header_info_row"><?php
 				$notifications = array();
 				if (isset($_SERVER['SERVER_NAME']))
-					$notifications[] = _('Host').': ' . htmlentities($_SERVER['SERVER_NAME']);
+					print _('Host').': ' . htmlentities($_SERVER['SERVER_NAME']);
 
 				if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
 					foreach ($global_notifications as $gn) {
 						$notifications[] = ($gn[1] ? '' : '<span class="icon-12 x12-shield-warning" style="vertical-align: middle;"></span>') . $gn[0];
 					}
 				}
+
 				foreach($notifications as $not) {
-					print '<div style="display: inline-block; margin-left: 8px;">'.$not.'</div>';
+					print '<div class="notificaiton_box">' . $not . '</div>';
 				}
 			?>
 		</div>
