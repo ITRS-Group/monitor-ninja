@@ -286,103 +286,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'host' => 'host_name',
 			'service' => 'service_description',
 			'hostgroup_name' => 'hostgroup',
-			'servicegroup_name' => 'servicegroup',
-			# Because we have a ton of custom date input formats everywhere in reports...
-			'cal_start' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['time_start']) || !$opts['time_start']) {
-					$opts['cal_start'] = $val;
-					$opts['time_start'] = '00:00';
-				}
-				$key = 'start_time';
-				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_start']}:00");
-				$val = $dt->getTimestamp();
-				return true;
-			},
-			'cal_end' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['time_end']) || !$opts['time_end']) {
-					$opts['cal_end'] = $val;
-					$opts['time_end'] = '23:59';
-				}
-				$key = 'end_time';
-				$dt = DateTime::createFromFormat(nagstat::date_format(), "$val {$opts['time_end']}:00");
-				$val = $dt->getTimestamp();
-				return true;
-			},
-			'time_start' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['cal_start'])) {
-					$opts['time_start'] = $val;
-					return false;
-				}
-				$key = 'start_time';
-				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_start']} $val:00");
-				$val = $dt->getTimestamp();
-				return true;
-			},
-			'time_end' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['cal_end'])) {
-					$opts['time_end'] = $val;
-					return false;
-				}
-				$key = 'end_time';
-				$dt = DateTime::createFromFormat(nagstat::date_format(), "{$opts['cal_end']} $val:00");
-				$val = $dt->getTimestamp();
-				return true;
-			},
-			'start_year' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['start_month'])) {
-					$opts['start_year'] = $val;
-					return false;
-				}
-				$key = 'start_time';
-				$val = mktime(0, 0, 0, $opts['start_month'], 1, $val);
-				return true;
-			},
-			'start_month' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['start_year'])) {
-					$opts['start_month'] = $val;
-					return false;
-				}
-				$key = 'start_time';
-				# First day of month => midnight day 1.
-				$val = mktime(0, 0, 0, $val, 1, $opts['start_year']);
-				return true;
-			},
-			'end_year' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				if (!isset($opts['end_month'])) {
-					$opts['end_year'] = $val;
-					return false;
-				}
-				$key = 'end_time';
-				$val = mktime(0, 0, -1, $opts['end_month'], 1, $val);
-				return true;
-			},
-			'end_month' => function(&$key, &$val, &$opts) {
-				if (!$val)
-					return false;
-				# End of month = second -1 of the next month
-				$val++;
-				if (!isset($opts['end_year'])) {
-					$opts['end_month'] = $val;
-					return false;
-				}
-				$key = 'end_time';
-				$val = mktime(0, 0, -1, $val, 1, $opts['end_year']);
-				return true;
-			},
+			'servicegroup_name' => 'servicegroup'
 		);
 	}
 
@@ -880,6 +784,13 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 
 	function __toString() { return var_export($this->options, true); }
 
+	/**
+	 * Finds properties to inject into.. myself
+	 *
+	 * @param string $type @todo remove me, I'm underused
+	 * @param $input array = false Autodiscovers options using superglobals: $input > POST > GET
+	 * @return array
+	 */
 	protected static function discover_options($type, $input = false)
 	{
 		# not using $_REQUEST, because that includes weird, scary session vars
@@ -889,6 +800,35 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$report_info = $_POST;
 		} else {
 			$report_info = $_GET;
+		}
+
+		if(isset($report_info['cal_start'], $report_info['cal_end'], $report_info['report_period']) &&
+				$report_info['cal_start'] &&
+				$report_info['cal_end'] &&
+				$report_info['report_period'] == 'custom'
+			) {
+
+			if(!isset($report_info['time_start'])) {
+				$report_info['time_start'] = "00:00";
+			}
+			if(!isset($report_info['time_end'])) {
+				$report_info['time_end'] = "23:59";
+			}
+			$report_info['start_time'] = DateTime::createFromFormat(
+				nagstat::date_format(),
+				$report_info['cal_start'].' '.$report_info['time_start'].':00'
+			)->getTimestamp();
+			$report_info['end_time'] = DateTime::createFromFormat(
+				nagstat::date_format(),
+				$report_info['cal_end'].' '.$report_info['time_end'].':00'
+			)->getTimestamp();
+
+			unset(
+				$report_info['cal_start'],
+				$report_info['cal_end'],
+				$report_info['time_start'],
+				$report_info['time_end']
+			);
 		}
 
 		return $report_info;

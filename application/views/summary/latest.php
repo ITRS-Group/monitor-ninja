@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 <div class="report-block">
+<h2><?php echo _('Summary report') ?></h2>
+<?php if (empty($result)) { ?>
+<p><?php echo _('No log data recorded during this time') ?></p>
+<?php } else { ?>
 <?php echo isset($pagination)?$pagination:'' ?>
 <div class="clear"></div>
 <table>
@@ -14,7 +18,6 @@
 	</tr>
 	<?php
 	$i = 0;
-	if (!empty($result)) {
 		$date_format = nagstat::date_format();
 		foreach ($result as $ary) {
 			$row = alert_history::get_user_friendly_representation($ary);
@@ -40,8 +43,8 @@
 </td></tr></table>
 		</td>
 	</tr>
-	<?php }
-	} ?>
+	<?php } ?>
 </table>
 <?php echo isset($pagination)?$pagination:'' ?>
+<?php } ?>
 </div>

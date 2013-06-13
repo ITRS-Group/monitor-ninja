@@ -1,6 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Sla_options_Core extends Report_options {
+	protected static function discover_options($type, $input = false) {
+		# not using $_REQUEST, because that includes weird, scary session vars
+		if (!empty($input)) {
+			$report_info = $input;
+		} else if (!empty($_POST)) {
+			$report_info = $_POST;
+		} else {
+			$report_info = $_GET;
+		}
+
+		if(isset($report_info['report_period'], $report_info['start_year'], $report_info['start_month'], $report_info['end_year'], $report_info['end_month'])
+			&& $report_info['report_period'] == 'custom'
+			&& strval($report_info['start_year']) !== ""
+			&& strval($report_info['start_month']) !== ""
+			&& strval($report_info['end_year']) !== ""
+			&& strval($report_info['end_month']) !== ""
+		) {
+			$report_info['time_start'] = mktime(0, 0, 0, $report_info['start_month'], 1, $report_info['start_year']);
+			$report_info['time_end'] = mktime(0, 0, -1, $report_info['end_month'], 1, $report_info['end_year']);
+		}
+		return $report_info;
+	}
+
 	public function setup_properties()
 	{
 		parent::setup_properties();

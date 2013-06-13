@@ -316,13 +316,4 @@ class report_Test extends TapUnit {
 			}
 		}
 	}
-
-	/**
-	 * @bug 7272
-	 */
-	function test_default_to_whole_day() {
-		$options = new Report_options(array('time_start' => null, 'time_end' => null, 'cal_start' => '2013-05-14', 'cal_end' => '2013-05-28'));
-		$this->ok_eq($options->options['start_time'], '1368482400', 'Setting time_start to empty value should have expanded nothing to first minute of the day (00:00)');
-		$this->ok_eq($options->options['end_time'], '1369778340', 'Setting time_start to empty value should have expanded nothing to the last minute of the day (23:59)');
-	}
 }

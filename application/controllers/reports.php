@@ -206,17 +206,18 @@ class Reports_Controller extends Base_reports_Controller
 
 		$sub_type = false;
 
+		$date_format = $this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format();
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = sprintf(
 				_('%s (%s to %s)'),
 				$this->options->get_value('report_period'),
-				"<strong>".date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['start_time'])."</strong>",
-				"<strong>".date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['end_time'])."</strong>"
+				"<strong>".date($date_format, $this->options['start_time'])."</strong>",
+				"<strong>".date($date_format, $this->options['end_time'])."</strong>"
 			);
 		else
 			$report_time_formatted  = sprintf(_("%s to %s"),
-				date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['start_time']),
-				date($this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format(), $this->options['end_time']));
+				date($date_format, $this->options['start_time']),
+				date($date_format, $this->options['end_time']));
 
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
