@@ -787,11 +787,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Finds properties to inject into.. myself
 	 *
-	 * @param string $type @todo remove me, I'm underused
 	 * @param $input array = false Autodiscovers options using superglobals: $input > POST > GET
 	 * @return array
 	 */
-	protected static function discover_options($type, $input = false)
+	static function discover_options($input = false)
 	{
 		# not using $_REQUEST, because that includes weird, scary session vars
 		if (!empty($input)) {
@@ -873,7 +872,7 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		if (!class_exists($class))
 			$class = 'Report_options';
 
-		$report_info = $class::discover_options($type, $input);
+		$report_info = $class::discover_options($input);
 		$options = $class::create_options_obj($type, $report_info);
 		return $options;
 	}

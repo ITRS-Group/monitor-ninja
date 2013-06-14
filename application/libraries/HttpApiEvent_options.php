@@ -113,11 +113,10 @@ class HttpApiEvent_options_core extends Report_options {
         /**
 	 * Listen for "http api" options/properties, instead of "report" options
          *
-         * @param $type string
          * @param $report_info array = false
          * @return array
          */
-        protected static function discover_options($type, $input = false)
+        static function discover_options($input = false)
         {
                 $options = array();
                 if($input) {

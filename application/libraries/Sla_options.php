@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Sla_options_Core extends Report_options {
-	protected static function discover_options($type, $input = false) {
+	static function discover_options($input = false) {
 		# not using $_REQUEST, because that includes weird, scary session vars
 		if (!empty($input)) {
 			$report_info = $input;
@@ -20,7 +20,7 @@ class Sla_options_Core extends Report_options {
 			&& strval($report_info['end_month']) !== ""
 		) {
 			$report_info['start_time'] = mktime(0, 0, 0, $report_info['start_month'], 1, $report_info['start_year']);
-			$report_info['end_time'] = mktime(0, 0, -1, $report_info['end_month'], 1, $report_info['end_year']);
+			$report_info['end_time'] = mktime(0, 0, -1, $report_info['end_month'] + 1, 1, $report_info['end_year']);
 			unset(
 				$report_info['cal_start'],
 				$report_info['cal_end'],

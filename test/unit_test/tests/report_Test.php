@@ -316,4 +316,17 @@ class report_Test extends TapUnit {
 			}
 		}
 	}
+
+	function test_discover_sla_options() {
+		$input = array(
+			'report_period' => 'custom',
+			'start_year' => 2013,
+			'start_month' => 2,
+			'end_year' => 2013,
+			'end_month' => 2
+		);
+		$output = Sla_options::discover_options($input);
+		$this->ok_eq(date('Y-m-d H:i:s', $output['start_time']), '2013-02-01 00:00:00', 'We should start on the first of Febuary');
+		$this->ok_eq(date('Y-m-d H:i:s', $output['end_time']), '2013-02-28 23:59:59', 'We should end on the last of Febuary');
+	}
 }
