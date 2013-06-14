@@ -940,18 +940,16 @@ class Reports_Controller extends Base_reports_Controller
 	*	@param $end_time int end timestamp of the last month
 	*	@return array of start/end timestamps for every timestamp gives the start and end of the month
 	*/
-	public function _split_month_data($months=false, $start_time=false, $end_time=false)
+	private function _split_month_data($months, $start_time, $end_time)
 	{
-		if (empty($months) || empty($start_time) || empty($end_time)) {
-			return false;
-		}
+		$months = array();
 		$date = $start_time;
 		while ($date < $end_time) {
 			$end = strtotime('+1 month', $date);
-			$return[$date] = array('start' => $date, 'end' => $end);
+			$months[$date] = array('start' => $date, 'end' => $end);
 			$date = $end;
 		}
-		return $return;
+		return $months;
 	}
 
 	/**
