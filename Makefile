@@ -66,6 +66,7 @@ prepare-config-templates:
 test-cucumber: prepare-config-templates
 	rm -rf /tmp/ninja-test/
 	cucumber
+	cucumber -p wip
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
