@@ -2,7 +2,7 @@
 Feature: Filters & list views
 
 	@configuration @asmonitor
-	@bug-7012 @todo
+	@bug-7012 @skip
 	Scenario: Service multi-delete
 		Given I have these hosts:
 			| host_name     |
