@@ -11,6 +11,7 @@ class Sla_options_Core extends Report_options {
 			$report_info = $_GET;
 		}
 
+
 		if(isset($report_info['report_period'], $report_info['start_year'], $report_info['start_month'], $report_info['end_year'], $report_info['end_month'])
 			&& $report_info['report_period'] == 'custom'
 			&& strval($report_info['start_year']) !== ""
@@ -18,8 +19,14 @@ class Sla_options_Core extends Report_options {
 			&& strval($report_info['end_year']) !== ""
 			&& strval($report_info['end_month']) !== ""
 		) {
-			$report_info['time_start'] = mktime(0, 0, 0, $report_info['start_month'], 1, $report_info['start_year']);
-			$report_info['time_end'] = mktime(0, 0, -1, $report_info['end_month'], 1, $report_info['end_year']);
+			$report_info['start_time'] = mktime(0, 0, 0, $report_info['start_month'], 1, $report_info['start_year']);
+			$report_info['end_time'] = mktime(0, 0, -1, $report_info['end_month'], 1, $report_info['end_year']);
+			unset(
+				$report_info['cal_start'],
+				$report_info['cal_end'],
+				$report_info['time_start'],
+				$report_info['time_end']
+			);
 		}
 		return $report_info;
 	}
