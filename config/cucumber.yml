@@ -1,2 +1,2 @@
-default: -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber -t ~@skip --format html --out /mnt/logs/cucumber.html --format progress
+default: -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber -t ~@skip --strict --format html --out /mnt/logs/cucumber.html --format progress
 wip: -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber -t @skip --wip --format html --out /mnt/logs/cucumber-wip.html --format progress
