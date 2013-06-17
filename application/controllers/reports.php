@@ -813,7 +813,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
-		$time_arr = $this->_split_month_data($months, $this->options['start_time'], $this->options['end_time']);
+		$time_arr = $this->_split_month_data($this->options['start_time'], $this->options['end_time']);
 		// only use month entered by the user regardless of start- or endtime
 		$data = false;
 		$opts = new Avail_options($this->options);
@@ -935,12 +935,11 @@ class Reports_Controller extends Base_reports_Controller
 
 	/**
 	*	@desc  Splits a span of unixtime(start_time, end_time) into slices for every month number in $months.
-	*	@param $months array - DEPRECATED. the months to calculate for.
 	*	@param $start_time int start timestamp of the first month
 	*	@param $end_time int end timestamp of the last month
 	*	@return array of start/end timestamps for every timestamp gives the start and end of the month
 	*/
-	private function _split_month_data($months, $start_time, $end_time)
+	private function _split_month_data($start_time, $end_time)
 	{
 		$months = array();
 		$date = $start_time;
