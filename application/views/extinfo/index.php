@@ -9,6 +9,8 @@ $enabled =  $green_shield.' '._('Enabled');
 $disabled = $red_shield.' '._('Disabled');
 $yes = _('Yes');
 $no = _('No');
+$logos_path = Kohana::config('config.logos_path');
+$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
 
 if( $object instanceof Host_Model ) {
 	$host = $object;
@@ -49,7 +51,7 @@ if (!empty($widgets)) {
 	<table>
 		<tr>
 			<th colspan="2" style="padding: 5px 0px" >
-				<?php echo $object->get_icon_image() ? html::image(Kohana::config('config.logos_path').$object->get_icon_image(), array('alt' => $object->get_icon_image_alt(), 'title' => $object->get_icon_image_alt(), 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
+				<?php echo $object->get_icon_image() ? html::image($logos_path.$object->get_icon_image(), array('alt' => $object->get_icon_image_alt(), 'title' => $object->get_icon_image_alt(), 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
 				<h1 style="display: inline"><?php echo ($type=='host' ? $object->get_alias().' ('.$object->get_display_name().')' : $object->get_display_name()) ?></h1>
 			</th>
 		</tr>

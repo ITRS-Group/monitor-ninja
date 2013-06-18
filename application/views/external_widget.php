@@ -61,7 +61,7 @@ if (isset($this->template->js_header))
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 				var _controller_name = '<?php echo Router::$controller ?>';
-				var _logo_path = '<?php echo Kohana::config('config.logos_path') ?>';
+				var _logo_path = '<?php echo Kohana::config('config.logos_path').(substr(Kohana::config('config.logos_path'), -1) == '/' ? '' : '/'); ?>';
 				var _escape_html_tags = <?php echo $cgi_esc_html_tags ?>;
 				var _widget_refresh_msg = '<?php echo _('Refresh rate for all widgets has been updated to %s sec'); ?>';
 				var _widget_refresh_error = '<?php echo _('Unable to update refresh rate for all widgets.'); ?>';
