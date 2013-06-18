@@ -2,7 +2,7 @@
 
 //var_dump(get_include_path());
 //var_dump(glob('/usr/share/php/*'));
-require_once(Kohana::config('config.op5lib').'/auth/Auth.php');
+require_once('op5/auth/Auth.php');
 
 /**
  * Model providing access to the authorization system in nagios

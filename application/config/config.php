@@ -218,14 +218,6 @@ $config['popup_delay'] = 150;
 $config['service_long_output_enabled'] = false;
 
 /**
- * Path to op5lib
- *
- * This should be an absolute path, unless you have op5lib in the global
- * PHP path.
- */
-$config['op5lib'] = 'op5';
-
-/**
  * How often do each listview refresh itself? 0 means it's disabled
  */
 $config['listview_refresh_rate'] = 30;

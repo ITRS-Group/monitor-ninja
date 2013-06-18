@@ -39,7 +39,7 @@ class Backup_Controller extends Authenticated_Controller {
 			System_Model::get_nagios_base_path().'/var/archives', # Isn't this a config backup?
 			System_Model::get_nagios_base_path().'/var/errors',   # Then why would we want these?
 			System_Model::get_nagios_base_path().'/var/traffic',
-			Kohana::config('core.op5lib').'/*.yml',
+			'/etc/op5/*.yml' # :TODO Read value from op5config
 		);
 
 		$len = count($this->files2backup);
