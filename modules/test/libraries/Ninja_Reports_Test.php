@@ -6,7 +6,7 @@
  *
  * Inherits from Reports_Model for "dammit, it's protected!" reasons
  */
-class Ninja_Reports_Test_Core extends Reports_Model
+class Ninja_Reports_Test_Core extends Status_Reports_Model
 {
 	public $test_file = false; /**< The file name we're testing */
 	private $total = 0;
@@ -150,7 +150,7 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		$opts['keep_logs'] = true;
 		$opts['keep_sub_logs'] = true;
 
-		$rpt = new Reports_Model($opts, $this->table_name);
+		$rpt = new Status_Reports_Model($opts, $this->table_name);
 		$return_arr = $rpt->get_uptime();
 		$this->result = $return_arr;
 		$this->report_objects[$this->cur_test] = $rpt;

@@ -58,7 +58,7 @@ class Alert_history_Controller extends Summary_Controller
 		$comment = $this->input->post('comment');
 		$username = Auth::instance()->get_user()->username;
 
-		if (Reports_Model::add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username))
+		if (Summary_Reports_Model::add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username))
 			echo '<div class="content">'.security::xss_clean($comment).'</div><div class="author">/'.$username.'</div>';
 	}
 }

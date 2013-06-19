@@ -27,7 +27,7 @@ class Reports_Controller extends Base_reports_Controller
 	public function index($input=false)
 	{
 		$this->setup_options_obj($input);
-		$this->reports_model = new Reports_Model($this->options);
+		$this->reports_model = new Status_Reports_Model($this->options);
 		$this->trends_graph_model = new Trends_graph_Model();
 
 		# check if we have all required parts installed
@@ -167,7 +167,7 @@ class Reports_Controller extends Base_reports_Controller
 	{
 		$this->setup_options_obj($input);
 
-		$this->reports_model = new Reports_Model($this->options);
+		$this->reports_model = new Status_Reports_Model($this->options);
 		$this->trends_graph_model = new Trends_graph_Model();
 
 		# check if we have all required parts installed
@@ -704,7 +704,7 @@ class Reports_Controller extends Base_reports_Controller
 			foreach ($res as $row)
 				$service_arr[] = $host_name . ';' . $row['description'];
 			$opts['service_description'] = $service_arr;
-			$report_class = new Reports_Model($opts);
+			$report_class = new Status_Reports_Model($opts);
 
 			$data_arr = $report_class->get_uptime();
 			return $data_arr;
@@ -845,7 +845,7 @@ class Reports_Controller extends Base_reports_Controller
 			foreach ($time_arr as $mnr => $dates) {
 				$opts['start_time'] = $dates['start'];
 				$opts['end_time'] = $dates['end'];
-				$report_class = new Reports_Model($opts);
+				$report_class = new Status_Reports_Model($opts);
 				$data_tmp = $report_class->get_uptime();
 
 				# The next line extracts _GROUPWIDE STATES_, discards individual member info (numeric indices)

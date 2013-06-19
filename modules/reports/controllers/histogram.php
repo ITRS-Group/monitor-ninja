@@ -64,7 +64,7 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
 		$this->template->css_header->css = $this->xtra_css;
-		$rpt = new Reports_Model($this->options);
+		$rpt = new Summary_Reports_Model($this->options);
 
 		$hostgroup			= false;
 		$hostname			= false;

@@ -42,7 +42,7 @@ class Summary_Controller extends Base_reports_Controller
 	public function index($input=false)
 	{
 		$this->setup_options_obj($input);
-		$this->reports_model = new Reports_Model($this->options);
+		$this->reports_model = new Summary_Reports_Model($this->options);
 
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
@@ -131,7 +131,7 @@ class Summary_Controller extends Base_reports_Controller
 	public function test_queries()
 	{
 		$this->setup_options_obj($input);
-		$rpt = new Reports_Model($this->options);
+		$rpt = new Summary_Reports_Model($this->options);
 		$rpt->set_option('start_time', 0);
 		$rpt->set_option('end_time', time());
 		$result = $rpt->test_summary_queries();
@@ -163,7 +163,7 @@ class Summary_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/index');
 		}
 
-		$this->reports_model = new Reports_Model($this->options);
+		$this->reports_model = new Summary_Reports_Model($this->options);
 
 		$result = false;
 		switch ($this->options['summary_type']) {

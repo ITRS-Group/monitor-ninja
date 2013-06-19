@@ -21,8 +21,8 @@ class report_Test extends TapUnit {
 
 		/* Run test */
 
-		$opts = new Avail_options(array('start_time'=>0, 'end_time'=>time()));
-		$rpts = new Reports_Model($opts);
+		$opts = new Summary_options(array('start_time'=>0, 'end_time'=>time()));
+		$rpts = new Summary_Reports_Model($opts);
 
 		/* We're not interested in filtering anything, just see the permissions.
 		 * Therefore, treat it as an API-call
@@ -105,7 +105,7 @@ class report_Test extends TapUnit {
 		// turns out, I'd just broken it and nothing told me, so let's always
 		// run this so it'll yell at me for next time
 		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
-		$this->rpt = new Reports_Model($opts);
+		$this->rpt = new Status_Reports_Model($opts);
 
 		$this->auth->set_authorized_for('view_hosts_root', false);
 		$this->auth->set_authorized_for('view_services_root', false);
