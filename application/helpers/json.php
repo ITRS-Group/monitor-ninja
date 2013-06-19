@@ -1,9 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Help class for handling JSON encode or decode
- * since we can't always know for sure that we have
- * the built-in PHP json_encode function and should
- * use ZEND_Json instead.
+ * Quickly kill request while serving it(s content) as JSON
  */
 class json_Core
 {

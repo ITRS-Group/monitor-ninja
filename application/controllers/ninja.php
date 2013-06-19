@@ -20,9 +20,6 @@ class Ninja_Controller extends Template_Controller {
 	const ADMIN = 'admin'; # how do we define the admin role in database
 
 	public $session = false;
-	public $locale = false;
-	public $registry = false;
-	public $defaultlanguage = 'en';
 	public $template;
 	public $user = false;
 	public $profiler = false;
@@ -97,11 +94,6 @@ class Ninja_Controller extends Template_Controller {
 
 			$_SESSION['sort_options'][$sort_key] = $cur_data;
 		}
-
-		$this->locale = zend::instance('locale');
-
-		$this->registry = zend::instance('Registry');
-		$this->registry->set('Zend_Locale', $this->locale);
 
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');

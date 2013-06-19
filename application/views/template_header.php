@@ -192,7 +192,7 @@
 		<?php } else { ?>
 			<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 		<?php	} ?>
-		<?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?>
+		<?php echo help::render('search_help', 'search'); ?>
 	</form>
 	</div>
 	<?php customlogo::Render(); ?>
