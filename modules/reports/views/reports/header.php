@@ -81,8 +81,6 @@
 		}
 		if (isset($options->options['assumestatesduringnotrunning']) && $options->options['assumestatesduringnotrunning'])
 			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
-		if (isset($options->options['use_average']))
-			echo '<p>'._('Using averages').'</p>';
 		if (isset($options->options['includesoftstates']))
 			echo '<p>'._('Including soft states').'</p>';
 		if (isset($options->options['alert_types'])) {

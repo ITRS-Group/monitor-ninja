@@ -45,27 +45,15 @@
 <div class="state_services report-block">
 	<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host" class="report-block">
 		<tr>
-			<th><?php echo help::render('average_and_sla').' '.sprintf(_('Average and group availability for %s'), $groupname?:_('selected hosts')); ?></th>
+			<th><?php echo help::render('average_and_sla').' '.sprintf(_('Summary for %s'), $groupname?:_('selected hosts')); ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Up') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Unreachable') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Down') ?></th>
 			<th class="headerNone" style="width: 80px"><?php echo _('Undetermined') ?></th>
 		</tr>
 		<?php ?>
-		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'; $i++?>">
-			<td><?php echo _('Average'); ?></td>
-			<td class="summary up <?php echo ($data['average_up']>0?'nonzero':'') ?>"><?php echo $data['average_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_up'] > 0 ? '' : 'not-').'up.png'),
-						array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="summary unreachable <?php echo ($data['average_unreachable']>0?'nonzero':'') ?>"><?php echo $data['average_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
-						array( 'alt' => _('Unreachable'), 'title' => _('Unreachable'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="summary down <?php echo ($data['average_down']>0?'nonzero':'') ?>"><?php echo $data['average_down'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_down'] > 0 ? '' : 'not-').'down.png'),
-						array( 'alt' => _('Down'), 'title' => _('Down'), 'style' => 'height: 12px; width: 12px')) ?></td>
-			<td class="summary undetermined <?php echo ($data['average_undetermined']>0?'nonzero':'') ?>"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 12px')) ?></td>
-		</tr>
-		<?php if ($options['use_average'] == 0) { ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
-			<td><?php echo _('Group availability (SLA)') ?></td>
+			<td><?php echo $options->get_value('sla_mode') ?></td>
 			<td class="summary up <?php echo ($data['group_up']>0?'nonzero':'') ?>"><?php echo $data['group_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_up'] > 0 ? '' : 'not-').'up.png'),
 						array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 12px')) ?></td>
 			<td class="summary unreachable <?php echo ($data['group_unreachable']>0?'nonzero':'') ?>"><?php echo $data['group_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
@@ -75,7 +63,6 @@
 			<td class="summary undetermined <?php echo ($data['group_undetermined']?'nonzero':'') ?>"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
-		<?php } ?>
 	</table>
 </div>
 <?php } ?>

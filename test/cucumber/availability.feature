@@ -86,7 +86,7 @@ Feature: Availability reports
 		And I should see "PING"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
@@ -108,7 +108,7 @@ Feature: Availability reports
 		And I should see "win-server1"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single service report
@@ -123,7 +123,7 @@ Feature: Availability reports
 		Then I should see "Service details for PING on host linux-server1"
 		And I shouldn't see "System Load"
 		And I shouldn't see "win-server"
-		And I shouldn't see "Group availability (SLA)"
+		And I shouldn't see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on same host report
@@ -145,7 +145,7 @@ Feature: Availability reports
 		And I should see "System Load"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
@@ -166,7 +166,7 @@ Feature: Availability reports
 		And I should see "Services on host: linux-server2"
 		And I should see "System Load"
 		And I shouldn't see "win-server"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
@@ -184,7 +184,7 @@ Feature: Availability reports
 		And I should see "HALIAS-ls2 (linux-server2)"
 		And I shouldn't see "win-server1"
 		And I shouldn't see "win-server2"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi hostgroup report
@@ -199,13 +199,13 @@ Feature: Availability reports
 		And "Selected hostgroups" should have option "WindowsServers"
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "Average and group availability for LinuxServers"
-		And I should see "Average and group availability for WindowsServers"
+		And I should see "Summary for LinuxServers"
+		And I should see "Summary for WindowsServers"
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I should see "win-server1"
 		And I should see "win-server2"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate hostgroup report with overlapping members
@@ -220,13 +220,13 @@ Feature: Availability reports
 		And "Selected hostgroups" should have option "MixedGroup"
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "Average and group availability for LinuxServers"
-		And I should see "Average and group availability for MixedGroup"
+		And I should see "Summary for LinuxServers"
+		And I should see "Summary for MixedGroup"
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I should see "win-server2"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single servicegroup report
@@ -247,7 +247,7 @@ Feature: Availability reports
 		And I should see "PING"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
@@ -263,15 +263,15 @@ Feature: Availability reports
 		And "Selected servicegroups" should have option "empty"
 		When I click "Show report"
 		Then I should see "Servicegroup breakdown"
-		And I should see "Average and group availability for pings"
-		And I shouldn't see "Average and group availability for empty"
+		And I should see "Summary for pings"
+		And I shouldn't see "Summary for empty"
 		And I should see "Services on host: linux-server1"
 		And I should see "Services on host: win-server1"
 		And I should see "Services on host: win-server2"
 		And I should see "PING"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate report on custom report date
@@ -321,6 +321,7 @@ Feature: Availability reports
 		And I should see "Showing hosts in state: up, unreachable, pending"
 		And I should see "Average"
 		And I shouldn't see "SLA"
+		And I shouldn't see "Worst"
 		And I should see "Uptime, with difference"
 		And I shouldn't see "Counting program downtime"
 		And I should see "Including soft states"
@@ -360,6 +361,7 @@ Feature: Availability reports
 		And I should see "Showing hosts in state: up, unreachable, pending"
 		And I should see "Average"
 		And I shouldn't see "SLA"
+		And I shouldn't see "Best"
 		And I should see "Uptime, with difference"
 		And I shouldn't see "Counting program downtime"
 		And I should see "Including soft states"

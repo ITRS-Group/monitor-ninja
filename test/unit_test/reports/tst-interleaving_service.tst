@@ -43,7 +43,7 @@ best state, down as down {
 		host2;PING
 		host2;PING2
 	}
-	cluster_mode = 1
+	sla_mode = 2
 	correct {
 		TIME_OK_UNSCHEDULED = 2799
 		TIME_OK_SCHEDULED = 404
@@ -60,7 +60,7 @@ best state, down as up {
 		host2;PING2
 	}
 	scheduleddowntimeasuptime = 1
-	cluster_mode = 1
+	sla_mode = 2
 	correct {
 		TIME_OK_UNSCHEDULED = 2799
 		TIME_OK_SCHEDULED = 1100

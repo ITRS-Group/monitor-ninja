@@ -301,11 +301,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 				$cnt++;
 			}
 			$return['nr_of_items'] = $cnt;
-			$return['average_ok'] = $sum_ok!=0 ? reports::format_report_value($sum_ok/$cnt) : '0';
-			$return['average_warning'] = $sum_warning!=0 ? reports::format_report_value($sum_warning/$cnt) : '0';
-			$return['average_unknown'] = $sum_unknown!=0 ? reports::format_report_value($sum_unknown/$cnt) : '0';
-			$return['average_critical'] = $sum_critical!=0 ? reports::format_report_value($sum_critical/$cnt) : '0';
-			$return['average_undetermined'] = $sum_undetermined!=0 ? reports::format_report_value($sum_undetermined/$cnt) : '0';
 			$return['group_ok'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_OK']);
 			$return['group_warning'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_WARNING']);
 			$return['group_unknown'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNKNOWN']);
@@ -336,11 +331,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 				$cnt++;
 			}
 			$return['nr_of_items'] = $cnt;
-			$return['average_up'] = $sum_up!=0 ? reports::format_report_value($sum_up/$cnt) : '0';
-			$return['average_down'] =  $sum_down!=0 ? reports::format_report_value($sum_down/$cnt) : '0';
-			$return['average_unreachable'] = $sum_unreachable!=0 ? reports::format_report_value($sum_unreachable/$cnt) : '0';
-			$return['average_undetermined'] = $sum_undetermined!=0 ? reports::format_report_value($sum_undetermined/$cnt) : '0';
-
 			$return['group_up'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UP']);
 			$return['group_down'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_DOWN']);
 			$return['group_unreachable'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNREACHABLE']);

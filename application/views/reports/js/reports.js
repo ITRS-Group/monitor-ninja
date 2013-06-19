@@ -140,19 +140,6 @@ function set_initial_state(what, val)
 				}
 			}
 			break;
-		case 'cluster_mode':
-			if (val!='0') {
-				toggle_label_weight(1, 'cluster_mode');
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', true);
-				}
-			} else {
-				toggle_label_weight(0, 'cluster_mode');
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', false);
-				}
-			}
-			break;
 		case 'rpttimeperiod':
 			item = 'rpttimeperiod';
 			break;

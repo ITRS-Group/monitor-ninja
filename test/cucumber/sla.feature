@@ -394,7 +394,7 @@ Feature: SLA reports
 		And I should see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I shouldn't see "win-server2"
-		And I should see "Group availability (SLA)"
+		And I should see "Group availability (Worst state)"
 		And I should see "Reporting period: Last 12 months"
 
 	@configuration @asmonitor @reports

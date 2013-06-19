@@ -295,9 +295,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
 		}
 
-		$this->js_strings .= "var cluster_mode = '".(int)$this->options['cluster_mode']."';\n";
-		$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->options['scheduleddowntimeasuptime']."';\n";
-
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
@@ -377,26 +374,20 @@ class Reports_Controller extends Base_reports_Controller
 
 				$image_data = array();
 
-				if( $this->options['use_average'] ) {
-					$prefix = 'average_';
-				} else {
-					$prefix = 'group_';
-				}
-
 				if( $sub_type == 'service' ) {
 					$states_to_chart = array(
-						$prefix.'ok' => 'OK',
-						$prefix.'warning' => 'WARNING',
-						$prefix.'critical' => 'CRITICAL',
-						$prefix.'unknown' => 'UNKNOWN',
-						$prefix.'undetermined' => 'UNDETERMINED'
+						'group_ok' => 'OK',
+						'group_warning' => 'WARNING',
+						'group_critical' => 'CRITICAL',
+						'group_unknown' => 'UNKNOWN',
+						'group_undetermined' => 'UNDETERMINED'
 					);
 				} else {
 					$states_to_chart = array(
-						$prefix.'up' => 'UP',
-						$prefix.'unreachable' => 'UNREACHABLE',
-						$prefix.'down' => 'DOWN',
-						$prefix.'undetermined' => 'UNDETERMINED'
+						'group_up' => 'UP',
+						'group_unreachable' => 'UNREACHABLE',
+						'group_down' => 'DOWN',
+						'group_undetermined' => 'UNDETERMINED'
 					);
 				}
 				foreach($states_to_chart as $key => $val) { $image_data[$val] = array(); }
@@ -944,16 +935,15 @@ class Reports_Controller extends Base_reports_Controller
 				"option decide to assume states for hosts and services during the downtime."),
 			'includesoftstates' => _("A problem is classified as a SOFT problem until the number of checks has reached the ".
 				"configured max_check_attempts value. When max_check_attempts is reached the problem is reclassified as HARD."),
-			'use_average' => sprintf(_("What calculation method to use for the report. %s".
-				"Traditional Availability reports are based on group availability (worst case). An alternative way is to use average values for ".
-				"the group or object in question. Note that using average values are by some, considered %s not %s to be actual SLA."), '<br /><br />', '<b>', '</b>'),
+			'sla_mode' => _("What calculation method to use for the report summary.<br/>".
+				"Depending on how your network is configured, your SLA might be the group availability (worst state at any point in time) or cluster mode availability (best state at any point time). You can also choose to use average values instead for ".
+				"the group or object in question.<br/>Note that calculating the summary incorrectly could mislead users."),
 			'use_alias' => _("Select if you would like to see host aliases in the generated reports instead of just the host_name"),
 			'csv_format' => _("The CSV (comma-separated values) format is a file format that stores tabular data. This format is supported ".
 				"by many applications such as MS Excel, OpenOffice and Google Spreadsheets."),
 			'save_report' => _("Check this box if you want to save the configured report for later use."),
 			'enter-sla' => _("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
 			'report_settings_sml' => _("Here you can modify the report settings for the report you are currently viewing."),
-			'cluster_mode' => _("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
 			'log_entries' => _("Shows the actual log messages that this report was created of."),
 			'hostgroup_breakdown' => _("Here you have a list of all hosts that are member of this hostgroup and their states."),
 			'servicegroup_breakdown' => _("Here you have a list of all services that are member of this servicegroup and their states."),

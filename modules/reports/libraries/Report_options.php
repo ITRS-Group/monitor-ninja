@@ -60,11 +60,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'default' => 25,
 			'description' => 'Number of summary items to include in reports'
 		),
-		'cluster_mode' => array(
-			'type' => 'bool',
-			'default' => false,
-			'description' => 'Whether to use best or worst case metrics'
-		),
 		'rpttimeperiod' => array(
 			'type' => 'enum',
 			'default' => false,
@@ -114,10 +109,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'default' => 0,
 			'description' => 'End time for report, timestamp or date-like string'
 		),
-		'use_average' => array(
+		'sla_mode' => array(
 			'type' => 'enum',
 			'default' => 0,
-			'description' => 'Whether to hide any SLA values and stick to averages'
+			'description' => 'Use worst, average, or best state for calculating overall health'
 		),
 		'host_filter_status' => array(
 			'type' => 'array',
@@ -229,10 +224,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 				0 => _('Actual state'),
 				1 => _('Uptime'),
 				2 => _('Uptime, with difference'));
-		if (isset($this->properties['use_average']))
-			$this->properties['use_average']['options'] = array(
-				0 => _('Group availability (SLA)'),
-				1 => _('Average'));
+		if (isset($this->properties['sla_mode']))
+			$this->properties['sla_mode']['options'] = array(
+				0 => _('Group availability (Worst state)'),
+				1 => _('Average'),
+				2 => _('Cluster mode (Best state)'));
 		if (isset($this->properties['alert_types']))
 			$this->properties['alert_types']['options'] = array(
 				3 => _('Host and service alerts'),

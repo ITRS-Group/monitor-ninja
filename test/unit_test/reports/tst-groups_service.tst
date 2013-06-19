@@ -79,7 +79,7 @@ Group availability excluding soft states, reversed host order (services) {
 Cluster mode availability including soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800
-	cluster_mode = 1
+	sla_mode = 2
 	service_description {
 		testhost;PING
 		testhost2;PING
@@ -92,7 +92,7 @@ Cluster mode availability including soft states (services) {
 Cluster mode availability including soft states, reversed host order (services) {
 	start_time = 1202684400
 	end_time = 1202770800
-	cluster_mode = 1
+	sla_mode = 2
 	service_description {
 		testhost2;PING
 		testhost;PING
@@ -106,7 +106,7 @@ Cluster mode availability excluding soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	cluster_mode = 1
+	sla_mode = 2
 	service_description {
 		testhost;PING
 		testhost2;PING
@@ -120,7 +120,7 @@ Cluster mode availability excluding soft states, reversed host order (services) 
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	cluster_mode = 1
+	sla_mode = 2
 	service_description {
 		testhost2;PING
 		testhost;PING

@@ -190,17 +190,18 @@ class Status_Reports_Model extends Reports_Model
 			break;
 		}
 
-		switch ($this->options['use_average']) {
+		switch ((int)$this->options['sla_mode']) {
 		 case 0:
 			$this->calculator = new WorstStateCalculator($this->options, $this->timeperiod);
 			break;
 		 case 1:
 			$this->calculator = new AverageStateCalculator($this->options, $this->timeperiod);
 			break;
-		}
-		switch ($this->options['cluster_mode']) {
-		 case 1:
+		 case 2:
 			$this->calculator = new BestStateCalculator($this->options, $this->timeperiod);
+			break;
+		 default:
+			die("Don't know how to do anything with this\n");
 			break;
 		}
 

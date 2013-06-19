@@ -57,10 +57,11 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td>
-			<label for="use_average"><?php echo help::render('use_average').' '._('SLA calculation method') ?></label><br />
-			<select id="use_average" name='use_average'>
-				<option value='0' <?php print $options['use_average']?'':'selected="selected"' ?>><?php echo _('Group availability (SLA)') ?></option>
-				<option value='1' <?php print $options['use_average']?'selected="selected"':'' ?>><?php echo _('Average') ?></option>
+			<label for="sla_mode"><?php echo help::render('sla_mode').' '._('SLA calculation method') ?></label><br />
+			<select id="sla_mode" name='sla_mode'>
+				<option value='0' <?php print $options['sla_mode'] == 0?'selected="selected"':'' ?>><?php echo _('Group availability (worst state)') ?></option>
+				<option value='1' <?php print $options['sla_mode'] == 1?'selected="selected"':'' ?>><?php echo _('Average') ?></option>
+				<option value='2' <?php print $options['sla_mode'] == 2?'selected="selected"':'' ?>><?php echo _('Cluster mode (best state)') ?></option>
 			</select>
 		</td>
 		<td>&nbsp;</td>
@@ -113,12 +114,6 @@ if($options['report_id']) { ?>
 			<label for="includesoftstates" id="include_softstates"><?php echo _('Include soft states') ?></label>
 		</td>
 		<td>&nbsp;</td>
-		<td style="vertical-align:top">
-			<?php echo help::render('cluster_mode') ?>
-			<input type="checkbox" class="checkbox" value="1" id="cluster_mode" name="cluster_mode"
-				onchange="toggle_label_weight(this.checked, 'clusterlbl');" <?php print $options['cluster_mode']?'checked="checked"':'' ?> />
-			<label for="cluster_mode" id="clusterlbl"><?php echo _('Use cluster mode') ?></label>
-		</td>
 	</tr>
 	<tr>
 		<td>
