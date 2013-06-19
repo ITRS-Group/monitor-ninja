@@ -12,7 +12,6 @@ application/widgets/cloudinfo
 .DS_Store
 *.swp
 modules/op5reports
-modules/reports
 *.dojod
 .sass-cache
 

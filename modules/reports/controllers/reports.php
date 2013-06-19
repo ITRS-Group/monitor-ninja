@@ -1013,4 +1013,3 @@ class Reports_Controller extends Base_reports_Controller
 			parent::_helptexts($id);
 	}
 }
-

@@ -20,10 +20,10 @@
 	box-shadow: inset 2px 2px 5px #fff;
 	background: transparent;
 	background: rgba(255, 255, 255, 0.8);
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCFFFFFF,endColorstr=#CCFFFFFF)"; 
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCFFFFFF,endColorstr=#CCFFFFFF)";
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCFFFFFF,endColorstr=#CCFFFFFF);
 	zoom: 1;
-	
+
 	position: absolute;
 	color: #333;
 	max-width: 180px;

@@ -196,10 +196,10 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 
 	/**
-	*	Determine the name of the state 
+	*	Determine the name of the state
 	*/
 	protected function _state_string_name($type='host', $state=false) {
-		
+
 		$type = strtolower($type);
 
 		if ($type === "host") {
