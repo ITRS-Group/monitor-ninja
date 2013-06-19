@@ -65,17 +65,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'default' => false,
 			'description' => 'Whether to use best or worst case metrics'
 		),
-		'keep_logs' => array(
-			'type' => 'bool',
-			'default' => false,
-			'description' => 'Whether to keep logs around - this turns on if (for example) include_trends is activated'
-		),
-		'keep_sub_logs' => array(
-			'type' => 'bool',
-			'default' => false,
-			'generated' => true,
-			'description' => 'Whether sub-reports should keep their logs around too - report_model generally keeps track of this'
-		),
 		'rpttimeperiod' => array(
 			'type' => 'enum',
 			'default' => false,
@@ -149,11 +138,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			'type' => 'bool',
 			'default' => false,
 			'description' => 'Include trends graph (if possible for this report type)'
-		),
-		'master' => array(
-			'type' => 'object',
-			'default' => false, 'generated' => true,
-			'description' => 'The master report, if one'
 		),
 		'schedule_id' => array(
 			'type' => 'int',
@@ -625,12 +609,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$value = array_filter($value, function($val) {
 				return is_numeric($val);
 			});
-			break;
-		 case 'include_trends':
-			if ($value === true) {
-				$this->set('keep_logs', true);
-				$this->set('keep_sub_logs', true);
-			}
 			break;
 		 case 'host_name':
 			if (!$value)

@@ -676,19 +676,6 @@ class Reports_Controller extends Base_reports_Controller
 		return $return;
 	}
 
-	/**
-	*	Convert nasty chars before creating report image file
-	*/
-	public function _img_filename_convert($filename=false)
-	{
-		$filename = trim($filename);
-		$filename = str_replace('/', '-', $filename);
-		$filename = str_replace(' ', '_', $filename);
-		$filename = str_replace(';', '_', $filename);
-
-		return $filename;
-	}
-
 	public function _print_states_for_services($host_name=false, $start_date=false, $end_date=false)
 	{
 		$host_name = trim($host_name);
@@ -710,14 +697,6 @@ class Reports_Controller extends Base_reports_Controller
 			return $data_arr;
 		}
 		return false;
-	}
-
-	/**
-	 * Wrapper around _get_alias for compatibility reasons
-	 */
-	public function _get_host_alias($host_name=false)
-	{
-		$this->_get_alias('hosts', $host_name);
 	}
 
 	/**

@@ -159,7 +159,7 @@ class SingleStateCalculator extends StateCalculator
 		if($row) {
 			$row['state'] = $this->st_obj_state;
 		}
-		if (!$this->options['keep_logs']) {
+		if (!$this->options['include_trends']) {
 			$this->prev_row = $row;
 			return;
 		}

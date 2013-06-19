@@ -147,8 +147,7 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 
 		# force logs to be kept so we can analyze them and make
 		# sure the durations add up
-		$opts['keep_logs'] = true;
-		$opts['keep_sub_logs'] = true;
+		$opts['include_trends'] = true;
 
 		$rpt = new Status_Reports_Model($opts, $this->table_name);
 		$return_arr = $rpt->get_uptime();

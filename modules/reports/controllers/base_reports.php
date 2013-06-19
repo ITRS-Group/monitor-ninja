@@ -181,8 +181,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		if (!$options) {
 			$optclass = get_class($this->options);
 			$options = new $optclass($this->options);
-			$options['keep_logs'] = $this->options['keep_logs'];
-			$options['keep_sub_logs'] = $this->options['keep_sub_logs'];
 		}
 
 		$data_arr = false;

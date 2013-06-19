@@ -78,7 +78,7 @@ abstract class StateCalculator
 
 		# if user asked for it, we preserve the log
 		# TODO: noes :(
-		if ($this->options['keep_logs']) {
+		if ($this->options['include_trends']) {
 			$this->st_log = array();
 		}
 
@@ -112,7 +112,7 @@ abstract class StateCalculator
 
 		# if we're actually going to use the log, we'll need
 		# to generate a faked initial message for it.
-		if ($this->options['keep_logs']) {
+		if ($this->options['include_trends']) {
 			$fout = sprintf("Report period start. Daemon is%s running, " .
 			                "we're%s in scheduled downtime, state is %s (%d)",
 			                $this->st_running ? '' : ' not',

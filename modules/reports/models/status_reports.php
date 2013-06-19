@@ -87,7 +87,7 @@ class Status_Reports_Model extends Reports_Model
 			"state,timestamp AS the_time, hard, event_type";
 		# output is a TEXT field, so it needs an extra disk
 		# lookup to fetch and we don't always need it
-		if ($this->options['keep_logs'])
+		if ($this->options['include_trends'])
 			$sql .= ", output";
 
 		$sql .= " FROM ".$this->db_table." ";
