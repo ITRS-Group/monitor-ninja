@@ -21,7 +21,7 @@ foreach ($data_arr as $sub_report) {
 			if ($field_name == 'HOST_NAME') {
 				$csv[] = '"' . (is_array($states[$field_name]) ? implode(', ', $states[$field_name]) : $states[$field_name]) . '"';
 			} else if ($field_name == 'HOSTGROUPS' || $field_name == 'SERVICEGROUPS') {
-				$csv[] = '"' . $data['groupname'] . '"';
+				$csv[] = '"' . $sub_report['groupname'] . '"';
 			} else if (isset($states[$field_name])) {
 				$csv[] = strstr($field_name, 'PERCENT') ? '"'.reports::format_report_value($states[$field_name]).'%"' : $states[$field_name];
 			} else {

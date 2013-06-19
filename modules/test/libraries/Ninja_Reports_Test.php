@@ -300,7 +300,6 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 
 		foreach ($this->details as $test_name => $fail_desc) {
 			echo "$test_name: ";
-			print_r($this->report_objects[$test_name]->st_raw);
 			print_r($fail_desc);
 			echo "\n";
 		}
@@ -369,13 +368,7 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 
 	private function count_sub_reports($ary)
 	{
-		$subs = 0;
-		foreach ($ary as $k => $v) {
-			if (is_numeric($k))
-				$subs++;
-		}
-
-		return $subs;
+		return count($ary['log']);
 	}
 
 	private function log_duration($st_log)
@@ -459,18 +452,11 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 		}
 
 		# check duration for all sub-reports individually
-		if (!empty($rpt->sub_reports)) {
-			foreach ($rpt->sub_reports as $r) {
-				$duration = $this->log_duration($r->st_log);
-				if ($duration != $r->options['end_time'] - $r->options['start_time']) {
-					$failed['st_log ' . $r->id] = "Log duration doesn't match report period duration (expected ".($r->options['end_time'] - $r->options['start_time']).", was $duration)";
-				}
+		foreach ($full_result['log'] as $k => $l) {
+			$duration = $this->log_duration($l);
+			if ($duration != $rpt->options['end_time'] - $rpt->options['start_time']) {
+				$failed['st_log ' . $k] = "Log duration doesn't match report period duration (expected ".($rpt->options['end_time'] - $rpt->options['start_time']).", was $duration)";
 			}
-		}
-		# also check the master report
-		$duration = $this->log_duration($rpt->st_log);
-		if ($duration != $rpt->options['end_time'] - $rpt->options['start_time']) {
-			$failed['st_log'] = "Log duration doesn't match report period duration (expected ".($rpt->options['end_time'] - $rpt->options['start_time']).", was $duration)";
 		}
 
 		if (empty($failed)) {

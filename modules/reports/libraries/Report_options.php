@@ -68,7 +68,6 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		'keep_logs' => array(
 			'type' => 'bool',
 			'default' => false,
-			'generated' => true,
 			'description' => 'Whether to keep logs around - this turns on if (for example) include_trends is activated'
 		),
 		'keep_sub_logs' => array(
