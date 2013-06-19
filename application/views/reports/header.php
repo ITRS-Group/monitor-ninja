@@ -85,7 +85,7 @@
 			echo '<p>'._('Using averages').'</p>';
 		if (isset($options->options['includesoftstates']))
 			echo '<p>'._('Including soft states').'</p>';
-		if (isset($options->options['alert_types'])) {
+		if (isset($options->options['alert_types']) && ($this->type == 'summary' || $options['include_alerts'] || $options['include_summary'])) {
 			// summary, or op5reports bundled summary:
 			switch ($options['alert_types']) {
 				case 3:
