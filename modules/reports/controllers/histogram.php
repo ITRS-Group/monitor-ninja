@@ -13,7 +13,7 @@
  */
 class Histogram_Controller extends Base_reports_Controller
 {
-	public $data = false;
+	public $data = false; /**< Awesomely named variable for passing the result of the histogram method in the summary report model */
 	private $labels = array();
 	public $type = 'histogram';
 

@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Report options class for availability reports
+ */
 class Avail_options extends Report_options {
 	public function setup_properties() {
 		parent::setup_properties();

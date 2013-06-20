@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * State calculator for multiple objects that returns the average state
+ */
 class AverageStateCalculator extends WorstStateCalculator
 {
 	public function add_event($row = false)

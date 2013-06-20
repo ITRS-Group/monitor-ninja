@@ -14,7 +14,7 @@
 class Summary_Controller extends Base_reports_Controller
 {
 	public $type = 'summary';
-	public $reports_model = false;
+	public $reports_model = false; /**< A report model */
 
 	private $host_state_names = array();
 	private $service_state_names = array();

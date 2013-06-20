@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Report options for SLA reports
+ */
 class Sla_options_Core extends Report_options {
 	static function discover_options($input = false) {
 		# not using $_REQUEST, because that includes weird, scary session vars

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * State calculator for a single object - thus more of a state.. keeper?
+ */
 class SingleStateCalculator extends StateCalculator
 {
 	protected $st_last_dt_init = 1; /**< set to FALSE on nagios restart, and a timestamp on first DT start after restart, so we can exclude duplicate downtime_start */
@@ -154,6 +157,9 @@ class SingleStateCalculator extends StateCalculator
 		return $res;
 	}
 
+	/**
+	 * Deprecated method that keeps the log around for the benefit of the trend graph
+	 */
 	protected function st_update_log($row = false)
 	{
 		if($row) {

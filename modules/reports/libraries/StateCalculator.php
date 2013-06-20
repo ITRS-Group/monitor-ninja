@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class that provides API/helpers for generating the state of a report based on
+ * a number of events.
+ */
 abstract class StateCalculator
 {
 	/**
@@ -64,12 +68,25 @@ abstract class StateCalculator
 
 	protected $options; /**< A Report_options object for this report */
 
+	/**
+	 * Create a new state calculator
+	 * @param $options A report_options object that describes the report
+	 * @param $timeperiod A (resolved) timeperiod to use throughout calculations
+	 */
 	public function __construct(Report_options $options, $timeperiod)
 	{
 		$this->options = $options;
 		$this->timeperiod = $timeperiod;
 	}
 
+	/**
+	 * Prepare a state calculator for action
+	 * Takes a number of initialization arguments, simply because they can be
+	 * more efficiently retrieved in bulk somewhere else.
+	 * @param $initial_state The state for the object when the report starts
+	 * @param $initial_depth The downtime depth when the report starts - in practice a boolean
+	 * @param $is_running Is nagios itself running when the report starts?
+	 */
 	public function initialize($initial_state, $initial_depth, $is_running)
 	{
 		$this->st_running = $is_running;

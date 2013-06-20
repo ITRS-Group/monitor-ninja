@@ -1,15 +1,27 @@
 <?php
 
+/**
+ * State calculator for not only generating the state for a number of sub-calculators,
+ * but also to sum up according to the worst state of them all.
+ */
 class WorstStateCalculator extends StateCalculator
 {
 	protected $sub_reports = array(); /**< An array of sub-reports for this report */
 	protected $st_sub = array(); /**< Map of sub report [state => [downtime_status => [indexes]]] */
 
+	/**
+	 * Provide this object with a number of sub reports which we'll keep up to date.
+	 * They should all be initialized externally, but other than that, hands off!
+	 */
 	public function set_sub_reports($subs)
 	{
 		$this->sub_reports = $subs;
 	}
 
+	/**
+	 * Initializes anything we need for this report to be generated.
+	 * Warning: all sub reports must have been initialized at this point.
+	 */
 	public function initialize($initial_state, $initial_depth, $is_running)
 	{
 		parent::initialize($initial_state, $initial_depth, $is_running);
@@ -49,7 +61,10 @@ class WorstStateCalculator extends StateCalculator
 		$this->prev_row = $row;
 	}
 
-	public function calculate_object_state()
+	/**
+	 * Actually discover the overall state based on the sub-reports
+	 */
+	protected function calculate_object_state()
 	{
 		/*
 		 * Welcome to todays installment of "The world sucks and I'm tired of

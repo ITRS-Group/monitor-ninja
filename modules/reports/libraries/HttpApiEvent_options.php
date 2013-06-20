@@ -1,6 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class HttpApiEvent_options_core extends Report_options {
+/**
+ * The report options for the Event type of reports in the HTTP API
+ */
+class HttpApiEvent_options extends Report_options {
 
 	const MAX_EVENTS = 10000; /**< Pagination limit for events retrieved from HTTP API. Hardcoded, deal with it */
 
@@ -110,25 +113,25 @@ class HttpApiEvent_options_core extends Report_options {
 		}
 	}
 
-        /**
+	/**
 	 * Listen for "http api" options/properties, instead of "report" options
-         *
-         * @param $report_info array = false
-         * @return array
-         */
-        static function discover_options($input = false)
-        {
-                $options = array();
-                if($input) {
-                        $options = $input;
-                } elseif($_POST) {
-                        $options = $_POST;
-                } elseif($_GET) {
-                        $options = $_GET;
-                }
-                if(isset($options['start_time']) && !isset($options['end_time'])) {
-                        $options['end_time'] = time();
-                }
+	 *
+	 * @param $input array = false
+	 * @return array
+	 */
+	static function discover_options($input = false)
+	{
+		$options = array();
+		if($input) {
+			$options = $input;
+		} elseif($_POST) {
+			$options = $_POST;
+		} elseif($_GET) {
+			$options = $_GET;
+		}
+		if(isset($options['start_time']) && !isset($options['end_time'])) {
+			$options['end_time'] = time();
+		}
 		if(isset($options['start_time']) || isset($options['end_time'])) {
 			// @todo workaround a nasty bug, implement this in Report_options directly
 			$options['report_period'] = 'custom';
@@ -140,45 +143,45 @@ class HttpApiEvent_options_core extends Report_options {
 			$options['service_description'] = (array) $options['service_description'];
 		}
 
-                // translate "all" to valid int-bitmap, for example
-                foreach($options as $key => $value) {
-                        if(isset(self::$http_api_options[$key]) &&
-                                isset(self::$http_api_options[$key]['options']) &&
-                                isset(self::$http_api_options[$key]['options'][$value])
-                        ) {
-                                $options[$key] = self::$http_api_options[$key]['options'][$value];
-                        }
-                }
-                return $options;
-        }
+		// translate "all" to valid int-bitmap, for example
+		foreach($options as $key => $value) {
+			if(isset(self::$http_api_options[$key]) &&
+				isset(self::$http_api_options[$key]['options']) &&
+				isset(self::$http_api_options[$key]['options'][$value])
+			) {
+				$options[$key] = self::$http_api_options[$key]['options'][$value];
+			}
+		}
+		return $options;
+		}
 
-        /**
-         * @param $value mixed
-         * @param $type string
-         * @return string
-         */
-        function format_default($value, $type)
-        {
-                if($type == 'bool') {
-                        return (int) $value;
-                }
-                if($type == 'array' || $type == 'objsel') {
-                        if(empty($value)) {
-                                return "[empty]";
-                        }
-                        return implode(", ", $value);
-                }
-                if($type == 'string' && !$value) {
-                        return '[empty]';
-                }
-                if($type == 'enum') {
-                        return "'$value'";
-                }
+		/**
+		 * @param $value mixed
+		 * @param $type string
+		 * @return string
+		 */
+		function format_default($value, $type)
+		{
+			if($type == 'bool') {
+				return (int) $value;
+			}
+			if($type == 'array' || $type == 'objsel') {
+				if(empty($value)) {
+					return "[empty]";
+				}
+				return implode(", ", $value);
+			}
+			if($type == 'string' && !$value) {
+				return '[empty]';
+			}
+			if($type == 'enum') {
+				return "'$value'";
+			}
 		if($type == 'int' && empty($value) && $value !== 0) {
 			return "[empty]";
 		}
-                return (string) $value;
-        }
+		return (string) $value;
+	}
 
 	/**
 	 * Not as forgiving as the parent. (Why is parent forgiving?)

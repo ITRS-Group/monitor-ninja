@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * State calculator for multiple objects that returns the best state at any point in time
+ */
 class BestStateCalculator extends WorstStateCalculator
 {
 	public function calculate_object_state()

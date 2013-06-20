@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Basic reports model that only exists for legacy reasons.
+ * Only contains crap that should be refactored away.
+ */
 class Reports_Model extends Model
 {
 	// state codes

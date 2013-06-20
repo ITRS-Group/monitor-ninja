@@ -22,7 +22,7 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 	private $table_name = false;
 	private $test_globals = array();
 	private $interesting_prefixes = array();
-	public $sub_reports = 0;
+	public $sub_reports = 0; /**< The number of sub reports */
 	private $color_red   = '';
 	private $color_green = '';
 	private $color_reset = '';

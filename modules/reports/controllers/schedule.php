@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Controller for scheduling reports
+ */
 class Schedule_Controller extends Authenticated_Controller
 {
 	public function __construct() {

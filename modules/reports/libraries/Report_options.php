@@ -5,9 +5,15 @@
  *
  * It's created to improve consistency between report types and frontend/backend
  */
-class Report_options_core implements ArrayAccess, Iterator, Countable {
+class Report_options implements ArrayAccess, Iterator, Countable {
+	/**
+	 * Can contains options that must be renamed when provided - for legacy links
+	 */
 	protected $rename_options;
 
+	/**
+	 * Contains a definition of all legal keys for this type of Report_options
+	 */
 	protected $properties = array(
 		'report_id' => array(
 			'type' => 'int',
@@ -192,6 +198,10 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 */
 	const ALL_AUTHORIZED = '*';
 
+	/**
+	 * The the explicitly set options. Should not be accessed directly,
+	 * outside of debugging.
+	 */
 	public $options = array();
 
 	/**
@@ -278,6 +288,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 			$this->set_options($options);
 	}
 
+	/**
+	 * Required by ArrayAccess
+	 */
 	public function offsetGet($str)
 	{
 		if (!isset($this->properties[$str]))
@@ -286,26 +299,41 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return arr::search($this->options, $str, $this->properties[$str]['default']);
 	}
 
+	/**
+	 * Required by ArrayAccess
+	 */
 	public function offsetSet($key, $val)
 	{
 		$this->set($key, $val);
 	}
 
+	/**
+	 * Required by ArrayAccess
+	 */
 	public function offsetExists($key)
 	{
 		return isset($this->properties[$key]);
 	}
 
+	/**
+	 * Required by ArrayAccess
+	 */
 	public function offsetUnset($key)
 	{
 		unset($this->options[$key]);
 	}
 
+	/**
+	 * This looks silly...
+	 */
 	function properties()
 	{
 		return $this->properties;
 	}
 
+	/**
+	 * For applicable keys, this returns a list of all possible values
+	 */
 	public function get_alternatives($key) {
 		if (!isset($this->properties[$key]))
 			return false;
@@ -314,6 +342,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return $this->properties[$key]['options'];
 	}
 
+	/**
+	 * Returns the user-friendly value, given a machine-friendly option key
+	 */
 	public function get_value($key) {
 		if (!isset($this->properties[$key]))
 			return false;
@@ -324,6 +355,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return $this->properties[$key]['options'][$this[$key]];
 	}
 
+	/**
+	 * Return all objects (hosts or services) this report applies to
+	 * This will return hosts or services regardless if the report object selection
+	 * uses groups or not.
+	 */
 	public function get_report_members() {
 		switch ($this['report_type']) {
 		 case 'hosts':
@@ -517,6 +553,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return $this->update_value($name, $value);
 	}
 
+	/**
+	 * Validates that $value isn't obviously unsuitable for $key
+	 *
+	 * Warning: you probably want to use set() or utilize the ArrayAccess API
+	 */
 	protected function validate_value($key, &$value)
 	{
 		if (!isset($this->properties[$key])) {
@@ -572,6 +613,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return true;
 	}
 
+	/**
+	 * Will actually set the provided $name to the value $value
+	 *
+	 * Warning: you probably want to use set() or utilize the ArrayAccess API
+	 */
 	protected function update_value($name, $value)
 	{
 		switch ($name) {
@@ -687,6 +733,8 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 	 *                   will be purged, so it's suitable for linking to sub-reports.
 	 *                   If false, all options will be kept, completely describing
 	 *                   this exact report.
+	 * @param $obj_only Does more-or-less the inverse of $anonymous - if true, don't
+	 *                  include anything that does not refer to the members of the report.
 	 */
 	public function as_keyval_string($anonymous=false, $obj_only=false) {
 		$opts_str = '';
@@ -706,6 +754,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return substr($opts_str, 1);
 	}
 
+	/**
+	 * Return the report as a HTML string of hidden form elements
+	 */
 	public function as_form($anonymous=false, $obj_only=false) {
 		$html_options = '';
 		foreach ($this as $key => $val) {
@@ -724,6 +775,9 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return $html_options;
 	}
 
+	/**
+	 * Return the report as a JSON string
+	 */
 	public function as_json() {
 		$opts = $this->options;
 		if ($this->get_value('report_type')) {
@@ -735,30 +789,45 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return json_encode($opts);
 	}
 
+	/**
+	 * Return the given timestamp typed property as a date string of the configured kind
+	 */
 	public function get_date($var) {
 		$format = cal::get_calendar_format(true);
 		return date($format, $this[$var]);
 	}
 
+	/**
+	 * Return the given timestamp typed property as a time string
+	 */
 	public function get_time($var) {
 		return date('H:i', $this[$var]);
 	}
 
+	/** Required by Iterator */
 	function rewind() { reset($this->options); }
+	/** Required by Iterator */
 	function current() { return current($this->options); }
+	/** Required by Iterator */
 	function key() { return key($this->options); }
+	/** Required by Iterator */
 	function next() {
 		do {
 			$x = next($this->options);
 		} while ($x !== false && isset($this->properties[key($this->options)]['generated']));
 	}
+	/** Required by Iterator */
 	function valid() { return array_key_exists(key($this->options), $this->options); }
+	/** Required by Countable */
 	function count() { return count($this->options); }
 
+	/** Print the options themselves when printing the object */
 	function __toString() { return var_export($this->options, true); }
 
 	/**
 	 * Finds properties to inject into.. myself
+	 *
+	 * You probably want setup_options_obj instead.
 	 *
 	 * @param $input array = false Autodiscovers options using superglobals: $input > POST > GET
 	 * @return array
@@ -806,6 +875,11 @@ class Report_options_core implements ArrayAccess, Iterator, Countable {
 		return $report_info;
 	}
 
+	/**
+	 * Combines the provided properties with any saved information.
+	 *
+	 * You probably want setup_options_obj instead.
+	 */
 	protected static function create_options_obj($type, $report_info = false) {
 
 		$options = new static($report_info);

@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Report options for alert history reports. Alert history reports are specialized summary reports.
+ */
 class Alert_history_options extends Summary_options {
 	public function setup_properties() {
 		parent::setup_properties();

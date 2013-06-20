@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Report options for histogram reports
+ */
 class Histogram_options_Core extends Report_options
 {
 	public function __construct($options=false)
