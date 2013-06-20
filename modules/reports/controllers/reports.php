@@ -366,7 +366,7 @@ class Reports_Controller extends Base_reports_Controller
 	/**
 	 * Generate (availability) report from parameters set in index()
 	 *
-	 * @param array $input = false
+	 * @param $input array = false
 	 */
 	public function generate($input=false)
 	{
