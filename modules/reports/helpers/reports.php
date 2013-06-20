@@ -102,23 +102,6 @@ class reports_Core
 	}
 
 	/**
-	 * Converts an html hexadecimal color from the form "#rrggbb" to
-	 * its separate components.
-	 * @param $color_str string: Color in html hex
-	 * @return False on error. Array of 3 decimal values on success
-	*/
-	public function convert_hex_color($color_str)
-	{
-		if (empty($color_str)) return false;
-		$color_str = str_replace('#', '', $color_str);
-		$c1 = substr($color_str, 0, 2);
-		$c2 = substr($color_str, 2, 2);
-		$c3 = substr($color_str, 4, 2);
-		return array(hexdec($c1), hexdec($c2), hexdec($c3) );
-	}
-
-
-	/**
 	 * Fetch date ranges from reports class
 	 * @return Array of date ranges
 	 */
@@ -151,21 +134,6 @@ class reports_Core
 
 		return $return;
 	}
-
-	/**
-	 * Validate report item
-	 * @param $k Unused FIXME
-	 * @param $data A data array that should have states
-	 * return true if valid, false otherwise
-	 */
-	static function is_proper_report_item($k, $data)
-	{
-		if (is_array($data) && !empty($data['states']) && is_array($data['states']))
-			return true;
-
-		return false;
-	}
-
 
 	/**
 	*	Create common translated javascript strings
@@ -271,5 +239,64 @@ class reports_Core
 						)
 				);
 		return $colors[$type];
+	}
+
+	static function format_multi_object_table($data, $title, $rowdescriber, $is_service, $is_summary, $down_as_up_diff, &$i=0)
+	{
+		if ($is_service) {
+			$coldefs = array(
+				array('PERCENT_KNOWN_TIME_OK', 'ok', _('Ok')),
+				array('PERCENT_KNOWN_TIME_UNKNOWN', 'unknown', _('Unknown')),
+				array('PERCENT_KNOWN_TIME_WARNING', 'warning', _('Warning')),
+				array('PERCENT_KNOWN_TIME_CRITICAL', 'critical', _('Critical')),
+				array('PERCENT_TOTAL_TIME_UNDETERMINED', 'pending', _('Undetermined'))
+			);
+		} else {
+			$coldefs = array(
+				array('PERCENT_KNOWN_TIME_UP', 'up', _('Up')),
+				array('PERCENT_KNOWN_TIME_UNREACHABLE', 'unreachable', _('Unreachable')),
+				array('PERCENT_KNOWN_TIME_DOWN', 'down', _('Down')),
+				array('PERCENT_TOTAL_TIME_UNDETERMINED', 'pending', _('Undetermined')),
+			);
+		}
+		$res = '<div class="report-block">
+		<table class="multiple_services">
+		<tr>
+		<th>'.$title.'</th>';
+		foreach ($coldefs as $col)
+			$res .= '<th class="headerNone" style="width: 80px">' . $col[2] .'</th>';
+		$res .='</tr>';
+
+		foreach ($data as $k => $row) {
+			if (!is_array($row) || !isset($row['states']))
+				continue;
+			$res .= '<tr class="'.($i++%2?'even':'odd').'">'.$rowdescriber($row);
+			foreach ($coldefs as $col) {
+				$res .= '<td style="width: 80px" class="summary '.($is_summary?'tally ':'').$col[1].' '.($row['states'][$col[0]]>0?'nonzero':'') .'">'.reports::format_report_value($row['states'][$col[0]]).' % '. html::image(ninja::add_path('icons/12x12/shield-'.($row['states'][$col[0]] > 0 ? '' : 'not-').$col[1].'.png'), array( 'alt' => $col[2], 'title' => $col[2], 'style' => 'height: 12px; width: 12px'));
+				if (($col[1] == 'ok' || $col[1] == 'up') && $down_as_up_diff && $row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']) {
+					$res .= ' ('.reports::format_report_value($row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).' % in other states)';
+				}
+				$res .= '</td>';
+			}
+			$res .= '</tr>';
+		}
+		$res .= '</table></div>';
+		return $res;
+	}
+
+	/**
+	 * Returns the alias for the specified object of the specified type, or false
+	 * Liberated from the report controller
+	 */
+	static function get_alias($type, $name)
+	{
+		if (empty($type) || empty($name))
+			return false;
+
+		$filter = array('name' => $name);
+		$res = Livestatus::instance()->{'get'.ucfirst($type)}(array('columns' => array('alias'), 'filter' => array('name' => $name)));
+		if (!$res)
+			return false;
+		return $res[0]['alias'];
 	}
 }

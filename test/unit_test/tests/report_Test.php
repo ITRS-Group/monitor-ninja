@@ -105,7 +105,7 @@ class report_Test extends TapUnit {
 		// turns out, I'd just broken it and nothing told me, so let's always
 		// run this so it'll yell at me for next time
 		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
-		$this->rpt = new Status_Reports_Model($opts);
+		$this->rpt = new Summary_Reports_Model($opts);
 
 		$this->auth->set_authorized_for('view_hosts_root', false);
 		$this->auth->set_authorized_for('view_services_root', false);

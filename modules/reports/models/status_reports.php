@@ -30,7 +30,8 @@
 class Status_Reports_Model extends Reports_Model
 {
 	protected $st_is_service = false; /**< Whether the objects in this report are services */
-	protected $st_source = false; /**< The source object. Can be object array, can be host_name, can be host_name;service_description, can drive you mad. */
+	protected $st_source = false; /**< Array of (non-group) objects that are part of this report */
+	protected $calculator = false; /**< The top-level calculator that represents this report */
 
 	/**
 	 * Constructor
@@ -41,31 +42,6 @@ class Status_Reports_Model extends Reports_Model
 	{
 		$this->db_table = $db_table;
 		parent::__construct($options);
-	}
-
-	/**
-	*	Check that we have a valid database installed and usable.
-	*/
-	public function _self_check()
-	{
-		try {
-			# this will result in error if db_name section
-			# isn't set in config/database.php
-			$db = Database::instance();
-		} catch (Kohana_Database_Exception $e) {
-			return false;
-		}
-		$table_exists = false;
-		if (isset($db)) {
-			try {
-				$table_exists = $db->table_exists($this->db_table);
-			} catch (Kohana_Database_Exception $e) {
-				return false;
-			}
-		} else {
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -175,85 +151,87 @@ class Status_Reports_Model extends Reports_Model
 
 		$is_running = !$this->get_last_shutdown();
 
-		$servicename = $hostname = false;
-
 		switch ($this->options['report_type']) {
 		 case 'services':
 		 case 'servicegroups':
-			$servicename = $this->options->get_report_members();
-			$this->st_source = $servicename;
-			break;
-		 case 'hosts':
-		 case 'hostgroups':
-			$hostname = $this->options->get_report_members();
-			$this->st_source = $hostname;
+			$this->st_is_service = true;
 			break;
 		}
+		$objects = $this->options->get_report_members();
+		$this->st_source = $objects;
 
+		$calculator_type = false;
 		switch ((int)$this->options['sla_mode']) {
 		 case 0:
-			$this->calculator = new WorstStateCalculator($this->options, $this->timeperiod);
+			$calculator_type = 'WorstStateCalculator';
 			break;
 		 case 1:
-			$this->calculator = new AverageStateCalculator($this->options, $this->timeperiod);
+			$calculator_type = 'AverageStateCalculator';
 			break;
 		 case 2:
-			$this->calculator = new BestStateCalculator($this->options, $this->timeperiod);
+			$calculator_type = 'BestStateCalculator';
 			break;
 		 default:
 			die("Don't know how to do anything with this\n");
 			break;
 		}
 
+		$this->calculator = new $calculator_type($this->options, $this->timeperiod);
+		$optclass = get_class($this->options);
+
 		$subs = array();
 
-		if ($servicename) {
-			$this->st_is_service = true;
-			$initial_states = $this->get_initial_states('service', $servicename);
-			$downtimes = $this->get_initial_dt_depths('service', $servicename);
-			foreach ($servicename as $service) {
-				$srv = explode(';', $service);
-				$optclass = get_class($this->options);
-				$opts = new $optclass($this->options);
-				$opts['service_description'] = array($service);
-				$sub = new SingleStateCalculator($opts, $this->timeperiod);
-				if( isset( $initial_states[$service] ) ) {
-					$initial_state = $initial_states[$service];
-				} else {
-					$initial_state = Reports_Model::STATE_PENDING;
-				}
-				if( isset( $downtimes[$service] ) && $downtimes[$service] )
+		$initial_states = $this->get_initial_states($this->st_is_service ? 'service' : 'host', $objects);
+		$downtimes = $this->get_initial_dt_depths($this->st_is_service ? 'service' : 'host', $objects);
+		foreach ($objects as $object) {
+			$opts = new $optclass($this->options);
+			$opts[$this->st_is_service ? 'service_description' : 'host_name'] = array($object);
+			$sub = new SingleStateCalculator($opts, $this->timeperiod);
+			if (isset( $initial_states[$object]))
+				$initial_state = $initial_states[$object];
+			else
+				$initial_state = Reports_Model::STATE_PENDING;
+
+			if (isset( $downtimes[$object]))
+				$initial_depth = $downtimes[$object];
+			else
+				$initial_depth = 0;
+
+			if (!$initial_depth && $this->st_is_service) { /* Is host scheduled? */
+				$srv = explode(';', $object);
+				if (isset($downtimes[$srv[0].';']) && $downtimes[$srv[0].';'])
 					$initial_depth = 1;
-				else if( isset( $downtimes[$srv[0].';'] ) && $downtimes[$srv[0].';'] ) /* Host scheduled */
-					$initial_depth = 1;
-				else
-					$initial_depth = 0;
-				$sub->initialize($initial_state, $initial_depth, $is_running);
-				$subs[] = $sub;
 			}
-		} else if ($hostname) {
-			$initial_states = $this->get_initial_states('host', $hostname);
-			$downtimes = $this->get_initial_dt_depths('host', $hostname);
-			foreach ($hostname as $host) {
-				$optclass = get_class($this->options);
+			$sub->initialize($initial_state, $initial_depth, $is_running);
+			$subs[$object] = $sub;
+		}
+
+		switch ($this->options['report_type']) {
+		 case 'servicegroups':
+		 case 'hostgroups':
+			$groups = $this->options[$this->options->get_value('report_type')];
+			$all_subs = $subs;
+			$subs = array();
+			foreach ($groups as $group) {
 				$opts = new $optclass($this->options);
-				$opts['host_name'] = array($host);
-				$sub = new SingleStateCalculator($opts, $this->timeperiod);
-				if( isset( $initial_states[$host] ) ) {
-					$initial_state = $initial_states[$host];
-				} else {
-					$initial_state = Reports_Model::STATE_PENDING;
-				}
-				if( isset( $downtimes[$host] ) ) {
-					$initial_depth = $downtimes[$host];
-				} else {
-					$initial_depth = 0;
-				}
-				$sub->initialize($initial_state, $initial_depth, $is_running);
-				$subs[] = $sub;
+				$opts[$this->options->get_value('report_type')] = array($group);
+				$members = $opts->get_report_members();
+				$these_subs = array();
+				foreach ($members as $member)
+					$these_subs[$member] = $all_subs[$member];
+				$this_sub = new $calculator_type($opts, $this->timeperiod);
+				$this_sub->set_sub_reports($these_subs);
+				$this_sub->initialize(Reports_Model::STATE_PENDING, Reports_Model::STATE_PENDING, $is_running);
+				$subs[$group] = $this_sub;
 			}
-		} else {
-			return false;
+			break;
+		 case 'hosts':
+		 case 'services':
+			$this_sub = new $calculator_type($this->options, $this->timeperiod);
+			$this_sub->set_sub_reports($subs);
+			$this_sub->initialize(Reports_Model::STATE_PENDING, Reports_Model::STATE_PENDING, $is_running);
+			$subs = array($this_sub);
+			break;
 		}
 
 		$this->calculator->set_sub_reports($subs);

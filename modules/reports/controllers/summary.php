@@ -14,7 +14,6 @@
 class Summary_Controller extends Base_reports_Controller
 {
 	public $type = 'summary';
-	public $reports_model = false; /**< A report model */
 
 	private $host_state_names = array();
 	private $service_state_names = array();
@@ -42,10 +41,10 @@ class Summary_Controller extends Base_reports_Controller
 	public function index($input=false)
 	{
 		$this->setup_options_obj($input);
-		$this->reports_model = new Summary_Reports_Model($this->options);
+		$reports_model = new Summary_Reports_Model($this->options);
 
 		# check if we have all required parts installed
-		if (!$this->reports_model->_self_check()) {
+		if (!$reports_model->_self_check()) {
 			return url::redirect('reports/invalid_setup');
 		}
 
@@ -163,20 +162,20 @@ class Summary_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/index');
 		}
 
-		$this->reports_model = new Summary_Reports_Model($this->options);
+		$reports_model = new Summary_Reports_Model($this->options);
 
 		$result = false;
 		switch ($this->options['summary_type']) {
 		 case Summary_options::TOP_ALERT_PRODUCERS:
-			$result = $this->reports_model->top_alert_producers();
+			$result = $reports_model->top_alert_producers();
 			break;
 
 		 case Summary_options::RECENT_ALERTS:
-			$result = $this->reports_model->recent_alerts();
+			$result = $reports_model->recent_alerts();
 			break;
 
 		 case Summary_options::ALERT_TOTALS:
-			$result = $this->reports_model->alert_totals();
+			$result = $reports_model->alert_totals();
 			break;
 
 		 default:

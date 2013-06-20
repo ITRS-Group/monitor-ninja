@@ -7,10 +7,18 @@ class SingleStateCalculator extends StateCalculator
 {
 	protected $st_last_dt_init = 1; /**< set to FALSE on nagios restart, and a timestamp on first DT start after restart, so we can exclude duplicate downtime_start */
 	protected $st_real_state = false; /**< The real state of the object */
+	public $st_log = false; /**< The log array, only used for treds, should use summary reports for this */
 
 	public function initialize($initial_state, $initial_depth, $is_running)
 	{
 		parent::initialize($initial_state, $initial_depth, $is_running);
+
+		# if user asked for it, we preserve the log
+		# TODO: noes :(
+		if ($this->options['include_trends']) {
+			$this->st_log = array();
+		}
+
 		$this->st_real_state = $this->st_obj_state;
 		# Warning: PHP sucks.
 		# In this particular instance, everything array-related breaks if the
@@ -151,10 +159,8 @@ class SingleStateCalculator extends StateCalculator
 		$converted_state['TIME_INACTIVE'] = $this->st_inactive;
 
 		$total_time = $this->options['end_time'] - $this->options['start_time'];
-		$log = array($this->st_source => $this->st_log);
 
-		$res =  array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time);
-		return $res;
+		return array('source' => $this->st_source, 'log' => $this->st_log, 'states' => $converted_state, 'tot_time' => $total_time);
 	}
 
 	/**

@@ -43,9 +43,6 @@
 #display_service_status
 	display: none
 
-#multiple_hosts
-	margin-top: 7px
-
 #log_entries
 	padding-bottom: 15px
 
@@ -151,36 +148,24 @@ tr
 		text-align: right
 		white-space: nowrap
 
-table
-	&.multiple_services tr
-		&.odd td.data, &.even td.data
-			text-align: right
-			white-space: nowrap
-	&#multiple_hosts tr
-		&.odd td.data, &.even td.data
-			text-align: right
-			white-space: nowrap
-
 .summary
 	text-align: right
-	white-space: nowrap
-
-.summary.nonzero
-	&.ok, &.up
-		@include background(linear-gradient(top, transparentize($status-green-hi, 0.50), transparentize($status-green-lo, 0.50)))
-		@include filter-gradient(transparentize($status-green-hi, 0.50), transparentize($status-green-lo, 0.50), vertical)
-	&.warning, &.unreachable
-		@include background(linear-gradient(top, transparentize($status-yellow-hi, 0.50), transparentize($status-yellow-lo, 0.50)))
-		@include filter-gradient(transparentize($status-yellow-hi, 0.50), transparentize($status-yellow-lo, 0.50), vertical)
-	&.critical, &.down
-		@include background(linear-gradient(top, transparentize($status-red-hi, 0.50), transparentize($status-red-lo, 0.50)))
-		@include filter-gradient(transparentize($status-red-hi, 0.50), transparentize($status-red-lo, 0.50), vertical)
-	&.unknown
-		@include background(linear-gradient(top, transparentize($status-orange-hi, 0.50), transparentize($status-orange-lo, 0.50)))
-		@include filter-gradient(transparentize($status-orange-hi, 0.50), transparentize($status-orange-lo, 0.50), vertical)
-	&.undetermined
-		@include background(linear-gradient(top, $gradient-dark-hi / 1.2, $gradient-dark-lo / 1.2))
-		@include filter-gradient($gradient-dark-hi / 1.2, $gradient-dark-lo / 1.2, vertical)
+	&.tally.nonzero
+		&.ok, &.up
+			@include background(linear-gradient(top, transparentize($status-green-hi, 0.50), transparentize($status-green-lo, 0.50)))
+			@include filter-gradient(transparentize($status-green-hi, 0.50), transparentize($status-green-lo, 0.50), vertical)
+		&.warning, &.unreachable
+			@include background(linear-gradient(top, transparentize($status-yellow-hi, 0.50), transparentize($status-yellow-lo, 0.50)))
+			@include filter-gradient(transparentize($status-yellow-hi, 0.50), transparentize($status-yellow-lo, 0.50), vertical)
+		&.critical, &.down
+			@include background(linear-gradient(top, transparentize($status-red-hi, 0.50), transparentize($status-red-lo, 0.50)))
+			@include filter-gradient(transparentize($status-red-hi, 0.50), transparentize($status-red-lo, 0.50), vertical)
+		&.unknown
+			@include background(linear-gradient(top, transparentize($status-orange-hi, 0.50), transparentize($status-orange-lo, 0.50)))
+			@include filter-gradient(transparentize($status-orange-hi, 0.50), transparentize($status-orange-lo, 0.50), vertical)
+		&.undetermined
+			@include background(linear-gradient(top, $gradient-dark-hi / 1.2, $gradient-dark-lo / 1.2))
+			@include filter-gradient($gradient-dark-hi / 1.2, $gradient-dark-lo / 1.2, vertical)
 
 tr
 	&.odd td.data img, &.even td.data img, &.dark td.data img

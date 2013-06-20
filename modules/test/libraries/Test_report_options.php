@@ -12,6 +12,8 @@ class Test_report_options extends Report_options {
 	 */
 	public function __construct($options=false) {
 		parent::__construct($options);
+		if (isset($options->members))
+			$this->members = $options->members;
 		$this->properties_copy =& $this->properties;
 	}
 
@@ -24,7 +26,12 @@ class Test_report_options extends Report_options {
 		switch ($this['report_type']) {
 		 case 'servicegroups':
 		 case 'hostgroups':
-			return $this->members;
+			$res_members = array();
+			foreach ($this->members as $group => $members) {
+				if (in_array($group, $this[$this->get_value('report_type')]))
+					$res_members = array_merge($res_members, $members);
+			}
+			return $res_members;
 		}
 		return parent::get_report_members();
 	}

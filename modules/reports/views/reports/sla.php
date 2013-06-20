@@ -14,7 +14,7 @@ foreach($report_data as $i =>  $report) {
 				$names = array($names);
 			if ($options['use_alias'] && $options['report_type'] !== 'services') {
 				foreach ($names as $k => $name)
-					$names[$k] = $this->_get_alias($options['report_type'], $name).' ('.$name.')';
+					$names[$k] = reports::get_alias($options['report_type'], $name).' ('.$name.')';
 			}
 			$str_source = sprintf(_('SLA breakdown for: %s'), implode(',', $names));
 		}
@@ -23,7 +23,7 @@ foreach($report_data as $i =>  $report) {
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<form action="<?php echo url::site() ?>avail/generate" method="post">
-			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php echo _('Show availability breakdown');?>" />
+			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php printf(_('Show availability breakdown for %s'), implode(', ', $names));?>" />
 			<?php
 			echo $options->as_form(true);
 			# Stupid multi-group reports, why do you insist on making my life complicated?
@@ -105,7 +105,7 @@ foreach($report_data as $i =>  $report) {
 				}
 				foreach($members as $member) {
 					if ($options['use_alias'] && $type !== 'services')
-						$name = $this->_get_alias($type, $member).' ('.$member.')';
+						$name = reports::get_alias($type, $member).' ('.$member.')';
 					else
 						$name = $member;
 					$x++;

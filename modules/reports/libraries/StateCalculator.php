@@ -18,7 +18,6 @@ abstract class StateCalculator
 	 */
 	abstract public function add_event($row);
 
-	public $st_log = false; /**< The log array, only used for treds, should use summary reports for this */
 	protected $st_text = array(); /**< Mapping between state integers and state text */
 
 	protected $st_source = false; /**< The source object. Can be object array, can be host_name, can be host_name;service_description, can drive you mad. */
@@ -92,12 +91,6 @@ abstract class StateCalculator
 		$this->st_running = $is_running;
 		$this->st_obj_state = $this->filter_excluded_state($initial_state);
 		$this->st_dt_depth = $initial_depth;
-
-		# if user asked for it, we preserve the log
-		# TODO: noes :(
-		if ($this->options['include_trends']) {
-			$this->st_log = array();
-		}
 
 		if ($this->options['service_description'] || $this->options['servicegroup']) {
 			$this->st_is_service = true;

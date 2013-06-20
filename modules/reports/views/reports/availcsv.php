@@ -7,12 +7,11 @@ foreach ($fields as $field) {
 }
 echo implode(', ', $csv)."\n";
 
-if (!isset($data_arr[0][0])) # For groups, we hide the data, so hide non-group data as well
-	$data_arr = array($data_arr);
-
-foreach ($data_arr as $sub_report) {
+foreach ($data_arr as $key => $sub_report) {
+	if (!is_array($sub_report) || !isset($sub_report['states']))
+		continue;
 	foreach ($sub_report as $k => $data) {
-		if (!is_numeric($k))
+		if (!is_array($data) || !isset($data['states']))
 			continue;
 		$states = $data['states'];
 
@@ -21,7 +20,7 @@ foreach ($data_arr as $sub_report) {
 			if ($field_name == 'HOST_NAME' || $field_name == 'SERVICE_DESCRIPTION') {
 				$csv[] = '"' . (is_array($states[$field_name]) ? implode(', ', $states[$field_name]) : $states[$field_name]) . '"';
 			} else if ($field_name == 'HOSTGROUPS' || $field_name == 'SERVICEGROUPS') {
-				$csv[] = '"' . $sub_report['groupname'] . '"';
+				$csv[] = '"' . implode(', ', $sub_report['groupname']) . '"';
 			} else if (isset($states[$field_name])) {
 				$csv[] = strstr($field_name, 'PERCENT') ? '"'.reports::format_report_value($states[$field_name]).'%"' : $states[$field_name];
 			} else {

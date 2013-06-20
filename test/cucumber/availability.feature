@@ -79,7 +79,9 @@ Feature: Availability reports
 		And I select "linux-server1" from "Available hosts"
 		And I doubleclick "linux-server1" from "host_tmp[]"
 		Then "Selected hosts" should have option "linux-server1"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Host details for linux-server1"
 		And I should see "Selected services"
 		And I shouldn't see "Selected hosts"
@@ -87,6 +89,7 @@ Feature: Availability reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (Worst state)"
+		And I shouldn't see "Summary"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
@@ -100,7 +103,9 @@ Feature: Availability reports
 		And I doubleclick "win-server1" from "host_tmp[]"
 		Then "Selected hosts" should have option "linux-server1"
 		And "Selected hosts" should have option "win-server1"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Host state breakdown"
 		And I should see "Selected hosts"
 		And I shouldn't see "Selected services"
@@ -109,6 +114,8 @@ Feature: Availability reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
 		And I should see "Group availability (Worst state)"
+		And I should see "Summary of selected"
+		And I shouldn't see "Total summary"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single service report
@@ -119,11 +126,14 @@ Feature: Availability reports
 		And I select "linux-server1;PING" from "Available services"
 		And I doubleclick "linux-server1;PING" from "service_tmp[]"
 		Then "Selected services" should have option "linux-server1;PING"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Service details for PING on host linux-server1"
 		And I shouldn't see "System Load"
 		And I shouldn't see "win-server"
 		And I shouldn't see "Group availability (Worst state)"
+		And I shouldn't see "Summary"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on same host report
@@ -146,6 +156,8 @@ Feature: Availability reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (Worst state)"
+		And I should see "Summary of selected"
+		And I shouldn't see "Total summary"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
@@ -159,7 +171,9 @@ Feature: Availability reports
 		And I doubleclick "linux-server2;System Load" from "service_tmp[]"
 		Then "Selected services" should have option "linux-server1;PING"
 		And "Selected services" should have option "linux-server2;System Load"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Service state breakdown"
 		And I should see "Services on host: linux-server1"
 		And I should see "PING"
@@ -167,6 +181,8 @@ Feature: Availability reports
 		And I should see "System Load"
 		And I shouldn't see "win-server"
 		And I should see "Group availability (Worst state)"
+		And I should see "Summary of selected"
+		And I shouldn't see "Total summary"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
@@ -184,6 +200,8 @@ Feature: Availability reports
 		And I should see "HALIAS-ls2 (linux-server2)"
 		And I shouldn't see "win-server1"
 		And I shouldn't see "win-server2"
+		And I shouldn't see "Summary of selected"
+		And I shouldn't see "Total summary"
 		And I should see "Group availability (Worst state)"
 
 	@configuration @asmonitor @reports
@@ -197,10 +215,13 @@ Feature: Availability reports
 		And I doubleclick "WindowsServers" from "hostgroup_tmp[]"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		And "Selected hostgroups" should have option "WindowsServers"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "Summary for LinuxServers"
-		And I should see "Summary for WindowsServers"
+		And I should see "Summary of LinuxServers"
+		And I should see "Summary of WindowsServers"
+		And I should see "Total summary"
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I should see "win-server1"
@@ -218,10 +239,13 @@ Feature: Availability reports
 		And I doubleclick "MixedGroup" from "hostgroup_tmp[]"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		And "Selected hostgroups" should have option "MixedGroup"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Hostgroup breakdown"
-		And I should see "Summary for LinuxServers"
-		And I should see "Summary for MixedGroup"
+		And I should see "Summary of LinuxServers"
+		And I should see "Summary of MixedGroup"
+		And I should see "Total summary"
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I shouldn't see "win-server1"
@@ -248,6 +272,8 @@ Feature: Availability reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 		And I should see "Group availability (Worst state)"
+		And I shouldn't see "Summary of selected"
+		And I shouldn't see "Summary of all"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
@@ -261,10 +287,13 @@ Feature: Availability reports
 		And I doubleclick "empty" from "servicegroup_tmp[]"
 		Then "Selected servicegroups" should have option "pings"
 		And "Selected servicegroups" should have option "empty"
-		When I click "Show report"
+		When I check "Include pie charts"
+		And I check "Include trends graph"
+		And I click "Show report"
 		Then I should see "Servicegroup breakdown"
-		And I should see "Summary for pings"
-		And I shouldn't see "Summary for empty"
+		And I should see "Summary of pings"
+		And I should see "Summary of empty"
+		And I should see "Total summary"
 		And I should see "Services on host: linux-server1"
 		And I should see "Services on host: win-server1"
 		And I should see "Services on host: win-server2"

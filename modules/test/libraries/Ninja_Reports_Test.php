@@ -133,9 +133,7 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 					$this->sub_reports = count($v);
 			}
 			if ($k === 'hostgroup' || $k === 'servicegroup') {
-				foreach ($v as $groupname => $members) {
-					$opts->members = array_merge($opts->members, $members);
-				}
+				$opts->members = array_merge($opts->members, $v);
 				$v = array_keys($v);
 				$this->sub_reports = count($opts->members);
 			}
@@ -365,9 +363,18 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 		return true;
 	}
 
-	private function count_sub_reports($ary)
+	private function count_sub_reports($top)
 	{
-		return count($ary['log']);
+		$i = 0;
+		foreach ($top as $middle) {
+			if (!is_array($middle) || !isset($middle['states']))
+				continue;
+			foreach ($middle as $bottom) {
+				if (is_array($bottom) && isset($bottom['states']))
+					$i++;
+			}
+		}
+		return $i;
 	}
 
 	private function log_duration($st_log)
@@ -403,16 +410,20 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 			if ($k === 'subs') {
 				foreach ($v as $sub_name => $sub_correct) {
 					$sub = false;
-					foreach ($full_result as $_ => $obj) {
-						$tmp_sub_name = '';
-						if (!isset($obj['states']) || !$obj['states'])
+					foreach ($full_result as $group) {
+						if (!isset($group['states']) || !$group['states'])
 							continue;
-						$tmp_sub_name .= $obj['states']['HOST_NAME'];
-						if (isset($obj['states']['SERVICE_DESCRIPTION']))
-							$tmp_sub_name .= ';'.$obj['states']['SERVICE_DESCRIPTION'];
-						if ($tmp_sub_name === $sub_name) {
-							$sub = $obj;
-							break;
+						foreach ($group as $obj) {
+							$tmp_sub_name = '';
+							if (!isset($obj['states']) || !$obj['states'])
+								continue;
+							$tmp_sub_name .= $obj['states']['HOST_NAME'];
+							if (isset($obj['states']['SERVICE_DESCRIPTION']))
+								$tmp_sub_name .= ';'.$obj['states']['SERVICE_DESCRIPTION'];
+							if ($tmp_sub_name === $sub_name) {
+								$sub = $obj;
+								break;
+							}
 						}
 					}
 					if (!$sub) {
@@ -451,10 +462,16 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 		}
 
 		# check duration for all sub-reports individually
-		foreach ($full_result['log'] as $k => $l) {
-			$duration = $this->log_duration($l);
-			if ($duration != $rpt->options['end_time'] - $rpt->options['start_time']) {
-				$failed['st_log ' . $k] = "Log duration doesn't match report period duration (expected ".($rpt->options['end_time'] - $rpt->options['start_time']).", was $duration)";
+		foreach ($full_result as $k => $l) {
+			if (!is_numeric($k))
+				continue;
+			foreach ($l as $k2 => $obj) {
+				if (!is_numeric($k2))
+					continue;
+				$duration = $this->log_duration($obj['log']);
+				if ($duration != $rpt->options['end_time'] - $rpt->options['start_time']) {
+					$failed['st_log ' . $k] = "Log duration doesn't match report period duration (expected ".($rpt->options['end_time'] - $rpt->options['start_time']).", was $duration)";
+				}
 			}
 		}
 

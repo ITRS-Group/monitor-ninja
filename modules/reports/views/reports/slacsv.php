@@ -11,7 +11,7 @@ echo implode(', ', $csv)."\n";
 
 if (is_array($data_arr)) {
 	foreach ($data_arr as $k => $data) {
-		if (!is_numeric($k))
+		if (!isset($data['table_data']))
 			continue;
 		$table = $data['table_data'];
 		foreach ($table as $start => $result) {

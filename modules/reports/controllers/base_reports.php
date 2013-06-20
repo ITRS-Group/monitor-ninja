@@ -178,36 +178,9 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	 * Expands a series of groupnames (host or service) into its member objects, and calculate uptime for each
-	 *
-	 * uses Status_Reports_Model::get_uptime()
-	 * @param $arr (array) List of groups
-	 * @param $type (string) The type of objects in $arr. Valid values are "hostgroup" or "servicegroup".
-	 * @param $options (Report_option) Can be sent to override the options from $this->options
-	 * @return array Calculated uptimes.
-	 */
-	protected function _expand_group_request(array $arr, $type, $options = false)
-	{
-		if (!$options) {
-			$optclass = get_class($this->options);
-			$options = new $optclass($this->options);
-		}
-
-		$data_arr = false;
-		foreach ($arr as $data) {
-			$options[$options->get_value('report_type')] = array($data);
-			$model = new Status_Reports_model($options);
-			$data_arr[] = $model->get_uptime();
-		}
-		return $data_arr;
-	}
-
-
-	/**
 	*	Determine the name of the state
 	*/
 	protected function _state_string_name($type='host', $state=false) {
-
 		$type = strtolower($type);
 
 		if ($type === "host") {
@@ -217,107 +190,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		}
 
 		return "N/A";
-
-	}
-
-	/**
-	 * Convert between yes/no and 1/0
-	 * @param $val (mixed) value to be converted
-	 * @param $use_int (bool) to indicate if we should use 1/0 instead of yes/no
-	 * @return mixed str/int
-	 */
-	protected function _convert_yesno_int($val, $use_int=true)
-	{
-		$return = false;
-		if ($use_int) {
-			// This is the way that we normally do things
-			switch (strtolower($val)) {
-				case 'yes':
-					$return = 1;
-					break;
-				case 'no':
-					$return = 0;
-					break;
-				default:
-					$return = $val;
-			}
-		} else {
-			// This is the old way, using yes/no values
-			switch ($val) {
-				case 1:
-					$return = 'yes';
-					break;
-				case 0:
-					$return = 'no';
-					break;
-				default:
-					$return = $val;
-			}
-		}
-		return $return;
-	}
-
-	/**
-	 * Re-order alphabetically a group to
-	 * 1) sort by host name
-	 * 2) sort by service description
-	 * A group here refers to the return value given by a call to get_multiple_state_info().
-	 * @param &$group Return parameter.
-	 */
-	protected function _reorder_by_host_and_service(&$group)
-	{
-		$num_hosts = count($group['HOST_NAME']);
-
-		# Set up structure ('host1' => array(1,5,8), 'host2' =>array(2,3,4,7), ...)
-		# where the numbers are indices of services in original array.
-		$host_idxs = array();
-		for($i=0 ; $i<$num_hosts ; $i++) {
-			$h = $group['HOST_NAME'][$i];
-			if(array_key_exists($h, $host_idxs)) {
-				$host_idxs[$h][] = $i;
-			} else {
-				$host_idxs[$h] = array($i);
-			}
-		}
-
-		$new_order = array(); # The new sorting order. used to re-order every array in $group
-		ksort($host_idxs);
-
-		if(!array_key_exists('SERVICE_DESCRIPTION', $group)) {
-			$new_order = array_values($host_idxs);
-			for($i=0,$n=count($new_order) ; $i<$n ; $i++) {
-				$new_order[$i] = $new_order[$i][0];
-			}
-		} else { #services or servicegroups
-			# For every host: re-order service names by alphabet
-			foreach($host_idxs as $h => $serv_indices) {
-				$tmp_servs = array();
-				foreach($serv_indices as $i) {
-					$tmp_servs[$i] = $group['SERVICE_DESCRIPTION'][$i];
-				}
-				asort($tmp_servs);
-				$new_order = array_merge($new_order, array_keys($tmp_servs));
-			}
-		}
-		# $new_order now contains the indices to move elements of
-		# arrays as for them to become correctly ordered.
-
-		# use new order to reorder all arrays
-		$a_names = array_keys($group);
-		foreach($a_names as $a_name) {
-			$arr =& $group[$a_name];
-			if(!is_array($arr)) # only re-order arrays
-				continue;
-
-			$tmp_arr = array();
-			foreach($new_order as $new_index => $old_index) {
-				# print "moving ".$arr[$old_index]." from $old_index to $new_index\n";
-				$tmp_arr[$new_index] = $arr[$old_index];
-			}
-
-			ksort($tmp_arr);
-			$group[$a_name] = $tmp_arr;
-		}
 	}
 
 	/**

@@ -129,35 +129,31 @@ class WorstStateCalculator extends StateCalculator
 			if (!isset($converted_state[$t]))
 				$converted_state[$t] = 0;
 
-		if ($this->st_is_service) {
-			unset($converted_state['HOST_NAME']);
-			$converted_state['SERVICE_DESCRIPTION'] = $this->st_source;
-		}
-		else {
-			$converted_state['HOST_NAME'] = $this->st_source;
-		}
-
 		# now add the time we didn't count due
 		# to the selected timeperiod
 		$converted_state['TIME_INACTIVE'] = $this->st_inactive;
 
 		$total_time = $this->options['end_time'] - $this->options['start_time'];
-		$res =  array('log' => array());
+		$res =  array('source' => $this->st_source, 'tot_time' => $total_time);
+		// st_source is always an of objects, but old code assumes the best
+		// way to determine the report type is to look at where the object
+		// names are stored.
+		switch ($this->options['report_type']) {
+		 case 'host_name':
+			$converted_state['HOST_NAME'] = $this->st_source;
+			break;
+		 case 'service_description':
+			$converted_state['SERVICE_DESCRIPTION'] = $this->st_source;
+			break;
+		 case 'hostgroups':
+		 case 'servicegroups':
+			$res['groupname'] = $this->options[$this->options->get_value('report_type')];
+			break;
+		}
+		$res['states'] = $converted_state;
 		foreach ($this->sub_reports as $sr) {
-			$res['log'][$sr->st_source] = $sr->st_log;
 			$res[] = $sr->get_data();
 		}
-		$res['source'] = $this->st_source;
-		$res['states'] = $converted_state;
-		$res['tot_time'] = $total_time;
-
-		$groupname = $this->options['hostgroup'] ? $this->options['hostgroup'] : $this->options['servicegroup'];
-		# HOWTO: induce bugs and make enemies:
-		if (count($groupname) === 1)
-			$res['groupname'] = $groupname[0];
-		else
-			$res['groupname'] = $groupname;
-
 		return $res;
 	}
 
