@@ -229,8 +229,10 @@ TGraph.prototype = {
 		this.height = 0;
 
 		this.max = 0;
-		for (i; i < this.stops[0].length; i += 1) {
-			this.max += this.stops[0][i].duration * 1000;
+		if (this.stops.length > 0) {
+			for (i; i < this.stops[0].length; i += 1) {
+				this.max += this.stops[0][i].duration * 1000;
+			}
 		}
 
 		var lastHost = '';
