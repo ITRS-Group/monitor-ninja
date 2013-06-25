@@ -110,18 +110,33 @@ listview_renderer_table.hosts = {
 					// escape
 					)));
 
-			if (args.obj.action_url)
-				cell.append(icon16('host-actions',
-						_('Perform extra host actions'), $('<a />').attr(
-								'href', args.obj.action_url)));
+			if (args.obj.action_url) {
+				cell.append(
+					icon16(
+						'host-actions',
+						_('Perform extra host actions'),
+						$('<a />')
+							.attr('href', args.obj.action_url)
+							.attr('target', _action_url_target)
+					)
+				);
+			}
 
 			if (args.obj.config_url && args.obj.config_allowed)
 				cell.append(icon16('nacoma', _('Configure this host'), $(
 						'<a />').attr('href', args.obj.config_url)));
 
-			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra host notes'), $(
-						'<a />').attr('href', args.obj.notes_url)));
+			if (args.obj.notes_url) {
+				cell.append(
+					icon16(
+						'host-notes',
+						_('View extra host notes'),
+						$('<a />')
+							.attr('href', args.obj.notes_url)
+							.attr('target', _notes_url_target)
+					)
+				);
+			}
 
 			return cell;
 		}
