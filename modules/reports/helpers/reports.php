@@ -117,6 +117,7 @@ class reports_Core
 		return array(hexdec($c1), hexdec($c2), hexdec($c3) );
 	}
 
+
 	/**
 	 * Fetch date ranges from reports class
 	 * @return Array of date ranges
@@ -164,6 +165,7 @@ class reports_Core
 
 		return false;
 	}
+
 
 	/**
 	*	Create common translated javascript strings

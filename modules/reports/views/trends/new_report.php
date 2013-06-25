@@ -8,15 +8,15 @@
 			$state_names = array();
 			$outputs = array();
 			$outputs_r = array();
-			
+
 			foreach ($graph_pure_data as $service => $statechanges) {
-			
+
 				$labels[] = $service;
-				
+
 				$servicerow = array();
-				
+
 				for ($i = 0; $i < count($statechanges); $i++) {
-					
+
 					$cur_out = $statechanges[$i]['output'];
 					if( isset( $outputs_r[$cur_out] ) ) {
 						$output_id = $outputs_r[$cur_out];
@@ -25,24 +25,24 @@
 						$outputs[] = $cur_out;
 						$outputs_r[$cur_out] = $output_id;
 					}
-					
+
 					$servicerow[] = array(
 						$statechanges[$i]['duration'], /* 0: duration */
 						$statechanges[$i]['state'], /* 1: state */
 						$output_id /* 2: short */
 						);
-					
+
 					$state_names[$statechanges[$i]['state']] = ucfirst($this->_state_string_name($obj_type, $statechanges[$i]['state']));
-					
+
 				}
 				$rawdata[] = $servicerow;
-				
+
 			}
 			$colors = reports::_state_color_table($obj_type);
-			
+
 		?>
 
-		
+
 		var rawdata = <?php echo json_encode($rawdata); ?>,
 			short_names = <?php echo json_encode($outputs); ?>,
 			labels = <?php echo json_encode($labels); ?>,
@@ -62,15 +62,15 @@
 				};
 			}
 		}
-		
+
 		$(window).load(function () {
 			new TGraph(
-				data, 'timeline', 
+				data, 'timeline',
 				labels,
 				<?php echo $graph_start_date ?>,
 				<?php echo ($use_scaling) ? 'true':'false'; ?>
 			);
 		});
-		
+
 	</script>
 </div>
