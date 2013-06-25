@@ -54,6 +54,7 @@ class Reports_Model extends Model
 	protected $options = false;
 	/** The timeperiod associated with this report */
 	protected $timeperiod;
+	/** Table to use for the duration of the build */
 	protected $db_table = 'report_data';
 
 		/**

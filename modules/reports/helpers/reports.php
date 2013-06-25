@@ -241,6 +241,9 @@ class reports_Core
 		return $colors[$type];
 	}
 
+	/**
+	 * Given bunch of somewhat-magical parameters, return a whole multi-object report table
+	 */
 	static function format_multi_object_table($data, $title, $rowdescriber, $is_service, $is_summary, $down_as_up_diff, &$i=0)
 	{
 		if ($is_service) {
