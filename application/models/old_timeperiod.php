@@ -44,7 +44,7 @@ class Old_Timeperiod_Model extends Model
 	}
 
 	/**
-	 * Warning: you should not use this directly
+	 * Warning: you should not use this directly - see instance()
 	 */
 	public function __construct($options) {
 		$this->start_time = $options['start_time'];
@@ -305,7 +305,7 @@ class Old_Timeperiod_Model extends Model
 	 */
 	public function resolve_timeperiods()
 	{
-		if ($this->start_time == false || $this->end_time == false) {
+		if ($this->start_time === false || $this->end_time === false) {
 			throw new Exception("Timeperiods cannot be resolved unless report start and end time is set");
 		}
 
