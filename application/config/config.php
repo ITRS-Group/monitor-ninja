@@ -212,12 +212,6 @@ $config['autocomplete_limit'] = 10;
 $config['popup_delay'] = 150;
 
 /**
-*  Controls if you will display multiline output or not
-*  in the Service detail view.
-*/
-$config['service_long_output_enabled'] = false;
-
-/**
  * How often do each listview refresh itself? 0 means it's disabled
  */
 $config['listview_refresh_rate'] = 30;
