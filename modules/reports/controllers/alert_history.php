@@ -24,7 +24,7 @@ class Alert_history_Controller extends Summary_Controller
 			$this->options['summary_items'] = $pagination->items_per_page;
 			$this->options['page'] = $pagination->current_page;
 		}
-		
+
 		$this->options['summary_type'] = Summary_options::RECENT_ALERTS;
 		$this->xtra_js[] = $this->add_path('alert_history/js/alert_history.js');
 		$real_output_format = $this->options['output_format'];
@@ -47,7 +47,7 @@ class Alert_history_Controller extends Summary_Controller
 			return $this->generate_pdf();
 		}
 	}
-	
+
 	public function add_comment()
 	{
 		$this->auto_render = false;
