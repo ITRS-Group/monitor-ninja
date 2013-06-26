@@ -43,6 +43,10 @@ class Alert_history_Controller extends Summary_Controller
 		}
 	}
 
+	/**
+	 * End-point for XHR requests, that creates an event comment which will be
+	 * displayed with the event itself in reports.
+	 */
 	public function add_comment()
 	{
 		$this->auto_render = false;
