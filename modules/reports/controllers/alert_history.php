@@ -16,7 +16,6 @@ class Alert_history_Controller extends Summary_Controller
 	{
 		$this->setup_options_obj($input);
 
-
 		unset($this->options['page']);
 		$pagination = new CountlessPagination(array('items_per_page' => $this->options['summary_items'], 'extra_params' => $this->options->as_keyval_string()));
 		$this->options['page'] = $pagination->current_page;
