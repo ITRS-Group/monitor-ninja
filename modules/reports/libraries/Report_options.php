@@ -745,11 +745,11 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $vk => $member) {
-					$opts_str .= "&{$key}[$vk]=$member";
+					$opts_str .= "&amp;{$key}[$vk]=".urlencode($member);
 				}
 				continue;
 			}
-			$opts_str .= "&$key=$val";
+			$opts_str .= "&$key=".urlencode($val);
 		}
 		return substr($opts_str, 1);
 	}
