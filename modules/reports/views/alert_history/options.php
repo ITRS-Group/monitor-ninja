@@ -159,6 +159,12 @@
 		<td>
 			<label for="filter_output"><?php echo _('Filter output') ?></label><br />
 			<input type="text" name="filter_output" id="filter_output" value="<?php echo $options['filter_output'] ?>" />
+		</td>
+		<td>&nbsp;</td>
+		<td>
+			<label for="summary_items"><?php echo _('Items to show') ?></label>
+			<input type="text" name="summary_items" id="summary_items" value="<?php echo $options['summary_items'] ?>" />
+		</td>
 	</tr>
 	<tr>
 		<td colspan="3">
