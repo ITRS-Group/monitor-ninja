@@ -30,7 +30,7 @@
 	</tr>
 	<tr data-show-for="hostgroups">
 		<td>
-			<?php echo _('Available').' '._('Hostgroups') ?><br />
+			<label for="hostgroup_tmp"><?php echo _('Available').' '._('Hostgroups') ?></label><br />
 			<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
 			</select>
 		</td>
@@ -39,14 +39,14 @@
 			<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
 		</td>
 		<td>
-			<?php echo _('Selected').' '._('Hostgroups') ?><br />
+			<label for="hostgroup"><?php echo _('Selected').' '._('Hostgroups') ?></label><br />
 			<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" class="multiple">
 			</select>
 		</td>
 	</tr>
 	<tr data-show-for="servicegroups">
 		<td>
-			<?php echo _('Available').' '._('Servicegroups') ?><br />
+			<label for="servicegroup_tmp"><?php echo _('Available').' '._('Servicegroups') ?></label><br />
 			<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
 			</select>
 		</td>
@@ -55,14 +55,14 @@
 			<input type="button" value="&lt;" id="mv_sg_l" class="button arrow-left" />
 		</td>
 		<td>
-			<?php echo _('Selected').' '._('Servicegroups') ?><br />
+			<label for="servicegroup"><?php echo _('Selected').' '._('Servicegroups') ?></label><br />
 			<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
 			</select>
 		</td>
 	</tr>
 	<tr data-show-for="hosts">
 		<td>
-			<?php echo _('Available').' '._('Hosts') ?><br />
+			<label for="host_tmp"><?php echo _('Available').' '._('Hosts') ?></label><br />
 			<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
 			</select>
 		</td>
@@ -71,14 +71,14 @@
 			<input type="button" value="&lt;" id="mv_h_l" class="button arrow-left" />
 		</td>
 		<td>
-			<?php echo _('Selected').' '._('Hosts') ?><br />
+			<label for="host_name"><?php echo _('Selected').' '._('Hosts') ?></label><br />
 			<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
 			</select>
 		</td>
 	</tr>
 	<tr data-show-for="services">
 		<td>
-			<?php echo _('Available').' '._('Services') ?><br />
+			<label for="service_tmp"><?php echo _('Available').' '._('Services') ?></label><br />
 			<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
 			</select>
 		</td>
@@ -87,7 +87,7 @@
 			<input type="button" value="&lt;" id="mv_s_l" class="button arrow-left"  />
 		</td>
 		<td>
-			<?php echo _('Selected').' '._('Services') ?><br />
+			<label for="service_description"><?php echo _('Selected').' '._('Services') ?></label><br />
 			<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
 			</select>
 		</td>
