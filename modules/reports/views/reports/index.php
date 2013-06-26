@@ -11,7 +11,6 @@
 <?php echo form::open($type.'/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));?>
 <?php
 	echo $report_options;
-	echo $options->as_form(false, true);
 ?>
 </form>
 </div>

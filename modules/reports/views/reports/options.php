@@ -225,3 +225,4 @@ if($options['report_id']) { ?>
 <div class="setup-table">
 	<input id="reports_submit_button" type="submit" name="" value="<?php echo _('Show report') ?>" class="button create-report" />
 </div>
+<?php echo $options->as_form(false, true) ?>
