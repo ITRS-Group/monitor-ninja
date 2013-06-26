@@ -17,13 +17,9 @@ class Alert_history_Controller extends Summary_Controller
 		$this->setup_options_obj($input);
 
 
-		if($this->options['summary_items']) {
-			// summary_items' set to 0 if it's disabled
-			$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
-			$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
-			$this->options['summary_items'] = $pagination->items_per_page;
-			$this->options['page'] = $pagination->current_page;
-		}
+		unset($this->options['page']);
+		$pagination = new CountlessPagination(array('items_per_page' => $this->options['summary_items'], 'extra_params' => $this->options->as_keyval_string()));
+		$this->options['page'] = $pagination->current_page;
 
 		$this->options['summary_type'] = Summary_options::RECENT_ALERTS;
 		$this->xtra_js[] = $this->add_path('alert_history/js/alert_history.js');
@@ -36,12 +32,11 @@ class Alert_history_Controller extends Summary_Controller
 			$this->template->title = _('Alert history');
 			$this->template->content->header->standard_header->skip_save = true;
 			$this->template->content->header->standard_header->title = _('Alert history');
-			if ($this->options['summary_items']) {
-				if(!$this->template->content->content->result || count($this->template->content->content->result) < $items_per_page) {
-					$pagination->hide_next = true;
-				}
-				$this->template->content->content->pagination = $pagination;
+			$pagination->hide_next = false;
+			if(!$this->template->content->content->result || count($this->template->content->content->result) < $this->options['summary_items']) {
+				$pagination->hide_next = true;
 			}
+			$this->template->content->content->pagination = $pagination;
 		}
 		if ($real_output_format == 'pdf') {
 			return $this->generate_pdf();

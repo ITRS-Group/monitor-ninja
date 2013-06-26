@@ -19,5 +19,9 @@ class CountlessPagination extends Pagination_Core {
 		}
 		$config['total_items'] = ($this->current_page + 1) * $this->items_per_page;
 		parent::initialize($config);
+		if (isset($config['extra_params'])) {
+			$base_url = ($this->base_url === '') ? Router::$current_uri : $this->base_url;
+			$this->url = url::site($base_url).'?'.$config['extra_params'].'&amp;page={page}';
+		}
 	}
 }
