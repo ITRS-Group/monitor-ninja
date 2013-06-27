@@ -402,6 +402,8 @@ class Summary_Reports_Model extends Reports_Model
 		$this->options['host_states'] = self::HOST_ALL;
 		$this->options['service_states'] = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
+		$this->options['host_states'] = $host_states;
+		$this->options['service_states'] = $service_states;
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
