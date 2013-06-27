@@ -45,7 +45,9 @@ $(document).ready(function() {
 });
 $('#verify').live('click', function(){
 	var link = $(this);
+	status = 'saving';
 	$('#backupstatus').load($(link).attr('href'), function(){
+		status = '';
 		if ($(this).find('span').hasClass('ok'))
 			setTimeout(backup, 2000);
 	});
@@ -82,8 +84,15 @@ $('a.delete').live('click', function(){
 
 window.onbeforeunload = function(event){
 	event = event || window.event;
+	var message;
 	if(status == 'restoring'){
-		return event.returnValue = "A backup is being restored!"
+		message = "Your configuration is being restored from a backup, do you really want to abort?";
+	} else if(status == 'saving') {
+		message = "Your configuration is being saved, do you really want to abort?";
+	}
+	if(message) {
+		event.returnValue = message;
+		return message;
 	}
 }
 var status = '';
