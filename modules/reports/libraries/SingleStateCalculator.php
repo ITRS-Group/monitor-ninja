@@ -190,6 +190,8 @@ class SingleStateCalculator extends StateCalculator
 					'state' => -2,
 					'hard' => 1
 				);
+			// This prevents the close event from being added multiple times
+			$this->prev_row['the_time']= $this->options['end_time'];
 			return;
 		}
 
