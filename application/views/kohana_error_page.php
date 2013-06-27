@@ -1,8 +1,20 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+$table_crashed = function($error_string) {
+	if(preg_match("~Table '([^']+)' is marked as crashed and should be repaired~", $error_string, $match)) {
+		return $match[1];
+	}
+	return null;
+};
+
 $content = '<div id="framework_error" style="width:42em;margin:0px auto;">';
 $content .= '<h3>'.html::specialchars($error).'</h3>';
 $content .= '<p>'.html::specialchars($description).'</p>';
+$crash_info = null;
+if($table = $table_crashed($message)) {
+	$content .= $crash_info = "<p>The table $table is marked as crashed: login as root on the Monitor server and run</p><pre>mysqlcheck --repair --databases merlin</pre><p>There is more information in the <a href='https://dev.mysql.com/doc/refman/5.0/en/rebuilding-tables.html'>MySQL manual</a>.</p>";
+}
+
 if ( ! empty($line) AND ! empty($file)) {
 	$content .= '<p>'.Kohana::lang('core.error_file_line', $file, $line).'</p>';
 }
@@ -43,6 +55,7 @@ if (IN_PRODUCTION) {
 		// log data clobbers a customers hard drive
 		$content .= "<p>Additionally, there was an error when trying to save the debug information to a file in '$tmp_dir'. Please make sure that your hard drive isn't full.</p></div>";
 	}
+	$content .= $crash_info;
 	unset($tmp_dir);
 }
 $title = 'Error';
