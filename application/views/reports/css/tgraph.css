@@ -68,6 +68,8 @@
 
 .tgraph .tgraph-block-line {
 	margin: 12px 0;
+	position: relative;
+	width: 100%;
 }
 
 .tgraph .tgraph-block .tgraph-block {
@@ -75,9 +77,9 @@
 }
 
 .tgraph .tgraph-block {
-	float: left;
 	height: 16px;
 	z-index: 0;
+	position: absolute;
 }
 
 .tgraph-hoverbox b {
