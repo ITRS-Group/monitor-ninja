@@ -137,7 +137,7 @@ if($options['report_id']) { ?>
 					onchange="toggle_label_weight(this.checked, 'include_trends');" <?php print $options['include_trends']?'checked="checked"':''; ?> />
 			<label for="include_trends"><?php echo _('Include trends graph') ?></label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo help::render('include_trends_scaling') ?> <input type="checkbox" class="checkbox" value="1" id="include_trends_scaling" name="include_trends_scaling"
-					onchange="toggle_label_weight(this.checked, 'include_trends_scaling');" disabled="true" <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
+					onchange="toggle_label_weight(this.checked, 'include_trends_scaling');" <?php print $options['include_trends']?'':'disabled="disabled"'?> <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
 			<label for="include_trends_scaling"><?php echo _('Show trends re-scaling') ?></label>
 		</td>
 		<td></td>
