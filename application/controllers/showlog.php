@@ -28,10 +28,17 @@ class Showlog_Controller extends Authenticated_Controller
 		if (empty($this->options))
 			$this->options = $this->input->post();
 
-		if (isset($this->options['first']) && !empty($this->options['first'])) {
+
+		if (!empty($this->options['cal_start']) && isset($this->options['time_start'])) {
+			$this->options['first'] = strtotime($this->options['cal_start'] . ' ' . $this->options['time_start']);
+		} else if (isset($this->options['first']) && !empty($this->options['first'])) {
 			$this->options['first'] = strtotime($this->options['first']);
 		}
-		if (isset($this->options['last']) && !empty($this->options['last'])) {
+
+
+		if (!empty($this->options['cal_end']) && isset($this->options['time_end'])) {
+			$this->options['last'] = strtotime($this->options['cal_end'] . ' ' . $this->options['time_end']);
+		} else if (isset($this->options['last']) && !empty($this->options['last'])) {
 			$this->options['last'] = strtotime($this->options['last']);
 		}
 		if (!empty($this->options) && !empty($this->options['have_options'])) {
