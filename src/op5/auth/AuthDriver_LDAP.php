@@ -40,6 +40,10 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 
 		$groups = $this->resolve_group_names($user_info['dn']);
 
+		if(!isset($user_info[ strtolower($this->config['userkey']) ])) {
+			$this->log->log('error', 'User has not attriribute '.$this->config['userkey']);
+			return false;
+		}
 		$username = $user_info[ strtolower($this->config['userkey']) ][0];
 		if($this->config['userkey_is_upn']) {
 			$parts = explode('@', $username, 2);
@@ -49,11 +53,11 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$user = new op5User(array(
 			'username'   => $username,
 			'groups'     => $groups,
-			'realname'   => array_key_exists($this->config['userkey_realname'], $user_info) ?
-			                $user_info[ $this->config['userkey_realname'] ][0] :
+			'realname'   => array_key_exists(strtolower($this->config['userkey_realname']), $user_info) ?
+			                $user_info[ strtolower($this->config['userkey_realname']) ][0] :
 			                $username,
-			'email'      => array_key_exists($this->config['userkey_email'], $user_info) ?
-			                $user_info[ $this->config['userkey_email'] ][0] :
+			'email'      => array_key_exists(strtolower($this->config['userkey_email']), $user_info) ?
+			                $user_info[ strtolower($this->config['userkey_email']) ][0] :
 			                ''
 			));
 		return $user;
@@ -120,7 +124,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$entry = ldap_first_entry($this->conn, $res);
 				while($entry !== false) {
 					$attrs = ldap_get_attributes($this->conn, $entry);
-					$result[ $attrs[ $this->config['groupkey'] ][0] ] = true;
+					$result[ $attrs[ strtolower($this->config['groupkey']) ][0] ] = true;
 					$entry = ldap_next_entry($this->conn, $entry);
 				}
 				ldap_free_result($res);
@@ -153,7 +157,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$entry = ldap_first_entry($this->conn, $res);
 				while($entry !== false) {
 					$attrs = ldap_get_attributes($this->conn, $entry);
-					$user = $attrs[ $this->config['userkey'] ][0];
+					$user = $attrs[ strtolower($this->config['userkey']) ][0];
 					if($this->config['userkey_is_upn']) {
 						$parts = explode('@', $user, 2);
 						$user = $parts[0];
