@@ -33,7 +33,14 @@ $(document).ready(function() {
 		'enableEscapeButton': false,
 		'autoDimensions': false,
 		'width': 250,
-		'height': 70
+		'height': 70,
+		'onStart': function(link) {
+			var l = $(link);
+			if(l.is('.restore') && !confirm('Do you really want to restore the backup ' + l.closest('tr').find('.download').text() + ' ?')) {
+				l.data('cancelled', true);
+				return false;
+			}
+		}
 	});
 });
 $('#verify').live('click', function(){
@@ -45,21 +52,20 @@ $('#verify').live('click', function(){
 	return false;
 });
 
-$('a.restore').live('click', function(){
-	var link = $(this),
-		confirmation = confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?');
-
-	if (confirmation) {
-		$('#backupstatus').text('Restoring backup...');
-		status = 'restoring';
-		$('#fancybox-content').load($(link).attr('title'), function() {
-			$('#fancybox-close').show();
-			status = '';
-			$('#backupstatus').text($('#fancybox-content').text());
-		});
-	} else {
-		$.fancybox.close();
+$('a.restore').live('click', function(ev){
+	var link = $(this);
+	if(link.data('cancelled')) {
+		link.removeData('cancelled');
+		return false;
 	}
+
+	$('#backupstatus').text('Restoring backup...');
+	status = 'restoring';
+	$('#fancybox-content').load(link.attr('title'), function() {
+		$('#fancybox-close').show();
+		status = '';
+		$('#backupstatus').text($('#fancybox-content').text());
+	});
 
 	return false;
 });
