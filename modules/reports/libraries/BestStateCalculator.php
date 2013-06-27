@@ -8,9 +8,9 @@ class BestStateCalculator extends WorstStateCalculator
 	public function calculate_object_state()
 	{
 		if ($this->st_is_service)
-			$states = array(Reports_Model::SERVICE_OK, Reports_Model::SERVICE_WARNING, Reports_Model::SERVICE_CRITICAL, Reports_Model::SERVICE_UNKNOWN, Reports_Model::SERVICE_PENDING);
+			$states = array(Reports_Model::SERVICE_OK, Reports_Model::SERVICE_WARNING, Reports_Model::SERVICE_CRITICAL, Reports_Model::SERVICE_UNKNOWN, Reports_Model::SERVICE_PENDING, Reports_Model::SERVICE_EXCLUDED);
 		else
-			$states = array(Reports_Model::HOST_UP, Reports_Model::HOST_DOWN, Reports_Model::HOST_UNREACHABLE, Reports_Model::HOST_PENDING);
+			$states = array(Reports_Model::HOST_UP, Reports_Model::HOST_DOWN, Reports_Model::HOST_UNREACHABLE, Reports_Model::HOST_PENDING, Reports_Model::HOST_EXCLUDED);
 
 		$final_state = $states[count($states) - 1];
 
