@@ -1,4 +1,18 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); $i = 0;
+if ($options['report_type'] === 'hosts' || $options['report_type'] === 'hostgroups') {
+	$var_types = array('UP' => 'UP', 'DOWN' => 'DOWN', 'UNREACHABLE' => 'UNREACHABLE');
+	$filter_name = 'host_filter_status';
+	$states = 'host_states';
+} else {
+	$var_types = array('OK' => 'OK', 'WARNING' => 'WARNING', 'UNKNOWN' => 'UNKNOWN', 'CRITICAL' => 'CRITICAL');
+	$filter_name = 'service_filter_status';
+	$states = 'service_states';
+}
+
+foreach (array_keys($options[$filter_name]) as $filtered) {
+	$php_sucks = Reports_Model::$$states; # No, you cannot do this on one line, because bugs
+	unset($var_types[strtoupper($php_sucks[$filtered])]);
+}
 foreach ($report_data as $avail_data) {
 	if (!is_array($avail_data) || !isset($avail_data['states']))
 		continue;
@@ -15,7 +29,6 @@ foreach ($report_data as $avail_data) {
 			<?php } ?>
 		</tr>
 		<?php
-		$var_types = ($options['report_type'] === 'hosts' || $options['report_type'] === 'hostgroups') ? array('UP', 'DOWN', 'UNREACHABLE') : array('OK', 'WARNING', 'UNKNOWN', 'CRITICAL');
 		foreach ($var_types as $var_type) { $i++; ?>
 		<tr class="even" >
 			<th style="border-top: 0px; vertical-align: bottom; width: 110px" rowspan="3">
@@ -51,7 +64,9 @@ foreach ($report_data as $avail_data) {
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
 		</tr>
-		<?php } ?>
+		<?php }
+		if (!isset($options[$filter_name][Reports_Model::HOST_PENDING])) {
+		?>
 		<tr class="even">
 			<th style="vertical-align: bottom; border-top: 0px" rowspan="3">
 				<?php echo _('Undetermined') ?>
@@ -76,11 +91,12 @@ foreach ($report_data as $avail_data) {
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
 		</tr>
+		<?php } ?>
 		<tr class="even total">
 			<th style="border-top: 0px"><?php echo _('All') ?></th>
 			<td><?php echo _('Total') ?></td>
-			<td class="data"><?php echo time::to_string($avail_data['states']['TOTAL_TIME_ACTIVE']) ?></td>
-			<td class="data">100 %</td>
+			<td class="data"><?php echo time::to_string($avail_data['states']['TOTAL_TIME_ACTIVE'] - $avail_data['states']['TOTAL_TIME_EXCLUDED']) ?></td>
+			<td class="data"><?php echo reports::format_report_value(100 - $avail_data['states']['PERCENT_TOTAL_TIME_EXCLUDED']) ?> %</td>
 		</tr>
 	</table>
 </div>

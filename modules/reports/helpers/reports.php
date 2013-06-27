@@ -244,39 +244,33 @@ class reports_Core
 	/**
 	 * Given bunch of somewhat-magical parameters, return a whole multi-object report table
 	 */
-	static function format_multi_object_table($data, $title, $rowdescriber, $is_service, $is_summary, $down_as_up_diff, &$i=0)
+	static function format_multi_object_table($data, $title, $rowdescriber, $columns, $is_summary, $down_as_up_diff, &$i=0)
 	{
-		if ($is_service) {
-			$coldefs = array(
-				array('PERCENT_KNOWN_TIME_OK', 'ok', _('Ok')),
-				array('PERCENT_KNOWN_TIME_UNKNOWN', 'unknown', _('Unknown')),
-				array('PERCENT_KNOWN_TIME_WARNING', 'warning', _('Warning')),
-				array('PERCENT_KNOWN_TIME_CRITICAL', 'critical', _('Critical')),
-				array('PERCENT_TOTAL_TIME_UNDETERMINED', 'pending', _('Undetermined'))
-			);
-		} else {
-			$coldefs = array(
-				array('PERCENT_KNOWN_TIME_UP', 'up', _('Up')),
-				array('PERCENT_KNOWN_TIME_UNREACHABLE', 'unreachable', _('Unreachable')),
-				array('PERCENT_KNOWN_TIME_DOWN', 'down', _('Down')),
-				array('PERCENT_TOTAL_TIME_UNDETERMINED', 'pending', _('Undetermined')),
-			);
-		}
+		$coldefs = array(
+			'ok' => array('PERCENT_KNOWN_TIME_OK',  _('Ok')),
+			'unknown' => array('PERCENT_KNOWN_TIME_UNKNOWN', _('Unknown')),
+			'warning' => array('PERCENT_KNOWN_TIME_WARNING', _('Warning')),
+			'critical' => array('PERCENT_KNOWN_TIME_CRITICAL', _('Critical')),
+			'up' => array('PERCENT_KNOWN_TIME_UP', _('Up')),
+			'unreachable' => array('PERCENT_KNOWN_TIME_UNREACHABLE', _('Unreachable')),
+			'down' => array('PERCENT_KNOWN_TIME_DOWN', _('Down')),
+			'pending' => array('PERCENT_TOTAL_TIME_UNDETERMINED', _('Undetermined')),
+		);
 		$res = '<div class="report-block">
 		<table class="multiple_services">
 		<tr>
 		<th>'.$title.'</th>';
-		foreach ($coldefs as $col)
-			$res .= '<th class="headerNone" style="width: 80px">' . $col[2] .'</th>';
+		foreach ($columns as $col)
+			$res .= '<th class="headerNone" style="width: 80px">' . $coldefs[$col][1] .'</th>';
 		$res .='</tr>';
 
 		foreach ($data as $k => $row) {
 			if (!is_array($row) || !isset($row['states']))
 				continue;
 			$res .= '<tr class="'.($i++%2?'even':'odd').'">'.$rowdescriber($row);
-			foreach ($coldefs as $col) {
-				$res .= '<td style="width: 80px" class="summary '.($is_summary?'tally ':'').$col[1].' '.($row['states'][$col[0]]>0?'nonzero':'') .'">'.reports::format_report_value($row['states'][$col[0]]).' % '. html::image(ninja::add_path('icons/12x12/shield-'.($row['states'][$col[0]] > 0 ? '' : 'not-').$col[1].'.png'), array( 'alt' => $col[2], 'title' => $col[2], 'style' => 'height: 12px; width: 12px'));
-				if (($col[1] == 'ok' || $col[1] == 'up') && $down_as_up_diff && $row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']) {
+			foreach ($columns as $col) {
+				$res .= '<td style="width: 80px" class="summary '.($is_summary?'tally ':'').$col.' '.($row['states'][$coldefs[$col][0]]>0?'nonzero':'') .'">'.reports::format_report_value($row['states'][$coldefs[$col][0]]).' % '. html::image(ninja::add_path('icons/12x12/shield-'.($row['states'][$coldefs[$col][0]] > 0 ? '' : 'not-').$col.'.png'), array( 'alt' => $coldefs[$col][1], 'title' => $coldefs[$col][1], 'style' => 'height: 12px; width: 12px'));
+				if (($col == 'ok' || $col == 'up') && $down_as_up_diff && $row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']) {
 					$res .= ' ('.reports::format_report_value($row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).' % in other states)';
 				}
 				$res .= '</td>';
