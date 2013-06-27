@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 function backup(){
-	$('#backupstatus').load($('#backup').attr('href'), function(){
+	$('#backupstatus').load('<?php echo url::base() . 'index.php/backup/backup/'; ?>', function(){
 		if ($(this).find('span').hasClass('ok'))
 		{
 			var file = $('#backupfilename').text();
@@ -104,8 +104,9 @@ var status = '';
 	<div style="display: none">
 		<div id="restore-status"><img src="/ninja/application/media/images/loading.gif" /></div>
 	</div>
-	<p><a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?></a>
-	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo _('Save your current op5 Monitor configuration'); ?></a></p>
+	<p>
+		<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?> <?php echo _('Save your current op5 Monitor configuration'); ?></a>
+	</p>
 	<br />
 	<table id="backups">
 		<thead>
