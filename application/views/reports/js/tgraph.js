@@ -148,10 +148,11 @@ TGraph.prototype = {
 			this.formatNumber(date.getDate());
 	},
 
-	createBlock: function (stop) {
+	createBlock: function (stop, starttime) {
 		var block = document.createElement('div');
 
-		block.style.width = ((stop.duration / this.max) * 100) + '%';
+		block.style.left = ((starttime / this.max) * 100) + '%';
+		block.style.right = (100 - ((starttime + stop.duration) / this.max) * 100) + '%';
 		block.style.background = stop.color;
 		block.className = 'tgraph-block';
 
@@ -261,6 +262,7 @@ TGraph.prototype = {
 			lastHost = cHost;
 
 			time = this.start;
+			running_duration = 0;
 			laststate = '';
 
 			this.height += 40;
@@ -270,7 +272,7 @@ TGraph.prototype = {
 				this.stops[y][i].duration = this.stops[y][i].duration * 1000;
 				this.stops[y][i].index = i;
 
-				this.stops[y][i].block = this.createBlock(this.stops[y][i]);
+				this.stops[y][i].block = this.createBlock(this.stops[y][i], running_duration);
 
 				if ((this.stops[y][i].duration / this.max) < 0.03 && this.upscale === true) {
 
@@ -321,6 +323,7 @@ TGraph.prototype = {
 				line.appendChild(this.stops[y][i].block);
 
 				time += this.stops[y][i].duration;
+				running_duration += this.stops[y][i].duration;
 
 			}
 
