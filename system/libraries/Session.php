@@ -65,17 +65,6 @@ class Session_Core {
 			// Create a new session
 			$this->create();
 
-			if (self::$config['regenerate'] > 0 AND ($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
-			{
-				// Regenerate session id and update session cookie
-				$this->regenerate();
-			}
-			else
-			{
-				// Always update session cookie to keep the session alive
-				cookie::set(self::$config['name'], $_SESSION['session_id'], self::$config['expiration']);
-			}
-
 			// Close the session just before sending the headers, so that
 			// the session cookie(s) can be written.
 			Event::add('system.send_headers', array($this, 'write_close'));
@@ -213,40 +202,6 @@ class Session_Core {
 
 		// Set the new data
 		self::set($vars);
-	}
-
-	/**
-	 * Regenerates the global session id.
-	 *
-	 * @return  void
-	 */
-	public function regenerate()
-	{
-		if (PHP_SAPI == 'cli')
-			return;
-		if (self::$config['driver'] === 'native')
-		{
-			// Generate a new session id
-			// Note: also sets a new session cookie with the updated id
-			session_regenerate_id(TRUE);
-
-			// Update session with new id
-			$_SESSION['session_id'] = session_id();
-		}
-		else
-		{
-			// Pass the regenerating off to the driver in case it wants to do anything special
-			$_SESSION['session_id'] = self::$driver->regenerate();
-		}
-
-		// Get the session name
-		$name = session_name();
-
-		if (isset($_COOKIE[$name]))
-		{
-			// Change the cookie value to match the new session id to prevent "lag"
-			$_COOKIE[$name] = $_SESSION['session_id'];
-		}
 	}
 
 	/**

@@ -37,7 +37,6 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
-		Session::instance()->regenerate();
 		$this->template = $this->add_view('login');
 		$this->template->error_msg = $this->session->get('error_msg', false);
 		$this->template->js_header = $this->add_view('js_header');
@@ -94,7 +93,7 @@ class Default_Controller extends Ninja_Controller  {
 			if ($res !== true) {
 				return url::redirect($res);
 			}
-				
+
 			$requested_uri = Session::instance()->get('requested_uri', false);
 			# make sure we don't end up in infinite loop
 			# if user managed to request show_login
