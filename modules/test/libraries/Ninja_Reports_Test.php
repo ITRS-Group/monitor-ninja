@@ -431,7 +431,7 @@ class Ninja_Reports_Test_Core extends Status_Reports_Model
 						continue;
 					}
 					foreach ($sub_correct as $sk => $sv) {
-						if (!isset($sub['states'])) {
+						if (!isset($sub['states']) || !isset($sub['states'][$sk])) {
 							$failed["$sub_name;$sk"] = "expected=$sv; lib_reports=(not set)";
 							continue;
 						}
