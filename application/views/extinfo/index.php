@@ -240,7 +240,7 @@ if (!empty($widgets)) {
 		?>
 		<tr>
 			<td class="dark"><?php echo _('Status information'); ?></td>
-			<td style="white-space: normal" id="field_plugin_output"><?php echo $output ?></td>
+			<td style="white-space: normal" id="field_plugin_output"><?php echo security::xss_clean($output) ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
@@ -345,7 +345,7 @@ if (!empty($widgets)) {
 				if (substr($variable, 0, 6) !== 'OP5H__') { ?>
 				<tr>
 					<td class="dark">_<?php echo $variable ?></td>
-					<td><?php echo link::linkify($value) ?></td>
+					<td><?php echo link::linkify(security::xss_clean($value)) ?></td>
 				</tr>
 		<?php
 				}
