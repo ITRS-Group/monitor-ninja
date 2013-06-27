@@ -11,11 +11,20 @@ global_vars {
 }
 
 test 1: using SLA - Group availability {
-	use_average = 0
+	sla_mode = 0
 
 	correct {
 		TOTAL_TIME_UP   = 20000
 		TOTAL_TIME_DOWN = 10000
+	}
+}
+
+test 1: using SLA - average {
+	sla_mode = 1
+
+	correct {
+		TOTAL_TIME_UP   = 25000
+		TOTAL_TIME_DOWN = 5000
 	}
 }
 
