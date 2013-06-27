@@ -18,7 +18,6 @@ class Reports_Controller extends Base_reports_Controller
 	private $status_link = "status/host/";
 	private $history_link = "alert_history/generate";
 
-	protected $trends_graph_model = false; /**< A mostly useless instance of the trends graph model - wasn't this replaced by tgraph? */
 
 	private static $sla_field_names = array(
 		'hosts' => 'PERCENT_TOTAL_TIME_UP',
@@ -34,7 +33,6 @@ class Reports_Controller extends Base_reports_Controller
 	{
 		$this->setup_options_obj($input);
 		$reports_model = new Status_Reports_Model($this->options);
-		$this->trends_graph_model = new Trends_graph_Model();
 
 		# check if we have all required parts installed
 		if (!$reports_model->_self_check()) {
@@ -174,7 +172,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->setup_options_obj($input);
 
 		$reports_model = new Status_Reports_Model($this->options);
-		$this->trends_graph_model = new Trends_graph_Model();
 
 		# check if we have all required parts installed
 		if (!$reports_model->_self_check()) {
@@ -505,9 +502,7 @@ class Reports_Controller extends Base_reports_Controller
 			$template->trends_graph->graph_end_date = $this->options['end_time'];
 			$template->trends_graph->use_scaling = $this->options['include_trends_scaling'];
 			$template->trends_graph->obj_type = $sub_type;
-			$template->trends_graph->graph_pure_data = $this->trends_graph_model->format_graph_data(
-				$graph_data
-			);
+			$template->trends_graph->graph_pure_data = Trends_graph_Model::format_graph_data($graph_data);
 		}
 
 		$this->template->inline_js = $this->inline_js;

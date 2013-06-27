@@ -13,7 +13,7 @@ class Trends_graph_Model extends Model
 	* @return $data_chart Formated data to fit trends graph
 	*/
 
-	public function format_graph_data ($data){
+	static public function format_graph_data ($data){
 
 		$data_chart = array();
 		$events = current($data);
