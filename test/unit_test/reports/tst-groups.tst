@@ -17,6 +17,23 @@ Group availability including soft states {
 		TIME_DOWN_UNSCHEDULED = 3600
 	}
 }
+
+Group availability including soft states, excluding OK {
+	start_time = 1202684400
+	end_time = 1202770800
+	host_filter_status {
+		0 = -2
+	}
+	host_name {
+		testhost
+		testhost2
+	}
+	correct {
+		TIME_EXCLUDED_UNSCHEDULED = 82800
+		TIME_DOWN_UNSCHEDULED = 3600
+	}
+}
+
 Group availability including soft states (hostgroups) {
 	start_time = 1202684400
 	end_time = 1202770800

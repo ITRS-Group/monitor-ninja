@@ -89,7 +89,7 @@ abstract class StateCalculator
 	public function initialize($initial_state, $initial_depth, $is_running)
 	{
 		$this->st_running = $is_running;
-		$this->st_obj_state = $this->filter_excluded_state($initial_state);
+		$this->st_obj_state = $initial_state;
 		$this->st_dt_depth = $initial_depth;
 
 		if ($this->options['service_description'] || $this->options['servicegroup']) {
@@ -136,21 +136,6 @@ abstract class StateCalculator
 			if (!empty($servicename) && is_string($servicename))
 				$this->prev_row['service_description'] = $servicename;
 		}
-	}
-
-
-	/**
-	 * Manually excluded states are excluded here.
-	 *
-	 * @param $state int
-	 * @return int
-	 */
-	protected function filter_excluded_state($state) {
-		if ($this->st_is_service && isset($this->options['service_filter_status'][$state]))
-			return $this->options['service_filter_status'][$state];
-		if (!$this->st_is_service && isset($this->options['host_filter_status'][$state]))
-			return $this->options['host_filter_status'][$state];
-		return $state;
 	}
 
 	/**

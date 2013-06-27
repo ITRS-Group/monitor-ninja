@@ -27,6 +27,6 @@ class BestStateCalculator extends WorstStateCalculator
 			}
 		}
 
-		$this->st_obj_state = $this->filter_excluded_state($final_state);
+		$this->st_obj_state = $final_state;
 	}
 }

@@ -19,7 +19,7 @@ class SingleStateCalculator extends StateCalculator
 			$this->st_log = array();
 		}
 
-		$this->st_real_state = $this->st_obj_state;
+		$this->st_real_state = $initial_state;
 		# Warning: PHP sucks.
 		# In this particular instance, everything array-related breaks if the
 		# array is stored in an array object. Hence, recover and then call current()
@@ -33,7 +33,6 @@ class SingleStateCalculator extends StateCalculator
 			$arr = $this->options['host_name'];
 			$this->host_name = $this->st_source = current($arr);
 		}
-		$this->calculate_object_state();
 	}
 
 	/**
@@ -105,7 +104,6 @@ class SingleStateCalculator extends StateCalculator
 			# never decrement if we're already at 0.
 			if ($this->st_dt_depth) {
 				$this->st_dt_depth--;
-				$this->calculate_object_state();
 			}
 			break;
 		 case Reports_Model::SERVICECHECK:
@@ -124,6 +122,20 @@ class SingleStateCalculator extends StateCalculator
 		$this->calculate_object_state();
 		# TODO: Ahrm...
 		$this->st_update_log($row);
+	}
+
+	/**
+	 * Manually excluded states are excluded here.
+	 *
+	 * @param $state int
+	 * @return int
+	 */
+	protected function filter_excluded_state($state) {
+		if ($this->st_is_service && isset($this->options['service_filter_status'][$state]))
+			return $this->options['service_filter_status'][$state];
+		else if (isset($this->options['host_filter_status'][$state]))
+			return $this->options['host_filter_status'][$state];
+		return $state;
 	}
 
 	/**

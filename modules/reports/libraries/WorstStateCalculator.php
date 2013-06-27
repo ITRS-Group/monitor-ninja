@@ -114,7 +114,7 @@ class WorstStateCalculator extends StateCalculator
 			}
 		}
 
-		$this->st_obj_state = $this->filter_excluded_state($final_state);
+		$this->st_obj_state = $final_state;
 	}
 
 	public function get_data()
