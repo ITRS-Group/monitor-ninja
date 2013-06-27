@@ -564,51 +564,51 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			return false;
 		}
 		switch ($this->properties[$key]['type']) {
-			case 'bool':
-			       if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
+		 case 'bool':
+			if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
 				$value = true;
-			       else
+			else
 				$value = false;
-			       if (!is_bool($value))
+			if (!is_bool($value))
 				return false;
-			       break;
-			case 'int':
-			       if (!is_numeric($value) || $value != intval($value))
+			break;
+		 case 'int':
+			if (!is_numeric($value) || $value != intval($value))
 				return false;
-			       $value = intval($value);
-			       break;
-			case 'string':
-			       if (!is_string($value))
+			$value = intval($value);
+			break;
+		 case 'string':
+			if (!is_string($value))
 				return false;
-			       break;
-			case 'objsel':
-			       if ($value == self::ALL_AUTHORIZED)
+			break;
+		 case 'objsel':
+			if ($value == self::ALL_AUTHORIZED)
 				return true;
-			case 'array':
-			       if (!is_array($value))
+		 case 'array':
+			if (!is_array($value))
 				return false;
-			       break;
-			case 'timestamp':
-			       if (!is_numeric($value)) {
-				if (strstr($value, '-') === false)
-					return false;
-				$value = strtotime($value);
-				if ($value === false)
-					return false;
-			       }
-			       break;
-			case 'object':
-			       if (!is_object($value)) {
+			break;
+		 case 'timestamp':
+			if (!is_numeric($value)) {
+			if (strstr($value, '-') === false)
 				return false;
-			       }
-			       break;
-			case 'enum':
-			       if (!isset($this->properties[$key]['options'][$value]))
+			$value = strtotime($value);
+			if ($value === false)
 				return false;
-			       break;
-			default:
-			       # this is an exception and should never ever happen
-			       return false;
+			}
+			break;
+		 case 'object':
+			if (!is_object($value)) {
+				return false;
+			}
+			break;
+		 case 'enum':
+			if (!isset($this->properties[$key]['options'][$value]))
+				return false;
+			break;
+		 default:
+			# this is an exception and should never ever happen
+			return false;
 		}
 		return true;
 	}
@@ -625,21 +625,10 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			if (!$this->calculate_time($value))
 				return false;
 			break;
-		 # lots of fallthroughs. lowest must come first
-		 case 'state_types': case 'alert_types':
-			if ($value > 3)
-				return false;
-		 case 'host_states':
-			if ($value > 7)
-				return false;
-		 case 'service_states':
-			if ($value > 15)
-				return false;
 		 case 'summary_items':
 			if ($value < 0)
 				return false;
 			break;
-		 # fallthrough end
 		 case 'host_filter_status':
 			$value = array_intersect_key($value, Reports_Model::$host_states);
 			$value = array_filter($value, function($val) {
