@@ -130,11 +130,11 @@ TGraph.prototype = {
 	},
 
 	parseNiceTime: function (date) {
-		return this.formatNumber(date.getHours()) + ':' +
-			this.formatNumber(date.getMinutes()) + ' ' +
-			date.getFullYear() +'-'+
+		return date.getFullYear() +'-'+
 			this.formatNumber((date.getMonth() + 1)) + '-' +
-			this.formatNumber(date.getDate());
+			this.formatNumber(date.getDate()) + ' ' +
+			this.formatNumber(date.getHours()) + ':' +
+			this.formatNumber(date.getMinutes());
 	},
 
 	parseNiceTimeHigh: function (date) {
