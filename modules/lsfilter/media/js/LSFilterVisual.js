@@ -619,6 +619,16 @@ var lsfilter_visual = {
 			lsfilter_visual.update_query_delayed();
 			return false;
 		});
+
+
+		/*
+		 * Start up with an "[hosts] all"-filter. Used as fallback if first
+		 * update is unparsable
+		 */
+		this.update({
+			source: "init",
+			query: "[hosts] all"
+		});
 	},
 
 	fields : null,
