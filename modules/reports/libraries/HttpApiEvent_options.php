@@ -209,8 +209,6 @@ class HttpApiEvent_options extends Report_options {
 		$type = $row['service_description'] ? 'service' : 'host';
 		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
 		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
-		$row['hard'] = (int) $row['hard'];
-		$row['retry'] = (int) $row['retry'];
 
 		// rename properties
 		$row['in_scheduled_downtime'] = (int) $row['downtime_depth'];
