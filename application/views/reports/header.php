@@ -79,11 +79,11 @@
 			echo '<p>'.reports::get_included_states($options['report_type'], $options).'</p>';
 			echo '<p>'.sprintf(_('Counting scheduled downtime as %s'), $options->get_value('scheduleddowntimeasuptime')).'</p>';
 		}
-		if (isset($options->options['assumestatesduringnotrunning']) && $options->options['assumestatesduringnotrunning'])
+		if ($options['assumestatesduringnotrunning'])
 			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
-		if (isset($options->options['use_average']))
+		if ($options['use_average'])
 			echo '<p>'._('Using averages').'</p>';
-		if (isset($options->options['includesoftstates']))
+		if ($options['includesoftstates'])
 			echo '<p>'._('Including soft states').'</p>';
 		if (isset($options->options['alert_types']) && ($this->type == 'summary' || $options['include_alerts'] || $options['include_summary'])) {
 			// summary, or op5reports bundled summary:
