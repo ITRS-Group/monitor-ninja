@@ -105,7 +105,7 @@ mkdir -p -m 775 %buildroot%prefix/application/logs
 cp -r * %buildroot%prefix
 for d in op5build monitor-ninja.spec ninja.doxy src Makefile \
 	php2doxy.sh example.htaccess cli-helpers/apr_md5_validate.c \
-	README docs/README
+	README docs/README xdoc
 do
 	rm -rf %buildroot%prefix/$d
 done
