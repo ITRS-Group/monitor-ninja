@@ -171,7 +171,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$this->template = $this->add_view('backup/backup');
 
-		$file = strftime('backup-%Y-%m-%d_%H.%M');
+		$file = strftime('backup-%Y-%m-%d_%H.%M.%S');
 		$output = array();
 		exec($this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
 			. ' ' . implode(' ', $this->files2backup), $output, $status);
