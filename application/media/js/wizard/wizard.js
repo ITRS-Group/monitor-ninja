@@ -278,7 +278,7 @@
 
 	window.Wizard.prototype = {
 
-		error: (function () {
+		'error': (function () {
 
 			var error_html	= '<h1>Error</h1>';
 			error_html		+= '<p class="wizard-note">The wizard seems to have encountered a problem! <br />';
@@ -303,7 +303,7 @@
 
 		}) (),
 
-		routines: function () {
+		'routines': function () {
 
 			var self = this;
 
@@ -334,13 +334,13 @@
 
 		},
 
-		save: function () {
+		'save': function () {
 
 			this.wml( 'save' );
 
 		},
 
-		adjust: function ( slow ) {
+		'adjust': function ( slow ) {
 
 			slow = slow || false;
 
@@ -355,7 +355,7 @@
 
 		},
 
-		detail: function ( summary, detail ) {
+		'detail': function ( summary, detail ) {
 
 			var self = this;
 
@@ -377,7 +377,7 @@
 
 		},
 
-		parseVarDefs: function ( string ) {
+		'parseVarDefs': function ( string ) {
 
 			function replacer ( match ) {
 				var prop = match.replace(/%/gi, '');
@@ -389,7 +389,7 @@
 			return string;
 		},
 
-		map: function ( step, what ) {
+		'map': function ( step, what ) {
 
 			var mappable = step.find( what ),
 				newNode, oldNode,
@@ -522,7 +522,7 @@
 
 		},
 
-		api: (function () {
+		'api': (function () {
 
 			var datas = {};
 
@@ -587,7 +587,7 @@
 
 		}) (),
 
-		mapping: function ( step ) {
+		'mapping': function ( step ) {
 
 			var mapping;
 
@@ -600,12 +600,12 @@
 
 		},
 
-		getTitle: function () {
+		'getTitle': function () {
 			return capitalize( this.maintitle ) + ' - ' + 
 					capitalize( this.steps[ this.step ].title );
 		},
 
-		next: function ( e, novalidation ) {
+		'next': function ( e, novalidation ) {
 
 			if ( !novalidation ) {
 				if ( !this.validate() ) {
@@ -656,14 +656,14 @@
 
 		},
 
-		last: function (e) {
+		'last': function (e) {
 
 			this.step -= 2;
 			this.next( null, true );
 
 		},
 
-		close: function (e) {
+		'close': function (e) {
 			if ( Wizard.all.length > 0 ) {
 				if ( confirm('Closing this window will remove all changes not saved,\nare you sure you want to close the wizard?') ) {
 					this.overlay.remove();
@@ -679,7 +679,7 @@
 			}
 		},
 
-		continue: function ( e, novalidation ) {
+		'continue': function ( e, novalidation ) {
 
 			if ( this.validate() || novalidation == true ) {
 
@@ -699,7 +699,7 @@
 
 		},
 
-		validate: ( function () {
+		'validate': ( function () {
 
 			function validateText ( input ) {
 
@@ -801,7 +801,7 @@
 
 		} ) (),
 
-		proceed: function ( e ) {
+		'proceed': function ( e ) {
 
 			if ( this.validate() ) {
 
@@ -825,7 +825,7 @@
 
 		},
 
-		button: function ( action, prepend ) {
+		'button': function ( action, prepend ) {
 
 			var button = $('<button>'),
 				self = this;
@@ -850,7 +850,7 @@
 
 		},
 
-		actions: function () {
+		'actions': function () {
 
 			this.buttons.html('');
 
@@ -863,14 +863,14 @@
 
 		},
 
-		abort: function () {
+		'abort': function () {
 			if ( confirm("This will remove the current object you are creating and return you to the first step, it will not affect already finished objects.") ) {
 				this.object = {};
-				this.continue( null, true );
+				this['continue']( null, true );
 			}
 		},
 
-		progress: function () {
+		'progress': function () {
 
 			this.progressbar.css(
 				'width',
@@ -881,7 +881,7 @@
 
 		},
 
-		parse: function ( fragment ) {
+		'parse': function ( fragment ) {
 
 			var fragments = fragment.match( /\<step((.|\n|\r)*?)\<\/step\>/gi ),
 				step;
@@ -914,7 +914,7 @@
 
 		},
 
-		wml: function ( wml ) {
+		'wml': function ( wml ) {
 
 			/* 
 
