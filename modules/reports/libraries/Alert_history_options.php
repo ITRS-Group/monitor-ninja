@@ -1,9 +1,22 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-
 /**
  * Report options for alert history reports. Alert history reports are specialized summary reports.
  */
 class Alert_history_options extends Summary_options {
+	/**
+	 * Callback helper for getting the bitmask host/service states into array form
+	 */
+	function rewrite_states($name, $value, $obj) {
+		if (is_array($value))
+			return $value;
+		$res = array();
+		foreach ($obj->properties[$name]['options'] as $bit => $_) {
+			if ($value & $bit)
+				$res[$bit] = $bit;
+		}
+		return $res;
+	}
+
 	public function setup_properties() {
 		parent::setup_properties();
 		$this->properties['host_states']['type'] = 'array';
@@ -27,6 +40,9 @@ class Alert_history_options extends Summary_options {
 			4 => _('Critical'),
 			8 => _('Unknown'),
 		);
+
+		$this->rename_options['service_states'] = array($this, 'rewrite_states');
+		$this->rename_options['host_states'] = array($this, 'rewrite_states');
 	}
 
 	protected function update_value($name, $value)
