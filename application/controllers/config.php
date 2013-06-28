@@ -177,6 +177,7 @@ class Config_Controller extends Authenticated_Controller {
 					_('Default Contact Groups'),
 					_('Enable Notifications'),
 					_('Notification Interval'),
+					_('First Notification Delay'),
 					//_('Notification Options'),
 					_('Notification Period'),
 					_('Event Handler'),
@@ -229,6 +230,7 @@ class Config_Controller extends Authenticated_Controller {
 
 						$result[$i][]= $row->notifications_enabled == 1 ? _('Yes') : _('No');
 						$result[$i][]= $row->notification_interval == 0 ? _('No Re-notification') : $row->notification_interval;
+						$result[$i][]= time::to_string($row->first_notification_delay);
 						//$notification_options = explode(',',$row->notification_options);
 						//$tmp = array();
 						//foreach($notification_options as $option) {
