@@ -310,14 +310,18 @@ class Reports_Controller extends Base_reports_Controller
 		$this->inline_js .= "set_selection('{$this->options['report_type']}');\n";
 
 		$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
-				'TOTAL_TIME_DOWN' => _('Down'),
-				'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
-				'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
+			'TOTAL_TIME_DOWN' => _('Down'),
+			'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
+			'TOTAL_TIME_UNDETERMINED' => _('Undetermined'),
+			'TOTAL_TIME_EXCLUDED' => 'EXCLUDE',
+		);
 		$service_graph_items = array('TOTAL_TIME_OK' => _('Ok'),
-				'TOTAL_TIME_WARNING' => _('Warning'),
-				'TOTAL_TIME_UNKNOWN' => _('Unknown'),
-				'TOTAL_TIME_CRITICAL' => _('Critical'),
-				'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
+			'TOTAL_TIME_WARNING' => _('Warning'),
+			'TOTAL_TIME_UNKNOWN' => _('Unknown'),
+			'TOTAL_TIME_CRITICAL' => _('Critical'),
+			'TOTAL_TIME_UNDETERMINED' => _('Undetermined'),
+			'TOTAL_TIME_EXCLUDED' => 'EXCLUDE',
+		);
 		$graph_filter = ${$sub_type.'_graph_items'};
 
 		$template->header = $this->add_view('reports/header');
@@ -352,7 +356,6 @@ class Reports_Controller extends Base_reports_Controller
 						if ($data['states'][$key]!=0)
 							$image[strtoupper($val)] = $data['states'][$key];
 					}
-					$image['EXCLUDE'] = $data['tot_time'] - array_sum($image);
 					$data_str[] = array(
 						'img' => http_build_query($image),
 						'host' => isset($data['groupname'])?implode(', ', $data['groupname']):'',
@@ -397,7 +400,6 @@ class Reports_Controller extends Base_reports_Controller
 									if ($data['states'][$key]!=0)
 										$image_data[strtoupper($val)] = $data['states'][$key];
 								}
-								$image_data['EXCLUDE'] = $data['tot_time'] - array_sum($image_data);
 							}
 
 							if ($image_data) {
