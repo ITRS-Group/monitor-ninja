@@ -274,6 +274,7 @@ Feature: Availability reports
 		And I should see "Group availability (Worst state)"
 		And I shouldn't see "Summary of selected"
 		And I shouldn't see "Summary of all"
+		And I shouldn't see "Including soft states"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
