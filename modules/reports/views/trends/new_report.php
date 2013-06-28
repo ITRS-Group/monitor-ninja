@@ -73,4 +73,7 @@
 		});
 
 	</script>
+	<?php if ($included && $skipped) {
+		printf(_("<p>Not showing %d graphs due to being 100%% OK</p>"), $skipped);
+	} ?>
 </div>

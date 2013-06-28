@@ -486,13 +486,21 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		if($this->options['include_trends']) {
+			$skipped = 0;
+			$included = 0;
 			$graph_data = array();
 			foreach ($data_arr as $data) {
 				if (!is_array($data) || !isset($data['states']))
 					continue;
 				foreach ($data as $obj) {
-					if (is_array($obj) && isset($obj['log']))
-						$graph_data[$obj['source']] = $obj['log'];
+					if (!is_array($obj) || !isset($obj['log']))
+						continue;
+					if (($sub_type == 'host' && $obj['states']['PERCENT_TOTAL_TIME_UP'] == 100) || ($sub_type == 'service' && $obj['states']['PERCENT_TOTAL_TIME_OK'] == 100)) {
+						$skipped++;
+						continue;
+					}
+					$graph_data[$obj['source']] = $obj['log'];
+					$included++;
 				}
 			}
 
@@ -500,6 +508,8 @@ class Reports_Controller extends Base_reports_Controller
 
 			/* New JS trend graph */
 
+			$template->trends_graph->skipped = $skipped;
+			$template->trends_graph->included = $included;
 			$template->trends_graph->graph_start_date = $this->options['start_time'];
 			$template->trends_graph->graph_end_date = $this->options['end_time'];
 			$template->trends_graph->use_scaling = $this->options['include_trends_scaling'];
