@@ -211,6 +211,25 @@ TGraph.prototype = {
 
 	},
 
+	/**
+	 * The subline's sub-blocks all currently have coordinates relative to the line, they must be translated
+	 * into coordinates relativeto the subline.
+	 * The subline itself should have a width of (length of interruption * 2) and be neatly centered.
+	 */
+	rescaleSubline: function (subline) {
+		var scale_from = parseFloat(subline.style.left.slice(0,-1));
+		var scale_to = 100 - parseFloat(subline.style.right.slice(0,-1));
+		for (var si = 0; si < subline.children.length; si++) {
+			var child = subline.children[si];
+			var orig_from = parseFloat(child.style.left.slice(0,-1));
+			var orig_to = 100 - parseFloat(child.style.right.slice(0,-1));
+			child.style.left = (((orig_from - scale_from) / (orig_to - scale_from)) * 100) + '%';
+			child.style.right = (100 - ((orig_to - scale_from) / (orig_to - scale_from)) * 100) + '%';
+		}
+		subline.style.left = Math.max(0, scale_from - (scale_to - scale_from) / 2) + '%';
+		subline.style.right = 100 - Math.min(100, scale_to + (scale_to - scale_from) / 2) + '%';
+	},
+
 	create: function () {
 
 		var time = null,
@@ -218,10 +237,11 @@ TGraph.prototype = {
 			line = null,
 			graph = null,
 			lclone = null,
-			subline = document.createElement('div'),
+			subline = null,
 			clear = document.createElement('div'),
 			skew = 0,
-			i = 0;
+			i = 0,
+			running_duration = 0;
 
 		clear.style.clear = 'both';
 		this.start = this.max * 1000;
@@ -240,6 +260,7 @@ TGraph.prototype = {
 
 			graph = document.createElement('div');
 			line = document.createElement('div');
+			subline = document.createElement('div');
 			i = 0;
 
 			graph.className = 'tgraph';
@@ -273,49 +294,24 @@ TGraph.prototype = {
 				this.stops[y][i].block = this.createBlock(this.stops[y][i], running_duration);
 
 				if ((this.stops[y][i].duration / this.max) < 0.03 && this.upscale === true) {
-
 					clone = this.stops[y][i].block.cloneNode(true);
-					swidth = (parseFloat(this.stops[y][i].block.style.width) * 20);
-					if (swidth < 2) swidth = 2;
-
-					clone.style.width =  swidth + '%';
-					subline.appendChild(clone);
 
 					this.stops[y][i].block.style.background = "#333";
 
 					clone.value = this.hoverText(this.stops[y][i], time);
-
-					//this.addHover(this.stops[y][i], clone, time);
-
+					subline.style.right = this.stops[y][i].block.style.right;
+					if (subline.children.length == 0)
+						subline.style.left = this.stops[y][i].block.style.left;
+					subline.appendChild(clone);
 				} else {
-
 					if (subline.children.length > 0) {
-
-						nwidth = 0;
-
-						if (this.stops[y][i - 1]) {
-
-							this.stops[y][i - 1].block.appendChild(subline);
-							children = this.stops[y][i - 1].block.children[0].children;
-
-							for (var x = 0; x < children.length; x += 1) {
-								child = children[x]
-								if (child.className) {
-									nwidth += parseFloat(child.style.width);
-									child.style.width = Math.floor(parseFloat(child.style.width)) + 'px';
-								}
-							}
-
-							subline.style.width = Math.ceil(nwidth) + 'px';
-							subline.style.marginLeft = '-' + ((nwidth / 2) + 1) + 'px';
-						}
-
+						this.rescaleSubline(subline)
+						line.appendChild(subline);
 						subline = document.createElement('div');
 						subline.className = 'tgraph-subline';
 					}
 
 					this.stops[y][i].block.value = this.hoverText(this.stops[y][i], time);
-					//this.addHover(this.stops[y][i], this.stops[y][i].block, time);
 				}
 
 				line.appendChild(this.stops[y][i].block);
@@ -324,6 +320,10 @@ TGraph.prototype = {
 				running_duration += this.stops[y][i].duration;
 
 			}
+					if (subline.children.length > 0) {
+						this.rescaleSubline(subline)
+						line.appendChild(subline);
+					}
 
 			if (!document.addEventListener) {
 				var clear = document.createElement('div');

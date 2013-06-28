@@ -55,9 +55,14 @@
 }
 
 .tgraph .tgraph-subline {
-	position: relative;
+	position: absolute;
 	margin-top: -12px;
 	outline: 1px solid #fff;
+	height: 10px;
+	min-width: 3px;
+}
+
+.tgraph .tgraph-subline .tgraph-block {
 	height: 10px;
 }
 
