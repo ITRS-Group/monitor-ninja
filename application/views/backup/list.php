@@ -6,7 +6,7 @@ function backup(){
 		if ($(this).find('span').hasClass('ok'))
 		{
 			var file = $('#backupfilename').text();
-			if ($('#backups tbody tr:first a:first').text() != file)
+			if ($('#backups tbody tr:first a:first').text() != file && !$('.download:contains('+file+')').length) {
 				$('#backups tbody tr:nth-child(2)').before('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
@@ -18,6 +18,7 @@ function backup(){
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'),
 						array('alt' => _('Delete'), 'title' => _('Delete'))); ?></a>'
 					+ '</td>' + '<td><a class="download" href="<?php echo url::base(); ?>index.php/backup/download/' + file + '">' + file + '</a></td></tr>');
+			}
 		}
 	});
 }
@@ -43,7 +44,13 @@ $(document).ready(function() {
 		}
 	});
 });
+
 $('#verify').live('click', function(){
+	if(status) {
+		alert("Already performing an action ("+status+"), try again soon");
+		return false;
+	}
+
 	var link = $(this);
 	status = 'saving';
 	$('#backupstatus').load($(link).attr('href'), function(){
@@ -55,6 +62,10 @@ $('#verify').live('click', function(){
 });
 
 $('a.restore').live('click', function(ev){
+	if(status) {
+		alert("Already performing an action ("+status+"), try again soon");
+		return false;
+	}
 	var link = $(this);
 	if(link.data('cancelled')) {
 		link.removeData('cancelled');
