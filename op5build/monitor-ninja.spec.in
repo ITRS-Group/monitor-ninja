@@ -103,8 +103,9 @@ mkdir -p -m 775 %buildroot%prefix/application/logs
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
-for d in op5build monitor-ninja.spec \
-	php2doxy.sh example.htaccess
+for d in op5build monitor-ninja.spec ninja.doxy src Makefile \
+	php2doxy.sh example.htaccess cli-helpers/apr_md5_validate.c \
+	README docs/README
 do
 	rm -rf %buildroot%prefix/$d
 done
