@@ -103,7 +103,7 @@ mkdir -p -m 775 %buildroot%prefix/application/logs
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
-for d in op5build monitor-ninja.spec ninja.doxy src \
+for d in op5build monitor-ninja.spec ninja.doxy \
 	php2doxy.sh example.htaccess cli-helpers/apr_md5_validate.c \
 	README docs/README xdoc
 do
@@ -205,12 +205,14 @@ done
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyc
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyo
 %attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
+%exclude %prefix/src
 %exclude %prefix/test
 %exclude %prefix/modules/test
 %exclude %prefix/Makefile
 
 %files test
 %defattr(-,monitor,%daemon_group)
+%prefix/src
 %prefix/test
 %prefix/modules/test
 %prefix/Makefile
