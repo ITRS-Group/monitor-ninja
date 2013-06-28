@@ -33,6 +33,8 @@ class SingleStateCalculator extends StateCalculator
 			$arr = $this->options['host_name'];
 			$this->host_name = $this->st_source = current($arr);
 		}
+		$this->calculate_object_state();
+		$this->prev_row['state'] = $this->st_obj_state;
 	}
 
 	/**
