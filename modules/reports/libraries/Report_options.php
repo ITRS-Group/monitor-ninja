@@ -838,12 +838,13 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				$report_info['report_period'] == 'custom'
 			) {
 
-			if(!isset($report_info['time_start'])) {
+			if(!isset($report_info['time_start']) || $report_info['time_start'] === "") {
 				$report_info['time_start'] = "00:00";
 			}
-			if(!isset($report_info['time_end'])) {
+			if(!isset($report_info['time_end']) || $report_info['time_end'] === "") {
 				$report_info['time_end'] = "23:59";
 			}
+
 			$report_info['start_time'] = DateTime::createFromFormat(
 				nagstat::date_format(),
 				$report_info['cal_start'].' '.$report_info['time_start'].':00'

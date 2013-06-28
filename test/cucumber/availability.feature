@@ -321,6 +321,22 @@ Feature: Availability reports
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
 
 	@configuration @asmonitor @reports
+	Scenario: Generate report on custom report date without time specified
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Availability"
+		And I select "LinuxServers" from "Available hostgroups"
+		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		When I select "Custom" from "Reporting period"
+		And I enter "2013-01-02" into "Start date"
+		And I enter "2013-04-03" into "End date"
+		And I select "workhours" from "Report time period"
+		When I click "Show report"
+		Then I should see "Hostgroup breakdown"
+		And I should see "Reporting period: 2013-01-02 00:00:00 to 2013-04-03 23:59:00 - workhours"
+
+	@configuration @asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
