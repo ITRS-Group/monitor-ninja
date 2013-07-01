@@ -295,7 +295,7 @@ TGraph.prototype = {
 
 				this.stops[y][i].block = this.createBlock(this.stops[y][i], running_duration);
 
-				if ((this.stops[y][i].duration / this.max) < 0.03 && this.upscale === true) {
+				if (this.upscale === true && (this.stops[y][i].duration / this.max) < 0.03 && this.stops[y][i].color != 'transparent') {
 					clone = this.stops[y][i].block.cloneNode(true);
 
 					this.stops[y][i].block.style.background = "#333";
