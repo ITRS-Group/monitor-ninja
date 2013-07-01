@@ -64,23 +64,13 @@ array(4) {
 							$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
 						}
 
-						if ($uri == $siteuri && false===strpos($data[0],'?')) {
-							// Only highlight link if not containing a "?"-mark. Otherwise links to listview (which can change without page reload) behave strange.
-							$linkstring .= "<li class='active'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
-							if (strpos($icon_image, '.') !== false)
-								$linkstring .= "<span class='icon-menu-dark' style='background-image: url(".ninja::add_path('icons/menu-dark/'.$icon_image, $module_name).")'></span>";
-							else
-								$linkstring .= "<span class='icon-menu-dark menu-dark-".$icon_image."'></span>";
-							$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
-							$in_menu = true;
-						} else {
-							$linkstring .= "<li class='nav-seg'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
-							if (strpos($icon_image, '.') !== false)
-								$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$icon_image, $module_name).")'></span>";
-							else
-								$linkstring .= "<span class='icon-menu menu-".$icon_image."'></span>";
-							$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
-						}
+						$linkstring .= "<li class='nav-seg'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
+						if (strpos($icon_image, '.') !== false)
+							$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$icon_image, $module_name).")'></span>";
+						else
+							$linkstring .= "<span class='icon-menu menu-".$icon_image."'></span>";
+						$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
+
 
 						$i++;
 
