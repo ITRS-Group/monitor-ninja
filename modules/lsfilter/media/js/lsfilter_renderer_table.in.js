@@ -289,7 +289,7 @@ listview_renderer_table.services = {
 	},
 	"host_actions" : {
 		"header" : _('Host Actions'),
-		"depends" : [ 'host.name', 'host.action_url', 'host.config_url', 'host.notes_url', 'host.config_allowed' ],
+		"depends" : [ 'host.name', 'host.action_url', 'host.config_url', 'host.notes_url' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -307,7 +307,7 @@ listview_renderer_table.services = {
 							_('Perform extra host actions'), $('<a />').attr(
 									'href', args.obj.host.action_url)));
 
-				if (args.obj.host.config_url && args.obj.config_allowed)
+				if (args.obj.host.config_url)
 					cell.append(icon16('nacoma', _('Configure this host'), $(
 							'<a />').attr('href', args.obj.host.config_url)));
 
