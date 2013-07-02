@@ -42,14 +42,6 @@ $kohana_modules = 'modules';
 $kohana_system = 'system';
 
 /**
- * Test to make sure that Kohana is running on PHP 5.2 or newer. Once you are
- * sure that your environment is compatible with Kohana, you can comment this
- * line out. When running an application on a new server, uncomment this line
- * to check the PHP version quickly.
- */
-#version_compare(PHP_VERSION, '5.2', '<') and exit('Kohana requires PHP 5.2 or newer.');
-
-/**
  * Set the error reporting level. Unless you have a special need, E_ALL is a
  * good level for error reporting.
  */

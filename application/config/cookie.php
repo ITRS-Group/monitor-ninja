@@ -29,4 +29,4 @@ $config['secure'] = FALSE;
  * Enable this option to disable the cookie from being accessed when using a
  * secure protocol. This option is only available in PHP 5.2 and above.
  */
-if (version_compare(PHP_VERSION, '5.2', '>=')) $config['httponly'] = FALSE;
+$config['httponly'] = FALSE;
