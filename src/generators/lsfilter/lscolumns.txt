@@ -4,9 +4,14 @@ string      /^("(?:[^"\\]|\\.)*")/
 float       /^([0-9]+\.[0-9]*)/
 integer     /^([0-9]+)/
 
+then        /^(then)(?:[^a-z0-9_][\s\S]*|)$/i
+else        /^(else)(?:[^a-z0-9_][\s\S]*|)$/i
+
+
 all         /^(all|default)(?:[^a-z0-9_][\s\S]*|)$/i
 for         /^(for)(?:[^a-z0-9_][\s\S]*|)$/i
 in          /^(in)(?:[^a-z0-9_][\s\S]*|)$/i
+if          /^(if)(?:[^a-z0-9_][\s\S]*|)$/i
 
 name        /^([a-z0-9_]+)/i
 
@@ -36,11 +41,14 @@ column_custom:      column = custom_name _eq expr
 _custom_name_name:  custom_name = name
 _custom_name_str:   custom_name = string
 
+expr_eq:            expr     = expr1 _eq expr1
 
-expr_add:           expr     = expr _op_add expr2
-expr_sub:           expr     = expr _op_sub expr2
+_expr_0_1:          expr     = expr1
 
-_expr_1_2:          expr     = expr2
+expr_add:           expr1    = expr1 _op_add expr2
+expr_sub:           expr1    = expr1 _op_sub expr2
+
+_expr_1_2:          expr1    = expr2
 
 expr_mult:          expr2    = expr2 _op_mult expr3
 expr_div:           expr2    = expr2 _op_div expr3
@@ -57,8 +65,11 @@ expr_float:         expr4    = float
 
 _expr_par:          expr4    = _par_l expr _par_r
 expr_list_comp:     expr4    = _sq_l expr _for name _in expr _sq_r
+expr_list_comp_if:  expr4    = _sq_l expr _for name _in expr _if expr _sq_r
 
 expr_func:          expr4    = name _par_l expr_list _par_r
+
+expr_if:            expr4    = _if expr _then expr4 _else expr4
 
 expr_list:          expr_list = expr _comma expr_list
 expr_list_end:      expr_list = expr

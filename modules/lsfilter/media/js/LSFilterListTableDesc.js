@@ -148,6 +148,13 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 	};
 
 	// expr_add: expr := * expr op_add expr2
+	this.visit_expr_eq = function(expr0, expr2) {
+		return function(args) {
+			return expr0(args) == expr2(args);
+		};
+	};
+
+	// expr_add: expr := * expr op_add expr2
 	this.visit_expr_add = function(expr0, expr2) {
 		return function(args) {
 			return expr0(args) + expr2(args);
@@ -310,6 +317,21 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		};
 	};
 
+	// expr_list_comp: expr4 := * sq_l expr for name in expr if expr sq_r
+	this.visit_expr_list_comp_if = function(expr1, name3, expr5, expr7) {
+		return function(args) {
+			var list = expr5(args);
+			var result = [];
+			var subargs = $.extend({}, args);
+			for ( var i = 0; i < list.length; i++) {
+				subargs[name3] = list[i];
+				if( expr7(subargs) )
+					result.push(expr1(subargs));
+			}
+			return result;
+		};
+	};
+
 	// expr_func: expr4 := * name par_l expr_list par_r
 	this.visit_expr_func = function(name0, expr_list2) {
 		switch (name0) {
@@ -324,18 +346,6 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				var fargs = expr_list2(args);
 				/* FIXME: test variable types */
 				return format_timestamp(fargs[0]);
-			};
-		case "if":
-			return function(args) {
-				var fargs = expr_list2(args);
-				if (fargs.length != 3) {
-					return "Incorrect argument length of if(match,then,else)";
-				}
-				if (fargs[0]) {
-					return fargs[1];
-				} else {
-					return fargs[2];
-				}
 			};
 		case "idx":
 			return function(args) {
@@ -371,6 +381,15 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			var arr = expr_list2(args);
 			arr.unshift(expr0(args));
 			return arr;
+		}
+	};
+
+	// expr_if: expr4 := * if expr then expr4 else expr4
+	this.visit_expr_if = function(expr1, expr3, expr5) {
+		return function(args) {
+			if( expr1(args) )
+				return expr3(args);
+			return expr5(args);
 		}
 	};
 
