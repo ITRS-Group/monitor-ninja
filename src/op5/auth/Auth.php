@@ -286,25 +286,25 @@ class op5auth {
 		if( $user !== false ) {
 			/* Postprocess login */
 			$user->auth_method = $auth_method;
-			$this->authorize_user( $user, $auth_method );
-			$this->user = $user;
+			if($this->authorize_user( $user, $auth_method )) {
+				$this->user = $user;
 
-			/* Store to session */
-			$this->session_store();
+				/* Store to session */
+				$this->session_store();
 
-			/* Store to APC */
-			if( $apc_tag !== false ) {
-				$this->log->log('debug', 'Storing credentials to cache' );
-				apc_store( $apc_tag, $user->fields, (int) $this->config['apc_ttl'] );
+				/* Store to APC */
+				if( $apc_tag !== false ) {
+					$this->log->log('debug', 'Storing credentials to cache' );
+					apc_store( $apc_tag, $user->fields, (int) $this->config['apc_ttl'] );
+				}
+				return true;
 			}
-			return true;
 		}
-		else {
-			if( $apc_tag !== false ) {
-				$seconds = (int) $this->config['apc_ttl'];
-				$this->log->log('notice', "User '$username' is not authenticated, storing in APC for $seconds seconds to avoid spamming login backend with bad auth");
-				apc_store( $apc_tag, false, $seconds );
-			}
+
+		if( $apc_tag !== false ) {
+			$seconds = (int) $this->config['apc_ttl'];
+			$this->log->log('notice', "User '$username' is not authenticated, storing in APC for $seconds seconds to avoid spamming login backend with bad auth");
+			apc_store( $apc_tag, false, $seconds );
 		}
 		return false;
 	}
