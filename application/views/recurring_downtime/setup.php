@@ -267,9 +267,10 @@ if (isset($saved_info) && !empty($saved_info)) {
 				} ?>
 		<tr class="scheduled_<?php echo $dt_type ?> <?php echo $i%2 == 0 ? 'even' : 'odd'?>" id="schedule_<?php echo $data['id'] ?>">
 			<td><?php
+
 				# limit output but enable possibility to view all
 				$max_objlist_len = 60;
-				$object_list = implode(', ', $data['data'][$objfields[$dt_type]]);
+				$object_list = isset($data['data'][$objfields[$dt_type]])?implode(', ', $data['data'][$objfields[$dt_type]]):'';
 				$object_list_wrap = substr($object_list, 0, $max_objlist_len);
 				if (strlen($object_list_wrap) < strlen($object_list)) {
 					echo '<span class="show_all_subobjects" title="'.
@@ -280,7 +281,7 @@ if (isset($saved_info) && !empty($saved_info)) {
 					echo '<span id="objects_small_'.$data['id'].'">'.$object_list_wrap."... </span>";
 
 					echo '<div id="all_objects_'.$data['id'].'" style="display:none">'.
-						implode(', <br />', $data['data'][$objfields[$dt_type]]);
+						(isset($data['data'][$objfields[$dt_type]])?implode(', <br />', $data['data'][$objfields[$dt_type]]):'').'</div>';
 				} else {
 					echo $object_list;
 				}
