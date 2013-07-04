@@ -74,8 +74,9 @@ class op5auth {
 	/**
 	 * Creates an op5Auth instance.
 	 *
-	 * @param 	$config array 	Elements in the array overrieds the values in the common block of auth config
-	 * @param 	$driver_config array
+	 * @param $config array	Elements in the array overrides the values in the common block of auth config
+	 * @param $driver_config array
+	 * @throws Exception Essential configuration is missing
 	 * @return void
 	 */
 	public function __construct($config = false, $driver_config = false)
