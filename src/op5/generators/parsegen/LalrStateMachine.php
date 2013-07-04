@@ -43,16 +43,17 @@ class LalrStateMachine {
 	private function build_table() {
 		$this->statetable = array();
 		foreach( $this->states as $i => $state ) {
+			/* @var $state LalrState */
 			$transistions = array();
 
 			/* reduce */
 			foreach( $state->closure() as $item ) {
 				if( $item->complete() ) {
 					foreach( $this->grammar->follow( $item->generates() ) as $sym ) {
-						if( isset( $transistions[$sym] ) ) {
-							throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
+						if( !isset( $transistions[$sym] ) ) {
+							$transistions[$sym] = array();
 						}
-						$transistions[$sym] = 'reduce:'.$item->get_name();
+						$transistions[$sym][] = 'reduce:'.$item->get_name();
 					}
 				}
 			}
@@ -60,7 +61,10 @@ class LalrStateMachine {
 			/* shift */
 			foreach( $state->next_symbols() as $sym ) {
 				if( $sym == 'end' ) {
-					$transistions[$sym] = 'accept:';
+					if( !isset( $transistions[$sym] ) ) {
+						$transistions[$sym] = array();
+					}
+					$transistions[$sym][] = 'accept:';
 				} else {
 					$next_state = $state->take( $sym );
 					$j = $this->get_state_id( $next_state );
@@ -68,10 +72,10 @@ class LalrStateMachine {
 						throw new GeneratorException( "ERROR in parser generator, should never happend...");
 					}
 					if( $this->grammar->is_terminal($sym) ) {
-						if( isset( $transistions[$sym] ) ) {
-							throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state );
+						if( !isset( $transistions[$sym] ) ) {
+							$transistions[$sym] = array();
 						}
-						$transistions[$sym] = 'shift:'.$j;
+						$transistions[$sym][] = 'shift:'.$j;
 					}
 				}
 			}
@@ -81,14 +85,29 @@ class LalrStateMachine {
 				$next_state = $state->take( $sym );
 				$j = $this->get_state_id( $next_state );
 				if( $j !== false ) {
-					if( isset( $transistions[$sym] ) ) {
-						throw new GeneratorException( "Disambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state);
+					if( !isset( $transistions[$sym] ) ) {
+						$transistions[$sym] = array();
 					}
-					$transistions[$sym] = 'goto:'.$j;
+					$transistions[$sym][] = 'goto:'.$j;
 				}
 			}
 
-			$this->statetable[$i] = $transistions;
+
+			/* Resolve ambiguities */
+			$resolved_transitions = array();
+			foreach( $transistions as $sym => $trans ) {
+				if(count($trans)>1) {
+					/* TODO: resolve ambiguities depending on rule/token priorities and left/right recursion
+					 * Allowing defined grammar ambiguities and resolving those here makes the parse table smaller and parsing faster.
+					 * Also, the if a then if b else c-ambiguity can be resolved (else has higher priority than if, triggering a shift before reduce)
+					 */
+					throw new GeneratorException( "Ambigous grammar\n".var_export($transistions,true)."\nAdding: $sym\n".$state);
+				} else {
+					$resolved_transitions[$sym] = $trans[0];
+				}
+			}
+
+			$this->statetable[$i] = $resolved_transitions;
 		}
 	}
 
