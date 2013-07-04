@@ -261,7 +261,6 @@ class Command_Controller extends Authenticated_Controller
 				}
 			}
 			else if ($target_type === 'host' && $selector_type === 'hostgroup') {
-var_dump($obj_names);
 				foreach ($obj_names as $gname) {
 					foreach ($ls->getHosts(array('filter' => array('groups' => array('>=' => $gname)), 'columns' => array('name'))) as $row) {
 						$individual_objs[$row['name']] = 1;
@@ -286,7 +285,6 @@ var_dump($obj_names);
 			}
 			$obj_names = $individual_objs;
 		}
-die(1);
 
 		$db = Database::instance();
 		foreach ($obj_names as $obj_name) {
