@@ -261,9 +261,13 @@ class Command_Controller extends Authenticated_Controller
 				}
 			}
 			else if ($target_type === 'host' && $selector_type === 'hostgroup') {
+var_dump($obj_names);
 				foreach ($obj_names as $gname) {
-					$individual_objs = $ls->getHosts(array('filter' => array('groups' => array('>=' => $gname)), 'columns' => 'name'));
+					foreach ($ls->getHosts(array('filter' => array('groups' => array('>=' => $gname)), 'columns' => array('name'))) as $row) {
+						$individual_objs[$row['name']] = 1;
+					}
 				}
+				$individual_objs = array_keys($individual_objs);
 			}
 			else if ($target_type === 'host' && $selector_type === 'servicegroup') {
 				foreach ($obj_names as $gname) {
@@ -282,6 +286,7 @@ class Command_Controller extends Authenticated_Controller
 			}
 			$obj_names = $individual_objs;
 		}
+die(1);
 
 		$db = Database::instance();
 		foreach ($obj_names as $obj_name) {
