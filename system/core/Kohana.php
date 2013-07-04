@@ -1605,6 +1605,8 @@ final class Kohana {
 			try {
 				if( $reflclass )
 					$reflmethod = $reflclass->getMethod($entry['function']);
+				else
+					$reflmethod = new ReflectionFunction($entry['function']);
 			} catch( Exception $e ) {
 				// Don't care about the problem... just don't expand variable names in that case
 				$reflmethod = false;
