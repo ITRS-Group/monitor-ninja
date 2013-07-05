@@ -8,7 +8,8 @@ then        /^(then)(?:[^a-z0-9_][\s\S]*|)$/i
 else        /^(else)(?:[^a-z0-9_][\s\S]*|)$/i
 
 
-all         /^(all|default)(?:[^a-z0-9_][\s\S]*|)$/i
+all         /^(all)(?:[^a-z0-9_][\s\S]*|)$/i
+default     /^(default)(?:[^a-z0-9_][\s\S]*|)$/i
 for         /^(for)(?:[^a-z0-9_][\s\S]*|)$/i
 in          /^(in)(?:[^a-z0-9_][\s\S]*|)$/i
 if          /^(if)(?:[^a-z0-9_][\s\S]*|)$/i
@@ -34,8 +35,10 @@ column_list_single: column_list = column
 column_list_multi:  column_list = column_list _comma column
 
 column_all:         column = _all
-column_default:     column = name
+column_default:     column = _default
+column_named:       column = name
 column_disable:     column = _op_sub name
+column_disable_str: column = _op_sub string
 column_custom:      column = custom_name _eq expr
 
 _custom_name_name:  custom_name = name

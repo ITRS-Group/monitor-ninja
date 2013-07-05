@@ -2,7 +2,7 @@
 
 /**
  * List view-related calls
- * 
+ *
  * Display the listview container, load scripts, and handles ajax-requests
  */
 class ListView_Controller extends Authenticated_Controller {
@@ -19,7 +19,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$basepath = 'modules/lsfilter/';
 
 		$this->xtra_js[] = 'index.php/manifest/js/orm_structure.js';
-		
+
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterLexer.js';
 		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';
@@ -36,7 +36,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'media/js/LSFilterRenderer.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
 		$this->xtra_js[] = 'index.php/listview/renderer/table.js';
-		
+
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMain.js';
 
 		$this->xtra_js[] = $basepath.'media/js/LSFilterHistory.js';
@@ -46,10 +46,10 @@ class ListView_Controller extends Authenticated_Controller {
 /*		$this->xtra_js[] = $basepath.'media/js/LSFilterSaved.js'; saved searched loaded globally */
 		$this->xtra_js[] = $basepath.'media/js/LSFilterTextarea.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisual.js';
-		
+
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMultiselect.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterInputWindow.js';
-		
+
 		$this->xtra_js[] = 'index.php/listview/columns_config/vars';
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -78,21 +78,30 @@ class ListView_Controller extends Authenticated_Controller {
 
 		/* Fetch all column configs for user */
 		$columns = array();
-		foreach( Kohana::config('listview.columns') as $table => $default ) {
-			$columns[$table] = config::get('listview.columns.'.$table, '*');
+		$columns_default = Kohana::config('listview.default.columns');
+		foreach( $columns_default as $table => $default ) {
+			/* Build a list of order to expand columns, per table
+			 * The result of the previous line will be handled as the "default" keyword in the next one
+			 */
+			$columns[$table] = array(
+					$default,
+					config::get('listview.columns.'.$table, '*')
+					);
 		}
+
+
 
 		/* This shouldn't have a standard template */
 		$this->template = $lview = $this->add_view('listview/js');
 		$this->template->vars = array(
 			'lsfilter_list_columns' => $columns
 			);
-		
+
 		/* Render and die... cant print anything like profiler output here */
 		$this->template->render(true);
 		exit();
 	}
-	
+
 	/**
 	 * Executes a search in the orm structure for a given query.
 	 */
@@ -100,23 +109,23 @@ class ListView_Controller extends Authenticated_Controller {
 		$query = $this->input->get('query','');
 		$columns = $this->input->get('columns',false);
 		$sort = $this->input->get('sort',array());
-		
+
 		$limit = $this->input->get('limit',false);
 		$offset = $this->input->get('offset',false);
 
 		if( $limit === false ) {
 			return json::fail( array( 'data' => _("No limit specified")) );
 		}
-		
+
 		/* TODO: Fix sorting better sometime
 		 * Do it though ORM more orm-ly
 		 * Check if columns exists and so on...
 		 */
 		$sort = array_map(function($el){return str_replace('.','_',$el);},$sort);
-		
+
 		try {
 			$result_set = ObjectPool_Model::get_by_query( $query );
-			
+
 			$data = array();
 			foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
 				$data[] = $elem->export();
@@ -140,7 +149,7 @@ class ListView_Controller extends Authenticated_Controller {
 				));
 		} catch( Exception $e ) {
 			$this->log->log('error', $e->getMessage() . ' at ' . $e->getFile() . '@' . $e->getLine());
-			
+
 			return json::fail( array(
 				'data' => $e->getMessage().' at '.$e->getFile().'@'.$e->getLine()
 				));
@@ -164,13 +173,13 @@ class ListView_Controller extends Authenticated_Controller {
 		$scope = $this->input->get('scope','user');
 
 		try {
-			
+
 			$result = LSFilter_Saved_Queries_Model::save_query($name, $query, $scope);
-			
+
 			if( $result !== false )
 				return json::ok( array('status'=>'error', 'data' => $result) );
-			
-			
+
+
 			return json::ok( array( 'status' => 'success', 'data' => 'success' ) );
 		}
 		catch( Exception $e ) {
@@ -206,20 +215,20 @@ class ListView_Controller extends Authenticated_Controller {
 		if( substr( $name, -3 ) == '.js' ) {
 			$name = substr( $name, 0, -3 );
 		}
-		
+
 		$this->auto_render = false;
 		$renderers_files = Module_Manifest_Model::get( 'lsfilter_renderers' );
-	
+
 		header('Content-Type: text/javascript');
-		
+
 		print "var listview_renderer_".$name." = {};\n\n";
-		
+
 		$files = array();
 		if( isset( $renderers_files[$name] ) ) {
 			$files = $renderers_files[$name];
 		}
 		sort($files);
-		
+
 		foreach( $files as $renderer ) {
 			print "\n/".str_repeat('*',79)."\n";
 			print " * Output file: ".$renderer."\n";

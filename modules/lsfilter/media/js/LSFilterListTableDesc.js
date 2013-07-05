@@ -103,8 +103,16 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		};
 	};
 
-	// column_default: column := * name
-	this.visit_column_default = function(name0) {
+	// column_default: column := * default
+	this.visit_column_default = function() {
+		return {
+			op : 'add',
+			cols : this.default_columns
+		};
+	};
+
+	// column_named: column := * name
+	this.visit_column_named = function(name0) {
 		if (!column_exists(name0)) {
 			return {
 				op : 'nop'
@@ -118,11 +126,14 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 
 	// column_disable: column := * minus name
 	this.visit_column_disable = function(name1) {
-		if (!column_exists(name1)) {
-			return {
-				op : 'nop'
-			};
-		}
+		return {
+			op : 'sub',
+			cols : [ name1 ]
+		};
+	};
+
+	// column_disable_str: column := * minus string
+	this.visit_column_disable_str = function(name1) {
 		return {
 			op : 'sub',
 			cols : [ name1 ]
@@ -437,7 +448,15 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 				all_db_columns, metadata);
 		var parser = new LSColumns(new LSColumnsPP(), columns_line_visitor);
 		try {
-			this.vis_columns = parser.parse(columndesc);
+			columns_line_visitor.default_columns = all_columns;
+
+			var cur_columns = [];
+			for( var i=0; i<columndesc.length; i++ ) {
+				cur_columns = parser.parse(columndesc[i]);
+				columns_line_visitor.default_columns = cur_columns;
+			}
+			this.vis_columns = cur_columns;
+
 			custom_columns = columns_line_visitor.custom_cols;
 			this.db_columns = this.db_columns
 					.concat(columns_line_visitor.custom_deps);
