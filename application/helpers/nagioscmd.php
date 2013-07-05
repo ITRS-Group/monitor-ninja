@@ -1283,7 +1283,7 @@ class nagioscmd_Core
 	 * -5: Contact can't submit commands on this specific object.
 	 * true: authorized for command
 	 */
-	public static function is_authorized_for($params, $cmd = false)
+	public static function is_authorized_for($params, $cmd = false, $throw_exception_on_error = false)
 	{
 		$type = false;
 		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : $cmd;
@@ -1295,6 +1295,9 @@ class nagioscmd_Core
 		$contact = ContactPool_Model::get_current_contact();
 		if ($contact !== false) {
 			if (!$contact->get_can_submit_commands()) {
+				if($throw_exception_on_error) {
+					throw new Exception("Contact can not submit commands", 401);
+				}
 				return -2;
 			}
 		}
@@ -1324,7 +1327,11 @@ class nagioscmd_Core
 		# to see
 		if ($type == 'system') {
 			# No per-contact rights, you're in or your out
-			return $user->authorized_for('system_commands');
+			$authorized = $user->authorized_for('system_commands');
+			if(!$authorized && $throw_exception_on_error) {
+				throw new Exception("Not authorized for system_commands", 401);
+			}
+			return $authorized;
 		}
 		else if ($user->authorized_for($type.'_edit_all')) {
 			# All of this type - wee!
@@ -1340,13 +1347,20 @@ class nagioscmd_Core
 		}
 		else if (!$user->authorized_for($type.'_edit_contact')) {
 			# Not edit all, not by contact - no rights.
+			if($throw_exception_on_error) {
+				throw new Exception("Not authorized for {$type}_edit_contact", 401);
+			}
 			return -4;
 		}
 
 		# not authorized from cgi.cfg, and not a configured contact,
 		# so bail out early
-		if ($contact === false)
+		if ($contact === false) {
+			if($throw_exception_on_error) {
+				throw new Exception("Not authorized from cgi.cfg and not contact", 401);
+			}
 			return -3;
+		}
 
 		if ($objects['service']) {
 			if (!is_array($objects['service']))
@@ -1361,16 +1375,25 @@ class nagioscmd_Core
 				else {
 					$parts = array(end($objects['host']), $service);
 				}
-				if (!$user->authorized_for_object('services', $parts))
+				if (!$user->authorized_for_object('services', $parts)) {
+					if($throw_exception_on_error) {
+						throw new Exception("Not authorized for '".implode(';', $parts)."'", 401);
+					}
 					return -5;
+				}
 			}
 			return true;
 		}
-		if (!is_array($objects[$type]))
+		if (!is_array($objects[$type])) {
 			$objects[$type] = array($objects[$type]);
+		}
 		foreach ($objects[$type] as $object) {
-			if (!$user->authorized_for_object($type.'s', $object))
-					return -5;
+			if (!$user->authorized_for_object($type.'s', $object)) {
+				if($throw_exception_on_error) {
+					throw new Exception("Not authorized for '$object'", 401);
+				}
+				return -5;
+			}
 		}
 		return true;
 	}
