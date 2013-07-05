@@ -439,6 +439,8 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 		if (lsfilter_list_columns && lsfilter_list_columns[metadata.table]) {
 			columndesc = lsfilter_list_columns[metadata.table];
 		}
+	} else {
+		columndesc = [columndesc];
 	}
 
 	if (columndesc) {
