@@ -164,6 +164,10 @@ class op5Authorization {
 				'command_view_all' => '',
 				'command_edit_all' => '',
 				'test_this_command' => ''),
+			'management_pack' => array(
+				'management_pack_add_delete' => '',
+				'management_pack_view_all' => '',
+				'management_pack_edit_all' => ''),
 			'configuration' => array(
 				'export' => '',
 				'configuration_all' => ''),
