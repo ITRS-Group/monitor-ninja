@@ -56,7 +56,6 @@ if (!empty($base_href)) {
 			if (Auth::instance()->logged_in()) { ?>
 
 			var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
-			var _wizards_path = '<?php echo Kohana::config('config.site_domain') ?>application/media/js/wizard/';
 			var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 			var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 			var _controller_name = '<?php echo str_replace("op5", null, Router::$controller) ?>';
