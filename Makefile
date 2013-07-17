@@ -97,4 +97,9 @@ prepare-config:
 	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '/tmp/ninja-test';\$$config['nagios_etc_path'] = '/tmp/ninja-test';" > application/config/custom/config.php
 	echo "path: /tmp/ninja-test/live" > $(OP5LIBCFG)/livestatus.yml
 
+i18n:
+	xgettext --debug --output=application/languages/en/en.po \
+		-j --package-name=ninja \
+		--from-code utf-8 -L php $$(find . -name '*.php')
+
 .PHONY: test help test-reports clean
