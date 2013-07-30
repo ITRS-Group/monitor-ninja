@@ -18,6 +18,8 @@ class LalrLexerJSGenerator extends js_class_generator {
 		$this->variable( 'position', 0 );
 
 		$this->generate_fetch_token();
+		$this->generate_tokens_to_string();
+
 		$this->finish_class();
 	}
 
@@ -66,6 +68,23 @@ class LalrLexerJSGenerator extends js_class_generator {
 		$this->write( '} while( token == 0 );');
 		$this->write( 'return [token, value, token_pos, length ];');
 
+		$this->finish_function();
+	}
+
+	private function generate_tokens_to_string() {
+		$this->init_function( 'tokens_to_string', array('tokens') );
+		$this->write('var start=false;');
+		$this->write('var end=false;');
+		$this->write('for( var i=0; i<tokens.length; i++ ) {');
+		$this->write('if(start === false || start > tokens[i][2]) {');
+		$this->write('start = tokens[i][2];');
+		$this->write('}');
+		$this->write('var tokend = tokens[i][2] + tokens[i][3];');
+		$this->write('if(end === false || end < tokend) {');
+		$this->write('end = tokend;');
+		$this->write('}');
+		$this->write('}');
+		$this->write('return this.expression.substring(start,end);');
 		$this->finish_function();
 	}
 }

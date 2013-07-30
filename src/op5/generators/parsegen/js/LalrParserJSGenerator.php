@@ -48,6 +48,11 @@ class LalrParserJSGenerator extends js_class_generator {
 		foreach( $this->grammar->get_rules() as $name => $item ) {
 			$this->generate_reduce( $item );
 		}
+		foreach( $this->grammar->get_errors() as $name => $error ) {
+			$this->comment( $name );
+			$this->generate_error( $error );
+		}
+		$this->generate_errorhandler();
 		$this->finish_class();
 	}
 
@@ -59,14 +64,14 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->write( 'this.lexer = lexer;' );
 		$this->write( 'var result = false;' );
 		$this->write( 'do {' );
-		$this->write(   'var token = lexer.fetch_token();' );
+		$this->write(   'this.token = lexer.fetch_token();' );
 		$this->write(   'do {' );
 		$this->write(     'this.cont = false;' );
 		$this->write(     'var head = this.stack[this.stack.length-1];' );
 
 		/* Fixme: How to better call the method and not losing "this"? */
 		$this->write(     'this.tmp = this.states[head[0]];' );
-		$this->write(     'result = this.tmp(token);');
+		$this->write(     'result = this.tmp();');
 
 		$this->write(   '} while( this.cont );' );
 		$this->write( '} while( !this.done );' );
@@ -78,8 +83,8 @@ class LalrParserJSGenerator extends js_class_generator {
 		$state = $this->fsm->get_state($state_id);
 		/* @var $state LalrState */
 
-		$this->init_function( false, array('token'), 'private' );
-//		$this->comment( "State: $state_id\n".trim(strval( $state )) );
+		$this->init_function( false, array(), 'private' );
+		//		$this->comment( "State: $state_id\n".trim(strval( $state )) );
 		$this->comment( "State: $state_id" );
 
 		$nextup = array();
@@ -89,7 +94,7 @@ class LalrParserJSGenerator extends js_class_generator {
 			}
 		}
 
-		$this->write( 'switch( token[0] ) {' );
+		$this->write( 'switch( this.token[0] ) {' );
 
 		/* Merge cases per action... many cases use same action... */
 		$map_r = array();
@@ -106,7 +111,7 @@ class LalrParserJSGenerator extends js_class_generator {
 			$this->comment( $action_arr );
 			switch( $action ) {
 				case 'shift':
-					$this->write( 'this.stack.push( [%s,token] );', intval($target) );
+					$this->write( 'this.stack.push( [%s,this.token] );', intval($target) );
 					$this->write( 'return null;' );
 					break;
 				case 'reduce':
@@ -118,19 +123,11 @@ class LalrParserJSGenerator extends js_class_generator {
 					$this->write( 'this.done = true;' );
 					$this->write( 'return this.visitor.accept(program[1][1]);');
 					break;
-				case 'error': // To be implemented
-					break;
 			}
 		}
 		$this->write( '}' );
-		$this->comment( 'error handler...' );
-		$this->write( 'var nextup = this.lexer.expression.substring(token[2])');
-		$this->write( 'if( nextup ) {');
-		$this->write(     'nextup = "error at: " + nextup.substring(0,20);');
-		$this->write( '} else {' );
-		$this->write(     'nextup = "unexpected end";' );
-		$this->write( '}' );
-		$this->write( 'throw "Invalid query, "+nextup;' );
+		$this->write( 'this.errorhandler();');
+
 		$this->write( 'return null;' );
 		$this->write( '},' ); // FIXME: Should be finish_function, but with , instead of ;
 	}
@@ -149,7 +146,7 @@ class LalrParserJSGenerator extends js_class_generator {
 		$length_sum = array();
 		foreach( array_reverse($item->get_symbols(),true) as $i => $symbol ) {
 			$this->write( 'var arg'.$i.' = this.stack.pop();');
-			$length_sum[] = 'arg'.$i.'[3]';
+			$length_sum[] = 'arg'.$i.'[1][3]';
 			if( $item->symbol_enabled($i) ) {
 				$args[] = 'arg'.$i.'[1][1]';
 			}
@@ -158,11 +155,11 @@ class LalrParserJSGenerator extends js_class_generator {
 		$item_name = $item->get_name();
 		if( $item_name[0] == '_' ) {
 			if( count( $args ) != 1 ) {
-				throw new GeneratorException( "Rule $item_name can not be used as transparent more than one usable argument" );
+				throw new GeneratorException( "Rule $item_name can not be used as transparent. Should have exactly one usable argument" );
 			}
-			$this->write( 'var new_token = [%s, '.$args[0].', arg0[2], '.$length_sum.'];', $item->generates());
+			$this->write( 'var new_token = [%s, '.$args[0].', arg0[1][2], '.$length_sum.'];', $item->generates());
 		} else {
-			$this->write( 'var new_token = [%s, this.visitor.visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), arg0[2], '.$length_sum.'];', $item->generates());
+			$this->write( 'var new_token = [%s, this.visitor.visit_'.$item->get_name().'('.implode(',',array_reverse($args)).'), arg0[1][2], '.$length_sum.'];', $item->generates());
 		}
 		$this->write( 'switch( this.stack[this.stack.length-1][0] ) {' );
 
@@ -182,6 +179,124 @@ class LalrParserJSGenerator extends js_class_generator {
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
 		$this->write( 'return null;' );
+		$this->finish_function();
+	}
+
+	private function generate_error( $error ) {
+		if( isset($this->goto_map[$error->generates()]) ) {
+			$targets = $this->goto_map[$error->generates()];
+		} else {
+			return; /* This method isn't used appearently */
+		}
+
+		$this->init_function( 'error_'.$error->get_name(), array('stack', 'tokens'), 'private' );
+
+		$this->write('if(typeof this.visitor.error_'.$error->get_name().' == "undefined"){');
+		$this->write('throw "Parse error at: " + this.lexer.tokens_to_string(tokens);');
+		$this->write('}');
+
+		/* Handle error */
+		$this->write('var value = this.visitor.error_'.$error->get_name().'(stack, tokens, this.lexer);');
+
+		/* Generate new token */
+		$this->write('var new_token = [%s,value,0,0];', $error->generates());
+
+		/* Merge cases */
+		$cases = array();
+		foreach( $targets as $old_state => $new_state ) {
+			if( !isset( $cases[$new_state] ) ) $cases[$new_state] = array();
+			$cases[$new_state][] = $old_state;
+		}
+
+		$this->write( 'switch( this.stack[this.stack.length-1][0] ) {' );
+		foreach( $cases as $new_state => $old_states ) {
+			foreach( $old_states as $old_state ) {
+				$this->write( 'case %s:', $old_state );
+			}
+			$this->write( 'this.stack.push([%s,new_token]); break;', $new_state );
+		}
+		$this->write( '}' );
+		$this->finish_function();
+	}
+
+	private function generate_errorhandler() {
+		$this->init_function( 'errorhandler', array(), 'private' );
+
+		$pop_states = array();
+		$shift_states = array();
+
+		foreach( $this->fsm->get_statetable() as $state_id => $map ) {
+			switch($this->fsm->get_default_error_handler($state_id)) {
+				case 'pop':
+					$pop_states[] = $state_id;
+					break;
+				case 'shift':
+					$shift_states[$state_id] = $map;
+					break;
+			}
+		}
+
+
+		$this->write( 'var errorstack = [];' );
+		$this->write( 'var errortokens = [];' );
+
+		$this->write( 'var running = true;');
+		$this->write( 'while( running ) {' );
+		$this->write( 'switch( this.stack[this.stack.length-1][0] ) {' );
+		foreach($pop_states as $state_id) {
+			$this->write( 'case %d:', $state_id );
+		}
+		$this->write( 'var errtok = this.stack.pop();');
+		$this->write( 'errorstack.unshift(errtok);');
+		$this->write( 'break;' );
+		$this->write( 'default:' );
+		$this->write( 'running = false;' );
+		$this->write( '}' );
+		$this->write( '}' );
+
+
+
+		$this->write( 'running = true;' );
+		$this->write( 'while( running ) {');
+		$this->write( 'switch(this.stack[this.stack.length-1][0]) {');
+		foreach($shift_states as $state_id => $map) {
+			$this->write( 'case %d:', $state_id );
+			$this->write( 'switch( this.token[0] ) {' );
+			/* Merge cases per action... many cases use same action... */
+			$map_r = array();
+			foreach( $map as $token => $action_arr ) {
+				if(!isset($map_r[$action_arr])) $map_r[$action_arr] = array();
+				$map_r[$action_arr][] = $token;
+			}
+			foreach( $map_r as $action_arr => $tokens ) {
+				list( $action, $target ) = explode(':',$action_arr,2);
+				if( $action != 'error' ) continue;
+				foreach( $tokens as $token ) {
+					$this->write( 'case %s:', $token );
+				}
+				$this->comment( $action_arr );
+
+				$this->write('this.error_'.$target.'(errorstack, errortokens);');
+				$this->write('this.cont = true;');
+				$this->write('running = false;');
+
+				$this->write('break;');
+				$this->write( 'default:' );
+				/* FIXME: fix this nicer: let parse method handle this... */
+				$this->write( 'errortokens.push(this.token);' );
+				$this->write( 'this.token = this.lexer.fetch_token();' );
+			}
+			$this->write( '}' );
+			$this->write( 'break;' );
+		}
+		$this->write( 'default:' );
+		/* This shouldn't happen, but if it does, don't kill the browser */
+		$this->write( 'throw "Internal parser error...";' );
+		$this->write( 'return false;' );
+		$this->write( '}' );
+		$this->write( '}' );
+
+		$this->write('return true;');
 		$this->finish_function();
 	}
 }

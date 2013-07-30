@@ -1,7 +1,7 @@
 <?php
 
 class LalrState {
-	private $items;
+	private $items; /* kernel */
 	private $grammar;
 
 	public function __construct( $items, $grammar ) {
@@ -58,6 +58,24 @@ class LalrState {
 			}
 		}
 		return $items;
+	}
+
+	public function errors() {
+		$items = $this->items;
+
+		$errors = array();
+		/* Don't use foreach. $items can grow in the loop, and the new items needs to be handled too */
+		for( $i = 0; $i<count($items); $i++ ) {
+			$cur_item = $items[$i];
+			$next_symbol = $cur_item->next();
+			$rule = $this->grammar->errors($next_symbol);
+			if($rule) {
+				foreach( $rule->follow() as $follow ) {
+					$errors[$follow] = $rule;
+				}
+			}
+		}
+		return $errors;
 	}
 
 	public function __toString() {

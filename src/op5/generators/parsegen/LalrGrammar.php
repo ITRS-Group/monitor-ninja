@@ -1,18 +1,50 @@
 <?php
 
 require_once( 'LalrItem.php' );
+require_once( 'LalrError.php' );
 
 class LalrGrammar {
 	private $tokens;
 	private $rules;
+	private $errors;
 
 	public function __construct( $grammar ) {
 		$this->tokens = array_map( 'trim', $grammar['tokens'] );
 		$this->rules = array();
+
 		foreach( $grammar['rules'] as $name => $rule ) {
 			$rule = array_map( 'trim', $rule );
 			$generates = array_shift( $rule );
 			$this->rules[$name] = new LalrItem( $name, $generates, $rule );
+		}
+
+		$this->errors = array();
+		if( isset($grammar['errors']) ) {
+			foreach( $grammar['errors'] as $name => $error ) {
+				$error = array_map( 'trim', $error );
+				$generates = array_shift( $error );
+				if(isset($this->errors[$generates])) {
+					/* FIXME: conflicting error handlers */
+				}
+				if(empty($error)) {
+					foreach($this->rules as $rule ) {
+						foreach( $this->follow($generates) as $next ) {
+							if( !in_array( $next, $error ) ) {
+								$error[] = $next;
+							}
+						}
+					}
+				}
+				$this->errors[$generates] = new LalrError( $name, $generates, $error );
+			}
+		}
+
+		/* If no default error handler exists, inject it */
+		$program_element = $this->rules['entry']->next();
+		if(!isset($this->errors[$program_element])) {
+			/* As the default error handler is to kill the parser without recover, we only end at the end token, and not in the middle of the parse */
+			$error = array('end');
+			$this->errors[$program_element] = new LalrError( 'default_error_handler', $program_element, array('end'));
 		}
 	}
 
@@ -22,6 +54,10 @@ class LalrGrammar {
 
 	public function get_rules() {
 		return $this->rules;
+	}
+
+	public function get_errors() {
+		return $this->errors;
 	}
 
 	public function get( $name ) {
@@ -112,5 +148,25 @@ class LalrGrammar {
 		}
 
 		return $next_term;
+	}
+
+	public function errors($sym) {
+		if(!isset($this->errors[$sym]))
+			return false;
+		return $this->errors[$sym];
+	}
+
+	public function __toString() {
+		$outp = "";
+		foreach( $this->tokens as $name => $el ) {
+			$outp .= $name . ' = ' . strval($el)."\n";
+		}
+		foreach( $this->rules as $el ) {
+			$outp .= strval($el)."\n";
+		}
+		foreach( $this->errors as $el ) {
+			$outp .= strval($el)."\n";
+		}
+		return $outp;
 	}
 }

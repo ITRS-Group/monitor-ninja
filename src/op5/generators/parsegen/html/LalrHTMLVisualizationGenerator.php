@@ -131,6 +131,8 @@ td.mark {
 <tr>
 <th colspan="2">State</th>
 <th class="bar"></th>
+<th>Error handler</th>
+<th class="bar"></th>
 <?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue;?>
 <th><?php echo htmlentities($sym); ?></th>
 <?php endforeach; ?>
@@ -158,6 +160,8 @@ td.mark {
 <?php endforeach; ?>
 </table>
 </td>
+<td class="bar hard_top bordered"></td>
+<td class="hard_top bordered"><?php echo $this->fsm->get_default_error_handler($state_id); ?></td>
 <td class="bar hard_top bordered"></td>
 <?php foreach( $this->grammar->terminals() as $sym ): if($sym[0]=='_') continue; ?>
 <td class="hard_top bordered"><?php

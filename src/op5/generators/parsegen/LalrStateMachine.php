@@ -5,9 +5,14 @@ require_once( 'LalrState.php' );
 require_once( 'LalrGrammar.php' );
 
 class LalrStateMachine {
+	/**
+	 *
+	 * @var LalrGrammar
+	 */
 	private $grammar;
 	private $states;
 	private $statetable;
+	private $errortable;
 
 	public function __construct( LalrGrammar $grammar ) {
 		$this->grammar = $grammar;
@@ -42,6 +47,7 @@ class LalrStateMachine {
 
 	private function build_table() {
 		$this->statetable = array();
+		$this->errortable = array();
 		foreach( $this->states as $i => $state ) {
 			/* @var $state LalrState */
 			$transistions = array();
@@ -92,6 +98,21 @@ class LalrStateMachine {
 				}
 			}
 
+			/* Error handlers */
+			$errors = $state->errors();
+
+			if( empty($errors) ) {
+				/* Insert pop error handler */
+				$errorhandler = 'pop';
+			} else {
+				/* Insert shift error handler */
+				$errorhandler = 'shift';
+				foreach( $errors as $sym => $errorrule ) {
+					if(!isset($transistions[$sym])) {
+						$transistions[$sym] = array('error:'.$errors[$sym]->get_name());
+					}
+				}
+			}
 
 			/* Resolve ambiguities */
 			$resolved_transitions = array();
@@ -108,6 +129,7 @@ class LalrStateMachine {
 			}
 
 			$this->statetable[$i] = $resolved_transitions;
+			$this->errortable[$i] = $errorhandler;
 		}
 	}
 
@@ -126,6 +148,14 @@ class LalrStateMachine {
 
 	public function get_statetable() {
 		return $this->statetable;
+	}
+
+	public function get_errortable() {
+		return $this->errortable;
+	}
+
+	public function get_default_error_handler($stateid) {
+		return $this->errortable[$stateid];
 	}
 
 	public function get_state( $state_id ) {

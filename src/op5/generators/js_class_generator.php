@@ -95,7 +95,7 @@ abstract class js_class_generator {
 			for($i=substr_count( $line, '}' ); $i>0; $i--)
 				array_pop( $this->indent_lvl );
 			$curlvl = array_sum( $this->indent_lvl );
-			if( substr( trim($line), 0, 4) == 'case' )
+			if( substr( trim($line), 0, 4) == 'case' || substr( trim($line), 0, 8) == 'default:' )
 				$curlvl--;
 			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . $line . "\n" );
 			for($i=substr_count( $line, '{' ); $i>0; $i--)

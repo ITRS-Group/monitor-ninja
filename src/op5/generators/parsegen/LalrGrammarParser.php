@@ -169,17 +169,30 @@ class LalrGrammarParser {
 
 		/* Grammar rules */
 		if( $this->acceptSym(array(':')) ) {
+			/* Grammar rule */
 			$items = array();
 			$items[] = $this->expectKeyword(false, false, true);
 			$this->expectSym(array('='));
-			while( $item = $this->acceptKeyword(false, false, true) ) {
-				$items[] = $item;
+			if( $this->acceptKeyword(array('error'), false, true) ) {
+				/* Error rule */
+				$result['errors'] = array($name => $items);
+				$this->expectLinebreak();
+				return $result;
+			} else {
+				/* Regular grammar rule */
+				while( $item = $this->acceptKeyword(false, false, true) ) {
+					$items[] = $item;
+				}
+				$result['rules'] = array($name => $items);
+				$this->expectLinebreak();
+				return $result;
 			}
-			$result['rules'] = array($name => $items);
-			$this->expectLinebreak();
-			return $result;
 		}
 
 		return false;
+	}
+
+	private function error($message) {
+		throw new Exception("Error while parsing grammar file: ". $message);
 	}
 }
