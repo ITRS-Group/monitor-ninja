@@ -277,7 +277,7 @@ function lsfilter_list(config)
 		} else {
 			var empty_text;
 			if(!(empty_text = $(this.config.table).parents('.widget').data('text-if-empty'))) {
-				empty_text = _("Nothing found for the filter '"+this.request_query+"'");
+				empty_text = _("No entries found using filter");
 			}
 			new_table = $('<div class="alert"></div>').text(empty_text);
 		}
