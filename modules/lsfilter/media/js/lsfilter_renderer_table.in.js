@@ -15,7 +15,7 @@ listview_renderer_table.hosts = {
 	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text', 'name' ],
-		"sort" : [ 'has_been_checked', 'state' ],
+		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
 			return $('<td class="icon obj_properties" />')
 					.append(
@@ -333,7 +333,7 @@ listview_renderer_table.services = {
 	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text', 'description', 'host.name' ],
-		"sort" : [ 'state' ],
+		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
 			return $('<td class="icon svc_obj_properties"><span class="icon-16 x16-shield-'
 					+ args.obj.state_text + '"></span></td>')
