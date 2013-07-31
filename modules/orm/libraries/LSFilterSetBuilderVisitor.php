@@ -6,15 +6,17 @@
 class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	private $metadata;
 	private $pool;
-	
-	
+	private $disabled_saved_filters = array();
+
+
 	/**
 	 * Generate the visitor
 	 */
-	public function __construct( $metadata ) {
+	public function __construct( $metadata, $disabled_saved_filters=array() ) {
 		$this->metadata = $metadata;
 		$this->pool = ObjectPool_Model::pool($this->metadata['name']);
 		$this->all_set = $this->pool->all();
+		$this->disabled_saved_filters = $disabled_saved_filters;
 	}
 
 	/**
@@ -23,7 +25,7 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	public function accept($result) {
 		return $result;
 	}
-	
+
 	// entry: program := * query end
 	/**
 	 * Visit the given grammar rule
@@ -111,13 +113,13 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	public function visit_match_all() {
 		return $this->pool->all();
 	}
-	
+
 	// match_in: match := * in string
 	/**
 	 * Visit the given grammar rule
 	 */
 	public function visit_match_in($set_descr1) {
-		return $this->pool->get_by_name($set_descr1);
+		return $this->pool->get_by_name($set_descr1, $this->disabled_saved_filters);
 	}
 
 	// match_field_in: match := * name in string
@@ -127,12 +129,12 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	public function visit_match_field_in($field0, $set_descr2) {
 		$table = $this->pool->get_table_for_field($field0);
 		if( $table === false ) return null;
-		
+
 		$pool = ObjectPool_Model::pool($table);
-		
+
 		$set = $pool->get_by_name($set_descr2);
 		if( $set === false ) return null;
-		
+
 		return $set->convert_to_object( $this->metadata['name'], $field0 );
 	}
 
@@ -231,7 +233,7 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	public function visit_match_eq($field0, $arg_num_string2) {
 		return $this->all_set->reduce_by( $field0, $arg_num_string2, '=' );
 	}
-	
+
 	// set_descr_name: Êset_descr := * string
 	/**
 	 * Visit the given grammar rule
