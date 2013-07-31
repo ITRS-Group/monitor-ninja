@@ -24,7 +24,7 @@ class Search_Controller extends Authenticated_Controller {
 		'comments' => array( 'author', 'comment' ),
 		'_si' => array('plugin_output')
 	);
-	
+
 	protected $search_columns_matchall = array(
 		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output' ),
 		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output' ),
@@ -51,10 +51,21 @@ class Search_Controller extends Authenticated_Controller {
 	public function index($query=false) {
 		$original_query = $query = trim($this->input->get('query', $query));
 
+		/* Is the query a complete search filter? */
 		if(preg_match('/^\[[a-zA-Z]+\]/', $query)) {
 			return url::redirect('listview?'.http_build_query(array('q'=>$query)));
 		}
+
+		/* Is the query a saved filter name? */
+		$filters = LSFilter_Saved_Queries_Model::get_query($query);
+		if($filters !== false) {
+			return url::redirect('listview?'.http_build_query(array('q'=>$filters)));
+		}
+
+		/* Is the query a oldschool search filter? h:kaka or boll */
 		$filters = $this->queryToLSFilter( $query );
+
+		/* Fallback on match everything */
 		if($filters === false) {
 			$filters = $this->queryToLSFilter_MatchAll( $query );
 		}
@@ -62,7 +73,7 @@ class Search_Controller extends Authenticated_Controller {
 		if(count($filters)==1) {
 			return url::redirect('listview?'.http_build_query(array('q'=>reset($filters))));
 		}
-		
+
 		$limit = false;
 		if(isset($filters['limit'])) {
 			$limit = $filters['limit'];
@@ -92,11 +103,11 @@ class Search_Controller extends Authenticated_Controller {
 		$this->xtra_js = array();
 		$this->xtra_css = array();
 		$this->template->content->widgets = array();
-		
+
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$username = Auth::instance()->get_user()->username;
-		
+
 		foreach( $queries as $table => $query ) {
 			$setting = array('query'=>$query);
 			if($limit !== false) {
@@ -110,14 +121,14 @@ class Search_Controller extends Authenticated_Controller {
 				'friendly_name' => ucfirst($table),
 				'setting' => $setting
 			));
-				
+
 			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
-				
+
 			$widget->set_fixed($query);
 			// abuse the fact that ls-tables are pluralized
 			$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($original_query));
-				
+
 			$this->template->content->widgets[] = $widget->render();
 		}
 
@@ -144,7 +155,7 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		$query = array();
-		
+
 		/* Map default tables to queries */
 		foreach($filter['filters'] as $table => $q ) {
 			$query[$table] = array($this->andOrToQuery($q, $this->search_columns[$table]));
@@ -182,16 +193,16 @@ class Search_Controller extends Authenticated_Controller {
 			/* Don't search in hosts if searching for services, just filter on hosts... */
 			unset( $query['hosts'] );
 		}
-		
+
 		$result = array();
 		foreach( $query as $table => $filters ) {
 			$result[$table] = '['.$table.'] '.implode(' and ',$filters);
 		}
-		
+
 		if( isset($filter['limit']) ) {
 			$result['limit'] = intval($filter['limit']);
 		}
-		
+
 		return $result;
 	}
 
