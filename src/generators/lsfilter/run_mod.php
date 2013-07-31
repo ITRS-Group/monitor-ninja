@@ -11,7 +11,7 @@ class LSFilter_generator extends generator_module {
 		$grammar_file = file_get_contents( $this->gen_dir.'lsfilter.txt' );
 		$grammar_parser = new LalrGrammarParser();
 		$grammar = $grammar_parser->parse($grammar_file);
-		
+
 		$generator = new LalrGenerator( 'LSFilter', $grammar );
 		$generator->generate();
 
@@ -19,7 +19,7 @@ class LSFilter_generator extends generator_module {
 		$grammar_file = file_get_contents( $this->gen_dir.'lscolumns.txt' );
 		$grammar_parser = new LalrGrammarParser();
 		$grammar = $grammar_parser->parse($grammar_file);
-		
+
 		$generator = new LalrGenerator( 'LSColumns', $grammar );
 		$generator->generate();
 	}

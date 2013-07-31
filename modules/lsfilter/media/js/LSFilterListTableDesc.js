@@ -37,6 +37,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 
 	this.custom_cols = {};
 	this.custom_deps = [];
+	this.error_id = 1;
 
 	// entry: definition := * column_list end
 	this.visit_entry = function(column_list0, end1) {
@@ -415,6 +416,64 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		return result;
 	};
 
+	
+	/*****************************
+	 * Error recovery routines
+	 *****************************/
+	
+	var errormessage = function(stack, tokens, lexer) {
+		var stacktoks = [];
+		for( var i=0; i<stack.length; i++ ) {
+			if(stack[i][1][0] != "column_list") {
+				// Only show current column
+				stacktoks.push(stack[i][1]);
+			}
+		}
+		
+		var before = lexer.tokens_to_string(stacktoks);
+		var follow = lexer.tokens_to_string(tokens);
+		
+		/* Add error notification column */
+		return 'syntax error: ' + before + ' <span style="color: red;">' + follow + '</span>';
+	}
+	
+	/*
+	 * Recover from column_list error: totally invalid column definition
+	 * Tries to dig out the previous column list from the stack.
+	 */
+	this.error_column_list_error = function(stack, tokens, lexer) {
+		var outp_list = [];
+		console.log("ERROR");
+		console.log(tokens);
+		
+		/* Extract column list from stack, if available */
+		if( stack.length >= 1 && stack[0][1][0] == 'column_list' ) {
+			outp_list = stack[0][1][1];
+		}
+		
+		var column_name = "parse error " + this.error_id;
+		outp_list.push(column_name);
+		this.error_id++;
+		
+		var msg = errormessage(stack,tokens,lexer);
+		this.custom_cols[column_name] = function(args) {
+			return msg;
+		}
+		
+		return outp_list;
+	};
+
+	/*
+	 * Recover from custom column error; the name is known, but not the
+	 * definition, recover in definition
+	 */
+	this.error_custom_content_error = function(stack, tokens, lexer) {
+		var msg = errormessage(stack,tokens,lexer);
+		return function(args) {
+			return msg;
+		};
+	};
+	
 };
 
 function lsfilter_list_table_desc(metadata, columndesc) {

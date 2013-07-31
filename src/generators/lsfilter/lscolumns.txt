@@ -29,20 +29,33 @@ par_r       /^(\))/
 sq_l        /^(\[)/
 sq_r        /^(\])/
 
+-- just so everything can be lexed, and therefore don't break error recovery
+char        /^(.)/
+
 entry: definition = column_list end
 
 column_list_single: column_list = column
 column_list_multi:  column_list = column_list _comma column
+
+-- Handle error in column list... The error handler should dig out
+-- column_list-tokens from error string
+column_list_error:  column_list = error
 
 column_all:         column = _all
 column_default:     column = _default
 column_named:       column = name
 column_disable:     column = _op_sub name
 column_disable_str: column = _op_sub string
-column_custom:      column = custom_name _eq expr
+column_custom:      column = custom_name _eq custom_content
 
 _custom_name_name:  custom_name = name
 _custom_name_str:   custom_name = string
+
+-- Wrap custom_content so we can track errors in the sub-expression. In that
+-- case, the title of the column can be valid, and keep the expression isolated
+-- for errors
+_custom_content_expr: custom_content = expr
+custom_content_error: custom_content = error
 
 expr_eq:            expr     = expr1 _eq expr1
 
