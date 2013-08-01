@@ -23,8 +23,13 @@ class op5queryhandler {
 	}
 
 	public function json_call( $channel, $command, $args, $conv_hash=true, $node = false ) {
+		/* Just a wrapper, because of the old json-syntax. */
+		return $this->kvvec_call( $channel, $command, $args, $conv_hash, $node );
+	}
+
+	public function kvvec_call( $channel, $command, $args, $conv_hash=true, $node = false ) {
 		$data = $this->call($channel, $command, $args, $node);
-		$expanded = @json_decode(trim($data));
+		$expanded = $this->unpack_args(trim($data));
 		if( $expanded === NULL ) {
 			print $data;
 			return false;
@@ -115,16 +120,44 @@ class op5queryhandler {
 	 * If value is an array, it's treated as a set of lines with identical keys
 	 */
 	private function pack_args( $args ) {
+		$escstr = ";=\n\0\\";
 		$result = array();
 		foreach( $args as $k => $v ) {
 			if( is_array( $v ) ) {
 				foreach( $v as $vx ) {
-					$result[] = $k . '=' . $vx;
+					$result[] = addcslashes($k,$escstr) . '=' . addcslashes($vx,$escstr);
 				}
 			} else {
-				$result[] = $k . '=' . $v;
+				$result[] = addcslashes($k,$escstr) . '=' . addcslashes($v,$escstr);
 			}
 		}
 		return implode(';', $result);
+	}
+
+	/**
+	 * Converts an associative array of arguments to a string using kvvec syntax with delimiters = and ;
+	 *
+	 * If value is an array, it's treated as a set of lines with identical keys
+	 */
+	private function unpack_args( $args ) {
+		$pairs = array();
+
+		do {
+			$match = false;
+			$key_raw = preg_match( '/^((?:[^;=\\\\]|\\\\.)*)=/', $args, $matches );
+			if($key_raw) {
+				$key = stripcslashes( $matches[1] );
+				$args = substr($args,strlen($matches[0]));
+				$value_raw = preg_match( '/^((?:[^;=\\\\]|\\\\.)*)(?:;.*|)$/', $args, $matches );
+				if($value_raw) {
+					$value = stripcslashes( $matches[1] );
+					$args = substr( $args,strlen($matches[1])+1 );
+					$pairs[] = array($key, $value);
+					$match = true;
+				}
+			}
+		} while($match);
+
+		return $pairs;
 	}
 }
