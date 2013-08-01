@@ -223,8 +223,8 @@ Feature: Filters & list views
 		And I have submitted a passive service check result "linux-server1;C-service;2;Dandy status information"
 		And I am on the Service details page
 		When I sort the filter result table by "state"
-		Then The first row of the filter result table should contain "B-service"
-		And The last row of the filter result table should contain "C-service"
+		Then The first row of the filter result table should contain "C-service"
+		And The last row of the filter result table should contain "B-service"
 		When I sort the filter result table by "state"
-		Then The last row of the filter result table should contain "B-service"
-		And The first row of the filter result table should contain "C-service"
+		Then The last row of the filter result table should contain "C-service"
+		And The first row of the filter result table should contain "B-service"
