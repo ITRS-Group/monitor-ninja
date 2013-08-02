@@ -19,10 +19,12 @@ var lsfilter_multiselect = {
 	init : function() {
 		var self = this; // To be able to access it from within handlers
 
-		this.elem_select = $('#multi_action_select');
+		this.elem_select = $('#multi-action-list');
 		this.elem_objtype = $('#listview_multi_action_obj_type');
-		$('#multi_action_select_send').click(function() {
-			self.do_send();
+		$(document).on('click', 'a.multi-action-send-link', function(e) {
+			e.preventDefault();
+			self.do_send($(this));
+			return false;
 		});
 	},
 
@@ -83,19 +85,18 @@ var lsfilter_multiselect = {
 		elem.empty();
 		for ( var val in values) {
 			var tag = values[val];
-			elem.append($('<option />').text(tag).attr('value', val));
+			elem.append($('<li />').append($('<a href="#" />').text(tag).data('value', val).addClass('multi-action-send-link')));
 		}
 	},
 
-	do_send : function() {
-		var action = $('#multi_action_select').val();
+	do_send : function(link) {
+		var action = link.data('value');
 		var selcount = $('.listview_multiselect_checkbox:checked').length;
 		if (selcount == 0) {
 			this.notice('No items selected');
 		} else if (!action) {
 			this.notice('No action selected');
 		} else {
-			$('#listview_multi_action_obj_action').attr('value', action);
 			$('#listview_multi_action_obj_action').attr('value', action);
 			$('#listview_multi_action_form').submit();
 		}

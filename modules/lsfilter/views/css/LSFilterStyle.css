@@ -30,6 +30,15 @@
 	padding-left: 22px !important;
 }
 
+#multi-action-list {
+	line-height: 1.7;
+	padding: 0.5em;
+}
+#multi-action-message {
+	color: #e40;
+}
+
+
 .lsfilter-noresult {
 	display: inline-block;
 	margin: 16px 16px;

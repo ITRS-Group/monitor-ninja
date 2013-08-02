@@ -19,8 +19,9 @@
 
 <div id="filter-query-multi-action">
 	<h2><?php echo _('Multi Action'); ?></h2>
-	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'), array(''=>'Table doesnt allow multi select')); ?>
-	<button id="multi_action_select_send">Submit</button>
+	<ul id="multi-action-list">
+	<li>Table doesnt allow multi select</li>
+	</ul>
 	<div id="multi-action-message"></div>
 </div>
 
