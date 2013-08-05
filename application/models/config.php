@@ -81,6 +81,9 @@ class Config_Model extends Model {
 			$ls = Livestatus::instance();
 			$filterable_keys = $ls->filterable_columns();
 			$filter = array();
+			if(!isset($filterable_keys[$type])) {
+				return false;
+			}
 			foreach($filterable_keys[$type] as $column) {
 				$filter[$column] = array('~~' => $free_text);
 			}

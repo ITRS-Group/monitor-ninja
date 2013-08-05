@@ -18,6 +18,9 @@
 	</form>
 </div>
 <div style="margin-top: 20px">
+	<?php if($header === false) { ?>
+		<p><?php echo _(sprintf('Unknown data type %s',$type)); ?></p>
+	<?php } else { ?>
 	<table id="config_table">
 		<thead>
 			<tr>
@@ -49,4 +52,5 @@
 		<?php } ?>
 		</tbody>
 	</table>
+	<?php } ?>
 </div>
