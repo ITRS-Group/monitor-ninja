@@ -20,13 +20,13 @@ class Netw_health_Widget extends widget_Base {
 	private $ok_img = '/images/thermok.png';
 	private $host_val = false;
 	private $service_val = false;
-	
+
 	private $netw_health_config = <<<EOC
 - HOSTS
-[hosts] all
+[hosts] scheduled_downtime_depth=0
 [hosts] state = 0
 - SERVICE
-[services] all
+[services] host.scheduled_downtime_depth=0 and scheduled_downtime_depth=0
 [services] state = 0
 EOC;
 
@@ -51,7 +51,7 @@ EOC;
 /* Remove this configuration for now... due to the awfulness of the
  * configuration interface, this shouldn't be nessecary to support in the
  * future.
- * 
+ *
  * There isn't a feature request with this, so let's remove it...
 		$this->netw_health_config =
 		isset($this->model->setting['netw_health_config'])
@@ -74,7 +74,7 @@ EOC;
 			'title' => sprintf(_('Default value: %d'), 1)), $this->visible_precision);
 /*
  * Because the configuration is to hard for now to support, this is commented out.
- * 
+ *
  * Otherwise this can be configured here...
  */
 //		$options[] = new option($this->model->name, 'netw_health_config', 'Configuration', 'textarea', array(), $this->netw_health_config);
@@ -89,20 +89,20 @@ EOC;
 
 		$health_warning_percentage = $this->health_warning_percentage;
 		$health_critical_percentage = $this->health_critical_percentage;
-		
+
 		$visible_precision = intval( $this->visible_precision );
 		if( $visible_precision < -1 ) $visible_precision = -1;
 		if( $visible_precision > 10 ) $visible_precision = 10;
 
 		/*
 		 * Parse configuration text
-		 * 
+		 *
 		 * Sets $bars to an array where each element is a array of three values, containing:
 		 * - Name of bar
 		 * - Query matching elements defining the set to measure on
 		 * - Query matching which elements is included in the percentatage
-		 * 
-		 * Both queries needs to work on the same table. 
+		 *
+		 * Both queries needs to work on the same table.
 		 */
 		$blocks = array();
 		$bar_configs = array();
@@ -122,7 +122,7 @@ EOC;
 		if( count($blocks) == 3 ) {
 			$bar_configs[] = $blocks;
 		}
-		
+
 		/* Calculate stats */
 		$bars = array();
 		foreach($bar_configs as $bar) {
