@@ -191,7 +191,7 @@ if (!empty($widgets)) {
 						echo '<span class="icon-16 x16-nacoma" title="'. _('Configure '.$type).'"></span>';
 						echo _('Configure').'</a>';
 					}
-					if ($object->get_pnpgraph_present()) {
+					if (0<$object->get_pnpgraph_present()) {
 						$url = url::site() . 'pnp/?host=' . $host->get_name();
 						$pnp_host = $host->get_name();
 						$pnp_service = "_HOST_";
