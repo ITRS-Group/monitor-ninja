@@ -2,7 +2,7 @@
 $id = uniqid('listview_'); /* ID of span for this widget */
 ?>
 <div id="<?php echo $id ?>">Loading...</div>
-<div><a href="<?php echo url::base(true).'listview?q='.urlencode($this->args['query']); ?>">View in listview</a></div>
+<div style="padding: 0 0 1px 0"><a href="<?php echo url::base(true).'listview?q='.urlencode($this->args['query']); ?>">View in listview</a></div>
 <script type="text/javascript">
 
 $(function(){
