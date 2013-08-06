@@ -37,7 +37,7 @@ function adjust_height_frame( selector ) {
 	var iframe = $(selector);
 	if( iframe ) {
 		var top = 49;
-		if( $('#infobar') ) top = 85;
+		if( $('#infobar').size() > 0 ) top = 85;
 		var new_height = parseInt(document.documentElement.clientHeight) - top;
 		$(selector).css('height', new_height+'px');
 	}
