@@ -20,9 +20,9 @@ listview_renderer_table.hosts = {
 			return $('<td class="icon obj_properties" />')
 					.append(
 							icon16('shield-' + args.obj.state_text,
-									args.obj.state_text))
-					.addClass(args.obj.state_text)
-					.attr('id','host|'+args.obj.name);
+									args.obj.state_text)).addClass(
+							args.obj.state_text).attr('id',
+							'host|' + args.obj.name);
 
 		}
 	},
@@ -54,8 +54,8 @@ listview_renderer_table.hosts = {
 	"status" : {
 		"header" : _('Status'),
 		"depends" : [ 'name', 'acknowledged', 'notifications_enabled',
-		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-		        'pnpgraph_present', 'comments_count' ],
+				'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
+				'pnpgraph_present', 'comments_count' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -91,14 +91,15 @@ listview_renderer_table.hosts = {
 						_('Scheduled Downtime')));
 
 			if (args.obj.comments_count > 0)
-				cell.append( comment_icon( args.obj.name, null ) )
-			
+				cell.append(comment_icon(args.obj.name, null))
+
 			return cell;
 		}
 	},
 	"actions" : {
 		"header" : _('Actions'),
-		"depends" : [ 'name', 'action_url', 'config_url', 'notes_url', 'config_allowed' ],
+		"depends" : [ 'name', 'action_url', 'config_url', 'notes_url',
+				'config_allowed' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -111,15 +112,10 @@ listview_renderer_table.hosts = {
 					)));
 
 			if (args.obj.action_url) {
-				cell.append(
-					icon16(
-						'host-actions',
-						_('Perform extra host actions'),
-						$('<a />')
-							.attr('href', args.obj.action_url)
-							.attr('target', _action_url_target)
-					)
-				);
+				cell.append(icon16('host-actions',
+						_('Perform extra host actions'), $('<a />').attr(
+								'href', args.obj.action_url).attr('target',
+								_action_url_target)));
 			}
 
 			if (args.obj.config_url && args.obj.config_allowed)
@@ -127,15 +123,9 @@ listview_renderer_table.hosts = {
 						'<a />').attr('href', args.obj.config_url)));
 
 			if (args.obj.notes_url) {
-				cell.append(
-					icon16(
-						'host-notes',
-						_('View extra host notes'),
-						$('<a />')
-							.attr('href', args.obj.notes_url)
-							.attr('target', _notes_url_target)
-					)
-				);
+				cell.append(icon16('host-notes', _('View extra host notes'), $(
+						'<a />').attr('href', args.obj.notes_url).attr(
+						'target', _notes_url_target)));
 			}
 
 			return cell;
@@ -173,7 +163,9 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			var cell = $('<td />').css('text-align', 'center');
 			if (args.obj.num_services > 0) {
-				cell.append(link_query('[services] host.name = "' + args.obj.name + '"').append(args.obj.num_services));
+				cell.append(link_query(
+						'[services] host.name = "' + args.obj.name + '"')
+						.append(args.obj.num_services));
 				cell.addClass('cell_svccnt_all');
 				cell.addClass('cell_svccnt');
 			}
@@ -187,7 +179,9 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			var cell = $('<td />').css('text-align', 'center');
 			if (args.obj.num_services_ok > 0) {
-				cell.append(link_query('[services] host.name = "' + args.obj.name + '" and state=0 and has_been_checked!=0')
+				cell.append(link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=0 and has_been_checked!=0')
 						.append(args.obj.num_services_ok));
 				cell.addClass('cell_svccnt_ok');
 				cell.addClass('cell_svccnt');
@@ -202,7 +196,9 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			var cell = $('<td />').css('text-align', 'center');
 			if (args.obj.num_services_warn > 0) {
-				cell.append(link_query('[services] host.name = "' + args.obj.name + '" and state=1 and has_been_checked!=0')
+				cell.append(link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=1 and has_been_checked!=0')
 						.append(args.obj.num_services_warn));
 				cell.addClass('cell_svccnt_warning');
 				cell.addClass('cell_svccnt');
@@ -217,7 +213,9 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			var cell = $('<td />').css('text-align', 'center');
 			if (args.obj.num_services_crit > 0) {
-				cell.append(link_query('[services] host.name = "' + args.obj.name + '" and state=2 and has_been_checked!=0')
+				cell.append(link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=2 and has_been_checked!=0')
 						.append(args.obj.num_services_crit));
 				cell.addClass('cell_svccnt_critical');
 				cell.addClass('cell_svccnt');
@@ -232,7 +230,9 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			var cell = $('<td />').css('text-align', 'center');
 			if (args.obj.num_services_unknown > 0) {
-				cell.append(link_query('[services] host.name = "' + args.obj.name + '" and state=3 and has_been_checked!=0')
+				cell.append(link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=3 and has_been_checked!=0')
 						.append(args.obj.num_services_unknown));
 				cell.addClass('cell_svccnt_unknown');
 				cell.addClass('cell_svccnt');
@@ -247,8 +247,10 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			var cell = $('<td />').css('text-align', 'center');
 			if (args.obj.num_services_pending > 0) {
-				cell.append(link_query('[services] host.name = "' + args.obj.name + '" and has_been_checked=0')
-						.append(args.obj.num_services_pending));
+				cell.append(link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and has_been_checked=0').append(
+						args.obj.num_services_pending));
 				cell.addClass('cell_svccnt_pending');
 				cell.addClass('cell_svccnt');
 			}
@@ -267,9 +269,9 @@ listview_renderer_table.services = {
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 				return $('<td class="icon obj_properties" />').append(
 						icon16('shield-' + args.obj.host.state_text,
-								args.obj.host.state_text))
-						.addClass(args.obj.host.state_text)
-						.attr('id','host|'+args.obj.host.name);
+								args.obj.host.state_text)).addClass(
+						args.obj.host.state_text).attr('id',
+						'host|' + args.obj.host.name);
 
 			} else {
 				return $('<td class="icon" />').addClass('listview-empty-cell');
@@ -278,8 +280,7 @@ listview_renderer_table.services = {
 	},
 	"host_name" : {
 		"header" : _('Host Name'),
-		"depends" : [ 'host.name', 'host.icon_image',
-				'host.address' ],
+		"depends" : [ 'host.name', 'host.icon_image', 'host.address' ],
 		"sort" : [ 'host.name', 'description' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -288,7 +289,8 @@ listview_renderer_table.services = {
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 				cell.append(extinfo_link({
 					host : args.obj.host.name
-				}).attr('title', args.obj.host.address).update_text(args.obj.host.name));
+				}).attr('title', args.obj.host.address).update_text(
+						args.obj.host.name));
 
 				if (args.obj.host.icon_image)
 					cell.append(icon(args.obj.host.icon_image, extinfo_link({
@@ -304,7 +306,8 @@ listview_renderer_table.services = {
 	},
 	"host_actions" : {
 		"header" : _('Host Actions'),
-		"depends" : [ 'host.name', 'host.action_url', 'host.config_url', 'host.notes_url', 'host.config_allowed' ],
+		"depends" : [ 'host.name', 'host.action_url', 'host.config_url',
+				'host.notes_url', 'host.config_allowed' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -313,8 +316,9 @@ listview_renderer_table.services = {
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 				cell.append(icon16('service-details',
 						_('View service details for this host'),
-						link_query('[services] host.name = "' + args.obj.host.name + '"' // FIXME:
-						// escape
+						link_query('[services] host.name = "'
+								+ args.obj.host.name + '"' // FIXME:
+								// escape
 						)));
 
 				if (args.obj.host.action_url)
@@ -327,8 +331,9 @@ listview_renderer_table.services = {
 							'<a />').attr('href', args.obj.host.config_url)));
 
 				if (args.obj.host.notes_url)
-					cell.append(icon16('host-notes', _('View extra host notes'), $(
-							'<a />').attr('href', args.obj.host.notes_url)));
+					cell.append(icon16('host-notes',
+							_('View extra host notes'), $('<a />').attr('href',
+									args.obj.host.notes_url)));
 			} else {
 				cell.addClass('listview-empty-cell');
 			}
@@ -350,10 +355,14 @@ listview_renderer_table.services = {
 		"depends" : [ 'state_text', 'description', 'host.name' ],
 		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
-			return $('<td class="icon svc_obj_properties"><span class="icon-16 x16-shield-'
-					+ args.obj.state_text + '"></span></td>')
-					.addClass(args.obj.state_text)
-					.attr('id','service|'+args.obj.host.name+'|'+args.obj.description.replace(' ','_')+'|'+args.obj.description);
+			return $(
+					'<td class="icon svc_obj_properties"><span class="icon-16 x16-shield-'
+							+ args.obj.state_text + '"></span></td>').addClass(
+					args.obj.state_text).attr(
+					'id',
+					'service|' + args.obj.host.name + '|'
+							+ args.obj.description.replace(' ', '_') + '|'
+							+ args.obj.description);
 		}
 	},
 	"description" : {
@@ -370,9 +379,9 @@ listview_renderer_table.services = {
 	"status" : {
 		"header" : _('Status'),
 		"depends" : [ 'host.name', 'description', 'pnpgraph_present',
-		        'acknowledged', 'comments_count', 'notifications_enabled',
-		        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-		        'host.scheduled_downtime_depth'],
+				'acknowledged', 'comments_count', 'notifications_enabled',
+				'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
+				'host.scheduled_downtime_depth' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -389,12 +398,13 @@ listview_renderer_table.services = {
 				});
 				cell.append(pnp_link);
 			}
-			
+
 			if (args.obj.acknowledged)
 				cell.append(icon16('acknowledged', _('Acknowledged')));
 
 			if (args.obj.comments_count > 0)
-				cell.append(comment_icon(args.obj.host.name, args.obj.description));
+				cell.append(comment_icon(args.obj.host.name,
+						args.obj.description));
 
 			if (!args.obj.notifications_enabled)
 				cell.append(icon16('notify-disabled',
@@ -407,10 +417,11 @@ listview_renderer_table.services = {
 			if (args.obj.is_flapping) // FIXME: Needs icon in compass
 				cell.append(icon16('flapping', _('Flapping')));
 
-			if ((args.obj.scheduled_downtime_depth > 0) || (args.obj.host.scheduled_downtime_depth > 0))
+			if ((args.obj.scheduled_downtime_depth > 0)
+					|| (args.obj.host.scheduled_downtime_depth > 0))
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
-			
+
 			return cell;
 		}
 	},
@@ -421,21 +432,18 @@ listview_renderer_table.services = {
 		"cell" : function(args) {
 			var cell = $('<td />');
 
-
 			if (args.obj.action_url)
 				cell.append(icon16('host-actions',
 						_('Perform extra host actions'), $('<a />').attr(
 								'href', args.obj.action_url)));
 
-
 			if (args.obj.config_url && args.obj.config_allowed)
 				cell.append(icon16('nacoma', _('Configure this service'), $(
 						'<a />').attr('href', args.obj.config_url)));
-			
 
 			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra service notes'), $(
-						'<a />').attr('href', args.obj.notes_url)));
+				cell.append(icon16('host-notes', _('View extra service notes'),
+						$('<a />').attr('href', args.obj.notes_url)));
 
 			return cell;
 		}
@@ -484,8 +492,8 @@ listview_renderer_table.hostgroups = {
 		"sort" : [ 'alias', 'name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(link_query('[hosts] in "' + args.obj.name + '"').update_text(
-					args.obj.alias + ' (' + args.obj.name + ')'));
+			cell.append(link_query('[hosts] in "' + args.obj.name + '"')
+					.update_text(args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
 	},
@@ -531,8 +539,8 @@ listview_renderer_table.servicegroups = {
 		"sort" : [ 'alias', 'name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(link_query('[services] in "' + args.obj.name + '"').update_text(
-					args.obj.alias + ' (' + args.obj.name + ')'));
+			cell.append(link_query('[services] in "' + args.obj.name + '"')
+					.update_text(args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
 	},
@@ -733,13 +741,12 @@ listview_renderer_table.comments = {
 			if (args.obj.is_service)
 				del_command = 'DEL_SVC_COMMENT';
 
-			cell.append(link('command/submit', {
-				cmd_typ : del_command,
-				'comment_id' : args.obj.id,
-			})
-			.attr('title', 'Delete comment')
-			.attr('class', 'action_delete_comment')
-			.append(icon16('delete-comment')));
+			cell.append(icon16('delete-comment', _('Delete comment'), link(
+					'command/submit', {
+						cmd_typ : del_command,
+						'comment_id' : args.obj.id,
+					}).attr('title', 'Delete comment').attr('class',
+					'action_delete_comment')));
 
 			return cell;
 		}
@@ -788,14 +795,14 @@ listview_renderer_table.downtimes = {
 		"sort" : [ 'host.name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(extinfo_link(args.obj.host.name).update_text(
-					args.obj.host.name));
+			cell.append(extinfo_link({
+				host : args.obj.host.name
+			}).update_text(args.obj.host.name));
 
 			if (args.obj.host.icon_image)
-				cell
-						.append(icon(args.obj.host.icon_image,
-								extinfo_link(args.obj.host.name)).css('float',
-								'right'));
+				cell.append(icon(args.obj.host.icon_image, extinfo_link({
+					host : args.obj.host.name
+				})).css('float', 'right'));
 
 			return cell;
 		}
@@ -899,18 +906,18 @@ listview_renderer_table.downtimes = {
 			var cell = $('<td />');
 
 			// Delete
-			var del_icon = icon16('delete-downtime',
-					_("Delete/cancel this scheduled downtime entry"));
 
 			var del_command = 'DEL_HOST_DOWNTIME';
 			if (args.obj.is_service) {
 				del_command = 'DEL_SVC_DOWNTIME';
 			}
 
-			cell.append(link('command/submit', {
-				cmd_typ : del_command,
-				downtime_id : args.obj.id,
-			}).attr('title', 'Delete downtime').append(del_icon));
+			cell.append(icon16('delete-downtime',
+					_("Delete/cancel this scheduled downtime entry"), link(
+							'command/submit', {
+								cmd_typ : del_command,
+								downtime_id : args.obj.id,
+							})));
 
 			// Schedule recurring
 
@@ -920,8 +927,8 @@ listview_renderer_table.downtimes = {
 			if (args.obj.service.description) {
 				recurring_args.service = args.obj.service.description;
 			}
-			cell.append(link('recurring_downtime', recurring_args).append(
-					icon16('recurring-downtime')));
+			cell.append(icon16('recurring-downtime', _('Recurring downtime'),
+					link('recurring_downtime', recurring_args)));
 
 			return cell;
 		}
@@ -1080,8 +1087,7 @@ listview_renderer_table.saved_filters = {
 		"sort" : [ 'filter_name' ],
 		"cell" : function(args) {
 			return $('<td />').append(
-					link_query(args.obj.filter).text(args.obj.filter_name)
-					);
+					link_query(args.obj.filter).text(args.obj.filter_name));
 
 		}
 	},
@@ -1091,8 +1097,7 @@ listview_renderer_table.saved_filters = {
 		"sort" : [ 'filter' ],
 		"cell" : function(args) {
 			return $('<td />').append(
-					link_query(args.obj.filter).text(args.obj.filter)
-					);
+					link_query(args.obj.filter).text(args.obj.filter));
 		}
 	},
 	"owner" : {
@@ -1123,15 +1128,16 @@ listview_renderer_table.saved_filters = {
 						+ '/listview/delete_saved_filter?id=' + args.obj.id;
 
 				var del_elem = $('<a />')
-					.attr('href', del_link)
-					.addClass('link_ajax_refresh')
-					.click(function(ev) {
-						if(!confirm(_("Are you sure you want to delete the filter '") + args.obj.filter_name +"' ?")) {
-							return false;
-						}
-					})
-					.append(del_icon);
-				
+						.attr('href', del_link)
+						.addClass('link_ajax_refresh')
+						.click(
+								function(ev) {
+									if (!confirm(_("Are you sure you want to delete the filter '")
+											+ args.obj.filter_name + "' ?")) {
+										return false;
+									}
+								}).append(del_icon);
+
 				cell.append(del_elem);
 			}
 			return cell;
