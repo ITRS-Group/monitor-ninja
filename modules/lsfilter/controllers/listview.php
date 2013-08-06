@@ -12,7 +12,6 @@ class ListView_Controller extends Authenticated_Controller {
 	 */
 	public function index($q = "[hosts] all") {
 		$this->template->listview_refresh = true;
-		$this->xtra_js = array();
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
 
