@@ -157,7 +157,9 @@ function lsfilter_list(config)
 					},
 					success: function(data)
 					{
-						if(options.success) {
+						if(data == null) {
+							self.handle_ajax_error_response({data:_("No valid response from server. Still logged in?")});
+						} else if(options.success) {
 							options.success(data);
 						} else {
 							self.handle_ajax_response(data);
