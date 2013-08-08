@@ -48,22 +48,22 @@ class LSFilter_Saved_Queries_Model extends Model {
 			return array('name'=>$k,'query'=>$v,'scope'=>'static');
 		},array_keys($queries),array_values($queries));
 	}
-	
+
 	/**
 	 * Get a set of database queries, possible given a table name
 	 */
 	private static function get_db_queries( $table = false ) {
 		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
-		
+
 		$table_filter = "";
 		if($table !== false) {
 			$table_filter = " AND filter_table = ".$db->escpae($table);
 		}
-		
+
 		$sql = "SELECT * FROM ".self::tablename." WHERE (username=".$db->escape($user)." OR username IS NULL)$table_filter";
 		$res = $db->query($sql);
-		
+
 		$queries = array();
 		foreach($res as $row) {
 			$queries[] = array( 'name' => $row->filter_name, 'table' => $row->filter_table, 'query' => $row->filter, 'scope' => ($row->username?'user':'global') );
@@ -71,7 +71,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 
 		return $queries;
 	}
-	
+
 	/**
 	 * Get a set of queries, possible given a table name
 	 */
@@ -80,7 +80,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 				self::get_static_queries($table),
 				self::get_db_queries($table)
 				);
-		
+
 		return $queries;
 	}
 
@@ -100,9 +100,9 @@ class LSFilter_Saved_Queries_Model extends Model {
 		$db = Database::instance();
 		$parser = new LSFilter_Core(new LSFilterPP_Core(), new LSFilterMetadataVisitor_Core());
 		$metadata = $parser->parse( $query );
-		
+
 		if( $metadata === false ) return "Error when type checking";
-		
+
 		$user = Auth::instance()->get_user()->username;
 		if( $scope == 'global' ) {
 			if( !op5auth::instance()->authorized_for('saved_filters_global') ) {
@@ -110,21 +110,35 @@ class LSFilter_Saved_Queries_Model extends Model {
 			}
 			$user = null;
 		}
-		
+
 		switch( $scope ) {
 			case 'user':
 			case 'global':
-				$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE filter=%s, filter_table=%s";
-				$args = array($user, $name, $metadata['name'], $query, $name, $query, $metadata['name']);
+				/* Those are ok, break out of switch */
 				break;
 			case 'static':
 				return "Can not save to statis scope";
 			default:
 				return "Unknown scope";
 		}
-		
+
+		/* It should be an update on duplicate key, but that doesn't work well with null-valued columns, delete instead */
+		if( $user === null ) {
+			$sql_query = "DELETE FROM ".self::tablename." WHERE username IS NULL AND filter_name = %s";
+			$args = array($name);
+		} else {
+			$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND filter_name = %s";
+			$args = array($user, $name);
+		}
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
 		$res = $db->query($sql_query);
+
+		/* And insert it's value */
+		$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s)";
+		$args = array($user, $name, $metadata['name'], $query, $name);
+		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
+		$res = $db->query($sql_query);
+
 		return false;
 	}
 	/**
@@ -132,16 +146,16 @@ class LSFilter_Saved_Queries_Model extends Model {
 	 */
 	public static function delete_query( $id ) {
 		$db = Database::instance();
-		
+
 		$user = Auth::instance()->get_user()->username;
-		
+
 		$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND id = %s";
 		$args = array($user, $id);
-		
+
 		if( op5auth::instance()->authorized_for('saved_filters_global') ) { /* FIXME: Delete from global scope */
 			$sql_query = "DELETE FROM ".self::tablename." WHERE (username = %s OR username IS NULL) AND id = %s";
 		}
-		
+
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
 		$res = $db->query($sql_query);
 		return false;
