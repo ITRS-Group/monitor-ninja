@@ -41,9 +41,20 @@ class LivestatusFilterAnd extends LivestatusFilterBase {
 	public function add( $filter ) {
 		if( $filter instanceof self ) {
 			foreach( $filter->sub_filters as $subf ) {
-				$this->sub_filters[] = $subf;
+				$this->do_add($subf);
 			}
 		} else {
+			$this->do_add($filter);
+		}
+	}
+	private function do_add( $filter ) {
+		$add = true;
+		foreach( $this->sub_filters as $tsf ) {
+			if( $tsf->equals( $filter ) ) {
+				$add = false;
+			}
+		}
+		if( $add ) {
 			$this->sub_filters[] = $filter;
 		}
 	}

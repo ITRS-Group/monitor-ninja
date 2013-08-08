@@ -20,4 +20,16 @@ abstract class LivestatusFilterBase {
 	function simplify() {
 		return clone $this;
 	}
+
+	/**
+	 * Test if two filters are equal.
+	 *
+	 * This is used for simplifications, return true if sure about equality.
+	 * Return false if not equal, or unsure.
+	 *
+	 * Should only give false negatives.
+	 */
+	function equals( $filter ) {
+		return false;
+	}
 }

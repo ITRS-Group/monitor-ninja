@@ -103,4 +103,28 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 				$this->negations[$this->op]
 				);
 	}
+
+	/**
+	 * Test if two filters are equal.
+	 *
+	 * This is used for simplifications, return true if sure about equality.
+	 * Return false if not equal, or unsure.
+	 *
+	 * Should only give false negatives.
+	 */
+	function equals( $filter ) {
+		if( !( $filter instanceof self ) ) {
+			return false;
+		}
+		if( $filter->field != $this->field ) {
+			return false;
+		}
+		if( $filter->value != $this->value ) {
+			return false;
+		}
+		if( $filter->op != $this->op ) {
+			return false;
+		}
+		return true;
+	}
 }
