@@ -16,7 +16,7 @@ class ORMRootSetGenerator extends class_generator {
 		$this->variable('dbtable',null,'protected');
 		$this->variable('class',null,'protected');
 		$this->variable('filter',null,'protected');
-		$this->variable('default_sort',null,'protected');
+		$this->variable('default_sort',array(),'protected');
 		$this->generate_getter('table');
 		$this->generate_getter('class');
 		$this->generate_binary_operator('union', 'LivestatusFilterOr');

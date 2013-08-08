@@ -94,6 +94,10 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$ls_filter .= "Sort: $col\n";');
 		$this->write('}');
 
+		$this->write('foreach($this->default_sort as $col) {');
+		$this->write('$ls_filter .= "Sort: $col\n";');
+		$this->write('}');
+
 		$this->write('if( $offset !== false ) {');
 		$this->write('$ls_filter .= "Offset: ".intval($offset)."\n";');
 		$this->write('}');
