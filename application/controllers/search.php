@@ -108,6 +108,7 @@ class Search_Controller extends Authenticated_Controller {
 
 		$username = Auth::instance()->get_user()->username;
 
+		$limit = config::get('pagination.default.items_per_page', '*');
 		foreach( $queries as $table => $query ) {
 			$setting = array('query'=>$query);
 			if($limit !== false) {
@@ -119,7 +120,8 @@ class Search_Controller extends Authenticated_Controller {
 				'widget' => 'listview',
 				'username' => $username,
 				'friendly_name' => ucfirst($table),
-				'setting' => $setting
+				'setting' => $setting,
+				'limit' => $limit
 			));
 
 			$widget = widget::get($model, $this);
