@@ -296,6 +296,7 @@ $tables = array (
 		'class' => 'Service',
 		'source' => 'LS',
 		'key' => array('host.name', 'description'),
+		'default_sort' => array('host_name asc', 'description asc'),
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
