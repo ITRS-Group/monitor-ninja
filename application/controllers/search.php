@@ -17,8 +17,8 @@ class Search_Controller extends Authenticated_Controller {
 	 * @var array of arrays.
 	 */
 	protected $search_columns = array(
-		'hosts' => array( 'name', 'display_name', 'address', 'alias' ),
-		'services' => array( 'description', 'display_name' ),
+		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'notes' ),
+		'services' => array( 'description', 'display_name', 'notes' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' ),
@@ -26,8 +26,8 @@ class Search_Controller extends Authenticated_Controller {
 	);
 
 	protected $search_columns_matchall = array(
-		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output' ),
-		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output' ),
+		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'notes' ),
+		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'notes' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' )
