@@ -108,20 +108,19 @@ class Search_Controller extends Authenticated_Controller {
 
 		$username = Auth::instance()->get_user()->username;
 
-		$limit = config::get('pagination.default.items_per_page', '*');
+		if( $limit === false ) {
+			$limit = config::get('pagination.default.items_per_page', '*');
+		}
 		foreach( $queries as $table => $query ) {
 			$setting = array('query'=>$query);
-			if($limit !== false) {
-				$setting['limit'] = $limit;
-			}
+			$setting['limit'] = $limit;
 			$model = new Ninja_widget_Model(array(
 				'page' => Router::$controller,
 				'name' => 'listview',
 				'widget' => 'listview',
 				'username' => $username,
 				'friendly_name' => ucfirst($table),
-				'setting' => $setting,
-				'limit' => $limit
+				'setting' => $setting
 			));
 
 			$widget = widget::get($model, $this);
