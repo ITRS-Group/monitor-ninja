@@ -57,7 +57,7 @@ class tablestat_Widget extends widget_Base {
 							),
 							array(
 									'name' => '%d Unhandled Problems',
-									'filter' => '[services] state != 0 and (scheduled_downtime_depth = 0 and acknowledged = 0) and (host.scheduled_downtime_depth = 0 and host.acknowledged=0)'
+									'filter' => '[services] state != 0 and (scheduled_downtime_depth = 0 and acknowledged = 0) and (host.scheduled_downtime_depth = 0 and host.acknowledged = 0) and (host.has_been_checked = 1 and host.state = 0)'
 							),
 							array(
 									'name' => '%d on Problem Hosts',
