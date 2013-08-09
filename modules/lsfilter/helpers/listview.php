@@ -6,13 +6,13 @@
 class listview {
 	/**
 	 * A simple tool to fetch a set of elements reduced by a certain paramters
-	 * 
+	 *
 	 * Useful for generating, for example a set of all notifications related to a host.
-	 * 
+	 *
 	 * @code
 	 * $set = listview::set('notifications', array('host_name'=>$hostname));
 	 * @endcode
-	 * 
+	 *
 	 * @param $table table to search in
 	 * @param $match array of matches
 	 * @return ObjectSet_Model
@@ -57,6 +57,23 @@ class listview {
 	 * @return string
 	 */
 	public static function link($table, $match) {
-		return url::base(true) . "listview/?q=" . urlencode(self::query($table, $match));
+		$query = self::query($table, $match);
+		return self::querylink($query);
+	}
+
+	/**
+	 * A simple tool to generate a link to a lsitview, given a table name and an array of matches
+	 *
+	 * Useful for generating, for example a link to all notifications related to a host.
+	 *
+	 * @code
+	 * $url = listview::link('[table] query');
+	 * @endcode
+	 *
+	 * @param $query The query to link to
+	 * @return string
+	 */
+	public static function querylink($query) {
+		return url::base(true) . "listview/?q=" . urlencode($query);
 	}
 }
