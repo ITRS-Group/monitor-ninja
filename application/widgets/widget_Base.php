@@ -5,25 +5,28 @@
  */
 class widget_Base
 {
-	protected $editable = TRUE;
-	protected $movable = TRUE;
-	protected $collapsable = TRUE;
-	protected $removable = TRUE;
-	protected $closeconfirm = TRUE;
-	protected $duplicatable = FALSE; // setting this to true requires testing, so default to the more backwards compatible mode
+	protected $editable = TRUE; /**< An editable widget has settings that can be changed */
+	protected $movable = TRUE; /**< A movable widget can be dragged around */
+	protected $collapsable = TRUE; /**< A collapsable widget can be collapsed, so only the title bar is visible */
+	protected $removable = TRUE; /**< A removable widget can be deleted */
+	protected $closeconfirm = TRUE; /**< Whether to ask the user to confirm widget deletion */
+	protected $duplicatable = FALSE; /**< Whether the widget can be copied. Setting this to true requires testing, so default to the more backwards compatible mode */
 
-	public $result = false; 	# widget content result
-	public $js = false;			# required js resources?
-	public $css = false;		# additional css?
-	public $inline_js = false;
-	public $widget_base_path = false;# base_path to widget
-	public $widget_full_path = false;
-	public $model = false;
+	public $result = false; /**< widget content result */
+	public $js = false; /**< required js resources? */
+	public $css = false; /**< additional css? */
+	public $inline_js = false; /**< additional inline javascript, as a string */
+	public $widget_base_path = false; /**< path to widget main directory */
+	public $widget_full_path = false; /**< path to this widget's directory */
+	public $model = false; /**< The widget model instance this widget represents */
 	public $extra_data_attributes = array(); /**<  array Key-value to attach to widget-container (for example ["hello"] => "bye" which renders as <div data-hello="bye" />, good for javascript-hooks */
 	private static $loaded_widgets = array();
 
-	public $arguments = array();
+	public $arguments = array(); /**< The arguments for this instance, constructed from the option objects */
 
+	/**
+	 * Create new widget instance from a given widget model.
+	 */
 	public function __construct($widget_model)
 	{
 		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
@@ -41,12 +44,22 @@ class widget_Base
 		$this->model = $widget_model;
 	}
 
+	/**
+	 * DEPRECATED: Do not use
+	 *
+	 * For legacy reasons, this provides a shortcut to a populated Current_status_Model instance.
+	 * There once were significant performance advantages to use this wrapper, but there isn't anymore.
+	 * Just call Current_status_Model::instance() instead.
+	 */
 	public static function get_current_status() {
 		$current_status = Current_status_Model::instance();
 		$current_status->analyze_status_data();
 		return $current_status;
 	}
 
+	/**
+	 * Returns the populated argument array
+	 */
 	public function get_arguments() {
 		$arguments = array();
 		foreach ($this->options() as $option) {
@@ -85,6 +98,12 @@ class widget_Base
 		return $path;
 	}
 
+	/**
+	 * Return the list of options to use in this widget. This should be an array of
+	 * option instances, or - if you want to do more manual work - strings.
+	 *
+	 * Actual widgets typically want to extend this method.
+	 */
 	public function options()
 	{
 		$refresh = new option($this->model->name, 'refresh_interval', 'Refresh (sec)', 'input', array('size'=>3, 'type'=>'text'), 60);
@@ -95,6 +114,9 @@ class widget_Base
 		);
 	}
 
+	/**
+	 * Hook to force additional CSS classes to the rendering
+	 */
 	public function add_css_class ($class)
 	{
 		if (!isset($this->added_classes))
@@ -105,7 +127,7 @@ class widget_Base
 	/**
 	 * Method to render a widget
 	 *
-	 * @param $meth Name of method
+	 * @param $method Name of method
 	 * @param $with_chrome True to generate widget with the menus and everything, false otherwise
 	 * @return The rendered widget as a string
 	 */
@@ -162,7 +184,7 @@ class widget_Base
 				$content .= '</div>';
 			}
 
-			$content .= '<div class="%%WIDGET_CLASS%%" style="overflow: auto;">'; 	// Clear and end widget header and start widget content
+			$content .= '<div class="%%WIDGET_CLASS%%" style="overflow: auto;">'; // Clear and end widget header and start widget content
 			
 		}
 		ob_start();
@@ -185,6 +207,19 @@ class widget_Base
 		return $content;
 	}
 
+	/**
+	 * Print the widget contents here
+	 *
+	 * Concrete widgets typically want to override this.
+	 */
+	public function index()
+	{
+		echo "<p>(empty widget)</p>";
+	}
+
+	/**
+	 * Weird little method that returns all the resources referenced in this instance
+	 */
 	public function resources($in_files=false, $type='js')
 	{
 		if (empty($in_files) || empty($type))

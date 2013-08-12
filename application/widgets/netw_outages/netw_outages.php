@@ -2,9 +2,7 @@
 /**
  * Network outages widget
  *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class Netw_outages_Widget extends widget_Base {
 	protected $duplicatable = true;

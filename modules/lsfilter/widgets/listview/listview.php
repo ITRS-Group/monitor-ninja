@@ -3,9 +3,7 @@
 /**
  * Listview widget
  *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class Listview_Widget extends widget_Base {
 	protected $duplicatable = true;

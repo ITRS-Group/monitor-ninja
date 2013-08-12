@@ -3,9 +3,7 @@
 /**
  * Nagvis widget
  *
- * @package NINJA
  * @author op5 Valerij Stukanov
- * @license GPL
  */
 class Nagvis_Widget extends widget_Base {
 	protected $duplicatable = true;

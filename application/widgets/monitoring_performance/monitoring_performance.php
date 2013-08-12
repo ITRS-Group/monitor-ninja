@@ -2,9 +2,7 @@
 /**
  * Hosts widget for monitoring performance
  *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class Monitoring_performance_Widget extends widget_Base {
 	protected $duplicatable = true;

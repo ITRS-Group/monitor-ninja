@@ -2,9 +2,7 @@
 /**
  * Network health widget
  *
- * @package NINJA
  * @author op5 AB
- * @license GPL
 */
 class Netw_health_Widget extends widget_Base {
 	protected $duplicatable = true;

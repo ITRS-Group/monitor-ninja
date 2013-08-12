@@ -4,6 +4,10 @@
  */
 class Error_Widget extends widget_Base {
 	private $message = false;
+	/**
+	 * Takes a widget model instance, and an exception, and tries to render
+	 * both in a somewhat user-friendly way.
+	 */
 	public function __construct($widget_obj, $exception) {
 		$this->model = $widget_obj;
 		if ($this->model == false) {

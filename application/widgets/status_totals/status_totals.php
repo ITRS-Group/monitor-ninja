@@ -3,9 +3,7 @@
 /**
  * Total Status widget
  *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class Status_totals_Widget extends widget_Base {
 
@@ -29,18 +27,32 @@ class Status_totals_Widget extends widget_Base {
 	
 	}
 
+	/**
+	 * A host name(?) or hostgroup name. Maybe it can also be arrays? Or must it be?
+	 * Darn, interface's spacey, yo!
+	 */
 	public function set_host($host) {
 		$this->host = $host;
 	}
 
+	/**
+	 * Adds a filter for the host(s) referenced by this widget to only display a particular status
+	 */
 	public function set_hoststatus($hoststatus) {
 		$this->hoststatus = $hoststatus;
 	}
 
+	/**
+	 * Adds a filter for the service(s) referenced by this widget to only display a particular status
+	 */
 	public function set_servicestatus($servicestatus) {
 		$this->servicestatus = $servicestatus;
 	}
 
+	/**
+	 * Set the type of group to render.
+	 * @param $grouptype "host" or "service". Or "hostgroup" or "servicegroup", because, hey, why not?
+	 */
 	public function set_grouptype($grouptype) {
 		$this->grouptype = str_replace('group', '', $grouptype);
 	}

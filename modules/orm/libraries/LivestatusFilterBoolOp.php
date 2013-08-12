@@ -4,7 +4,7 @@
  * An or-node in the livestatus filter node tree
  */
 abstract class LivestatusFilterBoolOp extends LivestatusFilterBase {
-	protected $sub_filters = array();
+	protected $sub_filters = array(); /**< The sub filters */
 
 	/**
 	 * Get a list of sub filters

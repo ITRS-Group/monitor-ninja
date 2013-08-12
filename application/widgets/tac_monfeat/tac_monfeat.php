@@ -2,9 +2,7 @@
 /**
  * Monitoring Features widget for tactical overview
  *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class Tac_monfeat_Widget extends widget_Base {
 	protected $duplicatable = true;
