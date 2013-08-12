@@ -24,25 +24,26 @@
 	<body>
 
 		<div class="container">
-
 			<?php
+			if(!isset($custom_header)) {
 				require __DIR__.'/template_header.php';
-			?>
-
-			<div class="navigation" id="navigation">
-
-				<div class="menu" id="main-menu">
-
-				<?php
-					require __DIR__.'/template_menu.php';
 				?>
 
+				<div class="navigation" id="navigation">
+
+					<div class="menu" id="main-menu">
+
+					<?php
+						require __DIR__.'/template_menu.php';
+					?>
+
+					</div>
+
 				</div>
-
-			</div>
-
+			<?php } else {
+				require($custom_header);
+			} ?>
 			<div class="content" id="content">
-
 
 					<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); }?>
 
@@ -58,7 +59,9 @@
 
 		</div>
 		<?php
-			echo html::script('application/media/js/dojo.js');
+			if(!isset($no_dojo)) {
+				echo html::script('application/media/js/dojo.js');
+			}
 			if (isset($context_menu))
 				echo $context_menu;
 		?>
