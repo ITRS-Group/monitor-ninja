@@ -223,7 +223,7 @@ class Execute_Command_Model extends Model
 							 (0 => 'Up', 1 => 'Down'));
 				break;
 			 case 'sticky':
-				$ary = array('type' => 'bool', 'default' => self::get_setting('sticky'));
+				$ary = array('type' => 'int', 'default' => self::get_setting('sticky'));
 				break;
 			 case 'value':
 				$ary = array('type' => 'string', 'size' => 100, 'default' => 'variable=value');
