@@ -1,3 +1,17 @@
+Given /^I have PNP data for "(.+)"/ do |object|
+	if object =~ /;/ then
+		objs = object.split(";")
+		host = objs[0]
+		service = objs[1]
+	else
+		service = "_HOST_"
+		host = object
+	end
+
+	FileUtils.mkdir_p("/opt/monitor/op5/pnp/perfdata/" + host)
+	FileUtils.touch("/opt/monitor/op5/pnp/perfdata/" + host + "/" + service + ".xml")
+end
+
 Then /^I should see this status:$/ do |table|
   cols = table.transpose.raw
   cols.each do |row|

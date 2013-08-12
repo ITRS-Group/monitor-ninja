@@ -341,7 +341,8 @@ Feature: Monitoring
 	Scenario: Host details host extinfo page show performance graph
 		Verify that the "Show performance graph" link works correctly.
 
-		Given I am on the Host details page
+		Given I have PNP data for "linux-server1"
+		And I am on the Host details page
 		When I click "linux-server1"
 		And I click "Show performance graph"
 		Then I should be on the PNP page
@@ -548,7 +549,8 @@ Feature: Monitoring
 		Verify that the performance graph link on the extinfo page for a given service
 		point to the right place.
 
-		Given I am on the Service details page
+		Given I have PNP data for "linux-server1;System Load"
+		And I am on the Service details page
 		When I click "System Load"
 		And I click "Show performance graph"
 		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System%20Load"
