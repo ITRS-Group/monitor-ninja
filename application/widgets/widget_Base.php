@@ -139,7 +139,7 @@ class widget_Base
 			$options = $this->options();
 			$widget_legal_classes = array('editable', 'movable', 'collapsable', 'removable', 'closeconfirm', 'duplicatable');
 			$widget_classes = array();
-			
+
 			foreach ($widget_legal_classes as $class) {
 				if ($this->$class) {
 					$widget_classes[] = $class;
@@ -169,8 +169,8 @@ class widget_Base
 						$content .= $option;
 					}
 					else {
-						$content .= $option->render_label($this->model->instance_id);
-						$content .= $option->render_widget($this->model->instance_id, $this->model->setting);
+						$content .= '<div class="widget-editbox-label"><div>'.$option->render_label($this->model->instance_id).'</div></div>';
+						$content .= '<div class="widget-editbox-field"><div>'.$option->render_widget($this->model->instance_id, $this->model->setting).'</div></div>';
 						$js = $option->render_js();
 						if (!empty($js) && !isset(self::$loaded_widgets[$this->model->name]))
 							$this->inline_js .= "($js)(this);\n";
@@ -185,11 +185,10 @@ class widget_Base
 			}
 
 			$content .= '<div class="%%WIDGET_CLASS%%" style="overflow: auto;">'; // Clear and end widget header and start widget content
-			
 		}
 		ob_start();
 		$this->$method();
-		
+
 		if (gettype($this->widget_base_path) === 'boolean') {
 			$content .= '<h2>Widget Error</h2><br />';
 			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content-error', $content);
