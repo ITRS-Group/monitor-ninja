@@ -27,7 +27,7 @@ class User_Controller extends Authenticated_Controller {
 		'config.popup_delay' => 'int',
 		'config.page_refresh_rate' => 'int',
 		'config.listview_refresh_rate' => 'int',
-		'nagdefault.sticky' => 'bool',
+		'nagdefault.sticky' => 'int',
 		'nagdefault.persistent' => 'bool',
 		'nagdefault.comment' => 'string',
 		'nagdefault.services-too' => 'bool',
