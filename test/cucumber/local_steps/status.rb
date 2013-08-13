@@ -7,6 +7,8 @@ Given /^I have PNP data for "(.+)"/ do |object|
 		service = "_HOST_"
 		host = object
 	end
+	host.gsub!(/[ :\/\\\]/, '_')
+	service.gsub!(/[ :\/\\\]/, '_')
 
 	FileUtils.mkdir_p("/opt/monitor/op5/pnp/perfdata/" + host)
 	FileUtils.touch("/opt/monitor/op5/pnp/perfdata/" + host + "/" + service + ".xml")
