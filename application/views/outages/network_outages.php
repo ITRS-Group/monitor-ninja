@@ -31,6 +31,8 @@
 				<td><?php echo html::anchor('extinfo/details/host/'.$details['name'], $details['name']) ?></td>
 				<td class="icon">
 					<?php echo $details['comments'] == 0 ? '' : html::anchor('extinfo/details/host/'.$details['name'], html::image($this->add_path('icons/16x16/add-comment.png'),array('alt' => _('View comments for this host'), 'title' => _('View comments for this host'))),array('style' => 'border: 0px')); ?>
+					<?php echo $details['acknowledged'] == 0 ? '' : html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Host problem is acknowledged'), 'title' => _('Host problem is acknowledged')),array('style' => 'border: 0px')); ?>
+					<?php echo $details['scheduled_downtime_depth'] == 0 ? '' : html::image($this->add_path('icons/16x16/scheduled-downtime.png'),array('alt' => _('Host is in scheduled downtime'), 'title' => _('Host is in scheduled downtime')),array('style' => 'border: 0px')); ?>
 				</td>
 				<td><?php echo $details['severity'] ?></td>
 				<td><?php echo time::to_string($details['duration']) ?></td>
