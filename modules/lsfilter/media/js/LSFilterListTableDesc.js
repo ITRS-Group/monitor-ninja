@@ -347,19 +347,19 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 	// expr_func: expr4 := * name par_l expr_list par_r
 	this.visit_expr_func = function(name0, expr_list2) {
 		switch (name0) {
-		case "implode":
+		case "implode": // implode( delimiter, array )
 			return function(args) {
 				var fargs = expr_list2(args);
 				/* FIXME: test variable types */
 				return fargs[1].join(fargs[0]);
 			};
-		case "time":
+		case "time": // time( unixtimestamp )
 			return function(args) {
 				var fargs = expr_list2(args);
 				/* FIXME: test variable types */
 				return format_timestamp(fargs[0]);
 			};
-		case "idx":
+		case "idx": // idx( argnr, arg0, arg1, arg2 ... )
 			return function(args) {
 				var fargs = expr_list2(args);
 				var idx = parseInt(fargs[0], 10);
@@ -368,12 +368,12 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				}
 				return fargs[idx + 1];
 			};
-		case "urlencode":
+		case "urlencode": // urlencode( string )
 			return function(args) {
 				var fargs = expr_list2(args);
 				return encodeURIComponent(fargs[0]);
 			};
-		case "htmlescape":
+		case "htmlescape": // htmlenscape( string )
 			return function(args) {
 				var fargs = expr_list2(args);
 				var el = $('<div>').text(fargs[0]);
