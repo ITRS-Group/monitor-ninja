@@ -9,7 +9,6 @@ $menu_items['manual'] = _('op5 Monitor manual');
 $menu_items['support'] = _('op5 Support portal');
 $menu_items['ninja_project'] = _('The Ninja project');
 $menu_items['merlin_project'] = _('The Merlin project');
-$menu_items['project_documentation'] = _('Project documentation');
 
 $menu_items['section_monitoring'] = _('Monitoring');
 $menu_items['tac'] = _('Tactical overview');
@@ -69,7 +68,7 @@ $menu_items['loading'] = 'Loading...';
 
 # menu structure using array keys from translated labels above
 $menu = array(
-	'section_about' => array('portal', 'manual', 'support', 'ninja_project', 'merlin_project', 'project_documentation'),
+	'section_about' => array('portal', 'manual', 'support', 'ninja_project', 'merlin_project'),
 	'section_monitoring' => array('tac', 'host_detail', 'service_detail',
 		'hostgroup_summary', 'hostgroup_overview', 'hostgroup_grid',
 		'servicegroup_summary', 'servicegroup_overview', 'servicegroup_grid',
@@ -101,7 +100,6 @@ $menu_base = array(
 		$menu_items['support'] 					=> array('http://www.op5.com/support', 'support',2),
 		$menu_items['ninja_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/ninja', 'ninja',3),
 		$menu_items['merlin_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/merlin', 'merlin',3),
-		$menu_items['project_documentation'] 	=> array('https://wiki.op5.org', 'eventlog',3),
 	),
 	$menu_items['section_monitoring'] => array(
 		$menu_items['tac'] 						=> array('/tac', 'tac',0),
