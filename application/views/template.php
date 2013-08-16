@@ -25,7 +25,7 @@
 
 		<div class="container">
 			<?php
-			if(!isset($custom_header)) {
+			if(!isset($hide_header)) {
 				require __DIR__.'/template_header.php';
 				?>
 
@@ -40,9 +40,9 @@
 					</div>
 
 				</div>
-			<?php } else {
-				require($custom_header);
-			} ?>
+			<?php
+			}
+			?>
 			<div class="content" id="content">
 
 					<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); }?>
