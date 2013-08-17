@@ -304,6 +304,7 @@ function lsfilter_list(config)
 		if (this.config.table) {
 			this.config.table.replaceContent(alert);
 		}
+		this.start_autorefresh_timer();
 	};
 
 	this.render_totals = function(table, totals)
