@@ -2,7 +2,7 @@
 Feature: Filters & list views
 
 	@configuration @asmonitor
-	@bug-7012 @skip
+	@bug-7012
 	Scenario: Service multi-delete
 		Given I have these hosts:
 			| host_name     |
@@ -12,22 +12,21 @@ Feature: Filters & list views
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
 			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] state != 200 and acknowledged = 0"
+		And I'm on the list view for query "[services] state != 200 and active_checks_enabled = 1"
 		Then I should see "System Load"
-		And I should see "PING"
+		And I shouldn't see "PING"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I select "Delete services" from "multi_action"
-		And I click "Submit"
+		And I click "Delete services"
 		Then I should be on the Configure page
-		Then I should see "There are 2 changes to 2 service objects" within frame "iframe"
+		Then I should see "There are 1 changes to 1 service objects" within frame "iframe"
 		When I click "More info" within frame "iframe"
 		Then I should see "Deleted service object linux-server1;System Load" within frame "iframe"
-		And I should see "Deleted service object linux-server1;PING" within frame "iframe"
-		Then I should see button "Save objects I have changed" within frame "iframe"
+		And I shouldn't see "linux-server1;PING" within frame "iframe"
+		And I should see button "Save objects I have changed" within frame "iframe"
 		And I should see button "Save everything" within frame "iframe"
-		And I click button "Save objects I have changed" within frame "iframe"
-		Then I should see "Preflight configuration turned out ok." within frame "iframe"
+		When I click button "Save objects I have changed" within frame "iframe"
+		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 
 	@configuration @asmonitor
