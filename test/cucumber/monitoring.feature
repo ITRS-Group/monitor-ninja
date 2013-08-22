@@ -453,7 +453,6 @@ Feature: Monitoring
 		And I click "Alert history"
 		Then I should be on url "/monitor/index.php/alert_history/generate?service_description[]=linux-server1;System+Load"
 		And I should see "Alert history"
-		And I should see "System Load"
 
 	@configuration @asmonitor @case-654
 	Scenario: Service details extinfo page check links
