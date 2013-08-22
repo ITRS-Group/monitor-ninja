@@ -29,6 +29,7 @@ Feature: Summary reports
 			| PING                | win-server2   | check_ping      | 0                     | 1                     | pings          |
 		And I have these report data entries:
 			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output |
+			| 2012-01-01 12:00:02 |        701 |  NULL |   NULL | linux-server1 | System Load         |     0 |    1 |     1 |           NULL | OK - Åke Cato       |
 			| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                |
 			| 2013-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - laa-laa        |
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander  |
@@ -85,7 +86,7 @@ Feature: Summary reports
 		Then "Selected hostgroups" should have option "EmptyGroup"
 		And I click "Show report"
 		Then I should see "No objects could be found in your selected groups to base the report on"
-		And I should see "Report Settings"
+		And I should see "Report Mode"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate report on empty servicegroup
@@ -99,7 +100,7 @@ Feature: Summary reports
 		Then "Selected servicegroups" should have option "empty"
 		And I click "Show report"
 		Then I should see "No objects could be found in your selected groups to base the report on"
-		And I should see "Report Settings"
+		And I should see "Report Mode"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate report for host should by default include service alerts
@@ -130,9 +131,9 @@ Feature: Summary reports
 		And I should see "PING"
 		# FIXME: would look better with a generic table content helper...
 		# The number of host alerts
-		And I should see "1"
-		# The number of service alerts
 		And I should see "2"
+		# The number of service alerts
+		And I should see "1"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
@@ -174,7 +175,6 @@ Feature: Summary reports
 		And I should see "2"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
-		And I shouldn't see "System Load"
 		When I click "Edit settings"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
@@ -184,7 +184,6 @@ Feature: Summary reports
 		And I should see "PING"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
-		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
 		When I click "Edit settings"
@@ -199,7 +198,6 @@ Feature: Summary reports
 		And I should see "2"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
-		And I shouldn't see "System Load"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single service report should by default include host alerts
@@ -221,7 +219,7 @@ Feature: Summary reports
 		# The number of host alerts
 		And I should see "1"
 		# The number of service alerts
-		And I should see "3"
+		And I should see "2"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
@@ -245,7 +243,7 @@ Feature: Summary reports
 		# The number of host alerts
 		And I should see "1"
 		# The number of service alerts
-		And I should see "3"
+		And I should see "2"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
@@ -380,12 +378,11 @@ Feature: Summary reports
 		And I should see "Host alerts for LinuxServers"
 		And I should see "Service alerts for LinuxServers"
 		# The number of host alerts
-		And I should see "1"
-		# The number of service alerts
 		And I should see "2"
+		# The number of service alerts
+		And I should see "1"
 		And I shouldn't see "PING"
 		And I shouldn't see "Swap Usage"
-		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
 		When I click "Edit settings"
@@ -395,7 +392,6 @@ Feature: Summary reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		And I shouldn't see "win-server"
-		And I shouldn't see "System Load"
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
 		When I click "Edit settings"
@@ -405,9 +401,8 @@ Feature: Summary reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 		# The number of host alerts
-		And I should see "1"
+		And I should see "2"
 		And I shouldn't see "win-server"
-		And I shouldn't see "System Load"
 		And I shouldn't see "PING"
 		And I shouldn't see "Swap Usage"
 
