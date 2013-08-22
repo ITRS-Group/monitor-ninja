@@ -1,4 +1,6 @@
-(function () {
+(function (_site_domain, _index_page) {
+
+	"use strict";
 
 	/* QUICKLINK EXTENSION */
 	var uh_prob_title = "Unhandled Problems",
@@ -26,8 +28,9 @@
 					uh_prob_title = data.totals.service_all[1] + ' unacknowledged services in Critical/Warning state!';
 					link.attr('title', uh_prob_title);
 
-					if (uh_prob_state_element)
+					if (uh_prob_state_element) {
 						uh_prob_state_element.remove();
+					}
 					uh_prob_state_element = $("<span style='margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;' />");
 					if(data.totals.service_all[1] < 100 ) {
 						uh_prob_state_element.text(data.totals.service_all[1]);
@@ -70,7 +73,7 @@
 				'setting': JSON.stringify(global_quicklinks)
 			},
 			type: 'POST',
-			complete: function (xhr) {
+			complete: function() {
 				$('#dojo-add-quicklink-href').attr('value','');
 				$('#dojo-add-quicklink-title').attr('value','');
 				$('#dojo-add-quicklink-icon').attr('value','');
@@ -96,7 +99,7 @@
 					'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + ' (<a target="_blank" class="external" href="'+l.href+'">'+l.href+'</a>)</label></li>'
 				));
 			}
-			$('#dojo-icon-container').on('click', 'span', function(ev) {
+			$('#dojo-icon-container').on('click', 'span', function() {
 				var span = $(this);
 				$('#dojo-add-quicklink-icon').val(span.data('icon'));
 
@@ -126,15 +129,15 @@
 		if (href && title && icon) { 
 			var i = global_quicklinks.length;
 			for (i; i--;) {
-				if (global_quicklinks[i].href == href) {
+				if (global_quicklinks[i].href === href) {
 					error += 'This href is already used in a quicklink. <br />';
 				}
-				if (global_quicklinks[i].title == title) {
+				if (global_quicklinks[i].title === title) {
 					error += 'This title is already in use, titles must be unique. <br />';
 				}
 			}
-			if (error.length == 0) {
-				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target})		
+			if (error.length === 0) {
+				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
 				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '"><span title="' + title + '" class="icon-16 x16-' + icon + '"></span></a></li>'));
 				changed = true;
 			} else {
@@ -142,13 +145,13 @@
 				return;
 			}
 		}
-		var removal = $('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
+		$('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
 			var i = global_quicklinks.length;
 			var vid = '';
 			if (this.checked) {
 				for (i; i--;) {
 					vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
-					if (this.value == vid) {
+					if (this.value === vid) {
 						$('#dojo-quicklink-external li a span[title="'+this.title+'"]').parent().parent().remove();
 						global_quicklinks.splice(i, 1);
 						changed = true;
@@ -163,7 +166,7 @@
 		if(!error) {
 			$.fancybox.close();
 		}
-	})
+	});
 
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
 			data: {
@@ -185,5 +188,5 @@
 			}
 		});
 
-}());
+}(window._site_domain, window._index_page));
 
