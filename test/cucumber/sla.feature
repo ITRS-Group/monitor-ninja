@@ -402,8 +402,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		Then I should see "Saved reports"
-		And "Saved reports" shouldn't have option "saved test report"
+		Then "Saved reports" shouldn't have option "saved test report"
 		When I select "LinuxServers" from "Available hostgroups"
 		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
 		Then "Selected hostgroups" should have option "LinuxServers"

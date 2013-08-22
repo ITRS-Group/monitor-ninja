@@ -723,9 +723,7 @@ Feature: Summary reports
 		When I select "saved test report"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		When I click "Delete"
-		# Test available first, to force capybara to wait for page reload
-		Then "Available hostgroups" should have option "LinuxServers"
-		And "Saved reports" shouldn't have option "saved test report"
+		Then "Saved reports" shouldn't have option "saved test report"
 		And "Selected hostgroups" shouldn't have option "LinuxServers"
 
 	# FIXME: all the standard report tests are crap, because I don't yet have

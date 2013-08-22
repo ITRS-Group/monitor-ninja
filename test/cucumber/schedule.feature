@@ -161,11 +161,11 @@ Feature: Scheduled reports
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
-		And I select "saved test report" from "Select report"
 		And I select "Weekly" from "Report interval"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
+		And I select "saved test report" from "Select report"
 		And I click "Save"
 		Then I shouldn't see "There are no scheduled SLA reports"
 		And I should see "saved_test_report_Weekly.pdf"
@@ -254,10 +254,10 @@ Feature: Scheduled reports
 		Then I should see "New Schedule"
 		When I select "Alert summary report" from "Select report type"
 		And I select "Weekly" from "Report interval"
-		And I select "saved test report" from "Select report"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
+		And I select "saved test report" from "Select report"
 		And I click "Save"
 		Then I shouldn't see "There are no scheduled alert summary reports"
 		And I should see "saved_test_report_Weekly.pdf"
@@ -286,9 +286,7 @@ Feature: Scheduled reports
 		Then "Custom" should be checked
 		And "Selected hostgroups" should have option "LinuxServers"
 		When I click "Delete"
-		# Test available first, to force capybara to wait for page reload
-		Then "Available hostgroups" should have option "LinuxServers"
-		And "Saved reports" shouldn't have option "saved test report"
+		Then "Saved reports" shouldn't have option "saved test report"
 		And "Selected hostgroups" shouldn't have option "LinuxServers"
 
 	@configuration @asmonitor @reports
