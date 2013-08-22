@@ -71,6 +71,10 @@ class User_Controller extends Authenticated_Controller {
 			_('Nagios Defaults') => 'nagdefault'
 		);
 
+		$sub_headings = array(
+			'listview' => array("https://kb.op5.com/x/AwE6", _('Read specification online'))
+		);
+
 		$settings['pagination'] = array(
 			_('Pagination Limit') => array('pagination.default.items_per_page', self::$var_types['pagination.default.items_per_page']),
 			_('Pagination Step') => array('pagination.paging_step', self::$var_types['pagination.paging_step']),
@@ -139,6 +143,7 @@ class User_Controller extends Authenticated_Controller {
 		$template->title = _('User settings');
 		$template->current_values = $current_values;
 		$template->available_setting_sections = $available_setting_sections;
+		$template->sub_headings = $sub_headings;
 		$template->settings = $settings;
 		$updated_str = false;
 		if ($updated !== false) {

@@ -29,7 +29,15 @@ if (!empty($available_setting_sections)) {
 	foreach ($available_setting_sections as $name => $setting_key) { ?>
 		<div id="settings_<?php echo $name ?>">
 			<table>
-			<tr><th colspan="2"><?php echo $name ?></th></tr>
+			<tr>
+				<th colspan="2">
+				<?php if(isset($sub_headings[$setting_key])) { ?>
+					<a target=_blank href="<?php echo $sub_headings[$setting_key][0]; ?>" title="<?php echo $sub_headings[$setting_key][1]; ?>"><span class="icon-12 x12-help"></span> <?php echo $name ?></a>
+				<?php } else { ?>
+					<?php echo $name ?>
+				<?php } ?>
+				</th>
+			</tr>
 			<?php
 				$i = 0;
 				foreach ($settings[$setting_key] as $setting_name => $cfgkey) {
@@ -42,7 +50,7 @@ if (!empty($available_setting_sections)) {
 							echo form::input($fieldname, $current_values[$cfgkey[0]]);
 							break;
 						case 'textarea':
-							echo form::textarea($fieldname, $current_values[$cfgkey[0]]);
+							echo form::textarea($fieldname, $current_values[$cfgkey[0]], 'rows="6"');
 							break;
 						case 'bool':
 							echo form::radio($fieldname, 1, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? true:false, 'id="radio_on_'.$fieldname.'"').' <label for="radio_on_'.$fieldname.'">'._('On').'</label> &nbsp;';
