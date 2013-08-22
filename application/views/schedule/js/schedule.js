@@ -48,8 +48,10 @@ $(document).ready(function() {
 					var saved_reports = document.getElementById("saved_report_id");
 					var children = saved_reports.children;
 					for (var i = 0; i < children.length; i++) {
-						if (children[i].value)
+						if (children[i].value) {
 							saved_reports.removeChild(children[i]);
+							i--;
+						}
 					}
 					if(!response.length) {
 						return;
