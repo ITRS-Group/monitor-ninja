@@ -89,7 +89,7 @@ Feature: Availability reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (Worst state)"
-		And I shouldn't see "Summary"
+		And I shouldn't see "Total Alerts"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
