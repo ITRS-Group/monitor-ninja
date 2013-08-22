@@ -7,22 +7,23 @@
 	box-shadow: 0 0 6px $weak_shadow_color
 	border-bottom: 1px solid $border-color-dark
 	height: $header_height
+	width: 100%
 	min-width: 768px
 	position: fixed
-	width: 100%
 	top: 0
 	left: 0
 	z-index: 2
 
 	.logo
 		position: fixed
+		padding: 7px
 		left: 0px
 		top: 0px
-		padding: 7px
+
 		border-radius: 0px 0px 5px 0px
-		border: 1px solid $border-color-dark
-		border-top: none
-		border-left: none
+		border: 0 solid $border-color-dark
+		border-width: 0 1px 1px 0
+
 		box-shadow: 0 0 3px $weak_shadow_color
 		background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
 		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
@@ -33,31 +34,6 @@
 			height: 19px
 			width: 19px
 			display: inline-block
-
-	.supermenu
-
-		margin-left: 52px
-		height: $header_height
-		float: left
-
-		ul
-			margin: 0
-			padding: 0
-			width: 100%
-			display: block
-			float: left
-
-			li
-				margin: 0
-				padding: 5px 8px
-				float: left
-				border-right: 1px solid $border-color-dark
-				display: block
-
-				&:hover
-					background-image: -ms-linear-gradient(top, #fefffd, #dedfdd)
-					@include background(linear-gradient(top, #fefffd, #dedfdd))
-					@include filter-gradient(#fefffd, #dedfdd, vertical)
 
 	.headercontent
 		float: left
@@ -91,8 +67,8 @@
 
 .header_info_row
 	position: fixed
-	top: 4px
-	left: 329px
+	top: 5px
+	left: 360px
 	right: 280px
 	font-size: 90%
 	color: #555

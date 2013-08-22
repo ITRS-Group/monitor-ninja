@@ -29,17 +29,17 @@
 				require __DIR__.'/template_header.php';
 				?>
 
-				<div class="navigation" id="navigation">
+				<!--div class="navigation" id="navigation">
 
-					<div class="menu" id="main-menu">
+					<div class="menu" id="main-menu"-->
 
 					<?php
 						require __DIR__.'/template_menu.php';
 					?>
 
-					</div>
+					<!--/div>
 
-				</div>
+				</div-->
 			<?php
 			}
 			?>

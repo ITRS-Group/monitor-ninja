@@ -19,13 +19,30 @@ array(4) {
 */
 	$in_menu = false;
 
+	?>
+
+	<div class="main-menu">
+
+		<div class="logo">
+			<div class="logo-image"></div>
+		</div>
+
+	<?php
+
 	if (isset($links)) {
 
 		$uri = str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 		$uri = str_replace('?', '', $uri);
 		$uri = preg_replace('~/+~', '/', $uri);
 
+		echo "<ul>";
+
 		foreach ($links as $section => $entry) {
+
+			?>
+				<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button" title="<?php echo $section; ?>">
+				<span class="icon-32 x32-<?php echo str_replace(' ','-',strtolower($section)); ?>"></span>
+			<?php
 
 			$linkstring = '';
 			if (strtolower($section) == 'about') {
@@ -100,8 +117,14 @@ array(4) {
 
 			echo $linkstring;
 
-			echo "</ul>";
+			echo "</ul></li>";
 
 		}
 
+		echo "</ul>";
+
 	}
+
+	?>
+
+	</div>

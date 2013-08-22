@@ -15,9 +15,10 @@ if (!empty($base_href)) {
 
 	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
 
-	<?php echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon') ?>
-
-	<?php echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen') ?>
+	<?php 
+		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
+		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
+	?>
 
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />

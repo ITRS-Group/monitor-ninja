@@ -40,38 +40,32 @@
 ?>
 
 <div class="header" id="header">
-	<div class="supermenu">
 
-		<div class="logo">
-			<div class="logo-image"></div>
-		</div>
+	<!--ul-->
+		<!-- Classes are used by javascript navigation -->
 
-		<ul>
-			<!-- Classes are used by javascript navigation -->
+	<?php
 
-		<?php
-			if(isset($links)) {
-				foreach($links as $section => $sections_links) {
-					if(empty($sections_links) && strtolower($section) != "about") {
-						// we want to whitelist the 'about' link since the ninja/nagios version is displayed there
-						continue;
-					} ?>
-				<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button" title="<?php echo $section; ?>">
-					<span class="icon-32 x32-<?php echo str_replace(' ','-',strtolower($section)); ?>"></span>
-				</li>
-		<?php
-				}
+		require __DIR__.'/template_menu.php';
+		/*if(isset($links)) {
+			foreach($links as $section => $sections_links) {
+				if(empty($sections_links) && strtolower($section) != "about") {
+					// we want to whitelist the 'about' link since the ninja/nagios version is displayed there
+					continue;
+				} ?>
+			<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button" title="<?php echo $section; ?>">
+				<span class="icon-32 x32-<?php echo str_replace(' ','-',strtolower($section)); ?>"></span>
+			</li>
+	<?php
 			}
-		?>
-		</ul>
-	</div>
+		}*/
+	?>
+	<!--/ul-->
 
 	<div class="headercontent">
 
 			<?php
 				$quri = '/'.url::current();
-
-
 
 					$buttons = $shortcuts['internal'];
 
