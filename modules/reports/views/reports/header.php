@@ -100,6 +100,8 @@
 					break;
 			}
 		}
+		if ($this->type == 'sla')
+			echo '<p>'.sprintf(_('Showing %s'), $options->get_value('sla_mode')).'</p>';
 
 ?>
 		<div class="description">
