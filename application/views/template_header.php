@@ -83,15 +83,15 @@
 				<hr />
 				<table class="no_border">
 					<tr>
-						<td><?php echo _('URI') ?>:</td>
+						<td><label for="dojo-add-quicklink-href"><?php echo _('URI') ?>:</label></td>
 						<td><input type="text" id="dojo-add-quicklink-href"></td>
 					</tr>
 					<tr>
-						<td><?php echo _('Title') ?>:</td>
+						<td><label for="dojo-add-quicklink-title"><?php echo _('Title') ?>:</label></td>
 						<td><input type="text" id="dojo-add-quicklink-title"></td>
 					</tr>
 					<tr>
-						<td><?php echo _('Open in') ?>:</td>
+						<td><label for="dojo-add-quicklink-target"><?php echo _('Open in') ?>:</label></td>
 						<td>
 							<select id="dojo-add-quicklink-target">
 								<option value=""><?php echo _('This window') ?></option>
@@ -100,7 +100,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td><?php echo _('Icon') ?>:</td>
+						<td><label for="dojo-add-quicklink-icon"><?php echo _('Icon') ?>:</label></td>
 						<td>
 							<input type='hidden' id='dojo-add-quicklink-icon' name='dojo-add-quicklink-icon' />
 							<table style="width: auto" id="dojo-icon-container">
