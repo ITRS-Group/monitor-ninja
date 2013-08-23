@@ -51,17 +51,23 @@ Feature: Menu
 	@asmonitor
 	Scenario: Add quicklink
 		When I click "Manage quickbar"
-		And I enter "google.com" into "#dojo-add-quicklink-href"
-		And I enter "Make my day" into "#dojo-add-quicklink-title"
+		# The dialog will fade in, and if it's not done, it won't fade out properly
+		And wait for "1" seconds
+		Then I should see css "#dojo-icon-container .x16-enable"
+		When I enter "google.com" into "URI"
+		And I enter "Make my day" into "Title"
 		And I click css "#dojo-icon-container .x16-enable"
 		And I click "Save"
-		Then I shouldn't see "Add new quicklink"
-		And I should see css "a[href='google.com'] span[title='Make my day']"
+		Then I should see css "a[href='google.com'][title='Make my day']" within "#header"
+		And I shouldn't see "Add new quicklink"
 
 	@asmonitor
 	Scenario: Remove quicklink
 		When I click "Manage quickbar"
-		And I click css "input[title='Make my day']"
+		# The dialog will fade in, and if it's not done, it won't fade out properly
+		And wait for "1" seconds
+		Then I should see css "#dojo-icon-container .x16-enable"
+		When I check "Make my day"
 		And I click "Save"
-		Then I shouldn't see "Add new quicklink"
-		And I shouldn't see css "a[href='google.com'] span[title='Make my day']"
+		Then I shouldn't see "Add new quicklink" waiting patiently
+		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"

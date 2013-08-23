@@ -204,7 +204,8 @@ Feature: Monitoring
 		And I enter "Some comment" into "cmd_param[comment]"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
-		When I click "Done"
+		# Let command be registered by nagios
+		When I wait for "1" seconds
 		And I click "Notifications"
 		Then I should see "linux-server1"
 
