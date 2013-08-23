@@ -139,7 +139,7 @@
 			}
 			if (error.length === 0) {
 				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
-				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '"><span title="' + title + '" class="icon-16 x16-' + icon + '"></span></a></li>'));
+				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '" title="' + title + '"><span class="icon-16 x16-' + icon + '"></span></a></li>'));
 				changed = true;
 			} else {
 				$.jGrowl(error);
@@ -153,7 +153,7 @@
 				for (i; i--;) {
 					vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
 					if (this.value === vid) {
-						$('#dojo-quicklink-external li a span[title="'+this.title+'"]').parent().parent().remove();
+						$('#dojo-quicklink-external li a[title="'+this.title+'"]').parent().remove();
 						global_quicklinks.splice(i, 1);
 						changed = true;
 					}
@@ -182,7 +182,7 @@
 				if (obj['dojo-quicklinks']) {
 					links = obj['dojo-quicklinks'];
 					for (var i = 0; i < links.length; i += 1) {
-						$('#dojo-quicklink-external').append($('<li><a target="' + links[i].target + '" class="image-link" href="' + links[i].href + '"><span title="'+links[i].title+'" class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
+						$('#dojo-quicklink-external').append($('<li><a target="' + links[i].target + '" class="image-link" href="' + links[i].href + '" title="'+links[i].title+'"><span class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
 					}
 				}
 				global_quicklinks = links;
