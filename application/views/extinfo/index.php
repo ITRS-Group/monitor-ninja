@@ -11,15 +11,18 @@ $yes = _('Yes');
 $no = _('No');
 $logos_path = Kohana::config('config.logos_path');
 $logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
+$table = 'unknown';
 
 if( $object instanceof Host_Model ) {
 	$host = $object;
 	$service = false;
 	$type = 'host';
+	$table = 'hosts';
 } else if( $object instanceof Service_Model ) {
 	$host = $object->get_host();
 	$service = $object;
 	$type = 'service';
+	$table = 'services';
 }
 /* @var $host Host_Model */
 /* @var $service Service_Model */
@@ -90,7 +93,21 @@ if (!empty($widgets)) {
 		<?php } ?>
 		<tr>
 			<td><strong><?php echo _('Member of'); ?></strong></td>
-			<td style="white-space: normal"><?php echo $object->get_groups() ? implode(', ', $object->get_groups()) : _('No '.$type.'groups') ?></td>
+			<td style="white-space: normal">
+			<?php $groups=$object->get_groups();
+			if( count($groups) == 0 ) {
+				echo _('No '.$type.'groups');
+			}
+			$delim = "";
+			foreach( $groups as $group ) {
+				print $delim;
+				print "<a href=\"" . htmlentities(url::base(true) . "listview/?q=[" . $table . "] groups >= \"" . urlencode(addslashes($group)) . "\"") . "\">";
+				print htmlentities( $group );
+				print "</a>";
+				$delim = ", ";
+			}
+			?>
+			</td>
 		</tr>
 		<tr>
 			<td><strong><?php echo _('Contact groups') ?></strong></td>
