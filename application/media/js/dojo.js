@@ -87,6 +87,17 @@
 		this.style.opacity = '0.5';
 	});
 
+	$('#dojo-icon-container').on('click', 'span', function() {
+		var span = $(this);
+		$('#dojo-add-quicklink-icon').val(span.data('icon'));
+
+		// we have to change the background of the td, since the span already
+		// has the icon image as its background
+		var all_tds = $('#dojo-icon-container td');
+		all_tds.removeClass('highlight');
+		span.parents('td').addClass('highlight');
+	});
+
 	$('#dojo-add-quicklink').fancybox({
 		titleShow: false,
 		overlayOpacity: 0,
@@ -99,16 +110,6 @@
 					'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + ' (<a target="_blank" class="external" href="'+l.href+'">'+l.href+'</a>)</label></li>'
 				));
 			}
-			$('#dojo-icon-container').on('click', 'span', function() {
-				var span = $(this);
-				$('#dojo-add-quicklink-icon').val(span.data('icon'));
-
-				// we have to change the background of the td, since the span already
-				// has the icon image as its background
-				var all_tds = $('#dojo-icon-container td');
-				all_tds.removeClass('highlight');
-				span.parents('td').addClass('highlight');
-			});
 		},
 		onClose: function() {
 			$('#dojo-add-quicklink-href').attr('value','');
