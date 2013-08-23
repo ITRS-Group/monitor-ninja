@@ -31,7 +31,7 @@ if (!empty($base_href)) {
 	<?php
 		echo html::script('application/media/js/jquery.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
-		echo html::script('application/media/js/jquery.fancybox.min.js');
+		echo html::script('application/media/js/jquery.fancybox.js');
 		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');
 		echo html::script('application/media/js/jquery.easywidgets.min.js');
