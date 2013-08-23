@@ -205,7 +205,8 @@ Feature: Monitoring
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		# Let command be registered by nagios
-		When wait for "1" seconds
+		When I click "Done"
+		And wait for "1" seconds
 		And I click "Notifications"
 		Then I should see "linux-server1"
 
