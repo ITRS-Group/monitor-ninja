@@ -124,9 +124,11 @@ Feature: Filters & list views
 		And I have activated the configuration
 		Given I am on the Service details page
 		When I sort the filter result table by "description"
+		And wait for "1" seconds
 		Then The first row of the filter result table should contain "A-service"
 		And The last row of the filter result table should contain "D-service"
 		When I sort the filter result table by "description"
+		And wait for "1" seconds
 		Then The first row of the filter result table should contain "D-service"
 		And The last row of the filter result table should contain "A-service"
 
@@ -149,9 +151,11 @@ Feature: Filters & list views
 		Given I have submitted a passive service check result "linux-server1;C-service;0;some output"
 		And I am on the Service details page
 		When I sort the filter result table by "last_check"
+		And wait for "1" seconds
 		Then The last row of the filter result table should contain "C-service"
 		When I sort the filter result table by "last_check"
-		And The first row of the filter result table should contain "C-service"
+		And wait for "1" seconds
+		Then The first row of the filter result table should contain "C-service"
 
 	@configuration @asmonitor @case-653
 	Scenario: Service detail listing column sorting
@@ -171,9 +175,11 @@ Feature: Filters & list views
 		Given I have submitted a passive service check result "linux-server1;B-service;0;some output"
 		And I am on the Service details page
 		When I sort the filter result table by "duration"
+		And wait for "1" seconds
 		Then The first row of the filter result table should contain "B-service"
 		When I sort the filter result table by "duration"
-		And The last row of the filter result table should contain "B-service"
+		And wait for "1" seconds
+		Then The last row of the filter result table should contain "B-service"
 
 	@configuration @asmonitor @case-653
 	Scenario: Service detail listing column sorting
@@ -196,9 +202,11 @@ Feature: Filters & list views
 		And I have submitted a passive service check result "linux-server1;C-service;0;Dandy status information"
 		And I am on the Service details page
 		When I sort the filter result table by "status_information"
+		And wait for "1" seconds
 		Then The first row of the filter result table should contain "B-service"
 		And The last row of the filter result table should contain "C-service"
 		When I sort the filter result table by "status_information"
+		And wait for "1" seconds
 		Then The last row of the filter result table should contain "B-service"
 		And The first row of the filter result table should contain "C-service"
 
@@ -222,8 +230,10 @@ Feature: Filters & list views
 		And I have submitted a passive service check result "linux-server1;C-service;2;Dandy status information"
 		And I am on the Service details page
 		When I sort the filter result table by "state"
+		And wait for "1" seconds
 		Then The first row of the filter result table should contain "C-service"
 		And The last row of the filter result table should contain "B-service"
 		When I sort the filter result table by "state"
+		And wait for "1" seconds
 		Then The last row of the filter result table should contain "C-service"
 		And The first row of the filter result table should contain "B-service"
