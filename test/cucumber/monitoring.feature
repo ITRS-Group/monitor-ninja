@@ -200,11 +200,11 @@ Feature: Monitoring
 
 		Given I am on the Host details page
 		When I click "linux-server1"
-		And I click "Send custom notification"
-		And I enter "Some comment" into "cmd_param[comment]"
+		Then "Notifications" should be shown as "Enabled"
+		When I click "Send custom notification"
+		And I enter "Some comment" into "Comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
-		# Let command be registered by nagios
 		When I click "Done"
 		And wait for "1" seconds
 		And I click "Notifications"
