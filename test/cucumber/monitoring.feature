@@ -42,6 +42,7 @@ Feature: Monitoring
 		And I click "Hosts down"
 		Then I should see "linux-server2"
 		When I click "Services total"
+		And wait for "1" seconds
 		Then I should see the configured services
 
 	@configuration @asmonitor @case-645
