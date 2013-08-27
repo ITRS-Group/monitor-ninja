@@ -232,11 +232,6 @@ if (!empty($widgets)) {
 
 <br /><br />
 <div class="left width-50" id="extinfo_current">
-	<?php
-	if (!$object->get_has_been_checked()) {
-		echo $object->get_key()."<br /><br />";
-		echo _('This '.$type.' has not yet been checked, so status information is not available.');
-	} else { ?>
 	<table class="ext">
 		<tr>
 			<th colspan="2"><?php echo $object->get_key() ?></th>
@@ -369,7 +364,6 @@ if (!empty($widgets)) {
 			}
 		} ?>
 			</table>
-<?php } ?>
 </div>
 
 <?php
