@@ -257,6 +257,7 @@ $tables = array (
 			'total_services' => 'int',
 			'worst_service_hard_state' => 'int',
 			'worst_service_state' => 'int',
+			'check_source' => 'string',
 		/*
 			'x_3d' => 'float',
 			'y_3d' => 'float',
@@ -380,6 +381,7 @@ $tables = array (
 			'should_be_scheduled' => 'int',
 			'state' => 'int',
 			'state_type' => 'int',
+			'check_source' => 'string',
 		),
 	),
 	'status' =>
