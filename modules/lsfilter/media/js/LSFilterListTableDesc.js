@@ -348,10 +348,20 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		case "htmlescape": // htmlenscape( string )
 			return function(args) {
 				var fargs = expr_list2(args);
-				var el = $('<div>').text(fargs[0]);
+				var el = $('<div />').text(fargs[0]);
 				var text = el.html();
 				el.remove(); // Make sure it's memory is freed
 				return text;
+			};
+		case "link": // link( relative_url, content )
+			return function( args ) {
+				var fargs = expr_list2(args);
+				var el = $('<a />');
+				el.attr('href', _site_domain + _index_page + "/" + fargs[0]);
+				el.html(fargs[1]);
+				/* Exprt as html, use a container, and get its html content */
+				var cont = $('<div />').append(el);
+				return cont.html();
 			};
 		}
 		return function(args) {
