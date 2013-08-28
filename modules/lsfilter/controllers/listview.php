@@ -125,6 +125,45 @@ class ListView_Controller extends Authenticated_Controller {
 		try {
 			$result_set = ObjectPool_Model::get_by_query( $query );
 
+			/*
+			 * Some magic column filtering
+			 *
+			 * We need to strip away requested columns that isn't available.
+			 * The ORM layer isn't, and shouldn't, be forgiving about columns
+			 * taht doesn't exist. But due to custom columns, that (yet) doesn't
+			 * know about "virtual" columns (columns defined as methods in the
+			 * ORM models), we need to expect that those exist, try to request
+			 * them, and then handle them as undefined if not defined in the
+			 * result, instead of handling them as undefined already in the
+			 * column definition.
+			 */
+			$structure = Module_Manifest_Model::get('orm_structure');
+
+			/* Extract virtual columns, so we can filter against structure */
+			$raw_columns = $result_set->validate_columns($columns);
+
+			/* Check each column against structure */
+			$columns = array();
+			foreach($raw_columns as $column) {
+				$parts = explode('.',$column);
+				$table = $result_set->get_table();
+				$accept = true;
+				/* Columns can be object.field, so iterate over each part */
+				foreach($parts as $part) {
+					if( isset($structure[$table][$part]) ) {
+						if($structure[$table][$part][0] == 'object') {
+							$table = $structure[$table][$part][1];
+						}
+					} else {
+						$accept = false;
+					}
+				}
+				/* Write back columns we accept */
+				if( $accept ) {
+					$columns[] = $column;
+				}
+			}
+
 			$data = array();
 			foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
 				$data[] = $elem->export();

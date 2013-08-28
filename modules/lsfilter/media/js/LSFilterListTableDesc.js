@@ -203,95 +203,67 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 
 	// expr_var: expr3 := * var
 	this.visit_expr_var = function(var0) {
-		/* Fetch table column dependencies */
-		var name = var0.name;
-		var curtbl = metadata.table;
-		var type = '';
-		for ( var i = 0; i < name.length; i++) {
-			var curname = name[i];
-			if (orm_structure[curtbl][curname]) {
-				var type = orm_structure[curtbl][curname];
-				if (type[0] == 'object') {
-					curtbl = type[1];
-				} else {
-					this.custom_deps.push(name.slice(0, i + 1).join('.'));
-					type = type[0];
-					break;
-				}
-			} else {
-				return function(variable) {
-					/*
-					 * We might not know the variable from strucutre, but it can
-					 * be a local, as in loop variable in list compherension
-					 */
-					var value = var0.fetch(variable);
-					if (typeof value != "undefined")
-						return value;
-					/* In this case, it's really unknown */
-					return 'Unknown variable ' + name.slice(0, i + 1).join('.');
-				};
-			}
-		}
-		var defval = '';
-		switch (type) {
-		case 'int':
-			defval = 0;
-			break;
-		case 'list':
-			defval = [];
-			break;
+		
+		var fetchvar = var0.slice(0); /* Make a clone */
+		if (fetchvar[0] == 'prev') {
+			fetchvar.shift();
 		}
 
+		/* 
+		 * if var is an object, fetch next also
+		 * This will filter out columns that might be available, so we can request them. But it does also filter out some more, which is good, because some columns might be specified in the ORM layer instead. So just dig deeper if we know it's an object
+		 */
+		var fetchlen = 0;
+		
+		var curtbl = metadata.table;
+		while(fetchvar[fetchlen] &&
+				orm_structure[curtbl][fetchvar[fetchlen]] &&
+				orm_structure[curtbl][fetchvar[fetchlen]][0] == 'object'
+		) {
+			curtbl = orm_structure[curtbl][fetchvar[fetchlen]][1];
+			fetchlen++;
+		}
+		fetchlen++;
+		fetchvar = fetchvar.slice(0, fetchlen);
+
+		this.custom_deps.push(fetchvar.join('.'));
+		
+
 		return function(args) {
-			return var0.fetch(args.obj, defval);
+			/*
+			 * By some reason, local variables is defined under args, but the
+			 * object should be accessable within args.obj without prefix. Merge
+			 * those namespaces
+			 */
+			var vars = $.extend({},args.obj,{prev: args.last_obj},args.local);
+			
+			for( var i=0; i<var0.length; i++ ) {
+				if( typeof vars != "undefined" &&
+					typeof var0[i] != "undefined" &&
+					typeof vars[var0[i]] != "undefined" ) {
+					vars = vars[var0[i]];
+				} else {
+					return "undefined";
+				}
+			}
+			
+			return vars;
 		};
 	};
 
 	// var_var: var := * name
 	this.visit_var_var = function(name0) {
-		var name = name0;
-		return {
-			name : [ name ],
-			fetch : function(variable, defval) {
-				/*
-				 * Should always exists, otherwise a missmatch between
-				 * livstatus_structure javascript and generated code, or invalid
-				 * dependency-lookup code in this class
-				 */
-				return variable[name];
-			}
-		};
+		return [ name0 ];
 	};
 
 	// var_index: var := * var sq_l integer sq_r
 	this.visit_var_index = function(var0, integer2) {
-		var idx = integer2;
-		var name_list = var0.name;
-		return {
-			name : name_list,
-			fetch : function(variable, defval) {
-				var variable = var0.fetch(variable);
-				if (variable && (typeof variable[idx] != "undefined"))
-					return variable[idx];
-				return defval;
-			}
-		};
+		return var0.concat( [ integer2 ] );
 	};
 
 	// var_attr: var := * var dot name
 	this.visit_var_attr = function(var0, name2) {
-		var name = name2;
-		var name_list = var0.name;
-		name_list.push(name);
-		return {
-			name : name_list,
-			fetch : function(variable, defval) {
-				var variable = var0.fetch(variable);
-				if (variable && variable[name])
-					return variable[name];
-				return defval;
-			}
-		};
+		return var0.concat( [ name2 ] );
 	};
 
 	// expr_string: expr2 := * string
@@ -320,9 +292,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		return function(args) {
 			var list = expr5(args);
 			var result = [];
-			var subargs = $.extend({}, args);
+			var subargs = $.extend(true, {local: {}}, args);
 			for ( var i = 0; i < list.length; i++) {
-				subargs[name3] = list[i];
+				subargs.local[name3] = list[i];
 				result.push(expr1(subargs));
 			}
 			return result;
@@ -334,9 +306,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		return function(args) {
 			var list = expr5(args);
 			var result = [];
-			var subargs = $.extend({}, args);
+			var subargs = $.extend(true, {local: {}}, args);
 			for ( var i = 0; i < list.length; i++) {
-				subargs[name3] = list[i];
+				subargs.local[name3] = list[i];
 				if( expr7(subargs) )
 					result.push(expr1(subargs));
 			}
