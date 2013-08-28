@@ -85,17 +85,17 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _saved_sla_reports = ".json_encode($sla_reports_arr).";\n";
 		$this->js_strings .= "var _saved_summary_reports = ".json_encode($summary_reports_arr).";\n";
 		$this->js_strings .= "var _scheduled_reports = ".json_encode(array('avail' => $avail_schedules, 'sla' => Scheduled_reports_Model::get_scheduled_reports('sla')->result_array(false), 'summary' => Scheduled_reports_Model::get_scheduled_reports('summary')->result_array(false))).";\n";
-		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
-		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
-
-		$this->js_strings .= "var _reports_no_sla_str = '"._('Please enter at least one SLA value')."';\n";
-		$this->js_strings .= "var _reports_sla_err_str = '"._('Please check SLA values in fields marked red below and try again')."';\n";
+		$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
+		$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
+		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
+		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
 		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
 

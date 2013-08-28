@@ -703,57 +703,6 @@ function moveAndSort(from_id, to_id)
 	$("#" + to_id).sortOptions();
 }
 
-/**
-*	Make sure all values are properly entered
-*/
-function validate_form(formData, jqForm, options) {
-	var interval = $('#period').val();
-	var recipients = $('input[name=recipients]').attr('value');
-	var filename = $('input[name=filename]').attr('value');
-	var description = $('input[name=description]').attr('value');
-	var saved_report_id = $('input[name=saved_report_id]').attr('value');
-	if (!saved_report_id) {
-		saved_report_id = $('#saved_report_id').attr('value');
-	}
-	var report_id = $('input[name=report_id]').attr('value');
-	if (report_id == '' || report_id == undefined) {
-		report_id = $('#report_id').val();
-	}
-	var fatal_err_str = _reports_fatal_err_str;// + "<br />";
-	$('.schedule_error').hide();
-
-	var err_str = "";
-	var errors = 0;
-	if (interval == '' || !interval) {
-		err_str += _reports_schedule_interval_error + "<br />";
-		errors++;
-	}
-
-	recipients = recipients.replace(/;/g, ',');
-	// @@@FIXME: split multiple addresses on ',' and check each one using regexp
-	if ($.trim(recipients) == '') {
-		err_str += _reports_schedule_recipient_error + "<br />";
-		errors++;
-	}
-	if (!saved_report_id) {
-		alert(fatal_err_str);
-		return false;
-	}
-
-	if (errors) {
-		/*
-		$('#response').attr("style", "");
-		$('#response').html("<ul class=\"error\">" + err_str + "</ul>").show();
-		*/
-		var str = _reports_errors_found + ':<br />' + err_str + '<br />' + _reports_please_correct + '<br />';
-		$("#new_schedule_area").prepend("<div id=\"response\" class=\"schedule_err_display\"><ul class=\"error\">" + str + "</ul></div>");
-		window.scrollTo(0,0); // make sure user sees the error message
-		return false;
-	}
-	$('.schedule_err_display').remove();
-    return true;
-}
-
 // init timepicker once it it is shown
 function init_timepicker()
 {

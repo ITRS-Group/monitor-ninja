@@ -110,17 +110,7 @@ class Reports_Controller extends Base_reports_Controller
 			$this->inline_js .= "toggle_label_weight(true, 'assume_progdown');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
-		$label_avail = _('Availability');
-		$label_sla = _('SLA');
-		$label_switch_to = _('Switch to');
-		$label_report = _('report');
 
-		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
-		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
-		$this->js_strings .= "var _label_avail = '".$label_avail."';\n";
-		$this->js_strings .= "var _label_sla = '".$label_sla."';\n";
-		$this->js_strings .= "var _label_switch_to = '".$label_switch_to."';\n";
-		$this->js_strings .= "var _label_report = '".$label_report."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
@@ -145,14 +135,11 @@ class Reports_Controller extends Base_reports_Controller
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
 
-		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
-		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
-		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
 		$this->js_strings .= "var _reports_no_sla_str = '"._('Please enter at least one SLA value')."';\n";
 		$this->js_strings .= "var _reports_sla_err_str = '"._('Please check SLA values in fields marked red below and try again')."';\n";
@@ -280,27 +267,12 @@ class Reports_Controller extends Base_reports_Controller
 		$tpl_options->saved_reports = $saved_reports;
 		$tpl_options->months = date::abbr_month_names();
 
-		if ($this->type == 'avail') {
-			$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
-			$this->inline_js .= "set_initial_state('report_period', '".$this->options['report_period']."');\n";
-			$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
-		}
-
-		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
-		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
-		$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
-		$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
-		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
-		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
-		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
-		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 

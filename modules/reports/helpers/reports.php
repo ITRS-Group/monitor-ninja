@@ -151,14 +151,9 @@ class reports_Core
 		$js_strings .= "var _reports_enddate_lessthan_startdate = '"._("You have entered an End date before Start Date.")."';\n";
 		$js_strings .= "var _reports_send_now = '"._('Send this report now')."';\n";
 		$js_strings .= "var _reports_send = '"._('Send')."';\n";
-		$js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
-		$js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
-		$js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
-		$js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
 		$js_strings .= "var _reports_invalid_email = '"._('You have entered an invalid email address')."';\n";
 		$js_strings .= "var _label_direct_link = '"._('Direct link')."';\n";
 		$js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-		$js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
 		$js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
 			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 		$js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
@@ -170,6 +165,8 @@ class reports_Core
 		$js_strings .= "Date.firstDayOfWeek = 1;\n";
 		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
 		$js_strings .= "_start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
+		$js_strings .= "var _reports_success = '"._('Success')."';\n";
+		$js_strings .= "var _reports_error = '"._('Error')."';\n";
 
 		return $js_strings;
 	}
