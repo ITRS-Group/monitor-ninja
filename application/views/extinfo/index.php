@@ -267,6 +267,10 @@ if (!empty($widgets)) {
 			<td id="field_last_check"><?php echo $object->get_last_check() ? date($date_format_str, $object->get_last_check()) : _('N/A') ?></td>
 		</tr>
 		<tr>
+			<td class="dark"><?php echo _('Check source'); ?></td>
+			<td id="field_check_source"><?php echo $object->get_source_node(); ?> (<?php echo $object->get_source_type(); ?>)</td>
+		</tr>
+		<tr>
 			<td class="dark"><?php echo _('Check type'); ?></td>
 			<td id="field_check_type">
 				<span class="<?php echo $object->get_check_type_str() ?>"><?php echo ($object->get_check_type_str() == 'active' ? $green_shield : $red_shield).' '.ucfirst($object->get_check_type_str()) ?></span>

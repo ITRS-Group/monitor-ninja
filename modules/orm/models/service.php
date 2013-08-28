@@ -39,7 +39,9 @@ class Service_Model extends BaseService_Model {
 		'comments_count'  => array('comments'),
 		'config_url'      => array('host.name', 'description'),
 		'check_type_str'  => array('check_type'),
-		'config_allowed'  => array('contacts')
+		'config_allowed'  => array('contacts'),
+		'source_node'     => array('check_source'),
+		'source_type'     => array('check_source')
 	);
 
 	/**
@@ -54,6 +56,8 @@ class Service_Model extends BaseService_Model {
 		$this->export[] = 'config_url';
 		$this->export[] = 'check_type_str';
 		$this->export[] = 'config_allowed';
+		$this->export[] = 'source_node';
+		$this->export[] = 'source_type';
 	}
 
 	/**
@@ -169,4 +173,46 @@ class Service_Model extends BaseService_Model {
 		}
 		return false;
 	}
+
+
+	/**
+	 * Get both address and type of check source
+	 *
+	 * internal function for get_source_node and get_source_type
+	 */
+	private function get_source() {
+		$check_source = $this->get_check_source();
+		$node = 'N/A';
+		$type = 'N/A';
+		if(preg_match('/^Core Worker ([0-9]+)$/', $check_source, $matches)) {
+			$node = gethostname();
+			$type = 'local';
+		}
+		if(preg_match('/^Merlin (.*) (.*)$/', $check_source, $matches)) {
+			$node = $matches[2];
+			$type = $matches[1];
+		}
+		return array($node, $type);
+	}
+
+	/**
+	 * Get which merlin node handling the check.
+	 *
+	 * This is determined by magic regexp parsing of the check_source field
+	 */
+	public function get_source_node() {
+		$source = $this->get_source();
+		return $source[0];
+	}
+
+	/**
+	 * Get which merlin node handling the check.
+	 *
+	 * This is determined by magic regexp parsing of the check_source field
+	 */
+	public function get_source_type() {
+		$source = $this->get_source();
+		return $source[1];
+	}
+
 }
