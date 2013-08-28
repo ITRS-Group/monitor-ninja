@@ -159,7 +159,7 @@
 	<div class="header_right">
 	<div class="global_search">
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
-		<?php echo _('Welcome'); ?> <?php echo html::anchor('user', strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username')) ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
+		<?php echo _('Welcome'); ?> <?php echo html::anchor('user', htmlentities(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username'))) ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
 		<?php
 		$query = arr::search($_REQUEST, 'query');
 		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
