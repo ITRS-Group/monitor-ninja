@@ -360,7 +360,7 @@ if (!empty($widgets)) {
 			foreach($object->get_custom_variables() as $variable => $value) {
 				if (substr($variable, 0, 6) !== 'OP5H__') { ?>
 				<tr>
-					<td class="dark">_<?php echo $variable ?></td>
+					<td class="dark">_<?php echo htmlentities($variable); ?></td>
 					<td><?php echo link::linkify(security::xss_clean($value)) ?></td>
 				</tr>
 		<?php
