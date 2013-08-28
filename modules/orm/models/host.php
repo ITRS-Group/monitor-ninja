@@ -36,7 +36,9 @@ class Host_Model extends BaseHost_Model {
 		'comments_count' => array('comments'),
 		'config_url'      => array('name'),
 		'check_type_str'  => array('check_type'),
-		'config_allowed'  => array('contacts')
+		'config_allowed'  => array('contacts'),
+		'source_node'     => array('check_source'),
+		'source_type'     => array('check_source')
 	);
 
 	/**
@@ -51,6 +53,8 @@ class Host_Model extends BaseHost_Model {
 		$this->export[] = 'config_url';
 		$this->export[] = 'check_type_str';
 		$this->export[] = 'config_allowed';
+		$this->export[] = 'source_node';
+		$this->export[] = 'source_type';
 	}
 
 	/**
