@@ -130,12 +130,6 @@ $menu_base = array(
 	)
 );
 
-
-# Add NACOMA link only if enabled in config
-if (isset($menu_items['configure']))
-	$menu_base[$menu_items['section_configuration']][$menu_items['configure']] = array('/configuration/configure','nacoma',0);
-
-
 if (isset($menu_items['hyper_map']))
 	$menu_base[$menu_items['section_monitoring']][$menu_items['hyper_map']] = array('/hypermap', 'hypermap',0);
 unset($auth);
@@ -186,3 +180,7 @@ if (!empty($xtra_menu)) {
 		unset($xtra_menu[$section]);
 	}
 }
+
+# Add NACOMA link only if enabled in config
+if (isset($menu_items['configure']))
+	$menu_base[$menu_items['section_configuration']][$menu_items['configure']] = array('/configuration/configure','nacoma',0);
