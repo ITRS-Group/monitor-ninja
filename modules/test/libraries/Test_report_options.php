@@ -4,7 +4,7 @@
  * A mock-implementation of the regular report options
  * In particular, it exposes a way to set arbitrary report properties and members
  */
-class Test_report_options extends Report_options {
+class Test_report_options extends Avail_options {
 	public $properties_copy; /**< A public reference to the protected properties array */
 	public $members = array(); /**< A public list of group members used by our get_report_members */
 	/**
