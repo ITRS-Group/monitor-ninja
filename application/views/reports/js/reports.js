@@ -127,13 +127,11 @@ function set_initial_state(what, val)
 	switch (what) {
 		case 'includesoftstates':
 			if (val!='0') {
-				toggle_label_weight(1, 'include_softstates');
 				f.elements.includesoftstates.checked = true;
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
-				toggle_label_weight(0, 'include_softstates');
 				f.elements.includesoftstates.checked = false;
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);

@@ -99,15 +99,9 @@ class Reports_Controller extends Base_reports_Controller
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 		}
 		$template->scheduled_info = $scheduled_info;
-
-		if ($this->options['report_id']) {
+		if ($this->options['report_id'])
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
-		}
 
-		if($this->options['includesoftstates'])
-			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
-		if($this->options['assumestatesduringnotrunning'])
-			$this->inline_js .= "toggle_label_weight(true, 'assume_progdown');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 

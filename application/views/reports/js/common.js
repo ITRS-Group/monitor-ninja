@@ -849,12 +849,6 @@ function disable_last_months(mnr)
 	disable_months(from, to);
 }
 
-function toggle_label_weight(val, the_id)
-{
-	var val_str = val ? 'bold' : 'normal';
-	$('#' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
-}
-
 function missing_objects()
 {
 	this.objs = [];

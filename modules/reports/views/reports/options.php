@@ -110,7 +110,7 @@ if($options['report_id']) { ?>
 		<td>
 			<?php echo help::render('includesoftstates') ?>
 			<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
-					onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $options['includesoftstates']?'checked="checked"':''; ?> />
+					<?php echo $options['includesoftstates']?'checked="checked"':''; ?> />
 			<label for="includesoftstates" id="include_softstates"><?php echo _('Include soft states') ?></label>
 		</td>
 		<td>&nbsp;</td>
@@ -119,14 +119,14 @@ if($options['report_id']) { ?>
 		<td>
 			<?php echo help::render('include_alerts') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_alerts" name="include_alerts"
-					onchange="toggle_label_weight(this.checked, 'include_alerts');" <?php print $options['include_alerts']?'checked="checked"':''; ?> />
+					<?php print $options['include_alerts']?'checked="checked"':''; ?> />
 			<label for="include_alerts"><?php echo _('Include alerts log') ?></label>
 		</td>
 		<td></td>
 		<td>
 			<?php echo help::render('use_alias') ?>
 			<input type="checkbox" class="checkbox" value="1" id="use_alias" name="use_alias"
-					onchange="toggle_label_weight(this.checked, 'usealias');" <?php print $options['use_alias']?'checked="checked"':'' ?> />
+					<?php print $options['use_alias']?'checked="checked"':'' ?> />
 			<label for="use_alias" id="usealias"><?php echo _('Use alias') ?></label>
 		</td>
 	</tr>
@@ -134,17 +134,17 @@ if($options['report_id']) { ?>
 		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
 			<?php echo help::render('include_trends') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
-					onchange="toggle_label_weight(this.checked, 'include_trends');" <?php print $options['include_trends']?'checked="checked"':''; ?> />
+					<?php print $options['include_trends']?'checked="checked"':''; ?> />
 			<label for="include_trends"><?php echo _('Include trends graph') ?></label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo help::render('include_trends_scaling') ?> <input type="checkbox" class="checkbox" value="1" id="include_trends_scaling" name="include_trends_scaling"
-					onchange="toggle_label_weight(this.checked, 'include_trends_scaling');" <?php print $options['include_trends']?'':'disabled="disabled"'?> <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
+					<?php print $options['include_trends']?'':'disabled="disabled"'?> <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
 			<label for="include_trends_scaling"><?php echo _('Show trends re-scaling') ?></label>
 		</td>
 		<td></td>
 		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
 			<?php echo help::render('piechart') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_pie_charts" name="include_pie_charts"
-					onchange="toggle_label_weight(this.checked, 'include_pie_charts');" <?php print $options['include_pie_charts']?'checked="checked"':'' ?> />
+					<?php print $options['include_pie_charts']?'checked="checked"':'' ?> />
 			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include pie charts') ?></label>
 		</td>
 	</tr>
