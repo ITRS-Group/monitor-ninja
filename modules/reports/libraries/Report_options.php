@@ -750,6 +750,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		return json_encode($opts);
 	}
 
+	/**
+	 * Expand the private structure, to make a traversal iterate over all the properties
+	 */
 	public function expand() {
 		foreach ($this->properties as $key => $_) {
 			$this[$key] = $this[$key];
