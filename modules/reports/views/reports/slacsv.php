@@ -17,7 +17,7 @@ if (is_array($data_arr)) {
 		foreach ($table as $start => $result) {
 			$csv = array();
 			if (!empty($data['name']))
-				$csv[] = '"'.$data['name'].'"';
+				$csv[] = '"'.implode(',', $data['name']).'"';
 			else
 				$csv[] = '"'.implode(',', $data['source']).'"';
 			$csv[] = date('Y', $start);
