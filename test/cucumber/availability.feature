@@ -418,6 +418,40 @@ Feature: Availability reports
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 
+	@configuration @asmonitor @reports @bug-7646
+	Scenario: Uncheck saved checkbox
+		Given I am on the Host details page
+		When I hover over the "Reporting" button
+		And I click "Availability"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report" from "Saved reports"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		And "Include soft states" should be checked
+		And "Use alias" should be checked
+		When I uncheck "Include soft states"
+		And I click "Show report"
+		And I click "Edit settings"
+		Then "Include soft states" should be unchecked
+		And "Use alias" should be checked
+		When I uncheck "Use alias"
+		And I click "Show report"
+		And I click "Edit settings"
+		Then "Include soft states" should be unchecked
+		And "Use alias" should be unchecked
+		When I click "Show report"
+		And I click "Save report"
+		And I click "Save report" inside "#save_report_form"
+		Then I should see "Report was successfully saved"
+		When I hover over the "Reporting" button
+		And I click "Availability"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report" from "Saved reports"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		And "Include soft states" should be unchecked
+		And "Use alias" should be unchecked
+
 	@configuration @asmonitor @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page

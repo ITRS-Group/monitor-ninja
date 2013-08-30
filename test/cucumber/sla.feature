@@ -473,6 +473,49 @@ Feature: SLA reports
 		And I should see "This is a saved test report"
 		And I should see "9.000 %"
 
+	@configuration @asmonitor @reports @bug-7646
+	Scenario: Uncheck saved checkbox
+		Given I am on the Host details page
+		When I hover over the "Reporting" button
+		And I click "SLA"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report" from "Saved reports"
+		Then "Selected hostgroups" should have option "LinuxServers"
+		And "Available hostgroups" should have option "WindowsServers"
+		And "Include soft states" should be checked
+		And "Use alias" should be checked
+		When I select "LinuxServers" from "Selected hostgroups"
+		And I doubleclick "LinuxServers"
+		And I deselect options in "Available hostgroups"
+		And I select "WindowsServers" from "Available hostgroups"
+		And I doubleclick "WindowsServers" from "hostgroup_tmp[]"
+		Then "Selected hostgroups" shouldn't have option "LinuxServers"
+		And "Available hostgroups" shouldn't have option "WindowsServers"
+		When I uncheck "Include soft states"
+		And I click "Show report"
+		And I click "Edit settings"
+		Then "Include soft states" should be unchecked
+		And "Use alias" should be checked
+		When I uncheck "Use alias"
+		And I click "Show report"
+		And I click "Edit settings"
+		Then "Include soft states" should be unchecked
+		And "Use alias" should be unchecked
+		When I click "Show report"
+		And I click "Save report"
+		And I click "Save report" inside "#save_report_form"
+		Then I should see "Report was successfully saved"
+		When I hover over the "Reporting" button
+		And I click "SLA"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "saved test report"
+		When I select "saved test report" from "Saved reports"
+		Then "Available hostgroups" should have option "LinuxServers"
+		Then "Selected hostgroups" should have option "WindowsServers"
+		And "Include soft states" should be unchecked
+		And "Use alias" should be unchecked
+
 	@configuration @asmonitor @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
@@ -481,9 +524,9 @@ Feature: SLA reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
-		Then "Selected hostgroups" should have option "LinuxServers"
+		Then "Selected hostgroups" should have option "WindowsServers"
 		When I click "Delete"
 		# Test available first, to force capybara to wait for page reload
-		Then "Available hostgroups" should have option "LinuxServers"
+		Then "Available hostgroups" should have option "WindowsServers"
 		And "Saved reports" shouldn't have option "saved test report"
-		And "Selected hostgroups" shouldn't have option "LinuxServers"
+		And "Selected hostgroups" shouldn't have option "WindowsServers"
