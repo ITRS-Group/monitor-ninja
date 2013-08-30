@@ -539,11 +539,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		switch ($this->properties[$key]['type']) {
 		 case 'bool':
 			if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
-				$value = true;
+				$value = 1;
 			else
-				$value = false;
-			if (!is_bool($value))
-				return false;
+				$value = 0;
 			break;
 		 case 'int':
 			if (!is_numeric($value) || $value != intval($value))
