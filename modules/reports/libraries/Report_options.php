@@ -752,6 +752,12 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		return json_encode($opts);
 	}
 
+	public function expand() {
+		foreach ($this->properties as $key => $_) {
+			$this[$key] = $this[$key];
+		}
+	}
+
 	/**
 	 * Return the given timestamp typed property as a date string of the configured kind
 	 */

@@ -52,6 +52,8 @@ class Saved_reports_Model extends Model
 
 		$db = Database::instance();
 
+		$options->expand();
+
 		# Don't save start- or end_time when we have report_period != custom
 		if (isset($options['report_period']) && $options['report_period'] != 'custom') {
 			unset($options['start_time']);
