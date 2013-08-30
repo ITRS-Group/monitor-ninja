@@ -230,7 +230,10 @@ class Reports_Controller extends Base_reports_Controller
 
 		$report_members = $this->options->get_report_members();
 		if (empty($report_members)) {
-			$_SESSION['report_err_msg'] = "No objects could be found in your selected groups to base the report on";
+			if (!$this->options[$var])
+				$_SESSION['report_err_msg'] = _("You didn't select any objects to include in the report");
+			else
+				$_SESSION['report_err_msg'] = sprintf(_("The groups you selected (%s) had no members, so cannot create a report from them"), implode(', ', $this->options[$var]));
 			return url::redirect(Router::$controller.'/index');
 		}
 

@@ -58,7 +58,7 @@ Feature: SLA reports
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
-		Then I should see "No objects could be found in your selected groups to base the report on"
+		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
 	@configuration @asmonitor @reports
@@ -73,7 +73,7 @@ Feature: SLA reports
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
-		Then I should see "No objects could be found in your selected groups to base the report on"
+		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
 	@configuration @asmonitor @reports

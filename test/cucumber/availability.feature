@@ -54,7 +54,7 @@ Feature: Availability reports
 		And I doubleclick "EmptyGroup" from "hostgroup_tmp[]"
 		Then "Selected hostgroups" should have option "EmptyGroup"
 		When I click "Show report"
-		Then I should see "No objects could be found in your selected groups to base the report on"
+		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
 	@configuration @asmonitor @reports
@@ -67,7 +67,7 @@ Feature: Availability reports
 		And I doubleclick "empty" from "servicegroup_tmp[]"
 		Then "Selected servicegroups" should have option "empty"
 		When I click "Show report"
-		Then I should see "No objects could be found in your selected groups to base the report on"
+		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
 	@configuration @asmonitor @reports
