@@ -276,7 +276,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-		$this->inline_js .= "set_selection('{$this->options['report_type']}');\n";
+		$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 
 		$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
 			'TOTAL_TIME_DOWN' => _('Down'),
