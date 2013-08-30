@@ -15,6 +15,8 @@ array(4) {
       [2]=>
       int(3) <---- 0 indicates internal link, /monitor/index.php will be prepended;
 	     <---- 1 indicates same host, https://monitor-server will be prepended
+			<---- 2 indicates same host, but only if site_domain is /monitor/, licensed version
+			<---- 3 indicates same host, but only if site_domain is not /monitor/, community version
     }
 */
 	$in_menu = false;
