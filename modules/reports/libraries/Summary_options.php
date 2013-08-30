@@ -23,13 +23,6 @@ class Summary_options extends Report_options
 			4 => _('Top hard alert producers'),
 			5 => _('Top hard host alert producers'),
 			6 => _('Top hard service alert producers')));
-		// Currently only used by alert history subreports, but we add them
-		// here so build_alert_summary_query can depend on them being around
-		$this->properties['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */
-		$this->properties['include_downtime'] = array('type' => 'bool', 'default' => false);
-		$this->properties['include_process'] = array('type' => 'bool', 'default' => false);
-		$this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
-		$this->properties['filter_output'] = array('type' => 'string', 'default' => false);
 
 		$this->rename_options['displaytype'] = 'summary_type';
 		$this->properties['report_period']['options']['forever'] = _('Forever');

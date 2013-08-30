@@ -248,10 +248,10 @@ class Summary_Reports_Model extends Reports_Model
 			break;
 		}
 
-		if ($this->options['include_downtime'])
+		if (isset($this->options['include_downtime']) && $this->options['include_downtime'])
 			$downtime = 'event_type < 1200 AND event_type > 1100';
 
-		if ($this->options['include_process'])
+		if (isset($this->options['include_process']) && $this->options['include_process'])
 			$process = 'event_type < 200';
 
 		if($this->options['start_time']) {
@@ -261,7 +261,7 @@ class Summary_Reports_Model extends Reports_Model
 			$time_last = 'timestamp <= ' . $this->options['end_time'];
 		}
 
-		if($this->options['filter_output']) {
+		if(isset($this->options['filter_output']) && $this->options['filter_output']) {
 			# convert fnmatch wildcards to sql ditos
 			$wc_str = $this->options['filter_output'];
 			$wc_str = preg_replace("/(?!\\\)\*/", '\1%', $wc_str);
@@ -675,10 +675,10 @@ class Summary_Reports_Model extends Reports_Model
 			return false;
 		}
 
-		$query .= ' ORDER BY timestamp '.($this->options['oldest_first']?'ASC':'DESC');
+		$query .= ' ORDER BY timestamp '.(isset($this->options['oldest_first']) && $this->options['oldest_first']?'ASC':'DESC');
 		if ($this->options['summary_items'] > 0) {
 			$query .= " LIMIT " . $this->options['summary_items'];
-			if ($this->options['page'])
+			if (isset($this->options['page']) && $this->options['page'])
 				$query .= ' OFFSET ' . ($this->options['summary_items'] * ($this->options['page'] - 1));
 		}
 

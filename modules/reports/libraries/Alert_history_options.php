@@ -41,6 +41,12 @@ class Alert_history_options extends Summary_options {
 			8 => _('Unknown'),
 		);
 
+                $this->properties['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */
+                $this->properties['include_downtime'] = array('type' => 'bool', 'default' => false);
+                $this->properties['include_process'] = array('type' => 'bool', 'default' => false);
+                $this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
+                $this->properties['filter_output'] = array('type' => 'string', 'default' => false);
+
 		$this->rename_options['service_states'] = array($this, 'rewrite_states');
 		$this->rename_options['host_states'] = array($this, 'rewrite_states');
 	}
