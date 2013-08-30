@@ -11,6 +11,17 @@ class Avail_options extends Report_options {
 			'default' => false,
 			'description' => 'Include pie charts'
 		);
+		$this->properties['include_trends'] = array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Include trends graph (if possible for this report type)'
+		);
+		$this->properties['include_trends_scaling'] = array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Include trends graph (if possible for this report type)'
+		);
+
 		if(ninja::has_module('synergy')) {
 			$this->properties['include_synergy_events'] = array(
 				'type' => 'bool',

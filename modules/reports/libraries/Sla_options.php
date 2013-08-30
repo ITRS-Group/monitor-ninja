@@ -37,7 +37,6 @@ class Sla_options_Core extends Report_options {
 	public function setup_properties()
 	{
 		parent::setup_properties();
-		unset($this->properties['include_trends'], $this->properties['include_trends_scaling']);
 		// Warning! months is 1-indexed
 		$this->properties['months'] = array('type' => 'array', 'default' => false);
 

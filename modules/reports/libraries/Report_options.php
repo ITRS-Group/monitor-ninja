@@ -130,16 +130,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'default' => array(),
 			'description' => 'Key: hide these. Value: map them to this instead (-2 means "secret")'
 		),
-		'include_trends' => array(
-			'type' => 'bool',
-			'default' => false,
-			'description' => 'Include trends graph (if possible for this report type)'
-		),
-		'include_trends_scaling' => array(
-			'type' => 'bool',
-			'default' => false,
-			'description' => 'Include trends graph (if possible for this report type)'
-		),
 		'schedule_id' => array(
 			'type' => 'int',
 			'default' => false,
