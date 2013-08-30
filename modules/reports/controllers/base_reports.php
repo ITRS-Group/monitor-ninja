@@ -128,7 +128,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 		$this->auto_render=false;
 
-		$return = false;
 		if (!$this->options['report_name']) {
 			return json::fail(_('Unable to save this report, report name missing.'));
 		}
