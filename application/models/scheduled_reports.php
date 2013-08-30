@@ -309,7 +309,7 @@ class Scheduled_reports_Model extends Model
 	 * and the report.
 	 *
 	 * @param $schedule_id The id of the schedule we're interested in.
-	 * @return False on errors. Options object on success.
+	 * @return False on errors. Array with scheduling information on success.
 	 */
 	static function get_scheduled_data($schedule_id=false)
 	{
@@ -318,8 +318,6 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
-		$type = self::get_typeof_report($schedule_id);
-
 		$sql = "SELECT sr.recipients, sr.filename, sr.local_persistent_filepath, sr.report_id FROM ".
 			"scheduled_reports sr ".
 			"WHERE sr.id=".$schedule_id;
@@ -327,9 +325,7 @@ class Scheduled_reports_Model extends Model
 		$res = $db->query($sql)->result_array(false);
 		if (!$res)
 			return false;
-		$res = $res[0];
-		$opts = Report_options::setup_options_obj($type, $res);
-		return $opts;
+		return $res[0];
 	}
 
 	/**

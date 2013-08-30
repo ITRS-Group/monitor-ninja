@@ -180,12 +180,13 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->auto_render = false;
 		$type = Scheduled_reports_Model::get_typeof_report($schedule_id);
 		$opt_obj = Scheduled_reports_Model::get_scheduled_data($schedule_id);
+		$report = Report_options::setup_options_obj($type, $opt_obj);
 		$pipe_desc = array(
 			0 => array('pipe', 'r'),
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?schedule_id='.$schedule_id.'&output_format='.$opt_obj['output_format'].'&report_id='.$opt_obj['report_id']);
+		$cmd = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($type.'/generate?schedule_id='.$schedule_id.'&output_format='.$report['output_format'].'&report_id='.$opt_obj['report_id']);
 		$process = proc_open($cmd, $pipe_desc, $pipes, DOCROOT);
 		$this->log->log('debug', $cmd);
 		if (is_resource($process)) {
@@ -215,7 +216,7 @@ class Schedule_Controller extends Authenticated_Controller
 				return json::fail(sprintf(_("Failed to run %s: %s"), $cmd, $out));
 			}
 			else {
-				$this->log->log('error', "Couldn't generate report for {$opt_obj['report_name']}: $out");
+				$this->log->log('error', "Couldn't generate report for schedule {$schedule_id}: $out");
 				return false;
 			}
 		}
@@ -224,7 +225,7 @@ class Schedule_Controller extends Authenticated_Controller
 			$save = true;
 		}
 		if ($opt_obj['recipients']) {
-			Send_report_Model::send($out, $filename, $opt_obj['output_format'], $opt_obj['recipients']);
+			Send_report_Model::send($out, $filename, $report['output_format'], $opt_obj['recipients']);
 			if(PHP_SAPI == 'cli') {
 				echo "Mailing schedule id $schedule_id to ".$opt_obj['recipients']."\n";
 			}

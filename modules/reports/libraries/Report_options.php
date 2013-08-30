@@ -130,11 +130,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'default' => array(),
 			'description' => 'Key: hide these. Value: map them to this instead (-2 means "secret")'
 		),
-		'schedule_id' => array(
-			'type' => 'int',
-			'default' => false,
-			'description' => "A schedule id we're currently running as, not to be confused with report_id. This cannot be calculated, so it must be included"
-		),
 		'output_format' => array(
 			'type' => 'enum',
 			'default' => 'html',
@@ -150,21 +145,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'type' => 'string',
 			'default' => '',
 			'description' => 'Use the following skin for rendering the report'
-		),
-		'recipients' => array(
-			'type' => 'string',
-			'default' => '',
-			'description' => 'Comma separated email addresses to report recipients'
-		),
-		'filename' => array(
-			'type' => 'string',
-			'default' => '',
-			'description' => 'Filename to use for saving the report, used to set output_format'
-		),
-		'local_persistent_filepath' => array(
-			'type' => 'string',
-			'default' => '',
-			'description' => 'Directory (not filename) to store the filename in locally'
 		),
 		'use_alias' => array(
 			'type' => 'bool',
