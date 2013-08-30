@@ -745,7 +745,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		if ($this->get_value('report_type')) {
 			// because the person who wrote the js became sick of all our special cases,
 			// it expects the objects to be called 'objects'. Which makes sense, really...
-			$opts['objects'] = $this[$this->get_value('report_type')];
+			if ($this[$this->get_value('report_type')])
+				$opts['objects'] = $this[$this->get_value('report_type')];
 			unset($opts[$this->get_value('report_type')]);
 		}
 		return json_encode($opts);
@@ -844,23 +845,23 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 * You probably want setup_options_obj instead.
 	 */
 	protected static function create_options_obj($type, $report_info = false) {
-
 		$options = new static($report_info);
 
 		if (isset($report_info['report_id']) && !empty($report_info['report_id'])) {
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
 
 			$options = new static($report_info);
-			if (is_array($saved_report_info)) {
+			if (!empty($saved_report_info)) {
 				foreach ($saved_report_info as $key => $sri) {
-					if (isset($report_info[$key]) || (isset($options->properties[$key]) && ($options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))))
+					if (isset($report_info[$key]) || !isset($options->properties[$key]) || $options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))
 						continue;
 					$options[$key] = $sri;
 				}
+				if ($options['report_type'] && isset($saved_report_info['objects']) && !$options[$options->get_value('report_type')])
+					$options[$options->get_value('report_type')] = $saved_report_info['objects'];
+			} else {
+				unset($options['report_id']);
 			}
-
-			if (isset($saved_report_info['objects']) && !$options[$options->get_value('report_type')])
-				$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 		}
 		if (isset($options->properties['report_period']) && !isset($options->options['report_period']) && isset($options->properties['report_period']['default']))
 			$options->calculate_time($options['report_period']);
