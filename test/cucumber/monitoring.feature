@@ -208,7 +208,7 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		# ninja -> nagios -> merlin -> mysql...
-		And wait for "10" seconds
+		And wait for "20" seconds
 		And I click "Notifications"
 		Then I should see "linux-server1"
 
