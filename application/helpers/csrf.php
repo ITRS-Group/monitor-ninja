@@ -12,7 +12,7 @@ class csrf_Core {
 	 */
 	public static function token($force = false)
 	{
-		if (($token = csrf::current_token()) === FALSE || $force === true) {
+		if (($token = csrf::current_token()) === FALSE || $force === true || csrf::current_token_expired() === true) {
 
 			# save token to session
 			Session::instance()->set(Kohana::config('csrf.csrf_token'), ($token = text::random('alnum', 41)));
@@ -25,20 +25,26 @@ class csrf_Core {
 	}
 
 	/**
+	 * Checks if current token has expired
+	 *
+	 * @return boolean
+	 **/
+	public static function current_token_expired() {
+		if (csrf::current_token() !== false && csrf::current_timestamp() + csrf::lifetime() < time()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Validate token
 	 * @param $token The csrf token
 	 * @return true if validation was successful, false otherwise
 	 */
 	public static function valid($token)
 	{
-		$current_token = csrf::current_token(); # session token
-		$current_token_timestamp = csrf::current_timestamp(); # session token time
-
-		# fetch token lifetime
-		$token_lifetime = csrf::lifetime();
-
 		# not valid if tokens differ or has expired
-		if ($token !== $current_token || ($current_token_timestamp + $token_lifetime) < (time())) {
+		if ($token !== csrf::current_token() || csrf::current_token_expired() === true) {
 			return false;
 		}
 		return true;
