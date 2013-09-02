@@ -41,31 +41,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'default' => 'last7days',
 			'description' => 'A report period to generate the report over, may automatically set {start,end}_time'
 		),
-		'alert_types' => array(
-			'type' => 'enum',
-			'default' => 3,
-			'description' => 'Bitmap of the types of alerts to include'
-		),
-		'state_types' => array(
-			'type' => 'enum',
-			'default' => 3,
-			'description' => 'Bitmap of the types of states to include (soft, hard, both)'
-		),
-		'host_states' => array(
-			'type' => 'enum',
-			'default' => 7,
-			'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)'
-		),
-		'service_states' => array(
-			'type' => 'enum',
-			'default' => 15,
-			'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)'
-		),
-		'summary_items' => array(
-			'type' => 'int',
-			'default' => 25,
-			'description' => 'Number of summary items to include in reports'
-		),
 		'rpttimeperiod' => array(
 			'type' => 'enum',
 			'default' => false,
@@ -209,31 +184,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				0 => _('Group availability (Worst state)'),
 				1 => _('Average'),
 				2 => _('Cluster mode (Best state)'));
-		if (isset($this->properties['alert_types']))
-			$this->properties['alert_types']['options'] = array(
-				3 => _('Host and service alerts'),
-				1 => _('Host alerts'),
-				2 => _('Service alerts'));
-		if (isset($this->properties['state_types']))
-			$this->properties['state_types']['options'] = array(
-				3 => _('Hard and soft states'),
-				2 => _('Hard states'),
-				1 => _('Soft states'));
-		if (isset($this->properties['host_states']))
-			$this->properties['host_states']['options'] = array(
-				7 => _('All host states'),
-				6 => _('Host problem states'),
-				1 => _('Host up states'),
-				2 => _('Host down states'),
-				4 => _('Host unreachable states'));
-		if (isset($this->properties['service_states']))
-			$this->properties['service_states']['options'] = array(
-				15 => _('All service states'),
-				14 => _('Service problem states'),
-				1 => _('Service OK states'),
-				2 => _('Service warning states'),
-				4 => _('Service critical states'),
-				8 => _('Service unknown states'));
 		if (isset($this->properties['rpttimeperiod']))
 			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
 		if (isset($this->properties['skin']))

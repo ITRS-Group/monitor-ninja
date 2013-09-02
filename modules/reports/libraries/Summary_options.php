@@ -24,6 +24,54 @@ class Summary_options extends Report_options
 			5 => _('Top hard host alert producers'),
 			6 => _('Top hard service alert producers')));
 
+		$this->properties['alert_types'] = array(
+			'type' => 'enum',
+			'default' => 3,
+			'description' => 'Bitmap of the types of alerts to include',
+			'options' => array(
+				3 => _('Host and service alerts'),
+				1 => _('Host alerts'),
+				2 => _('Service alerts'))
+		);
+		$this->properties['state_types'] = array(
+			'type' => 'enum',
+			'default' => 3,
+			'description' => 'Bitmap of the types of states to include (soft, hard, both)',
+			'options' => array(
+				3 => _('Hard and soft states'),
+				2 => _('Hard states'),
+				1 => _('Soft states'))
+		);
+		$this->properties['host_states'] = array(
+			'type' => 'enum',
+			'default' => 7,
+			'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)',
+			'options' => array(
+				7 => _('All host states'),
+				6 => _('Host problem states'),
+				1 => _('Host up states'),
+				2 => _('Host down states'),
+				4 => _('Host unreachable states'))
+		);
+		$this->properties['service_states'] = array(
+			'type' => 'enum',
+			'default' => 15,
+			'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)',
+			'options' => array(
+				15 => _('All service states'),
+				14 => _('Service problem states'),
+				1 => _('Service OK states'),
+				2 => _('Service warning states'),
+				4 => _('Service critical states'),
+				8 => _('Service unknown states'))
+		);
+		$this->properties['summary_items'] = array(
+			'type' => 'int',
+			'default' => 25,
+			'description' => 'Number of summary items to include in reports'
+		);
+
+
 		$this->rename_options['displaytype'] = 'summary_type';
 		$this->properties['report_period']['options']['forever'] = _('Forever');
 	}
