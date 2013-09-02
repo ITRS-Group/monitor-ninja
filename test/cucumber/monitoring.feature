@@ -194,7 +194,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Notifications" should be shown as "Disabled"
 
-	@configuration @asmonitor @case-646
+	@configuration @asmonitor @case-646 @unreliable
 	Scenario: Host details host commands - Send custom notification
 		Verify that the "Send custom notification" host command
 		works correctly.
