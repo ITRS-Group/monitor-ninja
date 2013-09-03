@@ -222,7 +222,7 @@ class Command_Controller extends Authenticated_Controller
 			return url::redirect('/configuration/configure?page=export.php');
 			break;
 		 default:
-			return;
+			break;
 		}
 		$info['params'] = $param;
 

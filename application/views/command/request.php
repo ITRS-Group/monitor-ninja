@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 echo '<div>';
-if (!isset($info)) {
-	echo "Unknown command: $requested_command<br />\n";
+if (!isset($info['brief'])) {
+	echo "Unknown command: $cmd_typ<br />\n";
 	return;
 }
 
