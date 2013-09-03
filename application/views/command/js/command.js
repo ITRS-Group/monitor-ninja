@@ -10,8 +10,8 @@ $(document).ready(function() {
 		 *	them all and prompt user in case they are empty.
 		 */
 
-		var requested_command = $('input[name=requested_command]').val();
-		if (requested_command != 'DEL_ALL_SVC_COMMENTS' && requested_command != 'DEL_ALL_HOST_COMMENTS') {
+		var cmd_typ = $('input[name=cmd_typ]').val();
+		if (cmd_typ != 'DEL_ALL_SVC_COMMENTS' && cmd_typ != 'DEL_ALL_HOST_COMMENTS') {
 			// don't select all options in multi-select if we are trying to delete
 			// service/host comments since we want to let the user choose objects
 			$('select').each(function() {

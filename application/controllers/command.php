@@ -126,7 +126,7 @@ class Command_Controller extends Authenticated_Controller
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
-		$this->template->content->requested_command = $cmd;
+		$this->template->content->cmd_typ = $cmd;
 
 		$command = new Execute_Command_Model;
 		$info = $command->get_command_info($cmd, $params);
@@ -313,12 +313,12 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function commit()
 	{
-		if(!isset($_REQUEST['requested_command'])) {
+		if(!isset($_REQUEST['cmd_typ']))
 			return url::redirect(Router::$controller.'/unauthorized/');
 		}
-		$cmd = $_REQUEST['requested_command'];
+		$cmd = $_REQUEST['cmd_typ'];
 		$this->init_page('command/commit');
-		$this->template->content->requested_command = $cmd;
+		$this->template->content->cmd_typ = $cmd;
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());

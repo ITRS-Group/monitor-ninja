@@ -48,12 +48,12 @@ foreach ($params as $pname => $ary) {
 
 	switch ($ary['type']) {
 		case 'select':
-			if (!is_array($dflt) && $requested_command != 'DEL_ALL_HOST_COMMENTS' && $requested_command != 'DEL_ALL_SVC_COMMENTS') {
+			if (!is_array($dflt) && $cmd_typ != 'DEL_ALL_HOST_COMMENTS' && $cmd_typ != 'DEL_ALL_SVC_COMMENTS') {
 				if ($dflt && false !== array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
 				echo form::dropdown(array('name' => $form_name, 'id' => 'field_'.$pname, 'style' => 'width: auto;'), $ary['options'], $dflt);
-			} elseif ($requested_command == 'DEL_ALL_SVC_COMMENTS' || $requested_command == 'DEL_ALL_HOST_COMMENTS') {
+			} elseif ($cmd_typ == 'DEL_ALL_SVC_COMMENTS' || $cmd_typ == 'DEL_ALL_HOST_COMMENTS') {
 				if ($dflt && false !== array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
@@ -119,7 +119,7 @@ foreach ($params as $pname => $ary) {
 }
 
 echo "<tr><td colspan='2'>";
-echo form::hidden('requested_command', $requested_command);
+echo form::hidden('cmd_typ', $cmd_typ);
 echo form::submit('Commit', _('Submit'), 'class="submit"');
 if (!empty($params)) {
 	echo " &nbsp;<input type='reset' value='" . _("Reset") . "'>\n";
