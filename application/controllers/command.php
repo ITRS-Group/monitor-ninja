@@ -106,9 +106,8 @@ class Command_Controller extends Authenticated_Controller
 			$params = $_GET;
 		}
 
-		if ($auth_check === false || $auth_check < 0 ) {
-			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
-		}
+		if (nagioscmd::is_authorized_for($params) !== true)
+			return $this->unauthorized($auth_check);
 
 		$this->template->content->cmd_typ = $cmd;
 
@@ -298,7 +297,7 @@ class Command_Controller extends Authenticated_Controller
 	public function commit()
 	{
 		if(!isset($_REQUEST['cmd_typ']))
-			return url::redirect(Router::$controller.'/unauthorized/');
+			return $this->unauthorized();
 		}
 		$cmd = $_REQUEST['cmd_typ'];
 		$this->init_page('command/commit');
@@ -306,10 +305,8 @@ class Command_Controller extends Authenticated_Controller
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
-		$auth_check = self::_is_authorized_for_command($param, $cmd);
-		if ($auth_check === false || $auth_check <0) {
-			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
-		}
+		if (self::_is_authorized_for_command($param, $cmd) !== true)
+			return $this->unauthorized($auth_check);
 
 		$param['author'] = Auth::instance()->get_user()->username;
 
@@ -507,22 +504,28 @@ class Command_Controller extends Authenticated_Controller
 				$this->template->content->error_description = _('Please enter a valid '.
 					'command or use the available links in the GUI.');
 				break;
-
 			case -2:  # Contact can't submit commands
-				$this->template->content->error_description = _("Your account doesn't seem to configured ".
+				$this->template->content->error_description = _("Your contact doesn't seem to configured ".
 					"to allow you to submit commands (i.e 'can_submit_commands' is not enabled). Please contact an administrator ".
 					"to enable this for you. ");
 				break;
-
 			case -3: # not authorized from cgi.cfg, and not a configured contact
-				$this->template->content->error_description = _("Your account doesn't seem to be ".
-					"configured properly. Please contact an administrator for assistance.");
+				$this->template->content->error_description = _("Your account doesn't have a " .
+					"configured contact, nor does it have permissions to submit commands to all " .
+					"objects. Please contact an administrator for assistance.");
+				break;
+			case -4:
+				$this->template->content->error_description = _("Your account isn't authorized " .
+					"to submit commands for this object type. Please contact an administrator for assistance.");
+				break;
+			case -5:
+				$this->template->content->error_description = _("Your account isn't authorized " .
+					"to submit commands for this object. Please contact an administrator for assistance.");
 				break;
 
 			default: # fallthrough, not authorized for anything
 				$this->template->content->error_description = _('Read the section of the '.
 					'documentation that deals with authentication and authorization in the CGIs for more information.');
-
 		}
 
 		$this->template->content->return_link_lable = _('Return from where you came');

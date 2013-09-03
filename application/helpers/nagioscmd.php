@@ -1272,10 +1272,12 @@ class nagioscmd_Core
 	 * http://nagios.sourceforge.net/docs/3_0/configcgi.html controls
 	 * the correctness of this method
 	 * Return codes:
-	 *	-1:		No command passed
-	 *	-2:		Contact can't submit commands
-	 *	-3:		not authorized from cgi.cfg, and not a configured contact
-	 * false:		fallthrough, not authorized for anything
+	 * -1: No command passed
+	 * -2: Contact can't submit commands
+	 * -3: not a configured contact
+	 * -4: Contact can't submit commands on this object type.
+	 * -5: Contact can't submit commands on this specific object.
+	 * true: authorized for command
 	 */
 	public static function is_authorized_for($params, $cmd = false)
 	{
@@ -1321,17 +1323,20 @@ class nagioscmd_Core
 			return $user->authorized_for('system_commands');
 		}
 		else if ($user->authorized_for($type.'_edit_all')) {
-			# All of this type, gogogo!
+			# All of this type - wee!
 			return true;
 		}
 		else if (!$objects[$type] && $user->authorized_for($type.'_edit_contact')) {
-			# a valid use-case is to see if the user would be allowed to submit this command
-			# if we weren't told what objects they would try with, tell them asking is fine
+			# A valid use-case is to see /if/ the user /would/ be allowed to
+			# submit this command, should them later try to, for displaying
+			# proper items in right click menus.
+			# When the user is specified for specific objects, and didn't
+			# specify any at all, tell them that it is OK to try.
 			return true;
 		}
 		else if (!$user->authorized_for($type.'_edit_contact')) {
-			# if we don't have by contact, just give up
-			return false;
+			# Not edit all, not by contact - no rights.
+			return -4;
 		}
 
 		# not authorized from cgi.cfg, and not a configured contact,
@@ -1353,7 +1358,7 @@ class nagioscmd_Core
 					$parts = array(end($objects['host']), $service);
 				}
 				if (!$user->authorized_for_object('services', $parts))
-					return false;
+					return -5;
 			}
 			return true;
 		}
@@ -1361,7 +1366,7 @@ class nagioscmd_Core
 			$objects[$type] = array($objects[$type]);
 		foreach ($objects[$type] as $object) {
 			if (!$user->authorized_for_object($type.'s', $object))
-					return false;
+					return -5;
 		}
 		return true;
 	}
