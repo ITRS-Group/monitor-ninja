@@ -171,22 +171,28 @@ class Command_Controller extends Authenticated_Controller
 		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
 			$param['_services-too'] = $this->cb(_('Remove any acknowledgements on services too'), '_services-too');
 			break;
-		 case 'NACOMA_DEL_HOST':
 		 case 'NACOMA_DEL_SERVICE':
-			// Delete the host/service then route to NACOMA SAVE_CONFIG page
-			if (isset($params['service'])) {
-				foreach ($params['service'] as $service) {
-					nacoma::delService($service);
-				}
+			$res = array();
+			foreach ($params['service'] as $service) {
+				if (($hg = nacoma::getHostgroupForService($service)))
+					$res[$service] = $hg;
 			}
 
-			if (isset($params['host_name'])) {
-				foreach ($params['host_name'] as $host) {
-					nacoma::delHost($host);
+			if ($res) {
+				$info['brief'] = ngettext(
+					"You've selected a service that is saved on a hostgroup",
+					"You've selected services that are saved on hostgroups", count($res));;
+				$info['description'] = '<ul>';
+				foreach ($res as $svc => $hg) {
+					$info['description'] .= sprintf(_('<li>%s is saved on %s</li>'), $svc, $hg);
 				}
+				$info['description'] .= '</ul><p>'.ngettext(
+					'Deleting it will delete it from all hosts in the hostgroup. Are you sure? You might instead want to create a better service directly on the host.',
+					'Deleting them will delete them from all the hosts in the hostgroup. Are you sure? You might instead want to create better services directly on the affected hosts.', count($res)).'</p>';
+				break;
 			}
-
-			return url::redirect('/configuration/configure?page=export.php');
+		 case 'NACOMA_DEL_HOST':
+			return $this->commit($cmd, $params);
 			break;
 		 default:
 			break;
@@ -464,6 +470,25 @@ class Command_Controller extends Authenticated_Controller
 			if(isset($param['fixed']) && $param['fixed']) {
 				$this->schedule_retrospectively('servicegroup', 'host', $param['servicegroup_name'], $param['start_time'], $param['end_time'], $param['comment']);
 			}
+			break;
+		 case 'NACOMA_DEL_HOST':
+		 case 'NACOMA_DEL_SERVICE':
+			// Delete the host/service then route to NACOMA SAVE_CONFIG page
+			 $res = true;
+			if (isset($param['service'])) {
+				foreach ($param['service'] as $service) {
+					$res &= nacoma::delService($service);
+				}
+			}
+
+			if (isset($param['host_name'])) {
+				foreach ($param['host_name'] as $host) {
+					$res &= nacoma::delHost($host);
+				}
+			}
+
+			if ($res)
+				return url::redirect('/configuration/configure?page=export.php');
 			break;
 		}
 

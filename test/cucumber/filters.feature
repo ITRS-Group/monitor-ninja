@@ -1,9 +1,8 @@
 @filters @listview
 Feature: Filters & list views
-
 	@configuration @asmonitor
 	@bug-7012
-	Scenario: Service multi-delete
+	Scenario: Host service single multi-delete
 		Given I have these hosts:
 			| host_name     |
 			| linux-server1 |
@@ -12,7 +11,7 @@ Feature: Filters & list views
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
 			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] state != 200 and active_checks_enabled = 1"
+		And I'm on the list view for query "[services] active_checks_enabled = 1"
 		Then I should see "System Load"
 		And I shouldn't see "PING"
 		When I check "select_all"
@@ -28,6 +27,166 @@ Feature: Filters & list views
 		When I click button "Save objects I have changed" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
+	@configuration @asmonitor
+	@bug-7012
+	Scenario: Host service multi multi-delete
+		Given I have these hosts:
+			| host_name     |
+			| linux-server1 |
+		And I have these services:
+			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
+			| PING1               | linux-server1 | check_ping      | 1                     | 1                     |
+			| PING2               | linux-server1 | check_ping      | 1                     | 0                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		Then I should see "System Load"
+		And I should see "PING1"
+		And I shouldn't see "PING2"
+		When I check "select_all"
+		And I click "Send multi action"
+		And I click "Delete services"
+		Then I should be on the Configure page
+		Then I should see "There are 2 changes to 2 service objects" within frame "iframe"
+		When I click "More info" within frame "iframe"
+		Then I should see "Deleted service object linux-server1;System Load" within frame "iframe"
+		And I should see "linux-server1;PING1" within frame "iframe"
+		And I shouldn't see "linux-server1;PING2" within frame "iframe"
+		And I should see button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save everything" within frame "iframe"
+		When I click button "Save objects I have changed" within frame "iframe"
+		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
+
+	@configuration @asmonitor
+	@bug-7012
+	Scenario: Hostgroup service single multi-delete
+		Given I have these hosts:
+			| host_name     | hostgroups |
+			| linux-server1 | a_group    |
+		And I have these hostgroups:
+			| hostgroup_name |
+			| a_group        |
+		And I have these services:
+			| service_description | hostgroup_name | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | a_group        | check_nrpe!load | 1                     | 1                     |
+			| PING                | a_group        | check_ping      | 1                     | 0                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		Then I should see "System Load"
+		And I shouldn't see "PING"
+		When I check "select_all"
+		And I click "Send multi action"
+		And I click "Delete services"
+		Then I should see "You've selected a service that is saved on a hostgroup"
+		And I should see "System Load"
+		And I shouldn't see "PING"
+		When I click "Submit"
+		Then I should be on the Configure page
+		Then I should see "There are 1 changes to 1 service objects" within frame "iframe"
+		When I click "More info" within frame "iframe"
+		Then I should see "Deleted service object a_group;System Load" within frame "iframe"
+		And I shouldn't see "a_group;PING" within frame "iframe"
+		And I should see button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save everything" within frame "iframe"
+		When I click button "Save objects I have changed" within frame "iframe"
+		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
+
+	@configuration @asmonitor
+	@bug-7012
+	Scenario: Hostgroup service multi multi-delete
+		Given I have these hosts:
+			| host_name     | hostgroups |
+			| linux-server1 | a_group    |
+		And I have these hostgroups:
+			| hostgroup_name |
+			| a_group        |
+		And I have these services:
+			| service_description | hostgroup_name | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | a_group        | check_nrpe!load | 1                     | 1                     |
+			| PING1               | a_group        | check_ping      | 1                     | 1                     |
+			| PING2               | a_group        | check_ping      | 1                     | 0                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		Then I should see "System Load"
+		And I should see "PING1"
+		And I shouldn't see "PING2"
+		When I check "select_all"
+		And I click "Send multi action"
+		And I click "Delete services"
+		Then I should see "You've selected services that are saved on hostgroups"
+		And I should see "System Load"
+		And I should see "PING1"
+		And I shouldn't see "PING2"
+		When I click "Submit"
+		Then I should be on the Configure page
+		Then I should see "There are 2 changes to 2 service objects" within frame "iframe"
+		When I click "More info" within frame "iframe"
+		Then I should see "Deleted service object a_group;System Load" within frame "iframe"
+		And I should see "a_group;PING1" within frame "iframe"
+		And I shouldn't see "linux-server1" within frame "iframe"
+		And I shouldn't see "PING2" within frame "iframe"
+		And I should see button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save everything" within frame "iframe"
+		When I click button "Save objects I have changed" within frame "iframe"
+		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
+
+	@configuration @asmonitor
+	@bug-7012
+	Scenario: Host single multi-delete
+		Given I have these hosts:
+			| host_name     | active_checks_enabled |
+			| linux-server1 | 0                     |
+			| linux-server2 | 1                     |
+		And I have these services:
+			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
+			| PING                | linux-server1 | check_ping      | 1                     | 0                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[hosts] state != 200 and active_checks_enabled = 1"
+		Then I should see "linux-server2"
+		And I shouldn't see "linux-server1"
+		When I check "select_all"
+		And I click "Send multi action"
+		And I click "Delete hosts"
+		Then I should be on the Configure page
+		Then I should see "There are 1 changes to 1 host objects" within frame "iframe"
+		When I click "More info" within frame "iframe"
+		Then I should see "Deleted host object linux-server2" within frame "iframe"
+		And I shouldn't see "linux-server1" within frame "iframe"
+		And I should see button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save everything" within frame "iframe"
+		When I click button "Save objects I have changed" within frame "iframe"
+		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
+
+	@configuration @asmonitor
+	@bug-7012
+	Scenario: Host multi multi-delete
+		Given I have these hosts:
+			| host_name     | active_checks_enabled |
+			| linux-server1 | 0                     |
+			| linux-server2 | 1                     |
+			| linux-server3 | 1                     |
+		And I have these services:
+			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
+			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[hosts] state != 200 and active_checks_enabled = 1"
+		Then I should see "linux-server2"
+		And I should see "linux-server3"
+		And I shouldn't see "linux-server1"
+		When I check "select_all"
+		And I click "Send multi action"
+		And I click "Delete hosts"
+		Then I should be on the Configure page
+		Then I should see "There are 2 changes to 2 host objects" within frame "iframe"
+		When I click "More info" within frame "iframe"
+		Then I should see "Deleted host object linux-server2" within frame "iframe"
+		And I shouldn't see "linux-server1" within frame "iframe"
+		And I should see button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save everything" within frame "iframe"
+		When I click button "Save objects I have changed" within frame "iframe"
+		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
 	Scenario: List hosts
