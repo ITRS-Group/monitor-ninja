@@ -541,7 +541,7 @@ class Command_Controller extends Authenticated_Controller
 
 		}
 
-		$this->template->content->return_link_lable = _('Return from whence you came');
+		$this->template->content->return_link_lable = _('Return from where you came');
 	}
 
 	/**
