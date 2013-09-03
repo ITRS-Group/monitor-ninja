@@ -35,22 +35,6 @@ class Command_Controller extends Authenticated_Controller
 		$this->template->disable_refresh = true;
 	}
 
-	protected function get_array_var($ary, $k, $dflt = false)
-	{
-		if (is_array($k)) {
-			if (count($k) === 1)
-				$k = array_pop($k);
-		}
-
-		if (is_array($k))
-			return false;
-
-		if (isset($ary[$k]))
-			return $ary[$k];
-
-		return $dflt;
-	}
-
 	/**
  	 * @param string $submitted_start_time (Y-m-d H:i:s)
  	 * @param string $submitted_end_time (Y-m-d H:i:s)
@@ -294,17 +278,21 @@ class Command_Controller extends Authenticated_Controller
 	 * and creates a Nagios command that gets fed to Nagios through
 	 * the external command pipe.
 	 */
-	public function commit()
+	public function commit($cmd = false, $param=false)
 	{
-		if(!isset($_REQUEST['cmd_typ']))
-			return $this->unauthorized();
+		if (!$cmd) {
+			if(!isset($_REQUEST['cmd_typ']))
+				return $this->unauthorized();
+			$cmd = $_REQUEST['cmd_typ'];
 		}
-		$cmd = $_REQUEST['cmd_typ'];
+
+		if (!$param)
+			$param = $_REQUEST['cmd_param'];
+
 		$this->init_page('command/commit');
 		$this->template->content->cmd_typ = $cmd;
 
 		$nagios_commands = array();
-		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
 		if (self::_is_authorized_for_command($param, $cmd) !== true)
 			return $this->unauthorized($auth_check);
 
