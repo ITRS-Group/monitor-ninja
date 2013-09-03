@@ -60,11 +60,28 @@ class nacoma_Core {
 	*
 	*	@param $host string host to be deleted
 	*/
-	public function delHost ($host) {
-		if (!nacoma::allowed()) {
+	public static function delHost ($host) {
+		if (!nacoma::allowed())
 			return false;
+
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t host -n ' . escapeshellarg($host) . ' -a delete', $out, $retval);
+		var_dump($out);
+		return $retval === 0;
+	}
+
+	public static function getHostgroupForService($service) {
+		if (!nacoma::allowed())
+			return false;
+
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -a show_object -n ' . escapeshellarg($service), $out, $retval);
+		if ($retval !== 0)
+			return false;
+		foreach ($out as $line) {
+			list($key, $val) = explode("=", $line);
+			if ($key == 'hostgroup_name')
+				return $val;
 		}
-		$out = @system('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t host -n "' . $host . '" -a delete -u >/dev/null', $retval);
+		return false;
 	}
 
 	/**
@@ -72,10 +89,12 @@ class nacoma_Core {
 	*
 	*	@param $service string service to be deleted, format HOST;SERVICE
 	*/
-	public function delService ($service) {
-		if (!nacoma::allowed()) {
+	public static function delService ($service) {
+		if (!nacoma::allowed())
 			return false;
-		}
-		$out = @system('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -n "' . $service . '" -a delete -u >/dev/null', $retval);
+
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -n ' . escapeshellarg($service) . ' -a delete', $out, $retval);
+		var_dump($out);
+		return $retval === 0;
 	}
 }
