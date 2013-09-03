@@ -99,8 +99,8 @@ class Command_Controller extends Authenticated_Controller
 		$info = $command->get_command_info($cmd, $params);
 		$param = $info['params'];
 		switch ($cmd) {
-			case 'DEL_HOST_COMMENT':
-			case 'DEL_SVC_COMMENT':
+		 case 'DEL_HOST_COMMENT':
+		 case 'DEL_SVC_COMMENT':
 				$param['comment_id']['type'] = 'immutable';
 				break;
 		 case 'SCHEDULE_HOST_CHECK':
