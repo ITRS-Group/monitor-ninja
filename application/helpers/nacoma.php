@@ -69,6 +69,10 @@ class nacoma_Core {
 		return $retval === 0;
 	}
 
+	/**
+	 * Given a service name, returns the name of the hostgroup this service
+	 * belongs to, or false if it is a host service.
+	 */
 	public static function getHostgroupForService($service) {
 		if (!nacoma::allowed())
 			return false;
