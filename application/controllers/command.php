@@ -22,8 +22,6 @@ class Command_Controller extends Authenticated_Controller
 	 * older than this many seconds, it's considered to have been added retrospectively
 	 */
 	private $grace_time_in_s = 300;
-	private $objects = false;
-	private $obj_type = false;
 
 	/**
 	 * Initializes a page with the correct view, java-scripts and css
@@ -94,7 +92,7 @@ class Command_Controller extends Authenticated_Controller
 	 * @param $name The requested command to run
 	 * @param $parameters The parameters (host_name etc) for the command
 	 */
-	public function submit($cmd = false, $inparams=false)
+	public function submit($cmd = false, $params=false)
 	{
 		$this->init_page('command/request');
 		$this->xtra_js[] = $this->add_path('command/js/command.js');
@@ -104,22 +102,8 @@ class Command_Controller extends Authenticated_Controller
 			$cmd = $this->input->get('cmd_typ');
 		}
 
-		$params = array();
-		if ($inparams === false) {
-			$inparams = $_GET;
-		}
-
-		$auth_check = nagioscmd::is_authorized_for($inparams);
-		foreach ($inparams as $k => $v) {
-			switch ($k) {
-			 case 'host':
-			 case 'hostgroup':
-			 case 'servicegroup':
-				$params[$k . '_name'] = $v;
-				break;
-			 default:
-				$params[$k] = $v;
-			}
+		if ($params === false) {
+			$params = $_GET;
 		}
 
 		if ($auth_check === false || $auth_check < 0 ) {
@@ -588,31 +572,38 @@ class Command_Controller extends Authenticated_Controller
 			$this->template->content->error_message = '<br /> &nbsp;'._('ERROR: Missing action parameter - unable to process request');
 			return false;
 		}
-
-		$cmd_typ = $_REQUEST['multi_action'];
-		$this->obj_type = isset($_REQUEST['obj_type']) ? $_REQUEST['obj_type'] : false;
-		$this->objects = isset($_REQUEST['object_select']) ? $_REQUEST['object_select'] : false;
-		if (empty($this->objects)) {
+		if (!isset($_REQUEST['object_select'])) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = '<br /> &nbsp;'._('ERROR: Missing objects - unable to process request');
 			return false;
 		}
+		if (!isset($_REQUEST['obj_type'])) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = '<br /> &nbsp;'._('ERROR: Missing object type - unable to process request');
+			return false;
+		}
+
+		$cmd_typ = $_REQUEST['multi_action'];
+		$obj_type = $_REQUEST['obj_type'];
+		$objects = $_REQUEST['object_select'];
 
 		$param_name = false;
-		switch ($this->obj_type) {
-			case 'host':
+		switch ($obj_type) {
 			case 'hosts':
 				$param_name = 'host_name';
 				break;
-			case 'service':
 			case 'services':
 				$param_name = 'service';
 				break;
-			case 'comment':
+			case 'hostgroups':
+				$param_name = 'hostgroup_name';
+				break;
+			case 'servicegroups':
+				$param_name = 'servicegroup_name';
+				break;
 			case 'comments':
 				$param_name = 'comment_id';
 				break;
-			case 'downtime':
 			case 'downtimes':
 				$param_name = 'downtime_id';
 				break;
@@ -620,7 +611,7 @@ class Command_Controller extends Authenticated_Controller
 
 		$params = false;
 
-		foreach ($this->objects as $obj) {
+		foreach ($objects as $obj) {
 			$params[$param_name][] = $obj;
 		}
 
