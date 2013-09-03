@@ -1035,6 +1035,10 @@ class nagioscmd_Core
 			  'brief' => _('You are trying to execute an unsupported command.'),
 			  'template' => 'CHANGE_CONTACT_MODSATTR;contact_name;value',
 			 ),
+			 'NACOMA_DEL_SERVICE' => array
+			 ('template' => 'NOT_A_REAL_COMMAND;service'),
+			 'NACOMA_DEL_HOST' => array
+			 ('template' => 'NOT_A_REAL_COMMAND;host_name'),
 		);
 
 		if (isset($command_info[$name])) {
