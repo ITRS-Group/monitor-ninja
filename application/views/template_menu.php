@@ -64,13 +64,14 @@ array(4) {
 					/* Never have a capital o in op5 */
 					$formatted_name = preg_replace('/op5/i', 'op5', ucwords($name));
 
-					$id = str_replace(' ','-',strtolower($section))."-".$data[1];
 					if( is_array($data[1]) ) {
 						$icon_image = $data[1][1];
 						$module_name = $data[1][0];
+						$id = str_replace(' ','-',strtolower($section))."-".$data[1][0];
 					} else {
 						$icon_image = $data[1];
 						$module_name = false;
+						$id = str_replace(' ','-',strtolower($section))."-".$data[1];
 					}
 					if ($data[2] == 0) {
 
