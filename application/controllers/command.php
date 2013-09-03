@@ -126,6 +126,8 @@ class Command_Controller extends Authenticated_Controller
 			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
+		$this->template->content->requested_command = $cmd;
+
 		$command = new Execute_Command_Model;
 		$info = $command->get_command_info($cmd, $params);
 		$param = $info['params'];
@@ -219,15 +221,12 @@ class Command_Controller extends Authenticated_Controller
 
 			return url::redirect('/configuration/configure?page=export.php');
 			break;
+		 default:
+			return;
 		}
 		$info['params'] = $param;
 
-		$this->template->content->requested_command = $cmd;
 		$this->template->content->info = $info;
-
-		if (is_array($info)) foreach ($info as $k => $v) {
-			$this->template->content->$k = $v;
-		}
 	}
 
 	protected function schedule_retrospectively($selector_type, $target_type, $obj_names, $start_time, $end_time, $comment)

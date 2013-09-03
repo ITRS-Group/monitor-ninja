@@ -1,15 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 echo '<div>';
-if (!$info) {
+if (!isset($info)) {
 	echo "Unknown command: $requested_command<br />\n";
 	return;
 }
 
 echo "<style>table td {vertical-align: top;border: none;} input, select {margin: 0 0 6px 0;} b {margin: 0 0 6px 0; display: inline-block;}</style>";
 
-echo "<h2>$brief</h2>\n";
-echo "<p>$description</p>\n";
+echo "<h2>{$info['brief']}</h2>\n";
+echo "<p>{$info['description']}</p>\n";
 echo form::open('command/commit', array('id' => 'command_form'));
 echo "<table>";
 
