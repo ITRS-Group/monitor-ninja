@@ -3,9 +3,7 @@
 /**
  * ORM tablestat widget
  *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class tablestat_Widget extends widget_Base {
 	/**
