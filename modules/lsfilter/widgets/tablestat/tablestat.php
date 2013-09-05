@@ -358,11 +358,11 @@ class tablestat_Widget extends widget_Base {
 				);
 			}
 
-			require($this->view_path('view'));
+			require('view.php');
 		} catch( ORMException $e ) {
-			require($this->view_path('view_error'));
+			require('view_error.php');
 		} catch( op5LivestatusException $e ) {
-			require($this->view_path('view_error'));
+			require('view_error.php');
 		}
 	}
 }

@@ -96,12 +96,11 @@ class gridstat_Widget extends widget_Base {
 			}
 			$this->data = $this->apply_filters($this->settings, $results);
 
-			$this->model->name = 'gridstat'; // Force it to be a gridstat model
-			require($this->view_path('view'));
+			require('view.php');
 		} catch( ORMException $e ) {
-			require($this->view_path('view_error'));
+			require('view_error.php');
 		} catch( op5LivestatusException $e ) {
-			require($this->view_path('view_error'));
+			require('view_error.php');
 		} catch( Exception $e ) {
 			print '<pre>';
 			print_r($e);
