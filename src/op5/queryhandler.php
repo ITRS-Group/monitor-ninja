@@ -1,5 +1,14 @@
 <?php
 
+class op5queryhandler_Exception extends Exception {
+	public function __construct($msg, $data=false) {
+		if( $data !== false ) {
+			$msg .= " (data: ".$data.")";
+		}
+		parent::__construct( $msg );
+	}
+}
+
 class op5queryhandler {
 	static private $instance = false;
 
@@ -31,8 +40,10 @@ class op5queryhandler {
 		$data = $this->call($channel, $command, $args, $node);
 		$expanded = $this->unpack_args(trim($data));
 		if( $expanded === NULL ) {
-			print $data;
-			return false;
+			throw new op5queryhandler_Exception( 'Unknown response', $data );
+		}
+		if( empty($expanded) ) {
+			throw new op5queryhandler_Exception( 'Empty result', $data );
 		}
 		if( $conv_hash ) {
 			$expanded = array_combine(
@@ -57,20 +68,20 @@ class op5queryhandler {
 		}
 		$sock = @fsockopen('unix://'.$this->path, NULL, $errno, $errstr, $this->timeout);
 		if ($sock === false)
-			return "Request failed: $errstr";
+			throw new op5queryhandler_Exception( "Request failed: $errstr" );
 		if ($errno)
-			return "Request failed: $errstr";
+			throw new op5queryhandler_Exception( "Request failed: $errstr" );
 
 		for ($written = 0; $written < strlen($command); $written += $len) {
 			$len = @fwrite($sock, substr($command, $written));
 			if ($len === false)
-				return "Request failed: couldn't write query";
+				throw new op5queryhandler_Exception( "Request failed: couldn't write query" );
 		}
 
 		$content = "";
 		while(($c = @fread($sock,1)) !== "\0"){
 			if($c === false)
-				return "Request failed: couldn't read response";
+				throw new op5queryhandler_Exception( "Request failed: couldn't read response" );
 			$content .= $c;
 		}
 		@fclose($sock);
