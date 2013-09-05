@@ -1,17 +1,27 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Listview widget
+ * ORM gridstat widget
  *
  * @package    NINJA
  * @author     op5 AB
  * @license    GPL
 */
 class gridstat_Widget extends widget_Base {
+	/**
+	 * Set if this widget is duplicatable
+	 */
 	protected $duplicatable = true;
 
+	/**
+	 * An array containing the settings for this widget; which filters to use
+	 */
 	protected $settings = false;
 
+	/**
+	 * Constructor. This should be overloaded, to upadte the settings-attribute
+	 * when making a custom widget of this type
+	 */
 	public function __construct($widget_model) {
 		parent::__construct($widget_model);
 		$this->settings = array();
@@ -28,6 +38,9 @@ class gridstat_Widget extends widget_Base {
 		$this->duplicatable = false;
 	}
 
+	/**
+	 * Load the options for this widget.
+	 */
 	public function options() {
 		$options = parent::options();
 		return $options;
@@ -73,6 +86,9 @@ class gridstat_Widget extends widget_Base {
 		return $filters;
 	}
 
+	/**
+	 * Fetch the data and show the widget
+	 */
 	public function index() {
 		try {
 			$filters = $this->grab_filters($this->settings);

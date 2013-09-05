@@ -1,15 +1,21 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Listview widget
+ * ORM tablestat widget
  *
  * @package    NINJA
  * @author     op5 AB
  * @license    GPL
-*/
+ */
 class tablestat_Widget extends widget_Base {
+	/**
+	 * Set if this widget is duplicatable
+	 */
 	protected $duplicatable = true;
 
+	/**
+	 * An array containing the settings for this widget; which filters to use
+	 */
 	protected $settings = array(
 			'services' => array(
 					'columns' => array(
@@ -232,6 +238,9 @@ class tablestat_Widget extends widget_Base {
 			)
 	);
 
+	/**
+	 * A list of the columns to show in the widget
+	 */
 	protected $columns = array(
 			array(
 					'name' => '%d objects',
@@ -239,17 +248,33 @@ class tablestat_Widget extends widget_Base {
 					'na_icon' => 'shield-not-info'
 			)
 	);
+	/**
+	 * A list of the rows to show in the widget
+	 */
 	protected $rows = array(
 			array(
 					'name' => '%d objects'
 			)
 	);
 
+	/**
+	 * The fetched table
+	 */
 	protected $table = false;
 
+	/**
+	 * The set representing whichs objects this widget should work within.
+	 */
 	protected $universe = false;
+	/**
+	 * The set representing all objects of the type this widget works with.
+	 */
 	protected $all = false;
 
+	/**
+	 * Constructor. This should be overloaded, to upadte the settings-attribute
+	 * when making a custom widget of this type
+	 */
 	public function __construct($widget_model) {
 		parent::__construct($widget_model);
 	}
@@ -265,12 +290,18 @@ class tablestat_Widget extends widget_Base {
 		$this->duplicatable = false;
 	}
 
+	/**
+	 * Load the options for this widget.
+	 */
 	public function options() {
 		$options = parent::options();
 		array_unshift($options, new option('tablestat','filter',_('Filter'),'textarea',array(),'[services] all'));
 		return $options;
 	}
 
+	/**
+	 * Fetch the data and show the widget
+	 */
 	public function index() {
 		try {
 			$this->args = $this->get_arguments();
