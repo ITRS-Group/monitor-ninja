@@ -1034,6 +1034,12 @@ final class Kohana {
 			$type = 'libraries/drivers';
 			$file = str_replace('_', '/', substr($class, 0, -7));
 		}
+		elseif ($suffix === 'Widget')
+		{
+			$type = 'widgets';
+			$classname = substr($class, 0, -7);
+			$file = $classname . '/' . $classname;
+		}
 		else
 		{
 			// This could be either a library or a helper, but libraries must
