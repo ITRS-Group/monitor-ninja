@@ -46,7 +46,7 @@ class tablestat_Widget extends widget_Base {
 									'filter' => '[services] has_been_checked = 0',
 									'icon' => 'shield-pending',
 									'na_icon' => 'shield-not-pending'
-							)
+							),
 					),
 					'rows' => array(
 							array(
@@ -76,6 +76,12 @@ class tablestat_Widget extends widget_Base {
 									'name' => '%d Acknowledged',
 									'filter' => '[services] acknowledged = 1',
 									'icon' => 'acknowledged'
+							),
+							array(
+									'name' => '%d Disabled',
+									'filter' => '[services] active_checks_enabled = 0',
+									'icon' => 'shield-disabled',
+									'na_icon' => 'shield-not-disabled'
 							),
 					)
 			),
@@ -129,6 +135,12 @@ class tablestat_Widget extends widget_Base {
 									'name' => '%d Acknowledged',
 									'filter' => '[hosts] acknowledged = 1',
 									'icon' => 'acknowledged'
+							),
+							array(
+									'name' => '%d Disabled',
+									'filter' => '[hosts] checks_enabled = 0',
+									'icon' => 'shield-disabled',
+									'na_icon' => 'shield-not-disabled'
 							),
 					)
 			),
