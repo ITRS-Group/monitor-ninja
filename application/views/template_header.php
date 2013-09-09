@@ -140,8 +140,7 @@
 	if(Auth::instance()->logged_in()) {
 ?><div class="header_info_row"><?php
 				$notifications = array();
-				if (isset($_SERVER['SERVER_NAME']))
-					print _('Host').': ' . htmlentities($_SERVER['SERVER_NAME']);
+				print _('Host').': ' . htmlentities(gethostname());
 
 				if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
 					foreach ($global_notifications as $gn) {
