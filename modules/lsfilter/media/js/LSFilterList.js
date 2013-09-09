@@ -281,7 +281,7 @@ function lsfilter_list(config)
 			if(!(empty_text = $(this.config.table).parents('.widget').data('text-if-empty'))) {
 				empty_text = _("No entries found using filter");
 			}
-			new_table = $('<div class="alert"></div>').text(empty_text);
+			new_table = $('<div class="alert notice"></div>').text(empty_text);
 		}
 		new_totals = this.render_totals(data.table, data.totals);
 
