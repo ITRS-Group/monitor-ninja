@@ -40,14 +40,19 @@ class Custom_command_Model extends Model
 			foreach ($custom_commands as $command_name => $params) {
 				if (isset($custom_commands[$command_name]['access']) && isset($custom_commands[$command_name]['action'])) {
 					// Check authorization.
+					$user_groups = op5auth::instance()->get_groups();
+					$user_group_access = false;
 					$set = ContactGroupPool_Model::none();
 					$all_set = ContactGroupPool_Model::all();
-					foreach ($custom_commands[$command_name]['access'] as $contactgroup) {
-						$set = $set->union($all_set->reduce_by('name', $contactgroup, "="));
+					foreach ($custom_commands[$command_name]['access'] as $group) {
+						$set = $set->union($all_set->reduce_by('name', $group, "="));
+						if (in_array($group, $user_groups)) {
+							$user_group_access = true;
+						}
 					}
 					$set = $set->reduce_by('members', Auth::instance()->get_user()->username, '>=');
 					// If we got any matches set action, if not unset custom command
-					if (count($set) > 0) {
+					if (count($set) > 0 || $user_group_access === true) {
 						$custom_commands[$command_name] = $custom_commands[$command_name]['action'];
 					} else {
 						unset($custom_commands[$command_name]);
