@@ -617,13 +617,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			if (!is_numeric($value))
 				$value = strtotime($value);
 			break;
-		 case 'filename':
-			if (strpos($value, '.pdf') !== false) {
-				$this->options['output_format'] = 'pdf';
-			}
-			if (strpos($value, '.csv') !== false)
-				$this->options['output_format'] = 'csv';
-			break;
 		 case 'output_format':
 			# this is the only thing preventing summary reports from breaking when saved as HTML reports
 			if (isset($this->options['filename']))
