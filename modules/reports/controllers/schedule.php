@@ -181,6 +181,11 @@ class Schedule_Controller extends Authenticated_Controller
 		$type = Scheduled_reports_Model::get_typeof_report($schedule_id);
 		$opt_obj = Scheduled_reports_Model::get_scheduled_data($schedule_id);
 		$report = Report_options::setup_options_obj($type, $opt_obj);
+		$extension = substr($opt_obj['filename'], count($opt_obj['filename'])-5);
+		if ($extension == '.pdf')
+			$report['output_format'] = 'pdf';
+		else if ($extension == '.csv')
+			$report['output_format'] = 'csv';
 		$pipe_desc = array(
 			0 => array('pipe', 'r'),
 			1 => array('pipe', 'w'),

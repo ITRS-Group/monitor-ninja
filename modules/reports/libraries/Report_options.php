@@ -617,10 +617,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			if (!is_numeric($value))
 				$value = strtotime($value);
 			break;
-		 case 'output_format':
-			# this is the only thing preventing summary reports from breaking when saved as HTML reports
-			if (isset($this->options['filename']))
-				return false;
 		 default:
 			break;
 		}
