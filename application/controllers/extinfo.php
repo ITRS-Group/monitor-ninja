@@ -80,7 +80,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
-		
+
 		// Widgets
 		$this->template->content->widgets = array();
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
@@ -95,9 +95,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$object = $it->current();
 
 		$content->object = $object;
-		
+
 		$username = Auth::instance()->get_user()->username;
-		
+
 		$setting = array(
 			'query'=>$set->get_comments()->get_query(),
 			'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
@@ -110,13 +110,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 			'friendly_name' => 'Comments',
 			'setting' => $setting
 		));
-	
+
 		$widget = widget::get($model, $this);
 		widget::set_resources($widget, $this);
-	
+
 		$widget->set_fixed($set->get_comments()->get_query());
 		$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
-	
+
 		$this->template->content->comments = $widget->render();
 
 		if ($object->get_scheduled_downtime_depth()) {
@@ -135,12 +135,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
-		
+
 			$widget->set_fixed($set->get_downtimes()->get_query());
 
 			$this->template->content->downtimes = $widget->render();
 		}
-		
+
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
@@ -586,19 +586,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 	public function scheduling_queue()
 	{
 		$back_link = '/extinfo/scheduling_queue/';
-		
+
 		$host = $this->input->get('host');
 		$service = $this->input->get('service');
 		$sq_model = new Scheduling_queue_Model();
 
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
-		
+
 		$sq_model->set_range(
 				$pagination->items_per_page,
 				($pagination->current_page-1)*$pagination->items_per_page
 				);
-		
+
 		if (!Auth::instance()->authorized_for('host_view_all')) {
 			return url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
