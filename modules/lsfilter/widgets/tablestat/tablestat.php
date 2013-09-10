@@ -305,7 +305,10 @@ class tablestat_Widget extends widget_Base {
 	 */
 	public function options() {
 		$options = parent::options();
-		array_unshift($options, new option('tablestat','filter',_('Filter'),'textarea',array(),'[services] all'));
+		/* If this class is extended, and universe is set from constructor, don't need filter option */
+		if($this->universe === false) {
+			array_unshift($options, new option('tablestat','filter',_('Filter'),'textarea',array(),'[services] all'));
+		}
 		return $options;
 	}
 
@@ -314,10 +317,12 @@ class tablestat_Widget extends widget_Base {
 	 */
 	public function index() {
 		try {
-			$this->args = $this->get_arguments();
-
-			$this->universe = ObjectPool_Model::get_by_query($this->args['filter']);
-			$this->all = ObjectPool_Model::pool($this->universe->get_table())->all();
+			/* If this class is extended, and universe is set from constructor, don't need filter option */
+			if($this->universe === false) {
+				$this->args = $this->get_arguments();
+				$this->universe = ObjectPool_Model::get_by_query($this->args['filter']);
+			}
+			$all = ObjectPool_Model::pool($this->universe->get_table())->all();
 
 			if( isset($this->settings[$this->universe->get_table()]) ) {
 				$settings = $this->settings[$this->universe->get_table()];
@@ -330,14 +335,14 @@ class tablestat_Widget extends widget_Base {
 				if( isset($col['filter']) ) {
 					$col_filter = ObjectPool_Model::get_by_query( $col['filter'] );
 				} else {
-					$col_filter = $this->all;
+					$col_filter = $all;
 				}
 				$stats[$ci.';_HEAD_'] = $col_filter;
 				foreach( $this->rows as $ri => $row ) {
 					if( isset($col['filter']) ) {
 						$row_filter = ObjectPool_Model::get_by_query( $row['filter'] );
 					} else {
-						$row_filter = $this->all;
+						$row_filter = $all;
 					}
 					$cell_filter = $row_filter->intersect( $col_filter );
 					$stats[$ci.';'.$ri] = $cell_filter;
