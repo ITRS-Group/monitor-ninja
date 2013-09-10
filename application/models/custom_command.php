@@ -52,7 +52,7 @@ class Custom_command_Model extends Model
 					}
 					$set = $set->reduce_by('members', Auth::instance()->get_user()->username, '>=');
 					// If we got any matches set action, if not unset custom command
-					if (count($set) > 0 || $user_group_access === true) {
+					if ( $user_group_access || count($set) > 0 ) {
 						$custom_commands[$command_name] = $custom_commands[$command_name]['action'];
 					} else {
 						unset($custom_commands[$command_name]);
