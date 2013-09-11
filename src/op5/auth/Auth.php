@@ -1,21 +1,17 @@
 <?php
 
-require_once( 'op5/config.php' );
-require_once( 'op5/auth/User_NoAuth.php' );
-require_once( 'op5/auth/User.php' );
-require_once( 'op5/auth/Authorization.php' );
-require_once( 'op5/log.php' );
-require_once( 'op5/livestatus.php' );
+require_once('op5/config.php');
+require_once('op5/auth/User_NoAuth.php');
+require_once('op5/auth/User.php');
+require_once('op5/auth/Authorization.php');
+require_once('op5/log.php');
+require_once('op5/livestatus.php');
 
 /**
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author
- * @copyright
- * @license
  */
-
 class op5auth {
 	/**
 	 * Defaults is specified here. Parameters is overwritten from config
@@ -51,9 +47,9 @@ class op5auth {
 	 * @param $driver_config array
 	 * @return object
 	 */
-	public static function factory( $config = false, $driver_config = false)
+	public static function factory($config = false, $driver_config = false)
 	{
-		self::$instance = new self( $config, $driver_config);
+		self::$instance = new self($config, $driver_config);
 		return self::$instance;
 	}
 
@@ -86,21 +82,21 @@ class op5auth {
 		/* Retrieve config file */
 		$authconfig = op5Config::instance()->getConfig('auth');
 
-		if( $authconfig === null ) {
-			throw new Exception( 'auth.yml configuration file not found, are the permissions correct?' );
+		if($authconfig === null) {
+			throw new Exception('auth.yml configuration file not found, are the permissions correct?');
 		}
 
 		/* Fetch configuration for common, and store */
-		if( !isset( $authconfig['common'] ) ) {
-			throw new Exception( 'section "common" not found in auth.yml' );
+		if(!isset($authconfig['common'])) {
+			throw new Exception('section "common" not found in auth.yml');
 		}
 
 		/* Overwrite defaults with config */
-		$this->config = array_merge( $this->config, $authconfig['common'] );
+		$this->config = array_merge($this->config, $authconfig['common']);
 
 		/* Add local configs to common config */
-		if( is_array( $config ) ) {
-			$this->config = array_merge( $this->config, $config );
+		if(is_array($config)) {
+			$this->config = array_merge($this->config, $config);
 		}
 
 		if (is_array($driver_config))
@@ -113,27 +109,27 @@ class op5auth {
 		 * is changed to the actual auth module object, to enable lazy loading.
 		 */
 		$this->auth_modules = array();
-		foreach( $authconfig as $name => $moduleconf ) {
-			if( isset( $moduleconf['driver'] ) ) {
+		foreach($authconfig as $name => $moduleconf) {
+			if(isset($moduleconf['driver'])) {
 				/* Store the module config */
-				$this->auth_modules[ $name ] = $moduleconf;
+				$this->auth_modules[$name] = $moduleconf;
 
 				/* Add to index by driver name */
-				if( !isset( $this->drivers[ $moduleconf['driver'] ] ) ) {
-					$this->drivers[ $moduleconf['driver'] ] = array();
+				if(!isset($this->drivers[$moduleconf['driver']])) {
+					$this->drivers[$moduleconf['driver']] = array();
 				}
-				$this->drivers[ $moduleconf['driver'] ][] = $name;
+				$this->drivers[$moduleconf['driver']][] = $name;
 			}
 		}
 
 		/* No auth modules means error... */
-		if( count( $this->auth_modules ) == 0 ) {
-			throw new Exception( 'No authentication driver specified' );
+		if(count($this->auth_modules) == 0) {
+			throw new Exception('No authentication driver specified');
 		}
 
 		/* If only one auth module, thats always the default */
-		if( count( $this->auth_modules ) == 1 ) {
-			list( $drv_name ) = array_keys( $this->auth_modules );
+		if(count($this->auth_modules) == 1) {
+			list($drv_name) = array_keys($this->auth_modules);
 			$this->config['default_auth'] = $drv_name;
 		}
 	}
@@ -144,12 +140,12 @@ class op5auth {
 	 * @param   $drivername string Name of the driver
 	 * @return              array  List of authenticaiton module names, or false if no moudles found.
 	 */
-	public function getAuthModulesPerDriver( $drivername )
+	public function getAuthModulesPerDriver($drivername)
 	{
-		if( !isset( $this->drivers[ $drivername ] ) ) {
+		if(!isset($this->drivers[$drivername])) {
 			return false;
 		}
-		return $this->drivers[ $drivername ];
+		return $this->drivers[$drivername];
 	}
 
 	/**
@@ -183,7 +179,7 @@ class op5auth {
 	 */
 	public function get_user()
 	{
-		if( $this->user === false ) {
+		if($this->user === false) {
 			$this->session_fetch();
 		}
 
@@ -192,21 +188,21 @@ class op5auth {
 		 * But let every auth driver try to auto_login, just to make generic.
 		 * FIXME: Don't iterate over all... how and still be generic?
 		 */
-		if( $this->config['enable_auto_login'] && $this->user === false ) {
-			foreach( array_keys( $this->auth_modules ) as $auth_method ) {
-				$driver = $this->getAuthModule( $auth_method );
+		if($this->config['enable_auto_login'] && $this->user === false) {
+			foreach(array_keys($this->auth_modules) as $auth_method) {
+				$driver = $this->getAuthModule($auth_method);
 				$user = $driver->auto_login();
-				if( $user !== false ) {
+				if($user !== false) {
 					/* Postprocess login */
 					$user->auth_method = $auth_method;
-					$this->authorize_user( $user, $auth_method );
+					$this->authorize_user($user, $auth_method);
 					$this->user = $user;
 					return $user;
 				}
 			}
 		}
 
-		if( $this->user === false ) {
+		if($this->user === false) {
 			return new op5User_NoAuth();
 		}
 		return $this->user;
@@ -225,9 +221,9 @@ class op5auth {
 	{
 		$this->logout();
 
-		if( $auth_method === false ) {
-			$parts = explode( '$', $username, 2 );
-			if( count( $parts ) == 2 ) {
+		if($auth_method === false) {
+			$parts = explode('$', $username, 2);
+			if(count($parts) == 2) {
 				$username = $parts[0];
 				$auth_method = $parts[1];
 			}
@@ -236,7 +232,7 @@ class op5auth {
 			}
 		}
 
-		$this->log->log('debug', 'Trying to log in as: '.var_export($username, true).' with method '.var_export($auth_method, true) );
+		$this->log->log('debug', 'Trying to log in as: '.var_export($username, true).' with method '.var_export($auth_method, true));
 
 
 		/*
@@ -249,63 +245,63 @@ class op5auth {
 
 		if($this->config['apc_enabled'] && extension_loaded('apc')) {
 			/* Generate tag to store with hash */
-			$apc_tag = $this->apc_key( $username, $auth_method, $password );
-			$userdata  = apc_fetch( $apc_tag, $success );
+			$apc_tag = $this->apc_key($username, $auth_method, $password);
+			$userdata  = apc_fetch($apc_tag, $success);
 
 			/* Userdata can be false = no accesss, or false = not cached */
-			if( $success ) {
-				if( $userdata === false ) {
+			if($success) {
+				if($userdata === false) {
 					/* No access */
 					$this->user = false;
 
 					/* Store to session */
 					$this->session_store();
 
-					$this->log->log('debug', 'Using cached credentials: authentication failed' );
+					$this->log->log('debug', 'Using cached credentials: authentication failed');
 					return false;
 				}
 				else {
 					/* Don't postprocess user, already authorized */
-					$this->user = new op5User( $userdata );
+					$this->user = new op5User($userdata);
 					/* Store to session */
 					$this->session_store();
 
-					$this->log->log('debug', 'Using cached credentials: authentication success' );
+					$this->log->log('debug', 'Using cached credentials: authentication success');
 					return true;
 				}
 			}
 			else {
-				$this->log->log('debug', 'No cached credentials... logging in' );
+				$this->log->log('debug', 'No cached credentials... logging in');
 			}
 		}
 
-		$driver = $this->getAuthModule( $auth_method );
-		if( $driver === false ) {
+		$driver = $this->getAuthModule($auth_method);
+		if($driver === false) {
 			return false;
 		}
-		$user = $driver->login( $username, $password );
-		if( $user !== false ) {
+		$user = $driver->login($username, $password);
+		if($user !== false) {
 			/* Postprocess login */
 			$user->auth_method = $auth_method;
-			if($this->authorize_user( $user, $auth_method )) {
+			if($this->authorize_user($user, $auth_method)) {
 				$this->user = $user;
 
 				/* Store to session */
 				$this->session_store();
 
 				/* Store to APC */
-				if( $apc_tag !== false ) {
-					$this->log->log('debug', 'Storing credentials to cache' );
-					apc_store( $apc_tag, $user->fields, (int) $this->config['apc_ttl'] );
+				if($apc_tag !== false) {
+					$this->log->log('debug', 'Storing credentials to cache');
+					apc_store($apc_tag, $user->fields, (int) $this->config['apc_ttl']);
 				}
 				return true;
 			}
 		}
 
-		if( $apc_tag !== false ) {
+		if($apc_tag !== false) {
 			$seconds = (int) $this->config['apc_ttl'];
 			$this->log->log('notice', "User '$username' is not authenticated, storing in APC for $seconds seconds to avoid spamming login backend with bad auth");
-			apc_store( $apc_tag, false, $seconds );
+			apc_store($apc_tag, false, $seconds);
 		}
 		return false;
 	}
@@ -317,14 +313,14 @@ class op5auth {
 	 */
 	public function logout()
 	{
-		if( ($this->user instanceof op5User) &&
-			isset( $this->user->auth_driver ) &&
-			$this->getAuthModule( $this->user->auth_driver ) !== false )
+		if(($this->user instanceof op5User) &&
+			isset($this->user->auth_driver) &&
+			$this->getAuthModule($this->user->auth_driver) !== false)
 		{
 			/* Second call to getAuthModule is always cheap, due to laziness */
-			$driver = $this->getAuthModule( $this->user->auth_driver );
+			$driver = $this->getAuthModule($this->user->auth_driver);
 
-			$driver->logout( $user );
+			$driver->logout($user);
 		}
 		$this->user = false;
 		$this->session_clear();
@@ -337,7 +333,7 @@ class op5auth {
 	 * @param   $authorization_point string
 	 * @return  boolean  true if access
 	 */
-	public function authorized_for( $authorization_point )
+	public function authorized_for($authorization_point)
 	{
 		return $this->get_user()->authorized_for($authorization_point);
 	}
@@ -354,25 +350,25 @@ class op5auth {
 	 * @return array       An array of all auth_methods as keys, values is an associative array
 	 *                     of the groups in $grouplist as keys, boolean as values
 	 */
-	public function groups_available( array $grouplist )
+	public function groups_available(array $grouplist)
 	{
 		$result = array();
 
-		foreach( array_keys( $this->auth_modules ) as $auth_method ) {
+		foreach(array_keys($this->auth_modules) as $auth_method) {
 			/* All drivers needs to be fetched and checked... cant be optimized, unfourtunatly */
-			$driver = $this->getAuthModule( $auth_method );
+			$driver = $this->getAuthModule($auth_method);
 
 			try {
-				$result[$auth_method] = $driver->groups_available( $grouplist );
+				$result[$auth_method] = $driver->groups_available($grouplist);
 
 				foreach($grouplist as $group) {
 					$avalible = false;
-					if( $group == 'meta_all_users' ) {
+					if($group == 'meta_all_users') {
 						$avalible = true;
-					} else if( $group == 'meta_driver_'.$auth_method ) {
+					} else if($group == 'meta_driver_'.$auth_method) {
 						$avalible = true;
 					}
-					if( !isset($result[$auth_method][$group]) ) {
+					if(!isset($result[$auth_method][$group])) {
 						$result[$auth_method][$group] = $avalible;
 					} else {
 						$result[$auth_method][$group] |= $avalible;
@@ -380,7 +376,7 @@ class op5auth {
 				}
 
 			}
-			catch( Exception $e ) {
+			catch(Exception $e) {
 				/* If a module fails, make groups unknown... */
 				/* TODO: Throw error further? */
 				$result[$auth_method] = array();
@@ -396,17 +392,17 @@ class op5auth {
 	 * @param $username   string  User to search for
 	 * @return            array   An array with an element per driver containing the user (key=name) with a list of groups as values
 	 */
-	public function groups_for_user( $username )
+	public function groups_for_user($username)
 	{
 		$groups = array();
-		foreach( array_keys( $this->auth_modules ) as $auth_method ) {
+		foreach(array_keys($this->auth_modules) as $auth_method) {
 			/* All drivers needs to be fetched and checked... cant be optimized, unfourtunatly */
-			$driver = $this->getAuthModule( $auth_method );
+			$driver = $this->getAuthModule($auth_method);
 
-			$driver_groups = $driver->groups_for_user( $username );
-			if( $driver_groups !== false ) {
+			$driver_groups = $driver->groups_for_user($username);
+			if($driver_groups !== false) {
 				$groups[$auth_method] = $driver_groups;
-				if( count($driver_groups) ) {
+				if(count($driver_groups)) {
 					$groups[$auth_method][] = 'meta_all_users';
 					$groups[$auth_method][] = 'meta_driver_'.$auth_method;
 				}
@@ -423,10 +419,10 @@ class op5auth {
 	 */
 	public function get_authentication_methods()
 	{
-		if( count( $this->auth_modules ) <= 1 ) {
+		if(count($this->auth_modules) <= 1) {
 			return false;
 		}
-		return array_keys( $this->auth_modules );
+		return array_keys($this->auth_modules);
 	}
 	/**
 	 * Returns name of default authentication method.
@@ -451,15 +447,15 @@ class op5auth {
 	 * @param $password string  Password to test
 	 * @return          boolean true if password is ok
 	 */
-	public function verify_password( op5User $user, $password ) {
-		if( !isset( $user->auth_method ) ) {
-			throw new Exception( 'User is not a user object.' );
+	public function verify_password(op5User $user, $password) {
+		if(!isset($user->auth_method)) {
+			throw new Exception('User is not a user object.');
 		}
-		$driver = $this->getAuthModule( $user->auth_method );
-		if( $driver === false ) {
-			throw new Exception( 'User is authenticated with an unknown backend.' );
+		$driver = $this->getAuthModule($user->auth_method);
+		if($driver === false) {
+			throw new Exception('User is authenticated with an unknown backend.');
 		}
-		return $driver->login( $user->username, $password ) !== false;
+		return $driver->login($user->username, $password) !== false;
 	}
 
 	/**
@@ -469,24 +465,24 @@ class op5auth {
 	 * @param $password string  New password
 	 * @return          boolean true if password is ok
 	 */
-	public function update_password( op5User $user, $password ) {
-		if( !isset( $user->auth_method ) ) {
-			throw new Exception( 'User is not a user object.' );
+	public function update_password(op5User $user, $password) {
+		if(!isset($user->auth_method)) {
+			throw new Exception('User is not a user object.');
 		}
 
 		/* Clear cache, just to be sure... */
 		/* FIXME: $password is wrong... it should be old password...
-		if( isset( $this->config['apc_enabled'] ) && $this->config['apc_enabled'] ) {
-			$apc_tag = $this->apc_key( $user->username, $user->auth_method, $password );
-			apc_delete( $apc_tag );
+		if(isset($this->config['apc_enabled']) && $this->config['apc_enabled']) {
+			$apc_tag = $this->apc_key($user->username, $user->auth_method, $password);
+			apc_delete($apc_tag);
 		}
 		*/
 
-		$driver = $this->getAuthModule( $user->auth_method );
-		if( $driver === false ) {
-			throw new Exception( 'User is authenticated with an unknown backend.' );
+		$driver = $this->getAuthModule($user->auth_method);
+		if($driver === false) {
+			throw new Exception('User is authenticated with an unknown backend.');
 		}
-		return $driver->update_password( $user, $password );
+		return $driver->update_password($user, $password);
 	}
 
 	/**
@@ -497,9 +493,9 @@ class op5auth {
 	 * @param $password     string password
 	 * @return              string tag
 	 */
-	private function apc_key( $username, $auth_method, $password )
+	private function apc_key($username, $auth_method, $password)
 	{
-		return $this->config['apc_store_prefix'] . md5( $username . '$' . $auth_method . ':' . $password );
+		return $this->config['apc_store_prefix'] . md5($username . '$' . $auth_method . ':' . $password);
 	}
 
 	/**
@@ -508,24 +504,24 @@ class op5auth {
 	 * @param $auth_method string
 	 * @return auth_method
 	 */
-	private function getAuthModule( $auth_method )
+	private function getAuthModule($auth_method)
 	{
-		if( !isset( $this->auth_modules[$auth_method] ) ) {
+		if(!isset($this->auth_modules[$auth_method])) {
 			return false;
 		}
-		if( $this->auth_modules[$auth_method] instanceof op5AuthDriver ) {
+		if($this->auth_modules[$auth_method] instanceof op5AuthDriver) {
 			return $this->auth_modules[$auth_method];
 		}
-		//error_log( 'op5Auth: Loading: ' . $auth_method );
+		//error_log('op5Auth: Loading: ' . $auth_method);
 		$drv_name = $this->auth_modules[$auth_method]['driver'];
 		$file_name = 'AuthDriver_' . $drv_name;
 		$class_name = 'op5' . $file_name;
-		require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $file_name . '.php' ); /* In same directory as this file */
+		require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . $file_name . '.php'); /* In same directory as this file */
 
 		/* To make it possible to get it's name within the driver */
 		$this->auth_modules[$auth_method]['name'] = $auth_method;
 
-		$this->auth_modules[$auth_method] = new $class_name( $this->auth_modules[$auth_method] );
+		$this->auth_modules[$auth_method] = new $class_name($this->auth_modules[$auth_method]);
 		return $this->auth_modules[$auth_method];
 	}
 
@@ -535,14 +531,14 @@ class op5auth {
 	 * @param $user op5User User to update
 	 * @return boolean if authorization was done successfully
 	 */
-	protected function authorize_user( op5User $user )
+	protected function authorize_user(op5User $user)
 	{
 		/* Authorize user */
-		if( !isset( $user->groups ) ) {
+		if(!isset($user->groups)) {
 			$user->groups = array();
 		}
 		$authorization = op5Authorization::factory();
-		if( !$authorization->authorize( $user ) ) {
+		if(!$authorization->authorize($user)) {
 			return false;
 		}
 
@@ -556,11 +552,11 @@ class op5auth {
 	 **/
 	protected function session_store()
 	{
-		if( $this->config['session_key'] !== false &&
+		if($this->config['session_key'] !== false &&
 		    ($this->user instanceof op5User) &&
-		    is_array( $this->user->fields ) )
+		    is_array($this->user->fields))
 		{
-			$_SESSION[ $this->config['session_key'] ] = $this->user->fields;
+			$_SESSION[$this->config['session_key']] = $this->user->fields;
 		} else {
 			$this->session_clear();
 		}
@@ -573,11 +569,11 @@ class op5auth {
 	 **/
 	protected function session_fetch()
 	{
-		if( $this->config['session_key'] !== false &&
-			isset( $_SESSION[ $this->config['session_key'] ] ) &&
-			is_array( $_SESSION[ $this->config['session_key'] ] ) )
+		if($this->config['session_key'] !== false &&
+			isset($_SESSION[$this->config['session_key']]) &&
+			is_array($_SESSION[$this->config['session_key']]))
 		{
-			$this->user = new op5User( $_SESSION[ $this->config['session_key'] ] );
+			$this->user = new op5User($_SESSION[$this->config['session_key']]);
 		} else {
 			$this->user = false;
 		}
@@ -590,8 +586,8 @@ class op5auth {
 	 **/
 	protected function session_clear()
 	{
-		if( $this->config['session_key'] !== false && isset ($_SESSION[$this->config['session_key']]) ) {
-			unset( $_SESSION[ $this->config['session_key'] ] );
+		if($this->config['session_key'] !== false && isset ($_SESSION[$this->config['session_key']])) {
+			unset($_SESSION[$this->config['session_key']]);
 		}
 	}
 
@@ -606,7 +602,7 @@ class op5auth {
 	public function force_user(op5User $user, $do_authorization = true) {
 		$this->logout();
 		$this->user = $user;
-		if( $do_authorization )
+		if($do_authorization)
 			$this->authorize_user($user);
 		$this->session_store();
 		return $this->user;

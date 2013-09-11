@@ -21,9 +21,9 @@ class op5Log {
 	 *
 	 * @return  object
 	 */
-	public static function factory( $namespace )
+	public static function factory($namespace)
 	{
-		return new self( $namespace );
+		return new self($namespace);
 	}
 
 	/**
@@ -31,14 +31,14 @@ class op5Log {
 	 *
 	 * @return  object
 	 */
-	public static function instance( $namespace )
+	public static function instance($namespace)
 	{
 		// Load the Auth instance
-		if ( !isset( self::$instances[ $namespace ] ) ) {
-			self::$instances[ $namespace ] = self::factory( $namespace );
+		if (!isset(self::$instances[$namespace])) {
+			self::$instances[$namespace] = self::factory($namespace);
 		}
 
-		return self::$instances[ $namespace ];
+		return self::$instances[$namespace];
 	}
 
 	/*
@@ -68,11 +68,11 @@ class op5Log {
 	/**
 	 * Setup the logging class
 	 */
-	public function __construct( $namespace )
+	public function __construct($namespace)
 	{
 		$this->namespace = $namespace;
-		$logconfig = op5Config::instance()->getConfig( 'log' );
-		if( isset( $logconfig[$namespace] ) ) {
+		$logconfig = op5Config::instance()->getConfig('log');
+		if(isset($logconfig[$namespace])) {
 			$this->config = $logconfig[$namespace];
 		}
 		else {
@@ -84,21 +84,21 @@ class op5Log {
 			return;
 		}
 
-		if( !isset( $this->config['file'] ) ) {
-			throw new Exception( "Logging for namespace '$namespace' is missing file parameter" );
+		if(!isset($this->config['file'])) {
+			throw new Exception("Logging for namespace '$namespace' is missing file parameter");
 		}
 
 		$level = 'debug';
-		if( isset( $this->config['level'] ) ) {
+		if(isset($this->config['level'])) {
 			$level = $this->config['level'];
 		}
-		if( !isset( self::$levels[ $this->config['level'] ] ) ) {
-			throw new Exception( "Unknown logging level '".self::$levels[ $this->config['level'] ]."'for '$namespace',".
-					". Logging levels available: ".implode(', ', self::$levels) );
+		if(!isset(self::$levels[$this->config['level']])) {
+			throw new Exception("Unknown logging level '".self::$levels[$this->config['level']]."'for '$namespace',".
+					". Logging levels available: ".implode(', ', self::$levels));
 		}
-		$this->config['level'] = self::$levels[ $this->config['level'] ];
+		$this->config['level'] = self::$levels[$this->config['level']];
 
-		if( !isset( $this->config['prefix'] ) ) {
+		if(!isset($this->config['prefix'])) {
 			$this->config['prefix'] = $namespace;
 		}
 
@@ -107,7 +107,7 @@ class op5Log {
 		 * extra file access will be generated with the buffer cleared. And the
 		 * number of log namespaces is quite limited.
 		 */
-		register_shutdown_function( array( __CLASS__, 'writeback' ) );
+		register_shutdown_function(array(__CLASS__, 'writeback'));
 	}
 
 	/**
@@ -121,20 +121,20 @@ class op5Log {
 	 * @param $level string
 	 * @param $message string
 	 */
-	public function log( $level, $message )
+	public function log($level, $message)
 	{
-		if( $this->config === false ) {
+		if($this->config === false) {
 			/* Loggging disabled for this namespace */
 			return;
 		}
-		if( self::$levels[$level] > $this->config['level'] ) {
+		if(self::$levels[$level] > $this->config['level']) {
 			return; /* To low logging level in config... */
 		}
 
 		/*
 		 * If message is an exception, format it.
 		 */
-		if( $message instanceof Exception ) {
+		if($message instanceof Exception) {
 			$ex = $message;
 			$message = trim("exception: " . $ex->getMessage())."\n";
 			$message .= $ex->getTraceAsString();
@@ -148,7 +148,7 @@ class op5Log {
 		 * for non-informative messages
 		 */
 		$reference = '';
-		if( isset( $this->config['reference'] ) && $this->config['reference'] ) {
+		if(isset($this->config['reference']) && $this->config['reference']) {
 			$stack = debug_backtrace();
 			@$reference = ' ' . $stack[1]['class'] . ' @' . $stack[1]['line'];
 		}
@@ -157,15 +157,15 @@ class op5Log {
 		 * Generate filename and message. Put filename through strftime, so log
 		 * files can be rotated automatically
 		 */
-		$filename = strftime( $this->config['file'] );
-		$line_prefix = strftime( '%Y-%m-%d %H:%M:%S ' ) . sprintf('%-7s', $level) . ' ' . $this->config['prefix'] . $reference . ': ';
+		$filename = strftime($this->config['file']);
+		$line_prefix = strftime('%Y-%m-%d %H:%M:%S ') . sprintf('%-7s', $level) . ' ' . $this->config['prefix'] . $reference . ': ';
 		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 
 		/*
 		 * Store message to self::$message as temporary storage, to reduce disc
 		 * access to one access per file and script, instead of one per line.
 		 */
-		if( !isset( self::$messages[$filename] ) ) {
+		if(!isset(self::$messages[$filename])) {
 			self::$messages[$filename] = array();
 		}
 		self::$messages[$filename][] = $message;
@@ -182,18 +182,18 @@ class op5Log {
 	{
 		$processUser = posix_getpwuid(posix_geteuid());
 		$user = $processUser['name'];
-		foreach( self::$messages as $file => $messages ) {
-			$dir = dirname( $file );
+		foreach(self::$messages as $file => $messages) {
+			$dir = dirname($file);
 			if(!is_dir($dir)) {
-				@mkdir( $dir, 0775, true );
+				@mkdir($dir, 0775, true);
 			}
 			$res = @file_put_contents(
 				$file,
-				implode( "\n", $messages ) . "\n",
-				FILE_APPEND );
+				implode("\n", $messages) . "\n",
+				FILE_APPEND);
 
-			if( $res === false ) {
-				error_log( 'Could not write to log file: ' . $file );
+			if($res === false) {
+				error_log('Could not write to log file: ' . $file);
 			}
 			if ($user === 'root' && posix_getpwuid(fileowner($file)) === 'root') {
 				exec("id monitor -gn", $p_group, $status);

@@ -29,15 +29,15 @@ class op5LivestatusException extends Exception {
 	 * @param $query string
 	 * @return void
 	 **/
-	public function __construct( $plain_message, $query = false ) {
+	public function __construct($plain_message, $query = false) {
 		$this->query = $query;
 		$this->plain_message = $plain_message;
 
 		$message = $plain_message;
-		if( $query ) {
+		if($query) {
 			$message .= ' <pre>'.$query.'</pre>';
 		}
-		parent::__construct( $message );
+		parent::__construct($message);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class op5Livestatus {
 	 **/
 	static public function instance($config = null)
 	{
-		if( self::$instance !== null )
+		if(self::$instance !== null)
 			return self::$instance;
 		self::$instance = new self($config);
 		return self::$instance;
@@ -107,7 +107,7 @@ class op5Livestatus {
 	 **/
 	public function stats_single($table, $filter, $stats) {
 		$columns = array();
-		foreach( $stats as $name => $query ) {
+		foreach($stats as $name => $query) {
 			$columns[] = $name;
 			$filter .= $query;
 		}
@@ -125,21 +125,21 @@ class op5Livestatus {
 	 * @param $options array
 	 * @return array
 	 **/
-	public function query($table, $filter, $columns, $options = array() ) {
+	public function query($table, $filter, $columns, $options = array()) {
 		$query  = "GET $table\n";
 		$query .= "OutputFormat: wrapped_json\n";
 		$query .= "KeepAlive: on\n";
 		$query .= "ResponseHeader: fixed16\n";
 		if(isset($options['auth']) && $options['auth'] instanceof op5User) {
 			$query .= $this->auth($table, $options['auth']);
-		} else if( !isset($options['auth']) || $options['auth'] != false ) {
+		} else if(!isset($options['auth']) || $options['auth'] != false) {
 			$query .= $this->auth($table);
 		}
 
-		if(is_array( $columns )) {
+		if(is_array($columns)) {
 			$column_txt = "";
 			$fetch_columns = array();
-			foreach($columns as $column ) {
+			foreach($columns as $column) {
 				$parts = explode('.',$column);
 				$colname = implode('_',array_slice($parts, -2)); /* service.host.name is not possible... host.name in livestatus... */
 				$column_txt .= " ".$colname;
@@ -149,8 +149,8 @@ class op5Livestatus {
 			$query .= "Columns: $column_txt\n";
 		}
 
-		if( is_array($filter) ) {
-			$filter = implode("\n", array_map( 'trim', $filter ))."\n";
+		if(is_array($filter)) {
+			$filter = implode("\n", array_map('trim', $filter))."\n";
 		}
 
 		$query .= $filter;
@@ -172,7 +172,7 @@ class op5Livestatus {
 		$objects = $result['data'];
 		$count = $result['total_count'];
 
-		if( !is_array($columns) ) {
+		if(!is_array($columns)) {
 			$columns = $result['columns'][0]; /* FIXME */
 		}
 
@@ -223,16 +223,16 @@ class op5Livestatus {
 			'timeperiods' => true
 			);
 
-		if( !isset( $table_permissions[$table] ) ) {
+		if(!isset($table_permissions[$table])) {
 			return "";
 		}
-		foreach( $table_permissions[$table] as $perm ) {
-			if( $user->authorized_for($perm) ) {
+		foreach($table_permissions[$table] as $perm) {
+			if($user->authorized_for($perm)) {
 				return "";
 			}
 		}
-		if( isset($table_noauth[$table] ) ) {
-			if( is_string($table_noauth[$table]) ) {
+		if(isset($table_noauth[$table])) {
+			if(is_string($table_noauth[$table])) {
 				return "Filter: ".$table_noauth[$table]. " = ".$user->username."\n";
 			} else {
 				return "Or: 0\n";
@@ -247,36 +247,36 @@ class op5Livestatus {
 	 * @param $query string
 	 * @return string
 	 **/
-	private function formatQueryForDebug( $query ) {
-		$querylines = explode( "\n", $query );
+	private function formatQueryForDebug($query) {
+		$querylines = explode("\n", $query);
 		$result = array();
 		$stats = array();
 		$filter = array();
 
-		$result[] = array_shift( $querylines ); /* GET-line */
-		foreach( $querylines as $line ) {
-			if( empty( $line ) ) continue;
-			$fields = explode( ":", $line, 2 );
-			if( count($fields) != 2 ) {
+		$result[] = array_shift($querylines); /* GET-line */
+		foreach($querylines as $line) {
+			if(empty($line)) continue;
+			$fields = explode(":", $line, 2);
+			if(count($fields) != 2) {
 				$result[] = $line;
 				continue;
 			}
 			$header = trim($fields[0]);
 			$param  = trim($fields[1]);
-			switch( $header ) {
+			switch($header) {
 				case 'Filter':
 					$filter[] = $param;
 					break;
 				case 'And':
 					$merge = array();
-					for( $i=0; $i<intval($param); $i++ ) {
+					for($i=0; $i<intval($param); $i++) {
 						$merge[] = array_pop($filter);
 					}
 					$filter[] = '(' . implode(' and ', $merge) . ')';
 					break;
 				case 'Or':
 					$merge = array();
-					for( $i=0; $i<intval($param); $i++ ) {
+					for($i=0; $i<intval($param); $i++) {
 						$merge[] = array_pop($filter);
 					}
 					$filter[] = '(' . implode(' or ', $merge) . ')';
@@ -286,14 +286,14 @@ class op5Livestatus {
 					break;
 				case 'StatsAnd':
 					$merge = array();
-					for( $i=0; $i<intval($param); $i++ ) {
+					for($i=0; $i<intval($param); $i++) {
 						$merge[] = array_pop($stats);
 					}
 					$stats[] = '(' . implode(' and ', $merge) . ')';
 					break;
 				case 'StatsOr':
 					$merge = array();
-					for( $i=0; $i<intval($param); $i++ ) {
+					for($i=0; $i<intval($param); $i++) {
 						$merge[] = array_pop($stats);
 					}
 					$stats[] = '(' . implode(' or ', $merge) . ')';
@@ -302,9 +302,9 @@ class op5Livestatus {
 					$result[] = "$header: $param";
 			}
 		}
-		if( count($filter) )
+		if(count($filter))
 			$result[] = "Filter: ".implode(' and ', $filter);
-		foreach( $stats as $statline ) {
+		foreach($stats as $statline) {
 			$result[] = "Stats: $statline";
 		}
 		return implode("\n", $result);
@@ -346,7 +346,7 @@ class op5livestatus_connection {
 	 **/
 	public function connect() {
 		$parts = explode(':', $this->connectionString, 2);
-		if( count($parts) == 2 ) {
+		if(count($parts) == 2) {
 			$type = $parts[0];
 			$address = $parts[1];
 		} else {

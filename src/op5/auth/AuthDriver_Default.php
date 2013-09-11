@@ -1,8 +1,8 @@
 <?php
 
-require_once('op5/auth/AuthDriver.php' );
-require_once('op5/auth/User.php' );
-require_once('op5/config.php' );
+require_once('op5/auth/AuthDriver.php');
+require_once('op5/auth/User.php');
+require_once('op5/config.php');
 
 /**
  * User authentication and authorization library.
@@ -26,16 +26,16 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		if (empty($username) || empty($password))
 			return false;
 
-		$userdata = $this->authenticate_user( $username, $password );
-		if( $userdata === false ) {
+		$userdata = $this->authenticate_user($username, $password);
+		if($userdata === false) {
 			return false;
 		}
 
 		/* username shuold be part of the user object, but is only the key in auth_users.json */
 		$userdata['username'] = $username;
-		$userdata['auth_data'] = array( 'own_user_change_password'=>true );
+		$userdata['auth_data'] = array('own_user_change_password'=>true);
 
-		return new op5User( $userdata );
+		return new op5User($userdata);
 	}
 
 	/**
@@ -54,21 +54,21 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		$this->fetch_users();
 
 		$groups = array();
-		foreach( $this->users as $user=>$userdata ) {
-			if( isset( $userdata['groups'] ) ) {
-				foreach( $userdata['groups'] as $group ) {
+		foreach($this->users as $user=>$userdata) {
+			if(isset($userdata['groups'])) {
+				foreach($userdata['groups'] as $group) {
 					$groups[$group] = $group;
 				}
 			}
 		}
 
 		$result = array();
-		foreach( $grouplist as $group ) {
-			if( substr( $group, 0, 5 ) == 'user_' ) {
-				$result[$group] = isset( $this->users[substr( $group, 5 )] );
+		foreach($grouplist as $group) {
+			if(substr($group, 0, 5) == 'user_') {
+				$result[$group] = isset($this->users[substr($group, 5)]);
 			}
 			else {
-				$result[$group] = isset( $groups[$group] );
+				$result[$group] = isset($groups[$group]);
 			}
 
 		}
@@ -81,13 +81,13 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 * @param $username string User to search for
 	 * @return          array  A list of groups, or false if not possible
 	 */
-   public function groups_for_user( $username )
+   public function groups_for_user($username)
    {
 		$this->fetch_users();
-		if( !isset( $this->users[$username] ) ) {
+		if(!isset($this->users[$username])) {
 			return false;
 		}
-		if( !isset( $this->users[$username]['groups'] ) ) {
+		if(!isset($this->users[$username]['groups'])) {
 			return array();
 		}
 		return $this->users[$username]['groups'];
@@ -97,14 +97,14 @@ class op5AuthDriver_Default extends op5AuthDriver {
 
 	private function fetch_users()
 	{
-		if( $this->users === false ) {
+		if($this->users === false) {
 			$this->users = op5Config::instance()->getConfig('auth_users');
 		}
 	}
 
 	private function store_users()
 	{
-		if( is_array( $this->users ) ) {
+		if(is_array($this->users)) {
 			op5Config::instance()->setConfig('auth_users', $this->users);
 		}
 	}
@@ -120,10 +120,10 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 * @return false|array database result from the user table
 	 */
 
-	private function authenticate_user( $username, $password ) {
+	private function authenticate_user($username, $password) {
 		$this->fetch_users();
 
-		if( !isset( $this->users[$username] ) ) {
+		if(!isset($this->users[$username])) {
 			op5Log::instance('auth')->log('notice', "User '$username' not found");
 			return false;
 		}
@@ -143,11 +143,11 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 * @param $password string  Password to set
 	 * @return          boolean True if successful, False if error
 	 */
-	public function update_password( $user, $password )
+	public function update_password($user, $password)
 	{
 		$this->fetch_users();
-		if( isset( $this->users[$user->username] ) ) {
-			$this->users[$user->username]['password'     ] = crypt( $password );
+		if(isset($this->users[$user->username])) {
+			$this->users[$user->username]['password'     ] = crypt($password);
 			$this->users[$user->username]['password_algo'] = 'crypt';
 			$this->store_users();
 			return true;

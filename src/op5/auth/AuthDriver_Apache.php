@@ -40,10 +40,10 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	public function groups_available(array $grouplist)
 	{
 		$result = array();
-		foreach( $grouplist as $group ) {
-			if( $group == 'apache_auth_user' ) {
+		foreach($grouplist as $group) {
+			if($group == 'apache_auth_user') {
 				$result[$group] = true;
-			} else if( substr( $group, 0, 5 ) == 'user_' ) {
+			} else if(substr($group, 0, 5) == 'user_') {
 				/* Unknown if user exists */
 			} else {
 				$result[$group] = false;
@@ -62,7 +62,7 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 */
 	private function doAuth() {
 		/* We let apache handle the authentication, so only username is relevant */
-		if( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
+		if(!isset($_SERVER['PHP_AUTH_USER'])) {
 			return false;
 		}
 
@@ -73,12 +73,12 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 			'apache_auth_user'
 		);
 
-		$user = new op5User( array(
+		$user = new op5User(array(
 				'username' => $username,
 				'groups'   => $groups,
 				'realname' => $username, /* We have no clue about realname, so call him/her their username */
 				'email'    => ''
-		) );
+		));
 		return $user;
 	}
 
@@ -88,8 +88,8 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 * @param $username string User to search for
 	 * @return          array  A list of groups, or false if not possible
 	 */
-	public function groups_for_user( $username )
+	public function groups_for_user($username)
 	{
-		return array( 'apache_auth_user' );
+		return array('apache_auth_user');
 	}
 } // End Auth

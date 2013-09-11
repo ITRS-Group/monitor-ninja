@@ -44,7 +44,7 @@ class op5User {
 	 **/
 	public function __isset($key)
 	{
-		return isset( $this->fields[$key] );
+		return isset($this->fields[$key]);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class op5User {
 	 **/
 	public function __unset($key)
 	{
-		unset( $this->fields[$key] );
+		unset($this->fields[$key]);
 	}
 
 	/**
@@ -64,7 +64,7 @@ class op5User {
 	 * @param $fields array
 	 * @return void
 	 **/
-	public function __construct( $fields ) {
+	public function __construct($fields) {
 		$this->fields = $fields;
 	}
 
@@ -76,7 +76,7 @@ class op5User {
 	 */
 	public function authorized_for($auth_point)
 	{
-		return isset( $this->auth_data[ $auth_point ] ) ? $this->auth_data[ $auth_point ] : false;
+		return isset($this->auth_data[$auth_point]) ? $this->auth_data[$auth_point] : false;
 	}
 
 	/**
@@ -124,7 +124,7 @@ class op5User {
 	 * @param  $password string
 	 * @return boolean
 	 */
-	public function change_password( $password )
+	public function change_password($password)
 	{
 		return false;
 	}
@@ -156,7 +156,7 @@ class op5User {
 		);
 		$result = array();
 		foreach ($objects as $row) {
-		        $result[] = $row[0];
+				$result[] = $row[0];
 		}
 		return $result;
 	}

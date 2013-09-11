@@ -4,12 +4,7 @@
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author
- * @copyright
- * @license
  */
-
-
 abstract class op5AuthDriver {
 
 	/**
@@ -76,7 +71,7 @@ abstract class op5AuthDriver {
 	 * @param $password string  Password to set
 	 * @return          boolean True if successful, False if error
 	 */
-	public function update_password( $user, $password )
+	public function update_password($user, $password)
 	{
 		return false;
 	}
@@ -103,7 +98,7 @@ abstract class op5AuthDriver {
 	 * @param $username string	User to search for
 	 * @return array			A list of groups, or false if not possible
 	 */
-	public function groups_for_user( $username )
+	public function groups_for_user($username)
 	{
 		return false;
 	}
