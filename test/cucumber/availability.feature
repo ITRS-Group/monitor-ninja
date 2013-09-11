@@ -431,7 +431,9 @@ Feature: Availability reports
 		And "Use alias" should be checked
 		When I uncheck "Include soft states"
 		And I click "Show report"
-		And I click "Edit settings"
+		# Wait for the page to reload:
+		Then I shouldn't see "Show report"
+		When I click "Edit settings"
 		Then "Include soft states" should be unchecked
 		And "Use alias" should be checked
 		When I uncheck "Use alias"
