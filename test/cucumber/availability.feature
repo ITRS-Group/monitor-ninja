@@ -442,6 +442,8 @@ Feature: Availability reports
 		Then "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 		When I click "Show report"
+		# Wait for the page to reload:
+		Then I shouldn't see "Show report"
 		And I click "Save report"
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
