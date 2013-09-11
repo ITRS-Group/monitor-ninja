@@ -171,13 +171,13 @@ class Ninja_Controller extends Template_Controller {
 			if($status) {
 				// we've got access
 				if ($status->get_enable_notifications() !== 1) {
-					$notifications[] = array(_('Notifications are disabled'), false);
+					$notifications[] = array(html::anchor('extinfo/show_process_info', _('Notifications are disabled')), false);
 				}
 				if ($status->get_execute_service_checks() !== 1) {
-					$notifications[] = array(_('Service checks are disabled'), false);
+					$notifications[] = array(html::anchor('extinfo/show_process_info', _('Service checks are disabled')), false);
 				}
 				if ($status->get_execute_host_checks() !== 1) {
-					$notifications[] = array(_('Host checks are disabled'), false);
+					$notifications[] = array(html::anchor('extinfo/show_process_info', _('Host checks are disabled')), false);
 				}
 				unset($status);
 			}
