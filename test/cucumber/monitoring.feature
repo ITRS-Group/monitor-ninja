@@ -131,6 +131,7 @@ Feature: Monitoring
 		And I have submitted a passive host check result "linux-server1;0;Everything was OK"
 		When I click "linux-server1"
 		And I click "Re-schedule next host check"
+		And I enter the time in 5 minutes into "field_check_time"
 		And I note the value of "field_check_time"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
@@ -268,6 +269,7 @@ Feature: Monitoring
 		And I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
 		When I click "linux-server1"
 		And I click "Schedule a check of all services"
+		And I enter the time in 5 minutes into "field_check_time"
 		And I note the value of "field_check_time"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
@@ -513,6 +515,7 @@ Feature: Monitoring
 		And I am on the Service details page
 		When I click "System Load"
 		And I click "Re-schedule next service check"
+		And I enter the time in 5 minutes into "field_check_time"
 		And I note the value of "field_check_time"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"

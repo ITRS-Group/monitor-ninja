@@ -14,6 +14,10 @@ Given /^I have PNP data for "(.+)"/ do |object|
 	FileUtils.touch("/opt/monitor/op5/pnp/perfdata/" + host + "/" + service + ".xml")
 end
 
+When /^I enter the time in (\d) minutes into "(.+)"$/ do |minutes, selector|
+	require('date')
+	fill_in(selector, :with => (Time.now + minutes.to_i * 60).strftime('%F %T'))
+end
 Then /^I should see this status:$/ do |table|
   cols = table.transpose.raw
   cols.each do |row|
