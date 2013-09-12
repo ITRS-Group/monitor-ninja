@@ -155,11 +155,11 @@ class op5queryhandler {
 
 		do {
 			$match = false;
-			$key_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*)=/', $args, $matches);
+			$key_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*?)=/', $args, $matches);
 			if($key_raw) {
 				$key = stripcslashes($matches[1]);
 				$args = substr($args,strlen($matches[0]));
-				$value_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*)(?:;.*|)$/', $args, $matches);
+				$value_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*?)(?:;|\z)/', $args, $matches);
 				if($value_raw) {
 					$value = stripcslashes($matches[1]);
 					$args = substr($args,strlen($matches[1])+1);
