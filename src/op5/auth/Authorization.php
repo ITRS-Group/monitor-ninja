@@ -86,6 +86,7 @@ class op5Authorization {
 				'configuration_information' => '',
 				'system_commands' => ''),
 			'api' => array(
+				'api_command' => '',
 				'api_config' => '',
 				'api_report' => '',
 				'api_status' => ''),
@@ -208,6 +209,7 @@ class op5Authorization {
 			$translated_access_levels['test_this_host'] = true;
 			$translated_access_levels['test_this_command'] = true;
 			$translated_access_levels['api_config'] = true;
+			$translated_access_levels['api_command'] = true;
 		}
 
 		foreach ($access_rights as $value) {
