@@ -123,6 +123,9 @@ $(document).ready(function() {
 			$.jGrowl(_listview_refresh_unpaused_msg, { header: _success_header });
 		}
 	});
+	$("#listview_refresh_value").bind('change', function() {
+		$("#listview_refresh_slider").slider("value", this.value);
+	});
 	if ($('#listview_refresh_edit').text()!=='') {
 		create_slider('listview_refresh');
 		$('#listview_refresh_slider').on('slidechange', function() {
@@ -138,15 +141,6 @@ $(document).ready(function() {
 			lsfilter_storage.list.start_autorefresh_timer();
 		});
 	}
-	$('#listview_refresh_edit').bind('click', function() {
-		if (!edit_visible) {
-			$('#listview_refresh_slider').show();
-			edit_visible = 1;
-		} else {
-			$('#listview_refresh_slider').hide();
-			edit_visible = 0;
-		}
-	});
 	// -- end listview refresh helper code
 
 	// ==========================

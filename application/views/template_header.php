@@ -203,10 +203,9 @@
 			<label id="listview_refresh_lable" for="listview_refresh_control"> <?php echo _('Pause list view refresh') ?></label>
 		</li>
 		<li id="listview_refresh_edit">
-			<?php echo _('Edit listview refresh rate') ?><br />
-			<div id="listview_refresh_slider" style="width: 160px; margin-top: 8px;">
-				<input type="text" maxlength="3" size="3" id="listview_refresh_value" name="listview_refresh_value" data-key="config.listview_refresh_rate" style="position: absolute; font-size: 11px; margin-left: 130px; padding: 1px; margin-top:-25px;z-index: 500" />
-				<div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
+			<label for="listview_refresh_value"><?php echo _('Edit listview refresh rate') ?></label> <input type="text" maxlength="2" size="3" id="listview_refresh_value" name="listview_refresh_value" data-key="config.listview_refresh_rate" /><br />
+			<div id="listview_refresh_slider">
+				<div></div>
 			</div>
 		</li>
 		<?php
