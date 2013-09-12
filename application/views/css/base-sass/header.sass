@@ -1,9 +1,7 @@
 @import "compass/css3/images"
 
 .header
-	background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
-	@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
-	@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+	@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
 	box-shadow: 0 0 6px $weak_shadow_color
 	border-bottom: 1px solid $border-color-dark
 	height: $header_height
@@ -25,9 +23,7 @@
 		border-width: 0 1px 1px 0
 
 		box-shadow: 0 0 3px $weak_shadow_color
-		background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
-		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
-		@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+		@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
 		
 		.logo-image
 			margin: 7px 9px 7px 7px
@@ -54,9 +50,7 @@
 				border-radius: 5px 5px 0 0
 
 				&:hover
-					background-image: -ms-linear-gradient(top, #f8f8f8, #fff)
-					@include background(linear-gradient(top, #f8f8f8, #fff))
-					@include filter-gradient(#f8f8f8, #fff, vertical)
+					@include background-with-css2-fallback(linear-gradient(top, #f8f8f8, #fff), $gradient-dark-hi)
 		a
 
 			span

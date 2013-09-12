@@ -131,17 +131,13 @@ table
 		@extend .nullify
 
 	.dark
-		background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
-		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
-		@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+		@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
 		border: 1px solid $border-color-light
 		padding: 5px 3px 2px 3px
 
 	th
 		@extend .nullify
-		background-image: -ms-linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo)
-		@include background(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo))
-		@include filter-gradient($gradient-dark-hi, $gradient-dark-lo, vertical)
+		@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
 		border: 1px solid $border-color-light
 		padding: 5px 3px 2px 3px
 
