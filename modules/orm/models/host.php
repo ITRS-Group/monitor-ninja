@@ -103,6 +103,16 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
+	 * Get the long plugin output, which is second line and forward
+	 *
+	 * By some reason, nagios escapes this field.
+	 */
+	public function get_long_plugin_output() {
+		$long_plugin_output = parent::get_long_plugin_output();
+		return stripcslashes($long_plugin_output);
+	}
+
+	/**
 	 * Get duration
 	 */
 	public function get_duration() {

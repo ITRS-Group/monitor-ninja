@@ -111,6 +111,16 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
+	 * Get the long plugin output, which is second line and forward
+	 *
+	 * By some reason, nagios escapes this field.
+	 */
+	public function get_long_plugin_output() {
+		$long_plugin_output = parent::get_long_plugin_output();
+		return stripcslashes($long_plugin_output);
+	}
+
+	/**
 	 * Return the notes url with macros expanded
 	 */
 	public function get_notes_url() {

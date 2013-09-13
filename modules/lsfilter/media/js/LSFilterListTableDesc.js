@@ -4,7 +4,7 @@ var LSColumnsPP = function() {
 	this.parent();
 
 	this.preprocess_string = function(value) {
-		return value.substring(1, value.length - 1).replace(/\\(.)/g, '$1');
+		return value.substring(1, value.length - 1).replace(/\\n/g, "\n").replace(/\\(.)/g, '$1');
 	};
 
 	this.preprocess_float = function(value) {
@@ -209,9 +209,12 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			fetchvar.shift();
 		}
 
-		/* 
-		 * if var is an object, fetch next also
-		 * This will filter out columns that might be available, so we can request them. But it does also filter out some more, which is good, because some columns might be specified in the ORM layer instead. So just dig deeper if we know it's an object
+		/*
+		 * if var is an object, fetch next also This will filter out columns
+		 * that might be available, so we can request them. But it does also
+		 * filter out some more, which is good, because some columns might be
+		 * specified in the ORM layer instead. So just dig deeper if we know
+		 * it's an object
 		 */
 		var fetchlen = 0;
 		
@@ -363,6 +366,12 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				var cont = $('<div />').append(el);
 				return cont.html();
 			};
+		case "nl2br": // nl2br(string)
+			return function( args ) {
+				var fargs = expr_list2(args);
+				var text = fargs[0].replace(/\n/g, "<br />");
+				return text;
+			};
 		}
 		return function(args) {
 			return "Unknown function " + name0;
@@ -399,9 +408,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 	};
 
 	
-	/*****************************
+	/***************************************************************************
 	 * Error recovery routines
-	 *****************************/
+	 **************************************************************************/
 	
 	var errormessage = function(stack, tokens, lexer) {
 		var stacktoks = [];
@@ -420,8 +429,8 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 	}
 	
 	/*
-	 * Recover from column_list error: totally invalid column definition
-	 * Tries to dig out the previous column list from the stack.
+	 * Recover from column_list error: totally invalid column definition Tries
+	 * to dig out the previous column list from the stack.
 	 */
 	this.error_column_list_error = function(stack, tokens, lexer) {
 		var outp_list = [];
