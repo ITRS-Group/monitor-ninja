@@ -464,7 +464,7 @@ class Reports_Controller extends Base_reports_Controller
 				foreach ($data as $obj) {
 					if (!is_array($obj) || !isset($obj['log']))
 						continue;
-					if (($sub_type == 'host' && $obj['states']['PERCENT_TOTAL_TIME_UP'] == 100) || ($sub_type == 'service' && $obj['states']['PERCENT_TOTAL_TIME_OK'] == 100)) {
+					if ($this->options['collapse_green_trends'] && (($sub_type == 'host' && $obj['states']['PERCENT_TOTAL_TIME_UP'] == 100) || ($sub_type == 'service' && $obj['states']['PERCENT_TOTAL_TIME_OK'] == 100))) {
 						$skipped++;
 						continue;
 					}
@@ -743,8 +743,9 @@ class Reports_Controller extends Base_reports_Controller
 			'sla_graph' => _("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled."),
 			'sla_breakdown' => _("Breakdown of the SLA report in actual figures."),
 			'sla_group_members' => _("Members of the selected group that the report is generated for. All members are links to individual reports."),
-			'trends' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
-			'trends_scaling' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below"),
+			'trends' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below."),
+			'trends_scaling' => _("Scale up rapid state changes into a line above the main line."),
+			'collapse_green_trends' => _("Hide trends that are 100% Up/OK during the report period. This reduces visual noise to help you correlate events."),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 			'include_pie_charts' => _('If you include this, your availability percentages will be graphed in pie charts'),

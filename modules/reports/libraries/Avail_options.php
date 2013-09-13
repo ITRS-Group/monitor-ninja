@@ -14,14 +14,18 @@ class Avail_options extends Report_options {
 		$this->properties['include_trends'] = array(
 			'type' => 'bool',
 			'default' => false,
-			'description' => 'Include trends graph (if possible for this report type)'
+			'description' => 'Include trends graph'
 		);
 		$this->properties['include_trends_scaling'] = array(
 			'type' => 'bool',
 			'default' => false,
-			'description' => 'Include trends graph (if possible for this report type)'
+			'description' => 'Scale up active sections of the trends graph'
 		);
-
+		$this->properties['collapse_green_trends'] = array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Hide trend graphs that are 100% green'
+		);
 		if(ninja::has_module('synergy')) {
 			$this->properties['include_synergy_events'] = array(
 				'type' => 'bool',

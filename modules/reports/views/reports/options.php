@@ -246,10 +246,7 @@ if($options['report_id']) { ?>
 			<?php echo help::render('include_trends') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
 					<?php print $options['include_trends']?'checked="checked"':''; ?> />
-			<label for="include_trends"><?php echo _('Include trends graph') ?></label><br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo help::render('include_trends_scaling') ?> <input type="checkbox" class="checkbox" value="1" id="include_trends_scaling" name="include_trends_scaling"
-					<?php print $options['include_trends']?'':'disabled="disabled"'?> <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
-			<label for="include_trends_scaling"><?php echo _('Show trends re-scaling') ?></label>
+			<label for="include_trends"><?php echo _('Include trends graph') ?></label>
 		</td>
 		<td></td>
 		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
@@ -259,6 +256,16 @@ if($options['report_id']) { ?>
 			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include pie charts') ?></label>
 		</td>
 	</tr>
+	<tr<?php if ($type == 'sla' || !$options['include_pie_charts']) { ?> style="display:none"<?php } ?> class="trend_options">
+		<td>
+			<?php echo help::render('include_trends_scaling') ?> <input type="checkbox" class="checkbox" value="1" id="include_trends_scaling" name="include_trends_scaling" <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
+			<label for="include_trends_scaling"><?php echo _('Show trends re-scaling') ?></label>
+		</td>
+		<td></td>
+		<td>
+			<?php echo help::render('collapse_green_trends') ?> <input type="checkbox" class="checkbox" value="1" id="collapse_green_trends" name="collapse_green_trends" <?php print $options['collapse_green_trends']?'checked="checked"':''; ?> />
+			<label for="collapse_green_trends"><?php echo _('Hide trends that are solid green') ?></label>
+		</td>
 	<?php
 	if(ninja::has_module('synergy')) { ?>
 	<tr>

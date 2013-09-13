@@ -57,6 +57,13 @@ $(document).ready(function() {
 		}
 		input.val(filename);
 	});
+
+	$('#include_trends').live('click', function(ev) {
+		if (ev.target.checked)
+			$('.trend_options').show();
+		else
+			$('.trend_options').hide();
+	});
 });
 
 function populate_saved_sla_data(json_data) {
