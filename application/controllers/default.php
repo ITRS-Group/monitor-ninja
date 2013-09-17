@@ -94,6 +94,8 @@ class Default_Controller extends Ninja_Controller  {
 				return url::redirect($res);
 			}
 
+			Event::run('ninja.logged_in');
+
 			$requested_uri = Session::instance()->get('requested_uri', false);
 			# make sure we don't end up in infinite loop
 			# if user managed to request show_login
