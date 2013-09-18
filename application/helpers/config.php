@@ -24,12 +24,10 @@ class config_Core
 		
 		$setting = self::CONFIG_NOT_FOUND;
 
-		# then check for database value
-		if ($setting === self::CONFIG_NOT_FOUND) {
-			$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
-			if ($cfg!==false) {
-				$setting = $cfg->setting;
-			}
+		# check for database value
+		$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
+		if ($cfg!==false) {
+			$setting = $cfg->setting;
 		}
 
 		if ($setting === self::CONFIG_NOT_FOUND) {
