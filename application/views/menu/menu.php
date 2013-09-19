@@ -101,7 +101,7 @@ $menu_base = array(
 		$menu_items['support'] 					=> array('http://www.op5.com/support', 'support',2),
 		$menu_items['ninja_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/ninja', 'ninja',3),
 		$menu_items['merlin_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/merlin', 'merlin',3),
-		$menu_items['project_documentation'] 	=> array('https://kb.op5.com/display/GUI/GUI+%28Ninja%29+Home', 'eventlog',3),
+		$menu_items['project_documentation'] 	=> array('https://kb.op5.com/x/aYAK', 'eventlog',3),
 	),
 	$menu_items['section_monitoring'] => array(
 		$menu_items['tac'] 						=> array('/tac', 'tac',0),
