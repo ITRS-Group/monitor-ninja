@@ -30,7 +30,6 @@ Requires: monitor-livestatus
 Requires: monitor-nacoma
 Requires: monitor-backup
 Requires: op5-bootstrap
-Requires: op5-chosen
 BuildRequires: php-op5lib >= 1.1.0-beta14
 BuildRequires: rubygem(compass)
 BuildRequires: doxygen
