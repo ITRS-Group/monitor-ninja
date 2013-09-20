@@ -10,6 +10,12 @@
 		}
 	}
 
+	if (!isset($keycommands_disabled) && $keycommands_disabled === true) {
+		$keycommands_active = (int)(bool)config::get('keycommands.activated', '*');
+	} else {
+		$keycommands_active = 0;
+	}
+
 	if (isset($this) && isset($this->template->js_header))
 		$this->template->js_header->js = array_unique($this->xtra_js);
 

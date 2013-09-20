@@ -15,7 +15,7 @@ if (!empty($base_href)) {
 
 	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
 
-	<?php 
+	<?php
 		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 	?>
@@ -97,7 +97,7 @@ if (!empty($base_href)) {
 			var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target', '*'); ?>";
 			var _action_url_target = "<?php echo config::get('nagdefault.action_url_target', '*'); ?>";
 
-		<?php	if (config::get('keycommands.activated', '*', true)) {	?>
+		<?php	if ($keycommands_active === 1) {	?>
 
 				var _keycommands_active='<?php echo config::get('keycommands.activated', '*', true); ?>';
 				var _keycommand_search='<?php echo config::get('keycommands.search', '*', true); ?>';
