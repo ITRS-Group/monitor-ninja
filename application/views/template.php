@@ -10,7 +10,7 @@
 		}
 	}
 
-	if (!isset($keycommands_disabled) && $keycommands_disabled === true) {
+	if (!isset($keycommands_disabled) || $keycommands_disabled !== true) {
 		$keycommands_active = (int)(bool)config::get('keycommands.activated', '*');
 	} else {
 		$keycommands_active = 0;
