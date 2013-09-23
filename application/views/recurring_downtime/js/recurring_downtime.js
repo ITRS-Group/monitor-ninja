@@ -104,11 +104,15 @@ function check_setup()
 			comment 	-
 			time		- hh:mm
 			duration	- hh:mm
+			Days of week - any checked
+			months		- any checked
 	*/
 	var comment = $.trim($('textarea[name=comment]').val());
 	var time = $.trim($('input[name=time]').val());
 	var duration = $.trim($('input[name=duration]').val());
 	var fixed = $('#checkbox_fixed').attr('checked');
+	var days = $('.recurring_day');
+	var months = $('.recurring_month');
 
 	if (comment == '' || time == '' || (fixed && duration == '')) {
 		// required fields are empty
@@ -146,6 +150,18 @@ function check_setup()
 			// force triggered by value to 0 when using fixed
 			$('#triggered_by').val(0);
 		}
+	}
+	days = days.filter(function() {
+		return $(this).prop('checked');
+	});
+	if (days.length === 0) {
+		err_str += '<li>You must check at least one day of the week</li>';
+	}
+	months = months.filter(function() {
+		return $(this).prop('checked');
+	});
+	if (months.length === 0) {
+		err_str += '<li>You must check at least one month</li>';
 	}
 
 	if (err_str != '') {
