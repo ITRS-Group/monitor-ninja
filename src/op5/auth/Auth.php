@@ -226,14 +226,15 @@ class op5auth {
 			if(count($parts) == 2) {
 				$username = $parts[0];
 				$auth_method = $parts[1];
+				$this->log->log('debug', 'Trying to log in as: '.var_export($username, true).' with explicitly requested (using $) auth method '.var_export($auth_method, true));
 			}
 			else {
 				$auth_method = $this->config['default_auth'];
+				$this->log->log('debug', 'Trying to log in as: '.var_export($username, true).' with default auth method '.var_export($auth_method, true));
 			}
+		} else {
+			$this->log->log('debug', 'Trying to log in as: '.var_export($username, true).' with method '.var_export($auth_method, true));
 		}
-
-		$this->log->log('debug', 'Trying to log in as: '.var_export($username, true).' with method '.var_export($auth_method, true));
-
 
 		/*
 		 * APC can cache credentials, so no new login lookup is needed when
