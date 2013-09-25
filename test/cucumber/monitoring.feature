@@ -229,6 +229,22 @@ Feature: Monitoring
 		Then I should see "This host has been scheduled for fixed downtime"
 
 	@configuration @asmonitor @case-646
+	Scenario: Host details host commands - Schedule downtime in the past
+		Verify that the "Schedule downtime" host command
+		works correctly even for a historical period of time.
+
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Schedule downtime for this host"
+		And I enter "Ghost of Christmas past" into "cmd_param[comment]"
+		And I enter "2013-06-06 11:00:03" into "cmd_param[start_time]"
+		And I click "Submit"
+		# Here, a confirm-popup is accepted by Poltergeist automatically
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		Then I should see "Ghost of Christmas past"
+
+	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable notifications for services
 		Verify that the "Disable notifications for all services"
 		host command works correctly.
