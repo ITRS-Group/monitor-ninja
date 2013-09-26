@@ -168,7 +168,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				break;
 			case 'service':
 				$page_links = array(
-					_('Information for this host') => 'extinfo/details/host/'.urlencode($host),
+					_('Information for this host') => 'extinfo/details?host='.urlencode($host),
 					_('Status detail for this host') => listview::link('services',array('host.name'=>$host)),
 					_('Alert history') => 'alert_history/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
