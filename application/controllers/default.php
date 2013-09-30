@@ -94,24 +94,22 @@ class Default_Controller extends Ninja_Controller  {
 				return url::redirect($res);
 			}
 
-			Event::run('ninja.logged_in');
-
 			$requested_uri = Session::instance()->get('requested_uri', false);
-			# make sure we don't end up in infinite loop
-			# if user managed to request show_login
-			if ($requested_uri == Kohana::config('routes.log_in_form')) {
+			if ($requested_uri !== false && $requested_uri == Kohana::config('routes.log_in_form')) {
+				# make sure we don't end up in infinite loop
+				# if user managed to request show_login
 				$requested_uri = Kohana::config('routes.logged_in_default');
 			}
 			if ($requested_uri !== false) {
 				# remove 'requested_uri' from session
 				Session::instance()->delete('requested_uri');
 				return url::redirect($requested_uri);
-			} else {
-				# we have no requested uri
-				# using logged_in_default from routes config
-				#die('going to default');
-				return url::redirect(Kohana::config('routes.logged_in_default'));
 			}
+
+			# might redirect somewhere
+			Event::run('ninja.logged_in');
+
+			return url::redirect(Kohana::config('routes.logged_in_default'));
 		}
 
 		# trying to login without $_POST is not allowed and shouldn't
