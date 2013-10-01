@@ -293,7 +293,7 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		if (!$param)
-			$param = $_REQUEST['cmd_param'];
+			$param = isset($_REQUEST['cmd_param']) ? $_REQUEST['cmd_param'] : array();
 
 		$this->init_page('command/commit');
 		$this->template->content->cmd_typ = $cmd;

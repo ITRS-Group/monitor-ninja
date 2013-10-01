@@ -640,3 +640,14 @@ Feature: Monitoring
 		And I click "Refresh"
 		Then I shouldn't see "linux-server1"
 		And I shouldn't see "System Load"
+
+	@asmonitor @bug-7870
+	Scenario: I can use commands
+		When I hover over the "Monitoring" button
+		And I click "Process info"
+		And I click "Disable notifications"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted to Nagios"
+		When I click "Done"
+		Then I shouldn't see "Disable notifications"
+		And I should see "Enable notifications"
