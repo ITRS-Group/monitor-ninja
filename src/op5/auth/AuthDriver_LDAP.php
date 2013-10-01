@@ -63,6 +63,13 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		return $user;
 	}
 
+	public function disconnect() {
+		if($this->conn === false) {
+			return;
+		}
+		ldap_unbind($this->conn);
+		$this->conn = false;
+	}
 	/************************ Groups *****************************************/
 
 	/**

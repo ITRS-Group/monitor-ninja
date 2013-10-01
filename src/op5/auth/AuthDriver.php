@@ -1,5 +1,7 @@
 <?php
 
+require_once('op5/log.php');
+
 /**
  * User authentication and authorization library.
  *
