@@ -1,6 +1,6 @@
 <?php
 
-require_once('op5/log.php');
+require_once(__DIR__.'/../log.php');
 
 /**
  * User authentication and authorization library.
