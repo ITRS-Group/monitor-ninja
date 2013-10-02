@@ -265,9 +265,13 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$entry = ldap_first_entry($this->conn, $res);
 		while($entry !== false) {
 			$group = ldap_get_dn($this->conn, $entry);
-			$groups[] = $group;
-			$this->log->log('debug', "Got group: $group");
-			$entry = ldap_next_entry($this->conn, $entry);
+			if( $group ) {
+				$groups[] = $group;
+				$this->log->log('debug', "Got group: $group");
+				$entry = ldap_next_entry($this->conn, $entry);
+			} else {
+				$entry = false;
+			}
 		}
 		ldap_free_result($res);
 
@@ -544,7 +548,11 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 		$this->log->log('debug', "LDAP: Searching for $filter at $base_dn");
 
-		return ldap_search($this->conn, $base_dn, $filter);
+		$result = @ldap_search($this->conn, $base_dn, $filter);
+		if( $result === false ) {
+			$this->throw_error('Error during LDAP search using query "'.$filter.'" at "'.$base_dn.'"');
+		}
+		return $result;
 	}
 
 	/**
