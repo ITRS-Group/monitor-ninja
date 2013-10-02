@@ -2,6 +2,7 @@
 
 require_once(__DIR__.'/AuthDriver.php');
 require_once(__DIR__.'/User.php');
+require_once(__DIR__.'/AuthException.php');
 require_once(__DIR__.'/../config.php');
 
 /**
@@ -521,7 +522,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			$msg .= ' (' . ldap_errno($this->conn) . ': ' . ldap_error($this->conn) . ')';
 		}
 		$this->log->log('error', 'op5AuthDriver_LDAP / '.$this->config['name'].': ' . $msg);
-		throw new Exception('op5AuthDriver_LDAP / '.$this->config['name'].': ' . $msg);
+		throw new op5AuthException('op5AuthDriver_LDAP / '.$this->config['name'].': ' . $msg);
 	}
 
 	/**
