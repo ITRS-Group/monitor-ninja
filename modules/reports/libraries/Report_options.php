@@ -214,7 +214,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	public function offsetGet($str)
 	{
 		if (!isset($this->properties[$str]))
-			return false;
+			return NULL;
 
 		return arr::search($this->options, $str, $this->properties[$str]['default']);
 	}
@@ -489,9 +489,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		switch ($this->properties[$key]['type']) {
 		 case 'bool':
 			if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
-				$value = 1;
+				$value = true;
 			else
-				$value = 0;
+				$value = false;
 			break;
 		 case 'int':
 			if (!is_numeric($value) || $value != intval($value))
