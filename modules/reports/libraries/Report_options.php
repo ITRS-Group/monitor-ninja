@@ -799,7 +799,13 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			$options = new static($report_info);
 			if (!empty($saved_report_info)) {
 				foreach ($saved_report_info as $key => $sri) {
-					if (isset($report_info[$key]) || !isset($options->properties[$key]) || $options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))
+					if (!isset($options->properties[$key])) {
+						// in theory, you get to throw this crap out.
+						// in practice, op5reports' option library does funky things
+						// involving sublibraries, where almost nothing is ever set
+						// so we must allow it
+					}
+					else if (isset($report_info[$key]) || $options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))
 						continue;
 					$options[$key] = $sri;
 				}
