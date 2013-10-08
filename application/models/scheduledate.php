@@ -25,7 +25,7 @@ class ScheduleDate_Model extends Model
 		$tomorrow = array();
 		// Gather everything we need to know about tomorrow
 		$tomorrow['year'] = date('Y', $timestamp);
-		$tomorrow['month'] = date('n', $timestamp);
+		$tomorrow['month'] = date('m', $timestamp);
 		$tomorrow['day'] = date('d', $timestamp);
 		$tomorrow['weekday'] = date('w', $timestamp);
 
