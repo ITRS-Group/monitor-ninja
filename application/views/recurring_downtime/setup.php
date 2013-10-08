@@ -188,7 +188,7 @@ if (!empty($widgets)) {
 						</tr>
 						<tr>
 							<td colspan="2">
-								<?php echo _('Days of week') ?> <em>*</em> <button type="button" id="select-all-days" value="">Select all</button> <button type="button" id="deselect-all-days">Deselect all</button><br />
+								<?php echo _('Days of week') ?> <em>*</em><br />
 								<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
 										<?php foreach ($day_index as $i) {
@@ -206,7 +206,7 @@ if (!empty($widgets)) {
 						</tr>
 						<tr>
 							<td colspan="2">
-								<?php echo _('Months') ?> <em>*</em> <button type="button" id="select-all-months">Select all</button> <button type="button" id="deselect-all-months">Deselect all</button><br />
+								<?php echo _('Months') ?> <em>*</em><br />
 								<table style="margin-top: 5px; width: 480px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
 									<?php 	$i = 0;

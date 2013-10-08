@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
 	$("#setup_form").bind('submit', function() {
 		loopElements();
@@ -66,18 +67,6 @@ $(document).ready(function() {
 	});
 	$('#progress').css('position', 'absolute').css('top', '90px').css('left', '470px');
 
-	$('#select-all-days').on('click', function() {
-		$('.recurring_day').prop('checked', true);
-	});
-	$('#deselect-all-days').on('click', function() {
-		$('.recurring_day').prop('checked', false);
-	});
-	$('#select-all-months').on('click', function() {
-		$('.recurring_month').prop('checked', true);
-	});
-	$('#deselect-all-months').on('click', function() {
-		$('.recurring_month').prop('checked', false);
-	});
 });
 
 function set_downtime_ids(what)
@@ -97,7 +86,7 @@ function set_downtime_ids(what)
 
 	// start by emptying the dropdown
 	$("#triggered_by").removeOption(/./);
-	for (var i in arr) {
+	for (i in arr) {
 		$("#triggered_by").addOption(i, arr[i], false);
 	}
 }
@@ -112,11 +101,11 @@ function check_setup()
 
 	/*
 		Fields to check (required):
-			comment 		-
-			time			- hh:mm
-			duration		- hh:mm
-			Days of week	- any checked
-			months			- any checked
+			comment 	-
+			time		- hh:mm
+			duration	- hh:mm
+			Days of week - any checked
+			months		- any checked
 	*/
 	var comment = $.trim($('textarea[name=comment]').val());
 	var time = $.trim($('input[name=time]').val());
