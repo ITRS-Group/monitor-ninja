@@ -42,7 +42,7 @@ array(4) {
 		foreach ($links as $section => $entry) {
 
 			?>
-				<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button">
+				<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button" title="<?php echo $section; ?>">
 				<span class="icon-32 x32-<?php echo str_replace(' ','-',strtolower($section)); ?>"></span>
 			<?php
 
