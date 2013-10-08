@@ -969,8 +969,8 @@ listview_renderer_table.notifications = {
 	},
 	"host_name" : {
 		"header" : _('Host'),
-		"depends" : [ 'host.name' ],
-		"sort" : [ 'host.name', 'service.description' ],
+		"depends" : [ 'host_name' ],
+		"sort" : [ 'host_name', 'service_description' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
 			cell.append(extinfo_link({
@@ -982,8 +982,8 @@ listview_renderer_table.notifications = {
 	},
 	"service_description" : {
 		"header" : _('Service'),
-		"depends" : [ 'host.name', 'service.description' ],
-		"sort" : [ 'service.description' ],
+		"depends" : [ 'host_name', 'service_description' ],
+		"sort" : [ 'service_description' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
 			cell.append(extinfo_link({
