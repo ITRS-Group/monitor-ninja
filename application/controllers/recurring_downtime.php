@@ -63,12 +63,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $id);
 
-		$error = Session::instance()->get('recurring_downtime_error', false);
-		if ($error !== false) {
-			$this->template->content->error = $error;
-			Session::instance()->delete('recurring_downtime_error');
-		}
-
 		$schedule_info = false;
 		$data = false;
 		$current_dt_type = 'host'; # default
@@ -216,11 +210,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		foreach ($valid_fields as $field) {
 			$val = arr::search($_REQUEST, $field, null);
 			if (is_null($val) && $field != 'fixed') {
-				// Recurring month and day must not be null
-				if ($field === 'recurring_day' || $field === 'recurring_month') {
-					Session::instance()->set('recurring_downtime_error', 'Recurring day and month must be set');
-					return url::redirect(Router::$controller);
-				}
 				continue;
 			}
 			$data[$field] = arr::search($_REQUEST, $field);

@@ -15,13 +15,6 @@ if (!empty($widgets)) {
 			<li><a href="#schedules-tab" style="border: 0px"><?php echo _('Schedules') ?></a></li>
 		</ul>
 		<div id="create-tab">
-			<div id="recurring_downtime_error">
-				<?php
-					if (isset($error)) {
-						echo _('<strong>ERROR: </strong>' . $error);
-					}
-				?>
-			</div>
 			<?php
 				echo form::open('recurring_downtime/generate', array('id' => 'setup_form'));
 			?>
@@ -188,7 +181,7 @@ if (!empty($widgets)) {
 						</tr>
 						<tr>
 							<td colspan="2">
-								<?php echo _('Days of week') ?> <em>*</em><br />
+								<?php echo _('Days of week') ?><br />
 								<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
 										<?php foreach ($day_index as $i) {
@@ -197,7 +190,7 @@ if (!empty($widgets)) {
 											$checked = 'checked=checked';
 										} ?>
 
-										<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="recurring_day[]" class="recurring_day" value="<?php echo $i ?>" id="<?php echo $day_names[$i];?>"> <label for="<?php echo $day_names[$i];?>"><?php echo $day_names[$i] ?></label></td>
+										<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="recurring_day[]" value="<?php echo $i ?>" id="<?php echo $day_names[$i];?>"> <label for="<?php echo $day_names[$i];?>"><?php echo $day_names[$i] ?></label></td>
 										<?php	} ?>
 									</tr>
 								</table>
@@ -206,7 +199,7 @@ if (!empty($widgets)) {
 						</tr>
 						<tr>
 							<td colspan="2">
-								<?php echo _('Months') ?> <em>*</em><br />
+								<?php echo _('Months') ?><br />
 								<table style="margin-top: 5px; width: 480px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
 									<?php 	$i = 0;
@@ -216,7 +209,7 @@ if (!empty($widgets)) {
 									if (isset($schedule_info['recurring_month']) && in_array($i, $schedule_info['recurring_month'])) {
 										$checked = 'checked=checked';
 									} ?>
-								<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="recurring_month[]" class="recurring_month" value="<?php echo $i ?>" id="<?php echo $month; ?>"> <label for="<?php echo $month; ?>"><?php echo $month ?></label></td>
+								<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="recurring_month[]" value="<?php echo $i ?>" id="<?php echo $month; ?>"> <label for="<?php echo $month; ?>"><?php echo $month ?></label></td>
 								<?php	if ($i == 6) {
 											echo "</tr><tr>";
 										}
