@@ -13,7 +13,7 @@
 class Backup_Controller extends Authenticated_Controller {
 	public $debug = false;
 	public $model = false;
-	
+
 	private $files2backup;
 	private $asmonitor = '/usr/bin/asmonitor -q ';
 	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
@@ -103,7 +103,7 @@ class Backup_Controller extends Authenticated_Controller {
 	}
 
 	public function download($file) {
-		
+
 		$file_path = $this->backups_location . "/" . $file . ".tar.gz";
 		$fp = fopen($file_path, "r");
 		if ($fp === false) {
@@ -215,7 +215,7 @@ class Backup_Controller extends Authenticated_Controller {
 			$this->debug = implode("\n", $output);
 			return;
 		}
-		
+
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 
