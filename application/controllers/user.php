@@ -107,11 +107,11 @@ class User_Controller extends Authenticated_Controller {
 
 
 		$listview_settings = array();
-		foreach( Kohana::config('listview.columns') as $table => $value ) {
+		foreach(Kohana::config('listview.columns') as $table => $value) {
 			$listview_settings[_('Table '.ucwords($table))] = array('listview.columns.'.$table, 'textarea');
 		}
 		$settings['listview'] = $listview_settings;
-		
+
 		$settings['config'] = false;
 		$available_skins = ninja::get_skins();
 		$settings['config'] = array(
@@ -173,10 +173,10 @@ class User_Controller extends Authenticated_Controller {
 
 		# Add string to all column types for listview
 		$listview_settings = array();
-		foreach( Kohana::config('listview.columns') as $table => $value ) {
+		foreach(Kohana::config('listview.columns') as $table => $value) {
 			$type_info['listview.columns.'.$table] = 'string';
 		}
-		
+
 		# make sure we have field type info befor continuing
 		if (empty($type_info)) {
 			die(_('Unable to process user settings since field type info is missing'));
@@ -264,7 +264,7 @@ class User_Controller extends Authenticated_Controller {
 			with a + sign between like 'Alt+Shift-f' without any spaces. All keys are case insensitive.");
 
 		$parts = explode('.',$id);
-		if( $parts[0] == 'listview' ) {
+		if($parts[0] == 'listview') {
 			return ListView_Controller::_helptexts($id);
 		}
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
