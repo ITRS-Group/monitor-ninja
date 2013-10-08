@@ -625,7 +625,7 @@ Feature: Monitoring
 		Then I shouldn't see "linux-server1"
 		And I shouldn't see "System Load"
 
-	@asmonitor @bug-7870
+	@configuration @asmonitor @bug-7870
 	Scenario: I can use commands
 		When I hover over the "Monitoring" button
 		And I click "Process info"
