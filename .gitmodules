@@ -3,4 +3,4 @@
 	url = git://git.op5.org/php-tools.git
 [submodule "test/cucumber/helpers"]
 	path = test/cucumber/helpers
-	url = git://devel.int.op5.se:19418/lib/cucumber.git
+	url = http://devel.dev.op5.com:8080/lib/cucumber
