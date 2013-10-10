@@ -786,6 +786,29 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	}
 
 	/**
+	 * So, my issue is, basically, that op5reports needs to override how what
+	 * is loaded from DB, and our saved_reports_model is useless and fragile
+	 * and scary and I'll kill it, as part of fixing #7491 at the very latest.
+	 * Until then, I need to expose this algorithm so op5report can access it
+	 * without having to copy-paste it or access the functionality the normal
+	 * way.
+	 */
+
+	static protected function merge_with_loaded($options, $report_info, $saved_report_info)
+	{
+		if (empty($saved_report_info))
+			return false;
+		foreach ($saved_report_info as $key => $sri) {
+			if (isset($report_info[$key]) || !isset($options->properties[$key]) || $options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))
+				continue;
+			$options[$key] = $sri;
+		}
+		if ($options['report_type'] && isset($saved_report_info['objects']) && !$options[$options->get_value('report_type')])
+			$options[$options->get_value('report_type')] = $saved_report_info['objects'];
+		return true;
+	}
+
+	/**
 	 * Combines the provided properties with any saved information.
 	 *
 	 * You probably want setup_options_obj instead.
@@ -795,25 +818,10 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 
 		if (isset($report_info['report_id']) && !empty($report_info['report_id'])) {
 			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
-
-			$options = new static($report_info);
-			if (!empty($saved_report_info)) {
-				foreach ($saved_report_info as $key => $sri) {
-					if (!isset($options->properties[$key])) {
-						// in theory, you get to throw this crap out.
-						// in practice, op5reports' option library does funky things
-						// involving sublibraries, where almost nothing is ever set
-						// so we must allow it
-					}
-					else if (isset($report_info[$key]) || $options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))
-						continue;
-					$options[$key] = $sri;
-				}
-				if ($options['report_type'] && isset($saved_report_info['objects']) && !$options[$options->get_value('report_type')])
-					$options[$options->get_value('report_type')] = $saved_report_info['objects'];
-			} else {
+			if (!empty($saved_report_info))
+				static::merge_with_loaded($options, $report_info, $saved_report_info);
+			else
 				unset($options['report_id']);
-			}
 		}
 		if (isset($options->properties['report_period']) && !isset($options->options['report_period']) && isset($options->properties['report_period']['default']))
 			$options->calculate_time($options['report_period']);
