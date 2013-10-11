@@ -195,7 +195,7 @@ class op5config {
 		}
 
 		$yaml = Spyc::YAMLDump( $array );
-		return (bool) file_put_contents( $path, $yaml );
+		return file_put_contents($path, $yaml) !== false;
 	}
 
 	/**
