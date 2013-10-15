@@ -18,6 +18,8 @@ generate-css:
 	for skin in application/views/css/*; do \
 		compass compile --trace --boring $$skin; \
 	done
+	# Generate css for listviews
+	compass compile --trace --boring modules/lsfilter/views/css/
 
 regenerate-php:
 	$(MAKE) -C src/generators regenerate
