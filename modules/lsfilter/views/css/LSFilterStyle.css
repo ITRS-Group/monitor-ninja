@@ -153,6 +153,7 @@ th .listview_multiselect_checkbox_all {
 	position: fixed;
 	height: 24px;
 	width: 100%;
+	background: #e3e4e2;
 	background: -ms-linear-gradient(top, #fafbf9, #e3e4e2);
 	background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fafbf9),
 		color-stop(100%, #e3e4e2) );
@@ -230,11 +231,11 @@ td.cell_svccnt a {
 }
 
 tr.even td.cell_svccnt_all {
-	
+
 }
 
 tr.odd td.cell_svccnt_all {
-	
+
 }
 
 tr.even td.cell_svccnt_ok {
