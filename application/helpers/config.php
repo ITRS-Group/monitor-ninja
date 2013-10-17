@@ -74,7 +74,7 @@ class config_Core
 	public static function get_version_info()
 	{
 		$file = Kohana::config('config.version_info');
-		if (file_exists($file)) {
+		if (@is_readable($file)) {
 			$handle = fopen($file, 'r');
 			$contents = fread($handle, filesize($file));
 			fclose($handle);
