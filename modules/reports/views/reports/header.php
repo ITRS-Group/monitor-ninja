@@ -105,7 +105,7 @@
 
 ?>
 		<div class="description">
-			<p><?php echo nl2br(isset($description) ? $description : $options['description']) ?></p>
+			<p><?php echo nl2br(html::specialchars(isset($description) ? $description : $options['description'])) ?></p>
 		</div>
 	</div>
 </div>
