@@ -201,44 +201,56 @@ class op5Livestatus {
 		if(!$user) {
 			$user = op5auth::instance()->get_user();
 		}
-		/* If table is defined, attach AuthUser, unless any of the permissions in the array is avalible for the user */
+		/* List all tables available, and how to handle the permissions for the
+		 * table.
+		 * 
+		 * Each definition contains two parts: how to handle the permission if
+		 * limited access, and who have full access to the table.
+		 * 
+		 * For the limited access:
+		 * if false - send AuthUser header
+		 * if true - don't allow any access, which means, send filter Or: 0
+		 * if string - represents a column name, and if that matches exactly the
+		 *             username, add Filter: column = username
+		 * 
+		 * The second parameter is a list of permissions flags, if a user has
+		 * any of those, give full access to the user, and don't send ANY auth
+		 * header.
+		 */
 		$table_permissions = array(
-			'commands'      => array('command_view_all'),
-			'comments'      => array('host_view_all','service_view_all'),
-			'contacts'      => array('contact_view_all'),
-			'downtime'      => array('host_view_all','service_view_all'),
-			'hosts'         => array('host_view_all'),
-			'hostgroups'    => array('hostgroup_view_all'),
-			'services'      => array('service_view_all'),
-			'servicegroups' => array('servicegroup_view_all'),
-			'status'        => array('system_information'),
-			'timeperiods'   => array('timeperiod_view_all')
+			'commands'      => array( true,   array('command_view_all') ),
+			'comments'      => array( false,  array('host_view_all','service_view_all') ),
+			'contactgroups' => array( false,  array('contactgroup_view_all') ),
+			'contacts'      => array( 'name', array('contact_view_all') ),
+			'downtimes'     => array( false,  array('host_view_all','service_view_all') ),
+			'hosts'         => array( false,  array('host_view_all') ),
+			'hostgroups'    => array( false,  array('hostgroup_view_all') ),
+			'services'      => array( false,  array('service_view_all') ),
+			'servicegroups' => array( false,  array('servicegroup_view_all') ),
+			'status'        => array( true,   array('system_information') ),
+			'timeperiods'   => array( true,   array('timeperiod_view_all') )
 			);
 
-		/* Tables not handling AuthUser in livestatus... if limited, filter by "Filter: col = username" or "Or: 0" */
-		$table_noauth = array(
-			'contacts' => 'name',
-			'commands' => true,
-			'status' => true,
-			'timeperiods' => true
-			);
-
+		/* If not defined, we don't know the table, and thus can not authenticate */
 		if(!isset($table_permissions[$table])) {
-			return "";
+			throw new op5LivestatusException('Unknown table '.$table);
 		}
-		foreach($table_permissions[$table] as $perm) {
+		
+		list( $if_limited, $for_full_perm ) = $table_permissions[$table];
+		
+		foreach($for_full_perm as $perm) {
 			if($user->authorized_for($perm)) {
 				return "";
 			}
 		}
-		if(isset($table_noauth[$table])) {
-			if(is_string($table_noauth[$table])) {
-				return "Filter: ".$table_noauth[$table]. " = ".$user->username."\n";
-			} else {
-				return "Or: 0\n";
-			}
+		if(is_string($if_limited)) {
+			return "Filter: ".$if_limited. " = ".$user->username."\n";
+		} else if($if_limited === true) {
+			return "Or: 0\n";
+		} else if($if_limited === false) {
+			return "AuthUser: ".$user->username."\n";
 		}
-		return "AuthUser: ".$user->username."\n";
+		throw new op5LivestatusException('Internal error in livestatus auth');
 	}
 
 	/**
