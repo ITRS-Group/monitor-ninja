@@ -111,6 +111,10 @@ class Backup_Controller extends Authenticated_Controller {
 			$this->template->message = "Couldn't create filehandle.";
 			return;
 		}
+		/* Prevent buffering and rendering */
+		Kohana::close_buffers(FALSE);
+		$this->auto_render = false;
+		
 		$hs = headers_sent();
 		header('Content-Description: File Transfer');
 		header("Content-Type: application/octet-stream");
@@ -122,7 +126,6 @@ class Backup_Controller extends Authenticated_Controller {
 		header('Content-Length: ' . filesize($file_path));
 		fpassthru($fp);
 		fclose($fp);
-		$this->index();
 	}
 
 	public function view($file)
