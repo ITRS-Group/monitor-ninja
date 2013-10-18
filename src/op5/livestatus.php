@@ -206,7 +206,7 @@ class op5Livestatus {
 			'commands'      => array('command_view_all'),
 			'comments'      => array('host_view_all','service_view_all'),
 			'contacts'      => array('contact_view_all'),
-			'downtime'      => array('host_view_all','service_view_all'),
+			'downtimes'     => array('host_view_all','service_view_all'),
 			'hosts'         => array('host_view_all'),
 			'hostgroups'    => array('hostgroup_view_all'),
 			'services'      => array('service_view_all'),
