@@ -1,7 +1,7 @@
 <?php
 
-require_once('op5/auth/AuthDriver.php');
-require_once('op5/auth/User.php');
+require_once(__DIR__.'/AuthDriver.php');
+require_once(__DIR__.'/User.php');
 
 /**
  * User authentication and authorization library.

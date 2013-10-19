@@ -1,6 +1,6 @@
 <?php
 
-require_once( 'spyc.php' );
+require_once( __DIR__.'/spyc.php' );
 
 class op5config {
 	private $basepath     = '/etc/op5/';

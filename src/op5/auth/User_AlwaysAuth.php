@@ -1,6 +1,6 @@
 <?php
 
-require_once('op5/auth/User.php');
+require_once(__DIR__.'/User.php');
 
 class op5User_AlwaysAuth extends op5User {
 	private $authorized_for = array();

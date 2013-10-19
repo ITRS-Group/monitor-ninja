@@ -1,6 +1,6 @@
 <?php
 
-require_once('op5/auth/User.php');
+require_once(__DIR__.'/User.php');
 
 class op5User_NoAuth extends op5User {
 	public function __construct() {

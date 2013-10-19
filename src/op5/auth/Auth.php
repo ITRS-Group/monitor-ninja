@@ -1,11 +1,11 @@
 <?php
 
-require_once('op5/config.php');
-require_once('op5/auth/User_NoAuth.php');
-require_once('op5/auth/User.php');
-require_once('op5/auth/Authorization.php');
-require_once('op5/log.php');
-require_once('op5/livestatus.php');
+require_once(__DIR__.'/../config.php');
+require_once(__DIR__.'/User_NoAuth.php');
+require_once(__DIR__.'/User.php');
+require_once(__DIR__.'/Authorization.php');
+require_once(__DIR__.'/../log.php');
+require_once(__DIR__.'/../livestatus.php');
 
 /**
  * User authentication and authorization library.

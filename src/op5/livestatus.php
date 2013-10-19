@@ -1,7 +1,7 @@
 <?php
 
-require_once("op5/auth/Auth.php");
-require_once('op5/config.php');
+require_once(__DIR__.'/auth/Auth.php');
+require_once(__DIR__.'/config.php');
 
 /**
  * Custom exceptions for livestatus
@@ -88,9 +88,19 @@ class op5Livestatus {
 	 *
 	 * @return void
 	 **/
-	public function __construct() {
-		$this->config     = op5config::instance()->getConfig('livestatus');
-		$this->connection = new op5livestatus_connection(array('path' => $this->config['path']));
+	public function __construct($config = null) {
+		if(!$config) {
+			$this->config = op5config::instance()->getConfig('livestatus');
+		} else {
+			$this->config = $config;
+		}
+		$connection_class = "op5livestatus_connection";
+		
+		if( isset($this->config['connection_class']) ) {
+			$connection_class = $this->config['connection_class'];
+		}
+		
+		$this->connection = new $connection_class($this->config);
 	}
 
 
@@ -146,14 +156,17 @@ class op5Livestatus {
 				$fetch_columns[] = $colname;
 			}
 			$columns = $fetch_columns;
-			$query .= "Columns: $column_txt\n";
+			$query .= "Columns:$column_txt\n";
 		}
 
 		if(is_array($filter)) {
-			$filter = implode("\n", array_map('trim', $filter))."\n";
+			$filter = implode("\n", array_map('trim', $filter));
 		}
-
-		$query .= $filter;
+		$filter = trim($filter);
+		if($filter) {
+			$query .= $filter."\n";
+		}
+		
 		$query .= "\n";
 
 		$start   = microtime(true);
