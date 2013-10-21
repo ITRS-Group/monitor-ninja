@@ -1,5 +1,5 @@
 <?php
-require_once('op5/config.php');
+require_once(__DIR__.'/config.php');
 
 class op5Log {
 	/**
