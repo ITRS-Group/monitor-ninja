@@ -61,15 +61,6 @@ test-coverage:
 	@make test-ci-prepare &> /dev/null
 	@php test/all_coverage.php $$(pwd)
 
-prepare-config-templates:
-	mkdir -m 0777 -p test/configs/templates/var/spool/checkresults
-	chmod 777 test/configs/templates/var/
-
-test-cucumber: prepare-config-templates
-	rm -rf /tmp/ninja-test/
-	cucumber
-	cucumber -p wip
-
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
 
