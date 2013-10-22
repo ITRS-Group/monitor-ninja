@@ -77,6 +77,7 @@
 				$('#dojo-add-quicklink-href').attr('value','');
 				$('#dojo-add-quicklink-title').attr('value','');
 				$('#dojo-add-quicklink-icon').attr('value','');
+				fix_empty_quicklink_border();
 			}
 		});
 	}
@@ -175,6 +176,9 @@
 				'page': 'tac'
 			},
 			type: 'POST',
+			complete: function() {
+				fix_empty_quicklink_border();
+			},
 			success: function (obj) {
 
 				var links = [];
