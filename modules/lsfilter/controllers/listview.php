@@ -56,7 +56,6 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css = array();
-		$this->xtra_css[] = $basepath.'views/css/LSFilterStyle.css';
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->title = _('List view');
