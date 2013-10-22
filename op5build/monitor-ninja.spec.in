@@ -210,10 +210,12 @@ done
 %exclude %prefix/test
 %exclude %prefix/modules/test
 %exclude %prefix/Makefile
+%exclude %prefix/features
 
 %files test
 %defattr(-,monitor,%daemon_group)
 %prefix/src
+%prefix/features
 %prefix/test
 %prefix/modules/test
 %prefix/Makefile
