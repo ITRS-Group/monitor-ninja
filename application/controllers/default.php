@@ -94,6 +94,9 @@ class Default_Controller extends Ninja_Controller  {
 				return url::redirect($res);
 			}
 
+			# might redirect somewhere
+			Event::run('ninja.logged_in');
+
 			$requested_uri = Session::instance()->get('requested_uri', false);
 			if ($requested_uri !== false && $requested_uri == Kohana::config('routes.log_in_form')) {
 				# make sure we don't end up in infinite loop
@@ -105,9 +108,6 @@ class Default_Controller extends Ninja_Controller  {
 				Session::instance()->delete('requested_uri');
 				return url::redirect($requested_uri);
 			}
-
-			# might redirect somewhere
-			Event::run('ninja.logged_in');
 
 			return url::redirect(Kohana::config('routes.logged_in_default'));
 		}
