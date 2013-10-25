@@ -73,13 +73,16 @@ class config_Core
 	 */
 	public static function get_version_info()
 	{
-		$file = Kohana::config('config.version_info');
-		if (@is_readable($file)) {
-			$handle = fopen($file, 'r');
-			$contents = fread($handle, filesize($file));
-			fclose($handle);
-			return trim(str_replace('VERSION=','',$contents));
+		static $version = NULL;
+		if ($version === NULL) {
+			$file = Kohana::config('config.version_info');
+			if (@is_readable($file)) {
+				$handle = fopen($file, 'r');
+				$contents = fread($handle, filesize($file));
+				fclose($handle);
+				$version = trim(str_replace('VERSION=','',$contents));
+			}
 		}
-		return null;
+		return $version;
 	}
 }
