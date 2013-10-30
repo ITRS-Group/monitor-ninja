@@ -105,7 +105,7 @@ class ORMObjectGenerator extends class_generator {
 		$this->init_function('get_'.$table.'_set');
 		$this->write('$set = '.$class.'Pool'.self::$model_suffix.'::all();');
 		foreach( $this->key as $key_field ) {
-			$this->write('$set = $set.reduce_by(%s,$this->get_'.$key_field.'());', $field.'.'.$key_field);
+			$this->write('$set = $set->reduce_by(%s,$this->get_'.$key_field.'(),"=");', $field.'.'.$key_field);
 		}
 		$this->write('return $set;');
 		$this->finish_function();
