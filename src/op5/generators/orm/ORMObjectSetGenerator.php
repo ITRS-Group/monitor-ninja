@@ -4,7 +4,8 @@ class ORMObjectSetGenerator extends class_generator {
 	private $name;
 	private $structure;
 	private $objectclass;
-	private $associations;
+	private $associations; /** an association is a way to get a one-to-many */
+	private $relations; /** a relation is a way to declare a many-to-one for sql */
 
 	public function __construct( $name, $structure ) {
 		$this->name = $name;
@@ -28,6 +29,19 @@ class ORMObjectSetGenerator extends class_generator {
 			}
 		}
 
+		if (isset($this->structure['relations'])) {
+			foreach ($this->structure['relations'] as $relation) {
+				list($foreign_key, $table, $key) = $relation;
+				$this->relations[$this->structure['structure'][$key][1]] = array(
+					'tbl' => $structure[$table]['table'],
+					'tblkey' => $structure[$table]['key'],
+				);
+			}
+		}
+		else {
+			$this->relations = array();
+		}
+
 		$this->set_model();
 	}
 
@@ -39,15 +53,36 @@ class ORMObjectSetGenerator extends class_generator {
 		}
 		$this->variable('table',$this->name,'protected');
 
-		$dbtable = $this->name;
-		if( isset($this->structure['table']) )
+		$dbtable_expr = $dbtable = $this->name;
+
+		if (isset($this->structure['table'])) {
 			$dbtable = $this->structure['table'];
+			$dbtable_expr = $this->structure['table'] . ' AS ' . $this->name;
+		}
+		if (isset($this->structure['relations'])) {
+			$joinexpr = array();
+			foreach ($this->structure['relations'] as $relation) {
+				list($foreign_key, $table, $key) = $relation;
+				$relations = $this->relations[$this->structure['structure'][$key][1]];
+				$ons = array();
+				for ($i = 0; $i < count($foreign_key); $i++) {
+					$ons[] = "{$this->structure['structure'][$key][1]}.{$relations['tblkey'][$i]} = {$this->name}.{$foreign_key[$i]}";
+				}
+				$joinexpr[] = "LEFT JOIN {$relations["tbl"]} AS {$this->structure['structure'][$key][1]} ON " . implode(" AND ", $ons);
+			}
+			$dbtable_expr .= ' '.implode("", $joinexpr);
+		}
 		$this->variable('dbtable',$dbtable,'protected');
+		$this->variable('dbtable_expr',$dbtable_expr,'protected');
 
 		if( isset($this->structure['default_sort']) )
 			$this->variable('default_sort',$this->structure['default_sort'],'protected');
 
 		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
+
+		$this->generate_format_column_filter();
+		$this->generate_format_column_selector();
+		$this->generate_format_column_list();
 
 		$this->generate_validate_columns();
 
@@ -85,6 +120,53 @@ class ORMObjectSetGenerator extends class_generator {
 		}
 		$this->write('return $columns;');
 		$this->finish_function();
+	}
+
+	public function generate_format_column_filter() {
+		if (isset($this->structure['relations'])) {
+			$this->init_function('format_column_filter', array('column'));
+			foreach ($this->structure['relations'] as $relation) {
+				list($foreign_key, $table, $key) = $relation;
+				$prefix = $this->structure['structure'][$key][1];
+				$this->write('if (!strncmp("'.$prefix.'", $column, '.strlen($prefix).')) {');
+				$this->write(    'return "'.$prefix.'.".substr($column, '.(strlen($prefix)+1).');');
+				$this->write('}');
+			}
+			$this->write('return "'.$this->name.'.".$column;');
+			$this->finish_function();
+		}
+	}
+
+	/**
+	 * Generate a function that returns a corrected column name
+	 * for use in a SELECT clause for making proper aliases available
+	 * to the ORM backend.
+	 */
+	public function generate_format_column_selector() {
+		if (isset($this->structure['relations'])) {
+			$this->init_function('format_column_selector', array('column'), array('private'));
+			foreach ($this->structure['relations'] as $relation) {
+				list($foreign_key, $table, $key) = $relation;
+				$prefix = $this->structure['structure'][$key][1];
+				$this->write('if (!strncmp("'.$prefix.'", $column, '.strlen($prefix).')) {');
+				$this->write(    'return "'.$prefix.'.$column AS '.$prefix.'".substr($column, '.(strlen($prefix)+1).');');
+				$this->write('}');
+			}
+			$this->write('return "'.$this->name.'.".$column;');
+			$this->finish_function();
+		}
+	}
+
+	public function generate_format_column_list() {
+		if (isset($this->structure['relations'])) {
+			$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
+			$this->write('if ($columns == false) {');
+			# This won't work quite right, as we won't get the prefix in place for foreign data. Meh.
+			$this->write(    'return "'.$this->name.'.*, '.implode(', ', array_map(function($rel) { return $rel[2] . '.*'; }, $this->structure['relations'])).'";');
+			$this->write('}');
+			$this->write('return implode(", ", array_map(array($this, "format_column_selector"), $columns));');
+			$this->finish_function();
+		}
 	}
 
 	private function generate_association_get_set($table, $class, $field) {

@@ -14,10 +14,27 @@ class ORMSQLSetGenerator extends class_generator {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'ObjectSet', array('abstract') );
 		$this->variable('db_instance','default','protected');
+		$this->generate_format_column_filter();
+		$this->generate_format_column_list();
 		$this->generate_stats();
 		$this->generate_count();
 		$this->generate_it();
 		$this->finish_class();
+	}
+
+	public function generate_format_column_filter() {
+		$this->init_function('format_column_filter', array('column'));
+		$this->write('return $this->table.".".$column;');
+		$this->finish_function();
+	}
+
+	public function generate_format_column_list() {
+		$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
+		$this->write('if ($columns == false) {');
+		$this->write(    'return "*";');
+		$this->write('}');
+		$this->write('return implode(", ", $columns);');
+		$this->finish_function();
 	}
 
 	public function generate_stats() {
@@ -30,8 +47,8 @@ class ORMSQLSetGenerator extends class_generator {
 		$this->init_function('count');
 		$this->write('$db = Database::instance($this->db_instance);');
 		$this->write('$filter = $this->get_auth_filter();');
-		$this->write('$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable;');
-		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		$this->write('$sql = "SELECT COUNT(*) AS count FROM ".$this->dbtable_expr;');
+		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(array($this, "format_column_filter")), false);');
 		$this->write('$q = $db->query($sql);');
 		$this->write('$q->result(false);');
 		$this->write('$row = $q->current();');
@@ -51,12 +68,8 @@ class ORMSQLSetGenerator extends class_generator {
 
 		$this->write('$filter = $this->get_auth_filter();');
 
-		$this->write('if($columns === false) {');
-		$this->write(    '$sql = "SELECT * FROM ".$this->dbtable;');
-		$this->write('} else {');
-		$this->write(    '$sql = "SELECT ".str_replace(".","_",implode(",",$columns))." FROM ".$this->dbtable;');
-		$this->write('}');
-		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(), false);');
+		$this->write('$sql = "SELECT ".$this->format_column_list($columns)." FROM ".$this->dbtable_expr;');
+		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(array($this, "format_column_filter")), false);');
 
 		$this->write('$sort = array();');
 		$this->write('foreach($order as $col) {');

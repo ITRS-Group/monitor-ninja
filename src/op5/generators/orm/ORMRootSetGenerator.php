@@ -14,6 +14,7 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_construct();
 		$this->variable('table',null,'protected');
 		$this->variable('dbtable',null,'protected');
+		$this->variable('dbtable_expr',null,'protected');
 		$this->variable('class',null,'protected');
 		$this->variable('filter',null,'protected');
 		$this->variable('default_sort',array(),'protected');
@@ -29,6 +30,8 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_it();
 		$this->generate_get_auth_filter();
 		$this->generate_validate_columns();
+		$this->generate_format_column_filter();
+		$this->generate_format_column_list();
 		$this->finish_class();
 	}
 
@@ -118,6 +121,26 @@ class ORMRootSetGenerator extends class_generator {
 		$this->write(   '}' );
 		$this->write( '}' );
 		$this->write('return $columns;');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate a function that returns a corrected column name
+	 * for use for selection - this might resolve aliases.
+	 */
+	public function generate_format_column_filter() {
+		$this->init_function('format_column_filter', array('column'));
+		$this->write('throw new Exception("Not implemented");');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate a function that given a list of columns returns a string
+	 * that sets any aliases required.
+	 */
+	public function generate_format_column_list() {
+		$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
+		$this->write('throw new Exception("Not implemented");');
 		$this->finish_function();
 	}
 }
