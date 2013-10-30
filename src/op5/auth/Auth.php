@@ -6,12 +6,13 @@ require_once(__DIR__.'/User.php');
 require_once(__DIR__.'/Authorization.php');
 require_once(__DIR__.'/../log.php');
 require_once(__DIR__.'/../livestatus.php');
+require_once(__DIR__.'/../objstore.php');
 
 /**
  * User authentication and authorization library.
  *
  * @package    Auth
- */
+*/
 class op5auth {
 	/**
 	 * Defaults is specified here. Parameters is overwritten from config
@@ -24,34 +25,19 @@ class op5auth {
 			'apc_ttl'           => 60,
 			'apc_store_prefix'  => 'op5_auth_',
 			'session_key'       => false
-			);
+	);
 
 	/**
 	 * A list of auth modules configs until the module is loaded, then the config is replaced with the module.
-	 */
+	*/
 	private $auth_modules = array();
 
 	/**
 	 * A list, indexed by authentication driver names, containing lists of auth module names.
-	 */
+	*/
 	private $drivers = array();
 
 	private $user = false;
-
-	private static $instance = false;
-
-	/**
-	 * Create an instance of Auth.
-	 *
-	 * @param $config array Elements in the array overrieds the values in the common block of auth config
-	 * @param $driver_config array
-	 * @return object
-	 */
-	public static function factory($config = false, $driver_config = false)
-	{
-		self::$instance = new self($config, $driver_config);
-		return self::$instance;
-	}
 
 	/**
 	 * Returns an instance of op5auth
@@ -60,11 +46,13 @@ class op5auth {
 	 * @param $driver_config array
 	 * @return void
 	 **/
-	public static function instance($config = false, $driver_config = false)
+	static public function instance($config = false, $driver_config = false)
 	{
-		if (self::$instance == false)
-			self::$instance = self::factory($config, $driver_config);
-		return self::$instance;
+		return op5objstore::instance()->obj_instance_callback(__CLASS__,
+				function() use($config, $driver_config) {
+					return new op5auth($config, $driver_config);
+				}
+		);
 	}
 
 	/**
@@ -104,10 +92,10 @@ class op5auth {
 
 		/*
 		 * Fetch list of auth modules, only blocks containing variable "driver" is treated as a auth modules
-		 *
-		 * the $this->auth_modules array contains configuration of auth modules until loaded, then the configuration
-		 * is changed to the actual auth module object, to enable lazy loading.
-		 */
+		*
+		* the $this->auth_modules array contains configuration of auth modules until loaded, then the configuration
+		* is changed to the actual auth module object, to enable lazy loading.
+		*/
 		$this->auth_modules = array();
 		foreach($authconfig as $name => $moduleconf) {
 			if(isset($moduleconf['driver'])) {
@@ -185,9 +173,9 @@ class op5auth {
 
 		/*
 		 * This is needed for Apache auth, which doesn't go through login method
-		 * But let every auth driver try to auto_login, just to make generic.
-		 * FIXME: Don't iterate over all... how and still be generic?
-		 */
+		* But let every auth driver try to auto_login, just to make generic.
+		* FIXME: Don't iterate over all... how and still be generic?
+		*/
 		if($this->config['enable_auto_login'] && $this->user === false) {
 			foreach(array_keys($this->auth_modules) as $auth_method) {
 				$driver = $this->getAuthModule($auth_method);
@@ -238,10 +226,10 @@ class op5auth {
 
 		/*
 		 * APC can cache credentials, so no new login lookup is needed when
-		 * logging in several times in a row.
-		 *
-		 * This is useful when using http_api.
-		 */
+		* logging in several times in a row.
+		*
+		* This is useful when using http_api.
+		*/
 		$apc_tag = false;
 
 		if($this->config['apc_enabled'] && extension_loaded('apc')) {
@@ -315,8 +303,8 @@ class op5auth {
 	public function logout()
 	{
 		if(($this->user instanceof op5User) &&
-			isset($this->user->auth_driver) &&
-			$this->getAuthModule($this->user->auth_driver) !== false)
+				isset($this->user->auth_driver) &&
+				$this->getAuthModule($this->user->auth_driver) !== false)
 		{
 			/* Second call to getAuthModule is always cheap, due to laziness */
 			$driver = $this->getAuthModule($this->user->auth_driver);
@@ -473,9 +461,9 @@ class op5auth {
 
 		/* Clear cache, just to be sure... */
 		/* FIXME: $password is wrong... it should be old password...
-		if(isset($this->config['apc_enabled']) && $this->config['apc_enabled']) {
-			$apc_tag = $this->apc_key($user->username, $user->auth_method, $password);
-			apc_delete($apc_tag);
+		 if(isset($this->config['apc_enabled']) && $this->config['apc_enabled']) {
+		$apc_tag = $this->apc_key($user->username, $user->auth_method, $password);
+		apc_delete($apc_tag);
 		}
 		*/
 
@@ -554,8 +542,8 @@ class op5auth {
 	protected function session_store()
 	{
 		if($this->config['session_key'] !== false &&
-		    ($this->user instanceof op5User) &&
-		    is_array($this->user->fields))
+				($this->user instanceof op5User) &&
+				is_array($this->user->fields))
 		{
 			$_SESSION[$this->config['session_key']] = $this->user->fields;
 		} else {
@@ -571,8 +559,8 @@ class op5auth {
 	protected function session_fetch()
 	{
 		if($this->config['session_key'] !== false &&
-			isset($_SESSION[$this->config['session_key']]) &&
-			is_array($_SESSION[$this->config['session_key']]))
+				isset($_SESSION[$this->config['session_key']]) &&
+				is_array($_SESSION[$this->config['session_key']]))
 		{
 			$this->user = new op5User($_SESSION[$this->config['session_key']]);
 		} else {

@@ -2,6 +2,7 @@
 
 require_once(__DIR__.'/auth/Auth.php');
 require_once(__DIR__.'/config.php');
+require_once(__DIR__.'/objstore.php');
 
 /**
  * Custom exceptions for livestatus
@@ -64,8 +65,6 @@ class op5LivestatusException extends Exception {
  *
  **/
 class op5Livestatus {
-	static private $instance = null;
-
 	/**
 	 * Creates an instance of livestatus
 	 *
@@ -74,10 +73,7 @@ class op5Livestatus {
 	 **/
 	static public function instance($config = null)
 	{
-		if(self::$instance !== null)
-			return self::$instance;
-		self::$instance = new self($config);
-		return self::$instance;
+		return op5objstore::instance()->obj_instance(__CLASS__, $config);
 	}
 
 	private $connection      = null;

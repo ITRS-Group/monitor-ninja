@@ -1,6 +1,7 @@
 <?php
 
 require_once( __DIR__.'/spyc.php' );
+require_once( __DIR__.'/objstore.php' );
 
 class op5config {
 	private $basepath     = '/etc/op5/';
@@ -26,14 +27,7 @@ class op5config {
 	 */
 	public static function instance($options=false)
 	{
-		static $instance;
-
-		// Load the Auth instance
-		if (empty($instance)) {
-			$instance = self::factory($options);
-		}
-
-		return $instance;
+		return op5objstore::instance()->obj_instance(__CLASS__, $options);
 	}
 
 	/**

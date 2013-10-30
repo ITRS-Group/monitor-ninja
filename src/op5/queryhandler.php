@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__.'/objstore.php');
+
 class op5queryhandler_Exception extends Exception {
 	public function __construct($msg, $data=false) {
 		if($data !== false) {
@@ -10,13 +12,9 @@ class op5queryhandler_Exception extends Exception {
 }
 
 class op5queryhandler {
-	static private $instance = false;
-
-	static public function instance() {
-		if(self::$instance === false) {
-			self::$instance = new self();
-		}
-		return self::$instance;
+	static public function instance()
+	{
+		return op5objstore::instance()->obj_instance(__CLASS__);
 	}
 
 	private $path;
