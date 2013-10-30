@@ -1,13 +1,15 @@
 <?php
 require_once(__DIR__.'/config.php');
 
-class op5Log {
-	/**
-	 * Holds instances of log
-	 *
-	 * @var $instances string
-	 **/
-	static $instances = array();
+class op5LogAccess {
+	protected $log_instance = false;
+	protected $namespace = false;
+	
+	public function __construct($log_instance, $namespace) {
+		$this->log_instance = $log_instance;
+		$this->namespace = $namespace;
+		
+	}
 
 	/**
 	 * @param $message string Proxy for $this->debug()
@@ -15,30 +17,38 @@ class op5Log {
 	public function __invoke($message) {
 		return $this->debug($message);
 	}
-
-	/**
-	 * Create an instance of Auth.
-	 *
-	 * @return  object
-	 */
-	public static function factory($namespace)
-	{
-		return new self($namespace);
+	
+	public function log($level, $message) {
+		$this->log_instance->log($this->namespace, $level, $message);
 	}
+	
+	public function debug($message) {
+		$this->log_instance->log($this->namespace, 'debug', $message);
+	}
+}
+
+class op5Log {
+	private static $levels = array(
+			'error'   => 1,
+			'warning' => 2,
+			'notice'  => 3,
+			'debug'   => 4
+			);
 
 	/**
 	 * Return a static instance of Auth.
 	 *
 	 * @return  object
 	 */
-	public static function instance($namespace)
+	public static function instance($namespace=false)
 	{
-		// Load the Auth instance
-		if (!isset(self::$instances[$namespace])) {
-			self::$instances[$namespace] = self::factory($namespace);
-		}
+		$log_instance = op5objstore::instance()->obj_instance(__CLASS__);
 
-		return self::$instances[$namespace];
+		if($namespace === false)
+			return $log_instance;
+		
+		/* Return a wrapper to aughment the log with a namespace field */
+		return new op5LogAccess($log_instance, $namespace);
 	}
 
 	/*
@@ -48,42 +58,20 @@ class op5Log {
 	 * - prefix: text to add after timestamp
 	 */
 	private $config = array();
-	/*
-	 * Namespace of logging.
-	 */
-	private $namespace = false;
 
 
 	/* Temporary store for messages... reduce file access.
 	 * Indexed per filename, so multiple instances can log to same file
 	* */
-	private static $messages = array();
-	private static $levels = array(
-			'error'   => 1,
-			'warning' => 2,
-			'notice'  => 3,
-			'debug'   => 4
-			);
+	private $messages = array();
 
 	/**
 	 * Setup the logging class
 	 */
-	public function __construct($namespace)
+	public function __construct()
 	{
-		$this->namespace = $namespace;
-		$logconfig = op5Config::instance()->getConfig('log');
-		if(isset($logconfig[$namespace])) {
-			$this->config = $logconfig[$namespace];
-		}
-		else {
-			/*
-			 * No logging specificed for this namespace... set config to false,
-			 * which indicates no logging
-			 */
-			$this->config = false;
-			return;
-		}
-
+		$this->config = op5Config::instance()->getConfig('log');
+/*
 		if(!isset($this->config['file'])) {
 			throw new Exception("Logging for namespace '$namespace' is missing file parameter");
 		}
@@ -100,7 +88,7 @@ class op5Log {
 
 		if(!isset($this->config['prefix'])) {
 			$this->config['prefix'] = $namespace;
-		}
+		}*/
 
 		/* This will be registered once per instance of op5Log. This is no
 		 * problem because writeback clears the buffer after each run, and no
@@ -111,23 +99,18 @@ class op5Log {
 	}
 
 	/**
-	 * @param $message string Proxy for $this->debug()
-	 */
-	public function debug($message) {
-		return $this->log('debug', $message);
-	}
-
-	/**
 	 * @param $level string
 	 * @param $message string
 	 */
-	public function log($level, $message)
+	public function log($namespace, $level, $message)
 	{
-		if($this->config === false) {
+		if(!isset($this->config[$namespace])) {
 			/* Loggging disabled for this namespace */
 			return;
 		}
-		if(self::$levels[$level] > $this->config['level']) {
+		$config = $this->config[$namespace];
+		
+		if(self::$levels[$level] > self::$levels[$config['level']]) {
 			return; /* To low logging level in config... */
 		}
 
@@ -148,7 +131,7 @@ class op5Log {
 		 * for non-informative messages
 		 */
 		$reference = '';
-		if(isset($this->config['reference']) && $this->config['reference']) {
+		if(isset($config['reference']) && $config['reference']) {
 			$stack = debug_backtrace();
 			@$reference = ' ' . $stack[1]['class'] . ' @' . $stack[1]['line'];
 		}
@@ -157,18 +140,19 @@ class op5Log {
 		 * Generate filename and message. Put filename through strftime, so log
 		 * files can be rotated automatically
 		 */
-		$filename = strftime($this->config['file']);
-		$line_prefix = strftime('%Y-%m-%d %H:%M:%S ') . sprintf('%-7s', $level) . ' ' . $this->config['prefix'] . $reference . ': ';
+		$filename = strftime($config['file']);
+		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
+		$line_prefix = strftime('%Y-%m-%d %H:%M:%S ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
 		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 
 		/*
 		 * Store message to self::$message as temporary storage, to reduce disc
 		 * access to one access per file and script, instead of one per line.
 		 */
-		if(!isset(self::$messages[$filename])) {
-			self::$messages[$filename] = array();
+		if(!isset($this->messages[$filename])) {
+			$this->messages[$filename] = array();
 		}
-		self::$messages[$filename][] = $message;
+		$this->messages[$filename][] = $message;
 	}
 
 	/**
@@ -178,11 +162,11 @@ class op5Log {
 	 * creating the first logger instance. But can be called during the script
 	 * to flush messages
 	 */
-	public static function writeback()
+	public function do_writeback()
 	{
 		$processUser = posix_getpwuid(posix_geteuid());
 		$user = $processUser['name'];
-		foreach(self::$messages as $file => $messages) {
+		foreach($this->messages as $file => $messages) {
 			$dir = dirname($file);
 			if(!is_dir($dir)) {
 				@mkdir($dir, 0775, true);
@@ -201,6 +185,13 @@ class op5Log {
 				chgrp($file, $p_group[0]);
 			}
 		}
-		self::$messages = array(); /* empty, to make it possible to add more messages afterwards */
+		$this->messages = array(); /* empty, to make it possible to add more messages afterwards */
+	}
+	
+	/**
+	 * Just a wrapper to be static
+	 */
+	public static function writeback() {
+		self::instance()->do_writeback();
 	}
 }
