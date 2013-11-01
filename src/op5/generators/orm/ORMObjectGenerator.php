@@ -194,8 +194,8 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function fetch_string( $name ) {
-		$this->write( "if(isset(\$values[\$prefix.'$name'])) { ");
-		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
+		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) { ");
+		$this->write( "\$this->$name = (string)\$values[\$prefix.'$name'];" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
@@ -228,7 +228,7 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function fetch_time( $name ) {
-		$this->write( "if(isset(\$values[\$prefix.'$name'])) { ");
+		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) { ");
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
@@ -262,7 +262,7 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function fetch_int( $name ) {
-		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
+		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = intval( \$values[\$prefix.'$name'] );" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
@@ -296,7 +296,7 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function fetch_float( $name ) {
-		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
+		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
@@ -330,7 +330,7 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function fetch_list( $name ) {
-		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
+		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
@@ -364,7 +364,7 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function fetch_dict( $name ) {
-		$this->write( "if(isset(\$values[\$prefix.'$name'])) {" );
+		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
 		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
