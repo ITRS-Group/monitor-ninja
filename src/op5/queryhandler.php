@@ -25,7 +25,7 @@ class op5queryhandler {
 	 *
 	 * @return void
 	 **/
-	private function __construct() {
+	public function __construct() {
 		$this->path = '/opt/monitor/var/rw/nagios.qh';
 	}
 
