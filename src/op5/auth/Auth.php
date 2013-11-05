@@ -54,6 +54,16 @@ class op5auth {
 				}
 		);
 	}
+	
+	/**
+	 * Just so we dont break compatibility. DONT USE!
+	 * 
+	 * @deprecated
+	 */
+	static public function factory($config = false, $driver_config = false) {
+		op5objstore::unload(__CLASS__);
+		return self::instance($config, $driver_config);
+	}
 
 	/**
 	 * Creates an op5Auth instance.
