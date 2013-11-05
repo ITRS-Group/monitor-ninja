@@ -61,7 +61,7 @@ class op5auth {
 	 * @deprecated
 	 */
 	static public function factory($config = false, $driver_config = false) {
-		op5objstore::unload(__CLASS__);
+		op5objstore::instance()->unload(__CLASS__);
 		return self::instance($config, $driver_config);
 	}
 
