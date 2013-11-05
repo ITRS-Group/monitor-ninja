@@ -140,7 +140,7 @@
 	if(Auth::instance()->logged_in()) {
 ?><div class="header_info_row"><?php
 				$notifications = array();
-				print _('Host').': ' . htmlentities(gethostname());
+				print _('Host').': ' . html::specialchars(gethostname());
 
 				if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
 					foreach ($global_notifications as $gn) {
@@ -158,11 +158,11 @@
 	<div class="header_right">
 	<div class="global_search">
 	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
-		<?php echo _('Welcome'); ?> <?php echo html::anchor('user', htmlentities(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username'))) ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
+		<?php echo _('Welcome'); ?> <?php echo html::anchor('user', html::specialchars(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username'))) ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
 		<?php
 		$query = arr::search($_REQUEST, 'query');
 		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-			<input type="text" name="query" id="query" class="textbox" value="<?php echo htmlentities($query, ENT_COMPAT, 'UTF-8') ?>" />
+			<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
 		<?php } else { ?>
 			<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 		<?php	} ?>

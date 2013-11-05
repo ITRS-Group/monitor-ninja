@@ -102,7 +102,7 @@ if (!empty($widgets)) {
 			foreach( $groups as $group ) {
 				print $delim;
 				print "<a href=\"" . htmlentities(url::base(true) . "listview/?q=[" . $table . "] groups >= \"" . urlencode(addslashes($group)) . "\"") . "\">";
-				print htmlentities( $group );
+				print html::specialchars( $group );
 				print "</a>";
 				$delim = ", ";
 			}
@@ -360,7 +360,7 @@ if (!empty($widgets)) {
 			foreach($object->get_custom_variables() as $variable => $value) {
 				if (substr($variable, 0, 6) !== 'OP5H__') { ?>
 				<tr>
-					<td class="dark">_<?php echo htmlentities($variable); ?></td>
+					<td class="dark">_<?php echo html::specialchars($variable); ?></td>
 					<td><?php echo link::linkify(security::xss_clean($value)) ?></td>
 				</tr>
 		<?php
@@ -383,12 +383,12 @@ if (isset($comments)) {
 
 	$label = _("Submit a $type comment");
 	$cmd = $type == 'host' ? nagioscmd::command_id('ADD_HOST_COMMENT') : nagioscmd::command_id('ADD_SVC_COMMENT');
-	echo '<span class="icon-16 x16-add-comment" title="' . htmlentities($label) . '"></span>';
+	echo '<span class="icon-16 x16-add-comment" title="' . html::specialchars($label) . '"></span>';
 	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label, 'submit', false, array('id'=>'submit_comment_button'));
 
 	$label = _("Delete all $type comments");
 	$cmd = $type == 'host' ? nagioscmd::command_id('DEL_ALL_HOST_COMMENTS') : nagioscmd::command_id('DEL_ALL_SVC_COMMENTS');
-	echo '<span class="icon-16 x16-delete-comment" title="' . htmlentities($label) . '"></span>';
+	echo '<span class="icon-16 x16-delete-comment" title="' . html::specialchars($label) . '"></span>';
 	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label, 'submit', false, array('id'=>'delete_all_comments_button'));
 
 	echo $comments;
