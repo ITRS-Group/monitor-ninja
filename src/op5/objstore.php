@@ -50,10 +50,12 @@ class op5objstore {
 	}
 
 	public function mock_add( $name, $object ) {
+		$name = strtolower( $name );
 		$this->mock_objects[$name] = $object;
 	}
 
 	public function mock_del( $name ) {
+		$name = strtolower( $name );
 		unset( $this->mock_objects[$name] );
 	}
 
@@ -72,6 +74,7 @@ class op5objstore {
 	}
 
 	public function obj_instance( $name, $arg=false ) {
+		$name = strtolower( $name );
 		return $this->obj_instance_callback($name,
 				function() use ($name, $arg) {
 					return new $name( $arg );
@@ -80,6 +83,7 @@ class op5objstore {
 	}
 
 	public function obj_instance_callback( $name, $callback ) {
+		$name = strtolower( $name );
 		/* If mocking an object, use that instead */
 		if( isset($this->mock_objects[$name]))
 			return $this->mock_objects[$name];
