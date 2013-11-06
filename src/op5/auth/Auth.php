@@ -606,4 +606,37 @@ class op5auth {
 		$this->session_store();
 		return $this->user;
 	}
+	
+	/**
+	 * Return the combined metadata for all modules used in the system.
+	 * 
+	 * This is useful to retreive for example which configuration interfaces
+	 * to provide.
+	 * 
+	 * @param string $field
+	 * @return array List of drivers, or list of drivers per metadata flag
+	 */
+	public function get_metadata($field=false) {
+		$metadata = array();
+		foreach(array_keys($this->auth_modules) as $auth_method) {
+			$driver = $this->getAuthModule($auth_method);
+			$driver_metadata = $driver->get_metadata($field);
+			if($field !== false)
+				$driver_metadata = array($field => $driver_metadata);
+			foreach( $driver_metadata as $var => $value ) {
+				if( $value ) {
+					if(!isset($metadata[$var]))
+						$metadata[$var] = array();
+					$metadata[$var][] = $auth_method;
+				}
+			}
+		}
+		if( $field !== false ) {
+			if( isset($metadata[$var]) ) {
+				return $metadata[$var];
+			}
+			return false;
+		}
+		return $metadata;
+	}
 } // End Auth

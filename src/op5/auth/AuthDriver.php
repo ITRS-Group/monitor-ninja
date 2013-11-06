@@ -16,6 +16,16 @@ abstract class op5AuthDriver {
 	protected $config = array();
 
 	/**
+	 * Metadata for the module
+	 * 
+	 * This array contains information about the driver itself, and about its
+	 * capabilities, and what it needs.
+	 * 
+	 * @var $metadata array
+	 **/
+	protected static $metadata = array();
+
+	/**
 	 * Stores a reference to the op5Log object
 	 * @var $log object
 	 **/
@@ -103,5 +113,21 @@ abstract class op5AuthDriver {
 	public function groups_for_user($username)
 	{
 		return false;
+	}
+	
+	/**
+	 * Get the metadata from the driver.
+	 * 
+	 * If given an attribute, return only that field in the metadata array.
+	 * Otherwise, the entire array
+	 */
+	public static function get_metadata($field = false) {
+		if( $field === false ) {
+			return static::$metadata;
+		}
+		if( !isset(static::$metadata[$field]) ) {
+			return false;
+		}
+		return static::$metadata[$field];
 	}
 } // End Auth
