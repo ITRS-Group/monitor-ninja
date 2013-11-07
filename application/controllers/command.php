@@ -200,6 +200,7 @@ class Command_Controller extends Authenticated_Controller
 		$info['params'] = $param;
 
 		$this->template->content->info = $info;
+		return $info;
 	}
 
 	protected function schedule_retrospectively($selector_type, $target_type, $obj_names, $start_time, $end_time, $comment)

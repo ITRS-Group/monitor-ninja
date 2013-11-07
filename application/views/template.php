@@ -54,7 +54,10 @@
 			}
 			if (isset($context_menu))
 				echo $context_menu;
+
+			require __DIR__ . '/template_notifications.php';
 		?>
+
 
 	</body>
 </html>

@@ -1,3 +1,8 @@
+<style>
+	.content {
+		padding: 8px 0;
+	}
+</style>
 <div>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<h2><?php echo (isset($label_title)) ? $label_title : _('Scheduling queue'); ?></h2>

@@ -1248,6 +1248,17 @@ class nagioscmd_Core
 		return html::anchor($lnk, html::specialchars($lable), $attributes);
 	}
 
+	static function command_ajax_button ( $command, $lable, $params = false, $state = false ) {
+
+		if ( $params != false && is_array( $params ) ) {
+			$params = json_encode( $params );
+			return '<button class="command-button" ' . (( $state !== false ) ? ('data-state="' . $state . '"') : "") . ' data-parameters="' . $params . '" data-command="' . $command . '">' . $lable . '</button>';
+		}
+
+		return '<button class="command-button" ' . (( $state !== false ) ? ('data-state="' . $state . '"') : "") . ' data-command="' . $command . '">' . $lable . '</button>';
+
+	}
+
 	/**
 	 * Given the name of a command, return the type of the command
 	 * (which can beharder than you'd think, see for example

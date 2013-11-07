@@ -13,6 +13,7 @@
  *
  */
 class Ajax_Controller extends Authenticated_Controller {
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -21,6 +22,51 @@ class Ajax_Controller extends Authenticated_Controller {
 		 * magic doesn't render templates in ajax requests, but for debugging
 		 */
 		$this->auto_render = false;
+	}
+
+	public function command ( $method = false, $command = false ) {
+
+		$method = $this->input->post( 'method', $method );
+		$command = $this->input->post( 'command', $command );
+		$naming = preg_replace( "/^(STOP|START|ENABLE|DISABLE)\_/", "", $command );
+
+		$cmd_name_mapping = array(
+			"NOTIFICATIONS" => "enable_notifications",
+			'EXECUTING_SVC_CHECKS' => "execute_service_checks",
+			'ACCEPTING_PASSIVE_SVC_CHECKS' => "accept_passive_service_checks",
+			'EXECUTING_HOST_CHECKS' => "execute_host_checks",
+			'ACCEPTING_PASSIVE_HOST_CHECKS' => "accept_passive_host_checks",
+			'EVENT_HANDLERS' => "enable_event_handlers",
+			'OBSESSING_OVER_SVC_CHECKS' => "obsess_over_services",
+			'OBSESSING_OVER_HOST_CHECKS' => "obsess_over_hosts",
+			'FLAP_DETECTION' => "enable_flap_detection",
+			'PERFORMANCE_DATA' => "process_performance_data"
+		);
+
+		if ( isset( $cmd_name_mapping[ $naming ] ) )
+			$naming = $cmd_name_mapping[ $naming ];
+
+		if ( $method ) {
+
+			$cmd = new Command_Controller();
+
+			if ( $method === "submit" ) {
+
+				$info = $cmd->submit( $command );
+				echo json_encode( $info );
+
+			} elseif ( $method === "commit" ) {
+
+				$status = Current_status_Model::instance()->program_status();
+				$state = $status->$naming;
+
+				$cmd->commit( $command );
+				echo json_encode( array( "state" => $state ) );
+
+			}
+
+		}
+
 	}
 
 	/**

@@ -141,7 +141,7 @@ table
 
 	th
 		@extend .nullify
-		@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
+		background: #f6f7f5
 		border: 1px solid $border-color-light
 		padding: 5px 3px 2px 3px
 
@@ -287,11 +287,14 @@ input
 	z-index: 4
 	text-align: right
 	background: transparent
-	padding: 3px
+	padding: 3px 3px 2px 3px
+	float: right
 
 	input
+		display: inline-block
 		width: 70%
 		color: #444
+		margin-top: 5px !important
 		padding: 2px 2px 2px 20px
 		background: $input_background_color
 		background-position: left center
@@ -532,7 +535,15 @@ td.comments
 			padding: 0px 8px !important
 			border-width: 0 1px
 
+.command-button
+	margin: 2px
+	border-radius: 2px
 
+.command-button[disabled]
+	opacity: 0.5
+
+.command-button[disabled]:hover
+	cursor: default
 
 // Import form SASS
 @import "sprites"

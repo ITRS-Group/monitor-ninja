@@ -47,6 +47,8 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.contextMenu.js');
 		echo html::script('application/media/js/date.js');
 		echo html::script('application/views/js/global_search.js');
+		echo html::script('application/media/js/jquery.notify.js');
+		echo html::script('application/media/js/ajax.commands.js');
 	?>
 	<script type="text/javascript">
 		//<!--

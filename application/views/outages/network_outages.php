@@ -1,5 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<style>
+	.content {
+		padding: 12px 0;
+	}
+</style>
+
 <h1><?php echo _('Network Outages'); ?></h1>
 
 <div id="network_outages">

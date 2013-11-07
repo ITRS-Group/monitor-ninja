@@ -1,5 +1,16 @@
-
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+
+	<style>
+
+		.content {
+			padding: 8px 0;
+		}
+
+		table td {
+			padding: 6px 4px;
+		}
+
+	</style>
 
 	<h2><?php echo $title ?></h2>
 

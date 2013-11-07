@@ -139,7 +139,6 @@
 
 	<div class="header_right">
 		<div class="global_search">
-
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
 				<?php
 					if ( Auth::instance()->logged_in() ) {
@@ -159,7 +158,6 @@
 				<?php	} ?>
 				<?php echo help::render('search_help', 'search'); ?>
 			</form>
-
 		</div>
 		<?php customlogo::Render(); ?>
 	</div>
