@@ -75,6 +75,7 @@ var lsfilter_main = {
 			lsfilter_visual.update(data);
 
 		} catch (ex) {
+			console.log(ex);
 			this.set_parse_status(ex);
 			$('#filter-query-builder').show();
 		}
