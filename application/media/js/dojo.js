@@ -107,9 +107,17 @@
 			for (var i = 0; i < global_quicklinks.length; i += 1) {
 				var l = global_quicklinks[i];
 				var vid = l.title + ':'+ l.href;
-				$('#dojo-quicklink-remove').append($(
-					'<li><input type="checkbox" title="'+l.title+'" value="' + vid +'" id="' + vid + '" /><span class="icon-16 x16-'+l.icon+'"></span><label for="' + vid + '">' + l.title + ' (<a target="_blank" class="external" href="'+l.href+'">'+l.href+'</a>)</label></li>'
-				));
+				var quicklink = $('<li><label><input type="checkbox" /><span class="icon-16 x16-'+l.icon+'"></span>' + l.title + '</label> (<a target="_blank" class="external"></a>)</li>');
+				quicklink
+					.find('input')
+						.attr('value', vid)
+						.attr('id', vid)
+						.attr('title', l.title);
+				quicklink
+					.find('a')
+						.attr('href', l.href)
+						.text(l.href);
+				$('#dojo-quicklink-remove').append(quicklink);
 			}
 		},
 		onClose: function() {
@@ -140,7 +148,13 @@
 			}
 			if (error.length === 0) {
 				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
-				$('#dojo-quicklink-external').append($('<li><a target="' + target + '" class="image-link" href="' + href + '" title="' + title + '"><span class="icon-16 x16-' + icon + '"></span></a></li>'));
+				var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
+				quicklink
+					.find('a')
+						.attr('target', target)
+						.attr('href', href)
+						.attr('title', title);
+				$('#dojo-quicklink-external').append(quicklink);
 				changed = true;
 			} else {
 				$.jGrowl(error);
@@ -186,7 +200,14 @@
 				if (obj['dojo-quicklinks']) {
 					links = obj['dojo-quicklinks'];
 					for (var i = 0; i < links.length; i += 1) {
-						$('#dojo-quicklink-external').append($('<li><a target="' + links[i].target + '" class="image-link" href="' + links[i].href + '" title="'+links[i].title+'"><span class="icon-16 x16-'+links[i].icon+'"></span></a></li>'));
+						var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-'+links[i].icon+'"></span></a></li>');
+						quicklink
+							.find('a')
+								.attr('target', links[i].target)
+								.attr('href', links[i].href)
+								.attr('title', links[i].title);
+
+						$('#dojo-quicklink-external').append(quicklink);
 					}
 				}
 				global_quicklinks = links;
