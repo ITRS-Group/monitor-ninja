@@ -126,6 +126,8 @@ table
 	@extend .nullify
 	font-size: 0.95em
 	margin: 0 0
+	border-collapse: collapse
+	border-spacing: 0
 	width: 100%
 
 	caption
@@ -141,9 +143,15 @@ table
 
 	th
 		@extend .nullify
-		background: #fcfdfb
+		background: #fafbf9
 		border: 1px solid $border-color-light
 		padding: 5px 3px 2px 3px
+
+		&:last-child
+			border-right: none
+
+		&:first-child
+			border-left: none
 
 		font-size: 1.1em
 
@@ -187,6 +195,12 @@ table
 		padding: 2px
 		text-align: left
 		vertical-align: middle
+
+		&:last-child
+			border-right: none
+
+		&:first-child
+			border-left: none
 
 	&.no_border td
 		border: none
@@ -251,7 +265,8 @@ a, input[type="submit"].plain, button.plain
 	padding: 0
 	height: 100%
 	z-index: 0
-	overflow: auto
+	overflow-y: auto
+	overflow-x: hidden
 
 	iframe#iframe, iframe#hypermap, object#geomap, iframe#nagvis
 		width: 100%
