@@ -194,7 +194,9 @@ class op5config {
 			apc_delete( $this->apc_tag_for_path( $path ) );
 		}
 
-		$yaml = Spyc::YAMLDump( $array );
+		$spyc = new Spyc();
+		$spyc->setting_dump_force_quotes = true;
+		$yaml = $spyc->dump($array);
 		return (bool) file_put_contents( $path, $yaml );
 	}
 
