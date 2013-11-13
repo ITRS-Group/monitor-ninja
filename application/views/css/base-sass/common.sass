@@ -137,9 +137,10 @@ table
 		@extend .nullify
 
 	.dark
-		@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
+		background-color: $gradient-dark-hi
 		border: 1px solid $border-color-light
 		padding: 5px 3px 2px 3px
+		box-shadow: inset 0 0 2px 4px $gradient-dark-lo
 
 	th
 		@extend .nullify
@@ -539,9 +540,28 @@ td.comments
 		border-right: 1px solid $border-color-light
 		font-size: 120%
 
+	.main-toolbar-subtitle
+		display: inline-block
+		vertical-align: middle
+		margin-right: 6px
+		padding: 5px 24px 4px 6px
+		font-size: 120%
+
 	.main-toolbar-info
 		display: inline-block
 		vertical-align: middle
+		padding: 2px 0 1px 0
+
+		span
+			display: inline-block
+			min-height: 14px
+
+		form
+			display: inline-block
+			width: auto
+
+			input
+				margin: 0
 
 	.main-toolbar-buttons
 		float: right
