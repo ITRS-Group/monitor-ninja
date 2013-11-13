@@ -1,24 +1,19 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 	<style>
-
-		.content {
-			padding: 8px 0;
-		}
-
 		table td {
 			padding: 6px 4px;
 		}
 
+		table caption {
+			font-size: 110%;
+			font-weight: 600;
+		}
 	</style>
 
-	<h2><?php echo $title ?></h2>
-
-	<hr />
-
 	<div>
-		<strong><?php echo _('Services actively checked') ?></strong>
 		<table>
+			<caption><?php echo _('Services actively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
 				<th><?php echo _('Services checked') ?></th>
@@ -72,10 +67,10 @@
 			</tr>
 		</table>
 	</div>
-	<br />
+
 	<div>
-		<strong><?php echo _('Services passively checked') ?></strong>
 		<table>
+			<caption><?php echo _('Services passively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
 				<th><?php echo _('Services checked') ?></th>
@@ -119,11 +114,9 @@
 		</table>
 	</div>
 
-	<br />
-
 	<div>
-		<strong><?php echo _('Hosts actively checked') ?></strong>
 		<table>
+			<caption><?php echo _('Hosts actively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
 				<th><?php echo _('Hosts checked') ?></th>
@@ -177,10 +170,10 @@
 			</tr>
 		</table>
 	</div>
-	<br />
+
 	<div>
-		<strong><?php echo _('Hosts passively checked') ?></strong>
 		<table>
+			<caption><?php echo _('Hosts passively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
 				<th><?php echo _('Hosts checked') ?></th>
@@ -224,9 +217,8 @@
 	</div>
 
 	<div>
-		<br />
-		<strong><?php echo _('Check statistics') ?></strong>
 		<table style="margin-bottom: 15px">
+			<caption><?php echo _('Check statistics') ?></caption>
 			<tr>
 				<th style="width: 50%"><?php echo _('Type') ?></th>
 				<th style="width: 25%"><?php echo _('Total') ?></th>

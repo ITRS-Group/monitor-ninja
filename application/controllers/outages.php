@@ -30,21 +30,31 @@ class Outages_Controller extends Authenticated_Controller
 	public function display_network_outages()
 	{
 		$ls = Livestatus::instance();
-		$outages = $ls->getHosts(array('filter' => array( 	'state'  => 1,
-															'childs' => array( '!=' => '' )
-													)));
+		$outages = $ls->getHosts( array(
+			'filter' => array(
+				'state'  => 1,
+				'childs' => array(
+					'!=' => ''
+				)
+			)
+		));
 
 
 		if(count($outages) > 0) {
 			foreach($outages as &$host) {
+
 				# count number of affected hosts / services
+
 				list($affected_hosts,$affected_services,$severity) = $this->count_affected_hosts_and_services($host['name']);
 				$host['affected_hosts']    = $affected_hosts;
 				$host['affected_services'] = $affected_services;
 				$host['severity']          = $severity;
+
 			}
 		}
 
+
+		$this->template->toolbar = new Toolbar_Controller( _("Network outages"), _("Blocking outages") );
 
 		$this->template->content = $this->add_view('outages/network_outages');
 		$this->template->js_header = $this->add_view('js_header');
@@ -54,7 +64,7 @@ class Outages_Controller extends Authenticated_Controller
 		$content->outage_data = $outages;
 		$this->template->title = _('Monitoring » Network outages');
 	}
-	
+
 
 	private function count_affected_hosts_and_services($host) {
 		/* FIXME: This method needs to be partly implemented in livestatus.
@@ -63,23 +73,23 @@ class Outages_Controller extends Authenticated_Controller
 		 */
 		$affected_hosts    = 0;
 		$affected_services = 0;
-	
+
 		$hosts_to_test = array($host);
 		$hosts_services = array();
-	
+
 		$ls = Livestatus::instance();
 		$lsb = $ls->getBackend();
-		
+
 		$severity_value = 0;
-	
+
 		/* Iterate through all hosts with children. */
 		while( !empty( $hosts_to_test ) ) {
 			$host_name = array_shift($hosts_to_test);
-	
+
 			/* Skip if already tested... */
 			if(isset($hosts_services[$host_name]))
 				continue;
-	
+
 			$host = $ls->getHosts(array(
 					'filter'=>array('name'=>$host_name),
 					'columns' => array('name', 'childs', 'hourly_value', 'num_services')
@@ -87,14 +97,14 @@ class Outages_Controller extends Authenticated_Controller
 			$service_value = $lsb->getStats('services', array('value' => 'sum hourly_value'), array(
 					'filter' => array('host_name'=>$host[0]['name'])
 					));
-	
+
 			$hosts_services[$host_name] = $host[0]['num_services'];
 			$hosts_to_test += $host[0]['childs'];
-	
+
 			$severity_value += $host[0]['hourly_value'] + $service_value[0]['value'];
 		}
-	
+
 		return array(count($hosts_services), array_sum($hosts_services), $severity_value);
 	}
-	
+
 }

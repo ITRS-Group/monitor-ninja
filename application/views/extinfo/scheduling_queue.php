@@ -1,24 +1,11 @@
-<style>
-	.content {
-		padding: 8px 0;
-	}
-</style>
 <div>
-	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<h2><?php echo (isset($label_title)) ? $label_title : _('Scheduling queue'); ?></h2>
 	<?php if(!$data) { ?>
 	<p><?php echo _('Nothing scheduled'); ?></p>
-	<?php if($host_search || $service_search) { ?>
-		<p><?php echo _('You filtered services/hosts by their names.')." "._("Do you want to"); ?> <a href="<?php echo Kohana::config('config.site_domain') . 'index.php/'.Router::$controller.'/'.Router::$method ?>"><?php echo _("reset the search filter?"); ?></a></p>
-		<?php
-		}
+	<?php
 		// abort early; returning from this scope will bubble up to post-render,
 		// in contrary to exit()
 		return;
-	}
-	echo form::open('extinfo/scheduling_queue', array('method' => 'get')); ?>
-	<p><?php echo _('Search for') ?> <label><?php echo _('Host') ?>: <input name='host' value='<?php echo $host_search ?>' /></label> <label><?php echo _('Service') ?>: <input name='service' value='<?php echo $service_search ?>' /></label> <input type="submit" value="<?php echo _('Search') ?>" /></p>
-	</form>
+	} ?>
 	<table id="hostcomments_table">
 		<tr>
 			<?php foreach($header_links as $column => $title) { ?>

@@ -183,10 +183,6 @@
 </div>
 
 <?php
-	require_once("template_notifications.php");
-?>
-
-<?php
 	if ($show_settings) {
 ?>
 <div id="page_settings" class="page_settings">

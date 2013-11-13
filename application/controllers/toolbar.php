@@ -9,9 +9,11 @@
 	class Toolbar_Controller {
 
 		public $title = false;
-		public function __construct ( $title = false ) {
+		public $subtitle = false;
+		public function __construct ( $title = false, $subtitle = false ) {
 
 			$this->title = ( gettype( $title ) == "string" ) ? $title: false;
+			$this->subtitle = ( gettype( $subtitle ) == "string" ) ? $subtitle: false;
 
 		}
 
@@ -21,6 +23,18 @@
 			if ( !$attr ) $attr = array();
 
 			$this->buttons[ ] = array(
+				"name" => $title,
+				"attr" => $attr
+			);
+
+		}
+
+		private $tabs = array();
+		public function tab ( $title, $attr = false ) {
+
+			if ( !$attr ) $attr = array();
+
+			$this->tabs[ ] = array(
 				"name" => $title,
 				"attr" => $attr
 			);
@@ -60,6 +74,10 @@
 
 			if ( gettype( $this->title ) == "string" ) {
 				print '<div class="main-toolbar-title">' . $this->title . '</div>';
+			}
+
+			if ( gettype( $this->subtitle ) == "string" ) {
+				print '<div class="main-toolbar-subtitle">' . $this->subtitle . '</div>';
 			}
 
 			if ( count( $this->info ) > 0 ) {

@@ -197,6 +197,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
+		$this->template->toolbar = new Toolbar_Controller( _("Process Information") );
 		$this->template->title = _('Monitoring » Process info');
 
 		# save us some typing
@@ -451,6 +452,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
 
+		$this->template->toolbar = new Toolbar_Controller( _("Performance Information"), _("Program-wide") );
+
 		$content->title = _("Program-wide performance information");
 
 		# Values
@@ -617,10 +620,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
 		$this->template->content->data = $sq_model->show_scheduling_queue($service, $host);
+
 		if(!$this->template->content->data || count($this->template->content->data) < $items_per_page) {
 			$pagination->hide_next = true;
 		}
-		$this->template->content->pagination = $pagination;
+
 		$this->template->content->host_search = $host;
 		$this->template->content->service_search = $service;
 		$this->template->content->header_links = array(
@@ -629,6 +633,28 @@ class Extinfo_Controller extends Authenticated_Controller {
 			'last_check' => _('Last check'),
 			'next_check' => _('Next check')
 		);
+
 		$this->template->content->date_format_str = nagstat::date_format();
+		$this->template->toolbar = new Toolbar_Controller( "Scheduling Queue" );
+
+		$form = '<form action="scheduling_queue" method="get">';
+		$form .= _('Search for');
+		$form .= '<label> ' . _('Host') . ': <input name="host" value="' . $host . '" /></label>';
+		$form .= '<label> ' . _('Service') . ': <input name="service" value="' . $service . '" /></label>';
+		$form .= '<input type="submit" value="' . _('Search') . '" /></form>';
+
+		$this->template->toolbar->info( $form );
+		if ( isset( $pagination ) ) {
+			$this->template->toolbar->info( $pagination );
+		}
+
+		if ( $host || $service ) {
+			$this->template->toolbar->info( ' <span>' .
+				' ' . _("Do you want to") .
+				' <a href="'. Kohana::config('config.site_domain') . 'index.php/' . Router::$controller . '/' . Router::$method . '">' .
+				_("reset the search filter?") . '</a></span>'
+			);
+		}
+
 	}
 }
