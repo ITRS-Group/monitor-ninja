@@ -1,19 +1,20 @@
 @import "compass/css3/images"
 
 .header
+	position: relative
+
+	box-sizing: border-box
+	-moz-box-sizing: border-box
+	min-width: 768px
+	width: 100%
+	z-index: 2
+
 	@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
 	box-shadow: 0 0 6px $weak_shadow_color
 	border-bottom: 1px solid $border-color-dark
-	height: $header_height
-	width: 100%
-	min-width: 768px
-	position: fixed
-	top: 0
-	left: 0
-	z-index: 2
 
 	.logo
-		position: fixed
+		position: absolute
 		padding: 7px
 		left: 0px
 		top: 0px
@@ -24,7 +25,7 @@
 
 		box-shadow: 0 0 3px $weak_shadow_color
 		@include background-with-css2-fallback(linear-gradient(top, $gradient-dark-hi, $gradient-dark-lo), $gradient-dark-hi)
-		
+
 		.logo-image
 			margin: 7px 9px 7px 7px
 			height: 19px
@@ -58,17 +59,3 @@
 				margin: 6px 6px 0 6px
 				background-repeat: no-repeat
 				overflow: auto
-
-.header_info_row
-	position: fixed
-	top: 5px
-	left: 360px
-	right: 280px
-	font-size: 90%
-	color: #555
-	overflow: hidden
-	white-space: nowrap
-
-	.notificaiton_box
-		display: inline-block
-		margin-left: 8px

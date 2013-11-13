@@ -25,12 +25,16 @@ $legacy-support-for-ie: true
 
 
 .width-33
-	width: 31% !important
-	margin: 0 1% !important
+	width: 33% !important
+	margin: 0 !important
+	box-sizing: border-box
+	-moz-box-sizing: border-box
 
 .width-50
-	width: 48% !important
-	margin: 0 1% !important
+	width: 50% !important
+	margin: 0 !important
+	box-sizing: border-box
+	-moz-box-sizing: border-box
 
 .alpha
 	opacity: $inactive_opacity
@@ -45,7 +49,7 @@ $legacy-support-for-ie: true
 
 .left
 	float: left !important
-	margin: 0 1% 0 0 !important
+	margin: 0
 
 .right
 	float: right !important
@@ -208,9 +212,11 @@ h1, h2, h3, h4, h5, h6
 
 h1
 	font-size: 1.3em
+	margin: 10px 0
 
 h2
 	font-size: 1.2em
+	margin: 6px 0
 
 h3
 	font-size: 1.15em
@@ -239,16 +245,15 @@ a, input[type="submit"].plain, button.plain
 .container
 	overflow: auto
 	min-width: 600px
+	height: 100%
 
 .content
-	padding: 0 10px
-	margin-top: $header_height
-	padding: 16px 32px 32px 32px
+	padding: 0
+	height: 100%
 	z-index: 0
+	overflow: auto
 
 	iframe#iframe, iframe#hypermap, object#geomap, iframe#nagvis
-		position: fixed
-		top: $header_height
 		width: 100%
 		left: 0
 
@@ -274,36 +279,15 @@ input
 .login_field
 	width: 200px
 
-#global_notifications
-	background: $general_background_color
-	border: 1px solid $border_color_light
-	box-shadow: 0 2px 3px $weak_shadow_color
-	position: fixed
-	width: 50%
-	width: 200px
-	top: 0
-	z-index: 800
-	left: 22%
-	padding: 2px 0
-	font-size: 90%
-	display: none
-	z-index: 10
-
-	ul
-		list-style: none
-
 .header_right
-	position: fixed
-	top: 4px
-	right: 40px
+	float: right
+	padding: 2px 8px
 
 .global_search
 	z-index: 4
 	text-align: right
-	height: 24px
 	background: transparent
-	padding: 4px
-	float: right
+	padding: 3px
 
 	input
 		width: 70%
@@ -500,6 +484,55 @@ td.comments
 
 #property_menu
 	font-size: 90%
+
+.notification-bar
+	clear: both
+	padding: 3px 8px 3px 48px
+
+	border: 1px solid #c49400
+	background: #efd556
+	box-shadow: inset 0 0 4px 2px #ecc200
+
+	text-align: center
+	font-weight: 600
+	color: #6e5e38
+
+	a
+		color: #7e6e58
+		&:hover
+			color: #5e4e38
+
+	span
+		display: inline-block
+		margin: 0 8px
+
+.main-toolbar
+	border-top: 1px solid $border-color-dark
+	clear: both
+	&:empty
+		display: none
+
+	.main-toolbar-title
+		display: inline-block
+		vertical-align: middle
+		margin-right: 8px
+		padding: 5px 24px 4px 12px
+		border-right: 1px solid $border-color-light
+		font-size: 120%
+
+	.main-toolbar-info
+		display: inline-block
+		vertical-align: middle
+
+	.main-toolbar-buttons
+		float: right
+
+		button
+			margin: 0
+			padding: 0px 8px !important
+			border-width: 0 1px
+
+
 
 // Import form SASS
 @import "sprites"

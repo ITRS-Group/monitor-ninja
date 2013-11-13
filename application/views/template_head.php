@@ -18,6 +18,7 @@ if (!empty($base_href)) {
 	<?php
 		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
+		echo html::link('application/media/css/jquery.notify.css', 'stylesheet', 'text/css', false, 'screen');
 	?>
 
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
@@ -30,6 +31,7 @@ if (!empty($base_href)) {
 
 	<?php
 		echo html::script('application/media/js/jquery.js');
+		echo html::script('application/media/js/jquery.notify.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
 		echo html::script('application/media/js/jquery.fancybox.js');
 		echo html::script('application/media/js/jquery.field.js');

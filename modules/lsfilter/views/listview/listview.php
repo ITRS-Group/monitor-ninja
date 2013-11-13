@@ -1,16 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="extra_toolbar">
-	<div class="right lsfilter-edit-bar">
-		<span id="filter_loading_status"></span>
-		<button id="show-filter-query-multi-action" title="Send multi action"><span class="icon-16 x16-check-boxes"></span></button>
-		<button id="show-filter-query-builder-button" title="Show/Edit Text Filter"><span class="icon-16 x16-filter"></span></button>
-	</div>
-	<div id="filter_result_totals"></div>
-</div>
-
-<div class="extra_toolbar_spacer"></div>
-
 <?php echo form::open('command/multi_action', array('id'=>'listview_multi_action_form')); ?>
 <div class="clear" id="filter_result"><div style="text-align: center; margin: 32px;"><span class="lsfilter-loader"><?php echo _('Loading...');?></span></div></div>
 <input type="hidden" id="listview_multi_action_obj_action" name="multi_action" value="" />

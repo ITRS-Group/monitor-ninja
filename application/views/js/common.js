@@ -7,6 +7,19 @@ var _save_scroll = true;
 
 $(document).ready(function() {
 
+	var content_div = $( "body > .container > #content" ),
+		header_div = $( "body > .container >#header" ),
+		body = $( "body" );
+
+	function fit_content () {
+		var height = body.height() - header_div.outerHeight();
+		console.log( header_div.height() );
+		content_div.css( "height", height + "px" );
+	}
+
+	$(window).bind( "resize", fit_content );
+	fit_content();
+
 	// make scroll memory cookie to be reset
 	// when actively clicking on a link.
 	$('body').on('click', 'a', function() {

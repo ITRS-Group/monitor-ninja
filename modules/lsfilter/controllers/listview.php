@@ -60,11 +60,25 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->title = _('List view');
+		$this->template->toolbar = new Toolbar_Controller( $this->template->title );
+
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
 
 		// add context menu items (hidden in html body)
 		$this->template->context_menu = $this->add_view('status/context_menu');
+
+		$this->template->toolbar->button( '<span class="icon-16 x16-check-boxes"></span>', array(
+			"title" => "Send multi action",
+			"id" => "show-filter-query-multi-action"
+		) );
+
+		$this->template->toolbar->button( '<span class="icon-16 x16-filter"></span>', array(
+			"title" => "Show/Edit Text Filter",
+			"id" => "show-filter-query-builder-button"
+		) );
+
+		$this->template->toolbar->info( '<div id="filter_result_totals"></div>' );
 
 		$lview->query = $query;
 		$lview->query_order = $query_order;

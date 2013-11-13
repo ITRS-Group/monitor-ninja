@@ -1,5 +1,5 @@
 #content.content
-  padding: 20px 2px 0 2px
+  padding: 0
 
 /* FIX AGAINST GENERAL CONTENT PADDING
 
@@ -14,12 +14,12 @@
   box-shadow: 0 2px 2px 3px rgba(0, 0, 0, 0.1)
   background: #f5f5f5
   border: 1px solid #999
-  position: fixed
+  position: absolute
   top: 76px
   /* topbar + extra toolbar height */
-  right: 0
+  right: 4px
   /* Attach to right corner */
-  z-index: 1
+  z-index: 10
   max-height: 500px
   overflow: auto
   display: none
@@ -52,7 +52,8 @@
   vertical-align: middle
   margin-right: 32px
   padding-left: 22px
-  height: 30px
+  margin-bottom: 4px
+  height: 15px
   *display: inline
   span
     vertical-align: middle
@@ -61,6 +62,8 @@
   margin-right: 20px !important
   button
     background: transparent
+    margin: 0
+    border-width: 0 1px 0 1px
     &.active
       background: rgba(0, 0, 0, 0.1)
     &:hover
@@ -76,6 +79,23 @@
     color: #222
     a
       color: #222
+
+#filter_result_totals
+  ul
+    li
+      display: inline-block
+      vertical-align: middle
+      border-right: 1px solid #ccc
+      padding: 3px 6px 2px 6px
+      &:first-child
+        border-right: none
+      .icon-16
+        vertical-align: middle
+    a
+      color: #444
+    a:hover
+      border: none
+      color: #000
 
 .listview-col-hover
   background: #fdfdfd
@@ -130,14 +150,7 @@ th
   position: fixed
   height: 24px
   width: 100%
-  background: #e3e4e2
-  background: -ms-linear-gradient(top, #fafbf9, #e3e4e2)
-  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fafbf9), color-stop(100%, #e3e4e2))
-  background: -webkit-linear-gradient(top, #fafbf9, #e3e4e2)
-  background: -moz-linear-gradient(top, #fafbf9, #e3e4e2)
-  background: -o-linear-gradient(top, #fafbf9, #e3e4e2)
-  background: linear-gradient(top, #fafbf9, #e3e4e2)
-  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, 		startColorstr='#FFFAFBF9', endColorstr='#FFE3E4E2' )
+  background: #f6f7f5
   z-index: 1
   overflow: hidden
   ul li
@@ -160,7 +173,6 @@ th
   margin: -2px -2px 0 -2px
 
 .floating-header
-  box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.1)
   left: 0px
   top: 77px
   position: fixed
@@ -168,6 +180,8 @@ th
   tr
     width: 100%
     display: block
+    th
+      padding-bottom: 1px !important
 
 .listview-summary li span
   vertical-align: middle
@@ -190,6 +204,9 @@ td.cell_svccnt a
   border-bottom: 0
 
 tr
+  box-sizing: border-box
+  td
+    box-sizing: border-box
   &.even td.cell_svccnt_ok
     background-color: #CCFFCC !important
   &.odd td.cell_svccnt_ok

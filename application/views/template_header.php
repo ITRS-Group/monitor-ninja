@@ -136,42 +136,57 @@
 			</form>
 		</div>
 	</div>
-	<?php
-	if(Auth::instance()->logged_in()) {
-?><div class="header_info_row"><?php
-				$notifications = array();
-				print _('Host').': ' . html::specialchars(gethostname());
-
-				if (isset($global_notifications) && is_array($global_notifications) && count($global_notifications) >= 1) {
-					foreach ($global_notifications as $gn) {
-						$notifications[] = ($gn[1] ? '' : '<span class="icon-12 x12-shield-warning" style="vertical-align: middle;"></span>') . $gn[0];
-					}
-				}
-
-				foreach($notifications as $not) {
-					print '<div class="notificaiton_box">' . $not . '</div>';
-				}
-			?>
-		</div>
-	<?php } ?>
 
 	<div class="header_right">
-	<div class="global_search">
-	<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
-		<?php echo _('Welcome'); ?> <?php echo html::anchor('user', html::specialchars(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username'))) ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?><br />
-		<?php
-		$query = arr::search($_REQUEST, 'query');
-		if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-			<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
-		<?php } else { ?>
-			<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
-		<?php	} ?>
-		<?php echo help::render('search_help', 'search'); ?>
-	</form>
+		<div class="global_search">
+
+			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
+				<?php
+					if ( Auth::instance()->logged_in() ) {
+						echo html::anchor('user', html::specialchars(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username')));
+						echo " at " . html::specialchars(gethostname());
+						echo " | " . html::anchor('default/logout', html::specialchars(_('Log out')));
+					}
+				?>
+
+				<br />
+				<?php
+				$query = arr::search($_REQUEST, 'query');
+				if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
+					<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
+				<?php } else { ?>
+					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
+				<?php	} ?>
+				<?php echo help::render('search_help', 'search'); ?>
+			</form>
+
+		</div>
+		<?php customlogo::Render(); ?>
 	</div>
-	<?php customlogo::Render(); ?>
-	</div>
+
+	<div class="clear"></div>
+
+	<?php
+		if ( isset( $global_notifications ) && is_array( $global_notifications ) && count( $global_notifications ) >= 1 ) {
+			echo '<div class="notification-bar">';
+			echo '<span class="icon-16 x16-shield-warning" style="vertical-align: middle;"></span>';
+			foreach ( $global_notifications as $note )
+				echo "<span>" . $note[0] . "</span>";
+			echo '</div>';
+		}
+	?>
+
+	<?php
+		if ( isset( $toolbar ) && get_class( $toolbar ) == "Toolbar_Controller" ) {
+			$toolbar->render();
+		}
+	?>
+
 </div>
+
+<?php
+	require_once("template_notifications.php");
+?>
 
 <?php
 	if ($show_settings) {

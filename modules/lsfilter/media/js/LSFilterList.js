@@ -219,26 +219,32 @@ function lsfilter_list(config)
 
 	this.update_float_header = function()
 	{
+
 		var thead =  $(this.config.table).find('thead');
 		var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
 		var clone = $(thead).filter(function(){return $(this).hasClass('floating-header');});
 
 		if( !header || !clone ) return;
 
-		var head = header.find("tr").children();
-		var cloneHead = clone.find("tr").children();
-		var index = 0;
+		var header_div = $("body .container #header"),
+			head = header.find("tr").children(),
+			cloneHead = clone.find("tr").children(),
+			index = 0;
 
-		clone.css('min-width', header.width());
+		clone.css( 'min-width', header.width() );
+		clone.css( 'top', header_div.outerHeight() + "px" );
 
 		head.each(function() {
+
 			var clonehead = $(cloneHead[index]);
 			var thishead = $(this);
+
+			var w = parseInt( thishead.css('width'), 10 );
 			index++;
 
-			clonehead.css(
-					'width',
-					(parseInt(thishead.css('width'), 10) + 1) + 'px');
+			if ( index % 2 == 1 ) w -= 1;
+
+			clonehead.css( 'width', w + 'px');
 
 			clonehead.css('padding-left', thishead.css('padding-left'));
 			clonehead.css('padding-right', thishead.css('padding-right'));
@@ -246,6 +252,7 @@ function lsfilter_list(config)
 			clonehead.css('padding-bottom', thishead.css('padding-bottom'));
 			clonehead.css('margin', thishead.css('margin'));
 			clonehead.css('border', thishead.css('border'));
+
 		});
 
 	};
@@ -314,15 +321,15 @@ function lsfilter_list(config)
 				link_query('['+table+'] all')
 					.addClass('no_uline')
 					.text(table.charAt(0).toUpperCase() + table.slice(1))
-					)
-				.css('float','left')
-				.css('font-weight', 'bold')
-				);
+				)
+				.css('font-size', '120%')
+				.css('padding', '0 6px')
+			);
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
 				if (field in totals) {
 					var item = listview_renderer_totals[field](totals[field][1])
-						.css('float', 'left').wrapInner(
+						.wrapInner(
 							link_query(totals[field][0]).addClass('no_uline')
 						);
 					item.find('a').attr('title', item.find('span').attr('title'));

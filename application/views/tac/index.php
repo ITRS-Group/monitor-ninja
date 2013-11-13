@@ -18,7 +18,7 @@ function render_placeholder( $widgets, $placeholder, $style='' ) {
 $i = 0;
 foreach( $tac_column_count as $count ) {
 	for( $j=0; $j<$count; $j++ ) {
-		render_placeholder($widgets, $i, 'width: '.(99/$count).'%;' );
+		render_placeholder($widgets, $i, 'width: '.(100/$count).'%;' );
 		$i++;
 	}
 	echo '<div style="clear: both;"></div>';
