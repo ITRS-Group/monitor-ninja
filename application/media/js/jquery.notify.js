@@ -79,10 +79,6 @@
 
 	function remove ( notification ) {
 
-		if ( basepath === false ) {
-			basepath = _site_domain + _index_page;
-		}
-
 		if ( notification && notification.remove ) {
 			notification.slideUp( 400, function () {
 
@@ -228,11 +224,49 @@
 
 		remove: function () {
 
+			if ( basepath === false ) {
+				basepath = _site_domain + _index_page;
+			}
+
 			var self = this;
 			this.wrapper.slideUp( 200, function () {
+
+				self.wrapper.remove();
 				if ( self.options.remove !== false && typeof( self.options.remove ) == "function" ) {
 					self.options.remove();
 				}
+
+				if ( zone.children().length == 0 ) {
+					zone.css( "display", "none" );
+				}
+
+				var note, blob = $.notify.configured;
+				for ( var signature in notifications ) {
+
+					note = notifications[ signature ];
+					blob[ signature ] = {
+						"display": note.display,
+						"sessionid": note.sessionid,
+						"timestamp": Date.now()
+					}
+
+				}
+
+				$.ajax( basepath + '/ajax/save_page_setting', {
+
+					data: {
+						'type': 'notifications',
+						'page': 'notifications_facility',
+						'setting': JSON.stringify( blob )
+					},
+
+					type: 'POST',
+					complete: function ( request ) {
+						console.log( request, "saved" );
+					}
+
+				});
+
 			});
 
 		},

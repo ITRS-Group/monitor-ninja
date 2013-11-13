@@ -13,7 +13,6 @@ $(document).ready(function() {
 
 	function fit_content () {
 		var height = body.height() - header_div.outerHeight();
-		console.log( header_div.height() );
 		content_div.css( "height", height + "px" );
 	}
 
