@@ -36,6 +36,10 @@
 
 		private static $notifications = array();
 
+		/**
+		 *  Creates a new notification in the User-interface with the
+		 *  provided message and options.
+		 */
 		public function __construct ( $message, $options = false ) {
 
 			$this->message = $message;
@@ -53,6 +57,10 @@
 
 		}
 
+		/**
+		 *  Renders all notifications provided with PHP to the jquery
+		 *  notification facility
+		 */
 		public static function render () {
 
 			echo '<script>$(window).load( function () {';

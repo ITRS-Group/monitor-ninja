@@ -1248,6 +1248,12 @@ class nagioscmd_Core
 		return html::anchor($lnk, html::specialchars($lable), $attributes);
 	}
 
+	/**
+	 * Returns the HTML for a button which can send commands through ajax
+	 * instead of page reloads!
+	 *
+	 * @TODO Handling of command parameters
+	 */
 	static function command_ajax_button ( $command, $lable, $params = false, $state = false ) {
 
 		if ( $params != false && is_array( $params ) ) {
