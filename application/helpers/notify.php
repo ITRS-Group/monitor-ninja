@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+	/**
+	 * Ninja notification facility PHP interface
+	 */
 	class Notify {
 
 		private static $settings = array(
