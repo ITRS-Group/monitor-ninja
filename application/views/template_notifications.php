@@ -3,7 +3,7 @@
 
 <?php
 
-	require_once( __DIR__ . "/../helpers/notify.php" );
+	//require_once( __DIR__ . "/../helpers/notify.php" );
 
 	/* Check to see if there are any global notifications to display */
 
@@ -35,7 +35,7 @@
 
 		$message .= ". You can enter the process information page to enable/disable process settings.";
 
-		new Notify( $message, array(
+		new notify( $message, array(
 			"type" => "warning",
 			"sticky" => true,
 			"configurable" => "true"
@@ -46,4 +46,4 @@
 	/* Render PHP added notifications if logged in! */
 
 	if ( Auth::instance()->logged_in() )
-		Notify::render();
+		notify::render();
