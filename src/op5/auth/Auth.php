@@ -427,10 +427,14 @@ class op5auth {
 	 * Returns name of default authentication method.
 	 *
 	 * @return 	string 	default authentication method
+	 * @throws Exception
 	 *
 	 */
 	public function get_default_auth()
 	{
+		if(!array_key_exists('default_auth', $this->config)) {
+			throw new Exception("Your configuration does not contain a common: default auth method");
+		}
 		return $this->config['default_auth'];
 	}
 
