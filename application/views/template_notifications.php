@@ -10,12 +10,16 @@
 	$notifications = array();
 
 	$note_config = Ninja_setting_Model::fetch_page_setting( "notifications", "notifications_facility" );
-	$note_config = $note_config->setting;
+	if ( $note_config ) {
+		$note_config = $note_config->setting;
+	} else {
+		$note_config = "{}";
+	}
 
 	echo "<script>" .
 			"$.notify.sessionid = '" . sha1( session_id() ) . "';" .
 			"$.notify.configured = " . $note_config . ";" .
-			"</script>";
+		"</script>";
 
 	if ( isset( $global_notifications ) && is_array( $global_notifications ) && count( $global_notifications ) >= 1 ) {
 
