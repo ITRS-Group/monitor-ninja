@@ -21,6 +21,8 @@ generate-css:
 	# Generate css for listviews
 	compass compile --trace --boring modules/lsfilter/views/css/
 
+# making the *-php targets work in your checked out environment: add
+# path/to/system-addons/op5lib/php to your global php.ini's include_path
 regenerate-php:
 	$(MAKE) -C src/generators regenerate
 
