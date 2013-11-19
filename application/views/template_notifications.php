@@ -3,8 +3,6 @@
 
 <?php
 
-	//require_once( __DIR__ . "/../helpers/notify.php" );
-
 	/* Check to see if there are any global notifications to display */
 
 	$notifications = array();
@@ -34,12 +32,6 @@
 		}
 
 		$message .= ". You can enter the process information page to enable/disable process settings.";
-
-		new notify( $message, array(
-			"type" => "warning",
-			"sticky" => true,
-			"configurable" => "true"
-		) );
 
 	}
 
