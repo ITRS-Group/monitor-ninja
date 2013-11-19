@@ -647,7 +647,6 @@ Feature: Monitoring
 		And I click "Process Info"
 		And I click "Disable notifications"
 		And I click "Submit"
-		Then I should see "Your command was successfully submitted to op5 Monitor"
-		When I click "Done"
+		Then I should see "Command has been executed!"
 		Then I shouldn't see "Disable notifications"
 		And I should see "Enable notifications"
