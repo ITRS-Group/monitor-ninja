@@ -292,6 +292,18 @@ function lsfilter_list(config)
 		}
 		new_totals = this.render_totals(data.table, data.totals);
 
+		$('.main-toolbar-buttons').replaceContent(
+			$.map([$('<span id="filter_loading_status"/>')].concat(
+					listview_renderer_buttons[data.table] || []).concat(
+						listview_renderer_buttons.all || []),
+				function(x) {
+					if (typeof x == 'function') {
+						x = x();
+					}
+					x.addClass('filter-query-button');
+					return x.toArray();
+				}));
+
 		if (this.config.totals) {
 			this.config.totals.replaceContent(new_totals);
 		}

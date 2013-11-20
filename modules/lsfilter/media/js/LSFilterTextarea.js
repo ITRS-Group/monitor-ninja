@@ -4,16 +4,18 @@ var lsfilter_textarea = {
 	// External methods
 	update: function(data)
 	{
+		if (!this.element)
+			return;
 		this.element.css("border", "2px solid #5d2"); // green
 		if (data.source == 'textarea') return;
 		this.element.val(data.query);
 	},
-	init: function()
+	init: function(element, orderelement)
 	{
 		var self = this; // To be able to access it from within handlers
 
-		this.element = $('#filter_query');
-		this.orderelement = $('#filter_query_order');
+		this.element = element;
+		this.orderelement = orderelement;
 		this.element.bind('keyup paste cut', function(evt)
 		{
 			query = self.element.val();
