@@ -72,12 +72,14 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$this->template->toolbar->button( '<span class="icon-16 x16-check-boxes"></span>', array(
 			"title" => "Send multi action",
-			"id" => "show-filter-query-multi-action"
+			"id" => "show-filter-query-multi-action",
+			"data-drop-down" => "filter-query-multi-action",
 		) );
 
 		$this->template->toolbar->button( '<span class="icon-16 x16-filter"></span>', array(
 			"title" => "Show/Edit Text Filter",
-			"id" => "show-filter-query-builder-button"
+			"id" => "show-filter-query-builder-button",
+			"data-drop-down" => "filter-query-builder",
 		) );
 
 		$this->template->toolbar->info( '<div id="filter_result_totals"></div>' );
