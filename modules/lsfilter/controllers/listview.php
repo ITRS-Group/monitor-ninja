@@ -32,9 +32,9 @@ class ListView_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $basepath.'js/LSColumnsVisitor.js';
 
 /*		$this->xtra_js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
-		$this->xtra_js[] = $basepath.'media/js/LSFilterRenderer.js';
 		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
 		$this->xtra_js[] = 'index.php/listview/renderer/table.js';
+		$this->xtra_js[] = 'index.php/listview/renderer/totals.js';
 
 		$this->xtra_js[] = $basepath.'media/js/LSFilterMain.js';
 

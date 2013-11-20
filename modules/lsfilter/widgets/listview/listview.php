@@ -33,6 +33,7 @@ class Listview_Widget extends widget_Base {
 		$this->js[] = $basepath.'media/js/LSFilterVisitors';
 		$this->js[] = $basepath.'media/js/LSFilterRenderer';
 		$this->js[] = 'index.php/listview/renderer/table';
+		$this->js[] = 'index.php/listview/renderer/totals';
 
 		$this->js[] = $basepath.'media/js/LSFilterList';
 		$this->js[] = $basepath.'media/js/LSFilterListEvents';
