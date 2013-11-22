@@ -301,7 +301,7 @@ function set_selection(val) {
 	$('*[data-show-for~='+val+']').show()
 }
 
-function get_members(type, cb) {
+function get_members(type, cb, names_to_skip) {
 	if (type=='') return;
 	var field_name = false;
 	var empty_field = false;
@@ -316,13 +316,13 @@ function get_members(type, cb) {
 		error: function(data) {
 			jgrowl_message('Unable to fetch objects: ' + data.responseText, _reports_error);
 		},
-		success: function(data) {
+		success: function(all_names) {
 			empty_list(field_name);
-			populate_options(field_name, empty_field, data);
 			empty_list(empty_field);
+			populate_options(field_name, empty_field, all_names, names_to_skip);
 			if(typeof cb == 'function')
 				cb();
-			$('#progress').hide();
+			$('#progress').css('display', 'none');
 		},
 		dataType: 'json'
 	});
@@ -362,29 +362,29 @@ function empty_list(field) {
 	field = field.replace('[', '\\[');
 	field = field.replace(']', '\\]');
 
-	var select = $('#' + field);
-	select.children().each(function() {
-		if (this.value)
-			$(this).remove();
-	});
-	// truncate select list
-	//$("#"+field).removeOption(/./);
+	$('#' + field).empty();
 }
 
 /**
 *	Populate HTML select list with supplied JSON data
 */
-function populate_options(tmp_field, field, json_data)
+function populate_options(tmp_field, field, json_data, select_data)
 {
 	show_progress('progress', _wait_str);
-	var fragment = document.createDocumentFragment();
-	for (var i = 0; i < json_data.length; i++) {
+	var available = document.createDocumentFragment();
+	var selected = document.createDocumentFragment();
+	for (i = 0; i < json_data.length; i++) {
 		var option = document.createElement("option");
-		option.setAttribute("value", json_data[i]);
 		option.appendChild(document.createTextNode(json_data[i]));
-		fragment.appendChild(option);
+		if (select_data.indexOf(json_data[i]) >= 0) {
+			selected.appendChild(option);
+		}
+		else {
+			available.appendChild(option);
+		}
 	}
-	document.getElementById(tmp_field.replace('[', '\\[').replace(']', '\\]')).appendChild(fragment);
+	document.getElementById(tmp_field).appendChild(available);
+	document.getElementById(field).appendChild(selected);
 }
 
 /**
@@ -981,15 +981,12 @@ function expand_and_populate(data)
 		var mo = new missing_objects();
 		if (reportObj.objects) {
 			for (var prop in reportObj.objects) {
-				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj.objects[prop])) {
+				if (!$('#'+field_obj.map[field_str]).containsOption(reportObj.objects[prop])) {
 					mo.add(reportObj.objects[prop]);
-				} else {
-					$('#'+tmp_fields.map[field_str]).selectOptions(reportObj.objects[prop]);
 				}
 			}
 			mo.display_if_any();
-			moveAndSort(tmp_fields.map[field_str], field_obj.map[field_str]);
 		}
-	});
+	}, reportObj.objects);
 	show_calendar(reportObj.report_period);
 }
