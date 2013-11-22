@@ -62,8 +62,12 @@
 
 .jq-notify-type-warning {
 	border-top: 4px solid #f5d27a;
+} .jq-notify-type-error {
+	border-top: 4px solid #f5d27a;
 } .jq-notify-type-info {
 	border-top: 4px solid #66aadd;
+} .jq-notify-type-success {
+	border-top: 4px solid #aadd66;
 } .jq-notify-type-critical {
 	border-top: 4px solid #e14626;
 }

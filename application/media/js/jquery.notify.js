@@ -163,6 +163,8 @@
 				if ( typeof(options[ opt ]) != "undefined" )
 					opts[opt] = options[ opt ];
 			}
+		} else if ( typeof( options ) == "string" ) {
+			opts.type = options.toLowerCase();
 		}
 
 		this.wrapper.attr( "data-signature", this.signature );
@@ -272,8 +274,12 @@
 		},
 
 		getAutoFadetime: function ( ) {
-			var size = this.message.split( " " ).length;
-			return 500 + ( size * 500 );
+
+			var size = this.message.split( " " ).length,
+				time = 500 + ( size * 500 );
+			time = ( time > 4000 ) ? 4000 : time;
+			return time;
+
 		},
 
 		apply: function () {
