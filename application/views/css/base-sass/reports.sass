@@ -262,7 +262,6 @@ div
 input[type=text], input[type=password], select, textarea
 	background: $input_background_color
 	border: 1px solid $border-color-light
-	outline: 0px
 	-moz-border-radius: 4px
 	-webkit-border-radius: 4px
 	padding: 3px 1px
@@ -275,65 +274,30 @@ select
 	&[multiple=multiple]
 		padding: 3px
 		width: 380px
-
-input
-	&[type=button], &[type=submit], &[type=reset], &[type=checkbox], &[type=radio]
-		width: auto
+	&:hover
+		background-color: $gradient-dark-lo
 
 select.auto
 	width: auto
 
-input
-	&[type=checkbox], &[type=radio]
-		margin: 0px
-		margin-bottom: 5px
-		border: 0px
-
-button
+button, input[type=reset], input[type=submit], input[type=button]
 	background: #cdcdcd url(images/bg.png) repeat-x
-	border: 1px solid $border-color-light
-	outline: 0px
+	border: 1px solid #cccccc
+	cursor: pointer
 	-moz-border-radius: 4px
 	-webkit-border-radius: 4px
 	padding: 2px 5px !important
 	margin-bottom: 5px
+	&:hover
+		background-color: #a0a0a0
 
 input
-	&[type=reset], &[type=submit], &[type=button]
-		background: #cdcdcd url(images/bg.png) repeat-x
-		border: 1px solid #cccccc
-		outline: 0px
-		-moz-border-radius: 4px
-		-webkit-border-radius: 4px
-		padding: 2px 5px !important
+	&[type=button], &[type=submit], &[type=reset], &[type=checkbox], &[type=radio]
+		width: auto
+	&[type=checkbox], &[type=radio]
+		margin: 0px
 		margin-bottom: 5px
-
-.form-dropdown
-	padding: 10px
-	background: #cdcdcd url(images/bg.png) repeat-x
-	border: 1px solid #dcdcdc
-	display: none
-	input, form
-		margin: 0
-
-input
-	&.wide, &.sla_month, &#cal_end, &#report_name, &.datepick-end, &.datepick-start, &#cal_start, &#summary_items, &#filter_field, &#time_start, &#time_end, &#duration, &#time_input, &#filename, &#local_persistent_filepath, &#recipients, &#attach_description
-		background: #fafafa
-		border: 1px solid #cccccc
-		outline: 0px
-		-moz-border-radius: 4px
-		-webkit-border-radius: 4px
-		border-radius: 4px
-		padding: 3px 1px
-		width: 378px
-		margin-top: 3px
-		margin-left: 0px
-		margin-bottom: 15px
-
-textarea
-	width: 378px
-
-input
+		border: 0px
 	&.sla_month
 		width: 30px
 	&.wide
@@ -343,6 +307,28 @@ input
 		margin-top: 3px
 	&#time_input, &#duration, &#cal_end, &#cal_start, &.datepick-end, &.datepick-start, &#time_start, &#time_end
 		width: 100px
+	&.wide, &.sla_month, &#cal_end, &#report_name, &.datepick-end, &.datepick-start, &#cal_start, &#summary_items, &#filter_field, &#time_start, &#time_end, &#duration, &#time_input, &#filename, &#local_persistent_filepath, &#recipients, &#attach_description
+		background: #fafafa
+		border: 1px solid #cccccc
+		-moz-border-radius: 4px
+		-webkit-border-radius: 4px
+		border-radius: 4px
+		padding: 3px 1px
+		width: 378px
+		margin-top: 3px
+		margin-left: 0px
+		margin-bottom: 15px
+
+.form-dropdown
+	padding: 10px
+	background: #cdcdcd url(images/bg.png) repeat-x
+	border: 1px solid #dcdcdc
+	display: none
+	input, form
+		margin: 0
+
+textarea
+	width: 378px
 
 select#period.popup
 	margin-top: 3px
