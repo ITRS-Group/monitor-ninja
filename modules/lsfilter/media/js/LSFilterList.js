@@ -293,16 +293,16 @@ function lsfilter_list(config)
 		new_totals = this.render_totals(data.table, data.totals);
 
 		$('.main-toolbar-buttons').replaceContent(
-			$.map([$('<span id="filter_loading_status"/>')].concat(
-					listview_renderer_buttons[data.table] || []).concat(
-						listview_renderer_buttons.all || []),
-				function(x) {
-					if (typeof x == 'function') {
-						x = x();
-					}
-					x.addClass('filter-query-button');
-					return x.toArray();
-				}));
+			$('<ul/>').append(
+				$.map([$('<li id="filter_loading_status"/>')].concat(
+						listview_renderer_buttons[data.table] || []).concat(
+							listview_renderer_buttons.all || []),
+					function(x) {
+						if (typeof x == 'function') {
+							x = x();
+						}
+						return $('<li class="filter-query-button"/>').html(x).toArray();
+		})));
 
 		if (this.config.totals) {
 			this.config.totals.replaceContent(new_totals);
@@ -331,7 +331,6 @@ function lsfilter_list(config)
 		var container = $('<ul />');
 		container.append($('<li />').append(
 				link_query('['+table+'] all')
-					.addClass('no_uline')
 					.text(table.charAt(0).toUpperCase() + table.slice(1))
 				)
 				.css('font-size', '120%')
@@ -342,7 +341,7 @@ function lsfilter_list(config)
 				if (field in totals) {
 					var item = listview_renderer_totals[field](totals[field][1])
 						.wrapInner(
-							link_query(totals[field][0]).addClass('no_uline')
+							link_query(totals[field][0])
 						);
 					item.find('a').attr('title', item.find('span').attr('title'));
 					container.append(item);

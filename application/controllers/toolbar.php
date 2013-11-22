@@ -66,7 +66,7 @@
 				$a = array();
 				foreach ( $b[ "attr" ] as $k => $v )
 					$a[] = "$k=\"$v\"";
-				$h .= "<button " . implode( " ", $a ) . ">" . $b[ "name" ] . "</button>";
+				$h .= "<a " . implode( " ", $a ) . ">" . $b[ "name" ] . "</a>";
 			}
 
 			return $h;
