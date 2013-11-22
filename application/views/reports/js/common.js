@@ -961,3 +961,35 @@ function init_regexpfilter() {
 
 	};
 }
+
+/**
+*	Receive params as JSON object
+*	Parse fields and populate corresponding fields in form
+*	with values.
+*/
+function expand_and_populate(data)
+{
+	var reportObj = data;
+	var field_obj = new field_maps();
+	var tmp_fields = new field_maps3();
+	var field_str = reportObj.report_type;
+	if (!field_str)
+		field_str = 'hostgroups';
+	$('#report_type').val(field_str);
+	set_selection(field_str);
+	get_members(field_str, function() {
+		var mo = new missing_objects();
+		if (reportObj.objects) {
+			for (var prop in reportObj.objects) {
+				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj.objects[prop])) {
+					mo.add(reportObj.objects[prop]);
+				} else {
+					$('#'+tmp_fields.map[field_str]).selectOptions(reportObj.objects[prop]);
+				}
+			}
+			mo.display_if_any();
+			moveAndSort(tmp_fields.map[field_str], field_obj.map[field_str]);
+		}
+	});
+	show_calendar(reportObj.report_period);
+}

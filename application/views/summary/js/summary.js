@@ -43,35 +43,6 @@ $(document).ready(function() {
 	});
 });
 
-/**
-*	Receive params as JSON object
-*	Parse fields and populate corresponding fields in form
-*	with values.
-*/
-function expand_and_populate(data)
-{
-	var reportObj = data;
-	var field_obj = new field_maps();
-	var tmp_fields = new field_maps3();
-	var field_str = reportObj.report_type;
-	if (!field_str)
-		field_str = 'hostgroups';
-	$('#report_type').val(field_str);
-	set_selection(field_str);
-	get_members(field_str, function() {
-		if (reportObj.objects) {
-			var to_id = field_obj.map[field_str];
-			var from_id = tmp_fields.map[field_str];
-			// select report objects
-			for (prop in reportObj['objects']) {
-				$('#' + from_id).selectOptions(reportObj['objects'][prop]);
-			}
-			// move selected options from left -> right
-			moveAndSort(from_id, to_id);
-		}
-	});
-}
-
 function set_report_mode(type)
 {
 	switch (type) {
