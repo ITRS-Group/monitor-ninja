@@ -55,7 +55,7 @@ if (!empty($widgets)) {
 		<tr>
 			<th colspan="2" style="padding: 5px 0px" >
 				<?php echo $object->get_icon_image() ? html::image($logos_path.$object->get_icon_image(), array('alt' => $object->get_icon_image_alt(), 'title' => $object->get_icon_image_alt(), 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
-				<h1 style="display: inline"><?php echo ($type=='host' ? $object->get_alias().' ('.$object->get_display_name().')' : $object->get_display_name()) ?></h1>
+				<h1 style="display: inline"><?php echo html::specialchars($type=='host' ? $object->get_alias().' ('.$object->get_display_name().')' : $object->get_display_name()) ?></h1>
 			</th>
 		</tr>
 		<?php
@@ -64,7 +64,7 @@ if (!empty($widgets)) {
 				echo '<td style="width: 80px"><strong>'._('On host').'</strong></td>';
 				echo '<td>';
 				echo html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_display_name()));
-				echo $host->get_alias() ? ' ('.$host->get_alias().')' : '';
+				echo $host->get_alias() ? ' ('.html::specialchars($host->get_alias()).')' : '';
 				echo '</td>';
 				echo '</tr>';
 			}
