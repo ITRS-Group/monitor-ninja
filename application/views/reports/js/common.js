@@ -441,21 +441,13 @@ function toggle_field_visibility(val, theId) {
 *	are set to selected
 */
 function loopElements(f) {
-	// Specify which form fields (select) we are NOT interested in
-	var nosave_suffix = "_tmp";
-
 	// select all elements that doesn't contain the nosave_suffix
-	$('.multiple:not([name*=' + nosave_suffix + '])').each(function() {
+	$('.multiple:not([id$=_tmp])').each(function() {
 		if ($(this).is(':visible')) {
 			$(this).children('option').attr('selected', 'selected');
 		} else {
 			$(this).children('option').attr('selected', false);
 		}
-	});
-
-	// unselect the rest
-	$('.multiple[name*=' + nosave_suffix + ']').each(function() {
-		$(this).children('option').attr('selected', false);
 	});
 }
 

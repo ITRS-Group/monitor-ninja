@@ -36,7 +36,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 				<div class="left" style="width: 40%">
 					<label for="hostgroup_tmp"><?php echo _('Available hostgroups') ?></label><br />
-					<select name="hostgroup_tmp[]" style="width: 100%" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple"></select>
+					<select style="width: 100%" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 				</div>
 
 				<div class="left" style="padding-top: 40px;">
@@ -59,7 +59,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 			<div class="left" style="width: 40%">
 				<label for="servicegroup_tmp"><?php echo _('Available servicegroups') ?></label><br />
-				<select name="servicegroup_tmp[]" style="width: 100%" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple"></select>
+				<select style="width: 100%" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 			</div>
 
 			<div class="left" style="padding-top: 40px;">
@@ -81,7 +81,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 			<div class="left" style="width: 40%">
 				<label for="host_tmp"><?php echo _('Available hosts') ?></label><br />
-				<select name="host_tmp[]" style="width: 100%" id="host_tmp" multiple="multiple" size="8" class="multiple"></select>
+				<select style="width: 100%" id="host_tmp" multiple="multiple" size="8" class="multiple"></select>
 			</div>
 
 			<div class="left" style="padding-top: 40px;">
@@ -99,7 +99,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<td colspan="3">
 			<div class="left" style="width: 40%">
 				<label for="service_tmp"><?php echo _('Available services') ?></label><br />
-				<select name="service_tmp[]" style="width: 100%" id="service_tmp" multiple="multiple" size="8" class="multiple"></select>
+				<select style="width: 100%" id="service_tmp" multiple="multiple" size="8" class="multiple"></select>
 			</div>
 
 			<div class="left" style="padding-top: 40px;">

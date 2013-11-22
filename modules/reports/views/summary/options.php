@@ -56,7 +56,7 @@
 				<td colspan="3">
 					<div class="left" style="width: 40%">
 						<label for="hostgroup_tmp"><?php echo _('Available hostgroups') ?></label><br />
-						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple" style="width: 100%">
+						<select id="hostgroup_tmp" multiple="multiple" size='8' class="multiple" style="width: 100%">
 						</select>
 					</div>
 					<div class="left" style="padding-top: 40px;">
@@ -74,7 +74,7 @@
 				<td colspan="3">
 					<div class="left" style="width: 40%">
 						<label for="servicegroup_tmp"><?php echo _('Available servicegroups') ?></label><br />
-						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple" style="width: 100%">
+						<select id="servicegroup_tmp" multiple="multiple" size='8' class="multiple" style="width: 100%">
 						</select>
 					</div>
 					<div class="left" style="padding-top: 40px;">
@@ -92,7 +92,7 @@
 				<td colspan="3">
 					<div class="left" style="width: 40%">
 						<label for="host_tmp"><?php echo _('Available hosts') ?></label><br />
-						<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple" style="width: 100%">
+						<select id="host_tmp" multiple="multiple" size="8" class="multiple" style="width: 100%">
 						</select>
 					</div>
 					<div class="left" style="padding-top: 40px;">
@@ -110,7 +110,7 @@
 				<td colspan="3">
 					<div class="left" style="width: 40%">
 						<label for="service_tmp"><?php echo _('Available services') ?></label><br />
-						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple" style="width: 100%">
+						<select id="service_tmp" multiple="multiple" size="8" class="multiple" style="width: 100%">
 						</select>
 					</div>
 					<div class="left" style="padding-top: 40px;">
