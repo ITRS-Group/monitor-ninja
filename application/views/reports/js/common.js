@@ -370,6 +370,7 @@ function empty_list(field) {
 */
 function populate_options(tmp_field, field, json_data, select_data)
 {
+	select_data = select_data || ''
 	show_progress('progress', _wait_str);
 	var available = document.createDocumentFragment();
 	var selected = document.createDocumentFragment();
