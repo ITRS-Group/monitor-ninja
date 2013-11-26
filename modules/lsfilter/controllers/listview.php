@@ -51,6 +51,8 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$this->xtra_js[] = 'index.php/listview/columns_config/vars';
 
+		$custom_extra_js = Module_Manifest_Model::get('lsfilter_extra_js');
+		$this->xtra_js = array_merge($this->xtra_js, $custom_extra_js);
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
 

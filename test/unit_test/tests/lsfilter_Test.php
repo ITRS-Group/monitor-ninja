@@ -192,21 +192,21 @@ class LSFilter_Test extends TapUnit {
 	public function test_sql_simple_all() {
 		$this->run_visitor(
 				"[notifications] all",
-				new LivestatusSQLBuilderVisitor(),
+				new LivestatusSQLBuilderVisitor(function($column) {return $column;}),
 				"(1=1)"
 		);
 	}
 	public function test_sql_andor() {
 		$this->run_visitor(
 				"[notifications] output=\"a\" and output=\"b\" or output=\"c\" and output=\"d\"",
-				new LivestatusSQLBuilderVisitor(),
+				new LivestatusSQLBuilderVisitor(function($column) {return $column;}),
 				"(((output = 'a') AND (output = 'b')) OR ((output = 'c') AND (output = 'd')))"
 		);
 	}
 	public function test_sql_orand() {
 		$this->run_visitor(
 				"[notifications] (output=\"a\" or output=\"b\") and (output=\"c\" or output=\"d\")",
-				new LivestatusSQLBuilderVisitor(),
+				new LivestatusSQLBuilderVisitor(function($column) {return $column;}),
 				"((((output = 'a')) OR ((output = 'b'))) AND (((output = 'c')) OR ((output = 'd'))))"
 		);
 	}
@@ -214,7 +214,7 @@ class LSFilter_Test extends TapUnit {
 	private function do_test_sql_op_str($op, $result) {
 		$this->run_visitor(
 				"[notifications] output $op \"a\"",
-				new LivestatusSQLBuilderVisitor(),
+				new LivestatusSQLBuilderVisitor(function($column) {return $column;}),
 				$result
 		);
 	}

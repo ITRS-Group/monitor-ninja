@@ -4,6 +4,16 @@
  * Used within the parser as a parse visitor of a lsfilter to generate a ORM object set
  */
 class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
+	/** a callback for converting a ORM layer column name to a database layer column name */
+	protected $column_formatter;
+
+	/**
+	 * Create new sql visitor
+	 * @param $column_formatter a callback for converting a ORM layer column name to a database layer column name
+	 */
+	public function __construct($column_formatter) {
+		$this->column_formatter = $column_formatter;
+	}
 	private function visit_op( $filt, $data, $op, $default ) {
 		$subfilters = $filt->get_sub_filters();
 		$result = array();
@@ -33,7 +43,8 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 	 * Visit an value match node
 	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
-		$field = str_replace('.','_',$filt->get_field());
+		$field = $filt->get_field();
+		$field = call_user_func($this->column_formatter, $field);
 		$value = $filt->get_value();
 		$op = $filt->get_op();
 		if( empty($value) ) {
