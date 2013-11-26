@@ -34,12 +34,17 @@
 		<td><?php echo $row['softorhard']; ?></td>
 		<td>
 <table class="output">
-<tr><td><?php echo security::xss_clean($ary['output']); ?></td><td style="border:0" class="comments">
-		<?php if (isset($ary['user_comment']))
+<tr><td><?php echo security::xss_clean($ary['output']);
+		if ($options['include_long_output'])
+			echo '<br />'.security::xss_clean($ary['long_output']);
+?>
+</td><td style="border:0" class="comments">
+<?php
+		if (isset($ary['user_comment']))
 			echo security::xss_clean($ary['user_comment']).'<br /><span class="author">/'.security::xss_clean($ary['username']).'</span>';
 		else
-			echo '<img class="right" src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>'
-		?>
+			echo '<img class="right" src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>';
+?>
 </td></tr></table>
 		</td>
 	</tr>

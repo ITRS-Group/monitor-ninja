@@ -70,7 +70,11 @@ class Summary_options extends Report_options
 			'default' => 25,
 			'description' => 'Number of summary items to include in reports'
 		);
-
+		$this->properties['include_long_output'] = array(
+			'type' => 'bool',
+			'default' => false,
+			'description' => 'Set this to include the full plugin output with the output of your reports'
+		);
 
 		$this->rename_options['displaytype'] = 'summary_type';
 		$this->properties['report_period']['options']['forever'] = _('Forever');

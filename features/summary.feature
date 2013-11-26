@@ -177,6 +177,7 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		When I click "Edit settings"
 		And I select "Most recent alerts" from "Summary type"
+		And I check "Include full output"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
 		And I should see "win-server1"

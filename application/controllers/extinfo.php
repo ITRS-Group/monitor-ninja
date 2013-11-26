@@ -160,7 +160,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			case 'host':
 				$page_links = array(
 					 _('Status detail') => listview::link('services',array('host.name'=>$host)),
-					 _('Alert history') => 'alert_history/generate?host_name[]='.urlencode($host),
+					 _('Alert history') => 'alert_history/generate?include_long_output=1&amp;host_name[]='.urlencode($host),
 					 _('Alert histogram') => 'histogram/generate?host_name[]='.urlencode($host),
 					 _('Availability report') => 'avail/generate/?host_name[]='.urlencode($host),
 					 _('Notifications') => listview::link('notifications',array('host_name'=>$host))
@@ -170,7 +170,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					_('Information for this host') => 'extinfo/details?host='.urlencode($host),
 					_('Status detail for this host') => listview::link('services',array('host.name'=>$host)),
-					_('Alert history') => 'alert_history/generate?service_description[]='.$host.';'.urlencode($service),
+					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;service_description[]='.$host.';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					_('Notifications') => listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service))
@@ -421,7 +421,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
-					_('Alert history') => 'alert_history/generate?'.$grouptype.'[]='.$group
+					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;'.$grouptype.'[]='.$group
 				);
 				break;
 			case 'hostgroup':
@@ -430,7 +430,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
 					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
-					_('Alert history') => 'alert_history/generate?'.$grouptype.'[]='.$group
+					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;'.$grouptype.'[]='.$group
 				);
 				break;
 		}

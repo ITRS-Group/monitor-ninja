@@ -134,12 +134,24 @@
 	</tr>
 	<tr>
 		<td>
+			<?php echo help::render('include_long_output') ?>
+			<input type="checkbox" name="include_long_output" id="include_long_output" <?php echo $options['include_long_output'] ? 'checked="checked"' : null ?> />
+			<label for="include_long_output"><?php echo _('Include full output') ?></label>
+		</td>
+		<td>&nbsp;</td>
+		<td>
+			<?php echo '<label>'.form::checkbox('oldest_first', 1, $options['oldest_first']).' '._('Older entries first').'</label>'; ?>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			<?php echo _('Report Period') ?><br />
 			<?php echo form::dropdown('report_period', $options->get_alternatives('report_period'), $options['report_period']); ?>
 		</td>
 		<td>&nbsp;</td>
 		<td>
-			<?php echo '<label>'.form::checkbox('oldest_first', 1, $options['oldest_first']).' '._('Older entries first').'</label>'; ?>
+			<label for="filter_output"><?php echo _('Filter output') ?></label><br />
+			<input type="text" name="filter_output" id="filter_output" value="<?php echo $options['filter_output'] ?>" />
 		</td>
 	</tr>
 	<tr id="display" style="display: none; clear: both;">
@@ -156,11 +168,6 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
-			<label for="filter_output"><?php echo _('Filter output') ?></label><br />
-			<input type="text" name="filter_output" id="filter_output" value="<?php echo $options['filter_output'] ?>" />
-		</td>
-		<td>&nbsp;</td>
 		<td>
 			<label for="summary_items"><?php echo _('Items to show') ?></label>
 			<input type="text" name="summary_items" id="summary_items" value="<?php echo $options['summary_items'] ?>" />

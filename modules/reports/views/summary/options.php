@@ -191,24 +191,30 @@
 			</tr>
 			<tr>
 				<td>
+					<?php echo help::render('include_long_output') ?>
+					<input type="checkbox" name="include_long_output" id="include_long_output" <?php echo $options['include_long_output'] ? 'checked="checked"' : null ?> />
+					<label for="include_long_output"><?php echo _('Include full output') ?></label>
+				</td>
+				<td></td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<?php echo help::render('skin') ?>
 					<label for="skin" id="skin_lbl"><?php echo _('Skin') ?></label>
 				</td>
 				<td></td>
-			</tr>
-			<tr>
-				<td>
-					<?php echo form::dropdown(array('name' => 'skin'), ninja::get_skins(), $options['skin']); ?>
-				</td>
-				<td></td>
-			</tr>
-			<tr>
 				<td>
 					<?php echo help::render('description') ?>
 					<label for="description" id="descr_lbl"><?php echo _('Description') ?></label>
 				</td>
 			</tr>
 			<tr>
+				<td>
+					<?php echo form::dropdown(array('name' => 'skin'), ninja::get_skins(), $options['skin']); ?>
+				</td>
+				<td></td>
 				<td>
 					<?php echo form::textarea('description', $options['description']); ?>
 				</td>
