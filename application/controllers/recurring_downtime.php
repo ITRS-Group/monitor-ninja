@@ -156,8 +156,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _confirm_delete_schedule = '"._('Are you sure that you would like to delete this schedule.\nPlease note that already scheuled downtime won\"t be affected by this and will have to be deleted manually.\nThis action can\"t be undone.')."';\n";
 		$this->js_strings .= "var _form_field_time = '"._("time")."';\n";
 		$this->js_strings .= "var _form_field_duration = '"._("duration")."';\n";
-		$this->js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report do not exist anymore and have been removed")."\";\n";
-		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '"._('Please modify the objects to include in your report below and then save it.')."';\n";
 
 
 		$template->day_names = date::day_names();

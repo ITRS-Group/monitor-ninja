@@ -167,6 +167,8 @@ class reports_Core
 		$js_strings .= "_start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
 		$js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$js_strings .= "var _reports_error = '"._('Error')."';\n";
+		$js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report do not exist anymore and have been removed")."\";\n";
+		$js_strings .= "var _reports_missing_objects_pleaseremove = '"._('Please modify the objects to include in your report below and then save it.')."';\n";
 
 		return $js_strings;
 	}
