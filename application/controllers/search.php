@@ -22,12 +22,12 @@ class Search_Controller extends Authenticated_Controller {
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' ),
-		'_si' => array('plugin_output')
+		'_si' => array('plugin_output', 'long_plugin_output')
 	);
 
 	protected $search_columns_matchall = array(
-		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'notes' ),
-		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'notes' ),
+		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'long_plugin_output', 'notes' ),
+		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'long_plugin_output', 'notes' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' )
