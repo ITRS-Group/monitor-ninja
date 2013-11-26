@@ -849,7 +849,8 @@ function missing_objects()
 
 missing_objects.prototype.add = function(name)
 {
-	this.objs.push(name);
+	if (name != '*')
+		this.objs.push(name);
 }
 
 missing_objects.prototype.display_if_any = function()
