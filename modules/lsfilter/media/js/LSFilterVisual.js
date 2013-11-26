@@ -516,12 +516,14 @@ var lsfilter_visual = {
 	update : function(data) {
 		if (data.source == 'visual')
 			return;
+		if (!this.filter_visual)
+			return;
 		var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
 		try {
 			var ast = parser.parse(data.query);
 			ast = lsfilter_visual_ast_preproc.visit(ast);
 			var result = lsfilter_graphics_visitor.visit(ast);
-			$('#filter_visual').empty().append(result);
+			this.filter_visual.empty().append(result);
 			this.update_depths();
 			this.update_binary_delimiters();
 		} catch (ex) {
@@ -529,7 +531,8 @@ var lsfilter_visual = {
 			console.log(data.query);
 		}
 	},
-	init : function() {
+	init : function(filter_visual) {
+		this.filter_visual = filter_visual;
 		var onnode = function(fnc) {
 			return function(e) {
 				e.preventDefault();
@@ -543,7 +546,7 @@ var lsfilter_visual = {
 			};
 		};
 
-		$('#filter_visual')
+		this.filter_visual
 
 		.on('click', '.lsfilter_visual_node_addrule', onnode(function(n, el) {
 			var marker = n.children('.lsfilter_visual_newmarker');

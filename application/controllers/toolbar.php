@@ -17,9 +17,14 @@
 
 		}
 
+		private $should_render_buttons = false;
+		public function should_render_buttons($should_render_buttons = true) {
+			$this->should_render_buttons = $should_render_buttons;
+		}
+
 		private $buttons = array();
 		public function button ( $title, $attr = false ) {
-
+			$this->should_render_buttons(true);
 			if ( !$attr ) $attr = array();
 
 			$this->buttons[ ] = array(
@@ -86,7 +91,7 @@
 				print '</div>';
 			}
 
-			if ( count( $this->buttons ) > 0 ) {
+			if ($this->should_render_buttons) {
 				print '<div class="main-toolbar-buttons">';
 				print $this->get_button_html();
 				print '</div>';

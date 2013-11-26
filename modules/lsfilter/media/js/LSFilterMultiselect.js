@@ -2,6 +2,8 @@ var lsfilter_multiselect = {
 	update : function(data) {
 		if (data.source == 'multiselect')
 			return;
+		if (!this.elem_select)
+			return;
 		if (data.metadata.table && data.metadata.table != this.selection_table) {
 			this.selection_table = data.metadata.table;
 			this.selection = {};
@@ -16,10 +18,10 @@ var lsfilter_multiselect = {
 			this.elem_objtype.attr('value', this.selection_table);
 		}
 	},
-	init : function() {
+	init : function(elem) {
 		var self = this; // To be able to access it from within handlers
 
-		this.elem_select = $('#multi-action-list');
+		this.elem_select = elem;
 		this.elem_objtype = $('#listview_multi_action_obj_type');
 		$(document).on('click', 'a.multi-action-send-link', function(e) {
 			e.preventDefault();

@@ -74,6 +74,14 @@ var lsfilter_main = {
 			lsfilter_textarea.update(data);
 			lsfilter_visual.update(data);
 
+			$('#extra-dropdowns').replaceContent(
+				$.map((listview_renderer_extra_objects[lsfilter_storage.list.request_metadata.table] || []).concat(listview_renderer_extra_objects.all || []), function(x) {
+					if (typeof x == 'function') {
+						x = x();
+					}
+					x.addClass('filter-query-dropdown');
+					return x.toArray();
+				}));
 		} catch (ex) {
 			console.log(ex);
 			this.set_parse_status(ex);
@@ -103,15 +111,7 @@ var lsfilter_main = {
 				loader.remove();
 			}
 		});
-		lsfilter_multiselect.init();
 		lsfilter_saved.init();
-		lsfilter_textarea.init();
-		lsfilter_visual.init();
-
-		// when first loaded, the textarea contains the query from the
-		// controller
-		lsfilter_textarea.load();
-
 	},
 
 	/***************************************************************************
@@ -167,4 +167,5 @@ var lsfilter_main = {
 
 $().ready(function() {
 	lsfilter_main.init();
+	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order)
 });
