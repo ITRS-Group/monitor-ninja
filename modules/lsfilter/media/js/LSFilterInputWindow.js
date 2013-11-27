@@ -2,7 +2,7 @@ $().ready(function() {
 	$('.main-toolbar-buttons').on('click', '.filter-query-button a', function() {
 		var button = $(this);
 		if (!button.data('drop-down')) {
-			return;
+			return true;
 		}
 		var dropdown = $('#'+button.data('drop-down'));
 		if (!dropdown.length) {
