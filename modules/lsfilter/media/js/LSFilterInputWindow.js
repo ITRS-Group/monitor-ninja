@@ -1,5 +1,5 @@
 $().ready(function() {
-	$('.main-toolbar-buttons').on('click', '.filter-query-button', function() {
+	$('.main-toolbar-buttons').on('click', '.filter-query-button a', function() {
 		var button = $(this);
 		if (!button.data('drop-down')) {
 			return;
