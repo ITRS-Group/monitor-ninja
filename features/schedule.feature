@@ -45,7 +45,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		When I select "LinuxServers" from "Available hostgroups"
-		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		And I doubleclick "LinuxServers"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
@@ -141,7 +141,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		When I select "LinuxServers" from "Available hostgroups"
-		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		And I doubleclick "LinuxServers"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		When I enter "9" into "Jan"
 		And I click "Show report"
@@ -238,7 +238,7 @@ Feature: Scheduled reports
 		When I click "Alert Summary"
 		And I choose "Custom"
 		And I select "LinuxServers" from "Available hostgroups"
-		And I doubleclick "LinuxServers" from "hostgroup_tmp[]"
+		And I doubleclick "LinuxServers"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		When I click "Show report"
 		Then I should see "Top alert producers"
