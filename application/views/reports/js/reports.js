@@ -9,11 +9,6 @@ $(document).ready(function() {
 
 	disable_sla_fields($('#report_period').attr('value'));
 
-	$("#report_form").bind('submit', function() {
-		loopElements();
-		return check_form_values();
-	});
-
 	$('#include_trends').click(function() {
 		if (this.checked) {
 			$('#include_trends_scaling').attr('disabled', false);
@@ -98,7 +93,7 @@ function set_report_form_values(the_val)
 function set_initial_state(what, val)
 {
 	var rep_type = $('input[name=type]').attr('value');
-	f = $('#report_form').get(0);
+	f = $('.report_form').get(0);
 	var item = '';
 	var elem = false;
 	switch (what) {

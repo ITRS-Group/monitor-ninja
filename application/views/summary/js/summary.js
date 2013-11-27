@@ -9,11 +9,6 @@ $(document).ready(function() {
 	});
 	show_calendar($('#report_period').val());
 
-	$(".to_check").bind('submit', function() {
-		loopElements();
-		return check_form_values(this.form);
-	});
-
 	// reset options and reload page
 	$('#new_report').click(function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;

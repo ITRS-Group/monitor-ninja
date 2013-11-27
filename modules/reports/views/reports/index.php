@@ -8,7 +8,7 @@
 ?>
 <div style="display: none">
 <div id="options">
-<?php echo form::open($type.'/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));?>
+<?php echo form::open($type.'/generate', array('class' => 'report_form'));?>
 <?php
 	echo $report_options;
 ?>

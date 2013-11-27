@@ -66,7 +66,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			<?php echo form::close();?>
 		</div>
 
-		<?php echo form::open($type.'/generate', array('id' => 'report_form')); ?>
+		<?php echo form::open($type.'/generate', array('class' => 'report_form')); ?>
 			<?php echo $report_options; ?>
 		</form>
 	</div>

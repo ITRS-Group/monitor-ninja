@@ -173,6 +173,11 @@ $(document).ready(function() {
 	$('#report_period').on('change', rpcust).each(rpcust);
 
 	$("#delete_report").click(confirm_delete_report);
+
+	$(".report_form").on('submit', function() {
+		loopElements();
+		return check_form_values();
+	});
 });
 
 var loadimg = new Image(16,16);
@@ -716,9 +721,7 @@ function disable_sla_fields(report_period)
 			disable_months(0, 12);
 			for (i=this_month + 1;i<=12;i++)
 			{
-				document.forms['report_form'].elements['month_' + i].value='';
-				document.forms['report_form'].elements['month_' + i].disabled=true;
-				document.forms['report_form'].elements['month_' + i].style.backgroundColor=sla_month_disabled_color;
+				$('.report_form #month_' + i).val('').attr('disabled', true).css('background-color', sla_month_disabled_color);
 			}
 			break;
 		case 'custom':
@@ -770,34 +773,27 @@ function disable_months(start, end)
 	start 	= Number(start);
 	end 	= Number(end);
 	for (i=1;i<=12;i++) {
+		var cell = $('.report_form #month_' + i);
 		if (start>end) {
 			if ( i >= start || i <= end) {
-				disabled_state = false;
-				col = sla_month_enabled_color;
+				cell.attr('disabled', false).css('background-color', sla_month_enabled_color);
 			} else {
-				document.forms['report_form'].elements['month_' + i].value='';
-				disabled_state = true;
-				col = sla_month_disabled_color;
+				cell.val('').attr('disabled', true).css('background-color', sla_month_disabled_color);
 			}
 		} else {
 			if ( i>= start && i <= end) {
-				disabled_state = false;
-				col = sla_month_enabled_color;
+				cell.attr('disabled', false).css('background-color', sla_month_enabled_color);
 			} else {
-				document.forms['report_form'].elements['month_' + i].value='';
-				disabled_state = true;
-				col = sla_month_disabled_color;
+				cell.val('').attr('disabled', true).css('background-color', sla_month_disabled_color);
 			}
 		}
-		document.forms['report_form'].elements['month_' + i].disabled=disabled_state;
-		document.forms['report_form'].elements['month_' + i].style.backgroundColor=col;
 	}
 }
 
 
 function check_custom_months()
 {
-	var f		 	= document.forms['report_form'];
+	var f		 	= $('.report_form').get(0);
 	// not SLA?
 	if (!f['start_month'])
 		return;
