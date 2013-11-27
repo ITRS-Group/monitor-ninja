@@ -36,7 +36,7 @@
 <table class="output">
 <tr><td><?php echo security::xss_clean($ary['output']);
 		if ($options['include_long_output'])
-			echo '<br />'.security::xss_clean($ary['long_output']);
+			echo '<br />'.nl2br(security::xss_clean($ary['long_output']));
 ?>
 </td><td style="border:0" class="comments">
 <?php
