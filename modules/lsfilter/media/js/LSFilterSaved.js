@@ -8,10 +8,10 @@ var lsfilter_saved = {
 	init : function() {
 		var self = this; // To be able to access it from within handlers
 
-		$('#lsfilter_save_filter').click(function() {
+		$(document).on('click', '#lsfilter_save_filter', function() {
 			$(this).addClass('saving').text(_('Saving...'));
 			self.save($('#filter_query').val());
-		})
+		});
 	},
 
 	icons : {

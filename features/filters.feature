@@ -396,3 +396,13 @@ Feature: Filters & list views
 		And wait for "1" seconds
 		Then The last row of the filter result table should contain "C-service"
 		And The first row of the filter result table should contain "B-service"
+
+	@configuration @asmonitor
+	Scenario: Save filter
+		Given I am on the Host details page
+		And I click "Show/Edit Text Filter"
+		And I enter "Ernie" into "lsfilter_save_filter_name"
+		And I click "Save Filter"
+		And I hover over the "Saved-filters" button
+		Then I should see these menu items:
+			| Ernie |
