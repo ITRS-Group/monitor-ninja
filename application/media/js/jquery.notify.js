@@ -75,51 +75,7 @@
 
 	$("document").ready( function () {
 		zone = $(".jq-notify-zone");
-	} )
-
-	function remove ( notification ) {
-
-		if ( notification && notification.remove ) {
-			notification.slideUp( 400, function () {
-
-				notification.remove();
-
-				if ( zone.children().length == 0 ) {
-					zone.css( "display", "none" );
-				}
-
-				var note, blob = $.notify.configured;
-				for ( var signature in notifications ) {
-
-					note = notifications[ signature ];
-					blob[ signature ] = {
-						"display": note.display,
-						"sessionid": note.sessionid,
-						"timestamp": Date.now()
-					}
-
-				}
-
-				console.log( blob );
-
-				$.ajax( basepath + '/ajax/save_page_setting', {
-
-					data: {
-						'type': 'notifications',
-						'page': 'notifications_facility',
-						'setting': JSON.stringify( blob )
-					},
-
-					type: 'POST',
-					complete: function ( request ) {
-						console.log( request, "saved" );
-					}
-
-				});
-
-			} );
-		}
-	}
+	} );
 
 	var Notification = function ( message, options ) {
 
@@ -264,7 +220,7 @@
 
 					type: 'POST',
 					complete: function ( request ) {
-						console.log( request, "saved" );
+
 					}
 
 				});
@@ -344,10 +300,7 @@
 	};
 
 	$.notify = function ( message, options ) {
-
-		var self = new Notification( message, options );
-		return self;
-
+		return ( new Notification( message, options ) );
 	}
 
 	$.notify.sessionid = "";

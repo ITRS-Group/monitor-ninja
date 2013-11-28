@@ -39,13 +39,14 @@ $("document").ready( function () {
 				dialog = $.notify( msg, {
 					"sticky": true,
 					"remove": function () {
-						console.log( "Here" );
 						btn.removeAttr( "disabled" );
 					},
 					"buttons": {
 
 						"Submit command!": function () {
+
 							dialog.remove();
+
 							$.ajax({
 								url : href,
 								type: "POST",
