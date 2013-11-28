@@ -19,8 +19,7 @@ listview_renderer_extra_objects.all = [
 				$('<input/>').attr('type', 'text').attr('id', 'lsfilter_save_filter_name').attr('placeholder', _('Filter Name')),
 				$('<button/>').attr('id', 'lsfilter_save_filter').text(_('Save Filter')),
 				// if authorized_for('saved_filters_global')
-				$('<input/>').attr('type', 'checkbox').attr('id', 'lsfilter_save_filter_global'),
-				_('Make global')
+				$('<label/>').text(" "+_('Make global')).prepend($('<input/>').attr('type', 'checkbox').attr('id', 'lsfilter_save_filter_global'))
 			),
 			$('<h2/>').text(_('Manual input')),
 			$('<form/>').attr('action', '#').append(
