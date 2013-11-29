@@ -1,14 +1,15 @@
 
 $(document).ready(function() {
+
 	adjust_height();
 
 	if ($('#iframe') || $('#nagvis') || $('#hypermap')) {
 		var elements = $('#iframe, #nagvis, #hypermap');
-		
+
 		var ua = navigator.userAgent.toLowerCase();
 
 		if (ua.indexOf('ipad') != -1 || ua.indexOf('android') != -1) {
-			
+
 			var agent = (ua.indexOf('ipad') != -1) ? 'iPad' : 'Android';
 
 			elements.load(function () {
@@ -34,24 +35,30 @@ $(document).ready(function() {
 });
 
 function adjust_height_frame( selector ) {
-	var iframe = $(selector);
+
+	var content_div = $( "body > .container > #content" ),
+			header_div = $( "body > .container >#header" ),
+			body = $( "body" );
+
+	var height = body.height() - header_div.outerHeight();
+	var iframe = $( selector );
+
 	if( iframe ) {
-		var top = 49;
-		if( $('#infobar').size() > 0 ) top = 85;
-		var new_height = parseInt(document.documentElement.clientHeight) - top;
-		$(selector).css('height', new_height+'px');
+		iframe.css( 'height', ( height - 4 ) + 'px' );
+		content_div.css( "height", (height) + "px" );
 	}
+
 }
 
 function adjust_height() {
+
 	adjust_height_frame('#iframe');
 	adjust_height_frame('#nagvis');
 	adjust_height_frame('#hypermap');
 	adjust_height_frame('#content');
-	
+
 	$('body').css('overflow-y', 'hidden');
+
 };
 
-window.onresize = function (){
-	adjust_height();
-};
+$(window).bind( "resize", adjust_height );
