@@ -138,6 +138,24 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->js_strings = $this->js_strings;
 
+		$this->template->toolbar = new Toolbar_Controller( $template->label_create_new );
+
+		if ( $this->type == 'avail' ) {
+			$this->template->toolbar->info( '<a id="switch_report_type" href="' . url::base(true) . 'sla' . '">' );
+			$this->template->toolbar->info(
+				html::image($this->add_path('icons/16x16/sla.png'), array('alt' => _('SLA'), 'title' => _('SLA'), 'ID' => 'switcher_image'))
+			);
+			$this->template->toolbar->info( ' &nbsp; <span id="switch_report_type_txt">' . _('Switch to SLA report') . '</span>' );
+			$this->template->toolbar->info( '</a>' );
+		} else {
+			$this->template->toolbar->info( '<a id="switch_report_type" href="' . url::base(true) . 'avail' . '">' );
+			$this->template->toolbar->info(
+				html::image($this->add_path('icons/16x16/availability.png'), array('alt' => _('Availability'), 'title' => _('Availability'), 'ID' => 'switcher_image'))
+			);
+			$this->template->toolbar->info( ' &nbsp; <span id="switch_report_type_txt">' . _('Switch to Availability report') . '</span>' );
+			$this->template->toolbar->info( '</a>' );
+		}
+
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Setup');
 	}
 

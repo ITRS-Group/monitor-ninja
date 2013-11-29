@@ -39,9 +39,8 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<select style="width: 100%" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple"></select>
 				</div>
 
-				<div class="left" style="padding-top: 40px;">
-					<input type="button" value="&gt;" id="mv_hg_r" class="button arrow-right" /><br />
-					<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
+				<div class="left" style="padding-top: 16px;">
+					<input type="button" value="&gt;" id="mv_hg_r" class="button arrow-right" /><br /><input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
 				</div>
 
 				<div class="left" style="width: 40%">

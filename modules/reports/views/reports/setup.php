@@ -15,20 +15,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 	}
 	?></div>
 		<div class="setup-table">
-			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
-
-			<div id="switcher" class="report-block">
-				<a id="switch_report_type" href="<?php echo url::base(true) . ($type == 'avail' ? 'sla' : 'avail') ?>/index" style="border: 0px; float: left; margin-right: 5px">
-				<?php
-					echo $type == 'avail' ?
-					html::image($this->add_path('icons/16x16/sla.png'), array('alt' => _('SLA'), 'title' => _('SLA'), 'ID' => 'switcher_image')) :
-					html::image($this->add_path('icons/16x16/availability.png'), array('alt' => _('Availability'), 'title' => _('Availability'), 'ID' => 'switcher_image'));
-				?>
-				<span id="switch_report_type_txt" style="border-bottom: 1px dotted #777777">
-				<?php echo $type == 'avail' ? _('Switch to SLA report') :_('Switch to Availability report'); ?>
-				</span>
-				</a>
-			</div>
 
 			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block', 'method' => 'get')); ?>
 				<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
