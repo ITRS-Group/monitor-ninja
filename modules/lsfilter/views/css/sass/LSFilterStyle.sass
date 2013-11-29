@@ -15,9 +15,8 @@
   background: #f5f5f5
   border: 1px solid #999
   position: absolute
-  top: 76px
   /* topbar + extra toolbar height */
-  right: 4px
+  right: 6px
   /* Attach to right corner */
   z-index: 10
   max-height: 500px
@@ -86,7 +85,7 @@
       display: inline-block
       vertical-align: middle
       border-right: 1px solid #ccc
-      padding: 3px 6px 2px 6px
+      padding: 1px 6px 0px 6px
       &:first-child
         border-right: none
       .icon-16
@@ -143,6 +142,13 @@ th
 
 #filter_result
   margin: -2px -2px 0 -2px
+
+#filter_result
+  table
+    td
+      padding: 4px 2px 1px 2px
+      a, img, span
+        vertical-align: middle
 
 .floating-header
   left: 0px

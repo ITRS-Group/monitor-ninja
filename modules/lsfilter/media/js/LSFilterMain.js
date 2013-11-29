@@ -42,9 +42,12 @@ var lsfilter_main = {
 	},
 
 	update_run : function() {
+
 		var source = this.update_source;
 		var query = this.update_query;
 		var order = this.update_order;
+
+		var header_height = $( "body > .container >#header" ).outerHeight() + 4;
 
 		this.update_timer = false;
 		try {
@@ -80,6 +83,7 @@ var lsfilter_main = {
 						x = x();
 					}
 					x.addClass('filter-query-dropdown');
+					x.css( "top", header_height + "px" );
 					return x.toArray();
 				}));
 		} catch (ex) {
