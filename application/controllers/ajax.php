@@ -58,10 +58,15 @@ class Ajax_Controller extends Authenticated_Controller {
 			} elseif ( $method === "commit" ) {
 
 				$status = Current_status_Model::instance()->program_status();
-				$state = $status->$naming;
 
+				if ( isset( $status->$naming ) )
+					$state = $status->$naming;
 				$cmd->commit( $command );
-				echo json_encode( array( "state" => $state ) );
+
+				if ( isset( $state ) )
+					echo json_encode( array( "state" => $state ) );
+				else
+					echo json_encode( array( ) );
 
 			}
 

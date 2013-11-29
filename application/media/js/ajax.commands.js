@@ -61,22 +61,23 @@ $("document").ready( function () {
 									$.notify( "Command has been executed!" );
 									data = JSON.parse( data );
 
-									if ( data.state === 0 ) {
-										title = title.replace( /Enable/, "Disable" );
-										title = title.replace( /Start/, "Stop" );
-									} else {
-										title = title.replace( /Stop/, "Start" );
-										title = title.replace( /Disable/, "Enable" );
+									if ( typeof( data.state ) != "undefined" ) {
+										if ( data.state === 0 ) {
+											title = title.replace( /Enable/, "Disable" );
+											title = title.replace( /Start/, "Stop" );
+										} else {
+											title = title.replace( /Stop/, "Start" );
+											title = title.replace( /Disable/, "Enable" );
+										}
+
+										btn.html( title );
+										btn.attr( "data-state", (data.state == 1) ? 0 : 1 );
+
+										if ( toggle )
+											btn.attr( "data-command", toggle );
+										toggle = command;
+
 									}
-
-									btn.html( title );
-									btn.attr( "data-state", (data.state == 1) ? 0 : 1 );
-
-									if ( toggle ) {
-										btn.attr( "data-command", toggle );
-									}
-
-									toggle = command;
 
 									btn.removeAttr( "disabled" );
 
