@@ -159,6 +159,9 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Setup');
 	}
 
+	/**
+	 * Create the same data as generate, but dump it as json
+	 */
 	public function debug($input=false)
 	{
 		$this->setup_options_obj($input);
