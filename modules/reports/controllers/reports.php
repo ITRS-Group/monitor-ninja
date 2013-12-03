@@ -159,6 +159,17 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Setup');
 	}
 
+	public function debug($input=false)
+	{
+		$this->setup_options_obj($input);
+		$reports_model = new Status_Reports_Model($this->options);
+		$data_arr = $reports_model->get_uptime();
+		header('Content-Type: text/plain');
+		header('Content-Disposition: attachment; filename="debug.json"');
+		print json_encode($data_arr);
+		exit(1);
+	}
+
 	/**
 	 * Generate (availability) report from parameters set in index()
 	 *
