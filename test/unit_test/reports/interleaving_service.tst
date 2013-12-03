@@ -70,3 +70,18 @@ best state, down as up {
 		TIME_CRITICAL_SCHEDULED = 0
 	}
 }
+
+# bug #8142
+worst state, down as down, previous dt exist {
+	start_time = 400004800
+	end_time = 400005800
+	service_description {
+		host1;PING
+	}
+	scheduleddowntimeasuptime = 0
+	correct {
+		TIME_WARNING_UNSCHEDULED = 200
+		TIME_CRITICAL_UNSCHEDULED = 500
+		TIME_CRITICAL_SCHEDULED = 300
+	}
+}

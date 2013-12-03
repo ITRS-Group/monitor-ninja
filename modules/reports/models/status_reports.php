@@ -330,7 +330,7 @@ class Status_Reports_Model extends Reports_Model
 
 		$downtimes = array();
 		foreach( $dbr as $staterow ) {
-			$in_downtime = ($staterow['event_type'] == Reports_Model::DOWNTIME_START);
+			$in_downtime = (int)($staterow['event_type'] == Reports_Model::DOWNTIME_START);
 			if ( $type == 'service' ) {
 				$downtimes[ $staterow['host_name'] . ';' . $staterow['service_description'] ] = $in_downtime;
 			} else {

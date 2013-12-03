@@ -95,7 +95,7 @@ class SingleStateCalculator extends StateCalculator
 				$add = 1;
 			}
 			if ($add) {
-				$this->st_dt_depth++;
+				$this->st_dt_depth+=1;
 			}
 			break;
 		 case Reports_Model::DOWNTIME_STOP:
@@ -105,7 +105,7 @@ class SingleStateCalculator extends StateCalculator
 			# old merlin versions created more end events than start events, so
 			# never decrement if we're already at 0.
 			if ($this->st_dt_depth) {
-				$this->st_dt_depth--;
+				$this->st_dt_depth-=1;
 			}
 			break;
 		 case Reports_Model::SERVICECHECK:

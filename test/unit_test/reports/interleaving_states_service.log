@@ -16,3 +16,6 @@
 [400003730] SERVICE ALERT: host1;PING;OK;HARD;1;OK - yay
 [400003770] SERVICE ALERT: host1;PING;WARNING;HARD;1;WARNING - danger, will robinson!
 [400004500] SERVICE DOWNTIME ALERT: host1;PING;STOPPED; Service has exited from a period of scheduled downtime
+[400005000] SERVICE ALERT: host1;PING;CRITICAL;HARD;1;CRITICAL - wow
+[400005200] SERVICE DOWNTIME ALERT: host1;PING;STARTED; Service has entered a period of scheduled downtime
+[400005500] SERVICE DOWNTIME ALERT: host1;PING;STOPPED; Service has exited from a period of scheduled downtime
