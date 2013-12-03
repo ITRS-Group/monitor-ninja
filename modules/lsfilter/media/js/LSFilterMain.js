@@ -115,7 +115,15 @@ var lsfilter_main = {
 				loader.remove();
 			}
 		});
+		lsfilter_textarea.init($('#filter_query'), $('#filter_query_order'));
 		lsfilter_saved.init();
+		lsfilter_visual.init($('#filter_visual'));
+		lsfilter_visual.update({
+			source: 'textfield',
+			query: lsfilter_query,
+			order: lsfilter_query_order
+		});
+
 	},
 
 	/***************************************************************************
