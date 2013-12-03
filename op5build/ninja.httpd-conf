@@ -4,7 +4,10 @@ Alias /monitor/GraphXML.dtd /opt/monitor/share/GraphXML.dtd
 Alias /monitor/js /opt/monitor/share/js
 Alias /monitor/images /opt/monitor/share/images
 Alias /monitor/css /opt/monitor/share/css
-Alias /monitor/op5 /opt/monitor/op5
+Alias /monitor/op5/nacoma /opt/monitor/op5/nacoma
+Alias /monitor/op5/pnp /opt/monitor/op5/pnp
+Alias /monitor/op5/portstatus /opt/monitor/op5/portstatus
+Alias /monitor/op5/manual /opt/monitor/op5/manual
 Alias /monitor /opt/monitor/op5/ninja
 Alias /ninja /opt/monitor/op5/ninja
 
