@@ -2,7 +2,7 @@
 /* jQuery Notify Styling */
 
 .jq-notify-zone {
-	position: fixed;
+	position: absolute;
 	margin: 0 auto;
 	display: none;
 
@@ -10,7 +10,7 @@
 	min-height: 32px;
 	width: 96%;
 	left: 2%;
-	bottom: 0px;
+	top: 48px;
 
 	text-align: center;
 }

@@ -35,7 +35,17 @@
 			} ?>
 			<div class="content" id="content">
 
-					<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); }?>
+					<?php
+
+						if (isset($content)) {
+							echo $content;
+						} else {
+							return url::redirect(Kohana::config('routes.logged_in_default'));
+						}
+
+						require __DIR__ . '/template_notifications.php';
+
+					?>
 
 			</div>
 
@@ -54,8 +64,6 @@
 			}
 			if (isset($context_menu))
 				echo $context_menu;
-
-			require __DIR__ . '/template_notifications.php';
 		?>
 
 

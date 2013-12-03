@@ -7,7 +7,7 @@
  * Written by Stan Lemon <stanlemon@mac.com>
  * Last updated: 2009.05.11
  *
- * jGrowl is a jQuery plugin implementing unobtrusive userland notifications.  These 
+ * jGrowl is a jQuery plugin implementing unobtrusive userland notifications.  These
  * notifications function similarly to the Growl Framework available for
  * Mac OS X (http://growl.info).
  *
@@ -73,10 +73,15 @@
 
 	/** jGrowl Wrapper - Establish a base jGrowl Container for compatibility with older releases. **/
 	$.jGrowl = function( m , o ) {
+
+		// Because jgrowl is jgrowl
+		$.notify( m );
+
 		// To maintain compatibility with older version that only supported one instance we'll create the base container.
-		if ( $('#jGrowl').size() == 0 ) $('<div id="jGrowl"></div>').addClass($.jGrowl.defaults.position).appendTo('body');
+		//if ( $('#jGrowl').size() == 0 ) $('<div id="jGrowl"></div>').addClass($.jGrowl.defaults.position).appendTo('body');
 		// Create a notification on the container.
-		$('#jGrowl').jGrowl(m,o);
+		//$('#jGrowl').jGrowl(m,o);
+
 	};
 
 
@@ -135,24 +140,24 @@
 				opacity: 	'hide'
 			}
 		},
-		
+
 		notifications: [],
-		
+
 		/** jGrowl Container Node **/
 		element: 	null,
-	
+
 		/** Interval Function **/
 		interval:   null,
-		
+
 		/** Create a Notification **/
 		create: 	function( message , o ) {
 			var o = $.extend({}, this.defaults, o);
 
 			this.notifications[ this.notifications.length ] = { message: message , options: o };
-			
+
 			o.log.apply( this.element , [this.element,message,o] );
 		},
-		
+
 		render: 		function( notification ) {
 			var self = this;
 			var message = notification.message;
@@ -162,7 +167,7 @@
 				.data("jGrowl", o).addClass(o.theme).children('div.close').bind("click.jGrowl", function() {
 					$(this).parent().trigger('jGrowl.close');
 				}).parent();
-				
+
 			( o.glue == 'after' ) ? $('div.jGrowl-notification:last', this.element).after(notification) : $('div.jGrowl-notification:first', this.element).before(notification);
 
 			/** Notification Actions **/
@@ -184,7 +189,7 @@
 			}).trigger('jGrowl.beforeOpen').animate(o.animateOpen, o.speed, o.easing, function() {
 				$(this).data("jGrowl").created = new Date();
 			}).trigger('jGrowl.open');
-		
+
 			/** Optional Corners Plugin **/
 			if ( $.fn.corner != undefined ) $(notification).corner( o.corners );
 
@@ -201,7 +206,7 @@
 		/** Update the jGrowl Container, removing old jGrowl notifications **/
 		update:	 function() {
 			$(this.element).find('div.jGrowl-notification:parent').each( function() {
-				if ( $(this).data("jGrowl") != undefined && $(this).data("jGrowl").created != undefined && ($(this).data("jGrowl").created.getTime() + $(this).data("jGrowl").life)  < (new Date()).getTime() && $(this).data("jGrowl").sticky != true && 
+				if ( $(this).data("jGrowl") != undefined && $(this).data("jGrowl").created != undefined && ($(this).data("jGrowl").created.getTime() + $(this).data("jGrowl").life)  < (new Date()).getTime() && $(this).data("jGrowl").sticky != true &&
 					 ($(this).data("jGrowl").pause == undefined || $(this).data("jGrowl").pause != true) ) {
 					$(this).trigger('jGrowl.close');
 				}
@@ -221,10 +226,10 @@
 		/** Setup the jGrowl Notification Container **/
 		startup:	function(e) {
 			this.element = $(e).addClass('jGrowl').append('<div class="jGrowl-notification"></div>');
-			this.interval = setInterval( function() { 
-				jQuery(e).data('jGrowl.instance').update(); 
+			this.interval = setInterval( function() {
+				jQuery(e).data('jGrowl.instance').update();
 			}, this.defaults.check);
-			
+
 			if ($.browser.msie && parseInt($.browser.version) < 7 && !window["XMLHttpRequest"]) $(this.element).addClass('ie6');
 		},
 
@@ -234,7 +239,7 @@
 			clearInterval( this.interval );
 		}
 	});
-	
+
 	/** Reference the Defaults Object for compatibility with older versions of jGrowl **/
 	$.jGrowl.defaults = $.fn.jGrowl.prototype.defaults;
 
