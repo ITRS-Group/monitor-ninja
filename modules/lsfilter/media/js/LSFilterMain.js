@@ -70,13 +70,6 @@ var lsfilter_main = {
 
 			this.clear_parse_status();
 
-			lsfilter_history.update(data);
-			lsfilter_storage.list.update(data);
-			lsfilter_multiselect.update(data);
-			lsfilter_saved.update(data);
-			lsfilter_textarea.update(data);
-			lsfilter_visual.update(data);
-
 			$('#filter-query-builder').css( "top", header_height + "px" );
 
 			$('#extra-dropdowns').replaceContent(
@@ -88,6 +81,13 @@ var lsfilter_main = {
 					x.css( "top", header_height + "px" );
 					return x.toArray();
 				}));
+			lsfilter_history.update(data);
+			lsfilter_storage.list.update(data);
+			lsfilter_multiselect.update(data);
+			lsfilter_saved.update(data);
+			lsfilter_textarea.update(data);
+			lsfilter_visual.update(data);
+
 		} catch (ex) {
 			console.log(ex);
 			this.set_parse_status(ex);
