@@ -77,6 +77,8 @@ var lsfilter_main = {
 			lsfilter_textarea.update(data);
 			lsfilter_visual.update(data);
 
+			$('#filter-query-builder').css( "top", header_height + "px" );
+
 			$('#extra-dropdowns').replaceContent(
 				$.map((listview_renderer_extra_objects[lsfilter_storage.list.request_metadata.table] || []).concat(listview_renderer_extra_objects.all || []), function(x) {
 					if (typeof x == 'function') {

@@ -231,7 +231,7 @@ function lsfilter_list(config)
 			cloneHead = clone.find("tr").children(),
 			index = 0;
 
-		clone.css( 'min-width', header.width() );
+		clone.css( 'min-width', header.outerWidth() );
 		clone.css( 'top', header_div.outerHeight() + "px" );
 
 		head.each(function() {
@@ -239,14 +239,18 @@ function lsfilter_list(config)
 			var clonehead = $(cloneHead[index]);
 			var thishead = $(this);
 
-			var w = parseInt( thishead.css('width'), 10 );
-			index++;
+			var w = parseInt( thishead.width(), 10 ) + 1;
 
-			if ( index % 2 == 1 ) w -= 1;
+			index++;
 
 			clonehead.css( 'width', w + 'px');
 
-			clonehead.css('padding-left', thishead.css('padding-left'));
+			if ( index == 1 ) {
+				clonehead.css('padding-left', (parseInt( thishead.css('padding-left'), 10 ) - 1) + "px" );
+			} else {
+				clonehead.css('padding-left', thishead.css('padding-left'));
+			}
+
 			clonehead.css('padding-right', thishead.css('padding-right'));
 			clonehead.css('padding-top', thishead.css('padding-top'));
 			clonehead.css('padding-bottom', thishead.css('padding-bottom'));
