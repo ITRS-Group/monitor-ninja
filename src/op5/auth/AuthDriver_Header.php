@@ -55,7 +55,7 @@ class op5AuthDriver_Header extends op5AuthDriver {
 			$params['email'] = '';
 		}
 
-		$group_delimiter = ' ';
+		$group_delimiter = ',';
 		if(isset($this->config['group_list_delimiter'])) {
 			$group_delimiter = $this->config['group_list_delimiter'];
 		}
