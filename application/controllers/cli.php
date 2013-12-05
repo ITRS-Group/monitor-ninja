@@ -333,4 +333,14 @@ class Cli_Controller extends Ninja_Controller {
 		$cfg->setConfig('auth_users', $users);
 		$cfg->setConfig('auth_groups', $groups);
 	}
+
+	public function license_start() {
+		$row = Database::instance()->query("SELECT timestamp from report_data ORDER BY timestamp ASC LIMIT 1");
+		if(!$row) {
+			echo "";
+			return;
+		}
+		$value = $row->result(false)->current();
+		echo $value['timestamp'];
+	}
 }
