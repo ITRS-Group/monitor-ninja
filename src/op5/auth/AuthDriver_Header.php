@@ -32,6 +32,8 @@ class op5AuthDriver_Header extends op5AuthDriver {
 		} else if(function_exists('apache_request_headers')) {
 			$headers = apache_request_headers();
 		}
+		
+		$headers = array_change_key_case($headers, CASE_LOWER);
 
 		$params = array();
 
@@ -75,9 +77,9 @@ class op5AuthDriver_Header extends op5AuthDriver {
 	 * @param $value mixed
 	 * @return boolean
 	 **/
-	private function fetch_header_if($headers, $config_key, &$value) {
-		if(isset($this->config[$config_key]) && isset($headers[$this->config[$config_key]])) {
-			$value = $headers[$this->config[$config_key]];
+	private function fetch_header_if( $headers, $config_key, &$value ) {
+		if(isset($this->config[$config_key]) && isset($headers[strtolower($this->config[$config_key])])) {
+			$value = $headers[strtolower($this->config[$config_key])];
 			return true;
 		}
 		return false;
