@@ -187,8 +187,7 @@ class op5Authorization {
 				'FILE' => '',
 				'access_rights' => '',
 				'pnp' => '',
-				'saved_filters_global' => '',
-				'manage_trapper' => '')
+				'saved_filters_global' => '')
 		);
 	}
 

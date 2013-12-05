@@ -12,6 +12,34 @@ require_once(__DIR__.'/User.php');
  * @license
  */
 class op5AuthDriver_Apache extends op5AuthDriver {
+	protected static $metadata = array(
+			'require_user_configuration' => true
+			);
+
+	private $users = false;
+
+	private function fetch_users()
+	{
+		if($this->users === false) {
+			$this->users = op5Config::instance()->getConfig('auth_users');
+		}
+	}
+
+	private function resolve_groups_for_user($username) {
+		$this->fetch_users();
+		$groups = array();
+
+		if( isset($this->users[$username]) && isset($this->users[$username]['groups']) ) {
+			$groups = array_merge($groups, $this->users[$username]['groups']);
+		}
+
+		/* Make all apache auth users members of this group, to grant privileges to all those users
+		 * This is for backward compatibility. Use meta_driver_apache or meta_all_users instead
+		*/
+		$groups[] = 'apache_auth_user';
+
+		return $groups;
+	}
 
 	/**
 	 * Attempt to log in a user by static configuration, or external infromation.
@@ -39,14 +67,25 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 */
 	public function groups_available(array $grouplist)
 	{
+		$this->fetch_users();
+
+		$groups = array();
+		foreach($this->users as $user=>$userdata) {
+			if(isset($userdata['groups'])) {
+				foreach($userdata['groups'] as $group) {
+					$groups[$group] = $group;
+				}
+			}
+		}
+		$groups['apache_auth_user'] = 'apache_auth_user';
+
 		$result = array();
+
 		foreach($grouplist as $group) {
-			if($group == 'apache_auth_user') {
-				$result[$group] = true;
-			} else if(substr($group, 0, 5) == 'user_') {
+			if(substr($group, 0, 5) == 'user_') {
 				/* Unknown if user exists */
 			} else {
-				$result[$group] = false;
+				$result[$group] = isset($groups[$group]);
 			}
 		}
 		return $result;
@@ -68,14 +107,9 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 
 		$username = $_SERVER['PHP_AUTH_USER'];
 
-		$groups = array(
-			/* Make all apache auth users members of this group, to grant privileges to all those users */
-			'apache_auth_user'
-		);
-
 		$user = new op5User(array(
 				'username' => $username,
-				'groups'   => $groups,
+				'groups'   => $this->resolve_groups_for_user($username),
 				'realname' => $username, /* We have no clue about realname, so call him/her their username */
 				'email'    => ''
 		));
@@ -90,6 +124,6 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 */
 	public function groups_for_user($username)
 	{
-		return array('apache_auth_user');
+		return $this->resolve_groups_for_user($username);
 	}
 } // End Auth
