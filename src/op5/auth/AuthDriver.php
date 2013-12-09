@@ -17,10 +17,10 @@ abstract class op5AuthDriver {
 
 	/**
 	 * Metadata for the module
-	 * 
+	 *
 	 * This array contains information about the driver itself, and about its
 	 * capabilities, and what it needs.
-	 * 
+	 *
 	 * @var $metadata array
 	 **/
 	protected static $metadata = array();
@@ -114,10 +114,10 @@ abstract class op5AuthDriver {
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Get the metadata from the driver.
-	 * 
+	 *
 	 * If given an attribute, return only that field in the metadata array.
 	 * Otherwise, the entire array
 	 */

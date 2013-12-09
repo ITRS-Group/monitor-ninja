@@ -54,10 +54,10 @@ class op5auth {
 				}
 		);
 	}
-	
+
 	/**
 	 * Just so we dont break compatibility. DONT USE!
-	 * 
+	 *
 	 * @deprecated
 	 */
 	static public function factory($config = false, $driver_config = false) {
@@ -610,13 +610,13 @@ class op5auth {
 		$this->session_store();
 		return $this->user;
 	}
-	
+
 	/**
 	 * Return the combined metadata for all modules used in the system.
-	 * 
+	 *
 	 * This is useful to retreive for example which configuration interfaces
 	 * to provide.
-	 * 
+	 *
 	 * @param string $field
 	 * @return array List of drivers, or list of drivers per metadata flag
 	 */
