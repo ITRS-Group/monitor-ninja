@@ -40,6 +40,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		 case 'rotate':
 			 $this->template->content->params = 'mod=Map&amp;act=view&amp;show='.$args[1].'&amp;rotation='.$args[0].'&amp;rotationStep=0&amp;'.$queryparams;
 			break;
+		 default:
+			 return parent::__call($name, $args);
 		}
 	}
 }
