@@ -36,8 +36,9 @@ $content .= '</div>';
 $css_header = '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
 
 if (IN_PRODUCTION) {
-	$tmp_dir = Kohana::Config('config.tmp_dir') ? Kohana::Config('config.tmp_dir') : '/tmp/ninja-stacktraces/';
-	@mkdir($tmp_dir, 0700, true);
+	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces/';
+	$tmp_dir_perm = Kohana::Config('exception.tmp_dir_perm') ? Kohana::Config('exception.tmp_dir_perm') : 0700;
+	@mkdir($tmp_dir, $tmp_dir_perm, true);
 	$file = tempnam($tmp_dir, date('Ymd-hi').'-');
 	$fd = fopen($file, 'w');
 	$error_data = "<html><head>$css_header</head><body>$content</body></html>";
