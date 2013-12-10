@@ -157,6 +157,9 @@ rm -rf %buildroot%prefix/application/vendor/phptap/.git
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 
+mkdir -p %buildroot%prefix/application/config/custom
+install -m 755 test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
+rm %buildroot%prefix/test/configs/kohana-configs/exception.php
 
 %pre
 # This needs to be removed for us to be able to upgrade ninja 2.0.7
@@ -211,6 +214,7 @@ done
 %exclude %prefix/modules/test
 %exclude %prefix/Makefile
 %exclude %prefix/features
+%exclude %prefix/application/config/custom/exception.php
 
 %files test
 %defattr(-,monitor,%daemon_group)
@@ -219,6 +223,7 @@ done
 %prefix/test
 %prefix/modules/test
 %prefix/Makefile
+%prefix/application/config/custom/exception.php
 
 %clean
 rm -rf %buildroot
