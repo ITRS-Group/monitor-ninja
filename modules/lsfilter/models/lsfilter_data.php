@@ -8,8 +8,8 @@ class LSFilter_Data_Model extends Model {
 	/**
 	 * @param $query string
 	 * @param $limit int
-	 * @param $offset int = false @TODO: should be 0..?
-	 * @param $columns array = false @TODO: should be array()..?
+	 * @param $offset int = false TODO: should be 0..?
+	 * @param $columns array = false TODO: should be array()..?
 	 * @param $sort array = array() [col1, col2, ..., colN]
 	 *
 	 * @throws LSFilterException
