@@ -152,7 +152,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			}
 
 			return value;
-		}
+		};
 		return {
 			op : 'add',
 			cols : [ custom_name0 ]
@@ -375,7 +375,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		}
 		return function(args) {
 			return "Unknown function " + name0;
-		}
+		};
 	};
 
 	// expr_list: expr_list := * expr comma expr_list
@@ -384,7 +384,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			var arr = expr_list2(args);
 			arr.unshift(expr0(args));
 			return arr;
-		}
+		};
 	};
 
 	// expr_if: expr4 := * if expr then expr4 else expr4
@@ -393,14 +393,14 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			if( expr1(args) )
 				return expr3(args);
 			return expr5(args);
-		}
+		};
 	};
 
 	// expr_list_end: expr_list := * expr
 	this.visit_expr_list_end = function(expr0) {
 		return function(args) {
 			return [ expr0(args) ];
-		}
+		};
 	};
 
 	this.accept = function(result) {
@@ -426,7 +426,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		
 		/* Add error notification column */
 		return 'syntax error: ' + before + ' <span style="color: red;">' + follow + '</span>';
-	}
+	};
 	
 	/*
 	 * Recover from column_list error: totally invalid column definition Tries
@@ -449,7 +449,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		var msg = errormessage(stack,tokens,lexer);
 		this.custom_cols[column_name] = function(args) {
 			return msg;
-		}
+		};
 		
 		return outp_list;
 	};
@@ -563,5 +563,5 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 		if (sort)
 			return sort;
 		return [];
-	}
+	};
 }

@@ -5,7 +5,7 @@ var LSFilterPP = function LSFilterPP() {
 	this.preprocess_string = function(value) {
 		return value.substring(1,value.length-1).replace(/\\(.)/g, '$1');
 	};
-}
+};
 
 var LSFilterMetadataVisitor = function LSFilterMetadataVisitor(){
 	this.visit_entry            = function(query0)                    { return query0; };

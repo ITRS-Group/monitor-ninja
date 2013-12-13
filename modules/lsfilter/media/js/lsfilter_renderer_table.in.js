@@ -91,7 +91,7 @@ listview_renderer_table.hosts = {
 						_('Scheduled Downtime')));
 
 			if (args.obj.comments_count > 0)
-				cell.append(comment_icon(args.obj.name, null))
+				cell.append(comment_icon(args.obj.name, null));
 
 			return cell;
 		}
@@ -1107,7 +1107,7 @@ listview_renderer_table.saved_filters = {
 		"cell" : function(args) {
 			var cell = $('<td />');
 			if (args.obj.username) {
-				cell.text(args.obj.username)
+				cell.text(args.obj.username);
 			}
 			return cell;
 

@@ -225,7 +225,7 @@ var lsfilter_graphics_visitor = {
 			tablesel.append(opt);
 		}
 		tablesel.val(obj.table);
-		container.append(tablesel)
+		container.append(tablesel);
 
 		container.append(this.visit(obj.query));
 		return container;
@@ -251,7 +251,7 @@ var lsfilter_graphics_visitor = {
 		list.attr('data-op', op);
 
 		var header = $("<div />");
-		header.addClass('lsfilter_visual_group_header')
+		header.addClass('lsfilter_visual_group_header');
 
 		list.append(header);
 
@@ -671,7 +671,7 @@ var lsfilter_visual = {
 							function(i) {
 								return $(this).prev('.lsfilter_visual_node').length > 0;
 							}).before(delimiter);
-		}
+		};
 		$('#filter_visual').find('.lsfilter_visual_delimiter').remove();
 		do_update($('<div>OR</div>'), 'or');
 		do_update($('<div>AND</div>'), 'and');

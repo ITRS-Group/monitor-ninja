@@ -181,5 +181,5 @@ var lsfilter_main = {
 
 $().ready(function() {
 	lsfilter_main.init();
-	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order)
+	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order);
 });
