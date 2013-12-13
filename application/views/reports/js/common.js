@@ -130,7 +130,7 @@ $(document).ready(function() {
 			},
 			success: function(data, status_msg, xhr) {
 				if (data == null) {
-					jgrowl_message(xhr.responseText, _reports_error);
+					$.notify(_reports_error + ": " + xhr.responseText, {'sticky': true});
 					return;
 				}
 				jgrowl_message(data.status_msg, _reports_success);
@@ -140,7 +140,7 @@ $(document).ready(function() {
 					$('#save_report_form').hide();
 			},
 			error: function(data) {
-				jgrowl_message(data.responseText, _reports_error);
+				$.notify(_reports_error + ": " + data.responseText, {'sticky': true});
 				btn.parent().find('img:last').remove();
 			},
 			dataType: 'json'
@@ -275,7 +275,7 @@ function js_print_date_ranges(the_year, type, item)
 
 			} else {
 				// error
-				jgrowl_message('Unable to fetch date ranges...', _reports_error);
+				$.notify(_reports_error + ": Unable to fetch date ranges.", {'sticky': true});
 			}
 			check_custom_months();
 		}
@@ -319,7 +319,7 @@ function get_members(type, cb, names_to_skip) {
 		url: _site_domain + _index_page + '/ajax/group_member',
 		data: {type: type},
 		error: function(data) {
-			jgrowl_message('Unable to fetch objects: ' + data.responseText, _reports_error);
+			$.notify("Unable to fetch objects: " + data.responseText, {'sticky': true});
 		},
 		success: function(all_names) {
 			empty_list(field_name);
@@ -356,7 +356,7 @@ function get_report_periods(type)
 				populate_report_periods(data);
 			} else {
 				// error
-				jgrowl_message('Unable to fetch report periods...', _reports_error);
+				$.notify(_reports_error + ": Unable to fetch report periods", {'sticky': true});
 			}
 		}
 	});
@@ -645,7 +645,6 @@ function check_form_values(form)
 		// trying to save a report without a name
 		errors++;
 		err_str += "<li>" + _reports_name_empty + "</li>";
-		jgrowl_message(_reports_name_empty, _error_header);
 	}
 
 	// display err_str if any
@@ -897,7 +896,7 @@ function confirm_delete_report()
 				}
 			},
 			error: function() {
-				jgrowl_message(_reports_error, _reports_error);
+				$.notify(_reports_error + ": failed to save report.", {'sticky': true});
 			},
 			dataType: 'json'
 		});

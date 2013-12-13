@@ -159,7 +159,7 @@ function get_sla_values() {
 		type: 'POST',
 		data: data,
 		error: function() {
-			jgrowl_message('Unable to fetch saved sla values...', _reports_error);
+			$.notify(_reports_error + ': Unable to fetch saved sla values...', {'sticky':true});
 		},
 		success: function(data) {
 			populate_saved_sla_data(data);
