@@ -746,8 +746,6 @@ class Reports_Controller extends Base_reports_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
-		# easier to find those later
 		$helptexts = array(
 			'filter' => _("Free text search, matching the objects in the left list below"),
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
@@ -795,11 +793,10 @@ class Reports_Controller extends Base_reports_Controller
 			'include_trends_scaling' => _("Check this to get upscaled values on your trends graph for small segments of time that would otherwise be hidden."),
 			'include_alerts' => _('Include a log of all alerts for all objects in your report.<br>Warning: This can make your reports slow!'),
 			'synergy_events' => _('Include a detailed history of what happened to BSM objects'),
-			'status_to_display' => _('Check a status to exclude log entries of that kind from the report.')
 		);
-		if (array_key_exists($id, $helptexts)) {
+		if (array_key_exists($id, $helptexts))
 			echo $helptexts[$id];
-		} else
+		else
 			parent::_helptexts($id);
 	}
 }
