@@ -71,7 +71,6 @@
 			<?php
 				echo form::hidden('first', '');
 				echo form::hidden('last', '');
-				echo form::hidden('have_options', 1);
 				if (isset($options['host'])) {
 					foreach ($options['host'] as $h)
 					echo form::hidden('host[]', $h);

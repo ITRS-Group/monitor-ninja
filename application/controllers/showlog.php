@@ -41,7 +41,7 @@ class Showlog_Controller extends Authenticated_Controller
 		} else if (isset($this->options['last']) && !empty($this->options['last'])) {
 			$this->options['last'] = strtotime($this->options['last']);
 		}
-		if (!empty($this->options) && !empty($this->options['have_options'])) {
+		if ($this->options) {
 			if (!isset($this->options['host_state_options'])) {
 				$this->options['host_state_options'] = array();
 			}
@@ -52,13 +52,17 @@ class Showlog_Controller extends Authenticated_Controller
 		}
 
 		# set default if no options are found
-		$this->options = array
-			(
+		$defaults = array(
 			 'state_type' => array('soft' => true, 'hard' => true),
 			 'host_state_options' => array('r' => true, 'd' => true, 'u' => true),
 			 'service_state_options' => array('r' => true, 'w' => true, 'c' => true, 'u' => true),
 			 'hide_initial' => true
-			 );
+		);
+		foreach($defaults as $key => $value) {
+			if(!isset($this->options[$key])) {
+				$this->options[$key] = $value;
+			}
+		}
 
 		if (!Auth::instance()->authorized_for('system_information')) {
 			$this->options['hide_process'] = 1;
