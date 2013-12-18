@@ -95,13 +95,18 @@ class LSFilter_Saved_Queries_Model extends Model {
 	}
 	/**
 	 * Save a query to the database
+	 *
+	 * @param $name string
+	 * @param $query string
+	 * @param $scope string "user" or "global"
+	 * @throws Exception if query can't be saved
 	 */
 	public static function save_query( $name, $query, $scope ) {
 		$db = Database::instance();
 		$parser = new LSFilter_Core(new LSFilterPP_Core(), new LSFilterMetadataVisitor_Core());
 		$metadata = $parser->parse( $query );
 
-		if( $metadata === false ) return "Error when type checking";
+		if( $metadata === false ) throw new Exception("Error when type checking");
 
 		$user = Auth::instance()->get_user()->username;
 		if( $scope == 'global' ) {
@@ -117,9 +122,9 @@ class LSFilter_Saved_Queries_Model extends Model {
 				/* Those are ok, break out of switch */
 				break;
 			case 'static':
-				return "Can not save to statis scope";
+				throw new Exception("Can not save to statis scope");
 			default:
-				return "Unknown scope";
+				throw new Exception("Unknown scope");
 		}
 
 		/* It should be an update on duplicate key, but that doesn't work well with null-valued columns, delete instead */
@@ -137,9 +142,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 		$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s)";
 		$args = array($user, $name, $metadata['name'], $query, $name);
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
-		$res = $db->query($sql_query);
-
-		return false;
+		$db->query($sql_query);
 	}
 	/**
 	 * Delete a query to the database

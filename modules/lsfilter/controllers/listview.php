@@ -162,13 +162,7 @@ class ListView_Controller extends Authenticated_Controller {
 		$scope = $this->input->get('scope','user');
 
 		try {
-
-			$result = LSFilter_Saved_Queries_Model::save_query($name, $query, $scope);
-
-			if( $result !== false )
-				return json::ok( array('status'=>'error', 'data' => $result) );
-
-
+			LSFilter_Saved_Queries_Model::save_query($name, $query, $scope);
 			return json::ok( array( 'status' => 'success', 'data' => 'success' ) );
 		}
 		catch( Exception $e ) {
