@@ -92,7 +92,10 @@ class showlog_Core
 
 		$cmd .= " --html";
 
-		passthru($cmd);
+		passthru($cmd, $exit_code);
+		if($exit_code) {
+			echo "<p>Could not use showlog binary, got '$exit_code' as exit code.</p>";
+		}
 	}
 
 	/**
