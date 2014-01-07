@@ -89,55 +89,32 @@ function format_interval(interval)
 function comment_icon( host, service ) {
 	var obj_name = service ? host+';'+service : host;
 	var query = '[comments] host.name="' + host + '"' + (service?' and service.description="'+service+'"':'');
-	var loading_img = '/application/media/images/loading.gif';
 	var link_data = {};
 	link_data.host = host;
 	if(service)
 		link_data.service = service;
 
 	return extinfo_link(link_data)
-			.append(icon16('add-comment', _('Comments')))
-			.css('border', '0px')
-			.qtip({
-				content: {
-					url: _site_domain + _index_page + "/ajax/fetch_comments/",
-					data: {host: obj_name},
-					method: 'get',
-					text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
-				},
-				position: {
-					corner: {
-					target: 'rightTop', // Position the tooltip
-					tooltip: 'bottomLeft'
-				},
-				adjust: {
-						screen: true, // Keep the tooltip on-screen at all times
-						x: 10,
-						y: -5
-					}
-				},
-				show: {
-					when: 'mouseover',
-					solo:true,
-					delay:_popup_delay
-				},
-				hide: {
-					effect: 'slide',
-					when: {
-						event: 'mouseout',
-						delay:2000
-					}
-				},
-				style: {
-					width: 500,
-					tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
-						border: {
-						width: 0,
-						radius: 4
-					},
-					name: 'light' // Use the default light style
+		.append(icon16('add-comment', _('Comments')))
+		.css('border', '0px')
+		.qtip($.extend(true, {}, qtip_default, {
+			content: {
+				text: function(ev, api) {
+					$.ajax({
+						url: _site_domain + _index_page + "/ajax/fetch_comments/",
+						data: {host: obj_name}
+					})
+					.done(function(html) {
+						api.set('content.text', html);
+					})
+					.fail(function(xhr, status, error) {
+						api.set('content.text', status + ': ' + error);
+					});
+
+					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
 				}
-			});
+			}
+		}));
 }
 
 function pnp_popup(elem, args)
@@ -147,55 +124,25 @@ function pnp_popup(elem, args)
 		get_data.push(key + "=" + encodeURIComponent(args[key].replace(/[ :\/\\]/g, "_")));
 	}
 
-	var loading_img = '/application/media/images/loading.gif';
-
-	$(elem).qtip(
-			{
-				content: {
+	$(elem).qtip($.extend(true, {}, qtip_default, {
+		content: {
+			text: function(ev, api) {
+				$.ajax({
 					url: _site_domain + _index_page + "/ajax/pnp_image/",
-					data: {
-						param: get_data.join("&")
-					},
-					method: 'post',
-					text: '<img src="' + _site_domain + loading_img + '" alt="'
-							+ _loading_str + '" />'
-				},
-				position: {
-					corner: {
-						target: 'bottomMiddle', // Position the tooltip above
-												// the link
-						tooltip: 'topLeft'
-					},
-					adjust: {
-						screen: true, // Keep the tooltip on-screen at all
-										// times
-						x: 10,
-						y: -5
-					}
-				},
-				show: {
-					when: 'mouseover',
-					solo: true,
-					delay: _popup_delay
-				},
-				hide: {
-					effect: 'slide',
-					when: {
-						event: 'mouseout',
-						delay: 2000
-					}
-				},
-				style: {
-					width: 620,
-					tip: true, // Apply a speech bubble tip to the tooltip at
-								// the designated tooltip corner
-					border: {
-						width: 0,
-						radius: 4
-					},
-					name: 'light' // Use the default light style
-				}
-			});
+					data: {param: get_data.join("&")},
+					type: 'POST'
+				})
+				.done(function(html) {
+					api.set('content.text', html);
+				})
+				.fail(function(xhr, status, error) {
+					api.set('content.text', status + ': ' + error);
+				});
+
+				return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
+			}
+		}
+	}));
 }
 
 jQuery.fn.update_text = function(text) {

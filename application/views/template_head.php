@@ -19,6 +19,7 @@ if (!empty($base_href)) {
 		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/jquery.notify.css', 'stylesheet', 'text/css', false, 'screen');
+		echo html::link('application/media/js/jquery.qtip.custom/jquery.qtip.css', 'stylesheet', 'text/css', false, 'screen');
 	?>
 
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
@@ -41,7 +42,7 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.jeditable.min');
 		echo html::script('application/media/js/jquery.query.js');
 		echo html::script('application/media/js/jquery.jgrowl.js');
-		echo html::script('application/media/js/jquery.qtip.min.js');
+		echo html::script('application/media/js/jquery.qtip.custom/jquery.qtip.js');
 		echo html::script('application/media/js/jquery.hotkeys.min.js');
 		echo html::script('application/media/js/jquery.contextMenu.js');
 		echo html::script('application/media/js/date.js');
@@ -112,6 +113,30 @@ if (!empty($base_href)) {
 		<?php 	} ?>
 
 			var _popup_delay='<?php echo config::get('config.popup_delay', '*', true); ?>';
+
+			var loading_img = '/application/media/images/loading.gif';
+			// Usage: $(your_element).qtip($.extend(true, {}, qtip_default, {your_qtip_options: 'here'}))
+			var qtip_default = {
+				position: {
+					viewport: $(window), // requires a plugin
+					at: 'bottom center',
+					my: 'top left',
+					adjust: {
+						x: 10,
+						y: 5
+					}
+				},
+				show: {
+					solo: true,
+					delay: _popup_delay
+				},
+				hide: {
+					delay: 2000
+				},
+				style: {
+					classes: 'qtip-light qtip-pnp'
+				}
+			};
 			<?php
 				if (!empty($js_strings)) {
 					echo $js_strings;

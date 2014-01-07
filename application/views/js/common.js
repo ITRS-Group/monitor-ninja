@@ -174,60 +174,36 @@ $(document).ready(function() {
 	});
 
 	$('.pnp_graph_icon').each(function() {
-			var pnp_link = $(this).parent().attr('href');
-			if (!pnp_link) {
-				pnp_link = $(this).attr('src');
-			}
-			var link_parts = pnp_link.split('?');
-			if (!link_parts.length) {
-				return false;
-			}
-			// ex: host=myhost&srv=PING
-			pnp_link = link_parts[1];
+		var pnp_link = $(this).parent().attr('href');
+		if (!pnp_link) {
+			pnp_link = $(this).attr('src');
+		}
+		var link_parts = pnp_link.split('?');
+		if (!link_parts.length) {
+			return false;
+		}
+		// ex: host=myhost&srv=PING
+		pnp_link = link_parts[1];
 
-			var loading_img = '/application/media/images/loading.gif';
-
-			$(this).qtip({
+		$(this).qtip($.extend(true, {}, qtip_default, {
 			content: {
-				url: _site_domain + _index_page + "/ajax/pnp_image/",
-				data: {param: pnp_link},
-				method: 'post',
-				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
-			},
-			position: {
-				corner: {
-				target: 'bottomMiddle', // Position the tooltip above the link
-				tooltip: 'topLeft'
-			},
-				adjust: {
-					screen: true, // Keep the tooltip on-screen at all times
-					x: 10,
-					y: -5
+				text: function(ev, api) {
+					$.ajax({
+						url: _site_domain + _index_page + "/ajax/pnp_image/",
+						data: {param: pnp_link},
+						type: 'POST'
+					})
+					.done(function(html) {
+						api.set('content.text', html);
+					})
+					.fail(function(xhr, status, error) {
+						api.set('content.text', status + ': ' + error);
+					});
+
+					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
 				}
-			},
-			show: {
-				when: 'mouseover',
-				solo:true,
-				delay:_popup_delay
-			},
-			hide: {
-				effect: 'slide',
-				when: {
-					event: 'mouseout',
-					delay:2000
-				}
-			},
-			style: {
-				width: 620,
-				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
-					border: {
-					width: 0,
-					radius: 4
-				},
-				name: 'light' // Use the default light style
 			}
-		});
-		//});
+		}));
 	});
 
 	$('.host_comment').each(function() {
@@ -237,51 +213,28 @@ $(document).ready(function() {
 			return false;
 		}
 
-		var loading_img = '/application/media/images/loading.gif';
 
 		// Remove the tooltip of the inner element since it overlays qtip
 		anchor.find('span').attr('title', '');
 
-		anchor.qtip({
+		anchor.qtip($.extend(true, {}, qtip_default, {
 			content: {
-				url: _site_domain + _index_page + "/ajax/fetch_comments/",
-				data: {host: obj_name},
-				method: 'get',
-				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
-			},
-			position: {
-				corner: {
-				target: 'rightTop', // Position the tooltip
-				tooltip: 'bottomLeft'
-			},
-			adjust: {
-					screen: true, // Keep the tooltip on-screen at all times
-					x: 10,
-					y: -5
+				text: function(ev, api) {
+					$.ajax({
+						url: _site_domain + _index_page + "/ajax/fetch_comments/",
+						data: {host: obj_name}
+					})
+					.done(function(html) {
+						api.set('content.text', html);
+					})
+					.fail(function(xhr, status, error) {
+						api.set('content.text', status + ': ' + error);
+					});
+
+					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
 				}
-			},
-			show: {
-				when: 'mouseover',
-				solo:true,
-				delay:_popup_delay
-			},
-			hide: {
-				effect: 'slide',
-				when: {
-					event: 'mouseout',
-					delay:2000
-				}
-			},
-			style: {
-				width: 500,
-				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
-					border: {
-					width: 0,
-					radius: 4
-				},
-				name: 'light' // Use the default light style
 			}
-		});
+		}));
 	});
 
 	$(".helptext_target").each(function(){
@@ -296,46 +249,25 @@ $(document).ready(function() {
 		var key = part[2];
 		var elem_id = the_id;
 
-		var loading_img = '/application/media/images/loading.gif';
-		$(this).qtip({
+		$(this).qtip($.extend(true, {}, qtip_default, {
 			content: {
-				url: _site_domain + _index_page + "/ajax/get_translation/",
-				data: {controller: controller, key: key},
-				method: 'post',
-				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
-			},
-			position: {
-				corner: {
-				target: 'bottomMiddle', // Position the tooltip above the link
-				tooltip: 'topLeft'
-			},
-				adjust: {
-					screen: true // Keep the tooltip on-screen at all times
+				text: function(ev, api) {
+					$.ajax({
+						url: _site_domain + _index_page + "/ajax/get_translation/",
+						data: {controller: controller, key: key},
+						type: 'POST',
+					})
+					.done(function(html) {
+						api.set('content.text', html);
+					})
+					.fail(function(xhr, status, error) {
+						api.set('content.text', status + ': ' + error);
+					});
+
+					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
 				}
-			},
-			show: {
-				when: 'click',
-				solo:true
-			},
-			hide: {
-				effect: 'slide',
-				when: {
-					event: 'unfocus',
-					delay:2000
-				}
-			},
-			style: {
-				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
-					border: {
-					width: 0,
-					radius: 4
-				},
-				width: {
-					min: "150"
-				},
-				name: 'light' // Use the default light style
 			}
-		});
+		}));
 	});
 	$(".helptext_target").click(function() {return false;});
 
