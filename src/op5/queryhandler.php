@@ -77,10 +77,10 @@ class op5queryhandler {
 		}
 
 		$content = "";
-		while(($c = @fread($sock,1)) !== "\0"){
-			if($c === false)
-				throw new op5queryhandler_Exception("Request failed: couldn't read response");
-			$content .= $c;
+		while(($c = fread($sock,1))!==false){
+			if($c === "" || $c === "\0")
+				break;
+			$content.=$c;
 		}
 		@fclose($sock);
 		return $content;
