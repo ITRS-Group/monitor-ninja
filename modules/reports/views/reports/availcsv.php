@@ -7,6 +7,9 @@ foreach ($fields as $field) {
 }
 echo implode(', ', $csv)."\n";
 
+if(!is_array($data_arr)) {
+	return;
+}
 foreach ($data_arr as $key => $sub_report) {
 	if (!is_array($sub_report) || !isset($sub_report['states']))
 		continue;
