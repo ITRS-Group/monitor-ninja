@@ -114,7 +114,7 @@ class Backup_Controller extends Authenticated_Controller {
 		/* Prevent buffering and rendering */
 		Kohana::close_buffers(FALSE);
 		$this->auto_render = false;
-		
+
 		$hs = headers_sent();
 		header('Content-Description: File Transfer');
 		header("Content-Type: application/octet-stream");
@@ -252,6 +252,6 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$this->template->status = @unlink($this->backups_location . '/' . $file . $this->backup_suffix);
 		$this->template->message = $this->template->status ? "The backup '{$file}' has been deleted"
-			: "Could not delete the backup '{$file}' has been deleted";
+			: "Could not delete the backup '{$file}'";
 	}
 }
