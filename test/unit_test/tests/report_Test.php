@@ -215,8 +215,11 @@ class report_Test extends TapUnit {
 	 */
 	function test_csv()
 	{
+		$month = date('n') - 1;
+		if ($month < 1)
+			$month += 12;
 		$Avail_opts = array('output_format' => 'csv', 'report_period' => 'last7days');
-		$Sla_opts = array('output_format' => 'csv', 'report_period' => 'lastmonth', 'months' => array((date('n')-1) => 9));
+		$Sla_opts = array('output_format' => 'csv', 'report_period' => 'lastmonth', 'months' => array($month => 9));
 		$Avail_tests = array(
 			'single host' => array(
 				'obj' => array('host_name' => array('host_pending')),
