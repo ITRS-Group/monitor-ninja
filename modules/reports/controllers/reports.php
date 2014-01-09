@@ -656,7 +656,7 @@ class Reports_Controller extends Base_reports_Controller
 			return $sla_data;
 		$report_data = array();
 		foreach ($sla_data as $period_data) {
-			$table_data = false;
+			$table_data = array();
 			$data = array();
 			$name = false;
 			// loop over whole period for current group

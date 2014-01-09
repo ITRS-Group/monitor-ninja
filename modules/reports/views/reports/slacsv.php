@@ -11,10 +11,7 @@ echo implode(', ', $csv)."\n";
 
 if (is_array($data_arr)) {
 	foreach ($data_arr as $k => $data) {
-		if (!isset($data['table_data']))
-			continue;
-		$table = $data['table_data'];
-		foreach ($table as $start => $result) {
+		foreach ($data['table_data'] as $start => $result) {
 			$csv = array();
 			if (!empty($data['name']))
 				$csv[] = '"'.implode(',', $data['name']).'"';
