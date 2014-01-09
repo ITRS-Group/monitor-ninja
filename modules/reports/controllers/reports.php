@@ -618,13 +618,11 @@ class Reports_Controller extends Base_reports_Controller
 	 * @param $months = false
 	 * @return array
 	 */
-	public function get_sla_data($months)
+	private function get_sla_data($months)
 	{
 		if (empty($months)) {
-			return false;
+			return array();
 		}
-
-		$report_data = false;
 
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
@@ -646,21 +644,20 @@ class Reports_Controller extends Base_reports_Controller
 				$data[$group][$mnr] = $val;
 			}
 		}
-		$report_data = $this->_sla_group_data($data);
-		return $report_data;
+		return $this->_sla_group_data($data);
 	}
 
 	/**
 	*	Mangle SLA data for host- and servicegroups
 	*/
-	public function _sla_group_data($sla_data)
+	private function _sla_group_data($sla_data)
 	{
 		if (empty($sla_data))
-			return false;
-		$report_data = false;
+			return $sla_data;
+		$report_data = array();
 		foreach ($sla_data as $period_data) {
 			$table_data = false;
-			$data = false;
+			$data = array();
 			$name = false;
 			// loop over whole period for current group
 			foreach ($period_data as $period_start => $tmp_data) {
