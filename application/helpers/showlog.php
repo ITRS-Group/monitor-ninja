@@ -53,9 +53,6 @@ class showlog_Core
 			 case 'service':
 				$cmd .= " --service='" . join("' --service='", $v) . "'";
 				break;
-			 case 'user':
-				$cmd .= " --user='$v'";
-				break;
 			 default:
 				break;
 			}
@@ -90,11 +87,51 @@ class showlog_Core
 			$cmd .= ' --hide-process --hide-commands ';
 		}
 
+		$send_objects = false;
+		if (!Auth::instance()->authorized_for('hosts_view_all') || !Auth::instance()->authorized_for('services_view_all')) {
+			$send_objects = true;
+			$cmd .= ' --restrict-objects';
+		}
+
 		$cmd .= " --html";
 
-		passthru($cmd, $exit_code);
-		if($exit_code) {
-			echo "<p>Could not use showlog binary, got '$exit_code' as exit code.</p>";
+		$descriptorspec = array(
+			0 => array('pipe', 'r'),
+			1 => array('pipe', 'w'), // really, php, no "I don't want to see it, just send it to the browser"?
+			2 => array('pipe', 'a'),
+		);
+
+		$process = proc_open($cmd, $descriptorspec, $pipes);
+		if (is_resource($process)) {
+			if ($send_objects) {
+				$pool = new HostPool_Model();
+				$set = $pool->all();
+				$hosts = array();
+				foreach ($set->it(array('name')) as $obj) {
+					$hosts[$obj->get_name()] = $obj->get_name();
+				}
+				fwrite($pipes[0], implode(';', $hosts));
+				fwrite($pipes[0], "\n");
+				$pool = new ServicePool_Model();
+				$set = $pool->all();
+				$svc = array();
+				foreach ($set->it(array('host_name', 'description')) as $obj) {
+					$hname = $obj->get_host()->get_name();
+					if (!array_key_exists($hname, $hosts)) {
+						$svc[] = $hname;
+						$svc[] = $obj->get_description();
+					}
+				}
+				fwrite($pipes[0], implode(';', $svc));
+			}
+			fclose($pipes[0]);
+			while (!feof($pipes[1])) {
+				echo fgets($pipes[1], 1024);
+			}
+			fclose($pipes[1]);
+			proc_close($process);
+		} else {
+			echo "Couldn't run showlog binary";
 		}
 	}
 
