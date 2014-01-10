@@ -648,9 +648,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				}
 				continue;
 			}
-			$opts_str .= "&$key=".urlencode($val);
+			$opts_str .= "&amp;$key=".urlencode($val);
 		}
-		return substr($opts_str, 1);
+		return substr($opts_str, 5);
 	}
 
 	/**
