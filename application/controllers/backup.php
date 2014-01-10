@@ -116,7 +116,6 @@ class Backup_Controller extends Authenticated_Controller {
 		/* Prevent buffering and rendering */
 		Kohana::close_buffers(FALSE);
 		$this->auto_render = false;
-		$hs = headers_sent();
 
 		header('Content-Description: File Transfer');
 		header("Content-Type: application/octet-stream");
