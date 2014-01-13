@@ -161,7 +161,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					 _('Status detail') => listview::link('services',array('host.name'=>$host)),
 					 _('Alert history') => 'alert_history/generate?include_long_output=1&amp;host_name[]='.urlencode($host),
-					 _('Event log') => 'showlog/showlog?hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host),
+					 _('Event log') => 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host),
 					 _('Alert histogram') => 'histogram/generate?host_name[]='.urlencode($host),
 					 _('Availability report') => 'avail/generate/?host_name[]='.urlencode($host),
 					 _('Notifications') => listview::link('notifications',array('host_name'=>$host))
@@ -172,7 +172,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Information for this host') => 'extinfo/details?host='.urlencode($host),
 					_('Status detail for this host') => listview::link('services',array('host.name'=>$host)),
 					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;service_description[]='.$host.';'.urlencode($service),
-					_('Event log') => 'showlog/showlog?hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service),
+					_('Event log') => 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					_('Notifications') => listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service))
