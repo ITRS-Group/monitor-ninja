@@ -286,13 +286,13 @@ function show_calendar(val, update) {
 	if (val=='custom') {
 		$("#display").show();
 
-			init_timepicker();
-			init_datepicker();
+		init_datepicker();
+		init_timepicker();
 
-			if (update == '') {
-				$('input[name=start_time]').attr('value', '');
-				$('input[name=end_time]').attr('value', '');
-			}
+		if (update == '') {
+			$('input[name=start_time]').attr('value', '');
+			$('input[name=end_time]').attr('value', '');
+		}
 	} else {
 		$("#display").hide();
 	}
@@ -977,5 +977,4 @@ function expand_and_populate(data)
 			mo.display_if_any();
 		}
 	}, reportObj.objects);
-	show_calendar(reportObj.report_period);
 }
