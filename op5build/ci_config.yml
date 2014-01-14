@@ -3,4 +3,5 @@ post:
   service httpd restart || service apache2 restart
   service mysqld restart || service mysql restart
   mon restart
+  /opt/op5sys/lib/mock_license.php monitorHosts 500
   TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
