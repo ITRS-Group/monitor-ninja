@@ -75,6 +75,7 @@ Requires: merlin-apps op5-mysql
 Requires: monitor-livestatus monitor-nagvis
 Requires: rubygem20-op5cucumber
 Requires: portal
+Requires: op5license-generator
 # For performance graph links on extinfo
 Requires: monitor-pnp
 
