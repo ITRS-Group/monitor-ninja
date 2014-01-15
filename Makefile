@@ -50,9 +50,10 @@ test-ci-cleanup:
 test-ci-prepare: test-ci-cleanup prepare-config
 	chmod -R 0777 /tmp/ninja-test/var
 	mkdir -m 0777 -p /tmp/ninja-test/var/spool/checkresults
+	/opt/monitor/op5/merlin/install-merlin.sh --batch --install=db --db-name=merlin_test
+	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
 	/usr/bin/monitor -d /tmp/ninja-test/nagios.cfg
-	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
@@ -81,6 +82,7 @@ prepare-config:
 	sed -e "s|@@TESTDIR@@|/tmp/ninja-test|" -e "s|@@USER@@|$$(id -un)|" -e "s|@@GROUP@@|$$(id -gn)|" -e "s|@@LIBDIR@@|$$(rpm --eval %{_libdir})|" test/configs/all-host_service-states/etc/merlin.conf.in > /tmp/ninja-test/merlin.conf
 	cp test/configs/all-host_service-states/var/status.sav /tmp/ninja-test/var/status.sav
 	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '/tmp/ninja-test';\$$config['nagios_etc_path'] = '/tmp/ninja-test';" > application/config/custom/config.php
+	echo "<?php \$$config['default']['connection']['database'] = 'merlin_test';" > application/config/custom/database.php
 	echo "path: /tmp/ninja-test/live" > $(OP5LIBCFG)/livestatus.yml
 
 i18n:

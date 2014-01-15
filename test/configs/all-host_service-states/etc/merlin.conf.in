@@ -45,7 +45,7 @@ daemon {
 	# the network
 	port = 15551;
 	database {
-		name = merlin;
+		name = merlin_test;
 		user = merlin;
 		pass = merlin;
 		host = localhost;
