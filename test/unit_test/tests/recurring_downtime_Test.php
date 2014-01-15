@@ -1,10 +1,10 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class Recurring_downtime_Test extends TapUnit {
+class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	var $scheduletimeofday = "12:00";
 	var $basecomment = 'Recurring Downtime Test Schedule For ';
 
@@ -44,28 +44,28 @@ class Recurring_downtime_Test extends TapUnit {
 			$old_count[$time] = count($ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduletimeofday} +1 day", $time)), 'columns' => array('id'))));
 			$output = '';
 			// Test that we cannot create duplicate schedules. Function should return skipping to STDERR if duplicate.
-			exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$time.' 2>&1', $output, $status);
-			$this->ok_eq($status, 0, 'Return code should be zero');
-			$this->ok(!empty($output), "$description twice should give error");
+			exec('/usr/bin/php index.php default/cron/downtime/'.$time.' 2>&1', $output, $status);
+			$this->assertEquals(0, $status, 'Return code should be zero');
+			$this->assertNotEmpty($output, "$description twice should give error");
 		}
 
 		$ids = array();
 		foreach ($tests as $time => $description) {
 			$dt = $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduletimeofday} +1 day", $time)), 'columns' => array('id')));
-			$this->ok_eq(count($dt), $old_count[$time], 'There should still be the same number of matching downtimes from '.$description);
+			$this->assertEquals(count($dt), $old_count[$time], 'There should still be the same number of matching downtimes from '.$description);
 			foreach ($dt as $row) {
 				$ids[] = $row['id'];
 			}
 		}
 
-		$this->ok_eq($current_number, count($ls->getDowntimes(array('filter' => array('comment' => $comment)))), 'Still same number of downtimes in total with our comment');
+		$this->assertEquals($current_number, count($ls->getDowntimes(array('filter' => array('comment' => $comment)))), 'Still same number of downtimes in total with our comment');
 
 		// Remove downtimes when tests are done.
 		$cmd = (strpos($type, 'host') !== false) ? 'DEL_HOST_DOWNTIME;' : 'DEL_SVC_DOWNTIME;';
 		$pipe = System_Model::get_pipe();
 		foreach ($ids as $id) {
 			$res = nagioscmd::submit_to_nagios($cmd . $id, $pipe);
-			$this->ok($res, 'Host delete command was submitted');
+			$this->assertTrue($res, 'Host delete command was submitted');
 		}
 	}
 
@@ -73,9 +73,9 @@ class Recurring_downtime_Test extends TapUnit {
 		$comment = $this->basecomment . $type;
 		foreach ($tests as $time => $description) {
 			$output = '';
-			exec('/usr/bin/php '.$_SERVER['argv'][0].' default/cron/downtime/'.$time.' 2>&1', $output, $status);
-			$this->ok_eq($status, 0, 'Return code should be zero');
-			$this->ok_empty($output, $description ." returned output: ".implode("\n", $output));
+			exec('/usr/bin/php index.php default/cron/downtime/'.$time.' 2>&1', $output, $status);
+			$this->assertEquals(0, $status, 'Return code should be zero');
+			$this->assertEmpty($output, $description ." returned output: ".implode("\n", $output));
 		}
 
 		sleep(3); # Y U SO SLOW?
@@ -83,9 +83,9 @@ class Recurring_downtime_Test extends TapUnit {
 		$ls = Livestatus::instance();
 		foreach ($tests as $time => $description) {
 			$dt = $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduletimeofday} +1 day", $time)), 'columns' => array('comment')));
-			$this->ok_eq(count($dt), $expected_number, "Unexpected number of downtimes created from $description");
+			$this->assertEquals(count($dt), $expected_number, "Unexpected number of downtimes created from $description");
 			foreach ($dt as $row) {
-				$this->ok_eq('AUTO: ' . $comment, $row['comment'], "Downtimes matching $description should have proper comment");
+				$this->assertEquals('AUTO: ' . $comment, $row['comment'], "Downtimes matching $description should have proper comment");
 			}
 		}
 	}
@@ -109,7 +109,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
 		$db = Database::instance();
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
 
 		$this->cron($this->basictests, 'hosts', 1);
 		$this->resubmit_and_cleanup($this->basictests, 'hosts');
@@ -117,7 +117,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$db = Database::instance();
 		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "One schedule was deleted.");
+		$this->assertEquals(count($result), 1, "One schedule was deleted.");
 	}
 
 	/**
@@ -149,7 +149,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
 		$db = Database::instance();
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
 
 		$this->cron($this->basictests, 'hostgroups', $number);
 		$this->resubmit_and_cleanup($this->basictests, 'hostgroups');
@@ -157,7 +157,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$db = Database::instance();
 		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "One schedule was deleted.");
+		$this->assertEquals(count($result), 1, "One schedule was deleted.");
 	}
 
 	/**
@@ -179,7 +179,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
 		$db = Database::instance();
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
 
 		$this->cron($this->basictests, 'services', 2);
 		$this->resubmit_and_cleanup($this->basictests, 'services');
@@ -187,7 +187,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$db = Database::instance();
 		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "One schedule was deleted.");
+		$this->assertEquals(count($result), 1, "One schedule was deleted.");
 	}
 
 	/**
@@ -209,7 +209,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
 		$db = Database::instance();
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
 
 		# The number is wrong.
 		# Any overlapping hosts will be added twice.
@@ -226,7 +226,7 @@ class Recurring_downtime_Test extends TapUnit {
 		$db = Database::instance();
 		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "One schedule was deleted.");
+		$this->assertEquals(count($result), 1, "One schedule was deleted.");
 	}
 
 	public function test_host_noschedule() {
@@ -259,6 +259,6 @@ class Recurring_downtime_Test extends TapUnit {
 		$db = Database::instance();
 		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
 		$result = $db->query($sql);
-		$this->ok_eq(count($result), 1, "One schedule was deleted.");
+		$this->assertEquals(count($result), 1, "One schedule was deleted.");
 	}
 }

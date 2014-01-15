@@ -1,10 +1,10 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
 */
-class LSFilter_Test extends TapUnit {
+class LSFilter_Test extends PHPUnit_Framework_TestCase {
 
 	/*
 	 * Test generation of queries...
@@ -13,13 +13,13 @@ class LSFilter_Test extends TapUnit {
 	*/
 	public function test_host_all_gen_query() {
 		$set = HostPool_Model::all();
-		$this->ok_eq($set->get_query(), '[hosts] all', 'Query missmatch');
+		$this->assertEquals($set->get_query(), '[hosts] all', 'Query missmatch');
 	}
 
 	public function test_host_filter_host_name_gen_query() {
 		$set = HostPool_Model::all();
 		$set = $set->reduce_by('name', 'kaka', '=');
-		$this->ok_eq($set->get_query(), '[hosts] name="kaka"', 'Query missmatch');
+		$this->assertEquals($set->get_query(), '[hosts] name="kaka"', 'Query missmatch');
 	}
 
 	public function test_host_filter_host_nested_and_or() {
@@ -34,7 +34,7 @@ class LSFilter_Test extends TapUnit {
 
 		$set = $and_set->union($all_set->reduce_by('plugin_output', 'show_me', '~~'));
 
-		$this->ok_eq($set->get_query(), '[hosts] name="kaka" and (state=0 or state=1) or plugin_output~~"show_me"', 'Query missmatch');
+		$this->assertEquals($set->get_query(), '[hosts] name="kaka" and (state=0 or state=1) or plugin_output~~"show_me"', 'Query missmatch');
 	}
 
 	/*
@@ -156,14 +156,19 @@ class LSFilter_Test extends TapUnit {
 
 	/*
 	 * Test parse fail
-	*/
-
+	 */
+	/**
+	 * @expectedException LSFilterException
+	 */
 	public function test_missing_end_parentisis() {
-		$this->run_parse_fail('[hosts] (all');
+		ObjectPool_Model::get_by_query('[hosts] (all');
 	}
 
+	/**
+	 * @expectedException LSFilterException
+	 */
 	public function test_extra_end_parentisis() {
-		$this->run_parse_fail('[hosts] (all))');
+		$set = ObjectPool_Model::get_by_query('[hosts] (all))');
 	}
 
 	/*
@@ -181,8 +186,11 @@ class LSFilter_Test extends TapUnit {
 		}
 	}
 
+	/**
+	 * @expectedException ORMException
+	 */
 	public function test_nonexisting_tables() {
-		$this->run_parse_fail("[nonexisting] all");
+		ObjectPool_Model::get_by_query("[nonexisting] all");
 	}
 
 
@@ -564,7 +572,7 @@ class LSFilter_Test extends TapUnit {
 		}
 		$set = ObjectPool_Model::get_by_query($query);
 		$converted = $set->test_visit_filter($visitor, false);
-		$this->ok_eq($converted, $goal, 'Query missmatch');
+		$this->assertEquals($converted, $goal, 'Query missmatch');
 	}
 
 	private function run_test_query( $query, $match_query = false ) {
@@ -572,15 +580,6 @@ class LSFilter_Test extends TapUnit {
 			$match_query = $query;
 		$set = ObjectPool_Model::get_by_query($query);
 		$gen_query = $set->get_query();
-		$this->ok_eq($gen_query, $match_query, 'Query missmatch');
-	}
-
-	private function run_parse_fail( $query ) {
-		try {
-			$set = ObjectPool_Model::get_by_query($query);
-			$this->fail('Exception expected');
-		} catch( Exception $e ) {
-			$this->pass( 'Got exception as expected: '.$e->getMessage() );
-		}
+		$this->assertEquals($gen_query, $match_query, 'Query missmatch');
 	}
 }

@@ -1,13 +1,15 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class Search_Ajax_Test extends TapUnit {
+class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 	protected $controller = false; /* Controller to test */
 	
 	public function setUp() {
+		global $_SESSION;
+		$_SESSION = array();
 		$this->controller = new Ajax_Controller();
 	}
 
@@ -118,11 +120,10 @@ class Search_Ajax_Test extends TapUnit {
 		$result = $this->controller->global_search_build_filter( $query );
 		
 		if( $expect === false && $result === false ) {
-			$this->ok();
 			return;
 		}
 		list( $type, $name, $settings, $options ) = $result;
 		
-		$this->ok_eq( array( $type, $name, $options ), $expect, "SearchFilter query '$query' doesn't match expected result." );
+		$this->assertEquals( array( $type, $name, $options ), $expect, "SearchFilter query '$query' doesn't match expected result." );
 	}
 }

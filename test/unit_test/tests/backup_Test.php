@@ -1,11 +1,14 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class Backup_Test extends TapUnit {
-/*	public function setUp() {
+class Backup_Test extends PHPUnit_Framework_TestCase {
+	public function setUp() {
+		$this->markTestSkipped(
+			'I think there was something about permissions that was a problem'
+		);
 		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 		$this->pre_backups = array();
 		$this->backup_location = "/var/www/html/backup";
@@ -56,4 +59,4 @@ class Backup_Test extends TapUnit {
 		$controller->delete($this_backup);
 		$this->ok(!file_exists($this->backup_location . '/' . $this_backup . '.tar.gz'), "asserting backup file has been deleted");
 	}
-*/}
+}

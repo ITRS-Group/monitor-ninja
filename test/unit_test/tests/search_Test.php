@@ -1,13 +1,15 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class Search_Test extends TapUnit {
+class Search_Test extends PHPUnit_Framework_TestCase {
 	protected $controller = false; /* Controller to test */
 	
 	public function setUp() {
+		global $_SESSION;
+		$_SESSION = array();
 		$this->controller = new Search_Controller();
 	}
 
@@ -61,6 +63,6 @@ class Search_Test extends TapUnit {
 
 	protected function run_test( $query, $expect ) {
 		$result = $this->controller->queryToLSFilter( $query );
-		$this->ok_eq( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
+		$this->assertEquals( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
 	}
 }

@@ -1,41 +1,41 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class Ninja_widgets_Test extends TapUnit {
+class Ninja_widgets_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 		$this->orig_widgets = Ninja_widget_Model::fetch_all('tac/index');
-		$this->ok(is_array($this->orig_widgets), "Fetch widgets returns an array");
-		$this->ok(!empty($this->orig_widgets), "Fetch widgets returns widgets");
+		$this->assertTrue(is_array($this->orig_widgets), "Fetch widgets returns an array");
+		$this->assertTrue(!empty($this->orig_widgets), "Fetch widgets returns widgets");
 		foreach ($this->orig_widgets as $w)
-			$this->ok($w !== false, 'No returned widgets should be false');
-		$this->ok_id(Ninja_widget_Model::get('tac/index', 'foobar', 3), false, "There shouldn't be a foobar widget with instance_id 3");
-		$this->ok_id(Ninja_widget_Model::get('tac/index', 'foobar'), false, "There shouldn't be a foobar widget at all");
+			$this->assertTrue($w !== false, 'No returned widgets should be false');
+		$this->assertSame(Ninja_widget_Model::get('tac/index', 'foobar', 3), false, "There shouldn't be a foobar widget with instance_id 3");
+		$this->assertSame(Ninja_widget_Model::get('tac/index', 'foobar'), false, "There shouldn't be a foobar widget at all");
 		Ninja_widget_Model::install('tac/index', 'foobar', 'Foo Bar');
 	}
 	public function tearDown() {
 		$db = Database::instance();
 		foreach ($db->query('SELECT username, page, name, instance_id, count(1) as count FROM ninja_widgets GROUP BY username, page, name, instance_id') as $ary)
-			$this->ok_eq($ary->count, 1, "There is 1 page=$ary->page,name=$ary->name,instance_id=$ary->instance_id,username=$ary->username");
-		$this->ok(Ninja_widget_Model::uninstall('foobar'), "Widget was uninstalled");
+			$this->assertEquals($ary->count, 1, "There is 1 page=$ary->page,name=$ary->name,instance_id=$ary->instance_id,username=$ary->username");
+		$this->assertTrue(Ninja_widget_Model::uninstall('foobar'), "Widget was uninstalled");
 		$new_widgets = Ninja_widget_Model::fetch_all('tac/index');
 		foreach ($new_widgets as $w)
-			$this->ok($w !== false, 'No returned widgets should be false');
-		$this->ok(is_array($new_widgets), "Fetch widgets returns an array");
-		$this->ok(!empty($new_widgets), "Fetch widgets returns widgets");
-		$this->ok(count($new_widgets) === count($this->orig_widgets), 'The new widget is gone (are '.count($new_widgets).', was '.count($this->orig_widgets).')');
+			$this->assertTrue($w !== false, 'No returned widgets should be false');
+		$this->assertTrue(is_array($new_widgets), "Fetch widgets returns an array");
+		$this->assertTrue(!empty($new_widgets), "Fetch widgets returns widgets");
+		$this->assertTrue(count($new_widgets) === count($this->orig_widgets), 'The new widget is gone (are '.count($new_widgets).', was '.count($this->orig_widgets).')');
 		foreach ($db->query('SELECT username, page, name, instance_id, count(1) as count FROM ninja_widgets GROUP BY username, page, name, instance_id') as $ary)
-			$this->ok_eq($ary->count, 1, "There is 1 page=$ary->page,name=$ary->name,instance_id=$ary->instance_id,username=$ary->username");
+			$this->assertEquals($ary->count, 1, "There is 1 page=$ary->page,name=$ary->name,instance_id=$ary->instance_id,username=$ary->username");
 	}
 
 	public function test_table_ninja_widgets_table_exists()
 	{
 		$db = Database::instance();
 		$table = 'ninja_widgets';
-		$this->ok($db->table_exists($table), "Unable to find table $table");
+		$this->assertTrue($db->table_exists($table), "Unable to find table $table");
 	}
 
 	/**
@@ -85,45 +85,45 @@ class Ninja_widgets_Test extends TapUnit {
 				$missing[] = $widget;
 		}
 
-		$this->ok(empty($missing), 'Missing database settings for '.implode(',',$missing));
+		$this->assertTrue(empty($missing), 'Missing database settings for '.implode(',',$missing));
 	}
 
 	function test_get_widget() {
 		$widget = Ninja_widget_Model::get('tac/index', 'foobar');
-		$this->ok($widget !== false, 'Create new widget is successful');
-		$this->ok_id(Ninja_widget_Model::get('tac/index', 'foobar', 3), false, "There still isn't a foobar widget with instance_id 3");
-		$this->ok_id($widget->page, 'tac/index', 'New page has the given page name');
+		$this->assertTrue($widget !== false, 'Create new widget is successful');
+		$this->assertSame(Ninja_widget_Model::get('tac/index', 'foobar', 3), false, "There still isn't a foobar widget with instance_id 3");
+		$this->assertSame($widget->page, 'tac/index', 'New page has the given page name');
 		$new_widgets = Ninja_widget_Model::fetch_all('tac/index');
 		foreach ($new_widgets as $w)
-				$this->ok($w !== false, 'No returned widgets should be false');
-		$this->ok(is_array($new_widgets), "Fetch widgets returns an array");
-		$this->ok(!empty($new_widgets), "Fetch widgets isn't empty");
-		$this->ok(count($new_widgets) === count($this->orig_widgets) + 1, 'There should be 1 new widget, there is ' + count($new_widgets) - count($this->orig_widgets));
+				$this->assertTrue($w !== false, 'No returned widgets should be false');
+		$this->assertTrue(is_array($new_widgets), "Fetch widgets returns an array");
+		$this->assertTrue(!empty($new_widgets), "Fetch widgets isn't empty");
+		$this->assertTrue(count($new_widgets) === count($this->orig_widgets) + 1, 'There should be 1 new widget, there is ' + count($new_widgets) - count($this->orig_widgets));
 	}
 
 	function test_copy_widget() {
 		$widget = Ninja_widget_Model::get('tac/index', 'foobar');
 		$widget = $widget->copy();
-		$this->ok($widget !== false, 'Create new widget is successful');
+		$this->assertTrue($widget !== false, 'Create new widget is successful');
 		$dup_widget = $widget->copy();
-		$this->ok($dup_widget !== false, 'Copy widget is successful');
-		$this->ok($dup_widget->instance_id == $widget->instance_id + 1, 'New widget has bumped instance id');
+		$this->assertTrue($dup_widget !== false, 'Copy widget is successful');
+		$this->assertTrue($dup_widget->instance_id == $widget->instance_id + 1, 'New widget has bumped instance id');
 		$new_widgets = Ninja_widget_Model::fetch_all('tac/index');
-		$this->ok(count($new_widgets) === count($this->orig_widgets) + 2, 'Both copies are fetched on fetch');
+		$this->assertTrue(count($new_widgets) === count($this->orig_widgets) + 2, 'Both copies are fetched on fetch');
 		$dup2 = $dup_widget->copy();
-		$this->ok($dup2 !== false, 'Copy copied widget is successful');
-		$this->ok($dup2->instance_id == $dup_widget->instance_id + 1, 'New widget has bumped instance id');
+		$this->assertTrue($dup2 !== false, 'Copy copied widget is successful');
+		$this->assertTrue($dup2->instance_id == $dup_widget->instance_id + 1, 'New widget has bumped instance id');
 		$dup3 = $widget->copy();
-		$this->ok($dup3 !== false, 'Copy original widget without highest instance_id is successful');
-		$this->ok($dup3->instance_id == $dup2->instance_id + 1, 'New widget has bumped instance id');
+		$this->assertTrue($dup3 !== false, 'Copy original widget without highest instance_id is successful');
+		$this->assertTrue($dup3->instance_id == $dup2->instance_id + 1, 'New widget has bumped instance id');
 		$dup3->delete();
 		$dup2->delete();
 		$dup_widget->delete();
 		$new_widgets = Ninja_widget_Model::fetch_all('tac/index');
-		$this->ok(count($new_widgets) === count($this->orig_widgets) + 1, 'After deleting copied widgets, only the original remains');
+		$this->assertTrue(count($new_widgets) === count($this->orig_widgets) + 1, 'After deleting copied widgets, only the original remains');
 		$widget->delete();
 		$new_widgets = Ninja_widget_Model::fetch_all('tac/index');
-		$this->ok(count($new_widgets) === count($this->orig_widgets) + 1, "Last widget copy can't be deleted");
+		$this->assertTrue(count($new_widgets) === count($this->orig_widgets) + 1, "Last widget copy can't be deleted");
 	}
 
 	/** there were no instance_ids in the past */
@@ -139,15 +139,15 @@ class Ninja_widgets_Test extends TapUnit {
 				break;
 			}
 		}
-		$this->ok($foobar !== false, 'Foobar2 widget found');
-		$this->ok_id($foobar->instance_id, NULL, 'Instance ID is initially NULL');
+		$this->assertTrue($foobar !== false, 'Foobar2 widget found');
+		$this->assertSame($foobar->instance_id, NULL, 'Instance ID is initially NULL');
 		$foobar->save();
-		$this->ok_id($foobar->instance_id, 1, 'Instance ID is set to a number after save');
+		$this->assertSame($foobar->instance_id, 1, 'Instance ID is set to a number after save');
 		$foobar->friendly_name='w00t';
 		$foobar->save();
 		$res = $db->query("SELECT count(1) AS count FROM ninja_widgets WHERE name='foobar2'");
-		$this->ok_eq($res->current()->count, 2, 'There should be 2 foobar2 widgets in DB after write, there are '.$res->current()->count);
-		$this->ok(Ninja_widget_Model::uninstall('foobar2'), "Widget can be uninstalled");
+		$this->assertEquals($res->current()->count, 2, 'There should be 2 foobar2 widgets in DB after write, there are '.$res->current()->count);
+		$this->assertTrue(Ninja_widget_Model::uninstall('foobar2'), "Widget can be uninstalled");
 	}
 
 	function test_settings() {
@@ -156,10 +156,10 @@ class Ninja_widgets_Test extends TapUnit {
 		$dupe = $widget->copy();
 		$widget->save();
 		$saved_widget = Ninja_widget_Model::get('tac/index', 'foobar', $widget->instance_id);
-		$this->ok(!empty($saved_widget->setting), 'There are settings saved');
-		$this->ok_id($widget->setting, $saved_widget->setting, 'The settings are identical');
+		$this->assertTrue(!empty($saved_widget->setting), 'There are settings saved');
+		$this->assertSame($widget->setting, $saved_widget->setting, 'The settings are identical');
 		$saved_dupe = Ninja_widget_Model::get('tac/index', 'foobar', $dupe->instance_id);
-		$this->ok_empty($saved_dupe->setting, 'There are no settings propagated to dupes');
+		$this->assertEmpty($saved_dupe->setting, 'There are no settings propagated to dupes');
 	}
 
 	function test_widget_helper() {
@@ -167,21 +167,21 @@ class Ninja_widgets_Test extends TapUnit {
 		$widget->save();
 		$ws = Ninja_widget_Model::fetch_all('tac/index');
 		foreach ($ws as $name => $widget_obj) {
-			$this->ok_id($name, 'widget-'.$widget_obj->name.'-'.$widget_obj->instance_id, 'All widgets have correct array indexes');
+			$this->assertSame($name, 'widget-'.$widget_obj->name.'-'.$widget_obj->instance_id, 'All widgets have correct array indexes');
 		}
 		$order = Ninja_widget_Model::fetch_widget_order('tac/index');
 		$order['test_placeholder'] = array('widget-foobar-1');
-		$this->ok(Ninja_widget_Model::set_widget_order('tac/index', $order), "set widget order is successful");
+		$this->assertTrue(Ninja_widget_Model::set_widget_order('tac/index', $order), "set widget order is successful");
 		$widgets = widget::add_widgets('tac/index', $ws, $this);
-		$this->ok(isset($widgets['test_placeholder']), 'The new placeholder exists');
-		$this->ok(isset($widgets['test_placeholder']['widget-foobar-1']), 'Our widget is saved in our placeholder');
+		$this->assertTrue(isset($widgets['test_placeholder']), 'The new placeholder exists');
+		$this->assertTrue(isset($widgets['test_placeholder']['widget-foobar-1']), 'Our widget is saved in our placeholder');
 		$foobar = Ninja_widget_Model::get('tac/index', 'foobar', 1);
 		$foobar2 = $foobar->copy();
 		$ws = Ninja_widget_Model::fetch_all('tac/index');
 		$widgets = widget::add_widgets('tac/index', $ws, $this);
-		$this->ok(isset($widgets['test_placeholder']), 'The new placeholder exists');
-		$this->ok(isset($widgets['test_placeholder']['widget-foobar-1']), 'Our old widget is saved in our placeholder');
-		$this->ok(isset($widgets['test_placeholder']['widget-foobar-2']), 'Our new widget is saved in the same placeholder as it\'s original');
+		$this->assertTrue(isset($widgets['test_placeholder']), 'The new placeholder exists');
+		$this->assertTrue(isset($widgets['test_placeholder']['widget-foobar-1']), 'Our old widget is saved in our placeholder');
+		$this->assertTrue(isset($widgets['test_placeholder']['widget-foobar-2']), 'Our new widget is saved in the same placeholder as it\'s original');
 	}
 
 	function test_many_users() {

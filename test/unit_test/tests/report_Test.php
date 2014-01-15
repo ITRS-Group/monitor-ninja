@@ -1,5 +1,5 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-class report_Test extends TapUnit {
+<?php
+class report_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 	}
@@ -53,7 +53,7 @@ class report_Test extends TapUnit {
 					."))"
 				.")";
 
-		$this->ok(strpos($query, $substr) !== false, 'Could not find permission check substring in query');
+		$this->assertTrue(strpos($query, $substr) !== false, 'Could not find permission check substring in query');
 
 		try {
 			$db = Database::instance();
@@ -74,11 +74,9 @@ class report_Test extends TapUnit {
 			'end_time' => strtotime('2012-01-01'),
 			'rpttimeperiod' => 'weird-stuff');
 		Old_Timeperiod_Model::$precreated = array();
-		sleep(1); // Give ocimp time to import the timeperiods
 		$report = Old_Timeperiod_Model::instance($opts);
 		$report->resolve_timeperiods();
-		$this->pass('Could resolve timperiod torture-test');
-		$this->ok(!empty($report->tp_exceptions), 'There should be timeperiod exceptions, based on '.var_export($db->query('SELECT * FROM timeperiod inner join custom_vars on obj_id=id where timeperiod_name="weird-stuff"')->result_array(false), true));
+		$this->assertNotEmpty($report->tp_exceptions, 'There should be timeperiod exceptions, based on '.var_export($db->query('SELECT * FROM timeperiod inner join custom_vars on obj_id=id where timeperiod_name="weird-stuff"')->result_array(false), true));
 		// fixme: validate output
 	}
 
@@ -92,7 +90,7 @@ class report_Test extends TapUnit {
 			$msg .= ' with view_services_root';
 		try {
 			$res = $this->rpt->test_summary_queries();
-			$this->ok(is_array($res), $msg);
+			$this->assertTrue(is_array($res), $msg);
 			if (!is_array($res))
 				$this->diag($res);
 		} catch (Exception $e) {
@@ -140,7 +138,7 @@ class report_Test extends TapUnit {
 			Reports_Model::DOWNTIME_STOP => 'scheduled_downtime_stop'
 		);
 		foreach($events as $code => $event) {
-			$this->ok_eq($event, Reports_Model::event_type_to_string($code, null, true), sprintf("Unmatching strings: [%s] != [%s]", $event, Reports_Model::event_type_to_string($code, null, true)));
+			$this->assertEquals($event, Reports_Model::event_type_to_string($code, null, true), sprintf("Unmatching strings: [%s] != [%s]", $event, Reports_Model::event_type_to_string($code, null, true)));
 		}
 	}
 
@@ -162,12 +160,12 @@ class report_Test extends TapUnit {
 			$opts[$k] = $v;
 		}
 		$id = Saved_Reports_Model::edit_report_info('avail', false, $opts);
-		$this->ok($id !== false, "Saving report should work, so id should not be false");
+		$this->assertTrue($id !== false, "Saving report should work, so id should not be false");
 		$new_opts = Saved_Reports_Model::get_report_info('avail', $id);
-		$this->ok(!empty($new_opts), "Loading a saved report should not return an empty array");
+		$this->assertTrue(!empty($new_opts), "Loading a saved report should not return an empty array");
 		$new_opts = Avail_Options::setup_options_obj('avail', $opts);
 		foreach ($opts as $k => $v) {
-			$this->ok_eq($v, $new_opts[$k], "$k should be the same after saving and loading report");
+			$this->assertEquals($v, $new_opts[$k], "$k should be the same after saving and loading report");
 		}
 
 		$the_modified_opts = $the_opts;
@@ -175,7 +173,7 @@ class report_Test extends TapUnit {
 		$the_modified_opts['host_name'][] = 'host_down_acknowledged';
 		$modified_opts = Avail_Options::setup_options_obj('avail', $the_modified_opts);
 		foreach ($the_modified_opts as $k => $v) {
-			$this->ok_eq($v, $modified_opts[$k], 'Loading a saved report should have option set to what we provided for '. $k);
+			$this->assertEquals($v, $modified_opts[$k], 'Loading a saved report should have option set to what we provided for '. $k);
 		}
 
 		$the_modified_opts['host_name'][] = 'host_pending';
@@ -187,7 +185,7 @@ class report_Test extends TapUnit {
 				sort($v);
 				sort($new_modified_opts->options[$k]);
 			}
-			$this->ok_eq($v, $new_modified_opts->options[$k], 'Loading a saved report should have option set to what we provided for '. $k);
+			$this->assertEquals($v, $new_modified_opts->options[$k], 'Loading a saved report should have option set to what we provided for '. $k);
 		}
 	}
 
@@ -305,17 +303,17 @@ class report_Test extends TapUnit {
 				$ctrl = new $ctrl_class();
 				$ctrl->auto_render = false;
 				$option = new $opt_class();
-				$this->ok($option->set_options(${$report_type.'_opts'}), "Setting initial options for $report_type $test_name should be fine");
+				$this->assertTrue($option->set_options(${$report_type.'_opts'}), "Setting initial options for $report_type $test_name should be fine");
 				foreach ($details['obj'] as $k => $v) {
-					$this->ok($option->set($k, $v), "Setting $k for $report_type $test_name should work");
+					$this->assertTrue($option->set($k, $v), "Setting $k for $report_type $test_name should work");
 				}
 				$ctrl->generate($option);
 				$out = $ctrl->template->render();
 
-				$this->ok_eq(count(explode("\n", trim($out))), $details['expected'], "Unexpected number of lines generated for $report_type $test_name, output was: $out");
-				$this->ok_id(strpos($out, '""'), false, "Expected no empty parameters for $report_type $test_name, found in $out");
+				$this->assertEquals(count(explode("\n", trim($out))), $details['expected'], "Unexpected number of lines generated for $report_type $test_name, output was: $out");
+				$this->assertSame(strpos($out, '""'), false, "Expected no empty parameters for $report_type $test_name, found in $out");
 				if ($report_type != 'Sla' || $option['report_type'] != 'services') # Because that case has comma-separated host-and-description names. Obviously.
-					$this->ok_id(strpos($out, ';'), false, "Expected no semi-colons in output for $report_type $test_name, found in $out");
+					$this->assertSame(strpos($out, ';'), false, "Expected no semi-colons in output for $report_type $test_name, found in $out");
 			}
 		}
 	}
@@ -329,7 +327,7 @@ class report_Test extends TapUnit {
 			'end_month' => 2
 		);
 		$output = Sla_options::discover_options($input);
-		$this->ok_eq(date('Y-m-d H:i:s', $output['start_time']), '2013-02-01 00:00:00', 'We should start on the first of Febuary');
-		$this->ok_eq(date('Y-m-d H:i:s', $output['end_time']), '2013-02-28 23:59:59', 'We should end on the last of Febuary');
+		$this->assertEquals(date('Y-m-d H:i:s', $output['start_time']), '2013-02-01 00:00:00', 'We should start on the first of Febuary');
+		$this->assertEquals(date('Y-m-d H:i:s', $output['end_time']), '2013-02-28 23:59:59', 'We should end on the last of Febuary');
 	}
 }

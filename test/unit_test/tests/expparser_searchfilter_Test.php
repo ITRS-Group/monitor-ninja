@@ -1,10 +1,10 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class ExpParser_SearchFilter_Test extends TapUnit {
+class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 	/* ******
 	 * Test correct simple queries for table access
 	 */
@@ -80,14 +80,14 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 	 */
 	public function test_autocomplete_first() {
 		$parser = $this->run_test('h:kaka', array('filters'=>array('hosts'=>array(array('kaka')) )) );
-		$this->ok_eq( $parser->getLastString(), 'kaka', "Autocomplete: doesn't return correct string" );
-		$this->ok_eq( $parser->getLastObject(), 'hosts', "Autocomplete: doesn't return correct object type" );
+		$this->assertEquals( $parser->getLastString(), 'kaka', "Autocomplete: doesn't return correct string" );
+		$this->assertEquals( $parser->getLastObject(), 'hosts', "Autocomplete: doesn't return correct object type" );
 	}
 	
 	public function test_autocomplete_or() {
 		$parser = $this->run_test('h:kaka or boll', array('filters'=>array('hosts'=>array(array('kaka','boll')) )) );
-		$this->ok_eq( $parser->getLastString(), 'boll', "Autocomplete: doesn't return correct string" );
-		$this->ok_eq( $parser->getLastObject(), 'hosts', "Autocomplete: doesn't return correct object type" );
+		$this->assertEquals( $parser->getLastString(), 'boll', "Autocomplete: doesn't return correct string" );
+		$this->assertEquals( $parser->getLastObject(), 'hosts', "Autocomplete: doesn't return correct object type" );
 	}
 	
 	public function test_autocomplete_and() {
@@ -95,8 +95,8 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 				'hosts'=>array(array('kaka')),
 				'services'=>array(array('boll'))
 				 )) );
-		$this->ok_eq( $parser->getLastString(), 'boll', "Autocomplete: doesn't return correct string" );
-		$this->ok_eq( $parser->getLastObject(), 'services', "Autocomplete: doesn't return correct object type" );
+		$this->assertEquals( $parser->getLastString(), 'boll', "Autocomplete: doesn't return correct string" );
+		$this->assertEquals( $parser->getLastObject(), 'services', "Autocomplete: doesn't return correct object type" );
 	}
 	
 	/* *******
@@ -125,7 +125,7 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 			$this->fail( 'Should have thrown an exception');
 		}
 		catch( ExpParserException $e ) {
-			$this->ok(
+			$this->assertTrue(
 					1===preg_match('/^Unexpected token.*$/',$e->getMessage()),
 					'Incorrect Exception for unexpected token: '.$e->getMessage()
 					);
@@ -141,7 +141,7 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 			$this->fail( 'Should have thrown an exception');
 		}
 		catch( ExpParserException $e ) {
-			$this->ok(
+			$this->assertTrue(
 					1===preg_match('/^Unexpected token.*expected number.*$/',$e->getMessage()),
 					'Incorrect Exception for unexpected token: '.$e->getMessage()
 					);
@@ -178,7 +178,7 @@ class ExpParser_SearchFilter_Test extends TapUnit {
 	private function run_test( $query, $expect ) {
 		$parser = new ExpParser_SearchFilter();
 		$result = $parser->parse( $query );
-		$this->ok_eq( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
+		$this->assertEquals( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
 		return $parser;
 	}
 }

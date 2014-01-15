@@ -1,16 +1,16 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * @package    NINJA
  * @author     op5
  * @license    GPL
  */
-class Livestatus_Test extends TapUnit {
+class Livestatus_Test extends PHPUnit_Framework_TestCase {
     public function setUp() {
 		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
         $this->ls = Livestatus::instance();
-        $this->ok(is_object($this->ls), 'created livestatus object');
+        $this->assertTrue(is_object($this->ls), 'created livestatus object');
         $this->lsb = $this->ls->getBackend();
-        $this->ok(is_object($this->lsb), 'fetched livestatus backend');
+        $this->assertTrue(is_object($this->lsb), 'fetched livestatus backend');
     }
 
     public function test_basic_filter() {
@@ -18,25 +18,25 @@ class Livestatus_Test extends TapUnit {
         $filter = array('name' => 'test');
         $expect = 'Filter: name = test';
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "basic filter 1: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "basic filter 1: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # basic filter 2
         $filter = array('name' => array('!=' => 'test'));
         $expect = 'Filter: name != test';
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "basic filter 2: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "basic filter 2: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # basic filter 3
         $filter = "";
         $expect = '';
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "basic filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "basic filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # basic filter 4
         $filter = array('', 'num_hosts' => array('>' => 0));
         $expect = 'Filter: num_hosts > 0';
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "basic filter 4: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "basic filter 4: \nexpect:\n".$expect."\n\ngot:\n".$filter);
     }
 
     public function test_and_filter() {
@@ -46,13 +46,13 @@ class Livestatus_Test extends TapUnit {
         );
         $expect = "Filter: name = test1";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "and filter 1: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "and filter 1: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # and filter 2
         $filter = array( 'host_has_been_checked' => 1, 'host_state' => 0 );
         $expect = "Filter: host_has_been_checked = 1\nFilter: host_state = 0\nAnd: 2";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "and filter 2: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "and filter 2: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # and filter 3
         $filter = array(
@@ -63,7 +63,7 @@ class Livestatus_Test extends TapUnit {
         );
         $expect = "Filter: host_has_been_checked = 1\nFilter: host_state = 0\nAnd: 2\nFilter: has_been_checked = 1\nFilter: state = 3\nAnd: 2\nAnd: 2";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "and filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "and filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
     }
 
     public function test_or_filter() {
@@ -73,7 +73,7 @@ class Livestatus_Test extends TapUnit {
         );
         $expect = "Filter: name = test1\nFilter: name = test2\nOr: 2";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "or filter 1: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "or filter 1: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # or filter 2
         $filter = $filter = array(
@@ -85,7 +85,7 @@ class Livestatus_Test extends TapUnit {
         );
         $expect = "Filter: name = test1\nFilter: name != test2\nOr: 2";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "or filter 2: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "or filter 2: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # or filter 3
         $filter = $filter = array(
@@ -94,7 +94,7 @@ class Livestatus_Test extends TapUnit {
         );
         $expect = "Filter: name1 = test1\nFilter: name2 = test2\nOr: 2";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "or filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "or filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
 
         # or filter 4
         $filter = $filter = array(
@@ -103,7 +103,7 @@ class Livestatus_Test extends TapUnit {
         );
         $expect = "Filter: name1 = test1\nFilter: name2 != test2\nOr: 2";
         $filter = chop($this->lsb->getQueryFilter($filter));
-        $this->ok($filter === $expect, "or filter 4: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+        $this->assertTrue($filter === $expect, "or filter 4: \nexpect:\n".$expect."\n\ngot:\n".$filter);
     }
 
 }
