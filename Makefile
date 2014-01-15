@@ -54,15 +54,6 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	/usr/bin/monitor -d /tmp/ninja-test/nagios.cfg
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh
 
-test-ci: test-ci-prepare
-	sh test/ci/testsuite.sh .
-	sh test/ci/testsuite.sh . test/ci/limited_tests.txt
-	make test-ci-cleanup
-
-test-coverage:
-	@make test-ci-prepare &> /dev/null
-	@php test/all_coverage.php $$(pwd)
-
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
 
