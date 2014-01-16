@@ -16,6 +16,7 @@ class op5AuthDriver_Header extends op5AuthDriver {
 	/* For testing, if headers is mocked, use the mocked headers. Normally, $mocked_headers = false */
 	private $mocked_headers = false;
 
+
 	/**
 	 * Attempt to log in a user by static configuration, or external infromation.
 	 *
@@ -32,7 +33,7 @@ class op5AuthDriver_Header extends op5AuthDriver {
 		} else if(function_exists('apache_request_headers')) {
 			$headers = apache_request_headers();
 		}
-		
+
 		$headers = array_change_key_case($headers, CASE_LOWER);
 
 		$params = array();
@@ -66,7 +67,30 @@ class op5AuthDriver_Header extends op5AuthDriver {
 			$params['groups'] = array();
 		}
 
-		return new op5User($params);
+		$this->log->debug('Logging in using header-specified user:');
+		foreach($params as $k => $v) {
+			if(is_array($v)) {
+				$this->log->debug('    '.$k . ': ...');
+				foreach($v as $vk => $vv) {
+					$this->log->debug('      - ' . $vv);
+				}
+			} else {
+				$this->log->debug('    '.$k . ': ' . $v);
+			}
+		}
+
+		$user = new op5User($params);
+
+		/*
+		 *  Add a flag that it can't logout. It's a bit negated, but default should
+		 * be that the user can. Default is not set is false.
+		 *
+		 * This is used to hide the log out-links.
+		 */
+		$user->auth_data = array(
+			'no_logout' => true
+		);
+		return $user;
 	}
 
 	/**

@@ -193,9 +193,10 @@ class op5auth {
 				if($user !== false) {
 					/* Postprocess login */
 					$user->auth_method = $auth_method;
-					$this->authorize_user($user, $auth_method);
-					$this->user = $user;
-					return $user;
+					if($this->authorize_user($user, $auth_method)) {
+						$this->user = $user;
+						return $user;
+					}
 				}
 			}
 		}
