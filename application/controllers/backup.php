@@ -42,11 +42,14 @@ class Backup_Controller extends Authenticated_Controller {
 			'/etc/op5/*.yml' # :TODO Read value from op5config
 		);
 
-		$len = count($this->files2backup);
-		for ($i = 0; $i < $len; $i++) {
-			if (!file_exists($this->files2backup[$i]))
-				unset($this->files2backup[$i]);
+		$backup = array();
+		foreach ($this->files2backup as $path) {
+			foreach (glob($path) as $file) {
+				$backup[] = $file;
+			}
 		}
+		$this->files2backup = $backup;
+
 		$this->template->disable_refresh = true;
 		$this->auto_render = true;
 		$this->cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM" >> ' . System_Model::get_pipe();
@@ -73,7 +76,6 @@ class Backup_Controller extends Authenticated_Controller {
 			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization for more information.');
 			$this->unauthorized = true;
 		}
-
 	}
 
 	public function index()
@@ -114,8 +116,8 @@ class Backup_Controller extends Authenticated_Controller {
 		/* Prevent buffering and rendering */
 		Kohana::close_buffers(FALSE);
 		$this->auto_render = false;
-
 		$hs = headers_sent();
+
 		header('Content-Description: File Transfer');
 		header("Content-Type: application/octet-stream");
 		header("Content-Disposition: attachment; filename=".$file.".tar.gz");
@@ -175,7 +177,6 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template = $this->add_view('backup/backup');
 
 		$file = strftime('backup-%Y-%m-%d_%H.%M.%S');
-		$output = array();
 		exec($this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
 			. ' ' . implode(' ', $this->files2backup), $output, $status);
 		if ($status != 0)
