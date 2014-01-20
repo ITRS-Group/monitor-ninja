@@ -4,11 +4,11 @@ require_once(__DIR__.'/config.php');
 class op5LogAccess {
 	protected $log_instance = false;
 	protected $namespace = false;
-	
+
 	public function __construct($log_instance, $namespace) {
 		$this->log_instance = $log_instance;
 		$this->namespace = $namespace;
-		
+
 	}
 
 	/**
@@ -17,11 +17,11 @@ class op5LogAccess {
 	public function __invoke($message) {
 		return $this->debug($message);
 	}
-	
+
 	public function log($level, $message) {
 		$this->log_instance->log($this->namespace, $level, $message);
 	}
-	
+
 	public function debug($message) {
 		$this->log_instance->log($this->namespace, 'debug', $message);
 	}
@@ -46,7 +46,7 @@ class op5Log {
 
 		if($namespace === false)
 			return $log_instance;
-		
+
 		/* Return a wrapper to aughment the log with a namespace field */
 		return new op5LogAccess($log_instance, $namespace);
 	}
@@ -109,7 +109,7 @@ class op5Log {
 			return;
 		}
 		$config = $this->config[$namespace];
-		
+
 		if(self::$levels[$level] > self::$levels[$config['level']]) {
 			return; /* To low logging level in config... */
 		}
@@ -187,7 +187,7 @@ class op5Log {
 		}
 		$this->messages = array(); /* empty, to make it possible to add more messages afterwards */
 	}
-	
+
 	/**
 	 * Just a wrapper to be static
 	 */
