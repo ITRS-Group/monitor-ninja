@@ -280,7 +280,7 @@ final class Kohana {
 			$controller = $class->newInstance();
 
 			// Controller constructor has been executed
-			Event::run('system.post_controller_constructor');
+			Event::run('system.post_controller_constructor', $controller);
 
 			try
 			{
@@ -315,7 +315,7 @@ final class Kohana {
 			$method->invokeArgs($controller, $arguments);
 
 			// Controller method has been executed
-			Event::run('system.post_controller');
+			Event::run('system.post_controller', $controller);
 
 			// Stop the controller execution benchmark
 			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');

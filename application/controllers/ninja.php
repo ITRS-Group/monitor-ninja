@@ -31,7 +31,6 @@ class Ninja_Controller extends Template_Controller {
 	public $run_tests = false;
 	public $notifications_disabled = false;
 	public $checks_disabled = false;
-	public $global_notifications = false;
 	public $log = false;
 	public $help_link = false;
 	public $help_link_url = false;
@@ -47,6 +46,8 @@ class Ninja_Controller extends Template_Controller {
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
 		$this->template = $this->add_view('template');
+
+		$this->template->global_notifications = array();
 
 		if (!$this->run_tests) {
 			$this->profiler = new Profiler;
@@ -159,34 +160,40 @@ class Ninja_Controller extends Template_Controller {
 		}
 	}
 
+	public function add_global_notification( $notification ) {
+		if (!is_array($notification)) {
+			$notification = array($notification);
+		}
+		$this->template->global_notifications[] = $notification;
+	}
+
 	/**
 	*	Check for notifications to be displayed to user
 	* 	Each notification should be an array with (text, link)
 	*/
 	public function _global_notification_checks()
 	{
-		$notifications = false;
 		try {
 			$status = StatusPool_Model::status();
 			if($status) {
 				// we've got access
 				if ($status->get_enable_notifications() !== 1) {
-					$notifications[] = array(html::anchor('extinfo/show_process_info', _('Notifications are disabled')), false);
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Notifications are disabled')) );
 				}
 				if ($status->get_execute_service_checks() !== 1) {
-					$notifications[] = array(html::anchor('extinfo/show_process_info', _('Service checks are disabled')), false);
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Service checks are disabled')) );
 				}
 				if ($status->get_execute_host_checks() !== 1) {
-					$notifications[] = array(html::anchor('extinfo/show_process_info', _('Host checks are disabled')), false);
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Host checks are disabled')) );
 				}
 				unset($status);
 			}
 		}
 		catch( LivestatusException $e ) {
-			$notifications[] = array(_('Livestatus is not accessable'), false);
+			$this->add_global_notification( _('Livestatus is not accessable') );
 		}
 		catch( ORMException $e ) {
-			$notifications[] = array(_('Livestatus is not accessable'), false);
+			$this->add_global_notification( _('Livestatus is not accessable') );
 		}
 		# check permissions
 		$user = Auth::instance()->get_user();
@@ -197,12 +204,10 @@ class Ninja_Controller extends Template_Controller {
 			$query->result(false);
 			$row = $query->current();
 			if ($row !== false && $row['cnt'] > 0) {
-				$notifications[] = array(html::anchor('configuration/configure?scan=autoscan_complete', $row['cnt'] . _(' unmonitored hosts present.')), true);
+				$this->add_global_notification( html::anchor('configuration/configure?scan=autoscan_complete', $row['cnt'] . _(' unmonitored hosts present.')) );
 			}
 		}
 
-		$this->global_notifications = $notifications;
-		$this->template->global_notifications = $notifications;
 	}
 
 	/**
