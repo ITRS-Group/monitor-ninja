@@ -47,6 +47,7 @@ class op5objstore {
 
 	public function mock_clear() {
 		$this->mock_objects = array();
+		$this->clear();
 	}
 
 	public function mock_add( $name, $object ) {
