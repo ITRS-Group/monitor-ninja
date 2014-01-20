@@ -7,33 +7,18 @@ var nr_of_scheduled_instances = 0;
 var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
 	// handle the move-between-lists-button (> + <) and double click events
-	// hostgroups >
-	$("#mv_hg_r").click(function() {moveAndSort('hostgroup_tmp', 'hostgroup');});
-	$("#hostgroup_tmp").dblclick(function() {moveAndSort('hostgroup_tmp', 'hostgroup');});
-	// hostgroups <
-	$("#mv_hg_l").click(function() {moveAndSort('hostgroup', 'hostgroup_tmp');});
-	$("#hostgroup").dblclick(function() {moveAndSort('hostgroup', 'hostgroup_tmp');});
-
-	// servicegroup >
-	$("#mv_sg_r").click(function() {moveAndSort('servicegroup_tmp', 'servicegroup');});
-	$("#servicegroup_tmp").dblclick(function() {moveAndSort('servicegroup_tmp', 'servicegroup');});
-	// servicegroup <
-	$("#mv_sg_l").click(function() {moveAndSort('servicegroup', 'servicegroup_tmp');});
-	$("#servicegroup").dblclick(function() {moveAndSort('servicegroup', 'servicegroup_tmp');});
-
-	// hosts >
-	$("#mv_h_r").click(function() {moveAndSort('host_tmp', 'host_name');});
-	$("#host_tmp").dblclick(function() {moveAndSort('host_tmp', 'host_name');});
-	// hosts <
-	$("#mv_h_l").click(function() {moveAndSort('host_name', 'host_tmp');});
-	$("#host_name").dblclick(function() {moveAndSort('host_name', 'host_tmp');});
-
-	// services >
-	$("#mv_s_r").click(function() {moveAndSort('service_tmp', 'service_description');});
-	$("#service_tmp").dblclick(function() {moveAndSort('service_tmp', 'service_description');});
-	// services <
-	$("#mv_s_l").click(function() {moveAndSort('service_description', 'service_tmp');});
-	$("#service_description").dblclick(function() {moveAndSort('service_description', 'service_tmp');});
+	function move_right() {
+		var selects = $(this).parent().parent().find('select');
+		moveAndSort(selects.filter(':first'), selects.filter(':last'));
+	}
+	function move_left() {
+		var selects = $(this).parent().parent().find('select');
+		moveAndSort(selects.filter(':last'), selects.filter(':first'));
+	}
+	$('.arrow-right').click(move_right);
+	$('.arrow-left').click(move_left);
+	$('#hostgroup_tmp, #servicegroup_tmp, #host_tmp, #service_tmp, #objects_tmp').dblclick(move_right);
+	$('#hostgroup, #servicegroup, #host_name, #service_description, #objects').dblclick(move_left);
 
 	$("#hide_response").click(function() {
 		hideMe('response');
@@ -689,15 +674,10 @@ function show_message(class_name, msg)	{
 	setTimeout('hide_response()', 5000);
 }
 
-function move_option(from_id, to_id)
+function moveAndSort(from, to)
 {
-	 return !$('#' + from_id + ' option:selected').remove().appendTo('#' + to_id);
-}
-
-function moveAndSort(from_id, to_id)
-{
-	move_option(from_id, to_id);
-	$("#" + to_id).sortOptions();
+	from.find('option:selected').remove().appendTo(to);
+	to.sortOptions();
 }
 
 // init timepicker once it it is shown
