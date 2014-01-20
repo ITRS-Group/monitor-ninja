@@ -127,12 +127,6 @@ class Reports_Controller extends Base_reports_Controller
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
 
-		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
-
 		$this->js_strings .= "var _reports_no_sla_str = '"._('Please enter at least one SLA value')."';\n";
 		$this->js_strings .= "var _reports_sla_err_str = '"._('Please check SLA values in fields marked red below and try again')."';\n";
 
@@ -294,12 +288,7 @@ class Reports_Controller extends Base_reports_Controller
 		$tpl_options->saved_reports = $saved_reports;
 		$tpl_options->months = date::abbr_month_names();
 
-		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
-		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 

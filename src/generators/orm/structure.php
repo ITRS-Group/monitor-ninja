@@ -486,8 +486,29 @@ $tables = array (
 			'filter' => 'string',
 			'filter_description' => 'string'
 			),
-		)
-	);
+		),
+	'recurring_downtimes' =>
+	array(
+		'class' => 'RecurringDowntime',
+		'source' => 'SQL',
+		'table' => 'recurring_downtime',
+		'key' => array('id'),
+		'default_sort' => array('last_update'),
+		'structure' => array(
+			'id' => 'int',
+			'author' => 'string',
+			'downtime_type' => 'string',
+			'last_update' => 'int',
+			'comment' => 'string',
+			'start_time' => 'int',
+			'end_time' => 'int',
+			'duration' => 'int',
+			'fixed' => 'int',
+			'weekdays' => 'list',
+			'months' => 'list'
+		),
+	),
+);
 /*
 
 		'log' =>

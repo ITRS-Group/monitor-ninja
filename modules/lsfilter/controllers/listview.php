@@ -17,6 +17,10 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$basepath = 'modules/lsfilter/';
 
+		$js_strings = "Date.monthNames = ".json_encode(date::month_names()).";\n";
+		$js_strings .= 'Date.dayNames = '.json_encode(date::day_names()).";\n";
+		$this->template->inline_js = $js_strings;
+
 		$this->xtra_js[] = 'index.php/manifest/js/orm_structure.js';
 
 		$this->xtra_js[] = $basepath.'js/LSFilter.js';

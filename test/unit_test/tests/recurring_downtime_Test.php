@@ -6,6 +6,7 @@
  */
 class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	var $scheduletimeofday = "12:00";
+	var $scheduleendtime = "15:00";
 	var $basecomment = 'Recurring Downtime Test Schedule For ';
 
 	/**
@@ -14,10 +15,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 
-		# Without this, super-failed test suites takes two test runs to heal. That's annoying.
-		$db = Database::instance();
-		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
-		$result = $db->query($sql);
+		$this->sd = new ScheduleDate_Model();
 
 		$this->basictests = array(
 			mktime(23, 50, 0, 11, 11, 2036) => 'Schedule on a monday',
@@ -31,6 +29,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			mktime(23, 50, 0, 2, 28, 2036) => 'Schedule on a leap day',
 			mktime(23, 50, 0, 12, 31, 2036) => 'Schedule on new years day',
 		);
+	}
+
+	public function tearDown() {
+		$db = Database::instance();
+		$db->query("TRUNCATE TABLE recurring_downtime");
+		$db->query("TRUNCATE TABLE recurring_downtime_objects");
+
 	}
 
 	public function resubmit_and_cleanup($tests, $type) {
@@ -52,13 +57,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$ids = array();
 		foreach ($tests as $time => $description) {
 			$dt = $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduletimeofday} +1 day", $time)), 'columns' => array('id')));
-			$this->assertEquals(count($dt), $old_count[$time], 'There should still be the same number of matching downtimes from '.$description);
+			$this->assertCount($old_count[$time], $dt, 'There should still be the same number of matching downtimes from '.$description);
 			foreach ($dt as $row) {
 				$ids[] = $row['id'];
 			}
 		}
 
-		$this->assertEquals($current_number, count($ls->getDowntimes(array('filter' => array('comment' => $comment)))), 'Still same number of downtimes in total with our comment');
+		$this->assertCount($current_number, $ls->getDowntimes(array('filter' => array('comment' => $comment))), 'Still same number of downtimes in total with our comment');
 
 		// Remove downtimes when tests are done.
 		$cmd = (strpos($type, 'host') !== false) ? 'DEL_HOST_DOWNTIME;' : 'DEL_SVC_DOWNTIME;';
@@ -67,6 +72,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			$res = nagioscmd::submit_to_nagios($cmd . $id, $pipe);
 			$this->assertTrue($res, 'Host delete command was submitted');
 		}
+
+		$this->assertCount(0, $ls->getDowntimes(array('filter' => array('comment' => $comment))), "Downtimes are gone after deleting them");
 	}
 
 	public function cron($tests, $type, $expected_number) {
@@ -74,16 +81,16 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		foreach ($tests as $time => $description) {
 			$output = '';
 			exec('/usr/bin/php index.php default/cron/downtime/'.$time.' 2>&1', $output, $status);
-			$this->assertEquals(0, $status, 'Return code should be zero');
 			$this->assertEmpty($output, $description ." returned output: ".implode("\n", $output));
+			$this->assertEquals(0, $status, 'Return code should be zero');
 		}
 
 		sleep(3); # Y U SO SLOW?
 
 		$ls = Livestatus::instance();
 		foreach ($tests as $time => $description) {
-			$dt = $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduletimeofday} +1 day", $time)), 'columns' => array('comment')));
-			$this->assertEquals(count($dt), $expected_number, "Unexpected number of downtimes created from $description");
+			$dt = $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduletimeofday} +1 day", $time)), 'columns' => array('comment'), 'auth' => false));
+			$this->assertCount($expected_number, $dt, "Unexpected number of downtimes created from $description");
 			foreach ($dt as $row) {
 				$this->assertEquals('AUTO: ' . $comment, $row['comment'], "Downtimes matching $description should have proper comment");
 			}
@@ -96,28 +103,29 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	public function test_schedule_hosts() {
 		$comment = $this->basecomment.'hosts';
 		$data = array(
-			"report_type" => "hosts",
-			"host_name" => array("monitor"),
+			'author' => 'me',
+			"downtime_type" => "hosts",
+			"objects" => array("monitor"),
 			"comment" => $comment,
-			"time" => $this->scheduletimeofday,
+			"start_time" => $this->scheduletimeofday,
+			"end_time" => $this->scheduleendtime,
 			"duration" => "2:00",
 			"fixed" => "1",
-			"triggered_by" =>"0",
-			"recurring_day" => array("1","2","3","4","5","6","0"),
-			"recurring_month" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		ScheduleDate_Model::edit_schedule($data, false);
-		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
+			"weekdays" => array("1","2","3","4","5","6","0"),
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+		$id;
+		$this->assertTrue($this->sd->edit_schedule($data, $id));
 		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertCount(1, $result, "After creating a new schedule, there's only one with that name");
 
 		$this->cron($this->basictests, 'hosts', 1);
 		$this->resubmit_and_cleanup($this->basictests, 'hosts');
 
-		$db = Database::instance();
-		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "One schedule was deleted.");
+		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
 
 	/**
@@ -126,38 +134,39 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	public function test_schedule_hostgroups() {
 		$comment = $this->basecomment . 'hostgroups';
 		$data = array(
-			"report_type" => "hostgroups",
-			"hostgroup" => array("hostgroup_up", "hostgroup_all"),
+			'author' => 'me',
+			"downtime_type" => "hostgroups",
+			"objects" => array("hostgroup_up", "hostgroup_all"),
 			"comment" => $comment,
-			"time" => $this->scheduletimeofday,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
 			"duration" => "2:00",
 			"fixed" => "1",
-			"triggered_by" =>"0",
-			"recurring_day" => array("1","2","3","4","5","6","0"),
-			"recurring_month" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"weekdays" => array("1","2","3","4","5","6","0"),
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
 
 		# The number is wrong.
 		# Any overlapping hosts will be added twice.
 		# However, it's slightly better with two downtimes than none.
 		$number = 0;
 		$ls = Livestatus::instance();
-		foreach ($data['hostgroup'] as $group) {
+		foreach ($data['objects'] as $group) {
 			$number += count($ls->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $group)))));
 		}
 
-		ScheduleDate_Model::edit_schedule($data, false);
-		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
+		$id;
+		$this->assertTrue($this->sd->edit_schedule($data, $id));
 		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertCount(1, $result, "After creating a new schedule, there's only one with that name");
 
 		$this->cron($this->basictests, 'hostgroups', $number);
 		$this->resubmit_and_cleanup($this->basictests, 'hostgroups');
 
-		$db = Database::instance();
-		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "One schedule was deleted.");
+		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
 
 	/**
@@ -166,28 +175,30 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	public function test_schedule_services() {
 		$comment = $this->basecomment . 'services';
 		$data = array(
-			"report_type" => "services",
-			"service_description" => array("host_down;service ok", "host_down;service critical"),
+			'author' => 'me',
+			"downtime_type" => "services",
+			"objects" => array("host_down;service ok", "host_down;service critical"),
 			"comment" => $comment,
-			"time" => $this->scheduletimeofday,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
 			"duration" => "2:00",
 			"fixed" => "1",
-			"triggered_by" =>"0",
-			"recurring_day" => array("1","2","3","4","5","6","0"),
-			"recurring_month" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		ScheduleDate_Model::edit_schedule($data, false);
-		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
+			"weekdays" => array("1","2","3","4","5","6","0"),
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+		$id;
+		$this->assertTrue($this->sd->edit_schedule($data, $id));
 		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertCount(1, $result, "After creating a new schedule, there's only one with that name");
 
 		$this->cron($this->basictests, 'services', 2);
 		$this->resubmit_and_cleanup($this->basictests, 'services');
 
 		$db = Database::instance();
-		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "One schedule was deleted.");
+		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
 
 	/**
@@ -196,27 +207,29 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	public function test_schedule_servicegroups() {
 		$comment = $this->basecomment . 'servicegroups';
 		$data = array(
-			"report_type" => "servicegroups",
-			"servicegroup" => array("servicegroup_ok", "servicegroup_critical"),
+			'author' => 'me',
+			"downtime_type" => "servicegroups",
+			"objects" => array("servicegroup_ok", "servicegroup_critical"),
 			"comment" => $comment,
-			"time" => $this->scheduletimeofday,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
 			"duration" => "2:00",
 			"fixed" => "1",
-			"triggered_by" =>"0",
-			"recurring_day" => array("1","2","3","4","5","6","0"),
-			"recurring_month" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		ScheduleDate_Model::edit_schedule($data, false);
-		$sql = "SELECT id FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%' ORDER BY id DESC";
+			"weekdays" => array("1","2","3","4","5","6","0"),
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+		$id;
+		$this->assertTrue($this->sd->edit_schedule($data, $id));
 		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "After creating a new schedule, there's only one with that name");
+		$this->assertCount(1 ,$result, "After creating a new schedule, there's only one with that name");
 
 		# The number is wrong.
 		# Any overlapping hosts will be added twice.
 		# However, it's slightly better with two downtimes than none.
 		$number = 0;
 		$ls = Livestatus::instance();
-		foreach ($data['servicegroup'] as $group) {
+		foreach ($data['objects'] as $group) {
 			$number += count($ls->getServices(array('filter' => array('groups' => array('>=' => $group)))));
 		}
 
@@ -224,24 +237,26 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->resubmit_and_cleanup($this->basictests, 'servicegroups');
 
 		$db = Database::instance();
-		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "One schedule was deleted.");
+		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
 
 	public function test_host_noschedule() {
 		$comment = $this->basecomment . "hosts";
 		$data = array(
-			"report_type" => "hosts",
-			"host_name" => array("monitor"),
+			'author' => 'me',
+			"downtime_type" => "hosts",
+			"objects" => array("monitor"),
 			"comment" => $comment,
-			"time" => $this->scheduletimeofday,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
 			"duration" => "2:00",
 			"fixed" => "1",
-			"triggered_by" =>"0",
-			"recurring_day" => array("1","2","3","4","5","6"),
-			"recurring_month" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		ScheduleDate_Model::edit_schedule($data, false);
+			"weekdays" => array("1","2","3","4","5","6"),
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+		$id;
+		$this->assertTrue($this->sd->edit_schedule($data, $id));
 
 		$tests_expected = array(
 			strtotime("2036-01-17 23:50") => "Schedule on thursday when sunday is excluded",
@@ -257,8 +272,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		# Honey, I swear, Nothing Happened, so there's nothing to clean up!
 
 		$db = Database::instance();
-		$sql = "DELETE FROM recurring_downtime WHERE data LIKE '%Recurring Downtime Test Schedule%'";
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
 		$result = $db->query($sql);
-		$this->assertEquals(count($result), 1, "One schedule was deleted.");
+		$this->assertCount(1, $result, "One schedule should be deleted.");
 	}
 }

@@ -7,17 +7,74 @@
 class ScheduleDate_Model extends Model
 {
 	/**
+	 * Fields that a schedule include. These are all valid, and all required.
+	 * Mostly public for test reasons.
+	 */
+	static public $valid_fields = array(
+		'author',
+		'downtime_type',
+		'objects',
+		'comment',
+		'start_time',
+		'end_time',
+		'duration',
+		'fixed',
+		'weekdays',
+		'months'
+	);
+
+	/**
+	 * A list of valid schedule types - same format (no underscore, trailing s)
+	 * as in report options.
+	 * Mostly public for test reasons.
+	 */
+	static public $valid_types = array(
+		'hosts',
+		'services',
+		'hostgroups',
+		'servicegroups'
+	);
+
+	static protected function check_if_scheduled($type, $name, $start_time, $end_time, $is_fixed)
+	{
+		$ls = Livestatus::instance();
+		switch ($type) {
+			case 'hosts':
+				$res = $ls->getDowntimes(array('filter' => array('is_service' => 0, 'host_name' => $name, 'start_time' => $start_time, 'fixed' => $is_fixed, 'end_time' => $end_time)));
+				break;
+			case 'services':
+				if (!strstr($name, ';'))
+					return false;
+
+				$parts = explode(';', $name);
+				$host = $parts[0];
+				$service = $parts[1];
+				$res = $ls->getDowntimes(array('filter' => array('is_service' => 1, 'host_name' => $host, 'service_description' => $service, 'start_time' => $start_time, 'fixed' => $is_fixed, 'end_time' => $end_time)));
+				break;
+			case 'hostgroups':
+				$hosts = $ls->getHosts(array('filter' => array('groups' => array('>=' => $name))));
+				$in_dtime = $ls->getDowntimes(array('filter' => array('is_service' => 0, 'host_groups' => array('>=' => $name), 'start_time' => $start_time, 'fixed' => $is_fixed, 'end_time' => $end_time)));
+				return (count($hosts) <= count($in_dtime));
+				break;
+
+			case 'servicegroups':
+				$services = $ls->getServices(array('filter' => array('groups' => array('>=' => $name))));
+				$in_dtime = $ls->getDowntimes(array('filter' => array('is_service' => 1, 'service_groups' => array('>=' => $name), 'start_time' => $start_time, 'fixed' => $is_fixed, 'end_time' => $end_time)));
+				return (count($services) <= count($in_dtime));
+				break;
+		}
+
+		return (!empty($res));
+	}
+
+	/**
 	 *	Schedule a recurring downtime if tomorrow matches any saved schedules
 	 *	@param $id int
 	 *	@param $timestamp int
 	 *	@return bool
 	 */
-	static public function schedule_downtime($id=false, $timestamp=false) {
-		$res = self::get_schedule_data($id);
-		if (!$res) {
-			// no saved schedules
-			return;
-		}
+	static public function schedule_downtime($timestamp=false) {
+		$schedules = RecurringDowntimePool_Model::all();
 
 		// Set timestamp to the following day.
 		$timestamp = strtotime('+1 day', $timestamp);
@@ -29,27 +86,39 @@ class ScheduleDate_Model extends Model
 		$tomorrow['day'] = date('d', $timestamp);
 		$tomorrow['weekday'] = date('w', $timestamp);
 
-		foreach ($res as $row) {
-			// Unserialize string saved in database
-			$data = i18n::unserialize($row->data);
-			$data['author'] = $row->author;
+		foreach ($schedules->it(array('weekdays', 'author', 'months', 'downtime_type', 'start_time', 'end_time', 'duration', 'objects', 'fixed', 'comment')) as $data) {
+			if (!in_array($tomorrow['weekday'], $data->get_weekdays()) || !in_array($tomorrow['month'], $data->get_months()))
+				continue;
 
-			// Check if we should schedule downtime on tomorrows weekday
-			if (in_array($tomorrow['weekday'], $data['recurring_day'])) {
-				// Check if we should schedule downtime on tomorrows month
-				if (in_array($tomorrow['month'], $data['recurring_month'])) {
-					// Get object type for downtime (host, service, hostgroup, servicegroup)
-					$nagios_cmd = self::determine_downtimetype(arr::search($data, 'report_type'));
+			$nagios_cmd = self::determine_downtimetype($data->get_downtime_type());
 
-					// Get the starttime for the scheduled downtime
-					$time = explode(':', $data['time']);
-					$starttime = mktime($time[0], $time[1], 0, $tomorrow['month'], $tomorrow['day'], $tomorrow['year']);
-					// Send command to nagios
-					self::add_downtime($data, $nagios_cmd, $starttime);
+			$start_time = mktime(0, 0, $data->get_start_time(), $tomorrow['month'], $tomorrow['day'], $tomorrow['year']);
+			$end_time = mktime(0, 0, $data->get_end_time(), $tomorrow['month'], $tomorrow['day'], $tomorrow['year']);
+			$duration = $data->get_duration();
+			$pipe = System_Model::get_pipe();
+			foreach ($data->get_objects() as $obj) {
+				# check if object already scheduled for same start time and duration?
+				if (static::check_if_scheduled($data->get_downtime_type(), $obj, $start_time, $end_time, $data->get_fixed())) {
+					fwrite(STDERR, "skipping $obj\n");
+					continue;
 				}
+				$tmp_cmd = "$nagios_cmd;$obj;$start_time;$end_time;{$data->get_fixed()};0;$duration;{$data->get_author()};AUTO: {$data->get_comment()}";
+				$result = nagioscmd::submit_to_nagios($tmp_cmd, $pipe);
 			}
 		}
-		return;
+	}
+
+	static protected function time_to_seconds($time)
+	{
+		$seconds = 0;
+		$parts = explode(':', $time);
+		if (isset($parts[0]))
+			$seconds += $parts[0] * 3600;
+		if (isset($parts[1]))
+			$seconds += $parts[1] * 60;
+		if (isset($parts[2]))
+			$seconds += $parts[2];
+		return $seconds;
 	}
 
 	/**
@@ -57,7 +126,7 @@ class ScheduleDate_Model extends Model
 	*	@param $report_type string
 	*	@return string
 	*/
-	static public function determine_downtimetype($report_type=false)
+	static protected function determine_downtimetype($report_type=false)
 	{
 		if (empty($report_type)) {
 			return false;
@@ -77,122 +146,64 @@ class ScheduleDate_Model extends Model
 	 *	@param $id int
 	 *	@return bool
 	 */
-	static public function edit_schedule($data = false, $id=false)
+	public function edit_schedule($data, &$id=false)
 	{
 		if (!is_array($data)) {
 			return false;
 		}
 
-		$db = Database::instance();
-
-		$downtime_type = $data['report_type'];
-		$data = serialize($data);
-
-		if ((int)$id) {
-			# update schedule
-			$sql = "UPDATE recurring_downtime SET author = ".$db->escape(Auth::instance()->get_user()->username).
-				", data = ".$db->escape($data).", downtime_type=".$db->escape($downtime_type).", last_update=".time().
-				" WHERE id = ".(int)$id;
-		} else {
-			# new schedule
-			$sql = "INSERT INTO recurring_downtime (author, data, downtime_type, last_update) ".
-				"VALUES(".$db->escape(Auth::instance()->get_user()->username).
-				", ".$db->escape($data).", ".$db->escape($downtime_type).", ".time().")";
+		foreach (static::$valid_fields as $field) {
+			if (!isset($data[$field]))
+				return false;
 		}
 
-		$db->query($sql);
-		return true;
-	}
-
-	/**
-	 * Fetch row(s) from db
-	 *
-	 * @param $id int = false
-	 * @param $type string = false
-	 * @return array
-	 */
-	static function get_schedule_data($id = false, $type=false)
-	{
 		$db = Database::instance();
 
-		$sql = "SELECT * FROM recurring_downtime ";
-
-		if (!empty($type)) {
-			$sql .= " WHERE downtime_type=".$db->escape($type)." ORDER BY last_update";
-		} else {
-			if (!empty($id)) {
-				$sql .= " WHERE id=".$id;
-			} else {
-				$sql .= " ORDER BY downtime_type, last_update";
-			}
-		}
-
-		$res = $db->query($sql);
-		return $res;
-	}
-
-	/**
-	 *	Send downtime command to nagios
-	 *	@param $data array
-	 *	@param $nagioscmd string
-	 *	@param $start_time int
-	 *	@return void
-	 */
-	static public function add_downtime($data=false, $nagioscmd=false, $start_time=false)
-	{
-		if (empty($data) || empty($nagioscmd) || empty($start_time)) {
+		$downtime_type = $data['downtime_type'];
+		if (!in_array($downtime_type, static::$valid_types)) {
 			return false;
 		}
+		$type = substr($data['downtime_type'], 0, -1);
+		if (!Auth::instance()->authorized_for($type.'_edit_contact') && !Auth::instance()->authorized_for($type.'_edit_all'))
+			return false;
 
-		$objfields = array(
-				'hosts' => 'host_name',
-				'hostgroups' => 'hostgroup',
-				'servicegroups' => 'servicegroup',
-				'services' => 'service_description'
-				);
+		$start_time = static::time_to_seconds($data['start_time']);
+		$end_time = static::time_to_seconds($data['end_time']);
+		$duration = static::time_to_seconds($data['duration']);
 
-		# determine if we should loop over host_name, hostgroups etc
-		if( isset($data[$objfields[$data['report_type']]]) ) {
-			$obj_arr = $data[$objfields[$data['report_type']]];
+		if ((int)$id) {
+			$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = '.(int)$id);
+			if (!count($set))
+				return false;
+			$db->query("DELETE FROM recurring_downtime_objects WHERE recurring_downtime_id = ".(int)$id);
+			# update schedule
+			$sql = "UPDATE recurring_downtime SET author = %s," .
+				" downtime_type = %s, last_update = %s, comment = %s," .
+				" start_time = %s, end_time = %s, duration = %s, fixed = %s," .
+				" weekdays = %s, months = %s WHERE id = ".(int)$id;
 		} else {
-			$obj_arr = array();
-		}
-		$cmd = false;
-		$duration = $data['duration'];
-		$fixed = isset($data['fixed']) ? (int)$data['fixed'] : 1;
-		$triggered_by = isset($data['triggered_by']) && !$fixed ? (int)$data['triggered_by'] : 0;
-
-		if (strstr($duration, ':')) {
-			# we have hh::mm
-			$timeparts = explode(':', $duration);
-			$duration_hours = $timeparts[0];
-			$duration_minutes = $timeparts[1];
-
-			#convert to seconds
-			$duration = ($duration_hours * 3600);
-			$duration += ($duration_minutes * 60);
-		} else {
-			$duration_hours = (int)$duration;
-			$duration = ($duration_hours * 3600);
+			# new schedule
+			$sql = "INSERT INTO recurring_downtime (author, downtime_type," .
+				" last_update, comment, start_time, end_time, duration," .
+				" fixed, weekdays, months) VALUES (%s, %s, %s, %s, %s, %s," .
+				" %s, %s, %s, %s)";
 		}
 
-		$end_time = $start_time + $duration;
-		$author = Auth::instance()->get_user()->username;
-		$comment = $data['comment'];
-
-		$pipe = System_Model::get_pipe();
-		foreach ($obj_arr as $obj) {
-			# check if object already scheduled for same start time and duration?
-			if (Old_Downtime_Model::check_if_scheduled($data['report_type'], $obj, $start_time, $duration)) {
-				fwrite(STDERR, "skipping $obj\n");
-				continue;
-			}
-			$tmp_cmd = "$nagioscmd;$obj;$start_time;$end_time;$fixed;$triggered_by;$duration;$author;AUTO: $comment";
-			$result = nagioscmd::submit_to_nagios($tmp_cmd, $pipe);
-			$cmd[] = $tmp_cmd.' :'.(int)$result;
+		$res = $db->query(sprintf($sql, $db->escape($data['author']),
+			$db->escape($data['downtime_type']), $db->escape(time()),
+			$db->escape($data['comment']), $db->escape($start_time),
+			$db->escape($end_time), $db->escape($duration),
+			$db->escape($data['fixed']),
+			$db->escape(serialize($data['weekdays'])),
+			$db->escape(serialize($data['months']))));
+		if (!$id)
+			$id = $res->insert_id();
+		foreach ($data['objects'] as $object) {
+			$db->query("INSERT INTO recurring_downtime_objects" .
+				" (recurring_downtime_id, object_name) VALUES (" .
+				(int)$id.", ".$db->escape($object).")");
 		}
-
-		#echo Kohana::debug($cmd);
+		return true;
 	}
 
 	/**
@@ -201,19 +212,26 @@ class ScheduleDate_Model extends Model
 	 * @param $id ID of the downtime to delete
 	 * @returns true on success, false otherwise
 	 */
-	public function delete_schedule($id=false)
+	public function delete_schedule($id)
 	{
-		if (!Auth::instance()->authorized_for('system_commands')) {
+		$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = '.(int)$id);
+		if (!count($set))
 			return false;
-		}
 
-		if (empty($id) || !(int)$id) {
+		$obj = $set->it(array('downtime_type'))->current();
+		$type = substr($obj->get_downtime_type(), 0, -1);
+		// *_add_delete is for the objects, and because this manipulates the
+		// state of an existing object, *_add_delete is not required. OK?
+		if (!Auth::instance()->authorized_for($type.'_edit_contact') && !Auth::instance()->authorized_for($type.'_edit_all'))
 			return false;
-		}
 
 		$db = Database::instance();
 
 		$sql = "DELETE FROM recurring_downtime WHERE id=".(int)$id;
+		if (!$db->query($sql)) {
+			return false;
+		}
+		$sql = "DELETE FROM recurring_downtime_objects WHERE recurring_downtime_id=".(int)$id;
 		if (!$db->query($sql)) {
 			return false;
 		}

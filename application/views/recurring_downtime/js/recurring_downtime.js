@@ -1,69 +1,75 @@
 $(document).ready(function() {
+//	$('.time-entry').timePicker();
 	$("#setup_form").bind('submit', function() {
 		loopElements();
 		return check_setup();
 	});
 
-	var $tabs = $('#schedule-tabs-container').tabs();
+	$('.content').on('click', '.recurring_delete', function(ev) {
+		ev.preventDefault();
+		var this_id = $(this).data('recurring-id');
 
-	$('.recurring_delete').click(function() {
-		var this_id = $(this).attr('id');
-		this_id = this_id.replace('recurring_delete_', '');
-		var type = $('#schedule_' + this_id).attr('class');
-		type = type.replace('scheduled_', '')
-
-		// find nr of rows
-		var nr_of_schedules = $('#table_' + type + ' tr').length - 2;
-
-		if (confirm(_confirm_delete_schedule)) {
+		if (confirm(_('Are you sure that you would like to delete this schedule.\nPlease note that already scheuled downtime won\'t be affected by this and will have to be deleted manually.\nThis action can\'t be undone.'))) {
 			$.ajax({
 				url:_site_domain + _index_page + '/recurring_downtime/delete',
 				type: 'POST',
 				data: {schedule_id: this_id},
 				success: function(data) {
-					if (data == 'ERROR') {
-						jgrowl_message(_schedule_error, data);
-					} else {
-						jgrowl_message(_schedule_delete_success, _schedule_delete_ok);
-						$('#schedule_' + this_id).remove();
-						if (nr_of_schedules == 1) {
-							$('#table_' + type).remove();
-						}
+					if (data) {
+						$.notify(data);
+						window.setTimeout(function() {
+							lsfilter_main.refresh();
+						}, 1500);
 					}
+					else {
+						$.notify('An unexpected error occured', {'sticky':true});
+					}
+				},
+				error: function(){
+					$.notify("An unexpected error occured", {'sticky':true});
 				}
 			});
 		}
 		return false;
 	});
 
-	$('.show_all_subobjects').css('cursor', 'pointer');
-
-	$('.show_all_subobjects').click(function() {
-		var the_id = $(this).attr('id');
-		the_id = the_id.replace('show_all_objects_', '');
-		$('#objects_small_' + the_id).toggle();
-		$('#all_objects_' + the_id).toggle();
-	});
-
-	$('#checkbox_fixed').bind('change', function() {
-		if ($(this).attr('checked')) {
+	$('#fixed').bind('change', function() {
+		if ($(this).is(':checked'))
 			$('#triggered_row').hide();
-		} else {
+		else
 			$('#triggered_row').show();
-		}
+	}).each(function() {
+		if ($(this).is(':checked'))
+			$('#triggered_row').hide();
+		else
+			$('#triggered_row').show();
 	});
 
-	$('#report_type').bind('change', function() {
-		switch($('#report_type').val()) {
-			case 'hosts': case 'hostgroups':
-				set_downtime_ids('host');
-				break;
-
-			case 'services': case 'servicegroups':
-				set_downtime_ids('service');
-				break;
+	$('#downtime_type').on('change', function() {
+		var value = this.value;
+		$('.object-list-type').text(value);
+		get_members(value, function(all_names) {
+			populate_options('objects_tmp', 'objects', all_names);
+		});
+	}).each(function() {
+		var val = $(this).val();
+		$('.object-list-type').text(val);
+		if (window['_report_data']) {
+			expand_and_populate(_report_data);
+		} else if (val) {
+			get_members(val, function(all_names) {
+				populate_options('objects_tmp', 'objects', all_names);
+			});
 		}
 	});
+	$('#sel_downtime_type').on('click', function() {
+		var value = this.form.downtime_type.value;
+		$('.object-list-type').text(value);
+		get_members(value, function(all_names) {
+			populate_options('objects_tmp', 'objects', all_names);
+		});
+	});
+
 	$('#progress').css('position', 'absolute').css('top', '90px').css('left', '470px');
 
 	$('#select-all-days').on('click', function() {
@@ -80,28 +86,6 @@ $(document).ready(function() {
 	});
 });
 
-function set_downtime_ids(what)
-{
-	var arr = false;
-	switch(what) {
-		case 'host':
-			arr = host_downtime_ids;
-			break;
-		case 'service':
-			arr = svc_downtime_ids;
-	}
-	if (typeof arr == 'undefined') {
-		// shouldn't happen but we should handle it
-		return false;
-	}
-
-	// start by emptying the dropdown
-	$("#triggered_by").removeOption(/./);
-	for (var i in arr) {
-		$("#triggered_by").addOption(i, arr[i], false);
-	}
-}
-
 function check_setup()
 {
 	if (!check_form_values()) {
@@ -110,32 +94,25 @@ function check_setup()
 
 	var err_str = '';
 
-	/*
-		Fields to check (required):
-			comment 		-
-			time			- hh:mm
-			duration		- hh:mm
-			Days of week	- any checked
-			months			- any checked
-	*/
 	var comment = $.trim($('textarea[name=comment]').val());
-	var time = $.trim($('input[name=time]').val());
+	var start_time = $.trim($('input[name=start_time]').val());
+	var end_time = $.trim($('input[name=end_time]').val());
 	var duration = $.trim($('input[name=duration]').val());
 	var fixed = $('#checkbox_fixed').attr('checked');
 	var days = $('.recurring_day');
 	var months = $('.recurring_month');
 
-	if (comment == '' || time == '' || (fixed && duration == '')) {
+	if (comment == '' || start_time == '' || end_time == '' || (!fixed && duration == '')) {
 		// required fields are empty
 		// _form_err_empty_fields
 		err_str += '<li>' + _form_err_empty_fields + '</li>';
 	} else {
 		// check for special input
 
-		// time field
-		if (time.indexOf(':') != -1) {
+		// start_time field
+		if (start_time.indexOf(':') != -1) {
 			// we have hh:mm
-			timeparts = time.split(':');
+			timeparts = start_time.split(':');
 			if (timeparts.length != 2 || isNaN(timeparts[0]) || isNaN(timeparts[1])) {
 				// bogus time format
 				err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_time) + '</li>';
@@ -189,59 +166,23 @@ function check_setup()
 *	Parse fields and populate corresponding fields in form
 *	with values.
 */
-function expand_and_populate(data)
+function expand_and_populate(reportObj)
 {
-	var reportObj = data;
-	var field_obj = new field_maps();
-	var tmp_fields = new field_maps3();
-	var field_str = reportObj.report_type;
-	set_selection(reportObj.report_type);
-	get_members(reportObj.report_type, function() {
+	var field_str = reportObj.downtime_type;
+	get_members(field_str, function(all_names) {
 		var mo = new missing_objects();
-		if (reportObj[field_obj.map[field_str]]) {
-			var to_id = field_obj.map[field_str];
-			var from_id = tmp_fields.map[field_str];
-			// select report objects
-			for (prop in reportObj[field_obj.map[field_str]]) {
-				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj[field_obj.map[field_str]][prop])) {
-					mo.add(reportObj[field_obj.map[field_str]][prop])
-				} else {
-					$('#' + from_id).selectOptions(reportObj[field_obj.map[field_str]][prop]);
-				}
+		var from_id = $('#objects_tmp');
+		populate_options('objects_tmp', 'objects', all_names);
+		// select report objects
+		for (prop in reportObj.objects) {
+			if (!from_id.containsOption(reportObj.objects[prop])) {
+				mo.add(reportObj.objects[prop])
+			} else {
+				from_id.selectOptions(reportObj.objects[prop]);
 			}
-			mo.display_if_any();
-			// move selected options from left -> right
-			moveAndSort(from_id, to_id);
 		}
+		mo.display_if_any();
+		// move selected options from left -> right
+		moveAndSort('objects_tmp', 'objects');
 	});
-}
-
-function set_initial_state(what, val)
-{
-	var item = '';
-	var elem = false;
-	switch (what) {
-		case '':
-			item = '';
-			break;
-		case 'triggered_row':
-		if (val == 1) {
-			$('#triggered_row').hide();
-		} else {
-			$('#triggered_row').show();
-		}
-			break;
-		default:
-			item = what;
-	}
-	if (item) {
-		// don't use name field - use ID!
-		if ($('#' + item).is(':visible')) {
-			$('#' + item + ' option').each(function() {
-				if ($(this).val() == val) {
-					$(this).attr('selected', true);
-				}
-			});
-		}
-	}
 }

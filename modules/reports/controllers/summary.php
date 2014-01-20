@@ -87,11 +87,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
-		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
 		if ($this->options['report_id']) {
@@ -215,11 +210,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
-		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		if (!$this->options['standardreport']) {
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 		}

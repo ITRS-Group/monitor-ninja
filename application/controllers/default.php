@@ -188,8 +188,8 @@ class Default_Controller extends Ninja_Controller  {
 		$op5_auth->force_user(new Op5User_AlwaysAuth());
 
 		if ($period_str === 'downtime') {
-			$controller = new recurring_downtime_Controller();
-			$controller->check_schedules(false, $timestamp);
+			$sd = new ScheduleDate_Model();
+			$sd->schedule_downtime($timestamp);
 			exit(0);
 		}
 

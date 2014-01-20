@@ -112,7 +112,7 @@ $menu_base = array(
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
 		$menu_items['comments'] 				=> array('/listview?q=[comments] all', 'comments',0),
 		$menu_items['scheduled_downtime']		=> array('/listview?q=[downtimes] all', 'scheduledowntime',0),
-		$menu_items['recurring_downtime']		=> array('/recurring_downtime', 'scheduledowntime', 0),
+		$menu_items['recurring_downtime']		=> array('/listview?q=[recurring_downtimes] all', 'scheduledowntime', 0),
 
 		$menu_items['process_info'] 			=> array('/extinfo/show_process_info', 'processinfo',0),
 		$menu_items['performance_info'] 		=> array('/extinfo/performance', 'performanceinfo',0),

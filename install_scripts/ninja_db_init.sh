@@ -2,7 +2,7 @@
 
 # setup the db tables required for Ninja
 
-target_db_version=12
+target_db_version=13
 target_sla_version=10
 target_avail_version=15
 target_sched_version=10
@@ -124,6 +124,10 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	5)
 		php index.php cli/upgrade_auth
 		all_versions 5
+		;;
+	12)
+		php index.php cli/upgrade_recurring_downtime
+		all_versions 12
 		;;
 	*)
 		all_versions "$db_ver"

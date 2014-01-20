@@ -334,6 +334,24 @@ class Cli_Controller extends Ninja_Controller {
 		$cfg->setConfig('auth_groups', $groups);
 	}
 
+	public function upgrade_recurring_downtime()
+	{
+		$db = Database::instance();
+		$res = $db->query('SELECT * FROM recurring_downtime');
+		$report = array(
+			'hosts' => 'host_name',
+			'services' => 'service_description',
+			'hostgroups' => 'hostgroup',
+			'servicegroups' => 'servicegroup'
+		);
+		foreach ($res->result(false) as $row) {
+			if ($row['start_time'])
+				continue; // already migrated
+			$data = i18n::unserialize($row['data']);
+			Scheduledate_Model::edit_downtime($data, $row['id']);
+		}
+	}
+
 	public function license_start() {
 		$row = Database::instance()->query("SELECT timestamp from report_data ORDER BY timestamp ASC LIMIT 1");
 		if(!$row) {

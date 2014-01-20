@@ -85,7 +85,6 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _saved_sla_reports = ".json_encode($sla_reports_arr).";\n";
 		$this->js_strings .= "var _saved_summary_reports = ".json_encode($summary_reports_arr).";\n";
 		$this->js_strings .= "var _scheduled_reports = ".json_encode(array('avail' => $avail_schedules, 'sla' => Scheduled_reports_Model::get_scheduled_reports('sla')->result_array(false), 'summary' => Scheduled_reports_Model::get_scheduled_reports('summary')->result_array(false))).";\n";
-		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";

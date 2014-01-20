@@ -1144,3 +1144,108 @@ listview_renderer_table.saved_filters = {
 		}
 	}
 };
+
+listview_renderer_table.recurring_downtimes = {
+	"downtime_type": {
+		"header": _('Downtime type'),
+		"depends": ['downtime_type'],
+		"sort": ['downtime_type'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.downtime_type);
+		}
+	},
+	"objects": {
+		"header": _('Objects'),
+		"depends": ['objects'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.objects.join(', '));
+		}
+	},
+	"author": {
+		"header": _('Author'),
+		"depends": ['author'],
+		"sort": ['author'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.author);
+		}
+	},
+	"comment": {
+		"header": _('Comment'),
+		"depends": ['comment'],
+		"sort": ['comment'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.comment);
+		}
+	},
+	"start_time": {
+		"header": _('Start time'),
+		"depends": ['start_time'],
+		"sort": ['start_time'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.start_time);
+		}
+	},
+	"end_time": {
+		"header": _('End time'),
+		"depends": ['end_time', 'start_time', 'duration'],
+		"sort": ['end_time'],
+		"cell": function(args) {
+			if (args.obj.end_time)
+				return $('<td />').update_text(args.obj.end_time);
+			var start_time_parts = args.obj.start_time.split(':');
+			var duration_parts = args.obj.duration.split(':');
+			var end_time_minutes = (Number(start_time_parts[0]) + Number(duration_parts[0])) * 60
+				+ Number(start_time_parts[1]) + Number(duration_parts[1]);
+			console.log(end_time_minutes);
+			end_time_minutes = end_time_minutes % 1440;
+			var end_minutes = end_time_minutes % 60;
+			return $('<td />').update_text((Number.parseInt(end_time_minutes / 60)) + ':' + (end_minutes < 60 ? '0' + end_minutes : end_minutes))
+		}
+	},
+	"duration": {
+		"header": _('Duration'),
+		"depends": ['duration'],
+		"sort": ['duration'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.duration);
+		}
+	},
+	"fixed": {
+		"header": _('Fixed?'),
+		"depends": ['fixed'],
+		"sort": ['fixed'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.fixed ? _("Fixed") : _("Flexible"));
+		}
+	},
+	"weekdays": {
+		"header": _('Weekdays'),
+		"depends": ['weekdays'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.weekdays.map(function (x) {return Date.dayNames[x];}).join(', '));
+		}
+	},
+	"months": {
+		"header": _('Months'),
+		"depends": ['months'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.months.map(function (x) {return Date.monthNames[x-1];}).join(', '));
+		}
+	},
+	"actions": {
+		"header": _('Actions'),
+		"depends": ['id'],
+		"cell": function(args) {
+			var cell = $('<td />');
+			cell.append(icon16('edit',
+				_('Edit schedule'),
+				link('recurring_downtime/index/' + args.obj.id)
+			));
+			cell.append(icon16('delete-doc',
+				_('Delete schedule'),
+				link('recurring_downtime/delete/').data('recurring-id', args.obj.id).addClass('recurring_delete')
+			));
+			return cell;
+		}
+	},
+};
