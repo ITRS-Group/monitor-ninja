@@ -132,23 +132,31 @@ $(document).ready(function() {
 		});
 	});
 
+	var field_obj = new field_maps();
+	var tmp_fields = new field_maps3();
 	$('#report_type').on('change', function() {
 		var value = this.value;
 		set_selection(value);
-		get_members(value);
+		get_members(value, function(all_names) {
+			populate_options(field_obj[value], tmp_fields[value], all_names);
+		});
 	}).each(function() {
 		var val = $(this).val();
 		if (window['_report_data']) {
 			expand_and_populate(_report_data);
 		} else if (val) {
 			set_selection(val);
-			get_members(val);
+			get_members(val, function(all_names) {
+				populate_options(field_obj[val], tmp_fields[value], all_names);
+			});
 		}
 	});
 	$('#sel_report_type').on('click', function() {
 		var value = this.form.report_type.value;
 		set_selection(value);
-		get_members(value);
+		get_members(value, function(all_names) {
+			populate_options(field_obj[value], tmp_fields[value], all_names);
+		});
 	});
 
 	var rpcust = function() {
@@ -291,8 +299,9 @@ function set_selection(val) {
 	$('*[data-show-for~='+val+']').show()
 }
 
-function get_members(type, cb, names_to_skip) {
-	if (type=='') return;
+function get_members(type, cb) {
+	if (!type)
+		return;
 	var field_name = false;
 	var empty_field = false;
 
@@ -307,11 +316,8 @@ function get_members(type, cb, names_to_skip) {
 			$.notify("Unable to fetch objects: " + data.responseText, {'sticky': true});
 		},
 		success: function(all_names) {
-			empty_list(field_name);
-			empty_list(empty_field);
-			populate_options(field_name, empty_field, all_names, names_to_skip);
 			if(typeof cb == 'function')
-				cb();
+				cb(all_names);
 			$('#progress').css('display', 'none');
 		},
 		dataType: 'json'
@@ -348,10 +354,6 @@ function get_report_periods(type)
 }
 
 function empty_list(field) {
-	// escape nasty [ and ]
-	field = field.replace('[', '\\[');
-	field = field.replace(']', '\\]');
-
 	$('#' + field).empty();
 }
 
@@ -360,6 +362,8 @@ function empty_list(field) {
 */
 function populate_options(tmp_field, field, json_data, select_data)
 {
+	empty_list(tmp_field);
+	empty_list(field);
 	select_data = select_data || ''
 	show_progress('progress', _wait_str);
 	var available = document.createDocumentFragment();
@@ -946,7 +950,8 @@ function expand_and_populate(data)
 		field_str = 'hostgroups';
 	$('#report_type').val(field_str);
 	set_selection(field_str);
-	get_members(field_str, function() {
+	get_members(field_str, function(all_names) {
+		populate_options(field_obj[field_str], tmp_fields[field_str], all_names, reportObj.objects);
 		var mo = new missing_objects();
 		if (reportObj.objects) {
 			for (var prop in reportObj.objects) {
@@ -956,5 +961,5 @@ function expand_and_populate(data)
 			}
 			mo.display_if_any();
 		}
-	}, reportObj.objects);
+	});
 }

@@ -300,6 +300,11 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	 * Worst methodname evah.
+	 *
+	 * Returns all the objects of the specified type that your user has
+	 * permissions to view.
+	 *
 	 * @param $type string = false
 	 */
 	public function group_member($type=false)
