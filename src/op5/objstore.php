@@ -19,7 +19,7 @@ class op5objstore {
 	protected static $instance = false;
 
 	/**
-	 * 
+	 *
 	 * @return op5objstore
 	 */
 	public static function instance() {
