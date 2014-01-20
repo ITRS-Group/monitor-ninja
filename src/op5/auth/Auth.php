@@ -187,13 +187,13 @@ class op5auth {
 		* FIXME: Don't iterate over all... how and still be generic?
 		*/
 		if($this->config['enable_auto_login'] && $this->user === false) {
-			foreach(array_keys($this->auth_modules) as $auth_method) {
-				$driver = $this->getAuthModule($auth_method);
+			foreach(array_keys($this->auth_modules) as $auth_module) {
+				$driver = $this->getAuthModule($auth_module);
 				$user = $driver->auto_login();
 				if($user !== false) {
 					/* Postprocess login */
-					$user->auth_method = $auth_method;
-					if($this->authorize_user($user, $auth_method)) {
+					$user->auth_method = $auth_module;
+					if($this->authorize_user($user, $auth_module)) {
 						$this->user = $user;
 						return $user;
 					}
