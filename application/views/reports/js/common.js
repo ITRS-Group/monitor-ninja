@@ -368,7 +368,7 @@ function populate_options(tmp_field, field, json_data, select_data)
 	show_progress('progress', _wait_str);
 	var available = document.createDocumentFragment();
 	var selected = document.createDocumentFragment();
-	for (i = 0; i < json_data.length; i++) {
+	for (i = 0; i < (json_data ? json_data.length : 0); i++) {
 		var option = document.createElement("option");
 		option.appendChild(document.createTextNode(json_data[i]));
 		if (select_data.indexOf(json_data[i]) >= 0) {
@@ -379,7 +379,7 @@ function populate_options(tmp_field, field, json_data, select_data)
 		}
 	}
 	$('#' + tmp_field).append(available);
-	$('#'+ field).append(selected);
+	$('#' + field).append(selected);
 }
 
 /**
