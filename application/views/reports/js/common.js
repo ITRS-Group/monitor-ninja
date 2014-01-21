@@ -138,7 +138,7 @@ $(document).ready(function() {
 		var value = this.value;
 		set_selection(value);
 		get_members(value, function(all_names) {
-			populate_options(field_obj[value], tmp_fields[value], all_names);
+			populate_options(tmp_fields.map[value], field_obj.map[value], all_names);
 		});
 	}).each(function() {
 		var val = $(this).val();
@@ -147,7 +147,7 @@ $(document).ready(function() {
 		} else if (val) {
 			set_selection(val);
 			get_members(val, function(all_names) {
-				populate_options(field_obj[val], tmp_fields[value], all_names);
+				populate_options(tmp_fields.map[val], field_obj.map[val], all_names);
 			});
 		}
 	});
@@ -155,7 +155,7 @@ $(document).ready(function() {
 		var value = this.form.report_type.value;
 		set_selection(value);
 		get_members(value, function(all_names) {
-			populate_options(field_obj[value], tmp_fields[value], all_names);
+			populate_options(tmp_fields.map[value], field_obj.map[value], all_names);
 		});
 	});
 
@@ -951,7 +951,7 @@ function expand_and_populate(data)
 	$('#report_type').val(field_str);
 	set_selection(field_str);
 	get_members(field_str, function(all_names) {
-		populate_options(field_obj[field_str], tmp_fields[field_str], all_names, reportObj.objects);
+		populate_options(tmp_fields.map[field_str], field_obj.map[field_str], all_names, reportObj.objects);
 		var mo = new missing_objects();
 		if (reportObj.objects) {
 			for (var prop in reportObj.objects) {
