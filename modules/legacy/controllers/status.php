@@ -144,8 +144,10 @@ class Status_Controller extends Authenticated_Controller {
 	{
 		return $this->_redirect_to_query('[hostgroups] all');
 	}
-	
+
 	private function _redirect_to_query( $query ) {
+		/* Put the filter through the parser, so we simplify it */
+		$query = ObjectPool_Model::get_by_query($query)->get_query();
 		return url::redirect('listview?'.http_build_query(array('q'=>$query)));
 	}
 }
