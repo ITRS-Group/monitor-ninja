@@ -18,6 +18,16 @@ class op5User_AlwaysAuth extends op5User {
 	 * @return void
 	 **/
 	public function set_authorized_for($type, $value) {
+		$categories = op5Authorization::get_all_auth_levels();
+		$found = false;
+		foreach ($categories as $levels) {
+			if (isset($levels[$type])) {
+				$found = true;
+				break;
+			}
+		}
+		if (!$found)
+			throw new Exception("Unknown authorization type $type: are you sure everything was spelled correctly?");
 		$this->authorized_for[$type] = $value;
 	}
 
