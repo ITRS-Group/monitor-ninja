@@ -344,8 +344,8 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		Then I should see "Saved reports"
-		And "Saved reports" shouldn't have option "saved test report"
+		Then I shouldn't see "Saved reports"
+		#And "Saved reports" shouldn't have option "saved test report"
 		When I select "LinuxServers" from "Available hostgroups"
 		And I doubleclick "LinuxServers"
 		Then "Selected hostgroups" should have option "LinuxServers"
