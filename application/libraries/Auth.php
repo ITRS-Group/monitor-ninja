@@ -8,9 +8,9 @@ require_once('op5/auth/User_AlwaysAuth.php');
  * User authentication and authorization library.
  *
  * @package    Auth
- * @author     
- * @copyright  
- * @license    
+ * @author
+ * @copyright
+ * @license
  */
 class Auth_Core {
 	/**
@@ -57,7 +57,7 @@ class Auth_Core {
 			$instance = new Auth_Core($config, $driver_config);
 		}
 		catch( Exception $e ) {
-			self::$fake_instance = new Auth_NoAuth_Core();
+			self::disable_auth_subsystem();
 			throw $e;
 		}
 		return $instance;
@@ -93,7 +93,7 @@ class Auth_Core {
 		$user = op5auth::instance()->get_user();
 		return $user;
 	}
-	
+
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
@@ -107,7 +107,7 @@ class Auth_Core {
 		$res = op5auth::instance()->login( $username, $password, $auth_method );
 		return $res;
 	}
-	
+
 	/**
 	 * Attempt to automatically log a user in.
 	 *
@@ -210,6 +210,17 @@ class Auth_Core {
 	{
 		return op5auth::instance()->force_user($user);
 	}
+
+	/**
+	 * Register noauth as auth subsystem, so we can't login, logout or anything.
+	 *
+	 * This effectivly reduces possibilities for auth-related errors. Because lot
+	 * of things depend on auth, even when rendering, this is needed to be loaded
+	 * when displaying error pages.
+	 */
+	public static function disable_auth_subsystem() {
+		self::$fake_instance = new Auth_NoAuth_Core();
+	}
 } // End Auth
 
 
@@ -225,22 +236,22 @@ class Auth_NoAuth_Core extends Auth_Core {
 	public function __construct($config = NULL)
 	{
 	}
-	
+
 	public function logged_in($role = NULL)
 	{
 		return false;
 	}
-	
+
 	public function get_user()
 	{
 		return new Op5User_NoAuth();
 	}
-	
+
 	public function login($username, $password, $auth_method = false)
 	{
 		return false;
 	}
-	
+
 	public function logout($destroy = FALSE)
 	{
 		return false;
@@ -255,12 +266,12 @@ class Auth_NoAuth_Core extends Auth_Core {
 	{
 		return false;
 	}
-	
+
 	public function authorized_for( $authorization_point )
 	{
 		return false;
 	}
-	
+
 	public function get_authentication_methods()
 	{
 		return false;
