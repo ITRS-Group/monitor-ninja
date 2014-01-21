@@ -99,52 +99,21 @@ class op5config {
 	{
 		/* Parameter array is empty; fetch tree */
 		if( count( $parameter ) == 0 ) {
-			/* Path is a dir, list dir an build array */
-			if( is_dir( $path ) ) {
-				$value = array();
-				foreach( scandir( $path ) as $entry ) {
-					if( $entry[0] == '.' ) {
-						continue;
-					}
-					if( substr( $entry, -4 ) == '.yml' && is_file($path . '/' . $entry ) ) {
-						$value[substr($entry,0,-4)] = $this->getConfigFile( $path . '/' . $entry );
-					}
-					if( is_dir( $path . '/' . $entry ) ) {
-						$value[$entry] = $this->getConfigVar(array($entry), $path);
-					}
-				}
-				return $value;
-
-			/* Path is an yml, fetch yml file */
-			} else if( is_file( $path .'.yml' ) ) {
-				return $this->getConfigFile($path.'.yml');
-			}
-
+			return $this->getConfigFile($path.'.yml');
 		/* Parameter tree isn't empty, step into */
-		}
-		else {
+		} else {
 			$head = array_shift( $parameter );
-
-			/* head is a dir, step into, and recurse */
-			if( is_dir($path . '/' . $head ) ) {
-				return $this->getConfigVar( $parameter, $path . '/' . $head );
-			}
-
-			if( is_file( $path . '/' . $head . '.yml') ) {
-				/* head is an yml file, just fetch the parameter without recursion and exit */
-				$value = $this->getConfigFile( $path . '/' . $head . '.yml' );
-				while( count( $parameter ) ) {
-					$head = array_shift( $parameter );
-					if( isset( $value[$head] ) ) {
-						$value = $value[$head];
-					} else {
-						return null;
-					}
+			/* head is a yml file, just fetch the parameter without recursion and exit */
+			$value = $this->getConfigFile( $path . '/' . $head . '.yml' );
+			while( count( $parameter ) ) {
+				$head = array_shift( $parameter );
+				if( isset( $value[$head] ) ) {
+					$value = $value[$head];
+				} else {
+					return null;
 				}
-				return $value;
-			} else {
-				return null;
 			}
+			return $value;
 		}
 	}
 
@@ -174,7 +143,10 @@ class op5config {
 			}
 		}
 
-		$array = Spyc::YAMLLoad( $path );
+		$array = null;
+		if (is_readable($path)) {
+			$array = Spyc::YAMLLoad( $path );
+		}
 
 		if( $this->apc_enabled ) {
 			apc_store( $this->apc_tag_for_path( $path ), $array, (int) $this->apc_ttl );
