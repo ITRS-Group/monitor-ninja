@@ -5,7 +5,7 @@
 How to install XHProf on CentOS 6.3 for a dev machine:
 
 @code
-# yum install php-pear
+# yum install php-pear php-devel
 # pecl config-set preferred_state beta
 # pecl install xhprof
 @endcode
