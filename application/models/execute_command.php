@@ -7,6 +7,10 @@ class Execute_Command_Model extends Model
 {
 	protected $dryrun = false; /**< Set to true to make it not actually do anything */
 
+	/**
+	 * Returns all downtime data. If filter is set,
+	 * it can restrict the query to only hosts or only services.
+	 */
 	protected static function get_downtime_data($filter=false)
 	{
 		$ls_filter = array();

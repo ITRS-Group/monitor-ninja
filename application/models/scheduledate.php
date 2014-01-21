@@ -35,6 +35,11 @@ class ScheduleDate_Model extends Model
 		'servicegroups'
 	);
 
+	/**
+	 * Use a reasonable amount of indicators to determine whether there's
+	 * already a matching downtime. This prevents downtimes from being
+	 * scheduled more than once.
+	 */
 	static protected function check_if_scheduled($type, $name, $start_time, $end_time, $is_fixed)
 	{
 		$ls = Livestatus::instance();
@@ -69,9 +74,7 @@ class ScheduleDate_Model extends Model
 
 	/**
 	 *	Schedule a recurring downtime if tomorrow matches any saved schedules
-	 *	@param $id int
 	 *	@param $timestamp int
-	 *	@return bool
 	 */
 	static public function schedule_downtime($timestamp=false) {
 		$schedules = RecurringDowntimePool_Model::all();
@@ -110,6 +113,10 @@ class ScheduleDate_Model extends Model
 		}
 	}
 
+	/**
+	 * Given a time-like string (hh[:mm[:ss]]),
+	 * return the number of seconds involved.
+	 */
 	static protected function time_to_seconds($time)
 	{
 		$seconds = 0;
