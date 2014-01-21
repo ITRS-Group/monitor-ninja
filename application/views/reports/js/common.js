@@ -378,8 +378,8 @@ function populate_options(tmp_field, field, json_data, select_data)
 			available.appendChild(option);
 		}
 	}
-	document.getElementById(tmp_field).appendChild(available);
-	document.getElementById(field).appendChild(selected);
+	$('#' + tmp_field).append(available);
+	$('#'+ field).append(selected);
 }
 
 /**
