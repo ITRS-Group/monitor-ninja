@@ -10,7 +10,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
 */
-class Cli_Controller extends Ninja_Controller {
+class Cli_Controller extends Controller {
 
 	public function __construct()
 	{
