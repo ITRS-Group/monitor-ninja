@@ -21,8 +21,6 @@ xhprof.output_dir = /tmp
 
 Now XHProf is installed and should show up when you type $ php -i | grep -i xhprof
 
-Caveat: I might have installed some "hidden" prerequisites prior to installing xhprof, add them here if you find them (and remove this note).
-
 We will now continue to install the GUI:
 
 Add:
