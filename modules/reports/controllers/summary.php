@@ -122,31 +122,6 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * Test a massive amount of queries. For debugging only
-	 */
-	public function test_queries()
-	{
-		$this->setup_options_obj($input);
-		$rpt = new Summary_Reports_Model($this->options);
-		$rpt->set_option('start_time', 0);
-		$rpt->set_option('end_time', time());
-		$result = $rpt->test_summary_queries();
-		echo "<pre>\n";
-		$cnt = count($result);
-		echo $cnt . " total different queries\n";
-		$total_rows = 0.0;
-		foreach ($result as $query => $ary) {
-			echo $query . "\n";
-			print_r($ary);
-			$total_rows += $ary['rows'];
-		}
-		$avg_rows = $total_rows / $cnt;
-		echo "Average row-count: $avg_rows\n";
-		echo "</pre>\n";
-		die;
-	}
-
-	/**
 	 * Generates an alert summary report
 	 */
 	public function generate($input=false)

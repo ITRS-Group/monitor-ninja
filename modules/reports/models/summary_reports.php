@@ -161,7 +161,7 @@ class Summary_Reports_Model extends Reports_Model
 		}
 
 		if (empty($hosts) && empty($services) && !$is_api_call) {
-			return false;
+			return "SELECT $fields FROM $db_table LIMIT 0";
 		}
 
 		$object_selection = false;
@@ -341,48 +341,6 @@ class Summary_Reports_Model extends Reports_Model
 
 		return $query;
 	}
-
-	/**
-	 * Given a query, generate debug information.
-	 *
-	 * While it's made for testing summary queries, it's completely generic
-	 */
-	public function test_summary_query($query)
-	{
-		$dbr = $this->db->query("EXPLAIN " . $query)->result(false);
-		if (!$dbr) {
-			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
-		}
-		return $dbr->current();
-	}
-
-	/**
-	 * Used by summary model to generate debug information for queries
-	 */
-	public function test_summary_queries()
-	{
-		$out = Livestatus::instance()->getHosts(array('columns' => 'name'));
-		$this->options['host_name'] = $out;
-		$result = array();
-		for ($host_state = 1; $host_state <= 7; $host_state++) {
-			$this->options['host_states'] = $host_state;
-			for ($service_state = 1; $service_state <= 15; $service_state++) {
-				$this->options['service_states'] = $service_state;
-				for ($state_types = 1; $state_types <= 3; $state_types++) {
-					$this->options['state_types'] = $state_types;
-					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
-						$this->options['alert_types'] = $alert_types;
-						$query = $this->build_alert_summary_query(false);
-						if (!$query)
-							return "FAIL: No query returned for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
-						$result[$query] = $this->test_summary_query($query);
-					}
-				}
-			}
-		}
-		return $result;
-	}
-
 
 	private function comparable_state($row)
 	{
@@ -670,10 +628,6 @@ class Summary_Reports_Model extends Reports_Model
 	public function recent_alerts()
 	{
 		$query = $this->build_alert_summary_query('*');
-
-		if ($query === false) {
-			return false;
-		}
 
 		$query .= ' ORDER BY timestamp '.(isset($this->options['oldest_first']) && $this->options['oldest_first']?'ASC':'DESC');
 		if ($this->options['summary_items'] > 0) {

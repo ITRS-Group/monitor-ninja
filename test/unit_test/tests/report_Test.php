@@ -80,46 +80,52 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		// fixme: validate output
 	}
 
-	private function run_and_diag($auth) {
-		$auth->hosts = false;
-		$auth->services = false;
-		$msg = 'Run summary test queries without syntax errors';
-		if ($auth->authorized_for('view_hosts_root'))
-			$msg .= ' with view_hosts_root';
-		if ($auth->authorized_for('view_services_root'))
-			$msg .= ' with view_services_root';
-		try {
-			$res = $this->rpt->test_summary_queries();
-			$this->assertTrue(is_array($res), $msg);
-			if (!is_array($res))
-				$this->diag($res);
-		} catch (Exception $e) {
-			$this->fail($e->getMessage());
-		}
+	private function run_and_diag() {
+		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
+		$db = Database::instance();
+		$msg = '';
+		if ($this->auth->authorized_for('host_view_all'))
+			$msg .= ' with host_view_all';
+		if ($this->auth->authorized_for('service_view_all'))
+			$msg .= ' with service_view_all';
+
+                $out = Livestatus::instance()->getHosts(array('columns' => 'name'));
+                $opts['host_name'] = $out;
+                $result = array();
+                for ($host_state = 1; $host_state <= 7; $host_state++) {
+                        $opts['host_states'] = $host_state;
+                        for ($service_state = 1; $service_state <= 15; $service_state++) {
+                                $opts['service_states'] = $service_state;
+                                for ($state_types = 1; $state_types <= 3; $state_types++) {
+                                        $opts['state_types'] = $state_types;
+                                        for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
+                                                $opts['alert_types'] = $alert_types;
+						$rpt = new Summary_Reports_Model($opts);
+                                                $query = $rpt->build_alert_summary_query(false);
+						$this->assertInternalType('string', $query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
+						$this->assertObjectHasAttribute('select_type', $db->query("EXPLAIN " . $query)->current());
+                                        }
+                                }
+                        }
+                }
 	}
 
 	public function test_run_summary_test_queries() {
-		// found this method while trying to memorize ninja's source code
-		// turns out, I'd just broken it and nothing told me, so let's always
-		// run this so it'll yell at me for next time
-		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
-		$this->rpt = new Summary_Reports_Model($opts);
+		$this->auth->set_authorized_for('host_view_all', true);
+		$this->auth->set_authorized_for('service_view_all', true);
+		$this->run_and_diag();
 
-		$this->auth->set_authorized_for('view_hosts_root', false);
-		$this->auth->set_authorized_for('view_services_root', false);
-		$this->run_and_diag($this->auth);
+		$this->auth->set_authorized_for('host_view_all', true);
+		$this->auth->set_authorized_for('service_view_all', false);
+		$this->run_and_diag();
 
-		$this->auth->set_authorized_for('view_hosts_root', true);
-		$this->auth->set_authorized_for('view_services_root', false);
-		$this->run_and_diag($this->auth);
+		$this->auth->set_authorized_for('host_view_all', false);
+		$this->auth->set_authorized_for('service_view_all', true);
+		$this->run_and_diag();
 
-		$this->auth->set_authorized_for('view_hosts_root', true);
-		$this->auth->set_authorized_for('view_services_root', true);
-		$this->run_and_diag($this->auth);
-
-		$this->auth->set_authorized_for('view_hosts_root', false);
-		$this->auth->set_authorized_for('view_services_root', true);
-		$this->run_and_diag($this->auth);
+		$this->auth->set_authorized_for('host_view_all', false);
+		$this->auth->set_authorized_for('service_view_all', false);
+		$this->run_and_diag();
 	}
 
 	/**
