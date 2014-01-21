@@ -7,6 +7,7 @@ class op5config {
 	private $basepath     = '/etc/op5/';
 	private $apc_enabled = false; /* Sets to true if apc_fetch exists */
 	private $apc_ttl     = 10;
+	const RESERVED_PREFIX = '__'; // Prefix for reserved keys
 
 
 	/**
@@ -55,13 +56,20 @@ class op5config {
 
 	/**
 	 * Get config for supplied namespace
+	 * If $reserved is set additional info about the configuration
+	 * will be returned, i.e. version
 	 *
 	 * @param $parameter mixed
-	 * @return array
+	 * @param $reserved boolean
+	 * @return mixed
 	 **/
-	public function getConfig( $parameter )
+	public function getConfig( $parameter, $reserved = false )
 	{
-		return $this->getConfigVar( explode('.',$parameter), $this->basepath );
+		$config = $this->getConfigVar(explode('.',$parameter), $this->basepath);
+		if (!$reserved && is_array($config)) {
+			$config = $this->cleanConfigArray($config);
+		}
+		return $config;
 	}
 
 	/**
@@ -188,10 +196,39 @@ class op5config {
 			apc_delete( $this->apc_tag_for_path( $path ) );
 		}
 
+		$array = $this->cleanConfigArray($array);
+
+		// Preserve special keys
+		$presentYaml = $this->getConfigFile($path);
+		if (is_array($presentYaml)) {
+			foreach (array_keys($presentYaml) as $key) {
+				if (substr($key, 0, strlen(static::RESERVED_PREFIX)) === static::RESERVED_PREFIX) {
+					// Store this value with the new array
+					$array[$key] = $presentYaml[$key];
+				}
+			}
+		}
+
 		$spyc = new Spyc();
 		$spyc->setting_dump_force_quotes = true;
 		$yaml = $spyc->dump($array);
 		return (bool) file_put_contents( $path, $yaml );
+	}
+
+	/**
+	 * Removes array keys that is not valid for storage
+	 *
+	 * @param $array arrray
+	 * @return array
+	 **/
+	private function cleanConfigArray($array)
+	{
+		foreach (array_keys($array) as $key) {
+			if (substr($key, 0, strlen(static::RESERVED_PREFIX)) === static::RESERVED_PREFIX) {
+				unset($array[$key]);
+			}
+		}
+		return $array;
 	}
 
 	/**
