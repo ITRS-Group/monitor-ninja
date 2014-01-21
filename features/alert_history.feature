@@ -1,4 +1,4 @@
-Feature: Summary reports
+Feature: Alert history reports
 	Background:
 		Given I have these hostgroups configured:
 			| hostgroup_name |
