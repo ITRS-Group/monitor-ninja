@@ -276,4 +276,43 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$result = $db->query($sql);
 		$this->assertCount(1, $result, "One schedule should be deleted.");
 	}
+
+	public function test_host_acrossmidnight() {
+		$comment = $this->basecomment . "hosts";
+		$data = array(
+			'author' => 'me',
+			"downtime_type" => "hosts",
+			"objects" => array("monitor"),
+			"comment" => $comment,
+			"start_time" => $this->scheduleendtime,
+			'end_time' => $this->scheduletimeofday,
+			"duration" => "2:00",
+			"fixed" => "1",
+			"weekdays" => array("1","2","3","4","5","6","0"),
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+		$id;
+		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$time = mktime(23, 50, 0, 11, 11, 2036);
+
+		$output = '';
+		exec('/usr/bin/php index.php default/cron/downtime/'.$time.' 2>&1', $output, $status);
+		$this->assertEmpty($output, "acrossmidnight returned output: ".implode("\n", $output));
+		$this->assertEquals(0, $status, 'Return code should be zero');
+
+		sleep(3); # Y U SO SLOW?
+
+		$ls = Livestatus::instance();
+		$dt = $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduleendtime} +1 day", $time), 'end_time' => strtotime("{$this->scheduletimeofday} +2 days", $time)), 'columns' => array('id'), 'auth' => false));
+		$this->assertCount(1, $dt, "Unexpected number of downtimes created from acrossmidnight");
+
+		// Remove downtimes when tests are done.
+		$cmd = 'DEL_HOST_DOWNTIME;';
+		$pipe = System_Model::get_pipe();
+		foreach ($dt as $id) {
+			$res = nagioscmd::submit_to_nagios($cmd . $id['id'], $pipe);
+			$this->assertTrue($res, 'Host delete command was submitted');
+		}
+
+		$this->assertCount(0, $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduleendtime} +1 day", $time), 'end_time' => strtotime("{$this->scheduletimeofday} +2 days", $time)))), "Downtimes are gone after deleting them");
+	}
 }

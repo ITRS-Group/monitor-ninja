@@ -94,6 +94,8 @@ class ScheduleDate_Model extends Model
 
 			$start_time = mktime(0, 0, $data->get_start_time(), $tomorrow['month'], $tomorrow['day'], $tomorrow['year']);
 			$end_time = mktime(0, 0, $data->get_end_time(), $tomorrow['month'], $tomorrow['day'], $tomorrow['year']);
+			if ($end_time < $start_time)
+				$end_time = mktime(0, 0, $data->get_end_time(), $tomorrow['month'], $tomorrow['day'] + 1, $tomorrow['year']);
 			$duration = $data->get_duration();
 			$pipe = System_Model::get_pipe();
 			foreach ($data->get_objects() as $obj) {
