@@ -47,9 +47,15 @@ class op5Authorization {
 
 		/* Also allow the per-user-group */
 		$groups[] = 'user_' . $user->username;
+
+		/**
+		 * Meta groups (all users and group per driver)
+		 */
 		$groups[] = 'meta_all_users';
-		if(isset($user->auth_method) && $user->auth_method)
+		if(isset($user->auth_method) && $user->auth_method) {
 			$groups[] = 'meta_driver_' . $user->auth_method;
+		}
+
 		$authorized = false;
 
 		/* Fetch the name column as an array from the result */
