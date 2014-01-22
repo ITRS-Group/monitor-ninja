@@ -171,18 +171,19 @@ function expand_and_populate(reportObj)
 	var field_str = reportObj.downtime_type;
 	get_members(field_str, function(all_names) {
 		var mo = new missing_objects();
-		var from_id = $('#objects_tmp');
+		var from = $('#objects_tmp');
+		var to = $('#objects');
 		populate_options('objects_tmp', 'objects', all_names);
 		// select report objects
 		for (prop in reportObj.objects) {
-			if (!from_id.containsOption(reportObj.objects[prop])) {
+			if (!from.containsOption(reportObj.objects[prop])) {
 				mo.add(reportObj.objects[prop])
 			} else {
-				from_id.selectOptions(reportObj.objects[prop]);
+				from.selectOptions(reportObj.objects[prop]);
 			}
 		}
 		mo.display_if_any();
 		// move selected options from left -> right
-		moveAndSort('objects_tmp', 'objects');
+		moveAndSort(from, to);
 	});
 }

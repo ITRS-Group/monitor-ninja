@@ -1182,7 +1182,7 @@ listview_renderer_table.recurring_downtimes = {
 		"depends": ['start_time'],
 		"sort": ['start_time'],
 		"cell": function(args) {
-			return $('<td />').update_text(args.obj.start_time);
+			return $('<td />').update_text(args.obj.start_time_string);
 		}
 	},
 	"end_time": {
@@ -1190,16 +1190,7 @@ listview_renderer_table.recurring_downtimes = {
 		"depends": ['end_time', 'start_time', 'duration'],
 		"sort": ['end_time'],
 		"cell": function(args) {
-			if (args.obj.end_time)
-				return $('<td />').update_text(args.obj.end_time);
-			var start_time_parts = args.obj.start_time.split(':');
-			var duration_parts = args.obj.duration.split(':');
-			var end_time_minutes = (Number(start_time_parts[0]) + Number(duration_parts[0])) * 60
-				+ Number(start_time_parts[1]) + Number(duration_parts[1]);
-			console.log(end_time_minutes);
-			end_time_minutes = end_time_minutes % 1440;
-			var end_minutes = end_time_minutes % 60;
-			return $('<td />').update_text((Number.parseInt(end_time_minutes / 60)) + ':' + (end_minutes < 60 ? '0' + end_minutes : end_minutes))
+			return $('<td />').update_text(args.obj.end_time_string);
 		}
 	},
 	"duration": {
@@ -1207,7 +1198,7 @@ listview_renderer_table.recurring_downtimes = {
 		"depends": ['duration'],
 		"sort": ['duration'],
 		"cell": function(args) {
-			return $('<td />').update_text(args.obj.duration);
+			return $('<td />').update_text(args.obj.duration_string);
 		}
 	},
 	"fixed": {

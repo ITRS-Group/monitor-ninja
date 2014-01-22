@@ -10,11 +10,14 @@ require_once( dirname(__FILE__).'/base/baserecurringdowntime.php' );
 class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 	static public $rewrite_columns = array(
 		'objects' => array('id'),
+		'end_time_string' => array('end_time'),
+		'start_time_string' => array('start_time'),
+		'duration_string' => array('duration'),
 	);
 
 	public function __construct($values, $prefix) {
 		parent::__construct($values, $prefix);
-		$this->export[] = 'objects';
+		$this->export = array_merge($this->export, array_keys(static::$rewrite_columns));
 	}
 
 	public function get_weekdays()
