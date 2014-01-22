@@ -86,7 +86,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$schedule_info = array(
 			'start_time' => 12 * 3600,
 			'end_time' => 14 * 3600,
-			'duration' => 2,
+			'duration' => 2 * 3600,
 			'fixed' => true,
 			'comment' => '',
 		);
