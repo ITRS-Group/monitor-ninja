@@ -1,7 +1,7 @@
 <?php
-require_once ('objstore.php');
-require_once ('livestatus.php');
-require_once ('queryhandler.php');
+require_once __DIR__.'/objstore.php';
+require_once __DIR__.'/livestatus.php';
+require_once __DIR__.'/queryhandler.php';
 
 class op5sysinfo_Exception extends Exception {}
 
