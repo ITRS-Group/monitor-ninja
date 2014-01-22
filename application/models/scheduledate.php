@@ -117,7 +117,7 @@ class ScheduleDate_Model extends Model
 	 * Given a time-like string (hh[:mm[:ss]]),
 	 * return the number of seconds involved.
 	 */
-	static protected function time_to_seconds($time)
+	static public function time_to_seconds($time)
 	{
 		$seconds = 0;
 		$parts = explode(':', $time);

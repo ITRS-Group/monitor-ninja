@@ -349,7 +349,17 @@ class Cli_Controller extends Controller {
 			if ($row['start_time'])
 				continue; // already migrated
 			$data = i18n::unserialize($row['data']);
-			Scheduledate_Model::edit_downtime($data, $row['id']);
+			$data['start_time'] = $data['time'];
+			$data['end_time'] = ScheduleDate_Model::time_to_seconds($data['time']) + ScheduleDate_Model::time_to_seconds($data['duration']);
+			$data['end_time'] = ($data['end_time'] / 3600 % 24) . ':' . ($data['end_time'] / 60 % 60) . ':' + ($data['end_time'] % 60);
+			$data['weekdays'] = $data['recurring_day'];
+			$data['months'] = $data['recurring_month'];
+			$data['downtime_type'] = $data['report_type'];
+			$data['objects'] = $data[$report[$data['report_type']]];
+			$data['author'] = $row['author'];
+			$data['comment'] = $row['comment'];
+			$sd = new ScheduleDate_Model();
+			$sd->edit_schedule($data, $row['id']);
 		}
 	}
 
