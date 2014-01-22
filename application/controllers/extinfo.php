@@ -30,19 +30,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function details($type='host', $host=false, $service=false)
 	{
-		// If customers have non-utf8 service names, $this->input
-		// will not contain a usefull name. Workaround.
-		if (PHP_SAPI !== 'cli') {
-			$host = getparams::get_raw_param('host', $host);
-			$service = getparams::get_raw_param('service', $service);
-			$hostgroup = getparams::get_raw_param('hostgroup', false);
-			$servicegroup = getparams::get_raw_param('servicegroup', false);
-		} else {
-			$host = $this->input->get('host', $host);
-			$service = $this->input->get('service', $service);
-			$hostgroup = $this->input->get('hostgroup', false);
-			$servicegroup = $this->input->get('servicegroup', false);
-		}
+		$host = $this->input->get('host', $host);
+		$service = $this->input->get('service', $service);
+		$hostgroup = $this->input->get('hostgroup', false);
+		$servicegroup = $this->input->get('servicegroup', false);
 
 		$this->template->title = 'Monitoring » Extinfo';
 

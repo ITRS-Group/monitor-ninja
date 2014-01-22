@@ -256,7 +256,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
-			<td style="white-space: normal" id="field_perf_data"><?php echo security::xss_clean($object->get_perf_data()) ?></td>
+			<td style="white-space: normal" id="field_perf_data"><?php echo html::specialchars($object->get_perf_data()) ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Current attempt'); ?></td>

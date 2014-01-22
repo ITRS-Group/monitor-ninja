@@ -53,12 +53,11 @@ class cookie_Core {
 	 *
 	 * @param   string   cookie name
 	 * @param   mixed    default value
-	 * @param   boolean  use XSS cleaning on the value
 	 * @return  string
 	 */
-	public static function get($name, $default = NULL, $xss_clean = FALSE)
+	public static function get($name, $default = NULL)
 	{
-		return Input::instance()->cookie($name, $default, $xss_clean);
+		return Input::instance()->cookie($name, $default);
 	}
 
 	/**

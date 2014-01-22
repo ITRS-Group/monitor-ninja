@@ -41,7 +41,7 @@
 </td><td style="border:0" class="comments">
 <?php
 		if (isset($ary['user_comment']))
-			echo security::xss_clean($ary['user_comment']).'<br /><span class="author">/'.security::xss_clean($ary['username']).'</span>';
+			echo security::xss_clean($ary['user_comment']).'<br /><span class="author">/'.html::specialchars($ary['username']).'</span>';
 		else
 			echo '<img class="right" src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>';
 ?>
