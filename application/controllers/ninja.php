@@ -177,15 +177,31 @@ class Ninja_Controller extends Template_Controller {
 			$status = StatusPool_Model::status();
 			if($status) {
 				// we've got access
-				if ($status->get_enable_notifications() !== 1) {
+				if (!$status->get_enable_notifications()) {
 					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Notifications are disabled')) );
 				}
-				if ($status->get_execute_service_checks() !== 1) {
+				if (!$status->get_execute_service_checks()) {
 					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Service checks are disabled')) );
 				}
-				if ($status->get_execute_host_checks() !== 1) {
+				if (!$status->get_execute_host_checks()) {
 					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Host checks are disabled')) );
 				}
+				if (!$status->get_process_performance_data()) {
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Performance data processing are disabled')) );
+				}
+				if (!$status->get_accept_passive_service_checks()) {
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Passive service checks are disabled')) );
+				}
+				if (!$status->get_accept_passive_host_checks()) {
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Passive host checks are disabled')) );
+				}
+				if (!$status->get_enable_event_handlers()) {
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Event handlers disabled')) );
+				}
+				if (!$status->get_enable_flap_detection()) {
+					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Flap detection disabled')) );
+				}
+
 				unset($status);
 			}
 		}
