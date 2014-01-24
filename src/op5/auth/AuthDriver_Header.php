@@ -67,15 +67,15 @@ class op5AuthDriver_Header extends op5AuthDriver {
 			$params['groups'] = array();
 		}
 
-		$this->log->debug('Logging in using header-specified user:');
+		$this->log->log('debug','Logging in using header-specified user:');
 		foreach($params as $k => $v) {
 			if(is_array($v)) {
-				$this->log->debug('    '.$k . ': ...');
+				$this->log->log('debug','    '.$k . ': ...');
 				foreach($v as $vk => $vv) {
-					$this->log->debug('      - ' . $vv);
+					$this->log->log('debug','      - ' . $vv);
 				}
 			} else {
-				$this->log->debug('    '.$k . ': ' . $v);
+				$this->log->log('debug','    '.$k . ': ' . $v);
 			}
 		}
 
