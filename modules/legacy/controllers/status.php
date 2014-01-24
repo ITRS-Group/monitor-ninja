@@ -13,9 +13,16 @@
 class Status_Controller extends Authenticated_Controller {
 
 	/**
-	 * Equivalent to style=hostdetail
+	 * Display a list of hosts
 	 *
 	 * @param $host
+	 * @param $hoststatustypes
+	 * @param $sort_order
+	 * @param $sort_field
+	 * @param $show_services
+	 * @param $group_type
+	 * @param $serviceprops
+	 * @param $hostprops
 	 */
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
@@ -45,8 +52,16 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * List status details for hosts and services
+	 * Display a list of services
 	 *
+	 * @param $name
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $service_props
+	 * @param $sort_order
+	 * @param $sort_field
+	 * @param $group_type
+	 * @param $hostprops
 	 */
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
@@ -94,9 +109,14 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * Show servicegroup status, wrapper for group('service', ...)
-	 * @param $group
+	 * Display a list of service groups
 	 *
+	 * @param $group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
+	 * @param $serviceprops
+	 * @param $hostprops
 	 */
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
@@ -104,9 +124,14 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * Show hostgroup status, wrapper for group('host', ...)
-	 * @param $group
+	 * Display a list of host groups
 	 *
+	 * @param $group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
+	 * @param $serviceprops
+	 * @param $hostprops
 	 */
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
@@ -114,7 +139,15 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * Show group status
+	 * Display a list of groups of some kind
+	 *
+	 * @param $grouptype
+	 * @param $group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
+	 * @param $serviceprops
+	 * @param $hostprops
 	 */
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
