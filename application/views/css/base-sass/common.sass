@@ -53,7 +53,7 @@ $legacy-support-for-ie: true
 
 .right
 	float: right !important
-	margin: 0 0 0 1% !important
+	margin: 0
 
 .indent
 	margin-left: 16px
@@ -520,6 +520,8 @@ td.comments
 
 	a
 		color: #4e3e18
+		border-bottom: none !important
+		text-decoration: underline !important
 		&:hover
 			color: #3e2e10
 
@@ -563,6 +565,14 @@ td.comments
 		display: inline-block
 		vertical-align: middle
 		padding: 2px 0 1px 0
+
+		a
+			display: inline-block
+			min-height: 14px
+			margin: 0 8px
+
+		li a
+			margin: 0
 
 		span
 			display: inline-block
