@@ -2,7 +2,7 @@
 
 Access to livestatus and some other tables is accessed through an Object Relational abstraction layer, which makes it possible to add logic to the objects.
 
-@section structure Structore
+@section structure Structure
 
 Each table is modelled by three classes: Pool, Set and Object.
 
@@ -62,14 +62,14 @@ A set is iterable:
 
 The database is queried  for all columns and no limit, so objects can be accessed.
 @code
-foreach( $host_set as $hoset ) {
+foreach( $host_set as $host ) {
 	print $host-get_name() . "\n";
 }
 @endcode
 
-Preffered way to iterate over a set is to use the ->it() method, which takes up to four arguments:
+Preferred way to iterate over a set is to use the ->it() method, which takes up to four arguments:
   * An array of columns to fetch. Only those columns contains valid information in the result, or false to fetch everything
-  * An array of columns to order on, with possible order. First column has precedance.
+  * An array of columns to order on, with possible order. First column has precedence.
   * (optional) an integer with the number of elements to fetch
   * (optional) an integer describing how many objects to skip at the beginning of the result set.
 
@@ -88,7 +88,7 @@ $host = $all->reduce_by('name', 'kaka', '=')->one();
 
 @subsection class_pool Pools
 
-A pool class modelles the collection of everything of a certain type. The main function of the pools i to give access to sets. This collection contains two primary static methods: all and non.
+A pool class models the collection of everything of a certain type. The main function of the pools is to give access to sets. This collection contains two primary static methods: all and non.
 
 @code
 $all_hosts = HostPool_Model::all();
@@ -99,7 +99,7 @@ $no_services = ServicePool_Model::none();
 
 All generated code is put in classes with prefix Base. All classes has a corresponding wrapper class with the same name, except the prefix.
 
-The reson of the wrapper class is to put business-specific logic to the model. The base class should never be instanced directly, and therefore is abstract.
+The reason of the wrapper class is to put business-specific logic to the model. The base class should never be instanced directly, and therefore is abstract.
 
 @code
 class Host_Model extends BaseHost_Model {
