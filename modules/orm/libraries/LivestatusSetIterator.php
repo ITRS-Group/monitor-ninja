@@ -7,12 +7,13 @@ class LivestatusSetIterator implements Iterator {
 	private $data;
 	private $ptr;
 	private $columns;
+	private $export_columns;
 	private $class;
-	
+
 	/**
 	 * Generate a set of object in the ORM. Don't call directly. Used from the set:s in ORM generated code.
 	 */
-	public function __construct( $data, $columns, $class ) {
+	public function __construct( $data, $columns, $export_columns, $class ) {
 		if( is_array($data) ) {
 			$data = new ArrayIterator($data);
 		}
@@ -20,8 +21,9 @@ class LivestatusSetIterator implements Iterator {
 		$this->columns = $columns;
 		$this->ptr = 0;
 		$this->class = $class;
+		$this->export_columns = $export_columns;
 	}
-	
+
 	/**
 	 * Get the current object from the dataset
 	 */
@@ -38,9 +40,9 @@ class LivestatusSetIterator implements Iterator {
 				$this->columns,
 				$cur_arr
 				);
-		return new $this->class( $varmap, '' );
+		return new $this->class( $varmap, '', $this->export_columns );
 	}
-	
+
 	/**
 	 * Get the key of the element
 	 */
@@ -48,7 +50,7 @@ class LivestatusSetIterator implements Iterator {
 	{
 		return $this->data->key();
 	}
-	
+
 	/**
 	 * Move the cursor to the next object
 	 */
@@ -56,7 +58,7 @@ class LivestatusSetIterator implements Iterator {
 	{
 		$this->data->next();
 	}
-	
+
 	/**
 	 * Rewind the set
 	 */
@@ -64,7 +66,7 @@ class LivestatusSetIterator implements Iterator {
 	{
 		$this->ptr = $this->data->rewind();
 	}
-	
+
 	/**
 	 * Return if the data is valid
 	 */

@@ -15,11 +15,6 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 		'duration_string' => array('duration'),
 	);
 
-	public function __construct($values, $prefix) {
-		parent::__construct($values, $prefix);
-		$this->export = array_merge($this->export, array_keys(static::$rewrite_columns));
-	}
-
 	public function get_weekdays()
 	{
 		$weekdays = unserialize(parent::get_weekdays());

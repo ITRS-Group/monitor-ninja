@@ -13,21 +13,13 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 		'$SERVICEGROUPNAME$' => 'name',
 		'$SERVICEGROUPALIAS$' => 'alias'
 	);
-	
+
 	/**
 	 * An array of custom column dependencies
 	 */
 	static public $rewrite_columns = array(
 		'service_stats' => array('name')
 	);
-
-	/**
-	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
-	 */
-	public function __construct($values, $prefix) {
-		parent::__construct($values, $prefix);
-		$this->export[] = 'service_stats';
-	}
 
 	/**
 	 * Get statistics about services in the group

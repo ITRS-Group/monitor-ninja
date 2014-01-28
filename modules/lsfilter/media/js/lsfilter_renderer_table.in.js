@@ -5,7 +5,7 @@
 listview_renderer_table.hosts = {
 	"select" : {
 		"header" : listview_multi_select_header,
-		"depends" : [],
+		"depends" : [ 'key' ],
 		"sort" : false,
 		"avalible" : function(args) {
 			return _controller_name == 'listview';
@@ -343,7 +343,7 @@ listview_renderer_table.services = {
 	},
 	"select" : {
 		"header" : listview_multi_select_header,
-		"depends" : [],
+		"depends" : [ 'key' ],
 		"sort" : false,
 		"avalible" : function(args) {
 			return _controller_name == 'listview';
@@ -572,7 +572,7 @@ listview_renderer_table.servicegroups = {
 listview_renderer_table.comments = {
 	"select" : {
 		"header" : listview_multi_select_header,
-		"depends" : [],
+		"depends" : [ 'key' ],
 		"sort" : false,
 		"avalible" : function(args) {
 			return _controller_name == 'listview';
@@ -755,7 +755,7 @@ listview_renderer_table.comments = {
 listview_renderer_table.downtimes = {
 	"select" : {
 		"header" : listview_multi_select_header,
-		"depends" : [],
+		"depends" : [ 'key' ],
 		"sort" : false,
 		"avalible" : function(args) {
 			return _controller_name == 'listview';

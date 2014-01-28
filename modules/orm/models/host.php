@@ -42,22 +42,6 @@ class Host_Model extends BaseHost_Model {
 	);
 
 	/**
-	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
-	 */
-	public function __construct($values, $prefix) {
-		parent::__construct($values, $prefix);
-		$this->export[] = 'state_text';
-		$this->export[] = 'checks_disabled';
-		$this->export[] = 'duration';
-		$this->export[] = 'comments_count';
-		$this->export[] = 'config_url';
-		$this->export[] = 'check_type_str';
-		$this->export[] = 'config_allowed';
-		$this->export[] = 'source_node';
-		$this->export[] = 'source_type';
-	}
-
-	/**
 	 * Get state, as text
 	 */
 	public function get_state_text() {
