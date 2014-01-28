@@ -136,7 +136,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-
 		if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
 			$this->template->content->commands = $this->add_view('extinfo/commands');
 			$this->template->content->commands->set = $set;
@@ -145,29 +144,53 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->commands->info_message = _("You're not authorized to run commands");
 		}
 
+		$this->template->toolbar = new Toolbar_Controller();
+		$toolbar = &$this->template->toolbar;
 
 		# create page links
 		switch ($type) {
 			case 'host':
-				$page_links = array(
-					 _('Status detail') => listview::link('services',array('host.name'=>$host)),
-					 _('Alert history') => 'alert_history/generate?include_long_output=1&amp;host_name[]='.urlencode($host),
-					 _('Event log') => 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host),
-					 _('Alert histogram') => 'histogram/generate?host_name[]='.urlencode($host),
-					 _('Availability report') => 'avail/generate/?host_name[]='.urlencode($host),
-					 _('Notifications') => listview::link('notifications',array('host_name'=>$host))
-				);
+
+				$toolbar->title = "Host";
+
+				if ( $object->get_icon_image() ) {
+
+					$attributes = array(
+						'alt' => $object->get_icon_image_alt(),
+						'title' => $object->get_icon_image_alt(),
+						'style' => 'width: 16px; vertical-align: middle; display: inline-block; margin-right: 4px'
+					);
+
+					$logos_path = Kohana::config('config.logos_path');
+					$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
+					$toolbar->subtitle = html::image( $logos_path.$object->get_icon_image(), $attributes ) . " " . $object->get_display_name();
+
+				} else {
+
+					$toolbar->subtitle = $object->get_display_name();
+
+				}
+
+				$toolbar->info( html::anchor( listview::link('services',array('host.name'=>$host)) , _('Status detail') ) );
+				$toolbar->info( html::anchor( 'alert_history/generate?include_long_output=1&amp;host_name[]='.urlencode($host) , _('Alert history') ) );
+				$toolbar->info( html::anchor( 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host) , _('Event log') ) );
+				$toolbar->info( html::anchor( 'histogram/generate?host_name[]='.urlencode($host) , _('Alert histogram') ) );
+				$toolbar->info( html::anchor( 'avail/generate/?host_name[]='.urlencode($host) , _('Availability report') ) );
+				$toolbar->info( html::anchor( listview::link('notifications',array('host_name'=>$host)) , _('Notifications') ) );
+
 				break;
 			case 'service':
-				$page_links = array(
-					_('Information for this host') => 'extinfo/details?host='.urlencode($host),
-					_('Status detail for this host') => listview::link('services',array('host.name'=>$host)),
-					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;service_description[]='.$host.';'.urlencode($service),
-					_('Event log') => 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service),
-					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
-					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
-					_('Notifications') => listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service))
-				);
+
+				$toolbar->title = "Service";
+				$toolbar->subtitle = $object->get_display_name();
+
+				$toolbar->info( html::anchor( 'extinfo/details?host='.urlencode($host) , _('Information for host') ) );
+				$toolbar->info( html::anchor( listview::link('services',array('host.name'=>$host)) , _('Status detail for host') ) );
+				$toolbar->info( html::anchor( 'alert_history/generate?include_long_output=1&amp;service_description[]='.$host.';'.urlencode($service) , _('Alert history') ) );
+				$toolbar->info( html::anchor( 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service), _('Event log') ) );
+				$toolbar->info( html::anchor( 'histogram/generate?service_description[]='.$host.';'.urlencode($service) , _('Alert histogram') ) );
+				$toolbar->info( html::anchor( 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services' , _('Availability report') ) );
+				$toolbar->info( html::anchor( listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service)) , _('Notifications') ) );
 
 				break;
 		}
@@ -407,24 +430,33 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res, $grouptype) : false;
 		$content->notes = $group_info_res->notes !='' ? nagstat::process_macros($group_info_res->notes, $group_info_res, $grouptype) : false;
 
+		$this->template->toolbar = new Toolbar_Controller( );
+		$toolbar = &$this->template->toolbar;
+
 		switch ($grouptype) {
 			case 'servicegroup':
+
+				$toolbar->title = "Servicegroup";
+				$toolbar->subtitle = security::xss_clean( $content->group_alias );
+
 				$label_view_for = _('for this servicegroup');
-				$page_links = array(
-					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
-					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
-					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;'.$grouptype.'[]='.$group
-				);
+				$toolbar->info( html::anchor( 'status/service/'.$group.'?group_type='.$grouptype , _('Status detail') ) );
+				$toolbar->info( html::anchor( 'status/'.$grouptype.'/'.$group , _('Status overview') ) );
+				$toolbar->info( html::anchor( 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group , _('Availability') ) );
+				$toolbar->info( html::anchor( 'alert_history/generate?include_long_output=1&amp;'.$grouptype.'[]='.$group , _('Alert history') ) );
+
 				break;
 			case 'hostgroup':
+
+				$toolbar->title = "Hostgroup";
+				$toolbar->subtitle = security::xss_clean( $content->group_alias );
+
 				$label_view_for = _('for this hostgroup');
-				$page_links = array(
-					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
-					_('Status overview') => 'status/'.$grouptype.'/'.$group,
-					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
-					_('Alert history') => 'alert_history/generate?include_long_output=1&amp;'.$grouptype.'[]='.$group
-				);
+				$toolbar->info( html::anchor( 'status/service/'.$group.'?group_type='.$grouptype , _('Status detail') ) );
+				$toolbar->info( html::anchor( 'status/'.$grouptype.'/'.$group , _('Status overview') ) );
+				$toolbar->info( html::anchor( 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group , _('Availability') ) );
+				$toolbar->info( html::anchor( 'alert_history/generate?include_long_output=1&amp;'.$grouptype.'[]='.$group , _('Alert history') ) );
+
 				break;
 		}
 		if (isset($page_links)) {

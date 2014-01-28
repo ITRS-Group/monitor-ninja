@@ -148,11 +148,6 @@ $(document).ready(function() {
 
 	setTimeout('hide_del_msg()', 3000);
 
-	// restore left border for first cell of each row
-	$('table').not('.no_border').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
-	$('table').not('.no_border').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
-	$('table').not('.no_border').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
-
 	$('#del_host_downtime_form').bind('submit', function() {
 		//return false;
 	});

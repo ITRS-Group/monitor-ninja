@@ -3,8 +3,8 @@ $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
 $date_format_str = nagstat::date_format();
 
-$green_shield = '<span class="icon-12 x12-shield-up"></span>';
-$red_shield = '<span class="icon-12 x12-shield-down"></span>';
+$green_shield = '<span class="icon-16 x16-shield-up"></span>';
+$red_shield = '<span class="icon-16 x16-shield-down"></span>';
 $enabled =  $green_shield.' '._('Enabled');
 $disabled = $red_shield.' '._('Disabled');
 $yes = _('Yes');
@@ -31,7 +31,7 @@ if( $object instanceof Host_Model ) {
 
 if (isset($page_links)) {
 ?>
-<div class="padding_plz">
+
 <div id="page_links">
 	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
 	<ul>
@@ -53,29 +53,35 @@ if (!empty($widgets)) {
 <div id="extinfo_host-info">
 	<table>
 		<tr>
-			<th colspan="2" style="padding: 5px 0px" >
-				<?php echo $object->get_icon_image() ? html::image($logos_path.$object->get_icon_image(), array('alt' => $object->get_icon_image_alt(), 'title' => $object->get_icon_image_alt(), 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
-				<h1 style="display: inline"><?php echo html::specialchars($type=='host' ? $object->get_alias().' ('.$object->get_display_name().')' : $object->get_display_name()) ?></h1>
-			</th>
+
+			<?php if ($service !== false) {
+				echo "<th>" . _("On host") . "</th>";
+			} ?>
+
+			<th><?php echo _("Address"); ?> </th>
+
+			<?php if ($host->get_parents()) { ?>
+			<th><?php echo _("Parents"); ?> </th>
+			<?php } ?>
+
+			<th><?php echo _('Member of'); ?></th>
+			<th><?php echo _('Contact groups') ?></th>
+			<th><?php echo _('Contacts') ?></th>
+
 		</tr>
+		<tr>
+
 		<?php
 			if ($service !== false) {
-				echo '<tr>';
-				echo '<td style="width: 80px"><strong>'._('On host').'</strong></td>';
-				echo '<td>';
+				echo '<td style="max-width: 300px">';
 				echo html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_display_name()));
 				echo $host->get_alias() ? ' ('.html::specialchars($host->get_alias()).')' : '';
 				echo '</td>';
-				echo '</tr>';
 			}
 		?>
-		<tr>
-			<td style="width: 80px"><strong><?php echo _('Address');?></strong></td>
 			<td><?php echo $host->get_address(); ?></td>
-		</tr>
-		<?php if ($host->get_parents()) { ?>
-		<tr>
-			<td><strong><?php echo _('Parents') ?></strong></td>
+
+			<?php if ($host->get_parents()) { ?>
 			<td>
 				<?php
 					echo implode(
@@ -89,10 +95,8 @@ if (!empty($widgets)) {
 					);
 				?>
 			</td>
-		</tr>
-		<?php } ?>
-		<tr>
-			<td><strong><?php echo _('Member of'); ?></strong></td>
+			<?php } ?>
+
 			<td style="white-space: normal">
 			<?php $groups=$object->get_groups();
 			if( count($groups) == 0 ) {
@@ -108,9 +112,6 @@ if (!empty($widgets)) {
 			}
 			?>
 			</td>
-		</tr>
-		<tr>
-			<td><strong><?php echo _('Contact groups') ?></strong></td>
 			<td>
 				<?php
 					$c = 0;
@@ -123,10 +124,10 @@ if (!empty($widgets)) {
 				?>
 				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
 					<tr>
-						<th style="border: 1px solid #cdcdcd"><?php echo _('Contact name') ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Alias') ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Email') ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
+						<th><?php echo _('Contact name') ?></th>
+						<th><?php echo _('Alias') ?></th>
+						<th><?php echo _('Email') ?></th>
+						<th><?php echo _('Pager') ?></th>
 					</tr>
 					<?php
 					$gobj = ContactGroupPool_Model::all()->reduce_by('name',$group,'=')->one(array('members'));
@@ -153,16 +154,13 @@ if (!empty($widgets)) {
 				<?php } ?>
 				<?php if( count( $contacts ) ) { ?>
 			</td>
-		</tr>
-		<tr>
-			<td><strong><?php echo _('Contacts') ?></strong></td>
-			<td>
-				<table class="extinfo_contacts" style="display: table;">
+			<td style="padding: 0">
+				<table class="extinfo_contacts" style="display: table; border: none">
 					<tr>
-						<th style="border: 1px solid #cdcdcd"><?php echo _('Contact name') ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Alias') ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Email') ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
+						<td style="border-top: none"><?php echo _('Name') ?></td>
+						<td style="border-top: none"><?php echo _('Alias') ?></td>
+						<td style="border-top: none"><?php echo _('Email') ?></td>
+						<td style="border-top: none"><?php echo _('Pager') ?></td>
 					</tr>
 					<?php
 
@@ -184,14 +182,12 @@ if (!empty($widgets)) {
 				<?php } ?>
 			</td>
 		</tr>
-		<?php if ($object->get_notes()) {?>
 		<tr>
+		<?php if ($object->get_notes()) {?>
 			<td><strong><?php echo _('Notes') ?></strong></td>
 			<td><?php echo $object->get_notes() ?></td>
-		</tr>
 		<?php } ?>
-		<tr>
-			<td colspan="2" style="padding-top: 7px">
+			<td colspan="4" style="padding-top: 7px; border-bottom: none">
 				<?php
 					if ($url = $object->get_action_url()) {
 						echo '<a href="'.$url.'" target="'.$action_url_target.'">';
@@ -230,7 +226,6 @@ if (!empty($widgets)) {
 
 <div class="clear"></div>
 
-<br /><br />
 <div class="left width-50" id="extinfo_current">
 	<table class="ext">
 		<tr>
@@ -239,7 +234,7 @@ if (!empty($widgets)) {
 		<tr>
 			<td style="width: 160px" class="dark bt"><?php echo _('Current status'); ?></td>
 			<td class="bt" id="field_current_status">
-				<span class="status-<?php echo strtolower($object->get_state_text()) ?>"><span class="icon-12 x12-shield-<?php echo strtolower($object->get_state_text()); ?>"></span><?php echo ucfirst(strtolower($object->get_state_text())) ?></span>
+				<span class="status-<?php echo strtolower($object->get_state_text()) ?>"><span class="icon-16 x16-shield-<?php echo strtolower($object->get_state_text()); ?>"></span><?php echo ucfirst(strtolower($object->get_state_text())) ?></span>
 				(<?php echo _('for'); ?> <?php echo $object->get_duration()>=0 ? time::to_string($object->get_duration()) : _('N/A') ?>)
 			</td>
 		</tr>
@@ -376,10 +371,12 @@ if (!empty($commands))
 ?>
 
 <div class="clear"></div>
-<br /><br />
+<br />
 
 <?php
 if (isset($comments)) {
+
+	echo "<div style=\"padding: 0 8px\">";
 
 	$label = _("Submit a $type comment");
 	$cmd = $type == 'host' ? nagioscmd::command_id('ADD_HOST_COMMENT') : nagioscmd::command_id('ADD_SVC_COMMENT');
@@ -391,10 +388,11 @@ if (isset($comments)) {
 	echo '<span class="icon-16 x16-delete-comment" title="' . html::specialchars($label) . '"></span>';
 	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label, 'submit', false, array('id'=>'delete_all_comments_button'));
 
+	echo "</div>";
+
 	echo $comments;
 }
 
 if (isset($downtimes))
 	echo $downtimes;
 ?>
-</div>
