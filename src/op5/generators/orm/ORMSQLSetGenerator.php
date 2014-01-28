@@ -60,15 +60,16 @@ class ORMSQLSetGenerator extends class_generator {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 		$this->write('$db = Database::instance($this->db_instance);');
 
-		$this->write('if( $columns != false ) {');
-		$this->write('$columns = $this->validate_columns($columns);');
-		$this->write('if($columns === false) return false;');
-		$this->write('$columns = array_unique($columns);');
+		$this->write('$valid_columns = $columns;');
+		$this->write('if( $valid_columns != false ) {');
+		$this->write('$valid_columns = $this->validate_columns($valid_columns);');
+		$this->write('if($valid_columns === false) return false;');
+		$this->write('$valid_columns = array_unique($valid_columns);');
 		$this->write('}');
 
 		$this->write('$filter = $this->get_auth_filter();');
 
-		$this->write('$sql = "SELECT ".$this->format_column_list($columns)." FROM ".$this->dbtable_expr;');
+		$this->write('$sql = "SELECT ".$this->format_column_list($valid_columns)." FROM ".$this->dbtable_expr;');
 		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(array($this, "format_column_filter")), false);');
 
 		$this->write('$sort = array();');
@@ -89,8 +90,15 @@ class ORMSQLSetGenerator extends class_generator {
 		$this->write('}');
 
 		$this->write('$q = $db->query($sql);');
-		$this->write('$q->result(false);');
-		$this->write('return new LivestatusSetIterator($q, $q->list_fields(), $this->class);');
+		$this->write('$q->result(false, MYSQL_NUM);');
+
+		$this->write('$fetched_columns = $q->list_fields();');
+
+		$this->write('if($columns === false) {');
+		$this->write(    '$columns = static::get_all_columns_list();');
+		$this->write('}');
+
+		$this->write('return new LivestatusSetIterator($q, $fetched_columns, $columns, $this->class);');
 		$this->finish_function();
 	}
 }

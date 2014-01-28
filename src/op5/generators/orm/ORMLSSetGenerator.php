@@ -106,18 +106,24 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$ls_filter .= "Limit: ".intval($limit)."\n";');
 		$this->write('}');
 
-		$this->write('if( $columns !== false ) {');
-		$this->write('$columns = $this->validate_columns($columns);');
-		$this->write('if($columns === false) return false;');
-		$this->write('$columns = array_unique($columns);');
+		$this->write('$valid_columns = $columns;');
+		$this->write('if( $valid_columns !== false ) {');
+		$this->write('$valid_columns = $this->validate_columns($valid_columns);');
+		$this->write('if($valid_columns === false) return false;');
+		$this->write('$valid_columns = array_unique($valid_columns);');
 		$this->write('}');
 
 		$this->write('try {');
-		$this->write('list($columns, $objects, $count) = $ls->query($this->table, $ls_filter, $columns);');
+		$this->write('list($fetched_columns, $objects, $count) = $ls->query($this->table, $ls_filter, $valid_columns);');
 		$this->write('} catch( op5LivestatusException $e ) {');
 		$this->write('throw new ORMException( $e->getPlainMessage() );');
 		$this->write('}');
-		$this->write('return new LivestatusSetIterator($objects, $columns, $this->class);');
+
+		$this->write('if($columns === false) {');
+		$this->write(    '$columns = static::get_all_columns_list();');
+		$this->write('}');
+
+		$this->write('return new LivestatusSetIterator($objects, $fetched_columns, $columns, $this->class);');
 		$this->finish_function();
 	}
 }

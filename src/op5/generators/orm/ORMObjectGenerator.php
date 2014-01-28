@@ -81,7 +81,22 @@ class ORMObjectGenerator extends class_generator {
 	 * @return void
 	 **/
 	private function generate_construct() {
-		$this->init_function( "__construct", array( 'values', 'prefix' ) );
+		$this->init_function( "__construct", array( 'values', 'prefix', 'export' ) );
+		$this->write( '$this->export = array();' );
+		$this->write( '$subobj_export = array();' );
+		$this->write( 'if($export === false) $export = array();'); //FIXME
+		$this->write( 'foreach( $export as $expcol ) {');
+		$this->write(     '$parts = explode(".", $expcol, 2);');
+		$this->write(     'if(count($parts) == 2) {');
+		$this->write(         'if(!isset($subobj_export[$parts[0]])) {');
+		$this->write(             '$subobj_export[$parts[0]] = array();');
+		$this->write(         '}');
+		$this->write(         '$subobj_export[$parts[0]][] = $parts[1];');
+		$this->write(         '$this->export[] = $parts[0];');
+		$this->write(     '} else {');
+		$this->write(         '$this->export[] = $parts[0];');
+		$this->write(     '}');
+		$this->write( '}');
 		foreach( $this->structure['structure'] as $field => $type ) {
 			if( is_array($type) ) {
 				$this->{"fetch_object"}( $field, $type );
@@ -89,7 +104,7 @@ class ORMObjectGenerator extends class_generator {
 				$this->{"fetch_$type"}( $field );
 			}
 		}
-		$this->write( 'parent::__construct( $values, $prefix ); ');
+		$this->write( 'parent::__construct( $values, $prefix, $export ); ');
 		$this->finish_function();
 	}
 
@@ -160,10 +175,8 @@ class ORMObjectGenerator extends class_generator {
 	 **/
 	private function fetch_object( $name, $type ) {
 		list( $class, $prefix ) = $type;
-		//		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, \$prefix.".var_export($prefix,true)." );" );
 		// Livestatus handles only one level of prefixes... might change in future? (for example comments: service.host.name should be host.name
-		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, ".var_export($prefix,true)." );" );
-		$this->write( "\$this->export[] = %s;", $name );
+		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, %s, isset(\$subobj_export[%s]) ? \$subobj_export[%s] : array() );", $prefix, $name, $name );
 	}
 
 	/**
@@ -196,7 +209,6 @@ class ORMObjectGenerator extends class_generator {
 	private function fetch_string( $name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) { ");
 		$this->write( "\$this->$name = (string)\$values[\$prefix.'$name'];" );
-		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 
@@ -230,7 +242,6 @@ class ORMObjectGenerator extends class_generator {
 	private function fetch_time( $name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) { ");
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
-		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 
@@ -264,7 +275,6 @@ class ORMObjectGenerator extends class_generator {
 	private function fetch_int( $name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = intval( \$values[\$prefix.'$name'] );" );
-		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 
@@ -298,7 +308,6 @@ class ORMObjectGenerator extends class_generator {
 	private function fetch_float( $name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
-		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 
@@ -332,7 +341,6 @@ class ORMObjectGenerator extends class_generator {
 	private function fetch_list( $name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
-		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 
@@ -366,7 +374,6 @@ class ORMObjectGenerator extends class_generator {
 	private function fetch_dict( $name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
 		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
-		$this->write( "\$this->export[] = %s;", $name );
 		$this->write( "}" );
 	}
 

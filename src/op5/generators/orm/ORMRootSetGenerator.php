@@ -32,6 +32,7 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_validate_columns();
 		$this->generate_format_column_filter();
 		$this->generate_format_column_list();
+		$this->generate_get_all_columns_list();
 		$this->finish_class();
 	}
 
@@ -141,6 +142,17 @@ class ORMRootSetGenerator extends class_generator {
 	public function generate_format_column_list() {
 		$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
 		$this->write('throw new Exception("Not implemented");');
+		$this->finish_function();
+	}
+
+	/**
+	 * Fetch all columns possible for this class to fetch, including subobjects.
+	 *
+	 * This is just a stub, which is overwritten by each object set.
+	 */
+	private function generate_get_all_columns_list() {
+		$this->init_function('get_all_columns_list', array(), array('static'));
+		$this->write('return array();');
 		$this->finish_function();
 	}
 }

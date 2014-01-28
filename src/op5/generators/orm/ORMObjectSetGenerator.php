@@ -86,6 +86,8 @@ class ORMObjectSetGenerator extends class_generator {
 
 		$this->generate_validate_columns();
 
+		$this->generate_get_all_columns_list();
+
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
 		}
@@ -94,16 +96,17 @@ class ORMObjectSetGenerator extends class_generator {
 
 	public function generate_validate_columns() {
 		$this->init_function('validate_columns', array('columns'));
-		$this->write('$columns = parent::validate_columns($columns);');
+		$this->write('$in_columns = parent::validate_columns($columns);');
+		$this->write('$columns = array();');
+
+		$local_columns = array();
 		foreach($this->structure['structure'] as $name => $type ) {
 			if( is_array($type) ) {
 				$this->write('$subcolumns = array();');
 				$this->write('$tmpcolumns = array();');
-				$this->write('foreach( $columns as $col ) {');
+				$this->write('foreach( $in_columns as $col ) {');
 				$this->write('if(substr($col,0,%s) == %s) {', strlen($name)+1,$name.'.');
 				$this->write('$subcolumns[] = substr($col,%s);', strlen($name)+1);
-				$this->write('} else {');
-				$this->write('$tmpcolumns[] = $col;');
 				$this->write('}');
 				$this->write('}');
 				$this->write('$columns = $tmpcolumns;');
@@ -113,8 +116,17 @@ class ORMObjectSetGenerator extends class_generator {
 				$this->write('foreach($subcolumns as $col) {');
 				$this->write('$columns[] = %s.$col;', $name.'.');
 				$this->write('}');
+			} else {
+				$local_columns[$name] = true;
 			}
 		}
+		$this->write('$accept_columns = %s;', $local_columns);
+		$this->write('foreach($in_columns as $col) {');
+		$this->write('if(isset($accept_columns[$col])) {');
+		$this->write('$columns[] = $col;');
+		$this->write('}');
+		$this->write('}');
+
 		foreach($this->structure['key'] as $keypart ) {
 			$this->write('if( !in_array(%s, $columns) ) $columns[] = %s;', $keypart, $keypart);
 		}
@@ -167,6 +179,32 @@ class ORMObjectSetGenerator extends class_generator {
 			$this->write('return implode(", ", array_map(array($this, "format_column_selector"), $columns));');
 			$this->finish_function();
 		}
+	}
+
+	private function generate_get_all_columns_list() {
+		$columns = array();
+		$subobjs = array();
+		foreach ($this->structure['structure'] as $name => $type) {
+			if (is_array($type)) {
+				$subobjs[$name] = $type;
+			} else {
+				$columns[] = $name;
+			}
+		}
+		$this->init_function('get_all_columns_list', array('include_nested'), array('static'), array('include_nested'=>true));
+		$this->write('$raw_columns = %s;', $columns);
+		$this->write('$sub_columns = array();');
+		$this->write('if ($include_nested) {');
+		foreach ($subobjs as $name => $type) {
+			$this->write('$obj_cols = '.$type[0].'Set'.self::$model_suffix.'::get_all_columns_list(false);');
+			$this->write('foreach ($obj_cols as $name) {');
+			$this->write('$sub_columns[] = %s.$name;', str_replace('_','.',$type[1]));
+			$this->write('}');
+		}
+		$this->write('}');
+		$this->write('$virtual_columns = array_keys('.$this->objectclass.'::$rewrite_columns);');
+		$this->write('return array_merge($sub_columns, $raw_columns, $virtual_columns);');
+		$this->finish_function();
 	}
 
 	private function generate_association_get_set($table, $class, $field) {
