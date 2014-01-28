@@ -1,7 +1,7 @@
 
 $("document").ready( function () {
 
-	$("button.command-button").click( function () {
+	$( "body" ).on( "click", "button.command-button", function () {
 
 		var btn = $( this ),
 			command = btn.attr( "data-command" ),
