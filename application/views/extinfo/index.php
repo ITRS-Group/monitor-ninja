@@ -122,7 +122,7 @@ if (!empty($widgets)) {
 						echo '<a href="#" title="'._('Contactgroup').': '.$group.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.(++$c).'">';
 						echo $group.'</a>';
 				?>
-				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
+				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none" class="extinfo_contacts">
 					<tr>
 						<th><?php echo _('Contact name') ?></th>
 						<th><?php echo _('Alias') ?></th>
