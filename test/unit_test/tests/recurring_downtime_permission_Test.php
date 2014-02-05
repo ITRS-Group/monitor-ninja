@@ -101,7 +101,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$stats = RecurringDowntimePool_Model::all();
 		$this->assertCount(4, $stats);
 
-		$one = $stats->it(array())->current()->export();
+		$one = $stats->it(array('id'))->current()->export();
 		$one['author'] = 'you';
 		$sd = new ScheduleDate_Model();
 		$id = $one['id'];
@@ -130,7 +130,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$stats = RecurringDowntimePool_Model::all();
 		$this->assertCount(4, $stats);
 
-		$one = $stats->it(array())->current()->export();
+		$one = $stats->it(array('id'))->current()->export();
 		$one['author'] = 'you';
 		$sd = new ScheduleDate_Model();
 		$id = $one['id'];
