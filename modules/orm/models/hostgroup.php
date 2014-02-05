@@ -13,7 +13,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		'$HOSTGROUPNAME$' => 'name',
 		'$HOSTGROUPALIAS$' => 'alias'
 	);
-	
+
 	/**
 	 * A list of column dependencies for custom columns
 	 */
@@ -21,15 +21,6 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		'host_stats' => array('name'),
 		'service_stats' => array('name')
 	);
-
-	/**
-	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
-	 */
-	public function __construct($values, $prefix) {
-		parent::__construct($values, $prefix);
-		$this->export[] = 'host_stats';
-		$this->export[] = 'service_stats';
-	}
 
 	/**
 	 * Get statistics about the hosts in the group
@@ -85,7 +76,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		}
 		return array( 'stats' => $set->stats($stats), 'queries' => $queries );
 	}
-	
+
 	/**
 	 * Get statistics about the services in the group
 	 */

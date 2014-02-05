@@ -127,9 +127,28 @@ class ListView_Controller extends Authenticated_Controller {
 			return json::fail( array( 'data' => _("No limit specified")) );
 		}
 
-		$model = new LSFilter_Data_Model();
+		/* TODO: Fix sorting better sometime
+		 * Do it though ORM more orm-ly
+		 * Check if columns exists and so on...
+		 */
+		$sort = array_map(function($el){return str_replace('.','_',$el);},$sort);
+
 		try {
-			return json::ok($model->query($query, $limit, $offset, $columns, $sort));
+			$result_set = ObjectPool_Model::get_by_query( $query );
+
+			$data = array();
+			foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
+				$obj = $elem->export();
+				$obj['_table'] = $elem->get_table();
+				$data[] = $obj;
+			}
+
+			return json::ok( array(
+				'totals' => $result_set->get_totals(),
+				'data' => $data,
+				'table' => $result_set->get_table(),
+				'count' => count($result_set)
+			) );
 		} catch( LSFilterException $e ) {
 			return json::fail( array(
 				'data' => $e->getMessage().' at "'.substr($e->get_query(), $e->get_position()).'"',

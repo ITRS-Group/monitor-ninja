@@ -12,14 +12,6 @@ class Notification_Model extends BaseNotification_Model {
 	static public $rewrite_columns = array(
 		'state_text' => array('state','notification_type')
 		);
-	
-	/**
-	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
-	 */
-	public function __construct($values, $prefix) {
-		parent::__construct($values, $prefix);
-		$this->export[] = 'state_text';
-	}
 
 	/**
 	 * Get the state, as text

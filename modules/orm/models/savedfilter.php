@@ -17,15 +17,6 @@ class SavedFilter_Model extends BaseSavedFilter_Model {
 	);
 
 	/**
-	 * Create an instance of the given type. Don't call dirctly, called from *Set_Model-objects
-	 */
-	public function __construct($values, $prefix) {
-		parent::__construct($values, $prefix);
-		$this->export[] = 'scope';
-		$this->export[] = 'deletable';
-	}
-
-	/**
 	 * Get the scope as a string
 	 */
 	public function get_scope() {
