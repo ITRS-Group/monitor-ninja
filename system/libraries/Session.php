@@ -133,13 +133,18 @@ class Session_Core {
 		// Name the session, this will also be the name of the cookie
 		session_name(self::$config['name']);
 
+		$secure = Kohana::config('cookie.secure');
+		if(!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS']) {
+			$secure = false;
+		}
+
 		// Set the session cookie parameters
 		session_set_cookie_params
 		(
 			self::$config['expiration'],
 			Kohana::config('cookie.path'),
 			Kohana::config('cookie.domain'),
-			Kohana::config('cookie.secure'),
+			$secure,
 			Kohana::config('cookie.httponly')
 		);
 

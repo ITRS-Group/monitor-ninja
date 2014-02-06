@@ -72,6 +72,11 @@ class Default_Controller extends Ninja_Controller  {
 			$post = Validation::factory($_POST);
 			$post->add_rules('*', 'required');
 
+			if(PHP_SAPI !== 'cli' && config::get('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
+				$this->session->set_flash('error_msg', _('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
+				return url::redirect('default/show_login');
+			}
+
 			# validate that we have both username and password
 			if (!$post->validate() ) {
 				$error_msg = _("Please supply both username and password");

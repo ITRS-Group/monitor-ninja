@@ -20,8 +20,8 @@ $config['path'] = '/';
 $config['expire'] = 0;
 
 /**
- * Enable this option to only allow the cookie to be read when using the a
- * secure protocol.
+ * Set to true, to only allow logging in through HTTPS, or false to allow
+ * logging in through HTTP.
  */
 $config['secure'] = true;
 
