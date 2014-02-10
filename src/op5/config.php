@@ -77,13 +77,14 @@ class op5config {
 	 *
 	 * @param $parameter string
 	 * @param $array array
+	 * @param $set_reserved boolean
 	 * @return void
  	 * @throws RuntimeException if file is unwritable
 	 */
-	public function setConfig( $parameter, $array )
+	public function setConfig( $parameter, $array, $set_reserved = false )
 	{
 		$path = $this->getPathForNamespace( $parameter );
-		if(false === $this->setConfigFile( $path, $array )) {
+		if(false === $this->setConfigFile( $path, $array, $set_reserved )) {
 			throw new RuntimeException("Could not write to $path");
 		}
 	}
@@ -159,16 +160,19 @@ class op5config {
 	 *
 	 * @param $path string
 	 * @param $array array
+	 * @param $set_reserved boolean
 	 * @return boolean
 	 **/
-	protected function setConfigFile( $path, $array )
+	protected function setConfigFile( $path, $array, $set_reserved = false )
 	{
 		if( $this->apc_enabled ) {
 			/* TODO: Use store instead... but I want to verify that it's stored correctly */
 			apc_delete( $this->apc_tag_for_path( $path ) );
 		}
 
-		$array = $this->cleanConfigArray($array);
+		if (!$set_reserved) {
+			$array = $this->cleanConfigArray($array);
+		}
 
 		// Preserve special keys
 		$presentYaml = $this->getConfigFile($path);
