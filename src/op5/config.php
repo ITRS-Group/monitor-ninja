@@ -1,7 +1,7 @@
 <?php
 
-require_once( __DIR__.'/spyc.php' );
-require_once( __DIR__.'/objstore.php' );
+require_once(__DIR__.'/spyc.php');
+require_once(__DIR__.'/objstore.php');
 
 class op5config {
 	private $basepath     = '/etc/op5/';
@@ -51,7 +51,7 @@ class op5config {
 			$this->basepath = $basepath;
 		}
 
-		$this->apc_enabled = function_exists( 'apc_fetch' );
+		$this->apc_enabled = function_exists('apc_fetch');
 	}
 
 	/**
@@ -63,7 +63,7 @@ class op5config {
 	 * @param $reserved boolean
 	 * @return mixed
 	 **/
-	public function getConfig( $parameter, $reserved = false )
+	public function getConfig($parameter, $reserved = false)
 	{
 		$config = $this->getConfigVar(explode('.',$parameter), $this->basepath);
 		if (!$reserved && is_array($config)) {
@@ -81,10 +81,10 @@ class op5config {
 	 * @return void
  	 * @throws RuntimeException if file is unwritable
 	 */
-	public function setConfig( $parameter, $array, $set_reserved = false )
+	public function setConfig($parameter, $array, $set_reserved = false)
 	{
-		$path = $this->getPathForNamespace( $parameter );
-		if(false === $this->setConfigFile( $path, $array, $set_reserved )) {
+		$path = $this->getPathForNamespace($parameter);
+		if (false === $this->setConfigFile($path, $array, $set_reserved)) {
 			throw new RuntimeException("Could not write to $path");
 		}
 	}
@@ -96,19 +96,19 @@ class op5config {
 	 * @param $path string
 	 * @return mixed
 	 **/
-	protected function getConfigVar( $parameter, $path )
+	protected function getConfigVar($parameter, $path)
 	{
 		/* Parameter array is empty; fetch tree */
-		if( count( $parameter ) == 0 ) {
+		if (count($parameter) == 0) {
 			return $this->getConfigFile($path.'.yml');
 		/* Parameter tree isn't empty, step into */
 		} else {
-			$head = array_shift( $parameter );
+			$head = array_shift($parameter);
 			/* head is a yml file, just fetch the parameter without recursion and exit */
-			$value = $this->getConfigFile( $path . '/' . $head . '.yml' );
-			while( count( $parameter ) ) {
-				$head = array_shift( $parameter );
-				if( isset( $value[$head] ) ) {
+			$value = $this->getConfigFile($path . '/' . $head . '.yml');
+			while(count($parameter)) {
+				$head = array_shift($parameter);
+				if (isset($value[$head])) {
 					$value = $value[$head];
 				} else {
 					return null;
@@ -124,7 +124,7 @@ class op5config {
 	 * @param $namespace string
 	 * @return string
 	 **/
-	protected function getPathForNamespace( $namespace )
+	protected function getPathForNamespace($namespace)
 	{
 		return $this->basepath . $namespace . '.yml';
 	}
@@ -135,22 +135,22 @@ class op5config {
 	 * @param $path string
 	 * @return array
 	 **/
-	protected function getConfigFile( $path )
+	protected function getConfigFile($path)
 	{
-		if( $this->apc_enabled ) {
-			$array = apc_fetch( $this->apc_tag_for_path( $path ), $success );
-			if( $success ) {
+		if ($this->apc_enabled) {
+			$array = apc_fetch($this->apc_tag_for_path($path), $success);
+			if ($success) {
 				return $array;
 			}
 		}
 
 		$array = null;
 		if (is_readable($path)) {
-			$array = Spyc::YAMLLoad( $path );
+			$array = Spyc::YAMLLoad($path);
 		}
 
-		if( $this->apc_enabled ) {
-			apc_store( $this->apc_tag_for_path( $path ), $array, (int) $this->apc_ttl );
+		if ($this->apc_enabled) {
+			apc_store($this->apc_tag_for_path($path), $array, (int) $this->apc_ttl);
 		}
 		return $array;
 	}
@@ -163,11 +163,11 @@ class op5config {
 	 * @param $set_reserved boolean
 	 * @return boolean
 	 **/
-	protected function setConfigFile( $path, $array, $set_reserved = false )
+	protected function setConfigFile($path, $array, $set_reserved = false)
 	{
-		if( $this->apc_enabled ) {
+		if ($this->apc_enabled) {
 			/* TODO: Use store instead... but I want to verify that it's stored correctly */
-			apc_delete( $this->apc_tag_for_path( $path ) );
+			apc_delete($this->apc_tag_for_path($path));
 		}
 
 		if (!$set_reserved) {
@@ -213,9 +213,9 @@ class op5config {
 	 * @param $path string
 	 * @return string
 	 **/
-	protected function apc_tag_for_path( $path ) {
+	protected function apc_tag_for_path($path) {
 		/* Fix path with realpath before hashing. Fixes double slashes and relative paths */
-		$tag = 'op5_config_' . md5( realpath($path) );
+		$tag = 'op5_config_' . md5(realpath($path));
 		return $tag;
 	}
 }
