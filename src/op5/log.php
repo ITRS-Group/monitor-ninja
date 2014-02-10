@@ -1,6 +1,11 @@
 <?php
 require_once(__DIR__.'/config.php');
 
+/**
+ * undocumented class
+ *
+ * @package default
+ **/
 class op5LogAccess {
 	protected $log_instance = false;
 	protected $namespace = false;
@@ -18,16 +23,40 @@ class op5LogAccess {
 		return $this->debug($message);
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @param $level string
+	 * @param $message string
+	 * @return void
+	 **/
 	public function log($level, $message) {
 		$this->log_instance->log($this->namespace, $level, $message);
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @param $message string
+	 * @return void
+	 **/
 	public function debug($message) {
 		$this->log_instance->log($this->namespace, 'debug', $message);
 	}
 }
 
+/**
+ * Logs to given namespace.
+ * Logs are configured in /etc/op5/log.yml
+ *
+ * @package default
+ **/
 class op5Log {
+
+	/**
+	 * Static log levels
+	 *
+	 **/
 	private static $levels = array(
 			'error'   => 1,
 			'warning' => 2,
