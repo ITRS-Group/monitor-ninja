@@ -12,14 +12,10 @@ class MockLivestatus_Exception extends Exception {}
 class MockLivestatus_StateMachine {
 	/**
 	 * Stack for the state of the state machine
-	 *
-	 * @var unknown
 	 */
 	public $stack;
 	/**
 	 * The object to use as source for tests
-	 *
-	 * @var array
 	 */
 	public $object;
 
@@ -180,22 +176,19 @@ class MockLivestatus_StateMachine {
 class MockLivestatus {
 	/**
 	 * Storage for the mocked environment.
-	 *
-	 * @var array
 	 */
 	protected $data;
 
 	/**
 	 * An array of the previously requested columns
-	 *
-	 * @var array
 	 */
 	public $last_columns = false;
 	/**
 	 * Load the mocked livestatus environment
 	 *
-	 *
-	 * @param array $data
+	 * @param $data Data
+	 *        	to be available in the mocked environemnt, indexed by table,
+	 *        	structure as livestatus result (but with names as keys)
 	 */
 	public function __construct($data) {
 		$this->data = $data;
