@@ -492,7 +492,7 @@ listview_renderer_table.hostgroups = {
 		"sort" : [ 'alias', 'name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(link_query('[hosts] in "' + args.obj.name + '"')
+			cell.append(link_query('[hosts] groups >= "' + args.obj.name + '"')
 					.update_text(args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
@@ -539,7 +539,7 @@ listview_renderer_table.servicegroups = {
 		"sort" : [ 'alias', 'name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(link_query('[services] in "' + args.obj.name + '"')
+			cell.append(link_query('[services] groups >= "' + args.obj.name + '"')
 					.update_text(args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
