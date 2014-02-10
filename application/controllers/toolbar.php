@@ -83,6 +83,8 @@
 
 			if ( gettype( $this->subtitle ) == "string" ) {
 				print '<div class="main-toolbar-subtitle">' . $this->subtitle . '</div>';
+			} else {
+				print '<div class="main-toolbar-subtitle"></div>';
 			}
 
 			if ( count( $this->info ) > 0 ) {
