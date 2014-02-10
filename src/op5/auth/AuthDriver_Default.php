@@ -17,7 +17,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 			'require_user_configuration' => true,
 			'require_user_password_configuration' => true
 			);
-	
+
 	private $users = false;
 
 	/**
@@ -86,8 +86,8 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 * @param $username string User to search for
 	 * @return          array  A list of groups, or false if not possible
 	 */
-   public function groups_for_user($username)
-   {
+	public function groups_for_user($username)
+	{
 		$this->fetch_users();
 		if(!isset($this->users[$username])) {
 			return false;
@@ -96,7 +96,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 			return array();
 		}
 		return $this->users[$username]['groups'];
-   }
+	}
 
 
 
