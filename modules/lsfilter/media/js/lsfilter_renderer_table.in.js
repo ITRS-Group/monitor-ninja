@@ -1240,3 +1240,21 @@ listview_renderer_table.recurring_downtimes = {
 		}
 	},
 };
+
+listview_renderer_table.commands = {
+	"name": {
+		"header": _('Name'),
+		"depends": ['name'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.name);
+		}
+	},
+	"line": {
+		"header": _('Shell command line'),
+		"depends": ['line'],
+		"sort": ['line'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.line);
+		}
+	}
+};
