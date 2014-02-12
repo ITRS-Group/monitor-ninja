@@ -177,7 +177,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template = $this->add_view('backup/backup');
 
 		$file = strftime('backup-%Y-%m-%d_%H.%M.%S');
-		exec($this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
+		exec($this->asmonitor . $this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
 			. ' ' . implode(' ', $this->files2backup), $output, $status);
 		if ($status != 0)
 		{
@@ -204,7 +204,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$status = 0;
 		$output = array();
-		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
+		exec($this->asmonitor . $this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}'";
