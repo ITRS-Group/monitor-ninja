@@ -328,8 +328,8 @@ class Cli_Controller extends Controller {
 			$users[$username] = $user;
 		}
 		$now = time();
-		@exec('cp /etc/op5/auth_users.yml /etc/op5/auth_users_' . $now . '.yml 2> /dev/null');
-		@exec('cp /etc/op5/auth_groups.yml /etc/op5/auth_groups_' . $now . '.yml 2> /dev/null');
+		@exec('cp -p /etc/op5/auth_users.yml /etc/op5/auth_users.yml.' . $now . ' 2> /dev/null');
+		@exec('cp -p /etc/op5/auth_groups.yml /etc/op5/auth_groups.yml.' . $now . ' 2> /dev/null');
 
 		$cfg->setConfig('auth_users', $users);
 		$cfg->setConfig('auth_groups', $groups);
