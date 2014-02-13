@@ -38,7 +38,8 @@ class Host_Model extends BaseHost_Model {
 		'check_type_str'  => array('check_type'),
 		'config_allowed'  => array('contacts'),
 		'source_node'     => array('check_source'),
-		'source_type'     => array('check_source')
+		'source_type'     => array('check_source'),
+		'perf_data'       => array('perf_data_raw')
 	);
 
 	/**
@@ -189,5 +190,13 @@ class Host_Model extends BaseHost_Model {
 	public function get_source_type() {
 		$source = $this->get_source();
 		return $source[1];
+	}
+
+	/**
+	 * Get the performance data for the object, expressed as an associative array
+	 */
+	public function get_perf_data() {
+		$perf_data_str = parent::get_perf_data_raw();
+		return performance_data::process_performance_data($perf_data_str);
 	}
 }

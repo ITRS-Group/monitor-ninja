@@ -251,7 +251,39 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
-			<td style="white-space: normal" id="field_perf_data"><?php echo html::specialchars($object->get_perf_data()) ?></td>
+			<td style="white-space: normal" id="field_perf_data">
+<?php
+$perf_data = $object->get_perf_data();
+if(count($perf_data)):
+?>
+				<table>
+					<thead>
+						<tr>
+							<th><?php echo _('Data source');?></th>
+							<th><?php echo _('Value');?></th>
+							<th><?php echo _('Warn');?></th>
+							<th><?php echo _('Crit');?></th>
+							<th><?php echo _('Min');?></th>
+							<th><?php echo _('Max');?></th>
+						</tr>
+					</thead>
+					<tbody>
+<?php foreach($perf_data as $ds_name => $ds): ?>
+						<tr>
+							<td><?php echo html::specialchars($ds_name); ?></td>
+							<td><?php echo isset($ds['value']) ? html::specialchars($ds['value'] . (isset($ds['unit'])?' '.$ds['unit']:'')) : ''; ?></td>
+							<td><?php echo isset($ds['warn']) ? html::specialchars($ds['warn']) : ''; ?></td>
+							<td><?php echo isset($ds['crit']) ? html::specialchars($ds['crit']) : ''; ?></td>
+							<td><?php echo isset($ds['min']) ? html::specialchars($ds['min'] . (isset($ds['unit'])?' '.$ds['unit']:'')) : ''; ?></td>
+							<td><?php echo isset($ds['max']) ? html::specialchars($ds['max'] . (isset($ds['unit'])?' '.$ds['unit']:'')) : ''; ?></td>
+						</tr>
+<?php endforeach; ?>
+					</tbody>
+				</table>
+<?php else:
+echo _('No performance data');
+endif; ?>
+</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Current attempt'); ?></td>
