@@ -1245,6 +1245,7 @@ listview_renderer_table.commands = {
 	"name": {
 		"header": _('Name'),
 		"depends": ['name'],
+		"sort": ['name'],
 		"cell": function(args) {
 			return $('<td />').update_text(args.obj.name);
 		}
@@ -1255,6 +1256,60 @@ listview_renderer_table.commands = {
 		"sort": ['line'],
 		"cell": function(args) {
 			return $('<td />').update_text(args.obj.line);
+		}
+	}
+};
+
+listview_renderer_table.timeperiods = {
+	"name": {
+		"header": _('Name'),
+		"depends": ['name'],
+		"sort": ['name'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.name);
+		}
+	},
+	"alias": {
+		"header": _('Alias'),
+		"depends": ['alias'],
+		"sort": ['alias'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.alias);
+		}
+	},
+	"in": {
+		"header": _('Currently active'),
+		"depends": ['in'],
+		"sort": ['in'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.in ? _('Yes') : _('No'));
+		}
+	}
+};
+
+listview_renderer_table.contactgroups = {
+	"name": {
+		"header": _('Name'),
+		"depends": ['name'],
+		"sort": ['name'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.name);
+		}
+	},
+	"alias": {
+		"header": _('Alias'),
+		"depends": ['alias'],
+		"sort": ['alias'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.alias);
+		}
+	},
+	"members": {
+		"header": _('Members'),
+		"depends": ['members'],
+		"sort": ['members'],
+		"cell": function(args) {
+			return $('<td />').update_text(args.obj.members.join(', '));
 		}
 	}
 };
