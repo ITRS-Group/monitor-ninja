@@ -313,7 +313,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 
 		$content->info[] = array(
-			"title" => _('Flap detection enabled?'),
+			"title" => _('Obsessing over hosts?'),
 			"command" => nagioscmd::command_ajax_button(
 				($status->obsess_over_hosts) ? nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS') : nagioscmd::command_id('START_OBSESSING_OVER_HOST_CHECKS'),
 				($status->obsess_over_hosts) ? _('Stop obsessing over hosts') : _('Start obsessing over hosts'),
