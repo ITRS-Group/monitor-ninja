@@ -1,4 +1,7 @@
 <?php
+
+require_once('op5/queryhandler.php');
+
 /**
  * Nagios FIFO command helper
  */
@@ -1200,22 +1203,19 @@ class nagioscmd_Core
 	/**
 	 * Actually submit command to nagios
 	 * @param $cmd The complete command
-	 * @param $pipe_path Path to the nagios path
+	 * @param $args string
 	 * @return false on error, else true
 	 */
-	public static function submit_to_nagios($cmd, $pipe_path)
+	public static function submit_to_nagios($cmd, $args = "")
 	{
-		$fh = fopen($pipe_path, "w");
-		if ($fh === false)
+		$qh = op5queryhandler::instance();
+		$command = sprintf("[%d] %s", time(), $cmd);
+		try {
+			$output = $qh->call("command run", $command, $args);
+		} catch (op5queryhandler_Exception $e) {
 			return false;
-
-		$len = fprintf($fh, "[%d] %s\n", time(), $cmd);
-		fclose($fh);
-		if (!$len)
-			return false;
-
-		// @todo return a proper status code here, based on what Nagios actually says
-		return true;
+		}
+		return substr($output, 0, strlen("OK:")) === "OK:";
 	}
 
 

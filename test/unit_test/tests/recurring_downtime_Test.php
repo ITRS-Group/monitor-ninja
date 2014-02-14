@@ -67,9 +67,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 
 		// Remove downtimes when tests are done.
 		$cmd = (strpos($type, 'host') !== false) ? 'DEL_HOST_DOWNTIME;' : 'DEL_SVC_DOWNTIME;';
-		$pipe = System_Model::get_pipe();
 		foreach ($ids as $id) {
-			$res = nagioscmd::submit_to_nagios($cmd . $id, $pipe);
+			$res = nagioscmd::submit_to_nagios($cmd . $id);
 			$this->assertTrue($res, 'Host delete command was submitted');
 		}
 
@@ -307,9 +306,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 
 		// Remove downtimes when tests are done.
 		$cmd = 'DEL_HOST_DOWNTIME;';
-		$pipe = System_Model::get_pipe();
 		foreach ($dt as $id) {
-			$res = nagioscmd::submit_to_nagios($cmd . $id['id'], $pipe);
+			$res = nagioscmd::submit_to_nagios($cmd . $id['id']);
 			$this->assertTrue($res, 'Host delete command was submitted');
 		}
 
