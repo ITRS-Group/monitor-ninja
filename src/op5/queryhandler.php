@@ -26,7 +26,7 @@ class op5queryhandler {
 	 * @return void
 	 **/
 	public function __construct() {
-		$this->path = '/opt/monitor/var/rw/nagios.qh';
+		$this->path = op5config::instance()->getConfig("queryhandler.socket_path");
 	}
 
 	public function json_call($channel, $command, $args, $conv_hash=true, $node = false) {
@@ -93,7 +93,7 @@ class op5queryhandler {
 			1 => array("pipe", "w"),
 			2 => array("pipe", "w")
 		);
-		$process = proc_open('asmonitor ssh '.escapeshellarg($node).' "unixcat /opt/monitor/var/rw/nagios.qh"', $descriptorspec, $pipes);
+		$process = proc_open('asmonitor ssh '.escapeshellarg($node).' "unixcat ' . $this->path . '"', $descriptorspec, $pipes);
 		if($process === false)
 			return false; /* TODO: Error handling */
 
