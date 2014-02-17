@@ -152,7 +152,7 @@ listview_renderer_table.hosts = {
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
 		"cell" : function(args) {
-			return $('<td style="max-width: 300px;" />').update_text(
+			return $('<td style="max-width: 300px; word-wrap: break-word;" />').update_text(
 					args.obj.plugin_output);
 		}
 	},
@@ -479,7 +479,7 @@ listview_renderer_table.services = {
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
 		"cell" : function(args) {
-			return $('<td style="max-width: 300px;" />').update_text(
+			return $('<td style="max-width: 300px; word-wrap: break-word;" />').update_text(
 					args.obj.plugin_output);
 		}
 	}
