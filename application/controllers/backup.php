@@ -90,23 +90,20 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template->title = _('Configuration » Backup/Restore');
 		$this->template->content->suffix = $this->backup_suffix;
 
-		$files = @scandir($this->backups_location);
-		if ($files === false)
+		$backupfiles = false;
+		foreach (glob($this->backups_location.'/*'.$this->backup_suffix) as $filename) {
+			$backupfiles[] = basename($filename);
+		}
+
+		if ($backupfiles === false)
 			throw new Exception('Cannot get directory contents: ' . $this->backups_location);
 
-		$suffix_len = strlen($this->backup_suffix);
-		$backupfiles = array();
-		foreach ($files as $file)
-			if (substr($file, -$suffix_len) == $this->backup_suffix)
-				$backupfiles[] = substr($file, 0, -$suffix_len);
-
-		rsort($backupfiles);
 		$this->template->content->files = $backupfiles;
 	}
 
 	public function download($file) {
 
-		$file_path = $this->backups_location . "/" . $file . ".tar.gz";
+		$file_path = $this->backups_location . "/" . $file;
 		$fp = fopen($file_path, "r");
 		if ($fp === false) {
 			$this->template->content = $this->add_view('backup/view');
@@ -141,7 +138,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$contents = array();
 		$status = 0;
-		exec($this->cmd_view . $this->backups_location . '/' . $file . $this->backup_suffix, $contents, $status);
+		exec($this->cmd_view . $this->backups_location . '/' . $file, $contents, $status);
 		sort($contents);
 
 		$this->template->content->files = $contents;
@@ -204,7 +201,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$status = 0;
 		$output = array();
-		exec($this->asmonitor . $this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix, $output, $status);
+		exec($this->asmonitor . $this->cmd_restore . $this->backups_location . '/' . $file, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}'";
@@ -251,7 +248,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$this->template = $this->add_view('backup/delete');
 
-		$this->template->status = @unlink($this->backups_location . '/' . $file . $this->backup_suffix);
+		$this->template->status = @unlink($this->backups_location . '/' . $file);
 		$this->template->message = $this->template->status ? "The backup '{$file}' has been deleted"
 			: "Could not delete the backup '{$file}'";
 	}
