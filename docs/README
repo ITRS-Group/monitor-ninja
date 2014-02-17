@@ -4,13 +4,15 @@ Requirements
 ------------
 Ninja requires the following system software to be installed:
 
-php, php-mysql and php-cli 5.3+
+php, php-mysql and php-cli 5.3+ (php-process)
 MySQL 5+ (4 might also work but is not tested)
 
 Further, generating stylesheets require:
 ruby
-sass
-compass
+rubygems (gem install compass) or:
+  rubygems-sass
+  rubygems-compass
+
 
 It also requires the following software, which you can find on git.op5.org:
 
@@ -56,9 +58,9 @@ cp -a ninja /usr/local/nagios/addons/
 
 7. Configure your webserver. We provide an example config file for apache
    located at ninja/op5build/ninja.httpd-conf. The example below works for
-   CentOS and RedHat
+   CentOS and RedHat.
 vim ninja/op5build/ninja.httpd-conf
-cp ninja/op5build/ninja.httpd-conf /etc/httpd/conf.d
+cp ninja/op5build/ninja.httpd-conf /etc/httpd/conf.d/ninja-httpd.conf
 service httpd restart
 
 8. Configure Ninja.
@@ -69,6 +71,10 @@ service httpd restart
    you should normally not require to edit them, the same goes for
    ninja/index.php which contains config regarding error reporting and general
    paths to Ninja's files.
+
+   if you want to use ninja over http instead of https you should copy
+   ninja/application/config/cookie.php to ninja/application/config/custom/
+   and change $config['secure'] = true; to false
 
 9. Setup the db tables required for Ninja by executing
 
