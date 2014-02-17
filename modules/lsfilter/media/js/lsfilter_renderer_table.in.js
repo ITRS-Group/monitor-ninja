@@ -1282,7 +1282,7 @@ listview_renderer_table.timeperiods = {
 		"depends": ['in'],
 		"sort": ['in'],
 		"cell": function(args) {
-			return $('<td />').update_text(args.obj.in ? _('Yes') : _('No'));
+			return $('<td />').update_text(args.obj['in'] ? _('Yes') : _('No'));
 		}
 	}
 };
