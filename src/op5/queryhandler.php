@@ -66,9 +66,9 @@ class op5queryhandler {
 		}
 		$sock = @fsockopen('unix://'.$this->path, NULL, $errno, $errstr, $this->timeout);
 		if ($sock === false)
-			throw new op5queryhandler_Exception("Request failed: $errstr");
+			throw new op5queryhandler_Exception("Failed to open socket at $this->path: $errstr");
 		if ($errno)
-			throw new op5queryhandler_Exception("Request failed: $errstr");
+			throw new op5queryhandler_Exception("Failed to open socket at $this->path: $errstr");
 
 		for ($written = 0; $written < strlen($command); $written += $len) {
 			$len = @fwrite($sock, substr($command, $written));
