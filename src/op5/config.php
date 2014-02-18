@@ -79,13 +79,13 @@ class op5config {
 	 * @param $array array
 	 * @param $set_reserved boolean
 	 * @return void
- 	 * @throws RuntimeException if file is unwritable
+	 * @throws ConfigException if file is unwritable
 	 */
 	public function setConfig($parameter, $array, $set_reserved = false)
 	{
 		$path = $this->getPathForNamespace($parameter);
 		if (false === $this->setConfigFile($path, $array, $set_reserved)) {
-			throw new RuntimeException("Could not write to $path");
+			throw new ConfigException("Could not write to $path");
 		}
 	}
 
