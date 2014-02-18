@@ -1213,6 +1213,7 @@ class nagioscmd_Core
 		try {
 			$output = $qh->call("command run", $command, $args);
 		} catch (op5queryhandler_Exception $e) {
+			op5log::instance("ninja")->log("error", "external command failed. Exception: " . $e->getMessage());
 			return false;
 		}
 		return substr($output, 0, strlen("OK:")) === "OK:";
