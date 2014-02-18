@@ -192,6 +192,95 @@ class op5config {
 	}
 
 	/**
+	 * Rename keys or values across all configuration files based on a replace map
+	 *
+	 * @param $parameter string
+	 * @param $old_value string
+	 * @param $new_value string
+	 * @param $replaceMap array
+	 * @throws ConfigException
+	 * @return boolean
+	 **/
+	public function cascadeEditConfig($parameter, $old_value, $new_value, $replaceMap = false)
+	{
+		if ($replaceMap) {
+			$this->replaceMap = $replaceMap;
+		} else {
+			$this->replaceMap = $this->getConfig('config_replace_map');
+		}
+		if (!isset($this->replaceMap[$parameter])) {
+			throw new ConfigException("There is no map for parameter: $parameter");
+		}
+		foreach ($this->replaceMap[$parameter] as $map) {
+			$path = explode('.', $map['path']);
+			$namespace = array_shift($path);
+			$config = $this->getConfig($namespace);
+			$modifiedConfig = $this->recursiveReplace($config, $path, $map['type'], $old_value, $new_value);
+			$this->setConfig($namespace, $modifiedConfig);
+		}
+	}
+
+	/**
+	 * Recursively replace config parameters in configuration files
+	 * based on a given path
+	 *
+	 * @param $config array
+	 * @param $path array
+	 * @param $type string
+	 * @param $old string
+	 * @param $new string
+	 * @throws ConfigException
+	 * @return array
+	 **/
+	private function recursiveReplace($config, $path, $type, $old, $new)
+	{
+		$new_config = array();
+		foreach ($config as $key => $value) {
+			if (count($path) === 1 && $path[0] === '*') {
+				// We have reached the end of the path, check for matching keys/values
+				switch ($type) {
+					case 'key':
+						if ($key === $old) {
+							$new_config[$new] = $value;
+						} else {
+							$new_config[$key] = $value;
+						}
+						break;
+					case 'value':
+						if ($value === $old) {
+							$new_config[$key] = $new;
+						} else {
+							$new_config[$key] = $value;
+						}
+						break;
+					default:
+						// TODO: Bail earlier?
+						throw new ConfigException("Unexpected type: $type is not valid for config parameter replacement");
+						break;
+				}
+			} else if (count($path) > 1 && $path[0] !== '*') {
+				// Recurse down a named path
+				$named_path = $path[0];
+				if (is_array($value) && $key === $named_path) {
+					// Path was found
+					$new_config[$named_path] = $this->recursiveReplace($value, array_slice($path, 1), $type, $old, $new);
+				} else {
+					// Not the path we were looking for
+					$new_config[$key] = $value;
+				}
+			} else if (count($path) > 1 && $path[0] === '*') {
+				// Recurse down all paths
+				if (is_array($value)) {
+					$new_config[$key] = $this->recursiveReplace($value, array_slice($path, 1), $type, $old, $new);
+				} else {
+					$new_config[$key] = $value;
+				}
+			}
+		}
+		return $new_config;
+	}
+
+	/**
 	 * Removes array keys that is not valid for storage
 	 *
 	 * @param $array arrray
