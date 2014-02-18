@@ -195,7 +195,7 @@ class Default_Controller extends Ninja_Controller  {
 		if ($period_str === 'downtime') {
 			$sd = new ScheduleDate_Model();
 			$ret = $sd->schedule_downtime($timestamp);
-			exit($ret);
+			exit($ret ? 0 : 1);
 		}
 
 		$controller = new Schedule_Controller();
