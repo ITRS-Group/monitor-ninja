@@ -3,12 +3,20 @@
 require_once(__DIR__.'/spyc.php');
 require_once(__DIR__.'/objstore.php');
 
+/**
+ * Configuration Exceptions
+ *
+ * @package default
+ **/
+class ConfigException extends Exception
+{
+} // END class ConfigException extends Exception
+
 class op5config {
 	private $basepath     = '/etc/op5/';
 	private $apc_enabled = false; /* Sets to true if apc_fetch exists */
 	private $apc_ttl     = 10;
 	const RESERVED_PREFIX = '__'; // Prefix for reserved keys
-
 
 	/**
 	 * Create an instance of op5Config.
