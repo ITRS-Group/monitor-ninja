@@ -283,7 +283,7 @@ class Command_Controller extends Authenticated_Controller
 	/**
 	 * Takes the command parameters given by the "submit" function
 	 * and creates a Nagios command that gets fed to Nagios through
-	 * the external command pipe.
+	 * the query handler.
 	 */
 	public function commit($cmd = false, $param=false)
 	{
@@ -495,13 +495,12 @@ class Command_Controller extends Authenticated_Controller
 
 		$nagios_commands = $this->_build_command($cmd, $param, $nagios_commands);
 
-		$pipe = System_Model::get_pipe();
 		if (empty($nagios_commands))
 			$this->template->content->result = false;
 
 		$this->template->content->result = true;
 		while ($ncmd = array_pop($nagios_commands)) {
-			$this->template->content->result = $this->template->content->result && nagioscmd::submit_to_nagios($ncmd, $pipe);
+			$this->template->content->result = $this->template->content->result && nagioscmd::submit_to_nagios($ncmd);
 		}
 	}
 
@@ -747,8 +746,7 @@ class Command_Controller extends Authenticated_Controller
 			}
 			// Submit logs to nagios as comments.
 			$nagios_base_path = Kohana::config('config.nagios_base_path');
-			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
-			nagioscmd::submit_to_nagios($comment, $pipe);
+			nagioscmd::submit_to_nagios($comment);
 			exec($command, $output, $status);
 		}
 		if ($status === 0) {

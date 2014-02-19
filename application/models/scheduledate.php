@@ -100,7 +100,6 @@ class ScheduleDate_Model extends Model
 			if ($end_time < $start_time)
 				$end_time = mktime(0, 0, $data->get_end_time(), $tomorrow['month'], $tomorrow['day'] + 1, $tomorrow['year']);
 			$duration = $data->get_duration();
-			$pipe = System_Model::get_pipe();
 			foreach ($data->get_objects() as $obj) {
 				# check if object already scheduled for same start time and duration?
 				if (static::check_if_scheduled($data->get_downtime_type(), $obj, $start_time, $end_time, $data->get_fixed())) {
@@ -108,7 +107,7 @@ class ScheduleDate_Model extends Model
 					continue;
 				}
 				$tmp_cmd = "$nagios_cmd;$obj;$start_time;$end_time;{$data->get_fixed()};0;$duration;{$data->get_author()};AUTO: {$data->get_comment()}";
-				$result = nagioscmd::submit_to_nagios($tmp_cmd, $pipe);
+				$result = nagioscmd::submit_to_nagios($tmp_cmd);
 			}
 		}
 	}

@@ -85,6 +85,7 @@ prepare-config:
 	echo "<?php \$$config['nagios_pipe'] = '/tmp/ninja-test/nagios.cmd';\$$config['nagios_base_path'] = '/tmp/ninja-test';\$$config['nagios_etc_path'] = '/tmp/ninja-test';" > application/config/custom/config.php
 	echo "<?php \$$config['default']['connection']['database'] = 'merlin_test';" > application/config/custom/database.php
 	echo "path: /tmp/ninja-test/live" > $(OP5LIBCFG)/livestatus.yml
+	echo "socket_path: /tmp/ninja-test/nagios.qh" > $(OP5LIBCFG)/queryhandler.yml
 
 i18n:
 	xgettext --debug --output=application/languages/en/en.po \
