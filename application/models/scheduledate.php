@@ -107,7 +107,7 @@ class ScheduleDate_Model extends Model
 					continue;
 				}
 				$tmp_cmd = "$nagios_cmd;$obj;$start_time;$end_time;{$data->get_fixed()};0;$duration;{$data->get_author()};AUTO: {$data->get_comment()}";
-				return nagioscmd::submit_to_nagios($tmp_cmd);
+				$result = nagioscmd::submit_to_nagios($tmp_cmd);
 			}
 		}
 	}
