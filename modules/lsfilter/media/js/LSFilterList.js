@@ -244,11 +244,10 @@ function lsfilter_list(config)
 			index++;
 
 			clonehead.css( 'width', w + 'px');
+			clonehead.css('padding-left', "2px" );
 
-			if ( index == 1 ) {
-				clonehead.css('padding-left', (parseInt( thishead.css('padding-left'), 10 ) - 1) + "px" );
-			} else {
-				clonehead.css('padding-left', thishead.css('padding-left'));
+			if ( clonehead.find( "input" ).length > 0 ) {
+				clonehead.css('padding-left', "0px");
 			}
 
 			clonehead.css('padding-right', thishead.css('padding-right'));
@@ -332,23 +331,36 @@ function lsfilter_list(config)
 
 	this.render_totals = function(table, totals)
 	{
+
+		var subtitle = $( '.main-toolbar-subtitle' );
 		var container = $('<ul />');
-		container.append($('<li />').append(
-				link_query('['+table+'] all')
-					.text(table.charAt(0).toUpperCase() + table.slice(1))
-				)
-				.css('font-size', '120%')
-				.css('padding', '0 6px')
-			);
+
+		subtitle.html("").append( link_query('['+table+'] all')
+			.text(table.charAt(0).toUpperCase() + table.slice(1))
+			.css( "border", "none" )
+		);
+
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
 				if (field in totals) {
+
 					var item = listview_renderer_totals[field](totals[field][1])
 						.wrapInner(
 							link_query(totals[field][0])
 						);
+
+					/* If the label is the same as the toolbar sub-header, remove it */
+					if ( item.hasClass( "extra_toolbar_category" ) ) {
+						var label = item.find( 'a[data-query="[' + table + '] all"]' );
+						if ( label.length > 0 ) {
+							var replacer = table.charAt(0).toUpperCase() + table.slice(1) + ":";
+							label.html( label.html().replace( replacer, "" ) );
+						}
+					}
+
 					item.find('a').attr('title', item.find('span').attr('title'));
 					container.append(item);
+
 				}
 			}
 		}
