@@ -15,6 +15,8 @@ $().ready(function() {
 		dropdown.toggle(100,
 			function () {button.toggleClass('active');}
 		);
-		return;
+		if(button.attr('href') === '#') {
+			return false;
+		}
 	});
 });
