@@ -22,8 +22,9 @@
 					$i++;
 			?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
-				<td class="icon <?php echo strtolower(Current_status_Model::status_text($details['state'], $details['has_been_checked'])); ?>">
-					<em><?php echo Current_status_Model::status_text($details['state'], $details['has_been_checked']) ?></em>
+				<?php $current_status = strtolower(Current_status_Model::status_text($details['state'], $details['has_been_checked'])); ?>
+				<td class="icon <?php echo $current_status; ?>">
+					<span class="icon-16 x16-shield-<?php echo $current_status; ?>"></span>
 				</td>
 				<td><?php echo html::anchor('extinfo/details/host/'.$details['name'], $details['name']) ?></td>
 				<td class="icon">
