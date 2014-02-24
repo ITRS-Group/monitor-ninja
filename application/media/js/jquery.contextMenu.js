@@ -138,6 +138,10 @@ if(jQuery)( function() {
 
 				// Show the menu
 				$(document).unbind('click');
+				// Make sure menu doesn't extend outside viewport
+				if (y + $(menu).height() >= $(window).height()) {
+					y = y - $(menu).height();
+				}
 				$(menu).css({ top: y, left: x , position: 'fixed'}).fadeIn(o.inSpeed);
 				// Hover events
 				$(menu).find('A').mouseover( function() {
