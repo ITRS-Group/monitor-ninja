@@ -226,7 +226,7 @@ if (!empty($widgets)) {
 
 <div class="clear"></div>
 
-<div class="left width-50" id="extinfo_current">
+<div class="left width-66" id="extinfo_current">
 	<table class="ext">
 		<tr>
 			<th colspan="2"><?php echo $object->get_key() ?></th>

@@ -21,7 +21,7 @@ if( $object instanceof Host_Model ) {
 
 ?>
 
-<div class="right width-50" id="extinfo_info">
+<div class="right width-33" id="extinfo_info">
 
 	<table class="ext">
 		<tr>
