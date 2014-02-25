@@ -1,7 +1,5 @@
 <?php
-
-require_once(__DIR__.'/User.php');
-
+require_once (__DIR__ . '/User.php');
 class op5User_NoAuth extends op5User {
 	public function __construct() {
 		$this->username = 'notauthenticated';
@@ -9,24 +7,22 @@ class op5User_NoAuth extends op5User {
 	}
 
 	/**
-	* Returns whether user is authorized for $auth_point.
-	* This user has no rights and always returns false
-	*
-	* @param $auth_point string
-	* @return boolean
-	*/
-	public function authorized_for($auth_point)
-	{
+	 * Returns whether user is authorized for $auth_point.
+	 * This user has no rights and always returns false
+	 *
+	 * @param $auth_point string
+	 * @return boolean
+	 */
+	public function authorized_for($auth_point) {
 		return false;
 	}
 
 	/**
 	 * Returns true if logged in
 	 *
-	 * @return  boolean   always false (never logged in)
+	 * @return boolean always false (never logged in)
 	 */
-	public function logged_in()
-	{
+	public function logged_in() {
 		return false;
 	}
 
@@ -34,12 +30,14 @@ class op5User_NoAuth extends op5User {
 	 * Determines whether user is authorized for an object
 	 *
 	 * @param $object_type string
-	 * @param $object_definition
+	 * @param
+	 *        	$object_definition
 	 * @param $case_sensitivity boolean
 	 * @return boolean
-	 **/
-	public function authorized_for_object($object_type, $object_definition, $case_sensitivity=true)
-	{
+	 *
+	 */
+	public function authorized_for_object($object_type, $object_definition,
+		$case_sensitivity = true) {
 		return false;
 	}
 
@@ -47,9 +45,9 @@ class op5User_NoAuth extends op5User {
 	 * Get "users" contact groups
 	 *
 	 * @return mixed
-	 **/
-	public function get_contact_groups()
-	{
+	 *
+	 */
+	public function get_contact_groups() {
 		return false;
 	}
 } // End Auth Guest User Model
