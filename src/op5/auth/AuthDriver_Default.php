@@ -120,7 +120,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	/**
 	 * Authenticate user, and return it's row from the database.
 	 * Return false
-	 * if authentication failed
+	 * if authentication failed or if user cannot login using this driver
 	 *
 	 * @param
 	 *        	string username of the user
@@ -139,11 +139,14 @@ class op5AuthDriver_Default extends op5AuthDriver {
 
 		$user = $this->users[$username];
 		if (self::valid_password($password, $user['password'],
-			$user['password_algo']) === true) { /*
-			                                                                                            *
-			                                                                                            * FIXME
-			                                                                                            */
-			return $user;
+			$user['password_algo']) === true) {
+			// Check if user has module membership
+			if (in_array($this->config['name'], $this->users[$username]['modules'], true)) {
+				return $user;
+			}
+			op5Log::instance('auth')->log('notice',
+				"User '$username' cannot login using module: {$this->config['name']}");
+			return false;
 		}
 		op5Log::instance('auth')->log('notice',
 			"User '$username' found but bad password provided");
