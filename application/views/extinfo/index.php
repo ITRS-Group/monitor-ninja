@@ -247,7 +247,7 @@ if (!empty($widgets)) {
 		?>
 		<tr>
 			<td class="dark"><?php echo _('Status information'); ?></td>
-			<td style="white-space: normal" id="field_plugin_output"><?php echo security::xss_clean($output) ?></td>
+			<td class="long_output" style="white-space: normal" id="field_plugin_output"><?php echo security::xss_clean($output) ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Performance data'); ?></td>
