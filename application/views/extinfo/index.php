@@ -187,7 +187,7 @@ if (!empty($widgets)) {
 			<td><strong><?php echo _('Notes') ?></strong></td>
 			<td><?php echo $object->get_notes() ?></td>
 		<?php } ?>
-			<td colspan="4" style="padding-top: 7px; border-bottom: none">
+			<td colspan="5" style="padding-top: 7px; border-bottom: none">
 				<?php
 					if ($url = $object->get_action_url()) {
 						echo '<a href="'.$url.'" target="'.$action_url_target.'">';
