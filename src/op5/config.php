@@ -202,30 +202,19 @@ class op5config {
 	/**
 	 * Rename keys or values across all configuration files based on a replace map
 	 *
-	 * @param $parameter string
+	 * @param $path string, the path, with wildcards, to replace
+	 * @param $type string, "key" or "value"
 	 * @param $old_value string
 	 * @param $new_value string
-	 * @param $replaceMap array
-	 * @throws ConfigException
 	 * @return boolean
 	 **/
-	public function cascadeEditConfig($parameter, $old_value, $new_value, $replaceMap = false)
+	public function cascadeEditConfig($path, $type, $old_value, $new_value)
 	{
-		if ($replaceMap) {
-			$this->replaceMap = $replaceMap;
-		} else {
-			$this->replaceMap = $this->getConfig('config_replace_map');
-		}
-		if (!isset($this->replaceMap[$parameter])) {
-			throw new ConfigException("There is no map for parameter: $parameter");
-		}
-		foreach ($this->replaceMap[$parameter] as $map) {
-			$path = explode('.', $map['path']);
-			$namespace = array_shift($path);
-			$config = $this->getConfig($namespace);
-			$modifiedConfig = $this->recursiveReplace($config, $path, $map['type'], $old_value, $new_value);
-			$this->setConfig($namespace, $modifiedConfig);
-		}
+		$path = explode('.', $path);
+		$namespace = array_shift($path);
+		$config = $this->getConfig($namespace);
+		$modifiedConfig = $this->recursiveReplace($config, $path, $type, $old_value, $new_value);
+		$this->setConfig($namespace, $modifiedConfig);
 	}
 
 	/**

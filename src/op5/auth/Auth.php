@@ -644,4 +644,28 @@ class op5auth {
 		}
 		return $metadata;
 	}
+
+	/**
+	 * Rename a group in the configuration files.
+	 *
+	 * @param $old string group to rename
+	 * @param $new string new name of the group
+	 */
+	public function rename_group($old, $new) {
+		$cfg = op5Config::instance();
+		$cfg->cascadeEditConfig('auth_groups.*', 'key', $old, $new);
+		$cfg->cascadeEditConfig('auth_users.*.groups.*', 'value', $old, $new);
+	}
+
+	/**
+	 * Rename a module in the configuration files.
+	 *
+	 * @param $old string module to rename
+	 * @param $new string new name of the module
+	 */
+	public function rename_module($old, $new) {
+		$cfg = op5Config::instance();
+		$cfg->cascadeEditConfig('auth.*', 'key', $old, $new);
+		$cfg->cascadeEditConfig('auth_users.*.modules.*', 'value', $old, $new);
+	}
 } // End Auth
