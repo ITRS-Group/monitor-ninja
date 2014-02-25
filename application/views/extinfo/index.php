@@ -152,9 +152,9 @@ if (!empty($widgets)) {
 					<?php } ?>
 				</table>
 				<?php } ?>
-				<?php if( count( $contacts ) ) { ?>
 			</td>
 			<td style="padding: 0">
+				<?php if( count( $contacts ) ) { ?>
 				<table class="extinfo_contacts" style="display: table; border: none">
 					<tr>
 						<td style="border-top: none"><?php echo _('Name') ?></td>
