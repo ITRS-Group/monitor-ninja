@@ -3,6 +3,8 @@ monitor:
   username: monitor
   realname: Monitor Admin
   password: $1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70
+  modules:
+    - Default
   groups:
     - admins
   password_algo: crypt
