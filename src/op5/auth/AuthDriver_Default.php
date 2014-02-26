@@ -137,19 +137,24 @@ class op5AuthDriver_Default extends op5AuthDriver {
 			return false;
 		}
 
-		$user = $this->users[$username];
-		if (self::valid_password($password, $user['password'],
-			$user['password_algo']) === true) {
-			// Check if user has module membership
-			if (in_array($this->config['name'], $this->users[$username]['modules'], true)) {
-				return $user;
-			}
+		if(!isset($this->users[$username]['modules'])) {
+			op5Log::instance('auth')->log('error', "User '$username' have not been assigned any auth modules and can therefore not be logged in.");
+			return false;
+		}
+
+		// Check if user has module membership
+		if (!in_array($this->config['name'], $this->users[$username]['modules'], true)) {
 			op5Log::instance('auth')->log('notice',
 				"User '$username' cannot login using module: {$this->config['name']}");
 			return false;
 		}
-		op5Log::instance('auth')->log('notice',
-			"User '$username' found but bad password provided");
+
+		$user = $this->users[$username];
+		if (self::valid_password($password, $user['password'], $user['password_algo']) === true) {
+			return $user;
+
+		}
+		op5Log::instance('auth')->log('notice', "User '$username' found but bad password provided");
 		return false;
 	}
 
