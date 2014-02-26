@@ -127,6 +127,7 @@ class Ninja_widget_Model extends Model
 				array('page' => $page, 'username' => $user, 'instance_id' => self::FIRST_INSTANCE_ID),
 				array('page' => $page, 'username' => $user, 'instance_id' => null),
 				array('page' => $page, 'username' => null, 'instance_id' => null),
+				array('page' => 'tac/index', 'username' => $user, 'instance_id' => self::FIRST_INSTANCE_ID),
 				array('page' => 'tac/index', 'username' => null, 'instance_id' => null),
 			);
 			foreach ($options as $option) {
