@@ -32,17 +32,18 @@ class Config_Controller extends Authenticated_Controller {
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
 
-		$config_model = new Config_Model();
-		$config_model->set_range(
-			$pagination->items_per_page,
-			($pagination->current_page-1)*$pagination->items_per_page
-		);
-
 		$filter = $this->input->get('filterbox', null);
 		if($filter && $filter == _('Enter text to filter')) {
 			$filter = null;
 		}
-		$data = $config_model->list_config($this->type, $filter);
+		$poolname = ucfirst(substr($this->type,0,-1)).'Pool_Model';
+		if (class_exists($poolname)) {
+			$set = $poolname::all();
+			$set->reduce_by("name", $filter, "~~");
+			$data = $set->it(false, array(), $pagination->items_per_page, ($pagination->current_page-1)*$pagination->items_per_page);
+		} else {
+			$data = false;
+		}
 		$result = array();
 		$this->template->title = _('Configuration').' » '._('View config');
 		$this->template->content = $this->add_view('config/index');
@@ -95,63 +96,63 @@ class Config_Controller extends Authenticated_Controller {
 						$result=array();
 						foreach($data as $row) {
 							$row = (object) $row;
-							$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
-							$result[$i][]= $row->alias;
-							$result[$i][]= $row->display_name;
-							$result[$i][]= $row->address;
+							$result[$i][]= '<a name="'.$row->get_name().'"></a>'.$row->get_name();
+							$result[$i][]= $row->get_alias();
+							$result[$i][]= $row->get_display_name();
+							$result[$i][]= $row->get_address();
 							$tmp = array();
-							foreach ($row->parents as $parent) {
+							foreach ($row->get_parents() as $parent) {
 								$tmp[] = html::anchor(Router::$controller.'/?type=hosts#'.$parent, $parent);
 							}
 							$result[$i][] = implode(', ',$tmp);
-							$result[$i][]= $row->max_check_attempts;
-							$result[$i][]= time::to_string($row->check_interval*60);
-							$result[$i][]= time::to_string($row->retry_interval*60);
-							$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->check_command, $row->check_command);
-							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
-							$result[$i][]= $row->obsess == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->active_checks_enabled == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->accept_passive_checks == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->check_freshness == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->freshness_threshold == 0 ? _('Auto-determined value') : $row->freshness_threshold.' '._('seconds');
+							$result[$i][]= $row->get_max_check_attempts();
+							$result[$i][]= time::to_string($row->get_check_interval()*60);
+							$result[$i][]= time::to_string($row->get_retry_interval()*60);
+							$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->get_check_command(), $row->get_check_command());
+							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->get_check_period(), $row->get_check_period());
+							$result[$i][]= $row->get_obsess() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_active_checks_enabled() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_accept_passive_checks() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_check_freshness() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_freshness_threshold() == 0 ? _('Auto-determined value') : $row->get_freshness_threshold().' '._('seconds');
 							$c_link = array();
-							foreach($row->contact_groups as $cg){
+							foreach($row->get_contact_groups() as $cg){
 								$c_link[] = html::anchor(Router::$controller.'/?type=contactgroups#'.$cg, $cg);
 							}
-							foreach($row->contacts as $c){
+							foreach($row->get_contacts() as $c){
 								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
 							}
 							$result[$i][] = implode(', ', $c_link);
 
-							$result[$i][]= $row->notification_interval == 0 ? _('No Re-notification') : $row->notification_interval;
-							$result[$i][]= time::to_string($row->first_notification_delay);
-							//$note_options = explode(',',$row->notification_options);
+							$result[$i][]= $row->get_notification_interval() == 0 ? _('No Re-notification') : $row->get_notification_interval();
+							$result[$i][]= time::to_string($row->get_first_notification_delay());
+							//$note_options = explode(',',$row->get_notification_options());
 							//$tmp = false;
 							//foreach($note_options as $option) {
 								//$tmp[] = $options['host']['notification'][$option];
 							//}
 							//$result[$i][]= implode(', ',$tmp);
-							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
-							$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
-							$result[$i][]= $row->event_handler_enabled == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->stalking_options == 'n' ? _('None') : _('??');
-							$result[$i][]= $row->flap_detection_enabled == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->low_flap_threshold == 0.0 ? _('Program-wide value') : $row->low_flap_threshold;
-							$result[$i][]= $row->high_flap_threshold == 0.0 ? _('Program-wide value') : $row->high_flap_threshold;
-							$result[$i][]= $row->process_performance_data == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->failure_prediction_enabled == 1 ? _('Yes') : _('No');
-							//$result[$i][]= !isset($row->failure_prediction_options) ? '&nbsp;' : $row->failure_prediction_options; // ?
-							$result[$i][]= $row->notes;
-							$result[$i][]= $row->notes_url;
-							$result[$i][]= $row->action_url;
-							$result[$i][]= $row->icon_image;
-							$result[$i][]= $row->icon_image_alt;
+							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->get_notification_period(), $row->get_notification_period());
+							$result[$i][]= $row->get_event_handler() == 0 ? '&nbsp;' : $row->get_event_handler();
+							$result[$i][]= $row->get_event_handler_enabled() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_stalking_options() == 'n' ? _('None') : _('??');
+							$result[$i][]= $row->get_flap_detection_enabled() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_low_flap_threshold() == 0.0 ? _('Program-wide value') : $row->get_low_flap_threshold();
+							$result[$i][]= $row->get_high_flap_threshold() == 0.0 ? _('Program-wide value') : $row->get_high_flap_threshold();
+							$result[$i][]= $row->get_process_performance_data() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_failure_prediction_enabled() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= !isset($row->get_failure_prediction_options()) ? '&nbsp;' : $row->get_failure_prediction_options(); // ?
+							$result[$i][]= $row->get_notes();
+							$result[$i][]= $row->get_notes_url();
+							$result[$i][]= $row->get_action_url();
+							$result[$i][]= $row->get_icon_image();
+							$result[$i][]= $row->get_icon_image_alt();
 							// retention options
 							//$ret = false;
-							//if ($row->retain_status_information == true) {
+							//if ($row->get_retain_status_information() == true) {
 								//$ret[] = _('Status Information');
 							//}
-							//if ($row->retain_nonstatus_information == true) {
+							//if ($row->get_retain_nonstatus_information() == true) {
 								//$ret[] = _('Non-status Information');
 							//}
 							//$result[$i][] = is_array($ret) ? implode(', ',$ret) : 'None';
@@ -205,62 +206,62 @@ class Config_Controller extends Authenticated_Controller {
 						$i = 0;
 						foreach($data as $row) {
 							$row = (object) $row;
-							//$note_options = explode(',',$row->notification_options);
+							//$note_options = explode(',',$row->get_notification_options());
 
-							$result[$i][]= '<a name="'.$row->host_name.'"></a>'.$row->host_name;
-							$result[$i][]= '<a name="'.$row->description.'"></a>'.$row->description;
-							$result[$i][]= $row->max_check_attempts;
-							$result[$i][]= time::to_string($row->check_interval*60);
-							$result[$i][]= time::to_string($row->retry_interval*60);
-							$result[$i][]= $row->check_command;
-							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
-							//$result[$i][]= $row->parallelize_check == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->is_volatile == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->obsess == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->active_checks_enabled == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->accept_passive_checks == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->check_freshness == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->freshness_threshold == 0 ? _('Auto-determined value') : $row->freshness_threshold.' '._('seconds');
+							$result[$i][]= '<a name="'.$row->get_host()->get_name().'"></a>'.$row->get_host()->get_name();
+							$result[$i][]= '<a name="'.$row->get_description().'"></a>'.$row->get_description();
+							$result[$i][]= $row->get_max_check_attempts();
+							$result[$i][]= time::to_string($row->get_check_interval()*60);
+							$result[$i][]= time::to_string($row->get_retry_interval()*60);
+							$result[$i][]= $row->get_check_command();
+							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->get_check_period(), $row->get_check_period());
+							//$result[$i][]= $row->get_parallelize_check() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_is_volatile() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_obsess() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_active_checks_enabled() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_accept_passive_checks() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_check_freshness() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_freshness_threshold() == 0 ? _('Auto-determined value') : $row->get_freshness_threshold().' '._('seconds');
 
 							$c_link = array();
-							foreach($row->contact_groups as $cg){
+							foreach($row->get_contact_groups() as $cg){
 								$c_link[] = html::anchor(Router::$controller.'/?type=contactgroups#'.$cg, $cg);
 							}
-							foreach($row->contacts as $c){
+							foreach($row->get_contacts() as $c){
 								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
 							}
 							$result[$i][] = implode(', ', $c_link);
 
-							$result[$i][]= $row->notifications_enabled == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->notification_interval == 0 ? _('No Re-notification') : $row->notification_interval;
-							$result[$i][]= time::to_string($row->first_notification_delay);
-							//$notification_options = explode(',',$row->notification_options);
+							$result[$i][]= $row->get_notifications_enabled() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_notification_interval() == 0 ? _('No Re-notification') : $row->get_notification_interval();
+							$result[$i][]= time::to_string($row->get_first_notification_delay());
+							//$notification_options = explode(',',$row->get_notification_options());
 							//$tmp = array();
 							//foreach($notification_options as $option) {
 								//$tmp[] = $options['service']['notification'][$option];
 							//}
 							//$result[$i][]= is_array($tmp) ? implode(', ',$tmp) : '';
-							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
-							$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
-							$result[$i][]= $row->event_handler_enabled == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->stalking_options == 'n' ? _('None') : _('??');
-							$result[$i][]= $row->flap_detection_enabled == 1 ? _('Yes') : _('No');
-							$result[$i][]= $row->low_flap_threshold == 0.0 ? _('Program-wide value') : $row->low_flap_threshold;
-							$result[$i][]= $row->high_flap_threshold == 0.0 ? _('Program-wide value') : $row->high_flap_threshold;
-							$result[$i][]= $row->process_performance_data == 1 ? _('Yes') : _('No');
-							//$result[$i][]= $row->failure_prediction_enabled == 1 ? _('Yes') : _('No');
-							//$result[$i][]= !isset($row->failure_prediction_options) ? '&nbsp;' : $row->failure_prediction_options; // ?
-							$result[$i][]= $row->notes;
-							$result[$i][]= $row->notes_url;
-							$result[$i][]= $row->action_url;
-							$result[$i][]= $row->icon_image;
-							$result[$i][]= $row->icon_image_alt;
+							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->get_notification_period(), $row->get_notification_period());
+							$result[$i][]= $row->get_event_handler() == 0 ? '&nbsp;' : $row->get_event_handler();
+							$result[$i][]= $row->get_event_handler_enabled() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_stalking_options() == 'n' ? _('None') : _('??');
+							$result[$i][]= $row->get_flap_detection_enabled() == 1 ? _('Yes') : _('No');
+							$result[$i][]= $row->get_low_flap_threshold() == 0.0 ? _('Program-wide value') : $row->get_low_flap_threshold();
+							$result[$i][]= $row->get_high_flap_threshold() == 0.0 ? _('Program-wide value') : $row->get_high_flap_threshold();
+							$result[$i][]= $row->get_process_performance_data() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= $row->get_failure_prediction_enabled() == 1 ? _('Yes') : _('No');
+							//$result[$i][]= !isset($row->get_failure_prediction_options()) ? '&nbsp;' : $row->get_failure_prediction_options(); // ?
+							$result[$i][]= $row->get_notes();
+							$result[$i][]= $row->get_notes_url();
+							$result[$i][]= $row->get_action_url();
+							$result[$i][]= $row->get_icon_image();
+							$result[$i][]= $row->get_icon_image_alt();
 							//retention options
 							//$ret = false;
-							//if ($row->retain_status_information == true) {
+							//if ($row->get_retain_status_information() == true) {
 								//$ret[] = _('Status Information');
 							//}
-							//if ($row->retain_nonstatus_information == true) {
+							//if ($row->get_retain_nonstatus_information() == true) {
 								//$ret[] = _('Non-status Information');
 							//}
 							//$result[$i][] = is_array($ret) ? implode(', ',$ret) : 'None';
@@ -289,35 +290,35 @@ class Config_Controller extends Authenticated_Controller {
 						$i = 0;
 						foreach($data as $row) {
 							$row = (object) $row;
-							$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
-							$result[$i][]= $row->alias;
-							$result[$i][]= '<a href="mailto:'.$row->email.'">'.$row->email.'</a>';
-							$result[$i][]= $row->pager;
+							$result[$i][]= '<a name="'.$row->get_name().'"></a>'.$row->get_name();
+							$result[$i][]= $row->get_alias();
+							$result[$i][]= '<a href="mailto:'.$row->get_email().'">'.$row->get_email().'</a>';
+							$result[$i][]= $row->get_pager();
 
-							//$s_notification_options = explode(',',$row->service_notification_options);
+							//$s_notification_options = explode(',',$row->get_service_notification_options());
 							//$s_tmp = false;
 							//foreach($s_notification_options as $s_option) {
 								//$s_tmp[] = $options['service']['notification'][$s_option];
 							//}
 							//$result[$i][]= implode(', ',$s_tmp);
 
-							//$h_notification_options = explode(',',$row->host_notification_options);
+							//$h_notification_options = explode(',',$row->get_host_notification_options());
 							//$h_tmp = false;
 							//foreach($h_notification_options as $h_option) {
 								//$h_tmp[] = $options['host']['notification'][$h_option];
 							//}
 							//$result[$i][]= implode(', ',$h_tmp);
 
-							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.($row->host_notification_period == 0 ? _('None') : $row->host_notification_period), $row->service_notification_period == 0 ? _('None') : $row->service_notification_period);
-							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.($row->host_notification_period == 0 ? _('None') : $row->host_notification_period), $row->host_notification_period == 0 ? _('None') : $row->host_notification_period);
+							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.($row->get_host_notification_period() == 0 ? _('None') : $row->get_host_notification_period()), $row->get_service_notification_period() == 0 ? _('None') : $row->get_service_notification_period());
+							$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.($row->get_host_notification_period() == 0 ? _('None') : $row->get_host_notification_period()), $row->get_host_notification_period() == 0 ? _('None') : $row->get_host_notification_period());
 							//$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->{self::SERVICE_NOTIFICATION_COMMANDS}, $row->{self::SERVICE_NOTIFICATION_COMMANDS});
 							//$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->{self::HOST_NOTIFICATION_COMMANDS}, $row->{self::HOST_NOTIFICATION_COMMANDS});
 							// retention options
 							//$ret = false;
-							//if ($row->retain_status_information == true) {
+							//if ($row->get_retain_status_information() == true) {
 								//$ret[] = _('Status Information');
 							//}
-							//if ($row->retain_nonstatus_information == true) {
+							//if ($row->get_retain_nonstatus_information() == true) {
 								//$ret[] = _('Non-status Information');
 							//}
 							//$result[$i][] = is_array($ret) ? implode(', ',$ret) : 'None';
@@ -339,11 +340,11 @@ class Config_Controller extends Authenticated_Controller {
 						foreach($data as $row) {
 							$row = (object) $row;
 
-							$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
-							$result[$i][]= $row->alias;
+							$result[$i][]= '<a name="'.$row->get_name().'"></a>'.$row->get_name();
+							$result[$i][]= $row->get_alias();
 
 							$temp = array();
-							foreach ($row->members as $trip) {
+							foreach ($row->get_members() as $trip) {
 								$temp[] = html::anchor(Router::$controller.'/?type=contacts#'.$trip, $trip);
 							}
 							if($temp) {
@@ -361,14 +362,18 @@ class Config_Controller extends Authenticated_Controller {
 					$header = array(
 						_('Name'),
 						_('Alias/Description'),
-						_('Monday Time Ranges'),
-						_('Tuesday Time Ranges'),
-						_('Wednesday Time Ranges'),
-						_('Thursday Time Ranges'),
-						_('Friday Time Ranges'),
-						_('Saturday Time Ranges'),
-						_('Sunday Time Ranges'),
+						_('In effect?'),
 					);
+					if ($data!==false) {
+						$i = 0;
+						foreach($data as $row) {
+							$result[$i][] = $row->get_name();
+							$result[$i][] = $row->get_alias();
+							$result[$i][] = $row->get_in() ? _('Yes') : _('No');
+							$i++;
+						}
+						$data = $result;
+					}
 					break;
 
 				case 'commands': // **************************************************************************
@@ -376,6 +381,15 @@ class Config_Controller extends Authenticated_Controller {
 						_('Command Name'),
 						_('Command Line')
 					);
+					if ($data!==false) {
+						$i = 0;
+						foreach($data as $row) {
+							$result[$i][] = $row->get_name();
+							$result[$i][] = $row->get_line();
+							$i++;
+						}
+						$data = $result;
+					}
 					break;
 
 				case 'hostgroups': // ***********************************************************************
@@ -392,23 +406,18 @@ class Config_Controller extends Authenticated_Controller {
 						$i = 0;
 						foreach($data as $row) {
 							$row = (object) $row;
-							$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
-							$result[$i][]= $row->alias;
+							$result[$i][]= '<a name="'.$row->get_name().'"></a>'.$row->get_name();
+							$result[$i][]= $row->get_alias();
 
-							$travel = Livestatus::instance()->getHostsByGroup(array('columns' => 'name', 'filter' => array('name' => $row->name)));
-							if ($travel) {
-								$temp = false;
-								foreach ($travel as $trip) {
-									$temp[] = html::anchor(Router::$controller.'/?type=hosts#'.$trip, $trip);
-								}
-								$result[$i][]= implode(', ',$temp);
+							$temp = array();
+							foreach ($row->get_members() as $trip) {
+								$temp[] = html::anchor(Router::$controller.'/?type=hosts#'.$trip, $trip);
 							}
-							else
-								$result[$i][]= '';
+							$result[$i][]= implode(', ',$temp);
 
-							$result[$i][]= $row->notes;
-							$result[$i][]= $row->notes_url;
-							$result[$i][]= $row->action_url;
+							$result[$i][]= $row->get_notes();
+							$result[$i][]= $row->get_notes_url();
+							$result[$i][]= $row->get_action_url();
 							$i++;
 							unset($travel);
 						}
@@ -430,18 +439,12 @@ class Config_Controller extends Authenticated_Controller {
 						$i = 0;
 						foreach($data as $row) {
 							$row = (object) $row;
-							$result[$i][]= '<a name="'.$row->name.'"></a>'.$row->name;
-							$result[$i][]= $row->alias;
+							$result[$i][]= '<a name="'.$row->get_name().'"></a>'.$row->get_name();
+							$result[$i][]= $row->get_alias();
 
-							$travel = Livestatus::instance()->getServicegroups(array('columns' => array('name', 'members'), 'filter' => array('name' => $row->name)));
 							$temp = array();
-							if ($travel) {
-								$travel = current($travel); // getting a nested array here..
-								if($travel['members']) {
-									foreach ($travel['members'] as $host_service) {
-										$temp[] = html::anchor(Router::$controller.'/?type=hosts#'.$host_service[0], $host_service[0]).' / '.html::anchor(Router::$controller.'/?type=services#'.$host_service[1], $host_service[1]);
-									}
-								}
+							foreach ($row->get_members() as $host_service) {
+								$temp[] = html::anchor(Router::$controller.'/?type=hosts#'.$host_service[0], $host_service[0]).' / '.html::anchor(Router::$controller.'/?type=services#'.$host_service[1], $host_service[1]);
 							}
 							if($temp) {
 								$result[$i][]= implode(', ',$temp);
@@ -449,9 +452,9 @@ class Config_Controller extends Authenticated_Controller {
 								$result[$i][]= '';
 							}
 
-							$result[$i][]= $row->notes;
-							$result[$i][]= $row->notes_url;
-							$result[$i][]= $row->action_url;
+							$result[$i][]= $row->get_notes();
+							$result[$i][]= $row->get_notes_url();
+							$result[$i][]= $row->get_action_url();
 							$i++;
 							unset($travel);
 						}
