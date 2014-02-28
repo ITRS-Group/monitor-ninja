@@ -138,14 +138,14 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		}
 
 		if(!isset($this->users[$username]['modules'])) {
-			op5Log::instance('auth')->log('error', "User '$username' have not been assigned any auth modules and can therefore not be logged in.");
+			op5Log::instance('auth')->log('error', "User '$username' have no 'modules' section and can therefore not be logged in. This is considered an error, did the upgrade script not add the required 'modules' section to every user?");
 			return false;
 		}
 
 		// Check if user has module membership
 		if (!in_array($this->config['name'], $this->users[$username]['modules'], true)) {
 			op5Log::instance('auth')->log('notice',
-				"User '$username' cannot login using module: {$this->config['name']}");
+				"User '$username' is not configured to login using the module: {$this->config['name']}");
 			return false;
 		}
 
