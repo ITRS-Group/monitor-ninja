@@ -244,11 +244,6 @@ function lsfilter_list(config)
 			index++;
 
 			clonehead.css( 'width', w + 'px');
-			clonehead.css('padding-left', "2px" );
-
-			if ( clonehead.find( "input" ).length > 0 ) {
-				clonehead.css('padding-left', "0px");
-			}
 
 			clonehead.css('padding-right', thishead.css('padding-right'));
 			clonehead.css('padding-top', thishead.css('padding-top'));
