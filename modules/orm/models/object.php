@@ -65,7 +65,7 @@ abstract class Object_Model extends BaseObject_Model {
 	 * Get the url to configure this object
 	 */
 	public function get_config_url() {
-		$unexpanded_url = config::get('config.config_url.'.$this->_table,'*');
+		$unexpanded_url = Kohana::config('config.config_url.'.$this->_table);
 		if(!$unexpanded_url)
 			return false;
 		if(Auth::instance()->authorized_for('configuration_information')==false)
