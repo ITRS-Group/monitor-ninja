@@ -92,13 +92,13 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		);
 		if (!empty($_POST)) {
 			$schedule_info = array_merge($schedule_info, $_POST);
-			$schedule_info = new RecurringDowntime_Model($schedule_info, '');
+			$schedule_info = new RecurringDowntime_Model($schedule_info, '', false);
 		}
 		else if ($schedule_id) {
 			$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = ' . $schedule_id);
 			$schedule_info = $set->it(array('id', 'downtime_type', 'objects', 'start_time', 'end_time', 'duration', 'fixed', 'weekdays', 'months', 'comment'))->current();
 		} else {
-			$schedule_info = new RecurringDowntime_Model($schedule_info, '');
+			$schedule_info = new RecurringDowntime_Model($schedule_info, '', false);
 		}
 
 		if ($schedule_id) {
