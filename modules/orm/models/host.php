@@ -10,25 +10,13 @@ class Host_Model extends BaseHost_Model {
 	 * A list of macros to expand for the current object
 	 */
 	static public $macros = array(
-		'$HOSTNAME$' => 'name',
-		'$HOSTADDRESS$' => 'address',
-		'$HOSTDISPLAYNAME$' => 'display_name',
-		'$HOSTALIAS$' => 'alias',
-		'$HOSTSTATE$' => 'state_text_uc',
-		'$HOSTSTATEID$' => 'state',
-		'$HOSTSTATETYPE$' => 'state_type_text_uc',
-		'$HOSTATTEMPT$' => 'current_attempt',
-		'$MAXHOSTATTEMPTS$' => 'max_check_attempts',
-		'$HOSTGROUPNAME$' => 'first_group',
-		'$CURRENT_USER$' => 'current_user'
+		'$HOSTNAME$' => 'name'
 	);
 
 	/**
 	 * An array containing the custom column dependencies
 	 */
 	static public $rewrite_columns = array(
-		'state_text_uc' => array('state_text'),
-		'state_type_text_uc' => array('state_type'),
 		'state_text' => array('state','has_been_checked'),
 		'first_group' => array('groups'),
 		'checks_disabled' => array('active_checks_enabled'),
@@ -54,20 +42,6 @@ class Host_Model extends BaseHost_Model {
 			case 2: return 'unreachable';
 		}
 		return 'unknown'; // should never happen
-	}
-
-	/**
-	 * Get the state, as uppercase
-	 */
-	public function get_state_text_uc() {
-		return strtoupper($this->get_state_text());
-	}
-
-	/**
-	 * get the state type, as text in uppercase (HARD/SOFT)
-	 */
-	public function get_state_type_text_uc() {
-		return $this->get_state_type()?'HARD':'SOFT';
 	}
 
 	/**
