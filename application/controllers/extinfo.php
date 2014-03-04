@@ -136,7 +136,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-		if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
+		if (nagioscmd::is_authorized_for(array('host_name' => $host, 'service' => $service)) === true) {
 			$this->template->content->commands = $this->add_view('extinfo/commands');
 			$this->template->content->commands->set = $set;
 		} else {

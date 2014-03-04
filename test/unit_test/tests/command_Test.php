@@ -73,9 +73,9 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 			foreach ($this->types as $type) {
 				foreach ($this->{$type.'_commands'} as $cmd) {
 					if ($type == $type_to_check)
-						$this->assertEquals(true, Command_Controller::_is_authorized_for_command(false, $cmd), "$type_to_check edit all should authorize you for $cmd");
+						$this->assertEquals(true, nagioscmd::is_authorized_for(false, $cmd), "$type_to_check edit all should authorize you for $cmd");
 					else
-						$this->assertTrue(Command_Controller::_is_authorized_for_command(false, $cmd) !== true, "$type_to_check edit all should not authorize you for $cmd");
+						$this->assertTrue(nagioscmd::is_authorized_for(false, $cmd) !== true, "$type_to_check edit all should not authorize you for $cmd");
 				}
 			}
 		}
@@ -92,7 +92,7 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 				if ($type == $type_to_check)
 					continue;
 				foreach ($this->{$type.'_commands'} as $cmd) {
-					$this->assertTrue(Command_Controller::_is_authorized_for_command(false, $cmd) !== true, "$type_to_check edit contact should not authorize you for $cmd");
+					$this->assertTrue(nagioscmd::is_authorized_for(false, $cmd) !== true, "$type_to_check edit contact should not authorize you for $cmd");
 				}
 			}
 		}
@@ -103,17 +103,17 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 			$user = new MockUser(array('username' => 'testuser', 'auth_data' => array($type_to_check.'_edit_contact' => true), 'authorized_for' => $this->authorized_for));
 			Op5Auth::factory(array('session_key' => false))->force_user($user, true);
 			foreach ($this->{$type_to_check.'_commands'} as $cmd) {
-				$this->assertEquals(true, Command_Controller::_is_authorized_for_command(false, $cmd), "$type_to_check edit contact should authorize you when not mentioning which object");
-				$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => $type_to_check.'1'), $cmd), "{$type_to_check} edit contact should authorize you for one {$type_to_check} by contact");
-				$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => array($type_to_check.'1', $type_to_check.'2')), $cmd), "{$type_to_check} edit contact should authorize you for array of {$type_to_check}s by contact");
-				$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => array($type_to_check.'1'), 'service' => 'flubb'), $cmd), "Including service-lulz in {$type_to_check} command should still auth you");
+				$this->assertEquals(true, nagioscmd::is_authorized_for(false, $cmd), "$type_to_check edit contact should authorize you when not mentioning which object");
+				$this->assertEquals(true, nagioscmd::is_authorized_for(array($type_to_check.'_name' => $type_to_check.'1'), $cmd), "{$type_to_check} edit contact should authorize you for one {$type_to_check} by contact");
+				$this->assertEquals(true, nagioscmd::is_authorized_for(array($type_to_check.'_name' => array($type_to_check.'1', $type_to_check.'2')), $cmd), "{$type_to_check} edit contact should authorize you for array of {$type_to_check}s by contact");
+				$this->assertEquals(true, nagioscmd::is_authorized_for(array($type_to_check.'_name' => array($type_to_check.'1'), 'service' => 'flubb'), $cmd), "Including service-lulz in {$type_to_check} command should still auth you");
 
-				$this->assertTrue(Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => $type_to_check.'3'), $cmd) !== true, "{$type_to_check} edit contact shouldn't authorize you for a {$type_to_check} you're not authorized for");
-				$this->assertTrue(Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => array($type_to_check.'1', $type_to_check.'3')), $cmd) !== true, "{$type_to_check} edit contact shouldn't authorize you for array of {$type_to_check}s where you're only contact for some");
+				$this->assertTrue(nagioscmd::is_authorized_for(array($type_to_check.'_name' => $type_to_check.'3'), $cmd) !== true, "{$type_to_check} edit contact shouldn't authorize you for a {$type_to_check} you're not authorized for");
+				$this->assertTrue(nagioscmd::is_authorized_for(array($type_to_check.'_name' => array($type_to_check.'1', $type_to_check.'3')), $cmd) !== true, "{$type_to_check} edit contact shouldn't authorize you for array of {$type_to_check}s where you're only contact for some");
 			}
-			$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => array($type_to_check.'1'))), "Sending a {$type_to_check} name and no command should auth you");
-			$this->assertTrue(Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => array($type_to_check.'3'))) !== true, "Sending a {$type_to_check} name you're not authed for and no command shouldn't auth you");
-			$this->assertTrue(Command_Controller::_is_authorized_for_command(array($type_to_check.'_name' => array($type_to_check.'3'), 'service' => 'service1')) !== true, "Including service-lulz when you're not mentioning which {$type_to_check} command you care about shouldn't auth you");
+			$this->assertEquals(true, nagioscmd::is_authorized_for(array($type_to_check.'_name' => array($type_to_check.'1'))), "Sending a {$type_to_check} name and no command should auth you");
+			$this->assertTrue(nagioscmd::is_authorized_for(array($type_to_check.'_name' => array($type_to_check.'3'))) !== true, "Sending a {$type_to_check} name you're not authed for and no command shouldn't auth you");
+			$this->assertTrue(nagioscmd::is_authorized_for(array($type_to_check.'_name' => array($type_to_check.'3'), 'service' => 'service1')) !== true, "Including service-lulz when you're not mentioning which {$type_to_check} command you care about shouldn't auth you");
 		}
 	}
 
@@ -122,15 +122,15 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 		Op5Auth::factory(array('session_key' => false))->force_user($user, true);
 
 		foreach ($this->service_commands as $cmd) {
-			$this->assertEquals(true, Command_Controller::_is_authorized_for_command(false, $cmd), "Service edit contact should authorize you when not mentioning which service");
-			$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array('service' => 'host3;service1'), $cmd), "Service edit contact should authorize you for one service by contact");
-			$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array('host_name' => array('host3;service1', 'host4;service2')), $cmd), "Service edit contact should authorize you for array of services by contact");
-			$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array('host_name' => array('host1'), 'service' => 'host3;service1'), $cmd), "Including host-lulz in service command should still auth you");
+			$this->assertEquals(true, nagioscmd::is_authorized_for(false, $cmd), "Service edit contact should authorize you when not mentioning which service");
+			$this->assertEquals(true, nagioscmd::is_authorized_for(array('service' => 'host3;service1'), $cmd), "Service edit contact should authorize you for one service by contact");
+			$this->assertEquals(true, nagioscmd::is_authorized_for(array('host_name' => array('host3;service1', 'host4;service2')), $cmd), "Service edit contact should authorize you for array of services by contact");
+			$this->assertEquals(true, nagioscmd::is_authorized_for(array('host_name' => array('host1'), 'service' => 'host3;service1'), $cmd), "Including host-lulz in service command should still auth you");
 
-			$this->assertTrue(Command_Controller::_is_authorized_for_command(array('service' => 'host5;service'), $cmd) !== true, "Service edit contact shouldn't authorize you for a service you're not authorized for");
-			$this->assertTrue(Command_Controller::_is_authorized_for_command(array('service' => array('host3;service1', 'host3;service5')), $cmd) !== true, "Service edit contact shouldn't authorize you for array of services where you're only contact for some");
+			$this->assertTrue(nagioscmd::is_authorized_for(array('service' => 'host5;service'), $cmd) !== true, "Service edit contact shouldn't authorize you for a service you're not authorized for");
+			$this->assertTrue(nagioscmd::is_authorized_for(array('service' => array('host3;service1', 'host3;service5')), $cmd) !== true, "Service edit contact shouldn't authorize you for array of services where you're only contact for some");
 		}
-		$this->assertEquals(true, Command_Controller::_is_authorized_for_command(array('service' => array('host3;service1'))), "Sending a service name and no command should auth you");
-		$this->assertTrue(Command_Controller::_is_authorized_for_command(array('service' => array('host3;service5'))) !== true, "Sending a service name you're not authed for and no command shouldn't auth you");
+		$this->assertEquals(true, nagioscmd::is_authorized_for(array('service' => array('host3;service1'))), "Sending a service name and no command should auth you");
+		$this->assertTrue(nagioscmd::is_authorized_for(array('service' => array('host3;service5'))) !== true, "Sending a service name you're not authed for and no command shouldn't auth you");
 	}
 }
