@@ -100,10 +100,14 @@ class ORMObjectGenerator extends class_generator {
 		$this->comment('If object fields exists, make sure the object only exists in the export array once');
 		$this->write( '$this->export = array_unique($this->export);');
 		foreach( $this->structure['structure'] as $field => $type ) {
+			$backend_name = $field;
+			if(isset($this->structure['rename']) && isset($this->structure['rename'][$field])) {
+				$backend_name = $this->structure['rename'][$field];
+			}
 			if( is_array($type) ) {
-				$this->{"fetch_object"}( $field, $type );
+				$this->{"fetch_object"}( $field, $backend_name, $type );
 			} else {
-				$this->{"fetch_$type"}( $field );
+				$this->{"fetch_$type"}( $field, $backend_name );
 			}
 		}
 		$this->write( 'parent::__construct( $values, $prefix, $export ); ');
@@ -175,10 +179,10 @@ class ORMObjectGenerator extends class_generator {
 	 * @param $type string
 	 * @return void
 	 **/
-	private function fetch_object( $name, $type ) {
+	private function fetch_object( $name, $backend_name, $type ) {
 		list( $class, $prefix ) = $type;
 		// Livestatus handles only one level of prefixes... might change in future? (for example comments: service.host.name should be host.name
-		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, %s, isset(\$subobj_export[%s]) ? \$subobj_export[%s] : array() );", $prefix, $name, $name );
+		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, %s, isset(\$subobj_export[%s]) ? \$subobj_export[%s] : array() );", $prefix, $backend_name, $name );
 	}
 
 	/**
@@ -208,9 +212,9 @@ class ORMObjectGenerator extends class_generator {
 	 *
 	 * @return void
 	 **/
-	private function fetch_string( $name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) { ");
-		$this->write( "\$this->$name = (string)\$values[\$prefix.'$name'];" );
+	private function fetch_string( $name, $backend_name ) {
+		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
+		$this->write( "\$this->$name = (string)\$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 
@@ -241,9 +245,9 @@ class ORMObjectGenerator extends class_generator {
 	 *
 	 * @return void
 	 **/
-	private function fetch_time( $name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) { ");
-		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
+	private function fetch_time( $name, $backend_name ) {
+		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
+		$this->write( "\$this->$name = \$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 
@@ -274,9 +278,9 @@ class ORMObjectGenerator extends class_generator {
 	 *
 	 * @return void
 	 **/
-	private function fetch_int( $name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
-		$this->write( "\$this->$name = intval( \$values[\$prefix.'$name'] );" );
+	private function fetch_int( $name, $backend_name ) {
+		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
+		$this->write( "\$this->$name = intval( \$values[\$prefix.'$backend_name'] );" );
 		$this->write( "}" );
 	}
 
@@ -307,9 +311,9 @@ class ORMObjectGenerator extends class_generator {
 	 *
 	 * @return void
 	 **/
-	private function fetch_float( $name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
-		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$name'] );" );
+	private function fetch_float( $name, $backend_name ) {
+		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
+		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$backend_name'] );" );
 		$this->write( "}" );
 	}
 
@@ -340,9 +344,9 @@ class ORMObjectGenerator extends class_generator {
 	 *
 	 * @return void
 	 **/
-	private function fetch_list( $name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
-		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
+	private function fetch_list( $name, $backend_name ) {
+		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
+		$this->write( "\$this->$name = \$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 
@@ -373,9 +377,9 @@ class ORMObjectGenerator extends class_generator {
 	 *
 	 * @return void
 	 **/
-	private function fetch_dict( $name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$name', \$values)) {" );
-		$this->write( "\$this->$name = \$values[\$prefix.'$name'];" );
+	private function fetch_dict( $name, $backend_name ) {
+		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
+		$this->write( "\$this->$name = \$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 

@@ -28,6 +28,7 @@ class ORMLSSetGenerator extends class_generator {
 		$this->generate_stats();
 		$this->generate_count();
 		$this->generate_it();
+		$this->generate_process_field_name();
 		$this->finish_class();
 	}
 
@@ -43,12 +44,14 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$single = !is_array($intersections);');
 		$this->write('if($single) $intersections = array($intersections);');
 
-		$this->write('$ls_filter = $this->filter->visit(new LivestatusFilterBuilderVisitor(), false);');
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor($this);');
+		$this->write('$sb_visit = new LivestatusStatsBuilderVisitor($this);');
+		$this->write('$ls_filter = $this->filter->visit($fb_visit, false);');
 
 		$this->write('$ls_intersections = array();');
 		$this->write('foreach( $intersections as $name => $intersection ) {');
 		$this->write('if($intersection->table == $this->table) {');
-		$this->write('$ls_intersections[$name] = $intersection->filter->visit(new LivestatusStatsBuilderVisitor(), false);');
+		$this->write('$ls_intersections[$name] = $intersection->filter->visit($sb_visit, false);');
 		$this->write('}'); // TODO: Error handling...
 		$this->write('}');
 
@@ -69,7 +72,8 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
-		$this->write('$ls_filter = $filter->visit(new LivestatusFilterBuilderVisitor(), false);');
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor($this);');
+		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 		$this->write('$ls_filter .= "Limit: 0\n";');
 
 		$this->write('$result = $ls->query($this->table, $ls_filter, false);');
@@ -88,15 +92,17 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
-		$this->write('$ls_filter = $filter->visit(new LivestatusFilterBuilderVisitor(), false);');
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor($this);');
+		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 
-		$this->write('foreach($order as $col) {');
-		$this->write('$ls_filter .= "Sort: $col\n";');
-		$this->write('}');
-
-		$this->write('foreach($this->default_sort as $col) {');
-		$this->write('$ls_filter .= "Sort: $col\n";');
-		$this->write('}');
+		foreach(array('$order','$this->default_sort') as $sortfield) {
+			$this->write('foreach('.$sortfield.' as $col_attr) {');
+			$this->write('$parts = explode(" ",$col_attr);');
+			$this->write('$parts[0] = static::process_field_name($parts[0]);');
+			$this->write('$parts = array_filter($parts);');
+			$this->write('$ls_filter .= "Sort: ".implode(" ",$parts)."\n";');
+			$this->write('}');
+		}
 
 		$this->write('if( $offset !== false ) {');
 		$this->write('$ls_filter .= "Offset: ".intval($offset)."\n";');
@@ -106,11 +112,17 @@ class ORMLSSetGenerator extends class_generator {
 		$this->write('$ls_filter .= "Limit: ".intval($limit)."\n";');
 		$this->write('}');
 
-		$this->write('$valid_columns = $columns;');
-		$this->write('if( $valid_columns !== false ) {');
-		$this->write('$valid_columns = $this->validate_columns($valid_columns);');
-		$this->write('if($valid_columns === false) return false;');
-		$this->write('$valid_columns = array_unique($valid_columns);');
+		$this->write('$valid_columns = false;');
+		$this->write('if( $columns !== false ) {');
+		$this->write(  '$processed_columns = array_merge($columns, $this->key_columns);');
+		$this->write(  '$processed_columns = static::apply_columns_rewrite($processed_columns);');
+		$this->write(  '$tmp_columns = array();');
+		$this->write(  'foreach($processed_columns as $col) {');
+		$this->write(    '$tmp_columns[] = static::process_field_name($col);');
+		$this->write(  '}');
+		$this->write(  '$valid_columns = static::filter_valid_columns($tmp_columns);');
+		$this->write(  'if($valid_columns === false) return false;');
+		$this->write(  '$valid_columns = array_unique($valid_columns);');
 		$this->write('}');
 
 		$this->write('try {');
@@ -125,5 +137,11 @@ class ORMLSSetGenerator extends class_generator {
 
 		$this->write('return new LivestatusSetIterator($objects, $fetched_columns, $columns, $this->class);');
 		$this->finish_function();
+	}
+
+	private function generate_process_field_name() {
+		$this->init_function('process_field_name', array('name'), array('static'));
+		$this->write('return str_replace(".","_",parent::process_field_name($name));');
+		$this->write('}');
 	}
 }

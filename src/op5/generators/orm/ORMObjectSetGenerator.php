@@ -79,14 +79,18 @@ class ORMObjectSetGenerator extends class_generator {
 			$this->variable('default_sort',$this->structure['default_sort'],'protected');
 
 		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
+		$this->variable('key_columns',$this->structure['key'],'protected');
 
 		$this->generate_format_column_filter();
 		$this->generate_format_column_selector();
 		$this->generate_format_column_list();
 
-		$this->generate_validate_columns();
+		$this->generate_apply_columns_rewrite();
+		$this->generate_filter_valid_columns();
 
 		$this->generate_get_all_columns_list();
+
+		$this->generate_process_field_name();
 
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
@@ -94,43 +98,61 @@ class ORMObjectSetGenerator extends class_generator {
 		$this->finish_class();
 	}
 
-	public function generate_validate_columns() {
-		$this->init_function('validate_columns', array('columns'));
-		$this->write('$in_columns = parent::validate_columns($columns);');
-		$this->write('$columns = array();');
-
-		$local_columns = array();
-		foreach($this->structure['structure'] as $name => $type ) {
-			if( is_array($type) ) {
-				$this->write('$subcolumns = array();');
-				$this->write('$tmpcolumns = array();');
-				$this->write('foreach( $in_columns as $col ) {');
-				$this->write('if(substr($col,0,%s) == %s) {', strlen($name)+1,$name.'.');
-				$this->write('$subcolumns[] = substr($col,%s);', strlen($name)+1);
-				$this->write('}');
-				$this->write('}');
-				$this->write('$columns = $tmpcolumns;');
-				$this->write('$tmpset = '.$type[0].'Pool'.self::$model_suffix.'::all();');
-				$this->write('$subcolumns = $tmpset->validate_columns($subcolumns);');
-				$this->write('if($subcolumns === false) return false;');
-				$this->write('foreach($subcolumns as $col) {');
-				$this->write('$columns[] = %s.$col;', $name.'.');
-				$this->write('}');
-			} else {
-				$local_columns[$name] = true;
+	public function generate_apply_columns_rewrite() {
+		$this->init_function('apply_columns_rewrite', array('columns', 'prefix'),array('static'),array('prefix'=>''));
+		$this->write( 'foreach('.$this->structure['class'].self::$model_suffix.'::$rewrite_columns as $column => $rewrites) {');
+		$this->write(   'if( in_array( $prefix.$column, $columns ) ) {' );
+		$this->write(     'foreach($rewrites as $rewrite) {' );
+		$this->write(       '$columns[] = $prefix.$rewrite;' );
+		$this->write(     '}' );
+		$this->write(   '}' );
+		$this->write( '}' );
+		foreach( $this->structure['structure'] as $name => $type ) {
+			if(isset($this->structure['rename']) && isset($this->structure['rename'][$name])) {
+				$name = $this->structure['rename'][$name];
+			}
+			if(is_array($type)) {
+				$this->write('$columns = '.$type[0].'Set'.self::$model_suffix.'::apply_columns_rewrite($columns,%s);',$name.".");
 			}
 		}
-		$this->write('$accept_columns = %s;', $local_columns);
-		$this->write('foreach($in_columns as $col) {');
-		$this->write('if(isset($accept_columns[$col])) {');
-		$this->write('$columns[] = $col;');
-		$this->write('}');
-		$this->write('}');
+		$this->write('return $columns;');
+		$this->finish_function();
+	}
 
+	public function generate_filter_valid_columns() {
+		$translated_structure = array();
+		foreach( $this->structure['structure'] as $name => $type ) {
+			if(isset($this->structure['rename']) && isset($this->structure['rename'][$name])) {
+				$name = $this->structure['rename'][$name];
+			}
+			$translated_structure[$name] = $type;
+		}
+
+		$this->init_function('filter_valid_columns', array('columns','prefix'), array('static'), array('prefix'=>''));
+		$this->write('$in_columns = array_flip($columns);');
+		$this->write('$out_columns = array();');
+
+		foreach($translated_structure as $name => $type ) {
+			if( !is_array($type) ) {
+				$this->write('if(isset($in_columns[$prefix.%s])) {', $name);
+				$this->write('$out_columns[] = $prefix.%s;',$name);
+				$this->write('}');
+			}
+		}
+		foreach($translated_structure as $name => $type ) {
+			if( is_array($type) ) {
+				$this->write('$tmpset = '.$type[0].'Pool'.self::$model_suffix.'::all();');
+				$this->write('$sub_columns = $tmpset->filter_valid_columns($columns,%s);',$type[1]);
+				$this->write('$out_columns = array_merge($out_columns, $sub_columns);');
+			}
+		}
+
+		/*
 		foreach($this->structure['key'] as $keypart ) {
 			$this->write('if( !in_array(%s, $columns) ) $columns[] = %s;', $keypart, $keypart);
 		}
-		$this->write('return $columns;');
+		*/
+		$this->write('return $out_columns;');
 		$this->finish_function();
 	}
 
@@ -213,5 +235,33 @@ class ORMObjectSetGenerator extends class_generator {
 		$this->write('$result->filter = $this->filter->prefix(%s);', $field.'.');
 		$this->write('return $result;');
 		$this->finish_function();
+	}
+
+	private function generate_process_field_name() {
+		$this->init_function('process_field_name', array('name'), array('static'));
+		if(isset($this->structure['rename'])) {
+			foreach($this->structure['rename'] as $source => $dest ) {
+				$this->write('if($name == %s) {', $source);
+				$this->write('$name = %s;', $dest);
+				$this->write('}');
+			}
+		}
+		foreach($this->structure['structure'] as $field => $type ) {
+			if(is_array($type)) {
+				$subobjset_class = $type[0].'Set'.self::$model_suffix;
+				$this->write('if(substr($name,0,%s) == %s) {', strlen($field)+1, $field.'.');
+				$this->write('$subobj_name = substr($name,%d);', strlen($field)+1);
+				// Somewhat a livestatus hack, but probably sql to. Only keep the innermost object name if contianing objects
+				$this->write('$prefix = "";');
+				$this->write('if(false===strpos($subobj_name,".")) {');
+				$this->write('$prefix = %s;', $field.'.');
+				$this->write('}');
+				$this->write('$name = $prefix.'.$subobjset_class.'::process_field_name($subobj_name);');
+				$this->write('}');
+			}
+		}
+		$this->write('$name = parent::process_field_name($name);');
+		$this->write('return $name;');
+		$this->write('}');
 	}
 }
