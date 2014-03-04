@@ -1259,10 +1259,10 @@ class nagioscmd_Core
 
 		if ( $params != false && is_array( $params ) ) {
 			$params = json_encode( $params );
-			return '<button class="command-button" ' . (( $state !== false ) ? ('data-state="' . $state . '"') : "") . ' data-parameters="' . $params . '" data-command="' . $command . '">' . $lable . '</button>';
+			return '<button class="command-button" ' . (( $state !== false ) ? ('data-state="' . $state . '"') : "") . ' data-parameters="' . $params . '" data-command="' . $command . '"><span></span>' . $lable . '</button>';
 		}
 
-		return '<button class="command-button" ' . (( $state !== false ) ? ('data-state="' . $state . '"') : "") . ' data-command="' . $command . '">' . $lable . '</button>';
+		return '<button class="command-button" ' . (( $state !== false ) ? ('data-state="' . $state . '"') : "") . ' data-command="' . $command . '"><span></span>' . $lable . '</button>';
 
 	}
 

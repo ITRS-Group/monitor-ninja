@@ -120,6 +120,7 @@
 }
 
 button.command-button {
+	overflow: visible;
 	display: inline-block;
 	border: 1px solid #999;
 	border-color: #bbb #999 #999 #bbb;
@@ -139,20 +140,21 @@ button.command-button[data-state] {
 	margin-left: 30px;
 }
 
-button.command-button[data-state]:before {
-	display: inline-block;
+button.command-button[data-state] span {
+
+	display: block;
 	position: absolute;
 	vertical-align: middle;
-	content: " ";
 	height: 12px;
 	width: 12px;
 	left: -24px;
 	border-radius: 8px;
 	box-shadow: 1px 1px 0px 0px #fff;
-} button.command-button[data-state="1"]:before {
+
+} button.command-button[data-state="1"] span {
 	background: #8e2;
 	border: 1px solid #4a1;
-} button.command-button[data-state="0"]:before {
+} button.command-button[data-state="0"] span {
 	background: #e82;
 	border: 1px solid #a41;
 }
