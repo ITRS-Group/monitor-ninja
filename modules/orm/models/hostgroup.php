@@ -7,14 +7,6 @@ require_once( dirname(__FILE__).'/base/basehostgroup.php' );
  */
 class HostGroup_Model extends BaseHostGroup_Model {
 	/**
-	 * A list of macros related to the object
-	 */
-	static public $macros =  array(
-		'$HOSTGROUPNAME$' => 'name',
-		'$HOSTGROUPALIAS$' => 'alias'
-	);
-
-	/**
 	 * A list of column dependencies for custom columns
 	 */
 	static public $rewrite_columns = array(

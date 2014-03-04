@@ -7,13 +7,6 @@ require_once( dirname(__FILE__).'/base/basehost.php' );
  */
 class Host_Model extends BaseHost_Model {
 	/**
-	 * A list of macros to expand for the current object
-	 */
-	static public $macros = array(
-		'$HOSTNAME$' => 'name'
-	);
-
-	/**
 	 * An array containing the custom column dependencies
 	 */
 	static public $rewrite_columns = array(
@@ -123,6 +116,17 @@ class Host_Model extends BaseHost_Model {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Get configuration url
+	 */
+	public function get_config_url() {
+		return str_replace(array(
+			'$HOSTNAME$'
+		), array(
+			urlencode($this->get_name())
+		), Kohana::config('config.config_url.hosts'));
 	}
 
 

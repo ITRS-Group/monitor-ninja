@@ -7,14 +7,6 @@ require_once( dirname(__FILE__).'/base/baseservice.php' );
  */
 class Service_Model extends BaseService_Model {
 	/**
-	 * A list of macros to expand for the current object
-	 */
-	static public $macros =  array(
-		'$HOSTNAME$' => 'host.name',
-		'$SERVICEDESC$' => 'description'
-	);
-
-	/**
 	 * An array containing the custom column dependencies
 	 */
 	static public $rewrite_columns = array(
@@ -125,6 +117,19 @@ class Service_Model extends BaseService_Model {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Get configuration url
+	 */
+	public function get_config_url() {
+		return str_replace(array(
+			'$HOSTNAME$',
+			'$SERVICEDESC$'
+		), array(
+			urlencode($this->get_host()->get_name()),
+			urlencode($this->get_description())
+		), Kohana::config('config.config_url.services'));
 	}
 
 

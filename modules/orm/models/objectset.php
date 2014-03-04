@@ -12,9 +12,6 @@ abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	public function validate_columns( $columns ) {
 
 		$classname = $this->class;
-		foreach( $classname::$macros as $match => $field ) {
-			$columns[] = $field;
-		}
 		$columns = array_filter($columns,function($row) { return $row != 'current_user'; });
 		return parent::validate_columns($columns);
 	}
