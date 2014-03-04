@@ -105,27 +105,6 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
-	 * Return the notes url with macros expanded
-	 */
-	public function get_notes_url() {
-		return $this->expand_macros_url(parent::get_notes_url());
-	}
-
-	/**
-	 * Return the notes with macros expanded
-	 */
-	public function get_notes() {
-		return $this->expand_macros(parent::get_notes());
-	}
-
-	/**
-	 * Return the action url with macros expanded
-	 */
-	public function get_action_url() {
-		return $this->expand_macros_url(parent::get_action_url());
-	}
-
-	/**
 	 * Returns the number of comments related to the service
 	 */
 	public function get_comments_count() {

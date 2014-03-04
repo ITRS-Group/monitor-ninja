@@ -151,6 +151,11 @@ $tables = array (
 		'class' => 'Host',
 		'source' => 'LS',
 		'key' => array('name'),
+		'rename' => array(
+			'notes_url' => 'notes_url_expanded',
+			'action_url' => 'action_url_expanded',
+			'notes' => 'notes_expanded'
+		),
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
@@ -298,6 +303,11 @@ $tables = array (
 		'source' => 'LS',
 		'key' => array('host.name', 'description'),
 		'default_sort' => array('host_name asc', 'description asc'),
+		'rename' => array(
+			'notes_url' => 'notes_url_expanded',
+			'action_url' => 'action_url_expanded',
+			'notes' => 'notes_expanded'
+		),
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',

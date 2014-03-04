@@ -108,27 +108,6 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * Get the notes url, with macros expanded
-	 */
-	public function get_notes_url() {
-		return $this->expand_macros_url(parent::get_notes_url());
-	}
-
-	/**
-	 * Get the notes field, with macros expanded
-	 */
-	public function get_notes() {
-		return $this->expand_macros(parent::get_notes());
-	}
-
-	/**
-	 * Get the action url with macros expanded
-	 */
-	public function get_action_url() {
-		return $this->expand_macros_url(parent::get_action_url());
-	}
-
-	/**
 	 * get the number of comments associated to the host
 	 */
 	public function get_comments_count() {
