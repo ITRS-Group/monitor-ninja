@@ -90,7 +90,7 @@ class Command_Controller extends Authenticated_Controller
 			$params = $_GET;
 		}
 
-		if (nagioscmd::is_authorized_for($params) !== true)
+		if (($auth_check = nagioscmd::is_authorized_for($params)) !== true)
 			return $this->unauthorized($auth_check);
 
 		$this->template->content->cmd_typ = $cmd;
@@ -300,7 +300,7 @@ class Command_Controller extends Authenticated_Controller
 		$this->template->content->cmd_typ = $cmd;
 
 		$nagios_commands = array();
-		if (self::_is_authorized_for_command($param, $cmd) !== true)
+		if (($auth_check = nagioscmd::is_authorized_for($param, $cmd)) !== true)
 			return $this->unauthorized($auth_check);
 
 		$param['author'] = Auth::instance()->get_user()->username;
