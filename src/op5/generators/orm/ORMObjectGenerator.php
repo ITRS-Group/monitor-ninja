@@ -97,6 +97,8 @@ class ORMObjectGenerator extends class_generator {
 		$this->write(         '$this->export[] = $parts[0];');
 		$this->write(     '}');
 		$this->write( '}');
+		$this->comment('If object fields exists, make sure the object only exists in the export array once');
+		$this->write( '$this->export = array_unique($this->export);');
 		foreach( $this->structure['structure'] as $field => $type ) {
 			if( is_array($type) ) {
 				$this->{"fetch_object"}( $field, $type );
