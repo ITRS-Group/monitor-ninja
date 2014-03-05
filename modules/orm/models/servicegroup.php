@@ -7,14 +7,6 @@ require_once( dirname(__FILE__).'/base/baseservicegroup.php' );
  */
 class ServiceGroup_Model extends BaseServiceGroup_Model {
 	/**
-	 * An array of macros to expand
-	 */
-	static public $macros =  array(
-		'$SERVICEGROUPNAME$' => 'name',
-		'$SERVICEGROUPALIAS$' => 'alias'
-	);
-
-	/**
 	 * An array of custom column dependencies
 	 */
 	static public $rewrite_columns = array(
