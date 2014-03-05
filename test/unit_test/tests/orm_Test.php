@@ -162,13 +162,13 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	 * This doesn't actually test the ORM, but a helper entirely used by ORM
 	 */
 	public function test_performance_data_conversion() {
-		$perf_data_str = "datasource=31 'Data Saucer'=32c;;;32;34 dattenSaucen=93%;~32:2;~3: invalid 'dd\'escaped'=13b;32";
+		$perf_data_str = "datasource=31 'Data Saucer'=32c;;;32;34 dattenSaucen=93%;~32:2;~3: invalid 'dd\'escaped'=13Gb;32";
 		$expect = array ('datasource' => array ('value' => 31.0),
 			'Data Saucer' => array ('value' => 32.0,'unit' => 'c','min' => 32.0,
 				'max' => 34.0),
 			'dattenSaucen' => array ('value' => 93.0,'unit' => '%',
 				'warn' => '~32:2','crit' => '~3:','min' => 0.0,'max' => 100.0),
-			'dd\'escaped' => array ('value' => 13.0,'unit' => 'b','warn'=>'32'));
+			'dd\'escaped' => array ('value' => 13.0,'unit' => 'Gb','warn'=>'32'));
 
 		$perf_data = performance_data_Core::process_performance_data(
 			$perf_data_str);

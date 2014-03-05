@@ -19,7 +19,7 @@ class performance_data_Core {
 	public static function process_performance_data($perf_data_str) {
 		/* Split string in data soruce part and performance part */
 		preg_match_all(
-			"/(?<=^|[\\s])('(?:\\\\.|[^\\\\'])*'|[^'\\s=][^\\s=]*)=([-0-9.]*|U)([s%bc]?)(?:;([^; ]*)(?:;([^; ]*)(?:;([-0-9.]*)(?:;([-0-9.]*)|)|)|)|)(?=$|[\\s])/",
+			"/(?<=^|[\\s])('(?:\\\\.|[^\\\\'])*'|[^'\\s=][^\\s=]*)=([-0-9.]*|U)([%a-zA-Z]*)(?:;([^; ]*)(?:;([^; ]*)(?:;([-0-9.]*)(?:;([-0-9.]*)|)|)|)|)(?=$|[\\s])/",
 			$perf_data_str, $matches, PREG_SET_ORDER);
 
 		$perf_data = array ();
