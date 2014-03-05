@@ -14,7 +14,7 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 			array ('id' => 2,'line' => "this is a another command",
 				'name' => 'cmdb'),
 			array ('id' => 3,'line' => "this is a command again",
-				'name' => 'cmdc')),
+				'name' => 'cmdc')),"services" => array (),"comments" => array (),
 		"hosts" => array (
 			array ('accept_passive_checks' => 1,'acknowledged' => 0,
 				'acknowledgement_type' => 0,
@@ -157,6 +157,58 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test whether sub object names is resolved, with correct virtual column rewriting
+	 *
+	 * We don't have any services in the test, but test that the correct columns is requested at least.
+	 */
+	public function test_sub_object_columns() {
+		$req_cols = array ('description', 'host.name','state_text','host.state_text');
+		$exp_cols = array ('description', 'host_name','state','has_been_checked','host_state','host_has_been_checked');
+		ServicePool_Model::all()->it($req_cols);
+		/* source_node is dependent on check_source, but isn't used in macros */
+		sort($exp_cols);
+		$this->assertEquals($exp_cols, $this->ls->last_columns);
+	}
+
+	/**
+	 * Test column renaming, which is having different name in backend and frontend
+	 */
+	public function test_renaming() {
+		$req_cols = array ('description', 'host.name','notes_url','host.action_url');
+		$exp_cols = array ('description', 'host_name','notes_url_expanded','host_action_url_expanded');
+		ServicePool_Model::all()->it($req_cols);
+		/* source_node is dependent on check_source, but isn't used in macros */
+		sort($exp_cols);
+		$this->assertEquals($exp_cols, $this->ls->last_columns);
+	}
+
+	/**
+	 * Test sub sub objects should only resolve one level of object abstraction
+	 *
+	 * For example comment -> service -> host should just resolve as comment -> host.
+	 */
+	public function test_sub_sub_object_columns() {
+		$req_cols = array ('id','is_service','host.name','service.description','service.host.state');
+		$exp_cols = array ('id','is_service','host_name','service_description','host_state');
+		CommentPool_Model::all()->it($req_cols);
+		/* source_node is dependent on check_source, but isn't used in macros */
+		sort($exp_cols);
+		$this->assertEquals($exp_cols, $this->ls->last_columns);
+	}
+
+	/**
+	 * Test if key columns is fetched automatically for base object (not for related)
+	 */
+	public function test_key_columns() {
+		$req_cols = array ('comment','host.state');
+		$exp_cols = array ('comment','host_state','id','is_service');
+		CommentPool_Model::all()->it($req_cols);
+		/* source_node is dependent on check_source, but isn't used in macros */
+		sort($exp_cols);
+		$this->assertEquals($exp_cols, $this->ls->last_columns);
+	}
+
+	/**
 	 * Test performance data processing.
 	 *
 	 * This doesn't actually test the ORM, but a helper entirely used by ORM
@@ -168,9 +220,9 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 				'max' => 34.0),
 			'dattenSaucen' => array ('value' => 93.0,'unit' => '%',
 				'warn' => '~32:2','crit' => '~3:','min' => 0.0,'max' => 100.0),
-			'dd\'escaped' => array ('value' => 13.0,'unit' => 'Gb','warn'=>'32'));
+			'dd\'escaped' => array ('value' => 13.0,'unit' => 'Gb','warn' => '32'));
 
-		$perf_data = performance_data_Core::process_performance_data(
+		$perf_data = performance_data::process_performance_data(
 			$perf_data_str);
 		$this->assertSame($perf_data, $expect);
 	}
@@ -192,7 +244,8 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 
 		$obj = HostPool_Model::all()->it(array ('name'))->current();
 		$host_name = $obj->get_name();
-		$this->assertTrue(false!==strpos($config_url_single, urlencode($host_name)));
+		$this->assertTrue(
+			false !== strpos($config_url_single, urlencode($host_name)));
 
 		$this->assertNotEmpty($host_name);
 	}

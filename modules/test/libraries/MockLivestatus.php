@@ -228,6 +228,9 @@ class MockLivestatus {
 		$table_data = $this->data[$table];
 
 		$this->last_columns = $columns;
+		if(is_array($this->last_columns)) {
+			sort($this->last_columns);
+		}
 
 		if (empty($columns)) {
 			$columns = array_keys($table_data[0]);
