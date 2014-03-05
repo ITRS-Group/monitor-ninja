@@ -229,7 +229,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	private function do_test_sql_op_int($op, $result) {
 		$this->run_visitor(
 				"[hosts] state $op 2",
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array( "Filter: state $op 2" )
 		);
 	}
@@ -329,7 +329,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_all() {
 		$this->run_visitor(
 				"[hosts] all",
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"And: 0"
 				)
@@ -338,7 +338,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_not_all() {
 		$this->run_visitor(
 				"[hosts] not all",
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"And: 0",
 						"Negate:"
@@ -348,7 +348,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_simple_and() {
 		$this->run_visitor(
 				'[hosts] name="a" and name="b"',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -359,7 +359,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_simple_or() {
 		$this->run_visitor(
 				'[hosts] name="a" or name="b"',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -370,7 +370,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_andor() {
 		$this->run_visitor(
 				'[hosts] (name="a" or name="b") and (name="c" or name="d")',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -385,7 +385,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_orand() {
 		$this->run_visitor(
 				'[hosts] (name="a" and name="b") or (name="c" and name="d")',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -400,7 +400,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_orandnot() {
 		$this->run_visitor(
 				'[hosts] (name="a" and name="b") or not (name="c" and name="d")',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -416,7 +416,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_trippleand_l() {
 		$this->run_visitor(
 				'[hosts] (name="a" and name="b") and name="c"',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -428,7 +428,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_trippleand_r() {
 		$this->run_visitor(
 				'[hosts] name="a" and (name="b" and name="c")',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -440,7 +440,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_trippleor_l() {
 		$this->run_visitor(
 				'[hosts] (name="a" or name="b") or name="c"',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -452,7 +452,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_ls_trippleor_r() {
 		$this->run_visitor(
 				'[hosts] name="a" or (name="b" or name="c")',
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Filter: name = a",
 						"Filter: name = b",
@@ -464,7 +464,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_lsstats_orandnot() {
 		$this->run_visitor(
 				'[hosts] (name="a" and name="b") or not (name="c" and name="d")',
-				new LivestatusStatsBuilderVisitor(),
+				new LivestatusStatsBuilderVisitor(HostPool_Model::all()),
 				array(
 						"Stats: name = a",
 						"Stats: name = b",
@@ -481,14 +481,14 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	private function do_test_ls_op_str($op) {
 		$this->run_visitor(
 				"[hosts] name $op \"a\"",
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array( "Filter: name $op a" )
 		);
 	}
 	private function do_test_ls_op_int($op) {
 		$this->run_visitor(
 				"[hosts] state $op 2",
-				new LivestatusFilterBuilderVisitor(),
+				new LivestatusFilterBuilderVisitor(HostPool_Model::all()),
 				array( "Filter: state $op 2" )
 		);
 	}
