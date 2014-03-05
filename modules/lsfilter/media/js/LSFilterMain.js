@@ -150,8 +150,15 @@ var lsfilter_main = {
 			var href = $(this).attr('href');
 			var args = self.parseParams(href);
 			if (args.q) {
+
 				lsfilter_main.update(args.q, 'external_link', '');
+
+				var content_div = $( "body > .container > #content" )
+				content_div.click();
+				content_div.focus();
+
 				return false;
+
 			}
 			return true;
 		});

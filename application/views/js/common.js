@@ -25,8 +25,10 @@ $(document).ready(function() {
 		_save_scroll = false;
 	});
 
-	var c = content_div[0];
-	if ( c ) c.focus();
+	if ( content_div ) {
+		content_div.click();
+		content_div.focus();
+	}
 
 	/**
 	*	Show the checkbox to show/hide "page header" if

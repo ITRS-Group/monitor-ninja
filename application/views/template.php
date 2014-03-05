@@ -33,7 +33,7 @@
 			<?php if(!isset($hide_header)) {
 				require __DIR__.'/template_header.php';
 			} ?>
-			<div class="content" id="content">
+			<div class="content" tabindex="0" id="content">
 
 					<?php
 
@@ -65,7 +65,6 @@
 			if (isset($context_menu))
 				echo $context_menu;
 		?>
-
 
 	</body>
 </html>
