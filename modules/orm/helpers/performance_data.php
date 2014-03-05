@@ -13,7 +13,7 @@ class performance_data_Core {
 	/**
 	 * Process performance data and return as an array
 	 *
-	 * @param $perf_data string
+	 * @param $perf_data_str string
 	 * @return array
 	 */
 	public static function process_performance_data($perf_data_str) {
