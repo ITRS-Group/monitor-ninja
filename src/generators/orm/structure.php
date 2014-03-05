@@ -155,7 +155,8 @@ $tables = array (
 			'notes_url' => 'notes_url_expanded',
 			'action_url' => 'action_url_expanded',
 			'notes' => 'notes_expanded',
-			'perf_data_raw' => 'perf_data'
+			'perf_data_raw' => 'perf_data',
+			'icon_image' => 'icon_image_expanded'
 		),
 		'structure' =>
 		array (
@@ -308,7 +309,8 @@ $tables = array (
 			'notes_url' => 'notes_url_expanded',
 			'action_url' => 'action_url_expanded',
 			'notes' => 'notes_expanded',
-			'perf_data_raw' => 'perf_data'
+			'perf_data_raw' => 'perf_data',
+			'icon_image' => 'icon_image_expanded'
 		),
 		'structure' =>
 		array (
