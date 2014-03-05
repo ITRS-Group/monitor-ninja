@@ -287,7 +287,7 @@ endif; ?>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Current attempt'); ?></td>
-			<td id="field_current_attempt"><?php echo $object->get_current_attempt() ?>/<?php echo $object->get_max_check_attempts() ?> (<?php echo strtolower($object->get_state_type_text_uc()) ?>)</td>
+			<td id="field_current_attempt"><?php echo $object->get_current_attempt() ?>/<?php echo $object->get_max_check_attempts() ?> (<?php echo $object->get_state_type_text() ?>)</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Last check time'); ?></td>

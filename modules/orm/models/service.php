@@ -16,6 +16,7 @@ class Service_Model extends BaseService_Model {
 		'duration'        => array('last_state_change'),
 		'comments_count'  => array('comments'),
 		'config_url'      => array('host.name', 'description'),
+		'state_type_text' => array('state_type'),
 		'check_type_str'  => array('check_type'),
 		'config_allowed'  => array('contacts'),
 		'source_node'     => array('check_source'),
@@ -81,6 +82,13 @@ class Service_Model extends BaseService_Model {
 	 */
 	public function get_comments_count() {
 		return count($this->get_comments());
+	}
+
+	/**
+	 * Return the state type, as text in uppercase
+	 */
+	public function get_state_type_text() {
+		return $this->get_state_type()?'hard':'soft';
 	}
 
 	/**
