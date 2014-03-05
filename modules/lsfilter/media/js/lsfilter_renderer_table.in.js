@@ -1213,14 +1213,14 @@ listview_renderer_table.recurring_downtimes = {
 		"header": _('Weekdays'),
 		"depends": ['weekdays'],
 		"cell": function(args) {
-			return $('<td />').update_text(args.obj.weekdays.map(function (x) {return Date.dayNames[x];}).join(', '));
+			return $('<td />').update_text($.map(args.obj.weekdays, function (x) {return Date.dayNames[x];}).join(', '));
 		}
 	},
 	"months": {
 		"header": _('Months'),
 		"depends": ['months'],
 		"cell": function(args) {
-			return $('<td />').update_text(args.obj.months.map(function (x) {return Date.monthNames[x-1];}).join(', '));
+			return $('<td />').update_text($.map(args.obj.months, function (x) {return Date.monthNames[x-1];}).join(', '));
 		}
 	},
 	"actions": {
