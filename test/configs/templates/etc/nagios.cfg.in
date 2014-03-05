@@ -12,7 +12,7 @@
 ###############################################################################
 
 broker_module=/opt/monitor/op5/merlin/merlin.so @@TESTDIR@@/etc/merlin.conf
-broker_module=/opt/monitor/op5/livestatus/livestatus.o /tmp/ninja-test/live
+broker_module=/usr/lib64/naemon-livestatus/livestatus.so /tmp/ninja-test/live
 
 precached_object_file=@@TESTDIR@@/var/objects.precache
 check_result_path=@@TESTDIR@@/var/spool/checkresults
