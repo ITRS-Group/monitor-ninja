@@ -6,14 +6,7 @@ require_once( dirname(__FILE__).'/base/baseserviceset.php' );
  * Describes a set of objects from livestatus
  */
 class ServiceSet_Model extends BaseServiceSet_Model {
-	/**
-	 * Valideate an array of columns for the given table
-	 */
-	public function validate_columns( $columns ) {
-		$columns[] = 'custom_variables';
-		return parent::validate_columns($columns);
-	}
-	
+
 	/**
 	 * Get statistics from the given set
 	 */
@@ -32,10 +25,10 @@ class ServiceSet_Model extends BaseServiceSet_Model {
 		foreach( $stats as $name => $set ) {
 			$totals[$name] = array($this->intersect($set)->get_query(), $stats_result[$name]);
 		}
-		
+
 		return $totals;
 	}
-	
+
 	/**
 	 * Get a set of comments for the services in the set
 	 */

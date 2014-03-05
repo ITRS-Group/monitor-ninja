@@ -6,15 +6,6 @@ require_once( dirname(__FILE__).'/base/baseobjectset.php' );
  * Describes a set of objects from livestatus
  */
 abstract class ObjectSet_Model extends BaseObjectSet_Model {
-	/**
-	 * Valideate an array of columns for the given table
-	 */
-	public function validate_columns( $columns ) {
-
-		$classname = $this->class;
-		$columns = array_filter($columns,function($row) { return $row != 'current_user'; });
-		return parent::validate_columns($columns);
-	}
 
 	/**
 	 * Get statistics about the set, by default only the count
