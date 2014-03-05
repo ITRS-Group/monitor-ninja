@@ -11,27 +11,13 @@ class Service_Model extends BaseService_Model {
 	 */
 	static public $macros =  array(
 		'$HOSTNAME$' => 'host.name',
-		'$HOSTADDRESS$' => 'host.address',
-		'$HOSTDISPLAYNAME$' => 'host.display_name',
-		'$HOSTALIAS$' => 'host.alias',
-		'$HOSTSTATE$' => 'host.state_text_uc',
-		'$HOSTSTATEID$' => 'host.state',
-		'$HOSTSTATETYPE$' => 'host.state_type_text_uc',
-		'$HOSTATTEMPT$' => 'host.current_attempt',
-		'$MAXHOSTATTEMPTS$' => 'host.max_check_attempts',
-		'$HOSTGROUPNAME$' => 'host.first_group',
-		'$SERVICEDESC$' => 'description',
-		'$SERVICEDISPLAYNAME$' => 'display_name',
-		'$SERVICEGROUPNAME$' => 'first_group',
-		'$SERVICESTATE$' => 'state',
-		'$CURRENT_USER$' => 'current_user'
+		'$SERVICEDESC$' => 'description'
 	);
 
 	/**
 	 * An array containing the custom column dependencies
 	 */
 	static public $rewrite_columns = array(
-		'state_text_uc'   => array('state_text'),
 		'state_text'      => array('state','has_been_checked'),
 		'first_group'     => array('groups'),
 		'checks_disabled' => array('active_checks_enabled'),
@@ -58,13 +44,6 @@ class Service_Model extends BaseService_Model {
 			case 3: return 'unknown';
 		}
 		return 'unknown'; // should never happen
-	}
-
-	/**
-	 * Return the state type, as text in uppercase
-	 */
-	public function get_state_type_text_uc() {
-		return $this->get_state_type()?'HARD':'SOFT';
 	}
 
 	/**
