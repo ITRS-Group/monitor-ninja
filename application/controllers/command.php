@@ -571,14 +571,6 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
-	 * Stupid wrapper around the commands helper, kept around for legacy reasons.
-	 */
-	static function _is_authorized_for_command($params = false, $cmd = false)
-	{
-		return nagioscmd::is_authorized_for($params, $cmd);
-	}
-
-	/**
 	*	Handle submitting of one command for multiple objects
 	*/
 	public function multi_action()
