@@ -87,7 +87,7 @@ var lsfilter_multiselect = {
 		elem.empty();
 		for ( var val in values) {
 			var tag = values[val];
-			elem.append($('<li />').append($('<a href="#" />').text(tag).data('value', val).addClass('multi-action-send-link')));
+			elem.append($('<li />').append($('<a href="#" />').text(tag).attr('data-value', val).addClass('multi-action-send-link')));
 		}
 	},
 
