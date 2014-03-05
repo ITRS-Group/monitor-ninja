@@ -22,6 +22,20 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 	protected $not    = "Negate:";
 
 	/**
+	 * The current set this visitor is operating for
+	 */
+	private $set;
+
+	/**
+	 * Populate the related set for the visitor
+	 *
+	 * @param $set Set object
+	 */
+	public function __construct( $set ) {
+		$this->set = $set;
+	}
+
+	/**
 	 * Visit an and node
 	 */
 	public function visit_and( LivestatusFilterAnd $filt, $data ) {
@@ -53,16 +67,12 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 	 * Visit an negation node
 	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
-		$fields = explode('.',$filt->get_field());
-		if( count($fields) > 2 ) {
-			$fields = array_slice($fields, count($fields)-2);
-		}
-		$field = implode('_',$fields);
+		$field = $this->set->process_field_name($filt->get_field());
 		$op = $filt->get_op();
 		$value = $filt->get_value();
 		return $this->filter . $field . " " . $op . " " . $value . "\n";
 	}
-	
+
 	public function visit_not( LivestatusFilterNot $filt, $data ) {
 		$subfilter = $filt->get_filter();
 		$result = $subfilter->visit($this,false);

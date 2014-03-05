@@ -151,6 +151,12 @@ $tables = array (
 		'class' => 'Host',
 		'source' => 'LS',
 		'key' => array('name'),
+		'rename' => array(
+			'notes_url' => 'notes_url_expanded',
+			'action_url' => 'action_url_expanded',
+			'notes' => 'notes_expanded',
+			'perf_data_raw' => 'perf_data'
+		),
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
@@ -241,7 +247,7 @@ $tables = array (
 			'parents' => 'list',
 			'pending_flex_downtime' => 'int',
 			'percent_state_change' => 'float',
-			'perf_data' => 'string',
+			'perf_data_raw' => 'string',
 			'plugin_output' => 'string',
 			'pnpgraph_present' => 'int',
 			'process_performance_data' => 'int',
@@ -298,6 +304,12 @@ $tables = array (
 		'source' => 'LS',
 		'key' => array('host.name', 'description'),
 		'default_sort' => array('host_name asc', 'description asc'),
+		'rename' => array(
+			'notes_url' => 'notes_url_expanded',
+			'action_url' => 'action_url_expanded',
+			'notes' => 'notes_expanded',
+			'perf_data_raw' => 'perf_data'
+		),
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
@@ -372,7 +384,7 @@ $tables = array (
 			'notifications_enabled' => 'int',
 			'obsess' => 'int',
 			'percent_state_change' => 'float',
-			'perf_data' => 'string',
+			'perf_data_raw' => 'string',
 			'plugin_output' => 'string',
 			'pnpgraph_present' => 'int',
 			'process_performance_data' => 'int',
