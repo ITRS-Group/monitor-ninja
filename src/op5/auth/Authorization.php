@@ -143,6 +143,7 @@ class op5Authorization {
 			'nagvis' => array ('nagvis_add_delete' => '','nagvis_view' => '',
 				'nagvis_edit' => '','nagvis_admin' => ''),
 			'misc' => array ('FILE' => '','access_rights' => '','pnp' => '',
+				'manage_trapper' => '',
 				'saved_filters_global' => ''));
 	}
 
