@@ -18,6 +18,7 @@ class ORMRootSetGenerator extends class_generator {
 		$this->variable('class',null,'protected');
 		$this->variable('filter',null,'protected');
 		$this->variable('default_sort',array(),'protected');
+		$this->variable('key_columns',array(),'protected');
 		$this->generate_getter('table');
 		$this->generate_getter('class');
 		$this->generate_binary_operator('union', 'LivestatusFilterOr');
@@ -29,10 +30,10 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_getIterator();
 		$this->generate_it();
 		$this->generate_get_auth_filter();
-		$this->generate_validate_columns();
 		$this->generate_format_column_filter();
 		$this->generate_format_column_list();
 		$this->generate_get_all_columns_list();
+		$this->generate_process_field_name();
 		$this->finish_class();
 	}
 
@@ -109,22 +110,6 @@ class ORMRootSetGenerator extends class_generator {
 		$this->finish_function();
 	}
 
-	public function generate_validate_columns() {
-		$this->init_function('validate_columns', array('columns'));
-		$this->write( '$classname = $this->class;' );
-		$this->write( '$prefix = "";' );
-		$this->write( 'foreach($classname::$rewrite_columns as $column => $rewrites) {');
-		$this->write(   'if( in_array( $column, $columns ) ) {' );
-		$this->write(     '$columns = array_filter( $columns, function($row) use($column) {return $row != $column;} );' );
-		$this->write(     'foreach($rewrites as $rewrite) {' );
-		$this->write(       '$columns[] = $rewrite;' );
-		$this->write(     '}' );
-		$this->write(   '}' );
-		$this->write( '}' );
-		$this->write('return $columns;');
-		$this->finish_function();
-	}
-
 	/**
 	 * Generate a function that returns a corrected column name
 	 * for use for selection - this might resolve aliases.
@@ -154,5 +139,14 @@ class ORMRootSetGenerator extends class_generator {
 		$this->init_function('get_all_columns_list', array(), array('static'));
 		$this->write('return array();');
 		$this->finish_function();
+	}
+
+	/**
+	 * Generate a stub for process_field_name, which translates the name in a filter to something useful in the backend
+	 */
+	private function generate_process_field_name() {
+		$this->init_function('process_field_name', array('name'), array('static'));
+		$this->write('return $name;');
+		$this->write('}');
 	}
 }
