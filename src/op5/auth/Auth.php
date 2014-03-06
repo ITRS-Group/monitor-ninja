@@ -78,11 +78,12 @@ class op5auth {
 		$this->log = op5Log::instance('auth');
 
 		/* Retrieve config file */
-		$authconfig = op5Config::instance()->getConfig('auth');
+		$op5config = op5Config::instance();
+		$authconfig = $op5config->getConfig('auth');
 
 		if ($authconfig === null) {
 			throw new Exception(
-				'auth.yml configuration file not found, are the permissions correct?');
+				$op5config->getPathForNamespace('auth').' configuration file not found, are the permissions correct?');
 		}
 
 		/* Fetch configuration for common, and store */

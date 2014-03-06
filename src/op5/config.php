@@ -132,7 +132,7 @@ class op5config {
 	 * @param $namespace string
 	 * @return string
 	 **/
-	protected function getPathForNamespace($namespace)
+	public function getPathForNamespace($namespace)
 	{
 		return $this->basepath . $namespace . '.yml';
 	}
