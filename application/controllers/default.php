@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+require_once('op5/config.php');
 require_once('op5/log.php');
 
 /**
@@ -41,6 +42,7 @@ class Default_Controller extends Ninja_Controller  {
 		$this->template->error_msg = $this->session->get('error_msg', false);
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = array('application/media/js/jquery.js', $this->add_path('/js/login.js'));
+		$this->template->auth_modules = op5auth::instance()->get_metadata('login_screen_dropdown');
 		Event::run('ninja.show_login', $this);
 	}
 

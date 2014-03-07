@@ -47,12 +47,11 @@
 				</tr>
 				<?php
 				$auth = Auth::instance();
-				$auth_methods = $auth->get_authentication_methods();
 				$default_auth = $auth->get_default_auth();
-				if (!empty($auth_methods) && is_array($auth_methods) && count($auth_methods) > 1) {	?>
+				if (!empty($auth_modules) && is_array($auth_modules) && count($auth_modules) > 1) {	?>
 				<tr>
 					<td><?php echo _('Login method') ?></td>
-					<td><?php echo form::dropdown(array('name'=>'auth_method', 'class'=>'login_field'), array_combine( $auth_methods, $auth_methods ), $default_auth ) ?></td>
+					<td><?php echo form::dropdown(array('name'=>'auth_method', 'class'=>'login_field'), array_combine( $auth_modules, $auth_modules ), $default_auth ) ?></td>
 				</tr>
 				<?php
 				}?>
