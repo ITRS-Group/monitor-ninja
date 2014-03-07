@@ -14,8 +14,11 @@ require_once (__DIR__ . '/User.php');
  *
  */
 class op5AuthDriver_Apache extends op5AuthDriver {
-	protected static $metadata = array ('require_user_configuration' => true,
-		'require_user_password_configuration' => false);
+	protected static $metadata = array (
+		'require_user_configuration' => true,
+		'require_user_password_configuration' => false,
+		'login_screen_dropdown' => false
+	);
 	private $users = false;
 	private function fetch_users() {
 		if ($this->users === false) {

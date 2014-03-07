@@ -15,8 +15,11 @@ require_once (__DIR__ . '/../config.php');
  *
  */
 class op5AuthDriver_Default extends op5AuthDriver {
-	protected static $metadata = array ('require_user_configuration' => true,
-		'require_user_password_configuration' => true);
+	protected static $metadata = array (
+		'require_user_configuration' => true,
+		'require_user_password_configuration' => true,
+		'login_screen_dropdown' => true
+	);
 	private $users = false;
 
 	/**

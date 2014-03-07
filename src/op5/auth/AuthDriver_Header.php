@@ -22,6 +22,12 @@ class op5AuthDriver_Header extends op5AuthDriver {
 	 */
 	private $mocked_headers = false;
 
+	protected static $metadata = array (
+		'require_user_configuration' => false,
+		'require_user_password_configuration' => false,
+		'login_screen_dropdown' => false
+	);
+
 	/**
 	 * Attempt to log in a user by static configuration, or external
 	 * infromation.

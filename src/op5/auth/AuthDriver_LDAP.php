@@ -18,6 +18,12 @@ require_once (__DIR__ . '/../config.php');
 class op5AuthDriver_LDAP extends op5AuthDriver {
 	private $conn = false;
 
+	protected static $metadata = array (
+		'require_user_configuration' => false,
+		'require_user_password_configuration' => false,
+		'login_screen_dropdown' => true
+	);
+
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
