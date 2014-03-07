@@ -1,40 +1,104 @@
 <?php
 
-class ORMSQLSetGenerator extends class_generator {
-	private $name;
-	private $objectclass;
+require_once("ORMObjectSetGenerator.php");
 
-	public function __construct( $name ) {
-		$this->name = $name;
-		$this->classname = "BaseObjectSQLSet";
-		$this->set_model();
+class ORMSQLSetGenerator extends ORMObjectSetGenerator {
+	public $relations; /** a relation is a way to declare a many-to-one for sql */
+
+	public function __construct( $name, $structure ) {
+		parent::__construct($name, $structure);
+
+		if (isset($this->structure['relations'])) {
+			foreach ($this->structure['relations'] as $relation) {
+				list($foreign_key, $table, $key) = $relation;
+				$this->relations[$this->structure['structure'][$key][1]] = array(
+					'tbl' => $structure[$table]['table'],
+					'tblkey' => $structure[$table]['key'],
+				);
+			}
+		}
+		else {
+			$this->relations = array();
+		}
 	}
 
-	public function generate($skip_generated_note = false) {
-		parent::generate($skip_generated_note);
-		$this->init_class( 'ObjectSet', array('abstract') );
-		$this->variable('db_instance','default','protected');
+	public function generate_backend_specific_functions() {
+		$db_instance = false;
+		if( isset($this->structure['db_instance']) ) {
+			$db_instance = $this->structure['db_instance'];
+		}
+		$this->variable('db_instance',$db_instance,'protected');
+
+		if(!isset($this->structure['relations'])) {
+			$this->structure['relations'] = array();
+		}
+
+		$dbtable_expr = $dbtable = $this->name;
+
+		$dbtable = $this->structure['table'];
+		$dbtable_expr = $this->structure['table'] . ' AS ' . $this->name;
+
+		$joinexpr = array();
+		foreach ($this->structure['relations'] as $relation) {
+			list($foreign_key, $table, $key) = $relation;
+			$virtual_table_name = rtrim($this->structure['structure'][$key][1],'.');
+			$relations = $this->relations[$this->structure['structure'][$key][1]];
+			$ons = array();
+			for ($i = 0; $i < count($foreign_key); $i++) {
+				$ons[] = "$virtual_table_name.{$relations['tblkey'][$i]} = {$this->name}.{$foreign_key[$i]}";
+			}
+			$joinexpr[] = "LEFT JOIN {$relations["tbl"]} AS $virtual_table_name ON " . implode(" AND ", $ons);
+		}
+		$dbtable_expr .= ' '.implode("", $joinexpr);
+
+		$this->variable('dbtable',$dbtable,'protected');
+		$this->variable('dbtable_expr',$dbtable_expr,'protected');
+
+
 		$this->generate_format_column_filter();
+		$this->generate_format_column_selector();
 		$this->generate_format_column_list();
-		$this->generate_stats();
-		$this->generate_count();
-		$this->generate_it();
-		$this->generate_process_field_name();
-		$this->finish_class();
 	}
 
 	public function generate_format_column_filter() {
 		$this->init_function('format_column_filter', array('column'));
-		$this->write('return $this->table.".".$column;');
+		foreach ($this->structure['relations'] as $relation) {
+			list($foreign_key, $table, $key) = $relation;
+			$prefix = $this->structure['structure'][$key][1];
+			$this->write('if (!strncmp("'.$prefix.'", $column, '.strlen($prefix).')) {');
+			$this->write(    'return "'.$prefix.'.".substr($column, '.(strlen($prefix)+1).');');
+			$this->write('}');
+		}
+		$this->write('return "'.$this->name.'.".$column;');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate a function that returns a corrected column name
+	 * for use in a SELECT clause for making proper aliases available
+	 * to the ORM backend.
+	 */
+	public function generate_format_column_selector() {
+		$this->init_function('format_column_selector', array('column'), array('private'));
+		foreach ($this->structure['relations'] as $relation) {
+			list($foreign_key, $table, $key) = $relation;
+			$prefix = $this->structure['structure'][$key][1];
+			$virtual_table_name = rtrim($prefix,'.');
+			$this->write('if (!strncmp("'.$prefix.'", $column, %s)) {',strlen($prefix));
+			$this->write(    'return "'.$virtual_table_name.'.$column AS '.$virtual_table_name.'_".substr($column, %s);',strlen($prefix));
+			$this->write('}');
+		}
+		$this->write('return "'.$this->name.'.".$column;');
 		$this->finish_function();
 	}
 
 	public function generate_format_column_list() {
 		$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
 		$this->write('if ($columns == false) {');
-		$this->write(    'return "*";');
+		# This won't work quite right, as we won't get the prefix in place for foreign data. Meh.
+		$this->write(    'return "'.$this->name.'.*, '.implode(', ', array_map(function($rel) { return $rel[2] . '.*'; }, $this->structure['relations'])).'";');
 		$this->write('}');
-		$this->write('return implode(", ", $columns);');
+		$this->write('return implode(", ", array_map(array($this, "format_column_selector"), $columns));');
 		$this->finish_function();
 	}
 
@@ -115,8 +179,34 @@ class ORMSQLSetGenerator extends class_generator {
 		$this->finish_function();
 	}
 
-	private function generate_process_field_name() {
+	/**
+	 * Generate the method process_field_name for the object set
+	 *
+	 * @param $oset ORMObjectSetGenerator
+	 */
+	public function generate_process_field_name() {
 		$this->init_function('process_field_name', array('name'), array('static'));
+		if(isset($this->structure['rename'])) {
+			foreach($this->structure['rename'] as $source => $dest ) {
+				$this->write('if($name == %s) {', $source);
+				$this->write('$name = %s;', $dest);
+				$this->write('}');
+			}
+		}
+		foreach($this->structure['structure'] as $field => $type ) {
+			if(is_array($type)) {
+				$subobjset_class = $type[0].'Set'.self::$model_suffix;
+				$this->write('if(substr($name,0,%s) == %s) {', strlen($field)+1, $field.'.');
+				$this->write('$subobj_name = substr($name,%d);', strlen($field)+1);
+				// Somewhat a livestatus hack, but probably sql to. Only keep the innermost object name if contianing objects
+				$this->write('$prefix = "";');
+				$this->write('if(false===strpos($subobj_name,".")) {');
+				$this->write('$prefix = %s;', $field.'.');
+				$this->write('}');
+				$this->write('$name = $prefix.'.$subobjset_class.'::process_field_name($subobj_name);');
+				$this->write('}');
+			}
+		}
 		$this->write('return preg_replace("/[^a-zA-Z._]/","",$name);');
 		$this->write('}');
 	}

@@ -45,25 +45,25 @@ abstract class js_class_generator {
 		return $this->classname . $this->class_suffix;
 	}
 
-	protected function get_filename() {
+	public function get_filename() {
 		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . $this->classname . '.js';
 	}
 
-	protected function init_class( $args = array() ) {
+	public function init_class( $args = array() ) {
 		$argstr = implode(', ', $args);
 		$this->write();
 		$this->write( 'var '.$this->get_classname() . ' = function '.$this->get_classname().'('.$argstr.'){' );
 	}
 
-	protected function finish_class() {
+	public function finish_class() {
 		$this->write( "};" );
 	}
 
-	protected function variable( $name, $default = null ) {
+	public function variable( $name, $default = null ) {
 		$this->write( "this.$name = %s;", $default );
 	}
 
-	protected function init_function( $name, $args = array() ) {
+	public function init_function( $name, $args = array() ) {
 		$argstr = implode(', ', $args);
 		if( $name === false ) {
 			$this->write( "function($argstr) {" );
@@ -72,19 +72,19 @@ abstract class js_class_generator {
 		}
 	}
 
-	protected function finish_function() {
+	public function finish_function() {
 		$this->write( "};" );
 		$this->write();
 	}
 
-	protected function comment( $comment ) {
+	public function comment( $comment ) {
 		$lines = explode( "\n", $comment );
 		$curlvl = array_sum( $this->indent_lvl );
 		foreach( $lines as $line ) {
 			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . "// " . trim($line) . "\n" );
 		}
 	}
-	protected function write( $block = '' ) {
+	public function write( $block = '' ) {
 		$args = func_get_args();
 		$block = array_shift( $args );
 		$args_str = array_map( function($var){return json_encode($var);}, $args );

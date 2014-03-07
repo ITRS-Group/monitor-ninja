@@ -1,35 +1,15 @@
 <?php
 
-class ORMLSSetGenerator extends class_generator {
-	private $name;
-	private $objectclass;
+require_once("ORMObjectSetGenerator.php");
 
-	/**
-	 * Construct
-	 *
-	 * @return void
-	 **/
-	public function __construct( $name ) {
-		$this->name = $name;
-		$this->classname = "BaseObjectLSSet";
-		$this->set_model();
+class ORMLSSetGenerator extends ORMObjectSetGenerator {
+
+	public function generate($skip_generated_note = false) {
+		$this->classfile("op5/livestatus.php");
+		parent::generate($skip_generated_note);
 	}
 
-	/**
-	 * Generate
-	 *
-	 * @param $skip_generate_note boolean
-	 * @return void
-	 **/
-	public function generate($skip_generated_note = false) {
-		parent::generate($skip_generated_note);
-		$this->classfile("op5/livestatus.php");
-		$this->init_class( 'ObjectSet', array('abstract') );
-		$this->generate_stats();
-		$this->generate_count();
-		$this->generate_it();
-		$this->generate_process_field_name();
-		$this->finish_class();
+	public function generate_backend_specific_functions() {
 	}
 
 	/**
@@ -139,9 +119,34 @@ class ORMLSSetGenerator extends class_generator {
 		$this->finish_function();
 	}
 
-	private function generate_process_field_name() {
+	/**
+	 * Generate the method process_field_name for the object set
+	 *
+	 * @param $oset ORMObjectSetGenerator
+	 */
+	public function generate_process_field_name() {
 		$this->init_function('process_field_name', array('name'), array('static'));
-		$this->write('return str_replace(".","_",parent::process_field_name($name));');
+		if(isset($this->structure['rename'])) {
+			foreach($this->structure['rename'] as $source => $dest ) {
+				$this->write('if($name == %s) {', $source);
+				$this->write('$name = %s;', $dest);
+				$this->write('}');
+			}
+		}
+		foreach($this->structure['structure'] as $field => $type ) {
+			if(is_array($type)) {
+				$subobjset_class = $type[0].'Set'.self::$model_suffix;
+				$this->write('if(substr($name,0,%s) == %s) {', strlen($field)+1, $field.'.');
+				$this->write('$subobj_name = substr($name,%d);', strlen($field)+1);
+				$this->write('$prefix = "";');
+				$this->write('if(false===strpos($subobj_name,".")) {');
+				$this->write('$prefix = %s;', $type[1]);
+				$this->write('}');
+				$this->write('$name = $prefix.'.$subobjset_class.'::process_field_name($subobj_name);');
+				$this->write('}');
+			}
+		}
+		$this->write('return preg_replace("/[^a-zA-Z._]/","",$name);');
 		$this->write('}');
 	}
 }

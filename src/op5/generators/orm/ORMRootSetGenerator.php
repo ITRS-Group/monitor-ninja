@@ -30,8 +30,6 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_getIterator();
 		$this->generate_it();
 		$this->generate_get_auth_filter();
-		$this->generate_format_column_filter();
-		$this->generate_format_column_list();
 		$this->generate_get_all_columns_list();
 		$this->generate_process_field_name();
 		$this->finish_class();
@@ -111,26 +109,6 @@ class ORMRootSetGenerator extends class_generator {
 	}
 
 	/**
-	 * Generate a function that returns a corrected column name
-	 * for use for selection - this might resolve aliases.
-	 */
-	public function generate_format_column_filter() {
-		$this->init_function('format_column_filter', array('column'));
-		$this->write('throw new Exception("Not implemented");');
-		$this->finish_function();
-	}
-
-	/**
-	 * Generate a function that given a list of columns returns a string
-	 * that sets any aliases required.
-	 */
-	public function generate_format_column_list() {
-		$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
-		$this->write('throw new Exception("Not implemented");');
-		$this->finish_function();
-	}
-
-	/**
 	 * Fetch all columns possible for this class to fetch, including subobjects.
 	 *
 	 * This is just a stub, which is overwritten by each object set.
@@ -145,8 +123,6 @@ class ORMRootSetGenerator extends class_generator {
 	 * Generate a stub for process_field_name, which translates the name in a filter to something useful in the backend
 	 */
 	private function generate_process_field_name() {
-		$this->init_function('process_field_name', array('name'), array('static'));
-		$this->write('return $name;');
-		$this->write('}');
+		$this->abstract_function('process_field_name', array('name'), array('static'));
 	}
 }
