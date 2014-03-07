@@ -93,10 +93,15 @@ class ORMSQLSetGenerator extends ORMObjectSetGenerator {
 	}
 
 	public function generate_format_column_list() {
+		$table_names = array($this->name);
+		foreach( $this->structure['relations'] as $rel ) {
+			$table_names[] = $rel[2];
+		}
+
 		$this->init_function('format_column_list', array('columns'), array('protected'), array('false'));
 		$this->write('if ($columns == false) {');
 		# This won't work quite right, as we won't get the prefix in place for foreign data. Meh.
-		$this->write(    'return "'.$this->name.'.*, '.implode(', ', array_map(function($rel) { return $rel[2] . '.*'; }, $this->structure['relations'])).'";');
+		$this->write(    'return %s;', implode(', ', array_map(function($rel) { return $rel . '.*'; }, $table_names)));
 		$this->write('}');
 		$this->write('return implode(", ", array_map(array($this, "format_column_selector"), $columns));');
 		$this->finish_function();
