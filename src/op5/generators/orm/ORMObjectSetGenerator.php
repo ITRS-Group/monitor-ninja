@@ -3,15 +3,16 @@
 abstract class ORMObjectSetGenerator extends class_generator {
 	public $name;
 	public $structure;
+	public $full_structure;
 	public $objectclass;
 	public $associations; /** an association is a way to get a one-to-many */
 
 	public function __construct( $name, $structure ) {
 		$this->name = $name;
 		$this->structure = $structure[$name];
+		$this->full_structure = $structure;
 		$this->objectclass = $this->structure['class'].self::$model_suffix;
 		$this->classname = 'Base'.$this->structure['class'].'Set';
-		parent::generate();
 
 		$this->associations = array();
 
@@ -46,7 +47,6 @@ abstract class ORMObjectSetGenerator extends class_generator {
 		$this->generate_backend_specific_functions();
 
 		$this->generate_apply_columns_rewrite();
-		$this->generate_filter_valid_columns();
 		$this->generate_get_all_columns_list();
 
 		/* External interface, backend specific */
@@ -55,7 +55,7 @@ abstract class ORMObjectSetGenerator extends class_generator {
 		$this->generate_it();
 
 		/* Interface used by orm-related libraries (some visitors) */
-		$this->generate_process_field_name();
+		$this->generate_map_name_to_backend();
 
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
@@ -81,37 +81,6 @@ abstract class ORMObjectSetGenerator extends class_generator {
 			}
 		}
 		$this->write('return $columns;');
-		$this->finish_function();
-	}
-
-	public function generate_filter_valid_columns() {
-		$translated_structure = array();
-		foreach( $this->structure['structure'] as $name => $type ) {
-			if(isset($this->structure['rename']) && isset($this->structure['rename'][$name])) {
-				$name = $this->structure['rename'][$name];
-			}
-			$translated_structure[$name] = $type;
-		}
-
-		$this->init_function('filter_valid_columns', array('columns','prefix'), array('static'), array('prefix'=>''));
-		$this->write('$in_columns = array_flip($columns);');
-		$this->write('$out_columns = array();');
-
-		foreach($translated_structure as $name => $type ) {
-			if( !is_array($type) ) {
-				$this->write('if(isset($in_columns[$prefix.%s])) {', $name);
-				$this->write('$out_columns[] = $prefix.%s;',$name);
-				$this->write('}');
-			}
-		}
-		foreach($translated_structure as $name => $type ) {
-			if( is_array($type) ) {
-				$this->write('$tmpset = '.$type[0].'Pool'.self::$model_suffix.'::all();');
-				$this->write('$sub_columns = $tmpset->filter_valid_columns($columns,%s);',$type[1]);
-				$this->write('$out_columns = array_merge($out_columns, $sub_columns);');
-			}
-		}
-		$this->write('return $out_columns;');
 		$this->finish_function();
 	}
 
@@ -152,6 +121,6 @@ abstract class ORMObjectSetGenerator extends class_generator {
 	abstract public function generate_it();
 	abstract public function generate_count();
 	abstract public function generate_stats();
-	abstract public function generate_process_field_name();
+	abstract public function generate_map_name_to_backend();
 	abstract public function generate_backend_specific_functions();
 }

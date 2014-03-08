@@ -31,7 +31,6 @@ class ORMRootSetGenerator extends class_generator {
 		$this->generate_it();
 		$this->generate_get_auth_filter();
 		$this->generate_get_all_columns_list();
-		$this->generate_process_field_name();
 		$this->finish_class();
 	}
 
@@ -117,12 +116,5 @@ class ORMRootSetGenerator extends class_generator {
 		$this->init_function('get_all_columns_list', array(), array('static'));
 		$this->write('return array();');
 		$this->finish_function();
-	}
-
-	/**
-	 * Generate a stub for process_field_name, which translates the name in a filter to something useful in the backend
-	 */
-	private function generate_process_field_name() {
-		$this->abstract_function('process_field_name', array('name'), array('static'));
 	}
 }

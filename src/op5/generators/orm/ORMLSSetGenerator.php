@@ -5,7 +5,6 @@ require_once("ORMObjectSetGenerator.php");
 class ORMLSSetGenerator extends ORMObjectSetGenerator {
 
 	public function generate($skip_generated_note = false) {
-		$this->classfile("op5/livestatus.php");
 		parent::generate($skip_generated_note);
 	}
 
@@ -24,8 +23,8 @@ class ORMLSSetGenerator extends ORMObjectSetGenerator {
 		$this->write('$single = !is_array($intersections);');
 		$this->write('if($single) $intersections = array($intersections);');
 
-		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor($this);');
-		$this->write('$sb_visit = new LivestatusStatsBuilderVisitor($this);');
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Set'.self::$model_suffix);
+		$this->write('$sb_visit = new LivestatusStatsBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Set'.self::$model_suffix);
 		$this->write('$ls_filter = $this->filter->visit($fb_visit, false);');
 
 		$this->write('$ls_intersections = array();');
@@ -52,7 +51,7 @@ class ORMLSSetGenerator extends ORMObjectSetGenerator {
 		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
-		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor($this);');
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Set'.self::$model_suffix);
 		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 		$this->write('$ls_filter .= "Limit: 0\n";');
 
@@ -72,15 +71,18 @@ class ORMLSSetGenerator extends ORMObjectSetGenerator {
 		$this->write('$ls = op5livestatus::instance();');
 
 		$this->write('$filter = $this->get_auth_filter();');
-		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor($this);');
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Set'.self::$model_suffix);
 		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 
 		foreach(array('$order','$this->default_sort') as $sortfield) {
 			$this->write('foreach('.$sortfield.' as $col_attr) {');
-			$this->write('$parts = explode(" ",$col_attr);');
-			$this->write('$parts[0] = static::process_field_name($parts[0]);');
-			$this->write('$parts = array_filter($parts);');
-			$this->write('$ls_filter .= "Sort: ".implode(" ",$parts)."\n";');
+			$this->write(  '$parts = explode(" ",$col_attr);');
+			$this->write(  '$parts[0] = static::map_name_to_backend($parts[0]);');
+			/* Skip sort if not accepted column */
+			$this->write(  'if($parts[0] !== false) {');
+			$this->write(    '$parts = array_filter($parts);');
+			$this->write(    '$ls_filter .= "Sort: ".implode(" ",$parts)."\n";');
+			$this->write(  '}');
 			$this->write('}');
 		}
 
@@ -96,12 +98,13 @@ class ORMLSSetGenerator extends ORMObjectSetGenerator {
 		$this->write('if( $columns !== false ) {');
 		$this->write(  '$processed_columns = array_merge($columns, $this->key_columns);');
 		$this->write(  '$processed_columns = static::apply_columns_rewrite($processed_columns);');
-		$this->write(  '$tmp_columns = array();');
+		$this->write(  '$valid_columns = array();');
 		$this->write(  'foreach($processed_columns as $col) {');
-		$this->write(    '$tmp_columns[] = static::process_field_name($col);');
+		$this->write(    '$new_name = static::map_name_to_backend($col);');
+		$this->write(    'if($new_name !== false) {');
+		$this->write(      '$valid_columns[] = $new_name;');
+		$this->write(    '}');
 		$this->write(  '}');
-		$this->write(  '$valid_columns = static::filter_valid_columns($tmp_columns);');
-		$this->write(  'if($valid_columns === false) return false;');
 		$this->write(  '$valid_columns = array_unique($valid_columns);');
 		$this->write('}');
 
@@ -120,33 +123,32 @@ class ORMLSSetGenerator extends ORMObjectSetGenerator {
 	}
 
 	/**
-	 * Generate the method process_field_name for the object set
+	 * Generate the method map_name_to_backend for the object set
 	 *
 	 * @param $oset ORMObjectSetGenerator
 	 */
-	public function generate_process_field_name() {
-		$this->init_function('process_field_name', array('name'), array('static'));
-		if(isset($this->structure['rename'])) {
-			foreach($this->structure['rename'] as $source => $dest ) {
-				$this->write('if($name == %s) {', $source);
-				$this->write('$name = %s;', $dest);
-				$this->write('}');
-			}
-		}
+	public function generate_map_name_to_backend() {
+		$this->init_function('map_name_to_backend', array('name', 'prefix'), array('static'), array('prefix' => false));
+		$this->write('if($prefix === false) {');
+		$this->write('$prefix = "";');
+		$this->write('}');
 		foreach($this->structure['structure'] as $field => $type ) {
+			$backend_field = $field;
+			if(isset($this->structure['rename']) && isset($this->structure['rename'][$field])) {
+				$backend_field = $this->structure['rename'][$field];
+			}
 			if(is_array($type)) {
 				$subobjset_class = $type[0].'Set'.self::$model_suffix;
 				$this->write('if(substr($name,0,%s) == %s) {', strlen($field)+1, $field.'.');
-				$this->write('$subobj_name = substr($name,%d);', strlen($field)+1);
-				$this->write('$prefix = "";');
-				$this->write('if(false===strpos($subobj_name,".")) {');
-				$this->write('$prefix = %s;', $type[1]);
+				$this->write('return '.$subobjset_class.'::map_name_to_backend(substr($name,%d),%s);', strlen($field)+1, $type[1]);
 				$this->write('}');
-				$this->write('$name = $prefix.'.$subobjset_class.'::process_field_name($subobj_name);');
+			} else {
+				$this->write('if($name == %s) {', $field);
+				$this->write('return $prefix.%s;',$backend_field);
 				$this->write('}');
 			}
 		}
-		$this->write('return preg_replace("/[^a-zA-Z._]/","",$name);');
+		$this->write('return false;');
 		$this->write('}');
 	}
 }
