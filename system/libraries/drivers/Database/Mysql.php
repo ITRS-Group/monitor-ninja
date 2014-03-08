@@ -473,12 +473,16 @@ class Mysql_Result extends Database_Result {
 		return isset($rows) ? $rows : array();
 	}
 
-	public function list_fields()
+	public function list_fields( $with_table_names = false )
 	{
 		$field_names = array();
 		while ($field = mysql_fetch_field($this->result))
 		{
-			$field_names[] = $field->name;
+			$name = "";
+			if($with_table_names)
+				$name .= $field->table . '.';
+			$name .= $field->name;
+			$field_names[] = $name;
 		}
 
 		return $field_names;
