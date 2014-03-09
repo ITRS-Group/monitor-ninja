@@ -21,18 +21,15 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 	 */
 	protected $not    = "Negate:";
 
-	/**
-	 * The current set this visitor is operating for
-	 */
-	private $set;
+	/** a callback for converting a ORM layer column name to a database layer column name */
+	protected $column_formatter;
 
 	/**
-	 * Populate the related set for the visitor
-	 *
-	 * @param $set Set object
+	 * Create new Livestatus visitor
+	 * @param $column_formatter a callback for converting a ORM layer column name to a database layer column name
 	 */
-	public function __construct( $set ) {
-		$this->set = $set;
+	public function __construct($column_formatter) {
+		$this->column_formatter = $column_formatter;
 	}
 
 	/**
@@ -67,7 +64,8 @@ class LivestatusFilterBuilderVisitor implements LivestatusFilterVisitor {
 	 * Visit an negation node
 	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
-		$field = $this->set->process_field_name($filt->get_field());
+		$field = $filt->get_field();
+		$field = call_user_func($this->column_formatter, $field);
 		$op = $filt->get_op();
 		$value = $filt->get_value();
 		return $this->filter . $field . " " . $op . " " . $value . "\n";
