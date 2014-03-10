@@ -40,7 +40,7 @@ class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
 				foreach ($objects as $object) {
 					if ($type == 'services') {
 						list($hname, $sdesc) = split(';', $object->object_name);
-						$set = $set->union($poolname::all()->reduce_by('host_name', $hname, '=')->reduce_by('description', $sdesc, '='));
+						$set = $set->union($poolname::all()->reduce_by('host.name', $hname, '=')->reduce_by('description', $sdesc, '='));
 					}
 					else {
 						$set = $set->union($poolname::all()->reduce_by('name', $object->object_name, '='));
