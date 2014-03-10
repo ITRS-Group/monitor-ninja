@@ -16,7 +16,7 @@ class op5sysinfo {
 	 *
 	 * @var unknown
 	 */
-	private static $metric_names = array ('monitor','logserver','pollers',
+	private static $metric_names = array ('monitor','monitor.service','logserver','pollers',
 		'peers','aps','trapper');
 
 	/**
@@ -39,7 +39,7 @@ class op5sysinfo {
 
 		$metrics = array ();
 		foreach ($request as $metric) {
-			$getter = "get_" . $metric . "_usage";
+			$getter = "get_" . str_replace('.','_',$metric) . "_usage";
 			try {
 				if (method_exists($this, $getter)) {
 					$metrics[$metric] = $this->$getter();
@@ -62,6 +62,20 @@ class op5sysinfo {
 		/* Query livestatus for number of hosts loaded in system */
 		list ($columns, $objects, $count) = $ls->query('hosts', 'Limit: 0',
 			array ('name'), array ('auth' => false));
+		return $count;
+	}
+
+	/**
+	 * Get number of hosts used by Monitor
+	 *
+	 * @throws op5LivestatusException
+	 * @return int
+	 */
+	public function get_monitor_service_usage() {
+		$ls = op5livestatus::instance();
+		/* Query livestatus for number of hosts loaded in system */
+		list ($columns, $objects, $count) = $ls->query('services', 'Limit: 0',
+			array ('description'), array ('auth' => false));
 		return $count;
 	}
 
