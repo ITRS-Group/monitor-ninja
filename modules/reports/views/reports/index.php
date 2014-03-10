@@ -2,6 +2,13 @@
 <div id="response"></div>
 <div id="progress"></div>
 <div class="report-page">
+	<div class="report-notification-bar">
+	<?php
+	foreach ($report_notifications as $report_notification) {
+		echo "<h2>".$report_notification."</h2>";
+	}
+	?>
+	</div>
 <?php
 	echo isset($error) ? $error : '';
 	echo $header;

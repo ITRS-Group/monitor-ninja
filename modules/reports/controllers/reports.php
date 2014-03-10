@@ -17,6 +17,7 @@ class Reports_Controller extends Base_reports_Controller
 {
 	private $status_link = "status/host/";
 	private $history_link = "alert_history/generate";
+	private $report_notifications = array();
 
 
 	private static $sla_field_names = array(
@@ -167,6 +168,10 @@ class Reports_Controller extends Base_reports_Controller
 		exit(1);
 	}
 
+	public function add_report_notification($notification) {
+		$this->report_notifications[] = $notification;
+	}
+
 	/**
 	 * Generate (availability) report from parameters set in index()
 	 *
@@ -208,6 +213,9 @@ class Reports_Controller extends Base_reports_Controller
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
+		if (count($this->report_notifications) > 0) {
+			$this->template->content->report_notifications = $this->report_notifications;
+		}
 		$template = $this->template->content;
 
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
