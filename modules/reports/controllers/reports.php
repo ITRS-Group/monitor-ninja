@@ -168,6 +168,12 @@ class Reports_Controller extends Base_reports_Controller
 		exit(1);
 	}
 
+	/**
+	 * Set notifications to reports via a hook
+	 *
+	 * @param $notification string
+	 * @return void
+	 **/
 	public function add_report_notification($notification) {
 		$this->report_notifications[] = $notification;
 	}
