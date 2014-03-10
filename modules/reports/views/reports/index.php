@@ -4,8 +4,10 @@
 <div class="report-page">
 	<div class="report-notification-bar">
 	<?php
-	foreach ($report_notifications as $report_notification) {
-		echo "<h2>".$report_notification."</h2>";
+	if (isset($report_notifications)) {
+		foreach ($report_notifications as $report_notification) {
+			echo $report_notification;
+		}
 	}
 	?>
 	</div>
