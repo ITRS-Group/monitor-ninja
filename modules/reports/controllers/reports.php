@@ -219,9 +219,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
-		if (count($this->report_notifications) > 0) {
-			$this->template->content->report_notifications = $this->report_notifications;
-		}
+		$this->template->content->report_notifications = $this->report_notifications;
 		$template = $this->template->content;
 
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
