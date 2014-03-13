@@ -104,10 +104,12 @@ class ORMSQLSetGenerator extends ORMObjectSetGenerator {
 			$this->write('foreach('.$sortfield.' as $col_attr) {');
 			$this->write(  '$parts = explode(" ",$col_attr,2);');
 			$this->write(  'if(isset($parts[1]) && !preg_match("/^(asc|desc)$/i",$parts[1])) continue;');
+			$this->write(  '$original_part_0 = $parts[0];');
 			$this->write(  '$parts[0] = static::map_name_to_backend($parts[0]);');
-			$this->write(  'if($parts[0] !== false) {');
-			$this->write(    '$sort[] = implode(" ",$parts);');
+			$this->write(  'if($parts[0] === false) {');
+			$this->write(    'throw new ORMException(%s.$original_part_0."\'");', "Table '".$this->name."' has no column '");
 			$this->write(  '}');
+			$this->write(  '$sort[] = implode(" ",$parts);');
 			$this->write('}');
 		}
 		$this->write('if(!empty($sort)) {');

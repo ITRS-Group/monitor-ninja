@@ -77,12 +77,14 @@ class ORMLSSetGenerator extends ORMObjectSetGenerator {
 		foreach(array('$order','$this->default_sort') as $sortfield) {
 			$this->write('foreach('.$sortfield.' as $col_attr) {');
 			$this->write(  '$parts = explode(" ",$col_attr);');
+			$this->write(  '$original_part_0 = $parts[0];');
 			$this->write(  '$parts[0] = static::map_name_to_backend($parts[0]);');
-			/* Skip sort if not accepted column */
-			$this->write(  'if($parts[0] !== false) {');
-			$this->write(    '$parts = array_filter($parts);');
-			$this->write(    '$ls_filter .= "Sort: ".implode(" ",$parts)."\n";');
+			/* Throw exception if column is not found */
+			$this->write(  'if($parts[0] === false) {');
+			$this->write(    'throw new ORMException(%s.$original_part_0."\'");', "Table '".$this->name."' has no column '");
 			$this->write(  '}');
+			$this->write(  '$parts = array_filter($parts);');
+			$this->write(  '$ls_filter .= "Sort: ".implode(" ",$parts)."\n";');
 			$this->write('}');
 		}
 
