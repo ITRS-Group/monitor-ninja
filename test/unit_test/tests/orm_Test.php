@@ -228,6 +228,14 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @expectedException ORMException
+	 * @expectedExceptionMessage Table 'hosts' has no column 'kaka'
+	 */
+	public function test_sort_on_missing_column() {
+		HostPool_Model::all()->it(false, array('kaka'));
+	}
+
+	/**
 	 * Test that config url contains the host name
 	 *
 	 * This test depends on the configuration containing the macro $HOSTNAME$,
