@@ -30,7 +30,16 @@
 	<body>
 
 		<div class="container">
-			<?php if(!isset($hide_header)) {
+			<?php
+			if (!empty($report_notifications)) {
+				?> <div class="report-notification-bar"> <?php
+				foreach ($report_notifications as $report_notification) {
+					echo $report_notification;
+				}
+			?> </div> <?php
+			}
+
+			if(!isset($hide_header)) {
 				require __DIR__.'/template_header.php';
 			} ?>
 			<div class="content" tabindex="0" id="content">

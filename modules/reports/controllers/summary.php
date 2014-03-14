@@ -18,7 +18,6 @@ class Summary_Controller extends Base_reports_Controller
 	private $host_state_names = array();
 	private $service_state_names = array();
 
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -95,10 +94,6 @@ class Summary_Controller extends Base_reports_Controller
 		else if (!$this->options['standardreport']) {
 			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
-
-
-
-
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
