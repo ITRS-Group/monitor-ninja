@@ -48,7 +48,7 @@ class Ninja_Controller extends Template_Controller {
 		$this->template = $this->add_view('template');
 
 		$this->template->global_notifications = array();
-		$this->template->report_notifications = array();
+		$this->template->print_notifications = array();
 
 		if (!$this->run_tests) {
 			$this->profiler = new Profiler;
@@ -168,8 +168,8 @@ class Ninja_Controller extends Template_Controller {
 		$this->template->global_notifications[] = $notification;
 	}
 
-	public function add_report_notification($notification) {
-		$this->template->report_notifications[] = $notification;
+	public function add_print_notification($notification) {
+		$this->template->print_notifications[] = $notification;
 	}
 
 	/**

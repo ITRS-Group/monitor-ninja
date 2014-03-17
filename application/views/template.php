@@ -31,10 +31,10 @@
 
 		<div class="container">
 			<?php
-			if (!empty($report_notifications)) {
-				?> <div class="report-notification-bar"> <?php
-				foreach ($report_notifications as $report_notification) {
-					echo $report_notification;
+			if (!empty($print_notifications)) {
+				?> <div class="print-notification-bar"> <?php
+				foreach ($print_notifications as $print_notification) {
+					echo $print_notification;
 				}
 			?> </div> <?php
 			}
