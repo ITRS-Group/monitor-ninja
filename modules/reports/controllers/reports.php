@@ -525,9 +525,9 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		if(ninja::has_module('synergy') && $this->options['include_synergy_events']) {
-			$synergy_report_model = new Synergy_report_Model;
+			$synergy_report_model = new Synergy_report_Model($this->options);
 			$synergy_content = $this->add_view('reports/synergy');
-			$synergy_content->synergy_events = $synergy_report_model->get_data($this->options);
+			$synergy_content->synergy_events = $synergy_report_model->get_data();
 			$this->template->content->synergy_content = $synergy_content;
 		}
 		$this->template->js_header->js = $this->xtra_js;
