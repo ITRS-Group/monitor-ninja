@@ -115,7 +115,8 @@ var lsfilter_main = {
 			},
 			loading_stop : function(loader) {
 				loader.remove();
-			}
+			},
+			per_page: lsfilter_per_page
 		});
 		lsfilter_textarea.init($('#filter_query'), $('#filter_query_order'));
 		lsfilter_saved.init();
