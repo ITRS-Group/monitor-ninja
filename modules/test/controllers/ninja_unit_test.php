@@ -11,13 +11,19 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 		new Ninja_Unit_Test;
 	}
 
+	private function prereq() {
+		if(date::utc_offset() != 3600) {
+			echo "Aborting: Report tests require CET as timezone (date.timezone = \"CET\" in php.ini, for example)\n";
+			exit(1);
+		}
+	}
+
 	/**
 	* Run report tests
 	*/
 	public function reports()
 	{
-		#$authentic = new Auth;
-		#Auth::instance()->force_login($user);
+		$this->prereq();
 
 		$test_results = array();
 		$config = Kohana::config('database.default');
