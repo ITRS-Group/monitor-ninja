@@ -7,6 +7,7 @@ function lsfilter_list(config)
 		autorefresh_enabled: true,
 		request_url: _site_domain + _index_page + "/" + _controller_name + "/fetch_ajax",
 		columns: false,
+		toolbar: false,
 		attach_head: false,
 		loading_start: function()
 		{
@@ -327,13 +328,19 @@ function lsfilter_list(config)
 	this.render_totals = function(table, totals)
 	{
 
-		var subtitle = $( '.main-toolbar-subtitle' );
+		var subtitle = null;
+		if ( this.config.toolbar ) {
+			subtitle = this.config.toolbar.find( '.main-toolbar-subtitle' );
+		}
+
 		var container = $('<ul />');
 
-		subtitle.html("").append( link_query('['+table+'] all')
-			.text(table.charAt(0).toUpperCase() + table.slice(1))
-			.css( "border", "none" )
-		);
+		if ( subtitle ) {
+			subtitle.html("").append( link_query('['+table+'] all')
+				.text(table.charAt(0).toUpperCase() + table.slice(1))
+				.css( "border", "none" )
+			);
+		}
 
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
