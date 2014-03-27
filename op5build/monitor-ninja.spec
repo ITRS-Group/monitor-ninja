@@ -10,9 +10,9 @@
 %endif
 
 Name: monitor-ninja
-Version: @@VERSION@@
-Release: @@RELEASE@@
-License: op5 Software License
+Version: %{op5version}
+Release: %{op5release}%{?dist}
+License: GPLv2 and LGPLv2 and ASL 2.0 and BSD and MIT and (MIT or GPL+) and (MIT or GPLv2+)
 Vendor: op5 AB
 BuildRoot: %{_tmppath}/%{name}-%{version}
 Summary: op5 monitor ninja
