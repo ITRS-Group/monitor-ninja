@@ -260,5 +260,5 @@ var listview_multi_select_cell_renderer = function(args)
 		else
 			args.row.addClass('selected_even');
 	}
-	return $('<td style="width: 1em;" />').append(checkbox);
+	return $('<td style="width: 1em; padding: 0 3px" />').append(checkbox);
 };
