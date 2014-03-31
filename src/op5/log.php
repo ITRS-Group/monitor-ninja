@@ -200,10 +200,25 @@ class op5Log {
 			if(!is_dir($dir)) {
 				@mkdir($dir, 0775, true);
 			}
+
+			$new_file = false;
+			if (!file_exists($file)) {
+				$new_file = true;
+			}
+
 			$res = @file_put_contents(
 				$file,
 				implode("\n", $messages) . "\n",
 				FILE_APPEND);
+
+			if ($new_file) {
+				/* Set read-writable by owner and group.
+				 * both the web server and the monitor user is a member of the web server (apache) group.
+				 * This allows the monitor user to directly use the op5Log class without triggering
+				 * access errors.
+				 * */
+				chmod ($file, 0664);
+			}
 
 			if($res === false) {
 				error_log('Could not write to log file: ' . $file);
