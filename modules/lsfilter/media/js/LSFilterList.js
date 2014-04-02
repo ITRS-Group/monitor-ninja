@@ -251,9 +251,56 @@ function lsfilter_list(config)
 			clonehead.css('padding-bottom', thishead.css('padding-bottom'));
 			clonehead.css('margin', thishead.css('margin'));
 			clonehead.css('border', thishead.css('border'));
-
 		});
 
+		// Get scrollbar height and width
+		var scroll = this.get_browser_scroll_size();
+		$('#align_th').remove();
+		if ($('.content').get(0).scrollHeight > $('.content').height()) {
+			/*
+			 *	Append a th to the floating header
+			 *	Give it a width that matches the scrollbars width
+			 *	It's not a very nice solution but at least we
+			 *	don't have to rewrite the floating header at this time
+			*/
+			clone.find("tr")
+				.append(
+					$("<th>")
+						.attr('id', 'align_th')
+						.css('width', (scroll.width - 4) + 'px')
+						.css('padding-right', 0)
+				);
+		}
+
+	};
+
+	this.get_browser_scroll_size = function()
+	{
+		var css = {
+			"border":  "none",
+			"height":  "200px",
+			"margin":  "0",
+			"padding": "0",
+			"width":   "200px"
+		};
+
+		var inner = $("<div>").css($.extend({}, css));
+		var outer = $("<div>").css($.extend({
+			"left":       "-2000px",
+			"overflow":   "scroll",
+			"position":   "absolute",
+			"top":        "-2000px"
+		}, css)).append(inner).appendTo("body")
+		.scrollLeft(2000)
+		.scrollTop(2000);
+
+		var scrollSize = {
+			"height": (outer.offset().top - inner.offset().top) || 0,
+			"width": (outer.offset().left - inner.offset().left) || 0
+		};
+
+		outer.remove();
+		return scrollSize;
 	};
 
 	this.handle_autorefresh = function()
