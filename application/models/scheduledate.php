@@ -79,6 +79,9 @@ class ScheduleDate_Model extends Model
 	static public function schedule_downtime($timestamp=false) {
 		$schedules = RecurringDowntimePool_Model::all();
 
+		if ($timestamp === false)
+			$timestamp = time();
+
 		// Set timestamp to the following day.
 		$timestamp = strtotime('+1 day', $timestamp);
 
