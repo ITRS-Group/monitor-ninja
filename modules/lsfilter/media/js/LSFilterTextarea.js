@@ -9,6 +9,7 @@ var lsfilter_textarea = {
 		this.element.css("border", "2px solid #5d2"); // green
 		if (data.source == 'textarea') return;
 		this.element.val(data.query);
+		this.last_query = data.query;
 	},
 	init: function(element, orderelement)
 	{
@@ -18,8 +19,18 @@ var lsfilter_textarea = {
 		this.orderelement = orderelement;
 		this.element.bind('keyup paste cut', function(evt)
 		{
-			query = self.element.val();
-			self.handle_propertychange(query);
+			var query = (self.element.val()).toString().trim();
+			if(self.last_query === query) {
+				// we don't want to update the view if we
+				// aren't modifying the value at all (for
+				// example when navigating the text or adding
+				// whitespace)
+				return;
+			}
+			// Set red until parsed...
+			self.element.css("border", "2px solid #f40");
+			lsfilter_main.update_delayed(query, 'textarea');
+			self.last_query = query;
 		});
 	},
 	load: function()
@@ -34,12 +45,4 @@ var lsfilter_textarea = {
 	// Internal veriables
 	element: false,
 	orderelement: false,
-
-	// Internal methods
-	handle_propertychange: function(query)
-	{
-		// Set red until parsed...
-		this.element.css("border", "2px solid #f40"); // red
-		lsfilter_main.update_delayed(query, 'textarea');
-	}
 };
