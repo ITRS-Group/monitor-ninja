@@ -105,6 +105,7 @@ var lsfilter_main = {
 		lsfilter_storage.list = new lsfilter_list({
 			autorefresh_delay : _lv_refresh_delay * 1000,
 			table : $('#filter_result'),
+			toolbar: $( '.main-toolbar' ),
 			totals : $('#filter_result_totals'),
 			attach_head : true,
 			loading_start : function() {

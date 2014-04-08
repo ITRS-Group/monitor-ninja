@@ -7,6 +7,7 @@ function lsfilter_list(config)
 		autorefresh_enabled: true,
 		request_url: _site_domain + _index_page + "/" + _controller_name + "/fetch_ajax",
 		columns: false,
+		toolbar: false,
 		attach_head: false,
 		loading_start: function()
 		{
@@ -250,9 +251,56 @@ function lsfilter_list(config)
 			clonehead.css('padding-bottom', thishead.css('padding-bottom'));
 			clonehead.css('margin', thishead.css('margin'));
 			clonehead.css('border', thishead.css('border'));
-
 		});
 
+		// Get scrollbar height and width
+		var scroll = this.get_browser_scroll_size();
+		$('#align_th').remove();
+		if ($('.content').get(0).scrollHeight > $('.content').height()) {
+			/*
+			 *	Append a th to the floating header
+			 *	Give it a width that matches the scrollbars width
+			 *	It's not a very nice solution but at least we
+			 *	don't have to rewrite the floating header at this time
+			*/
+			clone.find("tr")
+				.append(
+					$("<th>")
+						.attr('id', 'align_th')
+						.css('width', (scroll.width - 4) + 'px')
+						.css('padding-right', 0)
+				);
+		}
+
+	};
+
+	this.get_browser_scroll_size = function()
+	{
+		var css = {
+			"border":  "none",
+			"height":  "200px",
+			"margin":  "0",
+			"padding": "0",
+			"width":   "200px"
+		};
+
+		var inner = $("<div>").css($.extend({}, css));
+		var outer = $("<div>").css($.extend({
+			"left":       "-2000px",
+			"overflow":   "scroll",
+			"position":   "absolute",
+			"top":        "-2000px"
+		}, css)).append(inner).appendTo("body")
+		.scrollLeft(2000)
+		.scrollTop(2000);
+
+		var scrollSize = {
+			"height": (outer.offset().top - inner.offset().top) || 0,
+			"width": (outer.offset().left - inner.offset().left) || 0
+		};
+
+		outer.remove();
+		return scrollSize;
 	};
 
 	this.handle_autorefresh = function()
@@ -327,13 +375,19 @@ function lsfilter_list(config)
 	this.render_totals = function(table, totals)
 	{
 
-		var subtitle = $( '.main-toolbar-subtitle' );
+		var subtitle = null;
+		if ( this.config.toolbar ) {
+			subtitle = this.config.toolbar.find( '.main-toolbar-subtitle' );
+		}
+
 		var container = $('<ul />');
 
-		subtitle.html("").append( link_query('['+table+'] all')
-			.text(table.charAt(0).toUpperCase() + table.slice(1))
-			.css( "border", "none" )
-		);
+		if ( subtitle ) {
+			subtitle.html("").append( link_query('['+table+'] all')
+				.text(table.charAt(0).toUpperCase() + table.slice(1))
+				.css( "border", "none" )
+			);
+		}
 
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
