@@ -5,6 +5,9 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 	$saved_reports_exists = true;
 }
 ?>
+<div class="report_block">
+<h2><?php echo _('Report Mode'); ?></h2>
+<hr />
 <input type="hidden" name="type" value="<?php echo $type ?>" />
 <table summary="Select report type" class="setup-tbl"><!--id="main_table"-->
 	<tr>
@@ -113,11 +116,12 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		</td>
 	</tr>
 </table>
+</div>
 <?php
 if($options['report_id']) { ?>
 <input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 <?php } ?>
-<div class="setup-table" id="settings_table">
+<div class="report-block">
 <h2><?php echo _('Report Settings'); ?></h2>
 <hr />
 <table id="report" class="setup-tbl">

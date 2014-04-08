@@ -101,7 +101,7 @@ if (!empty($widgets)) {
 			</table>
 
 		<div class="setup-table" >
-			<table id="settings_table">
+			<table>
 				<tr>
 					<td>
 						<?php echo _('Report Period') ?><br />

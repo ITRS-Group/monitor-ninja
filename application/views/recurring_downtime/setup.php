@@ -8,8 +8,10 @@
 		}
 	?>
 </div>
-<form method="POST" action="" id="setup_form">
-	<div class="setup-table"><br />
+<form class="report-page-setup" method="POST" action="">
+	<div class="report-block">
+		<h2><?php echo _('Report Mode'); ?></h2>
+		<hr/>
 <?php	if (isset($schedule_id) && !empty($schedule_id)) {
 			# show link to create new recurring schedule
 			echo '&nbsp'.html::anchor('recurring_downtime/', _('Add New Downtime Schedule')).'<br /><br />';
@@ -63,7 +65,9 @@
 		</table>
 	</div>
 
-	<div class="setup-table">
+	<div class="report-block">
+		<h2><?php echo _('Report Settings'); ?></h2>
+		<hr />
 		<table class="setup-tbl">
 			<tr>
 				<td colspan="3">

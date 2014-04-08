@@ -5,7 +5,7 @@
 	}
 ?></div>
 
-<div>
+<div class="report-page-setup">
 	<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 		echo form::open('summary/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;', 'method' => 'get'));
 	 ?>
@@ -41,8 +41,8 @@
 	</div>
 	<?php echo form::close(); } ?>
 
-	<h1><?php echo _('Alert Summary Report') ?></h1>
 	<h2><?php echo _('Report Mode') ?></h2>
+	<hr />
 	<form id="report_mode_form"><br />
 	<label><?php echo form::radio(array('name' => 'report_mode'), 'standard', !$options['report_type'] || $options['standardreport']); ?> <?php echo _('Standard') ?></label> &nbsp; &nbsp; <label><?php echo form::radio(array('name' => 'report_mode'), 'custom', $options['report_type'] && !$options['standardreport']); ?> <?php echo _('Custom') ?></label>
 	</form>

@@ -95,6 +95,9 @@ class Summary_Controller extends Base_reports_Controller
 			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
 
+		$this->template->toolbar = new Toolbar_Controller(_('Summary report'));
+
+
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 

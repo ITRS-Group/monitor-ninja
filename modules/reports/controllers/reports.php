@@ -118,7 +118,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->inline_js = $this->inline_js;
 
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
-		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
 		$template->report_options->months = date::abbr_month_names();
 
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
@@ -132,7 +131,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->js_strings = $this->js_strings;
 
-		$this->template->toolbar = new Toolbar_Controller( $template->label_create_new );
+		$this->template->toolbar = new Toolbar_Controller($this->type == 'avail' ? _('Availability report') : _('SLA report'));
 
 		if ( $this->type == 'avail' ) {
 			$this->template->toolbar->info( '<a id="switch_report_type" href="' . url::base(true) . 'sla' . '">' );
