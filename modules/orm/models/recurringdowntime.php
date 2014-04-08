@@ -70,12 +70,14 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 	 */
 	public function get_objects()
 	{
-		$id = $this->get_id();
-		$db = Database::instance();
-		$res = $db->query('SELECT object_name from recurring_downtime_objects WHERE recurring_downtime_id = '.$id);
 		$ret = array();
-		foreach ($res->result(false) as $row) {
-			$ret[] = $row['object_name'];
+		$id = $this->get_id();
+		if ($id) {
+			$db = Database::instance();
+			$res = $db->query('SELECT object_name from recurring_downtime_objects WHERE recurring_downtime_id = '.$id);
+			foreach ($res->result(false) as $row) {
+				$ret[] = $row['object_name'];
+			}
 		}
 		return $ret;
 	}
