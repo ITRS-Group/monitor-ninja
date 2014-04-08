@@ -196,6 +196,80 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test bug #8602
+	 *
+	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
+	 */
+	function test_saved_filter_hostgroup_collission() {
+
+		try {
+			/* Mock a saved query */
+			LSFilter_Saved_Queries_Model::save_query('hostgroup_all', '[hosts] not all', 'global');
+
+			$the_opts = array(
+				'report_name' => 'TEST_REPORT',
+				'report_type' => 'hostgroups',
+				'hostgroup_name' => array('hostgroup_all'),
+				'report_period' => 'custom',
+				'start_time' => time() - 3600,
+				'end_time' => time(),
+			);
+			$opts = new Avail_Options();
+			foreach ($the_opts as $k => $v) {
+				$opts[$k] = $v;
+			}
+
+			/* The hostgroup represents all hosts, the filter represents none, so lets se that we get some hosts */
+			$this->assertNotEmpty($opts->get_report_members());
+		} catch(Exception $e) {
+			/* Just so we can clean up */
+			$db = Database::instance();
+			$dbr = $db->query('DELETE FROM '.LSFilter_Saved_Queries_Model::tablename.' WHERE filter_name="hostgroup_all"');
+			throw $e;
+		}
+		/* Clean up... PHP 5.5 is the first to have try {} catch {} finally {do this cleanup}, so copy/paste */
+		$db = Database::instance();
+		$dbr = $db->query('DELETE FROM '.LSFilter_Saved_Queries_Model::tablename.' WHERE filter_name="hostgroup_all"');
+	}
+
+	/**
+	 * Test bug #8602
+	 *
+	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
+	 */
+	function test_saved_filter_servicegroup_collission() {
+
+		try {
+			/* Mock a saved query */
+			LSFilter_Saved_Queries_Model::save_query('servicegroup_all', '[services] not all', 'global');
+
+			$the_opts = array(
+				'report_name' => 'TEST_REPORT',
+				'report_type' => 'servicegroups',
+				'servicegroup_name' => array('servicegroup_all'),
+				'report_period' => 'custom',
+				'start_time' => time() - 3600,
+				'end_time' => time(),
+			);
+			$opts = new Avail_Options();
+			foreach ($the_opts as $k => $v) {
+				$opts[$k] = $v;
+			}
+
+			/* The hostgroup represents all hosts, the filter represents none, so lets se that we get some hosts */
+			$this->assertNotEmpty($opts->get_report_members());
+		} catch(Exception $e) {
+			/* Just so we can clean up */
+			$db = Database::instance();
+			$dbr = $db->query('DELETE FROM '.LSFilter_Saved_Queries_Model::tablename.' WHERE filter_name="servicegroup_all"');
+			throw $e;
+		}
+		/* Clean up... PHP 5.5 is the first to have try {} catch {} finally {do this cleanup}, so copy/paste */
+		$db = Database::instance();
+		$dbr = $db->query('DELETE FROM '.LSFilter_Saved_Queries_Model::tablename.' WHERE filter_name="servicegroup_all"');
+	}
+
+	/**
 	 * The expectation is that - like regular reports - CSV reports should have
 	 * one line per host if it's a host report, one per service if it's a
 	 * service report, one per host if it's a hostgroup report, one per

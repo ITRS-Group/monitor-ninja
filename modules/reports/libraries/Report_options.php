@@ -286,32 +286,26 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		 case 'services':
 			return $this[$this->get_value('report_type')];
 		 case 'hostgroups':
-			$filter = array();
+		 	$all = HostPool_Model::all();
+		 	$set = HostPool_Model::none();
+
 			foreach ($this['hostgroup'] as $group) {
-				$filter[] = 'in "'.$group.'"';
+				$set = $set->union($all->reduce_by('groups', $group, '>='));
 			}
-			$filter = implode(' or ', $filter);
-			if (!$filter)
-				$filter = 'all';
-			$out = ObjectPool_Model::get_by_query('[hosts] '.$filter);
-			$out = $out->it(array('name'), array());
 			$res = array();
-			foreach ($out as $arr) {
+			foreach ($set->it(array('name'), array()) as $arr) {
 				$res[] = $arr->get_key();
 			}
 			return $res;
 		 case 'servicegroups':
-			$filter = array();
+		 	$all = ServicePool_Model::all();
+		 	$set = ServicePool_Model::none();
+
 			foreach ($this['servicegroup'] as $group) {
-				$filter[] = 'in "'.$group.'"';
+				$set = $set->union($all->reduce_by('groups', $group, '>='));
 			}
-			$filter = implode(' or ', $filter);
-			if (!$filter)
-				$filter = 'all';
-			$out = ObjectPool_Model::get_by_query('[services] '.$filter);
-			$out = $out->it(array('host.name', 'description'), array());
 			$res = array();
-			foreach ($out as $arr) {
+			foreach ($set->it(array('host.name', 'description'), array()) as $arr) {
 				$res[] = $arr->get_key();
 			}
 			return $res;
