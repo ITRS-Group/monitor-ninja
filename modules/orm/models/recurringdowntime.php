@@ -17,7 +17,9 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 
 	public function get_weekdays()
 	{
-		$weekdays = unserialize(parent::get_weekdays());
+		$weekdays = parent::get_weekdays();
+		if (is_string($weekdays))
+			$weekdays = unserialize($weekdays);
 		if (!$weekdays)
 			$weekdays = array();
 		return $weekdays;
@@ -25,7 +27,9 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 
 	public function get_months()
 	{
-		$months = unserialize(parent::get_months());
+		$months = parent::get_months();
+		if (is_string($months))
+			$months = unserialize($months);
 		if (!$months)
 			$months = array();
 		return $months;
