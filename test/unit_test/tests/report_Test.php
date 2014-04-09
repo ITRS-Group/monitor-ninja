@@ -89,8 +89,12 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		if ($this->auth->authorized_for('service_view_all'))
 			$msg .= ' with service_view_all';
 
-		$out = Livestatus::instance()->getHosts(array('columns' => 'name'));
-		$opts['host_name'] = $out;
+		$out = Livestatus::instance()->getHosts(array('columns' => array('name')));
+		$res = array();
+		foreach ($out as $row) {
+			$res[] = $row['name'];
+		}
+		$opts['host_name'] = $res;
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
 			$opts['host_states'] = $host_state;

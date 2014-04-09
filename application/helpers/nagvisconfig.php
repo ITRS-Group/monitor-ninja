@@ -23,11 +23,14 @@ class nagvisconfig_Core {
 		$nagvis_config = $cfg->getConfig('nagvis');
 
 		$contactgroups = Livestatus::instance()->getContactGroups(array(
-			'columns'=>'name',
+			'columns'=>array('name'),
 			'filter'=>array(
 				'members'=>array('>='=>$auth->get_user()->username)
 				)
 			));
+		foreach ($contactgroups as $idx) {
+			$contactgroups[$idx] = $contactgroups[$idx]['name'];
+		}
 		
 		$groups_per_type = array(
 			'auth_groups'    => $auth->get_user()->groups,
