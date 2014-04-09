@@ -89,25 +89,25 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		if ($this->auth->authorized_for('service_view_all'))
 			$msg .= ' with service_view_all';
 
-                $out = Livestatus::instance()->getHosts(array('columns' => 'name'));
-                $opts['host_name'] = $out;
-                $result = array();
-                for ($host_state = 1; $host_state <= 7; $host_state++) {
-                        $opts['host_states'] = $host_state;
-                        for ($service_state = 1; $service_state <= 15; $service_state++) {
-                                $opts['service_states'] = $service_state;
-                                for ($state_types = 1; $state_types <= 3; $state_types++) {
-                                        $opts['state_types'] = $state_types;
-                                        for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
-                                                $opts['alert_types'] = $alert_types;
+		$out = Livestatus::instance()->getHosts(array('columns' => 'name'));
+		$opts['host_name'] = $out;
+		$result = array();
+		for ($host_state = 1; $host_state <= 7; $host_state++) {
+			$opts['host_states'] = $host_state;
+			for ($service_state = 1; $service_state <= 15; $service_state++) {
+				$opts['service_states'] = $service_state;
+				for ($state_types = 1; $state_types <= 3; $state_types++) {
+					$opts['state_types'] = $state_types;
+					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
+						$opts['alert_types'] = $alert_types;
 						$rpt = new Summary_Reports_Model($opts);
-                                                $query = $rpt->build_alert_summary_query(false);
+						$query = $rpt->build_alert_summary_query(false);
 						$this->assertInternalType('string', $query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
 						$this->assertObjectHasAttribute('select_type', $db->query("EXPLAIN " . $query)->current());
-                                        }
-                                }
-                        }
-                }
+					}
+				}
+			}
+		}
 	}
 
 	public function test_run_summary_test_queries() {
