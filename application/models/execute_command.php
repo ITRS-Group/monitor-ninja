@@ -27,9 +27,6 @@ class Execute_Command_Model extends Model
 	{
 		$ary = array();
 		switch ($param_name) {
-		 case 'host_name':
-			$ary = Livestatus::instance()->getHosts(array('columns' => 'name'));
-			break;
 		 case 'service':
 		 case 'service_description':
 			$ary = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description')));
@@ -38,19 +35,22 @@ class Execute_Command_Model extends Model
 				foreach ($ary as $v) {
 					$ret_ary[] = $v['host_name'].';'.$v['description'];
 				}
-				$ary = $ret_ary;
+				return $ret_ary;
 			}
 			break;
+		 case 'host_name':
+			$ary = Livestatus::instance()->getHosts(array('columns' => array('name')));
+			break;
 		 case 'hostgroup_name':
-			$ary = Livestatus::instance()->getHostgroups(array('columns' => 'name'));
+			$ary = Livestatus::instance()->getHostgroups(array('columns' => array('name')));
 			break;
 		 case 'servicegroup_name':
-			$ary = Livestatus::instance()->getServicegroups(array('columns' => 'name'));
+			$ary = Livestatus::instance()->getServicegroups(array('columns' => array('name')));
 			break;
 		}
 		$res = array();
 		foreach ($ary as $val) {
-			$res[$val] = $val;
+			$res[$val['name']] = $val['name'];
 		}
 
 		return $res;

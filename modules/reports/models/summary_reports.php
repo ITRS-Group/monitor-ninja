@@ -361,8 +361,12 @@ class Summary_Reports_Model extends Reports_Model
 	 */
 	public function test_summary_queries()
 	{
-		$out = Livestatus::instance()->getHosts(array('columns' => 'name'));
-		$this->options['host_name'] = $out;
+		$out = Livestatus::instance()->getHosts(array('columns' => array('name')));
+		$names = array();
+		foreach ($out as $row) {
+			$names[] = $row['name'];
+		}
+		$this->options['host_name'] = $names;
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
 			$this->options['host_states'] = $host_state;
