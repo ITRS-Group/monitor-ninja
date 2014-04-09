@@ -17,10 +17,10 @@ throw new Exception('deprecated');
 			$ls = Livestatus::instance();
 			$objects = null;
 			if (empty($service)) {
-				$objects = $ls->getHosts(array('filter' => array('name' => $host), 'columns' => 'pnpgraph_present'));
+				$objects = $ls->getHosts(array('filter' => array('name' => $host), 'columns' => array('pnpgraph_present')));
 			} else {
 				$service = urldecode($service);
-				$objects = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'columns' => 'pnpgraph_present'));
+				$objects = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'columns' => array('pnpgraph_present')));
 			}
 			if (isset($objects) and isset($objects[0]) and $objects[0]['pnpgraph_present'] === 1) {
 				return true;
