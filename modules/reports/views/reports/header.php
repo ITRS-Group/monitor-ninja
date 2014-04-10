@@ -1,19 +1,6 @@
 <div id="header" class="report-block">
 	<div class="report-links">
 		<?php
-		echo html::anchor(
-			'#',
-			html::image(
-				$this->add_path('icons/32x32/square-print.png'),
-				array(
-					'alt' => _('Print report'),
-					'title' => _('Print report'),
-					'onclick' => 'window.print()'
-				)
-			),
-			array('class' => 'image-link')
-		);
-
 		echo "<span class='image-link'>";
 		echo form::open($type.'/generate');
 		echo $options->as_form();
