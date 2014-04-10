@@ -60,6 +60,7 @@ Feature: SLA reports
 		And I click "Show report"
 		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
+		And "Jan" should contain "9"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate report on empty servicegroup

@@ -257,7 +257,7 @@ class Reports_Controller extends Base_reports_Controller
 				$_SESSION['report_err_msg'] = _("You didn't select any objects to include in the report");
 			else
 				$_SESSION['report_err_msg'] = sprintf(_("The groups you selected (%s) had no members, so cannot create a report from them"), implode(', ', $this->options[$var]));
-			return url::redirect(Router::$controller.'/index');
+			return url::redirect(Router::$controller.'/index?' . http_build_query($this->options->options));
 		}
 
 		# fetch data
