@@ -20,7 +20,7 @@
 				</td>
 				<td></td>
 				<td>
-					<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $options['summary_items']) ?>
+					<?php echo form::input(array('name' => 'summary_items', 'maxlength' => 7), $options['summary_items']) ?>
 				</td>
 			</tr>
 			<tr>
