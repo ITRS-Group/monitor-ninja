@@ -31,4 +31,5 @@
 	<form id="filter_visual_form">
 		<div id="filter_visual">Filter</div>
 	</form>
+	<button id="close-filter-builder">Close filter builder</button>
  </div>
