@@ -207,7 +207,14 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
 			'description' => _("Optionally add a description to this report, such as an explanation of what the report conveys. Plain text only."),
 			"skin" => _("Choose a skin for your summary report."),
-
+			"standardreport" => _("Choose the type of report you want from the list of predefined summary reports."),
+			"summary_type" => _('The format of the summary. &quot;Most recent alerts&quot; simply lists alerts, &quot;Top alert producers&quot; orders host and/or services by the one that has notified the most recently, and &quot;Alert totals&quot; sums up the number of alerts per selected object'),
+			"summary_items" => _("Enter the number of items you wish the report to contain."),
+			"alert_types" => _("Select whether to include only host alerts, service alerts, or both"),
+			"state_types" => _("Whether to include only hard alerts, soft alerts, or both"),
+			"host_states" => _("Restrict which state(s) you're interested in hosts entering"),
+			"service_states" => _("Restrict which state(s) you're interested in services entering"),
+			"include_long_output" => _("In views that displays individual alerts, include the full check output, instead of only the first line"),
 		);
 
 		if (array_key_exists($id, $helptexts)) {
