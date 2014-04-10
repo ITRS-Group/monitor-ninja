@@ -205,11 +205,11 @@ if (!empty($widgets)) {
 						echo _('Configure').'</a>';
 					}
 					if (0<$object->get_pnpgraph_present()) {
-						$url = url::site() . 'pnp/?host=' . urlencode($host->get_name());
+						$url = url::site() . 'pnp/?host=' . rawurlencode($host->get_name());
 						$pnp_host = $host->get_name();
 						$pnp_service = "_HOST_";
 						if($service!==false) {
-							$url .= '&srv=' . urlencode($service->get_description());
+							$url .= '&srv=' . rawurlencode($service->get_description());
 							$pnp_service = $service->get_description();
 						} else {
 							$url .= '&srv=_HOST_';
