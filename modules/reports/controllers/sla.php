@@ -19,4 +19,13 @@ class Sla_Controller extends Reports_Controller
 			parent::_helptexts($id);
 	}
 
+	public function custom_start() {
+		$row = Database::instance()->query("SELECT MIN(timestamp) as timestamp from report_data");
+		if(!$row) {
+				return json::ok(date());
+		}
+		$value = $row->result(false)->current();
+		return json::ok(array('timestamp' => $value['timestamp']));
+	}
+
 }

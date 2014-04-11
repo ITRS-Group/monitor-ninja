@@ -159,12 +159,43 @@ $(document).ready(function() {
 		});
 	});
 
-	var rpcust = function() {
-		if (this.value == 'custom')
-			js_print_date_ranges();
-	};
-	$('#report_period').on('change', rpcust).each(rpcust);
 
+	var start_date = new Date(0);
+	var end_date = new Date();
+	$.ajax({
+		url:  _site_domain + _index_page + '/sla/custom_start/',
+		type: 'GET',
+		dataType: 'json',
+		success: function(data) {
+			start_date.setTime(data.timestamp * 1000);
+			var html = '<option></option>';
+			for (i = start_date.getFullYear(); i <= end_date.getFullYear(); i++) {
+				html += '<option>' + i + '</option>';
+			}
+			$('#start_year').html(html);
+			$('#end_year').html(html);
+		}
+	});
+	$('#start_year, #end_year').on('change', function () {
+		var start = 0;
+		var end = 11;
+		if (this.value == start_date.getFullYear()) {
+			start = start_date.getMonth();
+		}
+		if (this.value == end_date.getFullYear()) {
+			end = end_date.getMonth();
+		}
+		var html = '<option></option>';
+		for (i = start; i <= end; i++) {
+			html += '<option value="' + (i+1) + '">' + Date.monthNames[i] + '</option>';
+		}
+		if (this.id == 'start_year')
+			$('#start_month').html(html);
+		else
+			$('#end_month').html(html);
+	});
+
+	$('#start_year, #end_year, #start_month, #end_month').on('change', check_custom_months);
 	$("#delete_report").click(confirm_delete_report);
 
 	$(".report_form").on('submit', function() {
@@ -215,64 +246,6 @@ function show_hide(id,h1) {
 		.hide()
 		.css('background', 'url(icons/arrows/grey.gif) 11px 3px no-repeat');
 	}
-}
-
-function js_print_date_ranges(the_year, type, item)
-{
-	show_progress('progress', _wait_str);
-	the_year = typeof the_year == 'undefined' ? 0 : the_year;
-	type = typeof type == 'undefined' ? '' : type;
-	item = typeof item == 'undefined' ? '' : item;
-
-	if (!the_year && type!='' && item!='') {
-		return false;
-	}
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "get_date_ranges/";
-	var data = {the_year: the_year, type: type, item: item};
-
-	if (type !='') {
-		empty_list(type + '_month');
-	}
-
-	set_selected_period(type);
-
-	$.ajax({
-		url: url,
-		type: 'GET',
-		data: data,
-		dataType: 'json',
-		success: function(data) {
-			if (data != '') {
-				// OK, continue
-				if (data['start_year']) {
-					for (i in data['start_year']) {
-						$('#start_year').addOption(data['start_year'][i], data['start_year'][i]);
-					}
-					$('#start_year').find('option:first').attr('selected', 'selected');
-				}
-
-				if (data['end_year']) {
-					for (i in data['end_year']) {
-						$('#end_year').addOption(data['end_year'][i], data['end_year'][i]);
-					}
-					$('#end_year').find('option:first').attr('selected', 'selected');
-				}
-
-				if (data['type_item']) {
-					for (i in data['type_item']) {
-						$('#' + data['type_item'][i][0]).addOption(data['type_item'][i][2], data['type_item'][i][1]);
-					}
-					$('#' + data['type_item'][0][0]).find('option:first').attr('selected', 'selected');
-				}
-
-			} else {
-				// error
-				$.notify(_reports_error + ": Unable to fetch date ranges.", {'sticky': true});
-			}
-			check_custom_months();
-		}
-	});
 }
 
 function show_calendar(val, update) {

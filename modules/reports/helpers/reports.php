@@ -102,26 +102,6 @@ class reports_Core
 	}
 
 	/**
-	 * Fetch date ranges from reports class
-	 * @return Array of date ranges
-	 */
-	static function get_date_ranges()
-	{
-		$sql = "SELECT MIN(timestamp) AS min_date, ".
-				"MAX(timestamp) AS max_date ".
-			"FROM report_data";
-		$db = Database::instance();
-		$res = $db->query($sql);
-
-		if (!$res)
-			return false;
-		$row = $res->current();
-		$min_date = $row->min_date;
-		$max_date = $row->max_date;
-		return array($min_date, $max_date);
-	}
-
-	/**
 	*	Format report value output
 	*/
 	static function format_report_value($val)
