@@ -178,39 +178,6 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.pnp_graph_icon').each(function() {
-		var pnp_link = $(this).parent().attr('href');
-		if (!pnp_link) {
-			pnp_link = $(this).attr('src');
-		}
-		var link_parts = pnp_link.split('?');
-		if (!link_parts.length) {
-			return false;
-		}
-		// ex: host=myhost&srv=PING
-		pnp_link = link_parts[1];
-
-		$(this).qtip($.extend(true, {}, qtip_default, {
-			content: {
-				text: function(ev, api) {
-					$.ajax({
-						url: _site_domain + _index_page + "/ajax/pnp_image/",
-						data: {param: pnp_link},
-						type: 'POST'
-					})
-					.done(function(html) {
-						api.set('content.text', html);
-					})
-					.fail(function(xhr, status, error) {
-						api.set('content.text', status + ': ' + error);
-					});
-
-					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
-				}
-			}
-		}));
-	});
-
 	$('.host_comment').each(function() {
 		var anchor = $(this);
 		var obj_name = anchor.data('obj_name');
