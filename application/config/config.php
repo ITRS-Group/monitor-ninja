@@ -67,21 +67,6 @@ $config['global_xss_filtering'] = TRUE;
 $config['enable_hooks'] = true;
 
 /**
- * Log thresholds:
- *  0 - Disable logging
- *  1 - Errors and exceptions
- *  2 - Warnings
- *  3 - Notices
- *  4 - Debugging
- */
-$config['log_threshold'] = 0;
-
-/**
- * Message logging directory.
- */
-$config['log_directory'] = APPPATH.'logs';
-
-/**
  * Enable or disable displaying of Kohana error pages. This will not affect
  * logging. Turning this off will disable ALL error pages.
  */

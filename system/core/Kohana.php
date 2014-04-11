@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+require_once('op5/log.php');
+
 #
 # Hack to enable PHP version < 5.2
 #
@@ -83,15 +85,6 @@ final class Kohana {
 
 	// Cache lifetime
 	private static $cache_lifetime;
-
-	// Log levels
-	private static $log_levels = array
-	(
-		'error' => 1,
-		'alert' => 2,
-		'info'  => 3,
-		'debug' => 4,
-	);
 
 	// Internal caches and write status
 	private static $internal_cache = array();
@@ -190,15 +183,6 @@ final class Kohana {
 
 		// Set locale information
 		self::$locale = setlocale(LC_ALL, $locales);
-
-		if (self::$configuration['core']['log_threshold'] > 0)
-		{
-			// Set the log directory
-			self::log_directory(self::$configuration['core']['log_directory']);
-
-			// Enable log writing at shutdown
-			register_shutdown_function(array(__CLASS__, 'log_save'));
-		}
 
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));
@@ -533,85 +517,7 @@ final class Kohana {
 	 */
 	public static function log($type, $message)
 	{
-		if (self::$log_levels[$type] <= self::$configuration['core']['log_threshold'])
-		{
-			$message = array(date('Y-m-d H:i:s P'), $type, $message);
-
-			// Run the system.log event
-			Event::run('system.log', $message);
-
-			self::$log[] = $message;
-		}
-	}
-
-	/**
-	 * Save all currently logged messages.
-	 *
-	 * @return  void
-	 */
-	public static function log_save()
-	{
-		if (empty(self::$log) OR self::$configuration['core']['log_threshold'] < 1)
-			return;
-
-		// Filename of the log
-		$filename = self::log_directory().date('Y-m-d').'.log'.EXT;
-
-		if ( ! is_file($filename))
-		{
-			// Write the SYSPATH checking header
-			file_put_contents($filename,
-				'<?php defined(\'SYSPATH\') or die(\'No direct script access.\'); ?>'.PHP_EOL.PHP_EOL);
-
-			// Prevent external writes
-			chmod($filename, 0644);
-		}
-
-		// Messages to write
-		$messages = array();
-
-		do
-		{
-			// Load the next mess
-			list ($date, $type, $text) = array_shift(self::$log);
-
-			// Add a new message line
-			$messages[] = $date.' --- '.$type.': '.$text;
-		}
-		while ( ! empty(self::$log));
-
-		// Write messages to log file
-		file_put_contents($filename, implode(PHP_EOL, $messages).PHP_EOL, FILE_APPEND);
-	}
-
-	/**
-	 * Get or set the logging directory.
-	 *
-	 * @param   string  new log directory
-	 * @return  string
-	 */
-	public static function log_directory($dir = NULL)
-	{
-		static $directory;
-
-		if ( ! empty($dir))
-		{
-			// Get the directory path
-			$dir = realpath($dir);
-
-			if (is_dir($dir) AND is_writable($dir))
-			{
-				// Change the log directory
-				$directory = str_replace('\\', '/', $dir).'/';
-			}
-			else
-			{
-				// Log directory is invalid
-				throw new Kohana_Exception('core.log_dir_unwritable', $dir);
-			}
-		}
-
-		return $directory;
+		op5log::instance()->log('ninja', $type, $message);
 	}
 
 	/**
