@@ -95,7 +95,15 @@ class gridstat_Widget extends widget_Base {
 				$results[$filter] = count(ObjectPool_Model::get_by_query($filter));
 			}
 			$this->data = $this->apply_filters($this->settings, $results);
-
+			if(empty($this->data)) {
+				$this->data = array(
+					array(
+						'icon' => 'shield-not-disabled',
+						'title' => _('N/A'),
+						'fields' => array()
+					)
+				);
+			}
 			require('view.php');
 		} catch( ORMException $e ) {
 			require('view_error.php');
