@@ -5,7 +5,6 @@ var lsfilter_textarea = {
 	init: function(element, orderelement)
 	{
 		var self = this; // To be able to access it from within handlers
-		lsfilter_main.add_listener(self);
 
 		this.element = element;
 		this.orderelement = orderelement;

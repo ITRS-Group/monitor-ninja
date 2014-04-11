@@ -513,22 +513,24 @@ var lsfilter_visual = {
 	type_timeout : 500,
 	current_timeout : false,
 
-	update : function(data) {
-		if (data.source == 'visual')
-			return;
-		if (!this.filter_visual)
-			return;
-		var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
-		try {
-			var ast = parser.parse(data.query);
-			ast = lsfilter_visual_ast_preproc.visit(ast);
-			var result = lsfilter_graphics_visitor.visit(ast);
-			this.filter_visual.empty().append(result);
-			this.update_depths();
-			this.update_binary_delimiters();
-		} catch (ex) {
-			console.log(ex.stack);
-			console.log(data.query);
+	on: {
+		'update_ok': function(data) {
+			if (data.source == 'visual')
+				return;
+			if (!this.filter_visual)
+				return;
+			var parser = new LSFilter(new LSFilterPP(), new LSFilterASTVisitor());
+			try {
+				var ast = parser.parse(data.query);
+				ast = lsfilter_visual_ast_preproc.visit(ast);
+				var result = lsfilter_graphics_visitor.visit(ast);
+				this.filter_visual.empty().append(result);
+				this.update_depths();
+				this.update_binary_delimiters();
+			} catch (ex) {
+				console.log(ex.stack);
+				console.log(data.query);
+			}
 		}
 	},
 	init : function(filter_visual) {
@@ -625,13 +627,10 @@ var lsfilter_visual = {
 
 
 		/*
-		 * Start up with an "[hosts] all"-filter. Used as fallback if first
-		 * update is unparsable
+		 * Start up with an "[hosts] all"-filter. Used as fallback
+		 * if first update is unparsable
 		 */
-		this.update({
-			source: "init",
-			query: "[hosts] all"
-		});
+		lsfilter_main.update("[hosts] all", "init");
 	},
 
 	fields : null,

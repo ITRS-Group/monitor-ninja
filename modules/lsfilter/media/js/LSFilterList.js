@@ -49,49 +49,50 @@ function lsfilter_list(config)
 	/***************************************************************************
 	 * External methods
 	 **************************************************************************/
-	this.update = function(data)
-	{
-		var metadata = data.metadata;
+	this.on = {
+		'update_ok': function(data) {
+			var metadata = data.metadata;
 
-		if (data.source && data.source == 'list') { return; }
+			if (data.source && data.source == 'list') { return; }
 
-		if (!metadata) {
-			var parser = new LSFilter(new LSFilterPreprocessor(),
-					new LSFilterMetadataVisitor());
-			metadata = parser.parse(data.query);
+			if (!metadata) {
+				var parser = new LSFilter(new LSFilterPreprocessor(),
+						new LSFilterMetadataVisitor());
+				metadata = parser.parse(data.query);
+			}
+
+			if (self.request_metadata && self.request_metadata !== metadata) {
+				// we're switching from one type of view to another,
+				// reset unwanted state
+				self.config.offset = 0;
+				self.previous_obj = {};
+			}
+
+			self.request_query = data.query;
+			self.request_metadata = metadata;
+
+			self.table_desc = new lsfilter_list_table_desc(self.request_metadata, self.config.columns);
+
+			self.sort_vis_column = false;
+			self.sort_db_columns = [];
+			self.sort_ascending = true;
+
+			var order_parts = [];
+			if (data.order) {
+				order_parts = data.order.split(' ');
+			}
+			if (order_parts.length >= 1 && order_parts.length <= 2) {
+
+				self.sort_vis_column = order_parts[0];
+
+				self.sort_db_columns = self.table_desc.sort_cols(self.sort_vis_column);
+			}
+			if (order_parts.length == 2) {
+				self.sort_ascending = (order_parts[1].toLowerCase() == 'asc');
+			}
+
+			self.send_request({});
 		}
-
-		if (this.request_metadata && this.request_metadata !== metadata) {
-			// we're switching from one type of view to another,
-			// reset unwanted state
-			this.config.offset = 0;
-			this.previous_obj = {};
-		}
-
-		this.request_query = data.query;
-		this.request_metadata = metadata;
-
-		this.table_desc = new lsfilter_list_table_desc(this.request_metadata, this.config.columns);
-
-		this.sort_vis_column = false;
-		this.sort_db_columns = [];
-		this.sort_ascending = true;
-
-		var order_parts = [];
-		if (data.order) {
-			order_parts = data.order.split(' ');
-		}
-		if (order_parts.length >= 1 && order_parts.length <= 2) {
-
-			this.sort_vis_column = order_parts[0];
-
-			this.sort_db_columns = this.table_desc.sort_cols(this.sort_vis_column);
-		}
-		if (order_parts.length == 2) {
-			this.sort_ascending = (order_parts[1].toLowerCase() == 'asc');
-		}
-
-		this.send_request({});
 	};
 
 	this.set_sort = function(vis_column)

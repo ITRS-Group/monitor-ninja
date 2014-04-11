@@ -6,14 +6,15 @@ $id = uniqid('listview_'); /* ID of span for this widget */
 <script type="text/javascript">
 
 $(function(){
-	new lsfilter_list({
+	var list = new lsfilter_list({
 		table: $(<?php echo json_encode('#'.$id); ?>),
 		per_page: <?php echo json_encode(intval($this->args['limit'])); ?>,
 		request_url: _site_domain + _index_page + "/listview/fetch_ajax",
 		columns: <?php echo json_encode( $this->args['columns'] ); ?>
-	}).update(<?php echo json_encode(array(
+	});
+	list.on.update_ok(<?php echo json_encode(array(
 		'query' => $this->args['query'],
 		'order' => $this->args['order']
-		)); ?>);
+	)); ?>);
 });
 </script>

@@ -59,6 +59,7 @@ var lsfilter_main = {
 
 	emit: function(signal) {
 		var args = Array.prototype.slice.call(arguments);
+		// remove the named 'signal' argument
 		args.splice(0, 1);
 		for(var i = 0; i < this.listeners.length; i++) {
 			var listener = this.listeners[i];
@@ -121,19 +122,19 @@ var lsfilter_main = {
 				return x.toArray();
 			}));
 		this.emit('update_ok', data);
-		lsfilter_history.update(data);
-		lsfilter_storage.list.update(data);
-		lsfilter_multiselect.update(data);
-		lsfilter_saved.update(data);
-		lsfilter_visual.update(data);
 	},
 	/***************************************************************************
 	 * Initialize ListView
 	 **************************************************************************/
 	init : function() {
+		// Add all components that make up the listview. All of them
+		// receive events when the global state is updated (e.g. the
+		// textarea is notified whenever a change occurs in the
+		// graphical filter builder).
 		this.update_page_links();
 
 		lsfilter_history.init();
+		this.add_listener(lsfilter_history);
 
 		lsfilter_storage.list = new lsfilter_list({
 			autorefresh_delay : _lv_refresh_delay * 1000,
@@ -152,15 +153,18 @@ var lsfilter_main = {
 			},
 			per_page: lsfilter_per_page
 		});
-		lsfilter_textarea.init($('#filter_query'), $('#filter_query_order'));
-		lsfilter_saved.init();
-		lsfilter_visual.init($('#filter_visual'));
-		lsfilter_visual.update({
-			source: 'textfield',
-			query: lsfilter_query,
-			order: lsfilter_query_order
-		});
+		this.add_listener(lsfilter_storage.list);
 
+		lsfilter_textarea.init($('#filter_query'), $('#filter_query_order'));
+		this.add_listener(lsfilter_textarea);
+
+		lsfilter_saved.init();
+		this.add_listener(lsfilter_saved);
+
+		lsfilter_visual.init($('#filter_visual'));
+		this.add_listener(lsfilter_visual);
+
+		this.update(lsfilter_query, "Sweet Sweetback's Baadasssss Song", lsfilter_query_order);
 	},
 
 	/***************************************************************************
