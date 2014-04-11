@@ -4,23 +4,39 @@ var lsfilter_main = {
 
 	update_delay : 300,
 
+	listeners: [],
+
+	// Modules that listens for events, for example an instance of
+	// "lsfilter_textarea"
+	add_listener: function(listener) {
+		this.listeners.push(listener);
+	},
+
 	/***************************************************************************
 	 * Trigger update of ListView
 	 **************************************************************************/
+	// Proxy for update()
 	update_delayed : function(query, source, order) {
 		var self = this; // To be able to access it from within handlers
 		if (this.update_timer) {
 			clearTimeout(this.update_timer);
 		}
-		this.update_query = query;
-		this.update_source = source;
-		this.udpate_order = order;
 		this.update_timer = setTimeout(function() {
-			self.update_run();
+			self.update(query, source, order);
 		}, this.update_delay);
 	},
 
 	update : function(query, source, order) {
+		if(this.update_query &&
+			$.trim(query) === $.trim(this.update_query) &&
+			$.trim(order) === $.trim(this.update_order)
+			) {
+			// don't issue multiple requests for the same query,
+			// use refresh() if you want a brand new result set
+			// of the current query
+			return;
+		}
+
 		this.update_query = query;
 		this.update_source = source;
 		this.update_order = order;
@@ -41,8 +57,24 @@ var lsfilter_main = {
 		this.update_run();
 	},
 
-	update_run : function() {
+	emit: function(signal) {
+		var args = Array.prototype.slice.call(arguments);
+		args.splice(0, 1);
+		for(var i = 0; i < this.listeners.length; i++) {
+			var listener = this.listeners[i];
+			if(typeof listener['on'] === "undefined") {
+				continue;
+			}
+			if(typeof listener['on'][signal] === "function") {
+				// Using "apply" makes sure that callbacks
+				// can refer to their own instance as "this"
+				listener['on'][signal].apply(listener, args);
+			}
+		}
+	},
 
+	// Private method, run either update(), update_delayed() or refresh()
+	update_run : function() {
 		var source = this.update_source;
 		var query = this.update_query;
 		var order = this.update_order;
@@ -50,49 +82,50 @@ var lsfilter_main = {
 		var header_height = $( "body > .container >#header" ).outerHeight() + 4;
 
 		this.update_timer = false;
+
+		if (query) {
+			this.state.query = query;
+		}
+		if (typeof order == 'string') {
+			this.state.order = order;
+		}
+
+		var parser = new LSFilter(new LSFilterPreprocessor(),
+				new LSFilterMetadataVisitor());
 		try {
-
-			if (query) {
-				this.state.query = query;
-			}
-			if (typeof order == 'string') {
-				this.state.order = order;
-			}
-
-			var parser = new LSFilter(new LSFilterPreprocessor(),
-					new LSFilterMetadataVisitor());
 			var metadata = parser.parse(this.state.query);
-
-			var data = $.extend({
-				source : source,
-				metadata : metadata
-			}, this.state);
-
-			this.clear_parse_status();
-
-			$('#filter-query-builder').css( "top", header_height + "px" );
-
-			$('#extra-dropdowns').replaceContent(
-				$.map((listview_renderer_extra_objects[metadata.table] || []).concat(listview_renderer_extra_objects.all || []), function(x) {
-					if (typeof x == 'function') {
-						x = x();
-					}
-					x.addClass('filter-query-dropdown');
-					x.css( "top", header_height + "px" );
-					return x.toArray();
-				}));
-			lsfilter_history.update(data);
-			lsfilter_storage.list.update(data);
-			lsfilter_multiselect.update(data);
-			lsfilter_saved.update(data);
-			lsfilter_textarea.update(data);
-			lsfilter_visual.update(data);
-
 		} catch (ex) {
 			console.log(ex);
 			this.set_parse_status(ex);
 			$('#filter-query-builder').show();
+			this.emit('update_failed');
+			return;
 		}
+
+		var data = $.extend({
+			source : source,
+			metadata : metadata
+		}, this.state);
+
+		this.clear_parse_status();
+
+		$('#filter-query-builder').css( "top", header_height + "px" );
+
+		$('#extra-dropdowns').replaceContent(
+			$.map((listview_renderer_extra_objects[metadata.table] || []).concat(listview_renderer_extra_objects.all || []), function(x) {
+				if (typeof x == 'function') {
+					x = x();
+				}
+				x.addClass('filter-query-dropdown');
+				x.css( "top", header_height + "px" );
+				return x.toArray();
+			}));
+		this.emit('update_ok', data);
+		lsfilter_history.update(data);
+		lsfilter_storage.list.update(data);
+		lsfilter_multiselect.update(data);
+		lsfilter_saved.update(data);
+		lsfilter_visual.update(data);
 	},
 	/***************************************************************************
 	 * Initialize ListView

@@ -7,7 +7,7 @@ var lsfilter_visual_ast_preproc = {
 		var query = obj.query;
 
 		if (query.obj != 'and') {
-			/* If the outermost query isn't an and statement, enfore it */
+			/* If the outermost query isn't an and statement, enforce it */
 			query = {
 				'obj' : 'and',
 				'sub' : [ query ]
