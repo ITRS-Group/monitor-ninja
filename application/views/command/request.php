@@ -24,15 +24,11 @@ foreach ($params as $pname => $ary) {
 	}
 }
 
-if (!empty($params)) {
-	//echo "<table style=\"margin-top: 20px;\">\n";
-}
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
 	$dflt = false;
 	if (isset($ary['default']))
 		$dflt = $ary['default'];
-//	echo '<tr>';
 
 	# help column only printed if we really have a help key
 

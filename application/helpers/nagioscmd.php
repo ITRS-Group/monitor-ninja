@@ -1216,7 +1216,11 @@ class nagioscmd_Core
 			op5log::instance("ninja")->log("error", "external command failed. Exception: " . $e->getMessage());
 			return false;
 		}
-		return substr($output, 0, strlen("OK:")) === "OK:";
+		$result = substr($output, 0, strlen("OK:")) === "OK:";
+		if(!$result) {
+			op5log::instance("ninja")->log("error", "external command failed. Output: " . trim($output));
+		}
+		return $result;
 	}
 
 
