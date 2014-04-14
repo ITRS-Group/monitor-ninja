@@ -28,7 +28,7 @@ class Test_report_options extends Avail_options {
 		 case 'hostgroups':
 			$res_members = array();
 			foreach ($this->members as $group => $members) {
-				if (in_array($group, $this[$this->get_value('report_type')]))
+				if (in_array($group, $this['objects']))
 					$res_members = array_merge($res_members, $members);
 			}
 			return $res_members;

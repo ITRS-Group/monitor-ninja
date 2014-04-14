@@ -249,14 +249,13 @@ class Reports_Controller extends Base_reports_Controller
 			default:
 				return url::redirect(Router::$controller.'/index');
 		}
-		$var = $this->options->get_value('report_type');
 
 		$report_members = $this->options->get_report_members();
 		if (empty($report_members)) {
-			if (!$this->options[$var])
+			if (!$is_group)
 				$_SESSION['report_err_msg'] = _("You didn't select any objects to include in the report");
 			else
-				$_SESSION['report_err_msg'] = sprintf(_("The groups you selected (%s) had no members, so cannot create a report from them"), implode(', ', $this->options[$var]));
+				$_SESSION['report_err_msg'] = sprintf(_("The groups you selected (%s) had no members, so cannot create a report from them"), implode(', ', $this->options['objects']));
 			return url::redirect(Router::$controller.'/index?' . http_build_query($this->options->options));
 		}
 
@@ -317,7 +316,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		# avail, more than one object
 		$get_vars = $this->options->as_keyval_string(true);
-		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
+		if ($this->type == 'avail' && ($is_group || count($this->options['objects']) > 1)) {
 			$template_values = array();
 			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
 			$template->content->multiple_states = $data_arr;
@@ -427,7 +426,7 @@ class Reports_Controller extends Base_reports_Controller
 					# links - only for HTML reports
 					switch($this->options['report_type']) {
 						case 'hosts':
-							$host = $this->options['host_name'][0];
+							$host = $this->options['objects'][0];
 							$template->header->title = sprintf(_('Host details for %s'), $host);
 							$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
 
@@ -440,7 +439,7 @@ class Reports_Controller extends Base_reports_Controller
 							break;
 
 						case 'services':
-							list($host, $service) = explode(';',$this->options['service_description'][0]);
+							list($host, $service) = explode(';',$this->options['objects'][0]);
 
 							$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
 							if (isset($template->content)) {
@@ -587,9 +586,10 @@ class Reports_Controller extends Base_reports_Controller
 
 			$classname = get_class($this->options);
 			$opts = new $classname($this->options);
+			$opts['report_type'] = 'services';
 			foreach ($res as $row)
 				$service_arr[] = $row['host_name'] . ';' . $row['description'];
-			$opts['service_description'] = $service_arr;
+			$opts['objects'] = $service_arr;
 			$report_class = new Status_Reports_Model($opts);
 
 			$data_arr = $report_class->get_uptime();
@@ -732,7 +732,6 @@ class Reports_Controller extends Base_reports_Controller
 	public static function _helptexts($id)
 	{
 		$helptexts = array(
-			'filter' => _("Free text search, matching the objects in the left list below"),
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
 				"option decide to assume states for hosts and services during the downtime."),

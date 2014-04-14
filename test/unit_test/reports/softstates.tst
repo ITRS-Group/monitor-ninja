@@ -5,7 +5,8 @@ Include soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 1
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 	}
 	correct {
@@ -18,7 +19,8 @@ Exclude soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 	}
 	correct {

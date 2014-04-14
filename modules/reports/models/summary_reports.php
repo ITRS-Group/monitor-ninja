@@ -105,9 +105,9 @@ class Summary_Reports_Model extends Reports_Model
 
 		$hosts = false;
 		$services = false;
-		if ($this->options['servicegroup']) {
+		if ($this->options['report_type'] == 'servicegroups') {
 			$hosts = $services = array();
-			foreach ($this->options['servicegroup'] as $sg) {
+			foreach ($this->options['objects'] as $sg) {
 				$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('groups' => array('>=' => $sg))));
 				foreach ($res as $o) {
 					$name = implode(';', $o);
@@ -124,9 +124,9 @@ class Summary_Reports_Model extends Reports_Model
 			}
 			$this->service_servicegroup['host'] = $hosts;
 			$this->service_servicegroup['service'] = $services;
-		} elseif ($this->options['hostgroup']) {
+		} elseif ($this->options['report_type'] == 'hostgroups') {
 			$hosts = array();
-			foreach ($this->options['hostgroup'] as $hg) {
+			foreach ($this->options['objects'] as $hg) {
 				$res = Livestatus::instance()->getHosts(array('columns' => array('host_name'), 'filter' => array('groups' => array('>=' => $hg))));
 				foreach ($res as $row) {
 					# To be able to sum up alert totals:
@@ -137,25 +137,25 @@ class Summary_Reports_Model extends Reports_Model
 				}
 			}
 			$this->host_hostgroup = $hosts;
-		} elseif ($this->options['service_description']) {
+		} elseif ($this->options['report_type'] == 'services') {
 			$services = false;
-			if($this->options['service_description'] === Report_options::ALL_AUTHORIZED) {
+			if($this->options['objects'] === Report_options::ALL_AUTHORIZED) {
 				$services = Report_options::ALL_AUTHORIZED;
 			} else {
-				foreach ($this->options['service_description'] as $srv) {
+				foreach ($this->options['objects'] as $srv) {
 					$services[$srv] = $srv;
 				}
 			}
-		} elseif ($this->options['host_name']) {
+		} elseif ($this->options['report_type'] == 'hosts') {
 			$hosts = false;
-			if($this->options['host_name'] === Report_options::ALL_AUTHORIZED) {
+			if($this->options['objects'] === Report_options::ALL_AUTHORIZED) {
 				$hosts = Report_options::ALL_AUTHORIZED;
 			} else {
-				if (is_array($this->options['host_name'])) {
-					foreach ($this->options['host_name'] as $hn)
+				if (is_array($this->options['objects'])) {
+					foreach ($this->options['objects'] as $hn)
 						$hosts[$hn] = $hn;
 				} else {
-					$hosts[$this->options['host_name']] = $this->options['host_name'];
+					$hosts[$this->options['objects']] = $this->options['objects'];
 				}
 			}
 		}
@@ -447,7 +447,7 @@ class Summary_Reports_Model extends Reports_Model
 	{
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->options['host_name'] as $hn) {
+		foreach ($this->options['objects'] as $hn) {
 			$result[$hn] = $template;
 		}
 		$pstate = array();
@@ -478,7 +478,7 @@ class Summary_Reports_Model extends Reports_Model
 	{
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->options['service_description'] as $name) {
+		foreach ($this->options['objects'] as $name) {
 			list($host, $svc) = explode(';', $name);
 			# Assign host first, so it's position in the array is before services
 			$result[$host] = $template;
@@ -512,7 +512,7 @@ class Summary_Reports_Model extends Reports_Model
 		# from the inner loop
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->options['hostgroup'] as $hostgroup) {
+		foreach ($this->options['objects'] as $hostgroup) {
 			$result[$hostgroup] = $template;
 		}
 
@@ -545,7 +545,7 @@ class Summary_Reports_Model extends Reports_Model
 		# from the inner loop
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->options['servicegroup'] as $servicegroup) {
+		foreach ($this->options['objects'] as $servicegroup) {
 			$result[$servicegroup] = $template;
 		}
 

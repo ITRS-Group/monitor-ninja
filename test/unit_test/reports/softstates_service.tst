@@ -5,7 +5,8 @@ Include service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 1
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 	}
 	correct {
@@ -18,7 +19,8 @@ Exclude service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 	}
 	correct {

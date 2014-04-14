@@ -1,12 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
-<?php
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
-?>
 <div id="response"></div>
 <div id="progress"></div>
 
@@ -22,83 +14,7 @@ if (!empty($widgets)) {
 
 	<div id="histogram_report">
 	<?php	echo form::open('histogram/generate', array('id' => 'histogram_form')); ?>
-			<table style="border: none;" id="history_report_table" style="width: auto">
-				<tr>
-					<td colspan="3">
-						<select name="report_type" id="report_type">
-							<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
-							<option value="hosts"><?php echo _('Hosts') ?></option>
-							<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
-							<option value="services"><?php echo _('Services') ?></option>
-						</select>
-						<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
-					</td>
-				</tr>
-				<tr data-show-for="hostgroups">
-					<td>
-						<?php echo _('Available').' '._('Hostgroups') ?><br />
-						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
-						</select>
-					</td>
-					<td class="move-buttons">
-						<input type="button" value="&gt;" id="mv_hg_r" class="button arrow-right" /><br />
-						<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
-					</td>
-					<td>
-						<?php echo _('Selected').' '._('Hostgroups') ?><br />
-						<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" class="multiple">
-						</select>
-					</td>
-				</tr>
-				<tr data-show-for="servicegroups">
-					<td>
-						<?php echo _('Available').' '._('Servicegroups') ?><br />
-						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
-						</select>
-					</td>
-					<td class="move-buttons">
-						<input type="button" value="&gt;" id="mv_sg_r" class="button arrow-right" /><br />
-						<input type="button" value="&lt;" id="mv_sg_l" class="button arrow-left" />
-					</td>
-					<td>
-						<?php echo _('Selected').' '._('Servicegroups') ?><br />
-						<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
-						</select>
-					</td>
-				</tr>
-				<tr data-show-for="hosts">
-					<td>
-						<?php echo _('Available').' '._('Hosts') ?><br />
-						<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
-						</select>
-					</td>
-					<td class="move-buttons">
-						<input type="button" value="&gt;" id="mv_h_r" class="button arrow-right" /><br />
-						<input type="button" value="&lt;" id="mv_h_l" class="button arrow-left" />
-					</td>
-					<td>
-						<?php echo _('Selected').' '._('Hosts') ?><br />
-						<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
-						</select>
-					</td>
-				</tr>
-				<tr data-show-for="services">
-					<td>
-						<?php echo _('Available').' '._('Services') ?><br />
-						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
-						</select>
-					</td>
-					<td class="move-buttons">
-						<input type="button" value="&gt;" id="mv_s_r" class="button arrow-right" /><br />
-						<input type="button" value="&lt;" id="mv_s_l" class="button arrow-left"  />
-					</td>
-					<td>
-						<?php echo _('Selected').' '._('Services') ?><br />
-						<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
-						</select>
-					</td>
-				</tr>
-			</table>
+		<?php echo new View('reports/objselector'); ?>
 
 		<div class="setup-table" >
 			<table>

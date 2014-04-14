@@ -8,7 +8,8 @@ global_vars {
 	start_time = 1202684400
 	# tue feb 12 00:00:00 CET 2008
 	end_time = 1202770800
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 	}
 	timeperiod {

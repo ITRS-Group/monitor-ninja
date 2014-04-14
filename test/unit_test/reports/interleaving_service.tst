@@ -7,7 +7,8 @@ global_vars {
 }
 
 worst state, down as down {
-	service_description {
+	report_type = services
+	objects {
 		host1;PING
 		host2;PING
 		host2;PING2
@@ -22,7 +23,8 @@ worst state, down as down {
 	}
 }
 worst state, down as up {
-	service_description {
+	report_type = services
+	objects {
 		host1;PING
 		host2;PING
 		host2;PING2
@@ -38,7 +40,8 @@ worst state, down as up {
 	}
 }
 best state, down as down {
-	service_description {
+	report_type = services
+	objects {
 		host1;PING
 		host2;PING
 		host2;PING2
@@ -54,7 +57,8 @@ best state, down as down {
 	}
 }
 best state, down as up {
-	service_description {
+	report_type = services
+	objects {
 		host1;PING
 		host2;PING
 		host2;PING2
@@ -75,7 +79,8 @@ best state, down as up {
 worst state, down as down, previous dt exist {
 	start_time = 400004800
 	end_time = 400005800
-	service_description {
+	report_type = services
+	objects {
 		host1;PING
 	}
 	scheduleddowntimeasuptime = 0

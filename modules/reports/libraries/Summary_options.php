@@ -98,21 +98,21 @@ class Summary_options extends Report_options
 						$this['alert_types'] = 3;
 						$this['state_types'] = 2;
 						$this['report_type'] = 'hosts';
-						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
+						$this->options['objects'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 2: case 5:
 						$this['alert_types'] = 1;
 						$this['state_types'] = 2;
 						$this['report_type'] = 'hosts';
-						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
+						$this->options['objects'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 3: case 6:
 						$this['alert_types'] = 2;
 						$this['state_types'] = 2;
 						$this['report_type'] = 'services';
-						$this->options['service_description'] = Report_options::ALL_AUTHORIZED;
+						$this->options['objects'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					default:

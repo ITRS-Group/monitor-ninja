@@ -145,10 +145,6 @@ class Status_Reports_Model extends Reports_Model
 	 */
 	public function get_uptime()
 	{
-		if (!$this->options['host_name'] && !$this->options['hostgroup'] && !$this->options['service_description'] && !$this->options['servicegroup']) {
-			return false;
-		}
-
 		$is_running = !$this->get_last_shutdown();
 
 		switch ($this->options['report_type']) {
@@ -185,7 +181,8 @@ class Status_Reports_Model extends Reports_Model
 		$downtimes = $this->get_initial_dt_depths($this->st_is_service ? 'service' : 'host', $objects);
 		foreach ($objects as $object) {
 			$opts = new $optclass($this->options);
-			$opts[$this->st_is_service ? 'service_description' : 'host_name'] = array($object);
+			$opts['report_type'] = $this->st_is_service ? 'services' : 'hosts';
+			$opts['objects'] = array($object);
 			$sub = new SingleStateCalculator($opts, $this->timeperiod);
 			if (isset( $initial_states[$object]))
 				$initial_state = $initial_states[$object];
@@ -209,12 +206,12 @@ class Status_Reports_Model extends Reports_Model
 		switch ($this->options['report_type']) {
 		 case 'servicegroups':
 		 case 'hostgroups':
-			$groups = $this->options[$this->options->get_value('report_type')];
+			$groups = $this->options['objects'];
 			$all_subs = $subs;
 			$subs = array();
 			foreach ($groups as $group) {
 				$opts = new $optclass($this->options);
-				$opts[$this->options->get_value('report_type')] = array($group);
+				$opts['objects'] = array($group);
 				$members = $opts->get_report_members();
 				$these_subs = array();
 				foreach ($members as $member)

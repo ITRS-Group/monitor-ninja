@@ -25,7 +25,7 @@ class Alert_history_options extends Summary_options {
 		$this->properties['report_period']['default'] = 'forever';
 		$this->properties['report_type']['default'] = 'hosts';
 		$this->properties['summary_items']['default'] = config::get('pagination.default.items_per_page', '*');
-		$this->properties['host_name']['default'] = Report_options::ALL_AUTHORIZED;
+		$this->properties['objects']['default'] = Report_options::ALL_AUTHORIZED;
 		if(ninja::has_module('synergy')) {
 			$this->properties['synergy_events'] = array('type' => 'boolean', 'default' => false);
 		}

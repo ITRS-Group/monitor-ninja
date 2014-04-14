@@ -123,7 +123,7 @@ class Summary_Controller extends Base_reports_Controller
 
 		$report_members = $this->options->get_report_members();
 		if (empty($report_members)) {
-			$_SESSION['report_err_msg'] = "No objects could be found in your selected groups to base the report on";
+			$_SESSION['report_err_msg'] = _("No objects could be found in your selected groups to base the report on");
 			return url::redirect(Router::$controller.'/index');
 		}
 

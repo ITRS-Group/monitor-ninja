@@ -60,25 +60,10 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'type' => 'bool',
 			'default' => false, 'description' => 'Include soft states, yes/no?'
 		),
-		'host_name' => array(
+		'objects' => array(
 			'type' => 'objsel',
 			'default' => array(),
-			'description' => 'Hosts to include (note: array)'
-		),
-		'service_description' => array(
-			'type' => 'objsel',
-			'default' => array(),
-			'description' => 'Services to include (note: array)'
-		),
-		'hostgroup' => array(
-			'type' => 'array',
-			'default' => array(),
-			'description' => 'Hostgroups to include (note: array)'
-		),
-		'servicegroup' => array(
-			'type' => 'array',
-			'default' => array(),
-			'description' => 'Servicegroups to include (note: array)'
+			'description' => 'Objects to include (note: array)'
 		),
 		'start_time' => array(
 			'type' => 'timestamp',
@@ -192,10 +177,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		$this->rename_options = array(
 			't1' => 'start_time',
 			't2' => 'end_time',
-			'host' => 'host_name',
-			'service' => 'service_description',
-			'hostgroup_name' => 'hostgroup',
-			'servicegroup_name' => 'servicegroup'
+			'host' => 'objects',
+			'service' => 'objects',
+			'hostgroup_name' => 'objects',
+			'servicegroup_name' => 'objects',
+			'host_name' => 'objects',
+			'service_description' => 'objects',
+			'hostgroup' => 'objects',
+			'servicegroup' => 'objects',
 		);
 	}
 
@@ -284,12 +273,12 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		switch ($this['report_type']) {
 		 case 'hosts':
 		 case 'services':
-			return $this[$this->get_value('report_type')];
+			return $this['objects'];
 		 case 'hostgroups':
 		 	$all = HostPool_Model::all();
 		 	$set = HostPool_Model::none();
 
-			foreach ($this['hostgroup'] as $group) {
+			foreach ($this['objects'] as $group) {
 				$set = $set->union($all->reduce_by('groups', $group, '>='));
 			}
 			$res = array();
@@ -301,7 +290,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		 	$all = ServicePool_Model::all();
 		 	$set = ServicePool_Model::none();
 
-			foreach ($this['servicegroup'] as $group) {
+			foreach ($this['objects'] as $group) {
 				$set = $set->union($all->reduce_by('groups', $group, '>='));
 			}
 			$res = array();
@@ -556,52 +545,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				return is_numeric($val);
 			});
 			break;
-		 case 'host_name':
-			if (!$value)
-				return false;
-			$this->options['hostgroup'] = array();
-			$this->options['servicegroup'] = array();
-			$this->options['service_description'] = array();
-			$this->options['host_name'] = $value;
-			$this['report_type'] = 'hosts';
-			$this->hosts = array();
-			return true;
-		 case 'service_description':
-			if (!$value)
-				return false;
-			if($value != self::ALL_AUTHORIZED) {
-				foreach ($value as $svc) {
-					if (strpos($svc, ';') === false)
-						return false;
-				}
-			}
-			$this->options['hostgroup'] = array();
-			$this->options['servicegroup'] = array();
-			$this->options['host_name'] = array();
-			$this->options['service_description'] = $value;
-			$this['report_type'] = 'services';
-			$this->services = array();
-			return true;
-		 case 'hostgroup':
-			if (!$value)
-				return false;
-			$this->options['host_name'] = array();
-			$this->options['service_description'] = array();
-			$this->options['servicegroup'] = array();
-			$this->options['hostgroup'] = $value;
-			$this['report_type'] = 'hostgroups';
-			$this->hosts = array();
-			return true;
-		 case 'servicegroup':
-			if (!$value)
-				return false;
-			$this->options['host_name'] = array();
-			$this->options['service_description'] = array();
-			$this->options['hostgroup'] = array();
-			$this->options['servicegroup'] = $value;
-			$this['report_type'] = 'servicegroups';
-			$this->services = array();
-			return true;
 		 case 'start_time':
 		 case 'end_time':
 			// value "impossible", or value already set by report_period
@@ -632,9 +575,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	public function as_keyval_string($anonymous=false, $obj_only=false) {
 		$opts_str = '';
 		foreach ($this as $key => $val) {
-			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+			if ($obj_only && !in_array($key, array('objects', 'report_type')))
 				continue;
-			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type', 'report_id')))
+			if ($anonymous && in_array($key, array('objects', 'report_type', 'report_id')))
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $vk => $member) {
@@ -653,9 +596,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	public function as_form($anonymous=false, $obj_only=false) {
 		$html_options = '';
 		foreach ($this as $key => $val) {
-			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+			if ($obj_only && !in_array($key, array('objects', 'report_type')))
 				continue;
-			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type', 'report_id')))
+			if ($anonymous && in_array($key, array('objects', 'report_type', 'report_id')))
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $k => $v)
@@ -673,13 +616,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	public function as_json() {
 		$opts = $this->options;
-		if ($this->get_value('report_type')) {
-			// because the person who wrote the js became sick of all our special cases,
-			// it expects the objects to be called 'objects'. Which makes sense, really...
-			if ($this[$this->get_value('report_type')])
-				$opts['objects'] = $this[$this->get_value('report_type')];
-			unset($opts[$this->get_value('report_type')]);
-		}
 		return json_encode($opts);
 	}
 
@@ -797,8 +733,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				continue;
 			$options[$key] = $sri;
 		}
-		if ($options['report_type'] && isset($saved_report_info['objects']) && !$options[$options->get_value('report_type')])
-			$options[$options->get_value('report_type')] = $saved_report_info['objects'];
 		return true;
 	}
 

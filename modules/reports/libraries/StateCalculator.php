@@ -92,16 +92,16 @@ abstract class StateCalculator
 		$this->st_obj_state = $initial_state;
 		$this->st_dt_depth = $initial_depth;
 
-		if ($this->options['service_description'] || $this->options['servicegroup']) {
+		if ($this->options['report_type'] == 'services' || $this->options['report_type'] == 'servicegroups') {
 			$this->st_is_service = true;
 		}
 		else {
 			# we need at least a service or a host
-			if (!$this->options['host_name'] && !$this->options['hostgroup'])
+			if ($this->options['report_type'] !== 'hosts' && $this->options['report_type'] !== 'hostgroups')
 				return false;
 		}
 
-		$this->st_text = empty($this->st_is_service) ? Reports_Model::$host_states : Reports_Model::$service_states;
+		$this->st_text = $this->st_is_service ? Reports_Model::$service_states : Reports_Model::$host_states;
 		$this->st_text = array_map('strtoupper', $this->st_text);
 
 		$fout = "";

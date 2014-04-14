@@ -8,7 +8,8 @@ global_vars {
 }
 
 up_down_dtstart_dtend_up: normal {
-	host_name {
+	report_type = hosts
+	objects {
 		up_down_dtstart_dtend_up
 	}
 	scheduleddowntimeasuptime = 0
@@ -25,7 +26,8 @@ up_down_dtstart_dtend_up: normal {
 }
 
 up_down_dtstart_dtend_up: scheduled downtime as uptime {
-	host_name {
+	report_type = hosts
+	objects {
 		up_down_dtstart_dtend_up
 	}
 	scheduleddowntimeasuptime = 1
@@ -42,7 +44,8 @@ up_down_dtstart_dtend_up: scheduled downtime as uptime {
 }
 
 down_dtstart_up_dtend: normal {
-	host_name {
+	report_type = hosts
+	objects {
 		down_dtstart_up_dtend
 	}
 	scheduleddowntimeasuptime = 0
@@ -59,7 +62,8 @@ down_dtstart_up_dtend: normal {
 }
 
 down_dtstart_up_dtend: scheduled downtime as uptime {
-	host_name {
+	report_type = hosts
+	objects {
 		down_dtstart_up_dtend
 	}
 	scheduleddowntimeasuptime = 1
@@ -76,7 +80,8 @@ down_dtstart_up_dtend: scheduled downtime as uptime {
 }
 
 up_dtstart_down_dtend: normal {
-	host_name {
+	report_type = hosts
+	objects {
 		up_dtstart_down_dtend
 	}
 	scheduleddowntimeasuptime = 0
@@ -93,7 +98,8 @@ up_dtstart_down_dtend: normal {
 }
 
 up_dtstart_down_dtend: scheduled downtime as uptime {
-	host_name {
+	report_type = hosts
+	objects {
 		up_dtstart_down_dtend
 	}
 	scheduleddowntimeasuptime = 1
@@ -110,7 +116,8 @@ up_dtstart_down_dtend: scheduled downtime as uptime {
 }
 
 up_dtstart_down_up_down_dtend: normal {
-	host_name {
+	report_type = hosts
+	objects {
 		up_dtstart_down_up_down_dtend
 	}
 	scheduleddowntimeasuptime = 0
@@ -127,7 +134,8 @@ up_dtstart_down_up_down_dtend: normal {
 }
 
 up_dtstart_down_up_down_dtend: scheduled downtime as uptime {
-	host_name {
+	report_type = hosts
+	objects {
 		up_dtstart_down_up_down_dtend
 	}
 	scheduleddowntimeasuptime = 1
@@ -140,7 +148,8 @@ up_dtstart_down_up_down_dtend: scheduled downtime as uptime {
 }
 
 group avail: normal {
-	host_name {
+	report_type = hosts
+	objects {
 		up_down_dtstart_dtend_up
 		up_dtstart_down_dtend
 	}
@@ -154,7 +163,8 @@ group avail: normal {
 }
 
 group avail: scheduled downtime as uptime {
-	host_name {
+	report_type = hosts
+	objects {
 		up_down_dtstart_dtend_up
 		up_dtstart_down_dtend
 	}

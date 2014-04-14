@@ -26,7 +26,7 @@ class WorstStateCalculator extends StateCalculator
 	{
 		parent::initialize($initial_state, $initial_depth, $is_running);
 
-		$this->st_source = $this->options[$this->options->get_value('report_type')];
+		$this->st_source = $this->options['objects'];
 
 		foreach ($this->st_text as $st => $discard)
 			$this->st_sub[$st] = array();
@@ -147,7 +147,7 @@ class WorstStateCalculator extends StateCalculator
 			break;
 		 case 'hostgroups':
 		 case 'servicegroups':
-			$res['groupname'] = $this->options[$this->options->get_value('report_type')];
+			$res['groupname'] = $this->options['objects'];
 			break;
 		}
 		$res['states'] = $converted_state;

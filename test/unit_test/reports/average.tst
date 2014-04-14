@@ -4,7 +4,8 @@ logfile = average.log
 global_vars {
 	start_time = 1199200000
 	end_time   = 1199230000
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}

@@ -61,13 +61,9 @@ class Saved_reports_Model extends Model
 		}
 
 		if ($type != 'summary') {
-			$objects = $options[$options->get_value('report_type')];
-			unset($options[$options->get_value('report_type')]);
+			$objects = $options['objects'];
+			unset($options['objects']);
 
-			$actual_options = array();
-			foreach ($options as $option => $val) {
-				$actual_options[$option] = $val;
-			}
 			$options['id'] = $options['report_id'];
 			unset($options['report_id']);
 		}
@@ -93,15 +89,6 @@ class Saved_reports_Model extends Model
 				foreach ($options as $key => $val) {
 					// fuck you, special cases
 					switch ($key) {
-					 case 'cal_start':
-					 case 'cal_end':
-					 case 'time_start':
-					 case 'time_end':
-					 case 'host_name':
-					 case 'service_description':
-					 case 'hostgroup':
-					 case 'servicegroup':
-						break; # these are added in save_config_objects
 					 case 'host_filter_status':
 					 case 'service_filter_status':
 						$val = serialize($val);
@@ -122,15 +109,6 @@ class Saved_reports_Model extends Model
 				foreach ($options as $key => $value) {
 					// fuck you, special cases
 					switch ($key) {
-					 case 'cal_start':
-					 case 'cal_end':
-					 case 'time_start':
-					 case 'time_end':
-					 case 'host_name':
-					 case 'service_description':
-					 case 'hostgroup':
-					 case 'servicegroup':
-						break; # these are added in save_config_objects
 					 case 'host_filter_status':
 					 case 'service_filter_status':
 						$value = serialize($value);

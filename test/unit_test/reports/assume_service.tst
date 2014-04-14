@@ -5,7 +5,8 @@ assumed service states during program downtime #1 {
 	assumestatesduringnotrunning = true
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 	}
 	correct {
@@ -19,7 +20,8 @@ first state is undetermined {
 	assumestatesduringnotrunning = 0
 	start_time = 1202690000
 	end_time = 1202699000
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 	}
 	correct {

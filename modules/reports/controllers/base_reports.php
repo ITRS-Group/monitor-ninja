@@ -215,6 +215,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			"host_states" => _("Restrict which state(s) you're interested in hosts entering"),
 			"service_states" => _("Restrict which state(s) you're interested in services entering"),
 			"include_long_output" => _("In views that displays individual alerts, include the full check output, instead of only the first line"),
+			'filter' => _("Free text search, matching the objects in the left list below"),
 		);
 
 		if (array_key_exists($id, $helptexts)) {

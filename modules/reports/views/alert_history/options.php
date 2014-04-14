@@ -5,97 +5,12 @@
 	<table class="setup-tbl"><!--id="main_table"-->
 		<tr>
 			<td colspan="3">
-			<input type="checkbox" name="host_name" id="show_all" value="<?php echo Report_options::ALL_AUTHORIZED ?>" <?php echo $options['host_name'] === Report_options::ALL_AUTHORIZED?'checked="checked"':''?>/>
+			<input type="checkbox" name="host_name" id="show_all" value="<?php echo Report_options::ALL_AUTHORIZED ?>" <?php echo $options['objects'] === Report_options::ALL_AUTHORIZED?'checked="checked"':''?>/>
 				<label for="show_all">Show all</label>
 			</td>
 		</tr>
 	</table>
-	<table class="setup-tbl obj_selector">
-		<tr>
-			<td colspan="3">
-				<?php echo help::render('report-type').' '._('Report type'); ?><br />
-				<select name="report_type" id="report_type">
-					<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
-					<option value="hosts"><?php echo _('Hosts') ?></option>
-					<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
-					<option value="services"><?php echo _('Services') ?></option>
-				</select>
-				<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
-				<div id="progress"></div>
-			</td>
-		</tr>
-		<tr id="filter_row">
-			<td colspan="3">
-				<?php echo help::render('filter').' '._('Filter') ?><br />
-				<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
-				<input type="button" name="clear_filter" id="clear_filter" value="<?php echo _('Clear') ?>">
-			</td>
-		</tr>
-		<tr data-show-for="hostgroups">
-			<td>
-				<label for="hostgroup_tmp"><?php echo _('Available').' '._('Hostgroups') ?></label><br />
-				<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
-				</select>
-			</td>
-			<td class="move-buttons">
-				<input type="button" value="&gt;" id="mv_hg_r" class="button arrow-right" /><br />
-				<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
-			</td>
-			<td>
-				<label for="hostgroup"><?php echo _('Selected').' '._('Hostgroups') ?></label><br />
-				<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" class="multiple">
-				</select>
-			</td>
-		</tr>
-		<tr data-show-for="servicegroups">
-			<td>
-				<label for="servicegroup_tmp"><?php echo _('Available').' '._('Servicegroups') ?></label><br />
-				<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
-				</select>
-			</td>
-			<td class="move-buttons">
-				<input type="button" value="&gt;" id="mv_sg_r" class="button arrow-right" /><br />
-				<input type="button" value="&lt;" id="mv_sg_l" class="button arrow-left" />
-			</td>
-			<td>
-				<label for="servicegroup"><?php echo _('Selected').' '._('Servicegroups') ?></label><br />
-				<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
-				</select>
-			</td>
-		</tr>
-		<tr data-show-for="hosts">
-			<td>
-				<label for="host_tmp"><?php echo _('Available').' '._('Hosts') ?></label><br />
-				<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
-				</select>
-			</td>
-			<td class="move-buttons">
-				<input type="button" value="&gt;" id="mv_h_r" class="button arrow-right" /><br />
-				<input type="button" value="&lt;" id="mv_h_l" class="button arrow-left" />
-			</td>
-			<td>
-				<label for="host_name"><?php echo _('Selected').' '._('Hosts') ?></label><br />
-				<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
-				</select>
-			</td>
-		</tr>
-		<tr data-show-for="services">
-			<td>
-				<label for="service_tmp"><?php echo _('Available').' '._('Services') ?></label><br />
-				<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
-				</select>
-			</td>
-			<td class="move-buttons">
-				<input type="button" value="&gt;" id="mv_s_r" class="button arrow-right" /><br />
-				<input type="button" value="&lt;" id="mv_s_l" class="button arrow-left"  />
-			</td>
-			<td>
-				<label for="service_description"><?php echo _('Selected').' '._('Services') ?></label><br />
-				<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
-				</select>
-			</td>
-		</tr>
-	</table>
+	<?php echo new View('reports/objselector'); ?>
 </div>
 <div class="report_block">
 	<h2><?php echo _('Report Options'); ?></h2>

@@ -132,30 +132,35 @@ $(document).ready(function() {
 		});
 	});
 
-	var field_obj = new field_maps();
-	var tmp_fields = new field_maps3();
-	$('#report_type').on('change', function() {
+	$('select[name=report_type]').on('change', function() {
 		var value = this.value;
 		set_selection(value);
 		get_members(value, function(all_names) {
-			populate_options(tmp_fields.map[value], field_obj.map[value], all_names);
+			populate_options($('#objects_tmp'), $('#objects'), all_names);
 		});
 	}).each(function() {
-		var val = $(this).val();
-		if (window['_report_data']) {
-			expand_and_populate(_report_data);
-		} else if (val) {
-			set_selection(val);
-			get_members(val, function(all_names) {
-				populate_options(tmp_fields.map[val], field_obj.map[val], all_names);
-			});
-		}
+		var value = this.value;
+		set_selection(value);
+		get_members(value, function(all_names) {
+			populate_options($('#objects_tmp'), $(), all_names);
+			var tmp = $('#objects_tmp');
+			var mo = new missing_objects();
+			var elems = $('#objects').children();
+			for (var i = 0; i < elems.length; i++) {
+				var prop = elems[i];
+				if (tmp.containsOption(prop.value))
+					tmp.removeOption(prop.value);
+				else
+					mo.add(prop.value);
+			}
+			mo.display_if_any();
+		});
 	});
 	$('#sel_report_type').on('click', function() {
 		var value = this.form.report_type.value;
 		set_selection(value);
 		get_members(value, function(all_names) {
-			populate_options(tmp_fields.map[value], field_obj.map[value], all_names);
+			populate_options($('#objects_tmp'), $('#objects'), all_names);
 		});
 	});
 
@@ -268,6 +273,7 @@ function show_calendar(val, update) {
 function set_selection(val) {
 	if ($.inArray(val, ['servicegroups', 'hostgroups', 'services', 'hosts']) === -1)
 		val = 'hostgroups'; // Why? Because I found it like this
+	$('.object-list-type').text(val);
 	$('*[data-show-for]').hide()
 	$('*[data-show-for~='+val+']').show()
 }
@@ -277,9 +283,6 @@ function get_members(type, cb) {
 		return;
 	var field_name = false;
 	var empty_field = false;
-
-	field_name = new field_maps3().map[type];
-	empty_field = new field_maps().map[type];
 
 	show_progress('progress', _wait_str);
 	$.ajax({
@@ -307,7 +310,7 @@ function get_report_periods(type)
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "get_report_periods/";
 	var data = {type: type};
-	empty_list('report_period');
+	$('#report_period').empty();
 	set_selected_period(type);
 
 
@@ -326,33 +329,23 @@ function get_report_periods(type)
 	});
 }
 
-function empty_list(field) {
-	$('#' + field).empty();
-}
-
 /**
 *	Populate HTML select list with supplied JSON data
 */
-function populate_options(tmp_field, field, json_data, select_data)
+function populate_options(tmp_field, field, json_data)
 {
-	empty_list(tmp_field);
-	empty_list(field);
-	select_data = select_data || ''
+	tmp_field.empty();
+	field.empty();
 	show_progress('progress', _wait_str);
 	var available = document.createDocumentFragment();
 	var selected = document.createDocumentFragment();
 	for (i = 0; i < (json_data ? json_data.length : 0); i++) {
 		var option = document.createElement("option");
 		option.appendChild(document.createTextNode(json_data[i]));
-		if (select_data.indexOf(json_data[i]) >= 0) {
-			selected.appendChild(option);
-		}
-		else {
-			available.appendChild(option);
-		}
+		available.appendChild(option);
 	}
-	$('#' + tmp_field).append(available);
-	$('#' + field).append(selected);
+	tmp_field.append(available);
+	field.append(selected);
 }
 
 /**
@@ -419,38 +412,16 @@ function loopElements(f) {
 	});
 }
 
-function field_maps()
-{
-	this.map = new Object();
-	this.map['hosts']="host_name";
-	this.map['services']="service_description";
-	this.map['hostgroups']="hostgroup";
-	this.map['servicegroups']="servicegroup";
-}
-
-function field_maps3()
-{
-	this.map = new Object();
-	this.map['hosts']="host_tmp";
-	this.map['services']="service_tmp";
-	this.map['hostgroups']="hostgroup_tmp";
-	this.map['servicegroups']="servicegroup_tmp";
-}
-
 function check_form_values(form)
 {
 	if (!form)
 		form = document.documentElement;
 	var errors = 0;
 	var err_str = '';
-	var field_obj = new field_maps();
 	var cur_start = '';
 	var cur_end = '';
 
-	var rpt_type = $("input[name=report_type]", form).val();
-	if (rpt_type == '' || rpt_type == undefined) {
-		var rpt_type = $("select[name=report_type]", form).val();
-	}
+	var rpt_type = $("select[name=report_type]", form).val();
 	if ($("#report_period", form).val() == 'custom') {
 		if ($('input[name=type]', form).val() != 'sla') {
 			// date validation
@@ -523,7 +494,7 @@ function check_form_values(form)
 		}
 	}
 
-	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("#" + field_obj.map[rpt_type], form).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("#objects", form).is('select') && $('#objects option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
@@ -906,33 +877,4 @@ function init_regexpfilter() {
 		}
 
 	};
-}
-
-/**
-*	Receive params as JSON object
-*	Parse fields and populate corresponding fields in form
-*	with values.
-*/
-function expand_and_populate(data)
-{
-	var reportObj = data;
-	var field_obj = new field_maps();
-	var tmp_fields = new field_maps3();
-	var field_str = reportObj.report_type;
-	if (!field_str)
-		field_str = 'hostgroups';
-	$('#report_type').val(field_str);
-	set_selection(field_str);
-	get_members(field_str, function(all_names) {
-		populate_options(tmp_fields.map[field_str], field_obj.map[field_str], all_names, reportObj.objects);
-		var mo = new missing_objects();
-		if (reportObj.objects) {
-			for (var prop in reportObj.objects) {
-				if (!$('#'+field_obj.map[field_str]).containsOption(reportObj.objects[prop])) {
-					mo.add(reportObj.objects[prop]);
-				}
-			}
-			mo.display_if_any();
-		}
-	});
 }

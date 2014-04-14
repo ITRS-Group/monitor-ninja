@@ -8,7 +8,8 @@ global_vars {
 Group availability including soft states (servicegroups) {
 	start_time = 1202684400
 	end_time = 1202770800
-	servicegroup {
+	report_type = servicegroups
+	objects {
 		group1 {
 			testhost;PING
 		}
@@ -25,7 +26,8 @@ Group availability including soft states (servicegroups) {
 Group availability including soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 		testhost2;PING
 	}
@@ -38,7 +40,8 @@ Group availability including soft states (services) {
 Group availability including soft states, reversed host order (services) {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost2;PING
 		testhost;PING
 	}
@@ -52,7 +55,8 @@ Group availability excluding soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 		testhost2;PING
 	}
@@ -66,7 +70,8 @@ Group availability excluding soft states, reversed host order (services) {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	service_description {
+	report_type = services
+	objects {
 		testhost2;PING
 		testhost;PING
 	}
@@ -80,7 +85,8 @@ Cluster mode availability including soft states (services) {
 	start_time = 1202684400
 	end_time = 1202770800
 	sla_mode = 2
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 		testhost2;PING
 	}
@@ -93,7 +99,8 @@ Cluster mode availability including soft states, reversed host order (services) 
 	start_time = 1202684400
 	end_time = 1202770800
 	sla_mode = 2
-	service_description {
+	report_type = services
+	objects {
 		testhost2;PING
 		testhost;PING
 	}
@@ -107,7 +114,8 @@ Cluster mode availability excluding soft states (services) {
 	end_time = 1202770800
 	includesoftstates = 0
 	sla_mode = 2
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 		testhost2;PING
 	}
@@ -121,7 +129,8 @@ Cluster mode availability excluding soft states, reversed host order (services) 
 	end_time = 1202770800
 	includesoftstates = 0
 	sla_mode = 2
-	service_description {
+	report_type = services
+	objects {
 		testhost2;PING
 		testhost;PING
 	}

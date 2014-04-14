@@ -23,14 +23,13 @@ class SingleStateCalculator extends StateCalculator
 		# Warning: PHP sucks.
 		# In this particular instance, everything array-related breaks if the
 		# array is stored in an array object. Hence, recover and then call current()
+		$arr = $this->options['objects'];
 		if ($this->st_is_service) {
-			$arr = $this->options['service_description'];
 			$this->st_source = current($arr);
 			$srv = explode(';', $this->st_source);
 			$this->host_name = $srv[0];
 			$this->service_description = $srv[1];
 		} else {
-			$arr = $this->options['host_name'];
 			$this->host_name = $this->st_source = current($arr);
 		}
 		$this->calculate_object_state();

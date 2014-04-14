@@ -8,7 +8,8 @@ global_vars {
 Group availability including soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}
@@ -24,7 +25,8 @@ Group availability including soft states, excluding OK {
 	host_filter_status {
 		0 = -2
 	}
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}
@@ -37,7 +39,8 @@ Group availability including soft states, excluding OK {
 Group availability including soft states (hostgroups) {
 	start_time = 1202684400
 	end_time = 1202770800
-	hostgroup {
+	report_type = hostgroups
+	objects {
 		group1 {
 			testhost
 		}
@@ -54,7 +57,8 @@ Group availability including soft states (hostgroups) {
 Group availability including soft states, reversed host order {
 	start_time = 1202684400
 	end_time = 1202770800
-	host_name {
+	report_type = hosts
+	objects {
 		testhost2
 		testhost
 	}
@@ -68,7 +72,8 @@ Group availability excluding soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}
@@ -82,7 +87,8 @@ Group availability excluding soft states, reversed host order {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	host_name {
+	report_type = hosts
+	objects {
 		testhost2
 		testhost
 	}
@@ -96,7 +102,8 @@ Cluster mode availability including soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	sla_mode = 2
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}
@@ -109,7 +116,8 @@ Cluster mode availability including soft states, reversed host order {
 	start_time = 1202684400
 	end_time = 1202770800
 	sla_mode = 2
-	host_name {
+	report_type = hosts
+	objects {
 		testhost2
 		testhost
 	}
@@ -123,7 +131,8 @@ Cluster mode availability excluding soft states {
 	end_time = 1202770800
 	includesoftstates = 0
 	sla_mode = 2
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}
@@ -137,7 +146,8 @@ Cluster mode availability excluding soft states, reversed host order {
 	end_time = 1202770800
 	includesoftstates = 0
 	sla_mode = 2
-	host_name {
+	report_type = hosts
+	objects {
 		testhost2
 		testhost
 	}
@@ -150,7 +160,8 @@ Average availability including soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	sla_mode = 1
-	host_name {
+	report_type = hosts
+	objects {
 		testhost
 		testhost2
 	}

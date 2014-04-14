@@ -31,13 +31,14 @@ foreach($report_data as $i =>  $report) {
 			$obj_names = $report['name'];
 			# But if it's empty, this must be a multi-host/multi-service.
 			if (!$obj_names)
-				$obj_names = $options[$options->get_value('report_type')];
+				$obj_names = $options['objects'];
 			# Oh, but it can also be a string, because loose typing is awesome, I'm telling you!
 			if (!is_array($obj_names))
 				$obj_names = array($obj_names);
 			foreach ($obj_names as $name) {
-				echo '<input type="hidden" name="'.$options->get_value('report_type').'[]" value="'.$name.'"/>';
+				echo '<input type="hidden" name="objects[]" value="'.$name.'"/>';
 			}
+			echo '<input type="hidden" name="report_type" value="'.$options['report_type'].'"/>';
 			?>
 		</form>
 	</div>
@@ -97,11 +98,9 @@ foreach($report_data as $i =>  $report) {
 				$x = 0;
 				if (strpos('service', $options['report_type']) !== false) {
 					$type = 'services';
-					$objname = 'service_description';
 				}
 				else {
 					$type = 'hosts';
-					$objname= 'host_name';
 				}
 				foreach($members as $member) {
 					if ($options['use_alias'] && $type !== 'services')
@@ -110,7 +109,7 @@ foreach($report_data as $i =>  $report) {
 						$name = $member;
 					$x++;
 					echo '<tr class="'.($x%2 == 0 ? 'odd' : 'even').'"><td>';
-					echo '<a href="'.url::site().'sla/generate?'.$objname.'[]='. $member. '&report_type='.$type.'&amp;'.$options->as_keyval_string(true).'">'.$name.'</a>';
+					echo '<a href="'.url::site().'sla/generate?objects[]='. $member. '&report_type='.$type.'&amp;'.$options->as_keyval_string(true).'">'.$name.'</a>';
 					echo "</td></tr>\n";
 				}
 				?>

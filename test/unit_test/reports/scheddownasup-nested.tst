@@ -8,7 +8,8 @@ global_vars {
 }
 
 down_dtstart_dtstart_dtend_dtend: normal {
-	host_name {
+	report_type = hosts
+	objects {
 		down_dtstart_dtstart_dtend_dtend
 	}
 	scheduleddowntimeasuptime = 0
@@ -19,7 +20,8 @@ down_dtstart_dtstart_dtend_dtend: normal {
 }
 
 down_dtstart_dtstart_dtend_dtend: scheduled downtime as uptime {
-	host_name {
+	report_type = hosts
+	objects {
 		down_dtstart_dtstart_dtend_dtend
 	}
 	scheduleddowntimeasuptime = 1

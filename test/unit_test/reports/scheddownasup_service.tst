@@ -7,7 +7,8 @@ global_vars {
 scheduled service downtime as uptime {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 	}
 	scheduleddowntimeasuptime = 1
@@ -22,7 +23,8 @@ scheduled service downtime as uptime {
 host in scheduled downtime, service as uptime {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost2;PING
 	}
 	scheduleddowntimeasuptime = 1
@@ -37,7 +39,8 @@ host in scheduled downtime, service as uptime {
 host in scheduled downtime, service as uptime, 2 services {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost;PING
 		testhost2;PING
 	}
@@ -67,7 +70,8 @@ host in scheduled downtime, service as uptime, 2 services {
 host in dt before report_period starts, service never in dt {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost3;PING
 	}
 	scheduleddowntimeasuptime = 1
@@ -80,7 +84,8 @@ host in dt before report_period starts, service never in dt {
 host with two services {
 	start_time = 1202684400
 	end_time = 1202770800
-	service_description {
+	report_type = services
+	objects {
 		testhost2;PING
 		testhost2;PING2
 	}
