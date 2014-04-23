@@ -226,11 +226,11 @@ $().ready(function() {
 	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order);
 
 	/**
-	 * Closes the query builder IF
+	 * Closes the filter builder IF
 	 * 1. User clicks the "Close filter builder" button
-	 * 2. User clicks outside of the query builder
+	 * 2. User clicks outside of the filter builder
 	 * 3. User presses ESC
-	*/
+	 */
 	var filterBuilder = $('#filter-query-builder');
 	$('#close-filter-builder').on({
 		click: function() {
@@ -241,7 +241,7 @@ $().ready(function() {
 	$(document).on({
 		click: function(e) {
 			if ($(e.target).closest(filterBuilder).length === 0) {
-				// Clicked outside of the query builder
+				// Clicked outside of the filter builder
 				$(filterBuilder).hide();
 			}
 		},
