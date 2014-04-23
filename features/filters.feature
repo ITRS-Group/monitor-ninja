@@ -22,9 +22,8 @@ Feature: Filters & list views
 		When I click "More info" within frame "iframe"
 		Then I should see "Deleted service object linux-server1;System Load" within frame "iframe"
 		And I shouldn't see "linux-server1;PING" within frame "iframe"
-		And I should see button "Save objects I have changed" within frame "iframe"
-		And I should see button "Save everything" within frame "iframe"
-		When I click button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save" within frame "iframe"
+		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
@@ -52,9 +51,8 @@ Feature: Filters & list views
 		Then I should see "Deleted service object linux-server1;System Load" within frame "iframe"
 		And I should see "linux-server1;PING1" within frame "iframe"
 		And I shouldn't see "linux-server1;PING2" within frame "iframe"
-		And I should see button "Save objects I have changed" within frame "iframe"
-		And I should see button "Save everything" within frame "iframe"
-		When I click button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save" within frame "iframe"
+		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
@@ -86,9 +84,8 @@ Feature: Filters & list views
 		When I click "More info" within frame "iframe"
 		Then I should see "Deleted service object a_group;System Load" within frame "iframe"
 		And I shouldn't see "a_group;PING" within frame "iframe"
-		And I should see button "Save objects I have changed" within frame "iframe"
-		And I should see button "Save everything" within frame "iframe"
-		When I click button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save" within frame "iframe"
+		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
@@ -125,9 +122,8 @@ Feature: Filters & list views
 		And I should see "a_group;PING1" within frame "iframe"
 		And I shouldn't see "linux-server1" within frame "iframe"
 		And I shouldn't see "PING2" within frame "iframe"
-		And I should see button "Save objects I have changed" within frame "iframe"
-		And I should see button "Save everything" within frame "iframe"
-		When I click button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save" within frame "iframe"
+		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
@@ -153,9 +149,8 @@ Feature: Filters & list views
 		When I click "More info" within frame "iframe"
 		Then I should see "Deleted host object linux-server2" within frame "iframe"
 		And I shouldn't see "linux-server1" within frame "iframe"
-		And I should see button "Save objects I have changed" within frame "iframe"
-		And I should see button "Save everything" within frame "iframe"
-		When I click button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save" within frame "iframe"
+		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
@@ -183,9 +178,8 @@ Feature: Filters & list views
 		When I click "More info" within frame "iframe"
 		Then I should see "Deleted host object linux-server2" within frame "iframe"
 		And I shouldn't see "linux-server1" within frame "iframe"
-		And I should see button "Save objects I have changed" within frame "iframe"
-		And I should see button "Save everything" within frame "iframe"
-		When I click button "Save objects I have changed" within frame "iframe"
+		And I should see button "Save" within frame "iframe"
+		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
