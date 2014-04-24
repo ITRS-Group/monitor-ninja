@@ -19,7 +19,7 @@
 						<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 					</td>
 				</tr>
-				<tr id="display" style="display: none; clear: both;" class="none fancydisplay">
+				<tr id="custom_time" style="display: none; clear: both;" class="none fancydisplay">
 					<td>
 						<?php echo _('Start date') ?> (<span id="start_time_tmp"><?php echo _('Click calendar to select date') ?></span>)<br />
 						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('start_time') ?>" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />

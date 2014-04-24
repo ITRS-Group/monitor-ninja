@@ -255,7 +255,7 @@ function show_hide(id,h1) {
 
 function show_calendar(val, update) {
 	if (val=='custom') {
-		$("#display").show();
+		$("#custom_time").show();
 
 		init_datepicker();
 		init_timepicker();
@@ -265,7 +265,7 @@ function show_calendar(val, update) {
 			$('input[name=end_time]').attr('value', '');
 		}
 	} else {
-		$("#display").hide();
+		$("#custom_time").hide();
 	}
 	disable_sla_fields(val);
 }

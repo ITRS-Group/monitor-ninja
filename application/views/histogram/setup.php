@@ -30,7 +30,7 @@
 					</td>
 
 				</tr>
-				<tr id="display" style="display: none; clear: both;">
+				<tr id="custom_time" style="display: none; clear: both;">
 					<td><?php echo help::render('start-date').' '._('Start date') ?> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
 						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />
 						<input type="hidden" name="start_time" id="start_time" value=""/>
