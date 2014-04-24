@@ -40,10 +40,11 @@ array(4) {
 		echo "<ul>";
 
 		foreach ($links as $section => $entry) {
+			$normalized_section_name = str_replace(' ','-',strtolower($section));
 
 			?>
-				<li class="supermenu-button" id="<?php echo str_replace(' ','-',strtolower($section)); ?>-button">
-				<span class="icon-32 x32-<?php echo str_replace(' ','-',strtolower($section)); ?>"></span>
+				<li class="supermenu-button" id="<?php echo $normalized_section_name; ?>-button">
+				<span class="icon-32 x32-<?php echo $normalized_section_name; ?>"></span>
 			<?php
 
 			$linkstring = '';
@@ -67,11 +68,11 @@ array(4) {
 					if( is_array($data[1]) ) {
 						$icon_image = $data[1][1];
 						$module_name = $data[1][0];
-						$id = str_replace(' ','-',strtolower($section))."-".$data[1][0];
+						$id = $normalized_section_name."-".$data[1][0];
 					} else {
 						$icon_image = $data[1];
 						$module_name = false;
-						$id = str_replace(' ','-',strtolower($section))."-".$data[1];
+						$id = $normalized_section_name."-".$data[1];
 					}
 					if ($data[2] == 0) {
 
@@ -113,9 +114,9 @@ array(4) {
 			}
 
 			if ($in_menu == true) {
-				echo "<ul id='".str_replace(' ','-',strtolower($section))."-menu' class='current-sup-menu' style='display: block'>";
+				echo "<ul id='$normalized_section_name-menu' class='current-sup-menu' style='display: block'>";
 			} else {
-				echo "<ul id='".str_replace(' ','-',strtolower($section))."-menu'>";
+				echo "<ul id='$normalized_section_name-menu'>";
 			}
 
 			echo $linkstring;
