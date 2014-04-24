@@ -365,7 +365,7 @@ class Cli_Controller extends Controller {
 	}
 
 	public function license_start() {
-		$row = Database::instance()->query("SELECT timestamp from report_data ORDER BY timestamp ASC LIMIT 1");
+		$row = Database::instance()->query("SELECT MIN(timestamp) from report_data");
 		if(!$row) {
 			echo "";
 			return;
