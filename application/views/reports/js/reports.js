@@ -168,12 +168,3 @@ function get_sla_values() {
 		dataType: 'json'
 	});
 }
-
-function toggle_state(the_id)
-{
-	if ($('#' + the_id).attr('checked') ) {
-		$('#' + the_id).attr('checked', false);
-	} else {
-		$('#' + the_id).attr('checked', true);
-	}
-}

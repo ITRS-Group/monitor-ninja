@@ -21,7 +21,7 @@ $(document).ready(function() {
 	$('#hostgroup, #servicegroup, #host_name, #service_description, #objects').dblclick(move_left);
 
 	$("#hide_response").click(function() {
-		hideMe('response');
+		$('#response').hide('slow');
 	});
 
 	$(".fancybox").fancybox({
@@ -241,18 +241,6 @@ function init_datepicker()
 	);
 }
 
-function show_hide(id,h1) {
-	if ($('#' + id) && !$('#' + id).is(':visible')) {
-		$('#' + id)
-		.show()
-		.css('background', 'url(icons/arrows/grey-down.gif) 7px 7px no-repeat');
-	} else {
-		$('#' + id)
-		.hide()
-		.css('background', 'url(icons/arrows/grey.gif) 11px 3px no-repeat');
-	}
-}
-
 function show_calendar(val, update) {
 	if (val=='custom') {
 		$("#custom_time").show();
@@ -301,35 +289,6 @@ function get_members(type, cb) {
 }
 
 /**
-*	Fetch the report periods for selected report type.
-*
-*	Result will be returned to populate_report_periods() below.
-*/
-function get_report_periods(type)
-{
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "get_report_periods/";
-	var data = {type: type};
-	$('#report_period').empty();
-	set_selected_period(type);
-
-
-	$.ajax({
-		url: url,
-		data: data,
-		success: function(data) {
-			if (data != '') {
-				// OK, populate
-				populate_report_periods(data);
-			} else {
-				// error
-				$.notify(_reports_error + ": Unable to fetch report periods", {'sticky': true});
-			}
-		}
-	});
-}
-
-/**
 *	Populate HTML select list with supplied JSON data
 */
 function populate_options(tmp_field, field, json_data)
@@ -346,54 +305,6 @@ function populate_options(tmp_field, field, json_data)
 	}
 	tmp_field.append(available);
 	field.append(selected);
-}
-
-/**
-*	Re-populate report_period select field
-*/
-function populate_report_periods(json_data)
-{
-	var field_name = 'report_period';
-	for (var i = 0; i < json_data.length; i++) {
-		var val = json_data[i].optionValue;
-		var txt = json_data[i].optionText;
-		$("#" + field_name).addOption(val, txt, false);
-	}
-	disable_sla_fields($('#report_period option:selected').val());
-	setTimeout('delayed_hide_progress()', 1000);
-}
-
-/**
-*	Set selected report period to default
-*	(and disable sla fields out of scope if sla)
-*/
-function set_selected_period(val)
-{
-	$("#report_period").selectOptions(val);
-	disable_sla_fields(val);
-}
-
-// delay hiding of progress indicator
-function delayed_hide_progress()
-{
-	setup_hide_content('progress');
-}
-
-function setup_hide_content(d) {
-	if(d.length < 1) {
-		return;
-	}
-	$('#' + d).hide();
-}
-
-function hide_response() {setup_hide_content('response');}
-
-function toggle_field_visibility(val, theId) {
-	if (val) {
-		$('#' + theId).show();
-	} else {
-		$('#' + theId).hide();
-	}
 }
 
 /**
@@ -607,21 +518,6 @@ function check_form_values(form)
 	return false;
 }
 
-function epoch_to_human(val){
-	var the_date = new Date(val * 1000);
-	return the_date;
-}
-
-function hideMe(elem)
-{
-	$('#' + elem).hide('slow');
-}
-
-function show_message(class_name, msg)	{
-	$('#response').show().html('<ul class="' + class_name + '">' + msg + '<br /></ul>');
-	setTimeout('hide_response()', 5000);
-}
-
 function moveAndSort(from, to)
 {
 	from.find('option:selected').remove().appendTo(to);
@@ -743,9 +639,9 @@ function check_custom_months()
 			}
 		}
 	} else {
-		setTimeout('check_custom_months()', 1000);
+		disable_months(0, 0);
 	}
-	setup_hide_content('progress');
+	$('#progress').hide();
 }
 
 /**
@@ -784,7 +680,7 @@ missing_objects.prototype.display_if_any = function()
 	var info_str = _reports_missing_objects + ": ";
 	info_str += "<ul><li><img src=\"" + _site_domain + "application/views/icons/arrow-right.gif" + "\" /> " + this.objs.join('</li><li><img src="' + _site_domain + 'application/views/icons/arrow-right.gif' + '" /> ') + '</li></ul>';
 	info_str += _reports_missing_objects_pleaseremove;
-	info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + '' + 'application/views/icons/12x12/cross.gif" /></a>';
+	info_str += '<a href="#" id="hide_response" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + '' + 'application/views/icons/12x12/cross.gif" /></a>';
 	$('#response')
 		.css('background','#f4f4ed url(' + _site_domain + 'application/views/icons/32x32/shield-info.png) 7px 7px no-repeat')
 		.css("position", "relative")
