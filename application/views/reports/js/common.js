@@ -164,31 +164,19 @@ $(document).ready(function() {
 		});
 	});
 
-
-	var start_date = new Date(0);
-	var end_date = new Date();
-	$.ajax({
-		url:  _site_domain + _index_page + '/sla/custom_start/',
-		type: 'GET',
-		dataType: 'json',
-		success: function(data) {
-			start_date.setTime(data.timestamp * 1000);
-			var html = '<option></option>';
-			for (i = start_date.getFullYear(); i <= end_date.getFullYear(); i++) {
-				html += '<option>' + i + '</option>';
-			}
-			$('#start_year').html(html);
-			$('#end_year').html(html);
-		}
-	});
 	$('#start_year, #end_year').on('change', function () {
 		var start = 0;
 		var end = 11;
-		if (this.value == start_date.getFullYear()) {
-			start = start_date.getMonth();
+		// check_custom_months is supposedly initialized by the onload
+		// handler in application/views/reports/js/reports.js or equivalent.
+		if (check_custom_months.start_date == undefined || check_custom_months.end_date == undefined) {
+			return;
 		}
-		if (this.value == end_date.getFullYear()) {
-			end = end_date.getMonth();
+		if (this.value == check_custom_months.start_date.getFullYear()) {
+			start = check_custom_months.start_date.getMonth();
+		}
+		if (this.value == check_custom_months.end_date.getFullYear()) {
+			end = check_custom_months.end_date.getMonth();
 		}
 		var html = '<option></option>';
 		for (i = start; i <= end; i++) {
@@ -620,6 +608,29 @@ function check_custom_months()
 	// not SLA?
 	if (!f['start_month'])
 		return;
+
+	if (check_custom_months.start_date == undefined) {
+		check_custom_months.start_date = new Date(0);
+		check_custom_months.end_date = new Date();
+		$.ajax({
+			url:  _site_domain + _index_page + '/sla/custom_start/',
+			type: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				if (!data.timestamp) {
+					$.notify("Unable to fetch oldest report timestamp: " + data.responseText, {'sticky': true});
+				}
+				check_custom_months.start_date.setTime(data.timestamp * 1000);
+				var html = '<option></option>';
+				for (i = check_custom_months.start_date.getFullYear(); i <= check_custom_months.end_date.getFullYear(); i++) {
+					html += '<option>' + i + '</option>';
+				}
+				$('#start_year').html(html);
+				$('#end_year').html(html);
+			}
+		});
+	}
+
 	var start_year 	= f.start_year.value;
 	var start_month = f.start_month.value;
 	var end_year 	= f.end_year.value;
