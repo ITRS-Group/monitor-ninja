@@ -636,19 +636,9 @@ function check_custom_months()
 	var end_year 	= f.end_year.value;
 	var end_month 	= f.end_month.value;
 	if (start_year!='' && end_year!='' && start_month!='' && end_month!='') {
-		if (start_year < end_year) {
-			// start and end months will have to "restart"
-			disable_months(start_month, end_month);
-		} else {
-			if (start_year < end_year || start_year == end_year) {
-				// simple case - disable from start_month to end_month
-				disable_months(start_month, end_month);
-			} else {
-				// start_year > end_year = ERROR
-				// handled by check_form_values but let's disable all months?
-				disable_months(0, 0);
-			}
-		}
+		disable_months(0, 0);
+	} else if (start_year == end_year - 1 || start_year == end_year) {
+		disable_months(start_month, end_month);
 	} else {
 		disable_months(0, 0);
 	}
