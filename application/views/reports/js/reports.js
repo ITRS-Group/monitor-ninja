@@ -7,8 +7,6 @@ $(document).ready(function() {
 		self.location.href = base_uri + uri_xtra;
 	});
 
-	disable_sla_fields($('#report_period').attr('value'));
-
 	$('#include_trends').click(function() {
 		if (this.checked) {
 			$('#include_trends_scaling').attr('disabled', false);
