@@ -539,13 +539,13 @@ function disable_sla_fields(report_period)
 			check_custom_months();
 			break;
 		case 'lastmonth':
-			disable_last_months(1);
+			enable_last_months(1);
 			break;
 		case 'last3months':
-			disable_last_months(3);
+			enable_last_months(3);
 			break;
 		case 'last6months':
-			disable_last_months(6);
+			enable_last_months(6);
 			break;
 		case 'lastyear':
 		case 'last12months':
@@ -656,19 +656,19 @@ function check_custom_months()
 }
 
 /**
- * Generic function to disable month_ fields
+ * Generic function to enable month_ fields
  * depending on if selection is last 1, 3 or 6 months.
  */
-function disable_last_months(mnr)
+function enable_last_months(mnr)
 {
 	var now = new Date();
 	var this_month = now.getMonth()+1;
-	if (!mnr)
-		return false;
-	var from = (this_month-mnr);
-	var to = (this_month-1);
-	from = from<=0 ? (from + 12) : from;
-	to = to<=0 ? (to + 12) : to;
+	var from = this_month - mnr;
+	var to = this_month - 1;
+	if (from <= 0)
+		from += 12;
+	if (to <= 0)
+		to += 12;
 	disable_months(from, to);
 }
 
