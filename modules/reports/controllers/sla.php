@@ -26,7 +26,7 @@ class Sla_Controller extends Reports_Controller
 	public function custom_start() {
 		$row = Database::instance()->query("SELECT MIN(timestamp) as timestamp from report_data");
 		if(!$row) {
-			return json::ok(date());
+			return json::ok(array('timestamp' => date()));
 		}
 		$value = $row->result(false)->current();
 		return json::ok(array('timestamp' => $value['timestamp']));
