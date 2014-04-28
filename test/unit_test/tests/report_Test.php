@@ -94,7 +94,8 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		foreach ($out as $row) {
 			$res[] = $row['name'];
 		}
-		$opts['host_name'] = $res;
+		$opts['report_type'] = 'hosts';
+		$opts['objects'] = $res;
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
 			$opts['host_states'] = $host_state;
@@ -304,39 +305,39 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$Sla_opts = array('output_format' => 'csv', 'report_period' => 'lastmonth', 'months' => array($month => 9));
 		$Avail_tests = array(
 			'single host' => array(
-				'obj' => array('host_name' => array('host_pending')),
+				'obj' => array('report_type' => 'hosts', 'objects' => array('host_pending')),
 				'expected' => 2
 			),
 			'multi host' => array(
-				'obj' => array('host_name' => array('host_pending', 'host_up')),
+				'obj' => array('report_type' => 'hosts', 'objects' => array('host_pending', 'host_up')),
 				'expected' => 3
 			),
 			'single service' => array(
-				'obj' => array('service_description' => array('host_pending;service critical')),
+				'obj' => array('report_type' => 'services', 'objects' => array('host_pending;service critical')),
 				'expected' => 2
 			),
 			'multi service, same host' => array(
-				'obj' => array('service_description' => array('host_pending;service critical', 'host_pending;service ok')),
+				'obj' => array('report_type' => 'services', 'objects' => array('host_pending;service critical', 'host_pending;service ok')),
 				'expected' => 3
 			),
 			'multi service, different host' => array(
-				'obj' => array('service_description' => array('host_pending;service critical', 'host_up;service ok')),
+				'obj' => array('report_type' => 'services', 'objects' => array('host_pending;service critical', 'host_up;service ok')),
 				'expected' => 3
 			),
 			'single hostgroup with two members' => array(
-				'obj' => array('hostgroup' => array('hostgroup_acknowledged')),
+				'obj' => array('report_type' => 'hostgroups', 'objects' => array('hostgroup_acknowledged')),
 				'expected' => 3
 			),
 			'multi hostgroups' => array(
-				'obj' => array('hostgroup' => array('hostgroup_acknowledged', 'hostgroup_all')),
+				'obj' => array('report_type' => 'hostgroups', 'objects' => array('hostgroup_acknowledged', 'hostgroup_all')),
 				'expected' => 26
 			),
 			'single servicegroup, 88 members' => array(
-				'obj' => array('servicegroup' => array('servicegroup_pending')),
+				'obj' => array('report_type' => 'servicegroups', 'objects' => array('servicegroup_pending')),
 				'expected' => 89,
 			),
 			'multi servicegroups' => array(
-				'obj' => array('servicegroup' => array('servicegroup_pending', 'servicegroup_ok')),
+				'obj' => array('report_type' => 'servicegroups', 'objects' => array('servicegroup_pending', 'servicegroup_ok')),
 				'expected' => 111,
 			),
 		);
@@ -344,39 +345,39 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		// obj below - but that becomes boring due to the current month (and thus its report period) being fluid
 		$Sla_tests = array(
 			'single host' => array(
-				'obj' => array('host_name' => array('host_pending')),
+				'obj' => array('report_type' => 'hosts', 'objects' => array('host_pending')),
 				'expected' => 2
 			),
 			'multi host' => array(
-				'obj' => array('host_name' => array('host_pending', 'host_up')),
+				'obj' => array('report_type' => 'hosts', 'objects' => array('host_pending', 'host_up')),
 				'expected' => 2
 			),
 			'single service' => array(
-				'obj' => array('service_description' => array('host_pending;service critical')),
+				'obj' => array('report_type' => 'services', 'objects' => array('host_pending;service critical')),
 				'expected' => 2
 			),
 			'multi service, same host' => array(
-				'obj' => array('service_description' => array('host_pending;service critical', 'host_pending;service ok')),
+				'obj' => array('report_type' => 'services', 'objects' => array('host_pending;service critical', 'host_pending;service ok')),
 				'expected' => 2
 			),
 			'multi service, different host' => array(
-				'obj' => array('service_description' => array('host_pending;service critical', 'host_up;service ok')),
+				'obj' => array('report_type' => 'services', 'objects' => array('host_pending;service critical', 'host_up;service ok')),
 				'expected' => 2
 			),
 			'single hostgroup with two members' => array(
-				'obj' => array('hostgroup' => array('hostgroup_acknowledged')),
+				'obj' => array('report_type' => 'hostgroups', 'objects' => array('hostgroup_acknowledged')),
 				'expected' => 2
 			),
 			'multi hostgroups' => array(
-				'obj' => array('hostgroup' => array('hostgroup_acknowledged', 'hostgroup_all')),
+				'obj' => array('report_type' => 'hostgroups', 'objects' => array('hostgroup_acknowledged', 'hostgroup_all')),
 				'expected' => 3
 			),
 			'single servicegroup, 88 members' => array(
-				'obj' => array('servicegroup' => array('servicegroup_pending')),
+				'obj' => array('report_type' => 'servicegroups', 'objects' => array('servicegroup_pending')),
 				'expected' => 2,
 			),
 			'multi servicegroups' => array(
-				'obj' => array('servicegroup' => array('servicegroup_pending', 'servicegroup_ok')),
+				'obj' => array('report_type' => 'servicegroups', 'objects' => array('servicegroup_pending', 'servicegroup_ok')),
 				'expected' => 3,
 			),
 		);
