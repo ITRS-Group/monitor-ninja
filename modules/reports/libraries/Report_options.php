@@ -394,23 +394,23 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
 			       break;
 			case 'lastquarter':
-			       $t = getdate();
-			       if($t['mon'] <= 3){
-				$lqstart = ($t['year']-1)."-10-01";
-				$lqend = ($t['year']-1)."-12-31";
-			       } elseif ($t['mon'] <= 6) {
-				$lqstart = $t['year']."-01-01";
-				$lqend = $t['year']."-03-31";
-			       } elseif ($t['mon'] <= 9){
-				$lqstart = $t['year']."-04-01";
-				$lqend = $t['year']."-06-30";
-			       } else {
-				$lqstart = $t['year']."-07-01";
-				$lqend = $t['year']."-09-30";
-			       }
-			       $time_start = strtotime($lqstart);
-			       $time_end = strtotime($lqend);
-			       break;
+				$t = getdate($now);
+				if($t['mon'] <= 3){
+					$lqstart = 'midnight '.($t['year']-1)."-10-01";
+					$lqend = 'midnight '.($t['year'])."-01-01";
+				} elseif ($t['mon'] <= 6) {
+					$lqstart = 'midnight '.$t['year']."-01-01";
+					$lqend = 'midnight '.$t['year']."-04-01";
+				} elseif ($t['mon'] <= 9){
+					$lqstart = 'midnight '.$t['year']."-04-01";
+					$lqend = 'midnight '.$t['year']."-07-01";
+				} else {
+					$lqstart = 'midnight '.$t['year']."-07-01";
+					$lqend = 'midnight '.$t['year']."-10-01";
+				}
+				$time_start = strtotime($lqstart);
+				$time_end = strtotime($lqend);
+				break;
 			case 'custom':
 			       # we'll have "start_time" and "end_time" in
 			       # the options when this happens
