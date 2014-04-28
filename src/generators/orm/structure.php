@@ -452,10 +452,13 @@ $tables = array (
 		'class' => 'TimePeriod',
 		'source' => 'LS',
 		'key' => array('name'),
+		'rename' => array(
+			'is_active' => 'in'
+		),
 		'structure' =>
 		array (
 			'alias' => 'string',
-			'in' => 'int',
+			'is_active' => 'int',
 			'name' => 'string',
 		),
 	),

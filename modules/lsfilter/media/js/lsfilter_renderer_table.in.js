@@ -1279,10 +1279,10 @@ listview_renderer_table.timeperiods = {
 	},
 	"in": {
 		"header": _('Currently active'),
-		"depends": ['in'],
-		"sort": ['in'],
+		"depends": ['is_active'],
+		"sort": ['is_active'],
 		"cell": function(args) {
-			return $('<td />').update_text(args.obj['in'] ? _('Yes') : _('No'));
+			return $('<td />').update_text(args.obj.is_active ? _('Yes') : _('No'));
 		}
 	}
 };
