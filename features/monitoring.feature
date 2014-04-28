@@ -473,7 +473,7 @@ Feature: Monitoring
 		Given I am on the Service details page
 		When I click "System Load"
 		And I click "Alert history"
-		Then I should be on url "/monitor/index.php/alert_history/generate?include_long_output=1&report_type=services&objects=[]=linux-server1;System+Load"
+		Then I should be on url "/monitor/index.php/alert_history/generate?include_long_output=1&report_type=services&objects[]=linux-server1;System+Load"
 		And I should see "Alert history"
 
 	@configuration @asmonitor @case-654
@@ -484,7 +484,7 @@ Feature: Monitoring
 		Given I am on the Service details page
 		When I click "System Load"
 		And I click "Alert histogram"
-		Then I should be on url "/monitor/index.php/histogram/generate?report_type=services&objects=[]=linux-server1;System+Load"
+		Then I should be on url "/monitor/index.php/histogram/generate?report_type=services&objects[]=linux-server1;System+Load"
 
 	@configuration @asmonitor @case-654
 	Scenario: Service details extinfo page check links
@@ -494,7 +494,7 @@ Feature: Monitoring
 		Given I am on the Service details page
 		When I click "System Load"
 		And I click "Availability report"
-		Then I should be on url "/monitor/index.php/avail/generate?report_type=services&objects=[]=linux-server1;System+Load&report_type=services"
+		Then I should be on url "/monitor/index.php/avail/generate?report_type=services&objects[]=linux-server1;System+Load&report_type=services"
 		And I should see "Service details for System Load on host linux-server1"
 		And I should see "Reporting period: Last 7 days"
 
