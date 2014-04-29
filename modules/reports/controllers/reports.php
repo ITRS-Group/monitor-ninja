@@ -106,8 +106,8 @@ class Reports_Controller extends Base_reports_Controller
 
 
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
-		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
+		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
+		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
 		$this->js_strings .= "var _schedule_change_filename = \""._('Would you like to change the filename based on your selections?')."\";\n";
 
 		$this->js_strings .= reports::js_strings();
@@ -287,8 +287,8 @@ class Reports_Controller extends Base_reports_Controller
 		$tpl_options->months = date::abbr_month_names();
 
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
-		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
+		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
+		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
 
 		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 		$this->js_strings .= reports::js_strings();
