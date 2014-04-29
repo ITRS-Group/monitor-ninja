@@ -57,22 +57,45 @@ $(document).ready(function() {
 		else
 			$('.trend_options').hide();
 	});
-});
 
-function populate_saved_sla_data(json_data) {
-	json_data = eval(json_data);
-	for (var i = 1; i <= 12; i++) {
-		$("#sla_month_"+i).attr('value','');
-	}
-	for (var i = 0; i < json_data.length; i++) {
-		var j = i+1;
-		var name = json_data[i].name;
-		var value = json_data[i].value;
-		if (document.getElementById("sla_"+name).style.backgroundColor != 'rgb(205, 205, 205)')
-			$("#sla_"+name).attr('value',value);
-	}
-	setTimeout(delayed_hide_progress, 1000);
-}
+	$('#sla_report_id').change(function(ev) {
+		var sla_id = $(this).attr('value');
+		if (!sla_id) {
+			// don't try to fetch sla values when we have no id
+			return;
+		}
+		show_progress('progress', _wait_str);
+		var ajax_url = _site_domain + _index_page + '/ajax/';
+		var url = ajax_url + "get_sla_from_saved_reports/";
+		var data = {sla_id: sla_id}
+
+		$.ajax({
+			url: url,
+			data: data,
+			complete: function() {
+				$('#progress').hide();
+			},
+			error: function() {
+				$.notify(_reports_error + ': Unable to fetch saved sla values...', {'sticky':true});
+			},
+			success: function(data) {
+				for (var i = 1; i <= 12; i++) {
+					$("#month_"+i).attr('value','');
+				}
+				for (var i = 0; i < data.length; i++) {
+					var name = data[i].name;
+					var value = data[i].value;
+					var checkbox = $('#'+name);
+					if (checkbox.attr('disabled') !== 'disabled') {
+						checkbox.val(value);
+					}
+				}
+				$('.sla_values').show();
+			},
+			dataType: 'json'
+		});
+	});
+});
 
 // Propagate sla values
 function set_report_form_values(the_val)
@@ -137,32 +160,5 @@ function fetch_field_value(type, id, elem_id)
 		success: function(data) {
 			$('#' + elem_id).text(data);
 		}
-	});
-}
-
-function get_sla_values() {
-	var sla_id = $('#sla_report_id').attr('value');
-
-	if (!sla_id) {
-		// don't try to fetch sla values when we have no id
-		return;
-	}
-	show_progress('progress', _wait_str);
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "get_sla_from_saved_reports/";
-	var data = {sla_id: sla_id}
-
-	$.ajax({
-		url: url,
-		type: 'POST',
-		data: data,
-		error: function() {
-			$.notify(_reports_error + ': Unable to fetch saved sla values...', {'sticky':true});
-		},
-		success: function(data) {
-			populate_saved_sla_data(data);
-			$('.sla_values').show();
-		},
-		dataType: 'json'
 	});
 }

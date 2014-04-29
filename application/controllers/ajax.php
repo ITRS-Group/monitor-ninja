@@ -414,15 +414,14 @@ class Ajax_Controller extends Authenticated_Controller {
 
 	public function get_sla_from_saved_reports()
 	{
-
-		$sla_id = $this->input->post('sla_id', false);
-		if (empty($sla_id))
-			return false;
+		$sla_id = $this->input->get('sla_id', false);
+		if (empty($sla_id)) {
+			json::fail(array('message' => 'Need sla_id'));
+		}
 
 		$saved_sla = Saved_reports_Model::get_period_info($sla_id);
 		if (count($saved_sla) == 0) {
-			echo '';
-			return false;
+			json::fail(array('message' => 'No SLA report found for given ID'));
 		}
 
 		$return = false;
@@ -430,8 +429,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$return[] = array('name' => $info->name, 'value' => $info->value);
 		}
 
-		echo json::ok($return);
-		return true;
+		json::ok($return);
 	}
 
 	/**

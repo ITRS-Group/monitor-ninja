@@ -210,7 +210,7 @@ if($options['report_id']) { ?>
 		</tr>
 		<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
 			<td style="padding-left: 0px" colspan="12">
-				<select name="sla_report_id" id="sla_report_id" onchange="get_sla_values()">
+				<select name="sla_report_id" id="sla_report_id">
 					<option value=""> - <?php echo _('Select saved report') ?> - </option>
 					<?php
 					foreach ($saved_reports as $info) {
