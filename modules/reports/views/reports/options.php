@@ -1,10 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php
-$saved_reports_exists = false;
-if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
-	$saved_reports_exists = true;
-}
-?>
 <div class="report_block">
 <h2><?php echo _('Report Mode'); ?></h2>
 <hr />
@@ -205,10 +199,10 @@ if($options['report_id']) { ?>
 <br />
 <div class="setup-table<?php if ($type != 'sla') { ?> ui-helper-hidden<?php } ?>" id="enter_sla">
 	<table style="width: 810px">
-		<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
+		<tr class="sla_values" <?php if (!$saved_reports) { ?>style="display:none"<?php } ?>>
 			<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> <?php echo _('Use SLA-values from saved report') ?></td>
 		</tr>
-		<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
+		<tr class="sla_values" <?php if (!$saved_reports) { ?>style="display:none"<?php } ?>>
 			<td style="padding-left: 0px" colspan="12">
 				<select name="sla_report_id" id="sla_report_id">
 					<option value=""> - <?php echo _('Select saved report') ?> - </option>

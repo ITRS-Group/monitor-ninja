@@ -1,12 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<?php
-$saved_reports_exists = false;
-if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
-	$saved_reports_exists = true;
-}
-?>
-
 <div class="no-borders">
 	<div class="report-page-setup availsla">
 	<div id="response"><?php
@@ -17,7 +10,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<div class="setup-table">
 
 			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block', 'method' => 'get')); ?>
-				<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
+				<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports) { ?>display:none;<?php } ?>">
 					<?php echo help::render('saved_reports') ?> <label for="report_id"><?php echo _('Saved reports') ?></label><br />
 					<select name="report_id" id="report_id">
 						<option value=""> - <?php echo _('Select saved report') ?> - </option>

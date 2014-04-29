@@ -399,9 +399,6 @@ class Reports_Controller extends Base_reports_Controller
 					$t1 = $this->options['start_time'];
 					$t2 = $this->options['start_time'];
 
-					# assume default values for the following
-					$backtrack = 1;
-
 					$links = array();
 					$downtime       = $this->options['scheduleddowntimeasuptime'];
 					$not_running    = $this->options['assumestatesduringnotrunning'];

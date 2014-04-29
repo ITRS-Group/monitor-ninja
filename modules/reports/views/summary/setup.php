@@ -6,11 +6,10 @@
 ?></div>
 
 <div class="report-page-setup">
-	<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
+	<?php if ($saved_reports) {
 		echo form::open('summary/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;', 'method' => 'get'));
 	 ?>
 		<div style="width: 100%; padding-left: 0px">
-			<!--	onchange="check_and_submit(this.form)"	-->
 			<label for="report_id"><?php echo help::render('saved_reports', 'reports') ?> <?php echo _('Saved reports') ?></label><br />
 			<select name="report_id" id="report_id">
 				<option value=""> - <?php echo _('Select saved report') ?> - </option>
