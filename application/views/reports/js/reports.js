@@ -111,44 +111,6 @@ function set_report_form_values(the_val)
 	}
 }
 
-function set_initial_state(what, val)
-{
-	var rep_type = $('input[name=type]').attr('value');
-	f = $('.report_form').get(0);
-	var item = '';
-	var elem = false;
-	switch (what) {
-		case 'includesoftstates':
-			if (val!='0') {
-				f.elements.includesoftstates.checked = true;
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', true);
-				}
-			} else {
-				f.elements.includesoftstates.checked = false;
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', false);
-				}
-			}
-			break;
-		case 'rpttimeperiod':
-			item = 'rpttimeperiod';
-			break;
-		default:
-			item = what;
-	}
-	if (item) {
-		elem = f[item];
-		if (elem) {
-			for (i=0;i<elem.length;i++) {
-				if (elem.options[i].value==val) {
-					elem.options[i].selected = true;
-				}
-			}
-		}
-	}
-}
-
 /**
 *	create ajax call to reports/fetch_field_value
 *	to fetch a specific field value and asssign it to html element.

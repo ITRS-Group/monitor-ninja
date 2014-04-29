@@ -51,29 +51,3 @@ function set_report_mode(type)
 			break;
 	}
 }
-
-function set_initial_state(what, val)
-{
-	var item = '';
-	var elem = false;
-	switch (what) {
-		case 'obj_type':
-			item = 'report_type';
-			break;
-		case '':
-			item = '';
-			break;
-		default:
-			item = what;
-	}
-	if (item) {
-		// don't use name field - use ID!
-		if ($('#' + item).is(':visible')) {
-			$('#' + item + ' option').each(function() {
-				if ($(this).val() == val) {
-					$(this).attr('selected', true);
-				}
-			});
-		}
-	}
-}
