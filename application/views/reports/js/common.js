@@ -19,7 +19,7 @@ $(document).ready(function() {
 	$('#hostgroup_tmp, #servicegroup_tmp, #host_tmp, #service_tmp, #objects_tmp').dblclick(move_right);
 	$('#hostgroup, #servicegroup, #host_name, #service_description, #objects').dblclick(move_left);
 
-	$("#hide_response").click(function() {
+	$('#response').on('click', "#hide_response", function() {
 		$('#response').hide('slow');
 	});
 
@@ -144,13 +144,16 @@ $(document).ready(function() {
 			populate_options($('#objects_tmp'), $(), all_names);
 			var tmp = $('#objects_tmp');
 			var mo = new missing_objects();
-			var elems = $('#objects').children();
+			var objs = $('#objects');
+			var elems = objs.children();
 			for (var i = 0; i < elems.length; i++) {
 				var prop = elems[i];
-				if (tmp.containsOption(prop.value))
+				if (tmp.containsOption(prop.value)) {
 					tmp.removeOption(prop.value);
-				else
+				} else {
 					mo.add(prop.value);
+					objs.removeOption(prop.value);
+				}
 			}
 			mo.display_if_any();
 		});
