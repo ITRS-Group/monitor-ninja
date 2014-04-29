@@ -628,7 +628,7 @@ function check_custom_months()
 	var start_month = f.start_month.value;
 	var end_year 	= f.end_year.value;
 	var end_month 	= f.end_month.value;
-	if (start_year!='' && end_year!='' && start_month!='' && end_month!='') {
+	if (start_year == '' || end_year == '' || start_month == '' || end_month == '') {
 		disable_months(0, 0);
 	} else if (start_year == end_year - 1 || start_year == end_year) {
 		disable_months(start_month, end_month);
