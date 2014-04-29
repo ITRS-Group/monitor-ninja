@@ -9,45 +9,45 @@ class HttpApiEvent_options extends Summary_options {
 
 	private $limit;
 
-        /**
-         * Means to translate options back and forth between Report_options
-         * terms and HTTP API parameters. Handles both input and output translation.
-         */
-        static $http_api_options = array(
-                'alert_types' => array(
-                        'options' => array(
-                                'both' => 3,
-                                'host' => 1,
-                                'service' => 2
+	/**
+	 * Means to translate options back and forth between Report_options
+	 * terms and HTTP API parameters. Handles both input and output translation.
+	 */
+	static $http_api_options = array(
+		'alert_types' => array(
+			'options' => array(
+				'both' => 3,
+				'host' => 1,
+				'service' => 2
 			)
-                ),
-                'state_types' => array(
-                        'options' => array(
-                                'both' => 3,
-                                'hard' => 2,
-                                'soft' => 1
+		),
+		'state_types' => array(
+			'options' => array(
+				'both' => 3,
+				'hard' => 2,
+				'soft' => 1
 			)
-                ),
-                'host_states' => array(
-                        'options' => array(
-                                'all' => 7,
-                                'problem' => 6,
-                                'up' => 1,
-                                'down' => 2,
-                                'unreachable' => 4
-                        )
-                ),
-                'service_states' => array(
-                        'options' => array(
-                                'all' => 15,
-                                'problem' => 14,
-                                'ok' => 1,
-                                'warning' => 2,
-                                'critical' => 4,
-                                'unknown' => 8
-                        )
+		),
+		'host_states' => array(
+			'options' => array(
+				'all' => 7,
+				'problem' => 6,
+				'up' => 1,
+				'down' => 2,
+				'unreachable' => 4
+			)
+		),
+		'service_states' => array(
+			'options' => array(
+				'all' => 15,
+				'problem' => 14,
+				'ok' => 1,
+				'warning' => 2,
+				'critical' => 4,
+				'unknown' => 8
+			)
 		)
-        );
+	);
 
 	/**
 	 * Select report options' properties to include and adjust
