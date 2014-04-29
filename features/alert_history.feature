@@ -110,6 +110,20 @@ Feature: Alert history reports
 		And I should see "ERROR - tinky-winky"
 		And I should see "OK - laa-laa"
 
+	# Henrik claims I broke this once, so let's prove him wrong forever
+	@configuration @asmonitor
+	Scenario: Change option from all objects
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Alert History"
+		Then I should see "ERROR - out of teletubbies"
+		And I should see "OK - Sven Melander"
+		When I click "Edit settings"
+		And I uncheck "Up"
+		And I click "Update"
+		Then I should see "ERROR - out of teletubbies"
+		And I shouldn't see "OK - Sven Melander"
+
 	@bug-6341 @bug-6646
 	@configuration @asmonitor
 	Scenario: Pagination
