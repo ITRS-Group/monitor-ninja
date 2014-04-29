@@ -76,7 +76,7 @@ class Scheduled_reports_Model extends Model
 				scheduled_reports sr,
 				scheduled_report_types rt,
 				scheduled_report_periods rp,
-				".$type."_config r
+				saved_reports r
 			WHERE
 				rt.identifier='".$type."' AND
 				sr.report_type_id=rt.id AND

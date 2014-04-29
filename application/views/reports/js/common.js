@@ -124,7 +124,13 @@ $(document).ready(function() {
 					$('#save_report_form').hide();
 			},
 			error: function(data) {
-				$.notify(_reports_error + ": " + data.responseText, {'sticky': true});
+				var resp;
+				try {
+					resp = $.parseJSON(data.responseText).error;
+				} catch (ex) {
+					resp = "Unknown error";
+				}
+				$.notify(_reports_error + ": " + resp, {'sticky': true});
 				btn.parent().find('img:last').remove();
 			},
 			dataType: 'json'
@@ -688,7 +694,6 @@ missing_objects.prototype.display_if_any = function()
 
 function confirm_delete_report()
 {
-	var btn = $(this);
 	var id = $("#report_id").attr('value')
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
@@ -701,11 +706,14 @@ function confirm_delete_report()
 	}
 	msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
 	if (confirm(msg)) {
-		btn.after(loadimg);
+		$(this).after(loadimg);
 		$.ajax({
 			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
 			type: 'POST',
-			data: {'id': id},
+			data: {'report_id': id},
+			complete: function() {
+				$(loadimg).remove();
+			},
 			success: function(data) {
 				var a = document.createElement("a");
 				a.href = window.location.href;
@@ -713,8 +721,14 @@ function confirm_delete_report()
 					window.location.href = a.search.replace(new RegExp("report_id="+id+"&?"), "");
 				}
 			},
-			error: function() {
-				$.notify(_reports_error + ": failed to delete report", {'sticky': true});
+			error: function(data) {
+				var msg;
+				try {
+					msg = $.parseJSON(data.responseText).error;
+				} catch (ex) {
+					msg = "Unknown error";
+				}
+				$.notify("Failed to delete report: " + msg, {'sticky': true});
 			},
 			dataType: 'json'
 		});

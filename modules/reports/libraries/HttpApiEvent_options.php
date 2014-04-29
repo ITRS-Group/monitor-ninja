@@ -4,6 +4,7 @@
  * The report options for the Event type of reports in the HTTP API
  */
 class HttpApiEvent_options extends Summary_options {
+	public static $type = 'httpapievent';
 
 	const MAX_EVENTS = 10000; /**< Pagination limit for events retrieved from HTTP API. Hardcoded, deal with it */
 

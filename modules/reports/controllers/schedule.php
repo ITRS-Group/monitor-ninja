@@ -51,40 +51,18 @@ class Schedule_Controller extends Authenticated_Controller
 		}
 
 		$new_schedule->defined_report_types = $defined_report_types;
-		$avail_reports = Saved_reports_Model::get_saved_reports('avail');
-		$sla_reports = Saved_reports_Model::get_saved_reports('sla');
-		$summary_reports = Saved_reports_Model::get_saved_reports('summary');
-
-
-		# fetch ALL schedules (avail + SLA + Alert Summary)
-		$avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail')->result_array(false);
-		$new_schedule->saved_reports = $avail_reports;
 
 		# add new schedule template to available_schedules template
 		$available_schedules->new_schedule = $new_schedule;
 
-		# we need some data available as json for javascript
-		$avail_reports_arr = false;
-		foreach ($avail_reports as $rep) {
-			$avail_reports_arr[$rep->id] = $rep->report_name;
-		}
-
-		$summary_reports_arr = false;
-		foreach ($summary_reports as $rep) {
-			$summary_reports_arr[$rep->id] = $rep->report_name;
-		}
-
-		$sla_reports_arr = false;
-		foreach ($sla_reports as $rep) {
-			$sla_reports_arr[$rep->id] = $rep->report_name;
+		$scheduled_reports = array();
+		foreach (array('avail', 'sla', 'summary') as $type) {
+			$scheduled_reports[$type] = Scheduled_reports_Model::get_scheduled_reports($type)->result_array(false);
 		}
 
 		$scheduled_label = _('Scheduled');
 		$this->js_strings .= "var _report_types_json = ".json_encode($report_types).";\n";
-		$this->js_strings .= "var _saved_avail_reports = ".json_encode($avail_reports_arr).";\n";
-		$this->js_strings .= "var _saved_sla_reports = ".json_encode($sla_reports_arr).";\n";
-		$this->js_strings .= "var _saved_summary_reports = ".json_encode($summary_reports_arr).";\n";
-		$this->js_strings .= "var _scheduled_reports = ".json_encode(array('avail' => $avail_schedules, 'sla' => Scheduled_reports_Model::get_scheduled_reports('sla')->result_array(false), 'summary' => Scheduled_reports_Model::get_scheduled_reports('summary')->result_array(false))).";\n";
+		$this->js_strings .= "var _scheduled_reports = ".json_encode($scheduled_reports).";\n";
 		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
@@ -113,11 +91,12 @@ class Schedule_Controller extends Authenticated_Controller
 	public function list_by_type($type)
 	{
 		$this->auto_render = false;
-		$scheduled_reports = Saved_reports_Model::get_saved_reports($type);
-		if(!$scheduled_reports) {
-			return json::fail(_("No reports found for that type"));
-		}
-		return json::ok($scheduled_reports);
+		$rpt = Report_options::setup_options_obj($type);
+		$scheduled_reports = $rpt->get_all_saved();
+		$result = array();
+		foreach ($scheduled_reports as $id => $name)
+			$result[] = array('id' => $id, 'report_name' => $name);
+		return json::ok($result);
 	}
 
 	/**
@@ -180,6 +159,16 @@ class Schedule_Controller extends Authenticated_Controller
 		$type = Scheduled_reports_Model::get_typeof_report($schedule_id);
 		$opt_obj = Scheduled_reports_Model::get_scheduled_data($schedule_id);
 		$report = Report_options::setup_options_obj($type, $opt_obj);
+		if (!$report) {
+			$msg = sprintf(_("Failed to load %s report from schedule %s"), $type, $schedule_id);
+			if (request::is_ajax()) {
+				return json::fail($msg);
+			}
+			else {
+				$this->log->log('error', $msg);
+				return false;
+			}
+		}
 		$extension = substr($opt_obj['filename'], count($opt_obj['filename'])-5);
 		if ($extension == '.pdf')
 			$report['output_format'] = 'pdf';
@@ -382,19 +371,15 @@ class Schedule_Controller extends Authenticated_Controller
 				$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
 				if (!$report_type) {
 					echo _("Unable to determine type for selected report");
-					return;
+					break;
 				}
-				$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
-				if (!count($saved_reports)) {
+				$saved_report = Report_options::setup_options_obj($report_type, array('report_id' => $report_id));
+				if (!$saved_report['report_name']) {
 					echo _("Unable to fetch list of saved reports");
-					return;
+					break;
 				}
-				foreach ($saved_reports as $report) {
-					if ($report->id == $new_value) {
-						echo $report->report_name;
-						return;
-					}
-				}
+				echo $saved_report['report_name'];
+				break;
 			case 'period_id':
 				$periods = Scheduled_reports_Model::get_available_report_periods();
 				echo is_array($periods) && array_key_exists($new_value, $periods)

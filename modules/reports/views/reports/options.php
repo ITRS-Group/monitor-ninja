@@ -13,7 +13,6 @@ if($options['report_id']) { ?>
 <h2><?php echo _('Report Settings'); ?></h2>
 <hr />
 <table id="report" class="setup-tbl">
-	<caption><?php echo _('Enter the settings for your report') ?></caption>
 	<tr>
 		<td><label for="report_period"><?php echo help::render('reporting_period').' '._('Reporting period') ?></label></td>
 		<td style="width: 18px">&nbsp;</td>
@@ -41,7 +40,7 @@ if($options['report_id']) { ?>
 					<td><label for="start_year"><?php echo _('Start year') ?></label></td>
 					<td><select name="start_year" id="start_year" class="auto"><option value=""></option></select></td>
 					<td><label for="start_month"><?php echo _('Start month') ?></label></td>
-					<td><select name="start_month" id="start_month" class="auto" onchange="check_custom_months();"><option value=""></option></select></td>
+					<td><select name="start_month" id="start_month" class="auto"><option value=""></option></select></td>
 				</tr>
 			</table>
 		</td>
@@ -52,7 +51,7 @@ if($options['report_id']) { ?>
 					<td><label for="end_year"><?php echo _('End year') ?></label></td>
 					<td><select name="end_year" id="end_year" class="auto"><option value=""></option></select></td>
 					<td><label for="end_month"><?php echo _('End month') ?></label></td>
-					<td><select name="end_month" id="end_month" class="auto" onchange="check_custom_months();"><option value=""></option></select></td>
+					<td><select name="end_month" id="end_month" class="auto"><option value=""></option></select></td>
 				</tr>
 			</table>
 		</td>
@@ -207,9 +206,9 @@ if($options['report_id']) { ?>
 				<select name="sla_report_id" id="sla_report_id">
 					<option value=""> - <?php echo _('Select saved report') ?> - </option>
 					<?php
-					foreach ($saved_reports as $info) {
-						echo '<option '.(($options['report_id'] == $info->id) ? 'selected="selected"' : '').
-							' value="'.$info->id.'">'.$info->report_name.'</option>'."\n";
+					foreach ($saved_reports as $id => $report_name) {
+						echo '<option '.(($options['report_id'] == $id) ? 'selected="selected"' : '').
+							' value="'.$id.'">'.$report_name.'</option>'."\n";
 					}  ?>
 				</select>
 			</td>
@@ -218,15 +217,19 @@ if($options['report_id']) { ?>
 			<td style="padding-left: 0px" colspan="12"><?php echo help::render('enter-sla').' '._('Enter SLA') ?></td>
 		</tr>
 		<tr>
-			<?php foreach ($months as $key => $month) { ?>
+		<?php
+		foreach ($months as $key => $month_name) {
+			$month_index = $key + 1;
+			$val = arr::search($options['months'], $month_index, '');
+			?>
 			<td style="padding-left: 0px">
 				<a href="#" title="Click to propagate this value to all months" class="autofill">
 					<img src="<?php echo $this->add_path('icons/16x16/copy.png') ?>" alt="Click to propagate this value to all months" />
 				</a>
-				<label for="month_<?php echo $key+1 ?>"><?php echo $month ?></label><br />
-				<input type="text" size="2" class="sla_month" id="month_<?php echo ($key+1) ?>" name="month_<?php echo ($key+1) ?>" value="<?php echo arr::search($options['months'], $key + 1, '') ?>" maxlength="6" /> %
+				<label for="month_<?php echo $month_index ?>"><?php echo $month_name ?></label><br />
+				<input type="text" size="2" class="sla_month" id="month_<?php echo ($month_index) ?>" name="month_<?php echo ($month_index) ?>" value="<?php echo $val > 0 ? $val : ''; ?>" maxlength="6" /> %
 			</td>
-			<?php	} ?>
+		<?php } ?>
 		</tr>
 	</table>
 </div>

@@ -4,6 +4,8 @@
  * Report options class for availability reports
  */
 class Avail_options extends Report_options {
+	public static $type = 'avail';
+
 	public function setup_properties() {
 		parent::setup_properties();
 		$this->properties['include_pie_charts'] = array(

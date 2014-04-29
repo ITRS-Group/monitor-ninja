@@ -13,18 +13,11 @@
 			<label for="report_id"><?php echo help::render('saved_reports', 'reports') ?> <?php echo _('Saved reports') ?></label><br />
 			<select name="report_id" id="report_id">
 				<option value=""> - <?php echo _('Select saved report') ?> - </option>
-				<?php	$sched_str = "";
-				foreach ($saved_reports as $info) {
-					$sched_str = in_array($info->id, $scheduled_ids) ? " ( *"._('Scheduled')."* )" : "";
-					if (in_array($info->id, $scheduled_ids)) {
-						$sched_str = " ( *"._('Scheduled')."* )";
-						$title_str = $scheduled_periods[$info->id]." "._('schedule');
-					} else {
-						$sched_str = "";
-						$title_str = "";
-					}
-					echo '<option title="'.$title_str.'" '.(($options['report_id'] == $info->id) ? 'selected="selected"' : '').
-						' value="'.$info->id.'">'.$info->report_name.$sched_str.'</option>'."\n";
+				<?php
+				foreach ($saved_reports as $id => $report_name) {
+					$sched_str = in_array($id, $scheduled_ids) ? " ( *"._('Scheduled')."* )" : "";
+					echo '<option '.(($options['report_id'] == $id) ? 'selected="selected"' : '').
+						' value="'.$id.'">'.$report_name.$sched_str.'</option>'."\n";
 				}  ?>
 			</select>
 			<input type="submit" class="button select" value="<?php echo _('Select') ?>" name="fetch_report" />

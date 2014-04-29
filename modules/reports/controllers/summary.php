@@ -99,8 +99,7 @@ class Summary_Controller extends Base_reports_Controller
 		$template->scheduled_periods = $scheduled_periods;
 
 		$template->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
-
-		$template->saved_reports = $saved_reports;
+		$template->saved_reports = $this->options->get_all_saved();
 
 		$this->template->title = _("Reporting » Alert summary » Setup");
 	}

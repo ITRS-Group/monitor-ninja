@@ -20,9 +20,6 @@
 					<label for="saved_report_id"><?php echo help::render('select-report', 'reports').' '._('Select report') ?></label><br />
 					<select name="saved_report_id" id="saved_report_id">
 						<option value=""> - <?php echo _('Select saved report') ?> - </option>
-						<?php foreach ($saved_reports as $report) { ?>
-						<option value="<?php echo $report->id ?>"><?php echo $report->report_name ?></option>
-						<?php } ?>
 					</select><br />
 					<label for="recipients"><?php echo help::render('recipents', 'reports').' '._('Recipients') ?></label><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" />
 		</div>

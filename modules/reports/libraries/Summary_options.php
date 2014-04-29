@@ -5,6 +5,8 @@
  */
 class Summary_options extends Report_options
 {
+	public static $type = 'summary';
+
 	const RECENT_ALERTS = 1; /**< A summary that lists alerts from newest to oldest */
 	const ALERT_TOTALS = 2; /**< A summary that displays which ones and how many alerts each object has retrieved */
 	const TOP_ALERT_PRODUCERS = 3; /**< A summary that displays a top list of the most frequently alerting objects */

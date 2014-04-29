@@ -5,6 +5,8 @@
  */
 class Histogram_options_Core extends Report_options
 {
+	public static $type = 'histogram';
+
 	public function __construct($options=false)
 	{
 		$this->properties['breakdown'] = array('type' => 'enum', 'default' => 'hourly', 'options' => array(

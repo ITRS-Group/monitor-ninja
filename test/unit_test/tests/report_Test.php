@@ -156,49 +156,6 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * To begin with, test bug #6821
 	 */
-	function test_modify_report()
-	{
-		$the_opts = array(
-			'report_name' => 'TEST_REPORT',
-			'report_type' => 'hosts',
-			'host_name' => array('monitor'),
-			'report_period' => 'custom',
-			'start_time' => time() - 3600,
-			'end_time' => time(),
-		);
-		$opts = new Avail_Options();
-		foreach ($the_opts as $k => $v) {
-			$opts[$k] = $v;
-		}
-		$id = Saved_Reports_Model::edit_report_info('avail', false, $opts);
-		$this->assertTrue($id !== false, "Saving report should work, so id should not be false");
-		$new_opts = Saved_Reports_Model::get_report_info('avail', $id);
-		$this->assertTrue(!empty($new_opts), "Loading a saved report should not return an empty array");
-		$new_opts = Avail_Options::setup_options_obj('avail', $opts);
-		foreach ($opts as $k => $v) {
-			$this->assertEquals($v, $new_opts[$k], "$k should be the same after saving and loading report");
-		}
-
-		$the_modified_opts = $the_opts;
-		$the_modified_opts['report_id'] = $id;
-		$the_modified_opts['host_name'][] = 'host_down_acknowledged';
-		$modified_opts = Avail_Options::setup_options_obj('avail', $the_modified_opts);
-		foreach ($the_modified_opts as $k => $v) {
-			$this->assertEquals($v, $modified_opts[$k], 'Loading a saved report should have option set to what we provided for '. $k);
-		}
-
-		$the_modified_opts['host_name'][] = 'host_pending';
-		$modified_opts->options['host_name'][] = 'host_pending';
-		Saved_Reports_Model::edit_report_info('avail', $id, $modified_opts);
-		$new_modified_opts = Avail_Options::setup_options_obj('avail', array('report_id' => $id));
-		foreach ($the_modified_opts as $k => $v) {
-			if (is_array($v)) {
-				sort($v);
-				sort($new_modified_opts->options[$k]);
-			}
-			$this->assertEquals($v, $new_modified_opts->options[$k], 'Loading a saved report should have option set to what we provided for '. $k);
-		}
-	}
 
 	/**
 	 * Test bug #8602

@@ -78,39 +78,34 @@ class Cli_Controller extends Controller {
 		# figure out path from argv
 		$path = $GLOBALS['argv'][0];
 
-		// Saved reports:
-		$saved_reports_model = new Saved_reports_Model();
 		$report_types = array('avail', 'sla', 'summary');
 		foreach ($report_types as $report_type) {
-			$reports = $saved_reports_model->get_saved_reports($report_type);
+			$obj = Report_options::setup_options_obj($report_type);
+			$reports = $obj->get_all_saved();
 			foreach ($reports as $report) {
-				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
-				if(!is_array(arr::search($report_data, 'objects'))) {
-					continue;
-				}
-				if (arr::search($report_data, 'report_type') === 'services' && $type === 'host') {
+				$report_data = Report_options::setup_options_obj($report_type, $report->id);
+				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
-					if(!is_array($report_data['objects'])) {
-						continue;
-					}
-					foreach ($report_data['objects'] as $idx => $svc) {
-						$parts = explode(';', $svc);
-						if ($parts[0] === $old_name) {
-							if($new_name) {
-								// rename
-								$report_data['objects'][$idx] = $new_name.';'.$parts[1];
-							} else {
-								// delete
-								unset($report_data['objects'][$idx]);
+					foreach ($report_data['objects'] as $idx => $name) {
+						foreach ($report_data['objects'] as $idx => $svc) {
+							$parts = explode(';', $svc);
+							if ($parts[0] === $old_name) {
+								if($new_name) {
+									// rename
+									$report_data['objects'][$idx] = $new_name.';'.$parts[1];
+								} else {
+									// delete
+									unset($report_data['objects'][$idx]);
+								}
+								$savep = true;
 							}
-							$savep = true;
 						}
 					}
 					if ($savep) {
-						$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
+						$report_data->save();
 					}
 				}
-				if (arr::search($report_data, 'report_type') !== ($type . 's')) {
+				if ($report_data['report_type'] != $type . 's') {
 					continue;
 				}
 				$key = array_search($old_name, $report_data['objects']);
@@ -124,7 +119,7 @@ class Cli_Controller extends Controller {
 					// delete
 					unset($report_data['objects'][$key]);
 				}
-				$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
+				$report_data->save();
 			}
 		}
 	}
@@ -240,46 +235,39 @@ class Cli_Controller extends Controller {
 		if ($res->current()->version >= 10)
 			return; // already upgraded
 
-		$reports = Saved_reports_Model::get_saved_reports('avail');
-		if (!is_array($reports))
-			return;
-
+		$reports = $db->query('SELECT id, host_filter_status, service_filter_status FROM avail_config');
 		foreach ($reports as $report) {
-			$report_info = Saved_reports_Model::get_report_info('avail', $report->id);
-			$report_info['host_filter_status'] = @unserialize($report_info['host_filter_status']);
-			$report_info['service_filter_status'] = @unserialize($report_info['service_filter_status']);
+			$host_filter_status = @unserialize($report->host_filter_status);
+			$service_filter_status = @unserialize($report->service_filter_status);
 
-			if (!is_array($report_info['host_filter_status'])) {
-				// wooooha, duuuude
-				$report_info['host_filter_status'] = array();
+			if (!is_array($host_filter_status)) {
+				$host_filter_status = array();
 			} else {
 				$new_filter_status = array();
 				foreach (Reports_Model::$host_states as $id => $name) {
 					if ($name == 'pending')
 						$name = 'undetermined';
-					# we need to replace the name with the id, and invert which ones areset
-					if ($id == Reports_Model::HOST_EXCLUDED || isset($report_info['host_filter_status'][$name]))
+					# we need to replace the name with the id, and invert which ones are set
+					if ($id == Reports_Model::HOST_EXCLUDED || isset($host_filter_status[$name]))
 						continue;
 					$new_filter_status[$id] = 0;
 				}
-				$report_info['host_filter_status'] = $new_filter_status;
+				$host_filter_status = $new_filter_status;
 			}
 
-			if (!is_array($report_info['service_filter_status'])) {
-				$report_info['service_filter_status'] = array();
+			if (!is_array($service_filter_status)) {
+				$service_filter_status = array();
 			} else {
 				$new_filter_status = array();
 				foreach (Reports_Model::$service_states as $id => $name) {
-					# we need to replace the name with the id, and invert which ones areset
-					if ($id == Reports_Model::SERVICE_EXCLUDED || isset($report_info['service_filter_status'][$name]))
+					# we need to replace the name with the id, and invert which ones are set
+					if ($id == Reports_Model::SERVICE_EXCLUDED || isset($service_filter_status[$name]))
 						continue;
 					$new_filter_status[$id] = 0;
 				}
-				$report_info['service_filter_status'] = $new_filter_status;
+				$service_filter_status = $new_filter_status;
 			}
-			$opts = new Avail_options($report_info);
-
-			Saved_reports_Model::edit_report_info('avail', $report->id, $opts);
+			$reports = $db->query('UPDATE avail_config SET host_filter_status = '.$db->escape(serialize($host_filter_status)).', service_filter_status = '.$db->escape(serialize($service_filter_status)).' WHERE id = '.$db->escape($report->id));
 		}
 	}
 

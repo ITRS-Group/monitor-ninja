@@ -128,14 +128,11 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 		$this->auto_render=false;
 
-		if (!$this->options['report_name']) {
-			return json::fail(_('Unable to save this report, report name missing.'));
+		$saved = $this->options->save($message);
+		if ($saved) {
+			return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $this->options['report_id']));
 		}
-		$report_id = Saved_reports_Model::edit_report_info($this->type, $this->options['report_id'], $this->options);
-		if ($report_id) {
-			return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $report_id));
-		}
-		return json::fail(_('Unable to save this report.'));
+		return json::fail(array('error' => sprintf(_('Unable to save this report: %s'), $message)));
 	}
 
 	/**
@@ -147,13 +144,16 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			die($msg);
 		}
 
-		$id = $this->input->post('id');
+		$id = $this->input->post('report_id');
 		if (!$id)
-			return json::fail(_('No id supplied'));
+			return json::fail(array('error' => _('No id supplied')));
 
-		if (Saved_reports_Model::delete_report($this->type, $id))
-			return json::ok(_('Report deleted'));
-		return json::fail(_("Couldn't delete report: unknown error"));
+		$this->setup_options_obj(array('report_id' => $id));
+		if (!$this->options['report_name'])
+			return json::fail(array('error' => _("Couldn't find saved report")));
+		if ($this->options->delete())
+			return json::ok(array('success' =>_('Report deleted')));
+		return json::fail(array('error' => _("Couldn't delete report: unknown error")));
 	}
 
 	/**

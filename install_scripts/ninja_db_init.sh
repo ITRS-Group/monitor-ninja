@@ -2,9 +2,7 @@
 
 # setup the db tables required for Ninja
 
-target_db_version=13
-target_sla_version=10
-target_avail_version=15
+target_db_version=14
 target_sched_version=10
 
 db_user=merlin
@@ -102,6 +100,10 @@ then
 	exit 1
 fi
 
+# deprecated and should be deleted if they exist
+sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/null | sed -n \$p)
+avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
+
 function all_versions()
 {
 	db_ver="$1"
@@ -129,95 +131,85 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		all_versions 12
 		php index.php cli/upgrade_recurring_downtime
 		;;
+	13)
+		all_versions 13
+		# we intend to drop all the horrible mess that is the old reports
+		# however, we need to upgrade them first, so the migration will work
+		if [ "$sla_ver" != "" ]; then
+			target_sla_version=10
+			while [ "$sla_ver" -lt "$target_sla_version" ]
+			do
+				case "$sla_ver" in
+				[5-7])
+					new_ver='8'
+					upgrade_script="$prefix/sql/mysql/sla_v5_to_v8.sql"
+					;;
+				*)
+					new_ver=`expr $sla_ver + 1 `
+					upgrade_script="$prefix/sql/mysql/sla_v${sla_ver}_to_v${new_ver}.sql"
+					;;
+				esac
+
+				echo -n "Upgrading SLA tables from v${sla_ver} to v${new_ver} ... "
+				if [ -r "$upgrade_script" ]
+				then
+					run_sql_file "$db_login_opts" $upgrade_script
+					mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '$new_ver'" 2>/dev/null
+					echo "done."
+				else
+					echo "SCRIPT MISSING."
+					echo "Tried to use $upgrade_script"
+				fi
+
+				sla_ver=$new_ver
+			done
+		fi
+		if [ "$avail_ver" != "" ]; then
+			target_avail_version=15
+			while [ "$avail_ver" -lt $target_avail_version ]
+			do
+				case "$avail_ver" in
+				[2-4])
+					new_ver=5
+					upgrade_script="$prefix/sql/mysql/avail_v2_to_v5.sql"
+					;;
+				[6-7])
+					new_ver=8
+					upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
+					;;
+				9)
+					php $prefix/index.php cli/upgrade_excluded
+					new_ver=10
+					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
+					;;
+				*)
+					new_ver=`expr $avail_ver + 1 `
+					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
+
+					;;
+				esac
+
+				echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
+				if [ -r "$upgrade_script" ]
+				then
+					run_sql_file "$db_login_opts" $upgrade_script
+					mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '$new_ver'" 2>/dev/null
+					echo "done."
+				else
+					echo "SCRIPT MISSING."
+					echo "Tried to use $upgrade_script"
+				fi
+
+				avail_ver=$new_ver
+			done
+		fi
+		php index.php db_migrations/v13_to_v14
+		;;
+
 	*)
 		all_versions "$db_ver"
 		;;
 	esac
-done
-
-sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/null | sed -n \$p)
-
-if [ "$sla_ver" = "" ]
-then
-	echo "Installing database tables for SLA report configuration"
-	run_sql_file "$db_login_opts" "$prefix/sql/mysql/sla_v1.sql"
-	sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/null | sed -n \$p)
-fi
-
-
-while [ "$sla_ver" -lt "$target_sla_version" ]
-do
-	case "$sla_ver" in
-	[5-7])
-		new_ver='8'
-		upgrade_script="$prefix/sql/mysql/sla_v5_to_v8.sql"
-		;;
-	*)
-		new_ver=`expr $sla_ver + 1 `
-		upgrade_script="$prefix/sql/mysql/sla_v${sla_ver}_to_v${new_ver}.sql"
-		;;
-	esac
-
-	echo -n "Upgrading SLA tables from v${sla_ver} to v${new_ver} ... "
-	if [ -r "$upgrade_script" ]
-	then
-		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '$new_ver'" 2>/dev/null
-		echo "done."
-	else
-		echo "SCRIPT MISSING."
-		echo "Tried to use $upgrade_script"
-	fi
-
-	sla_ver=$new_ver
-done
-
-
-avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
-
-if [ "$avail_ver" = "" ]
-then
-	echo "Installing database tables for AVAIL report configuration"
-	run_sql_file "$db_login_opts" "$prefix/sql/mysql/avail_v1.sql"
-	avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
-fi
-
-
-while [ "$avail_ver" -lt $target_avail_version ]
-do
-	case "$avail_ver" in
-	[2-4])
-		new_ver=5
-		upgrade_script="$prefix/sql/mysql/avail_v2_to_v5.sql"
-		;;
-	[6-7])
-		new_ver=8
-		upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
-		;;
-	9)
-		php $prefix/index.php cli/upgrade_excluded
-		new_ver=10
-		upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
-		;;
-	*)
-		new_ver=`expr $avail_ver + 1 `
-		upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
-
-		;;
-	esac
-
-	echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
-	if [ -r "$upgrade_script" ]
-	then
-		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '$new_ver'" 2>/dev/null
-		echo "done."
-	else
-		echo "SCRIPT MISSING."
-		echo "Tried to use $upgrade_script"
-	fi
-
-	avail_ver=$new_ver
 done
 
 # check that we have the scheduled reports tables in merlin
@@ -258,12 +250,5 @@ while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 
 	sched_db_ver=$new_ver
 done;
-
-# make sure we have enabled scheduled summary reports
-summary_schedules=$(mysql $db_login_opts -Be "SELECT identifier FROM scheduled_report_types WHERE identifier='summary'" 2>/dev/null | sed -n \$p)
-if [ "$summary_schedules" = "" ]
-then
-	mysql $db_login_opts -Be "INSERT INTO scheduled_report_types (name, identifier) VALUES('Alert Summary Reports', 'summary');" 2>/dev/null
-fi
 
 echo "Database upgrade complete."

@@ -25,10 +25,36 @@ function create_filename()
 	return true;
 }
 
+function fill_saved_reports() {
+	var report_type = this.value;
+	$.ajax(
+		_site_domain + _index_page + "/schedule/list_by_type/"+report_type,
+		{
+			error: function(xhr) {
+				alert(xhr.responseText);
+			},
+			success: function(response) {
+				var saved_reports = document.getElementById("saved_report_id");
+				var default_opt = saved_reports.children[0];
+				saved_reports.length = 1;
+				var options = document.createDocumentFragment();
+				for(var i = 0; i < response.length; i++) {
+					var option = document.createElement("option");
+					var result = response[i];
+					option.appendChild(document.createTextNode(result.report_name));
+					option.setAttribute("value", result.id);
+					options.appendChild(option);
+				}
+				saved_reports.appendChild(options);
+				create_filename();
+			},
+			dataType: 'json'
+		}
+	);
+}
+
 $(document).ready(function() {
-	$("#saved_report_id, #period").change(function() {
-		create_filename();
-	});
+	$("#saved_report_id, #period").change(create_filename);
 	fill_scheduled();
 	setup_editable();
 
@@ -36,41 +62,7 @@ $(document).ready(function() {
 	$('body').on('click', '.delete_schedule', schedule_delete);
 	$('body').on('click', '.send_report_now', send_report_now);
 
-	$("#type").change(function() {
-		var report_type = $(this).fieldValue()[0];
-		$.ajax(
-			_site_domain + _index_page + "/schedule/list_by_type/"+report_type,
-			{
-				error: function(xhr) {
-					alert(xhr.responseText);
-				},
-				success: function(response) {
-					var saved_reports = document.getElementById("saved_report_id");
-					var children = saved_reports.children;
-					for (var i = 0; i < children.length; i++) {
-						if (children[i].value) {
-							saved_reports.removeChild(children[i]);
-							i--;
-						}
-					}
-					if(!response.length) {
-						return;
-					}
-					var options = document.createDocumentFragment();
-					for(var i = 0; i < response.length; i++) {
-						var option = document.createElement("option");
-						var result = response[i];
-						option.appendChild(document.createTextNode(result.report_name));
-						option.setAttribute("value", result.id);
-						options.appendChild(option);
-					}
-					saved_reports.appendChild(options);
-					create_filename();
-				},
-				dataType: 'json'
-			}
-		);
-	});
+	$("#type").change(fill_saved_reports).each(fill_saved_reports);
 
 	$('#new_schedule_report_form').submit(function(ev) {
 		ev.preventDefault();

@@ -3,6 +3,8 @@
  * Report options for alert history reports. Alert history reports are specialized summary reports.
  */
 class Alert_history_options extends Summary_options {
+	public static $type = 'alert_history';
+
 	/**
 	 * Callback helper for getting the bitmask host/service states into array form
 	 */

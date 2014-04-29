@@ -58,15 +58,14 @@ $(document).ready(function() {
 			$('.trend_options').hide();
 	});
 
-	$('#sla_report_id').change(function(ev) {
+	$('#sla_report_id').on('change', function(ev) {
 		var sla_id = $(this).attr('value');
 		if (!sla_id) {
 			// don't try to fetch sla values when we have no id
 			return;
 		}
 		show_progress('progress', _wait_str);
-		var ajax_url = _site_domain + _index_page + '/ajax/';
-		var url = ajax_url + "get_sla_from_saved_reports/";
+		var url = _site_domain + _index_page + '/sla/per_month_sla_for_report';
 		var data = {sla_id: sla_id}
 
 		$.ajax({
@@ -79,15 +78,12 @@ $(document).ready(function() {
 				$.notify(_reports_error + ': Unable to fetch saved sla values...', {'sticky':true});
 			},
 			success: function(data) {
-				for (var i = 1; i <= 12; i++) {
-					$("#month_"+i).attr('value','');
-				}
 				for (var i = 0; i < data.length; i++) {
-					var name = data[i].name;
-					var value = data[i].value;
-					var checkbox = $('#'+name);
-					if (checkbox.attr('disabled') !== 'disabled') {
-						checkbox.val(value);
+					var input = $('#month_' + i);
+					if (input.is(':disabled') || !data[i]) {
+						input.val('');
+					} else {
+						input.val(data[i]);
 					}
 				}
 				$('.sla_values').show();

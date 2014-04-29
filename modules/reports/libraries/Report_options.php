@@ -7,6 +7,11 @@
  */
 class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
+	 * A name for this report type that doesn't rely on splitting class_name() by _
+	 * This is used when saving the report.
+	 */
+	public static $type = null;
+	/**
 	 * Can contains options that must be renamed when provided - for legacy links
 	 */
 	protected $rename_options;
@@ -18,7 +23,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		'report_id' => array(
 			'type' => 'int',
 			'default' => false,
-			'description' => 'Saved report id - not to be confused with schedule_id'
+			'description' => 'Saved report id'
 		),
 		'report_name' => array(
 			'type' => 'string',
@@ -133,6 +138,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 * outside of debugging.
 	 */
 	public $options = array();
+
+	/**
+	 * This gives test suites the ability to override the
+	 * "current time" as seen from the report period calculation code.
+	 *
+	 * This is obviously dangerous and you should never, ever use it.
+	 */
+	public static $now = null;
 
 	/**
 	 * Properties should be completely setup - with translations and all - before
@@ -327,7 +340,12 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	protected function calculate_time($report_period)
 	{
-		$now = time();
+		// self::$now should only ever be set by test suites.
+		if (self::$now) {
+			$now = self::$now;
+		} else {
+			$now = time();
+		}
 		$year_now 	= date('Y', $now);
 		$month_now 	= date('m', $now);
 		$day_now	= date('d', $now);
@@ -494,11 +512,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			break;
 		 case 'timestamp':
 			if (!is_numeric($value)) {
-			if (strstr($value, '-') === false)
-				return false;
-			$value = strtotime($value);
-			if ($value === false)
-				return false;
+				if (strstr($value, '-') === false)
+					return false;
+				$value = strtotime($value);
+				if ($value === false)
+					return false;
+			}
+			else {
+				$value = intval($value);
 			}
 			break;
 		 case 'object':
@@ -509,6 +530,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		 case 'enum':
 			if (!isset($this->properties[$key]['options'][$value]))
 				return false;
+			// Cast. Ohmigod…
+			$value = key(array($value => 0));
 			break;
 		 default:
 			# this is an exception and should never ever happen
@@ -552,7 +575,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			if ($value <= 315525600 || $value === 'undefined' || (isset($this->options[$name]) && isset($this->options['report_period']) && $this->options['report_period'] != 'custom'))
 				return false;
 			if (!is_numeric($value))
-				$value = strtotime($value);
+				$value = (int)$value;
 			break;
 		 default:
 			break;
@@ -595,6 +618,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	public function as_form($anonymous=false, $obj_only=false) {
 		$html_options = '';
+		$this->expand();
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('objects', 'report_type')))
 				continue;
@@ -723,17 +747,16 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 * without having to copy-paste it or access the functionality the normal
 	 * way.
 	 */
-
-	static protected function merge_with_loaded($options, $report_info, $saved_report_info)
+	static protected function merge_with_loaded($options, $report_info)
 	{
-		if (empty($saved_report_info))
-			return false;
-		foreach ($saved_report_info as $key => $sri) {
-			if (isset($report_info[$key]) || !isset($options->properties[$key]) || $options[$key] !== $options->properties[$key]['default'] || ($options->properties[$key]['type'] === 'bool' && count($report_info) > 3))
-				continue;
-			$options[$key] = $sri;
+		if (count($report_info) > 3) {
+			foreach ($options->properties() as $key => $desc) {
+				if ($desc['type'] == 'bool' && isset($options->options[$key]))
+					$options[$key] = false;
+			}
 		}
-		return true;
+		$options->set_options($report_info);
+		return $options;
 	}
 
 	/**
@@ -741,18 +764,20 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 *
 	 * You probably want setup_options_obj instead.
 	 */
-	protected static function create_options_obj($type, $report_info = false) {
-		$options = new static($report_info);
-
+	protected static function create_options_obj($report_info = false) {
+		$options = new static();
 		if (isset($report_info['report_id']) && !empty($report_info['report_id'])) {
-			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
-			if (!empty($saved_report_info))
-				static::merge_with_loaded($options, $report_info, $saved_report_info);
-			else
-				unset($options['report_id']);
+			if (!$options->load($report_info['report_id'])) {
+				unset($report_info['report_id']);
+			}
+			$options = static::merge_with_loaded($options, $report_info);
 		}
-		if (isset($options->properties['report_period']) && !isset($options->options['report_period']) && isset($options->properties['report_period']['default']))
+		else if ($report_info) {
+			$options->set_options($report_info);
+		}
+		if (isset($options->properties['report_period']) && !isset($options->options['report_period']) && isset($options->properties['report_period']['default'])) {
 			$options->calculate_time($options['report_period']);
+		}
 		return $options;
 	}
 
@@ -772,7 +797,177 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			$class = 'Report_options';
 
 		$report_info = $class::discover_options($input);
-		$options = $class::create_options_obj($type, $report_info);
+		$options = $class::create_options_obj($report_info);
 		return $options;
+	}
+
+	/**
+	 * Return all saved reports for this report type
+	 *
+	 * @returns array A id-indexed list of report names
+	 */
+	public static function get_all_saved()
+	{
+		$db = Database::instance();
+		$auth = op5auth::instance();
+
+		$sql = "SELECT id, report_name FROM saved_reports WHERE type = ".$db->escape(static::$type);
+		if (!$auth->authorized_for('host_view_all')) {
+			$user = Auth::instance()->get_user()->username;
+			$sql .= " AND created_by = ".$db->escape($user);
+		}
+
+		$sql .= " ORDER BY report_name";
+
+		$res = $db->query($sql);
+		$return = array();
+		foreach ($res as $obj) {
+			$return[$obj->id] = $obj->report_name;
+		}
+		return $return;
+	}
+
+	/**
+	 * Loads options for a saved report by id.
+	 * Primarily exists so report-type-specific
+	 * load-mangling can take place.
+	 */
+	protected function load_options($id)
+	{
+		$db = Database::instance();
+		$auth = op5auth::instance();
+
+		$opts = array();
+		$sql = "SELECT name, value FROM saved_reports_options WHERE report_id = ".(int)$id;
+		$res = $db->query($sql);
+		$props = $this->properties();
+		foreach ($res as $obj) {
+			if (!isset($props[$obj->name]))
+				continue;
+			if ($props[$obj->name]['type'] == 'array')
+				$obj->value = @unserialize($obj->value);
+			$opts[$obj->name] = $obj->value;
+		}
+		$sql = "SELECT object_name FROM saved_reports_objects WHERE report_id = ".(int)$id;
+		$res = $db->query($sql);
+		$opts['objects'] = array();
+		foreach ($res as $obj) {
+			$opts['objects'][] = $obj->object_name;
+		}
+		return $opts;
+	}
+
+	/**
+	 * Loads a saved report.
+	 * Invoked automatically by create_options_obj
+	 *
+	 * @param $id int The saved report's id
+	 * @returns true if any report options were loaded, false otherwise.
+	 */
+	protected function load($id)
+	{
+		$db = Database::instance();
+		$auth = op5auth::instance();
+
+		$sql = "SELECT report_name FROM saved_reports WHERE type = " . $db->escape(static::$type) . " AND id = ".(int)$id;
+		$res = $db->query($sql);
+		if (!count($res))
+			return false;
+		$res = $res->result();
+		$this['report_name'] = $res[0]->report_name;
+
+		$res = $this->load_options($id);
+		$this->set_options($res);
+		$this['report_id'] = $id;
+		return true;
+	}
+
+	/**
+	 * Save a report. If it has a report_id, this does an update, otherwise,
+	 * a new report is saved.
+	 *
+	 * @param $message If set, will contain an error message on failure.
+	 * @returns boolean false if report saving failed, else true
+	 */
+	public function save(&$message = NULL)
+	{
+		if (!$this['report_name']) {
+			$message = _("No report name provided");
+			return false;
+		}
+		if (!$this['objects']) {
+			$message = _("Can't save report without report members");
+			return false;
+		}
+		$db = Database::instance();
+		$auth = op5auth::instance();
+		$user = Auth::instance()->get_user()->username;
+		if ($this['report_id']) {
+			$sql = "DELETE FROM saved_reports_options WHERE report_id = ".(int)$this['report_id'];
+			$db->query($sql);
+			$sql = "DELETE FROM saved_reports_objects WHERE report_id = ".(int)$this['report_id'];
+			$db->query($sql);
+			$sql = "UPDATE saved_reports SET report_name = ".$db->escape($this['report_name']).", updated_by = ".$db->escape($user).", updated_at = ".$db->escape(time());
+			$db->query($sql);
+		} else {
+			$sql = 'SELECT 1 FROM saved_reports WHERE report_name = '.$db->escape($this['report_name']).' AND type = '.$db->escape(static::$type);
+			if (count($db->query($sql)) > 0) {
+				$message = _("Another ".static::$type." report with the name {$this['report_name']} already exists");
+				return false;
+			}
+
+			$sql = "INSERT INTO saved_reports (type, report_name, created_by, created_at, updated_by, updated_at) VALUES (".$db->escape(static::$type).", ".$db->escape($this['report_name']).", ".$db->escape($user).", ".$db->escape(time()).", ".$db->escape($user).", ".$db->escape(time()).")";
+			$res = $db->query($sql);
+			$this['report_id'] = $res->insert_id();
+		}
+
+		$sql = "INSERT INTO saved_reports_options(report_id, name, value) VALUES ";
+		$this->expand();
+		$props = $this->properties();
+		$rows = array();
+		foreach ($this as $key => $val) {
+			if (in_array($key, array('objects', 'report_id', 'report_name')))
+				continue;
+			if (!isset($props[$key]))
+				continue;
+			if ($props[$key]['type'] == 'array') {
+				$val = @serialize($val);
+			}
+			# Don't save start- or end_time when we have report_period != custom
+			if (in_array($key, array('start_time', 'end_time')) && $this['report_period'] != 'custom') {
+				continue;
+			}
+			$rows[] = '(' . (int)$this['report_id'] . ', ' . $db->escape($key) . ', ' . $db->escape($val) . ')';
+		}
+		$sql .= implode(', ', $rows);
+		$db->query($sql);
+		$sql = "INSERT INTO saved_reports_objects(report_id, object_name) VALUES ";
+		$rows = array();
+		foreach ($this['objects'] as $object) {
+			$rows[] = '(' . (int)$this['report_id'] . ', ' . $db->escape($object) . ')';
+		}
+		$sql .= implode(', ', $rows);
+		$db->query($sql);
+		return true;
+	}
+
+	/**
+	 * Delete a saved report.
+	 *
+	 * @returns boolean FAIL if deletion failed, TRUE otherwise
+	 */
+	public function delete()
+	{
+		assert(is_int($this['report_id']));
+		assert($this['report_id'] >= 0);
+		$db = Database::instance();
+		$auth = op5auth::instance();
+		$sql = "DELETE FROM saved_reports_options WHERE report_id = ".(int)$this['report_id'];
+		$db->query($sql);
+		$sql = "DELETE FROM saved_reports_objects WHERE report_id = ".(int)$this['report_id'];
+		$db->query($sql);
+		$sql = "DELETE FROM saved_reports WHERE id = ".(int)$this['report_id'];
+		$db->query($sql);
+		return true;
 	}
 }

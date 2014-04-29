@@ -32,4 +32,15 @@ class Sla_Controller extends Reports_Controller
 		return json::ok(array('timestamp' => $value['timestamp']));
 	}
 
+	/**
+	 * Returns a json object which describes the months that should be set for
+	 * this report id.
+	 */
+	public function per_month_sla_for_report() {
+		$id = $input->get('id');
+		$opts = Report_options::setup_options_obj('sla', array('report_id' => $id));
+		if (!$opts['months'])
+			return json::fail(array('reason' => "Couldn't find SLA report with id $id"));
+		return json::ok(array('months' => $opts['months']));
+	}
 }
