@@ -1,4 +1,3 @@
-var invalid_report_names = '';
 var current_filename;
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
@@ -482,15 +481,6 @@ function check_form_values(form)
 	// display err_str if any
 	if (!errors) {
 		$('#response', form).html('');
-
-		// check if report name is unique
-		if(report_name && saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
-		{
-			if(!confirm(_reports_error_name_exists_replace))
-			{
-				return false;
-			}
-		}
 
 		$('#response', form).hide();
 		return true;

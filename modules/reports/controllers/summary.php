@@ -68,12 +68,6 @@ class Summary_Controller extends Base_reports_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		# get all saved reports for user
-		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
-
-		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", array_map('addslashes', $old_config_names))."');";
-
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
@@ -86,7 +80,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
-		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
 		if ($this->options['report_id']) {
 			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
@@ -102,8 +95,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->js_strings = $this->js_strings;
 
 		$template->type = $this->type;
-		$template->old_config_names_js = $old_config_names_js;
-		$template->old_config_names = $old_config_names;
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
 
@@ -171,12 +162,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->template->css_header->css = $this->xtra_css;
-
-		if ($this->type == 'summary') {
-			$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
-			$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", array_map('addslashes', $old_config_names))."');";
-			$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
-		}
 
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = $this->options->get_value('report_period');
