@@ -714,7 +714,7 @@ function confirm_delete_report()
 				}
 			},
 			error: function() {
-				$.notify(_reports_error + ": failed to save report.", {'sticky': true});
+				$.notify(_reports_error + ": failed to delete report", {'sticky': true});
 			},
 			dataType: 'json'
 		});
