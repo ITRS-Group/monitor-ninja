@@ -1,13 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-if (Auth::instance()->logged_in()) {
-	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
-}
-if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
-	$ninja_menu_state = $ninja_menu_setting->setting;
-} else {
-	$ninja_menu_state = 'show';
-}
 if (isset($this->template->js_header))
 	$this->template->js_header->js = array_unique($this->xtra_js);
 ?>
@@ -41,7 +33,6 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jquery.field.js');
 			echo html::script('application/media/js/date.js');
-			echo html::script('application/views/js/collapse_menu.js');
 			echo html::script('application/views/js/global_search.js');
 			echo html::script('application/views/js/pagination.js');
 			if (!isset($disable_refresh) || $disable_refresh === false) {
@@ -75,11 +66,6 @@ if (isset($this->template->js_header))
 				var _settings_msg = '<?php echo _('The settings were updated'); ?>';
 				var _success_header = '<?php echo _('Success'); ?>';
 				var _error_header = '<?php echo _('ERROR'); ?>';
-				var _ninja_menu_state = '<?php echo $ninja_menu_state ?>';
-				var _ninja_menusection_About = '<?php echo config::get('ninja_menusection_About', '/', false) ?>';
-				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false) ?>';
-				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false) ?>';
-				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false) ?>';
 				var _form_error_header = '<?php echo _("The form couldn\'t be processed since it contains one or more errors.%sPlease correct the following error(s) and try again:%s"); ?>';
 				var _command_empty_field = '<?php echo _("Field \'%s\' is required but empty"); ?>';
 				var _loading_str = '<?php echo _("Loading..."); ?>';

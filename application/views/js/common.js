@@ -160,24 +160,6 @@ $(document).ready(function() {
 	}
 	// -- end listview refresh helper code
 
-	// ==========================
-	// check menu section status
-	// ==========================
-	// find all menu sections identified by
-	// the text in cite tags
-	$('cite.menusection').each(function() {
-		var section = $(this).text();
-		var section_state = window['_ninja_menusection_'+ section];
-		if (typeof section_state !== 'undefined' && section_state !== '') {
-			// hide the sections set to 'hide'
-			if (section_state=='hide') {
-				// using collapse_section() from
-				// collapse_menu.js
-				collapse_section(section);
-			}
-		}
-	});
-
 	$('.host_comment').each(function() {
 		var anchor = $(this);
 		var obj_name = anchor.data('obj_name');
