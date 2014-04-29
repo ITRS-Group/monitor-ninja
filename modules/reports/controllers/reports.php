@@ -39,11 +39,6 @@ class Reports_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
-		# reset current_report_params and main_report_params
-		# just to be sure they're not left behind
-		Session::instance()->set('current_report_params', null);
-		Session::instance()->set('main_report_params', null);
-
 		$type_str = $this->type == 'avail'
 			? _('availability')
 			: _('SLA');
@@ -176,8 +171,6 @@ class Reports_Controller extends Base_reports_Controller
 		if (!$reports_model->_self_check()) {
 			return url::redirect(Router::$controller.'/invalid_setup');
 		}
-
-		$this->_stash_params();
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
@@ -535,24 +528,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf();
-		}
-	}
-
-	/**
-	*	Stash parameters in session from setup form to be used
-	*	for re-generating report.
-	*/
-	public function _stash_params()
-	{
-		Session::instance()->set('current_report_params', null);
-
-		if (!empty($data)) {
-			if (array_key_exists('ew_report_setup', $input)) {
-				# directly from setup form - keep data for backlink
-				Session::instance()->set('main_report_params', $this->options->as_keyval_string(false));
-			}
-
-			Session::instance()->set('current_report_params', $this->options->as_keyval_string(false));
 		}
 	}
 
