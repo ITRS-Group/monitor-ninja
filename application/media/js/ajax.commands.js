@@ -32,8 +32,6 @@ $("document").ready( function () {
 			},
 			success : function( data ) {
 
-				data = JSON.parse( data );
-
 				var msg = "<strong>" + data.brief + "</strong><br />" + data.description;
 
 				dialog = $.notify( msg, {
@@ -59,7 +57,6 @@ $("document").ready( function () {
 									var title = btn.html();
 
 									$.notify( "Command has been executed!" );
-									data = JSON.parse( data );
 
 									if ( typeof( data.state ) != "undefined" ) {
 										if ( data.state === 0 ) {

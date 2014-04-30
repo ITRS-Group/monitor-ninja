@@ -53,7 +53,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			if ( $method === "submit" ) {
 
 				$info = $cmd->submit( $command );
-				echo json_encode( $info );
+				return json::ok( $info );
 
 			} elseif ( $method === "commit" ) {
 
@@ -64,9 +64,9 @@ class Ajax_Controller extends Authenticated_Controller {
 				$cmd->commit( $command );
 
 				if ( isset( $state ) )
-					echo json_encode( array( "state" => $state ) );
+					return json::ok( array( "state" => $state ) );
 				else
-					echo json_encode( array( ) );
+					return json::ok( array( ) );
 
 			}
 
