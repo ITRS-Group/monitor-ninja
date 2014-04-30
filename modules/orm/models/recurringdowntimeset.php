@@ -39,7 +39,7 @@ class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
 				$schedule_filter = new LivestatusFilterAnd();
 				foreach ($objects as $object) {
 					if ($type == 'services') {
-						list($hname, $sdesc) = split(';', $object->object_name);
+						list($hname, $sdesc) = explode(';', $object->object_name);
 						$set = $set->union($poolname::all()->reduce_by('host.name', $hname, '=')->reduce_by('description', $sdesc, '='));
 					}
 					else {
