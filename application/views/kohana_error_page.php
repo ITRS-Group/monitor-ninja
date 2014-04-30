@@ -24,11 +24,11 @@ if ( ! empty($trace)){
 	$content .= $trace;
 }
 $content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
-foreach(config::get('exception.shell_commands') as $command) {
+foreach(Kohana::config('exception.shell_commands') as $command) {
 	exec($command, $output, $exit_value);
 	$content .= "<p class='stats'>$command (exit code $exit_value):<br />".implode('<br />', $output).'</p>';
 }
-foreach(config::get('exception.extra_info') as $header => $info) {
+foreach(Kohana::config('exception.extra_info') as $header => $info) {
 	$content .= "<p class='stats'>$header: $info</p>";
 }
 $content .= '</div>';
