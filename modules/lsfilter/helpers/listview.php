@@ -62,12 +62,12 @@ class listview {
 	}
 
 	/**
-	 * A simple tool to generate a link to a lsitview, given a table name and an array of matches
+	 * A simple tool to generate a link to a lsitview, given a raw query
 	 *
-	 * Useful for generating, for example a link to all notifications related to a host.
+	 * Useful when you already have the query. See also listview::link
 	 *
 	 * @code
-	 * $url = listview::link('[table] query');
+	 * $url = listview::querylink('[table] query');
 	 * @endcode
 	 *
 	 * @param $query The query to link to
