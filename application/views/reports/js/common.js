@@ -1,4 +1,3 @@
-var current_filename;
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
@@ -439,52 +438,6 @@ function check_form_values(form)
 			errors++;
 			err_str += "<li>" + _reports_no_sla_str + "</li>";
 		}
-	}
-
-	// create array prototype to sole the lack of in_array() in javascript
-	Array.prototype.has = function(value) {
-		var i;
-		for (var i = 0, loopCnt = this.length; i < loopCnt; i++) {
-			if (this[i] === value) {
-				return true;
-			}
-		}
-		return false;
-	};
-
-	var report_name 	= $("input[name=report_name]", form).attr('value');
-	report_name = $.trim(report_name);
-	var saved_report_id = $("input[name=saved_report_id]", form).attr('value');
-	var do_save_report 	= $('input[name=save_report_settings]', form).is(':checked') ? 1 : 0;
-
-	/*
-	*	Only perform checks if:
-	*		- Saved report exists
-	*		- User checked the 'Save Report' checkbox
-	*		- We are currently editing a report (i.e. have saved_report_id)
-	*/
-	if ($('#report_id', form) && do_save_report && saved_report_id) {
-		// Saved reports exists
-		$('#report_id option', form).each(function(i) {
-			if ($(this).val()) {// first item is empty
-				if (saved_report_id != $(this).val()) {
-					// check all the other saved reports
-					// make sure we don't miss the scheduled reports
-					var chk_text = $(this).text();
-					chk_text = chk_text.replace(" ( *" + _scheduled_label + "* )", '');
-					if (report_name == chk_text) {
-						// trying to save an item with an existing name
-						errors++;
-						err_str += "<li>" + _reports_error_name_exists + ".</li>";
-						return false;
-					}
-				}
-			}
-		});
-	} else if (do_save_report && report_name == '') {
-		// trying to save a report without a name
-		errors++;
-		err_str += "<li>" + _reports_name_empty + "</li>";
 	}
 
 	// display err_str if any

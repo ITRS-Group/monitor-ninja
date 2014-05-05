@@ -15,13 +15,7 @@ function create_filename()
 	new_filename = remove_scheduled_str(new_filename);
 	new_filename += '_' + $('#period option:selected').text() + '.pdf';
 	new_filename = new_filename.replace(/ /g, '_');
-	if ($('input[name=filename]').val() != '' && $('input[name=filename]').val() != current_filename) {
-		if (!confirm(_schedule_change_filename)) {
-			return false;
-		}
-	}
 	$('input[name=filename]').val(new_filename);
-	current_filename = new_filename;
 	return true;
 }
 
