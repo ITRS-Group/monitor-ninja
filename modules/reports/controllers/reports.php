@@ -92,20 +92,13 @@ class Reports_Controller extends Base_reports_Controller
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 		}
 		$template->scheduled_info = $scheduled_info;
-		if ($this->options['report_id'])
-			$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
-
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
-		$this->js_strings .= "var _schedule_change_filename = \""._('Would you like to change the filename based on your selections?')."\";\n";
 
 		$this->js_strings .= reports::js_strings();
 
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
-
-		$this->template->inline_js = $this->inline_js;
 
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->report_options->months = date::abbr_month_names();
@@ -186,9 +179,10 @@ class Reports_Controller extends Base_reports_Controller
 			$this->template->current_skin = $this->options['skin'];
 		}
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
@@ -274,10 +268,8 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
 
-		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-		$this->js_strings .= "var _report_data = " . $this->options->as_json() . "\n";
 
 		$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
 			'TOTAL_TIME_DOWN' => _('Down'),
@@ -484,9 +476,7 @@ class Reports_Controller extends Base_reports_Controller
 			$template->trends_graph->graph_pure_data = Trends_graph_Model::format_graph_data($graph_data);
 		}
 
-		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
-		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 
@@ -509,6 +499,7 @@ class Reports_Controller extends Base_reports_Controller
 			$synergy_content->synergy_events = $synergy_report_model->get_data();
 			$this->template->content->synergy_content = $synergy_content;
 		}
+		$this->xtra_js = sort($this->xtra_js);
 		$this->template->js_header->js = $this->xtra_js;
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 		if($scheduled_info) {

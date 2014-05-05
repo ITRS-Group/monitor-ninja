@@ -136,7 +136,6 @@ class reports_Core
 		$js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
 		$js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
 			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
-		$js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 
 		$js_strings .= "Date.monthNames = ".json_encode(date::month_names()).";\n";
 		$js_strings .= 'Date.abbrMonthNames = '.json_encode(date::abbr_month_names()).";\n";
