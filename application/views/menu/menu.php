@@ -83,11 +83,11 @@ $menu = array(
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
 $section_reporting = array();
 if(Kohana::config('config.pnp4nagios_path') !== false) {
-	$section_reporting[$menu_items['pnp']] = array('/pnp?host=.pnp-internal&srv=runtime', 'pnp',0);
+	$section_reporting[$menu_items['pnp']] = array('/pnp?host=.pnp-internal&amp;srv=runtime', 'pnp',0);
 }
 $section_reporting[$menu_items['alert_history']] = array('/alert_history/generate', 'alerthistory',0);
 $section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
-$section_reporting[$menu_items['notifications']]  = array('/listview?q=[notifications] all', 'notifications',0);
+$section_reporting[$menu_items['notifications']]  = array(listview::querylink('[notifications] all'), 'notifications',1);
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
 $section_reporting[$menu_items['availability']] = array('/avail/index', 'availability',0);
 $section_reporting[$menu_items['sla']] = array('/sla/index', 'sla',0);
@@ -105,14 +105,14 @@ $menu_base = array(
 	),
 	$menu_items['section_monitoring'] => array(
 		$menu_items['tac'] 						=> array('/tac', 'tac',0),
-		$menu_items['host_detail'] 				=> array('/listview?q=[hosts] all', 'host',0),
-		$menu_items['service_detail'] 			=> array('/listview?q=[services] all', 'service',0),
-		$menu_items['hostgroup_summary']		=> array('/listview?q=[hostgroups] all', 'hostgroupsummary',0),
-		$menu_items['servicegroup_summary'] 	=> array('/listview?q=[servicegroups] all', 'servicegroupsummary',0),
+		$menu_items['host_detail'] 				=> array(listview::querylink('[hosts] all'), 'host',1),
+		$menu_items['service_detail'] 			=> array(listview::querylink('[services] all'), 'service',1),
+		$menu_items['hostgroup_summary']		=> array(listview::querylink('[hostgroups] all'), 'hostgroupsummary',1),
+		$menu_items['servicegroup_summary'] 	=> array(listview::querylink('[servicegroups] all'), 'servicegroupsummary',1),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
-		$menu_items['comments'] 				=> array('/listview?q=[comments] all', 'comments',0),
-		$menu_items['scheduled_downtime']		=> array('/listview?q=[downtimes] all', 'scheduledowntime',0),
-		$menu_items['recurring_downtime']		=> array('/listview?q=[recurring_downtimes] all', 'scheduledowntime', 0),
+		$menu_items['comments'] 				=> array(listview::querylink('[comments] all'), 'comments',1),
+		$menu_items['scheduled_downtime']		=> array(listview::querylink('[downtimes] all'), 'scheduledowntime',1),
+		$menu_items['recurring_downtime']		=> array(listview::querylink('[recurring_downtimes] all'), 'recurringdowntime', 1),
 
 		$menu_items['process_info'] 			=> array('/extinfo/show_process_info', 'processinfo',0),
 		$menu_items['performance_info'] 		=> array('/extinfo/performance', 'performanceinfo',0),

@@ -95,9 +95,15 @@ array(4) {
 
 						$i++;
 
+					} elseif($data[2] == 1) {
+						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' class='ninja_menu_links'>";
+						if (strpos($icon_image, '.') !== false)
+							$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$icon_image, $module_name)."' />";
+						else
+							$linkstring .= "<span class='icon-menu menu-".$icon_image."'></span>";
+						$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
 					} // common external links
-						elseif($data[2] == 1 ||
-							($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') ||
+						elseif(($data[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') ||
 							($data[2] == 3 && Kohana::config('config.site_domain') != '/monitor/')) {
 
 						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' target='_blank' class='ninja_menu_links'>";
