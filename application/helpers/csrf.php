@@ -87,4 +87,3 @@ class csrf_Core {
 		return '<input type="hidden" name="'.$name.'" value="'.self::token(true).'">';
 	}
 }
-?>

@@ -9,7 +9,6 @@
 				<option value="services" <?php echo $options['report_type'] === 'services' ? 'selected="selected"' : ''; ?>><?php echo _('Services') ?></option>
 			</select>
 			<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
-			<div id="progress"></div>
 			&nbsp;
 		</td>
 	</tr>

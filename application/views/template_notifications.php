@@ -14,7 +14,7 @@
 		$note_config = "{}";
 	}
 
-	echo "<script>" .
+	echo "<script type=\"text/javascript\">" .
 			"$.notify.sessionid = '" . sha1( session_id() ) . "';" .
 			"$.notify.configured = " . $note_config . ";" .
 		"</script>";

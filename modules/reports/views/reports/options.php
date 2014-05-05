@@ -24,37 +24,40 @@ if($options['report_id']) { ?>
 		<td><?php echo form::dropdown(array('name' => 'rpttimeperiod'), $options->get_alternatives('rpttimeperiod'), $options['rpttimeperiod']); ?></td>
 	</tr>
 	<tr id="custom_time" style="display: none; clear: both;">
-		<td <?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><label for="cal_start"><?php echo help::render('start-date').' '._('Start date') ?></label> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+	<?php if ($type == 'avail') { ?>
+		<td><label for="cal_start"><?php echo help::render('start-date').' '._('Start date') ?></label> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
 			<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" value="<?php echo $options->get_date('start_time') ?>" />
 			<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $options->get_time('start_time') ?>" />
 		</td>
-		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>&nbsp;</td>
-		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><label for="cal_end"><?php echo help::render('end-date').' '._('End date') ?></label> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+		<td>&nbsp;</td>
+		<td><label for="cal_end"><?php echo help::render('end-date').' '._('End date') ?></label> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
 			<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" value="<?php echo $options->get_date('end_time') ?>" />
 			<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo $options->get_time('end_time') ?>" />
 		</td>
-		<td<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>
+	<?php } else { ?>
+		<td>
 			<?php echo help::render('start-date').' '._('Start date') ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
 					<td><label for="start_year"><?php echo _('Start year') ?></label></td>
-					<td><select name="start_year" id="start_year" class="auto"><option value=""></option></select></td>
+					<td><select name="start_year" id="start_year" class="auto"></select></td>
 					<td><label for="start_month"><?php echo _('Start month') ?></label></td>
-					<td><select name="start_month" id="start_month" class="auto"><option value=""></option></select></td>
+					<td><select name="start_month" id="start_month" class="auto"></select></td>
 				</tr>
 			</table>
 		</td>
-		<td<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>&nbsp;</td>
-		<td<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '._('End date') ?>
+		<td>&nbsp;</td>
+		<td><?php echo help::render('end-date').' '._('End date') ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
 					<td><label for="end_year"><?php echo _('End year') ?></label></td>
-					<td><select name="end_year" id="end_year" class="auto"><option value=""></option></select></td>
+					<td><select name="end_year" id="end_year" class="auto"></select></td>
 					<td><label for="end_month"><?php echo _('End month') ?></label></td>
-					<td><select name="end_month" id="end_month" class="auto"><option value=""></option></select></td>
+					<td><select name="end_month" id="end_month" class="auto"></select></td>
 				</tr>
 			</table>
 		</td>
+	<?php } ?>
 	</tr>
 	<tr>
 		<td>
@@ -143,7 +146,7 @@ if($options['report_id']) { ?>
 			<?php echo help::render('piechart') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_pie_charts" name="include_pie_charts"
 					<?php print $options['include_pie_charts']?'checked="checked"':'' ?> />
-			<label for="include_pie_charts" id="include_pie_charts"><?php echo _('Include pie charts') ?></label>
+			<label for="include_pie_charts" id="include_pie_charts_lbl"><?php echo _('Include pie charts') ?></label>
 		</td>
 	</tr>
 	<tr<?php if ($type == 'sla' || !$options['include_pie_charts']) { ?> style="display:none"<?php } ?> class="trend_options">
@@ -161,7 +164,7 @@ if($options['report_id']) { ?>
 	<tr>
 		<td>
 			<?php echo help::render('synergy_events'); ?>
-			<input type="checkbox" name="include_synergy_events" id="include_synergy_events" <?php echo $options['include_synergy_events'] ? 'checked="checked"' : null ?> />
+			<input type="checkbox" name="include_synergy_events" id="include_synergy_events" value="1" <?php echo $options['include_synergy_events'] ? 'checked="checked"' : null ?> />
 			<label for="include_synergy_events"><?php echo _('Include BSM events'); ?></label>
 		</td>
 		<td></td>

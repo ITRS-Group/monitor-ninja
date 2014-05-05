@@ -103,7 +103,7 @@ $(document).ready(function() {
 			return;
 		}
 		var btn = form.find('.save_report_btn');
-		btn.after(loadimg);
+		btn.after(loadimg_sml);
 		$.ajax({
 			url: form[0].action,
 			type: form[0].method,
@@ -203,9 +203,6 @@ $(document).ready(function() {
 		return check_form_values();
 	});
 });
-
-var loadimg = new Image(16,16);
-loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
 
 function init_datepicker()
 {
@@ -659,13 +656,13 @@ function confirm_delete_report()
 	}
 	msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
 	if (confirm(msg)) {
-		$(this).after(loadimg);
+		$(this).after(loadimg_sml);
 		$.ajax({
 			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
 			type: 'POST',
 			data: {'report_id': id},
 			complete: function() {
-				$(loadimg).remove();
+				$(loadimg_sml).remove();
 			},
 			success: function(data) {
 				var a = document.createElement("a");

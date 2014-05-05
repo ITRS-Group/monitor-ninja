@@ -1,23 +1,21 @@
 <div id="header" class="report-block">
 	<div class="report-links">
 		<?php
-		echo "<span class='image-link'>";
+		echo "<span class='image-link'></span>";
 		echo form::open($type.'/generate');
 		echo $options->as_form();
 		echo '<input type="hidden" name="output_format" value="csv" />';
 		$csv_alt = _('Download report as CSV');
 		echo "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png')."' alt='".$csv_alt."' title='".$csv_alt."'/>";
 		echo "</form>\n";
-		echo "</span>";
 
-		echo "<span class='image-link'>";
+		echo "<span class='image-link'></span>";
 		echo form::open($type.'/generate');
 		echo $options->as_form();
 		echo '<input type="hidden" name="output_format" value="pdf" />';
 		$pdf_alt = _('Show as pdf');
 		echo '<input type="image" src="'.$this->add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
 		echo '</form>';
-		echo "</span>";
 
 		if (!isset($skip_save)) { ?>
 		<a class="image-link" href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>

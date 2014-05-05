@@ -596,21 +596,19 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 *                  include anything that does not refer to the members of the report.
 	 */
 	public function as_keyval_string($anonymous=false, $obj_only=false) {
-		$opts_str = '';
+		$opts = array();
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('objects', 'report_type')))
 				continue;
 			if ($anonymous && in_array($key, array('objects', 'report_type', 'report_id')))
 				continue;
-			if (is_array($val)) {
-				foreach ($val as $vk => $member) {
-					$opts_str .= "&amp;{$key}[$vk]=".urlencode($member);
-				}
-				continue;
+			$props = $this->properties();
+			if ($props[$key]['type'] == 'bool') {
+				$val = (int)$val;
 			}
-			$opts_str .= "&amp;$key=".urlencode($val);
+			$opts[$key] = $val;
 		}
-		return substr($opts_str, 5);
+		return htmlspecialchars(http_build_query($opts));
 	}
 
 	/**

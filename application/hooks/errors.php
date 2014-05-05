@@ -31,4 +31,3 @@ class errors {
 }
 
 new errors;
-?>

@@ -17,14 +17,11 @@
 	if (isset($this) && isset($this->template->js_header))
 		$this->template->js_header->js = array_unique($this->xtra_js);
 
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
-
 	<?php
 		require __DIR__.'/template_head.php';
 	?>
-
 	<body>
 
 		<div class="container">

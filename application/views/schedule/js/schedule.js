@@ -131,7 +131,7 @@ function schedule_delete(ev)
 
 	var img = $('img', elem);
 	var img_src = img.attr('src');
-	img.attr('src', loadimg.src);
+	img.attr('src', loadimg_sml.src);
 
 	$.ajax({
 		url:_site_domain + _index_page + '/schedule/delete_schedule',
@@ -163,7 +163,7 @@ function send_report_now(ev)
 	var report_id = elem.data('report_id');
 	var img = $('img', elem);
 	var img_src = img.attr('src');
-	img.attr('src', loadimg.src);
+	img.attr('src', loadimg_sml.src);
 
 	$.ajax({
 		url: _site_domain + _index_page + '/schedule/send_now/' + sched_id,

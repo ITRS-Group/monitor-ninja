@@ -81,4 +81,3 @@ class nagvisconfig_Core {
 		return $data;
 	}
 }
-?>
