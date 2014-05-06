@@ -224,4 +224,30 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
 		}
 	}
+
+	/**
+	 * All reports must display the time range they cover, and this helper
+	 * helps them do so with some amount of consistency.
+	 *
+	 * @param $date_format string Format string for date(), probably nagstat::date_format()
+	 * @returns string Formatted date for this report
+	 */
+	protected function format_report_time($date_format)
+	{
+		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
+			$report_time_formatted  = sprintf(
+				_('%s (%s to %s)'),
+				$this->options->get_value('report_period'),
+				"<strong>".date($date_format, $this->options['start_time'])."</strong>",
+				"<strong>".date($date_format, $this->options['end_time'])."</strong>"
+			);
+		else
+			$report_time_formatted  = sprintf(_("%s to %s"),
+				date($date_format, $this->options['start_time']),
+				date($date_format, $this->options['end_time']));
+
+		if($this->options['rpttimeperiod'] != '')
+			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
+		return $report_time_formatted;
+	}
 }

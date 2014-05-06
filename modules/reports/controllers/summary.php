@@ -147,13 +147,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
-			$report_time_formatted  = $this->options->get_value('report_period');
-		else
-			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
-
-		if($this->options['rpttimeperiod'] != '')
-			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
 
 		$views = array(
 			Summary_options::TOP_ALERT_PRODUCERS => 'toplist',
@@ -166,7 +159,7 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->content->header->standard_header = $this->add_view('reports/header');
 		$header = $this->template->content->header->standard_header;
 		$this->template->content->report_options = $this->add_view('summary/options');
-		$header->report_time_formatted = $report_time_formatted;
+		$header->report_time_formatted = $this->format_report_time(nagstat::date_format());
 		$this->template->content->content =
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 

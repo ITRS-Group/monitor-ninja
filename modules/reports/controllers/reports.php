@@ -69,12 +69,10 @@ class Reports_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 
 		# what scheduled reports are there?
-		$scheduled_ids = array();
 		$scheduled_periods = null;
 		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($this->type);
 		if ($scheduled_res && count($scheduled_res)!=0) {
 			foreach ($scheduled_res as $sched_row) {
-				$scheduled_ids[] = $sched_row->report_id;
 				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
 			}
 		}
@@ -95,13 +93,11 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
 
-		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->report_options->months = date::abbr_month_names();
 
 		$saved_reports = $this->options->get_all_saved();
 		$template->report_options->saved_reports = $saved_reports;
 		$template->saved_reports = $saved_reports;
-		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
 
 		$this->js_strings .= "var _reports_no_sla_str = '"._('Please enter at least one SLA value')."';\n";
@@ -184,20 +180,6 @@ class Reports_Controller extends Base_reports_Controller
 		$sub_type = false;
 
 		$date_format = $this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format();
-		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
-			$report_time_formatted  = sprintf(
-				_('%s (%s to %s)'),
-				$this->options->get_value('report_period'),
-				"<strong>".date($date_format, $this->options['start_time'])."</strong>",
-				"<strong>".date($date_format, $this->options['end_time'])."</strong>"
-			);
-		else
-			$report_time_formatted  = sprintf(_("%s to %s"),
-				date($date_format, $this->options['start_time']),
-				date($date_format, $this->options['end_time']));
-
-		if($this->options['rpttimeperiod'] != '')
-			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
 
 		switch ($this->options['report_type']) {
 			case 'hostgroups':
@@ -280,10 +262,9 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->header = $this->add_view('reports/header');
 		$template->header->title = $template->title;
-		$template->header->report_time_formatted = $report_time_formatted;
+		$template->header->report_time_formatted = $this->format_report_time($date_format);
 
 		# avail, more than one object
-		$get_vars = $this->options->as_keyval_string(true);
 		if ($this->type == 'avail' && ($is_group || count($this->options['objects']) > 1)) {
 			$template_values = array();
 			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
