@@ -57,7 +57,6 @@ class Outages_Controller extends Authenticated_Controller
 		$this->template->toolbar = new Toolbar_Controller( _("Network outages"), _("Blocking outages") );
 
 		$this->template->content = $this->add_view('outages/network_outages');
-		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
 		$content->title = _('Blocking Outages');
 

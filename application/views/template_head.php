@@ -1,7 +1,3 @@
-<?php
-	if (isset($this) && isset($this->template->js_header))
-		$this->template->js_header->js = array_unique($this->xtra_js);
-?>
 <head>
 
 <?php
@@ -151,7 +147,7 @@ if (!empty($base_href)) {
 	</script>
 
 	<?php
-		echo (!empty($css_header)) ? $css_header : '';
+		echo new View('css_header', array('css' => isset($css)?$css:array()));
 		refresh::lv_control();
 		$basepath = 'modules/lsfilter/';
 		echo html::script($basepath.'media/js/lib.js');
@@ -168,6 +164,6 @@ if (!empty($base_href)) {
 	<![endif]-->
 
 	<?php echo html::script('application/views/js/common.js'); ?>
-	<?php echo (!empty($js_header)) ? $js_header : ''; ?>
+	<?php echo new View('js_header', array('js' => isset($js)?$js:array())); ?>
 
 </head>

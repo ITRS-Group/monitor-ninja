@@ -68,15 +68,12 @@ class Summary_Controller extends Base_reports_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->template->css_header->css = $this->xtra_css;
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
@@ -149,11 +146,7 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->template->css_header->css = $this->xtra_css;
-
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = $this->options->get_value('report_period');
 		else

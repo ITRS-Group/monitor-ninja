@@ -66,8 +66,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content = $this->add_view('extinfo/index');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
@@ -132,8 +130,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->downtimes = $widget->render();
 		}
 
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
 		if (nagioscmd::is_authorized_for(array('host_name' => $host, 'service' => $service)) === true) {
@@ -210,8 +206,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content = $this->add_view('extinfo/process_info');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 
 		$this->template->toolbar = new Toolbar_Controller( _("Process Information") );
 		$this->template->title = _('Monitoring » Process info');
@@ -384,13 +378,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return;
 		}
 
-
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
-		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->title = _('Monitoring » Group detail');
 
@@ -474,7 +464,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 	{
 		$this->template->content = $this->add_view('extinfo/performance');
 		$this->template->title = _('Monitoring').' » '._('Performance info');
-		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
 
 		$this->template->toolbar = new Toolbar_Controller( _("Performance Information"), _("Program-wide") );
@@ -633,13 +622,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
-		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
 		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 
-		$this->template->js_header->js = $this->xtra_js;
 		$this->session->set('back_extinfo',$back_link);
 
 		$this->template->title = _('Monitoring').' » '._('Scheduling queue');

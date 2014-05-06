@@ -19,9 +19,6 @@ class Tac_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 		$this->template->disable_refresh = true;
 
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
-
 		# make sure we have this done before letting widgets near
 		$model = Current_status_Model::instance();
 		$model->analyze_status_data();
@@ -79,8 +76,6 @@ class Tac_Controller extends Authenticated_Controller {
 		$this->template->content->widgets = $widgets;
 		$this->template->content->tac_column_count = $tac_column_count;
 		$this->template->widgets = $widget_objs;
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 	}
 }

@@ -28,16 +28,13 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->template->content = $this->add_view('histogram/setup');
 		$template = $this->template->content;
 
-		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
 
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
-		$this->template->css_header->css = $this->xtra_css;
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
@@ -54,8 +51,6 @@ class Histogram_Controller extends Base_reports_Controller
 	{
 		$this->setup_options_obj($input);
 		$this->template->disable_refresh = true;
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_js[] = 'application/media/js/jquery.flot.min.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
@@ -63,7 +58,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
-		$this->template->css_header->css = $this->xtra_css;
 		$rpt = new Summary_Reports_Model($this->options);
 
 		$hostgroup			= false;

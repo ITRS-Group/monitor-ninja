@@ -94,8 +94,6 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content         = $this->add_view('search/result');
-		$this->template->css_header      = $this->add_view('css_header');
-		$this->template->js_header       = $this->add_view('js_header');
 
 		$content = $this->template->content;
 		$content->date_format_str = nagstat::date_format();
@@ -133,8 +131,6 @@ class Search_Controller extends Authenticated_Controller {
 			$this->template->content->widgets[] = $widget->render();
 		}
 
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 	}
 

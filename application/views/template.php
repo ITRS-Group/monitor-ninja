@@ -14,9 +14,6 @@
 		$keycommands_active = 0;
 	}
 
-	if (isset($this) && isset($this->template->js_header))
-		$this->template->js_header->js = array_unique($this->xtra_js);
-
 ?><!DOCTYPE html>
 <html>
 	<?php

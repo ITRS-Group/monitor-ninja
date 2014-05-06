@@ -261,6 +261,13 @@ class Ninja_Controller extends Template_Controller {
 		echo _("The requested page doesn't exist") . " ($method)";
 	}
 
+	public function _render()
+	{
+		$this->template->js = $this->xtra_js;
+		$this->template->css = $this->xtra_css;
+		parent::_render();
+	}
+
 	/**
 	 * Create a View object
 	 */

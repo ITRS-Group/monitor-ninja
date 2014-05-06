@@ -14,12 +14,10 @@ class Schedule_Controller extends Authenticated_Controller
 	 */
 	public function show()
 	{
-		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('schedule/js/schedule.js');
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->content = $this->add_view('schedule/schedules');
 		$available_schedules = $this->template->content;

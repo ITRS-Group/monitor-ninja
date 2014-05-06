@@ -82,10 +82,6 @@ class Backup_Controller extends Authenticated_Controller {
 	{
 		if ($this->unauthorized)
 			return;
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header = $this->add_view('css_header');
-		$this->template->css_header->css = $this->xtra_css;
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->title = _('Configuration » Backup/Restore');
 		$this->template->content->suffix = $this->backup_suffix;

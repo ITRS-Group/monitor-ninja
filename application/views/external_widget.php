@@ -1,8 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-
-if (isset($this->template->js_header))
-	$this->template->js_header->js = array_unique($this->xtra_js);
-?>
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -19,7 +15,7 @@ if (isset($this->template->js_header))
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 		<![endif]-->
 		<?php
-			echo (!empty($css_header)) ? $css_header : '';
+			echo new View('css_header', array('css' => $css));
 			echo html::script('application/media/js/jquery.js');
 			echo html::script('application/media/js/jquery-ui.min.js');
 			echo html::script('application/media/js/jquery.form.js');
@@ -108,7 +104,7 @@ if (isset($this->template->js_header))
 			//-->
 		</script>
 		<?php echo html::script('application/views/js/common.js'); ?>
-		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
+		<?php echo new View('js_header', array('js' => $js)); ?>
 
 	</head>
 

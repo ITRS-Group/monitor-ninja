@@ -39,13 +39,7 @@ class Hello_world_Controller extends Authenticated_Controller {
 		# disable page refresh - set to false (or remove) to enable
 		$this->template->disable_refresh = true;
 
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
-
 		$this->xtra_js[] = 'modules/hello_world/views/hello_world/js/hello.js';
-
-		# add our javascript file to master template
-		$this->template->js_header->js = $this->xtra_js;
 
 		# pass the string to the translation object if you
 		# would like to be able to translate it using gettext tools

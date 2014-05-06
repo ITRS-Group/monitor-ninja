@@ -42,9 +42,6 @@ class External_widget_Controller extends Widget_Controller {
 		$this->template->title = _('External widget');
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
-
 		$model = Ninja_widget_Model::get(Router::$controller.'/'.Router::$method, $name, $instance_id);
 		if (!$model) {
 			$this->template->content->widget = false;
@@ -60,8 +57,6 @@ class External_widget_Controller extends Widget_Controller {
 		$this->template->inline_js = $this->inline_js;
 
 		$this->template->content->widget = $widget;
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
 		$this->template->disable_refresh = true;
 	}
 }

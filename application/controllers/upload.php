@@ -36,12 +36,8 @@ class Upload_Controller extends Authenticated_Controller
 		$this->template->title = _('Widget Upload');
 		$this->template->disable_refresh = true;
 
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_js[] = $this->add_path('upload/js/upload.js');
 		$this->xtra_css[] = $this->add_path('upload/css/upload.css');
-		$this->template->css_header->css = $this->xtra_css;
-		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	/**

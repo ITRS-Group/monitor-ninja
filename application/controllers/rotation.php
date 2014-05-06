@@ -22,15 +22,6 @@ class Rotation_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
 		$this->xtra_css[] = $this->add_path('rotation/css/rotation.css');
 		$this->template->disable_refresh = true;
-
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->js_header->js = $this->xtra_js;
-
-		$this->template->css_header = $this->add_view('css_header');
-		$this->template->css_header->css = $this->xtra_css;
-
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
 	}
 
 }

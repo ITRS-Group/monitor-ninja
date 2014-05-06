@@ -18,7 +18,7 @@
 		</style>
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<?php echo html::script('application/media/js/jquery.js'); ?>
-		<?php echo (!empty($js_header)) ? $js_header : '' ?>
+		<?php echo new View('js_header', array('js' => $js)); ?>
 	</head>
 
 	<body>

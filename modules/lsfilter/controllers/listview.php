@@ -59,13 +59,9 @@ class ListView_Controller extends Authenticated_Controller {
 
 		$custom_extra_js = Module_Manifest_Model::get('lsfilter_extra_js');
 		$this->xtra_js = array_merge($this->xtra_js, $custom_extra_js);
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->js_header->js = $this->xtra_js;
 
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css = array();
 		$this->xtra_css[] = $basepath.'views/css/LSFilterStyle.css';
-		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->title = _('List view');
 		$this->template->toolbar = new Toolbar_Controller( $this->template->title );

@@ -21,7 +21,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
 
-		$this->template->js_header = $this->add_view('js_header');
 		$queryparams = http_build_query($_GET, '', '&amp;');
 		switch($name) {
 		 case 'index':

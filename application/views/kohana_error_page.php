@@ -33,7 +33,9 @@ foreach(Kohana::config('exception.extra_info') as $header => $info) {
 }
 $content .= '</div>';
 
-$css_header = '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
+$content .= '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
+$js = array();
+$css = array();
 
 if (IN_PRODUCTION) {
 	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces/';
@@ -41,13 +43,12 @@ if (IN_PRODUCTION) {
 	@mkdir($tmp_dir, $tmp_dir_perm, true);
 	$file = tempnam($tmp_dir, date('Ymd-hi').'-');
 	$fd = fopen($file, 'w');
-	$error_data = "<html><head>$css_header</head><body>$content</body></html>";
+	$error_data = "<html><body>$content</body></html>";
 	$writeerror = false;
 	fwrite($fd, $error_data) or $writeerror = true;
 
 	fclose($fd);
 
-	$css_header = false;
 	$content = '<div><h3>There was an error rendering the page</h3>';
 	if (!$writeerror) {
 		$content .= '<p>Please contact your administrator.<br />The debug information in '.$file.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';

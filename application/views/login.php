@@ -28,7 +28,7 @@
 				});
 			//-->
 		</script>
-		<?php echo (!empty($js_header)) ? $js_header : '' ?>
+		<?php echo new View('js_header', array('js' => $js)); ?>
 	</head>
 
 	<body>

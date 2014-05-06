@@ -30,8 +30,6 @@ class Command_Controller extends Authenticated_Controller
 	protected function init_page($view)
 	{
 		$this->template->content = $this->add_view($view);
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->css_header = $this->add_view('css_header');
 		$this->template->disable_refresh = true;
 	}
 
@@ -80,7 +78,6 @@ class Command_Controller extends Authenticated_Controller
 	{
 		$this->init_page('command/request');
 		$this->xtra_js[] = $this->add_path('command/js/command.js');
-		$this->template->js_header->js = $this->xtra_js;
 
 		if ($cmd === false) {
 			$cmd = $this->input->get('cmd_typ');

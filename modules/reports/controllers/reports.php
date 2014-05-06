@@ -51,7 +51,6 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		# we should set the required js-files
-		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
@@ -66,12 +65,8 @@ class Reports_Controller extends Base_reports_Controller
 		sort($this->xtra_js);
 		$this->xtra_js = array_unique($this->xtra_js);
 
-		$this->template->js_header->js = $this->xtra_js;
-
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->template->css_header->css = $this->xtra_css;
 
 		# what scheduled reports are there?
 		$scheduled_ids = array();
@@ -165,7 +160,6 @@ class Reports_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
-		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
@@ -179,10 +173,8 @@ class Reports_Controller extends Base_reports_Controller
 			$this->template->current_skin = $this->options['skin'];
 		}
 
-		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
@@ -499,8 +491,7 @@ class Reports_Controller extends Base_reports_Controller
 			$synergy_content->synergy_events = $synergy_report_model->get_data();
 			$this->template->content->synergy_content = $synergy_content;
 		}
-		$this->xtra_js = sort($this->xtra_js);
-		$this->template->js_header->js = $this->xtra_js;
+		sort($this->xtra_js);
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 		if($scheduled_info) {
 			$schedule_id = $this->input->get('schedule_id', null);

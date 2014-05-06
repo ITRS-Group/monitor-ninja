@@ -430,10 +430,8 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('config/index');
 
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$this->template->js_header = $this->add_view('js_header');
 		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
-		$this->template->js_header->js = $this->xtra_js;
 		$this->template->content->header = $header;
 		$this->template->content->data = $result;
 		if(!$result || count($result) < $pagination->items_per_page) {

@@ -53,8 +53,6 @@ class User_Controller extends Authenticated_Controller {
 
 		$template = $this->template->content;
 
-		$this->template->js_header = $this->add_view('js_header');
-
 		# check if user is an admin
 		$is_admin = Auth::instance()->authorized_for('access_rights');
 		$template->is_admin = $is_admin;
@@ -150,7 +148,6 @@ class User_Controller extends Authenticated_Controller {
 			$updated_str = _('Your settings were successfully saved');
 		}
 		$template->updated_str = $updated_str;
-		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	/**
@@ -225,8 +222,6 @@ class User_Controller extends Authenticated_Controller {
 			$this->template->content = $this->add_view('user/error');
 
 			$template = $this->template->content;
-
-			$this->template->js_header = $this->add_view('js_header');
 
 			$this->template->content->widgets = $this->widgets;
 			$template->errors = $errors;
@@ -357,8 +352,6 @@ class User_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('user/edit_menu');
 		$this->xtra_js[] = $this->add_path('user/js/user.js');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->template->js_header->js = $this->xtra_js;
 		$content = $this->template->content;
 
 		$content->select_user_message = _("Select the user below to edit the menu for.");
