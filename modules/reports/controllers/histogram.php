@@ -13,7 +13,6 @@
  */
 class Histogram_Controller extends Base_reports_Controller
 {
-	public $data = false; /**< Awesomely named variable for passing the result of the histogram method in the summary report model */
 	private $labels = array();
 	public $type = 'histogram';
 
@@ -25,16 +24,26 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->setup_options_obj($input);
 
 		$this->template->disable_refresh = true;
-		$this->template->content = $this->add_view('histogram/setup');
+		$this->template->content = $this->add_view('reports/setup');
 		$template = $this->template->content;
+		if(isset($_SESSION['report_err_msg'])) {
+			$template->error_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
+
+		$template->saved_reports = $this->options->get_all_saved();
+		$scheduled_info = false;
+		if ($this->options['report_id']) {
+			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
+		}
+		$template->scheduled_info = $scheduled_info;
+		$template->report_options = $this->add_view('histogram/options');
 
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
@@ -54,78 +63,13 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.flot.min.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = 'application/media/js/excanvas.compiled.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
+		$this->xtra_js[] = ninja::add_path('histogram/js/histogram.js', 'reports');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
 		$rpt = new Summary_Reports_Model($this->options);
 
-		$hostgroup			= false;
-		$hostname			= false;
-		$servicegroup		= false;
-		$service			= false;
-
-		$group_name = false;
-		$title = _('Event history for ');
-		$objects = false;
-		switch ($this->options['report_type']) {
-			case 'hostgroups':
-				$sub_type = "host";
-				$hostgroup = $this->options['hostgroup'];
-				$group_name = $hostgroup;
-				$title .= _('Hostgroup(s): ');
-				$this->object_varname = 'host_name';
-				$objects = $this->options['hostgroup'];
-				break;
-			case 'servicegroups':
-				$sub_type = "service";
-				$servicegroup = $this->options['servicegroup'];
-				$group_name = $servicegroup;
-				$title .= _('Servicegroup(s): ');
-				$this->object_varname = 'service_description';
-				$objects = $this->options['servicegroup'];
-				break;
-			case 'hosts':
-				$sub_type = "host";
-				$hostname = $this->options['host_name'];
-				$title .= _('Host(s): ');
-				$this->object_varname = 'host_name';
-				if (is_array($this->options['host_name'])) {
-					$objects = $this->options['host_name'];
-				} else {
-					$objects[] = $this->options['host_name'];
-				}
-				break;
-			case 'services':
-				$sub_type = "service";
-				$service = $this->options['service_description'];
-				$title .= _('Service(s): ');
-				$tmp_obj = false;
-				if (is_array($service)) {
-					foreach ($service as $s) {
-						if (strstr($s, ';')) {
-							$tmp = explode(';', $s);
-							$tmp_obj[] = "'".$tmp[1]."' "._('On Host')." '".$tmp[0]."' ";
-						} else {
-							$tmp_obj[] = "'".$s."' "._('On Host')." '".$this->options['host_name']."' ";
-						}
-					}
-					if (!empty($tmp_obj)) {
-						$objects = $tmp_obj;
-					}
-				} else {
-					if (strstr($service, ';')) {
-						$tmp = explode(';', $service);
-						$objects[] = "'".$tmp[1]."' "._('On Host')." '".$tmp[0]."' ";
-					} else {
-						$objects[] = "'".$service."' "._('On Host')." '".$this->options['host_name']."' ";
-					}
-				}
-				$this->object_varname = 'service_description';
-				break;
-			default:
-				return url::redirect(Router::$controller.'/index');
-		}
+		$title = _('Alert histogram');
 
 		$breakdown_keys = false;
 		switch ($this->options['breakdown']) {
@@ -147,23 +91,19 @@ class Histogram_Controller extends Base_reports_Controller
 		}
 		$histogram_data = $rpt->histogram($breakdown_keys);
 
-		$min = false;
-		$max = false;
-		$avg = false;
-		$sum = false;
-
-		if (!empty($histogram_data)) {
-			# pull the data from the returned array
-			$this->data = isset($histogram_data['data']) ? $histogram_data['data'] : false;
-			$min = isset($histogram_data['min']) ? $histogram_data['min'] : false;
-			$max = isset($histogram_data['max']) ? $histogram_data['max'] : false;
-			$avg = isset($histogram_data['avg']) ? $histogram_data['avg'] : false;
-			$sum = isset($histogram_data['sum']) ? $histogram_data['sum'] : false;
-		}
+		# pull the data from the returned array
+		$data = isset($histogram_data['data']) ? $histogram_data['data'] : array();
+		$min = isset($histogram_data['min']) ? $histogram_data['min'] : array();
+		$max = isset($histogram_data['max']) ? $histogram_data['max'] : array();
+		$avg = isset($histogram_data['avg']) ? $histogram_data['avg'] : array();
+		$sum = isset($histogram_data['sum']) ? $histogram_data['sum'] : array();
 
 		$sub_type = false;
+		$is_group = false;
 		switch ($this->options['report_type']) {
-			case 'hosts': case 'hostgroups':
+			case 'hostgroups':
+				$is_group = true;
+			case 'hosts':
 				$state_names = array(
 					Reports_Model::HOST_UP => _('UP'),
 					Reports_Model::HOST_DOWN => _('DOWN'),
@@ -171,7 +111,9 @@ class Histogram_Controller extends Base_reports_Controller
 				);
 				$sub_type = 'host';
 				break;
-			case 'services': case 'servicegroups':
+			case 'servicegroups':
+				$is_group = true;
+			case 'services':
 				$state_names = array(
 					Reports_Model::SERVICE_OK => _('OK'),
 					Reports_Model::SERVICE_WARNING => _('WARNING'),
@@ -182,52 +124,41 @@ class Histogram_Controller extends Base_reports_Controller
 				break;
 		}
 
-		$this->inline_js .= "var graph_options = {legend: {show: true,container: $('#overviewLegend')},xaxis:{ticks:".$this->_get_xaxis_ticks()."},bars:{align:'center'}, grid: { hoverable: true, clickable: true }, yaxis:{min:0}};";
-		$this->js_strings .= "var graph_xlables = new Array(".implode(',', $this->labels).");";
+		$report_members = $this->options->get_report_members();
+		if (empty($report_members)) {
+			if (!$is_group)
+				$_SESSION['report_err_msg'] = _("You didn't select any objects to include in the report");
+			else
+				$_SESSION['report_err_msg'] = sprintf(_("The groups you selected (%s) had no members, so cannot create a report from them"), implode(', ', $this->options['objects']));
+			return url::redirect(Router::$controller.'/index?' . http_build_query($this->options->options));
+		}
+
+		$this->js_strings .= "var graph_options = {legend: {show: true,container: $('#overviewLegend')},xaxis:{ticks:".json_encode($this->_get_xaxis_ticks($data))."},bars:{align:'center'}, grid: { hoverable: true, clickable: true }, yaxis:{min:0}};\n";
+		$this->js_strings .= "var graph_xlables = ".json_encode($this->labels).";\n";
 
 		$this->js_strings .= reports::js_strings();
 
-		$data = $this->_prepare_graph_data();
+		$data = $this->_prepare_graph_data($data);
 		$datasets = array();
-		$this->inline_js .= "var datasets = {";
 
 		$states = array_keys($state_names);
 		foreach ($data as $key => $val) {
-			$datasets[] = "'".ucfirst(strtolower($state_names[$key]))."': {label: '".ucfirst(strtolower($state_names[$key]))."', data: [".implode(',', $val)."], color:'".reports::_state_colors($sub_type, $states[$key])."', bars: { show: true}}";
+			$datasets[ucfirst(strtolower($state_names[$key]))] = array('label' => ucfirst(strtolower($state_names[$key])), 'data' => $val, 'color' => reports::_state_colors($sub_type, $states[$key]), 'bars' => array('show' => true));
 		}
 
-		$this->inline_js .= implode(',', $datasets).'};';
+		$this->js_strings .= 'var datasets = '.json_encode($datasets).";\n";
 
-		$this->inline_js .= "var choiceContainer = $('#choices');
-		$.each(datasets, function(key, val) {
-			choiceContainer.append('<br/><input type=\"checkbox\" name=\"' + key +
-			'\" checked=\"checked\" id=\"id' + key + '\">' +
-			'<label for=\"id' + key + '\">'
-			+ val.label + '</label>');
-		});
-		choiceContainer.find(\"input\").click(plotAccordingToChoices);
-
-		function plotAccordingToChoices() {
-			var data = [];
-
-			choiceContainer.find(\"input:checked\").each(function () {
-				var key = $(this).attr(\"name\");
-				if (key && datasets[key])
-					data.push(datasets[key]);
-			});
-
-			if (data.length > 0)
-				$.plot($('#histogram_graph'), data, graph_options);
-		}
-
-	    plotAccordingToChoices();";
-
-		$this->template->content = $this->add_view('histogram/index');
-
+		$this->template->content = $this->add_view('reports/index');
 		$base = $this->template->content;
+
+		$base->header = $this->add_view('reports/header');
+		$base->header->title = $title;
+		$base->header->report_time_formatted = $this->format_report_time(nagstat::date_format());
+		$base->header->skip_csv = true;
+		$base->header->skip_pdf = true;
+
 		$base->content = $this->add_view("histogram/histogram");
 		$content = $base->content;
-		$content->state_names = $state_names;
 
 		$content->min = $min;
 		$content->max = $max;
@@ -235,15 +166,12 @@ class Histogram_Controller extends Base_reports_Controller
 		$content->sum = $sum;
 		$content->states = $state_names;
 		$content->available_states = array_keys($min);
-		$content->title = $title;
-		$content->objects = $objects;
+		$content->objects = $this->options['objects'];
 		$timeformat_str = nagstat::date_format();
 		$content->report_time = date($timeformat_str, $this->options['start_time']).' '._('to').' '.date($timeformat_str, $this->options['end_time']);
 
 		$this->template->content->report_options = $this->add_view('histogram/options');
 		$tpl_options = $this->template->content->report_options;
-
-		$tpl_options->sub_type = $sub_type;
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
@@ -254,52 +182,44 @@ class Histogram_Controller extends Base_reports_Controller
 	*	Replace all integer indicies with proper
 	* 	translated strings
 	*/
-	public function _get_xaxis_ticks()
+	private function _get_xaxis_ticks($data)
 	{
-		if (empty($this->data)) {
-			return false;
-		}
-
 		$return = false;
 		$i = 0;
-		foreach ($this->data as $key => $data) {
+		foreach ($data as $key => $values) {
 			switch ($this->options['breakdown']) {
 				case 'dayofmonth':
-					$return[] = '['.$i.', '.$key.']';
-					$this->labels[] = "'".$key."'";
+					$return[] = array($i, $key);
+					$this->labels[] = $key;
 					break;
 				case 'monthly':
-					$return[] = '['.$i.', "'.$key.'"]';
+					$return[] = array($i, $key);
 					$this->labels[] = "'".$key."'";
 					break;
 				case 'dayofweek':
-					$return[] = '['.$i.', "'.$key.'"]';
-					$this->labels[] = "'".$key."'";
+					$return[] = array($i, $key);
+					$this->labels[] = $key;
 					break;
 				case 'hourly':
-					$return[] = '['.$i.', "'.$key.':00'.'"]';
-					$this->labels[] = "'".$key.':00'."'";
+					$return[] = array($i, $key.':00');
+					$this->labels[] = $key.':00';
 					break;
 			}
 			$i++;
 		}
-		return '['.implode(',', $return).']';
+		return $return;
 	}
 
 	/**
 	*	Prepare data structore for use in histogram
 	*/
-	public function _prepare_graph_data($data=false)
+	private function _prepare_graph_data($data)
 	{
-		if (empty($this->data)) {
-			return false;
-		}
-
-		$return = false;
+		$return = array();
 		$i = 0; # graph data needs to have 0 indicies
-		foreach ($this->data as $key => $data) {
-			foreach ($data as $k => $v) {
-				$return[$k][] = '['.$i.','.$v.']';
+		foreach ($data as $key => $value) {
+			foreach ($value as $k => $v) {
+				$return[$k][] = array($i, $v);
 			}
 			$i++;
 		}

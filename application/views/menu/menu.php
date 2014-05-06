@@ -44,6 +44,7 @@ $menu_items['notifications'] = _('Notifications');
 $menu_items['event_log'] = _('Event log');
 $menu_items['availability'] = _('Availability');
 $menu_items['sla'] = _('SLA Reporting');
+$menu_items['histogram'] = _('Histogram Reporting');
 $menu_items['schedule_reports'] = _('Schedule reports');
 
 if (Kohana::config('config.cacti_path')) {
@@ -76,7 +77,7 @@ $menu = array(
 		'network_outages', //'host_problems', 'service_problems', 'unhandled_problems',
 		'comments', 'scheduled_downtime', 'recurring_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'hyper_map', 'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'pnp', 'alert_history', 'alert_summary', 'notifications', 'event_log',
-		'availability', 'sla', 'schedule_reports', 'statistics'),
+		'availability', 'sla', 'histogram', 'schedule_reports', 'statistics'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
 );
 
@@ -91,6 +92,7 @@ $section_reporting[$menu_items['notifications']]  = array(listview::querylink('[
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
 $section_reporting[$menu_items['availability']] = array('/avail/index', 'availability',0);
 $section_reporting[$menu_items['sla']] = array('/sla/index', 'sla',0);
+$section_reporting[$menu_items['histogram']] = array('/histogram/index', 'histogram',0);
 $section_reporting[$menu_items['schedule_reports']]= array('/schedule/show', 'schedulereports',0);
 
 # base menu (all)

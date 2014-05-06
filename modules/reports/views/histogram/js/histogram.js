@@ -1,9 +1,4 @@
 $(document).ready(function() {
-	$("#histogram_form").bind('submit', function() {
-		loopElements();
-		return check_form_values();
-	});
-
 	var previousPoint = null;
 	$("#histogram_graph").bind("plothover", function (event, pos, item) {
 		$("#x").text(pos.x.toFixed(2));
@@ -26,14 +21,34 @@ $(document).ready(function() {
 			previousPoint = null;
 		}
 	});
-	$("#report_period").bind('change', function() {
-		show_calendar($(this).attr('value'));
-	});
 
 	$('#show_all_objects').click(function() {
 		$('#all_objects').toggle('slow');
 	});
 
+	var choiceContainer = $('#choices');
+	$.each(datasets, function(key, val) {
+		choiceContainer.append('<br/><input type="checkbox" name="' + key +
+		'" checked="checked" id="id' + key + '">' +
+		'<label for="id' + key + '">'
+		+ val.label + '</label>');
+	});
+	choiceContainer.find("input").click(plotAccordingToChoices);
+
+	function plotAccordingToChoices() {
+		var data = [];
+
+		choiceContainer.find("input:checked").each(function () {
+			var key = $(this).attr("name");
+			if (key && datasets[key])
+				data.push(datasets[key]);
+		});
+
+		if (data.length > 0)
+			$.plot($('#histogram_graph'), data, graph_options);
+	}
+
+	plotAccordingToChoices();
 });
 
 function get_label(x)

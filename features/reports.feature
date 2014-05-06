@@ -20,6 +20,9 @@ Feature: Reports
 		When I hover over the "Reporting" button
 		And I click "Schedule Reports"
 		Then all helptexts should be defined
+		When I hover over the "Reporting" button
+		And I click "Histogram Reports"
+		Then all helptexts should be defined
 
 	@asmonitor @reports @calendar
 	Scenario: Toggle JS-calendars on custom report date

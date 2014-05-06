@@ -160,7 +160,6 @@ if (!empty($base_href)) {
 
 	<!--[If IE]>
 	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
-	<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 	<![endif]-->
 
 	<?php echo html::script('application/views/js/common.js'); ?>

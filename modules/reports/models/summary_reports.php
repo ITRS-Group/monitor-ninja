@@ -22,7 +22,7 @@ class Summary_Reports_Model extends Reports_Model
 		$query = $this->build_alert_summary_query
 			('timestamp, event_type, host_name, service_description, ' .
 		     'state, hard, retry, downtime_depth, output',
-		     true, array(), null, $auth);
+		     true, array(), $auth);
 
 		// investigate if there are more rows available for this query,
 		// with another set of pagination parameters
@@ -76,21 +76,14 @@ class Summary_Reports_Model extends Reports_Model
 	 * @param $fields string Comma separated list of database columns the caller needs
          * @param $is_api_call boolean = false
          * @param $blacklisted_criteria array = array()
-         * @param $db_table string = null
          * @param $auth auth module to use, if not using default
          * @return string (sql)
 	 */
-	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $db_table = null, $auth = null)
+	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $auth = null)
 	{
 		if(!$fields) {
 			// default to the most commonly used fields
 			$fields = 'host_name, service_description, state, hard';
-		}
-		if(!$db_table)
-		{
-			// this method ('s purpose) is so good I wanna copy it.. but that's not feasable,
-			// so I'm just gonna pretend it does dependency injection
-			$db_table = $this->db_table;
 		}
 		if(!$auth) {
 			$auth = op5auth::instance();
@@ -161,7 +154,7 @@ class Summary_Reports_Model extends Reports_Model
 		}
 
 		if (empty($hosts) && empty($services) && !$is_api_call) {
-			return "SELECT $fields FROM $db_table LIMIT 0";
+			return "SELECT $fields FROM $this->db_table LIMIT 0";
 		}
 
 		$object_selection = false;
@@ -275,7 +268,7 @@ class Summary_Reports_Model extends Reports_Model
 				"\n OR UPPER(service_description) LIKE $wc_str_esc";
 		}
 
-		$query = "SELECT " . $fields . "\nFROM " . $db_table;
+		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
 		$query .= ' WHERE '.
 			sql::combine('and',
 				$time_first,
@@ -680,7 +673,7 @@ class Summary_Reports_Model extends Reports_Model
 	public function histogram($slots=false)
 	{
 		if (empty($slots) || !is_array($slots))
-			return false;
+			return array();
 
 		$breakdown = $this->options['breakdown'];
 		$report_type = $this->options['report_type'];
@@ -694,38 +687,38 @@ class Summary_Reports_Model extends Reports_Model
 					$events = array(0 => 0, 1 => 0, 2 => 0);
 				} else {
 					$events = array();
-					for ($i = 0; $i < 7; $i++) {
+					for ($i = 0; $i <= 2; $i++) {
 						if (1 << $i & $this->options['host_states']) {
 							$events[$i] = 0;
 						}
 					}
 				}
+				$this->options['alert_types'] = 1;
 				break;
 			case 'services': case 'servicegroups':
 				if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
 					$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 				} else {
 					$events = array();
-					for ($i = 0; $i < 15; $i++) {
+					for ($i = 0; $i <= 3; $i++) {
 						if (1 << $i & $this->options['service_states']) {
 							$events[$i] = 0;
 						}
 					}
 				}
+				$this->options['alert_types'] = 2;
 				break;
 		}
 
 		# add event (state) counters to slots
-		$fixed_slots = false;
+		$data = false;
 		foreach ($slots as $s => $l) {
-			$fixed_slots[$l] = $events;
+			$data[$l] = $events;
 		}
 
 		# fields to fetch from db
 		$fields = 'timestamp, event_type, host_name, service_description, state, hard, retry';
 		$query = $this->build_alert_summary_query($fields);
-
-		$data = false;
 
 		# tell histogram_data() how to treat timestamp
 		$date_str = false;
@@ -744,61 +737,42 @@ class Summary_Reports_Model extends Reports_Model
 				break;
 		}
 
-		$data = $this->histogram_data($query, $date_str, $fixed_slots, $newstatesonly);
-
-		$min = $events;
-		$max = $events;
-		$avg = $events;
-		$sum = $events;
-		if (!empty($data)) {
-			foreach ($data as $slot => $slotstates) {
-				foreach ($slotstates as $id => $val) {
-					if ($val > $max[$id]) $max[$id] = $val;
-					if ($val < $min[$id]) $min[$id] = $val;
-					$sum[$id] += $val;
-				}
-			}
-			foreach ($max as $v => $k) {
-				if ($k != 0) {
-					$avg[$v] = number_format(($k/count($data)), 2);
-				}
-			}
-			return array('min' => $min, 'max' => $max, 'avg' => $avg, 'sum' => $sum, 'data' => $data);
-		}
-		return false;
-	}
-
-	/**
-	*	Populate slots for histogram
-	*
-	* 	@param $query sql
-	* 	@param $date_str string for use in PHP date()
-	* 	@param $slots array with slots to fill with data
-	* 	@param $newstatesonly bool Used to decide if to ignore repated events or not
-	* 	@return array Populated slots array with found data
-	*/
-	public function histogram_data($query, $date_str='j' , $slots=false, $newstatesonly=false)
-	{
-		if (empty($slots)) {
-			return false;
-		}
-
 		$res = $this->db->query($query)->result(false);
 		if (!$res) {
-			return false;
+			return array();
 		}
 		$last_state = null;
 		foreach ($res as $row) {
 			if ($newstatesonly) {
 				if ($row['state'] != $last_state) {
 					# only count this state if it differs from the last
-					$slots[date($date_str, $row['timestamp'])][$row['state']]++;
+					$data[date($date_str, $row['timestamp'])][$row['state']]++;
 				}
 			} else {
-				$slots[date($date_str, $row['timestamp'])][$row['state']]++;
+				$data[date($date_str, $row['timestamp'])][$row['state']]++;
 			}
 			$last_state = $row['state'];
 		}
-		return $slots;
+
+		$min = $events;
+		$max = $events;
+		$avg = $events;
+		$sum = $events;
+		if (empty($data))
+			return array();
+
+		foreach ($data as $slot => $slotstates) {
+			foreach ($slotstates as $id => $val) {
+				if ($val > $max[$id]) $max[$id] = $val;
+				if ($val < $min[$id]) $min[$id] = $val;
+				$sum[$id] += $val;
+			}
+		}
+		foreach ($max as $v => $k) {
+			if ($k != 0) {
+				$avg[$v] = number_format(($k/count($data)), 2);
+			}
+		}
+		return array('min' => $min, 'max' => $max, 'avg' => $avg, 'sum' => $sum, 'data' => $data);
 	}
 }

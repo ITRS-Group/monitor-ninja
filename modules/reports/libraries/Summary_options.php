@@ -118,6 +118,7 @@ class Summary_options extends Report_options
 						break;
 
 					default:
+						var_dump('unknown standard report');
 						Kohana::debug("Unknown standard report: $value");
 						die;
 				}
