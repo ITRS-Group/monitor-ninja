@@ -846,7 +846,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				$obj->value = @unserialize($obj->value);
 			$opts[$obj->name] = $obj->value;
 		}
-		$sql = "SELECT object_name FROM saved_reports_objects WHERE report_id = ".(int)$id;
+		$sql = "SELECT object_name FROM saved_reports_objects WHERE report_id = ".(int)$id." ORDER BY object_name";
 		$res = $db->query($sql);
 		$opts['objects'] = array();
 		foreach ($res as $obj) {
