@@ -15,7 +15,7 @@
  */
 class Reports_Controller extends Base_reports_Controller
 {
-	private $status_link = "status/host/";
+	private $status_link = "status/service/";
 	private $history_link = "alert_history/generate";
 
 
@@ -361,43 +361,25 @@ class Reports_Controller extends Base_reports_Controller
 						}
 					}
 
-					$t1 = $this->options['start_time'];
-					$t2 = $this->options['start_time'];
-
 					$links = array();
-					$downtime       = $this->options['scheduleddowntimeasuptime'];
-					$not_running    = $this->options['assumestatesduringnotrunning'];
-					$soft_states    = $this->options['includesoftstates'];
-
 					# links - only for HTML reports
 					switch($this->options['report_type']) {
 						case 'hosts':
 							$host = $this->options['objects'][0];
 							$template->header->title = sprintf(_('Host details for %s'), $host);
-							$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
 
-							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
-
+							$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
 							$links[$this->status_link.$host] = _('Status detail');
-
-							$links[$this->history_link . '?host_name[]=' . $host] = _('Alert history');
+							$links[$this->history_link . '?' . $this->options->as_keyval_string()] = _('Alert history');
 							$links[listview::link('notifications', array('host_name' => $host))] = _('Notifications');
 							break;
 
 						case 'services':
-							list($host, $service) = explode(';',$this->options['objects'][0]);
-
+							list($host, $service) = explode($this->options['objects'][0], ';');
 							$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
-							if (isset($template->content)) {
-								$template->content->host = $host;
-								$template->content->service = $service;
-							}
 
-							$histogram_params = "service[]=".urlencode("$host;$service")."&amp;t1=$t1&amp;t2=$t2";
-							$history_params = "service[]=".urlencode("$host;$service");
-
-							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
-							$links[$this->history_link . "?" . $history_params] = _('Alert history');
+							$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
+							$links[$this->history_link . "?" . $this->options->as_keyval_string()] = _('Alert history');
 							$links[listview::link('notifications', array('host_name' => $host, 'service_description' => $service))] = _('Notifications');
 
 							break;

@@ -90,6 +90,9 @@ Feature: Availability reports
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (Worst state)"
 		And I shouldn't see "Total Alerts"
+		When I click "Alert histogram"
+		Then I should see "Alert histogram"
+		And I should see "linux-server1"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
@@ -116,6 +119,8 @@ Feature: Availability reports
 		And I should see "Group availability (Worst state)"
 		And I should see "Summary of selected"
 		And I shouldn't see "Total summary"
+		When I click "linux-server1"
+		Then I should see "Host details for linux-server1"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single service report
@@ -158,6 +163,8 @@ Feature: Availability reports
 		And I should see "Group availability (Worst state)"
 		And I should see "Summary of selected"
 		And I shouldn't see "Total summary"
+		When I click "PING"
+		Then I should see "Service details for PING on host linux-server1"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
@@ -183,6 +190,8 @@ Feature: Availability reports
 		And I should see "Group availability (Worst state)"
 		And I should see "Summary of selected"
 		And I shouldn't see "Total summary"
+		When I click "linux-server1"
+		Then I should see "Host details for linux-server1"
 
 	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
