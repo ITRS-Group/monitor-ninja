@@ -190,9 +190,6 @@
 <div id="page_settings" class="page_settings">
 	<ul>
 		<li id="menu_global_settings" <?php	if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($listview_refresh)) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
-		<li id="noheader_ctrl" style="display:none">
-			<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo _('Hide page header')?></label>
-		</li>
 	<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
 		<li id="ninja_page_refresh">
 			<input type="checkbox" id="ninja_refresh_control" />

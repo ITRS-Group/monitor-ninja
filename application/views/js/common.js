@@ -30,25 +30,6 @@ $(document).ready(function() {
 		content_div.focus();
 	}
 
-	/**
-	*	Show the checkbox to show/hide "page header" if
-	*	we find the content-header div in the current page
-	*/
-	if ($('#content-header').text()!=='') {
-		$('#noheader_ctrl').show();
-		$('#page_settings_icon').show();
-		$('#menu_global_settings').show();
-
-		// Let checkbox state reflect visibility of the #content-header div
-		if ($('#content-header').is(':visible')) {
-			// force unchecked checkbox
-			$('#noheader_chbx').attr('checked', false);
-		} else {
-			// mark current state by checking the checkbox
-			$('#noheader_chbx').attr('checked', true);
-		}
-	}
-
 	// stop widgets from trying to reload once user clicked
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
@@ -68,25 +49,6 @@ $(document).ready(function() {
 				object_action(action, elem.attr('id'));
 			},".svc_obj_properties");
 	}
-
-	/**
-	*	Bind some functionality to the checkbox state change event
-	*	This involves setting the correct value for the noheader GET parameter
-	*	and passing the new value to the refresh script so that the value
-	*	will persist between refreshes.
-	*/
-	$('#noheader_chbx').bind('change', function() {
-		var new_url;
-		var noheader = $.query.get('noheader');
-		if ($(this).attr('checked')) {
-			$('#content-header').hide();
-			new_url = $.query.set('noheader', 1);
-		} else {
-			$('#content-header').show();
-			new_url = $.query.set('noheader', 0);
-		}
-		sURL = new_url.toString();
-	});
 
 	// refresh helper code
 	var old_refresh = 0;

@@ -64,16 +64,6 @@ class Ninja_Controller extends Template_Controller {
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
 
-		if (isset($_REQUEST['noheader'])) {
-			$this->session->set('noheader', !empty($_REQUEST['noheader']));
-		}
-
-		if ($this->session->get('noheader', false) !== false) {
-			# hack the session variable into the $_GET array
-			# to make it visible in $this->input->get()
-			$_GET['noheader'] = 1;
-		}
-
 		/**
 		* check for generic sort parameters in GET and store in session
 		*/

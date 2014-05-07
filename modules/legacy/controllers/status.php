@@ -74,7 +74,6 @@ class Status_Controller extends Authenticated_Controller {
 		$sort_order = $this->input->get('sort_order', $sort_order);
 		$sort_field = $this->input->get('sort_field', $sort_field);
 		$group_type = $this->input->get('group_type', $group_type);
-		$noheader = $this->input->get('noheader', false);
 		$group_type = strtolower($group_type);
 
 		$status = new Old_Status_Model();
