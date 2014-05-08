@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Cli_Controller extends Controller {
+class Db_Migrations_Controller extends Controller {
 	public function __construct()
 	{
 		if (PHP_SAPI !== "cli") {
