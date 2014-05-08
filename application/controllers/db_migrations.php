@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+require_once('op5/auth/Auth.php');
+require_once('op5/auth/User_AlwaysAuth.php');
 
 class Db_Migrations_Controller extends Controller {
 	public function __construct()
