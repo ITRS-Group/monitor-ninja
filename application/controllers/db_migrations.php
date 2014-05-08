@@ -22,7 +22,17 @@ class Db_Migrations_Controller extends Controller {
 	{
 		$db = Database::instance();
 
-		$res = $db->query('SELECT * FROM avail_config');
+		try {
+			$res = $db->query('SELECT * FROM avail_config');
+		} catch(Kohana_Database_Exception $e) {
+			// This most certainly (hrrm) was an installation
+			// instead of an upgrade, and as such, we already have
+			// the merlin.saved_reports table.
+			//
+			// Since it should be the usual case, we're keeping
+			// quiet. Shhh.
+			return;
+		}
 		foreach ($res->result(false) as $result) {
 			$objs = $db->query('SELECT `name` FROM avail_config_objects WHERE avail_config_objects.avail_id = '.$result['id']);
 			$objects = array();
