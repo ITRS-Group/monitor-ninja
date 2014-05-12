@@ -78,7 +78,7 @@ class Cli_Controller extends Controller {
 		# figure out path from argv
 		$path = $GLOBALS['argv'][0];
 
-		$report_types = array('avail', 'sla', 'summary');
+		$report_types = array('avail', 'sla', 'summary', 'histogram');
 		foreach ($report_types as $report_type) {
 			$obj = Report_options::setup_options_obj($report_type);
 			$reports = $obj->get_all_saved();
