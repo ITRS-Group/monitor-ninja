@@ -36,6 +36,17 @@ $(document).ready(function() {
 		},
 		width: 'none'
 	});
+
+	$('.expand-contract-long-output').on('click', function() {
+		var span = $(this).parent().siblings('.alert-history-long-output');
+		if ($(this).text() === '+') {
+			$(this).text('-');
+			span.show();
+		} else if ($(this).text() === '-') {
+			$(this).text('+');
+			span.hide();
+		}
+	});
 });
 
 function set_report_mode(type)
