@@ -103,7 +103,6 @@ Feature: Scheduled reports
 		And I click "Save"
 		Then I should see "saved_test_report_Monthly.pdf"
 		And I shouldn't see "&nbsp;"
-		And I shouldn't see "*Scheduled*" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		# Description comes before persistent path, so that's where we'll click
 		When I doubleclick "Double click to edit" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		And I enter "A description" into "newvalue" on the row where "Filename" is "saved_test_report_Monthly.pdf"
@@ -116,7 +115,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		Then I should see "Saved reports"
-		And "Saved reports" should have option "saved test report ( *Scheduled* )"
+		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "Selected hostgroups" should have option "LinuxServers"
 		When I click "Delete"
@@ -283,7 +282,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Alert Summary"
 		Then I should see "Saved reports"
-		And "Saved reports" should have option "saved test report ( *Scheduled* )"
+		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "Custom" should be checked
 		And "Selected hostgroups" should have option "LinuxServers"
