@@ -6,7 +6,7 @@
 ?></div>
 
 <div class="report-page-setup">
-	<?php echo new View('reports/saveselector'); ?>
+	<?php echo new View('reports/saveselector', array('saved_reports' => $saved_reports, 'scheduled_info' => $scheduled_info)); ?>
 
 	<h2><?php echo _('Report Mode') ?></h2>
 	<hr />

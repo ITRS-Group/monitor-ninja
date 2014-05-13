@@ -83,6 +83,8 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->template->js_strings = $this->js_strings;
 
+		$template->scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
+
 		$template->type = $this->type;
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;

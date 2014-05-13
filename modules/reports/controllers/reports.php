@@ -88,6 +88,8 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->report_options->months = date::abbr_month_names();
 
+		$template->scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
+
 		$saved_reports = $this->options->get_all_saved();
 		$template->report_options->saved_reports = $saved_reports;
 		$template->saved_reports = $saved_reports;
