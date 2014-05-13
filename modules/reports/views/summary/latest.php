@@ -36,13 +36,16 @@
 <table class="output">
 <tr><td><?php echo security::xss_clean($ary['output']);
 		if ($ary['long_output'] !== NULL) {
-			echo "<span class='right'><button class='expand-contract-long-output'>";
-			echo $options['include_long_output'] ? "-" : "+";
-			echo "</button></span>";
-			$hidden = $options['include_long_output'] ? "" : "style='display: none;'";
-			echo "<span class='alert-history-long-output' " . $hidden . ">";
-			echo '<br />'.nl2br(security::xss_clean($ary['long_output']));
-			echo "</span>";
+			$long_output = trim($ary['long_output']);
+			if (strlen($long_output) > 0) {
+				echo "<span class='right'><button class='toggle-long-output'>";
+				echo $options['include_long_output'] ? "-" : "+";
+				echo "</button></span>";
+				$hidden = $options['include_long_output'] ? "" : "style='display: none;'";
+				echo "<span class='alert-history-long-output' " . $hidden . ">";
+				echo '<br />'.nl2br(security::xss_clean($long_output));
+				echo "</span>";
+			}
 		}
 ?>
 </td><td style="border:0" class="comments">

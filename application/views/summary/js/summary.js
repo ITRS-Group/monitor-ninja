@@ -37,13 +37,14 @@ $(document).ready(function() {
 		width: 'none'
 	});
 
-	$('.expand-contract-long-output').on('click', function() {
-		var span = $(this).parent().siblings('.alert-history-long-output');
-		if ($(this).text() === '+') {
-			$(this).text('-');
+	$('.toggle-long-output').on('click', function() {
+		var toggler = $(this);
+		var span = toggler.parent().siblings('.alert-history-long-output');
+		if (toggler.text() === '+') {
+			toggler.text('-');
 			span.show();
-		} else if ($(this).text() === '-') {
-			$(this).text('+');
+		} else if (toggler.text() === '-') {
+			toggler.text('+');
 			span.hide();
 		}
 	});
