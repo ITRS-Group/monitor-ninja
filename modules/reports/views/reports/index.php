@@ -31,7 +31,7 @@
 					array(
 						'alt' => $name,
 						'title' => $name,
-						'style' => 'margin-bottom: -3px'
+						'style' => 'margin-bottom: -3px; width: 16px; height: 16px;'
 					)
 				),
 				array('style' => 'border: 0px')).
