@@ -79,13 +79,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->report_options = $this->add_view('reports/options');
 
-		$scheduled_info = false;
-		if ($this->options['report_id']) {
-			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
-			$template->is_scheduled = empty($scheduled_info) ? false: true;
-		}
-		$template->scheduled_info = $scheduled_info;
-		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
 
@@ -175,8 +168,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
 
-		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
-
 		$sub_type = false;
 
 		$date_format = $this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format();
@@ -238,7 +229,6 @@ class Reports_Controller extends Base_reports_Controller
 		$tpl_options->saved_reports = $saved_reports;
 		$tpl_options->months = date::abbr_month_names();
 
-		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
 

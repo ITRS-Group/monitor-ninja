@@ -1,7 +1,6 @@
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
-var nr_of_scheduled_instances = 0;
 var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
 	// handle the move-between-lists-button (> + <) and double click events
