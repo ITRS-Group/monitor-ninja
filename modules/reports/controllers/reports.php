@@ -367,7 +367,7 @@ class Reports_Controller extends Base_reports_Controller
 							break;
 
 						case 'services':
-							list($host, $service) = explode($this->options['objects'][0], ';');
+							list($host, $service) = explode(';', $this->options['objects'][0]);
 							$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
 
 							$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
