@@ -31,7 +31,7 @@ if(Summary_options::RECENT_ALERTS == $options['summary_type']) {
 			isset($log_entry['host_name'])?$log_entry['host_name']:'',
 			isset($log_entry['service_description'])? $log_entry['service_description'] : 'N/A',
 			$log_entry['hard'] ? _('Hard') : _('Soft'),
-			$output
+			trim($output)
 		);
 	}
 } elseif(Summary_options::TOP_ALERT_PRODUCERS == $options['summary_type']) {
