@@ -44,34 +44,47 @@ class Change_Password_Controller extends Authenticated_Controller {
 
 	public function change_password()
 	{
-		$post = Validation::factory($_POST);
-		$post->add_rules('*', 'required');
+
+		$messages = array(
+			"TO_SHORT" => _('The password must be at least 5 characters long.'),
+			"NO_UPDATE" => _('Authentication backend reported that password could not be updated.'),
+			"INVALID_CURRENT" => _('You entered incorrect current password.'),
+			"NO_MATCH" => _('New password did not match repeated password.'),
+			"SUCCESS" => _('Password changed successfully')
+		);
+
+		$post = Validation::factory( $_POST );
+		$post->add_rules( '*', 'required' );
+
 		$current_password = $this->input->post('current_password', false);
 		$new_password = $this->input->post('new_password', false);
 		$new_password2 = $this->input->post('confirm_password', false);
-		if (strlen($new_password) < 5 || strlen($new_password2) < 5)
-		{
-			$this->template->content->status_msg = _('The password must be at least 5 chars long.');
-		}
-		elseif ($new_password == $new_password2)
-		{
+
+		if ( strlen( $new_password ) < 5 || strlen( $new_password2 ) < 5 ) {
+
+			$this->template->content->status_msg = $messages[ "TO_SHORT" ];
+
+		} elseif ( $new_password == $new_password2 ) {
+
 			$auth = Auth::instance();
 			$user = $auth->get_user();
-			if ($auth->verify_password($user, $current_password))
-			{
-				if( $auth->update_password($user, $new_password) ) {
-					$this->template->content->status_msg = _('The password has been changed.');
+
+			if ( $auth->verify_password( $user, $current_password ) ) {
+
+				if ( $auth->update_password($user, $new_password) ) {
+					$this->template->content->successful = true;
+					$this->template->content->status_msg = $messages[ "SUCCESS" ];
+				} else {
+					$this->template->content->status_msg = $messages[ "NO_UPDATE" ];
 				}
-				else {
-					$this->template->content->status_msg = _('Authentication backend reported that password could not be updated.');
-				}
+
+			} else {
+				$this->template->content->status_msg = $messages[ "INVALID_CURRENT" ];
 			}
-			else
-				$this->template->content->status_msg = _('You entered incorrect current password.');
+
+		} else {
+			$this->template->content->status_msg = $messages[ "NO_MATCH" ];
 		}
-		else
-		{
-			$this->template->content->status_msg = _('Passwords do not match.');
-		}
+
 	}
 }

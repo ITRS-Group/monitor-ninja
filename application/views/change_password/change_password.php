@@ -1,8 +1,16 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
-<?php
-if (isset($error_msg)) echo $error_msg;
-	echo $status_msg;
+	if ( isset( $error_msg ) ) {
+		echo $error_msg;
+	}
+
+	if ( isset( $status_msg ) ) {
+		if ( isset( $successful ) ) {
+			echo "<div class=\"alert notice\">$status_msg</div>";
+		} else {
+			echo "<div class=\"alert error\">$status_msg</div>";
+		}
+	}
 
 	echo form::open('change_password/change_password');
 
@@ -20,21 +28,28 @@ if (isset($error_msg)) echo $error_msg;
 
 	?>
 	<table style="margin: 16px; border: none;" class="white-table">
-	<?php
-		foreach ($fields as $label => $field) {
-			echo '
-			<tr>
-				<td style="border: none; padding-right: 10px; width: 100px">'.form::label($label, $labels[$label]).'</td>
-				<td style="border: none;">'.$field.'</td>
+		<?php
+
+			$row = '<tr>
+				<td style="border: none; padding-right: 10px; width: 100px">%s</td>
+				<td style="border: none;">%s</td>
 			</tr>';
-		}
-	?>
+
+			foreach ($fields as $label => $field) {
+				printf( $row, form::label( $label, $labels[ $label ] ), $field );
+			}
+
+		?>
 		<tr>
 			<td style="border: none;"></td>
-			<td style="border: none;"><?php echo form::submit('change_password', _('Change password')); ?></td>
+			<td style="border: none;">
+				<?php echo form::submit('change_password', _('Change password')); ?>
+			</td>
 		</tr>
 	</table>
 
 	<?php
+
 	echo form::close();
+
 ?>
