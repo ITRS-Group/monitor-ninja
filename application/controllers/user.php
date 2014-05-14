@@ -141,16 +141,17 @@ class User_Controller extends Authenticated_Controller {
 		$template->title = _('User settings');
 
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Settings") );
+		$root = url::base(FALSE) . 'index.php/';
 
 		if ( Auth::instance()->authorized_for('access_rights') ) {
 			$this->template->toolbar->info(
-				'<a href="' . Router::$controller . '/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
+				'<a href="' . $root . 'user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
 			);
 		}
 
 		if ( Auth::instance()->authorized_for('own_user_change_password') ) {
 			$this->template->toolbar->info(
-				'<a href="./change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
+				'<a href="' . $root . 'change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
 			);
 		}
 
@@ -159,9 +160,11 @@ class User_Controller extends Authenticated_Controller {
 		$template->sub_headings = $sub_headings;
 		$template->settings = $settings;
 		$updated_str = false;
-		if ($updated !== false) {
+
+		if ( $updated !== false ) {
 			$updated_str = _('Your settings were successfully saved');
 		}
+
 		$template->updated_str = $updated_str;
 	}
 
@@ -401,13 +404,15 @@ class User_Controller extends Authenticated_Controller {
 
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Edit user menu") );
 
+		$root = url::base(FALSE) . 'index.php/';
+
 		$this->template->toolbar->info(
-			'<a href="./index" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
+			'<a href="' . $root . 'user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
 		);
 
 		if ( Auth::instance()->authorized_for('own_user_change_password') ) {
 			$this->template->toolbar->info(
-				'<a href="' . url::base(FALSE) . 'index.php/change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
+				'<a href="' . $root . 'change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
 			);
 		}
 

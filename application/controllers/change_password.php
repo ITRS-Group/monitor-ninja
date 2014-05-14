@@ -23,14 +23,15 @@ class Change_Password_Controller extends Authenticated_Controller {
 		$this->template->title = _('Configuration » Change password');
 
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Change Password") );
+		$root = url::base(FALSE) . 'index.php/';
 
 		$this->template->toolbar->info(
-			'<a href="./user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
+			'<a href="' . $root . 'user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
 		);
 
 		if ( Auth::instance()->authorized_for('access_rights') ) {
 			$this->template->toolbar->info(
-				'<a href="./user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
+				'<a href="' . $root . 'user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
 			);
 		}
 
