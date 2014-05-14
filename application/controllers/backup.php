@@ -94,6 +94,16 @@ class Backup_Controller extends Authenticated_Controller {
 		if ($backupfiles === false)
 			throw new Exception('Cannot get directory contents: ' . $this->backups_location);
 
+		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ) );
+
+		$link = '<a id="verify" href="' . url::base() . 'index.php/backup/verify/">%s %s</a>';
+		$link = sprintf( $link,
+			html::image( $this->add_path('/icons/16x16/backup.png'), array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')),
+			_('Save your current op5 Monitor configuration')
+		);
+
+		$this->template->toolbar->info( $link );
+
 		$this->template->content->files = $backupfiles;
 	}
 

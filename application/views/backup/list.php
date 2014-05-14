@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 function backup(){
-	$('#backupstatus').load('<?php echo url::base() . 'index.php/backup/backup/'; ?>', function(){
+	$('#backupstatus').css( "display", "block" ).load('<?php echo url::base() . 'index.php/backup/backup/'; ?>', function(){
 		if ($(this).find('span').hasClass('ok'))
 		{
 			var file = $('#backupfilename').text();
@@ -53,7 +53,7 @@ $('#verify').live('click', function(){
 
 	var link = $(this);
 	status = 'saving';
-	$('#backupstatus').load($(link).attr('href'), function(){
+	$('#backupstatus').css( "display", "block" ).load($(link).attr('href'), function(){
 		status = '';
 		if ($(this).find('span').hasClass('ok'))
 			setTimeout(backup, 2000);
@@ -72,7 +72,7 @@ $('a.restore').live('click', function(ev){
 		return false;
 	}
 
-	$('#backupstatus').text('Restoring backup...');
+	$('#backupstatus').css( "display", "block" ).text('Restoring backup...');
 	status = 'restoring';
 	$('#fancybox-content').load(link.attr('title'), function() {
 		$('#fancybox-close').show();
@@ -86,7 +86,7 @@ $('a.restore').live('click', function(ev){
 $('a.delete').live('click', function(){
 	var link = $(this);
 	if (confirm('Do you really want to delete ' + $(link).closest('tr').find('.download').text() + ' ?'))
-		$('#backupstatus').load($(link).attr('href'), function(){
+		$('#backupstatus').css( "display", "block" ).load($(link).attr('href'), function(){
 			if ($(this).find('span').hasClass('ok'))
 				$(link).closest('tr').remove();
 		});
@@ -109,27 +109,25 @@ window.onbeforeunload = function(event){
 var status = '';
 </script>
 
-<div	>
-	<h2><?php echo _('Backup/Restore'); ?></h2>
-	<div id="backupstatus">&nbsp;</div>
+<div>
+
+	<div class="alert warning" style="display: none" id="backupstatus">&nbsp;</div>
+
 	<div style="display: none">
-		<div id="restore-status"><img src="/ninja/application/media/images/loading.gif" /></div>
+		<div id="restore-status" class="alert warning"><img src="/ninja/application/media/images/loading.gif" /></div>
 	</div>
-	<p>
-		<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?> <?php echo _('Save your current op5 Monitor configuration'); ?></a>
-	</p>
-	<br />
+
 	<table id="backups">
 		<thead>
 		<tr>
-			<th style="width: 64px"><?php echo _('Actions'); ?></th>
+			<th style="width: 96px"><?php echo _('Actions'); ?></th>
 			<th><?php echo _('Backups'); ?></th>
 		</tr>
 		</thead>
 		<tbody>
-		<?php 
+		<?php
 			$i = 0;
-			foreach ($files as $file): $i++; 
+			foreach ($files as $file): $i++;
 		?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td>
