@@ -17,7 +17,7 @@ if (!empty($available_setting_sections)) {
 	echo form::open('user/save', array('id' => 'user_settings'));
 	foreach ($available_setting_sections as $name => $setting_key) { ?>
 		<div id="settings_<?php echo $name ?>">
-			<table>
+			<table class="padd-table">
 			<tr>
 				<th colspan="2">
 				<?php if(isset($sub_headings[$setting_key])) { ?>

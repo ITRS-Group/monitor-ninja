@@ -142,6 +142,12 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template->title = _('Configuration » Backup/Restore » View');
 		$this->template->content->backup = $file;
 
+		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ), $file );
+
+		$this->template->toolbar->info(
+			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
+		);
+
 		$contents = array();
 		$status = 0;
 		exec($this->cmd_view . $this->backups_location . '/' . $file, $contents, $status);

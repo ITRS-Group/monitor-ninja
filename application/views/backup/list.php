@@ -117,7 +117,7 @@ var status = '';
 		<div id="restore-status" class="alert warning"><img src="/ninja/application/media/images/loading.gif" /></div>
 	</div>
 
-	<table id="backups">
+	<table id="backups" class="padd-table">
 		<thead>
 		<tr>
 			<th style="width: 96px"><?php echo _('Actions'); ?></th>

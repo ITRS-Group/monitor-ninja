@@ -8,7 +8,9 @@
 		if ( isset( $successful ) ) {
 			echo "<div class=\"alert notice\">$status_msg</div>";
 		} else {
-			echo "<div class=\"alert error\">$status_msg</div>";
+			if ( strlen( $status_msg ) >= 1 ) {
+				echo "<div class=\"alert error\">$status_msg</div>";
+			}
 		}
 	}
 
