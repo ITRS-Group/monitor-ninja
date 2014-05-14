@@ -139,6 +139,21 @@ class User_Controller extends Authenticated_Controller {
 		}
 
 		$template->title = _('User settings');
+
+		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Settings") );
+
+		if ( Auth::instance()->authorized_for('access_rights') ) {
+			$this->template->toolbar->info(
+				'<a href="' . Router::$controller . '/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
+			);
+		}
+
+		if ( Auth::instance()->authorized_for('own_user_change_password') ) {
+			$this->template->toolbar->info(
+				'<a href="./change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
+			);
+		}
+
 		$template->current_values = $current_values;
 		$template->available_setting_sections = $available_setting_sections;
 		$template->sub_headings = $sub_headings;
@@ -383,6 +398,18 @@ class User_Controller extends Authenticated_Controller {
 
 		$content->remove_items = $remove_items;
 		$content->all_items = $all_items;
+
+		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Edit user menu") );
+
+		$this->template->toolbar->info(
+			'<a href="./index" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
+		);
+
+		if ( Auth::instance()->authorized_for('own_user_change_password') ) {
+			$this->template->toolbar->info(
+				'<a href="' . url::base(FALSE) . 'index.php/change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
+			);
+		}
 
 		# protected menu items
 		$untouchable_items = array('my_account');

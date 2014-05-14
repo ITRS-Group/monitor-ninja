@@ -12,18 +12,7 @@ if (!empty($updated_str)) {
 	echo '<div id="saved_msg">'.html::image($this->add_path('/icons/16x16/shield-ok.png'),array('alt' => '', 'style' => 'margin-bottom: -3px; margin-right: 4px')).$updated_str.'</div><br />';
 }
 
-echo "<h1>".$title."</h1><br />";
-
-if ($is_admin) {
-	echo '<div style="padding-bottom:20px">'.help::render('edit_menu').' &nbsp;'.
-	html::anchor(Router::$controller.'/menu_edit', _('Edit user menu')).'</div>';
-}
-
-if (Auth::instance()->authorized_for('own_user_change_password')) {
-	echo '<div>'.html::anchor('change_password', _('Change Password')).'</div><br />';
-}
-
-if (!empty($available_setting_sections)) {	
+if (!empty($available_setting_sections)) {
 
 	echo form::open('user/save', array('id' => 'user_settings'));
 	foreach ($available_setting_sections as $name => $setting_key) { ?>

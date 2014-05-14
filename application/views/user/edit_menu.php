@@ -1,12 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-echo form::open('user/menu_edit', array('id' => 'editmenu_form', 'method' => 'get')); ?>
-<div class="left">
-<div>
-	<p><?php echo html::anchor(Router::$controller, _('Back')) ?></p>
-	<h3><?php echo _('Edit user menu') ?></h3>
-</div>
-<?php
+echo form::open('user/menu_edit', array('style' => 'margin: 16px', 'id' => 'editmenu_form', 'method' => 'get'));
+
 if ($groups) { ?>
 	<label><?php echo _('Group').': '; ?>
 	<?php echo form::dropdown(array('name' => 'usergroup', 'id' => 'usergroup', 'style' => 'padding-right:10px'), array_merge(array('' => _('Select group')), array_combine(array_keys($groups), array_keys($groups))), $selected_group); ?></label>
@@ -17,21 +12,21 @@ if ($groups) { ?>
 echo form::close();
 
 if (isset($selected_group) && !empty($selected_group)) {
-	echo '<br /><p style="padding-top:5px">'.$description.'</p>';
-	echo form::open('user/menu_update');
+	echo '<p style="padding-top:5px">'.$description.'</p>';
+	echo form::open('user/menu_update', array( 'style' => 'margin: 16px' ));
 	echo form::hidden('group', $selected_group);
 	?>
-<table style="width:250px;padding-top:10px;">
+<table style="width: 512px; padding-top: 10px;">
 <tr>
 	<th><?php echo _('Menu item') ?></th>
-	<th><?php echo sprintf(_('Remove for users in %s'), $selected_group) ?></th>
+	<th style="width: 64px;"><?php echo sprintf(_('Remove for users in %s'), $selected_group) ?></th>
 </tr><?php
 foreach ($sections as $section) {
 	$section_str = 'section_'.$section;
 	if (isset($menu[$section_str]) && !empty($menu[$section_str])) {
-		echo '<tr><td colspan="2"><li style="list-style-type:square">
+		echo '<tr><td colspan="2">
 			<cite>'.html::specialchars($menu_items[$section_str]).'</cite>
-		</li></td></tr>'."\n";
+		</td></tr>'."\n";
 
 		foreach ($menu[$section_str] as $pages) {
 			if (!isset($menu_items[$pages])) {
@@ -42,15 +37,15 @@ foreach ($sections as $section) {
 				# removed items - dim out
 				$url = $all_items[$menu_items[$section_str]][$menu_items[$pages]];
 				$title = $menu_items[$pages];
-				
+
 				$icon = 'icons/menu/'.$url[1];
 				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
 				if( false === strpos($icon,'.') ) $icon .= '.png';
-				
-				echo '<tr style="color:#c0c0c0" id="'.$pages.'"><td style="border-bottom:1px dotted black"><li style="list-style-type:none">'.
+
+				echo '<tr id="'.$pages.'"><td style="padding-left: 8px">'.
 					html::image($this->add_path($icon),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
-					' '.html::specialchars($title).'</li></td>'."\n";
-				echo '<td>'.form::checkbox(array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox'), $pages, true).'</td></tr>';
+					' '.html::specialchars($title).'</td>'."\n";
+				echo '<td style="text-align: center">'.form::checkbox(array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox'), $pages, true).'</td></tr>';
 			} else {
 				# visible items
 				$cb_settings = array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox');
@@ -61,15 +56,15 @@ foreach ($sections as $section) {
 				}
 				$url = $menu_base[$menu_items[$section_str]][$menu_items[$pages]];
 				$title = $menu_items[$pages];
-				
+
 				$icon = 'icons/menu/'.$url[1];
 				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
 				if( false === strpos($icon,'.') ) $icon .= '.png';
 
-				echo '<tr id="'.$pages.'"><td style="border-bottom:1px dotted black"><li style="list-style-type:none">'.
+				echo '<tr id="'.$pages.'"><td style="padding-left: 8px">'.
 					html::image($this->add_path($icon),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
-					' '.html::specialchars($title).'</li></td>'."\n";
-				echo '<td>'.form::checkbox($cb_settings, $pages).'</td></tr>';
+					' '.html::specialchars($title).'</td>'."\n";
+				echo '<td style="text-align: center">'.form::checkbox($cb_settings, $pages).'</td></tr>';
 			}
 		}
 	}
@@ -83,4 +78,3 @@ foreach ($sections as $section) {
 <br />
 <?php echo form::close();
 } ?>
-</div>

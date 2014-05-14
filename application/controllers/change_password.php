@@ -17,9 +17,23 @@ class Change_Password_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
 		$this->template->content = $this->add_view('change_password/change_password');
 		$this->template->disable_refresh = true;
 		$this->template->title = _('Configuration » Change password');
+
+		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Change Password") );
+
+		$this->template->toolbar->info(
+			'<a href="./user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
+		);
+
+		if ( Auth::instance()->authorized_for('access_rights') ) {
+			$this->template->toolbar->info(
+				'<a href="./user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
+			);
+		}
+
 	}
 
 	public function index()
