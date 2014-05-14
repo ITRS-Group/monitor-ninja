@@ -12,7 +12,7 @@
 	</style>
 
 	<div>
-		<table>
+		<table class="padd-table">
 			<caption><?php echo _('Services actively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
@@ -40,7 +40,7 @@
 			</tr>
 		</table>
 		<br />
-		<table>
+		<table class="padd-table">
 			<tr>
 				<th style="width: 40%"><?php echo _('Metric') ?></th>
 				<th style="width: 20%"><?php echo _('Min.') ?></th>
@@ -69,7 +69,7 @@
 	</div>
 
 	<div>
-		<table>
+		<table class="padd-table">
 			<caption><?php echo _('Services passively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
@@ -98,7 +98,7 @@
 			</tr>
 		</table>
 		<br />
-		<table>
+		<table class="padd-table">
 			<tr>
 				<th style="width: 40%"><?php echo _('Metric') ?></th>
 				<th style="width: 20%"><?php echo _('Min.') ?></th>
@@ -115,7 +115,7 @@
 	</div>
 
 	<div>
-		<table>
+		<table class="padd-table">
 			<caption><?php echo _('Hosts actively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
@@ -143,7 +143,7 @@
 			</tr>
 		</table>
 		<br />
-		<table>
+		<table class="padd-table">
 			<tr>
 				<th style="width: 40%"><?php echo _('Metric') ?></th>
 				<th style="width: 20%"><?php echo _('Min.') ?></th>
@@ -172,7 +172,7 @@
 	</div>
 
 	<div>
-		<table>
+		<table class="padd-table">
 			<caption><?php echo _('Hosts passively checked') ?></caption>
 			<tr>
 				<th style="width: 40%"><?php echo _('Time frame') ?></th>
@@ -200,7 +200,7 @@
 			</tr>
 		</table>
 		<br />
-		<table>
+		<table class="padd-table">
 			<tr>
 				<th style="width: 40%"><?php echo _('Metric') ?></th>
 				<th style="width: 20%"><?php echo _('Min.') ?></th>
@@ -217,7 +217,7 @@
 	</div>
 
 	<div>
-		<table style="margin-bottom: 15px">
+		<table style="margin-bottom: 15px" class="padd-table">
 			<caption><?php echo _('Check statistics') ?></caption>
 			<tr>
 				<th style="width: 50%"><?php echo _('Type') ?></th>
