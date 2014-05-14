@@ -114,6 +114,8 @@ class Showlog_Controller extends Authenticated_Controller
 			$is_authorized = true;
 		}
 
+		$this->template->toolbar = new Toolbar_Controller( _( "Event Log" ) );
+
 		$this->template->content->is_authorized = $is_authorized;
 		$this->template->content->options = $this->options;
 	}
