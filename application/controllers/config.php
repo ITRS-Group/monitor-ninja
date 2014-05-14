@@ -440,6 +440,39 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->content->pagination = $pagination;
 		$this->template->content->filter_string = $this->input->get('filterbox', _('Enter text to filter'));
 		$this->template->content->type = $this->type;
+
+		$this->template->toolbar = new Toolbar_Controller( _( "View Config" ), _('Object type') );
+		$filter_string = $this->input->get('filterbox', _('Enter text to filter'));
+
+		$obj_types = array(
+			"hosts",
+			"hostgroups",
+			"services",
+			"servicegroups",
+			"contacts",
+			"contactgroups",
+			"timeperiods",
+			"commands"
+		);
+
+		$obj_form = '<form method="get" action="">';
+		$obj_form .= ' <select class="auto" name="type" onchange="submit()">';
+
+		foreach ( $obj_types as $t ) {
+			if ( $t === $this->type ) {
+				$obj_form .= '<option value="' . $t . '" selected="selected">' . $t . '</option>';
+			} else {
+				$obj_form .= '<option value="' . $t . '">' . $t . '</option>';
+			}
+		}
+
+		$obj_form .= '</select>';
+		$obj_form .= ' <input type="text" id="filterbox" name="filterbox" value="' . $filter_string . '" />';
+		$obj_form .= ' <input type="submit" value="' . _("Filter") . '"  />';
+		$obj_form .= '</form>';
+
+		$this->template->toolbar->info( $obj_form );
+
 	}
 
 	public function unauthorized()
