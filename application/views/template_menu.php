@@ -43,7 +43,7 @@ array(4) {
 			$normalized_section_name = str_replace(' ','-',strtolower($section));
 
 			?>
-				<li class="supermenu-button" id="<?php echo $normalized_section_name; ?>-button">
+				<li title="<?php echo ucwords( $normalized_section_name ); ?>" class="supermenu-button" id="<?php echo $normalized_section_name; ?>-button">
 				<span class="icon-32 x32-<?php echo $normalized_section_name; ?>"></span>
 			<?php
 
