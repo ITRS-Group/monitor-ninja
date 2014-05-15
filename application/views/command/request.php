@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-echo '<div>';
 if (!isset($info['brief'])) {
 	echo "Unknown command: $cmd_typ<br />\n";
 	return;
@@ -8,8 +7,11 @@ if (!isset($info['brief'])) {
 
 echo "<style>table td {vertical-align: top;border: none;} input, select {margin: 0 0 6px 0;} b {margin: 0 0 6px 0; display: inline-block;}</style>";
 
+echo '<div style="margin: 4px 8px">';
 echo "<h2>{$info['brief']}</h2>\n";
 echo "<p>{$info['description']}</p>\n";
+echo '</div>';
+
 echo form::open('command/commit', array('id' => 'command_form'));
 echo "<table>";
 
@@ -122,4 +124,3 @@ if (!empty($params)) {
 }
 echo "</td></tr></table>";
 echo form::close();
-echo '</div>';

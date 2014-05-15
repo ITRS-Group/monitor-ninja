@@ -196,6 +196,7 @@ class Command_Controller extends Authenticated_Controller
 		}
 		$info['params'] = $param;
 
+		$this->template->toolbar = new Toolbar_Controller( _( "Command" ), _( "Submit" ) );
 		$this->template->content->info = $info;
 		return $info;
 	}
