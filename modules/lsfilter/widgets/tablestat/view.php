@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-echo '<table style="table-layout: fixed;">';
+echo '<table class="tablestat-widget" style="table-layout: fixed;">';
 
 echo '<thead>';
 echo '<tr>';
@@ -23,7 +23,7 @@ foreach( $this->table as $col ) {
 		if( !$cell['hide'] ) {
 			$count++;
 			echo '<tr>';
-			echo '<td class="icon dark"><span class="icon-16 x16-'.$cell['icon'].'"></span></td>';
+			echo '<td class="icon"><span class="icon-16 x16-'.$cell['icon'].'"></span></td>';
 			echo '<td><a href="'.htmlentities(listview::querylink($cell['filter'])).'">';
 			echo $cell['text'];
 			echo '</a></td>';
@@ -32,7 +32,7 @@ foreach( $this->table as $col ) {
 	}
 	if( $count == 0 ) {
 		echo '<tr>';
-		echo '<td class="icon dark"><span class="icon-16 x16-'.$col['na_icon'].'"></span></td>';
+		echo '<td class="icon"><span class="icon-16 x16-'.$col['na_icon'].'"></span></td>';
 		echo '<td>'._('N/A').'</td>';
 		echo '</tr>';
 	}
