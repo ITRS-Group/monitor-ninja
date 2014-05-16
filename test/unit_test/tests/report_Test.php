@@ -21,13 +21,13 @@ class report_Test extends PHPUnit_Framework_TestCase {
 
 		/* Run test */
 
-		$opts = new Summary_options(array('start_time'=>0, 'end_time'=>time()));
+		$opts = new Alert_history_options(array('start_time'=>0, 'end_time'=>time()));
 		$rpts = new Summary_Reports_Model($opts);
 
 		/* We're not interested in filtering anything, just see the permissions.
 		 * Therefore, treat it as an API-call
 		 */
-		$query = $rpts->build_alert_summary_query(null,true);
+		$query = $rpts->build_alert_summary_query(null);
 
 		/* This string should represent the filter to filter out only allowed
 		 * objects
