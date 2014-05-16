@@ -74,10 +74,9 @@ class Summary_Reports_Model extends Reports_Model
 	 * sorting and limit options as necessary.
 	 *
 	 * @param $fields string Comma separated list of database columns the caller needs
-         * @param $is_api_call boolean = false
-         * @param $blacklisted_criteria array = array()
-         * @param $auth auth module to use, if not using default
-         * @return string (sql)
+	 * @param $blacklisted_criteria array = array()
+	 * @param $auth auth module to use, if not using default
+	 * @return string (sql)
 	 */
 	function build_alert_summary_query($fields = null, $blacklisted_criteria = array(), $auth = null)
 	{

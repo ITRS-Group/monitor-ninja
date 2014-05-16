@@ -147,7 +147,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	public static $now = null;
 
-	function rewrite_objects(&$name, $value, $obj) {
+	private function rewrite_objects(&$name, $value, $obj) {
 		switch ($name) {
 			case 'host':
 			case 'host_name':
