@@ -147,6 +147,29 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	public static $now = null;
 
+	function rewrite_objects(&$name, $value, $obj) {
+		switch ($name) {
+			case 'host':
+			case 'host_name':
+				$obj->options['report_type'] = 'hosts';
+				break;
+			case 'service':
+			case 'service_description':
+				$obj->options['report_type'] = 'services';
+				break;
+			case 'hostgroup_name':
+			case 'hostgroup':
+				$obj->options['report_type'] = 'hostgroups';
+				break;
+			case 'servicegroup_name':
+			case 'servicegroup':
+				$obj->options['report_type'] = 'servicegroups';
+				break;
+		}
+		$name = 'objects';
+		return $value;
+	}
+
 	/**
 	 * Properties should be completely setup - with translations and all - before
 	 * loading any options, and options are loaded by the construct, so do
@@ -190,14 +213,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		$this->rename_options = array(
 			't1' => 'start_time',
 			't2' => 'end_time',
-			'host' => 'objects',
-			'service' => 'objects',
-			'hostgroup_name' => 'objects',
-			'servicegroup_name' => 'objects',
-			'host_name' => 'objects',
-			'service_description' => 'objects',
-			'hostgroup' => 'objects',
-			'servicegroup' => 'objects',
+			'host' => array($this, 'rewrite_objects'),
+			'service' => array($this, 'rewrite_objects'),
+			'hostgroup_name' => array($this, 'rewrite_objects'),
+			'servicegroup_name' => array($this, 'rewrite_objects'),
+			'host_name' => array($this, 'rewrite_objects'),
+			'service_description' => array($this, 'rewrite_objects'),
+			'hostgroup' => array($this, 'rewrite_objects'),
+			'servicegroup' => array($this, 'rewrite_objects'),
 		);
 	}
 
@@ -461,7 +484,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		if (isset($this->rename_options[$name])) {
 			if (is_callable($this->rename_options[$name])) {
 				try {
-					$value = call_user_func($this->rename_options[$name], $name, $value, $this);
+					$value = call_user_func_array($this->rename_options[$name], array(&$name, $value, $this));
 				} catch (Exception $e) {
 					return false;
 				}
