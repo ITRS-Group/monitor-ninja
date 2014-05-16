@@ -65,7 +65,6 @@ class nacoma_Core {
 			return false;
 
 		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t host -n ' . escapeshellarg($host) . ' -a delete', $out, $retval);
-		var_dump($out);
 		return $retval === 0;
 	}
 
@@ -98,7 +97,6 @@ class nacoma_Core {
 			return false;
 
 		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -n ' . escapeshellarg($service) . ' -a delete', $out, $retval);
-		var_dump($out);
 		return $retval === 0;
 	}
 }
