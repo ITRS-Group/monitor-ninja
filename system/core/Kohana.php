@@ -165,7 +165,7 @@ final class Kohana {
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
 		// Set error handler
-		if (PHP_SAPI !== 'cli') {
+		if (PHP_SAPI !== 'cli' && !defined('SKIP_KOHANA')) {
 			set_error_handler(array('Kohana', 'exception_handler'));
 
 			// Set exception handler
