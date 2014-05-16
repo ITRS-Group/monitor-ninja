@@ -13,7 +13,7 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 
 	private function prereq() {
 		if(date::utc_offset() != 3600 * (1 + date("I"))) {
-			echo "Aborting: Report tests require CET as timezone (date.timezone = \"CET\" in php.ini, for example)\n";
+			echo "Aborting: Report tests require CET as timezone (date.timezone = \"CET\" in php.ini, for example). Got ".date::utc_offset()."\n";
 			exit(1);
 		}
 	}
