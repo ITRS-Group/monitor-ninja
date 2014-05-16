@@ -10,58 +10,9 @@ class HttpApiEvent_options extends Summary_options {
 
 	private $limit;
 
-	/**
-	 * Means to translate options back and forth between Report_options
-	 * terms and HTTP API parameters. Handles both input and output translation.
-	 */
-	static $http_api_options = array(
-		'alert_types' => array(
-			'options' => array(
-				'both' => 3,
-				'host' => 1,
-				'service' => 2
-			)
-		),
-		'state_types' => array(
-			'options' => array(
-				'both' => 3,
-				'hard' => 2,
-				'soft' => 1
-			)
-		),
-		'host_states' => array(
-			'options' => array(
-				'all' => 7,
-				'problem' => 6,
-				'up' => 1,
-				'down' => 2,
-				'unreachable' => 4
-			)
-		),
-		'service_states' => array(
-			'options' => array(
-				'all' => 15,
-				'problem' => 14,
-				'ok' => 1,
-				'warning' => 2,
-				'critical' => 4,
-				'unknown' => 8
-			)
-		)
-	);
-
-	/**
-	 * Select report options' properties to include and adjust
-	 * them for the HTTP API
-	 *
-	 * @param $options array = false
-	 */
-	function __construct($options = false)
+	public function setup_properties()
 	{
-		parent::__construct(false); // allright, this is a bit hackish, but parent's constructor tries to set options
-		// but we're not actually ready for that yet (see below? we modify the properties which are used by set_options
-
-		// whitelist properties to use, reuse the previous definitions
+		parent::setup_properties();
 		$this->properties = array_intersect_key(
 			$this->properties,
 			array_flip(array(
@@ -70,13 +21,11 @@ class HttpApiEvent_options extends Summary_options {
 				'state_types',
 				'host_states',
 				'service_states',
-				'host_name',
-				'service_description',
-				'hostgroup',
-				'servicegroup',
 				'start_time',
 				'end_time',
-				'include_comments'
+				'include_comments',
+				'objects',
+				'report_type',
 			))
 		);
 		$this->properties['include_comments'] = array(
@@ -84,10 +33,37 @@ class HttpApiEvent_options extends Summary_options {
 			'default' => false,
 			'description' => "Include events' comments"
 		);
-		$this->properties['alert_types']['description'] = _('Show events for this kind of objects');
-		$this->properties['host_states']['description'] = _('Limit the result set to a certain kind of host states');
-		$this->properties['service_states']['description'] = _('Limit the result set to a certain kind of service states');
-		$this->properties['state_types']['description'] = _('Restrict events based on which state the event is in (soft vs hard)');
+		$this->properties['alert_types']['options'] = array(
+				1 => 'host',
+				2 => 'service',
+				3 => 'both',
+		);
+		$this->properties['state_types']['options'] = array(
+			1 => 'soft',
+			2 => 'hard',
+			3 => 'both',
+		);
+		$this->properties['host_states']['options'] = array(
+			7 => 'all',
+			6 => 'problem',
+			1 => 'up',
+			2 => 'down',
+			4 => 'unreachable',
+		);
+
+		$this->properties['service_states']['options'] = array(
+			15 => 'all',
+			14 => 'problem',
+			1 => 'ok',
+			2 => 'warning',
+			4 => 'critical',
+			8 => 'unknown',
+		);
+
+		$this->properties['report_period']['default'] = 'custom';
+		$this->properties['report_period']['options'] = array_combine(
+			array_keys($this->properties['report_period']['options']),
+			array_keys($this->properties['report_period']['options']));
 
 		$limit = $this->limit = (int) Op5Config::instance()->getConfig('http_api.report.limit');
 		if($limit > self::MAX_EVENTS || $limit < 1) {
@@ -107,77 +83,39 @@ class HttpApiEvent_options extends Summary_options {
 			'description' => 'Skip the first <em>offset</em> events matching the rest of the query, well suited for pagination'
 		);
 
-		if($options) {
-			// finally make the call which *can not* be set in parent::__construct() until all properties and
-			// other boilerplate is set up
-			$this->set_options($options);
+		foreach (array('host_name', 'service_description', 'hostgroup', 'servicegroup') as $objtype) {
+			$this->properties[$objtype] = $this->properties['objects'];
+			$type = explode('_', $objtype);
+			$this->properties[$objtype]['description'] = ucfirst($type[0]).'s to include (note: array)';
 		}
+		$this->properties['objects']['generated'] = true;
+		$this->properties['objects']['default'] = Report_options::ALL_AUTHORIZED;
+		$this->properties['report_type']['generated'] = true;
+		$this->properties['report_type']['default'] = 'hosts';
 	}
 
 	/**
-	 * Listen for "http api" options/properties, instead of "report" options
-	 *
-	 * @param $input array = false
-	 * @return array
+	 * @param $value mixed
+	 * @param $type string
+	 * @return string
 	 */
-	static function discover_options($input = false)
+	function format_default($value, $type)
 	{
-		$options = array();
-		if($input) {
-			$options = $input;
-		} elseif($_POST) {
-			$options = $_POST;
-		} elseif($_GET) {
-			$options = $_GET;
+		if($type == 'bool') {
+			return (int) $value;
 		}
-		if(isset($options['start_time']) && !isset($options['end_time'])) {
-			$options['end_time'] = time();
-		}
-		if(isset($options['start_time']) || isset($options['end_time'])) {
-			// @todo workaround a nasty bug, implement this in Report_options directly
-			$options['report_period'] = 'custom';
-		}
-		if(isset($options['host_name'])) {
-			$options['host_name'] = (array) $options['host_name'];
-		}
-		if(isset($options['service_description'])) {
-			$options['service_description'] = (array) $options['service_description'];
-		}
-
-		// translate "all" to valid int-bitmap, for example
-		foreach($options as $key => $value) {
-			if(isset(self::$http_api_options[$key]) &&
-				isset(self::$http_api_options[$key]['options']) &&
-				isset(self::$http_api_options[$key]['options'][$value])
-			) {
-				$options[$key] = self::$http_api_options[$key]['options'][$value];
+		if($type == 'array' || $type == 'objsel') {
+			if(empty($value)) {
+				return "[empty]";
 			}
+			return implode(", ", $value);
 		}
-		return $options;
+		if($type == 'string' && !$value) {
+			return '[empty]';
 		}
-
-		/**
-		 * @param $value mixed
-		 * @param $type string
-		 * @return string
-		 */
-		function format_default($value, $type)
-		{
-			if($type == 'bool') {
-				return (int) $value;
-			}
-			if($type == 'array' || $type == 'objsel') {
-				if(empty($value)) {
-					return "[empty]";
-				}
-				return implode(", ", $value);
-			}
-			if($type == 'string' && !$value) {
-				return '[empty]';
-			}
-			if($type == 'enum') {
-				return "'$value'";
-			}
+		if($type == 'enum') {
+			return "'$value'";
+		}
 		if($type == 'int' && empty($value) && $value !== 0) {
 			return "[empty]";
 		}
@@ -196,6 +134,7 @@ class HttpApiEvent_options extends Summary_options {
 				throw new Api_Error_Response("Invalid value for option '$name'", 400);
 			}
 		}
+
 	}
 
 	/**
@@ -239,6 +178,17 @@ class HttpApiEvent_options extends Summary_options {
 	 */
 	protected function validate_value($key, &$value)
 	{
+		switch ($this->properties[$key]['type']) {
+			case 'enum':
+				$v = array_search($value, $this->properties[$key]['options']);
+				if ($v === false)
+					return false;
+				else
+					$value = $v;
+				break;
+		}
+		if ($key == 'objects' && !is_array($value))
+			$value = array($value);
 		if($key == 'limit') {
 			if(!$value) {
 				$value = $this->limit;
@@ -253,8 +203,11 @@ class HttpApiEvent_options extends Summary_options {
 			}
 			return true;
 		}
-		if($key == 'start_time' && isset($this->options['end_time']) && $value > $this->options['end_time']) {
-			return false;
+		if($key == 'start_time' && $this['report_period'] == 'custom') {
+			if (!isset($this->options['end_time']))
+				$this->options['end_time'] = time();
+			elseif ($value > $this->options['end_time'])
+				return false;
 		}
 		if($key == 'end_time' && isset($this->options['start_time']) && $value < $this->options['start_time']) {
 			return false;

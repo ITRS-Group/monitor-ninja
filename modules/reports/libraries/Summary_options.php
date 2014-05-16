@@ -29,7 +29,7 @@ class Summary_options extends Report_options
 		$this->properties['alert_types'] = array(
 			'type' => 'enum',
 			'default' => 3,
-			'description' => 'Bitmap of the types of alerts to include',
+			'description' => _('Show events for this kind of objects'),
 			'options' => array(
 				3 => _('Host and service alerts'),
 				1 => _('Host alerts'),
@@ -38,7 +38,7 @@ class Summary_options extends Report_options
 		$this->properties['state_types'] = array(
 			'type' => 'enum',
 			'default' => 3,
-			'description' => 'Bitmap of the types of states to include (soft, hard, both)',
+			'description' => _('Restrict events based on which state the event is in (soft vs hard)'),
 			'options' => array(
 				3 => _('Hard and soft states'),
 				2 => _('Hard states'),
@@ -47,7 +47,7 @@ class Summary_options extends Report_options
 		$this->properties['host_states'] = array(
 			'type' => 'enum',
 			'default' => 7,
-			'description' => 'Bitmap of the host states to include (up, down, unreachable, etc)',
+			'description' => _('Limit the result set to a certain kind of host states'),
 			'options' => array(
 				7 => _('All host states'),
 				6 => _('Host problem states'),
@@ -58,7 +58,7 @@ class Summary_options extends Report_options
 		$this->properties['service_states'] = array(
 			'type' => 'enum',
 			'default' => 15,
-			'description' => 'Bitmap of the service states to include (ok, warning, critical, etc)',
+			'description' => _('Limit the result set to a certain kind of service states'),
 			'options' => array(
 				15 => _('All service states'),
 				14 => _('Service problem states'),

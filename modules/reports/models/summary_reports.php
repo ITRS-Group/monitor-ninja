@@ -22,7 +22,7 @@ class Summary_Reports_Model extends Reports_Model
 		$query = $this->build_alert_summary_query
 			('timestamp, event_type, host_name, service_description, ' .
 		     'state, hard, retry, downtime_depth, output',
-		     true, array(), $auth);
+		     array(), $auth);
 
 		// investigate if there are more rows available for this query,
 		// with another set of pagination parameters
@@ -79,7 +79,7 @@ class Summary_Reports_Model extends Reports_Model
          * @param $auth auth module to use, if not using default
          * @return string (sql)
 	 */
-	function build_alert_summary_query($fields = null, $is_api_call = false, $blacklisted_criteria = array(), $auth = null)
+	function build_alert_summary_query($fields = null, $blacklisted_criteria = array(), $auth = null)
 	{
 		if(!$fields) {
 			// default to the most commonly used fields
@@ -153,7 +153,7 @@ class Summary_Reports_Model extends Reports_Model
 			}
 		}
 
-		if (empty($hosts) && empty($services) && !$is_api_call) {
+		if (empty($hosts) && empty($services)) {
 			return "SELECT $fields FROM $this->db_table LIMIT 0";
 		}
 
