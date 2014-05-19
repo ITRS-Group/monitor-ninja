@@ -22,12 +22,12 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		/* Run test */
 
 		$opts = new Alert_history_options(array('start_time'=>0, 'end_time'=>time()));
-		$rpts = new Summary_Reports_Model($opts);
+		$querym = new Report_query_builder_Model($opts);
 
 		/* We're not interested in filtering anything, just see the permissions.
 		 * Therefore, treat it as an API-call
 		 */
-		$query = $rpts->build_alert_summary_query(null);
+		$query = $querym->build_alert_summary_query();
 
 		/* This string should represent the filter to filter out only allowed
 		 * objects
@@ -105,8 +105,8 @@ class report_Test extends PHPUnit_Framework_TestCase {
 					$opts['state_types'] = $state_types;
 					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
 						$opts['alert_types'] = $alert_types;
-						$rpt = new Summary_Reports_Model($opts);
-						$query = $rpt->build_alert_summary_query(false);
+						$rpt = new Report_query_builder_Model('report_data');
+						$query = $rpt->build_alert_summary_query();
 						$this->assertInternalType('string', $query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
 						$this->assertObjectHasAttribute('select_type', $db->query("EXPLAIN " . $query)->current());
 					}
