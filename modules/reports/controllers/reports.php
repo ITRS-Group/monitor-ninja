@@ -658,7 +658,6 @@ class Reports_Controller extends Base_reports_Controller
 			'trends' => _("Shows trends during selected report period, lines above the main line are upscaled statechanges from the blacked out section below."),
 			'trends_scaling' => _("Scale up rapid state changes into a line above the main line."),
 			'collapse_green_trends' => _("Hide trends that are 100% Up/OK during the report period. This reduces visual noise to help you correlate events."),
-			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 			'include_pie_charts' => _('If you include this, your availability percentages will be graphed in pie charts'),
 
