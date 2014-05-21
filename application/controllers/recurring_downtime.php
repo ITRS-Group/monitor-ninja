@@ -102,13 +102,14 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select objects by moving them from %s the left selectbox to the right selectbox"), '<br />')."';\n";
 		$this->js_strings .= "var _form_err_empty_fields = '"._("Please Enter valid values in all required fields (marked by *) ")."';\n";
-		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please Enter a valid %s value (hh:mm)")."';\n";
+		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please Enter a valid %s value (hh:mm[:ss])")."';\n";
 		$this->js_strings .= "var _schedule_error = '"._("An error occurred when trying to delete this schedule")."';\n";
 
 		$this->js_strings .= "var _schedule_delete_ok = '"._("OK")."';\n";
 		$this->js_strings .= "var _schedule_delete_success = '"._("The schedule was successfully removed")."';\n";
 
-		$this->js_strings .= "var _form_field_time = '"._("time")."';\n";
+		$this->js_strings .= "var _form_field_start_time = '"._("Start Time")."';\n";
+		$this->js_strings .= "var _form_field_end_time = '"._("End Time")."';\n";
 		$this->js_strings .= "var _form_field_duration = '"._("duration")."';\n";
 
 

@@ -86,6 +86,22 @@ $(document).ready(function() {
 	});
 });
 
+function check_timestring(timestring) {
+	if (timestring.indexOf(':') === -1) {
+		return false;
+	}
+	// We have hh:mm or hh:mm:ss
+	var timeparts = timestring.split(':');
+	if ((timeparts.length !== 2 && timeparts.length !== 3) ||
+		isNaN(timeparts[0]) ||
+		isNaN(timeparts[1]) ||
+		(timeparts.length === 3 && isNaN(timeparts[2]))
+	) {
+		return false;
+	}
+	return true;
+}
+
 function check_setup()
 {
 	if (!check_form_values()) {
@@ -98,7 +114,7 @@ function check_setup()
 	var start_time = $.trim($('input[name=start_time]').val());
 	var end_time = $.trim($('input[name=end_time]').val());
 	var duration = $.trim($('input[name=duration]').val());
-	var fixed = $('#checkbox_fixed').attr('checked');
+	var fixed = $('#fixed').attr('checked');
 	var days = $('.recurring_day');
 	var months = $('.recurring_month');
 
@@ -110,33 +126,18 @@ function check_setup()
 		// check for special input
 
 		// start_time field
-		if (start_time.indexOf(':') != -1) {
-			// we have hh:mm
-			timeparts = start_time.split(':');
-			if (timeparts.length != 2 || isNaN(timeparts[0]) || isNaN(timeparts[1])) {
-				// bogus time format
-				err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_time) + '</li>';
-			}
+		if (!check_timestring(start_time)) {
+			err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_start_time) + '</li>';
+		}
+
+		// end_time field
+		if (!check_timestring(end_time)) {
+			err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_end_time) + '</li>';
 		}
 
 		// duration field
-		if (duration.indexOf(':') != -1) {
-			// we have hh:mm
-			durationparts = duration.split(':');
-			if (durationparts.length != 2 || isNaN(durationparts[0]) || isNaN(durationparts[1])) {
-				// bogus time format
-				err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_duration) + '</li>';
-			}
-		}
-
-		if (!fixed) {
-			if (!$('#triggered_by').val() || $('#triggered_by').val() == 0) {
-				// user selected triggered scheduled downtime but nothing to trigger by
-				err_str += '<li>' + _form_err_no_trigger_id + '</li>';
-			}
-		} else {
-			// force triggered by value to 0 when using fixed
-			$('#triggered_by').val(0);
+		if (!fixed && !check_timestring(duration)) {
+			err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_duration) + '</li>';
 		}
 	}
 	days = days.filter(function() {

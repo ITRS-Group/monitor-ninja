@@ -8,7 +8,7 @@
 		}
 	?>
 </div>
-<form class="report-page-setup" method="POST" action="">
+<form class="report-page-setup" method="POST" id="setup_form" action="">
 	<div class="report-block">
 		<h2><?php echo _('Report Mode'); ?></h2>
 		<hr/>
@@ -71,7 +71,7 @@
 		<table class="setup-tbl">
 			<tr>
 				<td colspan="3">
-					<?php echo _('Comment') ?><br />
+					<?php echo _('Comment') . " *" ?><br />
 					<textarea cols="40" rows="4" name="comment" width="100%"><?php echo $schedule_info->get_comment() ?></textarea>
 				</td>
 			</tr>
@@ -80,7 +80,7 @@
 					<input type="checkbox" name="fixed" id="fixed" value="1"<?php if ($schedule_info->get_fixed()) { ?> checked=checked<?php } ?>> <?php echo _('Fixed') ?>
 				</td>
 				<td id="triggered_row" style="display:none">
-					<?php echo _('Duration') ?> (hh:mm or hh:mm:ss)<br />
+					<?php echo _('Duration') . " *" ?> (hh:mm or hh:mm:ss)<br />
 					<input class="time-entry" type='text' id="duration" name='duration' value='<?php echo $schedule_info->get_duration_string() ?>'>
 				</td>
 				<td>&nbsp;</td>
@@ -88,18 +88,18 @@
 			</tr>
 			<tr>
 				<td>
-					<?php echo _('Start Time') ?> (hh:mm or hh:mm:ss)<br />
+					<?php echo _('Start Time') . " *" ?> (hh:mm or hh:mm:ss)<br />
 					<input class="time-entry" type='text' name='start_time' id="start_time_input" value='<?php echo $schedule_info->get_start_time_string() ?>'>
 				</td>
 				<td>
-					<?php echo _('End Time') ?> (hh:mm or hh:mm:ss)<br />
+					<?php echo _('End Time') . " *" ?> (hh:mm or hh:mm:ss)<br />
 					<input class="time-entry" type='text' name='end_time' id="end_time_input" value='<?php echo $schedule_info->get_end_time_string() ?>'>
 				</td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td colspan="3">
-					<?php echo _('Days of week') ?> <button type="button" id="select-all-days" value="">Select all</button> <button type="button" id="deselect-all-days">Deselect all</button><br />
+					<?php echo _('Days of week') . " *" ?> <button type="button" id="select-all-days" value="">Select all</button> <button type="button" id="deselect-all-days">Deselect all</button><br />
 					<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 						<tr>
 							<?php foreach ($day_index as $i) {
@@ -117,7 +117,7 @@
 			</tr>
 			<tr>
 				<td colspan="3">
-					<?php echo _('Months') ?> <button type="button" id="select-all-months">Select all</button> <button type="button" id="deselect-all-months">Deselect all</button><br />
+					<?php echo _('Months') . " *" ?> <button type="button" id="select-all-months">Select all</button> <button type="button" id="deselect-all-months">Deselect all</button><br />
 					<table style="margin-top: 5px; width: 480px; border-collapse: collapse; border-spacing: 0px">
 						<tr>
 						<?php 	$i = 0;
