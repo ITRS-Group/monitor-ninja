@@ -4,20 +4,20 @@
 The API for adding a menu item is this:
 
 array(4) {
-  ["About"]=> <-- category
-  array(3) {
-    ["The Ninja project"]=> <-- label
-    array(3) {
-      [0]=>
-      string(64) "http://www.op5.org/community/plugin-inventory/op5-projects/ninja" <-- absolute or relative url
-      [1]=>
-      string(5) "ninja" <--- "id", or "geomap.png" (ninja/app..), or array('synergy', 'synergy.png') (ninja/modules/..)
-      [2]=>
-      int(3) <---- 0 indicates internal link, /monitor/index.php will be prepended;
-	     <---- 1 indicates same host, https://monitor-server will be prepended
-			<---- 2 indicates same host, but only if site_domain is /monitor/, licensed version
-			<---- 3 indicates same host, but only if site_domain is not /monitor/, community version
-    }
+	["About"]=> <-- category
+	array(3) {
+	["The Ninja project"]=> <-- label
+	array(3) {
+		[0]=>
+		string(64) "http://www.op5.org/community/plugin-inventory/op5-projects/ninja" <-- absolute or relative url
+		[1]=>
+		string(5) "ninja" <--- "id", or "geomap.png" (ninja/app..), or array('synergy', 'synergy.png') (ninja/modules/..)
+		[2]=>
+		int(3)	<---- 0 indicates internal link, /monitor/index.php will be prepended;
+				<---- 1 indicates same host, https://monitor-server will be prepended
+				<---- 2 indicates same host, but only if site_domain is /monitor/, licensed version
+				<---- 3 indicates same host, but only if site_domain is not /monitor/, community version
+	}
 */
 	$in_menu = false;
 
