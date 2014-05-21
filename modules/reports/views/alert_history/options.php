@@ -5,7 +5,7 @@
 	<table class="setup-tbl"><!--id="main_table"-->
 		<tr>
 			<td colspan="3">
-			<input type="checkbox" name="host_name" id="show_all" value="<?php echo Report_options::ALL_AUTHORIZED ?>" <?php echo $options['objects'] === Report_options::ALL_AUTHORIZED?'checked="checked"':''?>/>
+			<input type="checkbox" name="host_name" id="show_all" value="<?php echo Report_options::ALL_AUTHORIZED ?>" <?php echo $options['objects'] === Report_options::ALL_AUTHORIZED?'':'checked="checked"'?>/>
 				<label for="show_all">Show all</label>
 			</td>
 		</tr>
