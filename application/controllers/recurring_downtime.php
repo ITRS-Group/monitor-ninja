@@ -97,6 +97,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		if ($schedule_id) {
 			$this->js_strings .= "var _report_data = " . json_encode(array('objects' => $schedule_info->get_objects(), 'downtime_type' => $schedule_info->get_downtime_type())) . "\n";
+			$this->js_strings .= "var _schedule_id = " . $schedule_id . "\n";
 		}
 		$this->js_strings .= reports::js_strings();
 
@@ -122,6 +123,29 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
+	}
+
+	/**
+	 * Insert a downtime
+	 *
+	 * @return string
+	 **/
+	function insert_downtimes()
+	{
+		$this->auto_render = false;
+		$objects = $this->input->post('objects', false);
+		$object_type = $this->input->post('object_type', false);
+		$start_time = $this->input->post('start_time', false);
+		$end_time = $this->input->post('end_time', false);
+		$fixed = $this->input->post('fixed', false);
+		$duration = $this->input->post('duration', false);
+		$comment = $this->input->post('comment', false);
+
+		if (ScheduleDate_Model::insert_downtimes($objects, $object_type, $start_time, $end_time, $fixed, $duration, $comment) !== false) {
+			return json::ok("Downtime successfully inserted");
+		} else {
+			return json::fail("Failed to insert downtime");
+		}
 	}
 
 	/**

@@ -159,6 +159,59 @@ function check_setup()
 		window.scrollTo(0,0); // make sure user sees the error message
 		return false;
 	}
+
+	/**
+	 * Everything validated ok.
+	 * Check if schedule matches today and if so ask the user if a downtime
+	 * should be inserted today.
+	 */
+	if (typeof _schedule_id !== 'undefined') {
+		return true;
+	}
+	var day_values = Array();
+	var month_values = Array();
+	days.each(function() {
+		day_values.push($(this).val());
+	});
+	months.each(function() {
+		month_values.push($(this).val());
+	});
+	if (fixed) {
+		fixed = 1;
+	} else {
+		fixed = 0;
+	}
+	var d = new Date();
+	if ($.inArray(d.getDay().toString(), day_values) !== -1 && $.inArray((d.getMonth() +1).toString(), month_values) !== -1) {
+		if (confirm("The schedule you are creating matches today, would you like to schedule a downtime for today?")) {
+			// Downtime type string
+			var object_type = $('#downtime_type option:selected').val();
+			// Array of selected objects
+			var objects = $('#objects').val();
+			$.ajax({
+				url: _site_domain + _index_page + '/recurring_downtime/insert_downtimes',
+				type: 'post',
+				async: false,
+				data: {
+					objects: objects,
+					object_type: object_type,
+					start_time: start_time,
+					end_time: end_time,
+					fixed: fixed,
+					duration: duration,
+					comment: comment
+				},
+				success: function(result, code) {
+					if (result) {
+						$.notify(result);
+					}
+				},
+				error: function() {
+					$.notify('Failed to schedule downtime for today', {'sticky':true});
+				}
+			});
+		}
+	}
 	return true;
 }
 

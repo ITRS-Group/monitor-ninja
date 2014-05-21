@@ -75,9 +75,11 @@ class ScheduleDate_Model extends Model
 	/**
 	 *	Schedule a recurring downtime if tomorrow matches any saved schedules
 	 *	@param $timestamp int
+	 *	@return boolean
 	 */
 	static public function schedule_downtime($timestamp=false) {
 		$schedules = RecurringDowntimePool_Model::all();
+		$result = array();
 
 		if ($timestamp === false)
 			$timestamp = time();
@@ -110,9 +112,36 @@ class ScheduleDate_Model extends Model
 					continue;
 				}
 				$tmp_cmd = "$nagios_cmd;$obj;$start_time;$end_time;{$data->get_fixed()};0;$duration;{$data->get_author()};AUTO: {$data->get_comment()}";
-				$result = nagioscmd::submit_to_nagios($tmp_cmd);
+				$result[] = nagioscmd::submit_to_nagios($tmp_cmd);
 			}
+			return !in_array(false, $result);
 		}
+	}
+
+	/**
+	 * Schedule a downtime by submitting it to nagios
+	 *
+	 * @param $objects array
+	 * @param $object_type string
+	 * @param $start_time string
+	 * @param $end_time string
+	 * @param $fixed string
+	 * @param $duration string
+	 * @param $comment string
+	 * @return boolean
+	 **/
+	public static function insert_downtimes($objects, $object_type, $start_time, $end_time, $fixed, $duration, $comment)
+	{
+		$result = array();
+		$nagios_cmd = self::determine_downtimetype($object_type);
+		$author = Auth::instance()->get_user()->username;
+		$start_time = mktime(0, 0, self::time_to_seconds($start_time), date('n'), date('d'), date('Y'));
+		$end_time = mktime(0, 0, self::time_to_seconds($end_time), date('n'), date('d'), date('Y'));
+		foreach ($objects as $object) {
+			$tmp_cmd = "$nagios_cmd;$object;$start_time;$end_time;$fixed;0;$duration;$author;AUTO: $comment";
+			$result[] = nagioscmd::submit_to_nagios($tmp_cmd);
+		}
+		return !in_array(false, $result);
 	}
 
 	/**
