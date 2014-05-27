@@ -47,6 +47,15 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			return false;
 		}
 
+		/**
+		 * In some setups the bound user hasn't got access to search for groups.
+		 * Check config if service account should bind again before group search
+		 */
+		if (!empty($this->config['resolve_with_service_account'])) {
+			$this->log->log('debug', 'Resolving groups using service account');
+			$this->bind_anon();
+		}
+
 		$groups = $this->resolve_group_names($user_info['dn']);
 
 		if (!isset($user_info[strtolower($this->config['userkey'])])) {
