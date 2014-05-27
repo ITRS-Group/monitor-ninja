@@ -24,7 +24,7 @@ Requires: merlin
 Requires: monitor-merlin
 Requires: php-op5lib >= 1.1.0
 Requires: wkhtmltopdf
-Requires: op5-monitor-supported-database
+Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
 Requires: monitor-nacoma
@@ -71,7 +71,7 @@ Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
 Requires: merlin monitor-merlin op5-nagios
-Requires: merlin-apps op5-mysql
+Requires: merlin-apps
 Requires: monitor-livestatus monitor-nagvis
 Requires: rubygem20-op5cucumber
 Requires: portal

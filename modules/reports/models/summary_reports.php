@@ -8,8 +8,6 @@ class Summary_Reports_Model extends Reports_Model
 {
 	# alert summary options
 	private $summary_result = array();
-	private $host_hostgroup; /**< array(host => array(hgroup1, hgroupx...)) */
-	private $service_servicegroup; /**< array(service => array(sgroup1, sgroupx...))*/
 
 	/**
 	 * Used from the HTTP API
@@ -233,7 +231,7 @@ class Summary_Reports_Model extends Reports_Model
 	}
 
 
-	private function alert_totals_by_hostgroup($dbr)
+	private function alert_totals_by_hostgroup($dbr, $host_hostgroup)
 	{
 		# pre-load the result set to keep conditionals away
 		# from the inner loop
@@ -257,7 +255,7 @@ class Summary_Reports_Model extends Reports_Model
 				continue;
 			}
 			$pstate[$name] = $state;
-			$hostgroups = $this->host_hostgroup[$row['host_name']];
+			$hostgroups = $host_hostgroup[$row['host_name']];
 			foreach ($hostgroups as $hostgroup) {
 				$result[$hostgroup][$type][$row['state']][$row['hard']]++;
 			}
@@ -266,7 +264,7 @@ class Summary_Reports_Model extends Reports_Model
 	}
 
 
-	private function alert_totals_by_servicegroup($dbr)
+	private function alert_totals_by_servicegroup($dbr, $service_servicegroup)
 	{
 		# pre-load the result set to keep conditionals away
 		# from the inner loop
@@ -291,7 +289,7 @@ class Summary_Reports_Model extends Reports_Model
 			}
 			$pstate[$name] = $state;
 
-			$servicegroups = $this->service_servicegroup[$type][$name];
+			$servicegroups = $service_servicegroup[$type][$name];
 			foreach ($servicegroups as $sg) {
 				$result[$sg][$type][$row['state']][$row['hard']]++;
 			}
@@ -331,10 +329,10 @@ class Summary_Reports_Model extends Reports_Model
 		# are expanded in the build_alert_summary_query() method
 		switch ($this->options['report_type']) {
 		 case 'servicegroups':
-			$result = $this->alert_totals_by_servicegroup($dbr);
+			$result = $this->alert_totals_by_servicegroup($dbr, $querym->service_servicegroup);
 			break;
 		 case 'hostgroups':
-			$result = $this->alert_totals_by_hostgroup($dbr);
+			$result = $this->alert_totals_by_hostgroup($dbr, $querym->host_hostgroup);
 			break;
 		 case 'services':
 			$result = $this->alert_totals_by_service($dbr);

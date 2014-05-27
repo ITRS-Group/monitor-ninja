@@ -7,6 +7,13 @@
  */
 class Report_query_builder_Model extends Model
 {
+	/* oh no, it leaked out from the summary report model
+	 * (contains a mapping from each group to each object, so alert summary
+	 * can sum up group reports)
+	 */
+	public $host_hostgroup; /**< array(host => array(hgrop1, hgroupx...)) */
+	public $service_servicegroup; /**< array(service => array(sgroup1, sgroupx...))*/
+
 	protected $db_table = false; /**< The table we'll be operating on */
 	protected $options = false; /**< An options object (or array) to work with */
 
