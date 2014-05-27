@@ -201,13 +201,11 @@ function check_setup()
 					duration: duration,
 					comment: comment
 				},
-				success: function(result, code) {
-					if (result) {
-						$.notify(result);
-					}
+				success: function(result) {
+					$.notify(result);
 				},
-				error: function() {
-					$.notify('Failed to schedule downtime for today', {'sticky':true});
+				error: function(result) {
+					$.notify(result.responseText, {'sticky':true, 'type':'critical'});
 				}
 			});
 		}
