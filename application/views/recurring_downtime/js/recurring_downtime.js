@@ -183,7 +183,7 @@ function check_setup()
 	}
 	var d = new Date();
 	if ($.inArray(d.getDay().toString(), day_values) !== -1 && $.inArray((d.getMonth() +1).toString(), month_values) !== -1) {
-		if (confirm("The schedule you are creating matches today, would you like to schedule a downtime for today?")) {
+		if (confirm("The schedule you are creating matches today, would you like to schedule a downtime for today?\nClick 'Cancel' to save your recurring schedule without scheduling a downtime for today or 'Ok' to save recurring schedule and schedule downtimes today.")) {
 			// Downtime type string
 			var object_type = $('#downtime_type option:selected').val();
 			// Array of selected objects
