@@ -97,7 +97,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		if ($schedule_id) {
 			$this->js_strings .= "var _report_data = " . json_encode(array('objects' => $schedule_info->get_objects(), 'downtime_type' => $schedule_info->get_downtime_type())) . "\n";
-			$this->js_strings .= "var _schedule_id = " . $schedule_id . "\n";
 		}
 		$this->js_strings .= reports::js_strings();
 

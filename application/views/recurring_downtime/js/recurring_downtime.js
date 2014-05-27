@@ -165,9 +165,6 @@ function check_setup()
 	 * Check if schedule matches today and if so ask the user if a downtime
 	 * should be inserted today.
 	 */
-	if (typeof _schedule_id !== 'undefined') {
-		return true;
-	}
 	var day_values = Array();
 	var month_values = Array();
 	days.each(function() {
