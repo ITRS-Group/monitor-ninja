@@ -16,6 +16,7 @@ class Report_query_builder_Model extends Model
 	 * @param $options The options object to work with
 	 */
 	function __construct($db_table, $options) {
+		parent::__construct();
 		$this->db_table = $db_table;
 		$this->options = $options;
 	}
