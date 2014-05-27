@@ -70,6 +70,12 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 					$this->config['userkey_email'])][0] : ''));
 		return $user;
 	}
+
+	/**
+	 * Kills connection to ldap server
+	 *
+	 * @return void
+	 **/
 	public function disconnect() {
 		if ($this->conn === false) {
 			return;
@@ -77,6 +83,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		ldap_unbind($this->conn);
 		$this->conn = false;
 	}
+
 	/**
 	 * ********************** Groups ****************************************
 	 */
@@ -195,8 +202,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 * Given a username, return a list of it's groups.
 	 * Useful when giving permissions to a user.
 	 *
-	 * @param $username string
-	 *        	User to search for
+	 * @param $username string	User to search for
 	 * @return array A list of groups, or false if not possible
 	 */
 	public function groups_for_user($username) {
@@ -217,8 +223,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 * Depending on config, it resolves the groups recursively
 	 *
-	 * @param
-	 *        	array Base DN to search
+	 * @param $object_dn array Base DN to search
 	 * @return array Array of group names:s
 	 */
 	private function resolve_group_names($object_dn) {
