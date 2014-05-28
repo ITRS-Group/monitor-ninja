@@ -135,9 +135,16 @@ class ScheduleDate_Model extends Model
 		$result = array();
 		$nagios_cmd = self::determine_downtimetype($object_type);
 		$author = Auth::instance()->get_user()->username;
-		$start_time = mktime(0, 0, self::time_to_seconds($start_time), date('n'), date('d'), date('Y'));
-		$end_time = mktime(0, 0, self::time_to_seconds($end_time), date('n'), date('d'), date('Y'));
+		$month = date('n');
+		$day = date('d');
+		$year = date('Y');
+		$start_time = mktime(0, 0, self::time_to_seconds($start_time), $month, $day, $year);
+		$end_time = mktime(0, 0, self::time_to_seconds($end_time), $month, $day, $year);
 		foreach ($objects as $object) {
+			if (static::check_if_scheduled($object_type, $object, $start_time, $end_time, $fixed)) {
+				// Skip object if it is already scheduled for downtime
+				continue;
+			}
 			$tmp_cmd = "$nagios_cmd;$object;$start_time;$end_time;$fixed;0;$duration;$author;AUTO: $comment";
 			$result[] = nagioscmd::submit_to_nagios($tmp_cmd);
 		}
