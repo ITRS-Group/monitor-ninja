@@ -60,7 +60,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 
 		if (!isset($user_info[strtolower($this->config['userkey'])])) {
 			$this->log->log('error',
-				'User has not attriribute ' . $this->config['userkey']);
+				'User hasn\'t got attribute ' . $this->config['userkey']);
 			return false;
 		}
 		$username = $user_info[strtolower($this->config['userkey'])][0];
