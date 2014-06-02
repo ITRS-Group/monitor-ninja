@@ -25,6 +25,7 @@ if ( ! empty($trace)){
 }
 $content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
 foreach(Kohana::config('exception.shell_commands') as $command) {
+	$output = null;
 	exec($command, $output, $exit_value);
 	$content .= "<p class='stats'>$command (exit code $exit_value):<br />".implode('<br />', $output).'</p>';
 }
