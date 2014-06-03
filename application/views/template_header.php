@@ -75,7 +75,7 @@
 		<ul id="dojo-quicklink-external">
 		</ul>
 	</div>
-	<a href="#dojo-add-quicklink-menu" title="Manage quickbar" class="icon-12 x12-box-config no_border" id="dojo-add-quicklink" style="opacity: 0.5; margin-top: 22px; display: inline-block;"></a>
+	<a href="#dojo-add-quicklink-menu" title="Manage quickbar" class="icon-12 x12-box-config no_border" id="dojo-add-quicklink" style="float: left; opacity: 0.5; margin-top: 22px; display: inline-block;"></a>
 	<div style="display: none">
 		<div id="dojo-add-quicklink-menu">
 			<form action="">
