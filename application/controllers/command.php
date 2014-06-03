@@ -498,10 +498,11 @@ class Command_Controller extends Authenticated_Controller
 
 		$this->template->content->result = true;
 		while ($ncmd = array_pop($nagios_commands)) {
-			//Clarification: not submitting any more commands if a
-			//previous one failed (indicated by && which
-			//never continues if result is false
-			$this->template->content->result = $this->template->content->result && nagioscmd::submit_to_nagios($ncmd);
+			if(!nagioscmd::submit_to_nagios($ncmd)) {
+				$this->template->content->result = false;
+				// don't try to submit more commands
+				return;
+			}
 		}
 	}
 

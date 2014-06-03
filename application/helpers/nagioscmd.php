@@ -1204,7 +1204,7 @@ class nagioscmd_Core
 	 * Actually submit command to nagios
 	 * @param $cmd The complete command
 	 * @param $args string
-	 * @return false on error, else true
+	 * @return boolean false on error, else true
 	 */
 	public static function submit_to_nagios($cmd, $args = "")
 	{
