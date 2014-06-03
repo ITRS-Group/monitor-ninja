@@ -82,8 +82,8 @@ class Cli_Controller extends Controller {
 		foreach ($report_types as $report_type) {
 			$obj = Report_options::setup_options_obj($report_type);
 			$reports = $obj->get_all_saved();
-			foreach ($reports as $report) {
-				$report_data = Report_options::setup_options_obj($report_type, $report->id);
+			foreach ($reports as $report_id => $_) {
+				$report_data = Report_options::setup_options_obj($report_type, array('report_id' => $report_id));
 				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
 					foreach ($report_data['objects'] as $idx => $name) {
