@@ -295,8 +295,10 @@ class nagstat_Core {
 	}
 
 	/**
-	*	Convert a date format string back to a timestamp
-	*/
+	 * Convert a date format string back to a timestamp
+	 *
+	 * @return false|DateTime
+	 */
 	public static function timestamp_format($format_str = false, $date_str=false)
 	{
 		if (empty($format_str))
@@ -305,6 +307,9 @@ class nagstat_Core {
 		# use now as date if nothing supplied as input FIXME: isn't that extremely anti-useful?
 		$date_str = empty($date_str) ? date($format_str) : $date_str;
 		$dt = DateTime::createFromFormat($format_str, $date_str);
+		if(!$dt) {
+			return false;
+		}
 		return $dt->getTimestamp();
 	}
 }
