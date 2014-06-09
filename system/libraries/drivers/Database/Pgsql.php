@@ -486,9 +486,12 @@ class Pgsql_Result extends Database_Result {
 	public function list_fields()
 	{
 		$field_names = array();
-		while ($field = pg_field_name($this->result))
+
+		$fields = pg_num_fields($this->result);
+
+		for ($i=0; $i < $fields; $i++)
 		{
-			$field_names[] = $field->name;
+			$field_names[] = pg_field_name($this->result, $i);
 		}
 
 		return $field_names;
