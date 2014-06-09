@@ -96,7 +96,7 @@ foreach($report_data as $i =>  $report) {
 			<tr><th><?php echo implode(',', $names); ?></th></tr>
 			<?php
 				$x = 0;
-				if (strpos('service', $options['report_type']) !== false) {
+				if (strpos($options['report_type'], 'service') !== false) {
 					$type = 'services';
 				}
 				else {
