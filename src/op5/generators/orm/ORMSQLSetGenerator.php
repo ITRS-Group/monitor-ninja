@@ -118,10 +118,10 @@ class ORMSQLSetGenerator extends ORMObjectSetGenerator {
 
 		$this->write('if( $limit !== false ) {');
 		$this->write(    '$sql .= " LIMIT ";');
-		$this->write(    'if( $offset !== false ) {');
-		$this->write(        '$sql .= intval($offset) . ", ";');
-		$this->write(    '}');
 		$this->write(    '$sql .= intval($limit);');
+		$this->write(    'if( $offset !== false ) {');
+		$this->write(        '$sql .= " OFFSET " . intval($offset);');
+		$this->write(    '}');
 		$this->write('}');
 
 		$this->write('$q = $db->query($sql);');
