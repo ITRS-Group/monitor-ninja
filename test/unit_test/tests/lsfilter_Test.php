@@ -561,6 +561,13 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 		$this->do_test_ls_op_int("=");
 	}
 
+	public function test_ls_op_date() {
+		$this->run_visitor(
+				"[hosts] last_check > date(\"1970-01-01 00:00:02 UTC\")",
+				new LivestatusFilterBuilderVisitor(function($column) {return $column;}),
+				array( "Filter: last_check > 2" )
+		);
+	}
 
 	/*
 	 * Internal methods to run a test

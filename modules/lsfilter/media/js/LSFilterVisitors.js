@@ -38,6 +38,9 @@ var LSFilterMetadataVisitor = function LSFilterMetadataVisitor(){
 	this.visit_set_descr_name   = function(string0)                   { return null; };
 	this.visit_field_name       = function(name0)                     { return name0; };
 	this.visit_field_obj        = function(name0, field2)             { return name0+"."+field2; };
+	this.visit_arg_num_func     = function(name0, lparen, arglist2, rparen) { return arglist2 ; };
+	this.visit_arg_list         = function(arg_num0, comma, arg_list2) { return arg_num0 + comma + arg_list2; };
+	this.visit_arg_list_end     = function(arg_num0)                  { return arg_num0 ; };
 	this.accept                 = function(result)                    { return result; };
 };
 
@@ -69,6 +72,9 @@ var LSFilterASTVisitor = function LSFilterASTVisit() {
 	this.visit_set_descr_name   = function(string0)                   { return string0; };
 	this.visit_field_name       = function(name0)                     { return name0; };
 	this.visit_field_obj        = function(name0, field2)             { return name0+"."+field2; };
+	this.visit_arg_num_func     = function(name0, lparen, arglist2, rparen) { return arglist2 ; };
+	this.visit_arg_list         = function(arg_num0, comma, arg_list2) { return arg_num0 + comma + arg_list2; };
+	this.visit_arg_list_end     = function(arg_num0)                  { return arg_num0 ; };
 	this.accept                 = function(result)                    { return result; };
 	
 	this.addto = function( obj, fields ) {

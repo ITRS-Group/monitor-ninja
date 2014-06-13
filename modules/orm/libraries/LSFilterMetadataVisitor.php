@@ -259,6 +259,21 @@ class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
 		return null;
 	}
 
+	public function visit_arg_num_func($name0, $arg_list2)
+	{
+		return null;
+	}
+
+	public function visit_arg_list($arg_num_string0, $arg_list2)
+	{
+		return null;
+	}
+
+	public function visit_arg_list_end($arg_num_string0)
+	{
+		return null;
+	}
+
 	/**
 	 * Accept the result of the parse
 	 */

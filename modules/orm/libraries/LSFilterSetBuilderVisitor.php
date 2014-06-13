@@ -256,4 +256,26 @@ class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
 	public function visit_field_obj($name0, $field2) {
 		return $name0.".".$field2;
 	}
+
+	public function visit_arg_num_func($name0, $arg_list2)
+	{
+		switch ($name0) {
+			case 'date':
+				return strtotime($arg_list2[0]);
+				break;
+			default:
+				return null;
+		}
+	}
+
+	public function visit_arg_list($arg_num_string0, $arg_list2)
+	{
+		array_unshift($arg_list2, $arg_num_string0);
+		return $arg_num_string0;
+	}
+
+	public function visit_arg_list_end($arg_num_string0)
+	{
+		return array($arg_num_string0);
+	}
 }
