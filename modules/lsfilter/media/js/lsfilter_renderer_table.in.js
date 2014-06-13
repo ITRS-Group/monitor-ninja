@@ -1180,7 +1180,7 @@ listview_renderer_table.recurring_downtimes = {
 	"start_time": {
 		"header": _('Start time'),
 		"depends": ['start_time_string'],
-		"sort": ['start_time_string'],
+		"sort": ['start_time'],
 		"cell": function(args) {
 			return $('<td />').update_text(args.obj.start_time_string);
 		}
@@ -1188,7 +1188,7 @@ listview_renderer_table.recurring_downtimes = {
 	"end_time": {
 		"header": _('End time'),
 		"depends": ['end_time_string'],
-		"sort": ['end_time_string'],
+		"sort": ['end_time'],
 		"cell": function(args) {
 			return $('<td />').update_text(args.obj.end_time_string);
 		}
@@ -1196,7 +1196,7 @@ listview_renderer_table.recurring_downtimes = {
 	"duration": {
 		"header": _('Duration'),
 		"depends": ['duration_string'],
-		"sort": ['duration_string'],
+		"sort": ['duration'],
 		"cell": function(args) {
 			return $('<td />').update_text(args.obj.duration_string);
 		}
