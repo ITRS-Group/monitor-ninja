@@ -141,7 +141,17 @@ class op5sysinfo {
 	 */
 	public function get_trapper_usage() {
 		exec('rpm -q op5-trapper-processor', $output, $exit_code);
-		return $exit_code === 0 ? 1 : 0;
+		if ($exit_code !== 0) {
+			// rpm returned non-zero, which probably means that Trapper is not installed.
+			return 0;
+		}
+		exec('/usr/bin/traped list handlers | grep -v demo-handler | wc -l', $output2);
+		if (is_numeric($output2[0]) && $output2[0] > 0){
+			// Trapper has at least one handler in addition to the default demo-handler. This means it is used.
+			return 1;
+		}
+		// We should never get here, but if it happens we'll say that Trapper is not used.
+		return 0;
 	}
 
 	/**
