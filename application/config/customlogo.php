@@ -1,5 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+// The 'custom logo' is what you see in the top left corner when you are
+// logged into Ninja
+//
+// If you want to change the logo on the login screen, look for the
+// $login_* variables in config.sass
+
 /**
  * Should this function be enabled or not?
 */
