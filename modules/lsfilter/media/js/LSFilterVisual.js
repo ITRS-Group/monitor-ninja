@@ -489,6 +489,8 @@ var lsfilter_dom_to_query = {
 				value = 0;
 		} else if (type[0] == 'float') {
 			value = parseFloat(value);
+		} else if (type[0] == 'time') {
+			value = 'date("'+value+'")'
 		} else {
 			value = '"' + value.replace(/([\\"'])/g, "\\$1") + '"';
 		}

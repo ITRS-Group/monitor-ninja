@@ -2,8 +2,9 @@ _whitespace /^(\s+)/
 _comment    /^(\/\*(?:[^\*]|\*[^\/])*\*\/)/
 
 string      /^("(?:[^"\\]|\\.)*")/
- 
+
 all         /^(all)(?:[^a-z0-9_][\s\S]*|)$/i
+
 
 and         /^(and)(?:[^a-z0-9_][\s\S]*|)$/i
 not         /^(not)(?:[^a-z0-9_][\s\S]*|)$/i
@@ -93,6 +94,6 @@ _arg_num_str_str:   arg_num_string = arg_string
 _arg_num:           arg_num        = integer
 _arg_string:        arg_string     = string
 
-
-
- 
+arg_num_func:       arg_num        = name _par_l arg_list _par_r
+arg_list:           arg_list       = arg_num_string _comma arg_list
+arg_list_end:       arg_list       = arg_num_string
