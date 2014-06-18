@@ -157,58 +157,58 @@ var lsfilter_graphics_visitor = {
 	fields : null,
 	operators : {
 		"string" : {
-			'not_re_ci' : 'not matching regexp, case insensitive',
-			'not_re_cs' : 'not matching regexp',
-			're_ci' : 'matching regexp, case insensitive',
-			're_cs' : 'matching regexp',
-			'not_eq_ci' : 'not equals, case insensitive',
-			'eq_ci' : 'equals, case insensitive',
+			'eq' : 'equals',
 			'not_eq' : 'not equals',
-			'eq' : 'equals'
+			'eq_ci' : 'equals, case insensitive',
+			'not_eq_ci' : 'not equals, case insensitive',
+			're_cs' : 'matching regexp',
+			're_ci' : 'matching regexp, case insensitive',
+			'not_re_cs' : 'not matching regexp',
+			'not_re_ci' : 'not matching regexp, case insensitive'
 		},
 		"int" : {
+			'eq' : 'equal',
 			'not_eq' : 'not equals',
-			'gt_eq' : 'greater than or equals',
+			'lt' : 'less than',
 			'lt_eq' : 'less than or equal',
 			'gt' : 'greater than',
-			'lt' : 'less than',
-			'eq' : 'equal'
+			'gt_eq' : 'greater than or equals'
 		},
 		"float" : {
+			'eq' : 'equals',
 			'not_eq' : 'not equals',
-			'gt_eq' : 'greater than or equals',
+			'lt' : 'less than',
 			'lt_eq' : 'less than or equals',
 			'gt' : 'greater than',
-			'lt' : 'less than',
-			'eq' : 'equals'
+			'gt_eq' : 'greater than or equals'
 		},
 		"time" : {
+			'eq' : 'equals',
 			'not_eq' : 'not equals',
-			'gt_eq' : 'greater than or equals',
+			'lt' : 'less than',
 			'lt_eq' : 'less than or equals',
 			'gt' : 'greater than',
-			'lt' : 'less than',
-			'eq' : 'equals'
+			'gt_eq' : 'greater than or equals'
 		},
 		"object" : {
-			'in' : 'in named set',
-			'all' : 'all'
+			'all' : 'all',
+			'in' : 'in named set'
 		},
 		"list" : {
-			'gt_eq' : 'contains',
 			'eq' : 'equals',
-			'not_eq' : 'not equals'
+			'not_eq' : 'not equals',
+			'gt_eq' : 'contains'
 		},
 		/* FIXME: This is ugly... better grammar for custom_variables */
 		"dict" : {
-			'not_re_ci' : 'not matching regexp, case insensitive',
+			'eq' : 'equals',
+			'not_eq' : 'not equals',
+			'eq_ci' : 'equals, case insensitive',
+			'not_eq_ci' : 'not equals, case insensitive',
+			're_cs' : 'matching regexp',
 			'not_re_cs' : 'not matching regexp',
 			're_ci' : 'matching regexp, case insensitive',
-			're_cs' : 'matching regexp',
-			'not_eq_ci' : 'not equals, case insensitive',
-			'eq_ci' : 'equals, case insensitive',
-			'not_eq' : 'not equals',
-			'eq' : 'equals'
+			'not_re_ci' : 'not matching regexp, case insensitive'
 		}
 	},
 
