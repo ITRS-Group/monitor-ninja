@@ -6,6 +6,8 @@ class ORMSQLSetGenerator extends ORMObjectSetGenerator {
 	public $relations; /** a relation is a way to declare a many-to-one for sql */
 	public $db_instance;
 
+	protected $visitor_class = "LivestatusSQLBuilderVisitor";
+
 	public function __construct( $name, $structure ) {
 		parent::__construct($name, $structure);
 
@@ -52,7 +54,7 @@ class ORMSQLSetGenerator extends ORMObjectSetGenerator {
 			$this->write('$sql .= %s;', $join_expr);
 		}
 		$this->write('$filter = $this->get_auth_filter();');
-		$this->write('$sql .= " WHERE ".$filter->visit(new LivestatusSQLBuilderVisitor(array(%s, "map_name_to_backend")), false);', $this->structure['class'].'Set'.self::$model_suffix);
+		$this->write('$sql .= " WHERE ".$filter->visit(new '.$this->visitor_class.'(array(%s, "map_name_to_backend")), false);', $this->structure['class'].'Set'.self::$model_suffix);
 	}
 
 	public function generate_count() {
