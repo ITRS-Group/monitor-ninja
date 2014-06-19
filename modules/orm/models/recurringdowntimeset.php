@@ -34,7 +34,7 @@ class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
 			$id_check = new LivestatusFilterOr();
 			$filter->add($id_check);
 			foreach ($res_schedules as $schedule) {
-				$set = $poolname::all();
+				$set = $poolname::none();
 				$objects = $db->query('SELECT recurring_downtime_objects.object_name FROM recurring_downtime_objects WHERE recurring_downtime_id = '.$schedule->id);
 				$schedule_filter = new LivestatusFilterAnd();
 				foreach ($objects as $object) {
