@@ -103,7 +103,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 	 */
 	public static function save_query( $name, $query, $scope ) {
 		$db = Database::instance();
-		$parser = new LSFilter_Core(new LSFilterPP_Core(), new LSFilterMetadataVisitor_Core());
+		$parser = new LSFilter(new LSFilterPP(), new LSFilterMetadataVisitor());
 		$metadata = $parser->parse( $query );
 
 		if( $metadata === false ) throw new Exception("Error when type checking");

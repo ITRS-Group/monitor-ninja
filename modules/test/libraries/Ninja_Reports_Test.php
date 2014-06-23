@@ -6,7 +6,7 @@
  *
  * Inherits from Reports_Model for "dammit, it's protected!" reasons
  */
-class Ninja_Reports_Test_Core extends Status_Reports_Model
+class Ninja_Reports_Test extends Status_Reports_Model
 {
 	public $test_file = false; /**< The file name we're testing */
 	private $total = 0;

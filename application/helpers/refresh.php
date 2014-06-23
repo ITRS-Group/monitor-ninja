@@ -3,7 +3,7 @@
  * This helper is intended to be used to control
  * the page reload (refresh) using javascript
  */
-class refresh_Core {
+class refresh {
 
 	/**
 	*	Print javascript to control page reload

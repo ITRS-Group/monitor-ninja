@@ -11,7 +11,7 @@ function widget_error_handler($a, $b, $c, $d)
 /**
  * widget helper class.
  */
-class widget_Core
+class widget
 {
 	private static $with_chrome = true;
 

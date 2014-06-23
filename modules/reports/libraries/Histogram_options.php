@@ -3,7 +3,7 @@
 /**
  * Report options for histogram reports
  */
-class Histogram_options_Core extends Summary_options
+class Histogram_options extends Summary_options
 {
 	public static $type = 'histogram';
 

@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class ORM_Versioned_Core extends ORM {
+class ORM_Versioned extends ORM {
 
 	protected $last_version = NULL;
 

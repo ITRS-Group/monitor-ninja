@@ -4,9 +4,9 @@
  * PDF help class
  *
  * @todo since this works for csv files as well, rename the class to something
- * like persist_file_Core
+ * like persist_file
  */
-class persist_pdf_Core
+class persist_pdf
 {
 	/**
 	 * Turns my_report.csv into my_report-2011-03-23.csv and, perhaps,

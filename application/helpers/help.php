@@ -2,7 +2,7 @@
 /**
  * Help class to provide links to render help texts
  */
-class help_Core
+class help
 {
 	/**
 	*	Render the help text calls to fetch

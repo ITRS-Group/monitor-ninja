@@ -15,7 +15,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Profiler_Core {
+class Profiler {
 
 	protected $profiles = array();
 	protected $show;

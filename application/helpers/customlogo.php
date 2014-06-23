@@ -2,7 +2,7 @@
 /**
  * Help class to ease the customization of the Ninja GUI Logo
  */
-class customlogo_Core {
+class customlogo {
 	/**
 	 * Display the div with the logo if it's all enabled
 	 */

@@ -3,7 +3,7 @@
 /**
  * Report options for SLA reports
  */
-class Sla_options_Core extends Report_options {
+class Sla_options extends Report_options {
 	public static $type = 'sla';
 
 	static function discover_options($input = false) {

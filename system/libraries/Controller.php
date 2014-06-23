@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-abstract class Controller_Core {
+abstract class Controller {
 
 	// Allow all controllers to run in production by default
 	const ALLOW_PRODUCTION = TRUE;

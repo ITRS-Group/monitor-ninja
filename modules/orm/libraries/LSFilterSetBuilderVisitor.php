@@ -3,7 +3,7 @@
 /**
  * Used within the parser as a parse visitor of a lsfilter to generate a ORM object set
  */
-class LSFilterSetBuilderVisitor_Core extends LSFilterVisitor_Core {
+class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 	private $metadata;
 	private $pool;
 	private $disabled_saved_filters = array();

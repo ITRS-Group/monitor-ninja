@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class expires_Core {
+class expires {
 
 	/**
 	 * Sets the amount of time before a page expires

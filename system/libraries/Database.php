@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Core {
+class Database {
 
 	// Database instances
 	public static $instances = array();
@@ -56,7 +56,7 @@ class Database_Core {
 	 * Returns a singleton instance of Database.
 	 *
 	 * @param   mixed   configuration array or DSN
-	 * @return  Database_Core
+	 * @return  Database
 	 */
 	public static function & instance($name = 'default', $config = NULL)
 	{
@@ -287,7 +287,7 @@ class Database_Core {
 	 * Selects the column names for a database query.
 	 *
 	 * @param   string  string or array of column names to select
-	 * @return  Database_Core  This Database object.
+	 * @return  Database  This Database object.
 	 */
 	public function select($sql = '*')
 	{
@@ -333,7 +333,7 @@ class Database_Core {
 	 * Selects the from table(s) for a database query.
 	 *
 	 * @param   string  string or array of tables to select
-	 * @return  Database_Core  This Database object.
+	 * @return  Database  This Database object.
 	 */
 	public function from($sql)
 	{
@@ -367,7 +367,7 @@ class Database_Core {
 	 * @param   string|array  where key or array of key => value pairs
 	 * @param   string        where value
 	 * @param   string        type of join
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function join($table, $key, $value = NULL, $type = '')
 	{
@@ -417,7 +417,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function where($key, $value = NULL, $quote = TRUE)
 	{
@@ -439,7 +439,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
@@ -461,7 +461,7 @@ class Database_Core {
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @param   boolean       automatically add starting and ending wildcards
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function like($field, $match = '', $auto = TRUE)
 	{
@@ -482,7 +482,7 @@ class Database_Core {
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @param   boolean       automatically add starting and ending wildcards
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function orlike($field, $match = '', $auto = TRUE)
 	{
@@ -503,7 +503,7 @@ class Database_Core {
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @param   boolean       automatically add starting and ending wildcards
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function notlike($field, $match = '', $auto = TRUE)
 	{
@@ -523,7 +523,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function ornotlike($field, $match = '', $auto = TRUE)
 	{
@@ -543,7 +543,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function regex($field, $match = '')
 	{
@@ -563,7 +563,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function orregex($field, $match = '')
 	{
@@ -583,7 +583,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        regex value to match with field
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function notregex($field, $match = '')
 	{
@@ -603,7 +603,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        regex value to match with field
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function ornotregex($field, $match = '')
 	{
@@ -622,7 +622,7 @@ class Database_Core {
 	 * Chooses the column to group by in a select query.
 	 *
 	 * @param   string  column name to group by
-	 * @return  Database_Core  This Database object.
+	 * @return  Database  This Database object.
 	 */
 	public function groupby($by)
 	{
@@ -656,7 +656,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function having($key, $value = '', $quote = TRUE)
 	{
@@ -670,7 +670,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function orhaving($key, $value = '', $quote = TRUE)
 	{
@@ -683,7 +683,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  column(s) to order on, can be an array, single column, or comma seperated list of columns
 	 * @param   string        direction of the order
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function orderby($orderby, $direction = NULL)
 	{
@@ -719,7 +719,7 @@ class Database_Core {
 	 *
 	 * @param   integer  number of rows to limit result to
 	 * @param   integer  offset in result to start returning rows from
-	 * @return  Database_Core   This Database object.
+	 * @return  Database   This Database object.
 	 */
 	public function limit($limit, $offset = NULL)
 	{
@@ -737,7 +737,7 @@ class Database_Core {
 	 * Sets the offset portion of a query.
 	 *
 	 * @param   integer  offset value
-	 * @return  Database_Core   This Database object.
+	 * @return  Database   This Database object.
 	 */
 	public function offset($value)
 	{
@@ -751,7 +751,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
-	 * @return  Database_Core        This Database object.
+	 * @return  Database        This Database object.
 	 */
 	public function set($key, $value = '')
 	{
@@ -810,7 +810,7 @@ class Database_Core {
 	 * @param   array   where clause
 	 * @param   string  limit clause
 	 * @param   string  offset clause
-	 * @return  Database_Core  This Database object.
+	 * @return  Database  This Database object.
 	 */
 	public function getwhere($table = '', $where = NULL, $limit = NULL, $offset = NULL)
 	{
@@ -906,7 +906,7 @@ class Database_Core {
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
 	 * @param   bool    Generate a NOT IN clause instead
-	 * @return  Database_Core  This Database object.
+	 * @return  Database  This Database object.
 	 */
 	public function in($field, $values, $not = FALSE)
 	{
@@ -938,7 +938,7 @@ class Database_Core {
 	 *
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
-	 * @return  Database_Core  This Database object.
+	 * @return  Database  This Database object.
 	 */
 	public function notin($field, $values)
 	{
@@ -1252,7 +1252,7 @@ class Database_Core {
 	 * Clears the query cache.
 	 *
 	 * @param   string|TRUE  clear cache by SQL statement or TRUE for last query
-	 * @return  Database_Core       This Database object.
+	 * @return  Database       This Database object.
 	 */
 	public function clear_cache($sql = NULL)
 	{
@@ -1288,7 +1288,7 @@ class Database_Core {
 	 * and pop to prevent queries from clashing before they are
 	 * executed
 	 *
-	 * @return Database_Core This Databaes object
+	 * @return Database This Databaes object
 	 */
 	public function push()
 	{	
@@ -1314,7 +1314,7 @@ class Database_Core {
 	/**
 	 * Pops from query stack into the current query space.
 	 *
-	 * @return Database_Core This Databaes object
+	 * @return Database This Databaes object
 	 */
 	public function pop()
 	{

@@ -3,7 +3,7 @@
 /**
  * Helper for CSV functionality
  */
-class csv_Core
+class csv
 {
 	/**
 	 * Set HTTP headers appropriate for CSV files

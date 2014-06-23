@@ -4,7 +4,7 @@ defined('SYSPATH') or die('No direct access allowed.');
 /**
  * Add functionality to kohanas built-in security helper
  */
-class security_Core {
+class security {
 	/**
 	 * Escape scring only if told to
 	 */

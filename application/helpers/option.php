@@ -3,7 +3,7 @@
 /**
  * A helper for widgets to render their custom configuration options
  */
-class option_Core
+class option
 {
 	private $should_render_js = true; /**< True to auto-render javascript to handle changes */
 	public $ns; /**< A unique namespace, usually the widget name */

@@ -3,7 +3,7 @@
 	/**
 	 * Ninja notification facility PHP interface
 	 */
-	class notify_Core {
+	class notify {
 
 		private static $settings = array(
 			/* Can be info, warning, critical. Will grant the

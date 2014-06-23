@@ -4,7 +4,7 @@
  * users against a database that stores passwords with multiple
  * different hash-types
  */
-class ninja_auth_Core
+class ninja_auth
 {
 	/**
 	 * Does the required steps to log in a user via the specified auth_method

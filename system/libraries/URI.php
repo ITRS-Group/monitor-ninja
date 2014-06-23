@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class URI_Core extends Router {
+class URI extends Router {
 
 	/**
 	 * Returns a singleton instance of URI.

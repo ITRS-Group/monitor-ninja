@@ -11,12 +11,12 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 	 * Parse a query and return the related set
 	 */
 	public static function get_by_query( $query, $disabled_saved_queries = array() ) {
-		$preprocessor = new LSFilterPP_Core();
+		$preprocessor = new LSFilterPP();
 
-		$parser = new LSFilter_Core($preprocessor, new LSFilterMetadataVisitor_Core());
+		$parser = new LSFilter($preprocessor, new LSFilterMetadataVisitor());
 		$metadata = $parser->parse( $query );
 
-		$parser = new LSFilter_Core($preprocessor, new LSFilterSetBuilderVisitor_Core($metadata, $disabled_saved_queries));
+		$parser = new LSFilter($preprocessor, new LSFilterSetBuilderVisitor($metadata, $disabled_saved_queries));
 		return $parser->parse( $query );
 	}
 

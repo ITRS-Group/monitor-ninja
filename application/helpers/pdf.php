@@ -2,7 +2,7 @@
 /**
  * PDF help class
  */
-class pdf_Core
+class pdf
 {
 	/**
 	 * Do PDF initiation

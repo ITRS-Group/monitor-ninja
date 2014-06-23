@@ -3,7 +3,7 @@
 /**
  * Helper to get the proper complete URL to the server
  */
-class base_url_Core {
+class base_url {
 
 	/**
 	 * This relies on the setting op5reports.site_address or a webserver

@@ -11,7 +11,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class alert_history_Core {
+class alert_history {
 	/**
 	 * Convert all sorts of constants to user-readable strings, add html, and generally make things pretty
 	 * @param $entry A database row

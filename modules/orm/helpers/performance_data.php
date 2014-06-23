@@ -9,7 +9,7 @@ defined('SYSPATH') or die('No direct access allowed.');
  * can be done both for services and hosts, which is entirely similar, this is
  * exported to a helper, so it's available for both.
  */
-class performance_data_Core {
+class performance_data {
 	/**
 	 * Process performance data and return as an array
 	 *

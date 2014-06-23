@@ -2,7 +2,7 @@
 /**
  * A Pagination library that doesn't require you to count() millions of rows
  */
-class CountlessPagination extends Pagination_Core {
+class CountlessPagination extends Pagination {
 	public function initialize($config = array()) {
 		if( isset( $config['query_string'] ) ) {
 			$this->query_string = $config['query_string'];

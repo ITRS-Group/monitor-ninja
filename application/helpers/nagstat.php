@@ -2,7 +2,7 @@
 /**
  * Helper class for nagios status
  */
-class nagstat_Core {
+class nagstat {
 	const CMD_ENABLE_FLAP_DETECTION = 61; /**< The nagios code for the command to enable flap detection */
 	const CMD_DISABLE_FLAP_DETECTION = 62; /**< The nagios code for the command to disable flap detection */
 

@@ -171,10 +171,10 @@ class Upload_Controller extends Authenticated_Controller
 
 		$is_correct_classname = false;
 		foreach ($classfile as $line) {
-			if (strstr($line, 'class ') && strstr($line, ' extends widget_Core')) {
+			if (strstr($line, 'class ') && strstr($line, ' extends widget')) {
 				$line = str_replace('class', '', $line);
 				$line = str_replace('{', '', $line);
-				$line = str_replace(' extends widget_Core', '', $line);
+				$line = str_replace(' extends widget', '', $line);
 				$line = trim($line);
 				if ($line !== ucfirst($widget_name).'_Widget') {
 					$errors++;

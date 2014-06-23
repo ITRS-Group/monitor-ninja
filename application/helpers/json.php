@@ -2,7 +2,7 @@
 /**
  * Quickly kill request while serving it(s content) as JSON
  */
-class json_Core
+class json
 {
 	/**
 	 * Kills the request after echoing a structured json response

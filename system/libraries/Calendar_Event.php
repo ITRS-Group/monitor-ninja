@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Calendar_Event_Core extends Event_Observer {
+class Calendar_Event extends Event_Observer {
 
 	// Boolean conditions
 	protected $booleans = array

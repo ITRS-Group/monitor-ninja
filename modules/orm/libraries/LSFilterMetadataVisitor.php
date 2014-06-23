@@ -3,7 +3,7 @@
 /**
  * Used within the parser as a parse visitor of a lsfilter to extract metadata from a query
  */
-class LSFilterMetadataVisitor_Core extends LSFilterVisitor_Core {
+class LSFilterMetadataVisitor extends LSFilterVisitor {
 	/**
 	 * Get the table name of the query
 	 */

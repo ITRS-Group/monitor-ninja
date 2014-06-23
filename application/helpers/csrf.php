@@ -2,7 +2,7 @@
 /**
  * CSRF helper class.
  */
-class csrf_Core {
+class csrf {
 
 	/**
 	 * Generate new token

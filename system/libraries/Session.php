@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Session_Core {
+class Session {
 
 	// Session singleton
 	private static $instance;

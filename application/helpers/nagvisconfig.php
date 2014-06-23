@@ -3,7 +3,7 @@
  * Nagvis config reader class
  */
 
-class nagvisconfig_Core {
+class nagvisconfig {
 	/**
 	 * Get a list of maps and automaps the current user is authorized for
 	 */

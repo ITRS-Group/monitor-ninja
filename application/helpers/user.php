@@ -2,7 +2,7 @@
 /**
  * Help class for user session data
  */
-class user_Core
+class user
 {
 	/**
 	 * Fetch session data for certain variable

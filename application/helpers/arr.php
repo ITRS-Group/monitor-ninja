@@ -2,7 +2,7 @@
 /**
  * Array Help class
  */
-class arr_Core
+class arr
 {
 	/**
 	 * this just lets us safely access array variables

@@ -3,7 +3,7 @@
  * Help class for handling config items transparently,
  * i.e independent of storage location (file or database)
  */
-class config_Core
+class config
 {
 	/**
 	 * Dummy value to compare to when ... no config was found!

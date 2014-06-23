@@ -6,7 +6,7 @@
  * Basically, stuff that could be in the ninja controller, if not other helpers
  * had needed it.
  */
-class ninja_Core {
+class ninja {
 	private static $loaded_modules = array();
 	/**
 	 * Given a file name that is relative to the views directory, find it and

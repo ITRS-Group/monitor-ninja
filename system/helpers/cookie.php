@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class cookie_Core {
+class cookie {
 
 	/**
 	 * Sets a cookie with the given parameters.

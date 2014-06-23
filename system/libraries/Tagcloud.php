@@ -11,7 +11,7 @@
  * @copyright  (c) 2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Tagcloud_Core {
+class Tagcloud {
 
 	/**
 	 * Creates a new Tagcloud instance and returns it.

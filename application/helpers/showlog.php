@@ -2,7 +2,7 @@
 /**
  * showlog helper
  */
-class showlog_Core
+class showlog
 {
 	/**
 	 * Generate HTML-formatted representation of the on-disk nagios log

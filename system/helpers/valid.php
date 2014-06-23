@@ -13,7 +13,7 @@ if (!defined('FILTER_FLAG_NO_RES_RANGE'))
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class valid_Core {
+class valid {
 
 	/**
 	 * Validate email, commonly used characters only

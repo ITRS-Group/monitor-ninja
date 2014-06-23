@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class arr_Core {
+class arr {
 
 	/**
 	 * Return a callback array from a string, eg: limit[10,20] would become

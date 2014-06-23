@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Pagination_Core {
+class Pagination {
 
 	// Config values
 	protected $base_url       = '';

@@ -2,7 +2,7 @@
 /**
  * SQL Help class
  */
-class sql_Core
+class sql
 {
 	/**
 	 * Parse the limit string and split into

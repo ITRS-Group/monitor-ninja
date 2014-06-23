@@ -2,7 +2,7 @@
 /**
  * Help with formatting datestamps
  */
-class date_Core {
+class date {
 
 	private static function _nice_format_duration($start_time, $end_time) {
 		$duration = $end_time - $start_time;

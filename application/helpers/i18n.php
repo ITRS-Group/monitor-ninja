@@ -3,7 +3,7 @@
  * Functionality used for internationalization related functionality
  */
 
-class i18n_Core {
+class i18n {
 	/**
 	 * A wrapper around PHP's unserialize that tries to cope when the database
 	 * encoding has changed.

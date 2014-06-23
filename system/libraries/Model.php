@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Model_Core {
+class Model {
 
 	// Database object
 	protected $db;

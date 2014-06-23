@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Validation_Core extends ArrayObject {
+class Validation extends ArrayObject {
 
 	// Filters
 	protected $pre_filters = array();

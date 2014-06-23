@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class upload_Core {
+class upload {
 
 	/**
 	 * Save an uploaded file to a new location.

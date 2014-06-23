@@ -3,7 +3,7 @@
 /**
  * Preprocessor for lsfilter, resolves strings and integers
  */
-class LSFilterPP_Core extends LSFilterPreprocessor_Core {
+class LSFilterPP extends LSFilterPreprocessor {
 	/**
 	 * Remove quotations of a string
 	 */

@@ -2,7 +2,7 @@
 /**
  * Help class for reports
  */
-class reports_Core
+class reports
 {
 	/** Colors for status in trends graph and such */
 	public static $colors = array(

@@ -9,7 +9,7 @@
 * @copyright  (c) 2007-2008 Kohana Team
 * @license    http://kohanaphp.com/license.html
 */
-class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
+class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 
 	// Class attributes
 	protected $class_name;

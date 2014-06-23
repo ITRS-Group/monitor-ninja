@@ -12,7 +12,7 @@ define('GENERATOR_BASE', KOHANA_BASE . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_S
 require_once( 'op5/generators/class_generator.php' );
 
 class_generator::$model_suffix = '_Model';
-class_generator::$library_suffix = '_Core';
+class_generator::$library_suffix = '';
 class_generator::$library_dir = 'libraries';
 class_generator::$model_dir = 'models';
 class_generator::$manifest_dir = 'manifest';

@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class email_Core {
+class email {
 
 	// SwiftMailer instance
 	protected static $mail;

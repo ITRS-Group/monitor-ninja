@@ -2,7 +2,7 @@
 /**
  * Charts helper class
  */
-class phplot_charts_Core
+class phplot_charts
 {
 	/**
 	 * Autoload phplot, now you can use new PHPlot()

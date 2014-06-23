@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class html_Core {
+class html {
 
 	// Enable or disable automatic setting of target="_blank"
 	public static $windowed_urls = FALSE;

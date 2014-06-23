@@ -2,7 +2,7 @@
 /**
  * Help class for converting seconds to readable string of days, hours etc
  */
-class time_Core
+class time
 {
 	/**
 	 * Convert a given nr of sec to string,

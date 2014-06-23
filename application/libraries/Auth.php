@@ -12,7 +12,7 @@ require_once('op5/auth/User_AlwaysAuth.php');
  * @copyright
  * @license
  */
-class Auth_Core {
+class Auth {
 	/**
 	 * Used to override instance, to break exception loop
 	 */
@@ -54,7 +54,7 @@ class Auth_Core {
 		if (self::$fake_instance !== false) return self::$fake_instance;
 		// Load the Auth instance
 		try {
-			$instance = new Auth_Core($config, $driver_config);
+			$instance = new Auth($config, $driver_config);
 		}
 		catch( Exception $e ) {
 			self::disable_auth_subsystem();
@@ -219,19 +219,19 @@ class Auth_Core {
 	 * when displaying error pages.
 	 */
 	public static function disable_auth_subsystem() {
-		self::$fake_instance = new Auth_NoAuth_Core();
+		self::$fake_instance = new Auth_NoAuth();
 	}
 } // End Auth
 
 
 /**
- * This class is just to fill in as Auth_Core if exception if thrown in factory.
+ * This class is just to fill in as Auth if exception if thrown in factory.
  *
  * When showing an error page (as from exception in factory method), the instance
  * needs to be set, so not a new exception will be thrown when rendering the error
  * page
  */
-class Auth_NoAuth_Core extends Auth_Core {
+class Auth_NoAuth extends Auth {
 
 	public function __construct($config = NULL)
 	{

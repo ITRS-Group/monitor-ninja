@@ -11,7 +11,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Encrypt_Core {
+class Encrypt {
 
 	// OS-dependant RAND type to use
 	protected static $rand;
@@ -23,7 +23,7 @@ class Encrypt_Core {
 	 * Returns a singleton instance of Encrypt.
 	 *
 	 * @param   array  configuration options
-	 * @return  Encrypt_Core
+	 * @return  Encrypt
 	 */
 	public static function instance($config = NULL)
 	{

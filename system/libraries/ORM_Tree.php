@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class ORM_Tree_Core extends ORM {
+class ORM_Tree extends ORM {
 
 	// Name of the child
 	protected $children;

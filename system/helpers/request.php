@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class request_Core {
+class request {
 
 	// Possible HTTP methods
 	protected static $http_methods = array('get', 'head', 'options', 'post', 'put', 'delete');

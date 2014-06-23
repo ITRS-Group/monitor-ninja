@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Calendar_Core extends Event_Subject {
+class Calendar extends Event_Subject {
 
 	// Start the calendar on Sunday by default
 	public static $start_monday = FALSE;

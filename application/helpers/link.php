@@ -3,7 +3,7 @@
  * Help class for handling links that could contain
  * chars that would break Kohanas routing ('/')
  */
-class link_Core
+class link
 {
 	/**
 	 * Encode a string so that it is possible to

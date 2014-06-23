@@ -2,7 +2,7 @@
 /**
  * Kohana helper class for pclzip
  */
-class zip_Core {
+class zip {
 	/**
 	* Create new pclzip instance
 	*/

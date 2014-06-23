@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class download_Core {
+class download {
 
 	/**
 	 * Force a download of a file to the user's browser. This function is

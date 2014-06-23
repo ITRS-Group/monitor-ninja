@@ -8,7 +8,7 @@ class ExpParserException extends Exception {}
 /**
  * Base class to handle the logic and lexing in a descendent recursive parser
  */
-abstract class ExpParser_Core {
+abstract class ExpParser {
 	/**
 	 * The expression to parse
 	 */

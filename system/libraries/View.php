@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class View_Core {
+class View {
 
 	// The view file name and type
 	protected $kohana_filename = FALSE;

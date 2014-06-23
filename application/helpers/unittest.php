@@ -4,7 +4,7 @@
  *
  * @author     op5 AB
  */
-class unittest_Core {
+class unittest {
 
 	private static $tap = false;
 	/**

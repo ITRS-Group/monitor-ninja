@@ -11,7 +11,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class nacoma_Core {
+class nacoma {
 
 	/**
 	*	Check if a link to Nacoma should be displayed

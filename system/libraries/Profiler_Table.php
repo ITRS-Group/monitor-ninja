@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Profiler_Table_Core {
+class Profiler_Table {
 
 	protected $columns = array();
 	protected $rows = array();

@@ -3,7 +3,7 @@
  * Help class for handling PNP related stuff such as
  * checking if we should display a graph link or not.
  */
-class pnp_Core
+class pnp
 {
 	/**
 	*	Check that there is actually a graph to display

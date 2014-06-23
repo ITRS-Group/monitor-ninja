@@ -2,7 +2,7 @@
 /**
  * Date help class
  */
-class cal_Core
+class cal
 {
 	/**
 	*	decide what date format to use for calendar
