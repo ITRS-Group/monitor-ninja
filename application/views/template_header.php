@@ -226,9 +226,6 @@
 				}
 				echo "<li><h2>"._('Widget settings')."</h2></li>";
 				echo '<li><form action="'.url::base(true).'widget/factory_reset_widgets" method="post"><input type="submit" class="plain" value="'._("Restore overview to factory settings").'" /></form></li>'."\n";
-				if ($authorized === true) {
-					echo '<li><a href="'.url::base(true).'upload">'._('Upload new widget').'</a></li>'."\n";
-				}
 				echo '<li><a href="#" id="show_global_widget_refresh">'._("Set every widget's refresh rate to (s.)").'</a></li>'."\n";
 			}
 		?>
