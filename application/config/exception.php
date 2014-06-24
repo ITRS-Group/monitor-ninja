@@ -17,7 +17,8 @@ $config['shell_commands'] = array(
 	"mon node show",
 	"top -bcn1M | head",
 	"grep ^model.name /proc/cpuinfo | uniq -c",
-	"lspci | sed -r 's/^[^ ]+ //' | sort | uniq -c"
+	"lspci | sed -r 's/^[^ ]+ //' | sort | uniq -c",
+	"mon sysconf check"
 );
 
 $config['extra_info'] = array(
