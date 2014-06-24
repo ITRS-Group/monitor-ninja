@@ -142,6 +142,7 @@ class op5Authorization {
 			'dokuwiki' => array ('wiki' => '','wiki_admin' => ''),
 			'nagvis' => array ('nagvis_add_delete' => '','nagvis_view' => '',
 				'nagvis_edit' => '','nagvis_admin' => ''),
+			'logserver' => array('logserver_access' => '', 'logserver_configuration' => '', 'logserver_schedule_archive_search' => ''),
 			'misc' => array ('FILE' => '','access_rights' => '','pnp' => '',
 				'manage_trapper' => '',
 				'saved_filters_global' => ''));
