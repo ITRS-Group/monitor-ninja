@@ -7,7 +7,7 @@ $table_crashed = function($error_string) {
 	return null;
 };
 
-$content = '<div id="framework_error" style="width:42em;margin:0px auto;">';
+$content = '<div id="framework_error">';
 $content .= '<h3>'.html::specialchars($error).'</h3>';
 $content .= '<p>'.html::specialchars($description).'</p>';
 $crash_info = null;
@@ -27,7 +27,7 @@ $content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
 foreach(Kohana::config('exception.shell_commands') as $command) {
 	$output = null;
 	exec($command, $output, $exit_value);
-	$content .= "<p class='stats'>$command (exit code $exit_value):<br />".implode('<br />', $output).'</p>';
+	$content .= "<p class='stats'><b>$command</b> (exit code $exit_value):<br />".implode('<br />', $output).'</p>';
 }
 foreach(Kohana::config('exception.extra_info') as $header => $info) {
 	$content .= "<p class='stats'>$header: $info</p>";
