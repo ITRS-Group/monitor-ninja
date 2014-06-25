@@ -124,6 +124,15 @@ final class Kohana {
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
 
+		// Add APPPATH as the first path
+		self::$include_paths = array(APPPATH);
+		foreach (glob(MODPATH.'*', GLOB_ONLYDIR) as $path)
+		{
+			self::$include_paths[] = $path.'/';
+		}
+		// Add SYSPATH as the last path
+		self::$include_paths[] = SYSPATH;
+
 		if (self::$cache_lifetime = self::config('core.internal_cache'))
 		{
 			// Load cached configuration and language files
@@ -309,29 +318,36 @@ final class Kohana {
 	}
 
 	/**
-	 * Get all include paths. APPPATH is the first path, followed by module
+	 * Get all include paths.
+	 * APPPATH is the first path, followed by module
 	 * paths in the order they are configured, follow by the SYSPATH.
 	 *
-	 * @param   boolean  re-process the include paths
-	 * @return  array
+	 * @param
+	 *        	boolean re-process the include paths, we don't do that...
+	 *        	ignore
+	 * @return array
 	 */
-	public static function include_paths($process = FALSE)
-	{
-		if ($process === TRUE)
-		{
-			// Add APPPATH as the first path
-			self::$include_paths = array(APPPATH);
-
-			foreach (glob(MODPATH.'*', GLOB_ONLYDIR) as $path)
-			{
-				self::$include_paths[] = $path.'/';
-			}
-
-			// Add SYSPATH as the last path
-			self::$include_paths[] = SYSPATH;
-		}
-
+	public static function include_paths($process = FALSE) {
 		return self::$include_paths;
+	}
+
+	/**
+	 * Remove include paths given a certain pattern.
+	 * Useful for replacing modules
+	 * for testing
+	 */
+	public static function remove_include_paths($pattern) {
+		self::$include_paths = array_filter(self::$include_paths,
+			function ($path) use($pattern) {
+				return !preg_match($pattern, $path);
+			});
+	}
+
+	/**
+	 * Add include path, useful for unit testing of external libraries
+	 */
+	public static function add_include_path($path) {
+		self::$include_paths[] = $path;
 	}
 
 	/**
