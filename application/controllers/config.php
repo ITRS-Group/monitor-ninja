@@ -429,7 +429,7 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->title = _('Configuration').' » '._('View config');
 		$this->template->content = $this->add_view('config/index');
 
-		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
 		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 		$this->template->content->header = $header;

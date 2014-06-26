@@ -23,8 +23,6 @@ class Ninja_Controller extends Template_Controller {
 	public $template;
 	public $user = false;
 	public $profiler = false;
-	public $xtra_js = array();
-	public $xtra_css = array();
 	public $inline_js = false;
 	public $js_strings = false;
 	public $stale_data = false;
@@ -249,13 +247,6 @@ class Ninja_Controller extends Template_Controller {
 		// that result in 404 errors will be handled by this method, instead of
 		// being displayed as "Page Not Found" errors.
 		echo _("The requested page doesn't exist") . " ($method)";
-	}
-
-	public function _render()
-	{
-		$this->template->js = $this->xtra_js;
-		$this->template->css = $this->xtra_css;
-		parent::_render();
 	}
 
 	/**

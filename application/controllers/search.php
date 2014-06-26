@@ -98,11 +98,9 @@ class Search_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$content->date_format_str = nagstat::date_format();
 
-		$this->xtra_js = array();
-		$this->xtra_css = array();
 		$this->template->content->widgets = array();
 
-		$this->xtra_js[] = $this->add_path('/js/widgets.js');
+		$this->template->js[] = $this->add_path('/js/widgets.js');
 
 		$username = Auth::instance()->get_user()->username;
 

@@ -18,7 +18,7 @@ javascript file called link.js.
 
 in link.php:
 @code
-$this->xtra_js[] = 'application/addons/intranet_link/link.js';
+$this->template->js[] = 'application/addons/intranet_link/link.js';
 @endcode
 
 in link.js:

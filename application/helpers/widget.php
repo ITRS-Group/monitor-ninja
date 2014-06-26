@@ -64,8 +64,8 @@ class widget
 			}
 		}
 
-		$master->xtra_js = array_unique($master->xtra_js);
-		$master->xtra_css = array_unique($master->xtra_css);
+		$master->template->js = array_unique($master->template->js);
+		$master->template->css = array_unique($master->template->css);
 
 		return $order;
 	}
@@ -138,8 +138,8 @@ class widget
 	 * @param $master Generally the caller controller, which will then have to provide this to their template
 	 */
 	public static function set_resources($widget, $master) {
-		$master->xtra_js = array_merge(isset($master->xtra_js) && is_array($master->xtra_js) ? $master->xtra_js : array(), $widget->resources($widget->js, 'js'));
-		$master->xtra_css = array_merge(isset($master->xtra_css) && is_array($master->xtra_css) ? $master->xtra_css : array(), $widget->resources($widget->css, 'css'));
+		$master->template->js = array_merge(isset($master->template->js) && is_array($master->template->js) ? $master->template->js : array(), $widget->resources($widget->js, 'js'));
+		$master->template->css = array_merge(isset($master->template->css) && is_array($master->template->css) ? $master->template->css : array(), $widget->resources($widget->css, 'css'));
 		$master->inline_js .= $widget->inline_js;
 		if ($widget->model) {
 			$widget_id = 'widget-'.$widget->model->name.'-'.$widget->model->instance_id;

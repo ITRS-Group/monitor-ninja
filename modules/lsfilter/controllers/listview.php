@@ -21,47 +21,46 @@ class ListView_Controller extends Authenticated_Controller {
 		$js_strings .= 'Date.dayNames = '.json_encode(date::day_names()).";\n";
 		$this->template->inline_js = $js_strings;
 
-		$this->xtra_js[] = 'index.php/manifest/js/orm_structure.js';
+		$this->template->js[] = 'index.php/manifest/js/orm_structure.js';
 
-		$this->xtra_js[] = $basepath.'js/LSFilter.js';
-		$this->xtra_js[] = $basepath.'js/LSFilterLexer.js';
-		$this->xtra_js[] = $basepath.'js/LSFilterParser.js';
-		$this->xtra_js[] = $basepath.'js/LSFilterPreprocessor.js';
-		$this->xtra_js[] = $basepath.'js/LSFilterVisitor.js';
+		$this->template->js[] = $basepath.'js/LSFilter.js';
+		$this->template->js[] = $basepath.'js/LSFilterLexer.js';
+		$this->template->js[] = $basepath.'js/LSFilterParser.js';
+		$this->template->js[] = $basepath.'js/LSFilterPreprocessor.js';
+		$this->template->js[] = $basepath.'js/LSFilterVisitor.js';
 
-		$this->xtra_js[] = $basepath.'js/LSColumns.js';
-		$this->xtra_js[] = $basepath.'js/LSColumnsLexer.js';
-		$this->xtra_js[] = $basepath.'js/LSColumnsParser.js';
-		$this->xtra_js[] = $basepath.'js/LSColumnsPreprocessor.js';
-		$this->xtra_js[] = $basepath.'js/LSColumnsVisitor.js';
+		$this->template->js[] = $basepath.'js/LSColumns.js';
+		$this->template->js[] = $basepath.'js/LSColumnsLexer.js';
+		$this->template->js[] = $basepath.'js/LSColumnsParser.js';
+		$this->template->js[] = $basepath.'js/LSColumnsPreprocessor.js';
+		$this->template->js[] = $basepath.'js/LSColumnsVisitor.js';
 
-/*		$this->xtra_js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
-		$this->xtra_js[] = $basepath.'media/js/LSFilterVisitors.js';
-		$this->xtra_js[] = 'index.php/listview/renderer/table.js';
-		$this->xtra_js[] = 'index.php/listview/renderer/buttons.js';
-		$this->xtra_js[] = 'index.php/listview/renderer/extra_objects.js';
-		$this->xtra_js[] = 'index.php/listview/renderer/totals.js';
+/*		$this->template->js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
+		$this->template->js[] = $basepath.'media/js/LSFilterVisitors.js';
+		$this->template->js[] = 'index.php/listview/renderer/table.js';
+		$this->template->js[] = 'index.php/listview/renderer/buttons.js';
+		$this->template->js[] = 'index.php/listview/renderer/extra_objects.js';
+		$this->template->js[] = 'index.php/listview/renderer/totals.js';
 
-		$this->xtra_js[] = $basepath.'media/js/LSFilterMain.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterMain.js';
 
-		$this->xtra_js[] = $basepath.'media/js/LSFilterHistory.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterList.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterListEvents.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterListTableDesc.js';
-/*		$this->xtra_js[] = $basepath.'media/js/LSFilterSaved.js'; saved searched loaded globally */
-		$this->xtra_js[] = $basepath.'media/js/LSFilterTextarea.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterVisual.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterHistory.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterList.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterListEvents.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterListTableDesc.js';
+/*		$this->template->js[] = $basepath.'media/js/LSFilterSaved.js'; saved searched loaded globally */
+		$this->template->js[] = $basepath.'media/js/LSFilterTextarea.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterVisual.js';
 
-		$this->xtra_js[] = $basepath.'media/js/LSFilterMultiselect.js';
-		$this->xtra_js[] = $basepath.'media/js/LSFilterInputWindow.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterMultiselect.js';
+		$this->template->js[] = $basepath.'media/js/LSFilterInputWindow.js';
 
-		$this->xtra_js[] = 'index.php/listview/columns_config/vars';
+		$this->template->js[] = 'index.php/listview/columns_config/vars';
 
 		$custom_extra_js = Module_Manifest_Model::get('lsfilter_extra_js');
-		$this->xtra_js = array_merge($this->xtra_js, $custom_extra_js);
+		$this->template->js = array_merge($this->template->js, $custom_extra_js);
 
-		$this->xtra_css = array();
-		$this->xtra_css[] = $basepath.'views/css/LSFilterStyle.css';
+		$this->template->css[] = $basepath.'views/css/LSFilterStyle.css';
 
 		$this->template->title = _('List view');
 		$this->template->toolbar = new Toolbar_Controller( $this->template->title );

@@ -39,11 +39,11 @@ class Histogram_Controller extends Base_reports_Controller
 		$template->scheduled_info = $scheduled_info;
 		$template->report_options = $this->add_view('histogram/options');
 
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
@@ -60,13 +60,13 @@ class Histogram_Controller extends Base_reports_Controller
 	{
 		$this->setup_options_obj($input);
 		$this->template->disable_refresh = true;
-		$this->xtra_js[] = 'application/media/js/jquery.flot.min.js';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = 'application/media/js/excanvas.compiled.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = ninja::add_path('histogram/js/histogram.js', 'reports');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->js[] = 'application/media/js/jquery.flot.min.js';
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = 'application/media/js/excanvas.compiled.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = ninja::add_path('histogram/js/histogram.js', 'reports');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 		$rpt = new Summary_Reports_Model($this->options);
 
 		$title = _('Alert histogram');

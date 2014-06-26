@@ -18,9 +18,9 @@ class Rotation_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('/rotation/view');
 		$this->template->title = _('Monitoring » Rotation');
-		$this->xtra_js[] = $this->add_path('/rotation/js/rotation.js');
-		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
-		$this->xtra_css[] = $this->add_path('rotation/css/rotation.css');
+		$this->template->js[] = $this->add_path('/rotation/js/rotation.js');
+		$this->template->js[] = $this->add_path('/js/iframe-adjust.js');
+		$this->template->css[] = $this->add_path('rotation/css/rotation.css');
 		$this->template->disable_refresh = true;
 	}
 

@@ -77,7 +77,7 @@ class Command_Controller extends Authenticated_Controller
 	public function submit($cmd = false, $params=false)
 	{
 		$this->init_page('command/request');
-		$this->xtra_js[] = $this->add_path('command/js/command.js');
+		$this->template->js[] = $this->add_path('command/js/command.js');
 
 		if ($cmd === false) {
 			$cmd = $this->input->get('cmd_typ');
@@ -116,7 +116,7 @@ class Command_Controller extends Authenticated_Controller
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
 			$this->template->inline_js = "grace_time_in_s = '$this->grace_time_in_s'";
-			$this->xtra_js[] = $this->add_path('command/js/schedule_downtime.js');
+			$this->template->js[] = $this->add_path('command/js/schedule_downtime.js');
 			$param['_child-hosts'] = array
 				('type' => 'select',
 				 'options' => array
@@ -130,7 +130,7 @@ class Command_Controller extends Authenticated_Controller
 			break;
 		 case 'SCHEDULE_SVC_DOWNTIME':
 			$this->template->inline_js = "grace_time_in_s = '$this->grace_time_in_s'";
-			$this->xtra_js[] = $this->add_path('command/js/schedule_downtime.js');
+			$this->template->js[] = $this->add_path('command/js/schedule_downtime.js');
 			break;
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':

@@ -57,12 +57,12 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('recurring_downtime/setup');
 		$template = $this->template->content;
 
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('recurring_downtime/js/recurring_downtime.js');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = $this->add_path('recurring_downtime/js/recurring_downtime.js');
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$date_format = cal::get_calendar_format(true);
 

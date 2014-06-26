@@ -369,7 +369,7 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->disable_refresh = true;
 
 		$this->template->content = $this->add_view('user/edit_menu');
-		$this->xtra_js[] = $this->add_path('user/js/user.js');
+		$this->template->js[] = $this->add_path('user/js/user.js');
 		$content = $this->template->content;
 
 		$content->select_user_message = _("Select the user below to edit the menu for.");

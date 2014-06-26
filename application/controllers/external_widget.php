@@ -40,7 +40,7 @@ class External_widget_Controller extends Widget_Controller {
 
 		$this->template->content = $this->add_view('single_widget');
 		$this->template->title = _('External widget');
-		$this->xtra_js[] = $this->add_path('/js/widgets.js');
+		$this->template->js[] = $this->add_path('/js/widgets.js');
 
 		$model = Ninja_widget_Model::get(Router::$controller.'/'.Router::$method, $name, $instance_id);
 		if (!$model) {

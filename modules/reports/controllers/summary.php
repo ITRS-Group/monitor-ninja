@@ -68,12 +68,12 @@ class Summary_Controller extends Base_reports_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = $this->add_path('summary/js/summary.js');
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
@@ -144,11 +144,11 @@ class Summary_Controller extends Base_reports_Controller
 		}
 
 		$this->template->disable_refresh = true;
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = $this->add_path('summary/js/summary.js');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$views = array(
 			Summary_options::TOP_ALERT_PRODUCERS => 'toplist',

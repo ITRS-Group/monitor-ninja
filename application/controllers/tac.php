@@ -16,7 +16,7 @@ class Tac_Controller extends Authenticated_Controller {
 	{
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
-		$this->xtra_js[] = $this->add_path('/js/widgets.js');
+		$this->template->js[] = $this->add_path('/js/widgets.js');
 		$this->template->disable_refresh = true;
 
 		# make sure we have this done before letting widgets near

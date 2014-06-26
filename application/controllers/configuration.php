@@ -68,7 +68,7 @@ class Configuration_Controller extends Authenticated_Controller {
 		$this->template->content = '<iframe src="'.Kohana::config('config.nacoma_path').'/'.$target_link.'" style="width: 100%; height: 768px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = _('Configuration » Configure');
 		$this->template->nacoma = true;
-		$this->xtra_js[] = $this->add_path('/js/iframe-adjust.js');
-		$this->xtra_js[] = $this->add_path('/js/nacoma-urls.js');
+		$this->template->js[] = $this->add_path('/js/iframe-adjust.js');
+		$this->template->js[] = $this->add_path('/js/nacoma-urls.js');
 	}
 }

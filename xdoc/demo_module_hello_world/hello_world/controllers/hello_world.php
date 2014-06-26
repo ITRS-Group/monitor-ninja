@@ -39,7 +39,7 @@ class Hello_world_Controller extends Authenticated_Controller {
 		# disable page refresh - set to false (or remove) to enable
 		$this->template->disable_refresh = true;
 
-		$this->xtra_js[] = 'modules/hello_world/views/hello_world/js/hello.js';
+		$this->template->js[] = 'modules/hello_world/views/hello_world/js/hello.js';
 
 		# pass the string to the translation object if you
 		# would like to be able to translate it using gettext tools

@@ -77,14 +77,14 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function basic_setup()
 	{
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('showlog/js/showlog.js');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = $this->add_path('showlog/js/showlog.js');
 
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
-		$this->xtra_css[] = $this->add_path('showlog/css/showlog.css');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = $this->add_path('showlog/css/showlog.css');
 		$this->js_strings .= reports::js_strings();
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;

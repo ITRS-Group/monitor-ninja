@@ -68,11 +68,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
-		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
 
 		// Widgets
 		$this->template->content->widgets = array();
-		$this->xtra_js[] = $this->add_path('/js/widgets.js');
+		$this->template->js[] = $this->add_path('/js/widgets.js');
 
 		# save us some typing
 		$content = $this->template->content;
@@ -380,7 +380,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
-		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
 
 		$this->template->title = _('Monitoring » Group detail');
 
@@ -622,8 +622,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
-		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
-		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
 		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 

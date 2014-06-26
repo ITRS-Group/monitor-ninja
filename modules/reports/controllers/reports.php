@@ -51,22 +51,22 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		# we should set the required js-files
-		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
+		$this->template->js[] = $this->add_path('reports/js/tgraph.js');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = $this->add_path('reports/js/reports.js');
 
 		# this makes anything in application/media be imported before
 		# application/views before modules/whatever, so op5reports can
 		# put random crap here as well.
 
 		# I apologize
-		sort($this->xtra_js);
-		$this->xtra_js = array_unique($this->xtra_js);
+		sort($this->template->js);
+		$this->template->js = array_unique($this->template->js);
 
-		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = $this->add_path('reports/css/tgraph.css');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		# what scheduled reports are there?
 		$scheduled_periods = null;
@@ -151,11 +151,11 @@ class Reports_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/invalid_setup');
 		}
 
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
-		$this->xtra_js[] = $this->add_path('reports/js/common.js');
-		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
+		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
+		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
+		$this->template->js[] = $this->add_path('reports/js/tgraph.js');
+		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = $this->add_path('reports/js/reports.js');
 
 		if ($this->options['skin']) {
 			if (substr($this->options['skin'], -1, 1) != '/') {
@@ -164,8 +164,8 @@ class Reports_Controller extends Base_reports_Controller
 			$this->template->current_skin = $this->options['skin'];
 		}
 
-		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = $this->add_path('reports/css/tgraph.css');
+		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
@@ -427,7 +427,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 
-		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
+		$this->template->js[] = $this->add_path('summary/js/summary.js');
 		if ($this->options['include_alerts']) {
 			$alrt_opts = new Alert_history_options($this->options);
 			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
@@ -446,7 +446,7 @@ class Reports_Controller extends Base_reports_Controller
 			$synergy_content->synergy_events = $synergy_report_model->get_data();
 			$this->template->content->synergy_content = $synergy_content;
 		}
-		sort($this->xtra_js);
+		sort($this->template->js);
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 		if($scheduled_info) {
 			$schedule_id = $this->input->get('schedule_id', null);
