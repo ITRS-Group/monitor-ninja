@@ -23,8 +23,11 @@
 
 		if (!isset($skip_save)) { ?>
 		<a class="image-link" href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
-		<?php } ?>
+		<?php
+		}
+		if (!isset($skip_edit)) { ?>
 		<a class="image-link fancybox" href="#options"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('Edit settings'), 'title' => _('Edit settings'))); ?></a>
+		<?php } ?>
 		<?php if ($options['report_id']) { ?>
 		<a class="image-link" id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
 		<?php }
@@ -87,5 +90,6 @@
 		<div class="description">
 			<p><?php echo nl2br(html::specialchars(isset($description) ? $description : $options['description'])) ?></p>
 		</div>
+
 	</div>
 </div>
