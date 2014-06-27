@@ -252,7 +252,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
-		When I select "Alert summary report" from "Select report type"
+		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
 		When I select "saved test report" from "Select report"
 		And I select "Weekly" from "Report interval"
@@ -270,7 +270,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
-		When I select "Alert summary report" from "Select report type"
+		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 		And I should see "saved_test_report"
 		When I click "View report" on the row where "Report" is "saved test report"
@@ -296,7 +296,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
-		When I select "Alert summary report" from "Select report type"
+		When I select "Alert Summary Report" from "Select report type"
 		And I shouldn't see "saved_test_report"
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"

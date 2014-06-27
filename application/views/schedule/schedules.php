@@ -19,7 +19,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr id="<?php echo $report_type ?>_no_result" class="no-result" style="display: none"><td colspan="8"><center><h3><?php echo sprintf(_('There are no scheduled %s reports'), $report_type_label) ?></h3></center></td></tr>
+				<tr id="<?php echo $report_type ?>_no_result" class="no-result" style="display: none"><td colspan="8"><center><h3><?php echo sprintf(_('There are no scheduled %s'), $report_type_label) ?></h3></center></td></tr>
 			</tbody>
 		</table>
 	</div>

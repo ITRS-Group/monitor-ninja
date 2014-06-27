@@ -36,10 +36,10 @@ class Schedule_Controller extends Authenticated_Controller
 				$report_types[$rpt_type->id] = $rpt_type->identifier; # needed for javascript json
 				switch ($rpt_type->identifier) {
 					case 'avail':
-						$defined_report_types[$rpt_type->identifier] = _('Availability report');
+						$defined_report_types[$rpt_type->identifier] = _('Availability reports');
 						break;
 					case 'sla':
-						$defined_report_types[$rpt_type->identifier] = _('SLA report');
+						$defined_report_types[$rpt_type->identifier] = _('SLA reports');
 						break;
 					default:
 						$defined_report_types[$rpt_type->identifier] = $rpt_type->name;
