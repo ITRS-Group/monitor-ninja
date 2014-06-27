@@ -41,8 +41,8 @@ class Schedule_Controller extends Authenticated_Controller
 					case 'sla':
 						$defined_report_types[$rpt_type->identifier] = _('SLA report');
 						break;
-					case 'summary':
-						$defined_report_types[$rpt_type->identifier] = _('Alert summary report');
+					default:
+						$defined_report_types[$rpt_type->identifier] = $rpt_type->name;
 						break;
 				}
 			}
@@ -52,9 +52,10 @@ class Schedule_Controller extends Authenticated_Controller
 
 		# add new schedule template to available_schedules template
 		$available_schedules->new_schedule = $new_schedule;
+		$available_schedules->defined_report_types = $defined_report_types;
 
 		$scheduled_reports = array();
-		foreach (array('avail', 'sla', 'summary') as $type) {
+		foreach ($defined_report_types as $type => $_) {
 			$scheduled_reports[$type] = Scheduled_reports_Model::get_scheduled_reports($type)->result_array(false);
 		}
 

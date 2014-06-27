@@ -26,8 +26,6 @@ class Scheduled_reports_Model extends Model
 	static function delete_all_scheduled_reports($type='avail',$id=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary'	)
-			return false;
 		$db = Database::instance();
 
 		# what report_type_id do we have?
@@ -57,8 +55,6 @@ class Scheduled_reports_Model extends Model
 	public static function get_scheduled_reports($type)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
 
 		$db = Database::instance();
 
@@ -99,8 +95,6 @@ class Scheduled_reports_Model extends Model
 	static function report_is_scheduled($type='avail', $id=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
-			return false;
 
 		$id = (int)$id;
 		if (!$id) return false;

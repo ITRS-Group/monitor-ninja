@@ -2,7 +2,7 @@
 <div id="schedules_area">
 	<?php echo isset($new_schedule) ? $new_schedule : '' ?>
 	<h1><?php echo _('Scheduled reports') ?></h1>
-	<?php foreach(array('availability' => 'avail', 'SLA' => 'sla', 'summary' => 'summary') as $report_type_label => $report_type) { ?>
+	<?php foreach($defined_report_types as $report_type => $report_type_label) { ?>
 	<div id="scheduled_<?php echo $report_type ?>_reports">
 		<table id="<?php echo $report_type ?>_scheduled_reports_table">
 			<caption><?php echo _('Your scheduled '.$report_type_label.' Reports') ?></caption>

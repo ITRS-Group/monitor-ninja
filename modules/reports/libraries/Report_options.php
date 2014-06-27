@@ -916,10 +916,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			$message = _("No report name provided");
 			return false;
 		}
-		if (!$this['objects']) {
-			$message = _("Can't save report without report members");
-			return false;
-		}
 		$db = Database::instance();
 		$auth = op5auth::instance();
 		$user = Auth::instance()->get_user()->username;
@@ -962,13 +958,15 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		}
 		$sql .= implode(', ', $rows);
 		$db->query($sql);
-		$sql = "INSERT INTO saved_reports_objects(report_id, object_name) VALUES ";
-		$rows = array();
-		foreach ($this['objects'] as $object) {
-			$rows[] = '(' . (int)$this['report_id'] . ', ' . $db->escape($object) . ')';
+		if ($this['objects']) {
+			$sql = "INSERT INTO saved_reports_objects(report_id, object_name) VALUES ";
+			$rows = array();
+			foreach ($this['objects'] as $object) {
+				$rows[] = '(' . (int)$this['report_id'] . ', ' . $db->escape($object) . ')';
+			}
+			$sql .= implode(', ', $rows);
+			$db->query($sql);
 		}
-		$sql .= implode(', ', $rows);
-		$db->query($sql);
 		return true;
 	}
 
