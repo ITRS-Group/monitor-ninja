@@ -951,7 +951,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				$val = @serialize($val);
 			}
 			# Don't save start- or end_time when we have report_period != custom
-			if (in_array($key, array('start_time', 'end_time')) && $this['report_period'] != 'custom') {
+			if (in_array($key, array('start_time', 'end_time')) && isset($this->properties['report_period'] && $this['report_period'] != 'custom') {
 				continue;
 			}
 			$rows[] = '(' . (int)$this['report_id'] . ', ' . $db->escape($key) . ', ' . $db->escape($val) . ')';
