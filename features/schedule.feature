@@ -62,7 +62,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
-		And "Availability report" should be selected from "Select report type"
+		And "Availability reports" should be selected from "Select report type"
 		When I select "Weekly" from "Report interval"
 		And I select "saved test report" from "Select report"
 		And I enter "dev@op5.com" into "Recipients"
@@ -79,7 +79,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
-		And "Availability report" should be selected from "Select report type"
+		And "Availability reports" should be selected from "Select report type"
 		And "Select report" should have option "saved test report"
 		And I should see "saved_test_report"
 		When I click "View report" on the row where "Report" is "saved test report"
@@ -93,7 +93,7 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Schedule Reports"
 		Then I should see "New Schedule"
-		And "Availability report" should be selected from "Select report type"
+		And "Availability reports" should be selected from "Select report type"
 		And "Weekly" should be selected from "Report interval"
 		When I select "saved test report" from "Select report"
 		Then "Filename" should contain "saved_test_report_Weekly.pdf"
