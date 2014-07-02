@@ -57,6 +57,9 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->js[] = $this->add_path('reports/js/common.js');
 		$this->template->js[] = $this->add_path('reports/js/reports.js');
 
+		$this->template->js[] = 'application/media/js/lib.set.js';
+		$this->template->js[] = 'application/media/js/jquery.filterable.js';
+
 		# this makes anything in application/media be imported before
 		# application/views before modules/whatever, so op5reports can
 		# put random crap here as well.
@@ -65,6 +68,7 @@ class Reports_Controller extends Base_reports_Controller
 		sort($this->template->js);
 		$this->template->js = array_unique($this->template->js);
 
+		$this->template->css[] = 'application/media/css/jquery.filterable.css';
 		$this->template->css[] = $this->add_path('reports/css/tgraph.css');
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 

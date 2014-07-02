@@ -1,0 +1,130 @@
+
+.jq-filterable-box {
+	display: inline-block;
+	vertical-align: 45%;
+	position: relative;
+}
+
+.jq-filterable-right {
+	display: inline-block;
+	position: relative;
+	vertical-align: top;
+}
+
+.jq-filterable-left {
+	display: inline-block;
+	position: relative;
+	vertical-align: top;
+}
+
+.jq-filterable-filter[type="text"] {
+	margin: 0;
+	width: 150px;
+	padding: 6px 2px 5px 2px;
+	border: 1px solid #bbb;
+	vertical-align: top;
+}
+
+.jq-filterable-larger {
+	width: 250px !important;
+}
+
+.jq-filterable-list {
+	margin-top: 0;
+	border: 1px solid #bbb;
+	width: 150px;
+	height: 25px;
+	vertical-align: top;
+	padding: 4px;
+}
+
+.jq-filterable-list[multiple],
+.jq-filterable-results {
+	margin-top: 0;
+	height: auto;
+	border: 1px solid #bbb;
+	width: 256px !important;
+	min-width: 256px !important;
+	height: 100px;
+}
+
+.jq-filterable-list[multiple] {
+	border-top: none;
+}
+
+.jq-filterable-results {
+	height: 127px;
+}
+
+.jq-filterable-list option,
+.jq-filterable-results option {
+	//padding: 4px 4px;
+	font-size: 110%;
+}
+
+.jq-filterable-results option[data-matching="no-match"] {
+	color: #888;
+}
+
+ul.jq-filterable-dragbox {
+	position: fixed;
+	list-style: none;
+
+	border: 1px solid #999;
+	background: #fefefe;
+	font-size: 90%;
+	color: #666;
+
+	margin: 0;
+	padding: 0;
+	width: 254px;
+}
+
+ul.jq-filterable-dragbox li {
+	margin: 0;
+	padding: 4px 4px;
+	border-top: 1px dotted #ccc;
+}
+
+.jq-filterable-move {
+	position: absolute;
+	right: 0px;
+	top: 4px;
+	padding: 0px 2px !important;
+	margin: 0 !important;
+	background: transparent !important;
+	border: 1px solid #ccc;
+}
+
+.jq-filterable-stats,
+.jq-filterable-stats-multi,
+.jq-filterable-result-stats {
+
+	position: relative;
+	text-align: right;
+
+	width: 150px;
+	padding: 2px 2px 1px 2px;
+	border: none;
+
+	font-size: 8pt;
+	color: #999;
+}
+
+.jq-filterable-stats[data-state="info"] {
+	color: #999;
+}
+
+.jq-filterable-stats[data-state="warning"] {
+	color: #ffcc00;
+}
+
+.jq-filterable-stats[data-state="error"] {
+	color: #ff4400;
+}
+
+.jq-filterable-working select,
+.jq-filterable-working input,
+.jq-filterable-working button {
+	cursor: wait !important;
+}

@@ -3,46 +3,6 @@ var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
 var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
-	// handle the move-between-lists-button (> + <) and double click events
-	function move_right() {
-		var selects = $(this).parent().parent().find('select');
-		moveAndSort(selects.filter(':first'), selects.filter(':last'));
-	}
-	function move_left() {
-		var selects = $(this).parent().parent().find('select');
-		moveAndSort(selects.filter(':last'), selects.filter(':first'));
-	}
-	$('.arrow-right').click(move_right);
-	$('.arrow-left').click(move_left);
-	$('#hostgroup_tmp, #servicegroup_tmp, #host_tmp, #service_tmp, #objects_tmp').dblclick(move_right);
-	$('#hostgroup, #servicegroup, #host_name, #service_description, #objects').dblclick(move_left);
-
-	$('#response').on('click', "#hide_response", function() {
-		$('#response').hide('slow');
-	});
-
-	$(".fancybox").fancybox({
-		'overlayOpacity'	:	0.7,
-		'overlayColor'		:	'#ffffff',
-		'hideOnContentClick' : false,
-		'autoScale':true,
-		'autoDimensions': true,
-	});
-
-	init_regexpfilter();
-	$('#filter_field').keyup(function() {
-		if ($(this).attr('value') == '') {
-			MyRegexp.resetFilter($("select[id$=_tmp]").filter(":visible").attr('id'));
-			return;
-		}
-		MyRegexp.selectFilter($("select[id$=_tmp]").filter(":visible").attr('id'), this.value);
-	});
-
-	$('#clear_filter').click(function() {
-		$('#filter_field').attr('value', '');
-		MyRegexp.resetFilter($("select[id$=_tmp]").filter(":visible").attr('id'));
-		$('#filter_field').focus();
-	});
 
 	var direct_link_visible = false;
 	$('#current_report_params').click(function() {
@@ -135,33 +95,35 @@ $(document).ready(function() {
 		});
 	});
 
-	$('select[name=report_type]').on('change', function() {
-		var value = this.value;
-		set_selection(value);
-		get_members(value, function(all_names) {
-			populate_options($('#objects_tmp'), $('#objects'), all_names);
-		});
-	}).each(function() {
-		var value = this.value;
-		set_selection(value);
-		get_members(value, function(all_names) {
-			populate_options($('#objects_tmp'), $(), all_names);
-			var tmp = $('#objects_tmp');
-			var mo = new missing_objects();
-			var objs = $('#objects');
-			var elems = objs.children();
-			for (var i = 0; i < elems.length; i++) {
-				var prop = elems[i];
-				if (tmp.containsOption(prop.value)) {
-					tmp.removeOption(prop.value);
-				} else {
-					mo.add(prop.value);
-					objs.removeOption(prop.value);
+	var hostname = window.location.protocol + "//" + window.location.host;
+	$('select[name=report_type]').on('change', function( e ) {
+
+		var filterable = jQuery.fn.filterable.find( $('select[name="objects[]"]') ),
+			type = e.target.value.replace( /s$/, "" );
+
+		if ( filterable ) {
+			$.ajax({
+				url: hostname + '/api/status/' + type,
+				data: { 'format': 'json', csrf_token: _csrf_token, 'auth_method': 'ninja' },
+				dataType: 'json',
+				error: function( xhr ) {
+					console.log( xhr.responseText );
+				},
+				success: function( data ) {
+
+					var names = [];
+					for ( var i = 0; i < data.length; i++ )
+						names.push( data[ i ].name );
+
+					filterable.data = new Set( names );
+					filterable.reset();
+
 				}
-			}
-			mo.display_if_any();
-		});
+			});
+		}
+
 	});
+
 	$('#sel_report_type').on('click', function() {
 		var value = this.form.report_type.value;
 		set_selection(value);
@@ -692,42 +654,3 @@ jQuery.extend(
 		}
 	}
 );
-
-/**
-*	Regexp filter that (hopefully) works for all browsers
-*	and not just FF
-*/
-function init_regexpfilter() {
-	MyRegexp = new Object();
-	MyRegexp.selectFilterData = new Object();
-	MyRegexp.selectFilter = function(selectId, filter) {
-		var list = document.getElementById(selectId);
-		if(!MyRegexp.selectFilterData[selectId]) {
-			//if we don't have a list of all the options, cache them now'
-			MyRegexp.selectFilterData[selectId] = new Array();
-			for(var i = 0; i < list.options.length; i++)
-				MyRegexp.selectFilterData[selectId][i] = list.options[i];
-		}
-		list.options.length = 0;   //remove all elements from the list
-		var r = new RegExp(filter, 'i');
-		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) {
-			//add elements from cache if they match filter
-			var o = MyRegexp.selectFilterData[selectId][i];
-			//if(o.text.toLowerCase().indexOf(filter.toLowerCase()) >= 0) list.add(o, null);
-			if(!o.parentNode && r.test(o.text)) list.add(o, null);
-		}
-	}
-	MyRegexp.resetFilter = function(selectId) {
-		if (typeof MyRegexp.selectFilterData[selectId] == 'undefined' || !MyRegexp.selectFilterData[selectId].length)
-			return;
-		var list = document.getElementById(selectId);
-		list.options.length = 0;   //remove all elements from the list
-		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) {
-			//add elements from cache if they match filter
-			var o = MyRegexp.selectFilterData[selectId][i];
-			if (!o.parentNode)
-				list.add(o, null);
-		}
-
-	};
-}

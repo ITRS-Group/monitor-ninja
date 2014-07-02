@@ -20,7 +20,28 @@
 		if (isset($schedule_id) && !empty($schedule_id)) {?>
 		<input type="hidden" name="schedule_id" value="<?php echo $schedule_id ?>" />
 		<?php }?>
-		<table summary="Select object type" class="setup-tbl">
+		<table summary="Select object type" class="setup-tbl obj_selector">
+			<tr>
+				<td colspan="3">
+					<select id="report_type" name="report_type">
+						<option value="hostgroups" <?php echo $schedule_info->get_downtime_type() === 'hostgroups' ? 'selected="selected"' : ''; ?>><?php echo _('Hostgroups') ?></option>
+						<option value="hosts" <?php echo $schedule_info->get_downtime_type() === 'hosts' ? 'selected="selected"' : ''; ?>><?php echo _('Hosts') ?></option>
+						<option value="servicegroups" <?php echo $schedule_info->get_downtime_type() === 'servicegroups' ? 'selected="selected"' : ''; ?>><?php echo _('Servicegroups') ?></option>
+						<option value="services" <?php echo $schedule_info->get_downtime_type() === 'services' ? 'selected="selected"' : ''; ?>><?php echo _('Services') ?></option>
+					</select>
+					<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
+					&nbsp;
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<select data-filterable data-type="hostgroup" name="objects[]" id="objects" multiple="multiple">
+					</select>
+				</td>
+			</tr>
+		</table>
+
+		<!--table summary="Select object type" class="setup-tbl">
 
 			<tr>
 				<td colspan="3">
@@ -62,7 +83,7 @@
 				<div class="clear"></div>
 				</td>
 			</tr>
-		</table>
+		</table-->
 	</div>
 
 	<div class="report-block">

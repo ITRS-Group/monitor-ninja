@@ -62,7 +62,11 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->js[] = $this->add_path('reports/js/common.js');
 		$this->template->js[] = $this->add_path('recurring_downtime/js/recurring_downtime.js');
 
+		$this->template->js[] = 'application/media/js/lib.set.js';
+		$this->template->js[] = 'application/media/js/jquery.filterable.js';
+
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
+		$this->template->css[] = 'application/media/css/jquery.filterable.css';
 
 		$date_format = cal::get_calendar_format(true);
 
