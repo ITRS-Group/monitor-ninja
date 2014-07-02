@@ -144,7 +144,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			die($msg);
 		}
 
-		$id = $this->input->post('report_id');
+		$id = $this->input->post('report_id',$this->input->get('report_id'));
 		if (!$id)
 			return json::fail(array('error' => _('No id supplied')));
 
