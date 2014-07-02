@@ -1,4 +1,4 @@
-GENERATE_PHP_MODS=
+ GENERATE_PHP_MODS=
 OP5LIBCFG=test/configs/all-host_service-states/op5lib
 
 all: generate-css generate-php

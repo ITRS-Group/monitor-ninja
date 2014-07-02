@@ -69,7 +69,9 @@ function format_timestamp(timestamp)
 {
 	// remember: server's offset is local - UTC, client's offset is UTC - local,
 	// so the sign should be the same.
-	var dateobj = new Date((timestamp + _server_utc_offset) * 1000);
+	var timestamp_int = parseInt(timestamp);
+
+	var dateobj = new Date((timestamp_int + _server_utc_offset) * 1000);
 	dateobj = new Date(dateobj.getTime() + (dateobj.getTimezoneOffset() * 60000));
 	var ret = dateobj.format(_date_format);
 	dateobj = null;
