@@ -98,6 +98,11 @@
 		this.resultstats =	this.box.find( '.jq-filterable-result-stats' );
 		this.mover =				this.box.find( '.jq-filterable-move' );
 
+		this.form = filtered.closest("form");
+		this.form.on( "submit", function ( e ) {
+			self.selected.find( "option" ).attr( "selected", true );
+		} );
+
 		if ( this.multiple ) {
 
 			this.selected.attr( "id", this.filtered.attr( "id" ) );
@@ -143,11 +148,6 @@
 
 			}
 
-		} );
-
-		this.form = this.selected.closest("form");
-		this.form.on( "submit", function ( e ) {
-			self.selected.find( "option" ).attr( "selected", true );
 		} );
 
 		this.box.on('click', '.deselect_all', function( e ) {
