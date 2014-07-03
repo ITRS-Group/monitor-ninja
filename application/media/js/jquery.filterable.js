@@ -63,6 +63,14 @@
 
 	var Filterable = function Filterable ( filtered, data ) {
 
+		var defaults = [];
+
+		if ( filtered.find( 'option' ).length > 0 ) {
+			filtered.find( 'option' ).each( function ( i, e ) {
+				defaults.push( e.value );
+			} );
+		}
+
 		var self = this;
 		this.box = null;
 
@@ -75,7 +83,7 @@
 		}
 
 		if (!this.multiple && !filtered.attr('data-required')) {
-			data.unshift('');
+			data.unshift(' ');
 		}
 
 		this.results =			new Set();
@@ -98,26 +106,21 @@
 			this.filtered.attr("id", this.selected.attr("id").replace('[', '_tmp['));
 			this.filtered.removeAttr( "name" );
 
+			if ( defaults.length > 0 ) {
+				defaults = new Set( defaults );
+				this.add( defaults );
+			}
+
 		}
 
 		filtered.replaceWith( this.box );
 
-
 		var _default = filtered.find( ':selected' );
-		if ( _default ) {
-			this.filter.val( _default.val() );
-			this.search( _default.val() );
+		if ( _default ) this.filter.val( _default.val() );
+
+		if ( _default.length < 1 && defaults.length < 1 ) {
+			this.search( this.filter.val() );
 		}
-
-		/*if ( filtered.val() ) {
-
-			var value = filtered.val();
-			if ( typeof( value ) == "string" )
-				value = [ value ];
-
-			this.add( new Set( value ) );
-
-		}*/
 
 		// Add relevant events
 
@@ -220,19 +223,21 @@
 		this.filtered.attr( 'disabled', 'disabled' );
 		this.box.addClass( 'jq-filterable-working' );
 
-		var batch = this.batcher( this.memory );
+		var batch = this.batcher( this.memory ),
+			completed = batch(),
 			interval = setInterval( function () {
-			var completed = batch();
-			if ( completed ) {
 
-				clearInterval( interval );
+				completed = batch();
+				if ( completed ) {
 
-				self.filtered.attr( 'disabled', false );
-				self.box.removeClass( 'jq-filterable-working' );
-				self.search( self.filter.val() );
+					clearInterval( interval );
 
-			}
-		}, 10 );
+					self.filtered.attr( 'disabled', false );
+					self.box.removeClass( 'jq-filterable-working' );
+					self.search( self.filter.val() );
+
+				}
+			}, 10 );
 
 	};
 
@@ -286,6 +291,7 @@
 			this.note( this.results.size() + " Items" );
 		}
 
+		// Fixes IE 9 error with dynamic options
 		this.selected.css( 'width', '0px' );
 		this.selected.css( 'width', '' );
 
