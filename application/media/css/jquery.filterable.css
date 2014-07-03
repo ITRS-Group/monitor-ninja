@@ -29,6 +29,10 @@
 	width: 250px !important;
 }
 
+.jq-filterable-largest {
+	width: 300px !important;
+}
+
 .jq-filterable-list {
 	margin-top: 0;
 	border: 1px solid #bbb;
@@ -45,7 +49,7 @@
 	border: 1px solid #bbb;
 	width: 256px !important;
 	min-width: 256px !important;
-	height: 100px;
+	height: 70px;
 }
 
 .jq-filterable-list[multiple] {
@@ -53,7 +57,7 @@
 }
 
 .jq-filterable-results {
-	height: 127px;
+	height: 97px;
 }
 
 .jq-filterable-list option,
@@ -91,13 +95,11 @@ ul.jq-filterable-dragbox li {
 	right: 0px;
 	top: 4px;
 	padding: 0px 2px !important;
-	margin: 0 !important;
 	background: transparent !important;
 	border: 1px solid #ccc;
 }
 
 .jq-filterable-stats,
-.jq-filterable-stats-multi,
 .jq-filterable-result-stats {
 
 	position: relative;

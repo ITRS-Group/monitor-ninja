@@ -54,7 +54,7 @@
 					filtered.clone()
 						.addClass( "jq-filterable-list" ),
 					"<br>",
-					$( '<div class="jq-filterable-stats">' )
+					$( '<div class="jq-filterable-stats jq-filterable-largest">' )
 				)
 			);
 		}
