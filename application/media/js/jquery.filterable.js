@@ -145,8 +145,8 @@
 
 		} );
 
-		this.selected.closest("form").on( "submit", function ( e ) {
-			e.preventDefault();
+		this.form = this.selected.closest("form");
+		this.form.on( "submit", function ( e ) {
 			self.selected.find( "option" ).attr( "selected", true );
 		} );
 
@@ -223,6 +223,9 @@
 		this.filtered.attr( 'disabled', 'disabled' );
 		this.box.addClass( 'jq-filterable-working' );
 
+		this.form.find( 'input[type="submit"]' )
+			.attr( 'disabled', 'disabled' );
+
 		var batch = this.batcher( this.memory ),
 			completed = batch(),
 			interval = setInterval( function () {
@@ -233,6 +236,9 @@
 					clearInterval( interval );
 
 					self.filtered.attr( 'disabled', false );
+					self.form.find( 'input[type="submit"]' )
+						.attr( 'disabled', false );
+
 					self.box.removeClass( 'jq-filterable-working' );
 					self.search( self.filter.val() );
 
