@@ -1,6 +1,6 @@
  GENERATE_PHP_MODS=
 OP5LIBCFG=test/configs/all-host_service-states/op5lib
-
+PHPDIR=/usr/local/share/php
 all: generate-css generate-php
 
 help:
@@ -92,4 +92,8 @@ i18n:
 		-j --package-name=ninja \
 		--from-code utf-8 -L php $$(find . -name '*.php')
 
-.PHONY: test help test-reports clean
+install-devel:
+	mkdir -m 0755 -p $(PHPDIR)/op5
+	cp -a src/op5/ninja_sdk $(PHPDIR)/op5/
+
+.PHONY: test help test-reports clean install-devel

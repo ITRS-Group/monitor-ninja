@@ -2,10 +2,12 @@
 %if 0%{?suse_version}
 %define htmlroot /srv/www/htdocs
 %define httpconfdir apache2/conf.d
+%define phpdir /usr/share/php5
 %define daemon_group www
 %else
 %define htmlroot /var/www/html
 %define httpconfdir httpd/conf.d
+%define phpdir /usr/share/php
 %define daemon_group apache
 %endif
 
@@ -83,6 +85,14 @@ Requires: monitor-pnp
 %description test
 Additional test files for ninja
 
+%package devel
+Summary: Development files for ninja
+Group: op5/monitor
+Requires: monitor-ninja = %version
+
+%description devel
+Development files files for ninja
+
 %prep
 %setup -q
 %if 0%{?suse_version}
@@ -103,6 +113,8 @@ rm -rf %buildroot
 mkdir -p -m 755 %buildroot%prefix
 mkdir -p -m 775 %buildroot%prefix/upload
 mkdir -p -m 775 %buildroot%prefix/application/logs
+
+make install-devel SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn)
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
@@ -217,6 +229,11 @@ done
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
+
+%files devel
+%defattr(-,root,root)
+%phpdir/op5/ninja_sdk
+
 
 %files test
 %defattr(-,monitor,%daemon_group)

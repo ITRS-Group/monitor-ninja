@@ -2,7 +2,7 @@
 
 require_once( '../buildlib.php' );
 
-require_once( 'op5/generators/orm/ORMBuilder.php' );
+require_once( NINJA_SDK_PATH.'/orm/ORMBuilder.php' );
 
 class orm_generator extends generator_module {
 	protected function do_run() {

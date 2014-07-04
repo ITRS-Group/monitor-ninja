@@ -1,5 +1,7 @@
 <?php
 
+define('NINJA_SDK_PATH', __DIR__.'/../op5/ninja_sdk');
+
 if( php_sapi_name() != 'cli' ) {
 	print("Builders can only be runned as cli\n");
 	exit(1);
@@ -9,7 +11,7 @@ define('KOHANA_BASE', dirname(dirname(dirname(__FILE__))) ); // FIXME: make nice
 define('TARGET_BASE', KOHANA_BASE . DIRECTORY_SEPARATOR . 'modules');
 define('GENERATOR_BASE', KOHANA_BASE . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'generators');
 
-require_once( 'op5/generators/class_generator.php' );
+require_once( NINJA_SDK_PATH.'/class_generator.php' );
 
 class_generator::$model_suffix = '_Model';
 class_generator::$library_suffix = '';

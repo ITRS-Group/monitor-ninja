@@ -2,8 +2,8 @@
 
 require_once( '../buildlib.php' );
 
-require_once( 'op5/generators/parsegen/LalrGenerator.php' );
-require_once( 'op5/generators/parsegen/LalrGrammarParser.php' );
+require_once( NINJA_SDK_PATH.'/parsegen/LalrGenerator.php' );
+require_once( NINJA_SDK_PATH.'/parsegen/LalrGrammarParser.php' );
 
 class LSFilter_generator extends generator_module {
 	protected function do_run() {
