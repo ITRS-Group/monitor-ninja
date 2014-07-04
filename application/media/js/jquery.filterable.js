@@ -73,6 +73,7 @@
 
 		var self = this;
 		this.box = null;
+		this.matching = 0;
 
 		if ( filtered.attr( "multiple" ) ) {
 			this.box = getBoxing( filtered, true );
@@ -291,10 +292,10 @@
 
 	Filterable.prototype.update_labels = function update_labels ( ) {
 
-		if ( this.results.size() >= settings.limit ) {
-			this.note( "Not all items shown; " + settings.limit + "/" + this.data.size() );
+		if ( this.matching >= settings.limit ) {
+			this.note( "Not all items shown; " + this.matching + "/" + this.data.size() );
 		} else {
-			this.note( this.results.size() + " Items" );
+			this.note( this.matching + " Items" );
 		}
 
 		// Fixes IE 9 error with dynamic options
@@ -338,11 +339,11 @@
 				this.results.push( index );
 		}
 
-
 		this.memory.reset();
 		this.results.reset();
 
 		this.results = this.results.diff( this.memory );
+		this.matching = this.results.size();
 
 		if ( respond ) {
 			this.results.reset();
