@@ -8,7 +8,7 @@ var SetIterator = function ( set ) {
 		var next = set.back();
 		set.increase();
 
-		if ( next ) return next;
+		if ( next != null ) return next;
 		return null;
 
 	}
@@ -21,7 +21,7 @@ var Set = function ( data ) {
 
 	if ( typeof( data ) == "number" ) {
 		data = new Array( data );
-	} else if ( !data ) {
+	} else if ( !data || typeof( data ) == "undefined" || data == null ) {
 		data = [];
 	} else data = data.sort();
 
@@ -49,7 +49,7 @@ var Set = function ( data ) {
 	 */
 	this.back = function () {
 
-		if ( data[ iterator ] ) {
+		if ( data[ iterator ] != null ) {
 			return data[ iterator ];
 		} return null;
 
@@ -126,7 +126,7 @@ var Set = function ( data ) {
 		var itt = new SetIterator( this ),
 			index = null;
 
-		while ( index = itt.next() ) {
+		while ( ( index = itt.next() ) != null ) {
 			if ( index === value ) {
 				return iterator - 1;
 			}
@@ -143,12 +143,10 @@ var Set = function ( data ) {
 
 	this.insert = function ( value ) {
 
-		//console.log( value );
-
 		var it = new SetIterator( this ),
 			index = null, inserted = false;
 
-		while ( index = it.next() ) {
+		while ( ( index = itt.next() ) != null ) {
 
 			comp = Set.compare( index, value );
 			if ( comp == -1 ) {
@@ -185,7 +183,7 @@ var Set = function ( data ) {
 
 		var merged = new Set( this.size() + target.size() );
 
-		while ( this.back() || target.back() ) {
+		while ( this.back() != null || target.back() != null ) {
 
 			comp = Set.compare( this.back(), target.back() );
 
@@ -221,7 +219,7 @@ var Set = function ( data ) {
 
 		var intersect = new Set( this.size() + target.size() );
 
-		while ( this.back() || target.back() ) {
+		while ( this.back() != null || target.back() != null ) {
 
 			comp = Set.compare( this.back(), target.back() );
 
@@ -258,7 +256,7 @@ var Set = function ( data ) {
 		var diff = new Set( this.size() ),
 			comp = null;
 
-		while ( this.back() ) {
+		while ( this.back() != null ) {
 
 			comp = Set.compare( this.back(), target.back() );
 
@@ -289,6 +287,6 @@ var Set = function ( data ) {
 
 Set.compare = function ( v1, v2 ) {
 	if ( v1 == v2 ) return 0;
-	if ( !v2 || v1 < v2 ) return -1;
-	if ( !v1 || v1 > v2 ) return 1;
+	if ( v2 == null || v1 < v2 ) return -1;
+	if ( v1 == null || v1 > v2 ) return 1;
 };

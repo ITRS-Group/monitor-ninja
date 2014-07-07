@@ -84,7 +84,7 @@
 		}
 
 		if (!this.multiple && !filtered.attr('data-required')) {
-			data.unshift(' ');
+			data.unshift('');
 		}
 
 		this.results =			new Set();
@@ -112,31 +112,34 @@
 			this.filtered.attr("id", this.selected.attr("id").replace('[', '_tmp['));
 			this.filtered.removeAttr( "name" );
 
-			if ( defaults.length > 0 ) {
-				defaults = new Set( defaults );
-				this.add( defaults );
-			}
-
 		}
 
 		filtered.replaceWith( this.box );
 
 		var _default = filtered.find( ':selected' );
-		if ( _default ) this.filter.val( _default.val() );
 
-		if ( _default.length < 1 && defaults.length < 1 ) {
+		if ( _default.length > 0 ) {
+			this.search( this.filter.val(), _default.val() );
+			if ( this.multiple && defaults.length > 0 ) {
+				defaults = new Set( defaults );
+				this.add( defaults );
+			}
+		} else {
 			this.search( this.filter.val() );
+			if ( defaults.length > 0 ) {
+				defaults = new Set( defaults );
+				this.add( defaults );
+			}
 		}
 
 		// Add relevant events
 
 		var key_timeout = null;
-		this.box.on( "keypress", ".jq-filterable-filter", function ( e ) {
+		this.box.on( "keyup", ".jq-filterable-filter", function ( e ) {
 
-			if ( $.inArray( e.which, [ 32 ] ) >= 0 ) return;
+			if ( $.inArray( e.which, [ 37, 38, 39, 40 ] ) >= 0 ) return;
 			else if ( e.which == 13 ) {
 
-				e.preventDefault();
 				clearTimeout( key_timeout );
 				self.search( self.filter.val() );
 
@@ -161,7 +164,14 @@
 			this.box.on( "change", ".jq-filterable-list, .jq-filterable-results", function ( e ) {
 
 				var parent = $( e.target ),
-					values = new Set( parent.val() );
+					values = null;
+
+				if ( parent.is( "option" ) ) {
+					parent = parent.closest( 'select' );
+				}
+
+				values = parent.val();
+				values = new Set( values );
 
 				if ( parent[0] == self.selected[0] )
 					self.remove( values );
@@ -334,7 +344,7 @@
 		var iterator = new SetIterator( this.data ),
 			index = null;
 
-		while ( index = iterator.next() ) {
+		while ( ( index = iterator.next() ) != null ) {
 			if ( index.match( term ) )
 				this.results.push( index );
 		}
@@ -350,7 +360,7 @@
 			return this.results;
 		} else {
 			this.results.shrink( 0, settings.limit );
-			this.populate();
+			this.populate( source );
 		}
 
 	};
@@ -363,7 +373,7 @@
 	  * @param string term
 	  * @return void
 	  */
-	Filterable.prototype.populate = function populate () {
+	Filterable.prototype.populate = function populate ( source ) {
 
 		var fragment = document.createDocumentFragment(),
 			iterator = null,
@@ -372,7 +382,7 @@
 
 		iterator = new SetIterator( this.results );
 
-		while ( index = iterator.next() ) {
+		while ( ( index = iterator.next() ) != null ) {
 
 			opt = document.createElement( 'option' );
 			opt.innerHTML = index;
@@ -385,6 +395,10 @@
 		this.filtered.empty();
 		this.filtered.append( fragment );
 		this.update_labels();
+
+		if ( source ) {
+			this.filtered.val( source );
+		}
 
 		if ( this.multiple ) {
 			this.filtered.val([]);
@@ -429,7 +443,9 @@
 
 		} else if (select.length) {
 
-			var options = $.map(select.children(), function(option) {return option.text;});
+			var options = $.map( select.children(), function( option ) {
+					return option.text;
+				});
 
 			select.children().each( function() {
 				if (!$(this).attr('selected')) {
