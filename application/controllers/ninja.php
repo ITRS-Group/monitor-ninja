@@ -44,6 +44,8 @@ class Ninja_Controller extends Template_Controller {
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
 		$this->template = $this->add_view('template');
+		$this->template->css = array();
+		$this->template->js = array();
 
 		$this->template->global_notifications = array();
 		$this->template->print_notifications = array();
