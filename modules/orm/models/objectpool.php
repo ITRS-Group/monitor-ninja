@@ -22,6 +22,7 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 	 * This can be used to hide tables from the HTTP-API that isn't API-stable
 	 * enough yet.
 	 */
+
 	public function available_for($where) {
 		if(isset(static::$available_for[$where])) {
 			return static::$available_for[$where];
