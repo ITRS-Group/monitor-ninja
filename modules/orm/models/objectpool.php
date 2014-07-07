@@ -8,6 +8,28 @@ require_once( dirname(__FILE__).'/base/baseobjectpool.php' );
 abstract class ObjectPool_Model extends BaseObjectPool_Model {
 
 	/**
+	 * List which places this object is available for.
+	 *
+	 * It is (for now) always available within ninja. Other places are: api
+	 * @var array
+	 */
+	protected static $available_for = array(
+		'api' => true
+	);
+
+	public function available_for($where) {
+		if(isset(static::$available_for[$where])) {
+			return static::$available_for[$where];
+		}
+		/*
+		 * Everything has traditionally been available everywhere. This is to limit
+		 * access if we can't guarantee integrety of the API in upcoming releases
+		 */
+		return true;
+	}
+
+
+	/**
 	 * Parse a query and return the related set
 	 */
 	public static function get_by_query( $query, $disabled_saved_queries = array() ) {
