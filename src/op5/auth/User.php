@@ -63,7 +63,7 @@ class op5User {
 	 *
 	 */
 	public function __construct($fields) {
-		$this->fields = $fields;
+		$this->fields = array_merge($this->fields, $fields);
 	}
 
 	/**
