@@ -8,7 +8,7 @@ class op5User {
 	 *
 	 */
 	public $fields = array ('username' => false,'realname' => false,
-		'email' => false);
+		'email' => false, 'auth_data' => array());
 
 	/**
 	 * Overload set
