@@ -19,14 +19,14 @@
 
 input.jq-filterable-filter[type="text"] {
 	margin: 0;
-	width: 143px;
+	width: 243px;
 	padding: 5px 2px 4px 2px;
 	border: 1px solid #bbb;
 	vertical-align: top;
 }
 
 .jq-filterable-larger {
-	width: 144px !important;
+	width: 184px !important;
 }
 
 .jq-filterable-largest {
@@ -36,7 +36,7 @@ input.jq-filterable-filter[type="text"] {
 select.jq-filterable-list {
 	margin-top: 0;
 	border: 1px solid #bbb;
-	width: 143px;
+	width: 243px;
 	height: 25px;
 	vertical-align: top;
 	padding: 4px;
@@ -47,8 +47,8 @@ select.jq-filterable-results {
 	margin-top: 0;
 	height: auto;
 	border: 1px solid #bbb;
-	width: 150px !important;
-	min-width: 150px !important;
+	width: 190px !important;
+	min-width: 190px !important;
 	height: 70px;
 }
 
@@ -87,7 +87,7 @@ input[type="button"].jq-filterable-move {
 	position: relative;
 	text-align: right;
 
-	width: 143px;
+	width: 243px;
 	padding: 2px 2px 1px 2px;
 	border: none;
 
