@@ -11,12 +11,17 @@ abstract class ObjectPool_Model extends BaseObjectPool_Model {
 	 * List which places this object is available for.
 	 *
 	 * It is (for now) always available within ninja. Other places are: api
-	 * @var array
 	 */
 	protected static $available_for = array(
 		'api' => true
 	);
 
+	/**
+	 * Check if a table is available to read and export from a given interface.
+	 *
+	 * This can be used to hide tables from the HTTP-API that isn't API-stable
+	 * enough yet.
+	 */
 	public function available_for($where) {
 		if(isset(static::$available_for[$where])) {
 			return static::$available_for[$where];
