@@ -32,3 +32,19 @@ Then /^all helptexts should be defined$/ do
     page.should have_no_css(".qtip-content", :visible => true)
   }
 end
+
+When /I select "(.*)" from the multiselect "(.*)"$/ do |option, selector|
+	tmp_sel = find_field(find_field(selector)[:id].sub('[', '_tmp['))
+	tmp_sel.select(option)
+	page.execute_script("$('##{tmp_sel[:id].gsub('[', '\\\\\[').gsub(']', '\\\\\]')}').trigger('change');")
+end
+
+When /I deselect "(.*)" from the multiselect "(.*)"$/ do |option, selector|
+	tmp_sel = find_field(selector)
+	tmp_sel.select(option)
+	page.execute_script("$('##{tmp_sel[:id].gsub('[', '\\\\\[').gsub(']', '\\\\\]')}').trigger('change');")
+end
+
+When /^I filter "(.*)" on "(.*)"$/ do |selector, regex|
+  find(:xpath, ".//input[following-sibling::*[self::input | self::textarea | self::select][not(./@type = 'submit' or ./@type = 'image' or ./@type = 'hidden')][(((./@id = '#{selector}' or ./@name = '#{selector}') or ./@placeholder = '#{selector}') or ./@id = //label[normalize-space(string(.)) = '#{selector}']/@for)]]").set(regex)
+end

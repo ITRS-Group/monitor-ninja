@@ -44,9 +44,8 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		When I select "LinuxServers" from "Available hostgroups"
-		And I doubleclick "LinuxServers"
-		Then "Selected hostgroups" should have option "LinuxServers"
+		When I select "LinuxServers" from the multiselect "objects"
+		Then "objects[]" should have option "LinuxServers"
 		When I click "Show report"
 		Then I should see "Hostgroup breakdown"
 		And I should see "LinuxServers"
@@ -117,12 +116,12 @@ Feature: Scheduled reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
-		Then "Selected hostgroups" should have option "LinuxServers"
+		Then "objects[]" should have option "LinuxServers"
 		When I click "Delete"
 		# Test available first, to force capybara to wait for page reload
-		Then "Available hostgroups" should have option "LinuxServers"
+		Then "objects" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
-		And "Selected hostgroups" shouldn't have option "LinuxServers"
+		And "objects[]" shouldn't have option "LinuxServers"
 
 	@configuration @asmonitor @reports
 	Scenario: Ensure previously added avail schedule is gone
@@ -139,9 +138,8 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		When I select "LinuxServers" from "Available hostgroups"
-		And I doubleclick "LinuxServers"
-		Then "Selected hostgroups" should have option "LinuxServers"
+		When I select "LinuxServers" from the multiselect "objects"
+		Then "objects[]" should have option "LinuxServers"
 		When I enter "9" into "Jan"
 		And I click "Show report"
 		Then I should see "SLA breakdown for: LinuxServers"
@@ -212,12 +210,12 @@ Feature: Scheduled reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
-		Then "Selected hostgroups" should have option "LinuxServers"
+		Then "objects[]" should have option "LinuxServers"
 		When I click "Delete"
 		# Test available first, to force capybara to wait for page reload
-		Then "Available hostgroups" should have option "LinuxServers"
+		Then "objects" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
-		And "Selected hostgroups" shouldn't have option "LinuxServers"
+		And "objects[]" shouldn't have option "LinuxServers"
 
 	@configuration @asmonitor @reports
 	Scenario: Ensure previously added sla schedule is gone
@@ -236,9 +234,8 @@ Feature: Scheduled reports
 		And I hover over the "Reporting" button
 		When I click "Alert Summary"
 		And I choose "Custom"
-		And I select "LinuxServers" from "Available hostgroups"
-		And I doubleclick "LinuxServers"
-		Then "Selected hostgroups" should have option "LinuxServers"
+		And I select "LinuxServers" from the multiselect "objects"
+		Then "objects[]" should have option "LinuxServers"
 		When I click "Show report"
 		Then I should see "Top alert producers"
 		When I click "Save report"
@@ -285,10 +282,10 @@ Feature: Scheduled reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "Custom" should be checked
-		And "Selected hostgroups" should have option "LinuxServers"
+		And "objects[]" should have option "LinuxServers"
 		When I click "Delete"
 		Then "Saved reports" shouldn't have option "saved test report"
-		And "Selected hostgroups" shouldn't have option "LinuxServers"
+		And "objects[]" shouldn't have option "LinuxServers"
 
 	@configuration @asmonitor @reports
 	Scenario: Ensure previously added summary schedule is gone
