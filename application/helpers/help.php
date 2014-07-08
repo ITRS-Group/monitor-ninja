@@ -27,10 +27,7 @@ class help
 
 		$controller = !empty($controller) ? $controller : Router::$controller;
 
-		# build the element ID with random nr | controller | help key
-		$id = 'help_'.rand(0, 10000).'|'.$controller.'|'.$key;
-
-		return '<a class="helptext_target" style="border:0" id="'.$id.'" href="#">'.
-		'<img src="'.$img_path.'" title="'._('Click for help').'" alt="'._('Click for help').'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
+		return '<a class="helptext_target" style="border:0" data-helptext-controller="'.$controller.'" data-helptext-key="'.$key.'" href="#">'.
+		'<img src="'.$img_path.'" alt="'._('Click for help').'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
 	}
 }
