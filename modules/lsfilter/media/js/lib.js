@@ -1,3 +1,11 @@
+function helpicon(controller, key)
+{
+	var link = $('<a class="helptext_target" style="border: 0" href="#"/>');
+	link.append(icon12('help'));
+	bind_helptext(link, controller, key);
+	return link;
+}
+
 function icon12(name, title, link)
 {
 	var img = $('<span />');
