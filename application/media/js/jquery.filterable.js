@@ -415,6 +415,12 @@
 
 	};
 
+	jQuery.filterable_settings = function ( key, value ) {
+		if ( settings[ key ] ) {
+			settings[ key ] = value;
+		}
+	}
+
 	jQuery.fn.filterable = FilterableFactory;
 	jQuery.fn.filterable.find = function ( element ) {
 
