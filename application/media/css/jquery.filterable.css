@@ -17,52 +17,53 @@
 	vertical-align: top;
 }
 
-.jq-filterable-filter[type="text"] {
+input.jq-filterable-filter[type="text"] {
 	margin: 0;
-	width: 150px;
-	padding: 6px 2px 5px 2px;
+	width: 143px;
+	padding: 5px 2px 4px 2px;
 	border: 1px solid #bbb;
 	vertical-align: top;
 }
 
 .jq-filterable-larger {
-	width: 250px !important;
+	width: 144px !important;
 }
 
 .jq-filterable-largest {
-	width: 300px !important;
+	width: 290px !important;
 }
 
-.jq-filterable-list {
+select.jq-filterable-list {
 	margin-top: 0;
 	border: 1px solid #bbb;
-	width: 150px;
+	width: 143px;
 	height: 25px;
 	vertical-align: top;
 	padding: 4px;
 }
 
-.jq-filterable-list[multiple],
-.jq-filterable-results {
+select.jq-filterable-list[multiple],
+select.jq-filterable-results {
 	margin-top: 0;
 	height: auto;
 	border: 1px solid #bbb;
-	width: 256px !important;
-	min-width: 256px !important;
+	width: 150px !important;
+	min-width: 150px !important;
 	height: 70px;
 }
 
-.jq-filterable-list[multiple] {
+select.jq-filterable-list[multiple] {
+	width: 150px !important;
 	border-top: none;
 }
 
-.jq-filterable-results {
-	height: 97px;
+select.jq-filterable-results {
+	height: 95px;
+	border-left: none;
 }
 
 .jq-filterable-list option,
 .jq-filterable-results option {
-	//padding: 4px 4px;
 	font-size: 110%;
 }
 
@@ -70,33 +71,14 @@
 	color: #888;
 }
 
-ul.jq-filterable-dragbox {
-	position: fixed;
-	list-style: none;
-
-	border: 1px solid #999;
-	background: #fefefe;
-	font-size: 90%;
-	color: #666;
-
-	margin: 0;
-	padding: 0;
-	width: 254px;
-}
-
-ul.jq-filterable-dragbox li {
-	margin: 0;
-	padding: 4px 4px;
-	border-top: 1px dotted #ccc;
-}
-
-.jq-filterable-move {
+input[type="button"].jq-filterable-move {
 	position: absolute;
-	right: 0px;
+	right: 4px;
 	top: 4px;
 	padding: 0px 2px !important;
-	background: transparent !important;
+	background: #fff !important;
 	border: 1px solid #ccc;
+	margin: 0;
 }
 
 .jq-filterable-stats,
@@ -105,7 +87,7 @@ ul.jq-filterable-dragbox li {
 	position: relative;
 	text-align: right;
 
-	width: 150px;
+	width: 143px;
 	padding: 2px 2px 1px 2px;
 	border: none;
 
