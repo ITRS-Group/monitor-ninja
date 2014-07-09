@@ -10,8 +10,6 @@ class orm_generator extends generator_module {
 
 		$builder = new ORMBuilder();
 
-		$builder->generate_base();
-
 		foreach( $tables as $name => $structure ) {
 			$builder->generate_table($name, $tables);
 		}
@@ -20,5 +18,10 @@ class orm_generator extends generator_module {
 	}
 }
 
-$generator = new orm_generator('orm');
-$generator->run();
+$generator = new orm_generator('monitoring');
+$result = $generator->run();
+
+if ($result != 0)
+	exit($result);
+
+exit(0);

@@ -41,8 +41,8 @@ abstract class generator_module {
 		} catch( Exception $e ) {
 			fprintf( STDERR, "Generator exception in module %s: %s\nExiting module...\n", $this->mod_name, $e->getMessage() );
 			fprintf( STDERR, "%s @ %s\n%s\n", $e->getFile(), $e->getLine(), $e->getTraceAsString());
-			exit( 1 );
+			return 1;
 		}
-		exit( 0 );
+		return 0;
 	}
 }
