@@ -62,7 +62,7 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Servicegroups" from "Report type"
-		And I select "empty" from "objects"
+		And I select "empty" from the multiselect "objects"
 		Then "objects[]" should have option "empty"
 		When I click "Show report"
 		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
@@ -74,7 +74,7 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Hosts" from "Report type"
-		And I select "linux-server1" from "objects"
+		And I select "linux-server1" from the multiselect "objects"
 		Then "objects[]" should have option "linux-server1"
 		When I check "Include pie charts"
 		And I check "Include trends graph"
@@ -95,8 +95,8 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Hosts" from "Report type"
-		And I select "linux-server1" from "objects"
-		And I select "win-server1" from "objects"
+		And I select "linux-server1" from the multiselect "objects"
+		And I select "win-server1" from the multiselect "objects"
 		Then "objects[]" should have option "linux-server1"
 		And "objects[]" should have option "win-server1"
 		When I check "Include pie charts"
@@ -119,7 +119,7 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Services" from "Report type"
-		And I select "linux-server1;PING" from "objects"
+		And I select "linux-server1;PING" from the multiselect "objects"
 		Then "objects[]" should have option "linux-server1;PING"
 		When I check "Include pie charts"
 		And I check "Include trends graph"
@@ -136,8 +136,8 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Services" from "Report type"
-		And I select "linux-server1;PING" from "objects"
-		And I select "linux-server1;System Load" from "objects"
+		And I select "linux-server1;PING" from the multiselect "objects"
+		And I select "linux-server1;System Load" from the multiselect "objects"
 		Then "objects[]" should have option "linux-server1;PING"
 		And "objects[]" should have option "linux-server1;System Load"
 		When I check "Use alias"
@@ -160,8 +160,8 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Services" from "Report type"
-		And I select "linux-server1;PING" from "objects"
-		And I select "linux-server2;System Load" from "objects"
+		And I select "linux-server1;PING" from the multiselect "objects"
+		And I select "linux-server2;System Load" from the multiselect "objects"
 		Then "objects[]" should have option "linux-server1;PING"
 		And "objects[]" should have option "linux-server2;System Load"
 		When I check "Include pie charts"
@@ -184,7 +184,7 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		And I select "LinuxServers" from "objects"
+		And I select "LinuxServers" from the multiselect "objects"
 		Then "objects[]" should have option "LinuxServers"
 		When I check "Use alias"
 		And I click "Show report"
@@ -203,8 +203,8 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		And I select "LinuxServers" from "objects"
-		And I select "WindowsServers" from "objects"
+		And I select "LinuxServers" from the multiselect "objects"
+		And I select "WindowsServers" from the multiselect "objects"
 		Then "objects[]" should have option "LinuxServers"
 		And "objects[]" should have option "WindowsServers"
 		When I check "Include pie charts"
@@ -225,8 +225,8 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		And I select "LinuxServers" from "objects"
-		And I select "MixedGroup" from "objects"
+		And I select "LinuxServers" from the multiselect "objects"
+		And I select "MixedGroup" from the multiselect "objects"
 		Then "objects[]" should have option "LinuxServers"
 		And "objects[]" should have option "MixedGroup"
 		When I check "Include pie charts"
@@ -248,7 +248,7 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Servicegroups" from "Report type"
-		And I select "pings" from "objects"
+		And I select "pings" from the multiselect "objects"
 		Then "objects[]" should have option "pings"
 		When I check "Use alias"
 		And I click "Show report"
@@ -271,8 +271,8 @@ Feature: Availability reports
 		And I hover over the "Reporting" button
 		When I click "Availability"
 		And I select "Servicegroups" from "Report type"
-		And I select "pings" from "objects"
-		And I select "empty" from "objects"
+		And I select "pings" from the multiselect "objects"
+		And I select "empty" from the multiselect "objects"
 		Then "objects[]" should have option "pings"
 		And "objects[]" should have option "empty"
 		When I check "Include pie charts"
@@ -295,7 +295,7 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		And I select "LinuxServers" from "objects"
+		And I select "LinuxServers" from the multiselect "objects"
 		Then "objects[]" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
 		And I enter "2013-01-02" into "Start date"
@@ -312,7 +312,7 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "Availability"
-		And I select "LinuxServers" from "objects"
+		And I select "LinuxServers" from the multiselect "objects"
 		Then "objects[]" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
 		And I enter "2013-01-02" into "Start date"
@@ -331,7 +331,7 @@ Feature: Availability reports
 		When I click "Availability"
 		Then I shouldn't see "Saved reports"
 		#And "Saved reports" shouldn't have option "saved test report"
-		When I select "LinuxServers" from "objects"
+		When I select "LinuxServers" from the multiselect "objects"
 		Then "objects[]" should have option "LinuxServers"
 		# Toggle *everything*!
 		When I select "Last month" from "Reporting period"
