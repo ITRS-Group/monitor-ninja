@@ -1021,18 +1021,13 @@ final class Kohana {
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
-		// NOTE: This test MUST be not be a strict comparison (===), or empty
-		// extensions will be allowed!
-		if ($ext == '')
-		{
-			// Use the default extension
+		// If $ext === false, the caller want the default extension
+		if ($ext === false)
 			$ext = EXT;
-		}
-		else
-		{
-			// Add a period before the extension
-			$ext = '.'.$ext;
-		}
+
+		// Make sure the extension starts with an ., if not empty
+		if($ext !== '')
+			$ext = '.'.ltrim($ext,'.');
 
 		// Search path
 		$search = $directory.'/'.$filename.$ext;

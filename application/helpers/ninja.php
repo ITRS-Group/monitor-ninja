@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+class FileLookupErrorException extends Exception {}
+
 /**
  * Helper for basic ninja stuff
  *
@@ -8,6 +10,8 @@
  */
 class ninja {
 	private static $loaded_modules = array();
+
+
 	/**
 	 * Given a file name that is relative to the views directory, find it and
 	 * return the full path.
@@ -22,11 +26,20 @@ class ninja {
 		if (empty($rel_path)) {
 			return false;
 		}
-		if($module_name === false ) {
-			$path = 'application/views/'.$rel_path;
+
+		$path = Kohana::find_file('views', $rel_path, true, '');
+
+		/*
+		 * Since find_file returns an absolute path, and we don't want that, just
+		 * strip away the beginning
+		 */
+		if(substr($path,0,strlen(DOCROOT)) == DOCROOT) {
+			$path = substr($path,strlen(DOCROOT));
 		} else {
-			$path = 'modules/'.$module_name.'/views/'.$rel_path;
+			throw new FileLookupErrorException("Can't find file ".$rel_path);
 		}
+
+
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
 		return self::add_version_to_uri($url_base.$path);
