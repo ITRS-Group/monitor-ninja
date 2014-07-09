@@ -42,7 +42,10 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = $this->add_path('reports/js/common.js');
+		$this->template->js[] = 'application/media/js/lib.set.js';
+		$this->template->js[] = 'application/media/js/jquery.filterable.js';
 
+		$this->template->css[] = 'application/media/css/jquery.filterable.css';
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$this->js_strings .= reports::js_strings();
