@@ -108,10 +108,12 @@ $(document).ready(function() {
 		var filterable = jQuery.fn.filterable.find( $('select[name="objects[]"]') ),
 			type = e.target.value.replace( /s$/, "" );
 
+		var url = _site_domain + _index_page;
+		url += '/listview/fetch_ajax?query=[' + type + 's] all&columns[]=key&limit=1000000';
+
 		if ( filterable ) {
 			$.ajax({
-				url: hostname + '/api/status/' + type,
-				data: { 'format': 'json', csrf_token: _csrf_token, 'auth_method': 'ninja' },
+				url: url,
 				dataType: 'json',
 				error: function( xhr ) {
 					console.log( xhr.responseText );
@@ -119,8 +121,10 @@ $(document).ready(function() {
 				success: function( data ) {
 
 					var names = [];
-					for ( var i = 0; i < data.length; i++ )
-						names.push( data[ i ].name );
+
+					for ( var i = 0; i < data.data.length; i++ ) {
+						names.push( data.data[ i ].key );
+					}
 
 					filterable.data = new Set( names );
 					filterable.reset();

@@ -8,19 +8,25 @@
 		"host": window.location.protocol + "//" + window.location.host,
 
 		"datasource": function ( select ) {
-			var type = select.attr( 'data-type' );
-			return settings.host + '/api/status/' + type
+
+			var type = select.attr( 'data-type' ),
+				root = settings.host + _site_domain + _index_page;
+
+			return root + '/listview/fetch_ajax?query=[' + type + 's] all&columns[]=key&limit=1000000';
+
 		},
 
 		"collector": function ( select, data ) {
+
 			var names = [];
-			for ( var i = 0; i < data.length; i++ )
-				names.push( data[ i ].name );
+			for ( var i = 0; i < data.data.length; i++ ) {
+				names.push( data.data[ i ].key );
+			}
 			select.filterable( names );
+
 		},
 
 		"ajax": {
-			data: { 'format': 'json', csrf_token: _csrf_token, 'auth_method': 'ninja' },
 			dataType: 'json',
 			error: function( xhr ) {
 				console.log( xhr.responseText );
