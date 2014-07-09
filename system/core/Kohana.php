@@ -448,21 +448,9 @@ final class Kohana {
 	 */
 	public static function config_load($name, $required = TRUE)
 	{
+		/* By some reason, the config file "config" is called "core" in Kohana */
 		if ($name === 'core')
-		{
-			// Load the application configuration file
-			require APPPATH.'config/config'.EXT;
-			if (is_file(APPPATH.'config/custom/config'.EXT))
-				include APPPATH.'config/custom/config'.EXT;
-
-			if ( ! isset($config['site_domain']))
-			{
-				// Invalid config file
-				die('Your Kohana application configuration file is not valid.');
-			}
-
-			return $config;
-		}
+			$name = 'config';
 
 		if (isset(self::$internal_cache['configuration'][$name]))
 			return self::$internal_cache['configuration'][$name];
