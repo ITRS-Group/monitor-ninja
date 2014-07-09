@@ -3,6 +3,13 @@ var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
 var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
+	$(".fancybox").fancybox({
+		'overlayOpacity'        :       0.7,
+		'overlayColor'          :       '#ffffff',
+		'hideOnContentClick' : false,
+		'autoScale':true,
+		'autoDimensions': true,
+	});
 
 	var direct_link_visible = false;
 	$('#current_report_params').click(function() {
