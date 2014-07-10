@@ -46,7 +46,6 @@ Feature: Alert history reports
 		And I shouldn't see "win-server"
 		When I click "Edit settings"
 		Then "Show all" should be unchecked
-		And I should see "objects[]"
 		And "objects[]" should have option "linux-server1"
 		When I uncheck "Up"
 		And I click "Update"
@@ -66,7 +65,6 @@ Feature: Alert history reports
 		And I should see "Reporting period: Forever"
 		When I click "Edit settings"
 		Then "Show all" should be unchecked
-		And I should see "objects[]"
 		And "objects[]" should have option "win-server1;Swap Usage"
 		When I uncheck "Ok"
 		And I uncheck "Up"

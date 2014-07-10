@@ -20,6 +20,7 @@
 					$datatype = "hostgroup";
 				}
 			?>
+			Please select what objects to base the report on<br />
 			<select data-filterable data-type="<?php echo $datatype; ?>" name="objects[]" id="objects" multiple="multiple">
 				<?php
 				//size="8" style="width: 100%;" class="multiple"
