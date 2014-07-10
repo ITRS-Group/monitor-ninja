@@ -8,7 +8,6 @@
 				<option value="servicegroups" <?php echo $options['report_type'] === 'servicegroups' ? 'selected="selected"' : ''; ?>><?php echo _('Servicegroups') ?></option>
 				<option value="services" <?php echo $options['report_type'] === 'services' ? 'selected="selected"' : ''; ?>><?php echo _('Services') ?></option>
 			</select>
-			<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
 			&nbsp;
 		</td>
 	</tr>
