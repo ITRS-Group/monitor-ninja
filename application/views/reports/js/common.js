@@ -369,7 +369,7 @@ function check_form_values(form)
 		}
 	}
 
-	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("#objects", form).is('select') && $('#objects option', form).length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all', form).is(':checked') && $("[name=objects\\[\\]]", form).is('select') && $('[name=objects\\[\\]] option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
