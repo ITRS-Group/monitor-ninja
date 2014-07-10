@@ -466,8 +466,6 @@ Feature: SLA reports
 		And "Use alias" should be checked
 		When I deselect "LinuxServers" from the multiselect "objects[]"
 		And I select "WindowsServers" from the multiselect "objects"
-		Then "objects[]" shouldn't have option "LinuxServers"
-		And "objects" shouldn't have option "WindowsServers"
 		When I uncheck "Include soft states"
 		And I click "Show report"
 		And I click "Edit settings"
