@@ -97,7 +97,7 @@ Feature: Alert history reports
 		When I click "Edit settings"
 		Then "objects" should have option "win-server1"
 		And "objects[]" should have option "linux-server1"
-		When I select "linux-server1" from the multiselect "objects[]"
+		When I deselect "linux-server1" from the multiselect "objects[]"
 		Then "objects" should have option "linux-server1"
 		When I select "win-server1" from "objects"
 		Then "objects[]" should have option "win-server1"

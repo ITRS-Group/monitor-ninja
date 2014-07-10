@@ -487,8 +487,6 @@ Feature: SLA reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
-		Then "objects" should have option "LinuxServers"
-		Then "objects[]" should have option "WindowsServers"
 		And "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 
