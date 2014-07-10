@@ -14,7 +14,13 @@
 	</tr>
 	<tr>
 		<td colspan="3">
-			<select data-filterable data-type="<?php echo substr( $options['report_type'], 0, -1 ); ?>" name="objects[]" id="objects" multiple="multiple">
+			<?php
+				$datatype = substr( $options['report_type'], 0, -1 );
+				if ( strlen( $datatype ) < 1 ) {
+					$datatype = "hostgroup";
+				}
+			?>
+			<select data-filterable data-type="<?php echo $datatype; ?>" name="objects[]" id="objects" multiple="multiple">
 				<?php
 				//size="8" style="width: 100%;" class="multiple"
 				$objs = $options['objects'];
