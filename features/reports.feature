@@ -38,5 +38,5 @@ Feature: Reports
 
 		When I click css "#cal_end"
 		Then I should see css "#dp-popup"
-		When I click css "#filter_field"
+		When I click css ".jq-filterable-filter"
 		Then I shouldn't see css "#dp-popup"
