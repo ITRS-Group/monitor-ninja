@@ -36,43 +36,69 @@ class Db_Migrations_Controller extends Controller {
 		foreach ($res->result(false) as $result) {
 			$objs = $db->query('SELECT `name` FROM avail_config_objects WHERE avail_config_objects.avail_id = '.$result['id']);
 			$objects = array();
-			foreach ($objs as $obj)
-				$objects[] = $obj->name;
+			foreach ($objs->result(false) as $obj)
+				$objects[] = $obj['name'];
 			$result['objects'] = $objects;
 			$opts = new Avail_options($result);
-			if (isset($result['alert_types'])) {
-				$op5opts = new Op5reports_options($result);
-				$op5opts->add_sub($opts);
-				$opts = $op5opts;
-			}
 			if (!$opts->save($msg))
 				print 'avail '.$result['report_name'].': '.$msg."\n";
+			# reimplement op5reports inside ninja :'(
+			if (isset($result['alert_types'])) {
+				$availprops = $opts->properties();
+				$sopts = new Summary_options($result);
+				$sql = "INSERT INTO saved_reports_options(report_id, name, value) VALUES ";
+				$sprops = $sopts->properties();
+				$rows = array();
+				foreach ($result as $key => $val) {
+					if ($key != 'use_pnp' && $key != 'use_summary' && !isset($sprops[$key]))
+						continue;
+					if (isset($availprops[$key]))
+						continue;
+					$rows[] = '(' . (int)$opts['report_id'] . ', ' . $db->escape($key) . ', ' . $db->escape($val) . ')';
+				}
+				$sql .= implode(', ', $rows);
+				$db->query($sql);
+			}
 		}
 
 		$res = $db->query('SELECT * FROM sla_config');
 		foreach ($res->result(false) as $result) {
 			$objs = $db->query('SELECT name FROM sla_config_objects WHERE sla_config_objects.sla_id = '.$result['id']);
 			$objects = array();
-			foreach ($objs as $obj)
-				$objects[] = $obj->name;
+			foreach ($objs->result(false) as $obj)
+				$objects[] = $obj['name'];
 			$result['objects'] = $objects;
 			$mnts = $db->query('SELECT value FROM sla_periods WHERE sla_periods.sla_id = '.$result['id']);
 			$months = array();
 			foreach ($mnts as $mnt)
 				$months[] = $mnt->value;
 			$opts = new Sla_options($result);
-			if (isset($result['alert_types'])) {
-				$op5opts = new Op5reports_options($result);
-				$op5opts->add_sub($opts);
-				$opts = $op5opts;
-			}
 			reset($months);
-			foreach ($res['months'] as $key => $_) {
-				$opts['months'][$key] = current($months);
+			$reindexed_months = array();
+			foreach ($opts['months'] as $key => $_) {
+				$reindexed_months[$key] = current($months);
 				next($months);
 			}
+			$opts['months'] = $reindexed_months;
 			if (!$opts->save($msg))
 				print 'sla '.$result['report_name'].': '.$msg."\n";
+			# reimplement op5reports inside ninja :'(
+			if (isset($result['alert_types'])) {
+				$slaprops = $opts->properties();
+				$sopts = new Summary_options($result);
+				$sql = "INSERT INTO saved_reports_options(report_id, name, value) VALUES ";
+				$sprops = $sopts->properties();
+				$rows = array();
+				foreach ($sopts as $key => $val) {
+					if ($key != 'use_pnp' && $key != 'use_summary' && !isset($sprops[$key]))
+						continue;
+					if (isset($slaprops[$key]))
+						continue;
+					$rows[] = '(' . (int)$opts['report_id'] . ', ' . $db->escape($key) . ', ' . $db->escape($val) . ')';
+				}
+				$sql .= implode(', ', $rows);
+				$db->query($sql);
+			}
 		}
 
 		$res = $db->query('SELECT * FROM summary_config');
