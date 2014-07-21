@@ -12,7 +12,7 @@
 		<input type="text" id="lsfilter_save_filter_name" placeholder="<?php echo _('Filter Name');?>" />
 		<button id="lsfilter_save_filter"><?php echo _('Save Filter');?></button>
 		<?php if(op5auth::instance()->authorized_for('saved_filters_global')) { ?>
-		<input type="checkbox" id="lsfilter_save_filter_global" /> <?php echo _('Make global'); ?>
+		<label><input type="checkbox" id="lsfilter_save_filter_global" /> <?php echo _('Make global'); ?></label>
 		<?php } ?>
 	</div>
 
