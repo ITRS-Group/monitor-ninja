@@ -40,13 +40,6 @@ $config['version_info'] = '/etc/ninja-release';
 $config['url_suffix'] = '';
 
 /**
- * Length of time of the internal cache in seconds. 0 or FALSE means no caching.
- * The internal cache stores file paths and config entries across requests and
- * can give significant speed improvements at the expense of delayed updating.
- */
-$config['internal_cache'] = FALSE;
-
-/**
  * Enable or disable gzip output compression. This can dramatically decrease
  * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
  * the compression level (1-9) that you want to use, or FALSE to disable.

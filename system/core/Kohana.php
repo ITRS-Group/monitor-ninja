@@ -83,12 +83,8 @@ final class Kohana {
 	// Logged messages
 	private static $log;
 
-	// Cache lifetime
-	private static $cache_lifetime;
-
 	// Internal caches and write status
 	private static $internal_cache = array();
-	private static $write_cache;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -132,19 +128,6 @@ final class Kohana {
 		}
 		// Add SYSPATH as the last path
 		self::$include_paths[] = SYSPATH;
-
-		if (self::$cache_lifetime = self::config('core.internal_cache'))
-		{
-			// Load cached configuration and language files
-			self::$internal_cache['configuration'] = self::cache('configuration', self::$cache_lifetime);
-			self::$internal_cache['language']      = self::cache('language', self::$cache_lifetime);
-
-			// Load cached file paths
-			self::$internal_cache['find_file_paths'] = self::cache('find_file_paths', self::$cache_lifetime);
-
-			// Enable cache saving
-			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
-		}
 
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
@@ -485,12 +468,6 @@ final class Kohana {
 			}
 		}
 
-		if ( ! isset(self::$write_cache['configuration']))
-		{
-			// Cache has changed
-			self::$write_cache['configuration'] = TRUE;
-		}
-
 		return self::$internal_cache['configuration'][$name] = $configuration;
 	}
 
@@ -504,12 +481,6 @@ final class Kohana {
 	{
 		// Remove the group from config
 		unset(self::$configuration[$group], self::$internal_cache['configuration'][$group]);
-
-		if ( ! isset(self::$write_cache['configuration']))
-		{
-			// Cache has changed
-			self::$write_cache['configuration'] = TRUE;
-		}
 	}
 
 	/**
@@ -1075,12 +1046,6 @@ final class Kohana {
 			}
 		}
 
-		if ( ! isset(self::$write_cache['find_file_paths']))
-		{
-			// Write cache at shutdown
-			self::$write_cache['find_file_paths'] = TRUE;
-		}
-
 		return self::$internal_cache['find_file_paths'][$search] = $found;
 	}
 
@@ -1170,12 +1135,6 @@ final class Kohana {
 						}
 					}
 				}
-			}
-
-			if ( ! isset(self::$write_cache['language']))
-			{
-				// Write language cache
-				self::$write_cache['language'] = TRUE;
 			}
 
 			self::$internal_cache['language'][$locale][$group] = $messages;
@@ -1568,37 +1527,6 @@ final class Kohana {
 		}
 
 		return '<ul class="backtrace">'.implode("\n", $output).'</ul>';
-	}
-
-	/**
-	 * Saves the internal caches: configuration, include paths, etc.
-	 *
-	 * @return  boolean
-	 */
-	public static function internal_cache_save()
-	{
-		if ( ! is_array(self::$write_cache))
-			return FALSE;
-
-		// Get internal cache names
-		$caches = array_keys(self::$write_cache);
-
-		// Nothing written
-		$written = FALSE;
-
-		foreach ($caches as $cache)
-		{
-			if (isset(self::$internal_cache[$cache]))
-			{
-				// Write the cache file
-				self::cache_save($cache, self::$internal_cache[$cache], self::$configuration['core']['internal_cache']);
-
-				// A cache has been written
-				$written = TRUE;
-			}
-		}
-
-		return $written;
 	}
 
 } // End Kohana
