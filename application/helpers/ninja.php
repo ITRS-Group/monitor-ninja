@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Exception thrown by add_path
+ */
 class FileLookupErrorException extends Exception {}
 
 /**
