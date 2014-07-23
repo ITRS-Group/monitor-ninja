@@ -75,6 +75,7 @@ class LalrParserPHPGenerator extends class_generator {
 	
 	private function generate_state( $state_id, $map ) {
 		$this->init_function( 'state_'.$state_id, array('token'), 'private' );
+		$tokennames = array();
 		$this->write( 'switch( $token[0] ) {' );
 		
 		/* Merge cases per action... many cases use same action... */
@@ -87,6 +88,7 @@ class LalrParserPHPGenerator extends class_generator {
 			list( $action, $target ) = explode(':',$action_arr,2);
 			if( $action == 'goto' ) continue;
 			foreach( $tokens as $token ) {
+				$tokennames[] = $token;
 				$this->write( 'case %s:', $token );
 			}
 			$this->comment( $action_arr );
@@ -110,7 +112,7 @@ class LalrParserPHPGenerator extends class_generator {
 		}
 		$this->write( '}' );
 		$this->comment( 'error handler...' );
-		$this->write( 'throw new '.$this->exception.'( "Error at state '.$state_id.'", $this->query, $token[2] );' );
+		$this->write( 'throw new '.$this->exception.'( "Parser error: got an unexpected token ".($token[1]?"\"$token[1]\"":$token[0])." at state '.$state_id.' - expected '.(count($tokennames) > 1 ? 'one of ' : '').implode(', ', $tokennames).'", $this->query, $token[2] );');
 		$this->write( 'return null;' );
 		$this->finish_function();
 	}

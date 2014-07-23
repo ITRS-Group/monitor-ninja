@@ -309,8 +309,8 @@ Feature: SLA reports
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects"
 		And I select "empty" from the multiselect "objects"
-		Then "Selected servicegroups" should have option "pings"
-		And "Selected servicegroups" should have option "empty"
+		Then "objects[]" should have option "pings"
+		And "objects[]" should have option "empty"
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -464,11 +464,8 @@ Feature: SLA reports
 		And "objects" should have option "WindowsServers"
 		And "Include soft states" should be checked
 		And "Use alias" should be checked
-		When I select "LinuxServers" from "objects[]"
-		And I deselect options in "objects"
-		And I select "WindowsServers" from "objects"
-		Then "objects[]" shouldn't have option "LinuxServers"
-		And "objects" shouldn't have option "WindowsServers"
+		When I deselect "LinuxServers" from the multiselect "objects[]"
+		And I select "WindowsServers" from the multiselect "objects"
 		When I uncheck "Include soft states"
 		And I click "Show report"
 		And I click "Edit settings"
@@ -488,8 +485,6 @@ Feature: SLA reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
-		Then "objects" should have option "LinuxServers"
-		Then "objects[]" should have option "WindowsServers"
 		And "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 

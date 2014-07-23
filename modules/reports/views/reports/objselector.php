@@ -8,13 +8,19 @@
 				<option value="servicegroups" <?php echo $options['report_type'] === 'servicegroups' ? 'selected="selected"' : ''; ?>><?php echo _('Servicegroups') ?></option>
 				<option value="services" <?php echo $options['report_type'] === 'services' ? 'selected="selected"' : ''; ?>><?php echo _('Services') ?></option>
 			</select>
-			<input type="button" id="sel_report_type" class="button select20" value="<?php echo _('Select') ?>" />
 			&nbsp;
 		</td>
 	</tr>
 	<tr>
 		<td colspan="3">
-			<select data-filterable data-type="hostgroup" name="objects[]" id="objects" multiple="multiple">
+			<?php
+				$datatype = substr( $options['report_type'], 0, -1 );
+				if ( strlen( $datatype ) < 1 ) {
+					$datatype = "hostgroup";
+				}
+			?>
+			Please select what objects to base the report on<br />
+			<select data-filterable data-type="<?php echo $datatype; ?>" name="objects[]" id="objects" multiple="multiple">
 				<?php
 				//size="8" style="width: 100%;" class="multiple"
 				$objs = $options['objects'];
