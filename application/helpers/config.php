@@ -5,11 +5,13 @@
  */
 class config
 {
+	static private $cache = array();
+
 	/**
 	 * Dummy value to compare to when ... no config was found!
 	 */
 	const CONFIG_NOT_FOUND = null;
-	
+
 	/**
         *       Fetch config item from db or config file
         *       If $page is set it will fetch for a page-specific
@@ -21,7 +23,11 @@ class config
 		if (empty($config_str) || !is_string($config_str)) {
 			return false;
 		}
-		
+
+		if(isset(self::$cache[$config_str])) {
+			return self::$cache[$config_str];
+		}
+
 		$setting = self::CONFIG_NOT_FOUND;
 
 		# check for database value
@@ -40,6 +46,7 @@ class config
 				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
 			}
 		}
+		self::$cache[$config_str] = $setting;
 
 		return $setting;
 	}

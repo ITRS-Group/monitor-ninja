@@ -45,6 +45,7 @@ $menu_items['event_log'] = _('Event log');
 $menu_items['availability'] = _('Availability');
 $menu_items['sla'] = _('SLA Reporting');
 $menu_items['histogram'] = _('Histogram Reporting');
+$menu_items['saved_reports'] = _('Saved reports');
 $menu_items['schedule_reports'] = _('Schedule reports');
 
 if (Kohana::config('config.cacti_path')) {
@@ -93,6 +94,7 @@ $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventl
 $section_reporting[$menu_items['availability']] = array('/avail/index', 'availability',0);
 $section_reporting[$menu_items['sla']] = array('/sla/index', 'sla',0);
 $section_reporting[$menu_items['histogram']] = array('/histogram/index', 'histogram',0);
+$section_reporting[$menu_items['saved_reports']] = array(listview::querylink('[saved_reports] all'), 'saved-reports',1);
 $section_reporting[$menu_items['schedule_reports']]= array('/schedule/show', 'schedulereports',0);
 
 # base menu (all)
