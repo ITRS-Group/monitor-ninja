@@ -28,6 +28,6 @@ class help
 		$controller = !empty($controller) ? $controller : Router::$controller;
 
 		return '<a class="helptext_target" style="border:0" data-helptext-controller="'.$controller.'" data-helptext-key="'.$key.'" href="#">'.
-		'<img src="'.$img_path.'" alt="'._('Click for help').'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
+		'<img src="'.$img_path.'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
 	}
 }
