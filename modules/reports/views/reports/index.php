@@ -24,10 +24,10 @@
 			$html_links[] = html::anchor(
 				url::site($url),
 				html::image(
-					sprintf(
-						$this->add_path('/icons/16x16/%s'),
+					ninja::add_path(sprintf(
+						'/icons/16x16/%s',
 						strtolower(str_replace(' ','-',$name)).'.png'
-					),
+					)),
 					array(
 						'alt' => $name,
 						'title' => $name,
