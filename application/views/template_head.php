@@ -21,12 +21,14 @@ if (!empty($base_href)) {
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
 	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
+	<?php echo new View('css_header', array('css' => isset($css)?$css:array())); ?>
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
 </script>
 
 	<?php
+
 		echo html::script('application/media/js/jquery.js');
 		echo html::script('application/media/js/jquery-ui.min.js');
 		echo html::script('application/media/js/jquery.fancybox.js');
@@ -154,7 +156,6 @@ if (!empty($base_href)) {
 	</script>
 
 	<?php
-		echo new View('css_header', array('css' => isset($css)?$css:array()));
 		refresh::lv_control();
 		$basepath = 'modules/lsfilter/';
 		echo html::script($basepath.'media/js/lib.js');
