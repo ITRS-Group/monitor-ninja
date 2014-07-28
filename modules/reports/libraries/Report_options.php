@@ -943,7 +943,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		$props = $this->properties();
 		$rows = array();
 		foreach ($this as $key => $val) {
-			if (in_array($key, array('objects', 'report_id', 'report_name')))
+			if (in_array($key, array('report_id', 'report_name')))
+				continue;
+			if ($key == 'objects' && $val != self::ALL_AUTHORIZED)
 				continue;
 			if (!isset($props[$key]))
 				continue;
@@ -958,7 +960,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		}
 		$sql .= implode(', ', $rows);
 		$db->query($sql);
-		if ($this['objects']) {
+		if ($this['objects'] && $this['objects'] != self::ALL_AUTHORIZED) {
 			$sql = "INSERT INTO saved_reports_objects(report_id, object_name) VALUES ";
 			$rows = array();
 			foreach ($this['objects'] as $object) {
