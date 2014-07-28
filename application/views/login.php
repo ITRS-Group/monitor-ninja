@@ -28,7 +28,10 @@
 				});
 			//-->
 		</script>
-		<?php echo new View('js_header', array('js' => $js)); ?>
+		<?php
+			$v = new View('js_header', array('js' => $js));
+			$v->render(true);
+		?>
 	</head>
 
 	<body>

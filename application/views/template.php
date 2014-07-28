@@ -39,7 +39,11 @@
 					<?php
 
 						if (isset($content)) {
-							echo $content;
+							if($content instanceof View) {
+								$content->render(true);
+							} else {
+								echo $content;
+							}
 						} else {
 							echo 'Page does not have any content';
 						}
@@ -63,8 +67,13 @@
 			if(!isset($no_dojo)) {
 				echo html::script('application/media/js/dojo.js');
 			}
-			if (isset($context_menu))
-				echo $context_menu;
+			if (isset($context_menu)) {
+				if($context_menu instanceof View) {
+					$context_menu->render(true);
+				} else {
+					echo $context_menu;
+				}
+			}
 		?>
 
 	</body>

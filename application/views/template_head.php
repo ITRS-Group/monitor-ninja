@@ -21,7 +21,10 @@ if (!empty($base_href)) {
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
 	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
-	<?php echo new View('css_header', array('css' => isset($css)?$css:array())); ?>
+	<?php
+		$v = new View('css_header', array('css' => isset($css)?$css:array()));
+		$v->render(true);
+	?>
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
@@ -171,6 +174,9 @@ if (!empty($base_href)) {
 	<![endif]-->
 
 	<?php echo html::script('application/views/js/common.js'); ?>
-	<?php echo new View('js_header', array('js' => isset($js)?$js:array())); ?>
+	<?php
+		$v = new View('js_header', array('js' => isset($js)?$js:array()));
+		$v->render(true);
+	?>
 
 </head>

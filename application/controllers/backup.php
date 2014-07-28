@@ -117,7 +117,6 @@ class Backup_Controller extends Authenticated_Controller {
 			return;
 		}
 		/* Prevent buffering and rendering */
-		Kohana::close_buffers(FALSE);
 		$this->auto_render = false;
 		$hs = headers_sent();
 

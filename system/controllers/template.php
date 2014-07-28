@@ -14,6 +14,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
+
 abstract class Template_Controller extends Controller {
 
 	// Template view name
@@ -32,11 +33,9 @@ abstract class Template_Controller extends Controller {
 		// Load the template
 		$this->template = new View($this->template);
 
-		if ($this->auto_render == TRUE)
-		{
-			// Render the template immediately after the controller method
-			Event::add('system.post_controller', array($this, '_render'));
-		}
+		// Render the template immediately after the controller method, if the event
+		// handler want to
+		Event::add('system.post_controller', array($this, '_render'));
 	}
 
 	/**

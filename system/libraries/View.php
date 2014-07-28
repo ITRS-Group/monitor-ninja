@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
+require_once('op5/log.php');
 /**
  * Loads and displays Kohana view files. Can also handle output of some binary
  * files, such as image, Javascript, and CSS files.
@@ -56,7 +58,7 @@ class View {
 			$this->kohana_local_data = array_merge($this->kohana_local_data, $data);
 		}
 	}
-	
+
 	/**
 	 * Magic method access to test for view property
 	 *
@@ -129,7 +131,7 @@ class View {
 	}
 
 	/**
-	 * Checks for a property existence in the view locally or globally. Unlike the built in __isset(), 
+	 * Checks for a property existence in the view locally or globally. Unlike the built in __isset(),
 	 * this method can take an array of properties to test simultaneously.
 	 *
 	 * @param string $key property name to test for
@@ -147,7 +149,7 @@ class View {
 		{
 			// Set the result to an array
 			$result = array();
-			
+
 			// Foreach key
 			foreach ($key as $property)
 			{
@@ -240,23 +242,48 @@ class View {
 	/**
 	 * Magically converts view object to string.
 	 *
+	 * This is deprecated in ninja. Since rendering is heavy, and might contain
+	 * lot of data, we should use ->render() instead explicitly, and prefferably
+	 * use the streamed version of it.
+	 *
 	 * @return  string
 	 */
 	public function __toString()
 	{
-		return $this->render();
+		$stack = debug_backtrace();
+		$file = $stack[0]['file'];
+		$line = $stack[0]['line'];
+		$msg = "Don't typecast view ".$this->kohana_filename." to stirng\n"
+			."    at ".$file."(".$line.")";
+
+		op5log::instance('ninja')->log('debug', $msg);
+
+		ob_start();
+		$this->render(TRUE);
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		return $output;
 	}
 
 	/**
 	 * Renders a view.
-	 *
-	 * @param   boolean   set to TRUE to echo the output instead of returning it
-	 * @param   callback  special renderer to pass the output through
-	 * @return  string    if print is FALSE
-	 * @return  void      if print is TRUE
 	 */
 	public function render($print = FALSE, $renderer = FALSE)
 	{
+		if ($print == false) {
+			$stack = debug_backtrace();
+			$file = $stack[0]['file'];
+			$line = $stack[0]['line'];
+			$msg = "Don't render a view to a variable!\n"
+				."    View: ".$this->kohana_filename."\n"
+				."    at ".$file."(".$line.")";
+
+			op5log::instance('ninja')->log('debug', $msg);
+
+			ob_start();
+		}
+
 		if (empty($this->kohana_filename))
 			throw new Kohana_Exception('core.view_set_filename');
 
@@ -266,41 +293,25 @@ class View {
 			$data = array_merge(self::$kohana_global_data, $this->kohana_local_data);
 
 			// Load the view in the controller for access to $this
-			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
-
-			if ($renderer !== FALSE AND is_callable($renderer, TRUE))
-			{
-				// Pass the output through the user defined renderer
-				$output = call_user_func($renderer, $output);
-			}
-
-			if ($print === TRUE)
-			{
-				// Display the output
-				echo $output;
-				return;
-			}
+			Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
 		}
 		else
 		{
 			// Set the content type and size
 			header('Content-Type: '.$this->kohana_filetype[0]);
 
-			if ($print === TRUE)
+			if ($file = fopen($this->kohana_filename, 'rb'))
 			{
-				if ($file = fopen($this->kohana_filename, 'rb'))
-				{
-					// Display the output
-					fpassthru($file);
-					fclose($file);
-				}
-				return;
+				// Display the output
+				fpassthru($file);
+				fclose($file);
 			}
-
-			// Fetch the file contents
-			$output = file_get_contents($this->kohana_filename);
 		}
 
-		return $output;
+		if ($print == false) {
+			$output = ob_get_contents();
+			ob_end_clean();
+			return $output;
+		}
 	}
 } // End View

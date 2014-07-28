@@ -60,9 +60,6 @@ abstract class Controller {
 		if ($kohana_view_filename == '')
 			return;
 
-		// Buffering on
-		ob_start();
-
 		// Import the view variables to local namespace
 		extract($kohana_input_data, EXTR_SKIP);
 
@@ -78,9 +75,6 @@ abstract class Controller {
 			// Display the exception using its internal __toString method
 			echo $e;
 		}
-
-		// Fetch the output and close the buffer
-		return ob_get_clean();
 	}
 
 } // End Controller Class

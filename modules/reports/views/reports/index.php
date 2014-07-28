@@ -4,13 +4,23 @@
 <div class="report-page">
 <?php
 	echo isset($error) ? $error : '';
-	echo $header;
+	if ($header instanceof View) {
+		$header->render(true);
+	} else {
+		// If $header is something that can be printable
+		echo $header;
+	}
 ?>
 <div style="display: none">
 <div id="options">
 <?php echo form::open($type.'/generate', array('class' => 'report_form'));?>
 <?php
-	echo $report_options;
+	if ($report_options instanceof View) {
+		$report_options->render(true);
+	} else {
+		// If $header is something that can be printable
+		echo $report_options;
+	}
 ?>
 </form>
 </div>
@@ -46,7 +56,12 @@
 		echo '</div>';
 	}
 	if (!empty($content)) {
-		echo $content;
+		if ($content instanceof View) {
+			$content->render(true);
+		} else {
+			// If $header is something that can be printable
+			echo $content;
+		}
 		echo !empty($svc_content) ? $svc_content : '';
 		echo isset($pie) ? $pie : '';
 		echo !empty($log_content) ? $log_content : '';

@@ -20,7 +20,7 @@ class Manifest_Controller extends Ninja_Controller {
 		$manifest = Module_Manifest_Model::get( $name );
 		return json::ok( $manifest );
 	}
-	
+
 	/**
 	 * Return a manifest variable as a javascript file, for loading through a script tag
 	 */
@@ -28,12 +28,12 @@ class Manifest_Controller extends Ninja_Controller {
 		if( substr( $name, -3 ) == '.js' ) {
 			$name = substr( $name, 0, -3 );
 		}
-		
+
 		$this->auto_render = false;
 		$manifest = Module_Manifest_Model::get( $name );
-		
+
 		header('Content-Type: text/javascript');
-		
+
 		print "var $name = " . json_encode( $manifest ) . ";";
 	}
 }

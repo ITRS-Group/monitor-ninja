@@ -59,9 +59,6 @@ final class Kohana {
 	// The singleton instance of the controller
 	public static $instance;
 
-	// Output buffering level
-	private static $buffer_level;
-
 	// Will be set to TRUE when an exception is caught
 	public static $has_error = FALSE;
 
@@ -147,12 +144,6 @@ final class Kohana {
 		// Restore error reporting
 		error_reporting($ER);
 
-		// Start output buffering
-		ob_start(array(__CLASS__, 'output_buffer'));
-
-		// Save buffering level
-		self::$buffer_level = ob_get_level();
-
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
@@ -182,9 +173,6 @@ final class Kohana {
 
 		// Enable Kohana 404 pages
 		Event::add('system.404', array('Kohana', 'show_404'));
-
-		// Enable Kohana output handling
-		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
 		if (self::config('core.enable_hooks') === TRUE)
 		{
@@ -534,160 +522,6 @@ final class Kohana {
 	}
 
 	/**
-	 * Kohana output handler.
-	 *
-	 * @param   string  current output buffer
-	 * @return  string
-	 */
-	public static function output_buffer($output)
-	{
-		if ( ! Event::has_run('system.send_headers'))
-		{
-			// Run the send_headers event, specifically for cookies being set
-			Event::run('system.send_headers');
-		}
-
-		// Set final output
-		self::$output = $output;
-
-		// Set and return the final output
-		return $output;
-	}
-
-	/**
-	 * Closes all open output buffers, either by flushing or cleaning all
-	 * open buffers, including the Kohana output buffer.
-	 *
-	 * @param   boolean  disable to clear buffers, rather than flushing
-	 * @return  void
-	 */
-	public static function close_buffers($flush = TRUE)
-	{
-		if (ob_get_level() >= self::$buffer_level)
-		{
-			// Set the close function
-			$close = ($flush === TRUE) ? 'ob_end_flush' : 'ob_end_clean';
-
-			while (ob_get_level() > self::$buffer_level)
-			{
-				// Flush or clean the buffer
-				$close();
-			}
-
-			// This will flush the Kohana buffer, which sets self::$output
-			ob_end_clean();
-
-			// Reset the buffer level
-			self::$buffer_level = ob_get_level();
-		}
-	}
-
-	/**
-	 * Triggers the shutdown of Kohana by closing the output buffer, runs the system.display event.
-	 *
-	 * @return  void
-	 */
-	public static function shutdown()
-	{
-		// Close output buffers
-		self::close_buffers(TRUE);
-
-		// Run the output event
-		Event::run('system.display', self::$output);
-
-		// Render the final output
-		self::render(self::$output);
-	}
-
-	/**
-	 * Inserts global Kohana variables into the generated output and prints it.
-	 *
-	 * @param   string  final output that will displayed
-	 * @return  void
-	 */
-	public static function render($output)
-	{
-		// Fetch memory usage in MB
-		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
-
-		// Fetch benchmark for page execution time
-		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
-
-		if (self::config('core.render_stats') === TRUE)
-		{
-			// Replace the global template variables
-			$output = str_replace(
-				array
-				(
-					'{kohana_version}',
-					'{kohana_codename}',
-					'{execution_time}',
-					'{memory_usage}',
-					'{included_files}',
-				),
-				array
-				(
-					KOHANA_VERSION,
-					KOHANA_CODENAME,
-					$benchmark['time'],
-					number_format($memory, 2).'MB',
-					count(get_included_files()),
-				),
-				$output
-			);
-		}
-
-		if ($level = self::config('core.output_compression') AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
-		{
-			if ($level < 1 OR $level > 9)
-			{
-				// Normalize the level to be an integer between 1 and 9. This
-				// step must be done to prevent gzencode from triggering an error
-				$level = max(1, min($level, 9));
-			}
-
-			if (stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
-			{
-				$compress = 'gzip';
-			}
-			elseif (stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
-			{
-				$compress = 'deflate';
-			}
-		}
-
-		if (isset($compress) AND $level > 0)
-		{
-			switch ($compress)
-			{
-				case 'gzip':
-					// Compress output using gzip
-					$output = gzencode($output, $level);
-				break;
-				case 'deflate':
-					// Compress output using zlib (HTTP deflate)
-					$output = gzdeflate($output, $level);
-				break;
-			}
-
-			// This header must be sent with compressed content to prevent
-			// browser caches from breaking
-			header('Vary: Accept-Encoding');
-
-			// Send the content encoding header
-			header('Content-Encoding: '.$compress);
-
-			// Sending Content-Length in CGI can result in unexpected behavior
-			if (stripos(PHP_SAPI, 'cgi') === FALSE)
-			{
-				header('Content-Length: '.strlen($output));
-			}
-		}
-
-		echo $output;
-	}
-
-	/**
 	 * Displays a 404 page.
 	 *
 	 * @throws  Kohana_404_Exception
@@ -789,12 +623,6 @@ final class Kohana {
 						header('HTTP/1.1 500 Internal Server Error');
 					}
 				}
-			}
-
-			while (ob_get_level() > self::$buffer_level)
-			{
-				// Close open buffers
-				ob_end_clean();
 			}
 
 			// Test if display_errors is on
