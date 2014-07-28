@@ -257,22 +257,18 @@ class nagstat {
 	*/
 	public static function date_format($nagios_format_name=false)
 	{
+		static $default_nagios_format = null;
 		if (empty($nagios_format_name)) {
-			$date_format_id = 'date_format';
-			# try config helper first (includes session check)
-			$nagios_format_name = config::get('config.'.$date_format_id);
-			if (empty($nagios_format_name)) {
-				# check nagios.cfg file
-				$nagios_config = System_Model::parse_config_file('nagios.cfg');
-				$nagios_format_name = $nagios_config[$date_format_id];
-				# save to session
-				Session::instance()->set('config.'.$date_format_id, $nagios_format_name);
-
-				# save setting to db
-				Ninja_setting_Model::save_page_setting('config.'.$date_format_id, '*', $nagios_format_name);
+			if (empty($default_nagios_format)) {
+				$date_format_id = 'date_format';
+				if (empty($nagios_format_name)) {
+					# check nagios.cfg file
+					$nagios_config = System_Model::parse_config_file('nagios.cfg');
+					$default_nagios_format = $nagios_config[$date_format_id];
+				}
 			}
+			$nagios_format_name = $default_nagios_format;
 		}
-		$nagios_format_name = trim($nagios_format_name);
 		if (empty($nagios_format_name)) {
 			return false;
 		}
