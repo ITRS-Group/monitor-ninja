@@ -78,6 +78,8 @@
 				var _search_saved_error = '<?php echo _('An error occured when trying to save your search.') ?>';
 				var _date_format = <?php echo json_encode(nagstat::date_format()); ?>;
 				var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
+				var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target', '*'); ?>";
+				var _action_url_target = "<?php echo config::get('nagdefault.action_url_target', '*'); ?>";
 
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 
@@ -103,6 +105,10 @@
 				}?>
 			//-->
 		</script>
+		<?php
+		$basepath = 'modules/lsfilter/';
+		echo html::script($basepath.'media/js/lib.js');
+		echo html::script($basepath.'media/js/LSFilterSaved.js'); ?>
 		<?php echo html::script('application/views/js/common.js'); ?>
 		<?php echo new View('js_header', array('js' => $js)); ?>
 
