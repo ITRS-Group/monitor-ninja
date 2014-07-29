@@ -66,7 +66,7 @@ listview_renderer_table.saved_reports = {
 		}
 	},
 	"modified_at" : {
-		"header" : _('Modified by'),
+		"header" : _('Modified at'),
 		"depends" : [ 'modified_at' ],
 		"sort" : [ 'modified_at asc' ],
 		"cell" : function(args) {
