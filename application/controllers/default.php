@@ -31,9 +31,8 @@ class Default_Controller extends Ninja_Controller  {
 		if (ninja_auth::is_locked_out()) {
 			return url::redirect('default/locked_out');
 		}
-		//$this->template-> = $this->add_view('menu');
-		$this->template->title = _('Ninja');
-
+		/* No url specified? go to the default page */
+		return url::redirect(Kohana::config('routes.logged_in_default'));
 	}
 
 	public function show_login()
