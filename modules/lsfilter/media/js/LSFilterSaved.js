@@ -32,7 +32,7 @@ var lsfilter_saved = {
 				'type' : 'lsfilters_saved',
 				'page' : 'listview'
 			},
-			type : 'POST',
+			type : 'GET',
 			success : function(data) {
 				var list = $("#saved-filters-menu").empty();
 				for ( var filter in data.data) {
