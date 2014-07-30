@@ -149,7 +149,7 @@ final class Kohana {
 
 		// Set error handler
 		if (PHP_SAPI !== 'cli' && !defined('SKIP_KOHANA')) {
-			set_error_handler(array('Kohana', 'exception_handler'));
+			set_error_handler(array('Kohana', 'error_handler'));
 
 			// Send default text/html UTF-8 header
 			header('Content-Type: text/html; charset=UTF-8');
@@ -535,44 +535,42 @@ final class Kohana {
 	}
 
 	/**
-	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page
-	 * view to display the message.
+	 * Error handler. Send an exception upon PHP errors to enter the normal
+	 * error/exception handling scheme.
 	 *
-	 * @param   integer|object  exception object or error code
-	 * @param   string          error message
-	 * @param   string          filename
-	 * @param   integer         line number
+	 * @param integer $errno
+	 * @param string $errstr
+	 * @param string $errfile
+	 * @param string $errline
+	 * @param string $errcontext
+	 * @throws Kohana_PHPError_Exception
+	 */
+	public static function error_handler($errno, $errstr,  $errfile = NULL, $errline = NULL, $errcontext = NULL) {
+		// Test to see if errors should be displayed
+		if ((error_reporting() & $errno) === 0)
+			return;
+		throw new Kohana_PHPError_Exception($errno, $errstr, $errfile, $errline, $errcontext);
+	}
+
+	/**
+	 * Exception handler. Uses the kohana_error_page view to display the message,
+	 * if exception isn't a Kohana_Exception, in that case, obey the exception.
+	 *
+	 * @param   object  exception object
 	 * @return  void
 	 */
-	public static function exception_handler($exception, $message = NULL, $file = NULL, $line = NULL)
+	public static function exception_handler($exception)
 	{
 		try {
-			// PHP errors have 5 args, always
-			$PHP_ERROR = (func_num_args() === 5);
-
-			// Test to see if errors should be displayed
-			if ($PHP_ERROR AND (error_reporting() & $exception) === 0)
-				return;
-
 			// This is useful for hooks to determine if a page has an error
 			self::$has_error = TRUE;
 
-			// Error handling will use exactly 5 args, every time
-			if ($PHP_ERROR)
-			{
-				$code     = $exception;
-				$type     = 'PHP Error';
-				$template = 'kohana_error_page';
-			}
-			else
-			{
-				$code     = $exception->getCode();
-				$type     = get_class($exception);
-				$message  = $exception->getMessage();
-				$file     = $exception->getFile();
-				$line     = $exception->getLine();
-				$template = ($exception instanceof Kohana_Exception) ? $exception->getTemplate() : 'kohana_error_page';
-			}
+			$code     = $exception->getCode();
+			$type     = get_class($exception);
+			$message  = $exception->getMessage();
+			$file     = $exception->getFile();
+			$line     = $exception->getLine();
+			$template = ($exception instanceof Kohana_Exception) ? $exception->getTemplate() : 'kohana_error_page';
 
 			if (is_numeric($code))
 			{
@@ -585,7 +583,7 @@ final class Kohana {
 				else
 				{
 					$level = 1;
-					$error = $PHP_ERROR ? 'Unknown Error' : get_class($exception);
+					$error = get_class($exception);
 					$description = '';
 				}
 			}
@@ -603,25 +601,12 @@ final class Kohana {
 
 			self::log('error', self::lang('core.uncaught_exception', $type, $message, $file, $line));
 
-			if ($PHP_ERROR)
-			{
-				$description = self::lang('errors.'.E_RECOVERABLE_ERROR);
-				$description = is_array($description) ? $description[2] : '';
-
-				if ( ! headers_sent())
+			if(!headers_sent()) {
+				if (method_exists($exception, 'sendHeaders'))
 				{
+					$exception->sendHeaders();
+				} else {
 					header('HTTP/1.1 500 Internal Server Error');
-				}
-			}
-			else
-			{
-				if(!headers_sent()) {
-					if (method_exists($exception, 'sendHeaders'))
-					{
-						$exception->sendHeaders();
-					} else {
-						header('HTTP/1.1 500 Internal Server Error');
-					}
 				}
 			}
 
@@ -631,7 +616,7 @@ final class Kohana {
 				if ($line != FALSE)
 				{
 					// Remove the first entry of debug_backtrace(), it is the exception_handler call
-					$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
+					$trace = $exception->getTrace();
 
 					// Beautify backtrace
 					$trace = self::backtrace($trace);
@@ -1469,3 +1454,17 @@ class Kohana_404_Exception extends Kohana_Exception {
 	}
 
 } // End Kohana 404 Exception
+
+/**
+ * Exception used to track PHP Errors
+ */
+class Kohana_PHPError_Exception extends Kohana_Exception {
+	protected $errcontext;
+
+	public function __construct($errno, $errstr,  $errfile = NULL, $errline = NULL, $errcontext = NULL) {
+		Exception::__construct($errstr, $errno);
+		$this->file = $errfile;
+		$this->line = $errline;
+		$this->errcontext = $errcontext;
+	}
+}
