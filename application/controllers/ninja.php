@@ -240,17 +240,6 @@ class Ninja_Controller extends Template_Controller {
 
 	}
 
-	public function __call($method, $arguments)
-	{
-		// Disable auto-rendering
-		$this->auto_render = FALSE;
-
-		// By defining a __call method, all pages routed to this controller
-		// that result in 404 errors will be handled by this method, instead of
-		// being displayed as "Page Not Found" errors.
-		echo _("The requested page doesn't exist") . " ($method)";
-	}
-
 	/**
 	 * Create a View object
 	 */
