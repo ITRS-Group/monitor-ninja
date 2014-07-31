@@ -61,12 +61,5 @@ if (IN_PRODUCTION) {
 	$content .= $crash_info;
 	unset($tmp_dir);
 }
-$title = 'Error';
-require('menu/menu.php');
-$links = $menu_base;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST')
-	$disable_refresh = true;
-
-$current_skin = 'default/';
-require('template.php');
+echo $content;
