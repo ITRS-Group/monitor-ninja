@@ -180,9 +180,9 @@ class op5sysinfo {
 				}
 			}
 			if (isset($instance['name']))
-				$instances[$instance['name']] = $instance;
+				$nodeinfo[$instance['name']] = $instance;
 		}
-		$this->merlin_nodeinfo = $instances;
-		return $instances;
+		$this->merlin_nodeinfo = $nodeinfo;
+		return $nodeinfo;
 	}
 }
