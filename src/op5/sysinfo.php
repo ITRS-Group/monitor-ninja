@@ -173,12 +173,14 @@ class op5sysinfo {
 				continue;
 			$instance = array ();
 			$parts = explode(';', $kvvec);
-			$instance_id = 7;
 			foreach ($parts as $kv) {
-				list ($k, $v) = explode('=', $kv, 2);
-				$instance[$k] = $v;
+				$kvarr = explode('=', $kv, 2);
+				if (count($kvarr) == 2) {
+					$instance[$kvarr[0]] = $kvarr[1];
+				}
 			}
-			$instances[$instance['name']] = $instance;
+			if (isset($instance['name']))
+				$instances[$instance['name']] = $instance;
 		}
 		$this->merlin_nodeinfo = $instances;
 		return $instances;
