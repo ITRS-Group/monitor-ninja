@@ -110,6 +110,9 @@ class op5sysinfo {
 	 */
 	public function get_pollers_usage() {
 		$nodeinfo = $this->get_merlininfo();
+		if (!isset($nodeinfo['ipc']) ||
+			 !isset($nodeinfo['ipc']['configured_polllers']))
+			throw new op5sysinfo_Exception('No poller information found');
 		return $nodeinfo['ipc']['configured_pollers'];
 	}
 
@@ -121,6 +124,9 @@ class op5sysinfo {
 	 */
 	public function get_peers_usage() {
 		$nodeinfo = $this->get_merlininfo();
+		if (!isset($nodeinfo['ipc']) ||
+			 !isset($nodeinfo['ipc']['configured_peers']))
+			throw new op5sysinfo_Exception('No peer information found');
 		return $nodeinfo['ipc']['configured_peers'];
 	}
 
