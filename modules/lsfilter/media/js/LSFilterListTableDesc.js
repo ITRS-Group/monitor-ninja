@@ -268,7 +268,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		/* Might be a non-existing column, or non-backened-column */
 		if( orm_structure[curtbl][fetchvar[fetchlen - 1]] ) {
 			var type = orm_structure[curtbl][fetchvar[fetchlen - 1]][0];
-			if (type != 'int' && type != 'string' && type != 'time')
+			if (type != 'int' && type != 'string' && type != 'time' && type != 'float')
 				is_sortable = false;
 		} else {
 			is_sortable = false;
