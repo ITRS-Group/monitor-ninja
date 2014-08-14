@@ -13,7 +13,8 @@ class ExpParser_SearchFilter extends ExpParser {
 			'c'  => 'comments',
 			'hg' => 'hostgroups',
 			'sg' => 'servicegroups',
-			'si' => '_si'
+			'si' => '_si',
+			'l'  => 'syslog'
 			);
 	
 	/**
