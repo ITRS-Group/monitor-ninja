@@ -115,7 +115,7 @@
 			this.selected.attr( "id", this.filtered.attr( "id" ) );
 			this.selected.attr( "name", this.filtered.attr( "name" ) );
 
-			this.filtered.attr("id", this.selected.attr("id").replace('[', '_tmp['));
+			this.filtered.attr("id", this.selected.attr("id")+'_tmp');
 			this.filtered.removeAttr( "name" );
 
 		}
