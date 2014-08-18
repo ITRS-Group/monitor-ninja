@@ -52,8 +52,8 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "EmptyGroup" from the multiselect "objects"
-		Then "objects[]" should have option "EmptyGroup"
+		And I select "EmptyGroup" from the multiselect "objects_tmp"
+		Then "objects" should have option "EmptyGroup"
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -67,8 +67,8 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Servicegroups" from "Report type"
-		And I select "empty" from the multiselect "objects"
-		Then "objects[]" should have option "empty"
+		And I select "empty" from the multiselect "objects_tmp"
+		Then "objects" should have option "empty"
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -80,8 +80,8 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "LinuxServers" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
 		When I click "Show report"
 		Then I should see "Please enter at least one SLA value"
 		And I should see "Report Settings"
@@ -92,8 +92,8 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Hosts" from "Report type"
-		And I select "linux-server1" from the multiselect "objects"
-		Then "objects[]" should have option "linux-server1"
+		And I select "linux-server1" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1"
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -110,10 +110,10 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Hosts" from "Report type"
-		And I select "linux-server1" from the multiselect "objects"
-		And I select "win-server1" from the multiselect "objects"
-		Then "objects[]" should have option "linux-server1"
-		And "objects[]" should have option "win-server1"
+		And I select "linux-server1" from the multiselect "objects_tmp"
+		And I select "win-server1" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1"
+		And "objects" should have option "win-server1"
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -135,8 +135,8 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Services" from "Report type"
-		And I select "linux-server1;PING" from the multiselect "objects"
-		Then "objects[]" should have option "linux-server1;PING"
+		And I select "linux-server1;PING" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1;PING"
 		When I enter "9.1" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -153,10 +153,10 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Services" from "Report type"
-		And I select "linux-server1;PING" from the multiselect "objects"
-		And I select "linux-server1;System Load" from the multiselect "objects"
-		Then "objects[]" should have option "linux-server1;PING"
-		And "objects[]" should have option "linux-server1;System Load"
+		And I select "linux-server1;PING" from the multiselect "objects_tmp"
+		And I select "linux-server1;System Load" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1;PING"
+		And "objects" should have option "linux-server1;System Load"
 		When I enter "9,1" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -179,10 +179,10 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Services" from "Report type"
-		And I select "linux-server1;PING" from the multiselect "objects"
-		And I select "linux-server2;System Load" from the multiselect "objects"
-		Then "objects[]" should have option "linux-server1;PING"
-		And "objects[]" should have option "linux-server2;System Load"
+		And I select "linux-server1;PING" from the multiselect "objects_tmp"
+		And I select "linux-server2;System Load" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1;PING"
+		And "objects" should have option "linux-server2;System Load"
 		When I enter "9.99" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -206,8 +206,8 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "LinuxServers" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
 		When I enter "9,99" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -228,10 +228,10 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "LinuxServers" from the multiselect "objects"
-		And I select "WindowsServers" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
-		And "objects[]" should have option "WindowsServers"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		And I select "WindowsServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
+		And "objects" should have option "WindowsServers"
 		When I enter "99.999" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -254,10 +254,10 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "LinuxServers" from the multiselect "objects"
-		And I select "MixedGroup" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
-		And "objects[]" should have option "MixedGroup"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		And I select "MixedGroup" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
+		And "objects" should have option "MixedGroup"
 		When I enter "99,999" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -281,8 +281,8 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Servicegroups" from "Report type"
-		And I select "pings" from the multiselect "objects"
-		Then "objects[]" should have option "pings"
+		And I select "pings" from the multiselect "objects_tmp"
+		Then "objects" should have option "pings"
 		When I enter "100" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -307,10 +307,10 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		And I select "Servicegroups" from "Report type"
-		And I select "pings" from the multiselect "objects"
-		And I select "empty" from the multiselect "objects"
-		Then "objects[]" should have option "pings"
-		And "objects[]" should have option "empty"
+		And I select "pings" from the multiselect "objects_tmp"
+		And I select "empty" from the multiselect "objects_tmp"
+		Then "objects" should have option "pings"
+		And "objects" should have option "empty"
 		When I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -334,8 +334,8 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "LinuxServers" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
 		And I select "2013" from "Start year"
 		And I select "Jan" from "Start month"
@@ -359,8 +359,8 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
 		When I click "SLA"
-		And I select "LinuxServers" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
 		When I select "Last 12 months" from "Reporting period"
 		And I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
@@ -383,8 +383,8 @@ Feature: SLA reports
 		And I hover over the "Reporting" button
 		When I click "SLA"
 		Then "Saved reports" shouldn't have option "saved test report"
-		When I select "LinuxServers" from the multiselect "objects"
-		Then "objects[]" should have option "LinuxServers"
+		When I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
 		# Toggle *everything*!
 		When I select "Last year" from "Reporting period"
 		And I enter "9" into "Jan"
@@ -425,7 +425,7 @@ Feature: SLA reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
-		Then "objects[]" should have option "LinuxServers"
+		Then "objects" should have option "LinuxServers"
 		And "Last year" should be selected from "Reporting period"
 		And "workhours" should be selected from "Report time period"
 		And "Down" should be checked
@@ -460,12 +460,12 @@ Feature: SLA reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
-		Then "objects[]" should have option "LinuxServers"
-		And "objects" should have option "WindowsServers"
+		Then "objects" should have option "LinuxServers"
+		And "objects_tmp" should have option "WindowsServers"
 		And "Include soft states" should be checked
 		And "Use alias" should be checked
-		When I deselect "LinuxServers" from the multiselect "objects[]"
-		And I select "WindowsServers" from the multiselect "objects"
+		When I deselect "LinuxServers" from the multiselect "objects"
+		And I select "WindowsServers" from the multiselect "objects_tmp"
 		When I uncheck "Include soft states"
 		And I click "Show report"
 		And I click "Edit settings"
@@ -496,9 +496,9 @@ Feature: SLA reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
-		Then "objects[]" should have option "WindowsServers"
+		Then "objects" should have option "WindowsServers"
 		When I click "Delete"
 		# Test available first, to force capybara to wait for page reload
-		Then "objects" should have option "WindowsServers"
+		Then "objects_tmp" should have option "WindowsServers"
 		And "Saved reports" shouldn't have option "saved test report"
-		And "objects[]" shouldn't have option "WindowsServers"
+		And "objects" shouldn't have option "WindowsServers"
