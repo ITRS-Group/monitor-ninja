@@ -233,7 +233,7 @@ class op5config {
 	{
 		$new_config = array();
 		foreach ($config as $key => $value) {
-			if (count($path) === 1 && $path[0] === '*') {
+			if (count($path) === 1) {
 				// We have reached the end of the path, check for matching keys/values
 				switch ($type) {
 					case 'key':
