@@ -8,7 +8,7 @@
 				<option value="servicegroups" <?php echo $options['report_type'] === 'servicegroups' ? 'selected="selected"' : ''; ?>><?php echo _('Servicegroups') ?></option>
 				<option value="services" <?php echo $options['report_type'] === 'services' ? 'selected="selected"' : ''; ?>><?php echo _('Services') ?></option>
 			</select>
-			&nbsp;
+			&nbsp;<br /><br />
 		</td>
 	</tr>
 	<tr>

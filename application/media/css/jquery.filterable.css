@@ -26,7 +26,7 @@ input.jq-filterable-filter[type="text"] {
 }
 
 .jq-filterable-larger {
-	width: 184px !important;
+	width: 234px !important;
 }
 
 .jq-filterable-largest {
@@ -47,13 +47,13 @@ select.jq-filterable-results {
 	margin-top: 0;
 	height: auto;
 	border: 1px solid #bbb;
-	width: 190px !important;
+	width: 230px !important;
 	min-width: 190px !important;
 	height: 70px;
 }
 
 select.jq-filterable-list[multiple] {
-	width: 150px !important;
+	width: 240px !important;
 	border-top: none;
 }
 
