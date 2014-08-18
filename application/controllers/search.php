@@ -23,7 +23,7 @@ class Search_Controller extends Authenticated_Controller {
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' ),
 		'_si' => array('plugin_output', 'long_plugin_output'),
-		'syslog' => array('ip', 'host', 'msg', 'ident', 'pid')
+		'syslog' => array('ip', 'host', 'msg', 'ident', 'pid', 'event' )
 	);
 
 	protected $search_columns_matchall = array(
@@ -32,7 +32,7 @@ class Search_Controller extends Authenticated_Controller {
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' ),
-		'syslog' => array('ip', 'host', 'msg', 'ident', 'pid')
+		'syslog' => array('ip', 'host', 'msg', 'ident', 'pid', 'event' )
 	);
 
 	/**
