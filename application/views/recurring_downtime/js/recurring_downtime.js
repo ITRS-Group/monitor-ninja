@@ -184,7 +184,10 @@ function check_setup()
 			// Downtime type string
 			var object_type = $('#downtime_type option:selected').val();
 			// Array of selected objects
-			var objects = $('#objects').val();
+			var objects = [];
+			$('#objects option').each(function() {
+				objects.push($(this).val());
+			});
 			$.ajax({
 				url: _site_domain + _index_page + '/recurring_downtime/insert_downtimes',
 				type: 'post',

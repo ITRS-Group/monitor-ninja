@@ -144,10 +144,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$duration = $this->input->post('duration', false);
 		$comment = $this->input->post('comment', false);
 
-		if (!is_array($objects)) {
-			return json::fail("No objects selected");
-		}
-
 		if (ScheduleDate_Model::insert_downtimes($objects, $object_type, $start_time, $end_time, $fixed, $duration, $comment) !== false) {
 			return json::ok("Downtime successfully scheduled");
 		} else {
