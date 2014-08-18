@@ -75,7 +75,7 @@ Feature: Histogram reports
 		When I click "Histogram"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
-		Then "objects_tmp" should have option "linux-server1"
+		Then "objects" should have option "linux-server1"
 		When I select "Hard states" from "State types to graph"
 		And I select "Day of month" from "Statistics breakdown"
 		And I select "This year" from "Reporting period"
