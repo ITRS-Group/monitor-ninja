@@ -65,7 +65,7 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Alert history"
-		Then I should be on url "/monitor/index.php/alert_history/generate?include_long_output=1&report_type=hosts&objects[]=linux-server1"
+		Then I should be on url "/monitor/index.php/alert_history/generate?report_type=hosts&objects[]=linux-server1"
 
 	@configuration @asmonitor @case-645
 	Scenario: Host details extinfo page check links
@@ -481,7 +481,7 @@ Feature: Monitoring
 		Given I am on the Service details page
 		When I click "System Load"
 		And I click "Alert history"
-		Then I should be on url "/monitor/index.php/alert_history/generate?include_long_output=1&report_type=services&objects[]=linux-server1;System+Load"
+		Then I should be on url "/monitor/index.php/alert_history/generate?report_type=services&objects[]=linux-server1;System+Load"
 		And I should see "Alert history"
 
 	@configuration @asmonitor @case-654
