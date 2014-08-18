@@ -703,6 +703,7 @@ class op5auth {
 	public function rename_module($old, $new) {
 		$cfg = op5Config::instance();
 		$cfg->cascadeEditConfig('auth.*', 'key', $old, $new);
+		$cfg->cascadeEditConfig('auth.common.default_auth', 'value', $old, $new);
 		$cfg->cascadeEditConfig('auth_users.*.modules.*', 'value', $old, $new);
 	}
 } // End Auth
