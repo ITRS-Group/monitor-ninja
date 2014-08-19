@@ -23,7 +23,7 @@ end
 Then /^all helptexts should be defined$/ do
   all(:css, '.helptext_target', :visible => true).each { | elem |
     elem.trigger(:mouseover)
-    sleep(1)
+    sleep(2)
     page.should have_css(".qtip-content", :visible => true)
     # "This helptext (%s) is not translated yet" is only printed by convention, but it appears we follow it
     page.should have_no_content "This helptext"
