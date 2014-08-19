@@ -41,7 +41,7 @@
 						if (isset($content)) {
 							echo $content;
 						} else {
-							return url::redirect(Kohana::config('routes.logged_in_default'));
+							echo 'Page does not have any content';
 						}
 
 						require __DIR__ . '/template_notifications.php';
