@@ -160,9 +160,6 @@ final class Kohana {
 		if (PHP_SAPI !== 'cli' && !defined('SKIP_KOHANA')) {
 			set_error_handler(array('Kohana', 'exception_handler'));
 
-			// Set exception handler
-			set_exception_handler(array('Kohana', 'exception_handler'));
-
 			// Send default text/html UTF-8 header
 			header('Content-Type: text/html; charset=UTF-8');
 		}
@@ -232,69 +229,48 @@ final class Kohana {
 			// Include the Controller file
 			require Router::$controller_path;
 
-			try
-			{
-				// Start validation of the controller
-				$class = new ReflectionClass(ucfirst(Router::$controller).'_Controller');
-			}
-			catch (ReflectionException $e)
-			{
-				// Controller does not exist
+			$classname = ucfirst(Router::$controller).'_Controller';
+
+			if (!class_exists($classname)) {
 				Event::run('system.404');
 			}
 
-			if ($class->isAbstract() OR (IN_PRODUCTION AND $class->getConstant('ALLOW_PRODUCTION') == FALSE))
-			{
+			if (IN_PRODUCTION && !$classname::ALLOW_PRODUCTION) {
 				// Controller is not allowed to run in production
 				Event::run('system.404');
 			}
 
-			// Run system.pre_controller
-			Event::run('system.pre_controller');
+			try {
+				// Run system.pre_controller
+				Event::run('system.pre_controller');
 
-			// Create a new controller instance
-			$controller = $class->newInstance();
+				// Create a new controller instance
+				$controller = new $classname();
 
-			// Controller constructor has been executed
-			Event::run('system.post_controller_constructor', $controller);
+				// Controller constructor has been executed
+				Event::run('system.post_controller_constructor', $controller);
 
-			try
-			{
-				// Load the controller method
-				$method = $class->getMethod(Router::$method);
+				$method = Router::$method;
 
-				if ($method->isProtected() or $method->isPrivate())
-				{
-					// Do not attempt to invoke protected methods
-					throw new ReflectionException('protected controller method');
-				}
+				// Stop the controller setup benchmark
+				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
 
-				// Default arguments
-				$arguments = Router::$arguments;
+				// Start the controller execution benchmark
+				Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
+
+				// Execute the controller method
+				// $method does always exist in a controller, since Controller
+				// implements the fucntion __call()
+				call_user_func_array(array($controller, $method), Router::$arguments);
+
+				// Controller method has been executed
+				Event::run('system.post_controller', $controller);
+
+				// Stop the controller execution benchmark
+				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+			} catch( Exception $e ) {
+				self::exception_handler($e);
 			}
-			catch (ReflectionException $e)
-			{
-				// Use __call instead
-				$method = $class->getMethod('__call');
-
-				// Use arguments in __call format
-				$arguments = array(Router::$method, Router::$arguments);
-			}
-
-			// Stop the controller setup benchmark
-			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
-
-			// Start the controller execution benchmark
-			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
-
-			// Execute the controller method
-			$method->invokeArgs($controller, $arguments);
-
-			// Controller method has been executed
-			Event::run('system.post_controller', $controller);
-
-			// Stop the controller execution benchmark
-			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
 		}
 
 		return self::$instance;
