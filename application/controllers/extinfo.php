@@ -330,6 +330,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 			)
 		);
 
+		if(Auth::instance()->authorized_for('system_information')) {
+			$content->info[] = array(
+				"title" => _('Debug information that assists op5 Support'),
+				"value" => '<a href="'.url::base().'index.php/extinfo/debug_info?download=1">'._('Download as file').'</a> '._('or').'<a href="'.url::base().'index.php/extinfo/debug_info"> '._('view as plain text').'</a></p>'
+			);
+		}
 	}
 
 	/**
@@ -664,6 +670,37 @@ class Extinfo_Controller extends Authenticated_Controller {
 				_("reset the search filter?") . '</a></span>'
 			);
 		}
+	}
 
+	/**
+	 * Information for op5 Support staff about the system
+	 */
+	function debug_info() {
+		if(!Auth::instance()->authorized_for('system_information')) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = _("Error: You need the system_information permission");
+			return;
+		}
+		$this->auto_render = false;
+		$information = array();
+		foreach(Kohana::config('exception.shell_commands') as $command) {
+			$output = null;
+			exec($command, $output, $exit_value);
+			$information[] = array(
+				'command' => $command,
+				'exit_code' => $exit_value,
+				'output' => implode("\n", $output)
+			);
+		}
+		$spyc = new Spyc();
+		$spyc->setting_dump_force_quotes = true;
+		$yaml = $spyc->dump($information);
+		if(PHP_SAPI == 'cli') {
+		} else if($this->input->get('download', false)) {
+			download::headers('op5_debug_'.date('Ymd_His').'.txt', strlen($yaml));
+		} else {
+			header("Content-type: text/plain");
+		}
+		echo $yaml;
 	}
 }
