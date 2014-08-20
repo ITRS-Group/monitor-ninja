@@ -108,7 +108,6 @@ class Backup_Controller extends Authenticated_Controller {
 	}
 
 	public function download($file) {
-
 		$file_path = $this->backups_location . "/" . $file;
 		$fp = fopen($file_path, "r");
 		if ($fp === false) {
@@ -118,16 +117,7 @@ class Backup_Controller extends Authenticated_Controller {
 		}
 		/* Prevent buffering and rendering */
 		$this->auto_render = false;
-		$hs = headers_sent();
-
-		header('Content-Description: File Transfer');
-		header("Content-Type: application/octet-stream");
-		header("Content-Disposition: attachment; filename=".$file.".tar.gz");
-		header("Content-Transfer-Encoding:binary");
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate');
-		header('Pragma: public');
-		header('Content-Length: ' . filesize($file_path));
+		download::headers($file.".tar.gz", filesize($file_path));
 		fpassthru($fp);
 		fclose($fp);
 	}
