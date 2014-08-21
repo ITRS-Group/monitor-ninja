@@ -36,10 +36,7 @@ abstract class ORMObjectSetGenerator extends class_generator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'ObjectSet', array('abstract') );
-		$this->variable('table',$this->name,'protected');
-
-		if( isset($this->structure['default_sort']) )
-			$this->variable('default_sort',$this->structure['default_sort'],'protected');
+		$this->variable('table',$this->name,'public');
 
 		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
 		$this->variable('key_columns',$this->structure['key'],'protected');
@@ -47,15 +44,11 @@ abstract class ORMObjectSetGenerator extends class_generator {
 		$this->generate_backend_specific_functions();
 
 		$this->generate_apply_columns_rewrite();
-		$this->generate_get_all_columns_list();
 
 		/* External interface, backend specific */
 		$this->generate_stats();
 		$this->generate_count();
 		$this->generate_it();
-
-		/* Interface used by orm-related libraries (some visitors) */
-		$this->generate_map_name_to_backend();
 
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
@@ -84,32 +77,6 @@ abstract class ORMObjectSetGenerator extends class_generator {
 		$this->finish_function();
 	}
 
-	public function generate_get_all_columns_list() {
-		$columns = array();
-		$subobjs = array();
-		foreach ($this->structure['structure'] as $name => $type) {
-			if (is_array($type)) {
-				$subobjs[$name] = $type;
-			} else {
-				$columns[] = $name;
-			}
-		}
-		$this->init_function('get_all_columns_list', array('include_nested'), array('static'), array('include_nested'=>true));
-		$this->write('$raw_columns = %s;', $columns);
-		$this->write('$sub_columns = array();');
-		$this->write('if ($include_nested) {');
-		foreach ($subobjs as $name => $type) {
-			$this->write('$obj_cols = '.$type[0].'Set'.self::$model_suffix.'::get_all_columns_list(false);');
-			$this->write('foreach ($obj_cols as $name) {');
-			$this->write('$sub_columns[] = %s.$name;', $name.'.');
-			$this->write('}');
-		}
-		$this->write('}');
-		$this->write('$virtual_columns = array_keys('.$this->objectclass.'::$rewrite_columns);');
-		$this->write('return array_merge($sub_columns, $raw_columns, $virtual_columns);');
-		$this->finish_function();
-	}
-
 	public function generate_association_get_set($table, $class, $field) {
 		$this->init_function('get_'.$table);
 		$this->write('$result = '.$class.'Pool'.self::$model_suffix.'::all();');
@@ -118,9 +85,29 @@ abstract class ORMObjectSetGenerator extends class_generator {
 		$this->finish_function();
 	}
 
-	abstract public function generate_it();
-	abstract public function generate_count();
-	abstract public function generate_stats();
-	abstract public function generate_map_name_to_backend();
+	public function generate_it() {
+		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
+		$this->write(
+			'return ' . $this->structure['class'] . 'Pool' . self::$model_suffix .
+				 '::it($this->get_auth_filter(),$columns,$order,$limit,$offset);');
+		$this->finish_function();
+	}
+
+	public function generate_count() {
+		$this->init_function('count', array());
+		$this->write(
+			'return ' . $this->structure['class'] . 'Pool' . self::$model_suffix .
+				 '::count($this->get_auth_filter());');
+		$this->finish_function();
+	}
+
+	public function generate_stats() {
+		$this->init_function('stats', array ('intersections'));
+		$this->write(
+			'return ' . $this->structure['class'] . 'Pool' . self::$model_suffix .
+				 '::stats($this->get_auth_filter(),$intersections);');
+		$this->finish_function();
+	}
+
 	abstract public function generate_backend_specific_functions();
 }

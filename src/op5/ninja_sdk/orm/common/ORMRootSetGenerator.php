@@ -12,11 +12,11 @@ class ORMRootSetGenerator extends class_generator {
 		parent::generate($skip_generated_note);
 		$this->init_class( false, array('abstract'), array("IteratorAggregate", "Countable") );
 		$this->generate_construct();
-		$this->variable('table',null,'protected');
+		$this->variable('table',null,'public');
 		$this->variable('dbtable',null,'protected');
 		$this->variable('dbtable_expr',null,'protected');
 		$this->variable('class',null,'protected');
-		$this->variable('filter',null,'protected');
+		$this->variable('filter',null,'public');
 		$this->variable('default_sort',array(),'protected');
 		$this->variable('key_columns',array(),'protected');
 		$this->generate_getter('table');

@@ -1,7 +1,6 @@
 <?php
 
-require_once(__DIR__."/../common/ORMObjectPoolGenerator.php");
+require_once(__DIR__."/../driver_SQL/ORMSQLObjectPoolGenerator.php");
 
-class ORMPgSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
-
+class ORMPgSQLObjectPoolGenerator extends ORMSQLObjectPoolGenerator {
 }

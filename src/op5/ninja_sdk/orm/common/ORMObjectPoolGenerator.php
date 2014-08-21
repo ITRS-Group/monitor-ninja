@@ -1,20 +1,27 @@
 <?php
 
-class ORMObjectPoolGenerator extends class_generator {
-	private $name;
-	private $structure;
-	private $objectclass;
+abstract class ORMObjectPoolGenerator extends class_generator {
+	protected $name;
+	protected $structure;
+	protected $full_structure;
+	protected $objectclass;
+	protected $setclass;
 
 	/**
 	 * undocumented function
 	 *
 	 * @return void
 	 **/
-	public function __construct( $name, $descr ) {
+	public function __construct( $name, $full_structure ) {
 		$this->name = $name;
-		$this->structure = $descr;
-		$this->objectclass = $descr[$name]['class'].self::$model_suffix;
-		$this->classname = 'Base'.$descr[$name]['class'].'Pool';
+		$this->structure = $full_structure[$this->name];
+		if(!isset($this->structure['table'])) {
+			$this->structure['table'] = $this->name;
+		}
+		$this->full_structure = $full_structure;
+		$this->objectclass = $this->structure['class'].self::$model_suffix;
+		$this->setclass = $this->structure['class'].'Set'.self::$model_suffix;
+		$this->classname = 'Base'.$this->structure['class'].'Pool';
 		$this->set_model();
 	}
 
@@ -26,13 +33,27 @@ class ORMObjectPoolGenerator extends class_generator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'ObjectPool', array('abstract') );
-		$this->variable('table',$this->name,'protected');
+
+		if( isset($this->structure['default_sort']) ) {
+			$this->variable('default_sort',$this->structure['default_sort'],'static protected');
+		} else {
+			$this->variable('default_sort',array(),'static protected');
+		}
+
+		$this->generate_backend_specific_functions();
+
+		$this->generate_stats();
+		$this->generate_count();
+		$this->generate_it();
+
 		$this->generate_pool();
 		$this->generate_table_for_field();
 		$this->generate_setbuilder_all();
 		$this->generate_setbuilder_none();
 		$this->generate_set_by_key();
 		$this->generate_fetch_by_key();
+		$this->generate_get_all_columns_list();
+
 		$this->finish_class();
 	}
 
@@ -56,7 +77,7 @@ class ORMObjectPoolGenerator extends class_generator {
 	private function generate_table_for_field() {
 		$this->init_function( 'get_table_for_field', array('name') );
 		$this->write( 'switch($name) {' );
-		foreach( $this->structure[$this->name]['structure'] as $field => $type ) {
+		foreach( $this->structure['structure'] as $field => $type ) {
 			if( is_array( $type ) ) {
 				$this->write( 'case %s:', $field );
 				$this->write( 'return %s;', $this->lookup_class( $type[0] ) );
@@ -67,13 +88,39 @@ class ORMObjectPoolGenerator extends class_generator {
 		$this->finish_function();
 	}
 
+	public function generate_get_all_columns_list() {
+		$columns = array();
+		$subobjs = array();
+		foreach ($this->structure['structure'] as $name => $type) {
+			if (is_array($type)) {
+				$subobjs[$name] = $type;
+			} else {
+				$columns[] = $name;
+			}
+		}
+		$this->init_function('get_all_columns_list', array('include_nested'), array('static'), array('include_nested'=>true));
+		$this->write('$raw_columns = %s;', $columns);
+		$this->write('$sub_columns = array();');
+		$this->write('if ($include_nested) {');
+		foreach ($subobjs as $name => $type) {
+			$this->write('$obj_cols = '.$type[0].'Set'.self::$model_suffix.'::get_all_columns_list(false);');
+			$this->write('foreach ($obj_cols as $name) {');
+			$this->write('$sub_columns[] = %s.$name;', $name.'.');
+			$this->write('}');
+		}
+		$this->write('}');
+		$this->write('$virtual_columns = array_keys('.$this->objectclass.'::$rewrite_columns);');
+		$this->write('return array_merge($sub_columns, $raw_columns, $virtual_columns);');
+		$this->finish_function();
+	}
+
 	/**
 	 * undocumented function
 	 *
 	 * @return void
 	 **/
 	private function lookup_class( $class ) {
-		foreach( $this->structure as $table => $struct ) {
+		foreach( $this->full_structure as $table => $struct ) {
 			if( $struct['class'] == $class ) {
 				return $table;
 			}
@@ -88,7 +135,7 @@ class ORMObjectPoolGenerator extends class_generator {
 	 **/
 	private function generate_setbuilder_all() {
 		$this->init_function( 'all', array(), 'static' );
-		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'(new LivestatusFilterAnd());');
+		$this->write('return new '.$this->setclass.'(new LivestatusFilterAnd());');
 		$this->finish_function();
 	}
 
@@ -99,7 +146,7 @@ class ORMObjectPoolGenerator extends class_generator {
 	 **/
 	private function generate_setbuilder_none() {
 		$this->init_function( 'none', array(), 'static' );
-		$this->write('return new '.$this->structure[$this->name]['class'].'Set'.self::$model_suffix.'(new LivestatusFilterOr());');
+		$this->write('return new '.$this->setclass.'(new LivestatusFilterOr());');
 		$this->finish_function();
 	}
 
@@ -112,13 +159,13 @@ class ORMObjectPoolGenerator extends class_generator {
 		$this->init_function( 'set_by_key', array('key'), 'static' );
 
 		$this->write('$parts = explode(";",$key);');
-		$this->write('if(count($parts) != %s) {', count($this->structure[$this->name]['key']));
+		$this->write('if(count($parts) != %s) {', count($this->structure['key']));
 		$this->write(    'return false;');
 		$this->write('}');
 
 		$set_fetcher = 'return self::all()';
 		$args = array();
-		foreach($this->structure[$this->name]['key'] as $i => $field) {
+		foreach($this->structure['key'] as $i => $field) {
 			$set_fetcher .= '->reduce_by(%s,$parts[%s],"=")';
 			$args[] = $field;
 			$args[] = $i;
@@ -136,4 +183,9 @@ class ORMObjectPoolGenerator extends class_generator {
 		$this->write('return false;');
 		$this->finish_function();
 	}
+
+	abstract public function generate_backend_specific_functions();
+	abstract public function generate_stats();
+	abstract public function generate_count();
+	abstract public function generate_it();
 }

@@ -1,6 +1,6 @@
 <?php
 
-class ORMObjectGenerator extends class_generator {
+abstract class ORMObjectGenerator extends class_generator {
 
 	private $name;
 	private $structure;
