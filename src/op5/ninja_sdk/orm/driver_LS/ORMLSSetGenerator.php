@@ -1,6 +1,6 @@
 <?php
 
-require_once("ORMObjectSetGenerator.php");
+require_once(__DIR__."/../common/ORMObjectSetGenerator.php");
 
 class ORMLSSetGenerator extends ORMObjectSetGenerator {
 

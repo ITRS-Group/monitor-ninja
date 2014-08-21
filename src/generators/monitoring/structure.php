@@ -465,7 +465,7 @@ $tables = array (
 	'notifications' =>
 	array(
 		'class' => 'Notification',
-		'source' => 'SQL',
+		'source' => 'MySQL',
 		'table' => 'notification',
 		'key' => array('id'),
 		'default_sort' => array('id desc'),
@@ -491,7 +491,7 @@ $tables = array (
 	'recurring_downtimes' =>
 	array(
 		'class' => 'RecurringDowntime',
-		'source' => 'SQL',
+		'source' => 'MySQL',
 		'table' => 'recurring_downtime',
 		'key' => array('id'),
 		'default_sort' => array('last_update'),

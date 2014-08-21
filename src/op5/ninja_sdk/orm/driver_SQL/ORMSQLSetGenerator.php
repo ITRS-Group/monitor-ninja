@@ -1,8 +1,8 @@
 <?php
 
-require_once("ORMObjectSetGenerator.php");
+require_once(__DIR__."/../common/ORMObjectSetGenerator.php");
 
-class ORMSQLSetGenerator extends ORMObjectSetGenerator {
+abstract class ORMSQLSetGenerator extends ORMObjectSetGenerator {
 	public $relations; /** a relation is a way to declare a many-to-one for sql */
 	public $db_instance;
 

@@ -3,19 +3,16 @@
 require_once( __DIR__.'/../js_class_generator.php' );
 require_once( __DIR__.'/../class_generator.php' );
 
-require_once( 'ORMObjectGenerator.php' );
-require_once( 'ORMObjectPoolGenerator.php' );
-require_once( 'ORMRootGenerator.php' );
-require_once( 'ORMRootPoolGenerator.php' );
-require_once( 'ORMRootSetGenerator.php' );
+require_once( 'common/ORMObjectGenerator.php' );
+require_once( 'common/ORMObjectPoolGenerator.php' );
+require_once( 'common/ORMRootGenerator.php' );
+require_once( 'common/ORMRootPoolGenerator.php' );
+require_once( 'common/ORMRootSetGenerator.php' );
 
-require_once( 'ORMWrapperGenerator.php' );
+require_once( 'meta/ORMWrapperGenerator.php' );
 
-require_once( 'ORMLSSetGenerator.php' );
-require_once( 'ORMSQLSetGenerator.php' );
-
-require_once( 'ORMTableManifestGenerator.php' );
-require_once( 'ORMStructureManifestGenerator.php' );
+require_once( 'meta/ORMTableManifestGenerator.php' );
+require_once( 'meta/ORMStructureManifestGenerator.php' );
 
 class ORMBuilder {
 	/**
@@ -91,7 +88,7 @@ class ORMBuilder {
 		/* Generate base set class */
 		/* We need the source generator available when generating the object */
 		$source_classname = "ORM".$structure['source'] ."SetGenerator";
-		require_once( "$source_classname.php" );
+		require_once( "driver_".$structure['source']."/".$source_classname.".php" );
 		$generator = new $source_classname( $name, $full_structure );
 		$generator->set_class_dir('base');
 		$generator->generate();

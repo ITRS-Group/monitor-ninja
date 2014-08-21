@@ -4,7 +4,7 @@ $tables = array (
 	'saved_reports' =>
 	array(
 		'class' => 'SavedReport',
-		'source' => 'SQL',
+		'source' => 'MySQL',
 		'table' => 'saved_reports',
 		'key' => array('id'),
 		'default_sort' => array('report_name'),

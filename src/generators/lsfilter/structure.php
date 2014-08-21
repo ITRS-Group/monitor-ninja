@@ -4,7 +4,7 @@ $tables = array (
 	'saved_filters' =>
 	array(
 		'class' => 'SavedFilter',
-		'source' => 'SQL',
+		'source' => 'MySQL',
 		'table' => 'ninja_saved_filters',
 		'key' => array('id'),
 		'default_sort' => array('filter_name asc'),
