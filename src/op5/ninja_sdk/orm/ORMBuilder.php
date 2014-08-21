@@ -56,15 +56,37 @@ class ORMBuilder {
 	}
 
 	/**
+	 * Return a list of class names defining the generators for loaded classes
+	 *
+	 * Make sure the classes are loaded too
+	 *
+	 * @param string $name of the driver
+	 * @return array of names for object generator, object set generator and
+	 * 			object pool generator
+	 */
+	private function load_driver( $name ) {
+		require_once( "driver_".$name."/ORM".$name."ObjectGenerator.php");
+		require_once( "driver_".$name."/ORM".$name."ObjectSetGenerator.php");
+		require_once( "driver_".$name."/ORM".$name."ObjectPoolGenerator.php");
+		return array(
+			"ORM".$name."ObjectGenerator",
+			"ORM".$name."ObjectSetGenerator",
+			"ORM".$name."ObjectPoolGenerator",
+		);
+
+	}
+
+	/**
 	 * Generate table
 	 *
 	 * @return void
 	 **/
 	public function generate_table( $name, $full_structure ) {
 		$structure = $full_structure[$name];
+		list($objgenclass, $setgenclass, $poolgenclass) = $this->load_driver($structure['source']);
 
 		/* Generate base class */
-		$generator = new ORMObjectGenerator( $name, $full_structure );
+		$generator = new $objgenclass( $name, $full_structure );
 		$generator->set_class_dir('base');
 		$generator->generate();
 		$path = $generator->get_include_path();
@@ -74,28 +96,25 @@ class ORMBuilder {
 		if( !$generator->exists() )
 			$generator->generate();
 
-		/* Generate base pool class */
-		$generator = new ORMObjectPoolGenerator( $name, $full_structure );
-		$generator->set_class_dir('base');
-		$generator->generate();
-		$path = $generator->get_include_path();
-
-		/* Generate pool wrapper if not exists */
-		$generator = new ORMWrapperGenerator( $structure['class']."Pool", false, $path );
-		if( !$generator->exists() )
-			$generator->generate();
-
 		/* Generate base set class */
-		/* We need the source generator available when generating the object */
-		$source_classname = "ORM".$structure['source'] ."SetGenerator";
-		require_once( "driver_".$structure['source']."/".$source_classname.".php" );
-		$generator = new $source_classname( $name, $full_structure );
+		$generator = new $setgenclass( $name, $full_structure );
 		$generator->set_class_dir('base');
 		$generator->generate();
 		$path = $generator->get_include_path();
 
 		/* Generate set wrapper if not exists */
 		$generator = new ORMWrapperGenerator( $structure['class']."Set", false, $path );
+		if( !$generator->exists() )
+			$generator->generate();
+
+		/* Generate base pool class */
+		$generator = new $poolgenclass( $name, $full_structure );
+		$generator->set_class_dir('base');
+		$generator->generate();
+		$path = $generator->get_include_path();
+
+		/* Generate pool wrapper if not exists */
+		$generator = new ORMWrapperGenerator( $structure['class']."Pool", false, $path );
 		if( !$generator->exists() )
 			$generator->generate();
 	}

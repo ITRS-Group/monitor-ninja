@@ -2,7 +2,7 @@
 
 require_once(__DIR__."/../common/ORMObjectSetGenerator.php");
 
-class ORMLSSetGenerator extends ORMObjectSetGenerator {
+class ORMLSObjectSetGenerator extends ORMObjectSetGenerator {
 
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
