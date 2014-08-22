@@ -1,22 +1,17 @@
 <?php
 
-abstract class ORMObjectSetGenerator extends class_generator {
-	public $name;
-	public $structure;
-	public $full_structure;
-	public $objectclass;
+require_once('ORMGenerator.php');
+
+abstract class ORMObjectSetGenerator extends ORMGenerator {
 	public $associations; /** an association is a way to get a one-to-many */
 
-	public function __construct( $name, $structure ) {
-		$this->name = $name;
-		$this->structure = $structure[$name];
-		$this->full_structure = $structure;
-		$this->objectclass = $this->structure['class'].self::$model_suffix;
+	public function __construct( $name, $full_structure ) {
+		parent::__construct($name, $full_structure);
 		$this->classname = 'Base'.$this->structure['class'].'Set';
 
 		$this->associations = array();
 
-		foreach( $structure as $table => $tbl_struct ) {
+		foreach( $full_structure as $table => $tbl_struct ) {
 			foreach( $tbl_struct['structure'] as $name => $type ) {
 				if( is_array( $type ) ) {
 					if( $type[0] == $this->structure['class'] ) {
@@ -29,8 +24,6 @@ abstract class ORMObjectSetGenerator extends class_generator {
 				}
 			}
 		}
-
-		$this->set_model();
 	}
 
 	public function generate($skip_generated_note = false) {
@@ -38,7 +31,6 @@ abstract class ORMObjectSetGenerator extends class_generator {
 		$this->init_class( 'ObjectSet', array('abstract') );
 		$this->variable('table',$this->name,'public');
 
-		$this->variable('class',$this->structure['class'].self::$model_suffix,'protected');
 		$this->variable('key_columns',$this->structure['key'],'protected');
 
 		$this->generate_backend_specific_functions();
@@ -58,7 +50,7 @@ abstract class ORMObjectSetGenerator extends class_generator {
 
 	public function generate_apply_columns_rewrite() {
 		$this->init_function('apply_columns_rewrite', array('columns', 'prefix'),array('static'),array('prefix'=>''));
-		$this->write( 'foreach('.$this->structure['class'].self::$model_suffix.'::$rewrite_columns as $column => $rewrites) {');
+		$this->write( 'foreach('.$this->obj_class.'::$rewrite_columns as $column => $rewrites) {');
 		$this->write(   'if( in_array( $prefix.$column, $columns ) ) {' );
 		$this->write(     'foreach($rewrites as $rewrite) {' );
 		$this->write(       '$columns[] = $prefix.$rewrite;' );
@@ -88,7 +80,7 @@ abstract class ORMObjectSetGenerator extends class_generator {
 	public function generate_it() {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 		$this->write(
-			'return ' . $this->structure['class'] . 'Pool' . self::$model_suffix .
+			'return ' . $this->pool_class .
 				 '::it($this->get_auth_filter(),$columns,$order,$limit,$offset);');
 		$this->finish_function();
 	}
@@ -96,7 +88,7 @@ abstract class ORMObjectSetGenerator extends class_generator {
 	public function generate_count() {
 		$this->init_function('count', array());
 		$this->write(
-			'return ' . $this->structure['class'] . 'Pool' . self::$model_suffix .
+			'return ' . $this->pool_class .
 				 '::count($this->get_auth_filter());');
 		$this->finish_function();
 	}
@@ -104,7 +96,7 @@ abstract class ORMObjectSetGenerator extends class_generator {
 	public function generate_stats() {
 		$this->init_function('stats', array ('intersections'));
 		$this->write(
-			'return ' . $this->structure['class'] . 'Pool' . self::$model_suffix .
+			'return ' . $this->pool_class .
 				 '::stats($this->get_auth_filter(),$intersections);');
 		$this->finish_function();
 	}

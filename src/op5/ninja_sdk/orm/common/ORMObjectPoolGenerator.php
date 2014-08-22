@@ -1,28 +1,16 @@
 <?php
 
-abstract class ORMObjectPoolGenerator extends class_generator {
-	protected $name;
-	protected $structure;
-	protected $full_structure;
-	protected $objectclass;
-	protected $setclass;
+require_once('ORMGenerator.php');
 
+abstract class ORMObjectPoolGenerator extends ORMGenerator {
 	/**
 	 * undocumented function
 	 *
 	 * @return void
 	 **/
 	public function __construct( $name, $full_structure ) {
-		$this->name = $name;
-		$this->structure = $full_structure[$this->name];
-		if(!isset($this->structure['table'])) {
-			$this->structure['table'] = $this->name;
-		}
-		$this->full_structure = $full_structure;
-		$this->objectclass = $this->structure['class'].self::$model_suffix;
-		$this->setclass = $this->structure['class'].'Set'.self::$model_suffix;
+		parent::__construct($name, $full_structure);
 		$this->classname = 'Base'.$this->structure['class'].'Pool';
-		$this->set_model();
 	}
 
 	/**
@@ -109,7 +97,7 @@ abstract class ORMObjectPoolGenerator extends class_generator {
 			$this->write('}');
 		}
 		$this->write('}');
-		$this->write('$virtual_columns = array_keys('.$this->objectclass.'::$rewrite_columns);');
+		$this->write('$virtual_columns = array_keys('.$this->obj_class.'::$rewrite_columns);');
 		$this->write('return array_merge($sub_columns, $raw_columns, $virtual_columns);');
 		$this->finish_function();
 	}
@@ -135,7 +123,7 @@ abstract class ORMObjectPoolGenerator extends class_generator {
 	 **/
 	private function generate_setbuilder_all() {
 		$this->init_function( 'all', array(), 'static' );
-		$this->write('return new '.$this->setclass.'(new LivestatusFilterAnd());');
+		$this->write('return new '.$this->set_class.'(new LivestatusFilterAnd());');
 		$this->finish_function();
 	}
 
@@ -146,7 +134,7 @@ abstract class ORMObjectPoolGenerator extends class_generator {
 	 **/
 	private function generate_setbuilder_none() {
 		$this->init_function( 'none', array(), 'static' );
-		$this->write('return new '.$this->setclass.'(new LivestatusFilterOr());');
+		$this->write('return new '.$this->set_class.'(new LivestatusFilterOr());');
 		$this->finish_function();
 	}
 

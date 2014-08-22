@@ -77,7 +77,7 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write('$valid_columns = false;');
 		$this->write('if( $columns !== false ) {');
 		$this->write(  '$processed_columns = array_merge($columns, %s);', $this->structure['key']);
-		$this->write(  '$processed_columns = '.$this->setclass.'::apply_columns_rewrite($processed_columns);');
+		$this->write(  '$processed_columns = '.$this->set_class.'::apply_columns_rewrite($processed_columns);');
 		$this->write(  '$valid_columns = array();');
 		$this->write(  'foreach($processed_columns as $col) {');
 		$this->write(    '$new_name = static::map_name_to_backend($col);');
@@ -143,7 +143,7 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write(    '$columns = static::get_all_columns_list();');
 		$this->write('}');
 
-		$this->write('return new LivestatusSetIterator($q, $fetched_columns, $columns, %s);', $this->objectclass);
+		$this->write('return new LivestatusSetIterator($q, $fetched_columns, $columns, %s);', $this->obj_class);
 		$this->finish_function();
 	}
 

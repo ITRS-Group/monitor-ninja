@@ -1,25 +1,22 @@
 <?php
 
-abstract class ORMObjectGenerator extends class_generator {
+require_once('ORMGenerator.php');
 
-	private $name;
-	private $structure;
-	private $associations;
+abstract class ORMObjectGenerator extends ORMGenerator {
+	protected $associations;
 
 	/**
 	 * Construct
 	 *
 	 * @return void
 	 **/
-	public function __construct( $name, $structure ) {
-		$this->name = $name;
-		$this->structure = $structure[$name];
-		$this->key = $this->structure['key'];
+	public function __construct( $name, $full_structure ) {
+		parent::__construct($name, $full_structure);
 		$this->classname = 'Base'.$this->structure['class'];
 
 		$this->associations = array();
 
-		foreach( $structure as $table => $tbl_struct ) {
+		foreach( $this->full_structure as $table => $tbl_struct ) {
 			foreach( $tbl_struct['structure'] as $name => $type ) {
 				if( is_array( $type ) ) {
 					if( $type[0] == $this->structure['class'] ) {
@@ -32,8 +29,6 @@ abstract class ORMObjectGenerator extends class_generator {
 				}
 			}
 		}
-
-		$this->set_model();
 	}
 
 	/**

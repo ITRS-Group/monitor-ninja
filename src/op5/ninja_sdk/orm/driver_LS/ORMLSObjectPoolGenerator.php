@@ -19,8 +19,8 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write('$single = !is_array($intersections);');
 		$this->write('if($single) $intersections = array($intersections);');
 
-		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Pool'.self::$model_suffix);
-		$this->write('$sb_visit = new LivestatusStatsBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Pool'.self::$model_suffix);
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->pool_class);
+		$this->write('$sb_visit = new LivestatusStatsBuilderVisitor(array(%s, "map_name_to_backend"));', $this->pool_class);
 		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 
 		$this->write('$ls_intersections = array();');
@@ -46,7 +46,7 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->init_function('count', array('filter'), array('static'));
 		$this->write('$ls = op5livestatus::instance();');
 
-		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Pool'.self::$model_suffix);
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->pool_class);
 		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 		$this->write('$ls_filter .= "Limit: 0\n";');
 
@@ -65,7 +65,7 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->init_function( 'it', array('filter','columns','order','limit','offset'), array('static'), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 		$this->write('$ls = op5livestatus::instance();');
 
-		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->structure['class'].'Pool'.self::$model_suffix);
+		$this->write('$fb_visit = new LivestatusFilterBuilderVisitor(array(%s, "map_name_to_backend"));', $this->pool_class);
 		$this->write('$ls_filter = $filter->visit($fb_visit, false);');
 
 		foreach(array('$order','self::$default_sort') as $sortfield) {
@@ -92,8 +92,8 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 
 		$this->write('$valid_columns = false;');
 		$this->write('if( $columns !== false ) {');
-		$this->write(  '$processed_columns = array_merge($columns, %s);', $this->structure['key']);
-		$this->write(  '$processed_columns = '.$this->setclass.'::apply_columns_rewrite($processed_columns);');
+		$this->write(  '$processed_columns = array_merge($columns, %s);', $this->key);
+		$this->write(  '$processed_columns = '.$this->set_class.'::apply_columns_rewrite($processed_columns);');
 		$this->write(  '$valid_columns = array();');
 		$this->write(  'foreach($processed_columns as $col) {');
 		$this->write(    '$new_name = static::map_name_to_backend($col);');
@@ -105,7 +105,7 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write('}');
 
 		$this->write('try {');
-		$this->write('list($fetched_columns, $objects, $count) = $ls->query(%s, $ls_filter, $valid_columns);', $this->structure['table']);
+		$this->write('list($fetched_columns, $objects, $count) = $ls->query(%s, $ls_filter, $valid_columns);', $this->name);
 		$this->write('} catch( op5LivestatusException $e ) {');
 		$this->write('throw new ORMException( $e->getPlainMessage() );');
 		$this->write('}');
@@ -114,7 +114,7 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write(    '$columns = static::get_all_columns_list();');
 		$this->write('}');
 
-		$this->write('return new LivestatusSetIterator($objects, $fetched_columns, $columns, %s);', $this->objectclass);
+		$this->write('return new LivestatusSetIterator($objects, $fetched_columns, $columns, %s);', $this->obj_class);
 		$this->finish_function();
 	}
 
