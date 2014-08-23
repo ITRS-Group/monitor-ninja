@@ -147,6 +147,48 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->finish_function();
 	}
 
+	public function generate_update_single() {
+		$this->init_function('update_single', array('key', 'values'), array('static'));
+		$this->write('$db = Database::instance(%s);',$this->db_instance);
+		$this->write('$keys = array();');
+		$this->write('$esc_values = array();');
+		$this->write('foreach($values as $k => $v) {');
+		$this->write(  '$keys[] = $k;');
+		$this->write(  '$esc_values[] = $db->escape($v);');
+		$this->write('}');
+		$this->write('$sql = %s;', 'UPDATE '.$this->structure['table']);
+		$this->write('$delim = " SET ";');
+		$this->write('foreach($values as $k => $v) {');
+		$this->write('$sql .= $delim . $k . " = " . $db->escape($v);');
+		$this->write('$delim = ", ";');
+		$this->write('}');
+		$delim = ' WHERE ';
+		foreach( $this->key as $k ) {
+			$this->write('$sql .= %s . $db->escape($key[%s]);', $delim . $k . ' = ', $k);
+			$delim = ' AND ';
+		}
+		$this->write('$db->query($sql);');
+		$this->finish_function();
+	}
+
+	public function generate_insert_single() {
+		$this->init_function('insert_single', array('values'), array('static'));
+		$this->write('$db = Database::instance(%s);',$this->db_instance);
+		$this->write('$keys = array();');
+		$this->write('$esc_values = array();');
+		$this->write('foreach($values as $k => $v) {');
+		$this->write(  '$keys[] = $k;');
+		$this->write(  '$esc_values[] = $db->escape($v);');
+		$this->write('}');
+		$this->write('$sql = %s . implode(",",$keys) . %s . implode(",",$esc_values) . %s;',
+			'INSERT INTO '.$this->structure['table'].' (',
+			') VALUES (',
+			')');
+		$this->write('$result = $db->query($sql);');
+		$this->write('return $result->insert_id();');
+		$this->finish_function();
+	}
+
 	/**
 	 * Generate the method map_name_to_backend for the object set
 	 *

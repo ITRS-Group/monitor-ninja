@@ -6,6 +6,7 @@ $tables = array (
 		'class' => 'SavedFilter',
 		'source' => 'MySQL',
 		'table' => 'ninja_saved_filters',
+		'writable' => true,
 		'key' => array('id'),
 		'default_sort' => array('filter_name asc'),
 		'structure' => array(

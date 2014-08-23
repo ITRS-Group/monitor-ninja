@@ -34,6 +34,11 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->generate_count();
 		$this->generate_it();
 
+		if($this->writable) {
+			$this->generate_insert_single();
+			$this->generate_update_single();
+		}
+
 		$this->generate_pool();
 		$this->generate_table_for_field();
 		$this->generate_setbuilder_all();
@@ -169,6 +174,16 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write(    'return $obj;');
 		$this->write('}');
 		$this->write('return false;');
+		$this->finish_function();
+	}
+
+	public function generate_update_single() {
+		$this->init_function('update_single', array('key', 'values'), array('static'));
+		$this->finish_function();
+	}
+
+	public function generate_insert_single() {
+		$this->init_function('insert_single', array('values'), array('static'));
 		$this->finish_function();
 	}
 

@@ -36,4 +36,19 @@ class SavedFilter_Model extends BaseSavedFilter_Model {
 		}
 		return false;
 	}
+
+	/**
+	 * Update filter string
+	 *
+	 * Also set the filter table when setting filter
+	 */
+	public function set_filter($value) {
+		$parser = new LSFilter(new LSFilterPP(), new LSFilterMetadataVisitor());
+		$metadata = $parser->parse( $value );
+
+		if( $metadata === false ) throw new Exception("Error when type checking");
+
+		parent::set_filter($value);
+		$this->set_filter_table($metadata['name']);
+	}
 }

@@ -62,6 +62,7 @@ abstract class ORMGenerator extends class_generator {
 	 * @var array
 	 */
 	protected $key;
+	protected $writable;
 
 	public function __construct( $name, $full_structure ) {
 		$this->set_model();
@@ -75,5 +76,9 @@ abstract class ORMGenerator extends class_generator {
 		$this->pool_class = $this->structure['class'] . 'Pool' . self::$model_suffix;
 
 		$this->key = $this->structure['key'];
+
+		$this->writable = false;
+		if(isset($this->structure['writable']))
+			$this->writable = $this->structure['writable'];
 	}
 }

@@ -40,6 +40,10 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		parent::generate($skip_generated_note);
 		$this->init_class( 'Object', array('abstract') );
 		$this->variable( '_table', $this->name, 'protected' );
+		if($this->writable) {
+			$this->variable( '_changed', array(), 'private' );
+			$this->variable( '_oldkey', false, 'private' );
+		}
 		$this->write();
 
 		/* Storage */
@@ -52,6 +56,12 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		}
 
 		$this->generate_construct();
+
+		if($this->writable) {
+			$this->generate_validate();
+			$this->generate_save();
+		}
+
 		$this->generate_get_key();
 
 		/* Getters and setters */
@@ -60,6 +70,12 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 				$this->{"get_object"}( $field, $type );
 			} else {
 				$this->{"get_$type"}( $field );
+			}
+			if( $this->writable ) {
+				if( !is_array($type) ) {
+					/* Only support setting of variables for now */
+					$this->{"set_$type"}( $field );
+				}
 			}
 		}
 
@@ -76,7 +92,16 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 * @return void
 	 **/
 	private function generate_construct() {
-		$this->init_function( "__construct", array( 'values', 'prefix', 'export' ) );
+		/* Make it possible to generate empty objects if writable */
+		if($this->writable) {
+			$default = array('values' => false, 'prefix' => false, 'export' => false);
+		} else {
+			$default = array();
+		}
+		$this->init_function( "__construct", array( 'values', 'prefix', 'export' ),  array(), $default);
+		if($this->writable) {
+			$this->write( 'if($values !== false) {' );
+		}
 		$this->write( '$this->export = array();' );
 		$this->write( '$subobj_export = array();' );
 		$this->write( 'if($export === false) $export = array();'); //FIXME
@@ -105,7 +130,65 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 				$this->{"fetch_$type"}( $field, $backend_name );
 			}
 		}
+		if($this->writable) {
+			$this->write( '$this->_oldkey = array();');
+			foreach($this->key as $name) {
+				$this->write( "\$this->_oldkey[%s] = \$this->$name;", $name);
+			}
+			$this->write( '}' );
+		}
 		$this->write( 'parent::__construct( $values, $prefix, $export ); ');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate the validate method, if object is writable
+	 *
+	 * The validate method returns if the object is ok to save. Default is to
+	 * always allow the object to be saved, but can be overridden.
+	 */
+	protected function generate_validate() {
+		$this->init_function('validate', array(), array('protected'));
+		$this->write('return true;');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate the save method, if object is writable
+	 */
+	private function generate_save() {
+		$this->init_function('save');
+
+		$this->write('if( empty($this->_changed) ) {');
+		$this->write('return;');
+		$this->write('}');
+
+		$this->write('if( !$this->validate() ) {');
+		$this->write('return;');
+		$this->write('}');
+
+		$this->write('$values = array();');
+		foreach( $this->structure['structure'] as $name => $type ) {
+			$this->write(   'if(isset($this->_changed[%s]) && $this->_changed[%s]) {', $name, $name);
+			$this->write(     '$values[%s] = $this->'.$name.';', $name);
+			$this->write(   '}');
+		}
+		$this->write(  'if(empty($this->_oldkey)) {'); // New
+		$this->write(     '$insid = '.$this->pool_class.'::insert_single($values);');
+		// Handle auto increment value, but only if single column key of type int
+		if(count($this->key) == 1 && $this->structure['structure'][$this->key[0]] == 'int') {
+			$this->write(     'if($insid !== false && $insid > 0) {');
+			$this->write(        '$this->'.$this->key[0].' = $insid;');
+			$this->write(     '}');
+		}
+		$this->write(  '} else {'); // Update
+		$this->write(     $this->pool_class.'::update_single($this->_oldkey,$values);');
+		$this->write(  '}');
+		$this->write(  '$this->_oldkey = array();');
+		foreach($this->key as $name) {
+			$this->write( "\$this->_oldkey[%s] = \$this->$name;", $name);
+		}
+		$this->write(  '$this->_changed = array();');
 		$this->finish_function();
 	}
 
@@ -224,7 +307,22 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->finish_function();
 	}
 
-	/* Time FIXME */
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_string( $name ) {
+		$this->init_function( "set_$name", array('value') );
+		$this->write( "\$value = (string)\$value;" );
+		$this->write( "if( \$this->$name !== \$value ) {" );
+		$this->write( "\$this->$name = \$value;" );
+		$this->write( "\$this->_changed[%s] = true;", $name );
+		$this->write( "}" );
+		$this->finish_function();
+	}
+
+	/* Time (treated as int) */
 
 	/**
 	 * undocumented function
@@ -242,7 +340,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_time( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
-		$this->write( "\$this->$name = \$values[\$prefix.'$backend_name'];" );
+		$this->write( "\$this->$name = intval( \$values[\$prefix.'$backend_name']; )" );
 		$this->write( "}" );
 	}
 
@@ -254,6 +352,21 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	private function get_time( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
+		$this->finish_function();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_time( $name ) {
+		$this->init_function( "set_$name", array('value') );
+		$this->write( "\$value = intval(\$value);" );
+		$this->write( "if( \$this->$name !== \$value ) {" );
+		$this->write( "\$this->$name = \$value;" );
+		$this->write( "\$this->_changed[%s] = true;", $name );
+		$this->write( "}" );
 		$this->finish_function();
 	}
 
@@ -290,6 +403,21 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->finish_function();
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_int( $name ) {
+		$this->init_function( "set_$name", array('value') );
+		$this->write( "\$value = intval(\$value);" );
+		$this->write( "if( \$this->$name !== \$value ) {" );
+		$this->write( "\$this->$name = \$value;" );
+		$this->write( "\$this->_changed[%s] = true;", $name );
+		$this->write( "}" );
+		$this->finish_function();
+	}
+
 	/* Float */
 
 	/**
@@ -320,6 +448,21 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	private function get_float( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
+		$this->finish_function();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_float( $name ) {
+		$this->init_function( "set_$name", array('value') );
+		$this->write( "\$value = floatval(\$value);" );
+		$this->write( "if( \$this->$name !== \$value ) {" );
+		$this->write( "\$this->$name = \$value;" );
+		$this->write( "\$this->_changed[%s] = true;", $name );
+		$this->write( "}" );
 		$this->finish_function();
 	}
 
@@ -356,6 +499,20 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->finish_function();
 	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_list( $name ) {
+		$this->init_function( "set_$name", array('value') );
+		$this->write( "if( \$this->$name !== \$value ) {" );
+		$this->write( "\$this->$name = \$value;" );
+		$this->write( "\$this->_changed[%s] = true;", $name );
+		$this->write( "}" );
+		$this->finish_function();
+	}
+
 	/* Dict */
 
 	/**
@@ -386,6 +543,20 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	private function get_dict( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
+		$this->finish_function();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_dict( $name ) {
+		$this->init_function( "set_$name", array('value') );
+		$this->write( "if( \$this->$name !== \$value ) {" );
+		$this->write( "\$this->$name = \$value;" );
+		$this->write( "\$this->_changed[%s] = true;", $name );
+		$this->write( "}" );
 		$this->finish_function();
 	}
 }
