@@ -554,8 +554,11 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		this.error_id++;
 
 		var msg = errormessage(stack, tokens, lexer);
-		this.custom_cols[column_name] = function(args) {
-			return msg;
+		this.custom_cols[column_name] = {
+			evaluator : function(args) {
+				return msg;
+			},
+			sort : false
 		};
 
 		return outp_list;
