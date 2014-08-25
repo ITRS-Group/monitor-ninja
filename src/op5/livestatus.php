@@ -134,7 +134,6 @@ class op5Livestatus {
 	public function query($table, $filter, $columns, $options = array()) {
 		$query  = "GET $table\n";
 		$query .= "OutputFormat: wrapped_json\n";
-		$query .= "KeepAlive: on\n";
 		$query .= "ResponseHeader: fixed16\n";
 		if(isset($options['auth']) && $options['auth'] instanceof op5User) {
 			$query .= $this->auth($table, $options['auth']);
@@ -175,6 +174,7 @@ class op5Livestatus {
 			throw new op5LivestatusException("Invalid query, livestatus response was empty", $query);
 		if($status != 200)
 			throw new op5LivestatusException(trim($body), $query);
+		$this->connection->close();
 
 		$result = json_decode(utf8_encode($body), true);
 
