@@ -387,6 +387,7 @@ Feature: Filters & list views
 		And I click "Show/Edit Text Filter"
 		And I enter "Ernie" into "lsfilter_save_filter_name"
 		And I click "Save Filter"
+		And I wait for 1 second
 		And I hover over the "Saved-filters" button
 		Then I should see these menu items:
 			| Ernie |
