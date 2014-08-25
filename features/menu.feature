@@ -76,6 +76,5 @@ Feature: Menu
 	@asmonitor
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover over the "About" button
-		And I click "op5 Monitor Manual"
-		Then I should be on url "https://kb.op5.com/display/DOC"
+		Then I should see css "a[href='https://kb.op5.com/display/DOC']"
 
