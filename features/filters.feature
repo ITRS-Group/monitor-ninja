@@ -389,7 +389,7 @@ Feature: Filters & list views
 		And I click "Save Filter"
 		And I wait for 1 second
 		And I hover over the "Saved-filters" button
-		When I click "Manage And View Filters"
+		When I click "Manage and view filters"
 		Then I should see "Ernie"
 		When I hover over the "Saved-filters" button
 		Then I should see these menu items:
