@@ -6,5 +6,5 @@ INSERT INTO `ninja_saved_filters` (`username`, `filter_name`, `filter_table`, `f
 (NULL, 'reboot', 'log_messages', '[log_messages] (event = 4740) or (ident = "shutdown")', 'reboot'),
 (NULL, 'sudo usage', 'log_messages', '[log_messages] ident = "sudo"', 'sudo usage'),
 (NULL, 'kernel messages', 'log_messages', '[log_messages] facility = 0', 'kernel messages'),
-(NULL, 'monitoring events', 'log_messages', '[log_messages] ident = "monitor"', 'monitoring events')
+(NULL, 'monitoring events', 'log_messages', '[log_messages] ident = "monitor"', 'monitoring events');
 
