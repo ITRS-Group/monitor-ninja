@@ -569,6 +569,19 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
+	// invalid/unparsable date texts should not be accepted (bug #9079)
+	/**
+	 * @expectedException ORMException
+	 */
+	public function test_ls_op_date_invalid_text() {
+		$this->run_visitor(
+			"[hosts] last_check = date(\"four score and seven years ago\")",
+			new LivestatusFilterBuilderVisitor(function($column) {return $column;}),
+			array( "I don't even ... Just odd.")
+		);
+	}
+
+
 	/*
 	 * Internal methods to run a test
 	*/
