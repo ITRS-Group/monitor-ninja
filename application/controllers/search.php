@@ -22,8 +22,7 @@ class Search_Controller extends Authenticated_Controller {
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
 		'comments' => array( 'author', 'comment' ),
-		'_si' => array('plugin_output', 'long_plugin_output'),
-		'syslog' => array('ip', 'host', 'msg', 'ident', 'pid', 'event' )
+		'_si' => array('plugin_output', 'long_plugin_output')
 	);
 
 	protected $search_columns_matchall = array(
@@ -31,9 +30,35 @@ class Search_Controller extends Authenticated_Controller {
 		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'long_plugin_output', 'notes' ),
 		'hostgroups' => array( 'name', 'alias' ),
 		'servicegroups' => array( 'name', 'alias' ),
-		'comments' => array( 'author', 'comment' ),
-		'syslog' => array('ip', 'host', 'msg', 'ident', 'pid', 'event' )
+		'comments' => array( 'author', 'comment' )
 	);
+
+	protected $object_types = array(
+			'h'  => 'hosts',
+			's'  => 'services',
+			'c'  => 'comments',
+			'hg' => 'hostgroups',
+			'sg' => 'servicegroups',
+			'si' => '_si'
+			);
+
+	public function __construct()
+	{
+		parent::__construct();
+		$global_search_tables = Module_Manifest_Model::get('global_search_tables');
+
+		if(isset($global_search_tables['search_columns'])) {
+			$this->search_columns = array_merge($this->search_columns, $global_search_tables['search_columns']);
+		}
+
+		if(isset($global_search_tables['search_columns_matchall'])) {
+			$this->search_columns_matchall = array_merge($this->search_columns_matchall, $global_search_tables['search_columns_matchall']);
+		}
+
+		if(isset($global_search_tables['object_types'])) {
+			$this->object_types = array_merge($this->object_types, $global_search_tables['object_types']);
+		}
+	}
 
 	/**
 	 * Do a search of a string
@@ -144,7 +169,7 @@ class Search_Controller extends Authenticated_Controller {
 	 */
 	public function queryToLSFilter($query)
 	{
-		$parser = new ExpParser_SearchFilter();
+		$parser = new ExpParser_SearchFilter($this->object_types);
 		try {
 			$filter = $parser->parse( $query );
 		} catch( ExpParserException $e ) {
