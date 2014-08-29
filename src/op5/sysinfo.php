@@ -110,6 +110,9 @@ class op5sysinfo {
 	 */
 	public function get_pollers_usage() {
 		$nodeinfo = $this->get_merlininfo();
+		if (!isset($nodeinfo['ipc']) ||
+			 !isset($nodeinfo['ipc']['configured_polllers']))
+			throw new op5sysinfo_Exception('No poller information found');
 		return $nodeinfo['ipc']['configured_pollers'];
 	}
 
@@ -121,6 +124,9 @@ class op5sysinfo {
 	 */
 	public function get_peers_usage() {
 		$nodeinfo = $this->get_merlininfo();
+		if (!isset($nodeinfo['ipc']) ||
+			 !isset($nodeinfo['ipc']['configured_peers']))
+			throw new op5sysinfo_Exception('No peer information found');
 		return $nodeinfo['ipc']['configured_peers'];
 	}
 
@@ -173,14 +179,16 @@ class op5sysinfo {
 				continue;
 			$instance = array ();
 			$parts = explode(';', $kvvec);
-			$instance_id = 7;
 			foreach ($parts as $kv) {
-				list ($k, $v) = explode('=', $kv, 2);
-				$instance[$k] = $v;
+				$kvarr = explode('=', $kv, 2);
+				if (count($kvarr) == 2) {
+					$instance[$kvarr[0]] = $kvarr[1];
+				}
 			}
-			$instances[$instance['name']] = $instance;
+			if (isset($instance['name']))
+				$nodeinfo[$instance['name']] = $instance;
 		}
-		$this->merlin_nodeinfo = $instances;
-		return $instances;
+		$this->merlin_nodeinfo = $nodeinfo;
+		return $nodeinfo;
 	}
 }
