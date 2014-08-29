@@ -129,7 +129,19 @@ class Ajax_Controller extends Authenticated_Controller {
 	 */
 	public function global_search_build_filter($q)
 	{
-		$parser = new ExpParser_SearchFilter();
+		/* This list is actually the list in the search controller, but since we
+		 * don't support auto complete on other fields than those anyway, we
+		 * can keep a local copy here, which isn't pluggable with modules until we
+		 * do support the auto complete.
+		 */
+		$parser = new ExpParser_SearchFilter(array(
+			'h'  => 'hosts',
+			's'  => 'services',
+			'c'  => 'comments',
+			'hg' => 'hostgroups',
+			'sg' => 'servicegroups',
+			'si' => '_si'
+			));
 
 		try {
 			$parser->parse($q);

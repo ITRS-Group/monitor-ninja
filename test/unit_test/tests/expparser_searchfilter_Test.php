@@ -13,37 +13,37 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 				'hosts'=>array(array('kaka'))
 				) ) );
 	}
-	
+
 	public function test_service() {
 		$parser = $this->run_test('s:kaka', array( 'filters'=>array(
 				'services'=>array(array('kaka'))
 				) ) );
 	}
-	
+
 	public function test_comments() {
 		$parser = $this->run_test('c:kaka', array( 'filters'=>array(
 				'comments'=>array(array('kaka'))
 				)) );
 	}
-	
+
 	public function test_status() {
 		$parser = $this->run_test('si:kaka', array( 'filters'=>array(
 				'_si'=>array(array('kaka'))
 				)) );
 	}
-	
+
 	public function test_hostgroups() {
 		$parser = $this->run_test('hg:kaka', array( 'filters'=>array(
 				'hostgroups'=>array(array('kaka'))
 				)) );
 	}
-	
+
 	public function test_servicegroups() {
 		$parser = $this->run_test('sg:kaka', array( 'filters'=>array(
 				'servicegroups'=>array(array('kaka'))
 				)) );
 	}
-	
+
 	/* ******
 	 * Test simple queries with whitespace arguments and or
 	 */
@@ -52,7 +52,7 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 				'hosts'=>array(array('kaka boll','kalles serviceverkstad'))
 				)) );
 	}
-	
+
 	/* ******
 	 * Test correct queries with boolean operators
 	 */
@@ -61,20 +61,20 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 				'hosts'=>array(array('hostkaka'),array('hostkoko')),
 				) ) );
 	}
-	
+
 	public function test_diff_and() {
 		$parser = $this->run_test('h:hostkaka and s:svckaka', array( 'filters'=>array(
 				'hosts'=>array(array('hostkaka')),
 				'services'=>array(array('svckaka'))
 				) ) );
 	}
-	
+
 	public function test_or() {
 		$parser = $this->run_test('h:hostkaka or hostkoko', array( 'filters'=>array(
 				'hosts'=>array(array('hostkaka', 'hostkoko'))
 				) ) );
 	}
-	
+
 	/* ******
 	 * Test correct queries with autocompletion extraction of last fields
 	 */
@@ -83,13 +83,13 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $parser->getLastString(), 'kaka', "Autocomplete: doesn't return correct string" );
 		$this->assertEquals( $parser->getLastObject(), 'hosts', "Autocomplete: doesn't return correct object type" );
 	}
-	
+
 	public function test_autocomplete_or() {
 		$parser = $this->run_test('h:kaka or boll', array('filters'=>array('hosts'=>array(array('kaka','boll')) )) );
 		$this->assertEquals( $parser->getLastString(), 'boll', "Autocomplete: doesn't return correct string" );
 		$this->assertEquals( $parser->getLastObject(), 'hosts', "Autocomplete: doesn't return correct object type" );
 	}
-	
+
 	public function test_autocomplete_and() {
 		$parser = $this->run_test('h:kaka and s:boll', array('filters'=>array(
 				'hosts'=>array(array('kaka')),
@@ -98,7 +98,7 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $parser->getLastString(), 'boll', "Autocomplete: doesn't return correct string" );
 		$this->assertEquals( $parser->getLastObject(), 'services', "Autocomplete: doesn't return correct object type" );
 	}
-	
+
 	/* *******
 	 * Test correct queries with limit
 	 */
@@ -108,14 +108,14 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 				'limit' => 13
 				) );
 	}
-	
+
 	public function test_fail_args() {
 		$this->run_test('h:kaka limit=13', array(
 				'filters'=>array('hosts'=>array(array('kaka')) ),
 				'limit' => 13
 				) );
 	}
-	
+
 	/* ******
 	 * Test incorrect tables
 	 */
@@ -131,7 +131,7 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 					);
 		}
 	}
-	
+
 	/* ******
 	 * Test incomplete limit
 	 */
@@ -147,7 +147,7 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 					);
 		}
 	}
-	
+
 	/* ******
 	 * Test case sensitivity
 	 */
@@ -171,12 +171,19 @@ class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
 				'hosts'=>array(array('hostkaka', 'hostkoko'))
 				) ) );
 	}
-	
+
 	/* ******
 	 * Internal library
 	 */
 	private function run_test( $query, $expect ) {
-		$parser = new ExpParser_SearchFilter();
+		$parser = new ExpParser_SearchFilter(array(
+			'h'  => 'hosts',
+			's'  => 'services',
+			'c'  => 'comments',
+			'hg' => 'hostgroups',
+			'sg' => 'servicegroups',
+			'si' => '_si'
+			));
 		$result = $parser->parse( $query );
 		$this->assertEquals( $result, $expect, "SearchFilter query '$query' doesn't match expected result." );
 		return $parser;

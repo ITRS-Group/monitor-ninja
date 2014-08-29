@@ -103,7 +103,7 @@ $(document).ready(function() {
 	});
 
 	var hostname = window.location.protocol + "//" + window.location.host;
-	$('select[name=report_type]').on('change', function( e ) {
+	$('select#report_type').on('change', function( e ) {
 
 		var filterable = jQuery.fn.filterable.find( $('select[name="objects[]"]') ),
 			type = e.target.value.replace( /s$/, "" );
@@ -133,14 +133,6 @@ $(document).ready(function() {
 			});
 		}
 
-	});
-
-	$('#sel_report_type').on('click', function() {
-		var value = this.form.report_type.value;
-		set_selection(value);
-		get_members(value, function(all_names) {
-			populate_options($('#objects_tmp'), $('#objects'), all_names);
-		});
 	});
 
 	$('#start_year, #end_year').on('change', function () {
@@ -296,7 +288,6 @@ function check_form_values(form)
 	var cur_start = '';
 	var cur_end = '';
 
-	var rpt_type = $("select[name=report_type]", form).val();
 	if ($("#report_period", form).val() == 'custom') {
 		if ($('input[name=type]', form).val() != 'sla') {
 			// date validation

@@ -261,7 +261,11 @@ class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 	{
 		switch ($name0) {
 			case 'date':
-				return strtotime($arg_list2[0]);
+				$ret = strtotime($arg_list2[0]);
+				if (false === $ret) {
+					throw new ORMException("Don't know how to translate \"" . htmlspecialchars($arg_list2[0]) . "\" into a date, please <a href=\"https://kb.op5.com/x/jIWX\" target=\"blank\">click here</a> for information on supported date formats.");
+				}
+				return $ret;
 				break;
 			default:
 				return null;

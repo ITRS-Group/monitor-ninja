@@ -12,6 +12,7 @@ Feature: Menu
 			| op5 Monitor Manual |
 			| op5 Support Portal |
 
+
 	@asmonitor
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitoring" button
@@ -71,3 +72,9 @@ Feature: Menu
 		And I click "Save"
 		Then I shouldn't see "Add new quicklink" waiting patiently
 		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"
+
+	@asmonitor
+	Scenario: Verify that the Manual link goes to the KB
+		When I hover over the "About" button
+		Then I should see css "a[href='https://kb.op5.com/display/DOC']"
+

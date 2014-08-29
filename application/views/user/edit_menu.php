@@ -38,12 +38,18 @@ foreach ($sections as $section) {
 				$url = $all_items[$menu_items[$section_str]][$menu_items[$pages]];
 				$title = $menu_items[$pages];
 
-				$icon = 'icons/menu/'.$url[1];
+				$icon_name = $url[1];
+				$icon_module = false;
+				if(is_array($icon_name)) {
+					$icon_module = $icon_name[0];
+					$icon_name = $icon_name[1];
+				}
+				$icon = 'icons/menu/'.$icon_name;
 				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
 				if( false === strpos($icon,'.') ) $icon .= '.png';
 
 				echo '<tr id="'.$pages.'"><td style="padding-left: 8px">'.
-					html::image($this->add_path($icon),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
+					html::image(ninja::add_path($icon,$icon_module),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
 					' '.html::specialchars($title).'</td>'."\n";
 				echo '<td style="text-align: center">'.form::checkbox(array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox'), $pages, true).'</td></tr>';
 			} else {
@@ -57,12 +63,18 @@ foreach ($sections as $section) {
 				$url = $menu_base[$menu_items[$section_str]][$menu_items[$pages]];
 				$title = $menu_items[$pages];
 
-				$icon = 'icons/menu/'.$url[1];
+				$icon_name = $url[1];
+				$icon_module = false;
+				if(is_array($icon_name)) {
+					$icon_module = $icon_name[0];
+					$icon_name = $icon_name[1];
+				}
+				$icon = 'icons/menu/'.$icon_name;
 				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
 				if( false === strpos($icon,'.') ) $icon .= '.png';
 
 				echo '<tr id="'.$pages.'"><td style="padding-left: 8px">'.
-					html::image($this->add_path($icon),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
+					html::image(ninja::add_path($icon,$icon_module),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
 					' '.html::specialchars($title).'</td>'."\n";
 				echo '<td style="text-align: center">'.form::checkbox($cb_settings, $pages).'</td></tr>';
 			}

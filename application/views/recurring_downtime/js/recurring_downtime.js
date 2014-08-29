@@ -45,31 +45,6 @@ $(document).ready(function() {
 			$('#triggered_row').show();
 	});
 
-	$('#downtime_type').on('change', function() {
-		var value = this.value;
-		$('.object-list-type').text(value);
-		get_members(value, function(all_names) {
-			populate_options($('#objects_tmp'), $('#objects'), all_names);
-		});
-	}).each(function() {
-		var val = $(this).val();
-		$('.object-list-type').text(val);
-		if (window['_report_data']) {
-			expand_and_populate(_report_data);
-		} else if (val) {
-			get_members(val, function(all_names) {
-				populate_options($('#objects_tmp'), $('#objects'), all_names);
-			});
-		}
-	});
-	$('#sel_downtime_type').on('click', function() {
-		var value = this.form.downtime_type.value;
-		$('.object-list-type').text(value);
-		get_members(value, function(all_names) {
-			populate_options($('#objects_tmp'), $('#objects'), all_names);
-		});
-	});
-
 	$('#progress').css('position', 'absolute').css('top', '90px').css('left', '470px');
 
 	$('#select-all-days').on('click', function() {
@@ -184,7 +159,10 @@ function check_setup()
 			// Downtime type string
 			var object_type = $('#downtime_type option:selected').val();
 			// Array of selected objects
-			var objects = $('#objects').val();
+			var objects = [];
+			$('#objects option').each(function() {
+				objects.push($(this).val());
+			});
 			$.ajax({
 				url: _site_domain + _index_page + '/recurring_downtime/insert_downtimes',
 				type: 'post',
