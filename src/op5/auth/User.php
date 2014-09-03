@@ -1,5 +1,7 @@
 <?php
-class op5User {
+require_once (__DIR__ . '/../mayi.php');
+
+class op5User implements op5MayI_Actor {
 
 	/**
 	 * Holds user definitions
@@ -158,5 +160,23 @@ class op5User {
 			$result[] = $row[0];
 		}
 		return $result;
+	}
+
+	/**
+	 * Return information about the user, to be used as an actor in the MayI
+	 * interface
+	 *
+	 * @see op5MayI_Actor::getActorInfo()
+	 */
+	public function getActorInfo() {
+		return array(
+			'type' => 'user',
+			'authenticated' => $this->logged_in(),
+			'name' => $this->username,
+			'realname' => $this->realname,
+			'email' => $this->email,
+			'authorized' => $this->auth_data,
+			'groups' => isset($this->groups) ? $this->groups : array()
+		);
 	}
 } // End Auth User Model

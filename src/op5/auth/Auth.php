@@ -1,5 +1,6 @@
 <?php
 require_once (__DIR__ . '/../config.php');
+require_once (__DIR__ . '/../mayi.php');
 require_once (__DIR__ . '/User_NoAuth.php');
 require_once (__DIR__ . '/User.php');
 require_once (__DIR__ . '/Authorization.php');
@@ -10,10 +11,17 @@ require_once (__DIR__ . '/../objstore.php');
 /**
  * User authentication and authorization library.
  *
+ * It is possible to add the user itself as an actor to mayi, but since the
+ * active user might change during the lifecycle of an execution, but not the
+ * authorization, it's better to keep the autorization module itself as an
+ * actor, just passing through the current users information upon request. That
+ * makes it possible to register the autorization actor, then just access the
+ * information from the mayi constraints afterwards.
+ *
  * @package Auth
  *
  */
-class op5auth {
+class op5auth implements op5MayI_Actor {
 	/**
 	 * Defaults is specified here.
 	 * Parameters is overwritten from config
@@ -705,5 +713,15 @@ class op5auth {
 		$cfg->cascadeEditConfig('auth.*', 'key', $old, $new);
 		$cfg->cascadeEditConfig('auth.common.default_auth', 'value', $old, $new);
 		$cfg->cascadeEditConfig('auth_users.*.modules.*', 'value', $old, $new);
+	}
+
+	/**
+	 * Implement the actor interface, which just passes the current user
+	 * information forward
+	 *
+	 * @see op5MayI_Actor::getActorInfo()
+	 */
+	public function getActorInfo() {
+		return $this->get_user()->getActorInfo();
 	}
 } // End Auth

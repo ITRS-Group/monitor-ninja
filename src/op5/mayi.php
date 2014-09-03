@@ -1,7 +1,15 @@
 <?php
 require_once (__DIR__ . '/config.php');
 require_once (__DIR__ . '/objstore.php');
-interface op5MayI_Personality {}
+interface op5MayI_Actor {
+	/**
+	 * Get information from the actor, as an array.
+	 *
+	 * The informaiton will be available to the contstaints, as a key in the
+	 * envioronment array passed to the run method.
+	 */
+	public function getActorInfo();
+}
 interface op5MayI_Constraints {
 	/**
 	 * Execute a action
@@ -18,7 +26,7 @@ interface op5MayI_Constraints {
 	public function run($action, $env, &$messages, &$perfdata);
 }
 class op5MayI {
-	protected $personalities = array ();
+	protected $actors = array ();
 	protected $constraints = array ();
 
 	/**
@@ -34,19 +42,20 @@ class op5MayI {
 	/**
 	 * Tell something about me (May I be, X?)
 	 *
-	 * Add some information about the environment. The personality is an object
-	 * implementing the interface of op5MayI_Personality, and will be accessable
+	 * Add some information about the environment. The actor is an object
+	 * implementing the interface of op5MayI_Actor, and will be accessable
 	 * through the name of the context.
 	 *
 	 * @param string $context
-	 * @param op5MayI_Personality $personality
+	 * @param op5MayI_Actor $actor
 	 */
-	public function be($context, op5MayI_Personality $personality) {
+	public function be($context, op5MayI_Actor $actor) {
+		$this->actors[$context] = $actor;
 	}
 
 	/**
 	 * Adds constaints to act upon, given an action.
-	 * Constraints may be  authorization, global configuration, or similar.
+	 * Constraints may be authorization, global configuration, or similar.
 	 *
 	 * Constraints is implemented through the interface of op5MayI_Constraints
 	 *
@@ -57,10 +66,32 @@ class op5MayI {
 	}
 
 	/**
+	 * Get information from all actors, packed as an array
+	 *
+	 * To debug and trace the system status, and the current information for
+	 * debugging, make it possible to export the environment for debugging.
+	 *
+	 * @param array $args
+	 *        	arguments accessable through the enviornment "args"
+	 * @return array
+	 */
+	public function get_environment($args = false) {
+		$environment = array ();
+		foreach ($this->actors as $context => $actor) {
+			$environment[$context] = $actor->getActorInfo();
+		}
+		if ($args !== false) {
+			$environment['args'] = $args;
+		}
+		return $environment;
+	}
+
+	/**
 	 * Run an action, and return if you may do the given action.
 	 *
 	 * The method returns if an action is allowed to execute given the
-	 * circumstanses of the enviornment (see be-method), and the constraints (see
+	 * circumstanses of the enviornment (see be-method), and the constraints
+	 * (see
 	 * act_upon method)
 	 *
 	 * @param string $action
@@ -73,12 +104,11 @@ class op5MayI {
 	 *        	returns a list of perfomrance data from constraints
 	 * @return boolean
 	 */
-	public function run($action, $args = array(), &$messages = false, &$perfdata = false) {
+	public function run($action, $args = false, &$messages = false, &$perfdata = false) {
 		$messages = array ();
 		$perfdata = array ();
 
-		$environment = array ();
-		$environemnt['args'] = $args;
+		$environment = $this->get_environment($args);
 
 		foreach ($this->constraints as $rs) {
 			if (!$rs->run($action, $environment, $messages, $perfdata)) {
