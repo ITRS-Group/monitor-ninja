@@ -183,12 +183,12 @@ var lsfilter_graphics_visitor = {
 			'gt_eq' : 'greater than or equals'
 		},
 		"time" : {
-			'eq' : 'equals',
-			'not_eq' : 'not equals',
-			'lt' : 'less than',
-			'lt_eq' : 'less than or equals',
-			'gt' : 'greater than',
-			'gt_eq' : 'greater than or equals'
+			'eq' : 'at',
+			'not_eq' : 'not at',
+			'lt' : 'earlier than',
+			'lt_eq' : 'earlier than or at',
+			'gt' : 'later than',
+			'gt_eq' : 'later than or at'
 		},
 		"object" : {
 			'all' : 'all',
