@@ -226,15 +226,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$status = Current_status_Model::instance()->program_status();
 		$content->program_status = $status;
 
-		$commands->label_shutdown_nagios = sprintf(_('Shutdown the %s process'), Kohana::config('config.product_name'));
-		$commands->label_restart_nagios = sprintf(_('Restart the %s process'), Kohana::config('config.product_name'));
-
 		$content->info[] = array(
 			"title" => "Program version",
 			"value" => $status->program_version,
 			"command" => array(
-				nagioscmd::command_ajax_button(nagioscmd::command_id('SHUTDOWN_PROCESS'), $commands->label_shutdown_nagios),
-				nagioscmd::command_ajax_button(nagioscmd::command_id('RESTART_PROCESS'), $commands->label_restart_nagios)
+				nagioscmd::command_ajax_button(nagioscmd::command_id('SHUTDOWN_PROCESS'), sprintf(_('Shutdown the %s process'), Kohana::config('config.product_name'))),
+				nagioscmd::command_ajax_button(nagioscmd::command_id('RESTART_PROCESS'), sprintf(_('Restart the %s process'), Kohana::config('config.product_name')))
 			)
 		);
 
