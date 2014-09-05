@@ -30,8 +30,6 @@ class Ninja_Controller extends Template_Controller {
 	public $notifications_disabled = false;
 	public $checks_disabled = false;
 	public $log = false;
-	public $help_link = false;
-	public $help_link_url = false;
 
 	public function __construct()
 	{
@@ -64,56 +62,16 @@ class Ninja_Controller extends Template_Controller {
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
 
-		/**
-		* check for generic sort parameters in GET and store in session
-		*/
-		# use e.g status/host/all to store sort settings
-		# this will lead to specific sort order for
-		# every <host_name> e.g status/host/<host_name>
-		$sort_key = Router::$current_uri;
-
-		# The following will instead make all calls to e.g status/host
-		# to behave the same
-		# $sort_key = Router::$controller.'/'.Router::$method;
-
-		if ($this->input->get('sort_field', false)) {
-			$cur_data = array(
-				'sort_field' => $this->input->get('sort_field', false),
-				'sort_order' => $this->input->get('sort_order', false)
-				);
-			$session_sort[$sort_key] = $cur_data;
-			$sort_options = $this->session->get('sort_options', false);
-
-			$_SESSION['sort_options'][$sort_key] = $cur_data;
-		}
-
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
 		$saved_searches = false;
-
-		# This should be defined even if not logged in
-		$this->template->help_link = false;
 
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			# warning! do not set anything in xlinks, as it isn't working properly
 			# and cannot (easily) be fixed
 			$this->xlinks = array();
 			$this->_addons();
-
-			# help link
-			# To enable link: create an addon with code:
-			# $this->help_link_url = "http://example.org/$VERSION$/$CONTROLLER$/$METHOD$"
-			if( $this->help_link_url ) {
-				$this->template->help_link = str_replace(
-					array('$VERSION$', '$CONTROLLER$', '$METHOD$'),
-					array_map('urlencode',
-						array(trim(config::get_version_info()), Router::$controller, Router::$method)
-					),
-					$this->help_link_url
-				);
-			}
-
 
 			# create the user menu
 			$menu = new Menu_Model();
@@ -130,13 +88,6 @@ class Ninja_Controller extends Template_Controller {
 				$this->template->saved_searches = $this->add_view('saved_searches');
 				$this->template->saved_searches->searches = $searches;
 			}
-		}
-
-		$items_per_page = arr::search($_GET, 'items_per_page');
-		if ($items_per_page !== false) {
-			$_GET['items_per_page'] = ($items_per_page !== false && $items_per_page < 0)
-				? ($items_per_page * -1)
-				: (int)$items_per_page;
 		}
 
 		# convert test params to $_REQUEST to enable more
