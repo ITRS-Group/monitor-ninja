@@ -340,7 +340,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_time( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
-		$this->write( "\$this->$name = intval( \$values[\$prefix.'$backend_name']; )" );
+		$this->write( "\$this->$name = intval( \$values[\$prefix.'$backend_name'] );" );
 		$this->write( "}" );
 	}
 
