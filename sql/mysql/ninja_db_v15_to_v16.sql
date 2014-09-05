@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS `ninja_saved_searches`;

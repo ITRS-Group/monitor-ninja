@@ -65,8 +65,6 @@ class Ninja_Controller extends Template_Controller {
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
-		$saved_searches = false;
-
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			# warning! do not set anything in xlinks, as it isn't working properly
 			# and cannot (easily) be fixed
@@ -81,13 +79,6 @@ class Ninja_Controller extends Template_Controller {
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
 
 			$this->_global_notification_checks();
-
-			# fetch info on saved searches and assign to master template
-			$searches = Saved_searches_Model::get_saved_searches();
-			if ($searches !== false && count($searches)) {
-				$this->template->saved_searches = $this->add_view('saved_searches');
-				$this->template->saved_searches->searches = $searches;
-			}
 		}
 
 		# convert test params to $_REQUEST to enable more

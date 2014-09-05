@@ -68,14 +68,6 @@
 				var _wait_str='<?php echo _('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
-				var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
-				var _search_string_field = '<?php echo _('Search string') ?>';
-				var _search_remove_confirm = '<?php echo _('Are you sure that you wish to remove this saved search?') ?>';
-				var _search_name_field = '<?php echo _('Name') ?>';
-				var _search_save_ok = '<?php echo _('OK') ?>';
-				var _search_save_error = '<?php echo _('ERROR') ?>';
-				var _search_saved_ok = '<?php echo _('Your search was successfully saved.') ?>';
-				var _search_saved_error = '<?php echo _('An error occured when trying to save your search.') ?>';
 				var _date_format = <?php echo json_encode(nagstat::date_format()); ?>;
 				var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
 				var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target', '*'); ?>";

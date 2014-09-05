@@ -87,14 +87,6 @@ if (!empty($base_href)) {
 			var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
 			var _listview_refresh_paused_msg='<?php echo _('List view refresh has been paused.') ?>';
 			var _listview_refresh_unpaused_msg='<?php echo _('List view refresh has been restored.') ?>';
-			var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
-			var _search_string_field = '<?php echo _('Search string') ?>';
-			var _search_remove_confirm = '<?php echo _('Are you sure that you wish to remove this saved search?') ?>';
-			var _search_name_field = '<?php echo _('Name') ?>';
-			var _search_save_ok = '<?php echo _('OK') ?>';
-			var _search_save_error = '<?php echo _('ERROR') ?>';
-			var _search_saved_ok = '<?php echo _('Your search was successfully saved.') ?>';
-			var _search_saved_error = '<?php echo _('An error occured when trying to save your search.') ?>';
 			var _nothing_selected_error = '<?php echo _('Please select at least one item.') ?>';
 			var _no_action_error = '<?php echo _('Please select an action.') ?>';
 			var _date_format = <?php echo json_encode(nagstat::date_format()); ?>;
