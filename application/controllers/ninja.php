@@ -16,19 +16,12 @@ require_once('op5/log.php');
  *  PARTICULAR PURPOSE.
  */
 class Ninja_Controller extends Template_Controller {
-
-	const ADMIN = 'admin'; # how do we define the admin role in database
-
 	public $session = false;
 	public $template;
-	public $user = false;
 	public $profiler = false;
 	public $inline_js = false;
 	public $js_strings = false;
-	public $stale_data = false;
 	public $run_tests = false;
-	public $notifications_disabled = false;
-	public $checks_disabled = false;
 	public $log = false;
 
 	public function __construct()
@@ -65,20 +58,12 @@ class Ninja_Controller extends Template_Controller {
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
-		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
-			# warning! do not set anything in xlinks, as it isn't working properly
-			# and cannot (easily) be fixed
-			$this->xlinks = array();
+		if (PHP_SAPI !== "cli") {
 			$this->_addons();
 
 			# create the user menu
 			$menu = new Menu_Model();
 			$this->template->links = $menu->create();
-
-			foreach ($this->xlinks as $link)
-				$this->template->links[$link['category']][$link['title']] = $link['contents'];
-
-			$this->_global_notification_checks();
 		}
 
 		# convert test params to $_REQUEST to enable more
@@ -102,65 +87,6 @@ class Ninja_Controller extends Template_Controller {
 
 	public function add_print_notification($notification) {
 		$this->template->print_notifications[] = $notification;
-	}
-
-	/**
-	*	Check for notifications to be displayed to user
-	* 	Each notification should be an array with (text, link)
-	*/
-	public function _global_notification_checks()
-	{
-		try {
-			$status = StatusPool_Model::status();
-			if($status) {
-				// we've got access
-				if (!$status->get_enable_notifications()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Notifications are disabled')) );
-				}
-				if (!$status->get_execute_service_checks()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Service checks are disabled')) );
-				}
-				if (!$status->get_execute_host_checks()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Host checks are disabled')) );
-				}
-				if (!$status->get_process_performance_data()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Performance data processing are disabled')) );
-				}
-				if (!$status->get_accept_passive_service_checks()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Passive service checks are disabled')) );
-				}
-				if (!$status->get_accept_passive_host_checks()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Passive host checks are disabled')) );
-				}
-				if (!$status->get_enable_event_handlers()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Event handlers disabled')) );
-				}
-				if (!$status->get_enable_flap_detection()) {
-					$this->add_global_notification( html::anchor('extinfo/show_process_info', _('Flap detection disabled')) );
-				}
-
-				unset($status);
-			}
-		}
-		catch( LivestatusException $e ) {
-			$this->add_global_notification( _('Livestatus is not accessable') );
-		}
-		catch( ORMException $e ) {
-			$this->add_global_notification( _('Livestatus is not accessable') );
-		}
-		# check permissions
-		$user = Auth::instance()->get_user();
-		if (nacoma::link()===true && $user->authorized_for('configuration_information')
-			&& $user->authorized_for('system_commands') && $user->authorized_for('host_view_all')) {
-			$nacoma = Database::instance('nacoma');
-			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results WHERE visibility != 0');
-			$query->result(false);
-			$row = $query->current();
-			if ($row !== false && $row['cnt'] > 0) {
-				$this->add_global_notification( html::anchor('configuration/configure?scan=autoscan_complete', $row['cnt'] . _(' unmonitored hosts present.')) );
-			}
-		}
-
 	}
 
 	/**
