@@ -91,7 +91,7 @@ class Status_Reports_Model extends Reports_Model
 				$hostname[] = $this->db->escape($ary[0]);
 				$servicename[] = $this->db->escape($ary[1]);
 			}
-			$purehost = "host_name IN (".join(", ", $hostname) . ") AND (service_description = '' OR service_description IS NULL)";
+			$purehost = "host_name IN (".join(", ", $hostname) . ") AND service_description = ''";
 
 			if (count($hostname) == 1) {
 				$hostname = array_pop($hostname);
@@ -119,7 +119,7 @@ class Status_Reports_Model extends Reports_Model
 								$downtime,
 								$softorhardcheck)))));
 		} else {
-			$objsel = "host_name IN ('" . join("', '", $this->st_source) . "') AND (service_description = '' OR service_description IS NULL)";
+			$objsel = "host_name IN ('" . join("', '", $this->st_source) . "') AND service_description = ''";
 
 			$sql_where = sql::combine('and',
 				$time_first,
@@ -297,7 +297,7 @@ class Status_Reports_Model extends Reports_Model
 				list( $host, $srv ) = explode( ';', $name, 2 );
 				$objectmatches[] = '(host_name = '
 						. $this->db->escape($host)
-						. ' AND (service_description = "" OR service_description IS NULL'
+						. ' AND (service_description = "" '
 						. ' OR service_description = '
 						. $this->db->escape($srv)
 						. '))';
@@ -306,7 +306,7 @@ class Status_Reports_Model extends Reports_Model
 			foreach( $names as $name ) {
 				$objectmatches[] = '(host_name = '
 						. $this->db->escape($name)
-						. ' AND (service_description = "" OR service_description IS NULL))';
+						. ' AND service_description = "")';
 			}
 		}
 
@@ -359,7 +359,7 @@ class Status_Reports_Model extends Reports_Model
 			foreach( $names as $name ) {
 				$objectmatches[] = '(host_name = '
 						. $this->db->escape($name)
-						. ' AND (service_description = "" OR service_description IS NULL))';
+						. ' AND service_description = "")';
 			}
 		}
 
