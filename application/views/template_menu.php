@@ -55,8 +55,6 @@ array(4) {
 				continue;
 			}
 
-			$i = 0;
-
 			$in_menu = false;
 
 			if($entry) {
@@ -78,13 +76,6 @@ array(4) {
 
 						// Do not add white-space, line-feeds or carriage returns in here, it will screw up JavaScript .children's and .nextSibling's
 
-						$siteuri = url::site($data[0], null);
-						$siteuri = preg_replace('~/+~', '/', $siteuri);
-
-						if (strpos($siteuri, '?')) {
-							$siteuri = substr($siteuri, 0, strpos($siteuri, '?'));
-						}
-
 						$linkstring .= "<li class='nav-seg'><a href='".rtrim(url::base(true), "/").$data[0]."' id='$id' class='ninja_menu_links'>";
 						if (strpos($icon_image, '.') !== false)
 							$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$icon_image, $module_name).")'></span>";
@@ -93,12 +84,10 @@ array(4) {
 						$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
 
 
-						$i++;
-
 					} elseif($data[2] == 1) {
 						$linkstring .= "<li class='nav-seg'><a href='".$data[0]."' id='$id' class='ninja_menu_links'>";
 						if (strpos($icon_image, '.') !== false)
-							$linkstring .= "<img src='".ninja::add_path('icons/menu/'.$icon_image, $module_name)."' />";
+							$linkstring .= "<span class='icon-menu' style='background-image: url(".ninja::add_path('icons/menu/'.$icon_image, $module_name).")'></span>";
 						else
 							$linkstring .= "<span class='icon-menu menu-".$icon_image."'></span>";
 						$linkstring .= "<span class='nav-seg-span'>".$formatted_name."</span></a></li>";
