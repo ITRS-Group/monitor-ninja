@@ -58,7 +58,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 
 		$table_filter = "";
 		if($table !== false) {
-			$table_filter = " AND filter_table = ".$db->escpae($table);
+			$table_filter = " AND filter_table = ".$db->escape($table);
 		}
 
 		$sql = "SELECT * FROM ".self::tablename." WHERE (username=".$db->escape($user)." OR username IS NULL)$table_filter";
