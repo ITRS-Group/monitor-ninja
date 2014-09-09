@@ -12,15 +12,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Pnp_Controller extends Authenticated_Controller {
-
-	public $model = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->model = Current_status_Model::instance();
-	}
-
 	public function index($host=false, $srv=false)
 	{
 		$host = $this->input->get('host', $host);

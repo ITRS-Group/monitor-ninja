@@ -13,12 +13,6 @@
  *  PARTICULAR PURPOSE.
  */
 class System_Controller extends Authenticated_Controller {
-
-	public function __construct()
-	{
-		parent::__construct();
-	}
-
 	public function rpm_info($filter = 'op5')
 	{
 		$data = System_Model::rpm_info($filter);

@@ -10,6 +10,7 @@
 class Public_Controller extends Controller {
 	public function __construct()
 	{
+		parent::__construct();
 		// No current user
 		if (!Auth::instance()->get_user()) {
 			// And we don't come from ::1 or 127.0.0.0/8
