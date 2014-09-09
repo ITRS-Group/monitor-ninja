@@ -41,10 +41,8 @@ class Authenticated_Controller extends Ninja_Controller {
 				if (!request::is_ajax() && $session)
 					$session->set('requested_uri', url::current(true));
 
-				if (Router::$controller != 'default') {
-					// url::redirect sends the headers and exits. Execution stops after this line
-					url::redirect(Kohana::config('routes.log_in_form'));
-				}
+				// url::redirect sends the headers and exits. Execution stops after this line
+				url::redirect(Kohana::config('routes.log_in_form'));
 			}
 		}
 
