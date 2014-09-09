@@ -45,7 +45,7 @@ $group_attribute = strtolower($grouptype) . '_name';
 <table class="ext">
 	<caption><?php echo ucfirst($label_grouptype) ?> <?php echo _('Commands').' '._('for').': '.html::specialchars($group_alias).' ('.$groupname.')'; ?>
 		<?php if (nacoma::link()===true)
-			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf(_('Configure this %sgroup'), $grouptype));?>
+			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf(_('Configure this %s'), $grouptype));?>
 	</caption>
 	<tr>
 		<td class="status icon">
