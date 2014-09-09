@@ -51,6 +51,17 @@ class Auth {
 	 */
 	public static function instance($config = array(), $driver_config = array())
 	{
+		/*
+		 * Since op5auth expectes the sesssion to be started, we should make sure
+		 * we have started the session. That is done by making sure the Session
+		 * object is instanced, so just load the instance, and we should be fine to
+		 * use op5auth later.
+		 *
+		 * This is mostly a workaround since op5auth doesn't do session handling on
+		 * its own (yet?)
+		 */
+		Session::instance();
+
 		if (self::$fake_instance !== false) return self::$fake_instance;
 		// Load the Auth instance
 		try {

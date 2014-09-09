@@ -37,25 +37,17 @@ class Authenticated_Controller extends Ninja_Controller {
 			}
 		} else {
 			if (!Auth::instance()->logged_in()) {
-				$auth_method = $this->input->get('auth_method', false);
-				$username    = $this->input->get('username', false);
-				$password    = $this->input->get('password', false);
-				if (Kohana::config('auth.use_get_auth') === true && $username !== false && $password !== false) {
-					$res = ninja_auth::login_user($username, $password, $auth_method);
-					if ($res !== true)
-						die('The provided authentication is invalid');
-				} else {
-					# store requested uri in session for later redirect
-					if (!request::is_ajax() && $this->session)
-						$this->session->set('requested_uri', url::current(true));
+				// store requested uri in session for later redirect
+				if (!request::is_ajax() && $session)
+					$session->set('requested_uri', url::current(true));
 
-					if (Router::$controller != 'default') {
-						return url::redirect(Kohana::config('routes.log_in_form'));
-					}
+				if (Router::$controller != 'default') {
+					// url::redirect sends the headers and exits. Execution stops after this line
+					url::redirect(Kohana::config('routes.log_in_form'));
 				}
 			}
 		}
-		
+
 		# user might not be logged in due to CLI scripts, be quiet
 		$current_skin = config::get('config.current_skin', '*', true);
 		if (!$current_skin) {
