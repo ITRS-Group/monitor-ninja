@@ -132,16 +132,10 @@ final class Kohana {
 		// Enable Kohana 404 pages
 		Event::add('system.404', array('Kohana', 'show_404'));
 
-		if (self::config('core.enable_hooks') === TRUE)
-		{
-			// Find all the hook files
-			$hooks = self::list_files('hooks', TRUE);
-
-			foreach ($hooks as $file)
-			{
-				// Load the hook
-				include $file;
-			}
+		// Find all the hook files and load them
+		$hooks = self::list_files('hooks', TRUE);
+		foreach ($hooks as $file) {
+			include $file;
 		}
 
 		// Setup is complete, prevent it from being run again
