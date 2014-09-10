@@ -2,48 +2,6 @@
 
 require_once('op5/log.php');
 
-#
-# Hack to enable PHP version < 5.2
-#
-if (!defined('E_RECOVERABLE_ERROR'))
-	define('E_RECOVERABLE_ERROR', 4096);
-if (!defined('FILTER_VALIDATE_IP'))
-	define('FILTER_VALIDATE_IP', false);
-if (!defined('FILTER_FLAG_IPV4'))
-	define('FILTER_FLAG_IPV4', false);
-
-if (!function_exists('spl_object_hash')) {
-    /**
-     * Returns the hash of the unique identifier for the object.
-     *
-     * @param object $object Object
-     * @author Rafael M. Salvioni
-     * @return string
-     */
-	function spl_object_hash($object)
-	{
-		if (!is_object($object))
-			$object = arr::to_object($object);
-			if (is_object($object)) {
-				ob_start(); var_dump($object); $dump = ob_get_contents(); ob_end_clean();
-				if (preg_match('/^object\(([a-z0-9_]+)\)\#(\d)+/i', $dump, $match)) {
-					return md5($match[1] . $match[2]);
-				}
-			}
-		trigger_error(__FUNCTION__ . "() expects parameter 1 to be object", E_USER_WARNING);
-		return null;
-	}
-}
-
-if (!function_exists('filter_var')) {
-	function filter_var($input) {
-		return $input;
-	}
-}
-#
-# End PHP version hack
-#
-
 /**
  * Provides Kohana-specific helper functions. This is where the magic happens!
  *
