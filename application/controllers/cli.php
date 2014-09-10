@@ -16,14 +16,12 @@ class Cli_Controller extends Controller {
 
 	public function __construct()
 	{
-		# Only grant permission for cli access or if
-		# user has been given the ADMIN role
-		if (PHP_SAPI !== "cli" &&
-			!Auth::instance()->logged_in(Ninja_Controller::ADMIN)) {
-			return url::redirect('default/index');
+		// Only allow cli access to this controller
+		if (PHP_SAPI !== "cli") {
+			// The next line calls exit();, so no further code will be executed
+			url::redirect('default/index');
 		}
 		parent::__construct();
-		$this->auto_render = false;
 		$op5_auth = Op5Auth::factory(array('session_key' => false));
 		$op5_auth->force_user(new Op5User_AlwaysAuth());
 	}

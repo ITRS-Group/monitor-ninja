@@ -26,11 +26,8 @@ class Ninja_Controller extends Template_Controller {
 
 	public function __construct()
 	{
-		$this->log = op5log::instance('ninja');
 		parent::__construct();
-		if(request::is_ajax()) {
-			$this->auto_render = FALSE;
-		}
+		$this->log = op5log::instance('ninja');
 
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
@@ -58,13 +55,11 @@ class Ninja_Controller extends Template_Controller {
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
-		if (PHP_SAPI !== "cli") {
-			$this->_addons();
+		$this->_addons();
 
-			# create the user menu
-			$menu = new Menu_Model();
-			$this->template->links = $menu->create();
-		}
+		# create the user menu
+		$menu = new Menu_Model();
+		$this->template->links = $menu->create();
 
 		# convert test params to $_REQUEST to enable more
 		# parameters to different controllers (reports for one)

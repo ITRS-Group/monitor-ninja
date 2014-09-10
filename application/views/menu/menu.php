@@ -98,9 +98,11 @@ $section_reporting[$menu_items['saved_reports']] = array(listview::querylink('[s
 $section_reporting[$menu_items['schedule_reports']]= array('/schedule/show', 'schedulereports',0);
 
 # base menu (all)
+$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '127.0.0.1';
+
 $menu_base = array(
 	$menu_items['section_about'] => array(
-		$menu_items['portal'] 					=> array('//'.$_SERVER['HTTP_HOST'], 'portal',2),
+		$menu_items['portal'] 					=> array('//'.$http_host, 'portal',2),
 		$menu_items['manual'] 					=> array(Kohana::config('menu.manual_url'), 'manual',2),
 		$menu_items['support'] 					=> array('http://www.op5.com/support', 'support',2),
 		$menu_items['ninja_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/ninja', 'ninja',3),
