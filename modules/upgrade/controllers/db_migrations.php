@@ -2,6 +2,9 @@
 require_once('op5/auth/Auth.php');
 require_once('op5/auth/User_AlwaysAuth.php');
 
+/**
+ * Handles CLI calls used in installation & upgrade scripts
+ */
 class Db_Migrations_Controller extends Controller {
 	public function __construct()
 	{
