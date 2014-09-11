@@ -208,6 +208,16 @@ final class Kohana {
 
 				// Stop the controller execution benchmark
 				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+
+				// Start the rendering benchmark
+				Benchmark::start(SYSTEM_BENCHMARK.'_render');
+
+				// Render the output
+				Event::run('system.render');
+
+				// Stop the rendering benchmark
+				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
+
 			} catch( Exception $e ) {
 				self::exception_handler($e);
 			}
