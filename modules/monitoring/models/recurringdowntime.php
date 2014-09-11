@@ -57,10 +57,13 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 
 	/**
 	 * Get the duration, but format it the way times are usually
-	 * formatted: hh:mm:ss
+	 * formatted: hh:mm:ss, or an empty string if the downtime is 'fixed'.
 	 */
 	public function get_duration_string()
 	{
+		if($this->get_fixed()) {
+			return "";
+		}
 		$duration = $this->get_duration();
 		return sprintf("%02d:%02d:%02d", (int)($duration / 3600 % 24), (int)($duration / 60 % 60), (int)($duration % 60));
 	}
