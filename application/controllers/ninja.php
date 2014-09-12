@@ -24,6 +24,8 @@ class Ninja_Controller extends Template_Controller {
 	public $run_tests = false;
 	public $log = false;
 
+	public $widgets = array();
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -45,7 +47,7 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
-		$this->template->current_skin = Kohana::config('config.current_skin');
+		$this->template->current_skin = $this->get_current_user_skin();
 
 		# Load session library
 		# If any current session data exists, it will become available.
@@ -129,5 +131,26 @@ class Ninja_Controller extends Template_Controller {
 	public function add_path($rel_path)
 	{
 		return ninja::add_path($rel_path);
+	}
+
+	/**
+	 * Load a skin
+	 */
+
+	private function get_current_user_skin() {
+		# user might not be logged in due to CLI scripts, be quiet
+		$current_skin = config::get('config.current_skin', '*', true);
+		if (!$current_skin) {
+			$current_skin = 'default/';
+		}
+		else if (substr($current_skin, -1, 1) != '/') {
+			$current_skin .= '/';
+		}
+
+		if (!file_exists(APPPATH."views/css/".$current_skin)) {
+			op5log::instance('ninja')->log('notice', 'Wanted to use skin "'. $current_skin.'", could not find it');
+			$current_skin = 'default/';
+		}
+		return $current_skin;
 	}
 }
