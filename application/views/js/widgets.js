@@ -34,7 +34,6 @@ $(document).ready(function() {
 
 // create array prototype to sole the lack of in_array() in javascript
 Array.prototype.has = function(value) {
-	var i;
 	for (var i = 0, loopCnt = this.length; i < loopCnt; i++) {
 		if (this[i] === value) {
 			return true;
@@ -141,7 +140,7 @@ function set_widget_refresh()
 		data: data,
 		type: 'POST',
 		success: function(data) {
-			if (data.success == true) {
+			if (data.success === true) {
 				$.jGrowl(sprintf(_widget_refresh_msg, value), { header: _success_header });
 				$('#widget_global_slider').remove();
 				$('.widget-editbox [name=refresh_interval]').each(function() {
@@ -408,11 +407,11 @@ widget.register_widget_load = function(widget_name, cb) {
 	else {
 		for (var i =0; i <  widget.widgets[widget_name].length; i++) {
 			if (widget.widgets[widget_name][i].toString() == cb.toString())
-				return
+				return;
 		}
 		widget.widgets[widget_name].push(cb);
 	}
-}
+};
 
 /*
  *	Set the refresh interval to use for widget

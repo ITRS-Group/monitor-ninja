@@ -43,7 +43,7 @@ function set_items_per_page()
 
 function preserve_get_params(custom_val, sel_id)
 {
-	if (custom_val != false && typeof custom_val != 'undefined' && custom_val != 'sel') {
+	if (custom_val !== false && typeof custom_val !== 'undefined' && custom_val != 'sel') {
 		propagate_val(custom_val);
 	} else {
 		if (custom_val == 'sel') {

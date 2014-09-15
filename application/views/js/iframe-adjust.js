@@ -23,7 +23,7 @@ $(document).ready(function() {
 				note.append('<span>Known issues on ' + agent + ' with iframes </span>');
 				note.append($('<a href="#"></a>').html('Open in a new window').click(function () {
 					window.open('https://' + window.location.hostname + elements.attr('src'), '_blank');
-				}))
+				}));
 
 				var first = $(elements.contents().find('body')[0].firstChild);
 				first.before(note);
@@ -59,6 +59,6 @@ function adjust_height() {
 
 	$('body').css('overflow-y', 'hidden');
 
-};
+}
 
 $(window).bind( "resize", adjust_height );
