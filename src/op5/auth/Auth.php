@@ -654,6 +654,32 @@ class op5auth implements op5MayI_Actor {
 	}
 
 	/**
+	 * Write information back to the backend. Changes after this call won't be
+	 * saved for future use or next session, but information should still be
+	 * accessable.
+	 *
+	 * Since Auth is quite close to sessions, and sessions acts as a mutex per
+	 * session, it's impossible to have the same session open in multiple
+	 * instances of php at the same time.
+	 *
+	 * write_close should close the session, stop the possibility to continue to
+	 * change the authentication settings, and making it possible to start a new
+	 * php request to the same session simultanously, if the current request will
+	 * take time. For example outputting log data.
+	 *
+	 * This should prefferably be called between the controller execution, which
+	 * might mutate the auth information, and the view controller, for which the
+	 * authentication should be read only.
+	 */
+	public function write_close() {
+		$this->session_store();
+		// FIXME: session_writeback
+
+		// Make sure we don't store anything more...
+		$this->config['session_key'] = false;
+	}
+
+	/**
 	 * Return the combined metadata for all modules used in the system.
 	 *
 	 * This is useful to retreive for example which configuration interfaces

@@ -154,6 +154,9 @@ class op5AuthDriver_Default extends op5AuthDriver {
 
 		$user = $this->users[$username];
 		if (self::valid_password($password, $user['password'], $user['password_algo']) === true) {
+			// We don't want those two fields to exist in the user object to prevent unintentional exposure, for example in the session file or stack traces
+			unset($user['password']);
+			unset($user['password_algo']);
 			return $user;
 
 		}
