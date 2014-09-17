@@ -34,23 +34,36 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
- 	 * @param string $submitted_start_time (Y-m-d H:i:s)
- 	 * @param string $submitted_end_time (Y-m-d H:i:s)
-	 * @return true | string (string = error message)
+	 * @param array $input, hopefully including well formed values in the indices start_time and end_time
+	 * @param string &$error possible error message
+	 * @return boolean
 	 */
-	private function _validate_dates($submitted_start_time, $submitted_end_time) {
-		$start_time = nagstat::timestamp_format(nagstat::date_format(), $submitted_start_time);
-		$end_time = nagstat::timestamp_format(nagstat::date_format(), $submitted_end_time);
-		$errors = array();
+	private function _validate_dates($input, &$error) {
+		$error = null;
+		if(!isset($input['start_time']) && !isset($input['end_time'])) {
+			// nothing to validate (in this date focused context, at least)
+			return true;
+		}
+		$start_time = false;
+		$end_time = false;
+		if(isset($input['start_time'])) {
+			$start_time = nagstat::timestamp_format(nagstat::date_format(), $input['start_time']);
+		}
+		if(isset($input['end_time'])) {
+			$end_time = nagstat::timestamp_format(nagstat::date_format(), $input['end_time']);
+		}
 		if(!$start_time || !$end_time) {
 			if(!$start_time && !$end_time) {
-				return "Neither of your submitted dates are valid, please <a href='javascript:history.back();'>adjust them</a>";
+				$error = "Neither of your submitted dates are valid, please <a href='javascript:history.back();'>adjust them</a>";
+				return false;
 			} else {
-				return sprintf("%s is not a valid date, please <a href='javascript:history.back();'>adjust it</a>", $start_time ? $submitted_end_time : $submitted_start_time);
+				$error = sprintf("%s is not a valid date, please <a href='javascript:history.back();'>adjust it</a>", $start_time ? $submitted_end_time : $submitted_start_time);
+				return false;
 			}
 		}
 		if($start_time > $end_time) {
-			return sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+			$error = sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+			return false;
 		}
 		return true;
 	}
@@ -303,6 +316,13 @@ class Command_Controller extends Authenticated_Controller
 
 		$param['author'] = Auth::instance()->get_user()->username;
 
+		// always validate start & end time when present
+		if(!$this->_validate_dates($param, $error_msg)) {
+			$this->template->content->result = false;
+			$this->template->content->error = $error_msg;
+			return;
+		}
+
 		if (isset($param['comment']) && trim($param['comment'])=='') {
 			# comments shouldn't ever be empty
 			$this->template->content->result = false;
@@ -330,12 +350,6 @@ class Command_Controller extends Authenticated_Controller
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
-			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
-			if($date_validation_result !== true) {
-				$this->template->content->result = false;
-				$this->template->content->error = $date_validation_result;
-				return;
-			}
 			if (!empty($param['_child-hosts']) && $param['_child-hosts'] != 'none') {
 				$what = $param['_child-hosts'];
 				unset($param['_child-hosts']);
@@ -435,12 +449,6 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_SVC_DOWNTIME':
 			if(isset($param['fixed']) && $param['fixed']) {
 				$this->schedule_retrospectively('service', 'service', $param['service'], $param['start_time'], $param['end_time'], $param['comment']);
-			}
-			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
-			if($date_validation_result !== true) {
-				$this->template->content->result = false;
-				$this->template->content->error = $date_validation_result;
-				return;
 			}
 			break;
 		 case 'ACKNOWLEDGE_HOST_PROBLEM':
