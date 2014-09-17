@@ -16,14 +16,6 @@ class Authenticated_Controller extends Ninja_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-
-		if (!Auth::instance()->logged_in()) {
-			// store requested uri in session for later redirect
-			if (!request::is_ajax() && $this->session)
-				$this->session->set('requested_uri', url::current(true));
-
-			// url::redirect sends the headers and exits. Execution stops after this line
-			url::redirect(Kohana::config('routes.log_in_form'));
-		}
+		$this->_verify_access('ninja.legacy:authenticated');
 	}
 }

@@ -102,7 +102,7 @@ class Default_Controller extends Ninja_Controller  {
 			# might redirect somewhere
 			Event::run('ninja.logged_in');
 
-			$requested_uri = Session::instance()->get('requested_uri', false);
+			$requested_uri = $this->input->get('uri', false);
 			if ($requested_uri !== false && $requested_uri == Kohana::config('routes.log_in_form')) {
 				# make sure we don't end up in infinite loop
 				# if user managed to request show_login

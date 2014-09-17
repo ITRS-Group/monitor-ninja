@@ -26,9 +26,16 @@ class Ninja_Controller extends Template_Controller {
 
 	public $widgets = array();
 
+	/**
+	 * @var op5MayI
+	 */
+	public $mayi = false;
+	public $access_perfdata = array();
+
 	public function __construct()
 	{
 		parent::__construct();
+		$this->mayi = op5MayI::instance();
 		$this->log = op5log::instance('ninja');
 
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
@@ -152,5 +159,29 @@ class Ninja_Controller extends Template_Controller {
 			$current_skin = 'default/';
 		}
 		return $current_skin;
+	}
+
+	/**
+	 * Verify access to a given action.
+	 * If no access, throw a Kohana_User_Exception
+	 *
+	 * This method returns if access is allowed, setting $this->access_messages
+	 * and $this->access_perfdata.
+	 *
+	 * If not access is allowed, throw an execption, to break out of normal
+	 * execution path, and render a access denied-page.
+	 */
+	protected function _verify_access($action, $args = false) {
+		$access = $this->mayi->run($action, $args, $messages,
+			$this->access_perfdata);
+
+		foreach ($messages as $msg) {
+			$this->add_global_notification($msg);
+		}
+
+		if (!$access) {
+			throw new Kohana_User_Exception('No access',
+				'Access denied for action ' . $action, 'auth/no_access');
+		}
 	}
 }
