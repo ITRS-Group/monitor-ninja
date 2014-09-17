@@ -498,8 +498,9 @@ class Command_Controller extends Authenticated_Controller
 
 		$this->template->content->result = true;
 		while ($ncmd = array_pop($nagios_commands)) {
-			if(!nagioscmd::submit_to_nagios($ncmd)) {
+			if(!nagioscmd::submit_to_nagios($ncmd, false, $output)) {
 				$this->template->content->result = false;
+				$this->template->content->error = "Failed to submit command: " . $output;
 				// don't try to submit more commands
 				return;
 			}
