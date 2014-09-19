@@ -20,7 +20,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}
 Summary: op5 monitor ninja
 Group: op5/monitor
 Prefix: /opt/monitor/op5/ninja
-Requires: monitor-gui-core
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
 Requires: monitor-merlin
