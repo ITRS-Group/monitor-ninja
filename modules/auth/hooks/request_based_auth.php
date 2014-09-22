@@ -12,9 +12,9 @@ require_once('op5/auth/User_AlwaysAuth.php');
 class request_based_auth_hooks {
 	public function __construct() {
 		if (PHP_SAPI === "cli") {
-			Event::add('system.ready', array ($this,'handle_cli_auth'));
+			Event::add('system.pre_controller', array ($this,'handle_cli_auth'));
 		} else {
-			Event::add('system.ready', array ($this,'handle_get_auth'));
+			Event::add('system.pre_controller', array ($this,'handle_get_auth'));
 		}
 	}
 
