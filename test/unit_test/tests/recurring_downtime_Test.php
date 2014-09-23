@@ -350,4 +350,73 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 
 		$this->assertCount(0, $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduleendtime} +1 day"), 'end_time' => strtotime("{$this->scheduletimeofday} +2 days")))), "Downtimes are gone after deleting them");
 	}
+
+	public function test_migration()
+	{
+		$db = Database::instance();
+		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1337, "monitor", "hosts", \'a:9:{s:11:"report_type";s:5:"hosts";s:9:"host_name";a:1:{i:0;s:7:"monitor";}s:7:"comment";s:15:"I am a comment.";s:4:"time";s:5:"12:00";s:8:"duration";s:4:"2:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:7:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"0";}s:15:"recurring_month";a:12:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"7";i:7;s:1:"8";i:8;s:1:"9";i:9;s:2:"10";i:10;s:2:"11";i:11;s:2:"12";}}\')');
+		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1338, "monitor", "services", \'a:8:{s:11:"report_type";s:8:"services";s:19:"service_description";a:1:{i:0;s:20:"monitor;Disk usage /";}s:7:"comment";s:36:"This is a comment of a service rsdt.";s:4:"time";s:5:"16:00";s:8:"duration";s:4:"4:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:1:{i:0;s:1:"4";}}\')');
+		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1339, "monitor", "services", \'a:8:{s:11:"report_type";s:8:"services";s:19:"service_description";a:1:{i:0;s:20:"monitor;Disk usage /";}s:7:"comment";s:46:"This scheduled downtime is as long as longcat.";s:4:"time";s:4:"0:00";s:8:"duration";s:5:"24:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:1:{i:0;s:1:"4";}}\')');
+		exec('/usr/bin/php index.php cli/upgrade_recurring_downtime 2>&1', $output, $status);
+		$res = $db->query('SELECT * FROM recurring_downtime WHERE id = 1337');
+		$res = $res->result_array(false);
+		$this->assertCount(1, $res);
+		unset($res[0]['data']);
+		unset($res[0]['id']);
+		unset($res[0]['last_update']);
+		$this->assertEquals(
+			array(
+				'author' => 'monitor',
+				'downtime_type' => 'hosts',
+				'comment' => 'I am a comment.',
+				'start_time' => '43200',
+				'end_time' => '50400',
+				'duration' => '7200',
+				'fixed' => '1',
+				'weekdays' => 'a:7:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"0";}',
+				'months' => 'a:12:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"7";i:7;s:1:"8";i:8;s:1:"9";i:9;s:2:"10";i:10;s:2:"11";i:11;s:2:"12";}'
+			),
+			$res[0]
+		);
+		$res = $db->query('SELECT * FROM recurring_downtime WHERE id = 1338');
+		$res = $res->result_array(false);
+		$this->assertCount(1, $res);
+		unset($res[0]['data']);
+		unset($res[0]['id']);
+		unset($res[0]['last_update']);
+		$this->assertEquals(
+			array(
+				'author' => 'monitor',
+				'downtime_type' => 'services',
+				'comment' => 'This is a comment of a service rsdt.',
+				'start_time' => '57600',
+				'end_time' => '72000',
+				'duration' => '14400',
+				'fixed' => '1',
+				'weekdays' => 'a:1:{i:0;s:1:"4";}',
+				'months' => 'a:0:{}'
+			),
+			$res[0]
+		);
+		$res = $db->query('SELECT * FROM recurring_downtime WHERE id = 1339');
+		$res = $res->result_array(false);
+		$this->assertCount(1, $res);
+		unset($res[0]['data']);
+		unset($res[0]['id']);
+		unset($res[0]['last_update']);
+		$this->assertEquals(
+			array(
+				'author' => 'monitor',
+				'downtime_type' => 'services',
+				'comment' => 'This scheduled downtime is as long as longcat.',
+				'start_time' => '0',
+				'end_time' => '86400',
+				'duration' => '86400',
+				'fixed' => '1',
+				'weekdays' => 'a:1:{i:0;s:1:"4";}',
+				'months' => 'a:0:{}'
+			),
+			$res[0]
+		);
+	}
 }
