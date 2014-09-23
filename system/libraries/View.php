@@ -3,7 +3,7 @@
 require_once('op5/log.php');
 /**
  * Loads and displays Kohana view files. Can also handle output of some binary
- * files, such as image, Javascript, and CSS files.
+ * files, such as Javascript and CSS files.
  *
  * $Id: View.php 3917 2009-01-21 03:06:22Z zombor $
  *
