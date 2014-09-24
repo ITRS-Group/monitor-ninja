@@ -13,7 +13,6 @@
 
 broker_module=@@LIBDIR@@/merlin/merlin.so @@TESTDIR@@/merlin.conf
 broker_module=@@LIBDIR@@/naemon-livestatus/livestatus.so @@TESTDIR@@/live debug=1
-broker_module=@@LIBDIR@@/command/command.so
 
 precached_object_file=@@TESTDIR@@/var/objects.precache
 check_result_path=@@TESTDIR@@/var/spool/checkresults
