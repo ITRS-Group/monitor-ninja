@@ -228,6 +228,8 @@ done
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
+%exclude %prefix/application/views/css/*/.sass-cache
+%exclude %prefix/modules/lsfilter/views/css/.sass-cache
 
 %files devel
 %defattr(-,root,root)
