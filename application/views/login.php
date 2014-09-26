@@ -38,6 +38,7 @@
 		<div id="login-table">
 			<?php if (isset($error_msg)) echo $error_msg; ?>
 			<?php echo form::open('default/do_login', array('id' => 'login_form')); ?>
+			<?php echo form::hidden('uri', Input::instance()->get('uri', '')); ?>
 			<table border="1">
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>

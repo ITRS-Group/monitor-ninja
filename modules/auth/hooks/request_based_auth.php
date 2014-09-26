@@ -54,8 +54,7 @@ class request_based_auth_hooks {
 			$password = $input->get('password', false);
 			if (Kohana::config('auth.use_get_auth') === true &&
 				 $username !== false && $password !== false) {
-				$res = ninja_auth::login_user($username, $password,
-					$auth_method);
+				$res = $auth->login($username, $password, $auth_method);
 				if ($res !== true)
 					die('The provided authentication is invalid');
 			}
