@@ -10,4 +10,7 @@ $config['_default'] = 'default';
 $config['logged_in_default'] = 'tac/index';
 
 # route to login_form
-$config['log_in_form'] = 'default/show_login';
+$config['log_in_form'] = 'auth/login';
+
+# route to login_form
+$config['log_out_action'] = 'auth/logout';
