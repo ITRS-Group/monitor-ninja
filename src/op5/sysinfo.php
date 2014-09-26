@@ -171,24 +171,28 @@ class op5sysinfo {
 			return $this->merlin_nodeinfo;
 		}
 		$qh = op5queryhandler::instance();
-		$nodeinfo_all = $qh->raw_call("#merlin nodeinfo\0");
-		$instances_kvvec = explode("\n", $nodeinfo_all);
-		$nodeinfo = array ();
-		foreach ($instances_kvvec as $kvvec) {
-			if (!$kvvec)
-				continue;
-			$instance = array ();
-			$parts = explode(';', $kvvec);
-			foreach ($parts as $kv) {
-				$kvarr = explode('=', $kv, 2);
-				if (count($kvarr) == 2) {
-					$instance[$kvarr[0]] = $kvarr[1];
+		try {
+			$nodeinfo_all = $qh->raw_call("#merlin nodeinfo\0");
+			$instances_kvvec = explode("\n", $nodeinfo_all);
+			$nodeinfo = array ();
+			foreach ($instances_kvvec as $kvvec) {
+				if (!$kvvec)
+					continue;
+				$instance = array ();
+				$parts = explode(';', $kvvec);
+				foreach ($parts as $kv) {
+					$kvarr = explode('=', $kv, 2);
+					if (count($kvarr) == 2) {
+						$instance[$kvarr[0]] = $kvarr[1];
+					}
 				}
+				if (isset($instance['name']))
+					$nodeinfo[$instance['name']] = $instance;
 			}
-			if (isset($instance['name']))
-				$nodeinfo[$instance['name']] = $instance;
+			$this->merlin_nodeinfo = $nodeinfo;
+		} catch (op5queryhandler_Exception $ex) {
+			$nodeinfo = array();
 		}
-		$this->merlin_nodeinfo = $nodeinfo;
 		return $nodeinfo;
 	}
 }
