@@ -2,7 +2,6 @@
 
 require_once('op5/auth/Auth.php');
 require_once('op5/auth/User_NoAuth.php');
-require_once('op5/auth/User_AlwaysAuth.php');
 
 /**
  * User authentication and authorization library.
@@ -80,17 +79,12 @@ class Auth {
 	}
 
 	/**
-	 * Check if there is an active session. Optionally allows checking for a
-	 * specific role.
+	 * Check if there is an user logged in
 	 *
-	 * @param   string   role name
 	 * @return  boolean
 	 */
-	public function logged_in($role = NULL)
+	public function logged_in()
 	{
-		if( $role !== NULL ) {
-			return false;
-		}
 		return op5auth::instance()->logged_in();
 	}
 
@@ -101,8 +95,7 @@ class Auth {
 	 */
 	public function get_user()
 	{
-		$user = op5auth::instance()->get_user();
-		return $user;
+		return op5auth::instance()->get_user();
 	}
 
 	/**
@@ -115,40 +108,7 @@ class Auth {
 	 */
 	public function login($username, $password, $auth_method = false)
 	{
-		$res = op5auth::instance()->login( $username, $password, $auth_method );
-		return $res;
-	}
-
-	/**
-	 * Attempt to automatically log a user in.
-	 *
-	 * @return  boolean
-	 */
-	public function auto_login()
-	{
-		return false;
-	}
-
-	/**
-	 * Force a login for a specific username.
-	 *
-	 * @param   mixed    username
-	 * @return  boolean
-	 */
-	public function force_login($username)
-	{
-		return false;
-	}
-
-	/**
-	 * Log out a user by removing the related session variables.
-	 *
-	 * @param   boolean  completely destroy the session
-	 * @return  boolean
-	 */
-	public function logout($destroy = FALSE)
-	{
-		return op5auth::instance()->logout();
+		return op5auth::instance()->login( $username, $password, $auth_method );
 	}
 
 	/**
@@ -189,17 +149,6 @@ class Auth {
 	public function authorized_for( $authorization_point )
 	{
 		return op5auth::instance()->authorized_for( $authorization_point );
-	}
-
-	/**
-	 * Returns an array of authentication methods.
-	 *
-	 * @return  array  list of authentication methods, or false if only a single
-	 *                 is avalible
-	 */
-	public function get_authentication_methods()
-	{
-		return op5auth::instance()->get_authentication_methods();
 	}
 
 	/**
@@ -263,11 +212,6 @@ class Auth_NoAuth extends Auth {
 		return false;
 	}
 
-	public function logout($destroy = FALSE)
-	{
-		return false;
-	}
-
 	public function verify_password( $user, $password )
 	{
 		return false;
@@ -279,11 +223,6 @@ class Auth_NoAuth extends Auth {
 	}
 
 	public function authorized_for( $authorization_point )
-	{
-		return false;
-	}
-
-	public function get_authentication_methods()
 	{
 		return false;
 	}
