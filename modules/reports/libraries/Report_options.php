@@ -924,7 +924,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			$db->query($sql);
 			$sql = "DELETE FROM saved_reports_objects WHERE report_id = ".(int)$this['report_id'];
 			$db->query($sql);
-			$sql = "UPDATE saved_reports SET report_name = ".$db->escape($this['report_name']).", updated_by = ".$db->escape($user).", updated_at = ".$db->escape(time())." WHERE report_id = ".(int)$this['report_id'];
+			$sql = "UPDATE saved_reports SET report_name = ".$db->escape($this['report_name']).", updated_by = ".$db->escape($user).", updated_at = ".$db->escape(time())." WHERE id = ".(int)$this['report_id'];
 			$db->query($sql);
 		} else {
 			$sql = 'SELECT 1 FROM saved_reports WHERE report_name = '.$db->escape($this['report_name']).' AND type = '.$db->escape(static::$type);
