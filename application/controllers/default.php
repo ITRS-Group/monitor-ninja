@@ -59,15 +59,6 @@ class Default_Controller extends Ninja_Controller  {
 	 */
 	public function do_login()
 	{
-		# check if we should allow login by GET params
-		if (Kohana::config('auth.use_get_auth')
-		&& array_key_exists('username', $_GET)
-		&& array_key_exists('password', $_GET)) {
-			$_POST['username'] = $_GET['username'];
-			$_POST['password'] = $_GET['password'];
-			$_POST['auth_method'] = $this->input->get('auth_method', false);
-		}
-
 		if ($_POST) {
 			$post = Validation::factory($_POST);
 			$post->add_rules('*', 'required');
@@ -135,23 +126,6 @@ class Default_Controller extends Ninja_Controller  {
 		Auth::instance()->logout();
 		Session::instance()->destroy();
 		return url::redirect('default/show_login');
-	}
-
-	/**
-	 *	Display an error message about no available
-	 * 	objects for a valid user. This page is used when
-	 * 	we are using login through apache.
-	 */
-	public function no_objects()
-	{
-		# unset some session variables
-		$this->session->delete('username');
-		$this->session->delete('auth_user');
-		$this->session->delete('nagios_access');
-		$this->session->delete('contact_id');
-
-		$this->template = $this->add_view('no_objects');
-		$this->template->error_msg = _("You have been denied access since you aren't authorized for any objects.");
 	}
 
 	/**
