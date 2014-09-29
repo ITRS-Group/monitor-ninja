@@ -5,6 +5,8 @@
 #
 ipc_socket = /tmp/ninja-test/ipc.sock;
 
+use_syslog = 1;
+
 # module-specific configuration options.
 module {
 	# textual log of normal hum-drum events

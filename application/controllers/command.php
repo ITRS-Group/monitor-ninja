@@ -57,12 +57,12 @@ class Command_Controller extends Authenticated_Controller
 				$error = "Neither of your submitted dates are valid, please <a href='javascript:history.back();'>adjust them</a>";
 				return false;
 			} else {
-				$error = sprintf("%s is not a valid date, please <a href='javascript:history.back();'>adjust it</a>", $start_time ? $submitted_end_time : $submitted_start_time);
+				$error = sprintf("%s is not a valid date, please <a href='javascript:history.back();'>adjust it</a>", $start_time ? $input['end_time'] : $input['start_time']);
 				return false;
 			}
 		}
 		if($start_time > $end_time) {
-			$error = sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+			$error = sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>");
 			return false;
 		}
 		return true;
