@@ -7,6 +7,11 @@ require_once ('op5/auth/Auth.php');
  * during porting of the authentication library
  */
 class mayi_ninja_legacy_constraints implements op5MayI_Constraints {
+	/**
+	 * Determine if the action is allowed, if the namespace is ninja.legacy.
+	 * Otherwise allow everything, so we don't interfere with anything else.
+	 * We're allowed access to ninja.legacy if we're logged in.
+	 */
 	public function run($action, $env, &$messages, &$perfdata) {
 		list ($resource, $method) = explode(':', $action, 2);
 		if ($resource == 'ninja.legacy') {

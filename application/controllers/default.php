@@ -15,117 +15,21 @@ require_once('op5/log.php');
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
 */
+
 class Default_Controller extends Ninja_Controller  {
-	public $csrf_config = false;
-	public $route_config = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->csrf_config = Kohana::config('csrf');
-		$this->route_config = Kohana::config('routes');
-	}
-
 	public function index()
 	{
-		if (ninja_auth::is_locked_out()) {
-			return url::redirect('default/locked_out');
-		}
 		/* No url specified? go to the default page */
 		return url::redirect(Kohana::config('routes.logged_in_default'));
 	}
 
+	/**
+	 * For backward compatibility before Montior 7.1, this was the default handler
+	 * for displaying the login form. So just don't break bookmarked links.
+	 */
 	public function show_login()
 	{
-		$this->template = $this->add_view('login');
-		$this->template->error_msg = $this->session->get('error_msg', false);
-		$this->template->js = array('application/media/js/jquery.js', $this->add_path('/js/login.js'));
-		$this->template->auth_modules = op5auth::instance()->get_metadata('login_screen_dropdown');
-		Event::run('ninja.show_login', $this);
-	}
-
-	/**
-	 * Show message (stored in session and set by do_login() below)
-	 * to inform that user has been locked out due to too many failed
-	 * login attempts
-	 */
-	public function locked_out()
-	{
-		echo $this->session->get('error_msg');
-	}
-	/**
-	 * Collect user input from login form, authenticate against
-	 * Auth module and redirect to controller requested by user.
-	 */
-	public function do_login()
-	{
-		if ($_POST) {
-			$post = Validation::factory($_POST);
-			$post->add_rules('*', 'required');
-
-			if(PHP_SAPI !== 'cli' && config::get('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
-				$this->session->set_flash('error_msg', _('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
-				return url::redirect('default/show_login');
-			}
-
-			# validate that we have both username and password
-			if (!$post->validate() ) {
-				$error_msg = _("Please supply both username and password");
-				$this->session->set_flash('error_msg', $error_msg);
-				return url::redirect('default/show_login');
-			}
-
-			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($this->input->post($this->csrf_config['csrf_token']))) {
-				$error_msg = _("CSRF tokens did not match.<br />This often happen when your browser opens cached windows (after restarting the browser, for example).<br />Try to login again.");
-				$this->session->set_flash('error_msg', $error_msg);
-				return url::redirect('default/show_login');
-			}
-
-			$username    = $this->input->post('username', false);
-			$password    = $this->input->post('password', false);
-			$auth_method = $this->input->post('auth_method', false);
-
-			$res = ninja_auth::login_user($username, $password, $auth_method);
-			if ($res !== true) {
-				return url::redirect($res);
-			}
-
-			# might redirect somewhere
-			Event::run('ninja.logged_in');
-
-			$requested_uri = $this->input->get('uri', false);
-			if ($requested_uri !== false && $requested_uri == Kohana::config('routes.log_in_form')) {
-				# make sure we don't end up in infinite loop
-				# if user managed to request show_login
-				$requested_uri = Kohana::config('routes.logged_in_default');
-			}
-			if ($requested_uri !== false) {
-				# remove 'requested_uri' from session
-				Session::instance()->delete('requested_uri');
-				return url::redirect($requested_uri);
-			}
-
-			return url::redirect(Kohana::config('routes.logged_in_default'));
-		}
-
-		# trying to login without $_POST is not allowed and shouldn't
-		# even happen - redirecting to default routes
-		if (!isset($auth) || !$auth->logged_in()) {
-			return url::redirect($this->route_config['_default']);
-		} else {
-			return url::redirect($this->route_config['logged_in_default']);
-		}
-	}
-
-	/**
-	 * Logout user, remove session and redirect
-	 *
-	 */
-	public function logout()
-	{
-		Auth::instance()->logout();
-		Session::instance()->destroy();
-		return url::redirect('default/show_login');
+		return url::redirect(Kohana::config('routes.log_in_form'));
 	}
 
 	/**

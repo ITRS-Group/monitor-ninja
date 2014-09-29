@@ -141,7 +141,7 @@
 						echo html::anchor('user', html::specialchars(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username')));
 						echo " at " . html::specialchars(gethostname());
 						if ( !op5auth::instance()->authorized_for('no_logout') ) {
-							echo " | " . html::anchor('default/logout', html::specialchars(_('Log out')));
+							echo " | " . html::anchor(Kohana::config('routes.log_out_action'), html::specialchars(_('Log out')));
 						}
 					}
 				?>
