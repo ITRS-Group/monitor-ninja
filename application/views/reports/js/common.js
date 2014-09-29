@@ -63,7 +63,6 @@ $(document).ready(function() {
 
 	$('.save_report_btn').parents('form').submit(function(ev) {
 		ev.preventDefault();
-		loopElements();
 		var form = $(this);
 		if (!(check_form_values(this[0]))) {
 			return;
@@ -163,7 +162,6 @@ $(document).ready(function() {
 	$("#delete_report").click(confirm_delete_report);
 
 	$(".report_form").on('submit', function() {
-		loopElements();
 		return check_form_values();
 	});
 });
@@ -261,22 +259,6 @@ function populate_options(tmp_field, field, json_data)
 	}
 	tmp_field.append(available);
 	field.append(selected);
-}
-
-/**
-*	Loop through all elements of a form
-*	Verify that all multiselect fields (right hand side)
-*	are set to selected
-*/
-function loopElements(f) {
-	// select all elements that doesn't contain the nosave_suffix
-	$('.multiple:not([id$=_tmp])').each(function() {
-		if ($(this).is(':visible')) {
-			$(this).children('option').attr('selected', 'selected');
-		} else {
-			$(this).children('option').attr('selected', false);
-		}
-	});
 }
 
 function check_form_values(form)

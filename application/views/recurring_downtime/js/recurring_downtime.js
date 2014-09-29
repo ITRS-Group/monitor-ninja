@@ -1,7 +1,6 @@
 $(document).ready(function() {
 //	$('.time-entry').timePicker();
 	$("#setup_form").bind('submit', function() {
-		loopElements();
 		return check_setup();
 	});
 
