@@ -60,7 +60,7 @@ function sprintf()
 		{
 			numSubstitutions++;
 			if (numSubstitutions >= arguments.length) {
-				alert('Error! Not enough function arguments (' + (arguments.length - 1)
+				console.error('Error! Not enough function arguments (' + (arguments.length - 1)
 				+ ', excluding the string)\n'
 				+ 'for the number of substitution parameters in string ('
 				+ numSubstitutions + ' so far).');

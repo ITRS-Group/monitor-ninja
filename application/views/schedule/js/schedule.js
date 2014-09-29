@@ -25,8 +25,8 @@ function fill_saved_reports() {
 		_site_domain + _index_page + "/schedule/list_by_type/"+report_type,
 		{
 			error: function(xhr) {
-				alert(xhr.responseText);
-			},
+				$.notify(_reports_error + ": " + xhr.responseText, {'sticky': true});
+		},
 			success: function(response) {
 				var saved_reports = document.getElementById("saved_report_id");
 				var default_opt = saved_reports.children[0];
@@ -65,7 +65,7 @@ $(document).ready(function() {
 
 		var recipients = $.trim($('#recipients').fieldValue()[0]);
 		if (recipients.indexOf('@') === -1) {
-			alert(_reports_invalid_email);
+			$.notify(_reports_invalid_email, {'sticky': true});
 			return false;
 		}
 
@@ -350,7 +350,7 @@ function validate_form(formData, jqForm, options) {
 		errors++;
 	}
 	if (!saved_report_id) {
-		alert(fatal_err_str);
+		$.notify(fatal_err_str, {'sticky': true});
 		return false;
 	}
 
