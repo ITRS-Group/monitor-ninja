@@ -127,7 +127,7 @@ Feature: Filters & list views
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
-	@bug-7012
+	@bug-7012 @unreliable
 	Scenario: Host single multi-delete
 		Given I have these hosts:
 			| host_name     | active_checks_enabled |
@@ -154,7 +154,7 @@ Feature: Filters & list views
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
 	@configuration @asmonitor
-	@bug-7012
+	@bug-7012 @unreliable
 	Scenario: Host multi multi-delete
 		Given I have these hosts:
 			| host_name     | active_checks_enabled |
@@ -381,7 +381,7 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "C-service"
 		And The first row of the filter result table should contain "B-service"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @unreliable
 	Scenario: Save filter
 		Given I am on the Host details page
 		And I click "Show/Edit Text Filter"

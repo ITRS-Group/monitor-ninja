@@ -283,7 +283,7 @@ Feature: Histogram reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports
+	@configuration @asmonitor @reports @unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Reporting" button
