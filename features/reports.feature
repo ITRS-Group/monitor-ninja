@@ -3,7 +3,7 @@ Feature: Reports
 	This is intended to contain general report tests, rather than report-type
 	specific report tests which can be found in their respective own features
 
-	@asmonitor @reports
+	@asmonitor @reports @unreliable
 	Scenario: All helptexts are defined
 		Given I am on the Host details page
 		When I hover over the "Reporting" button
