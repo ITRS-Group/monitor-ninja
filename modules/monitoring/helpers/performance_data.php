@@ -19,7 +19,7 @@ class performance_data {
 	public static function process_performance_data($perf_data_str) {
 		/* Split string in data soruce part and performance part */
 		preg_match_all(
-			"/(?<=^|[\\s])('(?:\\\\.|[^\\\\'])*'|[^'\\s=][^\\s=]*)=([-0-9.]*|U)([%a-zA-Z]*)(?:;([^; ]*)(?:;([^; ]*)(?:;([-0-9.]*)(?:;([-0-9.]*)|)|)|)|)(?=$|[\\s])/",
+			"/(?<=^|[\\s])('[^'=]+'|[^'\\s=]+)=([-0-9.]*|U)([%a-zA-Z]*)(?:;([^; ]*)(?:;([^; ]*)(?:;([-0-9.]*)(?:;([-0-9.]*)|)|)|)|)(?=$|[\\s])/",
 			$perf_data_str, $matches, PREG_SET_ORDER);
 
 		$perf_data = array ();
@@ -33,7 +33,7 @@ class performance_data {
 
 			/* Parse name, if quoted, strip it down to data source name */
 			if (substr($ds_name, 0, 1) == '\'') {
-				$ds_name = stripcslashes(substr($ds_name, 1, -1));
+				$ds_name = substr($ds_name, 1, -1);
 			}
 
 			/* build object */
