@@ -339,15 +339,19 @@ class Cli_Controller extends Controller {
 			if ($row['start_time'])
 				continue; // already migrated
 			$data = i18n::unserialize($row['data']);
-			$data['start_time'] = $data['time'];
-			$data['end_time'] = ScheduleDate_Model::time_to_seconds($data['time']) + ScheduleDate_Model::time_to_seconds($data['duration']);
-			$data['end_time'] = ($data['end_time'] / 3600 % 24) . ':' . ($data['end_time'] / 60 % 60) . ':' + ($data['end_time'] % 60);
-			$data['weekdays'] = $data['recurring_day'];
-			$data['months'] = $data['recurring_month'];
-			$data['downtime_type'] = $data['report_type'];
-			$data['objects'] = $data[$report[$data['report_type']]];
+			$data['start_time'] = arr::search($data, 'time', 0);
+			$end_time = ScheduleDate_Model::time_to_seconds(arr::search($data, 'time', '0')) + ScheduleDate_Model::time_to_seconds(arr::search($data, 'duration', '0'));
+			$data['end_time'] = sprintf(
+				'%02d:%02d:%02d',
+				($end_time / 3600),
+				($end_time / 60 % 60),
+				($end_time % 60));
+			$data['weekdays'] = arr::search($data, 'recurring_day', array());
+			$data['months'] = arr::search($data, 'recurring_month', array());
+			$data['downtime_type'] = arr::search($data, 'report_type', '');
+			if ($data['downtime_type'])
+				$data['objects'] = arr::search($data, $report[$data['report_type']], array());
 			$data['author'] = $row['author'];
-			$data['comment'] = $row['comment'];
 			$sd = new ScheduleDate_Model();
 			$sd->edit_schedule($data, $row['id']);
 		}
