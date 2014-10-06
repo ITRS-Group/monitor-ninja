@@ -18,8 +18,6 @@ return;
 	<?php
 	$even = false;
 	$date_format = nagstat::date_format();
-	// sprintf into this with: code, label
-	$image = '<img alt="%2$s" title="%2$s" src="'.ninja::add_path('icons/16x16/shield-%1$s.png').'" />';
 	$states = array(
 		0 => array('ok', _('OK')),
 		1 => array('warning', _('Warning')),
@@ -49,7 +47,7 @@ return;
 		return 0;
 	}
 
-	function draw_json_tree($tree, $image, $states, $indent_level = 1) {
+	function draw_json_tree($tree, $states, $indent_level = 1) {
 		if(!isset($tree['items'])) {
 			return null;
 		}
@@ -61,17 +59,18 @@ return;
 				// five spaces per indent was recently discovered to suffice forever
 				$info .= str_repeat('&nbsp;', 5*($indent_level-1)).' &#8618; ';
 			}
+			$image = sprintf('<img alt="%1$s" title="%1$s" src="%2$s" />', $states[$node['status']][1], ninja::add_path('icons/16x16/shield-'.($states[$node['status']][0]).'.png'));
 			if(!isset($node['items'])) {
 				// this means we're in a leaf
 				$msg = null;
 				if(isset($node['result'])) {
 					$msg = ": ".$node['result']['msg'];
 				}
-				$info .= sprintf($image, $states[$node['status']][0], $states[$node['status']][1]).' '.$node['name'].$msg;
+				$info .= $image.' '.$node['name'].$msg;
 			} else {
 				// this means we've got kids
-				$info .= sprintf($image, $states[$node['status']][0], $states[$node['status']][1]).' '.$node['name'].": ".$node['result']['msg'];
-				$info .= draw_json_tree($node, $image, $states, $indent_level + 1);
+				$info .= $image.' '.$node['name'].": ".$node['result']['msg'];
+				$info .= draw_json_tree($node, $states, $indent_level + 1);
 			}
 		}
 		return $info;
@@ -87,13 +86,13 @@ return;
 				continue;
 			}
 			$info = "<strong>".$json['result']['msg']."</strong>";
-			$info .= draw_json_tree($json, $image, $states);
+			$info .= draw_json_tree($json, $states);
 		} else {
 			$info = $all_ok;
 		} ?>
 		<tr class="<?php if($even) { $even = false; echo 'even'; } else { $even = true; echo 'odd'; } ?>">
 			<td><?php echo date($date_format, $event->timestamp); ?></td>
-			<td><?php printf($image, $states[$event->state][0], $states[$event->state][1]); ?></td>
+			<td><?php printf('<img alt="%1$s" title="%1$s" src="%2$s" />', $states[$event->state][1], ninja::add_path('icons/16x16/shield-'.($states[$event->state][0]).'.png'));?></td>
 			<td><?php echo $event->service_description; ?> (saved as service on host <?php echo $event->host_name; ?>)</td>
 			<td><?php echo $info; ?></td>
 		</tr>
