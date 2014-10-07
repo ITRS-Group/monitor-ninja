@@ -435,6 +435,9 @@ class op5auth implements op5MayI_Actor {
 				}
 			}
 		}
+		if (empty($groups)) {
+			$this->log->log('warning', "User $username is not a member of any group and is not given any permissions");
+		}
 		return $groups;
 	}
 
