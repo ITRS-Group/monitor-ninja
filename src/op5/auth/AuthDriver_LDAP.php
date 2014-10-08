@@ -18,6 +18,8 @@ require_once (__DIR__ . '/../config.php');
 class op5AuthDriver_LDAP extends op5AuthDriver {
 	private $conn = false;
 
+	const LDAP_OPT_DIAGNOSTIC_MESSAGE = 0x0032;
+
 	protected static $metadata = array (
 		'require_user_configuration' => false,
 		'require_user_password_configuration' => false,
@@ -577,6 +579,10 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		if ($this->conn !== false) {
 			$msg .= ' (' . ldap_errno($this->conn) . ': ' .
 				 ldap_error($this->conn) . ')';
+			// Check if we can get the diagnostic message of the error
+			if (ldap_get_option($this->conn, self::LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error)) {
+				$msg .= " " . $extended_error;
+			}
 		}
 		$this->log->log('error',
 			'op5AuthDriver_LDAP / ' . $this->config['name'] . ': ' . $msg);
