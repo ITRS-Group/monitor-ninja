@@ -96,7 +96,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('$sub_columns = array();');
 		$this->write('if ($include_nested) {');
 		foreach ($subobjs as $name => $type) {
-			$this->write('$obj_cols = '.$type[0].'Set'.self::$model_suffix.'::get_all_columns_list(false);');
+			$this->write('$obj_cols = '.$type[0].'Pool'.self::$model_suffix.'::get_all_columns_list(false);');
 			$this->write('foreach ($obj_cols as $name) {');
 			$this->write('$sub_columns[] = %s.$name;', $name.'.');
 			$this->write('}');
