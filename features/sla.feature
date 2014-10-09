@@ -417,7 +417,7 @@ Feature: SLA reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports
+	@configuration @asmonitor @reports @unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Reporting" button
@@ -452,7 +452,7 @@ Feature: SLA reports
 		And I should see "This is a saved test report"
 		And I should see "9.000 %"
 
-	@configuration @asmonitor @reports @bug-7646
+	@configuration @asmonitor @reports @bug-7646 @unreliable
 	Scenario: Uncheck saved checkbox
 		Given I am on the Host details page
 		When I hover over the "Reporting" button
@@ -488,7 +488,7 @@ Feature: SLA reports
 		And "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 
-	@configuration @asmonitor @reports
+	@configuration @asmonitor @reports @unreliable
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
