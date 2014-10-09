@@ -118,10 +118,14 @@ class Ninja_widget_Model extends Model
 		$db = Database::instance();
 
 		if (is_numeric($instance_id)) {
-			$subquery = 'page='.$db->escape($page).' AND username = '.$db->escape($user).' AND instance_id = '.$db->escape($instance_id);
-			$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
-		}
-		else {
+			foreach (array($page, 'tac/index') as $p) {
+				$subquery = 'page='.$db->escape($p).' AND username = '.$db->escape($user).' AND instance_id = '.$db->escape($instance_id);
+				$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
+				if (count($result)) {
+					break;
+				}
+			}
+		} else {
 			$instance_id = null;
 			$options = array(
 				array('page' => $page, 'username' => $user, 'instance_id' => self::FIRST_INSTANCE_ID),
