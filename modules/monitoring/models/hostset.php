@@ -6,6 +6,13 @@ require_once( dirname(__FILE__).'/base/basehostset.php' );
  * Describes a set of objects from livestatus
  */
 class HostSet_Model extends BaseHostSet_Model {
+	/**
+	 * Return resource name of this object
+	 * @return string
+	 */
+	public function mayi_resource() {
+		return "monitoring.hosts";
+	}
 
 	/**
 	 * Get statistics of the hosts in the set

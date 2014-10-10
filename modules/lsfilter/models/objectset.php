@@ -6,6 +6,13 @@ require_once( dirname(__FILE__).'/base/baseobjectset.php' );
  * Describes a set of objects from livestatus
  */
 abstract class ObjectSet_Model extends BaseObjectSet_Model {
+	/**
+	 * Return resource name of this object
+	 * @return string
+	 */
+	public function mayi_resource() {
+		throw new ORMException("Requesting resource from object not defining resource (" . $this->table . ")");
+	}
 
 	/**
 	 * Get statistics about the set, by default only the count

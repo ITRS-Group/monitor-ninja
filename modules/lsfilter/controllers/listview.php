@@ -87,20 +87,31 @@ class ListView_Controller extends Authenticated_Controller {
 
 		try {
 			$result_set = ObjectPool_Model::get_by_query( $query );
+			/* @var $result_set ObjectSet_Model */
 
-			$data = array();
-			foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
-				$obj = $elem->export();
-				$obj['_table'] = $elem->get_table();
-				$data[] = $obj;
+			$messages = array();
+			$perfdata = array();
+			if($this->mayi->run($result_set->mayi_resource().":view.list", false, $messages, $perfdata)) {
+				$data = array();
+				foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
+					$obj = $elem->export();
+					$obj['_table'] = $elem->get_table();
+					$data[] = $obj;
+				}
+
+				return json::ok( array(
+					'totals' => $result_set->get_totals(),
+					'data' => $data,
+					'table' => $result_set->get_table(),
+					'count' => count($result_set)
+				) );
+			} else {
+				return json::fail( array(
+					'data' => "You don't have permission to show ".$result_set->get_table(),
+					'query' => $query,
+					'messages' => $messages
+				));
 			}
-
-			return json::ok( array(
-				'totals' => $result_set->get_totals(),
-				'data' => $data,
-				'table' => $result_set->get_table(),
-				'count' => count($result_set)
-			) );
 		} catch( LSFilterException $e ) {
 			return json::fail( array(
 				'data' => $e->getMessage().' at "'.substr($e->get_query(), $e->get_position()).'"',

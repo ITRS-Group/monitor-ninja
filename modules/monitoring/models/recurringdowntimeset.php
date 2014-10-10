@@ -8,6 +8,14 @@ require_once( dirname(__FILE__).'/base/baserecurringdowntimeset.php' );
  * @todo: documentation
  */
 class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
+	/**
+	 * Return resource name of this object
+	 * @return string
+	 */
+	public function mayi_resource() {
+		return "monitoring.recurringdowntimes";
+	}
+
 	protected function get_auth_filter() {
 		$auth = Auth::instance();
 		$has_auth = array(

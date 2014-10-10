@@ -6,6 +6,13 @@ require_once( dirname(__FILE__).'/base/baseserviceset.php' );
  * Describes a set of objects from livestatus
  */
 class ServiceSet_Model extends BaseServiceSet_Model {
+	/**
+	 * Return resource name of this object
+	 * @return string
+	 */
+	public function mayi_resource() {
+		return "monitoring.services";
+	}
 
 	/**
 	 * Get statistics from the given set

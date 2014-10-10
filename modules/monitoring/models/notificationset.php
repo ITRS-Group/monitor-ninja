@@ -7,6 +7,13 @@ require_once( dirname(__FILE__).'/base/basenotificationset.php' );
  */
 class NotificationSet_Model extends BaseNotificationSet_Model {
 	/**
+	 * Return resource name of this object
+	 * @return string
+	 */
+	public function mayi_resource() {
+		return "monitoring.notificsations";
+	}
+	/**
 	 * apply some extra filters to match for the authentication.
 	 */
 	protected function get_auth_filter() {
