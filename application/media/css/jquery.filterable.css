@@ -5,6 +5,11 @@
 	position: relative;
 }
 
+/* STUPID defaults in common.css */
+.jq-filterable-box select {
+	width: auto;
+}
+
 .jq-filterable-right {
 	display: inline-block;
 	position: relative;
@@ -17,26 +22,22 @@
 	vertical-align: top;
 }
 
-input.jq-filterable-filter[type="text"] {
-	margin: 0;
-	width: 243px;
-	padding: 5px 2px 4px 2px;
-	border: 1px solid #bbb;
-	vertical-align: top;
+.jq-filterable-searchbox {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 3px 1px;
 }
 
-.jq-filterable-larger {
-	width: 234px !important;
-}
-
-.jq-filterable-largest {
-	width: 290px !important;
+/* STUPID defaults in common.css */
+input.jq-filterable-filter {
+	border: 0 !important;
+	margin: 0 !important;
+	width: auto !important;
 }
 
 select.jq-filterable-list {
 	margin-top: 0;
 	border: 1px solid #bbb;
-	width: 243px;
 	height: 25px;
 	vertical-align: top;
 	padding: 4px;
@@ -45,26 +46,18 @@ select.jq-filterable-list {
 select.jq-filterable-list[multiple],
 select.jq-filterable-results {
 	margin-top: 0;
-	height: auto;
 	border: 1px solid #bbb;
-	width: 230px !important;
 	min-width: 190px !important;
-	height: 70px;
+	height: 150px;
 }
 
 select.jq-filterable-list[multiple] {
-	width: 240px !important;
 	border-top: none;
 }
 
 select.jq-filterable-results {
-	height: 95px;
+	height: 181px;
 	border-left: none;
-}
-
-.jq-filterable-list option,
-.jq-filterable-results option {
-	font-size: 110%;
 }
 
 .jq-filterable-results option[data-matching="no-match"] {
@@ -73,9 +66,9 @@ select.jq-filterable-results {
 
 input[type="button"].jq-filterable-move {
 	position: absolute;
-	right: 4px;
-	top: 4px;
-	padding: 0px 2px !important;
+	right: 2px;
+	top: 3px;
+	padding: 2px !important;
 	background: #fff !important;
 	border: 1px solid #ccc;
 	margin: 0;
@@ -87,7 +80,6 @@ input[type="button"].jq-filterable-move {
 	position: relative;
 	text-align: right;
 
-	width: 243px;
 	padding: 2px 2px 1px 2px;
 	border: none;
 
