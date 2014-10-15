@@ -17,8 +17,8 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 			foreach ($this->structure['relations'] as $relation) {
 				list($foreign_key, $table, $key) = $relation;
 				$this->relations[$this->structure['structure'][$key][1]] = array(
-					'tbl' => $structure[$table]['table'],
-					'tblkey' => $structure[$table]['key'],
+					'tbl' => $full_structure[$table]['table'],
+					'tblkey' => $full_structure[$table]['key'],
 				);
 			}
 		} else {
