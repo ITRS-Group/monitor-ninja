@@ -38,6 +38,28 @@ class User_Controller extends Authenticated_Controller {
 		'nagdefault.action_url_target' => 'select'
 	);
 
+	private $custom_validators = array();
+
+	function __construct() {
+		parent::__construct();
+
+		// can't declare functions in arrays in a class' body, do it here instead
+		$this->custom_validators = array(
+			'pagination.default.items_per_page' => function($value) {
+				if($value < 1) {
+					return "Pagination Limit must be greater than 0";
+				}
+				return "";
+			},
+			'pagination.paging_step' => function($value) {
+				if($value < 1) {
+					return "Pagination Step must be greater than 0";
+				}
+				return "";
+			}
+		);
+	}
+
 	/**
 	*	Default method
 	*	Enable user to edit some GUI settings
@@ -209,27 +231,32 @@ class User_Controller extends Authenticated_Controller {
 				case 'int':
 					if (!is_numeric($val)) {
 						$errors[$key] = sprintf($base_err_str, $key, $type_info[$key], $val);
-					} else {
-						$this->_save_value($key, $val);
+						continue 2;
 					}
 					break;
 				case 'bool':
 					if (!is_numeric($val) || ($val != '0' && $val != '1')) {
 						$errors[$key] = sprintf($base_err_str, $key, $type_info[$key], $val);
-					} else {
-						$this->_save_value($key, $val);
+						continue 2;
 					}
 					break;
 				case 'select': case 'string':
 					if (strstr($key, 'keycommand')) {
 						$val = str_replace(' ', '', $val);
 					}
-					# no validation for these types yet
-					$this->_save_value($key, $val);
 					break;
 				default:
 					$errors[$key] = sprintf(_('Found no type information for %s so skipping it'), $key);
+					continue 2;
 			}
+			if(isset($this->custom_validators[$key]) && is_callable($this->custom_validators[$key])) {
+				$err_msg = call_user_func($this->custom_validators[$key], $val);
+				if($err_msg) {
+					$errors[$key] = $err_msg;
+					continue;
+				}
+			}
+			$this->_save_value($key, $val);
 		}
 
 		if (!empty($errors)) {
