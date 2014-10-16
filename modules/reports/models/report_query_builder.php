@@ -127,9 +127,9 @@ class Report_query_builder_Model extends Model
 					$ary = explode(';', $srv);
 					$h = $ary[0];
 					$s = $ary[1];
-					$object_selection .= $orstr . "(host_name = '" . $h . "'\n    AND (" ;
+					$object_selection .= $orstr . "(host_name = " . $this->db->escape($h) . "\n    AND (" ;
 					if ($s) { /* this if-statement can probably just go away */
-						$object_selection .= "service_description = '" . $s . "' OR ";
+						$object_selection .= "service_description = " . $this->db->escape($s) . " OR ";
 					}
 					$object_selection .= "event_type = 801))";
 					$orstr = "\n OR ";
@@ -138,8 +138,8 @@ class Report_query_builder_Model extends Model
 			if (!empty($object_selection))
 				$object_selection .= ')';
 		} elseif ($hosts && $hosts !== true) {
-			$object_selection = "host_name IN(\n '" .
-				join("',\n '", array_keys($hosts)) . "')";
+			$object_selection = "host_name IN(\n " .
+				join(",\n ", array_map(array($this->db,'escape'), array_keys($hosts))) . ")";
 		}
 		switch ($this->options['state_types']) {
 			case 0:
