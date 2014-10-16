@@ -3,5 +3,6 @@ post:
   service httpd restart || service apache2 restart
   service mysqld restart || service mysql restart
   mon restart
+  /opt/op5sys/lib/mock_license.php monitorHosts 500
   cp /var/op5license-tests/signed_valid/license.p7s /etc/op5license/op5license.p7s
   TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
