@@ -40,17 +40,18 @@
 		if ( multi ) {
 			return $( '<div class="jq-filterable-box">' ).append(
 				$( '<div class="jq-filterable-left">' ).append(
-					$( '<input type="text" class="jq-filterable-filter jq-filterable-larger" placeholder="Search...">' ),
-					$( '<input type="button" value="➤" class="jq-filterable-move" title="Use objects matching search">' ),
-					"<br>",
+					$( '<div class="jq-filterable-searchbox" />' ).append(
+						$( '<input type="text" class="jq-filterable-filter" placeholder="Search...">' ),
+						$( '<input type="button" value="➤" class="jq-filterable-move" title="Use objects matching search">' )
+					),
 					filtered.clone()
 						.addClass( "jq-filterable-list" ),
 					"<br>",
-					$( '<div class="jq-filterable-stats jq-filterable-larger">' )
+					$( '<div class="jq-filterable-stats">' )
 				),$( '<div class="jq-filterable-right">' ).append(
 					$( '<select multiple class="jq-filterable-results">' ),
 					"<br>",
-					$( '<div class="jq-filterable-result-stats jq-filterable-larger">' ).append( "No items selected..." )
+					$( '<div class="jq-filterable-result-stats">' ).append( "No items selected..." )
 				)
 			);
 		} else {
@@ -214,6 +215,7 @@
 
 				opt = document.createElement( 'option' );
 				opt.innerHTML = index;
+				opt.title = index;
 				opt.value = index;
 
 				fragment.appendChild( opt );
@@ -392,6 +394,7 @@
 
 			opt = document.createElement( 'option' );
 			opt.innerHTML = index;
+			opt.title = index;
 			opt.value = index;
 
 			fragment.appendChild( opt );
