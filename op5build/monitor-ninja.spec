@@ -21,8 +21,10 @@ Summary: op5 monitor ninja
 Group: op5/monitor
 Prefix: /opt/monitor/op5/ninja
 Obsoletes: monitor-gui <= 3.5.13
+Obsoletes: monitor-reports-gui <= 1.4.9
 Obsoletes: op5-nagios-gui-core <= 4.0.3
 Provides: monitor-gui %version
+Provides: monitor-reports-gui %version
 Provides: op5-nagios-gui-core %version
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
