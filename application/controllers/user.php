@@ -66,7 +66,7 @@ class User_Controller extends Authenticated_Controller {
 			_('Columns in list view') => 'listview',
 			_('Keyboard Commands') => 'keycommands',
 			_('URL Targets') => 'url_target',
-			_('Nagios Defaults') => 'nagdefault'
+			_('Command Defaults') => 'nagdefault'
 		);
 
 		$sub_headings = array(

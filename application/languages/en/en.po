@@ -1802,7 +1802,7 @@ msgid "URL Targets"
 msgstr ""
 
 #: application/controllers/user.php:71 application/controllers/user.php:71
-msgid "Nagios Defaults"
+msgid "Command Defaults"
 msgstr ""
 
 #: application/controllers/user.php:75 application/controllers/user.php:75
