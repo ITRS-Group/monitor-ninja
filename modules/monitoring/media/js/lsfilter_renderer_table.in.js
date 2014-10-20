@@ -68,7 +68,7 @@ listview_renderer_table.hosts = {
 						}),
 						pnp_link = icon16('pnp', _('Show performance graph'), ahref);
 
-				pnp_link.attr('data-popover', 'image:' + ahref.href);
+				pnp_link.attr('data-popover', 'image:' + ahref.attr('href'));
 				cell.append(pnp_link);
 			}
 
