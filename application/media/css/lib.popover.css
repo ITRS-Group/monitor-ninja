@@ -1,0 +1,18 @@
+
+.lib-popover-tip {
+  position: fixed;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  width: 200px;
+  padding: 8px;
+}
+
+.lib-popover-load {
+  display: block;
+  position: relative;
+  background: url('../images/loading_small.gif');
+  width: 16px;
+  height: 16px;
+  margin: 0 auto;
+}

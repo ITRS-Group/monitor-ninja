@@ -61,15 +61,14 @@ listview_renderer_table.hosts = {
 			var cell = $('<td />');
 
 			if (args.obj.pnpgraph_present > 0) {
-				var pnp_link = icon16('pnp', _('Show performance graph'), link(
+				var ahref = link(
 						'pnp', {
 							"srv" : "_HOST_",
 							"host" : args.obj.name
-						}));
-				pnp_popup(pnp_link, {
-					"srv" : "_HOST_",
-					"host" : args.obj.name
-				});
+						}),
+						pnp_link = icon16('pnp', _('Show performance graph'), ahref);
+
+				pnp_link.attr('data-popover', 'image:' + ahref.href);
 				cell.append(pnp_link);
 			}
 
