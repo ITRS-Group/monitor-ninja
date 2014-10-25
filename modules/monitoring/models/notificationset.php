@@ -11,7 +11,7 @@ class NotificationSet_Model extends BaseNotificationSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.notificsations";
+		return "monitoring.notifications";
 	}
 	/**
 	 * apply some extra filters to match for the authentication.
