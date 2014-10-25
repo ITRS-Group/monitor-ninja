@@ -585,7 +585,11 @@ final class Kohana {
 				}
 
 				// Load the error
-				require self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
+				if($template instanceof View) {
+					$template->render(true);
+				} else {
+					require self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
+				}
 			}
 			else
 			{
