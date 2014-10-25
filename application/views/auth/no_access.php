@@ -1,6 +1,3 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-// Simply redirect to the login form
-$url = Kohana::config('routes.log_in_form');
-$url .= '?uri='.urlencode(url::current(true));
-url::redirect($url);
+echo '<h1>'._('You don\'t have permission to view this page').'</h1>';

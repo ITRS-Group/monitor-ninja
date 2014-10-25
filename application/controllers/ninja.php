@@ -180,8 +180,9 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		if (!$access) {
+			$this->template->content = new View('auth/no_access');
 			throw new Kohana_User_Exception('No access',
-				'Access denied for action ' . $action, 'auth/no_access');
+				'Access denied for action ' . $action, $this->template);
 		}
 	}
 }
