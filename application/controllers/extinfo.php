@@ -10,7 +10,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Extinfo_Controller extends Authenticated_Controller {
+class Extinfo_Controller extends Ninja_Controller {
 	public $current = false;
 
 	/**
@@ -64,6 +64,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		else {
 			return false;
 		}
+
+		$this->_verify_access('monitoring.'.$set->get_table().':view.extinfo');
 
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_strings = $this->js_strings;
@@ -200,9 +202,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function show_process_info()
 	{
-		if (!Auth::instance()->authorized_for('system_information')) {
-			return url::redirect('extinfo/unauthorized/0');
-		}
+		$this->_verify_access('monitoring.status:view.extinfo');
 
 		$this->template->content = $this->add_view('extinfo/process_info');
 
@@ -368,6 +368,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 	{
 		$grouptype = $this->input->get('grouptype', $grouptype);
 		$group = $this->input->get('group', $group);
+
+		if(!in_array($grouptype, array('hostgroup', 'servicegroup'))) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = _("Error: Incorrect group type specified");
+			return;
+		}
+		$this->_verify_access('monitoring.'.$grouptype.'s:view.extinfo');
+
 		if (empty($group)) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = _("Error: No group name specified");
@@ -458,6 +466,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function performance()
 	{
+		$this->_verify_access('monitoring.performance:view.extinfo');
+
 		$this->template->content = $this->add_view('extinfo/performance');
 		$this->template->title = _('Monitoring').' » '._('Performance info');
 		$content = $this->template->content;
@@ -600,6 +610,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function scheduling_queue()
 	{
+		$this->_verify_access('monitoring.scheduling:view.list');
+
 		$back_link = '/extinfo/scheduling_queue/';
 
 		$host = $this->input->get('host');
@@ -613,10 +625,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$pagination->items_per_page,
 				($pagination->current_page-1)*$pagination->items_per_page
 				);
-
-		if (!Auth::instance()->authorized_for('host_view_all')) {
-			return url::redirect('extinfo/unauthorized/scheduling_queue');
-		}
 
 		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
