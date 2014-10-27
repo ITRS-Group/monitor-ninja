@@ -27,7 +27,8 @@ class help
 
 		$controller = !empty($controller) ? $controller : Router::$controller;
 
-		return '<a class="helptext_target" style="border:0" data-helptext-controller="'.$controller.'" data-helptext-key="'.$key.'" href="#">'.
-		'<img src="'.$img_path.'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
+		return '<a data-popover="help:'.$controller.'.'.$key.'"><img src="'.$img_path.'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
+		/*return '<a class="helptext_target" style="border:0" data-helptext-controller="'.$controller.'" data-helptext-key="'.$key.'" href="#">'.
+		'<img src="'.$img_path.'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';*/
 	}
 }

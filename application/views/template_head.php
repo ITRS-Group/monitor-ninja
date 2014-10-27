@@ -15,6 +15,7 @@ if (!empty($base_href)) {
 		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/jquery.notify.css', 'stylesheet', 'text/css', false, 'screen');
+		echo html::link('application/media/css/lib.popover.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/js/jquery.qtip.custom/jquery.qtip.css', 'stylesheet', 'text/css', false, 'screen');
 	?>
 
@@ -50,6 +51,7 @@ if (!empty($base_href)) {
 		echo html::script('application/views/js/global_search.js');
 		echo html::script('application/media/js/jquery.notify.js');
 		echo html::script('application/media/js/ajax.commands.js');
+		echo html::script('application/media/js/lib.popover.js');
 	?>
 	<script type="text/javascript">
 		//<!--
