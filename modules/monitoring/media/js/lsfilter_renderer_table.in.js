@@ -61,15 +61,19 @@ listview_renderer_table.hosts = {
 			var cell = $('<td />');
 
 			if (args.obj.pnpgraph_present > 0) {
-				var ahref = link(
+
+				var pnp_link = icon16('pnp', _('Show performance graph'), link(
 						'pnp', {
 							"srv" : "_HOST_",
 							"host" : args.obj.name
-						}),
-						pnp_link = icon16('pnp', _('Show performance graph'), ahref);
+						}));
 
-				pnp_link.attr('data-popover', 'image:' + ahref.attr('href'));
+				pnp_link.attr('data-popover',
+					'image:/monitor/op5/pnp/image?host=' + args.obj.name + '&srv=_HOST_&view=0&source=0'
+				);
+
 				cell.append(pnp_link);
+
 			}
 
 			if (args.obj.acknowledged)
@@ -386,16 +390,19 @@ listview_renderer_table.services = {
 			var cell = $('<td />');
 
 			if (args.obj.pnpgraph_present > 0) {
+
 				var pnp_link = icon16('pnp', _('Show performance graph'), link(
 						'pnp', {
 							"srv" : args.obj.description,
 							"host" : args.obj.host.name
 						}));
-				pnp_popup(pnp_link, {
-					"srv" : args.obj.description,
-					"host" : args.obj.host.name
-				});
+
+				pnp_link.attr('data-popover',
+					'image:/monitor/op5/pnp/image?host=' + args.obj.host.name + '&srv=' + args.obj.description + '&view=0&source=0'
+				);
+
 				cell.append(pnp_link);
+
 			}
 
 			if (args.obj.acknowledged)
