@@ -203,9 +203,9 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	{
 		$helptexts = array(
 			'report-type' => _("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
-				"To include objects of the given type in the report, select the objects from the left list and click on ".
-				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
-				"and click on the left pointing arrow."),
+				"To include objects of the given type in the report, click the object in the left list and it will move".
+				"into the selection. To exclude objects from the report, click the object in the right list and ".
+				"it will move out of selection, you may also click and drag over a group of objects in any list to select/deselect"),
 			'reporting_period' => _("Choose from a set of predefined report periods or choose &quot;CUSTOM REPORT PERIOD&quot; ".
 				"to manually specify Start and End date."),
 			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
