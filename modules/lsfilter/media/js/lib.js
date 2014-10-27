@@ -107,27 +107,16 @@ function comment_icon( host, service ) {
 	if(service)
 		link_data.service = service;
 
-	return extinfo_link(link_data)
+	var ext_link = extinfo_link(link_data)
 		.append(icon16('add-comment', _('Comments')))
-		.css('border', '0px')
-		.qtip($.extend(true, {}, qtip_default, {
-			content: {
-				text: function(ev, api) {
-					$.ajax({
-						url: _site_domain + _index_page + "/ajax/fetch_comments/",
-						data: {host: obj_name}
-					})
-					.done(function(html) {
-						api.set('content.text', html);
-					})
-					.fail(function(xhr, status, error) {
-						api.set('content.text', status + ': ' + error);
-					});
+		.css('border', '0px');
 
-					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
-				}
-			}
-		}));
+	ext_link.attr({
+		'data-popover': 'post:' + _site_domain + _index_page + "/ajax/fetch_comments/",
+		'data-popover-post': 'host=' + obj_name
+	});
+	return ext_link;
+
 }
 
 function pnp_popup(elem, args)
