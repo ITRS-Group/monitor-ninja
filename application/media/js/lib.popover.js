@@ -57,6 +57,7 @@
 
   var tooltip = $('<div>').addClass('lib-popover-tip');
   var loading = '<span class="lib-popover-load"></span>';
+  var request = null;
 
   var Popover = {
 
@@ -98,6 +99,7 @@
               Popover.display(registry[data], target);
               return;
             }
+            Popover.abort();
             Popover.display(loading, target);
             handler(data, target);
           }
@@ -188,32 +190,26 @@
 
       var offset = node.offset(),
           left = 0, top = 0,
-          width = 272, p = settings.position,
-          align = 'left';
+          width = 272,
+          screen_w = $(document).width() / 2,
+          screen_h = $(document).height() / 2;
 
-      if(p === 'right'){
-        left = offset.left + node.outerWidth();
-        top = offset.top + (node.outerHeight() / 2);
-      } else if(p === 'left'){
-        left = offset.left - width;
-        top = offset.top + (node.outerHeight() / 2);
-        align = 'right';
-      } else if(p === 'bottom'){
-        left = offset.left;
-        top = offset.top + node.outerHeight();
-      }
+      top = offset.top;
 
-      if(left > $(document).width() - width){
-        left = offset.left - width;
-        top = offset.top + (node.outerHeight() / 2);
-        align = 'right';
+      if(offset.left > screen_w){
+        left = (offset.left - width) - 8;
+        align = "right";
+      } else{
+        left = (offset.left + node.outerWidth()) + 8;
+        align = "left";
       }
 
       tooltip.css({
         left: left + 'px',
         top: top + 'px',
         display: 'block',
-        'text-align': align
+        'text-align': align,
+        width: ""
       });
 
     },
@@ -251,6 +247,16 @@
       tooltip.empty();
       tooltip.css('display', 'none');
 
+    },
+
+    /**
+     * Aborts the current request
+     */
+    abort: function(){
+      if(request && request.abort)
+        request.abort();
+      request = null;
+      Popover.deactivate();
     }
 
   };
@@ -268,6 +274,7 @@
       {src: data}
     ).on('load', function(e){
       Popover.display(e.target, target);
+      tooltip.css('width', 'auto');
     })
 
   });
@@ -276,7 +283,7 @@
 
     var ns = data.split('.');
 
-    $.post('/ninja/index.php/ajax/get_translation', {
+    request = $.post('/ninja/index.php/ajax/get_translation', {
       controller: ns[0],
       key: ns[1]
     }, function(text){

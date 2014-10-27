@@ -3,9 +3,11 @@
   position: fixed;
   background: #fff;
   border: 1px solid #aaa;
+  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.2);
   border-radius: 2px;
   width: 256px;
   padding: 8px;
+  z-index: 9999;
 }
 
 .lib-popover-load {
