@@ -119,34 +119,6 @@ function comment_icon( host, service ) {
 
 }
 
-function pnp_popup(elem, args)
-{
-	var get_data = [];
-	for ( var key in args) {
-		get_data.push(key + "=" + encodeURIComponent(args[key].replace(/[ :\/\\]/g, "_")));
-	}
-
-	$(elem).qtip($.extend(true, {}, qtip_default, {
-		content: {
-			text: function(ev, api) {
-				$.ajax({
-					url: _site_domain + _index_page + "/ajax/pnp_image/",
-					data: {param: get_data.join("&")},
-					type: 'POST'
-				})
-				.done(function(html) {
-					api.set('content.text', html);
-				})
-				.fail(function(xhr, status, error) {
-					api.set('content.text', status + ': ' + error);
-				});
-
-				return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
-			}
-		}
-	}));
-}
-
 jQuery.fn.update_text = function(text) {
 	if( _escape_html_tags ) {
 		return this.text(text);
