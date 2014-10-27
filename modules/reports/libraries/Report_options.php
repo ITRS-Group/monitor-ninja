@@ -983,6 +983,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		assert($this['report_id'] >= 0);
 		$db = Database::instance();
 		$auth = op5auth::instance();
+		Scheduled_reports_Model::delete_all_scheduled_reports(static::$type, $this['report_id']);
 		$sql = "DELETE FROM saved_reports_options WHERE report_id = ".(int)$this['report_id'];
 		$db->query($sql);
 		$sql = "DELETE FROM saved_reports_objects WHERE report_id = ".(int)$this['report_id'];
