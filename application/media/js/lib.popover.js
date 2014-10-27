@@ -1,4 +1,31 @@
 
+/**
+ * Lib Popover
+ *
+ * Usage:
+ *
+ *  <input data-popover="<popover-describer>" />
+ *  There, now it has a tooltip!
+ *
+ * ALl events are delegated, no DOM nodes are left floating
+ * in the wild .
+ *
+ * Possible describers:
+ *   "Text" - A free text popover, simply displays the text
+ *
+ *   "image:/a/image/url" - The popover will contain the image referenced
+ *
+ *   "get:/a/get/url" - A GET will be sent to the url, the return is displayed
+ *       as text.
+ *
+ *   "post:/a/post/url" - A POST will be sent to the url, assign paramters
+ *       with data-popover-post attribute, where the value is a query-string:
+ *       data-popover-post="name=something&key=else". The return is displayed
+ *       as text
+ *
+ *   "help:controller.key" - The popover will fetch the help text from
+ *       get_translation and display it as raw text
+ */
 (function(){
 
   var registry = {};
