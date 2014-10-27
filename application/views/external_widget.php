@@ -5,7 +5,6 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
-		<?php echo html::link('application/media/js/jquery.qtip.custom/jquery.qtip.css', 'stylesheet', 'text/css', false, 'screen'); ?>
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
@@ -25,7 +24,6 @@
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.query.js');
 			echo html::script('application/media/js/jquery.jgrowl.js');
-			echo html::script('application/media/js/jquery.qtip.custom/jquery.qtip.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jquery.field.js');
 			echo html::script('application/media/js/date.js');

@@ -122,45 +122,6 @@ $(document).ready(function() {
 	}
 	// -- end listview refresh helper code
 
-	$('.host_comment').each(function() {
-		var anchor = $(this);
-		var obj_name = anchor.data('obj_name');
-		if (!obj_name) {
-			return false;
-		}
-
-
-		// Remove the tooltip of the inner element since it overlays qtip
-		anchor.find('span').attr('title', '');
-
-		anchor.qtip($.extend(true, {}, qtip_default, {
-			content: {
-				text: function(ev, api) {
-					$.ajax({
-						url: _site_domain + _index_page + "/ajax/fetch_comments/",
-						data: {host: obj_name}
-					})
-					.done(function(html) {
-						api.set('content.text', html);
-					})
-					.fail(function(xhr, status, error) {
-						api.set('content.text', status + ': ' + error);
-					});
-
-					return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
-				}
-			}
-		}));
-	});
-
-	$(".helptext_target").each(function(){
-		// split the id into controller, key
-		var controller = $(this).data('helptext-controller');
-		var key = $(this).data('helptext-key');
-		bind_helptext($(this), controller, key);
-	});
-	$('body').on('click', ".helptext_target", function() {return false;});
-
 	$('#multi_action_select').bind('change', function() {
 		multi_action_select($(this).find('option:selected').val());
 	});
@@ -623,26 +584,4 @@ function trigger_cb_on_nth_call(cb, n) {
 		if (--n <= 0)
 			cb();
 	};
-}
-
-function bind_helptext(element, controller, key) {
-	element.qtip($.extend(true, {}, qtip_default, {
-		content: {
-			text: function(ev, api) {
-				$.ajax({
-					url: _site_domain + _index_page + "/ajax/get_translation/",
-					data: {controller: controller, key: key},
-					type: 'POST',
-				})
-				.done(function(html) {
-					api.set('content.text', html);
-				})
-				.fail(function(xhr, status, error) {
-					api.set('content.text', status + ': ' + error);
-				});
-
-				return '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />';
-			}
-		}
-	}));
 }
