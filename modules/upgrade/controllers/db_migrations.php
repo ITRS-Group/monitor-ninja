@@ -18,6 +18,14 @@ class Db_Migrations_Controller extends Controller {
 		$op5_auth->force_user(new Op5User_AlwaysAuth());
 	}
 
+
+	private function v13_helper(Report_options $report, $data)
+	{
+		$db = Database::instance();
+		$db->query('UPDATE saved_reports SET created_by = ' . $db->escape($data['username']) . ', updated_by = ' . $db->escape($data['username']) . ' WHERE id = ' . (int)$report['report_id']);
+		$db->query('UPDATE scheduled_reports SET report_id = ' . (int)$report['report_id'] . ' WHERE report_id = ' . (int)$data['id'] . ' AND report_type_id = (select id from scheduled_report_types where identifier = ' . $db->escape($report::$type) . ')');
+	}
+
 	/**
 	 * reports from per-report-type tables to all-in-one
 	 */
@@ -43,8 +51,10 @@ class Db_Migrations_Controller extends Controller {
 				$objects[] = $obj['name'];
 			$result['objects'] = $objects;
 			$opts = new Avail_options($result);
-			if (!$opts->save($msg))
-				print 'avail '.$result['report_name'].': '.$msg."\n";
+			if (!$opts->save($msg)) {
+				print 'avail '.$result['id'].' '.$result['report_name'].': '.$msg."\n";
+				continue;
+			}
 			# reimplement op5reports inside ninja :'(
 			if (isset($result['alert_types'])) {
 				$availprops = $opts->properties();
@@ -62,6 +72,7 @@ class Db_Migrations_Controller extends Controller {
 				$sql .= implode(', ', $rows);
 				$db->query($sql);
 			}
+			$this->v13_helper($opts, $result);
 		}
 
 		$res = $db->query('SELECT * FROM sla_config');
@@ -83,8 +94,10 @@ class Db_Migrations_Controller extends Controller {
 				next($months);
 			}
 			$opts['months'] = $reindexed_months;
-			if (!$opts->save($msg))
-				print 'sla '.$result['report_name'].': '.$msg."\n";
+			if (!$opts->save($msg)) {
+				print 'sla '.$result['id'].' '.$result['report_name'].': '.$msg."\n";
+				continue;
+			}
 			# reimplement op5reports inside ninja :'(
 			if (isset($result['alert_types'])) {
 				$slaprops = $opts->properties();
@@ -102,6 +115,7 @@ class Db_Migrations_Controller extends Controller {
 				$sql .= implode(', ', $rows);
 				$db->query($sql);
 			}
+			$this->v13_helper($opts, $result);
 		}
 
 		$res = $db->query('SELECT * FROM summary_config');
@@ -109,10 +123,14 @@ class Db_Migrations_Controller extends Controller {
 			$setting = @unserialize($result['setting']);
 			if (!$setting)
 				continue;
+			unset($setting['report_id']);
 			$setting['report_name'] = $result['report_name'];
 			$opts = new Summary_options($setting);
-			if (!$opts->save($msg))
-				print 'summary '.$result['report_name'].': '.$msg."\n";
+			if (!$opts->save($msg)) {
+				print 'summary '.$result['id'].' '.$result['report_name'].': '.$msg."\n";
+				continue;
+			}
+			$this->v13_helper($opts, $result);
 		}
 	}
 }
