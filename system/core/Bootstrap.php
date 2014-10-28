@@ -38,6 +38,9 @@ require_once 'op5/log.php';
 // Prepare the environment
 Kohana::setup();
 
+// Prepare the system
+Event::run('system.ready');
+
 if(!defined('SKIP_KOHANA')) {
 
 	// End kohana_loading
@@ -45,9 +48,6 @@ if(!defined('SKIP_KOHANA')) {
 
 	// Start system_initialization
 	Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
-
-	// Prepare the system
-	Event::run('system.ready');
 
 	// Determine routing
 	Event::run('system.routing');
