@@ -66,7 +66,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content = $this->add_view('extinfo/index');
-		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
 		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
 

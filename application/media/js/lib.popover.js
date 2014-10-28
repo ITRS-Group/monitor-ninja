@@ -275,21 +275,40 @@
     ).on('load', function(e){
       Popover.display(e.target, target);
       tooltip.css('width', 'auto');
-    })
+    });
 
   });
 
   Popover.register(/^help\:/, function(data, target){
 
-    var ns = data.split('.');
+    var ns = data.split('.'),
+      controller = ns.shift(),
+      key = ns.join('.');
 
     request = $.post('/ninja/index.php/ajax/get_translation', {
-      controller: ns[0],
-      key: ns[1]
+      controller: controller,
+      key: key
     }, function(text){
       Popover.display(text, target, data);
     }).fail(function(){
       Popover.display('Failed.', target);
+    });
+
+  });
+
+  Popover.register(/^pnp\:/, function(data, target){
+
+    var ns = data.split(';'),
+      host = encodeURIComponent(ns[0]),
+      service = "_HOST_";
+
+    if(ns[1]) service = encodeURIComponent(ns[1]);
+
+    $('<img>').attr(
+      {src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'}
+    ).on('load', function(e){
+      Popover.display(e.target, target);
+      tooltip.css('width', 'auto');
     });
 
   });

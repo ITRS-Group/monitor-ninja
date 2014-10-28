@@ -205,18 +205,20 @@ if (!empty($widgets)) {
 						echo _('Configure').'</a>';
 					}
 					if (0<$object->get_pnpgraph_present()) {
-						$url = url::site() . 'pnp/?host=' . rawurlencode($host->get_name());
-						$pnp_host = $host->get_name();
-						$pnp_service = "_HOST_";
+
+						$hostname = $host->get_name();
+						$servicename = "_HOST_";
+
 						if($service!==false) {
-							$url .= '&srv=' . rawurlencode($service->get_description());
-							$pnp_service = $service->get_description();
-						} else {
-							$url .= '&srv=_HOST_';
+							$servicename = $service->get_description();
 						}
-						echo '&nbsp; <a class="pnp_graph" data-host="'.$pnp_host.'" data-srv="'.$pnp_service.'" href="'.$url.'">';
+
+						$pnp_link = url::site() . 'pnp/?host=' . rawurlencode($hostname) . '&srv=' . rawurlencode($servicename);
+
+						echo '&nbsp; <a class="pnp_graph" data-popover="pnp:'.$hostname.';'.$servicename.'" href="'.$pnp_link.'">';
 						echo '<span class="icon-16 x16-pnp"></span>';
 						echo _('Show performance graph').'</a>';
+
 					}
 				?>
 			</td>

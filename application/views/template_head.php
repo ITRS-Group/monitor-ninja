@@ -93,6 +93,7 @@ if (!empty($base_href)) {
 			var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
 			var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target', '*'); ?>";
 			var _action_url_target = "<?php echo config::get('nagdefault.action_url_target', '*'); ?>";
+			var _pnp_web_path = "<?php echo Kohana::config('config.pnp4nagios_path'); ?>";
 
 		<?php	if ($keycommands_active === 1) {	?>
 

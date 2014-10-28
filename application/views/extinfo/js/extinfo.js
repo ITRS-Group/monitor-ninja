@@ -81,12 +81,6 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.pnp_graph').map(function() {
-		var el = $(this);
-		pnp_popup(el, el.data());
-	});
-
-
 	/**
 		========================
 		scheduled downtime filters
