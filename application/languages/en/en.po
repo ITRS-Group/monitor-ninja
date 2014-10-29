@@ -2004,33 +2004,33 @@ msgid ""
 msgstr ""
 
 #: application/controllers/user.php:282 application/controllers/user.php:282
-msgid "Configure the default value for the nagios \"sticky\" command option"
+msgid "Configure the default value for the \"sticky\" command option"
 msgstr ""
 
 #: application/controllers/user.php:283 application/controllers/user.php:283
 msgid ""
-"Configure the default value for the nagios \"persistent\" command option"
+"Configure the default value for the \"persistent\" command option"
 msgstr ""
 
 #: application/controllers/user.php:284 application/controllers/user.php:284
-msgid "Configure the default value for the nagios \"force\" command option"
+msgid "Configure the default value for the \"force\" command option"
 msgstr ""
 
 #: application/controllers/user.php:285 application/controllers/user.php:285
 msgid ""
-"Configure the default value for the nagios \"services-too\" command option"
+"Configure the default value for the \"services-too\" command option"
 msgstr ""
 
 #: application/controllers/user.php:286 application/controllers/user.php:286
-msgid "Configure the default value for the nagios \"fixed\" command option"
+msgid "Configure the default value for the \"fixed\" command option"
 msgstr ""
 
 #: application/controllers/user.php:287 application/controllers/user.php:287
-msgid "Configure the default value for the nagios \"duration\" command option"
+msgid "Configure the default value for the \"duration\" command option"
 msgstr ""
 
 #: application/controllers/user.php:288 application/controllers/user.php:288
-msgid "Configure the default value for the nagios \"comment\" command option"
+msgid "Configure the default value for the \"comment\" command option"
 msgstr ""
 
 #: application/controllers/user.php:359 application/controllers/user.php:359

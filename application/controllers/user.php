@@ -324,13 +324,13 @@ class User_Controller extends Authenticated_Controller {
 			'edit_menu' => _('Edit menu item visibility for limited users.'),
 			'nagdefault.notes_url_target' => _('This option determines the name of the frame target that notes URLs should be displayed in.'),
 			'nagdefault.action_url_target' => _('This option determines the name of the frame target that action URLs should be displayed in.'),
-			'nagdefault.sticky' => _('Configure the default value for the nagios "sticky" command option'),
-			'nagdefault.persistent' => _('Configure the default value for the nagios "persistent" command option'),
-			'nagdefault.force' => _('Configure the default value for the nagios "force" command option'),
-			'nagdefault.services-too' => _('Configure the default value for the nagios "services-too" command option'),
-			'nagdefault.fixed' => _('Configure the default value for the nagios "fixed" command option'),
-			'nagdefault.duration' => _('Configure the default value for the nagios "duration" command option'),
-			'nagdefault.comment' => _('Configure the default value for the nagios "comment" command option'),
+			'nagdefault.sticky' => _('Configure the default value for the "sticky" command option'),
+			'nagdefault.persistent' => _('Configure the default value for the "persistent" command option'),
+			'nagdefault.force' => _('Configure the default value for the "force" command option'),
+			'nagdefault.services-too' => _('Configure the default value for the "services-too" command option'),
+			'nagdefault.fixed' => _('Configure the default value for the "fixed" command option'),
+			'nagdefault.duration' => _('Configure the default value for the "duration" command option'),
+			'nagdefault.comment' => _('Configure the default value for the "comment" command option'),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
