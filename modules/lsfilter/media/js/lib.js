@@ -2,7 +2,7 @@ function helpicon(controller, key)
 {
 	var link = $('<a class="helptext_target" style="border: 0" href="#"/>');
 	link.append(icon12('help'));
-	bind_helptext(link, controller, key);
+	link.attr('data-popover', 'help:' + controller + '.' + key);
 	return link;
 }
 
