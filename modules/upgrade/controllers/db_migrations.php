@@ -21,9 +21,17 @@ class Db_Migrations_Controller extends Controller {
 
 	private function v13_helper(Report_options $report, $data)
 	{
+		static $seen_schedules = array();
 		$db = Database::instance();
 		$db->query('UPDATE saved_reports SET created_by = ' . $db->escape($data['username']) . ', updated_by = ' . $db->escape($data['username']) . ' WHERE id = ' . (int)$report['report_id']);
-		$db->query('UPDATE scheduled_reports SET report_id = ' . (int)$report['report_id'] . ' WHERE report_id = ' . (int)$data['id'] . ' AND report_type_id = (select id from scheduled_report_types where identifier = ' . $db->escape($report::$type) . ')');
+		$res = $db->query('SELECT id FROM scheduled_reports WHERE report_id = ' . (int)$data['id'] . ' AND report_type_id = (select id from scheduled_report_types where identifier = ' . $db->escape($report::$type) . ')');
+		$tmp_seen = array();
+		foreach ($res->result(false) as $row)
+		{
+			$tmp_seen[] = $row['id'];
+		}
+		$db->query('UPDATE scheduled_reports SET report_id = ' . (int)$report['report_id'] . ' WHERE report_id = ' . (int)$data['id'] . ' AND report_type_id = (select id from scheduled_report_types where identifier = ' . $db->escape($report::$type) . ')' . (empty($seen_schedules) ? '' : ' AND id NOT IN ('.implode(', ', $seen_schedules).')'));
+		$seen_schedules = array_merge($seen_schedules, $tmp_seen);
 	}
 
 	/**
