@@ -205,8 +205,16 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				0 => _('Group availability (Worst state)'),
 				1 => _('Average'),
 				2 => _('Cluster mode (Best state)'));
-		if (isset($this->properties['rpttimeperiod']))
-			$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
+		if (isset($this->properties['rpttimeperiod'])) {
+			try {
+				$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
+			} catch (op5LivestatusException $ex) {
+				/* crashing because we didn't find any timperiods is
+				 * counter-productive, so let's try with "nothing" and hope it's
+				 * not required */
+				$this->properties['rpttimeperiod']['options'] = array();
+			}
+		}
 		if (isset($this->properties['skin']))
 			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
 
