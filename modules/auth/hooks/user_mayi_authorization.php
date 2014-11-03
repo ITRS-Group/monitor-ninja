@@ -190,10 +190,21 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	 *        	referenced array to add performance data to
 	 */
 	public function run($action, $env, &$messages, &$perfdata) {
-		/* We don't handle meta-functionality in ninja */
-		if ($this->is_subset( 'ninja:', $action )) {
-			return true;
+		/*
+		 * The ninja:-resource is a little bit special. It contains more
+		 * meta-permissions.
+		 *
+		 * The general rule is that: ninja: should be available when logged in,
+		 * except for ninja.auth:login, which should be visible when logged out.
+		 */
+		$authenticated =  isset( $env['user'] ) && isset( $env['user']['authenticated'] ) && $env['user']['authenticated'];
+		if ($this->is_subset( 'ninja.auth:login', $action )) {
+			return !$authenticated;
 		}
+		if ($this->is_subset( 'ninja:', $action )) {
+			return $authenticated;
+		}
+
 		/* Map auth points to actions */
 		if (!isset( $env['user'] ))
 			return false;

@@ -18,6 +18,7 @@ class Auth_Controller extends Ninja_Controller {
 	 */
 	public function login()
 	{
+		$this->_verify_access('ninja.auth:login');
 		$auth = op5auth::instance();
 
 		$this->template = $this->add_view('login');
@@ -78,6 +79,7 @@ class Auth_Controller extends Ninja_Controller {
 	 */
 	public function logout()
 	{
+		$this->_verify_access('ninja.auth:logout');
 		op5auth::instance()->logout();
 		return url::redirect(Kohana::config('routes.log_in_form'));
 	}

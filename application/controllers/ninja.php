@@ -180,9 +180,13 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		if (!$access) {
-			$this->template->content = new View('auth/no_access');
-			throw new Kohana_User_Exception('No access',
-				'Access denied for action ' . $action, $this->template);
+			if($this->mayi->run('ninja.auth:login.redirect')) {
+				url::redirect('auth/login');
+			} else {
+				$this->template->content = new View('auth/no_access');
+				throw new Kohana_User_Exception('No access',
+					'Access denied for action ' . $action, $this->template);
+			}
 		}
 	}
 }
