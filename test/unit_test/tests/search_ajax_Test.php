@@ -6,20 +6,27 @@
  */
 class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 	protected $controller = false; /* Controller to test */
-	
+
 	public function setUp() {
 		global $_SESSION;
 		$_SESSION = array();
-		$this->controller = new Ajax_Controller();
+
+
+		/* Make sure our environment is clean */
+		$objstore = op5objstore::instance();
+		$objstore->clear();
+		$objstore->mock_clear();
+
+		$this->controller = new Search_Controller();
 	}
 
 	/*
 	 * Those tests should test how the livesearch generates queries.
-	 * 
+	 *
 	 * Tests handling the syntax of the filter shoudl be in expparser_searchfilter_Test,
 	 * This is about columns and generation oh the query, and wildcard
 	 */
-	
+
 	/* *****
 	 * Test simple table access
 	 */
@@ -53,7 +60,7 @@ class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 				'filter'  => array( 'comment_data' => array( '~~' => 'kaka' ) )
 		) ) );
 	}
-	
+
 	/* ******
 	 * Test second parameter or
 	 */
@@ -63,7 +70,7 @@ class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 				'filter'  => array( 'name' => array( '~~' => 'boll' ) )
 		) ) );
 	}
-	
+
 	/* ******
 	 * Test second parameter and
 	 */
@@ -73,7 +80,7 @@ class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 				'filter'  => array( 'name' => array( '~~' => 'boll' ) )
 		) ) );
 	}
-	
+
 	/* ******
 	 * Test second parameter and different
 	 */
@@ -83,7 +90,7 @@ class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 				'filter'  => array( 'description' => array( '~~' => 'boll' ) )
 		) ) );
 	}
-	
+
 	/* ******
 	 * Wildcards
 	 */
@@ -99,7 +106,7 @@ class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 				'filter'  => array( 'name' => array( '~~' => 'cykel.*styre' ) )
 		) ) );
 	}
-	
+
 	/* ******
 	 * Simple query, without h:/s:
 	 */
@@ -117,13 +124,13 @@ class Search_Ajax_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	protected function run_test( $query, $expect ) {
-		$result = $this->controller->global_search_build_filter( $query );
-		
+		$result = $this->controller->_global_search_build_filter( $query );
+
 		if( $expect === false && $result === false ) {
 			return;
 		}
 		list( $type, $name, $settings, $options ) = $result;
-		
+
 		$this->assertEquals( array( $type, $name, $options ), $expect, "SearchFilter query '$query' doesn't match expected result." );
 	}
 }

@@ -7,7 +7,7 @@ $(document).ready(function() {
 		return;
 	}
 	query.autocomplete({
-		serviceUrl:_site_domain + _index_page + '/ajax/global_search/',
+		serviceUrl:_site_domain + _index_page + '/search/ajax_auto_complete/',
 		minChars:2,
 		//delimiter: /(,|;)\s*/, // regex or character
 		maxHeight:500,

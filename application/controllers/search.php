@@ -10,7 +10,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
 */
-class Search_Controller extends Authenticated_Controller {
+class Search_Controller extends Ninja_Controller {
 	/**
 	 * Contains a list of columns to search in, depending on table.
 	 *
@@ -76,6 +76,8 @@ class Search_Controller extends Authenticated_Controller {
 	 * @param $query search string
 	 */
 	public function index($query=false) {
+		$this->_verify_access('ninja.search:view');
+
 		$original_query = $query = trim($this->input->get('query', $query));
 
 		/* Is the query a complete search filter? */
@@ -90,11 +92,11 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		/* Is the query a oldschool search filter? h:kaka or boll */
-		$filters = $this->queryToLSFilter( $query );
+		$filters = $this->_queryToLSFilter( $query );
 
 		/* Fallback on match everything */
 		if($filters === false) {
-			$filters = $this->queryToLSFilter_MatchAll( $query );
+			$filters = $this->_queryToLSFilter_MatchAll( $query );
 		}
 
 		if(count($filters)==1) {
@@ -116,6 +118,8 @@ class Search_Controller extends Authenticated_Controller {
 	 * @param $queries list of queries
 	 */
 	private function render_queries($queries, $original_query, $limit=false) {
+		$this->_verify_access('ninja.search:view');
+
 		if( !is_array($queries) ) {
 			$queries = array($queries);
 		}
@@ -135,25 +139,29 @@ class Search_Controller extends Authenticated_Controller {
 			$limit = config::get('pagination.default.items_per_page', '*');
 		}
 		foreach( $queries as $table => $query ) {
-			$setting = array('query'=>$query);
-			$setting['limit'] = $limit;
-			$model = new Ninja_widget_Model(array(
-				'page' => Router::$controller,
-				'name' => 'listview',
-				'widget' => 'listview',
-				'username' => $username,
-				'friendly_name' => ucfirst($table),
-				'setting' => $setting
-			));
+			$set = ObjectPool_Model::get_by_query($query);
+			/* @var $set ObjectSet_Model */
+			if($this->mayi->run($set->mayi_resource() . ':view.search')) {
+				$setting = array('query'=>$query);
+				$setting['limit'] = $limit;
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => ucfirst($table),
+					'setting' => $setting
+				));
 
-			$widget = widget::get($model, $this);
-			widget::set_resources($widget, $this);
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
 
-			$widget->set_fixed($query);
-			// abuse the fact that ls-tables are pluralized
-			$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($original_query));
+				$widget->set_fixed($query);
+				// abuse the fact that ls-tables are pluralized
+				$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($original_query));
 
-			$this->template->content->widgets[] = $widget->render();
+				$this->template->content->widgets[] = $widget->render();
+			}
 		}
 
 		$this->template->inline_js = $this->inline_js;
@@ -167,7 +175,7 @@ class Search_Controller extends Authenticated_Controller {
 	 * @param $query Search query for string
 	 * @return Livstatus query as string
 	 */
-	public function queryToLSFilter($query)
+	public function _queryToLSFilter($query)
 	{
 		$parser = new ExpParser_SearchFilter($this->object_types);
 		try {
@@ -254,9 +262,8 @@ class Search_Controller extends Authenticated_Controller {
 	 * @param $query Search query for string
 	 * @return Livstatus query as string
 	 */
-	public function queryToLSFilter_MatchAll($query)
+	public function _queryToLSFilter_MatchAll($query)
 	{
-
 		$query = str_replace('%','.*',$query);
 
 		$filters = array();
@@ -269,6 +276,109 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		return $filters;
+	}
+
+
+
+	/**
+	 *	Handle search queries from front page search field
+	 */
+	public function ajax_auto_complete($q=false)
+	{
+		$this->_verify_access('ninja.search:view');
+
+		$q = $this->input->get('query', $q);
+
+		$this->auto_render = false;
+
+		$result = $this->_global_search_build_filter($q);
+
+		if( $result !== false ) {
+			$obj_type = $result[0];
+			$obj_name = $result[1];
+			$settings = $result[2];
+			$livestatus_options = $result[3];
+
+			$ls = Livestatus::instance();
+			$lsb = $ls->getBackend();
+
+			$livestatus_options['limit'] = Kohana::config('config.autocomplete_limit');
+
+			$data = $lsb->getTable($obj_type, $livestatus_options);
+			$obj_info = array();
+			$obj_data = array();
+
+			if ($data!==false) {
+				foreach ($data as $row) {
+					$row = (object)$row;
+					$obj_info[] = $obj_type == 'services' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
+					$obj_data[] = array($settings['path'], $row->{$settings['data']});
+				}
+				if (!empty($obj_data) && !empty($found_str)) {
+					$obj_info[] = $divider_str;
+					$obj_data[] = array('', $divider_str);
+					$obj_info[] = $found_str;
+					$obj_data[] = array('', $found_str);
+				}
+			}
+			$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
+
+		} else {
+			$var = array('query' => $q, 'suggestions' => array(), 'data' => array());
+		}
+		$json_str = json_encode($var);
+		echo $json_str;
+	}
+
+	/**
+	 * This is actually a local method for global_search to build the search query for live search.
+	 *
+	 * This method is public to make it testable. It doesn't interact with anything external, or take time, so it's no security issue...
+	 *
+	 * @param $q Search query
+	 */
+	public function _global_search_build_filter($q)
+	{
+		$parser = new ExpParser_SearchFilter($this->object_types);
+
+		try {
+			$parser->parse($q);
+			$obj_type = $parser->getLastObject();
+			$obj_name = $parser->getLastString();
+		} catch( ExpParserException $e ) {
+			$obj_type = 'hosts';
+			$obj_name = $q;
+		} catch( Exception $e ) {
+			return false;
+		}
+
+		$obj_data = array();
+		$obj_info = array();
+
+		if ($obj_type !== false) {
+			try {
+				$pool = ObjectPool_Model::pool($obj_type);
+				/* @var $set ObjectPool_Model */
+				if($this->mayi->run($pool->all()->mayi_resource() . ':view.search')) {
+					switch ($obj_type) {
+						case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] host.name="%s"'            ); break;
+						case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
+						case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[hosts] in "%s"'                      ); break;
+						case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] in "%s"'                   ); break;
+						case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
+						default: return false;
+					}
+
+					return array( $obj_type, $obj_name, $settings, array(
+							'columns' => array_unique( array($settings['name_field'], $settings['data']) ),
+							'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) ))
+					) );
+				}
+			} catch(ORMException $e) {
+				/* We should ignore it, since it's just nothing to autocomplete upon */
+			}
+		}
+		return false;
 	}
 
 	/**
