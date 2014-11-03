@@ -5,15 +5,18 @@
  *
  * Display the listview container, load scripts, and handles ajax-requests
  */
-class ListView_Controller extends Authenticated_Controller {
+class ListView_Controller extends Ninja_Controller {
 
 	/**
 	 * Display a listview with a given query, entrypoint for listview
 	 */
 	public function index($q = "[hosts] all") {
+		$this->_verify_access('ninja.listview:view');
+
 		$this->template->listview_refresh = true;
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
+
 
 		$basepath = 'modules/lsfilter/';
 
@@ -43,6 +46,7 @@ class ListView_Controller extends Authenticated_Controller {
 	 * Fetches the users columns configuration, as a javascript.
 	 */
 	public function columns_config($tmp = false) {
+		$this->_verify_access('ninja.listview:view');
 
 		/* Fetch all column configs for user */
 		$columns = array();
@@ -56,8 +60,6 @@ class ListView_Controller extends Authenticated_Controller {
 					config::get('listview.columns.'.$table, '*')
 					);
 		}
-
-
 
 		/* This shouldn't have a standard template */
 		$this->template = $lview = $this->add_view('listview/js');
@@ -74,6 +76,8 @@ class ListView_Controller extends Authenticated_Controller {
 	 * Executes a search in the orm structure for a given query.
 	 */
 	public function fetch_ajax() {
+		$this->_verify_access('ninja.listview:view');
+
 		$query = $this->input->get('query','');
 		$columns = $this->input->get('columns',false);
 		$sort = $this->input->get('sort',array());
@@ -110,7 +114,7 @@ class ListView_Controller extends Authenticated_Controller {
 					'data' => "You don't have permission to show ".$result_set->get_table(),
 					'query' => $query,
 					'messages' => $messages
-				));
+				), 403);
 			}
 		} catch( LSFilterException $e ) {
 			return json::fail( array(
@@ -135,6 +139,8 @@ class ListView_Controller extends Authenticated_Controller {
 	 * Fetch a list of the saved queries for use with ajax
 	 */
 	public function fetch_saved_filters() {
+		$this->_verify_access('ninja.listview:view');
+
 		$queries = LSFilter_Saved_Queries_Model::get_queries();
 		return json::ok( array( 'status' => 'success', 'data' => $queries ) );
 	}
@@ -143,6 +149,8 @@ class ListView_Controller extends Authenticated_Controller {
 	 * Save a named query
 	 */
 	public function save_filter() {
+		$this->_verify_access('ninja.listview:view');
+
 		$name = $this->input->get('name',false);
 		$query = $this->input->get('query','');
 		$scope = $this->input->get('scope','user');
@@ -160,6 +168,8 @@ class ListView_Controller extends Authenticated_Controller {
 	 * Save a named query
 	 */
 	public function delete_saved_filter() {
+		$this->_verify_access('ninja.listview:view');
+
 		$id = $this->input->get('id',false);
 
 		try {
@@ -181,6 +191,8 @@ class ListView_Controller extends Authenticated_Controller {
 	 * Return a manifest variable as a javascript file, for loading through a script tag
 	 */
 	public function renderer( $name = false ) {
+		$this->_verify_access('ninja.listview:view');
+
 		if( substr( $name, -3 ) == '.js' ) {
 			$name = substr( $name, 0, -3 );
 		}

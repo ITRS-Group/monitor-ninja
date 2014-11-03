@@ -58,7 +58,7 @@ if (!empty($base_href)) {
 			if (empty($cgi_esc_html_tags)) {
 				$cgi_esc_html_tags = 0;
 			}
-			if (Auth::instance()->logged_in()) { ?>
+			?>
 
 			var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 			var _csrf_token = '<?php echo csrf::token() ?>';
@@ -110,9 +110,8 @@ if (!empty($base_href)) {
 
 			var loading_img = '/application/media/images/loading.gif';
 			<?php
-				if (!empty($js_strings)) {
-					echo $js_strings;
-				}
+			if (!empty($js_strings)) {
+				echo $js_strings;
 			}
 			if (!empty($inline_js)) {
 				echo '$(document).ready(function() {';

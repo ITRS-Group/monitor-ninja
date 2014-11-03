@@ -38,9 +38,6 @@ class refresh {
 	 **/
 	public static function lv_control()
 	{
-		if (!Auth::instance()->logged_in()) {
-			return;
-		}
 		# fetch setting
 		$lv_refresh_key = 'config.listview_refresh_rate';
 		$lv_refresh = (int)config::get($lv_refresh_key, '*', true, true);
