@@ -3,8 +3,8 @@ $(document).ready(function() {
 
 	adjust_height();
 
-	if ($('#iframe') || $('#nagvis') || $('#hypermap')) {
-		var elements = $('#iframe, #nagvis, #hypermap');
+	if ($('#iframe') || $('#nagvis')) {
+		var elements = $('#iframe, #nagvis');
 
 		var ua = navigator.userAgent.toLowerCase();
 
@@ -54,7 +54,6 @@ function adjust_height() {
 
 	adjust_height_frame('#iframe');
 	adjust_height_frame('#nagvis');
-	adjust_height_frame('#hypermap');
 	adjust_height_frame('#content');
 
 	$('body').css('overflow-y', 'hidden');

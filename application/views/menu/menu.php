@@ -32,10 +32,6 @@ $menu_items['scheduling_queue'] = _('Scheduling queue');
 
 $menu_items['nagvis'] = _('NagVis');
 
-if (Kohana::config('hypergraph.hyperapplet_path') !== false) {
-	$menu_items['hyper_map'] = _('Hyper Map');
-}
-
 $menu_items['section_reporting'] = _('Reporting');
 $menu_items['pnp'] = _('Graphs');
 $menu_items['alert_history'] = _('Alert history');
@@ -76,7 +72,7 @@ $menu = array(
 		'hostgroup_summary', 'hostgroup_overview', 'hostgroup_grid',
 		'servicegroup_summary', 'servicegroup_overview', 'servicegroup_grid',
 		'network_outages', //'host_problems', 'service_problems', 'unhandled_problems',
-		'comments', 'scheduled_downtime', 'recurring_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'hyper_map', 'nagvis'), /* remove hardcoded nagvis menu entry */
+		'comments', 'scheduled_downtime', 'recurring_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'pnp', 'alert_history', 'alert_summary', 'notifications', 'event_log',
 		'availability', 'sla', 'histogram', 'schedule_reports', 'statistics'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
@@ -136,8 +132,6 @@ $menu_base = array(
 	)
 );
 
-if (isset($menu_items['hyper_map']))
-	$menu_base[$menu_items['section_monitoring']][$menu_items['hyper_map']] = array('/hypermap', 'hypermap',0);
 unset($auth);
 
 /* remove hardcoded nagvis menu entry */
