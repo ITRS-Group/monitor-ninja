@@ -164,6 +164,8 @@ $(document).ready(function() {
 	$(".report_form").on('submit', function() {
 		return check_form_values();
 	});
+	$('#report_type').on('change', set_selection);
+	set_selection();
 });
 
 function init_datepicker()
@@ -212,12 +214,13 @@ function show_calendar(val, update) {
 	disable_sla_fields(val);
 }
 
-function set_selection(val) {
+function set_selection() {
+	var val = $('#report_type').val();
 	if ($.inArray(val, ['servicegroups', 'hostgroups', 'services', 'hosts']) === -1)
 		val = 'hostgroups'; // Why? Because I found it like this
 	$('.object-list-type').text(val);
-	$('*[data-show-for]').hide()
-	$('*[data-show-for~='+val+']').show()
+	$('*[data-show-for]').hide();
+	$('*[data-show-for~='+val+']').show();
 }
 
 function get_members(type, cb) {
