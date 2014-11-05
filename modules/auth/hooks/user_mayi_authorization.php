@@ -21,12 +21,14 @@ class user_mayi_authorization implements op5MayI_Constraints {
 					'monitoring.hosts:view',
 					'monitoring.comments:view',
 					'monitoring.downtimes:view',
+					'monitoring.recurringdowntimes:view',
 					'monitoring.notifications:view'
 			),
 			'host_view_contact' => array (
 					'monitoring.hosts:view',
 					'monitoring.comments:view',
 					'monitoring.downtimes:view',
+					'monitoring.recurringdowntimes:view',
 					'monitoring.notifications:view'
 			),
 			'host_edit_all' => array (),
@@ -40,12 +42,14 @@ class user_mayi_authorization implements op5MayI_Constraints {
 					'monitoring.services:view',
 					'monitoring.comments:view',
 					'monitoring.downtimes:view',
+					'monitoring.recurringdowntimes:view',
 					'monitoring.notifications:view'
 			),
 			'service_view_contact' => array (
 					'monitoring.services:view',
 					'monitoring.comments:view',
 					'monitoring.downtimes:view',
+					'monitoring.recurringdowntimes:view',
 					'monitoring.notifications:view'
 			),
 			'service_edit_all' => array (),
