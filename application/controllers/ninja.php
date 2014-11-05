@@ -99,8 +99,8 @@ class Ninja_Controller extends Template_Controller {
 	protected function _addons()
 	{
 		$addons_files = array_merge(
-			glob(APPPATH.'addons/*', GLOB_ONLYDIR),
-			glob(MODPATH.'*/addons/*', GLOB_ONLYDIR)
+			glob(APPPATH.'addons/menu', GLOB_ONLYDIR),
+			glob(MODPATH.'*/addons/menu', GLOB_ONLYDIR)
 			);
 
 		foreach ($addons_files as $file) {
