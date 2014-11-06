@@ -55,7 +55,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 	protected $controller = false;
 	private function do_change($postdata) {
 		$_POST = $postdata;
-		$this->controller->change_password();
+		$this->controller->index();
 	}
 
 	/**
@@ -83,7 +83,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test that we don't do anything if it isn't a post request
 	 */
-	public function disabled_test_no_action_post() {
+	public function test_no_action_post() {
 		$this->do_change( false );
 		$this->assertEquals( '$1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70', $this->conf->config['auth_users']['monitor']['password'] );
 	}
@@ -99,6 +99,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assertEquals( 'Password changed successfully', $this->controller->template->content->status_msg );
+		$this->assertTrue( $this->controller->template->content->successful );
 
 		/* Assume that the password has changed */
 		$this->assertNotEquals( '$1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70', $this->conf->config['auth_users']['monitor']['password'] );
@@ -115,6 +116,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assertEquals( 'You entered incorrect current password.', $this->controller->template->content->status_msg );
+		$this->assertFalse( $this->controller->template->content->successful );
 
 		/* Assume that the password hasn't changed */
 		$this->assertEquals( '$1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70', $this->conf->config['auth_users']['monitor']['password'] );
@@ -130,6 +132,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assertEquals( 'You entered incorrect current password.', $this->controller->template->content->status_msg );
+		$this->assertFalse( $this->controller->template->content->successful );
 
 		/* Assume that the password hasn't changed */
 		$this->assertEquals( '$1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70', $this->conf->config['auth_users']['monitor']['password'] );
@@ -146,6 +149,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assertEquals( 'The password must be at least 5 characters long.', $this->controller->template->content->status_msg );
+		$this->assertFalse( $this->controller->template->content->successful );
 
 		/* Assume that the password hasn't changed */
 		$this->assertEquals( '$1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70', $this->conf->config['auth_users']['monitor']['password'] );
@@ -162,6 +166,7 @@ class change_password_Test extends PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assertEquals( 'New password did not match repeated password.', $this->controller->template->content->status_msg );
+		$this->assertFalse( $this->controller->template->content->successful );
 
 		/* Assume that the password hasn't changed */
 		$this->assertEquals( '$1$VGn0CdSG$AMJjvHoF8M2nSy8SiPrW70', $this->conf->config['auth_users']['monitor']['password'] );

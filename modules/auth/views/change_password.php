@@ -14,7 +14,7 @@
 		}
 	}
 
-	echo form::open('change_password/change_password');
+	echo form::open();
 
 	$fields = array(
 		'current_password' => form::password(array('name' => 'current_password', 'autocomplete' => 'off')),
