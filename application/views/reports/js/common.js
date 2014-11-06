@@ -1,7 +1,6 @@
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
-var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
 	$(".fancybox").fancybox({
 		'overlayOpacity'        :       0.7,
@@ -15,7 +14,6 @@ $(document).ready(function() {
 	$('#current_report_params').click(function() {
 		// make sure we always empty the field
 		$('#link_container').html('');
-		// .html('<form><input type="text" size="200" value="' + $('#current_report_params').attr('href') + '"></form>')
 		if (!direct_link_visible) {
 			$('#link_container')
 				.html('<form>'+_label_direct_link+' <input class="wide" type="text" value="'
@@ -101,7 +99,6 @@ $(document).ready(function() {
 		});
 	});
 
-	var hostname = window.location.protocol + "//" + window.location.host;
 	$('select#report_type').on('change', function( e ) {
 
 		var filterable = jQuery.fn.filterable.find( $('select[name="objects[]"]') ),
@@ -221,47 +218,6 @@ function set_selection() {
 	$('.object-list-type').text(val);
 	$('*[data-show-for]').hide();
 	$('*[data-show-for~='+val+']').show();
-}
-
-function get_members(type, cb) {
-	if (!type)
-		return;
-	var field_name = false;
-	var empty_field = false;
-
-	show_progress('progress', _wait_str);
-	$.ajax({
-		url: _site_domain + _index_page + '/ajax/group_member',
-		data: {type: type},
-		error: function(data) {
-			$.notify("Unable to fetch objects: " + data.responseText, {'sticky': true});
-		},
-		success: function(all_names) {
-			if(typeof cb == 'function')
-				cb(all_names);
-			$('#progress').css('display', 'none');
-		},
-		dataType: 'json'
-	});
-}
-
-/**
-*	Populate HTML select list with supplied JSON data
-*/
-function populate_options(tmp_field, field, json_data)
-{
-	tmp_field.empty();
-	field.empty();
-	show_progress('progress', _wait_str);
-	var available = document.createDocumentFragment();
-	var selected = document.createDocumentFragment();
-	for (i = 0; i < (json_data ? json_data.length : 0); i++) {
-		var option = document.createElement("option");
-		option.appendChild(document.createTextNode(json_data[i]));
-		available.appendChild(option);
-	}
-	tmp_field.append(available);
-	field.append(selected);
 }
 
 function check_form_values(form)
@@ -401,12 +357,6 @@ function check_form_values(form)
 	resp.html("<ul class='alert error'>" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
-}
-
-function moveAndSort(from, to)
-{
-	from.find('option:selected').remove().appendTo(to);
-	to.sortOptions();
 }
 
 // init timepicker once it it is shown
@@ -559,37 +509,6 @@ function enable_last_months(mnr)
 	disable_months(from, to);
 }
 
-function missing_objects()
-{
-	this.objs = [];
-}
-
-missing_objects.prototype.add = function(name)
-{
-	if (name != '*')
-		this.objs.push(name);
-}
-
-missing_objects.prototype.display_if_any = function()
-{
-	if (!this.objs.length)
-		return;
-
-	var info_str = _reports_missing_objects + ": ";
-	info_str += "<ul><li><img src=\"" + _site_domain + "application/views/icons/arrow-right.gif" + "\" /> " + this.objs.join('</li><li><img src="' + _site_domain + 'application/views/icons/arrow-right.gif' + '" /> ') + '</li></ul>';
-	info_str += _reports_missing_objects_pleaseremove;
-	info_str += '<a href="#" id="hide_response" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + '' + 'application/views/icons/12x12/cross.gif" /></a>';
-	$('#response')
-		.css('background','#f4f4ed url(' + _site_domain + 'application/views/icons/32x32/shield-info.png) 7px 7px no-repeat')
-		.css("position", "relative")
-		.css('top', '0px')
-		.css('width','748px')
-		.css('left', '0px')
-		.css('padding','15px 2px 5px 50px')
-		.css('margin-left','5px')
-		.html(info_str);
-}
-
 function confirm_delete_report()
 {
 	var id = $("#report_id").attr('value')
@@ -632,12 +551,3 @@ function confirm_delete_report()
 		});
 	}
 }
-
-jQuery.extend(
-	jQuery.expr[':'], {
-		regex: function(a, i, m, r) {
-			var r = new RegExp(m[3], 'i');
-			return r.test(jQuery(a).text());
-		}
-	}
-);

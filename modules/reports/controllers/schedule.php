@@ -317,8 +317,7 @@ class Schedule_Controller extends Authenticated_Controller
 				if (is_array($recipient) && !empty($recipient)) {
 					foreach ($recipient as $recip) {
 						if (strlen($recip) < 6 || !preg_match("/.+@.+/", $recip)) {
-							echo '<a title="'._('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">';
-							echo sprintf(_("'%s' is not a valid email address.%sClick here to restore saved value."), $recip, '<br />')."\n</a>";
+							echo sprintf(_("'%s' is not a valid email address."), $recip, '<br />')."\n</a>";
 							return;
 						}
 					}
@@ -327,8 +326,7 @@ class Schedule_Controller extends Authenticated_Controller
 			case 'filename': // remove spaces
 				$new_value = $this->_convert_special_chars($new_value);
 				if (strlen($new_value)>255) {
-					echo sprintf(_('The entered value is too long. Only 255 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
-						_('Please').' <a title="'._('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'._('click here').'</a> '._('to view saved value').'.';
+						echo sprintf(_('The entered value is too long. Only 255 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />';
 					exit;
 				}
 				$new_value = $this->_check_filename($new_value);
@@ -408,24 +406,6 @@ class Schedule_Controller extends Authenticated_Controller
 			return json::ok(_("Schedule deleted"));
 		} else {
 			return json::fail(_('An error occurred - unable to delete selected schedule'));
-		}
-	}
-
-	/**
-	*	Fetch specific field value for a scheduled report
-	*/
-	public function fetch_field_value()
-	{
-		$this->auto_render=false;
-		$id = arr::search($_REQUEST, 'id');
-		$type = arr::search($_REQUEST, 'type');
-		if (empty($id) || empty($type))
-			return false;
-		$data = Scheduled_reports_Model::fetch_scheduled_field_value($type, $id);
-		if (!empty($data)) {
-			echo $data;
-		} else {
-			echo 'error';
 		}
 	}
 

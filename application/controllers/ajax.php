@@ -211,43 +211,6 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * Worst methodname evah.
-	 *
-	 * Returns all the objects of the specified type that your user has
-	 * permissions to view.
-	 *
-	 * @param $type string = false
-	 */
-	public function group_member($type=false)
-	{
-		$type = $this->input->get('type', false);
-
-		$result = array();
-		switch ($type) {
-			case 'hostgroups':
-			case 'servicegroups':
-			case 'hosts':
-				foreach(Livestatus::instance()->{'get'.$type}(array(
-					'columns' => array('name')
-				)) as $row) {
-					$result[] = $row['name'];
-				}
-				break;
-			case 'services':
-				foreach(Livestatus::instance()->getServices(array(
-					'columns' => array('host_name', 'service_description')
-				)) as $row) {
-					$result[] = $row['host_name'].";".$row['service_description'];
-				}
-				break;
-			default:
-				json::fail("No object type given");
-		}
-
-		json::ok($result);
-	}
-
-	/**
 	*	Fetch available report periods for selected report type
 	*/
 	public function get_report_periods()

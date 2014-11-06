@@ -645,8 +645,6 @@ class Reports_Controller extends Base_reports_Controller
 				"by many applications such as MS Excel, OpenOffice and Google Spreadsheets."),
 			'save_report' => _("Check this box if you want to save the configured report for later use."),
 			'enter-sla' => _("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
-			'report_settings_sml' => _("Here you can modify the report settings for the report you are currently viewing."),
-			'log_entries' => _("Shows the actual log messages that this report was created of."),
 			'hostgroup_breakdown' => _("Here you have a list of all hosts that are member of this hostgroup and their states."),
 			'servicegroup_breakdown' => _("Here you have a list of all services that are member of this servicegroup and their states."),
 			'average_and_sla' => _("Shows the Average and SLA values for all selected services above."), // text ok?
