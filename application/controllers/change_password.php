@@ -11,9 +11,9 @@
  *  PARTICULAR PURPOSE.
  */
 class Change_Password_Controller extends Authenticated_Controller {
-
-	public $model = false;
-
+	/**
+	 * Set up the tempaltes for change password pages
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -37,11 +37,17 @@ class Change_Password_Controller extends Authenticated_Controller {
 
 	}
 
+	/**
+	 * Action to show the change password page
+	 */
 	public function index()
 	{
 		$this->template->content->status_msg = '';
 	}
 
+	/**
+	 * Action to handle the password change, and show the password change page
+	 */
 	public function change_password()
 	{
 
