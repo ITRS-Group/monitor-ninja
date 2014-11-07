@@ -10,9 +10,11 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Nagvis_Controller extends Authenticated_Controller {
+class Nagvis_Controller extends Ninja_Controller {
 	public function __call($name, $args)
 	{
+		$this->_verify_access('ninja.nagvis:view');
+
 		$this->template->disable_refresh = true;
 		$this->template->title = _('Monitoring') . ' » NagVis';
 		$this->template->breadcrumb = _('Monitoring') . ' » '
