@@ -54,19 +54,36 @@
 	</div>
 	<h1><?php echo $title ?></h1>
 	<div class="report_options">
-	<?php
+		<?php
 		echo '<p>'._('Reporting period').': '.$report_time_formatted;
 		echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
 		echo '</p>';
 		if ($type == 'avail' || $type == 'sla') {
-			echo '<p>'.reports::get_included_states($options['report_type'], $options).'</p>';
 			echo '<p>'.sprintf(_('Counting scheduled downtime as %s'), $options->get_value('scheduleddowntimeasuptime')).'</p>';
 		}
 		if ($options['assumestatesduringnotrunning'])
 			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
-		if ($this->type == 'summary' || $options['include_alerts'] || $options['include_summary']) {
-					echo '<p>'.sprintf(_('Showing alerts for %s and %s, %s'), $options->get_value('host_states'), $options->get_value('service_states'), $options->get_value('state_types')).'</p>';
+		echo '<p>'.sprintf(_('Showing %s'), $options->get_value('state_types'));
+		$states = array();
+		if ($options['host_filter_status']) {
+			foreach ($options->get_alternatives('host_filter_status') as $state => $name) {
+				if (!isset($options['host_filter_status'][$state]))
+					$states[] = $name;
+				else if ($options['host_filter_status'][$state] != Reports_Model::HOST_EXCLUDED)
+					$states[] = $name . ' as ' . Reports_Model::$host_states[$options['host_filter_status'][$state]];
+			}
 		}
+		if ($options['service_filter_status']) {
+			foreach ($options->get_alternatives('service_filter_status') as $state => $name) {
+				if (!isset($options['service_filter_status'][$state]))
+					$states[] = $name;
+				else if ($options['service_filter_status'][$state] != Reports_Model::HOST_EXCLUDED)
+					$states[] = $name . ' as ' . Reports_Model::$service_states[$options['service_filter_status'][$state]];
+			}
+		}
+		if ($states)
+			echo ' in ' . implode(', ', $states);
+		echo '</p>';
 		if ($this->type == 'sla')
 			echo '<p>'.sprintf(_('Showing %s'), $options->get_value('sla_mode')).'</p>';
 

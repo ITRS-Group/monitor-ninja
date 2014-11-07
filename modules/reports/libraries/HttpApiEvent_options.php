@@ -10,6 +10,24 @@ class HttpApiEvent_options extends Summary_options {
 
 	private $limit;
 
+	/**
+	 * Convert the old, exported "{host,service}_states" bitmaps to
+	 * "standard" {host,service}_filter_status
+	 */
+	protected function rewrite_states(&$name, $value, $obj) {
+		$options = Reports_Model::$$name;
+		if ($name == 'host_states')
+			$name = 'host_filter_status';
+		else
+			$name = 'service_filter_status';
+		$res = array();
+		foreach ($options as $bit => $_) {
+			if ($bit >= 0 && !($value & (1 << $bit)))
+				$res[$bit] = -2;
+		}
+		return $res;
+	}
+
 	public function setup_properties()
 	{
 		parent::setup_properties();
@@ -18,8 +36,8 @@ class HttpApiEvent_options extends Summary_options {
 			array_flip(array(
 				'report_period',
 				'state_types',
-				'host_states',
-				'service_states',
+				'host_filter_status',
+				'service_filter_status',
 				'start_time',
 				'end_time',
 				'include_comments',
@@ -36,22 +54,6 @@ class HttpApiEvent_options extends Summary_options {
 			1 => 'soft',
 			2 => 'hard',
 			3 => 'both',
-		);
-		$this->properties['host_states']['options'] = array(
-			7 => 'all',
-			6 => 'problem',
-			1 => 'up',
-			2 => 'down',
-			4 => 'unreachable',
-		);
-
-		$this->properties['service_states']['options'] = array(
-			15 => 'all',
-			14 => 'problem',
-			1 => 'ok',
-			2 => 'warning',
-			4 => 'critical',
-			8 => 'unknown',
 		);
 
 		$this->properties['report_period']['default'] = 'custom';
@@ -86,6 +88,34 @@ class HttpApiEvent_options extends Summary_options {
 		$this->properties['objects']['default'] = Report_options::ALL_AUTHORIZED;
 		$this->properties['report_type']['generated'] = true;
 		$this->properties['report_type']['default'] = 'hosts';
+		$this->properties['host_filter_status']['generated'] = true;
+		$this->properties['service_filter_status']['generated'] = true;
+		$this->properties['host_states'] = array(
+			'type' => 'enum',
+			'default' => 7,
+			'description' => _('Limit the result set to a certain kind of host states'),
+			'options' => array(
+				7 => 'all',
+				6 => 'problem',
+				1 => 'up',
+				2 => 'down',
+				4 => 'unreachable')
+		);
+		$this->properties['service_states'] = array(
+			'type' => 'enum',
+			'default' => 15,
+			'description' => _('Limit the result set to a certain kind of service states'),
+			'options' => array(
+				15 => 'all',
+				14 => 'problem',
+				1 => 'ok',
+				2 => 'warning',
+				4 => 'critical',
+				8 => 'unknown')
+		);
+
+		$this->rename_options['host_states'] = array($this, 'rewrite_states');
+		$this->rename_options['service_states'] = array($this, 'rewrite_states');
 	}
 
 	/**

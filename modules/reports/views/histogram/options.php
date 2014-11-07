@@ -16,11 +16,13 @@ if($options['report_id']) { ?>
 <table id="report" class="setup-tbl">
 	<tr>
 		<td>
+			<?php echo help::render('reporting_period') ?>
 			<label for="report_period"><?php echo _('Reporting period') ?></label><br />
 			<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $options->get_alternatives('report_period'), $options['report_period']); ?>
 		</td>
-		<td style="width: 18px">&nbsp;</td>
+		<td>&nbsp;</td>
 		<td>
+			<?php echo help::render('breakdown') ?>
 			<label for="breakdown"><?php echo _('Statistics breakdown')?></label><br />
 			<?php echo form::dropdown('breakdown', $options->get_alternatives('breakdown'), $options['breakdown']) ?>
 		</td>
@@ -31,7 +33,7 @@ if($options['report_id']) { ?>
 			<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('start_time') ?>" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />
 			<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $options->get_time('start_time') ?>">
 		</td>
-		<td style="width: 18px">&nbsp;</td>
+		<td>&nbsp;</td>
 		<td>
 			<label for="cal_end"><?php echo help::render('end-date').' '._('End date') ?> (<em><?php echo _('Click calendar to select date') ?></em>)</label><br />
 			<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('end_time') ?>" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" />
@@ -40,22 +42,40 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td>
-			<label for="state_types"><?php echo _('State types to graph') ?></label><br />
+			<label for="state_types"><?php echo help::render('state_types').' '._('State types') ?></label><br />
 			<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 		</td>
-		<td style="width: 18px">&nbsp;</td>
+		<td>&nbsp;</td>
 		<td>
-			<?php echo _('Events to graph') ?><br />
 			<div data-show-for="hosts hostgroups">
-				<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']); ?>
+				<?php
+				echo help::render('host_states');
+				echo _('Events to graph').'<br />';
+				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {
+					echo "<span class=\"filter_map\" id=\"host_filter_map_$name\">";
+					echo "<input type=\"hidden\" name=\"host_filter_status[$id]\" value=\"-2\"/>";
+					echo "</span>";
+					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"host_filter_map_$name\" id=\"host_filter_status_$name\" ".(isset($options['host_filter_status'][$id])?'':'checked="checked"')."/>";
+					echo "<label for=\"host_filter_status_$name\">".ucfirst($name)."</label>\n";
+				} ?>
 			</div>
 			<div data-show-for="services servicegroups">
-				<?php echo form::dropdown('service_states', $options->get_alternatives('service_states'), $options['service_states']); ?>
+				<?php
+				echo help::render('service_states');
+				echo _('Events to graph').'<br />';
+				foreach ($options->get_alternatives('service_filter_status') as $id => $name) {
+					echo "<span class=\"filter_map\" id=\"service_filter_map_$name\">";
+					echo "<input type=\"hidden\" name=\"service_filter_status[$id]\" value=\"-2\"/>";
+					echo "</span>";
+					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"service_filter_map_$name\" id=\"service_filter_status_$name\" ".(isset($options['service_filter_status'][$id])?'':'checked="checked" ')." />";
+					echo "<label for=\"service_filter_status_$name\">".ucfirst($name)."</label>\n";
+				} ?>
 			</div>
 		</td>
 	</tr>
 	<tr>
 		<td>
+		<?php echo help::render('newstatesonly') ?>
 		<?php echo form::checkbox('newstatesonly', 1, $options['newstatesonly']); ?>
 		<label for="newstatesonly"><?php echo _('Ignore repeated states') ?></label>
 		</td>

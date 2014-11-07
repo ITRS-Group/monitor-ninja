@@ -325,6 +325,47 @@ Feature: Availability reports
 		And I should see "Reporting period: 2013-01-02 00:00:00 to 2013-04-03 23:59:00 - workhours"
 
 	@configuration @asmonitor @reports
+	Scenario: Generate host report with state mapping
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Availability"
+		And I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
+		And I should see "Up"
+		And I shouldn't see "Ok"
+		Then I shouldn't see "Mapping for excluded states"
+		When I uncheck "Up"
+		Then I should see "Mapping for excluded states"
+		When I select "Down" from "Map up to"
+		And I click "Show report"
+		Then I should see "Hostgroup breakdown"
+		And I should see "up as down, down, unreachable, undetermined"
+		And I shouldn't see "Up"
+		And the "Down" column should be "100 %" on the row where "LinuxServers" is "linux-server1"
+		And the "Undetermined" column should be "100 %" on the row where "LinuxServers" is "linux-server2"
+		When I click "Edit settings"
+		Then I should see "Up"
+		And I shouldn't see "Ok"
+		And "Down" should be selected from "Map up to"
+
+	@configuration @asmonitor @reports
+	Scenario: Test service report with state mapping
+		Given I am on the Host details page
+		And I hover over the "Reporting" button
+		When I click "Availability"
+		Then I should see "Up"
+		And I shouldn't see "Ok"
+		When I select "Servicegroups" from "Report type"
+		And I select "pings" from the multiselect "objects_tmp"
+		Then I should see "Ok"
+		And I shouldn't see "Up"
+		When I click "Show report"
+		Then I should see "Servicegroup breakdown"
+		When I click "Edit settings"
+		Then I should see "Ok"
+		And I shouldn't see "Up"
+
+	@configuration @asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Reporting" button
@@ -336,7 +377,7 @@ Feature: Availability reports
 		# Toggle *everything*!
 		When I select "Last month" from "Reporting period"
 		And I select "workhours" from "Report time period"
-		And I check "Down"
+		And I uncheck "Down"
 		And I select "Average" from "SLA calculation method"
 		And I select "Uptime, with difference" from "Count scheduled downtime as"
 		And I select "Undetermined" from "Count program downtime as"
@@ -350,7 +391,7 @@ Feature: Availability reports
 		# I don't care where, but I want everything to be visible somehow
 		Then I should see "Last month"
 		And I should see "workhours"
-		And I should see "Showing hosts in state: up, unreachable, pending"
+		And I should see "Showing Hard and soft states in up, unreachable, undetermined"
 		And I should see "Average"
 		And I shouldn't see "SLA"
 		And I shouldn't see "Worst"
@@ -376,7 +417,7 @@ Feature: Availability reports
 		Then "objects" should have option "LinuxServers"
 		And "Last month" should be selected from "Reporting period"
 		And "workhours" should be selected from "Report time period"
-		And "Down" should be checked
+		And "Down" should be unchecked
 		And "Average" should be selected from "SLA calculation method"
 		And "Uptime, with difference" should be selected from "Count scheduled downtime as"
 		And "Undetermined" should be selected from "Count program downtime as"
@@ -389,7 +430,7 @@ Feature: Availability reports
 		When I click "Show report"
 		Then I should see "Last month"
 		And I should see "workhours"
-		And I should see "Showing hosts in state: up, unreachable, pending"
+		And I should see "Showing Hard and soft states in up, unreachable, pending"
 		And I should see "Average"
 		And I shouldn't see "SLA"
 		And I shouldn't see "Best"

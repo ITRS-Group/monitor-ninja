@@ -36,8 +36,8 @@ class Reports_Model extends Model
 		Reports_Model::HOST_UP => 'up',
 		Reports_Model::HOST_DOWN => 'down',
 		Reports_Model::HOST_UNREACHABLE => 'unreachable',
-		Reports_Model::HOST_PENDING => 'pending',
-		Reports_Model::HOST_EXCLUDED => 'excluded');
+		Reports_Model::HOST_PENDING => 'undetermined',
+		Reports_Model::HOST_EXCLUDED => 'hidden');
 
 	/** A map of state ID => state name for services. FIXME: one of a gazillion */
 	static public $service_states = array(
@@ -45,8 +45,8 @@ class Reports_Model extends Model
 		Reports_Model::SERVICE_WARNING => 'warning',
 		Reports_Model::SERVICE_CRITICAL => 'critical',
 		Reports_Model::SERVICE_UNKNOWN => 'unknown',
-		Reports_Model::SERVICE_PENDING => 'pending',
-		Reports_Model::SERVICE_EXCLUDED => 'excluded');
+		Reports_Model::SERVICE_PENDING => 'undetermined',
+		Reports_Model::SERVICE_EXCLUDED => 'hidden');
 
 
 

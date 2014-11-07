@@ -19,12 +19,12 @@ class Summary_options extends Report_options
 	protected function set_alert_types(&$name, $value, $obj)
 	{
 		if ($value == 1) {
-			$name = 'host_status';
-			return array();
+			$name = 'host_filter_states';
+			return array(0 => -2, 1 => -2, 2 => -2, -1 => -2);
 		}
 		else if ($value == 2) {
-			$name = 'service_status';
-			return array();
+			$name = 'host_filter_states';
+			return array(0 => -2, 1 => -2, 2 => -2, 3 => -2, -1 => -2);
 		}
 		return null;
 	}
@@ -44,29 +44,6 @@ class Summary_options extends Report_options
 			5 => _('Top hard host alert producers'),
 			6 => _('Top hard service alert producers')));
 
-		$this->properties['host_states'] = array(
-			'type' => 'enum',
-			'default' => 7,
-			'description' => _('Limit the result set to a certain kind of host states'),
-			'options' => array(
-				7 => _('All host states'),
-				6 => _('Host problem states'),
-				1 => _('Host up states'),
-				2 => _('Host down states'),
-				4 => _('Host unreachable states'))
-		);
-		$this->properties['service_states'] = array(
-			'type' => 'enum',
-			'default' => 15,
-			'description' => _('Limit the result set to a certain kind of service states'),
-			'options' => array(
-				15 => _('All service states'),
-				14 => _('Service problem states'),
-				1 => _('Service OK states'),
-				2 => _('Service warning states'),
-				4 => _('Service critical states'),
-				8 => _('Service unknown states'))
-		);
 		$this->properties['state_types']['default'] = 3;
 		$this->properties['summary_items'] = array(
 			'type' => 'int',
@@ -82,6 +59,8 @@ class Summary_options extends Report_options
 		$this->rename_options['displaytype'] = 'summary_type';
 		$this->rename_options['alert_types'] = array($this, 'set_alert_types');
 		$this->properties['report_period']['options']['forever'] = _('Forever');
+		unset($this->properties['host_filter_status']['options'][-1]);
+		unset($this->properties['service_filter_status']['options'][-1]);
 	}
 
 	protected function update_value($name, $value)
@@ -105,14 +84,14 @@ class Summary_options extends Report_options
 						break;
 
 					case 2: case 5:
-						$this['service_states'] = array();
+						$this['service_filter_status'] = array(0 => -2, 1 => -2, 2 => -2, 3 => -2, -1 => -2);
 						$this['state_types'] = 2;
 						$this['report_type'] = 'hosts';
 						$this->options['objects'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 3: case 6:
-						$this['host_states'] = array();
+						$this['host_filter_status'] = array(0 => -2, 1 => -2, 2 => -2, -1 => -2);
 						$this['state_types'] = 2;
 						$this['report_type'] = 'services';
 						$this->options['objects'] = Report_options::ALL_AUTHORIZED;

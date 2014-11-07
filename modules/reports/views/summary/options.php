@@ -53,64 +53,13 @@
 					<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $options['summary_items']) ?>
 				</td>
 			</tr>
-			<tr>
-				<td><label for="report_period"><?php echo help::render('reporting_period').' '._('Reporting period') ?></label></td>
-				<td style="width: 10px">&nbsp;</td>
-				<td><label for="rpttimeperiod"><?php echo help::render('report_time_period').' '._('Report time period') ?></label></td>
-			</tr>
-			<tr>
-				<td><?php echo form::dropdown('report_period', $options->get_alternatives('report_period'), $options['report_period']); ?></td>
-				<td style="width: 18px">&nbsp;</td>
-				<td><?php echo form::dropdown(array('name' => 'rpttimeperiod'), $options->get_alternatives('rpttimeperiod'), $options['rpttimeperiod']); ?></td>
-			</tr>
-			<tr id="custom_time" style="display: none; clear: both;">
-				<td><label for="cal_start"><?php echo help::render('start-date', 'reports').' '._('Start date') ?></label> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-					<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('start_time') ?>" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />
-					<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $options->get_time('start_time') ?>">
-				</td>
-				<td>&nbsp;</td>
-				<td><label for="cal_end"><?php echo help::render('end-date', 'reports').' '._('End date') ?></label> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-					<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $options->get_date('end_time') ?>" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" />
-					<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo $options->get_time('end_time') ?>">
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-				</td>
-				<td>&nbsp;</td>
-				<td>
-					<label for="state_types"><?php echo help::render('state_types').' '._('State types') ?></label><br />
-					<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="host_states"><?php echo help::render('host_states').' '._('Host states') ?></label><br />
-					<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']) ?>
-				</td>
-				<td>&nbsp;</td>
-				<td>
-					<label for="service_states"><?php echo help::render('service_states').' '._('Service states') ?></label><br />
-					<?php echo form::dropdown('service_states', $options->get_alternatives('service_states'), $options['service_states']) ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<?php echo help::render('include_long_output') ?>
-					<input type="checkbox" name="include_long_output" id="include_long_output" <?php echo $options['include_long_output'] ? 'checked="checked"' : null ?> />
-					<label for="include_long_output"><?php echo _('Include full output') ?></label>
-				</td>
-				<td></td>
-				<td>
-				</td>
-			</tr>
+			<?php echo new View('summary/common-options'); ?>
 			<tr>
 				<td>
 					<?php echo help::render('skin') ?>
 					<label for="skin" id="skin_lbl"><?php echo _('Skin') ?></label>
 				</td>
-				<td></td>
+				<td>&nbsp;</td>
 				<td>
 					<?php echo help::render('description') ?>
 					<label for="description" id="descr_lbl"><?php echo _('Description') ?></label>
@@ -120,7 +69,7 @@
 				<td>
 					<?php echo form::dropdown(array('name' => 'skin'), ninja::get_skins(), $options['skin']); ?>
 				</td>
-				<td></td>
+				<td>&nbsp;</td>
 				<td>
 					<?php echo form::textarea('description', $options['description']); ?>
 				</td>
