@@ -7,9 +7,6 @@
  */
 abstract class Base_reports_Controller extends Authenticated_Controller
 {
-	/** All states, translated. Only used where actually translating them would break stuff. */
-	protected $state_values = false;
-
 	/** Useless base variable jay */
 	protected $histogram_link = "histogram/generate";
 
@@ -25,17 +22,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			die("You must set \$type in ".get_class($this));
 
 		parent::__construct();
-
-		$this->state_values = array(
-			'OK' => _('OK'),
-			'WARNING' => _('WARNING'),
-			'UNKNOWN' => _('UNKNOWN'),
-			'CRITICAL' => _('CRITICAL'),
-			'PENDING' => _('PENDING'),
-			'UP' => _('UP'),
-			'DOWN' => _('DOWN'),
-			'UNREACHABLE' => _('UNREACHABLE')
-		);
 
 		# When run from cron-job, or mailing out reports from gui, we need access
 		if(Router::$method == 'generate' && !Auth::instance()->get_user()->logged_in() && PHP_SAPI == 'cli') {
