@@ -485,6 +485,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			if (is_callable($this->rename_options[$name])) {
 				try {
 					$value = call_user_func_array($this->rename_options[$name], array(&$name, $value, $this));
+					if ($value === null)
+						return true;
 				} catch (Exception $e) {
 					return false;
 				}

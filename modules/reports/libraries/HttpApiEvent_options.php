@@ -17,7 +17,6 @@ class HttpApiEvent_options extends Summary_options {
 			$this->properties,
 			array_flip(array(
 				'report_period',
-				'alert_types',
 				'state_types',
 				'host_states',
 				'service_states',
@@ -32,11 +31,6 @@ class HttpApiEvent_options extends Summary_options {
 			'type' => 'bool',
 			'default' => false,
 			'description' => "Include events' comments"
-		);
-		$this->properties['alert_types']['options'] = array(
-				1 => 'host',
-				2 => 'service',
-				3 => 'both',
 		);
 		$this->properties['state_types']['options'] = array(
 			1 => 'soft',

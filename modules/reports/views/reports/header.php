@@ -66,22 +66,8 @@
 			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
 		if ($options['includesoftstates'])
 			echo '<p>'._('Including soft states').'</p>';
-		if (isset($options->options['alert_types']) && ($this->type == 'summary' || $options['include_alerts'] || $options['include_summary'])) {
-			// summary, or op5reports bundled summary:
-			switch ($options['alert_types']) {
-				case 3:
+		if ($this->type == 'summary' || $options['include_alerts'] || $options['include_summary']) {
 					echo '<p>'.sprintf(_('Showing alerts for %s and %s, %s'), $options->get_value('host_states'), $options->get_value('service_states'), $options->get_value('state_types')).'</p>';
-					break;
-				case 2:
-				case 1:
-					echo '<p>'.sprintf(_('Showing alerts for %s, %s'), $options->get_value($options['alert_types'] == 1 ? 'host_states' : 'service_states'), $options->get_value('state_types')).'</p>';
-					break;
-				case 0:
-					echo '<p>'._('Showing no alerts').'</p>';
-					break;
-				default:
-					break;
-			}
 		}
 		if ($this->type == 'sla')
 			echo '<p>'.sprintf(_('Showing %s'), $options->get_value('sla_mode')).'</p>';

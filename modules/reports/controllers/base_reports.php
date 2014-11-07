@@ -214,7 +214,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			"standardreport" => _("Choose the type of report you want from the list of predefined summary reports."),
 			"summary_type" => _('The format of the summary. &quot;Most recent alerts&quot; simply lists alerts, &quot;Top alert producers&quot; orders host and/or services by the one that has notified the most recently, and &quot;Alert totals&quot; sums up the number of alerts per selected object'),
 			"summary_items" => _("Enter the number of items you wish the report to contain."),
-			"alert_types" => _("Select whether to include only host alerts, service alerts, or both"),
 			"state_types" => _("Whether to include only hard alerts, soft alerts, or both"),
 			"host_states" => _("Restrict which state(s) you're interested in hosts entering"),
 			"service_states" => _("Restrict which state(s) you're interested in services entering"),

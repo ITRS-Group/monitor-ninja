@@ -18,8 +18,6 @@
 	<table class="setup-tbl">
 		<tr>
 			<td>
-				<?php echo _('Alert Types') ?><br />
-				<?php echo form::dropdown('alert_types', $options->get_alternatives('alert_types'), $options['alert_types']) ?>
 			</td>
 			<td>&nbsp;</td>
 			<td>

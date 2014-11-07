@@ -12,11 +12,10 @@ foreach ($result as $name => $ary) {
 		$obj_types = array('host' => 'host', 'service' => 'service');
 	}
 
-	# Hide tables for excluded alert types
-	if (!($options['alert_types'] & 1) && isset($obj_types['host']))
+	if (!$options['host_states'] && isset($obj_types['host']))
 		unset($obj_types['host']);
 
-	if (!($options['alert_types'] & 2) && isset($obj_types['service']))
+	if (!$options['service_states'] && isset($obj_types['service']))
 		unset($obj_types['service']);
 
 	foreach ($obj_types as $objtype) {

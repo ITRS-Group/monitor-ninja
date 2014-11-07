@@ -182,17 +182,7 @@ class Report_query_builder_Model extends Model
 			$service_states_sql .= join(',', $x) . '))';
 		}
 
-		switch ($this->options['alert_types']) {
-		 case 1:
-			$alert_types = $host_states_sql;
-			break;
-		 case 2:
-			$alert_types = $service_states_sql;
-			break;
-		 case 3:
-			$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
-			break;
-		}
+		$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
 
 		if (isset($this->options['include_downtime']) && $this->options['include_downtime'])
 			$downtime = 'event_type < 1200 AND event_type > 1100';
@@ -243,7 +233,7 @@ class Report_query_builder_Model extends Model
 		$db = $this->db; // for closures
 		$implode_str = ') OR (';
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
-		if(1 & $this->options["alert_types"] && !$auth->authorized_for("host_view_all")) {
+		if($this->options["host_states"] && !$auth->authorized_for("host_view_all")) {
 			$ls = op5Livestatus::instance();
 			$hosts = $ls->query("hosts", null, array("name"), array('auth' => $auth->get_user()));
 			$objtosql = function($e) use ($db) {
@@ -264,7 +254,7 @@ class Report_query_builder_Model extends Model
 		}
 
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
-		if(2 & $this->options["alert_types"] && !$auth->authorized_for("service_view_all")) {
+		if($this->options["service_states"] && !$auth->authorized_for("service_view_all")) {
 			$ls = op5Livestatus::instance();
 			$services = $ls->query("services", null, array("host_name", "description"), array('auth' => $auth->get_user()));
 			$objtosql = function($e) use ($db) {

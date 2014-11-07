@@ -77,8 +77,6 @@
 
 			<tr>
 				<td>
-					<label for="alert_types"><?php echo help::render('alert_types').' '._('Alert types') ?></label><br />
-					<?php echo form::dropdown('alert_types', $options->get_alternatives('alert_types'), $options['alert_types']) ?>
 				</td>
 				<td>&nbsp;</td>
 				<td>

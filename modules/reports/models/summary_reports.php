@@ -427,7 +427,6 @@ class Summary_Reports_Model extends Reports_Model
 						}
 					}
 				}
-				$this->options['alert_types'] = 1;
 				break;
 			case 'services': case 'servicegroups':
 				if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
@@ -440,7 +439,6 @@ class Summary_Reports_Model extends Reports_Model
 						}
 					}
 				}
-				$this->options['alert_types'] = 2;
 				break;
 		}
 

@@ -11,6 +11,24 @@ class Summary_options extends Report_options
 	const ALERT_TOTALS = 2; /**< A summary that displays which ones and how many alerts each object has retrieved */
 	const TOP_ALERT_PRODUCERS = 3; /**< A summary that displays a top list of the most frequently alerting objects */
 
+	/**
+	 * Convert uses of the old alert_types property so that all host states are
+	 * excluded if the user provides the "service states only" option, and the
+	 * other way around.
+	 */
+	protected function set_alert_types(&$name, $value, $obj)
+	{
+		if ($value == 1) {
+			$name = 'host_status';
+			return array();
+		}
+		else if ($value == 2) {
+			$name = 'service_status';
+			return array();
+		}
+		return null;
+	}
+
 	public function setup_properties()
 	{
 		parent::setup_properties();
@@ -26,15 +44,6 @@ class Summary_options extends Report_options
 			5 => _('Top hard host alert producers'),
 			6 => _('Top hard service alert producers')));
 
-		$this->properties['alert_types'] = array(
-			'type' => 'enum',
-			'default' => 3,
-			'description' => _('Show events for this kind of objects'),
-			'options' => array(
-				3 => _('Host and service alerts'),
-				1 => _('Host alerts'),
-				2 => _('Service alerts'))
-		);
 		$this->properties['state_types'] = array(
 			'type' => 'enum',
 			'default' => 3,
@@ -79,6 +88,7 @@ class Summary_options extends Report_options
 		);
 
 		$this->rename_options['displaytype'] = 'summary_type';
+		$this->rename_options['alert_types'] = array($this, 'set_alert_types');
 		$this->properties['report_period']['options']['forever'] = _('Forever');
 	}
 
@@ -97,21 +107,20 @@ class Summary_options extends Report_options
 					// By utilizing Report_options::ALL_AUTHORIZED, we pass on the
 					// explicit selection to the report model
 					case 1: case 4:
-						$this['alert_types'] = 3;
 						$this['state_types'] = 2;
 						$this['report_type'] = 'hosts';
 						$this->options['objects'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 2: case 5:
-						$this['alert_types'] = 1;
+						$this['service_states'] = array();
 						$this['state_types'] = 2;
 						$this['report_type'] = 'hosts';
 						$this->options['objects'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 3: case 6:
-						$this['alert_types'] = 2;
+						$this['host_states'] = array();
 						$this['state_types'] = 2;
 						$this['report_type'] = 'services';
 						$this->options['objects'] = Report_options::ALL_AUTHORIZED;

@@ -22,7 +22,10 @@ class Histogram_options extends Summary_options
 		parent::update_value($name, $value);
 		switch ($name) {
 		 case 'report_type':
-			$this['alert_types'] = 1 + ($value == 'services' || $value == 'servicegroups');
+			if ($value == 'services' || $value == 'servicegroups')
+				$this['host_states'] = array();
+			else
+				$this['service_states'] = array();
 			break;
 		}
 	}
