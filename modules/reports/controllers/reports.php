@@ -635,8 +635,6 @@ class Reports_Controller extends Base_reports_Controller
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
 				"option decide to assume states for hosts and services during the downtime."),
-			'includesoftstates' => _("A problem is classified as a SOFT problem until the number of checks has reached the ".
-				"configured max_check_attempts value. When max_check_attempts is reached the problem is reclassified as HARD."),
 			'sla_mode' => _("What calculation method to use for the report summary.<br/>".
 				"Depending on how your network is configured, your SLA might be the group availability (worst state at any point in time) or cluster mode availability (best state at any point time). You can also choose to use average values instead for ".
 				"the group or object in question.<br/>Note that calculating the summary incorrectly could mislead users."),

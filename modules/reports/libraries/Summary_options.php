@@ -44,15 +44,6 @@ class Summary_options extends Report_options
 			5 => _('Top hard host alert producers'),
 			6 => _('Top hard service alert producers')));
 
-		$this->properties['state_types'] = array(
-			'type' => 'enum',
-			'default' => 3,
-			'description' => _('Restrict events based on which state the event is in (soft vs hard)'),
-			'options' => array(
-				3 => _('Hard and soft states'),
-				2 => _('Hard states'),
-				1 => _('Soft states'))
-		);
 		$this->properties['host_states'] = array(
 			'type' => 'enum',
 			'default' => 7,
@@ -76,6 +67,7 @@ class Summary_options extends Report_options
 				4 => _('Service critical states'),
 				8 => _('Service unknown states'))
 		);
+		$this->properties['state_types']['default'] = 3;
 		$this->properties['summary_items'] = array(
 			'type' => 'int',
 			'default' => 25,

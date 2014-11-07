@@ -79,8 +79,8 @@ class Status_Reports_Model extends Reports_Model
 		if (!$this->options['assumestatesduringnotrunning'])
 			$process = 'event_type < 200';
 
-		if (!$this->options['includesoftstates']) {
-			$softorhardcheck .= ' AND hard=1';
+		if ($this->options['state_types'] != 3) {
+			$softorhardcheck .= ' AND hard=' . ($this->options['state_types'] - 1);
 		}
 
 		if ($this->st_is_service) {
@@ -371,8 +371,8 @@ class Status_Reports_Model extends Reports_Model
 		} else {
 			$sql .= " AND event_type = ".Reports_Model::HOSTCHECK;
 		}
-		if (!$this->options['includesoftstates'])
-			$sql .= " AND hard = 1";
+		if ($this->options['state_types'] != 3)
+			$sql .= ' AND hard = ' . ($this->options['state_types'] - 1);
 		$sql .= " AND timestamp < ".$this->options['start_time'];
 		$sql .= " GROUP BY host_name,service_description";
 		$sql .= ") AS lsc";

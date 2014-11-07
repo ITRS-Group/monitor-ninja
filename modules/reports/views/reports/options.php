@@ -111,10 +111,8 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td>
-			<?php echo help::render('includesoftstates') ?>
-			<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
-					<?php echo $options['includesoftstates']?'checked="checked"':''; ?> />
-			<label for="includesoftstates" id="include_softstates"><?php echo _('Include soft states') ?></label>
+			<label for="state_types"><?php echo help::render('state_types').' '._('State types') ?></label><br />
+			<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 		</td>
 		<td>&nbsp;</td>
 	</tr>

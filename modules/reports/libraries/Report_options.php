@@ -61,9 +61,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'default' => true,
 			'description' => 'Whether to assume states during not running'
 		),
-		'includesoftstates' => array(
-			'type' => 'bool',
-			'default' => false, 'description' => 'Include soft states, yes/no?'
+		'state_types' => array(
+			'type' => 'enum',
+			'default' => 2,
 		),
 		'objects' => array(
 			'type' => 'objsel',
@@ -147,6 +147,11 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	public static $now = null;
 
+	private function rewrite_soft(&$name, $value, $obj) {
+		$name = 'state_types';
+		return $value ? 3 : 2;
+	}
+
 	private function rewrite_objects(&$name, $value, $obj) {
 		switch ($name) {
 			case 'host':
@@ -210,6 +215,13 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		if (isset($this->properties['skin']))
 			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
 
+		if (isset($this->properties['state_types'])) {
+			$this->properties['state_types']['description'] = _('Restrict events based on which state the event is in (soft vs hard)');
+			$this->properties['state_types']['options'] = array(
+				3 => _('Hard and soft states'),
+				2 => _('Hard states'),
+				1 => _('Soft states'));
+		}
 		$this->rename_options = array(
 			't1' => 'start_time',
 			't2' => 'end_time',
@@ -221,6 +233,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'service_description' => array($this, 'rewrite_objects'),
 			'hostgroup' => array($this, 'rewrite_objects'),
 			'servicegroup' => array($this, 'rewrite_objects'),
+			'includesoftstates' => array($this, 'rewrite_soft'),
 		);
 	}
 

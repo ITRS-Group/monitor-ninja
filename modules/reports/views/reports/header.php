@@ -64,8 +64,6 @@
 		}
 		if ($options['assumestatesduringnotrunning'])
 			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
-		if ($options['includesoftstates'])
-			echo '<p>'._('Including soft states').'</p>';
 		if ($this->type == 'summary' || $options['include_alerts'] || $options['include_summary']) {
 					echo '<p>'.sprintf(_('Showing alerts for %s and %s, %s'), $options->get_value('host_states'), $options->get_value('service_states'), $options->get_value('state_types')).'</p>';
 		}
