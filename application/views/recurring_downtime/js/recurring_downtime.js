@@ -187,30 +187,3 @@ function check_setup()
 	}
 	return true;
 }
-
-/**
-*	Receive params as JSON object
-*	Parse fields and populate corresponding fields in form
-*	with values.
-*/
-function expand_and_populate(reportObj)
-{
-	var field_str = reportObj.downtime_type;
-	get_members(field_str, function(all_names) {
-		var mo = new missing_objects();
-		var from = $('#objects_tmp');
-		var to = $('#objects');
-		populate_options(from, to, all_names);
-		// select report objects
-		for (prop in reportObj.objects) {
-			if (!from.containsOption(reportObj.objects[prop])) {
-				mo.add(reportObj.objects[prop])
-			} else {
-				from.selectOptions(reportObj.objects[prop]);
-			}
-		}
-		mo.display_if_any();
-		// move selected options from left -> right
-		moveAndSort(from, to);
-	});
-}

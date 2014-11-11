@@ -99,9 +99,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$schedule_info = new RecurringDowntime_Model($schedule_info, '', false);
 		}
 
-		if ($schedule_id) {
-			$this->js_strings .= "var _report_data = " . json_encode(array('objects' => $schedule_info->get_objects(), 'downtime_type' => $schedule_info->get_downtime_type())) . "\n";
-		}
 		$this->js_strings .= reports::js_strings();
 
 		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select objects by moving them from %s the left selectbox to the right selectbox"), '<br />')."';\n";

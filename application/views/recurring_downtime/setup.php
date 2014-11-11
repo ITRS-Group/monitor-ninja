@@ -20,7 +20,7 @@
 		if (isset($schedule_id) && !empty($schedule_id)) {?>
 		<input type="hidden" name="schedule_id" value="<?php echo $schedule_id ?>" />
 		<?php }?>
-		<table summary="Select object type" class="setup-tbl obj_selector">
+		<table class="setup-tbl obj_selector">
 			<tr>
 				<td colspan="3">
 					<select id="report_type" name="downtime_type">
@@ -34,7 +34,10 @@
 			</tr>
 			<tr>
 				<td colspan="3">
-					<select data-filterable data-type="hostgroup" name="objects[]" id="objects" multiple="multiple">
+					<select data-filterable data-type="<?php echo $schedule_info->get_downtime_type() ? rtrim($schedule_info->get_downtime_type(), 's') : 'hostgroup' // first from select above ?>" name="objects[]" id="objects" multiple="multiple">
+					<?php foreach($schedule_info->get_objects() as $object) { ?>
+						<option value="<?php echo $object ?>"><?php echo $object ?></option>
+					<?php } ?>
 					</select>
 				</td>
 			</tr>
