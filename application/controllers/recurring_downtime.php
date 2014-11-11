@@ -60,7 +60,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = $this->add_path('reports/js/common.js');
-		$this->template->js[] = $this->add_path('recurring_downtime/js/recurring_downtime.js');
 
 		$this->template->js[] = 'application/media/js/lib.set.js';
 		$this->template->js[] = 'application/media/js/jquery.filterable.js';
@@ -101,9 +100,9 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->js_strings .= reports::js_strings();
 
-		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select objects by moving them from %s the left selectbox to the right selectbox"), '<br />')."';\n";
-		$this->js_strings .= "var _form_err_empty_fields = '"._("Please Enter valid values in all required fields (marked by *) ")."';\n";
-		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please Enter a valid %s value (hh:mm[:ss])")."';\n";
+		$this->js_strings .= "var _reports_err_str_noobjects = '"._("Please select objects from the left selectbox")."';\n";
+		$this->js_strings .= "var _form_err_empty_fields = '"._("Please enter valid values in all required fields (marked by *) ")."';\n";
+		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please enter a valid %s value (hh:mm[:ss])")."';\n";
 		$this->js_strings .= "var _schedule_error = '"._("An error occurred when trying to delete this schedule")."';\n";
 
 		$this->js_strings .= "var _schedule_delete_ok = '"._("OK")."';\n";

@@ -15,7 +15,7 @@
 
 	var settings = {
 
-		/* Can be info, warning, critical. Will grant the
+		/* info/warning/critical, Will grant the
 			notification-body the classes: jq-notify-type-<type> */
 		"type": "info",
 

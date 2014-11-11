@@ -122,7 +122,7 @@ class reports
 	{
 		$js_strings = "var _ok_str = '"._('OK')."';\n";
 		$js_strings .= "var _cancel_str = '"._('Cancel')."';\n";
-		$js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$js_strings .= "var _reports_err_str_noobjects = '"._("Please select what objects to base the report on from the left selectbox")."';\n";
 		$js_strings .= "var _reports_err_str_nostatus = '"._("You must provide at least one status to filter on")."';\n";
 		$js_strings .= "var _reports_invalid_startdate = \""._("You haven't entered a valid Start date")."\";\n";
 		$js_strings .= "var _reports_invalid_enddate = \""._("You haven't entered a valid End date")."\";\n";

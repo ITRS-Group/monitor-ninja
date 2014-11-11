@@ -1,5 +1,4 @@
 $(document).ready(function() {
-//	$('.time-entry').timePicker();
 	$("#setup_form").bind('submit', function() {
 		return check_setup();
 	});
@@ -78,11 +77,7 @@ function check_timestring(timestring) {
 
 function check_setup()
 {
-	if (!check_form_values()) {
-		return false;
-	}
-
-	var err_str = '';
+	var errors = [];
 
 	var comment = $.trim($('textarea[name=comment]').val());
 	var start_time = $.trim($('input[name=start_time]').val());
@@ -95,42 +90,40 @@ function check_setup()
 	if (comment == '' || start_time == '' || end_time == '' || (!fixed && duration == '')) {
 		// required fields are empty
 		// _form_err_empty_fields
-		err_str += '<li>' + _form_err_empty_fields + '</li>';
+		errors.push(_form_err_empty_fields);
 	} else {
 		// check for special input
 
 		// start_time field
 		if (!check_timestring(start_time)) {
-			err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_start_time) + '</li>';
+			errors.push(sprintf(_form_err_bad_timeformat, _form_field_start_time));
 		}
 
 		// end_time field
 		if (!check_timestring(end_time)) {
-			err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_end_time) + '</li>';
+			errors.push(sprintf(_form_err_bad_timeformat, _form_field_end_time));
 		}
 
 		// duration field
 		if (!fixed && !check_timestring(duration)) {
-			err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_duration) + '</li>';
+			errors.push(sprintf(_form_err_bad_timeformat, _form_field_duration));
 		}
 	}
 	days = days.filter(function() {
 		return $(this).prop('checked');
 	});
 	if (days.length === 0) {
-		err_str += '<li>You must check at least one day of the week</li>';
+		errors.push('You must select at least one day of the week');
 	}
 	months = months.filter(function() {
 		return $(this).prop('checked');
 	});
 	if (months.length === 0) {
-		err_str += '<li>You must check at least one month</li>';
+		errors.push('You must select at least one month');
 	}
 
-	if (err_str != '') {
-		$('#response').attr("style", "");
-		$('#response').html("<ul class=\"error\">" + err_str + "</ul>");
-		window.scrollTo(0,0); // make sure user sees the error message
+	if (errors.length) {
+		$.notify(errors.join(", "), {sticky: true, type: 'warning'});
 		return false;
 	}
 
