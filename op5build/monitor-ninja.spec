@@ -124,6 +124,8 @@ mkdir -p -m 775 %buildroot%prefix/application/logs
 
 make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn)
 
+mkdir -p %buildroot/var/log/op5
+
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
 for d in op5build monitor-ninja.spec ninja.doxy \
@@ -231,6 +233,12 @@ done
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyc
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyo
 %attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
+
+%dir %attr(775,monitor,%daemon_group) %_sysconfdir/op5
+%config(noreplace) %attr(660,monitor,%daemon_group) %_sysconfdir/op5/*.yml
+
+%dir %attr(775,monitor,%daemon_group) /var/log/op5
+
 %phpdir/op5
 %exclude %phpdir/op5/ninja_sdk
 %exclude %prefix/src

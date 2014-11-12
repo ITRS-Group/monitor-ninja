@@ -1,6 +1,11 @@
  GENERATE_PHP_MODS=
 OP5LIBCFG=test/configs/all-host_service-states/op5lib
 PHPDIR=/usr/local/share/php
+
+SYSCONFDIR := /etc
+ETC_USER := apache
+ETC_GROUP := apache
+
 all: generate-css generate-php
 
 help:
@@ -96,8 +101,15 @@ i18n:
 		-j --package-name=ninja \
 		--from-code utf-8 -L php $$(find . -name '*.php')
 
-install:
+install: install-lib install-config
+
+install-lib:
 	mkdir -m 0755 -p $(PHPDIR)
 	cp -a src/op5 $(PHPDIR)/op5
 
-.PHONY: test help test-reports clean install
+install-config:
+	mkdir -m 770 -p $(SYSCONFDIR)/op5
+	cp -R etc/* $(SYSCONFDIR)/op5
+	chown -R $(ETC_USER):$(ETC_GROUP) $(SYSCONFDIR)/op5
+
+.PHONY: test help test-reports clean install install-lib install-config
