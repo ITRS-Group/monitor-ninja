@@ -23,9 +23,11 @@ Prefix: /opt/monitor/op5/ninja
 Obsoletes: monitor-gui <= 3.5.13
 Obsoletes: monitor-reports-gui <= 1.4.9
 Obsoletes: op5-nagios-gui-core <= 4.0.3
+Obsoletes: php-op5lib <= 7.1.0-beta1
 Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
 Provides: op5-nagios-gui-core = %version
+Provides: php-op5lib = %version
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
 Requires: monitor-merlin
@@ -120,7 +122,7 @@ mkdir -p -m 755 %buildroot%prefix
 mkdir -p -m 775 %buildroot%prefix/upload
 mkdir -p -m 775 %buildroot%prefix/application/logs
 
-make install-devel SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn)
+make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn)
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
@@ -229,6 +231,8 @@ done
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyc
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyo
 %attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
+%phpdir/op5
+%exclude %phpdir/op5/ninja_sdk
 %exclude %prefix/src
 %exclude %prefix/test
 %exclude %prefix/modules/test

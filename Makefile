@@ -96,8 +96,8 @@ i18n:
 		-j --package-name=ninja \
 		--from-code utf-8 -L php $$(find . -name '*.php')
 
-install-devel:
-	mkdir -m 0755 -p $(PHPDIR)/op5
-	cp -a src/op5/ninja_sdk $(PHPDIR)/op5/
+install:
+	mkdir -m 0755 -p $(PHPDIR)
+	cp -a src/op5 $(PHPDIR)/op5
 
-.PHONY: test help test-reports clean install-devel
+.PHONY: test help test-reports clean install
