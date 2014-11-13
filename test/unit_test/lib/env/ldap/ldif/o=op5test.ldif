@@ -1,0 +1,4 @@
+dn: o=op5test
+objectClass: dcObject
+objectClass: organization
+o: op5test

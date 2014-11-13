@@ -1,0 +1,10 @@
+dn: cn=Single Group User
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Single Group User
+sn: SingleGO
+userPassword: singlegrouppassword
+mail: singlegroup@op5test.op5.com
+uid: singlegroup

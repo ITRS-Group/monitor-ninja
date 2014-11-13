@@ -26,3 +26,5 @@ class Session {
 }
 
 require_once(__DIR__.'/../../index.php');
+
+set_include_path(DOCROOT.'src/op5/' . PATH_SEPARATOR . get_include_path());

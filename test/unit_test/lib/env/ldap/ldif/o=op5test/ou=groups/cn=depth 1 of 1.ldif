@@ -1,0 +1,6 @@
+dn: cn=Depth 1 of 1
+objectClass: groupOfNames
+objectClass: top
+cn: Depth 1 of 1
+member: cn=Single Group User,ou=Users,o=op5test
+member: cn=Multi Group User,ou=Users,o=op5test

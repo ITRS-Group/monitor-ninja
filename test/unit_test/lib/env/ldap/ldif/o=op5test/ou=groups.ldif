@@ -1,0 +1,4 @@
+dn: ou=Groups
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups

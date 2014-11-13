@@ -51,6 +51,7 @@ Requires: php53-posix
 Requires: php53-ctype
 Requires: php53-iconv
 Requires: php53-mbstring
+Requires: php53-ldap
 BuildRequires: php53-json
 BuildRequires: php53-posix
 BuildRequires: php53-ctype
@@ -60,6 +61,7 @@ BuildRequires: graphviz-gnome
 BuildRequires: ghostscript-fonts-std
 %else
 Requires: php >= 5.3
+Requires: php-ldap
 BuildRequires: php >= 5.3
 BuildRequires: shadow-utils
 %if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
@@ -87,6 +89,11 @@ Requires: portal
 Requires: op5license-generator
 Requires: op5license-tests
 Requires: op5-phpunit
+%if 0%{?suse_version}
+Requires: openldap2
+%else
+Requires: openldap-servers
+%endif
 # For performance graph links on extinfo
 Requires: monitor-pnp
 

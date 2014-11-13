@@ -1,0 +1,10 @@
+dn: cn=Multi Group User
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Multi Group User
+sn: MultiGO
+userPassword: multigrouppassword
+mail: multigroup@op5test.op5.com
+uid: multigroup

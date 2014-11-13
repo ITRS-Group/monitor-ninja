@@ -1,0 +1,5 @@
+dn: cn=Depth 2 of 2
+objectClass: groupOfNames
+objectClass: top
+cn: Depth 2 of 2
+member: cn=Depth 1 of 2,ou=Groups,o=op5test

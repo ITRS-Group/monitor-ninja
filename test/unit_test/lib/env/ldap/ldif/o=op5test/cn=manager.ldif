@@ -1,0 +1,8 @@
+dn: cn=Manager,o=op5test
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+sn: Manager
+cn: Manager
+userPassword: password

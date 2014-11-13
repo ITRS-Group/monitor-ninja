@@ -1,0 +1,15 @@
+---
+modules:
+  - 
+    type: "key"
+    path: 'auth.*'
+  - 
+    type: "value"
+    path: 'auth_users.*.modules.*'
+groups:
+  - 
+    type: "key"
+    path: 'auth_groups.*'
+  - 
+    type: "value"
+    path: 'auth_users.*.groups.*'

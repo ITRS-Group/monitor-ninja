@@ -1,0 +1,5 @@
+dn: cn=Depth 1 of 2
+objectClass: groupOfNames
+objectClass: top
+cn: Depth 1 of 2
+member: cn=Nested Group User,ou=Users,o=op5test

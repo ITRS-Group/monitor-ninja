@@ -1,0 +1,10 @@
+dn: cn=Nested Group User
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Nested Group User
+sn: NestedGO
+userPassword: nestedgrouppassword
+mail: nestedgroup@op5test.op5.com
+uid: nestedgroup

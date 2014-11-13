@@ -46,6 +46,7 @@ test-reports:
 test-unittest: generate-php
 	make test-ci-prepare
 	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/unit_test/bootstrap.php test/unit_test/tests/; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/unit_test/bootstrap.php test/unit_test/lib/; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
 	rm -f application/config/custom/config.php
