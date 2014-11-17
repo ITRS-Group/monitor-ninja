@@ -107,7 +107,7 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write('try {');
 		$this->write('list($fetched_columns, $objects, $count) = $ls->query(%s, $ls_filter, $valid_columns);', $this->name);
 		$this->write('} catch( op5LivestatusException $e ) {');
-		$this->write('throw new ORMException( $e->getPlainMessage() );');
+		$this->write('throw new ORMException( $e->getPlainMessage(), %s, false, $e );', $this->name);
 		$this->write('}');
 
 		$this->write('if($columns === false) {');
