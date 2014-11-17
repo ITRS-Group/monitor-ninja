@@ -45,9 +45,7 @@ if($options['report_id']) { ?>
 					<td><select name="start_month" id="start_month" class="auto"></select></td>
 				</tr>
 			</table>
-		</td>
-		<td>&nbsp;</td>
-		<td><?php echo help::render('end-date').' '._('End date') ?>
+			<?php echo help::render('end-date').' '._('End date') ?>
 			<table summary="Reporting time" style="margin-left: -4px">
 				<tr>
 					<td><label for="end_year"><?php echo _('End year') ?></label></td>
@@ -57,6 +55,7 @@ if($options['report_id']) { ?>
 				</tr>
 			</table>
 		</td>
+		<td colspan="2">&nbsp;</td>
 	<?php } ?>
 	</tr>
 	<tr>
