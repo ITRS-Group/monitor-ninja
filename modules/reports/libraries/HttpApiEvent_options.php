@@ -28,6 +28,7 @@ class HttpApiEvent_options extends Summary_options {
 				'report_type',
 			))
 		);
+		$this->properties['include_downtime'] = array('type' => 'bool', 'default' => false, 'description' => "Include downtime events");
 		$this->properties['include_comments'] = array(
 			'type' => 'bool',
 			'default' => false,
