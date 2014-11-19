@@ -36,7 +36,6 @@ Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
-Requires: monitor-nacoma
 Requires: monitor-backup
 Requires: op5-bootstrap
 BuildRequires: php-op5lib >= 1.1.0-beta14
@@ -84,6 +83,7 @@ Requires: monitor-ninja = %version
 Requires: merlin monitor-merlin op5-nagios
 Requires: merlin-apps
 Requires: monitor-livestatus monitor-nagvis
+Requires: monitor-nacoma
 Requires: rubygem20-op5cucumber
 Requires: portal
 Requires: op5license-generator
