@@ -314,7 +314,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	public function get_value($key) {
 		if (!isset($this->properties[$key]))
 			return false;
-		if ($this->properties[$key]['type'] !== 'enum')
+		if ($this->properties[$key]['type'] !== 'enum' && $this->properties[$key]['type'] !== 'array')
 			return false;
 		if (!isset($this->properties[$key]['options'][$this[$key]]))
 			return $key;
