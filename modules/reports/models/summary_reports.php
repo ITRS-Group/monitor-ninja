@@ -19,7 +19,7 @@ class Summary_Reports_Model extends Reports_Model
 	{
 		$querym = new Report_query_builder_Model($this->db_table, $this->options);
 		$query = $querym->build_alert_summary_query
-			('timestamp, event_type, host_name, service_description, ' .
+			('id, timestamp, event_type, host_name, service_description, ' .
 		     'state, hard, retry, downtime_depth, output');
 
 		// investigate if there are more rows available for this query,
@@ -49,6 +49,9 @@ class Summary_Reports_Model extends Reports_Model
 				AND data.host_name = comments.host_name
 				AND data.service_description = comments.service_description
 				AND data.event_type = comments.event_type";
+		}
+		if($this->options['sort']) {
+			$query .= ' ORDER BY '.$this->options['sort'];
 		}
 		$query .= " LIMIT ".$limit." OFFSET ". $offset;
 

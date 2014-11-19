@@ -82,6 +82,29 @@ class HttpApiEvent_options extends Summary_options {
 			'default' => 0,
 			'description' => 'Skip the first <em>offset</em> events matching the rest of the query, well suited for pagination'
 		);
+		$this->properties['start_id'] = array(
+			'type' => 'int',
+			'default' => false,
+			'description' => 'The lowest id index to present. Like start_time, but based on the order the events entered the database, which might not be exactly the same order as their time.'
+		);
+		$this->properties['end_id'] = array(
+			'type' => 'int',
+			'default' => false,
+			'description' => 'The highest id index to present. Like end_time, but based on the order the events entered the database, which might not be exactly the same order as their time.'
+		);
+
+		$this->properties['sort'] = array(
+			'type' => 'enum',
+			'default' => 'timestamp',
+			'options' => array(
+				"id" => "id",
+				"timestamp" => "timestamp",
+			),
+			'description' => 'Sort on the specified column of the response',
+		);
+		foreach ($this->properties['sort']['options'] as $col) {
+			$this->properties['sort']['options']['-'.$col] = '-'.$col;
+		}
 
 		foreach (array('host_name', 'service_description', 'hostgroup', 'servicegroup') as $objtype) {
 			$this->properties[$objtype] = $this->properties['objects'];
