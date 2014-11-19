@@ -65,9 +65,6 @@ $(document).ready(function() {
 	$('.save_report_btn').parents('form').submit(function(ev) {
 		ev.preventDefault();
 		var form = $(this);
-		if (!(check_form_values(this[0]))) {
-			return;
-		}
 		var btn = form.find('.save_report_btn');
 		btn.after(loadimg_sml);
 		$.ajax({
@@ -85,8 +82,7 @@ $(document).ready(function() {
 				jgrowl_message(data.status_msg, _reports_success);
 				if (!btn[0].form.report_id)
 					$('form').append('<input type="hidden" name="report_id" value="'+data.report_id+'"/>');
-				else
-					$('#save_report_form').hide();
+				$('#save_report_form').hide();
 			},
 			error: function(data) {
 				var resp;
