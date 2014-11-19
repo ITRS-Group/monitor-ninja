@@ -113,6 +113,13 @@
 
 		if ( this.multiple ) {
 
+			var scrollpos = 0;
+
+			this.after = function () {
+				var list = this.box.find('.jq-filterable-list');
+				list.scrollTop(scrollpos);
+			}
+
 			this.selected.attr( "id", this.filtered.attr( "id" ) );
 			this.selected.attr( "name", this.filtered.attr( "name" ) );
 
@@ -176,6 +183,8 @@
 				if ( parent.is( "option" ) ) {
 					parent = parent.closest( 'select' );
 				}
+
+				scrollpos = parent.scrollTop();
 
 				values = parent.val();
 				values = new Set( values );
@@ -411,6 +420,7 @@
 
 		if ( this.multiple ) {
 			this.filtered.val([]);
+			this.after();
 		}
 
 	};
