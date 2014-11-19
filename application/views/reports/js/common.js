@@ -137,8 +137,6 @@ $(document).ready(function() {
 	$('#start_year, #end_year').on('change', function () {
 		var start = 0;
 		var end = 11;
-		// check_custom_months is supposedly initialized by the onload
-		// handler in application/views/reports/js/reports.js or equivalent.
 		if (check_custom_months.start_date == undefined || check_custom_months.end_date == undefined) {
 			return;
 		}
