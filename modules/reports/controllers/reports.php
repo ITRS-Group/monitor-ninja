@@ -194,7 +194,6 @@ class Reports_Controller extends Base_reports_Controller
 			return url::redirect(Router::$controller.'/index?' . http_build_query($this->options->options));
 		}
 
-		# fetch data
 		if ($this->type == 'avail') {
 			$data_arr = $reports_model->get_uptime();
 		} else {
@@ -210,16 +209,10 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
 
-		# ==========================================
-		# ========= REPORT STARTS HERE =============
-		# ==========================================
-
 		$template->report_options = $this->add_view('reports/options');
 
-		$tpl_options = $template->report_options;
-		$saved_reports = $this->options->get_all_saved();
-		$tpl_options->saved_reports = $saved_reports;
-		$tpl_options->months = date::abbr_month_names();
+		$template->report_options->saved_reports = $this->options->get_all_saved();
+		$template->report_options->months = date::abbr_month_names();
 
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months?')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months?")."';\n";
@@ -246,139 +239,119 @@ class Reports_Controller extends Base_reports_Controller
 		$template->header->title = $template->title;
 		$template->header->report_time_formatted = $this->format_report_time($date_format);
 
-		# avail, more than one object
-		if ($this->type == 'avail' && ($is_group || count($this->options['objects']) > 1)) {
-			$template_values = array();
-			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
-			$template->content->multiple_states = $data_arr;
-			$template->content->hide_host = false;
+		if ($this->type == 'avail') {
+			if ($is_group || count($this->options['objects']) > 1) {
+				$template_values = array();
+				$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
+				$template->content->multiple_states = $data_arr;
+				$template->content->hide_host = false;
 
-			if($is_group) # actual hostgroup/servicegroup.
-				$tmp_title = ucfirst($sub_type)._('group breakdown');
-			else
-				$tmp_title = ucfirst($sub_type).' '._('state breakdown');
-			$template->header->title = $tmp_title;
+				if($is_group) # actual hostgroup/servicegroup.
+					$tmp_title = ucfirst($sub_type)._('group breakdown');
+				else
+					$tmp_title = ucfirst($sub_type).' '._('state breakdown');
+				$template->header->title = $tmp_title;
 
-			// ===== SETUP PIECHART VALUES =====
+				if( $this->options['include_pie_charts'] ) {
+					$template->pie = $this->add_view('reports/pie_chart');
+					$data_str = array();
 
-			if( $this->options['include_pie_charts'] ) {
-				$template->pie = $this->add_view('reports/pie_chart');
-				$data_str = array();
-
-				foreach($data_arr as $data) { # for every group
-					if (!is_array($data) || !isset($data['states']))
-						continue;
-					$image = array();
-					foreach ($graph_filter as $key => $val) {
-						if ($data['states'][$key]!=0)
-							$image[strtoupper($val)] = $data['states'][$key];
-					}
-					$data_str[] = array(
-						'img' => http_build_query($image),
-						'host' => isset($data['groupname'])?implode(', ', $data['groupname']):'',
-					);
-				}
-
-				$template->pie->data_str = $data_str;
-			}
-		} else { # single avail host/service, or any sla
-			$image_data = array();
-			$data_str = '';
-			if (!empty($data_arr)) {
-				$template->content = $this->add_view('reports/'.$this->type);
-
-				if ($this->type == 'avail') {
-					$sources = array();
-					foreach ($data_arr as $grouplist) {
-						if (!is_array($grouplist) || !isset($grouplist['states']))
+					foreach($data_arr as $data) { # for every group
+						if (!is_array($data) || !isset($data['states']))
 							continue;
-						foreach ($grouplist as $host) {
-							if (!is_array($host) || !isset($host['states']))
-								continue;
-							$sources[] = $host['source'];
+						$image = array();
+						foreach ($graph_filter as $key => $val) {
+							if ($data['states'][$key]!=0)
+								$image[strtoupper($val)] = $data['states'][$key];
 						}
+						$data_str[] = array(
+							'img' => http_build_query($image),
+							'host' => isset($data['groupname'])?implode(', ', $data['groupname']):'',
+							);
 					}
-					$avail = $template->content;
-					$avail->report_data = $data_arr;
 
-					$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
+					$template->pie->data_str = $data_str;
+				}
+			} else { // single avail report
+				$template->content = $this->add_view('reports/avail');
 
-					# Will break epically
-					if( $this->options['include_pie_charts'] ) {
-						$pies = array();
-						foreach ($data_arr as $data) {
-							if (!is_array($data) || !isset($data['states']))
-								continue;
-							$pie = $this->add_view('reports/pie_chart');
+				$sources = array();
+				foreach ($data_arr as $grouplist) {
+					if (!is_array($grouplist) || !isset($grouplist['states']))
+						continue;
+					foreach ($grouplist as $host) {
+						if (!is_array($host) || !isset($host['states']))
+							continue;
+						$sources[] = $host['source'];
+					}
+				}
+				$avail = $template->content;
+				$avail->report_data = $data_arr;
 
-							// ===== SETUP PIECHART VALUES =====
-							if (is_array($data['states'])) {
-								foreach ($graph_filter as $key => $val) {
-									if ($data['states'][$key]!=0)
-										$image_data[strtoupper($val)] = $data['states'][$key];
-								}
-							}
+				$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
-							if ($image_data) {
-								$data_str = http_build_query($image_data);
-								$pie->data_str = $data_str;
-								$pie->source = $data['source'];
-							}
-							$pies[] = $pie;
+				if($this->options['include_pie_charts']) {
+					$pies = array();
+					foreach ($data_arr as $data) {
+						if (!is_array($data) || !isset($data['states']) || !is_array($data['states']))
+							continue;
+						$pie = $this->add_view('reports/pie_chart');
+						$image_data = array();
+						foreach ($graph_filter as $key => $val) {
+							if ($data['states'][$key]!=0)
+								$image_data[strtoupper($val)] = $data['states'][$key];
 						}
-						$avail->pies = $pies;
-					}
-
-					if ($sub_type=='host') {
-						$service_states = $this->_print_states_for_services($sources);
-
-						if ($service_states !== false) {
-							$header_str = _("Service state breakdown");
-							$template->svc_content = $this->add_view('reports/multiple_service_states');
-							$content = $template->svc_content;
-							$content->header_string = $header_str;
-							$content->multiple_states = $service_states;
-							$content->hide_host = true;
-							$content->source = $sources;
+						if ($image_data) {
+							$data_str = http_build_query($image_data);
+							$pie->data_str = $data_str;
+							$pie->source = $data['source'];
 						}
+
+						$pies[] = $pie;
 					}
-
-					$links = array();
-					# links - only for HTML reports
-					switch($this->options['report_type']) {
-						case 'hosts':
-							$host = $this->options['objects'][0];
-							$template->header->title = sprintf(_('Host details for %s'), $host);
-
-							$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
-							$links[$this->status_link.$host] = _('Status detail');
-							$links[$this->history_link . '?' . $this->options->as_keyval_string()] = _('Alert history');
-							$links[listview::link('notifications', array('host_name' => $host))] = _('Notifications');
-							break;
-
-						case 'services':
-							list($host, $service) = explode(';', $this->options['objects'][0]);
-							$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
-
-							$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
-							$links[$this->history_link . "?" . $this->options->as_keyval_string()] = _('Alert history');
-							$links[listview::link('notifications', array('host_name' => $host, 'service_description' => $service))] = _('Notifications');
-
-							break;
-					}
-
-					$template->links = $links;
-					$template->source = $sources;
-					$template->header_string = sprintf(_("State breakdown for %s"), implode(', ', $sources));
-				} else {
-					# SLA report
-					$template->header->title = _('SLA breakdown');
-					$sla = $template->content;
-					$sla->report_data = $data_arr;
+					$avail->pies = $pies;
 				}
 
-			} # end if not empty. Display message to user?
-			  # ^ no, that sounds like a terrible idea, don't inform the user about anything, ever!
+				if ($sub_type=='host') {
+					$service_states = $this->_print_states_for_services($sources);
+
+					if ($service_states !== false) {
+						$header_str = _("Service state breakdown");
+						$template->svc_content = $this->add_view('reports/multiple_service_states');
+						$content = $template->svc_content;
+						$content->header_string = $header_str;
+						$content->multiple_states = $service_states;
+						$content->hide_host = true;
+						$content->source = $sources;
+					}
+				}
+
+				$links = array();
+				# links - only for HTML reports
+				if ($this->options['report_type'] == 'hosts') {
+					$host = $this->options['objects'][0];
+					$template->header->title = sprintf(_('Host details for %s'), $host);
+					$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
+					$links[$this->status_link.$host] = _('Status detail');
+					$links[$this->history_link . '?' . $this->options->as_keyval_string()] = _('Alert history');
+					$links[listview::link('notifications', array('host_name' => $host))] = _('Notifications');
+				} else if ($this->options['report_type'] == 'services') {
+					list($host, $service) = explode(';', $this->options['objects'][0]);
+					$template->header->title = sprintf(_('Service details for %s on host %s'), $service, $host);
+					$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
+					$links[$this->history_link . "?" . $this->options->as_keyval_string()] = _('Alert history');
+					$links[listview::link('notifications', array('host_name' => $host, 'service_description' => $service))] = _('Notifications');
+				}
+
+				$template->links = $links;
+				$template->source = $sources;
+				$template->header_string = sprintf(_("State breakdown for %s"), implode(', ', $sources));
+			}
+		} else { # SLA report
+			$template->content = $this->add_view('reports/sla');
+			$template->header->title = _('SLA breakdown');
+			$sla = $template->content;
+			$sla->report_data = $data_arr;
 		}
 
 		if($this->options['include_trends']) {
