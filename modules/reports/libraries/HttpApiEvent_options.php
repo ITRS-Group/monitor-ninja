@@ -206,6 +206,9 @@ class HttpApiEvent_options extends Summary_options {
 	 */
 	protected function validate_value($key, &$value)
 	{
+		if (!isset($this->properties[$key])) {
+			return false;
+		}
 		switch ($this->properties[$key]['type']) {
 			case 'enum':
 				$v = array_search($value, $this->properties[$key]['options'], true);
