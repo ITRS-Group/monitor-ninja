@@ -570,11 +570,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				$value = intval($value);
 			}
 			break;
-		 case 'object':
-			if (!is_object($value)) {
-				return false;
-			}
-			break;
 		 case 'enum':
 			if (!isset($this->properties[$key]['options'][$value]))
 				return false;
