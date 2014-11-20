@@ -334,8 +334,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		 case 'services':
 			return $this['objects'];
 		 case 'hostgroups':
-		 	$all = HostPool_Model::all();
-		 	$set = HostPool_Model::none();
+			$all = HostPool_Model::all();
+			$set = HostPool_Model::none();
 
 			foreach ($this['objects'] as $group) {
 				$set = $set->union($all->reduce_by('groups', $group, '>='));
@@ -346,8 +346,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			}
 			return $res;
 		 case 'servicegroups':
-		 	$all = ServicePool_Model::all();
-		 	$set = ServicePool_Model::none();
+			$all = ServicePool_Model::all();
+			$set = ServicePool_Model::none();
 
 			foreach ($this['objects'] as $group) {
 				$set = $set->union($all->reduce_by('groups', $group, '>='));
@@ -766,10 +766,10 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		}
 
 		if(isset($report_info['cal_start'], $report_info['cal_end'], $report_info['report_period']) &&
-				$report_info['cal_start'] &&
-				$report_info['cal_end'] &&
-				$report_info['report_period'] == 'custom'
-			) {
+		   $report_info['cal_start'] &&
+		   $report_info['cal_end'] &&
+		   $report_info['report_period'] == 'custom'
+		) {
 
 			if(!isset($report_info['time_start']) || $report_info['time_start'] === "") {
 				$report_info['time_start'] = "00:00";
