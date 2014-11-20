@@ -3,21 +3,19 @@
 $nr = 0;
 foreach($report_data as $i =>  $report) {
 	$nr++;
-	if (!empty($report['data_str'])) {
-		if (!$report['name']) {
-			$str_source = 'SLA breakdown for custom group';
-			$names = array('custom group');
+	if (!$report['name']) {
+		$str_source = 'SLA breakdown for custom group';
+		$names = array('custom group');
+	}
+	else {
+		$names = $report['name'];
+		if (!is_array($names))
+			$names = array($names);
+		if ($options['use_alias'] && $options['report_type'] !== 'services') {
+			foreach ($names as $k => $name)
+				$names[$k] = reports::get_alias($options['report_type'], $name).' ('.$name.')';
 		}
-		else {
-			$names = $report['name'];
-			if (!is_array($names))
-				$names = array($names);
-			if ($options['use_alias'] && $options['report_type'] !== 'services') {
-				foreach ($names as $k => $name)
-					$names[$k] = reports::get_alias($options['report_type'], $name).' ('.$name.')';
-			}
-			$str_source = sprintf(_('SLA breakdown for: %s'), implode(',', $names));
-		}
+		$str_source = sprintf(_('SLA breakdown for: %s'), implode(',', $names));
 	}
 	?>
 	<div class="setup-table members">
