@@ -42,11 +42,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->setup_options_obj($input);
 		$reports_model = new Summary_Reports_Model($this->options);
 
-		# check if we have all required parts installed
-		if (!$reports_model->_self_check()) {
-			return url::redirect('reports/invalid_setup');
-		}
-
 		# what scheduled reports are there?
 		$scheduled_ids = array();
 		$scheduled_periods = null;

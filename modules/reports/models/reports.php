@@ -127,29 +127,4 @@ class Reports_Model extends Model
 		}
 		return $events[$event_type][$short ? 'short' : 'full'];
 	}
-
-	/**
-	*	Check that we have a valid database installed and usable.
-	*/
-	public function _self_check()
-	{
-		try {
-			# this will result in error if db_name section
-			# isn't set in config/database.php
-			$db = Database::instance();
-		} catch (Kohana_Database_Exception $e) {
-			return false;
-		}
-		$table_exists = false;
-		if (isset($db)) {
-			try {
-				$table_exists = $db->table_exists($this->db_table);
-			} catch (Kohana_Database_Exception $e) {
-				return false;
-			}
-		} else {
-			return false;
-		}
-		return true;
-	}
 }

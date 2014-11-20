@@ -34,11 +34,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->setup_options_obj($input);
 		$reports_model = new Status_Reports_Model($this->options);
 
-		# check if we have all required parts installed
-		if (!$reports_model->_self_check()) {
-			return url::redirect(Router::$controller.'/invalid_setup');
-		}
-
 		$type_str = $this->type == 'avail'
 			? _('availability')
 			: _('SLA');
@@ -145,11 +140,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->setup_options_obj($input);
 
 		$reports_model = new Status_Reports_Model($this->options);
-
-		# check if we have all required parts installed
-		if (!$reports_model->_self_check()) {
-			return url::redirect(Router::$controller.'/invalid_setup');
-		}
 
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
@@ -463,19 +453,6 @@ class Reports_Controller extends Base_reports_Controller
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf();
 		}
-	}
-
-	/**
-	*	Print message to user about invalid setup.
-	*	This could be because of missing database or
-	* 	reports module
-	*/
-	public function invalid_setup()
-	{
-		$this->template->content = $this->add_view('reports/reports_module');
-		$template = $this->template->content;
-		$template->error_msg  = _('Some parts in your setup is apparently missing.');
-		$template->info = _("make sure you install the latest version of merlin");
 	}
 
 	private function _print_states_for_services($host_name=false)
