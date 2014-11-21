@@ -355,6 +355,8 @@ class Summary_Reports_Model extends Reports_Model
 	 */
 	public function recent_alerts()
 	{
+		$timeperiod = Old_Timeperiod_Model::instance($this->options);
+		$timeperiod->resolve_timeperiods();
 		$querym = new Report_query_builder_Model($this->db_table, $this->options);
 		$query = $querym->build_alert_summary_query('*');
 
@@ -385,7 +387,7 @@ class Summary_Reports_Model extends Reports_Model
 
 		$this->summary_result = array();
 		foreach ($dbr as $row) {
-			if ($this->timeperiod->inside($row['timestamp']))
+			if ($timeperiod->inside($row['timestamp']))
 				$this->summary_result[] = $row;
 		}
 

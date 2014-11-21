@@ -52,8 +52,6 @@ class Reports_Model extends Model
 
 	/** The provided options */
 	protected $options = false;
-	/** The timeperiod associated with this report */
-	protected $timeperiod;
 	/** Table to use for the duration of the build */
 	protected $db_table = 'report_data';
 
@@ -76,8 +74,6 @@ class Reports_Model extends Model
 		}
 
 		$this->options = $options;
-		$this->timeperiod = Old_Timeperiod_Model::instance($options);
-		$this->timeperiod->resolve_timeperiods();
 	}
 
 	/**

@@ -144,6 +144,8 @@ class Status_Reports_Model extends Reports_Model
 		$is_running = !$this->get_last_shutdown($this->options['start_time']);
 		$is_service = in_array($this->options['report_type'], array('services', 'servicegroups'));
 		$objects = $this->options->get_report_members();
+		$timeperiod = Old_Timeperiod_Model::instance($this->options);
+		$timeperiod->resolve_timeperiods();
 
 		$calculator_type = false;
 		switch ((int)$this->options['sla_mode']) {
@@ -161,7 +163,7 @@ class Status_Reports_Model extends Reports_Model
 			break;
 		}
 
-		$calculator = new $calculator_type($this->options, $this->timeperiod);
+		$calculator = new $calculator_type($this->options, $timeperiod);
 		$optclass = get_class($this->options);
 
 		$subs = array();
@@ -172,7 +174,7 @@ class Status_Reports_Model extends Reports_Model
 			$opts = new $optclass($this->options);
 			$opts['report_type'] = $is_service ? 'services' : 'hosts';
 			$opts['objects'] = array($object);
-			$sub = new SingleStateCalculator($opts, $this->timeperiod);
+			$sub = new SingleStateCalculator($opts, $timeperiod);
 			if (isset( $initial_states[$object]))
 				$initial_state = $initial_states[$object];
 			else
@@ -205,7 +207,7 @@ class Status_Reports_Model extends Reports_Model
 				$these_subs = array();
 				foreach ($members as $member)
 					$these_subs[$member] = $all_subs[$member];
-				$this_sub = new $calculator_type($opts, $this->timeperiod);
+				$this_sub = new $calculator_type($opts, $timeperiod);
 				$this_sub->set_sub_reports($these_subs);
 				$this_sub->initialize(Reports_Model::STATE_PENDING, Reports_Model::STATE_PENDING, $is_running);
 				$subs[$group] = $this_sub;
@@ -213,7 +215,7 @@ class Status_Reports_Model extends Reports_Model
 			break;
 		 case 'hosts':
 		 case 'services':
-			$this_sub = new $calculator_type($this->options, $this->timeperiod);
+			$this_sub = new $calculator_type($this->options, $timeperiod);
 			$this_sub->set_sub_reports($subs);
 			$this_sub->initialize(Reports_Model::STATE_PENDING, Reports_Model::STATE_PENDING, $is_running);
 			$subs = array($this_sub);
