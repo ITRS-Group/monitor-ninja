@@ -46,6 +46,7 @@ class Report_query_builder_Model extends Model
 		$softorhard = false;
 		$alert_types = false;
 		$downtime = false;
+		$flapping = false;
 		$process = false;
 		$time_first = false;
 		$time_last = false;
@@ -183,6 +184,9 @@ class Report_query_builder_Model extends Model
 		if (isset($this->options['include_downtime']) && $this->options['include_downtime'])
 			$downtime = 'event_type < 1200 AND event_type > 1100';
 
+		if (isset($this->options['include_flapping']) && $this->options['include_flapping'])
+			$flapping = 'event_type == 1000 OR event_type == 1001';
+
 		if (isset($this->options['include_process']) && $this->options['include_process'])
 			$process = 'event_type < 200';
 
@@ -226,6 +230,7 @@ class Report_query_builder_Model extends Model
 						$object_selection,
 						sql::combine('or',
 							$downtime,
+							$flapping,
 							sql::combine('and',
 								$softorhard,
 								$alert_types)))),

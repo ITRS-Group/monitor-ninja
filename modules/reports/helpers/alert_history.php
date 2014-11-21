@@ -83,6 +83,16 @@ class alert_history {
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			$ret['softorhard'] = $entry['hard'] ? 'Hard' : 'Soft';
 			break;
+		 case 1000:
+		 case 1001:
+			if ($entry['service_description']) {
+				$ret['type'] = 'Service flapping alert';
+			} else {
+				$ret['type'] = 'Host flapping alert';
+			}
+			$ret['softorhard'] = $entry['event_type'] == 1000 ? 'Started' : 'Stopped';
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/flapping.png'), array('alt' => _('Flapping'), 'title' => _('Flapping')));
+			break;
 		 case 1103:
 		 case 1104:
 			if ($entry['service_description'])

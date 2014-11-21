@@ -20,6 +20,9 @@
 		<tr>
 			<td><?php echo help::render('include_downtime').' <label>'.form::checkbox('include_downtime', 1, $options['include_downtime']).' '._('Show downtime alerts'); ?></label></td>
 			<td>&nbsp;</td>
+			<td><?php echo help::render('include_flapping').' <label>'.form::checkbox('include_flapping', 1, $options['include_flapping']).' '._('Show flapping alerts'); ?></label></td>
+		</tr>
+		<tr>
 			<td><?php echo help::render('include_process').' <label>'.form::checkbox('include_process', 1, $options['include_process']).' '._('Show process messages').'</label>'; ?></td>
 		</tr>
 		<tr>

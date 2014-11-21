@@ -17,6 +17,7 @@ class Alert_history_options extends Summary_options {
 
 		$this->properties['page'] = array('type' => 'int', 'default' => 1); /**< Warning! 1 indexed */
 		$this->properties['include_downtime'] = array('type' => 'bool', 'default' => false);
+		$this->properties['include_flapping'] = array('type' => 'bool', 'default' => false);
 		$this->properties['include_process'] = array('type' => 'bool', 'default' => false);
 		$this->properties['oldest_first'] = array('type' => 'bool', 'default' => false);
 		$this->properties['filter_output'] = array('type' => 'string', 'default' => false);
