@@ -1,6 +1,4 @@
 Alias /monitor/stylesheets /opt/monitor/share/stylesheets
-Alias /monitor/cgi-bin /opt/monitor/sbin
-Alias /monitor/GraphXML.dtd /opt/monitor/share/GraphXML.dtd
 Alias /monitor/js /opt/monitor/share/js
 Alias /monitor/images /opt/monitor/share/images
 Alias /monitor/css /opt/monitor/share/css
