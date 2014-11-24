@@ -104,6 +104,9 @@ Additional test files for ninja
 Summary: Development files for ninja
 Group: op5/monitor
 Requires: monitor-ninja = %version
+Requires: rubygem(compass)
+Requires: doxygen
+Requires: graphviz
 
 %description devel
 Development files files for ninja
