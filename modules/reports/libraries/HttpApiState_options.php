@@ -118,11 +118,9 @@ class HttpApiState_options extends Report_options {
 	 */
 	function to_output($row)
 	{
-		// challenge: write this with variable variables!
-		if (isset($row['service_description']))
-			$row['state'] = Reports_Model::$service_states[$row['state']];
-		else
-			$row['state'] = Reports_Model::$host_states[$row['state']];
+		// transform values
+		$type = isset($row['service_description']) ? 'service' : 'host';
+		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
 
 		return $row;
 	}
