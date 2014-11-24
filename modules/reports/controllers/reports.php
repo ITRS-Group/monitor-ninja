@@ -197,7 +197,7 @@ class Reports_Controller extends Base_reports_Controller
 		if ($this->type == 'avail') {
 			$data_arr = $reports_model->get_uptime();
 		} else {
-			$data_arr = $this->get_sla_data($this->options['months']);
+			$data_arr = $this->get_sla_data();
 		}
 
 		if ($this->options['output_format'] == 'csv') {
@@ -453,15 +453,10 @@ class Reports_Controller extends Base_reports_Controller
 	 * Uses split_month_data() to split start- and end_time
 	 * on months.
 	 *
-	 * @param $months = false
 	 * @return array
 	 */
-	private function get_sla_data($months)
+	private function get_sla_data()
 	{
-		if (empty($months)) {
-			return array();
-		}
-
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
 		$time_arr = $this->_split_month_data($this->options['start_time'], $this->options['end_time']);
