@@ -139,6 +139,42 @@ class Status_Reports_Model extends Reports_Model
 	}
 
 	/**
+	 * API status entrypoint
+	 */
+	public function get_state()
+	{
+		$is_running = !$this->get_last_shutdown($this->options['start_time']);
+
+		if (in_array($this->options['report_type'], array('services', 'servicegroups')))
+			$is_service = true;
+		else
+			$is_service = false;
+
+		$objects = $this->options->get_report_members();
+
+		$initial_states = $this->get_initial_states($is_service ? 'service' : 'host', $objects, $this->options['start_time']);
+		$downtimes = $this->get_initial_dt_depths($is_service ? 'service' : 'host', $objects, $this->options['start_time']);
+
+		$return = array();
+
+		foreach ($objects as $object) {
+			$row = array(
+				'monitor_is_running' =>  $is_running,
+				'state' => (isset($initial_states[$object]) ? $initial_states[$object] : Reports_Model::STATE_PENDING),
+				'in_scheduled_downtime' => (isset($downtimes[$object]) ? $downtimes[$object] : 0)
+			);
+			if ($is_service) {
+				list($row['host_name'], $row['service_description']) = explode(';', $object);
+			} else {
+				$row['host_name'] = $object;
+			}
+			$return[] = $row;
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Calculate uptime between two timestamps for host/service
 	 * @return array or false on error
 	 *
