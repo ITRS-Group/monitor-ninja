@@ -40,4 +40,43 @@ class json
 	public static function ok($result = null, $http_status_code = 200) {
 		return self::_send_response($result, $http_status_code);
 	}
+
+	/**
+	 * Serialize JSON data in pretty-printed form, in PHP < 5.4 compatible way.
+	 *
+	 * @param $data mixed The object to serialize
+	 * @param $base_offset int Indentation control
+	 * @returns string A plain-text, pretty-printed json representation of $data
+	 */
+	public static function pretty($data, $base_offset = 0)
+	{
+		$res = "";
+		$offset = str_repeat(' ', $base_offset);
+		// with PHP 5.4, this can be replaced with JSON_PRETTY_PRINT
+		switch(gettype($data)) {
+		case 'object':
+		case 'array':
+			$tmpres = json_encode($data);
+			if ($tmpres[0] == '[') {
+				$res .= "{$offset}[\n";
+				foreach ($data as $val) {
+					$res .= json::pretty($val, $base_offset + 2);
+				}
+				$res .= "{$offset}]\n";
+			} else if ($tmpres[0] == '{') {
+				$res .= "{$offset}{\n";
+				foreach ($data as $key => $val) {
+					$start = str_repeat(' ', $base_offset + 2);
+					$res .= "$start".json_encode($key).": ".ltrim(json::pretty($val, $base_offset + 2));
+				}
+				$res .= "{$offset}}\n";
+			} else {
+				$res .= $offset . json_encode($data). "\n";
+			}
+			break;
+		default:
+			$res .= $offset . json_encode($data). "\n";
+		}
+		return $res;
+	}
 }
