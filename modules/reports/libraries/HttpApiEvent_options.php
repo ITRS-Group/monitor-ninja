@@ -174,12 +174,12 @@ class HttpApiEvent_options extends Summary_options {
 	 * Not as forgiving as the parent. (Why is parent forgiving?)
 	 *
 	 * @param $options array
-	 * @throws Api_Error_Response
+	 * @throws ReportValidationException
 	 */
 	function set_options($options) {
 		foreach($options as $name => $value) {
 			if(!$this->set($name, $value)) {
-				throw new Api_Error_Response("Invalid value for option '$name'", 400);
+				throw new ReportValidationException("Invalid value for option '$name'");
 			}
 		}
 	}
