@@ -372,4 +372,39 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(date('Y-m-d H:i:s', $output['start_time']), '2013-02-01 00:00:00', 'We should start on the first of Febuary');
 		$this->assertEquals(date('Y-m-d H:i:s', $output['end_time']), '2013-02-28 23:59:59', 'We should end on the last of Febuary');
 	}
+
+	/**
+	 * The assumption for report_data is that "only valid values are allowed"
+	 * for e.g. enums. This can be easily verified by looking at validate_value.
+	 *
+	 * However, there's a sneaky backdoor-potential if a user provides a
+	 * value that lacks a meaning in a subreporttype - i.e. manually submits a
+	 * key that should be disallowed to API reports, or submits a summary report
+	 * with a value that only alert history knows how to validate.
+	 */
+	function test_invalid_options()
+	{
+		$obj = Report_options::setup_options_obj(
+			'summary',
+			array(
+				'summary_items' => 777,
+				'page' => 3
+		));
+		$this->assertArrayHasKey('summary_items', $obj->options);
+		$this->assertEquals(777, $obj->options['summary_items']);
+		$this->assertArrayNotHasKey('page', $obj->options);
+
+		/* this message sucks, it should be invalid key.
+		 * however, that message is harder to generate.
+		 */
+		$this->setExpectedException(
+			'ReportValidationException',
+			"Invalid value for option 'report_name'");
+		$obj = Report_options::setup_options_obj(
+			'httpApiState',
+			array(
+				'report_name' => 'foo'
+		));
+		var_dump($obj);
+	}
 }

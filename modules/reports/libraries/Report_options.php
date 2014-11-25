@@ -1,6 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
+ * Used by the API-specific report_options for throwing errors back out of ninja
+ */
+class ReportValidationException extends Exception {}
+
+/**
  * Report_options is an object representing the user-selected report
  *
  * It's created to improve consistency between report types and frontend/backend
