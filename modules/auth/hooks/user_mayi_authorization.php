@@ -132,7 +132,7 @@ class user_mayi_authorization implements op5MayI_Constraints {
 			'nagvis_edit' => array (),
 			'nagvis_admin' => array (),
 			'logger_access' => array (
-					'monitoring.logger:view'
+					'logger.messages:view'
 			),
 			'logger_configuration' => array (),
 			'logger_schedule_archive_search' => array (),
