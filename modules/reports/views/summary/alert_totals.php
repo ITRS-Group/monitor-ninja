@@ -12,10 +12,10 @@ foreach ($result as $name => $ary) {
 		$obj_types = array('host' => 'host', 'service' => 'service');
 	}
 
-	if (!$options['host_states'] && isset($obj_types['host']))
+	if (!$options->is_any_state_included('host_filter_status') && isset($obj_types['host']))
 		unset($obj_types['host']);
 
-	if (!$options['service_states'] && isset($obj_types['service']))
+	if (!$options->is_any_state_included('service_filter_status') && isset($obj_types['service']))
 		unset($obj_types['service']);
 
 	foreach ($obj_types as $objtype) {

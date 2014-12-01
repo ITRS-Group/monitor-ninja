@@ -222,6 +222,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				2 => _('Hard states'),
 				1 => _('Soft states'));
 		}
+		if (isset($this->properties['host_filter_status'])) {
+			$this->properties['host_filter_status']['options'] = Reports_Model::$host_states;
+			unset($this->properties['host_filter_status']['options'][-2]);
+		}
+		if (isset($this->properties['service_filter_status'])) {
+			$this->properties['service_filter_status']['options'] = Reports_Model::$service_states;
+			unset($this->properties['service_filter_status']['options'][-2]);
+		}
 		$this->rename_options = array(
 			't1' => 'start_time',
 			't2' => 'end_time',
@@ -595,13 +603,13 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				return false;
 			break;
 		 case 'host_filter_status':
-			$value = array_intersect_key($value, Reports_Model::$host_states);
+			$value = array_intersect_key($value, $this->get_alternatives('host_filter_status'));
 			$value = array_filter($value, function($val) {
 				return is_numeric($val);
 			});
 			break;
 		 case 'service_filter_status':
-			$value = array_intersect_key($value, Reports_Model::$service_states);
+			$value = array_intersect_key($value, $this->get_alternatives('service_filter_status'));
 			$value = array_filter($value, function($val) {
 				return is_numeric($val);
 			});
@@ -701,6 +709,19 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	public function get_time($var) {
 		return date('H:i', $this[$var]);
+	}
+
+	/**
+	 * Return if the specified key has all the states
+	 */
+	public function is_any_state_included($var)
+	{
+		if (!in_array($var, array('host_filter_status', 'service_filter_status')))
+			throw new Exception("Invalid variable provided to is_any_state_included");
+
+		$n_excluded = count(array_filter($this[$var], function($x) { return $x == -2; }));
+		$n_possible = count($this->get_alternatives($var));
+		return $n_excluded != $n_possible;
 	}
 
 	/** Required by Iterator */

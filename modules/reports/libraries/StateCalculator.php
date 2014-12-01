@@ -164,7 +164,7 @@ abstract class StateCalculator
 	 *
 	 * @param $state State times. Has the format:<br>
 	 * array("X:Y:Z" => seconds, ...). Where X, Y and Z are numeric states and rhs argument is the number of seconds in that state
-	 * @param $conv State translation table. E.g. for hostgroups:<br> array(0 => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '-1' => 'PENDING')
+	 * @param $conv State translation table. E.g. for hostgroups:<br> array(0 => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '-1' => 'UNDETERMINED')
 	 * @return array A huge array with all possible states and time spent in that state. States called PERCENT_* contains percentages rather than a number of seconds.
 	 */
 	public function convert_state_table($state, $conv)
@@ -203,16 +203,15 @@ abstract class StateCalculator
 			elseif (isset($conv[$current_state])) {
 				$p2 = $conv[$current_state];
 
-				if ($p2 === 'PENDING')
+				if ($p2 === 'UNDETERMINED')
 					$cstate['TIME_UNDETERMINED_NO_DATA'] += $duration;
 			}
 			else {
 				$p2 = "BAD_BUG_ERROR";
 			}
 
-			if (!$is_running || $p2 === 'PENDING') {
+			if (!$is_running || $p2 === 'UNDETERMINED') {
 				$known = false;
-				$cstate['TOTAL_TIME_UNDETERMINED'] += $duration;
 			}
 			else {
 				$cstate['TOTAL_TIME_KNOWN'] += $duration;

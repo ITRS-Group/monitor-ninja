@@ -241,14 +241,14 @@ class Reports_Controller extends Base_reports_Controller
 			'TOTAL_TIME_DOWN' => _('Down'),
 			'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
 			'TOTAL_TIME_UNDETERMINED' => _('Undetermined'),
-			'TOTAL_TIME_EXCLUDED' => 'EXCLUDE',
+			'TOTAL_TIME_HIDDEN' => 'EXCLUDE',
 		);
 		$service_graph_items = array('TOTAL_TIME_OK' => _('Ok'),
 			'TOTAL_TIME_WARNING' => _('Warning'),
 			'TOTAL_TIME_UNKNOWN' => _('Unknown'),
 			'TOTAL_TIME_CRITICAL' => _('Critical'),
 			'TOTAL_TIME_UNDETERMINED' => _('Undetermined'),
-			'TOTAL_TIME_EXCLUDED' => 'EXCLUDE',
+			'TOTAL_TIME_HIDDEN' => 'EXCLUDE',
 		);
 		$graph_filter = ${$sub_type.'_graph_items'};
 
@@ -656,6 +656,8 @@ class Reports_Controller extends Base_reports_Controller
 			'collapse_green_trends' => _("Hide trends that are 100% Up/OK during the report period. This reduces visual noise to help you correlate events."),
 			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 			'include_pie_charts' => _('If you include this, your availability percentages will be graphed in pie charts'),
+			"host_states" => _("Uncheck the host states you wish to hide or handle specially in the report."),
+			"service_states" => _("Uncheck the service states you wish to hide or handle specially in the report."),
 
 			// new scheduled report
 			'report-type-save' => _("Select what type of report you would like to schedule the creation of"),

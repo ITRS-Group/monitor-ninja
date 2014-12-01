@@ -23,9 +23,11 @@ class Histogram_options extends Summary_options
 		switch ($name) {
 		 case 'report_type':
 			if ($value == 'services' || $value == 'servicegroups')
-				$this['host_states'] = array();
+				foreach ($this->get_alternatives('host_filter_status') as $k => $v)
+					$this->options['host_filter_status'][$k] = -2;
 			else
-				$this['service_states'] = array();
+				foreach ($this->get_alternatives('service_filter_status') as $k => $v)
+					$this->options['service_filter_status'][$k] = -2;
 			break;
 		}
 	}

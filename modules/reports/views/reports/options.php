@@ -68,24 +68,54 @@ if($options['report_id']) { ?>
 			</select>
 		</td>
 		<td>&nbsp;</td>
-		<td>
-			<?php echo help::render('status_to_display') ?>
-			<?php echo _('States to hide'); ?><br>
+		<td class="states-to-include">
 			<div data-show-for="hosts hostgroups">
-			<?php
-			foreach (Reports_Model::$host_states as $id => $name) {
-				if ($name === 'excluded')
-					continue;
-				echo "<input type=\"checkbox\" name=\"host_filter_status[$id]\" id=\"host_filter_status[$id]\" value=\"".($type == 'sla'?0:Reports_Model::HOST_EXCLUDED).'" '.(isset($options['host_filter_status'][$id])?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_filter_status[$id]\">".ucfirst($name)."</label>\n";
-			} ?>
+				<?php
+				echo help::render('host_states');
+				echo _('Host states to include').'<br/>';
+
+				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {
+					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"host_filter_map_$name\" id=\"host_filter_status_$name\" ".(isset($options['host_filter_status'][$id])?'':'checked="checked"')."/>";
+					echo "<label for=\"host_filter_status_$name\">".ucfirst($name)."</label>\n";
+				}
+				echo '<div class="configure_mapping">';
+				echo help::render('map_states');
+				echo _("Mapping for excluded states")."<br/>";
+				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {
+					echo "<div class=\"filter_map\" id=\"host_filter_map_$name\">";
+					echo "<label for=\"host_filter_status[$id]\">".sprintf(_('Map %s to'), $name).'</label> ';
+					$default = $type == 'sla' ? 0 : -2;
+					if (isset($options['host_filter_status'][$id]))
+						$default = $options['host_filter_status'][$id];
+					echo form::dropdown(array('id' => "host_filter_status[$id]", 'name' => "host_filter_status[$id]", "style" => "width: auto;"), array_map('ucfirst', Reports_Model::$host_states), $default);
+					echo '</div>';
+				}
+				echo '</div>';
+				?>
 			</div>
 			<div data-show-for="services servicegroups">
-			<?php
-			foreach (Reports_Model::$service_states as $id => $name) {
-				if ($name === 'excluded')
-					continue;
-				echo "<input type=\"checkbox\" name=\"service_filter_status[$id]\" id=\"service_filter_status[$id]\" value=\"".($type == 'sla'?0:Reports_Model::SERVICE_EXCLUDED).'" '.(isset($options['service_filter_status'][$id])?'checked="checked" ':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"service_filter_status[$id]\">".ucfirst($name)."</label>\n";
-			} ?>
+				<?php
+				echo help::render('service_states');
+				echo _('Service states to include').'<br/>';
+
+				foreach ($options->get_alternatives('service_filter_status') as $id => $name) {
+					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"service_filter_map_$name\" id=\"service_filter_status_$name\" ".(isset($options['service_filter_status'][$id])?'':'checked="checked" ')." />";
+					echo "<label for=\"service_filter_status_$name\">".ucfirst($name)."</label>\n";
+				}
+				echo '<div class="configure_mapping">';
+				echo help::render('map_states');
+				echo _("Mapping for excluded states")."<br/>";
+				foreach ($options->get_alternatives('service_filter_status') as $id => $name) {
+					echo "<div class=\"filter_map\" id=\"service_filter_map_$name\">";
+					echo "<label for=\"service_filter_status[$id]\">".sprintf(_('Map %s to'), ucfirst($name)).'</label> ';
+					$default = $type == 'sla' ? 0 : -2;
+					if (isset($options['service_filter_status'][$id]))
+						$default = $options['service_filter_status'][$id];
+					echo form::dropdown(array('id' => "service_filter_status[$id]",'name' => "service_filter_status[$id]", "style" => "width: auto;"), array_map('ucfirst', Reports_Model::$service_states), $default);
+					echo '</div>';
+				}
+				echo '</div>';
+				?>
 			</div>
 		</td>
 	</tr>

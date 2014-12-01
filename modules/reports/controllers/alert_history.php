@@ -65,4 +65,20 @@ class Alert_history_Controller extends Summary_Controller
 		if (Summary_Reports_Model::add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username))
 			echo '<div class="content">'.html::specialchars($comment).'</div><div class="author">/'.$username.'</div>';
 	}
+
+	public static function _helptexts($id)
+	{
+		$helptexts = array(
+			'include_downtime' => _('If checked, downtime events from the included hosts/services and timerange will be included in the report.'),
+			'include_process' => _('If checked, messages about Monitor nodes starting or stopping during the timerange will be included in the report'),
+			'filter_output' => _('Only include alerts whose check output contains the provided string. This can be useful for focusing on one specific error.'),
+			'oldest_first' => _('This inverts the ordering, so it goes from earliest to most recent.'),
+		);
+
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		} else {
+			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
+		}
+	}
 }

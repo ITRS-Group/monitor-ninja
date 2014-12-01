@@ -154,33 +154,27 @@ class Report_query_builder_Model extends Model
 				break;
 		}
 
-		if (!$this->options['host_states'] || $this->options['host_states'] == Reports_Model::HOST_ALL) {
-			$host_states_sql = 'event_type = ' . Reports_Model::HOSTCHECK;
-		} else {
-			$x = array();
+		$included_states = array();
+		foreach ($this->options->get_alternatives('host_filter_status') as $k => $v) {
+			if (!isset($this->options['host_filter_status'][$k]) || $this->options['host_filter_status'][$k] != Reports_Model::HOST_EXCLUDED)
+				$included_states[] = $this->db->escape($k);
+		}
+		if (!$included_states)
+			$host_states_sql = false;
+		else
 			$host_states_sql = '(event_type = ' . Reports_Model::HOSTCHECK . ' ' .
-				'AND state IN(';
-			for ($i = 0; $i < Reports_Model::HOST_ALL; $i++) {
-				if (1 << $i & $this->options['host_states']) {
-					$x[$i] = $i;
-				}
-			}
-			$host_states_sql .= join(',', $x) . '))';
-		}
+				' AND state IN('.implode(', ', $included_states).'))';
 
-		if (!$this->options['service_states'] || $this->options['service_states'] == Reports_Model::SERVICE_ALL) {
-			$service_states_sql = 'event_type = ' . Reports_Model::SERVICECHECK;
-		} else {
-			$x = array();
-			$service_states_sql = '(event_type = ' . Reports_Model::SERVICECHECK .
-				"\nAND state IN(";
-			for ($i = 0; $i < Reports_Model::SERVICE_ALL; $i++) {
-				if (1 << $i & $this->options['service_states']) {
-					$x[$i] = $i;
-				}
-			}
-			$service_states_sql .= join(',', $x) . '))';
+		$included_states = array();
+		foreach ($this->options->get_alternatives('service_filter_status') as $k => $v) {
+			if (!isset($this->options['service_filter_status'][$k]) || $this->options['service_filter_status'][$k] != Reports_Model::SERVICE_EXCLUDED)
+				$included_states[] = $this->db->escape($k);
 		}
+		if (!$included_states)
+			$service_states_sql = false;
+		else
+			$service_states_sql = '(event_type = ' . Reports_Model::SERVICECHECK .
+				' AND state IN('.implode(', ', $included_states).'))';
 
 		$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
 
@@ -233,7 +227,7 @@ class Report_query_builder_Model extends Model
 		$db = $this->db; // for closures
 		$implode_str = ') OR (';
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
-		if($this->options["host_states"] && !$auth->authorized_for("host_view_all")) {
+		if ($this->options->is_any_state_included("host_filter_status") && !$auth->authorized_for("host_view_all")) {
 			$ls = op5Livestatus::instance();
 			$hosts = $ls->query("hosts", null, array("name"), array('auth' => $auth->get_user()));
 			$objtosql = function($e) use ($db) {
@@ -254,7 +248,7 @@ class Report_query_builder_Model extends Model
 		}
 
 		// summa summarum: Don't use the API unless you're *authorized* (this is really slow)
-		if($this->options["service_states"] && !$auth->authorized_for("service_view_all")) {
+		if ($this->options->is_any_state_included("service_filter_status") && !$auth->authorized_for('service_view_all')) {
 			$ls = op5Livestatus::instance();
 			$services = $ls->query("services", null, array("host_name", "description"), array('auth' => $auth->get_user()));
 			$objtosql = function($e) use ($db) {

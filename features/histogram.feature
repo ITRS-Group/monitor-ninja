@@ -76,7 +76,7 @@ Feature: Histogram reports
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1"
-		When I select "Hard states" from "State types to graph"
+		When I select "Hard states" from "State types"
 		And I select "Day of month" from "Statistics breakdown"
 		And I select "This year" from "Reporting period"
 		And I click "Show report"
@@ -269,7 +269,7 @@ Feature: Histogram reports
 		# Toggle *everything*!
 		When I select "Last month" from "Reporting period"
 		And I select "Day of week" from "Statistics breakdown"
-		And I select "Soft states" from "State types to graph"
+		And I select "Soft states" from "State types"
 		And I check "Ignore repeated states"
 		And I select "pink_n_fluffy" from "Skin"
 		And I enter "This is a saved test report" into "Description"
@@ -294,7 +294,7 @@ Feature: Histogram reports
 		Then "objects" should have option "LinuxServers"
 		And "Last month" should be selected from "Reporting period"
 		And "Day of week" should be selected from "Statistics breakdown"
-		And "Soft states" should be selected from "State types to graph"
+		And "Soft states" should be selected from "State types"
 		And "Ignore repeated states" should be checked
 		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"

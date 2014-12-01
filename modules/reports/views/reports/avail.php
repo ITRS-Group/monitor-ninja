@@ -95,8 +95,8 @@ foreach ($report_data as $avail_data) {
 		<tr class="even total">
 			<th style="border-top: 0px"><?php echo _('All') ?></th>
 			<td><?php echo _('Total') ?></td>
-			<td class="data"><?php echo time::to_string($avail_data['states']['TOTAL_TIME_ACTIVE'] - $avail_data['states']['TOTAL_TIME_EXCLUDED']) ?></td>
-			<td class="data"><?php echo reports::format_report_value(100 - $avail_data['states']['PERCENT_TOTAL_TIME_EXCLUDED']) ?> %</td>
+			<td class="data"><?php echo time::to_string($avail_data['states']['TOTAL_TIME_ACTIVE'] - $avail_data['states']['TOTAL_TIME_HIDDEN']) ?></td>
+			<td class="data"><?php echo reports::format_report_value(100 - $avail_data['states']['PERCENT_TOTAL_TIME_HIDDEN']) ?> %</td>
 		</tr>
 	</table>
 </div>

@@ -8,7 +8,10 @@ $(document).ready(function() {
 		'hideOnContentClick' : false,
 		'autoScale':true,
 		'autoDimensions': true,
+		'onComplete': function(obj) { $($(obj).attr('href')).find('.filter-status').each(filter_mapping_mapping); }
 	});
+
+	$('.filter-status').on('change', filter_mapping_mapping).each(filter_mapping_mapping);
 
 	var direct_link_visible = false;
 	$('#current_report_params').click(function() {
@@ -159,6 +162,12 @@ $(document).ready(function() {
 	$("#delete_report").click(confirm_delete_report);
 
 	$(".report_form").on('submit', function() {
+		$('.filter-status:visible:checked', this).each(function() {
+			$('#' + $(this).data('which')).find('input, select').attr('name', '');
+		});
+		$('.filter-status:not(:visible)', this).each(function() {
+			$('#' + $(this).data('which')).find('input, select').attr('value', '-2');
+		});
 		return check_form_values();
 	});
 	$('#report_type').on('change', set_selection);
@@ -550,4 +559,17 @@ function confirm_delete_report()
 			dataType: 'json'
 		});
 	}
+}
+
+function filter_mapping_mapping()
+{
+	if ($(this).is(':checked'))
+		$('#' + $(this).data('which')).hide();
+	else
+		$('#' + $(this).data('which')).show();
+	// when checking if the child is visible, the container must be visible
+	// or we'd be checking the wrong thing.
+	$(this).siblings('.configure_mapping').show();
+	if (!$(this).siblings('.configure_mapping').find('.filter_map:visible').length)
+		$(this).siblings('.configure_mapping').hide();
 }

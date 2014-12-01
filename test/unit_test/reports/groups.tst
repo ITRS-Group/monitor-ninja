@@ -31,7 +31,7 @@ Group availability including soft states, excluding OK {
 		testhost2
 	}
 	correct {
-		TIME_EXCLUDED_UNSCHEDULED = 82800
+		TIME_HIDDEN_UNSCHEDULED = 82800
 		TIME_DOWN_UNSCHEDULED = 3600
 	}
 }

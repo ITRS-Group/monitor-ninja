@@ -637,18 +637,21 @@ Feature: Summary reports
 		And I enter "2013-04-03" into "End date"
 		And I enter "22:32" into "time_end"
 		And I select "workhours" from "Report time period"
-		And I select "Host alerts" from "Alert types"
 		And I select "Hard states" from "State types"
-		And I select "Host up states" from "Host states"
-		And I select "Service problem states" from "Service states"
+		And I check "Up"
+		And I uncheck "Down"
+		And I uncheck "Unreachable"
+		And I uncheck "Ok"
+		And I check "Warning"
+		And I check "Critical"
+		And I check "Unknown"
 		And I select "pink_n_fluffy" from "Skin"
 		And I enter "This is a saved test report" into "Description"
 		And I click "Show report"
 		# I don't care where, but I want everything to be visible somehow
 		Then I should see "2013-01-01 01:31:00 to 2013-04-03 22:32:00"
 		And I should see "workhours"
-		And I should see "Hard states"
-		And I should see "Host up states"
+		And I should see "Showing Hard states in up, warning, critical, unknown"
 		And I should see "Sven Melander"
 		# Tänk på pocenten, helge!
 		And I should see "This is a saved test report"
@@ -677,8 +680,10 @@ Feature: Summary reports
 		And "workhours" should be selected from "Report time period"
 		And "Host alerts" should be selected from "Alert types"
 		And "Hard states" should be selected from "State types"
-		And "Host up states" should be selected from "Host states"
-		And "Service problem states" should be selected from "Service states"
+		And "Up" should be checked
+		And "Warning" should be checked
+		And "Critical" should be checked
+		And "Unknown" should be checked
 		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"
 		When I click "Show report"

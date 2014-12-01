@@ -78,15 +78,14 @@ class Summary_Reports_Model extends Reports_Model
 	 */
 	public function top_alert_producers()
 	{
-		$start = microtime(true);
-		$host_states = $this->options['host_states'];
-		$service_states = $this->options['service_states'];
-		$this->options['host_states'] = self::HOST_ALL;
-		$this->options['service_states'] = self::SERVICE_ALL;
+		$host_filter_status = $this->options['host_filter_status'];
+		$service_filter_status = $this->options['service_filter_status'];
+		$this->options['host_filter_status'] = array();
+		$this->options['service_filter_status'] = array();
 		$querym = new Report_query_builder_Model($this->db_table, $this->options);
 		$query = $querym->build_alert_summary_query();
-		$this->options['host_states'] = $host_states;
-		$this->options['service_states'] = $service_states;
+		$this->options['host_filter_status'] = $host_filter_status;
+		$this->options['service_filter_status'] = $service_filter_status;
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
@@ -98,10 +97,10 @@ class Summary_Reports_Model extends Reports_Model
 		foreach ($dbr as $row) {
 			if (empty($row['service_description'])) {
 				$name = $row['host_name'];
-				$interesting_states = $host_states;
+				$uninteresting_states = $host_filter_status;
 			} else {
 				$name = $row['host_name'] . ';' . $row['service_description'];
-				$interesting_states = $service_states;
+				$uninteresting_states = $service_filter_status;
 			}
 
 			# only count true state-changes
@@ -112,7 +111,7 @@ class Summary_Reports_Model extends Reports_Model
 			$pstate[$name] = $state;
 
 			# if we're not interested in this state, just move along
-			if (!(1 << $row['state'] & $interesting_states)) {
+			if (in_array($row['state'], $uninteresting_states) && $uninteresting_states[$row['state']] == Reports_Model::HOST_EXCLUDED) {
 				continue;
 			}
 
@@ -417,28 +416,12 @@ class Summary_Reports_Model extends Reports_Model
 		$events = false;
 		switch ($report_type) {
 			case 'hosts': case 'hostgroups':
-				if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
-					$events = array(0 => 0, 1 => 0, 2 => 0);
-				} else {
-					$events = array();
-					for ($i = 0; $i <= 2; $i++) {
-						if (1 << $i & $this->options['host_states']) {
-							$events[$i] = 0;
-						}
-					}
-				}
+				$events = array(0 => 0, 1 => 0, 2 => 0);
+				$events = array_diff_key($events, array_keys($this->options['host_filter_status']));
 				break;
 			case 'services': case 'servicegroups':
-				if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
-					$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-				} else {
-					$events = array();
-					for ($i = 0; $i <= 3; $i++) {
-						if (1 << $i & $this->options['service_states']) {
-							$events[$i] = 0;
-						}
-					}
-				}
+				$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
+				$events = array_diff_key($events, array_keys($this->options['service_filter_status']));
 				break;
 		}
 
