@@ -461,7 +461,7 @@ class Reports_Controller extends Base_reports_Controller
 		// this time into parts according to sla_periods (months)
 		$time_arr = $this->_split_month_data($this->options['start_time'], $this->options['end_time']);
 		// only use month entered by the user regardless of start- or endtime
-		$data = array();
+		$sla_data = array();
 		$opts = new Avail_options($this->options);
 		$opts['report_period'] = 'custom';
 		foreach ($time_arr as $mnr => $dates) {
@@ -474,17 +474,9 @@ class Reports_Controller extends Base_reports_Controller
 			foreach ($data_tmp as $group => $val) {
 				if (!is_array($val) || !isset($val['states']))
 					continue;
-				$data[$group][$mnr] = $val;
+				$sla_data[$group][$mnr] = $val;
 			}
 		}
-		return $this->_sla_group_data($data);
-	}
-
-	/**
-	*	Mangle SLA data for host- and servicegroups
-	*/
-	private function _sla_group_data($sla_data)
-	{
 		if (empty($sla_data))
 			return $sla_data;
 		$report_data = array();

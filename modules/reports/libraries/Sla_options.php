@@ -27,10 +27,10 @@ class Sla_options extends Report_options {
 			$report_info['start_time'] = mktime(0, 0, 0, $report_info['start_month'], 1, $report_info['start_year']);
 			$report_info['end_time'] = mktime(0, 0, -1, $report_info['end_month'] + 1, 1, $report_info['end_year']);
 			unset(
-				$report_info['cal_start'],
-				$report_info['cal_end'],
-				$report_info['time_start'],
-				$report_info['time_end']
+				$report_info['start_year'],
+				$report_info['end_year'],
+				$report_info['start_month'],
+				$report_info['end_month']
 			);
 		}
 		return $report_info;
