@@ -29,10 +29,6 @@
  */
 class Status_Reports_Model extends Reports_Model
 {
-	protected $st_is_service = false; /**< Whether the objects in this report are services */
-	protected $st_source = false; /**< Array of (non-group) objects that are part of this report */
-	protected $calculator = false; /**< The top-level calculator that represents this report */
-
 	/**
 	 * Constructor
 	 * @param $options An instance of Report_options
@@ -49,10 +45,10 @@ class Status_Reports_Model extends Reports_Model
 	 *
 	 * @return PDO result object on success. FALSE on error.
 	 */
-	public function uptime_query()
+	protected function uptime_query($is_service, $objects)
 	{
 		$event_type = Reports_Model::HOSTCHECK;
-		if ($this->st_is_service) {
+		if ($is_service) {
 			$event_type = Reports_Model::SERVICECHECK;
 		}
 
@@ -83,10 +79,10 @@ class Status_Reports_Model extends Reports_Model
 			$softorhardcheck .= ' AND hard=' . ($this->options['state_types'] - 1);
 		}
 
-		if ($this->st_is_service) {
+		if ($is_service) {
 			$hostname = array();
 			$servicename = array();
-			foreach ($this->st_source as $hst_srv) {
+			foreach ($objects as $hst_srv) {
 				$ary = explode(';', $hst_srv, 2);
 				$hostname[] = $this->db->escape($ary[0]);
 				$servicename[] = $this->db->escape($ary[1]);
@@ -119,7 +115,7 @@ class Status_Reports_Model extends Reports_Model
 								$downtime,
 								$softorhardcheck)))));
 		} else {
-			$objsel = "host_name IN ('" . join("', '", $this->st_source) . "') AND service_description = ''";
+			$objsel = "host_name IN ('" . join("', '", $objects) . "') AND service_description = ''";
 
 			$sql_where = sql::combine('and',
 				$time_first,
@@ -145,16 +141,9 @@ class Status_Reports_Model extends Reports_Model
 	 */
 	public function get_uptime()
 	{
-		$is_running = !$this->get_last_shutdown();
-
-		switch ($this->options['report_type']) {
-		 case 'services':
-		 case 'servicegroups':
-			$this->st_is_service = true;
-			break;
-		}
+		$is_running = !$this->get_last_shutdown($this->options['start_time']);
+		$is_service = in_array($this->options['report_type'], array('services', 'servicegroups'));
 		$objects = $this->options->get_report_members();
-		$this->st_source = $objects;
 
 		$calculator_type = false;
 		switch ((int)$this->options['sla_mode']) {
@@ -172,16 +161,16 @@ class Status_Reports_Model extends Reports_Model
 			break;
 		}
 
-		$this->calculator = new $calculator_type($this->options, $this->timeperiod);
+		$calculator = new $calculator_type($this->options, $this->timeperiod);
 		$optclass = get_class($this->options);
 
 		$subs = array();
 
-		$initial_states = $this->get_initial_states($this->st_is_service ? 'service' : 'host', $objects);
-		$downtimes = $this->get_initial_dt_depths($this->st_is_service ? 'service' : 'host', $objects);
+		$initial_states = $this->get_initial_states($is_service ? 'service' : 'host', $objects, $this->options['start_time']);
+		$downtimes = $this->get_initial_dt_depths($is_service ? 'service' : 'host', $objects, $this->options['start_time']);
 		foreach ($objects as $object) {
 			$opts = new $optclass($this->options);
-			$opts['report_type'] = $this->st_is_service ? 'services' : 'hosts';
+			$opts['report_type'] = $is_service ? 'services' : 'hosts';
 			$opts['objects'] = array($object);
 			$sub = new SingleStateCalculator($opts, $this->timeperiod);
 			if (isset( $initial_states[$object]))
@@ -194,7 +183,7 @@ class Status_Reports_Model extends Reports_Model
 			else
 				$initial_depth = 0;
 
-			if (!$initial_depth && $this->st_is_service) { /* Is host scheduled? */
+			if (!$initial_depth && $is_service) { /* Is host scheduled? */
 				$srv = explode(';', $object);
 				if (isset($downtimes[$srv[0].';']) && $downtimes[$srv[0].';'])
 					$initial_depth = 1;
@@ -231,12 +220,15 @@ class Status_Reports_Model extends Reports_Model
 			break;
 		}
 
-		$this->calculator->set_sub_reports($subs);
-		$this->calculator->initialize(Reports_Model::STATE_PENDING, Reports_Model::STATE_PENDING, $is_running);
+		$calculator->set_sub_reports($subs);
+		$calculator->initialize(Reports_Model::STATE_PENDING, Reports_Model::STATE_PENDING, $is_running);
 
-		$this->st_parse_all_rows();
-		$this->calculator->finalize();
-		return $this->calculator->get_data();
+		$dbr = $this->uptime_query($is_service, $objects);
+		foreach ($dbr as $row) {
+			$calculator->add_event($row);
+		}
+		$calculator->finalize();
+		return $calculator->get_data();
 	}
 
 	/**
@@ -244,7 +236,7 @@ class Status_Reports_Model extends Reports_Model
 	 *
 	 * @return Timestamp when of last shutdown event prior to $start_time
 	 */
-	public function get_last_shutdown()
+	protected function get_last_shutdown($timestamp)
 	{
 		# If we're assuming states during program downtime,
 		# we don't really need to know when the last shutdown
@@ -256,7 +248,7 @@ class Status_Reports_Model extends Reports_Model
 
 		$query = "SELECT timestamp, event_type FROM ".
 			$this->db_table.
-			" WHERE timestamp <".$this->options['start_time'].
+			" WHERE timestamp <".$this->db->escape($timestamp).
 			" ORDER BY timestamp DESC LIMIT 1";
 		$dbr = $this->db->query($query)->result(false);
 
@@ -274,22 +266,11 @@ class Status_Reports_Model extends Reports_Model
 
 
 	/**
-	 * Runs the main query and loops through the results one by one
-	 */
-	private function st_parse_all_rows()
-	{
-		$dbr = $this->uptime_query();
-		foreach ($dbr as $row) {
-			$this->calculator->add_event($row);
-		}
-	}
-
-	/**
 	 * Fetch information about SCHEDULED_DOWNTIME status for multiple objects
 	 *
 	 * @return array of Depth of initial downtime.
 	 */
-	protected function get_initial_dt_depths( $type = 'host', $names = array() )
+	protected function get_initial_dt_depths($type, $names, $timestamp)
 	{
 		$objectmatches = array();
 		if( $type == 'service' ) {
@@ -314,7 +295,7 @@ class Status_Reports_Model extends Reports_Model
 		$sql .= "SELECT host_name, service_description, max( timestamp ) as timestamp FROM ".$this->db_table;
 		$sql .= " WHERE (".implode(' OR ',$objectmatches).")";
 		$sql .= " AND (event_type = ".Reports_Model::DOWNTIME_START." OR event_type = ".Reports_Model::DOWNTIME_STOP.")";
-		$sql .= " AND timestamp < ".$this->options['start_time'];
+		$sql .= " AND timestamp < ".$this->db->escape($timestamp);
 		$sql .= " GROUP BY host_name,service_description";
 		$sql .= ") AS lsc";
 		$sql .= " LEFT JOIN ".$this->db_table." AS rd";
@@ -343,7 +324,7 @@ class Status_Reports_Model extends Reports_Model
 	 *
 	 * @return array of initial states
 	 */
-	protected function get_initial_states( $type = 'host', $names = array() )
+	protected function get_initial_states($type, $names, $timestamp)
 	{
 		$objectmatches = array();
 		if( $type == 'service' ) {
@@ -373,7 +354,7 @@ class Status_Reports_Model extends Reports_Model
 		}
 		if ($this->options['state_types'] != 3)
 			$sql .= ' AND hard = ' . ($this->options['state_types'] - 1);
-		$sql .= " AND timestamp < ".$this->options['start_time'];
+		$sql .= " AND timestamp < ".$this->db->escape($timestamp);
 		$sql .= " GROUP BY host_name,service_description";
 		$sql .= ") AS lsc";
 		$sql .= " LEFT JOIN ".$this->db_table." AS rd";
