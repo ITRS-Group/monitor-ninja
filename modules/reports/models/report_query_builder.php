@@ -49,6 +49,8 @@ class Report_query_builder_Model extends Model
 		$process = false;
 		$time_first = false;
 		$time_last = false;
+		$id_first = false;
+		$id_last = false;
 		$wildcard_filter = false;
 
 		$hosts = false;
@@ -185,10 +187,16 @@ class Report_query_builder_Model extends Model
 			$process = 'event_type < 200';
 
 		if($this->options['start_time']) {
-			$time_first = 'timestamp >= ' . $this->options['start_time'];
+			$time_first = 'timestamp >= ' . (int)$this->options['start_time'];
 		}
 		if($this->options['end_time']) {
-			$time_last = 'timestamp <= ' . $this->options['end_time'];
+			$time_last = 'timestamp <= ' . (int)$this->options['end_time'];
+		}
+		if($this->options['start_id']) {
+			$id_first = 'id >= ' . (int)$this->options['start_id'];
+		}
+		if($this->options['end_id']) {
+			$id_last = 'id <= ' . (int)$this->options['end_id'];
 		}
 
 		if(isset($this->options['filter_output']) && $this->options['filter_output']) {
@@ -210,6 +218,8 @@ class Report_query_builder_Model extends Model
 			sql::combine('and',
 				$time_first,
 				$time_last,
+				$id_first,
+				$id_last,
 				sql::combine('or',
 					$process,
 					sql::combine('and',
