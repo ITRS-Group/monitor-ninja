@@ -22,7 +22,7 @@ end
 # Because all our projects have their own helptext implementation...
 Then /^all helptexts should be defined$/ do
   all(:css, '*[data-popover]', :visible => true).each { | elem |
-    elem.trigger(:mouseenter)
+    elem.trigger(:mouseover)
     sleep(1)
     page.should have_css(".lib-popover-tip", :visible => true)
     # "This helptext (%s) is not translated yet" is only printed by convention, but it appears we follow it
