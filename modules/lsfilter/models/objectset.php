@@ -11,7 +11,7 @@ abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		throw new ORMException("Requesting resource from object not defining resource (" . $this->table . ")");
+		throw new ORMException("The " . $this->table . " model set have not defined mayi resource(s), I don't know if you are allowed to be here");
 	}
 
 	/**
