@@ -14,6 +14,9 @@ class Schedule_Controller extends Authenticated_Controller
 	 */
 	public function show()
 	{
+
+		$this->template->toolbar = new Toolbar_Controller(_('New Schedule'));
+
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = $this->add_path('schedule/js/schedule.js');

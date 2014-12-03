@@ -605,7 +605,7 @@ class Reports_Controller extends Base_reports_Controller
 			'filename' => _("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
-			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
+			'local_persistent_filepath' => _("Specify an absolute path on the Monitor Server, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
 			'attach_description' => _("Append this description inside the report's header to the general description given for the report"),
 			'include_trends' => _("Check this to include a trends graph in your report.<br>Warning: This can make your reports slow!"),
 			'include_trends_scaling' => _("Check this to get upscaled values on your trends graph for small segments of time that would otherwise be hidden."),
