@@ -1,0 +1,149 @@
+
+.notify-notification-bar {
+  width: 100%;
+  font-size: 110%;
+}
+
+.notify-notification-bar .icon-16,
+.notify-notification-bar .icon-menu {
+  vertical-align: middle;
+  margin: 0 8px;
+}
+
+.notify-notification-bar .notify-notification-message {
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.notify-notification-bar .notify-notification-buttons {
+  display: inline-block;
+}
+
+.notify-notification-bar .notify-notification-buttons button {
+  margin: 0 8px;
+  vertical-align: middle;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 2px;
+  border: 1px solid #bbb;
+  color: #444;
+}
+
+.notify-notification-bar .notify-notification {
+  text-align: center;
+  border: 1px solid transparent;
+  border-width: 1px 0 0 0;
+  padding: 6px;
+} .notify-notification-bar .notify-notification.notify-notification-info,
+ .notify-notification-bar .notify-notification.notify-notification-info a {
+  background-color: #d9edf7;
+  border-color: #31708f;
+  color: #31708f;
+} .notify-notification-bar .notify-notification.notify-notification-warning,
+ .notify-notification-bar .notify-notification.notify-notification-warning a {
+  background-color: #fcf8e3;
+  border-color: #8a6d3b;
+  color: #8a6d3b;
+} .notify-notification-bar .notify-notification.notify-notification-error,
+ .notify-notification-bar .notify-notification.notify-notification-error a {
+  background-color: #f2dede;
+  border-color: #a94442;
+  color: #a94442;
+} .notify-notification-bar .notify-notification.notify-notification-success,
+ .notify-notification-bar .notify-notification.notify-notification-success a {
+  background-color: #dff0d8;
+  border-color: #3c763d;
+  color: #3c763d;
+}
+
+.notify-notification-zone {
+  position: fixed;
+  top: 64px;
+  left: 25%;
+  width: 50%;
+  z-index: 100;
+}
+
+.notify-notification-zone .icon-16,
+.notify-notification-zone .icon-menu {
+  vertical-align: middle;
+  margin: 0 8px;
+}
+
+.notify-notification-zone .notify-notification-message {
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.notify-notification-zone .notify-notification-buttons {
+  margin: 2px;
+  display: block;
+}
+
+.notify-notification-zone .notify-notification-buttons button {
+  margin: 2px 2px 0 2px;
+  vertical-align: middle;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 2px;
+  border: 1px solid #bbb;
+  color: #444;
+}
+
+.notify-notification-zone .notify-notification {
+  border: 1px solid #999;
+  border-top: 8px solid #fff;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  text-align: center;
+  padding: 8px 8px 4px 8px;
+  margin: 4px 0;
+} .notify-notification-zone .notify-notification.notify-notification-info {
+  border-top-color: #59b;
+} .notify-notification-zone .notify-notification.notify-notification-warning {
+  border-top-color: #db3;
+} .notify-notification-zone .notify-notification.notify-notification-error {
+  border-top-color: #c44;
+} .notify-notification-zone .notify-notification.notify-notification-success {
+  border-top-color: #7b2;
+}
+
+button.command-button {
+  overflow: visible;
+  display: inline-block;
+  border: 1px solid #999;
+  border-color: #bbb #999 #999 #bbb;
+  box-shadow: inset 0 0 0 1px #fff;
+  background-color: #e5e5e5;
+  border-radius: 2px;
+  font-size: 9pt;
+  color: #666;
+} button.command-button:hover {
+  background-color: #ebebeb;
+  border-color: #aaa #888 #888 #aaa;
+  color: #222;
+}
+
+button.command-button[data-state] {
+  position: relative;
+  margin-left: 30px;
+}
+
+button.command-button[data-state] span {
+
+  display: block;
+  position: absolute;
+  vertical-align: middle;
+  height: 12px;
+  width: 12px;
+  left: -24px;
+  border-radius: 8px;
+  box-shadow: 1px 1px 0px 0px #fff;
+
+} button.command-button[data-state="1"] span {
+  background: #8e2;
+  border: 1px solid #4a1;
+} button.command-button[data-state="0"] span {
+  background: #e82;
+  border: 1px solid #a41;
+}

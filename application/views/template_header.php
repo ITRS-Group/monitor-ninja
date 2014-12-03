@@ -163,16 +163,6 @@
 	<div class="clear"></div>
 
 	<?php
-		if ( isset( $global_notifications ) && is_array( $global_notifications ) && count( $global_notifications ) >= 1 ) {
-			echo '<div class="notification-bar">';
-			echo '<span class="icon-16 x16-shield-warning" style="vertical-align: middle;"></span>';
-			foreach ( $global_notifications as $note )
-				echo "<span>" . $note[0] . "</span>";
-			echo '</div>';
-		}
-	?>
-
-	<?php
 		if ( isset( $toolbar ) && get_class( $toolbar ) == "Toolbar_Controller" ) {
 			$toolbar->render();
 		}

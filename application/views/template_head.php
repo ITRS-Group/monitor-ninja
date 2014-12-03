@@ -14,8 +14,8 @@ if (!empty($base_href)) {
 	<?php
 		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
-		echo html::link('application/media/css/jquery.notify.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.popover.css', 'stylesheet', 'text/css', false, 'screen');
+		echo html::link('application/media/css/lib.notify.css', 'stylesheet', 'text/css', false, 'screen');
 	?>
 
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
@@ -47,9 +47,9 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.contextMenu.js');
 		echo html::script('application/media/js/date.js');
 		echo html::script('application/views/js/global_search.js');
-		echo html::script('application/media/js/jquery.notify.js');
 		echo html::script('application/media/js/ajax.commands.js');
 		echo html::script('application/media/js/lib.popover.js');
+		echo html::script('application/media/js/lib.notify.js');
 	?>
 	<script type="text/javascript">
 		//<!--
