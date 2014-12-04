@@ -19,12 +19,12 @@ class Summary_options extends Report_options
 	protected function set_alert_types(&$name, $value, $obj)
 	{
 		if ($value == 1) {
-			$name = 'host_filter_states';
-			return array(0 => -2, 1 => -2, 2 => -2, -1 => -2);
+			$name = 'service_filter_status';
+			return array(0 => -2, 1 => -2, 2 => -2, 3 => -2);
 		}
 		else if ($value == 2) {
-			$name = 'host_filter_states';
-			return array(0 => -2, 1 => -2, 2 => -2, 3 => -2, -1 => -2);
+			$name = 'host_filter_status';
+			return array(0 => -2, 1 => -2, 2 => -2);
 		}
 		return null;
 	}

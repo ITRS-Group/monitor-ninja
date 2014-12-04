@@ -405,6 +405,40 @@ class report_Test extends PHPUnit_Framework_TestCase {
 			array(
 				'report_name' => 'foo'
 		));
-		var_dump($obj);
+	}
+
+	function test_renamed_options()
+	{
+		$obj = Report_options::setup_options_obj(
+			'summary',
+			array(
+				'alert_types' => 1,
+		));
+		$this->assertArrayNotHasKey('alert_types', $obj->options);
+		$this->assertArrayHasKey('service_filter_status', $obj->options);
+		$this->assertEquals(array(0 => -2, 1 => -2, 2 => -2, 3 => -2), $obj->options['service_filter_status']);
+		$obj = Report_options::setup_options_obj(
+			'summary',
+			array(
+				'alert_types' => 'hosts',
+		));
+		$this->assertArrayNotHasKey('alert_types', $obj->options);
+		$this->assertArrayNotHasKey('service_filter_status', $obj->options);
+
+		$obj = Report_options::setup_options_obj(
+			'httpApiEvent',
+			array(
+				'alert_types' => 1,
+		));
+		$this->assertArrayNotHasKey('alert_types', $obj->options);
+		$this->assertArrayNotHasKey('service_filter_status', $obj->options);
+		$obj = Report_options::setup_options_obj(
+			'httpApiEvent',
+			array(
+				'alert_types' => 'host',
+		));
+		$this->assertArrayNotHasKey('alert_types', $obj->options);
+		$this->assertArrayHasKey('service_filter_status', $obj->options);
+		$this->assertEquals(array(0 => -2, 1 => -2, 2 => -2, 3 => -2), $obj->options['service_filter_status']);
 	}
 }
