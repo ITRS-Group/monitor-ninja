@@ -45,13 +45,13 @@ class json
 	 * Serialize JSON data in pretty-printed form, in PHP < 5.4 compatible way.
 	 *
 	 * @param $data mixed The object to serialize
-	 * @param $base_offset int Indentation control
+	 * @param $indent int Width of the indentation
 	 * @returns string A plain-text, pretty-printed json representation of $data
 	 */
-	public static function pretty($data, $base_offset = 0)
+	public static function pretty($data, $indent = 0)
 	{
 		$res = "";
-		$offset = str_repeat(' ', $base_offset);
+		$offset = str_repeat(' ', $indent);
 		// with PHP 5.4, this can be replaced with JSON_PRETTY_PRINT
 		switch(gettype($data)) {
 		case 'object':
@@ -60,22 +60,24 @@ class json
 			if ($tmpres[0] == '[') {
 				$res .= "{$offset}[\n";
 				foreach ($data as $val) {
-					$res .= json::pretty($val, $base_offset + 2);
+					$res .= json::pretty($val, $indent + 2).",\n";
 				}
+				$res = substr($res, 0, -2)."\n";
 				$res .= "{$offset}]\n";
 			} else if ($tmpres[0] == '{') {
 				$res .= "{$offset}{\n";
+				$start = str_repeat(' ', $indent + 2);
 				foreach ($data as $key => $val) {
-					$start = str_repeat(' ', $base_offset + 2);
-					$res .= "$start".json_encode($key).": ".ltrim(json::pretty($val, $base_offset + 2));
+					$res .= $start.json_encode((string)$key).": ".ltrim(json::pretty($val, $indent + 2)).",\n";
 				}
-				$res .= "{$offset}}\n";
+				$res = substr($res, 0, -2)."\n";
+				$res .= "{$offset}}";
 			} else {
-				$res .= $offset . json_encode($data). "\n";
+				$res .= $offset . json_encode($data);
 			}
 			break;
 		default:
-			$res .= $offset . json_encode($data). "\n";
+			$res .= $offset . json_encode($data);
 		}
 		return $res;
 	}
