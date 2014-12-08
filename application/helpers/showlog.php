@@ -79,15 +79,11 @@ class showlog
 		$cmd .= " --image-url=" . url::base(false) .
 			'application/views/icons/16x16/';
 
-		if (!Auth::instance()->authorized_for('system_information')) {
+		if (!op5mayi::instance()->run('monitoring.status:view.showlog')) {
 			$cmd .= ' --hide-process --hide-commands ';
 		}
 
-		$send_objects = false;
-		if (!Auth::instance()->authorized_for('hosts_view_all') || !Auth::instance()->authorized_for('services_view_all')) {
-			$send_objects = true;
-			$cmd .= ' --restrict-objects';
-		}
+		$cmd .= ' --restrict-objects';
 
 		$cmd .= " --html";
 
@@ -98,37 +94,50 @@ class showlog
 		);
 
 		$process = proc_open($cmd, $descriptorspec, $pipes);
-		if (is_resource($process)) {
-			if ($send_objects) {
-				$pool = new HostPool_Model();
-				$set = $pool->all();
-				$hosts = array();
-				foreach ($set->it(array('name')) as $obj) {
-					$hosts[$obj->get_name()] = $obj->get_name();
-				}
-				fwrite($pipes[0], implode(';', $hosts));
-				fwrite($pipes[0], "\n");
-				$pool = new ServicePool_Model();
-				$set = $pool->all();
-				$svc = array();
-				foreach ($set->it(array('host_name', 'description')) as $obj) {
-					$hname = $obj->get_host()->get_name();
-					if (!array_key_exists($hname, $hosts)) {
-						$svc[] = $hname;
-						$svc[] = $obj->get_description();
-					}
-				}
-				fwrite($pipes[0], implode(';', $svc));
-			}
-			fclose($pipes[0]);
-			while (!feof($pipes[1])) {
-				echo fgets($pipes[1], 1024);
-			}
-			fclose($pipes[1]);
-			proc_close($process);
-		} else {
+		if (!is_resource($process)) {
 			echo "Couldn't run showlog binary";
+			return;
 		}
+		$pool = new HostPool_Model();
+		$set = $pool->all();
+		if(!op5mayi::instance()->run($set->mayi_resource().":view.showlog", false, $messages)) {
+			echo "<p>Not enough rights for viewing showlog for hosts</p>\n";
+			if($messages) {
+				echo implode("<br />", $messages);
+			}
+			return;
+		}
+		$hosts = array();
+		foreach ($set->it(array('name')) as $obj) {
+			$hosts[$obj->get_name()] = $obj->get_name();
+		}
+		fwrite($pipes[0], implode(';', $hosts));
+		fwrite($pipes[0], "\n");
+		$pool = new ServicePool_Model();
+		$set = $pool->all();
+		if(!op5mayi::instance()->run($set->mayi_resource().":view.showlog", false, $messages)) {
+			echo "<p>Not enough rights for viewing showlog for services</p>\n";
+			if($messages) {
+				echo implode("<br />", $messages);
+			}
+			return;
+		}
+		$svc = array();
+		foreach ($set->it(array('host_name', 'description')) as $obj) {
+			$hname = $obj->get_host()->get_name();
+			if (!array_key_exists($hname, $hosts)) {
+				$svc[] = $hname;
+				$svc[] = $obj->get_description();
+			}
+		}
+		fwrite($pipes[0], implode(';', $svc));
+
+		fclose($pipes[0]);
+		while (!feof($pipes[1])) {
+			echo fgets($pipes[1], 1024);
+		}
+		fclose($pipes[1]);
+		proc_close($process);
 	}
 
 	/**

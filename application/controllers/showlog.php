@@ -10,20 +10,14 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Showlog_Controller extends Authenticated_Controller
+class Showlog_Controller extends Ninja_Controller
 {
-	private $show;
 	private $options = array();
 
 	public function __construct()
 	{
 		parent::__construct();
 
-		$this->get_options();
-	}
-
-	protected function get_options()
-	{
 		$this->options = $this->input->get();
 		if (empty($this->options))
 			$this->options = $this->input->post();
@@ -64,7 +58,7 @@ class Showlog_Controller extends Authenticated_Controller
 			}
 		}
 
-		if (!Auth::instance()->authorized_for('system_information')) {
+		if (!$this->mayi->run('monitoring.status:view.showlog')) {
 			$this->options['hide_process'] = 1;
 			$this->options['hide_commands'] = 1;
 		}
@@ -72,11 +66,13 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function _show_log_entries()
 	{
+		$this->_verify_access('ninja.showlog:view');
 		showlog::show_log_entries($this->options);
 	}
 
 	public function basic_setup()
 	{
+		$this->_verify_access('ninja.showlog:view');
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = $this->add_path('reports/js/common.js');
@@ -105,18 +101,14 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function showlog()
 	{
+		$this->_verify_access('ninja.showlog:view');
 		$this->template->content = $this->add_view('showlog/showlog');
 		$this->basic_setup();
 		$this->template->title = _("Reporting » Event Log");
 
-		$is_authorized = false;
-		if (Auth::instance()->authorized_for('system_information')) {
-			$is_authorized = true;
-		}
-
 		$this->template->toolbar = new Toolbar_Controller( _( "Event Log" ) );
 
-		$this->template->content->is_authorized = $is_authorized;
+		$this->template->content->is_authorized = $this->mayi->run('monitoring.status:view.showlog');
 		$this->template->content->options = $this->options;
 	}
 }
