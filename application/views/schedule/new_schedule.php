@@ -3,7 +3,7 @@
 <div id="new_schedule_area">
 	<form action="schedule/schedule" id="new_schedule_report_form">
 
-		<table class="setup-tbl">
+		<table class="setup-tbl padd-table">
 			<tr>
 				<td>
 					<label for="type"><?php echo help::render('report-type-save', 'reports').' '._('Select report type') ?></label><br />
@@ -53,12 +53,15 @@
 					<label for="local_persistent_filepath"><?php echo help::render('local_persistent_filepath', 'reports').' '._("Save report on Monitor Server?") ?></label><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" />
 				</td>
 			</tr>
+			<tr>
+				<td colspan="2">
+					<span>
+						<input type="submit" class="button save" value="<?php echo _('Save') ?>" />
+						<input type="reset" class="button clear" value="<?php echo _('Clear') ?>" />
+					</span>
+				</td>
+			</tr>
 		</table>
-
-		<span>
-			<input type="submit" class="button save" value="<?php echo _('Save') ?>" />
-			<input type="reset" class="button clear" value="<?php echo _('Clear') ?>" />
-		</span>
 
 	</form>
 </div>

@@ -4,7 +4,7 @@
 	<h1><?php echo _('Scheduled reports') ?></h1>
 	<?php foreach($defined_report_types as $report_type => $report_type_label) { ?>
 	<div id="scheduled_<?php echo $report_type ?>_reports">
-		<table id="<?php echo $report_type ?>_scheduled_reports_table">
+		<table class="padd-table" id="<?php echo $report_type ?>_scheduled_reports_table">
 			<caption><?php echo _('Your scheduled '.$report_type_label.' Reports') ?></caption>
 			<thead id="<?php echo $report_type ?>_headers">
 				<tr class="setup">
