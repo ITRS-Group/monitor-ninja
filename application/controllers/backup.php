@@ -10,7 +10,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Backup_Controller extends Authenticated_Controller {
+class Backup_Controller extends Ninja_Controller {
 	public $debug = false;
 	public $model = false;
 
@@ -26,9 +26,97 @@ class Backup_Controller extends Authenticated_Controller {
 
 	private $unauthorized = false;
 
-	public function __construct()
+	public function index()
 	{
-		parent::__construct();
+		$this->_verify_access('system.backup:read');
+		$this->template->content = $this->add_view('backup/list');
+		$this->template->title = _('Configuration » Backup/Restore');
+		$this->template->content->suffix = $this->backup_suffix;
+
+		$backupfiles = false;
+		foreach (glob($this->backups_location.'/*'.$this->backup_suffix) as $filename) {
+			$backupfiles[] = basename($filename);
+		}
+
+		if ($backupfiles === false)
+			throw new Exception('Cannot get directory contents: ' . $this->backups_location);
+
+
+		$link = '<a id="verify" href="' . url::base() . 'index.php/backup/verify/">%s %s</a>';
+		$link = sprintf( $link,
+			html::image( $this->add_path('/icons/16x16/backup.png'), array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')),
+			_('Save your current op5 Monitor configuration')
+		);
+
+		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ) );
+		$this->template->toolbar->info( $link );
+
+		$this->template->content->files = $backupfiles;
+	}
+
+	public function download($file) {
+		$this->_verify_access('system.backup:read');
+		$file_path = $this->backups_location . "/" . $file;
+		$fp = fopen($file_path, "r");
+		if ($fp === false) {
+			$this->template->content = $this->add_view('backup/view');
+			$this->template->message = "Couldn't create filehandle.";
+			return;
+		}
+		/* Prevent buffering and rendering */
+		$this->auto_render = false;
+		download::headers($file.".tar.gz", filesize($file_path));
+		fpassthru($fp);
+		fclose($fp);
+	}
+
+	public function view($file)
+	{
+		$this->_verify_access('system.backup:read');
+
+		$this->template->content = $this->add_view('backup/view');
+		$this->template->title = _('Configuration » Backup/Restore » View');
+		$this->template->content->backup = $file;
+
+		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ), $file );
+
+		$this->template->toolbar->info(
+			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
+		);
+
+		$contents = array();
+		$status = 0;
+		exec($this->cmd_view . $this->backups_location . '/' . $file, $contents, $status);
+		sort($contents);
+
+		$this->template->content->files = $contents;
+	}
+
+	public function verify()
+	{
+		$this->_verify_access('system.backup:read');
+
+		$this->template = $this->add_view('backup/verify');
+
+		$output = array();
+		exec($this->asmonitor . $this->cmd_verify, $output, $status);
+		if ($status != 0)
+		{
+			$this->template->status = false;
+			$this->template->message = "The current configuration is invalid";
+			$this->debug = implode("\n", $output);
+		}
+		else
+		{
+			$this->template->status = true;
+			$this->template->message = "The current configuration is valid. Creating a backup...";
+		}
+	}
+
+	public function backup()
+	{
+		$this->_verify_access('system.backup:create');
+
 		$nagioscfg = System_Model::get_nagios_etc_path()."nagios.cfg";
 		$this->cmd_verify = '/opt/monitor/bin/nagios -v '.$nagioscfg;
 		$this->files2backup = array(
@@ -68,110 +156,6 @@ class Backup_Controller extends Authenticated_Controller {
 			}
 		}
 
-		$user = Auth::instance()->get_user();
-		if (!$user->authorized_for('configuration_information') || !$user->authorized_for('system_commands')) {
-
-			$this->template->content = $this->add_view('unauthorized');
-			$this->template->content->error_message = _("It appears as though you aren't authorized to access the backup interface.");
-			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization for more information.');
-			$this->unauthorized = true;
-		}
-	}
-
-	public function index()
-	{
-		if ($this->unauthorized)
-			return;
-		$this->template->content = $this->add_view('backup/list');
-		$this->template->title = _('Configuration » Backup/Restore');
-		$this->template->content->suffix = $this->backup_suffix;
-
-		$backupfiles = false;
-		foreach (glob($this->backups_location.'/*'.$this->backup_suffix) as $filename) {
-			$backupfiles[] = basename($filename);
-		}
-
-		if ($backupfiles === false)
-			throw new Exception('Cannot get directory contents: ' . $this->backups_location);
-
-		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ) );
-
-		$link = '<a id="verify" href="' . url::base() . 'index.php/backup/verify/">%s %s</a>';
-		$link = sprintf( $link,
-			html::image( $this->add_path('/icons/16x16/backup.png'), array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')),
-			_('Save your current op5 Monitor configuration')
-		);
-
-		$this->template->toolbar->info( $link );
-
-		$this->template->content->files = $backupfiles;
-	}
-
-	public function download($file) {
-		$file_path = $this->backups_location . "/" . $file;
-		$fp = fopen($file_path, "r");
-		if ($fp === false) {
-			$this->template->content = $this->add_view('backup/view');
-			$this->template->message = "Couldn't create filehandle.";
-			return;
-		}
-		/* Prevent buffering and rendering */
-		$this->auto_render = false;
-		download::headers($file.".tar.gz", filesize($file_path));
-		fpassthru($fp);
-		fclose($fp);
-	}
-
-	public function view($file)
-	{
-		if ($this->unauthorized)
-			return;
-
-		$this->template->content = $this->add_view('backup/view');
-		$this->template->title = _('Configuration » Backup/Restore » View');
-		$this->template->content->backup = $file;
-
-		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ), $file );
-
-		$this->template->toolbar->info(
-			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
-		);
-
-		$contents = array();
-		$status = 0;
-		exec($this->cmd_view . $this->backups_location . '/' . $file, $contents, $status);
-		sort($contents);
-
-		$this->template->content->files = $contents;
-	}
-
-	public function verify()
-	{
-		if ($this->unauthorized)
-			return;
-
-		$this->template = $this->add_view('backup/verify');
-
-		$output = array();
-		exec($this->asmonitor . $this->cmd_verify, $output, $status);
-		if ($status != 0)
-		{
-			$this->template->status = false;
-			$this->template->message = "The current configuration is invalid";
-			$this->debug = implode("\n", $output);
-		}
-		else
-		{
-			$this->template->status = true;
-			$this->template->message = "The current configuration is valid. Creating a backup...";
-		}
-	}
-
-	public function backup()
-	{
-		if ($this->unauthorized)
-			return;
-
 		$this->template = $this->add_view('backup/backup');
 
 		$file = strftime('backup-%Y-%m-%d_%H.%M.%S');
@@ -194,8 +178,13 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function restore($file)
 	{
-		if ($this->unauthorized)
-			return;
+		$this->_verify_access('system.backup:read');
+		$this->_verify_access('monitoring.hosts:update.backup');
+		$this->_verify_access('monitoring.services:update.backup');
+		$this->_verify_access('monitoring.contacts:update.backup');
+		$this->_verify_access('monitoring.notifications:update.backup');
+		$this->_verify_access('monitoring.status:update.backup');
+		$this->_verify_access('system.users:update.backup');
 
 		$this->template = $this->add_view('backup/restore');
 		$this->template->status = false;
@@ -244,8 +233,7 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function delete($file)
 	{
-		if ($this->unauthorized)
-			return;
+		$this->_verify_access('system.backup:delete');
 
 		$this->template = $this->add_view('backup/delete');
 
