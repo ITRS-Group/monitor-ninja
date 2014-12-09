@@ -118,7 +118,7 @@ class Backup_Controller extends Ninja_Controller {
 		$this->_verify_access('system.backup:create');
 
 		$nagioscfg = System_Model::get_nagios_etc_path()."nagios.cfg";
-		$this->cmd_verify = '/opt/monitor/bin/nagios -v '.$nagioscfg;
+		$this->cmd_verify = '/usr/bin/naemon -v '.$nagioscfg;
 		$this->files2backup = array(
 			System_Model::get_nagios_etc_path().'nagios.cfg',
 			System_Model::get_nagios_etc_path().'cgi.cfg',
