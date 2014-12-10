@@ -222,8 +222,6 @@ class HttpApiEvent_options extends Summary_options {
 			unset($row['output']);
 			unset($row['retry']);
 			unset($row['state']);
-		} else {
-			$row['in_scheduled_downtime'] = null;
 		}
 		unset($row['downtime_depth']);
 		// rename properties
