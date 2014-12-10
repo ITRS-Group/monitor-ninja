@@ -19,7 +19,7 @@
 
 	$shortcuts = array('internal' => array(), 'external' => array());
 
-	$shortcuts['internal'][] = array('#', 'icon-16 x16-refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload()'));
+	$shortcuts['internal'][] = array('#', 'icon-16 x16-refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload(); return false;'));
 
 	if ($show_settings) {
 		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'page_settings_icon'));
