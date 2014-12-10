@@ -257,7 +257,7 @@ class HttpApiEvent_options extends Summary_options {
 		}
 		switch ($this->properties[$key]['type']) {
 			case 'enum':
-				$v = array_search($value, $this->properties[$key]['options']);
+				$v = array_search($value, $this->properties[$key]['options'], true);
 				if ($v === false)
 					return false;
 				else
