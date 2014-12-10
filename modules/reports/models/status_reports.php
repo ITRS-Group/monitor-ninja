@@ -157,7 +157,8 @@ class Status_Reports_Model extends Reports_Model
 			$row = array(
 				'monitor_is_running' =>  $is_running,
 				'state' => (isset($initial_states[$object]) ? $initial_states[$object] : Reports_Model::STATE_PENDING),
-				'in_scheduled_downtime' => (isset($downtimes[$object]) ? $downtimes[$object] : 0)
+				# 0 or 1:
+				'in_scheduled_downtime' => (int)(bool)(isset($downtimes[$object]) ? $downtimes[$object] : 0)
 			);
 			if ($is_service) {
 				list($row['host_name'], $row['service_description']) = explode(';', $object);
@@ -348,7 +349,15 @@ class Status_Reports_Model extends Reports_Model
 		foreach( $dbr as $staterow ) {
 			$in_downtime = (int)($staterow['event_type'] == Reports_Model::DOWNTIME_START);
 			if ( $type == 'service' ) {
-				$downtimes[ $staterow['host_name'] . ';' . $staterow['service_description'] ] = $in_downtime;
+				if ($staterow['service_description']) {
+					$downtimes[$staterow['host_name'] . ';' . $staterow['service_description']] = $in_downtime + arr::search($downtimes, $staterow['host_name'] . ';' . $staterow['service_description'], 0);
+				} else {
+					foreach ($names as $name) {
+						list( $host, $srv ) = explode( ';', $name, 2 );
+						if ($host == $staterow['host_name'])
+							$downtimes[$staterow['host_name'] . ';' . $srv] = $in_downtime + arr::search($downtimes, $staterow['host_name'] . ';' . $srv, 0);
+					}
+				}
 			} else {
 				$downtimes[ $staterow['host_name'] ] = $in_downtime;
 			}
