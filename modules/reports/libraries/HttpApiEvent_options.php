@@ -214,9 +214,16 @@ class HttpApiEvent_options extends Summary_options {
 		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
 		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
 
-		// rename properties
-		$row['in_scheduled_downtime'] = null;
+		if ($row['event_type'] == "scheduled_downtime_start" || $row['event_type'] == "scheduled_downtime_stop") {
+			unset($row['hard']);
+			unset($row['output']);
+			unset($row['retry']);
+			unset($row['state']);
+		} else {
+			$row['in_scheduled_downtime'] = null;
+		}
 		unset($row['downtime_depth']);
+		// rename properties
 		if(isset($row['username'])) {
 			// comments are included and we've got one of them!
 			// let's produce some hierarchy
