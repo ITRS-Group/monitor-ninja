@@ -246,6 +246,15 @@ class HttpApiEvent_options extends Summary_options {
 		if($key == 'end_time' && isset($this->options['start_time']) && $value < $this->options['start_time']) {
 			return false;
 		}
+		if ($key == 'start_id') {
+			if (isset($this->options['end_id']) && $value > $this->options['end_id'])
+				return false;
+		}
+		if ($key == 'end_id') {
+			if (isset($this->options['start_id']) && $value < $this->options['start_id'])
+				return false;
+		}
+
 		return parent::validate_value($key, $value);
 	}
 }
