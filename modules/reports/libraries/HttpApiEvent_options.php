@@ -172,7 +172,10 @@ class HttpApiEvent_options extends Summary_options {
 		// transform values
 		$type = $row['service_description'] ? 'service' : 'host';
 		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
-		$row['state'] = strtolower(Current_status_Model::status_text($row['state'], true, $type));
+		if (isset($row['service_description']))
+			$row['state'] = Reports_Model::$service_states[$row['state']];
+		else
+			$row['state'] = Reports_Model::$host_states[$row['state']];
 
 		if ($row['event_type'] == "scheduled_downtime_start" || $row['event_type'] == "scheduled_downtime_stop") {
 			unset($row['hard']);
