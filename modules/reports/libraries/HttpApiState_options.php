@@ -83,6 +83,34 @@ class HttpApiState_options extends Report_options {
 	}
 
 	/**
+	 * @todo be able to throw exceptions here to give feedback of
+	 * *which* error we experienced, since, you know, there's at
+	 * least one user (you) exposed to this API.. Help yourself
+	 *
+	 * @param $key string
+	 * @param $value mixed
+	 * @return boolean
+	 */
+	protected function validate_value($key, &$value)
+	{
+		if (!isset($this->properties[$key])) {
+			return false;
+		}
+		switch ($this->properties[$key]['type']) {
+			case 'enum':
+				$v = array_search($value, $this->properties[$key]['options'], true);
+				if ($v === false)
+					return false;
+				else
+					$value = $v;
+				break;
+		}
+		if ($key == 'objects' && !is_array($value))
+			$value = array($value);
+
+		return parent::validate_value($key, $value);
+	}
+	/**
 	 * Final step in the "from merlin.report_data row to API-output" process
 	 *
 	 * @param $row array
