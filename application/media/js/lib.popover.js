@@ -76,7 +76,7 @@
       settings.root.on(
         settings.untoggle,
         settings.selector,
-        Popover.deactivate
+        Popover.abort
       );
 
     },
@@ -139,7 +139,7 @@
       settings.root.off(
         settings.untoggle,
         settings.selector,
-        Popover.deactivate
+        Popover.abort
       );
 
       var o = null;
@@ -270,12 +270,14 @@
 
   Popover.register(/^image\:/, function(data, target){
 
-    $('<img>').attr(
-      {src: data}
-    ).on('load', function(e){
+    $('<img>').one('load', function(e){
       Popover.display(e.target, target);
       tooltip.css('width', 'auto');
-    });
+    }).one('error', function(e){
+      Popover.display("Failed.", target);
+    }).attr(
+      {src: data}
+    );
 
   });
 
@@ -304,12 +306,15 @@
 
     if(ns[1]) service = encodeURIComponent(ns[1]);
 
-    $('<img>').attr(
-      {src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'}
-    ).on('load', function(e){
+    $('<img>')
+    .one('load', function(e){
       Popover.display(e.target, target);
       tooltip.css('width', 'auto');
-    });
+    }).one('error', function(e){
+      Popover.display("Failed.", target);
+    }).attr(
+      {src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'}
+    );
 
   });
 
