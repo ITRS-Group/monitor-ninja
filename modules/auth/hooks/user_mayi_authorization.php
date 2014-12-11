@@ -5,6 +5,13 @@ require_once ('op5/mayi.php');
  * Add authorization rules to ninja, where each auth point maps to a set of allowed MayI rules.
  */
 class user_mayi_authorization implements op5MayI_Constraints {
+
+	/* If a user has an old auth access right that is a key in this array,
+	 * she gains all rights represented by that key's values.
+	 *
+	 * Every value matching ^ninja.* should not be defined here, see @run()
+	 * for more information.
+	 */
 	private $access_rules = array (
 		'system_information' => array (
 			'monitoring.status:view',
