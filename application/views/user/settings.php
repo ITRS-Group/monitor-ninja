@@ -21,7 +21,7 @@ if (!empty($available_setting_sections)) {
 			<tr>
 				<th colspan="2">
 				<?php if(isset($sub_headings[$setting_key])) { ?>
-					<a target=_blank href="<?php echo $sub_headings[$setting_key][0]; ?>" title="<?php echo $sub_headings[$setting_key][1]; ?>"><span class="icon-12 x12-help"></span> <?php echo $name ?></a>
+					<?php echo $name ?> &nbsp; (<a target=_blank href="<?php echo $sub_headings[$setting_key][0]; ?>" title="<?php echo $sub_headings[$setting_key][1]; ?>">Read more here</a>)
 				<?php } else { ?>
 					<?php echo $name ?>
 				<?php } ?>
