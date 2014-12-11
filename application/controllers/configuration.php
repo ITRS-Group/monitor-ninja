@@ -11,9 +11,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Configuration_Controller extends Authenticated_Controller {
-
-	public $model = false;
+class Configuration_Controller extends Ninja_Controller {
 
 	/**
 	 * Enable links from Ninja to Nacoma
@@ -26,12 +24,7 @@ class Configuration_Controller extends Authenticated_Controller {
 	 */
 	public function configure($type=false, $name=false)
 	{
-		if( !Auth::instance()->authorized_for('configuration_information')) {
-			$this->template->content = $this->add_view('unauthorized');
-			$this->template->content->error_message = _("It appears as though you aren't authorized to access the configuration interface.");
-			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
-			return false;
-		}
+		$this->_verify_access('ninja.configuration:view');
 		$scan = $this->input->get('scan', null);
 		$type = $this->input->get('type', $type);
 		$name = $this->input->get('name', $name);
