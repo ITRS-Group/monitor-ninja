@@ -8,6 +8,8 @@
   width: 256px;
   padding: 8px;
   z-index: 9999;
+  word-break: normal;
+  word-wrap: normal;
 }
 
 .lib-popover-load {
