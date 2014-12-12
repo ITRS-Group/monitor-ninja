@@ -49,6 +49,8 @@ class Old_Timeperiod_Model extends Model
 	public function __construct($options) {
 		$this->start_time = $options['start_time'];
 		$this->end_time = $options['end_time'];
+		if ($this->end_time === NULL)
+			$this->end_time = time();
 		if (!$options['rpttimeperiod'])
 			return;
 		$result = self::get($options['rpttimeperiod'], true);
