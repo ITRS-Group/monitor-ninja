@@ -48,7 +48,21 @@ class Reports_Model extends Model
 		Reports_Model::SERVICE_PENDING => 'undetermined',
 		Reports_Model::SERVICE_EXCLUDED => 'hidden');
 
-
+	/**
+	 * Return the correct (lower-cased) name for the specified object type and state.
+	 * This is subtly different than a runtime state due to as-of-yet undetermined states.
+	 * @param $type 'host' or 'service'
+	 * @param $state a numeric state code
+	 */
+	public static function state_name($type, $state)
+	{
+		if ($type == 'host')
+			return arr::search(Reports_Model::$host_states, $state, "invalid state " . $state);
+		else if ($type == 'service')
+			return arr::search(Reports_Model::$service_states, $state, "invalid state " . $state);
+		else
+			return "unknown type " . $type;
+	}
 
 	/** The provided options */
 	protected $options = false;
