@@ -56,10 +56,18 @@ class Reports_Model extends Model
 	 */
 	public static function state_name($type, $state)
 	{
-		if ($type == 'host')
-			return arr::search(Reports_Model::$host_states, $state, "invalid state " . $state);
-		else if ($type == 'service')
-			return arr::search(Reports_Model::$service_states, $state, "invalid state " . $state);
+		if ($type == 'host') {
+			$res = arr::search(Reports_Model::$host_states, $state, "invalid state " . $state);
+			if ($res == 'pending')
+				$res = 'undetermined';
+			return $res;
+		}
+		else if ($type == 'service') {
+			$res = arr::search(Reports_Model::$service_states, $state, "invalid state " . $state);
+			if ($res == 'pending')
+				$res = 'undetermined';
+			return $res;
+		}
 		else
 			return "unknown type " . $type;
 	}
