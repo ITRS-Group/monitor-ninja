@@ -6,6 +6,12 @@
 class HttpApiState_options extends Report_options {
 	public static $type = 'httpapistate';
 
+	private function includesoft(&$name, $value, $obj) {
+		$name = 'includesoftstates';
+		$value -= 2;
+		return $value;
+	}
+
 	public function setup_properties()
 	{
 		parent::setup_properties();
@@ -19,12 +25,15 @@ class HttpApiState_options extends Report_options {
 			))
 		);
 
-		$this->properties['state_types']['options'] = array(
-			1 => 'soft',
-			2 => 'hard',
-			3 => 'both',
+		$this->properties['state_types'] = array(
+			'type' => 'enum',
+			'options' => array(
+				2 => 'hard',
+				3 => 'both',
+			),
+			'default' => 3,
+			'description' => _('Restrict events based on which state the event is in (soft vs hard)')
 		);
-		$this->properties['state_types']['default'] = 3; // default for summary-style reports, used for consistency
 
 		foreach (array('host_name', 'service_description', 'hostgroup', 'servicegroup') as $objtype) {
 			$this->properties[$objtype] = $this->properties['objects'];
@@ -38,6 +47,7 @@ class HttpApiState_options extends Report_options {
 		$this->properties['time']['description'] = _("A UNIX timestamp at which you want the included objects' state");
 		$this->properties['start_time']['generated'] = true;
 		$this->rename_options['time'] = 'start_time';
+		$this->rename_options['state_types'] = array($this, 'includesoft');
 	}
 
 	/**
