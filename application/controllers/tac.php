@@ -11,9 +11,10 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Tac_Controller extends Authenticated_Controller {
+class Tac_Controller extends Ninja_Controller {
 	public function __call($method, $args)
 	{
+		$this->_verify_access('ninja.tac:read');
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
 		$this->template->js[] = $this->add_path('/js/widgets.js');
