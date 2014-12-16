@@ -62,12 +62,6 @@ $config['display_errors'] = TRUE;
  */
 $config['render_stats'] = false;
 
-/**
- * Filename prefixed used to determine extensions. For example, an
- * extension to the Controller class would be named MY_Controller.php.
- */
-$config['extension_prefix'] = 'MY_';
-
 $config['autoload'] = array
 (
 		'libraries' => 'session, database'

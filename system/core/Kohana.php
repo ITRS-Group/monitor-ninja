@@ -692,12 +692,7 @@ final class Kohana {
 			return FALSE;
 		}
 
-		if ($filename = self::find_file($type, self::$configuration['core']['extension_prefix'].$class))
-		{
-			// Load the class extension
-			require $filename;
-		}
-		elseif ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
+		if ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
 		{
 			// Class extension to be evaluated
 			$extension = 'class '.$class.' extends '.$class.'_Core { }';
