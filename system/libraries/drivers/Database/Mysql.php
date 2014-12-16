@@ -56,20 +56,22 @@ class Database_Mysql_Driver extends Database_Driver {
 		$port = isset($port) ? ':'.$port : '';
 
 		// Make the connection and select the database
-		if (($this->link = $connect($host.$port, $user, $pass, TRUE)) AND mysql_select_db($database, $this->link))
+		this->link = $connect($host.port, $user, $pass, TRUE);
+		if ($this->link === FALSE)
+			return FALSE;
+		$select_result = mysql_select_db($database, $this->link);
+		if ($select_result === FALSE)
+			return FALSE;
+
+		if ($charset = $this->db_config['character_set'])
 		{
-			if ($charset = $this->db_config['character_set'])
-			{
-				$this->set_charset($charset);
-			}
-
-			// Clear password after successful connect
-			$this->config['connection']['pass'] = NULL;
-
-			return $this->link;
+			$this->set_charset($charset);
 		}
 
-		return FALSE;
+		// Clear password after successful connect
+		$this->config['connection']['pass'] = NULL;
+
+		return $this->link;
 	}
 
 	public function query($sql)
