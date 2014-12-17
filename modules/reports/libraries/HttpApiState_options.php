@@ -58,24 +58,24 @@ class HttpApiState_options extends Report_options {
 	function format_default($value, $type)
 	{
 		if($type == 'bool') {
-			return (int) $this[$value];
+			return (int) $value;
 		}
 		if($type == 'array' || $type == 'objsel') {
-			if(empty($this[$value])) {
+			if(empty($value)) {
 				return "[empty]";
 			}
-			return implode(", ", $this[$value]);
+			return implode(", ", $value);
 		}
-		if($type == 'string' && !$this[$value]) {
+		if($type == 'string' && !$value) {
 			return '[empty]';
 		}
 		if($type == 'enum') {
-			return "'".$this->get_value($value)."'";
+			return "'$value'";
 		}
-		if($type == 'int' && empty($this[$value]) && $this[$value] !== 0) {
+		if($type == 'int' && empty($value) && $value !== 0) {
 			return "[empty]";
 		}
-		return (string) $this[$value];
+		return (string) $value;
 	}
 
 	/**
