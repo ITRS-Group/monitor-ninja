@@ -29,6 +29,11 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 				}
 			}
 		}
+
+		$this->parent_class = 'Object';
+		if(isset($this->structure['object_custom_parent'])) {
+			$this->parent_class = $this->structure['object_custom_parent'];
+		}
 	}
 
 	/**
@@ -38,7 +43,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
-		$this->init_class( 'Object', array('abstract') );
+		$this->init_class( $this->parent_class, array('abstract') );
 		$this->variable( '_table', $this->name, 'protected' );
 		if($this->writable) {
 			$this->variable( '_changed', array(), 'private' );

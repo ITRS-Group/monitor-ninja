@@ -24,11 +24,13 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 				}
 			}
 		}
+
+		$this->parent_class = 'ObjectSet';
 	}
 
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
-		$this->init_class( 'ObjectSet', array('abstract') );
+		$this->init_class( $this->parent_class, array('abstract') );
 		$this->variable('table',$this->name,'public');
 
 		$this->variable('key_columns',$this->structure['key'],'protected');
