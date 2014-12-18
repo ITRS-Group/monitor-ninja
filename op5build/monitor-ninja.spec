@@ -156,7 +156,7 @@ sed -i \
 cp op5build/login.png \
 	%buildroot%prefix/application/views/css/default/images
 cp op5build/favicon.ico \
-	%buildroot%prefix/application/views/icons/16x16/
+	%buildroot%prefix/application/views/icons/
 cp op5build/icon.png \
 	%buildroot%prefix/application/views/icons/
 
