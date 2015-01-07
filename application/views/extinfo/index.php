@@ -74,7 +74,7 @@ if (!empty($widgets)) {
 		<?php
 			if ($service !== false) {
 				echo '<td style="max-width: 300px">';
-				echo html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_display_name()));
+				echo html::anchor('extinfo/details/?host='.urlencode($host->get_name()), html::specialchars($host->get_name()));
 				echo $host->get_alias() ? ' ('.html::specialchars($host->get_alias()).')' : '';
 				echo '</td>';
 			}
