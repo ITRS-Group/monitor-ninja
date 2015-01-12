@@ -62,7 +62,21 @@ abstract class ORMGenerator extends class_generator {
 	 * @var array
 	 */
 	protected $key;
+
+	/**
+	 * If the model should enable write support.
+	 *
+	 * @var bool
+	 */
 	protected $writable;
+
+
+	/**
+	 * The name of the parent class.
+	 *
+	 * @var string
+	 */
+	protected $parent_class;
 
 	public function __construct( $name, $full_structure ) {
 		$this->set_model();

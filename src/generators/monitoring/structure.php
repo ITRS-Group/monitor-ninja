@@ -6,6 +6,7 @@ $tables = array (
 		'class' => 'Column',
 		'source' => 'LS',
 		'key' => array('name', 'table'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'description' => 'string',
@@ -19,6 +20,7 @@ $tables = array (
 		'class' => 'Command',
 		'source' => 'LS',
 		'key' => array('line','name'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'line' => 'string',
@@ -30,6 +32,7 @@ $tables = array (
 		'class' => 'Comment',
 		'source' => 'LS',
 		'key' => array('id','is_service'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'author' => 'string',
@@ -52,6 +55,7 @@ $tables = array (
 		'class' => 'ContactGroup',
 		'source' => 'LS',
 		'key' => array('name'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'alias' => 'string',
@@ -64,6 +68,7 @@ $tables = array (
 		'class' => 'Contact',
 		'source' => 'LS',
 		'key' => array('name'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'address1' => 'string',
@@ -95,6 +100,7 @@ $tables = array (
 		'class' => 'Downtime',
 		'source' => 'LS',
 		'key' => array('id', 'is_service'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'author' => 'string',
@@ -117,6 +123,7 @@ $tables = array (
 		'class' => 'HostGroup',
 		'source' => 'LS',
 		'key' => array('name'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'action_url' => 'string',
@@ -158,6 +165,7 @@ $tables = array (
 			'perf_data_raw' => 'perf_data',
 			'icon_image' => 'icon_image_expanded'
 		),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
@@ -277,6 +285,7 @@ $tables = array (
 		'class' => 'ServiceGroup',
 		'source' => 'LS',
 		'key' => array('name'),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'action_url' => 'string',
@@ -312,6 +321,7 @@ $tables = array (
 			'perf_data_raw' => 'perf_data',
 			'icon_image' => 'icon_image_expanded'
 		),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
@@ -403,6 +413,7 @@ $tables = array (
 		'class' => 'Status',
 		'source' => 'LS',
 		'key' => array(),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'accept_passive_host_checks' => 'int',
@@ -455,6 +466,7 @@ $tables = array (
 		'rename' => array(
 			'is_active' => 'in'
 		),
+		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
 			'alias' => 'string',

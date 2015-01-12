@@ -11,6 +11,8 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 	public function __construct( $name, $full_structure ) {
 		parent::__construct($name, $full_structure);
 		$this->classname = 'Base'.$this->structure['class'].'Pool';
+
+		$this->parent_class = 'ObjectPool';
 	}
 
 	/**
@@ -20,7 +22,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 	 **/
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
-		$this->init_class( 'ObjectPool', array('abstract') );
+		$this->init_class( $this->parent_class, array('abstract') );
 
 		if( isset($this->structure['default_sort']) ) {
 			$this->variable('default_sort',$this->structure['default_sort'],'static protected');
