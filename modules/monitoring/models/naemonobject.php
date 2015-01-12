@@ -1,10 +1,7 @@
 <?php
 
 /**
- * naemon Object Model
- *
- * @package default
- * @author
+ * Naemon Object Model
  **/
 class NaemonObject_Model extends Object_Model {
 }
