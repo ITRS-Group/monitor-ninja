@@ -1,11 +1,34 @@
 <?php
+
+require_once('op5/mayi.php');
+
 /**
  * Class containing hooks to interface with the monitoring subsystem.
  */
-class monitoring_hooks {
+class monitoring_hooks implements op5MayI_Actor {
 	public function __construct() {
 		Event::add('system.post_controller_constructor',
 			array ($this,'load_notifications'));
+
+		$mayi = op5MayI::instance();
+		$mayi->be('monitoring', $this);
+	}
+
+	/**
+	 * Return information about the system usage.
+	 *
+	 * @return array environemnt
+	 */
+	public function getActorInfo() {
+		$sysinfo = op5sysinfo::instance()->get_usage();
+		return array(
+			'monitor' => array(
+				'hosts' => isset($sysinfo['monitor']) ? $sysinfo['monitor'] : 0,
+				'services' => isset($sysinfo['monitor.services']) ? $sysinfo['monitor.services'] : 0,
+				'pollers' => isset($sysinfo['pollers']) ? $sysinfo['pollers'] : 0,
+				'peers' => isset($sysinfo['peers']) ? $sysinfo['peers'] : 0
+			)
+		);
 	}
 
 	/**
