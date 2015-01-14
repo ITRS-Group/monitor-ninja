@@ -56,7 +56,7 @@ class Database_Mysql_Driver extends Database_Driver {
 		$port = isset($port) ? ':'.$port : '';
 
 		// Make the connection and select the database
-		this->link = $connect($host.port, $user, $pass, TRUE);
+		$this->link = $connect($host.$port, $user, $pass, TRUE);
 		if ($this->link === FALSE)
 			return FALSE;
 		$select_result = mysql_select_db($database, $this->link);
