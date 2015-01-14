@@ -16,7 +16,7 @@
 				padding-top: 66px;
 			}
 		</style>
-		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
+		<?php echo html::link($this->add_path('icons/favicon.ico'),'icon','image/x-icon') ?>
 		<?php echo html::script('application/media/js/jquery.js'); ?>
 		<?php echo new View('js_header', array('js' => $js)); ?>
 	</head>

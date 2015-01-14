@@ -12,7 +12,7 @@ if (!empty($base_href)) {
 	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
 
 	<?php
-		echo html::link('application/views/icons/16x16/favicon.ico','icon','image/icon');
+		echo html::link('application/views/icons/favicon.ico','icon','image/x-icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.popover.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.notify.css', 'stylesheet', 'text/css', false, 'screen');
