@@ -148,7 +148,8 @@ class MayIActorTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Test that the special args actor can be passed as an argument to ->run()
+	 * Test that arguments can overwrite actor information when passed as an
+	 * argument to ->run()
 	 */
 	public function test_argument_actor() {
 		$mayi = op5MayI::instance();
@@ -156,16 +157,46 @@ class MayIActorTest extends PHPUnit_Framework_TestCase {
 		$cs = new MayIActorTest_EnvDumpConstraints();
 		$mayi->act_upon($cs);
 
-		$this->assertTrue(
-			$mayi->run('something:stuff', array ('x' => 12,'y' => 13)));
+		$actora = new MayIActorTest_setInfoActor();
+		$mayi->be('actA', $actora);
 
-		$this->assertEquals(array ('args' => array ('x' => 12,'y' => 13)),
+		$actorb = new MayIActorTest_setInfoActor();
+		$mayi->be('actB', $actorb);
+
+		$actora->setActorInfo(array ('a' => 1, 'x' => 4, 'y' => 5));
+		$actorb->setActorInfo(array ('b' => 2));
+
+		$this->assertTrue(
+			$mayi->run('something:stuff', array (
+				'actA' => array(
+					'x' => 3,
+					'k' => 7
+				)
+			)));
+
+		$this->assertEquals(array (
+			'actA' => array(
+				'a' => 1,
+				'x' => 3,
+				'y' => 5,
+				'k' => 7
+			),
+			'actB' => array(
+				'b' => 2
+			)
+		),
 			$cs->getEnv());
 	}
 
 	/**
 	 * Test that the actor "args" can be registered externally, and used if not
 	 * passed to the run method as an argument
+	 *
+	 * The behaviour of "args" actor is no longer a special case, because the
+	 * args is an array to override the values of actors when calling.
+	 *
+	 * This is still kepts as a test to validate that args isn't removed by some
+	 * strange reason. (The test is still valid, so why remove it?)
 	 */
 	public function test_args_registered_externally() {
 		$mayi = op5MayI::instance();

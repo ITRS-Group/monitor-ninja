@@ -95,7 +95,7 @@ class ListView_Controller extends Ninja_Controller {
 
 			$messages = array();
 			$perfdata = array();
-			if($this->mayi->run($result_set->mayi_resource().":view.list", false, $messages, $perfdata)) {
+			if($this->mayi->run($result_set->mayi_resource().":view.list", array(), $messages, $perfdata)) {
 				$data = array();
 				foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
 					$obj = $elem->export();

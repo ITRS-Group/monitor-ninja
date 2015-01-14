@@ -171,7 +171,7 @@ class Ninja_Controller extends Template_Controller {
 	 * If not access is allowed, throw an execption, to break out of normal
 	 * execution path, and render a access denied-page.
 	 */
-	protected function _verify_access($action, $args = false) {
+	protected function _verify_access($action, $args = array()) {
 		$access = $this->mayi->run($action, $args, $messages,
 			$this->access_perfdata);
 

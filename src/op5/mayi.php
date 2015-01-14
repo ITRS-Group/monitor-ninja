@@ -75,18 +75,17 @@ class op5MayI {
 	 * To debug and trace the system status, and the current information for
 	 * debugging, make it possible to export the environment for debugging.
 	 *
-	 * @param array $args
-	 *        	arguments accessable through the enviornment "args"
+	 * @param array $override
+	 *        values to override in the environement, which will be replaced
+	 *        by the values in this array.
 	 * @return array
 	 */
-	public function get_environment($args = false) {
+	public function get_environment(array $override = array()) {
 		$environment = array ();
 		foreach ($this->actors as $context => $actor) {
 			$environment[$context] = $actor->getActorInfo();
 		}
-		if ($args !== false) {
-			$environment['args'] = $args;
-		}
+		$environment = array_replace_recursive($environment, $override);
 		return $environment;
 	}
 
@@ -95,24 +94,24 @@ class op5MayI {
 	 *
 	 * The method returns if an action is allowed to execute given the
 	 * circumstanses of the enviornment (see be-method), and the constraints
-	 * (see
-	 * act_upon method)
+	 * (see act_upon method)
 	 *
 	 * @param string $action
 	 *        	the action in the format of "path.to.resource:action"
-	 * @param array $args
-	 *        	arguments accessable through the enviornment "args"
+	 * @param array $override
+	 *        values to override in the environement, which will be replaced
+	 *        by the values in this array.
 	 * @param array $messages
 	 *        	returns a list of messsages from constraints
 	 * @param array $perfdata
 	 *        	returns a list of perfomrance data from constraints
 	 * @return boolean
 	 */
-	public function run($action, $args = false, &$messages = false, &$perfdata = false) {
+	public function run($action, array $override = array(), &$messages = false, &$perfdata = false) {
 		$messages = array ();
 		$perfdata = array ();
 
-		$environment = $this->get_environment($args);
+		$environment = $this->get_environment($override);
 
 		foreach ($this->constraints as $rs) {
 			if (!$rs->run($action, $environment, $messages, $perfdata)) {
