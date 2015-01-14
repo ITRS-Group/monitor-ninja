@@ -78,9 +78,9 @@
 
 		<?php
 			if ( isset( $global_notifications ) && is_array( $global_notifications ) && count( $global_notifications ) >= 1 ) {
-				echo "<script>";
+				echo "<script>\n";
 				foreach ( $global_notifications as $note ) {
-					printf("Notify.message('%s', {type: 'error', nag: true});", $note[0]);
+					printf("Notify.message('%s', \n\t{type: 'error', nag: true});\n", addcslashes($note[0], "'"));
 				}
 				echo "</script>";
 			}
