@@ -48,9 +48,11 @@ class op5MayI {
 	 *
 	 * @param string $context
 	 * @param op5MayI_Actor $actor
+	 * @return op5MayI
 	 */
 	public function be($context, op5MayI_Actor $actor) {
 		$this->actors[$context] = $actor;
+		return $this;
 	}
 
 	/**
@@ -60,9 +62,11 @@ class op5MayI {
 	 * Constraints is implemented through the interface of op5MayI_Constraints
 	 *
 	 * @param op5MayI_Constraints $constraints
+	 * @return op5MayI
 	 */
 	public function act_upon(op5MayI_Constraints $constraints) {
 		$this->constraints[] = $constraints;
+		return $this;
 	}
 
 	/**
