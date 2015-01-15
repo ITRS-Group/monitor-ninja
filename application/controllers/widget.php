@@ -170,8 +170,6 @@ class Widget_Controller extends Authenticated_Controller {
 	/**
 	 * A "factory reset" is defined as "undefined, fairly evenly distributed
 	 * widgets with default settings"
-	 *
-	 * @FIXME I'm reasonably certain that default ordering won't work on oracle
 	 */
 	 public function factory_reset_widgets()
 	 {

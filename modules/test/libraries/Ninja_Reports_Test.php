@@ -333,10 +333,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		if ($cached) {
 			echo "Data is cached\n";
 		} else {
-			if ($this->db_type === 'oracle')
-				$sql = "CREATE TABLE $table_name AS (SELECT * FROM report_data WHERE rownum < 0)";
-			else
-				$sql = "CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0";
+			$sql = "CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0";
 			echo "Building table [$table_name]. This might take a moment or three...\n";
 			if( ! $db->query($sql)) {
 				$this->crash("Error creating table $table_name: ".$db->error_message());

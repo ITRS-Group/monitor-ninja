@@ -212,8 +212,7 @@ if [ -n "$MYSQL_AVAILABLE" ]; then
   popd
 else
   echo "WARNING: mysql-server is not installed or not running."
-  echo "If Oracle database is to be used this is ok."
-  echo "If MySQL database is to be used you need to maually run:"
+  echo "If a database is to be used you need to maually run:"
   echo "  %prefix/install_scripts/ninja_db_init.sh"
   echo "to complete the setup of %name"
 fi
@@ -222,7 +221,6 @@ $(php %prefix/index.php cli/save_widget --page 'tac/index' --name nagvis --frien
 $(php %prefix/index.php cli/save_widget --page 'tac/index' --name listview --friendly_name "List view" &> /dev/null)
 if [ "$?" -ne 0 ]; then
 	echo "WARNING: mysql-server is not installed or not running."
-	echo "If Oracle database is to be used this is ok."
 	echo "If MySQL database is to be used you need to maually"
 	echo "setup the merlin database to complete the setup of %name"
 fi
