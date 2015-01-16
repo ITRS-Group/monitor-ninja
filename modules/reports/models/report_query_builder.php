@@ -185,7 +185,7 @@ class Report_query_builder_Model extends Model
 			$downtime = 'event_type < 1200 AND event_type > 1100';
 
 		if (isset($this->options['include_flapping']) && $this->options['include_flapping'])
-			$flapping = 'event_type == 1000 OR event_type == 1001';
+			$flapping = 'event_type = 1000 OR event_type = 1001';
 
 		if (isset($this->options['include_process']) && $this->options['include_process'])
 			$process = 'event_type < 200';
