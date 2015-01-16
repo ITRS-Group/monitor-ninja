@@ -149,8 +149,9 @@ class Extinfo_Controller extends Ninja_Controller {
 			case 'host':
 
 				$toolbar->title = "Host";
+				$toolbar->subtitle = "";
 
-				if ( $object->get_icon_image() ) {
+				if ($object->get_icon_image()) {
 
 					$attributes = array(
 						'alt' => $object->get_icon_image_alt(),
@@ -160,20 +161,18 @@ class Extinfo_Controller extends Ninja_Controller {
 
 					$logos_path = Kohana::config('config.logos_path');
 					$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
-					$toolbar->subtitle = html::image( $logos_path.$object->get_icon_image(), $attributes ) . " " . html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
-
-				} else {
-
-					$toolbar->subtitle = html::specialchars($object->get_name());
+					$toolbar->subtitle = html::image($logos_path.$object->get_icon_image(), $attributes);
 
 				}
 
-				$toolbar->info( html::anchor( listview::link('services',array('host.name'=>$host)) , _('Status detail') ) );
-				$toolbar->info( html::anchor( 'alert_history/generate?report_type=hosts&amp;objects[]='.urlencode($host) , _('Alert history') ) );
-				$toolbar->info( html::anchor( 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host) , _('Event log') ) );
-				$toolbar->info( html::anchor( 'histogram/generate?report_type=hosts&amp;objects[]='.urlencode($host) , _('Alert histogram') ) );
-				$toolbar->info( html::anchor( 'avail/generate/?report_type=hosts&amp;objects[]='.urlencode($host) , _('Availability report') ) );
-				$toolbar->info( html::anchor( listview::link('notifications',array('host_name'=>$host)) , _('Notifications') ) );
+				$toolbar->subtitle .= html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
+
+				$toolbar->info(html::anchor(listview::link('services',array('host.name'=>$host)) , _('Status detail')));
+				$toolbar->info(html::anchor('alert_history/generate?report_type=hosts&amp;objects[]='.urlencode($host) , _('Alert history')));
+				$toolbar->info(html::anchor('showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host) , _('Event log')));
+				$toolbar->info(html::anchor('histogram/generate?report_type=hosts&amp;objects[]='.urlencode($host) , _('Alert histogram')));
+				$toolbar->info(html::anchor('avail/generate/?report_type=hosts&amp;objects[]='.urlencode($host) , _('Availability report')));
+				$toolbar->info(html::anchor(listview::link('notifications',array('host_name'=>$host)) , _('Notifications')));
 
 				break;
 			case 'service':
@@ -181,20 +180,22 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->title = "Service";
 				$toolbar->subtitle = html::specialchars($object->get_description());
 
-				$toolbar->info( html::anchor( 'extinfo/details?host='.urlencode($host) , _('Information for host') ) );
-				$toolbar->info( html::anchor( listview::link('services',array('host.name'=>$host)) , _('Status detail for host') ) );
-				$toolbar->info( html::anchor( 'alert_history/generate?report_type=services&amp;objects[]='.$host.';'.urlencode($service) , _('Alert history') ) );
-				$toolbar->info( html::anchor( 'showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service), _('Event log') ) );
-				$toolbar->info( html::anchor( 'histogram/generate?report_type=services&amp;objects[]='.$host.';'.urlencode($service) , _('Alert histogram') ) );
-				$toolbar->info( html::anchor( 'avail/generate/?report_type=services&amp;objects[]='.$host.';'.urlencode($service).'&report_type=services' , _('Availability report') ) );
-				$toolbar->info( html::anchor( listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service)) , _('Notifications') ) );
+				$toolbar->info(html::anchor('extinfo/details?host='.urlencode($host) , _('Information for host')));
+				$toolbar->info(html::anchor(listview::link('services',array('host.name'=>$host)) , _('Status detail for host')));
+				$toolbar->info(html::anchor('alert_history/generate?report_type=services&amp;objects[]='.$host.';'.urlencode($service) , _('Alert history')));
+				$toolbar->info(html::anchor('showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service), _('Event log')));
+				$toolbar->info(html::anchor('histogram/generate?report_type=services&amp;objects[]='.$host.';'.urlencode($service) , _('Alert histogram')));
+				$toolbar->info(html::anchor('avail/generate/?report_type=services&amp;objects[]='.$host.';'.urlencode($service).'&report_type=services' , _('Availability report')));
+				$toolbar->info(html::anchor(listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service)) , _('Notifications')));
 
 				break;
 		}
+
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
 			$this->template->content->label_view_for = _("for this $type");
 		}
+
 	}
 
 	/**
