@@ -48,14 +48,31 @@ class sql
 	}
 
 	/**
-	 * Given one SQL function F and N elements E, return (E_0) F (E_1) F (E_2) F ... (E_N)
-	 * Handles empty arguments just fine.
-	 * Is helpful for ANDing or ORing long expressions without having to resort to hacks like
-	 * WHERE 1=1
+	 * Joins arbitrary amount of sub-expressions into one OR separated string of expressions.
+	 * Filters out empty arguments, and wraps all the sub-expressions in parenthesis.
 	 */
-	public static function combine() {
+	public static function sqlor() {
 		$args = func_get_args();
-		$function = array_shift($args);
+		$function = 'or';
+		$res = false;
+		foreach ($args as $arg) {
+			if (!empty($arg))
+				$res[] = $arg;
+		}
+		if (!empty($res))
+			$res = '(' . implode(') '.$function.' (', $res) . ')';
+		else
+			$res = '1=0';
+		return $res;
+	}
+
+	/**
+	 * Joins arbitrary amount of sub-expressions into one AND separated string of expressions.
+	 * Filters out empty arguments, and wraps all the sub-expressions in parenthesis.
+	 */
+	public static function sqland() {
+		$args = func_get_args();
+		$function = 'and';
 		$res = false;
 		foreach ($args as $arg) {
 			if (!empty($arg))
@@ -66,4 +83,3 @@ class sql
 		return $res;
 	}
 }
-

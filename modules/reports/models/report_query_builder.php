@@ -179,13 +179,13 @@ class Report_query_builder_Model extends Model
 			$service_states_sql = '(event_type = ' . Reports_Model::SERVICECHECK .
 				' AND state IN('.implode(', ', $included_states).'))';
 
-		$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
+		$alert_types = sql::sqlor($host_states_sql, $service_states_sql);
 
 		if (isset($this->options['include_downtime']) && $this->options['include_downtime'])
 			$downtime = 'event_type < 1200 AND event_type > 1100';
 
 		if (isset($this->options['include_flapping']) && $this->options['include_flapping'])
-			$flapping = 'event_type == 1000 OR event_type == 1001';
+			$flapping = 'event_type = 1000 OR event_type = 1001';
 
 		if (isset($this->options['include_process']) && $this->options['include_process'])
 			$process = 'event_type < 200';
@@ -219,19 +219,19 @@ class Report_query_builder_Model extends Model
 
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
 		$query .= ' WHERE '.
-			sql::combine('and',
+			sql::sqland(
 				$time_first,
 				$time_last,
 				$id_first,
 				$id_last,
-				sql::combine('or',
+				sql::sqlor(
 					$process,
-					sql::combine('and',
+					sql::sqland(
 						$object_selection,
-						sql::combine('or',
+						sql::sqlor(
 							$downtime,
 							$flapping,
-							sql::combine('and',
+							sql::sqland(
 								$softorhard,
 								$alert_types)))),
 				$wildcard_filter
@@ -249,8 +249,7 @@ class Report_query_builder_Model extends Model
 							return $db->escape(current($e));
 						};
 			if (!empty($hosts[1])) {
-				$extra_sql[] = sql::combine(
-						"AND",
+				$extra_sql[] = sql::sqland(
 						"host_name IN (".
 						implode(", ",array_map($objtosql,$hosts[1])).")",
 						"service_description = ''"

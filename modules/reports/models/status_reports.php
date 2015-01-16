@@ -100,31 +100,31 @@ class Status_Reports_Model extends Reports_Model
 				$objsel = '('.implode(') OR (', $objsel).')';
 			}
 
-			$sql_where = sql::combine('and',
+			$sql_where = sql::sqland(
 				$time_first,
 				$time_last,
-				sql::combine('or',
+				sql::sqlor(
 					$process,
-					sql::combine('or',
-						sql::combine('and',
+					sql::sqlor(
+						sql::sqland(
 							$purehost,
 							$downtime),
-						sql::combine('and',
+						sql::sqland(
 							$objsel,
-							sql::combine('or',
+							sql::sqlor(
 								$downtime,
 								$softorhardcheck)))));
 		} else {
 			$objsel = "host_name IN ('" . join("', '", $objects) . "') AND service_description = ''";
 
-			$sql_where = sql::combine('and',
+			$sql_where = sql::sqland(
 				$time_first,
 				$time_last,
-				sql::combine('or',
+				sql::sqlor(
 					$process,
-					sql::combine('and',
+					sql::sqland(
 						$objsel,
-						sql::combine('or',
+						sql::sqlor(
 							$downtime,
 							$softorhardcheck))));
 		}
