@@ -23,7 +23,7 @@ foreach ($report_data as $avail_data) {
 			<th><?php echo help::render('availability') ?></th>
 			<th><?php echo _('Type / Reason') ?></th>
 			<th class="headerNone"><?php echo _('Time') ?></th>
-			<th class="headerNone"><?php echo _('Total time') ?></th>
+			<th class="headerNone"><?php echo _('Percent') ?></th>
 			<?php if ($options['include_pie_charts']) { ?>
 				<th><?php echo _('Status overview') ?></th>
 			<?php } ?>
