@@ -35,7 +35,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 
 		$substr = "AND "
 				."("
-					."((host_name IN ('monitor')) AND (service_description = ''))"
+					."((host_name IN ('monitor')) and (service_description = ''))"
 					." OR "
 					."((host_name, service_description) IN ("
 							."('host_down_acknowledged', 'service critical'), "

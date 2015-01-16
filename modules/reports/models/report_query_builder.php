@@ -192,7 +192,7 @@ class Report_query_builder_Model extends Model
 			$alert_types = $service_states_sql;
 			break;
 		 case 3:
-			$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
+			$alert_types = sql::sqlor($host_states_sql, $service_states_sql);
 			break;
 		}
 
@@ -231,18 +231,18 @@ class Report_query_builder_Model extends Model
 
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
 		$query .= ' WHERE '.
-			sql::combine('and',
+			sql::sqland(
 				$time_first,
 				$time_last,
 				$id_first,
 				$id_last,
-				sql::combine('or',
+				sql::sqlor(
 					$process,
-					sql::combine('and',
+					sql::sqland(
 						$object_selection,
-						sql::combine('or',
+						sql::sqlor(
 							$downtime,
-							sql::combine('and',
+							sql::sqland(
 								$softorhard,
 								$alert_types)))),
 				$wildcard_filter
@@ -260,8 +260,7 @@ class Report_query_builder_Model extends Model
 							return $db->escape(current($e));
 						};
 			if (!empty($hosts[1])) {
-				$extra_sql[] = sql::combine(
-						"AND",
+				$extra_sql[] = sql::sqland(
 						"host_name IN (".
 						implode(", ",array_map($objtosql,$hosts[1])).")",
 						"service_description = ''"
