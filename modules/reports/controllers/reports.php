@@ -313,17 +313,7 @@ class Reports_Controller extends Base_reports_Controller
 				}
 
 				if ($sub_type=='host') {
-					$service_states = $this->_print_states_for_services($sources);
-
-					if ($service_states !== false) {
-						$header_str = _("Service state breakdown");
-						$template->svc_content = $this->add_view('reports/multiple_service_states');
-						$content = $template->svc_content;
-						$content->header_string = $header_str;
-						$content->multiple_states = $service_states;
-						$content->hide_host = true;
-						$content->source = $sources;
-					}
+					$template->svc_content = $this->_print_states_for_services($sources);
 				}
 
 				$links = array();
@@ -437,6 +427,7 @@ class Reports_Controller extends Base_reports_Controller
 
 			$classname = get_class($this->options);
 			$opts = new $classname($this->options);
+			$opts['service_filter_status'] = array();
 			$opts['report_type'] = 'services';
 			foreach ($res as $row)
 				$service_arr[] = $row['host_name'] . ';' . $row['description'];
@@ -444,7 +435,13 @@ class Reports_Controller extends Base_reports_Controller
 			$report_class = new Status_Reports_Model($opts);
 
 			$data_arr = $report_class->get_uptime();
-			return $data_arr;
+			$content = $this->add_view('reports/multiple_service_states');
+			$content->options = $opts;
+			$content->header_string = _("Service state breakdown");
+			$content->multiple_states = $data_arr;
+			$content->hide_host = true;
+			$content->source = $service_arr;
+			return $content;
 		}
 		return false;
 	}
