@@ -6,6 +6,11 @@ require_once __DIR__.'/queryhandler.php';
 class op5sysinfo_Exception extends Exception {}
 
 class op5sysinfo {
+	/**
+	 * Return sysinfo instance
+	 *
+	 * @return op5sysinfo
+	 */
 	static public function instance() {
 		return op5objstore::instance()->obj_instance(__CLASS__);
 	}
@@ -113,7 +118,7 @@ class op5sysinfo {
 		if (!isset($nodeinfo['ipc']) ||
 			 !isset($nodeinfo['ipc']['configured_polllers']))
 			throw new op5sysinfo_Exception('No poller information found');
-		return $nodeinfo['ipc']['configured_pollers'];
+		return intval($nodeinfo['ipc']['configured_pollers']);
 	}
 
 	/**
@@ -127,7 +132,7 @@ class op5sysinfo {
 		if (!isset($nodeinfo['ipc']) ||
 			 !isset($nodeinfo['ipc']['configured_peers']))
 			throw new op5sysinfo_Exception('No peer information found');
-		return $nodeinfo['ipc']['configured_peers'];
+		return intval($nodeinfo['ipc']['configured_peers']);
 	}
 
 	/**
