@@ -28,6 +28,15 @@ class Avail_options extends Report_options {
 			'default' => false,
 			'description' => 'Hide trend graphs that are 100% green'
 		);
+		$this->properties['time_format'] = array(
+			'type' => 'enum',
+			'default' => 1,
+			'description' => 'How to render the portion of time a check has had a certain state',
+			'options' => array(
+				1 => _('Percentage'),
+				2 => _('Absolute time'),
+				3 => _('Both'))
+		);
 		if(ninja::has_module('synergy')) {
 			$this->properties['include_synergy_events'] = array(
 				'type' => 'bool',

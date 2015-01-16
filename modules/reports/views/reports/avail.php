@@ -21,8 +21,12 @@ foreach ($report_data as $avail_data) {
 		<tr>
 			<th><?php echo help::render('availability') ?></th>
 			<th><?php echo _('Type / Reason') ?></th>
+			<?php if ($options['time_format'] & 2) { ?>
 			<th class="headerNone"><?php echo _('Time') ?></th>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<th class="headerNone"><?php echo _('Percent') ?></th>
+			<?php } ?>
 			<?php if ($options['include_pie_charts']) { ?>
 				<th><?php echo _('Status overview') ?></th>
 			<?php } ?>
@@ -34,11 +38,15 @@ foreach ($report_data as $avail_data) {
 					<?php echo ucfirst(strtolower($var_type)); ?>
 			</th>
 			<td><?php echo _('Unscheduled') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data" style="width: 80px"><?php echo time::to_string($avail_data['states']['TIME_' . $var_type .'_UNSCHEDULED']) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data" style="width: 80px"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
+			<?php } ?>
 			<?php if ($i == 1 && isset($pies)) { ?>
 			<td rowspan="<?php echo count($var_types)*3+4; ?>" style="width: 200px; vertical-align: top">
 				<?php foreach ($pies as $pie) echo $pie ?>
@@ -47,21 +55,29 @@ foreach ($report_data as $avail_data) {
 		</tr>
 		<tr class="even">
 			<td style="border-left: 0px"><?php echo _('Scheduled') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data"><?php echo time::to_string($avail_data['states']['TIME_' . $var_type .'_SCHEDULED']) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			<?php if ($options['scheduleddowntimeasuptime'] == 2 && ($var_type === 'UP' || $var_type == 'OK') && ($avail_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP'] > 0)) { print '<br />('.reports::format_report_value($avail_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).'% in other states)'; } ?>
 			</td>
+			<?php } ?>
 		</tr>
 		<tr class="dark">
 			<td><?php echo _('Total') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data"><?php echo time::to_string($avail_data['states']['KNOWN_TIME_' . $var_type]) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_KNOWN_TIME_' . $var_type]) ?> %
 			<?php
 				echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_KNOWN_TIME_' . $var_type]) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
+			<?php } ?>
 		</tr>
 		<?php }
 		if (!isset($options[$filter_name][Reports_Model::HOST_PENDING])) {
@@ -71,31 +87,47 @@ foreach ($report_data as $avail_data) {
 				<?php echo _('Undetermined') ?>
 			</th>
 			<td><?php echo _('Not running') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data"><?php echo time::to_string($avail_data['states']['TIME_UNDETERMINED_NOT_RUNNING']) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?> </td>
+			<?php } ?>
 		</tr>
 		<tr class="even">
 			<td style="border-left: 0px"><?php echo _('Insufficient data') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data"><?php echo time::to_string($avail_data['states']['TIME_UNDETERMINED_NO_DATA']) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NO_DATA']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NO_DATA']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
+			<?php } ?>
 		</tr>
 		<tr class="dark total undetermined">
 			<td><?php echo _('Total') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data"><?php echo time::to_string($avail_data['states']['TOTAL_TIME_UNDETERMINED']) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED']!=0 ? $avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'] : reports::format_report_value(0)) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
+			<?php } ?>
 		</tr>
 		<?php } ?>
 		<tr class="even total">
 			<th style="border-top: 0px"><?php echo _('All') ?></th>
 			<td><?php echo _('Total') ?></td>
+			<?php if ($options['time_format'] & 2) { ?>
 			<td class="data"><?php echo time::to_string($avail_data['states']['TOTAL_TIME_ACTIVE'] - $avail_data['states']['TOTAL_TIME_HIDDEN']) ?></td>
+			<?php }
+			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value(100 - $avail_data['states']['PERCENT_TOTAL_TIME_HIDDEN']) ?> %</td>
+			<?php } ?>
 		</tr>
 	</table>
 </div>

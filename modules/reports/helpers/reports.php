@@ -189,20 +189,20 @@ class reports
 	/**
 	 * Given bunch of somewhat-magical parameters, return a whole multi-object report table
 	 */
-	static function format_multi_object_table($data, $title, $rowdescriber, $type, $columns, $is_summary, $down_as_up_diff, &$i=0)
+	static function format_multi_object_table($data, $title, $rowdescriber, $type, $columns, $is_summary, $options, &$i=0)
 	{
 		$servicedefs = array(
-			Reports_Model::SERVICE_OK => array('PERCENT_KNOWN_TIME_OK', _('Ok'), 'ok'),
-			Reports_Model::SERVICE_WARNING => array('PERCENT_KNOWN_TIME_WARNING', _('Warning'), 'warning'),
-			Reports_Model::SERVICE_CRITICAL => array('PERCENT_KNOWN_TIME_CRITICAL', _('Critical'), 'critical'),
-			Reports_Model::SERVICE_UNKNOWN => array('PERCENT_KNOWN_TIME_UNKNOWN', _('Unknown'), 'unknown'),
-			Reports_Model::SERVICE_PENDING => array('PERCENT_TOTAL_TIME_UNDETERMINED', _('Undetermined'), 'pending'),
+			Reports_Model::SERVICE_OK => array('KNOWN_TIME_OK', _('Ok'), 'ok'),
+			Reports_Model::SERVICE_WARNING => array('KNOWN_TIME_WARNING', _('Warning'), 'warning'),
+			Reports_Model::SERVICE_CRITICAL => array('KNOWN_TIME_CRITICAL', _('Critical'), 'critical'),
+			Reports_Model::SERVICE_UNKNOWN => array('KNOWN_TIME_UNKNOWN', _('Unknown'), 'unknown'),
+			Reports_Model::SERVICE_PENDING => array('TOTAL_TIME_UNDETERMINED', _('Undetermined'), 'pending'),
 		);
 		$hostdefs = array(
-			Reports_Model::HOST_UP => array('PERCENT_KNOWN_TIME_UP', _('Up'), 'up'),
-			Reports_Model::HOST_DOWN  => array('PERCENT_KNOWN_TIME_DOWN', _('Down'), 'down'),
-			Reports_Model::HOST_UNREACHABLE => array('PERCENT_KNOWN_TIME_UNREACHABLE', _('Unreachable'), 'unreachable'),
-			Reports_Model::HOST_PENDING => array('PERCENT_TOTAL_TIME_UNDETERMINED', _('Undetermined'), 'pending'),
+			Reports_Model::HOST_UP => array('KNOWN_TIME_UP', _('Up'), 'up'),
+			Reports_Model::HOST_DOWN  => array('KNOWN_TIME_DOWN', _('Down'), 'down'),
+			Reports_Model::HOST_UNREACHABLE => array('KNOWN_TIME_UNREACHABLE', _('Unreachable'), 'unreachable'),
+			Reports_Model::HOST_PENDING => array('TOTAL_TIME_UNDETERMINED', _('Undetermined'), 'pending'),
 		);
 		$coldefs = ${$type.'defs'};
 		$res = '<div class="report-block">
@@ -211,7 +211,7 @@ class reports
 		<tr>
 		<th>'.$title.'</th>';
 		foreach ($columns as $col)
-			$res .= '<th class="headerNone" style="width: 80px">' . $coldefs[$col][1] .'</th>';
+			$res .= '<th class="headerNone" style="width: 100px">' . $coldefs[$col][1] .'</th>';
 		$res .='</tr></thead><tbody>';
 
 		foreach ($data as $k => $row) {
@@ -219,8 +219,23 @@ class reports
 				continue;
 			$res .= '<tr class="'.($i++%2?'even':'odd').'">'.$rowdescriber($row);
 			foreach ($columns as $col) {
-				$res .= '<td style="width: 80px" class="summary '.($is_summary?'tally ':'').$col.' '.($row['states'][$coldefs[$col][0]]>0?'nonzero':'') .'">'.reports::format_report_value($row['states'][$coldefs[$col][0]]).' % '. html::image(ninja::add_path('icons/12x12/shield-'.($row['states'][$coldefs[$col][0]] > 0 ? '' : 'not-').$coldefs[$col][2].'.png'), array( 'alt' => $coldefs[$col][1], 'title' => $coldefs[$col][1], 'style' => 'height: 12px; width: 12px'));
-				if (($col == 'ok' || $col == 'up') && $down_as_up_diff && $row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']) {
+				$class = 'summary '.($is_summary?'tally ':'').$col.' '.($row['states']['PERCENT_'.$coldefs[$col][0]]>0?'nonzero':'');
+				$shieldname = 'icons/12x12/shield-'.($row['states']['PERCENT_'.$coldefs[$col][0]] > 0 ? '' : 'not-').$coldefs[$col][2].'.png';
+				$shield = html::image(
+					ninja::add_path($shieldname),
+					array(
+						'alt' => $coldefs[$col][1],
+						'title' => $coldefs[$col][1],
+						'style' => 'height: 12px; width: 12px'));
+				$res .= '<td style="width: 100px" class="'.$class.'">';
+				if ($options['time_format'] & 2)
+					$res .= time::to_string($row['states'][$coldefs[$col][0]]);
+				if ($options['time_format'] == 3)
+					$res .= '<br />';
+				if ($options['time_format'] & 1)
+					$res .= reports::format_report_value($row['states']['PERCENT_'.$coldefs[$col][0]]).' % ';
+				$res .= $shield;
+				if (($col == 'ok' || $col == 'up') && $options['scheduleddowntimeasuptime'] == 2 && $row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']) {
 					$res .= ' ('.reports::format_report_value($row['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).' % in other states)';
 				}
 				$res .= '</td>';

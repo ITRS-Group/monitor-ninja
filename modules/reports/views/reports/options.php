@@ -145,6 +145,10 @@ if($options['report_id']) { ?>
 			<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 		</td>
 		<td>&nbsp;</td>
+		<td>
+			<label for="time_format"><?php echo help::render('time_format').' '._('Format time as') ?></label><br />
+			<?php echo form::dropdown('time_format', $options->get_alternatives('time_format'), $options['time_format']) ?>
+		</td>
 	</tr>
 	<tr>
 		<td>
