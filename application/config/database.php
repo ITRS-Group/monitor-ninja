@@ -30,7 +30,6 @@ $config['default'] = array
 	'connection'    => array
 	(
 		'type'     => 'mysql',
-		              #'oracle',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
 		'host'     => 'localhost',
@@ -55,7 +54,6 @@ $config['nacoma'] = array
 	'connection'    => array
 	(
 		'type'     => 'mysql',
-		              #'oracle',
 		'user'     => 'nacoma',
 		'pass'     => 'nacoma',
 		'host'     => 'localhost',
