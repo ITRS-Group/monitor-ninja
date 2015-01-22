@@ -1,18 +1,35 @@
 <?php
+
+require_once('op5/auth/Auth.php');
+require_once('op5/objstore.php');
+
 class report_Test extends PHPUnit_Framework_TestCase {
+	/**
+	 * Make sure the enviornment is clean, and livestatus is mocked
+	 */
 	public function setUp() {
-		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		op5objstore::instance()->mock_clear();
+		op5objstore::instance()->clear();
+		$auth = op5auth::instance(array('session_key' => false));
+		$auth->force_user(new op5user_AlwaysAuth());
+	}
+	/**
+	 * Remove mock environment
+	 */
+	public function tearDown() {
+		op5objstore::instance()->mock_clear();
+		op5objstore::instance()->clear();
 	}
 
 	public function test_restricted_access() {
 		/* Store old user, so we can reset afterward */
-		$authmod = Auth::instance();
+		$authmod = op5auth::instance();
 		$stasheduser = $authmod->get_user();
 
 		/* Setup limited user, we can't replace the user, but only it's
 		 * content. Singleton objects stashes the user object
 		 */
-		$authmod->force_user($user = new Op5User_AlwaysAuth());
+		$authmod->force_user($user = new Op5User_AlwaysAuth(), false);
 		$user->set_authorized_for('host_view_all', false);
 		$user->set_authorized_for('service_view_all', false);
 		$user->set_authorized_for('hostgroup_view_all', false);
@@ -53,7 +70,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 					."))"
 				.")";
 
-		$this->assertTrue(strpos($query, $substr) !== false, 'Could not find permission check substring in query');
+		$this->assertContains($substr, $query, 'Could not find permission check substring in query', true);
 
 		try {
 			$db = Database::instance();
@@ -64,7 +81,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 
 
 		/* Reset user */
-		$authmod->force_user($stasheduser);
+		$authmod->force_user($stasheduser, false);
 	}
 
 	public function test_overlapping_timeperiods() {
@@ -84,9 +101,9 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
 		$db = Database::instance();
 		$msg = '';
-		if ($this->auth->authorized_for('host_view_all'))
+		if (op5auth::instance()->authorized_for('host_view_all'))
 			$msg .= ' with host_view_all';
-		if ($this->auth->authorized_for('service_view_all'))
+		if (op5auth::instance()->authorized_for('service_view_all'))
 			$msg .= ' with service_view_all';
 
 		$out = Livestatus::instance()->getHosts(array('columns' => array('name')));
@@ -116,20 +133,22 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_run_summary_test_queries() {
-		$this->auth->set_authorized_for('host_view_all', true);
-		$this->auth->set_authorized_for('service_view_all', true);
+		$user = op5auth::instance()->get_user();
+
+		$user->set_authorized_for('host_view_all', true);
+		$user->set_authorized_for('service_view_all', true);
 		$this->run_and_diag();
 
-		$this->auth->set_authorized_for('host_view_all', true);
-		$this->auth->set_authorized_for('service_view_all', false);
+		$user->set_authorized_for('host_view_all', true);
+		$user->set_authorized_for('service_view_all', false);
 		$this->run_and_diag();
 
-		$this->auth->set_authorized_for('host_view_all', false);
-		$this->auth->set_authorized_for('service_view_all', true);
+		$user->set_authorized_for('host_view_all', false);
+		$user->set_authorized_for('service_view_all', true);
 		$this->run_and_diag();
 
-		$this->auth->set_authorized_for('host_view_all', false);
-		$this->auth->set_authorized_for('service_view_all', false);
+		$user->set_authorized_for('host_view_all', false);
+		$user->set_authorized_for('service_view_all', false);
 		$this->run_and_diag();
 	}
 
@@ -176,7 +195,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 				'start_time' => time() - 3600,
 				'end_time' => time(),
 			);
-			$opts = new Avail_Options();
+			$opts = new Avail_options();
 			foreach ($the_opts as $k => $v) {
 				$opts[$k] = $v;
 			}
@@ -213,7 +232,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 				'start_time' => time() - 3600,
 				'end_time' => time(),
 			);
-			$opts = new Avail_Options();
+			$opts = new Avail_options();
 			foreach ($the_opts as $k => $v) {
 				$opts[$k] = $v;
 			}
