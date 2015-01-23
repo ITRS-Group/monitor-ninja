@@ -26,7 +26,7 @@ array(4) {
 	<div class="main-menu">
 
 		<div class="logo">
-			<div class="logo-image"></div>
+			<?php echo brand::get(); ?>
 		</div>
 
 	<?php

@@ -1,5 +1,21 @@
 @import "compass/css3/images"
 
+img.brand-icon
+	vertical-align: middle
+	max-height: 40px
+
+span.brand-label
+	font-size: 13pt
+	vertical-align: middle
+	font-weight: 400
+	margin-left: 8px
+	margin-right: 8px
+
+span.brand-aligner
+	display: inline-block
+	vertical-align: middle
+	height: 48px
+
 .header
 	position: relative
 
@@ -13,23 +29,9 @@
 	border-bottom: 1px solid $border-color-dark
 
 	.logo
-		position: absolute
-		padding: 7px
-		left: 0px
-		top: 0px
-
-		border-radius: 0px 0px 5px 0px
-		border: 0 solid $border-color-dark
-		border-width: 0 1px 1px 0
-
-		box-shadow: 0 0 3px $weak_shadow_color
-		background: #fcfcfc
-
-		.logo-image
-			margin: 7px 9px 7px 7px
-			height: 19px
-			width: 19px
-			display: inline-block
+		position: relative
+		margin-left: 16px
+		float: left
 
 	.headercontent
 		float: left

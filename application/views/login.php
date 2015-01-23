@@ -39,6 +39,14 @@
 			<?php if (isset($error_msg)) echo $error_msg; ?>
 			<?php echo form::open($login_page, array('id' => 'login_form')); ?>
 			<table border="1">
+				<tr>
+					<td colspan="2">
+						<?php
+							$brand = brand::get();
+							echo '<center>' . $brand . '</center>';
+						?>
+					</td>
+				</tr>
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
 					<td><label for="username"><?php echo _('Username') ?></label></td>

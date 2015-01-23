@@ -21,7 +21,7 @@ class ninja {
 	 *
 	 * @return string
 	 */
-	public static function add_path($rel_path, $module_name=false) {
+	public static function add_path($rel_path, $module_name=false, $required = true) {
 		static $url_base = false;
 		if (!$url_base)
 			$url_base = url::base();
@@ -30,7 +30,7 @@ class ninja {
 			return false;
 		}
 
-		$path = Kohana::find_file('views', $rel_path, true, '');
+		$path = Kohana::find_file('views', $rel_path, $required, '');
 
 		/*
 		 * Since find_file returns an absolute path, and we don't want that, just

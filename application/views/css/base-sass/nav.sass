@@ -3,12 +3,12 @@
 // Menu/Navigation SASS
 
 .main-menu
-	margin-left: 52px
 	float: left
 	z-index: 3
 
 	ul
 		position: relative
+		float: left
 
 		li
 			position: relative
@@ -17,6 +17,9 @@
 			vertical-align: top
 			padding: 5px 10px 4px 10px
 			border-right: 1px solid $border-color-dark
+
+			&:first-child
+				border-left: 1px solid $border-color-dark
 
 			&:hover
 				cursor: default
