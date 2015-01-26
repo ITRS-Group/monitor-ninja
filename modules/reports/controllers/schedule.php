@@ -93,7 +93,11 @@ class Schedule_Controller extends Authenticated_Controller
 	public function list_by_type($type)
 	{
 		$this->auto_render = false;
-		$rpt = Report_options::setup_options_obj($type);
+		try {
+			$rpt = Report_options::setup_options_obj($type);
+		} catch (op5LivestatusException $ex) {
+			return json::fail("Livestatus connection failed, can't load reports");
+		}
 		$scheduled_reports = $rpt->get_all_saved();
 		$result = array();
 		foreach ($scheduled_reports as $id => $name)
