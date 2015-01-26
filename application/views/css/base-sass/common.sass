@@ -344,30 +344,32 @@ code
 	padding: 0px 3px 0 3px
 	float: right
 
-	input
+	input[type="text"]
 		display: inline-block
-		width: 70%
+		width: 75%
 		color: #444
-		margin-top: 5px !important
-		padding: 2px 2px 2px 20px
+		font-size: 10pt
+		margin-top: 5px
+		padding: 2px 2px 2px 8px
 		background: $input_background_color
 		background-position: left center
 
 .autocomplete
 	display: none
 	position: fixed
-	top: 48px
-	right: 40px
-	width: 230px !important
+	top: 44px
+	right: 8px
+	width: 230px
 	background: $general_background_color
-	border: 1px solid $border_color_dark
+	border: 1px solid $border_color_light
 	z-index: 20
+	border-radius: 3px
 
 	div
-		padding: 2px
+		padding: 6px 4px
 
 	.selected
-		background-color: #ccc
+		background-color: #ddd
 
 #login-table
 	padding-top: $login_image_height

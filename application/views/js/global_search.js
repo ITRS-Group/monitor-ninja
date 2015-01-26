@@ -11,7 +11,7 @@ $(document).ready(function() {
 		minChars:2,
 		//delimiter: /(,|;)\s*/, // regex or character
 		maxHeight:500,
-		width:269,
+		width:'auto',
 		deferRequestBy: 300, //miliseconds
 		// callback function:
 		onSelect: function(value, data){ do_redirect(value, data); }
