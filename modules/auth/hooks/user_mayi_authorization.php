@@ -13,6 +13,10 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	 * for more information.
 	 */
 	private $access_rules = array (
+		'always' => array(
+			'monitoring.lsfilter.saved_filters:',
+			'ninja:'
+		),
 		'system_information' => array (
 			'monitoring.status:view',
 			'monitoring.performance:view'
@@ -212,17 +216,19 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		if ($this->is_subset( 'ninja.auth:login', $action )) {
 			return !$authenticated;
 		}
-		if ($this->is_subset( 'ninja:', $action )) {
-			return $authenticated;
-		}
 
 		/* Map auth points to actions */
 		if (!isset( $env['user'] ))
 			return false;
 		if (!isset( $env['user']['authorized'] ))
 			return false;
+		if (!$authenticated)
+			return false;
 
-		foreach ( $env['user']['authorized'] as $authpoint => $allow ) {
+		$authpoints = $env['user']['authorized'];
+		$authpoints['always'] = true;
+
+		foreach ( $authpoints as $authpoint => $allow ) {
 			if (! $allow)
 				continue;
 			if (!isset( $this->access_rules[$authpoint] ))
