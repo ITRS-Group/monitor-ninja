@@ -75,12 +75,14 @@ final class Kohana {
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
 
-		// Add APPPATH as the first path
-		self::$include_paths = array(APPPATH);
+		self::$include_paths = array();
+		// Modules overrides application alphabetically (glob is defined to be soreted), add those first
 		foreach (glob(MODPATH.'*', GLOB_ONLYDIR) as $path)
 		{
 			self::$include_paths[] = $path.'/';
 		}
+		// Since modules overrides application, add application after modules
+		self::$include_paths[] = APPPATH;
 		// Add SYSPATH as the last path
 		self::$include_paths[] = SYSPATH;
 
