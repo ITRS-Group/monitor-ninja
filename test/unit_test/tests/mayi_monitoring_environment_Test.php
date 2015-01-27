@@ -140,7 +140,7 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 			'monitoring' => array (
 				'monitor' => array (
 					'hosts' => 6,
-					'services' => 0,
+					'services' => 5,
 					'pollers' => 0,
 					'peers' => 0
 				)
