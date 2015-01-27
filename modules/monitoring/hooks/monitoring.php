@@ -1,6 +1,7 @@
 <?php
 
 require_once('op5/mayi.php');
+require_once('op5/sysinfo.php');
 
 /**
  * Class containing hooks to interface with the monitoring subsystem.
