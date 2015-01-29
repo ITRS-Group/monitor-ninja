@@ -35,6 +35,7 @@ class brand {
         $image = ninja::add_path(sprintf($format, $label), false, false);
         $label = "";
       } catch (FileLookupErrorException $e) {
+        $image = ninja::add_path('brands/op5.png', false, true);
         // If there is no image, use default image already set
         // and the message as a label for that image.
       }
