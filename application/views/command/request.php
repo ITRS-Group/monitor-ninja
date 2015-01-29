@@ -108,7 +108,7 @@ foreach ($params as $pname => $ary) {
 					default:
 						$classname = 'required';
 				}
-				echo form::input(array('class' => "autotest-$classname", 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				echo form::input(array('class' => "input-wide autotest-$classname", 'name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
 			}
 			break;
 	}
