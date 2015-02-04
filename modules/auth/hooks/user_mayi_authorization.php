@@ -229,7 +229,6 @@ class user_mayi_authorization implements op5MayI_Constraints {
 				continue;
 			foreach ( $this->access_rules[$authpoint] as $match ) {
 				if ($this->is_subset( $match, $action )) {
-					$messages[] = "Match $match, Action $action, AP $authpoint";
 					return true;
 				}
 			}
