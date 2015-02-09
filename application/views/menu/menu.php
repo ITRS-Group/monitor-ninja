@@ -43,10 +43,6 @@ $menu_items['histogram'] = _('Histogram Reporting');
 $menu_items['saved_reports'] = _('Saved reports');
 $menu_items['schedule_reports'] = _('Schedule reports');
 
-if (Kohana::config('config.cacti_path')) {
-	$menu_items['statistics'] = _('Statistics');
-}
-
 if ($auth->authorized_for('configuration_information') && Kohana::config('config.nacoma_path') !== false) {
 	$menu_items['configure'] = _('Configure');
 }
@@ -73,7 +69,7 @@ $menu = array(
 		'network_outages', //'host_problems', 'service_problems', 'unhandled_problems',
 		'comments', 'scheduled_downtime', 'recurring_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'pnp', 'alert_history', 'alert_summary', 'notifications', 'event_log',
-		'availability', 'sla', 'histogram', 'schedule_reports', 'statistics'),
+		'availability', 'sla', 'histogram', 'schedule_reports'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
 );
 
