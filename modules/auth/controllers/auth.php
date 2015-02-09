@@ -18,7 +18,6 @@ class Auth_Controller extends Ninja_Controller {
 	 */
 	public function login()
 	{
-		$this->_verify_access('ninja.auth:login');
 		$auth = op5auth::instance();
 
 		$this->template = $this->add_view('login');
@@ -30,6 +29,7 @@ class Auth_Controller extends Ninja_Controller {
 		$this->template->auth_modules = $auth->get_metadata('login_screen_dropdown');
 
 		if ($_POST) {
+			$this->_verify_access('ninja.auth:login');
 			try {
 				if(PHP_SAPI !== 'cli' && config::get('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
 					throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
