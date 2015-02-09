@@ -35,7 +35,7 @@ class op5MayI {
 	 * @param string $config
 	 * @return op5MayI
 	 */
-	public function instance($config = null) {
+	public static function instance($config = null) {
 		return op5objstore::instance()->obj_instance(__CLASS__, $config);
 	}
 
