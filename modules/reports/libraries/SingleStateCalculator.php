@@ -134,7 +134,7 @@ class SingleStateCalculator extends StateCalculator
 	protected function filter_excluded_state($state) {
 		if ($this->st_is_service && isset($this->options['service_filter_status'][$state]))
 			return $this->options['service_filter_status'][$state];
-		else if (isset($this->options['host_filter_status'][$state]))
+		else if (!$this->st_is_service && isset($this->options['host_filter_status'][$state]))
 			return $this->options['host_filter_status'][$state];
 		return $state;
 	}
