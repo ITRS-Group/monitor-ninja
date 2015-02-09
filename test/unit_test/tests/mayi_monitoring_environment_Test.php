@@ -137,8 +137,8 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 		new monitoring_hooks();
 
 		$this->assertSame( array (
-			'monitoring' => array (
-				'monitor' => array (
+			'monitor' => array (
+				'monitoring' => array (
 					'hosts' => 6,
 					'services' => 5,
 					'pollers' => 0,

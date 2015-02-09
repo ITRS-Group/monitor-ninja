@@ -12,7 +12,7 @@ class monitoring_hooks implements op5MayI_Actor {
 			array ($this,'load_notifications'));
 
 		$mayi = op5MayI::instance();
-		$mayi->be('monitoring', $this);
+		$mayi->be('monitor.monitoring', $this);
 	}
 
 	/**
@@ -23,12 +23,10 @@ class monitoring_hooks implements op5MayI_Actor {
 	public function getActorInfo() {
 		$sysinfo = op5sysinfo::instance()->get_usage();
 		return array(
-			'monitor' => array(
-				'hosts' => isset($sysinfo['monitor']) ? $sysinfo['monitor'] : 0,
-				'services' => isset($sysinfo['monitor.service']) ? $sysinfo['monitor.service'] : 0,
-				'pollers' => isset($sysinfo['pollers']) ? $sysinfo['pollers'] : 0,
-				'peers' => isset($sysinfo['peers']) ? $sysinfo['peers'] : 0
-			)
+			'hosts' => isset($sysinfo['monitor']) ? $sysinfo['monitor'] : 0,
+			'services' => isset($sysinfo['monitor.service']) ? $sysinfo['monitor.service'] : 0,
+			'pollers' => isset($sysinfo['pollers']) ? $sysinfo['pollers'] : 0,
+			'peers' => isset($sysinfo['peers']) ? $sysinfo['peers'] : 0
 		);
 	}
 
