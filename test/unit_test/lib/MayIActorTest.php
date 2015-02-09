@@ -124,6 +124,55 @@ class MayIActorTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test multiple actors can exist on different subcontexts, like
+	 * "monitor.monitoring" and "monitor.distribution", but only non-overlapping
+	 * ("monitor" and "monitor.monitoring" can't exist at the same time, not
+	 * tested here)
+	 */
+	public function test_multiple_actors_subsys_nonoverlap() {
+		$mayi = op5MayI::instance();
+
+		$cs = new MayIActorTest_EnvDumpConstraints();
+		$mayi->act_upon($cs);
+
+		$actora = new MayIActorTest_setInfoActor();
+		$mayi->be('act.a', $actora);
+
+		$actorb = new MayIActorTest_setInfoActor();
+		$mayi->be('act.b', $actorb);
+
+		/* Verity both actors values exists */
+		$actora->setActorInfo(array ('aa' => 1));
+		$actorb->setActorInfo(array ('bb' => 2));
+		$this->assertTrue($mayi->run('something:stuff'));
+		$this->assertEquals( array (
+			'act' => array (
+				'a' => array (
+					'aa' => 1
+				),
+				'b' => array (
+					'bb' => 2
+				)
+			)
+		), $cs->getEnv());
+
+		/* Verity updating of values */
+		$actora->setActorInfo(array ('axa' => 3,'axxa' => 4));
+		$this->assertTrue($mayi->run('something:stuff'));
+		$this->assertEquals( array (
+			'act' => array (
+				'a' => array (
+					'axa' => 3,
+					'axxa' => 4
+				),
+				'b' => array (
+					'bb' => 2
+				)
+			)
+		), $cs->getEnv() );
+	}
+
+	/**
 	 * Test that enviornemnt is passed through to all active constraints
 	 */
 	public function test_multiple_constraints() {
@@ -145,6 +194,30 @@ class MayIActorTest extends PHPUnit_Framework_TestCase {
 			$csa->getEnv());
 		$this->assertEquals(array ('subject' => array ('stuff' => 'yep')),
 			$csb->getEnv());
+	}
+
+	/**
+	 * Test that actor '' is treated as the an actor setting entire environment
+	 * (That would be a singleton actor setup)
+	 */
+	public function test_root_actor() {
+		$mayi = op5MayI::instance();
+
+		$cs = new MayIActorTest_EnvDumpConstraints();
+		$mayi->act_upon($cs);
+
+		$actor = new MayIActorTest_setInfoActor();
+		$mayi->be('', $actor);
+
+		$actor->setActorInfo(array ('a' => 1, 'x' => 4, 'y' => 5));
+
+		$this->assertTrue( $mayi->run( 'something:stuff'));
+
+		$this->assertEquals( array (
+			'a' => 1,
+			'x' => 4,
+			'y' => 5
+		), $cs->getEnv() );
 	}
 
 	/**

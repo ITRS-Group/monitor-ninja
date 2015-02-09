@@ -83,7 +83,19 @@ class op5MayI {
 	public function get_environment(array $override = array()) {
 		$environment = array ();
 		foreach ($this->actors as $context => $actor) {
-			$environment[$context] = $actor->getActorInfo();
+			$contextparts = array_filter(
+					explode('.', $context),
+					function($val) { return $val !== ''; }
+			);
+			$envref =& $environment;
+			foreach($contextparts as $part) {
+				if (!isset($envref[$part]) ) {
+					$envref[$part] = array();
+				}
+				$envref =& $envref[$part];
+			}
+			$envref = $actor->getActorInfo();
+			unset($envref);
 		}
 		$environment = array_replace_recursive($environment, $override);
 		return $environment;
