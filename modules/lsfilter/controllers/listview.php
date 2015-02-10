@@ -107,7 +107,8 @@ class ListView_Controller extends Ninja_Controller {
 					'totals' => $result_set->get_totals(),
 					'data' => $data,
 					'table' => $result_set->get_table(),
-					'count' => count($result_set)
+					'count' => count($result_set),
+					'messages' => $messages
 				) );
 			} else {
 				return json::fail( array(

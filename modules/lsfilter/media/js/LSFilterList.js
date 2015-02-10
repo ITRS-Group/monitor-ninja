@@ -275,6 +275,16 @@ function lsfilter_list(config)
 
 	};
 
+	this.update_nagbar = function(messages)
+	{
+		var i;
+		Notify.clear('nagbar');
+		for(i=0;i<messages.length;i++) {
+			Notify.message(messages[i],
+					{type: 'error', nag: true});
+		}
+	}
+
 	this.get_browser_scroll_size = function()
 	{
 		var css = {
@@ -328,6 +338,11 @@ function lsfilter_list(config)
 	{
 		var new_table;
 		var new_totals = $('<span />');
+
+		if(data.messages) {
+			self.update_nagbar(data.messages);
+		}
+
 		if(data.data.length) {
 			new_table = this.render_table(data, this.sort_vis_column, this.sort_ascending);
 		} else {
