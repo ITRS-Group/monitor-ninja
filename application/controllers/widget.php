@@ -28,6 +28,7 @@ class Widget_Controller extends Authenticated_Controller {
 	 */
 	public function widget($widget)
 	{
+		$this->auto_render = false;
 		$instance_id = $this->input->get('instance_id', false);
 		$page = $this->input->get('page', false);
 
@@ -62,6 +63,7 @@ class Widget_Controller extends Authenticated_Controller {
 	*/
 	public function fetch_widgets_order($page=false)
 	{
+		$this->auto_render = false;
 		$page = $this->input->get('page', $page);
 		$default = $this->input->get('default', false);
 		$default = (int)$default == 1 ? true : $default;
@@ -146,6 +148,7 @@ class Widget_Controller extends Authenticated_Controller {
 	*/
 	public function get_widget_setting()
 	{
+		$this->auto_render = false;
 		$page = $this->input->post('page', false);
 		$widget = $this->input->post('widget', false);
 		$page = trim($page);
@@ -160,6 +163,7 @@ class Widget_Controller extends Authenticated_Controller {
 	*/
 	public function set_widget_refresh()
 	{
+		$this->auto_render = false;
 		$page = $this->input->post('page', false);
 		$value = $this->input->post('value', false);
 		$type = $this->input->post('type', false);
@@ -173,6 +177,7 @@ class Widget_Controller extends Authenticated_Controller {
 	 */
 	 public function factory_reset_widgets()
 	 {
+		$this->auto_render = false;
 		$username = user::session('username');
 		$db = Database::instance();
 		$db->query('DELETE FROM ninja_widgets WHERE username = ' . $db->escape($username));
@@ -188,6 +193,7 @@ class Widget_Controller extends Authenticated_Controller {
 	 }
 
 	public function copy_widget_instance() {
+		$this->auto_render = false;
 		$page = $this->input->post('page');
 		$widget = $this->input->post('widget');
 		$instance_id = $this->input->post('instance_id');

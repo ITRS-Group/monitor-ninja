@@ -356,7 +356,9 @@ class Ninja_widget_Model extends Model
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
-				if ($widget->setting == false)
+				// Disregard widget rows that doesn't have an instance_id i.e the default settings
+				// This would save a new instance of a widget that has been removed by user
+				if ($widget->instance_id === NULL)
 					continue;
 				$widget->merge_settings($new_setting);
 				$widget->save();
