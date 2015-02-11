@@ -24,7 +24,7 @@ class monitoring_hooks implements op5MayI_Actor {
 		return array(
 			'monitor' => array(
 				'hosts' => isset($sysinfo['monitor']) ? $sysinfo['monitor'] : 0,
-				'services' => isset($sysinfo['monitor.services']) ? $sysinfo['monitor.services'] : 0,
+				'services' => isset($sysinfo['monitor.service']) ? $sysinfo['monitor.service'] : 0,
 				'pollers' => isset($sysinfo['pollers']) ? $sysinfo['pollers'] : 0,
 				'peers' => isset($sysinfo['peers']) ? $sysinfo['peers'] : 0
 			)
