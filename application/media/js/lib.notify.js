@@ -1,35 +1,131 @@
 
 var Notify = (function () {
 
-  var bar = null;
-  var zone = null;
-  var init = function () {
-    bar  = $('<div>').addClass('notify-notification-bar');
-    zone  = $('<div>').addClass('notify-notification-zone');
-    $('#header > .clear').append(bar);
-    $('#content').append(zone);
+  var zones = null;
+  var active = [];
+
+  var icons = {
+    "error": '<span class="icon-16 x16-remove"></span>',
+    "warning": '<span class="icon-menu menu-outages"></span>',
+    "info": '<span class="icon-menu menu-processinfo"></span>',
+    "success": '<span class="icon-16 x16-start-execute"></span>'
   };
 
-  var current = [];
+  var initialize = function () {
+    zones = {};
+    zones.nagbar = $('<div>').addClass('notify-notification-bar');
+    zones.message = $('<div>').addClass('notify-notification-zone');
+
+    $('#header > .clear').append(zones.nagbar);
+    $('#content').append(zones.message);
+  };
+
+  var fadesettings = {
+    "constanttime": 500,
+    "wordtime": 500,
+    "maxtime": 10000,
+    "default": 5000
+  };
+
+  /**
+   * Creates a new notification object but has not yet
+   * applied option-specific behaviour.
+   */
+  var Notification = function (message, options) {
+
+    if (typeof(options) === 'object') {
+      for (key in Notify.options) {
+        if (typeof(options[key]) === 'undefined' || options[key] === null) {
+          options[key] = Notify.options[key];
+        }
+      }
+    } else {
+      options = Notify.options;
+    }
+
+    var notification = {
+      'element': $('<div>')
+        .addClass('notify-notification')
+        .addClass('notify-notification-' + options.type),
+      'message': '<span class="notify-notification-message">' + message + '</span>',
+      'options': options,
+      'zone': 'message'
+    };
+
+    notification.remove = function (time) {
+
+      var index = active.indexOf(notification);
+      time = time ? time : notification.options.animationtime;
+      active.splice(index, 1);
+
+      if (notification.zone === 'nagbar') {
+        notification.element.remove();
+      } else {
+        notification.element.fadeOut(time, function () {
+          notification.element.remove();
+        });
+      }
+
+    };
+
+    notification.button = function (label, callback) {
+
+      if (!notification.buttonwrap) {
+        notification.buttonwrap = $('<div>')
+          .addClass('notify-notification-buttons');
+        notification.element.append(notification.buttonwrap);
+      }
+
+      notification.buttonwrap.append(
+        $('<button>').html(label)
+          .one('click', function () {
+            callback.call(null, notification);
+          })
+      );
+
+    };
+
+    notification.fadetime = function () {
+
+      var time = notification.options.fadetime;
+      var words = message.split(/\s+/);
+
+      if (time === 'auto') {
+        time = (words.length * fadesettings.wordtime);
+        time += fadesettings.constanttime;
+        return (time > fadesettings.maxtime) ? fadesettings.maxtime : time;
+      }
+
+      return (typeof(time) === 'number') ? time : fadesettings.default;
+
+    };
+
+    return notification;
+
+  };
 
   return {
 
     options: {
       /* info, warning, error, success */
       type: "info",
+      /* Sticky messages */
       sticky: false,
       /* Can the message be removed? otherwise it will not
         fade away nor be closable by button */
       removable: true,
-      /* Time before a non-sticky message fades away, ms or 'auto' */
+      /* Time before a non-sticky message fades away, ms or 'auto'
+         auto uses (fadesettings.wordtime * <wordcount>) + fadesettings.constanttime,
+         anything over fadesettings.maxtime uses maxtime */
       fadetime: "auto",
-      /* Animation time for fade-out */
-      removetime: 400,
-      configurable: false,
+      /* Animation time for jquery fade-out */
+      animationtime: 400,
+      /* An object of button-labels with callbacks as values */
       buttons: false,
+      /* nag messages ignore many options, such as sticky. */
       nag: false,
-      icon: true,
-      signature: false
+      /* Automatically insert type-icon or not */
+      icon: true
     },
 
     /**
@@ -38,16 +134,16 @@ var Notify = (function () {
      *  Notify.clear('message') - Clear message notifications
      *  Notify.clear('nagbar') - Clear nagbar notifications
      *
-     * @param  {string}  type  The notification type
+     * @param  {string}  zone  The notification zone to clear
      */
-    clear: function (type) {
+    clear: function (zone) {
 
-      var i = current.length;
-      type = (typeof(type) === 'string') ? type : 'all';
+      var i = active.length;
+      zone = (typeof(zone) === 'string') ? zone : 'all';
 
       for (i; i--; ) {
-        if (current[i].type === type || type === 'all') {
-          current[i].remove();
+        if (active[i].zone === zone || zone === 'all') {
+          active[i].remove();
         }
       }
 
@@ -62,116 +158,47 @@ var Notify = (function () {
      */
     message: function (message, options) {
 
-      if (bar === null) init();
+      if (zones === null) initialize();
+      var notification = Notification(message, options);
 
-      var key;
-      var notification = {
-        element: $('<div>').addClass('notify-notification'),
-        message: '<span class="notify-notification-message">' + message + '</span>',
-        type: 'message'
-      };
-
-      if (typeof(options) === 'object') {
-        for (key in Notify.options) {
-          if (typeof(options[key]) === 'undefined' || options[key] === null) {
-            options[key] = Notify.options[key];
-          }
-        }
-      } else {
-        options = Notify.options;
-      }
-
-      notification.remove = function (time) {
-
-        var index = current.indexOf(notification);
-        current.splice(index, 1);
-
-        time = time ? time : options.removetime;
-
-        if (notification.type === 'nagbar') {
-          notification.element.remove();
-        } else {
-          notification.element.fadeOut(time, function () {
-            notification.element.remove();
-          });
-        }
-
-      };
-
-      notification.element.addClass('notify-notification-' + options.type);
-
-      if (options.icon) {
-        if (options.type === 'warning') {
-          notification.message = '<span class="icon-menu menu-outages"></span>' + notification.message;
-        } else if (options.type === 'info') {
-          notification.message = '<span class="icon-menu menu-processinfo"></span>' + notification.message;
-        } else if (options.type === 'success') {
-          notification.message = '<span class="icon-16 x16-start-execute"></span>' + notification.message;
-        }  else if (options.type === 'error') {
-          notification.message = '<span class="icon-16 x16-remove"></span>' + notification.message;
+      if (notification.options.icon) {
+        var icon = icons[notification.options.type];
+        if (icon) {
+          notification.message = icons[notification.options.type] + notification.message;
         }
       }
 
       notification.element.html(notification.message);
 
       /**
-       * If the nag option is true(thy) we append the notification
+       * If the nag option is true then we append the notification
        * to the nagbar instead and make it non-removable as well as
        * ignoring sicky and fadetime options.
        */
-      if (options.nag) {
-
-        bar.append(notification.element);
-        options.removable = false;
-        notification.type = 'nagbar';
-
+      if (notification.options.nag) {
+        notification.zone = 'nagbar';
+        notification.options.removable = false;
       } else {
-
-        zone.append(notification.element);
-
-        if (options.sticky === false) {
-          setTimeout(notification.remove, (function () {
-            var time = options.fadetime;
-            if (time === 'auto') {
-              time = (message.length * 150) + 500;
-              return (time > 8000) ? 8000 : time;
-            } else if (typeof(time) === 'number') {
-              return time;
-            }
-            return 3000;
-          }()));
+        if (notification.options.sticky === false) {
+          setTimeout(notification.remove, notification.fadetime());
         }
-
       }
 
-      if (options.removable) {
-        if (!options.buttons) {
-          options.buttons = {};
-        }
-        options.buttons['Close'] = function () {};
+      if (notification.options.removable) {
+        notification.button('Close', function () {
+          notification.remove();
+        });
       }
 
-      if (options.buttons) {
-
-        var wrapper = $('<div>').addClass('notify-notification-buttons');
-        var create_button = function (key, callable) {
-          return $('<button>').html(key)
-            .one('click', function () {
-              callable.call(notification);
-              notification.remove();
-            });
+      if (notification.options.buttons) {
+        for (var key in notification.options.buttons) {
+          notification.button(key, notification.options.buttons[key]);
         }
-        for (var key in options.buttons) {
-          wrapper.append(
-            create_button(key, options.buttons[key])
-          );
-        }
-
-        notification.element.append(wrapper);
-
       }
 
-      current.push(notification);
+      zones[notification.zone].append(notification.element);
+      active.push(notification);
+
       return notification;
 
     }
