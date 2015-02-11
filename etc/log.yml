@@ -2,6 +2,10 @@ auth:
   file: /var/log/op5/auth.log
   level: error
   reference: true
+mayi:
+  file: /var/log/op5/mayi.log
+  level: error
+  reference: false
 synergy:
   file: /var/log/op5/synergy.log
   level: error

@@ -127,6 +127,8 @@ class op5MayI {
 
 		foreach ($this->constraints as $rs) {
 			if (!$rs->run($action, $environment, $messages, $perfdata)) {
+				op5log::instance('mayi')->log('debug', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
+				op5log::instance('mayi')->log('notice', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $messages)));
 				return false;
 			}
 		}
