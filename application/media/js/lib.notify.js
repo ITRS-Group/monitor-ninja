@@ -10,13 +10,21 @@ var Notify = (function () {
     $('#content').append(zone);
   };
 
+  var current = [];
+
   return {
 
     options: {
+      /* info, warning, error, success */
       type: "info",
       sticky: false,
+      /* Can the message be removed? otherwise it will not
+        fade away nor be closable by button */
       removable: true,
+      /* Time before a non-sticky message fades away, ms or 'auto' */
       fadetime: "auto",
+      /* Animation time for fade-out */
+      removetime: 400,
       configurable: false,
       buttons: false,
       nag: false,
@@ -24,6 +32,34 @@ var Notify = (function () {
       signature: false
     },
 
+    /**
+     * Usage:
+     *  Notify.clear() - Clear every notification
+     *  Notify.clear('message') - Clear message notifications
+     *  Notify.clear('nagbar') - Clear nagbar notifications
+     *
+     * @param  {string}  type  The notification type
+     */
+    clear: function (type) {
+
+      var i = current.length;
+      type = (typeof(type) === 'string') ? type : 'all';
+
+      for (i; i--; ) {
+        if (current[i].type === type || type === 'all') {
+          current[i].remove();
+        }
+      }
+
+    },
+
+    /**
+     * See options above for possible options and their values
+     *
+     * @param  {string} message  The notification message
+     * @param  {object} options  Options
+     * @return {notification}    The created notification
+     */
     message: function (message, options) {
 
       if (bar === null) init();
@@ -31,7 +67,8 @@ var Notify = (function () {
       var key;
       var notification = {
         element: $('<div>').addClass('notify-notification'),
-        message: '<span class="notify-notification-message">' + message + '</span>'
+        message: '<span class="notify-notification-message">' + message + '</span>',
+        type: 'message'
       };
 
       if (typeof(options) === 'object') {
@@ -46,10 +83,18 @@ var Notify = (function () {
 
       notification.remove = function (time) {
 
-        time = time ? time : options.fadetime;
-        notification.element.fadeOut(400, function () {
+        var index = current.indexOf(notification);
+        current.splice(index, 1);
+
+        time = time ? time : options.removetime;
+
+        if (notification.type === 'nagbar') {
           notification.element.remove();
-        });
+        } else {
+          notification.element.fadeOut(time, function () {
+            notification.element.remove();
+          });
+        }
 
       };
 
@@ -78,6 +123,7 @@ var Notify = (function () {
 
         bar.append(notification.element);
         options.removable = false;
+        notification.type = 'nagbar';
 
       } else {
 
@@ -125,6 +171,7 @@ var Notify = (function () {
 
       }
 
+      current.push(notification);
       return notification;
 
     }
