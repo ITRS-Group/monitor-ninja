@@ -612,7 +612,7 @@ Feature: Monitoring
 
 		Given I am on the main page
 		When I have submitted a passive host check result "linux-server2;1;some output"
-		And I click "uh_problems"
+		And I click "uh_host_problems"
 		Then I should see "linux-server2"
 		When I have host "linux-server2" in downtime
 		And I click "Refresh"
@@ -625,7 +625,7 @@ Feature: Monitoring
 		Given I am on the main page
 		And I have submitted a passive host check result "linux-server1;0;Under load"
 		And I have submitted a passive service check result "linux-server1;System Load;2;Under load"
-		And I click "uh_problems"
+		And I click "uh_service_problems"
 		Then I should see "linux-server1"
 		And I should see "System Load"
 		When I have service "linux-server1;System Load" in downtime
@@ -638,10 +638,9 @@ Feature: Monitoring
 	Scenario: Unhandled problems - service on host in downtime
 		Verify that a service on a host in downtime doesn't appear in unhandled problems
 
-		Given I am on the main page
-		And I have submitted a passive host check result "linux-server1;0;Under load"
+		Given I have submitted a passive host check result "linux-server1;0;Under load"
 		And I have submitted a passive service check result "linux-server1;System Load;2;Under load"
-		And I click "uh_problems"
+		And I am on address "/monitor/index.php/listview/?q=%5Bservices%5D%20in%20%22unhandled%20service%20problems%22%20or%20host%20in%20%22unhandled%20host%20problems%22"
 		Then I should see "linux-server1"
 		And I should see "System Load"
 		When I have host "linux-server1" in downtime

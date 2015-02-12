@@ -5,10 +5,9 @@
 	/* QUICKLINK EXTENSION */
 	var uh_prob_title = "Unhandled Problems",
 		uh_prob_state_element = null;
-	function query_for_states () {
+	function query_uh_objects(link) {
 
 		var basepath = _site_domain + _index_page,
-			link = $('#uh_problems'),
 			query = link.attr('href');
 
 		query = query.split('q=')[1];
@@ -23,9 +22,30 @@
 			},
 			success : function(data) {
 
-				if (data && data.totals.service_all[1] > 0) {
+				if (!data) {
+					return;
+				}
 
-					uh_prob_title = data.totals.service_all[1] + ' unacknowledged services in Critical/Warning state!';
+				if (typeof data.totals.host_all !== 'undefined' && data.totals.host_all[1] > 0) {
+
+					uh_prob_title = data.totals.host_all[1] + ' unacknowledged host(s) in Down state!';
+					link.attr('title', uh_prob_title);
+
+					if (uh_prob_state_element) {
+						uh_prob_state_element.remove();
+					}
+					uh_prob_state_element = $("<span style='margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;' />");
+					if(data.totals.host_all[1] < 100 ) {
+						uh_prob_state_element.text(data.totals.host_all[1]);
+					}
+					link.append(uh_prob_state_element);
+
+					if (data.totals.host_state_down[1] > 0) {
+						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-critical');
+					}
+				} else if (typeof data.totals.service_all !== 'undefined' && data.totals.service_all[1] > 0) {
+
+					uh_prob_title = data.totals.service_all[1] + ' unacknowledged service(s) in Critical/Warning state!';
 					link.attr('title', uh_prob_title);
 
 					if (uh_prob_state_element) {
@@ -45,6 +65,13 @@
 				}
 			}
 		});
+	}
+
+	function query_for_states() {
+		var links = Array($('#uh_host_problems'), $('#uh_service_problems'));
+		for (var i = 0; i < links.length; i += 1) {
+			query_uh_objects(links[i]);
+		}
 	}
 
 	setInterval(query_for_states, 10000);
@@ -136,7 +163,7 @@
 				target = $('#dojo-add-quicklink-target').attr('value'),
 				changed = false;
 		var error = '';
-		if (href && title && icon) { 
+		if (href && title && icon) {
 			var i = global_quicklinks.length;
 			for (i; i--;) {
 				if (global_quicklinks[i].href === href) {
