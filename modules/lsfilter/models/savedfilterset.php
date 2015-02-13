@@ -9,6 +9,13 @@ require_once( dirname(__FILE__).'/base/basesavedfilterset.php' );
  */
 class SavedFilterSet_Model extends BaseSavedFilterSet_Model {
 	/**
+	 * MayI reasource name
+	 */
+	public function mayi_resource() {
+		return 'monitoring.lsfilter.saved_filters';
+	}
+
+	/**
 	 * apply some extra filters to match for the authentication.
 	 */
 	protected function get_auth_filter() {
