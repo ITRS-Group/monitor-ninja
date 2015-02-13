@@ -15,7 +15,8 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	private $access_rules = array (
 		'always' => array(
 			'monitoring.lsfilter.saved_filters:',
-			'ninja:'
+			'ninja:',
+			'http_api:'
 		),
 		'system_information' => array (
 			'monitoring.status:view',
