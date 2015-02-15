@@ -24,10 +24,25 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		),
 		'configuration_information' => array (),
 		'system_commands' => array (),
-		'api_command' => array (),
-		'api_config' => array (),
-		'api_report' => array (),
-		'api_status' => array (),
+		'api_command' => array (
+			'monitoring.hosts:view.api.command',
+			'monitoring.hosts:update.api.command'
+		),
+		'api_config' => array (
+			'monitoring.hosts:view.api.configuration',
+			'monitoring.hosts:create.api.configuration',
+			'monitoring.hosts:delete.api.configuration',
+			'monitoring.hosts:update.api.configuration'
+		),
+		'api_perfdata' => array (
+			'monitoring.hosts:view.api.perfdata'
+		),
+		'api_report' => array (
+			'monitoring.hosts:view.api.report'
+		),
+		'api_status' => array (
+			'monitoring.hosts:view.api.status'
+		),
 		'host_add_delete' => array (),
 		'host_view_all' => array (
 			'monitoring.hosts:view',
