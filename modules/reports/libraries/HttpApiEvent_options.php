@@ -144,31 +144,31 @@ class HttpApiEvent_options extends Summary_options {
 	}
 
 	/**
-	 * @param $value mixed
+	 * @param $name string
 	 * @param $type string
 	 * @return string
 	 */
-	function format_default($value, $type)
+	function format_default($name, $type)
 	{
 		if($type == 'bool') {
-			return (int) $this[$value];
+			return (int) $this[$name];
 		}
 		if($type == 'array' || $type == 'objsel') {
-			if(empty($this[$value])) {
+			if(empty($this[$name])) {
 				return "[empty]";
 			}
-			return implode(", ", $this[$value]);
+			return implode(", ", $this[$name]);
 		}
-		if($type == 'string' && !$this[$value]) {
+		if($type == 'string' && !$this[$name]) {
 			return '[empty]';
 		}
 		if($type == 'enum') {
-			return "'".$this->get_value($value)."'";
+			return "'".$this->get_value($name)."'";
 		}
-		if($type == 'int' && empty($this[$value]) && $this[$value] !== 0) {
+		if($type == 'int' && empty($this[$name]) && $this[$name] !== 0) {
 			return "[empty]";
 		}
-		return (string) $this[$value];
+		return (string) $this[$name];
 	}
 
 	/**
