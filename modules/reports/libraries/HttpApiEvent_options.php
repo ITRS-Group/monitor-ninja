@@ -34,14 +34,22 @@ class HttpApiEvent_options extends Summary_options {
 	protected function rewrite_states(&$name, $value, $obj) {
 		$options = Reports_Model::$$name;
 		if ($name == 'host_states')
+			$res = array(0 => -2, 1 => -2, 2 => -2);
+		else
+			$res = array(0 => -2, 1 => -2, 2 => -2, 3 => -2);
+		foreach ($value as $v) {
+			if (!isset($obj->properties[$name]['options'][$v])) {
+				throw new Exception();
+			}
+			foreach ($options as $bit => $_) {
+				if ($bit >= 0 && ($v& (1 << $bit)))
+					unset($res[$bit]);
+			}
+		}
+		if ($name == 'host_states')
 			$name = 'host_filter_status';
 		else
 			$name = 'service_filter_status';
-		$res = array();
-		foreach ($options as $bit => $_) {
-			if ($bit >= 0 && !($value & (1 << $bit)))
-				$res[$bit] = -2;
-		}
 		return $res;
 	}
 
@@ -132,7 +140,7 @@ class HttpApiEvent_options extends Summary_options {
 		$this->properties['host_filter_status']['generated'] = true;
 		$this->properties['service_filter_status']['generated'] = true;
 		$this->properties['host_states'] = array(
-			'type' => 'enum',
+			'type' => 'array',
 			'default' => 7,
 			'description' => _('Limit the result set to a certain kind of host states'),
 			'options' => array(
@@ -140,10 +148,11 @@ class HttpApiEvent_options extends Summary_options {
 				6 => 'problem',
 				1 => 'up',
 				2 => 'down',
-				4 => 'unreachable')
+				4 => 'unreachable',
+				0 => 'none')
 		);
 		$this->properties['service_states'] = array(
-			'type' => 'enum',
+			'type' => 'array',
 			'default' => 15,
 			'description' => _('Limit the result set to a certain kind of service states'),
 			'options' => array(
@@ -152,7 +161,8 @@ class HttpApiEvent_options extends Summary_options {
 				1 => 'ok',
 				2 => 'warning',
 				4 => 'critical',
-				8 => 'unknown')
+				8 => 'unknown',
+				0 => 'none')
 		);
 
 		$this->rename_options['host_states'] = array($this, 'rewrite_states');
@@ -195,6 +205,25 @@ class HttpApiEvent_options extends Summary_options {
 	 */
 	function set_options($options) {
 		foreach($options as $name => $value) {
+			switch ($this->properties[$name]['type']) {
+			case 'array':
+				$res = array();
+				if (!is_array($value))
+					$value = array($value);
+				foreach ($value as $v) {
+					$v = array_search($v, $this->properties[$name]['options'], true);
+					if ($v === false)
+						throw new ReportValidationException("Invalid value for option '$name'");
+					$res[] = $v;
+				}
+				$value = $res;
+				break;
+			case 'enum':
+				$value = array_search($value, $this->properties[$name]['options'], true);
+				if ($value === false)
+					throw new ReportValidationException("Invalid value for option '$name'");
+				break;
+			}
 			if(!$this->set($name, $value)) {
 				throw new ReportValidationException("Invalid value for option '$name'");
 			}
@@ -212,7 +241,7 @@ class HttpApiEvent_options extends Summary_options {
 		// transform values
 		$type = $row['service_description'] ? 'service' : 'host';
 		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
-		if (isset($row['service_description']))
+		if ($row['service_description'])
 			$row['state'] = Reports_Model::$service_states[$row['state']];
 		else
 			$row['state'] = Reports_Model::$host_states[$row['state']];
@@ -252,15 +281,6 @@ class HttpApiEvent_options extends Summary_options {
 	{
 		if (!isset($this->properties[$key])) {
 			return false;
-		}
-		switch ($this->properties[$key]['type']) {
-			case 'enum':
-				$v = array_search($value, $this->properties[$key]['options'], true);
-				if ($v === false)
-					return false;
-				else
-					$value = $v;
-				break;
 		}
 		if ($key == 'objects' && !is_array($value))
 			$value = array($value);
