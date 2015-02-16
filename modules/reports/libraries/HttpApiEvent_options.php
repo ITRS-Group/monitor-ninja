@@ -11,23 +11,6 @@ class HttpApiEvent_options extends Summary_options {
 	private $limit;
 
 	/**
-	 * Convert uses of the old alert_types property so that all host states are
-	 * excluded if the user provides the "service states only" option, and the
-	 * other way around.
-	 */
-	protected function set_alert_types(&$name, $value, $obj)
-	{
-		if ($value == 'host') {
-			$name = 'service_filter_status';
-			return array(0 => -2, 1 => -2, 2 => -2, 3 => -2);
-		}
-		else if ($value == 'service') {
-			$name = 'host_filter_status';
-			return array(0 => -2, 1 => -2, 2 => -2);
-		}
-		return null;
-	}
-	/**
 	 * Convert the old, exported "{host,service}_states" bitmaps to
 	 * "standard" {host,service}_filter_status
 	 */
@@ -164,6 +147,14 @@ class HttpApiEvent_options extends Summary_options {
 				8 => 'unknown',
 				0 => 'none')
 		);
+		$this->properties['alert_types'] = array(
+			'type' => 'enum',
+			'default' => 3,
+			'generated' => 1, // not really, but this hides it from the web UI
+			'options' => array(
+				1 => 'host',
+				2 => 'service',
+				3 => 'both'));
 
 		$this->rename_options['host_states'] = array($this, 'rewrite_states');
 		$this->rename_options['service_states'] = array($this, 'rewrite_states');

@@ -447,13 +447,6 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$obj = Report_options::setup_options_obj(
 			'httpApiEvent',
 			array(
-				'alert_types' => 1,
-		));
-		$this->assertArrayNotHasKey('alert_types', $obj->options);
-		$this->assertArrayNotHasKey('service_filter_status', $obj->options);
-		$obj = Report_options::setup_options_obj(
-			'httpApiEvent',
-			array(
 				'alert_types' => 'host',
 		));
 		$this->assertArrayNotHasKey('alert_types', $obj->options);
