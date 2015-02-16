@@ -92,7 +92,7 @@ class op5Authorization {
 			'nagios_auth' => array ('system_information' => '',
 				'configuration_information' => '','system_commands' => ''),
 			'api' => array ('api_command' => '','api_config' => '',
-				'api_report' => '','api_status' => ''),
+				'api_report' => '','api_status' => '', 'api_perfdata' => ''),
 			'host' => array ('host_add_delete' => '','host_view_all' => '',
 				'host_view_contact' => '','host_edit_all' => '',
 				'host_edit_contact' => '','test_this_host' => ''),
@@ -178,6 +178,7 @@ class op5Authorization {
 		$translated_access_levels['test_this_command'] = true;
 		$translated_access_levels['api_config'] = true;
 		$translated_access_levels['api_command'] = true;
+		$translated_access_levels['api_perfdata'] = true;
 	}
 
 	foreach ($access_rights as $value) {
