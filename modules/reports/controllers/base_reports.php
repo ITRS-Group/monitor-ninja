@@ -5,7 +5,7 @@
  *
  * Might have been called Report_controller, had that name not been busy.
  */
-abstract class Base_reports_Controller extends Authenticated_Controller
+abstract class Base_reports_Controller extends Ninja_Controller
 {
 	/** Useless base variable jay */
 	protected $histogram_link = "histogram/generate";
@@ -22,6 +22,8 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			die("You must set \$type in ".get_class($this));
 
 		parent::__construct();
+		// FIXME: not everything is hosts...
+		$this->_verify_access('monitoring.hosts:view.report.'.$this->type);
 
 		# When run from cron-job, or mailing out reports from gui, we need access
 		if(Router::$method == 'generate' && !Auth::instance()->get_user()->logged_in() && PHP_SAPI == 'cli') {
@@ -48,6 +50,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 */
 	protected function generate_pdf()
 	{
+		$this->_verify_access('monitor.hosts:view.report.pdf');
 		$this->template->base_href = 'https://localhost'.url::base();
 
 		# not using exec, so STDERR (used for status info) will be loggable
