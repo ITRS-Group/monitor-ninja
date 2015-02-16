@@ -171,6 +171,8 @@ class HttpApiEvent_options extends Summary_options {
 			return (int) $this[$name];
 		}
 		if($type == 'array' || $type == 'objsel') {
+			if ($name == 'host_states' || $name == 'service_states')
+				return '\'all\'';
 			if(empty($this[$name])) {
 				return "[empty]";
 			}
