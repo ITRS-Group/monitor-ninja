@@ -11,6 +11,6 @@ class TimePeriodSet_Model extends BaseTimePeriodSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.timeperiods";
+		return "monitor.monitoring.timeperiods";
 	}
 }

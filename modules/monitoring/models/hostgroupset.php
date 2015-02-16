@@ -11,6 +11,6 @@ class HostGroupSet_Model extends BaseHostGroupSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.hostgroups";
+		return "monitor.monitoring.hostgroups";
 	}
 }

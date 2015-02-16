@@ -79,7 +79,8 @@ class showlog
 		$cmd .= " --image-url=" . url::base(false) .
 			'application/views/icons/16x16/';
 
-		if (!op5mayi::instance()->run('monitoring.status:view.showlog')) {
+		$resource = ObjectPool_Model::pool('status')->all()->mayi_resource();
+		if (!op5mayi::instance()->run($resource.':read.showlog')) {
 			$cmd .= ' --hide-process --hide-commands ';
 		}
 
@@ -100,7 +101,7 @@ class showlog
 		}
 		$pool = new HostPool_Model();
 		$set = $pool->all();
-		if(!op5mayi::instance()->run($set->mayi_resource().":view.showlog", false, $messages)) {
+		if(!op5mayi::instance()->run($set->mayi_resource().":read.showlog", false, $messages)) {
 			echo "<p>Not enough rights for viewing showlog for hosts</p>\n";
 			if($messages) {
 				echo implode("<br />", $messages);
@@ -115,7 +116,7 @@ class showlog
 		fwrite($pipes[0], "\n");
 		$pool = new ServicePool_Model();
 		$set = $pool->all();
-		if(!op5mayi::instance()->run($set->mayi_resource().":view.showlog", false, $messages)) {
+		if(!op5mayi::instance()->run($set->mayi_resource().":read.showlog", false, $messages)) {
 			echo "<p>Not enough rights for viewing showlog for services</p>\n";
 			if($messages) {
 				echo implode("<br />", $messages);

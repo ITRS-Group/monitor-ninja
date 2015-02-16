@@ -11,6 +11,6 @@ class CommandSet_Model extends BaseCommandSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.commands";
+		return "monitor.monitoring.commands";
 	}
 }

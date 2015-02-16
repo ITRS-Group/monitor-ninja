@@ -14,7 +14,7 @@
 class Tac_Controller extends Ninja_Controller {
 	public function __call($method, $args)
 	{
-		$this->_verify_access('ninja.tac:read');
+		$this->_verify_access('ninja.tac:read.tac');
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
 		$this->template->js[] = $this->add_path('/js/widgets.js');
@@ -35,7 +35,7 @@ class Tac_Controller extends Ninja_Controller {
 			}
 			$db_widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 		}
-		
+
 		if(empty($db_widgets)) {
 			/* Force the widgets variable to be an array...
 			 * empty array kohana-style is defined as false, by some wierd
@@ -43,15 +43,15 @@ class Tac_Controller extends Ninja_Controller {
 			 */
 			$db_widgets = array();
 		}
-		
+
 		$tac_column_count_str = config::get('tac.column_count', 'tac/'.$method);
-		
+
 		$tac_column_count = array_map('intval',explode(',',$tac_column_count_str));
 		$n_placeholders = array_sum( $tac_column_count );
-		
+
 		$widgets = array();
 		$unknown_widgets = array();
-		
+
 		foreach( $db_widgets as $placeholder => $widgetlist ) {
 			$id = false;
 			if( preg_match( '/^widget-placeholder([0-9]*)$/', $placeholder, $matches ) ) {
@@ -67,13 +67,13 @@ class Tac_Controller extends Ninja_Controller {
 				$unknown_widgets = array_merge( $unknown_widgets, $widgetlist );
 			}
 		}
-		
+
 		$placeholder_id = 0;
 		foreach( $unknown_widgets as $name => $widget ) {
 			$widgets[$placeholder_id][$name] = $widget;
 			$placeholder_id = ($placeholder_id+1)%$n_placeholders;
 		}
-		
+
 		$this->template->content->widgets = $widgets;
 		$this->template->content->tac_column_count = $tac_column_count;
 		$this->template->widgets = $widget_objs;

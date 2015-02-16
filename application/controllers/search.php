@@ -76,7 +76,7 @@ class Search_Controller extends Ninja_Controller {
 	 * @param $query search string
 	 */
 	public function index($query=false) {
-		$this->_verify_access('ninja.search:view');
+		$this->_verify_access('ninja.search:read.search');
 
 		$original_query = $query = trim($this->input->get('query', $query));
 
@@ -118,8 +118,6 @@ class Search_Controller extends Ninja_Controller {
 	 * @param $queries list of queries
 	 */
 	private function render_queries($queries, $original_query, $limit=false) {
-		$this->_verify_access('ninja.search:view');
-
 		if( !is_array($queries) ) {
 			$queries = array($queries);
 		}
@@ -141,7 +139,7 @@ class Search_Controller extends Ninja_Controller {
 		foreach( $queries as $table => $query ) {
 			$set = ObjectPool_Model::get_by_query($query);
 			/* @var $set ObjectSet_Model */
-			if($this->mayi->run($set->mayi_resource() . ':view.search')) {
+			if($this->mayi->run($set->mayi_resource() . ':read.search')) {
 				$setting = array('query'=>$query);
 				$setting['limit'] = $limit;
 				$model = new Ninja_widget_Model(array(
@@ -285,7 +283,7 @@ class Search_Controller extends Ninja_Controller {
 	 */
 	public function ajax_auto_complete($q=false)
 	{
-		$this->_verify_access('ninja.search:view');
+		$this->_verify_access('ninja.search:read.search');
 
 		$q = $this->input->get('query', $q);
 
@@ -359,7 +357,7 @@ class Search_Controller extends Ninja_Controller {
 			try {
 				$pool = ObjectPool_Model::pool($obj_type);
 				/* @var $set ObjectPool_Model */
-				if($this->mayi->run($pool->all()->mayi_resource() . ':view.search')) {
+				if($this->mayi->run($pool->all()->mayi_resource() . ':read.search')) {
 					switch ($obj_type) {
 						case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] host.name="%s"'            ); break;
 						case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;

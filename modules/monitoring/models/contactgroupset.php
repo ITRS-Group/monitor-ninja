@@ -11,6 +11,6 @@ class ContactGroupSet_Model extends BaseContactGroupSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.contactgroups";
+		return "monitor.monitoring.contactgroups";
 	}
 }

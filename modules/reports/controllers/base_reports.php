@@ -23,7 +23,8 @@ abstract class Base_reports_Controller extends Ninja_Controller
 
 		parent::__construct();
 		// FIXME: not everything is hosts...
-		$this->_verify_access('monitoring.hosts:view.report.'.$this->type);
+		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
+		$this->_verify_access($resource.':read.report.'.$this->type);
 
 		# When run from cron-job, or mailing out reports from gui, we need access
 		if(Router::$method == 'generate' && !Auth::instance()->get_user()->logged_in() && PHP_SAPI == 'cli') {
@@ -50,7 +51,8 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 */
 	protected function generate_pdf()
 	{
-		$this->_verify_access('monitor.monitoring.hosts:read.report.pdf');
+		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
+		$this->_verify_access($resource.':read.report.pdf');
 		$this->template->base_href = 'https://localhost'.url::base();
 
 		# not using exec, so STDERR (used for status info) will be loggable

@@ -11,7 +11,7 @@ class HostSet_Model extends BaseHostSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.hosts";
+		return "monitor.monitoring.hosts";
 	}
 
 	/**

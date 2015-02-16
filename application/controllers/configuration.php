@@ -24,7 +24,7 @@ class Configuration_Controller extends Ninja_Controller {
 	 */
 	public function configure($type=false, $name=false)
 	{
-		$this->_verify_access('ninja.configuration:view');
+		$this->_verify_access('ninja.configuration:read');
 		$scan = $this->input->get('scan', null);
 		$type = $this->input->get('type', $type);
 		$name = $this->input->get('name', $name);

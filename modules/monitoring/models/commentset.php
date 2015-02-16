@@ -11,6 +11,6 @@ class CommentSet_Model extends BaseCommentSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.comments";
+		return "monitor.monitoring.comments";
 	}
 }

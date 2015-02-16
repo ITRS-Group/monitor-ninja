@@ -9,6 +9,13 @@ require_once( dirname(__FILE__).'/base/basesavedreportset.php' );
  */
 class SavedReportSet_Model extends BaseSavedReportSet_Model {
 	/**
+	 * MayI reasource name
+	 */
+	public function mayi_resource() {
+		return 'monitor.reports.saved_reports';
+	}
+
+	/**
 	 * Filter out only reports allowed for the user.
 	 *
 	 * @todo: documentation

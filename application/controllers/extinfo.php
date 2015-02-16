@@ -65,7 +65,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			return false;
 		}
 
-		$this->_verify_access('monitoring.'.$set->get_table().':view.extinfo');
+		$this->_verify_access($set->mayi_resource().':read.extinfo');
 
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_strings = $this->js_strings;
@@ -203,7 +203,8 @@ class Extinfo_Controller extends Ninja_Controller {
 	 */
 	public function show_process_info()
 	{
-		$this->_verify_access('monitoring.status:view.extinfo');
+		$resource = ObjectPool_Model::pool('status')->all()->mayi_resource();
+		$this->_verify_access($resource.':read.extinfo');
 
 		$this->template->content = $this->add_view('extinfo/process_info');
 
@@ -375,7 +376,9 @@ class Extinfo_Controller extends Ninja_Controller {
 			$this->template->content->error_message = _("Error: Incorrect group type specified");
 			return;
 		}
-		$this->_verify_access('monitoring.'.$grouptype.'s:view.extinfo');
+		$set = ObjectPool_Model::pool($grouptype.'s')->all();
+		/* @var $set ServiceGroupSet_Model */
+		$this->_verify_access($set->mayi_resource().':read.extinfo');
 
 		if (empty($group)) {
 			$this->template->content = $this->add_view('error');
@@ -467,7 +470,7 @@ class Extinfo_Controller extends Ninja_Controller {
 	*/
 	public function performance()
 	{
-		$this->_verify_access('monitoring.performance:view.extinfo');
+		$this->_verify_access('ninja.performance:read.extinfo');
 
 		$this->template->content = $this->add_view('extinfo/performance');
 		$this->template->title = _('Monitoring').' » '._('Performance info');
@@ -611,7 +614,10 @@ class Extinfo_Controller extends Ninja_Controller {
 	*/
 	public function scheduling_queue()
 	{
-		$this->_verify_access('monitoring.scheduling:view.list');
+		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
+		$this->_verify_access($resource.':read.scheduling_queue');
+		$resource = ObjectPool_Model::pool('services')->all()->mayi_resource();
+		$this->_verify_access($resource.':read.scheduling_queue');
 
 		$back_link = '/extinfo/scheduling_queue/';
 

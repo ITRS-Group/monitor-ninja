@@ -16,7 +16,7 @@ class Change_Password_Controller extends Ninja_Controller {
 	 */
 	public function index()
 	{
-		$this->_verify_access('ninja.user.password:update');
+		$this->_verify_access('monitor.system.user.password:update');
 
 		$messages = array(
 			"TO_SHORT" => _('The password must be at least 5 characters long.'),

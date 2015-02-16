@@ -11,6 +11,6 @@ class StatusSet_Model extends BaseStatusSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.status";
+		return "monitor.monitoring.status";
 	}
 }

@@ -11,7 +11,7 @@ class ServiceSet_Model extends BaseServiceSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.services";
+		return "monitor.monitoring.services";
 	}
 
 	/**

@@ -28,7 +28,7 @@ class Backup_Controller extends Ninja_Controller {
 
 	public function index()
 	{
-		$this->_verify_access('system.backup:read');
+		$this->_verify_access('monitor.system.backup:read.backup');
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->title = _('Configuration » Backup/Restore');
 		$this->template->content->suffix = $this->backup_suffix;
@@ -55,7 +55,7 @@ class Backup_Controller extends Ninja_Controller {
 	}
 
 	public function download($file) {
-		$this->_verify_access('system.backup:read');
+		$this->_verify_access('monitor.system.backup:read.backup');
 		$file_path = $this->backups_location . "/" . $file;
 		$fp = fopen($file_path, "r");
 		if ($fp === false) {
@@ -72,7 +72,7 @@ class Backup_Controller extends Ninja_Controller {
 
 	public function view($file)
 	{
-		$this->_verify_access('system.backup:read');
+		$this->_verify_access('monitor.system.backup:read.backup');
 
 		$this->template->content = $this->add_view('backup/view');
 		$this->template->title = _('Configuration » Backup/Restore » View');
@@ -94,7 +94,7 @@ class Backup_Controller extends Ninja_Controller {
 
 	public function verify()
 	{
-		$this->_verify_access('system.backup:read');
+		$this->_verify_access('monitor.system.backup:read.backup');
 
 		$this->template = $this->add_view('backup/verify');
 
@@ -115,7 +115,7 @@ class Backup_Controller extends Ninja_Controller {
 
 	public function backup()
 	{
-		$this->_verify_access('system.backup:create');
+		$this->_verify_access('monitor.system.backup:create.backup');
 
 		$nagioscfg = System_Model::get_nagios_etc_path()."nagios.cfg";
 		$this->cmd_verify = '/usr/bin/naemon -v '.$nagioscfg;
@@ -178,13 +178,12 @@ class Backup_Controller extends Ninja_Controller {
 
 	public function restore($file)
 	{
-		$this->_verify_access('system.backup:read');
-		$this->_verify_access('monitoring.hosts:update.backup');
-		$this->_verify_access('monitoring.services:update.backup');
-		$this->_verify_access('monitoring.contacts:update.backup');
-		$this->_verify_access('monitoring.notifications:update.backup');
-		$this->_verify_access('monitoring.status:update.backup');
-		$this->_verify_access('system.users:update.backup');
+		$this->_verify_access('monitor.system.backup:read.backup');
+		$this->_verify_access('monitor.monitoring.hosts:update.backup');
+		$this->_verify_access('monitor.monitoring.services:update.backup');
+		$this->_verify_access('monitor.monitoring.contacts:update.backup');
+		$this->_verify_access('monitor.monitoring.notifications:update.backup');
+		$this->_verify_access('monitor.system.users:update.backup');
 
 		$this->template = $this->add_view('backup/restore');
 		$this->template->status = false;
@@ -233,7 +232,7 @@ class Backup_Controller extends Ninja_Controller {
 
 	public function delete($file)
 	{
-		$this->_verify_access('system.backup:delete');
+		$this->_verify_access('monitor.system.backup:delete.backup');
 
 		$this->template = $this->add_view('backup/delete');
 

@@ -13,7 +13,7 @@
 class Nagvis_Controller extends Ninja_Controller {
 	public function __call($name, $args)
 	{
-		$this->_verify_access('ninja.nagvis:view');
+		$this->_verify_access('ninja.nagvis:read');
 
 		$this->template->disable_refresh = true;
 		$this->template->title = _('Monitoring') . ' » NagVis';

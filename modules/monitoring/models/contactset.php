@@ -11,6 +11,6 @@ class ContactSet_Model extends BaseContactSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.contacts";
+		return "monitor.monitoring.contacts";
 	}
 }

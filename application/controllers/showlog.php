@@ -58,7 +58,7 @@ class Showlog_Controller extends Ninja_Controller
 			}
 		}
 
-		if (!$this->mayi->run('monitoring.status:view.showlog')) {
+		if (!$this->mayi->run('monitoring.status:read.showlog')) {
 			$this->options['hide_process'] = 1;
 			$this->options['hide_commands'] = 1;
 		}
@@ -66,13 +66,13 @@ class Showlog_Controller extends Ninja_Controller
 
 	public function _show_log_entries()
 	{
-		$this->_verify_access('ninja.showlog:view');
+		$this->_verify_access('ninja.showlog:read.showlog');
 		showlog::show_log_entries($this->options);
 	}
 
 	public function basic_setup()
 	{
-		$this->_verify_access('ninja.showlog:view');
+		$this->_verify_access('ninja.showlog:read.showlog');
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = $this->add_path('reports/js/common.js');
@@ -101,14 +101,15 @@ class Showlog_Controller extends Ninja_Controller
 
 	public function showlog()
 	{
-		$this->_verify_access('ninja.showlog:view');
+		$this->_verify_access('ninja.showlog:read.showlog');
 		$this->template->content = $this->add_view('showlog/showlog');
 		$this->basic_setup();
 		$this->template->title = _("Reporting » Event Log");
 
 		$this->template->toolbar = new Toolbar_Controller( _( "Event Log" ) );
 
-		$this->template->content->is_authorized = $this->mayi->run('monitoring.status:view.showlog');
+		$resource = ObjectPool_Model::pool('status')->all()->mayi_resource();
+		$this->template->content->is_authorized = $this->mayi->run($resource.':read.showlog');
 		$this->template->content->options = $this->options;
 	}
 }

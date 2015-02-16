@@ -11,6 +11,6 @@ class ServiceGroupSet_Model extends BaseServiceGroupSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.servicegroups";
+		return "monitor.monitoring.servicegroups";
 	}
 }

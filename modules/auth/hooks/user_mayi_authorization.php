@@ -14,13 +14,13 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	 */
 	private $access_rules = array (
 		'always' => array(
-			'monitoring.lsfilter.saved_filters:',
+			'monitor.system.saved_filters:',
 			'ninja:',
 			'http_api:'
 		),
 		'system_information' => array (
-			'monitoring.status:view',
-			'monitoring.performance:view'
+			'monitor.monitoring.status:read',
+			'monitor.monitoring.performance:read'
 		),
 		'configuration_information' => array (),
 		'system_commands' => array (),
@@ -45,18 +45,18 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		),
 		'host_add_delete' => array (),
 		'host_view_all' => array (
-			'monitoring.hosts:view',
-			'monitoring.comments:view',
-			'monitoring.downtimes:view',
-			'monitoring.recurringdowntimes:view',
-			'monitoring.notifications:view'
+			'monitor.monitoring.hosts:read',
+			'monitor.monitoring.comments:read',
+			'monitor.monitoring.downtimes:read',
+			'monitor.monitoring.downtimes.recurring:read',
+			'monitor.monitoring.notifications:read'
 		),
 		'host_view_contact' => array (
-			'monitoring.hosts:view',
-			'monitoring.comments:view',
-			'monitoring.downtimes:view',
-			'monitoring.recurringdowntimes:view',
-			'monitoring.notifications:view'
+			'monitor.monitoring.hosts:read',
+			'monitor.monitoring.comments:read',
+			'monitor.monitoring.downtimes:read',
+			'monitor.monitoring.downtimes.recurring:read',
+			'monitor.monitoring.notifications:read'
 		),
 		'host_edit_all' => array (),
 		'host_edit_contact' => array (),
@@ -66,18 +66,18 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'host_template_edit_all' => array (),
 		'service_add_delete' => array (),
 		'service_view_all' => array (
-			'monitoring.services:view',
-			'monitoring.comments:view',
-			'monitoring.downtimes:view',
-			'monitoring.recurringdowntimes:view',
-			'monitoring.notifications:view'
+			'monitor.monitoring.services:read',
+			'monitor.monitoring.comments:read',
+			'monitor.monitoring.downtimes:read',
+			'monitor.monitoring.downtimes.recurring:read',
+			'monitor.monitoring.notifications:read'
 		),
 		'service_view_contact' => array (
-			'monitoring.services:view',
-			'monitoring.comments:view',
-			'monitoring.downtimes:view',
-			'monitoring.recurringdowntimes:view',
-			'monitoring.notifications:view'
+			'monitor.monitoring.services:read',
+			'monitor.monitoring.comments:read',
+			'monitor.monitoring.downtimes:read',
+			'monitor.monitoring.downtimes.recurring:read',
+			'monitor.monitoring.notifications:read'
 		),
 		'service_edit_all' => array (),
 		'service_edit_contact' => array (),
@@ -87,19 +87,19 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'service_template_edit_all' => array (),
 		'hostgroup_add_delete' => array (),
 		'hostgroup_view_all' => array (
-			'monitoring.hostgroups:view'
+			'monitor.monitoring.hostgroups:read'
 		),
 		'hostgroup_view_contact' => array (
-			'monitoring.hostgroups.view'
+			'monitor.monitoring.hostgroups.view'
 		),
 		'hostgroup_edit_all' => array (),
 		'hostgroup_edit_contact' => array (),
 		'servicegroup_add_delete' => array (),
 		'servicegroup_view_all' => array (
-			'monitoring.servicegroups:view'
+			'monitor.monitoring.servicegroups:read'
 		),
 		'servicegroup_view_contact' => array (
-			'monitoring.servicegroups:view'
+			'monitor.monitoring.servicegroups:read'
 		),
 		'servicegroup_edit_all' => array (),
 		'servicegroup_edit_contact' => array (),
@@ -117,10 +117,10 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'serviceescalation_edit_all' => array (),
 		'contact_add_delete' => array (),
 		'contact_view_contact' => array (
-			'monitoring.contacts:view'
+			'monitor.monitoring.contacts:read'
 		),
 		'contact_view_all' => array (
-			'monitoring.contacts:view'
+			'monitor.monitoring.contacts:read'
 		),
 		'contact_edit_contact' => array (),
 		'contact_edit_all' => array (),
@@ -129,21 +129,21 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'contact_template_edit_all' => array (),
 		'contactgroup_add_delete' => array (),
 		'contactgroup_view_contact' => array (
-			'monitoring.contactgroups:view'
+			'monitor.monitoring.contactgroups:read'
 		),
 		'contactgroup_view_all' => array (
-			'monitoring.contactgroups:view'
+			'monitor.monitoring.contactgroups:read'
 		),
 		'contactgroup_edit_contact' => array (),
 		'contactgroup_edit_all' => array (),
 		'timeperiod_add_delete' => array (),
 		'timeperiod_view_all' => array (
-			'monitoring.timeperiods:view'
+			'monitor.monitoring.timeperiods:read'
 		),
 		'timeperiod_edit_all' => array (),
 		'command_add_delete' => array (),
 		'command_view_all' => array (
-			'monitoring.commands:view'
+			'monitor.monitoring.commands:read'
 		),
 		'command_edit_all' => array (),
 		'test_this_command' => array (),
@@ -159,7 +159,7 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'nagvis_edit' => array (),
 		'nagvis_admin' => array (),
 		'logger_access' => array (
-			'logger.messages:view'
+			'monitor.logger.messages:read'
 		),
 		'logger_configuration' => array (),
 		'logger_schedule_archive_search' => array (),

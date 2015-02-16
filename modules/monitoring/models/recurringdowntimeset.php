@@ -13,7 +13,7 @@ class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.recurringdowntimes";
+		return "monitor.monitoring.downtimes.recurring";
 	}
 
 	protected function get_auth_filter() {

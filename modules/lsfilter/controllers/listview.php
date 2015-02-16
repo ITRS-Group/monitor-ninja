@@ -11,7 +11,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Display a listview with a given query, entrypoint for listview
 	 */
 	public function index($q = "[hosts] all") {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		$this->template->listview_refresh = true;
 		$query = $this->input->get('q', $q);
@@ -46,7 +46,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Fetches the users columns configuration, as a javascript.
 	 */
 	public function columns_config($tmp = false) {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		/* Fetch all column configs for user */
 		$columns = array();
@@ -76,7 +76,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Executes a search in the orm structure for a given query.
 	 */
 	public function fetch_ajax() {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		$query = $this->input->get('query','');
 		$columns = $this->input->get('columns',false);
@@ -95,7 +95,7 @@ class ListView_Controller extends Ninja_Controller {
 
 			$messages = array();
 			$perfdata = array();
-			if($this->mayi->run($result_set->mayi_resource().":view.list", array(), $messages, $perfdata)) {
+			if($this->mayi->run($result_set->mayi_resource().":read.list", array(), $messages, $perfdata)) {
 				$data = array();
 				foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
 					$obj = $elem->export();
@@ -140,7 +140,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Fetch a list of the saved queries for use with ajax
 	 */
 	public function fetch_saved_filters() {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		$queries = LSFilter_Saved_Queries_Model::get_queries();
 		return json::ok( array( 'status' => 'success', 'data' => $queries ) );
@@ -150,7 +150,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Save a named query
 	 */
 	public function save_filter() {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		$name = $this->input->get('name',false);
 		$query = $this->input->get('query','');
@@ -169,7 +169,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Save a named query
 	 */
 	public function delete_saved_filter() {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		$id = $this->input->get('id',false);
 
@@ -192,7 +192,7 @@ class ListView_Controller extends Ninja_Controller {
 	 * Return a manifest variable as a javascript file, for loading through a script tag
 	 */
 	public function renderer( $name = false ) {
-		$this->_verify_access('ninja.listview:view');
+		$this->_verify_access('ninja.listview:read');
 
 		if( substr( $name, -3 ) == '.js' ) {
 			$name = substr( $name, 0, -3 );

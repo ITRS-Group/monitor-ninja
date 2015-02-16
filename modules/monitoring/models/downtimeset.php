@@ -11,6 +11,6 @@ class DowntimeSet_Model extends BaseDowntimeSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.downtimes";
+		return "monitor.monitoring.downtimes";
 	}
 }

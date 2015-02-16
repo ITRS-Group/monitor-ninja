@@ -24,7 +24,7 @@ class Outages_Controller extends Ninja_Controller {
 		$outages_objs = HostPool_Model::all()->reduce_by( 'state', 1, '=' )->reduce_by( 'childs', '', '!=' );
 		/* @var $outages_objs HostSet_Model */
 
-		$this->_verify_access($outages_objs->mayi_resource().':view.list.outages');
+		$this->_verify_access($outages_objs->mayi_resource().':read.list.outages');
 
 		$outages = array ();
 		foreach ( $outages_objs as $host_obj ) {

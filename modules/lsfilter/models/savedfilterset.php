@@ -12,7 +12,7 @@ class SavedFilterSet_Model extends BaseSavedFilterSet_Model {
 	 * MayI reasource name
 	 */
 	public function mayi_resource() {
-		return 'monitoring.lsfilter.saved_filters';
+		return 'monitor.system.saved_filters';
 	}
 
 	/**

@@ -11,6 +11,6 @@ class ColumnSet_Model extends BaseColumnSet_Model {
 	 * @return string
 	 */
 	public function mayi_resource() {
-		return "monitoring.columns";
+		return "monitor.monitoring.columns";
 	}
 }
