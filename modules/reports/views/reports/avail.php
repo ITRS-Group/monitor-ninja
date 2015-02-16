@@ -2,16 +2,17 @@
 if ($options['report_type'] === 'hosts' || $options['report_type'] === 'hostgroups') {
 	$var_types = array('UP' => 'UP', 'DOWN' => 'DOWN', 'UNREACHABLE' => 'UNREACHABLE');
 	$filter_name = 'host_filter_status';
+	$states = 'host_states';
 } else {
 	$var_types = array('OK' => 'OK', 'WARNING' => 'WARNING', 'UNKNOWN' => 'UNKNOWN', 'CRITICAL' => 'CRITICAL');
 	$filter_name = 'service_filter_status';
+	$states = 'service_states';
 }
 
 foreach (array_keys($options[$filter_name]) as $filtered) {
 	$php_sucks = Reports_Model::$$states; # No, you cannot do this on one line, because bugs
 	unset($var_types[strtoupper($php_sucks[$filtered])]);
 }
-
 foreach ($report_data as $avail_data) {
 	if (!is_array($avail_data) || !isset($avail_data['states']))
 		continue;
