@@ -177,6 +177,9 @@ class Ninja_Controller extends Template_Controller {
 
 		foreach ($messages as $msg) {
 			$this->add_global_notification($msg);
+			// Since the messages is published depending on action instead of
+			// target, we should add all messages as print_notifiations too
+			$this->add_print_notification($msg);
 		}
 
 		if (!$access) {
