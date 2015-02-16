@@ -171,7 +171,7 @@ class op5sysinfo {
 	 *
 	 * @return array
 	 */
-	private function get_merlininfo() {
+	public function get_merlininfo() {
 		if ($this->merlin_nodeinfo !== false) {
 			return $this->merlin_nodeinfo;
 		}
