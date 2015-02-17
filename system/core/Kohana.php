@@ -691,6 +691,10 @@ final class Kohana {
 		else
 		{
 			// The class could not be found
+			if(!IN_PRODUCTION) {
+				// If not in production, display information on what and why
+				throw new Kohana_Exception('core.autoload_not_found', $file, $class, $type, implode(':', self::$include_paths));
+			}
 			return FALSE;
 		}
 
