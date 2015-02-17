@@ -467,7 +467,7 @@ class Config_Controller extends Authenticated_Controller {
 		}
 
 		$obj_form .= '</select>';
-		$obj_form .= ' <input type="text" id="filterbox" name="filterbox" value="' . $filter_string . '" />';
+		$obj_form .= ' <input type="text" id="filterbox" name="filterbox" value="' . html::specialchars($filter_string) . '" />';
 		$obj_form .= ' <input type="submit" value="' . _("Filter") . '"  />';
 		$obj_form .= '</form>';
 
