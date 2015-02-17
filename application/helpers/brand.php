@@ -18,7 +18,7 @@ class brand {
    *
    * @return string A HTML blob to use in branding
    */
-  public static function get($host = "") {
+  public static function get($host = "", $use_label = true) {
 
     // Default branding, ninja in community, op5 banana otherwise
 
@@ -33,7 +33,8 @@ class brand {
       '<img class="brand-icon" src="%s" />' .
       '<span class="brand-label">%s</span>' .
       '<span class="brand-aligner"></span>',
-      $host . $data["branding"]["image"], $data["branding"]["label"]
+      $host . $data["branding"]["image"],
+      ($use_label) ? $data["branding"]["label"] : ""
     );
 
   }

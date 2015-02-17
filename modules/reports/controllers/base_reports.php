@@ -50,7 +50,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 */
 	protected function generate_pdf()
 	{
-		$this->_verify_access('monitor.hosts:view.report.pdf');
+		$this->_verify_access('monitor.monitoring.hosts:read.report.pdf');
 		$this->template->base_href = 'https://localhost'.url::base();
 
 		# not using exec, so STDERR (used for status info) will be loggable
@@ -61,6 +61,10 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		$pipes = false;
 
 		$command = Kohana::config('reports.pdf_command');
+		$brand = brand::get('http://localhost', false);
+		$command .= ' --replace brand "' . $brand . '"';
+		$command .= ' - -';
+
 		$this->log->log('debug', "Running pdf generation command '$command'");
 		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
 

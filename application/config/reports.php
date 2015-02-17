@@ -27,4 +27,4 @@ $config['showlog_path'] = '/opt/monitor/op5/merlin/showlog';
  *  https://code.google.com/p/wkhtmltopdf/issues/detail?id=957 is worked around
  *  with --{top,bottom}-spacing and --{header,footer}-html
  */
-$config['pdf_command'] = '/usr/bin/wkhtmltopdf -q --print-media-type --disable-internal-links --disable-external-links --margin-top 10 --margin-bottom 10 --header-spacing 5 --footer-spacing 5 --header-html application/media/report_header.html --footer-html application/media/report_footer.html - -';
+$config['pdf_command'] = '/usr/bin/wkhtmltopdf -q --print-media-type --disable-internal-links --disable-external-links --margin-top 10 --margin-bottom 10 --header-spacing 5 --footer-spacing 5 --header-html application/media/report_header.html --footer-html application/media/report_footer.html';
