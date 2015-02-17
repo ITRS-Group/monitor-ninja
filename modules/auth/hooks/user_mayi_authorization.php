@@ -25,23 +25,32 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'configuration_information' => array (),
 		'system_commands' => array (),
 		'api_command' => array (
-			'monitoring.hosts:view.api.command',
-			'monitoring.hosts:update.api.command'
+			'monitor.monitoring.hosts:read.api.command',
+			'monitor.monitoring.hosts:read.app.command',
+			'monitor.monitoring.hosts:update.api.command',
+			'monitor.monitoring.hosts:update.app.command'
 		),
 		'api_config' => array (
-			'monitoring.hosts:view.api.configuration',
-			'monitoring.hosts:create.api.configuration',
-			'monitoring.hosts:delete.api.configuration',
-			'monitoring.hosts:update.api.configuration'
+			'monitor.monitoring.hosts:read.api.configuration',
+			'monitor.monitoring.hosts:read.app.configuration',
+			'monitor.monitoring.hosts:create.api.configuration',
+			'monitor.monitoring.hosts:create.app.configuration',
+			'monitor.monitoring.hosts:delete.api.configuration',
+			'monitor.monitoring.hosts:delete.app.configuration',
+			'monitor.monitoring.hosts:update.api.configuration',
+			'monitor.monitoring.hosts:update.app.configuration'
 		),
 		'api_perfdata' => array (
-			'monitoring.hosts:view.api.perfdata'
+			'monitor.monitoring.hosts:read.api.perfdata',
+			'monitor.monitoring.hosts:read.app.perfdata'
 		),
 		'api_report' => array (
-			'monitoring.hosts:view.api.report'
+			'monitor.monitoring.hosts:read.api.report',
+			'monitor.monitoring.hosts:read.app.report'
 		),
 		'api_status' => array (
-			'monitoring.hosts:view.api.status'
+			'monitor.monitoring.hosts:read.api.status',
+			'monitor.monitoring.hosts:read.app.status'
 		),
 		'host_add_delete' => array (),
 		'host_view_all' => array (
