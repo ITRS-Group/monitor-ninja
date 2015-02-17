@@ -5,190 +5,152 @@ require_once ('op5/mayi.php');
  * Add authorization rules to ninja, where each auth point maps to a set of allowed MayI rules.
  */
 class user_mayi_authorization implements op5MayI_Constraints {
-
-	/* If a user has an old auth access right that is a key in this array,
-	 * she gains all rights represented by that key's values.
+	/**
+	 * ACL list for users authorization
 	 *
-	 * Every value matching ^ninja.* should not be defined here, see @run()
-	 * for more information.
+	 * The ACL is defined as a string, where each line is either empty (ignored)
+	 * or a string, containint three parts seperated by whitespaces (spaces, no
+	 * tabs).
+	 *
+	 * First part is a group memebership, the string "always" or the string
+	 * "authenticated". If the user is a member of the group, the line is
+	 * matched, if not prefixed, by !, which means the line is executed if no
+	 * match.
+	 *
+	 * Second part is a action subset match. If the action matches the part, the
+	 * function returns the third part as status.
+	 *
+	 * @var string
 	 */
-	private $access_rules = array (
-		'always' => array(
-			'monitor.system.saved_filters:',
-			'ninja:',
-			'http_api:'
-		),
-		'system_information' => array (
-			'monitor.monitoring.status:read',
-			'monitor.monitoring.performance:read'
-		),
-		'configuration_information' => array (),
-		'system_commands' => array (),
-		'api_command' => array (
-			'monitor.monitoring.hosts:read.api.command',
-			'monitor.monitoring.hosts:read.app.command',
-			'monitor.monitoring.hosts:update.api.command',
-			'monitor.monitoring.hosts:update.app.command'
-		),
-		'api_config' => array (
-			'monitor.monitoring.hosts:read.api.configuration',
-			'monitor.monitoring.hosts:read.app.configuration',
-			'monitor.monitoring.hosts:create.api.configuration',
-			'monitor.monitoring.hosts:create.app.configuration',
-			'monitor.monitoring.hosts:delete.api.configuration',
-			'monitor.monitoring.hosts:delete.app.configuration',
-			'monitor.monitoring.hosts:update.api.configuration',
-			'monitor.monitoring.hosts:update.app.configuration'
-		),
-		'api_perfdata' => array (
-			'monitor.monitoring.hosts:read.api.perfdata',
-			'monitor.monitoring.hosts:read.app.perfdata'
-		),
-		'api_report' => array (
-			'monitor.monitoring.hosts:read.api.report',
-			'monitor.monitoring.hosts:read.app.report'
-		),
-		'api_status' => array (
-			'monitor.monitoring.hosts:read.api.status',
-			'monitor.monitoring.hosts:read.app.status'
-		),
-		'host_add_delete' => array (),
-		'host_view_all' => array (
-			'monitor.monitoring.hosts:read',
-			'monitor.monitoring.comments:read',
-			'monitor.monitoring.downtimes:read',
-			'monitor.monitoring.downtimes.recurring:read',
-			'monitor.monitoring.notifications:read'
-		),
-		'host_view_contact' => array (
-			'monitor.monitoring.hosts:read',
-			'monitor.monitoring.comments:read',
-			'monitor.monitoring.downtimes:read',
-			'monitor.monitoring.downtimes.recurring:read',
-			'monitor.monitoring.notifications:read'
-		),
-		'host_edit_all' => array (),
-		'host_edit_contact' => array (),
-		'test_this_host' => array (),
-		'host_template_add_delete' => array (),
-		'host_template_view_all' => array (),
-		'host_template_edit_all' => array (),
-		'service_add_delete' => array (),
-		'service_view_all' => array (
-			'monitor.monitoring.services:read',
-			'monitor.monitoring.comments:read',
-			'monitor.monitoring.downtimes:read',
-			'monitor.monitoring.downtimes.recurring:read',
-			'monitor.monitoring.notifications:read'
-		),
-		'service_view_contact' => array (
-			'monitor.monitoring.services:read',
-			'monitor.monitoring.comments:read',
-			'monitor.monitoring.downtimes:read',
-			'monitor.monitoring.downtimes.recurring:read',
-			'monitor.monitoring.notifications:read'
-		),
-		'service_edit_all' => array (),
-		'service_edit_contact' => array (),
-		'test_this_service' => array (),
-		'service_template_add_delete' => array (),
-		'service_template_view_all' => array (),
-		'service_template_edit_all' => array (),
-		'hostgroup_add_delete' => array (),
-		'hostgroup_view_all' => array (
-			'monitor.monitoring.hostgroups:read'
-		),
-		'hostgroup_view_contact' => array (
-			'monitor.monitoring.hostgroups.view'
-		),
-		'hostgroup_edit_all' => array (),
-		'hostgroup_edit_contact' => array (),
-		'servicegroup_add_delete' => array (),
-		'servicegroup_view_all' => array (
-			'monitor.monitoring.servicegroups:read'
-		),
-		'servicegroup_view_contact' => array (
-			'monitor.monitoring.servicegroups:read'
-		),
-		'servicegroup_edit_all' => array (),
-		'servicegroup_edit_contact' => array (),
-		'hostdependency_add_delete' => array (),
-		'hostdependency_view_all' => array (),
-		'hostdependency_edit_all' => array (),
-		'servicedependency_add_delete' => array (),
-		'servicedependency_view_all' => array (),
-		'servicedependency_edit_all' => array (),
-		'hostescalation_add_delete' => array (),
-		'hostescalation_view_all' => array (),
-		'hostescalation_edit_all' => array (),
-		'serviceescalation_add_delete' => array (),
-		'serviceescalation_view_all' => array (),
-		'serviceescalation_edit_all' => array (),
-		'contact_add_delete' => array (),
-		'contact_view_contact' => array (
-			'monitor.monitoring.contacts:read'
-		),
-		'contact_view_all' => array (
-			'monitor.monitoring.contacts:read'
-		),
-		'contact_edit_contact' => array (),
-		'contact_edit_all' => array (),
-		'contact_template_add_delete' => array (),
-		'contact_template_view_all' => array (),
-		'contact_template_edit_all' => array (),
-		'contactgroup_add_delete' => array (),
-		'contactgroup_view_contact' => array (
-			'monitor.monitoring.contactgroups:read'
-		),
-		'contactgroup_view_all' => array (
-			'monitor.monitoring.contactgroups:read'
-		),
-		'contactgroup_edit_contact' => array (),
-		'contactgroup_edit_all' => array (),
-		'timeperiod_add_delete' => array (),
-		'timeperiod_view_all' => array (
-			'monitor.monitoring.timeperiods:read'
-		),
-		'timeperiod_edit_all' => array (),
-		'command_add_delete' => array (),
-		'command_view_all' => array (
-			'monitor.monitoring.commands:read'
-		),
-		'command_edit_all' => array (),
-		'test_this_command' => array (),
-		'management_pack_add_delete' => array (),
-		'management_pack_view_all' => array (),
-		'management_pack_edit_all' => array (),
-		'export' => array (),
-		'configuration_all' => array (),
-		'wiki' => array (),
-		'wiki_admin' => array (),
-		'nagvis_add_delete' => array (),
-		'nagvis_view' => array (),
-		'nagvis_edit' => array (),
-		'nagvis_admin' => array (),
-		'logger_access' => array (
-			'monitor.logger.messages:read'
-		),
-		'logger_configuration' => array (),
-		'logger_schedule_archive_search' => array (),
-		'FILE' => array (),
-		'access_rights' => array (),
-		'pnp' => array (),
-		'manage_trapper' => array (
-			'monitor.trapper.handlers:',
-			'monitor.trapper.log:',
-			'monitor.trapper.matchers:',
-			'monitor.trapper.modules:',
-			'monitor.trapper.traps:'
-		),
-		'saved_filters_global' => array ()
-	);
+	private $raw_acl = <<<EOF
+always                      ninja.session:                                true
+authenticated               ninja.auth:login                              true
+!authenticated              ninja.auth:login                              false
+always                      ninja:                                        true
+
+always                      monitor.system.saved_filters:                 true
+
+system_information          monitor.monitoring.status:read                true
+system_information          monitor.monitoring.performance:read           true
+
+!api_command                :read.api.command                             false
+!api_command                :update.api.command                           false
+
+!api_config                 :read.api.configuration                       false
+!api_config                 :create.api.configuration                     false
+!api_config                 :delete.api.configuration                     false
+!api_config                 :update.api.configuration                     false
+
+!api_report                 :view.api.report                              false
+!api_status                 :view.api.status                              false
+
+!api_command                :read.app.command                             false
+!api_command                :update.app.command                           false
+
+!api_config                 :read.app.configuration                       false
+!api_config                 :create.app.configuration                     false
+!api_config                 :delete.app.configuration                     false
+!api_config                 :update.app.configuration                     false
+
+!api_report                 :view.app.report                              false
+!api_status                 :view.app.status                              false
+
+!api_command                :read.local.command                           false
+!api_command                :update.local.command                         false
+
+!api_config                 :read.local.configuration                     false
+!api_config                 :create.local.configuration                   false
+!api_config                 :delete.local.configuration                   false
+!api_config                 :update.local.configuration                   false
+
+!api_report                 :view.local.report                            false
+!api_status                 :view.local.status                            false
+
+host_view_all               monitor.monitoring.hosts:read                 true
+host_view_all               monitor.monitoring.comments:read              true
+host_view_all               monitor.monitoring.downtimes:read             true
+host_view_all               monitor.monitoring.downtimes.recurring:read   true
+host_view_all               monitor.monitoring.notifications:read         true
+
+host_view_contact           monitor.monitoring.hosts:read                 true
+host_view_contact           monitor.monitoring.comments:read              true
+host_view_contact           monitor.monitoring.downtimes:read             true
+host_view_contact           monitor.monitoring.downtimes.recurring:read   true
+host_view_contact           monitor.monitoring.notifications:read         true
+
+service_view_all            monitor.monitoring.services:read              true
+service_view_all            monitor.monitoring.comments:read              true
+service_view_all            monitor.monitoring.downtimes:read             true
+service_view_all            monitor.monitoring.downtimes.recurring:read   true
+service_view_all            monitor.monitoring.notifications:read         true
+
+service_view_contact        monitor.monitoring.services:read              true
+service_view_contact        monitor.monitoring.comments:read              true
+service_view_contact        monitor.monitoring.downtimes:read             true
+service_view_contact        monitor.monitoring.downtimes.recurring:read   true
+service_view_contact        monitor.monitoring.notifications:read         true
+
+hostgroup_view_all          monitor.monitoring.hostgroups:read            true
+
+hostgroup_view_contact      monitor.monitoring.hostgroups.view            true
+
+servicegroup_view_all       monitor.monitoring.servicegroups:read         true
+
+servicegroup_view_contact   monitor.monitoring.servicegroups:read         true
+
+contact_view_contact        monitor.monitoring.contacts:read              true
+
+contact_view_all            monitor.monitoring.contacts:read              true
+
+contactgroup_view_contact   monitor.monitoring.contactgroups:read         true
+
+contactgroup_view_all       monitor.monitoring.contactgroups:read         true
+
+timeperiod_view_all         monitor.monitoring.timeperiods:read           true
+
+command_view_all            monitor.monitoring.commands:read              true
+
+logger_access               monitor.logger.messages:read                  true
+
+manage_trapper              monitor.trapper.handlers:                     true
+
+manage_trapper              monitor.trapper.log:                          true
+
+manage_trapper              monitor.trapper.matchers:                     true
+
+manage_trapper              monitor.trapper.modules:                      true
+
+manage_trapper              monitor.trapper.traps:                        true
+EOF;
+
+
+	/**
+	 * Processed result of the $raw_acl varible.
+	 *
+	 * @var array
+	 */
+	private $acl = array();
 
 	/**
 	 *  Add the event handler for this object
 	 */
 	public function __construct() {
+		$rows = array_filter(explode("\n", $this->raw_acl));
+		foreach($rows as $row) {
+			$row_parts = array_values(array_filter(explode(" ", $row)));
+			if(count($row_parts) != 3) {
+				die("Invalid ACL line");
+			}
+
+			$negate = false;
+			if($row_parts[0][0] == '!') {
+				$negate = true;
+				$row_parts[0] = substr($row_parts[0], 1);
+			}
+
+			$this->acl[] = array($row_parts[0], $negate, $row_parts[1], $row_parts[2] == 'true');
+		}
+
 		Event::add( 'system.ready', array (
 			$this,
 			'populate_mayi'
@@ -244,19 +206,6 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		 * except for ninja.auth:login, which should be visible when logged out.
 		 */
 		$authenticated =  isset( $env['user'] ) && isset( $env['user']['authenticated'] ) && $env['user']['authenticated'];
-		if ($this->is_subset( 'ninja.auth:login', $action )) {
-			return !$authenticated;
-		}
-
-		/*
-		 * Since session manipulation is outside the scope of
-		 * authentication (it must work for authentication to work),
-		 * we should keep it seperate from user auth. Always allow
-		 * ninja.session:
-		 */
-		if ($this->is_subset( 'ninja.session:', $action )) {
-			return true;
-		}
 
 		/* Map auth points to actions */
 		if (!isset( $env['user'] )) {
@@ -276,17 +225,20 @@ class user_mayi_authorization implements op5MayI_Constraints {
 
 		$authpoints = $env['user']['authorized'];
 		$authpoints['always'] = true;
+		$authpoints['authenticated'] = $authenticated;
 
-		foreach ( $authpoints as $authpoint => $allow ) {
-			if (! $allow)
+		foreach($this->acl as $acl_line) {
+			list($access_rule, $negate, $action_pattern, $allow) = $acl_line;
+			$access = isset($authpoints[$access_rule]) && $authpoints[$access_rule];
+
+			if($negate)
+				$access = !$access;
+
+			if(!$access)
 				continue;
-			if (!isset( $this->access_rules[$authpoint] ))
-				continue;
-			foreach ( $this->access_rules[$authpoint] as $match ) {
-				if ($this->is_subset( $match, $action )) {
-					return true;
-				}
-			}
+
+			if($this->is_subset($action_pattern, $action))
+				return $allow;
 		}
 		$messages[] = "You are not authorized for $action";
 		return false;
