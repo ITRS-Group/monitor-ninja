@@ -109,12 +109,6 @@
 		});
 	}
 
-	$('#dojo-add-quicklink').hover(function () {
-		this.style.opacity = '1.0';
-	}, function () {
-		this.style.opacity = '0.5';
-	});
-
 	$('#dojo-icon-container').on('click', 'span', function() {
 		var span = $(this);
 		$('#dojo-add-quicklink-icon').val(span.data('icon'));
