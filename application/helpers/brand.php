@@ -18,35 +18,22 @@ class brand {
    *
    * @return string A HTML blob to use in branding
    */
-  public static function get() {
+  public static function get($host = "") {
 
     // Default branding, ninja in community, op5 banana otherwise
-    $image = ninja::add_path('brands/' . brand::DEFAULT_IMAGE, false, true);
-    $label = "";
 
-    op5MayI::instance()->run("monitor.system.brand:info.icon", array(), $messages, $perfdata);
+    $data = array('branding' => array(
+      'image' => ninja::add_path('brands/' . brand::DEFAULT_IMAGE, false, true),
+      'label' => ''
+    ));
 
-    if (!empty($messages)) {
-
-      $label = $messages[0];
-      $format = 'brands/%s.png';
-
-      try {
-        $image = ninja::add_path(sprintf($format, $label), false, false);
-        $label = "";
-      } catch (FileLookupErrorException $e) {
-        $image = ninja::add_path('brands/op5.png', false, true);
-        // If there is no image, use default image already set
-        // and the message as a label for that image.
-      }
-
-    }
+    Event::run('ninja.get_branding', $data);
 
     return sprintf(
       '<img class="brand-icon" src="%s" />' .
       '<span class="brand-label">%s</span>' .
       '<span class="brand-aligner"></span>',
-      $image, $label
+      $host . $data["branding"]["image"], $data["branding"]["label"]
     );
 
   }
