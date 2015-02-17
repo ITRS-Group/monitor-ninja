@@ -233,6 +233,16 @@ class user_mayi_authorization implements op5MayI_Constraints {
 			return !$authenticated;
 		}
 
+		/*
+		 * Since session manipulation is outside the scope of
+		 * authentication (it must work for authentication to work),
+		 * we should keep it seperate from user auth. Always allow
+		 * ninja.session:
+		 */
+		if ($this->is_subset( 'ninja.session:', $action )) {
+			return true;
+		}
+
 		/* Map auth points to actions */
 		if (!isset( $env['user'] ))
 			return false;
