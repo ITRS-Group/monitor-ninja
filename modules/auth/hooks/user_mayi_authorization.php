@@ -166,7 +166,13 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		'FILE' => array (),
 		'access_rights' => array (),
 		'pnp' => array (),
-		'manage_trapper' => array (),
+		'manage_trapper' => array (
+			'monitor.trapper.handlers:',
+			'monitor.trapper.log:',
+			'monitor.trapper.matchers:',
+			'monitor.trapper.modules:',
+			'monitor.trapper.traps:'
+		),
 		'saved_filters_global' => array ()
 	);
 
