@@ -1,0 +1,113 @@
+#!/usr/bin/env php
+<?php
+require('op5/config.php');
+
+$users = Op5Config::instance()->getConfig('auth_users');
+
+$mode = false;
+$username = false;
+$realname = false;
+$modules = array();
+$groups = array();
+$password = false;
+
+function usage() {
+	echo <<<EOH
+This is a small helper for adding/changing/deleting users in op5 Monitor.
+
+Create/edit user:
+	{$_SERVER['argv'][0]} --update --username=<username> (--password=<password>) --module=<module1> [--module=<modulen>]
+		[--realname=<realname> --group=<group1> [--group=<groupn>]]
+	--username		User's username
+	--password		Password is only required if an authentication module that requires passwords is chosen
+	--module		Authentication module that should be used for this user
+	--realname		Full name of user
+	--group			User's group memberships
+
+Delete user:
+	{$_SERVER['argv'][0]} --remove --username=<username>
+
+EOH;
+}
+
+for ($i = 1; $i < count($_SERVER['argv']); $i++) {
+	$arg = $_SERVER['argv'][$i];
+	if ($arg == '-h' || $arg == '--help' || $arg == '--usage') {
+		usage();
+		exit(0);
+	}
+	else if ($arg == '--update') {
+		$mode = 'update';
+	}
+	else if ($arg == '--remove') {
+		$mode = 'remove';
+	}
+	else if (strpos($arg, '--username') !== false) {
+		if (($pos = strpos($arg, '=')) !== false)
+			$username = substr($arg, $pos + 1);
+		else
+			$username = $_SERVER['argv'][++$i];
+	}
+	else if (strpos($arg, '--password') !== false) {
+		if (($pos = strpos($arg, '=')) !== false)
+			$password = substr($arg, $pos + 1);
+		else
+			$password = $_SERVER['argv'][++$i];
+	}
+	else if (strpos($arg, '--realname') !== false) {
+		if (($pos = strpos($arg, '=')) !== false)
+			$realname = substr($arg, $pos + 1);
+		else
+			$realname = $_SERVER['argv'][++$i];
+	}
+	else if (strpos($arg, '--module') !== false) {
+		if (($pos = strpos($arg, '=')) !== false)
+			$modules[] = substr($arg, $pos + 1);
+		else
+			$modules[] = $_SERVER['argv'][++$i];
+	}
+	else if (strpos($arg, '--group') !== false) {
+		if (($pos = strpos($arg, '=')) !== false)
+			$groups[] = substr($arg, $pos + 1);
+		else
+			$groups[] = $_SERVER['argv'][++$i];
+	}
+	else {
+		usage();
+		exit(1);
+	}
+}
+
+if ($mode == 'update') {
+	if (!$username) {
+		usage();
+		exit(1);
+	}
+
+	$users[$username] = array(
+		'username' => $username,
+	);
+	if ($password) {
+		$users[$username]['password'] = crypt($password);
+		$users[$username]['password_algo'] = 'crypt';
+	}
+	if ($modules)
+		$users[$username]['modules'] = $modules;
+	if ($groups)
+		$users[$username]['groups'] = $groups;
+	if ($realname)
+		$users[$username]['realname'] = $realname;
+}
+else if ($mode == 'remove') {
+	if (!$username) {
+		usage();
+		exit(1);
+	}
+	unset($users[$username]);
+}
+else {
+	usage();
+	exit(1);
+}
+
+Op5Config::instance()->setConfig('auth_users', $users);

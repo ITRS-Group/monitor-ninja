@@ -132,7 +132,7 @@ mkdir -p -m 755 %buildroot%prefix
 mkdir -p -m 775 %buildroot%prefix/upload
 mkdir -p -m 775 %buildroot%prefix/application/logs
 
-make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn)
+make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn) BINDIR=%buildroot/usr/bin
 
 mkdir -p %buildroot/var/log/op5
 
@@ -241,6 +241,7 @@ done
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyc
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyo
 %attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
+%attr(755,root,root) /usr/bin/op5-manage-users
 
 %dir %attr(775,monitor,%daemon_group) %_sysconfdir/op5
 %config(noreplace) %attr(660,monitor,%daemon_group) %_sysconfdir/op5/*.yml

@@ -102,7 +102,11 @@ i18n:
 		-j --package-name=ninja \
 		--from-code utf-8 -L php $$(find . -name '*.php')
 
-install: install-lib install-config
+install: install-lib install-config install-bin
+
+install-bin:
+	mkdir -m 0755 -p $(BINDIR)
+	cp install_scripts/op5-manage-users $(BINDIR)
 
 install-lib:
 	mkdir -m 0755 -p $(PHPDIR)
