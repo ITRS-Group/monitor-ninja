@@ -438,10 +438,13 @@ listview_renderer_table.services = {
 		"cell" : function(args) {
 			var cell = $('<td />');
 
-			if (args.obj.action_url)
+			if (args.obj.action_url) {
 				cell.append(icon16('host-actions',
-						_('Perform extra host actions'), $('<a />').attr(
-								'href', args.obj.action_url)));
+						_('Perform extra service actions'), $('<a />').attr({
+							'href': args.obj.action_url,
+							'target': _action_url_target
+						})));
+			}
 
 			if (args.obj.config_url && args.obj.config_allowed)
 				cell.append(icon16('nacoma', _('Configure this service'), $(
