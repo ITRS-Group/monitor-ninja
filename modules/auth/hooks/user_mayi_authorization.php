@@ -250,12 +250,20 @@ class user_mayi_authorization implements op5MayI_Constraints {
 		}
 
 		/* Map auth points to actions */
-		if (!isset( $env['user'] ))
+		if (!isset( $env['user'] )) {
+			$messages[] = "You are not logged in";
 			return false;
-		if (!isset( $env['user']['authorized'] ))
+		}
+
+		elseif (!isset( $env['user']['authorized'] )) {
+			$messages[] = "Your are not assigned any rights and are therefore not allowed to do this";
 			return false;
-		if (!$authenticated)
+		}
+
+		elseif (!$authenticated) {
+			$messages[] = "You are not authenticated";
 			return false;
+		}
 
 		$authpoints = $env['user']['authorized'];
 		$authpoints['always'] = true;
@@ -271,6 +279,7 @@ class user_mayi_authorization implements op5MayI_Constraints {
 				}
 			}
 		}
+		$messages[] = "You are not authorized for $action";
 		return false;
 	}
 }
