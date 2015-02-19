@@ -60,15 +60,28 @@ class Ninja_Controller extends Template_Controller {
 		# If any current session data exists, it will become available.
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
+		$this->template->menu = new Menu_Model();
+
+		//$this->template->menu->set('About', null, 0, 'icon-16 x16-about')->get('About')
+
+		$this->template->menu->set('Branding', null, 0, null, array('style' => 'padding-top: 2px'))->get('Branding')
+			->set_label(brand::get())
+			->set('op5 Portal', '/portal', 0, 'icon-16 x16-op5', array('target' => '_blank'))
+			->set('op5 Manual', Kohana::config('menu.manual_url'), 1, 'icon-16 x16-manual', array('target' => '_blank'))
+			->set('op5 Support', 'http://www.op5.com/support', 2, 'icon-16 x16-support', array('target' => '_blank'))
+			->set('HTTP API', '/api/help', 3, 'icon-16 x16-op5', array('target' => '_blank'));
+
+		$this->template->menu->set('Monitor', null, 1, 'icon-16 x16-monitoring', array('style' => 'padding-top: 8px'))->get('Monitor')
+			->set('Tactical Overview', 'tac', 0, 'icon-16 x16-tac')
+			->set('Network Outages', 'outages', 1, 'icon-16 x16-outages')
+			->set('NagVis', 'nagvis/nagvis', null, 'icon-16 x16-nagvis');
+
+		Event::run('ninja.menu.setup', $this->template->menu);
 
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
 		$this->_addons();
-
-		# create the user menu
-		$menu = new Menu_Model();
-		$this->template->links = $menu->create();
 
 		# convert test params to $_REQUEST to enable more
 		# parameters to different controllers (reports for one)

@@ -1,92 +1,119 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-echo form::open('user/menu_edit', array('style' => 'margin: 16px', 'id' => 'editmenu_form', 'method' => 'get'));
+	<style>
 
-if ($groups) { ?>
-	<label><?php echo _('Group').': '; ?>
-	<?php echo form::dropdown(array('name' => 'usergroup', 'id' => 'usergroup', 'style' => 'padding-right:10px'), array_merge(array('' => _('Select group')), array_combine(array_keys($groups), array_keys($groups))), $selected_group); ?></label>
-<?php
-} else {
-	echo _("No limited users found in the system so there's nothing we can do here.");
-}
-echo form::close();
-
-if (isset($selected_group) && !empty($selected_group)) {
-	echo '<p style="padding-top:5px">'.$description.'</p>';
-	echo form::open('user/menu_update', array( 'style' => 'margin: 16px' ));
-	echo form::hidden('group', $selected_group);
-	?>
-<table style="width: 512px; padding-top: 10px;">
-<tr>
-	<th><?php echo _('Menu item') ?></th>
-	<th style="width: 64px;"><?php echo sprintf(_('Remove for users in %s'), $selected_group) ?></th>
-</tr><?php
-foreach ($sections as $section) {
-	$section_str = 'section_'.$section;
-	if (isset($menu[$section_str]) && !empty($menu[$section_str])) {
-		echo '<tr><td colspan="2">
-			<cite>'.html::specialchars($menu_items[$section_str]).'</cite>
-		</td></tr>'."\n";
-
-		foreach ($menu[$section_str] as $pages) {
-			if (!isset($menu_items[$pages])) {
-				continue;
-			}
-
-			if ((isset($remove_items[$section]) && in_array($pages, $remove_items[$section])) || !isset($menu_base[$menu_items[$section_str]][$menu_items[$pages]])) {
-				# removed items - dim out
-				$url = $all_items[$menu_items[$section_str]][$menu_items[$pages]];
-				$title = $menu_items[$pages];
-
-				$icon_name = $url[1];
-				$icon_module = false;
-				if(is_array($icon_name)) {
-					$icon_module = $icon_name[0];
-					$icon_name = $icon_name[1];
-				}
-				$icon = 'icons/menu/'.$icon_name;
-				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
-				if( false === strpos($icon,'.') ) $icon .= '.png';
-
-				echo '<tr id="'.$pages.'"><td style="padding-left: 8px">'.
-					html::image(ninja::add_path($icon,$icon_module),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
-					' '.html::specialchars($title).'</td>'."\n";
-				echo '<td style="text-align: center">'.form::checkbox(array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox'), $pages, true).'</td></tr>';
-			} else {
-				# visible items
-				$cb_settings = array('name' => 'remove_items['.$section.'][]', 'id' => 'checkbox_'.$pages, 'class' => 'menubox');
-
-				# check if anything should be disabled
-				if (isset($untouchable_items) && is_array($untouchable_items) && in_array($pages, $untouchable_items)) {
-					$cb_settings['disabled'] = 1;
-				}
-				$url = $menu_base[$menu_items[$section_str]][$menu_items[$pages]];
-				$title = $menu_items[$pages];
-
-				$icon_name = $url[1];
-				$icon_module = false;
-				if(is_array($icon_name)) {
-					$icon_module = $icon_name[0];
-					$icon_name = $icon_name[1];
-				}
-				$icon = 'icons/menu/'.$icon_name;
-				/* By some reason, icons names containing . is treated as non-tiled images in menues... otherwise icons is avalible as .png */
-				if( false === strpos($icon,'.') ) $icon .= '.png';
-
-				echo '<tr id="'.$pages.'"><td style="padding-left: 8px">'.
-					html::image(ninja::add_path($icon,$icon_module),array('title' => html::specialchars($title), 'alt' => html::specialchars($title), 'style' => 'padding-right:5px')).
-					' '.html::specialchars($title).'</td>'."\n";
-				echo '<td style="text-align: center">'.form::checkbox($cb_settings, $pages).'</td></tr>';
-			}
+		.menu-editor ul {
+			margin-left: 24px;
 		}
+
+		.menu-editor ul li {
+			margin: 4px;
+		}
+
+		.menu-editor ul li input {
+			margin-right: 4px;
+		}
+
+		.menu-editor ul li input:checked + span {
+			opacity: 0.5;
+		}
+
+		.menu-editor > ul > li {
+			margin-left: 24px;
+			float: left;
+		}
+
+		.menu-editor li > label > span > span {
+			vertical-align: middle;
+		}
+
+	</style>
+
+	<?php
+
+	echo form::open('user/menu_edit', array('style' => 'margin: 16px', 'id' => 'editmenu_form', 'method' => 'get'));
+
+	if ($groups) {
+
+			echo '<label>' . _('Group').': ';
+
+			echo form::dropdown(
+				array(
+					'name' => 'usergroup',
+					'id' => 'usergroup',
+					'style' => 'padding-right:10px'
+				), array_merge(
+					array('' => _('Select group')),
+					array_combine(array_keys($groups), array_keys($groups))
+				), $selected_group
+			);
+
+			echo '</label>';
+
+	} else {
+
+		echo _("No limited usergroups found in the system, onnly limited usergroups can have configured menues so there's nothing we can do here.");
+
 	}
-} ?>
-	<tr>
-		<td colspan="2"><br />
-			<?php echo form::submit('s1', _('Save')) ?>
-		</td>
-	</tr>
-</table>
-<br />
-<?php echo form::close();
-} ?>
+
+	echo form::close();
+
+	if (isset($selected_group) && !empty($selected_group)) {
+
+		echo '<p>Check the menu items that the should not be visible to the users of the <strong>' . $selected_group . '</strong> group.</p>';
+		echo '<p><strong>Note that this will not restrict access, only hide the item in the menu.</strong></p>';
+
+		echo form::open('user/menu_update', array( 'style' => 'margin: 16px 8px' ));
+		echo form::hidden('group', $selected_group);
+
+		$render_edit_menu = function ($menu, $is_root = false) use (&$render_edit_menu, &$untouchable, &$config, &$dynamics) {
+
+			$branch = $menu->get_branch();
+			$attr = $menu->get_attributes();
+
+			$render = "";
+			$icon = ($menu->get_icon()) ? sprintf('<span class="%s"></span>', htmlentities($menu->get_icon())) : "";
+
+			$attributes = "";
+			foreach ($attr as $name => $value) {
+				$attributes .= sprintf(" %s=\"%s\"", htmlentities($name), htmlentities($value));
+			}
+
+			if ($is_root) {
+				$format = '<label><span %s>%s <span>%s</span></span></label>';
+			} else {
+				if (in_array($menu->get_id(), $config)) {
+					$format = '<label><input value="' . $menu->get_id() . '" name="removed[]" checked="checked" type="checkbox" /><span %s>%s <span>%s</span></span></label>';
+				} else {
+					$format = '<label><input value="' . $menu->get_id() . '" name="removed[]" type="checkbox" /><span %s>%s <span>%s</span></span></label>';
+				}
+			}
+
+			$render .= sprintf($format, $attributes, $icon, $menu->get_label());
+
+			if ($menu->has_children()) {
+				if (!in_array($menu->get_id(), $dynamics)) {
+
+					$render .= '<ul>';
+					foreach ($branch as $child) {
+						if (in_array($child->get_id(), $untouchable)) continue;
+						$cAttributes = $child->get_attributes();
+						$render .= '<li tabindex="1">' . $render_edit_menu($child, false) . '</li>';
+					}
+					$render .= '</ul>';
+
+				}
+			}
+
+			return $render;
+
+		};
+
+		echo '<div class="menu-editor">';
+		echo $render_edit_menu($menu, true);
+		echo '</div>';
+
+		echo '<input type="submit" value="Save new settings!">';
+		echo form::close();
+
+	}

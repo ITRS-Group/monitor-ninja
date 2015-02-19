@@ -6,48 +6,48 @@ Feature: Menu
 
 	@asmonitor
 	Scenario: See that the about menu displays properly on hover
-		When I hover over the "About" button
-		Then I should see these menu items:
+		When I hover the branding
+		Then I should see menu items:
 			| op5 Portal |
-			| op5 Monitor Manual |
-			| op5 Support Portal |
-
+			| op5 Manual |
+			| op5 Support |
 
 	@asmonitor
 	Scenario: See that the monitor menu displays properly on hover
-		When I hover over the "Monitoring" button
-		Then I should see these menu items:
+		When I hover over the "Monitor" menu
+		Then I should see menu items:
 			| Tactical Overview |
-			| Host Detail |
-			| Service Detail |
-			| Hostgroup Summary |
-			| Servicegroup Summary |
 			| Network Outages |
-			| Comments |
-			| Scheduled Downtime |
-			| Recurring Downtime |
-			| Process Info |
-			| Performance Info |
-			| Scheduling Queue |
+			| Hosts |
+			| Services |
+			| Hostgroups |
+			| Servicegroups |
+			| Downtimes |
 			| NagVis |
 
 	@asmonitor
 	Scenario: See that the graphs menu displays properly on hover
-		When I hover over the "Reporting" button
-		Then I should see these menu items:
+		When I hover over the "Report" menu
+		Then I should see menu items:
 			| Graphs |
-			| Alert History |
+			| Availability |
+			| SLA |
+			| Histogram |
 			| Alert Summary |
+			| Alert history |
 			| Notifications |
 
 	@asmonitor
 	Scenario: See that the config menu displays properly on hover
-		When I hover over the "Configuration" button
-		Then I should see these menu items:
-			| View Config |
-			| My Account |
-			| Backup/Restore |
+		When I hover over the "Manage" menu
+		Then I should see menu items:
 			| Configure |
+			| View active config |
+			| Backup/Restore |
+			| Manage filters |
+			| Scheduling queue |
+			| Process information |
+			| Performance information |
 
 	@asmonitor
 	Scenario: Add quicklink
@@ -75,6 +75,6 @@ Feature: Menu
 
 	@asmonitor
 	Scenario: Verify that the Manual link goes to the KB
-		When I hover over the "About" button
+		When I hover the branding
 		Then I should see css "a[href='https://kb.op5.com/display/DOC']"
 

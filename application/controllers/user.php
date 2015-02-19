@@ -340,95 +340,73 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Remove menu item by index
-	* 	Both section string ['about', 'monitoring', etc]
-	* 	and item string ['portal', 'manual', 'support', etc] are required.
-	* 	As a consequence, all menu items has to be explicitly removed before removing the section
-	*/
-	public function menu_remove(&$menu_links=false, &$menu_items=false, $section_str=false, $group=false, $item_str=false, $save=true)
-	{
-		if (empty($menu_links) || empty($menu_items) || empty($section_str)) {
-			return false;
-		}
-
-		if (is_array($section_str)) {
-			if ($save === true) {
-				$config = Op5Config::instance();
-				$ninja_menu = $config->getConfig('ninja_menu');
-				$ninja_menu[$group] = $section_str;
-				$config->setConfig('ninja_menu', $ninja_menu);
-			}
-
-			# we have to make recursive calls
-			foreach ($section_str as $section => $items) {
-				foreach ($items as $item) {
-					$this->menu_remove($menu_links, $menu_items, $section, $item, $group);
-				}
-			}
-		} else {
-			if (empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]])
-				&& empty($menu_links[$menu_items['section_'.$section_str]])) {
-				# remove the section
-				unset($menu_links[$menu_items['section_'.$section_str]]);
-			} elseif (isset($menu_items[$item_str]) && !empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
-				unset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]]);
-			}
-		}
-	}
-
-
-	/**
 	*	Edit menu items
 	* 	Show form for editing menu items
 	*/
 	public function menu_edit()
 	{
+
 		if(!Auth::instance()->authorized_for('access_rights')) {
 			// @todo add "you're not authed" flash message
 			//_("You don't have access to this page. Only visible to administrators.");
 			return url::redirect(Router::$controller.'/index');
 		}
+
 		$groups = Auth::get_groups_without_rights(array('access_rights'));
 		$selected_group = $this->input->get('usergroup', false);
+
 		if($selected_group && !isset($groups[$selected_group])) {
 			return url::redirect(Router::$controller.'/menu_edit');
 		}
+
 		$this->template->disable_refresh = true;
 
 		$this->template->content = $this->add_view('user/edit_menu');
 		$this->template->js[] = $this->add_path('user/js/user.js');
+
 		$content = $this->template->content;
 
-		$content->select_user_message = _("Select the user below to edit the menu for.");
-		$content->description = _("Check the menu items that the should not be visible to the selected user.");
-
 		$content->groups = $groups;
+		$content->selected_group = $selected_group;
+		$content->menu = $this->template->menu;
 
-		$remove_items = false;
-		$all_items = false;
-		if ($selected_group) {
-			include(APPPATH.'views/menu/menu.php');
-			$config = Op5Config::instance()->getConfig('ninja_menu');
-			if(isset($config[$selected_group])) {
-				$remove_items = $config[$selected_group];
+		// Do not display dynamically used menu items in menu configuration
+		$content->dynamics = array_keys(ObjectPool_Model::load_table_classes());
+
+		$pool = new SavedFilterPool_Model();
+		$set = $pool->all();
+		$it = $set->it(false, array());
+
+		foreach ($it as $object) {
+			$type = $object->get_filter_table();
+			if (!in_array($type, $content->dynamics)) {
+				$content->dynamics[] = $type;
 			}
-
-			// disallowing manually giving someone the right to access nacoma,
-			// it's really controlled by system_information (an access right)
-			unset($menu_base['Configuration']['Configure'], $menu_items['configure']);
-			$all_items = $menu_base;
-
-			$content->menu_base = $menu_base;
-			$content->menu_items = $menu_items;
-			$content->sections = $sections;
-			$content->menu = $menu;
 		}
 
-		$content->selected_group = $selected_group;
+		// Explicitly state that some items cannot be changed, these will not
+		// be rendered at all
+		$content->untouchable = array(
+			'branding',
+			'my_account'
+		);
 
-		$content->remove_items = $remove_items;
-		$content->all_items = $all_items;
+		$config = Op5Config::instance()->getConfig('ninja_menu');
+		if ($selected_group) {
 
+			if (isset($config[$selected_group])) {
+				$newconfig = array();
+				foreach ($config[$selected_group] as $section => $items) {
+					$newconfig = array_merge($newconfig, $items);
+				}
+				$config = $newconfig;
+			} else {
+				$config = array();
+			}
+
+		}
+
+		$content->config = $config;
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Edit user menu") );
 
 		$root = url::base(FALSE) . 'index.php/';
@@ -443,9 +421,6 @@ class User_Controller extends Authenticated_Controller {
 			);
 		}
 
-		# protected menu items
-		$untouchable_items = array('my_account');
-		$content->untouchable_items = $untouchable_items;
 	}
 
 	/**
@@ -459,26 +434,21 @@ class User_Controller extends Authenticated_Controller {
 			//_("You don't have access to this page. Only visible to administrators.");
 			return url::redirect(Router::$controller.'/index');
 		}
+
 		$group = $this->input->post('group', false);
-		$remove_items = $this->input->post('remove_items', false);
+		$removed = $this->input->post('removed', array());
+
 		if($_SERVER['REQUEST_METHOD'] != 'POST' || !$group) {
 			return url::redirect(Router::$controller.'/menu_edit');
 		}
 
-		include(APPPATH.'views/menu/menu.php');
+		$config = Op5Config::instance();
 
-		$all_items = $menu_base;
-		if ($remove_items) {
-			$this->menu_remove($menu_base, $menu_items, $remove_items, $group);
-		} else {
-			$config = Op5Config::instance();
-			$ninja_menu = $config->getConfig('ninja_menu');
-			if(isset($ninja_menu[$group])) {
-				unset($ninja_menu[$group]);
-			}
-			$config->setConfig('ninja_menu', $ninja_menu);
-		}
+		$menu_config = array();
+		$menu_config[$group]['hidden'] = $removed;
 
+		Op5Config::instance()->setConfig('ninja_menu', $menu_config);
 		return url::redirect(Router::$controller."/menu_edit?usergroup=$group");
+
 	}
 }

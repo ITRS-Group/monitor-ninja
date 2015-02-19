@@ -4,8 +4,7 @@
   font-size: 110%;
 }
 
-.notify-notification-bar .icon-16,
-.notify-notification-bar .icon-menu {
+.notify-notification-bar .icon-16 {
   vertical-align: middle;
   margin: 0 8px;
 }
@@ -64,8 +63,7 @@
   z-index: 100;
 }
 
-.notify-notification-zone .icon-16,
-.notify-notification-zone .icon-menu {
+.notify-notification-zone .icon-16 {
   vertical-align: middle;
   margin: 0 8px;
 }

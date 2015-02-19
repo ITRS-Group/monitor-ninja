@@ -19,15 +19,13 @@
 
 	$shortcuts = array('internal' => array(), 'external' => array());
 
-	$shortcuts['internal'][] = array('#', 'icon-16 x16-refresh', array('title' => 'Refresh', 'onclick' => 'window.location.reload(); return false;'));
-
 	if ($show_settings) {
 		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'page_settings_icon'));
 	}
 
 	$shortcuts['internal'][] = array('/listview?q=[hosts] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0', 'icon-16 x16-shield-pending', array('id' => 'uh_host_problems', 'title' => 'Unhandled Host Problems'));
 	$shortcuts['internal'][] = array('/listview?q=[services] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0 and host.scheduled_downtime_depth = 0', 'icon-16 x16-shield-pending', array('id' => 'uh_service_problems', 'title' => 'Unhandled Service Problems'));
-	$shortcuts['internal'][] = array('/tac', 'icon-menu menu-tac', array('title' => 'Tactical Overview'));
+	$shortcuts['internal'][] = array('/tac', 'icon-16 x16-tac', array('title' => 'Tactical Overview'));
 
 	if (isset($int_shortcuts)) {
 		for ($i = 0; $i < count($int_shortcuts); $i++) {
@@ -39,7 +37,7 @@
 <div class="header" id="header">
 
 	<?php
-		require __DIR__.'/template_menu.php';
+		require __DIR__.'/menu.php';
 	?>
 
 	<div class="headercontent">

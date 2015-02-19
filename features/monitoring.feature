@@ -38,11 +38,9 @@ Feature: Monitoring
 		When I click "Hosts total"
 		Then I should see the configured hosts
 		When I have submitted a passive host check result "linux-server2;1;some output"
-		And I click "Refresh"
 		And I click "Hosts down"
 		Then I should see "linux-server2"
 		When I click "Services total"
-		And wait for "1" seconds
 		Then I should see the configured services
 
 	@configuration @asmonitor @case-645
@@ -209,7 +207,7 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		# ninja -> nagios -> merlin -> mysql...
-		And wait for "20" seconds
+		And wait for "10" seconds
 		And I click "Notifications"
 		Then I should see "linux-server1"
 
@@ -233,7 +231,7 @@ Feature: Monitoring
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
-		And I click "Refresh"
+		And I reload the page
 		Then I should see "This host has been scheduled for fixed downtime"
 
 	@configuration @asmonitor @case-646
@@ -615,7 +613,7 @@ Feature: Monitoring
 		And I click "uh_host_problems"
 		Then I should see "linux-server2"
 		When I have host "linux-server2" in downtime
-		And I click "Refresh"
+		And I reload the page
 		Then I shouldn't see "linux-server2"
 
 	@configuration @asmonitor @bug-6780
@@ -629,7 +627,7 @@ Feature: Monitoring
 		Then I should see "linux-server1"
 		And I should see "System Load"
 		When I have service "linux-server1;System Load" in downtime
-		And I click "Refresh"
+		And I reload the page
 		Then I shouldn't see "linux-server1"
 		And I shouldn't see "System Load"
 
@@ -644,14 +642,14 @@ Feature: Monitoring
 		Then I should see "linux-server1"
 		And I should see "System Load"
 		When I have host "linux-server1" in downtime
-		And I click "Refresh"
+		And I reload the page
 		Then I shouldn't see "linux-server1"
 		And I shouldn't see "System Load"
 
 	@configuration @asmonitor @bug-7870
 	Scenario: I can use commands
-		When I hover over the "Monitoring" button
-		And I click "Process Info"
+		When I hover over the "Manage" menu
+		And I click "Process information"
 		And I click "Disable notifications"
 		And I click "Submit"
 		Then I should see "Command has been executed!"

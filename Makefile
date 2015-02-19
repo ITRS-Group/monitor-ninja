@@ -21,7 +21,7 @@ install-sass:
 generate-css:
 	which compass || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
 	for skin in application/views/css/*; do \
-		test -f $$skin/config.rb && compass compile --trace --boring $$skin; \
+		test -f $$skin/config.rb && /bin/bash -c "ulimit -s unlimited && compass compile --trace --boring $$skin"; \
 	done
 	# Generate css for listviews
 	compass compile --trace --boring modules/lsfilter/views/css/

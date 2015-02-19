@@ -74,7 +74,7 @@ if( $object instanceof Host_Model ) {
 			$label = _("Re-schedule next $type check");
 			$cmd = $type == 'host' ? nagioscmd::command_id('SCHEDULE_HOST_CHECK') : nagioscmd::command_id('SCHEDULE_SVC_CHECK'); ?>
 			<td class="icon dark">
-				<?php echo html::image(ninja::add_path('icons/16x16/re-schedule.png'), array('alt' => $label, 'title' => $label)); ?>
+				<span class="re-schedule" title="<?php echo $label; ?>"></span>
 			</td>
 			<td><?php echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label); ?></td>
 		</tr>

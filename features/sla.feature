@@ -39,8 +39,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -50,8 +51,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "EmptyGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "EmptyGroup"
 		When I enter "9" into "Jan"
@@ -64,8 +66,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "empty" from the multiselect "objects_tmp"
 		Then "objects" should have option "empty"
@@ -78,8 +81,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report without SLA values
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I click "Show report"
@@ -89,8 +93,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1"
@@ -107,8 +112,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		And I select "win-server1" from the multiselect "objects_tmp"
@@ -132,8 +138,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single service report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1;PING"
@@ -150,8 +157,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		And I select "linux-server1;System Load" from the multiselect "objects_tmp"
@@ -176,8 +184,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		And I select "linux-server2;System Load" from the multiselect "objects_tmp"
@@ -204,8 +213,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I enter "9,99" into "Jan"
@@ -226,8 +236,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "WindowsServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -252,8 +263,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "MixedGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -278,8 +290,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		Then "objects" should have option "pings"
@@ -304,8 +317,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		And I select "empty" from the multiselect "objects_tmp"
@@ -332,8 +346,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
@@ -357,8 +372,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Ensure correct timeperiod is carried over to avail
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I select "Last 12 months" from "Reporting period"
@@ -380,8 +396,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		Then "Saved reports" shouldn't have option "saved test report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -419,8 +436,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports @unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
-		When I hover over the "Reporting" button
-		And I click "SLA"
+		When I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		And I click "Setup SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -454,8 +472,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports @bug-7646 @unreliable
 	Scenario: Uncheck saved checkbox
 		Given I am on the Host details page
-		When I hover over the "Reporting" button
-		And I click "SLA"
+		When I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		And I click "Setup SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -479,8 +498,9 @@ Feature: SLA reports
 		And I click "Save report"
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
-		When I hover over the "Reporting" button
-		And I click "SLA"
+		When I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		And I click "Setup SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -490,8 +510,9 @@ Feature: SLA reports
 	@configuration @asmonitor @reports @unreliable
 	Scenario: Delete previously created report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"

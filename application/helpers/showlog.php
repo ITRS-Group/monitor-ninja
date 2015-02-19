@@ -77,7 +77,7 @@ class showlog
 
 		# Add the proper image url.
 		$cmd .= " --image-url=" . url::base(false) .
-			'application/views/icons/16x16/';
+			'application/views/icons/x16/';
 
 		$resource = ObjectPool_Model::pool('status')->all()->mayi_resource();
 		if (!op5mayi::instance()->run($resource.':read.showlog')) {

@@ -32,3 +32,23 @@ Then /^all helptexts should be defined$/ do
     page.should have_selector('.lib-popover-tip', visible: false)
   }
 end
+
+When /^I hover the branding$/ do
+  page.find('a[title="branding"]').hover
+end
+
+When /^I hover over the "(.*)" menu$/ do |element|
+  page.find('a span', :text => element, :match => :prefer_exact, :visible => true).hover
+end
+
+When /^I reload the page$/ do
+  visit current_url
+  # page.execute_script("document.location.reload();")
+end
+
+Then /^I should see menu items:$/ do |table|
+  rows = table.raw
+  rows.each do |row|
+    page.find('a span', :text => row[0]).visible?
+  end
+end
