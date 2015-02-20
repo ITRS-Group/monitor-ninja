@@ -203,6 +203,21 @@ EOF;
 		 */
 		$authenticated =  isset( $env['user'] ) && isset( $env['user']['authenticated'] ) && $env['user']['authenticated'];
 
+		if($this->is_subset('ninja.auth:login', $action)) {
+			return !$authenticated;
+		}
+
+		/*
+		* Since session manipulation is outside the scope of
+		* authentication (it must work for authentication to
+		* we should keep it seperate from user auth. Always
+		* ninja.session:
+		*/
+		if ($this->is_subset('ninja.session:', $action)) {
+		       return true;
+		}
+
+
 		/* Map auth points to actions */
 		if (!isset( $env['user'] )) {
 			$messages[] = "You are not logged in";
