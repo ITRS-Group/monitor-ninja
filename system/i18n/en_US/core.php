@@ -31,4 +31,5 @@ $lang = array
 	'driver'                => 'driver',
 	'model'                 => 'model',
 	'view'                  => 'view',
+	'autoload_not_found'    => 'File "%s" containing "%s" of type "%s" not found in "%s"'
 );
