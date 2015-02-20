@@ -59,9 +59,9 @@
 						$stripped = $stripped[0];
 
 						if ($quri == $stripped)
-							echo '<li class="selected">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span>', $attributes).'</li>';
+							echo '<li class="selected">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span><span style="margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;"></span>', $attributes).'</li>';
 						else
-							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span>', $attributes).'</li>';
+							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span><span style="margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;"></span>', $attributes).'</li>';
 					}
 
 					echo '</ul>';
