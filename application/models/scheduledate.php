@@ -200,18 +200,22 @@ class ScheduleDate_Model extends Model
 		}
 
 		foreach (static::$valid_fields as $field) {
-			if (!isset($data[$field]))
+			if (!isset($data[$field])) {
+				print "Missing field $field\n";
 				return false;
+			}
 		}
 
 		$db = Database::instance();
 
 		$downtime_type = $data['downtime_type'];
 		if (!in_array($downtime_type, static::$valid_types)) {
+			print "Downtime type $downtime_type is invalid\n";
 			return false;
 		}
 		$type = substr($data['downtime_type'], 0, -1);
 		if (!op5auth::instance()->authorized_for($type.'_edit_contact') && !op5auth::instance()->authorized_for($type.'_edit_all')) {
+			print "Not authorized for editing $type objects\n";
 			return false;
 		}
 
@@ -221,8 +225,10 @@ class ScheduleDate_Model extends Model
 
 		if ((int)$id) {
 			$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = '.(int)$id);
-			if (!count($set))
+			if (!count($set)) {
+				print "Schedule was supposed to be for an existing recurring downtime, but none could be found for $id\n";
 				return false;
+			}
 			$db->query("DELETE FROM recurring_downtime_objects WHERE recurring_downtime_id = ".(int)$id);
 			# update schedule
 			$sql = "UPDATE recurring_downtime SET author = %s," .
