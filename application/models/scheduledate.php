@@ -134,7 +134,7 @@ class ScheduleDate_Model extends Model
 	{
 		$result = array();
 		$nagios_cmd = self::determine_downtimetype($object_type);
-		$author = Auth::instance()->get_user()->username;
+		$author = op5auth::instance()->get_user()->username;
 		$month = date('n');
 		$day = date('d');
 		$year = date('Y');
@@ -211,8 +211,9 @@ class ScheduleDate_Model extends Model
 			return false;
 		}
 		$type = substr($data['downtime_type'], 0, -1);
-		if (!Auth::instance()->authorized_for($type.'_edit_contact') && !Auth::instance()->authorized_for($type.'_edit_all'))
+		if (!op5auth::instance()->authorized_for($type.'_edit_contact') && !op5auth::instance()->authorized_for($type.'_edit_all')) {
 			return false;
+		}
 
 		$start_time = static::time_to_seconds($data['start_time']);
 		$end_time = static::time_to_seconds($data['end_time']);
@@ -269,7 +270,7 @@ class ScheduleDate_Model extends Model
 		$type = substr($obj->get_downtime_type(), 0, -1);
 		// *_add_delete is for the objects, and because this manipulates the
 		// state of an existing object, *_add_delete is not required. OK?
-		if (!Auth::instance()->authorized_for($type.'_edit_contact') && !Auth::instance()->authorized_for($type.'_edit_all'))
+		if (!op5auth::instance()->authorized_for($type.'_edit_contact') && !op5auth::instance()->authorized_for($type.'_edit_all'))
 			return false;
 
 		$db = Database::instance();
