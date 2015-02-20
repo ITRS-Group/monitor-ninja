@@ -19,8 +19,6 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	 *
 	 * Second part is a action subset match. If the action matches the part, the
 	 * function returns the third part as status.
-	 *
-	 * @var string
 	 */
 	private $raw_acl = <<<EOF
 always                      ninja.session:                                true
@@ -126,8 +124,6 @@ EOF;
 
 	/**
 	 * Processed result of the $raw_acl varible.
-	 *
-	 * @var array
 	 */
 	private $acl = array();
 
