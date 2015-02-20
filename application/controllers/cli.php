@@ -22,7 +22,8 @@ class Cli_Controller extends Controller {
 			url::redirect('default/index');
 		}
 		parent::__construct();
-		$op5_auth = Op5Auth::factory(array('session_key' => false));
+		$op5_auth = Op5Auth::instance();
+		$op5_auth->write_close();
 		$op5_auth->force_user(new Op5User_AlwaysAuth());
 	}
 
