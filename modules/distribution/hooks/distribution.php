@@ -47,7 +47,7 @@ class distribution_hooks implements op5MayI_Actor
 		$configured_pollers = 0;
 		$pgroups = array();
 
-		if ($nodeinfo['ipc']['configured_masters'] > 0) {
+		if (!isset($nodeinfo['ipc']) || $nodeinfo['ipc']['configured_masters'] > 0) {
 			// We're on a poller just return 0 on everything
 			return array(
 				'poller_groups' => 0,
