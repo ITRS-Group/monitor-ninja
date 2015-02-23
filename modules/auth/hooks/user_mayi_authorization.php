@@ -21,104 +21,101 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	 * function returns the third part as status.
 	 */
 	private $raw_acl = <<<EOF
-always                      ninja.session:                                true
-authenticated               ninja.auth:login                              true
-!authenticated              ninja.auth:login                              false
-always                      ninja:                                        true
+always                          ninja.session:                                                true
 
-always                      monitor.system.saved_filters:                 true
+!authenticated                  ninja.auth:login                                              true
+authenticated                   ninja.auth:login                                              false
 
-system_information          monitor.monitoring.status:read                true
-system_information          monitor.monitoring.performance:read           true
+authenticated                   ninja:                                                        true
 
-!api_command                :read.api.command                             false
-!api_command                :update.api.command                           false
+authenticated                   monitor.system.saved_filters:                                 true
 
-!api_config                 :read.api.configuration                       false
-!api_config                 :create.api.configuration                     false
-!api_config                 :delete.api.configuration                     false
-!api_config                 :update.api.configuration                     false
+system_information              monitor.monitoring.status:read                                true
+system_information              monitor.monitoring.performance:read                           true
 
-!api_report                 :view.api.report                              false
-!api_status                 :view.api.status                              false
+!api_command                    :read.api.command                                             false
+!api_command                    :update.api.command                                           false
 
-!api_command                :read.app.command                             false
-!api_command                :update.app.command                           false
+!api_config                     :read.api.configuration                                       false
+!api_config                     :create.api.configuration                                     false
+!api_config                     :delete.api.configuration                                     false
+!api_config                     :update.api.configuration                                     false
 
-!api_config                 :read.app.configuration                       false
-!api_config                 :create.app.configuration                     false
-!api_config                 :delete.app.configuration                     false
-!api_config                 :update.app.configuration                     false
+!api_report                     :view.api.report                                              false
+!api_status                     :view.api.status                                              false
 
-!api_report                 :view.app.report                              false
-!api_status                 :view.app.status                              false
+!api_command                    :read.app.command                                             false
+!api_command                    :update.app.command                                           false
 
-!api_command                :read.local.command                           false
-!api_command                :update.local.command                         false
+!api_config                     :read.app.configuration                                       false
+!api_config                     :create.app.configuration                                     false
+!api_config                     :delete.app.configuration                                     false
+!api_config                     :update.app.configuration                                     false
 
-!api_config                 :read.local.configuration                     false
-!api_config                 :create.local.configuration                   false
-!api_config                 :delete.local.configuration                   false
-!api_config                 :update.local.configuration                   false
+!api_report                     :view.app.report                                              false
+!api_status                     :view.app.status                                              false
 
-!api_report                 :view.local.report                            false
-!api_status                 :view.local.status                            false
+!api_command                    :read.local.command                                           false
+!api_command                    :update.local.command                                         false
 
-host_view_all               monitor.monitoring.hosts:read                 true
-host_view_all               monitor.monitoring.comments:read              true
-host_view_all               monitor.monitoring.downtimes:read             true
-host_view_all               monitor.monitoring.downtimes.recurring:read   true
-host_view_all               monitor.monitoring.notifications:read         true
+!api_config                     :read.local.configuration                                     false
+!api_config                     :create.local.configuration                                   false
+!api_config                     :delete.local.configuration                                   false
+!api_config                     :update.local.configuration                                   false
 
-host_view_contact           monitor.monitoring.hosts:read                 true
-host_view_contact           monitor.monitoring.comments:read              true
-host_view_contact           monitor.monitoring.downtimes:read             true
-host_view_contact           monitor.monitoring.downtimes.recurring:read   true
-host_view_contact           monitor.monitoring.notifications:read         true
+!api_report                     :view.local.report                                            false
+!api_status                     :view.local.status                                            false
 
-service_view_all            monitor.monitoring.services:read              true
-service_view_all            monitor.monitoring.comments:read              true
-service_view_all            monitor.monitoring.downtimes:read             true
-service_view_all            monitor.monitoring.downtimes.recurring:read   true
-service_view_all            monitor.monitoring.notifications:read         true
+host_view_{all,contact}         monitor.monitoring.hosts:read                                 true
+host_view_{all,contact}         monitor.monitoring.comments:read                              true
+host_view_{all,contact}         monitor.monitoring.downtimes:read                             true
+host_view_{all,contact}         monitor.monitoring.downtimes.recurring:read                   true
+host_view_{all,contact}         monitor.monitoring.notifications:read                         true
 
-service_view_contact        monitor.monitoring.services:read              true
-service_view_contact        monitor.monitoring.comments:read              true
-service_view_contact        monitor.monitoring.downtimes:read             true
-service_view_contact        monitor.monitoring.downtimes.recurring:read   true
-service_view_contact        monitor.monitoring.notifications:read         true
+host_edit_{all,contact}         monitor.monitoring.hosts:{create,update,delete}               true
+host_edit_{all,contact}         monitor.monitoring.comments:{create,update,delete}            true
+host_edit_{all,contact}         monitor.monitoring.downtimes:{create,update,delete}           true
+host_edit_{all,contact}         monitor.monitoring.downtimes.recurring:{create,update,delete} true
+host_edit_{all,contact}         monitor.monitoring.notifications:{create,update,delete}       true
 
-hostgroup_view_all          monitor.monitoring.hostgroups:read            true
+service_view_{all,contact}      monitor.monitoring.services:read                              true
+service_view_{all,contact}      monitor.monitoring.comments:read                              true
+service_view_{all,contact}      monitor.monitoring.downtimes:read                             true
+service_view_{all,contact}      monitor.monitoring.downtimes.recurring:read                   true
+service_view_{all,contact}      monitor.monitoring.notifications:read                         true
 
-hostgroup_view_contact      monitor.monitoring.hostgroups.view            true
+service_edit_{all,contact}      monitor.monitoring.services:{create,update,delete}            true
+service_edit_{all,contact}      monitor.monitoring.comments:{create,update,delete}            true
+service_edit_{all,contact}      monitor.monitoring.downtimes:{create,update,delete}           true
+service_edit_{all,contact}      monitor.monitoring.downtimes.recurring:{create,update,delete} true
+service_edit_{all,contact}      monitor.monitoring.notifications:{create,update,delete}       true
 
-servicegroup_view_all       monitor.monitoring.servicegroups:read         true
+hostgroup_view_{all,contact}    monitor.monitoring.hostgroups:read                            true
+hostgroup_edit_{all,contact}    monitor.monitoring.hostgroups:{create,update,delete}          true
 
-servicegroup_view_contact   monitor.monitoring.servicegroups:read         true
+servicegroup_view_{all,contact} monitor.monitoring.servicegroups:read                         true
+servicegroup_edit_{all,contact} monitor.monitoring.servicegroups:{create,update,delete}       true
 
-contact_view_contact        monitor.monitoring.contacts:read              true
+contact_view_{all,contact}      monitor.monitoring.contacts:read                              true
+contact_edit_{all,contact}      monitor.monitoring.contacts:{create,update,delete}            true
 
-contact_view_all            monitor.monitoring.contacts:read              true
+contactgroup_view_{all,contact} monitor.monitoring.contactgroups:read                         true
+contactgroup_edit_{all,contact} monitor.monitoring.contactgroups:{create,update,delete}       true
 
-contactgroup_view_contact   monitor.monitoring.contactgroups:read         true
 
-contactgroup_view_all       monitor.monitoring.contactgroups:read         true
+timeperiod_view_all             monitor.monitoring.timeperiods:read                           true
+timeperiod_edit_all             monitor.monitoring.timeperiods:{create,update,delete}         true
 
-timeperiod_view_all         monitor.monitoring.timeperiods:read           true
+command_view_all                monitor.monitoring.commands:read                              true
+command_edit_all                monitor.monitoring.commands:{create,update,delete}            true
 
-command_view_all            monitor.monitoring.commands:read              true
+logger_access                   monitor.logger.messages:read                                  true
 
-logger_access               monitor.logger.messages:read                  true
-
-manage_trapper              monitor.trapper.handlers:                     true
-
-manage_trapper              monitor.trapper.log:                          true
-
-manage_trapper              monitor.trapper.matchers:                     true
-
-manage_trapper              monitor.trapper.modules:                      true
-
-manage_trapper              monitor.trapper.traps:                        true
+manage_trapper                  monitor.trapper.handlers:                                     true
+manage_trapper                  monitor.trapper.log:                                          true
+manage_trapper                  monitor.trapper.matchers:                                     true
+manage_trapper                  monitor.trapper.modules:                                      true
+manage_trapper                  monitor.trapper.traps:                                        true
 EOF;
 
 
@@ -128,23 +125,65 @@ EOF;
 	private $acl = array();
 
 	/**
+	 * Convert the input line containing {xxx,yyy} segments to a list of all segments unpacked
+	 *
+	 * For example:
+	 *
+	 * aaa_{b,c} kaka {xx,yyy}
+	 *
+	 * would be unpacked to four lines:
+	 *
+	 * aaa_b kaka xx
+	 * aaa_c kaka xx
+	 * aaa_b kaka yyy
+	 * aaa_c kaka yyy
+	 *
+	 * Used to preprocess the ACL to easier handle {create,update,delete} lines
+	 *
+	 * @param dyting $rawrow
+	 * @return multitype:string
+	 */
+	private function preprocess_row($rawrow) {
+		$splitted = preg_split('/\{([^{}]+)\}/', $rawrow, NULL, PREG_SPLIT_DELIM_CAPTURE);
+		$rows = array('');
+		while(count($splitted) > 0) {
+			$prefix = array_shift($splitted);
+			$rows = array_map(function($value) use ($prefix) { return $value.$prefix; }, $rows);
+			if(count($splitted) > 0) {
+				$choices = explode(',',array_shift($splitted));
+				$newrows = array();
+				foreach($choices as $choice) {
+					$newrows = array_merge($newrows,
+							array_map(function($value) use ($choice) { return $value.$choice; }, $rows)
+					);
+				}
+				$rows = $newrows;
+			}
+		}
+		return $rows;
+	}
+
+	/**
 	 *  Add the event handler for this object
 	 */
 	public function __construct() {
 		$rows = array_filter(explode("\n", $this->raw_acl));
-		foreach($rows as $row) {
-			$row_parts = array_values(array_filter(explode(" ", $row)));
-			if(count($row_parts) != 3) {
-				die("Invalid ACL line");
-			}
+		foreach($rows as $rawrow) {
+			$processed_rows = $this->preprocess_row($rawrow);
+			foreach($processed_rows as $row) {
+				$row_parts = array_values(array_filter(explode(" ", $row)));
+				if(count($row_parts) != 3) {
+					die("Invalid ACL line");
+				}
 
-			$negate = false;
-			if($row_parts[0][0] == '!') {
-				$negate = true;
-				$row_parts[0] = substr($row_parts[0], 1);
-			}
+				$negate = false;
+				if($row_parts[0][0] == '!') {
+					$negate = true;
+					$row_parts[0] = substr($row_parts[0], 1);
+				}
 
-			$this->acl[] = array($row_parts[0], $negate, $row_parts[1], $row_parts[2] == 'true');
+				$this->acl[] = array($row_parts[0], $negate, $row_parts[1], $row_parts[2] == 'true');
+			}
 		}
 
 		Event::add( 'system.ready', array (
@@ -203,38 +242,11 @@ EOF;
 		 */
 		$authenticated =  isset( $env['user'] ) && isset( $env['user']['authenticated'] ) && $env['user']['authenticated'];
 
-		if($this->is_subset('ninja.auth:login', $action)) {
-			return !$authenticated;
-		}
+		$authpoints = array();
 
-		/*
-		* Since session manipulation is outside the scope of
-		* authentication (it must work for authentication to
-		* we should keep it seperate from user auth. Always
-		* ninja.session:
-		*/
-		if ($this->is_subset('ninja.session:', $action)) {
-		       return true;
-		}
+		if( isset($env['user']) && isset($env['user']['authorized']))
+			$authpoints = $env['user']['authorized'];
 
-
-		/* Map auth points to actions */
-		if (!isset( $env['user'] )) {
-			$messages[] = "You are not logged in";
-			return false;
-		}
-
-		elseif (!isset( $env['user']['authorized'] )) {
-			$messages[] = "Your are not assigned any rights and are therefore not allowed to do this";
-			return false;
-		}
-
-		elseif (!$authenticated) {
-			$messages[] = "You are not authenticated";
-			return false;
-		}
-
-		$authpoints = $env['user']['authorized'];
 		$authpoints['always'] = true;
 		$authpoints['authenticated'] = $authenticated;
 
