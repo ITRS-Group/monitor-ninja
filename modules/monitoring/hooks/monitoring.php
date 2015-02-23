@@ -8,11 +8,13 @@ require_once('op5/sysinfo.php');
  */
 class monitoring_hooks implements op5MayI_Actor {
 	public function __construct() {
+
 		Event::add('system.post_controller_constructor',
 			array ($this,'load_notifications'));
 
 		$mayi = op5MayI::instance();
 		$mayi->be('monitor.monitoring', $this);
+
 	}
 
 	/**
@@ -24,9 +26,7 @@ class monitoring_hooks implements op5MayI_Actor {
 		$sysinfo = op5sysinfo::instance()->get_usage();
 		return array(
 			'hosts' => isset($sysinfo['monitor']) ? $sysinfo['monitor'] : 0,
-			'services' => isset($sysinfo['monitor.service']) ? $sysinfo['monitor.service'] : 0,
-			'pollers' => isset($sysinfo['pollers']) ? $sysinfo['pollers'] : 0,
-			'peers' => isset($sysinfo['peers']) ? $sysinfo['peers'] : 0
+			'services' => isset($sysinfo['monitor.service']) ? $sysinfo['monitor.service'] : 0
 		);
 	}
 

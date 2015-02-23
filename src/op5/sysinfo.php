@@ -6,12 +6,27 @@ require_once __DIR__.'/queryhandler.php';
 class op5sysinfo_Exception extends Exception {}
 
 class op5sysinfo {
+
+	private $usage_metrics = array();
 	/**
 	 * Return sysinfo instance
 	 *
 	 * @return op5sysinfo
 	 */
 	static public function instance() {
+
+		$this->usage_metrics = array();
+		foreach ($request as $metric) {
+			$getter = "get_" . str_replace('.','_',$metric) . "_usage";
+			try {
+				if (method_exists($this, $getter)) {
+					$this->usage_metrics[$metric] = $this->$getter();
+				}
+			} catch (Exception $e) {
+				/* Something went wrong... skip this metric */
+			}
+		}
+
 		return op5objstore::instance()->obj_instance(__CLASS__);
 	}
 
@@ -38,22 +53,18 @@ class op5sysinfo {
 	 * @return array
 	 */
 	public function get_usage(array $request = null) {
-		if ($request === null) {
-			$request = self::$metric_names;
-		}
 
-		$metrics = array ();
-		foreach ($request as $metric) {
-			$getter = "get_" . str_replace('.','_',$metric) . "_usage";
-			try {
-				if (method_exists($this, $getter)) {
-					$metrics[$metric] = $this->$getter();
-				}
-			} catch (Exception $e) {
-				/* Something went wrong... skip this metric */
+		$metrics = array();
+		$request = ($request === null) ? self::$metric_names : $request;
+
+		foreach ($request as $name) {
+			if (isset($this->usage_metrics[$name])) {
+				$metrics[$name] = $this->usage_metrics[$name];
 			}
 		}
+
 		return $metrics;
+
 	}
 
 	/**
