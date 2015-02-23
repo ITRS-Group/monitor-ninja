@@ -8,27 +8,6 @@ class op5sysinfo_Exception extends Exception {}
 class op5sysinfo {
 
 	private $usage_metrics = array();
-	/**
-	 * Return sysinfo instance
-	 *
-	 * @return op5sysinfo
-	 */
-	static public function instance() {
-
-		$this->usage_metrics = array();
-		foreach ($request as $metric) {
-			$getter = "get_" . str_replace('.','_',$metric) . "_usage";
-			try {
-				if (method_exists($this, $getter)) {
-					$this->usage_metrics[$metric] = $this->$getter();
-				}
-			} catch (Exception $e) {
-				/* Something went wrong... skip this metric */
-			}
-		}
-
-		return op5objstore::instance()->obj_instance(__CLASS__);
-	}
 
 	/**
 	 * List of names of all available metrics.
@@ -46,6 +25,35 @@ class op5sysinfo {
 	 * @var array
 	 */
 	private $merlin_nodeinfo = false;
+
+	/**
+	 * Return sysinfo instance
+	 *
+	 * @return op5sysinfo
+	 */
+	static public function instance() {
+		return op5objstore::instance()->obj_instance(__CLASS__);
+	}
+
+	/**
+	 * Load all usage flags, since we for sure will use them sometime.
+	 *
+	 * op5sysinfo is a singleton, and thus it's better to load information once.
+	 * That's easiest to do in the constructor.
+	 */
+	public function __construct() {
+		$this->usage_metrics = array();
+		foreach (self::$metric_names as $metric) {
+			$getter = "get_" . str_replace('.','_',$metric) . "_usage";
+			try {
+				if (method_exists($this, $getter)) {
+					$this->usage_metrics[$metric] = $this->$getter();
+				}
+			} catch (Exception $e) {
+				/* Something went wrong... skip this metric */
+			}
+		}
+	}
 
 	/**
 	 * Get a list of all metrics in the system.

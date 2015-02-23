@@ -140,9 +140,7 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 			'monitor' => array (
 				'monitoring' => array (
 					'hosts' => 6,
-					'services' => 5,
-					'pollers' => 0,
-					'peers' => 0
+					'services' => 5
 				)
 			)
 		), op5MayI::instance()->get_environment() );

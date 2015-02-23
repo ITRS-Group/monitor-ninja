@@ -40,7 +40,7 @@ class distribution_hooks implements op5MayI_Actor
 	 **/
 	function process_info()
 	{
-		$sysinfo = new op5sysinfo();
+		$sysinfo = op5sysinfo::instance();
 		$nodeinfo = $sysinfo->get_merlininfo();
 
 		$configured_peers = 0;
