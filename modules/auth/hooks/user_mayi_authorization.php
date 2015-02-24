@@ -260,8 +260,12 @@ EOF;
 			if(!$access)
 				continue;
 
-			if($this->is_subset($action_pattern, $action))
+			if($this->is_subset($action_pattern, $action)) {
+				if(!$allow) {
+					$messages[] = "You are not authorized for $action";
+				}
 				return $allow;
+			}
 		}
 		$messages[] = "You are not authorized for $action";
 		return false;
