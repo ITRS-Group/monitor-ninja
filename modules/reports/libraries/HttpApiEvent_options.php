@@ -9,6 +9,21 @@ class HttpApiEvent_options extends Summary_options {
 	const MAX_EVENTS = 10000; /**< Pagination limit for events retrieved from HTTP API. Hardcoded, deal with it */
 
 	private $limit;
+	/**
+	 * Arrays such as host_states and service_states needs to be converted
+	 * into a bitmap, which they are here.
+	 */
+	protected function merge_array(&$name, $value, $obj)
+	{
+		if (is_array($value)) {
+			$res = 0;
+			foreach ($value as $val) {
+				$res |= $val;
+			}
+			return $res;
+		}
+		return $value;
+	}
 
 	public function setup_properties()
 	{
@@ -43,22 +58,6 @@ class HttpApiEvent_options extends Summary_options {
 			1 => 'soft',
 			2 => 'hard',
 			3 => 'both',
-		);
-		$this->properties['host_states']['options'] = array(
-			7 => 'all',
-			6 => 'problem',
-			1 => 'up',
-			2 => 'down',
-			4 => 'unreachable',
-		);
-
-		$this->properties['service_states']['options'] = array(
-			15 => 'all',
-			14 => 'problem',
-			1 => 'ok',
-			2 => 'warning',
-			4 => 'critical',
-			8 => 'unknown',
 		);
 
 		$this->properties['report_period']['default'] = 'custom';
@@ -141,6 +140,9 @@ class HttpApiEvent_options extends Summary_options {
 				8 => 'unknown',
 				0 => 'none')
 		);
+
+		$this->rename_options['service_states'] = array($this, 'merge_array');
+		$this->rename_options['host_states'] = array($this, 'merge_array');
 	}
 
 	/**
@@ -181,24 +183,26 @@ class HttpApiEvent_options extends Summary_options {
 	 */
 	function set_options($options) {
 		foreach($options as $name => $value) {
-			switch ($this->properties[$name]['type']) {
-			case 'array':
-				$res = array();
-				if (!is_array($value))
-					$value = array($value);
-				foreach ($value as $v) {
-					$v = array_search($v, $this->properties[$name]['options'], true);
-					if ($v === false)
+			if (isset($this->properties[$name])) {
+				switch ($this->properties[$name]['type']) {
+				case 'array':
+					$res = array();
+					if (!is_array($value))
+						$value = array($value);
+					foreach ($value as $v) {
+						$v = array_search($v, $this->properties[$name]['options'], true);
+						if ($v === false)
+							throw new ReportValidationException("Invalid value for option '$name'");
+						$res[] = $v;
+					}
+					$value = $res;
+					break;
+				case 'enum':
+					$value = array_search($value, $this->properties[$name]['options'], true);
+					if ($value === false)
 						throw new ReportValidationException("Invalid value for option '$name'");
-					$res[] = $v;
+					break;
 				}
-				$value = $res;
-				break;
-			case 'enum':
-				$value = array_search($value, $this->properties[$name]['options'], true);
-				if ($value === false)
-					throw new ReportValidationException("Invalid value for option '$name'");
-				break;
 			}
 			if(!$this->set($name, $value)) {
 				throw new ReportValidationException("Invalid value for option '$name'");
@@ -255,6 +259,8 @@ class HttpApiEvent_options extends Summary_options {
 		if (!isset($this->properties[$key])) {
 			return false;
 		}
+		if ($this->properties[$key]['type'] == 'array')
+			return true;
 		if ($key == 'objects' && !is_array($value))
 			$value = array($value);
 		if($key == 'limit') {
