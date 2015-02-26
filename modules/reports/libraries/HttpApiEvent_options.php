@@ -198,24 +198,26 @@ class HttpApiEvent_options extends Summary_options {
 	 */
 	function set_options($options) {
 		foreach($options as $name => $value) {
-			switch ($this->properties[$name]['type']) {
-			case 'array':
-				$res = array();
-				if (!is_array($value))
-					$value = array($value);
-				foreach ($value as $v) {
-					$v = array_search($v, $this->properties[$name]['options'], true);
-					if ($v === false)
+			if (isset($this->properties[$name])) {
+				switch ($this->properties[$name]['type']) {
+				case 'array':
+					$res = array();
+					if (!is_array($value))
+						$value = array($value);
+					foreach ($value as $v) {
+						$v = array_search($v, $this->properties[$name]['options'], true);
+						if ($v === false)
+							throw new ReportValidationException("Invalid value for option '$name'");
+						$res[] = $v;
+					}
+					$value = $res;
+					break;
+				case 'enum':
+					$value = array_search($value, $this->properties[$name]['options'], true);
+					if ($value === false)
 						throw new ReportValidationException("Invalid value for option '$name'");
-					$res[] = $v;
+					break;
 				}
-				$value = $res;
-				break;
-			case 'enum':
-				$value = array_search($value, $this->properties[$name]['options'], true);
-				if ($value === false)
-					throw new ReportValidationException("Invalid value for option '$name'");
-				break;
 			}
 			if(!$this->set($name, $value)) {
 				throw new ReportValidationException("Invalid value for option '$name'");
@@ -272,6 +274,8 @@ class HttpApiEvent_options extends Summary_options {
 		if (!isset($this->properties[$key])) {
 			return false;
 		}
+		if ($this->properties[$key]['type'] == 'array')
+			return true;
 		if ($key == 'objects' && !is_array($value))
 			$value = array($value);
 		if($key == 'limit') {
