@@ -156,9 +156,9 @@ class Report_query_builder_Model extends Model
 				break;
 		}
 
-		if (!$this->options['host_states'] || $this->options['host_states'] == Reports_Model::HOST_ALL) {
+		if ($this->options['host_states'] == Reports_Model::HOST_ALL) {
 			$host_states_sql = 'event_type = ' . Reports_Model::HOSTCHECK;
-		} else {
+		} else if ($this->options['host_states']) {
 			$x = array();
 			$host_states_sql = '(event_type = ' . Reports_Model::HOSTCHECK . ' ' .
 				'AND state IN(';
@@ -168,11 +168,13 @@ class Report_query_builder_Model extends Model
 				}
 			}
 			$host_states_sql .= join(',', $x) . '))';
+		} else {
+			$host_states_sql = '';
 		}
 
-		if (!$this->options['service_states'] || $this->options['service_states'] == Reports_Model::SERVICE_ALL) {
+		if ($this->options['service_states'] == Reports_Model::SERVICE_ALL) {
 			$service_states_sql = 'event_type = ' . Reports_Model::SERVICECHECK;
-		} else {
+		} else if ($this->options['service_states']) {
 			$x = array();
 			$service_states_sql = '(event_type = ' . Reports_Model::SERVICECHECK .
 				"\nAND state IN(";
@@ -182,6 +184,8 @@ class Report_query_builder_Model extends Model
 				}
 			}
 			$service_states_sql .= join(',', $x) . '))';
+		} else {
+			$service_states_sql = '';
 		}
 
 		switch ($this->options['alert_types']) {
