@@ -3,14 +3,17 @@
 	"use strict";
 
 	/* QUICKLINK EXTENSION */
-	var uh_prob_title = "Unhandled Problems",
-		uh_prob_state_element = null;
+	var uh_prob_title = "Unhandled Problems";
 	function query_uh_objects(link) {
 
 		var basepath = _site_domain + _index_page,
-			query = link.attr('href');
+			query = link.attr('href'),
+			shield_class = 'icon-16 x16-shield-ok',
+			uh_prob_title = '',
+			totals = 0;
 
 		query = query.split('q=')[1];
+		var obj_type = link.attr('id').split('_')[1];
 
 		$.ajax({
 			url : basepath + "/listview/fetch_ajax",
@@ -26,43 +29,31 @@
 					return;
 				}
 
-				if (typeof data.totals.host_all !== 'undefined' && data.totals.host_all[1] > 0) {
-
-					uh_prob_title = data.totals.host_all[1] + ' unacknowledged host(s) in Down state!';
-					link.attr('title', uh_prob_title);
-
-					if (uh_prob_state_element) {
-						uh_prob_state_element.remove();
-					}
-					uh_prob_state_element = $("<span style='margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;' />");
-					if(data.totals.host_all[1] < 100 ) {
-						uh_prob_state_element.text(data.totals.host_all[1]);
-					}
-					link.append(uh_prob_state_element);
-
+				if (obj_type === 'host') {
+					totals = data.totals.host_all[1];
+					uh_prob_title = totals + ' unacknowledged host(s) in Down state!';
 					if (data.totals.host_state_down[1] > 0) {
-						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-critical');
+						shield_class = 'icon-16 x16-shield-critical';
 					}
-				} else if (typeof data.totals.service_all !== 'undefined' && data.totals.service_all[1] > 0) {
-
-					uh_prob_title = data.totals.service_all[1] + ' unacknowledged service(s) in Critical/Warning state!';
-					link.attr('title', uh_prob_title);
-
-					if (uh_prob_state_element) {
-						uh_prob_state_element.remove();
-					}
-					uh_prob_state_element = $("<span style='margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;' />");
-					if(data.totals.service_all[1] < 100 ) {
-						uh_prob_state_element.text(data.totals.service_all[1]);
-					}
-					link.append(uh_prob_state_element);
-
+				} else if (obj_type === 'service') {
+					totals = data.totals.service_all[1];
+					uh_prob_title = totals + ' unacknowledged service(s) in Critical/Warning state!';
 					if (data.totals.service_state_critical[1] > 0) {
-						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-critical');
+						shield_class = 'icon-16 x16-shield-critical';
 					} else if (data.totals.service_state_warning[1] > 0) {
-						link.find(':first-child').removeClass().addClass('icon-16 x16-shield-warning');
+						shield_class = 'icon-16 x16-shield-warning';
 					}
 				}
+
+				var uh_prob_state_element = link.find(':nth-child(2)');
+
+				if(totals < 100) {
+					// Only set text if there are less than 100 to prevent overflow
+					uh_prob_state_element.text(totals);
+				}
+
+				link.attr('title', uh_prob_title);
+				link.find(':first-child').removeClass().addClass(shield_class);
 			}
 		});
 	}
