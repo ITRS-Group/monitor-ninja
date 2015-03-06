@@ -66,6 +66,8 @@ system_information              monitor.monitoring.performance:read             
 !api_report                     :view.local.report                                            false
 !api_status                     :view.local.status                                            false
 
+own_user_change_password        monitor.system.users.password:update                           true
+
 host_view_{all,contact}         monitor.monitoring.hosts:read                                 true
 host_view_{all,contact}         monitor.monitoring.comments:read                              true
 host_view_{all,contact}         monitor.monitoring.downtimes:read                             true
