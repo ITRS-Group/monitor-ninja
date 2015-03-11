@@ -1,6 +1,64 @@
 <?php
 require_once (__DIR__ . '/config.php');
 require_once (__DIR__ . '/objstore.php');
+
+/**
+ * Model for defining a metric used by MayI
+ */
+class op5MayIMetric {
+	/**
+	 * Value of the metric
+	 *
+	 * @var float
+	 */
+	private $value;
+	/**
+	 * Minimum possible value of the metric
+	 *
+	 * @var float|false
+	 */
+	private $min;
+	/**
+	 * Maximum possible value of the metric
+	 *
+	 * @var float|false
+	 */
+	private $max;
+	public function __construct($value, $min = false, $max = false) {
+		$this->value = $value;
+		$this->min = $min;
+		$this->max = $max;
+	}
+
+	/**
+	 * Get the value of the metric
+	 *
+	 * @return float
+	 */
+	public function get_value() {
+		return $this->value;
+	}
+	/**
+	 * Get the minimum possible value of the metric
+	 *
+	 * @return float|false
+	 */
+	public function get_min() {
+		return $this->min;
+	}
+	/**
+	 * Get the maximum possible value of the metric
+	 *
+	 * @return float|false
+	 */
+	public function get_max() {
+		return $this->max;
+	}
+}
+
+/**
+ * Interface for MayI environment providers (actors)
+ */
 interface op5MayI_Actor {
 	/**
 	 * Get information from the actor, as an array.
@@ -10,6 +68,10 @@ interface op5MayI_Actor {
 	 */
 	public function getActorInfo();
 }
+
+/**
+ * Interface for MayI constraints
+ */
 interface op5MayI_Constraints {
 	/**
 	 * Execute a action
@@ -20,11 +82,17 @@ interface op5MayI_Constraints {
 	 *        	environment variables for the constraints
 	 * @param array $messages
 	 *        	referenced array to add messages to
-	 * @param array $perfdata
+	 * @param op5MayIMetric[] $metrics
 	 *        	referenced array to add performance data to
 	 */
-	public function run($action, $env, &$messages, &$perfdata);
+	public function run($action, $env, &$messages, &$metrics);
 }
+
+/**
+ * Main class for MayI
+ *
+ * MayI is a singleton, handles generic authorization.
+ */
 class op5MayI {
 	protected $actors = array ();
 	protected $constraints = array ();
@@ -115,18 +183,18 @@ class op5MayI {
 	 *        by the values in this array.
 	 * @param array $messages
 	 *        	returns a list of messsages from constraints
-	 * @param array $perfdata
+	 * @param op5MayIMetric[] $metrics
 	 *        	returns a list of perfomrance data from constraints
 	 * @return boolean
 	 */
-	public function run($action, array $override = array(), &$messages = false, &$perfdata = false) {
+	public function run($action, array $override = array(), &$messages = false, &$metrics = false) {
 		$messages = array ();
-		$perfdata = array ();
+		$metrics = array ();
 
 		$environment = $this->get_environment($override);
 
 		foreach ($this->constraints as $rs) {
-			if (!$rs->run($action, $environment, $messages, $perfdata)) {
+			if (!$rs->run($action, $environment, $messages, $metrics)) {
 				op5log::instance('mayi')->log('debug', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
 				op5log::instance('mayi')->log('notice', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $messages)));
 				return false;
