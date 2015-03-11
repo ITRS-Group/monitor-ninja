@@ -283,6 +283,7 @@ function lsfilter_list(config)
 			Notify.message(messages[i],
 					{type: 'error', nag: true});
 		}
+		$(window).trigger('resize');
 	}
 
 	this.get_browser_scroll_size = function()
