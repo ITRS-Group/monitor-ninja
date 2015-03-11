@@ -29,6 +29,7 @@ authenticated                   ninja.auth:login                                
 authenticated                   ninja:                                                        true
 
 authenticated                   monitor.system.saved_filters:                                 true
+authenticated                   monitor.reports.saved_reports:                                true
 configuration_information       monitor.system.backup:                                        true
 
 system_information              monitor.monitoring.status:read                                true

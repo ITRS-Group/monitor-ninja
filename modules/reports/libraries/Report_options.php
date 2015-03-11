@@ -862,6 +862,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 
 	/**
 	 * Return all saved reports for this report type
+	 * FIXME remove and replace calls here with usage of object pool for
+	 * saved reports which already has mayi instead of authorized_for()
 	 *
 	 * @returns array A id-indexed list of report names
 	 */
