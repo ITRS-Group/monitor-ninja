@@ -60,9 +60,15 @@ var Notify = (function () {
 
       if (notification.zone === 'nagbar') {
         notification.element.remove();
+        if (typeof(notification.options.remove) === 'function') {
+          notification.options.remove();
+        }
       } else {
         notification.element.fadeOut(time, function () {
           notification.element.remove();
+          if (typeof(notification.options.remove) === 'function') {
+            notification.options.remove();
+          }
         });
       }
 
