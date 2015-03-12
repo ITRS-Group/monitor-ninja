@@ -160,8 +160,11 @@ class op5sysinfo {
 	 * @return int, 1 for aps, 0 if not
 	 */
 	public function get_aps_usage() {
-		exec('rpm -q op5-system-release', $output, $exit_code);
-		return $exit_code === 0 ? 1 : 0;
+		# /etc/sysctl.d/99-op5.conf comes with op5-default-appliance rpm
+		if (file_exists('/etc/sysctl.d/99-op5.conf')) {
+			return 1;
+		}
+		return 0;
 	}
 
 	/**
