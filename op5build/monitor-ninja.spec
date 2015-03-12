@@ -61,6 +61,7 @@ BuildRequires: ghostscript-fonts-std
 %else
 Requires: php >= 5.3
 Requires: php-ldap
+Requires: php-pecl-apc
 BuildRequires: php >= 5.3
 BuildRequires: shadow-utils
 %if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
