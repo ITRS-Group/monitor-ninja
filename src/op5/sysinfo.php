@@ -170,11 +170,11 @@ class op5sysinfo {
 	 * @return int, 1 for installed, 0 if not
 	 */
 	public function get_trapper_usage() {
-		exec('rpm -q op5-trapper-processor', $output, $exit_code);
-		if ($exit_code !== 0) {
-			// rpm returned non-zero, which probably means that Trapper is not installed.
+		if (!file_exists("/opt/trapper/op5-monitor-trapper-version")) {
 			return 0;
 		}
+
+		/* Potentially expensive ... If trapper's installed we'll run this once on every page load */
 		exec('/usr/bin/traped list handlers | grep -v demo-handler | wc -l', $output2);
 		if (is_numeric($output2[0]) && $output2[0] > 0){
 			// Trapper has at least one handler in addition to the default demo-handler. This means it is used.
