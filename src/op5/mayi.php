@@ -188,19 +188,43 @@ class op5MayI {
 	 * @return boolean
 	 */
 	public function run($action, array $override = array(), &$messages = false, &$metrics = false) {
-		$messages = array ();
-		$metrics = array ();
-
 		$environment = $this->get_environment($override);
 
-		foreach ($this->constraints as $rs) {
-			if (!$rs->run($action, $environment, $messages, $metrics)) {
-				op5log::instance('mayi')->log('debug', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
-				op5log::instance('mayi')->log('notice', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $messages)));
-				return false;
+		$constr_res = array();
+		$allow = true;
+
+		foreach ($this->constraints as $i => $rs) {
+			$cur_messages = array();
+			$cur_metrics = array();
+			$cur_result = $rs->run($action, $environment, $cur_messages, $cur_metrics);
+			$constr_res[] = array($cur_result, $cur_messages, $cur_metrics);
+			if(!$cur_result) {
+				$allow = false;
 			}
 		}
 
-		return true;
+		$filt_res = array_filter($constr_res, function($r) use($allow) {return $r[0] == $allow;});
+
+		$messages = array ();
+		$metrics = array ();
+		foreach($filt_res as $res) {
+			list($cur_result, $cur_messages, $cur_metrics) = $res;
+			foreach($cur_messages as $message) {
+				$messages[] = $message;
+			}
+			foreach($cur_metrics as $name => $metric) {
+				$metrics[$name] = $metric;
+			}
+		}
+
+		if(!$allow) {
+			foreach($filt_res as $res) {
+				list($cur_result, $cur_messages, $cur_metrics) = $res;
+				op5log::instance('mayi')->log('debug', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
+				op5log::instance('mayi')->log('notice', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
+			}
+		}
+
+		return $allow;
 	}
 }
