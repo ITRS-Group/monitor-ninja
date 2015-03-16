@@ -304,4 +304,139 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array ('msg a', 'msg b'), $messages);
 		$this->assertEquals(array ('a' => 1,'x' => 4,'b' => 2), $metrics);
 	}
+
+	/**
+	 * Returns a list of test scenareos
+	 *
+	 * All cases contains the result and three constraint settings. Each setting
+	 * should be an array of:
+	 *  - Result
+	 *  - Priority
+	 *  - If message shold be visible
+	 */
+	public function ds_msg_priorities() {
+		return array (
+			/*
+			 * Test that all messages is visible if allowed, independent of
+			 * priorities
+			 */
+			array (
+				true,
+				array (true,0,true),
+				array (true,0,true),
+				array (true,0,true)
+			),
+			array (
+				true,
+				array (true,0,true),
+				array (true,1,true),
+				array (true,1,true)
+			),
+			array (
+				true,
+				array (true,1,true),
+				array (true,0,true),
+				array (true,1,true)
+			),
+			array (
+				true,
+				array (true,1,true),
+				array (true,1,true),
+				array (true,1,true)
+			),
+			array (
+				true,
+				array (true,1,true),
+				array (true,3,true),
+				array (true,2,true)
+			),
+			/*
+			 * Test that deny masks allow, but with priorities between deny
+			 */
+			array (
+				false,
+				array (false,0,true),
+				array (true,0,false),
+				array (true,0,false)
+			),
+			array (
+				false,
+				array (false,0,true),
+				array (false,0,true),
+				array (true,0,false)
+			),
+			array (
+				false,
+				array (true,0,false),
+				array (false,0,true),
+				array (true,0,false)
+			),
+			array (
+				false,
+				array (true,0,false),
+				array (false,0,true),
+				array (false,0,true)
+			),
+			/*
+			 * Test that deny masks allow, even if allow has higher priority
+			 */
+			array (
+				false,
+				array (false,0,true),
+				array (true,1,false),
+				array (true,2,false)
+			),
+			array (
+				false,
+				array (false,0,false),
+				array (false,1,true),
+				array (true,2,false)
+			),
+			array (
+				false,
+				array (true,2,false),
+				array (false,1,true),
+				array (true,0,false)
+			),
+			array (
+				false,
+				array (true,2,false),
+				array (false,1,true),
+				array (false,0,false)
+			)
+		);
+	}
+
+	/**
+	 * Verify that messages is returned given the correct priorities and result
+	 * @dataProvider ds_msg_priorities
+	 */
+	public function test_msg_priorities($result, $ca_conf, $cb_conf, $cc_conf) {
+		$mayi = op5MayI::instance();
+
+		$ca = new MayIConstraintsTest_TraceConstraints(array('some:stuff' => $ca_conf[0]));
+		$cb = new MayIConstraintsTest_TraceConstraints(array('some:stuff' => $cb_conf[0]));
+		$cc = new MayIConstraintsTest_TraceConstraints(array('some:stuff' => $cc_conf[0]));
+
+		$mayi->act_upon($ca, $ca_conf[1]);
+		$mayi->act_upon($cb, $cb_conf[1]);
+		$mayi->act_upon($cc, $cc_conf[1]);
+
+		$ca->addMessage('msg a');
+		$cb->addMessage('msg b');
+		$cc->addMessage('msg c');
+
+		// Make sure first request returns an empty array
+		$messages = false;
+		$metrics = false;
+
+		$this->assertEquals($result,
+				$mayi->run('some:stuff', array (), $messages, $metrics));
+
+		$exp_msg = array();
+		if($ca_conf[2]) $exp_msg[] = 'msg a';
+		if($cb_conf[2]) $exp_msg[] = 'msg b';
+		if($cc_conf[2]) $exp_msg[] = 'msg c';
+		$this->assertEquals($exp_msg, $messages);
+	}
 }
