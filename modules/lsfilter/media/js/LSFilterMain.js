@@ -142,6 +142,7 @@ var lsfilter_main = {
 			toolbar: $( '.main-toolbar' ),
 			totals : $('#filter_result_totals'),
 			attach_head : true,
+			notify : Notify,
 			loading_start : function() {
 				var loader = $('<span class="lsfilter-loader" />').append(
 						$('<span>' + _('Loading...') + '</span>'));

@@ -9,6 +9,7 @@ function lsfilter_list(config)
 		columns: false,
 		toolbar: false,
 		attach_head: false,
+		notify: false,
 		loading_start: function()
 		{
 		},
@@ -278,12 +279,14 @@ function lsfilter_list(config)
 	this.update_nagbar = function(messages)
 	{
 		var i;
-		Notify.clear('nagbar');
-		for(i=0;i<messages.length;i++) {
-			Notify.message(messages[i],
-					{type: 'error', nag: true});
+		if(this.config.notify) {
+			this.config.notify.clear('nagbar');
+			for(i=0;i<messages.length;i++) {
+				this.config.notify.message(messages[i],
+						{type: 'error', nag: true});
+			}
+			$(window).trigger('resize');
 		}
-		$(window).trigger('resize');
 	}
 
 	this.get_browser_scroll_size = function()
