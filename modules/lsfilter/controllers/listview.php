@@ -95,7 +95,23 @@ class ListView_Controller extends Ninja_Controller {
 
 			$messages = array();
 			$perfdata = array();
-			if($this->mayi->run($result_set->mayi_resource().":read.list", array(), $messages, $perfdata)) {
+			if($this->mayi->run($result_set->mayi_resource().":read.list", array(), $resource_messages, $perfdata)) {
+
+				/*
+				 * Messages should be both global notifications and messages
+				 * from the resouce
+				 */
+				$messages = array();
+				foreach( $this->template->global_notifications as $notifications ) {
+					foreach($notifications as $notification) {
+						$messages[] = $notification;
+					}
+				}
+				foreach($resource_messages as $message) {
+					$messages[] = $resource_messages;
+				}
+
+
 				$data = array();
 				foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
 					$obj = $elem->export();
