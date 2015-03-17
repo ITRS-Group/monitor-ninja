@@ -175,18 +175,22 @@ class Ninja_Controller extends Template_Controller {
 		$access = $this->mayi->run($action, $args, $messages,
 			$this->access_perfdata);
 
-		foreach ($messages as $msg) {
-			$this->add_global_notification($msg);
-			// Since the messages is published depending on action instead of
-			// target, we should add all messages as print_notifiations too
-			$this->add_print_notification($msg);
+		if ($access) {
+			foreach ($messages as $msg) {
+				$this->add_global_notification($msg);
+				// Since the messages are published depending on action instead
+				// of target, we should add all messages as print_notifications
+				// as well
+				$this->add_print_notification($msg);
+			}
 		}
-
-		if (!$access) {
+		else {
 			if($this->mayi->run('ninja.auth:login.redirect')) {
 				url::redirect('auth/login?uri=' . rawurlencode(Router::$complete_uri));
 			} else {
 				$this->template->content = new View('auth/no_access');
+				$this->template->content->messages = $messages;
+				$this->template->content->action = $action;
 				throw new Kohana_User_Exception('No access',
 					'Access denied for action ' . $action, $this->template);
 			}
