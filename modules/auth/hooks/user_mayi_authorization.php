@@ -253,25 +253,51 @@ EOF;
 		$authpoints['always'] = true;
 		$authpoints['authenticated'] = $authenticated;
 
+		$denied_rules = array();
+		$is_allowed = null; /* set _once_ only */
+
 		foreach($this->acl as $acl_line) {
-			list($access_rule, $negate, $action_pattern, $allow) = $acl_line;
-			$access = isset($authpoints[$access_rule]) && $authpoints[$access_rule];
-
+			list($access_rule, $negate, $action_pattern, $acl_allow) = $acl_line;
+			$user_access = isset($authpoints[$access_rule]) && $authpoints[$access_rule];
 			if($negate)
-				$access = !$access;
+				$user_access = !$user_access;
 
-			if(!$access)
-				continue;
 
 			if($this->is_subset($action_pattern, $action)) {
-				if(!$allow) {
-					$messages[] = "You are not authorized for $action";
+				if(!$acl_allow || !$user_access) {
+					/*Display access right in the same manner as the "Grouprights" page */
+					$denied_rules[] = ucwords(str_replace('_', ' ', $access_rule));
 				}
-				return $allow;
+				if ($user_access)
+					$is_allowed = is_null($is_allowed) ? $acl_allow : $is_allowed;
 			}
 		}
-		$messages[] = "You are not authorized for $action";
-		return false;
+		if (is_null($is_allowed)) {
+			/* We found no explicit authpoint, and no default access for this action */
+			/* Default to deny */
+			$is_allowed = false;
+		}
+
+		if (count($denied_rules) == 0) {
+			/* Use pure action for troubleshooting purposes, what else could we do?*/
+			$denied_rules[] = $action;
+		}
+
+		if (!$is_allowed) {
+			if (count($denied_rules) === 1) {
+				$msg = "You are not authorized for the " . $denied_rules[0] . " access right and it is required to perform this action.";
+			}
+			else {
+				$last_rule = array_pop($denied_rules);
+				$rules_list = implode(",", array_map(function($r) {
+					return "'$r'";
+				}, $denied_rules));
+				$msg = "You are not authorized for neither of the " . $rules_list . " or '" . $last_rule . "' access rights. One or more of them may be required to perform this action";
+			}
+			$messages[] = $msg;
+		}
+
+		return $is_allowed;
 	}
 }
 
