@@ -6,7 +6,7 @@ require_once ("op5/mayi.php");
  * This test suite tests the Constraints functionality of the mayi class
  *
  * Verifies the constraint execution, which order constraints are executed, and
- * how constraints are masked. Also message and perfdata handling.
+ * how constraints are masked. Also message and metrics handling.
  *
  * This doesn't test the Personality interface, which is another test suite.
  */
@@ -15,7 +15,7 @@ class MayIConstraintsTest_TraceConstraints implements op5MayI_Constraints {
 	protected $trace = array ();
 	protected $results = array ();
 	protected $messages = array ();
-	protected $perfdata = array ();
+	protected $metrics = array ();
 	public function __construct($results = array()) {
 		$this->results = $results;
 	}
@@ -25,21 +25,21 @@ class MayIConstraintsTest_TraceConstraints implements op5MayI_Constraints {
 	public function addMessage($message) {
 		$this->messages[] = $message;
 	}
-	public function setPerfdata($perfdata) {
-		$this->perfdata = $perfdata;
+	public function setPerfdata($metrics) {
+		$this->metrics = $metrics;
 	}
 	public function getTrace() {
 		$trace = $this->trace;
 		$this->trace = array ();
 		return $trace;
 	}
-	public function run($action, $env, &$messages, &$perfdata) {
+	public function run($action, $env, &$messages, &$metrics) {
 		$this->trace[] = $action;
 		if (count($this->messages) > 0) {
 			$messages[] = array_shift($this->messages);
 		}
-		foreach ($this->perfdata as $k => $v) {
-			$perfdata[$k] = $v;
+		foreach ($this->metrics as $k => $v) {
+			$metrics[$k] = $v;
 		}
 		if (isset($this->results[$action]))
 			return $this->results[$action];
@@ -78,17 +78,17 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Make sure a request ends up with an empty list of messages and perfdata
+	 * Make sure a request ends up with an empty list of messages and metrics
 	 */
 	public function test_simple_return_values() {
 		$mayi = op5MayI::instance();
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 		$this->assertTrue(
 			$mayi->run('do.something.really.fun:doit', array (), $messages,
-				$perfdata));
+				$metrics));
 		$this->assertEquals(array (), $messages);
-		$this->assertEquals(array (), $perfdata);
+		$this->assertEquals(array (), $metrics);
 	}
 
 	/**
@@ -119,9 +119,10 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Make sure several Constraints are all executed, and stopped in correct order
+	 * We had the behaviour of masking execution of constraints, which is
+	 * changed. Verify that everything is executed always.
 	 */
-	public function test_multiple_Constraints() {
+	public function test_multiple_constraints() {
 		$mayi = op5MayI::instance();
 		$mayi->act_upon($ca = new MayIConstraintsTest_TraceConstraints());
 		$mayi->act_upon($cb = new MayIConstraintsTest_TraceConstraints());
@@ -142,15 +143,13 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 		$cb->setResult(array ('x:stuff' => true));
 		$this->assertFalse($mayi->run('x:stuff'));
 		$this->assertEquals(array ('x:stuff'), $ca->getTrace());
-		// rsa masks execution of rsb...
-		$this->assertEquals(array (), $cb->getTrace());
+		$this->assertEquals(array ('x:stuff'), $cb->getTrace());
 
 		$ca->setResult(array ('x:stuff' => false));
 		$cb->setResult(array ('x:stuff' => false));
 		$this->assertFalse($mayi->run('x:stuff'));
 		$this->assertEquals(array ('x:stuff'), $ca->getTrace());
-		// rsa masks execution of rsb...
-		$this->assertEquals(array (), $cb->getTrace());
+		$this->assertEquals(array ('x:stuff'), $cb->getTrace());
 	}
 
 	/**
@@ -162,20 +161,20 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 
 		// Make sure first request returns an empty array
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array (), $messages);
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$c->addMessage('This is a message');
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array ('This is a message'), $messages);
 	}
 
@@ -191,49 +190,49 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 
 		// Make sure first request returns an empty array
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array (), $messages);
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$ca->addMessage('msg a');
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array ('msg a'), $messages);
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$cb->addMessage('msg b');
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array ('msg b'), $messages);
 
 		// Make sure all messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$ca->addMessage('msg c');
 
 		$cb->addMessage('msg d');
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array ('msg c','msg d'), $messages);
 	}
 
 	/**
 	 * Verify messages can be masked from result sets returning false
 	 */
-	public function test_masked_messages_perfdata() {
+	public function test_masked_messages_metrics() {
 		$mayi = op5MayI::instance();
 		$ca = new MayIConstraintsTest_TraceConstraints();
 		$cb = new MayIConstraintsTest_TraceConstraints();
@@ -245,7 +244,7 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$ca->addMessage('msg a');
 		$ca->setResult(array ('some:stuff' => true));
@@ -254,14 +253,14 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 		$cb->setResult(array ('some:stuff' => true));
 
 		$this->assertTrue(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array ('msg a','msg b'), $messages);
-		// Last executed constraints should overwrite perfdata
-		$this->assertEquals(array ('a' => 1,'x' => 4,'b' => 2), $perfdata);
+		// Last executed constraints should overwrite metrics
+		$this->assertEquals(array ('a' => 1,'x' => 4,'b' => 2), $metrics);
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$ca->addMessage('msg a');
 		$ca->setResult(array ('some:stuff' => true));
@@ -270,14 +269,14 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 		$cb->setResult(array ('some:stuff' => false));
 
 		$this->assertFalse(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
-		$this->assertEquals(array ('msg a','msg b'), $messages);
-		// Last executed constraints should overwrite perfdata
-		$this->assertEquals(array ('a' => 1,'x' => 4,'b' => 2), $perfdata);
+			$mayi->run('some:stuff', array (), $messages, $metrics));
+		$this->assertEquals(array ('msg b'), $messages);
+		// Last executed constraints should overwrite metrics
+		$this->assertEquals(array ('b' => 2,'x' => 4), $metrics);
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$ca->addMessage('msg a');
 		$ca->setResult(array ('some:stuff' => false));
@@ -286,13 +285,13 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 		$cb->setResult(array ('some:stuff' => true));
 
 		$this->assertFalse(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
+			$mayi->run('some:stuff', array (), $messages, $metrics));
 		$this->assertEquals(array ('msg a'), $messages);
-		$this->assertEquals(array ('a' => 1,'x' => 3), $perfdata);
+		$this->assertEquals(array ('a' => 1,'x' => 3), $metrics);
 
 		// Make sure messages are returned
 		$messages = false;
-		$perfdata = false;
+		$metrics = false;
 
 		$ca->addMessage('msg a');
 		$ca->setResult(array ('some:stuff' => false));
@@ -301,8 +300,8 @@ class MayIConstraintsTest extends PHPUnit_Framework_TestCase {
 		$cb->setResult(array ('some:stuff' => false));
 
 		$this->assertFalse(
-			$mayi->run('some:stuff', array (), $messages, $perfdata));
-		$this->assertEquals(array ('msg a'), $messages);
-		$this->assertEquals(array ('a' => 1,'x' => 3), $perfdata);
+			$mayi->run('some:stuff', array (), $messages, $metrics));
+		$this->assertEquals(array ('msg a', 'msg b'), $messages);
+		$this->assertEquals(array ('a' => 1,'x' => 4,'b' => 2), $metrics);
 	}
 }
