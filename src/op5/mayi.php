@@ -129,11 +129,24 @@ class op5MayI {
 	 *
 	 * Constraints is implemented through the interface of op5MayI_Constraints
 	 *
+	 * Priorities controls which constraints are allowed to export messgaes.
+	 *
+	 * Given that at least one constraint denies access, only messages from
+	 * the denying constraints with highest available priority are returned.
+	 * Several constraints can have equal, and thus highest, priority at the
+	 * same time.
+	 *
+	 * Given that all constaints allows access, all messages from all
+	 * constraints are returned.
+	 *
+	 * metrics is passed through in the same way as messages.
+	 *
 	 * @param op5MayI_Constraints $constraints
+	 * @param integer $priority The priority of the constraint, default to 0
 	 * @return op5MayI
 	 */
-	public function act_upon(op5MayI_Constraints $constraints) {
-		$this->constraints[] = $constraints;
+	public function act_upon(op5MayI_Constraints $constraints, $priority = 0) {
+		$this->constraints[] = array($constraints,$priority);
 		return $this;
 	}
 
@@ -194,34 +207,40 @@ class op5MayI {
 		$allow = true;
 
 		foreach ($this->constraints as $i => $rs) {
+			list($obj, $priority) = $rs;
 			$cur_messages = array();
 			$cur_metrics = array();
-			$cur_result = $rs->run($action, $environment, $cur_messages, $cur_metrics);
-			$constr_res[] = array($cur_result, $cur_messages, $cur_metrics);
+			$cur_result = $obj->run($action, $environment, $cur_messages, $cur_metrics);
+			$constr_res[] = array($cur_result, $priority, $cur_messages, $cur_metrics);
 			if(!$cur_result) {
+				op5log::instance('mayi')->log('debug', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
+				op5log::instance('mayi')->log('notice', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
 				$allow = false;
 			}
 		}
 
+		/* Filter out messages for the current result */
 		$filt_res = array_filter($constr_res, function($r) use($allow) {return $r[0] == $allow;});
+
+		/* Filter out messages of highest priority, if deny */
+		if (! $allow) {
+			$highest_prio = count( $filt_res ) > 0 ? max( array_map( function ($r) {
+				return $r[1];
+			}, $filt_res ) ) : 0;
+			$filt_res = array_filter( $filt_res, function ($r) use($highest_prio) {
+				return $r[1] == $highest_prio;
+			} );
+		}
 
 		$messages = array ();
 		$metrics = array ();
 		foreach($filt_res as $res) {
-			list($cur_result, $cur_messages, $cur_metrics) = $res;
+			list($cur_result, $priority, $cur_messages, $cur_metrics) = $res;
 			foreach($cur_messages as $message) {
 				$messages[] = $message;
 			}
 			foreach($cur_metrics as $name => $metric) {
 				$metrics[$name] = $metric;
-			}
-		}
-
-		if(!$allow) {
-			foreach($filt_res as $res) {
-				list($cur_result, $cur_messages, $cur_metrics) = $res;
-				op5log::instance('mayi')->log('debug', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
-				op5log::instance('mayi')->log('notice', get_class($rs)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
 			}
 		}
 
