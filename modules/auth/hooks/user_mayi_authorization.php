@@ -198,7 +198,7 @@ EOF;
 	 * On system.ready, add this class as a MayI constraint
 	 */
 	public function populate_mayi() {
-		op5MayI::instance()->act_upon( $this );
+		op5MayI::instance()->act_upon( $this, 10 );
 	}
 	private function is_subset($subset, $world) {
 		$subset_parts = explode( ':', $subset );
