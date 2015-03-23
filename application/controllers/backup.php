@@ -11,115 +11,159 @@
  *  PARTICULAR PURPOSE.
  */
 class Backup_Controller extends Ninja_Controller {
+
 	public $debug = false;
 	public $model = false;
 
-	private $files2backup;
-	private $asmonitor = '/usr/bin/asmonitor -q ';
-	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
-	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
-	private $cmd_view = 'tar tfz ';
-	private $cmd_verify;
+	private $nagios_cfg_path = "";
 
-	private $backup_suffix = '.tar.gz';
-	private $backups_location = '/var/www/html/backup';
+	const BACKUP_EXTENSION = '.tar.gz';
+	const STORAGE = '/var/www/html/backup/';
 
-	private $unauthorized = false;
+	const CMD_UNPACK = 'tar tfz';
+	const CMD_VERIFY = '/usr/bin/asmonitor -q /usr/bin/naemon -v';
+	const CMD_BACKUP = '/usr/bin/asmonitor -q /opt/monitor/op5/backup/backup';
+	const CMD_RESTORE = '/usr/bin/asmonitor -q /opt/monitor/op5/backup/restore';
 
-	public function index()
+	public function __construct ()
 	{
+
+		parent::__construct();
+
+		$this->nagios_cfg_path = System_Model::get_nagios_etc_path();
+
+	}
+
+	/**
+	 * Index page, display backup list with actions
+	 *
+	 * @return
+	 */
+	public function index ()
+	{
+
 		$this->_verify_access('monitor.system.backup:read.backup');
-		$this->template->content = $this->add_view('backup/list');
+
+
 		$this->template->title = _('Configuration » Backup/Restore');
-		$this->template->content->suffix = $this->backup_suffix;
+		$this->template->content = $this->add_view('backup/list');
+		$this->template->disable_refresh = true;
+		$this->template->js[] = $this->add_path('backup/js/backup.js');
 
-		$backupfiles = false;
-		foreach (glob($this->backups_location.'/*'.$this->backup_suffix) as $filename) {
-			$backupfiles[] = basename($filename);
+		$files = false;
+		foreach (glob(self::STORAGE . '*' . self::BACKUP_EXTENSION) as $filename) {
+			$files[] = basename($filename);
 		}
 
-		if ($backupfiles === false)
-			throw new Exception('Cannot get directory contents: ' . $this->backups_location);
+		$link = '<a id="verify" href="%sindex.php/backup/verify/">%s %s</a>';
+		$icon = '<span style="vertical-align: middle" class="icon-16 x16-backup"></span>';
+		$lable = '<span style="vertical-align: middle">' . _('Save your current op5 Monitor configuration') . '</span>';
 
+		$link = sprintf($link, url::base(), $icon, $lable);
 
-		$link = '<a id="verify" href="' . url::base() . 'index.php/backup/verify/">%s %s</a>';
-		$link = sprintf( $link,
-			html::image( $this->add_path('/icons/16x16/backup.png'), array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')),
-			_('Save your current op5 Monitor configuration')
-		);
+		$this->template->toolbar = new Toolbar_Controller(_( "Backup/Restore" ));
+		$this->template->toolbar->info($link);
 
-		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ) );
-		$this->template->toolbar->info( $link );
-
-		$this->template->content->files = $backupfiles;
-	}
-
-	public function download($file) {
-		$this->_verify_access('monitor.system.backup:read.backup');
-		$file_path = $this->backups_location . "/" . $file;
-		$fp = fopen($file_path, "r");
-		if ($fp === false) {
-			$this->template->content = $this->add_view('backup/view');
-			$this->template->message = "Couldn't create filehandle.";
-			return;
+		if ($files === false) {
+			$files = array();
+			$this->template->content->error = 'Cannot get directory contents: ' . self::STORAGE;
 		}
-		/* Prevent buffering and rendering */
-		$this->auto_render = false;
-		download::headers($file.".tar.gz", filesize($file_path));
-		fpassthru($fp);
-		fclose($fp);
+
+		$this->template->content->files = $files;
+
 	}
 
-	public function view($file)
+	public function view ($file)
 	{
+
 		$this->_verify_access('monitor.system.backup:read.backup');
 
 		$this->template->content = $this->add_view('backup/view');
 		$this->template->title = _('Configuration » Backup/Restore » View');
-		$this->template->content->backup = $file;
 
-		$this->template->toolbar = new Toolbar_Controller( _( "Backup/Restore" ), $file );
+		$this->template->content->backup = $file;
+		$this->template->disable_refresh = true;
+
+		$this->template->toolbar = new Toolbar_Controller(_( "Backup/Restore" ), $file);
 
 		$this->template->toolbar->info(
 			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
 		);
 
-		$contents = array();
-		$status = 0;
-		exec($this->cmd_view . $this->backups_location . '/' . $file, $contents, $status);
-		sort($contents);
+		list($status, $output) = $this->execute(self::CMD_UNPACK, self::STORAGE . $file);
+		sort($output);
 
-		$this->template->content->files = $contents;
+		$this->template->content->files = $output;
 	}
 
-	public function verify()
-	{
+	/* below are AJAX/JSON actions */
+
+	private function execute ($command) {
+
+		$arguments = array_slice(func_get_args(), 1);
+		foreach ($arguments as $index => $value) {
+			if (is_array($value)) {
+				array_splice($arguments, $index, 1, $value);
+			}
+		}
+
+		$executable = $command . ' ' . implode(' ', array_map('escapeshellarg', $arguments));
+
+		exec($executable, $output, $status);
+		return array($status, $output);
+
+	}
+
+	public function download ($file) {
+
 		$this->_verify_access('monitor.system.backup:read.backup');
 
-		$this->template = $this->add_view('backup/verify');
+		$file_path = self::STORAGE . $file;
+		if ($file_path != realpath($file_path)) {
+			json::fail('File could not be located within the designated storage area');
+		}
 
-		$output = array();
-		exec($this->asmonitor . $this->cmd_verify, $output, $status);
-		if ($status != 0)
-		{
-			$this->template->status = false;
-			$this->template->message = "The current configuration is invalid";
-			$this->debug = implode("\n", $output);
+		$fp = fopen($file_path, "r");
+
+		if ($fp === false) {
+			$this->template->content = $this->add_view('backup/view');
+			$this->template->message = "Couldn't create filehandle.";
+			return;
 		}
-		else
-		{
-			$this->template->status = true;
-			$this->template->message = "The current configuration is valid. Creating a backup...";
-		}
+
+		/* Prevent buffering and rendering */
+		$this->auto_render = false;
+		download::headers($file . self::BACKUP_EXTENSION, filesize($file_path));
+
+		fpassthru($fp);
+		fclose($fp);
+
 	}
 
-	public function backup()
+	public function verify ()
 	{
+
+		$this->_verify_access('monitor.system.backup:read.backup');
+
+		list($status, $output) = $this->execute(self::CMD_VERIFY, $this->nagios_cfg_path . 'nagios.cfg');
+
+		if ($status != 0) {
+			json::fail(array(
+				"message" => "The current configuration is invalid",
+				"debug" => $output
+			));
+		} else {
+			json::ok("The current configuration is valid");
+		}
+
+	}
+
+	public function backup ()
+	{
+
 		$this->_verify_access('monitor.system.backup:create.backup');
 
-		$nagioscfg = System_Model::get_nagios_etc_path()."nagios.cfg";
-		$this->cmd_verify = '/usr/bin/naemon -v '.$nagioscfg;
-		$this->files2backup = array(
+		$general_files = array(
 			System_Model::get_nagios_etc_path().'nagios.cfg',
 			System_Model::get_nagios_etc_path().'cgi.cfg',
 			System_Model::get_nagios_base_path().'/var/*.log',
@@ -131,113 +175,117 @@ class Backup_Controller extends Ninja_Controller {
 		);
 
 		$backup = array();
-		foreach ($this->files2backup as $path) {
+		foreach ($general_files as $path) {
 			foreach (glob($path) as $file) {
 				$backup[] = $file;
 			}
 		}
-		$this->files2backup = $backup;
 
-		$this->template->disable_refresh = true;
-		$this->auto_render = true;
-		$this->cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM" >> ' . System_Model::get_pipe();
+		$system = System_Model::parse_config_file($this->nagios_cfg_path. 'nagios.cfg');
+		$searches = array('cfg_file', 'resource_file', 'cfg_dir');
+		$result = array();
 
-		$nagcfg = System_Model::parse_config_file($nagioscfg);
-		foreach (array('cfg_file', 'resource_file', 'cfg_dir') as $interesting_file) {
-			if (!isset($nagcfg[$interesting_file]))
+		foreach ($searches as $item) {
+
+			if (!isset($system[$item])) {
 				continue;
-			$files = $nagcfg[$interesting_file];
-			if (!is_array($files))
-				$files = array($files);
-			foreach ($files as $file) {
-				if ($file[0] !== '/')
-					$file = System_Model::get_nagios_etc_path().$file;
-				$this->files2backup[] = $file;
+			} else {
+				$files = (is_array($system[$item])) ? $system[$item] : array($system[$item]);
 			}
+
+			foreach ($files as $file) {
+				$file = ($file[0] !== '/') ? $this->nagios_cfg_path . $file : $file;
+				$backup[] = $file;
+			}
+
 		}
 
-		$this->template = $this->add_view('backup/backup');
+		$this->auto_render = true;
 
-		$file = strftime('backup-%Y-%m-%d_%H.%M.%S');
-		exec($this->asmonitor . $this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
-			. ' ' . implode(' ', $this->files2backup), $output, $status);
-		if ($status != 0)
-		{
-			$this->template->status = false;
-			$this->template->file = '';
-			$this->template->message = "Could not backup the current configuration";
-			$this->debug = implode("\n", $output);
-		}
-		else
-		{
-			$this->template->status = true;
-			$this->template->file = $file;
-			$this->template->message = "A backup of the current configuration has been created";
+		$file = strftime('backup-%Y-%m-%d_%H.%M.%S') . self::BACKUP_EXTENSION;
+
+		list($status, $output) = $this->execute(self::CMD_BACKUP, self::STORAGE . $file, $backup);
+
+		if ($status != 0) {
+			json::fail(array(
+				"message" => "Could not backup the current configuration",
+				"debug" => $output
+			));
+		} else {
+			json::ok($file);
 		}
 	}
 
-	public function restore($file)
+	public function restore ($file)
 	{
+
 		$this->_verify_access('monitor.system.backup:read.backup');
 		$this->_verify_access('monitor.monitoring.hosts:update.backup');
 		$this->_verify_access('monitor.monitoring.services:update.backup');
 		$this->_verify_access('monitor.monitoring.contacts:update.backup');
 		$this->_verify_access('monitor.monitoring.notifications:update.backup');
-		$this->_verify_access('monitor.system.users:update.backup');
 
-		$this->template = $this->add_view('backup/restore');
-		$this->template->status = false;
+		list($status, $restore_output) = $this->execute(self::CMD_RESTORE, self::STORAGE . $file);
 
-		$status = 0;
-		$output = array();
-		exec($this->asmonitor . $this->cmd_restore . $this->backups_location . '/' . $file, $output, $status);
-		if ($status != 0)
-		{
-			$this->template->message = "Could not restore the configuration '{$file}'";
-			$this->debug = implode("\n", $output);
-			return;
-		}
-
-		exec($this->asmonitor . $this->cmd_verify, $output, $status);
-		if ($status != 0)
-		{
-			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
-			$this->debug = implode("\n", $output);
-			return;
-		}
-
-		$time = time();
-		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
-
-		exec($this->cmd_reload, $output, $status);
 		if ($status != 0) {
-			$this->template->message = "Could not reload the configuration '{$file}'";
-			$this->debug = implode("\n", $output);
-		}
-		else
-		{
-			$this->template->status = true;
-			$this->template->message = "The configuration '{$file}' has been restored";
-			foreach($this->files2backup as $onefile){
-				$onefile = trim($onefile);
-				if(pathinfo($onefile, PATHINFO_EXTENSION) === "cfg") {
-					if(file_exists($onefile) && is_writable($onefile)) {
-						touch($onefile);
-					}
-				}
+			json::fail(array(
+				"message" => "Could not restore the configuration '{$file}'",
+				"debug" => $restore_output
+			));
+		} else {
+
+			list($status, $verify_output) = $this->execute(self::CMD_VERIFY, $this->nagios_cfg_path. 'nagios.cfg');
+			if ($status != 0) {
+				json::fail(array(
+					"message" => "The configuration '{$file}' has been restored but seems to be invalid",
+					"debug" => $verify_output
+				));
 			}
+
+			json::ok("The configuration '{$file}' has been restored successfully");
+
 		}
-		return;
+
 	}
 
-	public function delete($file)
+	public function delete ($file)
 	{
+
 		$this->_verify_access('monitor.system.backup:delete.backup');
 
-		$this->template = $this->add_view('backup/delete');
+		$status = @unlink(self::STORAGE . $file);
 
-		$this->template->status = @unlink($this->backups_location . '/' . $file);
-		$this->template->message = $this->template->status ? "The backup '{$file}' has been deleted"
-			: "Could not delete the backup '{$file}'";
+		if ($status) {
+			json::ok("The backup '{$file}' has been deleted");
+		} else {
+			json::fail(array(
+				"message" => "Could not delete the backup '{$file}'",
+				"debug" => array("Could not unlink file.")
+			));
+		}
+
 	}
+
+	public function restart () {
+
+		$user = Auth::instance()->get_user();
+		if ($user->authorized_for('system_commands')) {
+			$success = nagioscmd::submit_to_nagios('RESTART_PROCESS', "", $output);
+			if ($success) {
+				json::ok("Restarting monitoring process");
+			} else {
+				json::fail(array(
+					"message" => "Could not restart monitoring process",
+					"debug" => $output
+				));
+			}
+		} else {
+			json::fail(array(
+				"message" => "Not authorized to perform a process restart",
+				"debug" => array()
+			));
+		}
+
+	}
+
 }
