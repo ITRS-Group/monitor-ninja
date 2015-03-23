@@ -40,6 +40,12 @@ class Config_Controller extends Authenticated_Controller {
 		if (class_exists($poolname)) {
 			$set = $poolname::all();
 			$set->reduce_by("name", $filter, "~~");
+			if (!$this->mayi->run($set->mayi_resource().":read.list.config", array(), $messages)) {
+				$set = $poolname::none();
+			}
+			foreach ($messages as $m) {
+				$this->add_global_notification($m);
+			}
 			$data = $set->it(false, array(), $pagination->items_per_page, ($pagination->current_page-1)*$pagination->items_per_page);
 			$i = 0;
 			$result=array();
