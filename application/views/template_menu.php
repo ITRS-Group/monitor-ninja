@@ -32,11 +32,6 @@ array(4) {
 	<?php
 
 	if (isset($links)) {
-
-		$uri = str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
-		$uri = str_replace('?', '', $uri);
-		$uri = preg_replace('~/+~', '/', $uri);
-
 		echo "<ul>";
 
 		foreach ($links as $section => $entry) {

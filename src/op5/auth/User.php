@@ -31,7 +31,7 @@ class op5User implements op5MayI_Actor {
 	 * @return mixed
 	 *
 	 */
-	public function __get($key) {
+	public function &__get($key) {
 		return $this->fields[$key];
 	}
 
