@@ -82,11 +82,29 @@ class Ninja_Controller extends Template_Controller {
 		}
 	}
 
+	/**
+	 * Clean up global notifications
+	 *
+	 * If we want to regenerate the list of global notifiactions, we can simply clean it up
+	 */
+	protected function clear_global_notification() {
+		$this->template->global_notifications = array();
+	}
+
 	public function add_global_notification( $notification ) {
 		if (!is_array($notification)) {
 			$notification = array($notification);
 		}
 		$this->template->global_notifications[] = $notification;
+	}
+
+	/**
+	 * Clean up print notifications
+	 *
+	 * If we want to regenerate the list of print notifiactions, we can simply clean it up
+	 */
+	protected function clear_print_notification() {
+		$this->template->print_notifications = array();
 	}
 
 	public function add_print_notification($notification) {
