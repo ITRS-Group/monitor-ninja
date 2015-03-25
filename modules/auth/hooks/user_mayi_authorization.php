@@ -68,7 +68,43 @@ system_information              monitor.monitoring.performance:read             
 !api_report                     :view.local.report                                            false
 !api_status                     :view.local.status                                            false
 
-own_user_change_password        monitor.system.users.password:update                           true
+configuration_information       monitor.monitoring.users:read.local.configuration             true
+access_rights                   monitor.monitoring.users:                                     true
+access_rights                   monitor.monitoring.usergroups:                                true
+
+pnp                             monitor.monitoring.combined_graphs:                           true
+pnp                             monitor.monitoring.graph_collections:                         true
+pnp                             monitor.monitoring.graph_templates:                           true
+
+hostescalation_view_all         monitor.monitoring.hostescalations:read                       true
+hostescalation_edit_all         monitor.monitoring.hostescalations:{create,update,delete}     true
+hostescalation_add_delete       monitor.monitoring.hostescalations:{create,delete}            true
+
+serviceescalation_view_all      monitor.monitoring.serviceescalations:read                    true
+serviceescalation_edit_all      monitor.monitoring.serviceescalations:{create,update,delete}  true
+serviceescalation_add_delete    monitor.monitoring.serviceescalations:{create,delete}         true
+
+own_user_change_password        monitor.system.users.password:update                          true
+
+command_add_delete              monitor.monitoring.commands:{create,delete}                   true
+command_view_all                monitor.monitoring.commands:read                              true
+command_edit_all                monitor.monitoring.commands:{create,update,delete}            true
+
+management_pack_view_all        monitor.monitoring.management_packs:read                      true
+management_pack_edit_all        monitor.monitoring.management_packs:{create,update,delete}    true
+management_pack_add_delete      monitor.monitoring.management_packs:{create,delete}           true
+
+test_this_command               monitor.monitoring.commands:update.test                       true
+test_this_service               monitor.monitoring.services:update.test                       true
+test_this_host                  monitor.monitoring.hosts:update.test                          true
+
+host_template_view_all          monitor.monitoring.host_templates:read                        true
+host_template_edit_all          monitor.monitoring.host_templates:{create,update,delete}      true
+host_template_add_delete        monitor.monitoring.host_templates:{create,delete}             true
+
+service_template_view_all       monitor.monitoring.service_templates:read                     true
+service_template_edit_all       monitor.monitoring.service_templates:{create,update,delete}   true
+service_template_add_delete     monitor.monitoring.service_templates:{create,delete}          true
 
 host_view_{all,contact}         monitor.monitoring.hosts:read                                 true
 host_view_{all,contact}         monitor.monitoring.comments:read                              true
@@ -82,6 +118,16 @@ host_edit_{all,contact}         monitor.monitoring.downtimes:{create,update,dele
 host_edit_{all,contact}         monitor.monitoring.downtimes.recurring:{create,update,delete} true
 host_edit_{all,contact}         monitor.monitoring.notifications:{create,update,delete}       true
 
+host_add_delete                 monitor.monitoring.hosts:{create,delete}                      true
+
+hostdependency_view_all         monitor.monitoring.hostdependencies:read                      true
+hostdependency_edit_all         monitor.monitoring.hostdependencies:{create,update,delete}    true
+hostdependency_add_delete       monitor.monitoring.hostdependencies:{create,delete}           true
+
+servicedependency_view_all      monitor.monitoring.servicedependencies:read                   true
+servicedependency_edit_all      monitor.monitoring.servicedependencies:{create,update,delete} true
+servicedependency_add_delete    monitor.monitoring.servicedependencies:{create,delete}        true
+
 service_view_{all,contact}      monitor.monitoring.services:read                              true
 service_view_{all,contact}      monitor.monitoring.comments:read                              true
 service_view_{all,contact}      monitor.monitoring.downtimes:read                             true
@@ -94,21 +140,31 @@ service_edit_{all,contact}      monitor.monitoring.downtimes:{create,update,dele
 service_edit_{all,contact}      monitor.monitoring.downtimes.recurring:{create,update,delete} true
 service_edit_{all,contact}      monitor.monitoring.notifications:{create,update,delete}       true
 
+service_add_delete              monitor.monitoring.services:{create,delete}                   true
+
 hostgroup_view_{all,contact}    monitor.monitoring.hostgroups:read                            true
 hostgroup_edit_{all,contact}    monitor.monitoring.hostgroups:{create,update,delete}          true
+hostgroup_add_delete            monitor.monitoring.hostgroups:{create,delete}                 true
 
 servicegroup_view_{all,contact} monitor.monitoring.servicegroups:read                         true
 servicegroup_edit_{all,contact} monitor.monitoring.servicegroups:{create,update,delete}       true
+servicegroup_add_delete         monitor.monitoring.servicegroups:{create,delete}              true
 
 contact_view_{all,contact}      monitor.monitoring.contacts:read                              true
 contact_edit_{all,contact}      monitor.monitoring.contacts:{create,update,delete}            true
+contact_add_delete              monitor.monitoring.contacts:{create,delete}                   true
+
+contact_template_view_all       monitor.monitoring.contact_templates:read                     true
+contact_template_edit_all       monitor.monitoring.contact_templates:{create,update,delete}   true
+contact_template_add_delete     monitor.monitoring.contact_templates:{create,delete}          true
 
 contactgroup_view_{all,contact} monitor.monitoring.contactgroups:read                         true
 contactgroup_edit_{all,contact} monitor.monitoring.contactgroups:{create,update,delete}       true
-
+contactgroup_add_delete         monitor.monitoring.contactgroups:{create,delete}              true
 
 timeperiod_view_all             monitor.monitoring.timeperiods:read                           true
 timeperiod_edit_all             monitor.monitoring.timeperiods:{create,update,delete}         true
+timeperiod_add_delete           monitor.monitoring.timeperiods:{create,delete}                true
 
 command_view_all                monitor.monitoring.commands:read                              true
 command_edit_all                monitor.monitoring.commands:{create,update,delete}            true
@@ -121,7 +177,6 @@ manage_trapper                  monitor.trapper.matchers:                       
 manage_trapper                  monitor.trapper.modules:                                      true
 manage_trapper                  monitor.trapper.traps:                                        true
 EOF;
-
 
 	/**
 	 * Processed result of the $raw_acl varible.
