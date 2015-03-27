@@ -46,6 +46,9 @@ class Session {
 	 */
 	public function __construct()
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		$this->input = Input::instance();
 
 		// This part only needs to be run once
