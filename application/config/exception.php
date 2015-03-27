@@ -6,19 +6,20 @@
 $config['shell_commands'] = array(
 	"id",
 	"df -hP",
+	"df -iP",
 	"date",
-	"rpm -q op5-monitor",
-	"rpm -q op5-default-appliance",
-	"rpm -q op5-system-release",
+	"locale",
+	"rpm -qf /etc/op5-monitor-release",
 	"uname -a",
-	"cat /proc/version",
 	"grep -D skip . /etc/*-release",
 	"mon node status",
 	"mon node show",
-	"top -bcn1M | head",
+	"free -m",
+	"top -bcn1 | head -n17",
+	"last -Fax | egrep -e 'system boot' -e '^(reboot|shutdown|wtmp begins) ' -e '- (crash|gone) '",
+	"pstree -p 1 | grep -Po '(?<=\()[0-9]+(?=\))' | xargs ps uf -p",
 	"grep ^model.name /proc/cpuinfo | uniq -c",
-	"lspci | sed -r 's/^[^ ]+ //' | sort | uniq -c",
-	"mon sysconf check"
+	"lspci | sed -r 's/^[^ ]+ //' | sort | uniq -c"
 );
 
 $config['extra_info'] = array(
