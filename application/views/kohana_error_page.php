@@ -27,7 +27,7 @@ $content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
 foreach(Kohana::config('exception.shell_commands') as $command) {
 	$output = null;
 	exec($command, $output, $exit_value);
-	$content .= "<p class='stats'><b>$command</b> (exit code $exit_value):<br />".implode('<br />', $output).'</p>';
+	$content .= "<p class='stats'><b>$command</b> (exit code $exit_value):<br />".implode('<br />', array_map('htmlentities', $output)).'</p>';
 }
 foreach(Kohana::config('exception.extra_info') as $header => $info) {
 	$content .= "<p class='stats'>$header: $info</p>";
