@@ -85,7 +85,7 @@ Feature: Availability reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 		And I should see "Group availability (Worst state)"
-		And I should see "7d"
+		And I should see "7d", compensating for DST
 		And I shouldn't see "100 %"
 		And I shouldn't see "Total Alerts"
 		When I click "Alert histogram"
@@ -133,7 +133,7 @@ Feature: Availability reports
 		And I click "Show report"
 		Then I should see "Service details for PING on host linux-server1"
 		And I should see "100 %"
-		And I should see "7d"
+		And I should see "7d", compensating for DST
 		And I shouldn't see "System Load"
 		And I shouldn't see "win-server"
 		And I shouldn't see "Group availability (Worst state)"
