@@ -47,6 +47,8 @@ class Session {
 	public function __construct()
 	{
 		if(PHP_SAPI == 'cli') {
+			// fake the Singleton pattern
+			self::$instance = $this;
 			return;
 		}
 		$this->input = Input::instance();
@@ -87,6 +89,9 @@ class Session {
 	 */
 	public function id()
 	{
+		if(PHP_SAPI == 'cli') {
+			return "";
+		}
 		return $_SESSION['session_id'];
 	}
 
@@ -98,6 +103,9 @@ class Session {
 	 */
 	public function create($vars = NULL)
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		// Destroy any current sessions
 		$this->destroy();
 
@@ -219,6 +227,9 @@ class Session {
 	 */
 	public function destroy()
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		if (session_id() !== '')
 		{
 			// Get the session name
@@ -242,6 +253,9 @@ class Session {
 	 */
 	public function write_close()
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		static $run;
 
 		if ($run === NULL)
@@ -268,6 +282,9 @@ class Session {
 	 */
 	public function set($keys, $val = FALSE)
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		if (empty($keys))
 			return FALSE;
 
@@ -295,6 +312,9 @@ class Session {
 	 */
 	public function set_flash($keys, $val = FALSE)
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		if (empty($keys))
 			return FALSE;
 
@@ -321,6 +341,9 @@ class Session {
 	 */
 	public function keep_flash($keys = NULL)
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		$keys = ($keys === NULL) ? array_keys(self::$flash) : func_get_args();
 
 		foreach ($keys as $key)
@@ -339,6 +362,9 @@ class Session {
 	 */
 	public function expire_flash()
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		static $run;
 
 		// Method can only be run once
@@ -375,6 +401,9 @@ class Session {
 	 */
 	public function get($key = FALSE, $default = FALSE)
 	{
+		if(PHP_SAPI == 'cli') {
+			return $default;
+		}
 		if (empty($key))
 			return $_SESSION;
 
@@ -392,6 +421,9 @@ class Session {
 	 */
 	public function get_once($key, $default = FALSE)
 	{
+		if(PHP_SAPI == 'cli') {
+			return $default;
+		}
 		$return = self::get($key, $default);
 		self::delete($key);
 
@@ -406,6 +438,9 @@ class Session {
 	 */
 	public function delete($keys)
 	{
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
 		$args = func_get_args();
 
 		foreach ($args as $key)
