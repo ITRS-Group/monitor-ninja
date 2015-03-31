@@ -108,7 +108,7 @@ class ListView_Controller extends Ninja_Controller {
 					}
 				}
 				foreach($resource_messages as $message) {
-					$messages[] = $resource_messages;
+					$messages[] = $message;
 				}
 
 
