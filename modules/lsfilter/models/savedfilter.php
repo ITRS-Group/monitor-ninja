@@ -20,7 +20,7 @@ class SavedFilter_Model extends BaseSavedFilter_Model {
 	 * Get the scope as a string
 	 */
 	public function get_scope() {
-		if( $this->get_username() === false ) {
+		if($this->get_username() === '') {
 			return 'global';
 		}
 		return 'user';
