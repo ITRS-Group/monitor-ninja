@@ -233,6 +233,9 @@ do
 	fi
 done
 
+# Migrate auth and upgrade user-groups permissions
+php %prefix/install_scripts/migrate_auth.php
+
 %files
 %defattr(-,%daemon_user,%daemon_group)
 %prefix
