@@ -348,7 +348,7 @@ EOF;
 				$rules_list = implode(",", array_map(function($r) {
 					return "'$r'";
 				}, $denied_rules));
-				$msg = "You are not authorized for neither of the " . $rules_list . " or '" . $last_rule . "' access rights. One or more of them may be required to perform this action";
+				$msg = "You are not authorized for neither of the " . $rules_list . " nor '" . $last_rule . "' access rights. One or more of them may be required to perform this action";
 			}
 			$messages[] = $msg;
 		}
