@@ -39,24 +39,27 @@ $js = array();
 $css = array();
 
 if (IN_PRODUCTION) {
-	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces/';
+	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces';
+	$tmp_dir = rtrim($tmp_dir, "/");
 	$tmp_dir_perm = Kohana::Config('exception.tmp_dir_perm') ? Kohana::Config('exception.tmp_dir_perm') : 0700;
 	@mkdir($tmp_dir, $tmp_dir_perm, true);
-	$file = tempnam($tmp_dir, date('Ymd-hi').'-');
-	$fd = fopen($file, 'w');
-	$error_data = "<html><body>$content</body></html>";
-	$writeerror = false;
-	fwrite($fd, $error_data) or $writeerror = true;
 
-	fclose($fd);
+	$error_html = "<!doctype html><html><head><meta charset='UTF-8' /></head><body>$content</body></html>";
 
+	// we can't use tmpnam() because we need a suffix, and we don't have
+	// mkstemp() in php; but sha1 is certainly unique enough with a small
+	// enough output to fit nicely into a filename
+	$filename = $tmp_dir.'/'.date('Ymd-Hi').'-'.sha1($error_html).'.html';
+	$write_successful = file_put_contents($filename, $error_html);
+
+	// reset content to display less information, adhere to IN_PRODUCTION
 	$content = '<div><h3>There was an error rendering the page</h3>';
-	if (!$writeerror) {
-		$content .= '<p>Please contact your administrator.<br />The debug information in '.$file.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';
+	if($write_successful) {
+		$content .= '<p>Please contact your administrator.<br />The debug information in '.$filename.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';
 	} else {
 		// by special casing this here once, we save some support time every time
 		// log data clobbers a customers hard drive
-		$content .= "<p>Additionally, there was an error when trying to save the debug information to a file in '$tmp_dir'. Please make sure that your hard drive isn't full.</p></div>";
+		$content .= "<p>We failed to save the debug information to a filename in '$tmp_dir'. Please make sure that the permissions of that folder are correct, and that your hard drive isn't full.</p></div>";
 	}
 	$content .= $crash_info;
 	unset($tmp_dir);
