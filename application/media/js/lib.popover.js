@@ -173,7 +173,6 @@
       tooltip.append(node);
 
       target.after(tooltip);
-      node = null;
 
     },
 
@@ -270,8 +269,8 @@
 
   Popover.register(/^image\:/, function(data, target){
 
-    $('<img>').one('load', function(e){
-      Popover.display(e.target, target);
+    var img = $('<img>').one('load', function(e){
+      Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
     }).one('error', function(e){
       Popover.display("Failed.", target);
@@ -306,15 +305,14 @@
 
     if(ns[1]) service = encodeURIComponent(ns[1]);
 
-    $('<img>')
-    .one('load', function(e){
-      Popover.display(e.target, target);
+    var img = $('<img>').one('load', function(e){
+      Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
     }).one('error', function(e){
       Popover.display("Failed.", target);
-    }).attr(
-      {src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'}
-    );
+    }).attr({
+      src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'
+    });
 
   });
 
