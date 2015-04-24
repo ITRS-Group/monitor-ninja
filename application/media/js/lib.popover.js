@@ -49,6 +49,7 @@
     toggle: 'mouseenter focus',
     untoggle: 'mouseleave blur',
     selector: '*[data-popover]',
+    delay: 400,
     cache: true,
     position: 'bottom',
     root: $(document)
@@ -58,6 +59,7 @@
   var tooltip = $('<div>').addClass('lib-popover-tip');
   var loading = '<span class="lib-popover-load"></span>';
   var request = null;
+  var timer = null;
 
   var Popover = {
 
@@ -163,16 +165,21 @@
      */
     display: function(node, target, namespace){
 
+      clearTimeout(timer);
       Popover.adjust(target, node);
 
-      if(namespace){
-        Popover.cache(namespace, node);
-      }
+      timer = setTimeout(function () {
 
-      tooltip.empty();
-      tooltip.append(node);
+        if(namespace){
+          Popover.cache(namespace, node);
+        }
 
-      target.after(tooltip);
+        tooltip.empty();
+        tooltip.append(node);
+        tooltip.css('display', 'block');
+        target.after(tooltip);
+
+      }, settings.delay);
 
     },
 
@@ -206,7 +213,6 @@
       tooltip.css({
         left: left + 'px',
         top: top + 'px',
-        display: 'block',
         'text-align': align,
         width: ""
       });
@@ -252,10 +258,14 @@
      * Aborts the current request
      */
     abort: function(){
+
+      clearTimeout(timer);
       if(request && request.abort)
         request.abort();
+
       request = null;
       Popover.deactivate();
+
     }
 
   };
