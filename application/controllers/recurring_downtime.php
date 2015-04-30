@@ -140,6 +140,29 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$duration = $this->input->post('duration', false);
 		$comment = $this->input->post('comment', false);
 
+		if (!$duration) {
+			$duration = '0';
+		} else {
+
+			$duration = explode(':', $duration);
+			if (count($duration) === 3) {
+				list($hours, $minutes, $seconds) = $duration;
+			} elseif (count($duration) === 2) {
+				list($hours, $minutes) = $duration;
+				$seconds = 0;
+			} else {
+				return json::fail("Failed to schedule downtime, duration expects format HH:MM:SS (01:30:00) or HH:MM (01:30)");
+			}
+
+			$duration = 0;
+			$duration += intval(ltrim($hours, '0')) * 3600;
+			$duration += intval(ltrim($minutes, '0')) * 60;
+			$duration += intval(ltrim($seconds, '0'));
+
+			$duration = round($duration);
+
+		}
+
 		if (ScheduleDate_Model::insert_downtimes($objects, $object_type, $start_time, $end_time, $fixed, $duration, $comment) !== false) {
 			return json::ok("Downtime successfully scheduled");
 		} else {
