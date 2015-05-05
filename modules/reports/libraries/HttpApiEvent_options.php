@@ -198,24 +198,26 @@ class HttpApiEvent_options extends Summary_options {
 	 */
 	function set_options($options) {
 		foreach($options as $name => $value) {
-			switch ($this->properties[$name]['type']) {
-			case 'array':
-				$res = array();
-				if (!is_array($value))
-					$value = array($value);
-				foreach ($value as $v) {
-					$v = array_search($v, $this->properties[$name]['options'], true);
-					if ($v === false)
+			if (isset($this->properties[$name])) {
+				switch ($this->properties[$name]['type']) {
+				case 'array':
+					$res = array();
+					if (!is_array($value))
+						$value = array($value);
+					foreach ($value as $v) {
+						$v = array_search($v, $this->properties[$name]['options'], true);
+						if ($v === false)
+							throw new ReportValidationException("Invalid value for option '$name'");
+						$res[] = $v;
+					}
+					$value = $res;
+					break;
+				case 'enum':
+					$value = array_search($value, $this->properties[$name]['options'], true);
+					if ($value === false)
 						throw new ReportValidationException("Invalid value for option '$name'");
-					$res[] = $v;
+					break;
 				}
-				$value = $res;
-				break;
-			case 'enum':
-				$value = array_search($value, $this->properties[$name]['options'], true);
-				if ($value === false)
-					throw new ReportValidationException("Invalid value for option '$name'");
-				break;
 			}
 			if(!$this->set($name, $value)) {
 				throw new ReportValidationException("Invalid value for option '$name'");
@@ -234,10 +236,7 @@ class HttpApiEvent_options extends Summary_options {
 		// transform values
 		$type = $row['service_description'] ? 'service' : 'host';
 		$row['event_type'] = Reports_Model::event_type_to_string($row['event_type'], $type, true);
-		if ($row['service_description'])
-			$row['state'] = Reports_Model::$service_states[$row['state']];
-		else
-			$row['state'] = Reports_Model::$host_states[$row['state']];
+		$row['state'] = Reports_Model::state_name($type, $row['state']);
 
 		if ($row['event_type'] == "scheduled_downtime_start" || $row['event_type'] == "scheduled_downtime_stop") {
 			unset($row['hard']);
@@ -275,6 +274,8 @@ class HttpApiEvent_options extends Summary_options {
 		if (!isset($this->properties[$key])) {
 			return false;
 		}
+		if ($this->properties[$key]['type'] == 'array')
+			return true;
 		if ($key == 'objects' && !is_array($value))
 			$value = array($value);
 		if($key == 'limit') {

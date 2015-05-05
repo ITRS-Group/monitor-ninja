@@ -52,6 +52,13 @@ class Sla_options extends Report_options {
 			"last12months" => _('Last 12 months'),
 			'custom' => _('Custom')
 		));
+		if(ninja::has_module('synergy')) {
+			$this->properties['include_synergy_events'] = array(
+				'type' => 'bool',
+				'default' => false,
+				'description' => 'Include BSM events'
+			);
+		}
 	}
 
 	/**

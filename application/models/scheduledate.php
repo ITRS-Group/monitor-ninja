@@ -114,8 +114,8 @@ class ScheduleDate_Model extends Model
 				$tmp_cmd = "$nagios_cmd;$obj;$start_time;$end_time;{$data->get_fixed()};0;$duration;{$data->get_author()};AUTO: {$data->get_comment()}";
 				$result[] = nagioscmd::submit_to_nagios($tmp_cmd);
 			}
-			return !in_array(false, $result);
 		}
+		return !in_array(false, $result);
 	}
 
 	/**

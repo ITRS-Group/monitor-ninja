@@ -52,9 +52,23 @@ var Notify = (function () {
       'zone': 'message'
     };
 
+    var getIndexOf = function (a, value) {
+      if (a.indexOf) {
+        return a.indexOf(notification);
+      } else {
+        var i = 0;
+        for (i = 0; i < a.length; i++) {
+          if (value === a[i]) {
+            return i;
+          }
+        }
+        return -1;
+      }
+    }
+
     notification.remove = function (time) {
 
-      var index = active.indexOf(notification);
+      var index = getIndexOf(active, notification);
       time = time ? time : notification.options.animationtime;
       active.splice(index, 1);
 
@@ -102,7 +116,7 @@ var Notify = (function () {
         return (time > fadesettings.maxtime) ? fadesettings.maxtime : time;
       }
 
-      return (typeof(time) === 'number') ? time : fadesettings.default;
+      return (typeof(time) === 'number') ? time : fadesettings['default'];
 
     };
 

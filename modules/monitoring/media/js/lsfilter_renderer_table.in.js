@@ -69,7 +69,7 @@ listview_renderer_table.hosts = {
 						}));
 
 				pnp_link.attr('data-popover',
-					'image:/monitor/op5/pnp/image?host=' + args.obj.name + '&srv=_HOST_&view=0&source=0'
+					'pnp:' + args.obj.name
 				);
 
 				cell.append(pnp_link);

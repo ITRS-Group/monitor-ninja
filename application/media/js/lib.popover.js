@@ -49,6 +49,7 @@
     toggle: 'mouseenter focus',
     untoggle: 'mouseleave blur',
     selector: '*[data-popover]',
+    delay: 400,
     cache: true,
     position: 'bottom',
     root: $(document)
@@ -58,6 +59,7 @@
   var tooltip = $('<div>').addClass('lib-popover-tip');
   var loading = '<span class="lib-popover-load"></span>';
   var request = null;
+  var timer = null;
 
   var Popover = {
 
@@ -163,17 +165,21 @@
      */
     display: function(node, target, namespace){
 
+      clearTimeout(timer);
       Popover.adjust(target, node);
 
-      if(namespace){
-        Popover.cache(namespace, node);
-      }
+      timer = setTimeout(function () {
 
-      tooltip.empty();
-      tooltip.append(node);
+        if(namespace){
+          Popover.cache(namespace, node);
+        }
 
-      target.after(tooltip);
-      node = null;
+        tooltip.empty();
+        tooltip.append(node);
+        tooltip.css('display', 'block');
+        target.after(tooltip);
+
+      }, settings.delay);
 
     },
 
@@ -207,7 +213,6 @@
       tooltip.css({
         left: left + 'px',
         top: top + 'px',
-        display: 'block',
         'text-align': align,
         width: ""
       });
@@ -253,10 +258,14 @@
      * Aborts the current request
      */
     abort: function(){
+
+      clearTimeout(timer);
       if(request && request.abort)
         request.abort();
+
       request = null;
       Popover.deactivate();
+
     }
 
   };
@@ -270,8 +279,8 @@
 
   Popover.register(/^image\:/, function(data, target){
 
-    $('<img>').one('load', function(e){
-      Popover.display(e.target, target);
+    var img = $('<img>').one('load', function(e){
+      Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
     }).one('error', function(e){
       Popover.display("Failed.", target);
@@ -306,15 +315,14 @@
 
     if(ns[1]) service = encodeURIComponent(ns[1]);
 
-    $('<img>')
-    .one('load', function(e){
-      Popover.display(e.target, target);
+    var img = $('<img>').one('load', function(e){
+      Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
     }).one('error', function(e){
       Popover.display("Failed.", target);
-    }).attr(
-      {src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'}
-    );
+    }).attr({
+      src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'
+    });
 
   });
 

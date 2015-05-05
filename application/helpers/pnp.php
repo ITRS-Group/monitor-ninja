@@ -114,7 +114,7 @@ throw new Exception('deprecated');
 			# for us to just include it to get options available in $conf array
 			$pnp_config_file = Kohana::config('config.pnp4nagios_config_path');
 			if (file_exists($pnp_config_file))
-				include_once($pnp_config_file);
+				include($pnp_config_file);
 
 			# Since the PNP is not very likely to change very often,
 			# we may store the config in session to save us from

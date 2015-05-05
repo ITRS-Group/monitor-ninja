@@ -8,7 +8,7 @@
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
-		<?php echo html::link($this->add_path('icons/favicon.ico'),'icon','image/x-icon') ?>
+		<?php echo html::link('application/views/icons/favicon.ico','icon','image/x-icon'); ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
