@@ -32,24 +32,9 @@ if (!empty($base_href)) {
 
 	<?php
 
-		echo html::script('application/media/js/jquery.js');
-		echo html::script('application/media/js/jquery-ui.min.js');
-		echo html::script('application/media/js/jquery.fancybox.js');
-		echo html::script('application/media/js/jquery.field.js');
-		echo html::script('application/media/js/jquery.form.js');
-		echo html::script('application/media/js/jquery.easywidgets.min.js');
-		echo html::script('application/media/js/jquery.autocomplete.min');
-		echo html::script('application/media/js/jquery.selectboxes.min.js');
-		echo html::script('application/media/js/jquery.jeditable.min');
-		echo html::script('application/media/js/jquery.query.js');
-		echo html::script('application/media/js/jquery.jgrowl.js');
-		echo html::script('application/media/js/jquery.hotkeys.min.js');
-		echo html::script('application/media/js/jquery.contextMenu.js');
-		echo html::script('application/media/js/date.js');
+		echo html::script('application/media/js/bundle.js');
 		echo html::script('application/views/js/global_search.js');
-		echo html::script('application/media/js/ajax.commands.js');
-		echo html::script('application/media/js/lib.popover.js');
-		echo html::script('application/media/js/lib.notify.js');
+
 	?>
 	<script type="text/javascript">
 		//<!--

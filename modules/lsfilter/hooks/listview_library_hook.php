@@ -25,20 +25,8 @@ class listview_library_hook {
 
 		$basepath = 'modules/lsfilter/';
 
-
 		$controller->template->js[] = 'index.php/manifest/js/orm_structure.js';
-
-		$controller->template->js[] = $basepath.'js/LSFilter.js';
-		$controller->template->js[] = $basepath.'js/LSFilterLexer.js';
-		$controller->template->js[] = $basepath.'js/LSFilterParser.js';
-		$controller->template->js[] = $basepath.'js/LSFilterPreprocessor.js';
-		$controller->template->js[] = $basepath.'js/LSFilterVisitor.js';
-
-		$controller->template->js[] = $basepath.'js/LSColumns.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsLexer.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsParser.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsPreprocessor.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsVisitor.js';
+		$controller->template->js[] = $basepath.'js/bundle.js';
 
 		/*		$controller->template->js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
 		$controller->template->js[] = $basepath.'media/js/LSFilterVisitors.js';

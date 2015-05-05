@@ -6,7 +6,7 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-all: generate-css generate-php
+all: generate-css generate-php generate-js
 
 help:
 	@echo
@@ -25,6 +25,10 @@ generate-css:
 	done
 	# Generate css for listviews
 	compass compile --trace --boring modules/lsfilter/views/css/
+
+generate-js:
+	browserify ./application/media/js/manifest.js > ./application/media/js/bundle.js
+	browserify ./modules/lsfilter/manifest/manifest.js > ./modules/lsfilter/js/bundle.js
 
 # making the *-php targets work in your checked out environment: add
 # path/to/system-addons/op5lib/php to your global php.ini's include_path
