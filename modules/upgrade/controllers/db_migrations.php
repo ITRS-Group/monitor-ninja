@@ -1,10 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 require_once('op5/auth/Auth.php');
 require_once('op5/auth/User_AlwaysAuth.php');
-require_once(__DIR__.'/../../modules/reports/libraries/Report_options.php');
-require_once(__DIR__.'/../../modules/reports/libraries/Avail_options.php');
-require_once(__DIR__.'/../../modules/reports/libraries/Sla_options.php');
-require_once(__DIR__.'/../../modules/reports/libraries/Summary_options.php');
+require_once(__DIR__.'/../../../modules/reports/libraries/Report_options.php');
+require_once(__DIR__.'/../../../modules/reports/libraries/Avail_options.php');
+require_once(__DIR__.'/../../../modules/reports/libraries/Sla_options.php');
+require_once(__DIR__.'/../../../modules/reports/libraries/Summary_options.php');
 
 /**
  * Handles CLI calls used in installation & upgrade scripts
