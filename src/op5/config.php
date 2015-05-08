@@ -59,7 +59,11 @@ class op5config {
 			$this->basepath = $basepath;
 		}
 
-		$this->apc_enabled = function_exists('apc_fetch');
+		// Disabling apc since our test environment fails when building
+		// Nacoma. More research needed. See MON-8063. Instead of false,
+		// it should be set to function_exists('apc_store');
+		// (see git log)
+		$this->apc_enabled = false;
 	}
 
 	/**
