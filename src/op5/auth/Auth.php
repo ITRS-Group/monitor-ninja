@@ -340,7 +340,7 @@ class op5auth implements op5MayI_Actor {
 			$driver->logout($user);
 		}
 		$this->user = false;
-		$this->session_clear();
+		session::instance()->destroy();
 		return true;
 	}
 
