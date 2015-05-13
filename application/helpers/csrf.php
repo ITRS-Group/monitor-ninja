@@ -15,7 +15,7 @@ class csrf {
 		if (($token = csrf::current_token()) === FALSE || $force === true || csrf::current_token_expired() === true) {
 
 			# save token to session
-			Session::instance()->set(Kohana::config('csrf.csrf_token'), ($token = text::random('alnum', 41)));
+			Session::instance()->set(Kohana::config('csrf.csrf_token'), ($token = text::random(41)));
 
 			# save session timestamp to session
 			Session::instance()->set(Kohana::config('csrf.csrf_timestamp'), time());
