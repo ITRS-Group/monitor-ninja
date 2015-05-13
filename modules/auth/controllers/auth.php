@@ -44,15 +44,14 @@ class Auth_Controller extends Ninja_Controller {
 					throw new NinjaLogin_Exception(_("Please supply both username and password"));
 				}
 
-				$csrf_config = Kohana::config('csrf');
-				if ($csrf_config['csrf_token']!='' && $csrf_config['active'] !== false && !csrf::valid($this->input->post($csrf_config['csrf_token']))) {
-					throw new NinjaLogin_Exception(_("CSRF tokens did not match.<br />This often happen when your browser opens cached windows (after restarting the browser, for example).<br />Try to login again."));
-				}
-
 				$result = $auth->login($username, $password, $auth_method);
 				if (!$result) {
 					throw new NinjaLogin_Exception(_("Login failed - please try again"));
 				}
+
+
+				/* Force new CSRF token */
+				csrf::token(true);
 
 				# might redirect somewhere
 				Event::run('ninja.logged_in');
