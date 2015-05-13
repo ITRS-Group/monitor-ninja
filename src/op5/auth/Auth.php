@@ -676,7 +676,7 @@ class op5auth implements op5MayI_Actor {
 	 */
 	public function write_close() {
 		$this->session_store();
-		// FIXME: session_writeback
+		session_write_close();
 
 		// Make sure we don't store anything more...
 		$this->config['session_key'] = false;
