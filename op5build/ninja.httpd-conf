@@ -8,6 +8,7 @@ Alias /monitor/op5/portstatus /opt/monitor/op5/portstatus
 Alias /monitor /opt/monitor/op5/ninja
 Alias /ninja /opt/monitor/op5/ninja
 
+KeepAlive On
 <Location /monitor>
 	Options -Indexes
 	Order allow,deny
