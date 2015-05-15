@@ -156,7 +156,7 @@ class Search_Controller extends Ninja_Controller {
 
 				$widget->set_fixed($query);
 				// abuse the fact that ls-tables are pluralized
-				$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($original_query));
+				$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($query));
 
 				$this->template->content->widgets[] = $widget->render();
 			}
