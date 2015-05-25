@@ -283,7 +283,7 @@
       Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
     }).one('error', function(e){
-      Popover.display("Failed.", target);
+      Popover.display("Could not fetch image", target);
     }).attr(
       {src: data}
     );
@@ -301,8 +301,10 @@
       key: key
     }, function(text){
       Popover.display(text, target, data);
-    }).fail(function(){
-      Popover.display('Failed.', target);
+    }).fail(function(xhr, status){
+      if (status !== 'abort') {
+        Popover.display('Could not fetch helptext', target);
+      }
     });
 
   });
@@ -319,7 +321,7 @@
       Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
     }).one('error', function(e){
-      Popover.display("Failed.", target);
+      Popover.display("Could not fetch graph", target);
     }).attr({
       src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'
     });
@@ -332,8 +334,10 @@
 
     $.post(data, post, function(text){
       Popover.display(text, target, data);
-    }).fail(function(){
-      Popover.display('Failed.', target);
+    }).fail(function(xhr, status){
+      if (status !== 'abort') {
+        Popover.display('Failed to retrieve popover information', target);
+      }
     });
 
   });
@@ -342,8 +346,10 @@
 
     $.get(data, function(text){
       Popover.display(text, target, data);
-    }).fail(function(){
-      Popover.display('Failed.', target);
+    }).fail(function(xhr, status){
+      if (status !== 'abort') {
+        Popover.display('Failed to retrieve popover information', target);
+      }
     });
 
   });
