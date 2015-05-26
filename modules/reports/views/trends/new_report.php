@@ -32,7 +32,17 @@
 						$output_id /* 2: short */
 						);
 
-					$state_names[$statechanges[$i]['state']] = ucfirst($this->_state_string_name($obj_type, $statechanges[$i]['state']));
+					switch(strtolower($obj_type)) {
+						case 'host':
+							$state_name = Reports_Model::$host_states[$statechanges[$i]['state']];
+							break;
+						case 'service':
+							$state_name = Reports_Model::$service_states[$statechanges[$i]['state']];
+							break;
+						default:
+							$state_name = 'N/A';
+					}
+					$state_names[$statechanges[$i]['state']] = ucfirst($state_name);
 
 				}
 				$rawdata[] = $servicerow;

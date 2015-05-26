@@ -7,7 +7,7 @@
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/common.css') ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/print.css') ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
-		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
+		<?php echo html::link(ninja::add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<?php echo html::script('application/media/js/jquery.js'); ?>
 		 <script type="text/javascript">
 			var this_page = "<?php echo Kohana::config('config.site_domain').

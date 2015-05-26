@@ -88,10 +88,5 @@
 	<?php echo form::close(); ?>
 </div>
 <div class="long_output">
-<?php
-	# this hidden thing marks "no options chosen" as a chosen set of options
-	# so we avoid overriding "no options" with the default ones
-
-	$this->_show_log_entries();
-?>
+<?php showlog::show_log_entries($options); ?>
 </div>

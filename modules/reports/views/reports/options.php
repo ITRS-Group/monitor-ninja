@@ -258,7 +258,7 @@ if($options['report_id']) { ?>
 			?>
 			<td style="padding-left: 0px">
 				<a href="#" title="Click to propagate this value to all months" class="autofill">
-					<img src="<?php echo $this->add_path('icons/16x16/copy.png') ?>" alt="Click to propagate this value to all months" />
+					<img src="<?php echo ninja::add_path('icons/16x16/copy.png') ?>" alt="Click to propagate this value to all months" />
 				</a>
 				<label for="month_<?php echo $month_index ?>"><?php echo $month_name ?></label><br />
 				<input type="text" size="2" class="sla_month" id="month_<?php echo ($month_index) ?>" name="month_<?php echo ($month_index) ?>" value="<?php echo $val > 0 ? $val : ''; ?>" maxlength="6" /> %

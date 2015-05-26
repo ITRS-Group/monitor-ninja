@@ -64,12 +64,6 @@ class Showlog_Controller extends Ninja_Controller
 		}
 	}
 
-	public function _show_log_entries()
-	{
-		$this->_verify_access('ninja.showlog:read.showlog');
-		showlog::show_log_entries($this->options);
-	}
-
 	public function basic_setup()
 	{
 		$this->_verify_access('ninja.showlog:read.showlog');

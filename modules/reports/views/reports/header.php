@@ -7,7 +7,7 @@
 			echo $options->as_form();
 			echo '<input type="hidden" name="output_format" value="csv" />';
 			$csv_alt = _('Download report as CSV');
-			echo "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png')."' alt='".$csv_alt."' title='".$csv_alt."'/>";
+			echo "<input type='image' src='".ninja::add_path('icons/32x32/page-csv.png')."' alt='".$csv_alt."' title='".$csv_alt."'/>";
 			echo "</form>\n";
 		}
 
@@ -17,23 +17,23 @@
 			echo $options->as_form();
 			echo '<input type="hidden" name="output_format" value="pdf" />';
 			$pdf_alt = _('Show as pdf');
-			echo '<input type="image" src="'.$this->add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
+			echo '<input type="image" src="'.ninja::add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
 			echo '</form>';
 		}
 
 		if (!isset($skip_save)) { ?>
-		<a class="image-link" href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
+		<a class="image-link" href="#" id="save_report"><?php echo html::image(ninja::add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
 		<?php
 		}
 		if (!isset($skip_edit)) { ?>
-		<a class="image-link fancybox" href="#options"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('Edit settings'), 'title' => _('Edit settings'))); ?></a>
+		<a class="image-link fancybox" href="#options"><?php echo html::image(ninja::add_path('/icons/32x32/square-edit.png'), array('alt' => _('Edit settings'), 'title' => _('Edit settings'))); ?></a>
 		<?php } ?>
 		<?php if ($options['report_id']) { ?>
-		<a class="image-link" id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
+		<a class="image-link" id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image(ninja::add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
 		<?php }
 			# make it possible to get the link (GET) to the current report
 			echo html::anchor($type.'/generate?'.$options->as_keyval_string(),
-				html::image($this->add_path('/icons/32x32/square-link.png'),
+				html::image(ninja::add_path('/icons/32x32/square-link.png'),
 					array('alt' => '','title' => _('Direct link'))),
 				array('class' => 'image-link', 'id' => 'current_report_params', 'title' => _('Direct link to this report. Right click to copy or click to view.'))
 			);
@@ -84,7 +84,7 @@
 		if ($states)
 			echo ' in ' . implode(', ', $states);
 		echo '</p>';
-		if ($this->type == 'sla')
+		if ($type == 'sla')
 			echo '<p>'.sprintf(_('Showing %s'), $options->get_value('sla_mode')).'</p>';
 
 ?>

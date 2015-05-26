@@ -44,7 +44,7 @@ foreach ($report_data as $avail_data) {
 			<?php }
 			if ($options['time_format'] & 1) { ?>
 			<td class="data" style="width: 80px"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) ?> %
-			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
+			<?php echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
 			<?php } ?>
@@ -61,7 +61,7 @@ foreach ($report_data as $avail_data) {
 			<?php }
 			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
-			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
+			<?php echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			<?php if ($options['scheduleddowntimeasuptime'] == 2 && ($var_type === 'UP' || $var_type == 'OK') && ($avail_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP'] > 0)) { print '<br />('.reports::format_report_value($avail_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).'% in other states)'; } ?>
 			</td>
@@ -75,7 +75,7 @@ foreach ($report_data as $avail_data) {
 			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_KNOWN_TIME_' . $var_type]) ?> %
 			<?php
-				echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_KNOWN_TIME_' . $var_type]) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
+				echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_KNOWN_TIME_' . $var_type]) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
 			<?php } ?>
@@ -93,7 +93,7 @@ foreach ($report_data as $avail_data) {
 			<?php }
 			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) ?> %
-			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) > 0 ? '' : 'not-').'pending.png'),
+			<?php echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?> </td>
 			<?php } ?>
 		</tr>
@@ -104,7 +104,7 @@ foreach ($report_data as $avail_data) {
 			<?php }
 			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NO_DATA']) ?> %
-			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NO_DATA']) > 0 ? '' : 'not-').'pending.png'),
+			<?php echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_UNDETERMINED_NO_DATA']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
 			<?php } ?>
 		</tr>
@@ -115,7 +115,7 @@ foreach ($report_data as $avail_data) {
 			<?php }
 			if ($options['time_format'] & 1) { ?>
 			<td class="data"><?php echo reports::format_report_value($avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED']!=0 ? $avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'] : reports::format_report_value(0)) ?> %
-			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED']) > 0 ? '' : 'not-').'pending.png'),
+			<?php echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TOTAL_TIME_UNDETERMINED']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => _('Undetermined'),'title' => _('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
 			<?php } ?>
 		</tr>
