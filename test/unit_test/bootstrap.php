@@ -17,11 +17,7 @@ class Session {
 	public function destroy() {}
 	public function write_close() {}
 	public function set($keys, $val = FALSE) {}
-	public function set_flash($keys, $val = FALSE) {}
-	public function keep_flash($keys = NULL) {}
-	public function expire_flash() {}
 	public function get($key = FALSE, $default = FALSE) { return $default; }
-	public function get_once($key, $default = FALSE) { return $default; }
 	public function delete($keys) {}
 }
 

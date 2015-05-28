@@ -29,7 +29,6 @@ class Profiler {
 		// Add all built in profiles to event
 		Event::add('profiler.run', array($this, 'benchmarks'));
 		Event::add('profiler.run', array($this, 'database'));
-		Event::add('profiler.run', array($this, 'session'));
 		Event::add('profiler.run', array($this, 'post'));
 		Event::add('profiler.run', array($this, 'cookies'));
 
@@ -188,36 +187,6 @@ class Profiler {
 
 		$data = array('Total: ' . count($queries), number_format($total_time, 3), $total_rows);
 		$table->add_row($data, 'kp-totalrow');
-	}
-
-	/**
-	 * Session data.
-	 *
-	 * @return  void
-	 */
-	public function session()
-	{
-		if (empty($_SESSION)) return;
-
-		if ( ! $table = $this->table('session'))
-			return;
-
-		$table->add_column('kp-name');
-		$table->add_column();
-		$table->add_row(array('Session', 'Value'), 'kp-title', 'background-color: #CCE8FB');
-
-		text::alternate();
-		foreach($_SESSION as $name => $value)
-		{
-			if (is_object($value))
-			{
-				$value = get_class($value).' [object]';
-			}
-
-			$data = array($name, $value);
-			$class = text::alternate('', 'kp-altrow');
-			$table->add_row($data, $class);
-		}
 	}
 
 	/**
