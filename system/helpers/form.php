@@ -30,6 +30,14 @@ class form {
 			$attr['method'] = 'post';
 		}
 
+		$method = strtolower($attr['method']);
+
+		if (in_array($attr['method'], array('post', 'put', 'delete'))) {
+			// Get or generate CSRF/XSRF token for all methods that would alter
+			// server state
+			$hidden["csrf_token"] = csrf::token(false);
+		}
+
 		if ($action === NULL)
 		{
 			// Use the current URL as the default action
