@@ -89,77 +89,22 @@ class text {
 	}
 
 	/**
-	 * Generates a random string of a given type and length.
+	 * Generates a random alphanumeric string of a given length.
 	 *
-	 * @param   string   a type of pool, or a string of characters to use as the pool
 	 * @param   integer  length of string to return
 	 * @return  string
-	 *
-	 * @tutorial  alnum     alpha-numeric characters
-	 * @tutorial  alpha     alphabetical characters
-	 * @tutorial  hexdec    hexadecimal characters, 0-9 plus a-f
-	 * @tutorial  numeric   digit characters, 0-9
-	 * @tutorial  nozero    digit characters, 1-9
-	 * @tutorial  distinct  clearly distinct alpha-numeric characters
 	 */
-	public static function random($type = 'alnum', $length = 8)
+	public static function random($length = 8)
 	{
-		$utf8 = FALSE;
-
-		switch ($type)
-		{
-			case 'alnum':
-				$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			break;
-			case 'alpha':
-				$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			break;
-			case 'hexdec':
-				$pool = '0123456789abcdef';
-			break;
-			case 'numeric':
-				$pool = '0123456789';
-			break;
-			case 'nozero':
-				$pool = '123456789';
-			break;
-			case 'distinct':
-				$pool = '2345679ACDEFHJKLMNPRSTUVWXYZ';
-			break;
-			default:
-				$pool = (string) $type;
-				$utf8 = ! utf8::is_ascii($pool);
-			break;
-		}
-
-		// Split the pool into an array of characters
-		$pool = ($utf8 === TRUE) ? utf8::str_split($pool, 1) : str_split($pool, 1);
-
+		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		// Largest pool key
-		$max = count($pool) - 1;
-
+		$max = strlen($pool) - 1;
 		$str = '';
 		for ($i = 0; $i < $length; $i++)
 		{
 			// Select a random character from the pool and add it to the string
 			$str .= $pool[mt_rand(0, $max)];
 		}
-
-		// Make sure alnum strings contain at least one letter and one digit
-		if ($type === 'alnum' AND $length > 1)
-		{
-			if (ctype_alpha($str))
-			{
-				// Add a random digit
-				$str[mt_rand(0, $length - 1)] = chr(mt_rand(48, 57));
-			}
-			elseif (ctype_digit($str))
-			{
-				// Add a random letter
-				$str[mt_rand(0, $length - 1)] = chr(mt_rand(65, 90));
-			}
-		}
-
 		return $str;
 	}
 
