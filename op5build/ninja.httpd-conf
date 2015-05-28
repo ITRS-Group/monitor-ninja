@@ -14,6 +14,9 @@ KeepAlive On
 	Order allow,deny
 	Allow from all
 	DirectoryIndex index.php
+
+	# Disable output buffering, so at least backup file download won't hang
+	php_flag output_buffering off
 </Location>
 <Location /monitor/images>
         Options -Indexes
@@ -26,5 +29,8 @@ KeepAlive On
 	Order allow,deny
 	Allow from all
 	DirectoryIndex index.php
+
+	# Disable output buffering, so at least backup file download won't hang
+	php_flag output_buffering off
 </Location>
 
