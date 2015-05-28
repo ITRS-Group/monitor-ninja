@@ -12,7 +12,7 @@ class csrf {
 	 */
 	public static function token($force = false)
 	{
-		if (($token = csrf::current_token()) === FALSE || $force === true || csrf::current_token_expired() === true) {
+		if (($token = csrf::current_token()) === FALSE || $force === true) {
 
 			# save token to session
 			Session::instance()->set(Kohana::config('csrf.csrf_token'), ($token = text::random(41)));
@@ -21,19 +21,7 @@ class csrf {
 			Session::instance()->set(Kohana::config('csrf.csrf_timestamp'), time());
 		}
 
-		return $token;
-	}
-
-	/**
-	 * Checks if current token has expired
-	 *
-	 * @return boolean
-	 **/
-	public static function current_token_expired() {
-		if (csrf::current_token() !== false && csrf::current_timestamp() + csrf::lifetime() < time()) {
-			return true;
-		}
-		return false;
+		return self::current_token();
 	}
 
 	/**
@@ -44,7 +32,7 @@ class csrf {
 	public static function valid($token)
 	{
 		# not valid if tokens differ or has expired
-		if ($token !== csrf::current_token() || csrf::current_token_expired() === true) {
+		if ($token !== csrf::current_token()) {
 			return false;
 		}
 		return true;
@@ -56,34 +44,5 @@ class csrf {
 	public static function current_token()
 	{
 		return Session::instance()->get(Kohana::config('csrf.csrf_token'), false);
-	}
-
-	/**
-	 * Return current csrf timestamp
-	 */
-	public static function current_timestamp()
-	{
-		return Session::instance()->get(Kohana::config('csrf.csrf_timestamp'), false);
-	}
-
-	/**
-	 * Return lifetime for current csrf token
-	 */
-	public static function lifetime()
-	{
-		return (int)Kohana::config('csrf.csrf_lifetime');
-	}
-
-	/**
-	 * Return a string representation of a form element with the current CSRF token
-	 * @param $name The name of the form element
-	 */
-	public static function form_field($name='') {
-		if (Kohana::config('csrf.csrf_token')=='' || Kohana::config('csrf.active') === false) {
-			return;
-		}
-
-		if (empty($name)) $name = Kohana::config('csrf.csrf_token');
-		return '<input type="hidden" name="'.$name.'" value="'.self::token(true).'">';
 	}
 }
