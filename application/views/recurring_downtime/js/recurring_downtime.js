@@ -11,7 +11,10 @@ $(document).ready(function() {
 			$.ajax({
 				url:_site_domain + _index_page + '/recurring_downtime/delete',
 				type: 'POST',
-				data: {schedule_id: this_id},
+				data: {
+					schedule_id: this_id,
+					csrf_token: _csrf_token
+				},
 				success: function(data) {
 					if (data) {
 						$.notify(data);
@@ -166,7 +169,8 @@ function check_setup()
 					end_time: end_time,
 					fixed: fixed,
 					duration: duration,
-					comment: comment
+					comment: comment,
+					csrf_token: _csrf_token
 				},
 				success: function(result) {
 					$.notify(result);

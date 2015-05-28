@@ -66,11 +66,12 @@ $(document).ready(function() {
 		}
 		show_progress('progress', _wait_str);
 		var url = _site_domain + _index_page + '/sla/per_month_sla_for_report';
-		var data = {sla_id: sla_id}
-
 		$.ajax({
 			url: url,
-			data: data,
+			data: {
+				sla_id: sla_id,
+				csrf_token: _csrf_token
+			},
 			complete: function() {
 				$('#progress').hide();
 			},

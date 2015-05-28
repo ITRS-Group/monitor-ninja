@@ -20,25 +20,28 @@ foreach($report_data as $i =>  $report) {
 	?>
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
-		<form action="<?php echo url::site() ?>avail/generate" method="post">
-			<input type="image" class="report-chart-fullwidth" src="<?php echo url::site() ?>public/barchart/?<?php echo $report['data_str'] ?>" title="<?php printf(_('Show availability breakdown for %s'), implode(', ', $names));?>" />
-			<?php
-			echo $options->as_form(true);
-			# Stupid multi-group reports, why do you insist on making my life complicated?
-			# In case it's a multi-group report we must look at $report['name']
-			$obj_names = $report['name'];
-			# But if it's empty, this must be a multi-host/multi-service.
-			if (!$obj_names)
-				$obj_names = $options['objects'];
-			# Oh, but it can also be a string, because loose typing is awesome, I'm telling you!
-			if (!is_array($obj_names))
-				$obj_names = array($obj_names);
-			foreach ($obj_names as $name) {
-				echo '<input type="hidden" name="objects[]" value="'.$name.'"/>';
-			}
-			echo '<input type="hidden" name="report_type" value="'.$options['report_type'].'"/>';
-			?>
-		</form>
+<?php
+	echo form::open(url::site() . 'avail/generate', array(), array('report_type' => $options['report_type']));
+	echo form::input(array('type' => 'image',
+		'class' => 'report-chart-fullwidth',
+		'src' => url::site() . 'public/barchart/?' . $report['data_str'],
+		'title' => sprintf(_('Show availability breakdown for %s'), implode(', ', $names))
+	));
+	echo $options->as_form(true);
+	# Stupid multi-group reports, why do you insist on making my life complicated?
+	# In case it's a multi-group report we must look at $report['name']
+	$obj_names = $report['name'];
+	# But if it's empty, this must be a multi-host/multi-service.
+	if (!$obj_names)
+		$obj_names = $options['objects'];
+	# Oh, but it can also be a string, because loose typing is awesome, I'm telling you!
+	if (!is_array($obj_names))
+		$obj_names = array($obj_names);
+	foreach ($obj_names as $name) {
+		echo form::hidden('objects[]', $name);
+	}
+	echo form::close();
+?>
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
 	<?php  if (!empty($report['table_data'])) {

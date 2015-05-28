@@ -41,16 +41,16 @@
 	</div>
 	<div id="link_container" class="form-dropdown"></div>
 	<div id="save_report_form" class="form-dropdown">
-		<form method="post" action="<?php echo url::base(true).Router::$controller."/save" ?>">
-			<?php
-			$report_name = $options['report_name'];
-			unset($options['report_name']);
-			echo $options->as_form();
-			echo '<input class="wide" type="text" name="report_name" value="'.$report_name.'" />';
-			$options['report_name'] = $report_name;
-			?>
-			<input type="submit" class="save_report_btn" value="<?php echo _('Save report') ?>" />
-		</form>
+	<?php
+		echo form::open(url::base(true).Router::$controller."/save");
+		$report_name = $options['report_name'];
+		unset($options['report_name']);
+		echo $options->as_form();
+		$options['report_name'] = $report_name;
+		echo form::input(array("class" => "wide", "type" => "text", "name" => "report_name"), $report_name);
+		echo form::input(array("class" => "save_report_btn", "type" => "submit"), _("Save report"));
+		echo form::close();
+?>
 	</div>
 	<h1><?php echo $title ?></h1>
 	<div class="report_options">

@@ -463,7 +463,8 @@ function create_slider(the_id)
 					data: {
 						page: '*',
 						setting: interval,
-						type: key
+						type: key,
+						csrf_token: _csrf_token
 					},
 					complete: function() {
 						last_update_request = false;

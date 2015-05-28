@@ -85,7 +85,9 @@ $(document).ready(function() {
 				filename: $('#filename').fieldValue()[0],
 				description: $('#description').fieldValue()[0],
 				attach_description: $('#attach_description').fieldValue()[0],
-				local_persistent_filepath: $.trim($('#local_persistent_filepath').val())
+				local_persistent_filepath: $.trim($('#local_persistent_filepath').val()),
+				csrf_token: _csrf_token
+
 			},
 			complete: function() {
 				$('#progress').hide();
@@ -135,7 +137,7 @@ function schedule_delete(ev)
 
 	$.ajax({
 		url:_site_domain + _index_page + '/schedule/delete_schedule',
-		data: {'id': schedule_id},
+		data: {'id': schedule_id, csrf_token: _csrf_token},
 		complete: function() {
 			img.attr('src', img_src);
 		},
@@ -167,6 +169,9 @@ function send_report_now(ev)
 
 	$.ajax({
 		url: _site_domain + _index_page + '/schedule/send_now/' + sched_id,
+		data: {
+			csrf_token: _csrf_token
+		},
 		type: 'POST',
 		complete: function() {
 			img.attr('src', img_src);
@@ -198,7 +203,8 @@ function setup_editable()
 		height : '14px',
 		submit : _ok_str,
 		cancel : _cancel_str,
-		placeholder:_reports_edit_information
+		placeholder:_reports_edit_information,
+		submitdata : {'csrf_token': _csrf_token}
 	});
 	$(".period_select").editable(save_url, {
 		data : function(value) {
@@ -214,7 +220,8 @@ function setup_editable()
 		event : 'dblclick',
 		type : 'select',
 		submit : _ok_str,
-		cancel : _cancel_str
+		cancel : _cancel_str,
+		submitdata : {'csrf_token': _csrf_token}
 	});
 	$(".iseditable_txtarea").editable(save_url, {
 		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
@@ -226,7 +233,8 @@ function setup_editable()
 		submit : _ok_str,
 		cancel : _cancel_str,
 		cssclass: "txtarea",
-		placeholder:_reports_edit_information
+		placeholder:_reports_edit_information,
+		submitdata : {'csrf_token': _csrf_token}
 	});
 	$(".report_name").editable(save_url, {
 		data : function (){
@@ -245,7 +253,8 @@ function setup_editable()
 		event : 'dblclick',
 		type : 'select',
 		submit : 'OK',
-		cancel : 'cancel'
+		cancel : 'cancel',
+		submitdata : {'csrf_token': _csrf_token}
 	});
 	$(".attach_description").editable(save_url, {
 		data : {0: "No", 1: "Yes"},
@@ -254,7 +263,8 @@ function setup_editable()
 		event : 'dblclick',
 		type : 'select',
 		submit : _ok_str,
-		cancel : _cancel_str
+		cancel : _cancel_str,
+		submitdata : {'csrf_token': _csrf_token}
 	});
 }
 

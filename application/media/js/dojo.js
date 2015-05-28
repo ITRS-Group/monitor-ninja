@@ -88,7 +88,8 @@
 			data: {
 				'type': 'dojo-quicklinks',
 				'page': 'tac',
-				'setting': JSON.stringify(global_quicklinks)
+				'setting': JSON.stringify(global_quicklinks),
+				'csrf_token': _csrf_token
 			},
 			type: 'POST',
 			complete: function() {
@@ -199,7 +200,8 @@
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
 			data: {
 				'type': 'dojo-quicklinks',
-				'page': 'tac'
+				'page': 'tac',
+				'csrf_token': _csrf_token
 			},
 			type: 'POST',
 			complete: function() {

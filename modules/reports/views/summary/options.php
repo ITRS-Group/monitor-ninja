@@ -1,7 +1,7 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<form action="<?php echo url::base(true) ?>summary/generate" method="post" class="report_form">
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+echo form::open(url::base(true) . 'summary/generate', array('class' => 'report_form'), array('report_id' => $options['report_id']));
+?>
 	<div class="standard setup-table">
-		<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 		<table class="setup-tbl report_block auto_width">
 			<tr>
 				<td>
@@ -24,14 +24,15 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo _('Show report') ?>" class="button create-report" /></td>
+				<td colspan="3"><?php echo form::input(array('id' => 'reports_submit_button', 'type' => 'submit', 'name' => '', 'class' => 'button create-report'), _('Show report')); ?></td>
 			</tr>
 		</table>
 	</div>
-</form>
-<form action="<?php echo url::base(true) ?>summary/generate" method="post" class="report_form">
+<?php echo form::close();
+
+echo form::open(url::base(true) . 'summary/generate', array('class' => 'report_form'), array('report_id' => $options['report_id']));
+?>
 	<div class="custom setup-table">
-		<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 		<?php echo new View('reports/objselector'); ?>
 		<h2><?php echo _('Report Settings'); ?></h2>
 		<hr />
@@ -75,7 +76,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo _('Show report') ?>" class="button create-report" /></td>
+				<td colspan="3"><?php echo form::input(array('id' => 'reports_submit_button', 'type' => 'submit', 'name' => '', 'class' => 'button create-report'), _('Show report')); ?></td>
 			</tr>
 		</table>
 	</div>

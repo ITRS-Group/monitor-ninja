@@ -133,7 +133,7 @@ function set_widget_refresh()
 	var url = _site_domain + _index_page + "/widget/set_widget_refresh/";
 	var page_name = _current_uri;
 	var value = global_refresh;
-	var data = {page: escape(page_name), value: value, type: 'refresh_interval'};
+	var data = {page: escape(page_name), value: value, type: 'refresh_interval', csrf_token: _csrf_token};
 	$.ajax({
 		url: url,
 		dataType:'json',
@@ -165,7 +165,8 @@ function save_widget_order(order_str)
 		{
 			data: {
 				page: escape(_current_uri),
-				widget_str: order_str
+				widget_str: order_str,
+				csrf_token: _csrf_token
 			},
 			type: 'POST'
 		}
@@ -193,7 +194,7 @@ function copy_widget_instance(name, instance_id, cb) {
 		url: _site_domain + _index_page + '/widget/copy_widget_instance',
 		dataType: 'html',
 		type: 'POST',
-		data: {page: _current_uri, widget: name, 'instance_id': instance_id},
+		data: {page: _current_uri, widget: name, 'instance_id': instance_id, csrf_token: _csrf_token},
 		success: function(data) {
 			var new_widget;
 			var this_widget = $('#widget-' + name + '-' + instance_id);
@@ -221,7 +222,8 @@ function save_widget_state(what, widget_name, instance_id)
 				page: escape(_current_uri),
 				method: what,
 				name: widget_name,
-				instance_id: instance_id
+				instance_id: instance_id,
+				csrf_token: _csrf_token
 			},
 			type: 'POST'
 		}
@@ -362,6 +364,7 @@ widget.prototype.update_display = function() {
 */
 widget.prototype.save_settings = function(data) {
 	var self = this;
+	data.csrf_token = _csrf_token;
 	$.ajax(
 		this.ajax_url + "save_widget_setting/",
 		{
@@ -387,7 +390,8 @@ widget.prototype.save_custom_val = function(newval, fieldname, cb) {
 				fieldvalue: newval,
 				fieldname: fieldname,
 				widget: this.name,
-				instance_id: this.instance_id
+				instance_id: this.instance_id,
+				csrf_token: _csrf_token
 			},
 			complete: function(data) {
 				if (typeof cb == 'function') {

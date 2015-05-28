@@ -298,7 +298,8 @@
 
     request = $.post('/ninja/index.php/ajax/get_translation', {
       controller: controller,
-      key: key
+      key: key,
+      csrf_token: _csrf_token
     }, function(text){
       Popover.display(text, target, data);
     }).fail(function(xhr, status){
@@ -331,6 +332,7 @@
   Popover.register(/^post\:/, function(data, target){
 
     var post = target.data('popover-post');
+    data.csrf_token = _csrf_token;
 
     $.post(data, post, function(text){
       Popover.display(text, target, data);

@@ -28,7 +28,8 @@ $("document").ready( function () {
 			type: "POST",
 			data: {
 				"method": "submit",
-				"command": command
+				"command": command,
+				"csrf_token": _csrf_token
 			},
 			success : function( data ) {
 
@@ -50,7 +51,8 @@ $("document").ready( function () {
 								type: "POST",
 								data: {
 									"method": "commit",
-									"command": command
+									"command": command,
+									"csrf_token": _csrf_token,
 								},
 								success : function( data ) {
 

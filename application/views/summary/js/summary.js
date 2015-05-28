@@ -31,6 +31,7 @@ $(document).ready(function() {
 				event_type: eventrow.data('statecode'),
 				host_name: eventrow.data('hostname'),
 				service_description: eventrow.data('servicename'),
+				csrf_token: _csrf_token,
 				comment: $('input', this).val() // (today) you cannot use value, because it's the original HTML
 			}
 		},

@@ -8,37 +8,49 @@
 		}
 	?>
 </div>
-<form class="report-page-setup" method="POST" id="setup_form" action="">
+<?php
+echo form::open('', array('class' => 'report-page-setup', 'id' => "setup_form"));
+?>
 	<div class="report-block">
 		<h2><?php echo _('Report Mode'); ?></h2>
 		<hr/>
 <?php	if (isset($schedule_id) && !empty($schedule_id)) {
 			# show link to create new recurring schedule
 			echo '&nbsp'.html::anchor('recurring_downtime/', _('Add New Downtime Schedule')).'<br /><br />';
+			form::hidden('schedule_id', $schedule_id);
 		}
-
-		if (isset($schedule_id) && !empty($schedule_id)) {?>
-		<input type="hidden" name="schedule_id" value="<?php echo $schedule_id ?>" />
-		<?php }?>
+?>
 		<table class="setup-tbl obj_selector">
 			<tr>
 				<td colspan="3">
-					<select id="report_type" name="downtime_type">
-						<option value="hostgroups" <?php echo $schedule_info->get_downtime_type() === 'hostgroups' ? 'selected="selected"' : ''; ?>><?php echo _('Hostgroups') ?></option>
-						<option value="hosts" <?php echo $schedule_info->get_downtime_type() === 'hosts' ? 'selected="selected"' : ''; ?>><?php echo _('Hosts') ?></option>
-						<option value="servicegroups" <?php echo $schedule_info->get_downtime_type() === 'servicegroups' ? 'selected="selected"' : ''; ?>><?php echo _('Servicegroups') ?></option>
-						<option value="services" <?php echo $schedule_info->get_downtime_type() === 'services' ? 'selected="selected"' : ''; ?>><?php echo _('Services') ?></option>
-					</select>
+<?php
+echo form::dropdown(array('name' => 'downtime_type', 'id' => 'report_type'),
+	array(
+		'hostgroups' => _('Hostgroups'),
+		'hosts' => _('Hosts'),
+		'servicegroups' => _('Servicegroups'),
+		'services' => _('Services')
+	),
+	$schedule_info->get_downtime_type()
+);
+?>
 					&nbsp;<br /><br />
 				</td>
 			</tr>
 			<tr>
 				<td colspan="3">
-					<select data-filterable data-type="<?php echo $schedule_info->get_downtime_type() ? rtrim($schedule_info->get_downtime_type(), 's') : 'hostgroup' // first from select above ?>" name="objects[]" id="objects" multiple="multiple">
-					<?php foreach($schedule_info->get_objects() as $object) { ?>
-						<option value="<?php echo $object ?>"><?php echo $object ?></option>
-					<?php } ?>
-					</select>
+<?php
+
+$obj_options = array();
+// In PHP 5.3, array_combine requires both arrays to have at least one element... Sigh.
+if (count($schedule_info->get_objects()) > 0) {
+	$obj_options = array_combine($schedule_info->get_objects(), $schedule_info->get_objects());
+}
+$trimmed_downtime_type = $schedule_info->get_downtime_type() ? rtrim($schedule_info->get_downtime_type(), 's') : 'hostgroup'; // first from select above
+echo form::dropdown(array('data-filterable' => '', 'data-type' => $trimmed_downtime_type, 'name' => 'objects[]', 'id' => 'objects', 'multiple' => 'multiple'),
+	$obj_options
+);
+?>
 				</td>
 			</tr>
 		</table>
@@ -52,16 +64,25 @@
 			<tr>
 				<td colspan="3">
 					<?php echo _('Comment') . " *" ?><br />
-					<textarea cols="40" rows="4" name="comment" width="100%"><?php echo $schedule_info->get_comment() ?></textarea>
+					<?php
+echo form::textarea(
+	array('cols' => '40', 'rows' => '4', 'name' => 'comment', 'width' => '100%'),
+	$schedule_info->get_comment()
+);
+?>
 				</td>
 			</tr>
 			<tr>
 				<td style="vertical-align: top;">
-					<input type="checkbox" name="fixed" id="fixed" value="1"<?php if ($schedule_info->get_fixed()) { ?> checked=checked<?php } ?>> <?php echo _('Fixed') ?>
+<?php
+echo form::checkbox(array('name' => 'fixed', 'id' => 'fixed'), "1", $schedule_info->get_fixed());
+?> <?php echo _('Fixed'); ?>
 				</td>
 				<td id="triggered_row" style="display:none">
 					<?php echo _('Duration') . " *" ?> (hh:mm or hh:mm:ss)<br />
-					<input class="time-entry" type='text' id="duration" name='duration' value='<?php echo $schedule_info->get_duration_string() ?>'>
+<?php
+echo form::input(array('class' => 'time-entry', 'type' => 'text', 'id' => 'duration', 'name' => 'duration'), $schedule_info->get_duration_string());
+?>
 				</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -69,17 +90,25 @@
 			<tr>
 				<td>
 					<?php echo _('Start Time') . " *" ?> (hh:mm or hh:mm:ss)<br />
-					<input class="time-entry" type='text' name='start_time' id="start_time_input" value='<?php echo $schedule_info->get_start_time_string() ?>'>
+<?php
+echo form::input(array('class' => 'time-entry', 'type' => 'text', 'id' => 'start_time_input', 'name' => 'start_time'), $schedule_info->get_start_time_string());
+?>
 				</td>
 				<td>
 					<?php echo _('End Time') . " *" ?> (hh:mm or hh:mm:ss)<br />
-					<input class="time-entry" type='text' name='end_time' id="end_time_input" value='<?php echo $schedule_info->get_end_time_string() ?>'>
+<?php
+echo form::input(array('class' => 'time-entry', 'type' => 'text', 'id' => 'end_time_input', 'name' => 'end_time'), $schedule_info->get_end_time_string());
+?>
 				</td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td colspan="3">
-					<?php echo _('Days of week') . " *" ?> <button type="button" id="select-all-days" value="">Select all</button> <button type="button" id="deselect-all-days">Deselect all</button><br />
+<?php echo _('Days of week') . " * ";
+echo form::button(array('type' => 'button', 'id' => 'select-all-days', 'value' => ''), 'Select all');?> <?php
+echo form::button(array('type' => 'button', 'id' => 'deselect-all-days'), 'Deselect all');
+?>
+<br />
 					<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 						<tr>
 							<?php foreach ($day_index as $i) {
@@ -97,17 +126,18 @@
 			</tr>
 			<tr>
 				<td colspan="3">
-					<?php echo _('Months') . " *" ?> <button type="button" id="select-all-months">Select all</button> <button type="button" id="deselect-all-months">Deselect all</button><br />
+<?php echo _('Months') . " * ";
+echo form::button(array('type' => 'button', 'id' => 'select-all-months'), 'Select all'); ?> <?php echo form::button(array('type' => 'button', 'id' => 'deselect-all-months'), 'Deselect all'); ?>
+					<br />
 					<table style="margin-top: 5px; width: 480px; border-collapse: collapse; border-spacing: 0px">
 						<tr>
-						<?php 	$i = 0;
+						<?php	$i = 0;
 					foreach($month_names as $month) {
 						$i++;
-						$checked = '';
-						if (in_array($i, $schedule_info->get_months())) {
-							$checked = 'checked=checked';
-						} ?>
-					<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="months[]" class="recurring_month" value="<?php echo $i ?>" id="<?php echo $month; ?>"> <label for="<?php echo $month; ?>"><?php echo $month ?></label></td>
+?>
+						<td style="width: 80px">
+						<?php echo form::checkbox(array('name' => 'months[]', 'class' => 'recurring_month', 'id' => $month), $i, in_array($i, $schedule_info->get_months())); ?> <?php echo form::label($month, $month); ?>
+</td>
 					<?php	if ($i == 6) {
 								echo "</tr><tr>";
 							}
@@ -121,7 +151,9 @@
 	</div>
 
 	<div class="setup-table">
-		<input id="reports_submit_button" type="submit" name="" value="<?php echo $schedule_id ? _('Update schedule') : _('Add Schedule') ?>" class="button create-report" />
+<?php
+echo form::submit(array('id' => 'reports_submit_button', 'name' => '', 'class' => 'button create-report'), $schedule_id ? _('Update schedule') : _('Add Schedule'));
+?>
 	</div>
 </form>
 </div>

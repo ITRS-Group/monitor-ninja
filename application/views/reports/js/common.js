@@ -530,7 +530,7 @@ function confirm_delete_report()
 		$.ajax({
 			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
 			type: 'POST',
-			data: {'report_id': id},
+			data: {'report_id': id, csrf_token: _csrf_token},
 			complete: function() {
 				$(loadimg_sml).remove();
 			},
