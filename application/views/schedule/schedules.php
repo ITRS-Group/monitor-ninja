@@ -34,9 +34,9 @@
 			<td class="iseditable local-path" title="<?php echo _('Double click to edit') ?>"></td>
 			<td class="attach_description" title="<?php echo _('Double click to edit') ?>"></td>
 			<td class="action">
-				<a href="" class="direct_link"><img src="<?php echo $this->add_path("icons/16x16/status-detail.png") ?>" title="<?php echo _("View report") ?>" alt="<?php echo _("View report") ?>" /></a>
-				<a href="#" class="send_report_now" data-schedule="" data-report_id="" data-type=""><img src="<?php echo $this->add_path('icons/16x16/send-report.png') ?>" alt="<?php echo _('Send this report now') ?>" title="<?php echo _('Send this report now') ?>" /></a>
-				<a href="#" class="delete_schedule" data-schedule="" data-type=""><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'), array('alt' => _('Delete scheduled report'), 'title' => _('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
+				<a href="" class="direct_link"><img src="<?php echo ninja::add_path("icons/16x16/status-detail.png") ?>" title="<?php echo _("View report") ?>" alt="<?php echo _("View report") ?>" /></a>
+				<a href="#" class="send_report_now" data-schedule="" data-report_id="" data-type=""><img src="<?php echo ninja::add_path('icons/16x16/send-report.png') ?>" alt="<?php echo _('Send this report now') ?>" title="<?php echo _('Send this report now') ?>" /></a>
+				<a href="#" class="delete_schedule" data-schedule="" data-type=""><?php echo html::image(ninja::add_path('icons/16x16/delete-schedule.png'), array('alt' => _('Delete scheduled report'), 'title' => _('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
 			</td>
 		</tr>
 	</table>

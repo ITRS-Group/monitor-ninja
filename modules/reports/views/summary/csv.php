@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $csv_content = array(
 	array(
-		 $this->options->get_value('summary_type'),
+		 $options->get_value('summary_type'),
 		'From: '.$options->get_date('start_time'),
 		'To: '.$options->get_date('end_time'),
 		'Duration: '.($options['end_time'] - $options['start_time'])

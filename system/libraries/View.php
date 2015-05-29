@@ -293,7 +293,7 @@ class View {
 			$data = array_merge(self::$kohana_global_data, $this->kohana_local_data);
 
 			// Load the view in the controller for access to $this
-			Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
+			$this->load_view($this->kohana_filename, $data);
 		}
 		else
 		{
@@ -312,6 +312,35 @@ class View {
 			$output = ob_get_contents();
 			ob_end_clean();
 			return $output;
+		}
+	}
+
+	/**
+	 * Includes a View
+	 *
+	 * @param   string  view filename
+	 * @param   array   array of view variables
+	 * @return  string
+	 */
+	protected function load_view($kohana_view_filename, $kohana_input_data)
+	{
+		if ($kohana_view_filename == '')
+			return;
+
+		// Import the view variables to local namespace
+		extract($kohana_input_data, EXTR_SKIP);
+
+		try
+		{
+			// Views are straight HTML pages with embedded PHP, so importing them
+			// this way insures that $this can be accessed as if the user was in
+			// the controller, which gives the easiest access to libraries in views
+			include $kohana_view_filename;
+		}
+		catch (Exception $e)
+		{
+			// Display the exception using its internal __toString method
+			echo $e;
 		}
 	}
 } // End View

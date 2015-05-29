@@ -72,7 +72,7 @@ foreach($report_data as $i =>  $report) {
 				foreach ($data as $month => $value) {
 					$y++;?>
 				<td class="data">
-					<?php echo reports::format_report_value($value[0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0] < $value[1]) ? 'down' : 'up').'.png'),
+					<?php echo reports::format_report_value($value[0]) ?> % <?php echo html::image(ninja::add_path('icons/12x12/shield-'.(($value[0] < $value[1]) ? 'down' : 'up').'.png'),
 							array(
 							'alt' => '',
 							'title' => $value[0] < $value[1] ? _('Below SLA') : _('OK'),

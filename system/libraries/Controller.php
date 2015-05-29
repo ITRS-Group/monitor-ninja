@@ -48,33 +48,4 @@ abstract class Controller {
 		Event::run('system.404');
 	}
 
-	/**
-	 * Includes a View within the controller scope.
-	 *
-	 * @param   string  view filename
-	 * @param   array   array of view variables
-	 * @return  string
-	 */
-	public function _kohana_load_view($kohana_view_filename, $kohana_input_data)
-	{
-		if ($kohana_view_filename == '')
-			return;
-
-		// Import the view variables to local namespace
-		extract($kohana_input_data, EXTR_SKIP);
-
-		try
-		{
-			// Views are straight HTML pages with embedded PHP, so importing them
-			// this way insures that $this can be accessed as if the user was in
-			// the controller, which gives the easiest access to libraries in views
-			include $kohana_view_filename;
-		}
-		catch (Exception $e)
-		{
-			// Display the exception using its internal __toString method
-			echo $e;
-		}
-	}
-
 } // End Controller Class
