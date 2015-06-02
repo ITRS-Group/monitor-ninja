@@ -657,3 +657,19 @@ Feature: Monitoring
 		Then I should see "Command has been executed!"
 		Then I shouldn't see "Disable notifications"
 		And I should see "Enable notifications"
+
+	@configuration @asmonitor @bug-8022
+	Scenario: Service comments in list view
+		Verify that service comments are shown when hovering the "comments" icon for a service in the list views
+
+		Given I am on the Service details page
+		When I click "System Load"
+		And I click "Submit a service comment"
+		And I enter "Zombocom" into "cmd_param[comment]"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I should see "Zombocom"
+		And I am on the Service details page
+		And I hover over "Comments"
+		Then I should see "Zombocom"
