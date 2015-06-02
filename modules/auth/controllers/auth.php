@@ -49,10 +49,6 @@ class Auth_Controller extends Ninja_Controller {
 					throw new NinjaLogin_Exception(_("Login failed - please try again"));
 				}
 
-
-				/* Force new CSRF token */
-				csrf::token(true);
-
 				# might redirect somewhere
 				Event::run('ninja.logged_in');
 			} catch(NinjaLogin_Exception $e) {

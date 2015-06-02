@@ -8,7 +8,7 @@ Event::add('system.pre_controller', function() {
 
 	$log = op5log::instance('ninja');
 	$log->log('debug', 'Validating CSRF token');
-	if (!isset($_REQUEST['csrf_token']) || !csrf::valid($_REQUEST['csrf_token'])) {
+	if (!isset($_REQUEST['csrf_token']) || !Session::instance()->csrf_token_valid($_REQUEST['csrf_token'])) {
 		$log->log('warning', 'CSRF token validation failed');
 		Event::run('system.403');
 	}

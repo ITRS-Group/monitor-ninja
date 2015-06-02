@@ -82,6 +82,10 @@ class Session {
 		}
 	}
 
+	public function csrf_token_valid($token)
+	{
+		return $token == $this->get(Kohana::config('csrf.csrf_token'), false);
+	}
 	/**
 	 * Get the session id.
 	 *
@@ -162,6 +166,10 @@ class Session {
 		// Start the session!
 		session_start();
 
+		if (!isset($_SESSION[Kohana::config('csrf.csrf_token')])) {
+			$this->set(Kohana::config('csrf.csrf_token'), text::random(41));
+		}
+
 		// Put session_id in the session variable
 		$_SESSION['session_id'] = session_id();
 
@@ -218,6 +226,7 @@ class Session {
 
 		// Set the new data
 		self::set($vars);
+
 	}
 
 	/**

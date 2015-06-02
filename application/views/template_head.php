@@ -61,7 +61,7 @@ if (!empty($base_href)) {
 			?>
 
 			var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
-			var _csrf_token = '<?php echo csrf::token() ?>';
+			var _csrf_token = '<?php echo Session::instance()->get(Kohana::config('csrf.csrf_token')) ?>';
 			var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 			var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 			var _controller_name = '<?php echo str_replace("op5", null, Router::$controller) ?>';
