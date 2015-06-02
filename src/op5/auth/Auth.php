@@ -219,7 +219,6 @@ class op5auth implements op5MayI_Actor {
 
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
-	 * Implicitly logout previsouly logged in user, to clear session.
 	 *
 	 * @param $username string
 	 *        	to log in with
@@ -230,8 +229,6 @@ class op5auth implements op5MayI_Actor {
 	 * @return boolean True if success
 	 */
 	public function login($username, $password, $auth_method = false) {
-		$this->logout();
-
 		if ($auth_method === false) {
 			$parts = explode('$', $username, 2);
 			if (count($parts) == 2) {
@@ -341,6 +338,7 @@ class op5auth implements op5MayI_Actor {
 		}
 		$this->user = false;
 		$this->session_clear();
+		Session::instance()->destroy();
 		return true;
 	}
 
