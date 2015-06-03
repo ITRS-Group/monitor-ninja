@@ -32,6 +32,8 @@ abstract class Object_Model extends BaseObject_Model {
 
 	/**
 	 * Get the table of the current object
+	 *
+	 * @return string
 	 */
 	public function get_table() {
 		return $this->_table;
@@ -39,13 +41,26 @@ abstract class Object_Model extends BaseObject_Model {
 
 	/**
 	 * Get a list of custom variables related to the object, if possible
+	 *
+	 * @return array
 	 */
 	public function get_custom_variables() {
 		return array();
 	}
 
 	/**
+	 * Get a list of commands related to the object
+	 *
+	 * @return array
+	 */
+	public function list_commands() {
+		return array();
+	}
+
+	/**
 	 * Get the current logged in username
+	 *
+	 * @return string
 	 */
 	public function get_current_user() {
 		return Auth::instance()->get_user()->username;

@@ -198,4 +198,212 @@ class Service_Model extends BaseService_Model {
 		$perf_data_str = parent::get_perf_data_raw();
 		return performance_data::process_performance_data($perf_data_str);
 	}
+
+	/**
+	 * All methods in this class that corresponds 1:1 to a command, such
+	 * as a Naemon command. Note that developers might have implemented
+	 * other methods that in turn call these; those methods are *not*
+	 * returned from this method (unless the method is overwritten). As
+	 * such, this method can be used for listing e.g. mayi resources.
+	 *
+	 *
+	 * @return array
+	 */
+	public function list_commands() {
+		return array (
+			'add_comment' =>
+			array(
+				'parameters' =>
+				array(
+					'comment' => 'string',
+				),
+				'description' => _("This command is used to add a comment for the specified service. If you work with other administrators, you may find it useful to share information about a host or service that is having problems if more than one of you may be working on it."),
+			),
+			'disable_check' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to disable active checks of a service.',
+				'mayi_resource' => '',
+			),
+			'process_check_result' =>
+			array (
+				'parameters' =>
+				array (
+					'return_code' => 'select',
+					'plugin_output' => 'string',
+				),
+				'description' => 'This command is used to submit a passive check result for a service.  It is particularly useful for resetting security-related services to OK states once they have been dealt with. ',
+				'mayi_resource' => '',
+			),
+			'schedule_check' =>
+			array (
+				'parameters' =>
+				array (
+					'check_time' => 'time',
+				),
+				'description' => 'This command is used to schedule the next check of a service.  Nagios will re-queue the service to be checked at the time you specify. If you select the <i>force check</i> option, Nagios will force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service. ',
+				'mayi_resource' => '',
+			),
+			'schedule_downtime' =>
+			array (
+				'parameters' =>
+				array (
+					'start_time' => 'time',
+					'end_time' => 'time',
+					'fixed' => 'bool',
+					'trigger_id' => 'select',
+					'duration' => 'duration',
+					'comment' => 'string',
+				),
+				'description' => 'This command is used to schedule downtime for a service.  During the specified downtime, Nagios will not send notifications out about the service. When the scheduled downtime expires, Nagios will send out notifications for this service as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>Y-m-d H:i:s</b> (<a href="http://php.net/manual/en/function.date.php">see explanation of date-letters</a>). option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when the service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed downtime. ',
+				'mayi_resource' => '',
+			),
+			'send_custom_notification' =>
+			array (
+				'parameters' =>
+				array (
+					'comment' => 'string',
+				),
+				'description' => 'This command is used to send a custom notification about the specified service.  Useful in emergencies when you need to notify admins of an issue regarding a monitored system or service. Custom notifications normally follow the regular notification logic in Nagios.  Selecting the <i>Forced</i> option will force the notification to be sent out, regardless of the time restrictions, whether or not notifications are enabled, etc.  Selecting the <i>Broadcast</i> option causes the notification to be sent out to all normal (non-escalated) and escalated contacts.  These options allow you to override the normal notification logic if you need to get an important message out. ',
+				'mayi_resource' => '',
+			),
+		);
+	}
+
+	/**
+	 * @param comment
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function add_comment($comment, &$error_string=NULL) {
+		$error_string = null;
+
+		// we're hardcoding persistance here, it seems like one of those
+		// very weird parameters to expose
+		$command = nagioscmd::build_command("ADD_SVC_COMMENT", array(
+			'service' => $this->get_host()->get_name().";".$this->get_description(),
+			'persistent' => 1,
+			'author' => $this->get_current_user(),
+			'comment' => $comment
+		));
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function disable_check(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("DISABLE_SVC_CHECK",
+			array(
+				'service' => $this->get_host()->get_name().";".$this->get_description()
+			)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param plugin_output
+	 * @param return_code
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function process_check_result($plugin_output, $return_code, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("PROCESS_SERVICE_CHECK_RESULT",
+		array(
+		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
+		'return_code' => $return_code,
+		'plugin_output' => $plugin_output
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param check_time
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function schedule_check($check_time, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SCHEDULE_SVC_CHECK",
+		array(
+		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
+		'check_time' => $check_time
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param duration
+	 * @param trigger_id
+	 * @param start_time
+	 * @param end_time
+	 * @param comment
+	 * @param fixed = true
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SCHEDULE_SVC_DOWNTIME",
+		array(
+		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
+		'start_time' => $start_time,
+		'end_time' => $end_time,
+		'fixed' => $fixed,
+		'trigger_id' => $trigger_id,
+		'duration' => $duration,
+		'author' => $this->get_current_user(),
+		'comment' => $comment
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param comment
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function send_custom_notification($comment, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SEND_CUSTOM_SVC_NOTIFICATION",
+		array(
+		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
+		'author' => $this->get_current_user(),
+		'comment' => $comment
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
 }

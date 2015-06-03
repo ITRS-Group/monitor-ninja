@@ -194,4 +194,453 @@ class Host_Model extends BaseHost_Model {
 		$perf_data_str = parent::get_perf_data_raw();
 		return performance_data::process_performance_data($perf_data_str);
 	}
+
+	/**
+	 * Trigger this host to be checked right now.
+	 *
+	 * @param &$error_string
+	 * @return boolean
+	 */
+	public function check_now(&$error_string = null) {
+		return $this->schedule_check(time(), $error_string);
+	}
+
+	/**
+	 * All methods in this class that corresponds 1:1 to a command, such
+	 * as a Naemon command. Note that developers might have implemented
+	 * other methods that in turn call these; those methods are *not*
+	 * returned from this method (unless the method is overwritten). As
+	 * such, this method can be used for listing e.g. mayi resources.
+	 *
+	 * @return array
+	 */
+	public function list_commands() {
+		return array (
+			'acknowledge_problem' =>
+			array (
+				'parameters' =>
+				array (
+					'sticky' => 'bool',
+					'notify' => 'bool',
+					'persistent' => 'bool',
+					'comment' => 'string',
+				),
+				'description' => 'This command is used to acknowledge a host problem.  When a host problem is acknowledged, future notifications about problems are temporarily disabled until the host changes from its current state. If you want acknowledgement to disable notifications until the host recovers, check the \'Sticky Acknowledgement\' checkbox. Contacts for this host will receive a notification about the acknowledgement, so they are aware that someone is working on the problem.  Additionally, a comment will also be added to the host. Make sure to enter your name and fill in a brief description of what you are doing in the comment field.  If you would like the host comment to remain once the acknowledgement is removed, check the \'Persistent Comment\' checkbox.  If you do not want an acknowledgement notification sent out to the appropriate contacts, uncheck the \'Notify\' checkbox. ',
+				'mayi_resource' => '',
+			),
+			'add_comment' =>
+			array(
+				'parameters' =>
+				array(
+					'comment' => 'string',
+				),
+				'description' => _("This command is used to add a comment for the specified host. If you work with other administrators, you may find it useful to share information about a host that is having problems if more than one of you may be working on it."),
+			),
+			'check_now' =>
+			array(
+				'parameters' =>
+				array (
+				),
+				'description' => 'Schedule the next check as soon as possible',
+				'mayi_resource' => 'monitor.monitoring.hosts.commands.schedule_check:create'
+			),
+			'disable_check' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to temporarily prevent Nagios from actively checking the status of a host.  If Nagios needs to check the status of this host, it will assume that it is in the same state that it was in before checks were disabled. ',
+				'mayi_resource' => '',
+			),
+			'disable_service_checks' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to disable active checks of all services associated with the specified host.  When a service is disabled Nagios will not monitor the service.  Doing this will prevent any notifications being sent out for the specified service while it is disabled.  In order to have Nagios check the service in the future you will have to re-enable the service. Note that disabling service checks may not necessarily prevent notifications from being sent out about the host which those services are associated with.  This <i>does not</i> disable checks of the host unless you check the \'Disable for host too\' option. ',
+				'mayi_resource' => '',
+			),
+			'disable_service_notifications' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to prevent notifications from being sent out for all services on the specified host.  You will have to re-enable notifications for all services associated with this host before any alerts can be sent out in the future.  This <i>does not</i> prevent notifications from being sent out about the host unless you check the \'Disable for host too\' option. ',
+				'mayi_resource' => '',
+			),
+			'enable_check' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to enable active checks of this host. ',
+				'mayi_resource' => '',
+			),
+			'enable_service_checks' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to enable active checks of all services associated with the specified host.  This <i>does not</i> enable checks of the host unless you check the \'Enable for host too\' option. ',
+				'mayi_resource' => '',
+			),
+			'enable_service_notifications' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to enable notifications for all services on the specified host.  Notifications will only be sent out for the service state types you defined in your service definition.  This <i>does not</i> enable notifications for the host unless you check the \'Enable for host too\' option. ',
+				'mayi_resource' => '',
+			),
+			'process_check_result' =>
+			array (
+				'parameters' =>
+				array (
+					'status_code' => 'select',
+					'plugin_output' => 'string',
+				),
+				'description' => 'This command is used to submit a passive check result for a host. ',
+				'mayi_resource' => '',
+			),
+			'remove_acknowledgement' =>
+			array (
+				'parameters' =>
+				array (
+				),
+				'description' => 'This command is used to remove an acknowledgement for a host problem.  Once the acknowledgement is removed, notifications may start being sent out about the host problem.  ',
+				'mayi_resource' => '',
+			),
+			'schedule_check' =>
+			array (
+				'parameters' =>
+				array (
+					'check_time' => 'time',
+				),
+				'description' => 'This command is used to schedule the next check of a host. Nagios will re-queue the host to be checked at the time you specify. If you select the <i>force check</i> option, Nagios will force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host.',
+				'mayi_resource' => '',
+			),
+			'schedule_downtime' =>
+			array (
+				'parameters' =>
+				array (
+					'start_time' => 'time',
+					'end_time' => 'time',
+					'fixed' => 'bool',
+					'trigger_id' => 'select',
+					'duration' => 'duration',
+					'comment' => 'string',
+				),
+				'description' => 'This command is used to schedule downtime for a host. During the specified downtime, Nagios will not send notifications out about the host. When the scheduled downtime expires, Nagios will send out notifications for this host as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>Y-m-d H:i:s</b> (<a href="http://php.net/manual/en/function.date.php">see explanation of date-letters</a>). If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when the host goes down or becomes unreachable (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed downtime. ',
+				'mayi_resource' => '',
+			),
+			'schedule_service_checks' =>
+			array (
+				'parameters' =>
+				array (
+					'check_time' => 'time',
+				),
+				'description' => 'This command is used to scheduled the next check of all services on the specified host.  If you select the <i>force check</i> option, Nagios will force a check of all services on the host regardless of both what time the scheduled checks occur and whether or not checks are enabled for those services. ',
+				'mayi_resource' => '',
+			),
+			'send_custom_notification' =>
+			array (
+				'parameters' =>
+				array (
+					'comment' => 'string',
+				),
+				'description' => 'This command is used to send a custom notification about the specified host.  Useful in emergencies when you need to notify admins of an issue regarding a monitored system or service. Custom notifications normally follow the regular notification logic in Nagios.  Selecting the <i>Forced</i> option will force the notification to be sent out, regardless of the time restrictions, whether or not notifications are enabled, etc.  Selecting the <i>Broadcast</i> option causes the notification to be sent out to all normal (non-escalated) and escalated contacts.  These options allow you to override the normal notification logic if you need to get an important message out. ',
+				'mayi_resource' => '',
+			),
+		);
+	}
+
+	/**
+	 * @param comment
+	 * @param persistent = true
+	 * @param notify = true
+	 * @param sticky = true
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function acknowledge_problem($comment, $persistent=true, $notify=true, $sticky=true, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("ACKNOWLEDGE_HOST_PROBLEM",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'sticky' => $sticky,
+		'notify' => $notify,
+		'persistent' => $persistent,
+		'author' => $this->get_current_user(),
+		'comment' => $comment
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param comment
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function add_comment($comment, &$error_string=NULL) {
+		$error_string = null;
+
+		// we're hardcoding persistance here, it seems like one of those
+		// very weird parameters to expose
+		$command = nagioscmd::build_command("ADD_HOST_COMMENT", array(
+			'host_name' => $this->get_name(),
+			'persistent' => 1,
+			'author' => $this->get_current_user(),
+			'comment' => $comment
+		));
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function disable_check(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("DISABLE_HOST_CHECK",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function disable_service_checks(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("DISABLE_HOST_SVC_CHECKS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function disable_service_notifications(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("DISABLE_HOST_SVC_NOTIFICATIONS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function enable_check(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("ENABLE_HOST_CHECK",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function enable_service_checks(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("ENABLE_HOST_SVC_CHECKS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function enable_service_notifications(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("ENABLE_HOST_SVC_NOTIFICATIONS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param plugin_output
+	 * @param status_code
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function process_check_result($plugin_output, $status_code, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("PROCESS_HOST_CHECK_RESULT",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'status_code' => $status_code,
+		'plugin_output' => $plugin_output
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function remove_acknowledgement(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("REMOVE_HOST_ACKNOWLEDGEMENT",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param check_time
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function schedule_check($check_time, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SCHEDULE_HOST_CHECK",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'check_time' => $check_time
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param duration
+	 * @param trigger_id
+	 * @param start_time
+	 * @param end_time
+	 * @param comment
+	 * @param fixed = true
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SCHEDULE_HOST_DOWNTIME",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'start_time' => $start_time,
+		'end_time' => $end_time,
+		'fixed' => $fixed,
+		'trigger_id' => $trigger_id,
+		'duration' => $duration,
+		'author' => $this->get_current_user(),
+		'comment' => $comment
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param check_time
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function schedule_service_checks($check_time, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SCHEDULE_HOST_SVC_CHECKS",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'check_time' => $check_time
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param comment
+	 * @param &error_string = NULL
+	 * @return bool
+	 */
+	public function send_custom_notification($comment, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SEND_CUSTOM_HOST_NOTIFICATION",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'author' => $this->get_current_user(),
+		'comment' => $comment
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
 }
