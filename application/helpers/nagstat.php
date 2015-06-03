@@ -293,10 +293,14 @@ class nagstat {
 	/**
 	 * Convert a date format string back to a timestamp
 	 *
-	 * @return false|DateTime
+	 * @return false|int
 	 */
 	public static function timestamp_format($format_str = false, $date_str=false)
 	{
+		if(ctype_digit(strval(($date_str)))) {
+			// assume UNIX timestamp
+			return $date_str;
+		}
 		if (empty($format_str))
 			$format_str = self::date_format(); # fetch if not set
 
