@@ -37,10 +37,6 @@ When /^I hover the branding$/ do
   page.find('a[title="branding"]').hover
 end
 
-When /^I hover over the "(.*)" menu$/ do |element|
-  page.find('a span', :text => element, :match => :prefer_exact, :visible => true).hover
-end
-
 When /^I reload the page$/ do
   visit current_url
   # page.execute_script("document.location.reload();")
