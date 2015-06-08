@@ -29,17 +29,17 @@ class alert_history {
 		 case 100:
 			$ret['type'] = 'Process start';
 			$ret['state'] = "Start";
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = '<span class="icon-16 x16-' . strtolower($ret['state']) . '" title="' . $ret['state'] . '"></span>';
 			break;
 		 case 102:
 			$ret['type'] = 'Process restart';
 			$ret['state'] = "Restart";
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.gif'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = '<span class="icon-16 x16-' . strtolower($ret['state']) . '" title="' . $ret['state'] . '"></span>';
 			break;
 		 case 103:
 			$ret['type'] = 'Process shutdown';
 			$ret['state'] = 'Stop';
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = '<span class="icon-16 x16-' . strtolower($ret['state']) . '" title="' . $ret['state'] . '"></span>';
 			break;
 		 case 701:
 			$ret['type'] = 'Service alert';
@@ -61,7 +61,7 @@ class alert_history {
 				$ret['state'] = 'Pending';
 				break;
 			}
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = '<span class="icon-16 x16-shield-' . strtolower($ret['state']) . '" title="' . $ret['state'] . '"></span>';
 			$ret['softorhard'] = $entry['hard'] ? 'Hard' : 'Soft';
 			break;
 		 case 801:
@@ -80,7 +80,7 @@ class alert_history {
 				$ret['state'] = 'Pending';
 				break;
 			}
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = '<span class="icon-16 x16-shield-' . strtolower($ret['state']) . '" title="' . $ret['state'] . '"></span>';
 			$ret['softorhard'] = $entry['hard'] ? 'Hard' : 'Soft';
 			break;
 		 case 1000:
@@ -91,7 +91,7 @@ class alert_history {
 				$ret['type'] = 'Host flapping alert';
 			}
 			$ret['softorhard'] = $entry['event_type'] == 1000 ? 'Started' : 'Stopped';
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/flapping.png'), array('alt' => _('Flapping'), 'title' => _('Flapping')));
+			$ret['image'] = '<span class="icon-16 x16-flapping" title="Flapping"></span>';
 			break;
 		 case 1103:
 		 case 1104:
@@ -100,7 +100,7 @@ class alert_history {
 			else
 				$ret['type'] = 'Host downtime alert';
 			$ret['softorhard'] = $entry['event_type'] == 1103 ? 'Started' : 'Stopped';
-			$ret['image'] = html::image(ninja::add_path('icons/16x16/scheduled-downtime.png'), array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')));
+			$ret['image'] = '<span class="icon-16 x16-scheduled-downtime" title="Sheduled downtime"></span>';
 			break;
 		 default:
 			$ret['type'] = "Unknown event #{$entry['entry_type']}";

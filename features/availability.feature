@@ -39,8 +39,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I click "Show report"
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
@@ -48,8 +49,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "EmptyGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "EmptyGroup"
 		When I click "Show report"
@@ -59,8 +61,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "empty" from the multiselect "objects_tmp"
 		Then "objects" should have option "empty"
@@ -71,8 +74,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1"
@@ -95,8 +99,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		And I select "win-server1" from the multiselect "objects_tmp"
@@ -122,8 +127,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single service report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1;PING"
@@ -142,8 +148,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		And I select "linux-server1;System Load" from the multiselect "objects_tmp"
@@ -166,8 +173,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		And I select "linux-server2;System Load" from the multiselect "objects_tmp"
@@ -191,8 +199,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I check "Use alias"
@@ -210,8 +219,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "WindowsServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -232,8 +242,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "MixedGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -254,8 +265,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		Then "objects" should have option "pings"
@@ -277,8 +289,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		And I select "empty" from the multiselect "objects_tmp"
@@ -302,8 +315,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
@@ -319,8 +333,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate report on custom report date without time specified
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
@@ -336,8 +351,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Generate host report with state mapping
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		And I should see "Up"
@@ -360,8 +376,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Test service report with state mapping
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		Then I should see "Up"
 		And I shouldn't see "Ok"
 		When I select "Servicegroups" from "Report type"
@@ -377,8 +394,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		Then I shouldn't see "Saved reports"
 		#And "Saved reports" shouldn't have option "saved test report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
@@ -418,7 +436,7 @@ Feature: Availability reports
 	@configuration @asmonitor @reports @unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
-		When I hover over the "Reporting" button
+		When I hover over the "Report" menu
 		And I click "Availability"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
@@ -454,7 +472,7 @@ Feature: Availability reports
 	@configuration @asmonitor @reports @bug-7646 @unreliable
 	Scenario: Uncheck saved checkbox
 		Given I am on the Host details page
-		When I hover over the "Reporting" button
+		When I hover over the "Report" menu
 		And I click "Availability"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
@@ -481,7 +499,7 @@ Feature: Availability reports
 		And I click "Save report"
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
-		When I hover over the "Reporting" button
+		When I hover over the "Report" menu
 		And I click "Availability"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
@@ -493,8 +511,9 @@ Feature: Availability reports
 	@configuration @asmonitor @reports @unreliable
 	Scenario: Delete previously created report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"

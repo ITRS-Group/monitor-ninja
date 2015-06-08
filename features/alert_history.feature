@@ -113,8 +113,8 @@ Feature: Alert history reports
 	@configuration @asmonitor
 	Scenario: Change option from all objects
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Alert History"
+		And I hover over the "Report" menu
+		When I click "Alert history"
 		Then I should see "ERROR - out of teletubbies"
 		And I should see "OK - Sven Melander"
 		When I click "Edit settings"

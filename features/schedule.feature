@@ -42,8 +42,9 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports @unreliable
 	Scenario: Save avail report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I click "Show report"
@@ -58,8 +59,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Schedule avail report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
 		When I select "Weekly" from "Report interval"
@@ -75,8 +76,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: View scheduled avail report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
 		And "Select report" should have option "saved test report"
@@ -89,8 +90,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Add second avail schedule
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
 		And "Weekly" should be selected from "Report interval"
@@ -111,8 +112,9 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Delete previously created avail report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Availability"
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Setup Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
@@ -126,8 +128,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Ensure previously added avail schedule is gone
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And I shouldn't see "saved_test_report"
 		And I shouldn't see "saved test report"
@@ -136,8 +138,9 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Save SLA report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I enter "9" into "Jan"
@@ -154,8 +157,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Schedule SLA report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
@@ -172,8 +175,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: View scheduled SLA report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
@@ -186,8 +189,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Delete SLA schedule
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
@@ -195,8 +198,8 @@ Feature: Scheduled reports
 		When I click "Delete scheduled report" on the row where "Report" is "saved test report"
 		Then I should see "Schedule deleted"
 		And I should see "There are no scheduled SLA reports"
-		When I hover over the "Reporting" button
-		And I click "Schedule Reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		And I select "SLA report" from "Select report type"
 		Then I shouldn't see "saved test report" within "#scheduled_sla_reports"
 		When I select "SLA report" from "Select report type"
@@ -205,8 +208,9 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Delete previously created SLA report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "SLA"
+		And I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		When I click "Setup SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
@@ -220,8 +224,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Ensure previously added sla schedule is gone
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		And I select "SLA report" from "Select report type"
 		Then I should see "New Schedule"
 		And I shouldn't see "saved_test_report"
@@ -231,8 +235,9 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Save summary report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Alert Summary"
+		And I hover over the "Report" menu
+		And I hover over the "Alert Summary" menu
+		When I click "Setup Alert Summary"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -246,8 +251,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Schedule summary report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
@@ -264,8 +269,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: View scheduled summary report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report"
@@ -276,8 +281,9 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Delete previously created summary report
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Alert Summary"
+		And I hover over the "Report" menu
+		And I hover over the "Alert Summary" menu
+		When I click "Setup Alert Summary"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
@@ -290,8 +296,8 @@ Feature: Scheduled reports
 	@configuration @asmonitor @reports
 	Scenario: Ensure previously added summary schedule is gone
 		Given I am on the Host details page
-		And I hover over the "Reporting" button
-		When I click "Schedule Reports"
+		And I hover over the "Report" menu
+		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "Alert Summary Report" from "Select report type"
 		And I shouldn't see "saved_test_report"

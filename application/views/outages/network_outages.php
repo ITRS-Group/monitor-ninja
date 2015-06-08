@@ -28,9 +28,9 @@
 				</td>
 				<td><?php echo html::anchor('extinfo/details/host/'.$details['name'], $details['name']) ?></td>
 				<td class="icon">
-					<?php echo $details['comments'] == 0 ? '' : html::anchor('extinfo/details/host/'.$details['name'], html::image(ninja::add_path('icons/16x16/add-comment.png'),array('alt' => _('View comments for this host'), 'title' => _('View comments for this host'))),array('style' => 'border: 0px')); ?>
-					<?php echo $details['acknowledged'] == 0 ? '' : html::image(ninja::add_path('icons/16x16/acknowledged.png'),array('alt' => _('Host problem is acknowledged'), 'title' => _('Host problem is acknowledged')),array('style' => 'border: 0px')); ?>
-					<?php echo $details['scheduled_downtime_depth'] == 0 ? '' : html::image(ninja::add_path('icons/16x16/scheduled-downtime.png'),array('alt' => _('Host is in scheduled downtime'), 'title' => _('Host is in scheduled downtime')),array('style' => 'border: 0px')); ?>
+					<?php echo $details['comments'] == 0 ? '' : html::anchor('extinfo/details/host/'.$details['name'], '<span class="icon-16 x16-add-comment" title="View comments for this host"></span>', array('style' => 'border: 0px')); ?>
+					<?php echo $details['acknowledged'] == 0 ? '' : '<span class="icon-16 x16-acknowledged" title="Host problem is acknowledged"></span>'; ?>
+					<?php echo $details['scheduled_downtime_depth'] == 0 ? '' : '<span class="icon-16 x16-scheduled-downtime" title="Host is in scheduled downtime"></span>'; ?>
 				</td>
 				<td><?php echo $details['severity'] ?></td>
 				<td><?php echo time::to_string($details['duration']) ?></td>
@@ -38,13 +38,13 @@
 				<td><?php echo $details['affected_services'] ?></td>
 				<td>
 					<?php
-						echo html::anchor(listview::link('services',array('host.name'=>$details['name'])), html::image(ninja::add_path('icons/16x16/service-details.gif'),array('alt' => _('View status detail for this host'), 'title' => _('View status detail for this host'))),array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor(listview::link('services',array('host.name'=>$details['name'])), '<span class="icon-16 x16-service-details" title="View status detail for this host"></span>',array('style' => 'border: 0px')).'&nbsp;';
 						if ( Kohana::config('nagvis.nagvis_path') ) {
-							echo html::anchor('nagvis/automap/host/'.urlencode($details['name']), html::image(ninja::add_path('icons/16x16/locate-host-on-map.png'),array('alt' => _('Locate host on map'), 'title' => _('Locate host on map'))),array('style' => 'border: 0px')).'&nbsp;';
+							echo html::anchor('nagvis/automap/host/'.urlencode($details['name']), '<span class="icon-16 x16-locate-host-on-map" title="Locate host on map"></span>', array('style' => 'border: 0px')).'&nbsp;';
 						}
-						echo html::anchor('avail/generate?include_trends=1&amp;host_name[]='.urlencode($details['name']), html::image(ninja::add_path('icons/16x16/trends.png'),array('alt' => _('View trends for this host'), 'title' => _('View trends for this host'))),array('style' => 'border: 0px')).'&nbsp;';
-						echo html::anchor('alert_history/generate?host_name[]='.urlencode($details['name']), html::image(ninja::add_path('icons/16x16/alert-history.png'),array('alt' => _('View alert history for this host'), 'title' => _('View alert history for this host'))),array('style' => 'border: 0px')).'&nbsp;';
-						echo html::anchor(listview::link('notifications',array('host_name'=>$details['name'])), html::image(ninja::add_path('icons/16x16/notify.png'),array('alt' => _('View notifications for this host'), 'title' => _('View notifications for this host'))),array('style' => 'border: 0px'))
+						echo html::anchor('avail/generate?include_trends=1&amp;host_name[]='.urlencode($details['name']), '<span class="icon-16 x16-trends" title="View trends for this host"></span>', array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('alert_history/generate?host_name[]='.urlencode($details['name']), '<span class="icon-16 x16-alert-history" title="View alert history for this host"></span>', array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor(listview::link('notifications',array('host_name'=>$details['name'])), '<span class="icon-16 x16-notify" title="View notifications for this host"></span>',array('style' => 'border: 0px'))
 					?>
 				</td>
 			</tr>

@@ -9,7 +9,7 @@ if (!empty($widgets)) {
 
 echo '<div>';
 if (!empty($updated_str)) {
-	echo '<div id="saved_msg">'.html::image(ninja::add_path('/icons/16x16/shield-ok.png'),array('alt' => '', 'style' => 'margin-bottom: -3px; margin-right: 4px')).$updated_str.'</div><br />';
+	echo '<div id="saved_msg"><span class="icon-16 x16-shield-ok"></span>' . $updated_str . '</div><br />';
 }
 
 if (!empty($available_setting_sections)) {

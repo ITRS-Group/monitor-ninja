@@ -6,9 +6,9 @@ var Notify = (function () {
 
   var icons = {
     "error": '<span class="icon-16 x16-remove"></span>',
-    "warning": '<span class="icon-menu menu-outages"></span>',
-    "info": '<span class="icon-menu menu-processinfo"></span>',
-    "success": '<span class="icon-16 x16-start-execute"></span>'
+    "warning": '<span class="icon-16 x16-outages"></span>',
+    "info": '<span class="icon-16 x16-processinfo"></span>',
+    "success": '<span class="icon-16 x16-enabled"></span>'
   };
 
   var initialize = function () {

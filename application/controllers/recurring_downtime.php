@@ -77,7 +77,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->template->toolbar = new Toolbar_Controller('Recurring scheduled downtimes');
 
-		$this->template->toolbar->button('<span class="icon-menu menu-schedulereports"></span>' . _('Schedules'), array('href' => url::base(true) . 'listview?q=[recurring_downtimes]%20all'));
+		$this->template->toolbar->button('<span class="icon-16 x16-schedulereports"></span>' . _('Schedules'), array('href' => url::base(true) . 'listview?q=[recurring_downtimes]%20all'));
 
 		$data = false;
 		$schedule_info = array(

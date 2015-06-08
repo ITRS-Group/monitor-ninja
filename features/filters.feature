@@ -388,9 +388,10 @@ Feature: Filters & list views
 		And I enter "Ernie" into "lsfilter_save_filter_name"
 		And I click "Save Filter"
 		And I wait for 1 second
-		And I hover over the "Saved-filters" button
-		When I click "Manage and view filters"
+		And I hover over the "Manage" menu
+		When I click "Manage filters"
 		Then I should see "Ernie"
-		When I hover over the "Saved-filters" button
+		When I hover over the "Monitor" menu
+		And I hover over the "Hosts" menu
 		Then I should see these menu items:
 			| Ernie |
