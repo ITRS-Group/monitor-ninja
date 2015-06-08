@@ -33,7 +33,7 @@ Feature: Menu
 			| Availability |
 			| SLA |
 			| Histogram |
-			| Alert Summary |
+			| Summary |
 			| Alert history |
 			| Notifications |
 
