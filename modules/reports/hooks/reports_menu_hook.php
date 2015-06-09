@@ -8,104 +8,40 @@
 
   }
 
+  function add_report_menu_type ($menu, $order, $type, $label, $index, $link, $icon) {
+
+    $it = get_saved_of_type($type);
+    $max_filters = 6;
+
+    $menu->set(sprintf('Report.%s', $label), null, $order, $icon);
+    $menu->set(sprintf('Report.%s.Setup %s Report', $label, $label), $index, 0, $icon);
+
+    $count = 0;
+    foreach ($it as $report) {
+
+      $count++;
+      if ($count > $max_filters) {
+        $ns = sprintf('Report.%s.View all %s reports', $label, $label);
+        $link = listview::querylink(sprintf('[saved_reports] type="%s"'), $type);
+        $menu->set($ns, $link, null, 'icon-16 x16-filter');
+        break;
+      }
+
+      $ns = sprintf('Report.%s.', $label) . preg_replace('/\./', '&period;', $report->get_report_name());
+      $menu->set($ns, $link . '?report_id=' . $report->get_id(), null, $icon);
+
+    }
+  }
+
   Event::add('ninja.menu.setup', function () {
 
     $menu = Event::$data;
-    $max_filters = 6;
-
     $menu->set('Report', null, 2, 'icon-16 x16-reporting', array('style' => 'margin-top: 8px'));
 
-    $menu->set('Report.Availability', null, 0, 'icon-16 x16-availability');
-    $menu->set('Report.Availability.Setup Availability Report', 'avail/index', 0, 'icon-16 x16-availability');
-
-    $it = get_saved_of_type('avail');
-    $count = 0;
-    foreach ($it as $report) {
-
-      $count++;
-      if ($count > $max_filters) {
-        $menu->set(
-          'Report.Availability.View all Availability reports',
-          listview::querylink('[saved_reports] type="avail"'), null, sprintf('icon-16 x16-%s', 'filter')
-        );
-        break;
-      }
-
-      $menu->set(
-        'Report.Availability.' . $report->get_report_name(),
-        'avail/generate?report_id' . $report->get_id(), null, 'icon-16 x16-availability'
-      );
-
-    }
-
-    $menu->set('Report.SLA', null, 1, 'icon-16 x16-sla');
-    $menu->set('Report.SLA.Setup SLA Report', 'sla/index', 1, 'icon-16 x16-sla');
-
-    $it = get_saved_of_type('sla');
-    $count = 0;
-
-    foreach ($it as $report) {
-
-      $count++;
-      if ($count > $max_filters) {
-        $menu->set(
-          'Report.SLA.View all SLA reports',
-          listview::querylink('[saved_reports] type="sla"'), null, sprintf('icon-16 x16-%s', 'filter')
-        );
-        break;
-      }
-
-      $menu->set(
-        'Report.SLA.' . $report->get_report_name(),
-        'sla/generate?report_id' . $report->get_id(), null, 'icon-16 x16-sla'
-      );
-    }
-
-    $menu->set('Report.Histogram', null, 2, 'icon-16 x16-histogram');
-    $menu->set('Report.Histogram.Setup Histogram', 'histogram/index', 2, 'icon-16 x16-histogram');
-
-    $it = get_saved_of_type('histogram');
-    $count = 0;
-
-    foreach ($it as $report) {
-
-      $count++;
-      if ($count > $max_filters) {
-        $menu->set(
-          'Report.Histogram.View all Histogram Reports',
-          listview::querylink('[saved_reports] type="histogram"'), null, sprintf('icon-16 x16-%s', 'filter')
-        );
-        break;
-      }
-
-      $menu->set(
-        'Report.Histogram.' . $report->get_report_name(),
-        'histogram/generate?report_id' . $report->get_id(), null, 'icon-16 x16-histogram'
-      );
-    }
-
-    $menu->set('Report.Alert Summary', null, 3, 'icon-16 x16-alertsummary');
-    $menu->set('Report.Alert Summary.Setup Alert Summary', 'summary', 0, 'icon-16 x16-alertsummary');
-
-    $it = get_saved_of_type('summary');
-    $count = 0;
-
-    foreach ($it as $report) {
-
-      $count++;
-      if ($count > $max_filters) {
-        $menu->set(
-          'Report.Summary.View all Alert Summaries',
-          listview::querylink('[saved_reports]  type="summary"'), null, sprintf('icon-16 x16-%s', 'filter')
-        );
-        break;
-      }
-
-      $menu->set(
-        'Report.Alert summary.' . $report->get_report_name(),
-        'summary/generate?report_id' . $report->get_id(), null, 'icon-16 x16-alertsummary'
-      );
-    }
+    add_report_menu_type($menu, 0, 'avail', 'Availability', 'avail/index', 'avail/generate', 'icon-16 x16-availability');
+    add_report_menu_type($menu, 1, 'sla', 'SLA', 'sla/index', 'sla/generate', 'icon-16 x16-sla');
+    add_report_menu_type($menu, 2, 'histogram', 'Histogram', 'histogram/index', 'histogram/generate', 'icon-16 x16-histogram');
+    add_report_menu_type($menu, 3, 'summary', 'Summary', 'summary/index', 'summary/generate', 'icon-16 x16-alertsummary');
 
     if (Kohana::config('config.pnp4nagios_path') !== false) {
       $menu->set('Report.Graphs', 'pnp?host=.pnp-internal&srv=runtime', 4, 'icon-16 x16-pnp');

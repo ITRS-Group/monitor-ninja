@@ -8,7 +8,7 @@
 
     $menu = Event::$data;
     $mayi = op5MayI::instance();
-    $max_filters = 6;
+    $max_filters = 1;
 
     $section = $menu->get('Monitor');
     $menu->set('Manage.Manage filters', listview::querylink('[saved_filters] all'), 3, 'icon-16 x16-eventlog');
@@ -21,6 +21,15 @@
     );
 
     $index = 2;
+
+    $saved = array();
+    $set = SavedFilterPool_Model::all();
+
+    foreach ($set->it(false, array('filter_name')) as $value) {
+      $table = $value->get_filter_table();
+      if (!isset($saved[$table])) $saved[$table] = array();
+      $saved[$table][] = $value;
+    }
 
     foreach ($tables as $table => $def) {
 
@@ -41,30 +50,28 @@
           0, sprintf('icon-16 x16-%s', $icon)
         );
 
-        $filters = new SavedFilterPool_Model();
-        $set = $filters->all()->reduce_by('filter_table', $table, '=');
-        $it = $set->it(false, array());
-
         $count = 0;
-        foreach ($it as $object) {
+        if (isset($saved[$table])) {
+          foreach ($saved[$table] as $object) {
 
-          $count++;
+            $count++;
 
-          if ($count > $max_filters) {
+            if ($count > $max_filters) {
+              $section->set(
+                $key . '.All filters for ' . preg_replace('/\./', '&period;', $table),
+                listview::querylink(sprintf('[saved_filters] filter_table = "%s"', $table)),
+                $index, sprintf('icon-16 x16-%s', 'filter')
+              );
+              break;
+            }
+
             $section->set(
-              $key . '.View all ' . $singular . ' filters here',
+              $key . '.' . $object->get_filter_name(),
               listview::querylink($object->get_filter()),
-              $index, sprintf('icon-16 x16-%s', 'filter')
+              $index, sprintf('icon-16 x16-%s', $icon)
             );
-            break;
+
           }
-
-          $section->set(
-            $key . '.' . $object->get_filter_name(),
-            listview::querylink($object->get_filter()),
-            $index, sprintf('icon-16 x16-%s', $icon)
-          );
-
         }
 
         $index++;

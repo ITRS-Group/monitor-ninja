@@ -236,8 +236,8 @@ Feature: Scheduled reports
 	Scenario: Save summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
-		And I hover over the "Alert Summary" menu
-		When I click "Setup Alert Summary"
+		And I hover over the "Summary" menu
+		When I click "Setup Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -282,8 +282,8 @@ Feature: Scheduled reports
 	Scenario: Delete previously created summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
-		And I hover over the "Alert Summary" menu
-		When I click "Setup Alert Summary"
+		And I hover over the "Summary" menu
+		When I click "Setup Summary Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
