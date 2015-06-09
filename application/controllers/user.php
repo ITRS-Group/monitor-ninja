@@ -382,10 +382,16 @@ class User_Controller extends Authenticated_Controller {
 
 		foreach ($it as $object) {
 			$type = $object->get_filter_table();
-			if (!in_array($type, $content->dynamics)) {
+			if (!in_array($type, $content->dynamics, true)) {
 				$content->dynamics[] = $type;
 			}
 		}
+
+		# Dont allow editing of report dynamic menus
+		$content->dynamics[] = 'availability';
+		$content->dynamics[] = 'sla';
+		$content->dynamics[] = 'histogram';
+		$content->dynamics[] = 'summary';
 
 		// Explicitly state that some items cannot be changed, these will not
 		// be rendered at all
