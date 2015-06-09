@@ -224,6 +224,9 @@ class User_Controller extends Authenticated_Controller {
 		$base_err_str = _('Wrong datatype vaule for field %s. Should be %s - found %s');
 		$empty_str = _('Ignoring %s since no value was found for it.');
 		foreach ($data as $key => $val) {
+			if (!isset($type_info[$key]))
+				continue;
+
 			if ($val == '' && $type_info[$key] != 'string') {
 				$errors[$key] = sprintf($empty_str, $key);
 			}
