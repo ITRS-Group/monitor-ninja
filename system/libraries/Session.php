@@ -40,6 +40,7 @@ class Session {
 	{
 		return $token == $this->get(Kohana::config('csrf.csrf_token'), false);
 	}
+
 	/**
 	 * Get the session id.
 	 *
@@ -65,7 +66,7 @@ class Session {
 			return;
 		}
 		// Destroy any current sessions
-		$this->destroy();
+		op5auth::instance()->session_destroy();
 
 		// Name the session, this will also be the name of the cookie
 		session_name(Kohana::config('session.name'));
@@ -90,20 +91,13 @@ class Session {
 	/**
 	 * Destroys the current session.
 	 *
+	 * @deprecated
+	 * @see op5auth::session_destroy()
 	 * @return  void
 	 */
 	public function destroy()
 	{
-		if(PHP_SAPI == 'cli') {
-			return;
-		}
-		if (session_id() !== '')
-		{
-			$name = session_name();
-			session_destroy();
-			$_SESSION = array();
-			cookie::delete($name);
-		}
+		op5auth::instance()->session_destroy();
 	}
 
 	/**

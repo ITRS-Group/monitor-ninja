@@ -338,7 +338,7 @@ class op5auth implements op5MayI_Actor {
 		}
 		$this->user = false;
 		$this->session_clear();
-		Session::instance()->destroy();
+		$this->session_destroy();
 		return true;
 	}
 
@@ -636,6 +636,22 @@ class op5auth implements op5MayI_Actor {
 		}
 	}
 
+	public function session_destroy() {
+		if(PHP_SAPI == 'cli') {
+			return;
+		}
+
+		if (session_id() !== '')
+		{
+			$name = session_name();
+			session_destroy();
+			$_SESSION = array();
+			unset($_COOKIE[$name]);
+			if(!headers_sent()) {
+				setcookie($name, '', -86400, null, null, false, false);
+			}
+		}
+	}
 	/**
 	 * Forces authentication and authorization of supplied user.
 	 * Authorization of user is optional.
