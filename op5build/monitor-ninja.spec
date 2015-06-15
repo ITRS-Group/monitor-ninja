@@ -218,9 +218,9 @@ else
   echo "to complete the setup of %name"
 fi
 
-$(php %prefix/index.php cli/save_widget --page 'tac/index' --name nagvis --friendly_name "Nagvis" &> /dev/null)
-$(php %prefix/index.php cli/save_widget --page 'tac/index' --name listview --friendly_name "List view" &> /dev/null)
-if [ "$?" -ne 0 ]; then
+$(php %prefix/index.php cli/save_widget --page 'tac/index' --name nagvis --friendly_name "Nagvis") || MYSQL_AVAILABLE=0
+$(php %prefix/index.php cli/save_widget --page 'tac/index' --name listview --friendly_name "List view") || MYSQL_AVAILABLE=0
+if [ -n "$MYSQL_AVAILABLE" ]; then
 	echo "WARNING: mysql-server is not installed or not running."
 	echo "If MySQL database is to be used you need to maually"
 	echo "setup the merlin database to complete the setup of %name"
