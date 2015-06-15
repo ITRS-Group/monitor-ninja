@@ -84,6 +84,36 @@
     $section->set('Downtimes.All Downtimes', listview::querylink('[downtimes] all'), 0, 'icon-16 x16-downtime');
     $section->set('Downtimes.Recurring Downtimes', listview::querylink('[recurring_downtimes] all'), 1, 'icon-16 x16-recurring-downtime');
 
-    $menu->set('Report.Notifications', listview::querylink('[notifications] all'), null, 'icon-16 x16-notification');
+    $icon = 'icon-16 x16-notification';
+    $menu->set('Report.Notifications', null, null, $icon);
+
+    $count = 0;
+    $table = "notifications";
+
+    $menu->set('Report.Notifications.All Notifications', listview::querylink('[notifications] all'), 0, $icon);
+    $key = listview_menu_label($table);
+
+    if (isset($saved[$table])) {
+      foreach ($saved[$table] as $object) {
+
+        $count++;
+
+        if ($count > $max_filters) {
+          $menu->set(
+            'Report.Notifications.All filters for ' . preg_replace('/\./', '&period;', $table),
+            listview::querylink(sprintf('[saved_filters] filter_table = "%s"', $table)),
+            $index, sprintf('icon-16 x16-%s', 'filter')
+          );
+          break;
+        }
+
+        $menu->set(
+          'Report.Notifications.' . $object->get_filter_name(),
+          listview::querylink($object->get_filter()),
+          $index, sprintf('icon-16 x16-%s', $icon)
+        );
+
+      }
+    }
 
   });
