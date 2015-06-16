@@ -293,7 +293,13 @@ class View {
 			$data = array_merge(self::$kohana_global_data, $this->kohana_local_data);
 
 			// Load the view in the controller for access to $this
-			$this->load_view($this->kohana_filename, $data);
+			if(Kohana::$instance instanceof System_Controller) {
+				// We're in PNP land, and there you assign $this->foo in the
+				// controller, instead of Ninja's $this->content->foo
+				Kohana::$instance->load_view($this->kohana_filename, $data);
+			} else {
+				$this->load_view($this->kohana_filename, $data);
+			}
 		}
 		else
 		{
