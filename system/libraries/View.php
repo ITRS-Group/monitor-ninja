@@ -296,7 +296,7 @@ class View {
 			if(Kohana::$instance instanceof System_Controller) {
 				// We're in PNP land, and there you assign $this->foo in the
 				// controller, instead of Ninja's $this->content->foo
-				Kohana::$instance->load_view($this->kohana_filename, $data);
+				Kohana::$instance->_load_view($this->kohana_filename, $data);
 			} else {
 				$this->load_view($this->kohana_filename, $data);
 			}
