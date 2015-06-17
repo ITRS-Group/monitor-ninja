@@ -18,6 +18,7 @@ Event::add('system.pre_controller', function() {
 	) {
 		$log->log('warning', 'CSRF token validation failed');
 		Event::run('system.403');
+		return;
 	}
 
 	$log->log('debug', 'CSRF token validation successful');
