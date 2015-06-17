@@ -22,7 +22,7 @@
       $count++;
       if ($count > $max_filters) {
         $ns = sprintf('Report.%s.View all %s reports', $label, $label);
-        $link = listview::querylink(sprintf('[saved_reports] type="%s"'), $type);
+        $link = listview::querylink(sprintf('[saved_reports] type="%s"', $type));
         $menu->set($ns, $link, null, 'icon-16 x16-filter');
         break;
       }
