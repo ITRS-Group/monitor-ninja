@@ -33,35 +33,6 @@ class Session {
 	 */
 	public function __construct()
 	{
-		$this->create();
-	}
-
-	public function csrf_token_valid($token)
-	{
-		return $token == $this->get(Kohana::config('csrf.csrf_token'), false);
-	}
-
-	/**
-	 * Get the session id.
-	 *
-	 * @return  string
-	 */
-	public function id()
-	{
-		if(PHP_SAPI == 'cli') {
-			return "";
-		}
-		return session_id();
-	}
-
-	/**
-	 * Create a new session.
-	 *
-	 * @param   array  variables to set after creation
-	 * @return  void
-	 */
-	public function create($vars = NULL)
-	{
 		if(PHP_SAPI == 'cli') {
 			return;
 		}
@@ -84,8 +55,24 @@ class Session {
 		// Start the session!
 		session_start();
 
-		// Set the new data
-		$this->set($vars);
+	}
+
+	public function csrf_token_valid($token)
+	{
+		return $token == $this->get(Kohana::config('csrf.csrf_token'), false);
+	}
+
+	/**
+	 * Get the session id.
+	 *
+	 * @return  string
+	 */
+	public function id()
+	{
+		if(PHP_SAPI == 'cli') {
+			return "";
+		}
+		return session_id();
 	}
 
 	/**
