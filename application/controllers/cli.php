@@ -16,10 +16,9 @@ class Cli_Controller extends Controller {
 
 	public function __construct()
 	{
-		// Only allow cli access to this controller
 		if (PHP_SAPI !== "cli") {
-			// The next line calls exit();, so no further code will be executed
 			url::redirect('default/index');
+			return;
 		}
 		parent::__construct();
 		$op5_auth = Op5Auth::instance();
