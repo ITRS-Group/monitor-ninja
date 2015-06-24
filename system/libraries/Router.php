@@ -113,9 +113,8 @@ class Router {
 					// Valid path
 					$found = TRUE;
 
-					// The controller must be a file that exists with the search path
-					// Allow break the $dir-jail with symlinks outside production.
-					// (not in production due to possible security issues)
+					// The controller must be a file that exists with the search path.
+					// Allows breaking the $dir-jail with symlinks.
 					if ($c = str_replace('\\', '/', realpath($dir.$controller_path.EXT))
 						AND is_file($c))
 					{
