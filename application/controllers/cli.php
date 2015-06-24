@@ -24,6 +24,7 @@ class Cli_Controller extends Controller {
 		$op5_auth = Op5Auth::instance();
 		$op5_auth->write_close();
 		$op5_auth->force_user(new Op5User_AlwaysAuth());
+		$this->auto_render=false;
 	}
 
 	/**
@@ -64,7 +65,6 @@ class Cli_Controller extends Controller {
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
-		$this->auto_render=false;
 		$cli_access = Kohana::config('config.cli_access');
 
 		if (empty($cli_access)) {
@@ -153,7 +153,6 @@ class Cli_Controller extends Controller {
 			die("illegal call\n");
 		}
 
-		$this->auto_render=false;
 		$cli_access = Kohana::config('config.cli_access');
 
 		if (empty($cli_access)) {
@@ -163,8 +162,10 @@ class Cli_Controller extends Controller {
 		}
 
 		$params = $this->_parse_parameters();
-		if (!isset($params['page']) || !isset($params['name']) || !isset($params['friendly_name']))
-			die("Usage: {$params[0]} {$params[1]} --page <page> --name <name> --friendly_name <friendly_name>\n");
+		if (!isset($params['page']) || !isset($params['name']) || !isset($params['friendly_name'])) {
+			echo "Usage: {$params[0]} {$params[1]} --page <page> --name <name> --friendly_name <friendly_name>\n";
+			exit(1);
+		}
 
 		Ninja_widget_Model::install($params['page'], $params['name'], $params['friendly_name']);
 	}
@@ -174,7 +175,6 @@ class Cli_Controller extends Controller {
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
-		$this->auto_render=false;
 		$cli_access = Kohana::config('config.cli_access');
 
 		if (empty($cli_access)) {
@@ -184,8 +184,10 @@ class Cli_Controller extends Controller {
 		}
 
 		$params = $this->_parse_parameters();
-		if (!isset($params['from']) || !isset($params['to']))
-			die("Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n");
+		if (!isset($params['from']) || !isset($params['to'])) {
+			echo "Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n";
+			exit(1);
+		}
 
 		Ninja_widget_Model::rename_widget($params['from'], $params['to']);
 	}
@@ -195,7 +197,6 @@ class Cli_Controller extends Controller {
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
-		$this->auto_render=false;
 		$cli_access = Kohana::config('config.cli_access');
 
 		if (empty($cli_access)) {
@@ -205,8 +206,10 @@ class Cli_Controller extends Controller {
 		}
 
 		$params = $this->_parse_parameters();
-		if (!isset($params['from']) || !isset($params['to']))
-			die("Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n");
+		if (!isset($params['from']) || !isset($params['to'])) {
+			echo "Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n";
+			exit(1);
+		}
 
 		Ninja_widget_Model::rename_friendly_widget($params['from'], $params['to']);
 	}
@@ -221,7 +224,6 @@ class Cli_Controller extends Controller {
 		if (PHP_SAPI !== 'cli') {
 			die("illegal call\n");
 		}
-		$this->auto_render=false;
 		$cli_access = Kohana::config('config.cli_access');
 
 		if (empty($cli_access)) {
