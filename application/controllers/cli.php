@@ -27,14 +27,13 @@ class Cli_Controller extends Controller {
 	}
 
 	/**
-	 * Parse input data from commandline and stores in an array
-	 * An equivalent to getopt() but easier for us in this environment
+	 * Parse input data from commandline and stores in an array, equivalent
+	 * to getopt().
 	 */
 	private function _parse_parameters($noopt = array())
 	{
 		$result = array();
 		$params = $GLOBALS['argv'];
-		// could use getopt() here (since PHP 5.3.0), but it doesn't work relyingly
 		reset($params);
 		while (list($tmp, $p) = each($params)) {
 			if ($p{0} == '-') {
