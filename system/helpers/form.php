@@ -38,9 +38,10 @@ class form {
 			$hidden["csrf_token"] = Session::instance()->get(Kohana::config('csrf.csrf_token'));
 		}
 
-		if ($action === NULL)
+		if (!$action)
 		{
 			// Use the current URL as the default action
+			// Works with open(), open('') and open(null)
 			$action = url::site(Router::$complete_uri);
 		}
 		elseif (strpos($action, '://') === FALSE)
