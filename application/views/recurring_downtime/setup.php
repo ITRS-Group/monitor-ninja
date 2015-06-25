@@ -8,16 +8,18 @@
 		}
 	?>
 </div>
-<?php
-echo form::open('', array('class' => 'report-page-setup', 'id' => "setup_form"));
-?>
+<?php echo form::open(null, array(
+	'method' => 'post',
+	'class' => 'report-page-setup',
+	'id' => 'setup_form'
+)); ?>
 	<div class="report-block">
 		<h2><?php echo _('Report Mode'); ?></h2>
 		<hr/>
 <?php	if (isset($schedule_id) && !empty($schedule_id)) {
 			# show link to create new recurring schedule
 			echo '&nbsp'.html::anchor('recurring_downtime/', _('Add New Downtime Schedule')).'<br /><br />';
-			form::hidden('schedule_id', $schedule_id);
+			echo form::hidden('schedule_id', $schedule_id);
 		}
 ?>
 		<table class="setup-tbl obj_selector">

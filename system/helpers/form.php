@@ -32,7 +32,7 @@ class form {
 
 		$method = strtolower($attr['method']);
 
-		if (in_array($attr['method'], array('post', 'put', 'delete'))) {
+		if (in_array(strtolower($attr['method']), array('post', 'put', 'delete'), true)) {
 			// Get or generate CSRF/XSRF token for all methods that would alter
 			// server state
 			$hidden["csrf_token"] = Session::instance()->get(Kohana::config('csrf.csrf_token'));

@@ -1240,10 +1240,14 @@ listview_renderer_table.recurring_downtimes = {
 			cell.append(icon16('edit',
 				_('Edit schedule'),
 				link('recurring_downtime/index/' + args.obj.id)
+					.attr('title', 'Edit schedule')
 			));
 			cell.append(icon16('delete-doc',
 				_('Delete schedule'),
-				link('recurring_downtime/delete/').data('recurring-id', args.obj.id).addClass('recurring_delete')
+				link('recurring_downtime/delete/')
+					.data('recurring-id', args.obj.id)
+					.addClass('recurring_delete')
+					.attr('title', 'Delete schedule')
 			));
 			return cell;
 		}
