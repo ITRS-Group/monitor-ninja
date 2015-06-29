@@ -44,7 +44,7 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Availability" menu
-		When I click "Setup Availability Report"
+		When I click "Create Availability Report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I click "Show report"
@@ -114,7 +114,7 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Availability" menu
-		When I click "Setup Availability Report"
+		When I click "Create Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
@@ -140,7 +140,7 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I enter "9" into "Jan"
@@ -210,7 +210,7 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
@@ -237,7 +237,7 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -283,7 +283,7 @@ Feature: Scheduled reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"

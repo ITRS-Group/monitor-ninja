@@ -14,7 +14,7 @@
     $max_filters = 6;
 
     $menu->set(sprintf('Report.%s', $label), null, $order, $icon);
-    $menu->set(sprintf('Report.%s.Setup %s Report', $label, $label), $index, 0, $icon);
+    $menu->set(sprintf('Report.%s.Create %s Report', $label, $label), $index, 0, $icon);
 
     $count = 0;
     foreach ($it as $report) {

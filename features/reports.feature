@@ -8,11 +8,11 @@ Feature: Reports
 		Given I am on the Host details page
 		When I hover over the "Report" menu
 		When I hover over the "SLA" menu
-		And I click "Setup SLA Report"
+		And I click "Create SLA Report"
 		Then all helptexts should be defined
 		When I hover over the "Report" menu
 		When I hover over the "Availability" menu
-		And I click "Setup Availability Report"
+		And I click "Create Availability Report"
 		Then all helptexts should be defined
 		When I hover over the "Report" menu
 		When I hover over the "Alert Summary" menu
@@ -33,7 +33,7 @@ Feature: Reports
 		Given I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
-		And I click "Setup Availability Report"
+		And I click "Create Availability Report"
 		And I select "Custom" from "Reporting period"
 
 		And I click css "#cal_start"
