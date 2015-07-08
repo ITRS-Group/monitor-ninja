@@ -1,5 +1,18 @@
 <?php
 
+Event::add('ninja.logged_in', function () {
+
+	if (PHP_SAPI === 'cli') {
+		return;
+	}
+
+	$token = Session::instance()->get(Kohana::config('csrf.csrf_token'), false);
+	if ($token === false) {
+		Session::instance()->set(Kohana::config('csrf.csrf_token'), text::random(41));
+	}
+
+});
+
 Event::add('system.pre_controller', function() {
 
 	if ((PHP_SAPI === 'cli') || (!in_array($_SERVER['REQUEST_METHOD'], array('POST', 'PUT', 'DELETE')))) {
