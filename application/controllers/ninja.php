@@ -56,18 +56,15 @@ class Ninja_Controller extends Template_Controller {
 		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
 		$this->template->current_skin = $this->get_current_user_skin();
 
+		$self = $this;
+		Event::add('ninja.menu.setup', function () use ($self) {
+			$self->template->menu = Event::$data;
+		});
+
 		# Load session library
 		# If any current session data exists, it will become available.
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
-		$this->template->menu = new Menu_Model();
-
-		$this->template->menu->set('Monitor', null, 1, 'icon-16 x16-monitoring', array('style' => 'padding-top: 8px'))->get('Monitor')
-			->set('Tactical Overview', 'tac', 0, 'icon-16 x16-tac')
-			->set('Network Outages', 'outages', 1, 'icon-16 x16-outages')
-			->set('NagVis', 'nagvis/nagvis', null, 'icon-16 x16-nagvis');
-
-		Event::run('ninja.menu.setup', $this->template->menu);
 
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
