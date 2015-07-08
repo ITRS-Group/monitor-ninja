@@ -81,45 +81,14 @@ class Cli_Controller extends Controller {
 			$reports = $obj->get_all_saved();
 			foreach ($reports as $report_id => $_) {
 				$report_data = Report_options::setup_options_obj($report_type, array('report_id' => $report_id));
-				// The report might use the magical "All" string, instead of an array, in which case we're done
-				if (!is_array($report_data['objects']))
-					continue;
-				if ($report_data['report_type'] === 'services' && $type === 'host') {
-					$savep = false;
-					foreach ($report_data['objects'] as $idx => $name) {
-						foreach ($report_data['objects'] as $idx => $svc) {
-							$parts = explode(';', $svc);
-							if ($parts[0] === $old_name) {
-								if($new_name) {
-									// rename
-									$report_data['objects'][$idx] = $new_name.';'.$parts[1];
-								} else {
-									// delete
-									unset($report_data['objects'][$idx]);
-								}
-								$savep = true;
-							}
-						}
-					}
-					if ($savep) {
-						$report_data->save();
-					}
-				}
-				if ($report_data['report_type'] != $type . 's') {
-					continue;
-				}
-				$key = array_search($old_name, $report_data['objects']);
-				if ($key === false) {
-					continue;
-				}
-				if($new_name) {
-					// rename
-					$report_data['objects'][$key] = $new_name;
+				if($new_name !== null) {
+					$needs_save = $report_data->rename_object($type, $old_name, $new_name);
 				} else {
-					// delete
-					unset($report_data['objects'][$key]);
+					$needs_save = $report_data->remove_object($type, $old_name);
 				}
-				$report_data->save();
+				if($needs_save) {
+					$report_data->save();
+				}
 			}
 		}
 	}

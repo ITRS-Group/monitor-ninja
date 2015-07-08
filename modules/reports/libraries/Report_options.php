@@ -734,6 +734,84 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		return $n_excluded != $n_possible;
 	}
 
+	/**
+	 * Call @see save() based if this method returns true and you want to
+	 * persist the change.
+	 *
+	 * @param $object_type string (such as 'service')
+	 * @param $old_name string
+	 * @return boolean did any changes take place? is there a need to save?
+	 */
+	function remove_object($object_type, $old_name) {
+		if($this['objects'] === self::ALL_AUTHORIZED) {
+			return false;
+		}
+		// work on a copy since we're using ArrayAccess
+		$objects = $this['objects'];
+		$changed = false;
+		if($this['report_type'] === 'services' && $object_type === 'host') {
+			foreach($this['objects'] as $index => $name) {
+				$parts = explode(';', $name);
+				if ($parts[0] === $old_name) {
+					unset($objects[$index]);
+					$changed = true;
+				}
+			}
+			$this['objects'] = $objects;
+			return $changed;
+		}
+
+		if($this['report_type'] != $object_type . 's') {
+			return false;
+		}
+		$key = array_search($old_name, $objects);
+		if($key === false) {
+			return false;
+		}
+		unset($objects[$key]);
+		$this['objects'] = $objects;
+		return true;
+	}
+
+	/**
+	 * Call @see save() based if this method returns true and you want to
+	 * persist the change.
+	 *
+	 * @param $object_type string (such as 'service')
+	 * @param $old_name string
+	 * @param $new_name string
+	 * @return boolean did any changes take place? is there a need to save?
+	 */
+	function rename_object($object_type, $old_name, $new_name) {
+		if($this['objects'] === self::ALL_AUTHORIZED) {
+			return false;
+		}
+		// work on a copy since we're using ArrayAccess
+		$objects = $this['objects'];
+		$changed = false;
+		if($this['report_type'] === 'services' && $object_type === 'host') {
+			foreach($this['objects'] as $index => $name) {
+				$parts = explode(';', $name);
+				if ($parts[0] === $old_name) {
+					$objects[$index] = $new_name.';'.$parts[1];
+					$changed = true;
+				}
+			}
+			$this['objects'] = $objects;
+			return $changed;
+		}
+		if($this['report_type'] != $object_type . 's') {
+			return false;
+		}
+		$key = array_search($old_name, $objects);
+		if($key === false) {
+			return false;
+		}
+		$objects[$key] = $new_name;
+		$this['objects'] = $objects;
+		return true;
+	}
+
 	/** Required by Iterator */
 	function rewind() { reset($this->options); }
 	/** Required by Iterator */
