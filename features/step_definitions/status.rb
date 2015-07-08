@@ -34,7 +34,7 @@ Then /^all helptexts should be defined$/ do
 end
 
 When /^I hover the branding$/ do
-  page.find('a[title="branding"]').hover
+  page.find('a[data-menu-id="branding"]').hover
 end
 
 When /^I reload the page$/ do

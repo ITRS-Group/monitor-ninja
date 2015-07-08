@@ -32,7 +32,6 @@
 			if (is_null($menu->get_href())) {
 
 				$format = '<a%s>%s<span>%s</span></a>';
-				$attr['title'] = $attr['data-menu-id'];
 
 			} else {
 
@@ -43,7 +42,6 @@
 					$href = url::base(true) . $href;
 				}
 
-				$attr['title'] = $menu->get_label();
 				$attr['href'] = $href;
 
 			}
