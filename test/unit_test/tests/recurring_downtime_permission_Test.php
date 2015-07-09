@@ -33,10 +33,12 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$this->assertCount(0, $res);
 		$res = $db->query("SELECT * FROM recurring_downtime_objects");
 		$this->assertCount(0, $res);
+		op5objstore::instance()->mock_clear();
 	}
 
 	public function setUp()
 	{
+		op5objstore::instance()->mock_clear();
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
 		$this->created = array();
 
