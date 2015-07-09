@@ -45,7 +45,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		Then "Standard" should be checked
 		And I should see "Standard type"
 		And I should see "Items to show"
@@ -71,7 +71,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I click "Show report"
 		Then I should see "Please select what objects to base the report on"
@@ -82,7 +82,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "EmptyGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "EmptyGroup"
@@ -95,7 +95,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Servicegroups" from "Report type"
 		And I select "empty" from the multiselect "objects_tmp"
@@ -109,7 +109,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Hosts" from "Report type"
 		And I select "win-server1" from the multiselect "objects_tmp"
@@ -158,7 +158,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Hosts" from "Report type"
 		And I select "win-server1" from the multiselect "objects_tmp"
@@ -206,7 +206,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Services" from "Report type"
 		And I select "win-server1;PING" from the multiselect "objects_tmp"
@@ -255,7 +255,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Services" from "Report type"
 		And I select "win-server1;PING" from the multiselect "objects_tmp"
@@ -310,7 +310,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;System Load" from the multiselect "objects_tmp"
@@ -367,7 +367,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -411,7 +411,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "WindowsServers" from the multiselect "objects_tmp"
@@ -462,7 +462,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "MixedGroup" from the multiselect "objects_tmp"
@@ -512,7 +512,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
@@ -560,7 +560,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
@@ -610,7 +610,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -640,7 +640,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I choose "Custom"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -681,7 +681,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -716,7 +716,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
@@ -732,7 +732,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I select "Most recent hard alerts" from "Standard type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -742,7 +742,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I select "Most recent hard host alerts" from "Standard type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -752,7 +752,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I select "Most recent hard host alerts" from "Standard type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -762,7 +762,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I select "Top hard alert producers" from "Standard type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -772,7 +772,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I select "Top hard host alert producers" from "Standard type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -782,7 +782,7 @@ Feature: Summary reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Setup Summary Report"
+		When I click "Create Summary Report"
 		And I select "Top hard service alert producers" from "Standard type"
 		And I click "Show report"
 		Then I should see "Top alert producers"

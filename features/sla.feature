@@ -41,7 +41,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
@@ -53,7 +53,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "EmptyGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "EmptyGroup"
 		When I enter "9" into "Jan"
@@ -68,7 +68,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "empty" from the multiselect "objects_tmp"
 		Then "objects" should have option "empty"
@@ -83,7 +83,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I click "Show report"
@@ -95,7 +95,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1"
@@ -114,7 +114,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Hosts" from "Report type"
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		And I select "win-server1" from the multiselect "objects_tmp"
@@ -140,7 +140,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1;PING"
@@ -159,7 +159,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		And I select "linux-server1;System Load" from the multiselect "objects_tmp"
@@ -186,7 +186,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Services" from "Report type"
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		And I select "linux-server2;System Load" from the multiselect "objects_tmp"
@@ -215,7 +215,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I enter "9,99" into "Jan"
@@ -238,7 +238,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "WindowsServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -265,7 +265,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		And I select "MixedGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -292,7 +292,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		Then "objects" should have option "pings"
@@ -319,7 +319,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		And I select "empty" from the multiselect "objects_tmp"
@@ -348,7 +348,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I select "Custom" from "Reporting period"
@@ -374,7 +374,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I select "Last 12 months" from "Reporting period"
@@ -398,7 +398,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		Then "Saved reports" shouldn't have option "saved test report"
 		When I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
@@ -438,7 +438,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		And I click "Setup SLA Report"
+		And I click "Create SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -474,7 +474,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		And I click "Setup SLA Report"
+		And I click "Create SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -500,7 +500,7 @@ Feature: SLA reports
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		And I click "Setup SLA Report"
+		And I click "Create SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -512,7 +512,7 @@ Feature: SLA reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Setup SLA Report"
+		When I click "Create SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
