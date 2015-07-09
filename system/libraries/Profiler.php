@@ -23,7 +23,6 @@ class Profiler {
 	public function __construct()
 	{
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-			Kohana::log('debug', 'Skipping init of Profiler, since the current request is ajaxish');
 			return;
 		}
 		// Add all built in profiles to event
