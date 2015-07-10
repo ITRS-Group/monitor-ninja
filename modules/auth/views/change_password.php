@@ -1,16 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-	if ( isset( $error_msg ) ) {
+	if (isset($error_msg)) {
 		echo $error_msg;
 	}
 
-	if ( isset( $status_msg ) ) {
-		if ( isset( $successful ) ) {
+	if ($status_msg) {
+		if ($successful) {
 			echo "<div class=\"alert notice\">$status_msg</div>";
 		} else {
-			if ( strlen( $status_msg ) >= 1 ) {
-				echo "<div class=\"alert error\">$status_msg</div>";
-			}
+			echo "<div class=\"alert error\">$status_msg</div>";
 		}
 	}
 
