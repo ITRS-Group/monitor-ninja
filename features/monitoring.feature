@@ -383,7 +383,7 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Submit a host comment"
-		And I enter "A comment for this host" into "cmd_param[comment]"
+		And I enter "A comment for this host" into "comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
@@ -663,7 +663,7 @@ Feature: Monitoring
 		Given I am on the Service details page
 		When I click "System Load"
 		And I click "Submit a service comment"
-		And I enter "Zombocom" into "cmd_param[comment]"
+		And I enter "Zombocom" into "comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"

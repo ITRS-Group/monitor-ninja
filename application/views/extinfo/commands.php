@@ -28,7 +28,6 @@ if( $object instanceof Host_Model ) {
 			<th colspan="2"><?php echo ($type == 'host' ? _('Host Commands') : _('Service Commands')) ?></th>
 		</tr>
 		<?php # only for hosts!
-			$i =0;
 			if ($type == 'host' && Kohana::config('nagvis.nagvis_real_path', false, false)) {
 		?>
 		<tr>
@@ -37,7 +36,12 @@ if( $object instanceof Host_Model ) {
 			</td>
 			<td class="bt"><?php echo html::anchor('nagvis/automap/host/'.$host->get_name(), _('Locate host on map')) ?></td>
 		</tr>
-		<?php } ?>
+		<?php }
+		// TODO this view/list of commands needs to be generated from
+		// Object_Model::list_commands(), otherwise we will never get
+		// rid of duplication (like the mayi resource)
+		if(!FEATURE_FLAG_6761 || (FEATURE_FLAG_6761 && op5mayi::instance()->run("monitor.monitoring.".$object->get_table().".commands.add_comment:create"))) {
+		?>
 		<tr>
 			<?php
 				$img = 'add-comment';
@@ -48,9 +52,17 @@ if( $object instanceof Host_Model ) {
 				<span class="icon-16 x16-<?php echo $img ?>" title="<?php echo $label ?>"></span>
 			</td>
 			<td>
-				<?php echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label); ?>
+
+<?php
+				if(FEATURE_FLAG_6761) {
+					echo nagioscmd::cmd_link($object, 'add_comment', $label);
+				} else {
+					echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label);
+				}
+?>
 			</td>
 		</tr>
+		<?php } ?>
 		<tr>
 			<?php
 			if ($object->get_active_checks_enabled()) {

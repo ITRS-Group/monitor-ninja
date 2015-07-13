@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Sends external commands to Nagios command FIFO
+ * Gives you data in preparation to be sent to Naemon as commands.
+ * Handles Naemon objects, metadata about commands and their arguments,
+ * authorization.. you name it.
  */
 class Execute_Command_Model extends Model
 {

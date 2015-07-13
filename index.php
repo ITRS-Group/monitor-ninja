@@ -7,6 +7,9 @@
  * @see http://kohanaphp.com
  */
 
+// zero effort feature flag method, will be overwritten when Ninja is upgraded
+define('FEATURE_FLAG_6761', true);
+
 /**
  * Define the website environment status. When this flag is set to TRUE, some
  * module demonstration controllers will result in 404 errors. For more information

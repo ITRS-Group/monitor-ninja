@@ -1229,6 +1229,27 @@ class nagioscmd
 		return $result;
 	}
 
+	/**
+	 * @param $object Object_Model
+	 * @param $command string
+	 * @param $text string
+	 * @return string|null
+	 */
+	static function cmd_link(Object_Model $object, $command, $text) {
+		if(!array_key_exists($command, $object->list_commands())) {
+			return null;
+		}
+		return html::anchor(
+			sprintf(
+				"exec_cmd/index?command=%s&table=%s&object=%s",
+				urlencode($command),
+				urlencode($object->get_table()),
+				urlencode($object->get_key())
+			),
+			html::specialchars($text)
+		);
+	}
+
 
 	/**
 	 * Helper function to save us from typing
