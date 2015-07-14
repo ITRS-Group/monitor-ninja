@@ -61,6 +61,7 @@
   var request = null;
   var timer = null;
 
+  var abort = false;
   var Popover = {
 
     /**
@@ -165,6 +166,12 @@
      */
     display: function(node, target, namespace){
 
+      if (abort) {
+        abort = false;
+        return;
+      }
+
+      abort = false;
       clearTimeout(timer);
       Popover.adjust(target, node);
 
@@ -263,6 +270,7 @@
       if(request && request.abort)
         request.abort();
 
+      abort = true;
       request = null;
       Popover.deactivate();
 
