@@ -1,0 +1,41 @@
+.popup-about {
+  text-align: center;
+}
+
+.popup-about-img {
+  margin: 32px 64px;
+}
+
+.popup-about-table {
+  margin-top: 16px;
+  border-collapse: collapse;
+}
+
+.popup-about-row {
+  border: none;
+}
+
+.popup-about-row.popup-about-row-links {
+  border: none;
+  border-top: 16px solid #fff;
+}
+
+.popup-about-row-links td {
+  border: none;
+  border-top: 1px solid #ddd;
+  background: #eee;
+  padding: 8px;
+}
+
+.popup-about-cell {
+  padding: 8px 32px;
+  border: none;
+}
+
+.popup-about-row-links a {
+  display: inline-block;
+  border: none;
+  padding: 16px;
+  font-size: 11pt;
+  color: #3ba2c6;
+}
