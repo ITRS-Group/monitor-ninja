@@ -19,11 +19,11 @@
 		?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td>
-				<a class="view" href="<?php echo $baseurl . 'backup/view/' . $file; ?>" style="border: 0px"><span class="icon-16 x16-backup-view"></span></a>
-				<a class="restore" href="<?php echo $baseurl . 'backup/restore/' . $file; ?>" style="border: 0px"><span class="icon-16 x16-backup-restore"></span></a>
-				<a class="delete" href="<?php echo $baseurl . 'backup/delete/' . $file; ?>" style="border: 0px"><span class="icon-16 x16-backup-delete"></span></a>
+				<a class="view" href="<?php echo $baseurl . 'backup/view/' . $file; ?>" style="border: 0px" title="View Backup"><span class="icon-16 x16-backup-view"></span></a>
+				<a class="restore" href="<?php echo $baseurl . 'backup/restore/' . $file; ?>" style="border: 0px" title="Restore Backup"><span class="icon-16 x16-backup-restore"></span></a>
+				<a class="delete" href="<?php echo $baseurl . 'backup/delete/' . $file; ?>" style="border: 0px" title="Delete Backup"><span class="icon-16 x16-backup-delete"></span></a>
 			</td>
-			<td><a class="download" href="<?php echo $baseurl . 'backup/download/' . $file; ?>" target="_blank"><?php echo $file; ?></a></td>
+			<td><a class="download" href="<?php echo $baseurl . 'backup/download/' . $file; ?>" target="_blank" title="Download backup"><?php echo $file; ?></a></td>
 		</tr>
 	<?php } ?>
 	</tbody>
