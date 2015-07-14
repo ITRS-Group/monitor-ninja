@@ -48,3 +48,11 @@ Then /^I should see menu items:$/ do |table|
     page.find('a span', :text => row[0]).visible?
   end
 end
+
+When /^I have the csrf token "([^\"]*)"$/ do |val|
+  evaluate_script("$('input[name=\"csrf_token\"]').val(\"#{val}\")");
+end
+
+When /^I have no csrf token$/ do
+  evaluate_script("$('input[name=\"csrf_token\"]').remove()");
+end
