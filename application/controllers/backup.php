@@ -133,7 +133,7 @@ class Backup_Controller extends Ninja_Controller {
 
 		/* Prevent buffering and rendering */
 		$this->auto_render = false;
-		download::headers($file . self::BACKUP_EXTENSION, filesize($file_path));
+		download::headers($file, filesize($file_path));
 
 		fpassthru($fp);
 		fclose($fp);
