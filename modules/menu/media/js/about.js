@@ -12,14 +12,15 @@ $(document).ready(function() {
       'autoDimensions': true,
       'width': 480,
       'height': 10
-  }).click(function () {
+  }).click(function (ev) {
+    ev.preventDefault();
     $('#fancybox-outer').css({
       'width': '480px',
       'background-color': '#fff'
     });
     $('#fancybox-content')
       .text('Loading about...')
-      .load(_site_domain + 'index.php/menu/about', function() {
+      .load($(this).attr('href'), function() {
         $('#fancybox-content').css({'width': '480px', 'border-width': '0'})
         $.fancybox.center();
         $('#fancybox-close').show();

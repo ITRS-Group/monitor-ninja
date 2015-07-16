@@ -6,7 +6,7 @@ Event::add('ninja.menu.setup', function () {
 
   $menu->set('Branding', null, 0, null, array('style' => 'padding-top: 2px'))
     ->get('Branding')->set_label(brand::get())
-    ->set('About', null, 0, 'icon-16 x16-op5', array('id' => 'open-about-button'))
+    ->set('About', 'menu/about', 0, 'icon-16 x16-op5', array('id' => 'open-about-button'))
     ->set('HTTP API', '/api/help', 3, 'icon-16 x16-op5', array('target' => '_blank'));
 
   Event::$data = $menu;
