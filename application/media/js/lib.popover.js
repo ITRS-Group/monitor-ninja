@@ -99,6 +99,7 @@
           rule: rule,
           handler: function(data, target){
             if(registry[data]) {
+              abort = false;
               Popover.display(registry[data], target);
               return;
             }
@@ -109,6 +110,7 @@
         });
       } else {
         Rules.push({rule: rule, handler: function(data, target){
+          Popover.abort();
           Popover.display(loading, target);
           handler();
         }});
