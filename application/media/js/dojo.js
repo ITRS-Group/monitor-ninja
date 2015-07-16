@@ -34,6 +34,8 @@
 					uh_prob_title = totals + ' unacknowledged host(s) in Down state!';
 					if (data.totals.host_state_down[1] > 0) {
 						shield_class = 'icon-16 x16-shield-critical';
+					} else if (data.totals.host_state_unreachable[1] > 0) {
+						shield_class = 'icon-16 x16-shield-unknown';
 					}
 				} else if (obj_type === 'service') {
 					totals = data.totals.service_all[1];
@@ -42,6 +44,8 @@
 						shield_class = 'icon-16 x16-shield-critical';
 					} else if (data.totals.service_state_warning[1] > 0) {
 						shield_class = 'icon-16 x16-shield-warning';
+					} else if (data.totals.service_state_unknown[1] > 0) {
+						shield_class = 'icon-16 x16-shield-unknown';
 					}
 				}
 
