@@ -4,117 +4,61 @@ $manifest = array_merge_recursive($manifest, array(
 	'monitor' => array(
 		'monitoring' => array(
 			'hosts' => array(
-				'commands' => array(
-					'acknowledge_problem' => array(
-						':create' => array()
-					),
-					'add_comment' => array(
-						':create' => array()
-					),
-					'disable_check' => array(
-						':create' => array()
-					),
-					'disable_service_checks' => array(
-						':create' => array()
-					),
-					'disable_service_notifications' => array(
-						':create' => array()
-					),
-					'enable_check' => array(
-						':create' => array()
-					),
-					'enable_service_checks' => array(
-						':create' => array()
-					),
-					'enable_service_notifications' => array(
-						':create' => array()
-					),
-					'process_check_result' => array(
-						':create' => array()
-					),
-					'remove_acknowledgement' => array(
-						':create' => array()
-					),
-					'schedule_check' => array(
-						':create' => array()
-					),
-					'schedule_downtime' => array(
-						':create' => array()
-					),
-					'schedule_service_checks' => array(
-						':create' => array()
-					),
-					'send_custom_notification' => array(
-						':create' => array()
-					),
-				),
+				':update' => array(
+					'commands' => array(
+						'acknowledge_problem' => array(),
+						'add_comment' => array(),
+						'disable_check' => array(),
+						'disable_service_checks' => array(),
+						'disable_service_notifications' => array(),
+						'enable_check' => array(),
+						'enable_service_checks' => array(),
+						'enable_service_notifications' => array(),
+						'process_check_result' => array(),
+						'remove_acknowledgement' => array(),
+						'schedule_check' => array(),
+						'schedule_downtime' => array(),
+						'schedule_service_checks' => array(),
+						'send_custom_notification' => array()
+					)
+				)
 			),
 			'services' => array(
-				'commands' => array(
-					'add_comment' => array(
-						':create' => array()
-					),
-					'disable_check' => array(
-						':create' => array()
-					),
-					'process_check_result' => array(
-						':create' => array()
-					),
-					'schedule_check' => array(
-						':create' => array()
-					),
-					'schedule_downtime' => array(
-						':create' => array()
-					),
-					'send_custom_notification' => array(
-						':create' => array()
-					),
-				),
+				':update' => array(
+					'commands' => array(
+						'add_comment' => array(),
+						'disable_check' => array(),
+						'process_check_result' => array(),
+						'schedule_check' => array(),
+						'schedule_downtime' => array(),
+						'send_custom_notification' => array()
+					)
+				)
 			),
 			'hostgroup' => array(
-				'commands' => array(
-					'disable_service_checks' => array(
-						':create' => array()
-					),
-					'disable_service_notifications' => array(
-						':create' => array()
-					),
-					'enable_service_checks' => array(
-						':create' => array()
-					),
-					'enable_service_notifications' => array(
-						':create' => array()
-					),
-					'schedule_host_downtime' => array(
-						':create' => array()
-					),
-					'schedule_service_downtime' => array(
-						':create' => array()
-					),
-				),
+				':update' => array(
+					'commands' => array(
+						'disable_service_checks' => array(),
+						'disable_service_notifications' => array(),
+						'enable_service_checks' => array(),
+						'enable_service_notifications' => array(),
+						'schedule_host_downtime' => array(),
+						'schedule_service_downtime' => array()
+					)
+				)
 			),
 			'servicegroup' => array(
-				'commands' => array(
-					'disable_service_checks' => array(
-						':create' => array()
-					),
-					'disable_service_notifications' => array(
-						':create' => array()
-					),
-					'enable_service_checks' => array(
-						':create' => array()
-					),
-					'enable_service_notifications' => array(
-						':create' => array()
-					),
-					'schedule_host_downtime' => array(
-						':create' => array()
-					),
-					'schedule_service_downtime' => array(
-						':create' => array()
-					),
-				),
-			),
+				':update' => array(
+					'commands' => array(
+						'disable_service_checks' => array(),
+						'disable_service_notifications' => array(),
+						'enable_service_checks' => array(),
+						'enable_service_notifications' => array(),
+						'schedule_host_downtime' => array(),
+						'schedule_service_downtime' => array()
+					)
+				)
+			)
 		)
 	)
 ));
