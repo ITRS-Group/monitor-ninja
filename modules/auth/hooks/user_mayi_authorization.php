@@ -70,7 +70,9 @@ system_information              monitor.monitoring.performance:read             
 
 configuration_information       monitor.monitoring.users:read.local.configuration             true
 access_rights                   monitor.monitoring.users:                                     true
+access_rights                   monitor.system.users:                                         true
 access_rights                   monitor.monitoring.usergroups:                                true
+access_rights                   monitor.system.usergroups:                                    true
 
 pnp                             monitor.monitoring.combined_graphs:                           true
 pnp                             monitor.monitoring.graph_collections:                         true
