@@ -1,6 +1,6 @@
 <?php
 
-class ORMRootGenerator extends class_generator {
+class ORMRootObjectGenerator extends class_generator {
 
 	private $structure;
 

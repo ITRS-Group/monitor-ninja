@@ -1,6 +1,6 @@
 <?php
 
-class ORMRootSetGenerator extends class_generator {
+class ORMRootObjectSetGenerator extends class_generator {
 	private $objectclass;
 
 	public function __construct() {

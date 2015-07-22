@@ -6,8 +6,9 @@ abstract class js_class_generator {
 	protected $fp;
 	protected $indent_lvl = array();
 	protected $class_suffix = '';
+	protected $moduledir = false;
 	protected $class_dir = 'js';
-	protected $class_basedir = '.';
+	protected $class_basedir = false;
 	protected $classname;
 
 	public function generate( $skip_generated_note = false ) {
@@ -33,6 +34,10 @@ abstract class js_class_generator {
 		$this->class_dir = $class_dir;
 	}
 
+	public function set_moduledir( $moduledir ) {
+		$this->moduledir = $moduledir;
+	}
+
 	public function set_basedir( $class_basedir ) {
 		$this->class_basedir = $class_basedir;
 	}
@@ -46,7 +51,19 @@ abstract class js_class_generator {
 	}
 
 	public function get_filename() {
-		return $this->class_basedir . DIRECTORY_SEPARATOR . $this->class_dir . DIRECTORY_SEPARATOR . $this->classname . '.js';
+		$filename = $this->classname;
+
+		$path = '';
+		if($this->moduledir !== false) {
+			$path .= $this->moduledir . DIRECTORY_SEPARATOR;
+		}
+		if($this->class_basedir !== false) {
+			$path .= $this->class_basedir . DIRECTORY_SEPARATOR;
+		}
+		if($this->class_dir !== false) {
+			$path .= $this->class_dir . DIRECTORY_SEPARATOR;
+		}
+		return $path . $filename . '.js';
 	}
 
 	public function init_class( $args = array() ) {

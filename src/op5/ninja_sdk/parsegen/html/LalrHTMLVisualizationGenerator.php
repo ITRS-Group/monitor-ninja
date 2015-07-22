@@ -28,11 +28,14 @@ class LalrHTMLVisualizationGenerator {
 		}
 	}
 
-	public function generate() {
-		if( !is_dir( $this->dir ) && !mkdir( $this->dir, 0755, true ) )
+	public function generate($moduledir) {
+		$htmldir = $moduledir . DIRECTORY_SEPARATOR . $this->dir;
+		if( !is_dir( $htmldir ) && !mkdir( $htmldir, 0755, true ) )
 			throw new GeneratorException( "Could not create dir $class_dir" );
 
-		$this->fp = fopen( $this->dir . DIRECTORY_SEPARATOR . $this->filename.'.html', 'w' );
+		$filename = $htmldir . DIRECTORY_SEPARATOR . $this->filename.'.html';
+		printf("  -> %s\n", $filename);
+		$this->fp = fopen( $filename, 'w' );
 
 		ob_start( array( $this, 'write_block'), 1024 );
 		$this->build_html();

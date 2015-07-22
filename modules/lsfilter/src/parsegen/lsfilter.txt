@@ -1,3 +1,5 @@
+=LSFilter
+
 _whitespace /^(\s+)/
 _comment    /^(\/\*(?:[^\*]|\*[^\/])*\*\/)/
 

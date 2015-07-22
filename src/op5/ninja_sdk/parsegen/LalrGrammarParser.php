@@ -158,6 +158,14 @@ class LalrGrammarParser {
 			return $result;
 		}
 
+		/* Accept class name */
+		if( $this->acceptSym(array('=')) ) {
+			$name = $this->expectKeyword(false, false, true);
+			$result['class'] = $name;
+			$this->expectLinebreak();
+			return $result;
+		}
+
 		$name = $this->expectKeyword(false, false, true);
 
 		/* Token */
