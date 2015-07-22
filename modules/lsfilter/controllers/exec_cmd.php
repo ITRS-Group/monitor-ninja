@@ -48,62 +48,48 @@ class Exec_cmd_Controller extends Ninja_Controller {
 	 * Send a command for a specific object
 	 */
 	public function obj() {
-		// todo mayi
+		// TODO Don't use ORMException in this code...
 		// TODO maybe you don't wanna reuse the old view
 		$this->template->content = $this->add_view('command/commit');
 		$command = $this->input->post('c', false);
 		$table = $this->input->post('t', false);
 		$key = $this->input->post('o', false);
 
-		// validate input parameters presence
-		$errors = array();
-		if($command == false) {
-			$errors[] = 'Missing command (the c parameter)';
-		}
-		if($table == false) {
-			$errors[] = 'Missing table (the t parameter)';
-		}
-		if($key == false) {
-			$errors[] = 'Missing object name (the o parameter)';
-		}
-		if($errors) {
-			if(request::is_ajax()) {
-				return json::fail(array('error' => $errors));
-			}
-			$this->template->content->result = false;
-			$this->template->content->error = implode("<br>", $errors);
-		}
-
-		// validate table name
 		try {
+			// validate input parameters presence
+			$errors = array();
+			if($command == false) {
+				$errors[] = 'Missing command (the c parameter)';
+			}
+			if($table == false) {
+				$errors[] = 'Missing table (the t parameter)';
+			}
+			if($key == false) {
+				$errors[] = 'Missing object name (the o parameter)';
+			}
+
+			if($errors)
+				throw new ORMException(implode("<br>", $errors));
+
+			// validate table name
 			$pool = ObjectPool_Model::pool($table);
+
+			// validate object by primary key
+			$object = $pool->fetch_by_key($key);
+			if($object === false)
+				throw new ORMException("Could not find object '$key'", $table, false);
+
+			// validate command
+			$commands = $object->list_commands();
+			if(!array_key_exists($command, $commands))
+				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied", $table, false);
+
+			$mayi_action = $pool->all()->mayi_resource() . ':' . $commands[$command]['mayi_method'];
+			$this->_verify_access($mayi_action);
+
+
 		} catch(ORMException $e) {
 			$error_message = $e->getMessage();
-			if(request::is_ajax()) {
-				return json::fail(array('error' => $error_message));
-			}
-			$this->template->content->result = false;
-			$this->template->content->error = $error_message;
-			return;
-		}
-
-		// validate object by primary key
-		$object = $pool->fetch_by_key($key);
-		if($object === false) {
-			$error_message =  "Could not find object '$key'";
-			if(request::is_ajax()) {
-				return json::fail(array('error' => $error_message));
-			}
-			$this->template->content->result = false;
-			$this->template->content->error = $error_message;
-			return;
-		}
-
-		// TODO differentiate hg service and h service
-		// validate command
-		$commands = $object->list_commands();
-		if(!array_key_exists($command, $commands)) {
-			$error_message = "Tried to submit command '$command' on table '$table' but that command does not exist for that kind of objects. Aborting without any commands applied";
 			op5log::instance('ninja')->log('warning', $error_message);
 			if(request::is_ajax()) {
 				return json::fail(array('error' => $error_message));
@@ -113,17 +99,6 @@ class Exec_cmd_Controller extends Ninja_Controller {
 			return;
 		}
 
-		// validate mayi
-		if(isset($commands[$command]['mayi_resource']) && $commands[$command]['mayi_resource']) {
-			// the command specified its own mayi_resource
-			$this->_verify_access($commands[$command]['mayi_resource']);
-		} else {
-			// fallback to using the command name, avoids
-			// lengthy command definitions in the objects
-			// themselves
-			$this->_verify_access("monitor.monitoring.$table.commands.$command:create");
-		}
-
 
 		$params = array();
 		foreach($commands[$command]['parameters'] as $parameter => $type) {
@@ -131,6 +106,7 @@ class Exec_cmd_Controller extends Ninja_Controller {
 		}
 		// every command takes a reference to an error as its
 		// last argument
+		$error_string = "";
 		$params[] = &$error_string;
 
 		$result = call_user_func_array(array($object, $command), $params);
