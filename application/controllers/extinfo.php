@@ -635,7 +635,6 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 
 		$this->session->set('back_extinfo',$back_link);
