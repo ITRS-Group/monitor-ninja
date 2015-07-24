@@ -7,15 +7,9 @@ require_once( dirname(__FILE__).'/base/basehostgroup.php' );
  */
 class HostGroup_Model extends BaseHostGroup_Model {
 	/**
-	 * A list of column dependencies for custom columns
-	 */
-	static public $rewrite_columns = array(
-		'host_stats' => array('name'),
-		'service_stats' => array('name')
-	);
-
-	/**
 	 * Get statistics about the hosts in the group
+	 *
+	 * @ninja orm depend[] name
 	 */
 	public function get_host_stats() {
 		$set = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
@@ -71,6 +65,8 @@ class HostGroup_Model extends BaseHostGroup_Model {
 
 	/**
 	 * Get statistics about the services in the group
+	 *
+	 * @ninja orm depend[] name
 	 */
 	public function get_service_stats() {
 		$set = ServicePool_Model::all()->reduce_by('host.groups', $this->get_name(), '>=');

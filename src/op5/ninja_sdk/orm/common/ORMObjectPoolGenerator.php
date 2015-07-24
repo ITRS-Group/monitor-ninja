@@ -104,7 +104,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 			$this->write('}');
 		}
 		$this->write('}');
-		$this->write('$virtual_columns = array_keys('.$this->obj_class.'::$rewrite_columns);');
+		$this->write('$virtual_columns = array_keys('.$this->obj_class.'::rewrite_columns());');
 		$this->write('return array_merge($sub_columns, $raw_columns, $virtual_columns);');
 		$this->finish_function();
 	}
