@@ -163,13 +163,36 @@ class php_miner_statement extends php_miner_block {
 	public function get_docstring_tags() {
 		$raw_lines = explode( "\n", $this->docstring );
 
+		$lines = array_filter( array_map( function ($line) {
+			$line = trim( $line );
+			if ($line == '/**')
+				return false;
+			if ($line == '*/')
+				return false;
+			$line = ltrim( $line, '*' );
+			$line = ltrim( $line );
+			return $line;
+		}, $raw_lines ), function ($row) {
+			return $row !== false;
+		} );
+
 		$tags = array ();
-		foreach ( $raw_lines as $line ) {
-			$lineparts = explode( "@", $line, 2 );
-			if (count( $lineparts ) >= 2) {
-				$tags[] = trim( $lineparts[1] );
+		$curtag = false;
+		foreach ( $lines as $line ) {
+			if ((substr( $line, 0, 1 ) == '@' || $line == '') && $curtag !== false) {
+				$tags[] = implode( "\n", $curtag );
+				$curtag = false;
+			}
+			if (substr( $line, 0, 1 ) == '@') {
+				$line = substr( $line, 1 );
+				$curtag = array ();
+			}
+			if ($line != '' && $curtag !== false) {
+				$curtag[] = $line;
 			}
 		}
+		if ($curtag !== false)
+			$tags[] = implode( "\n", $curtag );
 		return $tags;
 	}
 }
