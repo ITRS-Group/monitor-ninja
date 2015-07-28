@@ -267,11 +267,11 @@ class php_miner_file extends php_miner_block {
 	private function __construct($tokens) {
 		$this->tokens = $tokens;
 		$this->position = 0;
-		$this->next_token();
-
 		$lines = array ();
-		while ( false !== ($line = $this->accept_statement()) ) {
-			$lines[] = $line;
+		if($this->next_token()) {
+			while ( false !== ($line = $this->accept_statement()) ) {
+				$lines[] = $line;
+			}
 		}
 
 		/* FIXME: expect end, otherwise don't set $this->valid */
