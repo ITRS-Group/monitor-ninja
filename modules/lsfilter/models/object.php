@@ -1,6 +1,5 @@
 <?php
-
-require_once( dirname(__FILE__).'/base/baseobject.php' );
+require_once (dirname( __FILE__ ) . '/base/baseobject.php');
 
 /**
  * Describes a single object from livestatus
@@ -45,23 +44,40 @@ abstract class Object_Model extends BaseObject_Model {
 	 * @return array
 	 */
 	public function get_custom_variables() {
-		return array();
+		return array ();
 	}
 
 	/**
+	 * Get the MayI resource related to this table
+	 */
+	abstract function mayi_resource();
+
+	/**
 	 * Get a list of commands related to the object
-	 *
 	 * This digs out the information from orm_command_doctags, which is
 	 * generated from the @ninja orm_command tags in corresponding classes
 	 *
+	 * @param $auth_filtered bool
+	 *        	true if filtered by permission, false otherwise
 	 * @return array
 	 */
-	public function list_commands() {
-		$orm_command = Module_Manifest_Model::get('orm_command_doctags');
-		$classname = strtolower(get_class($this));
-		if(!array_key_exists($classname, $orm_command))
-			return array();
-		return $orm_command[$classname];
+	public function list_commands($auth_filtered = true) {
+		$orm_command = Module_Manifest_Model::get( 'orm_command_doctags' );
+		$classname = strtolower( get_class( $this ) );
+		if (! array_key_exists( $classname, $orm_command ))
+			return array ();
+
+		$commands = $orm_command[$classname];
+
+		if ($auth_filtered) {
+			$mayi = op5MayI::instance();
+			$mayi_resource = $this->mayi_resource();
+			$commands = array_filter( $commands, function ($command) use($mayi, $mayi_resource) {
+				return $mayi->run( $mayi_resource . ':' . $command['mayi_method'] );
+			} );
+		}
+
+		return $commands;
 	}
 
 	/**
