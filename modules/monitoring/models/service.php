@@ -200,82 +200,17 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
-	 * All methods in this class that corresponds 1:1 to a command, such
-	 * as a Naemon command. Note that developers might have implemented
-	 * other methods that in turn call these; those methods are *not*
-	 * returned from this method (unless the method is overwritten). As
-	 * such, this method can be used for listing e.g. mayi resources.
-	 *
-	 *
-	 * @return array
-	 */
-	public function list_commands() {
-		return array (
-			'add_comment' =>
-			array(
-				'parameters' =>
-				array(
-					'comment' => 'string',
-				),
-				'description' => _("This command is used to add a comment for the specified service. If you work with other administrators, you may find it useful to share information about a host or service that is having problems if more than one of you may be working on it."),
-			),
-			'disable_check' =>
-			array (
-				'parameters' =>
-				array (
-				),
-				'description' => 'This command is used to disable active checks of a service.',
-				'mayi_resource' => '',
-			),
-			'process_check_result' =>
-			array (
-				'parameters' =>
-				array (
-					'return_code' => 'select',
-					'plugin_output' => 'string',
-				),
-				'description' => 'This command is used to submit a passive check result for a service.  It is particularly useful for resetting security-related services to OK states once they have been dealt with. ',
-				'mayi_resource' => '',
-			),
-			'schedule_check' =>
-			array (
-				'parameters' =>
-				array (
-					'check_time' => 'time',
-				),
-				'description' => 'This command is used to schedule the next check of a service.  Nagios will re-queue the service to be checked at the time you specify. If you select the <i>force check</i> option, Nagios will force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service. ',
-				'mayi_resource' => '',
-			),
-			'schedule_downtime' =>
-			array (
-				'parameters' =>
-				array (
-					'start_time' => 'time',
-					'end_time' => 'time',
-					'fixed' => 'bool',
-					'trigger_id' => 'select',
-					'duration' => 'duration',
-					'comment' => 'string',
-				),
-				'description' => 'This command is used to schedule downtime for a service.  During the specified downtime, Nagios will not send notifications out about the service. When the scheduled downtime expires, Nagios will send out notifications for this service as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>Y-m-d H:i:s</b> (<a href="http://php.net/manual/en/function.date.php">see explanation of date-letters</a>). option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when the service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed downtime. ',
-				'mayi_resource' => '',
-			),
-			'send_custom_notification' =>
-			array (
-				'parameters' =>
-				array (
-					'comment' => 'string',
-				),
-				'description' => 'This command is used to send a custom notification about the specified service.  Useful in emergencies when you need to notify admins of an issue regarding a monitored system or service. Custom notifications normally follow the regular notification logic in Nagios.  Selecting the <i>Forced</i> option will force the notification to be sent out, regardless of the time restrictions, whether or not notifications are enabled, etc.  Selecting the <i>Broadcast</i> option causes the notification to be sent out to all normal (non-escalated) and escalated contacts.  These options allow you to override the normal notification logic if you need to get an important message out. ',
-				'mayi_resource' => '',
-			),
-		);
-	}
-
-	/**
 	 * @param comment
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.add_comment
+	 * @ninja orm_command param[] string comment
+	 * @ninja orm_command description
+	 *     This command is used to add a comment for the specified service. If
+	 *     you work with other administrators, you may find it useful to share
+	 *     information about a host or service that is having problems if more
+	 *     than one of you may be working on it.
 	 */
 	public function add_comment($comment, &$error_string=NULL) {
 		$error_string = null;
@@ -298,6 +233,10 @@ class Service_Model extends BaseService_Model {
 	/**
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.disable_check
+	 * @ninja orm_command description
+	 *     This command is used to disable active checks of a service.
 	 */
 	public function disable_check(&$error_string=NULL) {
 		$error_string = null;
@@ -318,6 +257,14 @@ class Service_Model extends BaseService_Model {
 	 * @param return_code
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.process_check_result
+	 * @ninja orm_command param[] string plugin_output
+	 * @ninja orm_command param[] select return_code
+	 * @ninja orm_command description
+	 *     This command is used to submit a passive check result for a service.
+	 *     It is particularly useful for resetting security-related services to
+	 *     OK states once they have been dealt with.
 	 */
 	public function process_check_result($plugin_output, $return_code, &$error_string=NULL) {
 		$error_string = null;
@@ -339,6 +286,15 @@ class Service_Model extends BaseService_Model {
 	 * @param check_time
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.schedule_check
+	 * @ninja orm_command param[] time check_time
+	 * @ninja orm_command description
+	 *     This command is used to schedule the next check of a service. Naemon
+	 *     will re-queue the service to be checked at the time you specify. If
+	 *     you select the <i>force check</i> option, Nagios will force a check
+	 *     of the service regardless of both what time the scheduled check
+	 *     occurs and whether or not checks are enabled for the service.
 	 */
 	public function schedule_check($check_time, &$error_string=NULL) {
 		$error_string = null;
@@ -364,6 +320,26 @@ class Service_Model extends BaseService_Model {
 	 * @param fixed = true
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.schedule_downtime
+	 * @ninja orm_command param[] duration duration
+	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] time start_time
+	 * @ninja orm_command param[] time end_time
+	 * @ninja orm_command param[] string comment
+	 * @ninja orm_command param[] bool fixed
+	 * @ninja orm_command description
+	 *     This command is used to schedule downtime for a service.  During the
+	 *     specified downtime, Naemon will not send notifications out about the
+	 *     service. When the scheduled downtime expires, Naemon will send out
+	 *     notifications for this service as it normally would. Scheduled
+	 *     downtimes are preserved across program shutdowns and restarts. Both
+	 *     the start and end times should be specified in the following format:
+	 *     <b>YYYY-MM-DD hh:mm:ss</b>. If fixed is disabled, Naemon will treat
+	 *     this as "flexible" downtime. Flexible downtime starts when the
+	 *     service enters a non-OK state (sometime between the start and end
+	 *     times you specified) and lasts as long as the duration of time you
+	 *     enter. The duration fields do not apply for fixed downtime.
 	 */
 	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
 		$error_string = null;
@@ -390,6 +366,21 @@ class Service_Model extends BaseService_Model {
 	 * @param comment
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.send_custom_notification
+	 * @ninja orm_command param[] string comment
+	 * @ninja orm_command description
+	 *     This command is used to send a custom notification about the
+	 *     specified service. Useful in emergencies when you need to notify
+	 *     admins of an issue regarding a monitored system or service. Custom
+	 *     notifications normally follow the regular notification logic in
+	 *     Naemon. Selecting the <i>Forced</i> option will force the
+	 *     notification to be sent out, regardless of the time restrictions,
+	 *     whether or not notifications are enabled, etc. Selecting the
+	 *     <i>Broadcast</i> option causes the notification to be sent out to all
+	 *     normal (non-escalated) and escalated contacts. These options allow
+	 *     you to override the normal notification logic if you need to get an
+	 *     important message out.
 	 */
 	public function send_custom_notification($comment, &$error_string=NULL) {
 		$error_string = null;

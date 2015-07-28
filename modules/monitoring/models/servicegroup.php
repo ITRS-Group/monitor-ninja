@@ -69,83 +69,15 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	}
 
 	/**
-	 * All methods in this class that corresponds 1:1 to a command, such
-	 * as a Naemon command. Note that developers might have implemented
-	 * other methods that in turn call these; those methods are *not*
-	 * returned from this method (unless the method is overwritten). As
-	 * such, this method can be used for listing e.g. mayi resources.
-	 *
-	 *
-	 * @return array
-	 */
-	public function list_commands() {
-		return array (
-			'disable_service_checks' =>
-			array (
-				'parameters' =>
-				array (
-				),
-				'description' => 'This command is used to disable active checks of all services in the specified servicegroup.  This <i>does not</i> disable checks of the hosts in the servicegroup unless you check the \'Disable for hosts too\' option. ',
-				'mayi_resource' => '',
-			),
-			'disable_service_notifications' =>
-			array (
-				'parameters' =>
-				array (
-				),
-				'description' => 'This command is used to prevent notifications from being sent out for all services in the specified servicegroup.  You will have to re-enable notifications for all services in this servicegroup before any alerts can be sent out in the future.  This <i>does not</i> prevent notifications from being sent out about the hosts in this servicegroup unless you check the \'Disable for hosts too\' option. ',
-				'mayi_resource' => '',
-			),
-			'enable_service_checks' =>
-			array (
-				'parameters' =>
-				array (
-				),
-				'description' => 'This command is used to enable active checks of all services in the specified servicegroup.  This <i>does not</i> enable active checks of the hosts in the servicegroup unless you check the \'Enable for hosts too\' option. ',
-				'mayi_resource' => '',
-			),
-			'enable_service_notifications' =>
-			array (
-				'parameters' =>
-				array (
-				),
-				'description' => 'This command is used to enable notifications for all services in the specified servicegroup.  Notifications will only be sent out for the service state types you defined in your service definitions.  This <i>does not</i> enable notifications for the hosts in this servicegroup unless you check the \'Enable for hosts too\' option. ',
-				'mayi_resource' => '',
-			),
-			'schedule_host_downtime' =>
-			array (
-				'parameters' =>
-				array (
-					'start_time' => 'time',
-					'end_time' => 'time',
-					'fixed' => 'bool',
-					'trigger_id' => 'select',
-					'duration' => 'duration',
-					'comment' => 'string',
-				),
-				'description' => 'This command is used to schedule downtime for all hosts in a servicegroup.  During the specified downtime, Nagios will not send notifications out about the hosts. When the scheduled downtime expires, Nagios will send out notifications for the hosts as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>Y-m-d H:i:s</b> (<a href="http://php.net/manual/en/function.date.php">see explanation of date-letters</a>). If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when a host goes down or becomes unreachable (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed dowtime. ',
-				'mayi_resource' => '',
-			),
-			'schedule_service_downtime' =>
-			array (
-				'parameters' =>
-				array (
-					'start_time' => 'time',
-					'end_time' => 'time',
-					'fixed' => 'bool',
-					'trigger_id' => 'select',
-					'duration' => 'duration',
-					'comment' => 'string',
-				),
-				'description' => 'This command is used to schedule downtime for all services in a servicegroup.  During the specified downtime, Nagios will not send notifications out about the services. When the scheduled downtime expires, Nagios will send out notifications for the services as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>Y-m-d H:i:s</b> (<a href="http://php.net/manual/en/function.date.php">see explanation of date-letters</a>). If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when a service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed dowtime. Note that scheduling downtime for services does not automatically schedule downtime for the hosts those services are associated with.  If you want to also schedule downtime for all hosts in the servicegroup, check the \'Schedule downtime for hosts too\' option. ',
-				'mayi_resource' => '',
-			),
-		);
-	}
-
-	/**
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.disable_service_checks
+	 * @ninja orm_command description
+	 *     This command is used to disable active checks of all services in the
+	 *     specified servicegroup. This <i>does not</i> disable checks of the
+	 *     hosts in the servicegroup unless you check the 'Disable for hosts
+	 *     too' option.
 	 */
 	public function disable_service_checks(&$error_string=NULL) {
 		$error_string = null;
@@ -164,6 +96,15 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	/**
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.disable_service_notifications
+	 * @ninja orm_command description
+	 *     This command is used to prevent notifications from being sent out for
+	 *     all services in the specified servicegroup. You will have to
+	 *     re-enable notifications for all services in this servicegroup before
+	 *     any alerts can be sent out in the future. This <i>does not</i>
+	 *     prevent notifications from being sent out about the hosts in this
+	 *     servicegroup unless you check the 'Disable for hosts too' option.
 	 */
 	public function disable_service_notifications(&$error_string=NULL) {
 		$error_string = null;
@@ -182,6 +123,13 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	/**
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.enable_service_checks
+	 * @ninja orm_command description
+	 *     This command is used to enable active checks of all services in the
+	 *     specified servicegroup. This <i>does not</i> enable active checks of
+	 *     the hosts in the servicegroup unless you check the 'Enable for hosts
+	 *     too' option.
 	 */
 	public function enable_service_checks(&$error_string=NULL) {
 		$error_string = null;
@@ -200,6 +148,14 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	/**
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.enable_service_notifications
+	 * @ninja orm_command description
+	 *     This command is used to enable notifications for all services in the
+	 *     specified servicegroup. Notifications will only be sent out for the
+	 *     service state types you defined in your service definitions. This
+	 *     <i>does not</i> enable notifications for the hosts in this
+	 *     servicegroup unless you check the 'Enable for hosts too' option.
 	 */
 	public function enable_service_notifications(&$error_string=NULL) {
 		$error_string = null;
@@ -224,6 +180,29 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @param fixed = true
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.schedule_host_downtime
+	 * @ninja orm_command param[] duration duration
+	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] time start_time
+	 * @ninja orm_command param[] time end_time
+	 * @ninja orm_command param[] string comment
+	 * @ninja orm_command param[] bool fixed
+	 * @ninja orm_command description
+	 *     This command is used to schedule downtime for all hosts in a
+	 *     servicegroup. During the specified downtime, Naemon will not send
+	 *     notifications out about the hosts. When the scheduled downtime
+	 *     expires, Naemon will send out notifications for the hosts as it
+	 *     normally would. Scheduled downtimes are preserved across program
+	 *     shutdowns and restarts. Both the start and end times should be
+	 *     specified in the following format: <b>YYYY-MM-DD hh:mm:ss</b>. If you
+	 *     select the <i>fixed</i> option, the downtime will be in effect
+	 *     between the start and end times you specify. If you do not select the
+	 *     <i>fixed</i> option, Naemon will treat this as "flexible" downtime.
+	 *     Flexible downtime starts when a host goes down or becomes unreachable
+	 *     (sometime between the start and end times you specified) and lasts as
+	 *     long as the duration of time you enter. The duration fields do not
+	 *     apply for fixed dowtime.
 	 */
 	public function schedule_host_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
 		$error_string = null;
@@ -255,6 +234,33 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @param fixed = true
 	 * @param &error_string = NULL
 	 * @return bool
+	 *
+	 * @ninja orm_command mayi_method update.command.schedule_service_downtime
+	 * @ninja orm_command param[] duration duration
+	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] time start_time
+	 * @ninja orm_command param[] time end_time
+	 * @ninja orm_command param[] string comment
+	 * @ninja orm_command param[] bool fixed
+	 * @ninja orm_command description
+	 *     This command is used to schedule downtime for all services in a
+	 *     servicegroup. During the specified downtime, Naemon will not send
+	 *     notifications out about the services. When the scheduled downtime
+	 *     expires, Naemon will send out notifications for the services as it
+	 *     normally would.  Scheduled downtimes are preserved across program
+	 *     shutdowns and restarts. Both the start and end times should be
+	 *     specified in the following format: <b>YYYY-MM-DD hh:mm:ss</b>. If you
+	 *     select the <i>fixed</i> option, the downtime will be in effect
+	 *     between the start and end times you specify. If you do not select the
+	 *     <i>fixed</i> option, Naemon will treat this as "flexible" downtime.
+	 *     Flexible downtime starts when a service enters a non-OK state
+	 *     (sometime between the start and end times you specified) and lasts as
+	 *     long as the duration of time you enter. The duration fields do not
+	 *     apply for fixed dowtime. Note that scheduling downtime for services
+	 *     does not automatically schedule downtime for the hosts those services
+	 *     are associated with. If you want to also schedule downtime for all
+	 *     hosts in the servicegroup, check the 'Schedule downtime for hosts
+	 *     too' option.
 	 */
 	public function schedule_service_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
 		$error_string = null;
