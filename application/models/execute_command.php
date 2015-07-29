@@ -85,6 +85,7 @@ class Execute_Command_Model extends Model
 
 		$pool = CommentPool_Model::all();
 
+		$ret = array();
 		foreach ($pool->it(array('id')) as $row) {
 			$ret[$row->get_id()] = $row->get_id();
 		}
