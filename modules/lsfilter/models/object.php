@@ -48,9 +48,14 @@ abstract class Object_Model extends BaseObject_Model {
 	}
 
 	/**
-	 * Get the MayI resource related to this table
+	 * Get mayi resource for the current object
+	 *
+	 * This is a wrapper to get the resource from the set
 	 */
-	abstract function mayi_resource();
+	public function mayi_resource() {
+		$pool = ObjectPool_Model::pool($this->get_table());
+		return $pool->all()->mayi_resource();
+	}
 
 	/**
 	 * Get a list of commands related to the object
@@ -77,7 +82,22 @@ abstract class Object_Model extends BaseObject_Model {
 			} );
 		}
 
-		return $commands;
+		/*
+		 * Fill in default values, and make sure all parameters exist in the
+		 * command
+		 */
+		$outcommands = array();
+		foreach($commands as $cmdname => $cmdinfo) {
+			$outcommands[$cmdname] = array(
+				'name' => isset($cmdinfo['name']) ? $cmdinfo['name'] : $cmdname,
+				'icon' => isset($cmdinfo['icon']) ? $cmdinfo['icon'] : 'command',
+				'description' => isset($cmdinfo['description']) ? $cmdinfo['description'] : '',
+				'param' => isset($cmdinfo['param']) ? $cmdinfo['param'] : array(),
+				'mayi_method' => $cmdinfo['mayi_method']
+			);
+		}
+
+		return $outcommands;
 	}
 
 	/**

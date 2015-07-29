@@ -201,6 +201,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &$error_string
 	 * @return boolean
 	 *
+	 * @ninja orm_command name Check now
+	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.check_now
 	 * @ninja orm_command description
 	 *     Schedule the next check as soon as possible
@@ -217,6 +219,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Acknowledge Problem
+	 * @ninja orm_command icon acknowledged
+	 * @ninja orm_command enabled
 	 * @ninja orm_command param[] bool sticky
 	 * @ninja orm_command param[] bool notify
 	 * @ninja orm_command param[] bool persistent
@@ -263,6 +268,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Add comment
+	 * @ninja orm_command icon comment
 	 * @ninja orm_command param[] string comment
 	 * @ninja orm_command mayi_method update.command.add_comment
 	 * @ninja orm_command description
@@ -293,6 +300,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Disable active checks
+	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_check
 	 * @ninja orm_command description
 	 *     This command is used to temporarily prevent Nagios from actively
@@ -318,6 +327,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Disable active service checks
+	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_service_checks
 	 * @ninja orm_command description
 	 *     This command is used to disable active checks of all services
@@ -349,6 +360,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Disable service notifications
+	 * @ninja orm_command icon notify-disabled
 	 * @ninja orm_command mayi_method
 	 *     update.command.disable_service_notifications
 	 * @ninja orm_command description
@@ -377,6 +390,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Enable active checks
+	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_check
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of this host.
@@ -399,6 +414,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Enable active service checks
+	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_service_checks
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of all services
@@ -423,6 +440,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Enable service notifications
+	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method
 	 *     update.command.enable_service_notifications
 	 * @ninja orm_command description
@@ -452,6 +471,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Submit passive check result
+	 * @ninja orm_command icon checks-passive
 	 * @ninja orm_command mayi_method update.command.process_check_result
 	 * @ninja orm_command param[] string plugin_output
 	 * @ninja orm_command param[] select status_code
@@ -478,6 +499,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Remove acknoledgement
+	 * @ninja orm_command icon acknowledged-not
 	 * @ninja orm_command mayi_method update.command.remove_acknowledgement
 	 * @ninja orm_command description
 	 *     This command is used to remove an acknowledgement for a host problem.
@@ -503,6 +526,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Reschedule check
+	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_check
 	 * @ninja orm_command param[] time check_time
 	 * @ninja orm_command description
@@ -537,6 +562,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Schedule downtime
+	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_downtime
 	 * @ninja orm_command param[] duration duration
 	 * @ninja orm_command param[] select trigger_id
@@ -585,6 +612,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Reschedule check
+	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_service_checks
 	 * @ninja orm_command param[] time check_time
 	 * @ninja orm_command description
@@ -614,6 +643,8 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
+	 * @ninja orm_command name Send custom notificatoin
+	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method update.command.send_custom_notification
 	 * @ninja orm_command param[] string comment
 	 * @ninja orm_command description

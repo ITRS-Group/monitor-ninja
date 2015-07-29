@@ -101,7 +101,9 @@ class Exec_cmd_Controller extends Ninja_Controller {
 
 
 		$params = array();
-		foreach($commands[$command]['parameters'] as $parameter => $type) {
+		$cmdparams = $commands[$command]['param'];
+		foreach($commands[$command]['param'] as $paramstr) {
+			list($type,$parameter) = explode(' ', $paramstr);
 			$params[] = $this->input->post($parameter, null);
 		}
 		// every command takes a reference to an error as its
