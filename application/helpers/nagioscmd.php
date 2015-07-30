@@ -1243,7 +1243,7 @@ class nagioscmd
 			return null;
 		return html::anchor(
 			sprintf(
-				"exec_cmd/index?command=%s&table=%s&object=%s",
+				"cmd?command=%s&table=%s&object=%s",
 				urlencode($command),
 				urlencode($object->get_table()),
 				urlencode($object->get_key())

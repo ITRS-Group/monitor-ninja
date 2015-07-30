@@ -3,14 +3,14 @@
 /**
  * Execute commands on ORM objects
  */
-class Exec_cmd_Controller extends Ninja_Controller {
+class Cmd_Controller extends Ninja_Controller {
 
 	/**
 	 * Show a form for submitting a command on a single object
 	 */
 	public function index() {
 		// todo mayi
-		$this->template->content = $this->add_view('command/cmd_exec');
+		$this->template->content = $this->add_view('cmd/index');
 		$this->template->disable_refresh = true;
 		$this->template->content->error = false;
 		$command = $this->input->get('command');
@@ -33,7 +33,6 @@ class Exec_cmd_Controller extends Ninja_Controller {
 		$this->template->content->table = $table;
 		$this->template->content->command = $command;
 
-		// TODO differentiate hg service and h service
 		$commands = $object->list_commands();
 		if(!array_key_exists($command, $commands)) {
 			$error_message = "Tried to submit command '$command' on table '$table' but that command does not exist for that kind of objects. Aborting without any commands applied";
@@ -47,13 +46,19 @@ class Exec_cmd_Controller extends Ninja_Controller {
 	/**
 	 * Send a command for a specific object
 	 */
-	public function obj() {
+	public function obj($resp_type = 'html') {
 		// TODO Don't use ORMException in this code...
 		// TODO maybe you don't wanna reuse the old view
-		$this->template->content = $this->add_view('command/commit');
-		$command = $this->input->post('c', false);
-		$table = $this->input->post('t', false);
-		$key = $this->input->post('o', false);
+		$template = false;
+
+		if($resp_type == 'json') {
+			$template = $this->template = $this->add_view('cmd/json');
+		} else {
+			$template = $this->template->content = $this->add_view('cmd/exec');
+		}
+		$command = $this->input->post('command', false);
+		$table = $this->input->post('table', false);
+		$key = $this->input->post('object', false);
 
 		try {
 			// validate input parameters presence
@@ -78,33 +83,28 @@ class Exec_cmd_Controller extends Ninja_Controller {
 			$object = $pool->fetch_by_key($key);
 			if($object === false)
 				throw new ORMException("Could not find object '$key'", $table, false);
+			/* @var $object Object_Model */
 
 			// validate command
-			$commands = $object->list_commands();
+			$commands = $object->list_commands(true);
 			if(!array_key_exists($command, $commands))
 				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied", $table, false);
-
-			$mayi_action = $pool->all()->mayi_resource() . ':' . $commands[$command]['mayi_method'];
-			$this->_verify_access($mayi_action);
-
-
 		} catch(ORMException $e) {
 			$error_message = $e->getMessage();
 			op5log::instance('ninja')->log('warning', $error_message);
 			if(request::is_ajax()) {
 				return json::fail(array('error' => $error_message));
 			}
-			$this->template->content->result = false;
-			$this->template->content->error = $error_message;
+			$template->result = false;
+			$template->error = $error_message;
 			return;
 		}
 
-
 		$params = array();
 		$cmdparams = $commands[$command]['param'];
-		foreach($commands[$command]['param'] as $paramstr) {
-			list($type,$parameter) = explode(' ', $paramstr);
-			$params[] = $this->input->post($parameter, null);
+		foreach($commands[$command]['param'] as $param_def) {
+			list($param_type,$param_name) = $param_def;
+			$params[] = $this->input->post($param_name, null);
 		}
 		// every command takes a reference to an error as its
 		// last argument
@@ -116,14 +116,11 @@ class Exec_cmd_Controller extends Ninja_Controller {
 			if(request::is_ajax()) {
 				return json::ok(array('message' =>  'Your command was successfully submitted'));
 			}
-			$this->template->content->result = true;
+			$template->result = true;
 			return;
 		}
 
-		if(request::is_ajax()) {
-			return json::fail(array('error' => $error_string));
-		}
-		$this->template->content->result = false;
-		$this->template->content->error = $error_string;
+		$template->result = false;
+		$template->error = $error_string;
 	}
 }

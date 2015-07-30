@@ -243,6 +243,7 @@ class Host_Model extends BaseHost_Model {
 	 *     is removed, check the 'Persistent Comment' checkbox.  If you do not
 	 *     want an acknowledgement notification sent out to the appropriate
 	 *     contacts, uncheck the 'Notify' checkbox.
+	 * @ninja orm_command enabled_if unacknowledged_problem
 	 */
 	public function acknowledge_problem($comment, $persistent=true, $notify=true, $sticky=true, &$error_string=NULL) {
 		$error_string = null;
@@ -261,6 +262,57 @@ class Host_Model extends BaseHost_Model {
 			$error_string = $output;
 		}
 		return $result;
+	}
+
+	/**
+	 * Returns if the host has a problem which is unacknowledged
+	 *
+	 * @ninja orm export false
+	 * @ninja orm depend[] state
+	 * @ninja orm depend[] has_been_checked
+	 * @ninja orm depend[] acknowledged
+	 */
+	public function get_unacknowledged_problem() {
+		return ($this->get_state() > 0 && $this->get_has_been_checked()) && ! $this->get_acknowledged();
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 *
+	 * @ninja orm_command name Remove acknoledgement
+	 * @ninja orm_command icon acknowledged-not
+	 * @ninja orm_command mayi_method update.command.remove_acknowledgement
+	 * @ninja orm_command description
+	 *     This command is used to remove an acknowledgement for a host problem.
+	 *     Once the acknowledgement is removed, notifications may start being
+	 *     sent out about the host problem.
+	 * @ninja orm_command enabled_if acknowledged_problem
+	 */
+	public function remove_acknowledgement(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("REMOVE_HOST_ACKNOWLEDGEMENT",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns if the host has a problem which is acknowledged
+	 *
+	 * @ninja orm export false
+	 * @ninja orm depend[] state
+	 * @ninja orm depend[] has_been_checked
+	 * @ninja orm depend[] acknowledged
+	 */
+	public function get_acknowledged_problem() {
+		return ($this->get_state() > 0 && $this->get_has_been_checked()) && $this->get_acknowledged();
 	}
 
 	/**
@@ -300,101 +352,12 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
-	 * @ninja orm_command name Disable active checks
-	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_check
-	 * @ninja orm_command description
-	 *     This command is used to temporarily prevent Nagios from actively
-	 *     checking the status of a host.  If Nagios needs to check the status
-	 *     of this host, it will assume that it is in the same state that it was
-	 *     in before checks were disabled.
-	 */
-	public function disable_check(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_HOST_CHECK",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
-	}
-
-	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
-	 * @ninja orm_command name Disable active service checks
-	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_service_checks
-	 * @ninja orm_command description
-	 *     This command is used to disable active checks of all services
-	 *     associated with the specified host.  When a service is disabled
-	 *     Naemon will not monitor the service.  Doing this will prevent any
-	 *     notifications being sent out for the specified service while it is
-	 *     disabled.  In order to have Nagios check the service in the future
-	 *     you will have to re-enable the service. Note that disabling service
-	 *     checks may not necessarily prevent notifications from being sent out
-	 *     about the host which those services are associated with.  This
-	 *     <i>does not</i> disable checks of the host unless you check the
-	 *     'Disable for host too' option.
-	 */
-	public function disable_service_checks(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_HOST_SVC_CHECKS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
-	}
-
-	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
-	 * @ninja orm_command name Disable service notifications
-	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method
-	 *     update.command.disable_service_notifications
-	 * @ninja orm_command description
-	 *     This command is used to prevent notifications from being sent out for
-	 *     all services on the specified host.  You will have to re-enable
-	 *     notifications for all services associated with this host before any
-	 *     alerts can be sent out in the future.  This <i>does not</i> prevent
-	 *     notifications from being sent out about the host unless you check the
-	 *     'Disable for host too' option.
-	 */
-	public function disable_service_notifications(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_HOST_SVC_NOTIFICATIONS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
-	}
-
-	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Enable active checks
 	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_check
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of this host.
+	 * @ninja orm_command enabled_if checks_disabled
 	 */
 	public function enable_check(&$error_string=NULL) {
 		$error_string = null;
@@ -414,46 +377,19 @@ class Host_Model extends BaseHost_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
-	 * @ninja orm_command name Enable active service checks
-	 * @ninja orm_command icon enable
-	 * @ninja orm_command mayi_method update.command.enable_service_checks
+	 * @ninja orm_command name Disable active checks
+	 * @ninja orm_command icon disable-active-checks
+	 * @ninja orm_command mayi_method update.command.disable_check
 	 * @ninja orm_command description
-	 *     This command is used to enable active checks of all services
-	 *     associated with the specified host.  This <i>does not</i> enable
-	 *     checks of the host unless you check the 'Enable for host too' option.
+	 *     This command is used to temporarily prevent Nagios from actively
+	 *     checking the status of a host.  If Nagios needs to check the status
+	 *     of this host, it will assume that it is in the same state that it was
+	 *     in before checks were disabled.
+	 * @ninja orm_command enabled_if checks_enabled
 	 */
-	public function enable_service_checks(&$error_string=NULL) {
+	public function disable_check(&$error_string=NULL) {
 		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_HOST_SVC_CHECKS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
-	}
-
-	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
-	 * @ninja orm_command name Enable service notifications
-	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method
-	 *     update.command.enable_service_notifications
-	 * @ninja orm_command description
-	 *     This command is used to enable notifications for all services on the
-	 *     specified host.  Notifications will only be sent out for the service
-	 *     state types you defined in your service definition.  This <i>does
-	 *     not</i> enable notifications for the host unless you check the
-	 *     'Enable for host too' option.
-	 */
-	public function enable_service_notifications(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_HOST_SVC_NOTIFICATIONS",
+		$command = nagioscmd::build_command("DISABLE_HOST_CHECK",
 		array(
 		'host_name' => implode(';', array($this->get_name()))
 		)
@@ -478,6 +414,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command param[] select status_code
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a host.
+	 * @ninja orm_command enabled_if accept_passive_checks
 	 */
 	public function process_check_result($plugin_output, $status_code, &$error_string=NULL) {
 		$error_string = null;
@@ -486,32 +423,6 @@ class Host_Model extends BaseHost_Model {
 		'host_name' => implode(';', array($this->get_name())),
 		'status_code' => $status_code,
 		'plugin_output' => $plugin_output
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
-	}
-
-	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
-	 * @ninja orm_command name Remove acknoledgement
-	 * @ninja orm_command icon acknowledged-not
-	 * @ninja orm_command mayi_method update.command.remove_acknowledgement
-	 * @ninja orm_command description
-	 *     This command is used to remove an acknowledgement for a host problem.
-	 *     Once the acknowledgement is removed, notifications may start being
-	 *     sent out about the host problem.
-	 */
-	public function remove_acknowledgement(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("REMOVE_HOST_ACKNOWLEDGEMENT",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
 		)
 		);
 		$result = nagioscmd::submit_to_nagios($command, "", $output);
@@ -536,6 +447,7 @@ class Host_Model extends BaseHost_Model {
 	 *     select the <i>force check</i> option, Naemon will force a check of
 	 *     the host regardless of both what time the scheduled check occurs and
 	 *     whether or not checks are enabled for the host.
+	 * @ninja orm_command enabled_if checks_enabled
 	 */
 	public function schedule_check($check_time, &$error_string=NULL) {
 		$error_string = null;
@@ -608,37 +520,6 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @param check_time
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
-	 * @ninja orm_command name Reschedule check
-	 * @ninja orm_command icon re-schedule
-	 * @ninja orm_command mayi_method update.command.schedule_service_checks
-	 * @ninja orm_command param[] time check_time
-	 * @ninja orm_command description
-	 *     This command is used to scheduled the next check of all services on
-	 *     the specified host. If you select the <i>force check</i> option,
-	 *     Naemon will force a check of all services on the host regardless of
-	 *     both what time the scheduled checks occur and whether or not checks
-	 *     are enabled for those services.
-	 */
-	public function schedule_service_checks($check_time, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_HOST_SVC_CHECKS",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'check_time' => $check_time
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
-	}
-
-	/**
 	 * @param comment
 	 * @param &error_string = NULL
 	 * @return bool
@@ -667,6 +548,155 @@ class Host_Model extends BaseHost_Model {
 		'host_name' => implode(';', array($this->get_name())),
 		'author' => $this->get_current_user(),
 		'comment' => $comment
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 *
+	 * @ninja orm_command name Enable service notifications
+	 * @ninja orm_command icon notify-send
+	 * @ninja orm_command mayi_method
+	 *     update.command.enable_service_notifications
+	 * @ninja orm_command description
+	 *     This command is used to enable notifications for all services on the
+	 *     specified host.  Notifications will only be sent out for the service
+	 *     state types you defined in your service definition.  This <i>does
+	 *     not</i> enable notifications for the host unless you check the
+	 *     'Enable for host too' option.
+	 */
+	public function enable_service_notifications(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("ENABLE_HOST_SVC_NOTIFICATIONS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 *
+	 * @ninja orm_command name Disable service notifications
+	 * @ninja orm_command icon notify-disabled
+	 * @ninja orm_command mayi_method
+	 *     update.command.disable_service_notifications
+	 * @ninja orm_command description
+	 *     This command is used to prevent notifications from being sent out for
+	 *     all services on the specified host.  You will have to re-enable
+	 *     notifications for all services associated with this host before any
+	 *     alerts can be sent out in the future.  This <i>does not</i> prevent
+	 *     notifications from being sent out about the host unless you check the
+	 *     'Disable for host too' option.
+	 */
+	public function disable_service_notifications(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("DISABLE_HOST_SVC_NOTIFICATIONS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 *
+	 * @ninja orm_command name Enable active service checks
+	 * @ninja orm_command icon enable
+	 * @ninja orm_command mayi_method update.command.enable_service_checks
+	 * @ninja orm_command description
+	 *     This command is used to enable active checks of all services
+	 *     associated with the specified host.  This <i>does not</i> enable
+	 *     checks of the host unless you check the 'Enable for host too' option.
+	 */
+	public function enable_service_checks(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("ENABLE_HOST_SVC_CHECKS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param &error_string = NULL
+	 * @return bool
+	 *
+	 * @ninja orm_command name Disable active service checks
+	 * @ninja orm_command icon disable-active-checks
+	 * @ninja orm_command mayi_method update.command.disable_service_checks
+	 * @ninja orm_command description
+	 *     This command is used to disable active checks of all services
+	 *     associated with the specified host.  When a service is disabled
+	 *     Naemon will not monitor the service.  Doing this will prevent any
+	 *     notifications being sent out for the specified service while it is
+	 *     disabled.  In order to have Nagios check the service in the future
+	 *     you will have to re-enable the service. Note that disabling service
+	 *     checks may not necessarily prevent notifications from being sent out
+	 *     about the host which those services are associated with.  This
+	 *     <i>does not</i> disable checks of the host unless you check the
+	 *     'Disable for host too' option.
+	 */
+	public function disable_service_checks(&$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("DISABLE_HOST_SVC_CHECKS",
+		array(
+		'host_name' => implode(';', array($this->get_name()))
+		)
+		);
+		$result = nagioscmd::submit_to_nagios($command, "", $output);
+		if(!$result && $output !== false) {
+			$error_string = $output;
+		}
+		return $result;
+	}
+
+	/**
+	 * @param check_time
+	 * @param &error_string = NULL
+	 * @return bool
+	 *
+	 * @ninja orm_command name Reschedule service checks
+	 * @ninja orm_command icon re-schedule
+	 * @ninja orm_command mayi_method update.command.schedule_service_checks
+	 * @ninja orm_command param[] time check_time
+	 * @ninja orm_command description
+	 *     This command is used to scheduled the next check of all services on
+	 *     the specified host. If you select the <i>force check</i> option,
+	 *     Naemon will force a check of all services on the host regardless of
+	 *     both what time the scheduled checks occur and whether or not checks
+	 *     are enabled for those services.
+	 */
+	public function schedule_service_checks($check_time, &$error_string=NULL) {
+		$error_string = null;
+		$command = nagioscmd::build_command("SCHEDULE_HOST_SVC_CHECKS",
+		array(
+		'host_name' => implode(';', array($this->get_name())),
+		'check_time' => $check_time
 		)
 		);
 		$result = nagioscmd::submit_to_nagios($command, "", $output);

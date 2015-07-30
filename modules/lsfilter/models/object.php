@@ -88,12 +88,26 @@ abstract class Object_Model extends BaseObject_Model {
 		 */
 		$outcommands = array();
 		foreach($commands as $cmdname => $cmdinfo) {
+			$enabled = true;
+			if(isset($cmdinfo['enabled_if'])) {
+				$enabled_fnc = 'get_'.$cmdinfo['enabled_if'];
+				$enabled = call_user_func(array($this, $enabled_fnc));
+			}
+
+			$params = array();
+			if(isset($cmdinfo['param'])) {
+				foreach($cmdinfo['param'] as $param) {
+					$params[] = split("[ \t]+", $param, 2);
+				}
+			}
+
 			$outcommands[$cmdname] = array(
 				'name' => isset($cmdinfo['name']) ? $cmdinfo['name'] : $cmdname,
 				'icon' => isset($cmdinfo['icon']) ? $cmdinfo['icon'] : 'command',
 				'description' => isset($cmdinfo['description']) ? $cmdinfo['description'] : '',
-				'param' => isset($cmdinfo['param']) ? $cmdinfo['param'] : array(),
-				'mayi_method' => $cmdinfo['mayi_method']
+				'param' => $params,
+				'mayi_method' => $cmdinfo['mayi_method'],
+				'enabled' => $enabled
 			);
 		}
 
