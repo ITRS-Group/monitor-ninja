@@ -107,7 +107,8 @@ abstract class Object_Model extends BaseObject_Model {
 				'description' => isset($cmdinfo['description']) ? $cmdinfo['description'] : '',
 				'param' => $params,
 				'mayi_method' => $cmdinfo['mayi_method'],
-				'enabled' => $enabled
+				'enabled' => $enabled,
+				'select' => isset($cmdinfo['select']) ? $cmdinfo['select'] : array()
 			);
 		}
 

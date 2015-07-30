@@ -258,7 +258,7 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @param plugin_output
-	 * @param return_code
+	 * @param status_code
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
@@ -266,18 +266,22 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command icon checks-passive
 	 * @ninja orm_command mayi_method update.command.process_check_result
 	 * @ninja orm_command param[] string plugin_output
-	 * @ninja orm_command param[] select return_code
+	 * @ninja orm_command param[] select status_code
+	 * @ninja orm_command select.status_code[] Ok
+	 * @ninja orm_command select.status_code[] Warning
+	 * @ninja orm_command select.status_code[] Critical
+	 * @ninja orm_command select.status_code[] Unknown
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a service.
 	 *     It is particularly useful for resetting security-related services to
 	 *     OK states once they have been dealt with.
 	 */
-	public function process_check_result($plugin_output, $return_code, &$error_string=NULL) {
+	public function process_check_result($plugin_output, $status_code, &$error_string=NULL) {
 		$error_string = null;
 		$command = nagioscmd::build_command("PROCESS_SERVICE_CHECK_RESULT",
 		array(
 		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
-		'return_code' => $return_code,
+		'return_code' => $status_code,
 		'plugin_output' => $plugin_output
 		)
 		);
@@ -333,7 +337,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_downtime
 	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] int trigger_id
 	 * @ninja orm_command param[] time start_time
 	 * @ninja orm_command param[] time end_time
 	 * @ninja orm_command param[] string comment

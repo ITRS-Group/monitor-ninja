@@ -412,6 +412,9 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command mayi_method update.command.process_check_result
 	 * @ninja orm_command param[] string plugin_output
 	 * @ninja orm_command param[] select status_code
+	 * @ninja orm_command select.status_code[] Up
+	 * @ninja orm_command select.status_code[] Down
+	 * @ninja orm_command select.status_code[] Unreachable
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a host.
 	 * @ninja orm_command enabled_if accept_passive_checks
@@ -478,7 +481,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_downtime
 	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] int trigger_id
 	 * @ninja orm_command param[] time start_time
 	 * @ninja orm_command param[] time end_time
 	 * @ninja orm_command param[] string comment

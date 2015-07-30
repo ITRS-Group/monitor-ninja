@@ -30,6 +30,15 @@ if (empty( $error )) {
 					'id' => 'field_' . $param_name
 				) );
 				break;
+			case 'int' :
+			case 'float' :
+				echo form::input( array (
+					'class' => "input-wide autotest-required",
+					'name' => $param_name,
+					'title' => _( 'Required field' ),
+					'id' => 'field_' . $param_name
+				) );
+				break;
 			case 'time' :
 				echo form::input( array (
 					'class' => "input-wide autotest-date",
@@ -47,12 +56,12 @@ if (empty( $error )) {
 				) );
 				break;
 			case 'select' :
-				echo form::input( array (
+				echo form::dropdown( array (
 					'class' => "input-wide autotest-required",
 					'name' => $param_name,
 					'title' => _( 'Required field' ),
 					'id' => 'field_' . $param_name
-				) );
+				), $command_info['select'][$param_name] );
 				break;
 			case 'bool' :
 				echo form::checkbox(  array (

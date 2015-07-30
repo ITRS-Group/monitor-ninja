@@ -217,7 +217,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.schedule_host_downtime
 	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] int trigger_id
 	 * @ninja orm_command param[] time start_time
 	 * @ninja orm_command param[] time end_time
 	 * @ninja orm_command param[] string comment
@@ -273,7 +273,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.schedule_service_downtime
 	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] select trigger_id
+	 * @ninja orm_command param[] int trigger_id
 	 * @ninja orm_command param[] time start_time
 	 * @ninja orm_command param[] time end_time
 	 * @ninja orm_command param[] string comment

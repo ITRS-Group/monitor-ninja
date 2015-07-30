@@ -103,12 +103,19 @@ class doctags_Builder {
 						                        // this case
 					}
 
+					$key_val = array();
+
+					$key_obj =& $key_val;
+					foreach(explode('.', $key) as $keypart) {
+						$key_obj[$keypart] = array();
+						$key_obj =& $key_obj[$keypart];
+					}
+					$key_obj = $value;
+
 					$manifests = array_merge_recursive( $manifests, array (
 						$manifest => array (
 							strtolower($class) => array (
-								strtolower($function) => array (
-									$key => $value
-								)
+								strtolower($function) => $key_val
 							)
 						)
 					) );
