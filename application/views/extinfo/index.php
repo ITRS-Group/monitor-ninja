@@ -43,11 +43,6 @@ if (isset($page_links)) {
 </div>
 <?php
 }
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
 ?>
 
 <div id="extinfo_host-info">
@@ -426,7 +421,8 @@ if (isset($comments)) {
 
 	echo $comments;
 }
-
-if (isset($downtimes))
-	echo $downtimes;
+/* @var $widgets widget_Base[] */
+foreach ($widgets as $widget) {
+	echo $widget->render('index', false);
+}
 ?>

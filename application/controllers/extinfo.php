@@ -88,27 +88,32 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$username = Auth::instance()->get_user()->username;
 
-		$setting = array(
-			'query'=>$set->get_comments()->get_query(),
-			'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
+		/* Comment widget */
+		if($object->get_comments_count() > 0) {
+			$setting = array(
+				'query'=>$set->get_comments()->get_query(),
+				'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
 			);
-		$model = new Ninja_widget_Model(array(
-			'page' => Router::$controller,
-			'name' => 'listview',
-			'widget' => 'listview',
-			'username' => $username,
-			'friendly_name' => 'Comments',
-			'setting' => $setting
-		));
+			$model = new Ninja_widget_Model(array(
+				'page' => Router::$controller,
+				'name' => 'listview',
+				'widget' => 'listview',
+				'username' => $username,
+				'friendly_name' => 'Comments',
+				'setting' => $setting
+			));
 
-		$widget = widget::get($model, $this);
-		widget::set_resources($widget, $this);
+			$widget = widget::get($model, $this);
+			widget::set_resources($widget, $this);
 
-		$widget->set_fixed($set->get_comments()->get_query());
-		$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+			$widget->set_fixed($set->get_comments()->get_query());
+			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
 
-		$this->template->content->comments = $widget->render();
+			$this->template->content->widgets[] = $widget;
+		}
+		/* End of comment widget */
 
+		/* Downtimes widget */
 		if ($object->get_scheduled_downtime_depth()) {
 			$setting = array(
 				'query'=>$set->get_downtimes()->get_query(),
@@ -128,8 +133,35 @@ class Extinfo_Controller extends Ninja_Controller {
 
 			$widget->set_fixed($set->get_downtimes()->get_query());
 
-			$this->template->content->downtimes = $widget->render();
+			$this->template->content->widgets[] = $widget;
 		}
+		/* End of downtimes widget */
+
+		/* Services widget */
+		if($set->get_table() == 'hosts') {
+			$setting = array(
+				'query'=>$set->get_services()->get_query(),
+				'columns'=>'all, -host_state, -host_name, -host_actions',
+				'limit' => 100
+				);
+			$model = new Ninja_widget_Model(array(
+				'page' => Router::$controller,
+				'name' => 'listview',
+				'widget' => 'listview',
+				'username' => $username,
+				'friendly_name' => 'Services',
+				'setting' => $setting
+			));
+
+			$widget = widget::get($model, $this);
+			widget::set_resources($widget, $this);
+
+			$widget->set_fixed($set->get_comments()->get_query());
+			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+
+			$this->template->content->widgets[] = $widget;
+		}
+		/* End of services widget */
 
 		$this->template->inline_js = $this->inline_js;
 
