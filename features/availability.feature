@@ -508,7 +508,7 @@ Feature: Availability reports
 		And "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 
-	@configuration @asmonitor @reports @unreliable
+	@configuration @asmonitor @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Report" menu

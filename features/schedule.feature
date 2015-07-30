@@ -39,7 +39,7 @@ Feature: Scheduled reports
 
 		And I have activated the configuration
 
-	@configuration @asmonitor @reports @unreliable
+	@configuration @asmonitor @reports
 	Scenario: Save avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
