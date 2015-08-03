@@ -259,6 +259,7 @@ class Service_Model extends BaseService_Model {
 	/**
 	 * @param plugin_output
 	 * @param status_code
+	 * @param perf_data
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
@@ -267,6 +268,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command mayi_method update.command.process_check_result
 	 * @ninja orm_command param[] string plugin_output
 	 * @ninja orm_command param[] select status_code
+	 * @ninja orm_command param[] string perf_data
 	 * @ninja orm_command select.status_code[] Ok
 	 * @ninja orm_command select.status_code[] Warning
 	 * @ninja orm_command select.status_code[] Critical
@@ -276,8 +278,10 @@ class Service_Model extends BaseService_Model {
 	 *     It is particularly useful for resetting security-related services to
 	 *     OK states once they have been dealt with.
 	 */
-	public function process_check_result($plugin_output, $status_code, &$error_string=NULL) {
+	public function process_check_result($plugin_output, $status_code, $perf_data=false, &$error_string=NULL) {
 		$error_string = null;
+		if($perf_data !== false)
+			$plugin_output .= '|' . $perf_data;
 		$command = nagioscmd::build_command("PROCESS_SERVICE_CHECK_RESULT",
 		array(
 		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
@@ -297,7 +301,7 @@ class Service_Model extends BaseService_Model {
 	 * @param &error_string = NULL
 	 * @return bool
 	 *
-	 * @ninja orm_command name Reschedule check
+	 * @ninja orm_command name Re-schedule next service check
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_check
 	 * @ninja orm_command param[] time check_time
