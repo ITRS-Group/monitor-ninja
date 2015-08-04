@@ -33,20 +33,48 @@ class Config_Controller extends Authenticated_Controller {
 		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
 
 		$filter = $this->input->get('filterbox', null);
-		if($filter && $filter == _('Enter text to filter')) {
-			$filter = null;
-		}
-		$poolname = ucfirst(substr($this->type,0,-1)).'Pool_Model';
-		if (class_exists($poolname)) {
-			$set = $poolname::all();
-			$set->reduce_by("name", $filter, "~~");
+
+		// Object types used on this page paired with their columns for filter
+		// matching.
+		$obj_types = array(
+			"hosts"         => array("name"),
+			"hostgroups"    => array("name"),
+			"services"      => array("description", "host.name"),
+			"servicegroups" => array("name"),
+			"contacts"      => array("name"),
+			"contactgroups" => array("name"),
+			"timeperiods"   => array("name"),
+			"commands"      => array("name", "line")
+		);
+
+		$pool = ObjectPool_Model::pool($this->type);
+		if ($pool !== false) {
+			// Find filter matches in all given columns for the current object
+			// type, and merge the result to $set.
+			$set = $pool->none();
+			$columns = $obj_types[$this->type];
+			foreach ($columns as $column) {
+				$set = $set->union($pool->all()->reduce_by(
+					$column, $filter, "~~"
+				));
+			}
+
 			if (!$this->mayi->run($set->mayi_resource().":read.list.config", array(), $messages)) {
-				$set = $poolname::none();
+				$set = $pool->none();
 			}
 			foreach ($messages as $m) {
 				$this->add_global_notification($m);
 			}
-			$data = $set->it(false, array(), $pagination->items_per_page, ($pagination->current_page-1)*$pagination->items_per_page);
+			try {
+				$data = $set->it(
+					false, array(), $pagination->items_per_page,
+					($pagination->current_page-1)*$pagination->items_per_page
+				);
+			} catch(ORMException $e) {
+				$this->add_global_notification($e->getMessage());
+				$data = array();
+			}
+
 			$i = 0;
 			$result=array();
 			switch ($this->type) {
@@ -436,7 +464,6 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('config/index');
 
 		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$this->js_strings .= "var _filter_label = '"._('Enter text to filter')."';";
 		$this->template->js_strings = $this->js_strings;
 		$this->template->content->header = $header;
 		$this->template->content->data = $result;
@@ -444,27 +471,16 @@ class Config_Controller extends Authenticated_Controller {
 			$pagination->hide_next = true;
 		}
 		$this->template->content->pagination = $pagination;
-		$this->template->content->filter_string = $this->input->get('filterbox', _('Enter text to filter'));
+		$filter_string = $this->input->get('filterbox');
+		$this->template->content->filter_string = $filter_string;
+
 		$this->template->content->type = $this->type;
-
 		$this->template->toolbar = new Toolbar_Controller( _( "View Config" ), _('Object type') );
-		$filter_string = $this->input->get('filterbox', _('Enter text to filter'));
-
-		$obj_types = array(
-			"hosts",
-			"hostgroups",
-			"services",
-			"servicegroups",
-			"contacts",
-			"contactgroups",
-			"timeperiods",
-			"commands"
-		);
 
 		$obj_form = '<form method="get" action="">';
 		$obj_form .= ' <select class="auto" name="type" onchange="submit()">';
 
-		foreach ( $obj_types as $t ) {
+		foreach ($obj_types as $t => $columns) {
 			if ( $t === $this->type ) {
 				$obj_form .= '<option value="' . $t . '" selected="selected">' . $t . '</option>';
 			} else {
@@ -472,13 +488,18 @@ class Config_Controller extends Authenticated_Controller {
 			}
 		}
 
-		$obj_form .= '</select>';
-		$obj_form .= ' <input type="text" id="filterbox" name="filterbox" value="' . html::specialchars($filter_string) . '" />';
-		$obj_form .= ' <input type="submit" value="' . _("Filter") . '"  />';
-		$obj_form .= '</form>';
+		ob_start();
+		?>
+		</select>
+		  <input type="text" id="filterbox" name="filterbox" placeholder=
+		    "<?php echo html::specialchars(_('Enter text to filter')); ?> "
+		    value="<?php echo html::specialchars($filter_string); ?>" />
+		  <input type="submit" value="<?php echo _("Filter"); ?>" />
+		</form>
+		<?php
+		$obj_form .= ob_get_clean();
 
 		$this->template->toolbar->info( $obj_form );
-
 	}
 
 	public function unauthorized()

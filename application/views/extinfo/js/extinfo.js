@@ -40,19 +40,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('#hostfilterbox').keyup(function(){
-		filter_table(this, 'hostcomments_table');})
-		.focus(function(){
-			if(this.value==_filter_label) {
-				this.value='';
-			}
-	})
-	.blur(function() {
-		if (this.value == '') {
-			this.value = _filter_label;
-		}
-	});
-
 	$('.filterboxfield')
 		.parents('form')
 			.submit(function(ev) {
@@ -66,19 +53,6 @@ $(document).ready(function() {
 	$('#clearservicesearch').click(function() {
 		$('#servicefilterbox').val('').trigger('keyup').trigger('blur');
 		return false;
-	});
-
-	$('#servicefilterbox').keyup(function(){
-		filter_table(this, 'servicecomments_table');})
-		.focus(function(){
-			if(this.value==_filter_label) {
-				this.value='';
-			}
-	})
-	.blur(function() {
-		if (this.value == '') {
-			this.value = _filter_label;
-		}
 	});
 
 	/**
@@ -95,20 +69,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('#hostfilterbox_sched').keyup(function(){
-		filter_table(this, 'scheduled_host_downtime');})
-		.focus(function(){
-			if(this.value==_filter_label) {
-				this.value='';
-			}
-	})
-	.blur(function() {
-		if (this.value == '') {
-			this.value = _filter_label;
-		}
-	});
-
-
 	// service scheduled downtime
 	if ($.tablesorter)
 		$('#scheduled_service_downtime').tablesorter({headers:{0:{sorter:false}}});
@@ -116,19 +76,6 @@ $(document).ready(function() {
 	$('#clearservicesearch_sched').click(function() {
 		$('#servicefilterbox_sched').val('').trigger('keyup').trigger('blur');
 		return false;
-	});
-
-	$('#servicefilterbox_sched').keyup(function(){
-		filter_table(this, 'scheduled_service_downtime');})
-		.focus(function(){
-			if(this.value==_filter_label) {
-				this.value='';
-			}
-	})
-	.blur(function() {
-		if (this.value == '') {
-			this.value = _filter_label;
-		}
 	});
 
 	$('.extinfo_contactgroup').each(function() {
