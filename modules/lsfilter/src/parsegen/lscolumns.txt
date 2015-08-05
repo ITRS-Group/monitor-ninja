@@ -1,3 +1,5 @@
+=LSColumns
+
 _whitespace /^(\s+)/
 
 string      /^("(?:[^"\\]|\\.)*")/

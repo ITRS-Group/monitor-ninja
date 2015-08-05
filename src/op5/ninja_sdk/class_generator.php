@@ -6,16 +6,17 @@ abstract class class_generator {
 	protected $fp;
 	protected $indent_lvl = array();
 	protected $class_suffix = '';
+	protected $moduledir = false;
 	protected $class_dir = false;
 	protected $class_basedir = false;
 	protected $classname;
 
 	/* Overwrite those to make compatible with framework naming convention */
-	public static $model_suffix = '';
+	public static $model_suffix = '_Model';
 	public static $library_suffix = '';
-	public static $library_dir = false;
-	public static $model_dir = false;
-	public static $manifest_dir = false;
+	public static $library_dir = 'libraries';
+	public static $model_dir = 'models';
+	public static $manifest_dir = 'manifest';
 
 	protected $filename_lowercase = true;
 
@@ -49,6 +50,10 @@ abstract class class_generator {
 
 	public function set_class_dir( $class_dir ) {
 		$this->class_dir = $class_dir;
+	}
+
+	public function set_moduledir( $moduledir ) {
+		$this->moduledir = $moduledir;
 	}
 
 	public function set_basedir( $class_basedir ) {
@@ -97,6 +102,9 @@ abstract class class_generator {
 			$filename = strtolower( $this->classname );
 		}
 		$path = '';
+		if($this->moduledir !== false) {
+			$path .= $this->moduledir . DIRECTORY_SEPARATOR;
+		}
 		if($this->class_basedir !== false) {
 			$path .= $this->class_basedir . DIRECTORY_SEPARATOR;
 		}

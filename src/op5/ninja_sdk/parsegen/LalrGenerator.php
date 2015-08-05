@@ -22,52 +22,63 @@ class LalrGenerator {
 	private $name;
 	private $grammar;
 
-	public function __construct( $name, $grammar ) {
-		$this->name = $name;
+	public function __construct( $grammar ) {
+		$this->name = $grammar['class'];
 		$this->grammar = new LalrGrammar( $grammar );
 	}
 
-	public function generate() {
+	public function generate($moduledir) {
 		print "- Building parser state table\n";
 		$fsm = new LalrStateMachine( $this->grammar );
 
 		print "- Building PHP Lexer\n";
 		$generator = new LalrLexerPHPGenerator( $this->name, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building PHP Preprocessor\n";
 		$generator = new LalrPreprocessorPHPGenerator( $this->name, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building PHP Parser\n";
 		$generator = new LalrParserPHPGenerator( $this->name, $fsm, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building PHP Visitor\n";
 		$generator = new LalrVisitorPHPGenerator( $this->name, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building PHP Exception\n";
 		$generator = new LalrExceptionPHPGenerator( $this->name );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building PHP Wrapper\n";
 		$generator = new LalrPHPGenerator( $this->name );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 
 		print "- Building Javascript Lexer\n";
 		$generator = new LalrLexerJSGenerator( $this->name, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building Javascript Preprocessor\n";
 		$generator = new LalrPreprocessorJSGenerator( $this->name, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building Javascript Parser\n";
 		$generator = new LalrParserJSGenerator( $this->name, $fsm, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building Javascript Visitor\n";
 		$generator = new LalrVisitorJSGenerator( $this->name, $this->grammar );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 		print "- Building Javascript Wrapper\n";
 		$generator = new LalrJSGenerator( $this->name );
+		$generator->set_moduledir($moduledir);
 		$generator->generate();
 
 		print "- Building HTML visualization of parser state table and lexer\n";
 		$generator = new LalrHTMLVisualizationGenerator( $this->name, $fsm, $this->grammar );
-		$generator->generate();
+		$generator->generate($moduledir);
 	}
 }

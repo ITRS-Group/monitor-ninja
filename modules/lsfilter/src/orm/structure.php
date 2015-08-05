@@ -1,6 +1,13 @@
 <?php
 
 $tables = array (
+	'object' =>
+	array(
+		/* Special case, root objects */
+		'class' => 'Object',
+		'source' => 'Root',
+		'structure' => array()
+	),
 	'saved_filters' =>
 	array(
 		'class' => 'SavedFilter',
