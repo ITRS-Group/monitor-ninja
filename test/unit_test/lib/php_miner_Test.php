@@ -216,7 +216,7 @@ EOF;
  * @ninja stuff boll
  * @ninja boll hej
  * @somethingelse kakaka
- ' @something something @otherthing
+ * @something something @otherthing
  */
 class boll {
 }
@@ -234,6 +234,37 @@ EOF;
 			'ninja boll hej',
 			'somethingelse kakaka',
 			'something something @otherthing'
+		), $classes[0]->get_docstring_tags() );
+	}
+	public function test_docstring_multiline_tags() {
+		$content = <<<'EOF'
+<?php
+/**
+ * boll class things
+ *
+ * @multi line
+ *   new line ending
+ *
+ * not in tag
+ * @multi line tag
+ * ends with new tag
+ * @singe line
+ */
+class boll {
+}
+
+EOF;
+		$miner = php_miner_file::parse_content( $content );
+		$this->assertInstanceOf( 'php_miner_file', $miner );
+
+		$classes = $miner->extract( 'php_miner_statement_class', false );
+		/* @var $classes php_miner_statement_class[] */
+		$this->assertCount( 1, $classes );
+
+		$this->assertEquals( array (
+			"multi line\nnew line ending",
+			"multi line tag\nends with new tag",
+			"singe line"
 		), $classes[0]->get_docstring_tags() );
 	}
 }
