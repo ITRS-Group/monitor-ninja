@@ -40,6 +40,8 @@ class doctags_Builder {
 		$patterns = explode( "\n", file_get_contents( $includes_file ) );
 		$files = array ();
 		foreach ( array_reverse( $patterns ) as $pattern ) {
+			if($pattern == '')
+				continue;
 			$include = true;
 			if (substr( $pattern, 0, 1 ) == "!") {
 				$pattern = substr( $pattern, 1 );
@@ -83,6 +85,7 @@ class doctags_Builder {
 		$prefix .= " ";
 		foreach ( $tags as $tag ) {
 			list ( $class, $function, $tagline ) = $tag;
+			$tagline = str_replace("\n", " ", $tagline);
 			if (substr( $tagline, 0, strlen( $prefix ) ) == $prefix) {
 				$tagline = trim( substr( $tagline, strlen( $prefix ) ) );
 				$tagparts = explode( " ", $tagline, 3 );
