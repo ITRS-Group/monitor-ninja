@@ -287,7 +287,7 @@ class Host_Model extends BaseHost_Model {
 	/**
 	 * @param comment
 	 *
-	 * @ninja orm_command name Add comment
+	 * @ninja orm_command name Submit a host comment
 	 * @ninja orm_command icon comment
 	 * @ninja orm_command param[] string comment
 	 * @ninja orm_command mayi_method update.command.add_comment
@@ -360,12 +360,13 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @param check_time
-	 * @return bool
+	 * @param forced = false
 	 *
 	 * @ninja orm_command name Re-schedule next host check
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_check
 	 * @ninja orm_command param[] time check_time
+	 * @ninja orm_command param[] bool forced
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a host. Naemon
 	 *     will re-queue the host to be checked at the time you specify. If you
@@ -375,8 +376,18 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command enabled_if checks_enabled
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_check($check_time) {
-		return $this->submit_naemon_command("SCHEDULE_HOST_CHECK", $check_time);
+	public function schedule_check($check_time, $forced = false) {
+
+		$check_tstamp = nagstat::timestamp_format(false, $check_time);
+		if($check_tstamp === false)
+			return array(
+				'status' => 0,
+				'output' => $check_time . " is not a valid date, please adjust it"
+				);
+
+		if($forced)
+			return $this->submit_naemon_command("SCHEDULE_FORCED_HOST_CHECK", $check_tstamp);
+		return $this->submit_naemon_command("SCHEDULE_HOST_CHECK", $check_tstamp);
 	}
 
 	/**
@@ -414,7 +425,23 @@ class Host_Model extends BaseHost_Model {
 	 */
 	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
 		$duration_sec = intval(floatval($duration) * 3600);
-		return $this->submit_naemon_command( "SCHEDULE_HOST_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
+
+		$start_tstamp = nagstat::timestamp_format(false, $start_time);
+		if($start_tstamp === false)
+			return array(
+				'status' => 0,
+				'output' => $start_time . " is not a valid date, please adjust it"
+				);
+
+		$end_tstamp = nagstat::timestamp_format(false, $end_time);
+		if($end_tstamp === false)
+			return array(
+				'status' => 0,
+				'output' => $end_time . " is not a valid date, please adjust it"
+				);
+
+
+		return $this->submit_naemon_command( "SCHEDULE_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
 	}
 
 	/**
@@ -515,11 +542,13 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @param check_time
+	 * @param forced = false
 	 *
 	 * @ninja orm_command name Reschedule service checks
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_service_checks
 	 * @ninja orm_command param[] time check_time
+	 * @ninja orm_command param[] bool forced
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
 	 *     the specified host. If you select the <i>force check</i> option,
@@ -528,7 +557,161 @@ class Host_Model extends BaseHost_Model {
 	 *     are enabled for those services.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_service_checks($check_time) {
+	public function schedule_service_checks($check_time, $forced = false) {
+		$check_time = nagstat::timestamp_format(false, $check_time);
+		if($forced)
+			return $this->submit_naemon_command("SCHEDULE_FORCED_HOST_SVC_CHECKS", $check_time);
 		return $this->submit_naemon_command("SCHEDULE_HOST_SVC_CHECKS", $check_time);
+	}
+
+
+	/**
+	 * @ninja orm_command name Stop obsessing over this host
+	 * @ninja orm_command icon shield-disabled
+	 * @ninja orm_command mayi_method update.command.stop_obsessing
+	 * @ninja orm_command description
+	 *     Disables processing of host checks via the OCHP command for the
+	 *     specified host.
+	 * @ninja orm_command enabled_if obsess
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function stop_obsessing() {
+		return $this->submit_naemon_command("STOP_OBSESSING_OVER_HOST");
+	}
+
+
+	/**
+	 * @ninja orm_command name Start obsessing over this host
+	 * @ninja orm_command icon shield-enabled
+	 * @ninja orm_command mayi_method update.command.start_obsessing
+	 * @ninja orm_command description
+	 *     Disables processing of host checks via the OCHP command for the
+	 *     specified host.
+	 * @ninja orm_command enabled_if !obsess
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function start_obsessing() {
+		return $this->submit_naemon_command("START_OBSESSING_OVER_HOST");
+	}
+
+
+	/**
+	 * @ninja orm_command name Stop accepting passive checks
+	 * @ninja orm_command icon shield-disabled
+	 * @ninja orm_command mayi_method update.command.stop_accept_passive_checks
+	 * @ninja orm_command description
+	 *     Stop accepting new passive host check results
+	 * @ninja orm_command enabled_if accept_passive_checks
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function stop_accept_passive_checks() {
+		return $this->submit_naemon_command("DISABLE_PASSIVE_HOST_CHECKS");
+	}
+
+
+	/**
+	 * @ninja orm_command name Start accepting passive checks for
+	 * @ninja orm_command icon shield-enabled
+	 * @ninja orm_command mayi_method update.command.start_accept_passive_checks
+	 * @ninja orm_command description
+	 *     Start accepting new passive host check results
+	 * @ninja orm_command enabled_if !accept_passive_checks
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function start_accept_passive_checks() {
+		return $this->submit_naemon_command("ENABLE_PASSIVE_HOST_CHECKS");
+	}
+
+
+	/**
+	 * @ninja orm_command name Disable notifications
+	 * @ninja orm_command icon notify-disabled
+	 * @ninja orm_command mayi_method update.command.stop_notifications
+	 * @ninja orm_command description
+	 *     Disable notifications from this host. No contacts will be contacted
+	 *     if this host are having trouble.
+	 * @ninja orm_command enabled_if notifications_enabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function stop_notifications() {
+		return $this->submit_naemon_command("DISABLE_HOST_NOTIFICATIONS");
+	}
+
+
+	/**
+	 * @ninja orm_command name Enable notifications
+	 * @ninja orm_command icon notify
+	 * @ninja orm_command mayi_method update.command.start_notificaitons
+	 * @ninja orm_command description
+	 *     Enable notifications from this host. Contacts for this host will be
+	 *     contacted if this host are having trouble, if there are no other
+	 *     reason for notifications to be prevented, like scheduled downtime or
+	 *     reachabilitiy.
+	 * @ninja orm_command enabled_if !notifications_enabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function start_notificaitons() {
+		return $this->submit_naemon_command("ENABLE_HOST_NOTIFICATIONS");
+	}
+
+
+	/**
+	 * @ninja orm_command name Disable event handler
+	 * @ninja orm_command icon shield-disabled
+	 * @ninja orm_command mayi_method update.command.stop_event_handler
+	 * @ninja orm_command description
+	 *     Disable execution of the custom event handler for this host.
+	 * @ninja orm_command enabled_if event_handler_enabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function stop_event_handler() {
+		return $this->submit_naemon_command("DISABLE_HOST_EVENT_HANDLER");
+	}
+
+
+	/**
+	 * @ninja orm_command name Enable event handler
+	 * @ninja orm_command icon shield-enabled
+	 * @ninja orm_command mayi_method update.command.start_event_handler
+	 * @ninja orm_command description
+	 *     Enable execution of the custom event handler for this host.
+	 * @ninja orm_command enabled_if !event_handler_enabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function start_event_handler() {
+		return $this->submit_naemon_command("ENABLE_HOST_EVENT_HANDLER");
+	}
+
+	/**
+	 * @ninja orm_command name Disable flap detection
+	 * @ninja orm_command icon shield-disabled
+	 * @ninja orm_command mayi_method update.command.stop_flap_detection
+	 * @ninja orm_command description
+	 *     Disable analysis of this host is flapping. If no flap detection
+	 *     analysis is enabled, the host will trigger a problem and recovery
+	 *     notification every time the host goes up or down, not only just a
+	 *     "flapping" notification when it starts flapping,
+	 * @ninja orm_command enabled_if flap_detection_enabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function stop_flap_detection() {
+		return $this->submit_naemon_command("DISABLE_HOST_FLAP_DETECTION");
+	}
+
+
+	/**
+	 * @ninja orm_command name Enable flap detection
+	 * @ninja orm_command icon shield-enabled
+	 * @ninja orm_command mayi_method update.command.start_flap_detection
+	 * @ninja orm_command description
+	 *     Enable analysis of this host is flapping. If flap detection
+	 *     analysis is enabled, the host will trigger flapping notification
+	 *     when the host starts to rapidly change between states, instead of
+	 *     sending lot of notifications for every state change.
+	 * @ninja orm_command enabled_if !flap_detection_enabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function start_flap_detection() {
+		return $this->submit_naemon_command("ENABLE_HOST_FLAP_DETECTION");
 	}
 }

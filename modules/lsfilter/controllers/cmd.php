@@ -85,6 +85,20 @@ class Cmd_Controller extends Ninja_Controller {
 			$commands = $object->list_commands(true);
 			if(!array_key_exists($command, $commands))
 				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied", $table, false);
+
+
+			$params = array();
+			$cmdparams = $commands[$command]['param'];
+			foreach($commands[$command]['param'] as $param_def) {
+				list($param_type,$param_name) = $param_def;
+				$params[] = $this->input->post($param_name, null);
+			}
+
+			// Don't set $this->template->content directly, since command might throw exceptions
+			$command_template = $this->add_view($commands[$command]['view']);
+			$command_template->result = call_user_func_array(array($object, $command), $params);
+			$this->template->content = $command_template;
+
 		} catch(ORMException $e) {
 			$error_message = $e->getMessage();
 			op5log::instance('ninja')->log('warning', $error_message);
@@ -95,16 +109,6 @@ class Cmd_Controller extends Ninja_Controller {
 			$template->error = $error_message;
 			return;
 		}
-
-		$params = array();
-		$cmdparams = $commands[$command]['param'];
-		foreach($commands[$command]['param'] as $param_def) {
-			list($param_type,$param_name) = $param_def;
-			$params[] = $this->input->post($param_name, null);
-		}
-
-		$template = $this->template->content = $this->add_view($commands[$command]['view']);
-		$template->result = call_user_func_array(array($object, $command), $params);
 
 	}
 }

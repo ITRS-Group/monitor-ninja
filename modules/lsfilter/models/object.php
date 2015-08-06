@@ -90,8 +90,16 @@ abstract class Object_Model extends BaseObject_Model {
 		foreach($commands as $cmdname => $cmdinfo) {
 			$enabled = true;
 			if(isset($cmdinfo['enabled_if'])) {
-				$enabled_fnc = 'get_'.$cmdinfo['enabled_if'];
+				$field = $cmdinfo['enabled_if'];
+
+				$negate = substr($field,0,1) == '!';
+				if($negate) $field = substr($field,1);
+
+				$enabled_fnc = 'get_'.$field;
 				$enabled = call_user_func(array($this, $enabled_fnc));
+
+				if($negate)
+					$enabled = !$enabled;
 			}
 
 			$params = array();
