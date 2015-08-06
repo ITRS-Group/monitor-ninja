@@ -108,7 +108,8 @@ abstract class Object_Model extends BaseObject_Model {
 				'param' => $params,
 				'mayi_method' => $cmdinfo['mayi_method'],
 				'enabled' => $enabled,
-				'select' => isset($cmdinfo['select']) ? $cmdinfo['select'] : array()
+				'select' => isset($cmdinfo['select']) ? $cmdinfo['select'] : array(),
+				'view' => isset($cmdinfo['view']) ? $cmdinfo['view'] : 'cmd/exec'
 			);
 		}
 

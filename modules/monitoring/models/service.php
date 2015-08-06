@@ -201,8 +201,6 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @param comment
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Add comment
 	 * @ninja orm_command icon comment
@@ -213,55 +211,28 @@ class Service_Model extends BaseService_Model {
 	 *     you work with other administrators, you may find it useful to share
 	 *     information about a host or service that is having problems if more
 	 *     than one of you may be working on it.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function add_comment($comment, &$error_string=NULL) {
-		$error_string = null;
-
-		// we're hardcoding persistance here, it seems like one of those
-		// very weird parameters to expose
-		$command = nagioscmd::build_command("ADD_SVC_COMMENT", array(
-			'service' => $this->get_host()->get_name().";".$this->get_description(),
-			'persistent' => 1,
-			'author' => $this->get_current_user(),
-			'comment' => $comment
-		));
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function add_comment($comment) {
+		return $this->submit_naemon_command("ADD_SVC_COMMENT",1,$this->get_current_user(),$comment);
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Disable active checks
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_check
 	 * @ninja orm_command description
 	 *     This command is used to disable active checks of a service.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function disable_check(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_SVC_CHECK",
-			array(
-				'service' => $this->get_host()->get_name().";".$this->get_description()
-			)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function disable_check() {
+		return $this->submit_naemon_command("DISABLE_SVC_CHECK");
 	}
 
 	/**
 	 * @param plugin_output
 	 * @param status_code
 	 * @param perf_data
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Submit passive check result
 	 * @ninja orm_command icon checks-passive
@@ -277,29 +248,16 @@ class Service_Model extends BaseService_Model {
 	 *     This command is used to submit a passive check result for a service.
 	 *     It is particularly useful for resetting security-related services to
 	 *     OK states once they have been dealt with.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function process_check_result($plugin_output, $status_code, $perf_data=false, &$error_string=NULL) {
-		$error_string = null;
+	public function process_check_result($plugin_output, $status_code, $perf_data=false) {
 		if($perf_data !== false)
 			$plugin_output .= '|' . $perf_data;
-		$command = nagioscmd::build_command("PROCESS_SERVICE_CHECK_RESULT",
-		array(
-		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
-		'return_code' => $status_code,
-		'plugin_output' => $plugin_output
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+		return $this->submit_naemon_command("PROCESS_SERVICE_CHECK_RESULT", $status_code, $plugin_output);
 	}
 
 	/**
 	 * @param check_time
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Re-schedule next service check
 	 * @ninja orm_command icon re-schedule
@@ -311,20 +269,10 @@ class Service_Model extends BaseService_Model {
 	 *     you select the <i>force check</i> option, Nagios will force a check
 	 *     of the service regardless of both what time the scheduled check
 	 *     occurs and whether or not checks are enabled for the service.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_check($check_time, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_SVC_CHECK",
-		array(
-		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
-		'check_time' => $check_time
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_check($check_time) {
+		return $this->submit_naemon_command("SCHEDULE_SVC_CHECK", $check_time);
 	}
 
 	/**
@@ -334,8 +282,6 @@ class Service_Model extends BaseService_Model {
 	 * @param end_time
 	 * @param comment
 	 * @param fixed = true
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Schedule downtime
 	 * @ninja orm_command icon scheduled-downtime
@@ -358,32 +304,15 @@ class Service_Model extends BaseService_Model {
 	 *     service enters a non-OK state (sometime between the start and end
 	 *     times you specified) and lasts as long as the duration of time you
 	 *     enter. The duration fields do not apply for fixed downtime.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_SVC_DOWNTIME",
-		array(
-		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
-		'start_time' => $start_time,
-		'end_time' => $end_time,
-		'fixed' => $fixed,
-		'trigger_id' => $trigger_id,
-		'duration' => $duration,
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
+		$duration_sec = intval(floatval($duration) * 3600);
+		return $this->submit_naemon_command("SCHEDULE_SVC_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
 	}
 
 	/**
 	 * @param comment
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Send custom notificatoin
 	 * @ninja orm_command icon notify-send
@@ -401,20 +330,10 @@ class Service_Model extends BaseService_Model {
 	 *     normal (non-escalated) and escalated contacts. These options allow
 	 *     you to override the normal notification logic if you need to get an
 	 *     important message out.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function send_custom_notification($comment, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SEND_CUSTOM_SVC_NOTIFICATION",
-		array(
-		'service' => implode(';', array($this->get_host()->get_name(), $this->get_description())),
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function send_custom_notification($comment) {
+		$options = 4; // forced
+		return $this->submit_naemon_command("SEND_CUSTOM_SVC_NOTIFICATION", $options, $this->get_current_user(), $comment);
 	}
 }

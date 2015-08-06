@@ -17,6 +17,7 @@ class ORMRootObjectGenerator extends class_generator {
 		$this->generate_export();
 		$this->generate_construct();
 		$this->generate_rewrite_columns();
+		$this->generate_get_key();
 		$this->finish_class();
 	}
 
@@ -44,6 +45,19 @@ class ORMRootObjectGenerator extends class_generator {
 	private function generate_rewrite_columns() {
 		$this->init_function('rewrite_columns', array(), array('static', 'public'));
 		$this->write('return array();');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate get key
+	 *
+	 * Should be overridden by most objects.
+	 *
+	 * @return void
+	 **/
+	private function generate_get_key() {
+		$this->init_function("get_key");
+		$this->write("return false;");
 		$this->finish_function();
 	}
 }

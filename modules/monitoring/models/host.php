@@ -198,17 +198,15 @@ class Host_Model extends BaseHost_Model {
 	/**
 	 * Trigger this host to be checked right now.
 	 *
-	 * @param &$error_string
-	 * @return boolean
-	 *
 	 * @ninja orm_command name Check now
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.check_now
 	 * @ninja orm_command description
 	 *     Schedule the next check as soon as possible
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function check_now(&$error_string = null) {
-		return $this->schedule_check(time(), $error_string);
+	public function check_now() {
+		return $this->schedule_check(time());
 	}
 
 	/**
@@ -216,12 +214,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param persistent = true
 	 * @param notify = true
 	 * @param sticky = true
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Acknowledge Problem
 	 * @ninja orm_command icon acknowledged
-	 * @ninja orm_command enabled
 	 * @ninja orm_command param[] bool sticky
 	 * @ninja orm_command param[] bool notify
 	 * @ninja orm_command param[] bool persistent
@@ -244,24 +239,10 @@ class Host_Model extends BaseHost_Model {
 	 *     want an acknowledgement notification sent out to the appropriate
 	 *     contacts, uncheck the 'Notify' checkbox.
 	 * @ninja orm_command enabled_if unacknowledged_problem
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function acknowledge_problem($comment, $persistent=true, $notify=true, $sticky=true, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ACKNOWLEDGE_HOST_PROBLEM",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'sticky' => $sticky,
-		'notify' => $notify,
-		'persistent' => $persistent,
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function acknowledge_problem($comment, $persistent=true, $notify=true, $sticky=true) {
+		return $this->submit_naemon_command("ACKNOWLEDGE_HOST_PROBLEM", $sticky?2:0, $notify?1:0, $persistent?1:0, $this->get_current_user(), $comment);
 	}
 
 	/**
@@ -277,9 +258,6 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Remove acknoledgement
 	 * @ninja orm_command icon acknowledged-not
 	 * @ninja orm_command mayi_method update.command.remove_acknowledgement
@@ -288,19 +266,10 @@ class Host_Model extends BaseHost_Model {
 	 *     Once the acknowledgement is removed, notifications may start being
 	 *     sent out about the host problem.
 	 * @ninja orm_command enabled_if acknowledged_problem
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function remove_acknowledgement(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("REMOVE_HOST_ACKNOWLEDGEMENT",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function remove_acknowledgement() {
+		return $this->submit_naemon_command("REMOVE_HOST_ACKNOWLEDGEMENT");
 	}
 
 	/**
@@ -317,8 +286,6 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @param comment
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Add comment
 	 * @ninja orm_command icon comment
@@ -329,27 +296,13 @@ class Host_Model extends BaseHost_Model {
 	 *     work with other administrators, you may find it useful to share
 	 *     information about a host that is having problems if more than one of
 	 *     you may be working on it.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function add_comment($comment, &$error_string=NULL) {
-		$error_string = null;
-
-		// we're hardcoding persistance here, it seems like one of those
-		// very weird parameters to expose
-		$command = nagioscmd::build_command("ADD_HOST_COMMENT", array(
-			'host_name' => $this->get_name(),
-			'persistent' => 1,
-			'author' => $this->get_current_user(),
-			'comment' => $comment
-		));
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function add_comment($comment) {
+		return $this->submit_naemon_command("ADD_HOST_COMMENT",1,$this->get_current_user(),$comment);
 	}
 
 	/**
-	 * @param &error_string = NULL
 	 * @return bool
 	 *
 	 * @ninja orm_command name Enable active checks
@@ -358,25 +311,13 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of this host.
 	 * @ninja orm_command enabled_if checks_disabled
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function enable_check(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_HOST_CHECK",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function enable_check() {
+		return $this->submit_naemon_command("ENABLE_HOST_CHECK");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Disable active checks
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_check
@@ -386,27 +327,16 @@ class Host_Model extends BaseHost_Model {
 	 *     of this host, it will assume that it is in the same state that it was
 	 *     in before checks were disabled.
 	 * @ninja orm_command enabled_if checks_enabled
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function disable_check(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_HOST_CHECK",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function disable_check() {
+		return $this->submit_naemon_command("DISABLE_HOST_CHECK");
 	}
 
 	/**
 	 * @param plugin_output
 	 * @param status_code
 	 * @param perf_data
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Submit passive check result
 	 * @ninja orm_command icon checks-passive
@@ -420,28 +350,16 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a host.
 	 * @ninja orm_command enabled_if accept_passive_checks
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function process_check_result($plugin_output, $status_code, $perf_data=false, &$error_string=NULL) {
-		$error_string = null;
+	public function process_check_result($plugin_output, $status_code, $perf_data=false) {
 		if($perf_data !== false)
 			$plugin_output .= '|' . $perf_data;
-		$command = nagioscmd::build_command("PROCESS_HOST_CHECK_RESULT",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'status_code' => $status_code,
-		'plugin_output' => $plugin_output
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+		return $this->submit_naemon_command("PROCESS_HOST_CHECK_RESULT", $status_code, $plugin_output);
 	}
 
 	/**
 	 * @param check_time
-	 * @param &error_string = NULL
 	 * @return bool
 	 *
 	 * @ninja orm_command name Re-schedule next host check
@@ -455,20 +373,10 @@ class Host_Model extends BaseHost_Model {
 	 *     the host regardless of both what time the scheduled check occurs and
 	 *     whether or not checks are enabled for the host.
 	 * @ninja orm_command enabled_if checks_enabled
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_check($check_time, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_HOST_CHECK",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'check_time' => $check_time
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_check($check_time) {
+		return $this->submit_naemon_command("SCHEDULE_HOST_CHECK", $check_time);
 	}
 
 	/**
@@ -478,8 +386,6 @@ class Host_Model extends BaseHost_Model {
 	 * @param end_time
 	 * @param comment
 	 * @param fixed = true
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Schedule downtime
 	 * @ninja orm_command icon scheduled-downtime
@@ -504,32 +410,15 @@ class Host_Model extends BaseHost_Model {
 	 *     host goes down or becomes unreachable (sometime between the start and
 	 *     end times you specified) and lasts as long as the duration of time
 	 *     you enter. The duration fields do not apply for fixed downtime.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_HOST_DOWNTIME",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'start_time' => $start_time,
-		'end_time' => $end_time,
-		'fixed' => $fixed,
-		'trigger_id' => $trigger_id,
-		'duration' => $duration,
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
+		$duration_sec = intval(floatval($duration) * 3600);
+		return $this->submit_naemon_command( "SCHEDULE_HOST_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
 	}
 
 	/**
 	 * @param comment
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Send custom notificatoin
 	 * @ninja orm_command icon notify-send
@@ -547,27 +436,14 @@ class Host_Model extends BaseHost_Model {
 	 *     normal (non-escalated) and escalated contacts. These options allow
 	 *     you to override the normal notification logic if you need to get an
 	 *     important message out.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function send_custom_notification($comment, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SEND_CUSTOM_HOST_NOTIFICATION",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function send_custom_notification($comment) {
+		$options = 4; // forced
+		return $this->submit_naemon_command("SEND_CUSTOM_HOST_NOTIFICATION", $options, $this->get_current_user(), $comment);
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Enable service notifications
 	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method
@@ -578,25 +454,13 @@ class Host_Model extends BaseHost_Model {
 	 *     state types you defined in your service definition.  This <i>does
 	 *     not</i> enable notifications for the host unless you check the
 	 *     'Enable for host too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function enable_service_notifications(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_HOST_SVC_NOTIFICATIONS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function enable_service_notifications() {
+		return $this->submit_naemon_command("ENABLE_HOST_SVC_NOTIFICATIONS");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Disable service notifications
 	 * @ninja orm_command icon notify-disabled
 	 * @ninja orm_command mayi_method
@@ -608,25 +472,13 @@ class Host_Model extends BaseHost_Model {
 	 *     alerts can be sent out in the future.  This <i>does not</i> prevent
 	 *     notifications from being sent out about the host unless you check the
 	 *     'Disable for host too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function disable_service_notifications(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_HOST_SVC_NOTIFICATIONS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function disable_service_notifications() {
+		return $this->submit_naemon_command("DISABLE_HOST_SVC_NOTIFICATIONS");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Enable active service checks
 	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_service_checks
@@ -634,25 +486,13 @@ class Host_Model extends BaseHost_Model {
 	 *     This command is used to enable active checks of all services
 	 *     associated with the specified host.  This <i>does not</i> enable
 	 *     checks of the host unless you check the 'Enable for host too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function enable_service_checks(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_HOST_SVC_CHECKS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function enable_service_checks() {
+		return $this->submit_naemon_command("ENABLE_HOST_SVC_CHECKS");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
 	 * @ninja orm_command name Disable active service checks
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_service_checks
@@ -667,25 +507,14 @@ class Host_Model extends BaseHost_Model {
 	 *     about the host which those services are associated with.  This
 	 *     <i>does not</i> disable checks of the host unless you check the
 	 *     'Disable for host too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function disable_service_checks(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_HOST_SVC_CHECKS",
-		array(
-		'host_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function disable_service_checks() {
+		return $this->submit_naemon_command("DISABLE_HOST_SVC_CHECKS");
 	}
 
 	/**
 	 * @param check_time
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
 	 * @ninja orm_command name Reschedule service checks
 	 * @ninja orm_command icon re-schedule
@@ -697,19 +526,9 @@ class Host_Model extends BaseHost_Model {
 	 *     Naemon will force a check of all services on the host regardless of
 	 *     both what time the scheduled checks occur and whether or not checks
 	 *     are enabled for those services.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_service_checks($check_time, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_HOST_SVC_CHECKS",
-		array(
-		'host_name' => implode(';', array($this->get_name())),
-		'check_time' => $check_time
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_service_checks($check_time) {
+		return $this->submit_naemon_command("SCHEDULE_HOST_SVC_CHECKS", $check_time);
 	}
 }

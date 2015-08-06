@@ -49,13 +49,9 @@ class Cmd_Controller extends Ninja_Controller {
 	public function obj($resp_type = 'html') {
 		// TODO Don't use ORMException in this code...
 		// TODO maybe you don't wanna reuse the old view
-		$template = false;
 
-		if($resp_type == 'json') {
-			$template = $this->template = $this->add_view('cmd/json');
-		} else {
-			$template = $this->template->content = $this->add_view('cmd/exec');
-		}
+		$template = $this->template->content = $this->add_view('cmd/exec');
+
 		$command = $this->input->post('command', false);
 		$table = $this->input->post('table', false);
 		$key = $this->input->post('object', false);
@@ -106,21 +102,9 @@ class Cmd_Controller extends Ninja_Controller {
 			list($param_type,$param_name) = $param_def;
 			$params[] = $this->input->post($param_name, null);
 		}
-		// every command takes a reference to an error as its
-		// last argument
-		$error_string = "";
-		$params[] = &$error_string;
 
-		$result = call_user_func_array(array($object, $command), $params);
-		if($result) {
-			if(request::is_ajax()) {
-				return json::ok(array('message' =>  'Your command was successfully submitted'));
-			}
-			$template->result = true;
-			return;
-		}
+		$template = $this->template->content = $this->add_view($commands[$command]['view']);
+		$template->result = call_user_func_array(array($object, $command), $params);
 
-		$template->result = false;
-		$template->error = $error_string;
 	}
 }

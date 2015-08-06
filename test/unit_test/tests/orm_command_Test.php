@@ -109,14 +109,14 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		$sticky = true;
 
 		$host = new Host_Model(array('name' => $host_name), '', array('name'));
-		$host->acknowledge_problem($comment, $persistent, $notify, $sticky, $error_message);
+		$host->acknowledge_problem($comment, $persistent, $notify, $sticky);
 		$this->assertRegExp(
 			sprintf(
 				'/\[\d+\] ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s/',
 				$host_name,
-				(int) $persistent,
-				(int) $notify,
-				(int) $sticky,
+				$sticky ? 2 : 0, // If the "sticky" option is set to two (2), the acknowledgement will remain until the host returns to an UP state.
+				$notify ? 1 : 0,
+				$persistent ? 1 : 0,
 				$this->author,
 				$comment
 			),

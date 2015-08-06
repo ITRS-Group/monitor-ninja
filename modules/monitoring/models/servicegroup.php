@@ -69,34 +69,23 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
+	 * @ninja orm_command name Disable active service checks
+	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_service_checks
 	 * @ninja orm_command description
 	 *     This command is used to disable active checks of all services in the
 	 *     specified servicegroup. This <i>does not</i> disable checks of the
 	 *     hosts in the servicegroup unless you check the 'Disable for hosts
 	 *     too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function disable_service_checks(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_SERVICEGROUP_SVC_CHECKS",
-		array(
-		'servicegroup_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function disable_service_checks() {
+		return $this->submit_naemon_command("DISABLE_SERVICEGROUP_SVC_CHECKS");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
+	 * @ninja orm_command name Disable service notifications
+	 * @ninja orm_command icon notify-disabled
 	 * @ninja orm_command mayi_method update.command.disable_service_notifications
 	 * @ninja orm_command description
 	 *     This command is used to prevent notifications from being sent out for
@@ -105,50 +94,30 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 *     any alerts can be sent out in the future. This <i>does not</i>
 	 *     prevent notifications from being sent out about the hosts in this
 	 *     servicegroup unless you check the 'Disable for hosts too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function disable_service_notifications(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS",
-		array(
-		'servicegroup_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function disable_service_notifications() {
+		return $this->submit_naemon_command("DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
+	 * @ninja orm_command name Enable active service checks
+	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_service_checks
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of all services in the
 	 *     specified servicegroup. This <i>does not</i> enable active checks of
 	 *     the hosts in the servicegroup unless you check the 'Enable for hosts
 	 *     too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function enable_service_checks(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_SERVICEGROUP_SVC_CHECKS",
-		array(
-		'servicegroup_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function enable_service_checks() {
+		return $this->submit_naemon_command("ENABLE_SERVICEGROUP_SVC_CHECKS");
 	}
 
 	/**
-	 * @param &error_string = NULL
-	 * @return bool
-	 *
+	 * @ninja orm_command name Enable service notifications
+	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method update.command.enable_service_notifications
 	 * @ninja orm_command description
 	 *     This command is used to enable notifications for all services in the
@@ -156,19 +125,10 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 *     service state types you defined in your service definitions. This
 	 *     <i>does not</i> enable notifications for the hosts in this
 	 *     servicegroup unless you check the 'Enable for hosts too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function enable_service_notifications(&$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS",
-		array(
-		'servicegroup_name' => implode(';', array($this->get_name()))
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function enable_service_notifications() {
+		return $this->submit_naemon_command("ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS");
 	}
 
 	/**
@@ -178,9 +138,9 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @param end_time
 	 * @param comment
 	 * @param fixed = true
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
+	 * @ninja orm_command name Schedule host downtime
+	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_host_downtime
 	 * @ninja orm_command param[] duration duration
 	 * @ninja orm_command param[] int trigger_id
@@ -203,26 +163,11 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 *     (sometime between the start and end times you specified) and lasts as
 	 *     long as the duration of time you enter. The duration fields do not
 	 *     apply for fixed dowtime.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_host_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_SERVICEGROUP_HOST_DOWNTIME",
-		array(
-		'servicegroup_name' => implode(';', array($this->get_name())),
-		'start_time' => $start_time,
-		'end_time' => $end_time,
-		'fixed' => $fixed,
-		'trigger_id' => $trigger_id,
-		'duration' => $duration,
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_host_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
+		$duration_sec = intval(floatval($duration) * 3600);
+		return $this->submit_naemon_command( "SCHEDULE_SERVICEGROUP_HOST_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
 	}
 
 	/**
@@ -232,9 +177,9 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @param end_time
 	 * @param comment
 	 * @param fixed = true
-	 * @param &error_string = NULL
-	 * @return bool
 	 *
+	 * @ninja orm_command name Schedule service downtime
+	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_service_downtime
 	 * @ninja orm_command param[] duration duration
 	 * @ninja orm_command param[] int trigger_id
@@ -261,25 +206,10 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 *     are associated with. If you want to also schedule downtime for all
 	 *     hosts in the servicegroup, check the 'Schedule downtime for hosts
 	 *     too' option.
+	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_service_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true, &$error_string=NULL) {
-		$error_string = null;
-		$command = nagioscmd::build_command("SCHEDULE_SERVICEGROUP_SVC_DOWNTIME",
-		array(
-		'servicegroup_name' => implode(';', array($this->get_name())),
-		'start_time' => $start_time,
-		'end_time' => $end_time,
-		'fixed' => $fixed,
-		'trigger_id' => $trigger_id,
-		'duration' => $duration,
-		'author' => $this->get_current_user(),
-		'comment' => $comment
-		)
-		);
-		$result = nagioscmd::submit_to_nagios($command, "", $output);
-		if(!$result && $output !== false) {
-			$error_string = $output;
-		}
-		return $result;
+	public function schedule_service_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
+		$duration_sec = intval(floatval($duration) * 3600);
+		return $this->submit_naemon_command( "SCHEDULE_SERVICEGROUP_SVC_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
 	}
 }
