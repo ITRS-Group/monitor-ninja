@@ -68,7 +68,7 @@ clean:
 
 Documentation: clean ninja.doxy application/models/*.php application/helpers/*.php
 	a=$$(doxygen ninja.doxy 2>&1); \
-	if [[ -n $$a ]]; then \
+	if [ -n "$$a" ]; then \
 		echo "$$a"; \
 		exit 1; \
 	fi;
