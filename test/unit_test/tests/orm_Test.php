@@ -115,7 +115,7 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	public function test_fetch_all() {
 		$orm_structure = Module_Manifest_Model::get('orm_structure');
 
-		$columns = array_merge(array_keys(Host_Model::$rewrite_columns),
+		$columns = array_merge(array_keys(Host_Model::rewrite_columns()),
 			array_keys($orm_structure['hosts']));
 
 		$this->fetch_and_test_single_host(false, $columns);

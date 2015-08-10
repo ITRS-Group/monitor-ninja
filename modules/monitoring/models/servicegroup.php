@@ -7,14 +7,9 @@ require_once( dirname(__FILE__).'/base/baseservicegroup.php' );
  */
 class ServiceGroup_Model extends BaseServiceGroup_Model {
 	/**
-	 * An array of custom column dependencies
-	 */
-	static public $rewrite_columns = array(
-		'service_stats' => array('name')
-	);
-
-	/**
 	 * Get statistics about services in the group
+	 *
+	 * @ninja orm depend[] name
 	 */
 	public function get_service_stats() {
 		$set = ServicePool_Model::all()->reduce_by('groups', $this->get_name(), '>=');

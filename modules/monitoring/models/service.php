@@ -7,25 +7,10 @@ require_once( dirname(__FILE__).'/base/baseservice.php' );
  */
 class Service_Model extends BaseService_Model {
 	/**
-	 * An array containing the custom column dependencies
-	 */
-	static public $rewrite_columns = array(
-		'state_text'      => array('state','has_been_checked'),
-		'first_group'     => array('groups'),
-		'checks_disabled' => array('active_checks_enabled'),
-		'duration'        => array('last_state_change'),
-		'comments_count'  => array('comments'),
-		'config_url'      => array('host.name', 'description'),
-		'state_type_text' => array('state_type'),
-		'check_type_str'  => array('check_type'),
-		'config_allowed'  => array('contacts'),
-		'source_node'     => array('check_source'),
-		'source_type'     => array('check_source'),
-		'perf_data'       => array('perf_data_raw')
-	);
-
-	/**
 	 * Return the state as text
+	 *
+	 * @ninja orm depend[] state
+	 * @ninja orm depend[] has_been_checked
 	 */
 	public function get_state_text() {
 		if( !$this->get_has_been_checked() )
@@ -41,6 +26,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Return the name of one of the services groups the object is member of
+	 *
+	 * @ninja orm depend[] groups
 	 */
 	public function get_first_group() {
 		$groups = $this->get_groups();
@@ -50,6 +37,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Returns true if checks are disabled
+	 *
+	 * @ninja orm depend[] active_checks_enabled
 	 */
 	public function get_checks_disabled() {
 		//FIXME: passive as active
@@ -58,6 +47,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Returns the duration since last state change
+	 *
+	 * @ninja orm depend[] last_state_change
 	 */
 	public function get_duration() {
 		$now = time();
@@ -79,6 +70,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Returns the number of comments related to the service
+	 *
+	 * @ninja orm depend[] comments
 	 */
 	public function get_comments_count() {
 		return count($this->get_comments());
@@ -86,6 +79,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Return the state type, as text in uppercase
+	 *
+	 * @ninja orm depend[] state_type
 	 */
 	public function get_state_type_text() {
 		return $this->get_state_type()?'hard':'soft';
@@ -93,6 +88,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Get the check type as string (passive/active)
+	 *
+	 * @ninja orm depend[] check_type
 	 */
 	public function get_check_type_str() {
 		return $this->get_check_type() ? 'passive' : 'active';
@@ -100,6 +97,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Get a list of custom commands for the service
+	 *
+	 * @ninja orm depend[] custom_variables
 	 */
 	public function get_custom_commands() {
 		return Custom_command_Model::parse_custom_variables($this->get_custom_variables());
@@ -108,6 +107,8 @@ class Service_Model extends BaseService_Model {
 	/**
 	 * Get if having access to configure the host.
 	 * @param $auth op5auth module to use, if not default
+	 *
+	 * @ninja orm depend[] contacts
 	 */
 	public function get_config_allowed($auth = false) {
 		if( $auth === false ) {
@@ -129,6 +130,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Get configuration url
+	 *
+	 * @ninja orm depend[] host.name
+	 * @ninja orm depend[] description
 	 */
 	public function get_config_url() {
 		return str_replace(array(
@@ -165,6 +169,8 @@ class Service_Model extends BaseService_Model {
 	 * Get which merlin node handling the check.
 	 *
 	 * This is determined by magic regexp parsing of the check_source field
+	 *
+	 * @ninja orm depend[] check_source
 	 */
 	public function get_source_node() {
 		$source = $this->get_source();
@@ -175,6 +181,8 @@ class Service_Model extends BaseService_Model {
 	 * Get which merlin node handling the check.
 	 *
 	 * This is determined by magic regexp parsing of the check_source field
+	 *
+	 * @ninja orm depend[] check_source
 	 */
 	public function get_source_type() {
 		$source = $this->get_source();
@@ -183,6 +191,8 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * Get the performance data for the object, expressed as an associative array
+	 *
+	 * @ninja orm depend[] perf_data_raw
 	 */
 	public function get_perf_data() {
 		$perf_data_str = parent::get_perf_data_raw();

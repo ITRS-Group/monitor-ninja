@@ -7,6 +7,30 @@ require_once( dirname(__FILE__).'/base/baseobject.php' );
  */
 abstract class Object_Model extends BaseObject_Model {
 	/**
+	 * Mine out rewrite columns from doctags
+	 *
+	 * TODO: Don't do string magic in runtime... That's slow
+	 * However... in this case, it's not that often...
+	 */
+	static public function rewrite_columns() {
+		$orm_doctags = Module_Manifest_Model::get('orm_doctags');
+		$classname = strtolower(get_called_class());
+		if(!isset($orm_doctags[$classname]))
+			return array();
+
+		$rewrite_columns = array();
+		foreach($orm_doctags[$classname] as $field => $info) {
+			if(!isset($info['depend']))
+				continue;
+			if(substr($field,0,4) != 'get_')
+				continue;
+			$field = substr($field,4);
+			$rewrite_columns[$field] = $info['depend'];
+		}
+		return $rewrite_columns;
+	}
+
+	/**
 	 * Get the table of the current object
 	 */
 	public function get_table() {

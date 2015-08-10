@@ -9,15 +9,9 @@ require_once( dirname(__FILE__).'/base/basesavedfilter.php' );
  */
 class SavedFilter_Model extends BaseSavedFilter_Model {
 	/**
-	 * An array containing the custom column dependencies
-	 */
-	static public $rewrite_columns = array(
-		'scope' => array('username'),
-		'deletable' => array('username')
-	);
-
-	/**
 	 * Get the scope as a string
+	 *
+	 * @ninja orm depend[] username
 	 */
 	public function get_scope() {
 		if($this->get_username() === '') {
@@ -28,6 +22,8 @@ class SavedFilter_Model extends BaseSavedFilter_Model {
 
 	/**
 	 * Get if current user is allowed to delete the object
+	 *
+	 * @ninja orm depend[] username
 	 */
 	public function get_deletable() {
 		switch( $this->get_scope() ) {

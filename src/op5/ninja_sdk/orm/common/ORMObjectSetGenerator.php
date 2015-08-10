@@ -52,7 +52,7 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 
 	public function generate_apply_columns_rewrite() {
 		$this->init_function('apply_columns_rewrite', array('columns', 'prefix'),array('static'),array('prefix'=>''));
-		$this->write( 'foreach('.$this->obj_class.'::$rewrite_columns as $column => $rewrites) {');
+		$this->write( 'foreach('.$this->obj_class.'::rewrite_columns() as $column => $rewrites) {');
 		$this->write(   'if( in_array( $prefix.$column, $columns ) ) {' );
 		$this->write(     'foreach($rewrites as $rewrite) {' );
 		$this->write(       '$columns[] = $prefix.$rewrite;' );

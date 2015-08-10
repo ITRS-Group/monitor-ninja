@@ -7,14 +7,10 @@ require_once( dirname(__FILE__).'/base/basenotification.php' );
  */
 class Notification_Model extends BaseNotification_Model {
 	/**
-	 * An array containing the custom column dependencies
-	 */
-	static public $rewrite_columns = array(
-		'state_text' => array('state','notification_type')
-		);
-
-	/**
 	 * Get the state, as text
+	 *
+	 * @ninja orm depend[] state
+	 * @ninja orm depend[] notification_type
 	 */
 	public function get_state_text() {
 		$state = $this->get_state();

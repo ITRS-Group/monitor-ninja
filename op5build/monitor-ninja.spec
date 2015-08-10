@@ -58,6 +58,7 @@ BuildRequires: util-linux
 BuildRequires: pwdutils
 BuildRequires: graphviz-gnome
 BuildRequires: ghostscript-fonts-std
+BuildRequires: php53-tokenizer
 %else
 Requires: php >= 5.3
 Requires: php-ldap
@@ -108,6 +109,9 @@ Requires: monitor-ninja = %version
 Requires: rubygem(compass)
 Requires: doxygen
 Requires: graphviz
+%if 0%{?suse_version}
+Requires: php53-tokenizer
+%endif
 
 %description devel
 Development files files for ninja

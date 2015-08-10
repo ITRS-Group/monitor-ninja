@@ -14,9 +14,9 @@ class ORMRootObjectGenerator extends class_generator {
 		$this->init_class();
 		$this->variable( '_table', null, 'protected' );
 		$this->variable( 'export', array('key'), 'protected' );
-		$this->variable( 'rewrite_columns', array(), 'static public' );
 		$this->generate_export();
 		$this->generate_construct();
+		$this->generate_rewrite_columns();
 		$this->finish_class();
 	}
 
@@ -38,6 +38,12 @@ class ORMRootObjectGenerator extends class_generator {
 		$this->write(     '}');
 		$this->write( '}');
 		$this->write( 'return $result;');
+		$this->finish_function();
+	}
+
+	private function generate_rewrite_columns() {
+		$this->init_function('rewrite_columns', array(), array('static', 'public'));
+		$this->write('return array();');
 		$this->finish_function();
 	}
 }
