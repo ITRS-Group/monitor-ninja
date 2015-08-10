@@ -217,10 +217,23 @@ class Host_Model extends BaseHost_Model {
 	 *
 	 * @ninja orm_command name Acknowledge Problem
 	 * @ninja orm_command icon acknowledged
-	 * @ninja orm_command param[] bool sticky
-	 * @ninja orm_command param[] bool notify
-	 * @ninja orm_command param[] bool persistent
-	 * @ninja orm_command param[] string comment
+	 *
+	 * @ninja orm_command params.sticky.id 0
+	 * @ninja orm_command params.sticky.type bool
+	 * @ninja orm_command params.sticky.name Sticky
+	 *
+	 * @ninja orm_command params.notify.id 1
+	 * @ninja orm_command params.notify.type bool
+	 * @ninja orm_command params.notify.name Sticky
+	 *
+	 * @ninja orm_command params.persistent.id 2
+	 * @ninja orm_command params.persistent.type bool
+	 * @ninja orm_command params.persistent.name Sticky
+	 *
+	 * @ninja orm_command params.comment.id 3
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge_problem
 	 * @ninja orm_command description
 	 *     This command is used to acknowledge a host problem.
@@ -289,7 +302,10 @@ class Host_Model extends BaseHost_Model {
 	 *
 	 * @ninja orm_command name Submit a host comment
 	 * @ninja orm_command icon comment
-	 * @ninja orm_command param[] string comment
+	 *
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
 	 * @ninja orm_command mayi_method update.command.add_comment
 	 * @ninja orm_command description
 	 *     This command is used to add a comment for the specified host. If you
@@ -341,12 +357,24 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Submit passive check result
 	 * @ninja orm_command icon checks-passive
 	 * @ninja orm_command mayi_method update.command.process_check_result
-	 * @ninja orm_command param[] string plugin_output
-	 * @ninja orm_command param[] select status_code
-	 * @ninja orm_command param[] string perf_data
-	 * @ninja orm_command select.status_code[] Up
-	 * @ninja orm_command select.status_code[] Down
-	 * @ninja orm_command select.status_code[] Unreachable
+	 *
+	 * @ninja orm_command params.plugin_output.id 0
+	 * @ninja orm_command params.plugin_output.type string
+	 * @ninja orm_command params.plugin_output.name Plugin output
+	 * @ninja orm_command params.plugin_output.description The status string reported as plugin output
+	 *
+	 * @ninja orm_command params.status_code.id 1
+	 * @ninja orm_command params.status_code.type select
+	 * @ninja orm_command params.status_code.name Status code
+	 * @ninja orm_command params.status_code.option[] Up
+	 * @ninja orm_command params.status_code.option[] Down
+	 * @ninja orm_command params.status_code.option[] Unreachable
+	 *
+	 * @ninja orm_command params.perf_data.id 2
+	 * @ninja orm_command params.perf_data.type string
+	 * @ninja orm_command params.perf_data.name Perf data
+	 * @ninja orm_command params.perf_data.description Performance data, formatted as as monitoring-plugins defines
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a host.
 	 * @ninja orm_command enabled_if accept_passive_checks
@@ -365,8 +393,15 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Re-schedule next host check
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_check
-	 * @ninja orm_command param[] time check_time
-	 * @ninja orm_command param[] bool forced
+	 *
+	 * @ninja orm_command params.check_time.id 0
+	 * @ninja orm_command params.check_time.type time
+	 * @ninja orm_command params.check_time.name Check time
+	 *
+	 * @ninja orm_command params.forced.id 1
+	 * @ninja orm_command params.forced.type bool
+	 * @ninja orm_command params.forced.name Force check
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a host. Naemon
 	 *     will re-queue the host to be checked at the time you specify. If you
@@ -401,12 +436,31 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Schedule downtime
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_downtime
-	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] int trigger_id
-	 * @ninja orm_command param[] time start_time
-	 * @ninja orm_command param[] time end_time
-	 * @ninja orm_command param[] string comment
-	 * @ninja orm_command param[] bool fixed
+	 *
+	 * @ninja orm_command params.duration.id 0
+	 * @ninja orm_command params.duration.type duration
+	 * @ninja orm_command params.duration.name Duration
+	 *
+	 * @ninja orm_command params.trigger_id.id 1
+	 * @ninja orm_command params.trigger_id.type int
+	 * @ninja orm_command params.trigger_id.name Trigger id
+	 *
+	 * @ninja orm_command params.start_time.id 2
+	 * @ninja orm_command params.start_time.type time
+	 * @ninja orm_command params.start_time.name Start time
+	 *
+	 * @ninja orm_command params.end_time.id 3
+	 * @ninja orm_command params.end_time.type time
+	 * @ninja orm_command params.end_time.name End time
+	 *
+	 * @ninja orm_command params.comment.id 4
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command params.fixed.id 5
+	 * @ninja orm_command params.fixed.type bool
+	 * @ninja orm_command params.fixed.name Fixed
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule downtime for a host. During the
 	 *     specified downtime, Nagios will not send notifications out about the
@@ -450,7 +504,11 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Send custom notificatoin
 	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method update.command.send_custom_notification
-	 * @ninja orm_command param[] string comment
+	 *
+	 * @ninja orm_command params.comment.id 0
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to send a custom notification about the
 	 *     specified host. Useful in emergencies when you need to notify admins
@@ -547,8 +605,15 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Reschedule service checks
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_service_checks
-	 * @ninja orm_command param[] time check_time
-	 * @ninja orm_command param[] bool forced
+	 *
+	 * @ninja orm_command params.check_time.id 0
+	 * @ninja orm_command params.check_time.type time
+	 * @ninja orm_command params.check_time.name Check time
+	 *
+	 * @ninja orm_command params.forced.id 1
+	 * @ninja orm_command params.forced.type bool
+	 * @ninja orm_command params.forced.name Forced
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
 	 *     the specified host. If you select the <i>force check</i> option,

@@ -205,7 +205,11 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command name Submit a service comment
 	 * @ninja orm_command icon comment
 	 * @ninja orm_command mayi_method update.command.add_comment
-	 * @ninja orm_command param[] string comment
+	 *
+	 * @ninja orm_command params.comment.id 0
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to add a comment for the specified service. If
 	 *     you work with other administrators, you may find it useful to share
@@ -237,13 +241,23 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command name Submit passive check result
 	 * @ninja orm_command icon checks-passive
 	 * @ninja orm_command mayi_method update.command.process_check_result
-	 * @ninja orm_command param[] string plugin_output
-	 * @ninja orm_command param[] select status_code
-	 * @ninja orm_command param[] string perf_data
-	 * @ninja orm_command select.status_code[] Ok
-	 * @ninja orm_command select.status_code[] Warning
-	 * @ninja orm_command select.status_code[] Critical
-	 * @ninja orm_command select.status_code[] Unknown
+	 *
+	 * @ninja orm_command params.plugin_output.id 0
+	 * @ninja orm_command params.plugin_output.type string
+	 * @ninja orm_command params.plugin_output.name Plugin output
+	 *
+	 * @ninja orm_command params.status_code.id 1
+	 * @ninja orm_command params.status_code.type select
+	 * @ninja orm_command params.status_code.name Status code
+	 * @ninja orm_command params.status_code.option[] Ok
+	 * @ninja orm_command params.status_code.option[] Warning
+	 * @ninja orm_command params.status_code.option[] Critical
+	 * @ninja orm_command params.status_code.option[] Unknown
+	 *
+	 * @ninja orm_command params.perf_data.id 2
+	 * @ninja orm_command params.perf_data.type string
+	 * @ninja orm_command params.perf_data.name Perf data
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a service.
 	 *     It is particularly useful for resetting security-related services to
@@ -263,8 +277,15 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command name Re-schedule next service check
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_check
-	 * @ninja orm_command param[] time check_time
-	 * @ninja orm_command param[] bool forced
+	 *
+	 * @ninja orm_command params.check_time.id 0
+	 * @ninja orm_command params.check_time.type time
+	 * @ninja orm_command params.check_time.name Check time
+	 *
+	 * @ninja orm_command params.forced.id 1
+	 * @ninja orm_command params.forced.type bool
+	 * @ninja orm_command params.forced.name Forced
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a service. Naemon
 	 *     will re-queue the service to be checked at the time you specify. If
@@ -297,12 +318,31 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command name Schedule downtime
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_downtime
-	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] int trigger_id
-	 * @ninja orm_command param[] time start_time
-	 * @ninja orm_command param[] time end_time
-	 * @ninja orm_command param[] string comment
-	 * @ninja orm_command param[] bool fixed
+	 *
+	 * @ninja orm_command params.duration.id 0
+	 * @ninja orm_command params.duration.type duration
+	 * @ninja orm_command params.duration.name Duration
+	 *
+	 * @ninja orm_command params.trigger_id.id 1
+	 * @ninja orm_command params.trigger_id.type int
+	 * @ninja orm_command params.trigger_id.name Trigger id
+	 *
+	 * @ninja orm_command params.start_time.id 2
+	 * @ninja orm_command params.start_time.type time
+	 * @ninja orm_command params.start_time.name Start time
+	 *
+	 * @ninja orm_command params.end_time.id 3
+	 * @ninja orm_command params.end_time.type time
+	 * @ninja orm_command params.end_time.name End time
+	 *
+	 * @ninja orm_command params.comment.id 4
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command params.fixed.id 5
+	 * @ninja orm_command params.fixed.type bool
+	 * @ninja orm_command params.fixed.name Fixed
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule downtime for a service.  During the
 	 *     specified downtime, Naemon will not send notifications out about the
@@ -343,7 +383,11 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command name Send custom notificatoin
 	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method update.command.send_custom_notification
-	 * @ninja orm_command param[] string comment
+	 *
+	 * @ninja orm_command params.comment.id 0
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to send a custom notification about the
 	 *     specified service. Useful in emergencies when you need to notify

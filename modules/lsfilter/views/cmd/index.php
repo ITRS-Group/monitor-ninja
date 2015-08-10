@@ -15,60 +15,71 @@ if (empty( $error )) {
 	echo form::hidden( 'table', $object->get_table() );
 	echo form::hidden( 'object', $object->get_key() );
 	echo "<table>";
-	foreach ( $command_info['param'] as $param_def ) {
-		list ( $param_type, $param_name ) = $param_def;
+	foreach ( $command_info['params'] as $pname => $pdef ) {
+		$pdef = array_merge(array(
+			'name' => $pname,
+			'description' => '',
+			'option' => array(),
+			'default' => false
+		), $pdef);
 
 		echo "<tr>";
-		echo "<td>" . mb_convert_case(str_replace('_',' ',$param_name), MB_CASE_TITLE) . "</td>";
 		echo "<td>";
-		switch ($param_type) {
+		echo "<label for='field_$pname'>" . $pdef['name'] . "</label>";
+		echo "</td>";
+		echo "<td>";
+		switch ($pdef['type']) {
 			case 'string' :
 				echo form::input( array (
 					'class' => "input-wide autotest-required",
-					'name' => $param_name,
+					'name' => $pname,
 					'title' => _( 'Required field' ),
-					'id' => 'field_' . $param_name
+					'id' => 'field_' . $pname
 				) );
 				break;
 			case 'int' :
 			case 'float' :
 				echo form::input( array (
 					'class' => "input-wide autotest-required",
-					'name' => $param_name,
+					'name' => $pname,
 					'title' => _( 'Required field' ),
-					'id' => 'field_' . $param_name
+					'id' => 'field_' . $pname
 				) );
 				break;
 			case 'time' :
 				echo form::input( array (
 					'class' => "input-wide autotest-date",
-					'name' => $param_name,
+					'name' => $pname,
 					'title' => _( 'Required field' ),
-					'id' => 'field_' . $param_name
+					'id' => 'field_' . $pname
 				) );
 				break;
 			case 'duration' :
 				echo form::input( array (
 					'class' => "input-wide autotest-float",
-					'name' => $param_name,
+					'name' => $pname,
 					'title' => _( 'Required field' ),
-					'id' => 'field_' . $param_name
+					'id' => 'field_' . $pname
 				) );
 				break;
 			case 'select' :
 				echo form::dropdown( array (
 					'class' => "input-wide autotest-required",
-					'name' => $param_name,
+					'name' => $pname,
 					'title' => _( 'Required field' ),
-					'id' => 'field_' . $param_name
-				), $command_info['select'][$param_name] );
+					'id' => 'field_' . $pname
+				), $pdef['option'] );
 				break;
 			case 'bool' :
 				echo form::checkbox(  array (
-					'name' => $param_name,
-					'id' => 'field_' . $param_name
+					'name' => $pname,
+					'id' => 'field_' . $pname
 				), true, false, 'class="checkbox"' );
 				break;
+		}
+		if(!empty($pdef['description'])) {
+			echo "<br />";
+			echo html::specialchars($pdef['description']);
 		}
 		echo "</td>";
 		echo "</tr>";

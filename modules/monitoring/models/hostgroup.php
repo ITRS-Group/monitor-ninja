@@ -185,12 +185,31 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 * @ninja orm_command name Schedule host downtime
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_host_downtime
-	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] int trigger_id
-	 * @ninja orm_command param[] time start_time
-	 * @ninja orm_command param[] time end_time
-	 * @ninja orm_command param[] string comment
-	 * @ninja orm_command param[] bool fixed
+	 *
+	 * @ninja orm_command params.duration.id 0
+	 * @ninja orm_command params.duration.type duration
+	 * @ninja orm_command params.duration.name Duration
+	 *
+	 * @ninja orm_command params.trigger_id.id 1
+	 * @ninja orm_command params.trigger_id.type int
+	 * @ninja orm_command params.trigger_id.name Trigger id
+	 *
+	 * @ninja orm_command params.start_time.id 2
+	 * @ninja orm_command params.start_time.type time
+	 * @ninja orm_command params.start_time.name Start time
+	 *
+	 * @ninja orm_command params.end_time.id 3
+	 * @ninja orm_command params.end_time.type time
+	 * @ninja orm_command params.end_time.name End time
+	 *
+	 * @ninja orm_command params.comment.id 4
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command params.fixed.id 5
+	 * @ninja orm_command params.fixed.type bool
+	 * @ninja orm_command params.fixed.name Fixed
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule downtime for all hosts in a
 	 *     hostgroup. During the specified downtime, Naemon will not send
@@ -227,12 +246,31 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 * @ninja orm_command name Schedule service downtime
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_service_downtime
-	 * @ninja orm_command param[] duration duration
-	 * @ninja orm_command param[] int trigger_id
-	 * @ninja orm_command param[] time start_time
-	 * @ninja orm_command param[] time end_time
-	 * @ninja orm_command param[] string comment
-	 * @ninja orm_command param[] bool fixed
+	 *
+	 * @ninja orm_command params.duration.id 0
+	 * @ninja orm_command params.duration.type duration
+	 * @ninja orm_command params.duration.name Duration
+	 *
+	 * @ninja orm_command params.trigger_id.id 1
+	 * @ninja orm_command params.trigger_id.type int
+	 * @ninja orm_command params.trigger_id.name Trigger id
+	 *
+	 * @ninja orm_command params.start_time.id 2
+	 * @ninja orm_command params.start_time.type time
+	 * @ninja orm_command params.start_time.name Start time
+	 *
+	 * @ninja orm_command params.end_time.id 3
+	 * @ninja orm_command params.end_time.type time
+	 * @ninja orm_command params.end_time.name End time
+	 *
+	 * @ninja orm_command params.comment.id 4
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command params.fixed.id 5
+	 * @ninja orm_command params.fixed.type bool
+	 * @ninja orm_command params.fixed.name Fixed
+	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule downtime for all services in a
 	 *     hostgroup. During the specified downtime, Naemon will not send

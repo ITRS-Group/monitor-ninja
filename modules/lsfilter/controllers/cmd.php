@@ -87,12 +87,14 @@ class Cmd_Controller extends Ninja_Controller {
 				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied", $table, false);
 
 
+			// Unpack params
 			$params = array();
-			$cmdparams = $commands[$command]['param'];
-			foreach($commands[$command]['param'] as $param_def) {
-				list($param_type,$param_name) = $param_def;
-				$params[] = $this->input->post($param_name, null);
+			foreach($commands[$command]['params'] as $pname => $pdef) {
+				$params[intval($pdef['id'])] = $this->input->post($pname, null);
 			}
+
+			// Depend on order of id instead of order of occurance
+			ksort($params);
 
 			// Don't set $this->template->content directly, since command might throw exceptions
 			$command_template = $this->add_view($commands[$command]['view']);
