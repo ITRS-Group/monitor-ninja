@@ -11,15 +11,15 @@ $commands = $object->list_commands();
 ?>
 <div class="right width-33" id="extinfo_info">
 	<table class="ext">
-<?php foreach($commands as $cmd => $cmdinfo):
-	if($cmdinfo['enabled']):?>
+<?php foreach($commands as $cmd => $cmdinfo) {
+	if($cmdinfo['enabled']) { ?>
 		<tr>
 			<td class="icon dark">
 				<span class="icon-16 x16-<?php echo $cmdinfo['icon']; ?>" title="<?php echo  html::specialchars($cmdinfo['name']) ?>"></span>
 			</td>
-			<td class="bt"><?php echo nagioscmd::cmd_link($object, $cmd, $cmdinfo['name']) ?></td>
+			<td class="bt"><?php echo cmd::cmd_link($object, $cmd, $cmdinfo['name']) ?></td>
 		</tr>
-<?php endif; endforeach; ?>
+<?php } } ?>
 	</table>
 </div>
 
