@@ -128,7 +128,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	/**
 	 * @ninja orm_command name Disable service notifications
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method update.command.disable_service_notificaitons
+	 * @ninja orm_command mayi_method update.command.disable_service_notifications
 	 * @ninja orm_command description
 	 *     This command is used to prevent notifications from being sent out for
 	 *     all services in the specified hostgroup. You will have to re-enable
@@ -230,7 +230,6 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	public function schedule_host_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
 		$duration_sec = intval(floatval($duration) * 3600);
 		return $this->submit_naemon_command( "SCHEDULE_HOSTGROUP_HOST_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
-
 	}
 
 	/**

@@ -705,7 +705,7 @@ class Host_Model extends BaseHost_Model {
 	/**
 	 * @ninja orm_command name Enable notifications
 	 * @ninja orm_command icon notify
-	 * @ninja orm_command mayi_method update.command.start_notificaitons
+	 * @ninja orm_command mayi_method update.command.start_notifications
 	 * @ninja orm_command description
 	 *     Enable notifications from this host. Contacts for this host will be
 	 *     contacted if this host are having trouble, if there are no other
@@ -714,7 +714,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command enabled_if !notifications_enabled
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function start_notificaitons() {
+	public function start_notifications() {
 		return $this->submit_naemon_command("ENABLE_HOST_NOTIFICATIONS");
 	}
 
