@@ -494,14 +494,13 @@ class Host_Model extends BaseHost_Model {
 				'output' => $end_time . " is not a valid date, please adjust it"
 				);
 
-
-		return $this->submit_naemon_command( "SCHEDULE_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
+		return $this->schedule_downtime_retrospectively(false, "SCHEDULE_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 
 	/**
 	 * @param comment
 	 *
-	 * @ninja orm_command name Send custom notificatoin
+	 * @ninja orm_command name Send custom notification
 	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method update.command.send_custom_notification
 	 *

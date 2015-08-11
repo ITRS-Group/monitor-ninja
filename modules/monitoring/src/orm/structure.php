@@ -123,7 +123,7 @@ $tables = array (
 		'class' => 'HostGroup',
 		'source' => 'LS',
 		'key' => array('name'),
-		'object_custom_parent' => 'NaemonObject',
+		'object_custom_parent' => 'NaemonMonitoredObject',
 		'structure' =>
 		array (
 			'action_url' => 'string',
@@ -165,7 +165,7 @@ $tables = array (
 			'perf_data_raw' => 'perf_data',
 			'icon_image' => 'icon_image_expanded'
 		),
-		'object_custom_parent' => 'NaemonObject',
+		'object_custom_parent' => 'NaemonMonitoredObject',
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',
@@ -285,7 +285,7 @@ $tables = array (
 		'class' => 'ServiceGroup',
 		'source' => 'LS',
 		'key' => array('name'),
-		'object_custom_parent' => 'NaemonObject',
+		'object_custom_parent' => 'NaemonMonitoredObject',
 		'structure' =>
 		array (
 			'action_url' => 'string',
@@ -321,7 +321,7 @@ $tables = array (
 			'perf_data_raw' => 'perf_data',
 			'icon_image' => 'icon_image_expanded'
 		),
-		'object_custom_parent' => 'NaemonObject',
+		'object_custom_parent' => 'NaemonMonitoredObject',
 		'structure' =>
 		array (
 			'accept_passive_checks' => 'int',

@@ -374,7 +374,7 @@ class Service_Model extends BaseService_Model {
 				'output' => $end_time . " is not a valid date, please adjust it"
 				);
 
-		return $this->submit_naemon_command("SCHEDULE_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
+		return $this->schedule_downtime_retrospectively(false, "SCHEDULE_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
 	}
 
 	/**
