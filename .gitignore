@@ -20,6 +20,7 @@ modules/*/js
 modules/*/html
 modules/*/models/base
 modules/*/manifest/orm_*.php
+src/generators/*
 
 application/views/css/*/*.css
 application/views/icons/x*-*.png
