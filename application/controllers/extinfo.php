@@ -24,6 +24,8 @@ class Extinfo_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 * Show a single object that is not a group, such as a host
+	 *
 	 * @param $type string = host
 	 * @param $host boolean = false
 	 * @param $service boolean = false
@@ -45,7 +47,6 @@ class Extinfo_Controller extends Ninja_Controller {
 		$hostgroup = trim($hostgroup);
 		$servicegroup = trim($servicegroup);
 
-		$ls = Livestatus::instance();
 		if(!empty($host) && empty($service)) {
 			$set = HostPool_Model::all()->reduce_by('name', $host, '=');
 		}
@@ -390,26 +391,34 @@ class Extinfo_Controller extends Ninja_Controller {
 	}
 
 	/**
-	*   Display extinfo for host- and servicegroups
-	*
-	*/
+	 * Show a single object that is a group, such as a servicegroup
+	 */
 	public function group_details($grouptype='servicegroup', $group=false)
 	{
 		$grouptype = $this->input->get('grouptype', $grouptype);
 		$group = $this->input->get('group', $group);
 
-		if(!in_array($grouptype, array('hostgroup', 'servicegroup'))) {
+		if(!in_array($grouptype, array('hostgroup', 'servicegroup'), true)) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = _("Error: Incorrect group type specified");
 			return;
 		}
-		$set = ObjectPool_Model::pool($grouptype.'s')->all();
-		/* @var $set ServiceGroupSet_Model */
-		$this->_verify_access($set->mayi_resource().':read.extinfo');
-
 		if (empty($group)) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = _("Error: No group name specified");
+			return;
+		}
+
+		$set = ObjectPool_Model::pool($grouptype.'s')
+			->all()
+			->reduce_by('name', $group, '=');
+
+		/* @var $set ServiceGroupSet_Model */
+		$this->_verify_access($set->mayi_resource().':read.extinfo');
+
+		if (count($set) != 1) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
 			return;
 		}
 
@@ -429,27 +438,18 @@ class Extinfo_Controller extends Ninja_Controller {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
 			return;
-		} else {
-			$group_info_res = (object)$group_info_res[0];
 		}
+		$group_info_res = (object)$group_info_res[0];
 		$this->template->content = $this->add_view('extinfo/groups');
 		$content = $this->template->content;
+		$object = $set->it(false)->current();
+		$content->object = $object;
 
 		$content->label_grouptype = $grouptype=='servicegroup' ? _('servicegroup') : _('hostgroup');
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
-		$content->grouptype = $grouptype;
-		$content->cmd_schedule_downtime_hosts = nagioscmd::command_id('SCHEDULE_'.strtoupper($grouptype).'_HOST_DOWNTIME');
-		$content->cmd_schedule_downtime_services = nagioscmd::command_id('SCHEDULE_'.strtoupper($grouptype).'_SVC_DOWNTIME');
-		$content->cmd_enable_notifications_hosts = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_HOST_NOTIFICATIONS');
-		$content->cmd_disable_notifications_hosts = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_HOST_NOTIFICATIONS');
-		$content->cmd_disable_notifications_services = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_SVC_NOTIFICATIONS');
-		$content->cmd_enable_notifications_services = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_SVC_NOTIFICATIONS');
-		$content->cmd_disable_active_svc_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
-		$content->cmd_enable_active_svc_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
-
-		$content->cmd_disable_active_host_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_HOST_CHECKS');
-		$content->cmd_enable_active_host_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_HOST_CHECKS');
+		$content->commands = $this->add_view('extinfo/commands');
+		$content->commands->set = $set;
 
 		$content->notes_url = $group_info_res->notes_url !='' ? nagstat::process_macros($group_info_res->notes_url, $group_info_res, $grouptype) : false;
 		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res, $grouptype) : false;

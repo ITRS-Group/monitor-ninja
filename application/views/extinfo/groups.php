@@ -36,96 +36,16 @@ if (!empty($notes)) {?>
 	<br /><strong><?php echo _('Notes') ?></strong>: <?php echo $notes;
 }
 
-
-$group_attribute = strtolower($grouptype) . '_name';
-
 ?>
 
 <div>
-<table class="ext">
-	<caption><?php echo ucfirst($label_grouptype) ?> <?php echo _('Commands').' '._('for').': '.html::specialchars($group_alias).' ('.$groupname.')'; ?>
+<h1><?php echo ucfirst($label_grouptype); ?> <strong><?php echo $object->get_alias(); ?> (<?php echo $object->get_key() ?>)</h1>
+<?php
+/*
 		<?php if (nacoma::link()===true)
+		TODO add configuration commands to all objects
 			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/x16/nacoma.png', sprintf(_('Configure this %s'), $grouptype));?>
 	</caption>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-scheduled-downtime" title="Schedule downtime for all hosts in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_schedule_downtime_hosts.'&'.$group_attribute.'='.$groupname, _('Schedule downtime for all hosts in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-scheduled-downtime" title="Schedule downtime for all services in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_schedule_downtime_services.'&'.$group_attribute.'='.$groupname, _('Schedule downtime for all services in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-notify" title="Enable notifications for all hosts in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_notifications_hosts.'&'.$group_attribute.'='.$groupname, _('Enable')." "._('notifications for all hosts in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-notify-disabled" title="Disable notifications for all hosts in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_notifications_hosts.'&'.$group_attribute.'='.$groupname, _('Disable')." "._('notifications for all hosts in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-notify" title="Enable notifications for all services in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_notifications_services.'&'.$group_attribute.'='.$groupname, _('Enable')." "._('notifications for all services in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-notify-disabled" title="Disable notifications for all services in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_notifications_services.'&'.$group_attribute.'='.$groupname, _('Disable').' '._('notifications for all services in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-enabled" title="Enable active checks for all hosts in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_host_checks.'&'.$group_attribute.'='.$groupname, _('Enable')." "._('active checks of all hosts in this')." ".$label_grouptype); ?>
-	</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-disabled" title="Disable active checks for all hosts in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_active_host_checks.'&'.$group_attribute.'='.$groupname, _('Disable')." "._('active checks of all hosts in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-enabled" title="Enable active checks for all services in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_svc_checks.'&'.$group_attribute.'='.$groupname, _('Enable')." "._('active checks of all services in this')." ".$label_grouptype); ?>
-	</td>
-	</tr>
-	<tr>
-		<td class="status icon">
-			<span class="icon-16 x16-disabled" title="Disable active checks for all services in this group"></span>
-		</td>
-		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_active_svc_checks.'&'.$group_attribute.'='.$groupname, _('Disable')." "._('active checks of all services in this')." ".$label_grouptype); ?>
-		</td>
-	</tr>
-</table>
-</div>
+ */
+
+echo $commands;

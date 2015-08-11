@@ -69,6 +69,30 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	}
 
 	/**
+	 * @ninja orm_command name Disable active host checks
+	 * @ninja orm_command icon disable-active-checks
+	 * @ninja orm_command mayi_method update.command.disable_host_checks
+	 * @ninja orm_command description
+	 *      Disables active checks for all hosts in this servicegroup.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function disable_host_checks() {
+		return $this->submit_naemon_command("DISABLE_SERVICEGROUP_HOST_CHECKS");
+	}
+
+	/**
+	 * @ninja orm_command name Disable host notifications
+	 * @ninja orm_command icon notify-disabled
+	 * @ninja orm_command mayi_method update.command.stop_notifications
+	 * @ninja orm_command description
+	 *     Disable notifications for all hosts in this servicegroup.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function disable_host_notifications() {
+		return $this->submit_naemon_command("DISABLE_SERVICEGROUP_HOST_NOTIFICATIONS");
+	}
+
+	/**
 	 * @ninja orm_command name Disable active service checks
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_service_checks
@@ -101,6 +125,30 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	}
 
 	/**
+	 * @ninja orm_command name Enable active host checks
+	 * @ninja orm_command icon enable
+	 * @ninja orm_command mayi_method update.command.enable_host_checks
+	 * @ninja orm_command description
+	 *      Enables active checks for all hosts in this servicegroup.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function enable_host_checks() {
+		return $this->submit_naemon_command("ENABLE_SERVICEGROUP_HOST_CHECKS");
+	}
+
+	/**
+	 * @ninja orm_command name Enable host notifications
+	 * @ninja orm_command icon notify
+	 * @ninja orm_command mayi_method update.command.start_notifications
+	 * @ninja orm_command description
+	 *     Enable notifications for all hosts in this servicegroup.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function enable_host_notifications() {
+		return $this->submit_naemon_command("ENABLE_SERVICEGROUP_HOST_NOTIFICATIONS");
+	}
+
+	/**
 	 * @ninja orm_command name Enable active service checks
 	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_service_checks
@@ -129,6 +177,23 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 */
 	public function enable_service_notifications() {
 		return $this->submit_naemon_command("ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS");
+	}
+
+	/**
+	 * Get all hosts that have services in this set.
+	 *
+	 * TODO this method is SLOW for large servicegroups
+	 *
+	 * @return HostSet_Model
+	 */
+	public function get_hosts_set() {
+		$services = ServicePool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
+		$all = HostPool_Model::all();
+		$hosts = HostPool_Model::none();
+		foreach($services->it(array('host.name')) as $obj) {
+			$hosts = $hosts->union($all->reduce_by('name', $obj->get_host()->get_name(), '='));
+		}
+		return $hosts;
 	}
 
 	/**
@@ -186,7 +251,22 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 */
 	public function schedule_host_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
 		$duration_sec = intval(floatval($duration) * 3600);
-		return $this->submit_naemon_command( "SCHEDULE_SERVICEGROUP_HOST_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
+		$start_tstamp = nagstat::timestamp_format(false, $start_time);
+		if($start_tstamp === false) {
+			return array(
+				'status' => 0,
+				'output' => $start_time . " is not a valid date, please adjust it"
+			);
+		}
+		$end_tstamp = nagstat::timestamp_format(false, $end_time);
+		if($end_tstamp === false) {
+			return array(
+				'status' => 0,
+				'output' => $end_time . " is not a valid date, please adjust it"
+			);
+		}
+		$set = $this->get_hosts_set();
+		return $this->schedule_downtime_retrospectively($set, "SCHEDULE_SERVICEGROUP_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 
 	/**
@@ -248,6 +328,22 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 */
 	public function schedule_service_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
 		$duration_sec = intval(floatval($duration) * 3600);
-		return $this->submit_naemon_command( "SCHEDULE_SERVICEGROUP_SVC_DOWNTIME", $start_time, $end_time, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment );
+		$start_tstamp = nagstat::timestamp_format(false, $start_time);
+		if($start_tstamp === false) {
+			return array(
+				'status' => 0,
+				'output' => $start_time . " is not a valid date, please adjust it"
+			);
+		}
+		$end_tstamp = nagstat::timestamp_format(false, $end_time);
+		if($end_tstamp === false) {
+			return array(
+				'status' => 0,
+				'output' => $end_time . " is not a valid date, please adjust it"
+			);
+		}
+
+		$set = ServicePool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
+		return $this->schedule_downtime_retrospectively($set, "SCHEDULE_SERVICEGROUP_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 }

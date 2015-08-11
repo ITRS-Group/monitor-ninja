@@ -8,10 +8,12 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 	/**
 	 * Entry point for scheduling any downtime, not only retrospectively
 	 * added ones (TODO change method name?)
+	 *
+	 * @param $set false|ObjectSet_Model Additional object to place in downtime
 	 */
 	protected function schedule_downtime_retrospectively() {
 		$args = func_get_args();
-		$query = array_shift($args);
+		$set_to_schedule = array_shift($args);
 		// always submit the command for all downtimes that starts >= now
 		$ret = call_user_func_array(array($this, 'submit_naemon_command'), $args);
 
@@ -29,10 +31,10 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 			 * X seconds, it's considered to have been added
 			 * retrospectively
 			 */
-			if($query) {
+			if($set_to_schedule) {
 				// some action wants to apply the downtime to
 				// other objects than itself
-				$this->schedule_retrospectively_for_query($query, $start_time, $end_time, $comment);
+				$this->schedule_retrospectively_for_set($set_to_schedule, $start_time, $end_time, $comment);
 			}
 			if($this instanceof Host_Model || $this instanceof Service_Model) {
 				$this->schedule_downtime_retrospectively_for_object($this, $start_time, $end_time, $comment);
@@ -73,28 +75,22 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 	}
 
 	/**
-	 * Schedule downtime for past dates for all objects matching $query
+	 * Schedule downtime for past dates for all objects in $set
 	 *
-	 * @param $query string like [hosts] name = "sven"
+	 * @param $set ObjectSet_Model
 	 * @param $start_time int UNIX timestamp
 	 * @param $end_time int UNIX timestamp
 	 * @param $comment string
 	 */
-	protected function schedule_retrospectively_for_query($query, $start_time, $end_time, $comment) {
-		try {
-			$pool = ObjectPool_Model::get_by_query($query);
-		} catch(LSFilterException $e) {
-			op5log::instance('ninja')->log('error', 'Tried to schedule downtime, found bad query: '.$query);
-			return;
-		}
-		if($pool instanceof ServicePool_Model) {
+	protected function schedule_retrospectively_for_set(ObjectSet_Model $set, $start_time, $end_time, $comment) {
+		if($set instanceof ServiceSet_Model) {
 			$columns = array('host.name', 'description');
-		} elseif($pool instanceof HostPool_Model) {
+		} elseif($set instanceof HostSet_Model) {
 			$columns = array('name');
 		} else {
 			return;
 		}
-		foreach($pool->it($columns) as $obj) {
+		foreach($set->it($columns) as $obj) {
 			$this->schedule_downtime_retrospectively_for_object($obj, $start_time, $end_time, $comment);
 		}
 	}
