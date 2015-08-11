@@ -172,6 +172,10 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 
 	private function generate_fetch_by_key() {
 		$this->init_function( 'fetch_by_key', array('key'), 'static' );
+		$this->write('$set = self::set_by_key($key);');
+		$this->write('if($set === false) {');
+		$this->write('return false;');
+		$this->write('}');
 		$this->write('foreach(self::set_by_key($key) as $obj) {');
 		$this->write(    'return $obj;');
 		$this->write('}');
