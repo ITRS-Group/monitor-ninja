@@ -165,13 +165,8 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$this->template->inline_js = $this->inline_js;
 
-		if (nagioscmd::is_authorized_for(array('host_name' => $host, 'service' => $service)) === true) {
-			$this->template->content->commands = $this->add_view('extinfo/commands');
-			$this->template->content->commands->set = $set;
-		} else {
-			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = _("You're not authorized to run commands");
-		}
+		$this->template->content->commands = $this->add_view('extinfo/commands');
+		$this->template->content->commands->set = $set;
 
 		$this->template->toolbar = new Toolbar_Controller();
 		$toolbar = &$this->template->toolbar;
