@@ -236,4 +236,16 @@ class request {
 		}
 	}
 
+	/**
+	 * @param $code int like 200 400 etc
+	 */
+	public static function send_header($code) {
+		$codes = array(
+			400 => 'Bad request'
+		);
+		if(headers_sent() || !array_key_exists($code, $codes)) {
+			return;
+		}
+		header("HTTP/1.1 $code ".$codes[$code]);
+	}
 } // End request
