@@ -8,6 +8,16 @@
 class Listview_Widget extends widget_Base {
 	protected $duplicatable = true;
 
+	/**
+	 * Not really branding, but how to make this listview widget custom in the
+	 * case of using it as a static embedded list view.
+	 *
+	 * @var array
+	 */
+	protected $branding = array(
+			'listview_link' => true
+		);
+
 	private $query=false;
 
 	public function __construct($widget_model) {
@@ -17,12 +27,13 @@ class Listview_Widget extends widget_Base {
 	/**
 	 * Disable everything configurable. This is useful when including the widget with generetated parameters from a controller.
 	 */
-	public function set_fixed() {
+	public function set_fixed($branding = array()) {
 		$this->movable      = false;
 		$this->removable    = false;
 		$this->closeconfirm = false;
 		$this->editable     = false;
 		$this->duplicatable = false;
+		$this->branding     = array_merge($this->branding, $branding);
 	}
 
 	public function options() {

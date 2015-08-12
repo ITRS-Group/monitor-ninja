@@ -157,7 +157,7 @@ class Search_Controller extends Ninja_Controller {
 				$widget = widget::get($model, $this);
 				widget::set_resources($widget, $this);
 
-				$widget->set_fixed($query);
+				$widget->set_fixed();
 				// abuse the fact that ls-tables are pluralized
 				$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($query));
 

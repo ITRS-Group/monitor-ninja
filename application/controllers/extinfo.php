@@ -107,7 +107,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
 
-			$widget->set_fixed($set->get_comments()->get_query());
+			$widget->set_fixed();
 			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
 
 			$this->template->content->widgets[] = $widget;
@@ -132,7 +132,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
 
-			$widget->set_fixed($set->get_downtimes()->get_query());
+			$widget->set_fixed();
 
 			$this->template->content->widgets[] = $widget;
 		}
@@ -157,7 +157,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			$widget = widget::get($model, $this);
 			widget::set_resources($widget, $this);
 
-			$widget->set_fixed($set->get_comments()->get_query());
+			$widget->set_fixed();
 			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
 
 			$this->template->content->widgets[] = $widget;

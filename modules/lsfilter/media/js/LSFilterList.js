@@ -151,12 +151,14 @@ function lsfilter_list(config)
 				.ajax({
 					url: this.config.request_url,
 					dataType: 'json',
+					type: "POST",
 					data: {
 						"query": this.request_query,
 						"sort": db_sort_columns,
 						"columns": this.table_desc.db_columns,
 						"limit": options.per_page,
-						"offset": options.offset
+						"offset": options.offset,
+						"csrf_token": _csrf_token
 					},
 					success: function(data)
 					{

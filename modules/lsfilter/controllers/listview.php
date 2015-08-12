@@ -78,12 +78,12 @@ class ListView_Controller extends Ninja_Controller {
 	public function fetch_ajax() {
 		$this->_verify_access('ninja.listview:read');
 
-		$query = $this->input->get('query','');
-		$columns = $this->input->get('columns',false);
-		$sort = $this->input->get('sort',array());
+		$query = $this->input->get('query',$this->input->post('query',''));
+		$columns = $this->input->get('columns',$this->input->post('columns',false));
+		$sort = $this->input->get('sort',$this->input->post('sort',array()));
 
-		$limit = $this->input->get('limit',false);
-		$offset = $this->input->get('offset',false);
+		$limit = $this->input->get('limit',$this->input->post('limit',false));
+		$offset = $this->input->get('offset',$this->input->post('offset',false));
 
 		if( $limit === false ) {
 			return json::fail( array( 'data' => _("No limit specified")) );
