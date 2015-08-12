@@ -6,6 +6,25 @@ require_once( dirname(__FILE__).'/base/basedowntime.php' );
  * Describes a single object from livestatus
  */
 class Downtime_Model extends BaseDowntime_Model {
+
+	/**
+	 * @ninja orm_command name Delete downtime
+	 * @ninja orm_command icon delete-downtime
+	 * @ninja orm_command mayi_method
+	 *     update.command.delete_downtime
+	 *
+	 * @ninja orm_command description
+	 *     Delete/cancel a scheduled downtime entry.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function delete() {
+		$cmd = "DEL_HOST_DOWNTIME";
+		if($this->get_is_service()) {
+			$cmd = "DEL_SVC_DOWNTIME";
+		}
+		return $this->submit_naemon_command($cmd);
+	}
+
 	/**
 	 * Get triggered by object, as a text.
 	 *

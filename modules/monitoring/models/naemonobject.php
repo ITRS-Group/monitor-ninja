@@ -13,7 +13,13 @@ class NaemonObject_Model extends Object_Model {
 		$args = func_get_args();
 		$cmd = array_shift($args);
 
-		$key = $this->get_key();
+		if($this instanceof Downtime_Model) {
+			// the downtime model has "id;is_service" as key,
+			// which does not correspond to the Neamon cmd
+			$key = $this->get_id();
+		} else {
+			$key = $this->get_key();
+		}
 		$key = ($key===false) ? "" : ";".$key;
 
 		$raw_command = sprintf("[%d] %s%s", time(), $cmd, $key);

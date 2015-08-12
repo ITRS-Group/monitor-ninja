@@ -915,21 +915,22 @@ listview_renderer_table.downtimes = {
 			var cell = $('<td />');
 
 			// Delete
-
-			var del_command = 'DEL_HOST_DOWNTIME';
-			if (args.obj.is_service) {
-				del_command = 'DEL_SVC_DOWNTIME';
-			}
-
-			cell.append(icon16('delete-downtime',
-					_("Delete/cancel this scheduled downtime entry"), link(
-							'command/submit', {
-								cmd_typ : del_command,
-								downtime_id : args.obj.id,
-							})));
+			cell.append(
+				icon16(
+					'delete-downtime',
+					_("Delete/cancel this scheduled downtime entry"),
+					link(
+						'cmd',
+						{
+							'command': 'delete',
+							'table': 'downtimes',
+							'object': args.obj.id+";"+Number(args.obj.is_service)
+						}
+					)
+				)
+			);
 
 			// Schedule recurring
-
 			var recurring_args = {
 				host : args.obj.host.name
 			};
