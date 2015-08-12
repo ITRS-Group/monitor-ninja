@@ -111,7 +111,8 @@ abstract class Object_Model extends BaseObject_Model {
 				'enabled' => $enabled,
 				'default' => isset($cmdinfo['default']) ? $cmdinfo['default'] : array(),
 				'select' => isset($cmdinfo['select']) ? $cmdinfo['select'] : array(),
-				'view' => isset($cmdinfo['view']) ? $cmdinfo['view'] : 'cmd/exec'
+				'view' => isset($cmdinfo['view']) ? $cmdinfo['view'] : 'cmd/exec',
+				'redirect' => isset($cmdinfo['redirect']) ? $cmdinfo['redirect'] : 0
 			);
 		}
 

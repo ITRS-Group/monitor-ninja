@@ -44,6 +44,19 @@ class Cmd_Controller extends Ninja_Controller {
 			$this->template->content->error = "Could not find object '$error_message'";
 			return;
 		}
+		if(isset($commands[$command]['redirect']) && $commands[$command]['redirect']) {
+			// All commands that have the 'redirect' flag set
+			// wants us to skip the regular command form view
+			// and provide its own. For example: locate host
+			// on map (Nagvis)
+			$result = $object->$command();
+			if(isset($result['status'])
+					&& $result['status']
+					&& isset($result['redirect'])
+					&& $result['redirect']) {
+				return url::redirect($result['redirect']);
+			}
+		}
 		$this->template->content->command_info = $commands[$command];
 	}
 
