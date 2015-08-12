@@ -8,10 +8,9 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 	/**
 	 * Entry point for scheduling any downtime, not only retrospectively
 	 * added ones (TODO change method name?)
-	 *
-	 * @param $set false|ObjectSet_Model Additional object to place in downtime
 	 */
 	protected function schedule_downtime_retrospectively() {
+		// $set is false|ObjectSet_Model, an additional object to place in downtime
 		$args = func_get_args();
 		$set_to_schedule = array_shift($args);
 		// always submit the command for all downtimes that starts >= now
