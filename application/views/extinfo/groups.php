@@ -41,11 +41,5 @@ if (!empty($notes)) {?>
 <div>
 <h1><?php echo ucfirst($label_grouptype); ?> <strong><?php echo $object->get_alias(); ?> (<?php echo $object->get_key() ?>)</h1>
 <?php
-/*
-		<?php if (nacoma::link()===true)
-		TODO add configuration commands to all objects
-			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/x16/nacoma.png', sprintf(_('Configure this %s'), $grouptype));?>
-	</caption>
- */
 
 echo $commands;

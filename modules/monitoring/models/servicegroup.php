@@ -69,6 +69,24 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	}
 
 	/**
+	 * @ninja orm_command name Configure this servicegroup
+	 * @ninja orm_command icon nacoma
+	 * @ninja orm_command mayi_method update.command.configure
+	 * @ninja orm_command description
+	 *     Configure this servicegroup.
+	 * @ninja orm_command redirect 1
+	 */
+	public function configure() {
+		if(nacoma::link() !== true) {
+			return array('status' => 0);
+		}
+		return array(
+			'status' => 1,
+			'redirect' => 'configuration/configure/servicegroup/'.$this->get_name()
+		);
+	}
+
+	/**
 	 * @ninja orm_command name Disable active host checks
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_host_checks

@@ -368,6 +368,15 @@ Feature: Monitoring
 		Then I should be on the Configure page
 
 	@configuration @asmonitor @case-647
+	Scenario: Hostgroup details hostgroup extinfo page configure
+		Verify that the "Configure" link works correctly.
+
+		Given I am on the Hostgroup details page
+		When I click "Actions"
+		And I click "Configure"
+		Then I should be on the Configure page
+
+	@configuration @asmonitor @case-647
 	Scenario: Host details host extinfo page show performance graph
 		Verify that the "Show performance graph" link works correctly.
 
