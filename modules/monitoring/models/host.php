@@ -598,6 +598,24 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
+	 * @ninja orm_command name Locate host on map
+	 * @ninja orm_command icon locate-host-on-map
+	 * @ninja orm_command mayi_method update.command.locate_on_nagvis_map
+	 * @ninja orm_command description
+	 *     Find the host on a map.
+	 * @ninja orm_command redirect 1
+	 */
+	public function locate_on_nagvis_map() {
+		if(!Kohana::config('nagvis.nagvis_path')) {
+			return array('status' => 0);
+		}
+		return array(
+			'status' => 1,
+			'redirect' => sprintf('nagvis/automap/host/%s', urlencode($this->get_name()))
+		);
+	}
+
+	/**
 	 * @param check_time
 	 * @param forced = false
 	 *
