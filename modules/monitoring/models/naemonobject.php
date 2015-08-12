@@ -13,9 +13,9 @@ class NaemonObject_Model extends Object_Model {
 		$args = func_get_args();
 		$cmd = array_shift($args);
 
-		if($this instanceof Downtime_Model) {
-			// the downtime model has "id;is_service" as key,
-			// which does not correspond to the Neamon cmd
+		if($this instanceof Downtime_Model || $this instanceof Comment_Model) {
+			// the downtime|comment models have "id;is_service" as
+			// keys, which does not correspond to the Neamon cmd
 			$key = $this->get_id();
 		} else {
 			$key = $this->get_key();

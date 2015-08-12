@@ -745,18 +745,22 @@ listview_renderer_table.comments = {
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
-
-			var del_command = 'DEL_HOST_COMMENT';
-			if (args.obj.is_service)
-				del_command = 'DEL_SVC_COMMENT';
-
-			cell.append(icon16('delete-comment', _('Delete comment'), link(
-					'command/submit', {
-						cmd_typ : del_command,
-						'comment_id' : args.obj.id,
-					}).attr('title', 'Delete comment').attr('class',
-					'action_delete_comment')));
-
+			cell.append(
+				icon16(
+					'delete-comment',
+					_('Delete comment'),
+					link(
+						'cmd',
+						{
+							'command': 'delete',
+							'table': 'comments',
+							'object': args.obj.id+";"+Number(args.obj.is_service)
+						}
+					)
+						.attr('title', 'Delete comment')
+						.attr('class', 'action_delete_comment')
+				)
+			);
 			return cell;
 		}
 	}
