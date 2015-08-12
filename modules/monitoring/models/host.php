@@ -529,7 +529,7 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Enable service notifications
+	 * @ninja orm_command name Enable notifications for all services
 	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method
 	 *     update.command.enable_service_notifications
@@ -546,7 +546,7 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Disable service notifications
+	 * @ninja orm_command name Disable notifications for all services
 	 * @ninja orm_command icon notify-disabled
 	 * @ninja orm_command mayi_method
 	 *     update.command.disable_service_notifications
@@ -564,7 +564,7 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Enable active service checks
+	 * @ninja orm_command name Enable checks of all services
 	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_service_checks
 	 * @ninja orm_command description
@@ -578,7 +578,7 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Disable active service checks
+	 * @ninja orm_command name Disable checks of all services
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_service_checks
 	 * @ninja orm_command description
@@ -620,7 +620,7 @@ class Host_Model extends BaseHost_Model {
 	 * @param check_time
 	 * @param forced = false
 	 *
-	 * @ninja orm_command name Reschedule service checks
+	 * @ninja orm_command name Schedule a check of all services
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule_service_checks
 	 *
