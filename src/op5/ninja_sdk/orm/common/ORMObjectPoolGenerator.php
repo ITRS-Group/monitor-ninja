@@ -30,6 +30,8 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 			$this->variable('default_sort',array(),'static protected');
 		}
 
+		$this->generate_common();
+
 		$this->generate_backend_specific_functions();
 
 		$this->generate_stats();

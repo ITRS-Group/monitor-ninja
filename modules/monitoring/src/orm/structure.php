@@ -7,11 +7,14 @@ $tables = array (
 		'source' => 'LS',
 		'key' => array('name', 'table'),
 		'object_custom_parent' => 'NaemonObject',
+		'rename' => array(
+			'table_name' => 'table'
+		),
 		'structure' =>
 		array (
 			'description' => 'string',
 			'name' => 'string',
-			'table' => 'string',
+			'table_name' => 'string',
 			'type' => 'string',
 		),
 	),

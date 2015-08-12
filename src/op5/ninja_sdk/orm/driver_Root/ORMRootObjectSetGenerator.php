@@ -1,6 +1,7 @@
 <?php
+require_once('ORMRootGenerator.php');
 
-class ORMRootObjectSetGenerator extends class_generator {
+class ORMRootObjectSetGenerator extends ORMRootGenerator {
 	private $objectclass;
 
 	public function __construct() {
@@ -12,6 +13,7 @@ class ORMRootObjectSetGenerator extends class_generator {
 		parent::generate($skip_generated_note);
 		$this->init_class( false, array('abstract'), array("IteratorAggregate", "Countable") );
 		$this->generate_construct();
+		$this->generate_common();
 		$this->variable('table',null,'public');
 		$this->variable('dbtable',null,'protected');
 		$this->variable('dbtable_expr',null,'protected');
@@ -19,7 +21,6 @@ class ORMRootObjectSetGenerator extends class_generator {
 		$this->variable('filter',null,'public');
 		$this->variable('default_sort',array(),'protected');
 		$this->variable('key_columns',array(),'protected');
-		$this->generate_getter('table');
 		$this->generate_getter('class');
 		$this->generate_binary_operator('union', 'LivestatusFilterOr');
 		$this->generate_binary_operator('intersect', 'LivestatusFilterAnd');

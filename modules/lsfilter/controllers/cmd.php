@@ -13,30 +13,64 @@ class Cmd_Controller extends Ninja_Controller {
 		$this->template->content = $this->add_view('cmd/index');
 		$this->template->disable_refresh = true;
 		$this->template->content->error = false;
-		$command = $this->input->get('command');
-		$table = $this->input->get('table');
-		$object_key = $this->input->get('object');
+
+		/* Accept both get and post, get has precedance */
+		$command = $this->input->get('command', $this->input->post( 'command', false ) );
+		$table = $this->input->get('table', $this->input->post( 'table', false ) );
+		$object_keys = $this->input->get('object', $this->input->post( 'object', false ) );
+
+		/* Object keys can be both array or single, if single, convert ot array */
+		if(!is_array($object_keys)) {
+			$object_keys = array($object_keys);
+		}
 
 		try {
 			$pool = ObjectPool_Model::pool($table);
+			/* @var $pool ObjectPool_Model */
 		} catch(ORMException $e) {
 			request::send_header(400);
 			$this->template->content->error = $e->getMessage();
 			return;
 		}
 
-
-		$object = $pool->fetch_by_key($object_key);
-		if($object === false) {
-			request::send_header(400);
-			$this->template->content->error = "Could not find $table object '$object_key'";
-			return;
+		$set = $pool->none();
+		/* @var $set ObjectSet_Model */
+		foreach($object_keys as $key) {
+			$set = $set->union($pool->set_by_key($key));
 		}
-		$this->template->content->object = $object;
+
+		$this->template->content->set = $set;
 		$this->template->content->table = $table;
 		$this->template->content->command = $command;
 
-		$commands = $object->list_commands();
+		$widget = widget::get(new Ninja_widget_Model(array(
+			'page' => Router::$controller,
+			'name' => 'listview',
+			'widget' => 'listview',
+			'username' => op5auth::instance()->get_user()->username,
+			'friendly_name' => 'Objects',
+			'setting' => array(
+				'query'=>$set->get_query(),
+				'limit' => intval(config::get('pagination.default.items_per_page','*'))
+			)
+		)));
+		$widget->set_fixed(array(
+			'listview_link'=>false
+		));
+		widget::set_resources($widget, $this);
+
+		$this->template->content->objs_widget = $widget;
+
+		$count = count($set);
+
+		$commands = array();
+		if($count == 1) {
+			$object = $set->one();
+			$commands = $object->list_commands();
+		} else {
+			$obj_class = $set->class_obj();
+			$commands = $obj_class::list_commands_static();
+		}
 		if(!array_key_exists($command, $commands)) {
 			request::send_header(400);
 			$error_message = "Tried to submit command '$command' on table '$table' but that command does not exist for that kind of objects. Aborting without any commands applied";
@@ -69,41 +103,27 @@ class Cmd_Controller extends Ninja_Controller {
 		$template = $this->template->content = $this->add_view('cmd/exec');
 
 		$command = $this->input->post('command', false);
-		$table = $this->input->post('table', false);
-		$key = $this->input->post('object', false);
+		$query = $this->input->post('query', false);
 
 		try {
 			// validate input parameters presence
-			$errors = array();
 			if($command == false) {
-				$errors[] = 'Missing command (the c parameter)';
+				throw new ORMException('Missing command');
 			}
-			if($table == false) {
-				$errors[] = 'Missing table (the t parameter)';
-			}
-			if($key == false) {
-				$errors[] = 'Missing object name (the o parameter)';
-			}
-
-			if($errors) {
-				throw new ORMException(implode("<br>", $errors));
+			if($query == false) {
+				throw new ORMException('Missing query');
 			}
 
 			// validate table name
-			$pool = ObjectPool_Model::pool($table);
-
-			// validate object by primary key
-			/* @var $object Object_Model */
-			$object = $pool->fetch_by_key($key);
-			if($object === false) {
-				throw new ORMException("Could not find object '$key'", $table, false);
-			}
+			$set = ObjectPool_Model::get_by_query($query);
+			/* @var $set ObjectPool_Model */
 
 			// validate command
-			$commands = $object->list_commands(true);
-			if(!array_key_exists($command, $commands)) {
-				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied", $table, false);
-			}
+			$obj_class = $set->class_obj();
+			$commands = $obj_class::list_commands_static(true);
+
+			if(!array_key_exists($command, $commands))
+				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied");
 
 			// Unpack params
 			$params = array();
@@ -114,14 +134,18 @@ class Cmd_Controller extends Ninja_Controller {
 			// Depend on order of id instead of order of occurance
 			ksort($params);
 
-			// Don't set $this->template->content directly, since command might throw exceptions
-			$command_template = $this->add_view($commands[$command]['view']);
-			$result = call_user_func_array(array($object, $command), $params);
-			$command_template->result = $result;
-			if(isset($result['status']) && !$result['status']) {
-				request::send_header(400);
+			$results = array();
+
+			foreach($set as $object) {
+				// Don't set $this->template->content directly, since command might throw exceptions
+				$command_template = $this->add_view($commands[$command]['view']);
+				$command_template->result = call_user_func_array(array($object, $command), $params);
+				$command_template->object = $object;
+				$results[] = $command_template;
 			}
-			$this->template->content = $command_template;
+
+			$template->results = $results;
+
 		} catch(ORMException $e) {
 			request::send_header(400);
 			$error_message = $e->getMessage();

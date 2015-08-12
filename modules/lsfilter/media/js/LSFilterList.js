@@ -460,6 +460,17 @@ function lsfilter_list(config)
 				}));
 				// .addClass( 'listview-cell-' + cur_col));
 			}
+
+			for ( var cmd in this.table_desc.commands ) {
+				var validator = this.table_desc.commands[cmd];
+				if (validator(obj)) {
+					row.addClass('command_en_' + cmd);
+				} else {
+					row.addClass('command_dis_' + cmd);
+				}
+			}
+			row.addClass('listview_row');
+
 			tbody.append(row);
 			this.previous_obj = obj;
 		}

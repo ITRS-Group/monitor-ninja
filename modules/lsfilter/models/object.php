@@ -30,15 +30,6 @@ abstract class Object_Model extends BaseObject_Model {
 	}
 
 	/**
-	 * Get the table of the current object
-	 *
-	 * @return string
-	 */
-	public function get_table() {
-		return $this->_table;
-	}
-
-	/**
 	 * Get a list of custom variables related to the object, if possible
 	 *
 	 * @return array
@@ -53,8 +44,59 @@ abstract class Object_Model extends BaseObject_Model {
 	 * This is a wrapper to get the resource from the set
 	 */
 	public function mayi_resource() {
-		$pool = ObjectPool_Model::pool($this->get_table());
+		$pool = ObjectPool_Model::pool(static::get_table());
 		return $pool->all()->mayi_resource();
+	}
+
+	/**
+	 * Get a list of commands related to the object
+	 * This digs out the information from orm_command_doctags, which is
+	 * generated from the @ninja orm_command tags in corresponding classes.
+	 *
+	 * This doesn't set if the command is enabled or not, but just the enable
+	 * criteria. Thus enable is depednent of the current object
+	 *
+	 * @param $auth_filtered bool
+	 *        	true if filtered by permission, false otherwise
+	 * @return array
+	 */
+	public static function list_commands_static($auth_filtered = true) {
+		$orm_command = Module_Manifest_Model::get( 'orm_command_doctags' );
+		$classname = strtolower( get_called_class() );
+		if (! array_key_exists( $classname, $orm_command ))
+			return array ();
+
+		$commands = $orm_command[$classname];
+
+		if ($auth_filtered) {
+			$mayi = op5MayI::instance();
+			$mayi_resource = static::mayi_resource();
+			$commands = array_filter( $commands, function ($command) use($mayi, $mayi_resource) {
+				return $mayi->run( $mayi_resource . ':' . $command['mayi_method'] );
+			} );
+		}
+
+		/*
+		 * Fill in default values, and make sure all parameters exist in the
+		 * command
+		 */
+		$outcommands = array();
+		foreach ( $commands as $cmdname => $cmdinfo ) {
+			$outcommands[$cmdname] = array_merge( array (
+				'name' => $cmdname,
+				'icon' => 'command',
+				'description' => '',
+				'params' => array (),
+				'mayi_method' => 'invalid',
+				'enabled_if' => false,
+				'defualt' => array (),
+				'select' => array (),
+				'view' => 'cmd/exec',
+                'redirect' => 0
+			), $cmdinfo );
+		}
+
+		return $outcommands;
 	}
 
 	/**
@@ -67,56 +109,28 @@ abstract class Object_Model extends BaseObject_Model {
 	 * @return array
 	 */
 	public function list_commands($auth_filtered = true) {
-		$orm_command = Module_Manifest_Model::get( 'orm_command_doctags' );
-		$classname = strtolower( get_class( $this ) );
-		if (! array_key_exists( $classname, $orm_command ))
-			return array ();
+		$self = $this;
+		return array_map( function ($cmd) use($self) {
+			if ($cmd['enabled_if'] === false) {
+				$cmd['enabled'] = true;
+			} else {
 
-		$commands = $orm_command[$classname];
+				$field = $cmd['enabled_if'];
+				$negate = substr( $field, 0, 1 ) == '!';
+				if ($negate)
+					$field = substr( $field, 1 );
 
-		if ($auth_filtered) {
-			$mayi = op5MayI::instance();
-			$mayi_resource = $this->mayi_resource();
-			$commands = array_filter( $commands, function ($command) use($mayi, $mayi_resource) {
-				return $mayi->run( $mayi_resource . ':' . $command['mayi_method'] );
-			} );
-		}
 
-		/*
-		 * Fill in default values, and make sure all parameters exist in the
-		 * command
-		 */
-		$outcommands = array();
-		foreach($commands as $cmdname => $cmdinfo) {
-			$enabled = true;
-			if(isset($cmdinfo['enabled_if'])) {
-				$field = $cmdinfo['enabled_if'];
+				$cmd['enabled'] = call_user_func( array (
+					$self,
+					'get_' . $field
+				) );
 
-				$negate = substr($field,0,1) == '!';
-				if($negate) $field = substr($field,1);
-
-				$enabled_fnc = 'get_'.$field;
-				$enabled = call_user_func(array($this, $enabled_fnc));
-
-				if($negate)
-					$enabled = !$enabled;
+				if ($negate)
+					$cmd['enabled'] = ! $cmd['enabled'];
 			}
-
-			$outcommands[$cmdname] = array(
-				'name' => isset($cmdinfo['name']) ? $cmdinfo['name'] : $cmdname,
-				'icon' => isset($cmdinfo['icon']) ? $cmdinfo['icon'] : 'command',
-				'description' => isset($cmdinfo['description']) ? $cmdinfo['description'] : '',
-				'params' => isset($cmdinfo['params']) ? $cmdinfo['params'] : array(),
-				'mayi_method' => $cmdinfo['mayi_method'],
-				'enabled' => $enabled,
-				'default' => isset($cmdinfo['default']) ? $cmdinfo['default'] : array(),
-				'select' => isset($cmdinfo['select']) ? $cmdinfo['select'] : array(),
-				'view' => isset($cmdinfo['view']) ? $cmdinfo['view'] : 'cmd/exec',
-				'redirect' => isset($cmdinfo['redirect']) ? $cmdinfo['redirect'] : 0
-			);
-		}
-
-		return $outcommands;
+			return $cmd;
+		}, static::list_commands_static( $auth_filtered ) );
 	}
 
 	/**

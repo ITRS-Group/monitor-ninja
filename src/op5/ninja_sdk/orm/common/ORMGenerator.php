@@ -95,4 +95,26 @@ abstract class ORMGenerator extends class_generator {
 		if(isset($this->structure['writable']))
 			$this->writable = $this->structure['writable'];
 	}
+
+	protected function generate_common() {
+		$this->init_function('class_obj');
+		$this->write("return %s;", $this->obj_class);
+		$this->finish_function();
+
+		$this->init_function('class_set');
+		$this->write("return %s;", $this->set_class);
+		$this->finish_function();
+
+		$this->init_function('class_pool');
+		$this->write("return %s;", $this->pool_class);
+		$this->finish_function();
+
+		$this->init_function('key_columns');
+		$this->write("return %s;", $this->structure['key']);
+		$this->finish_function();
+
+		$this->init_function('get_table');
+		$this->write("return %s;", $this->name);
+		$this->finish_function();
+	}
 }

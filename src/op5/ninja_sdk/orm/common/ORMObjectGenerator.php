@@ -44,12 +44,13 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( $this->parent_class, array('abstract') );
-		$this->variable( '_table', $this->name, 'protected' );
 		if($this->writable) {
 			$this->variable( '_changed', array(), 'private' );
 			$this->variable( '_oldkey', false, 'private' );
 		}
 		$this->write();
+
+		$this->generate_common();
 
 		/* Storage */
 		foreach( $this->structure['structure'] as $field => $type ) {

@@ -1,6 +1,7 @@
 <?php
+require_once('ORMRootGenerator.php');
 
-class ORMRootObjectPoolGenerator extends class_generator {
+class ORMRootObjectPoolGenerator extends ORMRootGenerator {
 
 	private $structure;
 	private $objectclass;
@@ -15,9 +16,11 @@ class ORMRootObjectPoolGenerator extends class_generator {
 		$this->init_class( false, array('abstract') );
 		$this->variable('table',false,'protected');
 		$this->variable('table_classes',false,'private static');
+		$this->generate_common();
 		$this->generate_pool();
 		$this->generate_load_table_classes();
 		$this->generate_fetch_by_key();
+		$this->generate_set_by_key();
 		$this->finish_class();
 	}
 
@@ -48,6 +51,17 @@ class ORMRootObjectPoolGenerator extends class_generator {
 	 **/
 	private function generate_fetch_by_key() {
 		$this->init_function( 'fetch_by_key', array('key'), 'static' );
+		$this->write( 'return false;' );
+		$this->finish_function();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function generate_set_by_key() {
+		$this->init_function( 'set_by_key', array('key'), 'static' );
 		$this->write( 'return false;' );
 		$this->finish_function();
 	}

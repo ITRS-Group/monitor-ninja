@@ -1,6 +1,7 @@
 <?php
+require_once('ORMRootGenerator.php');
 
-class ORMRootObjectGenerator extends class_generator {
+class ORMRootObjectGenerator extends ORMRootGenerator {
 
 	private $structure;
 
@@ -12,10 +13,10 @@ class ORMRootObjectGenerator extends class_generator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class();
-		$this->variable( '_table', null, 'protected' );
 		$this->variable( 'export', array('key'), 'protected' );
-		$this->generate_export();
+		$this->generate_common();
 		$this->generate_construct();
+		$this->generate_export();
 		$this->generate_rewrite_columns();
 		$this->generate_get_key();
 		$this->finish_class();

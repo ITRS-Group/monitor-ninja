@@ -224,7 +224,7 @@ var listview_multi_select_header = $('<input type="checkbox" id="select_all" cla
 var listview_multi_select_cell_renderer = function(args)
 {
 	var checkbox = $(
-			'<input type="checkbox" name="object_select[]" class="listview_multiselect_checkbox" />')
+			'<input type="checkbox" name="object[]" class="listview_multiselect_checkbox" />')
 			.attr('value', args.obj.key);
 	if ( lsfilter_multiselect.box_selected(args.obj.key) ) {
 		checkbox.prop('checked', true);

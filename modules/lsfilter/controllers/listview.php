@@ -239,6 +239,43 @@ class ListView_Controller extends Ninja_Controller {
 		}
 	}
 
+
+	/**
+	 * Return a manifest variable as a javascript file, for loading through a script tag
+	 */
+	public function list_commands( $name = false ) {
+		$this->_verify_access('ninja.listview:read');
+
+		$type = 'json';
+
+		if( substr( $name, -3 ) == '.js' ) {
+			$name = substr( $name, 0, -3 );
+			$type = 'js';
+		}
+
+
+		$this->auto_render = false;
+		$tables = ObjectPool_Model::load_table_classes();
+
+		$commands = array();
+
+		foreach( $tables as $table => $classes ) {
+			$obj_class = $classes['object'];
+			$commands[$table] = $obj_class::list_commands_static();
+		}
+
+		switch($type) {
+			case 'js':
+				header('Content-Type: text/javascript');
+				printf("var listview_commands = %s;\n\n", json_encode($commands));
+				break;
+			case 'json':
+				header('Content-Type: application/json');
+				echo json_encode($commands);
+				break;
+		}
+	}
+
 	/**
 	 * Translated helptexts for this controller
 	 */

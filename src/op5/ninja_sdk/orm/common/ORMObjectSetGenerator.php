@@ -31,6 +31,9 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 	public function generate($skip_generated_note = false) {
 		parent::generate($skip_generated_note);
 		$this->init_class( $this->parent_class, array('abstract') );
+
+		$this->generate_common();
+
 		$this->variable('table',$this->name,'public');
 
 		$this->variable('key_columns',$this->structure['key'],'protected');

@@ -581,10 +581,13 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 };
 
 function lsfilter_list_table_desc(metadata, columndesc) {
+	var self = this;
+
 	this.metadata = metadata;
 	this.vis_columns = [];
 	this.col_renderers = {};
 	this.db_columns = [];
+	this.commands = {};
 
 	if (!listview_renderer_table[metadata.table])
 		return;
@@ -596,6 +599,13 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 	}
 	var all_db_columns = orm_structure[metadata.table];
 	var custom_columns = {};
+
+	var all_command_info = {};
+	if(listview_commands[metadata.table]) {
+		all_command_info = listview_commands[metadata.table];
+	}
+
+
 
 	if (!columndesc) {
 		// If not having a column desc, does a user-config exist?
@@ -671,6 +681,37 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 		for (var j = 0; j < column_obj.depends.length; j++) {
 			this.db_columns.push(column_obj.depends[j]);
 		}
+	}
+
+	for (var cmd in all_command_info) {
+		var field = all_command_info[cmd].enabled_if;
+		var negate = false;
+
+		if(field[0] == '!') {
+			negate = true;
+			field = field.substring(1);
+		}
+
+		(function(){
+			if(!all_command_info[cmd].enabled_if) {
+				self.commands[cmd] = function(obj) {
+					return true;
+				};
+			} else {
+				var myfield = field;
+				if(negate) {
+					self.commands[cmd] = function(obj) {
+						return !obj[myfield];
+					}
+				} else {
+					self.commands[cmd] = function(obj) {
+						return obj[myfield];
+					}
+				}
+			}
+		})();
+
+		this.db_columns.push(field);
 	}
 
 	/* Build fetch sort columns method */

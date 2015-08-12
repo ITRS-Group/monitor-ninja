@@ -53,6 +53,7 @@ function lsfilter_list_attach_events( listview, base_element ) {
 		}
 		else {
 			tr.removeClass(classname);
+			$('#select_all').prop('checked', false);
 		}
 	})
 

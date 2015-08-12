@@ -24,6 +24,9 @@
   display: none
   padding: 8px
 
+#filter-query-multi-action
+  padding: 0px
+
 #filter-query-builder
   width: 75%
 
@@ -33,11 +36,21 @@
   padding-left: 22px !important
 
 #multi-action-list
-  line-height: 1.7
-  padding: 0.5em
+  li
+    &:first-child
+      border: none
+    border-top: 1px solid #999
 
-#multi-action-message
-  color: #e40
+    a
+      display: block
+      padding: 0.25em
+      background: #ffffff
+      &:hover
+        background: #f0f0f0
+        cursor: default
+
+      text-decoration: none
+      border: 0
 
 .lsfilter-noresult
   display: inline-block

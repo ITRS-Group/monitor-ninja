@@ -46,6 +46,7 @@ class listview_library_hook {
 		$controller->template->js[] = 'index.php/listview/renderer/buttons.js';
 		$controller->template->js[] = 'index.php/listview/renderer/extra_objects.js';
 		$controller->template->js[] = 'index.php/listview/renderer/totals.js';
+		$controller->template->js[] = 'index.php/listview/list_commands/commands.js';
 
 		$controller->template->js[] = $basepath.'media/js/LSFilterList.js';
 		$controller->template->js[] = $basepath.'media/js/LSFilterListEvents.js';

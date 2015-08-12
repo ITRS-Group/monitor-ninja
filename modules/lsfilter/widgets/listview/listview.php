@@ -11,8 +11,6 @@ class Listview_Widget extends widget_Base {
 	/**
 	 * Not really branding, but how to make this listview widget custom in the
 	 * case of using it as a static embedded list view.
-	 *
-	 * @var array
 	 */
 	protected $branding = array(
 			'listview_link' => true
