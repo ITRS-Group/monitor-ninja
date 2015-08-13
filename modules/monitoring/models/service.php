@@ -222,11 +222,30 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
+	 * @return bool
+	 *
+	 * @ninja orm_command name Enable active checks
+	 * @ninja orm_command icon enable
+	 * @ninja orm_command mayi_method update.command.enable_check
+	 * @ninja orm_command description
+	 *     This command is used to enable active checks of this service.
+	 * @ninja orm_command enabled_if checks_disabled
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function enable_check() {
+		return $this->submit_naemon_command("ENABLE_SVC_CHECK");
+	}
+
+	/**
 	 * @ninja orm_command name Disable active checks
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_check
 	 * @ninja orm_command description
-	 *     This command is used to disable active checks of a service.
+	 *     This command is used to temporarily prevent Nagios from actively
+	 *     checking the status of a service.  If Nagios needs to check the
+	 *     status of this service, it will assume that it is in the same state
+	 *     that it was  in before checks were disabled.
+	 * @ninja orm_command enabled_if checks_enabled
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function disable_check() {
