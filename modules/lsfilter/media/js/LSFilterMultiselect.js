@@ -39,19 +39,6 @@ var lsfilter_multiselect = {
 			self.do_send($(this));
 			return false;
 		});
-
-
-		// FIXME: make this widget-safe
-		$(document).on('mouseover', '.multi-action-send-link', function(e) {
-			var cmd = $(this).data('multi-action-command');
-			$('tr.command_dis_' + cmd).css({ opacity: 0.3 });
-			return true;
-		});
-		$(document).on('mouseout', '.multi-action-send-link', function(e) {
-			var cmd = $(this).data('multi-action-command');
-			$('tr.command_dis_' + cmd).css({ opacity: 1.0 });
-			return true;
-		});
 	},
 
 	elem_select : false,
