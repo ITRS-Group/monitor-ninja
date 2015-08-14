@@ -226,7 +226,8 @@ Feature: Monitoring
 		Then I should see "ERROR: 2023-03-14 14:40 is not a valid date, please adjust it"
 		And I shouldn't see "Fatal error"
 		And I click "Back"
-		Then I should see "Schedule downtome on linux-server1"
+		Then I should see "Schedule downtime"
+		And I should see "linux-server1"
 		And I enter "2023-03-14 14:40:00" into "field_start_time"
 		And I enter "2023-03-14 14:50:00" into "field_end_time"
 		And I click "Submit"
@@ -393,14 +394,14 @@ Feature: Monitoring
 
 		Given I am on the Host details page
 		When I click "linux-server1"
-		And I click "Submit a host comment"
+		And I click "Add a new comment"
 		And I enter "A comment for this host" into "comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		And I should see "A comment for this host"
 		When I click "Delete comment"
-		Then I should see "You are trying to delete a host comment"
+		Then I should see "Delete comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
@@ -414,7 +415,7 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Stop accepting passive checks"
-		Then I should see "Stop accepting passive checks on linux-server1"
+		Then I should see "Stop accepting passive checks"
 		And I should see "linux-server1"
 		When I click "Submit"
 		Then I should see "Your command was successfully submitted"
@@ -603,14 +604,14 @@ Feature: Monitoring
 
 		Given I am on the Service details page
 		When I click "System Load"
-		And I click "Submit a service comment"
+		And I click "Add a new comment"
 		And I enter "A comment for this service" into "field_comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		And I should see "A comment for this service"
 		When I click "Delete comment"
-		Then I should see "You are trying to delete a service comment"
+		Then I should see "Delete comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
@@ -674,7 +675,7 @@ Feature: Monitoring
 
 		Given I am on the Service details page
 		When I click "System Load"
-		And I click "Submit a service comment"
+		And I click "Add a new comment"
 		And I enter "Zombocom" into "comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
