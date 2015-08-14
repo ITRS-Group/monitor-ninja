@@ -16,7 +16,10 @@ Feature: Filters & list views
 		And I shouldn't see "PING"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I click "Delete services"
+		And I click "Delete"
+		And I click "Submit"
+		Then I should see "Submitted for deletion"
+		When I click "Show changes in Nacoma"
 		Then I should be on the Configure page
 		Then I should see "There are 1 changes to 1 service objects" within frame "iframe"
 		When I click "More info" within frame "iframe"
@@ -44,7 +47,10 @@ Feature: Filters & list views
 		And I shouldn't see "PING2"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I click "Delete services"
+		And I click "Delete"
+		And I click "Submit"
+		Then I should see "Submitted for deletion"
+		When I click "Show changes in Nacoma"
 		Then I should be on the Configure page
 		Then I should see "There are 2 changes to 2 service objects" within frame "iframe"
 		When I click "More info" within frame "iframe"
@@ -57,7 +63,7 @@ Feature: Filters & list views
 
 	@configuration @asmonitor
 	@bug-7012
-	Scenario: Hostgroup service single multi-delete
+	Scenario: Hostgroup service single multi-delete no force
 		Given I have these hosts:
 			| host_name     | hostgroups |
 			| linux-server1 | a_group    |
@@ -74,23 +80,14 @@ Feature: Filters & list views
 		And I shouldn't see "PING"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I click "Delete services"
-		Then I should see "You've selected a service that is saved on a hostgroup"
-		And I should see "System Load"
-		And I shouldn't see "PING"
-		When I click "Submit"
-		Then I should be on the Configure page
-		Then I should see "There are 1 changes to 1 service objects" within frame "iframe"
-		When I click "More info" within frame "iframe"
-		Then I should see "Deleted service object a_group;System Load" within frame "iframe"
-		And I shouldn't see "a_group;PING" within frame "iframe"
-		And I should see button "Save" within frame "iframe"
-		When I click button "Save" within frame "iframe"
-		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
+		And I click "Delete"
+		And I click "Submit"
+		Then I should see "Hostgroup a_group / System Load is a member of a hostgroup"
+		When I click "Show changes in Nacoma"
+		Then I shouldn't see "System Load" within frame "iframe"
 
 	@configuration @asmonitor
-	@bug-7012
-	Scenario: Hostgroup service multi multi-delete
+	Scenario: Hostgroup service multi multi-delete no force
 		Given I have these hosts:
 			| host_name     | hostgroups |
 			| linux-server1 | a_group    |
@@ -109,13 +106,41 @@ Feature: Filters & list views
 		And I shouldn't see "PING2"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I click "Delete services"
-		Then I should see "You've selected services that are saved on hostgroups"
-		And I should see "System Load"
+		And I click "Delete"
+		And I click "Submit"
+		Then I should see "is a member of a hostgroup"
+		When I click "Show changes in Nacoma"
+		Then I shouldn't see "System Load"
+		And I shouldn't see "PING1"
+		And I shouldn't see "PING2"
+
+	@configuration @asmonitor
+	Scenario: Hostgroup service multi multi-delete with force
+		Given I have these hosts:
+			| host_name     | hostgroups |
+			| linux-server1 | a_group    |
+		And I have these hostgroups:
+			| hostgroup_name |
+			| a_group        |
+		And I have these services:
+			| service_description | hostgroup_name | check_command   | notifications_enabled | active_checks_enabled |
+			| System Load         | a_group        | check_nrpe!load | 1                     | 1                     |
+			| PING1               | a_group        | check_ping      | 1                     | 1                     |
+			| PING2               | a_group        | check_ping      | 1                     | 0                     |
+		And I have activated the configuration
+		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		Then I should see "System Load"
 		And I should see "PING1"
 		And I shouldn't see "PING2"
-		When I click "Submit"
-		Then I should be on the Configure page
+		When I check "select_all"
+		And I click "Send multi action"
+		And I click "Delete"
+		And I check "field_forced"
+		And I click "Submit"
+		Then I should see "Hostgroup a_group / System Load"
+		And I should see "Hostgroup a_group / PING1"
+		And I shouldn't see "Hostgroup a_group / PING2"
+		When I click "Show changes in Nacoma"
 		Then I should see "There are 2 changes to 2 service objects" within frame "iframe"
 		When I click "More info" within frame "iframe"
 		Then I should see "Deleted service object a_group;System Load" within frame "iframe"
@@ -143,7 +168,10 @@ Feature: Filters & list views
 		And I shouldn't see "linux-server1"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I click "Delete hosts"
+		And I click "Delete"
+		And I click "Submit"
+		Then I should see "Submitted for deletion"
+		When I click "Show changes in Nacoma"
 		Then I should be on the Configure page
 		Then I should see "There are 1 changes to 1 host objects" within frame "iframe"
 		When I click "More info" within frame "iframe"
@@ -172,7 +200,10 @@ Feature: Filters & list views
 		And I shouldn't see "linux-server1"
 		When I check "select_all"
 		And I click "Send multi action"
-		And I click "Delete hosts"
+		And I click "Delete"
+		And I click "Submit"
+		Then I should see "Submitted for deletion"
+		When I click "Show changes in Nacoma"
 		Then I should be on the Configure page
 		Then I should see "There are 2 changes to 2 host objects" within frame "iframe"
 		When I click "More info" within frame "iframe"

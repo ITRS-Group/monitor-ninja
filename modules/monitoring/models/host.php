@@ -128,29 +128,7 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * Get configuration url
-	 *
-	 * @ninja orm depend[] name
-	 *
-	 * @ninja orm_command name Configure
-	 * @ninja orm_command category Configuration
-	 * @ninja orm_command icon nacoma
-	 * @ninja orm_command mayi_method update.command.configure
-	 * @ninja orm_command description
-	 *     Configure this host
-	 * @ninja orm_command enabled_if config_allowed
-	 * @ninja orm_command redirect 1
-	 */
-	public function get_config_url() {
-		return str_replace(array(
-			'$HOSTNAME$'
-		), array(
-			urlencode($this->get_name())
-		), Kohana::config('config.config_url.hosts'));
-	}
-
-	/**
-	 * Get configuration url
+	 * Get notes url
 	 *
 	 * @ninja orm_command name Notes
 	 * @ninja orm_command category Links
@@ -858,5 +836,64 @@ class Host_Model extends BaseHost_Model {
 	 */
 	public function start_flap_detection() {
 		return $this->submit_naemon_command("ENABLE_HOST_FLAP_DETECTION");
+	}
+
+	/**
+	 * Get configuration url
+	 *
+	 * @ninja orm depend[] name
+	 *
+	 * @ninja orm_command name Configure
+	 * @ninja orm_command category Configuration
+	 * @ninja orm_command icon nacoma
+	 * @ninja orm_command mayi_method update.command.configure
+	 * @ninja orm_command description
+	 *     Configure this host
+	 * @ninja orm_command enabled_if config_allowed
+	 * @ninja orm_command redirect 1
+	 */
+	public function get_config_url() {
+		return str_replace(array(
+			'$HOSTNAME$'
+		), array(
+			urlencode($this->get_name())
+		), Kohana::config('config.config_url.hosts'));
+	}
+
+	/**
+	 * @ninja orm_command name Delete
+	 * @ninja orm_command category Configuration
+	 * @ninja orm_command icon delete
+	 * @ninja orm_command mayi_method delete.command.delete
+	 * @ninja orm_command description
+	 *     Delete the host in Nacoma, and queue it in the changelog. The changes
+	 *     still needs to be published in nacoma before the host is removed
+	 *     from the running config
+	 * @ninja orm_command view monitoring/nacoma_command
+	 */
+	public function delete() {
+		if (Kohana::config('config.nacoma_path')===false) {
+			return array(
+				'result' => false,
+				'name' => '',
+				'output' => "Nacoma is not installed"
+			);
+		}
+
+
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . op5Auth::instance()->get_user()->username . ' -t host -n ' . escapeshellarg($this->get_key()) . ' -a delete', $out, $retval);
+		if($retval === 0) {
+			return array(
+				'result' => true,
+				'name' => $this->get_name(),
+				'output' => "Submitted for deletion"
+			);
+		} else {
+			return array(
+				'result' => false,
+				'name' => $this->get_name(),
+				'output' => "Error deleting service"
+			);
+		}
 	}
 }

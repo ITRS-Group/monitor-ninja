@@ -9,11 +9,20 @@ if(isset($error)) {
 
 if(isset($results)) {
 	$footer = '';
+	$first = true;
 	foreach($results as $view) {
 		/* @var $view View */
+		$view->header = '';
+
 		$view->footer = $footer;
-		$view->render(true);
+		$content = $view->render(false);
 		$footer = $view->footer;
+
+		if($first) {
+			echo $view->header;
+			$first = false;
+		}
+		echo $content;
 	}
 	echo $footer;
 }

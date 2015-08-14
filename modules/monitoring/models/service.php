@@ -129,32 +129,7 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
-	 * Get configuration url
-	 *
-	 * @ninja orm depend[] host.name
-	 * @ninja orm depend[] description
-	 *
-	 * @ninja orm_command name Configure
-	 * @ninja orm_command category Configuration
-	 * @ninja orm_command icon nacoma
-	 * @ninja orm_command mayi_method update.command.configure
-	 * @ninja orm_command description
-	 *     Configure this service
-	 * @ninja orm_command enabled_if config_allowed
-	 * @ninja orm_command redirect 1
-	 */
-	public function get_config_url() {
-		return str_replace(array(
-			'$HOSTNAME$',
-			'$SERVICEDESC$'
-		), array(
-			urlencode($this->get_host()->get_name()),
-			urlencode($this->get_description())
-		), Kohana::config('config.config_url.services'));
-	}
-
-	/**
-	 * Get configuration url
+	 * Get notes url
 	 *
 	 * @ninja orm_command name Notes
 	 * @ninja orm_command category Links
@@ -740,5 +715,98 @@ class Service_Model extends BaseService_Model {
 	 */
 	public function start_flap_detection() {
 		return $this->submit_naemon_command("ENABLE_SVC_FLAP_DETECTION");
+	}
+
+	/**
+	 * Get configuration url
+	 *
+	 * @ninja orm depend[] host.name
+	 * @ninja orm depend[] description
+	 *
+	 * @ninja orm_command name Configure
+	 * @ninja orm_command category Configuration
+	 * @ninja orm_command icon nacoma
+	 * @ninja orm_command mayi_method update.command.configure
+	 * @ninja orm_command description
+	 *     Configure this service
+	 * @ninja orm_command enabled_if config_allowed
+	 * @ninja orm_command redirect 1
+	 */
+	public function get_config_url() {
+		return str_replace(array(
+			'$HOSTNAME$',
+			'$SERVICEDESC$'
+		), array(
+			urlencode($this->get_host()->get_name()),
+			urlencode($this->get_description())
+		), Kohana::config('config.config_url.services'));
+	}
+
+	/**
+	 * @ninja orm_command name Delete
+	 * @ninja orm_command category Configuration
+	 * @ninja orm_command icon delete
+	 * @ninja orm_command mayi_method delete.command.delete
+	 *
+	 * @ninja orm_command params.forced.id 0
+	 * @ninja orm_command params.forced.type bool
+	 * @ninja orm_command params.forced.name Remove hostgroup services
+	 * @ninja orm_command params.forced.description
+	 *     Allow removal of services even if they originates from a hostgroup.
+	 *     Removing those services will also remove them from all other hosts in
+	 *     the hostgroup. Verify the output in the nacoma submit changes page
+	 *     before submitting.
+	 *
+	 * @ninja orm_command description
+	 *     Delete the host in Nacoma, and queue it in the changelog. The changes
+	 *     still needs to be published in nacoma before the host is removed
+	 *     from the running config
+	 * @ninja orm_command view monitoring/nacoma_command
+	 */
+	public function delete($forced = false) {
+		if (Kohana::config('config.nacoma_path')===false) {
+			return array(
+				'result' => false,
+				'name' => '',
+				'output' => "Nacoma is not installed"
+			);
+		}
+
+		$hostgroup = false;
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -a show_object -n ' . escapeshellarg($this->get_key()), $out, $retval);
+		if ($retval === 0) {
+			foreach ($out as $line) {
+				list($key, $val) = explode("=", $line);
+				if ($key == 'hostgroup_name') {
+					$hostgroup = $val;
+					break;
+				}
+			}
+		}
+		$name = ($hostgroup === false ? ("Host ".$this->get_host()->get_name()) : ("Hostgroup ".$hostgroup))." / ".$this->get_description();
+
+		if(!$forced && $hostgroup !== false) {
+			return array(
+				'result' => false,
+				'name' => $name,
+				'output' => "$name is a member of a hostgroup"
+			);
+		}
+
+
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . op5Auth::instance()->get_user()->username . ' -t service -n ' . escapeshellarg($this->get_key()) . ' -a delete', $out, $retval);
+		if($retval === 0) {
+			return array(
+				'result' => true,
+				'name' => $name,
+				'output' => "Submitted for deletion"
+			);
+		} else {
+			return array(
+				'result' => false,
+				'name' => $name,
+				'output' => "Error deleting service"
+			);
+		}
 	}
 }
