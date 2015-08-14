@@ -11,7 +11,7 @@ class Comment_Model extends BaseComment_Model {
 	 * @ninja orm_command name Delete comment
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon delete-comment
-	 * @ninja orm_command mayi_method delete
+	 * @ninja orm_command mayi_method delete.command
 	 * @ninja orm_command description
 	 *     Delete a comment.
 	 * @ninja orm_command view monitoring/naemon_command

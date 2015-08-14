@@ -554,7 +554,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Send custom notification
 	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method update.command.notification
+	 * @ninja orm_command mayi_method update.command.send_notification
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
@@ -574,7 +574,7 @@ class Host_Model extends BaseHost_Model {
 	 *     important message out.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function send_custom_notification($comment) {
+	public function send_notification($comment) {
 		$options = 4; // forced
 		return $this->submit_naemon_command("SEND_CUSTOM_HOST_NOTIFICATION", $options, $this->get_current_user(), $comment);
 	}
@@ -766,7 +766,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Disable notifications
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method update.command.notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     Disable notifications from this host. No contacts will be contacted
 	 *     if this host are having trouble.
@@ -782,7 +782,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Enable notifications
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon notify
-	 * @ninja orm_command mayi_method update.command.notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     Enable notifications from this host. Contacts for this host will be
 	 *     contacted if this host are having trouble, if there are no other

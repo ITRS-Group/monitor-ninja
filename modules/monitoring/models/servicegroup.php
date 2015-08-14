@@ -92,7 +92,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Disable active host checks
 	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_host_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *      Disables active checks for all hosts in this servicegroup.
 	 * @ninja orm_command view monitoring/naemon_command
@@ -105,7 +105,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Disable host notifications
 	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method update.command.stop_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     Disable notifications for all hosts in this servicegroup.
 	 * @ninja orm_command view monitoring/naemon_command
@@ -118,7 +118,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Disable active service checks
 	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_service_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to disable active checks of all services in the
 	 *     specified servicegroup. This <i>does not</i> disable checks of the
@@ -134,7 +134,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Disable service notifications
 	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method update.command.disable_service_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     This command is used to prevent notifications from being sent out for
 	 *     all services in the specified servicegroup. You will have to
@@ -152,7 +152,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Enable active host checks
 	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon enable
-	 * @ninja orm_command mayi_method update.command.enable_host_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *      Enables active checks for all hosts in this servicegroup.
 	 * @ninja orm_command view monitoring/naemon_command
@@ -165,7 +165,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Enable host notifications
 	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon notify
-	 * @ninja orm_command mayi_method update.command.start_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     Enable notifications for all hosts in this servicegroup.
 	 * @ninja orm_command view monitoring/naemon_command
@@ -178,7 +178,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Enable active service checks
 	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon enable
-	 * @ninja orm_command mayi_method update.command.enable_service_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of all services in the
 	 *     specified servicegroup. This <i>does not</i> enable active checks of
@@ -194,7 +194,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command name Enable service notifications
 	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method update.command.enable_service_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     This command is used to enable notifications for all services in the
 	 *     specified servicegroup. Notifications will only be sent out for the

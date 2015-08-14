@@ -431,6 +431,7 @@ class Service_Model extends BaseService_Model {
 	 *     This command is used to submit a passive check result for a service.
 	 *     It is particularly useful for resetting security-related services to
 	 *     OK states once they have been dealt with.
+	 * @ninja orm_command enabled_if accept_passive_checks
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function process_check_result($plugin_output, $status_code, $perf_data=false) {
@@ -462,6 +463,7 @@ class Service_Model extends BaseService_Model {
 	 *     you select the <i>force check</i> option, Nagios will force a check
 	 *     of the service regardless of both what time the scheduled check
 	 *     occurs and whether or not checks are enabled for the service.
+	 * @ninja orm_command enabled_if checks_enabled
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_check($check_time, $forced = false) {
@@ -554,7 +556,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command name Send custom notification
 	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method update.command.notification
+	 * @ninja orm_command mayi_method update.command.send_notification
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
@@ -574,7 +576,7 @@ class Service_Model extends BaseService_Model {
 	 *     important message out.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function send_custom_notification($comment) {
+	public function send_notification($comment) {
 		$options = 4; // forced
 		return $this->submit_naemon_command("SEND_CUSTOM_SVC_NOTIFICATION", $options, $this->get_current_user(), $comment);
 	}

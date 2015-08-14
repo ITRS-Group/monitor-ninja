@@ -11,9 +11,7 @@ class Downtime_Model extends BaseDowntime_Model {
 	 * @ninja orm_command name Delete downtime
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon delete-downtime
-	 * @ninja orm_command mayi_method
-	 *     update.command.delete_downtime
-	 *
+	 * @ninja orm_command mayi_method delete.command
 	 * @ninja orm_command description
 	 *     Delete/cancel a scheduled downtime entry.
 	 * @ninja orm_command view monitoring/naemon_command
