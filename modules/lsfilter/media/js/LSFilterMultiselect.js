@@ -60,25 +60,49 @@ var lsfilter_multiselect = {
 	selection : {},
 	selection_table : false,
 
-	populate_select : function(elem, values) {
+	populate_select : function(elem, commands) {
+
 		elem.empty();
-		for ( var val in values) {
-			var cmd = values[val];
-			var opt = $('<a />')
 
-			opt.data('multi-action-command', val);
-			opt.append($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
-			opt.append($('<span />').text(cmd.name));
-			opt.addClass('multi-action-send-link');
-
-			elem.append($('<li />').append(opt));
-		}
-		if(values.length == 0) {
+		if(commands.length == 0) {
 			var li = $('<li />')
 			li.text("No commands available");
 
 			elem.append(li);
+		} else {
+
+			var categories = {};
+
+			for ( var cmdname in commands) {
+				var cmd = commands[cmdname];
+				// Redirect commands can't be applied in multi aciton
+				if(!cmd['redirect']) {
+					if(!categories[cmd.category]) {
+						categories[cmd.category] = {}
+					}
+					categories[cmd.category][cmdname] = cmd;
+				}
+			}
+
+			for ( var category in categories) {
+				var category_commands = categories[category];
+
+				elem.append($('<li />').text(category).addClass('multi-action-title'));
+
+				for ( var cmdname in category_commands) {
+					var cmd = category_commands[cmdname];
+					var opt = $('<a />')
+
+					opt.data('multi-action-command', cmdname);
+					opt.append($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
+					opt.append($('<span />').text(cmd.name));
+					opt.addClass('multi-action-send-link');
+
+					elem.append($('<li />').append(opt));
+				}
+			}
 		}
+
 	},
 
 	do_send : function(link) {

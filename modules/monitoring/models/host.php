@@ -131,6 +131,15 @@ class Host_Model extends BaseHost_Model {
 	 * Get configuration url
 	 *
 	 * @ninja orm depend[] name
+	 *
+	 * @ninja orm_command name Configure
+	 * @ninja orm_command category Configuration
+	 * @ninja orm_command icon nacoma
+	 * @ninja orm_command mayi_method update.command.configure
+	 * @ninja orm_command description
+	 *     Configure this host
+	 * @ninja orm_command enabled_if config_allowed
+	 * @ninja orm_command redirect 1
 	 */
 	public function get_config_url() {
 		return str_replace(array(
@@ -138,6 +147,38 @@ class Host_Model extends BaseHost_Model {
 		), array(
 			urlencode($this->get_name())
 		), Kohana::config('config.config_url.hosts'));
+	}
+
+	/**
+	 * Get configuration url
+	 *
+	 * @ninja orm_command name Notes
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon host-notes
+	 * @ninja orm_command mayi_method read.extinfo
+	 * @ninja orm_command description
+	 *     Follow the notes links
+	 * @ninja orm_command enabled_if notes_url
+	 * @ninja orm_command redirect 1
+	 */
+	public function get_notes_url() {
+		return parent::get_notes_url();
+	}
+
+	/**
+	 * Get action url
+	 *
+	 * @ninja orm_command name Actions
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon host-actions
+	 * @ninja orm_command mayi_method read.extinfo
+	 * @ninja orm_command description
+	 *     Follow the action link
+	 * @ninja orm_command enabled_if action_url
+	 * @ninja orm_command redirect 1
+	 */
+	public function get_action_url() {
+		return parent::get_action_url();
 	}
 
 
@@ -199,8 +240,9 @@ class Host_Model extends BaseHost_Model {
 	 * Trigger this host to be checked right now.
 	 *
 	 * @ninja orm_command name Check now
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon re-schedule
-	 * @ninja orm_command mayi_method update.command.check_now
+	 * @ninja orm_command mayi_method update.command.schedule
 	 * @ninja orm_command description
 	 *     Schedule the next check as soon as possible
 	 * @ninja orm_command view monitoring/naemon_command
@@ -216,6 +258,7 @@ class Host_Model extends BaseHost_Model {
 	 * @param sticky = true
 	 *
 	 * @ninja orm_command name Acknowledge Problem
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon acknowledged
 	 *
 	 * @ninja orm_command params.sticky.id 0
@@ -234,7 +277,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
 	 *
-	 * @ninja orm_command mayi_method update.command.acknowledge_problem
+	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
 	 *     This command is used to acknowledge a host problem.
 	 *     When a host problem is acknowledged, future notifications about
@@ -272,8 +315,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Remove acknoledgement
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon acknowledged-not
-	 * @ninja orm_command mayi_method update.command.remove_acknowledgement
+	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
 	 *     This command is used to remove an acknowledgement for a host problem.
 	 *     Once the acknowledgement is removed, notifications may start being
@@ -300,14 +344,15 @@ class Host_Model extends BaseHost_Model {
 	/**
 	 * @param comment
 	 *
-	 * @ninja orm_command name Submit a host comment
+	 * @ninja orm_command name Add a new comment
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon comment
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
 	 *
-	 * @ninja orm_command mayi_method update.command.add_comment
+	 * @ninja orm_command mayi_method update.command.comment
 	 * @ninja orm_command description
 	 *     This command is used to add a comment for the specified host. If you
 	 *     work with other administrators, you may find it useful to share
@@ -323,8 +368,9 @@ class Host_Model extends BaseHost_Model {
 	 * @return bool
 	 *
 	 * @ninja orm_command name Enable active checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon enable
-	 * @ninja orm_command mayi_method update.command.enable_check
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of this host.
 	 * @ninja orm_command enabled_if checks_disabled
@@ -336,8 +382,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Disable active checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_check
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to temporarily prevent Nagios from actively
 	 *     checking the status of a host.  If Nagios needs to check the status
@@ -356,8 +403,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param perf_data
 	 *
 	 * @ninja orm_command name Submit passive check result
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon checks-passive
-	 * @ninja orm_command mayi_method update.command.process_check_result
+	 * @ninja orm_command mayi_method update.command.passive
 	 *
 	 * @ninja orm_command params.plugin_output.id 0
 	 * @ninja orm_command params.plugin_output.type string
@@ -392,8 +440,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param forced = false
 	 *
 	 * @ninja orm_command name Re-schedule next host check
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon re-schedule
-	 * @ninja orm_command mayi_method update.command.schedule_check
+	 * @ninja orm_command mayi_method update.command.schedule
 	 *
 	 * @ninja orm_command params.check_time.id 0
 	 * @ninja orm_command params.check_time.type time
@@ -435,8 +484,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param fixed = true
 	 *
 	 * @ninja orm_command name Schedule downtime
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon scheduled-downtime
-	 * @ninja orm_command mayi_method update.command.schedule_downtime
+	 * @ninja orm_command mayi_method update.command.downtime
 	 *
 	 * @ninja orm_command params.duration.id 0
 	 * @ninja orm_command params.duration.type duration
@@ -502,8 +552,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param comment
 	 *
 	 * @ninja orm_command name Send custom notification
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method update.command.send_custom_notification
+	 * @ninja orm_command mayi_method update.command.notification
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
@@ -530,9 +581,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Enable notifications for all services
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method
-	 *     update.command.enable_service_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     This command is used to enable notifications for all services on the
 	 *     specified host.  Notifications will only be sent out for the service
@@ -547,9 +598,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Disable notifications for all services
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method
-	 *     update.command.disable_service_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     This command is used to prevent notifications from being sent out for
 	 *     all services on the specified host.  You will have to re-enable
@@ -565,8 +616,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Enable checks of all services
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon enable
-	 * @ninja orm_command mayi_method update.command.enable_service_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of all services
 	 *     associated with the specified host.  This <i>does not</i> enable
@@ -579,8 +631,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Disable checks of all services
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_service_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to disable active checks of all services
 	 *     associated with the specified host.  When a service is disabled
@@ -600,20 +653,18 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Locate host on map
+	 * @ninja orm_command category Links
 	 * @ninja orm_command icon locate-host-on-map
-	 * @ninja orm_command mayi_method update.command.locate_on_nagvis_map
+	 * @ninja orm_command mayi_method read.nagvis
 	 * @ninja orm_command description
-	 *     Find the host on a map.
+	 *     Find the host on a nagvis automap.
 	 * @ninja orm_command redirect 1
 	 */
 	public function locate_on_nagvis_map() {
 		if(!Kohana::config('nagvis.nagvis_path')) {
-			return array('status' => 0);
+			return false;
 		}
-		return array(
-			'status' => 1,
-			'redirect' => sprintf('nagvis/automap/host/%s', urlencode($this->get_name()))
-		);
+		return sprintf('nagvis/automap/host/%s', urlencode($this->get_name()));
 	}
 
 	/**
@@ -621,8 +672,9 @@ class Host_Model extends BaseHost_Model {
 	 * @param forced = false
 	 *
 	 * @ninja orm_command name Schedule a check of all services
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon re-schedule
-	 * @ninja orm_command mayi_method update.command.schedule_service_checks
+	 * @ninja orm_command mayi_method update.command.schedule
 	 *
 	 * @ninja orm_command params.check_time.id 0
 	 * @ninja orm_command params.check_time.type time
@@ -650,8 +702,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Stop obsessing over this host
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_obsessing
+	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command description
 	 *     Disables processing of host checks via the OCHP command for the
 	 *     specified host.
@@ -665,8 +718,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Start obsessing over this host
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_obsessing
+	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command description
 	 *     Disables processing of host checks via the OCHP command for the
 	 *     specified host.
@@ -680,8 +734,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Stop accepting passive checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_accept_passive_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     Stop accepting new passive host check results
 	 * @ninja orm_command enabled_if accept_passive_checks
@@ -694,8 +749,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Start accepting passive checks for
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_accept_passive_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     Start accepting new passive host check results
 	 * @ninja orm_command enabled_if !accept_passive_checks
@@ -708,8 +764,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Disable notifications
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method update.command.stop_notifications
+	 * @ninja orm_command mayi_method update.command.notifications
 	 * @ninja orm_command description
 	 *     Disable notifications from this host. No contacts will be contacted
 	 *     if this host are having trouble.
@@ -723,8 +780,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Enable notifications
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon notify
-	 * @ninja orm_command mayi_method update.command.start_notifications
+	 * @ninja orm_command mayi_method update.command.notifications
 	 * @ninja orm_command description
 	 *     Enable notifications from this host. Contacts for this host will be
 	 *     contacted if this host are having trouble, if there are no other
@@ -740,8 +798,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Disable event handler
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_event_handler
+	 * @ninja orm_command mayi_method update.command.event_handler
 	 * @ninja orm_command description
 	 *     Disable execution of the custom event handler for this host.
 	 * @ninja orm_command enabled_if event_handler_enabled
@@ -754,8 +813,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Enable event handler
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_event_handler
+	 * @ninja orm_command mayi_method update.command.event_handler
 	 * @ninja orm_command description
 	 *     Enable execution of the custom event handler for this host.
 	 * @ninja orm_command enabled_if !event_handler_enabled
@@ -767,8 +827,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Disable flap detection
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_flap_detection
+	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command description
 	 *     Disable analysis of this host is flapping. If no flap detection
 	 *     analysis is enabled, the host will trigger a problem and recovery
@@ -784,8 +845,9 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @ninja orm_command name Enable flap detection
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_flap_detection
+	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command description
 	 *     Enable analysis of this host is flapping. If flap detection
 	 *     analysis is enabled, the host will trigger flapping notification

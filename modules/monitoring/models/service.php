@@ -133,6 +133,15 @@ class Service_Model extends BaseService_Model {
 	 *
 	 * @ninja orm depend[] host.name
 	 * @ninja orm depend[] description
+	 *
+	 * @ninja orm_command name Configure
+	 * @ninja orm_command category Configuration
+	 * @ninja orm_command icon nacoma
+	 * @ninja orm_command mayi_method update.command.configure
+	 * @ninja orm_command description
+	 *     Configure this service
+	 * @ninja orm_command enabled_if config_allowed
+	 * @ninja orm_command redirect 1
 	 */
 	public function get_config_url() {
 		return str_replace(array(
@@ -142,6 +151,38 @@ class Service_Model extends BaseService_Model {
 			urlencode($this->get_host()->get_name()),
 			urlencode($this->get_description())
 		), Kohana::config('config.config_url.services'));
+	}
+
+	/**
+	 * Get configuration url
+	 *
+	 * @ninja orm_command name Notes
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon host-notes
+	 * @ninja orm_command mayi_method read.extinfo
+	 * @ninja orm_command description
+	 *     Follow the notes links
+	 * @ninja orm_command enabled_if notes_url
+	 * @ninja orm_command redirect 1
+	 */
+	public function get_notes_url() {
+		return parent::get_notes_url();
+	}
+
+	/**
+	 * Get action url
+	 *
+	 * @ninja orm_command name Actions
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon host-actions
+	 * @ninja orm_command mayi_method read.extinfo
+	 * @ninja orm_command description
+	 *     Follow the action link
+	 * @ninja orm_command enabled_if action_url
+	 * @ninja orm_command redirect 1
+	 */
+	public function get_action_url() {
+		return parent::get_action_url();
 	}
 
 
@@ -201,10 +242,116 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @param comment
+	 * @param persistent = true
+	 * @param notify = true
+	 * @param sticky = true
 	 *
-	 * @ninja orm_command name Submit a service comment
+	 * @ninja orm_command name Acknowledge Problem
+	 * @ninja orm_command category Actions
+	 * @ninja orm_command icon acknowledged
+	 *
+	 * @ninja orm_command params.sticky.id 0
+	 * @ninja orm_command params.sticky.type bool
+	 * @ninja orm_command params.sticky.name Sticky
+	 *
+	 * @ninja orm_command params.notify.id 1
+	 * @ninja orm_command params.notify.type bool
+	 * @ninja orm_command params.notify.name Sticky
+	 *
+	 * @ninja orm_command params.persistent.id 2
+	 * @ninja orm_command params.persistent.type bool
+	 * @ninja orm_command params.persistent.name Sticky
+	 *
+	 * @ninja orm_command params.comment.id 3
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command mayi_method update.command.acknowledge
+	 * @ninja orm_command description
+	 *     This command is used to acknowledge a host problem.
+	 *     When a host problem is acknowledged, future notifications about
+	 *     problems are temporarily disabled until the host changes from its
+	 *     current state.
+	 *     If you want acknowledgement to disable notifications until the host
+	 *     recovers, check the 'Sticky Acknowledgement' checkbox. Contacts for
+	 *     this host will receive a notification about the acknowledgement, so
+	 *     they are aware that someone is working on the problem.  Additionally,
+	 *     a comment will also be added to the host.
+	 *     Make sure to enter your name and fill in a brief description of what
+	 *     you are doing in the comment field.
+	 *     If you would like the host comment to remain once the acknowledgement
+	 *     is removed, check the 'Persistent Comment' checkbox.  If you do not
+	 *     want an acknowledgement notification sent out to the appropriate
+	 *     contacts, uncheck the 'Notify' checkbox.
+	 * @ninja orm_command enabled_if unacknowledged_problem
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function acknowledge_problem($comment, $persistent=true, $notify=true, $sticky=true) {
+		return $this->submit_naemon_command("ACKNOWLEDGE_SVC_PROBLEM", $sticky?2:0, $notify?1:0, $persistent?1:0, $this->get_current_user(), $comment);
+	}
+
+	/**
+	 * Returns if the host has a problem which is unacknowledged
+	 *
+	 * @ninja orm export false
+	 * @ninja orm depend[] state
+	 * @ninja orm depend[] has_been_checked
+	 * @ninja orm depend[] acknowledged
+	 */
+	public function get_unacknowledged_problem() {
+		return ($this->get_state() > 0 && $this->get_has_been_checked()) && ! $this->get_acknowledged();
+	}
+
+	/**
+	 * @ninja orm_command name Remove acknoledgement
+	 * @ninja orm_command category Actions
+	 * @ninja orm_command icon acknowledged-not
+	 * @ninja orm_command mayi_method update.command.acknowledge
+	 * @ninja orm_command description
+	 *     This command is used to remove an acknowledgement for a host problem.
+	 *     Once the acknowledgement is removed, notifications may start being
+	 *     sent out about the host problem.
+	 * @ninja orm_command enabled_if acknowledged_problem
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function remove_acknowledgement() {
+		return $this->submit_naemon_command("REMOVE_SVC_ACKNOWLEDGEMENT");
+	}
+
+	/**
+	 * Returns if the host has a problem which is acknowledged
+	 *
+	 * @ninja orm export false
+	 * @ninja orm depend[] state
+	 * @ninja orm depend[] has_been_checked
+	 * @ninja orm depend[] acknowledged
+	 */
+	public function get_acknowledged_problem() {
+		return ($this->get_state() > 0 && $this->get_has_been_checked()) && $this->get_acknowledged();
+	}
+
+	/**
+	 * Trigger this host to be checked right now.
+	 *
+	 * @ninja orm_command name Check now
+	 * @ninja orm_command category Actions
+	 * @ninja orm_command icon re-schedule
+	 * @ninja orm_command mayi_method update.command.schedule
+	 * @ninja orm_command description
+	 *     Schedule the next check as soon as possible
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function check_now() {
+		return $this->schedule_check(time());
+	}
+
+	/**
+	 * @param comment
+	 *
+	 * @ninja orm_command name Add a new comment
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon comment
-	 * @ninja orm_command mayi_method update.command.add_comment
+	 * @ninja orm_command mayi_method update.command.comment
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
@@ -225,8 +372,9 @@ class Service_Model extends BaseService_Model {
 	 * @return bool
 	 *
 	 * @ninja orm_command name Enable active checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon enable
-	 * @ninja orm_command mayi_method update.command.enable_check
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of this service.
 	 * @ninja orm_command enabled_if checks_disabled
@@ -238,8 +386,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Disable active checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon disable-active-checks
-	 * @ninja orm_command mayi_method update.command.disable_check
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to temporarily prevent Nagios from actively
 	 *     checking the status of a service.  If Nagios needs to check the
@@ -258,8 +407,9 @@ class Service_Model extends BaseService_Model {
 	 * @param perf_data
 	 *
 	 * @ninja orm_command name Submit passive check result
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon checks-passive
-	 * @ninja orm_command mayi_method update.command.process_check_result
+	 * @ninja orm_command mayi_method update.command.passive
 	 *
 	 * @ninja orm_command params.plugin_output.id 0
 	 * @ninja orm_command params.plugin_output.type string
@@ -294,8 +444,9 @@ class Service_Model extends BaseService_Model {
 	 * @param forced = false
 	 *
 	 * @ninja orm_command name Re-schedule next service check
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon re-schedule
-	 * @ninja orm_command mayi_method update.command.schedule_check
+	 * @ninja orm_command mayi_method update.command.schedule
 	 *
 	 * @ninja orm_command params.check_time.id 0
 	 * @ninja orm_command params.check_time.type time
@@ -335,8 +486,9 @@ class Service_Model extends BaseService_Model {
 	 * @param fixed = true
 	 *
 	 * @ninja orm_command name Schedule downtime
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon scheduled-downtime
-	 * @ninja orm_command mayi_method update.command.schedule_downtime
+	 * @ninja orm_command mayi_method update.command.downtime
 	 *
 	 * @ninja orm_command params.duration.id 0
 	 * @ninja orm_command params.duration.type duration
@@ -399,9 +551,10 @@ class Service_Model extends BaseService_Model {
 	/**
 	 * @param comment
 	 *
-	 * @ninja orm_command name Send custom notificatoin
+	 * @ninja orm_command name Send custom notification
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon notify-send
-	 * @ninja orm_command mayi_method update.command.send_custom_notification
+	 * @ninja orm_command mayi_method update.command.notification
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
@@ -429,8 +582,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Stop obsessing over this service
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_obsessing
+	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command description
 	 *     Disables processing of service checks via the OCSP command for the
 	 *     specified service.
@@ -444,8 +598,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Start obsessing over this service
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_obsessing
+	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command description
 	 *     Disables processing of service checks via the OCSP command for the
 	 *     specified service.
@@ -459,8 +614,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Stop accepting passive checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_accept_passive_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     Stop accepting new passive service check results
 	 * @ninja orm_command enabled_if accept_passive_checks
@@ -473,8 +629,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Start accepting passive checks
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_accept_passive_checks
+	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     Start accepting new passive service check results
 	 * @ninja orm_command enabled_if !accept_passive_checks
@@ -487,8 +644,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Disable notifications
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon notify-disabled
-	 * @ninja orm_command mayi_method update.command.stop_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     Disable notifications from this service. No contacts will be
 	 *     contacted if this service are having trouble.
@@ -502,8 +660,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Enable notifications
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon notify
-	 * @ninja orm_command mayi_method update.command.start_notifications
+	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     Enable notifications from this service. Contacts for this host will
 	 *     be contacted if this service are having trouble, if there are no
@@ -519,8 +678,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Disable event handler
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_event_handler
+	 * @ninja orm_command mayi_method update.command.event_handler
 	 * @ninja orm_command description
 	 *     Disable execution of the custom event handler for this service.
 	 * @ninja orm_command enabled_if event_handler_enabled
@@ -533,8 +693,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Enable event handler
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_event_handler
+	 * @ninja orm_command mayi_method update.command.event_handler
 	 * @ninja orm_command description
 	 *     Enable execution of the custom event handler for this service.
 	 * @ninja orm_command enabled_if !event_handler_enabled
@@ -546,8 +707,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Disable flap detection
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.stop_flap_detection
+	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command description
 	 *     Disable analysis of this service is flapping. If no flap detection
 	 *     analysis is enabled, the service will trigger a problem and recovery
@@ -563,8 +725,9 @@ class Service_Model extends BaseService_Model {
 
 	/**
 	 * @ninja orm_command name Enable flap detection
+	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.start_flap_detection
+	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command description
 	 *     Enable analysis of this service is flapping. If flap detection
 	 *     analysis is enabled, the service will trigger flapping notification

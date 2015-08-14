@@ -69,25 +69,28 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Configure this servicegroup
+	 * Get configuration url
+	 *
+	 * @ninja orm depend[] name
+	 *
+	 * @ninja orm_command name Configure
+	 * @ninja orm_command category Configuration
 	 * @ninja orm_command icon nacoma
 	 * @ninja orm_command mayi_method update.command.configure
 	 * @ninja orm_command description
 	 *     Configure this servicegroup.
 	 * @ninja orm_command redirect 1
 	 */
-	public function configure() {
+	public function get_config_url() {
 		if(nacoma::link() !== true) {
-			return array('status' => 0);
+			return false;
 		}
-		return array(
-			'status' => 1,
-			'redirect' => 'configuration/configure/servicegroup/'.$this->get_name()
-		);
+		return 'configuration/configure/servicegroup/'.$this->get_name();
 	}
 
 	/**
 	 * @ninja orm_command name Disable active host checks
+	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_host_checks
 	 * @ninja orm_command description
@@ -100,6 +103,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Disable host notifications
+	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon notify-disabled
 	 * @ninja orm_command mayi_method update.command.stop_notifications
 	 * @ninja orm_command description
@@ -112,6 +116,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Disable active service checks
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.disable_service_checks
 	 * @ninja orm_command description
@@ -127,6 +132,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Disable service notifications
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon notify-disabled
 	 * @ninja orm_command mayi_method update.command.disable_service_notifications
 	 * @ninja orm_command description
@@ -144,6 +150,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Enable active host checks
+	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_host_checks
 	 * @ninja orm_command description
@@ -156,6 +163,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Enable host notifications
+	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon notify
 	 * @ninja orm_command mayi_method update.command.start_notifications
 	 * @ninja orm_command description
@@ -168,6 +176,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Enable active service checks
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon enable
 	 * @ninja orm_command mayi_method update.command.enable_service_checks
 	 * @ninja orm_command description
@@ -183,6 +192,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 	/**
 	 * @ninja orm_command name Enable service notifications
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon notify-send
 	 * @ninja orm_command mayi_method update.command.enable_service_notifications
 	 * @ninja orm_command description
@@ -223,6 +233,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @param fixed = true
 	 *
 	 * @ninja orm_command name Schedule host downtime
+	 * @ninja orm_command category Host Operations
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_host_downtime
 	 *
@@ -296,6 +307,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @param fixed = true
 	 *
 	 * @ninja orm_command name Schedule service downtime
+	 * @ninja orm_command category Service Operations
 	 * @ninja orm_command icon scheduled-downtime
 	 * @ninja orm_command mayi_method update.command.schedule_service_downtime
 	 *

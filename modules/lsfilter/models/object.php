@@ -84,6 +84,7 @@ abstract class Object_Model extends BaseObject_Model {
 		foreach ( $commands as $cmdname => $cmdinfo ) {
 			$outcommands[$cmdname] = array_merge( array (
 				'name' => $cmdname,
+				'category' => 'Commands',
 				'icon' => 'command',
 				'description' => '',
 				'params' => array (),
@@ -121,7 +122,7 @@ abstract class Object_Model extends BaseObject_Model {
 					$field = substr( $field, 1 );
 
 
-				$cmd['enabled'] = call_user_func( array (
+				$cmd['enabled'] = (bool)call_user_func( array (
 					$self,
 					'get_' . $field
 				) );

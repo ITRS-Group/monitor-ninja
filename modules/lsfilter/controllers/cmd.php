@@ -84,12 +84,7 @@ class Cmd_Controller extends Ninja_Controller {
 			// and provide its own. For example: locate host
 			// on map (Nagvis)
 			$result = $object->$command();
-			if(isset($result['status'])
-					&& $result['status']
-					&& isset($result['redirect'])
-					&& $result['redirect']) {
-				return url::redirect($result['redirect']);
-			}
+			return url::redirect($result);
 		}
 		$this->template->content->command_info = $commands[$command];
 	}
