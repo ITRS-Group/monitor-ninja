@@ -1,4 +1,4 @@
-listview_renderer_extra_objects.all = [
+var listview_renderer_extra_objects_all = [
 	function() {
 		var menu;
 		if (!lsfilter_multiselect.elem_objtype) {

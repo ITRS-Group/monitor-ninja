@@ -12,7 +12,7 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	}
 	
 	/**
-	 * Get the columns avalible in the query
+	 * Get the columns available in the query
 	 */
 	public function get_columns() {
 		return $this->columns;

@@ -218,20 +218,3 @@ function render_host_status_summary(stats)
 
 	return ul;
 }
-
-var listview_multi_select_header = $('<input type="checkbox" id="select_all" class="listview_multiselect_checkbox_all" />');
-
-var listview_multi_select_cell_renderer = function(args)
-{
-	var checkbox = $(
-			'<input type="checkbox" name="object[]" class="listview_multiselect_checkbox" />')
-			.attr('value', args.obj.key);
-	if ( lsfilter_multiselect.box_selected(args.obj.key) ) {
-		checkbox.prop('checked', true);
-		if (args.row.hasClass('odd'))
-			args.row.addClass('selected_odd');
-		else
-			args.row.addClass('selected_even');
-	}
-	return $('<td style="width: 1em; padding: 0 3px" />').append(checkbox);
-};

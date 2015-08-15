@@ -3,15 +3,6 @@
  ******************************************************************************/
 
 listview_renderer_table.hosts = {
-	"select" : {
-		"header" : listview_multi_select_header,
-		"depends" : [ 'key' ],
-		"sort" : false,
-		"avalible" : function(args) {
-			return _controller_name == 'listview';
-		},
-		"cell" : listview_multi_select_cell_renderer
-	},
 	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text', 'name' ],
@@ -344,15 +335,6 @@ listview_renderer_table.services = {
 			return cell;
 		}
 	},
-	"select" : {
-		"header" : listview_multi_select_header,
-		"depends" : [ 'key' ],
-		"sort" : false,
-		"avalible" : function(args) {
-			return _controller_name == 'listview';
-		},
-		"cell" : listview_multi_select_cell_renderer
-	},
 	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text', 'description', 'host.name' ],
@@ -579,15 +561,6 @@ listview_renderer_table.servicegroups = {
 };
 
 listview_renderer_table.comments = {
-	"select" : {
-		"header" : listview_multi_select_header,
-		"depends" : [ 'key' ],
-		"sort" : false,
-		"avalible" : function(args) {
-			return _controller_name == 'listview';
-		},
-		"cell" : listview_multi_select_cell_renderer
-	},
 	"id" : {
 		"header" : _('ID'),
 		"depends" : [ 'id' ],
@@ -766,15 +739,6 @@ listview_renderer_table.comments = {
 	}
 };
 listview_renderer_table.downtimes = {
-	"select" : {
-		"header" : listview_multi_select_header,
-		"depends" : [ 'key' ],
-		"sort" : false,
-		"avalible" : function(args) {
-			return _controller_name == 'listview';
-		},
-		"cell" : listview_multi_select_cell_renderer
-	},
 	"id" : {
 		"header" : _('ID'),
 		"depends" : [ 'id' ],

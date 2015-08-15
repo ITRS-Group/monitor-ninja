@@ -113,7 +113,7 @@ var lsfilter_main = {
 		$('#filter-query-builder').css( "top", header_height + "px" );
 
 		$('#extra-dropdowns').replaceContent(
-			$.map((listview_renderer_extra_objects[metadata.table] || []).concat(listview_renderer_extra_objects.all || []), function(x) {
+			$.map((listview_renderer_extra_objects[metadata.table] || []).concat(listview_renderer_extra_objects_all || []), function(x) {
 				if (typeof x == 'function') {
 					x = x();
 				}

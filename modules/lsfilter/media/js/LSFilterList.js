@@ -541,10 +541,10 @@ function lsfilter_list(config)
 			var col_render = this.table_desc.col_renderers[col_name];
 
 			/*
-			 * Check if column is avalible in current view.
+			 * Check if column is available in current view.
 			 */
-			if (col_render.avalible) {
-				if (!col_render.avalible({})) {
+			if (col_render.available) {
+				if (!col_render.available({table:this.table_desc.metadata.table})) {
 					continue;
 				}
 			}

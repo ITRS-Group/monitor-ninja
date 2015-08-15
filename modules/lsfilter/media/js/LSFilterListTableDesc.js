@@ -592,7 +592,11 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 	if (!listview_renderer_table[metadata.table])
 		return;
 
-	var all_col_renderers = listview_renderer_table[metadata.table];
+	var all_col_renderers = $.extend(
+			{},
+			listview_renderer_table_all,
+			listview_renderer_table[metadata.table]
+			);
 	var all_columns = [];
 	for ( var col in all_col_renderers) {
 		all_columns.push(col);
