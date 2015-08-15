@@ -224,42 +224,58 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 		return $hosts;
 	}
 
+
 	/**
-	 * @param duration
-	 * @param trigger_id
 	 * @param start_time
 	 * @param end_time
+	 * @param flexible
+	 * @param duration
+	 * @param trigger_id
 	 * @param comment
-	 * @param fixed = true
 	 *
 	 * @ninja orm_command name Schedule host downtime
-	 * @ninja orm_command category Host Operations
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon scheduled-downtime
-	 * @ninja orm_command mayi_method update.command.schedule_host_downtime
+	 * @ninja orm_command mayi_method update.command.downtime
 	 *
-	 * @ninja orm_command params.duration.id 0
-	 * @ninja orm_command params.duration.type duration
-	 * @ninja orm_command params.duration.name Duration
-	 *
-	 * @ninja orm_command params.trigger_id.id 1
-	 * @ninja orm_command params.trigger_id.type int
-	 * @ninja orm_command params.trigger_id.name Trigger id
-	 *
-	 * @ninja orm_command params.start_time.id 2
+	 * @ninja orm_command params.start_time.id 0
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
+	 * @ninja orm_command params.start_time.description
+	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
-	 * @ninja orm_command params.end_time.id 3
+	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
+	 * @ninja orm_command params.end_time.description
+	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
-	 * @ninja orm_command params.comment.id 4
+	 * @ninja orm_command params.flexible.id 2
+	 * @ninja orm_command params.flexible.type bool
+	 * @ninja orm_command params.flexible.name Flexible
+	 * @ninja orm_command params.flexible.description
+	 *     Flexible downtime starts when the host goes down or becomes
+	 *     unreachable (sometime between the start and end times you specified)
+	 *     and lasts as long as the duration of time you enter.
+	 *
+	 * @ninja orm_command params.duration.id 3
+	 * @ninja orm_command params.duration.type duration
+	 * @ninja orm_command params.duration.name Duration
+	 * @ninja orm_command params.duration.description
+	 *     Only for flexible downtimes. Number of hours from first problem the
+	 *     scheduled downtime should progress
+	 *
+	 * @ninja orm_command params.trigger_id.id 4
+	 * @ninja orm_command params.trigger_id.type object
+	 * @ninja orm_command params.trigger_id.query [downtimes] all
+	 * @ninja orm_command params.trigger_id.name Triggering downtime
+	 * @ninja orm_command params.trigger_id.description
+	 *     Only for flexible downtimes. Which downtime that should trigger this
+	 *     downtime
+	 *
+	 * @ninja orm_command params.comment.id 5
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
-	 *
-	 * @ninja orm_command params.fixed.id 5
-	 * @ninja orm_command params.fixed.type bool
-	 * @ninja orm_command params.fixed.name Fixed
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule downtime for all hosts in a
@@ -267,113 +283,112 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 *     notifications out about the hosts. When the scheduled downtime
 	 *     expires, Naemon will send out notifications for the hosts as it
 	 *     normally would. Scheduled downtimes are preserved across program
-	 *     shutdowns and restarts. Both the start and end times should be
-	 *     specified in the following format: <b>YYYY-MM-DD hh:mm:ss</b>. If you
-	 *     select the <i>fixed</i> option, the downtime will be in effect
-	 *     between the start and end times you specify. If you do not select the
-	 *     <i>fixed</i> option, Naemon will treat this as "flexible" downtime.
-	 *     Flexible downtime starts when a host goes down or becomes unreachable
-	 *     (sometime between the start and end times you specified) and lasts as
-	 *     long as the duration of time you enter. The duration fields do not
-	 *     apply for fixed dowtime.
+	 *     shutdowns and restarts.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_host_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
+	public function schedule_host_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment) {
 		$duration_sec = intval(floatval($duration) * 3600);
+
+		$trigger_id = intval($trigger_id);
+
 		$start_tstamp = nagstat::timestamp_format(false, $start_time);
-		if($start_tstamp === false) {
+		if($start_tstamp === false)
 			return array(
 				'status' => 0,
 				'output' => $start_time . " is not a valid date, please adjust it"
 			);
-		}
-		$end_tstamp = nagstat::timestamp_format(false, $end_time);
-		if($end_tstamp === false) {
-			return array(
-				'status' => 0,
-				'output' => $end_time . " is not a valid date, please adjust it"
-			);
-		}
-		$set = $this->get_hosts_set();
-		return $this->schedule_downtime_retrospectively($set, "SCHEDULE_SERVICEGROUP_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+
+			$end_tstamp = nagstat::timestamp_format(false, $end_time);
+			if($end_tstamp === false)
+				return array(
+					'status' => 0,
+					'output' => $end_time . " is not a valid date, please adjust it"
+				);
+
+				return $this->schedule_downtime_retrospectively(false, "SCHEDULE_SERVICEGROUP_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 
+
 	/**
-	 * @param duration
-	 * @param trigger_id
 	 * @param start_time
 	 * @param end_time
+	 * @param flexible
+	 * @param duration
+	 * @param trigger_id
 	 * @param comment
-	 * @param fixed = true
 	 *
 	 * @ninja orm_command name Schedule service downtime
-	 * @ninja orm_command category Service Operations
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon scheduled-downtime
-	 * @ninja orm_command mayi_method update.command.schedule_service_downtime
+	 * @ninja orm_command mayi_method update.command.downtime
 	 *
-	 * @ninja orm_command params.duration.id 0
-	 * @ninja orm_command params.duration.type duration
-	 * @ninja orm_command params.duration.name Duration
-	 *
-	 * @ninja orm_command params.trigger_id.id 1
-	 * @ninja orm_command params.trigger_id.type int
-	 * @ninja orm_command params.trigger_id.name Trigger id
-	 *
-	 * @ninja orm_command params.start_time.id 2
+	 * @ninja orm_command params.start_time.id 0
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
+	 * @ninja orm_command params.start_time.description
+	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
-	 * @ninja orm_command params.end_time.id 3
+	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
+	 * @ninja orm_command params.end_time.description
+	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
-	 * @ninja orm_command params.comment.id 4
+	 * @ninja orm_command params.flexible.id 2
+	 * @ninja orm_command params.flexible.type bool
+	 * @ninja orm_command params.flexible.name Flexible
+	 * @ninja orm_command params.flexible.description
+	 *     Flexible downtime starts when the service get a problem state
+	 *     (sometime between the start and end times you specified)
+	 *     and lasts as long as the duration of time you enter.
+	 *
+	 * @ninja orm_command params.duration.id 3
+	 * @ninja orm_command params.duration.type duration
+	 * @ninja orm_command params.duration.name Duration
+	 * @ninja orm_command params.duration.description
+	 *     Only for flexible downtimes. Number of hours from first problem the
+	 *     scheduled downtime should progress
+	 *
+	 * @ninja orm_command params.trigger_id.id 4
+	 * @ninja orm_command params.trigger_id.type object
+	 * @ninja orm_command params.trigger_id.query [downtimes] all
+	 * @ninja orm_command params.trigger_id.name Triggering downtime
+	 * @ninja orm_command params.trigger_id.description
+	 *     Only for flexible downtimes. Which downtime that should trigger this
+	 *     downtime
+	 *
+	 * @ninja orm_command params.comment.id 5
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
-	 *
-	 * @ninja orm_command params.fixed.id 5
-	 * @ninja orm_command params.fixed.type bool
-	 * @ninja orm_command params.fixed.name Fixed
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule downtime for all services in a
 	 *     servicegroup. During the specified downtime, Naemon will not send
 	 *     notifications out about the services. When the scheduled downtime
 	 *     expires, Naemon will send out notifications for the services as it
-	 *     normally would.  Scheduled downtimes are preserved across program
-	 *     shutdowns and restarts. Both the start and end times should be
-	 *     specified in the following format: <b>YYYY-MM-DD hh:mm:ss</b>. If you
-	 *     select the <i>fixed</i> option, the downtime will be in effect
-	 *     between the start and end times you specify. If you do not select the
-	 *     <i>fixed</i> option, Naemon will treat this as "flexible" downtime.
-	 *     Flexible downtime starts when a service enters a non-OK state
-	 *     (sometime between the start and end times you specified) and lasts as
-	 *     long as the duration of time you enter. The duration fields do not
-	 *     apply for fixed dowtime. Note that scheduling downtime for services
-	 *     does not automatically schedule downtime for the hosts those services
-	 *     are associated with. If you want to also schedule downtime for all
-	 *     hosts in the servicegroup, check the 'Schedule downtime for hosts
-	 *     too' option.
+	 *     normally would. Scheduled downtimes are preserved across program
+	 *     shutdowns and restarts.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_service_downtime($duration, $trigger_id, $start_time, $end_time, $comment, $fixed=true) {
+	public function schedule_service_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment) {
 		$duration_sec = intval(floatval($duration) * 3600);
+
+		$trigger_id = intval($trigger_id);
+
 		$start_tstamp = nagstat::timestamp_format(false, $start_time);
-		if($start_tstamp === false) {
+		if($start_tstamp === false)
 			return array(
 				'status' => 0,
 				'output' => $start_time . " is not a valid date, please adjust it"
 			);
-		}
-		$end_tstamp = nagstat::timestamp_format(false, $end_time);
-		if($end_tstamp === false) {
-			return array(
-				'status' => 0,
-				'output' => $end_time . " is not a valid date, please adjust it"
-			);
-		}
 
-		$set = ServicePool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
-		return $this->schedule_downtime_retrospectively($set, "SCHEDULE_SERVICEGROUP_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $fixed ? 1 : 0, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+			$end_tstamp = nagstat::timestamp_format(false, $end_time);
+			if($end_tstamp === false)
+				return array(
+					'status' => 0,
+					'output' => $end_time . " is not a valid date, please adjust it"
+				);
+
+				return $this->schedule_downtime_retrospectively(false, "SCHEDULE_SERVICEGROUP_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 }

@@ -74,6 +74,22 @@ if (empty( $error )) {
 					'id' => 'field_' . $pname
 				), true, false, 'class="checkbox"' );
 				break;
+			case 'object':
+				$set = ObjectPool_Model::get_by_query($pdef['query']);
+				$objs = array(
+					'' => 'None'
+				);
+				foreach($set->it(array('key'), array(), 1000) as $obj) {
+					/* @var $obj Object_Model */
+					$objs[$obj->get_key()] = $obj->get_key();
+				}
+				echo form::dropdown(array(
+					'class' => "input-wide",
+					'name' => $pname,
+					'title' => _( 'Required field' ),
+					'id' => 'field_' . $pname,
+					'options' => $objs
+				));
 		}
 		if(!empty($pdef['description'])) {
 			echo "<br />";

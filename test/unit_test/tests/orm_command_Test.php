@@ -96,7 +96,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 
 		$host = new Servicegroup_Model(array('name' => $name), '', array('name'));
 
-		$host->schedule_service_downtime($duration_in, $trigger_id, $start_time, $end_time, $comment);
+		$host->schedule_service_downtime($start_time, $end_time, !$fixed, $duration_in, $trigger_id, $comment);
 		$wanted_output = "/\[\d+\] SCHEDULE_SERVICEGROUP_SVC_DOWNTIME;$name;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/";
 		$this->assertRegExp($wanted_output, $this->m->last_cmd());
 	}
