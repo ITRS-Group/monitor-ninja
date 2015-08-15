@@ -27,6 +27,24 @@
 #filter-query-multi-action
   max-height: none
   padding: 0px
+  background: #ffffff
+
+  ul
+    display: inline-block
+    vertical-align: top
+    li
+      &:first-child
+        border-bottom: 1px solid #999
+      padding: 0.25em 1em 0.25em 0.25em
+
+      a
+        display: block
+        &:hover
+          background: #f0f0f0
+          cursor: default
+
+        text-decoration: none
+        border: 0
 
 #filter-query-builder
   width: 75%
@@ -36,22 +54,6 @@
   background-position: left center
   padding-left: 22px !important
 
-#multi-action-list
-  li
-    &:first-child
-      border: none
-    border-top: 1px solid #999
-
-    a
-      display: block
-      padding: 0.25em
-      background: #ffffff
-      &:hover
-        background: #f0f0f0
-        cursor: default
-
-      text-decoration: none
-      border: 0
 
 .lsfilter-noresult
   display: inline-block

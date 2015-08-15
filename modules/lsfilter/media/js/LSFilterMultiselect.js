@@ -3,7 +3,7 @@ var lsfilter_multiselect = {
 		'update_ok': function(data) {
 			if (data.source == 'multiselect')
 				return;
-			if (!this.elem_select)
+			if (!this.elem_menu)
 				return;
 			if (data.metadata.table && data.metadata.table != this.selection_table) {
 				this.selection_table = data.metadata.table;
@@ -12,10 +12,9 @@ var lsfilter_multiselect = {
 
 
 				if (listview_commands[this.selection_table]) {
-					this.populate_select(this.elem_select,
-							listview_commands[this.selection_table]);
+					this.populate_select(listview_commands[this.selection_table]);
 				} else {
-					this.populate_select(this.elem_select, {});
+					this.populate_select({});
 				}
 
 				this.elem_objtype.attr('value', this.selection_table);
@@ -32,7 +31,7 @@ var lsfilter_multiselect = {
 		var self = this; // To be able to access it from within handlers
 		lsfilter_main.add_listener(self);
 
-		this.elem_select = elem;
+		this.elem_menu = elem;
 		this.elem_objtype = $('#listview_multi_action_obj_type');
 		$(document).on('click', '.multi-action-send-link', function(e) {
 			e.preventDefault();
@@ -41,21 +40,17 @@ var lsfilter_multiselect = {
 		});
 	},
 
-	elem_select : false,
+	elem_menu : false,
 	elem_objtype : false,
 
 	selection : {},
 	selection_table : false,
 
-	populate_select : function(elem, commands) {
-
-		elem.empty();
+	populate_select : function(commands) {
+		this.elem_menu.empty();
 
 		if(commands.length == 0) {
-			var li = $('<li />')
-			li.text("No commands available");
-
-			elem.append(li);
+			this.elem_menu.empty().text("No commands available");
 		} else {
 
 			var categories = {};
@@ -73,23 +68,23 @@ var lsfilter_multiselect = {
 
 			for ( var category in categories) {
 				var category_commands = categories[category];
-
-				elem.append($('<li />').text(category).addClass('multi-action-title'));
+				var cat_list = $('<ul />');
+				cat_list.append($('<li />').text(category).addClass('multi-action-title'));
 
 				for ( var cmdname in category_commands) {
 					var cmd = category_commands[cmdname];
-					var opt = $('<a />')
+					var opt = $('<a href="#"/>')
 
 					opt.data('multi-action-command', cmdname);
-					opt.append($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
-					opt.append($('<span />').text(cmd.name));
+					opt.text(cmd.name);
+					opt.prepend($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
 					opt.addClass('multi-action-send-link');
 
-					elem.append($('<li />').append(opt));
+					cat_list.append($('<li />').append(opt));
 				}
+				this.elem_menu.append(cat_list);
 			}
 		}
-
 	},
 
 	do_send : function(link) {
