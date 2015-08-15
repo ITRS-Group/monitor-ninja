@@ -373,7 +373,7 @@ Feature: Monitoring
 		Verify that the "Configure" link works correctly.
 
 		Given I am on the Hostgroup details page
-		When I click "Actions"
+		When I click css "span[title=Actions]"
 		And I click "Configure"
 		Then I should be on the Configure page
 
