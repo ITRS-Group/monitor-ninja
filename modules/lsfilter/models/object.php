@@ -135,6 +135,17 @@ abstract class Object_Model extends BaseObject_Model {
 	}
 
 	/**
+	 * Get a readable name of the current object. As fallback, which is valid
+	 * in many cases, is the key string. But for tables with ID-keys, it might
+	 * be nice to have a better string representation.
+	 *
+	 * @return string
+	 */
+	public function get_readable_name() {
+		return $this->get_key();
+	}
+
+	/**
 	 * Get the current logged in username
 	 *
 	 * @return string

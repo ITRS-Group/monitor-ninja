@@ -1,5 +1,5 @@
 <?php
-print "<h2>" . $object->get_key() . "</h2>";
+print "<h2>" . $object->get_readable_name() . "</h2>";
 if ($result['status']) {
 	echo '<div class="alert notice">'.sprintf(_('Your command was successfully submitted to %s.'), Kohana::config('config.product_name')).'</div>';
 	$this->footer = '<input style="margin-left: 12px" type="button" value="Done" onclick="history.go(-2)" />'."\n";

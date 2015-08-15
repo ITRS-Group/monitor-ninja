@@ -79,9 +79,9 @@ if (empty( $error )) {
 				$objs = array(
 					'' => 'None'
 				);
-				foreach($set->it(array('key'), array(), 1000) as $obj) {
+				foreach($set->it(array('key', 'readable_name'), array(), 1000) as $obj) {
 					/* @var $obj Object_Model */
-					$objs[$obj->get_key()] = $obj->get_key();
+					$objs[$obj->get_key()] = $obj->get_readable_name();
 				}
 				echo form::dropdown(array(
 					'class' => "input-wide",

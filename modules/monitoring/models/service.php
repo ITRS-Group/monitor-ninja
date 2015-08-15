@@ -820,4 +820,14 @@ class Service_Model extends BaseService_Model {
 			);
 		}
 	}
+
+	/**
+	 * Get a better name for the service
+	 *
+	 * @ninja orm depend[] host.name
+	 * @ninja orm depend[] description
+	 */
+	public function get_readable_name() {
+		return sprintf("%s / %s", $this->get_host()->get_name(), $this->get_description());
+	}
 }

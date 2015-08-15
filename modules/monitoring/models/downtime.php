@@ -40,4 +40,33 @@ class Downtime_Model extends BaseDowntime_Model {
 		if( $svc ) return $host.';'.$svc;
 		return $host;
 	}
+
+	/**
+	 * Get a better name for the downtime
+	 *
+	 * @ninja orm depend[] id
+	 * @ninja orm depend[] is_service
+	 * @ninja orm depend[] host.name
+	 * @ninja orm depend[] service.description
+	 * @ninja orm depend[] start_time
+	 * @ninja orm depend[] comment
+	 */
+	public function get_readable_name() {
+		if($this->get_is_service()) {
+			return sprintf("%d - %s / %s @ %s: %s",
+					$this->get_id(),
+					$this->get_host()->get_name(),
+					$this->get_service()->get_description(),
+					date(nagstat::date_format(), $this->get_start_time()),
+					mb_strimwidth($this->get_comment(),0, 30, "...")
+					);
+		} else {
+			return sprintf("%d - %s @ %s: %s",
+					$this->get_id(),
+					$this->get_host()->get_name(),
+					date(nagstat::date_format(), $this->get_start_time()),
+					mb_strimwidth($this->get_comment(),0, 30, "...")
+					);
+		}
+	}
 }
