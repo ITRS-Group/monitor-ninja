@@ -75,7 +75,7 @@ var lsfilter_multiselect = {
 					var cmd = category_commands[cmdname];
 					var opt = $('<a href="#"/>')
 
-					opt.data('multi-action-command', cmdname);
+					opt.attr('data-multi-action-command', cmdname);
 					opt.text(cmd.name);
 					opt.prepend($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
 					opt.addClass('multi-action-send-link');
@@ -88,7 +88,7 @@ var lsfilter_multiselect = {
 	},
 
 	do_send : function(link) {
-		var action = link.data('multi-action-command');
+		var action = link.attr('data-multi-action-command');
 		var selcount = $('.listview_multiselect_checkbox:checked').length;
 		if (selcount == 0) {
 			Notify.message('No items selected');
