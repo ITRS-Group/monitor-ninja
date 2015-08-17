@@ -242,14 +242,23 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.sticky.id 0
 	 * @ninja orm_command params.sticky.type bool
 	 * @ninja orm_command params.sticky.name Sticky
+	 * @ninja orm_command params.sticky.default 1
+	 * @ninja orm_command params.sticky.description
+	 * 		If you want acknowledgement to disable notifications until the host recovers, check this checkbox.
 	 *
 	 * @ninja orm_command params.notify.id 1
 	 * @ninja orm_command params.notify.type bool
-	 * @ninja orm_command params.notify.name Sticky
+	 * @ninja orm_command params.notify.name Notify
+	 * @ninja orm_command params.notify.default 1
+	 * @ninja orm_command params.notify.description
+	 * 		If you want an acknowledgement notification sent out to the appropriate contacts, check this checkbox.
 	 *
 	 * @ninja orm_command params.persistent.id 2
 	 * @ninja orm_command params.persistent.type bool
-	 * @ninja orm_command params.persistent.name Sticky
+	 * @ninja orm_command params.persistent.name Persistent
+	 * @ninja orm_command params.persistent.default 1
+	 * @ninja orm_command params.persistent.description
+	 * 		If you would like the host comment to remain once the acknowledgement is removed, check this checkbox.
 	 *
 	 * @ninja orm_command params.comment.id 3
 	 * @ninja orm_command params.comment.type string
@@ -400,7 +409,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.perf_data.id 2
 	 * @ninja orm_command params.perf_data.type string
 	 * @ninja orm_command params.perf_data.name Perf data
-	 * @ninja orm_command params.perf_data.description Performance data, formatted as as monitoring-plugins defines
+	 * @ninja orm_command params.perf_data.description Performance data, formatted as monitoring-plugins defines
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to submit a passive check result for a host.
@@ -425,10 +434,16 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.check_time.id 0
 	 * @ninja orm_command params.check_time.type time
 	 * @ninja orm_command params.check_time.name Check time
+	 * @ninja orm_command params.check_time.default now
+	 * @ninja orm_command params.check_time.description
+	 * 		Enter a check time in the format: YYYY-MM-DD hh:mm::ss
 	 *
 	 * @ninja orm_command params.forced.id 1
 	 * @ninja orm_command params.forced.type bool
 	 * @ninja orm_command params.forced.name Force check
+	 * @ninja orm_command params.forced.default 1
+	 * @ninja orm_command params.forced.description
+	 * 		If this checkbox is checked Naemon will force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a host. Naemon
@@ -469,12 +484,14 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.start_time.id 0
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
+	 * @ninja orm_command params.start_time.default now
 	 * @ninja orm_command params.start_time.description
 	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
+	 * @ninja orm_command params.end_time.default now + 2hours
 	 * @ninja orm_command params.end_time.description
 	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
@@ -489,6 +506,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.duration.id 3
 	 * @ninja orm_command params.duration.type duration
 	 * @ninja orm_command params.duration.name Duration
+	 * @ninja orm_command params.duration.default 2.0
 	 * @ninja orm_command params.duration.description
 	 *     Only for flexible downtimes. Number of hours from first problem the
 	 *     scheduled downtime should progress
@@ -666,10 +684,16 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.check_time.id 0
 	 * @ninja orm_command params.check_time.type time
 	 * @ninja orm_command params.check_time.name Check time
+	 * @ninja orm_command params.check_time.default now
+	 * @ninja orm_command params.check_time.description
+	 * 		Enter a check time in the format: YYYY-MM-DD hh:mm::ss
 	 *
 	 * @ninja orm_command params.forced.id 1
 	 * @ninja orm_command params.forced.type bool
 	 * @ninja orm_command params.forced.name Forced
+	 * @ninja orm_command params.forced.default 1
+	 * @ninja orm_command params.forced.description
+	 * 		If this checkbox is checked Naemon will force a check of the services regardless of both what time the scheduled check occurs and whether or not checks are enabled for the services.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on

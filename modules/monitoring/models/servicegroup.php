@@ -241,12 +241,14 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command params.start_time.id 0
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
+	 * @ninja orm_command params.start_time.default now
 	 * @ninja orm_command params.start_time.description
 	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
+	 * @ninja orm_command params.end_time.default now + 2hours
 	 * @ninja orm_command params.end_time.description
 	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
@@ -261,6 +263,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command params.duration.id 3
 	 * @ninja orm_command params.duration.type duration
 	 * @ninja orm_command params.duration.name Duration
+	 * @ninja orm_command params.duration.default 2.0
 	 * @ninja orm_command params.duration.description
 	 *     Only for flexible downtimes. Number of hours from first problem the
 	 *     scheduled downtime should progress
@@ -325,12 +328,14 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command params.start_time.id 0
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
+	 * @ninja orm_command params.start_time.default now
 	 * @ninja orm_command params.start_time.description
 	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
+	 * @ninja orm_command params.end_time.default now + 2hours
 	 * @ninja orm_command params.end_time.description
 	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
@@ -345,6 +350,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 	 * @ninja orm_command params.duration.id 3
 	 * @ninja orm_command params.duration.type duration
 	 * @ninja orm_command params.duration.name Duration
+	 * @ninja orm_command params.duration.default 2.0
 	 * @ninja orm_command params.duration.description
 	 *     Only for flexible downtimes. Number of hours from first problem the
 	 *     scheduled downtime should progress
