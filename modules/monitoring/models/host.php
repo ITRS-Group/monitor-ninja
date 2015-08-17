@@ -239,30 +239,30 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon acknowledged
 	 *
-	 * @ninja orm_command params.sticky.id 0
+	 * @ninja orm_command params.comment.id 0
+	 * @ninja orm_command params.comment.type string
+	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command params.sticky.id 1
 	 * @ninja orm_command params.sticky.type bool
 	 * @ninja orm_command params.sticky.name Sticky
 	 * @ninja orm_command params.sticky.default 1
 	 * @ninja orm_command params.sticky.description
 	 * 		If you want acknowledgement to disable notifications until the host recovers, check this checkbox.
 	 *
-	 * @ninja orm_command params.notify.id 1
+	 * @ninja orm_command params.notify.id 2
 	 * @ninja orm_command params.notify.type bool
 	 * @ninja orm_command params.notify.name Notify
 	 * @ninja orm_command params.notify.default 1
 	 * @ninja orm_command params.notify.description
 	 * 		If you want an acknowledgement notification sent out to the appropriate contacts, check this checkbox.
 	 *
-	 * @ninja orm_command params.persistent.id 2
+	 * @ninja orm_command params.persistent.id 3
 	 * @ninja orm_command params.persistent.type bool
 	 * @ninja orm_command params.persistent.name Persistent
 	 * @ninja orm_command params.persistent.default 1
 	 * @ninja orm_command params.persistent.description
 	 * 		If you would like the host comment to remain once the acknowledgement is removed, check this checkbox.
-	 *
-	 * @ninja orm_command params.comment.id 3
-	 * @ninja orm_command params.comment.type string
-	 * @ninja orm_command params.comment.name Comment
 	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
@@ -284,7 +284,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command enabled_if unacknowledged_problem
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function acknowledge_problem($comment, $persistent=true, $notify=true, $sticky=true) {
+	public function acknowledge_problem($comment, $sticky=true, $notify=true, $persistent=true) {
 		return $this->submit_naemon_command("ACKNOWLEDGE_HOST_PROBLEM", $sticky?2:0, $notify?1:0, $persistent?1:0, $this->get_current_user(), $comment);
 	}
 
