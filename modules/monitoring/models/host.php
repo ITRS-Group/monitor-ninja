@@ -100,7 +100,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm depend[] custom_variables
 	 */
 	public function get_custom_commands() {
-		return Custom_command_Model::parse_custom_variables($this->get_custom_variables());
+		return $this->list_custom_commands();
 	}
 
 	/**

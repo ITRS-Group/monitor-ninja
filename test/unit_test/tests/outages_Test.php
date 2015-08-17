@@ -9,6 +9,17 @@ class outages_Test extends PHPUnit_Framework_TestCase {
 	 * @var array
 	 */
 	protected $objects = array (
+			"contacts" => array (
+				array (
+					'name' => 'superuser'
+				)
+			),
+			"contactgroups" => array (
+				array(
+					'name' => 'admins',
+					'members' => array('superuser')
+				)
+			),
 			"services" => array (
 					array (
 							'description' => 's_a',

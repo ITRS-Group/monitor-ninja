@@ -9,6 +9,17 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	 * @var array
 	 */
 	protected $objects = array (
+		"contacts" => array (
+			array (
+				'name' => 'superuser'
+			)
+		),
+		"contactgroups" => array (
+			array(
+				'name' => 'admins',
+				'members' => array('superuser')
+			)
+		),
 		"commands" => array (
 			array ('id' => 1,'line' => "this is a command",'name' => 'cmda'),
 			array ('id' => 2,'line' => "this is a another command",

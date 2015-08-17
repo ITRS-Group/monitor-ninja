@@ -41,4 +41,73 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 		$db->query("INSERT INTO report_data(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
 		$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
 	}
+
+	/**
+	 *	Parses custom variables and returns custom commands
+	 *
+	 *	@return array
+	 */
+	public function list_custom_commands() {
+		$contact = ContactPool_Model::get_current_contact();
+		/*
+		 * We need a contact to have contact groups. If no contact groups, we
+		 * don't have any custom commands
+		 */
+		if($contact === false)
+			return false;
+
+		/*
+		 * Unpack contactgroups for this user as a lookup from contactgroup name
+		 */
+		$cg_set = $contact->get_groups_set();
+		$cgs = array();
+		foreach($cg_set->it(array('name')) as $cg) {
+			$cgs[$cg->get_name()] = true;
+		}
+
+
+		/* Unpack commands */
+		$custom_commands = array();
+		foreach ($this->get_custom_variables() as $key => $value) {
+			$parts = explode('__', strtolower($key));
+
+			/* Not a valid command */
+			if(count($parts) != 3)
+				continue;
+
+			list($context, $attr, $command) = $parts;
+
+			// Does custom variable name match pattern?
+			if (substr($context, 0, 3) != 'op5')
+				continue;
+
+			if (!isset($custom_commands[$command]))
+				$custom_commands[$command] = array();
+
+			$custom_commands[$command][$attr] = $value;
+		}
+
+		/* Filter out incomplete custom commands */
+		$custom_commands = array_filter($custom_commands, function($cmd) {
+			if(!isset($cmd['access']))
+				return false;
+			if(!isset($cmd['action']))
+				return false;
+			return true;
+		});
+
+		/* Filter out unauthorized commands */
+		$custom_commands = array_filter($custom_commands, function($cmd) use ($cgs) {
+			foreach(explode(',',$cmd['access']) as $grp) {
+				if(isset($cgs[$grp]) && $cgs[$grp])
+					return true;
+			}
+			return false;
+		});
+
+		/* Unpack commands, to skip access, when returning */
+		return array_map(function($cmd) {
+			return $cmd['action'];
+		}, $custom_commands);
+	}
 }
