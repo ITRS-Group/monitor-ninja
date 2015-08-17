@@ -268,6 +268,7 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 * @param flexible
 	 * @param duration
 	 * @param trigger_id
+	 * @param propagation
 	 * @param comment
 	 *
 	 * @ninja orm_command name Schedule host downtime
@@ -313,7 +314,20 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 *     Only for flexible downtimes. Which downtime that should trigger this
 	 *     downtime
 	 *
-	 * @ninja orm_command params.comment.id 5
+	 * @ninja orm_command params.propagation.id 5
+	 * @ninja orm_command params.propagation.type select
+	 * @ninja orm_command params.propagation.name Propagate to children
+	 * @ninja orm_command params.propagation.option[] No propagation
+	 * @ninja orm_command params.propagation.option[] Propagate to child hosts
+	 * @ninja orm_command params.propagation.option[] Propagate as triggered downtime to child hosts
+	 * @ninja orm_command params.propagation.description
+	 *     Also add this downtime to children hosts. If selecting propagation,
+	 *     this downtime, with its parameters, will be added to all children
+	 *     hosts automatically. If selected that propagation is triggered, the
+	 *     downtime on children hosts is registered as flexible, triggered by
+	 *     the selected host.
+	 *
+	 * @ninja orm_command params.comment.id 6
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
 	 *
@@ -326,26 +340,21 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 *     shutdowns and restarts.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_host_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment) {
-		$duration_sec = intval(floatval($duration) * 3600);
-
-		$trigger_id = intval($trigger_id);
-
-		$start_tstamp = nagstat::timestamp_format(false, $start_time);
-		if($start_tstamp === false)
-			return array(
+	public function schedule_host_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment) {
+		$hosts = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
+		$result = array(
 				'status' => 0,
-				'output' => $start_time . " is not a valid date, please adjust it"
-			);
-
-			$end_tstamp = nagstat::timestamp_format(false, $end_time);
-			if($end_tstamp === false)
-				return array(
-					'status' => 0,
-					'output' => $end_time . " is not a valid date, please adjust it"
+				'output' => 'No hosts in hostgroup.'
 				);
+		foreach($hosts as $host) {
+			/* @var $host Host_Model */
+			$cur_result = $host->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment);
 
-				return $this->schedule_downtime_retrospectively(false, "SCHEDULE_HOSTGROUP_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+			/* Keep those with errors... */
+			if($cur_result['status'] > $result['status'])
+				$result = $cur_result;
+		}
+		return $result;
 	}
 
 
@@ -414,24 +423,19 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_service_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment) {
-		$duration_sec = intval(floatval($duration) * 3600);
-
-		$trigger_id = intval($trigger_id);
-
-		$start_tstamp = nagstat::timestamp_format(false, $start_time);
-		if($start_tstamp === false)
-			return array(
+		$services = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=')->get_services();
+		$result = array(
 				'status' => 0,
-				'output' => $start_time . " is not a valid date, please adjust it"
-			);
-
-			$end_tstamp = nagstat::timestamp_format(false, $end_time);
-			if($end_tstamp === false)
-				return array(
-					'status' => 0,
-					'output' => $end_time . " is not a valid date, please adjust it"
+				'output' => 'No hosts in hostgroup.'
 				);
+		foreach($services as $service) {
+			/* @var $host Service_Model */
+			$cur_result = $service->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment);
 
-				return $this->schedule_downtime_retrospectively(false, "SCHEDULE_HOSTGROUP_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+			/* Keep those with errors... */
+			if($cur_result['status'] > $result['status'])
+				$result = $cur_result;
+		}
+		return $result;
 	}
 }

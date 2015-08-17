@@ -175,28 +175,32 @@ class MockLivestatus_StateMachine {
 				$result = false;
 				switch ($match_op) {
 					case '=':/* equality */
-					$result = ($match_value == $value);
+						$result = ($match_value == $value);
 						break;
 					case '~': /* match regular expression (substring match) */
-					$result = (false != preg_match( '/' . $match_value . '/', $value ));
+						$result = (false != preg_match( '/' . $match_value . '/', $value ));
 						break;
 					case '=~': /* equality ignoring case */
-					$result = (strtolower( $match_value ) == strtolower( $value ));
+						$result = (strtolower( $match_value ) == strtolower( $value ));
 						break;
 					case '~~': /* regular expression ignoring case */
-					$result = (false != preg_match( '/' . $match_value . '/i', $value ));
+						$result = (false != preg_match( '/' . $match_value . '/i', $value ));
 						break;
 					case '<': /* less than */
-					$result = ($match_value < $value);
+						$result = ($match_value < $value);
 						break;
 					case '>': /* greater than */
-					$result = ($match_value > $value);
+						$result = ($match_value > $value);
 						break;
 					case '<=': /* less or equal */
-					$result = ($match_value <= $value);
+						$result = ($match_value <= $value);
 						break;
-					case '>=': /* greater or equal */
-					$result = ($match_value >= $value);
+					case '>=': /* greater or equal, or in array */
+						if(is_array($value)) {
+							$result = in_array($match_value, $value);
+						} else {
+							$result = ($match_value >= $value);
+						}
 						break;
 					default :
 						throw new MockLivestatus_Exception( 'Unknown filter operator ' . $match_op );

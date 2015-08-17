@@ -474,6 +474,7 @@ class Host_Model extends BaseHost_Model {
 	 * @param flexible
 	 * @param duration
 	 * @param trigger_id
+	 * @param propagation
 	 * @param comment
 	 *
 	 * @ninja orm_command name Schedule downtime
@@ -519,7 +520,20 @@ class Host_Model extends BaseHost_Model {
 	 *     Only for flexible downtimes. Which downtime that should trigger this
 	 *     downtime
 	 *
-	 * @ninja orm_command params.comment.id 5
+	 * @ninja orm_command params.propagation.id 5
+	 * @ninja orm_command params.propagation.type select
+	 * @ninja orm_command params.propagation.name Propagate to children
+	 * @ninja orm_command params.propagation.option[] No propagation
+	 * @ninja orm_command params.propagation.option[] Propagate to child hosts
+	 * @ninja orm_command params.propagation.option[] Propagate as triggered downtime to child hosts
+	 * @ninja orm_command params.propagation.description
+	 *     Also add this downtime to children hosts. If selecting propagation,
+	 *     this downtime, with its parameters, will be added to all children
+	 *     hosts automatically. If selected that propagation is triggered, the
+	 *     downtime on children hosts is registered as flexible, triggered by
+	 *     the selected host.
+	 *
+	 * @ninja orm_command params.comment.id 6
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
 	 *
@@ -531,26 +545,39 @@ class Host_Model extends BaseHost_Model {
 	 *     are preserved across program shutdowns and restarts.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment) {
+	public function schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment) {
 		$duration_sec = intval(floatval($duration) * 3600);
 
 		$trigger_id = intval($trigger_id);
 
+		/* Handle propagation correctly */
+		$propagation = (int)$propagation;
+		$commands = array(
+			"SCHEDULE_HOST_DOWNTIME",
+			"SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME",
+			"SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME"
+		);
+		$command = array_key_exists($propagation, $commands) ? $commands[$propagation] : $commands[0];
+
 		$start_tstamp = nagstat::timestamp_format(false, $start_time);
-		if($start_tstamp === false)
+		if($start_tstamp === false) {
 			return array(
 				'status' => 0,
 				'output' => $start_time . " is not a valid date, please adjust it"
 				);
+		}
 
 		$end_tstamp = nagstat::timestamp_format(false, $end_time);
-		if($end_tstamp === false)
+		if($end_tstamp === false) {
 			return array(
 				'status' => 0,
 				'output' => $end_time . " is not a valid date, please adjust it"
 				);
+		}
 
-		return $this->schedule_downtime_retrospectively(false, "SCHEDULE_HOST_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+		/* TODO: handle propagation of downtimes retrospectively */
+		$this->schedule_downtime_retrospectively($this->get_name(), false, $start_time, $end_time, $comment);
+		return $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 
 	/**

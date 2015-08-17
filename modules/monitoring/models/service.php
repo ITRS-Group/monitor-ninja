@@ -540,20 +540,23 @@ class Service_Model extends BaseService_Model {
 		$trigger_id = intval($trigger_id);
 
 		$start_tstamp = nagstat::timestamp_format(false, $start_time);
-		if($start_tstamp === false)
+		if($start_tstamp === false) {
 			return array(
 				'status' => 0,
 				'output' => $start_time . " is not a valid date, please adjust it"
 				);
+		}
 
 		$end_tstamp = nagstat::timestamp_format(false, $end_time);
-		if($end_tstamp === false)
+		if($end_tstamp === false) {
 			return array(
 				'status' => 0,
 				'output' => $end_time . " is not a valid date, please adjust it"
 				);
+		}
 
-		return $this->schedule_downtime_retrospectively(false, "SCHEDULE_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+		$this->schedule_downtime_retrospectively($this->get_host()->get_name(), $this->get_description(), $start_time, $end_time, $comment);
+		return $this->submit_naemon_command("SCHEDULE_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 
 	/**

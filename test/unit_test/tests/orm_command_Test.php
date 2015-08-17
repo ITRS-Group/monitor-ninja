@@ -36,10 +36,47 @@ class mock_queryhandler extends op5queryhandler {
 
 class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 
+	protected $objects = array (
+		"hosts" => array(
+			array(
+				'name' => 'myhst'
+			),
+			array(
+				'name' => 'a_hst'
+			)
+		),
+		"services" => array (
+			array (
+				'host_name' => 'myhst',
+				'description' => 's_a',
+				'groups' => array('lightweight'),
+			),
+			array (
+				'host_name' => 'myhst',
+				'description' => 's_b',
+				'groups' => array(),
+			),
+			array (
+				'host_name' => 'a_hst',
+				'description' => 's_c',
+				'groups' => array('lightweight'),
+			),
+		),
+		"servicegroups" => array (
+			array(
+				'name' => 'lightweight'
+			)
+		)
+	);
+
 	function setup() {
 		// capture all external commands
 		$this->m = new mock_queryhandler();
 		op5objstore::instance()->mock_add('op5queryhandler', $this->m);
+
+		op5objstore::instance()->mock_add( 'op5Livestatus', new MockLivestatus( $this->objects, array (
+			'allow_undefined_columns' => true
+		) ) );
 
 		// login as a common user to avoid it in every step,
 		// since many of the commands want an "author"
@@ -94,11 +131,12 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		$comment = 'baby';
 		$fixed = 1;
 
-		$host = new Servicegroup_Model(array('name' => $name), '', array('name'));
+		$sg = new Servicegroup_Model(array('name' => $name), '', array('name'));
 
-		$host->schedule_service_downtime($start_time, $end_time, !$fixed, $duration_in, $trigger_id, $comment);
-		$wanted_output = "/\[\d+\] SCHEDULE_SERVICEGROUP_SVC_DOWNTIME;$name;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/";
-		$this->assertRegExp($wanted_output, $this->m->last_cmd());
+		$sg->schedule_service_downtime($start_time, $end_time, !$fixed, $duration_in, $trigger_id, $comment);
+		$this->assertRegExp("/\[\d+\] SCHEDULE_SVC_DOWNTIME;a_hst;s_c;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
+		$this->assertRegExp("/\[\d+\] SCHEDULE_SVC_DOWNTIME;myhst;s_a;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
+		$this->assertNull($this->m->last_cmd());
 	}
 
 	function test_host_acknowledge_problem() {
