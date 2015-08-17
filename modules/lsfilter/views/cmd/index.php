@@ -33,7 +33,7 @@ if (empty( $error )) {
 					'name' => $pname,
 					'title' => _( 'Required field' ),
 					'id' => 'field_' . $pname
-				) );
+				), (string) $pdef['default'] );
 				break;
 			case 'int' :
 			case 'float' :
@@ -42,15 +42,19 @@ if (empty( $error )) {
 					'name' => $pname,
 					'title' => _( 'Required field' ),
 					'id' => 'field_' . $pname
-				) );
+				), (string) $pdef['default'] );
 				break;
 			case 'time' :
+				$default = "";
+				if ($pdef['default']) {
+					$default = date(nagstat::date_format(), strtotime($pdef['default']));
+				}
 				echo form::input( array (
 					'class' => "input-wide autotest-date",
 					'name' => $pname,
 					'title' => _( 'Required field' ),
 					'id' => 'field_' . $pname
-				) );
+				), $default );
 				break;
 			case 'duration' :
 				echo form::input( array (
@@ -58,7 +62,7 @@ if (empty( $error )) {
 					'name' => $pname,
 					'title' => _( 'Required field' ),
 					'id' => 'field_' . $pname
-				) );
+				), (string) $pdef['default'] );
 				break;
 			case 'select' :
 				echo form::dropdown( array (
@@ -72,7 +76,7 @@ if (empty( $error )) {
 				echo form::checkbox(  array (
 					'name' => $pname,
 					'id' => 'field_' . $pname
-				), true, false, 'class="checkbox"' );
+				), true, (bool) $pdef['default'], 'class="checkbox"' );
 				break;
 			case 'object':
 				$set = ObjectPool_Model::get_by_query($pdef['query']);

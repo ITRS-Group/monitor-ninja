@@ -90,10 +90,8 @@ abstract class Object_Model extends BaseObject_Model {
 				'params' => array (),
 				'mayi_method' => 'invalid',
 				'enabled_if' => false,
-				'defualt' => array (),
-				'select' => array (),
 				'view' => 'cmd/exec',
-                'redirect' => 0
+				'redirect' => 0
 			), $cmdinfo );
 		}
 
