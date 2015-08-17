@@ -447,7 +447,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command params.forced.name Force check
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If this checkbox is checked Naemon will force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service.
+	 * 		If you want Naemon to force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service, check this checkbox.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a service. Naemon

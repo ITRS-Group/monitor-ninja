@@ -443,7 +443,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Force check
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If this checkbox is checked Naemon will force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host.
+	 * 		If you want Naemon to force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host, check this checkbox.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a host. Naemon
@@ -693,7 +693,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Forced
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If this checkbox is checked Naemon will force a check of the services regardless of both what time the scheduled check occurs and whether or not checks are enabled for the services.
+	 * 		If you want Naemon to force a check of the services regardless of both what time the scheduled check occurs and whether or not checks are enabled for the services, check this checkbox.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
