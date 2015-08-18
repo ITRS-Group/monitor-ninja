@@ -154,11 +154,17 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 	 **/
 	private function generate_set_by_key() {
 		$this->init_function( 'set_by_key', array('key'), 'static' );
-
-		$this->write('$parts = explode(";",$key);');
-		$this->write('if(count($parts) != %s) {', count($this->structure['key']));
-		$this->write(    'return false;');
-		$this->write('}');
+		if(count($this->structure['key']) > 0) {
+			// if count(key) == 0, explode is always 1
+			$this->write('$parts = explode(";",$key);');
+			$this->write('if(count($parts) != %s) {', count($this->structure['key']));
+			$this->write(    'return false;');
+			$this->write('}');
+		} else {
+			$this->write('if($key != "") {');
+			$this->write(    'return false;');
+			$this->write('}');
+		}
 
 		$set_fetcher = 'return self::all()';
 		$args = array();

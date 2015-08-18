@@ -167,7 +167,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		$this->template->inline_js = $this->inline_js;
 
 		$this->template->content->commands = $this->add_view('extinfo/commands');
-		$this->template->content->commands->set = $set;
+		$this->template->content->commands->object = $object;
 
 		$this->template->toolbar = new Toolbar_Controller();
 		$toolbar = &$this->template->toolbar;
@@ -226,12 +226,16 @@ class Extinfo_Controller extends Ninja_Controller {
 
 	}
 
+	private function enabled_icon($enabled) {
+		return '<span class="icon-16 x16-'.($enabled?'enabled':'disabled').'"></span>'.($enabled?'Enabled':'Disabled');
+	}
+	
 	/**
 	 * Show Nagios process info
 	 */
 	public function show_process_info()
 	{
-		$resource = ObjectPool_Model::pool('status')->all()->mayi_resource();
+		$resource = StatusPool_Model::all()->mayi_resource();
 		$this->_verify_access($resource.':read.extinfo');
 
 		$this->template->content = $this->add_view('extinfo/process_info');
@@ -252,111 +256,67 @@ class Extinfo_Controller extends Ninja_Controller {
 		$content->date_format_str = $date_format_str;
 
 		# fetch program status from program_status_model; uses ORM
-		$status = Current_status_Model::instance()->program_status();
-		$content->program_status = $status;
+        $status = StatusPool_Model::status();
+		$content->object = $status;
 
 		$content->info[] = array(
 			"title" => "Program version",
-			"value" => $status->program_version,
-			"command" => array(
-				nagioscmd::command_ajax_button(nagioscmd::command_id('SHUTDOWN_PROCESS'), sprintf(_('Shutdown the %s process'), Kohana::config('config.product_name'))),
-				nagioscmd::command_ajax_button(nagioscmd::command_id('RESTART_PROCESS'), sprintf(_('Restart the %s process'), Kohana::config('config.product_name')))
-			)
+			"value" => $status->get_program_version()
 		);
 
-		$content->info[] = array( "title" => "Program Starttime", "value" => date($date_format_str, $status->program_start) );
-		$content->info[] = array( "title" => "Running Time", "value" => time::to_string(time() - $status->program_start ) );
-		$content->info[] = array( "title" => "Last logfile rotation", "value" => $status->last_log_rotation ? date($date_format_str, $status->last_log_rotation) : 'never' );
-		$content->info[] = array( "title" => "Nagios PID", "value" => $status->nagios_pid );
+		$content->info[] = array( "title" => "Program Starttime", "value" => date($date_format_str, $status->get_program_start()) );
+		$content->info[] = array( "title" => "Running Time", "value" => time::to_string(time() - $status->get_program_start() ) );
+		$content->info[] = array( "title" => "Last logfile rotation", "value" => $status->get_last_log_rotation() ? date($date_format_str, $status->get_last_log_rotation()) : 'never' );
+		$content->info[] = array( "title" => "Nagios PID", "value" => $status->get_nagios_pid() );
 
 		$content->info[] = array(
 			"title" => _("Notifications enabled?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->enable_notifications) ? nagioscmd::command_id('DISABLE_NOTIFICATIONS') : nagioscmd::command_id('ENABLE_NOTIFICATIONS'),
-				($status->enable_notifications) ? _('Disable notifications') : _('Enable notifications'),
-				false, $status->enable_notifications
-			)
+			"value" => $this->enabled_icon($status->get_enable_notifications())
 		);
 
 		$content->info[] = array(
 			"title" => _("Service checks being executed?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->execute_service_checks) ? nagioscmd::command_id('STOP_EXECUTING_SVC_CHECKS') : nagioscmd::command_id('START_EXECUTING_SVC_CHECKS'),
-				($status->execute_service_checks) ? _('Stop executing service checks') : _('Start executing service checks'),
-				false, $status->execute_service_checks
-			)
+			"value" => $this->enabled_icon($status->get_execute_service_checks())
 		);
 
 		$content->info[] = array(
 			"title" => _("Passive service checks being accepted?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->accept_passive_service_checks) ? nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_SVC_CHECKS') : nagioscmd::command_id('START_ACCEPTING_PASSIVE_SVC_CHECKS'),
-				($status->accept_passive_service_checks) ? _('Stop accepting passive service checks') : _('Start accepting passive service checks'),
-				false, $status->accept_passive_service_checks
-			)
+			"value" => $this->enabled_icon($status->get_accept_passive_service_checks())
 		);
 
 		$content->info[] = array(
 			"title" => _("Host checks being executed?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->execute_host_checks) ? nagioscmd::command_id('STOP_EXECUTING_HOST_CHECKS') : nagioscmd::command_id('START_EXECUTING_HOST_CHECKS'),
-				($status->execute_host_checks) ? _('Stop executing host checks') : _('Start executing host checks'),
-				false, $status->execute_host_checks
-			)
+			"value" => $this->enabled_icon($status->get_execute_host_checks())
 		);
 
 		$content->info[] = array(
 			"title" => _("Passive host checks being accepted?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->accept_passive_host_checks) ? nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_HOST_CHECKS') : nagioscmd::command_id('START_ACCEPTING_PASSIVE_HOST_CHECKS'),
-				($status->accept_passive_host_checks) ? _('Stop accepting passive host checks') : _('Start accepting passive host checks'),
-				false, $status->accept_passive_host_checks
-			)
+			"value" => $this->enabled_icon($status->get_accept_passive_host_checks())
 		);
 
 		$content->info[] = array(
 			"title" => _("Event handlers enabled?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->enable_event_handlers) ? nagioscmd::command_id('DISABLE_EVENT_HANDLERS') : nagioscmd::command_id('ENABLE_EVENT_HANDLERS'),
-				($status->enable_event_handlers) ? _('Disable event handlers') : _('Enable event handlers'),
-				false, $status->enable_event_handlers
-			)
+			"value" => $this->enabled_icon($status->get_enable_event_handlers())
 		);
 
 		$content->info[] = array(
 			"title" => _("Obsessing over services?"),
-			"command" => nagioscmd::command_ajax_button(
-				($status->obsess_over_services) ? nagioscmd::command_id('STOP_OBSESSING_OVER_SVC_CHECKS') : nagioscmd::command_id('START_OBSESSING_OVER_SVC_CHECKS'),
-				($status->obsess_over_services) ? _('Stop obsessing over services') : _('Start obsessing over services'),
-				false, $status->obsess_over_services
-			)
+			"value" => $this->enabled_icon($status->get_obsess_over_services())
 		);
 
 		$content->info[] = array(
 			"title" => _('Obsessing over hosts?'),
-			"command" => nagioscmd::command_ajax_button(
-				($status->obsess_over_hosts) ? nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS') : nagioscmd::command_id('START_OBSESSING_OVER_HOST_CHECKS'),
-				($status->obsess_over_hosts) ? _('Stop obsessing over hosts') : _('Start obsessing over hosts'),
-				false, $status->obsess_over_hosts
-			)
+			"value" => $this->enabled_icon($status->get_obsess_over_hosts())
 		);
 
 		$content->info[] = array(
 			"title" => _('Flap detection enabled?'),
-			"command" => nagioscmd::command_ajax_button(
-				($status->enable_flap_detection) ? nagioscmd::command_id('DISABLE_FLAP_DETECTION') : nagioscmd::command_id('ENABLE_FLAP_DETECTION'),
-				($status->enable_flap_detection) ? _('Disable flap detection') : _('Enable flap detection'),
-				false, $status->enable_flap_detection
-			)
+			"value" => $this->enabled_icon($status->get_enable_flap_detection())
 		);
 
 		$content->info[] = array(
 			"title" => _('Performance data being processed?'),
-			"command" => nagioscmd::command_ajax_button(
-				($status->process_performance_data) ? nagioscmd::command_id('DISABLE_PERFORMANCE_DATA') : nagioscmd::command_id('ENABLE_PERFORMANCE_DATA'),
-				($status->process_performance_data) ? _('Disable performance data') : _('Enable performance data'),
-				false, $status->process_performance_data
-			)
+			"value" => $this->enabled_icon($status->get_process_performance_data())
 		);
 
 	}
@@ -449,7 +409,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		$content->commands = $this->add_view('extinfo/commands');
-		$content->commands->set = $set;
+		$content->commands->object = $object;
 
 		$content->notes_url = $group_info_res->notes_url !='' ? nagstat::process_macros($group_info_res->notes_url, $group_info_res, $grouptype) : false;
 		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res, $grouptype) : false;

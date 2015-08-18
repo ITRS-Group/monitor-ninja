@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<div class="left width-66">
 <table>
 	<colgroup>
 		<col />
@@ -34,3 +35,9 @@
 		}
 	?>
 </table>
+</div>
+
+
+<?php
+$commandlist = new View('extinfo/commands', array('object' => $object));
+$commandlist->render(true);

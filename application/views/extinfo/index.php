@@ -403,24 +403,6 @@ if (!empty($commands))
 <br />
 
 <?php
-if (isset($comments)) {
-
-	echo "<div style=\"padding: 0 8px\">";
-
-	$label = _("Submit a $type comment");
-	$cmd = $type == 'host' ? nagioscmd::command_id('ADD_HOST_COMMENT') : nagioscmd::command_id('ADD_SVC_COMMENT');
-	echo '<span class="icon-16 x16-add-comment" title="' . html::specialchars($label) . '"></span>';
-	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label, 'submit', false, array('id'=>'submit_comment_button'));
-
-	$label = _("Delete all $type comments");
-	$cmd = $type == 'host' ? nagioscmd::command_id('DEL_ALL_HOST_COMMENTS') : nagioscmd::command_id('DEL_ALL_SVC_COMMENTS');
-	echo '<span class="icon-16 x16-delete-comment" title="' . html::specialchars($label) . '"></span>';
-	echo nagioscmd::command_link($cmd, $host->get_name(), $service === false ? false : $service->get_description(), $label, 'submit', false, array('id'=>'delete_all_comments_button'));
-
-	echo "</div>";
-
-	echo $comments;
-}
 /* @var $widgets widget_Base[] */
 foreach ($widgets as $widget) {
 	echo $widget->render('index', false);

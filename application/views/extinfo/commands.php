@@ -1,10 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-
-/* @var $set ObjectSet_Model */
-$it = $set->it(false, array(), 1, 0);
-/* @var $object Object_Model */
-$object = $it->current();
-
 /* @var $object Object_Model */
 $commands = $object->list_commands();
 

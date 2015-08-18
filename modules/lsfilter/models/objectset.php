@@ -31,7 +31,7 @@ abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	/**
 	 * Get the first matching object in the set
 	 */
-	public function one($columns = array()) {
+	public function one($columns = false) {
 		if($columns) {
 			$columns = (array) $columns;
 		}

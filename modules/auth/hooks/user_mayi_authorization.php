@@ -32,9 +32,6 @@ authenticated                   monitor.system.saved_filters:                   
 authenticated                   monitor.reports.saved_reports:                                true
 configuration_information       monitor.system.backup:                                        true
 
-system_information              monitor.monitoring.status:read                                true
-system_information              monitor.monitoring.performance:read                           true
-
 !api_command                    :read.api.command                                             false
 !api_command                    :update.api.command                                           false
 
@@ -67,6 +64,10 @@ system_information              monitor.monitoring.performance:read             
 
 !api_report                     :view.local.report                                            false
 !api_status                     :view.local.status                                            false
+
+system_information              monitor.monitoring.status:read                                true
+system_information              monitor.monitoring.performance:read                           true
+system_commands                 monitor.monitoring.status:update                              true
 
 configuration_information       monitor.monitoring.users:read.local.configuration             true
 access_rights                   monitor.monitoring.users:                                     true

@@ -112,7 +112,7 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 	}
 
 	/**
-	 * @param $command string
+	 * @param $command_name string
 	 * @return array
 	 */
 	public function submit_custom_command($command_name) {
