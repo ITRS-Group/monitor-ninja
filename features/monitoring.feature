@@ -663,12 +663,12 @@ Feature: Monitoring
 	Scenario: I can use commands
 		When I hover over the "Manage" menu
 		And I click "Process information"
-		And I click "Disable Notifications"
+		And I click "Disable notifications"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
-		Then I shouldn't see "Disable Notifications"
-		And I should see "Enable Notifications"
+		Then I shouldn't see "Disable notifications"
+		And I should see "Enable notifications"
 
 	@configuration @asmonitor @bug-8022
 	Scenario: Service comments in list view
