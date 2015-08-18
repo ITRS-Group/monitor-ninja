@@ -39,6 +39,11 @@ foreach($command_categories as $category => $category_commands) {
 <?php
 	}
 }
+
+	if($object instanceof NaemonMonitoredObject_Model) {
+		$dynamic_button_view = new View('extinfo/dynamic_button', array('object' => $object));
+		$dynamic_button_view->render(true);
+	}
 ?>
 	</table>
 </div>

@@ -397,8 +397,6 @@ endif; ?>
 <?php
 if (!empty($commands))
 	echo $commands;
-$dynamic_button_view = new View('extinfo/dynamic_button', array('object' => $object));
-$dynamic_button_view->render(true);
 ?>
 
 <div class="clear"></div>

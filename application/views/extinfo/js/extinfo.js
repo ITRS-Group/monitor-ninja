@@ -146,7 +146,8 @@ $(document).ready(function() {
 			$('.service_feedback').text('');
 		}
 	});
-	$('.custom_command a').fancybox({
+	$('.custom_command a')
+		.fancybox({
 			'overlayOpacity': 0.7,
 			'overlayColor' : '#000000',
 			'hideOnContentClick': false,
@@ -157,21 +158,22 @@ $(document).ready(function() {
 			'autoDimensions': true,
 			'width': 250,
 			'height': 10
-	})
-	.css('border-bottom', '1px dotted #777');
-	$('.custom_command a').click(function() {
-		// Don't refresh page while script is running.
-		clearInterval(_interval);
-		var cmd = $(this).attr('title');
-		cmd = cmd.replace(/;/g, "/");
-		$('#fancybox-content').text('Executing command, please wait for acknowledgement.');
-		// Load executing function with custom var name as parameter
-		$('#fancybox-content').load(_site_domain+'index.php/command/exec_custom_command/'+encodeURI(cmd), function() {
-			$('#fancybox-close').show();
-			// It's ok to refresh again so let's start doing so.
-			ninja_refresh(0);
+		})
+		.css('border-bottom', '1px dotted #777')
+		.click(function(ev) {
+			ev.preventDefault();
+			// Don't refresh page while script is running.
+			clearInterval(_interval);
+			var a = $(this);
+			var x = encodeURIComponent;
+			var url = _site_domain+'index.php/command/exec_custom_command/?command='+x(a.data('command'))+'&table='+x(a.data('table'))+'&key='+x(a.data('key'));
+			$('#fancybox-content').text('Executing command, please wait for acknowledgement.');
+			$('#fancybox-content').load(url, function() {
+				$('#fancybox-close').show();
+				// It's ok to refresh again so let's start doing so.
+				ninja_refresh(0);
+			});
 		});
-	});
 });
 
 function hide_del_msg() {

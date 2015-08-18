@@ -110,4 +110,46 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 			return $cmd['action'];
 		}, $custom_commands);
 	}
+
+	/**
+	 * @param $command string
+	 * @return array
+	 */
+	public function submit_custom_command($command_name) {
+		$commands = $this->list_custom_commands();
+		if(!array_key_exists($command_name, $commands)) {
+			return array('status' => false, 'output' => "$command_name is not a valid command, or you aren't authorized to execute it");
+		}
+		$type = rtrim($this->get_table(), 's');
+		$properties = array();
+		foreach($this->export() as $prop => $value) {
+			if(is_array($value)) {
+				// ASSUMING that export() only supports 2 levels
+				foreach($value as $prop_key => $prop_value) {
+					if(is_array($prop_value)) {
+						// "we won't find a macro here anyways" / Max
+						continue;
+					}
+					// adapt to old nagstat::process_macros() logic,
+					// TODO fixup
+					$properties[$prop."_".$prop_key] = $prop_value;
+				}
+			} else {
+				$properties[$prop] = $value;
+			}
+		}
+		$command = nagstat::process_macros($commands[$command_name], (object) $properties, $type);
+		$comment_result = $this->add_comment("Executing custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name))));
+		if(!$comment_result['status']) {
+			return array(
+				'status' => false,
+				'output' => $comment_result['output']
+			);
+		}
+		exec($command, $output, $status);
+		return array(
+			'status' => $status == 0,
+			'output' => implode("\n", $output),
+		);
+	}
 }

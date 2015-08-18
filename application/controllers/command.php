@@ -706,60 +706,31 @@ class Command_Controller extends Authenticated_Controller
 
 	/**
 	 * Executes custom commands and return output to ajax call.
-	 *	@param $command_name string
-	 *	@param $type string
-	 *	@param $host string
-	 *	@param $service string
-	 *	@return string
+	 *
+	 * @return string
 	 */
-	public function exec_custom_command($command_name, $type=false, $host=false, $service=false)
+	public function exec_custom_command()
 	{
-		// Stop redirects
 		$this->auto_render=false;
-		if ($host === false) {
+		$command_name = $this->input->get('command', null);
+		$table = $this->input->get('table', null);
+		$key = $this->input->get('key', null);
+		if(!$command_name || !$table || !$key) {
 			echo "No object type or identifier were set. Aborting.";
 			return;
 		}
-		// Get object data.
-		$ls = Livestatus::instance();
-		if(!empty($host) && empty($service)) {
-			$result_data = $ls->getHosts(array('filter' => array('name' => $host)));
+		// Stop redirects
+		$object = ObjectPool_Model::pool($table)->fetch_by_key($key);
+		if(!$object instanceof NaemonMonitoredObject_Model) {
+			echo "No object type or identifier were set. Aborting.";
+			return;
 		}
-		else if(!empty($host) && !empty($service)) {
-			$result_data = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service)));
-		}
-		$obj = (object)$result_data[0];
 
-		$custom_variables = array_combine($obj->custom_variable_names, $obj->custom_variable_values);
-		$custom_commands = Custom_command_Model::parse_custom_variables($custom_variables, $command_name);
-		if (empty($custom_commands)) {
-			echo "You are not authorized to run this command or it doesn't exist.";
-			return;
-		} else {
-			$command = $custom_commands[$command_name];
-			$command = nagstat::process_macros($command, $obj, $type);
-			// Set host/service comment that the command has been run
-			switch($type) {
-				case 'host':
-					$comment = "ADD_HOST_COMMENT;".$host.";1;".Auth::instance()->get_user()->username.";Executed custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name)));
-					break;
-				case 'service':
-					$comment = "ADD_SVC_COMMENT;".$host.";".$service.";1;".Auth::instance()->get_user()->username.";Executed custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name)));
-					break;
-			}
-			// Submit logs to nagios as comments.
-			$nagios_base_path = Kohana::config('config.nagios_base_path');
-			nagioscmd::submit_to_nagios($comment);
-			exec($command, $output, $status);
-		}
-		if ($status === 0) {
-			if (is_array($output)) {
-				$output = implode('<br />', $output);
-			}
-			echo $output;
-		} else {
-			echo "Script failed with status: " . $status;
+		$result = $object->submit_custom_command($command_name);
+		if(!$result['status']) {
+			echo "Script failed:" . nl2br($result['output']);
 			return;
 		}
+		echo nl2br($result['output']);
 	}
 }

@@ -1,23 +1,27 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-/* @var $object NaemonMonitoredObject_Model */
 
+/* @var $object NaemonMonitoredObject_Model */
 $commands = $object->list_custom_commands();
 
-if(count($commands) > 0) {
+if(!$commands) {
+	return;
+}
 ?>
-<div class="right width-33" id="extinfo_info">
-	<h2>Custom commands</h2>
-	<table class="ext">
+<tr>
+	<td colspan="2" class="bt"><h2><?php echo _('Custom commands'); ?></h2></td>
+</tr>
 <?php
 foreach($commands as $cmd => $cmdinfo) {
+	$linktext = ucwords(strtolower(str_replace('_', ' ', $cmd)));
+	$cmd = html::specialchars($cmd);
+	$key = html::specialchars($object->get_key());
+	$table = html::specialchars($object->get_table());
+	$link = "<a href='#' data-table='$table' data-key='$key' data-command='$cmd'>" . $linktext . "</a>";
 ?>
 		<tr>
 			<td class="icon dark">
-				<span class="icon-16 x16-command" title="<?php echo html::specialchars($cmd) ?>"></span>
+				<span class="icon-16 x16-cli" title="<?php echo html::specialchars($cmd) ?>"></span>
 			</td>
-			<td class="bt"><?php echo $cmd; ?></td>
+			<td class="bt custom_command"><?php echo $link; ?></td>
 		</tr>
-<?php } ?>
-	</table>
-</div>
 <?php } ?>
