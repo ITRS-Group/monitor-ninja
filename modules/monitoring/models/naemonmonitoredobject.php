@@ -22,7 +22,7 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 
 		/* Only schedule if downtime is in the past, but have a grace time */
 		if ($start_time > time() - 300) {
-			return;
+			return false;
 		}
 
 		$type = empty($service_description) ? 'Host' : 'Service';
@@ -40,6 +40,10 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 		$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($start_time, 1103, $host_name_e, $service_description_e, 1, $start_msg_e)");
 		$db->query("INSERT INTO report_data(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
 		$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
+		return array(
+				'status' => true,
+				'output' => 'Scheduled retrospectivly for reporting'
+		);
 	}
 
 	/**

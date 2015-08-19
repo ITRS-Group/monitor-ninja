@@ -45,7 +45,7 @@ class NaemonObject_Model extends Object_Model {
 		}
 		return array(
 				'status' => $result,
-				'output' => $output
+				'output' => $output=="OK" ? sprintf(_('Your command was successfully submitted to %s.'), Kohana::config('config.product_name')) : $output
 				);
 	}
 }

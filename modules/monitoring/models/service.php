@@ -555,7 +555,9 @@ class Service_Model extends BaseService_Model {
 				);
 		}
 
-		$this->schedule_downtime_retrospectively($this->get_host()->get_name(), $this->get_description(), $start_time, $end_time, $comment);
+		$retrospective = $this->schedule_downtime_retrospectively($this->get_host()->get_name(), $this->get_description(), $start_tstamp, $end_tstamp, $comment);
+		if($retrospective !== false)
+			return $retrospective;
 		return $this->submit_naemon_command("SCHEDULE_SVC_DOWNTIME", $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 	}
 

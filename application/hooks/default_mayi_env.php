@@ -7,7 +7,8 @@ class monitor_mayi_actor implements op5MayI_Actor {
 
 	private function get_installation_time() {
 		$db = Database::instance();
-		$timerow = $db->query('SELECT MIN(timestamp) FROM report_data')->result_array(false, MYSQL_NUM);
+		// 1103 and 1104 is downtimes, which can be added retrospectivly
+		$timerow = $db->query('SELECT MIN(timestamp) FROM report_data WHERE event_type NOT IN (1103,1104)')->result_array(false, MYSQL_NUM);
 		$installation_time = $timerow[0][0];
 		if($installation_time === NULL) {
 			$installation_time = time();
