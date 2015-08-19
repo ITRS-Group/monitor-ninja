@@ -26,6 +26,42 @@ $new_rights = array(
 			'logger_configuration',
 			'logger_schedule_archive_search'
 		)
+	),
+	4 => array(
+		'host_edit_all' => array(
+			'host_command_acknowledge',
+			'host_command_add_comment',
+			'host_command_schedule_downtime',
+			'host_command_check_execution',
+			'host_command_event_handler',
+			'host_command_flap_detection',
+			'host_command_notifications',
+			'host_command_passive_check',
+			'host_command_schedule_check',
+			'host_command_send_notification'
+		),
+		'service_edit_all' => array(
+			'service_command_acknowledge',
+			'service_command_add_comment',
+			'service_command_schedule_downtime',
+			'service_command_check_execution',
+			'service_command_event_handler',
+			'service_command_flap_detection',
+			'service_command_notifications',
+			'service_command_passive_check',
+			'service_command_schedule_check',
+			'service_command_send_notification'
+		),
+		'hostgroup_edit_all' => array(
+			'hostgroup_command_schedule_downtime',
+			'hostgroup_command_check_execution',
+			'hostgroup_command_send_notifications'
+		),
+		'servicegroup_edit_all' => array(
+			'servicegroup_command_schedule_downtime',
+			'servicegroup_command_check_execution',
+			'servicegroup_command_send_notifications'
+		)
 	)
 );
 

@@ -69,6 +69,44 @@ system_information              monitor.monitoring.status:read                  
 system_information              monitor.monitoring.performance:read                           true
 system_commands                 monitor.monitoring.status:update                              true
 
+host_command_acknowledge        monitor.monitoring.hosts:update.command.acknowledge           true
+host_command_add_comment        monitor.monitoring.hosts:update.command.comment               true
+host_edit_{all,contact}         monitor.monitoring.hosts:update.command.configure             true
+host_command_schedule_downtime  monitor.monitoring.hosts:update.command.downtime              true
+host_command_check_execution    monitor.monitoring.hosts:update.command.enabled               true
+host_command_event_handler      monitor.monitoring.hosts:update.command.event_handler         true
+host_command_flap_detection           monitor.monitoring.hosts:update.command.flap_detection              true
+host_command_notifications      monitor.monitoring.hosts:update.command.notification          true
+host_command_obsess             monitor.monitoring.hosts:update.command.obsess                true
+host_command_passive_check      monitor.monitoring.hosts:update.command.passive               true
+host_command_schedule_check     monitor.monitoring.hosts:update.command.schedule              true
+host_command_send_notification  monitor.monitoring.hosts:update.command.send_notification     true
+
+service_command_acknowledge        monitor.monitoring.services:update.command.acknowledge           true
+service_command_add_comment        monitor.monitoring.services:update.command.comment               true
+service_edit_{all,contact}         monitor.monitoring.services:update.command.configure             true
+service_command_schedule_downtime  monitor.monitoring.services:update.command.downtime              true
+service_command_check_execution    monitor.monitoring.services:update.command.enabled               true
+service_command_event_handler      monitor.monitoring.services:update.command.event_handler         true
+service_command_flap_detection           monitor.monitoring.services:update.command.flap_detection              true
+service_command_notifications      monitor.monitoring.services:update.command.notification          true
+service_command_obsess             monitor.monitoring.services:update.command.obsess                true
+service_command_passive_check      monitor.monitoring.services:update.command.passive               true
+service_command_schedule_check     monitor.monitoring.services:update.command.schedule              true
+service_command_send_notification  monitor.monitoring.services:update.command.send_notification     true
+
+hostgroup_edit_{all,contact}        monitor.monitoring.hostgroups:update.command.configure     true
+hostgroup_command_schedule_downtime monitor.monitoring.hostgroups:update.command.downtime      true
+hostgroup_command_check_execution   monitor.monitoring.hostgroups:update.command.enabled       true
+hostgroup_command_send_notifications     monitor.monitoring.hostgroups:update.command.notification  true
+
+servicegroup_edit_{all,contact}        monitor.monitoring.servicegroups:update.command.configure     true
+servicegroup_command_schedule_downtime monitor.monitoring.servicegroups:update.command.downtime      true
+servicegroup_command_check_execution   monitor.monitoring.servicegroups:update.command.enabled       true
+servicegroup_command_send_notifications     monitor.monitoring.servicegroups:update.command.notification  true
+
+always                          :update.command                                               false
+
 configuration_information       monitor.monitoring.users:read.local.configuration             true
 access_rights                   monitor.monitoring.users:                                     true
 access_rights                   monitor.system.users:                                         true
@@ -286,13 +324,13 @@ EOF;
 	 * Execute a action
 	 *
 	 * @param $action
-	 *        	name of the action, as "path.to.resource:action"
+	 *          name of the action, as "path.to.resource:action"
 	 * @param $env
-	 *        	environment variables for the constraints
+	 *          environment variables for the constraints
 	 * @param $messages
-	 *        	referenced array to add messages to
+	 *          referenced array to add messages to
 	 * @param $perfdata
-	 *        	referenced array to add performance data to
+	 *          referenced array to add performance data to
 	 */
 	public function run($action, $env, &$messages, &$perfdata) {
 		/*
