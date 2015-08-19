@@ -259,7 +259,7 @@ class Status_Model extends BaseStatus_Model {
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon disabled
 	 *
-	 * @ninja orm_command mayi_method update.command.flapping
+	 * @ninja orm_command mayi_method update.command.flap_detection
 	 * @ninja orm_command view monitoring/naemon_command
 	 *
 	 * @ninja orm_command enabled_if enable_flap_detection
@@ -273,7 +273,7 @@ class Status_Model extends BaseStatus_Model {
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon enabled
 	 *
-	 * @ninja orm_command mayi_method update.command.flapping
+	 * @ninja orm_command mayi_method update.command.flap_detection
 	 * @ninja orm_command view monitoring/naemon_command
 	 *
 	 * @ninja orm_command enabled_if !enable_flap_detection

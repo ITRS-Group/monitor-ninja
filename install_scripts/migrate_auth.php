@@ -36,6 +36,7 @@ $new_rights = array(
 			'host_command_event_handler',
 			'host_command_flap_detection',
 			'host_command_notifications',
+			'host_command_obsess',
 			'host_command_passive_check',
 			'host_command_schedule_check',
 			'host_command_send_notification'
@@ -48,6 +49,7 @@ $new_rights = array(
 			'service_command_event_handler',
 			'service_command_flap_detection',
 			'service_command_notifications',
+			'service_command_obsess',
 			'service_command_passive_check',
 			'service_command_schedule_check',
 			'service_command_send_notification'
@@ -64,6 +66,8 @@ $new_rights = array(
 		)
 	)
 );
+
+
 
 require_once('op5/config.php');
 $c = new op5config();

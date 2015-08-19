@@ -869,7 +869,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Disable flap detection
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-disabled
-	 * @ninja orm_command mayi_method update.command.flapping
+	 * @ninja orm_command mayi_method update.command.flap_detection
 	 * @ninja orm_command description
 	 *     Disable analysis of this host is flapping. If no flap detection
 	 *     analysis is enabled, the host will trigger a problem and recovery
@@ -887,7 +887,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command name Enable flap detection
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon shield-enabled
-	 * @ninja orm_command mayi_method update.command.flapping
+	 * @ninja orm_command mayi_method update.command.flap_detection
 	 * @ninja orm_command description
 	 *     Enable analysis of this host is flapping. If flap detection
 	 *     analysis is enabled, the host will trigger flapping notification
