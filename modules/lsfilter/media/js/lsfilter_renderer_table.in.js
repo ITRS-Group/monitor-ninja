@@ -10,7 +10,17 @@ var listview_renderer_table_all = {
 		"available" : function(args) {
 			if(_controller_name != 'listview')
 				return false;
-			if(!listview_commands[args.table] || listview_commands[args.table].length==0)
+			if(!listview_commands[args.table])
+				return false;
+
+			var cmd_count = 0;
+			for ( var cmdname in listview_commands[args.table]) {
+				// Redirect commands can't be applied in multi aciton
+				if(!listview_commands[args.table][cmdname]['redirect']) {
+					cmd_count++;
+				}
+			}
+			if(cmd_count == 0)
 				return false;
 			return true;
 		},

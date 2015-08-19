@@ -48,24 +48,25 @@ var lsfilter_multiselect = {
 
 	populate_select : function(commands) {
 		this.elem_menu.empty();
+		var categories = {};
+		var cmd_count = 0;
 
-		if(commands.length == 0) {
+		for ( var cmdname in commands) {
+			var cmd = commands[cmdname];
+			// Redirect commands can't be applied in multi aciton
+			if(!cmd['redirect']) {
+				if(!categories[cmd.category]) {
+					categories[cmd.category] = {}
+				}
+				categories[cmd.category][cmdname] = cmd;
+
+				cmd_count++;
+			}
+		}
+
+		if(cmd_count == 0) {
 			this.elem_menu.empty().text("No commands available");
 		} else {
-
-			var categories = {};
-
-			for ( var cmdname in commands) {
-				var cmd = commands[cmdname];
-				// Redirect commands can't be applied in multi aciton
-				if(!cmd['redirect']) {
-					if(!categories[cmd.category]) {
-						categories[cmd.category] = {}
-					}
-					categories[cmd.category][cmdname] = cmd;
-				}
-			}
-
 			for ( var category in categories) {
 				var category_commands = categories[category];
 				var cat_list = $('<ul />');
