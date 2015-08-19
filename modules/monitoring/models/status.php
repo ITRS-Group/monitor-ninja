@@ -150,7 +150,7 @@ class Status_Model extends BaseStatus_Model {
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
 	 *
-	 * @ninja orm_command enabled_if accept_passive_service_checks
+	 * @ninja orm_command enabled_if accept_passive_host_checks
 	 */
 	public function disable_host_passive_checks() {
 		return $this->submit_naemon_command("STOP_ACCEPTING_PASSIVE_HOST_CHECKS");
@@ -164,7 +164,7 @@ class Status_Model extends BaseStatus_Model {
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
 	 *
-	 * @ninja orm_command enabled_if !accept_passive_service_checks
+	 * @ninja orm_command enabled_if !accept_passive_host_checks
 	 */
 	public function enable_host_passive_checks() {
 		return $this->submit_naemon_command("START_ACCEPTING_PASSIVE_HOST_CHECKS");
