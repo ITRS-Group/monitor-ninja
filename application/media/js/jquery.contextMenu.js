@@ -33,83 +33,63 @@ if(jQuery)( function() {
 
 				// enable/disable menu items
 				// depending on obj_prop value
-				if (o.use_prop == true) { // added by op5
-					// start by showing all menu items
-					// in case they have been previously disabled
-					$('.contextMenu li').show();
-					var the_id = $(this).attr('id');
-					var parts = the_id.split('|');
-					var name = false;
-					var service = false;
-					switch(parts.length) {
-						case 0: case 1: return false;
-							break;
-						case 2: // host or groups
-							name = parts[1];
-							break;
-						case 4: // service
-							name = parts[1];
-							service = parts[2];
-							break;
+				// start by showing all menu items
+				// in case they have been previously disabled
+				$('.contextMenu li').show();
+				var this_td = $(this);
+				var table = this_td.data('table');
+				var obj = this_td.data('object');
+				var obj_prop = '';
+
+				// TODO only show transitions that are possible
+				var OK = 0;
+				var ACKNOWLEDGED = 1;
+				var NOTIFICATIONS_ENABLED = 2;
+				var CHECKS_ENABLED = 4;
+				var SCHEDULED_DT = 8;
+				if (obj_prop != '') {
+					if (obj_prop & ACKNOWLEDGED || !(obj_prop & 16) || obj_prop & OK) {
+						$('#_menu_acknowledge_host_problem').hide();
+						$('#_menu_acknowledge_svc_problem').hide();
 					}
-
-					if (service != false) {
-						name = name + '__' + service;
+					if (!(obj_prop & ACKNOWLEDGED)) { // || obj_prop & OK
+						$('#_menu_remove_host_acknowledgement').hide();
+						$('#_menu_remove_svc_acknowledgement').hide();
 					}
+					if (obj_prop & NOTIFICATIONS_ENABLED) {
+						$('#_menu_disable_host_notifications').hide();
+						$('#_menu_disable_svc_notifications').hide();
+					}
+					if (!(obj_prop & NOTIFICATIONS_ENABLED)) {
+						$('#_menu_enable_host_notifications').hide();
+						$('#_menu_enable_svc_notifications').hide();
+					}
+					if (obj_prop & CHECKS_ENABLED) {
+						$('#_menu_disable_host_check').hide();
+						$('#_menu_disable_svc_check').hide();
+					}
+					if (!(obj_prop & CHECKS_ENABLED)) {
+						$('#_menu_enable_host_check').hide();
+						$('#_menu_enable_svc_check').hide();
+					}
+					if (obj_prop & SCHEDULED_DT) {
+						$('#_menu_schedule_host_downtime').hide();
+						$('#_menu_schedule_svc_downtime').hide();
+					}
+					if (!(obj_prop & SCHEDULED_DT)) {
+						$('#_menu_removeschedule_host_downtime').hide();
+						$('#_menu_removeschedule_svc_downtime').hide();
+					} else if(el.hasClass('svc_obj_properties')) {
+						// Do not offer to cancel scheduled downtime if its host is in scheduled downtime. Look for that.
 
-					name = name.replace(/[^a-zA-Z0-9-_]/g, '_');
+						// Traverse upwards, looking for a host-td (since it might not be to the immidiate left of this service's td)
+						var tr_to_examine = el.parent();
+						while(tr_to_examine.find('td').eq(1).hasClass('white')) {
+							tr_to_examine = tr_to_examine.prev();
+						}
 
-					var obj_prop = $('._' + name).text();
-
-					var OK = 0;
-					var ACKNOWLEDGED = 1;
-					var NOTIFICATIONS_ENABLED = 2;
-					var CHECKS_ENABLED = 4;
-					var SCHEDULED_DT = 8;
-					if (obj_prop != '') {
-						if (obj_prop & ACKNOWLEDGED || !(obj_prop & 16) || obj_prop & OK) {
-							$('#_menu_acknowledge_host_problem').hide();
-							$('#_menu_acknowledge_svc_problem').hide();
-						}
-						if (!(obj_prop & ACKNOWLEDGED)) { // || obj_prop & OK
-							$('#_menu_remove_host_acknowledgement').hide();
-							$('#_menu_remove_svc_acknowledgement').hide();
-						}
-						if (obj_prop & NOTIFICATIONS_ENABLED) {
-							$('#_menu_disable_host_notifications').hide();
-							$('#_menu_disable_svc_notifications').hide();
-						}
-						if (!(obj_prop & NOTIFICATIONS_ENABLED)) {
-							$('#_menu_enable_host_notifications').hide();
-							$('#_menu_enable_svc_notifications').hide();
-						}
-						if (obj_prop & CHECKS_ENABLED) {
-							$('#_menu_disable_host_check').hide();
-							$('#_menu_disable_svc_check').hide();
-						}
-						if (!(obj_prop & CHECKS_ENABLED)) {
-							$('#_menu_enable_host_check').hide();
-							$('#_menu_enable_svc_check').hide();
-						}
-						if (obj_prop & SCHEDULED_DT) {
-							$('#_menu_schedule_host_downtime').hide();
-							$('#_menu_schedule_svc_downtime').hide();
-						}
-						if (!(obj_prop & SCHEDULED_DT)) {
-							$('#_menu_removeschedule_host_downtime').hide();
+						if(tr_to_examine.find('.service_hostname img[title="Scheduled downtime"]').length > 0) {
 							$('#_menu_removeschedule_svc_downtime').hide();
-						} else if(el.hasClass('svc_obj_properties')) {
-							// Do not offer to cancel scheduled downtime if its host is in scheduled downtime. Look for that.
-
-							// Traverse upwards, looking for a host-td (since it might not be to the immidiate left of this service's td)
-							var tr_to_examine = el.parent();
-							while(tr_to_examine.find('td').eq(1).hasClass('white')) {
-								tr_to_examine = tr_to_examine.prev();
-							}
-
-							if(tr_to_examine.find('.service_hostname img[title="Scheduled downtime"]').length > 0) {
-								$('#_menu_removeschedule_svc_downtime').hide();
-							}
 						}
 					}
 				}
@@ -185,9 +165,13 @@ if(jQuery)( function() {
 					$(document).unbind('click').unbind('keypress');
 					$(".contextMenu").hide();
 					// Callback
-					if( typeof callback === "function" ) callback( $(this).attr('href').substr(1), el, {x: x - offset.left, y: y - offset.top, docX: x, docY: y} );
+					if(typeof callback === "function") {
+						var a = $(this);
+						callback(a.data('cmd'), el.data('table'), el.data('object'));
+					}
 					return false;
 				});
+
 
 				// Hide bindings
 				setTimeout( function() { // Delay for Mozilla

@@ -92,7 +92,7 @@ class Cmd_Controller extends Ninja_Controller {
 	/**
 	 * Send a command for a specific object
 	 */
-	public function obj($resp_type = 'html') {
+	public function obj() {
 		// TODO Don't use ORMException in this code...
 
 		$template = $this->template->content = $this->add_view('cmd/exec');

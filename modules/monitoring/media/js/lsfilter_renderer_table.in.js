@@ -10,11 +10,11 @@ listview_renderer_table.hosts = {
 		"cell" : function(args) {
 			return $('<td class="icon obj_properties" />')
 					.append(
-							icon16('shield-' + args.obj.state_text,
-									args.obj.state_text)).addClass(
-							args.obj.state_text).attr('id',
-							'host|' + args.obj.name);
-
+							icon16('shield-' + args.obj.state_text, args.obj.state_text)
+					)
+					.addClass(args.obj.state_text)
+					.attr('data-table', 'hosts')
+					.attr('data-object', args.obj.key);
 		}
 	},
 	"name" : {
@@ -261,11 +261,13 @@ listview_renderer_table.services = {
 		"cell" : function(args) {
 			if (args.obj.host
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
-				return $('<td class="icon obj_properties" />').append(
-						icon16('shield-' + args.obj.host.state_text,
-								args.obj.host.state_text)).addClass(
-						args.obj.host.state_text).attr('id',
-						'host|' + args.obj.host.name);
+				return $('<td class="icon obj_properties" />')
+					.append(
+						icon16('shield-' + args.obj.host.state_text, args.obj.host.state_text)
+					)
+					.addClass(args.obj.host.state_text)
+					.attr('data-table', 'hosts')
+					.attr('data-object', args.obj.host.name);
 
 			} else {
 				return $('<td class="icon" />').addClass('listview-empty-cell');
@@ -343,11 +345,9 @@ listview_renderer_table.services = {
 			return $(
 					'<td class="icon svc_obj_properties"><span class="icon-16 x16-shield-'
 							+ args.obj.state_text + '"></span></td>').addClass(
-					args.obj.state_text).attr(
-					'id',
-					'service|' + args.obj.host.name + '|'
-							+ args.obj.description.replace(' ', '_') + '|'
-							+ args.obj.description);
+					args.obj.state_text)
+					.attr('data-table', 'services')
+					.attr('data-object', args.obj.key);
 		}
 	},
 	"description" : {
