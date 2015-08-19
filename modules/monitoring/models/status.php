@@ -31,13 +31,13 @@ class Status_Model extends BaseStatus_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Disable Notifications
+	 * @ninja orm_command name Disable notifications
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon disabled
 	 *
 	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if enable_notifications
 	 */
 	public function disable_notifications() {
@@ -45,13 +45,13 @@ class Status_Model extends BaseStatus_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Enable Notifications
+	 * @ninja orm_command name Enable notifications
 	 * @ninja orm_command category Operations
 	 * @ninja orm_command icon enabled
 	 *
 	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !enable_notifications
 	 */
 	public function enable_notifications() {
@@ -59,13 +59,13 @@ class Status_Model extends BaseStatus_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Stop executing serivce checks
+	 * @ninja orm_command name Stop executing service checks
 	 * @ninja orm_command category Service operations
 	 * @ninja orm_command icon disabled
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if execute_service_checks
 	 */
 	public function disable_service_checks() {
@@ -73,13 +73,13 @@ class Status_Model extends BaseStatus_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Start executing serivce checks
+	 * @ninja orm_command name Start executing service checks
 	 * @ninja orm_command category Service operations
 	 * @ninja orm_command icon enabled
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !execute_service_checks
 	 */
 	public function enable_service_checks() {
@@ -87,13 +87,13 @@ class Status_Model extends BaseStatus_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Stop accepting passive serivce checks
+	 * @ninja orm_command name Stop accepting passive service checks
 	 * @ninja orm_command category Service operations
 	 * @ninja orm_command icon disabled
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if accept_passive_service_checks
 	 */
 	public function disable_service_passive_checks() {
@@ -101,13 +101,13 @@ class Status_Model extends BaseStatus_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Start accepting passive serivce checks
+	 * @ninja orm_command name Start accepting passive service checks
 	 * @ninja orm_command category Service operations
 	 * @ninja orm_command icon enabled
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !accept_passive_service_checks
 	 */
 	public function enable_service_passive_checks() {
@@ -121,7 +121,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if execute_host_checks
 	 */
 	public function disable_host_checks() {
@@ -135,7 +135,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !execute_host_checks
 	 */
 	public function enable_host_checks() {
@@ -149,7 +149,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if accept_passive_service_checks
 	 */
 	public function disable_host_passive_checks() {
@@ -163,7 +163,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !accept_passive_service_checks
 	 */
 	public function enable_host_passive_checks() {
@@ -177,7 +177,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.event_handler
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if enable_event_handlers
 	 */
 	public function disable_event_handlers() {
@@ -191,7 +191,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.event_handler
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !enable_event_handlers
 	 */
 	public function enable_event_handlers() {
@@ -205,7 +205,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if obsess_over_services
 	 */
 	public function stop_obsessing_over_services() {
@@ -219,7 +219,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !obsess_over_services
 	 */
 	public function start_obsessing_over_services() {
@@ -233,7 +233,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if obsess_over_hosts
 	 */
 	public function stop_obsessing_over_hosts() {
@@ -247,7 +247,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.obsess
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !obsess_over_hosts
 	 */
 	public function start_obsessing_over_hosts() {
@@ -261,7 +261,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if enable_flap_detection
 	 */
 	public function stop_flap_detection() {
@@ -275,7 +275,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !enable_flap_detection
 	 */
 	public function start_flap_detection() {
@@ -289,7 +289,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if process_performance_data
 	 */
 	public function stop_perfdata_processing() {
@@ -303,7 +303,7 @@ class Status_Model extends BaseStatus_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.flapping
 	 * @ninja orm_command view monitoring/naemon_command
-	 * 
+	 *
 	 * @ninja orm_command enabled_if !process_performance_data
 	 */
 	public function start_perfdata_processing() {
