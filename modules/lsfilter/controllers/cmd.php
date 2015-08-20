@@ -135,7 +135,15 @@ class Cmd_Controller extends Ninja_Controller {
 			foreach($set as $object) {
 				// Don't set $this->template->content directly, since command might throw exceptions
 				$command_template = $this->add_view($commands[$command]['view']);
-				$command_template->result = call_user_func_array(array($object, $command), $params);
+				$result = call_user_func_array(array($object, $command), $params);
+				if(isset($result['status']) && !$result['status']) {
+					$output = "";
+					if(isset($result['output'])) {
+						$output = " Output: ".$result['output'];
+					}
+					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+				}
+				$command_template->result = $result;
 				$command_template->object = $object;
 				$results[] = $command_template;
 			}

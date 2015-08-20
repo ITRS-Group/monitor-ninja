@@ -33,8 +33,11 @@ class NaemonObject_Model extends Object_Model {
 			$resp = $qh->call("command run", $raw_command, "");
 			$output = $resp;
 		} catch (op5queryhandler_Exception $e) {
-			op5log::instance("ninja")->log("error", "external command failed. Exception: " . $e->getMessage());
-			return false;
+			op5log::instance("ninja")->log("error", sprintf("External command failed. Exception: %s\nOutput:\n%s", $e->getMessage(), $output));
+			return array(
+				'status' => false,
+				'output' => "External command failed. See Ninja's error log for details"
+			);
 		}
 		# because there are two command modules, with different output:
 		$result = ($output === "200: OK" || substr($output, 0, strlen("OK:")) === "OK:");
@@ -44,8 +47,8 @@ class NaemonObject_Model extends Object_Model {
 			op5log::instance("ninja")->log("error", "external command failed. Output: " . trim($output));
 		}
 		return array(
-				'status' => $result,
-				'output' => $output=="OK" ? sprintf(_('Your command was successfully submitted to %s.'), Kohana::config('config.product_name')) : $output
-				);
+			'status' => $result,
+			'output' => $output=="OK" ? sprintf(_('Your command was successfully submitted to %s.'), Kohana::config('config.product_name')) : $output
+		);
 	}
 }

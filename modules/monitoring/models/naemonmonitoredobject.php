@@ -41,8 +41,8 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 		$db->query("INSERT INTO report_data(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
 		$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
 		return array(
-				'status' => true,
-				'output' => 'Scheduled retrospectivly for reporting'
+			'status' => true,
+			'output' => 'Scheduled retrospectivly for reporting'
 		);
 	}
 
@@ -145,12 +145,16 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 		$command = nagstat::process_macros($commands[$command_name], (object) $properties, $type);
 		$comment_result = $this->add_comment("Executing custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name))));
 		if(!$comment_result['status']) {
+			op5log::instance('ninja')->log('warning', sprintf('Failed to comment custom command: %s\nOutput:\n%s', $command_name, implode("\n", $comment_result['output'])));
 			return array(
 				'status' => false,
 				'output' => $comment_result['output']
 			);
 		}
 		exec($command, $output, $status);
+		if($status != 0) {
+			op5log::instance('ninja')->log('warning', sprintf('Failed to execute custom command: %s\nOutput:\n%s', $command, implode("\n", $output)));
+		}
 		return array(
 			'status' => $status == 0,
 			'output' => implode("\n", $output),

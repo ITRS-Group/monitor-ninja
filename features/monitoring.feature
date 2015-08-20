@@ -230,6 +230,7 @@ Feature: Monitoring
 		And I should see "linux-server1"
 		And I enter "2023-03-14 14:40:00" into "field_start_time"
 		And I enter "2023-03-14 14:50:00" into "field_end_time"
+		And I enter "Some comment" into "field_comment"
 		And I click "Submit"
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"

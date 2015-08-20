@@ -253,7 +253,7 @@ class View {
 		$stack = debug_backtrace();
 		$file = $stack[0]['file'];
 		$line = $stack[0]['line'];
-		$msg = "Don't typecast view ".$this->kohana_filename." to stirng\n"
+		$msg = "Don't typecast view ".$this->kohana_filename." to string\n"
 			."    at ".$file."(".$line.")";
 
 		op5log::instance('ninja')->log('debug', $msg);

@@ -577,9 +577,16 @@ class Host_Model extends BaseHost_Model {
 
 		/* TODO: handle propagation of downtimes retrospectively */
 		$retrospective = $this->schedule_downtime_retrospectively($this->get_name(), false, $start_tstamp, $end_tstamp, $comment);
-		if($retrospective !== false)
+		if($retrospective !== false && $end_tstamp < time()) {
+			// no need to submit a naemon command
 			return $retrospective;
-		return $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+		}
+		$downtime = $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+		if($retrospective !== false && $downtime['status']) {
+			// if the naemon command was successful, return the retro-text
+			return $retrospective;
+		}
+		return $downtime;
 	}
 
 	/**
