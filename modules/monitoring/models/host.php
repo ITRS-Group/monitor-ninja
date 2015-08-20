@@ -301,7 +301,7 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Remove acknoledgement
+	 * @ninja orm_command name Remove acknowledgement
 	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon acknowledged-not
 	 * @ninja orm_command mayi_method update.command.acknowledge

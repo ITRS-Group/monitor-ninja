@@ -287,7 +287,7 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
-	 * @ninja orm_command name Remove acknoledgement
+	 * @ninja orm_command name Remove acknowledgement
 	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon acknowledged-not
 	 * @ninja orm_command mayi_method update.command.acknowledge
