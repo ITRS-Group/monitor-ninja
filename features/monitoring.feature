@@ -248,7 +248,7 @@ Feature: Monitoring
 		And I enter "2013-06-06 11:00:03" into "field_start_time"
 		And I click "Submit"
 		# Here, a confirm-popup is accepted by Poltergeist automatically
-		Then I should see "Your command was successfully submitted"
+		Then I should see "Scheduled retrospectivly for reporting"
 		When I click "Done"
 		Then I should see "Ghost of Christmas past"
 
