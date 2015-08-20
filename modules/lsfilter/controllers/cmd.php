@@ -96,6 +96,7 @@ class Cmd_Controller extends Ninja_Controller {
 		// TODO Don't use ORMException in this code...
 
 		$template = $this->template->content = $this->add_view('cmd/exec');
+		$this->template->disable_refresh = true;
 
 		$command = $this->input->post('command', false);
 		$query = $this->input->post('query', false);
