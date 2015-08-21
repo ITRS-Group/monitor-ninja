@@ -687,8 +687,8 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 		}
 	}
 
-	for (var cmd in all_command_info) {
-		var field = all_command_info[cmd].enabled_if;
+	$.each(all_command_info, function(cmd, cmdinfo) {
+		var field = cmdinfo.enabled_if;
 		var negate = false;
 
 		if(field[0] == '!') {
@@ -715,8 +715,8 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 			}
 		})();
 
-		this.db_columns.push(field);
-	}
+		self.db_columns.push(field);
+	});
 
 	/* Build fetch sort columns method */
 	this.sort_cols = function(vis_col) {
