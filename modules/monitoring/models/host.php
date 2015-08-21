@@ -582,9 +582,12 @@ class Host_Model extends BaseHost_Model {
 			return $retrospective;
 		}
 		$downtime = $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
-		if($retrospective !== false && $downtime['status']) {
+		if($retrospective !== false) {
 			// if the naemon command was successful, return the retro-text
-			return $retrospective;
+			return array(
+					'status' => $downtime && $retrospective,
+					'output' => $downtime['output'] . "<br />" . $retrospective['output']
+			);
 		}
 		return $downtime;
 	}
