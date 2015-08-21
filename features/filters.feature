@@ -16,6 +16,8 @@ Feature: Filters & list views
 		And I shouldn't see "PING"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I click "Submit"
 		Then I should see "Submitted for deletion"
@@ -47,6 +49,8 @@ Feature: Filters & list views
 		And I shouldn't see "PING2"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I click "Submit"
 		Then I should see "Submitted for deletion"
@@ -80,6 +84,8 @@ Feature: Filters & list views
 		And I shouldn't see "PING"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I click "Submit"
 		Then I should see "Hostgroup a_group / System Load is a member of a hostgroup"
@@ -106,6 +112,8 @@ Feature: Filters & list views
 		And I shouldn't see "PING2"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I click "Submit"
 		Then I should see "is a member of a hostgroup"
@@ -134,6 +142,8 @@ Feature: Filters & list views
 		And I shouldn't see "PING2"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I check "field_forced"
 		And I click "Submit"
@@ -168,6 +178,8 @@ Feature: Filters & list views
 		And I shouldn't see "linux-server1"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I click "Submit"
 		Then I should see "Submitted for deletion"
@@ -200,6 +212,8 @@ Feature: Filters & list views
 		And I shouldn't see "linux-server1"
 		When I check "select_all"
 		And I click "Send multi action"
+		# Wait until multi action zoom has finished after 100ms + some margin
+		And I wait for 1 second
 		And I click "Delete"
 		And I click "Submit"
 		Then I should see "Submitted for deletion"
