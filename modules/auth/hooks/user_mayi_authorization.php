@@ -223,6 +223,11 @@ EOF;
 	 * Processed result of the $raw_acl varible.
 	 */
 	private $acl = array();
+	
+	/**
+	 * Result cache
+	 */
+	private $cache = array();
 
 	/**
 	 * Convert the input line containing {xxx,yyy} segments to a list of all segments unpacked
@@ -281,8 +286,11 @@ EOF;
 					$negate = true;
 					$row_parts[0] = substr($row_parts[0], 1);
 				}
+				$mayimethod = array_map ( function ($field) {
+					return array_filter( explode ( ".", $field ) );
+				}, explode ( ':', $row_parts [1] ) );
 
-				$this->acl[] = array($row_parts[0], $negate, $row_parts[1], $row_parts[2] == 'true');
+				$this->acl[] = array($row_parts[0], $negate, $mayimethod, $row_parts[2] == 'true');
 			}
 		}
 
@@ -298,17 +306,13 @@ EOF;
 		op5MayI::instance()->act_upon( $this, 10 );
 	}
 	private function is_subset($subset, $world) {
-		$subset_parts = explode( ':', $subset );
-		$world_parts = explode( ':', $world );
-
-		$count = count( $subset_parts );
-
-		if ($count != count( $world_parts ))
+		$count = count( $subset );
+		if ($count != count( $world ))
 			return false;
 
 		for($i = 0; $i < $count; $i ++) {
-			$subset_attr = array_filter( explode( '.', $subset_parts[$i] ) );
-			$world_attr = array_filter( explode( '.', $world_parts[$i] ) );
+			$subset_attr = $subset[$i];
+			$world_attr = $world[$i];
 
 			/* If this part isn't a subset bail out */
 			if (array_slice( $world_attr, 0, count( $subset_attr ) ) != $subset_attr) {
@@ -333,6 +337,19 @@ EOF;
 	 *          referenced array to add performance data to
 	 */
 	public function run($action, $env, &$messages, &$perfdata) {
+		
+		if(isset($this->cache[$action])) {
+			if($this->cache[$action]['msg'] !== false)
+				$messages[] = $this->cache[$action]['msg'];
+			return $this->cache[$action]['result'];
+		}
+		
+		$msg = false;
+		
+		$action_exploded = array_map ( function ($field) {
+			return array_filter( explode ( ".", $field ) );
+		}, explode ( ':', $action ) );
+		
 		/*
 		 * The ninja:-resource is a little bit special. It contains more
 		 * meta-permissions.
@@ -360,7 +377,7 @@ EOF;
 				$user_access = !$user_access;
 
 
-			if($this->is_subset($action_pattern, $action)) {
+			if($this->is_subset($action_pattern, $action_exploded)) {
 				if(!$acl_allow || !$user_access) {
 					/*Display access right in the same manner as the "Grouprights" page */
 					$denied_rules[] = ucwords(str_replace('_', ' ', $access_rule));
@@ -394,6 +411,11 @@ EOF;
 			$messages[] = $msg;
 		}
 
+		$this->cache[$action] = array(
+				'msg' => $msg,
+				'result' => $is_allowed
+		);
+		
 		return $is_allowed;
 	}
 }

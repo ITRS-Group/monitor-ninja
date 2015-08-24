@@ -206,6 +206,11 @@ class op5MayI {
 		$constr_res = array();
 		$allow = true;
 
+		$log = op5log::instance('mayi');
+
+		$log_debug = $log->loggable_level('debug');
+		$log_notice = $log->loggable_level('notice');
+
 		foreach ($this->constraints as $i => $rs) {
 			list($obj, $priority) = $rs;
 			$cur_messages = array();
@@ -213,8 +218,10 @@ class op5MayI {
 			$cur_result = $obj->run($action, $environment, $cur_messages, $cur_metrics);
 			$constr_res[] = array($cur_result, $priority, $cur_messages, $cur_metrics);
 			if(!$cur_result) {
-				op5log::instance('mayi')->log('debug', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
-				op5log::instance('mayi')->log('notice', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
+				if($log_debug)
+					$log->log('debug', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
+				if($log_notice)
+					$log->log('notice', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
 				$allow = false;
 			}
 		}

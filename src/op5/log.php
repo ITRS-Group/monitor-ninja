@@ -43,6 +43,16 @@ class op5LogAccess {
 	public function debug($message) {
 		$this->log_instance->log($this->namespace, 'debug', $message);
 	}
+	
+	/**
+	 * Test if correct log level
+	 *
+	 * @param $level string
+	 * @return bool
+	 */
+	public function loggable_level($level) {
+		return $this->log_instance->loggable_level($this->namespace, $level);
+	}
 }
 
 /**
@@ -182,6 +192,24 @@ class op5Log {
 			$this->messages[$filename] = array();
 		}
 		$this->messages[$filename][] = $message;
+	}
+	
+	/**
+	 * Test if correct log level
+	 *
+	 * @param $level string
+	 * @return bool
+	 */
+	public function loggable_level($namespace, $level) {
+		if(!isset($this->config[$namespace])) {
+			/* Loggging disabled for this namespace */
+			return false;
+		}
+		$config = $this->config[$namespace];
+		if(self::$levels[$level] > self::$levels[$config['level']]) {
+			return false; /* To low logging level in config... */
+		}
+		return true;
 	}
 
 	/**
