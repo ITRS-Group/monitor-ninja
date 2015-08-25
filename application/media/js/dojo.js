@@ -124,12 +124,16 @@
 			for (var i = 0; i < global_quicklinks.length; i += 1) {
 				var l = global_quicklinks[i];
 				var vid = l.title + ':'+ l.href;
-				var quicklink = $('<li><label><input type="checkbox" /><span class="icon-16 x16-'+l.icon+'"></span>' + l.title + '</label> (<a target="_blank" class="external"></a>)</li>');
+				var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
 				quicklink
-					.find('input')
-						.attr('value', vid)
-						.attr('id', vid)
-						.attr('title', l.title);
+					.find('label')
+						.text(l.title)
+						.prepend($('<span class="icon-16"></span>').addClass('x16-'+l.icon))
+						.prepend($('<input type="checkbox" />')
+							.attr('value', vid)
+							.attr('id', vid)
+							.attr('title', l.title)
+						);
 				quicklink
 					.find('a')
 						.attr('href', l.href)
