@@ -242,7 +242,7 @@ if($options['report_id']) { ?>
 					<?php
 					foreach ($saved_reports as $id => $report_name) {
 						echo '<option '.(($options['report_id'] == $id) ? 'selected="selected"' : '').
-							' value="'.$id.'">'.$report_name.'</option>'."\n";
+							' value="'.$id.'">'.html::specialchars($report_name).'</option>'."\n";
 					}  ?>
 				</select>
 			</td>

@@ -6,7 +6,7 @@
 			<?php
 			foreach ($saved_reports as $id => $report_name) {
 				echo '<option '.(($options['report_id'] == $id) ? 'selected="selected"' : '').
-					' value="'.$id.'">'.$report_name.'</option>'."\n";
+					' value="'.$id.'">'.html::specialchars($report_name).'</option>'."\n";
 			} ?>
 		</select>
 		<input type="submit" class="button select" value="<?php echo _('Select') ?>" name="fetch_report" />
