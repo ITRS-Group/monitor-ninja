@@ -12,10 +12,14 @@
  *  PARTICULAR PURPOSE.
  */
 class Config_Controller extends Authenticated_Controller {
-	public $current = false;
+	/**
+	 * Which type to show
+	 */
 	public $type = 'hosts';
+	/*
 	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands';
 	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
+	*/
 
 	/**
 	 * Default controller method
@@ -502,6 +506,9 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->toolbar->info( $obj_form );
 	}
 
+	/**
+	 * Show a page that you are not autoraized
+	 */
 	public function unauthorized()
 	{
 		$this->template->content = $this->add_view('extinfo/unauthorized');

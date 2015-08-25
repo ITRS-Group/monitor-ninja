@@ -459,7 +459,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_check($check_time, $forced = false) {
-		$check_tstamp = nagstat::timestamp_format(false, $check_time);
+		$check_tstamp = date::timestamp_format(false, $check_time);
 		if($check_tstamp === false)
 			return array(
 				'status' => 0,
@@ -539,7 +539,7 @@ class Service_Model extends BaseService_Model {
 
 		$trigger_id = intval($trigger_id);
 
-		$start_tstamp = nagstat::timestamp_format(false, $start_time);
+		$start_tstamp = date::timestamp_format(false, $start_time);
 		if($start_tstamp === false) {
 			return array(
 				'status' => 0,
@@ -547,7 +547,7 @@ class Service_Model extends BaseService_Model {
 				);
 		}
 
-		$end_tstamp = nagstat::timestamp_format(false, $end_time);
+		$end_tstamp = date::timestamp_format(false, $end_time);
 		if($end_tstamp === false) {
 			return array(
 				'status' => 0,

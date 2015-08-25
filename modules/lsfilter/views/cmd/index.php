@@ -47,7 +47,7 @@ if (empty( $error )) {
 			case 'time' :
 				$default = "";
 				if ($pdef['default']) {
-					$default = date(nagstat::date_format(), strtotime($pdef['default']));
+					$default = date(date::date_format(), strtotime($pdef['default']));
 				}
 				echo form::input( array (
 					'class' => "input-wide autotest-date",

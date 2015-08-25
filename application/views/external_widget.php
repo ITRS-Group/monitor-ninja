@@ -66,7 +66,7 @@
 				var _wait_str='<?php echo _('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
-				var _date_format = <?php echo json_encode(nagstat::date_format()); ?>;
+				var _date_format = <?php echo json_encode(date::date_format()); ?>;
 				var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
 				var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target', '*'); ?>";
 				var _action_url_target = "<?php echo config::get('nagdefault.action_url_target', '*'); ?>";

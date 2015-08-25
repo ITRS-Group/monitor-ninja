@@ -7,7 +7,7 @@ $(document).ready(function () {
 				var src = $(this).closest('div').next('div').find('img').attr('src');
 				var match = src.match(/\?(.*)&view=(\d)&source=(\d)/);
 				$.ajax(
-					_site_domain + _index_page + '/ajax/pnp_default/',
+					_site_domain + _index_page + '/pnp/pnp_default/',
 					{
 						data: {
 							param: match[1],
@@ -15,8 +15,11 @@ $(document).ready(function () {
 							source: match[3],
 							csrf_token: _csrf_token
 						},
-						complete: function () {
+						success: function () {
 							$.jGrowl(_settings_msg, {header: _success_header});
+						},
+						error: function () {
+							$.jGrowl(_error_header, {header: _error_header});
 						},
 						type: 'POST'
 					}

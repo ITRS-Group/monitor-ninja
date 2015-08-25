@@ -32,9 +32,6 @@ class ListView_Controller extends Ninja_Controller {
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
 
-		// add context menu items (hidden in html body)
-		$this->template->context_menu = $this->add_view('status/context_menu');
-
 		$this->template->toolbar->should_render_buttons(true);
 		$this->template->toolbar->info('<div id="filter_result_totals"></div>');
 		$this->template->js_strings .= "var lsfilter_query = ".json_encode($query).";\n";

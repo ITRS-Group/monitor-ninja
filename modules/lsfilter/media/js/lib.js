@@ -112,7 +112,7 @@ function comment_icon( host, service ) {
 		.css('border', '0px');
 
 	ext_link.attr({
-		'data-popover': 'get:' + _site_domain + _index_page + "/ajax/fetch_comments?host=" + obj_name
+		'data-popover': 'get:' + _site_domain + _index_page + "/listview_tools/fetch_comments?host=" + obj_name
 	});
 	return ext_link;
 

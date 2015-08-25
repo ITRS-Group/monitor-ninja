@@ -11,6 +11,11 @@
  *  PARTICULAR PURPOSE.
  */
 class Nagvis_Controller extends Ninja_Controller {
+	/**
+	 * Show a nagvis page
+	 * @param $name name of the nagvis page
+	 * @param $args arguments for the page
+	 */
 	public function __call($name, $args)
 	{
 		$this->_verify_access('ninja.nagvis:read');
@@ -46,4 +51,3 @@ class Nagvis_Controller extends Ninja_Controller {
 		}
 	}
 }
-

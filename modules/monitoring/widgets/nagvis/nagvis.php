@@ -40,4 +40,3 @@ class Nagvis_Widget extends widget_Base {
 		require($view_path);
 	}
 }
-

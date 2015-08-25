@@ -215,7 +215,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 * All reports must display the time range they cover, and this helper
 	 * helps them do so with some amount of consistency.
 	 *
-	 * @param $date_format string Format string for date(), probably nagstat::date_format()
+	 * @param $date_format string Format string for date(), probably date::date_format()
 	 * @returns string Formatted date for this report
 	 */
 	protected function format_report_time($date_format)

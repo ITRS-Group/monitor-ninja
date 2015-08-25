@@ -1,2 +1,2 @@
 <?php
-$manifest[] = 'application/views/recurring_downtime/js/recurring_downtime.js';
+$manifest[] = 'modules/monitoring/views/recurring_downtime/js/recurring_downtime.js';

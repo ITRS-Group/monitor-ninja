@@ -17,7 +17,7 @@
 	</tr>
 	<?php
 	$i = 0;
-		$date_format = nagstat::date_format();
+		$date_format = date::date_format();
 		foreach ($result as $ary) {
 			$row = alert_history::get_user_friendly_representation($ary);
 			$i++;

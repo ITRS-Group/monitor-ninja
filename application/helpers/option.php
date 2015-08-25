@@ -2,6 +2,8 @@
 
 /**
  * A helper for widgets to render their custom configuration options
+ *
+ * NOTE: This is not a helper, it's intended to be instanced, thus model...
  */
 class option
 {

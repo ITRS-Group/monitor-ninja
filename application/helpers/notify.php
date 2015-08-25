@@ -2,6 +2,8 @@
 
 	/**
 	 * Ninja notification facility PHP interface
+	 *
+	 * NOTE: This is not a helper, it's intended to be instanced, thus model...
 	 */
 	class notify {
 

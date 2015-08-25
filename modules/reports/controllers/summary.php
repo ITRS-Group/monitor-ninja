@@ -131,7 +131,7 @@ class Summary_Controller extends Base_reports_Controller
 			$this->template->options = $this->options;
 			$this->template->summary_type = $this->options['summary_type'];
 			$this->template->result = $result;
-			$this->template->date_format = nagstat::date_format();
+			$this->template->date_format = date::date_format();
 			$this->template->host_state_names = $this->host_state_names;
 			$this->template->service_state_names = $this->service_state_names;
 
@@ -156,7 +156,7 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->content->header->standard_header = $this->add_view('reports/header');
 		$header = $this->template->content->header->standard_header;
 		$this->template->content->report_options = $this->add_view('summary/options');
-		$header->report_time_formatted = $this->format_report_time(nagstat::date_format());
+		$header->report_time_formatted = $this->format_report_time(date::date_format());
 		$this->template->content->content =
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 

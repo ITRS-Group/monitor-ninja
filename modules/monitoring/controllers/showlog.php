@@ -14,6 +14,9 @@ class Showlog_Controller extends Ninja_Controller
 {
 	private $options = array();
 
+	/**
+	 * Create a showlog controller
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -64,6 +67,9 @@ class Showlog_Controller extends Ninja_Controller
 		}
 	}
 
+	/**
+	 * Basic setup
+	 */
 	public function basic_setup()
 	{
 		$this->_verify_access('ninja.showlog:read.showlog');
@@ -93,6 +99,9 @@ class Showlog_Controller extends Ninja_Controller
 		$this->template->content->service_state_options = $service_state_options;
 	}
 
+	/**
+	 * Show log
+	 */
 	public function showlog()
 	{
 		$this->_verify_access('ninja.showlog:read.showlog');

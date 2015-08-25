@@ -17,7 +17,7 @@ return;
 	<tbody>
 	<?php
 	$even = false;
-	$date_format = nagstat::date_format();
+	$date_format = date::date_format();
 	$states = array(
 		0 => array('ok', _('OK')),
 		1 => array('warning', _('Warning')),

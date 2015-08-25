@@ -153,7 +153,7 @@ class Histogram_Controller extends Base_reports_Controller
 
 		$base->header = $this->add_view('reports/header');
 		$base->header->title = $title;
-		$base->header->report_time_formatted = $this->format_report_time(nagstat::date_format());
+		$base->header->report_time_formatted = $this->format_report_time(date::date_format());
 		$base->header->skip_csv = true;
 		$base->header->skip_pdf = true;
 
@@ -167,7 +167,7 @@ class Histogram_Controller extends Base_reports_Controller
 		$content->states = $state_names;
 		$content->available_states = array_keys($min);
 		$content->objects = $this->options['objects'];
-		$timeformat_str = nagstat::date_format();
+		$timeformat_str = date::date_format();
 		$content->report_time = date($timeformat_str, $this->options['start_time']).' '._('to').' '.date($timeformat_str, $this->options['end_time']);
 
 		$this->template->content->report_options = $this->add_view('histogram/options');

@@ -45,7 +45,7 @@ array(4) {
 			$linkstring = '';
 			if (strtolower($section) == 'about') {
 				$linkstring .= '<li class="meta">'.Kohana::config('config.product_name') . ": " . config::get_version_info().'</li>';
-				$linkstring .= '<li class="meta">'._('Page loaded').': '.date(nagstat::date_format()).'</li>';
+				$linkstring .= '<li class="meta">'._('Page loaded').': '.date(date::date_format()).'</li>';
 			} elseif (empty($entry)) {
 				continue;
 			}

@@ -11,7 +11,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Extinfo_Controller extends Ninja_Controller {
-	public $current = false;
 
 	/**
 	 * Default controller method
@@ -38,9 +37,6 @@ class Extinfo_Controller extends Ninja_Controller {
 		$servicegroup = $this->input->get('servicegroup', false);
 
 		$this->template->title = 'Monitoring » Extinfo';
-
-		# load current status for host/service status totals
-		//$this->current = new Current_status_Model();
 
 		$host = trim($host);
 		$service = trim($service);
@@ -252,7 +248,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		$yes = _('YES');
 		$no = _('NO');
 
-		$date_format_str = nagstat::date_format();
+		$date_format_str = date::date_format();
 		$content->date_format_str = $date_format_str;
 
 		# fetch program status from program_status_model; uses ORM
@@ -515,7 +511,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			'next_check' => _('Next check')
 		);
 
-		$this->template->content->date_format_str = nagstat::date_format();
+		$this->template->content->date_format_str = date::date_format();
 		$this->template->toolbar = new Toolbar_Controller( "Scheduling Queue" );
 
 		$form = '<form action="scheduling_queue" method="get">';

@@ -12,12 +12,24 @@
  */
 class Backup_Controller extends Ninja_Controller {
 
+	/**
+	 * Undocumented variable
+	 */
 	public $debug = false;
+	/**
+	 * Undocumented variable
+	 */
 	public $model = false;
 
 	private $nagios_cfg_path = "";
 
+	/**
+	 * Extension for backup files
+	 */
 	const BACKUP_EXTENSION = '.tar.gz';
+	/**
+	 * Path for where to store the backups
+	 */
 	const STORAGE = '/var/www/html/backup/';
 
 	public function __construct ()
@@ -68,6 +80,10 @@ class Backup_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * Undocumented method
+	 * @param $file
+	 */
 	public function view ($file)
 	{
 
@@ -92,6 +108,10 @@ class Backup_Controller extends Ninja_Controller {
 	}
 
 	/* below are AJAX/JSON actions */
+	/**
+	 * Undocumented method
+	 * @param $file
+	 */
 	public function download ($file) {
 
 		$this->_verify_access('monitor.system.backup:read.backup');
@@ -125,6 +145,9 @@ class Backup_Controller extends Ninja_Controller {
 		proc::open(array('/usr/bin/asmonitor','-q', '/usr/bin/naemon', '-v', $this->nagios_cfg_path . 'nagios.cfg'), $stdout, $stderr, $status);
 	}
 
+	/**
+	 * Undocumented method
+	 */
 	public function verify ()
 	{
 
@@ -140,6 +163,9 @@ class Backup_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * Undocumented method
+	 */
 	public function backup ()
 	{
 
@@ -193,6 +219,9 @@ class Backup_Controller extends Ninja_Controller {
 		json::ok($file);
 	}
 
+	/**
+	 * Undocumented method
+	 */
 	public function restore ($file)
 	{
 
@@ -223,6 +252,9 @@ class Backup_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * Undocumented method
+	 */
 	public function delete ($file)
 	{
 
@@ -241,6 +273,9 @@ class Backup_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * Undocumented method
+	 */
 	public function restart () {
 
 		$user = Auth::instance()->get_user();

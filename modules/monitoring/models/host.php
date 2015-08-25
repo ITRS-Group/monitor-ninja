@@ -456,7 +456,7 @@ class Host_Model extends BaseHost_Model {
 	 */
 	public function schedule_check($check_time, $forced = false) {
 
-		$check_tstamp = nagstat::timestamp_format(false, $check_time);
+		$check_tstamp = date::timestamp_format(false, $check_time);
 		if($check_tstamp === false)
 			return array(
 				'status' => 0,
@@ -559,7 +559,7 @@ class Host_Model extends BaseHost_Model {
 		);
 		$command = array_key_exists($propagation, $commands) ? $commands[$propagation] : $commands[0];
 
-		$start_tstamp = nagstat::timestamp_format(false, $start_time);
+		$start_tstamp = date::timestamp_format(false, $start_time);
 		if($start_tstamp === false) {
 			return array(
 				'status' => 0,
@@ -567,7 +567,7 @@ class Host_Model extends BaseHost_Model {
 				);
 		}
 
-		$end_tstamp = nagstat::timestamp_format(false, $end_time);
+		$end_tstamp = date::timestamp_format(false, $end_time);
 		if($end_tstamp === false) {
 			return array(
 				'status' => 0,
@@ -743,7 +743,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_service_checks($check_time, $forced = false) {
-		$check_time = nagstat::timestamp_format(false, $check_time);
+		$check_time = date::timestamp_format(false, $check_time);
 		if($forced)
 			return $this->submit_naemon_command("SCHEDULE_FORCED_HOST_SVC_CHECKS", $check_time);
 		return $this->submit_naemon_command("SCHEDULE_HOST_SVC_CHECKS", $check_time);

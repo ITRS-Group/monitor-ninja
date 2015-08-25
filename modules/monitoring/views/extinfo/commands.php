@@ -41,4 +41,3 @@ foreach($command_categories as $category => $category_commands) {
 ?>
 	</table>
 </div>
-

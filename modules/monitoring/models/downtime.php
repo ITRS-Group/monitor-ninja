@@ -57,14 +57,14 @@ class Downtime_Model extends BaseDowntime_Model {
 					$this->get_id(),
 					$this->get_host()->get_name(),
 					$this->get_service()->get_description(),
-					date(nagstat::date_format(), $this->get_start_time()),
+					date(date::date_format(), $this->get_start_time()),
 					mb_strimwidth($this->get_comment(),0, 30, "...")
 					);
 		} else {
 			return sprintf("%d - %s @ %s: %s",
 					$this->get_id(),
 					$this->get_host()->get_name(),
-					date(nagstat::date_format(), $this->get_start_time()),
+					date(date::date_format(), $this->get_start_time()),
 					mb_strimwidth($this->get_comment(),0, 30, "...")
 					);
 		}

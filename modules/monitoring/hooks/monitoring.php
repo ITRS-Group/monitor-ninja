@@ -12,9 +12,11 @@ class monitoring_hooks implements op5MayI_Actor {
 		Event::add('system.post_controller_constructor',
 			array ($this,'load_notifications'));
 
+		Event::add('system.post_controller',
+			array ($this,'add_extras'));
+
 		$mayi = op5MayI::instance();
 		$mayi->be('monitor.monitoring', $this);
-
 	}
 
 	/**
@@ -97,6 +99,16 @@ class monitoring_hooks implements op5MayI_Actor {
 					_('Livestatus is not accessable'));
 			}
 		}
+	}
+
+	/**
+	 * Hook for adding extra details to the page
+	 */
+	public function add_extras() {
+		$controller = Event::$data;
+
+		// add context menu items (hidden in html body)
+		$controller->template->context_menu = new View('status/context_menu');
 	}
 }
 

@@ -10,4 +10,3 @@ class Tac_services_Widget extends tablestat_Widget {
 		$this->universe = ServicePool_Model::all();
 	}
 }
-

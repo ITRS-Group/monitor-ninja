@@ -865,11 +865,11 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			}
 
 			$report_info['start_time'] = DateTime::createFromFormat(
-				nagstat::date_format(),
+				date::date_format(),
 				$report_info['cal_start'].' '.$report_info['time_start'].':00'
 			)->getTimestamp();
 			$report_info['end_time'] = DateTime::createFromFormat(
-				nagstat::date_format(),
+				date::date_format(),
 				$report_info['cal_end'].' '.$report_info['time_end'].':00'
 			)->getTimestamp();
 

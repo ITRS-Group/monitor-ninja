@@ -128,7 +128,7 @@ class Search_Controller extends Ninja_Controller {
 		$this->template->content         = $this->add_view('search/result');
 
 		$content = $this->template->content;
-		$content->date_format_str = nagstat::date_format();
+		$content->date_format_str = date::date_format();
 
 		$this->template->content->widgets = array();
 

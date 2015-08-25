@@ -1,13 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Sort method to sort widgets alphabetically by displayed name
- */
-function sort_widgets_by_friendly_name($a, $b) {
-	return strcmp($a->name, $b->name) || strcmp($a->friendly_name, $b->friendly_name);
-}
-
-/**
  * A widget consists of four (or, well, five) identifying pieces of information.
  *
  * It has a name. The name links it to the on-disk PHP files.
@@ -94,7 +87,9 @@ class Ninja_widget_Model extends Model
 			assert('$widget !== false');
 			$widgets['widget-'.$widget->name.'-'.$widget->instance_id] = $widget;
 		}
-		uasort($widgets, 'sort_widgets_by_friendly_name');
+		uasort($widgets, function ($a, $b) {
+			return strcmp($a->name, $b->name) || strcmp($a->friendly_name, $b->friendly_name);
+		});
 		return $widgets;
 	}
 

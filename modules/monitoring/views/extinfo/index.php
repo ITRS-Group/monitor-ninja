@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
-$date_format_str = nagstat::date_format();
+$date_format_str = date::date_format();
 
 $green_shield = '<span class="icon-16 x16-shield-up"></span>';
 $red_shield = '<span class="icon-16 x16-shield-down"></span>';
@@ -314,7 +314,7 @@ endif; ?>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Last notification'); ?></td>
-			<?php $last_notification = $object->get_last_notification()!=0 ? date(nagstat::date_format(), $object->get_last_notification()) : _('N/A'); ?>
+			<?php $last_notification = $object->get_last_notification()!=0 ? date(date::date_format(), $object->get_last_notification()) : _('N/A'); ?>
 			<td id="field_last_notification"><?php echo $last_notification ?>&nbsp;(<?php echo _('Notifications'); ?>: <?php echo $object->get_current_notification_number() ?>)</td>
 		</tr>
 		<tr>

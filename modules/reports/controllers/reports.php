@@ -162,7 +162,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		$sub_type = false;
 
-		$date_format = $this->type == 'sla' ? cal::get_calendar_format(true) : nagstat::date_format();
+		$date_format = $this->type == 'sla' ? cal::get_calendar_format(true) : date::date_format();
 
 		switch ($this->options['report_type']) {
 			case 'hostgroups':
