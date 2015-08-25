@@ -51,7 +51,7 @@
 				$attributes .= sprintf(" %s=\"%s\"", htmlentities($name), htmlentities($value));
 			}
 
-			$render .= sprintf($format, $attributes, $icon, $menu->get_label());
+			$render .= sprintf($format, $attributes, $icon, $menu->get_label_as_html());
 
 			if ($menu->has_children()) {
 				$render .= '<ul>';
