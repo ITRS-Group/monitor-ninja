@@ -89,7 +89,7 @@
 				}
 			}
 
-			$render .= sprintf($format, $attributes, $icon, $menu->get_label());
+			$render .= sprintf($format, $attributes, $icon, $menu->get_label_as_html());
 
 			if ($menu->has_children()) {
 				if (!in_array($menu->get_id(), $dynamics)) {

@@ -33,6 +33,7 @@ class Menu_Model {
   private $href;
   private $icon = "";
   private $id;
+  private $label_contains_valid_html = false;
 
   /**
    * Instantiates a new Menu model node, children within the structure use
@@ -142,6 +143,21 @@ class Menu_Model {
   }
 
   /**
+   * Sets this nodes $label value as "valid html", meaning that it does not
+   * need further escaping in the view layer. This complements @see set_label()
+   *
+   * @param $html   The label value to set
+   * @return Menu_Model     Returns $this for chainability
+   */
+  public function set_html_label ($html) {
+    if (is_string($html)) {
+      $this->label_contains_valid_html = true;
+      $this->label = $html;
+    }
+    return $this;
+  }
+
+  /**
    * Returns this nodes $attributes value
    * @return array  This nodes $attributes value
    */
@@ -169,11 +185,13 @@ class Menu_Model {
   }
 
   /**
-   * Returns this nodes $label value
-   * @return string  This nodes $label value
+   * @return string proper html to use as an element
    */
-  public function get_label () {
-    return $this->label;
+  public function get_label_as_html() {
+    if($this->label_contains_valid_html) {
+      return $this->label;
+    }
+    return html::specialchars($this->label);
   }
 
   /**
