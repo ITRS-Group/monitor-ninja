@@ -73,9 +73,6 @@ Documentation: clean ninja.doxy application/models/*.php application/helpers/*.p
 		exit 1; \
 	fi;
 
-wipe:
-	php index.php ninja_unit_test/wipe_tables
-
 prepare-config:
 	mkdir -m 0777 -p /tmp/ninja-test
 	mkdir -m 0777 -p /tmp/ninja-test/var

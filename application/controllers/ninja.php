@@ -21,7 +21,6 @@ class Ninja_Controller extends Template_Controller {
 	public $profiler = false;
 	public $inline_js = false;
 	public $js_strings = false;
-	public $run_tests = false;
 	public $log = false;
 
 	public $widgets = array();
@@ -38,8 +37,6 @@ class Ninja_Controller extends Template_Controller {
 		$this->mayi = op5MayI::instance();
 		$this->log = op5log::instance('ninja');
 
-		$this->run_tests = $this->input->get('run_tests', false) !== false;
-
 		$this->template = $this->add_view('template');
 		$this->template->css = array();
 		$this->template->js = array();
@@ -47,11 +44,7 @@ class Ninja_Controller extends Template_Controller {
 		$this->template->global_notifications = array();
 		$this->template->print_notifications = array();
 
-		if (!$this->run_tests) {
-			$this->profiler = new Profiler;
-		} else if ($this->run_tests !== false) {
-			unittest::instance();
-		}
+		$this->profiler = new Profiler;
 
 		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
 		$this->template->current_skin = $this->get_current_user_skin();
@@ -70,17 +63,6 @@ class Ninja_Controller extends Template_Controller {
 		textdomain('ninja');
 
 		$this->_addons();
-
-		# convert test params to $_REQUEST to enable more
-		# parameters to different controllers (reports for one)
-		if (PHP_SAPI == "cli" && $this->run_tests !== false
-		&& !empty($_SERVER['argc']) && isset($_SERVER['argv'][1])) {
-			$params = $_SERVER['argv'][1];
-			if (strstr($params, '?')) {
-				$params = explode('?', $params);
-				parse_str($params[1], $_REQUEST);
-			}
-		}
 	}
 
 	/**

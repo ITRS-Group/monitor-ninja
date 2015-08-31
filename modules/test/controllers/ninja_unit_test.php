@@ -3,14 +3,6 @@
  * Unit_Test controller.
  */
 class Ninja_unit_test_Controller extends Ninja_Controller {
-	/**
-	 * Run unit tests and show results!
-	 */
-	public function index()
-	{
-		new Ninja_Unit_Test;
-	}
-
 	private function prereq() {
 		if(date::utc_offset() != 3600 * (1 + date("I"))) {
 			echo "Aborting: Report tests require CET as timezone (date.timezone = \"CET\" in php.ini, for example). Got ".date::utc_offset()."\n";
@@ -105,26 +97,4 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 		exit(0); //removing this causes ninja to print a 302 to tac
 
 	}
-
-        /**
-         Drops all tables in Database() which "appear to be"
-         test data.
-        */
-        public function wipe_tables()
-        {
-            $db = Database::instance();
-            $tlist = $db->list_tables();
-            if( !count($tlist) ) {
-                throw new Exception("Query failed!");
-            }
-            foreach( $tlist as $table ) {
-                #echo "Checking table $table...\n";
-                if (strlen($table) >= 40) {
-                    echo "Dropping table $table...\n";
-                    if (!$db->query("drop table $table")) {
-                        echo "Failed to drop table $table:" . $db->error_message() . "\n";
-                    }
-                }
-            }
-        }
 }
