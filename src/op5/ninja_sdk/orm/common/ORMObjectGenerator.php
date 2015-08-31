@@ -61,7 +61,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			}
 		}
 
-		$this->generate_construct();
+		$this->generate_factory_from_setiterator();
 
 		if($this->writable) {
 			$this->generate_validate();
@@ -97,18 +97,13 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 *
 	 * @return void
 	 **/
-	private function generate_construct() {
+	private function generate_factory_from_setiterator() {
 		/* Make it possible to generate empty objects if writable */
-		if($this->writable) {
-			$default = array('values' => false, 'prefix' => false, 'export' => false);
-		} else {
-			$default = array();
-		}
-		$this->init_function( "__construct", array( 'values', 'prefix', 'export' ),  array(), $default);
-		if($this->writable) {
-			$this->write( 'if($values !== false) {' );
-		}
-		$this->write( '$this->export = array();' );
+		$this->init_function( "factory_from_setiterator", array( 'values', 'prefix', 'export' ),  array('static'), array());
+
+		$this->write( '$obj = new static();');
+
+		$this->write( '$obj->export = array();' );
 		$this->write( '$subobj_export = array();' );
 		$this->write( 'if($export === false) $export = array();'); //FIXME
 		$this->write( 'foreach( $export as $expcol ) {');
@@ -118,13 +113,13 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write(             '$subobj_export[$parts[0]] = array();');
 		$this->write(         '}');
 		$this->write(         '$subobj_export[$parts[0]][] = $parts[1];');
-		$this->write(         '$this->export[] = $parts[0];');
+		$this->write(         '$obj->export[] = $parts[0];');
 		$this->write(     '} else {');
-		$this->write(         '$this->export[] = $parts[0];');
+		$this->write(         '$obj->export[] = $parts[0];');
 		$this->write(     '}');
 		$this->write( '}');
 		$this->comment('If object fields exists, make sure the object only exists in the export array once');
-		$this->write( '$this->export = array_unique($this->export);');
+		$this->write( '$obj->export = array_unique($obj->export);');
 		foreach( $this->structure['structure'] as $field => $type ) {
 			$backend_name = $field;
 			if(isset($this->structure['rename']) && isset($this->structure['rename'][$field])) {
@@ -137,13 +132,12 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			}
 		}
 		if($this->writable) {
-			$this->write( '$this->_oldkey = array();');
+			$this->write( '$obj->_oldkey = array();');
 			foreach($this->key as $name) {
-				$this->write( "\$this->_oldkey[%s] = \$this->$name;", $name);
+				$this->write( "\$obj->_oldkey[%s] = \$obj->$name;", $name);
 			}
-			$this->write( '}' );
 		}
-		$this->write( 'parent::__construct( $values, $prefix, $export ); ');
+		$this->write( 'return $obj;');
 		$this->finish_function();
 	}
 
@@ -266,7 +260,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	private function fetch_object( $name, $backend_name, $type ) {
 		list( $class, $prefix ) = $type;
 		// Livestatus handles only one level of prefixes... might change in future? (for example comments: service.host.name should be host.name
-		$this->write( "\$this->$name = new $class".self::$model_suffix."( \$values, %s, isset(\$subobj_export[%s]) ? \$subobj_export[%s] : array() );", $prefix, $backend_name, $name );
+		$this->write( "\$obj->$name = $class".self::$model_suffix."::factory_from_setiterator( \$values, %s, isset(\$subobj_export[%s]) ? \$subobj_export[%s] : array() );", $prefix, $backend_name, $name );
 	}
 
 	/**
@@ -298,7 +292,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_string( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
-		$this->write( "\$this->$name = (string)\$values[\$prefix.'$backend_name'];" );
+		$this->write( "\$obj->$name = (string)\$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 
@@ -346,7 +340,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_time( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
-		$this->write( "\$this->$name = intval( \$values[\$prefix.'$backend_name'] );" );
+		$this->write( "\$obj->$name = intval( \$values[\$prefix.'$backend_name'] );" );
 		$this->write( "}" );
 	}
 
@@ -394,7 +388,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_int( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$this->$name = intval( \$values[\$prefix.'$backend_name'] );" );
+		$this->write( "\$obj->$name = intval( \$values[\$prefix.'$backend_name'] );" );
 		$this->write( "}" );
 	}
 
@@ -442,7 +436,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_float( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$this->$name = floatval( \$values[\$prefix.'$backend_name'] );" );
+		$this->write( "\$obj->$name = floatval( \$values[\$prefix.'$backend_name'] );" );
 		$this->write( "}" );
 	}
 
@@ -490,7 +484,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_list( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$this->$name = \$values[\$prefix.'$backend_name'];" );
+		$this->write( "\$obj->$name = \$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 
@@ -537,7 +531,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 **/
 	private function fetch_dict( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$this->$name = \$values[\$prefix.'$backend_name'];" );
+		$this->write( "\$obj->$name = \$values[\$prefix.'$backend_name'];" );
 		$this->write( "}" );
 	}
 

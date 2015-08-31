@@ -93,7 +93,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 
 	function test_host_disable_check() {
 		$host_name = 'my cat had a hat';
-		$host = new Host_Model(array('name' => $host_name), '', array('name'));
+		$host = Host_Model::factory_from_setiterator(array('name' => $host_name), '', array('name'));
 		$host->disable_check();
 		$this->assertRegExp(
 			'/\[\d+\] DISABLE_HOST_CHECK;'.$host_name.'/',
@@ -109,7 +109,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 	function test_host_check_now_helper_method() {
 		$now = time();
 		$name = 'bosse bildoktor';
-		$host = new Host_Model(array('name' => $name), '', array('name'));
+		$host = Host_Model::factory_from_setiterator(array('name' => $name), '', array('name'));
 		$host->check_now();
 		$this->assertRegExp(
 			"/\[\d+\] SCHEDULE_HOST_CHECK;$name;$now/",
@@ -131,7 +131,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		$comment = 'baby';
 		$fixed = 1;
 
-		$sg = new Servicegroup_Model(array('name' => $name), '', array('name'));
+		$sg = Servicegroup_Model::factory_from_setiterator(array('name' => $name), '', array('name'));
 
 		$sg->schedule_service_downtime($start_time, $end_time, !$fixed, $duration_in, $trigger_id, $comment);
 		$this->assertRegExp("/\[\d+\] SCHEDULE_SVC_DOWNTIME;a_hst;s_c;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
@@ -146,7 +146,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		$notify = true;
 		$sticky = true;
 
-		$host = new Host_Model(array('name' => $host_name), '', array('name'));
+		$host = Host_Model::factory_from_setiterator(array('name' => $host_name), '', array('name'));
 		$host->acknowledge_problem($comment, $persistent, $notify, $sticky);
 		$this->assertRegExp(
 			sprintf(

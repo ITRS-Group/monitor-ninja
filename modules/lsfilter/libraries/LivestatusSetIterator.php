@@ -40,7 +40,8 @@ class LivestatusSetIterator implements Iterator {
 				$this->columns,
 				$cur_arr
 				);
-		return new $this->class( $varmap, '', $this->export_columns );
+		$classname = $this->class;
+		return $classname::factory_from_setiterator( $varmap, '', $this->export_columns );
 	}
 
 	/**

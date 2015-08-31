@@ -47,7 +47,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		op5objstore::instance()->mock_clear();
 	}
 	public function test_no_commands() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array ()
 		), '', array () );
@@ -55,7 +55,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_no_access() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -66,7 +66,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_no_access_through_user() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -77,7 +77,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_access_single_contactgroup() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -90,7 +90,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), $host->list_custom_commands() );
 	}
 	public function test_access_multi_contactgroup_first() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -103,7 +103,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), $host->list_custom_commands() );
 	}
 	public function test_access_multi_contactgroup_last() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -116,7 +116,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), $host->list_custom_commands() );
 	}
 	public function test_no_access_empty_access() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -127,7 +127,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_no_access_empty_groups() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__SOMECOMMAND' => 'do stuff',
@@ -138,7 +138,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_multi_commands() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5X__ACTION__CMD1' => 'do stuff 1',
@@ -159,7 +159,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), $host->list_custom_commands() );
 	}
 	public function test_noprefix() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5__ACTION__SOMECOMMAND' => 'do stuff',
@@ -172,7 +172,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), $host->list_custom_commands() );
 	}
 	public function test_hidden_noprefix() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5H__ACTION__SOMECOMMAND' => 'do stuff',
@@ -185,7 +185,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), $host->list_custom_commands() );
 	}
 	public function test_incorrect_order() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5__BOLL__ACTION__STUFF' => 'do stuff',
@@ -196,7 +196,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_no_access_attr() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5H__ACTION__SOMECOMMAND' => 'do stuff'
@@ -206,7 +206,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 	public function test_no_action_attr() {
-		$host = new Host_Model( array (
+		$host = Host_Model::factory_from_setiterator( array (
 			'name' => 'stuff',
 			'custom_variables' => array (
 				'OP5__ACCESS__SOMECOMMAND' => 'greger_and_his_friends'

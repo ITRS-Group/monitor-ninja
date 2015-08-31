@@ -136,7 +136,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 				$tp['exceptions_week_day'] = array();
 
 			$tpobj = Old_Timeperiod_Model::instance(array('start_time' => $start_time, 'end_time' => $end_time, 'rpttimeperiod' => $tp['name']));
-			$tpobj->set_timeperiod_data(new TimePeriod_Model($tp, '', array()));
+			$tpobj->set_timeperiod_data(TimePeriod_Model::factory_from_setiterator($tp, '', array()));
 			$tpobj->resolve_timeperiods();
 		}
 

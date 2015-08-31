@@ -15,16 +15,10 @@ class ORMRootObjectGenerator extends ORMRootGenerator {
 		$this->init_class();
 		$this->variable( 'export', array('key'), 'protected' );
 		$this->generate_common();
-		$this->generate_construct();
 		$this->generate_export();
 		$this->generate_rewrite_columns();
 		$this->generate_get_key();
 		$this->finish_class();
-	}
-
-	private function generate_construct() {
-		$this->init_function( "__construct", array( 'values', 'prefix', 'export' ) );
-		$this->finish_function();
 	}
 
 	private function generate_export() {
