@@ -30,11 +30,6 @@ $(document).ready(function() {
 		content_div.focus();
 	}
 
-	// stop widgets from trying to reload once user clicked
-	// on a menu
-	$('#menu a').click(function() {_is_refreshing = true;});
-
-
 	var object_action = function(cmd, table, obj) {
 		var en = encodeURIComponent;
 		var target = _site_domain + _index_page + '/cmd?command=' + en(cmd) + '&table=' + en(table) + '&object=' + en(obj);

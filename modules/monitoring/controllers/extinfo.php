@@ -70,7 +70,6 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		// Widgets
 		$this->template->content->widgets = array();
-		$this->template->js[] = $this->add_path('/js/widgets.js');
 
 		# save us some typing
 		$content = $this->template->content;

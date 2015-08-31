@@ -1,7 +1,7 @@
 PROJECT_NAME = ninja
 PROJECT_NUMBER = git
 
-INPUT            = application/models application/helpers xdoc/ modules application/widgets
+INPUT            = application/models application/helpers xdoc/ modules
 EXCLUDE_PATTERNS = */modules/*/views/* */modules/*/vendor/*
 DOTFILE_DIRS     = xdoc
 QUIET            = YES

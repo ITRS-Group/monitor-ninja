@@ -132,8 +132,6 @@ class Search_Controller extends Ninja_Controller {
 
 		$this->template->content->widgets = array();
 
-		$this->template->js[] = $this->add_path('/js/widgets.js');
-
 		$username = Auth::instance()->get_user()->username;
 
 		if( $limit === false ) {

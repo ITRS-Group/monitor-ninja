@@ -16,7 +16,6 @@ class widget_Base
 	public $js = false; /**< required js resources? */
 	public $css = false; /**< additional css? */
 	public $inline_js = false; /**< additional inline javascript, as a string */
-	public $widget_base_path = false; /**< path to widget main directory */
 	public $widget_full_path = false; /**< path to this widget's directory */
 	public $model = false; /**< The widget model instance this widget represents */
 	public $extra_data_attributes = array(); /**<  array Key-value to attach to widget-container (for example ["hello"] => "bye" which renders as <div data-hello="bye" />, good for javascript-hooks */
@@ -29,17 +28,8 @@ class widget_Base
 	 */
 	public function __construct($widget_model)
 	{
-		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
-		$this->auto_render = FALSE;
-
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget_model->name, $widget_model->name, false);
-		if ($path === false) {
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget_model->name, $widget_model->name, false);
-		}
-		if (strstr($path, Kohana::config('widget.custom_dirname')) !== false) {
-			$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.custom_dirname');
-		}
-		$this->widget_full_path = $this->widget_base_path.$widget_model->name;
+		/* @var $widget_model Ninja_Widget_Model */
+		$this->widget_full_path = $widget_model->widget_path();
 
 		$this->model = $widget_model;
 	}
@@ -55,6 +45,18 @@ class widget_Base
 		$current_status = Current_status_Model::instance();
 		$current_status->analyze_status_data();
 		return $current_status;
+	}
+
+	/**
+	 * Return the default friendly name for the widget type
+	 *
+	 * default to the model name, but should be overridden by widgets.
+	 */
+	public function get_metadata() {
+		return array(
+			'friendly_name' => "Widget " . $this->model->name,
+			'instanceable' => true
+			);
 	}
 
 	/**
@@ -189,7 +191,7 @@ class widget_Base
 		ob_start();
 		$this->$method();
 
-		if (gettype($this->widget_base_path) === 'boolean') {
+		if ($this->widget_full_path === false) {
 			$content .= '<h2>Widget Error</h2><br />';
 			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content-error', $content);
 		} else {
@@ -226,8 +228,8 @@ class widget_Base
 		$type = strtolower($type);
 		$files = array();
 		foreach ($in_files as $file) {
-			if (file_exists($this->widget_base_path.$this->model->name.'/'.$file.'.'.$type))
-				$files[] = $this->widget_base_path.$this->model->name.'/'.$file.'.'.$type;
+			if (file_exists($this->widget_full_path.'/'.$file.'.'.$type))
+				$files[] = $this->widget_full_path.'/'.$file.'.'.$type;
 			else
 				$files[] = $file.'.'.$type;
 		}

@@ -1,0 +1,1 @@
+DELETE FROM ninja_widgets WHERE username = "";

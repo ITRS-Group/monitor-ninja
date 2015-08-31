@@ -5,10 +5,6 @@
  */
 $config['dirname'] = 'widgets/';
 
-/**
- * define base path for widgets
- */
-$config['path'] = 'application/';
 
 /**
  * Name of custom widgets directory

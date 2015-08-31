@@ -110,7 +110,8 @@
 			}
 
 			if ($this->should_render_buttons) {
-				print '<div class="main-toolbar-buttons">';
+				/* Class main-toolbar-buttons is for styling. Class toolbar-buttons is for locating */
+				print '<div class="main-toolbar-buttons toolbar-buttons">';
 				print $this->get_button_html();
 				print '</div>';
 			}

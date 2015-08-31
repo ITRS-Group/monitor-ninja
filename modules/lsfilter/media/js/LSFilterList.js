@@ -360,17 +360,19 @@ function lsfilter_list(config)
 		}
 		new_totals = this.render_totals(data.table, data.totals);
 
-		$('.main-toolbar-buttons').replaceContent(
-			$('<ul/>').append(
-				$.map([$('<li id="filter_loading_status"/>')].concat(
-						listview_renderer_buttons[data.table] || []).concat(
-							listview_renderer_buttons.all || []),
-					function(x) {
-						if (typeof x == 'function') {
-							x = x();
-						}
-						return $('<li class="filter-query-button"/>').html(x).toArray();
-		})));
+		if(this.config.toolbar) {
+			this.config.toolbar.find('.toolbar-buttons').replaceContent(
+				$('<ul/>').append(
+					$.map([$('<li id="filter_loading_status"/>')].concat(
+							listview_renderer_buttons[data.table] || []).concat(
+								listview_renderer_buttons.all || []),
+						function(x) {
+							if (typeof x == 'function') {
+								x = x();
+							}
+							return $('<li class="filter-query-button"/>').html(x).toArray();
+			})));
+		}
 
 		if (this.config.totals) {
 			this.config.totals.replaceContent(new_totals);

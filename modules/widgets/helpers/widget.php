@@ -113,18 +113,7 @@ class widget
 	 */
 	public static function get($widget_obj)
 	{
-		# first try custom path
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget_obj->name, $widget_obj->name, false);
-		if ($path === false) {
-			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget_obj->name, $widget_obj->name, true);
-		}
-		if (!is_file($path))
-			throw new Exception("Widget not found on disk");
-		require_once($path);
-		$classname = $widget_obj->name.'_Widget';
-
-		return new $classname($widget_obj);
+		return $widget_obj->build();
 	}
 
 	/**
@@ -141,10 +130,6 @@ class widget
 		$master->template->js = array_merge(isset($master->template->js) && is_array($master->template->js) ? $master->template->js : array(), $widget->resources($widget->js, 'js'));
 		$master->template->css = array_merge(isset($master->template->css) && is_array($master->template->css) ? $master->template->css : array(), $widget->resources($widget->css, 'css'));
 		$master->inline_js .= $widget->inline_js;
-		if ($widget->model) {
-			$widget_id = 'widget-'.$widget->model->name.'-'.$widget->model->instance_id;
-			$master->inline_js .= "$.fn.AddEasyWidget('#$widget_id', \$('#$widget_id').parent().id, window.easywidgets_obj);";
-		}
 	}
 
 	public function __construct() {

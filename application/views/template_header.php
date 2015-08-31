@@ -208,18 +208,6 @@
 		</li>
 		<?php
 			} # end if listview_refresh
-			if (isset($widgets) && is_array($widgets)) {
-				echo '<li><h2>'._('Available Widgets').'</h2></li>'."\n";
-				foreach($widgets as $widget) {
-					$class_name = isset($widget->id) ? 'selected' : 'unselected';
-					echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
-				}
-				echo "<li><h2>"._('Widget settings')."</h2></li><li>";
-				echo form::open(url::base(true) . 'widget/factory_reset_widgets');
-				echo form::submit(array('class' => 'plain'), _("Restore overview to factory settings"));
-				echo form::close();
-				echo '</li><li><a href="#" id="show_global_widget_refresh">'._("Set every widget's refresh rate to (s.)").'</a></li>'."\n";
-			}
 		?>
 	</ul>
 
