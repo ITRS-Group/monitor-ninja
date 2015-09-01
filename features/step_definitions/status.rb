@@ -37,11 +37,6 @@ When /^I hover the branding$/ do
   page.find('a[data-menu-id="branding"]').hover
 end
 
-When /^I reload the page$/ do
-  visit current_url
-  # page.execute_script("document.location.reload();")
-end
-
 Then /^I should see menu items:$/ do |table|
   rows = table.raw
   rows.each do |row|
