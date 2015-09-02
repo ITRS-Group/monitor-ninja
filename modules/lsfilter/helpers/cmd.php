@@ -12,11 +12,6 @@ class cmd
 	 * @return string|null
 	 */
 	static function cmd_link(Object_Model $object, $command, $text) {
-		$command_list = $object->list_commands();
-		if(!array_key_exists($command, $command_list))
-			return null;
-		if(!array_key_exists('mayi_method', $command_list[$command]))
-			return null;
 		return html::anchor(
 			sprintf(
 				"cmd?command=%s&table=%s&object=%s",
