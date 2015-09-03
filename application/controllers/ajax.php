@@ -176,8 +176,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Fetch comment for object
-	*/
+	 * Fetch comment for object, echoes HTML
+	 */
 	public function fetch_comments()
 	{
 		$host = $this->input->get('host', false);
@@ -202,7 +202,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		if (count($set) > 0) {
 			$data = "<table><tr><th>"._("Timestamp")."</th><th>"._('Author')."</th><th>"._('Comment')."</th></tr>";
 			foreach ($set->it(array('entry_time', 'author', 'comment'),array()) as $row) {
-				$data .= '<tr><td>'.date(nagstat::date_format(), $row->get_entry_time()).'</td><td valign="top">'.$row->get_author().'</td><td width="400px">'.wordwrap($row->get_comment(), '50', '<br />').'</td></tr>';
+				$data .= '<tr><td>'.date(nagstat::date_format(), $row->get_entry_time()).'</td><td valign="top">'.html::specialchars($row->get_author()).'</td><td width="400px">'.nl2br(html::specialchars(wordwrap($row->get_comment(), '50', "\n"))).'</td></tr>';
 			}
 			$data .= '</table>';
 		}
