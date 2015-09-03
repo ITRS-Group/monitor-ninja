@@ -221,7 +221,7 @@ class User_Controller extends Authenticated_Controller {
 
 		# loop through actual settings, validate and save if OK
 		$errors = false;
-		$base_err_str = _('Wrong datatype vaule for field %s. Should be %s - found %s');
+		$base_err_str = _('Wrong datatype value for field %s. Should be %s - found %s');
 		$empty_str = _('Ignoring %s since no value was found for it.');
 		foreach ($data as $key => $val) {
 			if (!isset($type_info[$key]))

@@ -11,7 +11,7 @@ if (!empty($errors)) {
 	echo _("Your settings couldn't be saved since the following errors were encountered:");
 	echo "<br /><ul>";
 	foreach ($errors as $e) {
-		echo '<li>'.$e.'</li>';
+		echo '<li>'.html::specialchars($e).'</li>';
 	}
 	echo '</ul>';
 	?>
