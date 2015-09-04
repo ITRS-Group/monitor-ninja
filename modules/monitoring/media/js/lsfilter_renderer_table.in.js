@@ -652,7 +652,7 @@ listview_renderer_table.comments = {
 		"depends" : [ 'comment' ],
 		"sort" : [ 'comment' ],
 		"cell" : function(args) {
-			return $('<td />').update_text(args.obj.comment);
+			return $('<td class="restricted-output"/>').update_text(args.obj.comment);
 		}
 	},
 	"id" : {
