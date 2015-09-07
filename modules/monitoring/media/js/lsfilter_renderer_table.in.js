@@ -1259,6 +1259,132 @@ listview_renderer_table.timeperiods = {
 			return $('<td />').update_text(args.obj.alias);
 		}
 	},
+	"days": {
+		"header": _('Day schedule'),
+		"depends": ['days'],
+		"sort": false,
+		"cell": function(args) {
+			var cell = $('<td />');
+			var i;
+			var sub_list = $('<table />');
+			var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+			for(i=0;i<7;i++) {
+				var day = args.obj.days[i];
+
+				/* Build timerange definition */
+				var range_def = "";
+				var tr_i;
+				var have_range = false;
+				for(tr_i=0;tr_i<day.length;tr_i+=2) {
+					if(range_def)
+						range_def += ", ";
+					range_def += "" + (day[tr_i]/3600.0) + "-" + (day[tr_i+1]/3600.0);
+					have_range = true;
+				}
+
+				if( have_range ) {
+					sub_list.append(
+							$('<tr />')
+							.append($('<td />').text(days[i]))
+							.append($('<td />').text(range_def))
+						);
+				}
+			}
+			cell.append(sub_list);
+			return cell;
+		}
+	},
+	"exceptions": {
+		"header": _('Exceptions'),
+		"depends": ['exceptions'],
+		"sort": false,
+		"cell": function(args) {
+			var cell = $('<td />');
+			var i;
+			var sub_list = $('<table />');
+			var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+			var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+			var format_timerange = function(tr) {
+			};
+			for (i = 0; i < args.obj.exceptions.length; i++) {
+				var ex = args.obj.exceptions[i];
+
+				/* Build date definition */
+				var date_def = "";
+				switch (ex.type) {
+				case 'calendar_date':
+					date_def += ex.syear + "-" + (ex.smon + 1) + "-"
+							+ ex.smday;
+					if ((ex.syear != ex.eyear) || (ex.smon != ex.emon)
+							|| (ex.smday != ex.emday))
+						date_def += " - " + ex.eyear + "-" + (ex.emon + 1)
+								+ "-" + ex.emday;
+					break;
+				case 'month_date':
+					date_def += months[ex.smon] + " " + ex.smday;
+					if ((ex.smon != ex.emon) || (ex.smday != ex.emday))
+						date_def += " - " + months[ex.emon + 1] + " "
+								+ ex.emday;
+					break;
+				case 'month_day':
+					date_def += "day " + ex.smday;
+					if ((ex.smday != ex.emday))
+						date_def += " - " + ex.emday;
+					break;
+				case 'month_week_day':
+					date_def += days[ex.swday] + " " + ex.swday_offset + " "
+							+ months[ex.smon];
+					if ((ex.swday != ex.ewday)
+							|| (ex.swday_offset != ex.ewday_offset)
+							|| (ex.smon != ex.emon))
+						date_def += " - " + days[ex.ewday] + " " + ex.ewday_offset
+								+ " " + months[ex.emon];
+					break;
+				case 'week_day':
+					date_def += days[ex.swday] + " " + ex.swday_offset;
+					if ((ex.swday != ex.ewday)
+							|| (ex.swday_offset != ex.ewday_offset))
+						date_def += " - " + days[ex.ewday] + " " + ex.ewday_offset;
+					break;
+				}
+				if (ex.skip_interval > 1) {
+					date_def += " / " + ex.skip_interval;
+				}
+
+				/* Build timerange definition */
+				var range_def = "";
+				var tr_i;
+				for(tr_i=0;tr_i<ex.times.length;tr_i+=2) {
+					if(range_def)
+						range_def += ", ";
+					range_def += "" + (ex.times[tr_i]/3600.0) + "-" + (ex.times[tr_i+1]/3600.0);
+				}
+
+				sub_list.append(
+						$('<tr />')
+						.append($('<td />').text(date_def))
+						.append($('<td />').text(range_def))
+					);
+			}
+			cell.append(sub_list);
+			return cell;
+		}
+	},
+	"exclusions": {
+		"header": _('Exclusions'),
+		"depends": ['exclusions'],
+		"sort": false,
+		"cell": function(args) {
+			var cell = $('<td />');
+			var i;
+			var sub_list = $('<ul />');
+			for(i=0;i<args.obj.exclusions.length;i++) {
+				sub_list.append($('<li />').text(args.obj.exclusions[i]));
+			}
+			cell.append(sub_list);
+			return cell;
+		}
+	},
 	"in": {
 		"header": _('Currently active'),
 		"depends": ['is_active'],

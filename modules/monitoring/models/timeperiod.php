@@ -21,4 +21,23 @@ class TimePeriod_Model extends BaseTimePeriod_Model {
 	public function get_in() {
 		return $this->get_is_active();
 	}
+
+	/**
+	 * Get all exceptions, augmented with types
+	 *
+	 * @ninja orm depend[] exceptions_calendar_dates
+	 * @ninja orm depend[] exceptions_month_date
+	 * @ninja orm depend[] exceptions_month_day
+	 * @ninja orm depend[] exceptions_month_week_day
+	 * @ninja orm depend[] exceptions_week_day
+	 */
+	public function get_exceptions() {
+		return array_merge(
+				array_map(function($r) {$r['type'] = 'calendar_date'; return $r;}, $this->get_exceptions_calendar_dates()),
+				array_map(function($r) {$r['type'] = 'month_date'; return $r;}, $this->get_exceptions_month_date()),
+				array_map(function($r) {$r['type'] = 'month_day'; return $r;}, $this->get_exceptions_month_day()),
+				array_map(function($r) {$r['type'] = 'month_week_day'; return $r;}, $this->get_exceptions_month_week_day()),
+				array_map(function($r) {$r['type'] = 'week_day'; return $r;}, $this->get_exceptions_week_day())
+		);
+	}
 }

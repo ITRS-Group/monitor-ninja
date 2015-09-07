@@ -472,9 +472,16 @@ $tables = array (
 		'object_custom_parent' => 'NaemonObject',
 		'structure' =>
 		array (
-			'alias' => 'string',
-			'is_active' => 'int',
 			'name' => 'string',
+			'alias' => 'string',
+			'days' => 'list',
+			'exceptions_calendar_dates' => 'list',
+			'exceptions_month_date' => 'list',
+			'exceptions_month_day' => 'list',
+			'exceptions_month_week_day' => 'list',
+			'exceptions_week_day' => 'list',
+			'exclusions' => 'list',
+			'is_active' => 'int',
 		),
 	),
 	'notifications' =>
