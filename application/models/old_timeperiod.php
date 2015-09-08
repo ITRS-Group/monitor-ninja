@@ -14,7 +14,7 @@ class Old_Timeperiod_Model extends Model
 	/** Please do not touch this outside of tests, it's a cache for performance purposes */
 	static public $precreated = array();
 	/** Definition of the regular (weekday) timeperiod definitions */
-	protected $period = false;
+	private $period = false;
 	/** Report start */
 	public $start_time = false;
 	/** Report stop */
@@ -51,10 +51,17 @@ class Old_Timeperiod_Model extends Model
 		$this->end_time = $options['end_time'];
 		if (!$options['rpttimeperiod'])
 			return;
-		$result = self::get($options['rpttimeperiod'], true);
+		$result = TimePeriodPool_Model::fetch_by_key($options['rpttimeperiod']);
 		if (empty($result))
 			return;
 		$this->set_timeperiod_data($result);
+	}
+
+	/**
+	 * Export internal state, only to be able to write tests so we can isolate and verify the timeperiod import
+	 */
+	public function test_export() {
+		return array('period' => $this->period, 'exceptions' => $this->tp_exceptions, 'excludes' => $this->tp_excludes);
 	}
 
 	/**
@@ -65,42 +72,65 @@ class Old_Timeperiod_Model extends Model
 	 * @param $period A timeperiod db result
 	 * @return true on success, false otherwise
 	 */
-	public function set_timeperiod_data($period=NULL)
+	public function set_timeperiod_data(TimePeriod_Model $period=NULL)
 	{
-		$valid_weekdays = reports::$valid_weekdays;
-
 		if (!$period) {
 			$this->period = false;
 			return true;
 		}
 
+		/* Unpack timeranges from start,stop,start,stop to start-stop tuples */
 		$this->period = array();
-
-		unset($period['id']);
-		unset($period['timeperiod_name']);
-		unset($period['alias']);
-		unset($period['instance_id']);
-
-		$includes = $period;
-
-		$errors = 0;
-		foreach ($includes as $k => $v) {
-			if (empty($v)) {
+		foreach($period->get_days() as $i => $day) {
+			if(empty($day))
 				continue;
-			}
-			$errors += $this->set_timeperiod_variable($k, $v) === false;
+			$this->period[$i] = array_map(function ($row) {
+				return array(
+					'start' => $row[0],
+					'stop' => $row[1]
+				);
+			}, array_chunk($day, 2));
+		}
+		foreach ($period->get_exceptions_calendar_dates() as $ex) {
+			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
+				$ex['syear'], $ex['smon'] + 1, $ex['smday'], 0, 0, $ex['eyear'],
+				$ex['emon'] + 1, $ex['emday'], 0, 0, $ex['skip_interval'],
+				$ex['times']);
 		}
 
-		if(!empty($period['excludes']))
-		{
-			foreach($period['excludes'] as $exclude)
-			{
-				$this->tp_excludes[] = Old_Timeperiod_Model::instance(array('start_time' => $this->start_time, 'end_time' => $this->end_time, 'rpttimeperiod' => $exclude));
-			}
+		foreach ($period->get_exceptions_month_date() as $ex) {
+			$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE, 0,
+				$ex['smon'] + 1, $ex['smday'], 0, 0, 0, $ex['emon'] + 1,
+				$ex['emday'], 0, 0, $ex['skip_interval'], $ex['times']);
 		}
 
-		if ($errors)
-			return false;
+		foreach ($period->get_exceptions_month_day() as $ex) {
+			$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY, 0, 0,
+				$ex['smday'], 0, 0, 0, 0, $ex['emday'], 0, 0,
+				$ex['skip_interval'], $ex['times']);
+		}
+
+		foreach ($period->get_exceptions_month_week_day() as $ex) {
+			$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY, 0,
+				$ex['smon'] + 1, 0, $ex['swday'], $ex['swday_offset'], 0,
+				$ex['emon'] + 1, 0, $ex['ewday'], $ex['ewday_offset'],
+				$ex['skip_interval'], $ex['times']);
+		}
+
+		foreach ($period->get_exceptions_week_day() as $ex) {
+			$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY, 0, 0, 0,
+				$ex['swday'], $ex['swday_offset'], 0, 0, 0, $ex['ewday'],
+				$ex['ewday_offset'], $ex['skip_interval'], $ex['times']);
+		}
+
+		foreach ($period->get_exclusions() as $exclude) {
+			$this->tp_excludes[] = Old_Timeperiod_Model::instance(array(
+				'start_time' => $this->start_time,
+				'end_time' => $this->end_time,
+				'rpttimeperiod' => $exclude
+			));
+		}
+
 		return true;
 	}
 
@@ -167,7 +197,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $what Whether to search for start or stop. Valid values are 'start' and 'stop'.
 	 * @return The timestamp
 	 */
-	public function tp_next($when, $what = 'start')
+	private function tp_next($when, $what = 'start')
 	{
 		if ($this->period === false)
 			return $when;
@@ -427,53 +457,6 @@ class Old_Timeperiod_Model extends Model
 		unset($this->tp_exceptions['unresolved']);
 	}
 
-		/**
-	 * Parses a timerange string
-	 * FIXME: add more validation
-	 * @param $str string
-	 * @return An array of timeranges
-	 * E.g:
-	 * $str="08:00-12:00,13:00-17:00" gives:
-	 * array
-	 * (
-	 * 		array('start' => 28800, 'stop' => 43200),
-	 * 		array('start' => 46800, 'stop' => 61200)
-	 * );
-	 */
-	protected function tp_parse_day($str)
-	{
-		if (!$str)
-			return 0;
-
-		$i = 0;
-		$ret = array();
-
-		$ents = explode(',', $str);
-		foreach ($ents as $ent) {
-			$start_stop = explode('-', $ent);
-			$start_hour_minute = explode(':', $start_stop[0]);
-			$start_hour = $start_hour_minute[0];
-			$start_minute = $start_hour_minute[1];
-			$stop_hour_minute = explode(':', $start_stop[1]);
-			$stop_hour = $stop_hour_minute[0];
-			$stop_minute = $stop_hour_minute[1];
-			$stop_hour_minute = $start_hour_minute = $stop = $start = false;
-			$start_second = ($start_hour * 3600) + ($start_minute * 60);
-			$stop_second = ($stop_hour * 3600) + ($stop_minute * 60);
-			if($start_second >= $stop_second)
-			{
-				# @@@FIXME: no print statements in models!
-				print "Error: Skipping timerange $str, stop time is before start time<br>";
-				continue;
-			}
-			$ret[$i]['start'] = $start_second;
-			$ret[$i]['stop'] = $stop_second;
-			$i++;
-		}
-
-		return $ret;
-	}
-
 	/**
 	 * Adds a timeperiod exception to the report.
 	 * FIXME: should probably validate more
@@ -492,7 +475,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $timeranges Array of timeranges.
 	 * Throws Exception if any parameter has bogus values.
 	 */
-	protected function add_timeperiod_exception($dateperiod_type,
+	private function add_timeperiod_exception($dateperiod_type,
 	                                  $syear, $smon, $smday, $swday, $swday_offset,
 	                                  $eyear, $emon, $emday, $ewday, $ewday_offset,
 	                                  $skip_interval, $timeranges)
@@ -502,8 +485,15 @@ class Old_Timeperiod_Model extends Model
 		if (!isset($this->tp_exceptions['unresolved']))
 			$this->tp_exceptions['unresolved'] = array();
 
-		assert($dateperiod_type >= 0 && $dateperiod_type < self::DATERANGE_TYPES); # can only fail if programmer messed up
-		$timeranges = $this->tp_parse_day($timeranges);
+		assert($dateperiod_type >= 0 && $dateperiod_type < self::DATERANGE_TYPES); // can only fail if programmer messed up
+
+		/* Unpack timeranges from start,stop,start,stop to start-stop tuples */
+		$timeranges = array_map(function ($row) {
+			return array(
+				'start' => $row[0],
+				'stop' => $row[1]
+			);
+		}, array_chunk($timeranges, 2));
 
 		$this->tp_exceptions['unresolved'][] = array
 		(
@@ -524,349 +514,12 @@ class Old_Timeperiod_Model extends Model
 	}
 
 	/**
-	 * Parses given input as a nagios 3 timeperiod variable. If valid,
-	 * it is added to the report.
-	 * Code is derived from the nagios 3 sources (xdata/xodtemplate.c)
-	 * FIXME: find better way of adding 24h to end date
-	 *
-	 * @param $name The timeperiod style variable we want to parse
-	 * @param $value The value of the timeperiod variable
-	 * @return boolean
-	 */
-	public function set_timeperiod_variable($name, $value)
-	{
-		$valid_weekdays = reports::$valid_weekdays;
-		$valid_months = reports::$valid_months;
-
-		$weekday_numbers = array_flip($valid_weekdays);
-		$month_numbers = array_flip($valid_months);
-
-		if(in_array($name, $valid_weekdays)) # add regular weekday include time
-		{
-			$this->period[array_search($name, $valid_weekdays)] = $this->tp_parse_day($value);
-			return true;
-		}
-
-		$input = "$name $value";
-
-		# you could put this in one line but that will be too messy
-		$items = array_filter(sscanf($input,"%4d-%2d-%2d - %4d-%2d-%2d / %d %[0-9:, -]"));
-		if(count($items) == 8)
-		{
-			list($syear, $smon, $smday, $eyear, $emon, $emday, $skip_interval, $timeranges) = $items;
-
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges);
-			return true;
-		}
-
-		$items = array_filter(sscanf($input,"%4d-%2d-%2d / %d %[0-9:, -]"));
-		if(count($items) == 5)
-		{
-			list($syear,$smon, $smday, $skip_interval, $timeranges) = $items;
-			$eyear = $syear;
-			$emon  = $smon;
-			$emday = $smday;
-
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges);
-			return true;
-		}
-
-		$items = array_filter(sscanf($input,"%4d-%2d-%2d - %4d-%2d-%2d %[0-9:, -]"));
-		if(count($items) == 7)
-		{
-			list($syear, $smon, $smday, $eyear, $emon, $emday, $timeranges) = $items;
-
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges);
-			return true;
-		}
-
-		$items=array_filter(sscanf($input,"%4d-%2d-%2d %[0-9:, -]"));
-		if(count($items)==4)
-		{
-			list($syear, $smon, $smday, $timeranges) = $items;
-			$eyear = $syear;
-			$emon = $smon;
-			$emday = $smday;
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges);
-			return true;
-		}
-
-		/* other types... */
-		$items = array_filter(sscanf($input,"%[a-z] %d %[a-z] - %[a-z] %d %[a-z] / %d %[0-9:, -]"));
-		if(count($items) == 8)
-		{
-			list($str1, $swday_offset, $str2, $str3, $ewday_offset, $str4, $skip_interval, $timeranges) = $items;
-			/* wednesday 1 january - thursday 2 july / 3 */
-
-			if(in_array($str1, $valid_weekdays) &&
-				in_array($str2, $valid_months) &&
-				in_array($str3, $valid_weekdays) &&
-				in_array($str4, $valid_months))
-			{
-				$swday = $weekday_numbers[$str1];
-				$smon = $month_numbers[$str2];
-				$ewday = $weekday_numbers[$str3];
-				$emon = $month_numbers[$str4];
-
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, $skip_interval,  $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d - %[a-z] %d / %d %[0-9:, -]"));
-		if(count($items) == 6)
-		{
-			list($str1, $smday, $str2, $emday, $skip_interval, $timeranges) = $items;
-			/* february 1 - march 15 / 3 */
-			/* monday 2 - thursday 3 / 2 */
-			/* day 4 - day 6 / 2 */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_weekdays))
-			{
-				/* monday 2 - thursday 3 / 2 */
-				$swday = $weekday_numbers[$str1];
-				$ewday = $weekday_numbers[$str2];
-				$swday_offset = $smday;
-				$ewday_offset = $emday;
-
-				/* add timeperiod exception */
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges);
-				return true;
-			}
-			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
-			{
-				$smon = $month_numbers[$str1];
-				$emon = $month_numbers[$str2];
-				/* february 1 - march 15 / 3 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges);
-				return true;
-			}
-			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
-			{
-				/* day 4 - 6 / 2 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d - %d / %d %[0-9:, -]"));
-		if(count($items) == 5)
-		{
-			list($str1, $smday, $emday, $skip_interval, $timeranges) = $items;
-
-			/* february 1 - 15 / 3 */
-			/* monday 2 - 3 / 2 */
-			/* day 1 - 25 / 4 */
-			if(in_array($str1, $valid_weekdays))
-			{
-				$swday = $weekday_numbers[$str1];
-				/* thursday 2 - 4 */
-				$swday_offset = $smday;
-				$ewday = $swday;
-				$ewday_offset = $emday;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges);
-				return true;
-			}
-			else if(in_array($str1, $valid_months))
-			{
-				$smon = $month_numbers[$str1];
-				$emon = $smon;
-				/* february 3 - 5 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges);
-				return true;
-			}
-			else if(!strcmp($str1, "day"))
-			{
-				/* day 1 - 4 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d %[a-z] - %[a-z] %d %[a-z] %[0-9:, -]"));
-		if(count($items)  == 7)
-		{
-			list($str1, $swday_offset, $str2, $str3, $ewday_offset, $str4, $timeranges) = $items;
-
-			/* wednesday 1 january - thursday 2 july */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_months) &&
-				in_array($str3, $valid_weekdays) && in_array($str4, $valid_months))
-			{
-				$swday = $weekday_numbers[$str1];
-				$smon = $month_numbers[$str2];
-				$ewday = $weekday_numbers[$str3];
-				$emon = $month_numbers[$str4];
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items=array_filter(sscanf($input,"%[a-z] %d - %d %[0-9:, -]"));
-		if(count($items) == 4)
-		{
-			list($str1, $smday, $emday, $timeranges) = $items;
-
-			/* february 3 - 5 */
-			/* thursday 2 - 4 */
-			/* day 1 - 4 */
-			if(in_array($str1, $valid_weekdays))
-			{
-				/* thursday 2 - 4 */
-				$swday = $weekday_numbers[$str1];
-				$swday_offset = $smday;
-				$ewday = $weekday_numbers[$swday];
-				$ewday_offset = $emday;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
-				return true;
-			}
-			else if(in_array($str1, $valid_months))
-			{
-				/* february 3 - 5 */
-				$smon = $month_numbers[$str1];
-				$emon = $smon;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
-				return true;
-			}
-			else if(!strcmp($str1,"day"))
-			{
-				/* day 1 - 4 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d - %[a-z] %d %[0-9:, -]"));
-		 if(count($items) == 5)
-		{
-			list($str1, $smday, $str2, $emday, $timeranges) = $items;
-			/* february 1 - march 15 */
-			/* monday 2 - thursday 3 */
-			/* day 1 - day 5 */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_weekdays))
-			{
-				/* monday 2 - thursday 3 */
-				$swday = $weekday_numbers[$str1];
-				$ewday = $weekday_numbers[$str2];
-				$swday_offset = $smday;
-				$ewday_offset = $emday;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
-				return true;
-			}
-			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
-			{
-				/* february 1 - march 15 */
-				$smon = $month_numbers[$str1];
-				$emon = $month_numbers[$str2];
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
-				return true;
-			}
-			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
-			{
-				/* day 1 - day 5 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d%*[ \t]%[0-9:, -]"));
-		if(count($items) == 3)
-		{
-			list($str1, $smday, $timeranges) = $items;
-			/* february 3 */
-			/* thursday 2 */
-			/* day 1 */
-			if(in_array($str1, $valid_weekdays))
-			{
-				/* thursday 2 */
-				$swday = $weekday_numbers[$str1];
-				$swday_offset = $smday;
-				$ewday = $swday;
-				$ewday_offset = $swday_offset;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
-				return true;
-			}
-			elseif(in_array($str1, $valid_months))
-			{
-				/* february 3 */
-				$smon = $month_numbers[$str1];
-				$emon = $smon;
-				$emday = $smday;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
-				return true;
-			}
-			else if(!strcmp($str1,"day"))
-			{
-				/* day 1 */
-				$emday = $smday;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d %[a-z] %[0-9:, -]"));
-		if(count($items) == 4)
-		{
-			list($str1, $swday_offset, $str2, $timeranges) = $items;
-
-			/* thursday 3 february */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_months))
-			{
-				$swday = $weekday_numbers[$str1];
-				$smon = $month_numbers[$str2];
-				$emon = $smon;
-				$ewday = $swday;
-				$ewday_offset = $swday_offset;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges);
-				return true;
-			}
-			// return false;
-		}
-
-		# syntactically incorrect variable
-		return false;
-	}
-
-	/**
 	 * Return true if both the start date and end date is the same day
 	 *
 	 * @param $dr A daterange
 	 * @return true if condition holds
 	 */
-	public function is_daterange_single_day(&$dr)
+	private function is_daterange_single_day(&$dr)
 	{
 		if($dr['syear'] != $dr['eyear'])
 			return false;
@@ -882,15 +535,6 @@ class Old_Timeperiod_Model extends Model
 		return true;
 	}
 
-	/**
-	 * Print the timerange $r
-	 * @param $r A timerange
-	 */
-	public function print_timerange(&$r)
-	{
-		print "$r[start]-$r[stop]";
-	}
-
 		/**
 	 * Converts a date into timestamp, with some extra features such as
 	 * negative days of month to use days from the end of the month.
@@ -901,7 +545,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $monthday - Day of month, can be negative.
 	 * @return The resulting timestamp.
 	 */
-	public function calculate_time_from_day_of_month($year, $month, $monthday)
+	private function calculate_time_from_day_of_month($year, $month, $monthday)
 	{
 		$day = 0;
 
@@ -951,7 +595,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $weekday The weekday's numeric presentation (0=sunday, 6=saturday)
 	 * @param $weekday_offset Which occurence of the weekday, can be negative
 	 */
-	public function calculate_time_from_weekday_of_month($year, $month, $weekday, $weekday_offset)
+	private function calculate_time_from_weekday_of_month($year, $month, $weekday, $weekday_offset)
 	{
 		$weeks = 0;
 		$midnight = mktime(0,0,0, $month, 1, $year);
@@ -1009,7 +653,7 @@ class Old_Timeperiod_Model extends Model
 	 * 	(Eg: start1 == stop2 or start2 == stop1)
 	 * @return boolean
 	 */
-	public function timeranges_overlap(&$range1, &$range2, $inclusive=false)
+	private function timeranges_overlap(&$range1, &$range2, $inclusive=false)
 	{
 		if($inclusive)
 			return ($range1['start'] <= $range2['stop'] && $range2['start'] <= $range1['stop']) ||
@@ -1028,7 +672,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $dst_range array
 	 * @return array
 	 */
-	public function merge_timeranges(&$src_range, &$dst_range)
+	private function merge_timeranges(&$src_range, &$dst_range)
 	{
 		return array('start' => min($src_range['start'], $dst_range['start']),
 		             'stop'  => max($src_range['stop'],  $dst_range['stop']));
@@ -1044,7 +688,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $range Array of range(s) to add
 	 * @param $timerange_set The timerange set to add to
 	 */
-	public function add_timerange_to_set($range, &$timerange_set)
+	private function add_timerange_to_set($range, &$timerange_set)
 	{
 		for($i=0 ; $i<count($timerange_set) ; $i++)
 		{
@@ -1078,7 +722,7 @@ class Old_Timeperiod_Model extends Model
 	 * @param $timerange_set2 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
 	 * @return array
 	 */
-	public function merge_timerange_sets(&$timerange_set1, &$timerange_set2)
+	private function merge_timerange_sets(&$timerange_set1, &$timerange_set2)
 	{
 		$resulting_timerange_set = array();
 
@@ -1096,49 +740,8 @@ class Old_Timeperiod_Model extends Model
 		return $resulting_timerange_set;
 	}
 
-	/**
-	 * Fetch info on a timeperiod
-	 *
-	 * @param $period string: Timeperiod name
-	 * @return an array of the timeperiod's properties
-	 */
-	public static function get($period)
-	{
-		$db = Database::instance();
-		$query = 'SELECT * FROM timeperiod ' .
-			'WHERE timeperiod_name = ' .$db->escape($period);
-		$res = $db->query($query);
-		if (!$res) {
-			return false;
-		}
-
-		$res = $res->result(false);
-		$res = $res->current();
-
-		if ($res) {
-			$query = "SELECT variable, value FROM custom_vars WHERE obj_type = 'timeperiod' AND obj_id = {$res['id']}";
-			$exception_res = $db->query($query);
-			foreach ($exception_res as $exception) {
-				$res[$exception->variable] = $exception->value;
-			}
-
-			$query = "SELECT tp.timeperiod_name FROM timeperiod tp".
-					 " JOIN timeperiod_exclude ON exclude = id ".
-					 " WHERE timeperiod = {$res['id']}";
-
-			$exclude_res = $db->query($query);
-			// it might seem appropriate to be all recursive about this,
-			// but the recursiveness is already done on a model-level, so
-			// we have no use for anything but name
-			foreach ($exclude_res as $exclude) {
-				$res['excludes'][] = $exclude->timeperiod_name;
-			}
-		}
-		return $res;
-	}
-
 	private static $timeperiods_all = false;
-	
+
 	/**
 	 * Fetch all timperiods
 	 * @return db result

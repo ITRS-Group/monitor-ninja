@@ -117,11 +117,26 @@ class Ninja_Reports_Test extends Status_Reports_Model
 
 		Old_Timeperiod_Model::$precreated = array();
 		foreach ($timeperiods as $idx => &$tp) {
-			if (!isset($tp['timeperiod_name']))
-				$tp['timeperiod_name'] = 'the_timeperiod'.$idx;
+			if (!isset($tp['name']))
+				$tp['name'] = 'the_timeperiod'.$idx;
 
-			$tpobj = Old_Timeperiod_Model::instance(array('start_time' => $start_time, 'end_time' => $end_time, 'rpttimeperiod' => $tp['timeperiod_name']));
-			$tpobj->set_timeperiod_data($tp);
+			if(!isset($tp['days']))
+				$tp['days'] = array(array(),array(),array(),array(),array(),array(),array());
+			if(!isset($tp['exclusions']))
+				$tp['exclusions'] = array();
+			if(!isset($tp['exceptions_calendar_dates']))
+				$tp['exceptions_calendar_dates'] = array();
+			if(!isset($tp['exceptions_month_date']))
+				$tp['exceptions_month_date'] = array();
+			if(!isset($tp['exceptions_month_day']))
+				$tp['exceptions_month_day'] = array();
+			if(!isset($tp['exceptions_month_week_day']))
+				$tp['exceptions_month_week_day'] = array();
+			if(!isset($tp['exceptions_week_day']))
+				$tp['exceptions_week_day'] = array();
+
+			$tpobj = Old_Timeperiod_Model::instance(array('start_time' => $start_time, 'end_time' => $end_time, 'rpttimeperiod' => $tp['name']));
+			$tpobj->set_timeperiod_data(new TimePeriod_Model($tp, '', array()));
 			$tpobj->resolve_timeperiods();
 		}
 
@@ -141,8 +156,8 @@ class Ninja_Reports_Test extends Status_Reports_Model
 			if (!$opts->set($k, $v))
 				echo "Failed to set option '$k' to '$v'\n";
 		}
-		$opts->properties_copy['rpttimeperiod']['options'][$timeperiod['timeperiod_name']] = $timeperiod['timeperiod_name'];
-		$opts['rpttimeperiod'] = $timeperiod['timeperiod_name'];
+		$opts->properties_copy['rpttimeperiod']['options'][$timeperiod['name']] = $timeperiod['name'];
+		$opts['rpttimeperiod'] = $timeperiod['name'];
 
 		# force logs to be kept so we can analyze them and make
 		# sure the durations add up
@@ -225,7 +240,6 @@ class Ninja_Reports_Test extends Status_Reports_Model
 			if ($result < 0)
 				return $result;
 		}
-
 		foreach ($this->tests as $test_name => $params) {
 			$this->cur_test = $test_name;
 			$result = $this->run_test($params);

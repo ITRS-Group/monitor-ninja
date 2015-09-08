@@ -453,4 +453,505 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('service_filter_status', $obj->options);
 		$this->assertEquals(array(0 => -2, 1 => -2, 2 => -2, 3 => -2), $obj->options['service_filter_status']);
 	}
+
+	function test_timeperiod_import()
+	{
+			/*
+		 * The expected data is generated before changing to livestatus backend
+		 * for timeperiods, thus treated as reference for regression bugs in
+		 * the merlin-DB to livestatus port
+		 */
+		$expcted = array(
+			'period' => array(
+				1 => array(
+					array(
+						'start' => 0,
+						'stop' => 32400
+					),
+					array(
+						'start' => 61200,
+						'stop' => 86400
+					)
+				)
+			),
+			'exceptions' => array(
+				'unresolved' => array(
+					array(
+						'type' => 0,
+						'syear' => 1999,
+						'smon' => 1,
+						'smday' => 28,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 1999,
+						'emon' => 1,
+						'emday' => 28,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 0,
+						'syear' => 2007,
+						'smon' => 1,
+						'smday' => 1,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 2008,
+						'emon' => 2,
+						'emday' => 1,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+
+					array(
+						'type' => 0,
+						'syear' => 2007,
+						'smon' => 1,
+						'smday' => 1,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 2008,
+						'emon' => 2,
+						'emday' => 1,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 3,
+						'timeranges' => array(
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 0,
+						'syear' => 2008,
+						'smon' => 4,
+						'smday' => 1,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 2008,
+						'emon' => 4,
+						'emday' => 1,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 7,
+						'timeranges' => array(
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+
+					array(
+						'type' => 1,
+						'syear' => 0,
+						'smon' => 4,
+						'smday' => 10,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 5,
+						'emday' => 15,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 2,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 1,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 15,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 2,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 1,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 15,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 5,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 2,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 2,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 2,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 2,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 20,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => - 1,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 1,
+						'syear' => 0,
+						'smon' => 2,
+						'smday' => - 1,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 2,
+						'emday' => - 1,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 1,
+						'syear' => 0,
+						'smon' => 2,
+						'smday' => 10,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 2,
+						'emday' => 10,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 4,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 0,
+						'swday' => 5,
+						'swday_offset' => - 2,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 0,
+						'ewday' => 5,
+						'ewday_offset' => - 2,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 1,
+						'syear' => 0,
+						'smon' => 7,
+						'smday' => 10,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 7,
+						'emday' => 15,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 1,
+						'syear' => 0,
+						'smon' => 7,
+						'smday' => 10,
+						'swday' => 0,
+						'swday_offset' => 0,
+						'eyear' => 0,
+						'emon' => 7,
+						'emday' => 15,
+						'ewday' => 0,
+						'ewday_offset' => 0,
+						'skip_interval' => 2,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+
+					array(
+						'type' => 4,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 0,
+						'swday' => 1,
+						'swday_offset' => 3,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 0,
+						'ewday' => 1,
+						'ewday_offset' => 3,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 4,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 0,
+						'swday' => 1,
+						'swday_offset' => 3,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 0,
+						'ewday' => 4,
+						'ewday_offset' => 4,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 4,
+						'syear' => 0,
+						'smon' => 0,
+						'smday' => 0,
+						'swday' => 1,
+						'swday_offset' => 3,
+						'eyear' => 0,
+						'emon' => 0,
+						'emday' => 0,
+						'ewday' => 4,
+						'ewday_offset' => 4,
+						'skip_interval' => 2,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 3,
+						'syear' => 0,
+						'smon' => 11,
+						'smday' => 0,
+						'swday' => 4,
+						'swday_offset' => - 1,
+						'eyear' => 0,
+						'emon' => 11,
+						'emday' => 0,
+						'ewday' => 4,
+						'ewday_offset' => - 1,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 36000,
+								'stop' => 43200
+							)
+						)
+					),
+					array(
+						'type' => 3,
+						'syear' => 0,
+						'smon' => 4,
+						'smday' => 0,
+						'swday' => 2,
+						'swday_offset' => 1,
+						'eyear' => 0,
+						'emon' => 5,
+						'emday' => 0,
+						'ewday' => 5,
+						'ewday_offset' => 2,
+						'skip_interval' => 0,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					),
+					array(
+						'type' => 3,
+						'syear' => 0,
+						'smon' => 4,
+						'smday' => 0,
+						'swday' => 2,
+						'swday_offset' => 1,
+						'eyear' => 0,
+						'emon' => 5,
+						'emday' => 0,
+						'ewday' => 5,
+						'ewday_offset' => 2,
+						'skip_interval' => 6,
+						'timeranges' => array(
+
+							array(
+								'start' => 0,
+								'stop' => 86400
+							)
+						)
+					)
+				)
+			),
+			'excludes' => array()
+		);
+
+		$compare_fnc = function($a, $b) {
+			$diff = $a['type'] - $b['type'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['syear'] - $b['syear'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['smon'] - $b['smon'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['smday'] - $b['smday'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['swday'] - $b['swday'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['swday_offset'] - $b['swday_offset'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['eyear'] - $b['eyear'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['emon'] - $b['emon'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['emday'] - $b['emday'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['ewday'] - $b['ewday'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['ewday_offset'] - $b['ewday_offset'];
+			if ($diff != 0)
+				return $diff;
+			$diff = $a['skip_interval'] - $b['skip_interval'];
+			if ($diff != 0)
+				return $diff;
+			return 0;
+		};
+
+		Old_Timeperiod_Model::$precreated = array ();
+		$tp = Old_Timeperiod_Model::instance ( array (
+				'rpttimeperiod' => 'weird-stuff',
+				'start_time' => 0,
+				'end_time' => 0
+		) );
+
+		$actual = $tp->test_export();
+
+		/* The order of exceptions shouldn't affect behaviour, so verify they are the same order */
+		usort($expcted['exceptions']['unresolved'], $compare_fnc);
+		usort($actual['exceptions']['unresolved'], $compare_fnc);
+
+		$this->assertEquals ( $expcted, $actual );
+	}
 }
