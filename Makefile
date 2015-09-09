@@ -33,7 +33,7 @@ test: test-reports test-unittest
 
 test-reports:
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/unit_test/reports/*.tst; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/unit_test/reports/*.tst.php; res=$$?; make test-ci-cleanup; exit $$res
 
 test-unittest: generate-php
 	make test-ci-prepare

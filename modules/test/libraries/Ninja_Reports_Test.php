@@ -165,102 +165,44 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		if (!$test_file)
 			return false;
 
-		$req = array('description', 'logfiles');
-		$params = array();
-
-		$buf = file_get_contents($test_file);
-		$lines = explode("\n", $buf);
-		$block = false;
-		$pushed_blocks = array();
-		$pushed_names = array();
-		$block_name = false;
-		$num_line = 0;
-		foreach ($lines as $raw_line) {
-			$num_line++;
-			$line = trim($raw_line);
-			if (!strlen($line) || $line{0} === '#')
-				continue;
-
-			if ($line{0} === '}') {
-				if (!empty($pushed_blocks)) {
-					$tmp = array_pop($pushed_blocks);
-					$tmp[$block_name] = $block;
-					$block = $tmp;
-					$block_name = array_pop($pushed_names);
-					$tmp = false;
-				}
-				else {
-					if ($block_name === 'global_vars')
-						$this->test_globals = $block;
-					elseif ($block_name === 'logfiles')
-						$this->logfiles = $block;
-					else
-						$params[$block_name] = $block;
-
-					$block = $block_name = false;
-				}
-				continue;
-			}
-
-			if ($line{strlen($line) - 1} === '{') {
-				$ary = preg_split("/[\t ]*{[\t ]*/", $line);
-				if ($block_name) {
-					array_push($pushed_blocks, $block);
-					array_push($pushed_names, $block_name);
-				}
-				$block_name = $ary[0];
-				$block = array();
-				continue;
-			}
-
-			# regular variable, or possibly a single string
-			$ary = preg_split("/[\t ]*=[\t ]/", $line);
-
-			if (count($ary) !== 2) {
-				if ($block !== false) {
-					$block[] = $line;
-				}
-				else {
-					echo "Line $num_line in $test_file is malformed: $line\n";
-				}
-				continue;
-			}
-			$k = $ary[0];
-			$v = $ary[1];
-			if ($block !== false) {
-				$block[$k] = $v;
-			}
-			else {
-				switch ($k) {
-				 case 'description':
-					$this->description = $v;
-					break;
-				 case 'config_files':
-					$this->config_files = $v;
-					break;
-				 case 'logfile':
-					$this->logfile = $v;
-					break;
-				 case 'sqlfile':
-					$this->sqlfile = $v;
-					break;
-				 case 'db_table':
-					$this->table_name = $v;
-					break;
-				 default:
-					if (!is_array($v)) {
-						$this->crash("Illegal variable: $k = $v\n");
-						exit(1);
-					}
-					$params[$k] = $v;
-				}
-			}
+		$testcase = false;
+		require($test_file);
+		if(!is_array($testcase)) {
+			$this->crash("Incorrect testcase file: $test_file\n");
+			exit(1);
 		}
 
-		#	print_r($params);
-		//recurse_print($params);
-		$this->params = $params;
-		return $params;
+		if(isset($testcase['global_vars'])) {
+			$this->test_globals = $testcase['global_vars'];
+			unset($testcase['global_vars']);
+		}
+		if(isset($testcase['logfiles'])) {
+			$this->logfiles = $testcase['logfiles'];
+			unset($testcase['logfiles']);
+		}
+		if(isset($testcase['config_files'])) {
+			$this->config_files = $testcase['config_files'];
+			unset($testcase['config_files']);
+		}
+		if(isset($testcase['logfile'])) {
+			$this->logfile = $testcase['logfile'];
+			unset($testcase['logfile']);
+		}
+		if(isset($testcase['sqlfile'])) {
+			$this->sqlfile = $testcase['sqlfile'];
+			unset($testcase['sqlfile']);
+		}
+		if(isset($testcase['db_table'])) {
+			$this->db_table = $testcase['db_table'];
+			unset($testcase['db_table']);
+		}
+		if(isset($testcase['description'])) {
+			$this->description = $testcase['description'];
+			unset($testcase['description']);
+		}
+
+		$this->params = $testcase;
+		return $testcase;
 	}
 
 	/**
