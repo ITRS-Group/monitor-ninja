@@ -10,24 +10,11 @@ class Menu_Controller extends Ninja_Controller {
    */
   public function about () {
 
-    $this->auto_render = false;
+    $about = new About_Model();
+    Event::run('ninja.version.info', $about);
 
-    $status = Current_status_Model::instance()->program_status();
-    $release = @file_get_contents('/etc/op5-monitor-release');
-
-    if ($release) {
-      $release = preg_replace('/VERSION=/', '', $release);
-    } else {
-      $release = "Unknown";
-    }
-
-    $this->template = $this->add_view('about');
-    $this->template->version = (object) array(
-      "product" => $status->program_version . " (" . trim($release) . ")",
-      "livestatus" => $status->livestatus_version,
-    );
-
-    $this->template->render(TRUE);
+    $this->template = new View('about');
+    $this->template->about = $about;
 
   }
 
