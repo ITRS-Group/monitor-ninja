@@ -77,12 +77,14 @@
 			foreach ($options->get_alternatives('service_filter_status') as $state => $name) {
 				if (!isset($options['service_filter_status'][$state]))
 					$states[] = $name;
-				else if ($options['service_filter_status'][$state] != Reports_Model::HOST_EXCLUDED)
+				else if ($options['service_filter_status'][$state] != Reports_Model::SERVICE_EXCLUDED)
 					$states[] = $name . ' as ' . Reports_Model::$service_states[$options['service_filter_status'][$state]];
 			}
 		}
-		if ($states)
-			echo ' in ' . implode(', ', $states);
+		if ($states) {
+			// "unique" because undetermined is the same for hosts and services
+			echo ' in ' . implode(', ', array_unique($states));
+		}
 		echo '</p>';
 		if ($type == 'sla')
 			echo '<p>'.sprintf(_('Showing %s'), $options->get_value('sla_mode')).'</p>';

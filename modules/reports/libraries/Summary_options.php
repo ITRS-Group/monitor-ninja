@@ -59,8 +59,6 @@ class Summary_options extends Report_options
 		$this->rename_options['displaytype'] = 'summary_type';
 		$this->rename_options['alert_types'] = array($this, 'set_alert_types');
 		$this->properties['report_period']['options']['forever'] = _('Forever');
-		unset($this->properties['host_filter_status']['options'][-1]);
-		unset($this->properties['service_filter_status']['options'][-1]);
 	}
 
 	protected function update_value($name, $value)
