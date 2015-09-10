@@ -251,6 +251,77 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test create/update/delete
+	 *
+	 * This test uses an SQL table, which should be available always, and is
+	 * writeable. It creates an object with a unique and random name, and should
+	 * remove it afterwards. Thus, should be isolated, but depend on database.
+	 */
+	public function test_create_update_fetch_delete() {
+		// A unique name, so we don't conflict with earlier failing tests
+		$current_name = md5(uniqid());
+
+		// Create object
+
+		$obj = new SavedFilter_Model();
+		$obj->set_filter('[saved_filters] all');
+		$obj->set_filter_description('This is a filter used in tests');
+		$obj->set_filter_name($current_name);
+
+		// ->set_filter() should set filter table, verify that...
+		$this->assertEquals('saved_filters', $obj->get_filter_table());
+
+		$obj->save();
+		unset($obj); // We wan't a clean environment to next step
+
+		// Fetch object
+
+		$set = SavedFilterPool_Model::all()->reduce_by('filter_name', $current_name, '=');
+		$this->assertCount(1, $set);
+		$obj = $set->one();
+
+		$this->assertInstanceOf('SavedFilter_Model', $obj);
+		$this->assertEquals('[saved_filters] all', $obj->get_filter());
+		$this->assertEquals('This is a filter used in tests', $obj->get_filter_description());
+		$this->assertEquals($current_name, $obj->get_filter_name());
+		$this->assertEquals('saved_filters', $obj->get_filter_table());
+
+		// Update object
+
+		$obj->set_filter('[somerandomtable] all');
+		// ->set_filter() should set filter table, verify that...
+		$this->assertEquals('somerandomtable', $obj->get_filter_table());
+		$obj->save();
+		unset($obj); // We wan't a clean environment to next step
+
+		// Fetch object again
+
+		$set = SavedFilterPool_Model::all()->reduce_by('filter_name', $current_name, '=');
+		$this->assertCount(1, $set);
+		$obj = $set->one();
+
+		$this->assertInstanceOf('SavedFilter_Model', $obj);
+		$this->assertEquals('[somerandomtable] all', $obj->get_filter());
+		$this->assertEquals('This is a filter used in tests', $obj->get_filter_description());
+		$this->assertEquals($current_name, $obj->get_filter_name());
+		$this->assertEquals('somerandomtable', $obj->get_filter_table());
+
+		// Delete object
+
+		$obj->delete();
+		unset($obj); // We wan't a clean environment to next step
+
+		// Fetch object, it should be gone
+
+		$set = SavedFilterPool_Model::all()->reduce_by('filter_name', $current_name, '=');
+		$this->assertCount(0, $set);
+		$obj = $set->one();
+
+		$this->assertSame(false, $obj);
+
+	}
+
+	/**
 	 * Fetch a host object, and test that when requesting a couple of columns,
 	 * only the columns in an expect list is exported
 	 *

@@ -43,7 +43,7 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 
 	private function build_sql_from_where() {
 		$table = $this->name;
-		$this->write('$sql .= %s;', ' FROM ' . $this->structure['table'] . ' AS ' . $this->name);
+		$this->write('$sql .= %s;', ' FROM ' . $this->structure['table']);
 		foreach ($this->structure['relations'] as $relation) {
 			list($foreign_key, $foreign_table, $key) = $relation;
 			$foreign_structure = $this->full_structure[$foreign_table];
@@ -54,6 +54,11 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 			}, $foreign_structure['key'], $foreign_key));
 			$this->write('$sql .= %s;', $join_expr);
 		}
+		$this->write('$sql .= " WHERE ".$filter->visit(new '.$this->visitor_class.'(array(%s, "map_name_to_backend")), false);', $this->structure['class'].'Pool'.self::$model_suffix);
+	}
+
+	private function build_sql_where() {
+		/* We assume a single table */
 		$this->write('$sql .= " WHERE ".$filter->visit(new '.$this->visitor_class.'(array(%s, "map_name_to_backend")), false);', $this->structure['class'].'Pool'.self::$model_suffix);
 	}
 
@@ -90,7 +95,7 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 
 		$this->write('$sql = "SELECT ";');
 		$this->write('if ($valid_columns === false) {');
-		$table_names = array($this->name);
+		$table_names = array($this->structure['table']);
 		foreach( $this->structure['relations'] as $rel ) {
 			$table_names[] = $rel[2];
 		}
@@ -132,8 +137,8 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 
 		$this->write('$fetched_columns = array();');
 		$this->write('foreach($fetched_columns_raw as $col) {');
-		$this->write('if(substr($col,0,%s) == %s) {', strlen($this->name)+1, $this->name.'.');
-		$this->write('$fetched_columns[] = substr($col,%s);', strlen($this->name)+1);
+		$this->write('if(substr($col,0,%s) == %s) {', strlen($this->structure['table'])+1, $this->structure['table'].'.');
+		$this->write('$fetched_columns[] = substr($col,%s);', strlen($this->structure['table'])+1);
 		$this->write('} else {');
 		$this->write('$fetched_columns[] = $col;');
 		$this->write('}');
@@ -147,26 +152,25 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->finish_function();
 	}
 
-	public function generate_update_single() {
-		$this->init_function('update_single', array('key', 'values'), array('static'));
+	public function generate_update() {
+		$this->init_function('update', array('filter', 'values'), array('static'));
 		$this->write('$db = Database::instance(%s);',$this->db_instance);
-		$this->write('$keys = array();');
-		$this->write('$esc_values = array();');
-		$this->write('foreach($values as $k => $v) {');
-		$this->write(  '$keys[] = $k;');
-		$this->write(  '$esc_values[] = $db->escape($v);');
-		$this->write('}');
 		$this->write('$sql = %s;', 'UPDATE '.$this->structure['table']);
 		$this->write('$delim = " SET ";');
 		$this->write('foreach($values as $k => $v) {');
 		$this->write('$sql .= $delim . $k . " = " . $db->escape($v);');
 		$this->write('$delim = ", ";');
 		$this->write('}');
-		$delim = ' WHERE ';
-		foreach( $this->key as $k ) {
-			$this->write('$sql .= %s . $db->escape($key[%s]);', $delim . $k . ' = ', $k);
-			$delim = ' AND ';
-		}
+		$this->build_sql_where();
+		$this->write('$db->query($sql);');
+		$this->finish_function();
+	}
+
+	public function generate_delete() {
+		$this->init_function('delete', array('filter'), array('static'));
+		$this->write('$db = Database::instance(%s);',$this->db_instance);
+		$this->write('$sql = %s;', "DELETE ".$this->structure['table']);
+		$this->build_sql_from_where();
 		$this->write('$db->query($sql);');
 		$this->finish_function();
 	}
@@ -197,7 +201,7 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 	public function generate_map_name_to_backend() {
 		$this->init_function('map_name_to_backend', array('name', 'prefix'), array('static'), array('prefix' => false));
 		$this->write('if($prefix === false) {');
-		$this->write('$prefix = %s;', $this->name.'.');
+		$this->write('$prefix = %s;', $this->structure['table'].'.');
 		$this->write('}');
 		foreach($this->structure['structure'] as $field => $type ) {
 			$backend_field = $field;

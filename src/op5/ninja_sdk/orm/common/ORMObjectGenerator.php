@@ -66,6 +66,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		if($this->writable) {
 			$this->generate_validate();
 			$this->generate_save();
+			$this->generate_delete();
 		}
 
 		$this->generate_get_key();
@@ -173,7 +174,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			$this->write(     '$values[%s] = $this->'.$name.';', $name);
 			$this->write(   '}');
 		}
-		$this->write(  'if(empty($this->_oldkey)) {'); // New
+		$this->write(  'if($this->_oldkey === false) {'); // New
 		$this->write(     '$insid = '.$this->pool_class.'::insert_single($values);');
 		// Handle auto increment value, but only if single column key of type int
 		if(count($this->key) == 1 && $this->structure['structure'][$this->key[0]] == 'int') {
@@ -182,12 +183,34 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			$this->write(     '}');
 		}
 		$this->write(  '} else {'); // Update
-		$this->write(     $this->pool_class.'::update_single($this->_oldkey,$values);');
+		$this->write(     '$set = '.$this->pool_class.'::all();');
+		foreach($this->key as $name) {
+			$this->write(     '$set = $set->reduce_by(%s, $this->_oldkey[%s], "=");', $name, $name);
+		}
+		$this->write(     '$set->update($values);');
 		$this->write(  '}');
 		$this->write(  '$this->_oldkey = array();');
 		foreach($this->key as $name) {
 			$this->write( "\$this->_oldkey[%s] = \$this->$name;", $name);
 		}
+		$this->write(  '$this->_changed = array();');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate the save method, if object is writable
+	 */
+	private function generate_delete() {
+		$this->init_function('delete');
+		$this->write(  'if($this->_oldkey === false) {'); // New
+		$this->write(     'return;'); // Nothing to delete, it's not saved
+		$this->write(  '}');
+		$this->write(  '$set = '.$this->pool_class.'::all();');
+		foreach($this->key as $name) {
+			$this->write(  '$set = $set->reduce_by(%s, $this->_oldkey[%s], "=");', $name, $name);
+		}
+		$this->write(  '$set->delete($this->_oldkey);');
+		$this->write(  '$this->_oldkey = false;');
 		$this->write(  '$this->_changed = array();');
 		$this->finish_function();
 	}

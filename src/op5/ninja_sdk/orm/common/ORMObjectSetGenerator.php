@@ -47,9 +47,15 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 		$this->generate_count();
 		$this->generate_it();
 
+		if($this->writable) {
+			$this->generate_update();
+			$this->generate_delete();
+		}
+
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
 		}
+
 		$this->finish_class();
 	}
 
@@ -87,6 +93,21 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 		$this->write(
 			'return ' . $this->pool_class .
 				 '::it($this->get_auth_filter(),$columns,$order,$limit,$offset);');
+		$this->finish_function();
+	}
+
+	public function generate_update() {
+		$this->init_function( 'update', array('values') );
+		$this->write(
+			'return ' . $this->pool_class .
+			'::update($this->get_auth_filter(),$values);');
+		$this->finish_function();
+	}
+	public function generate_delete() {
+		$this->init_function( 'delete' );
+		$this->write(
+			'return ' . $this->pool_class .
+				 '::delete($this->get_auth_filter());');
 		$this->finish_function();
 	}
 

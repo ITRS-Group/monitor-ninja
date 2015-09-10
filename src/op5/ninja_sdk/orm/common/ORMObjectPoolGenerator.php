@@ -40,7 +40,8 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 
 		if($this->writable) {
 			$this->generate_insert_single();
-			$this->generate_update_single();
+			$this->generate_update();
+			$this->generate_delete();
 		}
 
 		$this->generate_pool();
@@ -191,8 +192,14 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->finish_function();
 	}
 
-	public function generate_update_single() {
-		$this->init_function('update_single', array('key', 'values'), array('static'));
+	public function generate_update() {
+		$this->init_function('update', array('filter', 'values'), array('static'));
+		$this->finish_function();
+	}
+
+
+	public function generate_delete() {
+		$this->init_function('delete', array('filter'), array('static'));
 		$this->finish_function();
 	}
 
