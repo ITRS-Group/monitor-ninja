@@ -5,8 +5,7 @@
 	 *
 	 *
 	 */
-
-	class Toolbar_Controller {
+	class Toolbar_Controller extends Ninja_Controller {
 
 		public $title = false;
 		public $subtitle = false;
@@ -58,6 +57,17 @@
 
 		}
 
+		private $menus = array();
+		public function menu (Menu_Model $menu) {
+
+			$view = new View('menu', array(
+				"menu" => $menu
+			));
+
+			$this->menus[] = $view->render();
+
+		}
+
 		private function get_button_html () {
 
 			$h = "";
@@ -90,6 +100,12 @@
 			if ( count( $this->info ) > 0 ) {
 				print '<div class="main-toolbar-info">';
 				foreach ( $this->info as $html ) print $html;
+				print '</div>';
+			}
+
+			if (count($this->menus) > 0) {
+				print '<div class="menu main-toolbar-menu">';
+				foreach ($this->menus as $html) print $html;
 				print '</div>';
 			}
 

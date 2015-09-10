@@ -588,6 +588,26 @@ td.comments
 	background: #f7f6f5
 	clear: both
 
+	.main-toolbar-menu
+		display: inline-block
+		vertical-align: middle
+		margin-right: 8px
+		border-right: 1px solid $border-color-light
+
+		& > ul > li
+			height: 24px
+
+		& > ul > li > ul
+			right: 0
+
+		& > ul > li > ul ul
+			left: -100%
+			margin-left: -2px
+
+		& > ul > li > a
+			display: inline-block
+			padding: 5px 8px 4px 8px
+
 	.main-toolbar-title
 		display: inline-block
 		vertical-align: middle
