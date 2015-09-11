@@ -37,7 +37,9 @@
 <div class="header" id="header">
 
 	<?php
-		require __DIR__.'/menu.php';
+		if(isset($menu)) {
+			require __DIR__.'/menu.php';
+		}
 	?>
 
 	<div class="headercontent">

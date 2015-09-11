@@ -1,3 +1,12 @@
+<?php
+
+if(!isset($menu)) {
+	// $menu is a requirement for this rendered view,
+	// do not die if it's not properly set
+	return;
+}
+
+?>
 
 <div class="main-menu">
 
