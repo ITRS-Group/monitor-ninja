@@ -49,10 +49,8 @@ class Ninja_Controller extends Template_Controller {
 		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
 		$this->template->current_skin = $this->get_current_user_skin();
 
-		$self = $this;
-		Event::add('ninja.menu.setup', function () use ($self) {
-			$self->template->menu = Event::$data;
-		});
+		$this->template->menu = new Menu_Model();
+		Event::run('ninja.menu.setup', $this->template->menu);
 
 		# Load session library
 		# If any current session data exists, it will become available.
