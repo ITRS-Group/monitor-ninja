@@ -3,6 +3,10 @@
 	$store_cfg = Op5Config::instance()->getConfig('ninja_menu');
 	$groups = op5auth::instance()->get_user()->groups;
 
+	/* Use settings */
+	$orientation = (isset($orientation)) ? $orientation : 'left';
+	$class = (isset($class)) ? "menu " . $class : "menu";
+
 	if (!$store_cfg)
 		$store_cfg = array();
 
@@ -67,4 +71,6 @@
 
 	};
 
+	echo "<div class=\"$class menu-$orientation\">";
 	echo $render_menu($menu);
+	echo "</div>";

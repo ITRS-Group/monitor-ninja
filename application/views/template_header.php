@@ -36,9 +36,14 @@
 
 <div class="header" id="header">
 
-	<div class="menu main-menu">
-	<?php require __DIR__.'/menu.php'; ?>
-	</div>
+	<?php
+		$menu_widget = new View('menu', array(
+			'menu' => $menu,
+			'orientation' => 'left',
+			'class' => 'main-menu'
+		));
+		echo $menu_widget->render();
+	?>
 
 	<div class="headercontent">
 

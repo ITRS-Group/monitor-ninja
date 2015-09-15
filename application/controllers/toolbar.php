@@ -61,7 +61,9 @@
 		public function menu (Menu_Model $menu) {
 
 			$view = new View('menu', array(
-				"menu" => $menu
+				"menu" => $menu,
+				"class" => "menu main-toolbar-menu",
+				"orientation" => "right"
 			));
 
 			$this->menus[] = $view->render();
@@ -104,9 +106,7 @@
 			}
 
 			if (count($this->menus) > 0) {
-				print '<div class="menu main-toolbar-menu">';
 				foreach ($this->menus as $html) print $html;
-				print '</div>';
 			}
 
 			if ($this->should_render_buttons) {

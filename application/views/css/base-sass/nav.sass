@@ -8,6 +8,25 @@
 .menu
 	z-index: 3
 
+	&.menu-left
+
+	&.menu-right
+		margin-right: 8px
+
+		& > ul > li
+			height: 24px
+
+		& > ul > li > ul
+			right: 0
+
+		& > ul > li > ul ul
+			left: -100%
+			margin-left: -2px
+
+		& > ul > li > a
+			display: inline-block
+			padding: 5px 8px 4px 8px
+
 	ul
 		position: relative
 		float: left
@@ -55,6 +74,8 @@
 
 					span.menu-section:after, a.menu-section:after
 						position: absolute
+						padding: 4px 0
+						font-size: 80%
 						content: "▼"
 						color: #555
 						right: 8px
