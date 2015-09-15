@@ -1,0 +1,14 @@
+[1209100000] HOST ALERT: a-very.delicious.host.in.cake.net;UP;HARD;1;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.140ms
+[1208608787] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;a-very.delicious.host.in.cake.net;0;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.146ms
+[1209203006] HOST DOWNTIME ALERT: a-very.delicious.host.in.cake.net;STARTED; Host has entered a period of scheduled downtime
+[1209203166] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;a-very.delicious.host.in.cake.net;2;192.168.224.250 is DOWN - Host unreachable @ 192.168.224.245: rta: nan, lost 100%
+[1209203166] HOST ALERT: a-very.delicious.host.in.cake.net;UNREACHABLE;HARD;1;192.168.224.250 is DOWN - Host unreachable @ 192.168.224.245: rta: nan, lost 100%
+[1209203288] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;a-very.delicious.host.in.cake.net;0;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.151ms
+[1209203288] HOST ALERT: a-very.delicious.host.in.cake.net;UP;HARD;1;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.151ms
+[1209204314] HOST DOWNTIME ALERT: a-very.delicious.host.in.cake.net;STOPPED; Host has exited from a period of scheduled downtime
+[1209205131] HOST DOWNTIME ALERT: a-very.delicious.host.in.cake.net;STARTED; Host has entered a period of scheduled downtime
+[1209205160] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;a-very.delicious.host.in.cake.net;2;192.168.224.250 is DOWN - rta: nan, lost 100%
+[1209205160] HOST ALERT: a-very.delicious.host.in.cake.net;UNREACHABLE;HARD;1;192.168.224.250 is DOWN - rta: nan, lost 100%
+[1209205266] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;a-very.delicious.host.in.cake.net;0;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.140ms
+[1209205266] HOST ALERT: a-very.delicious.host.in.cake.net;UP;HARD;1;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.140ms
+[1209206920] HOST DOWNTIME ALERT: a-very.delicious.host.in.cake.net;STOPPED; Host has exited from a period of scheduled downtime
