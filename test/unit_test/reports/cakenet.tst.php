@@ -1,15 +1,15 @@
 <?php
 $testcase = array (
-  'description' => 'Bakelit',
-  'logfile' => 'bakelit.log',
-  'ixx konstruktions-bakelit' => 
+  'description' => 'Cakenet',
+  'logfile' => 'cakenet.log',
+  'mmm tasty-pastry' => 
   array (
     'start_time' => '1209160800',
     'end_time' => '1209247200',
     'report_type' => 'hosts',
     'objects' => 
     array (
-      0 => 'kb-nas1.kb-01.konstruktions-bakelit.com',
+      0 => 'a-very.delicious.host.in.cake.net'
     ),
     'correct' => 
     array (
