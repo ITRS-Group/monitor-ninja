@@ -1,239 +1,195 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<table>
+	<tr>
+		<td>
+			<table class="padd-table">
+				<caption><?php echo _('Services actively checked') ?></caption>
+				<tr>
+					<th style="width: 40%"><?php echo _('Time frame') ?></th>
+					<th><?php echo _('Services checked') ?></th>
+				</tr>
+				<?php
+					$loads = $performance->get_active_service_loads();
+					foreach ($loads as $interval => $load) {
+						?>
+							<tr class="even">
+								<td>&le; <?php echo $interval . "min"; ?></td>
+								<td><?php echo $load ?> (<?php printf("%.1f", $performance->percentage_of($load, $performance->service->active_all_sum)) ?>%)</td>
+							</tr>
+						<?php
+					}
+				?>
+			</table>
+			<br />
+			<table class="padd-table">
+				<tr>
+					<th style="width: 40%"><?php echo _('Metric') ?></th>
+					<th style="width: 20%"><?php echo _('Min.') ?></th>
+					<th style="width: 20%"><?php echo _('Max.') ?></th>
+					<th style="width: 20%"><?php echo _('Average') ?></th>
+				</tr>
+				<tr class="even">
+					<td><?php echo _('Check execution Time') ?></td>
+					<td><?php printf("%.2f", $performance->service->execution_time_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->service->execution_time_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->service->execution_time_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+				<tr class="odd">
+					<td><?php echo _('Check latency') ?></td>
+					<td><?php printf("%.2f", $performance->service->latency_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->service->latency_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->service->latency_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+				<tr class="even">
+					<td><?php echo _('Percent state change') ?></td>
+					<td><?php printf("%.2f", $performance->service->active_state_change_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->service->active_state_change_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->service->active_state_change_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+			</table>
+		</td>
+		<td>
+			<table class="padd-table">
+				<caption><?php echo _('Services passively checked') ?></caption>
+				<tr>
+					<th style="width: 40%"><?php echo _('Time frame') ?></th>
+					<th><?php echo _('Services checked') ?></th>
+				</tr>
+				<?php
+					$loads = $performance->get_passive_service_loads();
+					foreach ($loads as $interval => $load) {
+						?>
+							<tr class="even">
+								<td>&le; <?php echo $interval . "min"; ?></td>
+								<td><?php echo $load ?> (<?php printf("%.1f", $performance->percentage_of($load, $performance->service->passive_all_sum)) ?>%)</td>
+							</tr>
+						<?php
+					}
+				?>
+			</table>
+			<br />
+			<table class="padd-table">
+				<tr>
+					<th style="width: 40%"><?php echo _('Metric') ?></th>
+					<th style="width: 20%"><?php echo _('Min.') ?></th>
+					<th style="width: 20%"><?php echo _('Max.') ?></th>
+					<th style="width: 20%"><?php echo _('Average') ?></th>
+				</tr>
+				<tr class="even">
+					<td><?php echo _('Percent state change') ?></td>
+					<td><?php printf("%.2f", $performance->service->passive_state_change_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->service->passive_state_change_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->service->passive_state_change_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
 
-	<style>
-		table td {
-			padding: 6px 4px;
-		}
+<table>
+	<tr>
+		<td>
+			<table class="padd-table">
+				<caption><?php echo _('Hosts actively checked') ?></caption>
+				<tr>
+					<th style="width: 40%"><?php echo _('Time frame') ?></th>
+					<th><?php echo _('Hosts checked') ?></th>
+				</tr>
+				<?php
+					$loads = $performance->get_active_host_loads();
+					foreach ($loads as $interval => $load) {
+						?>
+							<tr class="even">
+								<td>&le; <?php echo $interval . "min"; ?></td>
+								<td><?php echo $load ?> (<?php printf("%.1f", $performance->percentage_of($load, $performance->host->active_all_sum)) ?>%)</td>
+							</tr>
+						<?php
+					}
+				?>
+			</table>
+			<br />
+			<table class="padd-table">
+				<tr>
+					<th style="width: 40%"><?php echo _('Metric') ?></th>
+					<th style="width: 20%"><?php echo _('Min.') ?></th>
+					<th style="width: 20%"><?php echo _('Max.') ?></th>
+					<th style="width: 20%"><?php echo _('Average') ?></th>
+				</tr>
+				<tr class="even">
+					<td><?php echo _('Check execution Time') ?></td>
+					<td><?php printf("%.2f", $performance->host->execution_time_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->host->execution_time_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->host->execution_time_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+				<tr class="odd">
+					<td><?php echo _('Check latency') ?></td>
+					<td><?php printf("%.2f", $performance->host->latency_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->host->latency_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->host->latency_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+				<tr class="even">
+					<td><?php echo _('Percent state change') ?></td>
+					<td><?php printf("%.2f", $performance->host->active_state_change_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->host->active_state_change_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->host->active_state_change_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+			</table>
+		</td>
+		<td>
+			<table class="padd-table">
+				<caption><?php echo _('Hosts passively checked') ?></caption>
+				<tr>
+					<th style="width: 40%"><?php echo _('Time frame') ?></th>
+					<th><?php echo _('Hosts checked') ?></th>
+				</tr>
+				<?php
+					$loads = $performance->get_passive_host_loads();
+					foreach ($loads as $interval => $load) {
+						?>
+							<tr class="even">
+								<td>&le; <?php echo $interval . "min"; ?></td>
+								<td><?php echo $load ?> (<?php printf("%.1f", $performance->percentage_of($load, $performance->host->passive_all_sum)) ?>%)</td>
+							</tr>
+						<?php
+					}
+				?>
+			</table>
+			<br />
+			<table class="padd-table">
+				<tr>
+					<th style="width: 40%"><?php echo _('Metric') ?></th>
+					<th style="width: 20%"><?php echo _('Min.') ?></th>
+					<th style="width: 20%"><?php echo _('Max.') ?></th>
+					<th style="width: 20%"><?php echo _('Average') ?></th>
+				</tr>
+				<tr class="even">
+					<td><?php echo _('Percent state change') ?></td>
+					<td><?php printf("%.2f", $performance->host->passive_state_change_min) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.2f", $performance->host->passive_state_change_max) ?> <?php echo _('sec') ?></td>
+					<td><?php printf("%.3f", $performance->host->passive_state_change_avg) ?> <?php echo _('sec') ?></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
 
-		table caption {
-			font-size: 110%;
-			font-weight: 600;
-		}
-	</style>
-
-	<div>
-		<table class="padd-table">
-			<caption><?php echo _('Services actively checked') ?></caption>
-			<tr>
-				<th style="width: 40%"><?php echo _('Time frame') ?></th>
-				<th><?php echo _('Services checked') ?></th>
-			</tr>
-			<tr class="even">
-				<td>&le; 1 <?php echo _('minute') ?></td>
-				<td><?php echo $svc_active_1min ?> (<?php echo $svc_active_1min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 5 <?php echo _('minutes') ?></td>
-				<td><?php echo $svc_active_5min ?> (<?php echo $svc_active_5min_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td>&le; 15 <?php echo _('minutes') ?></td>
-				<td><?php echo $svc_active_15min ?> (<?php echo $svc_active_15min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 1 <?php echo _('hour') ?></td>
-				<td><?php echo $svc_active_1hour ?> (<?php echo $svc_active_1hour_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Since program start') ?>&nbsp;&nbsp;</td>
-				<td><?php echo $svc_active_start ?> (<?php echo $svc_active_start_perc ?> %)</td>
-			</tr>
-		</table>
-		<br />
-		<table class="padd-table">
-			<tr>
-				<th style="width: 40%"><?php echo _('Metric') ?></th>
-				<th style="width: 20%"><?php echo _('Min.') ?></th>
-				<th style="width: 20%"><?php echo _('Max.') ?></th>
-				<th style="width: 20%"><?php echo _('Average') ?></th>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Check execution Time') ?></td>
-				<td><?php echo $min_service_execution_time ?> <?php echo _('sec') ?></td>
-				<td><?php echo $max_service_execution_time ?> <?php echo _('sec') ?></td>
-				<td><?php echo $svc_average_execution_time ?> <?php echo _('sec') ?></td>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Check latency') ?></td>
-				<td><?php echo $min_service_latency ?> <?php echo _('sec') ?></td>
-				<td><?php echo $max_service_latency ?> <?php echo _('sec') ?></td>
-				<td><?php echo $average_service_latency ?> <?php echo _('sec') ?></td>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Percent state change') ?></td>
-				<td><?php echo $min_service_percent_change_a ?> %</td>
-				<td><?php echo $max_service_percent_change_a ?> %</td>
-				<td><?php echo $average_service_percent_change ?> %</td>
-			</tr>
-		</table>
-	</div>
-
-	<div>
-		<table class="padd-table">
-			<caption><?php echo _('Services passively checked') ?></caption>
-			<tr>
-				<th style="width: 40%"><?php echo _('Time frame') ?></th>
-				<th><?php echo _('Services checked') ?></th>
-			</tr>
-			<tr class="even">
-				<td>&le; 1 <?php echo _('minute') ?></td>
-				<td><?php echo $svc_passive_1min ?> (<?php echo $svc_passive_1min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 5 <?php echo _('minutes') ?></td>
-				<td><?php echo $svc_passive_5min ?> (<?php echo $svc_passive_5min_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td>&le; 15 <?php echo _('minutes') ?></td>
-				<td><?php echo $svc_passive_15min ?> (<?php echo $svc_passive_15min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 1 <?php echo _('hour') ?></td>
-				<td><?php echo $svc_passive_1hour ?> (<?php echo $svc_passive_1hour_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Since program start') ?></td>
-				<td><?php echo $svc_passive_start ?> (<?php echo $svc_passive_start_perc ?> %)
-				</td>
-			</tr>
-		</table>
-		<br />
-		<table class="padd-table">
-			<tr>
-				<th style="width: 40%"><?php echo _('Metric') ?></th>
-				<th style="width: 20%"><?php echo _('Min.') ?></th>
-				<th style="width: 20%"><?php echo _('Max.') ?></th>
-				<th style="width: 20%"><?php echo _('Average') ?></th>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Percent state change') ?>&nbsp;&nbsp;</td>
-				<td><?php echo $min_service_percent_change_b ?> %</td>
-				<td><?php echo $max_service_percent_change_b ?> %</td>
-				<td><?php echo $average_service_percent_change ?> %</td>
-			</tr>
-		</table>
-	</div>
-
-	<div>
-		<table class="padd-table">
-			<caption><?php echo _('Hosts actively checked') ?></caption>
-			<tr>
-				<th style="width: 40%"><?php echo _('Time frame') ?></th>
-				<th><?php echo _('Hosts checked') ?></th>
-			</tr>
-			<tr class="even">
-				<td>&le; 1 <?php echo _('minute') ?></td>
-				<td><?php echo $hst_active_1min ?> (<?php echo $hst_active_1min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 5 <?php echo _('minutes') ?></td>
-				<td><?php echo $hst_active_5min ?> (<?php echo $hst_active_5min_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td>&le; 15 <?php echo _('minutes') ?></td>
-				<td><?php echo $hst_active_15min ?> (<?php echo $hst_active_15min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 1 <?php echo _('hour') ?></td>
-				<td><?php echo $hst_active_1hour ?> (<?php echo $hst_active_1hour_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Since program start') ?></td>
-				<td><?php echo $hst_active_start ?> (<?php echo $hst_active_start_perc ?> %)</td>
-			</tr>
-		</table>
-		<br />
-		<table class="padd-table">
-			<tr>
-				<th style="width: 40%"><?php echo _('Metric') ?></th>
-				<th style="width: 20%"><?php echo _('Min.') ?></th>
-				<th style="width: 20%"><?php echo _('Max.') ?></th>
-				<th style="width: 20%"><?php echo _('Average') ?></th>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Check execution Time') ?></td>
-				<td><?php echo $min_host_execution_time ?> <?php echo _('sec') ?></td>
-				<td><?php echo $max_host_execution_time ?> <?php echo _('sec') ?></td>
-				<td><?php echo $average_host_execution_time ?> <?php echo _('sec') ?></td>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Check latency') ?></td>
-				<td><?php echo $min_host_latency ?> <?php echo _('sec') ?></td>
-				<td><?php echo $max_host_latency ?> <?php echo _('sec') ?></td>
-				<td><?php echo $average_host_latency ?> <?php echo _('sec') ?></td>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Percent state change') ?></td>
-				<td><?php echo $min_host_percent_change_a ?> %</td>
-				<td><?php echo $max_host_percent_change_a ?> %</td>
-				<td><?php echo $average_host_percent_change ?> %</td>
-			</tr>
-		</table>
-	</div>
-
-	<div>
-		<table class="padd-table">
-			<caption><?php echo _('Hosts passively checked') ?></caption>
-			<tr>
-				<th style="width: 40%"><?php echo _('Time frame') ?></th>
-				<th><?php echo _('Hosts checked') ?></th>
-			</tr>
-			<tr class="even">
-				<td>&le; 1 <?php echo _('minute') ?></td>
-				<td><?php echo $hst_passive_1min ?> (<?php echo $hst_passive_1min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 5 <?php echo _('minutes') ?></td>
-				<td><?php echo $hst_passive_5min ?> (<?php echo $hst_passive_5min_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td>&le; 15 <?php echo _('minutes') ?></td>
-				<td><?php echo $hst_passive_15min ?> (<?php echo $hst_passive_15min_perc ?> %)</td>
-			</tr>
-			<tr class="odd">
-				<td>&le; 1 <?php echo _('hour') ?></td>
-				<td><?php echo $hst_passive_1hour ?> (<?php echo $hst_passive_1hour_perc ?> %)</td>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Since program start') ?></td>
-				<td><?php echo $hst_passive_start ?> (<?php echo $hst_passive_start_perc ?> %)</td>
-			</tr>
-		</table>
-		<br />
-		<table class="padd-table">
-			<tr>
-				<th style="width: 40%"><?php echo _('Metric') ?></th>
-				<th style="width: 20%"><?php echo _('Min.') ?></th>
-				<th style="width: 20%"><?php echo _('Max.') ?></th>
-				<th style="width: 20%"><?php echo _('Average') ?></th>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Percent state change') ?>&nbsp;&nbsp;</td>
-				<td><?php echo $min_host_percent_change_b ?> %</td>
-				<td><?php echo $max_host_percent_change_b ?> %</td>
-				<td><?php echo $average_host_percent_change ?> %</td>
-			</tr>
-		</table>
-	</div>
-
-	<div>
-		<table style="margin-bottom: 15px" class="padd-table">
-			<caption><?php echo _('Check statistics') ?></caption>
-			<tr>
-				<th style="width: 50%"><?php echo _('Type') ?></th>
-				<th style="width: 25%"><?php echo _('Total') ?></th>
-				<th style="width: 25%"><?php echo _('Rate') ?></th>
-			</tr>
-			<tr class="even">
-				<td><?php echo _('Servicechecks') ?></td>
-				<td><?php echo $program_status->service_checks ?></td>
-				<td><?php echo number_format($program_status->service_checks_rate, 2) ?>/s</td>
-			</tr>
-			<tr class="odd">
-				<td><?php echo _('Hostchecks') ?></td>
-				<td><?php echo $program_status->host_checks ?></td>
-				<td><?php echo number_format($program_status->host_checks_rate, 2) ?>/s</td>
-			</tr>
-		</table>
-	</div>
-
+<div>
+	<table style="margin-bottom: 15px" class="padd-table">
+		<caption><?php echo _('Check statistics') ?></caption>
+		<tr>
+			<th style="width: 50%"><?php echo _('Type') ?></th>
+			<th style="width: 25%"><?php echo _('Total') ?></th>
+			<th style="width: 25%"><?php echo _('Rate') ?></th>
+		</tr>
+		<tr class="even">
+			<td><?php echo _('Servicechecks') ?></td>
+			<td><?php echo $performance->program->get_service_checks() ?></td>
+			<td><?php printf("%.2f", $performance->program->get_service_checks_rate()) ?>/s</td>
+		</tr>
+		<tr class="odd">
+			<td><?php echo _('Hostchecks') ?></td>
+			<td><?php echo $performance->program->get_host_checks() ?></td>
+			<td><?php printf("%.2f", $performance->program->get_host_checks_rate()) ?>/s</td>
+		</tr>
+	</table>
+</div>
