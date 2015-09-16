@@ -38,7 +38,6 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');
 		echo html::script('application/media/js/jquery.easywidgets.min.js');
-		echo html::script('application/media/js/jquery.autocomplete.min');
 		echo html::script('application/media/js/jquery.selectboxes.min.js');
 		echo html::script('application/media/js/jquery.jeditable.min');
 		echo html::script('application/media/js/jquery.query.js');
@@ -46,7 +45,6 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.hotkeys.min.js');
 		echo html::script('application/media/js/jquery.contextMenu.js');
 		echo html::script('application/media/js/date.js');
-		echo html::script('application/views/js/global_search.js');
 		echo html::script('application/media/js/ajax.commands.js');
 		echo html::script('application/media/js/lib.popover.js');
 		echo html::script('application/media/js/lib.notify.js');
@@ -133,6 +131,7 @@ if (!empty($base_href)) {
 		$basepath = 'modules/lsfilter/';
 		echo html::script($basepath.'media/js/lib.js');
 		echo html::script($basepath.'media/js/LSFilterSaved.js');
+		echo html::script('modules/search/media/js/search.js');
 
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();

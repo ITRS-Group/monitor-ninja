@@ -138,30 +138,31 @@
 	</div>
 
 	<div class="header_right">
-		<div class="global_search">
-			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
-				<?php
+
+		<?php
+
+			$query = arr::search($_REQUEST, 'query');
+			$search_widget = new View('search/box', array(
+				'query' => $query
+			));
+
+			echo $search_widget->render();
+
+			customlogo::Render();
+
+		?>
+
+		<div class="profile">
+			<?php
 					if ( Auth::instance()->logged_in() ) {
 						echo html::anchor('user', html::specialchars(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username')));
-						echo " at " . html::specialchars(gethostname());
 						if ( !op5auth::instance()->authorized_for('no_logout') ) {
 							echo " | " . html::anchor(Kohana::config('routes.log_out_action'), html::specialchars(_('Log out')));
 						}
+						echo "<br />" . html::specialchars(gethostname());
 					}
 				?>
-
-				<br />
-				<?php
-				$query = arr::search($_REQUEST, 'query');
-				if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
-				<?php } else { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
-				<?php	} ?>
-				<?php echo help::render('search_help', 'search'); ?>
-			</form>
 		</div>
-		<?php customlogo::Render(); ?>
 	</div>
 
 	<div class="clear"></div>
