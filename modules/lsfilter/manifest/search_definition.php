@@ -1,25 +1,41 @@
 <?php
-$manifest = array(
+/**
+ *	Search definition manifest
+ *
+ *	Format:
+ *
+ *		table => array(
+ *			query => What LSFilter query to use when interpolated with the search query"
+ *			columns => What columns to fetch from the ORM
+ *			autocomplete => What href should the autocomplete link to for a result
+ *											of this type, interpolating values from the object.
+ *											(Only values set in columns are accessible)
+ *		)
+ */
+$manifest = array_merge_recursive($manifest, array(
 
-	"queries" => array(
-		"hosts" => 'name ~~ "{query}"',
-		"services" => 'description ~~ "{query}" or host.name ~ "{query}"',
-		"hostgroups" => 'name ~~ "{query}"',
-		"servicegroups" => 'name ~~ "{query}"'
+	"hosts" => array(
+		"query" => 'name ~~ "{query}"',
+		"columns" => array('name', 'key'),
+		"autocomplete" => '/extinfo/details?host={name}',
 	),
 
-	"columns" => array(
-		"hosts" => array('name', 'key'),
-		"services" => array('host.name', 'description', 'key'),
-		"hostgroups" => array('name', 'key'),
-		"servicegroups" => array('name', 'key')
+	"services" => array(
+		"query" => 'description ~~ "{query}" or host.name ~ "{query}"',
+		"columns" => array('host.name', 'description', 'key'),
+		"autocomplete" => '/extinfo/details?host={host.name}&service={description}',
 	),
 
-	"autocomplete" => array(
-		"hosts" => '/extinfo/details?host={name}',
-		"services" => '/extinfo/details?host={host.name}&service={description}',
-		"hostgroups" => '/extinfo/details?hostgroup={name}',
-		"servicegroups" => '/extinfo/details?servicegroup={name}'
+	"hostgroups" => array(
+		"query" => 'name ~~ "{query}"',
+		"columns" => array('name', 'key'),
+		"autocomplete" => '/extinfo/details?hostgroup={name}',
+	),
+
+	"servicegroups" => array(
+		"query" => 'name ~~ "{query}"',
+		"columns" => array('name', 'key'),
+		"autocomplete" => '/extinfo/details?servicegroup={name}',
 	)
 
-);
+));

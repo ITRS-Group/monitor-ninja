@@ -41,9 +41,9 @@ class Search_Controller extends Ninja_Controller {
 
 	protected function autocomplete_href ($table, $object) {
 
-		$template = $this->manifest['autocomplete'][$table];
+		$template = $this->manifest[$table]['autocomplete'];
 
-		foreach ($this->manifest['columns'][$table] as $key) {
+		foreach ($this->manifest[$table]['columns'] as $key) {
 			$value = $this->get_point($key, $object);
 			$template = preg_replace("/\{" . $key . "\}/", urlencode($value), $template);
 		}
@@ -60,9 +60,9 @@ class Search_Controller extends Ninja_Controller {
 		$username = Auth::instance()->get_user()->username;
 		$this->template->content = new View('search/result');
 
-		foreach ($this->manifest['queries'] as $table => $ls_query) {
+		foreach ($this->manifest as $table => $definition) {
 
-			$ls_query = $this->build_query($table, $ls_query, $query);
+			$ls_query = $this->build_query($table, $definition['query'], $query);
 			$set = ObjectPool_Model::get_by_query($ls_query);
 
 			if ($this->mayi->run($set->mayi_resource() . ':read.search')) {
@@ -108,7 +108,7 @@ class Search_Controller extends Ninja_Controller {
 
 			if ($this->mayi->run($set->mayi_resource() . ':read.search')) {
 				$results[$table] = array();
-				foreach ($set->it($this->manifest['columns'][$table], array(), 10) as $o) {
+				foreach ($set->it($definition['columns'], array(), 10) as $o) {
 					$object = $o->export();
 					$object['link'] = $this->autocomplete_href($table, $object);
 					$results[$table][] = $object;
