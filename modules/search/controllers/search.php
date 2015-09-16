@@ -121,4 +121,23 @@ class Search_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * Translated helptexts for this controller
+	 */
+	public static function _helptexts($id) {
+
+		$helptexts = array(
+			'search_help' => _("Here you may perform a global search for Hosts, Services, Hostgroups and Services, they are searched for by their key column (such as name for Hosts and description for Services). Services are also visible when searching for the Host they reside on."),
+			'saved_search_help' => _('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
+			'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
+		);
+
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		} else {
+			echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
+		}
+
+	}
+
 }
