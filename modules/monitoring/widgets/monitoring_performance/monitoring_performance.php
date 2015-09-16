@@ -6,6 +6,19 @@
  */
 class Monitoring_performance_Widget extends widget_Base {
 	protected $duplicatable = true;
+
+	/**
+	 * Return the default friendly name for the widget type
+	 *
+	 * default to the model name, but should be overridden by widgets.
+	 */
+	public function get_metadata() {
+		return array_merge(parent::get_metadata(), array(
+			'friendly_name' => 'Monitoring performance',
+			'instanceable' => true
+		));
+	}
+
 	public function index()
 	{
 		# fetch widget view path

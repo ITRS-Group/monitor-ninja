@@ -74,4 +74,16 @@ class Tac_monfeat_Widget extends widget_Base {
 		# fetch widget content
 		require($view_path);
 	}
+
+	/**
+	 * Return the default friendly name for the widget type
+	 *
+	 * default to the model name, but should be overridden by widgets.
+	 */
+	public function get_metadata() {
+		return array_merge(parent::get_metadata(), array(
+			'friendly_name' => 'Monitoring features',
+			'instanceable' => true
+		));
+	}
 }

@@ -58,6 +58,18 @@ EOC;
 */
 	}
 
+	/**
+	 * Return the default friendly name for the widget type
+	 *
+	 * default to the model name, but should be overridden by widgets.
+	 */
+	public function get_metadata() {
+		return array_merge(parent::get_metadata(), array(
+			'friendly_name' => 'Network health',
+			'instanceable' => true
+		));
+	}
+
 	public function options()
 	{
 		$options = parent::options();

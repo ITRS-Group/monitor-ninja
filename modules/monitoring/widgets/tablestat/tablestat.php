@@ -290,6 +290,18 @@ class tablestat_Widget extends widget_Base {
 	}
 
 	/**
+	 * Return the default friendly name for the widget type
+	 *
+	 * default to the model name, but should be overridden by widgets.
+	 */
+	public function get_metadata() {
+		return array_merge(parent::get_metadata(), array(
+			'friendly_name' => 'Table Stat',
+			'instanceable' => true // It's added as derivates with hard coded tables
+		));
+	}
+
+	/**
 	 * Disable everything configurable. This is useful when including the widget with generetated parameters from a controller.
 	 */
 	public function set_fixed() {

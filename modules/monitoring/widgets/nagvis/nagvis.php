@@ -7,6 +7,19 @@
  */
 class Nagvis_Widget extends widget_Base {
 	protected $duplicatable = true;
+
+	/**
+	 * Return the default friendly name for the widget type
+	 *
+	 * default to the model name, but should be overridden by widgets.
+	 */
+	public function get_metadata() {
+		return array_merge(parent::get_metadata(), array(
+			'friendly_name' => 'NagVis',
+			'instanceable' => true
+		));
+	}
+
 	public function options() {
 		$maps = nagvisconfig::get_map_list();
 		$default = false;
