@@ -344,7 +344,7 @@ code
 	text-align: right
 	float: right
 	padding: 8px 4px
-	line-height: 110%
+	line-height: 120%
 
 .search
 	position: relative
@@ -354,13 +354,20 @@ code
 	float: right
 	padding: 4px
 
+	form
+		width: auto
+		display: inline-block
+		margin-top: 4px
+		border: 1px solid $border-color-light
+		border-radius: 3px
+
 	.autocomplete
 		position: absolute
 		display: none
 
-		top: 100%
-		left: 0
-		width: 200px
+		top: 95%
+		left: 4px
+		width: 180px
 		z-index: 20
 
 		background: $general_background_color
@@ -374,13 +381,25 @@ code
 			&.autocomplete-selected
 				background: #ddd
 
+	.icon-16
+		vertical-align: middle
+		padding: 0 4px
+		margin: 0 2px 0 4px
+		cursor: pointer
+
 	input[type="text"]
 		display: inline-block
-		width: 180px
+		vertical-align: middle
+
+		border: none
+		border-right: 1px solid $border-color-light
+		border-radius: 3px 0 0 3px
+
+		width: 140px
 		color: #444
 		font-size: 10pt
-		margin-top: 5px
-		padding: 4px 8px
+		margin: 0
+		padding: 6px 8px
 		background: $input_background_color
 		background-position: left center
 

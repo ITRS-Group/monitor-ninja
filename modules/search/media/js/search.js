@@ -8,6 +8,7 @@
 		this.box = root;
 		this.form = root.find('form');
 		this.input = root.find('input');
+		this.button = root.find('.icon-16');
 		this.complete = root.find('.autocomplete');
 		this.request;
 
@@ -17,6 +18,7 @@
 		this.form.on('submit', this.submithandler.bind(this));
 		this.input.on('blur', this.blurhandler.bind(this));
 		this.input.on('keyup', this.keyhandler.bind(this));
+		this.button.on('click', this.clickhandler.bind(this));
 
 	};
 
@@ -65,6 +67,11 @@
 				console.log(e);
 			});
 
+		},
+
+		clickhandler: function (e) {
+			this.selected = null;
+			this.form.get(0).submit();
 		},
 
 		submithandler: function (e) {

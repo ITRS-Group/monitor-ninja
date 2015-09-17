@@ -58,7 +58,9 @@ class Search_Controller extends Ninja_Controller {
 		$query = $this->input->get('query', $query);
 
 		$username = Auth::instance()->get_user()->username;
+
 		$this->template->content = new View('search/result');
+		$this->template->disable_refresh = true;
 
 		foreach ($this->manifest as $table => $definition) {
 
@@ -67,18 +69,16 @@ class Search_Controller extends Ninja_Controller {
 
 			if ($this->mayi->run($set->mayi_resource() . ':read.search')) {
 
-				$setting = array(
-					'query' => $ls_query,
-					'limit' => $limit
-				);
-
 				$model = new Ninja_widget_Model(array(
 					'page' => Router::$controller,
 					'name' => 'listview',
 					'widget' => 'listview',
 					'username' => $username,
 					'friendly_name' => ucfirst($table),
-					'setting' => $setting
+					'setting' => array(
+						'query' => $ls_query,
+						'limit' => $limit
+					)
 				));
 
 				$widget = widget::get($model, $this);
@@ -86,7 +86,12 @@ class Search_Controller extends Ninja_Controller {
 
 				$widget->set_fixed();
 				$widget->extra_data_attributes['text-if-empty'] = _("No $table found, searching for ".htmlspecialchars($query));
-				$this->template->content->widgets[] = $widget->render();
+
+				$this->template->content->widgets[] = array(
+					"widget" => $widget,
+					"title" => ucfirst($table)
+				);
+
 			}
 
 		}
@@ -102,16 +107,18 @@ class Search_Controller extends Ninja_Controller {
 
 		foreach ($this->manifest as $table => $definition) {
 
-			$set = ObjectPool_Model::get_by_query(
-				$this->build_query($table, $definition["query"], $query)
-			);
+			if ($definition["autocomplete"]) {
+				$set = ObjectPool_Model::get_by_query(
+					$this->build_query($table, $definition["query"], $query)
+				);
 
-			if ($this->mayi->run($set->mayi_resource() . ':read.search')) {
-				$results[$table] = array();
-				foreach ($set->it($definition['columns'], array(), 10) as $o) {
-					$object = $o->export();
-					$object['link'] = $this->autocomplete_href($table, $object);
-					$results[$table][] = $object;
+				if ($this->mayi->run($set->mayi_resource() . ':read.search')) {
+					$results[$table] = array();
+					foreach ($set->it($definition['columns'], array(), 10) as $o) {
+						$object = $o->export();
+						$object['link'] = $this->autocomplete_href($table, $object);
+						$results[$table][] = $object;
+					}
 				}
 			}
 
