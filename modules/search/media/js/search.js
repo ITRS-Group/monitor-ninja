@@ -69,6 +69,7 @@
 
 		submithandler: function (e) {
 
+			console.log("submit");
 			if (this.selected) {
 				e.preventDefault();
 				this.selected.find('a').get(0).click();
@@ -78,9 +79,10 @@
 
 		keyhandler: function (e) {
 
-			if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+			if (e.keyCode === 38 || e.keyCode === 40) {
 
-				this.index = (e.key === 'ArrowUp') ? this.index - 1 : this.index + 1;
+				this.index = (e.keyCode === 38) ? this.index - 1 : this.index + 1;
+				console.log(this.index);
 
 				if (this.index < 0) {
 					if (this.selected) this.selected.removeClass('autocomplete-selected');
@@ -116,9 +118,12 @@
 
 		blurhandler: function (e) {
 
-			this.complete.hide();
-			this.complete.empty();
-			this.selected = null;
+			var self = this;
+			var to = setTimeout(function () {
+				self.complete.hide();
+				self.complete.empty();
+				self.selected = null;
+			}, 250);
 
 		}
 

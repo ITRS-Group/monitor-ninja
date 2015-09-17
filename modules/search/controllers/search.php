@@ -100,10 +100,10 @@ class Search_Controller extends Ninja_Controller {
 
 		$results = array();
 
-		foreach ($this->manifest['queries'] as $table => $ls_query) {
+		foreach ($this->manifest as $table => $definition) {
 
 			$set = ObjectPool_Model::get_by_query(
-				$this->build_query($table, $ls_query, $query)
+				$this->build_query($table, $definition["query"], $query)
 			);
 
 			if ($this->mayi->run($set->mayi_resource() . ':read.search')) {
