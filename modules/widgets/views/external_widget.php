@@ -8,7 +8,10 @@
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
-		<?php echo html::link('application/views/icons/favicon.ico','icon','image/x-icon'); ?>
+		<?php
+		echo html::link('application/views/icons/favicon.ico','icon','image/x-icon');
+		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
+		?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
@@ -16,6 +19,7 @@
 		<?php
 			echo new View('css_header', array('css' => $css));
 			echo html::script('application/media/js/jquery.js');
+			echo html::script('application/media/js/jquery.fancybox.js');
 			echo html::script('application/media/js/jquery-ui.min.js');
 			echo html::script('application/media/js/jquery.form.js');
 			echo html::script('modules/widgets/media/js/jquery.easywidgets.min.js');
@@ -44,6 +48,7 @@
 				if (Auth::instance()->logged_in()) { ?>
 
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
+				var _csrf_token = '<?php echo Session::instance()->get(Kohana::config('csrf.csrf_token')) ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 				var _controller_name = '<?php echo Router::$controller ?>';
@@ -107,8 +112,7 @@
 
 	<body>
 		<div align="center">
-			<?php if (isset($content)) { echo $content; } else { return url::redirect(Kohana::config('routes.logged_in_default')); } ?>
-			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
+			<?php echo $widget->render('index', false); ?>
 		</div>
 	</body>
 </html>
