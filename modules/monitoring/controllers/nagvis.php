@@ -26,7 +26,7 @@ class Nagvis_Controller extends Ninja_Controller {
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » ';
 		$this->template->content = $this->add_view('nagvis/index');
-		$this->template->js[] = $this->add_path('/js/iframe-adjust.js');
+		$this->template->js[] = 'application/views//js/iframe-adjust.js';
 
 		$queryparams = http_build_query($_GET, '', '&amp;');
 		switch($name) {

@@ -46,11 +46,11 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		# we should set the required js-files
-		$this->template->js[] = $this->add_path('reports/js/tgraph.js');
+		$this->template->js[] = 'modules/reports/views/reports/js/tgraph.js';
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = $this->add_path('reports/js/common.js');
-		$this->template->js[] = $this->add_path('reports/js/reports.js');
+		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
+		$this->template->js[] = 'modules/reports/views/reports/js/reports.js';
 
 		# this makes anything in application/media be imported before
 		# application/views before modules/whatever, so op5reports can
@@ -143,9 +143,9 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = $this->add_path('reports/js/tgraph.js');
-		$this->template->js[] = $this->add_path('reports/js/common.js');
-		$this->template->js[] = $this->add_path('reports/js/reports.js');
+		$this->template->js[] = 'modules/reports/views/reports/js/tgraph.js';
+		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
+		$this->template->js[] = 'modules/reports/views/reports/js/reports.js';
 
 		if ($this->options['skin']) {
 			if (substr($this->options['skin'], -1, 1) != '/') {
@@ -381,7 +381,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 
-		$this->template->js[] = $this->add_path('summary/js/summary.js');
+		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 		if ($this->options['include_alerts']) {
 			$alrt_opts = new Alert_history_options($this->options);
 			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range

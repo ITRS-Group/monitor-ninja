@@ -1,10 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-if (!empty($js))
-	foreach ($js as $js_file) {
-		if ($js_file[0] === '/' || strpos($js_file, 'http') === 0) {
-			echo '<script type="text/javascript" src="'.$js_file."\"></script>\n";
-		} else {
-			echo html::script($js_file);
-		}
-	}
+$basepath = url::base();
+
+if(empty($js))
+	$js = array();
+
+foreach ($js as $js_file) {
+	$path = ninja::add_version_to_uri($basepath.$js_file);
+	echo "<script type=\"text/javascript\" src=\"".$path."\"></script>\n";
+}

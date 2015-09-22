@@ -66,7 +66,7 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_strings = $this->js_strings;
-		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
 
 		// Widgets
 		$this->template->content->widgets = array();
@@ -379,7 +379,7 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
 		$this->template->js_strings = $this->js_strings;
-		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
 
 		$this->template->title = _('Monitoring » Group detail');
 
@@ -487,7 +487,7 @@ class Extinfo_Controller extends Ninja_Controller {
 				($pagination->current_page-1)*$pagination->items_per_page
 				);
 
-		$this->template->js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
 		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
 		$this->template->js_strings = $this->js_strings;
 

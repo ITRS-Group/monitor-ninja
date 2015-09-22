@@ -75,8 +75,8 @@ class Showlog_Controller extends Ninja_Controller
 		$this->_verify_access('ninja.showlog:read.showlog');
 		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
 		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = $this->add_path('reports/js/common.js');
-		$this->template->js[] = $this->add_path('showlog/js/showlog.js');
+		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
+		$this->template->js[] = 'modules/monitoring/views/showlog/js/showlog.js';
 
 
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
