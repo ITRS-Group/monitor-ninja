@@ -20,11 +20,6 @@ class Backup_Controller extends Ninja_Controller {
 	const BACKUP_EXTENSION = '.tar.gz';
 	const STORAGE = '/var/www/html/backup/';
 
-	const CMD_UNPACK = 'tar tfz';
-	const CMD_VERIFY = '/usr/bin/asmonitor -q /usr/bin/naemon -v';
-	const CMD_BACKUP = '/usr/bin/asmonitor -q /opt/monitor/op5/backup/backup';
-	const CMD_RESTORE = '/usr/bin/asmonitor -q /opt/monitor/op5/backup/restore';
-
 	public function __construct ()
 	{
 
@@ -90,30 +85,13 @@ class Backup_Controller extends Ninja_Controller {
 			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
 		);
 
-		list($status, $output) = $this->execute(self::CMD_UNPACK, self::STORAGE . $file);
+		proc::open(array('tar', 'tfz', self::STORAGE . $file), $output);
 		sort($output);
 
 		$this->template->content->files = $output;
 	}
 
 	/* below are AJAX/JSON actions */
-
-	private function execute ($command) {
-
-		$arguments = array_slice(func_get_args(), 1);
-		foreach ($arguments as $index => $value) {
-			if (is_array($value)) {
-				array_splice($arguments, $index, 1, $value);
-			}
-		}
-
-		$executable = $command . ' ' . implode(' ', array_map('escapeshellarg', $arguments));
-
-		exec($executable, $output, $status);
-		return array($status, $output);
-
-	}
-
 	public function download ($file) {
 
 		$this->_verify_access('monitor.system.backup:read.backup');
@@ -140,21 +118,25 @@ class Backup_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * Simple facade for proc::open() with preset values
+	 */
+	private function _verify_naemon_config(&$stdout, &$stderr, &$status) {
+		proc::open(array('/usr/bin/asmonitor','-q', '/usr/bin/naemon', '-v', $this->nagios_cfg_path . 'nagios.cfg'), $stdout, $stderr, $status);
+	}
+
 	public function verify ()
 	{
 
 		$this->_verify_access('monitor.system.backup:read.backup');
-
-		list($status, $output) = $this->execute(self::CMD_VERIFY, $this->nagios_cfg_path . 'nagios.cfg');
-
-		if ($status != 0) {
+		$this->_verify_naemon_config($stdout, $stderr, $status);
+		if ($status) {
 			json::fail(array(
 				"message" => "The current configuration is invalid",
-				"debug" => $output
+				"debug" => $stdout
 			));
-		} else {
-			json::ok("The current configuration is valid");
 		}
+		json::ok("The current configuration is valid");
 
 	}
 
@@ -171,7 +153,7 @@ class Backup_Controller extends Ninja_Controller {
 			System_Model::get_nagios_base_path().'/var/archives', # Isn't this a config backup?
 			System_Model::get_nagios_base_path().'/var/errors',   # Then why would we want these?
 			System_Model::get_nagios_base_path().'/var/traffic',
-			'/etc/op5/*.yml' # :TODO Read value from op5config
+			'/etc/op5/*.yml'
 		);
 
 		$backup = array();
@@ -186,34 +168,29 @@ class Backup_Controller extends Ninja_Controller {
 		$result = array();
 
 		foreach ($searches as $item) {
-
 			if (!isset($system[$item])) {
 				continue;
-			} else {
-				$files = (is_array($system[$item])) ? $system[$item] : array($system[$item]);
 			}
-
-			foreach ($files as $file) {
+			foreach ((array) $system[$item] as $file) {
 				$file = ($file[0] !== '/') ? $this->nagios_cfg_path . $file : $file;
 				$backup[] = $file;
 			}
-
 		}
 
 		$this->auto_render = true;
 
 		$file = strftime('backup-%Y-%m-%d_%H.%M.%S') . self::BACKUP_EXTENSION;
 
-		list($status, $output) = $this->execute(self::CMD_BACKUP, self::STORAGE . $file, $backup);
+		$command_line = array_merge(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/backup', self::STORAGE . $file), $backup);
+		proc::open($command_line, $stdout, $stderr, $status);
 
-		if ($status != 0) {
+		if ($status) {
 			json::fail(array(
 				"message" => "Could not backup the current configuration",
-				"debug" => $output
+				"debug" => $stderr
 			));
-		} else {
-			json::ok($file);
 		}
+		json::ok($file);
 	}
 
 	public function restore ($file)
@@ -225,26 +202,24 @@ class Backup_Controller extends Ninja_Controller {
 		$this->_verify_access('monitor.monitoring.contacts:update.backup');
 		$this->_verify_access('monitor.monitoring.notifications:update.backup');
 
-		list($status, $restore_output) = $this->execute(self::CMD_RESTORE, self::STORAGE . $file);
+		proc::open(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/restore', self::STORAGE . $file), $stdout, $stderr, $status);
 
-		if ($status != 0) {
+		if ($status) {
 			json::fail(array(
 				"message" => "Could not restore the configuration '{$file}'",
-				"debug" => $restore_output
+				"debug" => $stderr
 			));
-		} else {
-
-			list($status, $verify_output) = $this->execute(self::CMD_VERIFY, $this->nagios_cfg_path. 'nagios.cfg');
-			if ($status != 0) {
-				json::fail(array(
-					"message" => "The configuration '{$file}' has been restored but seems to be invalid",
-					"debug" => $verify_output
-				));
-			}
-
-			json::ok("The configuration '{$file}' has been restored successfully");
-
 		}
+
+		$this->_verify_naemon_config($stdout, $stderr, $status);
+		if ($status) {
+			json::fail(array(
+				"message" => "The configuration '{$file}' has been restored but seems to be invalid",
+				"debug" => $stdout // Naemon writes errors to stdout..
+			));
+		}
+
+		json::ok("The configuration '{$file}' has been restored successfully");
 
 	}
 
