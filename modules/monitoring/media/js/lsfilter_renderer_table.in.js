@@ -352,13 +352,26 @@ listview_renderer_table.services = {
 	},
 	"description" : {
 		"header" : _('Service'),
-		"depends" : [ 'host.name', 'description' ],
+		"depends" : [ 'host.name', 'description', 'icon_image' ],
 		"sort" : [ 'description' ],
 		"cell" : function(args) {
-			return $('<td />').append(extinfo_link({
+
+			var cell = $('<td />');
+
+			cell.append(extinfo_link({
 				host : args.obj.host.name,
 				service : args.obj.description
 			}).update_text(args.obj.description));
+
+			if (args.obj.icon_image) {
+				cell.append(icon(args.obj.icon_image, extinfo_link({
+					host : args.obj.host.name,
+					service : args.obj.description
+				})).css('float', 'right'));
+			}
+
+			return cell;
+
 		}
 	},
 	"status" : {
