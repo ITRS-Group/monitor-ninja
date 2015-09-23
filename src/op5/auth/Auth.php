@@ -599,11 +599,12 @@ class op5auth implements op5MayI_Actor {
 	 *
 	 */
 	protected function session_store() {
-		if ($this->config['session_key'] !== false &&
-			 ($this->user instanceof op5User) && is_array($this->user->fields)) {
-			$_SESSION[$this->config['session_key']] = $this->user->fields;
-		} else {
-			$this->session_clear();
+		if ($this->config['session_key'] !== false) {
+			if(($this->user instanceof op5User) && is_array($this->user->fields)) {
+				$_SESSION[$this->config['session_key']] = $this->user->fields;
+			} else {
+				$this->session_clear();
+			}
 		}
 	}
 
@@ -644,7 +645,7 @@ class op5auth implements op5MayI_Actor {
 		if (session_id() !== '')
 		{
 			$name = session_name();
-			session_destroy();
+			@session_destroy(); // Don't care if session is initialized
 			$_SESSION = array();
 			unset($_COOKIE[$name]);
 			if(!headers_sent()) {
@@ -689,8 +690,10 @@ class op5auth implements op5MayI_Actor {
 	 * authentication should be read only.
 	 */
 	public function write_close() {
-		$this->session_store();
-		session_write_close();
+		if($this->config['session_key'] !== false) {
+			$this->session_store();
+			session_write_close();
+		}
 
 		// Make sure we don't store anything more...
 		$this->config['session_key'] = false;

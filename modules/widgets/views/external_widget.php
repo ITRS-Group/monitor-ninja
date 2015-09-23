@@ -19,6 +19,15 @@
 		<?php
 			echo new View('css_header', array('css' => $css));
 			echo html::script('application/media/js/jquery.js');
+		?>
+		<script type="text/javascript">
+		$.ajaxSetup({
+			'data': {
+				'request_context': 'external_widget'
+			}
+		});
+		</script>
+		<?php
 			echo html::script('application/media/js/jquery.fancybox.js');
 			echo html::script('application/media/js/jquery-ui.min.js');
 			echo html::script('application/media/js/jquery.form.js');
@@ -105,14 +114,20 @@
 		echo html::script($basepath.'media/js/lib.js');
 		echo html::script($basepath.'media/js/LSFilterSaved.js'); ?>
 		<?php echo html::script('application/views/js/common.js'); ?>
-		<?php echo new View('js_header', array('js' => $js)); ?>
+		<?php
+			$mangled_js = array();
+			foreach($js as $orig_js) {
+				$delim = (strpos($orig_js, '?') === false) ? '?' : '&';
+				$mangled_js[] = $orig_js . $delim . 'request_context=external_widget';
+			}
+			$js_view = new View('js_header', array('js' => $mangled_js));
+			$js_view->render(true);
+		?>
 
 	</head>
 
 
 	<body>
-		<div align="center">
-			<?php echo $widget->render('index', false); ?>
-		</div>
+		<?php echo $widget->render('index', false); ?>
 	</body>
 </html>

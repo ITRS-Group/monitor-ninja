@@ -32,3 +32,39 @@
 $config['widget_name'] = 'netw_health';
 $config['username'] = false;
 $config['groups'] = false;
+
+$config['widgets'] = array();
+
+/**
+ * Define the widgets you want to expose, with config below.
+ *
+ * For example, to expose a nagvis map, add the following:
+ *
+ * $config['widgets']['some_map'] = array(
+ *     'name' => 'nagvis',
+ *     'friendly_name' => 'Some NagVis map',
+ *     'setting' => array(
+ *         'height' => 600,
+ *         'map' => 'my_nagvis_map_name'
+ *     )
+ * );
+ *
+ * The widget will be available at:
+ * https://my_monitor_host/monitor/index.php/external_widget/some_map
+ *
+ * To expose a list view, given a filter:
+ *
+ * $config['widgets']['service_problems'] = array(
+ *     'name' => 'listview',
+ *     'friendly_name' => 'Currently unacknowledged service problems',
+ *     'setting' => array(
+ *         'query' => '[services] state != 0 and scheduled_downtime_depth != 0 and host.scheduled_downtime_depth != 0 and acknowledged != 0',
+ *         'columns' => 'default',
+ *         'limit' => 50,
+ *         'order' => ''
+ *     )
+ * );
+ *
+ * The widget will be available at:
+ * https://my_monitor_host/monitor/index.php/external_widget/service_problems
+ */

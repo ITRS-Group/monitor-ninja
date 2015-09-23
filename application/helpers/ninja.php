@@ -101,6 +101,7 @@ class ninja {
 	 * @return string
 	 */
 	static function add_version_to_uri($uri) {
-		return $uri .= "?v=".config::get_version_info();
+		$delim = (strpos($uri, '?') === false) ? '?' : '&';
+		return $uri .= $delim . "v=".config::get_version_info();
 	}
 }
