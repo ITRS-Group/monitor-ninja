@@ -191,9 +191,6 @@ install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma
 mkdir -p %buildroot%_sysconfdir/%{httpconfdir}
 install -m 640 op5build/ninja.httpd-conf %buildroot/etc/%{httpconfdir}/monitor-ninja.conf
 
-# we don't need the git directories
-rm -rf %buildroot%prefix/application/vendor/phptap/.git
-
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 
 mkdir -p %buildroot%prefix/application/config/custom
@@ -242,6 +239,8 @@ done
 
 # Migrate auth and upgrade user-groups permissions
 php %prefix/install_scripts/migrate_auth.php
+# The line above can leave artifacts created by root, making ninja-backup fail
+chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 
 %files
 %defattr(-,%daemon_user,%daemon_group)

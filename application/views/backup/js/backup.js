@@ -2,6 +2,10 @@
 
   var baseurl = _site_domain + _index_page + '/';
 
+  var nl2br = function(text) {
+    return text.replace("\n", "<br>", "g");
+  };
+
   function restart () {
     $.get(baseurl + 'backup/restart')
       .done(function (message) {
@@ -14,7 +18,7 @@
           buttons: {
             "Show output": function () {
               notification.remove(1);
-              Notify.message(data.debug.join('<br>'), {
+              Notify.message(nl2br(data.debug), {
                 sticky: true
               });
             }
@@ -69,7 +73,7 @@
           buttons: {
             "Show output": function () {
               notification.remove(1);
-              Notify.message(data.debug.join('<br>'), {sticky: true});
+              Notify.message(nl2br(data.debug), {sticky: true});
             }
           }
         });
@@ -103,7 +107,7 @@
           buttons: {
             "Show output": function () {
               notification.remove(1);
-              Notify.message(data.debug.join('<br>'), {sticky: true});
+              Notify.message(nl2br(data.debug), {sticky: true});
             },
             "Backup anyway": backup
           }
@@ -141,7 +145,7 @@
                 sticky: true,
                 "Show output": function () {
                   notification.remove(1);
-                  Notify.message(data.debug.join('<br>'), {sticky: true});
+                  Notify.message(nl2br(data.debug), {sticky: true});
                 }
               });
             });
