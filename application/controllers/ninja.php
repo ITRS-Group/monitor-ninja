@@ -50,7 +50,11 @@ class Ninja_Controller extends Template_Controller {
 		$this->template->current_skin = $this->get_current_user_skin();
 
 		$this->template->menu = new Menu_Model();
+		$pre_event_data = Event::$data;
+		$pre_event_name = Event::$name;
 		Event::run('ninja.menu.setup', $this->template->menu);
+		Event::$data = $pre_event_data;
+		Event::$name = $pre_event_name;
 
 		# Load session library
 		# If any current session data exists, it will become available.
