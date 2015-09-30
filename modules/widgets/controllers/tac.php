@@ -63,6 +63,36 @@ class Tac_Controller extends Ninja_Controller {
 			$widget_order = self::parse_widget_order($widget_order_setting->setting);
 		}
 
+		/*
+		 * We didn't have any widgets, so we should fetch them according to the
+		 * default setup
+		 */
+		if(count($widgets_per_tag) == 0) {
+			/* Tac is empty, fill with default */
+			/* Do default as earlier, load everything */
+			foreach(Ninja_WidgetPool_Model::get_available_widgets() as $wname => $friendly_name) {
+				$widget_model = new Ninja_Widget_Model();
+				$widget_model->set_name($wname);
+				$widget_model->set_friendly_name($friendly_name);
+				$widget_model->set_instance_id(mt_rand(0, 10000000)); // needs to be unique
+				$widget_model->set_page($page);
+				$widget_model->set_setting(array());
+				$widget_model->set_username(op5auth::instance()->get_user()->username);
+				$widget_model->save();
+
+				$widget = $widget_model->build();
+				if ($widget === false) {
+					/* Skip widgets if we have uninstalled them. But don't remove, since it might be temporarly during an upgrade */
+					continue;
+				}
+
+				$tag = 'widget-' . $widget_model->get_name() . '-' .
+					 $widget_model->get_instance_id();
+				$widgets_per_tag[$tag] = $widget;
+				widget::set_resources($widget, $this);
+			}
+		}
+
 		/* Place known widgets in the correct placeholders */
 		foreach ($widget_order as $p_name => $p_content ) {
 			if (preg_match ( '/^widget-placeholder([0-9]*)$/', $p_name, $matches )) {
