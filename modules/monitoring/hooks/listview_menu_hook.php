@@ -26,10 +26,9 @@ Event::add ( 'ninja.menu.setup', function () {
 
 	$max_filters = 6;
 
-	$section = $menu->get ( 'Monitor' );
 	$menu->set ( 'Manage.Manage filters', listview::querylink ( '[saved_filters] all' ), 3, 'icon-16 x16-eventlog' );
-	$section->set ( 'Network Outages', 'outages', 1, 'icon-16 x16-outages' );
-	$section->set ( 'NagVis', 'nagvis', null, 'icon-16 x16-nagvis' );
+	$menu->set ( 'Monitor.Network Outages', 'outages', 1, 'icon-16 x16-outages' );
+	$menu->set ( 'Monitor.NagVis', 'nagvis', null, 'icon-16 x16-nagvis' );
 
 	$tables = array (
 			'hosts' => array (
@@ -70,14 +69,14 @@ Event::add ( 'ninja.menu.setup', function () {
 		$pool = $def ['pool'];
 
 		$resource = $pool::all ()->mayi_resource ();
-		$key = listview_menu_label ( $table );
+		$key = "Monitor." . listview_menu_label ( $table );
 
 		if ($mayi->run ( $resource . ':read.list' )) {
 
 			$icon = preg_replace ( "/\_/", "-", $singular );
-			$section->set ( $key, null, 2 + $index, sprintf ( 'icon-16 x16-%s', $icon ) );
+			$menu->set ( $key, null, 2 + $index, sprintf ( 'icon-16 x16-%s', $icon ) );
 
-			$section->set ( $key . '.All ' . $key, listview::querylink ( sprintf ( '[%s] all', $table ) ), 0, sprintf ( 'icon-16 x16-%s', $icon ) );
+			$menu->set ( $key . '.All ' . $key, listview::querylink ( sprintf ( '[%s] all', $table ) ), 0, sprintf ( 'icon-16 x16-%s', $icon ) );
 
 			$count = 0;
 			if (isset ( $saved [$table] )) {
@@ -86,11 +85,11 @@ Event::add ( 'ninja.menu.setup', function () {
 					$count ++;
 
 					if ($count > $max_filters) {
-						$section->set ( $key . '.All filters for ' . preg_replace ( '/\./', '&period;', $table ), listview::querylink ( sprintf ( '[saved_filters] filter_table = "%s"', $table ) ), $index, sprintf ( 'icon-16 x16-%s', 'filter' ) );
+						$menu->set ( $key . '.All filters for ' . preg_replace ( '/\./', '&period;', $table ), listview::querylink ( sprintf ( '[saved_filters] filter_table = "%s"', $table ) ), $index, sprintf ( 'icon-16 x16-%s', 'filter' ) );
 						break;
 					}
 
-					$section->set ( $key . '.' . $object->get_filter_name (), listview::querylink ( $object->get_filter () ), $index, sprintf ( 'icon-16 x16-%s', $icon ) );
+					$menu->set ( $key . '.' . $object->get_filter_name (), listview::querylink ( $object->get_filter () ), $index, sprintf ( 'icon-16 x16-%s', $icon ) );
 				}
 			}
 
@@ -98,9 +97,9 @@ Event::add ( 'ninja.menu.setup', function () {
 		}
 	}
 
-	$section->set ( 'Downtimes', null, ($index ++) + 2, 'icon-16 x16-downtime' );
-	$section->set ( 'Downtimes.All Downtimes', listview::querylink ( '[downtimes] all' ), 0, 'icon-16 x16-downtime' );
-	$section->set ( 'Downtimes.Recurring Downtimes', listview::querylink ( '[recurring_downtimes] all' ), 1, 'icon-16 x16-recurring-downtime' );
+	$menu->set ( 'Monitor.Downtimes', null, ($index ++) + 2, 'icon-16 x16-downtime' );
+	$menu->set ( 'Monitor.Downtimes.All Downtimes', listview::querylink ( '[downtimes] all' ), 0, 'icon-16 x16-downtime' );
+	$menu->set ( 'Monitor.Downtimes.Recurring Downtimes', listview::querylink ( '[recurring_downtimes] all' ), 1, 'icon-16 x16-recurring-downtime' );
 
 	$icon = 'icon-16 x16-notification';
 	$menu->set ( 'Report.Notifications', null, null, $icon );
@@ -109,7 +108,6 @@ Event::add ( 'ninja.menu.setup', function () {
 	$table = "notifications";
 
 	$menu->set ( 'Report.Notifications.All Notifications', listview::querylink ( '[notifications] all' ), 0, $icon );
-	$key = listview_menu_label ( $table );
 
 	if (isset ( $saved [$table] )) {
 		foreach ( $saved [$table] as $object ) {
