@@ -7,6 +7,7 @@ Event::add ( 'ninja.menu.setup', function () {
 
 	$auth = Auth::instance ();
 	$menu = Event::$data;
+	assert($menu instanceof Menu_Model);
 	$mayi = op5MayI::instance ();
 
 	if (op5MayI::instance ()->run ( 'ninja.configuration:read' ) && Kohana::config ( 'config.nacoma_path' ) !== false) {
@@ -76,7 +77,7 @@ Event::add ( 'ninja.menu.setup', function () {
 			$icon = preg_replace ( "/\_/", "-", $singular );
 			$menu->set ( $key, null, 2 + $index, sprintf ( 'icon-16 x16-%s', $icon ) );
 
-			$menu->set ( $key . '.All ' . $key, listview::querylink ( sprintf ( '[%s] all', $table ) ), 0, sprintf ( 'icon-16 x16-%s', $icon ) );
+			$menu->set ( $key . '.All ' . listview_menu_label ( $table ), listview::querylink ( sprintf ( '[%s] all', $table ) ), 0, sprintf ( 'icon-16 x16-%s', $icon ) );
 
 			$count = 0;
 			if (isset ( $saved [$table] )) {
