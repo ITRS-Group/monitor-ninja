@@ -25,7 +25,7 @@ class Auth_Controller extends Ninja_Controller {
 		// We should always login to the current url, including ?uri=xxx
 		$this->template->login_page = url::current(true);
 
-		$this->template->js = array('application/media/js/jquery.js', $this->add_path('/js/login.js'));
+		$this->template->js = array('application/media/js/jquery.js', 'application/views/js/login.js');
 		$this->template->auth_modules = $auth->get_metadata('login_screen_dropdown');
 
 		if ($_POST) {
