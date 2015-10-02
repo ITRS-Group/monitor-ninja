@@ -6,6 +6,101 @@
 class pnp
 {
 	/**
+	 * Given a host and optionally a service, return all rrd sources
+	 *
+	 * @param $host A host name
+	 * @param $service A service description
+	 * @return An array of DS sources
+	 */
+	public static function get_sources($host=false, $service=false)
+	{
+		if (empty($host)) {
+			return array();
+		}
+		if (!self::is_enabled()) {
+			return array();
+		}
+		$host = self::clean($host);
+		$rrdbase = self::pnp_config('rrdbase');
+		if (empty($rrdbase)) {
+			# config missing or some other error
+			return array();
+		}
+
+		$rrdbase = trim($rrdbase);
+
+		# Better safe than sorry...
+		if (substr($rrdbase, -1, 1) != '/') {
+			$rrdbase .= '/';
+		}
+
+		if (empty($service)) {
+			$service = '_HOST_';
+		} else {
+			# replace some strings in service name
+			# like PNP does
+			$service = urldecode($service);
+			$service = self::clean($service);
+		}
+
+		$path = $rrdbase . $host . '/' . $service . '.xml';
+
+		if (!posix_access($path, POSIX_R_OK))
+			return array();
+
+		$contents = file_get_contents($path);
+		$xmldata = @simplexml_load_string($contents);
+		if ($xmldata === false) {
+			// one can always try...
+			$xmldata = @simplexml_load_string(utf8_encode($contents));
+		}
+		if ($xmldata === false || !isset($xmldata->DATASOURCE)) {
+			return array();
+		}
+		$res = array();
+		if ($xmldata->DATASOURCE) {
+			$i = 0;
+			foreach ($xmldata->DATASOURCE as $ds) {
+				if (isset($ds->DS))
+					$res[] = $i++;
+			}
+		}
+		return $res;
+	}
+
+	/**
+	*	Check if PNP is installed (enabled) on this machine
+	*/
+	public static function is_enabled()
+	{
+		$pnp_path = config::get('config.pnp4nagios_path');
+		return $pnp_path === false ? false : true;
+	}
+
+	/**
+	*	Fetch PNP config options and stash in current session.
+	* 	Returns the value of $key or entire config if no params
+	*/
+	public static function pnp_config($key=false)
+	{
+		$conf = Session::instance()->get('pnp_config', false);
+
+		if (empty($conf)) {
+			# PNP config file consists of PHP code which makes it possible
+			# for us to just include it to get options available in $conf array
+			$pnp_config_file = Kohana::config('config.pnp4nagios_config_path');
+			if (file_exists($pnp_config_file))
+				include($pnp_config_file);
+
+			# Since the PNP is not very likely to change very often,
+			# we may store the config in session to save us from
+			# fetching it more than once per session.
+			Session::instance()->set('pnp_config', $conf);
+		}
+		return empty($key) ? $conf : $conf[$key];
+	}
+
+	/**
 	 * Cleanses a string for use as a pnp object reference
 	 * @param $string The string to cleanse
 	 * @return The mangled string
