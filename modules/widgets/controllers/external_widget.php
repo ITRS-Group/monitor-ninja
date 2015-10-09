@@ -24,9 +24,9 @@ class External_widget_Controller extends Ninja_Controller {
 		$page = Router::$controller.'/'.$name;
 
 		if(!isset($conf['widgets'][$name])) {
-			die('Widget not found');
-			// Bail out here... with error
-			return;
+			header("HTTP/1.1 404 Not Found");
+			echo 'Widget not found';
+			exit(1);
 		}
 		$widget_conf = $conf['widgets'][$name];
 
@@ -38,7 +38,9 @@ class External_widget_Controller extends Ninja_Controller {
 		$model->set_name($widget_conf['name']);
 		$model->set_page($page);
 		$model->set_friendly_name($widget_conf['friendly_name']);
-		$model->set_setting($widget_conf['setting']);
+		if(isset($widget_conf['setting'])) {
+			$model->set_setting($widget_conf['setting']);
+		}
 		$model->set_instance_id($instance_id);
 
 		/* We need to build the widget to get the default friendly name */
