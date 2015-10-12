@@ -237,21 +237,54 @@ Feature: Monitoring
 		And I reload the page
 		Then I should see "This host has been scheduled for fixed downtime"
 
-	@configuration @asmonitor @case-646
-	Scenario: Host details host commands - Schedule downtime in the past
-		Verify that the "Schedule downtime" host command
-		works correctly even for a historical period of time.
+	@configuration @asmonitor @trial_license
+	Scenario: Schedule downtime retro - before first event in db
+		MON-8606
+
+		Given I am on the Host details page
+		And I have these report data entries:
+                        | timestamp           | event_type | flags | attrib | host_name | service_description | state | hard | retry | downtime_depth | output |
+                        | 2013-01-01 12:00:00 |        100 |  NULL |   NULL |           |                     |     0 |    0 |     0 |           NULL | NULL   |
+		When I click "linux-server1"
+		And I click "Schedule downtime"
+		And I enter "Ghost of Christmas past" into "field_comment"
+		And I enter "1970-06-06 11:00:03" into "field_start_time"
+		And I click "Submit"
+		Then I should see "Adjusting start of downtime to start when Monitor was installed"
+		When I go to the listview for [downtimes] host.name = "linux-server1"
+		Then I should see "Ghost of Christmas past"
+		And I should see "2013-01-01"
+
+	@configuration @asmonitor @trial_license
+	Scenario: Schedule downtime retro - after first event in db
+		MON-8606
+
+		Given I am on the Host details page
+		And I have these report data entries:
+                        | timestamp           | event_type | flags | attrib | host_name | service_description | state | hard | retry | downtime_depth | output |
+                        | 2013-01-01 12:00:00 |        100 |  NULL |   NULL |           |                     |     0 |    0 |     0 |           NULL | NULL   |
+		When I click "linux-server1"
+		And I click "Schedule downtime"
+		And I enter "lullull" into "field_comment"
+		And I enter "2014-01-01 00:00:01" into "field_start_time"
+		And I click "Submit"
+		Then I should see "Scheduled retrospectively for reporting"
+		When I click "Done"
+		Then I should see "lullull"
+
+	@configuration @asmonitor @trial_license
+	Scenario: Schedule downtime now
+		MON-8606
 
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Schedule downtime"
-		And I enter "Ghost of Christmas past" into "field_comment"
-		And I enter "2013-06-06 11:00:03" into "field_start_time"
+		And I enter "I love lamp" into "field_comment"
+		And I enter the current date and time into "field_start_time"
 		And I click "Submit"
-		# Here, a confirm-popup is accepted by Poltergeist automatically
-		Then I should see "Scheduled retrospectivly for reporting"
+		Then I should see "Scheduled retrospectively for reporting"
 		When I click "Done"
-		Then I should see "Ghost of Christmas past"
+		Then I should see "I love lamp"
 
 	@configuration @asmonitor @case-646
 	Scenario: Host details host commands - Disable notifications for services

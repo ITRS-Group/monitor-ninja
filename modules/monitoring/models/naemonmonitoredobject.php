@@ -42,7 +42,7 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 		$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name_e, $service_description_e, 0, $end_msg_e)");
 		return array(
 			'status' => true,
-			'output' => 'Scheduled retrospectivly for reporting'
+			'output' => 'Scheduled retrospectively for reporting'
 		);
 	}
 

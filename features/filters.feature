@@ -11,7 +11,7 @@ Feature: Filters & list views
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
 			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		And I go to the listview for [services] active_checks_enabled = 1
 		Then I should see "System Load"
 		And I shouldn't see "PING"
 		When I check "select_all"
@@ -43,7 +43,7 @@ Feature: Filters & list views
 			| PING1               | linux-server1 | check_ping      | 1                     | 1                     |
 			| PING2               | linux-server1 | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		And I go to the listview for [services] active_checks_enabled = 1
 		Then I should see "System Load"
 		And I should see "PING1"
 		And I shouldn't see "PING2"
@@ -79,7 +79,7 @@ Feature: Filters & list views
 			| System Load         | a_group        | check_nrpe!load | 1                     | 1                     |
 			| PING                | a_group        | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		And I go to the listview for [services] active_checks_enabled = 1
 		Then I should see "System Load"
 		And I shouldn't see "PING"
 		When I check "select_all"
@@ -106,7 +106,7 @@ Feature: Filters & list views
 			| PING1               | a_group        | check_ping      | 1                     | 1                     |
 			| PING2               | a_group        | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		And I go to the listview for [services] active_checks_enabled = 1
 		Then I should see "System Load"
 		And I should see "PING1"
 		And I shouldn't see "PING2"
@@ -136,7 +136,7 @@ Feature: Filters & list views
 			| PING1               | a_group        | check_ping      | 1                     | 1                     |
 			| PING2               | a_group        | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] active_checks_enabled = 1"
+		And I go to the listview for [services] active_checks_enabled = 1
 		Then I should see "System Load"
 		And I should see "PING1"
 		And I shouldn't see "PING2"
@@ -173,7 +173,7 @@ Feature: Filters & list views
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
 			| PING                | linux-server1 | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[hosts] state != 200 and active_checks_enabled = 1"
+		And I go to the listview for [hosts] state != 200 and active_checks_enabled = 1
 		Then I should see "linux-server2"
 		And I shouldn't see "linux-server1"
 		When I check "select_all"
@@ -206,7 +206,7 @@ Feature: Filters & list views
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
 			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[hosts] state != 200 and active_checks_enabled = 1"
+		And I go to the listview for [hosts] state != 200 and active_checks_enabled = 1
 		Then I should see "linux-server2"
 		And I should see "linux-server3"
 		And I shouldn't see "linux-server1"
@@ -244,7 +244,7 @@ Feature: Filters & list views
 			| PING                | linux-server4   | check_ping	|
 			| PING                | linux-server5   | check_ping	|
 		And I have activated the configuration
-		And I'm on the list view for query "[hosts] all"
+		And I go to the listview for [hosts] all
 		Then I should see the configured hosts
 
 	@configuration @asmonitor
@@ -264,7 +264,7 @@ Feature: Filters & list views
 			| PING                | linux-server4   | check_ping	|
 			| PING                | linux-server5   | check_ping	|
 		And I have activated the configuration
-		And I'm on the list view for query "[services] all"
+		And I go to the listview for [services] all
 		Then I should see the configured services
 		And I should see the configured hosts
 
@@ -280,7 +280,7 @@ Feature: Filters & list views
 			| PING                | linux-server1   | check_ping	|
 			| PING                | linux-server2   | check_ping	|
 		And I have activated the configuration
-		And I'm on the list view for query "[services] all"
+		And I go to the listview for [services] all
 		Then I should see the configured services
 		And I should see "linux-server1"
 		And I should see "linux-server2"
@@ -300,7 +300,7 @@ Feature: Filters & list views
 			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
 			| PING                | linux-server2   | check_ping      | 0                     | 1                     |
 		And I have activated the configuration
-		And I'm on the list view for query "[services] active_checks_enabled = 0 and notifications_enabled = 1"
+		And I go to the listview for [services] active_checks_enabled = 0 and notifications_enabled = 1
 		And I should see "PING"
 		And I should see "linux-server1"
 		And I shouldn't see "linux-server2"

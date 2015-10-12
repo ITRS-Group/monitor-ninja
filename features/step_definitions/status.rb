@@ -51,3 +51,13 @@ end
 When /^I have no csrf token$/ do
   evaluate_script("$('input[name=\"csrf_token\"]').remove()");
 end
+
+When /^I enter the current date and time into "([^"]*)"$/ do |sel|
+  steps %Q{
+    When I enter "#{Time.new().strftime('%F %T')}" into "#{sel}"
+  }
+end
+
+Given /^I go to the listview for (.*)$/ do |query|
+    visit path_to("list view") + '?q=' + query
+end
