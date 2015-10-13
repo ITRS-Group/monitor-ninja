@@ -404,7 +404,9 @@ if (!empty($commands))
 
 <?php
 /* @var $widgets widget_Base[] */
-foreach ($widgets as $widget) {
+foreach ($widgets as $title => $widget) {
+	echo "<hr />\n";
+	echo "<h2>$title</h2>\n";
 	echo $widget->render('index', false);
 }
 ?>

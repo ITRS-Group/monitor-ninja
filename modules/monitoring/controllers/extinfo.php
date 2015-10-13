@@ -105,7 +105,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			$widget->set_fixed();
 			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
 
-			$this->template->content->widgets[] = $widget;
+			$this->template->content->widgets[_('Comments')] = $widget;
 		}
 		/* End of comment widget */
 
@@ -129,7 +129,7 @@ class Extinfo_Controller extends Ninja_Controller {
 
 			$widget->set_fixed();
 
-			$this->template->content->widgets[] = $widget;
+			$this->template->content->widgets[_('Scheduled downtimes')] = $widget;
 		}
 		/* End of downtimes widget */
 
@@ -155,7 +155,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			$widget->set_fixed();
 			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
 
-			$this->template->content->widgets[] = $widget;
+			$this->template->content->widgets[_('Services')] = $widget;
 		}
 		/* End of services widget */
 
