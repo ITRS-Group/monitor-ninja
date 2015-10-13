@@ -8,6 +8,8 @@ class NaemonObject_Model extends Object_Model {
 	/**
 	 * Takes a naemon command as first argument, and it's arguments, except
 	 * object key, as rest of parameters
+	 *
+	 * @return array ['status' => bool, 'output' => string]
 	 */
 	protected function submit_naemon_command() {
 		$args = func_get_args();

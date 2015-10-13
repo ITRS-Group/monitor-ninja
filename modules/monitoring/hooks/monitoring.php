@@ -113,3 +113,23 @@ class monitoring_hooks implements op5MayI_Actor {
 }
 
 new monitoring_hooks();
+
+/**
+ * Provides "installation_time" actor info
+ */
+class monitor_mayi_actor implements op5MayI_Actor {
+	private $actorinfo = array();
+
+	public function __construct() {
+		$this->actorinfo['installation_time'] = installation::get_installation_time();
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getActorInfo() {
+		return $this->actorinfo;
+	}
+}
+
+op5mayi::instance()->be('monitor', new monitor_mayi_actor());

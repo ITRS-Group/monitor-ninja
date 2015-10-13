@@ -13,16 +13,19 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 	 * @param $start_time int UNIX timestamp
 	 * @param $end_time int UNIX timestamp
 	 * @param $comment string
+	 * @return array
 	 */
 	protected function schedule_downtime_retrospectively($host_name, $service_description, $start_time, $end_time, $comment) {
-
-		/* Make sure it's really are integers... not only integer strings */
+		/* Make sure they really are integers... not only integer strings */
 		$start_time = (int)$start_time;
 		$end_time = (int)$end_time;
 
-		/* Only schedule if downtime is in the past, but have a grace time */
-		if ($start_time > time() - 300) {
-			return false;
+		if($start_time > time()) {
+			// no need to bubble a message
+			return array(
+				'status' => true,
+				'output' => ''
+			);
 		}
 
 		$type = empty($service_description) ? 'Host' : 'Service';

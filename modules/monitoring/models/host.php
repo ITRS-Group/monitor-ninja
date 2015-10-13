@@ -562,34 +562,64 @@ class Host_Model extends BaseHost_Model {
 		$start_tstamp = date::timestamp_format(false, $start_time);
 		if($start_tstamp === false) {
 			return array(
-				'status' => 0,
+				'status' => false,
 				'output' => $start_time . " is not a valid date, please adjust it"
-				);
+			);
 		}
 
 		$end_tstamp = date::timestamp_format(false, $end_time);
 		if($end_tstamp === false) {
 			return array(
-				'status' => 0,
+				'status' => false,
 				'output' => $end_time . " is not a valid date, please adjust it"
-				);
+			);
+		}
+
+		if($start_tstamp >= $end_tstamp) {
+			return array(
+				'status' => false,
+				'output' => "Downtime must start before it ends"
+			);
+		}
+
+		$installation_time = installation::get_installation_time();
+
+		$output = array();
+		if($start_tstamp < $installation_time) {
+			$output[] = sprintf(
+				"Adjusting start of downtime to start when Monitor was installed (tried to submit %s and Monitor was installed %s)",
+				$start_time,
+				date(date::date_format(), $installation_time)
+			);
+			$start_tstamp = $installation_time;
+		}
+
+		if($end_tstamp < $installation_time) {
+			return array(
+				'status' => true,
+				'output' => sprintf(
+					"Not scheduling any downtime since it was supposed to end before Monitor was installed (tried to submit %s and Monitor was installed %s)",
+					$end_time,
+					date(date::date_format(), $installation_time)
+				)
+			);
 		}
 
 		/* TODO: handle propagation of downtimes retrospectively */
 		$retrospective = $this->schedule_downtime_retrospectively($this->get_name(), false, $start_tstamp, $end_tstamp, $comment);
-		if($retrospective !== false && $end_tstamp < time()) {
-			// no need to submit a naemon command
-			return $retrospective;
-		}
-		$downtime = $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
-		if($retrospective !== false) {
-			// if the naemon command was successful, return the retro-text
+		$output[] = $retrospective['output'];
+		if($end_tstamp < time()) {
 			return array(
-					'status' => $downtime && $retrospective,
-					'output' => $downtime['output'] . "<br />" . $retrospective['output']
+				'status' => $retrospective['status'],
+				'output' => implode("<br>", array_filter($output))
 			);
 		}
-		return $downtime;
+		$downtime = $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
+		$output[] = $downtime['output'];
+		return array(
+			'status' => $downtime['status'] && $retrospective['status'],
+			'output' => implode("<br>", array_filter($output))
+		);
 	}
 
 	/**
