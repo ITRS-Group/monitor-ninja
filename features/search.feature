@@ -22,13 +22,13 @@ Feature: Search
 	@configuration @asmonitor
 	Scenario: Global search autocomplete default behaviour
 		Given I am on the Host details page
-		And I enter "win" into "#query"
+		And I enter "win" into "query"
 		Then waiting until I see "win-server2"
 
 	@configuration @asmonitor
 	Scenario: Global search autocomplete colon filter behaviour
 		Given I am on the Host details page
-		And I enter "h:win" into "#query"
+		And I enter "h:win" into "query"
 		Then waiting until I see "win-server2"
-		And I enter "h:win AND s:PING" into "#query"
+		And I enter "h:win AND s:PING" into "query"
 		Then waiting until I see "win-server2;PING"
