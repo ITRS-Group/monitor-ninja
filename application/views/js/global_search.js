@@ -13,6 +13,7 @@ $(document).ready(function() {
 		maxHeight:500,
 		width:'auto',
 		deferRequestBy: 300, //miliseconds
+		cacheLength: 0,
 		// callback function:
 		onSelect: function(value, data){ do_redirect(value, data); }
 	});
