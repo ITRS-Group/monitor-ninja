@@ -177,11 +177,6 @@ final class Kohana {
 				Event::run('system.404');
 			}
 
-			if (IN_PRODUCTION && !$classname::ALLOW_PRODUCTION) {
-				// Controller is not allowed to run in production
-				Event::run('system.404');
-			}
-
 			try {
 				// Run system.pre_controller
 				Event::run('system.pre_controller');
