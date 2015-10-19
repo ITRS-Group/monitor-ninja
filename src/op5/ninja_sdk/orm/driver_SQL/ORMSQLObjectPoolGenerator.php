@@ -42,8 +42,8 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 	}
 
 	private function build_sql_from_where() {
-		$table = $this->name;
-		$this->write('$sql .= %s;', ' FROM ' . $this->structure['table']);
+		$table = $this->structure['table'];
+		$this->write('$sql .= %s;', ' FROM ' . $table);
 		foreach ($this->structure['relations'] as $relation) {
 			list($foreign_key, $foreign_table, $key) = $relation;
 			$foreign_structure = $this->full_structure[$foreign_table];
