@@ -11,11 +11,19 @@ class Tac_acknowledged_Widget extends widget_Base {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$current_status = $this->get_current_status();
 
 		# HOSTS DOWN / problems
 		$problem = array();
 		$i = 0;
+
+		try {
+			$current_status = Current_status_Model::instance();
+			$current_status->analyze_status_data();
+		}
+		catch (op5LivestatusException $ex) {
+			require($view_path);
+			return;
+		}
 
 		if ($current_status->hst->down_and_ack) {
 			$problem[$i]['type'] = _('Host');

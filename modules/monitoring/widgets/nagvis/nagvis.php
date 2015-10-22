@@ -21,7 +21,11 @@ class Nagvis_Widget extends widget_Base {
 	}
 
 	public function options() {
-		$maps = nagvisconfig::get_map_list();
+		try {
+			$maps = nagvisconfig::get_map_list();
+		} catch (op5LivestatusException $ex) {
+			$maps = array();
+		}
 		$default = false;
 		if (count($maps)) {
 			$default = $maps[0];

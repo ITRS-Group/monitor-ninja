@@ -12,7 +12,45 @@ class Tac_monfeat_Widget extends widget_Base {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$current_status = $this->get_current_status();
+		try {
+			$current_status = Current_status_Model::instance();
+			$current_status->analyze_status_data();
+
+			# fetch global nagios config data
+			# try with the database first but we may use the nagios.cfg file as fallback
+			$status = Current_status_Model::instance()->program_status();
+			$enable_notifications = $status->enable_notifications;
+			$enable_flap_detection = $status->enable_flap_detection;
+			$enable_event_handlers = $status->enable_event_handlers;
+			$execute_service_checks = $status->execute_service_checks;
+			$accept_passive_service_checks = $status->accept_passive_service_checks;
+
+			$flap_disabled_services = $current_status->svc->flapping_disabled;
+			$flapping_services = $current_status->svc->flapping;
+			$flap_disabled_hosts = $current_status->hst->flapping_disabled;
+			$flapping_hosts = $current_status->hst->flapping;
+
+			$notification_disabled_services = $current_status->svc->notifications_disabled;
+			$notification_disabled_hosts = $current_status->hst->notifications_disabled;
+
+			$event_handler_disabled_svcs = $current_status->svc->eventhandler_disabled;
+			$event_handler_disabled_hosts = $current_status->svc->eventhandler_disabled;
+
+			$active_checks_disabled_svcs = $current_status->svc->active_checks_disabled_active;
+			$active_checks_disabled_hosts = $current_status->hst->active_checks_disabled_active;
+
+			$passive_checks_disabled_svcs = $current_status->svc->passive_checks_disabled;
+			$passive_checks_disabled_hosts = $current_status->hst->passive_checks_disabled;
+
+
+		}
+		catch ( op5LivestatusException $ex) {
+			$enable_notifications = false;
+			$enable_flap_detection = false;
+			$enable_event_handlers = false;
+			$execute_service_checks = false;
+			$accept_passive_service_checks = false;
+		}
 
 		$flap_detect_header_label = _('Flap Detection');
 		$notifications_header_label = _('Notifications');
@@ -32,32 +70,6 @@ class Tac_monfeat_Widget extends widget_Base {
 		$lable_no_hosts = _('No Hosts');
 		$lable_host_singular = _('Host');
 		$lable_host_plural = _('Hosts');
-
-		# fetch global nagios config data
-		# try with the database first but we may use the nagios.cfg file as fallback
-		$status = Current_status_Model::instance()->program_status();
-		$enable_notifications = $status->enable_notifications;
-		$enable_flap_detection = $status->enable_flap_detection;
-		$enable_event_handlers = $status->enable_event_handlers;
-		$execute_service_checks = $status->execute_service_checks;
-		$accept_passive_service_checks = $status->accept_passive_service_checks;
-
-		$flap_disabled_services = $current_status->svc->flapping_disabled;
-		$flapping_services = $current_status->svc->flapping;
-		$flap_disabled_hosts = $current_status->hst->flapping_disabled;
-		$flapping_hosts = $current_status->hst->flapping;
-
-		$notification_disabled_services = $current_status->svc->notifications_disabled;
-		$notification_disabled_hosts = $current_status->hst->notifications_disabled;
-
-		$event_handler_disabled_svcs = $current_status->svc->eventhandler_disabled;
-		$event_handler_disabled_hosts = $current_status->svc->eventhandler_disabled;
-
-		$active_checks_disabled_svcs = $current_status->svc->active_checks_disabled_active;
-		$active_checks_disabled_hosts = $current_status->hst->active_checks_disabled_active;
-
-		$passive_checks_disabled_svcs = $current_status->svc->passive_checks_disabled;
-		$passive_checks_disabled_hosts = $current_status->hst->passive_checks_disabled;
 
 		$cmd_flap_status = ($enable_flap_detection ? 'enabled' : 'disabled').'_monfeat';
 		$cmd_notification_status = ($enable_notifications ? 'enabled' : 'disabled').'_monfeat';

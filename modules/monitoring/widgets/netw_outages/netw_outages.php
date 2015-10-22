@@ -12,14 +12,19 @@ class Netw_outages_Widget extends widget_Base {
 		$view_path = $this->view_path('view');
 
 		# fetch info on outages
-		$current_status = $this->get_current_status();
+		try {
+			$current_status = Current_status_Model::instance();
+			$current_status->analyze_status_data();
+			$total_blocking_outages = $current_status->hst->outages;
+		}
+		catch (op5LivestatusException $ex) {
+		}
 		#$outages = new Outages_Model();
 		#$outage_data = $outages->fetch_outage_data();
 
 		$label = _('Blocking Outages');
 		$no_access_msg = _('N/A');
 
-		$total_blocking_outages = $current_status->hst->outages;
 
 		$user_has_access = op5auth::instance()->authorized_for('host_view_all');
 

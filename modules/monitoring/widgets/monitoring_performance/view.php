@@ -4,28 +4,28 @@
 		<td class="icon dark"><span class="icon-20 x20-time"></span></td>
 		<td>
 			<?php echo html::anchor('extinfo/performance', _('Service Check Execution Time').':'  ) ?><br />
-			<?php echo html::anchor('extinfo/performance', $min_service_execution_time.' / '.$max_service_execution_time.' / '.$average_service_execution_time.' '._('sec')) ?>
+			<?php echo html::anchor('extinfo/performance', $service_check_execution_time) ?>
 		</td>
 	</tr>
 	<tr>
 		<td class="icon dark"><span class="icon-20 x20-time_latency"></span></td>
 		<td>
 			<?php echo html::anchor('extinfo/performance', _('Service Check Latency').':'  ) ?><br />
-			<?php echo html::anchor('extinfo/performance', $min_service_latency.' / '.$max_service_latency.' / '.$average_service_latency.' '._('sec')) ?>
+			<?php echo html::anchor('extinfo/performance', $service_check_latency); ?>
 		</td>
 	</tr>
 	<tr>
 		<td class="icon dark"><span class="icon-20 x20-time"></span></td>
 		<td>
 			<?php echo html::anchor('extinfo/performance', _('Host Check Execution Time').':') ?><br />
-			<?php echo html::anchor('extinfo/performance', $min_host_execution_time.' / '.$max_host_execution_time.' / '.$average_host_execution_time.' '._('sec')) ?>
+			<?php echo html::anchor('extinfo/performance', $host_check_execution_time) ?>
 		</td>
 	</tr>
 	<tr>
 		<td class="icon dark"><span class="icon-20 x20-time_latency"></span></td>
 		<td>
 			<?php echo html::anchor('extinfo/performance', _('Host Check Latency').':') ?><br />
-			<?php echo html::anchor('extinfo/performance', $min_host_latency.' / '.$max_host_latency.' / '.$average_host_latency.' '._('sec')) ?>
+			<?php echo html::anchor('extinfo/performance', $host_check_latency) ?>
 		</td>
 	</tr>
 	<tr>
