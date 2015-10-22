@@ -14,6 +14,17 @@ class html {
 	// Enable or disable automatic setting of target="_blank"
 	public static $windowed_urls = FALSE;
 
+	public static function badge ($type, $content, array $attributes = array()) {
+
+		foreach ($attributes as $key => $value) {
+			$attributes[$key] = html::specialchars($key) . '="' . html::specialchars($value) . '"';
+		}
+
+		$attributes = implode(' ', $attributes);
+		return sprintf('<span class="badge %s" %s>%s</span>', $type, $attributes, $content);
+
+	}
+
 	/**
 	 * Convert special characters to HTML entities
 	 *
