@@ -175,6 +175,16 @@ class html {
 	}
 
 	/**
+	 * Makes an underscore lowercase name/identifier into a pretty name
+	 *
+	 * @param  string $name The name
+	 * @return string
+	 */
+	public static function pretty_name($name) {
+		return ucfirst(preg_replace('/_+/', ' ', $name));
+	}
+
+	/**
 	 * Creates an email anchor.
 	 *
 	 * @param   string  email address to send to
@@ -286,6 +296,35 @@ class html {
 			return html::link(ninja::add_version_to_uri($style), 'stylesheet', 'text/css', null, $media, $index);
 		}
 		return html::link($style, 'stylesheet', 'text/css', null, $media, $index);
+	}
+
+	/**
+	 * Generate icon html and returns it
+	 *
+	 * @param  string $name The icon name
+	 * @return string
+	 */
+	public static function icon ($name) {
+		return sprintf('<span class="icon-16 x16-%s"></span>', $name);
+	}
+
+	/**
+	 * Generate an anchor element without magic-ying and messing with the URL.
+	 *
+	 * @param  string $href        The href of the anchor
+	 * @param  string $label       Label to wrap the element around
+	 * @param  array  $attributes  Attributes for the element
+	 * @return string
+	 */
+	public static function href ($href, $label, array $attributes = array()) {
+
+		foreach ($attributes as $key => $value) {
+			$attributes[$key] = html::specialchars($key) . '="' . html::specialchars($value) . '"';
+		}
+
+		$attributes = implode(' ', $attributes);
+		return sprintf('<a href="%s" %s>%s</a>', $href, $attributes, $label);
+
 	}
 
 	/**
