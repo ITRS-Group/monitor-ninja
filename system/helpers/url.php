@@ -23,6 +23,24 @@ class url {
 	}
 
 	/**
+	 * Fetches a URL based on what controller and method you wish to access
+	 *
+	 * @param  string $controller  The controller name
+	 * @param  string $method      The method name
+	 * @param  array  $parameters  GET Parameters to add to URL
+	 * @return string              The full URL
+	 */
+	public static function method($controller, $method, array $parameters = array()) {
+
+		return implode('/', array(
+			self::base(TRUE),
+			strtolower($controller),
+			strtolower($method)
+		)) . '?' . http_build_query($parameters);
+
+	}
+
+	/**
 	 * Base URL, with or without the index page.
 	 *
 	 * If protocol (and core.site_protocol) and core.site_domain are both empty,
