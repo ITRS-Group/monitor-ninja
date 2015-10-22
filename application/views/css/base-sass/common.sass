@@ -583,6 +583,40 @@ td.comments
 .print-notification-bar
 	display: none
 
+.page-flow-layout
+	padding: 16px
+
+	h2
+		margin-top: 16px
+
+.configuration-page-link
+	display: inline-block
+	vertical-align: top
+	min-height: 32px
+	width: 196px
+	padding: 0
+
+	a
+		border: none
+		display: inline-block
+
+		border-radius: 3px
+		padding: 4px 8px
+		width: 100%
+
+		&:hover
+			background-color: $table-odd-color
+
+	span
+		vertical-align: middle
+		margin: 4px
+
+.configuration-page-description
+	display: inline-block
+	padding-left: 4px
+	font-style: italic
+	color: #777
+
 .main-toolbar
 	border-top: 1px solid $border-color-dark
 	background: #f7f6f5
@@ -639,6 +673,19 @@ td.comments
 
 	.main-toolbar-buttons
 		float: right
+
+		a
+			display: inline-block
+			border: none
+			padding: 5px 4px 4px 4px
+			border-left: 1px solid $border-color-light
+
+			&:first-child
+				border-left: none
+
+			span.icon-16, span.toolbar-icon-label
+				vertical-align: middle
+				margin: 0 4px
 
 		button
 			margin: 0
