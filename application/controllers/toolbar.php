@@ -33,6 +33,16 @@
 
 		}
 
+		public function icon ($icon, $title, array $attr = array()) {
+
+			$this->should_render_buttons(true);
+			$this->buttons[] = array(
+				"name" => html::icon($icon) . '<span class="toolbar-icon-label">' .  $title . '</span>',
+				"attr" => $attr
+			);
+
+		}
+
 		private $tabs = array();
 		public function tab ( $title, $attr = false ) {
 
@@ -58,13 +68,13 @@
 		}
 
 		private $menus = array();
-		public function menu (Menu_Model $menu) {
+		public function menu (Menu_Model $menu, array $settings = array()) {
 
-			$view = new View('menu', array(
+			$view = new View('menu', array_merge(array(
 				"menu" => $menu,
 				"class" => "menu main-toolbar-menu",
 				"orientation" => "right"
-			));
+			), $settings));
 
 			$this->menus[] = $view->render();
 
