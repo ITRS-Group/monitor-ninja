@@ -8,10 +8,8 @@ class Netw_outages_Widget extends widget_Base {
 	protected $duplicatable = true;
 	public function index()
 	{
-		# fetch widget view path
 		$view_path = $this->view_path('view');
-
-		# fetch info on outages
+		$total_blocking_outages = 0;
 		try {
 			$current_status = Current_status_Model::instance();
 			$current_status->analyze_status_data();
@@ -19,8 +17,6 @@ class Netw_outages_Widget extends widget_Base {
 		}
 		catch (op5LivestatusException $ex) {
 		}
-		#$outages = new Outages_Model();
-		#$outage_data = $outages->fetch_outage_data();
 
 		$label = _('Blocking Outages');
 		$no_access_msg = _('N/A');
