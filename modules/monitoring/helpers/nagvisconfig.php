@@ -11,12 +11,16 @@ class nagvisconfig {
 		$maps = array();
 		$auth = Auth::instance();
 		if ($auth->authorized_for('nagvis_view')) {
-			$files = scandir(Kohana::config('nagvis.nagvis_real_path').'/etc/maps');
+			$maps_dir = Kohana::config('nagvis.nagvis_real_path').'/etc/maps';
+			if (!is_dir($maps_dir) || !is_readable($maps_dir)) {
+				op5log::instance('ninja')->log('error', 'No Nagvis maps can be found, check configuration for nagvis.nagvis_real_path (it is currently not a valid directory, it needs to contain etc/maps)');
+				return $maps;
+			}
+			$files = scandir($maps_dir);
 			foreach ($files as $file) {
 				if (strpos($file, '.cfg') !== false)
 					$maps[] = substr($file, 0, -4);
 			}
-
 			return $maps;
 		}
 		$cfg = Op5Config::instance();
