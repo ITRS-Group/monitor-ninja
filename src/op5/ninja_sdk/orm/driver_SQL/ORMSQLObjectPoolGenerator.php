@@ -24,21 +24,10 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 		} else {
 			$this->structure['relations'] = array();
 		}
-
-		$this->db_instance = false;
-		if( isset($this->structure['db_instance']) ) {
-			$this->db_instance = $this->structure['db_instance'];
-		}
 	}
 
 	public function generate_backend_specific_functions() {
 		$this->generate_map_name_to_backend();
-	}
-
-	public function generate_stats() {
-		$this->init_function('stats',array('intersections'));
-		$this->write('return array();');
-		$this->finish_function();
 	}
 
 	private function build_sql_from_where() {
@@ -60,137 +49,6 @@ abstract class ORMSQLObjectPoolGenerator extends ORMObjectPoolGenerator {
 	private function build_sql_where() {
 		/* We assume a single table */
 		$this->write('$sql .= " WHERE ".$filter->visit(new '.$this->visitor_class.'(array(%s, "map_name_to_backend")), false);', $this->structure['class'].'Pool'.self::$model_suffix);
-	}
-
-	public function generate_count() {
-		$this->init_function('count', array('filter'));
-		$this->write('$db = Database::instance(%s);',$this->db_instance);
-		$this->write('$sql = "SELECT COUNT(*) AS count";');
-		$this->build_sql_from_where();
-		$this->write('$q = $db->query($sql);');
-		$this->write('$q->result(false);');
-		$this->write('$row = $q->current();');
-		$this->write('return $row["count"];');
-		$this->finish_function();
-	}
-
-	public function generate_it() {
-		$table = $this->name;
-		$this->init_function( 'it', array('filter','columns','order','limit','offset'), array('static'), array('order' => array(), 'limit'=>false, 'offset'=>false) );
-		$this->write('$db = Database::instance(%s);',$this->db_instance);
-
-		$this->write('$valid_columns = false;');
-		$this->write('if( $columns !== false ) {');
-		$this->write(  '$processed_columns = array_merge($columns, %s);', $this->structure['key']);
-		$this->write(  '$processed_columns = '.$this->set_class.'::apply_columns_rewrite($processed_columns);');
-		$this->write(  '$valid_columns = array();');
-		$this->write(  'foreach($processed_columns as $col) {');
-		$this->write(    '$new_name = static::map_name_to_backend($col);');
-		$this->write(    'if($new_name !== false) {');
-		$this->write(      '$valid_columns[] = $new_name;');
-		$this->write(    '}');
-		$this->write(  '}');
-		$this->write(  '$valid_columns = array_unique($valid_columns);');
-		$this->write('}');
-
-		$this->write('$sql = "SELECT ";');
-		$this->write('if ($valid_columns === false) {');
-		$table_names = array($this->structure['table']);
-		foreach( $this->structure['relations'] as $rel ) {
-			$table_names[] = $rel[2];
-		}
-		$this->write(  '$sql .= %s;', implode(', ', array_map(function($rel) { return $rel . '.*'; }, $table_names)));
-		$this->write('} else {');
-		$this->write(  '$sql .= implode(", ", $valid_columns);');
-		$this->write('}');
-		$this->build_sql_from_where();
-
-		$this->write('$sort = array();');
-		foreach(array('$order','static::$default_sort') as $sortfield) {
-			$this->write('foreach('.$sortfield.' as $col_attr) {');
-			$this->write(  '$parts = explode(" ",$col_attr,2);');
-			$this->write(  'if(isset($parts[1]) && !preg_match("/^(asc|desc)$/i",$parts[1])) continue;');
-			$this->write(  '$original_part_0 = $parts[0];');
-			$this->write(  '$parts[0] = static::map_name_to_backend($parts[0]);');
-			$this->write(  'if($parts[0] === false) {');
-			$this->write(    'throw new ORMException(%s.$original_part_0."\'");', "Table '".$this->name."' has no column '");
-			$this->write(  '}');
-			$this->write(  '$sort[] = implode(" ",$parts);');
-			$this->write('}');
-		}
-		$this->write('if(!empty($sort)) {');
-		$this->write('$sql .= " ORDER BY ".implode(", ",$sort);');
-		$this->write('}');
-
-		$this->write('if( $limit !== false ) {');
-		$this->write(    '$sql .= " LIMIT ";');
-		$this->write(    '$sql .= intval($limit);');
-		$this->write(    'if( $offset !== false ) {');
-		$this->write(        '$sql .= " OFFSET " . intval($offset);');
-		$this->write(    '}');
-		$this->write('}');
-
-		$this->write('$q = $db->query($sql);');
-		$this->write('$q->result(false, MYSQL_NUM);');
-
-		$this->write('$fetched_columns_raw = $q->list_fields(true);');
-
-		$this->write('$fetched_columns = array();');
-		$this->write('foreach($fetched_columns_raw as $col) {');
-		$this->write('if(substr($col,0,%s) == %s) {', strlen($this->structure['table'])+1, $this->structure['table'].'.');
-		$this->write('$fetched_columns[] = substr($col,%s);', strlen($this->structure['table'])+1);
-		$this->write('} else {');
-		$this->write('$fetched_columns[] = $col;');
-		$this->write('}');
-		$this->write('}');
-
-		$this->write('if($columns === false) {');
-		$this->write(    '$columns = static::get_all_columns_list();');
-		$this->write('}');
-
-		$this->write('return new LivestatusSetIterator($q, $fetched_columns, $columns, %s);', $this->obj_class);
-		$this->finish_function();
-	}
-
-	public function generate_update() {
-		$this->init_function('update', array('filter', 'values'), array('static'));
-		$this->write('$db = Database::instance(%s);',$this->db_instance);
-		$this->write('$sql = %s;', 'UPDATE '.$this->structure['table']);
-		$this->write('$delim = " SET ";');
-		$this->write('foreach($values as $k => $v) {');
-		$this->write('$sql .= $delim . $k . " = " . $db->escape($v);');
-		$this->write('$delim = ", ";');
-		$this->write('}');
-		$this->build_sql_where();
-		$this->write('$db->query($sql);');
-		$this->finish_function();
-	}
-
-	public function generate_delete() {
-		$this->init_function('delete', array('filter'), array('static'));
-		$this->write('$db = Database::instance(%s);',$this->db_instance);
-		$this->write('$sql = %s;', "DELETE ".$this->structure['table']);
-		$this->build_sql_from_where();
-		$this->write('$db->query($sql);');
-		$this->finish_function();
-	}
-
-	public function generate_insert_single() {
-		$this->init_function('insert_single', array('values'), array('static'));
-		$this->write('$db = Database::instance(%s);',$this->db_instance);
-		$this->write('$keys = array();');
-		$this->write('$esc_values = array();');
-		$this->write('foreach($values as $k => $v) {');
-		$this->write(  '$keys[] = $k;');
-		$this->write(  '$esc_values[] = $db->escape($v);');
-		$this->write('}');
-		$this->write('$sql = %s . implode(",",$keys) . %s . implode(",",$esc_values) . %s;',
-			'INSERT INTO '.$this->structure['table'].' (',
-			') VALUES (',
-			')');
-		$this->write('$result = $db->query($sql);');
-		$this->write('return $result->insert_id();');
-		$this->finish_function();
 	}
 
 	/**

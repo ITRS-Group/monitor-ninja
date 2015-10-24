@@ -45,6 +45,8 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		}
 
 		$this->generate_pool();
+		$this->generate_get_driver();
+		$this->generate_get_full_structure();
 		$this->generate_table_for_field();
 		$this->generate_setbuilder_all();
 		$this->generate_setbuilder_none();
@@ -67,6 +69,33 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->finish_function();
 	}
 
+
+	private function generate_get_driver() {
+		$this->init_function( 'get_driver', array(), 'static');
+		/**
+		 * SQLDrivers currently depend on the interface
+		 * of Kohana's Database class, which is a parameterized
+		 * singleton type of thing. This means that we need to parameterize
+		 *
+		 * the driver itself in order to support switching out the driver
+		 * (for example, when mocking) for one database instance at a time.
+		 **/
+		if (isset($this->structure['db_instance'])) {
+			$driver_instance_name = "ORMDriver" . $this->structure['source'] . " " . $this->structure['db_instance'];
+		}
+		else {
+			$driver_instance_name = "ORMDriver" . $this->structure['source'] . " default";
+		}
+		$this->write('return op5objstore::instance()->obj_instance_callback("' . $driver_instance_name . '", function() { return new ORMDriver' . $this->structure["source"] . '();});');
+		$this->finish_function();
+	}
+
+	private function generate_get_full_structure() {
+		$this->init_function( 'get_full_structure', array(), 'static');
+		$this->write('return ' . var_export($this->full_structure, true) . ';');
+		$this->finish_function();
+
+	}
 	/**
 	 * undocumented function
 	 *
@@ -193,23 +222,56 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 	}
 
 	public function generate_update() {
-		$this->init_function('update', array('filter', 'values'), array('static'));
+		$this->init_function('update', array('filter', 'values'));
+		$this->write('return self::get_driver()->update("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter, $values);');
 		$this->finish_function();
 	}
 
 
 	public function generate_delete() {
-		$this->init_function('delete', array('filter'), array('static'));
+		$this->init_function('delete', array('filter'));
+		$this->write('return self::get_driver()->delete("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter);');
 		$this->finish_function();
 	}
 
 	public function generate_insert_single() {
-		$this->init_function('insert_single', array('values'), array('static'));
+		$this->init_function('insert_single', array('values'));
+		$this->write('return self::get_driver()->insert_single("' . $this->name . '", ' . var_export($this->structure, true) . ', $values);');
 		$this->finish_function();
 	}
 
 	abstract public function generate_backend_specific_functions();
-	abstract public function generate_stats();
-	abstract public function generate_count();
-	abstract public function generate_it();
+	/**
+	 * Generate stats
+	 *
+	 * @return void
+	 **/
+	public function generate_stats() {
+		$this->init_function('stats',array('filter','intersections'));
+		$this->write('return self::get_driver()->stats("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter, $intersections);');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generate count
+	 *
+	 * @return void
+	 **/
+	public function generate_count() {
+		$this->init_function('count', array('filter'));
+		$this->write('return self::get_driver()->count("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter);');
+		$this->finish_function();
+	}
+
+	/**
+	 * Generates set
+	 *
+	 * @return void
+	 **/
+	public function generate_it() {
+		$this->init_function( 'it', array('filter','columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
+		$this->write('return self::get_driver()->it("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter, $columns, $order, $limit, $offset);');
+		$this->finish_function();
+
+	}
 }
