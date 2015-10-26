@@ -92,6 +92,19 @@ $legacy-support-for-ie: true
 .padding_plz
 	padding: 0 2em 2em
 
+.badge
+
+	vertical-align: middle
+	display: inline-block
+	text-align: center
+	font-weight: bold
+
+	border: 1px solid transparent
+	padding: 1px 8px
+	margin: 1px 4px 0px 4px
+	border-radius: 3px
+	min-width: 16px
+
 .alert, #response .alert
 	background: #FCF8E3
 	border: 1px solid #FBEED5
@@ -100,15 +113,20 @@ $legacy-support-for-ie: true
 	padding: 8px 35px 8px 14px
 	@include border-radius(4px)
 
-.alert.error, #response .alert.error
+.error, #response .error
 	background: #F2DEDE
 	border-color: #EED3D7
 	color: #B94A48
 
-.alert.notice, #response .alert.notice
+.notice, #response .notice
 	background: #E3F8E3
 	border-color: #D5EED5
 	color: #539853
+
+.warning, #response .warning
+	background: #FCF8D3
+	border-color: #EBDEB5
+	color: #B06823
 
 .alert p
 	font-size: 120%
@@ -593,7 +611,8 @@ td.comments
 	display: inline-block
 	vertical-align: top
 	min-height: 32px
-	width: 196px
+	width: 210px
+	margin: 0 8px
 	padding: 0
 
 	a
