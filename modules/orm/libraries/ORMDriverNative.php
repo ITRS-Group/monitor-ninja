@@ -7,6 +7,11 @@ class ORMDriverNative implements ORMDriverInterface {
 
 	private $storage = array();
 
+	/**
+	 * Constructor for this class.
+	 * @param $storage array An associative array over the table space that this driver serves
+	 * @return void
+	 */
 	public function __construct($storage = array()) {
 		$this->storage = $storage;
 	}

@@ -1,4 +1,7 @@
 <?php
+/**
+ * An ORM driver which is backed by Livestatus
+ */
 class ORMDriverLS implements ORMDriverInterface {
 	public function count($table, $structure, $filter) {
 		$ls = op5livestatus::instance();

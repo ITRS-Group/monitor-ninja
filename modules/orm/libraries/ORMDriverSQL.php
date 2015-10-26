@@ -1,4 +1,7 @@
 <?php
+/**
+ * An ORM driver which is backed by a generic (MySQL-like) SQL database
+ */
 class ORMDriverSQL implements ORMDriverInterface {
 
 	private function sql_from_where($filter, $structure) {
