@@ -17,7 +17,7 @@ $manifest = array_merge_recursive($manifest, array(
 						"icon" => "access-config",
 						"label" => "Local users",
 						"right" => "ninja.configuration:read",
-						"description" => "Local users stored on this server",
+						"description" => "Local users stored on the op5Monitor server",
 						"href" => array('configuration', 'configure', array('page' => 'edit_special.php/access'))
 					),
 					"auth_modules" => array(
