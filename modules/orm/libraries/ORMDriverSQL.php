@@ -6,6 +6,7 @@ class ORMDriverSQL implements ORMDriverInterface {
 
 	private function sql_from_where($filter, $structure) {
 		$sql = "";
+		$table = $structure['table'];
 		$class = $structure['class'];
 		$pool_class = $class . 'Pool_Model';
 		$full_structure = $pool_class::get_full_structure();
