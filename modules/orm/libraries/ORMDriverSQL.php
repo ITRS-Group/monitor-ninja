@@ -4,6 +4,11 @@
  */
 class ORMDriverSQL implements ORMDriverInterface {
 
+	/**
+	 * Which visitor should sql_from_where() use?
+	 */
+	protected $sql_builder_visitor_class_name = 'LivestatusSQLBuilderVisitor';
+
 	private function sql_from_where($filter, $structure) {
 		$sql = "";
 		$table = $structure['table'];
@@ -20,7 +25,7 @@ class ORMDriverSQL implements ORMDriverInterface {
 			}, $foreign_structure['key'], $foreign_key));
 			$sql .= $join_expr;
 		}
-		$visitor = new LivestatusSQLBuilderVisitor(array($pool_class, "map_name_to_backend"));
+		$visitor = new $this->sql_builder_visitor_class_name(array($pool_class, "map_name_to_backend"));
 		$sql .= " WHERE ".$filter->visit($visitor, false);
 		return $sql;
 	}
