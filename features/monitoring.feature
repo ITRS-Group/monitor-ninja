@@ -393,7 +393,7 @@ Feature: Monitoring
 		Then "Flap detection" should be shown as "Disabled"
 		And I should see "Enable flap detection"
 
-	@configuration @asmonitor @case-647
+	@configuration @asmonitor @case-647 @skip
 	Scenario: Host details host extinfo page configure
 		Verify that the "Configure" link works correctly.
 
@@ -401,8 +401,9 @@ Feature: Monitoring
 		When I click "linux-server1"
 		And I click "Configure"
 		Then I should be on the Configure page
+		And I should see "linux-server1"
 
-	@configuration @asmonitor @case-647
+	@configuration @asmonitor @case-647 @skip
 	Scenario: Hostgroup details hostgroup extinfo page configure
 		Verify that the "Configure" link works correctly.
 
@@ -410,6 +411,7 @@ Feature: Monitoring
 		When I click css "span[title=Actions]"
 		And I click "Configure"
 		Then I should be on the Configure page
+		And I should see "LinuxServers"
 
 	@configuration @asmonitor @case-647
 	Scenario: Host details host extinfo page show performance graph
@@ -608,7 +610,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Current status" should be shown as "Critical"
 
-	@configuration @asmonitor @case-656
+	@configuration @asmonitor @case-656 @skip
 	Scenario: Service extinfo page check configure link
 		Verify that the configuration link on the extinfo page for a given service
 		point to the right place.

@@ -1,6 +1,6 @@
 @filters @listview
 Feature: Filters & list views
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	@bug-7012
 	Scenario: Host service single multi-delete
 		Given I have these hosts:
@@ -31,7 +31,7 @@ Feature: Filters & list views
 		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	@bug-7012
 	Scenario: Host service multi multi-delete
 		Given I have these hosts:
@@ -65,7 +65,7 @@ Feature: Filters & list views
 		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	@bug-7012
 	Scenario: Hostgroup service single multi-delete no force
 		Given I have these hosts:
@@ -92,7 +92,7 @@ Feature: Filters & list views
 		When I click "Show changes in Nacoma"
 		Then I shouldn't see "System Load" within frame "iframe"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	Scenario: Hostgroup service multi multi-delete no force
 		Given I have these hosts:
 			| host_name     | hostgroups |
@@ -118,11 +118,12 @@ Feature: Filters & list views
 		And I click "Submit"
 		Then I should see "is a member of a hostgroup"
 		When I click "Show changes in Nacoma"
-		Then I shouldn't see "System Load"
+		Then I should see "Nothing to save"
+		And I shouldn't see "System Load"
 		And I shouldn't see "PING1"
 		And I shouldn't see "PING2"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	Scenario: Hostgroup service multi multi-delete with force
 		Given I have these hosts:
 			| host_name     | hostgroups |
@@ -161,7 +162,7 @@ Feature: Filters & list views
 		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	@bug-7012
 	Scenario: Host single multi-delete
 		Given I have these hosts:
@@ -193,7 +194,7 @@ Feature: Filters & list views
 		When I click button "Save" within frame "iframe"
 		Then I should see "Preflight configuration check turned out ok." within frame "iframe"
 
-	@configuration @asmonitor
+	@configuration @asmonitor @skip
 	@bug-7012
 	Scenario: Host multi multi-delete
 		Given I have these hosts:
