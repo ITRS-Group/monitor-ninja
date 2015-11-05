@@ -10,4 +10,8 @@ class LivestatusFilterOr extends LivestatusFilterBoolOp {
 	public function visit( LivestatusFilterVisitor $visitor, $data ) {
 		return $visitor->visit_or($this, $data);
 	}
+
+	public function get_hash () {
+		return $this->get_bool_op_hash("or");
+	}
 }

@@ -27,6 +27,10 @@ class LivestatusFilterNot extends LivestatusFilterBase {
 		$this->filter = $filter;
 	}
 
+	public function get_hash () {
+		return md5("not " . $this->filter->get_hash());
+	}
+
 	/**
 	 * Returns a copy of the filter, but with a variables prefixed
 	 */

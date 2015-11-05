@@ -29,18 +29,18 @@ class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
 		$db = new Database();
 		foreach ($has_auth as $type => $godmode) {
 			$filter = new LivestatusFilterAnd();
-			$auth_filter->add($filter);
 			$filter->add(new LivestatusFilterMatch('downtime_type', $type, '='));
-			// there are only four valid values, so always checking them is cheap
-			if ($godmode)
+			// there are only four valid values, so always checking them is cheap	
+			if ($godmode) {
+				$auth_filter->add($filter);
 				continue;
+			}
 
 			// this, though, isn't cheap :(
 			$res_schedules = $db->query('SELECT recurring_downtime.id FROM recurring_downtime WHERE downtime_type = '.$db->escape($type));
 			$schedules = array();
 			$poolname = ucfirst(substr($type, 0, -1)).'Pool_Model';
 			$id_check = new LivestatusFilterOr();
-			$filter->add($id_check);
 			foreach ($res_schedules as $schedule) {
 				$set = $poolname::none();
 				$objects = $db->query('SELECT recurring_downtime_objects.object_name FROM recurring_downtime_objects WHERE recurring_downtime_id = '.$schedule->id);
@@ -58,6 +58,8 @@ class RecurringDowntimeSet_Model extends BaseRecurringDowntimeSet_Model {
 					$id_check->add(new LivestatusFilterMatch('id', $schedule->id, '='));
 				}
 			}
+			$filter->add($id_check);
+			$auth_filter->add($filter);
 		}
 		$result_filter = new LivestatusFilterAnd();
 		$result_filter->add($this->filter);

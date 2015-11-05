@@ -34,6 +34,12 @@ class LivestatusFilterMatch extends LivestatusFilterBase {
 			'<'   => '>='
 			);
 
+
+	function get_hash () {
+		$line = "match " . $this->field . " " . $this->op . " " . $this->value;
+		return md5($line);
+	}
+
 	/**
 	 * Get the name of the field to match
 	 */
