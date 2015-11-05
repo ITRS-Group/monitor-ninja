@@ -1,0 +1,376 @@
+/* line 1, sass/LSFilterStyle.sass */
+#content.content {
+  padding: 0; }
+
+/* FIX AGAINST GENERAL CONTENT PADDING */
+/* line 6, sass/LSFilterStyle.sass */
+#lsfilter_save_filter_name {
+  margin-bottom: 0; }
+
+/* FIX AGAINST REPORT CSS */
+/* line 11, sass/LSFilterStyle.sass */
+.filter-query-dropdown {
+  display: none;
+  box-shadow: 0 2px 2px 3px #dddddd;
+  box-shadow: 0 2px 2px 3px rgba(0, 0, 0, 0.1);
+  background: whitesmoke;
+  border: 1px solid #999999;
+  position: absolute;
+  /* topbar + extra toolbar height */
+  right: 6px;
+  /* Attach to right corner */
+  z-index: 1;
+  max-height: 500px;
+  overflow: auto;
+  display: none;
+  padding: 8px; }
+
+/* line 27, sass/LSFilterStyle.sass */
+#filter-query-multi-action {
+  max-height: none;
+  padding: 0px;
+  background: white; }
+  /* line 32, sass/LSFilterStyle.sass */
+  #filter-query-multi-action ul {
+    display: inline-block;
+    vertical-align: top; }
+    /* line 35, sass/LSFilterStyle.sass */
+    #filter-query-multi-action ul li {
+      padding: 0.25em 1em 0.25em 0.25em; }
+      /* line 36, sass/LSFilterStyle.sass */
+      #filter-query-multi-action ul li:first-child {
+        border-bottom: 1px solid #999999; }
+      /* line 40, sass/LSFilterStyle.sass */
+      #filter-query-multi-action ul li a {
+        display: block;
+        text-decoration: none;
+        border: 0; }
+        /* line 42, sass/LSFilterStyle.sass */
+        #filter-query-multi-action ul li a:hover {
+          background: #f0f0f0;
+          cursor: default; }
+
+/* line 49, sass/LSFilterStyle.sass */
+#filter-query-builder {
+  width: 75%; }
+
+/* line 52, sass/LSFilterStyle.sass */
+#lsfilter_save_filter.saving {
+  background: url("loading_small.gif") no-repeat;
+  background-position: left center;
+  padding-left: 22px !important; }
+
+/* line 58, sass/LSFilterStyle.sass */
+.lsfilter-noresult {
+  display: inline-block;
+  margin: 16px 16px; }
+
+/* line 62, sass/LSFilterStyle.sass */
+.lsfilter-loader {
+  background: url("loading_small.gif") no-repeat;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+  vertical-align: middle;
+  margin-right: 32px;
+  padding-left: 22px;
+  margin-bottom: 4px;
+  height: 15px;
+  *display: inline; }
+  /* line 73, sass/LSFilterStyle.sass */
+  .lsfilter-loader span {
+    vertical-align: middle; }
+
+/* line 76, sass/LSFilterStyle.sass */
+.multi-action-title {
+  padding: 0.5em 0.1em 0.1em 0.1em;
+  font-weight: bold; }
+
+/* line 80, sass/LSFilterStyle.sass */
+.lsfilter-edit-bar {
+  margin-right: 20px !important; }
+  /* line 82, sass/LSFilterStyle.sass */
+  .lsfilter-edit-bar button {
+    background: transparent;
+    margin: 0;
+    border-width: 0 1px 0 1px; }
+    /* line 86, sass/LSFilterStyle.sass */
+    .lsfilter-edit-bar button.active {
+      background: rgba(0, 0, 0, 0.1); }
+    /* line 88, sass/LSFilterStyle.sass */
+    .lsfilter-edit-bar button:hover {
+      cursor: pointer;
+      background: white;
+      background: rgba(255, 255, 255, 0.4); }
+
+/* line 93, sass/LSFilterStyle.sass */
+#filter_result tbody tr:hover {
+  background: #fdfdfd;
+  color: #222222; }
+  /* line 96, sass/LSFilterStyle.sass */
+  #filter_result tbody tr:hover > td {
+    border-color: #999999;
+    color: #222222; }
+    /* line 99, sass/LSFilterStyle.sass */
+    #filter_result tbody tr:hover > td a {
+      color: #222222; }
+
+/* line 104, sass/LSFilterStyle.sass */
+.main-toolbar ul li {
+  display: inline-block;
+  vertical-align: middle;
+  border-right: 1px solid #cccccc;
+  padding: 1px 6px 0px 6px; }
+  /* line 109, sass/LSFilterStyle.sass */
+  .main-toolbar ul li:first-child {
+    border-right: none; }
+  /* line 111, sass/LSFilterStyle.sass */
+  .main-toolbar ul li .icon-16 {
+    vertical-align: middle; }
+/* line 113, sass/LSFilterStyle.sass */
+.main-toolbar ul a {
+  color: #444444;
+  border-bottom: none; }
+/* line 116, sass/LSFilterStyle.sass */
+.main-toolbar ul a:hover {
+  border: none;
+  color: black; }
+
+/* line 120, sass/LSFilterStyle.sass */
+.listview-col-hover {
+  background: #fdfdfd;
+  border-color: #999999;
+  color: #222222; }
+
+/* line 125, sass/LSFilterStyle.sass */
+th span.header-icon {
+  display: block;
+  margin: 0 auto; }
+
+/* line 129, sass/LSFilterStyle.sass */
+.listview-empty-cell {
+  border: none !important;
+  background: transparent !important; }
+
+/* line 133, sass/LSFilterStyle.sass */
+#filter_result thead th {
+  border-top: none;
+  border-bottom: 1px solid #aaaaaa;
+  padding-bottom: 0;
+  padding-right: 0;
+  white-space: nowrap; }
+
+/* line 140, sass/LSFilterStyle.sass */
+.lsfilter-sort-span {
+  float: right;
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  text-align: center;
+  padding-right: 0;
+  margin-right: 4px;
+  background-repeat: no-repeat;
+  background-position: center; }
+
+/* line 153, sass/LSFilterStyle.sass */
+th.sortable:hover {
+  background: #c6e4ee;
+  cursor: pointer; }
+/* line 156, sass/LSFilterStyle.sass */
+th.sortable.current {
+  background: lightblue; }
+/* line 158, sass/LSFilterStyle.sass */
+th .listview_multiselect_checkbox_all {
+  margin: 0;
+  padding: 0;
+  vertical-align: top; }
+
+/* line 163, sass/LSFilterStyle.sass */
+#filter_result {
+  margin: -2px -2px 0 -2px; }
+
+/* line 168, sass/LSFilterStyle.sass */
+#filter_result table th {
+  padding: 4px 2px 1px 2px; }
+  /* line 170, sass/LSFilterStyle.sass */
+  #filter_result table th:first-child {
+    padding-left: 0.2%; }
+  /* line 172, sass/LSFilterStyle.sass */
+  #filter_result table th:last-child {
+    padding-right: 0.3%; }
+/* line 175, sass/LSFilterStyle.sass */
+#filter_result table td:first-child {
+  padding-left: 0.3%; }
+/* line 177, sass/LSFilterStyle.sass */
+#filter_result table td:last-child {
+  padding-right: 0.3%; }
+/* line 179, sass/LSFilterStyle.sass */
+#filter_result table td a, #filter_result table td img, #filter_result table td span {
+  vertical-align: middle; }
+
+/* line 182, sass/LSFilterStyle.sass */
+.floating-header {
+  left: 0px;
+  top: 77px;
+  position: fixed;
+  z-index: 0; }
+  /* line 187, sass/LSFilterStyle.sass */
+  .floating-header tr {
+    width: 100%;
+    display: block; }
+    /* line 190, sass/LSFilterStyle.sass */
+    .floating-header tr th {
+      padding-bottom: 1px !important; }
+      /* line 192, sass/LSFilterStyle.sass */
+      .floating-header tr th:first-child {
+        padding-left: 0.2%; }
+      /* line 194, sass/LSFilterStyle.sass */
+      .floating-header tr th:last-child {
+        padding-right: 0.3%; }
+
+/* line 197, sass/LSFilterStyle.sass */
+.listview-summary li span {
+  vertical-align: middle; }
+
+/* line 200, sass/LSFilterStyle.sass */
+.table_pagination td {
+  font-size: 12pt;
+  padding: 0.1em;
+  text-align: center; }
+
+/* line 205, sass/LSFilterStyle.sass */
+.selected_odd td {
+  background-color: #eee4e4 !important; }
+
+/* line 208, sass/LSFilterStyle.sass */
+.selected_even td {
+  background-color: #ffeeee !important; }
+
+/* Service count in host detail listing */
+/* line 214, sass/LSFilterStyle.sass */
+td.cell_svccnt a {
+  border-bottom: 0; }
+
+/* line 217, sass/LSFilterStyle.sass */
+tr {
+  box-sizing: border-box; }
+  /* line 219, sass/LSFilterStyle.sass */
+  tr td {
+    box-sizing: border-box; }
+  /* line 221, sass/LSFilterStyle.sass */
+  tr.even td.cell_svccnt_ok {
+    background-color: #ccffcc !important; }
+  /* line 223, sass/LSFilterStyle.sass */
+  tr.odd td.cell_svccnt_ok {
+    background-color: #bbeebb !important; }
+  /* line 225, sass/LSFilterStyle.sass */
+  tr.even td.cell_svccnt_warning {
+    background-color: #ffffcc !important; }
+  /* line 227, sass/LSFilterStyle.sass */
+  tr.odd td.cell_svccnt_warning {
+    background-color: #eeeebb !important; }
+  /* line 229, sass/LSFilterStyle.sass */
+  tr.even td.cell_svccnt_critical {
+    background-color: #ffddcc !important; }
+  /* line 231, sass/LSFilterStyle.sass */
+  tr.odd td.cell_svccnt_critical {
+    background-color: #ffccc3 !important; }
+  /* line 233, sass/LSFilterStyle.sass */
+  tr.even td.cell_svccnt_unknown {
+    background-color: #ffeedd !important; }
+  /* line 235, sass/LSFilterStyle.sass */
+  tr.odd td.cell_svccnt_unknown {
+    background-color: #ffe7d4 !important; }
+  /* line 237, sass/LSFilterStyle.sass */
+  tr.even td.cell_svccnt_pending {
+    background-color: #dddddd !important; }
+  /* line 239, sass/LSFilterStyle.sass */
+  tr.odd td.cell_svccnt_pending {
+    background-color: #cccccc !important; }
+
+/* Visual filter editor */
+/* line 245, sass/LSFilterStyle.sass */
+.lsfilter_visual_group, .lsfilter_visual_match {
+  padding: 2px;
+  margin: 1em 1em 1em 2em; }
+
+/* line 249, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_0 {
+  background-color: whitesmoke; }
+
+/* line 252, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_1 {
+  background-color: #f0f0f0;
+  border: 1px solid #cccccc; }
+
+/* line 256, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_2 {
+  background-color: #ebebeb;
+  border: 1px solid #cccccc; }
+
+/* line 260, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_3 {
+  background-color: #e6e6e6;
+  border: 1px solid #cccccc; }
+
+/* line 264, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_4 {
+  background-color: #e1e1e1;
+  border: 1px solid #cccccc; }
+
+/* line 268, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_5 {
+  background-color: gainsboro;
+  border: 1px solid #cccccc; }
+
+/* line 272, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_6 {
+  background-color: #d7d7d7;
+  border: 1px solid #cccccc; }
+
+/* line 276, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_7 {
+  background-color: #d2d2d2;
+  border: 1px solid #cccccc; }
+
+/* line 280, sass/LSFilterStyle.sass */
+.lsfilter_visual_not {
+  border-left: 0.5em solid #cc0000;
+  padding-left: 0.5em; }
+
+/* line 284, sass/LSFilterStyle.sass */
+.lsfilter_visual_group_header {
+  display: block;
+  font-weight: bold;
+  vertical-algin: middle; }
+
+/* line 289, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_remove {
+  display: inline-block;
+  float: right;
+  border: 0; }
+  /* line 293, sass/LSFilterStyle.sass */
+  .lsfilter_visual_node_remove:hover {
+    border: 0; }
+
+/* line 296, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_addrule, .lsfilter_visual_node_addgroup, .lsfilter_visual_node_negate {
+  display: inline-block;
+  margin: 0 0.5em 0 0; }
+
+/* line 300, sass/LSFilterStyle.sass */
+.lsfilter_visual_field_select, .lsfilter_visual_operator_select, .lsfilter_visual_value_field {
+  width: 30%; }
+
+/* line 303, sass/LSFilterStyle.sass */
+li.filter-query-button a img {
+  vertical-align: middle; }
+
+/* line 306, sass/LSFilterStyle.sass */
+li.filter-query-button a span {
+  vertical-align: middle;
+  margin: 4px 2px; }
+
+/* line 310, sass/LSFilterStyle.sass */
+li.filter-query-button a .filter-button-label {
+  margin-left: 4px; }

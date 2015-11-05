@@ -6,7 +6,7 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-all: generate-css generate-php
+all: generate-php
 
 help:
 	@echo
@@ -14,17 +14,6 @@ help:
 	@echo -----------------------
 	@$(MAKE) --print-data-base --question | sed -n -e '/^Makefile/d' -e 's/^\([A-Za-z0-9_-]*\):.*/\1/p'
 	@echo
-
-install-sass:
-	gem install compass
-
-generate-css:
-	which compass || (echo "Run make install-sass to install the necessary prerequisites for generating CSS" && exit 1)
-	for skin in application/views/css/*; do \
-		test -f $$skin/config.rb && /bin/bash -c "ulimit -s unlimited && compass compile --trace --boring $$skin"; \
-	done
-	# Generate css for listviews
-	compass compile --trace --boring modules/lsfilter/views/css/
 
 generate-php:
 	php build.php

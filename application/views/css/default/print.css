@@ -1,0 +1,95 @@
+/* line 2, ../base-sass/print.sass */
+div {
+  box-shadow: none !important;
+  text-shadow: none !important; }
+
+/* line 6, ../base-sass/print.sass */
+body {
+  font-size: 8pt;
+  background-color: white; }
+
+/* line 10, ../base-sass/print.sass */
+.navigation, .header, .report-links, #save_report_form, .helptext_target, .print-unimportant {
+  display: none !important; }
+
+/* line 13, ../base-sass/print.sass */
+a {
+  border: none !important; }
+
+/* line 16, ../base-sass/print.sass */
+.content {
+  width: 94%;
+  margin: 0 !important;
+  padding: 0 !important; }
+  /* line 21, ../base-sass/print.sass */
+  .content .report-page {
+    padding: 0 !important; }
+
+/* line 24, ../base-sass/print.sass */
+.dark, .widget-header, th {
+  background: none !important; }
+
+/* line 27, ../base-sass/print.sass */
+.report-block .comments img {
+  display: none; }
+
+/* line 30, ../base-sass/print.sass */
+.report-links {
+  display: none; }
+
+/* line 33, ../base-sass/print.sass */
+.report-chart-fullwidth {
+  width: 100%; }
+
+/* line 36, ../base-sass/print.sass */
+#jGrowl {
+  display: none !important; }
+
+/* line 39, ../base-sass/print.sass */
+#progress {
+  display: none !important; }
+
+/* line 42, ../base-sass/print.sass */
+.pagination_container {
+  display: none !important; }
+
+/* line 45, ../base-sass/print.sass */
+table tr.even td {
+  background-color: white !important; }
+
+/* line 48, ../base-sass/print.sass */
+table tr.odd td {
+  background-color: white !important; }
+
+/* line 51, ../base-sass/print.sass */
+td, th {
+  border: 1pt solid #777777 !important;
+  border-bottom: 1pt solid #bbbbbb !important; }
+
+/* line 55, ../base-sass/print.sass */
+th {
+  border: 1pt solid #777777 !important; }
+
+/* line 58, ../base-sass/print.sass */
+#report-links-internal {
+  display: none; }
+
+/* line 61, ../base-sass/print.sass */
+th, .setup-table, .pie-chart, .sla_table, .report-block {
+  page-break-inside: avoid; }
+
+/* line 64, ../base-sass/print.sass */
+body, .container, .content {
+  height: auto; }
+
+/* line 67, ../base-sass/print.sass */
+.jq-notify-zone {
+  display: none !important; }
+
+/* line 70, ../base-sass/print.sass */
+.print-notification-bar {
+  display: block !important; }
+
+/* line 73, ../base-sass/print.sass */
+.toggle-long-output {
+  display: none; }
