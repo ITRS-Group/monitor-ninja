@@ -39,7 +39,6 @@ Requires: monitor-livestatus
 Requires: monitor-backup
 Requires: op5-bootstrap
 BuildRequires: php-op5lib >= 1.1.0-beta14
-BuildRequires: rubygem(compass)
 BuildRequires: doxygen
 BuildRequires: graphviz
 %if 0%{?suse_version}
@@ -106,7 +105,6 @@ Additional test files for ninja
 Summary: Development files for ninja
 Group: op5/monitor
 Requires: monitor-ninja = %version
-Requires: rubygem(compass)
 Requires: doxygen
 Requires: graphviz
 %if 0%{?suse_version}
@@ -256,8 +254,6 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
 %exclude %prefix/Documentation
-%exclude %prefix/application/views/css/*/.sass-cache
-%exclude %prefix/modules/lsfilter/views/css/.sass-cache
 
 %files devel
 %defattr(-,root,root)
