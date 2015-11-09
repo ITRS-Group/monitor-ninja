@@ -13,6 +13,9 @@ application/widgets/cloudinfo
 *.swp
 modules/op5reports
 *.dojod
+logs
+
+config/custom/*
 
 # Generated code
 modules/*/js
