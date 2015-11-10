@@ -10,7 +10,7 @@ Event::add ( 'ninja.menu.setup', function () {
 	assert($menu instanceof Menu_Model);
 	$mayi = op5MayI::instance ();
 
-	if (op5MayI::instance ()->run ( 'ninja.configuration:read' ) && Kohana::config ( 'config.nacoma_path' ) !== false) {
+	if (op5MayI::instance()->run('ninja.configuration:read')) {
 
 		$menu->set ( 'Manage', null, 4, 'icon-16 x16-configuration', array (
 				'style' => 'margin-top: 8px'
