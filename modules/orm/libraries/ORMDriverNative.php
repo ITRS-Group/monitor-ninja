@@ -31,9 +31,25 @@ class ORMDriverNative implements ORMDriverInterface {
 		$data = array();
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
 			foreach ( $this->storage[$table] as $row) {
-				$obj = $model_type::factory_from_setiterator($row, '', $columns);
-				if ( $filter->visit($visitor, $obj)) {
-					$data[] = $obj;
+				foreach ($structure["structure"] as $field => $type) {
+					if (is_array($type)) {
+						list($class_prefix, $field_prefix) = $type;
+						$pool_model = $class_prefix . 'Pool_Model';
+						$foreign_table = $pool_model::get_table();
+
+						$foreign_key = $pool_model::key_columns();
+						foreach ($this->storage[$foreign_table] as $foreign_row) {
+							//FIXME: Handle multiple foreign keys in pool model
+							if ($foreign_row[$foreign_key[0]] == $row[$field]) {
+								$row[$field] = $foreign_row;
+								break;
+							}
+						}
+					}
+				}
+
+				if ( $filter->visit($visitor, $row)) {
+					$data[] = $model_type::factory_from_array($row, $columns);
 				}
 			}
 		}
@@ -59,7 +75,6 @@ class ORMDriverNative implements ORMDriverInterface {
 			foreach ( $this->storage[$table] as $ix => $row) {
 				$obj = $model_type::factory_from_setiterator($row, '', $columns);
 				if ( $filter->visit($visitor, $obj)) {
-					var_dump($obj);
 					unset($this->storage[$table][$ix]);
 				}
 			}

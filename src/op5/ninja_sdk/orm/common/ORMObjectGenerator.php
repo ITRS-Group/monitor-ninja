@@ -61,6 +61,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			}
 		}
 
+		$this->generate_factory_from_array();
 		$this->generate_factory_from_setiterator();
 
 		if($this->writable) {
@@ -92,6 +93,53 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 
 		$this->finish_class();
 	}
+
+	/**
+	 *
+	 **/
+	private function generate_factory_from_array() {
+		/* Make it possible to generate empty objects if writable */
+		$this->init_function( "factory_from_array", array( 'values', 'export' ),  array('static'), array());
+
+		$this->write( '$obj = new static();');
+
+		$this->write( '$obj->export = array();' );
+		$this->write( '$subobj_export = array();' );
+		$this->write( 'if($export === false) $export = array();'); //FIXME
+		$this->write( 'foreach( $export as $expcol ) {');
+		$this->write(     '$parts = explode(".", $expcol, 2);');
+		$this->write(     'if(count($parts) == 2) {');
+		$this->write(         'if(!isset($subobj_export[$parts[0]])) {');
+		$this->write(             '$subobj_export[$parts[0]] = array();');
+		$this->write(         '}');
+		$this->write(         '$subobj_export[$parts[0]][] = $parts[1];');
+		$this->write(         '$obj->export[] = $parts[0];');
+		$this->write(     '} else {');
+		$this->write(         '$obj->export[] = $parts[0];');
+		$this->write(     '}');
+		$this->write( '}');
+		$this->comment('If object fields exists, make sure the object only exists in the export array once');
+		$this->write( '$obj->export = array_unique($obj->export);');
+		foreach( $this->structure['structure'] as $field => $type ) {
+			$this->write("if (array_key_exists(%s, \$values)) {", $field);
+			if( is_array($type) ) {
+				$subclass = $type[0] . self::$model_suffix;
+				$this->write("\$obj->$field = $subclass::factory_from_array(\$values[%s], \$subobj_export[%s]);", $field, $field);
+			} else {
+				$this->write("\$obj->$field = \$values[%s];", $field);
+			}
+			$this->write('}');
+		}
+		if($this->writable) {
+			$this->write( '$obj->_oldkey = array();');
+			foreach($this->key as $name) {
+				$this->write( "\$obj->_oldkey[%s] = \$obj->$name;", $name);
+			}
+		}
+		$this->write( 'return $obj;');
+		$this->finish_function();
+	}
+
 
 	/**
 	 * Generates a class construct

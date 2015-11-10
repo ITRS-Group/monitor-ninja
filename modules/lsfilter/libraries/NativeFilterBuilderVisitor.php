@@ -33,7 +33,10 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 	 */
 	public function visit_match( LivestatusFilterMatch $filt, $data ) {
 		$field = $filt->get_field();
-		$lhs = call_user_func(array( $data->class_pool(), 'map_name_to_backend'), $field);
+		$lhs = $data;
+		foreach (explode(".", $field) as $k) {
+			$lhs = $lhs[$k];
+		}
 		$value = $filt->get_value();
 		$op = $filt->get_op();
 		if( empty($value) ) {
