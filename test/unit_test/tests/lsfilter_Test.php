@@ -22,6 +22,17 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($set->get_query(), '[hosts] name="kaka"', 'Query missmatch');
 	}
 
+	public function test_equivalent_filter_hash () {
+
+		$filter_a = new LivestatusFilterAnd();
+		$filter_b = new LivestatusFilterAnd();
+
+		$filter_a->add(new LivestatusFilterMatch('type', 'type', '='));
+		$filter_b->add(new LivestatusFilterMatch('type', 'type', '='));
+
+		$this->assertEquals($filter_a->get_hash(), $filter_b->get_hash(), "Filter hashes do not match");
+	}
+
 	public function test_host_filter_host_nested_and_or() {
 		$all_set = HostPool_Model::all();
 
@@ -64,7 +75,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_all_or_all() {
-		$this->run_test_query('[hosts] all or all', '[hosts] all or all');
+		$this->run_test_query('[hosts] all or all', '[hosts] all');
 	}
 
 	public function test_nested_simple_paranthesis() {
@@ -99,59 +110,59 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	public function test_not_and() {
 		$this->run_test_query(
 				'[hosts] not (state=0 and state=1)',
-				'[hosts] not (state=0 and state=1)'
+				'[hosts] state!=0 or state!=1'
 		);
 	}
 
 	public function test_not_and_left() {
 		$this->run_test_query(
 				'[hosts] (not state=0) and state=1',
-				'[hosts] not state=0 and state=1'
+				'[hosts] state!=0 and state=1'
 		);
 	}
 
 	public function test_not_and_left_nopar() {
-		$this->run_test_query('[hosts] not state=0 and state=1');
+		$this->run_test_query('[hosts] not state=0 and state=1', '[hosts] state!=0 and state=1');
 	}
 
 	public function test_not_and_right() {
 		$this->run_test_query(
 				'[hosts] not state=0 and (not state=1)',
-				'[hosts] not state=0 and not state=1'
+				'[hosts] state!=0 and state!=1'
 		);
 	}
 
 	public function test_not_and_right_nopar() {
-		$this->run_test_query('[hosts] state=0 and not state=1');
+		$this->run_test_query('[hosts] state=0 and not state=1', '[hosts] state=0 and state!=1');
 	}
 
 	public function test_not_or() {
 		$this->run_test_query(
 				'[hosts] not (state=0 or state=1)',
-				'[hosts] not (state=0 or state=1)'
+				'[hosts] state!=0 and state!=1'
 		);
 	}
 
 	public function test_not_or_left() {
 		$this->run_test_query(
 				'[hosts] (not state=0) or state=1',
-				'[hosts] not state=0 or state=1'
+				'[hosts] state!=0 or state=1'
 		);
 	}
 
 	public function test_not_or_left_nopar() {
-		$this->run_test_query('[hosts] not state=0 or state=1');
+		$this->run_test_query('[hosts] not state=0 or state=1', '[hosts] state!=0 or state=1');
 	}
 
 	public function test_not_or_right() {
 		$this->run_test_query(
 				'[hosts] not state=0 or (not state=1)',
-				'[hosts] not state=0 or not state=1'
+				'[hosts] state!=0 or state!=1'
 		);
 	}
 
 	public function test_not_or_right_nopar() {
-		$this->run_test_query('[hosts] state=0 or not state=1');
+		$this->run_test_query('[hosts] state=0 or not state=1', '[hosts] state=0 or state!=1');
 	}
 
 	/*
@@ -600,6 +611,6 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 			$match_query = $query;
 		$set = ObjectPool_Model::get_by_query($query);
 		$gen_query = $set->get_query();
-		$this->assertEquals($gen_query, $match_query, 'Query missmatch');
+		$this->assertEquals($match_query, $gen_query, 'Query missmatch');
 	}
 }

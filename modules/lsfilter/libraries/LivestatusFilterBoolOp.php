@@ -10,19 +10,29 @@ abstract class LivestatusFilterBoolOp extends LivestatusFilterBase {
 	 * Get a list of sub filters
 	 */
 	public function get_sub_filters() {
-		return $this->sub_filters;
+		return array_values($this->sub_filters);
 	}
 
 	/**
 	 * Clone the filter
 	 */
 	public function __clone() {
-		$this->sub_filters = array_map(
-				function($filt) {
-					return clone $filt;
-				},
-				$this->sub_filters );
+		$new_filters = array();
+		foreach ($this->sub_filters as $hash => $subfilter) {
+			$new_filters[$hash] = clone $subfilter;
+		}
+		$this->sub_filters = $new_filters;
 	}
+
+	/**
+	 * Retrieve the hash of a bool op
+	 */
+	protected function get_bool_op_hash ($op) {
+		$hashes = array_keys($this->sub_filters);
+		sort($hashes);
+		return md5($op . " " . implode(" ", $hashes));
+	}
+
 
 	/**
 	 * Returns a copy of the filter, but with a variables prefixed
@@ -40,22 +50,9 @@ abstract class LivestatusFilterBoolOp extends LivestatusFilterBase {
 	 */
 	public function add( $filter ) {
 		if( $filter instanceof static ) {
-			foreach( $filter->sub_filters as $subf ) {
-				$this->do_add($subf);
-			}
+			$this->sub_filters = array_merge($this->sub_filters, $filter->sub_filters);
 		} else {
-			$this->do_add($filter);
-		}
-	}
-	private function do_add( $filter ) {
-		$add = true;
-		foreach( $this->sub_filters as $tsf ) {
-			if( $tsf->equals( $filter ) ) {
-				$add = false;
-			}
-		}
-		if( $add ) {
-			$this->sub_filters[] = $filter;
+			$this->sub_filters[$filter->get_hash()] = $filter;
 		}
 	}
 
@@ -63,6 +60,10 @@ abstract class LivestatusFilterBoolOp extends LivestatusFilterBase {
 	 * Simplify the filter
 	 */
 	public function simplify() {
+		if(count($this->sub_filters) == 1) {
+			list($sub_f) = array_values($this->sub_filters);
+			return $sub_f->simplify();
+		}
 		$out = new static();
 		foreach($this->sub_filters as $subf) {
 			$out->add($subf->simplify());

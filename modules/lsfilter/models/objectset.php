@@ -25,7 +25,7 @@ abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	 * Get the query representing the set
 	 */
 	public function get_query() {
-		return '['.$this->table.'] '.$this->filter->visit(new LSFilterQueryBuilderVisitor(), 0);
+		return '['.$this->table.'] '.$this->filter->simplify()->visit(new LSFilterQueryBuilderVisitor(), 0);
 	}
 
 	/**

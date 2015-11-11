@@ -15,6 +15,11 @@ abstract class LivestatusFilterBase {
 	abstract function visit( LivestatusFilterVisitor $visitor, $data );
 
 	/**
+	 * generate unqiue hash for the current filter
+	 */
+	abstract function get_hash ();
+
+	/**
 	 * Simplify the filter
 	 */
 	function simplify() {
