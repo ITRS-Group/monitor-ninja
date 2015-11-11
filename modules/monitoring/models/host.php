@@ -198,6 +198,7 @@ class Host_Model extends BaseHost_Model {
 	 * This is determined by magic regexp parsing of the check_source field
 	 *
 	 * @ninja orm depend[] check_source
+	 * @return string Either local, peer or poller
 	 */
 	public function get_source_type() {
 		$source = $this->get_source();

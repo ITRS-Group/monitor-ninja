@@ -306,7 +306,20 @@ endif; ?>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $service!==false?_('Next scheduled active check'):_('Next scheduled check') ?></td>
-			<td id="field_next_check"><?php echo $object->get_next_check() && $object->get_active_checks_enabled() ? date($date_format_str, $object->get_next_check()) : _('N/A') ?></td>
+			<td id="field_next_check">
+				<?php 
+					if ($object->get_next_check() && $object->get_active_checks_enabled()) {
+						$source = $object->get_source_type();
+						if ($source != 'poller' && $source != 'peer') {
+							echo date($date_format_str, $object->get_next_check()); 
+						} else {
+							echo "Remotely checked by " . $object->get_source_node();
+						} 
+					} else {
+						echo "N/A";
+					}
+				?>
+			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo _('Last state change'); ?></td>
