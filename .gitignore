@@ -14,6 +14,9 @@ application/widgets/cloudinfo
 modules/op5reports
 *.dojod
 
+application/logs
+application/config/custom/*
+
 # Generated code
 modules/*/js
 modules/*/html
