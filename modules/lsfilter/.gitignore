@@ -10,4 +10,3 @@ libraries/LSFilterLexer.php
 libraries/LSFilterParser.php
 libraries/LSFilterPreprocessor.php
 libraries/LSFilterVisitor.php
-views/css/LSFilterStyle.css

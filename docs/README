@@ -7,12 +7,6 @@ Ninja requires the following system software to be installed:
 php, php-mysql and php-cli 5.3+ (php-process)
 MySQL 5+ (4 might also work but is not tested)
 
-Further, generating stylesheets require:
-ruby
-rubygems (gem install compass) or:
-  rubygems-sass
-  rubygems-compass
-
 
 It also requires the following software, which you can find on git.op5.org:
 
@@ -49,8 +43,7 @@ Here is a longer and a bit more exact version on how to install it
 
 4. Download ninja from http://git.op5.org/
 
-5. Within ninja directory, type "make". In case of depenceny issues with gems
-   and compass, follow the instructions in the terminal.
+5. Within ninja directory, type "make".
 
 6. Copy the ninja dir to a suitable location. Will vary between installations.
 mkdir /usr/local/nagios/addons/

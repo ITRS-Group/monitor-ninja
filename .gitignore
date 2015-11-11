@@ -13,7 +13,6 @@ application/widgets/cloudinfo
 *.swp
 modules/op5reports
 *.dojod
-.sass-cache
 
 # Generated code
 modules/*/js
@@ -21,13 +20,3 @@ modules/*/html
 modules/*/models/base
 modules/*/manifest/orm_*.php
 src/generators/*
-
-application/views/css/*/*.css
-application/views/icons/x*-*.png
-application/views/icons/menu-*.png
-!application/views/css/default/ie7.css
-!application/views/css/default/jquery-ui-custom.css
-!application/views/css/pink_n_fluffy/ie7.css
-!application/views/css/pink_n_fluffy/jquery-ui-custom.css
-!application/views/css/classic/ie7.css
-!application/views/css/classic/jquery-ui-custom.css
