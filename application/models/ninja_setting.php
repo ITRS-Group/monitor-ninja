@@ -25,11 +25,7 @@ class Ninja_setting_Model extends Model
 			return false;
 
 		$db = Database::instance();
-		try {
-			@$db->connect();
-		} catch (Exception $ex) {
-			return false;
-		}
+		$db->connect();
 
 		if (empty($user))
 			$user = "''";
@@ -70,11 +66,7 @@ class Ninja_setting_Model extends Model
 			return false;
 
 		$db = Database::instance();
-		try {
-			@$db->connect();
-		} catch (Exception $ex) {
-			return false;
-		}
+		$db->connect();
 		$res = false;
 		$sql_base = "SELECT * FROM ninja_settings";
 		if ($default === true) {

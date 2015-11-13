@@ -41,6 +41,10 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function connect()
 	{
+
+		if (!function_exists('mysql_connect')) {
+			throw new Kohana_Database_Exception("Missing PHP extension for MySQL");
+		}
 		// Check if link already exists
 		if (is_resource($this->link))
 			return $this->link;
