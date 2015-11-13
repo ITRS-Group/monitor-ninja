@@ -39,6 +39,7 @@ Requires: monitor-livestatus
 Requires: monitor-backup
 Requires: op5-bootstrap
 BuildRequires: php-op5lib >= 1.1.0-beta14
+BuildRequires: python
 BuildRequires: doxygen
 BuildRequires: graphviz
 %if 0%{?suse_version}
