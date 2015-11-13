@@ -41,7 +41,6 @@ Feature: Menu
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
 		Then I should see menu items:
-			| Configure |
 			| View active config |
 			| Backup/Restore |
 			| Manage filters |
