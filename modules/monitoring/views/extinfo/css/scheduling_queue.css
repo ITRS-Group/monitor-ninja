@@ -1,0 +1,6 @@
+
+form[action="scheduling_queue"] input[type="text"] {
+	padding: 3px;
+	margin: 2px;
+	width: 128px;
+}
