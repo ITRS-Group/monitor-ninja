@@ -294,8 +294,12 @@ class html {
 	 * @param  string $name The icon name
 	 * @return string
 	 */
-	public static function icon ($name) {
-		return sprintf('<span class="icon-16 x16-%s"></span>', $name);
+	public static function icon ($name, array $attributes = array()) {
+		foreach ($attributes as $key => $value) {
+			$attributes[$key] = html::specialchars($key) . '="' . addslashes($value) . '"';
+		}
+		$attributes = implode(' ', $attributes);
+		return sprintf('<span class="icon-16 x16-%s" %s></span>', $name, $attributes);
 	}
 
 	/**
