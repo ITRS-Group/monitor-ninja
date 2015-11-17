@@ -30,8 +30,12 @@ class config
 
 		$setting = self::CONFIG_NOT_FOUND;
 
-		# check for database value
-		$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
+		try {
+			$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
+		} catch (Kohana_Database_Exception $e) {
+			op5log::instance('ninja')->log('error', "Cannot fetch setting '$config_str' for page '$page': " . $e->getMessage());
+			return $setting;
+		}
 		if ($cfg!==false) {
 			$setting = $cfg->setting;
 		}
