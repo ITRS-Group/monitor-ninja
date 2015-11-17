@@ -14,7 +14,11 @@ class installation
 			return self::$timestamp;
 		}
 		$db = Database::instance();
-		$timerow = $db->query('SELECT MIN(timestamp) FROM report_data')->result_array(false, MYSQL_NUM);
+		try {
+			$timerow = $db->query('SELECT MIN(timestamp) FROM report_data')->result_array(false, MYSQL_NUM);
+		} catch (Kohana_Database_Exception $e) {
+			return 0;
+		}
 		$installation_time = $timerow[0][0];
 		if($installation_time === NULL) {
 			$installation_time = time();

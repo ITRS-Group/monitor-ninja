@@ -8,7 +8,7 @@ class ORMException extends Exception {
 	private $field = false;
 
 	/**
-	 * initialization of the ORMExcetpion
+	 * initialization of the ORMException
 	 *
 	 * @param $msg message to print
 	 * @param $table related table, or false
@@ -20,9 +20,9 @@ class ORMException extends Exception {
 		$this->table = $table;
 		$this->field = $field;
 		if( $table )
-			$msg .= "Table: ".$table;
+			$msg .= ", in table: '".$table."'";
 		if( $field )
-			$msg .= "Field: ".$field;
+			$msg .= ", in field: '".$field."'";
 		parent::__construct($msg, 0, $previous);
 	}
 
