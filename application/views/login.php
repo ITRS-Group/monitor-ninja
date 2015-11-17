@@ -38,14 +38,15 @@
 
 	<body>
 		<div id="login-table">
-			<?php if (isset($error_msg)) echo $error_msg; ?>
 			<?php echo form::open($login_page, array('id' => 'login_form')); ?>
 			<table border="1">
 				<tr>
 					<td colspan="2">
-						<?php
-							$brand = brand::get();
-							echo '<center>' . $brand . '</center>';
+						<?php $brand = brand::get();
+						echo '<center>' . $brand . '</center>';
+						if (isset($error_msg)) {
+							echo "<p class='alert error'>" . $error_msg . "</p>";
+						}
 						?>
 					</td>
 				</tr>
