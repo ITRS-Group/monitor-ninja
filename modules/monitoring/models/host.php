@@ -334,7 +334,7 @@ class Host_Model extends BaseHost_Model {
 	 *
 	 * @ninja orm_command name Add a new comment
 	 * @ninja orm_command category Actions
-	 * @ninja orm_command icon comment
+	 * @ninja orm_command icon add-comment
 	 *
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string

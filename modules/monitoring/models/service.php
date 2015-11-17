@@ -334,7 +334,7 @@ class Service_Model extends BaseService_Model {
 	 *
 	 * @ninja orm_command name Add a new comment
 	 * @ninja orm_command category Actions
-	 * @ninja orm_command icon comment
+	 * @ninja orm_command icon add-comment
 	 * @ninja orm_command mayi_method update.command.comment
 	 *
 	 * @ninja orm_command params.comment.id 0
