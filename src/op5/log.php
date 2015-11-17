@@ -221,12 +221,16 @@ class op5Log {
 	 */
 	public function do_writeback()
 	{
-		$processUser = posix_getpwuid(posix_geteuid());
+
+		$processUser = array('name' => 'unknown');
+		if (function_exists('posix_getpwuid')) {
+			$processUser = posix_getpwuid(posix_geteuid());
+		}
 		$user = $processUser['name'];
 		foreach($this->messages as $file => $messages) {
 			$dir = dirname($file);
 			if(!is_dir($dir)) {
-				@mkdir($dir, 0775, true);
+				mkdir($dir, 0775, true);
 			}
 
 			$new_file = false;
@@ -234,7 +238,7 @@ class op5Log {
 				$new_file = true;
 			}
 
-			$res = @file_put_contents(
+			$res = file_put_contents(
 				$file,
 				implode("\n", $messages) . "\n",
 				FILE_APPEND);
