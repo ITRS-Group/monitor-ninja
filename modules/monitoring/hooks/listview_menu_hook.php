@@ -55,9 +55,14 @@ Event::add ( 'ninja.menu.setup', function () {
 	$saved = array ();
 	$set = SavedFilterPool_Model::all ();
 
-	foreach ( $set->it ( false, array (
-			'filter_name'
-	) ) as $value ) {
+	try {
+		$it = $set->it(false, array('filter_name'));
+	} catch (ORMDriverException $e) {
+		op5log::instance('ninja')->log('error', "Failed to get saved filters: " . $e->getMessage());
+		return new ArrayIterator(array());
+	}
+
+	foreach ( $it as $value ) {
 		$table = $value->get_filter_table ();
 		if (! isset ( $saved [$table] ))
 			$saved [$table] = array ();
