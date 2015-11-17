@@ -31,7 +31,7 @@ class Auth_Controller extends Ninja_Controller {
 		if ($_POST) {
 			$this->_verify_access('ninja.auth:login');
 			try {
-				if(PHP_SAPI !== 'cli' && config::get('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
+				if(PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
 					throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
 				}
 
@@ -49,7 +49,6 @@ class Auth_Controller extends Ninja_Controller {
 					throw new NinjaLogin_Exception(_("Login failed - please try again"));
 				}
 
-				# might redirect somewhere
 				Event::run('ninja.logged_in');
 			} catch(NinjaLogin_Exception $e) {
 				$this->template->error_msg = $e->getMessage();
