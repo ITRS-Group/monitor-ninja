@@ -978,6 +978,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 * Loads options for a saved report by id.
 	 * Primarily exists so report-type-specific
 	 * load-mangling can take place.
+	 *
+	 * @param $id int
+	 * @return array (empty if nothing was found)
 	 */
 	protected function load_options($id)
 	{
@@ -997,9 +1000,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		}
 		$sql = "SELECT object_name FROM saved_reports_objects WHERE report_id = ".(int)$id." ORDER BY object_name";
 		$res = $db->query($sql);
-		$opts['objects'] = array();
 		foreach ($res as $obj) {
+			if(!isset($opts['objects'])) {
+				$opts['objects'] = array();
+			}
 			$opts['objects'][] = $obj->object_name;
+		}
+		if(empty($opts['objects'])) {
+			op5log::instance('ninja')->log('warning', "Could not find any report objects for report with id '".((int) $id)."'");
 		}
 		return $opts;
 	}
@@ -1024,6 +1032,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		$this['report_name'] = $res[0]->report_name;
 
 		$res = $this->load_options($id);
+		if(!$res) {
+			return false;
+		}
 		$this->set_options($res);
 		$this['report_id'] = $id;
 		return true;
