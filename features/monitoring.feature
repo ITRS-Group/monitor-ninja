@@ -394,24 +394,6 @@ Feature: Monitoring
 		And I should see "Enable flap detection"
 
 	@configuration @asmonitor @case-647
-	Scenario: Host details host extinfo page configure
-		Verify that the "Configure" link works correctly.
-
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Configure"
-		Then I should be on the Configure page
-
-	@configuration @asmonitor @case-647
-	Scenario: Hostgroup details hostgroup extinfo page configure
-		Verify that the "Configure" link works correctly.
-
-		Given I am on the Hostgroup details page
-		When I click css "span[title=Actions]"
-		And I click "Configure"
-		Then I should be on the Configure page
-
-	@configuration @asmonitor @case-647
 	Scenario: Host details host extinfo page show performance graph
 		Verify that the "Show performance graph" link works correctly.
 
@@ -607,17 +589,6 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		Then "Current status" should be shown as "Critical"
-
-	@configuration @asmonitor @case-656
-	Scenario: Service extinfo page check configure link
-		Verify that the configuration link on the extinfo page for a given service
-		point to the right place.
-
-		Given I am on the Service details page
-		When I click "System Load"
-		And I click "Configure"
-		Then I should be on url "/monitor//index.php/configuration/configure?page=edit.php%3Fobj_type%3Dservice%26host%3Dlinux-server1%26service%3DSystem%2BLoad"
-		And I should see "linux-server1" within frame "iframe"
 
 	@configuration @asmonitor @case-656
 	Scenario: Service extinfo page check performance graph link
