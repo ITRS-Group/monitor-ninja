@@ -185,6 +185,7 @@ $tables = array (
 			'check_interval' => 'float',
 			'check_options' => 'int',
 			'check_period' => 'string',
+			'check_source' => 'string',
 			'check_type' => 'int',
 			'checks_enabled' => 'int',
 			'childs' => 'list',
@@ -275,7 +276,6 @@ $tables = array (
 			'total_services' => 'int',
 			'worst_service_hard_state' => 'int',
 			'worst_service_state' => 'int',
-			'check_source' => 'string',
 		/*
 			'x_3d' => 'float',
 			'y_3d' => 'float',
@@ -338,6 +338,7 @@ $tables = array (
 			'check_interval' => 'float',
 			'check_options' => 'int',
 			'check_period' => 'string',
+			'check_source' => 'string',
 			'check_type' => 'int',
 			'checks_enabled' => 'int',
 			'comments' => 'list',
@@ -408,7 +409,6 @@ $tables = array (
 			'should_be_scheduled' => 'int',
 			'state' => 'int',
 			'state_type' => 'int',
-			'check_source' => 'string',
 		),
 	),
 	'status' =>
