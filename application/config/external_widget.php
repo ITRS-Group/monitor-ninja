@@ -18,18 +18,13 @@
 *
 * 	quickly gives the external user right to see everything.
 *
-* 	Specifying the 'widget_name' below is not necessary
-* 	but will make it possible to call the external_widget
-* 	controller without specifying what widget to use.
-*
 * 	A simple iframe on the external page like the following
 * 	should work if a valid user is configured:
 *
 * 	<iframe
-* 		src="http://<SERVER_NAME>/ninja/index.php/external_widget/show_widget/<OPTIONAL WIDGET_NAME>"
+* 		src="http://<SERVER_NAME>/ninja/index.php/external_widget/<WIDGET_REFERENCE>"
 * 		height="500px" frameborder=0 width="600px" scrolling='no'></iframe>
 */
-$config['widget_name'] = 'netw_health';
 $config['username'] = false;
 $config['groups'] = false;
 
@@ -37,20 +32,6 @@ $config['widgets'] = array();
 
 /**
  * Define the widgets you want to expose, with config below.
- *
- * For example, to expose a nagvis map, add the following:
- *
- * $config['widgets']['some_map'] = array(
- *     'name' => 'nagvis',
- *     'friendly_name' => 'Some NagVis map',
- *     'setting' => array(
- *         'height' => 600,
- *         'map' => 'my_nagvis_map_name'
- *     )
- * );
- *
- * The widget will be available at:
- * https://my_monitor_host/monitor/index.php/external_widget/some_map
  *
  * To expose a list view, given a filter:
  *
