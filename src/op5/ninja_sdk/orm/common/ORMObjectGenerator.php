@@ -54,11 +54,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 
 		/* Storage */
 		foreach( $this->structure['structure'] as $field => $type ) {
-			if( is_array($type) ) {
-				$this->{"storage_object"}( $field, $type );
-			} else {
-				$this->{"storage_$type"}( $field );
-			}
+			$this->storage_object( $field, $type );
 		}
 
 		$this->generate_factory_from_array();
@@ -310,15 +306,44 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->finish_function();
 	}
 
+
+	/**
+	 * Given a field type, returns the default value
+	 * of that type as a string.
+	 *
+	 * @param string $type
+	 * @return string
+	 */
+	private function default_value_of_type($type) {
+		/*
+		 * in case the type is a "foreign relation" (described by a tuple
+		 * ('foreign type', 'local prefix')), it's likely an object so we set
+		 * null as the default value
+		 */
+		if (is_array($type)) {
+			return 'null';
+		}
+
+		switch ($type) {
+		case 'int': 	return '0';
+		case 'time':	return '0';
+		case 'float':	return '0.0';
+		case 'string':	return '""';
+		case 'dict':	return 'array()';
+		case 'list':	return 'array()';
+		}
+		throw new ORMGeneratorException("Unhandled type '$type'; can not determine default value");
+	}
+
 	/**
 	 * Writes a private variable to class
 	 *
-	 * @param $name string
-	 * @param $type string		Unused?
+	 * @param string $name
+	 * @param string $type
 	 * @return void
 	 **/
 	private function storage_object( $name, $type ) {
-		$this->write( "private \$$name = false;" );
+		$this->write( "private \$$name = " . $this->default_value_of_type($type)  . ";" );
 	}
 
 	/**
@@ -345,15 +370,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function storage_string( $name ) {
-		$this->write( "private \$$name = false;" );
 	}
 
 	/**
@@ -400,15 +416,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 *
 	 * @return void
 	 **/
-	private function storage_time( $name ) {
-		$this->write( "private \$$name = false;" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
 	private function fetch_time( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
 		$this->write( "\$obj->$name = intval( \$values[\$prefix.'$backend_name'] );" );
@@ -442,15 +449,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	}
 
 	/* Int */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function storage_int( $name ) {
-		$this->write( "private \$$name = false;" );
-	}
 
 	/**
 	 * undocumented function
@@ -496,15 +494,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 *
 	 * @return void
 	 **/
-	private function storage_float( $name ) {
-		$this->write( "private \$$name = false;" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
 	private function fetch_float( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
 		$this->write( "\$obj->$name = floatval( \$values[\$prefix.'$backend_name'] );" );
@@ -544,15 +533,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 *
 	 * @return void
 	 **/
-	private function storage_list( $name ) {
-		$this->write( "private \$$name = false;" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
 	private function fetch_list( $name, $backend_name ) {
 		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
 		$this->write( "\$obj->$name = \$values[\$prefix.'$backend_name'];" );
@@ -585,15 +565,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	}
 
 	/* Dict */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function storage_dict( $name ) {
-		$this->write( "private \$$name = false;" );
-	}
 
 	/**
 	 * undocumented function

@@ -1,5 +1,7 @@
 <?php
 
+class ORMGeneratorException extends Exception {}
+
 abstract class ORMGenerator extends class_generator {
 	/**
 	 * Name of the object class, like Host_Model
