@@ -466,70 +466,89 @@ class Extinfo_Controller extends Ninja_Controller {
 	/**
 	*   Show scheduling queue
 	*/
-	public function scheduling_queue()
+	public function scheduling_queue($host_filter = '', $service_filter = '')
 	{
-		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
-		$this->_verify_access($resource.':read.scheduling_queue');
-		$resource = ObjectPool_Model::pool('services')->all()->mayi_resource();
-		$this->_verify_access($resource.':read.scheduling_queue');
 
-		$back_link = '/extinfo/scheduling_queue/';
+		$host_filter = $this->input->get('host', $host_filter);
+		$service_filter = $this->input->get('service', $service_filter);
 
-		$host = $this->input->get('host');
-		$service = $this->input->get('service');
-		$sq_model = new Scheduling_queue_Model();
+		$service_set = ServicePool_Model::all()
+			->reduce_by('description', $service_filter, '~~')
+			->reduce_by('host.name', $host_filter, '~~');
+		$host_set = HostPool_Model::all()
+			->reduce_by('name', $host_filter, '~~');
 
+		$this->_verify_access($service_set->mayi_resource().':read.scheduling_queue');
+		$this->_verify_access($host_set->mayi_resource().':read.scheduling_queue');
+
+		$unfiltered_total = $service_set->count() + $host_set->count();
+
+		$service_set = $service_set->reduce_by('check_source', '^Merlin', '!~~');
+		$host_set = $host_set->reduce_by('check_source', '^Merlin', '!~~');
+
+		$filtered_total = $service_set->count() + $host_set->count();
+		$is_remote_filtered = ($filtered_total < $unfiltered_total);
+
+		$service_it = $service_set->it(false, array("next_check"));
+		$host_it = $host_set->it(false, array("next_check"));
+
+		$raw = array();
+
+		foreach ($service_it as $service) {
+			$raw[] = $service;
+		}
+
+		foreach ($host_it as $host) {
+			$raw[] = $host;
+		}
+
+		usort($raw, function ($a, $b) {
+			if ($a->get_next_check() > $b->get_next_check()) return 1;
+			elseif ($a->get_next_check() > $b->get_next_check()) return -1;
+			else return 0;
+		});
+
+		$total = count($raw);
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
-		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page));
+		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page, 'total_items' => $total));
 
-		$sq_model->set_range(
-				$pagination->items_per_page,
-				($pagination->current_page-1)*$pagination->items_per_page
-				);
-
-		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
-		$this->template->js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$this->template->js_strings = $this->js_strings;
-
-		$this->session->set('back_extinfo',$back_link);
-
-		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
-		$this->template->content = $this->add_view('extinfo/scheduling_queue');
-		$this->template->content->data = $sq_model->show_scheduling_queue($service, $host);
-
-		if(!$this->template->content->data || count($this->template->content->data) < $items_per_page) {
+		if ($total <= $pagination->items_per_page * $pagination->current_page) {
 			$pagination->hide_next = true;
 		}
 
-		$this->template->content->host_search = $host;
-		$this->template->content->service_search = $service;
-		$this->template->content->header_links = array(
+		$raw = array_slice($raw, ($pagination->current_page - 1) * $pagination->items_per_page, $pagination->items_per_page);
+
+		$this->template->css[] = $this->add_path('extinfo/css/scheduling_queue.css');
+		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
+		$this->template->content = $this->add_view('extinfo/scheduling_queue');
+		$this->template->content->data = $raw;
+		$this->template->content->is_remote_filtered = $is_remote_filtered;
+
+		$this->template->content->host_filter = $host_filter;
+		$this->template->content->service_filter = $service_filter;
+		$this->template->content->columns = array(
 			'host_name' => _('Host'),
 			'description' => _('Service'),
 			'last_check' => _('Last check'),
 			'next_check' => _('Next check')
 		);
 
-		$this->template->content->date_format_str = date::date_format();
 		$this->template->toolbar = new Toolbar_Controller( "Scheduling Queue" );
 
 		$form = '<form action="scheduling_queue" method="get">';
 		$form .= _('Search for');
-		$form .= '<label> ' . _('Host') . ': <input name="host" value="' . $host . '" /></label>';
-		$form .= '<label> ' . _('Service') . ': <input name="service" value="' . $service . '" /></label>';
+		$form .= '<label> ' . _('Host') . ': <input type="text" name="host" value="' . $host_filter . '" /></label>';
+		$form .= '<label> ' . _('Service') . ': <input type="text" name="service" value="' . $service_filter . '" /></label>';
 		$form .= '<input type="submit" value="' . _('Search') . '" /></form>';
 
-		$this->template->toolbar->info( $form );
-		if ( isset( $pagination ) ) {
-			$this->template->toolbar->info( $pagination );
-		}
+		$this->template->toolbar->info($form);
+		$this->template->toolbar->info($pagination->render());
 
-		if ( $host || $service ) {
-			$this->template->toolbar->info( ' <span>' .
+		if ($host_filter || $service_filter) {
+			$this->template->toolbar->info(' <span>' .
 				' ' . _("Do you want to") .
 				' <a href="'. Kohana::config('config.site_domain') . 'index.php/' . Router::$controller . '/' . Router::$method . '">' .
-				_("reset the search filter?") . '</a></span>'
-			);
+				_("reset the search filter?") . '</a></span>');
 		}
 
 	}
