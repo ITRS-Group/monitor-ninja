@@ -647,7 +647,6 @@ td.comments {
   padding: 3px 8px;
   border: 1px solid #c49400;
   background: #efd556;
-  box-shadow: inset 0 0 4px 2px #ffe566;
   text-align: center;
   font-weight: 600;
   color: #544420; }
@@ -674,7 +673,6 @@ td.comments {
 .license-bar,
 .print-notification-bar {
   background: #f0a000;
-  box-shadow: inset 0 0 4px 2px #ffaa10;
   text-shadow: 0 0 1px #703000;
   padding: 8px;
   color: white; }
@@ -1974,7 +1972,6 @@ span.brand-label {
   width: 100%;
   z-index: 2;
   background: #fcfcfc;
-  box-shadow: 0 0 6px #bbbbbb;
   border-bottom: 1px solid #777777; }
   /* line 25, ../base-sass/header.sass */
   .header .logo {
@@ -2151,10 +2148,9 @@ a.external {
 /* line 4, ../base-sass/widget.sass */
 .widget {
   height: auto;
-  margin: 8px;
+  margin: 8px 4px;
   border: 1px solid #777777;
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 0 6px #bbbbbb;
   position: relative; }
 
 /* line 12, ../base-sass/widget.sass */
