@@ -1,82 +1,66 @@
 @filters @listview
 Feature: Filters & list views
-	@configuration @asmonitor
 	Scenario: List hosts
-		Given I have these hosts:
-			| host_name |
-			| linux-server1 |
-			| linux-server2 |
-			| linux-server3 |
-			| linux-server4 |
-			| linux-server5 |
-		And I have these services:
-			| service_description | host_name		| check_command	|
-			| PING                | linux-server1   | check_ping	|
-			| PING                | linux-server2   | check_ping	|
-			| PING                | linux-server3   | check_ping	|
-			| PING                | linux-server4   | check_ping	|
-			| PING                | linux-server5   | check_ping	|
-		And I have activated the configuration
+		Given I have these mocked hosts
+			| name           |
+			| Hue Vong       |
+			| Imelda Angeles |
+			| Manami Ikeda   |
+			| Hoa Mi Chu     |
+			| Yoki Houston   |
+
 		And I go to the listview for [hosts] all
-		Then I should see the configured hosts
+		Then I should see the mocked hosts
 
-	@configuration @asmonitor
 	Scenario: List hosts
-		Given I have these hosts:
-			| host_name |
-			| linux-server1 |
-			| linux-server2 |
-			| linux-server3 |
-			| linux-server4 |
-			| linux-server5 |
-		And I have these services:
-			| service_description | host_name		| check_command	|
-			| PING                | linux-server1   | check_ping	|
-			| PING                | linux-server2   | check_ping	|
-			| PING                | linux-server3   | check_ping	|
-			| PING                | linux-server4   | check_ping	|
-			| PING                | linux-server5   | check_ping	|
-		And I have activated the configuration
+		Given I have these mocked hosts
+			| name |
+			| Mai Kawasaki |
+			| Tami Foster |
+			| Tomasine Vogelstein |
+			| Hue Tram |
+			| Eun Shim |
+		And I have these mocked services
+			| description      | host |
+			| Liam Monroy      | Mai Kawasaki |
+			| Dae-Hyun Kim     | Tami Foster |
+			| Julius Camarillo | Tomasine Vogelstein |
+			| De Pham          | Hue Tram |
+			| Dong-Sun Cheung  | Eun Shim |
 		And I go to the listview for [services] all
-		Then I should see the configured services
-		And I should see the configured hosts
+		Then I should see the mocked services
+		And I should see the mocked hosts
 
-
-	@configuration @asmonitor
 	Scenario: List hosts
-		Given I have these hosts:
-			| host_name |
-			| linux-server1 |
-			| linux-server2 |
-		And I have these services:
-			| service_description | host_name		| check_command	|
-			| PING                | linux-server1   | check_ping	|
-			| PING                | linux-server2   | check_ping	|
-		And I have activated the configuration
+		Given I have these mocked hosts
+			| name |
+			| Irish Acosta |
+			| Najma Ashraf |
+		And I have these mocked services
+			| description      | host |
+			| Molly Eisenstadt | Irish Acosta |
+			| Anming Gu        | Najma Ashraf |
 		And I go to the listview for [services] all
-		Then I should see the configured services
-		And I should see "linux-server1"
-		And I should see "linux-server2"
+		Then I should see the mocked services
+		And I should see "Irish Acosta"
+		And I should see "Najma Ashraf"
 
-
-	@configuration @asmonitor
 	Scenario: List services with granular filter
 		Ensure that filters work even when we specify more limiting
 		filters.
 
-		Given I have these hosts:
-			| host_name |
-			| linux-server1 |
-			| linux-server2 |
-		And I have these services:
-			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
-			| PING                | linux-server1   | check_ping      | 1                     | 0                     |
-			| PING                | linux-server2   | check_ping      | 0                     | 1                     |
-		And I have activated the configuration
+		Given I have these mocked hosts
+			| name           |
+			| Zuzela Adkins  |
+			| Zuzela Griffin |
+		And I have these mocked services
+			| description | host           | notifications_enabled | active_checks_enabled |
+			| Munny Sum   | Zuzela Adkins  | 1                     | 0                     |
+			| De Lieu     | Zuzela Griffin | 0                     | 1                     |
 		And I go to the listview for [services] active_checks_enabled = 0 and notifications_enabled = 1
-		And I should see "PING"
-		And I should see "linux-server1"
-		And I shouldn't see "linux-server2"
+		And I should see "Munny Sum"
+		And I should see "Zuzela Adkins"
+		And I shouldn't see "Zuzela Griffin"
 
 	@configuration @asmonitor @case-653
 	Scenario: Service detail listing column sorting
@@ -199,7 +183,7 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "C-service"
 		And The first row of the filter result table should contain "B-service"
 
-	@configuration @asmonitor @unreliable
+	@configuration @asmonitor @unreliable @integration
 	Scenario: Save filter
 		Given I am on the Host details page
 		And I click "Show/Edit Text Filter"
