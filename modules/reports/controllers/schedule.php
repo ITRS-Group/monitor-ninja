@@ -283,7 +283,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$tmp_parts = arr::search($_REQUEST, 'elementid');
 
 		if (!$tmp_parts) {
-			# @@@FIXME: inform user via jGrowl and echo old value somehow?
+			# @@@FIXME: inform user via notify and echo old value somehow?
 			echo _("Required data is missing, unable to save changes");
 			return false;
 		}

@@ -16,10 +16,10 @@ $(document).ready(function () {
 							csrf_token: _csrf_token
 						},
 						success: function () {
-							$.jGrowl(_settings_msg, {header: _success_header});
+							$notify(_settings_msg, {type: "success"});
 						},
 						error: function () {
-							$.jGrowl(_error_header, {header: _error_header});
+							$notify(_error_header, {type: "error"});
 						},
 						type: 'POST'
 					}

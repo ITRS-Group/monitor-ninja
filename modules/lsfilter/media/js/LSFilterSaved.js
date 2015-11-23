@@ -104,7 +104,7 @@ var lsfilter_saved = {
 			});
 
 		} else {
-			$.jGrowl(_('You must give the filter a name!'));
+			$.notify(_('You must give the filter a name!'));
 			$('#lsfilter_save_filter').removeClass().text(_('Save'));
 		}
 	}
