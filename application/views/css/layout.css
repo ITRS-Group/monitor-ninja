@@ -1,0 +1,123 @@
+/* CSS Reset */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+html {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+q, blockquote {
+  quotes: none;
+}
+
+q:before, q:after, blockquote:before, blockquote:after {
+    content: "";
+    content: none;
+}
+
+a img {
+  border: none;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+/* End CSS Reset */
+
+/* Width based layouting */
+.width-33 {
+  width: 33% !important;
+  margin: 0 0.2% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.width-66 {
+  width: 66% !important;
+  margin: 0 0.2% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.width-50 {
+  width: 49.4% !important;
+  margin: 0 0.2% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.width-80 {
+  width: 79.5% !important;
+  margin: 0 0.2% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.width-20 {
+  width: 19.5% !important;
+  margin: 0 0.2% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+/* End Width base layouting */
+
+/* Utility classes */
+
+/* Restores page flow following floating elements */
+.clear {
+  clear: both;
+}
+
+.left {
+  float: left !important;
+  margin: 0;
+}
+
+.right {
+  float: right !important;
+  margin: 0;
+}
+
+.indent {
+  margin-left: 16px;
+}
+
+.image-link {
+  border: none !important;
+}
+
+
+/* End Utility classes */
