@@ -254,7 +254,7 @@ table {
     box-shadow: inset 0 0 2px 4px #ff99b3; }
   /* line 199, ../base-sass/common.sass */
   table th {
-    background: #fafbf9;
+    background: #feeded;
     border-bottom: 1px solid #edebe9;
     padding: 5px 3px 4px 3px;
     font-size: 1.1em; }
@@ -729,7 +729,7 @@ td.comments {
 /* line 639, ../base-sass/common.sass */
 .main-toolbar {
   border-top: 1px solid #b04779;
-  background: #f7f6f5;
+  background: #ff99b3;
   clear: both; }
   /* line 644, ../base-sass/common.sass */
   .main-toolbar .main-toolbar-menu {
@@ -1974,7 +1974,7 @@ span.brand-label {
   min-width: 768px;
   width: 100%;
   z-index: 2;
-  background: #fcfcfc;
+  background: #feeded;
   border-bottom: 1px solid #b04779; }
   /* line 25, ../base-sass/header.sass */
   .header .logo {
