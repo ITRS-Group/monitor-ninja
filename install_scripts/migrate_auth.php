@@ -64,7 +64,15 @@ $new_rights = array(
 			'servicegroup_command_check_execution',
 			'servicegroup_command_send_notifications'
 		)
-	)
+	),
+	5 => array(
+		'service_view_all' => array(
+			'business_services_access',
+		),
+		'service_view_contact' => array(
+			'business_services_access',
+		)
+	),
 );
 
 
