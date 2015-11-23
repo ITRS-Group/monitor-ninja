@@ -75,6 +75,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /* End CSS Reset */
 
 /* Width based layouting */
+
 .width-33 {
   width: 33% !important;
   margin: 0 0.2% !important;
@@ -109,7 +110,49 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
-/* End Width base layouting */
+
+
+.page-flow-layout {
+  padding: 16px;
+}
+
+.page-flow-layout h2 {
+  margin-top: 16px;
+}
+
+.configuration-page-link {
+  display: inline-block;
+  vertical-align: top;
+  min-height: 32px;
+  width: 210px;
+  margin: 0 8px;
+  padding: 0;
+}
+
+.configuration-page-link a {
+  border: none;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 4px 8px;
+  width: 100%;
+}
+
+.configuration-page-link a:hover {
+  border: none;
+}
+
+.configuration-page-link span {
+  vertical-align: middle;
+  margin: 4px;
+}
+
+.configuration-page-description {
+  display: inline-block;
+  padding-left: 4px;
+}
+
+
+/* End layouting */
 
 /* Utility classes */
 
@@ -222,6 +265,15 @@ table td {
   vertical-align: middle;
 }
 
+table td.comments {
+  width: 200px;
+}
+
+.comments .content {
+  margin-top: 0;
+  padding: 4px;
+}
+
 table td:last-child {
   border-right: 1px solid #dddbd9;
 }
@@ -234,10 +286,115 @@ table.no_border td {
   border: none;
 }
 
+/* Toolbar */
 
-/* End table layout */
+.main-toolbar {
+  border-top: 1px solid transparent;
+  clear: both;
+}
+
+.main-toolbar .main-toolbar-menu {
+  float: right;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.main-toolbar .main-toolbar-title {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  padding: 5px 24px 4px 12px;
+}
+
+.main-toolbar .main-toolbar-subtitle {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  padding: 5px 16px 4px 6px;
+}
+
+.main-toolbar .main-toolbar-info {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 2px 0 1px 0;
+}
+
+.main-toolbar .main-toolbar-info a {
+  display: inline-block;
+  min-height: 14px;
+  margin: 0 8px;
+}
+
+.main-toolbar .main-toolbar-info li a {
+  margin: 0;
+}
+
+.main-toolbar .main-toolbar-info span {
+  display: inline-block;
+  min-height: 14px;
+}
+
+.main-toolbar .main-toolbar-info form {
+  display: inline-block;
+  width: auto;
+}
+
+.main-toolbar .main-toolbar-info form input,
+.main-toolbar .main-toolbar-info form select {
+  margin: 0;
+}
+
+.main-toolbar .main-toolbar-buttons {
+  float: right;
+}
+
+.main-toolbar .main-toolbar-buttons a {
+  display: inline-block;
+  border: none;
+  padding: 5px 4px 4px 4px;
+  border-left: 1px solid #aaaaaa;
+}
+
+.main-toolbar .main-toolbar-buttons a:first-child {
+  border-left: none;
+}
+
+.main-toolbar .main-toolbar-buttons a span.icon-16,
+.main-toolbar .main-toolbar-buttons a span.toolbar-icon-label {
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.main-toolbar .main-toolbar-buttons button {
+  margin: 0;
+  padding: 0px 8px !important;
+  border-width: 0 1px;
+}
+
+#user_settings input[type="submit"],
+#command_form input[type="submit"] {
+  margin-left: 8px;
+}
+
 
 /* Explicit classes */
+
+.restricted-output {
+  word-wrap: break-word;
+  min-width: 300px;
+  max-width: 640px;
+  width: 35%;
+}
+
+.padd-table {
+  margin: 4px 0;
+}
+
+.padd-table td:first-child,
+.padd-table th:first-child {
+    padding-left: 8px;
+}
 
 .container {
   min-width: 600px;
@@ -375,5 +532,513 @@ input[type="submit"].plain {
   padding: 0;
 }
 
+/* Header */
 
-/* End Form classes */
+.header {
+  position: relative;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  min-width: 768px;
+  width: 100%;
+  z-index: 2;
+}
+
+.header .logo {
+  position: relative;
+  margin-left: 16px;
+  float: left;
+}
+
+.header .headercontent {
+  float: left;
+  margin-left: 20px;
+  margin-top: 12px;
+  padding: 0;
+}
+
+.header .headercontent ul {
+  float: left;
+}
+
+.header .headercontent ul li {
+  float: left;
+  border-radius: 4px;
+  margin: 0 2px 0 0;
+}
+
+.header .headercontent ul li:hover {
+  border-color: #999999;
+  background: white;
+}
+
+.header .headercontent a span {
+  cursor: pointer;
+  margin: 6px 4px 0 4px;
+  background-repeat: no-repeat;
+  overflow: auto;
+}
+
+/* Menu */
+
+.main-menu {
+  float: left;
+}
+
+.menu {
+  z-index: 3;
+}
+
+.menu.menu-right {
+    margin-right: 8px;
+}
+
+.menu.menu-right > ul > li {
+      height: 24px;
+}
+
+.menu.menu-right > ul > li > ul {
+      right: 0;
+}
+
+.menu.menu-right > ul > li > ul ul {
+  left: -100%;
+  margin-left: -2px;
+}
+
+.menu.menu-right > ul > li > a {
+  display: inline-block;
+  padding: 5px 8px 4px 8px;
+}
+
+
+.menu ul {
+  position: relative;
+  float: left;
+}
+
+.menu ul li {
+  position: relative;
+  display: inline-block;
+  padding: 7px;
+}
+
+.menu ul li:hover > ul {
+  display: block;
+}
+
+.menu ul li ul {
+  position: absolute;
+  display: none;
+  width: 200px;
+  margin: 0;
+  top: 100%;
+  border: 1px solid transparent;
+  border-radius: 0 0 3px 3px;
+  z-index: 4;
+}
+
+.menu ul li ul li {
+  display: block;
+  position: relative;
+  border: none;
+  border-top: 1px solid transparent;
+  padding: 0;
+}
+
+.menu ul li ul li:first-child {
+  border: none;
+}
+
+.menu ul li ul li.meta {
+  padding: 4px 0 4px 8px;
+}
+
+.menu ul li ul li span.menu-section:after,
+.menu ul li ul li a.menu-section:after {
+  position: absolute;
+  padding: 4px 0;
+  right: 8px;
+}
+
+.menu ul li ul li ul {
+  left: 100%;
+  margin: 0;
+  top: 0;
+}
+
+.menu ul li ul li > a, .menu ul li ul li > span {
+  border: none;
+  display: block;
+  padding: 6px 0 6px 8px;
+}
+
+
+.menu ul li ul li > a span,
+.menu ul li ul li > span span {
+  vertical-align: middle;
+}
+
+.menu ul li ul li > a span:first-child,
+.menu ul li ul li > span span:first-child {
+  margin-right: 4px;
+}
+
+.menu ul li ul li .nav-seg-span {
+  margin-left: 8px;
+}
+
+.menu ul li > ul {
+  margin-left: -7px;
+}
+
+.main-menu > ul > li {
+  height: 36px;
+  padding: 6px;
+  vertical-align: top;
+}
+
+.main-menu > ul > li > a {
+  border: none;
+  display: inline-block;
+}
+
+.main-menu > ul > li > a > span {
+  vertical-align: middle;
+}
+
+.main-menu > ul > li > a > span:last-child {
+  font-weight: bold;
+  margin: 0 6px;
+}
+
+.input-wide {
+  width: 312px;
+}
+
+#progress {
+  margin-left: 40%;
+}
+
+#progress em {
+  margin-top: 12px;
+}
+
+#response {
+  margin-left: 0px;
+  padding-top: 0px;
+  background: #f9f9f5 url(images/bg.png) repeat-x;
+}
+
+#response h1 {
+  font: bold 12px arial, helvetica, sans-serif;
+  display: none;
+}
+
+#response ul {
+  padding: 7px 2px 5px 33px;
+  margin: 0px;
+  margin-bottom: 7px;
+  width: auto;
+  background: transparent 10px 8px no-repeat;
+}
+
+#response li {
+  background: none;
+  padding: 2px 0px;
+  width: auto;
+  list-style: none;
+}
+
+#response ul.ok {
+  background-image: url(icons/x16/shield-ok.png);
+}
+
+#response ul.error {
+  background-image: url(icons/x16/shield-error.png); }
+
+#response ul.warning {
+  background-image: url(icons/x16/shield-warning.png);
+}
+
+#response ul.info {
+  background-image: url(icons/x16/shield-info.png);
+}
+
+#response ul.help {
+  background-image: url(icons/x16/shield-help.png);
+}
+
+#display_service_status {
+  display: none;
+}
+
+#log_entries {
+  padding-bottom: 15px;
+}
+
+a#optiontoggle {
+  margin: 5px;
+}
+
+#new_schedule_report_table {
+  width: auto;
+}
+
+.action img {
+  margin-left: 5px;
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+}
+.action a {
+  border: 0 !important;
+}
+
+.report-page-setup, .report-page {
+  padding: 0px 16px;
+}
+
+.report-page-setup td > label {
+  margin: 4px 0;
+  display: inline-block;
+}
+
+.pie-chart {
+  display: block;
+  float: left;
+  width: auto;
+  margin-right: 7px;
+}
+
+.chart-border {
+  border: 1px solid gainsboro;
+}
+
+.report-chart-fullwidth {
+  min-width: 10px;
+  min-height: 10px;
+}
+
+.log_messages {
+  clear: both;
+  float: left;
+}
+
+.headerNone.left {
+  text-align: left;
+}
+
+.setup-table {
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+.form-dropdown {
+  background: #ededed;
+  border: 1px solid gainsboro;
+  border-radius: 4px;
+  margin-right: 16px;
+  display: none;
+  padding: 10px;
+}
+/* Nagbar and notification classes should not be restyleable, so they are placed here to keep them out of skinnable CSS */
+
+.notification-bar,
+.license-bar,
+.print-notification-bar {
+  clear: both;
+  padding: 3px 8px;
+  border: 1px solid #c49400;
+  background: #efd556;
+  text-align: center;
+  font-weight: 600;
+  color: #544420;
+}
+
+.notification-bar a,
+.license-bar a,
+.print-notification-bar a {
+  color: #4e3e18;
+  border-bottom: none !important;
+  text-decoration: underline !important;
+}
+
+.notification-bar a:hover,
+.license-bar a:hover,
+.print-notification-bar a:hover {
+  color: #3e2e10;
+}
+
+.notification-bar span,
+.license-bar span,
+.print-notification-bar span {
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.license-bar,
+.print-notification-bar {
+  background: #f0a000;
+  text-shadow: 0 0 1px #703000;
+  padding: 8px;
+  color: white;
+}
+
+.license-bar a,
+.print-notification-bar a {
+  color: white;
+}
+
+.license-bar a:hover,
+.print-notification-bar a:hover {
+      color: white;
+}
+
+.print-notification-bar {
+  display: none;
+}
+
+img.brand-icon {
+  vertical-align: middle;
+  height: 32px;
+}
+
+span.brand-label {
+  font-size: 13pt;
+  vertical-align: middle;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+/* Reports */
+
+/* a report block is a logical unit that contains information */
+.report-block {
+  width: 100%;
+  float: none;
+  clear: both;
+  padding-top: 2em;
+}
+
+.report-block td {
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.min-l {
+  min-width: 120px;
+}
+
+.min-s {
+  min-width: 65px;
+}
+
+.min-m {
+  min-width: 100px;
+}
+
+.logo-image {
+  background: url("../../icons/icon.png") no-repeat;
+}
+
+/* Magic name selectors ... */
+#mv_hg_l, #mv_hg_r,
+#mv_sg_l, #mv_sg_r,
+#mv_s_l, #mv_s_r,
+#mv_h_l, #mv_h_r {
+  height: auto;
+  padding-bottom: 4px;
+  margin: 1px 1px;
+}
+
+.output {
+  white-space: normal;
+  border: 0 !important;
+  margin: 0;
+  padding: 0;
+}
+
+.output tr, .output td {
+  white-space: normal;
+  border: 0 !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 339, ../base-sass/reports.sass */
+input#summary_items {
+  width: 50px;
+}
+
+/* line 343, ../base-sass/reports.sass */
+td.iseditable input,
+td.report_name select,
+td.period_select select {
+  width: auto;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* line 348, ../base-sass/reports.sass */
+.txtarea textarea {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.comments {
+  text-align: right;
+}
+
+.editing-comments {
+  min-width: 40%;
+}
+
+.host_alerts td {
+  width: 25%;
+}
+
+select#period.popup {
+  margin-top: 3px;
+  width: 100px;
+}
+
+/* line 3, ../base-sass/pagination.sass */
+.pagination_container {
+  float: right;
+  clear: both;
+}
+
+/* line 7, ../base-sass/pagination.sass */
+.pagination {
+  text-wrap: none;
+  float: right;
+  margin: 4px;
+}
+
+.pagination span {
+    vertical-align: middle;
+}
+
+.pagination strong {
+    vertical-align: middle;
+}
+
+.pagination_form {
+  float: right;
+  padding: 3px;
+}
+
+.tablestat-widget {
+  width: 99%;
+  margin: 0 auto;
+  border: none;
+}
+
+.tablestat-widget td:last-child {
+  border-right: none;
+}
+

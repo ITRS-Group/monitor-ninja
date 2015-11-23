@@ -1,11 +1,10 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-	$date_format = cal::get_calendar_format(true);
-	echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get'));
+$date_format = cal::get_calendar_format(true);
+echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get'));
 ?>
 <div>
-	<table class="showlog no-borders padd-table">
-		<tr>
-			<td class="showlog_options">
+	<div class="no-borders indent">
+			<div class="left width-20">
 			<h3><?php echo _('General options'); ?></h3>
 			<label><?php echo form::checkbox('hide_flapping', 1, isset($options['hide_flapping'])).' '._('Hide flapping alerts'); ?></label><br />
 			<label><?php echo form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '._('Hide downtime alerts'); ?></label><br />
@@ -14,8 +13,8 @@
 			<label><?php echo form::checkbox('hide_logrotation', 1, isset($options['hide_logrotation'])).' '._('Hide logrotation messages'); ?></label><br />
 			<?php echo $is_authorized ? '<label>'.form::checkbox('hide_commands', 1, isset($options['hide_commands'])).' '._('Hide external commands').'</label><br />' : ''; ?>
 			<label><?php echo form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '._('Older entries first'); ?>
-			</td>
-			<td class="showlog_options">
+			</div>
+			<div class="left width-20">
 				<table>
 					<tr>
 						<td style="border: none">
@@ -32,59 +31,53 @@
 						</td>
 					</tr>
 				</table>
-			</td>
-			<td class="showlog_options">
+			</div>
+			<div class="left width-20">
 			<h3><?php echo _('Service state options'); ?></h3>
-			<?php
-				$i = 0;
-				foreach ($service_state_options as $k => $v) {
-					$set = isset($options['service_state_options'][$v]);
-					$i++;
-					$name = 'service_state_options[' . $v . ']';
-					//echo ($i%2 == 0) ? '': '<tr>';
-					echo '<label>'.form::checkbox($name,1, $set).' '.$k.'</label><br />';
-					//echo ($i%2 == 0) ? '</tr>': ''."\n";
-				}
-			?>
-			</td><td class="showlog_options">
+<?php
+$i = 0;
+foreach ($service_state_options as $k => $v) {
+	$set = isset($options['service_state_options'][$v]);
+	$i++;
+	$name = 'service_state_options[' . $v . ']';
+	echo '<label>'.form::checkbox($name,1, $set).' '.$k.'</label><br />';
+}
+?>
+			</div>
+			<div class="left width-20">
 			<h3><?php echo _('Host state options'); ?></h3>
-			<?php
-				$i = 0;
-				foreach ($host_state_options as $k => $v) {
-					$i++;
-					$set = isset($options['host_state_options'][$v]);
-					$name = 'host_state_options[' . $v . ']';
-					//echo ($i%2 == 0) ? '': '<tr>';
-					echo "<label>".form::checkbox($name, 1, $set).' '.$k.'</label><br />';
-					//echo ($i%2 == 0) ? '</tr>': ''."\n";
-				}
-			?>
-			</td>
-			<td class="showlog_options" style="border: none">
+<?php
+$i = 0;
+foreach ($host_state_options as $k => $v) {
+	$i++;
+	$set = isset($options['host_state_options'][$v]);
+	$name = 'host_state_options[' . $v . ']';
+	echo "<label>".form::checkbox($name, 1, $set).' '.$k.'</label><br />';
+}
+?>
+			</div>
+			<div class="left width-20" style="border: none">
 			<h3><?php echo _('State type options'); ?></h3>
 			<label><?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '._('Soft states'); ?></label><br />
 			<label><?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '._('Hard states'); ?></label>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="4">
-			<?php
-				echo form::hidden('first', '');
-				echo form::hidden('last', '');
-				if (isset($options['host'])) {
-					foreach ($options['host'] as $h)
-					echo form::hidden('host[]', $h);
-				}
-				if (isset($options['service'])) {
-					foreach ($options['service'] as $s) {
-						echo form::hidden('service[]', $s);
-					}
-				}
-				echo form::submit('Update', 'Update');
-			?>
-			</td>
-		</tr>
-		</table>
+			</div>
+<div class="clear"></div>
+<div>
+<?php
+echo form::hidden('first', '');
+echo form::hidden('last', '');
+if (isset($options['host'])) {
+	foreach ($options['host'] as $h)
+		echo form::hidden('host[]', $h);
+}
+if (isset($options['service'])) {
+	foreach ($options['service'] as $s) {
+		echo form::hidden('service[]', $s);
+	}
+}
+echo form::submit('Update', 'Update');
+?>
+			</div>
 	<?php echo form::close(); ?>
 </div>
 <div class="long_output">
