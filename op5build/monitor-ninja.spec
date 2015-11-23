@@ -23,7 +23,7 @@ Prefix: /opt/monitor/op5/ninja
 Obsoletes: monitor-gui <= 3.5.13
 Obsoletes: monitor-reports-gui <= 1.4.9
 Obsoletes: op5-nagios-gui-core <= 4.0.3
-Obsoletes: php-op5lib <= 7.1.0-beta1
+Obsoletes: php-op5lib < %version
 Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
 Provides: op5-nagios-gui-core = %version
@@ -31,14 +31,12 @@ Provides: php-op5lib = %version
 Requires: merlin-apps >= 0.8.0
 Requires: merlin
 Requires: monitor-merlin
-Requires: php-op5lib >= 1.1.0
 Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
 Requires: monitor-backup
 Requires: op5-bootstrap
-BuildRequires: php-op5lib >= 1.1.0-beta14
 BuildRequires: python
 BuildRequires: doxygen
 BuildRequires: graphviz
