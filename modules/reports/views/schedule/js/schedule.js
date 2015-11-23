@@ -96,7 +96,7 @@ $(document).ready(function() {
 				$('#' + rep_type_str + '_headers').show();
 			},
 			error: function(data) {
-				jgrowl_message(data.responseText, _reports_error);
+				$.notify(data.responseText, {type: "error"});
 			},
 			success: function(data) {
 				var rep_type = $('#type').attr('value');
@@ -112,7 +112,7 @@ $(document).ready(function() {
 				setup_editable();
 				$('#new_schedule_report_form').clearForm();
 
-				jgrowl_message(_reports_schedule_create_ok, _reports_success);
+				$.notify(_reports_schedule_create_ok, {type: "success"});
 			},
 			dataType: 'json'
 		});
@@ -142,14 +142,14 @@ function schedule_delete(ev)
 			img.attr('src', img_src);
 		},
 		success: function(data) {
-			jgrowl_message(data, _reports_success);
+			$.notify(data, {type: "success"});
 			var table = $('#'+type+'_scheduled_reports_table tbody');
 			$('tr#report-'+schedule_id, table).detach();
 			if (!$(':visible', table).length)
 				$('.no-result', table).show();
 		},
 		error: function(data) {
-			jgrowl_message(data, _reports_error);
+			$.notify(data, {type: "error"});
 		},
 		type: 'POST',
 		dataType: 'json'
@@ -177,13 +177,13 @@ function send_report_now(ev)
 			img.attr('src', img_src);
 		},
 		success: function(data) {
-			jgrowl_message(data, _reports_success);
+			$.notify(data, {type: "success"});
 		},
 		error: function(data) {
 			if(data.responseText) {
-				jgrowl_message(_reports_schedule_send_error + ': ' + data.responseText, _reports_error);
+				$.notify(_reports_schedule_send_error + ': ' + data.responseText, {type: "error"});
 			} else {
-				jgrowl_message(_reports_schedule_send_error, _reports_error);
+				$.notify(_reports_schedule_send_error, {type: "error"});
 			}
 			img.attr('src', img_src);
 		},
@@ -360,7 +360,7 @@ function validate_form(formData, jqForm, options) {
 		errors++;
 	}
 	if (!saved_report_id) {
-		$.notify(fatal_err_str, {'sticky': true});
+		$.notify(fatal_err_str, {type: "error", 'sticky': true});
 		return false;
 	}
 
