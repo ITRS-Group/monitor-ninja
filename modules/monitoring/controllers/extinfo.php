@@ -191,10 +191,32 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->subtitle .= html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
 
 				$toolbar->info(html::anchor(listview::link('services',array('host.name'=>$host)) , _('Status detail')));
-				$toolbar->info(html::anchor('alert_history/generate?report_type=hosts&amp;objects[]='.urlencode($host) , _('Alert history')));
-				$toolbar->info(html::anchor('showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;host_state_options[d]=1&amp;host_state_options[u]=1&amp;host_state_options[r]=1&amp;host[]='.urlencode($host) , _('Event log')));
-				$toolbar->info(html::anchor('histogram/generate?report_type=hosts&amp;objects[]='.urlencode($host) , _('Alert histogram')));
-				$toolbar->info(html::anchor('avail/generate/?report_type=hosts&amp;objects[]='.urlencode($host) , _('Availability report')));
+				$toolbar->info(html::href(url::method("alert_history", "generate", array(
+					"report_type" => "hosts",
+					"objects[]" => $host
+				)), "Alert history"));
+
+				$toolbar->info(html::href(url::method("showlog", "showlog", array(
+					"hide_initial" => "1",
+					"hide_process" => "1",
+					"hide_logrotation" => "1",
+					"hide_commands" => "1",
+					"host_state_options[d]" => "1",
+					"host_state_options[u]" => "1",
+					"host_state_options[r]" => "1",
+					"host[]" => $host
+				)), "Event log"));
+
+				$toolbar->info(html::href(url::method("histogram", "generate", array(
+					"report_type" => "hosts",
+					"objects[]" => $host
+				)), "Alert histogram"));
+
+				$toolbar->info(html::href(url::method("avail", "generate", array(
+					"report_type" => "hosts",
+					"objects[]" => $host
+				)), "Availability report"));
+
 				$toolbar->info(html::anchor(listview::link('notifications',array('host_name'=>$host)) , _('Notifications')));
 
 				break;
@@ -203,13 +225,40 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->title = "Service";
 				$toolbar->subtitle = html::specialchars($object->get_description());
 
-				$toolbar->info(html::anchor('extinfo/details?host='.urlencode($host) , _('Information for host')));
+				$toolbar->info(html::href(url::method("extinfo", "details", array(
+					"host" => $host
+				)), "Information about host"));
+
 				$toolbar->info(html::anchor(listview::link('services',array('host.name'=>$host)) , _('Status detail for host')));
-				$toolbar->info(html::anchor('alert_history/generate?report_type=services&amp;objects[]='.$host.';'.urlencode($service) , _('Alert history')));
-				$toolbar->info(html::anchor('showlog/showlog?hide_initial=1&amp;hide_process=1&amp;hide_logrotation=1&amp;hide_commands=1&amp;service_state_options[w]=1&amp;service_state_options[u]=1&amp;service_state_options[c]=1&amp;service_state_options[r]=1&amp;service[]='.urlencode($host).';'.urlencode($service), _('Event log')));
-				$toolbar->info(html::anchor('histogram/generate?report_type=services&amp;objects[]='.$host.';'.urlencode($service) , _('Alert histogram')));
-				$toolbar->info(html::anchor('avail/generate/?report_type=services&amp;objects[]='.$host.';'.urlencode($service).'&report_type=services' , _('Availability report')));
-				$toolbar->info(html::anchor(listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service)) , _('Notifications')));
+
+				$toolbar->info(html::href(url::method("alert_history", "generate", array(
+					"report_type" => "services",
+					"objects[]" => $host . ';' . $service,
+				)), "Alert history"));
+
+				$toolbar->info(html::href(url::method("showlog", "showlog", array(
+					"hide_initial" => "1",
+					"hide_process" => "1",
+					"hide_logrotation" => "1",
+					"hide_commands" => "1",
+					"service_state_options[w]" => "1",
+					"service_state_options[u]" => "1",
+					"service_state_options[c]" => "1",
+					"service_state_options[r]" => "1",
+					"service[]" => $host . ';' . $service,
+				)), "Event log"));
+
+				$toolbar->info(html::href(url::method("histogram", "generate", array(
+					"report_type" => "services",
+					"objects[]" => $host . ';' . $service,
+				)), "Alert histogram"));
+
+				$toolbar->info(html::href(url::method("avail", "generate", array(
+					"report_type" => "services",
+					"objects[]" => $host . ';' . $service,
+				)), "Availability report"));
+
+				$toolbar->info(html::href(listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service)) , _('Notifications')));
 
 				break;
 		}
@@ -251,7 +300,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		$content->date_format_str = $date_format_str;
 
 		# fetch program status from program_status_model; uses ORM
-        $status = StatusPool_Model::status();
+		$status = StatusPool_Model::status();
 		$content->object = $status;
 
 		$content->info[] = array(

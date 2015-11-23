@@ -33,7 +33,7 @@ class url {
 	public static function method($controller, $method, array $parameters = array()) {
 
 		return implode('/', array(
-			self::base(TRUE),
+			rtrim(self::base(TRUE), '/'),
 			strtolower($controller),
 			strtolower($method)
 		)) . '?' . http_build_query($parameters);

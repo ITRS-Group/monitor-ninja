@@ -22,6 +22,10 @@ module Op5Cucumber::Mock
       true
     end
 
+    def data(type)
+      @data[driver_for_type(type)][type]
+    end
+
     def driver_for_type(type)
       'ORMDriverLS default'
     end
@@ -33,7 +37,6 @@ module Op5Cucumber::Mock
     end
 
     def mock(type, hashes={})
-
       hashes.each {|hash|
         hash.map {|field, value|
           if field.end_with? 's'
