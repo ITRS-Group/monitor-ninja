@@ -41,10 +41,6 @@ a {
 .report-chart-fullwidth {
   width: 100%; }
 
-/* line 36, ../base-sass/print.sass */
-#jGrowl {
-  display: none !important; }
-
 /* line 39, ../base-sass/print.sass */
 #progress {
   display: none !important; }

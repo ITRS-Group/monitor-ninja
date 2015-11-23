@@ -4,6 +4,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo Kohana::config('config.product_name').' '._('login'); ?></title>
+
+		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/layout.css') ?>" media="all" />
+		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/icons.css') ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/common.css') ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/print.css') ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
@@ -39,7 +42,7 @@
 	<body>
 		<div id="login-table">
 			<?php echo form::open($login_page, array('id' => 'login_form')); ?>
-			<table border="1">
+			<table border="1" class="no-borders">
 				<tr>
 					<td colspan="2">
 						<?php $brand = brand::get();

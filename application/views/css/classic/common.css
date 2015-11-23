@@ -1,28 +1,44 @@
-/* line 57, ../base-sass/common.sass */
+h1, h2, h3, h4, h5, h6 {
+  font-family: helvetica, arial, tahoma, sans-serif;
+  margin: 1px 0;
+}
+
+h1 {
+  font-size: 1.3em;
+  margin: 10px 0;
+}
+
+h2 {
+  font-size: 1.2em;
+  margin: 6px 0;
+}
+
+h3 {
+  font-size: 1.15em;
+}
+
+h4 {
+  font-size: 1.1em;
+}
+
+h5 {
+  font-size: 1.05em;
+}
+
+h6 {
+  font-size: 1.05em;
+}
+
+
 .alpha {
   opacity: 0.4;
   filter: alpha(opacity=40);
 }
 
-/* line 61, ../base-sass/common.sass */
 .white {
   opacity: 0 !important;
   filter: alpha(opacity=0) !important;
 }
-
-/* line 83, ../base-sass/common.sass */
-.nullify, table, table tbody, table th, table tr, table td {
-  background: transparent;
-  border-spacing: 0;
-  vertical-align: top;
-  outline: none;
-  border: none;
-  margin: 0;
-  padding: 0; }
-
-/* line 92, ../base-sass/common.sass */
-.padding_plz {
-  padding: 0 2em 2em; }
 
 /* line 95, ../base-sass/common.sass */
 .badge {
@@ -86,414 +102,122 @@
     margin: 4px 8px;
     vertical-align: middle; }
 
-/* line 148, ../base-sass/common.sass */
-html {
-  height: 100%; }
-
 /* line 151, ../base-sass/common.sass */
 body {
-  margin: 0;
-  padding: 0;
   font: normal normal 0.75em helvetica, arial, tahoma, sans-serif;
   color: #111111;
-  height: 100%;
-  background: #f9f9f9; }
-
-/* line 159, ../base-sass/common.sass */
-form {
-  width: 100%;
-  display: block; }
-
-/* line 163, ../base-sass/common.sass */
-.logo {
-  position: absolute;
-  top: 0;
-  left: 0; }
+  background: #f9f9f9;
+}
 
 /* line 168, ../base-sass/common.sass */
 hr {
   height: 0px;
   border: none;
-  border-bottom: 1px solid #aaaaaa; }
+  border-bottom: 1px solid #aaaaaa;
+}
 
-/* line 173, ../base-sass/common.sass */
-b, strong {
-  font-weight: bold; }
+table .dark {
+  background-color: #f9faf8;
+  border: 1px solid #aaaaaa;
+  box-shadow: inset 0 0 2px 4px #e5e6e4;
+}
 
-/* line 176, ../base-sass/common.sass */
-i, em {
-  font-style: italic; }
+table th {
+  background: #fafbf9;
+  border-bottom: 1px solid #edebe9;
+  font-size: 1.1em;
+}
 
-/* line 179, ../base-sass/common.sass */
-table {
-  font-size: 0.95em;
-  margin: 0 0;
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%; }
-  /* line 187, ../base-sass/common.sass */
-  table caption {
-    padding: 8px; }
-  /* line 193, ../base-sass/common.sass */
-  table .dark {
-    background-color: #f9faf8;
-    border: 1px solid #aaaaaa;
-    padding: 5px 3px 2px 3px;
-    box-shadow: inset 0 0 2px 4px #e5e6e4; }
-  /* line 199, ../base-sass/common.sass */
-  table th {
-    background: #fafbf9;
-    border-bottom: 1px solid #edebe9;
-    padding: 5px 3px 4px 3px;
-    font-size: 1.1em; }
-    /* line 205, ../base-sass/common.sass */
-    table th:last-child {
-      border-right: none; }
-    /* line 208, ../base-sass/common.sass */
-    table th:first-child {
-      border-left: none; }
-  /* line 213, ../base-sass/common.sass */
-  table .header {
-    background: none;
-    box-shadow: none;
-    border: none;
-    height: auto;
-    min-width: 0;
-    position: relative;
-    width: auto;
-    z-index: 0; }
-  /* line 223, ../base-sass/common.sass */
-  table .icon {
-    width: 32px;
-    min-width: 32px;
-    text-align: center; }
-  /* line 228, ../base-sass/common.sass */
-  table .comments {
-    width: 40px;
-    text-align: center; }
-  /* line 232, ../base-sass/common.sass */
-  table tr {
-    background: none; }
-  /* line 237, ../base-sass/common.sass */
-  table tr.odd td {
-    background: #f1f0ed; }
-  /* line 241, ../base-sass/common.sass */
-  table tr.even td {
-    background: transparent; }
-  /* line 244, ../base-sass/common.sass */
-  table tr.odd:hover td, table tr.even:hover td {
-    background: lightblue;
-    color: black; }
-  /* line 248, ../base-sass/common.sass */
-  table td {
-    border-bottom: 1px solid #dddbd9;
-    padding: 3px 2px 5px 2px;
-    text-align: left;
-    vertical-align: middle; }
-    /* line 255, ../base-sass/common.sass */
-    table td:last-child {
-      border-right: 1px solid #dddbd9; }
-    /* line 258, ../base-sass/common.sass */
-    table td:first-child {
-      border-left: none; }
-  /* line 261, ../base-sass/common.sass */
-  table.no_border td {
-    border: none; }
+table .header {
+  background: none;
+  box-shadow: none;
+}
 
-/* line 266, ../base-sass/common.sass */
+table tr {
+  background: none;
+}
+
+table tr.odd td {
+  background: #f1f0ed;
+}
+
+table tr.even td {
+  background: transparent;
+}
+
+table tr.odd:hover td, table tr.even:hover td {
+  background: lightblue;
+  color: black;
+}
+
+table td {
+  border-color: 1px solid #dddbd9;
+}
+
+table td:last-child {
+  border-right: 1px solid #dddbd9;
+}
+
+table td:first-child {
+  border-left: none;
+}
+
 #host_table tr:hover, #service_table tr:hover, .host_table tr:hover, .service_table tr:hover {
-  outline: 1px solid #aaaaaa; }
+  outline: 1px solid #aaaaaa;
+}
 
-/* line 270, ../base-sass/common.sass */
-.no-borders td {
-  border: none; }
-
-/* line 273, ../base-sass/common.sass */
-.no_border {
-  border: none; }
-
-/* line 276, ../base-sass/common.sass */
-.auto_width {
-  width: auto; }
-
-/* line 279, ../base-sass/common.sass */
-h1, h2, h3, h4, h5, h6 {
-  font-family: helvetica, arial, tahoma, sans-serif;
-  margin: 1px 0; }
-
-/* line 283, ../base-sass/common.sass */
-h1 {
-  font-size: 1.3em;
-  margin: 10px 0; }
-
-/* line 287, ../base-sass/common.sass */
-h2 {
-  font-size: 1.2em;
-  margin: 6px 0; }
-
-/* line 291, ../base-sass/common.sass */
-h3 {
-  font-size: 1.15em; }
-
-/* line 294, ../base-sass/common.sass */
-h4 {
-  font-size: 1.1em; }
-
-/* line 297, ../base-sass/common.sass */
-h5 {
-  font-size: 1.05em; }
-
-/* line 300, ../base-sass/common.sass */
-h6 {
-  font-size: 1.05em; }
-
-/* line 303, ../base-sass/common.sass */
 a, input[type="submit"].plain, button.plain {
   color: #333333;
   text-decoration: none;
-  border-bottom: 1px dotted #333333; }
-  /* line 308, ../base-sass/common.sass */
-  a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
-    border-bottom: 0 dotted #333333; }
-  /* line 311, ../base-sass/common.sass */
-  a:hover, input[type="submit"].plain:hover, button.plain:hover {
-    color: black;
-    border-bottom: 1px dotted black; }
+  border-bottom: 1px dotted #333333;
+}
 
-/* line 315, ../base-sass/common.sass */
-.container {
-  overflow: auto;
-  min-width: 600px;
-  height: 100%; }
+a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
+  border-bottom: 0 dotted #333333;
+}
 
-/* line 320, ../base-sass/common.sass */
-.content {
-  padding: 0;
-  height: 100%;
-  z-index: 0;
-  overflow-y: auto;
-  overflow-x: hidden; }
-  /* line 327, ../base-sass/common.sass */
-  .content iframe#iframe, .content object#geomap, .content iframe#nagvis {
-    width: 100%;
-    left: 0; }
-  /* line 331, ../base-sass/common.sass */
-  .content p {
-    width: 90%;
-    margin: 8px 8px; }
+a:hover, input[type="submit"].plain:hover, button.plain:hover {
+  color: black;
+  border-bottom: 1px dotted black;
+}
 
-/* line 336, ../base-sass/common.sass */
 input[type="text"], input[type="password"] {
-  border-radius: 3px;
-  border: 1px solid #aaaaaa;
-  padding: 3px 6px; }
+  border-color: #aaaaaa;
+}
+
 /* line 340, ../base-sass/common.sass */
 input[type="submit"].plain {
   background: transparent;
-  border-width: 0 0 1px;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  display: inline;
-  margin: 0;
-  padding: 0 !important; }
+}
 
-/* line 350, ../base-sass/common.sass */
-code {
-  font-family: monospace; }
-
-/* line 354, ../base-sass/common.sass */
-.login_field {
-  width: 200px; }
-
-/* line 357, ../base-sass/common.sass */
-.header_right {
-  float: right;
-  padding: 2px 8px 0 8px; }
-
-/* line 361, ../base-sass/common.sass */
-.global_search {
-  z-index: 4;
-  text-align: right;
-  background: transparent;
-  padding: 0px 3px 0 3px;
-  float: right; }
-  /* line 368, ../base-sass/common.sass */
-  .global_search input[type="text"] {
-    display: inline-block;
-    width: 75%;
-    color: #444444;
-    font-size: 10pt;
-    margin-top: 5px;
-    padding: 2px 2px 2px 8px;
-    background: white;
-    background-position: left center; }
-
-/* line 378, ../base-sass/common.sass */
 .autocomplete {
-  display: none;
-  position: fixed;
-  top: 44px;
-  right: 8px;
-  width: 230px;
   background: #f9f9f9;
-  border: 1px solid #aaaaaa;
-  z-index: 20;
-  border-radius: 3px; }
-  /* line 389, ../base-sass/common.sass */
-  .autocomplete div {
-    padding: 6px 4px; }
-  /* line 392, ../base-sass/common.sass */
-  .autocomplete .selected {
-    background-color: #dddddd; }
+  border-color: #aaaaaa;
+}
 
-/* line 395, ../base-sass/common.sass */
-#login-table {
-  padding-top: 66px;
-  margin: 10% auto;
-  width: 300px; }
-  /* line 400, ../base-sass/common.sass */
-  #login-table td, #login-table tbody, #login-table tr {
-    border: none !important; }
-
-/* line 403, ../base-sass/common.sass */
-#page_links {
-  margin-bottom: 1em;
-  width: 100%;
-  vertical-align: middle;
-  border: none;
-  box-shadow: none;
-  z-index: 1; }
-  /* line 411, ../base-sass/common.sass */
-  #page_links .page-links-label {
-    float: left;
-    max-width: 20%;
-    padding-top: 10px; }
-  /* line 416, ../base-sass/common.sass */
-  #page_links ul {
-    float: left;
-    margin: 0px;
-    margin-left: 8px;
-    padding: 0px;
-    width: 100%;
-    max-width: 80%; }
-    /* line 424, ../base-sass/common.sass */
-    #page_links ul li {
-      list-style: none;
-      display: inline-block;
-      margin: 4px 2px 0 6px;
-      padding: 5px;
-      font-size: 0.9em;
-      border-radius: 3px;
-      border: 1px solid #888888;
-      box-shadow: 0 0 3px #bbbbbb; }
-      /* line 434, ../base-sass/common.sass */
-      #page_links ul li a {
-        border: none; }
-
-/* line 437, ../base-sass/common.sass */
-.report-links {
-  float: right; }
-  /* line 441, ../base-sass/common.sass */
-  .report-links form input {
-    border: 0;
-    padding: 0; }
-  /* line 445, ../base-sass/common.sass */
-  .report-links a, .report-links form {
-    float: left;
-    width: auto; }
-  /* line 449, ../base-sass/common.sass */
-  .report-links img {
-    margin: 2px 0 2px 8px; }
-  /* line 452, ../base-sass/common.sass */
-  .report-links input[type="image"] {
-    margin: 2px 0 2px 8px; }
-
-/* line 455, ../base-sass/common.sass */
-#version_info {
-  position: fixed;
-  display: none;
-  top: 48px;
-  left: 230px;
-  width: 200px;
-  z-index: 10;
-  background: #f9f9f9;
-  border: 1px solid #aaaaaa;
-  box-shadow: 0 2px 3px #bbbbbb; }
-  /* line 466, ../base-sass/common.sass */
-  #version_info li {
-    padding: 2px 4px;
-    border-bottom: #eeeeee; }
+.autocomplete .selected {
+  background-color: #dddddd;
+}
 
 /* line 470, ../base-sass/common.sass */
 .page_settings {
-  position: fixed;
-  display: none;
-  top: 48px;
-  left: 230px;
-  width: 300px;
-  z-index: 10;
   background: #f9f9f9;
-  border: 1px solid #aaaaaa;
-  box-shadow: 0 2px 3px #bbbbbb; }
-  /* line 481, ../base-sass/common.sass */
-  .page_settings .ninja_page_refresh_value {
-    display: none; }
-  /* line 484, ../base-sass/common.sass */
-  .page_settings .widget-selector {
-    margin-left: 10px; }
-  /* line 487, ../base-sass/common.sass */
-  .page_settings .unselected {
-    background: url("images/checkbox.png") no-repeat; }
-  /* line 490, ../base-sass/common.sass */
-  .page_settings .selected {
-    background: url("images/checkbox-selected.png") no-repeat; }
-  /* line 493, ../base-sass/common.sass */
-  .page_settings li {
-    padding: 4px 4px 4px 25px;
-    border-bottom: #aaaaaa;
-    background-color: #f9faf8; }
+  border-color: #aaaaaa;
+  box-shadow: 0 2px 3px #bbbbbb;
+}
 
-/* line 498, ../base-sass/common.sass */
-.jGrowl-notification {
-  background-color: black;
-  background-color: rgba(0, 0, 0, 0.5); }
+.page_settings .unselected {
+  background: url("images/checkbox.png") no-repeat;
+}
 
-/* line 502, ../base-sass/common.sass */
-#jGrowl {
-  position: fixed;
-  top: 54px;
-  right: 30%;
-  z-index: 9999;
-  width: 40%;
-  color: white; }
-  /* line 511, ../base-sass/common.sass */
-  #jGrowl .header {
-    background: none;
-    box-shadow: none;
-    border: none;
-    height: auto;
-    min-width: 0;
-    position: relative;
-    width: auto;
-    z-index: 0;
-    color: white;
-    font-weight: bold;
-    border-color: black;
-    padding: 4px;
-    float: left; }
-  /* line 526, ../base-sass/common.sass */
-  #jGrowl .message {
-    clear: both;
-    display: inline-block;
-    color: white;
-    border-color: black;
-    padding: 4px; }
-  /* line 533, ../base-sass/common.sass */
-  #jGrowl .close {
-    color: white;
-    border-color: black;
-    float: right;
-    margin: 2px 6px; }
+.page_settings .selected {
+    background: url("images/checkbox-selected.png") no-repeat;
+}
+
+.page_settings li {
+  border-bottom: #aaaaaa;
+  background-color: #f9faf8;
+}
 
 /* line 539, ../base-sass/common.sass */
 .enabled_monfeat, .disabled_monfeat {

@@ -2,20 +2,6 @@
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
 ?>
-<div id="page_links">
-	<ul>
-	<?php
-	if (isset($page_links)) {
-		foreach ($page_links as $label => $link) {
-			?>
-			<li><?php echo html::anchor($link, $label) ?></li>
-			<?php
-		}
-	}
-	?>
-	</ul>
-</div>
-<div class="clear"> </div>
 
 <?php if (!empty($action_url)) { ?>
 <a href="<?php echo $action_url ?>" style="border: 0px" target="<?php echo $action_url_target ?>">

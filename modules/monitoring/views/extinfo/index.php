@@ -28,21 +28,6 @@ if( $object instanceof Host_Model ) {
 /* @var $service Service_Model */
 /* @var $object Service_Model */
 
-
-if (isset($page_links)) {
-?>
-
-<div id="page_links">
-	<em class="page-links-label"><?php echo _('View').', '.$label_view_for.':'; ?></em>
-	<ul>
-	<?php foreach ($page_links as $label => $link) { ?>
-		<li><?php echo html::anchor($link, $label) ?></li>
-	<?php } ?>
-	</ul>
-	<div class="clear"></div>
-</div>
-<?php
-}
 ?>
 
 <div id="extinfo_host-info">
@@ -307,14 +292,14 @@ endif; ?>
 		<tr>
 			<td class="dark"><?php echo $service!==false?_('Next scheduled active check'):_('Next scheduled check') ?></td>
 			<td id="field_next_check">
-				<?php 
+				<?php
 					if ($object->get_next_check() && $object->get_active_checks_enabled()) {
 						$source = $object->get_source_type();
 						if ($source != 'poller' && $source != 'peer') {
-							echo date($date_format_str, $object->get_next_check()); 
+							echo date($date_format_str, $object->get_next_check());
 						} else {
 							echo "Remotely checked by " . $object->get_source_node();
-						} 
+						}
 					} else {
 						echo "N/A";
 					}

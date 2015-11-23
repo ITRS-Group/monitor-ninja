@@ -21,7 +21,24 @@ time, mark, audio, video {
 }
 
 html {
+  height: 100%;
   line-height: 1;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* line 159, ../base-sass/common.sass */
+form {
+  width: 100%;
+  display: block;
+}
+
+code {
+  font-family: monospace;
 }
 
 ol, ul {
@@ -119,5 +136,244 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   border: none !important;
 }
 
+/*
+ * Resets -some- layout breaking properties of an element
+ * @todo The .nullify class should be removed.
+ */
+.nullify, table, table tbody, table th, table tr, table td {
+  background: transparent;
+  border-spacing: 0;
+  vertical-align: top;
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.no-borders td,
+.no-borders td:first-child,
+.no-borders td:last-child {
+  border: none;
+}
+
+.no_border {
+  border: none;
+}
+
+.auto_width {
+  width: auto;
+}
 
 /* End Utility classes */
+
+/* Table layout */
+
+table {
+  margin: 0 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+table caption {
+  padding: 8px;
+}
+
+table .dark {
+  padding: 5px 3px 2px 3px;
+}
+
+table th {
+  padding: 5px 3px 4px 3px;
+}
+
+table th:last-child {
+  border-right: none;
+}
+
+table th:first-child {
+  border-left: none;
+}
+
+table .header {
+  border: none;
+  height: auto;
+  min-width: 0;
+  position: relative;
+  width: auto;
+  z-index: 0;
+}
+
+table .icon {
+  width: 32px;
+  min-width: 32px;
+  text-align: center;
+}
+
+table .comments {
+  width: 40px;
+  text-align: center;
+}
+
+table td {
+  border-bottom: 1px solid transparent;
+  padding: 3px 2px 5px 2px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+table td:last-child {
+  border-right: 1px solid #dddbd9;
+}
+
+table td:first-child {
+  border-left: none;
+}
+
+table.no_border td {
+  border: none;
+}
+
+
+/* End table layout */
+
+/* Explicit classes */
+
+.container {
+  min-width: 600px;
+  overflow: auto;
+  height: 100%;
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.content {
+  padding: 0;
+  height: 100%;
+  z-index: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.content iframe#iframe, .content object#geomap, .content iframe#nagvis {
+  width: 100%;
+  left: 0;
+}
+
+.content p {
+  width: 90%;
+  margin: 8px 8px;
+}
+
+.header_right {
+  float: right;
+  padding: 2px 8px 0 8px;
+}
+
+#login-table {
+  padding-top: 66px;
+  margin: 10% auto;
+  width: 300px;
+}
+
+.global_search {
+  z-index: 4;
+  text-align: right;
+  padding: 0px 3px 0 3px;
+  float: right;
+}
+
+.global_search input[type="text"] {
+  display: inline-block;
+  width: 75%;
+  margin-top: 5px;
+  padding: 2px 2px 2px 8px;
+}
+
+.autocomplete {
+  display: none;
+  position: fixed;
+  top: 44px;
+  right: 8px;
+  width: 230px;
+  border: 1px solid transparent;
+  z-index: 20;
+  border-radius: 3px;
+}
+
+.autocomplete div {
+  padding: 6px 4px;
+}
+
+.report-links {
+  float: right;
+}
+
+.report-links form input {
+  border: 0;
+  padding: 0;
+}
+
+.report-links a, .report-links form {
+    float: left;
+    width: auto;
+}
+
+.report-links img {
+    margin: 2px 0 2px 8px;
+}
+
+.report-links input[type="image"] {
+    margin: 2px 0 2px 8px;
+}
+
+/* line 470, ../base-sass/common.sass */
+.page_settings {
+  position: fixed;
+  display: none;
+  top: 48px;
+  left: 230px;
+  width: 300px;
+  z-index: 10;
+  border: 1px solid transparent;
+}
+
+.page_settings .ninja_page_refresh_value {
+    display: none;
+}
+
+.page_settings .widget-selector {
+  margin-left: 10px;
+}
+
+.page_settings li {
+  padding: 4px 4px 4px 25px;
+}
+
+
+/* End Explicit classes */
+
+/* Form classes */
+
+input[type="text"], input[type="password"] {
+  border-radius: 3px;
+  border: 1px solid transparent;
+  padding: 3px 6px;
+}
+
+input[type="submit"].plain {
+  background: transparent;
+  border-width: 0 0 1px;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* End Form classes */

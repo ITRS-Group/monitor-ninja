@@ -214,11 +214,6 @@ class Extinfo_Controller extends Ninja_Controller {
 				break;
 		}
 
-		if (isset($page_links)) {
-			$this->template->content->page_links = $page_links;
-			$this->template->content->label_view_for = _("for this $type");
-		}
-
 	}
 
 	private function enabled_icon($enabled) {
@@ -438,10 +433,6 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->info( html::anchor( 'alert_history/generate?'.$grouptype.'[]='.$group , _('Alert history') ) );
 
 				break;
-		}
-		if (isset($page_links)) {
-			$content->page_links = $page_links;
-			$content->label_view_for = $label_view_for;
 		}
 
 	}
