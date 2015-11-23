@@ -4,8 +4,8 @@ Feature: Scheduling information
     is presented as such on the extinfo page for a host
 
     Given I have these mocked hosts
-      |name      |next_check|check_source      |groups     |contact_groups|contacts|active_checks_enabled|
-      |remotehost|10        |Merlin peer Gustaf|           |              |        |true                 |
+      |name      |next_check|check_source      |active_checks_enabled|
+      |remotehost|10        |Merlin peer Gustaf|true                 |
     And I am on the Host details page
     And I click "remotehost"
     Then I should see "Remotely checked by Gustaf"
@@ -15,8 +15,8 @@ Feature: Scheduling information
     is presented as-is on the extinfo page for a host
 
     Given I have these mocked hosts
-      |name      |next_check  |check_source       |groups     |contact_groups|contacts|active_checks_enabled|
-      |local_host|2147485547  |Core Worker 12     |           |              |        |true                 |
+      |name      |next_check  |check_source       |active_checks_enabled|
+      |local_host|2147485547  |Core Worker 12     |true                 |
     And I am on the Host details page
     And I click "local_host"
     # note: 2147485547 is Tue Jan 19 03:45:47 UTC 2038
@@ -28,9 +28,9 @@ Feature: Scheduling information
     is not included in the scheduling queue
 
     Given I have these mocked hosts
-      |name      |next_check|check_source      |groups     |contact_groups|contacts|active_checks_enabled|
-      |remote_host|10        |Merlin peer Gustaf|           |              |        |true                 |
-      |local_host |10        |Core Worker 666   |           |              |        |true                 |
+      |name       |next_check|check_source      |active_checks_enabled|
+      |remote_host|10        |Merlin peer Gustaf|true                 |
+      |local_host |10        |Core Worker 666   |true                 |
     And I am on address "/monitor/index.php/extinfo/scheduling_queue"
     Then I should see "local_host"
     But I shouldn't see "remote_host"
