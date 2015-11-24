@@ -7,9 +7,8 @@ if (!empty($widgets)) {
 	}
 }
 
-echo '<div>';
 if (!empty($updated_str)) {
-	echo '<div class="alert success"><span class="icon-16 x16-shield-ok"></span>' . $updated_str . '</div><br />';
+	echo '<div class="alert success"><span class="icon-16 x16-shield-ok"></span>' . $updated_str . '</div>';
 }
 
 if (!empty($available_setting_sections)) {
@@ -61,7 +60,4 @@ if (!empty($available_setting_sections)) {
 	}
 	echo form::submit('save_config', _('Save'));
 	echo form::close();
-}?>
-<br />
-
-</div>
+}

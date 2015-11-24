@@ -1,5 +1,12 @@
+body {
+  font-size: 10pt;
+  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  color: #111111;
+  background: #f9f9f9;
+}
+
 h1, h2, h3, h4, h5, h6 {
-  font-family: helvetica, arial, tahoma, sans-serif;
+  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
   margin: 1px 0;
 }
 
@@ -74,29 +81,30 @@ form input[type="password"] {
   -o-border-radius: 4px;
   border-radius: 4px; }
 
-/* line 116, ../base-sass/common.sass */
 .error, #response .error {
   background: #f2dede;
   border-color: #eed3d7;
-  color: #b94a48; }
+  color: #b94a48;
+}
 
-/* line 121, ../base-sass/common.sass */
+.success, #response .success {
+  background: #dff0d8;
+  border-color: #cfe0c8;
+  color: #114411;
+}
+
 .notice, #response .notice {
   background: #e3f8e3;
   border-color: #d5eed5;
-  color: #539853; }
+  color: #539853;
+}
 
-/* line 126, ../base-sass/common.sass */
 .warning, #response .warning {
   background: #fcf8d3;
   border-color: #ebdeb5;
-  color: #b06823; }
+  color: #b06823;
+}
 
-/* line 131, ../base-sass/common.sass */
-.alert p {
-  font-size: 120%; }
-
-/* line 134, ../base-sass/common.sass */
 .long_output {
   -ms-word-break: break-all;
   word-break: break-all;
@@ -104,20 +112,14 @@ form input[type="password"] {
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   -ms-hyphens: auto;
-  hyphens: auto; }
-  /* line 142, ../base-sass/common.sass */
-  .long_output img {
-    margin: 4px 8px;
-    vertical-align: middle; }
-
-/* line 151, ../base-sass/common.sass */
-body {
-  font: normal normal 0.75em helvetica, arial, tahoma, sans-serif;
-  color: #111111;
-  background: #f9f9f9;
+  hyphens: auto;
 }
 
-/* line 168, ../base-sass/common.sass */
+.long_output img {
+    margin: 4px 8px;
+    vertical-align: middle;
+}
+
 hr {
   height: 0px;
   border: none;
@@ -133,7 +135,6 @@ table .dark {
 table th {
   background: #fafbf9;
   border-bottom: 1px solid #edebe9;
-  font-size: 1.1em;
 }
 
 table .header {
@@ -287,6 +288,8 @@ a:hover {
   border-color: #aaaaaa;
 }
 
+/* This is only for the rendering of the downward
+ * arrow in the menu*/
 .menu ul li ul li span.menu-section:after,
 .menu ul li ul li a.menu-section:after {
   font-size: 80%;

@@ -71,6 +71,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 form {
   display: block;
+  box-sizing: border-box;
   padding: 16px;
   width: 100%;
 }
@@ -165,6 +166,7 @@ form button {
 
 
 .page-flow-layout {
+  box-sizing: border-box;
   padding: 16px;
 }
 
