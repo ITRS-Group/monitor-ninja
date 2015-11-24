@@ -60,6 +60,14 @@ class User_Controller extends Authenticated_Controller {
 		);
 	}
 
+	private $module_settings = array();
+	public function _add ($section, $label, $key, $type) {
+		$this->module_settings[$section] = array(
+			$label => array($key, $type)
+		);
+		self::$var_types[$key] = $type;
+	}
+
 	/**
 	*	Default method
 	*	Enable user to edit some GUI settings
@@ -140,6 +148,9 @@ class User_Controller extends Authenticated_Controller {
 			_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
 		);
 
+		Event::run('ninja.user.settings', $this);
+		$settings = array_merge_recursive($settings, $this->module_settings);
+
 		$current_values = false;
 		if (!empty($available_setting_sections)) {
 			foreach ($available_setting_sections as $str => $key) {
@@ -196,6 +207,7 @@ class User_Controller extends Authenticated_Controller {
 	public function save()
 	{
 		unset($_POST['save_config']);
+		Event::run('ninja.user.settings', $this);
 
 		# restore '.' in config keys
 		$restore_string = '_99_';

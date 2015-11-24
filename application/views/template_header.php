@@ -140,28 +140,28 @@
 	<div class="header_right">
 		<div class="global-search">
 			<form action="<?php echo url::method('search', 'lookup'); ?>" method="get">
-				<span class="profile">
 				<?php
+					Event::run('render.header.profile:before');
+					echo '<span class="profile">';
 					if (Auth::instance()->logged_in ()) {
 						$username = strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username');
 						echo html::anchor('user', html::specialchars($username));
-						echo " | " . html::anchor('user', _("Account settings"));
 						if (!op5auth::instance()->authorized_for('no_logout')) {
 							echo " | " . html::anchor(Kohana::config('routes.log_out_action'), html::specialchars(_('Log out')));
 						}
-						echo "<br>Host: " . html::specialchars(gethostname());
+						echo "<br>" . html::specialchars(gethostname());
 					}
+					Event::run('render.header.profile');
+					echo '</span>';
+					Event::run('render.header.profile:after');
+					$query = arr::search($_REQUEST, 'query');
+					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
+						<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
+					<?php } else { ?>
+						<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
+					<?php	}
+					echo help::render('search_help', 'search');
 				?>
-				</span>
-
-				<?php
-				$query = arr::search($_REQUEST, 'query');
-				if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
-				<?php } else { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
-				<?php	} ?>
-				<?php echo help::render('search_help', 'search'); ?>
 			</form>
 		</div>
 		<?php customlogo::Render(); ?>

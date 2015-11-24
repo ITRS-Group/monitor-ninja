@@ -502,6 +502,19 @@ table.no_border td {
   vertical-align: middle;
 }
 
+.global-search .profile-image {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 2px 4px 0 4px;
+}
+
+.global-search .profile-image img {
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  margin: 0;
+}
+
 .global-search input[type="text"] {
   display: inline-block;
   width: 128px;
