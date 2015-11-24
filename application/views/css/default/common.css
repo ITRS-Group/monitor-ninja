@@ -75,11 +75,17 @@ form textarea {
   -o-border-radius: 4px;
   border-radius: 4px; }
 
-/* line 116, ../base-sass/common.sass */
 .error, #response .error {
   background: #f2dede;
   border-color: #eed3d7;
-  color: #b94a48; }
+  color: #b94a48;
+}
+
+.success, #response .success {
+  background: #dff0d8;
+  border-color: #cfe0c8;
+  color: #114411;
+}
 
 /* line 121, ../base-sass/common.sass */
 .notice, #response .notice {
