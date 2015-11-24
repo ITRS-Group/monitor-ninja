@@ -71,8 +71,8 @@ if($options['report_id']) { ?>
 		<td class="states-to-include">
 			<div data-show-for="hosts hostgroups">
 				<?php
-				echo help::render('host_states');
-				echo _('Host states to include').'<br/>';
+				echo '<label>' . help::render('host_states');
+				echo _('Host states to include').'</label><br>';
 
 				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {
 					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"host_filter_map_$name\" id=\"host_filter_status_$name\" ".(isset($options['host_filter_status'][$id])?'':'checked="checked"')."/>";
@@ -152,14 +152,14 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td>
-			<?php echo help::render('include_alerts') ?>
+			<label><?php echo help::render('include_alerts') ?></label>
 			<input type="checkbox" class="checkbox" value="1" id="include_alerts" name="include_alerts"
 					<?php print $options['include_alerts']?'checked="checked"':''; ?> />
 			<label for="include_alerts"><?php echo _('Include alerts log') ?></label>
 		</td>
 		<td></td>
 		<td>
-			<?php echo help::render('use_alias') ?>
+			<label><?php echo help::render('use_alias') ?></label>
 			<input type="checkbox" class="checkbox" value="1" id="use_alias" name="use_alias"
 					<?php print $options['use_alias']?'checked="checked"':'' ?> />
 			<label for="use_alias" id="usealias"><?php echo _('Use alias') ?></label>
@@ -167,14 +167,13 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr>
 		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
-			<?php echo help::render('include_trends') ?>
-			<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
-					<?php print $options['include_trends']?'checked="checked"':''; ?> />
+			<label><?php echo help::render('include_trends') ?></label>
+			<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends" <?php print $options['include_trends']?'checked="checked"':''; ?> />
 			<label for="include_trends"><?php echo _('Include trends graph') ?></label>
 		</td>
 		<td></td>
 		<td<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>
-			<?php echo help::render('piechart') ?>
+			<label><?php echo help::render('piechart') ?></label>
 			<input type="checkbox" class="checkbox" value="1" id="include_pie_charts" name="include_pie_charts"
 					<?php print $options['include_pie_charts']?'checked="checked"':'' ?> />
 			<label for="include_pie_charts" id="include_pie_charts_lbl"><?php echo _('Include pie charts') ?></label>
@@ -182,19 +181,21 @@ if($options['report_id']) { ?>
 	</tr>
 	<tr<?php if ($type == 'sla' || !$options['include_pie_charts']) { ?> style="display:none"<?php } ?> class="trend_options">
 		<td>
-			<?php echo help::render('include_trends_scaling') ?> <input type="checkbox" class="checkbox" value="1" id="include_trends_scaling" name="include_trends_scaling" <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
+			<label><?php echo help::render('include_trends_scaling') ?></label>
+			<input type="checkbox" class="checkbox" value="1" id="include_trends_scaling" name="include_trends_scaling" <?php print $options['include_trends_scaling']?'checked="checked"':''; ?> />
 			<label for="include_trends_scaling"><?php echo _('Show trends re-scaling') ?></label>
 		</td>
 		<td></td>
 		<td>
-			<?php echo help::render('collapse_green_trends') ?> <input type="checkbox" class="checkbox" value="1" id="collapse_green_trends" name="collapse_green_trends" <?php print $options['collapse_green_trends']?'checked="checked"':''; ?> />
+			<label><?php echo help::render('collapse_green_trends') ?></label>
+			<input type="checkbox" class="checkbox" value="1" id="collapse_green_trends" name="collapse_green_trends" <?php print $options['collapse_green_trends']?'checked="checked"':''; ?> />
 			<label for="collapse_green_trends"><?php echo _('Hide trends that are solid green') ?></label>
 		</td>
 	<?php
 	if(ninja::has_module('synergy')) { ?>
 	<tr>
 		<td>
-			<?php echo help::render('synergy_events'); ?>
+			<label><?php echo help::render('synergy_events'); ?></label>
 			<input type="checkbox" name="include_synergy_events" id="include_synergy_events" value="1" <?php echo $options['include_synergy_events'] ? 'checked="checked"' : null ?> />
 			<label for="include_synergy_events"><?php echo _('Include BSM events'); ?></label>
 		</td>
@@ -208,14 +209,17 @@ if($options['report_id']) { ?>
 	} ?>
 	<tr>
 		<td>
-			<br />
-			<?php echo help::render('skin') ?>
-			<label for="skin" id="skin_lbl"><?php echo _('Skin') ?></label>
+			<label for="skin" id="skin_lbl">
+				<?php echo help::render('skin') ?>
+				<?php echo _('Skin') ?>
+			</label>
 		</td>
 		<td></td>
 		<td>
-			<?php echo help::render('description') ?>
-			<label for="description" id="descr_lbl"><?php echo _('Description') ?></label>
+			<label for="description" id="descr_lbl">
+				<?php echo help::render('description') ?>
+				<?php echo _('Description') ?>
+			</label>
 		</td>
 	</tr>
 	<tr>

@@ -86,6 +86,10 @@ form select {
   min-width: 196px;
 }
 
+form select option {
+  padding: 2px;
+}
+
 form textarea {
   min-width: 256px;
 }

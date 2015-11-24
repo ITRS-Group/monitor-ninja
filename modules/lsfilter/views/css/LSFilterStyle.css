@@ -179,11 +179,22 @@ th.sortable:hover {
 /* line 156, sass/LSFilterStyle.sass */
 th.sortable.current {
   background: lightblue; }
-/* line 158, sass/LSFilterStyle.sass */
-th .listview_multiselect_checkbox_all {
+
+form#listview_multi_action_form {
+  padding: 0;
+}
+
+th input[type="checkbox"].listview_multiselect_checkbox_all {
   margin: 0;
   padding: 0;
-  vertical-align: top; }
+  vertical-align: top;
+}
+
+td input[type="checkbox"].listview_multiselect_checkbox {
+  margin: 2px;
+  padding: 0;
+  vertical-align: middle;
+}
 
 /* line 163, sass/LSFilterStyle.sass */
 #filter_result {
