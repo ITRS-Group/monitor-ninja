@@ -755,7 +755,7 @@ input[type="submit"].plain {
 #response {
   margin-left: 0px;
   padding-top: 0px;
-  background: #f9f9f5 url(images/bg.png) repeat-x;
+  background: #f9f9f5;
 }
 
 #response h1 {
@@ -1161,7 +1161,7 @@ div.time-picker li.selected {
 
 .ui-widget-header {
   border: 0px;
-  background: #cdcdcd url(images/bg.png) repeat-x;
+  background: #cdcdcd;
   border-bottom: 1px solid #cdcdcd;
   color: #222222;
   font-weight: bold;
@@ -1169,7 +1169,7 @@ div.time-picker li.selected {
 
 .ui-state-default, .ui-widget-content .ui-state-default {
   border: 1px solid #cdcdcd;
-  background: #dddddd url(images/bg.png) repeat-x;
+  background: #dddddd;
   font-weight: normal;
   color: #555555;
   outline: none;
@@ -1177,7 +1177,7 @@ div.time-picker li.selected {
 
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus {
   border: 1px solid #cdcdcd;
-  background: #aaaaaa url(images/bg.png) repeat-x;
+  background: #aaaaaa;
   font-weight: normal;
   color: #212121;
   outline: none;
