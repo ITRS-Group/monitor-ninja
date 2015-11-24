@@ -5,7 +5,7 @@ Event::add('render.header.profile:after', function () {
 	if ($gravatar) {
 		$gravatar_hash = md5($gravatar);
 		echo '<div class="profile-image">';
-		echo sprintf('<img height="40" src="http://www.gravatar.com/avatar/%s">', $gravatar_hash);
+		echo sprintf('<img src="http://www.gravatar.com/avatar/%s?s=32">', $gravatar_hash);
 		echo '</div>';
 	}
 
