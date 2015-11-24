@@ -84,7 +84,10 @@ Requires: merlin monitor-merlin op5-nagios
 Requires: merlin-apps
 Requires: monitor-livestatus monitor-nagvis
 Requires: monitor-nacoma
+%if 0%{?rhel} >= 7
+%else
 Requires: rubygem20-op5cucumber
+%endif
 Requires: portal
 Requires: op5license-generator
 Requires: op5license-tests
