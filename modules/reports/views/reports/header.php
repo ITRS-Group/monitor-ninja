@@ -3,7 +3,7 @@
 		<?php
 		if (!isset($skip_csv)) {
 			echo "<span class='image-link'></span>";
-			echo form::open($type.'/generate');
+			echo form::open($type.'/generate', array("id" => 'report-to-csv'));
 			echo $options->as_form();
 			echo '<input type="hidden" name="output_format" value="csv" />';
 			$csv_alt = _('Download report as CSV');
@@ -13,7 +13,7 @@
 
 		if (!isset($skip_pdf)) {
 			echo "<span class='image-link'></span>";
-			echo form::open($type.'/generate');
+			echo form::open($type.'/generate', array('id' => 'report-to-pdf'));
 			echo $options->as_form();
 			echo '<input type="hidden" name="output_format" value="pdf" />';
 			$pdf_alt = _('Show as pdf');

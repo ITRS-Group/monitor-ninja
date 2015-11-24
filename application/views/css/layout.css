@@ -76,22 +76,22 @@ form {
   width: 100%;
 }
 
-form label {
+label {
   display: inline-block;
   vertical-align: middle;
   margin: 4px;
 }
 
-form select {
+select {
   margin: 4px;
   min-width: 196px;
 }
 
-form select option {
+select option {
   padding: 2px;
 }
 
-form textarea {
+textarea {
   margin: 4px;
   padding: 4px;
   min-width: 256px;
@@ -100,12 +100,12 @@ form textarea {
   line-height: 120%;
 }
 
-form input[type="radio"] {
+input[type="radio"] {
   margin: 4px;
   vertical-align: middle;
 }
 
-form input[type="checkbox"] {
+input[type="checkbox"] {
   margin: 4px;
   vertical-align: middle;
 }
@@ -205,6 +205,34 @@ form button {
   padding-left: 4px;
 }
 
+#dojo-quicklink-internal li {
+  position: relative;
+  padding: 3px;
+}
+
+#dojo-add-quicklink {
+  float: left;
+  opacity: 0.5;
+  margin-top: 18px;
+  margin-left: 6px;
+  display: inline-block;
+  opacity: 0.7;
+}
+
+#dojo-add-quicklink:hover {
+  border: none;
+  opacity: 1;
+}
+
+#dojo-icon-container td.highlight {
+  border-radius: 4px;
+}
+
+#dojo-icon-container td span {
+  cursor: pointer;
+}
+
+
 /* Utility classes */
 
 /* Restores page flow following floating elements */
@@ -258,7 +286,24 @@ form button {
   width: auto;
 }
 
-/* End Utility classes */
+.badge {
+  vertical-align: middle;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid transparent;
+  padding: 1px 8px;
+  margin: 1px 4px 0px 4px;
+  border-radius: 3px;
+  min-width: 16px;
+}
+
+.alert, #response .alert {
+  border: 1px solid transparent;
+  margin: 1em;
+  padding: 8px 35px 8px 14px;
+  border-radius: 4px;
+}
 
 /* Table layout */
 
@@ -278,7 +323,8 @@ table .dark {
 }
 
 table th {
-  padding: 5px 3px 4px 3px;
+  padding: 4px;
+  border-bottom: 1px solid transparent;
 }
 
 table th:last-child {
@@ -311,7 +357,7 @@ table .comments {
 
 table td {
   border-bottom: 1px solid transparent;
-  padding: 3px 2px 5px 2px;
+  padding: 6px 4px 6px 4px;
   text-align: left;
   vertical-align: middle;
 }
@@ -349,20 +395,21 @@ table.no_border td {
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
+  padding: 4px;
 }
 
 .main-toolbar .main-toolbar-title {
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
-  padding: 5px 24px 4px 12px;
+  padding: 6px 24px 6px 12px;
 }
 
 .main-toolbar .main-toolbar-subtitle {
   display: inline-block;
   vertical-align: middle;
   margin-right: 6px;
-  padding: 5px 16px 4px 6px;
+  padding: 6px 16px 6px 6px;
 }
 
 .main-toolbar .main-toolbar-info {
@@ -502,12 +549,13 @@ table.no_border td {
 .global-search .profile {
   display: inline-block;
   vertical-align: middle;
+  line-height: 130%;
 }
 
 .global-search .profile-image {
   display: inline-block;
   vertical-align: middle;
-  margin: 2px 4px 0 4px;
+  margin: 2px 2px 0px 10px;
 }
 
 .global-search .profile-image img {
@@ -521,7 +569,7 @@ table.no_border td {
   display: inline-block;
   width: 128px;
   margin-top: 4px;
-  padding: 2px 2px 2px 8px;
+  padding: 6px 4px 3px 6px;
 }
 
 .autocomplete {
@@ -623,13 +671,6 @@ table.no_border td {
   background: white;
 }
 
-.header .headercontent a span {
-  cursor: pointer;
-  margin: 6px 4px 0 4px;
-  background-repeat: no-repeat;
-  overflow: auto;
-}
-
 /* Menu */
 
 .main-menu {
@@ -641,15 +682,15 @@ table.no_border td {
 }
 
 .menu.menu-right {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .menu.menu-right > ul > li {
-      height: 24px;
+  height: 24px;
 }
 
 .menu.menu-right > ul > li > ul {
-      right: 0;
+  right: 0;
 }
 
 .menu.menu-right > ul > li > ul ul {
@@ -725,8 +766,8 @@ table.no_border td {
 }
 
 
-.menu ul li ul li > a span,
-.menu ul li ul li > span span {
+.menu ul li > a span,
+.menu ul li > span span {
   vertical-align: middle;
 }
 
@@ -832,10 +873,6 @@ a#optiontoggle {
   margin: 5px;
 }
 
-#new_schedule_report_table {
-  width: auto;
-}
-
 .action img {
   margin-left: 5px;
   margin-top: 2px;
@@ -869,14 +906,6 @@ a#optiontoggle {
 
 .headerNone.left {
   text-align: left;
-}
-
-.setup-table {
-  border: 0px;
-  padding: 0px;
-  margin: 0px;
-  border-spacing: 0px;
-  border-collapse: collapse;
 }
 
 .form-dropdown {
@@ -966,10 +995,19 @@ span.brand-label {
   padding-top: 2em;
 }
 
+
 .report-block td {
   word-wrap: break-word;
   word-break: break-all;
   overflow-wrap: break-word;
+}
+
+#report-to-pdf {
+  padding: 0;
+}
+
+#report-to-csv {
+  padding: 0;
 }
 
 .min-l {
@@ -1012,7 +1050,6 @@ span.brand-label {
   padding: 0;
 }
 
-/* line 339, ../base-sass/reports.sass */
 input#summary_items {
   width: 50px;
 }
@@ -1042,13 +1079,11 @@ select#period.popup {
   width: 100px;
 }
 
-/* line 3, ../base-sass/pagination.sass */
 .pagination_container {
   float: right;
   clear: both;
 }
 
-/* line 7, ../base-sass/pagination.sass */
 .pagination {
   text-wrap: none;
   float: right;
@@ -1076,12 +1111,6 @@ select#period.popup {
 
 .tablestat-widget td:last-child {
   border-right: none;
-}
-
-#new_schedule_report_table tr td {
-  padding: 0px 15px 0px 0px;
-  vertical-align: top;
-  width: auto;
 }
 
 tr#pdf-hide td {

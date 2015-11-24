@@ -202,7 +202,8 @@ td input[type="checkbox"].listview_multiselect_checkbox {
 
 /* line 168, sass/LSFilterStyle.sass */
 #filter_result table th {
-  padding: 4px 2px 1px 2px; }
+  padding: 6px 4px 4px 4px;
+}
   /* line 170, sass/LSFilterStyle.sass */
   #filter_result table th:first-child {
     padding-left: 0.2%; }
@@ -219,25 +220,29 @@ td input[type="checkbox"].listview_multiselect_checkbox {
 #filter_result table td a, #filter_result table td img, #filter_result table td span {
   vertical-align: middle; }
 
-/* line 182, sass/LSFilterStyle.sass */
 .floating-header {
   left: 0px;
   top: 77px;
   position: fixed;
-  z-index: 0; }
-  /* line 187, sass/LSFilterStyle.sass */
-  .floating-header tr {
+  z-index: 0;
+}
+
+.floating-header tr {
     width: 100%;
-    display: block; }
-    /* line 190, sass/LSFilterStyle.sass */
-    .floating-header tr th {
-      padding-bottom: 1px !important; }
-      /* line 192, sass/LSFilterStyle.sass */
-      .floating-header tr th:first-child {
-        padding-left: 0.2%; }
-      /* line 194, sass/LSFilterStyle.sass */
-      .floating-header tr th:last-child {
-        padding-right: 0.3%; }
+    display: block;
+}
+
+.floating-header tr th {
+  padding-bottom: 2px !important;
+}
+
+.floating-header tr th:first-child {
+  padding-left: 0.2%;
+}
+
+.floating-header tr th:last-child {
+  padding-right: 0.3%;
+}
 
 /* line 197, sass/LSFilterStyle.sass */
 .listview-summary li span {

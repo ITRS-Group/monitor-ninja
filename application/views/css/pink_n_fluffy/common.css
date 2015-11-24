@@ -56,31 +56,11 @@ form input[type="password"] {
   filter: alpha(opacity=0) !important;
 }
 
-/* line 95, ../base-sass/common.sass */
-.badge {
-  vertical-align: middle;
-  display: inline-block;
-  text-align: center;
-  font-weight: bold;
-  border: 1px solid transparent;
-  padding: 1px 8px;
-  margin: 1px 4px 0px 4px;
-  border-radius: 3px;
-  min-width: 16px; }
-
-/* line 108, ../base-sass/common.sass */
 .alert, #response .alert {
   background: #fcf8e3;
-  border: 1px solid #fbeed5;
+  border-color: #fbeed5;
   color: #c09853;
-  margin: 1em;
-  padding: 8px 35px 8px 14px;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px; }
+}
 
 .error, #response .error {
   background: #f2dede;
@@ -183,9 +163,9 @@ a {
 
 a:hover {
   color: #440011;
+  text-decoration: none;
   border-bottom: 1px dotted #440011;
 }
-
 
 .autocomplete {
   background: #f9d9d9;
@@ -268,7 +248,6 @@ a:hover {
   cursor: pointer;
 }
 
-
 .menu ul li:hover {
   background: #f0d0d0;
   cursor: default;
@@ -298,41 +277,13 @@ a.external {
   padding-right: 16px;
 }
 
-#dojo-quicklink-internal li {
-  position: relative;
-}
-
 #dojo-quicklink-internal li.selected {
   background-color: #f2f2f2;
   border: 1px solid #999999;
 }
 
-#dojo-add-quicklink {
-  float: left;
-  opacity: 0.5;
-  margin-top: 18px;
-  margin-left: 6px;
-  display: inline-block;
-  opacity: 0.7;
-}
-
-#dojo-add-quicklink:hover {
-  border: none;
-  opacity: 1;
-}
-
 #dojo-icon-container td.highlight {
   background: lightblue;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-}
-
-#dojo-icon-container td span {
-  cursor: pointer;
 }
 
 .setup-table table tr td {

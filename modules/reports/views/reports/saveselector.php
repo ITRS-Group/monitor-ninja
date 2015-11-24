@@ -1,4 +1,11 @@
-<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block', 'method' => 'get')); ?>
+<?php
+	if ($saved_reports) {
+		echo form::open($type.'/index', array(
+			'id' => 'saved_report_form',
+			'class' => 'report-block',
+			'method' => 'get'
+		));
+?>
 	<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports) { ?>display:none;<?php } ?>">
 		<?php echo help::render('saved_reports') ?> <label for="report_id"><?php echo _('Saved reports') ?></label><br />
 		<select name="report_id" id="report_id">
@@ -21,5 +28,8 @@
 		</div>
 		<?php } ?>
 	</div>
-<?php echo form::close();?>
+<?php
+	echo form::close();
+	}
+?>
 
