@@ -217,13 +217,15 @@ manage_trapper                  monitor.trapper.log:                            
 manage_trapper                  monitor.trapper.matchers:                                     true
 manage_trapper                  monitor.trapper.modules:                                      true
 manage_trapper                  monitor.trapper.traps:                                        true
+
+business_services_access        monitor.bsm:{create,read,update,delete}                       true
 EOF;
 
 	/**
 	 * Processed result of the $raw_acl varible.
 	 */
 	private $acl = array();
-	
+
 	/**
 	 * Result cache
 	 */
@@ -337,19 +339,19 @@ EOF;
 	 *          referenced array to add performance data to
 	 */
 	public function run($action, $env, &$messages, &$perfdata) {
-		
+
 		if(isset($this->cache[$action])) {
 			if($this->cache[$action]['msg'] !== false)
 				$messages[] = $this->cache[$action]['msg'];
 			return $this->cache[$action]['result'];
 		}
-		
+
 		$msg = false;
-		
+
 		$action_exploded = array_map ( function ($field) {
 			return array_filter( explode ( ".", $field ) );
 		}, explode ( ':', $action ) );
-		
+
 		/*
 		 * The ninja:-resource is a little bit special. It contains more
 		 * meta-permissions.
@@ -415,7 +417,7 @@ EOF;
 				'msg' => $msg,
 				'result' => $is_allowed
 		);
-		
+
 		return $is_allowed;
 	}
 }

@@ -157,6 +157,7 @@ class op5Authorization {
 			'nagvis' => array ('nagvis_add_delete' => '','nagvis_view' => '',
 				'nagvis_edit' => '','nagvis_admin' => ''),
 			'logger' => array('logger_access' => '', 'logger_configuration' => '', 'logger_schedule_archive_search' => ''),
+			'business_services' => array('business_services_access' => ''),
 			'misc' => array ('FILE' => '','access_rights' => '','pnp' => '',
 				'manage_trapper' => '',
 				'saved_filters_global' => ''));
