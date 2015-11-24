@@ -125,7 +125,10 @@ pushd cli-helpers
 make
 popd
 make
+%if 0%{?rhel} >= 7
+%else
 make docs
+%endif
 
 
 %install
@@ -252,12 +255,18 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
+%if 0%{?rhel} >= 7
+%else
 %exclude %prefix/Documentation
+%endif
 
 %files devel
 %defattr(-,root,root)
 %phpdir/op5/ninja_sdk
+%if 0%{?rhel} >= 7
+%else
 %prefix/Documentation
+%endif
 
 
 %files test
