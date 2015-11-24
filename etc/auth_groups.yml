@@ -74,6 +74,7 @@ admins:
   - pnp
   - saved_filters_global
   - manage_trapper
+  - business_services_access
 guest:
   - system_information
   - configuration_information
