@@ -342,197 +342,31 @@ a.external {
   background-color: transparent;
 }
 
-/* line 112, ../base-sass/reports.sass */
-#new_schedule_report_table tr td {
-  background: none;
-  padding: 0px 15px 0px 0px;
-  vertical-align: top;
-  width: auto;
-}
-
-/* line 117, ../base-sass/reports.sass */
-tr#pdf-hide td {
-  background: transparent;
-  margin-top: 5px;
-  text-align: right;
-  padding-right: 2px; }
-
-/* line 123, ../base-sass/reports.sass */
 th.headerNone {
   white-space: nowrap;
-  text-align: right; }
+  text-align: right;
+}
 
-/* line 128, ../base-sass/reports.sass */
 tr.dark td, tr.odd td.dark {
-  border: 1px solid #dcdccd;
-  border-left: 0px;
+  border-color: #dcdccd;
   background: #efefef;
-  border-top: 0px;
-  padding-top: 2px;
-  padding-bottom: 2px; }
-/* line 135, ../base-sass/reports.sass */
+}
+
 tr.even td.dark {
-  border: 1px solid #dcdccd;
-  border-left: 0px;
+  border-color: #dcdccd;
   background: #efefef;
-  border-top: 0px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding: 2px 5px;
-  border-left: 1px solid gainsboro;
-  vertical-align: bottom;
-  width: auto;
-  text-align: left;
+  border-left-color: gainsboro;
 }
 
-tr.dark td.data, tr.odd td.data, tr.even td.data {
-  text-align: right;
-  white-space: nowrap; }
-
-/* line 151, ../base-sass/reports.sass */
-.summary {
-  text-align: right;
-}
-
-.summary.tally.nonzero.ok,
-.summary.tally.nonzero.up {
-    background: rgba(167, 214, 144, 0.5);
-    *zoom: 1;
-}
-
-.summary.tally.nonzero.warning,
-.summary.tally.nonzero.unreachable {
-    background: rgba(250, 212, 96, 0.5);
-    *zoom: 1;
-}
-
-.summary.tally.nonzero.critical,
-.summary.tally.nonzero.down {
-    background: rgba(211, 63, 47, 0.5);
-    *zoom: 1;
-}
-
-.summary.tally.nonzero.unknown {
-    background: rgba(238, 152, 61, 0.5);
-    *zoom: 1;
-}
-
-.summary.tally.nonzero.undetermined {
-    background: #cfd0ce;
-    *zoom: 1;
-}
-
-/* line 171, ../base-sass/reports.sass */
-tr.odd td.data img, tr.even td.data img, tr.dark td.data img {
-  margin-bottom: -1px; }
-/* line 173, ../base-sass/reports.sass */
 tr.none td {
   border: 0px;
-  background: white; }
+  background: white;
+}
 
-/* line 178, ../base-sass/reports.sass */
-table.setup-tbl tr td {
-  padding: 0px 5px 0px 0px;
-  border: 0;
-  vertical-align: top; }
-/* line 182, ../base-sass/reports.sass */
-table.setup-tbl input, table.setup-tbl select {
-  background: #fafafa;
-  border: 1px solid #cccccc;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  padding: 3px 1px;
-  margin-top: 3px;
-  margin-left: 0px;
-  margin-bottom: 15px; }
-  /* line 192, ../base-sass/reports.sass */
-  table.setup-tbl input[type=text], table.setup-tbl select[type=text] {
-    width: 378px; }
-
-/* line 198, ../base-sass/reports.sass */
 table.white-table tr.no-result td {
   background: white;
   font-style: italic;
-  padding-left: 0px; }
-
-/* time picker ********************************************************************************* */
-/* line 206, ../base-sass/reports.sass */
-div.time-picker {
-  position: absolute;
-  height: 200px;
-  width: 9em;
-  /* needed for IE */
-  overflow: auto;
-  background: white;
-  border: 1px solid #d0d0d0;
-  z-index: 99; }
-/* line 215, ../base-sass/reports.sass */
-div.time-picker-12hours {
-  width: 6em;
-  /* needed for IE */ }
-/* line 219, ../base-sass/reports.sass */
-div.time-picker ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0; }
-/* line 223, ../base-sass/reports.sass */
-div.time-picker li {
-  padding: 1px;
-  cursor: pointer; }
-  /* line 226, ../base-sass/reports.sass */
-  div.time-picker li.selected {
-    background: #316ac5;
-    color: white; }
-
-/* line 230, ../base-sass/reports.sass */
-.time_error {
-  border: 1px solid red;
-  color: red; }
-
-/* tab specifics ********************************************************************************* */
-/* line 236, ../base-sass/reports.sass */
-.ui-widget-content {
-  border: 0px;
-  background: white;
-  color: #222222; }
-
-/* line 241, ../base-sass/reports.sass */
-.ui-widget-header {
-  border: 0px;
-  background: #cdcdcd url(images/bg.png) repeat-x;
-  border-bottom: 1px solid #cdcdcd;
-  color: #222222;
-  font-weight: bold; }
-
-/* line 248, ../base-sass/reports.sass */
-.ui-state-default, .ui-widget-content .ui-state-default {
-  border: 1px solid #cdcdcd;
-  background: #dddddd url(images/bg.png) repeat-x;
-  font-weight: normal;
-  color: #555555;
-  outline: none; }
-
-/* line 255, ../base-sass/reports.sass */
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus {
-  border: 1px solid #cdcdcd;
-  background: #aaaaaa url(images/bg.png) repeat-x;
-  font-weight: normal;
-  color: #212121;
-  outline: none; }
-
-/* line 262, ../base-sass/reports.sass */
-.ui-state-active, .ui-widget-content .ui-state-active {
-  border: 1px solid #cdcdcd;
-  background: white;
-  font-weight: normal;
-  color: #212121;
-  outline: none; }
-
-/* line 269, ../base-sass/reports.sass */
-.ui-corner-all {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px; }
+}
 
 .comments .author {
   font-style: italic;

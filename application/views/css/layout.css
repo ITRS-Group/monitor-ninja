@@ -31,12 +31,6 @@ body {
   height: 100%;
 }
 
-/* line 159, ../base-sass/common.sass */
-form {
-  width: 100%;
-  display: block;
-}
-
 code {
   font-family: monospace;
 }
@@ -72,7 +66,34 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block;
 }
-/* End CSS Reset */
+
+/* General form layout */
+
+form {
+  display: block;
+  padding: 8px;
+  width: 100%;
+}
+
+form label {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 4px;
+}
+
+form select {
+  margin: 4px;
+  min-width: 196px;
+}
+
+form textarea {
+  min-width: 256px;
+}
+
+form input[type="checkbox"] {
+  margin: 4px;
+  vertical-align: middle;
+}
 
 /* Width based layouting */
 
@@ -444,6 +465,10 @@ table.no_border td {
   float: right;
 }
 
+.global_search form {
+  padding: 0;
+}
+
 .global_search input[type="text"] {
   display: inline-block;
   width: 75%;
@@ -794,15 +819,6 @@ a#optiontoggle {
   border: 0 !important;
 }
 
-.report-page-setup, .report-page {
-  padding: 0px 16px;
-}
-
-.report-page-setup td > label {
-  margin: 4px 0;
-  display: inline-block;
-}
-
 .pie-chart {
   display: block;
   float: left;
@@ -1040,5 +1056,139 @@ select#period.popup {
 
 .tablestat-widget td:last-child {
   border-right: none;
+}
+
+#new_schedule_report_table tr td {
+  padding: 0px 15px 0px 0px;
+  vertical-align: top;
+  width: auto;
+}
+
+tr#pdf-hide td {
+  background: transparent;
+  margin-top: 5px;
+  text-align: right;
+  padding-right: 2px;
+}
+
+tr.dark td, tr.odd td.dark {
+  border: 1px solid transparent;
+  border-left: 0px;
+  border-top: 0px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+tr.even td.dark {
+  border: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-top: 0px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding: 2px 5px;
+  vertical-align: bottom;
+  width: auto;
+  text-align: left;
+}
+
+tr.dark td.data, tr.odd td.data, tr.even td.data {
+  text-align: right;
+  white-space: nowrap;
+}
+
+table.setup-tbl tr td {
+  padding: 0px 5px 0px 0px;
+  border: 0;
+  vertical-align: top;
+}
+
+table.white-table tr.no-result td {
+  padding-left: 0px;
+}
+
+.summary {
+  text-align: right;
+}
+
+/* Time picker specifics, should be generalized */
+div.time-picker {
+  position: absolute;
+  height: 200px;
+  width: 9em;
+  /* needed for IE */
+  overflow: auto;
+  background: white;
+  border: 1px solid #d0d0d0;
+  z-index: 99;
+}
+
+div.time-picker-12hours {
+  width: 6em;
+  /* needed for IE */
+}
+div.time-picker ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+div.time-picker li {
+  padding: 1px;
+  cursor: pointer;
+}
+
+div.time-picker li.selected {
+    background: #316ac5;
+    color: white;
+}
+
+.time_error {
+  border: 1px solid red;
+  color: red;
+}
+
+/* jQuery UI specifics, should be generalized */
+
+.ui-widget-content {
+  border: 0px;
+  background: white;
+  color: #222222;
+}
+
+.ui-widget-header {
+  border: 0px;
+  background: #cdcdcd url(images/bg.png) repeat-x;
+  border-bottom: 1px solid #cdcdcd;
+  color: #222222;
+  font-weight: bold;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default {
+  border: 1px solid #cdcdcd;
+  background: #dddddd url(images/bg.png) repeat-x;
+  font-weight: normal;
+  color: #555555;
+  outline: none;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus {
+  border: 1px solid #cdcdcd;
+  background: #aaaaaa url(images/bg.png) repeat-x;
+  font-weight: normal;
+  color: #212121;
+  outline: none;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+  border: 1px solid #cdcdcd;
+  background: white;
+  font-weight: normal;
+  color: #212121;
+  outline: none;
+}
+
+.ui-corner-all {
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
 }
 
