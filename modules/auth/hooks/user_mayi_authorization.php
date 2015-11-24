@@ -211,6 +211,7 @@ command_view_all                monitor.monitoring.commands:read                
 command_edit_all                monitor.monitoring.commands:{create,update,delete}            true
 
 logger_access                   monitor.logger.messages:read                                  true
+logger_configuration            monitor.logger.settings:update                                true
 
 manage_trapper                  monitor.trapper.handlers:                                     true
 manage_trapper                  monitor.trapper.log:                                          true
