@@ -71,7 +71,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 form {
   display: block;
-  padding: 8px;
+  padding: 16px;
   width: 100%;
 }
 
@@ -91,12 +91,39 @@ form select option {
 }
 
 form textarea {
+  margin: 4px;
+  padding: 4px;
   min-width: 256px;
+  background: #fff;
+  border: 1px solid transparent;
+  line-height: 120%;
+}
+
+form input[type="radio"] {
+  margin: 4px;
+  vertical-align: middle;
 }
 
 form input[type="checkbox"] {
   margin: 4px;
   vertical-align: middle;
+}
+
+form input[type="text"],
+form input[type="password"]{
+  margin: 4px;
+  padding: 4px;
+  line-height: 150%;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+
+form input[type="submit"],
+form input[type="reset"],
+form input[type="button"],
+form button {
+  margin: 4px;
 }
 
 /* Width based layouting */
@@ -175,9 +202,6 @@ form input[type="checkbox"] {
   display: inline-block;
   padding-left: 4px;
 }
-
-
-/* End layouting */
 
 /* Utility classes */
 
@@ -462,21 +486,26 @@ table.no_border td {
   width: 300px;
 }
 
-.global_search {
+.global-search {
   z-index: 4;
   text-align: right;
-  padding: 0px 3px 0 3px;
+  padding: 4px;
   float: right;
 }
 
-.global_search form {
+.global-search form {
   padding: 0;
 }
 
-.global_search input[type="text"] {
+.global-search .profile {
   display: inline-block;
-  width: 75%;
-  margin-top: 5px;
+  vertical-align: middle;
+}
+
+.global-search input[type="text"] {
+  display: inline-block;
+  width: 128px;
+  margin-top: 4px;
   padding: 2px 2px 2px 8px;
 }
 
@@ -538,27 +567,6 @@ table.no_border td {
 
 .page_settings li {
   padding: 4px 4px 4px 25px;
-}
-
-
-/* End Explicit classes */
-
-/* Form classes */
-
-input[type="text"], input[type="password"] {
-  border-radius: 3px;
-  border: 1px solid transparent;
-  padding: 3px 6px;
-}
-
-input[type="submit"].plain {
-  background: transparent;
-  border-width: 0 0 1px;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  display: inline;
-  margin: 0;
-  padding: 0;
 }
 
 /* Header */
@@ -994,17 +1002,10 @@ input#summary_items {
   width: 50px;
 }
 
-/* line 343, ../base-sass/reports.sass */
 td.iseditable input,
 td.report_name select,
 td.period_select select {
   width: auto;
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* line 348, ../base-sass/reports.sass */
-.txtarea textarea {
   display: block;
   margin-bottom: 5px;
 }

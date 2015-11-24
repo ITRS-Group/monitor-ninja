@@ -62,7 +62,10 @@
   padding: 6px 0 2px 6px;
   overflow: auto;
   position: relative;
-  font-weight: bold; }
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
   /* line 66, ../base-sass/widget.sass */
   .widget-header span {
     white-space: pre;

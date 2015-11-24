@@ -29,6 +29,16 @@ h6 {
   font-size: 1.05em;
 }
 
+
+form input[type="text"],
+form input[type="password"] {
+  border-color: #999999;
+}
+
+form textarea {
+  border-color: #999999;
+}
+
 .alpha {
   opacity: 0.4;
   filter: alpha(opacity=40);
@@ -165,28 +175,17 @@ table td:first-child {
   outline: 1px solid #777777;
 }
 
-a, input[type="submit"].plain, button.plain {
-  color: #444444;
+a {
+  color: #666666;
   text-decoration: none;
-  border-bottom: 1px dotted #444444;
+  border-bottom: 1px dotted #666666;
 }
 
-a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
-    border-bottom: 0 dotted #444444;
+a:hover {
+  color: #333333;
+  border-bottom: 1px dotted #333333;
 }
 
-a:hover, input[type="submit"].plain:hover, button.plain:hover {
-    color: #333333;
-    border-bottom: 1px dotted #333333;
-}
-
-input[type="text"], input[type="password"] {
-  border-color: #777777;
-}
-
-input[type="submit"].plain {
-  background: transparent;
-}
 
 .autocomplete {
   background: #fdfdfd;

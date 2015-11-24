@@ -29,6 +29,14 @@ h6 {
   font-size: 1.05em;
 }
 
+form textarea {
+  border-color: #aaaaaa;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  border-color: #aaaaaa;
+}
 
 .alpha {
   opacity: 0.4;
@@ -162,33 +170,24 @@ table td:first-child {
   border-left: none;
 }
 
-#host_table tr:hover, #service_table tr:hover, .host_table tr:hover, .service_table tr:hover {
+#host_table tr:hover,
+#service_table tr:hover,
+.host_table tr:hover,
+.service_table tr:hover {
   outline: 1px solid #aaaaaa;
 }
 
-a, input[type="submit"].plain, button.plain {
+a {
   color: #333333;
   text-decoration: none;
   border-bottom: 1px dotted #333333;
 }
 
-a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
-  border-bottom: 0 dotted #333333;
-}
-
-a:hover, input[type="submit"].plain:hover, button.plain:hover {
+a:hover {
   color: black;
   border-bottom: 1px dotted black;
 }
 
-input[type="text"], input[type="password"] {
-  border-color: #aaaaaa;
-}
-
-/* line 340, ../base-sass/common.sass */
-input[type="submit"].plain {
-  background: transparent;
-}
 
 .autocomplete {
   background: #f9f9f9;

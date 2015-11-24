@@ -1,106 +1,91 @@
 
 .jq-filterable-box {
-	display: inline-block;
-	vertical-align: 45%;
-	position: relative;
+  display: inline-block;
+  vertical-align: 45%;
+  position: relative;
 }
 
 /* STUPID defaults in common.css */
 .jq-filterable-box select {
-	width: auto;
+  width: auto;
 }
 
 .jq-filterable-right {
-	display: inline-block;
-	position: relative;
-	vertical-align: top;
-	margin-left: 8px;
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  margin-left: 8px;
 }
 
 .jq-filterable-left {
-	display: inline-block;
-	position: relative;
-	vertical-align: top;
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
 }
 
 .jq-filterable-searchbox {
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	padding: 3px 1px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 3px 1px;
 }
 
-/* STUPID defaults in common.css */
-input.jq-filterable-filter {
-	border: 0 !important;
-	margin: 0 !important;
-	width: auto !important;
+form input.jq-filterable-filter {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  width: auto;
 }
 
 select.jq-filterable-list {
-	margin-top: 0;
-	border: 1px solid #bbb;
-	height: 25px;
-	vertical-align: top;
-	padding: 4px;
+  margin: 0;
+  border: 1px solid #bbb;
+  height: 25px;
+  vertical-align: top;
+  padding: 4px;
 }
 
 select.jq-filterable-list[multiple],
 select.jq-filterable-results {
-	margin-top: 0;
-	border: 1px solid #bbb;
-	min-width: 190px !important;
-	height: 150px;
+  margin-top: 0;
+  border: 1px solid #bbb;
+  min-width: 190px !important;
+  height: 150px;
 }
 
 select.jq-filterable-list[multiple] {
-	border-top: none;
+  border-top: none;
 }
 
 select.jq-filterable-results {
-	height: 178px;
+  margin: 0;
+  height: 178px;
 }
 
 .jq-filterable-results option[data-matching="no-match"] {
-	color: #888;
+  color: #888;
 }
 
 input[type="button"].jq-filterable-move {
-	position: absolute;
-	right: 2px;
-	top: 3px;
-	padding: 2px !important;
-	background: #fff !important;
-	border: 1px solid #ccc;
-	margin: 0;
+  position: absolute;
+  right: 2px;
+  top: 3px;
+  padding: 2px !important;
+  background: #fff !important;
+  border: 1px solid #ccc;
+  margin: 0;
 }
 
 .jq-filterable-stats,
 .jq-filterable-result-stats {
-
-	position: relative;
-	text-align: right;
-
-	padding: 2px 2px 1px 2px;
-	border: none;
-
-	font-size: 8pt;
-	color: #999;
-}
-
-.jq-filterable-stats[data-state="info"] {
-	color: #999;
-}
-
-.jq-filterable-stats[data-state="warning"] {
-	color: #ffcc00;
-}
-
-.jq-filterable-stats[data-state="error"] {
-	color: #ff4400;
+  position: relative;
+  text-align: right;
+  padding: 2px 2px 1px 2px;
+  border: none;
+  font-size: 80%;
 }
 
 .jq-filterable-working select,
 .jq-filterable-working input,
 .jq-filterable-working button {
-	cursor: wait !important;
+  cursor: wait !important;
 }

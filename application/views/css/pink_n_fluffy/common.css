@@ -29,6 +29,16 @@ h6 {
   font-size: 1.05em;
 }
 
+
+form textarea {
+  border-color: #b04779;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  border-color: #b04779;
+}
+
 .alpha {
   opacity: 0.4;
   filter: alpha(opacity=40);
@@ -136,21 +146,17 @@ table tr {
   background: none;
 }
 
-table tr.odd td {
-  background: #f9d9d9;
+table tr:nth-child(even) td {
+  background: #ffdddd;
 }
 
-table tr.even td {
-    background: #f9e3e3;
-}
-
-table tr.odd:hover td, table tr.even:hover td {
-  background: lightblue;
+table tr:hover td {
+  background: #ffeeee;
   color: black;
 }
 
 table td {
-  border-color: #dddbd9;
+  border-color: #eecccc;
 }
 
 table td:last-child {
@@ -161,32 +167,24 @@ table td:first-child {
   border-left: none;
 }
 
-#host_table tr:hover, #service_table tr:hover, .host_table tr:hover, .service_table tr:hover {
-  outline: 1px solid #b04779;
+#host_table tr:hover,
+#service_table tr:hover,
+.host_table tr:hover,
+.service_table tr:hover {
+  outline: 1px solid #cc7799;
 }
 
-a, input[type="submit"].plain, button.plain {
-  color: #665555;
+a {
+  color: #773344;
   text-decoration: none;
-  border-bottom: 1px dotted #665555;
+  border-bottom: 1px dotted #773344;
 }
 
-a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
-  border-bottom: 0 dotted #665555;
+a:hover {
+  color: #440011;
+  border-bottom: 1px dotted #440011;
 }
 
-a:hover, input[type="submit"].plain:hover, button.plain:hover {
-  color: #443333;
-  border-bottom: 1px dotted #443333;
-}
-
-input[type="text"], input[type="password"] {
-  border-color: #b04779;
-}
-
-input[type="submit"].plain {
-  background: transparent;
-}
 
 .autocomplete {
   background: #f9d9d9;
@@ -271,14 +269,14 @@ input[type="submit"].plain {
 
 
 .menu ul li:hover {
-  background: #f0f0f0;
+  background: #f0d0d0;
   cursor: default;
 }
 
 .menu ul li ul {
   border-color: #b04779;
   box-shadow: 0 2px 3px #bbbbbb;
-  background: white;
+  background: #ffeeee;
 }
 
 .menu ul li ul li {

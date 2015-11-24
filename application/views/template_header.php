@@ -138,19 +138,22 @@
 	</div>
 
 	<div class="header_right">
-		<div class="global_search">
-			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
+		<div class="global-search">
+			<form action="<?php echo url::method('search', 'lookup'); ?>" method="get">
+				<span class="profile">
 				<?php
-					if ( Auth::instance()->logged_in() ) {
-						echo html::anchor('user', html::specialchars(strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username')));
-						echo " at " . html::specialchars(gethostname());
-						if ( !op5auth::instance()->authorized_for('no_logout') ) {
+					if (Auth::instance()->logged_in ()) {
+						$username = strlen(user::session('realname')) > 0 ? user::session('realname') : user::session('username');
+						echo html::anchor('user', html::specialchars($username));
+						echo " | " . html::anchor('user', _("Account settings"));
+						if (!op5auth::instance()->authorized_for('no_logout')) {
 							echo " | " . html::anchor(Kohana::config('routes.log_out_action'), html::specialchars(_('Log out')));
 						}
+						echo "<br>Host: " . html::specialchars(gethostname());
 					}
 				?>
+				</span>
 
-				<br />
 				<?php
 				$query = arr::search($_REQUEST, 'query');
 				if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
