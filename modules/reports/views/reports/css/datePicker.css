@@ -58,7 +58,7 @@ table.jCalendar td.unselectable.dp-hover {
 a.dp-choose-date {
 	width: 16px;
 	height: 16px;
-	padding: 0;
+	vertical-align: text-bottom;
 	display: inline-block;
 	text-indent: -2000px;
 	overflow: hidden;
