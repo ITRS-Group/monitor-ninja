@@ -54,7 +54,8 @@ q, blockquote {
   quotes: none;
 }
 
-q:before, q:after, blockquote:before, blockquote:after {
+q:before, q:after,
+blockquote:before, blockquote:after {
     content: "";
     content: none;
 }
@@ -63,8 +64,41 @@ a img {
   border: none;
 }
 
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+article, aside, details,
+figcaption, figure, footer,
+header, hgroup, menu, nav,
+section, summary {
   display: block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 2px 0;
+}
+
+h1 {
+  font-size: 1.3em;
+  margin: 10px 0;
+}
+
+h2 {
+  font-size: 1.2em;
+  margin: 6px 0;
+}
+
+h3 {
+  font-size: 1.15em;
+}
+
+h4 {
+  font-size: 1.1em;
+}
+
+h5 {
+  font-size: 1.05em;
+}
+
+h6 {
+  font-size: 1.05em;
 }
 
 /* General form layout */
@@ -258,20 +292,6 @@ form button {
   border: none !important;
 }
 
-/*
- * Resets -some- layout breaking properties of an element
- * @todo The .nullify class should be removed.
- */
-.nullify, table, table tbody, table th, table tr, table td {
-  background: transparent;
-  border-spacing: 0;
-  vertical-align: top;
-  outline: none;
-  border: none;
-  margin: 0;
-  padding: 0;
-}
-
 .no-borders td,
 .no-borders td:first-child,
 .no-borders td:last-child {
@@ -307,8 +327,18 @@ form button {
 
 /* Table layout */
 
+table, table tbody, table th, table tr, table td {
+  background: transparent;
+  border-spacing: 0;
+  vertical-align: top;
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
 table {
-  margin: 0 0;
+  vertical-align: top;
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;

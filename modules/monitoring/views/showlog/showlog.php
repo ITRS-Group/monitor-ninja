@@ -3,7 +3,7 @@ $date_format = cal::get_calendar_format(true);
 echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get'));
 ?>
 <div>
-	<div class="no-borders indent">
+	<div class="indent">
 			<div class="left width-20">
 			<h3><?php echo _('General options'); ?></h3>
 			<label><?php echo form::checkbox('hide_flapping', 1, isset($options['hide_flapping'])).' '._('Hide flapping alerts'); ?></label><br />
