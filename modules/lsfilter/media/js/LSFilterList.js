@@ -401,7 +401,7 @@ function lsfilter_list(config)
 
 		var subtitle = null;
 		if ( this.config.toolbar ) {
-			subtitle = this.config.toolbar.find( '.main-toolbar-subtitle' );
+			subtitle = this.config.toolbar.find( '.main-toolbar-title' );
 		}
 
 		var container = $('<ul />');

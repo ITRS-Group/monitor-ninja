@@ -120,10 +120,13 @@
   display: inline-block;
   vertical-align: middle;
   border-right: 1px solid #cccccc;
-  padding: 1px 6px 0px 6px;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 6px 8px;
 }
 
-.main-toolbar ul li:first-child {
+.main-toolbar ul li:first-child,
+.main-toolbar ul li:last-child {
   border-right: none;
 }
 

@@ -175,18 +175,16 @@ class User_Controller extends Authenticated_Controller {
 
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Settings") );
 		$root = url::base(FALSE) . 'index.php/';
+		$links = "";
 
 		if ( Auth::instance()->authorized_for('access_rights') ) {
-			$this->template->toolbar->info(
-				'<a href="' . $root . 'user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
-			);
+			$links .= '<li>' . html::icon('eventlog') . '<a href="' . $root . 'user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a></li>';
 		}
 
 		if ( Auth::instance()->authorized_for('own_user_change_password') ) {
-			$this->template->toolbar->info(
-				'<a href="' . $root . 'change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
-			);
+			$links .= '<li>' . html::icon('access-configuration') . '<a href="' . $root . 'change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a></li>';
 		}
+		$this->template->toolbar->info("<ul>$links</ul>");
 
 		$template->current_values = $current_values;
 		$template->available_setting_sections = $available_setting_sections;
@@ -431,16 +429,15 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Edit user menu") );
 
 		$root = url::base(FALSE) . 'index.php/';
+		$links = "";
 
-		$this->template->toolbar->info(
-			'<a href="' . $root . 'user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
-		);
+		$links .= '<li>' . html::icon('profiles') . '<a href="' . $root . 'user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a></li>';
 
 		if ( Auth::instance()->authorized_for('own_user_change_password') ) {
-			$this->template->toolbar->info(
-				'<a href="' . $root . 'change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a>'
-			);
+			$links .= '<li>' . html::icon('access-configuration') . '<a href="' . $root . 'change_password' . '" title="' . _('Change Password') . '">' . _('Change Password') . '</a></li>';
 		}
+
+		$this->template->toolbar->info("<ul>$links</ul>");
 
 	}
 

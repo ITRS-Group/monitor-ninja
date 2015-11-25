@@ -1,12 +1,12 @@
 body {
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Droid Sans', 'Arial', 'Tahoma', sans-serif;
   font-size: 9pt;
   color: #3a3a3a;
   background: #fdfdfd;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Tahoma', sans-serif;
 }
 
 h1 {/* Can set font-family and color */}
@@ -202,7 +202,7 @@ a:hover {
   background: #f7f6f5;
 }
 
-.main-toolbar .main-toolbar-menu > ul > li {
+.main-toolbar .main-toolbar-menu {
   border-left: 1px solid #aaaaaa;
 }
 
@@ -257,6 +257,9 @@ a:hover {
   border-color: #aaaaaa;
 }
 
+.menu ul li a span:last-child {
+  font-size: 110%;
+}
 /* This is only the rendering of the downward
  * arrow in the menu */
 .menu ul li ul li span.menu-section:after,
@@ -284,7 +287,6 @@ a:hover {
 .widget-header {
   background: #f7f6f5;
   border-color: #ccc;
-  font-weight: bold;
 }
 
 .widget-content-error {

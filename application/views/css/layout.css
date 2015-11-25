@@ -412,6 +412,7 @@ table.no_border td {
 
 .main-toolbar {
   border-top: 1px solid transparent;
+  height: 32px;
   clear: both;
 }
 
@@ -420,30 +421,41 @@ table.no_border td {
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
+  height: 32px;
 }
 
 .main-toolbar .menu.main-toolbar-menu > ul > li > a {
-  padding: 3px 4px 2px 4px;
+  padding: 0 4px;
 }
 
 .main-toolbar .main-toolbar-title {
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
-  padding: 6px 24px 6px 12px;
+  padding: 10px 24px 10px 16px;
+  height: 32px;
+  box-sizing: border-box;
 }
 
 .main-toolbar .main-toolbar-subtitle {
   display: inline-block;
   vertical-align: middle;
   margin-right: 6px;
-  padding: 6px 16px 6px 6px;
+  padding: 10px 16px 10px 6px;
+  height: 32px;
+  box-sizing: border-box;
+}
+
+
+.main-toolbar .main-toolbar-subtitle:empty {
+  display: none;
 }
 
 .main-toolbar .main-toolbar-info {
   display: inline-block;
   vertical-align: middle;
-  padding: 2px 0 1px 0;
+  height: 32px;
+  box-sizing: border-box;
 }
 
 .main-toolbar .main-toolbar-info a {
@@ -478,7 +490,7 @@ table.no_border td {
 .main-toolbar .main-toolbar-buttons a {
   display: inline-block;
   border: none;
-  padding: 5px 4px 4px 4px;
+  padding: 3px;
   border-left: 1px solid #aaaaaa;
 }
 
@@ -713,10 +725,6 @@ table.no_border td {
   margin-right: 8px;
 }
 
-.menu.menu-right > ul > li {
-  height: 24px;
-}
-
 .menu.menu-right > ul > li > ul {
   right: 0;
 }
@@ -828,7 +836,6 @@ table.no_border td {
 }
 
 .main-menu > ul > li > a > span:last-child {
-  font-weight: bold;
   margin: 0 6px;
 }
 
@@ -838,12 +845,10 @@ table.no_border td {
   height: auto;
   margin: 8px 4px;
   border: 1px solid transparent;
-  border-radius: 0 0 8px 8px;
   position: relative;
 }
 
 .widget-content {
-  margin-bottom: 10px;
   overflow: auto;
 }
 

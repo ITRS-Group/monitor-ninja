@@ -28,7 +28,7 @@ class ListView_Controller extends Ninja_Controller {
 		$this->template->js[] = $basepath.'media/js/LSFilterInputWindow.js';
 
 		$this->template->title = _('List view');
-		$this->template->toolbar = new Toolbar_Controller( $this->template->title );
+		$this->template->toolbar = new Toolbar_Controller($this->template->title);
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;
 
