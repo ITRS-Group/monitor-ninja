@@ -1326,10 +1326,19 @@ table.white-table tr.no-result td {
 }
 
 /* Time picker specifics, should be generalized */
+
+input.time_start {
+  width: 64px;
+}
+
+input.time_end {
+  width: 64px;
+}
+
 div.time-picker {
   position: absolute;
   height: 200px;
-  width: 9em;
+  width: 74px;
   /* needed for IE */
   overflow: auto;
   background: white;
