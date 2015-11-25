@@ -9,23 +9,17 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
 }
 
-h1 {
-}
+h1 {/* Can set font-family and color */}
 
-h2 {
-}
+h2 {/* Can set font-family and color */}
 
-h3 {
-}
+h3 {/* Can set font-family and color */}
 
-h4 {
-}
+h4 {/* Can set font-family and color */}
 
-h5 {
-}
+h5 {/* Can set font-family and color */}
 
-h6 {
-}
+h6 {/* Can set font-family and color */}
 
 form textarea {
   border-color: #b04779;
@@ -34,61 +28,6 @@ form textarea {
 form input[type="text"],
 form input[type="password"] {
   border-color: #b04779;
-}
-
-.alpha {
-  opacity: 0.4;
-  filter: alpha(opacity=40);
-}
-
-.white {
-  opacity: 0 !important;
-  filter: alpha(opacity=0) !important;
-}
-
-.alert, #response .alert {
-  background: #fcf8e3;
-  border-color: #fbeed5;
-  color: #c09853;
-}
-
-.error, #response .error {
-  background: #f2dede;
-  border-color: #eed3d7;
-  color: #b94a48;
-}
-
-.success, #response .success {
-  background: #dff0d8;
-  border-color: #cfe0c8;
-  color: #114411;
-}
-
-.notice, #response .notice {
-  background: #e3f8e3;
-  border-color: #d5eed5;
-  color: #539853;
-}
-
-.warning, #response .warning {
-  background: #fcf8d3;
-  border-color: #ebdeb5;
-  color: #b06823;
-}
-
-.long_output {
-  -ms-word-break: break-all;
-  word-break: break-all;
-  word-break: break-word;
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;
-}
-
-.long_output img {
-    margin: 4px 8px;
-    vertical-align: middle;
 }
 
 hr {
@@ -138,13 +77,6 @@ table td:first-child {
   border-left: none;
 }
 
-#host_table tr:hover,
-#service_table tr:hover,
-.host_table tr:hover,
-.service_table tr:hover {
-  outline: 1px solid #cc7799;
-}
-
 a {
   color: #773344;
   text-decoration: none;
@@ -156,6 +88,43 @@ a:hover {
   text-decoration: none;
   border-bottom: 1px dotted #440011;
 }
+
+.alert {
+  background: #fcf8e3;
+  border-color: #fbeed5;
+  color: #c09853;
+}
+
+/* These classes are to be used with the alert
+ * class such as a div with class "alert
+ * error" or with the badge class such as a
+ * span with class "badge error" */
+
+.error {
+  background: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+
+.success {
+  background: #dff0d8;
+  border-color: #cfe0c8;
+  color: #114411;
+}
+
+.notice {
+  background: #e3f8e3;
+  border-color: #d5eed5;
+  color: #539853;
+}
+
+.warning {
+  background: #fcf8d3;
+  border-color: #ebdeb5;
+  color: #b06823;
+}
+
+/* Style the global search autocomplete box */
 
 .autocomplete {
   background: #f9d9d9;
@@ -170,14 +139,6 @@ a:hover {
   background: #f9d9d9;
   border-color: #d05789;
   box-shadow: 0 2px 3px #bbbbbb;
-}
-
-.page_settings .unselected {
-  background: url("images/checkbox.png") no-repeat;
-}
-
-.page_settings .selected {
-  background: url("images/checkbox-selected.png") no-repeat;
 }
 
 .page_settings li {
@@ -260,6 +221,37 @@ a:hover {
   font-size: 80%;
   content: "▼";
   color: #555555;
+}
+
+/* Widget styling */
+.widget {
+  border-color: #b04779;
+}
+
+.widget-editbox {
+  background: #f9d9d9;
+  border-color: #d05789;
+}
+
+.widget-selector:hover {
+  cursor: pointer;
+  background-color: #ff99b3;
+}
+
+.widget-header {
+  background: #ff99b3;
+  border-color: #c05789;
+  font-weight: bold;
+}
+
+.widget-content-error {
+  background: #f9d9d9;
+  font-size: 10pt;
+}
+
+.widget-placeholder {
+  border-color: #b04779;
+  background: #dddddd;
 }
 
 a.external {
