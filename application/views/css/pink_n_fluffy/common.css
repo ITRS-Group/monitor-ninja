@@ -1,6 +1,6 @@
 body {
-  font-size: 10pt;
   font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-size: 9pt;
   color: #332a2a;
   background: #fff5f5;
 }
@@ -60,7 +60,7 @@ table tr:nth-child(even) td {
   background: #ffdddd;
 }
 
-table tr:hover td {
+#filter_result table tr:hover td {
   background: #ffeeee;
   color: black;
 }

@@ -1,6 +1,6 @@
 body {
   font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
-  font-size: 10pt;
+  font-size: 9pt;
   color: #3a3a3a;
   background: #fdfdfd;
 }
@@ -60,7 +60,7 @@ table tr.odd td {
   background: #f1f0ed;
 }
 
-table tr:hover td {
+#filter_result table tr:hover td {
   background: lightblue;
   color: black;
 }

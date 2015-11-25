@@ -420,7 +420,10 @@ table.no_border td {
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
-  padding: 4px;
+}
+
+.main-toolbar .menu.main-toolbar-menu > ul > li > a {
+  padding: 3px 4px 2px 4px;
 }
 
 .main-toolbar .main-toolbar-title {

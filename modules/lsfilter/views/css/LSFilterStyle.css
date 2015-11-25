@@ -1,14 +1,12 @@
-/* line 1, sass/LSFilterStyle.sass */
 #content.content {
   padding: 0; }
 
 /* FIX AGAINST GENERAL CONTENT PADDING */
-/* line 6, sass/LSFilterStyle.sass */
 #lsfilter_save_filter_name {
-  margin-bottom: 0; }
+  margin-bottom: 0;
+}
 
 /* FIX AGAINST REPORT CSS */
-/* line 11, sass/LSFilterStyle.sass */
 .filter-query-dropdown {
   display: none;
   box-shadow: 0 2px 2px 3px #dddddd;
@@ -23,20 +21,23 @@
   max-height: 500px;
   overflow: auto;
   display: none;
-  padding: 8px; }
+  padding: 8px;
+}
 
-/* line 27, sass/LSFilterStyle.sass */
 #filter-query-multi-action {
   max-height: none;
   padding: 0px;
-  background: white; }
-  /* line 32, sass/LSFilterStyle.sass */
-  #filter-query-multi-action ul {
-    display: inline-block;
-    vertical-align: top; }
-    /* line 35, sass/LSFilterStyle.sass */
-    #filter-query-multi-action ul li {
-      padding: 0.25em 1em 0.25em 0.25em; }
+  background: white;
+}
+
+#filter-query-multi-action ul {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#filter-query-multi-action ul li {
+  padding: 0.25em 1em 0.25em 0.25em;
+}
       /* line 36, sass/LSFilterStyle.sass */
       #filter-query-multi-action ul li:first-child {
         border-bottom: 1px solid #999999; }
@@ -50,22 +51,21 @@
           background: #f0f0f0;
           cursor: default; }
 
-/* line 49, sass/LSFilterStyle.sass */
 #filter-query-builder {
-  width: 75%; }
+  width: 75%;
+}
 
-/* line 52, sass/LSFilterStyle.sass */
 #lsfilter_save_filter.saving {
   background: url("loading_small.gif") no-repeat;
   background-position: left center;
-  padding-left: 22px !important; }
+  padding-left: 22px !important;
+}
 
-/* line 58, sass/LSFilterStyle.sass */
 .lsfilter-noresult {
   display: inline-block;
-  margin: 16px 16px; }
+  margin: 16px 16px;
+}
 
-/* line 62, sass/LSFilterStyle.sass */
 .lsfilter-loader {
   background: url("loading_small.gif") no-repeat;
   display: inline-block;
@@ -76,17 +76,18 @@
   padding-left: 22px;
   margin-bottom: 4px;
   height: 15px;
-  *display: inline; }
-  /* line 73, sass/LSFilterStyle.sass */
-  .lsfilter-loader span {
-    vertical-align: middle; }
+  *display: inline;
+}
 
-/* line 76, sass/LSFilterStyle.sass */
+.lsfilter-loader span {
+  vertical-align: middle;
+}
+
 .multi-action-title {
   padding: 0.5em 0.1em 0.1em 0.1em;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
-/* line 80, sass/LSFilterStyle.sass */
 .lsfilter-edit-bar {
   margin-right: 20px !important; }
   /* line 82, sass/LSFilterStyle.sass */
@@ -115,52 +116,50 @@
     #filter_result tbody tr:hover > td a {
       color: #222222; }
 
-/* line 104, sass/LSFilterStyle.sass */
 .main-toolbar ul li {
   display: inline-block;
   vertical-align: middle;
   border-right: 1px solid #cccccc;
-  padding: 1px 6px 0px 6px; }
-  /* line 109, sass/LSFilterStyle.sass */
-  .main-toolbar ul li:first-child {
-    border-right: none; }
-  /* line 111, sass/LSFilterStyle.sass */
-  .main-toolbar ul li .icon-16 {
-    vertical-align: middle; }
-/* line 113, sass/LSFilterStyle.sass */
+  padding: 1px 6px 0px 6px;
+}
+
+.main-toolbar ul li:first-child {
+  border-right: none;
+}
+
+.main-toolbar ul li .icon-16 {
+  vertical-align: middle;
+}
+
 .main-toolbar ul a {
   color: #444444;
-  border-bottom: none; }
-/* line 116, sass/LSFilterStyle.sass */
+  border-bottom: none;
+}
+
 .main-toolbar ul a:hover {
   border: none;
-  color: black; }
+  color: black;
+}
 
-/* line 120, sass/LSFilterStyle.sass */
 .listview-col-hover {
   background: #fdfdfd;
   border-color: #999999;
-  color: #222222; }
+  color: #222222;
+}
 
-/* line 125, sass/LSFilterStyle.sass */
 th span.header-icon {
   display: block;
-  margin: 0 auto; }
+  margin: 0 auto;
+}
 
-/* line 129, sass/LSFilterStyle.sass */
-.listview-empty-cell {
-  border: none !important;
-  background: transparent !important; }
-
-/* line 133, sass/LSFilterStyle.sass */
 #filter_result thead th {
   border-top: none;
   border-bottom: 1px solid #aaaaaa;
   padding-bottom: 0;
   padding-right: 0;
-  white-space: nowrap; }
+  white-space: nowrap;
+}
 
-/* line 140, sass/LSFilterStyle.sass */
 .lsfilter-sort-span {
   float: right;
   display: inline-block;
@@ -170,15 +169,17 @@ th span.header-icon {
   padding-right: 0;
   margin-right: 4px;
   background-repeat: no-repeat;
-  background-position: center; }
+  background-position: center;
+}
 
-/* line 153, sass/LSFilterStyle.sass */
 th.sortable:hover {
   background: #c6e4ee;
-  cursor: pointer; }
-/* line 156, sass/LSFilterStyle.sass */
+  cursor: pointer;
+}
+
 th.sortable.current {
-  background: lightblue; }
+  background: lightblue;
+}
 
 form#listview_multi_action_form {
   padding: 0;

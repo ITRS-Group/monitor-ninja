@@ -1,5 +1,5 @@
 body {
-  font-size: 10pt;
+  font-size: 9pt;
   font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
   color: #111111;
   background: #f9f9f9;
@@ -56,21 +56,17 @@ table tr {
   background: none;
 }
 
-table tr.odd td {
+table tr:nth-child(odd) td {
   background: #f1f0ed;
 }
 
-table tr.even td {
-  background: transparent;
-}
-
-table tr.odd:hover td, table tr.even:hover td {
+#filter_result table tr:hover td {
   background: lightblue;
   color: black;
 }
 
 table td {
-  border-color: 1px solid #dddbd9;
+  border-color: #bbbbbb;
 }
 
 table td:last-child {
