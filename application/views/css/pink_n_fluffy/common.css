@@ -2,7 +2,7 @@ body {
   font-size: 10pt;
   font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
   color: #332a2a;
-  background: #f9d9d9;
+  background: #fff5f5;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -122,6 +122,47 @@ a:hover {
   background: #fcf8d3;
   border-color: #ebdeb5;
   color: #b06823;
+}
+/* State colors, state colors should only be used on "final" elements
+ * and are therefor !important */
+
+.state-critical,
+.state-down{
+  background: #f2cece !important;
+  border-color: #eeb3b7 !important;
+  color: #b94a48;
+}
+
+.state-ok,
+.state-up{
+  background: #dff0d8 !important;
+  border-color: #cfe0c8 !important;
+  color: #114411;
+}
+
+.state-warning {
+  background: #fcf8d3 !important;
+  border-color: #ebdeb5 !important;
+  color: #b06823;
+}
+
+.state-unknown,
+.state-unreachable {
+  background: #ffddbb !important;
+  border-color: #ccaa99 !important;
+  color: #b06823;
+}
+
+.state-pending {
+  background: #dedede !important;
+  border-color: #bebebe !important;
+  color: #777777;
+}
+
+.state-info {
+  background: #cfd0f8 !important;
+  border-color: #bfc0e8 !important;
+  color: #114411;
 }
 
 /* Style the global search autocomplete box */

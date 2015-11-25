@@ -127,6 +127,94 @@ a:hover {
   border-color: #ebdeb5;
   color: #b06823;
 }
+/* State colors, state colors should only be used on "final" elements
+ * and are therefor !important */
+
+.state-critical,
+.state-down{
+  background: #f2aeae !important;
+  border-color: #ee9797 !important;
+  color: #b94a48;
+  font-weight: bold;
+}
+
+.state-ok,
+.state-up{
+  background: #bfe0b8 !important;
+  border-color: #aee0a8 !important;
+  color: #114411;
+  font-weight: bold;
+}
+
+.state-warning {
+  background: #fcf8d3 !important;
+  border-color: #ebdeb5 !important;
+  color: #b06823;
+  font-weight: bold;
+}
+
+.state-unknown,
+.state-unreachable {
+  background: #ffddbb !important;
+  border-color: #ccaa99 !important;
+  color: #b06823;
+  font-weight: bold;
+}
+
+.state-pending {
+  background: #dedede !important;
+  border-color: #bebebe !important;
+  color: #777777;
+  font-weight: bold;
+}
+
+.state-info {
+  background: #afc0f8 !important;
+  border-color: #9fb0e8 !important;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* Classic specific state-cell coloring */
+
+.icon.svc_obj_properties.critical,
+.icon.obj_properties.down {
+  background: #f2aeae !important;
+  border-color: #ee9797 !important;
+  color: #b94a48;
+  font-weight: bold;
+}
+
+.icon.svc_obj_properties.ok,
+.icon.obj_properties.up{
+  background: #bfe0b8 !important;
+  border-color: #aee0a8 !important;
+  color: #114411;
+  font-weight: bold;
+}
+
+.icon.svc_obj_properties.warning {
+  background: #fcf8d3 !important;
+  border-color: #ebdeb5 !important;
+  color: #b06823;
+  font-weight: bold;
+}
+
+.icon.svc_obj_properties.unknown,
+.icon.obj_properties.unreachable {
+  background: #ffddbb !important;
+  border-color: #ccaa99 !important;
+  color: #b06823;
+  font-weight: bold;
+}
+
+.icon.svc_obj_properties.pending,
+.icon.obj_properties.pending {
+  background: #dedede !important;
+  border-color: #bebebe !important;
+  color: #777777;
+  font-weight: bold;
+}
 
 /* Style the global search autocomplete box */
 

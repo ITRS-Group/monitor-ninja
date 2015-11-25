@@ -39,11 +39,6 @@ ol, ul {
   list-style: none;
 }
 
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
 caption, th, td {
   text-align: left;
   font-weight: normal;
@@ -387,7 +382,7 @@ table .comments {
 
 table td {
   border-bottom: 1px solid transparent;
-  padding: 6px 4px 6px 4px;
+  padding: 8px 4px 8px 4px;
   text-align: left;
   vertical-align: middle;
 }

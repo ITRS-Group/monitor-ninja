@@ -160,8 +160,7 @@ listview_renderer_table.hosts = {
 				cell.append(link_query(
 						'[services] host.name = "' + args.obj.name + '"')
 						.append(args.obj.num_services));
-				cell.addClass('cell_svccnt_all');
-				cell.addClass('cell_svccnt');
+				cell.addClass('state-info');
 			}
 			return cell;
 		}
@@ -177,8 +176,7 @@ listview_renderer_table.hosts = {
 						'[services] host.name = "' + args.obj.name
 								+ '" and state=0 and has_been_checked!=0')
 						.append(args.obj.num_services_ok));
-				cell.addClass('cell_svccnt_ok');
-				cell.addClass('cell_svccnt');
+				cell.addClass('state-ok');
 			}
 			return cell;
 		}
@@ -194,8 +192,7 @@ listview_renderer_table.hosts = {
 						'[services] host.name = "' + args.obj.name
 								+ '" and state=1 and has_been_checked!=0')
 						.append(args.obj.num_services_warn));
-				cell.addClass('cell_svccnt_warning');
-				cell.addClass('cell_svccnt');
+				cell.addClass('state-warning');
 			}
 			return cell;
 		}
@@ -211,8 +208,7 @@ listview_renderer_table.hosts = {
 						'[services] host.name = "' + args.obj.name
 								+ '" and state=2 and has_been_checked!=0')
 						.append(args.obj.num_services_crit));
-				cell.addClass('cell_svccnt_critical');
-				cell.addClass('cell_svccnt');
+				cell.addClass('state-critical');
 			}
 			return cell;
 		}
@@ -228,8 +224,7 @@ listview_renderer_table.hosts = {
 						'[services] host.name = "' + args.obj.name
 								+ '" and state=3 and has_been_checked!=0')
 						.append(args.obj.num_services_unknown));
-				cell.addClass('cell_svccnt_unknown');
-				cell.addClass('cell_svccnt');
+				cell.addClass('state-unknown');
 			}
 			return cell;
 		}
@@ -245,8 +240,7 @@ listview_renderer_table.hosts = {
 						'[services] host.name = "' + args.obj.name
 								+ '" and has_been_checked=0').append(
 						args.obj.num_services_pending));
-				cell.addClass('cell_svccnt_pending');
-				cell.addClass('cell_svccnt');
+				cell.addClass('state-pending');
 			}
 			return cell;
 		}

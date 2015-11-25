@@ -196,29 +196,35 @@ td input[type="checkbox"].listview_multiselect_checkbox {
   vertical-align: middle;
 }
 
-/* line 163, sass/LSFilterStyle.sass */
 #filter_result {
-  margin: -2px -2px 0 -2px; }
-
-/* line 168, sass/LSFilterStyle.sass */
-#filter_result table th {
-  padding: 6px 4px 4px 4px;
+  margin: -2px -2px 0 -2px;
 }
-  /* line 170, sass/LSFilterStyle.sass */
-  #filter_result table th:first-child {
-    padding-left: 0.2%; }
-  /* line 172, sass/LSFilterStyle.sass */
-  #filter_result table th:last-child {
-    padding-right: 0.3%; }
-/* line 175, sass/LSFilterStyle.sass */
+
+#filter_result table th {
+  padding: 8px 4px 6px 4px;
+}
+
+#filter_result table th:first-child {
+    padding-left: 0.2%;
+}
+
+#filter_result table th:last-child {
+    padding-right: 0.3%;
+}
+
 #filter_result table td:first-child {
-  padding-left: 0.3%; }
-/* line 177, sass/LSFilterStyle.sass */
+  padding-left: 0.3%;
+}
+
 #filter_result table td:last-child {
-  padding-right: 0.3%; }
-/* line 179, sass/LSFilterStyle.sass */
-#filter_result table td a, #filter_result table td img, #filter_result table td span {
-  vertical-align: middle; }
+  padding-right: 0.3%;
+}
+
+#filter_result table td a,
+#filter_result table td img,
+#filter_result table td span {
+  vertical-align: middle;
+}
 
 .floating-header {
   left: 0px;
@@ -244,149 +250,116 @@ td input[type="checkbox"].listview_multiselect_checkbox {
   padding-right: 0.3%;
 }
 
-/* line 197, sass/LSFilterStyle.sass */
 .listview-summary li span {
-  vertical-align: middle; }
+  vertical-align: middle;
+}
 
-/* line 200, sass/LSFilterStyle.sass */
 .table_pagination td {
   font-size: 12pt;
   padding: 0.1em;
-  text-align: center; }
+  text-align: center;
+}
 
-/* line 205, sass/LSFilterStyle.sass */
 .selected_odd td {
-  background-color: #eee4e4 !important; }
+  background-color: #eee4e4;
+}
 
-/* line 208, sass/LSFilterStyle.sass */
 .selected_even td {
-  background-color: #ffeeee !important; }
+  background-color: #ffeeee;
+}
 
-/* Service count in host detail listing */
-/* line 214, sass/LSFilterStyle.sass */
-td.cell_svccnt a {
-  border-bottom: 0; }
-
-/* line 217, sass/LSFilterStyle.sass */
 tr {
-  box-sizing: border-box; }
-  /* line 219, sass/LSFilterStyle.sass */
-  tr td {
-    box-sizing: border-box; }
-  /* line 221, sass/LSFilterStyle.sass */
-  tr.even td.cell_svccnt_ok {
-    background-color: #ccffcc !important; }
-  /* line 223, sass/LSFilterStyle.sass */
-  tr.odd td.cell_svccnt_ok {
-    background-color: #bbeebb !important; }
-  /* line 225, sass/LSFilterStyle.sass */
-  tr.even td.cell_svccnt_warning {
-    background-color: #ffffcc !important; }
-  /* line 227, sass/LSFilterStyle.sass */
-  tr.odd td.cell_svccnt_warning {
-    background-color: #eeeebb !important; }
-  /* line 229, sass/LSFilterStyle.sass */
-  tr.even td.cell_svccnt_critical {
-    background-color: #ffddcc !important; }
-  /* line 231, sass/LSFilterStyle.sass */
-  tr.odd td.cell_svccnt_critical {
-    background-color: #ffccc3 !important; }
-  /* line 233, sass/LSFilterStyle.sass */
-  tr.even td.cell_svccnt_unknown {
-    background-color: #ffeedd !important; }
-  /* line 235, sass/LSFilterStyle.sass */
-  tr.odd td.cell_svccnt_unknown {
-    background-color: #ffe7d4 !important; }
-  /* line 237, sass/LSFilterStyle.sass */
-  tr.even td.cell_svccnt_pending {
-    background-color: #dddddd !important; }
-  /* line 239, sass/LSFilterStyle.sass */
-  tr.odd td.cell_svccnt_pending {
-    background-color: #cccccc !important; }
+  box-sizing: border-box;
+}
+
+tr td {
+    box-sizing: border-box;
+}
 
 /* Visual filter editor */
-/* line 245, sass/LSFilterStyle.sass */
 .lsfilter_visual_group, .lsfilter_visual_match {
   padding: 2px;
-  margin: 1em 1em 1em 2em; }
+  margin: 1em 1em 1em 2em;
+}
 
-/* line 249, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_0 {
-  background-color: whitesmoke; }
+  background-color: whitesmoke;
+}
 
-/* line 252, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_1 {
   background-color: #f0f0f0;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 256, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_2 {
   background-color: #ebebeb;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 260, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_3 {
   background-color: #e6e6e6;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 264, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_4 {
   background-color: #e1e1e1;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 268, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_5 {
   background-color: gainsboro;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 272, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_6 {
   background-color: #d7d7d7;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 276, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_7 {
   background-color: #d2d2d2;
-  border: 1px solid #cccccc; }
+  border: 1px solid #cccccc;
+}
 
-/* line 280, sass/LSFilterStyle.sass */
 .lsfilter_visual_not {
   border-left: 0.5em solid #cc0000;
-  padding-left: 0.5em; }
+  padding-left: 0.5em;
+}
 
-/* line 284, sass/LSFilterStyle.sass */
 .lsfilter_visual_group_header {
   display: block;
   font-weight: bold;
-  vertical-algin: middle; }
+  vertical-algin: middle;
+}
 
-/* line 289, sass/LSFilterStyle.sass */
 .lsfilter_visual_node_remove {
   display: inline-block;
   float: right;
-  border: 0; }
-  /* line 293, sass/LSFilterStyle.sass */
-  .lsfilter_visual_node_remove:hover {
-    border: 0; }
+  border: 0;
+}
 
-/* line 296, sass/LSFilterStyle.sass */
+.lsfilter_visual_node_remove:hover {
+  border: 0;
+}
+
 .lsfilter_visual_node_addrule, .lsfilter_visual_node_addgroup, .lsfilter_visual_node_negate {
   display: inline-block;
-  margin: 0 0.5em 0 0; }
+  margin: 0 0.5em 0 0;
+}
 
-/* line 300, sass/LSFilterStyle.sass */
 .lsfilter_visual_field_select, .lsfilter_visual_operator_select, .lsfilter_visual_value_field {
-  width: 30%; }
+  width: 30%;
+}
 
-/* line 303, sass/LSFilterStyle.sass */
 li.filter-query-button a img {
-  vertical-align: middle; }
+  vertical-align: middle;
+}
 
-/* line 306, sass/LSFilterStyle.sass */
 li.filter-query-button a span {
   vertical-align: middle;
-  margin: 4px 2px; }
+  margin: 4px 2px;
+}
 
-/* line 310, sass/LSFilterStyle.sass */
 li.filter-query-button a .filter-button-label {
-  margin-left: 4px; }
+  margin-left: 4px;
+}
