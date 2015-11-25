@@ -117,6 +117,12 @@ pnp                             monitor.monitoring.combined_graphs:             
 pnp                             monitor.monitoring.graph_collections:                         true
 pnp                             monitor.monitoring.graph_templates:                           true
 
+nagvis_add_delete               monitor.nagvis.maps:{create,delete}                           true
+nagvis_view                     monitor.nagvis.maps:read                                      true
+nagvis_edit                     monitor.nagvis.maps:{create,update,delete}                    true
+nagvis_admin                    monitor.nagvis.maps:                                          true
+nagvis_admin                    monitor.nagvis.permissions:                                   true
+
 hostescalation_view_all         monitor.monitoring.hostescalations:read                       true
 hostescalation_edit_all         monitor.monitoring.hostescalations:{create,update,delete}     true
 hostescalation_add_delete       monitor.monitoring.hostescalations:{create,delete}            true
