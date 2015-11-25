@@ -80,7 +80,6 @@ class Showlog_Controller extends Ninja_Controller
 
 
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
-		$this->template->css[] = $this->add_path('showlog/css/showlog.css');
 		$this->js_strings .= reports::js_strings();
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
