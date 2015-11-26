@@ -1,4 +1,7 @@
 When /^I have these mocked (.*)$/ do |type, table|
+  if @mock == nil
+    @mock = Mock::Mock.new
+  end
   @mock.mock(type, table.hashes)
   page.driver.headers = {'X-op5-mock' => @mock.filename}
 end
@@ -23,7 +26,11 @@ After do |scenario|
     name = scenario.scenario_outline.name
   end
 
-  if page.driver.headers.has_key? 'X-op5-mock' and scenario.failed?
-    puts "Scenario #{name} failed, mock data stored in #{@mock.filename}"
+  if @mock != nil
+    if scenario.failed?
+      puts "Scenario '#{name}' failed, mock data stored in #{@mock.filename}"
+    else
+      @mock.delete()
+    end
   end
 end

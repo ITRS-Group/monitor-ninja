@@ -1,7 +1,7 @@
 require 'json'
 require 'cucumber'
 require 'tempfile'
-module Op5Cucumber::Mock
+module Mock
 
   class Mock
     def initialize()
@@ -21,7 +21,7 @@ module Op5Cucumber::Mock
       true
     end
 
-    def data(type)
+    def data(type=nil)
       @data[driver_for_type(type)][type]
     end
 
@@ -33,6 +33,10 @@ module Op5Cucumber::Mock
       File.open(@file, 'w') { |f|
         f.write(@data.to_json)
       }
+    end
+
+    def delete()
+      File.unlink(@file)
     end
 
     def mock(type, hashes={})
