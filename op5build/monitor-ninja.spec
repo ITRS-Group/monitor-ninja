@@ -192,7 +192,11 @@ install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma
 %endif
 
 mkdir -p %buildroot%_sysconfdir/%{httpconfdir}
+%if 0%{?rhel} >= 7
+install -m 640 op5build/ninja.httpd-conf.el7 %buildroot/etc/%{httpconfdir}/monitor-ninja.conf
+%else
 install -m 640 op5build/ninja.httpd-conf %buildroot/etc/%{httpconfdir}/monitor-ninja.conf
+%endif
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 
