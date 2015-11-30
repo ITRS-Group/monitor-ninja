@@ -101,10 +101,16 @@ class Backup_Controller extends Ninja_Controller {
 			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
 		);
 
-		proc::open(array('tar', 'tfz', self::STORAGE . $file), $output);
-		sort($output);
+		proc::open(array('tar', 'tfz', self::STORAGE . $file), $output, $stderr, $status);
 
-		$this->template->content->files = $output;
+		if ($status === 0 && is_string($output)) {
+			$files = explode("\n", $output);
+			sort($files);
+			$this->template->content->files = $files;
+		} else {
+			$this->template->content->error = _("Could not read content of backup");
+		}
+
 	}
 
 	/* below are AJAX/JSON actions */
