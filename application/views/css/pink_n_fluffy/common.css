@@ -1,12 +1,12 @@
 body {
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Helvetica', 'Tahoma', sans-serif;
   font-size: 9pt;
   color: #332a2a;
   background: #fff5f5;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Helvetica', 'Tahoma', sans-serif;
 }
 
 h1 {/* Can set font-family and color */}
@@ -243,6 +243,10 @@ a:hover {
 .menu ul li:hover {
   background: #f0d0d0;
   cursor: default;
+}
+
+.menu ul li a span:last-child {
+  font-size: 110%;
 }
 
 .menu ul li ul {

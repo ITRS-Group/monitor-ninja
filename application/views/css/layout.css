@@ -848,6 +848,11 @@ table.no_border td {
   position: relative;
 }
 
+/* Special table rule for widget rendering */
+.widget table tr:last-child td {
+  border-bottom: none;
+}
+
 .widget-content {
   overflow: auto;
 }

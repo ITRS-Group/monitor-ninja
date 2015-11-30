@@ -1,12 +1,12 @@
 body {
-  font-family: 'Droid Sans', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Helvetica', 'Tahoma', sans-serif;
   font-size: 9pt;
   color: #3a3a3a;
   background: #fdfdfd;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Helvetica', 'Tahoma', sans-serif;
 }
 
 h1 {/* Can set font-family and color */}
@@ -272,6 +272,7 @@ a:hover {
 /* Widget styling */
 .widget {
   border-color: #777777;
+  background: #fff;
 }
 
 .widget-editbox {

@@ -1,12 +1,12 @@
 body {
   font-size: 9pt;
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Helvetica', 'Tahoma', sans-serif;
   color: #111111;
   background: #f9f9f9;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
+  font-family: 'Arial', 'Helvetica', 'Tahoma', sans-serif;
 }
 
 h1 {/* Can style font-family and color */}
@@ -292,6 +292,10 @@ a:hover {
   cursor: default;
 }
 
+.menu ul li a span:last-child {
+  font-size: 110%;
+}
+
 .menu ul li ul {
   border-color: #aaaaaa;
   box-shadow: 0 2px 3px #bbbbbb;
@@ -315,6 +319,7 @@ a:hover {
 
 .widget {
   border-color: #aaaaaa;
+  background: #fff;
 }
 
 .widget-editbox {
