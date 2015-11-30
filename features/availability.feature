@@ -1,4 +1,4 @@
-@availability
+@availability @configuration
 Feature: Availability reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
@@ -36,7 +36,7 @@ Feature: Availability reports
 
 		And I have activated the configuration
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -46,7 +46,7 @@ Feature: Availability reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -58,7 +58,7 @@ Feature: Availability reports
 		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -71,7 +71,7 @@ Feature: Availability reports
 		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate single host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -96,7 +96,7 @@ Feature: Availability reports
 		Then I should see "Alert histogram"
 		And I should see "linux-server1"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -124,7 +124,7 @@ Feature: Availability reports
 		When I click "linux-server1"
 		Then I should see "Host details for linux-server1"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate single service report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -145,7 +145,7 @@ Feature: Availability reports
 		And I shouldn't see "Group availability (Worst state)"
 		And I shouldn't see "Summary"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -170,7 +170,7 @@ Feature: Availability reports
 		When I click "PING"
 		Then I should see "Service details for PING on host linux-server1"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -196,7 +196,7 @@ Feature: Availability reports
 		When I click "linux-server1"
 		Then I should see "Host details for linux-server1"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -216,7 +216,7 @@ Feature: Availability reports
 		And I shouldn't see "Total summary"
 		And I should see "Group availability (Worst state)"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -239,7 +239,7 @@ Feature: Availability reports
 		And I should see "win-server2"
 		And I should see "Group availability (Worst state)"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -262,7 +262,7 @@ Feature: Availability reports
 		And I should see "win-server2"
 		And I should see "Group availability (Worst state)"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -286,7 +286,7 @@ Feature: Availability reports
 		And I shouldn't see "Summary of all"
 		And I shouldn't see "Including soft states"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -312,7 +312,7 @@ Feature: Availability reports
 		And I shouldn't see "System Load"
 		And I should see "Group availability (Worst state)"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -330,7 +330,7 @@ Feature: Availability reports
 		Then I should see "Hostgroup breakdown"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate report on custom report date without time specified
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -348,7 +348,7 @@ Feature: Availability reports
 		Then I should see "Hostgroup breakdown"
 		And I should see "Reporting period: 2013-01-02 00:00:00 to 2013-04-03 23:59:00 - workhours"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Generate host report with state mapping
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -373,7 +373,7 @@ Feature: Availability reports
 		And I shouldn't see "Ok"
 		And "Down" should be selected from "Map up to"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Test service report with state mapping
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -391,7 +391,7 @@ Feature: Availability reports
 		Then I should see "Ok"
 		And I shouldn't see "Up"
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -433,7 +433,7 @@ Feature: Availability reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports @unreliable
+	@asmonitor @reports @unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Report" menu
@@ -469,7 +469,7 @@ Feature: Availability reports
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 
-	@configuration @asmonitor @reports @bug-7646 @unreliable
+	@asmonitor @reports @bug-7646 @unreliable
 	Scenario: Uncheck saved checkbox
 		Given I am on the Host details page
 		When I hover over the "Report" menu
@@ -508,7 +508,7 @@ Feature: Availability reports
 		And "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 
-	@configuration @asmonitor @reports
+	@asmonitor @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Report" menu

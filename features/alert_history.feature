@@ -1,3 +1,4 @@
+@configuration
 Feature: Alert history reports
 	Background:
 		Given I have these hostgroups configured:

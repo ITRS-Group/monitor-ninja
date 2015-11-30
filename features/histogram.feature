@@ -1,3 +1,4 @@
+@configuration
 Feature: Histogram reports
 	Background:
 		Given I have these hostgroups configured:

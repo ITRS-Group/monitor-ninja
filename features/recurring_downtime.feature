@@ -1,3 +1,4 @@
+@configuration
 Feature: Recurring downtime
 
 	Background:
@@ -10,7 +11,7 @@ Feature: Recurring downtime
 
 		And I have activated the configuration
 
-	@configuration @asmonitor
+	@asmonitor
 	Scenario: Add a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -26,7 +27,7 @@ Feature: Recurring downtime
 		Then I should be on url "/monitor/index.php/monitor/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "Kroppkakor is a thing"
 
-	@configuration @asmonitor
+	@asmonitor
 	Scenario: Edit a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -42,7 +43,7 @@ Feature: Recurring downtime
 		And I shouldn't see "Kroppkakor is a thing"
 		And I should see "Whipped cream"
 
-	@configuration @asmonitor
+	@asmonitor
 	Scenario: Delete a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
