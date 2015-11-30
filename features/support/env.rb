@@ -6,6 +6,8 @@ require 'capybara/cucumber'
 require 'syslog'
 require 'fileutils'
 
+require './features/support/env_file.rb'
+
 module CucumberHelpers
   require './features/support/navigationhelpers.rb'
   include NavigationHelpers
@@ -38,6 +40,7 @@ if ENV['DEBUG'] or ENV['VERBOSE']
 end
 
 After do |scenario|
+  @env_file.delete()
   if scenario.failed?
 	if ENV['CUKE_SCREEN_DIR']
 	  screen_dir = ENV['CUKE_SCREEN_DIR']
@@ -61,11 +64,23 @@ end
 
 Before do |scenario|
   @params = {}
+  @scenario_name = "Unknown scenario"
   case scenario
   when Cucumber::Ast::Scenario
     @scenario_name = scenario.name
   when Cucumber::Ast::OutlineTable::ExampleRow
     @scenario_name = scenario.scenario_outline.name
+  end
+
+  @env_file = NinjaEnvFile.new "./.env"
+  if ENV['CUKE_NINJA_MODULES']
+    etc = Dir.mktmpdir("cuke-etc")
+    File.open(etc + '/modules.yml', 'w') { |f|
+      f.write(
+        YAML.dump({"enabled" => ENV['CUKE_NINJA_MODULES'].split(',')})
+      )
+    }
+    @env_file.add("OP5LIBCFG", "/tmp/cuke-etc")
   end
   Syslog.log(Syslog::LOG_INFO, "Running '#{@scenario_name}'")
 end

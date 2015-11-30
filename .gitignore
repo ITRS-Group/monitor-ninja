@@ -13,7 +13,7 @@ application/widgets/cloudinfo
 *.swp
 modules/op5reports
 *.dojod
-
+.env
 application/logs
 application/config/custom/*
 

@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 require_once('op5/log.php');
+require_once('system/libraries/EnvLoader.php');
 
 /**
  * Provides Kohana-specific helper functions. This is where the magic happens!
@@ -65,6 +66,12 @@ final class Kohana {
 
 		// Start the environment setup benchmark
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
+    $envloader = new EnvLoader();
+    try {
+      $envloader->load(DOCROOT . "/.env");
+    } catch (EnvLoaderException $e) {
+			self::log('debug', 'No custom environment loader');
+    }
 
 		// Define Kohana error constant
 		define('E_KOHANA', 42);
@@ -76,11 +83,24 @@ final class Kohana {
 		define('E_DATABASE_ERROR', 44);
 
 		self::$include_paths = array();
-		// Modules overrides application alphabetically (glob is defined to be soreted), add those first
-		foreach (glob(MODPATH.'*', GLOB_ONLYDIR) as $path)
+		// Modules overrides application alphabetically (glob is defined to be sorted)
+		$modules_paths = array();
+		$modules = op5config::instance()->getConfig('modules');
+		if (isset($modules['all']) && $modules['all'] === true) {
+			$modules_paths = glob(MODPATH.'*', GLOB_ONLYDIR);
+		}
+		else if (isset($modules['enabled']) && is_array($modules['enabled'])) {
+			var_dump($modules);
+			$modules_paths = array_map(function($mod) {
+				return MODPATH.$mod;
+			}, $modules->get('enabled'));
+		}
+
+		foreach ($modules_paths as $path)
 		{
 			self::$include_paths[] = $path.'/';
 		}
+
 		// Since modules overrides application, add application after modules
 		self::$include_paths[] = APPPATH;
 		// Add SYSPATH as the last path

@@ -87,6 +87,15 @@ class ninja {
 	static function has_module($name)
 	{
 		$name = (string) $name;
+		$modules_config = op5config::instance()->getConfig('modules');
+		if (isset($modules['all']) && $modules['all'] === true) {
+		}
+		else if (isset($modules['enabled']) && is_array($modules['enabled'])){
+			if (!in_array($name, $modules['enabled'], true)) {
+				return false;
+			}
+		}
+
 		if(!isset(self::$loaded_modules[$name])) {
 			self::$loaded_modules[$name] = is_readable(MODPATH.$name);
 		}
