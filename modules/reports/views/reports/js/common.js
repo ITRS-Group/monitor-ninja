@@ -79,7 +79,7 @@ $(document).ready(function() {
 					$.notify(_reports_error + ": " + xhr.responseText, {'sticky': true});
 					return;
 				}
-				jgrowl_message(data.status_msg, _reports_success);
+				Notify.message(data.status_msg, {type: "success"});
 				if (!btn[0].form.report_id)
 					$('form').append('<input type="hidden" name="report_id" value="'+data.report_id+'"/>');
 				$('#save_report_form').hide();

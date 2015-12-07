@@ -39,7 +39,6 @@
 			echo html::script('application/media/js/jquery.selectboxes.min.js');
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.query.js');
-			echo html::script('application/media/js/jquery.jgrowl.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jquery.field.js');
 			echo html::script('application/media/js/date.js');
