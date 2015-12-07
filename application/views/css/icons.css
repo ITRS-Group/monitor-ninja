@@ -11,7 +11,9 @@
 /* line 12, ../base-sass/sprites.sass */
 .icon-16 {
   width: 16px;
-  height: 16px; }
+  height: 16px;
+  vertical-align: middle;
+}
 
 /* line 17, ../base-sass/sprites.sass */
 .icon-20 {
