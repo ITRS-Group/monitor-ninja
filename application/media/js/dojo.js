@@ -178,7 +178,7 @@
 				$('#dojo-quicklink-external').append(quicklink);
 				changed = true;
 			} else {
-				$.jGrowl(error);
+				Notify.message(error, {type: "error"});
 				return;
 			}
 		}

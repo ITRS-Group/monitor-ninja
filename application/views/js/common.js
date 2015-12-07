@@ -71,7 +71,7 @@ $(document).ready(function() {
 		create_slider('ninja_page_refresh');
 		$('#ninja_page_refresh_slider').on('slidechange', function() {
 			var delay = parseInt($('#ninja_page_refresh_value').val(), 10);
-			$.jGrowl(sprintf(_page_refresh_msg, delay), { header: _success_header });
+			Notify.message(sprintf(_page_refresh_msg, delay), {type: "success"});
 			ninja_refresh(delay);
 		});
 	}
@@ -93,12 +93,12 @@ $(document).ready(function() {
 			// to be able to restore it later
 			$('#listview_refresh_lable').css('font-weight', 'bold');
 			clearTimeout(lsfilter_storage.list.autorefresh_timer);
-			$.jGrowl(_listview_refresh_paused_msg, { header: _success_header });
+			Notify.message(_listview_refresh_paused_msg, {type: "success"});
 		} else {
 			// restore previous refresh rate
 			$('#listview_refresh_lable').css('font-weight', '');
 			lsfilter_storage.list.start_autorefresh_timer();
-			$.jGrowl(_listview_refresh_unpaused_msg, { header: _success_header });
+			Notify.message(_listview_refresh_unpaused_msg, {type: "success"});
 		}
 	});
 	$("#listview_refresh_value").bind('change', function() {
@@ -108,7 +108,7 @@ $(document).ready(function() {
 		create_slider('listview_refresh');
 		$('#listview_refresh_slider').on('slidechange', function() {
 			var delay = parseInt($('#listview_refresh_value').val(), 10);
-			$.jGrowl(sprintf(_listview_refresh_msg, delay), { header: _success_header });
+			Notify.message(sprintf(_listview_refresh_msg, delay), {type: "success"});
 			clearTimeout(lsfilter_storage.list.autorefresh_timer);
 			if (delay > 0) {
 				lsfilter_storage.list.config.autorefresh_enabled = true;
@@ -197,7 +197,7 @@ $(document).ready(function() {
 	}
 
 	/**
-	*	Toggle page refresh and show a jGrowl message to user about state
+	*	Toggle page refresh and show a notify message to user about state
 	*/
 	function toggle_refresh()
 	{
@@ -209,7 +209,7 @@ $(document).ready(function() {
 			$("#ninja_refresh_control").attr('checked', false);
 
 			// inform user
-			$.jGrowl(_refresh_unpaused_msg, { header: _success_header });
+			Notify.message(_refresh_unpaused_msg, {type: "success"});
 		} else {
 			// Prevent message from showing up when no pause is available
 			if ($("#ninja_page_refresh").html() === null) {
@@ -225,7 +225,7 @@ $(document).ready(function() {
 			refresh_is_paused = true;
 
 			// inform user
-			$.jGrowl(_refresh_paused_msg, { header: _success_header });
+			Notify.message(_refresh_paused_msg, {type: "success" });
 		}
 	}
 
@@ -421,14 +421,6 @@ function ninja_refresh(val)
 		_interval = setInterval( "refresh()", refresh_val*1000 );
 	}
 }
-
-function jgrowl_message(message_str, header_str)
-{
-	if (message_str!=='') {
-		$.jGrowl(message_str, { header: header_str });
-	}
-}
-
 
 // ===========================================================
 // code for remembering scroll position between page reloads

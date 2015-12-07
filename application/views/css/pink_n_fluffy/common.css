@@ -93,51 +93,6 @@ input[type="submit"].plain {
   background-color: #feeded;
 }
 
-.jGrowl-notification {
-  background-color: black;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-#jGrowl {
-  position: fixed;
-  top: 54px;
-  right: 30%;
-  z-index: 9999;
-  width: 40%;
-  color: white;
-}
-
-#jGrowl .header {
-  background: none;
-  box-shadow: none;
-  border: none;
-  height: auto;
-  min-width: 0;
-  position: relative;
-  width: auto;
-  z-index: 0;
-  color: white;
-  font-weight: bold;
-  border-color: black;
-  padding: 4px;
-  float: left;
-}
-
-#jGrowl .message {
-  clear: both;
-  display: inline-block;
-  color: white;
-  border-color: black;
-  padding: 4px;
-}
-
-#jGrowl .close {
-  color: white;
-  border-color: black;
-  float: right;
-  margin: 2px 6px;
-}
-
 .enabled_monfeat, .disabled_monfeat {
   font-size: 95%;
 }
