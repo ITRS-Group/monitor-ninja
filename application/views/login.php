@@ -10,7 +10,7 @@
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/print.css') ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/jquery-ui-custom.css') ?>" />
 		<?php
-			echo html::link(ninja::add_path('icons/x16/favicon.ico'),'icon','image/icon');
+			echo html::link('application/views/icons/favicon.ico','icon','image/x-icon');
 			echo html::script('application/media/js/jquery.js');
 		?>
 		 <script type="text/javascript">
