@@ -28,12 +28,13 @@ class Auth_Controller extends Ninja_Controller {
 		$this->template->js = array('application/media/js/jquery.js', 'application/views/js/login.js');
 		$this->template->auth_modules = $auth->get_metadata('login_screen_dropdown');
 
-		if ($_POST) {
-			$this->_verify_access('ninja.auth:login');
-			try {
-				if(PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
-					throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
-				}
+		try {
+			if(PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
+				throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
+			}
+
+			if ($_POST) {
+				$this->_verify_access('ninja.auth:login');
 
 				$username    = $this->input->post('username', false);
 				$password    = $this->input->post('password', false);
@@ -50,9 +51,9 @@ class Auth_Controller extends Ninja_Controller {
 				}
 
 				Event::run('ninja.logged_in');
-			} catch(NinjaLogin_Exception $e) {
-				$this->template->error_msg = $e->getMessage();
 			}
+		} catch(NinjaLogin_Exception $e) {
+			$this->template->error_msg = $e->getMessage();
 		}
 
 		/*
