@@ -23,6 +23,7 @@ class Ninja_Controller extends Template_Controller {
 	public $js_strings = false;
 	public $log = false;
 
+	public $notices;
 	public $widgets = array();
 	public $linkprovider;
 
@@ -35,6 +36,8 @@ class Ninja_Controller extends Template_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		$this->notices = new NoticeManager_Model();
 		$this->mayi = op5MayI::instance();
 		$this->log = op5log::instance('ninja');
 
@@ -47,8 +50,8 @@ class Ninja_Controller extends Template_Controller {
 		$this->template->css = array();
 		$this->template->js = array();
 
-		$this->template->global_notifications = array();
 		$this->template->print_notifications = array();
+		$this->template->notices = $this->notices;
 
 		$this->profiler = new Profiler;
 
@@ -71,22 +74,6 @@ class Ninja_Controller extends Template_Controller {
 		textdomain('ninja');
 
 		$this->_addons();
-	}
-
-	/**
-	 * Clean up global notifications
-	 *
-	 * If we want to regenerate the list of global notifiactions, we can simply clean it up
-	 */
-	protected function clear_global_notification() {
-		$this->template->global_notifications = array();
-	}
-
-	public function add_global_notification( $notification ) {
-		if (!is_array($notification)) {
-			$notification = array($notification);
-		}
-		$this->template->global_notifications[] = $notification;
 	}
 
 	/**
@@ -186,7 +173,7 @@ class Ninja_Controller extends Template_Controller {
 
 		if ($access) {
 			foreach ($messages as $msg) {
-				$this->add_global_notification($msg);
+				$this->notices[] = new InformationNotice_Model($msg);
 				// Since the messages are published depending on action instead
 				// of target, we should add all messages as print_notifications
 				// as well

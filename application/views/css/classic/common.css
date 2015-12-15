@@ -49,7 +49,6 @@ button.plain:hover {
   color: #b06823;
 }
 
-
 .alert, #response .alert {
   background: #fcf8e3;
   border: 1px solid #fbeed5;
@@ -58,19 +57,26 @@ button.plain:hover {
 
 .error, #response .error {
   background: #f2dede;
-  border-color: #eed3d7;
+  border-color: #eec3c7;
   color: #b94a48;
 }
 
-.notice, #response .notice {
+.info {
+  background-color: #d9edf7;
+  border-color: #b9cdd7;
+  color: #31708f;
+}
+
+.notice, #response .notice,
+.success {
   background: #e3f8e3;
-  border-color: #d5eed5;
+  border-color: #c5dec5;
   color: #539853;
 }
 
 .warning, #response .warning {
   background: #fcf8d3;
-  border-color: #ebdeb5;
+  border-color: #dbcea5;
   color: #b06823;
 }
 

@@ -64,9 +64,11 @@
 
 		</div>
 		<?php
+
 			if(!isset($no_dojo)) {
 				echo html::script('application/media/js/dojo.js');
 			}
+
 			if (isset($context_menu)) {
 				if($context_menu instanceof View) {
 					$context_menu->render(true);
@@ -74,16 +76,7 @@
 					echo $context_menu;
 				}
 			}
-		?>
 
-		<?php
-			if ( isset( $global_notifications ) && is_array( $global_notifications ) && count( $global_notifications ) >= 1 ) {
-				echo "<script>\n";
-				foreach ( $global_notifications as $note ) {
-					printf("Notify.message('%s', \n\t{type: 'error', nag: true});\n", addcslashes($note[0], "'"));
-				}
-				echo "</script>";
-			}
 		?>
 
 	</body>

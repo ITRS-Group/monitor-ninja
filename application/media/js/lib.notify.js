@@ -46,7 +46,7 @@ var Notify = (function () {
     var notification = {
       'element': $('<div>')
         .addClass('notify-notification')
-        .addClass('notify-notification-' + options.type),
+        .addClass(options.type),
       'message': '<span class="notify-notification-message">' + message + '</span>',
       'options': options,
       'zone': 'message'

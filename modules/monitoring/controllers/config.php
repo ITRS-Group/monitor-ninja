@@ -67,7 +67,7 @@ class Config_Controller extends Authenticated_Controller {
 				$set = $pool->none();
 			}
 			foreach ($messages as $m) {
-				$this->add_global_notification($m);
+				$this->notices[] = new ErrorNotice_Model($m);
 			}
 			try {
 				$data = $set->it(
@@ -75,7 +75,7 @@ class Config_Controller extends Authenticated_Controller {
 					($pagination->current_page-1)*$pagination->items_per_page
 				);
 			} catch(ORMException $e) {
-				$this->add_global_notification($e->getMessage());
+				$this->notices[] = new ErrorNotice_Model($e->getMessage());
 				$data = array();
 			}
 

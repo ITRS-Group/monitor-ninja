@@ -284,8 +284,17 @@ function lsfilter_list(config)
 		if(this.config.notify) {
 			this.config.notify.clear('nagbar');
 			for(i=0;i<messages.length;i++) {
-				this.config.notify.message(messages[i],
-						{type: 'error', nag: true});
+				if (typeof(messages[i]) === 'object') {
+					this.config.notify.message(messages[i].message, {
+						type: messages[i].type,
+						nag: true
+					});
+				} else {
+					this.config.notify.message(messages[i], {
+						type: 'error',
+						nag: true
+					});
+				}
 			}
 			$(window).trigger('resize');
 		}

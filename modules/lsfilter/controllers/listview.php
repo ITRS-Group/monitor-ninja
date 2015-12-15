@@ -99,15 +99,17 @@ class ListView_Controller extends Ninja_Controller {
 				 * from the resouce
 				 */
 				$messages = array();
-				foreach( $this->template->global_notifications as $notifications ) {
-					foreach($notifications as $notification) {
-						$messages[] = $notification;
-					}
-				}
+
 				foreach($resource_messages as $message) {
-					$messages[] = $message;
+					$this->notices[] = new InformationNotice_Model($message);
 				}
 
+				foreach ($this->notices as $notice) {
+					$messages[] = array(
+						"message" => $notice->get_message(),
+						"type" => $notice->get_typename()
+					);
+				}
 
 				$data = array();
 				foreach( $result_set->it($columns,$sort,$limit,$offset) as $elem ) {
