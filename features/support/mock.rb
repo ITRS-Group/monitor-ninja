@@ -6,7 +6,6 @@ module Op5Cucumber::Mock
   class Mock
     def initialize()
       @file = Dir::Tmpname.make_tmpname('/tmp/mock', nil)
-      puts "Initializing mock data in ... #{@file}"
       @data = {'ORMDriverLS default' =>
                {
                  'hostgroups' => [],

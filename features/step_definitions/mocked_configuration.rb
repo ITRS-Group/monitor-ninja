@@ -14,3 +14,16 @@ Then /^I should see the mocked (.*)$/ do | type |
     page.should have_content(expected_content)
   }
 end
+
+After do |scenario|
+  case scenario
+  when Cucumber::Ast::Scenario
+    name = scenario.name
+  when Cucumber::Ast::OutlineTable::ExampleRow
+    name = scenario.scenario_outline.name
+  end
+
+  if page.driver.headers.has_key? 'X-op5-mock' and scenario.failed?
+    puts "Scenario #{name} failed, mock data stored in #{@mock.filename}"
+  end
+end
