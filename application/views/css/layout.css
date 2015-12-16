@@ -382,6 +382,15 @@ table.no_border td {
   border: none;
 }
 
+table.list-table {}
+table.list-table td {
+        vertical-align: top;
+}
+
+table.list-table ul li {
+        padding: 6px 0 6px 6px;
+}
+
 td.comments {
   max-width: 200px;
 }
