@@ -1,5 +1,10 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<table class="tablestat-widget" id="mmm">
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+if (isset($error)) {
+	echo '<div class="alert error">' . $error . '</div>';
+	return;
+}
+?>
+<table class="list-table" id="mmm">
 	<colgroup>
 		<col style="width: 20%" />
 		<col style="width: 20%" />
@@ -8,225 +13,118 @@
 		<col style="width: 20%" />
 	</colgroup>
 	<tr>
-		<th class="<?php echo $cmd_flap_status ?>">
-			<strong><?php echo $flap_detect_header_label ?></strong>
-			<?php $current = str_replace('_monfeat','',$cmd_flap_status); ?>
-			<a title="Click to <?php echo ( $current == "enabled" ) ? "disable" : "enable" ?>" href="<?php echo $cmd_flap_link ?>">
-				<?php echo $current; ?>
-			</a>
-		</th>
-		<th class="<?php echo $cmd_notification_status ?>">
-			<strong><?php echo $notifications_header_label ?></strong>
-			<?php $current = str_replace('_monfeat','',$cmd_notification_status); ?>
-			<a title="Click to <?php echo ( $current == "enabled" ) ? "disable" : "enable" ?>" href="<?php echo $cmd_notification_link ?>">
-				<?php
-					echo $current;
-				?>
-			</a>
-		</th>
-		<th class="<?php echo $cmd_event_status ?>">
-			<strong><?php echo $eventhandler_header_label ?></strong>
-			<?php $current = str_replace('_monfeat','',$cmd_event_status); ?>
-			<a title="Click to <?php echo ( $current == "enabled" ) ? "disable" : "enable" ?>" href="<?php echo $cmd_event_link ?>">
-				<?php echo $current; ?>
-			</a>
-		</th>
-		<th class="<?php echo $cmd_activecheck_status ?>">
-			<strong><?php echo $activechecks_header_label ?></strong>
-			<?php $current = str_replace('_monfeat','',$cmd_activecheck_status); ?>
-			<a title="Click to <?php echo ( $current == "enabled" ) ? "disable" : "enable" ?>" href="<?php echo $cmd_activecheck_link ?>">
-				<?php echo $current; ?>
-			</a>
-		</th>
-		<th class="<?php echo $cmd_passivecheck_status ?>">
-			<strong><?php echo $passivechecks_header_label ?></strong>
-			<?php $current = str_replace('_monfeat','',$cmd_passivecheck_status); ?>
-			<a title="Click to <?php echo ( $current == "enabled" ) ? "disable" : "enable" ?>" href="<?php echo $cmd_passivecheck_link ?>">
-				<?php echo $current; ?>
-			</a>
-		</th>
-	</tr>
-	<tr>
-		<td>
-		<table class="no_border">
-			<?php	if ($enable_flap_detection) { ?>
-				<?php if ($flap_disabled_services > 0) {?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-					<td style="white-space: normal">
-						<?php echo $flap_disabled_services.' '.($flap_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled ?>
-					</td>
-				</tr>
-				<?php } else { ?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-					<td style="white-space: normal"><?php echo $lable_all_services.' '.$lable_enabled ?></td>
-				</tr>
-				<?php } if ($flapping_services > 0) {?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-					<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_IS_FLAPPING  ,$flapping_services.' '.($flapping_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_flapping) ?></td>
-				</tr>
-				<?php } else { ?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-					<td style="white-space: normal"><?php echo $lable_no_services.' '.$lable_flapping ?></td>
-				</tr>
-				<?php } if ($flap_disabled_hosts > 0) {?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-					<td style="white-space: normal"><?php echo $flap_disabled_hosts.' '.($flap_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled ?></td>
-				</tr>
-				<?php } else { ?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-					<td style="white-space: normal"><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
-				</tr>
-				<?php } if ($flapping_hosts > 0) {?>
-				<tr>
-					<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-					<td style="white-space: normal"><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_IS_FLAPPING ,$flapping_hosts.' '.($flapping_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_flapping) ?></td>
-				</tr>
-				<?php } else { ?>
-					<tr>
-						<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-						<td style="white-space: normal"><?php echo $lable_no_hosts.' '.$lable_flapping ?></td>
-					</tr>
-				<?php } } else { ?>
-					<tr>
-							<td style="padding: 6.5px"><?php echo _('N/A') ?></td>
-						</tr>
-				<?php	} ?>
-			</table>
-		</td>
-		<td>
-			<table class="no_border">
-				<?php	if ($enable_notifications) { ?>
-					<?php if ($notification_disabled_services > 0) { ?>
-					<tr>
-						<td class="icon icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-						<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_NOTIFICATIONS_DISABLED, $notification_disabled_services.' '.($notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
-					</tr>
-					<?php	} else { ?>
-					<tr>
-						<td class="icon icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-						<td style="white-space: normal"><?php echo $lable_all_services.' '.$lable_enabled ?></td>
-					</tr>
-					<?php	} ?>
-					<?php if ($notification_disabled_hosts > 0) { ?>
-					<tr>
-						<td class="icon icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-						<td style="white-space: normal"><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_NOTIFICATIONS_DISABLED, $notification_disabled_hosts.' '.($notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
-					</tr>
-					<?php	} else { ?>
-					<tr>
-						<td class="icon icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-						<td style="white-space: normal"><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
-					</tr>
-					<?php	} ?>
-					<?php	} else { ?>
-						<tr>
-							<td style="padding: 6.5px"><?php echo _('N/A') ?></td>
-						</tr>
-					<?php	} ?>
-			</table>
-		</td>
-		<td>
-			<table class="no_border">
-				<?php	if ($enable_event_handlers) { ?>
-						<?php if ($event_handler_disabled_svcs > 0) { ?>
-						<tr>
-							<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-							<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_EVENT_HANDLER_DISABLED, $event_handler_disabled_svcs.' '.($event_handler_disabled_svcs==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
-						</tr>
-						<?php } else { ?>
-							<tr>
-								<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-								<td style="white-space: normal"><?php echo $lable_all_services.' '.$lable_enabled ?></td>
-							</tr>
-						<?php } ?>
-						<?php if ($event_handler_disabled_hosts > 0) { ?>
-						<tr>
-							<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-							<td style="white-space: normal"><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_EVENT_HANDLER_DISABLED, $event_handler_disabled_hosts.' '.($event_handler_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
-						</tr>
-						<?php } else { ?>
-							<tr>
-								<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-								<td style="white-space: normal"><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
-							</tr>
-						<?php } ?>
-				<?php	} else { ?>
-					<tr>
-						<td style="padding: 6.5px"><?php echo _('N/A') ?></td>
-					</tr>
-				<?php	} ?>
-			</table>
-		</td>
+	<td>
+		<ul>
+<?php
+			if ($status->get_enable_flap_detection()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_flap_link, _("Flap detection enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_flap_link, _("Flap detection disabled"), array('title' => "Click to enable")) . "</li>";
+			}
 
-		<td>
-			<table class="no_border">
-				<?php	if ($execute_service_checks) { ?>
-					<?php if ($active_checks_disabled_svcs > 0) { ?>
-						<tr>
-							<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-							<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_CHECKS_DISABLED, $active_checks_disabled_svcs.' '.($active_checks_disabled_svcs==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
-						</tr>
-					<?php } else { ?>
-						<tr>
-							<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-							<td style="white-space: normal"><?php echo $lable_all_services.' '.$lable_enabled ?></td>
-						</tr>
-					<?php } ?>
-					<?php if ($active_checks_disabled_hosts > 0) { ?>
-						<tr>
-							<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-							<td style="white-space: normal"><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_CHECKS_DISABLED, $active_checks_disabled_hosts.' '.($active_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
-						</tr>
-					<?php } else { ?>
-						<tr>
-							<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-							<td style="white-space: normal"><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
-						</tr>
-					<?php } ?>
-				<?php	} else { ?>
-					<tr>
-						<td style="padding: 6.5px"><?php echo _('N/A') ?></td>
-					</tr>
-				<?php	} ?>
-			</table>
-		</td>
-		<td>
-			<table class="no_border">
-					<?php	if ($accept_passive_service_checks) { ?>
-						<?php if ($passive_checks_disabled_svcs > 0) { ?>
-							<tr>
-								<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-								<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_PASSIVE_CHECKS_DISABLED, $passive_checks_disabled_svcs.' '.($passive_checks_disabled_svcs==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
-							</tr>
-						<?php } else { ?>
-							<tr>
-								<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-								<td style="white-space: normal"><?php echo $lable_all_services.' '.$lable_enabled ?></td>
-							</tr>
-						<?php } ?>
-						<?php if ($passive_checks_disabled_hosts > 0) { ?>
-							<tr>
-								<td class="icon"><span class="icon-16 x16-shield-disabled" title="<?php echo _('Disabled'); ?>"></span></td>
-								<td style="white-space: normal"><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_PASSIVE_CHECKS_DISABLED, $passive_checks_disabled_hosts.' '.($passive_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
-							</tr>
-						<?php } else { ?>
-							<tr>
-								<td class="icon"><span class="icon-16 x16-shield-ok" title="<?php echo _('Enabled'); ?>"></span></td>
-								<td style="white-space: normal"><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
-							</tr>
-						<?php } ?>
-				<?php	} else { ?>
-					<tr>
-						<td style="padding: 6.5px"><?php echo _('N/A') ?></td>
-					</tr>
-				<?php	} ?>
-			</table>
-		</td>
+			if ($host_status->flapping_disabled)
+				echo "<li>" . html::icon('shield-pending') . html::href($linkprovider->get_url('listview', 'index', array('q' => '[hosts] flap_detection_enabled = 0')), $host_status->flapping_disabled . " Host(s) disabled") . "</li>";
+			if ($host_status->flapping)
+				echo "<li>" . html::icon('shield-unreachable') . html::href($linkprovider->get_url('listview', 'index', array('q' => '[hosts] is_flapping = 1')), $host_status->flapping . " Host(s) flapping") . "</li>";
+			else echo "<li>" . html::icon('shield-enabled') . "No Host flapping</li>";
+
+			if ($service_status->flapping_disabled)
+				echo "<li>" . html::icon('shield-pending') . html::href($linkprovider->get_url('listview', 'index', array('q' => '[services] flap_detection_enabled = 0')), $service_status->flapping_disabled . " Service(s) disabled") . "</li>";
+			if ($service_status->flapping)
+				echo "<li>" . html::icon('shield-unknown') . html::href($linkprovider->get_url('listview', 'index', array('q' => '[services] is_flapping = 1')), $service_status->flapping . " Service(s) flapping") . "</li>";
+			else echo "<li>" . html::icon('shield-enabled') . "No Service flapping</li>";
+?>
+		</ul>
+	</td>
+	<td>
+		<ul>
+<?php
+			if ($status->get_enable_notifications()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_notification_link, _("Notifications enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_notification_link, _("Notifications disabled"), array('title' => "Click to enable")) . "</li>";
+			}
+
+			if ($host_status->notifications_disabled)
+				echo "<li>" . html::icon('shield-pending') . html::href($linkprovider->get_url('listview', 'index', array('q' => '[hosts] notifications_enabled = 0')), $host_status->notifications_disabled . " Host(s) disabled") . "</li>";
+			if ($service_status->notifications_disabled)
+				echo "<li>" . html::icon('shield-pending') . html::href($linkprovider->get_url('listview', 'index', array('q' => '[services] notifications_enabled = 0')), $service_status->notifications_disabled . " Service(s) disabled") . "</li>";
+?>
+		</ul>
+	</td>
+	<td>
+		<ul>
+<?php
+			if ($status->get_enable_event_handlers()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_event_link, _("Event handlers enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_event_link, _("Event handlers disabled"), array('title' => "Click to enable")) . "</li>";
+			}
+
+			if ($host_status->eventhandler_disabled)
+				echo "<li>" . html::icon('shield-pending') . html::href($linkprovider->get_url("listview", "index", array('q' => '[hosts] event_handler_enabled = 0')), $host_status->eventhandler_disabled . " Host(s) disabled") . "</li>";
+			if ($service_status->eventhandler_disabled)
+				echo "<li>" . html::icon('shield-pending') . html::href($linkprovider->get_url("listview", "index", array('q' => '[services] event_handler_enabled = 0')), $service_status->eventhandler_disabled . " Services(s) disabled") . "</li>";
+?>
+		</ul>
+	</td>
+	<td>
+		<ul>
+<?php
+			if ($status->get_execute_host_checks()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_check_host_link, _("Active Host checks enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_check_host_link, _("Active Host checks disabled"), array('title' => "Click to enable")) . "</li>";
+			}
+
+			if ($host_status->active_checks_disabled_active) {
+				echo "<li>" . html::icon('shield-disabled') . html::href($linkprovider->get_url("listview", "index", array('q' => '[hosts] active_checks_enabled = 0')), $host_status->active_checks_disabled_active . " Host(s) disabled") . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-enabled') . "All Hosts enabled</li>";
+			}
+
+			if ($status->get_execute_service_checks()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_check_service_link, _("Active Service checks enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_check_service_link, _("Active Service checks disabled"), array('title' => "Click to enable")) . "</li>";
+			}
+
+			if ($service_status->active_checks_disabled_active) {
+				echo "<li>" . html::icon('shield-disabled') . html::href($linkprovider->get_url("listview", "index", array('q' => '[services] active_checks_enabled = 0')), $service_status->active_checks_disabled_active . " Services(s) disabled") . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-enabled') . "All Services enabled</li>";
+			}
+?>
+		</ul>
+	</td>
+	<td>
+		<ul>
+<?php
+			if ($status->get_accept_passive_host_checks()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_host_link, _("Passive Host checks enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_passive_host_link, _("Passive Host checks enabled"), array('title' => "Click to enable")) . "</li>";
+			}
+
+			if ($host_status->passive_checks_disabled) {
+				echo "<li>" . html::icon('shield-disabled') . html::href($linkprovider->get_url("listview", "index", array('q' => '[hosts] accept_passive_checks = 0')), $host_status->passive_checks_disabled . " Hosts(s) disabled") . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-enabled') . "All Hosts enabled</li>";
+			}
+
+			if ($status->get_accept_passive_service_checks()) {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_service_link, _("Passive Service checks enabled"), array('title' => "Click to disable")) . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_service_link, _("Passive Service checks enabled"), array('title' => "Click to enable")) . "</li>";
+			}
+
+			if ($service_status->passive_checks_disabled) {
+				echo "<li>" . html::icon('shield-disabled') . html::href($linkprovider->get_url("listview", "index", array('q' => '[services] accept_passive_checks = 0')), $service_status->passive_checks_disabled . " Services(s) disabled") . "</li>";
+			} else {
+				echo "<li>" . html::icon('shield-enabled') . "All Services enabled</li>";
+			}
+?>
+		</ul>
+	</td>
 	</tr>
 </table>

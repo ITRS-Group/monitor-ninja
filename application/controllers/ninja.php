@@ -24,6 +24,7 @@ class Ninja_Controller extends Template_Controller {
 	public $log = false;
 
 	public $widgets = array();
+	public $linkprovider;
 
 	/**
 	 * @var op5MayI
@@ -36,6 +37,11 @@ class Ninja_Controller extends Template_Controller {
 		parent::__construct();
 		$this->mayi = op5MayI::instance();
 		$this->log = op5log::instance('ninja');
+
+		/* Only available outside of CLI */
+		if (PHP_SAPI !== 'cli') {
+			$this->linkprovider = LinkProvider::factory();
+		}
 
 		$this->template = $this->add_view('template');
 		$this->template->css = array();
