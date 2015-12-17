@@ -4,8 +4,10 @@ require 'tempfile'
 module Op5Cucumber::Mock
 
   class Mock
+    attr_reader :file
+
     def initialize()
-      @file = Dir::Tmpname.make_tmpname('/tmp/mock', nil)
+      @file = nil
       @data = {'ORMDriverLS default' =>
                {
                  'hostgroups' => [],
@@ -17,8 +19,7 @@ module Op5Cucumber::Mock
     end
 
     def active?()
-      #ENV['OP5_MOCK']
-      true
+      !@file.nil?
     end
 
     def data(type)
@@ -30,6 +31,9 @@ module Op5Cucumber::Mock
     end
 
     def save()
+      if not active?
+        @file = Dir::Tmpname.make_tmpname('/tmp/mock', nil)
+      end
       File.open(@file, 'w') { |f|
         f.write(@data.to_json)
       }
@@ -47,8 +51,8 @@ module Op5Cucumber::Mock
       save
     end
 
-    def filename
-      @file
+    def delete!()
+      File.delete(@file)
     end
   end
 end
