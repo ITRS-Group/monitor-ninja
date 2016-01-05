@@ -1,4 +1,6 @@
-var nacoma_base = _site_domain + '/' + _index_page + '/' + _current_uri;
+var nacoma_base = $.map(function(p) {
+	return p.replace(/^\/|\/$/, '');
+}, [_site_domain, _index_page, _current_uri]).join('/');
 var nacoma_install_location = '/monitor/op5/nacoma/';
 
 // called by nacoma whenever a nacoma page is loaded
