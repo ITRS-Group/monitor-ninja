@@ -36,17 +36,6 @@
 				<?php echo help::render('oldest_first').' <label>'.form::checkbox('oldest_first', 1, $options['oldest_first']).' '._('Older entries first').'</label>'; ?>
 			</td>
 		</tr>
-		<tr id="custom_time" style="display: none; clear: both;">
-			<td><?php echo help::render('start-date', 'reports').' '._('Start date') ?> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-				<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>"  value="<?php echo $options->get_date('start_time') ?>" />
-				<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $options->get_time('start_time') ?>">
-			</td>
-			<td>&nbsp;</td>
-			<td><?php echo help::render('end-date', 'reports').' '._('End date') ?> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-				<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" value="<?php echo $options->get_date('end_time') ?>" />
-				<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo $options->get_time('end_time') ?>" />
-			</td>
-		</tr>
 		<tr>
 			<td>
 				<label for="summary_items"><?php echo _('Items to show') ?></label>

@@ -123,6 +123,21 @@ Feature: Alert history reports
 		Then I should see "ERROR - out of teletubbies"
 		And I shouldn't see "OK - Sven Melander"
 
+	# MON-8189
+	@configuration @asmonitor
+	Scenario: Changes to start and end times are properly updated
+		Given I am on the Host details page
+		And I hover over the "Report" menu
+		Then I click "Alert history"
+		Then I click "Edit settings"
+		And I select "Custom" from "Reporting period"
+		And I enter "2000-01-01" into "cal_start"
+		And I enter "2016-01-01" into "cal_end"
+		And I enter "10:00" into "time_start"
+		And I enter "10:00" into "time_end"
+		And I click "Update"
+		Then I should see "2000-01-01 10:00:00 to 2016-01-01 10:00:00"
+
 	@bug-6341 @bug-6646
 	@configuration @asmonitor
 	Scenario: Pagination
