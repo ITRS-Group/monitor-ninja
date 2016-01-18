@@ -47,7 +47,7 @@
 						<?php $brand = brand::get();
 						echo '<center>' . $brand . '</center>';
 						if (isset($error_msg)) {
-							echo "<p class='alert error'>" . $error_msg . "</p>";
+							echo "<div class='alert error'>" . $error_msg . "</div>";
 						}
 						?>
 					</td>

@@ -604,6 +604,18 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   border-radius: 4px;
 }
 
+.alert .license {
+  color: black;
+}
+
+.alert .license h3 {
+  font-weight: bold;
+}
+
+.alert .license p {
+  margin: 1em 0 1em 0;
+}
+
 .long_output {
   -ms-word-break: break-all;
   word-break: break-all;
