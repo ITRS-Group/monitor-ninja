@@ -18,7 +18,7 @@
 	if ($report_options instanceof View) {
 		$report_options->render(true);
 	} else {
-		// If $header is something that can be printable
+		// If $header is printable
 		echo $report_options;
 	}
 ?>

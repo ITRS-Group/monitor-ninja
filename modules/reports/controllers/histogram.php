@@ -154,8 +154,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$base->header = $this->add_view('reports/header');
 		$base->header->title = $title;
 		$base->header->report_time_formatted = $this->format_report_time(date::date_format());
-		$base->header->skip_csv = true;
-		$base->header->skip_pdf = true;
 
 		$base->content = $this->add_view("histogram/histogram");
 		$content = $base->content;
@@ -176,6 +174,7 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->title = _('Reporting » Histogram » Report');
+		$this->generate_toolbar();
 	}
 
 	/**

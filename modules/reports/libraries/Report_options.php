@@ -643,15 +643,17 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	}
 
 	/**
-	 * Generate a standard HTTP keyval string, suitable for URLs or POST bodies.
+	 * A.k.a. "to array"
+	 *
 	 * @param $anonymous If true, any option on the exact objects in this report
 	 *                   will be purged, so it's suitable for linking to sub-reports.
 	 *                   If false, all options will be kept, completely describing
 	 *                   this exact report.
 	 * @param $obj_only Does more-or-less the inverse of $anonymous - if true, don't
 	 *                  include anything that does not refer to the members of the report.
+	 * @return array
 	 */
-	public function as_keyval_string($anonymous=false, $obj_only=false) {
+	public function as_keyval($anonymous=false, $obj_only=false) {
 		$opts = array();
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('objects', 'report_type')))
@@ -664,7 +666,20 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			}
 			$opts[$key] = $val;
 		}
-		return htmlspecialchars(http_build_query($opts));
+		return $opts;
+	}
+
+	/**
+	 * Generate a standard HTTP keyval string, suitable for URLs or POST bodies.
+	 * @param $anonymous If true, any option on the exact objects in this report
+	 *                   will be purged, so it's suitable for linking to sub-reports.
+	 *                   If false, all options will be kept, completely describing
+	 *                   this exact report.
+	 * @param $obj_only Does more-or-less the inverse of $anonymous - if true, don't
+	 *                  include anything that does not refer to the members of the report.
+	 */
+	public function as_keyval_string($anonymous=false, $obj_only=false) {
+		return htmlspecialchars(http_build_query($this->as_keyval($anonymous, $obj_only)));
 	}
 
 	/**

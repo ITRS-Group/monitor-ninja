@@ -189,5 +189,7 @@ class Summary_Controller extends Base_reports_Controller
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf();
 		}
+		$this->generate_toolbar();
 	}
+
 }

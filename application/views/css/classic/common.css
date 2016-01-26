@@ -132,28 +132,6 @@ input[type="submit"].plain {
   background-color: #dddddd;
 }
 
-.report-links {
-  float: right;
-}
-
-.report-links form input {
-  border: 0;
-  padding: 0;
-}
-
-.report-links a, .report-links form {
-  float: left;
-  width: auto;
-}
-
-.report-links img {
-  margin: 2px 0 2px 8px;
-}
-
-.report-links input[type="image"] {
-  margin: 2px 0 2px 8px;
-}
-
 .page_settings {
   position: fixed;
   display: none;

@@ -35,7 +35,6 @@ class Alert_history_Controller extends Summary_Controller
 		if ($this->options['output_format'] !== 'csv') {
 			$this->template->content->report_options = $this->add_view('alert_history/options');
 			$this->template->title = _('Alert history');
-			$this->template->content->header->standard_header->skip_save = true;
 			$this->template->content->header->standard_header->title = _('Alert history');
 			$pagination->hide_next = false;
 			if(!$this->template->content->content->result || count($this->template->content->content->result) < $this->options['summary_items']) {
