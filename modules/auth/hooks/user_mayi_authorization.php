@@ -112,6 +112,7 @@ access_rights                   monitor.monitoring.users:                       
 access_rights                   monitor.system.users:                                         true
 access_rights                   monitor.monitoring.usergroups:                                true
 access_rights                   monitor.system.usergroups:                                    true
+access_rights                   monitor.system.authmodules:                                   true
 
 pnp                             monitor.monitoring.combined_graphs:                           true
 pnp                             monitor.monitoring.graph_collections:                         true

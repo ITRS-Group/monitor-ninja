@@ -542,7 +542,7 @@ class op5auth implements op5MayI_Actor {
 	 * @param $auth_method string
 	 * @return auth_method
 	 */
-	private function getAuthModule($auth_method) {
+	public function getAuthModule($auth_method) {
 		if (!isset($this->auth_modules[$auth_method])) {
 			return false;
 		}
@@ -553,22 +553,14 @@ class op5auth implements op5MayI_Actor {
 		$drv_name = $this->auth_modules[$auth_method]['driver'];
 		$file_name = 'AuthDriver_' . $drv_name;
 		$class_name = 'op5' . $file_name;
-		require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . $file_name .
-			 '.php'); /*
-			                                                                              *
-			                                                                              * In
-			                                                                              * same
-			                                                                              * directory
-			                                                                              * as
-			                                                                              * this
-			                                                                              * file
-			                                                                              */
+		require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . $file_name . '.php');
 
 		/* To make it possible to get it's name within the driver */
-				$this->auth_modules[$auth_method]['name'] = $auth_method;
-
+		$this->auth_modules[$auth_method]['name'] = $auth_method;
 		$this->auth_modules[$auth_method] = new $class_name(
-			$this->auth_modules[$auth_method]);
+			$this->auth_modules[$auth_method]
+		);
+
 		return $this->auth_modules[$auth_method];
 	}
 
