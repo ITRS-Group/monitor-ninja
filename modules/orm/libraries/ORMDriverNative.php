@@ -5,7 +5,10 @@
  */
 class ORMDriverNative implements ORMDriverInterface {
 
-	private $storage = array();
+	/**
+	 * Temporary data storage
+	 */
+	protected $storage = array();
 
 	/**
 	 * Constructor for this class.

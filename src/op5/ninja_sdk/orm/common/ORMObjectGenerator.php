@@ -83,6 +83,10 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			}
 		}
 
+		if (isset($this->structure['renderable'])) {
+			$this->generate_get_renderable_fields();
+		}
+
 		foreach( $this->associations as $assoc ) {
 			$this->generate_association_get_set( $assoc[0], $assoc[1], $assoc[2] );
 		}
@@ -98,11 +102,18 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->init_function( "factory_from_array", array( 'values', 'export' ),  array('static'), array());
 
 		$this->write( '$obj = new static();');
+		$this->write( '$structure = array(' );
+		foreach ($this->structure['structure'] as $name => $type) {
+			$this->write("'$name' => '$type',");
+		}
+		$this->write( ');' );
 
 		$this->write( '$obj->export = array();' );
 		$this->write( '$subobj_export = array();' );
 		$this->write( 'if($export === false) $export = array();'); //FIXME
 		$this->write( 'foreach( $export as $expcol ) {');
+		/* Do not export password fields as they may contain sensitive data */
+		$this->write(     'if (isset($structure[$expcol]) && $structure[$expcol] === "password") continue;' );
 		$this->write(     '$parts = explode(".", $expcol, 2);');
 		$this->write(     'if(count($parts) == 2) {');
 		$this->write(         'if(!isset($subobj_export[$parts[0]])) {');
@@ -147,11 +158,18 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->init_function( "factory_from_setiterator", array( 'values', 'prefix', 'export' ),  array('static'), array());
 
 		$this->write( '$obj = new static();');
+		$this->write( '$structure = array(' );
+		foreach ($this->structure['structure'] as $name => $type) {
+			$this->write("'$name' => '$type',");
+		}
+		$this->write( ');' );
 
 		$this->write( '$obj->export = array();' );
 		$this->write( '$subobj_export = array();' );
 		$this->write( 'if($export === false) $export = array();'); //FIXME
 		$this->write( 'foreach( $export as $expcol ) {');
+		/* Do not export password fields as they may contain sensitive data */
+		$this->write(     'if (isset($structure[$expcol]) && $structure[$expcol] === "password") continue;' );
 		$this->write(     '$parts = explode(".", $expcol, 2);');
 		$this->write(     'if(count($parts) == 2) {');
 		$this->write(         'if(!isset($subobj_export[$parts[0]])) {');
@@ -325,12 +343,13 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		}
 
 		switch ($type) {
-		case 'int': 	return '0';
-		case 'time':	return '0';
-		case 'float':	return '0.0';
-		case 'string':	return '""';
-		case 'dict':	return 'array()';
-		case 'list':	return 'array()';
+		case 'int': 		return '0';
+		case 'time':		return '0';
+		case 'float':		return '0.0';
+		case 'password':	return '""';
+		case 'string':		return '""';
+		case 'dict':		return 'array()';
+		case 'list':		return 'array()';
 		}
 		throw new ORMGeneratorException("Unhandled type '$type'; can not determine default value");
 	}
@@ -388,10 +407,28 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	 *
 	 * @return void
 	 **/
+	private function fetch_password( $name, $backend_name ) {
+		$this->fetch_string($name, $backend_name);
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
 	private function get_string( $name ) {
 		$this->init_function( "get_$name" );
 		$this->write( "return \$this->$name;" );
 		$this->finish_function();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function get_password( $name ) {
+		$this->get_string($name);
 	}
 
 	/**
@@ -407,6 +444,15 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write( "\$this->_changed[%s] = true;", $name );
 		$this->write( "}" );
 		$this->finish_function();
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+	private function set_password( $name ) {
+		$this->set_string($name);
 	}
 
 	/* Time (treated as int) */
@@ -601,4 +647,51 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write( "}" );
 		$this->finish_function();
 	}
+
+	private function get_renderable_value ($value) {
+		$render = "";
+		if (is_array($value)) {
+			$render .= 'array(';
+			foreach ($value as $key => $value) {
+				if (is_string($key)) {
+					$render .= "'$key' => " . $this->get_renderable_value($value) . ',' ;
+				} else {
+					$render .= $this->get_renderable_value($value);
+				}
+			}
+			$render .= '),';
+		} elseif (is_string($value)) {
+			return "'$value'";
+		} elseif (is_int($value) || is_float($value)) {
+			return $value;
+		} elseif (is_bool($value)) {
+			return ($value) ? 'true' : 'false';
+		}
+		return $render;
+	}
+
+	private function generate_get_renderable_fields () {
+
+		$this->init_function("get_renderable_fields", array());
+		$this->write("return array(");
+
+		foreach ($this->structure['renderable'] as $id => $field) {
+			/**
+			 * If this field is a key for the object, mark it as
+			 * such so that we may render it as non-editable
+			 */
+			if (in_array($id, $this->structure['key'], true))
+				$field["key"] = true;
+			/**
+			 * Does the structure field for this select input allow
+			 * multiple values, if so then it is a multiselect
+			 */
+			if ($field['type'] === 'select' && $this->structure['structure'][$id] === 'list')
+				$field["multiple"] = "multiple";
+			$this->write("'$id' => " . $this->get_renderable_value($field));
+		}
+		$this->write( ");" );
+		$this->finish_function();
+	}
+
 }
