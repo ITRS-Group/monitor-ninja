@@ -987,28 +987,6 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   margin-right: 32px;
 }
 
-.report-links {
-  float: right;
-}
-
-.report-links form input {
-  border: 0;
-  padding: 0;
-}
-
-.report-links a, .report-links form {
-  float: left;
-  width: auto;
-}
-
-.report-links img {
-  margin: 2px 0 2px 8px;
-}
-
-.report-links input[type="image"] {
-  margin: 2px 0 2px 8px;
-}
-
 .report-page-setup, .report-page {
   padding: 0px 16px;
 }
@@ -1141,11 +1119,22 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   float: right;
 }
 
-.main-toolbar .main-toolbar-buttons a {
-  display: inline-block;
+.main-toolbar .main-toolbar-buttons a, .main-toolbar .main-toolbar-buttons input[type=submit] {
+  background: transparent;
   border: none;
-  padding: 5px 4px 4px 4px;
   border-left: 1px solid #aaaaaa;
+  border-radius: 0;
+  color: #444;
+  display: inline-block;
+  margin: 0;
+  padding: 5px 6px 4px 6px !important;
+  width: auto;
+}
+
+.main-toolbar .main-toolbar-buttons form {
+  display: inline-block;
+  padding: 0;
+  width: auto;
 }
 
 .main-toolbar .main-toolbar-buttons a:first-child {

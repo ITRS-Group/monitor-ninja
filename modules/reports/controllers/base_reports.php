@@ -45,6 +45,43 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	abstract public function generate($input = false);
 
 	/**
+	 * Fill the toolbar with appropriate things for the current report
+	 * type.
+	 */
+	protected function generate_toolbar() {
+		$this->template->toolbar = new Toolbar_Controller('Report');
+
+		if($this->type != 'histogram') {
+			$pdf_button = form::open($this->type.'/generate');
+			$pdf_button .= $this->options->as_form();
+			$pdf_button .= '<input type="hidden" name="output_format" value="pdf" />';
+			$pdf_button .= sprintf('<input type="submit" value="%s" />', _('As PDF'));
+			$pdf_button .= '</form>';
+			$this->template->toolbar->html_as_button($pdf_button);
+
+			$csv_button = form::open($this->type.'/generate');
+			$csv_button .= $this->options->as_form();
+			$csv_button .= '<input type="hidden" name="output_format" value="csv" />';
+			$csv_button .= sprintf('<input type="submit" value="%s" />', _('As CSV'));
+			$csv_button .= "</form>\n";
+			$this->template->toolbar->html_as_button($csv_button);
+		}
+
+		if($this->type !== 'alert_history') {
+			$this->template->toolbar->button(_('Save report'), array('href' => '#', 'id' => 'save_report'));
+		}
+
+		$lp = LinkProvider::factory();
+		if($this->options['report_id']) {
+			$this->template->toolbar->button(_('View schedule'), array('href' => $lp->get_url('schedule', 'show'), 'id' => 'show_schedule'));
+		}
+
+		$this->template->toolbar->button(_('Edit settings'), array('href' => '#options', 'class' => 'fancybox'));
+		$this->template->toolbar->button(_('Permalink'), array('href' => $lp->get_url($this->type, 'generate', $this->options->as_keyval())));
+	}
+
+
+	/**
 	 * Generate PDF instead of normal rendering. Uses shell
 	 *
 	 * Assumes that $this->template is set up correctly

@@ -9,7 +9,7 @@ body {
   background-color: white; }
 
 /* line 10, ../base-sass/print.sass */
-.navigation, .header, .report-links, #save_report_form, .helptext_target, .print-unimportant {
+.navigation, .header, #save_report_form, .helptext_target, .print-unimportant {
   display: none !important; }
 
 /* line 13, ../base-sass/print.sass */
@@ -31,10 +31,6 @@ a {
 
 /* line 27, ../base-sass/print.sass */
 .report-block .comments img {
-  display: none; }
-
-/* line 30, ../base-sass/print.sass */
-.report-links {
   display: none; }
 
 /* line 33, ../base-sass/print.sass */
