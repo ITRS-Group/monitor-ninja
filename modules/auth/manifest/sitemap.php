@@ -16,21 +16,21 @@ $manifest = array_merge_recursive($manifest, array(
 					"local_users" => array(
 						"icon" => "access-config",
 						"label" => "Local users",
-						"right" => "monitor.monitoring.users:read",
+						"right" => "monitor.system.users:read",
 						"description" => "Local users stored on the op5Monitor server",
-						"href" => array('configuration', 'configure', array('page' => 'edit_special.php/access'))
+						"href" => array('users','index')
 					),
 					"auth_modules" => array(
 						"icon" => "auth-modules",
 						"label" => "Authentication modules",
-						"right" => "monitor.monitoring.users:read.local.configuration",
+						"right" => "monitor.system.authmodules:read",
 						"description" => "Ways to authenticate toward op5 Monitor",
 						"href" => array('configuration', 'configure', array('page' => 'authconfig.php'))
 					),
 					"group_rights" => array(
 						"icon" => "assign-group-rights",
 						"label" => "Group rights",
-						"right" => "monitor.monitoring.usergroups:read",
+						"right" => "monitor.system.usergroups:read",
 						"description" => "User roles within op5 Monitor",
 						"href" => array('configuration', 'configure', array('page' => 'edit_special.php/group'))
 					)

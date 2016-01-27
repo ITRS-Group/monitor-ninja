@@ -30,10 +30,11 @@
 }
 
 /* STUPID defaults in common.css */
-input.jq-filterable-filter {
+form .jq-filterable-searchbox input[type=text].jq-filterable-filter {
 	border: 0 !important;
 	margin: 0 !important;
 	width: auto !important;
+	padding: 3px 4px 2px 3px;
 }
 
 select.jq-filterable-list {

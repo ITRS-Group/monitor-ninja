@@ -162,6 +162,18 @@ form {
   display: block;
 }
 
+form label {
+  display: inline-block;
+}
+
+form fieldset {
+  margin: 4px;
+}
+
+form button {
+  margin: 2px 4px;
+}
+
 input[type="text"], input[type="password"] {
   border-radius: 3px;
   border: 1px solid #777777;
@@ -212,7 +224,7 @@ button, input[type=reset], input[type=submit], input[type=button] {
   cursor: pointer;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  padding: 2px 5px !important;
+  padding: 2px 5px;
   margin-bottom: 5px;
 }
 
