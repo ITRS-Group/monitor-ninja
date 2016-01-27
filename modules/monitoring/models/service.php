@@ -420,8 +420,8 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command enabled_if accept_passive_checks
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function process_check_result($plugin_output, $status_code, $perf_data=false) {
-		if($perf_data !== false)
+	public function process_check_result($plugin_output, $status_code, $perf_data = null) {
+		if($perf_data !== null)
 			$plugin_output .= '|' . $perf_data;
 		return $this->submit_naemon_command("PROCESS_SERVICE_CHECK_RESULT", $status_code, $plugin_output);
 	}
