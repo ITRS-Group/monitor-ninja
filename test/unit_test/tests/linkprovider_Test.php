@@ -32,6 +32,11 @@ class LinkProvider_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("https://192.168.0.1/ninja/index.php/linkprovidertestclass/home", $url);
 	}
 
+	public function test_no_method_provided_default () {
+		$url = $this->lp->get_url("linkprovidertestclass");
+		$this->assertEquals("https://192.168.0.1/ninja/index.php/linkprovidertestclass", $url);
+	}
+
 	public function test_existing_class_by_slug () {
 		$url = $this->lp->get_url("linkprovidertestclass", "home");
 		$this->assertEquals("https://192.168.0.1/ninja/index.php/linkprovidertestclass/home", $url);

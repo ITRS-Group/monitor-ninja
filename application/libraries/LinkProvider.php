@@ -73,6 +73,7 @@ class LinkProvider {
 	 */
 	private function validate_method ($classname, $method) {
 
+		if (!$method) return '';
 		if (!method_exists($classname, $method))
 			throw new LinkProviderException("Cannot create URL to unknown method '$method' on class '$classname'");
 		/* The only way besides actually instantiating
@@ -101,23 +102,34 @@ class LinkProvider {
 	 * @param array $parameters        Parameters to add as query string
 	 * @return string                  A valid URL
 	 */
-	public function get_url ($controller, $method = 'index', array $parameters = array()) {
+	public function get_url ($controller, $method = null, array $parameters = array()) {
 
 		$query_string = (count($parameters) > 0)
-			? $query_string = "?" . http_build_query($parameters)
+			? "?" . http_build_query($parameters)
 			: "";
 
 		list($classname, $controller) = $this->validate_controller($controller);
+		$url = "";
 		$method = $this->validate_method($classname, $method);
 
-		return sprintf("%s://%s/%s/%s/%s",
-			$this->protocol,
-			$this->domain,
-			$this->indexpath,
-			$controller,
-			$method
-		) . $query_string;
+		if ($method) {
+			$url = sprintf("%s://%s/%s/%s/%s",
+				$this->protocol,
+				$this->domain,
+				$this->indexpath,
+				$controller,
+				$method
+			);
+		} else {
+			$url = sprintf("%s://%s/%s/%s",
+				$this->protocol,
+				$this->domain,
+				$this->indexpath,
+				$controller
+			);
+		}
 
+		return $url . $query_string;
 
 	}
 
