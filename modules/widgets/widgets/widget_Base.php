@@ -29,7 +29,12 @@ class widget_Base
 	public function __construct($widget_model)
 	{
 		/* @var $widget_model Ninja_Widget_Model */
-		$this->widget_full_path = $widget_model->widget_path();
+		try {
+			$this->widget_full_path = $widget_model->widget_path();
+		}
+		catch (Exception $e) {
+			$this->widget_full_path = false;
+		}
 
 		$this->model = $widget_model;
 	}
@@ -136,6 +141,18 @@ class widget_Base
 	public function render($method='index', $with_chrome=true)
 	{
 		$content = '';
+		ob_start();
+		try {
+			$this->$method();
+		}
+		catch (Exception $e) {
+			require_once(Kohana::find_file('widgets/dead', 'dead'));
+			$dead_widget = new Dead_Widget($this->model, $e);
+			$dead_widget->index();
+		}
+
+		$widget_content = ob_get_clean();
+
 		$widget_id = $this->model->name.'-'.$this->model->instance_id;
 		if ($with_chrome) {
 			$options = $this->options();
@@ -186,20 +203,9 @@ class widget_Base
 				$content .= '</div>';
 			}
 
-			$content .= '<div class="%%WIDGET_CLASS%%" style="overflow: auto;">'; // Clear and end widget header and start widget content
+			$content .= '<div class="widget-content" style="overflow: auto;">'; // Clear and end widget header and start widget content
 		}
-		ob_start();
-		$this->$method();
-
-		if ($this->widget_full_path === false) {
-			$content .= '<h2>Widget Error</h2><br />';
-			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content-error', $content);
-		} else {
-			$content = str_replace('%%WIDGET_CLASS%%', 'widget-content', $content);
-		}
-
-		$content .= ob_get_contents();
-		ob_end_clean();
+		$content .= $widget_content;
 		if ($with_chrome) {
 			$content .= '</div>';
 			$content .= '</div>';

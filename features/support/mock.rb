@@ -14,6 +14,10 @@ module Op5Cucumber::Mock
                  'hosts' => [],
                  'servicegroups' => [],
                  'services' => []
+               },
+               'ORMDriverMySQL default' =>
+               {
+                 'ninja_widgets' => []
                }
       }
     end
@@ -27,7 +31,16 @@ module Op5Cucumber::Mock
     end
 
     def driver_for_type(type)
-      'ORMDriverLS default'
+      case type
+      when /^host.*s$/
+        'ORMDriverLS default'
+      when /^service.*s$/
+        'ORMDriverLS default'
+      when /^ninja_widgets$/
+        'ORMDriverMySQL default'
+      else
+        raise "Unknown type #{type}"
+      end
     end
 
     def save()
@@ -40,14 +53,18 @@ module Op5Cucumber::Mock
     end
 
     def mock(type, hashes={})
-      hashes.each {|hash|
-        hash.map {|field, value|
-          if field.end_with? 's'
-            hash[field] = value.split ','
-          end
+      if type == "MockedClasses"
+        @data[type] = hashes
+      else
+        hashes.each {|hash|
+          hash.map {|field, value|
+            if field.end_with? 's'
+              hash[field] = value.split ','
+            end
+          }
         }
-      }
-      @data[driver_for_type(type)][type] += hashes
+        @data[driver_for_type(type)][type] += hashes
+      end
       save
     end
 

@@ -10,29 +10,6 @@ if (!is_readable($mock_data_path)) {
 }
 
 Event::add("system.ready", function() use ($mock_data_path, $log) {
-	op5objstore::instance()->mock_add('op5config',
-		new MockConfig(
-			array('auth' =>
-			array(
-				'common' => array(
-					'session_key' => 'auth_user',
-					'default_auth' => 'Default'
-				),
-				'Default' => array(
-					'driver' => 'default'
-				)
-			)
-		)
-	));
-
-	op5objstore::instance()->mock_add('op5auth',
-		new MockAuth());
-
-	op5objstore::instance()->mock_add('op5MayI',
-		new MockMayI(
-		)
-	);
-
 	$json_str = file_get_contents($mock_data_path);
 
 	if (!$json_str) {
@@ -48,6 +25,18 @@ Event::add("system.ready", function() use ($mock_data_path, $log) {
 		$log->log("error", "Could not decode mock data from '$mock_data_path'. Invalid JSON?");
 		return;
 	}
+
+	if (array_key_exists("MockedClasses", $json_conf)) {
+		$mocked_classes = $json_conf["MockedClasses"];
+		unset($json_conf["MockedClasses"]);
+
+		foreach ($mocked_classes as $mock_spec) {
+			$mock_class = $mock_spec["mock_class"];
+			op5objstore::instance()->mock_add($mock_spec["real_class"],
+				new $mock_class($mock_spec["args"]));
+		}
+	}
+
 	foreach ($json_conf as $driver => $tables) {
 		op5objstore::instance()->mock_add($driver, new ORMDriverNative($tables));
 	}

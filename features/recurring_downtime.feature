@@ -23,7 +23,7 @@ Feature: Recurring downtime
 		And I click css "#select-all-days"
 		And I click css "#select-all-months"
 		And I click "Add Schedule"
-		Then I should be on url "/monitor/index.php/monitor/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
+		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "Kroppkakor is a thing"
 
 	@configuration @asmonitor
@@ -38,7 +38,7 @@ Feature: Recurring downtime
 		When I click "Edit schedule"
 		And I enter "Whipped cream" into "comment"
 		And I click "Update schedule"
-		Then I should be on url "/monitor/index.php/monitor/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
+		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I shouldn't see "Kroppkakor is a thing"
 		And I should see "Whipped cream"
 

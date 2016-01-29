@@ -1,4 +1,7 @@
 Feature: Scheduling information
+  Background:
+    Given I am logged in
+
   Scenario: Remote scheduling information is hidden in extinfo
     Verify that scheduling information for a check that is run on a remote node (peer or poller)
     is presented as such on the extinfo page for a host
@@ -31,7 +34,7 @@ Feature: Scheduling information
       |name       |next_check|check_source      |active_checks_enabled|
       |remote_host|10        |Merlin peer Gustaf|true                 |
       |local_host |10        |Core Worker 666   |true                 |
-    And I am on address "/monitor/index.php/extinfo/scheduling_queue"
+    And I am on address "/index.php/extinfo/scheduling_queue"
     Then I should see "local_host"
     But I shouldn't see "remote_host"
 

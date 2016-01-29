@@ -59,5 +59,5 @@ When /^I enter the current date and time into "([^"]*)"$/ do |sel|
 end
 
 Given /^I go to the listview for (.*)$/ do |query|
-    visit path_to("list view") + '?q=' + query
+    visit Op5Cucumber::NavigationHelpers.path_to("list view") + '?q=' + query
 end

@@ -208,7 +208,7 @@ if (isset($page_links)) {
 							$servicename = $service->get_description();
 						}
 
-						$pnp_link = url::site() . 'pnp/?host=' . rawurlencode($hostname) . '&srv=' . rawurlencode($servicename);
+						$pnp_link = LinkProvider::factory()->get_url('pnp', null, array('host' => $hostname, 'srv' => $servicename));
 
 						echo '&nbsp; <a class="pnp_graph" data-popover="pnp:'.$hostname.';'.$servicename.'" href="'.$pnp_link.'">';
 						echo '<span class="icon-16 x16-pnp"></span>';

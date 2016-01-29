@@ -41,7 +41,7 @@ Feature: Monitoring
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Locate host on map"
-		Then I should be on address "/monitor/index.php/nagvis/automap/host/linux-server1"
+		Then I should be on url "/index.php/nagvis/automap/host/linux-server1"
 		And I should see "linux-server1" within frame "nagvis"
 
 	@configuration @asmonitor @case-646 @integration
@@ -338,7 +338,7 @@ Feature: Monitoring
 		And I am on the Host details page
 		When I click "linux-server1"
 		And I click "Show performance graph"
-		Then I should be on the PNP page
+		Then I should be on url "/index.php/pnp?host=linux-server1&srv=_HOST_"
 
 	@configuration @asmonitor @case-648 @integration
 	Scenario: Host details Add/delete comment
@@ -380,7 +380,7 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		And I click "Done"
 		When I click "Start obsessing over this host"
-		Then I should be on url "/monitor/index.php/cmd?command=start_obsessing&table=hosts&object=linux-server1"
+		Then I should be on url "/index.php/cmd?command=start_obsessing&table=hosts&object=linux-server1"
 
 	@configuration @asmonitor @case-650 @integration
 	Scenario: Service details filter
@@ -480,7 +480,7 @@ Feature: Monitoring
 		And I am on the Service details page
 		When I click "System Load"
 		And I click "Show performance graph"
-		Then I should be on url "/monitor/index.php/pnp/?host=linux-server1&srv=System%20Load"
+		Then I should be on url "/index.php/pnp?host=linux-server1&srv=System+Load"
 		And I should see "linux-server1" within frame "iframe"
 
 	@configuration @asmonitor @case-657 @integration
@@ -537,7 +537,7 @@ Feature: Monitoring
 
 		Given I have submitted a passive host check result "linux-server1;0;Under load"
 		And I have submitted a passive service check result "linux-server1;System Load;2;Under load"
-		And I am on address "/monitor/index.php/listview/?q=%5Bservices%5D%20in%20%22unhandled%20service%20problems%22%20or%20host%20in%20%22unhandled%20host%20problems%22"
+		And I am on address "/index.php/listview/?q=%5Bservices%5D%20in%20%22unhandled%20service%20problems%22%20or%20host%20in%20%22unhandled%20host%20problems%22"
 		Then I should see "linux-server1"
 		And I should see "System Load"
 		When I have host "linux-server1" in downtime

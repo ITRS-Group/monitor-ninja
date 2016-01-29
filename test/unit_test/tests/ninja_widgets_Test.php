@@ -45,7 +45,6 @@ class Ninja_widgets_Test extends PHPUnit_Framework_TestCase {
 		$widget_model->set_name(self::DUMMY_WIDGET);
 
 		$widget = $widget_model->build();
-
 		$this->assertInstanceOf(self::DUMMY_WIDGET_CLASS, $widget);
 		/* @var $widget Netw_Health_Widget */
 		$this->assertSame($widget_model, $widget->model);

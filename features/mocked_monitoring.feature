@@ -1,4 +1,7 @@
 Feature: Mocked
+  Background:
+    Given I am logged in
+
 	Scenario: Host details page links
 		Ensure that all links on the host details
 		page work, and verify the tables' content
@@ -46,6 +49,7 @@ Feature: Mocked
 			| name			|
 			| <name>		|
 
+		And I am logged in
 		And I am on the Host details page
 		When I click "<name>"
 		And I click "<link>"
@@ -53,9 +57,9 @@ Feature: Mocked
 
 		Examples:
 			|name			|link			|url                                                                   |
-			|Bao Jen		|Alert history	|/monitor/index.php/alert_history/generate?report_type=hosts&objects%5B%5D=Bao+Jen|
-      |Henderson Gomez|Alert histogram|/monitor/index.php/histogram/generate?report_type=hosts&objects%5B%5D=Henderson+Gomez|
-			|Raizy Olsen    |Availability report|/monitor/index.php/avail/generate?report_type=hosts&objects%5B%5D=Raizy+Olsen|
+			|Bao Jen		|Alert history	|/index.php/alert_history/generate?report_type=hosts&objects%5B%5D=Bao+Jen|
+      |Henderson Gomez|Alert histogram|/index.php/histogram/generate?report_type=hosts&objects%5B%5D=Henderson+Gomez|
+			|Raizy Olsen    |Availability report|/index.php/avail/generate?report_type=hosts&objects%5B%5D=Raizy+Olsen|
 
 	Scenario: Host details extinfo page check links
 		Verify that all links on the extinfo page for a given host
@@ -127,8 +131,8 @@ Feature: Mocked
 
 		Examples:
 			|name|link|url|
-			|Sherwin Ventura|Alert history|/monitor/index.php/alert_history/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BSherwin+Ventura|
-			|Munny Ma|Alert histogram|/monitor/index.php/histogram/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BMunny+Ma|
+			|Sherwin Ventura|Alert history|/index.php/alert_history/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BSherwin+Ventura|
+			|Munny Ma|Alert histogram|/index.php/histogram/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BMunny+Ma|
 
 	Scenario: Service details extinfo page check links
 		Verify that all links on the extinfo page for a given service
@@ -162,6 +166,6 @@ Feature: Mocked
     And I am on the Service details page
 		When I click "Manami Kaneshiro"
 		And I click "Availability report"
-		Then I should be on url "/monitor/index.php/avail/generate?report_type=services&objects%5B%5D=Champey+Hong%3BManami+Kaneshiro"
+		Then I should be on url "/index.php/avail/generate?report_type=services&objects%5B%5D=Champey+Hong%3BManami+Kaneshiro"
 		And I should see "Service details for Manami Kaneshiro on host Champey Hong"
 		And I should see "Reporting period: Last 7 days"

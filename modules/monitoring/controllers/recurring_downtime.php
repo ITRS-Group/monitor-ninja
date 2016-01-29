@@ -44,8 +44,9 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 				$id = arr::search($_REQUEST, 'schedule_id');
 
 				$sd = new ScheduleDate_Model();
-				if ($sd->edit_schedule($data, $id))
-					return url::redirect(url::base(true) . 'listview?q=[recurring_downtimes]%20all');
+				if ($sd->edit_schedule($data, $id)) {
+					return url::redirect(LinkProvider::factory()->get_url('listview', null, array('q' => '[recurring_downtimes] all')));
+				}
 				$recurring_downtime_error = 'Failed to save changed schedule';
 			}
 		}

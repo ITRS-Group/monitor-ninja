@@ -8,8 +8,8 @@ Feature: Filters & list views
 			| Manami Ikeda   |
 			| Hoa Mi Chu     |
 			| Yoki Houston   |
-
-		And I go to the listview for [hosts] all
+		And I am logged in
+		When I go to the listview for [hosts] all
 		Then I should see the mocked hosts
 
 	Scenario: List hosts
@@ -27,7 +27,8 @@ Feature: Filters & list views
 			| Julius Camarillo | Tomasine Vogelstein |
 			| De Pham          | Hue Tram |
 			| Dong-Sun Cheung  | Eun Shim |
-		And I go to the listview for [services] all
+		And I am logged in
+		When I go to the listview for [services] all
 		Then I should see the mocked services
 		And I should see the mocked hosts
 
@@ -40,7 +41,8 @@ Feature: Filters & list views
 			| description      | host |
 			| Molly Eisenstadt | Irish Acosta |
 			| Anming Gu        | Najma Ashraf |
-		And I go to the listview for [services] all
+		And I am logged in
+		When I go to the listview for [services] all
 		Then I should see the mocked services
 		And I should see "Irish Acosta"
 		And I should see "Najma Ashraf"
@@ -57,10 +59,11 @@ Feature: Filters & list views
 			| description | host           | notifications_enabled | active_checks_enabled |
 			| Munny Sum   | Zuzela Adkins  | 1                     | 0                     |
 			| De Lieu     | Zuzela Griffin | 0                     | 1                     |
-		And I go to the listview for [services] active_checks_enabled = 0 and notifications_enabled = 1
-		And I should see "Munny Sum"
+		And I am logged in
+		When I go to the listview for [services] active_checks_enabled = 0 and notifications_enabled = 1
+		Then I should see "Munny Sum"
 		And I should see "Zuzela Adkins"
-		And I shouldn't see "Zuzela Griffin"
+		But I shouldn't see "Zuzela Griffin"
 
 	@configuration @asmonitor @case-653
 	Scenario: Service detail listing column sorting

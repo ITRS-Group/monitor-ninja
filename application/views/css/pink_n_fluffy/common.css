@@ -330,14 +330,6 @@ a.external {
   filter: alpha(opacity=100);
 }
 
-.widget-content-error {
-  background: #cccccc url("./images/stripe.png");
-  text-align: center;
-  text-shadow: 0 0 3px white;
-  color: #111111;
-  font-size: 1;
-}
-
 .widget-placeholder {
   border: 1px dashed #aa8899;
   background: #dddddd url("./images/stripe.png");

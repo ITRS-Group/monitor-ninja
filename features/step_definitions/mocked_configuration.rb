@@ -3,6 +3,39 @@ When /^I have these mocked (.*)$/ do |type, table|
   page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
+When /^I am logged in$/ do
+  @mock.mock("MockedClasses",
+             [
+               {
+                 "real_class" => "op5config",
+                 "mock_class" => "MockConfig",
+                 "args" => {
+                   "auth" => {
+                     "common" => {
+                       "session_key" => "auth_user",
+                       "default_auth" => "Default"
+                     },
+                     "Default" => {
+                       "driver" => "default"
+                     }
+                   }
+
+                 }
+               },
+               {
+                 "real_class" => "op5auth",
+                 "mock_class" => "MockAuth",
+                 "args" => {}
+               },
+               {
+                 "real_class" => "op5MayI", "mock_class" => "MockMayI",
+                 "args" => {}
+               }
+  ]
+  )
+  page.driver.headers = {'X-op5-mock' => @mock.file}
+end
+
 Then /^I should see the mocked (.*)$/ do | type |
   @mock.data(type).all? { |obj|
     if type == 'services'
