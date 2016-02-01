@@ -18,8 +18,16 @@ else
   NINJA_ROOT = '/opt/monitor/op5/ninja'
 end
 
+After do |scenario|
+  case scenario
+  when Cucumber::Ast::Scenario
+    name = scenario.name
+  when Cucumber::Ast::OutlineTable::ExampleRow
+    name = scenario.scenario_outline.name
+  end
+  if scenario.failed?
+      puts "Scenario '#{name}' failed"
+  end
 
-Before do |scenario|
-  @mock = Op5Cucumber::Mock::Mock.new
 end
 World Op5Cucumber

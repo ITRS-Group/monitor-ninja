@@ -48,6 +48,10 @@ Then /^I should see the mocked (.*)$/ do | type |
   }
 end
 
+Before do |scenario|
+  @mock = Op5Cucumber::Mock::Mock.new
+end
+
 After do |scenario|
   case scenario
   when Cucumber::Ast::Scenario
@@ -58,7 +62,7 @@ After do |scenario|
 
   if @mock.active?
     if scenario.failed?
-      puts "Scenario #{name} failed, mock data stored in #{@mock.file}"
+      puts "mock data stored in #{@mock.file}"
     else
       @mock.delete!
     end
