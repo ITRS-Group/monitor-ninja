@@ -143,7 +143,14 @@ class widget_Base
 		$content = '';
 		ob_start();
 		try {
+			/*
+			 * Invoke "error-prone" methods first, yield a dead widget on
+			 * exception
+			 */
 			$this->$method();
+			if ($with_chrome) {
+				$options = $this->options();
+			}
 		}
 		catch (Exception $e) {
 			require_once(Kohana::find_file('widgets/dead', 'dead'));
@@ -155,7 +162,6 @@ class widget_Base
 
 		$widget_id = $this->model->name.'-'.$this->model->instance_id;
 		if ($with_chrome) {
-			$options = $this->options();
 			$widget_legal_classes = array('editable', 'movable', 'collapsable', 'removable', 'closeconfirm', 'duplicatable');
 			$widget_classes = array();
 
