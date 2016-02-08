@@ -67,8 +67,11 @@ BuildRequires: shadow-utils
 Requires: php-process
 Requires: php-mbstring
 BuildRequires: php-process
-%else
-Requires: php-json
+%endif
+%if 0%{?rhel} >= 7
+# For stack trace info
+Requires: psmisc
+Requires: pciutils
 %endif
 %endif
 
