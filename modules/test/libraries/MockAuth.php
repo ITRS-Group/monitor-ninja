@@ -5,6 +5,17 @@
  */
 class MockAuth extends op5auth
 {
+
+	/**
+	 * Create and return a new MockAuth instance.
+	 *
+	 * The $config paramater can contain an element "denied_authpoints" which
+	 * contains a list of authpoints which this instance will deny on invocation
+	 * of authorized_for()
+	 *
+	 * @param $config array configuration for the new instance
+	 * @return MockAuth the constructed instance
+	 */
 	public function __construct($config) {
 		$this->denied_authpoints = array();
 		if (array_key_exists('denied_authpoints', $config)) {

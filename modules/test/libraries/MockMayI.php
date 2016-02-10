@@ -5,6 +5,16 @@
 class MockMayI extends op5MayI
 {
 
+	/**
+	 * Create and return a new MockMayI instance.
+	 *
+	 * The $config paramater can contain an element "denied_actions" which
+	 * contains a list of namespaces which this instance will deny on invocation
+	 * of run()
+	 *
+	 * @param $config array configuration for the new instance
+	 * @return MockMayI the constructed instance
+	 */
 	public function __construct($config) {
 		$this->denied_actions = array();
 		if (array_key_exists('denied_actions', $config)) {
@@ -34,7 +44,9 @@ class MockMayI extends op5MayI
 	}
 
 	/**
-	 * Dummy `run` implementation, that always returns true
+	 * A mocked `run` implementation, that returns true for all
+	 * actions that are not listed in the "denied_actions" configuration
+	 * passed to the constructor.
 	 *
 	 * @param $action Unused
 	 * @param $override Unused
