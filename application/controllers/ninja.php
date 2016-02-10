@@ -179,17 +179,14 @@ class Ninja_Controller extends Template_Controller {
 				// as well
 				$this->add_print_notification($msg);
 			}
-		}
-		else {
-			if($this->mayi->run('ninja.auth:login.redirect')) {
-				url::redirect('auth/login?uri=' . rawurlencode(Router::$complete_uri));
-			} else {
-				$this->template->content = new View('auth/no_access');
-				$this->template->content->messages = $messages;
-				$this->template->content->action = $action;
-				throw new Kohana_User_Exception('No access',
-					'Access denied for action ' . $action, $this->template);
-			}
+		} elseif (!Auth::instance()->get_user()->logged_in()) {
+			url::redirect('auth/login?uri=' . rawurlencode(Router::$complete_uri));
+		} else {
+			$this->template->content = new View('auth/no_access');
+			$this->template->content->messages = $messages;
+			$this->template->content->action = $action;
+			throw new Kohana_User_Exception('No access',
+				'Access denied for action ' . $action, $this->template);
 		}
 	}
 }
