@@ -3,36 +3,52 @@ When /^I have these mocked (.*)$/ do |type, table|
   page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
-When /^I am logged in$/ do
-  @mock.mock("MockedClasses",
-             [
-               {
-                 "real_class" => "op5config",
-                 "mock_class" => "MockConfig",
-                 "args" => {
-                   "auth" => {
-                     "common" => {
-                       "session_key" => "auth_user",
-                       "default_auth" => "Default"
-                     },
-                     "Default" => {
-                       "driver" => "default"
-                     }
-                   }
+When /^these authpoints are denied$/ do |table|
+  @mock.mock_class("op5auth", {
+      "mock_class" => "MockAuth",
+      "args" => { "denied_authpoints" => table.hashes[0].values}
+    })
+end
 
-                 }
-               },
-               {
-                 "real_class" => "op5auth",
-                 "mock_class" => "MockAuth",
-                 "args" => {}
-               },
-               {
-                 "real_class" => "op5MayI", "mock_class" => "MockMayI",
-                 "args" => {}
-               }
-  ]
-  )
+When /^these actions are denied$/ do |table|
+  denied_actions = {}
+  table.hashes.each {|h|
+    denied_actions[h["action"]] = {"message" => h["message"]}
+  }
+  @mock.mock_class("op5MayI", {
+    "mock_class" => "MockMayI",
+    "args" =>
+    {
+      "denied_actions" => denied_actions
+    }
+  })
+end
+
+
+When /^I am logged in$/ do
+  @mock.mock_class("op5config", {
+      "mock_class" => "MockConfig",
+      "args" => {
+        "auth" => {
+          "common" => {
+            "session_key" => "auth_user",
+            "default_auth" => "Default"
+          },
+          "Default" => {
+            "driver" => "default"
+          }
+        }
+
+      }
+    })
+  @mock.mock_class("op5auth", {
+      "mock_class" => "MockAuth",
+      "args" => {}
+    })
+  @mock.mock_class("op5MayI", {
+      "mock_class" => "MockMayI",
+      "args" => {}
+    })
   page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 

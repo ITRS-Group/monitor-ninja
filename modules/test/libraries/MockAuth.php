@@ -5,6 +5,12 @@
  */
 class MockAuth extends op5auth
 {
+	public function __construct($config) {
+		$this->denied_authpoints = array();
+		if (array_key_exists('denied_authpoints', $config)) {
+			$this->denied_authpoints = $config['denied_authpoints'];
+		}
+	}
 	/**
 	 * Returns true if current session has access for a given authorization
 	 * point, which is always for this implementation.
@@ -13,7 +19,10 @@ class MockAuth extends op5auth
 	 * @return boolean true if access
 	 */
 	public function authorized_for($authpoint) {
-		return true;
+		$log = op5log::instance('test');
+		$ret = !in_array($authpoint, $this->denied_authpoints, true);
+		$log->log('debug', ($ret ? "Authorizing " : "Not authorizing ") . "access to authpoint $authpoint");
+		return $ret;
 	}
 
 	/**
