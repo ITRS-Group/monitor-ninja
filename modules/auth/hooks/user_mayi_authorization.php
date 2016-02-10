@@ -296,10 +296,7 @@ EOF;
 					$negate = true;
 					$row_parts[0] = substr($row_parts[0], 1);
 				}
-				$mayimethod = array_map ( function ($field) {
-					return array_filter( explode ( ".", $field ) );
-				}, explode ( ':', $row_parts [1] ) );
-
+				$mayimethod = op5MayI::explode_namespace_set($row_parts[1]);
 				$this->acl[] = array($row_parts[0], $negate, $mayimethod, $row_parts[2] == 'true');
 			}
 		}
@@ -314,24 +311,6 @@ EOF;
 	 */
 	public function populate_mayi() {
 		op5MayI::instance()->act_upon( $this, 10 );
-	}
-	private function is_subset($subset, $world) {
-		$count = count( $subset );
-		if ($count != count( $world ))
-			return false;
-
-		for($i = 0; $i < $count; $i ++) {
-			$subset_attr = $subset[$i];
-			$world_attr = $world[$i];
-
-			/* If this part isn't a subset bail out */
-			if (array_slice( $world_attr, 0, count( $subset_attr ) ) != $subset_attr) {
-				return false;
-			}
-		}
-
-		/* We passed all parts, accept */
-		return true;
 	}
 
 	/**
@@ -356,9 +335,7 @@ EOF;
 
 		$msg = false;
 
-		$action_exploded = array_map ( function ($field) {
-			return array_filter( explode ( ".", $field ) );
-		}, explode ( ':', $action ) );
+		$action_exploded = op5MayI::explode_namespace_set($action);
 
 		/*
 		 * The ninja:-resource is a little bit special. It contains more
@@ -387,7 +364,7 @@ EOF;
 				$user_access = !$user_access;
 
 
-			if($this->is_subset($action_pattern, $action_exploded)) {
+			if(op5MayI::is_subset_exploded($action_exploded, $action_pattern)) {
 				if(!$acl_allow || !$user_access) {
 					/*Display access right in the same manner as the "Grouprights" page */
 					$denied_rules[] = ucwords(str_replace('_', ' ', $access_rule));

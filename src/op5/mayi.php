@@ -100,11 +100,106 @@ class op5MayI {
 	/**
 	 * Return the active instance of the MayI object
 	 *
-	 * @param string $config
+	 * @param $config string
 	 * @return op5MayI
 	 */
 	public static function instance($config = null) {
 		return op5objstore::instance()->obj_instance(__CLASS__, $config);
+	}
+
+	/**
+	 * Helper function to explode namespace set string for passing to
+	 * is_subset_exploded(). Unless you're calling this from a very hot
+	 * codepath and caching the result, you probably want is_subset(), instead.
+	 *
+	 * @param $namespace string A namespace set string of the form "a.b:c.d"
+	 * @return array
+	 */
+	public static function explode_namespace_set($namespace) {
+		return array_map ( function ($field) {
+			return array_filter( explode ( ".", $field ) );
+		}, explode ( ':', $namespace) );
+	}
+
+	/**
+	 * This function takes a namespace subset and a namespace world and
+	 * determines whether the former is a (strict or non-strict) subset of the
+	 * latter according to the following rules:
+	 *
+	 * A namespace set consists of two partitions, separated by a colon (:) .
+	 * Each partition consists of zero or more segments, separated by a period
+	 * (.).  Both partitions have an implicit root, which is the superset of
+	 * all other sets in its partition.
+	 *
+	 * A namespace set S is said to be a subset of a namespace set W iff for
+	 * both partitions:
+	 *
+	 * for each segment in W; S has an identical corresponding segment on the
+	 * same depth, where depth is determined by the number of segments preceding
+	 * this one.
+	 *
+	 * Examples:
+	 *    'a:b' is a subset of ':'
+	 *    'a.b:c.d' is a subset of 'a:c'
+	 *    'b:c' is NOT a subset of 'a:c'
+	 *    'a:c.d.e.f.g' is a subset of 'a:c'
+	 *    'a:c' is NOT a subset of 'a.b:c.d'
+	 *
+	 *
+	 * @param $subset string
+	 * @param $world string 
+	 * @return true if $subset is a subset of $world, false otherwise
+	 */
+	public static function is_subset($subset, $world) {
+		return self::is_subset_exploded(
+			self::explode_namespace_set($subset),
+			self::explode_namespace_set($world)
+		);
+	}
+
+	/**
+	 * Like is_subset, but takes two arrays of size 2 representing the subset and the
+	 * world, respectively.
+	 *
+	 * For example to determine the answer for is_subset("a.b:c.d", "b:c"), you
+	 * would invoke this function as
+	 *
+	 *    is_subset_exploded(
+	 *        array(
+	 *            array("a", "b"),
+	 *            array("c", "d")
+	 *        ),
+	 *        array(
+	 *            array("b")
+	 *            array("c")
+	 *       )
+	 *    );
+	 *
+	 * This function is public because of its use in hot codepaths. For most
+	 * cases, you probably want to use is_subset() instead.
+	 *
+	 * @param array $subset
+	 * @param array $world
+	 * @return true if $subset is a subset of the world $world, false otherwise
+	 *
+	 * see documentation for is_subset() for more information
+	 */
+	public static function is_subset_exploded($subset, $world) {
+		if (count($subset) != 2 || count($world) != 2)
+			return false;
+
+		for($i = 0; $i < 2; $i ++) {
+			$subset_attr = $subset[$i];
+			$world_attr = $world[$i];
+
+			/* If this part isn't a subset bail out */
+			if (array_slice($subset_attr, 0, count( $world_attr) ) != $world_attr) {
+				return false;
+			}
+		}
+
+		/* We passed all parts, accept */
+		return true;
 	}
 
 	/**
