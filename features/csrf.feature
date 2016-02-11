@@ -1,4 +1,4 @@
-@csrf
+@csrf @configuration
 Feature: CSRF Token
 	Background:
 		Given I have these hostgroups configured:
@@ -18,10 +18,9 @@ Feature: CSRF Token
 			| PING                | win-server1   | check_ping      | 1                     | 0                     |
 			| PING                | win-server2   | check_ping      | 0                     | 1                     |
 		And I have activated the configuration
+		And I am logged in
 
-	@configuration @asmonitor
 	Scenario: CSRF Should fail submission of POST form with invalid token
-
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Disable active checks"
@@ -29,9 +28,7 @@ Feature: CSRF Token
 		And I click "Submit"
 		Then I should see "Forbidden"
 
-	@configuration @asmonitor
 	Scenario: CSRF Should fail submission of POST form with empty token
-
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Disable active checks"
@@ -39,9 +36,7 @@ Feature: CSRF Token
 		And I click "Submit"
 		Then I should see "Forbidden"
 
-	@configuration @asmonitor
 	Scenario: CSRF Should fail submission of POST form with no token
-
 		Given I am on the Host details page
 		When I click "linux-server1"
 		And I click "Disable active checks"

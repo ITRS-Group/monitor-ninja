@@ -1,3 +1,4 @@
+@configuration
 Feature: Recurring downtime
 
 	Background:
@@ -9,8 +10,8 @@ Feature: Recurring downtime
 			| PING                | switch32  | check_ping    |
 
 		And I have activated the configuration
+		And I am logged in
 
-	@configuration @asmonitor
 	Scenario: Add a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -26,7 +27,6 @@ Feature: Recurring downtime
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "Kroppkakor is a thing"
 
-	@configuration @asmonitor
 	Scenario: Edit a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -42,7 +42,6 @@ Feature: Recurring downtime
 		And I shouldn't see "Kroppkakor is a thing"
 		And I should see "Whipped cream"
 
-	@configuration @asmonitor
 	Scenario: Delete a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu

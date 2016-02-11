@@ -3,9 +3,10 @@ Feature: Reports
 	This is intended to contain general report tests, rather than report-type
 	specific report tests which can be found in their respective own features
 
-	@asmonitor @reports @unreliable
+	@unreliable
 	Scenario: All helptexts are defined
-		Given I am on the Host details page
+		Given I am logged in
+		And I am on the Host details page
 		When I hover over the "Report" menu
 		When I hover over the "SLA" menu
 		And I click "Create SLA Report"
@@ -28,19 +29,18 @@ Feature: Reports
 		And I click "Setup Histogram"
 		Then all helptexts should be defined
 
-	@asmonitor @reports @calendar
+	@calendar
 	Scenario: Toggle JS-calendars on custom report date
-		Given I am on the Host details page
+		Given I am logged in
+		And I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
 		And I select "Custom" from "Reporting period"
-
 		And I click css "#cal_start"
 		Then I should see css "#dp-popup"
 		When I click css ".jq-filterable-filter"
 		Then I shouldn't see css "#dp-popup"
-
 		When I click css "#cal_end"
 		Then I should see css "#dp-popup"
 		When I click css ".jq-filterable-filter"

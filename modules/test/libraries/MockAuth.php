@@ -6,7 +6,6 @@ require_once("op5/auth/Authorization.php");
  */
 class MockAuth extends op5auth
 {
-
 	/**
 	 * Create and return a new MockAuth instance.
 	 *

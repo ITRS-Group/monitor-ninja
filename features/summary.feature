@@ -1,4 +1,4 @@
-@summary
+@summary @configuration @reports
 Feature: Summary reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
@@ -37,10 +37,9 @@ Feature: Summary reports
 			| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky |
 			| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen |
-
 		And I have activated the configuration
+		And I am logged in
 
-	@configuration @asmonitor @reports
 	Scenario: See that the default-custom selector works
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -66,7 +65,6 @@ Feature: Summary reports
 		And I shouldn't see "Reporting period"
 		And I shouldn't see "Host states"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -77,7 +75,6 @@ Feature: Summary reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -90,7 +87,6 @@ Feature: Summary reports
 		Then I should see "No objects could be found in your selected groups to base the report on"
 		And I should see "Report Mode"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -104,7 +100,6 @@ Feature: Summary reports
 		Then I should see "No objects could be found in your selected groups to base the report on"
 		And I should see "Report Mode"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate report for host should by default include service alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -153,7 +148,6 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -201,7 +195,6 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate single service report should by default include host alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -250,7 +243,6 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -305,7 +297,6 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -362,7 +353,6 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		And I shouldn't see "Swap Usage"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -406,7 +396,6 @@ Feature: Summary reports
 		And I shouldn't see "PING"
 		And I shouldn't see "Swap Usage"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -457,7 +446,6 @@ Feature: Summary reports
 		# The number of host alerts
 		And I should see "1"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -507,7 +495,6 @@ Feature: Summary reports
 		# The number of host alerts
 		And I should see "1"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -555,7 +542,6 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -605,7 +591,6 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 
-	@configuration @asmonitor @reports
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -635,7 +620,6 @@ Feature: Summary reports
 		Then I should see "Top alert producers"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
 
-	@configuration @asmonitor @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -678,7 +662,7 @@ Feature: Summary reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports @unreliable
+	@unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Report" menu
@@ -713,7 +697,6 @@ Feature: Summary reports
 		And I should see "Sven Melander"
 		And I should see "This is a saved test report"
 
-	@configuration @asmonitor @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -729,7 +712,6 @@ Feature: Summary reports
 
 	# FIXME: all the standard report tests are crap, because I don't yet have
 	# a way to create alerts for the last 7 days that won't break in a week
-	@configuration @asmonitor @reports
 	Scenario: Standard Most recent hard alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -739,7 +721,6 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Most recent alerts"
 
-	@configuration @asmonitor @reports
 	Scenario: Standard Most recent hard host alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -749,7 +730,6 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Most recent alerts"
 
-	@configuration @asmonitor @reports
 	Scenario: Standard Most recent hard service alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -759,7 +739,6 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Most recent alerts"
 
-	@configuration @asmonitor @reports
 	Scenario: Standard Top hard alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -769,7 +748,6 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Top alert producers"
 
-	@configuration @asmonitor @reports
 	Scenario: Standard Top hard host alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -779,7 +757,6 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Top alert producers"
 
-	@configuration @asmonitor @reports
 	Scenario: Standard Top hard service alerts
 		Given I am on the Host details page
 		And I hover over the "Report" menu

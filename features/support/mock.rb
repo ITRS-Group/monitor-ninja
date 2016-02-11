@@ -7,7 +7,7 @@ module Op5Cucumber::Mock
     attr_reader :file
 
     def initialize()
-      @file = nil
+      @file = ni
       @data = {'ORMDriverLS default' =>
                {
                  'hostgroups' => [],
@@ -38,31 +38,32 @@ module Op5Cucumber::Mock
       @data[driver_for_type(type)][type]
     end
 
+
     def driver_for_type(type)
       case type
       when /^hosts$/
         if not @data["ORMDriverLS default"].key?(:hosts)
-          @data["ORMDriverLS default"] << {'hosts' => []}
+          @data["ORMDriverLS default"] = {'hosts' => []}
         end
 	'ORMDriverLS default'
       when /^hostgroups$/
         if not @data["ORMDriverLS default"].key?(:hostgroups)
-          @data["ORMDriverLS default"] << {'hostgroups' => []}
+          @data["ORMDriverLS default"] = {'hostgroups' => []}
         end
         'ORMDriverLS default'
       when /^services$/
         if not @data["ORMDriverLS default"].key?(:services)
-          @data["ORMDriverLS default"] << {'services' => []}
+          @data["ORMDriverLS default"] = {'services' => []}
         end
         'ORMDriverLS default'
       when /^servicegroups$/
         if not @data["ORMDriverLS default"].key?(:servicegroups)
-          @data["ORMDriverLS default"] << {'servicegroups' => []}
+          @data["ORMDriverLS default"] = {'servicegroups' => []}
         end
         'ORMDriverLS default'
       when /^ninja_widgets$/
         if not @data["ORMDriverMySQL default"].key?(:ninja_widgets)
-          @data["ORMDriverMySQL default"] << {'ninja_widgets' => []}
+          @data["ORMDriverMySQL default"] = {'ninja_widgets' => []}
         end
         'ORMDriverMySQL default'
       when /^users$/

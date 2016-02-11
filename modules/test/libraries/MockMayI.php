@@ -4,7 +4,6 @@
  */
 class MockMayI extends op5MayI
 {
-
 	/**
 	 * Create and return a new MockMayI instance.
 	 *

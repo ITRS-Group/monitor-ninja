@@ -25,7 +25,6 @@ Feature: Scheduling information
     # note: 2147485547 is Tue Jan 19 03:45:47 UTC 2038
     Then I should see "2038-01"
 
-
   Scenario: Remote scheduling information is hidden in scheduling queue
     Verify that scheduling information for a check that is run on a remote node (peer or poller)
     is not included in the scheduling queue
@@ -37,4 +36,3 @@ Feature: Scheduling information
     And I am on address "/index.php/extinfo/scheduling_queue"
     Then I should see "local_host"
     But I shouldn't see "remote_host"
-

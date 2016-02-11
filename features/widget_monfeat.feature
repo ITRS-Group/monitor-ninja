@@ -1,7 +1,7 @@
 Feature: Monitoring features widget
 
 	Scenario: Monitoring features should display command links
-		When I am logged in as "monitor" with password "monitor"
+		When I am logged in
 		And I am on the main page
 		Then I should see "Monitoring features"
 		And I should see link "Flap detection enabled"
@@ -11,4 +11,3 @@ Feature: Monitoring features widget
 		And I should see link "Active Service checks enabled"
 		And I should see link "Passive Host checks enabled"
 		And I should see link "Passive Service checks enabled"
-

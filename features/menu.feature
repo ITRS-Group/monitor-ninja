@@ -2,9 +2,9 @@
 Feature: Menu
 
 	Background:
-		Given I am on the main page
+		Given I am logged in
+		And I am on the main page
 
-	@asmonitor
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
 		Then I should see menu items:
@@ -12,7 +12,6 @@ Feature: Menu
 			| op5 Manual |
 			| op5 Support |
 
-	@asmonitor
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
 		Then I should see menu items:
@@ -25,7 +24,6 @@ Feature: Menu
 			| Downtimes |
 			| NagVis |
 
-	@asmonitor
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
 		Then I should see menu items:
@@ -37,7 +35,6 @@ Feature: Menu
 			| Alert history |
 			| Notifications |
 
-	@asmonitor
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
 		Then I should see menu items:
@@ -48,7 +45,6 @@ Feature: Menu
 			| Process information |
 			| Performance information |
 
-	@asmonitor
 	Scenario: Add quicklink
 		When I click "Manage quickbar"
 		# The dialog will fade in, and if it's not done, it won't fade out properly
@@ -61,7 +57,6 @@ Feature: Menu
 		Then I should see css "a[href='google.com'][title='Make my day']" within "#header"
 		And I shouldn't see "Add new quicklink"
 
-	@asmonitor
 	Scenario: Remove quicklink
 		When I click "Manage quickbar"
 		# The dialog will fade in, and if it's not done, it won't fade out properly
@@ -72,8 +67,6 @@ Feature: Menu
 		Then I shouldn't see "Add new quicklink" waiting patiently
 		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"
 
-	@asmonitor
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover the branding
 		Then I should see css "a[href='https://kb.op5.com/display/DOC']"
-

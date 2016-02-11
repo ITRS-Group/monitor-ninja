@@ -51,7 +51,6 @@ Feature: Filters & list views
 	Scenario: List services with granular filter
 		Ensure that filters work even when we specify more limiting
 		filters.
-
 		Given I have these mocked hosts
 			| name           |
 			| Zuzela Adkins  |
@@ -66,11 +65,10 @@ Feature: Filters & list views
 		And I should see "Zuzela Adkins"
 		But I shouldn't see "Zuzela Griffin"
 
-	@configuration @asmonitor
+	@configuration
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by description.
-
 		Given I have these hosts:
 			| host_name |
 			| linux-server1 |
@@ -81,7 +79,8 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I am on the Service details page
+		Given I am logged in
+		And I am on the Service details page
 		When I sort the filter result table by "description"
 		Then The first row of the filter result table should contain "A-service"
 		And The last row of the filter result table should contain "D-service"
@@ -89,12 +88,10 @@ Feature: Filters & list views
 		Then The first row of the filter result table should contain "D-service"
 		And The last row of the filter result table should contain "A-service"
 
-
-	@configuration @asmonitor
+	@configuration
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by last checked.
-
 		Given I have these hosts:
 			| host_name |
 			| linux-server1 |
@@ -105,18 +102,18 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I have submitted a passive service check result "linux-server1;C-service;0;some output"
+		Given I am logged in
+		And I have submitted a passive service check result "linux-server1;C-service;0;some output"
 		And I am on the Service details page
 		When I sort the filter result table by "last_check"
 		Then The last row of the filter result table should contain "C-service"
 		When I sort the filter result table by "last_check"
 		Then The first row of the filter result table should contain "C-service"
 
-	@configuration @asmonitor
+	@configuration
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by duration.
-
 		Given I have these hosts:
 			| host_name |
 			| linux-server1 |
@@ -127,18 +124,18 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I have submitted a passive service check result "linux-server1;B-service;0;some output"
+		Given I am logged in
+		And I have submitted a passive service check result "linux-server1;B-service;0;some output"
 		And I am on the Service details page
 		When I sort the filter result table by "duration"
 		Then The first row of the filter result table should contain "B-service"
 		When I sort the filter result table by "duration"
 		Then The last row of the filter result table should contain "B-service"
 
-	@configuration @asmonitor
+	@configuration
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by status information.
-
 		Given I have these hosts:
 			| host_name |
 			| linux-server1 |
@@ -149,7 +146,8 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I have submitted a passive service check result "linux-server1;B-service;0;Apocryphal status information message"
+		Given I am logged in
+		And I have submitted a passive service check result "linux-server1;B-service;0;Apocryphal status information message"
 		And I have submitted a passive service check result "linux-server1;A-service;1;Bereaved status information"
 		And I have submitted a passive service check result "linux-server1;D-service;0;Curmudgeonly status information"
 		And I have submitted a passive service check result "linux-server1;C-service;0;Dandy status information"
@@ -161,12 +159,10 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "B-service"
 		And The first row of the filter result table should contain "C-service"
 
-
-	@configuration @asmonitor
+	@configuration
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by state.
-
 		Given I have these hosts:
 			| host_name |
 			| linux-server1 |
@@ -176,7 +172,8 @@ Feature: Filters & list views
 			| B-service				| linux-server1 | check_ping	|
 			| C-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I have submitted a passive service check result "linux-server1;A-service;1;Bereaved status information"
+		Given I am logged in
+		And I have submitted a passive service check result "linux-server1;A-service;1;Bereaved status information"
 		And I have submitted a passive service check result "linux-server1;B-service;0;Apocryphal status information message"
 		And I have submitted a passive service check result "linux-server1;C-service;2;Dandy status information"
 		And I am on the Service details page
@@ -191,7 +188,7 @@ Feature: Filters & list views
 	Scenario: Save filter
 		Given I am logged in
 		And I am on the Host details page
-		Then I click "Show/Edit Text Filter"
+		And I click "Show/Edit Text Filter"
 		And I enter "Ernie" into "lsfilter_save_filter_name"
 		And I click "Save Filter"
 		And I wait for 1 second

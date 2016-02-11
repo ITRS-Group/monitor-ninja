@@ -3,43 +3,43 @@ Feature: Scheduled reports
 	deleting schedules deletes reports...
 
 	Background:
-		Given I have these hostgroups configured:
-			| hostgroup_name |
+		Given I have these mocked hostgroups
+			| name           |
 			| LinuxServers   |
 			| WindowsServers |
 			| MixedGroup     |
 			| EmptyGroup     |
-		And I have these hosts:
-			| host_name      | host_groups               |
+		And I have these mocked hosts
+			| name           | groups                    |
 			| linux-server1  | LinuxServers,MixedGroup   |
 			| linux-server2  | LinuxServers              |
 			| win-server1    | WindowsServers            |
 			| win-server2    | WindowsServers,MixedGroup |
-		And I have these servicegroups:
-			| servicegroup_name | alias                           |
-			| pings             | ping services plus one non-ping |
-			| empty             | nothing in here                 |
-		And I have these services:
-			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled | service_groups |
-			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |                |
-			| PING                | linux-server1 | check_ping      | 1                     | 0                     | pings          |
-			| System Load         | linux-server2 | check_nrpe!load | 1                     | 1                     |                |
-			| PING                | win-server1   | check_ping      | 1                     | 0                     | pings          |
-			| Swap Usage          | win-server1   | check_swap      | 1                     | 0                     | pings          |
-			| PING                | win-server2   | check_ping      | 0                     | 1                     | pings          |
+		And I have these mocked servicegroups
+			| name  | alias                           |
+			| pings | ping services plus one non-ping |
+			| empty | nothing in here                 |
+		And I have these mocked services
+			| description | host          | check_command   | notifications_enabled | active_checks_enabled | groups |
+			| System Load | linux-server1 | check_nrpe!load | 1                     | 1                     |        |
+			| PING        | linux-server1 | check_ping      | 1                     | 0                     | pings  |
+			| System Load | linux-server2 | check_nrpe!load | 1                     | 1                     |        |
+			| PING        | win-server1   | check_ping      | 1                     | 0                     | pings  |
+			| Swap Usage  | win-server1   | check_swap      | 1                     | 0                     | pings  |
+			| PING        | win-server2   | check_ping      | 0                     | 1                     | pings  |
 		And I have these report data entries:
-			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output |
-			| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                |
-			| 2013-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - laa-laa        |
-			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander  |
-			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - po             |
-			| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky |
+			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output                     |
+			| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                       |
+			| 2013-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - laa-laa               |
+			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander         |
+			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - po                    |
+			| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky        |
 			| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
-			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen |
+			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
 
-		And I have activated the configuration
+		And I am logged in
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Save avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -56,7 +56,7 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Schedule avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -73,7 +73,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: View scheduled avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -87,7 +87,7 @@ Feature: Scheduled reports
 		And I should see "LinuxServers"
 		And I should see "linux-server1"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Add second avail schedule
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -109,7 +109,7 @@ Feature: Scheduled reports
 		And I click "OK" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		Then the "Description" column should be "A description" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Delete previously created avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -125,7 +125,7 @@ Feature: Scheduled reports
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Ensure previously added avail schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -135,7 +135,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Save SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -154,7 +154,7 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Schedule SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -172,7 +172,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: View scheduled SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -186,7 +186,7 @@ Feature: Scheduled reports
 		And I should see "Group members"
 		And I should see "linux-server1"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Delete SLA schedule
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -205,7 +205,7 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Delete previously created SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -221,7 +221,7 @@ Feature: Scheduled reports
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Ensure previously added sla schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -232,7 +232,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Save summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -248,7 +248,7 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Schedule summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -266,7 +266,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: View scheduled summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -278,7 +278,7 @@ Feature: Scheduled reports
 		When I click "View report" on the row where "Report" is "saved test report"
 		Then I should see "Top alert producers"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Delete previously created summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -293,7 +293,7 @@ Feature: Scheduled reports
 		Then "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 
-	@configuration @asmonitor @reports
+	@reports
 	Scenario: Ensure previously added summary schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
