@@ -15,6 +15,11 @@ function tac_send_request(method, data, callbacks) {
 			}
 		},
 		error : function(data) {
+			if (data.readyState == 0 || data.status == 0) {
+				// User aborted request (maybe by clicking the refresh button)
+				return;
+			}
+
 			if (callbacks.error) {
 				callbacks.error(data);
 			} else {
