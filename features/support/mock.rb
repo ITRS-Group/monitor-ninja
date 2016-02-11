@@ -22,6 +22,7 @@ module Op5Cucumber::Mock
       @data[driver_for_type(type)][type]
     end
 
+
     def driver_for_type(type)
       case type
       when /^host.*s$/
