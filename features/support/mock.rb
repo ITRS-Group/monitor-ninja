@@ -7,25 +7,9 @@ module Op5Cucumber::Mock
     attr_reader :file
 
     def initialize()
-      @file = ni
-      @data = {'ORMDriverLS default' =>
-               {
-                 'hostgroups' => [],
-                 'hosts' => [],
-                 'servicegroups' => [],
-                 'services' => []
-               },
-               'ORMDriverMySQL default' =>
-               {
-                 'ninja_widgets' => []
-               },
-               'ORMDriverYAML default' =>
-               {
-                 'users' => [],
-                 'usergroups' => [],
-                 'authmodules' => []
-               },
-               'MockedClasses' => []
+      @file = nil
+      @data = {
+        'MockedClasses' => []
       }
       @mocked_classes = {}
     end
@@ -38,33 +22,17 @@ module Op5Cucumber::Mock
       @data[driver_for_type(type)][type]
     end
 
-
     def driver_for_type(type)
       case type
-      when /^hosts$/
-        if not @data["ORMDriverLS default"].key?(:hosts)
-          @data["ORMDriverLS default"] = {'hosts' => []}
-        end
-	'ORMDriverLS default'
-      when /^hostgroups$/
-        if not @data["ORMDriverLS default"].key?(:hostgroups)
-          @data["ORMDriverLS default"] = {'hostgroups' => []}
-        end
+      when /^host.*s$/
         'ORMDriverLS default'
-      when /^services$/
-        if not @data["ORMDriverLS default"].key?(:services)
-          @data["ORMDriverLS default"] = {'services' => []}
-        end
-        'ORMDriverLS default'
-      when /^servicegroups$/
-        if not @data["ORMDriverLS default"].key?(:servicegroups)
-          @data["ORMDriverLS default"] = {'servicegroups' => []}
-        end
+      when /^service.*s$/
         'ORMDriverLS default'
       when /^ninja_widgets$/
-        if not @data["ORMDriverMySQL default"].key?(:ninja_widgets)
-          @data["ORMDriverMySQL default"] = {'ninja_widgets' => []}
-        end
+        'ORMDriverMySQL default'
+      when /^status$/
+        'ORMDriverLS default'
+      when /^ninja_widgets$/
         'ORMDriverMySQL default'
       when /^users$/
         'ORMDriverYAML default'
@@ -108,7 +76,15 @@ module Op5Cucumber::Mock
           end
         }
       }
-      @data[driver_for_type(type)][type] += hashes
+      driver = driver_for_type(type)
+      if not @data.key?(driver)
+        @data[driver] = {}
+      end
+      if not @data[driver].key?(type)
+        @data[driver][type] = []
+      end
+
+      @data[driver][type] += hashes
       save
     end
 

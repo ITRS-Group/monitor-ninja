@@ -10,6 +10,7 @@ Feature: Recurring downtime
 			| PING                | switch32  | check_ping    |
 
 		And I have activated the configuration
+		And I am on the main page
 		And I am logged in
 
 	Scenario: Add a recurring downtime

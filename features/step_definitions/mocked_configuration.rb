@@ -24,9 +24,12 @@ When /^these actions are denied$/ do |table|
   })
 end
 
+When /^I am logged in as admin$/ do
+
+
+end
 
 When /^I am logged in$/ do
-
   @mock.mock('authmodules', [{
       "modulename" => "Default",
       "properties" => {
@@ -45,7 +48,6 @@ When /^I am logged in$/ do
   })
 
   page.driver.headers = {'X-op5-mock' => @mock.file}
-
 end
 
 Then /^I should see the mocked (.*)$/ do | type |
