@@ -1,9 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-require_once('op5/log.php');
-
 /**
- * Base NINJA controller.
+ * Chromeless controller.
  *
  * Sets necessary objects like session and database
  *
@@ -15,24 +13,15 @@ require_once('op5/log.php');
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Ninja_Controller extends Base_Controller {
+class Chromeless_Controller extends Base_Controller {
 
 	public $session = false;
 	public $template;
-	public $profiler = false;
 	public $inline_js = false;
 	public $js_strings = false;
 	public $log = false;
+
 	public $widgets = array();
-
-	/**
-	 * @var NoticeManager_Model
-	 */
-	public $notices;
-
-	/**
-	 * @var LinkProvider
-	 */
 	public $linkprovider;
 
 	/**
@@ -42,6 +31,7 @@ class Ninja_Controller extends Base_Controller {
 	public $access_perfdata = array();
 
 	public function __construct () {
+
 		parent::__construct();
 
 		$this->notices = new NoticeManager_Model();
@@ -53,24 +43,12 @@ class Ninja_Controller extends Base_Controller {
 			$this->linkprovider = LinkProvider::factory();
 		}
 
-		$this->template = $this->add_view('template');
+		$this->template = new View('chromeless');
 		$this->template->css = array();
 		$this->template->js = array();
 
-		$this->template->print_notifications = array();
-		$this->template->notices = $this->notices;
-
-		$this->profiler = new Profiler;
-
 		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
 		$this->template->current_skin = $this->get_current_user_skin();
-
-		$this->template->menu = new Menu_Model();
-		$pre_event_data = Event::$data;
-		$pre_event_name = Event::$name;
-		Event::run('ninja.menu.setup', $this->template->menu);
-		Event::$data = $pre_event_data;
-		Event::$name = $pre_event_name;
 
 		# Load session library
 		# If any current session data exists, it will become available.
@@ -80,67 +58,6 @@ class Ninja_Controller extends Base_Controller {
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
-		$this->_addons();
-	}
-
-	/**
-	 * Clean up print notifications
-	 *
-	 * If we want to regenerate the list of print notifiactions, we can simply clean it up
-	 */
-	protected function clear_print_notification() {
-		$this->template->print_notifications = array();
-	}
-
-	public function add_print_notification($notification) {
-		$this->template->print_notifications[] = $notification;
-	}
-
-	/**
-	 * Find and include php files from 'addons' found in defined folders
-	 */
-	protected function _addons()
-	{
-		$addons_files = array_merge(
-			glob(APPPATH.'addons/menu', GLOB_ONLYDIR),
-			glob(MODPATH.'*/addons/menu', GLOB_ONLYDIR)
-		);
-
-		foreach ($addons_files as $file) {
-			$addons = glob($file.'/*.php');
-			foreach ($addons as $addon) {
-				include_once($addon);
-			}
-		}
-
-	}
-
-	/**
-	 * Create a View object
-	 */
-	public function add_view($view)
-	{
-		$view = trim($view);
-		if (empty($view)) {
-			return false;
-		}
-		return new View($view);
-	}
-
-	/**
-	 * Set correct image path.
-	 */
-	public function img_path($rel_path='')
-	{
-		return $this->add_path($rel_path);
-	}
-
-	/**
-	 * Set correct image path
-	 */
-	public function add_path($rel_path)
-	{
-		return ninja::add_path($rel_path);
 	}
 
 	/**
@@ -162,4 +79,5 @@ class Ninja_Controller extends Base_Controller {
 		}
 		return $current_skin;
 	}
+
 }
