@@ -79,7 +79,7 @@ class AuthDriverDefaultTest extends PHPUnit_Framework_TestCase {
 						'own_user_change_password' => true,
 						'some_plain_access' => true
 				),
-				$user->auth_data,
+				$user->get_auth_data(),
 				'Invalid authorization flags');
 	}
 
@@ -89,8 +89,8 @@ class AuthDriverDefaultTest extends PHPUnit_Framework_TestCase {
 				'Could login as user_plain with incorrect password' );
 		$user = $this->auth->get_user();
 		$this->assertTrue(
-				$user instanceof op5User_NoAuth,
-				'User returned without login isn\'t op5User_NoAuth');
+				$user instanceof User_NoAuth_Model,
+				'User returned without login isn\'t User_NoAuth_Model');
 	}
 
 	public function test_no_module_login() {
@@ -98,8 +98,8 @@ class AuthDriverDefaultTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($this->auth->login('user_nomodule', 'user_pass'));
 		$user = $this->auth->get_user();
 		$this->assertTrue(
-				$user instanceof op5User_NoAuth,
-				'User returned without login isn\'t op5User_NoAuth');
+				$user instanceof User_NoAuth_Model,
+				'User returned without login isn\'t User_NoAuth_Model');
 	}
 
 	public function test_metadata_all() {

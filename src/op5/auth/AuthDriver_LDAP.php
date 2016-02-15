@@ -1,6 +1,5 @@
 <?php
 require_once (__DIR__ . '/AuthDriver.php');
-require_once (__DIR__ . '/User.php');
 require_once (__DIR__ . '/AuthException.php');
 require_once (__DIR__ . '/../config.php');
 
@@ -35,9 +34,10 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 */
 	public function login($username, $password) {
 		$this->connect();
+		$config = $this->module->get_properties();
 
-		if (isset($this->config['bind_with_upn']) &&
-			 $this->config['bind_with_upn']) {
+		if (isset($config['bind_with_upn']) &&
+			 $config['bind_with_upn']) {
 			$user_info = $this->do_upn_login($username, $password);
 		} else {
 			$user_info = $this->do_dn_login($username, $password);
@@ -53,32 +53,37 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		 * In some setups the bound user hasn't got access to search for groups.
 		 * Check config if service account should bind again before group search
 		 */
-		if (!empty($this->config['resolve_with_service_account'])) {
+		if (!empty($config['resolve_with_service_account'])) {
 			$this->log->log('debug', 'Resolving groups using service account');
 			$this->bind_anon();
 		}
 
 		$groups = $this->resolve_group_names($user_info['dn']);
 
-		if (!isset($user_info[strtolower($this->config['userkey'])])) {
+		if (!isset($user_info[strtolower($config['userkey'])])) {
 			$this->log->log('error',
-				'User hasn\'t got attribute ' . $this->config['userkey']);
+				'User hasn\'t got attribute ' . $config['userkey']);
 			return false;
 		}
-		$username = $user_info[strtolower($this->config['userkey'])][0];
-		if ($this->config['userkey_is_upn']) {
+		$username = $user_info[strtolower($config['userkey'])][0];
+		if ($config['userkey_is_upn']) {
 			$parts = explode('@', $username, 2);
 			$username = $parts[0];
 		}
 
-		$user = new op5User(
-			array ('username' => $username,'groups' => $groups,
-				'realname' => array_key_exists(
-					strtolower($this->config['userkey_realname']), $user_info) ? $user_info[strtolower(
-					$this->config['userkey_realname'])][0] : $username,
-				'email' => array_key_exists(
-					strtolower($this->config['userkey_email']), $user_info) ? $user_info[strtolower(
-					$this->config['userkey_email'])][0] : ''));
+		return new User_Model(
+			array(
+				'username' => $username,
+				'groups' => $groups,
+				'realname' => array_key_exists(strtolower($config['userkey_realname']), $user_info)
+					? $user_info[strtolower($config['userkey_realname'])][0]
+					: $username,
+				'email' => array_key_exists(strtolower($config['userkey_email']), $user_info)
+					? $user_info[strtolower($config['userkey_email'])][0]
+					: ''
+			)
+		);
+
 		return $user;
 	}
 
@@ -118,6 +123,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	public function groups_available(array $grouplist) {
 		$this->connect();
 		$this->bind_anon();
+		$config = $this->module->get_properties();
 
 		if ($this->conn === false) {
 			return array ();
@@ -141,9 +147,9 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 
 		/* Build LDAP-query for groups */
 		if (count($groups_group) > 0) {
-			$filter = '(&' . $this->config['group_filter'] . '(|';
+			$filter = '(&' . $config['group_filter'] . '(|';
 			foreach ($groups_group as $group) {
-				$filter .= '(' . $this->config['groupkey'] . '=' .
+				$filter .= '(' . $config['groupkey'] . '=' .
 					 $this->ldap_escape($group) . ')';
 			}
 			$filter .= '))';
@@ -156,13 +162,13 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$result[$group] = false;
 			}
 
-			$res = $this->ldap_query(array (), $this->config['group_base_dn'],
-				$filter, array ($this->config['groupkey']));
+			$res = $this->ldap_query(array (), $config['group_base_dn'],
+				$filter, array ($config['groupkey']));
 			if ($res !== false) {
 				$entry = ldap_first_entry($this->conn, $res);
 				while ($entry !== false) {
 					$attrs = ldap_get_attributes($this->conn, $entry);
-					$result[$attrs[strtolower($this->config['groupkey'])][0]] = true;
+					$result[$attrs[strtolower($config['groupkey'])][0]] = true;
 					$entry = ldap_next_entry($this->conn, $entry);
 				}
 				ldap_free_result($res);
@@ -171,12 +177,12 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 
 		/* Build LDAP-query for users */
 		if (count($groups_user) > 0) {
-			$filter = '(&' . $this->config['user_filter'] . '(|';
+			$filter = '(&' . $config['user_filter'] . '(|';
 			foreach ($groups_user as $user) {
-				if ($this->config['userkey_is_upn']) {
-					$user .= '@' . $this->config['upn_suffix'];
+				if ($config['userkey_is_upn']) {
+					$user .= '@' . $config['upn_suffix'];
 				}
-				$filter .= '(' . $this->config['userkey'] . '=' .
+				$filter .= '(' . $config['userkey'] . '=' .
 					 $this->ldap_escape($user) . ')';
 			}
 			$filter .= '))';
@@ -189,14 +195,14 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$result['user_' . $user] = false;
 			}
 
-			$res = $this->ldap_query(array (), $this->config['user_base_dn'],
-				$filter, array ($this->config['userkey']));
+			$res = $this->ldap_query(array (), $config['user_base_dn'],
+				$filter, array ($config['userkey']));
 			if ($res !== false) {
 				$entry = ldap_first_entry($this->conn, $res);
 				while ($entry !== false) {
 					$attrs = ldap_get_attributes($this->conn, $entry);
-					$user = $attrs[strtolower($this->config['userkey'])][0];
-					if ($this->config['userkey_is_upn']) {
+					$user = $attrs[strtolower($config['userkey'])][0];
+					if ($config['userkey_is_upn']) {
 						$parts = explode('@', $user, 2);
 						$user = $parts[0];
 					}
@@ -258,7 +264,8 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	private function resolve_groups($object_dn) {
 		$tosearch = array ($object_dn);
 		$groups = array ();
-		$recursive = $this->config['group_recursive'];
+		$config = $this->module->get_properties();
+		$recursive = $config['group_recursive'];
 
 		while (count($tosearch) > 0) {
 			$cur = array_pop($tosearch);
@@ -279,22 +286,27 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 * Used internally by resolve_groups.
 	 *
-	 * @param
-	 *        	array Base DN to search
-	 * @param
-	 *        	boolean To search recursivly
+	 * @param $object_dn array Base DN to search
+	 * @param boolean To search recursivly
 	 * @return array Array of group DN:s
 	 */
 	private function resolve_groups_nonrecursive($object_dn) {
+
+		$config = $this->module->get_properties();
 		$res = $this->ldap_query(
-			array (
-				$this->config['memberkey'] => $this->config['memberkey_is_dn'] ? $object_dn : $this->strip_dn(
-					$object_dn)), $this->config['group_base_dn'],
-			$this->config['group_filter'], array ('dn'));
+			array(
+				$config['memberkey'] => $config['memberkey_is_dn']
+				? $object_dn
+				: $this->strip_dn($object_dn)
+			),
+			$config['group_base_dn'],
+			$config['group_filter'],
+			array('dn')
+		);
 
 		$groups = array ();
-
 		$entry = ldap_first_entry($this->conn, $res);
+
 		while ($entry !== false) {
 			$group = ldap_get_dn($this->conn, $entry);
 			if ($group) {
@@ -305,9 +317,10 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$entry = false;
 			}
 		}
-		ldap_free_result($res);
 
+		ldap_free_result($res);
 		return $groups;
+
 	}
 
 	/**
@@ -352,7 +365,8 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 */
 	private function do_upn_login($username, $password) {
-		$upn = $username . '@' . $this->config['upn_suffix'];
+		$config = $this->module->get_properties();
+		$upn = $username . '@' . $config['upn_suffix'];
 
 		/* Try to bind as user to authenticate */
 		if (!$this->bind($upn, $password)) {
@@ -374,16 +388,23 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 */
 	private function get_info_for_user($filter) {
+
+		$config = $this->module->get_properties();
 		if (!is_array($filter)) {
 			$username = $filter;
-			if ($this->config['userkey_is_upn']) {
-				$username .= '@' . $this->config['upn_suffix'];
+			if ($config['userkey_is_upn']) {
+				$username .= '@' . $config['upn_suffix'];
 			}
-			$filter = array ($this->config['userkey'] => $username);
+			$filter = array ($config['userkey'] => $username);
 		}
 
-		$res = $this->ldap_query($filter, $this->config['user_base_dn'],
-			$this->config['user_filter'], array ('dn'));
+		$res = $this->ldap_query(
+			$filter,
+			$config['user_base_dn'],
+			$config['user_filter'],
+			array('dn')
+		);
+
 		$entries = ldap_get_entries($this->conn, $res);
 		ldap_free_result($res);
 
@@ -405,18 +426,17 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 */
 	private function connect() {
-		/* Already connected */
-		if ($this->conn !== false) {
-			return;
-		}
 
-		if (!isset($this->config['server'])) {
+		if ($this->conn !== false) return;
+
+		$config = $this->module->get_properties();
+
+		if (!isset($config['server']))
 			$this->throw_error('Server is not specified');
-		}
 
 		$enctype = false;
-		if (isset($this->config['encryption'])) {
-			$enctype = $this->config['encryption'];
+		if (isset($config['encryption'])) {
+			$enctype = $config['encryption'];
 		}
 
 		if ($enctype !== false && $enctype !== 'none' && $enctype !== 'start_tls' &&
@@ -430,12 +450,12 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			$port = 636;
 		}
 
-		if (isset($this->config['port']) && $this->config['port'] != false) {
-			$port = $this->config['port'];
+		if (isset($config['port']) && $config['port'] != false) {
+			$port = $config['port'];
 		}
 
 		$urls = array ();
-		foreach (preg_split('/\s+/', $this->config['server']) as $server) {
+		foreach (preg_split('/\s+/', $config['server']) as $server) {
 			$url = ($enctype == 'ssl') ? 'ldaps://' : 'ldap://';
 			$url .= $server . ':' . $port;
 			$urls[] = $url;
@@ -457,13 +477,11 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 
 		$ldap_options = array ();
-		if (isset($this->config['ldap_options']) &&
-			 is_array($this->config['ldap_options'])) {
-			$ldap_options = $this->config['ldap_options'];
-		}
+		if (isset($config['ldap_options']) &&  is_array($config['ldap_options']))
+			$ldap_options = $config['ldap_options'];
 
-		if (isset($this->config['protocol_version'])) {
-			$ldap_options['LDAP_OPT_PROTOCOL_VERSION'] = $this->config['protocol_version'];
+		if (isset($config['protocol_version'])) {
+			$ldap_options['LDAP_OPT_PROTOCOL_VERSION'] = $config['protocol_version'];
 		}
 
 		foreach ($ldap_options as $opt => $val) {
@@ -492,6 +510,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 */
 	private function bind($dn = false, $password = false) {
+		$config = $this->module->get_properties();
 		if ($dn === false) {
 			$this->log->log('debug', 'Bindning anonymously');
 			$result = @ldap_bind($this->conn); /*
@@ -499,7 +518,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			                                    */
 		} else {
 			$this->log->log('debug',
-				$this->config['name'] . ': Bindning as ' . $dn .
+				$this->module->get_modulename() . ': Bindning as ' . $dn .
 					 (($password === false) ? ', password=false' : ' with password set'));
 			$result = @ldap_bind($this->conn, $dn, $password);
 		}
@@ -519,15 +538,16 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 */
 	private function bind_anon() {
+		$config = $this->module->get_properties();
 		/* Bind with service account (or anonymously) */
-		if (!isset($this->config['bind_secret']) ||
-			 $this->config['bind_secret'] === false) {
+		if (!isset($config['bind_secret']) ||
+			 $config['bind_secret'] === false) {
 			/* Bind anonymously */
 			if (!$this->bind()) {
 				$this->throw_error('Could not bind anonymously to LDAP server');
 			}
 		} else {
-			$secret = $this->config['bind_secret'];
+			$secret = $config['bind_secret'];
 
 			/*
 			 * If $secret is an array, it references to another file, for
@@ -543,22 +563,21 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				 * security issue with caching...
 				 */
 				else if (isset($secret['config'])) {
-					$secret_conf = op5Config::instance()->getConfig(
-						$secret['config']);
+					$secret_conf = op5Config::instance()->getConfig($secret['config']);
 					if ($secret_conf === false) {
 						$this->throw_error(
 							'secret specified as config reference, but referenced config not found');
 					}
-					if (!isset($secret_conf[$this->config['name']])) {
+					if (!isset($secret_conf[$this->module->get_modulename()])) {
 						$this->throw_error(
-							'section ' . $this->config['name'] .
+							'section ' . $this->modules->get_modulename() .
 								 ' not found in config file ' . $secret['config']);
 					}
-					$secret = $secret_conf[$this->config['name']];
+					$secret = $secret_conf[$this->module->get_modulename()];
 				}
 			}
 
-			if (!$this->bind($this->config['bind_dn'], $secret)) {
+			if (!$this->bind($config['bind_dn'], $secret)) {
 				$this->throw_error(
 					'Could not bind using config user to LDAP server');
 			}
@@ -576,6 +595,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 */
 	private function throw_error($msg) {
+		$config = $this->module->get_properties();
 		if ($this->conn !== false) {
 			$msg .= ' (' . ldap_errno($this->conn) . ': ' .
 				 ldap_error($this->conn) . ')';
@@ -585,9 +605,9 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			}
 		}
 		$this->log->log('error',
-			'op5AuthDriver_LDAP / ' . $this->config['name'] . ': ' . $msg);
+			'op5AuthDriver_LDAP / ' . $this->module->get_modulename() . ': ' . $msg);
 		throw new op5AuthException(
-			'op5AuthDriver_LDAP / ' . $this->config['name'] . ': ' . $msg);
+			'op5AuthDriver_LDAP / ' . $this->module->get_modulename() . ': ' . $msg);
 	}
 
 	/**

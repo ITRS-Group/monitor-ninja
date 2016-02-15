@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 require_once('op5/auth/Auth.php');
-require_once('op5/auth/User_AlwaysAuth.php');
 /**
  * 	CLI controller for command line access to Ninja
  *
@@ -23,7 +22,7 @@ class Cli_Controller extends Controller {
 		parent::__construct();
 		$op5_auth = Op5Auth::instance();
 		$op5_auth->write_close();
-		$op5_auth->force_user(new Op5User_AlwaysAuth());
+		$op5_auth->force_user(new User_AlwaysAuth_Model());
 		$this->auto_render=false;
 	}
 

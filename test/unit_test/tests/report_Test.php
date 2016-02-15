@@ -11,7 +11,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 		$auth = op5auth::instance(array('session_key' => false));
-		$auth->force_user(new op5user_AlwaysAuth());
+		$auth->force_user(new User_AlwaysAuth_Model());
 	}
 	/**
 	 * Remove mock environment
@@ -29,12 +29,12 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		/* Setup limited user, we can't replace the user, but only it's
 		 * content. Singleton objects stashes the user object
 		 */
-		$authmod->force_user($user = new Op5User_AlwaysAuth(), false);
+		$authmod->force_user($user = new User_AlwaysAuth_Model(), false);
 		$user->set_authorized_for('host_view_all', false);
 		$user->set_authorized_for('service_view_all', false);
 		$user->set_authorized_for('hostgroup_view_all', false);
 		$user->set_authorized_for('servicegroup_view_all', false);
-		$user->username = 'limited';
+		$user->set_username('limited');
 
 		/* Run test */
 

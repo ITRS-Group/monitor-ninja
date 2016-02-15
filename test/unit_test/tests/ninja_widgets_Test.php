@@ -15,7 +15,7 @@ class Ninja_widgets_Test extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		op5objstore::instance()->mock_clear();
-		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 	}
 
 	/**

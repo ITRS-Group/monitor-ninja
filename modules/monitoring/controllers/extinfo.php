@@ -82,7 +82,7 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$content->object = $object;
 
-		$username = Auth::instance()->get_user()->username;
+		$username = Auth::instance()->get_user()->get_username();
 
 		/* Comment widget */
 		if($object->get_comments_count() > 0) {

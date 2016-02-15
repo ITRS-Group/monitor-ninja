@@ -91,11 +91,11 @@ class op5Livestatus {
 			$this->config = $config;
 		}
 		$connection_class = "op5livestatus_connection";
-		
+
 		if( isset($this->config['connection_class']) ) {
 			$connection_class = $this->config['connection_class'];
 		}
-		
+
 		$this->connection = new $connection_class($this->config);
 	}
 
@@ -135,7 +135,7 @@ class op5Livestatus {
 		$query  = "GET $table\n";
 		$query .= "OutputFormat: wrapped_json\n";
 		$query .= "ResponseHeader: fixed16\n";
-		if(isset($options['auth']) && $options['auth'] instanceof op5User) {
+		if(isset($options['auth']) && $options['auth'] instanceof User_Model) {
 			$query .= $this->auth($table, $options['auth']);
 		} else if(!isset($options['auth']) || $options['auth'] != false) {
 			$query .= $this->auth($table);
@@ -161,7 +161,7 @@ class op5Livestatus {
 		if($filter) {
 			$query .= $filter."\n";
 		}
-		
+
 		$query .= "\n";
 
 		$start   = microtime(true);
@@ -206,22 +206,22 @@ class op5Livestatus {
 	 * @param $user object
 	 * @return string
 	 **/
-	private function auth($table, op5User $user = null) {
+	private function auth($table, User_Model $user = null) {
 		if(!$user) {
 			$user = op5auth::instance()->get_user();
 		}
 		/* List all tables available, and how to handle the permissions for the
 		 * table.
-		 * 
+		 *
 		 * Each definition contains two parts: how to handle the permission if
 		 * limited access, and who have full access to the table.
-		 * 
+		 *
 		 * For the limited access:
 		 * if false - send AuthUser header
 		 * if true - don't allow any access, which means, send filter Or: 0
 		 * if string - represents a column name, and if that matches exactly the
 		 *             username, add Filter: column = username
-		 * 
+		 *
 		 * The second parameter is a list of permissions flags, if a user has
 		 * any of those, give full access to the user, and don't send ANY auth
 		 * header.
@@ -244,20 +244,20 @@ class op5Livestatus {
 		if(!isset($table_permissions[$table])) {
 			throw new op5LivestatusException('Unknown table '.$table);
 		}
-		
+
 		list( $if_limited, $for_full_perm ) = $table_permissions[$table];
-		
+
 		foreach($for_full_perm as $perm) {
 			if($user->authorized_for($perm)) {
 				return "";
 			}
 		}
 		if(is_string($if_limited)) {
-			return "Filter: ".$if_limited. " = ".$user->username."\n";
+			return "Filter: ".$if_limited. " = ".$user->get_username() ."\n";
 		} else if($if_limited === true) {
 			return "Or: 0\n";
 		} else if($if_limited === false) {
-			return "AuthUser: ".$user->username."\n";
+			return "AuthUser: ".$user->get_username()."\n";
 		}
 		throw new op5LivestatusException('Internal error in livestatus auth');
 	}

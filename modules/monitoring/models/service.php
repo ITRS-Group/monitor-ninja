@@ -122,7 +122,7 @@ class Service_Model extends BaseService_Model {
 		}
 		$cts = $this->get_contacts();
 		if(!is_array($cts)) $cts = array();
-		if($auth->authorized_for('service_edit_contact') && in_array($auth->get_user()->username, $cts)) {
+		if($auth->authorized_for('service_edit_contact') && in_array($auth->get_user()->get_username(), $cts)) {
 			return true;
 		}
 		return false;
@@ -851,7 +851,7 @@ class Service_Model extends BaseService_Model {
 		}
 
 		$hostgroup = false;
-		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -a show_object -n ' . escapeshellarg($this->get_key()), $out, $retval);
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->get_username() . ' -t service -a show_object -n ' . escapeshellarg($this->get_key()), $out, $retval);
 		if ($retval === 0) {
 			foreach ($out as $line) {
 				list($key, $val) = explode("=", $line);
@@ -872,7 +872,7 @@ class Service_Model extends BaseService_Model {
 		}
 
 
-		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . op5Auth::instance()->get_user()->username . ' -t service -n ' . escapeshellarg($this->get_key()) . ' -a delete', $out, $retval);
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . op5Auth::instance()->get_user()->get_username() . ' -t service -n ' . escapeshellarg($this->get_key()) . ' -a delete', $out, $retval);
 		if($retval === 0) {
 			return array(
 				'result' => true,

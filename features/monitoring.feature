@@ -33,7 +33,7 @@ Feature: Monitoring
 		When I click "Services total"
 		Then I should see the configured services
 
-	@configuration @asmonitor @case-646 @integration
+	@configuration @asmonitor @case-646 @unreliable @integration
 	Scenario: Host details host commands - Locate host on map
 		Verify that the "Locate host on map" host command
 		works correctly.
@@ -330,7 +330,7 @@ Feature: Monitoring
 		Then "Flap detection" should be shown as "Disabled"
 		And I should see "Enable flap detection"
 
-	@configuration @asmonitor @case-647 @integration
+	@configuration @asmonitor @case-647 @integration @unreliable
 	Scenario: Host details host extinfo page show performance graph
 		Verify that the "Show performance graph" link works correctly.
 
@@ -471,7 +471,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Current status" should be shown as "Critical"
 
-	@configuration @asmonitor @case-656 @integration
+	@configuration @asmonitor @case-656 @integration @unreliable
 	Scenario: Service extinfo page check performance graph link
 		Verify that the performance graph link on the extinfo page for a given service
 		point to the right place.

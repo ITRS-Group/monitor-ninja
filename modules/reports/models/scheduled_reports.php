@@ -61,7 +61,7 @@ class Scheduled_reports_Model extends Model
 		$sql_xtra = '';
 		$auth = op5auth::instance();
 		if (!$auth->authorized_for('host_view_all')) {
-			$sql_xtra = ' AND sr.'.self::USERFIELD.'='.$db->escape(Auth::instance()->get_user()->username).' ';
+			$sql_xtra = ' AND sr.'.self::USERFIELD.'='.$db->escape(Auth::instance()->get_user()->get_username()).' ';
 		}
 
 		$sql = "SELECT
@@ -179,7 +179,7 @@ class Scheduled_reports_Model extends Model
 		$filename = trim($filename);
 		$description = trim($description);
 		$attach_description = (int) $attach_description;
-		$user = Auth::instance()->get_user()->username;
+		$user = Auth::instance()->get_user()->get_username();
 
 		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return _('Missing data');
 

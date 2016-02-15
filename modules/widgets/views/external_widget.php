@@ -112,9 +112,9 @@
 
 				<?php $auth_user = op5auth::instance()->get_user(); ?>
 				var _user = <?php echo json_encode(array(
-					'username' => $auth_user->username,
-					'realname' => $auth_user->realname,
-					'auth_data' => $auth_user->auth_data)); ?>
+					'username' => $auth_user->get_username(),
+					'realname' => $auth_user->get_realname(),
+					'auth_data' => $auth_user->get_auth_data())); ?>
 			//-->
 		</script>
 		<?php

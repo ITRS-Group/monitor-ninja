@@ -54,7 +54,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 	 */
 	private static function get_db_queries( $table = false ) {
 		$db = Database::instance();
-		$user = Auth::instance()->get_user()->username;
+		$user = Auth::instance()->get_user()->get_username();
 
 		$table_filter = "";
 		if($table !== false) {
@@ -108,7 +108,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 
 		if( $metadata === false ) throw new Exception("Error when type checking");
 
-		$user = Auth::instance()->get_user()->username;
+		$user = Auth::instance()->get_user()->get_username();
 		if( $scope == 'global' ) {
 			if( !op5auth::instance()->authorized_for('saved_filters_global') ) {
 				return "Not authorized to create global queries";
@@ -150,7 +150,7 @@ class LSFilter_Saved_Queries_Model extends Model {
 	public static function delete_query( $id ) {
 		$db = Database::instance();
 
-		$user = Auth::instance()->get_user()->username;
+		$user = Auth::instance()->get_user()->get_username();
 
 		$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND id = %s";
 		$args = array($user, $id);

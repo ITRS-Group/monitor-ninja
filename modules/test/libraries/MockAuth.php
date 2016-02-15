@@ -43,11 +43,11 @@ class MockAuth extends op5auth
 	 * @return  mixed
 	 */
 	public function get_user() {
-		$user = new op5User(array(
+		$user = new User_Model(array(
 			"username" => "mockeduser",
 			"realname" => "Mocke D. User",
 			"email" => "mockeduser@op5.com",
-			"authdata" => array()
+			"auth_data" => array()
 		));
 		return $user;
 	}

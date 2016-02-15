@@ -19,6 +19,12 @@ module Op5Cucumber::Mock
                {
                  'ninja_widgets' => []
                },
+               'ORMDriverYAML default' =>
+               {
+                 'users' => [],
+                 'usergroups' => [],
+                 'authmodules' => []
+               },
                'MockedClasses' => []
       }
       @mocked_classes = {}
@@ -40,6 +46,12 @@ module Op5Cucumber::Mock
         'ORMDriverLS default'
       when /^ninja_widgets$/
         'ORMDriverMySQL default'
+      when /^users$/
+        'ORMDriverYAML default'
+      when /^authmodules$/
+        'ORMDriverYAML default'
+      when /^usergroups$/
+        'ORMDriverYAML default'
       else
         raise "Unknown type #{type}"
       end
@@ -57,6 +69,7 @@ module Op5Cucumber::Mock
       File.open(@file, 'w') { |f|
         f.write(@data.to_json)
       }
+      File.chmod(0777, @file)
     end
 
     def mock_class(real_class, class_block)
@@ -70,7 +83,7 @@ module Op5Cucumber::Mock
       end
       hashes.each {|hash|
         hash.map {|field, value|
-          if field.end_with? 's'
+          if field.end_with? 's' and value.is_a? String
             hash[field] = value.split ','
           end
         }

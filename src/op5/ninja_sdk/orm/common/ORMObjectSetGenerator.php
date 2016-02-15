@@ -92,7 +92,7 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 		$this->init_function( 'it', array('columns','order','limit','offset'), array(), array('order' => array(), 'limit'=>false, 'offset'=>false) );
 		$this->write(
 			'return ' . $this->pool_class .
-				 '::it($this->get_auth_filter(),$columns,$order,$limit,$offset);');
+				 '::pool()->it($this->get_auth_filter(),$columns,$order,$limit,$offset);');
 		$this->finish_function();
 	}
 
@@ -100,22 +100,20 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 		$this->init_function( 'update', array('values') );
 		$this->write(
 			'return ' . $this->pool_class .
-			'::update($this->get_auth_filter(),$values);');
+			'::pool()->update($this->get_auth_filter(),$values);');
 		$this->finish_function();
 	}
 	public function generate_delete() {
 		$this->init_function( 'delete' );
 		$this->write(
 			'return ' . $this->pool_class .
-				 '::delete($this->get_auth_filter());');
+				 '::pool()->delete($this->get_auth_filter());');
 		$this->finish_function();
 	}
 
 	public function generate_count() {
 		$this->init_function('count', array());
-		$this->write(
-			'return ' . $this->pool_class .
-				 '::count($this->get_auth_filter());');
+		$this->write('return ' . $this->pool_class . '::pool()->count($this->get_auth_filter());');
 		$this->finish_function();
 	}
 
@@ -123,7 +121,7 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 		$this->init_function('stats', array ('intersections'));
 		$this->write(
 			'return ' . $this->pool_class .
-				 '::stats($this->get_auth_filter(),$intersections);');
+				 '::pool()->stats($this->get_auth_filter(),$intersections);');
 		$this->finish_function();
 	}
 

@@ -46,7 +46,6 @@ class mayi_auth_hooks {
 	 * information in the constraints.
 	 */
 	public function populate_mayi() {
-		Session::instance(); /* TODO: Refactor op5auth to handle sessions, this is a bit hack'y (but necessary)*/
 		$mayi = op5MayI::instance();
 		$auth = op5auth::instance();
 		$mayi->be('user', $auth);

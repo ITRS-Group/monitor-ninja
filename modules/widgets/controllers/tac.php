@@ -77,7 +77,7 @@ class Tac_Controller extends Ninja_Controller {
 				$widget_model->set_instance_id(mt_rand(0, 10000000)); // needs to be unique
 				$widget_model->set_page($page);
 				$widget_model->set_setting(array());
-				$widget_model->set_username(op5auth::instance()->get_user()->username);
+				$widget_model->set_username(op5auth::instance()->get_user()->get_username());
 				$widget_model->save();
 
 				$widget = $widget_model->build();
@@ -190,7 +190,7 @@ class Tac_Controller extends Ninja_Controller {
 		$page = $this->input->post('page');
 		$widget_name = $this->input->post('name');
 		$widget_instance_id = $this->input->post('instance_id');
-		$username = op5auth::instance()->get_user()->username;
+		$username = op5auth::instance()->get_user()->get_username();
 
 		$widget_model = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
 			->reduce_by('name', $widget_name, '=')
@@ -274,7 +274,7 @@ class Tac_Controller extends Ninja_Controller {
 		$page = $this->input->post('page');
 		$widget_name = $this->input->post('name');
 		$widget_instance_id = $this->input->post('instance_id');
-		$username = op5auth::instance()->get_user()->username;
+		$username = op5auth::instance()->get_user()->get_username();
 
 		$widget = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
 			->reduce_by('name', $widget_name, '=')
@@ -302,7 +302,7 @@ class Tac_Controller extends Ninja_Controller {
 		$widget_name = $this->input->post('name');
 		$widget_instance_id = $this->input->post('instance_id');
 		$new_name = $this->input->post('new_name');
-		$username = op5auth::instance()->get_user()->username;
+		$username = op5auth::instance()->get_user()->get_username();
 
 		$widget = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
 			->reduce_by('name', $widget_name, '=')
@@ -331,7 +331,7 @@ class Tac_Controller extends Ninja_Controller {
 		$widget_name = $this->input->post('name');
 		$widget_instance_id = $this->input->post('instance_id');
 		$setting = $this->input->post('setting');
-		$username = op5auth::instance()->get_user()->username;
+		$username = op5auth::instance()->get_user()->get_username();
 
 		$widget = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
 			->reduce_by('name', $widget_name, '=')

@@ -26,7 +26,7 @@ class SavedReportSet_Model extends BaseSavedReportSet_Model {
 		$filter->add( $this->filter );
 
 		if (!$auth->authorized_for('host_view_all')) {
-			$user = Auth::instance()->get_user()->username;
+			$user = Auth::instance()->get_user()->get_username();
 			$filter->add( new LivestatusFilterMatch( 'created_by', $user, '=' ) );
 		}
 

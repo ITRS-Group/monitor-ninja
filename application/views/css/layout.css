@@ -155,6 +155,7 @@ label, button, input[type=submit] {
   cursor: pointer;
 }
 
+
 /* Form layout */
 
 form {
@@ -479,6 +480,26 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   margin: 8px 8px;
 }
 
+.center {
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	top: 10%;
+	width: 50%;
+	min-width: 256px;
+	max-width: 512px;
+}
+
+.center p,
+.center h1,
+.center h2,
+.center h3,
+.center fieldset[type=buttons],
+.center h4 {
+	text-align: center;
+	width: 100%;
+}
+
 .header {
   position: relative;
   box-sizing: border-box;
@@ -608,6 +629,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 }
 
 .alert, #response .alert {
+  box-sizing: border-box;
   background: #fcf8e3;
   border: 1px solid #fbeed5;
   color: #c09853;
@@ -1313,6 +1335,10 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 #backups td img {
   margin: 0 4px;
+}
+
+span.brand {
+  display: inline-block;
 }
 
 img.brand-icon {

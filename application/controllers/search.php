@@ -132,7 +132,7 @@ class Search_Controller extends Ninja_Controller {
 
 		$this->template->content->widgets = array();
 
-		$username = Auth::instance()->get_user()->username;
+		$username = Auth::instance()->get_user()->get_username();
 
 		if( $limit === false ) {
 			$limit = config::get('pagination.default.items_per_page', '*');

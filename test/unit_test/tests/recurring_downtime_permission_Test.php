@@ -15,7 +15,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 
 	public function tearDown()
 	{
-		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 		$this->auth->set_authorized_for('host_view_all', true);
 		$this->auth->set_authorized_for('service_view_all', true);
 		$this->auth->set_authorized_for('hostgroup_view_all', true);
@@ -39,7 +39,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		op5objstore::instance()->mock_clear();
-		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 		$this->created = array();
 
 
@@ -177,7 +177,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 
 	public function testLimitedHost()
 	{
-		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User(array('username' => 'limited')));
+		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_Model(array('username' => 'limited')));
 		$stats = RecurringDowntimePool_Model::all();
 		$this->assertCount(1, $stats);
 		$obj = $stats->it(array('downtime_type', 'objects', 'start_time'))->current();

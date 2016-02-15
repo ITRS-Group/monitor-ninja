@@ -27,7 +27,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 						$data[$field] = false;
 					}
 					else if ($field === 'author') {
-						$data[$field] = Auth::instance()->get_user()->username;
+						$data[$field] = Auth::instance()->get_user()->get_username();
 					}
 					else {
 						$missing[] = $field;

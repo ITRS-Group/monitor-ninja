@@ -29,7 +29,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		# When run from cron-job, or mailing out reports from gui, we need access
 		if(Router::$method == 'generate' && !Auth::instance()->get_user()->logged_in() && PHP_SAPI == 'cli') {
 			$op5_auth = Op5Auth::factory(array('session_key' => false));
-			$op5_auth->force_user(new Op5User_AlwaysAuth());
+			$op5_auth->force_user(new User_AlwaysAuth_Model());
 		}
 
 		$this->template->disable_refresh = true;

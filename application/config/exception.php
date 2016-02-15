@@ -23,5 +23,5 @@ $config['shell_commands'] = array(
 );
 
 $config['extra_info'] = array(
-	'Monitor user' => user::session('username')
+	'Monitor user' => Auth::instance()->get_user()->get_username()
 );

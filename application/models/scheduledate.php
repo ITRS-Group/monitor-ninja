@@ -134,7 +134,7 @@ class ScheduleDate_Model extends Model
 	{
 		$result = array();
 		$nagios_cmd = self::determine_downtimetype($object_type);
-		$author = op5auth::instance()->get_user()->username;
+		$author = op5auth::instance()->get_user()->get_username();
 		$month = date('n');
 		$day = date('d');
 		$year = date('Y');

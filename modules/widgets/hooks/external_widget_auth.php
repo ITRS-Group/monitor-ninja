@@ -58,7 +58,7 @@ class external_widget_auth_hooks {
 		// This should be a one-shot request, close session
 		$auth->write_close();
 
-		$auth->force_user(new op5User(array(
+		$auth->force_user(new User_Model(array(
 			'username' => $conf['username'],
 			'groups' => $conf['groups']
 		)));

@@ -10,24 +10,23 @@ class NinjaLogin_Exception extends Exception {}
 /**
  * Handle user authentication (login and logout)
  */
-class Auth_Controller extends Ninja_Controller {
+class Auth_Controller extends Chromeless_Controller {
 
 	/**
 	 * Handle everything with login, either display login form, or on POST, try to
 	 * login. If logged in, redirect to the requested URL.
 	 */
-	public function login()
-	{
-		$auth = op5auth::instance();
+	public function login () {
 
-		$this->template = $this->add_view('login');
+		$auth = op5auth::instance();
+		$this->template->js = array();
+
+		$this->template->content = new View('login');
 
 		// We should always login to the current url, including ?uri=xxx
-		$this->template->login_page = url::current(true);
-
-		$this->template->js = array('application/media/js/jquery.js', 'application/views/js/login.js');
-		$this->template->auth_modules = $auth->get_metadata('login_screen_dropdown');
-
+		$this->template->content->login_page = url::current(true);
+		$this->template->content->auth_modules = $auth->get_metadata('login_screen_dropdown');
+		$this->template->content->message = null;
 		try {
 			if(PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
 				throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
@@ -41,7 +40,7 @@ class Auth_Controller extends Ninja_Controller {
 				$auth_method = $this->input->post('auth_method', false);
 
 				# validate that we have both username and password
-				if ( empty($username) || empty($password) ) {
+				if (empty($username) || empty($password)) {
 					throw new NinjaLogin_Exception(_("Please supply both username and password"));
 				}
 
@@ -53,7 +52,7 @@ class Auth_Controller extends Ninja_Controller {
 				Event::run('ninja.logged_in');
 			}
 		} catch(NinjaLogin_Exception $e) {
-			$this->template->error_msg = $e->getMessage();
+			$this->template->content->message = new ErrorNotice_Model($e->getMessage());
 		}
 
 		/*

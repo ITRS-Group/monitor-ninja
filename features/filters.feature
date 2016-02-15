@@ -1,5 +1,6 @@
 @filters @listview
 Feature: Filters & list views
+
 	Scenario: List hosts
 		Given I have these mocked hosts
 			| name           |
@@ -65,7 +66,7 @@ Feature: Filters & list views
 		And I should see "Zuzela Adkins"
 		But I shouldn't see "Zuzela Griffin"
 
-	@configuration @asmonitor @case-653
+	@configuration @asmonitor
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by description.
@@ -89,7 +90,7 @@ Feature: Filters & list views
 		And The last row of the filter result table should contain "A-service"
 
 
-	@configuration @asmonitor @case-653
+	@configuration @asmonitor
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by last checked.
@@ -111,7 +112,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "last_check"
 		Then The first row of the filter result table should contain "C-service"
 
-	@configuration @asmonitor @case-653
+	@configuration @asmonitor
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by duration.
@@ -133,7 +134,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "duration"
 		Then The last row of the filter result table should contain "B-service"
 
-	@configuration @asmonitor @case-653
+	@configuration @asmonitor
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by status information.
@@ -161,7 +162,7 @@ Feature: Filters & list views
 		And The first row of the filter result table should contain "C-service"
 
 
-	@configuration @asmonitor @case-653
+	@configuration @asmonitor
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by state.
@@ -186,10 +187,11 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "C-service"
 		And The first row of the filter result table should contain "B-service"
 
-	@configuration @asmonitor @unreliable @integration
+	@configuration @unreliable @integration
 	Scenario: Save filter
-		Given I am on the Host details page
-		And I click "Show/Edit Text Filter"
+		Given I am logged in
+		And I am on the Host details page
+		Then I click "Show/Edit Text Filter"
 		And I enter "Ernie" into "lsfilter_save_filter_name"
 		And I click "Save Filter"
 		And I wait for 1 second

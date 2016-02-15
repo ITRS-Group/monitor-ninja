@@ -20,7 +20,7 @@ class NotificationSet_Model extends BaseNotificationSet_Model {
 		$auth = Auth::instance();
 		$all_hosts    = $auth->authorized_for('host_view_all');
 		$all_services = $auth->authorized_for('service_view_all');
-		$contact_name = $auth->get_user()->username;
+		$contact_name = $auth->get_user()->get_username();
 
 		// Authorized for everything? Don't filter anything...
 		if( $all_hosts && $all_services )

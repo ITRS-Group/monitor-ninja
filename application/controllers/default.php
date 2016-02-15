@@ -68,7 +68,7 @@ class Default_Controller extends Ninja_Controller  {
 		}
 
 		$op5_auth = Op5Auth::factory(array('session_key' => false));
-		$op5_auth->force_user(new Op5User_AlwaysAuth());
+		$op5_auth->force_user(new User_AlwaysAuth_Model());
 
 		if ($period_str === 'downtime') {
 			$sd = new ScheduleDate_Model();

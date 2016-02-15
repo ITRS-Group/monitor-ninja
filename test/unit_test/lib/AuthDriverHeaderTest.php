@@ -5,6 +5,8 @@ require_once "op5/objstore.php";
 
 class AuthDriverHeaderTest extends PHPUnit_Framework_TestCase
 {
+	private $driver;
+
 	static function setUpBeforeClass() {
 		op5objstore::instance()->mock_add( 'op5log', new MockLog() );
 	}
@@ -14,205 +16,254 @@ class AuthDriverHeaderTest extends PHPUnit_Framework_TestCase
 		op5objstore::instance()->mock_clear();
 	}
 
-	public function test_only_username() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username'
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser'
-				));
-		$user = $drv->auto_login();
+	public function get_driver ($properties) {
+		$module = new AuthModule_Model();
+		$module->set_modulename('HeaderAuth');
+		$module->set_properties($properties);
+		$driver = new op5AuthDriver_Header($module);
+		return $driver;
+	}
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity");
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+	public function test_only_username() {
+
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username'
+		));
+
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
+
 	}
 
 	public function test_realname() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_realname' => 'Test-Realname'
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				'Test-Realname' => 'Test User',
-				));
-		$user = $drv->auto_login();
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'Test User', "Realname validity");
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_realname' => 'Test-Realname'
+		));
+
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+			'Test-Realname' => 'Test User',
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'Test User', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
+
 	}
 
 	public function test_realname_not_specified() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_realname' => 'Test-Realname'
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				));
-		$user = $drv->auto_login();
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_realname' => 'Test-Realname'
+		));
+
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
 	}
 
 	public function test_email() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_email' => 'Test-Email'
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				'Test-Email' => 'test@example.org',
-				));
-		$user = $drv->auto_login();
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity");
-		$this->assertEquals($user->email, 'test@example.org', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_email' => 'Test-Email'
+		));
+
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+			'Test-Email' => 'test@example.org',
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), 'test@example.org', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
 	}
 
 	public function test_email_not_specified() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_email' => 'Test-Email'
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				));
-		$user = $drv->auto_login();
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_email' => 'Test-Email'
+		));
+
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
 	}
 
 	public function test_groups_not_specified() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_groups' => 'Test-Groups'
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser'
-				));
-		$user = $drv->auto_login();
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_groups' => 'Test-Groups'
+		));
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
 	}
 
 	public function test_groups_default_delimiter() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_groups' => 'Test-Groups',
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				'Test-Groups' => 'grpa,grpb'
-				));
-		$user = $drv->auto_login();
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_groups' => 'Test-Groups',
+		));
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array('grpa', 'grpb'), "Groups validity");
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+			'Test-Groups' => 'grpa,grpb'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array('grpa', 'grpb'), "Groups validity");
 	}
 
 	public function test_groups_explicit_delimiter() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_groups' => 'Test-Groups',
-				'group_list_delimiter' => ','
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				'Test-Groups' => 'grpa,grpb'
-				));
-		$user = $drv->auto_login();
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_groups' => 'Test-Groups',
+			'group_list_delimiter' => ','
+		));
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array('grpa', 'grpb'), "Groups validity");
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+			'Test-Groups' => 'grpa,grpb'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array('grpa', 'grpb'), "Groups validity");
 	}
 
 	public function test_groups_explicit_delimiter_trim() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_groups' => 'Test-Groups',
-				'group_list_delimiter' => ','
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				'Test-Groups' => 'grpa, grpb'
-				));
-		$user = $drv->auto_login();
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_groups' => 'Test-Groups',
+			'group_list_delimiter' => ','
+		));
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array('grpa', 'grpb'), "Groups validity");
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+			'Test-Groups' => 'grpa, grpb'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array('grpa', 'grpb'), "Groups validity");
 	}
 
 	public function test_groups_empty_list() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'Test-Username',
-				'header_groups' => 'Test-Groups',
-				'group_list_delimiter' => ','
-				));
-		$drv->test_mock_headers(array(
-				'Test-Username' => 'testuser',
-				'Test-Groups' => ''
-				));
-		$user = $drv->auto_login();
+		$driver = $this->get_driver(array(
+			'header_username' => 'Test-Username',
+			'header_groups' => 'Test-Groups',
+			'group_list_delimiter' => ','
+		));
 
-		$this->assertEquals($user->username, 'testuser', "Username validity");
-		$this->assertEquals($user->realname, 'testuser', "Realname validity"); /* User username */
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver->test_mock_headers(array(
+			'Test-Username' => 'testuser',
+			'Test-Groups' => ''
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username validity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname validity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
 	}
 
 	public function test_case_sensititivty() {
-		$drv = new op5AuthDriver_Header(array(
-				'header_username' => 'tEST-UserNAMe'
-				));
-		$drv->test_mock_headers(array(
-				'tEsT-USerNamE' => 'testuser'
-				));
-		$user = $drv->auto_login();
+		$driver = $this->get_driver(array(
+			'header_username' => 'tEST-UserNAMe'
+		));
 
-		$this->assertEquals($user->username, 'testuser', "Username vailidity");
-		$this->assertEquals($user->realname, 'testuser', "Realname vailidity");
-		$this->assertEquals($user->email, '', "Email validity");
-		$this->assertEquals($user->groups, array(), "Groups validity");
+		$driver->test_mock_headers(array(
+			'tEsT-USerNamE' => 'testuser'
+		));
+
+		$user = $driver->auto_login();
+
+		$this->assertInstanceOf('User_Model', $user);
+		$this->assertEquals($user->get_username(), 'testuser', "Username vailidity");
+		$this->assertEquals($user->get_realname(), 'testuser', "Realname vailidity");
+		$this->assertEquals($user->get_email(), '', "Email validity");
+		$this->assertEquals($user->get_groups(), array(), "Groups validity");
 	}
 
 	public function test_no_header_username_header() {
-		$drv = new op5AuthDriver_Header(array(
+
+		$driver = $this->get_driver(array(
 			'header_username' => 'ååå(€',
 			'header_email' => 'äää°%',
 			'header_realname' => 'ööö#$',
 		));
 
-		$user = $drv->auto_login();
+		$user = $driver->auto_login();
 		$this->assertEquals($user, false, "You can't login if you don't provide any headers");
 
-		$drv->test_mock_headers(array());
-		$user = $drv->auto_login();
+		$driver->test_mock_headers(array());
+		$user = $driver->auto_login();
 		$this->assertEquals($user, false, "You can't login if you don't provide any headers");
 
-		$drv->test_mock_headers(array('äää°%' => 'blaha@pippi.com', 'ööö#$' => 'Pippi Longstocking'));
-		$user = $drv->auto_login();
+		$driver->test_mock_headers(array('äää°%' => 'blaha@pippi.com', 'ööö#$' => 'Pippi Longstocking'));
+		$user = $driver->auto_login();
 		$this->assertEquals($user, false, "You can't login if you don't provide header_username");
 	}
 }

@@ -1,0 +1,103 @@
+form.renderable {
+	font-size: 10pt;
+	max-width: 768px;
+	width: 70%;
+	min-width: 400px;
+}
+
+.center form.renderable {
+	width: 100%;
+}
+
+.center form.renderable fieldset {
+	text-align: center;
+}
+
+.center form.renderable fieldset label {
+	text-align: left;
+}
+
+form.renderable label {
+	min-width: 128px;
+	padding: 4px 8px;
+}
+
+form.renderable input[type=submit],
+form.renderable input[type=reset],
+form.renderable button {
+	padding: 4px 8px;
+}
+
+form.renderable hr {
+	border-color: #cccccc;
+	margin: 16px 0;
+}
+
+form.renderable button:hover {
+	border-color: #aaaaaa;
+	background: #eeeeee;
+}
+
+form.renderable fieldset {
+	margin: 4px 0;
+}
+
+form.renderable input[type="text"],
+form.renderable input[type="number"],
+form.renderable input[type="password"] {
+	padding: 6px 4px;
+}
+
+form.renderable fieldset[type=text],
+form.renderable fieldset[type=number],
+form.renderable fieldset[type=checkbox] {
+	display: inline-block;
+}
+
+form.renderable fieldset[type=password] {
+	display: block;
+}
+
+form.renderable fieldset[type$="-repeat"] {
+	display: inline-block;
+}
+
+form.renderable fieldset[type$="-repeat"] label {
+	padding-left: 12px;
+}
+
+form.renderable select {
+	width: auto;
+	padding: 0;
+	min-width: 190px;
+}
+
+form.renderable select option {
+	padding: 6px 4px;
+}
+
+form.renderable fieldset[type=select] {
+	display: block;
+}
+
+form.renderable .jq-filterable-box select option {
+	padding: 2px 4px;
+}
+
+form.renderable .jq-filterable-searchbox {
+	width: 257px;
+}
+
+form.renderable .jq-filterable-searchbox input[type=text] {
+	width: 95% !important;
+}
+
+form.renderable .jq-filterable-list {
+	height: 120px;
+	width: 260px;
+}
+
+form.renderable .jq-filterable-results {
+	height: 149px;
+	width: 260px;
+}

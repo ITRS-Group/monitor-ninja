@@ -1,19 +1,9 @@
 <?php
 require_once (__DIR__ . '/AuthDriver.php');
-require_once (__DIR__ . '/User.php');
 require_once (__DIR__ . '/../config.php');
 
 /**
  * User authentication and authorization library.
- *
- * @package Auth
- * @author
- *
- * @copyright
- *
- * @license
- *
- *
  */
 class op5AuthDriver_Header extends op5AuthDriver {
 	/*
@@ -34,10 +24,11 @@ class op5AuthDriver_Header extends op5AuthDriver {
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return op5User User object, or false
+	 * @return User_Model User object, or false
 	 */
 	public function auto_login() {
-		$headers = array ();
+
+		$headers = array();
 
 		/* For testing, if headers is mocked, use the mocked headers */
 		if ($this->mocked_headers != false) {
@@ -47,8 +38,9 @@ class op5AuthDriver_Header extends op5AuthDriver {
 		}
 
 		$headers = array_change_key_case($headers, CASE_LOWER);
+		$params = array();
 
-		$params = array ();
+		$this->fetch_header_if($headers, 'header_username', $value);
 
 		if ($this->fetch_header_if($headers, 'header_username', $value)) {
 			$params['username'] = $value;
@@ -92,7 +84,7 @@ class op5AuthDriver_Header extends op5AuthDriver {
 			}
 		}
 
-		$user = new op5User($params);
+		$user = new User_Model($params);
 
 		/*
 		 * Add a flag that it can't logout. It's a bit negated, but default
@@ -113,9 +105,9 @@ class op5AuthDriver_Header extends op5AuthDriver {
 	 *
 	 */
 	private function fetch_header_if($headers, $config_key, &$value) {
-		if (isset($this->config[$config_key]) &&
-			 isset($headers[strtolower($this->config[$config_key])])) {
-			$value = $headers[strtolower($this->config[$config_key])];
+		$config = $this->module->get_properties();
+		if (isset($config[$config_key]) && isset($headers[strtolower($config[$config_key])])) {
+			$value = $headers[strtolower($config[$config_key])];
 			return true;
 		}
 		return false;
@@ -130,4 +122,4 @@ class op5AuthDriver_Header extends op5AuthDriver {
 	public function test_mock_headers($headers) {
 		$this->mocked_headers = $headers;
 	}
-} // End Auth
+}

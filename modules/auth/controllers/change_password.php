@@ -18,67 +18,71 @@ class Change_Password_Controller extends Ninja_Controller {
 	{
 		$this->_verify_access('monitor.system.users.password:update');
 
-		$messages = array(
-			"TO_SHORT" => _('The password must be at least 5 characters long.'),
-			"NO_UPDATE" => _('Authentication backend reported that password could not be updated.'),
-			"INVALID_CURRENT" => _('You entered incorrect current password.'),
-			"NO_MATCH" => _('New password did not match repeated password.'),
-			"SUCCESS" => _('Password changed successfully')
-		);
-
 		$this->template->content = new View('change_password');
-		$this->template->disable_refresh = true;
 		$this->template->title = _('Configuration » Change password');
 
+		$this->template->disable_refresh = true;
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Change Password") );
-		$root = url::base(FALSE) . 'index.php/';
 
 		$this->template->toolbar->info(
-			'<a href="' . $root . 'user" title="' . _( "Account Settings" ) . '">' . _( "Account Settings" ) . '</a>'
+			html::href(
+				$this->linkprovider->get_url('user'),
+				_('Account settings'),
+				array(
+					'title' => _('Account settings')
+				)
+			)
 		);
 
-		if ( Auth::instance()->authorized_for('access_rights') ) {
+		if (Auth::instance()->authorized_for('access_rights')) {
 			$this->template->toolbar->info(
-				'<a href="' . $root . 'user/menu_edit' . '" title="' . _( "Edit user menu" ) . '">' . _( "Edit user menu" ) . '</a>'
+				html::href(
+					$this->linkprovider->get_url('user', 'menu_edit'),
+					_('Edit user menu'),
+					array(
+						'title' => _('Edit user menu')
+					)
+				)
 			);
 		}
 
 		$this->template->content->successful = false;
-		$this->template->content->status_msg = '';
+		$this->template->content->message = null;
 
-		if( $_POST ) {
-			$post = Validation::factory( $_POST );
-			$post->add_rules( '*', 'required' );
+		if(!$_POST) return;
 
-			$current_password = $this->input->post('current_password', false);
-			$new_password = $this->input->post('new_password', false);
-			$new_password2 = $this->input->post('confirm_password', false);
+		$post = Validation::factory($_POST);
+		$post->add_rules('*', 'required');
 
-			if ( strlen( $new_password ) < 5 || strlen( $new_password2 ) < 5 ) {
+		$current_password = $this->input->post('current_password', false);
+		$new_password = $this->input->post('new_password', false);
+		$new_password2 = $this->input->post('confirm_password', false);
 
-				$this->template->content->status_msg = $messages[ "TO_SHORT" ];
-
-			} elseif ( $new_password == $new_password2 ) {
-
-				$auth = Auth::instance();
-				$user = $auth->get_user();
-
-				if ( $auth->verify_password( $user, $current_password ) ) {
-
-					if ( $auth->update_password($user, $new_password) ) {
-						$this->template->content->successful = true;
-						$this->template->content->status_msg = $messages[ "SUCCESS" ];
-					} else {
-						$this->template->content->status_msg = $messages[ "NO_UPDATE" ];
-					}
-
-				} else {
-					$this->template->content->status_msg = $messages[ "INVALID_CURRENT" ];
-				}
-
-			} else {
-				$this->template->content->status_msg = $messages[ "NO_MATCH" ];
-			}
+		if ($new_password != $new_password2) {
+			$this->template->content->message = new ErrorNotice_Model(_('New password did not match repeated password.'));
+			return;
 		}
+
+		$auth = Auth::instance();
+
+		// This looks odd, but user instances instantiated by Auth
+		// are not storable, they are only to be used ephemerally
+		// So get a proper storable instance of the user from the ORM.
+		$authuser = $auth->get_user();
+		$user = UserPool_Model::all()->reduce_by('username', $authuser->get_username(), '=')->one();
+
+		if ($auth->verify_password($authuser, $current_password)) {
+			try {
+				$user->set_password($new_password);
+				$user->save();
+				$this->template->content->successful = true;
+				$this->template->content->message = new SuccessNotice_Model(_('Password changed successfully'));
+			} catch (Exception $e) {
+				$this->template->content->message = new ErrorNotice_Model($e->getMessage());
+			}
+		} else {
+			$this->template->content->message = new ErrorNotice_Model(_('You entered incorrect current password.'));
+		}
+
 	}
 }

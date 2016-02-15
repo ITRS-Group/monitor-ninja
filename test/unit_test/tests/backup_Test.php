@@ -9,7 +9,7 @@ class Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->markTestSkipped(
 			'I think there was something about permissions that was a problem'
 		);
-		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 		$this->pre_backups = array();
 		$this->backup_location = "/var/www/html/backup";
 		if ($handle = opendir($this->backup_location)) {

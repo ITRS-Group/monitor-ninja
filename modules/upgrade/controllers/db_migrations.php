@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 require_once('op5/auth/Auth.php');
-require_once('op5/auth/User_AlwaysAuth.php');
 require_once(__DIR__.'/../../../modules/reports/libraries/Report_options.php');
 require_once(__DIR__.'/../../../modules/reports/libraries/Avail_options.php');
 require_once(__DIR__.'/../../../modules/reports/libraries/Sla_options.php');
@@ -19,7 +18,7 @@ class Db_Migrations_Controller extends Controller {
 		parent::__construct();
 		$this->auto_render = false;
 		$op5_auth = Op5Auth::factory(array('session_key' => false));
-		$op5_auth->force_user(new Op5User_AlwaysAuth());
+		$op5_auth->force_user(new User_AlwaysAuth_Model());
 	}
 
 

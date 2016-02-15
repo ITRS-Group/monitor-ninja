@@ -29,7 +29,7 @@ class nagvisconfig {
 		$contactgroups = Livestatus::instance()->getContactGroups(array(
 			'columns'=>array('name'),
 			'filter'=>array(
-				'members'=>array('>='=>$auth->get_user()->username)
+				'members'=>array('>='=>$auth->get_user()->get_username())
 				)
 			));
 		foreach ($contactgroups as $idx) {
@@ -37,7 +37,7 @@ class nagvisconfig {
 		}
 
 		$groups_per_type = array(
-			'auth_groups'    => $auth->get_user()->groups,
+			'auth_groups'    => $auth->get_user()->get_groups(),
 			'contact_groups' => $contactgroups
 		);
 

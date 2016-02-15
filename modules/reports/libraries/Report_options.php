@@ -975,7 +975,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 
 		$sql = "SELECT id, report_name FROM saved_reports WHERE type = ".$db->escape(static::$type);
 		if (!$auth->authorized_for('host_view_all')) {
-			$user = Auth::instance()->get_user()->username;
+			$user = Auth::instance()->get_user()->get_username();
 			$sql .= " AND created_by = ".$db->escape($user);
 		}
 
@@ -1070,7 +1070,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		}
 		$db = Database::instance();
 		$auth = op5auth::instance();
-		$user = Auth::instance()->get_user()->username;
+		$user = Auth::instance()->get_user()->get_username();
 		if ($this['report_id']) {
 			$sql = "DELETE FROM saved_reports_options WHERE report_id = ".(int)$this['report_id'];
 			$db->query($sql);

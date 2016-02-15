@@ -13,7 +13,7 @@ class ContactPool_Model extends BaseContactPool_Model {
 	 */
 	public static function get_current_contact()
 	{
-		$username = Auth::instance()->get_user()->username;
+		$username = Auth::instance()->get_user()->get_username();
 
 		$set = ContactPool_Model::all();
 		$set = $set->reduce_by('name', $username, '=');

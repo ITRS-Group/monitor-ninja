@@ -1,6 +1,5 @@
 <?php
 require_once('op5/auth/Auth.php');
-require_once('op5/auth/User_AlwaysAuth.php');
 
 /**
  * Hooks for enabling authentication through GET variables or CLI attributes.
@@ -27,12 +26,12 @@ class request_based_auth_hooks {
 		if ($cli_access === true) {
 			// username should be passed as argv[2]
 			if (!empty($_SERVER['argc']) && isset($_SERVER['argv'][2])) {
-				$auth->force_user(new op5User_AlwaysAuth(array('username' => $_SERVER['argv'][2])));
+				$auth->force_user(new User_AlwaysAuth_Model(array('username' => $_SERVER['argv'][2])));
 			} else {
-				$auth->force_user(new op5User_AlwaysAuth(array('username' => 'cli_user')));
+				$auth->force_user(new User_AlwaysAuth_Model(array('username' => 'cli_user')));
 			}
 		} else if ($cli_access !== false) {
-				$auth->force_user(new op5User_AlwaysAuth(array('username' => $cli_access)));
+				$auth->force_user(new User_AlwaysAuth_Model(array('username' => $cli_access)));
 		} else {
 			/*
 			 * This should be unnessecary, since we don't have authed a user anyway.

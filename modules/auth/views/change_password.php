@@ -1,15 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-	if (isset($error_msg)) {
-		echo $error_msg;
-	}
-
-	if ($status_msg) {
-		if ($successful) {
-			echo "<div class=\"alert notice\">$status_msg</div>";
-		} else {
-			echo "<div class=\"alert error\">$status_msg</div>";
-		}
+	if ($message) {
+		printf("<div class=\"alert %s\">%s</div>", $message->get_typename(), $message->get_message());
 	}
 
 	echo form::open();
@@ -36,7 +28,7 @@
 			</tr>';
 
 			foreach ($fields as $label => $field) {
-				printf( $row, form::label( $label, $labels[ $label ] ), $field );
+				printf($row, form::label($label, $labels[$label]), $field);
 			}
 
 		?>

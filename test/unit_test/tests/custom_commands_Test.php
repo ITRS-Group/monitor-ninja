@@ -31,7 +31,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		$auth = op5auth::instance( array (
 			'session_key' => false
 		) );
-		$auth->force_user( new op5User( array (
+		$auth->force_user( new User_Model( array (
 			'username' => 'greger',
 			'groups' => array (
 				'greger_and_his_group'

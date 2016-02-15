@@ -61,3 +61,7 @@ end
 Given /^I go to the listview for (.*)$/ do |query|
     visit Op5Cucumber::NavigationHelpers.path_to("list view") + '?q=' + query
 end
+
+Then /^I should be logged in as "([^\"]+)"$/ do |user|
+  page.should have_css("a[data-username=\"#{user}\"]", :visible => true)
+end

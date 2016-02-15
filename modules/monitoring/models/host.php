@@ -121,7 +121,7 @@ class Host_Model extends BaseHost_Model {
 		}
 		$cts = $this->get_contacts();
 		if(!is_array($cts)) $cts = array();
-		if($auth->authorized_for('host_edit_contact') && in_array($auth->get_user()->username, $cts)) {
+		if($auth->authorized_for('host_edit_contact') && in_array($auth->get_user()->get_username(), $cts)) {
 			return true;
 		}
 		return false;
@@ -984,7 +984,7 @@ class Host_Model extends BaseHost_Model {
 		}
 
 
-		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . op5Auth::instance()->get_user()->username . ' -t host -n ' . escapeshellarg($this->get_key()) . ' -a delete', $out, $retval);
+		exec('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . op5Auth::instance()->get_user()->get_username() . ' -t host -n ' . escapeshellarg($this->get_key()) . ' -a delete', $out, $retval);
 		if($retval === 0) {
 			return array(
 				'result' => true,

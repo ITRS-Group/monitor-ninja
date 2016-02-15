@@ -149,6 +149,6 @@ abstract class Object_Model extends BaseObject_Model {
 	 * @return string
 	 */
 	public function get_current_user() {
-		return Auth::instance()->get_user()->username;
+		return Auth::instance()->get_user()->get_username();
 	}
 }

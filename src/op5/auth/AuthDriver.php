@@ -11,10 +11,10 @@ abstract class op5AuthDriver {
 	/**
 	 * Configuration for the module
 	 *
-	 * @var $config array
+	 * @var $module AuthModule_Model
 	 *
 	 */
-	protected $config = array ();
+	protected $module = null;
 
 	/**
 	 * Metadata for the module
@@ -38,13 +38,13 @@ abstract class op5AuthDriver {
 	/**
 	 * Create an instance of auth log and set config.
 	 *
-	 * @param $config array
+	 * @param $module AuthModule_Model
 	 * @return void
 	 *
 	 */
-	public final function __construct($config) {
+	public final function __construct(AuthModule_Model $module) {
 		$this->log = op5Log::instance('auth');
-		$this->config = $config;
+		$this->module = $module;
 	}
 
 	/**
@@ -54,7 +54,7 @@ abstract class op5AuthDriver {
 	 *        	string username to log in
 	 * @param
 	 *        	string password to check against
-	 * @return op5User User object, or false
+	 * @return User_Model User object, or false
 	 */
 	public function login($username, $password) {
 		return false;
@@ -66,7 +66,7 @@ abstract class op5AuthDriver {
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return op5User User object, or false
+	 * @return User_Model User object, or false
 	 */
 	public function auto_login() {
 		return false;
@@ -75,23 +75,10 @@ abstract class op5AuthDriver {
 	/**
 	 * Log out a user, if
 	 *
-	 * @param $user op5User
+	 * @param $user User_Model
 	 *        	driver-specific logout-routine, if driver requires.
 	 */
 	public function logout($user) {
-	}
-
-	/**
-	 * Update password for a user.
-	 *
-	 * @param $user op5User
-	 *        	User object
-	 * @param $password string
-	 *        	Password to set
-	 * @return boolean True if successful, False if error
-	 */
-	public function update_password($user, $password) {
-		return false;
 	}
 
 	/**
@@ -124,6 +111,16 @@ abstract class op5AuthDriver {
 	 */
 	public function groups_for_user($username) {
 		return false;
+	}
+
+	/**
+	 * Returns the amount of users configured
+	 * using this driver
+	 *
+	 * @return int The usercount
+	 */
+	public function get_user_count () {
+		return 0;
 	}
 
 	/**

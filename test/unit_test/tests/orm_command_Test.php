@@ -83,7 +83,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		// parameter, which is implicitly the logged in one
 		$this->author = 'ronnie';
 		Op5Auth::factory(array('session_key' => false))
-			->force_user(new Op5User(array('username' => $this->author)), true);
+			->force_user(new User_Model(array('username' => $this->author)), true);
 	}
 
 	function teardown() {

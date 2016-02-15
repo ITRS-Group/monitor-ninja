@@ -36,8 +36,6 @@ class Session {
 		if(PHP_SAPI == 'cli') {
 			return;
 		}
-		// Destroy any current sessions
-		op5auth::instance()->session_destroy();
 
 		// Name the session, this will also be the name of the cookie
 		session_name(Kohana::config('session.name'));

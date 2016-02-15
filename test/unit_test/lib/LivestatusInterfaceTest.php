@@ -2,7 +2,6 @@
 
 require_once "op5/objstore.php";
 require_once "op5/livestatus.php";
-require_once "op5/auth/User.php";
 
 class mock_livestatus_connection {
 	private $test;
@@ -112,7 +111,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 				)
 		);
 		$this->ls->query("hosts", "", array('name'), array(
-				'auth' => new op5User(array(
+				'auth' => new User_Model(array(
 						'username' => 'theusername',
 						'auth_data' => array()
 				))
@@ -161,7 +160,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 						false
 				);
 				$this->ls->query($table, "", false, array(
-						'auth' => new op5User(array(
+						'auth' => new User_Model(array(
 								'username' => 'theusername',
 								'auth_data' => array()
 						))
@@ -281,7 +280,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 						'Invalid query for: '.$table.' permission: '.$permission
 				);
 				$this->ls->query($table, "", false, array(
-						'auth' => new op5User(array(
+						'auth' => new User_Model(array(
 								'username' => 'theusername',
 								'auth_data' => array(
 										$permission => true
@@ -315,7 +314,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 				)
 		);
 		$this->ls->query("hosts", "Line: 1\nLine: 2\n", array('name'), array(
-				'auth' => new op5User(array(
+				'auth' => new User_Model(array(
 						'username' => 'theusername',
 						'auth_data' => array()
 				))
@@ -346,7 +345,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 				)
 		);
 		$this->ls->query("hosts", "Line: 1\nLine: 2", array('name'), array(
-				'auth' => new op5User(array(
+				'auth' => new User_Model(array(
 						'username' => 'theusername',
 						'auth_data' => array()
 				))
@@ -377,7 +376,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 				)
 		);
 		$this->ls->query("hosts", "Line: 1\nLine: 2\n\n", array('name'), array(
-				'auth' => new op5User(array(
+				'auth' => new User_Model(array(
 						'username' => 'theusername',
 						'auth_data' => array()
 				))
@@ -406,7 +405,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 				)
 		);
 		$this->ls->query("hosts", "\n", array('name'), array(
-				'auth' => new op5User(array(
+				'auth' => new User_Model(array(
 						'username' => 'theusername',
 						'auth_data' => array()
 				))

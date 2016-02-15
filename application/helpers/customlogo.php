@@ -57,7 +57,8 @@ class customlogo {
 			return $icon;
 		}
 
-		if (!preg_match(Kohana::config('customlogo.pattern'), user::session('username'), $custom)) {
+		$username = Auth::instance()->get_user()->get_username();
+		if (!preg_match(Kohana::config('customlogo.pattern'), $username, $custom)) {
 			return $icon;
 		}
 

@@ -47,7 +47,7 @@ class Cmd_Controller extends Ninja_Controller {
 			'page' => Router::$controller,
 			'name' => 'listview',
 			'widget' => 'listview',
-			'username' => op5auth::instance()->get_user()->username,
+			'username' => op5auth::instance()->get_user()->get_username(),
 			'friendly_name' => 'Objects',
 			'setting' => array(
 				'query'=>$set->get_query(),

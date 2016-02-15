@@ -266,5 +266,5 @@ function array_first( $obj, $fields )
 */
 function current_user()
 {
-	return Auth::instance()->get_user()->username;
+	return Auth::instance()->get_user()->get_username();
 }

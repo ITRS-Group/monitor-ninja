@@ -1,39 +1,32 @@
 <?php
 require_once (__DIR__ . '/AuthDriver.php');
-require_once (__DIR__ . '/User.php');
 
 /**
  * User authentication and authorization library.
- *
- * @package Auth
- * @author
- *
- * @copyright
- *
- * @license
- *
  */
 class op5AuthDriver_Apache extends op5AuthDriver {
+
 	protected static $metadata = array (
 		'require_user_configuration' => true,
 		'require_user_password_configuration' => false,
 		'login_screen_dropdown' => false
 	);
-	private $users = false;
+
+	private $users = null;
 	private function fetch_users() {
-		if ($this->users === false) {
-			$this->users = op5Config::instance()->getConfig('auth_users');
-		}
+		if ($this->users) return;
+		$this->users = UserPool_Model::all();
 	}
+
 	private function resolve_groups_for_user($username) {
+
 		$this->fetch_users();
-		$groups = array ();
-		if (isset($this->users[$username])) {
-			if (in_array($this->config['name'],
-				$this->users[$username]['modules'], true)) {
-				if (isset($this->users[$username]['groups'])) {
-					$groups = $this->users[$username]['groups'];
-				}
+		$groups = array();
+
+		$user = $this->users->reduce_by('username', $username, '=')->one();
+		if ($user) {
+			if (in_array($this->module->get_modulename(), $user->get_modules(), true)) {
+				$groups = $user->get_groups();
 			}
 		}
 
@@ -46,13 +39,17 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 		return $groups;
 	}
 
+	public function get_user_count () {
+		return count(UserPool_Model::all());
+	}
+
 	/**
 	 * Attempt to log in a user by static configuration, or external
 	 * infromation.
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return op5User User object, or false
+	 * @return User_Model User object, or false
 	 */
 	public function auto_login() {
 		/*
@@ -81,17 +78,15 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	public function groups_available(array $grouplist) {
 		$this->fetch_users();
 
-		$groups = array ();
-		foreach ($this->users as $user => $userdata) {
-			if (isset($userdata['groups'])) {
-				foreach ($userdata['groups'] as $group) {
-					$groups[$group] = $group;
-				}
+		$groups = array();
+		foreach ($this->users as $user) {
+			foreach ($user->get_groups() as $group) {
+				$groups[$group] = $group;
 			}
 		}
-		$groups['apache_auth_user'] = 'apache_auth_user';
 
-		$result = array ();
+		$groups['apache_auth_user'] = 'apache_auth_user';
+		$result = array();
 
 		foreach ($grouplist as $group) {
 			if (substr($group, 0, 5) == 'user_') {
@@ -123,13 +118,14 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 		}
 
 		$username = $_SERVER['PHP_AUTH_USER'];
-
-		$user = new op5User(
-			array ('username' => $username,
+		return new User_Model(
+			array (
+				'username' => $username,
 				'groups' => $this->resolve_groups_for_user($username),
 				'realname' => $username, /* We have no clue about realname, so call him/her their username */
-				'email' => ''));
-		return $user;
+				'email' => ''
+			)
+		);
 	}
 
 	/**
@@ -143,4 +139,4 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	public function groups_for_user($username) {
 		return $this->resolve_groups_for_user($username);
 	}
-} // End Auth
+}

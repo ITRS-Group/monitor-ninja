@@ -34,7 +34,7 @@ class External_widget_Controller extends Ninja_Controller {
 		$this->template->widget = false;
 
 		$model = new Ninja_Widget_Model();
-		$model->set_username(op5auth::instance()->get_user()->username);
+		$model->set_username(op5auth::instance()->get_user()->get_username());
 		$model->set_name($widget_conf['name']);
 		$model->set_page($page);
 		$model->set_friendly_name($widget_conf['friendly_name']);

@@ -6,7 +6,7 @@
  */
 class Livestatus_Test extends PHPUnit_Framework_TestCase {
     public function setUp() {
-		Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
         $this->ls = Livestatus::instance();
         $this->assertTrue(is_object($this->ls), 'created livestatus object');
         $this->lsb = $this->ls->getBackend();

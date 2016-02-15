@@ -22,10 +22,10 @@ class op5Authorization {
 	public static function factory() {
 		return new self();
 	}
-	private $groups = false;
+	private $groups = null;
 	public function __construct() {
 		$this->log = op5Log::instance('auth');
-		$this->groups = op5Config::instance()->getConfig('auth_groups');
+		$this->groups = UserGroupPool_Model::all();
 	}
 
 	/**
@@ -36,48 +36,41 @@ class op5Authorization {
 	 * Returns true if the user is a member of one or more groups in the
 	 * monitor system.
 	 *
-	 * @param $user op5User
+	 * @param $user User_Model
 	 *        	The user to authorize
 	 * @return boolean If the user is authorized
 	 */
-	public function authorize(op5User $user) {
+	public function authorize(User_Model $user) {
 		/* Fetch groups */
-		$groups = $user->groups;
+		$groups = $user->get_groups();
 
 		/* Also allow the per-user-group */
-		$groups[] = 'user_' . $user->username;
+		$groups[] = 'user_' . $user->get_username();
 
 		/**
 		 * Meta groups (all users and group per driver)
 		 */
 		$groups[] = 'meta_all_users';
-		if (isset($user->auth_method) && $user->auth_method) {
-			$groups[] = 'meta_driver_' . $user->auth_method;
+		if ($user->get_auth_method()) {
+			$groups[] = 'meta_driver_' . $user->get_auth_method();
 		}
 
 		$authorized = false;
 
 		/* Fetch the name column as an array from the result */
-		$auth_data = array ();
-		if (isset($user->auth_data)) {
-			$auth_data = $user->auth_data;
-		}
+		$auth_data = $user->get_auth_data();
 		foreach ($groups as $group) {
-			if (isset($this->groups[$group])) {
+			$checkgroup = $this->groups->reduce_by('groupname', $group, '=')->one();
+			if ($checkgroup) {
 				$authorized = true;
-				foreach ($this->groups[$group] as $perm) {
-					$auth_data[$perm] = true;
+				foreach ($checkgroup->get_rights() as $right) {
+					$auth_data[$right] = true;
 				}
 			}
 		}
 
-		foreach ($auth_data as $perm => $val) {
-			$this->log->log('debug', $user->username . ": permission: " . $perm);
-		}
-
 		/* Store as auth_data */
-		$user->auth_data = $auth_data;
-
+		$user->set_auth_data($auth_data);
 		return $authorized;
 	}
 

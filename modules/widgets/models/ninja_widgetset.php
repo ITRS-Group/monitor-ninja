@@ -19,7 +19,7 @@ class Ninja_WidgetSet_Model extends BaseNinja_WidgetSet_Model {
 	 * apply some extra filters to match for the authentication.
 	 */
 	protected function get_auth_filter() {
-		$username = Auth::instance()->get_user()->username;
+		$username = Auth::instance()->get_user()->get_username();
 
 		$result_filter = new LivestatusFilterAnd();
 		$result_filter->add($this->filter);

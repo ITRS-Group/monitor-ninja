@@ -1,6 +1,7 @@
 @widgets
 Feature: Widgets
 
+	@unreliable
 	Scenario: External widget listview
 		Given I have these mocked ninja_widgets
 			|id|username  |page     |name         |friendly_name     |setting|instance_id|
@@ -24,6 +25,7 @@ Feature: Widgets
 	# This test is likely to fail when run against a ninja
 	# not in /opt/monitor since nagvis is hardcoded to look
 	# for external_widget settings in that particular directory
+	@unreliable
 	Scenario: External widget nagvis
 		Given I expose the widget "nagvis" with settings
 			| height | map |

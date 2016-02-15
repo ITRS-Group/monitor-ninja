@@ -87,9 +87,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => false,
-				'name' => 'notauthenticated',
+				'username' => 'notauthenticated',
 				'realname' => 'Not Logged in',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (),
 				'groups' => array ()
 			), $auth->getActorInfo());
@@ -102,15 +102,17 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 				'testkey' => array (
 					'username' => 'user_plain',
 					'realname' => 'Just a plain user',
-					'email' => false,
-					'auth_data' => array (
-						'own_user_change_password' => true,
-						'some_plain_access' => true
-					),
+					'email' => '',
 					'modules' => array (
 						'mydefault'
 					),
 					'auth_method' => 'mydefault',
+					'auth_driver' => '',
+					'auth_data' => array(
+						'own_user_change_password' => true,
+						'some_plain_access' => true
+					),
+					'password_algo' => 'plain',
 					'groups' => array (
 						'plain_group'
 					)
@@ -121,9 +123,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'user_plain',
+				'username' => 'user_plain',
 				'realname' => 'Just a plain user',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (
 					'own_user_change_password' => true,
 					'some_plain_access' => true
@@ -141,11 +143,11 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => false,
-				'name' => 'notauthenticated',
+				'username' => 'notauthenticated',
 				'realname' => 'Not Logged in',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (),
-				'groups' => array ()
+				'groups' => array (),
 			), $auth->getActorInfo());
 	}
 
@@ -161,11 +163,11 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => false,
-				'name' => 'notauthenticated',
+				'username' => 'notauthenticated',
 				'realname' => 'Not Logged in',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (),
-				'groups' => array ()
+				'groups' => array (),
 			), $auth->getActorInfo());
 
 		/* Session should be written during login */
@@ -176,7 +178,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 				'testkey' => array (
 					'username' => 'user_plain',
 					'realname' => 'Just a plain user',
-					'email' => false,
+					'email' => '',
 					'auth_data' => array (
 						'own_user_change_password' => true,
 						'some_plain_access' => true
@@ -184,6 +186,8 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 					'modules' => array (
 						'mydefault'
 					),
+					'auth_driver' => '',
+					'password_algo' => 'plain',
 					'auth_method' => 'mydefault',
 					'groups' => array (
 						'plain_group'
@@ -195,9 +199,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'user_plain',
+				'username' => 'user_plain',
 				'realname' => 'Just a plain user',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (
 					'own_user_change_password' => true,
 					'some_plain_access' => true
@@ -216,7 +220,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 				'testkey' => array (
 					'username' => 'user_plain',
 					'realname' => 'Just a plain user',
-					'email' => false,
+					'email' => '',
 					'auth_data' => array (
 						'own_user_change_password' => true,
 						'some_plain_access' => true
@@ -224,6 +228,8 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 					'modules' => array (
 						'mydefault'
 					),
+					'auth_driver' => '',
+					'password_algo' => 'plain',
 					'auth_method' => 'mydefault',
 					'groups' => array (
 						'plain_group'
@@ -235,9 +241,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => false,
-				'name' => 'notauthenticated',
+				'username' => 'notauthenticated',
 				'realname' => 'Not Logged in',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (),
 				'groups' => array ()
 			), $auth->getActorInfo());
@@ -255,11 +261,11 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => false,
-				'name' => 'notauthenticated',
+				'username' => 'notauthenticated',
 				'realname' => 'Not Logged in',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (),
-				'groups' => array ()
+				'groups' => array (),
 			), $auth->getActorInfo());
 
 		/* Session shouldn't be written during login, but user is logged in */
@@ -271,9 +277,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'user_plain',
+				'username' => 'user_plain',
 				'realname' => 'Just a plain user',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (
 					'own_user_change_password' => true,
 					'some_plain_access' => true
@@ -291,9 +297,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => false,
-				'name' => 'notauthenticated',
+				'username' => 'notauthenticated',
 				'realname' => 'Not Logged in',
-				'email' => false,
+				'email' => '',
 				'authorized' => array (),
 				'groups' => array ()
 			), $auth->getActorInfo());
@@ -334,7 +340,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'from_session_user',
+				'username' => 'from_session_user',
 				'realname' => 'A user from the session',
 				'email' => 'i_have@an.email',
 				'authorized' => array (
@@ -380,7 +386,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'from_session_user',
+				'username' => 'from_session_user',
 				'realname' => 'A user from the session',
 				'email' => 'i_have@an.email',
 				'authorized' => array (
@@ -393,7 +399,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			), $auth->getActorInfo());
 
 		$auth->force_user(
-			new op5User(
+			new User_Model(
 				array (
 					'username' => 'a_forced_user',
 					'realname' => 'This is forced',
@@ -410,7 +416,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'a_forced_user',
+				'username' => 'a_forced_user',
 				'realname' => 'This is forced',
 				'email' => 'i_do_have@n.email',
 				'authorized' => array (
@@ -433,7 +439,9 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 					),
 					'groups' => array (
 						'somestuff'
-					)
+					),
+					'modules' => array(),
+					'auth_method' => ''
 				),
 				'this_should_be_untouched' => 17
 			), $_SESSION);
@@ -475,7 +483,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'from_session_user',
+				'username' => 'from_session_user',
 				'realname' => 'A user from the session',
 				'email' => 'i_have@an.email',
 				'authorized' => array (
@@ -489,10 +497,8 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 
 		$auth->write_close();
 		$auth->force_user(
-			new op5User(
+			new User_Model(
 				array (
-					'type' => 'user',
-					'authenticated' => true,
 					'username' => 'a_forced_user',
 					'realname' => 'This is forced',
 					'email' => 'i_do_have@n.email',
@@ -508,7 +514,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 			array (
 				'type' => 'user',
 				'authenticated' => true,
-				'name' => 'a_forced_user',
+				'username' => 'a_forced_user',
 				'realname' => 'This is forced',
 				'email' => 'i_do_have@n.email',
 				'authorized' => array (

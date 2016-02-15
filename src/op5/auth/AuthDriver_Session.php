@@ -1,6 +1,5 @@
 <?php
 require_once (__DIR__ . '/AuthDriver.php');
-require_once (__DIR__ . '/User.php');
 require_once (__DIR__ . '/../config.php');
 
 /**
@@ -22,26 +21,27 @@ class op5AuthDriver_Session extends op5AuthDriver {
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return op5User User object, or false
+	 * @return User_Model User object
 	 */
 	public function auto_login() {
 		$params = array ();
 
+		$config = $this->module->get_properties();
 		if (isset($this->config['username_session_key'])) {
-			$params['username'] = $_SESSION[$this->config['username_session_key']];
+			$params['username'] = $_SESSION[$config['username_session_key']];
 		} else {
-			return false;
+			return null;
 		}
 
 		if (isset($this->config['groups_session_key'])) {
-			$params['groups'] = $_SESSION[$this->config['groups_session_key']];
+			$params['groups'] = $_SESSION[$config['groups_session_key']];
 		}
 
-		if (isset($this->config['single_shot']) && $this->config['single_shot']) {
+		if (isset($config['single_shot']) && $config['single_shot']) {
 			unset($_SESSION[$this->config['username_session_key']]);
 			unset($_SESSION[$this->config['groups_session_key']]);
 		}
 
-		return new op5User($params);
+		return new User_Model($params);
 	}
 } // End Auth

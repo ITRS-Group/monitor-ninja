@@ -59,7 +59,7 @@ class Alert_history_Controller extends Summary_Controller
 		$host_name = $this->input->post('host_name');
 		$service = $this->input->post('service_description');
 		$comment = $this->input->post('comment');
-		$username = Auth::instance()->get_user()->username;
+		$username = Auth::instance()->get_user()->get_username();
 
 		if (Summary_Reports_Model::add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username))
 			echo '<div class="content">'.html::specialchars($comment).'</div><div class="author">/'.$username.'</div>';

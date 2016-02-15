@@ -1,15 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 require_once('op5/auth/Auth.php');
-require_once('op5/auth/User_NoAuth.php');
 
 /**
  * User authentication and authorization library.
- *
- * @package    Auth
- * @author
- * @copyright
- * @license
  */
 class Auth {
 	/**
@@ -73,6 +67,10 @@ class Auth {
 		return $instance;
 	}
 
+	/**
+	 * @param $config array Optional method config
+	 * @param $driver_config array Optional Driver config
+	 */
 	public function __construct( $config = NULL, $driver_config = array() )
 	{
 		Op5Auth::instance( $config, $driver_config );
@@ -101,10 +99,10 @@ class Auth {
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
-	 * @param   string   username to log in
-	 * @param   string   password to check against
-	 * @param   boolean  enable auto-login
-	 * @return  boolean	True on success
+	 * @param   $username     string    username to log in
+	 * @param   $password     string    password to check against
+	 * @param   $auth_method  mixed     Which auth method to use
+	 * @return  boolean                 True on success
 	 */
 	public function login($username, $password, $auth_method = false)
 	{
@@ -119,7 +117,7 @@ class Auth {
 	 *
 	 * This method doesn't use APC
 	 *
-	 * @param $user     Op5User User object to verify
+	 * @param $user     User_Model User object to verify
 	 * @param $password string  Password to test
 	 * @return          boolean true if password is ok
 	 */
@@ -129,26 +127,14 @@ class Auth {
 	}
 
 	/**
-	 * Update password for a given user.
-	 *
-	 * @param $user     Op5User User object to verify
-	 * @param $password string  New password
-	 * @return          boolean true if password is ok
-	 */
-	public function update_password( $user, $password )
-	{
-		return op5auth::instance()->update_password( $user, $password );
-	}
-
-	/**
 	 * Returns true if current session has access for a given authorization point
 	 *
-	 * @param   string   authorization point
+	 * @param   $authorization_point string   authorization point
 	 * @return  boolean  true if access
 	 */
-	public function authorized_for( $authorization_point )
+	public function authorized_for($authorization_point)
 	{
-		return op5auth::instance()->authorized_for( $authorization_point );
+		return op5auth::instance()->authorized_for($authorization_point);
 	}
 
 	/**
@@ -163,10 +149,10 @@ class Auth {
 	}
 
 	/**
-	 * Take an op5User object, and force the auth module to recognize it as the
+	 * Take an User_Model object, and force the auth module to recognize it as the
 	 * currently logged in user
 	 */
-	public function force_user($user)
+	public function force_user(User_Model $user)
 	{
 		return op5auth::instance()->force_user($user);
 	}
@@ -193,10 +179,16 @@ class Auth {
  */
 class Auth_NoAuth extends Auth {
 
+	/**
+	 * @param $config array Optional method config
+	 */
 	public function __construct($config = NULL)
 	{
 	}
 
+	/**
+	 * @param $role mixed This is something, remove?
+	 */
 	public function logged_in($role = NULL)
 	{
 		return false;
@@ -204,9 +196,17 @@ class Auth_NoAuth extends Auth {
 
 	public function get_user()
 	{
-		return new Op5User_NoAuth();
+		return new User_NoAuth_Model();
 	}
 
+	/**
+         * Attempt to log in a user by using an ORM object and plain-text password.
+         *
+         * @param   $username     string    username to log in
+         * @param   $password     string    password to check against
+         * @param   $auth_method  mixed     Which auth method to use
+         * @return  boolean                 True on success
+         */
 	public function login($username, $password, $auth_method = false)
 	{
 		return false;
@@ -217,11 +217,12 @@ class Auth_NoAuth extends Auth {
 		return false;
 	}
 
-	public function update_password( $user, $password )
-	{
-		return false;
-	}
-
+	/**
+         * Returns true if current session has access for a given authorization point
+         *
+         * @param   $authorization_point string   authorization point
+         * @return  boolean  true if access
+         */
 	public function authorized_for( $authorization_point )
 	{
 		return false;

@@ -13,7 +13,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	 *	Set up prerequisities for this test
 	 */
 	public function setUp() {
-		$this->auth = Auth::instance(array('session_key' => false))->force_user(new Op5User_AlwaysAuth());
+		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 
 		$this->sd = new ScheduleDate_Model();
 

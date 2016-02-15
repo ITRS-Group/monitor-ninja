@@ -8,58 +8,67 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 	private $dut; /* Device under test */
 
 	private $default_config = array(
-			'auth' => array(
-				'Apa' => array(
-					'driver' => 'Apache'
+		'auth' => array(
+			'Apa' => array(
+				'driver' => 'Apache'
+			)
+		),
+		'auth_users' => array(
+			'usra' => array(
+				'username' => 'usra',
+				'realname' => 'User A',
+				'groups' => array(
+					'grpa'
+				),
+				'modules' => array(
+					'Apa'
 				)
 			),
-			'auth_users' => array(
-					'usra' => array(
-							'realname' => 'User A',
-							'groups' => array(
-									'grpa'
-							),
-							'modules' => array(
-								'Apa'
-							)
-					),
-					'usrb' => array(
-							'realname' => 'User B',
-							'groups' => array(
-									'grpa',
-									'grpb'
-							),
-							'modules' => array(
-								'Apa'
-							)
-					),
-					'usrd' => array(
-							'realname' => 'User D',
-							'groups' => array(
-									'grpa',
-									'grpd'
-							),
-							'modules' => array(
-								'Apa'
-							)
-					),
-					'usre' => array(
-							'realname' => 'User no Auth Modules',
-							'groups' => array(
-									'grpa',
-									'grpd'
-							),
-							'modules' => array(
-							)
-					)
+			'usrb' => array(
+				'username' => 'usrb',
+				'realname' => 'User B',
+				'groups' => array(
+					'grpa',
+					'grpb'
+				),
+				'modules' => array(
+					'Apa'
+				)
+			),
+			'usrd' => array(
+				'username' => 'usrd',
+				'realname' => 'User D',
+				'groups' => array(
+					'grpa',
+					'grpd'
+				),
+				'modules' => array(
+					'Apa'
+				)
+			),
+			'usre' => array(
+				'username' => 'usre',
+				'realname' => 'User no Auth Modules',
+				'groups' => array(
+					'grpa',
+					'grpd'
+				),
+				'modules' => array(
+				)
 			)
+		)
 	);
 
 	private function init_config($module_name) {
+
 		op5objstore::instance()->mock_add('op5config', new MockConfig($this->default_config));
 		$config = $this->default_config['auth'][$module_name];
-		$config['name'] = $module_name;
-		$this->dut = new op5AuthDriver_Apache($config);
+
+		$module = new AuthModule_Model();
+		$module->set_modulename($module_name);
+		$module->set_properties($config);
+
+		$this->dut = new op5AuthDriver_Apache($module);
 	}
 
 	/**
@@ -81,22 +90,22 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 
 	function test_groups_available() {
 		$this->assertEquals(
-				$this->dut->groups_available(array(
-						'grpa',
-						'grpb',
-						'grpc',
-						'user_usra',
-						'user_usrb',
-						'user_usrc',
-						'apache_auth_user'
-				)),
-				array(
-						'grpa' => true,
-						'grpb' => true,
-						'grpc' => false,
-						'apache_auth_user' => true
-				),
-				'Test group list returns expected data'
+			$this->dut->groups_available(array(
+				'grpa',
+				'grpb',
+				'grpc',
+				'user_usra',
+				'user_usrb',
+				'user_usrc',
+				'apache_auth_user'
+			)),
+			array(
+				'grpa' => true,
+				'grpb' => true,
+				'grpc' => false,
+				'apache_auth_user' => true
+			),
+			'Test group list returns expected data'
 		);
 	}
 
@@ -112,7 +121,7 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(
 			'apache_auth_user'
 			),
-			$user->groups,
+			$user->get_groups(),
 			"User should only receive 'apache_auth_user' group since it doesn't use the Apa module"
 		);
 	}
@@ -120,9 +129,9 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 	function test_group_resolution() {
 		$_SERVER['PHP_AUTH_USER'] = "usra";
 		$user = $this->dut->auto_login();
-		$this->assertTrue($user instanceof op5User, 'Test auto_login returns an op5User');
+		$this->assertTrue($user instanceof User_Model, 'Test auto_login returns a User_Model');
 
-		$this->assertEquals($user->groups,
+		$this->assertEquals($user->get_groups(),
 				array(
 						'grpa',
 						'apache_auth_user'

@@ -20,7 +20,7 @@ class SavedFilterSet_Model extends BaseSavedFilterSet_Model {
 	 */
 	protected function get_auth_filter() {
 		$auth = Auth::instance();
-		$username = $auth->get_user()->username;
+		$username = $auth->get_user()->get_username();
 
 		$auth_filter = new LivestatusFilterOr();
 		$auth_filter->add(new LivestatusFilterMatch('username', $username));

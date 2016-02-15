@@ -1,7 +1,7 @@
 <?php
 
 	$store_cfg = Op5Config::instance()->getConfig('ninja_menu');
-	$groups = op5auth::instance()->get_user()->groups;
+	$groups = op5auth::instance()->get_user()->get_groups();
 
 	/* Use settings */
 	$orientation = (isset($orientation)) ? $orientation : 'left';

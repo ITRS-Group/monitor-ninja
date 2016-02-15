@@ -2,7 +2,6 @@
 
 require_once "op5/objstore.php";
 require_once "op5/config.php";
-require_once "op5/auth/User.php";
 require_once "op5/auth/Authorization.php";
 
 class AuthorizationTest extends PHPUnit_Framework_TestCase
@@ -42,14 +41,14 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function test_meta_all_resolution() {
-		$user = new op5User(array(
+		$user = new User_Model(array(
 				'username' => 'someuser',
 				'auth_method' => 'somedriver',
 				'groups' => array()
 		));
 		self::$az->authorize( $user );
 		$this->assertEquals(
-				$user->auth_data,
+				$user->get_auth_data(),
 				array(
 						'perm_meta_all_users' => true
 				),
@@ -58,7 +57,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function test_group_resolution() {
-		$user = new op5User(array(
+		$user = new User_Model(array(
 				'username' => 'someuser',
 				'auth_method' => 'somedriver',
 				'groups' => array(
@@ -67,7 +66,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 		));
 		self::$az->authorize( $user );
 		$this->assertEquals(
-				$user->auth_data,
+				$user->get_auth_data(),
 				array(
 						'perm_limited_read' => true,
 						'perm_limited_read_2' => true,
@@ -78,7 +77,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function test_user_group_resolution() {
-		$user = new op5User(array(
+		$user = new User_Model(array(
 				'username' => 'myuser',
 				'auth_method' => 'somedriver',
 				'groups' => array(
@@ -86,7 +85,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 		));
 		self::$az->authorize( $user );
 		$this->assertEquals(
-				$user->auth_data,
+				$user->get_auth_data(),
 				array(
 						'perm_myuser' => true,
 						'perm_meta_all_users' => true
@@ -96,7 +95,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function test_meta_driver_resolution() {
-		$user = new op5User(array(
+		$user = new User_Model(array(
 				'username' => 'someuser',
 				'auth_method' => 'kaka',
 				'groups' => array(
@@ -104,7 +103,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 		));
 		self::$az->authorize( $user );
 		$this->assertEquals(
-				$user->auth_data,
+				$user->get_auth_data(),
 				array(
 						'perm_meta_driver_kaka' => true,
 						'perm_meta_all_users' => true
