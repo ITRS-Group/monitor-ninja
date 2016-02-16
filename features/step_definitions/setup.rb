@@ -15,10 +15,10 @@ Given /^I have the default authentication module configured$/ do
 	page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
-Given /^I have an admin user group with all rights$/ do
+Given /^I have an (.*) user group with all rights$/ do |group|
 	@mock.mock('usergroups', [
 		{
-			"groupname" => "admins",
+			"groupname" => group,
 			"rights" => [
 				"system_information",
 				"configuration_information",
