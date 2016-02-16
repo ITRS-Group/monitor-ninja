@@ -30,7 +30,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 * @param $username string
 	 * @param $password string
-	 * @return boolean True if success
+	 * @return User_Model|null
 	 */
 	public function login($username, $password) {
 		$this->connect();
@@ -46,7 +46,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		if ($user_info === false) {
 			$this->log->log('debug',
 				'No User info returned. (incorrect login/connection error)');
-			return false;
+			return null;
 		}
 
 		/**
@@ -63,7 +63,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		if (!isset($user_info[strtolower($config['userkey'])])) {
 			$this->log->log('error',
 				'User hasn\'t got attribute ' . $config['userkey']);
-			return false;
+			return null;
 		}
 		$username = $user_info[strtolower($config['userkey'])][0];
 		if ($config['userkey_is_upn']) {
@@ -83,8 +83,6 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 					: ''
 			)
 		);
-
-		return $user;
 	}
 
 	/**
@@ -362,7 +360,6 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 * @param $username string
 	 * @param $password string
 	 * @return false or user
-	 *
 	 */
 	private function do_upn_login($username, $password) {
 		$config = $this->module->get_properties();
@@ -676,7 +673,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	}
 
 	/**
-	 * Ldap char excaping
+	 * Ldap char escaping
 	 *
 	 * @param $str string
 	 * @param $from_dn bool

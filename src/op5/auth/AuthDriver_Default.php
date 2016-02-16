@@ -28,7 +28,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 *
 	 * @param $username string
 	 * @param $password string
-	 * @return User_Model On successfull login
+	 * @return User_Model|null
 	 */
 	public function login($username, $password) {
 
@@ -76,8 +76,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 			if (substr($group, 0, 5) == 'user_') {
 				$name = substr($group, 5);
 				$user = $this->users->reduce_by('username', $name, '=')->one();
-				if ($user) $result[$group] = true;
-				else $result[$group] = false;
+				$result[$group] = (boolean) $user;
 			} else {
 				$result[$group] = isset($groups[$group]);
 			}
@@ -91,12 +90,14 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 *
 	 * @param $username string
 	 *        	User to search for
-	 * @return array A list of groups, or false if not possible
+	 * @return array A list of groups
 	 */
 	public function groups_for_user($username) {
 		$this->fetch_users();
 		$user = $this->users->reduce_by('username', $username, '=')->one();
-		if (!$user) return false;
+		if (!$user) {
+			return array();
+		}
 		return $user->get_groups();
 	}
 
@@ -128,7 +129,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 	 *        	string username of the user
 	 * @param
 	 *        	string password entered by the user
-	 * @return false array result from the user table
+	 * @return User_Model|false
 	 */
 	private function authenticate_user($username, $password) {
 
@@ -137,20 +138,20 @@ class op5AuthDriver_Default extends op5AuthDriver {
 
 		if (!$user) {
 			op5Log::instance('auth')->log('notice', "User '$username' not found");
-			return false;
+			return null;
 		}
 
 
 		if(count($user->get_modules()) === 0) {
 			op5Log::instance('auth')->log('error', "User '$username' have no 'modules' section and can therefore not be logged in. This is considered an error, did the upgrade script not add the required 'modules' section to every user?");
-			return false;
+			return null;
 		}
 
 		// Check if user has module membership
 		if (!in_array($this->module->get_modulename(), $user->get_modules(), true)) {
 			op5Log::instance('auth')->log('notice',
 				"User '$username' is not configured to login using the module: {$this->config['name']}");
-			return false;
+			return null;
 		}
 
 		if (self::valid_password($password, $user->get_password(), $user->get_password_algo()) === true) {
@@ -158,7 +159,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		}
 
 		op5Log::instance('auth')->log('notice', "User '$username' found but bad password provided");
-		return false;
+		return null;
 	}
 
 	/**

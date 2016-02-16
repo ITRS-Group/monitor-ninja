@@ -4,14 +4,6 @@ require_once (__DIR__ . '/../config.php');
 
 /**
  * User authentication and authorization library.
- *
- * @package Auth
- * @author
- *
- * @copyright
- *
- * @license
- *
  */
 class op5AuthDriver_Session extends op5AuthDriver {
 
@@ -21,7 +13,7 @@ class op5AuthDriver_Session extends op5AuthDriver {
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return User_Model User object
+	 * @return User_Model|null
 	 */
 	public function auto_login() {
 		$params = array ();
@@ -44,4 +36,4 @@ class op5AuthDriver_Session extends op5AuthDriver {
 
 		return new User_Model($params);
 	}
-} // End Auth
+}

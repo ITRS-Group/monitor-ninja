@@ -49,7 +49,7 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return User_Model User object, or false
+	 * @return User_Model|null
 	 */
 	public function auto_login() {
 		/*
@@ -107,14 +107,14 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 * TODO: Cache user credentials and authorization if username doesn't
 	 * change.
 	 *
-	 * @return mixed
+	 * @return User_Model|null
 	 */
 	private function doAuth() {
 		/*
 		 * We let apache handle the authentication, so only username is relevant
 		 */
 		if (!isset($_SERVER['PHP_AUTH_USER'])) {
-			return false;
+			return null;
 		}
 
 		$username = $_SERVER['PHP_AUTH_USER'];
@@ -134,7 +134,7 @@ class op5AuthDriver_Apache extends op5AuthDriver {
 	 *
 	 * @param $username string
 	 *        	User to search for
-	 * @return array A list of groups, or false if not possible
+	 * @return array A list of groups
 	 */
 	public function groups_for_user($username) {
 		return $this->resolve_groups_for_user($username);

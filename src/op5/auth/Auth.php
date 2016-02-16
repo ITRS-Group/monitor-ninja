@@ -184,7 +184,7 @@ class op5auth implements op5MayI_Actor {
 				$driver = $this->get_auth_driver($module->get_modulename());
 				$user = $driver->auto_login();
 
-				if ($user !== null) {
+				if ($user) {
 					/* Postprocess login */
 					$user->set_auth_method($auth_module);
 					if ($this->authorize_user($user, $auth_module)) {
@@ -313,7 +313,9 @@ class op5auth implements op5MayI_Actor {
 
 		if (($this->user instanceof User_Model)) {
 			$driver = $this->get_auth_driver($this->user->get_auth_method());
-			if ($driver !== false) $driver->logout($this->user);
+			if ($driver) {
+				$driver->logout($this->user);
+			}
 		}
 
 		$this->user = null;
@@ -340,16 +342,15 @@ class op5auth implements op5MayI_Actor {
 	 * keys and a boolean if group is available in the backend. If it is
 	 * unknown if the user is available, the field is unset.
 	 *
-	 * If driver supports multiple backends, the extra auth_method can be
-	 * set to the backend. Otherwise, a superset is should given of all
-	 * backends
-	 *
 	 * @param $grouplist array List of groups to check
 	 * @return array An array of all auth_methods as keys, values is an
 	 * 	associative array of the groups in $grouplist as keys, boolean as
 	 * 	values
 	 */
 	public function groups_available(array $grouplist) {
+		if(!$grouplist) {
+			return array();
+		}
 		$result = array ();
 		foreach ($this->auth_modules as $module) {
 			// All drivers needs to be fetched and checked...
@@ -358,16 +359,11 @@ class op5auth implements op5MayI_Actor {
 			try {
 				$result[$modulename] = $driver->groups_available($grouplist);
 				foreach ($grouplist as $group) {
-					$avalible = false;
-					if ($group == 'meta_all_users') {
-						$avalible = true;
-					} else if ($group == 'meta_driver_' . $auth_method) {
-						$avalible = true;
-					}
-					if (!isset($result[$auth_method][$group])) {
-						$result[$modulename][$group] = $avalible;
+					$available = in_array($group, array('meta_all_users', 'meta_driver_' . $modulename), true);
+					if (!isset($result[$modulename][$group])) {
+						$result[$modulename][$group] = $available;
 					} else {
-						$result[$modulename][$group] |= $avalible;
+						$result[$modulename][$group] |= $available;
 					}
 				}
 			} catch (Exception $e) {
@@ -393,9 +389,10 @@ class op5auth implements op5MayI_Actor {
 		$groups = array ();
 		foreach ($this->auth_modules as $module) {
 			// All drivers needs to be fetched and checked...
-			$driver = $this->get_auth_driver($module->get_modulename());
+			$auth_method = $module->get_modulename();
+			$driver = $this->get_auth_driver($auth_method);
 			$driver_groups = $driver->groups_for_user($username);
-			if ($driver_groups !== false) {
+			if ($driver_groups) {
 				$groups[$auth_method] = $driver_groups;
 				if (count($driver_groups)) {
 					$groups[$auth_method][] = 'meta_all_users';
@@ -434,14 +431,15 @@ class op5auth implements op5MayI_Actor {
 	 *        	User object to verify
 	 * @param $password string
 	 *        	Password to test
-	 * @return boolean true if password is ok
+	 * @throws Exception if the user's auth_driver is not valid
+	 * @return boolean true if user can be logged in with given password
 	 */
 	public function verify_password(User_Model $user, $password) {
 		$driver = $this->get_auth_driver($user->get_auth_method());
-		if ($driver === false) {
+		if (!$driver) {
 			throw new Exception('User is authenticated with an unknown backend.');
 		}
-		return $driver->login($user->get_username(), $password) !== null;
+		return (boolean) $driver->login($user->get_username(), $password);
 	}
 
 	/**
@@ -460,7 +458,7 @@ class op5auth implements op5MayI_Actor {
 	/**
 	 * Lazy loading of drivers...
 	 *
-	 * @param  $auth_method string
+	 * @param  $module string
 	 * @return op5AuthDriver
 	 */
 	public function get_auth_driver($module) {
@@ -514,7 +512,7 @@ class op5auth implements op5MayI_Actor {
 	 * Fetches user object from session held under $key
 	 *
 	 * @param $key string The session user key to fetch
-	 * @return void
+	 * @return User_Model|null
 	 */
 	protected function session_fetch($key) {
 		if (

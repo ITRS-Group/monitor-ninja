@@ -131,17 +131,17 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	function test_group_membership() {
 		$this->connect();
 		$user = $this->drv->login('nogroup', 'nogrouppassword');
-		$this->assertTrue($user !== false, "No user object returned, couldn't login as nogroup");
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as nogroup");
 		$this->assertEquals( $user->get_groups(), array(),
 				'Incorrect groups returned for user nogroup');
 
 		$user = $this->drv->login('singlegroup', 'singlegrouppassword');
-		$this->assertTrue($user !== false, "No user object returned, couldn't login as singlegroup");
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as singlegroup");
 		$this->assertEquals( $user->get_groups(), array('Depth 1 of 1'),
 				'Incorrect groups returned for user singlegroup');
 
 		$user = $this->drv->login('multigroup', 'multigrouppassword');
-		$this->assertTrue($user !== false, "No user object returned, couldn't login as multigroup");
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as multigroup");
 		$this->assertEquals( $user->get_groups(), array('Depth 1 of 1', 'Depth 1 of 1 Nr 2'),
 				'Incorrect groups returned for user multigroup');
 	}
@@ -149,13 +149,13 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	function test_group_recursion() {
 		$this->connect(array('group_recursive' => false));
 		$user = $this->drv->login('nestedgroup', 'nestedgrouppassword');
-		$this->assertTrue($user !== false, "No user object returned, couldn't login as nestedgroup");
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as nestedgroup");
 		$this->assertEquals( $user->get_groups(), array('Depth 1 of 2'),
 				'Incorrect groups returned for user nestedgroup');
 
 		$this->connect(array('group_recursive' => true));
 		$user = $this->drv->login('nestedgroup', 'nestedgrouppassword');
-		$this->assertTrue($user !== false, "No user object returned, couldn't login as nestedgroup");
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as nestedgroup");
 		$this->assertEquals( $user->get_groups(), array('Depth 1 of 2', 'Depth 2 of 2'),
 				'Incorrect groups returned for user nestedgroup');
 	}
@@ -171,13 +171,13 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	function test_invalid_password() {
 		$this->connect();
 		$user = $this->drv->login('nogroup', 'incorrect password');
-		$this->assertEquals( $user, false, 'User returned with incorrect password');
+		$this->assertNotInstanceOf('User_Model', $user, 'User returned with incorrect password');
 	}
 
 	function test_invalid_username() {
 		$this->connect();
 		$user = $this->drv->login('incorrectuser', 'incorrect password');
-		$this->assertEquals( $user, false, 'User returned with incorrect password');
+		$this->assertNotInstanceOf('User_Model', $user, 'User returned with incorrect password');
 	}
 
 	function test_service_account() {
@@ -186,7 +186,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 				'bind_secret' => 'nogrouppassword',
 		));
 		$user = $this->drv->login('nogroup', 'nogrouppassword');
-		$this->assertTrue($user !== false, "Could not login when service account is used");
+		$this->assertInstanceOf('User_Model', $user, 'Could not login when service account is used');
 	}
 
 	function test_service_account_invalid_password() {
@@ -249,7 +249,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 		$this->connect(array('user_filter' => '(objectClass=incorrect)'));
 
 		$user = $this->drv->login('singlegroup', 'singlegrouppassword');
-		$this->assertTrue($user === false, "User returned, but user_filter shouldn't match anything");
+		$this->assertNotInstanceOf('User_Model', $user, 'User returned, but user_filter should not match anything');
 	}
 
 	function test_user_filter_malformed() {
@@ -257,7 +257,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 
 		try {
 			$user = $this->drv->login('singlegroup', 'singlegrouppassword');
-			$this->assertTrue($user === false, "User returned, but user_filter shouldn't match anything");
+			$this->assertNotInstanceOf('User_Model', $user, 'User returned, but user_filter should not match anything');
 		} catch( op5AuthException $e ) {
 			$this->assertEquals(
 					'op5AuthDriver_LDAP / Test driver: Error during LDAP search using query "(&(&(uID=singlegroup))malformed()" at "o=op5test" (-7: Bad search filter)',
@@ -270,7 +270,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 		$this->connect(array('group_filter' => '(objectClass=incorrect)'));
 
 		$user = $this->drv->login('singlegroup', 'singlegrouppassword');
-		$this->assertTrue($user !== false, "No user object returned, couldn't login as singlegroup");
+		$this->assertInstanceOf('User_Model', $user, 'No user object returned, could not login as singlegroup');
 		$this->assertEquals( $user->get_groups(), array(),
 				'Groups returned for user singlegroup, but group_filter is incorrect');
 	}
@@ -280,7 +280,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 
 		try {
 			$user = $this->drv->login('singlegroup', 'singlegrouppassword');
-			$this->assertTrue($user === false, "User returned, but user_filter shouldn't match anything");
+			$this->assertNotInstanceOf('User_Model', $user, 'User returned, but user_filter should not match anything');
 		} catch( op5AuthException $e ) {
 			$this->assertEquals(
 					'op5AuthDriver_LDAP / Test driver: Error during LDAP search using query "(&(&(mEMBER=cn=Single Group User,ou=Users,o=op5test))malformed()" at "o=op5test" (-7: Bad search filter)',

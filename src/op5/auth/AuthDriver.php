@@ -54,10 +54,10 @@ abstract class op5AuthDriver {
 	 *        	string username to log in
 	 * @param
 	 *        	string password to check against
-	 * @return User_Model User object, or false
+	 * @return User_Model|null
 	 */
 	public function login($username, $password) {
-		return false;
+		return null;
 	}
 
 	/**
@@ -66,10 +66,10 @@ abstract class op5AuthDriver {
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
-	 * @return User_Model User object, or false
+	 * @return User_Model|null
 	 */
 	public function auto_login() {
-		return false;
+		return null;
 	}
 
 	/**
