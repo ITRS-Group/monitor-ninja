@@ -22,20 +22,6 @@ Feature: Widgets
 		When I am on the main page
 		Then I should see "Password"
 
-	# This test is likely to fail when run against a ninja
-	# not in /opt/monitor since nagvis is hardcoded to look
-	# for external_widget settings in that particular directory
-	@unreliable
-	Scenario: External widget nagvis
-		Given I expose the widget "nagvis" with settings
-			| height | map |
-			| 600    | automap |
-		When I am on address "/index.php/external_widget/nagvis"
-		# Default root of automap is monitor
-		Then I should see "monitor" within frame "nagvis"
-		When I am on the main page
-		Then I should see "Password"
-
 	Scenario: Listview widgets are rendered on TAC
 		Given I have these mocked ninja_widgets
 			|id|username  |page     |name         |friendly_name     |setting|instance_id|
