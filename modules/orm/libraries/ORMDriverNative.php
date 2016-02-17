@@ -83,19 +83,29 @@ class ORMDriverNative implements ORMDriverInterface {
 
 	public function update($table, $structure, $filter, $values)
 	{
-		throw new ORMException("Unimplemented driver operation update()");
-		$this->persist($table);
+		$touched = false;
+		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
+			$visitor = new NativeFilterBuilderVisitor();
+			foreach ( $this->storage[$table] as $ix => $row) {
+				if ( $filter->visit($visitor, $row)) {
+					foreach($values as $old_key => $new_value) {
+						$this->storage[$table][$ix][$old_key] = $new_value;
+					}
+					$touched = true;
+				}
+			}
+		}
+		if($touched) {
+			$this->persist($table);
+		}
 	}
 
 	public function delete($table, $structure, $filter)
 	{
-		$visitor = new NativeFilterBuilderVisitor();
-
-		$model_type = $structure['class'] . '_Model';
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
+			$visitor = new NativeFilterBuilderVisitor();
 			foreach ( $this->storage[$table] as $ix => $row) {
-				$obj = $model_type::factory_from_setiterator($row, '', $columns);
-				if ( $filter->visit($visitor, $obj)) {
+				if ( $filter->visit($visitor, $row)) {
 					unset($this->storage[$table][$ix]);
 				}
 			}

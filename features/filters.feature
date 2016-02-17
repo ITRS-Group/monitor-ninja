@@ -79,7 +79,7 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I am logged in
+		Given I am logged in as administrator
 		And I am on the Service details page
 		When I sort the filter result table by "description"
 		Then The first row of the filter result table should contain "A-service"
@@ -102,7 +102,7 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I am logged in
+		Given I am logged in as administrator
 		And I have submitted a passive service check result "linux-server1;C-service;0;some output"
 		And I am on the Service details page
 		When I sort the filter result table by "last_check"
@@ -124,7 +124,7 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I am logged in
+		Given I am logged in as administrator
 		And I have submitted a passive service check result "linux-server1;B-service;0;some output"
 		And I am on the Service details page
 		When I sort the filter result table by "duration"
@@ -146,7 +146,7 @@ Feature: Filters & list views
 			| C-service				| linux-server1 | check_ping	|
 			| D-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I am logged in
+		Given I am logged in as administrator
 		And I have submitted a passive service check result "linux-server1;B-service;0;Apocryphal status information message"
 		And I have submitted a passive service check result "linux-server1;A-service;1;Bereaved status information"
 		And I have submitted a passive service check result "linux-server1;D-service;0;Curmudgeonly status information"
@@ -172,7 +172,7 @@ Feature: Filters & list views
 			| B-service				| linux-server1 | check_ping	|
 			| C-service				| linux-server1 | check_ping	|
 		And I have activated the configuration
-		Given I am logged in
+		Given I am logged in as administrator
 		And I have submitted a passive service check result "linux-server1;A-service;1;Bereaved status information"
 		And I have submitted a passive service check result "linux-server1;B-service;0;Apocryphal status information message"
 		And I have submitted a passive service check result "linux-server1;C-service;2;Dandy status information"
@@ -186,7 +186,7 @@ Feature: Filters & list views
 
 	@configuration @unreliable @integration
 	Scenario: Save filter
-		Given I am logged in
+		Given I am logged in as administratior
 		And I am on the Host details page
 		And I click "Show/Edit Text Filter"
 		And I enter "Ernie" into "lsfilter_save_filter_name"

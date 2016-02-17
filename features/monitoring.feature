@@ -1,4 +1,4 @@
-@monitoring @configuration @integration
+@monitoring @integration
 Feature: Monitoring
 	Background:
 		Given I have these hostgroups configured:
@@ -6,11 +6,11 @@ Feature: Monitoring
 			| LinuxServers   | linux-server1,linux-server2 |
 			| WindowsServers | win-server1,win-server2     |
 		And I have these hosts:
-			| host_name     | contacts |
-			| linux-server1 | monitor  |
-			| linux-server2 |          |
-			| win-server1   |          |
-			| win-server2   |          |
+			| host_name     | contact       |
+			| linux-server1 | administrator |
+			| linux-server2 | administrator |
+			| win-server1   | administrator |
+			| win-server2   | administrator |
 		And I have these services:
 			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |
@@ -21,9 +21,9 @@ Feature: Monitoring
 			| enable_flap_detection | enable_notifications | enable_event_handlers | execute_service_checks | execute_host_checks | accept_passive_service_checks | accept_passive_host_checks |
 			| 1                     | 1                    | 1                     | 1                      | 1                   | 1                             | 1                          |
 		And I have activated the configuration
-		And I am logged in
+		And I am logged in as administrator
 
-	@case-643
+	@configuration @case-643
 	Scenario: Host details filter
 		Ensure that the filters on the host details
 		page works as expected.
@@ -36,7 +36,7 @@ Feature: Monitoring
 		When I click "Services total"
 		Then I should see the configured services
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable active checks
 		Verify that the "Disable active checks" host command
 		works correctly.
@@ -48,7 +48,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Active checks" should be shown as "Disabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Reschedule check
 		Verify that the "Reschedule next check" host command
 		works correctly.
@@ -64,7 +64,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Next scheduled check" should be shown as the value of "field_check_time"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Submit passive check
 		Verify that the "Submit passive check" host command
 		works correctly.
@@ -79,7 +79,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Current status" should be shown as "Down"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Stop obsessing
 		Verify that the "Stop obsessing" host command
 		works correctly.
@@ -91,7 +91,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Obsessing" should be shown as "Disabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable passive check
 		Verify that the "Disable passive check" host command
 		works correctly.
@@ -103,7 +103,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Passive checks" should be shown as "Disabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable notifications
 		Verify that the "Disable notifications" host command
 		works correctly.
@@ -115,7 +115,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Notifications" should be shown as "Disabled"
 
-	@case-646 @unreliable
+	@configuration @case-646 @unreliable
 	Scenario: Host details host commands - Send custom notification
 		Verify that the "Send custom notification" host command
 		works correctly.
@@ -132,7 +132,7 @@ Feature: Monitoring
 		And I click "Notifications"
 		Then I should see "linux-server1"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Schedule downtime
 		Verify that the "Schedule downtime" host command
 		works correctly.
@@ -156,7 +156,7 @@ Feature: Monitoring
 		And I reload the page
 		Then I should see "This host has been scheduled for fixed downtime"
 
-	@trial_license
+	@configuration @trial_license
 	Scenario: Schedule downtime retro - before first event in db
 		MON-8606
 		Given I am on the Host details page
@@ -173,7 +173,7 @@ Feature: Monitoring
 		Then I should see "Ghost of Christmas past"
 		And I should see "2013-01-01"
 
-	@trial_license
+	@configuration @trial_license
 	Scenario: Schedule downtime retro - after first event in db
 		MON-8606
 		Given I am on the Host details page
@@ -189,7 +189,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then I should see "lullull"
 
-	@trial_license
+	@configuration @trial_license
 	Scenario: Schedule downtime now
 		MON-8606
 		Given I am on the Host details page
@@ -202,7 +202,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then I should see "I love lamp"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable notifications for services
 		Verify that the "Disable notifications for all services"
 		host command works correctly.
@@ -217,7 +217,7 @@ Feature: Monitoring
 		And I click "System Load"
 		Then "Notifications" should be shown as "Disabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Enable notifications for services
 		Verify that the "Enable notifications for all services"
 		host command works correctly.
@@ -232,7 +232,7 @@ Feature: Monitoring
 		And I click "PING"
 		Then "Notifications" should be shown as "Enabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Schedule check for all services
 		Verify that the "Schedule check for all services" host command
 		works correctly.
@@ -250,7 +250,7 @@ Feature: Monitoring
 		And I click "System Load"
 		Then "Next scheduled active check" should be shown as the value of "field_check_time"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable checks of all services
 		Verify that the "Disable checks of all services" host command works correctly.
 		Given I am on the Host details page
@@ -264,7 +264,7 @@ Feature: Monitoring
 		And I click "System Load"
 		Then "Active checks" should be shown as "Disabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Enable checks of all services
 		Verify that the "Enable checks of all services" host command works correctly.
 		Given I am on the Host details page
@@ -277,7 +277,7 @@ Feature: Monitoring
 		And I click "PING"
 		Then "Active checks" should be shown as "Enabled"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable event handler
 		Verify that the "Disable event handler" host command works correctly.
 		Given I am on the Host details page
@@ -289,7 +289,7 @@ Feature: Monitoring
 		Then "Event handler" should be shown as "Disabled"
 		And I should see "Enable event handler"
 
-	@case-646
+	@configuration @case-646
 	Scenario: Host details host commands - Disable flap detection
 		Verify that the "Disable flap detection" host command works correctly.
 		Given I am on the Host details page
@@ -301,7 +301,7 @@ Feature: Monitoring
 		Then "Flap detection" should be shown as "Disabled"
 		And I should see "Enable flap detection"
 
-	@case-647 @unreliable
+	@configuration @case-647 @unreliable
 	Scenario: Host details host extinfo page show performance graph
 		Verify that the "Show performance graph" link works correctly.
 		Given I have PNP data for "linux-server1"
@@ -310,7 +310,7 @@ Feature: Monitoring
 		And I click "Show performance graph"
 		Then I should be on url "/index.php/pnp?host=linux-server1&srv=_HOST_"
 
-	@case-648
+	@configuration @case-648
 	Scenario: Host details Add/delete comment
 		Verify that adding and deleting comments on hosts
 		works.
@@ -329,7 +329,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then I shouldn't see "A comment for this host"
 
-	@bug-6933
+	@configuration @bug-6933
 	Scenario: Disable passive checks and obsess over this host
 		Verify that after disable passive checks for this host and
 		stop obsess over this host it is possible to start them both.
@@ -350,7 +350,7 @@ Feature: Monitoring
 		When I click "Start obsessing over this host"
 		Then I should be on url "/index.php/cmd?command=start_obsessing&table=hosts&object=linux-server1"
 
-	@case-650
+	@configuration @case-650
 	Scenario: Service details filter
 		Verify that filter links work as expected
 		Given I am on the Service details page
@@ -359,7 +359,7 @@ Feature: Monitoring
 		And I click link "Services total"
 		Then I should see the configured services
 
-	@case-650
+	@configuration @case-650
 	Scenario: Service details filter
 		Verify that filter link counts are correct
 		for various states
@@ -371,7 +371,7 @@ Feature: Monitoring
 		And Link "Services critical" should contain "1"
 		And Link "Services warning" should contain "1"
 
-	@case-650
+	@configuration @case-650
 	Scenario: Service details filter
 		Verify that I can go back to showing all by
 		services after having filtered on Ok ones
@@ -388,7 +388,7 @@ Feature: Monitoring
 		When I click link "Services"
 		Then I should see the configured services
 
-	@case-655 @integration
+	@configuration @case-655 @integration
 	Scenario: Service extinfo page service commands
 		Test disabling active checks of service from
 		service extinfo page.
@@ -401,7 +401,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Active checks" should be shown as "Disabled"
 
-	@case-655
+	@configuration @case-655
 	Scenario: Service extinfo page service commands
 		Test rescheduling next check from service extinfo page.
 		Given I have submitted a passive service check result "linux-server1;System Load;0;Everything was OK"
@@ -416,7 +416,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Next scheduled active check" should be shown as the value of "field_check_time"
 
-	@case-655
+	@configuration @case-655
 	Scenario: Service extinfo page service commands
 		Test submitting a passive check result from the service
 		extinfo page.
@@ -432,7 +432,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then "Current status" should be shown as "Critical"
 
-	@case-656 @unreliable
+	@configuration @case-656 @unreliable
 	Scenario: Service extinfo page check performance graph link
 		Verify that the performance graph link on the extinfo page for a given service
 		point to the right place.
@@ -443,7 +443,7 @@ Feature: Monitoring
 		Then I should be on url "/index.php/pnp?host=linux-server1&srv=System+Load"
 		And I should see "linux-server1" within frame "iframe"
 
-	@case-657
+	@configuration @case-657
 	Scenario: Service details Add/delete comment
 		Verify that adding and deleting comments on services
 		works.
@@ -462,7 +462,7 @@ Feature: Monitoring
 		When I click "Done"
 		Then I shouldn't see "A comment for service host"
 
-	@bug-6780
+	@configuration @bug-6780
 	Scenario: Unhandled problems - host in downtime
 		Verify that hosts in downtime doesn't appear in unhandled problems
 		Given I am on the main page
@@ -473,7 +473,7 @@ Feature: Monitoring
 		And I reload the page
 		Then I shouldn't see "linux-server2"
 
-	@bug-6780
+	@configuration @bug-6780
 	Scenario: Unhandled problems - service in downtime
 		Verify that a service in downtime doesn't appear in unhandled problems
 		Given I am on the main page
@@ -500,7 +500,7 @@ Feature: Monitoring
 		Then I shouldn't see "linux-server1"
 		And I shouldn't see "System Load"
 
-	@bug-7870
+	@configuration @bug-7870
 	Scenario: I can use commands
 		When I hover over the "Manage" menu
 		And I click "Process information"
@@ -511,7 +511,7 @@ Feature: Monitoring
 		Then I shouldn't see "Disable notifications"
 		And I should see "Enable notifications"
 
-	@bug-8022
+	@configuration @bug-8022
 	Scenario: Service comments in list view
 		Verify that service comments are shown when hovering the "comments" icon for a service in the list views
 		Given I am on the Service details page

@@ -1,24 +1,24 @@
 Feature: Change password
 
-	@asmonitor
 	Scenario: Change password
-		When I click "Monitor Admin"
+		Given I am logged in as administrator
+		And I am on the main page
+		And I click "Administrator"
 		And I click "Change Password"
-		And I enter "monitor" into "current_password"
+		And I enter "123123" into "current_password"
 		And I enter "billabong" into "new_password"
 		And I enter "billabong" into "confirm_password"
 		And I click "Change password"
 		Then I should see "Password changed successfully"
 		When I click "Log out"
-		Given I am logged in as "monitor" with password "billabong"
-		And I click "Monitor Admin"
+		Then I should see "Username"
+		When I enter "administrator" into "username"
+		And I enter "billabong" into "password"
+		And I click "Login"
+		And I click "Administrator"
 		And I click "Change Password"
 		And I enter "billabong" into "current_password"
-		And I enter "monitor" into "new_password"
-		And I enter "monitor" into "confirm_password"
+		And I enter "123123" into "new_password"
+		And I enter "123123" into "confirm_password"
 		And I click "Change password"
 		Then I should see "Password changed successfully"
-		# ok we're done, let's just make sure the teardown worked
-		When I click "Log out"
-		Given I am logged in as "monitor" with password "monitor"
-		Then I should see "Monitor Admin"

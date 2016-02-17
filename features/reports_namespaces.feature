@@ -1,7 +1,8 @@
 Feature: Report namespace are respected
 
 	Background:
-		Given I am logged in
+		Given I have an admins user group with all rights
+		And I am logged in
 		And I am on the main page
 
 	Scenario Outline: HTML reports are restricted

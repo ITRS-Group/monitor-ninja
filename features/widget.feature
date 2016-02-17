@@ -28,27 +28,27 @@ Feature: Widgets
 
 	Scenario: Listview widgets are rendered on TAC
 		Given I have these mocked ninja_widgets
-			|id|username  |page     |name         |friendly_name     |setting|instance_id|
-			|0 |mockeduser|tac/index|listview     |A friendly widget!|a:0:{} |1234567    |
-		And I am logged in
+			|id|username     |page     |name         |friendly_name     |setting|instance_id|
+			|0 |administrator|tac/index|listview     |A friendly widget!|a:0:{} |1234567    |
+		And I am logged in as administrator
 		When I am on the main page
 		Then I should see "A friendly widget"
 
 	Scenario: Non-installed widgets are reported as such
 		Given I have these mocked ninja_widgets
-			|id|username  |page     |name                     |friendly_name       |setting|instance_id|
-			|0 |mockeduser|tac/index|not-an-actual-widget-type|An imaginary widget!|a:0:{} |1234567    |
-		And I am logged in
+			|id|username     |page     |name                     |friendly_name       |setting|instance_id|
+			|0 |administrator|tac/index|not-an-actual-widget-type|An imaginary widget!|a:0:{} |1234567    |
+		And I am logged in as administrator
 		When I am on the main page
 		Then I should see "An imaginary widget"
 		And I should see "Widget type 'not-an-actual-widget-type' does not seem to be installed"
 
 	Scenario: Widgets that fails to render are rendered with error message
 		Given I have a widget that fails to render with error message "Widget failed to render"
-		And I am logged in
+		And I am logged in as administrator
 		And I have these mocked ninja_widgets
-			|id|username  |page     |name        |friendly_name    |setting|instance_id|
-			|0 |mockeduser|tac/index|unrenderable|Unrendered Widget|a:0:{} |1234567    |
+			|id|username     |page     |name        |friendly_name    |setting|instance_id|
+			|0 |administrator|tac/index|unrenderable|Unrendered Widget|a:0:{} |1234567    |
 
 		And I am on the main page
 		Then I should see "Widget failed to render"
@@ -57,10 +57,10 @@ Feature: Widgets
 
 	Scenario: Widgets that fail to instantiate are rendered with error message
 		Given I have a broken widget with error message "This is a dead widget"
-		And I am logged in
+		And I am logged in as administrator
 		And I have these mocked ninja_widgets
-			|id|username  |page     |name  |friendly_name|setting|instance_id|
-			|0 |mockeduser|tac/index|broken|Broken Widget|a:0:{} |1234567    |
+			|id|username     |page     |name  |friendly_name|setting|instance_id|
+			|0 |administrator|tac/index|broken|Broken Widget|a:0:{} |1234567    |
 
 		And I am on the main page
 		Then I should see "This is a dead widget"

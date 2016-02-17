@@ -11,7 +11,7 @@ Feature: Pagination
 			| linux-server1 |
 		And I have 300 services configured on host "linux-server1"
 		And I have activated the configuration
-		And I am logged in
+		And I am logged in as administrator
 		When I am on the Service details page
 		Then Link "Services total" should contain "300"
 		#+1 row for the "Load 100 more rows" row

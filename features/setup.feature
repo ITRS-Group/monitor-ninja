@@ -3,7 +3,7 @@ Feature: Initial administrator setup
 	Background:
 		Given I have no users configured
 		And I have the default authentication module configured
-		And I have an admin user group with all rights
+		And I have an admins user group with all rights
 
 	Scenario: I default to the administrator setup page
 		Given I am on the login page

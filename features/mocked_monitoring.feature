@@ -58,7 +58,7 @@ Feature: Mocked
 		Examples:
 			|name			|link			|url                                                                   |
 			|Bao Jen		|Alert history	|/index.php/alert_history/generate?report_type=hosts&objects%5B%5D=Bao+Jen|
-      |Henderson Gomez|Alert histogram|/index.php/histogram/generate?report_type=hosts&objects%5B%5D=Henderson+Gomez|
+			|Henderson Gomez|Alert histogram|/index.php/histogram/generate?report_type=hosts&objects%5B%5D=Henderson+Gomez|
 			|Raizy Olsen    |Availability report|/index.php/avail/generate?report_type=hosts&objects%5B%5D=Raizy+Olsen|
 
 	Scenario: Host details extinfo page check links

@@ -26,9 +26,6 @@ end
 
 When /^I am logged in$/ do
 
-  username = 'administrator'
-  password = '123123'
-
   @mock.mock('authmodules', [{
       "modulename" => "Default",
       "properties" => {
@@ -36,34 +33,59 @@ When /^I am logged in$/ do
       }
   }])
 
-  @mock.mock('users', [{
-      'username' => username,
-      'realname' => 'Administrator',
-      'password' => '$1$lrF9ydB5$G1EfpAnNTlzsrHF5My6Eg.',
-      'password_algo' => 'crypt',
-      'groups' => ['admins'],
-      'modules' => ['Default']
-  }])
-
-  #@mock.mock_class("op5auth", {
-  #    "mock_class" => "MockAuth",
-  #    "args" => {}
-  #})
-
-  page.driver.headers = {'X-op5-mock' => @mock.file}
-
-  steps %Q{
-      When I am on the main page
-      And I enter "#{username}" into "username"
-      And I enter "#{password}" into "password"
-      And I click "Login"
-  }
+  @mock.mock_class("op5auth", {
+      "mock_class" => "MockAuth",
+      "args" => {}
+  })
 
   @mock.mock_class("op5MayI", {
       "mock_class" => "MockMayI",
       "args" => {}
   })
 
+  page.driver.headers = {'X-op5-mock' => @mock.file}
+
+end
+
+When /^I am logged in as administrator$/ do
+
+  steps %Q{
+    Given I have an admins user group with all rights
+  }
+
+  username = 'administrator'
+  password = '123123'
+
+  @mock.mock('authmodules', [{
+    "modulename" => "Default",
+    "properties" => {
+      "driver" => "Default"
+    }
+  }])
+
+  @mock.mock('users', [{
+    'username' => username,
+    'realname' => 'Administrator',
+    'password' => '$1$lrF9ydB5$G1EfpAnNTlzsrHF5My6Eg.',
+    'password_algo' => 'crypt',
+    'groups' => ['admins'],
+    'modules' => ['Default']
+  }])
+
+  page.driver.headers = {'X-op5-mock' => @mock.file}
+
+  steps %Q{
+    When I am on the main page
+    And I enter "#{username}" into "username"
+    And I enter "#{password}" into "password"
+    And I click "Login"
+  }
+
+  # Mocked permissions must be set after user is logged in.
+  @mock.mock_class("op5MayI", {
+    "mock_class" => "MockMayI",
+    "args" => {}
+  })
 end
 
 Then /^I should see the mocked (.*)$/ do | type |
