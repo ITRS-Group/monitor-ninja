@@ -33,8 +33,12 @@ Feature: Alert history reports
 			| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky        |
 			| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
+		And I have these mocked status
+			| enable_flap_detection | enable_notifications | enable_event_handlers | execute_service_checks | execute_host_checks | accept_passive_service_checks | accept_passive_host_checks |
+			| 1                     | 1                    | 1                     | 1                      | 1                   | 1                             | 1                          |
 		And I am logged in
 
+	@configuration
 	Scenario: Single host alert history
 		Given I am on the Host details page
 		When I click "linux-server1"
@@ -49,7 +53,7 @@ Feature: Alert history reports
 		And I click "Update"
 		Then I shouldn't see "Sven Melander"
 
-	@bug-7083
+	@configuration @bug-7083
 	Scenario: Service with host alert history
 		Given I am on the Service details page
 		When I click "Swap Usage"
@@ -69,6 +73,7 @@ Feature: Alert history reports
 		Then I should see "ERROR - out of teletubbies"
 		And I shouldn't see "OK - laa-laa"
 
+	@configuration
 	Scenario: Host with service alert history
 		Given I am on the Host details page
 		When I click "win-server1"
@@ -86,7 +91,7 @@ Feature: Alert history reports
 		And I shouldn't see "ERROR - tinky-winky"
 		And I should see "OK - laa-laa"
 
-	@bug-7083
+	@configuration @bug-7083
 	Scenario: Switch object
 		Given I am on the Host details page
 		When I click "linux-server1"
@@ -105,6 +110,7 @@ Feature: Alert history reports
 		And I should see "OK - laa-laa"
 
 	# Henrik claims I broke this once, so let's prove him wrong forever
+	@configuration
 	Scenario: Change option from all objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -118,6 +124,7 @@ Feature: Alert history reports
 		And I shouldn't see "OK - Sven Melander"
 
 	# MON-8189
+	@configuration
 	Scenario: Changes to start and end times are properly updated
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -131,7 +138,7 @@ Feature: Alert history reports
 		And I click "Update"
 		Then I should see "2000-01-01 10:00:00 to 2016-01-01 10:00:00"
 
-	@bug-6341 @bug-6646
+	@configuration @bug-6341 @bug-6646
 	Scenario: Pagination
 		Given I am on the Host details page
 		When I click "win-server1"

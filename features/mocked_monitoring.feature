@@ -1,6 +1,6 @@
 Feature: Mocked
-	Background:
-		Given I am logged in
+  Background:
+    Given I am logged in
 
 	Scenario: Host details page links
 		Ensure that all links on the host details

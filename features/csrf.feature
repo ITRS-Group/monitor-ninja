@@ -1,4 +1,4 @@
-@csrf @configuration
+@csrf
 Feature: CSRF Token
 	Background:
 		Given I have these hostgroups configured:
@@ -20,6 +20,7 @@ Feature: CSRF Token
 		And I have activated the configuration
 		And I am logged in as administrator
 
+	@configuration
 	Scenario: CSRF Should fail submission of POST form with invalid token
 		Given I am on the Host details page
 		When I click "linux-server1"
@@ -28,6 +29,7 @@ Feature: CSRF Token
 		And I click "Submit"
 		Then I should see "Forbidden"
 
+	@configuration
 	Scenario: CSRF Should fail submission of POST form with empty token
 		Given I am on the Host details page
 		When I click "linux-server1"
@@ -36,6 +38,7 @@ Feature: CSRF Token
 		And I click "Submit"
 		Then I should see "Forbidden"
 
+	@configuration
 	Scenario: CSRF Should fail submission of POST form with no token
 		Given I am on the Host details page
 		When I click "linux-server1"

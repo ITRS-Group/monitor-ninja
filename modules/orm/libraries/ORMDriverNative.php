@@ -106,7 +106,8 @@ class ORMDriverNative implements ORMDriverInterface {
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
 			$visitor = new NativeFilterBuilderVisitor();
 			foreach ( $this->storage[$table] as $ix => $row) {
-				if ( $filter->visit($visitor, $row)) {
+				$obj = $model_type::factory_from_setiterator($row, '', false);
+				if ( $filter->visit($visitor, $obj)) {
 					unset($this->storage[$table][$ix]);
 				}
 			}
