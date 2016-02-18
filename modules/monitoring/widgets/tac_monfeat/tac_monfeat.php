@@ -21,6 +21,7 @@ class Tac_monfeat_Widget extends widget_Base {
 		$host_status = $current_status->hst;
 		$service_status = $current_status->svc;
 		$status = StatusPool_Model::status();
+
 		if (!$status)
 			throw new Exception("No monitoring features status information available.");
 

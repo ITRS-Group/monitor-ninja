@@ -100,6 +100,7 @@ class ORMDriverNative implements ORMDriverInterface {
 		}
 	}
 
+
 	public function delete($table, $structure, $filter)
 	{
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {

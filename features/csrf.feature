@@ -6,11 +6,11 @@ Feature: CSRF Token
 			| LinuxServers   | linux-server1,linux-server2 |
 			| WindowsServers | win-server1,win-server2     |
 		And I have these hosts:
-			| host_name     | contacts |
-			| linux-server1 | monitor  |
-			| linux-server2 |          |
-			| win-server1   |          |
-			| win-server2   |          |
+			| host_name     |
+			| linux-server1 |
+			| linux-server2 |
+			| win-server1   |
+			| win-server2   |
 		And I have these services:
 			| service_description | host_name     | check_command   | notifications_enabled | active_checks_enabled |
 			| System Load         | linux-server1 | check_nrpe!load | 1                     | 1                     |

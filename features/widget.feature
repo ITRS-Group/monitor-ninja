@@ -1,9 +1,5 @@
 @widgets
 Feature: Widgets
-	Background:
-		Given I have these mocked status
-			| enable_flap_detection | enable_notifications | enable_event_handlers | execute_service_checks | execute_host_checks | accept_passive_service_checks | accept_passive_host_checks |
-			| 1                     | 1                    | 1                     | 1                      | 1                   | 1                             | 1                          |
 
 	@unreliable
 	Scenario: External widget listview
