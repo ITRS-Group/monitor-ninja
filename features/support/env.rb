@@ -1,4 +1,5 @@
 require 'op5cucumber'
+require 'fileutils'
 
 if ENV['SERVER']
   SERVER=ENV['SERVER']
@@ -26,8 +27,12 @@ After do |scenario|
     name = scenario.scenario_outline.name
   end
   if scenario.failed?
-      puts "Scenario '#{name}' failed"
+    puts "Scenario '#{name}' failed"
   end
 
+  if File.exist?('/mnt/logs/php_errors.log')
+    cleanname = name.split("\n")[0].strip().gsub(/[ -]+/, "_")
+    FileUtils.mv('/mnt/logs/php_errors.log', "/mnt/logs/php_errors_#{cleanname}.log")
+  end
 end
 World Op5Cucumber
