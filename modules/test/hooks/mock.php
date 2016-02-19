@@ -10,7 +10,13 @@ if (!is_readable($mock_data_path)) {
 }
 
 Event::add("system.ready", function() use ($mock_data_path, $log) {
-	$json_str = file_get_contents($mock_data_path);
+	try {
+		$json_str = file_get_contents($mock_data_path);
+	}
+	catch (Exception $e) {
+		// Handle exception as error below.
+		$json_str = false;
+	}
 
 	if (!$json_str) {
 		// "error" since the user is a dev; or an elite supreme hacker
