@@ -17,9 +17,6 @@ Feature: Monitoring
 			| System Load         | linux-server2 | check_nrpe!load | 1                     | 1                     |
 			| PING                | win-server1   | check_ping      | 1                     | 0                     |
 			| PING                | win-server2   | check_ping      | 0                     | 1                     |
-		And I have these mocked status
-			| enable_flap_detection | enable_notifications | enable_event_handlers | execute_service_checks | execute_host_checks | accept_passive_service_checks | accept_passive_host_checks |
-			| 1                     | 1                    | 1                     | 1                      | 1                   | 1                             | 1                          |
 		And I have activated the configuration
 		And I am logged in as administrator
 
@@ -497,7 +494,7 @@ Feature: Monitoring
 		Then I shouldn't see "linux-server1"
 		And I shouldn't see "System Load"
 
-	@bug-6780
+	@configuration @bug-6780
 	Scenario: Unhandled problems - service on host in downtime
 		Verify that a service on a host in downtime doesn't appear in unhandled problems
 		Given I have submitted a passive host check result "linux-server1;0;Under load"
