@@ -1,9 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-if (isset($error)) {
-	echo '<div class="alert error">' . $error . '</div>';
-	return;
-}
-?>
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <table class="list-table" id="mmm">
 	<colgroup>
 		<col style="width: 20%" />

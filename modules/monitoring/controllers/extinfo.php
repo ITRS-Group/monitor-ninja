@@ -302,6 +302,8 @@ class Extinfo_Controller extends Ninja_Controller {
 		# fetch program status from program_status_model; uses ORM
 		$status = StatusPool_Model::status();
 		$content->object = $status;
+		if (!$status)
+			throw new Exception("No monitoring features status information available.");
 
 		$content->info[] = array(
 			"title" => "Program version",

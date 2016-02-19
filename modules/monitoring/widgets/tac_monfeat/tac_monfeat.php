@@ -16,17 +16,13 @@ class Tac_monfeat_Widget extends widget_Base {
 		$host_status = (object) array();
 		$service_status = (object) array();
 
-		try {
-			$current_status = Current_status_Model::instance();
-			$current_status->analyze_status_data();
-			$host_status = $current_status->hst;
-			$service_status = $current_status->svc;
-			$status = StatusPool_Model::status();
-		} catch (op5LivestatusException $ex) {
-			$error = _("Could not connect to Livestatus");
-			require($view_path);
-			return;
-		}
+		$current_status = Current_status_Model::instance();
+		$current_status->analyze_status_data();
+		$host_status = $current_status->hst;
+		$service_status = $current_status->svc;
+		$status = StatusPool_Model::status();
+		if (!$status)
+			throw new Exception("No monitoring features status information available.");
 
 		$cmd_flap_link = $linkprovider->get_url('cmd', 'index', array(
 			"command" => ($status->get_enable_flap_detection() ? 'stop' : 'start').'_flap_detection',
