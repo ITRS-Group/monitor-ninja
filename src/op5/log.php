@@ -86,7 +86,7 @@ class op5Log {
 		if($namespace === false)
 			return $log_instance;
 
-		/* Return a wrapper to aughment the log with a namespace field */
+		/* Return a wrapper to augment the log with a namespace field */
 		return new op5LogAccess($log_instance, $namespace);
 	}
 
