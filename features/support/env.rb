@@ -32,7 +32,9 @@ After do |scenario|
 
   if File.exist?('/mnt/logs/php_errors.log')
     cleanname = name.split("\n")[0].strip().gsub(/[ -]+/, "_")
-    FileUtils.mv('/mnt/logs/php_errors.log', "/mnt/logs/php_errors_#{cleanname}.log")
+    new_path = "/mnt/logs/php_errors_#{cleanname}.log"
+    puts "Moving php_errors.log to #{new_path} after scenario #{name}"
+    FileUtils.mv('/mnt/logs/php_errors.log', new_path)
   end
 end
 World Op5Cucumber
