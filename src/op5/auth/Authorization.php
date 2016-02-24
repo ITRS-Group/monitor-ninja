@@ -1,6 +1,5 @@
 <?php
 require_once (__DIR__ . '/../config.php');
-require_once (__DIR__ . '/../log.php');
 
 /**
  * User authentication and authorization library.
@@ -24,7 +23,6 @@ class op5Authorization {
 	}
 	private $groups = null;
 	public function __construct() {
-		$this->log = op5Log::instance('auth');
 		$this->groups = UserGroupPool_Model::all();
 	}
 
@@ -69,7 +67,6 @@ class op5Authorization {
 			}
 		}
 
-		/* Store as auth_data */
 		$user->set_auth_data($auth_data);
 		return $authorized;
 	}
