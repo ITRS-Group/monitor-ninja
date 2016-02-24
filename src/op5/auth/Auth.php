@@ -60,14 +60,13 @@ class op5auth implements op5MayI_Actor {
 	 * Returns an instance of op5auth
 	 *
 	 * @param $config array
-	 * @param $driver_config array
 	 * @return void
 	 */
-	static public function instance($config = false, $driver_config = false) {
+	static public function instance(array $config = array()) {
 		return op5objstore::instance()->obj_instance_callback(
 			__CLASS__,
-			function () use($config, $driver_config) {
-				return new op5auth($config, $driver_config);
+			function () use($config) {
+				return new op5auth($config);
 			}
 		);
 	}
@@ -78,12 +77,11 @@ class op5auth implements op5MayI_Actor {
 	 *
 	 * @deprecated
 	 * @param $config array
-	 * @param $driver_config array
 	 * @return void
 	 */
-	static public function factory($config = false, $driver_config = false) {
+	static public function factory(array $config = array()) {
 		op5objstore::instance()->unload(__CLASS__);
-		return self::instance($config, $driver_config);
+		return self::instance($config);
 	}
 
 	/**

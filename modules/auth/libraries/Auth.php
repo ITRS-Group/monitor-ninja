@@ -16,9 +16,9 @@ class Auth {
 	 *
 	 * @return  object
 	 */
-	public static function factory($config = array(), $driver_config = array())
+	public static function factory(array $config = array())
 	{
-		Op5Auth::factory($config, $driver_config);
+		Op5Auth::factory($config);
 		return new self();
 	}
 
@@ -42,7 +42,7 @@ class Auth {
 	 *
 	 * @return  object
 	 */
-	public static function instance($config = array(), $driver_config = array())
+	public static function instance($config = array())
 	{
 		/*
 		 * Since op5auth expectes the sesssion to be started, we should make sure
@@ -58,7 +58,7 @@ class Auth {
 		if (self::$fake_instance !== false) return self::$fake_instance;
 		// Load the Auth instance
 		try {
-			$instance = new Auth($config, $driver_config);
+			$instance = new Auth($config);
 		}
 		catch( Exception $e ) {
 			self::disable_auth_subsystem();
@@ -69,11 +69,10 @@ class Auth {
 
 	/**
 	 * @param $config array Optional method config
-	 * @param $driver_config array Optional Driver config
 	 */
-	public function __construct( $config = NULL, $driver_config = array() )
+	public function __construct(array $config = array())
 	{
-		Op5Auth::instance( $config, $driver_config );
+		Op5Auth::instance($config);
 	}
 
 	/**
