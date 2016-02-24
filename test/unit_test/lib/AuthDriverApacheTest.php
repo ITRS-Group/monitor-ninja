@@ -5,12 +5,29 @@ require_once "op5/objstore.php";
 
 class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 {
-	private $dut; /* Device under test */
+	/**
+	 * Device under test
+	 *
+	 * @var op5AuthDriver_Apache
+	 */
+	private $dut;
 
 	private $default_config = array(
 		'auth' => array(
 			'Apa' => array(
 				'driver' => 'Apache'
+			),
+			'common' => array(
+				'session_key' => 'auth_user',
+				'default_auth' => 'Default',
+				'apc_enabled' => 'false',
+				'apc_ttl' => '60',
+				'apc_store_prefix' => 'op5_login_'
+			)
+		),
+		'auth_groups' => array(
+			'yolo' => array(
+				'host_view_all'
 			)
 		),
 		'auth_users' => array(
@@ -55,12 +72,21 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 				),
 				'modules' => array(
 				)
+			),
+			'usrf' => array(
+				'username' => 'usrf',
+				'realname' => 'User F',
+				'groups' => array(
+					'yolo'
+				),
+				'modules' => array(
+					'Apa'
+				)
 			)
 		)
 	);
 
 	private function init_config($module_name) {
-
 		op5objstore::instance()->mock_add('op5config', new MockConfig($this->default_config));
 		$config = $this->default_config['auth'][$module_name];
 
@@ -151,6 +177,14 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 				$groups,
 				'Test group resolution without login'
 		);
+	}
+
+	function test_get_user() {
+		$_SERVER['PHP_AUTH_USER'] = "usrf";
+		$auth = new op5auth(array('enable_auto_login' => true));
+		$user = $auth->get_user();
+		$this->assertNotInstanceOf('User_NoAuth_Model', $user);
+		$this->assertInstanceOf('User_Model', $user);
 	}
 
 }

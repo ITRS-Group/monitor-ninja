@@ -89,20 +89,20 @@ class op5auth implements op5MayI_Actor {
 	 *
 	 * @throws Exception Essential configuration is missing
 	 * @param $config array The array overrides the values read from common configuration
-	 * @param $driver_config array
 	 */
-	public function __construct($config = false) {
+	public function __construct(array $config = array()) {
 
 		$this->log = op5Log::instance('auth');
-		$authconf = op5config::instance()->getConfig('auth');
+		$authconf = op5objstore::instance()->obj_instance('op5config')->getConfig('auth');
 
-		if (!isset($authconf['common']))
+		if (!isset($authconf['common'])) {
 			throw new Exception('section "common" not found in auth.yml');
+		}
 
 		$common = $authconf['common'];
 		$this->config = array_merge($this->config, $common);
 
-		if (is_array($config)) {
+		if ($config) {
 			$this->config = array_merge($this->config, $config);
 		}
 
@@ -168,8 +168,9 @@ class op5auth implements op5MayI_Actor {
 	 */
 	public function get_user() {
 
-		if ($this->user === null && $this->config['session_key'])
+		if ($this->user === null && $this->config['session_key']) {
 			$this->user = $this->session_fetch($this->config['session_key']);
+		}
 
 		/*
 		 * This is needed for Apache auth, which doesn't go through login method
@@ -179,13 +180,14 @@ class op5auth implements op5MayI_Actor {
 		if ($this->config['enable_auto_login'] && $this->user === null) {
 			foreach ($this->auth_modules as $module)  {
 
-				$driver = $this->get_auth_driver($module->get_modulename());
+				$module_name = $module->get_modulename();
+				$driver = $this->get_auth_driver($module_name);
 				$user = $driver->auto_login();
 
 				if ($user) {
 					/* Postprocess login */
-					$user->set_auth_method($auth_module);
-					if ($this->authorize_user($user, $auth_module)) {
+					$user->set_auth_method($module_name);
+					if ($this->authorize_user($user)) {
 						$this->user = $user;
 						return $user;
 					}
