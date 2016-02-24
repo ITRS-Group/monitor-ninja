@@ -28,51 +28,25 @@ class Setup_Controller extends Chromeless_Controller {
 	 * index
 	 */
 	public function configure () {
+
+		$data = array(
+			'user' => array(
+				'username' => $this->input->post('username'),
+				'realname' => $this->input->post('realname', $this->input->post('username')),
+				'password' => $this->input->post('password', ''),
+				'password-repeat' => $this->input->post('password-repeat')
+			)
+		);
+
 		try {
-			$user = new User_Model();
-
-			$password = $this->input->post('password', '');
-			$repeat = $this->input->post('password-repeat');
-			$username = $this->input->post('username');
-			$method = 'Default';
-
-			if ($password !== $repeat) {
-				throw new Exception(
-					'Passwords do not match'
-				);
-			}
-
-			// for UX reasons, displaying the proper authentication
-			// module driven exception for this was deemed to far
-			// above new users
-			if (strlen($password) === 0) {
-				throw new Exception(
-					'You need to set a password'
-				);
-			}
-
-			$user->set_username($username);
-			$user->set_realname($username);
-			$user->set_password($password);
-
-			$user->set_groups(array('admins'));
-			$user->set_modules(array($method));
-
-			$user->save();
-			$eventdata = array(
-				'administrator' => array(
-					'username' => $username
-				)
-			);
-
-			Event::run('ninja.initial.setup', $eventdata);
-			$this->auto_login($username, $password, $method);
-
+			Event::run('ninja.setup', $data);
+			$this->auto_login($data['user']['username'], $data['user']['password'], 'Default');
 		} catch (Exception $e) {
 			$this->index(
 				new ErrorNotice_Model($e->getMessage())
 			);
 		}
+
 	}
 
 	/**
