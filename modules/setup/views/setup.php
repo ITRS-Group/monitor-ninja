@@ -10,7 +10,7 @@
 		<p>
 			<span class="brand"><?php echo brand::get(); ?></span>
 		</p>
-		<h2>Create your op5 Monitor administrator account</h2>
+		<h2>Create your administrator account</h2>
 		<p>
 			You should save this username and password at a safe location so that the account is not lost.
 		</p>
