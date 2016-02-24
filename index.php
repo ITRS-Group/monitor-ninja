@@ -87,13 +87,20 @@ define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 // Clean up
 unset($kohana_application, $kohana_modules, $kohana_system);
 
-if (file_exists(DOCROOT.'install'.EXT))
-{
-	// Load the installation tests
-	include DOCROOT.'install'.EXT;
+try {
+	if (file_exists(DOCROOT.'install'.EXT))
+	{
+		// Load the installation tests
+		include DOCROOT.'install'.EXT;
+	}
+	else
+	{
+		// Initialize Kohana
+		require SYSPATH.'core/Bootstrap'.EXT;
+	}
 }
-else
-{
-	// Initialize Kohana
-	require SYSPATH.'core/Bootstrap'.EXT;
+catch (Exception $e) {
+	$msg = $e->getMessage();
+	op5log::instance('ninja')->log('error', $msg);
+	echo 'Something went wrong. Exception thrown with message: ' . $msg;
 }
