@@ -33,16 +33,6 @@ Feature: Monitoring
 		When I click "Services total"
 		Then I should see the configured services
 
-	@configuration @case-646 @unreliable
-	Scenario: Host details host commands - Locate host on map
-		Verify that the "Locate host on map" host command
-		works correctly.
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Locate host on map"
-		Then I should be on url "/index.php/nagvis/automap/host/linux-server1"
-		And I should see "linux-server1" within frame "nagvis"
-
 	@configuration @case-646
 	Scenario: Host details host commands - Disable active checks
 		Verify that the "Disable active checks" host command

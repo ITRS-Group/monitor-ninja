@@ -48,7 +48,7 @@ Feature: Histogram reports
 
 	@configuration @reports
 	Scenario: Generate report on empty hostgroup
-		Given  I am on the Host details page
+		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Histogram" menu
 		When I click "Create Histogram Report"
