@@ -385,7 +385,7 @@ Feature: Monitoring
 		When I click link "Services"
 		Then I should see the configured services
 
-	@configuration @case-655 @integration
+	@configuration @case-655
 	Scenario: Service extinfo page service commands
 		Test disabling active checks of service from
 		service extinfo page.
