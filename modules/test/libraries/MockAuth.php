@@ -1,4 +1,5 @@
 <?php
+require_once("op5/auth/Authorization.php");
 /**
  * A mock implementation of op5Auth, which defines a hard coded user
  * "mockeduser", which is authorized to do anything.
@@ -43,11 +44,20 @@ class MockAuth extends op5auth
 	 * @return  mixed
 	 */
 	public function get_user() {
+		$auth_data = array();
+		foreach(op5Authorization::get_all_auth_levels() as $category => $cat_auth_data) {
+			foreach($cat_auth_data as $lvl => $desc) {
+				$auth_data[$lvl] = true;
+			}
+		}
+		foreach($this->denied_authpoints as $lvl) {
+			$auth_data[$lvl] = false;
+		}
 		$user = new User_Model(array(
 			"username" => "mockeduser",
 			"realname" => "Mocke D. User",
 			"email" => "mockeduser@op5.com",
-			"auth_data" => array()
+			"auth_data" => $auth_data
 		));
 		return $user;
 	}
