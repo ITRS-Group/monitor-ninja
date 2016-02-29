@@ -1,4 +1,4 @@
-@availability @configuration @reports
+@availability
 Feature: Availability reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
@@ -36,6 +36,7 @@ Feature: Availability reports
 		And I have activated the configuration
 		And I am logged in as administrator
 
+	@configuration @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -45,6 +46,7 @@ Feature: Availability reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
+	@configuration @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -56,6 +58,7 @@ Feature: Availability reports
 		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
+	@configuration @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
