@@ -18,7 +18,7 @@ Feature: Initial administrator setup
 		Then I should see "Passwords do not match"
 		When I enter "my grandma rocks" into "password"
 		And I enter "my grandma rocks" into "password-repeat"
-		And I click "Create account"
+		And I click "Create account" waiting patiently
 		Then I should be logged in as "administrator"
 		When I go to the listview for [contacts] all
 		Then I should see "administrator"

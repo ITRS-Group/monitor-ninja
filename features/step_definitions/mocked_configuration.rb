@@ -86,6 +86,34 @@ When /^I am logged in as administrator$/ do
   })
 end
 
+# Set up an adminitrator account but do not log in.
+When /^I have an administrator account$/ do
+  steps %Q{
+    Given I have an admins user group with all rights
+  }
+
+  username = 'administrator'
+  password = '123123'
+
+  @mock.mock('authmodules', [{
+    "modulename" => "Default",
+    "properties" => {
+      "driver" => "Default"
+    }
+  }])
+
+  @mock.mock('users', [{
+    'username' => username,
+    'realname' => 'Administrator',
+    'password' => '$1$lrF9ydB5$G1EfpAnNTlzsrHF5My6Eg.',
+    'password_algo' => 'crypt',
+    'groups' => ['admins'],
+    'modules' => ['Default']
+  }])
+
+  page.driver.headers = {'X-op5-mock' => @mock.file}
+end
+
 Then /^I should see the mocked (.*)$/ do | type |
   @mock.data(type).all? { |obj|
     if type == 'services'
