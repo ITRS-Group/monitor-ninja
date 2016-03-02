@@ -89,7 +89,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	protected function generate_pdf()
 	{
 		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
-		$this->clear_print_notification();
+		$this->_clear_print_notification();
 		$this->_verify_access($resource.':read.report.'.$this->type.'.pdf');
 		$this->template->base_href = 'https://localhost'.url::base();
 

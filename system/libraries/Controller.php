@@ -41,7 +41,16 @@ abstract class Controller {
 	 */
 	public function __call($method, $args)
 	{
-		// Default to showing a 404 page
+		op5log::instance('ninja')->log('debug',
+			sprintf(
+				"404 triggered from '%s' for url '%s', wanted to call method '%s' with args '%s'",
+				__METHOD__,
+				Router::$complete_uri,
+				$method,
+				var_export($args, true)
+			)
+		);
+
 		Event::run('system.404');
 	}
 

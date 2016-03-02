@@ -160,7 +160,12 @@ class Router {
 
 		if (self::$controller === NULL)
 		{
-			// No controller was found, so no page can be rendered
+			op5log::instance('ninja')->log('debug',
+				sprintf(
+					"Triggering 404 from '%s' because no controller was found, so no page can be rendered",
+					__METHOD__
+				)
+			);
 			Event::run('system.404');
 		}
 	}

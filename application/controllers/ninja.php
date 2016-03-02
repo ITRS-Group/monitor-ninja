@@ -84,19 +84,6 @@ class Ninja_Controller extends Base_Controller {
 	}
 
 	/**
-	 * Clean up print notifications
-	 *
-	 * If we want to regenerate the list of print notifiactions, we can simply clean it up
-	 */
-	protected function clear_print_notification() {
-		$this->template->print_notifications = array();
-	}
-
-	public function add_print_notification($notification) {
-		$this->template->print_notifications[] = $notification;
-	}
-
-	/**
 	 * Find and include php files from 'addons' found in defined folders
 	 */
 	protected function _addons()

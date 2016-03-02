@@ -164,7 +164,7 @@ final class Kohana {
 
 			if (Router::$method[0] === '_')
 			{
-				// Do not allow access to hidden methods
+				op5log::instance('ninja')->log('debug', 'Triggering 404 for disallowed hidden method '.Router::$complete_uri);
 				Event::run('system.404');
 			}
 
@@ -174,6 +174,7 @@ final class Kohana {
 			$classname = ucfirst(Router::$controller).'_Controller';
 
 			if (!class_exists($classname)) {
+				op5log::instance('ninja')->log('debug', 'Triggering 404 for missing class '.Router::$complete_uri);
 				Event::run('system.404');
 			}
 

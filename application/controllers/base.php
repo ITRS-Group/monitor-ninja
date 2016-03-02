@@ -33,6 +33,27 @@ class Base_Controller extends Template_Controller {
 	}
 
 	/**
+	 * Clean up print notifications
+	 *
+	 * If we want to regenerate the list of print notifiactions, we can simply clean it up
+	 */
+	protected function _clear_print_notification() {
+		if(!$this->template instanceof View) {
+			op5log::instance('ninja')->log('debug', 'You tried to clear print notifications without having a view');
+			return;
+		}
+		$this->template->print_notifications = array();
+	}
+
+	protected function _add_print_notification($notification) {
+		if(!$this->template instanceof View) {
+			op5log::instance('ninja')->log('debug', 'You tried to add a print notification without having a view: '.$notification);
+			return;
+		}
+		$this->template->print_notifications[] = $notification;
+	}
+
+	/**
          * Verify access to a given action.
          * If no access, throw a Kohana_User_Exception
          *
@@ -43,7 +64,6 @@ class Base_Controller extends Template_Controller {
          * execution path, and render a access denied-page.
          */
 	protected function _verify_access($action, $args = array()) {
-
 		$access = $this->mayi->run(
 			$action, $args, $messages,
 			$this->access_perfdata
@@ -55,7 +75,7 @@ class Base_Controller extends Template_Controller {
 				// Since the messages are published depending
 				// on action instead of target, we should add
 				// all messages as print_notifications as well
-				$this->add_print_notification($msg);
+				$this->_add_print_notification($msg);
 			}
 		} elseif (!Auth::instance()->get_user()->logged_in()) {
 			$this->redirect('auth', 'login', array(
@@ -68,8 +88,5 @@ class Base_Controller extends Template_Controller {
 			throw new Kohana_User_Exception('No access',
 				'Access denied for action ' . $action, $this->template);
 		}
-
 	}
-
-
 }
