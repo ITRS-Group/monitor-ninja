@@ -18,7 +18,6 @@ require_once('op5/log.php');
 class Base_Controller extends Template_Controller {
 
 	protected function redirect ($controller, $method = null, array $parameters = array()) {
-
 		$url = LinkProvider::factory()->get_url($controller, $method, $parameters);
 
 		if (Event::has_run('system.send_headers')) {
@@ -30,7 +29,7 @@ class Base_Controller extends Template_Controller {
 
 		header('HTTP/1.1 302 Found');
 		header('Location: ' . $url);
-
+		exit(0);
 	}
 
 	/**
