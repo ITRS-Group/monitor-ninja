@@ -252,15 +252,6 @@ Feature: Monitoring
 		Then "Flap detection" should be shown as "Disabled"
 		And I should see "Enable flap detection"
 
-	@configuration @case-647 @unreliable
-	Scenario: Host details host extinfo page show performance graph
-		Verify that the "Show performance graph" link works correctly.
-		Given I have PNP data for "linux-server1"
-		And I am on the Host details page
-		When I click "linux-server1"
-		And I click "Show performance graph"
-		Then I should be on url "/index.php/pnp?host=linux-server1&srv=_HOST_"
-
 	@configuration @case-648
 	Scenario: Host details Add/delete comment
 		Verify that adding and deleting comments on hosts
@@ -382,17 +373,6 @@ Feature: Monitoring
 		Then I should see "Your command was successfully submitted"
 		When I click "Done"
 		Then "Current status" should be shown as "Critical"
-
-	@configuration @case-656 @unreliable
-	Scenario: Service extinfo page check performance graph link
-		Verify that the performance graph link on the extinfo page for a given service
-		point to the right place.
-		Given I have PNP data for "linux-server1;System Load"
-		And I am on the Service details page
-		When I click "System Load"
-		And I click "Show performance graph"
-		Then I should be on url "/index.php/pnp?host=linux-server1&srv=System+Load"
-		And I should see "linux-server1" within frame "iframe"
 
 	@configuration @case-657
 	Scenario: Service details Add/delete comment
