@@ -17,6 +17,16 @@ require_once('op5/log.php');
  */
 class Base_Controller extends Template_Controller {
 
+	/**
+	 * @var NoticeManager_Model
+	 */
+	public $notices;
+
+	public function __construct() {
+		parent::__construct();
+		$this->notices = new NoticeManager_Model();
+	}
+
 	protected function redirect ($controller, $method = null, array $parameters = array()) {
 		$url = LinkProvider::factory()->get_url($controller, $method, $parameters);
 

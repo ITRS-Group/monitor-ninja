@@ -34,7 +34,6 @@ class Chromeless_Controller extends Base_Controller {
 
 		parent::__construct();
 
-		$this->notices = new NoticeManager_Model();
 		$this->mayi = op5MayI::instance();
 		$this->log = op5log::instance('ninja');
 

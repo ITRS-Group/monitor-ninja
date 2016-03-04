@@ -26,11 +26,6 @@ class Ninja_Controller extends Base_Controller {
 	public $widgets = array();
 
 	/**
-	 * @var NoticeManager_Model
-	 */
-	public $notices;
-
-	/**
 	 * @var LinkProvider
 	 */
 	public $linkprovider;
@@ -44,7 +39,6 @@ class Ninja_Controller extends Base_Controller {
 	public function __construct () {
 		parent::__construct();
 
-		$this->notices = new NoticeManager_Model();
 		$this->mayi = op5MayI::instance();
 		$this->log = op5log::instance('ninja');
 
