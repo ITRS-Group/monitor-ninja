@@ -307,16 +307,16 @@ class op5MayI {
 		$log_notice = $log->loggable_level('notice');
 
 		foreach ($this->constraints as $i => $rs) {
-			list($obj, $priority) = $rs;
+			list($constraint, $priority) = $rs;
 			$cur_messages = array();
 			$cur_metrics = array();
-			$cur_result = $obj->run($action, $environment, $cur_messages, $cur_metrics);
+			$cur_result = $constraint->run($action, $environment, $cur_messages, $cur_metrics);
 			$constr_res[] = array($cur_result, $priority, $cur_messages, $cur_metrics);
 			if(!$cur_result) {
 				if($log_debug)
-					$log->log('debug', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
+					$log->log('debug', get_class($constraint)." denies '$action'\n".Spyc::YAMLDump(array('environment' => $environment)));
 				if($log_notice)
-					$log->log('notice', get_class($obj)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
+					$log->log('notice', get_class($constraint)." denies '$action'\n".Spyc::YAMLDump(array('messages' => $cur_messages)));
 				$allow = false;
 			}
 		}
