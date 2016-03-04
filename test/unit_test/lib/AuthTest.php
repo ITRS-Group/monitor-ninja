@@ -354,6 +354,33 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * The get_metadata interface of auth sucks, but at least
+	 * test that it sucks the same between changes.
+	 */
+	public function test_get_metadata_all() {
+		$result = op5auth::instance()->get_metadata();
+
+		$this->assertArrayHasKey('require_user_configuration', $result);
+		$this->assertArrayHasKey('require_user_password_configuration', $result);
+		$this->assertArrayHasKey('login_screen_dropdown', $result);
+
+		$this->assertEquals(array("mydefault"),$result['require_user_configuration']);
+		$this->assertEquals(array("mydefault"),$result['require_user_password_configuration']);
+		$this->assertEquals(array("mydefault"),$result['login_screen_dropdown']);
+
+	}
+
+	public function test_get_metadata_specific() {
+		$result = op5auth::instance()->get_metadata('require_user_password_configuration');
+		$this->assertEquals(array("mydefault"), $result);
+	}
+
+	public function test_get_metadata_when_not_set() {
+		$result = op5auth::instance()->get_metadata('the_module_flurpbar_setting');
+		$this->assertFalse($result);
+	}
+
+	/**
 	 * Test forcing a user, which means bypassing the auth mechanism.
 	 * It should still write to the session
 	 */

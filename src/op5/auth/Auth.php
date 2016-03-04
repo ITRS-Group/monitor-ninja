@@ -118,9 +118,7 @@ class op5auth implements op5MayI_Actor {
 
 		if (count($this->auth_modules) === 0) {
 			throw new Exception('No authentication driver specified');
-		}
-
-		if (count($this->auth_modules) == 1) {
+		} elseif (count($this->auth_modules) == 1) {
 			$this->config['default_auth'] = $this->auth_modules->one()->get_modulename();
 		}
 	}
@@ -621,8 +619,8 @@ class op5auth implements op5MayI_Actor {
 			}
 		}
 		if ($field !== false) {
-			if (isset($metadata[$var]))
-				return $metadata[$var];
+			if (isset($metadata[$field]))
+				return $metadata[$field];
 			return false;
 		}
 		return $metadata;
