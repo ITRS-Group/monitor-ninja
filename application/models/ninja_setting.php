@@ -3,9 +3,19 @@
 /**
  *	Handle page data - saving and fetching
  */
-class Ninja_setting_Model extends Model
-{
-	const USERFIELD = 'username'; /**< The DB field that provides the user name */
+class Ninja_setting_Model extends Model {
+
+	private static function fetch_default_setting ($type, $page = false) {
+
+		$set = SettingPool_Model::all()
+			->reduce_by('username', '', '=')
+			->reduce_by('type', $type, '=')
+			->reduce_by('page', $page, '=');
+
+		return (count($set)) ? (object) $set->one()->export() : false;
+
+	}
+
 	/**
 	 * Save page setting for a user
 	 *
@@ -20,35 +30,30 @@ class Ninja_setting_Model extends Model
 		$type = trim($type);
 		$page = trim($page);
 		$value = trim($value);
-		$user = empty($username) ? @Auth::instance()->get_user()->get_username() : $username;
-		if (empty($type))
-			return false;
+		$username = empty($username) ? op5Auth::instance()->get_user()->get_username() : $username;
 
-		$db = Database::instance();
-		$db->connect();
+		if (empty($type)) return false;
+		$set = SettingPool_Model::all()
+			->reduce_by('username', $username, '=')
+			->reduce_by('type', $type, '=')
+			->reduce_by('page', $page, '=');
 
-		if (empty($user))
-			$user = "''";
-		else
-			$user = $db->escape($user);
-
-		$sql = "SELECT * FROM ninja_settings WHERE ".self::USERFIELD."=".$user.
-			" AND page=".$db->escape($page)." AND type=".$db->escape($type);
-
-		# does this setting exist? (i.e should we do insert or update)
-		$res = $db->query($sql);
-		if (count($res)!=0) {
-			$sql = "UPDATE ninja_settings SET setting=".$db->escape($value).
-				" WHERE ".self::USERFIELD."=".$user." AND type=".
-				$db->escape($type)." AND page=".$db->escape($page);
+		/* Setting already exists, update it */
+		if (count($set)) {
+			$setting = $set->one();
+			$setting->set_setting($value);
+			$setting->save();
 		} else {
-			$sql = "INSERT INTO ninja_settings(page, type, setting, ".self::USERFIELD.") ".
-				"VALUES(".$db->escape($page).", ".$db->escape($type).", ".$db->escape($value).
-				", ".$user.")";
+			$setting = new Setting_Model();
+			$setting->set_username($username);
+			$setting->set_type($type);
+			$setting->set_page($page);
+			$setting->set_setting($value);
+			$setting->save();
 		}
-		unset($res);
-		$db->query($sql);
+
 		return true;
+
 	}
 
 	/**
@@ -60,35 +65,28 @@ class Ninja_setting_Model extends Model
 	 */
 	public static function fetch_page_setting($type, $page=false, $default=false)
 	{
+
 		$type = trim($type);
 		$page = trim($page);
-		if (empty($type))
-			return false;
 
-		$db = Database::instance();
-		$db->connect();
-		$res = false;
-		$sql_base = "SELECT * FROM ninja_settings";
-		if ($default === true) {
-			# We have a request for default value
-			$sql = $sql_base." WHERE (".self::USERFIELD."='' OR ".self::USERFIELD." IS NULL) AND page=".
-				$db->escape($page)." AND type=".$db->escape($type);
-		} else {
-			$user = @Auth::instance()->get_user()->get_username();
-			# first, try user setting
-			$sql = $sql_base." WHERE ".self::USERFIELD."=".$db->escape($user)." AND page=".$db->escape($page).
-				" AND type=".$db->escape($type);
+		if (empty($type)) return false;
 
-			$res = $db->query($sql);
-			if (count($res)==0) {
-				# try default if nothing found
-				$sql = $sql_base." WHERE (".self::USERFIELD."='' OR ".self::USERFIELD." IS NULL) AND page=".
-					$db->escape($page)." AND type=".$db->escape($type);
-				$res = false;
-			}
+		if ($default) {
+			return self::fetch_default_setting($type, $page);
 		}
-		$result = ($res!== false && count($res)) ? $res : $db->query($sql);
-		return count($result) !=0 ? $result->current() : false;
+
+		$username = op5Auth::instance()->get_user()->get_username();
+		$set = SettingPool_Model::all()
+			->reduce_by('username', $username, '=')
+			->reduce_by('type', $type, '=')
+			->reduce_by('page', $page, '=');
+
+		if (count($set)) {
+			return (object) $set->one()->export();
+		}
+
+		return self::fetch_default_setting($type, $page);
+
 	}
 
 	/**
@@ -103,19 +101,18 @@ class Ninja_setting_Model extends Model
 	{
 		$type = trim($type);
 		$page = trim($page);
-		if (empty($type))
-			return false;
 
-		$db = Database::instance();
-		$res = false;
-		$sql_base = "SELECT * FROM ninja_settings";
-		$user = empty($username) ? Auth::instance()->get_user()->get_username() : $username;
+		if (empty($type)) return false;
 
-		$sql = $sql_base." WHERE ".self::USERFIELD."=".$db->escape($user)." AND page=".$db->escape($page).
-			" AND type=".$db->escape($type);
+		$set = SettingPool_Model::all()
+			->reduce_by('username', $username, '=')
+			->reduce_by('type', $type, '=')
+			->reduce_by('page', $page, '=');
 
-		$res = $db->query($sql);
-		$result = ($res!== false && count($res)) ? $res : $db->query($sql);
-		return count($result) !=0 ? $result->current() : false;
+		if (count($set)) {
+			return (object) $set->one()->export();
+		}
+
+		return false;
 	}
 }
