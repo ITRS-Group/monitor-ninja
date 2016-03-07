@@ -5,8 +5,6 @@ if (!empty($base_href)) {
 	echo (!empty($base_href)) ? '<base href="'.$base_href.'" />' : '';
 }
 ?>
-
-	<meta http-equiv="X-UA-Compatible" content="IE=8" /> <!-- Please remove me -->
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
 	<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
