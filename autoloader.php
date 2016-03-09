@@ -3,49 +3,33 @@
 call_user_func(function () {
 
 	$root = dirname(__FILE__);
-	$include_paths = array();
 
 	/**
 	 * Set include paths for all modules that we have
 	 */
-	foreach (glob($root . '/modules/*', GLOB_ONLYDIR) as $path) {
-		$include_paths[] = $path;
-	}
-
+	$include_paths = glob($root . '/modules/*', GLOB_ONLYDIR);
 	$include_paths[] = $root . '/application';
 	$include_paths[] = $root . '/system';
 
 	/**
-	 * This is a "copy" of the Kohana::find_file that does not depend on
-	 * any global constants being set
+	 * This function locates classes as Kohanas find_file does it
+	 * but can ignore caching since a class will never be located
+	 * twice once included, and ignore config files and more since
+	 * this can only load classes.
 	 */
-	$file_cache = array();
-	$locate = function ($directory, $filename) use (&$file_cache, &$include_paths) {
+	$locate = function ($directory, $filename) use ($include_paths) {
 
-		$search = $directory.'/'.$filename.'.php';
-		if (isset($file_cache[$search])) return $file_cache[$search];
+		$file = false;
+		$classpath = $directory.'/'.$filename.'.php';
 
-		$paths = $include_paths;
-		$found = NULL;
-
-		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'config/custom') {
-			$paths = array_reverse($paths);
-			foreach ($paths as $path) {
-				if (is_file($path.'/'.$search)) {
-					$found[] = $path.'/'.$search;
-				}
-			}
-		} else {
-			foreach ($paths as $path) {
-				if (is_file($path.'/'.$search)) {
-					$found = $path.'/'.$search;
-					break;
-				}
+		foreach ($include_paths as $path) {
+			if (is_file($path.'/'.$classpath)) {
+				$file = $path.'/'.$classpath;
+				break;
 			}
 		}
 
-		if ($found === NULL) $found = false;
-		return $file_cache[$search] = $found;
+		return $file;
 
 	};
 
