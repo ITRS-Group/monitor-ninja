@@ -105,7 +105,7 @@ final class Kohana {
 		error_reporting($ER);
 
 		// Set autoloader
-		spl_autoload_register(array('Kohana', 'auto_load'));
+		require_once(DOCROOT . 'autoloader.php');
 
 		// Set error handler
 		if (PHP_SAPI !== 'cli' && !defined('SKIP_KOHANA')) {
@@ -617,99 +617,6 @@ final class Kohana {
 
 		}
 		exit;
-	}
-
-	/**
-	 * Provides class auto-loading.
-	 *
-	 * @throws  Kohana_Exception
-	 * @param   string  name of class
-	 * @return  bool
-	 */
-	public static function auto_load($class)
-	{
-		if (class_exists($class, FALSE))
-			return TRUE;
-
-		if (($suffix = strrpos($class, '_')) > 0)
-		{
-			// Find the class suffix
-			$suffix = substr($class, $suffix + 1);
-		}
-		else
-		{
-			// No suffix
-			$suffix = FALSE;
-		}
-
-		if ($suffix === 'Core')
-		{
-			$type = 'libraries';
-			$file = substr($class, 0, -5);
-		}
-		elseif ($suffix === 'Controller')
-		{
-			$type = 'controllers';
-			// Lowercase filename
-			$file = strtolower(substr($class, 0, -11));
-		}
-		elseif ($suffix === 'Model')
-		{
-			$type = 'models';
-			// Lowercase filename
-			$file = strtolower(substr($class, 0, -6));
-		}
-		elseif ($suffix === 'Driver')
-		{
-			$type = 'libraries/drivers';
-			$file = str_replace('_', '/', substr($class, 0, -7));
-		}
-		elseif ($suffix === 'Widget')
-		{
-			$type = 'widgets';
-			$classname = substr($class, 0, -7);
-			$file = $classname . '/' . $classname;
-		}
-		else
-		{
-			// This could be either a library or a helper, but libraries must
-			// always be capitalized, so we check if the first character is
-			// uppercase. If it is, we are loading a library, not a helper.
-			$type = ($class[0] < 'a') ? 'libraries' : 'helpers';
-			$file = $class;
-		}
-
-		if ($filename = self::find_file($type, $file))
-		{
-			// Load the class
-			require $filename;
-		}
-		else
-		{
-			// The class could not be found
-			return FALSE;
-		}
-
-		if ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
-		{
-			// Class extension to be evaluated
-			$extension = 'class '.$class.' extends '.$class.'_Core { }';
-
-			// Start class analysis
-			$core = new ReflectionClass($class.'_Core');
-
-			if ($core->isAbstract())
-			{
-				// Make the extension abstract
-				$extension = 'abstract '.$extension;
-			}
-
-			// Transparent class extensions are handled using eval. This is
-			// a disgusting hack, but it gets the job done.
-			eval($extension);
-		}
-
-		return TRUE;
 	}
 
 	/**

@@ -368,7 +368,7 @@ class Pdosqlite_Result extends Database_Result {
 
 		if ($this->fetch_type == PDO::FETCH_OBJ)
 		{
-			$this->return_type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+			$this->return_type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 		}
 		else
 		{
@@ -399,7 +399,7 @@ class Pdosqlite_Result extends Database_Result {
 
 				// NOTE - The class set by $type must be defined before fetching the result,
 				// autoloading is disabled to save a lot of stupid overhead.
-				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+				$type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 			}
 			else
 			{
@@ -413,7 +413,7 @@ class Pdosqlite_Result extends Database_Result {
 
 			if ($fetch == PDO::FETCH_OBJ)
 			{
-				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+				$type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 			}
 		}
 		try

@@ -396,7 +396,7 @@ class Pgsql_Result extends Database_Result {
 		// autoloading is disabled to save a lot of stupid overhead.
 		if ($this->fetch_type == 'pg_fetch_object')
 		{
-			$this->return_type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+			$this->return_type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 		}
 		else
 		{
@@ -427,7 +427,7 @@ class Pgsql_Result extends Database_Result {
 
 				// NOTE - The class set by $type must be defined before fetching the result,
 				// autoloading is disabled to save a lot of stupid overhead.
-				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+				$type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 			}
 			else
 			{
@@ -441,7 +441,7 @@ class Pgsql_Result extends Database_Result {
 
 			if ($fetch == 'pg_fetch_object')
 			{
-				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+				$type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 			}
 		}
 

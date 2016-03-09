@@ -410,7 +410,7 @@ class Mysql_Result extends Database_Result {
 		// autoloading is disabled to save a lot of stupid overhead.
 		if ($this->fetch_type == 'mysql_fetch_object' AND $object === TRUE)
 		{
-			$this->return_type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+			$this->return_type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 		}
 		else
 		{
@@ -447,7 +447,7 @@ class Mysql_Result extends Database_Result {
 			{
 				$fetch = 'mysql_fetch_object';
 
-				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
+				$type = (is_string($type) AND class_exists($type, true)) ? $type : 'stdClass';
 			}
 			else
 			{
@@ -461,7 +461,7 @@ class Mysql_Result extends Database_Result {
 
 			if ($fetch == 'mysql_fetch_object')
 			{
-				$type = (is_string($this->return_type) AND Kohana::auto_load($this->return_type)) ? $this->return_type : 'stdClass';
+				$type = (is_string($this->return_type) AND class_exists($this->return_type, true)) ? $this->return_type : 'stdClass';
 			}
 		}
 

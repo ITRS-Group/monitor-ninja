@@ -195,7 +195,7 @@ class Database {
 		$driver = 'Database_'.ucfirst($this->config['connection']['type']).'_Driver';
 
 		// Load the driver
-		if ( ! Kohana::auto_load($driver))
+		if (!class_exists($driver, true))
 			throw new Kohana_Database_Exception('core.driver_not_found', $this->config['connection']['type'], get_class($this));
 
 		// Initialize the driver
@@ -1291,7 +1291,7 @@ class Database {
 	 * @return Database This Databaes object
 	 */
 	public function push()
-	{	
+	{
 		array_push($this->query_history, array(
 			$this->select,
 			$this->from,
@@ -1323,7 +1323,7 @@ class Database {
 			// No history
 			return $this;
 		}
-	
+
 		list(
 			$this->select,
 			$this->from,
