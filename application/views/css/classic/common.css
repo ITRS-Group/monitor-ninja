@@ -513,28 +513,17 @@ a.external {
   height: auto;
   margin: 8px 4px;
   border: 1px solid #777777;
-  border-radius: 0 0 8px 8px;
   position: relative;
 }
 
 .widget-content {
-  margin-bottom: 10px;
   overflow: auto;
 }
 
 .widget-editbox {
-  display: none;
-  position: absolute;
   font-size: 0.9em;
-  width: 80%;
-  max-width: 512px;
-  right: 2px;
-  padding: 0;
-  top: 24px;
-  background: #fdfdfd;
+  background: #fff;
   border: 1px solid #aaaaaa;
-  box-shadow: 0 2px 3px #bbbbbb;
-  z-index: 2;
 }
 
 .widget-editbox select {

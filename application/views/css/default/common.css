@@ -186,7 +186,7 @@ input[type="submit"].plain {
 
 .main-toolbar {
   border-top: 1px solid #777777;
-  background: #f7f6f5;
+  background: #f5f5f0;
 }
 
 .main-toolbar .main-toolbar-menu > ul > li {
@@ -221,7 +221,7 @@ span.brand-label {
 }
 
 .header {
-  background: #fcfcfc;
+  background: #ffffff;
   border-bottom: 1px solid #777777;
 }
 
@@ -298,12 +298,11 @@ a.external {
 
 .widget {
   border: 1px solid #777777;
-  border-radius: 0 0 8px 8px;
 }
 
 .widget-editbox {
   font-size: 0.9em;
-  background: #fdfdfd;
+  background: #fff;
   border: 1px solid #aaaaaa;
   box-shadow: 0 2px 3px #bbbbbb;
 }
@@ -314,7 +313,7 @@ a.external {
 }
 
 .widget-header {
-  background: #f7f6f5;
+  background: #f5f5f0;
   *zoom: 1;
   font-weight: bold;
 }

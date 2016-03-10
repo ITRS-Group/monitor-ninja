@@ -1193,12 +1193,10 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   height: auto;
   margin: 8px 4px;
   border: 1px solid #777777;
-  border-radius: 0 0 8px 8px;
   position: relative;
 }
 
 .widget-content {
-  margin-bottom: 10px;
   overflow: auto;
   word-wrap: break-word;
 }
