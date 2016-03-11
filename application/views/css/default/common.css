@@ -296,52 +296,8 @@ a.external {
   padding-right: 16px;
 }
 
-.widget {
-  border: 1px solid #777777;
-  border-radius: 0 0 8px 8px;
-}
-
-.widget-editbox {
-  font-size: 0.9em;
-  background: #fdfdfd;
-  border: 1px solid #aaaaaa;
-  box-shadow: 0 2px 3px #bbbbbb;
-}
-
 .widget-selector:hover {
-  cursor: pointer;
   background-color: #eeecea;
-}
-
-.widget-header {
-  background: #f7f6f5;
-  *zoom: 1;
-  font-weight: bold;
-}
-
-.widget-header .widget-menu .widget-copylink,
-.widget-header .widget-menu .widget-collapselink,
-.widget-header .widget-menu .widget-editlink,
-.widget-header .widget-menu .widget-closelink {
-  border: none !important;
-  margin: 0 2px;
-}
-
-.widget-header .widget-menu img {
-  opacity: 0.4;
-  filter: alpha(opacity=40);
-}
-
-.widget-header .widget-menu img:hover {
-  opacity: 1;
-  filter: alpha(opacity=100);
-}
-
-.widget-placeholder {
-  border: 1px dashed #777777;
-  background: #dddddd url("./images/stripe.png");
-  box-shadow: inset 0 0 8px #888888;
-  border-radius: 0 0 8px 8px;
 }
 
 #dojo-icon-container td.highlight {

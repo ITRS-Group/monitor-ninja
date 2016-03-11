@@ -4,13 +4,6 @@ var Notify = (function () {
   var zones = null;
   var active = [];
 
-  var icons = {
-    "error": '<span class="icon-16 x16-remove"></span>',
-    "warning": '<span class="icon-16 x16-outages"></span>',
-    "info": '<span class="icon-16 x16-processinfo"></span>',
-    "success": '<span class="icon-16 x16-enabled"></span>'
-  };
-
   var initialize = function () {
     zones = {};
     zones.nagbar = $('<div>').addClass('notify-notification-bar');
@@ -143,9 +136,7 @@ var Notify = (function () {
       /* An object of button-labels with callbacks as values */
       buttons: false,
       /* nag messages ignore many options, such as sticky. */
-      nag: false,
-      /* Automatically insert type-icon or not */
-      icon: true
+      nag: false
     },
 
     /**
@@ -180,13 +171,6 @@ var Notify = (function () {
 
       if (zones === null) initialize();
       var notification = Notification(message, options);
-
-      if (notification.options.icon) {
-        var icon = icons[notification.options.type];
-        if (icon) {
-          notification.message = icons[notification.options.type] + notification.message;
-        }
-      }
 
       notification.element.html(notification.message);
 

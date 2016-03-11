@@ -18,8 +18,13 @@ class Listview_Widget extends widget_Base {
 
 	private $query=false;
 
-	public function __construct($widget_model) {
-		parent::__construct($widget_model);
+	/**
+	 * Constructs a new listview widget
+	 *
+	 * @param $model Ninja_Widget_Model
+	 */
+	public function __construct(Ninja_Widget_Model $model) {
+		parent::__construct($model);
 	}
 
 	/**

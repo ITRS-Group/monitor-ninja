@@ -17,6 +17,7 @@ form.renderable {
 	text-align: left;
 }
 
+
 form.renderable label {
 	min-width: 128px;
 	padding: 4px 8px;
@@ -26,6 +27,11 @@ form.renderable input[type=submit],
 form.renderable input[type=reset],
 form.renderable button {
 	padding: 4px 8px;
+}
+
+form.renderable textarea {
+  width: 185px;
+  vertical-align: top;
 }
 
 form.renderable hr {

@@ -291,49 +291,25 @@ a.external {
 }
 
 .widget {
-  border: 1px solid #aa8899;
-  border-radius: 0 0 8px 8px;
+  border-color: #aa8899;
 }
 
 .widget-editbox {
-  font-size: 0.9em;
   background: #feeded;
-  border: 1px solid #aa8899;
+  border-color: #aa8899;
 }
 
 .widget-selector:hover {
-  cursor: pointer;
   background-color: #feeded;
 }
 
 .widget-header {
   background: #eccdcd;
   color: #660011;
-  font-weight: bold;
-}
-
-.widget-header .widget-menu .widget-copylink,
-.widget-header .widget-menu .widget-collapselink,
-.widget-header .widget-menu .widget-editlink,
-.widget-header .widget-menu .widget-closelink {
-  border: none !important;
-  margin: 0 2px;
-}
-
-.widget-header .widget-menu img {
-  opacity: 0.4;
-  filter: alpha(opacity=40);
-}
-
-.widget-header .widget-menu img:hover {
-  opacity: 1;
-  filter: alpha(opacity=100);
 }
 
 .widget-placeholder {
-  border: 1px dashed #aa8899;
-  background: #dddddd url("./images/stripe.png");
-  border-radius: 4px;
+  border-color: #aa8899;
 }
 
 #dojo-icon-container td.highlight {

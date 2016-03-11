@@ -28,7 +28,12 @@ class Netw_health_Widget extends widget_Base {
 [services] state = 0
 EOC;
 
-	public function __construct($model)
+	/**
+	 * Constructs a new network health widget
+	 *
+	 * @param $model Ninja_Widget_Model
+	 */
+	public function __construct(Ninja_Widget_Model $model)
 	{
 		parent::__construct($model);
 
@@ -147,6 +152,7 @@ EOC;
 				);
 		}
 
+		$path = $this->widget_full_path;
 		# set required extra resources
 		require($view_path);
 	}
