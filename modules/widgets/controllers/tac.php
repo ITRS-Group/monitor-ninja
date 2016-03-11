@@ -159,10 +159,13 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
-	*	Save location and order of widgets on a page
-	*/
-	public function on_change_positions()
-	{
+	 *	Save location and order of widgets on a page, reading post data
+	 *	and saving them to page settings.
+	 *
+	 *  @return string JSON
+	 */
+	public function on_change_positions () {
+
 		$this->auto_render = false;
 		// This is a basic functionality of the tac, so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
@@ -175,7 +178,6 @@ class Tac_Controller extends Ninja_Controller {
 			return false;
 
 		Ninja_setting_Model::save_page_setting('widget_order', $page, $positions);
-
 		return json::ok(array('result' => 'ok'));
 	}
 
@@ -294,8 +296,8 @@ class Tac_Controller extends Ninja_Controller {
 	 * Create a new widget of a given type
 	 */
 	public function on_widget_rename() {
+
 		$this->auto_render = false;
-		// This is a basic functionality of the tac, so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
 		$page = $this->input->post('page');
@@ -323,8 +325,8 @@ class Tac_Controller extends Ninja_Controller {
 	 * Create a new widget of a given type
 	 */
 	public function on_widget_save_settings() {
+
 		$this->auto_render = false;
-		// This is a basic functionality of the tac, so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
 		$page = $this->input->post('page');

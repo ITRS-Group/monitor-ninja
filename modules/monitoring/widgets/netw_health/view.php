@@ -3,11 +3,11 @@
 	<tr>
 	<?php foreach( $bars as $bar ):
 		if ($bar['value'] < $this->health_critical_percentage) {
-			$image = $this->widget_full_path.$this->crit_img;
+			$image = $path.$this->crit_img;
 		} else if ($bar['value'] < $this->health_warning_percentage) {
-			$image = $this->widget_full_path.$this->warn_img;
+			$image = $path.$this->warn_img;
 		} else {
-			$image = $this->widget_full_path.$this->ok_img;
+			$image = $path.$this->ok_img;
 		}
 		?>
 		<td style="text-align: center;">

@@ -1,71 +1,163 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-/**
- * widget helper class.
- */
-class widget_Base
-{
-	protected $editable = TRUE; /**< An editable widget has settings that can be changed */
-	protected $movable = TRUE; /**< A movable widget can be dragged around */
-	protected $collapsable = TRUE; /**< A collapsable widget can be collapsed, so only the title bar is visible */
-	protected $removable = TRUE; /**< A removable widget can be deleted */
-	protected $closeconfirm = TRUE; /**< Whether to ask the user to confirm widget deletion */
-	protected $duplicatable = FALSE; /**< Whether the widget can be copied. Setting this to true requires testing, so default to the more backwards compatible mode */
+require_once('op5/spyc.php');
 
-	public $result = false; /**< widget content result */
-	public $js = false; /**< required js resources? */
-	public $css = false; /**< additional css? */
-	public $inline_js = false; /**< additional inline javascript, as a string */
-	public $widget_full_path = false; /**< path to this widget's directory */
-	public $model = false; /**< The widget model instance this widget represents */
-	public $extra_data_attributes = array(); /**<  array Key-value to attach to widget-container (for example ["hello"] => "bye" which renders as <div data-hello="bye" />, good for javascript-hooks */
+/**
+ * General widget exception
+ */
+class WidgetException extends Exception {}
+/**
+ * Widget setting exception
+ */
+class WidgetSettingException extends Exception {}
+
+/**
+ * Widget base class.
+ */
+class widget_Base {
+
+	/**
+	 * An editable widget has settings that can be changed
+	 */
+	protected $editable = true;
+
+	/**
+	 * A movable widget can be dragged around
+	 */
+	protected $movable = true;
+
+	/**
+	 * A collapsable widget can be collapsed, so only
+	 * the title bar is visible
+	 */
+	protected $collapsable = true;
+
+	/**
+	 * A removable widget can be deleted
+	 */
+	protected $removable = TRUE;
+
+	/**
+	 * Whether to ask the user to confirm widget
+	 * deletion
+	 */
+	protected $closeconfirm = TRUE;
+
+	/**
+	 * Whether the widget can be copied. Setting this
+	 * to true requires testing, so default to the more backwards
+	 * compatible mode
+	 */
+	protected $duplicatable = FALSE;
+
+	/**
+	 * Path to this widget's directory
+	 */
+	protected  $widget_full_path = false;
+
+	/**
+	 * List of all loaded widgets
+	 */
 	private static $loaded_widgets = array();
 
-	public $arguments = array(); /**< The arguments for this instance, constructed from the option objects */
+	/**
+	 * The widget model instance this widget represents
+	 */
+	public $model = false;
+
+	/**
+	 * Array Key-value to attach to widget-container
+	 * (for example ["hello"] => "bye" which renders as <div data-hello="bye"
+	 * />, good for javascript-hooks
+	 */
+	public $extra_data_attributes = array();
+
+	/**
+	 * Additional JavaScript files to load
+	 */
+	public $js = false;
+
+	/**
+	 * Additional CSS files to load
+	 */
+	public $css = false;
+
+	/**
+	 * A JavaScript string to inline into the widget
+	 */
+	public $inline_js = false;
+
+	/**
+	 * The arguments for this instance, constructed from the
+	 * option objects
+	 */
+	public $arguments = array();
 
 	/**
 	 * Create new widget instance from a given widget model.
+	 *
+	 * @param $model Ninja_Widget_Model ORM Model for a ninja widget
 	 */
-	public function __construct($widget_model)
-	{
-		/* @var $widget_model Ninja_Widget_Model */
+	public function __construct(Ninja_Widget_Model $model) {
+
 		try {
-			$this->widget_full_path = $widget_model->widget_path();
-		}
-		catch (Exception $e) {
+			$this->widget_full_path = $model->widget_path();
+		} catch (Exception $e) {
 			$this->widget_full_path = false;
 		}
 
-		$this->model = $widget_model;
+		$this->model = $model;
+		$option_manifest_path = $this->widget_full_path . '/options.php';
+		if (file_exists($option_manifest_path)) {
+			$this->options_definition = include(
+				$option_manifest_path
+			);
+		}
+
 	}
 
 	/**
-	 * DEPRECATED: Do not use
+	 * Retrieves this widgets setting value for $key, if not yet configured it
+	 * will fetch the default from the widgets option definition
 	 *
-	 * For legacy reasons, this provides a shortcut to a populated Current_status_Model instance.
-	 * There once were significant performance advantages to use this wrapper, but there isn't anymore.
-	 * Just call Current_status_Model::instance() instead.
+	 * NOTE: cannot be used if the widget does not yet use an options.php
+	 * definition file.
+	 *
+	 * @param $key string
+	 * @return mixed
 	 */
-	public static function get_current_status() {
-		$current_status = Current_status_Model::instance();
-		$current_status->analyze_status_data();
-		return $current_status;
+	protected function get_setting ($key) {
+
+		if (isset($this->model->setting[$key])) {
+			return $this->model->setting[$key];
+		} elseif (isset($this->options_definition[$key], $this->options_definition[$key]['default'])) {
+			return $this->options_definition[$key]["default"];
+		}
+
+		op5log::instance('ninja')->log('error', "Attempt to fetch invalid
+			setting $key for widget '" . $this->model->get_name() . "'");
+		throw new WidgetSettingException("Invalid setting $key for widget '" .
+			$this->model->get_display_name() . "'");
+
 	}
 
 	/**
-	 * Return the default friendly name for the widget type
+	 * Return the default friendly name for the widget type default to the
+	 * model name, but should be overridden by widgets.
 	 *
-	 * default to the model name, but should be overridden by widgets.
+	 * @return array
 	 */
 	public function get_metadata() {
 		return array(
 			'friendly_name' => "Widget " . $this->model->name,
 			'instanceable' => true
-			);
+		);
 	}
 
 	/**
 	 * Returns the populated argument array
+	 *
+	 * @return array
 	 */
 	public function get_arguments() {
 		$arguments = array();
@@ -84,11 +176,11 @@ class widget_Base
 
 	/**
 	 * Find path of widget viewer
+	 *
 	 * @param $view Template object
 	 * @return str path to viewer
 	 */
-	public function view_path($view=false)
-	{
+	public function view_path($view = false) {
 
 		if (empty($view))
 			return false;
@@ -106,19 +198,61 @@ class widget_Base
 	}
 
 	/**
-	 * Return the list of options to use in this widget. This should be an array of
-	 * option instances, or - if you want to do more manual work - strings.
+	 *
+	 * Return the list of options to use in this widget. This should be an
+	 * array of option instances, or - if you want to do more manual work -
+	 * strings.
 	 *
 	 * Actual widgets typically want to extend this method.
+	 *
+	 * DEPRECATED USAGE: do not extend this within your widget, create an
+	 * "options.yml" file in your widget directory instead and then use
+	 * $this->get_setting($key) to fetch default and/or user settings, keeping
+	 * you from messing with settings in your widget "controller", see big_number widget
+	 *
+	 * @return array
 	 */
-	public function options()
-	{
+	public function options () {
+
 		$refresh = new option($this->model->name, 'refresh_interval', 'Refresh (sec)', 'input', array('size'=>3, 'type'=>'text'), 60);
 		$refresh->should_render_js(false);
-		return array(
+		$options = array(
 			$refresh,
 			'<div class="refresh_slider"></div>'
 		);
+
+		if (!isset($this->options_definition))
+			return $options;
+
+		foreach ($this->options_definition as $key => $def) {
+
+			$attr = array();
+			$label = $key;
+			$default = '';
+
+			if (is_string($def)) $type = $def;
+			elseif (is_array($def)) {
+
+
+				$type = $def['type'];
+				$label = isset($def['label']) ? $def['label'] : $key;
+				$default = isset($def['default']) ? $def['default'] : '';
+
+				if ($type === 'dropdown') {
+					$attr['options'] = isset($def['options']) ? $def['options'] : array();
+				}
+			}
+
+			$options[] = new option(
+				$this->model->name,
+				$key, $label, $type, $attr, $default
+			);
+
+		}
+
+		return $options;
+
+
 	}
 
 	/**
@@ -138,86 +272,77 @@ class widget_Base
 	 * @param $with_chrome True to generate widget with the menus and everything, false otherwise
 	 * @return The rendered widget as a string
 	 */
-	public function render($method='index', $with_chrome=true)
-	{
-		$content = '';
+	public function render($method = 'index', $with_chrome = true) {
+
 		ob_start();
+
+		// Invoke "error-prone" methods first, yield a dead widget on exception
 		try {
-			/*
-			 * Invoke "error-prone" methods first, yield a dead widget on
-			 * exception
-			 */
 			$this->$method();
 			if ($with_chrome) {
 				$options = $this->options();
 			}
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			require_once(Kohana::find_file('widgets/dead', 'dead'));
 			$dead_widget = new Dead_Widget($this->model, $e);
 			$dead_widget->index();
 		}
 
-		$widget_content = ob_get_clean();
-
-		$widget_id = $this->model->name.'-'.$this->model->instance_id;
-		if ($with_chrome) {
-			$widget_legal_classes = array('editable', 'movable', 'collapsable', 'removable', 'closeconfirm', 'duplicatable');
-			$widget_classes = array();
-
-			foreach ($widget_legal_classes as $class) {
-				if ($this->$class) {
-					$widget_classes[] = $class;
-				}
-			}
-
-			if (isset($this->added_classes)) {
-				for($i = 0; $i < count($this->added_classes); $i++) {
-					$widget_classes[] = $this->added_classes[$i];
-				}
-			}
-			$data_attributes = "";
-			foreach($this->extra_data_attributes as $key => $value) {
-				$data_attributes .= " data-$key='$value'";
-			}
-
-			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'" data-name="'.$this->model->name.'" '.$data_attributes.' data-instance_id="'.$this->model->instance_id.'">';
-			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
-			if (!empty($options) && $this->editable) {
-				$content .= '<div class="clear"></div><div class="widget-editbox">';
-				$content .= form::open('widget/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
-				$content .= '<fieldset>';
-				if (!isset(self::$loaded_widgets[$this->model->name]))
-					$this->inline_js .= "widget.register_widget_load('".$this->model->name."', function() {";
-				foreach ($options as $option) {
-					if (is_string($option)) {
-						$content .= $option;
-					}
-					else {
-						$content .= '<div class="widget-editbox-label"><div>'.$option->render_label($this->model->instance_id).'</div></div>';
-						$content .= '<div class="widget-editbox-field"><div>'.$option->render_widget($this->model->instance_id, $this->model->setting).'</div></div>';
-						$js = $option->render_js();
-						if (!empty($js) && !isset(self::$loaded_widgets[$this->model->name]))
-							$this->inline_js .= "($js)(this);\n";
-					}
-					$content .= '<br/>';
-				}
-				if (!isset(self::$loaded_widgets[$this->model->name]))
-					$this->inline_js .= "});\n";
-				$content .= '</fieldset>';
-				$content .= form::close();
-				$content .= '</div>';
-			}
-
-			$content .= '<div class="widget-content" style="overflow: auto;">'; // Clear and end widget header and start widget content
+		$content = ob_get_clean();
+		if (!$with_chrome) {
+			return $content;
 		}
-		$content .= $widget_content;
-		if ($with_chrome) {
-			$content .= '</div>';
-			$content .= '</div>';
+		ob_start();
+
+		$widget_id = $this->model->get_widget_id();
+		$widget_legal_classes = array(
+			'editable',
+			'movable',
+			'collapsable',
+			'removable',
+			'closeconfirm',
+			'duplicatable'
+		);
+
+		$widget_classes = array();
+		foreach ($widget_legal_classes as $class) {
+			if ($this->$class) {
+				$widget_classes[] = $class;
+			}
 		}
+
+		if (isset($this->added_classes)) {
+			for($i = 0; $i < count($this->added_classes); $i++) {
+				$widget_classes[] = $this->added_classes[$i];
+			}
+		}
+
+		$data_attributes = "";
+		foreach($this->extra_data_attributes as $key => $value) {
+			$data_attributes .= " data-$key='$value'";
+		}
+
+		$classes = implode(" ", $widget_classes);
+		$instance_id = $this->model->get_instance_id();
+
+		$editable = $this->editable;
+		$name = $this->model->name;
+		$display_name = $this->model->get_friendly_name();
+		$setting = $this->model->get_setting();
+
+		$loaded = isset(self::$loaded_widgets[$this->model->name]);
+		$template = MODPATH . 'widgets/views/widget.php';
+
+		if (!is_readable($template)) {
+			op5log::instance('ninja')->log('error', "Could not render widget
+				due to missing template, expected template at '$template'");
+			return _("Could not render widget due to missing template");
+		}
+
+		require($template);
 		self::$loaded_widgets[$this->model->name] = 1;
-		return $content;
+
+		return ob_get_clean();
 	}
 
 	/**

@@ -75,13 +75,13 @@
   text-align: center;
   padding: 8px 8px 4px 8px;
   margin: 4px 0;
-} .notify-notification-zone .notify-notification.notify-notification-info {
+} .notify-notification-zone .notify-notification.notify-notification.info {
   border-top-color: #59b;
-} .notify-notification-zone .notify-notification.notify-notification-warning {
+} .notify-notification-zone .notify-notification.notify-notification.warning {
   border-top-color: #db3;
-} .notify-notification-zone .notify-notification.notify-notification-error {
+} .notify-notification-zone .notify-notification.notify-notification.error {
   border-top-color: #c44;
-} .notify-notification-zone .notify-notification.notify-notification-success {
+} .notify-notification-zone .notify-notification.notify-notification.success {
   border-top-color: #7b2;
 }
 

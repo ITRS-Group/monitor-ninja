@@ -10,4 +10,4 @@ Feature: Tactical Overview, TAC
 	@widget
 	Scenario: All widgets should be reachable
 		Given I am logged in as administrator
-		Then I shouldn't see "Couldn't load widget"
+		Then I shouldn't see "This widget failed to load"

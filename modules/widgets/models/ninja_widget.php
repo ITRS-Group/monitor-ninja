@@ -43,8 +43,21 @@ class Ninja_Widget_Model extends BaseNinja_Widget_Model {
 		}
 		return $var;
 	}
+
 	public function set_setting($value) {
 		return parent::set_setting(serialize($value));
+	}
+
+	/**
+	 * Returns the widgets full qualified identification
+	 *
+	 * @return string Identification
+	 */
+	public function get_widget_id () {
+		return sprintf('%s-%s',
+			$this->get_name(),
+			$this->get_instance_id()
+		);
 	}
 
 	/**

@@ -1189,16 +1189,22 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 /* Widgets */
 
-.widget {
-  height: auto;
-  margin: 8px 4px;
-  border: 1px solid #777777;
-  border-radius: 0 0 8px 8px;
+.widget, .widget-placeholder {
+  margin: 18px 10px 0 10px;
+  border: 1px solid #aaa;
   position: relative;
 }
 
+.widget {
+  height: auto;
+}
+
+.widget-placeholder {
+  height: 24px;
+  background: #dddddd url("./images/stripe.png");
+}
+
 .widget-content {
-  margin-bottom: 10px;
   overflow: auto;
   word-wrap: break-word;
 }
@@ -1206,45 +1212,21 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 .widget-editbox {
   display: none;
   position: absolute;
-  font-size: 0.9em;
-  width: 80%;
-  max-width: 512px;
-  right: 2px;
-  padding: 0;
+  right: 0;
   top: 24px;
-  background: #fdfdfd;
-  border: 1px solid #aaaaaa;
   z-index: 2;
-}
 
-.widget-editbox select {
-  width: auto !important;
+  font-size: 0.9em;
+  width: 360px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #aaaaaa;
+  border-radius: 2px;
 }
 
 .widget-editbox .refresh_slider {
-  margin: 0 16px;
-}
-
-.widget-editbox-label {
-  width: 28%;
-  display: inline-block;
-}
-
-.widget-editbox-label div {
-  padding: 0 5px 0 16px;
-}
-
-.widget-editbox-field {
-  width: 68%;
-  display: inline-block;
-}
-
-.widget-editbox-field textarea {
-  width: 100%;
-}
-
-.widget-editbox-field div {
-  padding: 0 16px 0 5px;
+  margin: 4px 16px;
+  width: 79%;
 }
 
 .widget-selector:hover {
@@ -1253,30 +1235,29 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 }
 
 .widget-header {
-  background: #f7f6f5;
+  background: #f5f5f5;
   *zoom: 1;
   padding: 6px 0 2px 6px;
   overflow: auto;
   position: relative;
   font-weight: bold;
 }
+
 .widget-header span {
-  white-space: pre;
-  white-space: pre-wrap;
-  white-space: pre-line;
-  white-space: -pre-wrap;
-  white-space: -o-pre-wrap;
-  white-space: -moz-pre-wrap;
-  white-space: -hp-pre-wrap;
   word-wrap: break-word;
   float: left;
   max-width: 50%;
 }
 
 .widget-header .widget-menu {
-  float: right;
   padding-right: 3px;
   max-width: 40%;
+  display: none;
+  float: right;
+}
+
+.widget-header:hover .widget-menu {
+  display: inline-block;
 }
 
 .widget-header .widget-menu .widget-copylink,
@@ -1297,29 +1278,25 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   filter: alpha(opacity=100);
 }
 
-.widget-placeholder {
-  border: 1px dashed #777777;
-  background: #dddddd url("./images/stripe.png");
-  height: 25px;
-  margin: 8px;
-  border-radius: 0 0 8px 8px;
-  position: relative;
-}
-
 .widget-place {
-  min-height: 25px;
+  min-height: 4px;
   margin: 0;
   padding: 0;
   float: left;
 }
+
 .tablestat-widget {
-  width: 99%;
+  width: 100%;
   margin: 0 auto;
   border: none;
 }
 
 .tablestat-widget td:last-child {
   border-right: none;
+}
+
+.tablestat-widget tr:last-child td {
+  border-bottom: none;
 }
 
 
