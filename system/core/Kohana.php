@@ -198,8 +198,14 @@ final class Kohana {
 
 				// Execute the controller method
 				// $method does always exist in a controller, since Controller
-				// implements the fucntion __call()
-				call_user_func_array(array($controller, $method), Router::$arguments);
+				// implements the function __call()
+				try {
+					call_user_func_array(array($controller, $method), Router::$arguments);
+				} catch (ORMDriverException $e) {
+					//echo $e->getMessage();
+					echo 'Hola!';
+					exit;
+				}
 
 				// Controller method has been executed
 				Event::run('system.post_controller', $controller);

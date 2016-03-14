@@ -138,6 +138,12 @@ class ListView_Controller extends Ninja_Controller {
 				'query' => $e->get_query(),
 				'position' => $e->get_position()
 				));
+		} catch (ORMDriverException $e) {
+			$this->log->log('error', $e->getMessage());
+			$msg = ucfirst($result_set->get_table()) . ' not available. ' .
+				'Is Livestatus down? If the problem persists, please ' .
+				'contact your administrator';
+			return json::fail(array('data' => $msg));
 		} catch( ORMException $e ) {
 			return json::fail( array(
 				'data' => $e->getMessage()
