@@ -4,12 +4,7 @@
 
     $filters = new SavedReportPool_Model();
     $set = $filters->all()->reduce_by('type', $type, '=');
-    try {
-        return $set->it(false, array());
-    } catch (ORMDriverException $e) {
-		op5log::instance('ninja')->log('error', "Failed to get saved reports: " . $e->getMessage());
-        return new ArrayIterator(array());
-    }
+    return $set->it(false, array());
 
   }
 

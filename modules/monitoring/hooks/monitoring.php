@@ -116,9 +116,7 @@ class monitoring_hooks implements op5MayI_Actor {
 					unset($status);
 				}
 			} catch (LivestatusException $e) {
-				$controller->notices[] = new ErrorNotice_Model(_('Livestatus is not accessable'));
-			} catch (ORMException $e) {
-				$controller->notices[] = new ErrorNotice_Model(_('Livestatus is not accessable'));
+				throw new ORMDriverException($e->getMessage());
 			}
 		}
 	}

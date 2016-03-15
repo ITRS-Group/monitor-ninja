@@ -16,7 +16,8 @@ class Error_Controller extends Ninja_Controller  {
 	{
 		try {
 			parent::__construct();
-			$this->template->menu = new Menu_Model();
+		} catch (ORMDriverException $e) {
+			throw $e;
 		} catch (Exception $ex) {}
 	}
 

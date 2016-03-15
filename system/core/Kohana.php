@@ -179,15 +179,12 @@ final class Kohana {
 			}
 
 			try {
+
 				// Run system.pre_controller
 				Event::run('system.pre_controller');
 
 				// Create a new controller instance
 				$controller = new $classname();
-
-				// Controller constructor has been executed
-				Event::run('system.post_controller_constructor', $controller);
-
 				$method = Router::$method;
 
 				// Stop the controller setup benchmark
@@ -199,16 +196,11 @@ final class Kohana {
 				// Execute the controller method
 				// $method does always exist in a controller, since Controller
 				// implements the function __call()
-				try {
+					// Controller constructor has been executed
+					Event::run('system.post_controller_constructor', $controller);
 					call_user_func_array(array($controller, $method), Router::$arguments);
-				} catch (ORMDriverException $e) {
-					//echo $e->getMessage();
-					echo 'Hola!';
-					exit;
-				}
-
-				// Controller method has been executed
-				Event::run('system.post_controller', $controller);
+					// Controller method has been executed
+					Event::run('system.post_controller', $controller);
 
 				// Stop the controller execution benchmark
 				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
@@ -216,15 +208,26 @@ final class Kohana {
 				// Start the rendering benchmark
 				Benchmark::start(SYSTEM_BENCHMARK.'_render');
 
-				// Render the output
-				Event::run('system.render');
 
 				// Stop the rendering benchmark
 				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
 
+			} catch (ORMDriverException $e) {
+				//echo $e->getMessage();
+				self::$instance->template->content = new View('503');
+				self::$instance->template->content->exception = $e;
+				self::$instance->template->disable_refresh = true;
 			} catch( Exception $e ) {
 				self::exception_handler($e);
 			}
+
+			try {
+				// Render the output
+				Event::run('system.render');
+			} catch (Exception $e) {
+				self::exception_handler($e);
+			}
+
 		}
 
 		return self::$instance;

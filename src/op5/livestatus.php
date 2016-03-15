@@ -166,6 +166,7 @@ class op5Livestatus {
 
 		// Connect to Livestatus. Re-trying up to three times. Sleep 0.3 seconds
 		// between each try.
+		op5log::instance('ninja')->log('debug', $_SERVER['REQUEST_URI']);
 		$i = 0;
 		while (true) {
 			try {
