@@ -65,3 +65,11 @@ end
 Then /^I should be logged in as "([^\"]+)"$/ do |user|
   page.should have_css("a[data-username=\"#{user}\"]", :visible => true)
 end
+
+When /^(.*) waiting a long time$/ do |action|
+  # Needed by nacoma, because it's infinitely slow
+  using_wait_time(60) do
+    step action
+  end
+end
+

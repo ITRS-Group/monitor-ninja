@@ -18,7 +18,7 @@ Feature: Initial administrator setup
 		Then I should see "Passwords do not match"
 		When I enter "my grandma rocks" into "password"
 		And I enter "my grandma rocks" into "password-repeat"
-		And I click "Create account" waiting patiently
+		And I click "Create account" waiting a long time
 		Then I should be logged in as "administrator"
 		When I go to the listview for [contacts] all
 		Then I should see "administrator"
@@ -29,7 +29,7 @@ Feature: Initial administrator setup
 		When I enter "a super secret" into "password"
 		And I enter "a super secret" into "password-repeat"
 		And I enter "bikermise_from_mars" into "username"
-		And I click "Create account"
+		And I click "Create account" waiting a long time
 		Then I should be logged in as "bikermise_from_mars"
 		When I go to the listview for [contacts] all
 		Then I should see "bikermise_from_mars"
