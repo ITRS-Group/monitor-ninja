@@ -13,10 +13,6 @@ Feature: Initial administrator setup
 		Given I am on the login page
 		Then I should see "Create your administrator account"
 		When I enter "my grandma rocks" into "password"
-		And I enter "my grandmas socks" into "password-repeat"
-		And I click "Create account"
-		Then I should see "Passwords do not match"
-		When I enter "my grandma rocks" into "password"
 		And I enter "my grandma rocks" into "password-repeat"
 		And I click "Create account" waiting patiently
 		Then I should be logged in as "administrator"
