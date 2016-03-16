@@ -9,10 +9,8 @@ require_once('op5/sysinfo.php');
 class monitoring_hooks implements op5MayI_Actor {
 	public function __construct() {
 
-		//Event::add('system.post_controller_constructor',
-		//	array ($this,'load_notices'));
-		Event::add('system.post_controller',
-				array ($this,'load_notices'));
+		Event::add('system.post_controller_constructor',
+			array ($this,'load_notices'));
 
 		Event::add('system.post_controller',
 			array ($this,'add_extras'));

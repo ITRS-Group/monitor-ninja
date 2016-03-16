@@ -4,9 +4,13 @@ Feature: Livestatus error handling
 		Given I am logged in as administrator
 
 	Scenario: See that "Livestatus down" error message looks correct in listviews
-		When I am on address listview/fetch_ajax?query=[failing] all&limit=100
-		Then I should see "Error: Services not available. Is Livestatus down? If the problem persists, please contact your administrator"
+		When I am on address "/index.php/listview/fetch_ajax?query=[failing] all&limit=100"
+		Then I should see "Service unavailable"
+		And I should see "We were unable to satisfy your request at this time, you may attempt to refresh this page in your browser"
+		And I should see "Please contact your administrator"
 
 	Scenario: See that "Livestatus down" correct on page created by a controller
-		When I am on address failing/orm_exception
-		Then I should see "Fantastic error message"
+		When I am on address "/index.php/failing/orm_exception"
+		Then I should see "Service unavailable"
+		And I should see "We were unable to satisfy your request at this time, you may attempt to refresh this page in your browser"
+		And I should see "Please contact your administrator"

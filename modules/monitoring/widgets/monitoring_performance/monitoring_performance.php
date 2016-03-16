@@ -62,8 +62,8 @@ class Monitoring_performance_Widget extends widget_Base {
 			$service_check_latency = $min_service_latency.' / '.$max_service_latency.' / '.$average_service_latency.' '._('sec');
 			$host_check_execution_time = $min_host_execution_time.' / '.$max_host_execution_time.' / '.$average_host_execution_time.' '._('sec');
 			$host_check_latency = $min_host_latency.' / '.$max_host_latency.' / '.$average_host_latency.' '._('sec');
-		}
-		catch (op5LivestatusException $ex) {
+		} catch (ORMDriverException $e) {
+		} catch (op5LivestatusException $ex) {
 		}
 
 		require($view_path);

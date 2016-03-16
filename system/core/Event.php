@@ -200,7 +200,6 @@ final class Event {
 	 */
 	public static function run($name, & $data = NULL)
 	{
-		op5log::instance('ninja')->log('debug', 'EVENT: ' . $name);
 		if ( ! empty(self::$events[$name]))
 		{
 			// So callbacks can access Event::$data

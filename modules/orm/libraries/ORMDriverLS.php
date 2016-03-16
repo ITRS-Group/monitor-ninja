@@ -102,8 +102,9 @@ class ORMDriverLS implements ORMDriverInterface {
 
 		try {
 			$result = $ls->stats_single($table, $ls_filter, $ls_intersections);
-		}
-		catch (op5LivestatusException $ex) {
+		} catch (ORMDriverException $e) {
+			return false;
+		} catch (op5LivestatusException $ex) {
 			return false;
 		}
 

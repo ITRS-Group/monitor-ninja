@@ -216,11 +216,11 @@ final class Kohana {
 				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
 
 			} catch (ORMDriverException $e) {
-				//echo $e->getMessage();
 				self::$instance->template->content = new View('503');
 				self::$instance->template->content->exception = $e;
 				self::$instance->template->disable_refresh = true;
-			} catch( Exception $e ) {
+
+			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
 
