@@ -196,18 +196,21 @@ final class Kohana {
 				// Execute the controller method
 				// $method does always exist in a controller, since Controller
 				// implements the function __call()
-					// Controller constructor has been executed
-					Event::run('system.post_controller_constructor', $controller);
-					call_user_func_array(array($controller, $method), Router::$arguments);
-					// Controller method has been executed
-					Event::run('system.post_controller', $controller);
+				// Controller constructor has been executed
+				Event::run('system.post_controller_constructor', $controller);
+				call_user_func_array(
+					array($controller, $method),
+					Router::$arguments
+				);
+
+				// Controller method has been executed
+				Event::run('system.post_controller', $controller);
 
 				// Stop the controller execution benchmark
 				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
 
 				// Start the rendering benchmark
 				Benchmark::start(SYSTEM_BENCHMARK.'_render');
-
 
 				// Stop the rendering benchmark
 				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
