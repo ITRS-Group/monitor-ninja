@@ -95,6 +95,8 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->auto_render = false;
 		try {
 			$rpt = Report_options::setup_options_obj($type);
+		} catch (ORMDriverException $e) {
+			return json::fail("Livestatus connection failed, can't load reports");
 		} catch (op5LivestatusException $ex) {
 			return json::fail("Livestatus connection failed, can't load reports");
 		}
