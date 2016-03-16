@@ -166,6 +166,11 @@ class op5Livestatus {
 
 		// Connect to Livestatus. Re-trying up to three times. Sleep 0.3 seconds
 		// between each try.
+
+		$bt = debug_backtrace();
+		op5log::instance('ninja')->log('debug', $bt[1]['function']);
+		op5log::instance('ninja')->log('debug', $bt[2]['function']);
+		op5log::instance('ninja')->log('debug', $bt[3]['function']);
 		op5log::instance('ninja')->log('debug', $_SERVER['REQUEST_URI']);
 		$i = 0;
 		while (true) {
@@ -188,8 +193,15 @@ class op5Livestatus {
 				$ninja_log = op5Log::instance('ninja');
 				// After three failing attempts the exception is thrown upwards.
 				if ($i == 3) {
+					/*
+					ob_start();
+					debug_print_backtrace();
+					$s = ob_get_clean();
+					$ninja_log->debug($s);
+					*/
 					$ninja_log->debug('Livestatus down. Last attempt failed.');
-					throw new op5LivestatusException($e->getMessage(), $query);
+					throw $e;
+					//throw new Exception('Super error exception');
 				}
 				usleep(300000);
 				$i++;

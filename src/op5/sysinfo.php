@@ -49,9 +49,13 @@ class op5sysinfo {
 				if (method_exists($this, $getter)) {
 					$this->usage_metrics[$metric] = $this->$getter();
 				}
+				op5log::instance('ninja')->log('debug', 'op5sysinfo');
+			} catch (op5LivestatusException $e) {
+				throw new ORMDriverException($e->getMessage());
 			} catch (ORMDriverException $e) {
 				throw $e;
 			} catch (Exception $e) {
+				op5log::instance('ninja')->log('debug', get_class($e) . ' ' . $e->getMessage());
 				/* Something went wrong... skip this metric */
 			}
 		}
