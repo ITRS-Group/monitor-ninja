@@ -7,6 +7,8 @@ require_once ("op5/auth/Auth.php");
  * Verifies that auth driver handles sessions correctly
  */
 class AuthTest extends PHPUnit_Framework_TestCase {
+	const DEPRECATION_ENV_VAR = 'OP5_NINJA_DEPRECATION_SHOULD_EXIT';
+
 	private static $config = array (
 		'auth' => array (
 			'common' => array (
@@ -50,29 +52,22 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 	);
 
 	/**
-	 * Confirm that we start from scratch
-	 */
-	static public function setUpBeforeClass() {
-		op5objstore::instance()->mock_clear();
-		op5objstore::instance()->mock_add('op5config',
-			new MockConfig(self::$config));
-	}
-
-	/**
-	 * Make sure we clear everything up.
-	 */
-	public static function tearDownAfterClass() {
-		op5objstore::instance()->mock_clear();
-		op5objstore::instance()->clear();
-	}
-
-	/**
 	 * Make sure we don't have any lasting instances between tests
 	 */
 	public function setup() {
+		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
+		op5objstore::instance()->mock_add('op5config', new MockConfig(self::$config));
 		/* Start with a clean session */
 		$_SESSION = array ('this_should_be_untouched' => 17);
+		// unset the env var
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
+	}
+
+	public function teardown() {
+		op5objstore::instance()->mock_clear();
+		op5objstore::instance()->clear();
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
 	}
 
 	/**
@@ -554,5 +549,111 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 
 		/* Session should be untouched */
 		$this->assertEquals($original_session, $_SESSION);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	public function test_user_model_compatible_with_removed_op5user() {
+		$expected_username = 'Honkytonk';
+
+		$this->login_fixture($expected_username);
+
+		// this used to return an op5user instance
+		$old_syntax = op5auth::instance()->get_user()->username;
+		// this returns a User_Model instance
+		$new_syntax = op5auth::instance()->get_user()->get_username();
+
+		$this->assertSame($expected_username, $old_syntax);
+		$this->assertSame($expected_username, $new_syntax);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	public function test_user_model_get_property_backwards_compatible() {
+		$user = new User_Model();
+		$new_username = 'MasterBlaster';
+		$user->set_username($new_username);
+		$this->assertSame($new_username, $user->get_username());
+		$this->assertSame($new_username, $user->username);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	public function test_user_model_set_property_backwards_compatible() {
+		$user = new User_Model();
+		$user->username = 'Mister Big';
+		$this->assertSame('Mister Big', $user->get_username());
+		$this->assertSame('Mister Big', $user->username);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	public function test_user_model_isset_property_backwards_compatible() {
+		$user = new User_Model();
+		$user->username = 'Mister Big';
+		$this->assertSame(true, isset($user->username));
+		$this->assertSame(false, isset($user->catname));
+		$this->assertSame(true, isset($user->export), "Sadly, we must expose privately used variables too, through __isset() :(");
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	public function test_user_model_set_property_that_exists_as_non_public_interface() {
+		// reusing the old interface by attempting to set arbitrary
+		// strings that might collide with existing properties in
+		// User_Model
+		$user = new User_Model();
+		$user->hello = 35;
+		$this->assertSame(35, $user->hello);
+
+		$user->custom_properties = 64;
+		$this->assertSame(64, $user->custom_properties, 'Setting a public variable');
+
+		$this->assertSame(35, $user->hello, 'Make sure the internal $custom_properties variable was not altered');
+	}
+
+	/**
+	 * Needed for @group MON-9199
+	 */
+	private function login_fixture($username) {
+		$mock_config = array(
+			'auth' => array (
+				'common' => array (
+					'default_auth' => 'mydefault',
+					'session_key' => 'testkey'
+				),
+				'mydefault' => array (
+					'driver' => 'Default'
+				)
+			),
+			'auth_users' => array (
+				$username => array (
+					'username' => $username,
+					'realname' => $username,
+					'password' => 'man',
+					'password_algo' => 'plain',
+					'modules' => array (
+						'mydefault'
+					),
+					'groups' => array (
+						'plain_group'
+					)
+				)
+			),
+			'auth_groups' => array (
+				'plain_group' => array (
+					'some_plain_access'
+				)
+			)
+		);
+		op5objstore::instance()->mock_add('op5config', new MockConfig($mock_config));
+		$op5auth = op5auth::instance();
+		$login_result = $op5auth->login($username, 'man');
+		$this->assertSame(true, $login_result, 'We should be able to login');
 	}
 }

@@ -258,9 +258,11 @@ final class Kohana {
 	}
 
 	/**
-	 * Get a config item or group.
+	 * Get a config item or group. Prioritizes the environment variables;
+	 * this is an example that ignores the configuration stored on disk:
+	 * NINJA_COOKIE_SECURE=0 phpunit some_cookie_test.php
 	 *
-	 * @param   string   item name
+	 * @param   string   item name such as 'cookie.secure'
 	 * @param   boolean  force a forward slash (/) at the end of the item
 	 * @param   boolean  is the item required?
 	 * @return  mixed
