@@ -5,4 +5,6 @@ post:
   mon restart
   /opt/op5sys/lib/mock_license.php monitorHosts 500
   cp /var/op5license-tests/signed_valid/license.lic /etc/op5license/op5license.lic
+  # make sure deprecated code paths throw errors in our CI environment, MON-9199:
+  echo '<?php \$config["deprecation_should_exit"] = true;' > /opt/monitor/op5/ninja/application/config/custom/flag.php
   TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test

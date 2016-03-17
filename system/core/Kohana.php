@@ -258,15 +258,24 @@ final class Kohana {
 	}
 
 	/**
-	 * Get a config item or group.
+	 * Get a config item or group. Prioritizes the environment variables;
+	 * this is an example that ignores the configuration stored on disk:
+	 * NINJA_COOKIE_SECURE=0 phpunit some_cookie_test.php
 	 *
-	 * @param   string   item name
+	 * @param   string   item name such as 'cookie.secure'
 	 * @param   boolean  force a forward slash (/) at the end of the item
 	 * @param   boolean  is the item required?
 	 * @return  mixed
 	 */
 	public static function config($key, $slash = FALSE, $required = TRUE)
 	{
+		// environment variables cannot include dots, so we use an
+		// underscore for separating the key's parts
+		$environment_variable_as_kohana_config_key = str_replace('.', '_', strtoupper("ninja.$key"));
+		$e = getenv($environment_variable_as_kohana_config_key);
+		if($e !== false) {
+			return $e;
+		}
 		if (self::$configuration === NULL)
 		{
 			// Load core configuration

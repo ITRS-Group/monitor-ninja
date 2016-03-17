@@ -9,6 +9,11 @@ require_once( dirname(__FILE__).'/base/baseuser.php' );
  */
 class User_Model extends BaseUser_Model implements op5MayI_Actor {
 
+	/**
+	 * For backward compatible reasons
+	 */
+	protected $custom_properties = array();
+
 	protected $export = array(
 		'username',
 		'realname',
@@ -27,17 +32,73 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 	 */
 	public function __construct (array $data = array()) {
 		foreach ($data as $key => $value) {
-
-			if ($key === 'key') continue;
-			$setter = "set_" . $key;
-
-			if (!method_exists($this, $setter)) {
-				throw new ORMException("Not a valid key '$key' for User");
+			if ($key === 'key') {
+				// 'key' is a special property, it denotes the
+				// "primary key" of this object, in this class
+				// it represents 'username'
+				continue;
 			}
+			$setter = "set_" . $key;
+			if (method_exists($this, $setter)) {
+				$this->$setter($value);
+			} else {
+				flag::deprecated(__METHOD__, "Backwards-compatibility after op5user => User_Model, trying to set '$key' to '".var_export($value, true)."'");
+				$this->custom_properties[$key] = $value;
 
-			$this->$setter($value);
-
+				// make sure a call to export() includes the newly
+				// attached key
+				$this->export[] = $key;
+			}
 		}
+	}
+
+	/**
+	 * Backwards compatibility with now removed op5user class
+	 *
+	 * @param $property
+	 * @return mixed
+	 */
+	public function __get($property) {
+		flag::deprecated(__METHOD__, "Backwards-compatibility after op5user => User_Model");
+		$method = 'get_'.$property;
+		if(method_exists($this, $method)) {
+			return $this->$method();
+		}
+		if(array_key_exists($property, $this->custom_properties)) {
+			return $this->custom_properties[$property];
+		}
+		return null;
+	}
+
+	/**
+	 * Backwards compatibility with now removed op5user class
+	 *
+	 * @param $property
+	 * @param $value
+	 */
+	public function __set($property, $value) {
+		flag::deprecated(__METHOD__, "Backwards-compatibility after op5user => User_Model");
+		$setter = "set_" . $property;
+		if (method_exists($this, $setter)) {
+			$this->$setter($value);
+		} else {
+			$this->custom_properties[$property] = $value;
+
+			// make sure a call to export() includes the newly
+			// attached property
+			$this->export[] = $property;
+		}
+	}
+
+	/**
+	 * @param $property
+	 * @return boolean
+	 */
+	public function __isset($property) {
+		if(isset($this->custom_properties[$property])) {
+			return true;
+		}
+		return $this->$property !== NULL;
 	}
 
 	/**

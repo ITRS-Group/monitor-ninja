@@ -7,6 +7,10 @@ require_once ("op5/auth/Auth.php");
  * Verifies that auth driver handles sessions correctly
  */
 class AuthTest extends PHPUnit_Framework_TestCase {
+	const STASHED_CONFIG_FILE_TEMPORARY_NAME = '/tmp/klj132hj5jkndsfndjsnfj2134adsfh';
+	const DEPRECATION_ENV_VAR = 'NINJA_FLAG_DEPRECATION_SHOULD_EXIT';
+	private static $global_flag_config;
+
 	private static $config = array (
 		'auth' => array (
 			'common' => array (
@@ -50,29 +54,17 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 	);
 
 	/**
-	 * Confirm that we start from scratch
-	 */
-	static public function setUpBeforeClass() {
-		op5objstore::instance()->mock_clear();
-		op5objstore::instance()->mock_add('op5config',
-			new MockConfig(self::$config));
-	}
-
-	/**
-	 * Make sure we clear everything up.
-	 */
-	public static function tearDownAfterClass() {
-		op5objstore::instance()->mock_clear();
-		op5objstore::instance()->clear();
-	}
-
-	/**
 	 * Make sure we don't have any lasting instances between tests
 	 */
 	public function setup() {
 		op5objstore::instance()->clear();
 		/* Start with a clean session */
 		$_SESSION = array ('this_should_be_untouched' => 17);
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'='));
+	}
+
+	public function teardown() {
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'='));
 	}
 
 	/**
@@ -554,5 +546,159 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 
 		/* Session should be untouched */
 		$this->assertEquals($original_session, $_SESSION);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	function test_user_model_compatible_with_removed_op5user() {
+		$expected_username = 'Honkytonk';
+
+		$this->_login_fixture($expected_username);
+
+		// this used to return an op5user instance
+		$old_syntax = op5auth::instance()->get_user()->username;
+		// this returns a User_Model instance
+		$new_syntax = op5auth::instance()->get_user()->get_username();
+
+		$this->assertSame($expected_username, $old_syntax);
+		$this->assertSame($expected_username, $new_syntax);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	function test_user_model_fails_if_deprecation_is_not_wanted() {
+		// now we just test that our dev environment actually has the
+		// possibility to die if we don't want to tolerate deprecations
+		// when working with Ninja
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'=1'));
+
+		try {
+			op5auth::instance()->get_user()->username;
+		} catch(DeprecationException $e) {
+			$expected = "DEPRECATION: 'User_Model::__get' is deprecated and should not be executed: Backwards-compatibility after op5user => User_Model";
+			$this->assertSame($expected, $e->getMessage());
+			return;
+		}
+		$this->assertTrue(false, "This code path should not be reached, expected an exception to be thrown");
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	function test_user_model_get_property_backwards_compatible() {
+		$user = new User_Model();
+		$new_username = 'MasterBlaster';
+		$user->set_username($new_username);
+		$this->assertSame($new_username, $user->get_username());
+		$this->assertSame($new_username, $user->username);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	function test_user_model_set_property_backwards_compatible() {
+		$user = new User_Model();
+		$user->username = 'Mister Big';
+		$this->assertSame('Mister Big', $user->get_username());
+		$this->assertSame('Mister Big', $user->username);
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	function test_user_model_isset_property_backwards_compatible() {
+		$user = new User_Model();
+		$user->username = 'Mister Big';
+		$this->assertSame(true, isset($user->username));
+		$this->assertSame(false, isset($user->catname));
+		$this->assertSame(true, isset($user->export), "Sadly, we must expose privately used variables too, through __isset() :(");
+	}
+
+	/**
+	 * @group MON-9199
+	 */
+	function test_user_model_set_property_that_exists_as_non_public_interface() {
+		// reusing the old interface by attempting to set arbitrary
+		// strings that might collide with existing properties in
+		// User_Model
+		$user = new User_Model();
+		$user->hello = 35;
+		$this->assertSame(35, $user->hello);
+
+		$user->custom_properties = 64;
+		$this->assertSame(64, $user->custom_properties, 'Setting a public variable');
+
+		$this->assertSame(35, $user->hello, 'Make sure the internal $custom_properties variable was not altered');
+	}
+
+	/**
+	 * Needed for avoiding global debug-dying-state.. I painted myself into
+	 * a corner: of course we want to have a global deprecation flag on
+	 * while testing Ninja, but for testing the flags themselves, we cannot
+	 * rely on global state.
+	 *
+	 * Needed for @group MON-9199
+	 */
+	static public function setUpBeforeClass() {
+		op5objstore::instance()->mock_clear();
+		op5objstore::instance()->mock_add('op5config', new MockConfig(self::$config));
+
+		$ninja_dir = __DIR__.'/../../..';
+		assert(basename(realpath($ninja_dir)) === "ninja");
+		self::$global_flag_config = $ninja_dir.'/application/config/custom/flag.php';
+		if(file_exists(self::$global_flag_config)) {
+			assert(rename(self::$global_flag_config, self::STASHED_CONFIG_FILE_TEMPORARY_NAME));
+		}
+	}
+
+	public static function tearDownAfterClass() {
+		op5objstore::instance()->mock_clear();
+		op5objstore::instance()->clear();
+
+		if(file_exists(self::STASHED_CONFIG_FILE_TEMPORARY_NAME)) {
+			assert(rename(self::STASHED_CONFIG_FILE_TEMPORARY_NAME, self::$global_flag_config));
+		}
+	}
+
+	/**
+	 * Needed for @group MON-9199
+	 */
+	function _login_fixture($username) {
+		$mock_config = array(
+			'auth' => array (
+				'common' => array (
+					'default_auth' => 'mydefault',
+					'session_key' => 'testkey'
+				),
+				'mydefault' => array (
+					'driver' => 'Default'
+				)
+			),
+			'auth_users' => array (
+				$username => array (
+					'username' => $username,
+					'realname' => $username,
+					'password' => 'man',
+					'password_algo' => 'plain',
+					'modules' => array (
+						'mydefault'
+					),
+					'groups' => array (
+						'plain_group'
+					)
+				)
+			),
+			'auth_groups' => array (
+				'plain_group' => array (
+					'some_plain_access'
+				)
+			)
+		);
+		op5objstore::instance()->mock_add('op5config', new MockConfig($mock_config));
+		$op5auth = op5auth::instance();
+		$login_result = $op5auth->login($username, 'man');
+		$this->assertSame(true, $login_result, 'We should be able to login');
 	}
 }

@@ -178,66 +178,66 @@ class op5Authorization {
 					return array_merge($a, array_keys($b));
 				}, array ());
 
-		$translated_access_levels['test_this_service'] = true;
-		$translated_access_levels['test_this_host'] = true;
-		$translated_access_levels['test_this_command'] = true;
-		$translated_access_levels['api_config'] = true;
-		$translated_access_levels['api_command'] = true;
-		$translated_access_levels['api_perfdata'] = true;
-	}
-
-	foreach ($access_rights as $value) {
-		if (substr($value, 0, 15) === 'authorized_for_') {
-			$value = substr($value, 15);
-		}
-		switch ($value) {
-		case 'all_hosts':
-			$translated_access_levels['host_view_all'] = true;
-			$translated_access_levels['hostgroup_view_all'] = true;
-			$translated_access_levels['hostdependency_view_all'] = true;
-			$translated_access_levels['hostescalation_view_all'] = true;
-			break;
-		case 'all_services':
-			$translated_access_levels['service_view_all'] = true;
-			$translated_access_levels['servicegroup_view_all'] = true;
-			$translated_access_levels['servicedependency_view_all'] = true;
-			$translated_access_levels['serviceescalation_view_all'] = true;
-			break;
-		case 'all_host_commands':
-			$translated_access_levels['host_edit_all'] = true;
-			$translated_access_levels['host_add_delete'] = true;
-			$translated_access_levels['test_this_host'] = true;
-			$translated_access_levels['hostgroup_add_delete'] = true;
-			$translated_access_levels['hostgroup_edit_all'] = true;
-			$translated_access_levels['hostdependency_edit_all'] = true;
-			$translated_access_levels['hostescalation_edit_all'] = true;
-			$translated_access_levels['hostdependency_add_delete'] = true;
-			$translated_access_levels['hostescalation_add_delete'] = true;
-			break;
-		case 'all_service_commands':
-			$translated_access_levels['service_edit_all'] = true;
 			$translated_access_levels['test_this_service'] = true;
-			$translated_access_levels['servicegroup_edit_all'] = true;
-			$translated_access_levels['servicedependency_edit_all'] = true;
-			$translated_access_levels['serviceescalation_edit_all'] = true;
-			$translated_access_levels['servicedependency_add_delete'] = true;
-			$translated_access_levels['serviceescalation_add_delete'] = true;
-			break;
-		case 'system_commands':
-			$translated_access_levels['command_edit_all'] = true;
+			$translated_access_levels['test_this_host'] = true;
 			$translated_access_levels['test_this_command'] = true;
-			$translated_access_levels['export'] = true;
-		/* fallthrough */
-		case 'system_information':
-			$translated_access_levels['command_view_all'] = true;
-		/* fallthrough */
-		case 'configuration_information':
-			$translated_access_levels[$value] = true;
-			break;
-		default: // unknown, ignore
-			break;
+			$translated_access_levels['api_config'] = true;
+			$translated_access_levels['api_command'] = true;
+			$translated_access_levels['api_perfdata'] = true;
 		}
+
+		foreach ($access_rights as $value) {
+			if (substr($value, 0, 15) === 'authorized_for_') {
+				$value = substr($value, 15);
+			}
+			switch ($value) {
+			case 'all_hosts':
+				$translated_access_levels['host_view_all'] = true;
+				$translated_access_levels['hostgroup_view_all'] = true;
+				$translated_access_levels['hostdependency_view_all'] = true;
+				$translated_access_levels['hostescalation_view_all'] = true;
+				break;
+			case 'all_services':
+				$translated_access_levels['service_view_all'] = true;
+				$translated_access_levels['servicegroup_view_all'] = true;
+				$translated_access_levels['servicedependency_view_all'] = true;
+				$translated_access_levels['serviceescalation_view_all'] = true;
+				break;
+			case 'all_host_commands':
+				$translated_access_levels['host_edit_all'] = true;
+				$translated_access_levels['host_add_delete'] = true;
+				$translated_access_levels['test_this_host'] = true;
+				$translated_access_levels['hostgroup_add_delete'] = true;
+				$translated_access_levels['hostgroup_edit_all'] = true;
+				$translated_access_levels['hostdependency_edit_all'] = true;
+				$translated_access_levels['hostescalation_edit_all'] = true;
+				$translated_access_levels['hostdependency_add_delete'] = true;
+				$translated_access_levels['hostescalation_add_delete'] = true;
+				break;
+			case 'all_service_commands':
+				$translated_access_levels['service_edit_all'] = true;
+				$translated_access_levels['test_this_service'] = true;
+				$translated_access_levels['servicegroup_edit_all'] = true;
+				$translated_access_levels['servicedependency_edit_all'] = true;
+				$translated_access_levels['serviceescalation_edit_all'] = true;
+				$translated_access_levels['servicedependency_add_delete'] = true;
+				$translated_access_levels['serviceescalation_add_delete'] = true;
+				break;
+			case 'system_commands':
+				$translated_access_levels['command_edit_all'] = true;
+				$translated_access_levels['test_this_command'] = true;
+				$translated_access_levels['export'] = true;
+			/* fallthrough */
+			case 'system_information':
+				$translated_access_levels['command_view_all'] = true;
+			/* fallthrough */
+			case 'configuration_information':
+				$translated_access_levels[$value] = true;
+				break;
+			default: // unknown, ignore
+				break;
+			}
+		}
+		return array_keys($translated_access_levels);
 	}
-	return array_keys($translated_access_levels);
-}
 }
