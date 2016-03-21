@@ -150,7 +150,7 @@ class op5AuthDriver_Default extends op5AuthDriver {
 		// Check if user has module membership
 		if (!in_array($this->module->get_modulename(), $user->get_modules(), true)) {
 			op5Log::instance('auth')->log('notice',
-				"User '$username' is not configured to login using the module: {$this->config['name']}");
+				"User '$username' is not configured to login using the module: '".$this->module->get_modulename()."'");
 			return null;
 		}
 
