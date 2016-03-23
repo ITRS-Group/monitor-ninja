@@ -7,9 +7,7 @@ require_once ("op5/auth/Auth.php");
  * Verifies that auth driver handles sessions correctly
  */
 class AuthTest extends PHPUnit_Framework_TestCase {
-	const STASHED_CONFIG_FILE_TEMPORARY_NAME = '/tmp/klj132hj5jkndsfndjsnfj2134adsfh';
 	const DEPRECATION_ENV_VAR = 'NINJA_FLAG_DEPRECATION_SHOULD_EXIT';
-	private static $global_flag_config;
 
 	private static $config = array (
 		'auth' => array (
@@ -633,33 +631,14 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame(35, $user->hello, 'Make sure the internal $custom_properties variable was not altered');
 	}
 
-	/**
-	 * Needed for avoiding global debug-dying-state.. I painted myself into
-	 * a corner: of course we want to have a global deprecation flag on
-	 * while testing Ninja, but for testing the flags themselves, we cannot
-	 * rely on global state.
-	 *
-	 * Needed for @group MON-9199
-	 */
 	static public function setUpBeforeClass() {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add('op5config', new MockConfig(self::$config));
-
-		$ninja_dir = __DIR__.'/../../..';
-		assert(basename(realpath($ninja_dir)) === "ninja");
-		self::$global_flag_config = $ninja_dir.'/application/config/custom/flag.php';
-		if(file_exists(self::$global_flag_config)) {
-			assert(rename(self::$global_flag_config, self::STASHED_CONFIG_FILE_TEMPORARY_NAME));
-		}
 	}
 
 	public static function tearDownAfterClass() {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
-
-		if(file_exists(self::STASHED_CONFIG_FILE_TEMPORARY_NAME)) {
-			assert(rename(self::STASHED_CONFIG_FILE_TEMPORARY_NAME, self::$global_flag_config));
-		}
 	}
 
 	/**
