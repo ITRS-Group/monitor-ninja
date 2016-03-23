@@ -269,13 +269,6 @@ final class Kohana {
 	 */
 	public static function config($key, $slash = FALSE, $required = TRUE)
 	{
-		// environment variables cannot include dots, so we use an
-		// underscore for separating the key's parts
-		$environment_variable_as_kohana_config_key = str_replace('.', '_', strtoupper("ninja.$key"));
-		$e = getenv($environment_variable_as_kohana_config_key);
-		if($e !== false) {
-			return $e;
-		}
 		if (self::$configuration === NULL)
 		{
 			// Load core configuration

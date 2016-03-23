@@ -7,7 +7,7 @@ require_once ("op5/auth/Auth.php");
  * Verifies that auth driver handles sessions correctly
  */
 class AuthTest extends PHPUnit_Framework_TestCase {
-	const DEPRECATION_ENV_VAR = 'NINJA_FLAG_DEPRECATION_SHOULD_EXIT';
+	const DEPRECATION_ENV_VAR = 'OP5_NINJA_DEPRECATION_SHOULD_EXIT';
 
 	private static $config = array (
 		'auth' => array (

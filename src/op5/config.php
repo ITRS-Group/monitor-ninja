@@ -77,6 +77,13 @@ class op5config {
 	 **/
 	public function getConfig($parameter, $reserved = false)
 	{
+		// environment variables cannot include dots, so we use an
+		// underscore for separating the key's parts
+		$environment_variable_as_kohana_config_key = str_replace('.', '_', strtoupper("op5.$parameter"));
+		$e = getenv($environment_variable_as_kohana_config_key);
+		if($e !== false) {
+			return $e;
+		}
 		$config = $this->getConfigVar(explode('.',$parameter), $this->basepath);
 		if (!$reserved && is_array($config)) {
 			$config = $this->cleanConfigArray($config);

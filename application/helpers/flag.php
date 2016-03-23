@@ -18,7 +18,8 @@ class flag {
 	 * @return boolean
 	 */
 	static function deprecation_kills() {
-		return (boolean) Kohana::config('flag.deprecation_should_exit');
+		return (boolean) op5config::instance()
+			->getConfig('ninja.deprecation_should_exit');
 	}
 
 	/**
