@@ -9,6 +9,7 @@ Feature: Initial administrator setup
 		Given I am on the login page
 		Then I should see "Create your administrator account"
 
+	@unreliable
 	Scenario: I create my administrator account
 		Given I am on the login page
 		Then I should see "Create your administrator account"
@@ -23,6 +24,7 @@ Feature: Initial administrator setup
 		When I go to the listview for [contacts] all
 		Then I should see "administrator"
 
+	@unreliable
 	Scenario: I create my administrator account and choose a username
 		Given I am on the login page
 		Then I should see "Create your administrator account"
