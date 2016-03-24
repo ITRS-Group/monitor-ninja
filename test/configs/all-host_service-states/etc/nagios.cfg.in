@@ -15,7 +15,6 @@ broker_module=@@LIBDIR@@/merlin/merlin.so @@TESTDIR@@/merlin.conf
 broker_module=@@LIBDIR@@/naemon-livestatus/livestatus.so @@TESTDIR@@/live debug=1
 
 precached_object_file=@@TESTDIR@@/var/objects.precache
-check_result_path=@@TESTDIR@@/var/spool/checkresults
 
 log_file=@@TESTDIR@@/var/nagios.log
 
@@ -47,23 +46,12 @@ temp_file=@@TESTDIR@@/var/nagios.tmp
 status_file=@@TESTDIR@@/var/status.log
 status_update_interval=5
 
-nagios_user=@@USER@@
-nagios_group=@@GROUP@@
-
 enable_notifications=1
 execute_service_checks=1
 accept_passive_service_checks=1
 execute_host_checks=1
 accept_passive_host_checks=1
 enable_event_handlers=1
-
-# LOG ROTATION METHOD
-#   n   = None - don't rotate the log
-#   h   = Hourly rotation (top of the hour)
-#   d   = Daily rotation (midnight every day)
-#   w   = Weekly rotation (midnight on Saturday evening)
-#   m   = Monthly rotation (midnight last day of month)
-log_rotation_method=m
 
 log_archive_path=@@TESTDIR@@/var/archives
 
@@ -99,21 +87,12 @@ log_passive_checks=1
 #global_host_event_handler=
 #global_service_event_handler=
 
-service_inter_check_delay_method=s
 max_service_check_spread=30
 service_interleave_factor=s
 max_concurrent_checks=0
 #check_result_reaper_frequency=
-host_inter_check_delay_method=s
-max_host_check_spread=30
 
 interval_length=60
-
-# turned off since this is an Experimental feature according to the Nagios
-# documentation
-auto_reschedule_checks=0
-auto_rescheduling_interval=30
-auto_rescheduling_window=180
 
 use_agressive_host_checking=0
 
@@ -178,8 +157,6 @@ use_true_regexp_matching=0
 
 admin_email=support@op5.com
 admin_pager=support@op5.com
-
-daemon_dumps_core=1
 
 ## PNP config start ##
 service_perfdata_file=/opt/monitor/var/service-perfdata

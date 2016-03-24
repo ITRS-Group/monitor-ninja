@@ -20,12 +20,7 @@ else
 end
 
 After do |scenario|
-  case scenario
-  when Cucumber::Ast::Scenario
-    name = scenario.name
-  when Cucumber::Ast::OutlineTable::ExampleRow
-    name = scenario.scenario_outline.name
-  end
+  name = scenario.name
   if scenario.failed?
     puts "Scenario '#{name}' failed"
   end
