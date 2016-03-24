@@ -83,7 +83,7 @@ class ListView_Controller extends Ninja_Controller {
 		$offset = $this->input->get('offset',$this->input->post('offset',false));
 
 		if( $limit === false ) {
-			return json::fail( array( 'data' => _("No limit specified")) );
+			return json::fail(array('data' => _("No limit specified")), 400);
 		}
 
 		try {
@@ -139,7 +139,7 @@ class ListView_Controller extends Ninja_Controller {
 				'position' => $e->get_position()
 				));
 		} catch (ORMDriverException $e) {
-			throw $e;
+			return json::fail(array('data' => $e->getMessage()));
 		} catch (ORMException $e) {
 			return json::fail(array('data' => $e->getMessage()));
 		} catch( Exception $e ) {

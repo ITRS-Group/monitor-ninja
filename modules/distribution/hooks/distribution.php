@@ -66,14 +66,12 @@ class distribution_hooks implements op5MayI_Actor
 			}
 		}
 
-		$this->info = array(
+		return array(
 			'poller_groups' => count($pgroups),
 			'pollers' => isset($nodeinfo['ipc']['configured_pollers']) ? (int) $nodeinfo['ipc']['configured_pollers'] : 0,
 			// Always count the ipc as a peer
 			'peers' => isset($nodeinfo['ipc']['configured_peers']) ? (int) $nodeinfo['ipc']['configured_peers']: 0
 		);
-
-		return $this->info;
 	}
 } // END class distribution_hooks implements op5MayI_Actor
 

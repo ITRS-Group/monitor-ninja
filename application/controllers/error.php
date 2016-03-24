@@ -38,6 +38,7 @@ class Error_Controller extends Ninja_Controller  {
 	public function show_livestatus($exception) {
 		if (PHP_SAPI === 'cli') {
 			print("Livestatus error\n");
+			var_dump($exception);
 			return;
 		}
 		$this->template->content = $this->add_view('livestatus');
