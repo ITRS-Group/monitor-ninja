@@ -29,16 +29,6 @@ class distribution_hooks implements op5MayI_Actor
 	 **/
 	public function getActorInfo()
 	{
-		return $this->process_info();
-	}
-
-	/**
-	 * Gathers and processes info about the system usage
-	 *
-	 * @return array
-	 **/
-	private function process_info()
-	{
 		if (isset($this->info)) {
 			return $this->info;
 		}

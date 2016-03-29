@@ -73,7 +73,7 @@ class ORMDriverLS implements ORMDriverInterface {
 		try {
 			list($fetched_columns, $objects, $count) = $ls->query($table, $ls_filter, $valid_columns);
 		} catch( op5LivestatusException $e ) {
-			throw new ORMException( $e->getPlainMessage(), $table, false, $e );
+			throw new ORMDriverException($e->getPlainMessage(), $table, false, $e);
 		}
 
 		if($columns === false) {

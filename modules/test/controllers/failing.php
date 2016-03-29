@@ -6,8 +6,9 @@ class Failing_Controller extends Ninja_Controller {
 	/**
 	* Run report tests
 	*/
-	public function orm_exception()
-	{
-		count(FailingPool_Model::all());
+	public function orm_exception() {
+		throw new ORMDriverException(
+			'This exception is to test the handling of ORMDriverExceptions'
+		);
 	}
 }
