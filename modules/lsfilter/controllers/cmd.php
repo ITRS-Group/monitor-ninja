@@ -86,7 +86,19 @@ class Cmd_Controller extends Ninja_Controller {
 			$result = $object->$command();
 			return url::redirect($result);
 		}
-		$this->template->content->command_info = $commands[$command];
+
+		$command_definition = $commands[$command];
+		if (isset($command_definition['params'])) {
+			foreach ($command_definition['params'] as $param => $data) {
+				$override = config::get('nagdefault.' . $param, null);
+				if (!($override === null)) {
+					$command_definition['params'][$param]['default'] = $override;
+				}
+			}
+		}
+
+		$this->template->content->command_info = $command_definition;
+
 	}
 
 	/**

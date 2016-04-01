@@ -1,0 +1,14 @@
+.bignumber_state_ok {
+	background-color: #30C330;
+	color: white;
+}
+
+.bignumber_state_warning {
+	background-color: #F4A03C;
+	color: white;
+}
+
+.bignumber_state_critical {
+	background-color: #F43C3C;
+	color: white;
+}
