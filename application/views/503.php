@@ -12,10 +12,8 @@
 		<h2>Troubleshooting information</h2>
 <?php if (isset($exception)) { ?>
 		<code>
-			<?php
-				echo get_class($exception) . "<br>";
-				echo $exception->getMessage();
-			?>
+			<?php echo get_class($exception); ?> thrown with message:
+			<i><?php echo $exception->getMessage(); ?></i>
 		</code>
 <?php } ?>
 	</div>

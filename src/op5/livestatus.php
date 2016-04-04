@@ -402,18 +402,24 @@ class op5livestatus_connection {
 		}
 		elseif($type == 'unix') {
 			if(!file_exists($address)) {
-				throw new op5LivestatusException("connection failed, make sure $address exists\n");
+				throw new op5LivestatusException('Cannot connect to Livestatus.');
 			}
 			$this->connection = @fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
 			if (!$this->connection)
-				throw new op5LivestatusException("connection failed, make sure $address exists\n");
+				throw new op5LivestatusException('Cannot connect to Livestatus.');
 		}
 		else {
-			throw new op5LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
+			throw new op5LivestatusException(
+				'Cannot connect to Livestatus. Unknown connection type: ' .
+				"'$type', valid types are 'tcp' and 'unix'."
+			);
 		}
 
 		if(!$this->connection) {
-			throw new op5LivestatusException("connection ".$this->connectionString." failed: ".$errstr);
+			throw new op5LivestatusException(
+				'Cannot connect to Livestatus. ' .
+				'Connection ' . $this->connectionString . ' failed: ' . $errstr
+			);
 		}
 	}
 
@@ -441,7 +447,7 @@ class op5livestatus_connection {
 			$this->connect();
 		$out = @fwrite($this->connection, $str);
 		if ($out === false)
-			throw new op5LivestatusException("Couldn't write to livestatus socket");
+			throw new op5LivestatusException("Couldn't write to Livestatus socket");
 	}
 
 	/**
