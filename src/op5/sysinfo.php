@@ -50,7 +50,7 @@ class op5sysinfo {
 					$this->usage_metrics[$metric] = $this->$getter();
 				}
 			} catch (op5LivestatusException $e) {
-				throw new ORMDriverException($e->getMessage());
+				throw new ORMDriverException($e->getMessage(), false, false, $e);
 			} catch (ORMDriverException $e) {
 				throw $e;
 			} catch (Exception $e) {

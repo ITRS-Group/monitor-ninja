@@ -138,8 +138,6 @@ class ListView_Controller extends Ninja_Controller {
 				'query' => $e->get_query(),
 				'position' => $e->get_position()
 				));
-		} catch (ORMDriverException $e) {
-			return json::fail(array('data' => $e->getMessage()));
 		} catch (ORMException $e) {
 			return json::fail(array('data' => $e->getMessage()));
 		} catch( Exception $e ) {
