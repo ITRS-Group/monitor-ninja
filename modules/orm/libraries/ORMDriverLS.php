@@ -73,7 +73,7 @@ class ORMDriverLS implements ORMDriverInterface {
 		try {
 			list($fetched_columns, $objects, $count) = $ls->query($table, $ls_filter, $valid_columns);
 		} catch( op5LivestatusException $e ) {
-			throw new ORMException( $e->getPlainMessage(), $table, false, $e );
+			throw new ORMDriverException($e->getPlainMessage(), $table, false, $e);
 		}
 
 		if($columns === false) {
@@ -102,8 +102,9 @@ class ORMDriverLS implements ORMDriverInterface {
 
 		try {
 			$result = $ls->stats_single($table, $ls_filter, $ls_intersections);
-		}
-		catch (op5LivestatusException $ex) {
+		} catch (ORMDriverException $e) {
+			return false;
+		} catch (op5LivestatusException $ex) {
 			return false;
 		}
 

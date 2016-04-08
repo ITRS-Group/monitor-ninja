@@ -31,6 +31,11 @@ class Ninja_Controller extends Base_Controller {
 	public $linkprovider;
 
 	/**
+	 * @var Menu_Model
+	 */
+	public $menu;
+
+	/**
 	 * @var op5MayI
 	 */
 	public $mayi = false;

@@ -23,6 +23,8 @@ class Nagvis_Widget extends widget_Base {
 	public function options() {
 		try {
 			$maps = nagvisconfig::get_map_list();
+		} catch (ORMDriverException $e) {
+			$maps = array();
 		} catch (op5LivestatusException $ex) {
 			$maps = array();
 		}

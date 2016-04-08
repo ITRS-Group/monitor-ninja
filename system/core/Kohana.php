@@ -179,15 +179,12 @@ final class Kohana {
 			}
 
 			try {
+
 				// Run system.pre_controller
 				Event::run('system.pre_controller');
 
 				// Create a new controller instance
 				$controller = new $classname();
-
-				// Controller constructor has been executed
-				Event::run('system.post_controller_constructor', $controller);
-
 				$method = Router::$method;
 
 				// Stop the controller setup benchmark
@@ -198,8 +195,13 @@ final class Kohana {
 
 				// Execute the controller method
 				// $method does always exist in a controller, since Controller
-				// implements the fucntion __call()
-				call_user_func_array(array($controller, $method), Router::$arguments);
+				// implements the function __call()
+				// Controller constructor has been executed
+				Event::run('system.post_controller_constructor', $controller);
+				call_user_func_array(
+					array($controller, $method),
+					Router::$arguments
+				);
 
 				// Controller method has been executed
 				Event::run('system.post_controller', $controller);
@@ -210,15 +212,25 @@ final class Kohana {
 				// Start the rendering benchmark
 				Benchmark::start(SYSTEM_BENCHMARK.'_render');
 
-				// Render the output
-				Event::run('system.render');
-
 				// Stop the rendering benchmark
 				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
 
-			} catch( Exception $e ) {
+			} catch (ORMDriverException $e) {
+				self::$instance->template->content = new View('503');
+				self::$instance->template->content->exception = $e;
+				self::$instance->template->disable_refresh = true;
+
+			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
+
+			try {
+				// Render the output
+				Event::run('system.render');
+			} catch (Exception $e) {
+				self::exception_handler($e);
+			}
+
 		}
 
 		return self::$instance;
@@ -258,9 +270,11 @@ final class Kohana {
 	}
 
 	/**
-	 * Get a config item or group.
+	 * Get a config item or group. Prioritizes the environment variables;
+	 * this is an example that ignores the configuration stored on disk:
+	 * NINJA_COOKIE_SECURE=0 phpunit some_cookie_test.php
 	 *
-	 * @param   string   item name
+	 * @param   string   item name such as 'cookie.secure'
 	 * @param   boolean  force a forward slash (/) at the end of the item
 	 * @param   boolean  is the item required?
 	 * @return  mixed

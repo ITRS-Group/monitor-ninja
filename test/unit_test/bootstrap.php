@@ -21,6 +21,9 @@ class Session {
 	public function delete($keys) {}
 }
 
+// Make sure deprecated features are treated as such, see MON-9199
+assert(putenv('OP5_NINJA_DEPRECATION_SHOULD_EXIT=1'));
+
 set_include_path(realpath(__DIR__.'/../../src/') . PATH_SEPARATOR . get_include_path());
 
 require_once(__DIR__.'/../../index.php');

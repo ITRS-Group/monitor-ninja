@@ -20,7 +20,7 @@ class op5AuthDriver_Header extends op5AuthDriver {
 
 	/**
 	 * Attempt to log in a user by static configuration, or external
-	 * infromation.
+	 * information.
 	 *
 	 * Useful for example for HTTP-auth.
 	 *
@@ -91,7 +91,8 @@ class op5AuthDriver_Header extends op5AuthDriver {
 		 * should be that the user can. Default is not set is false. This is
 		 * used to hide the log out-links.
 		 */
-		$user->auth_data = array ('no_logout' => true);
+		$user->set_auth_data(array('no_logout' => true));
+
 		return $user;
 	}
 

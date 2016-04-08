@@ -1,19 +1,3 @@
-Given /^I have PNP data for "(.+)"/ do |object|
-	if object =~ /;/ then
-		objs = object.split(";")
-		host = objs[0]
-		service = objs[1]
-	else
-		service = "_HOST_"
-		host = object
-	end
-	host.gsub!(/[ :\/\\]/, '_')
-	service.gsub!(/[ :\/\\]/, '_')
-
-	FileUtils.mkdir_p("/opt/monitor/op5/pnp/perfdata/" + host)
-	FileUtils.touch("/opt/monitor/op5/pnp/perfdata/" + host + "/" + service + ".xml")
-end
-
 When /^I enter the time in (\d) minutes into "(.+)"$/ do |minutes, selector|
 	require('date')
 	fill_in(selector, :with => (Time.now + minutes.to_i * 60).strftime('%F %T'))

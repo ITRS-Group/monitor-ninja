@@ -49,6 +49,10 @@ class op5sysinfo {
 				if (method_exists($this, $getter)) {
 					$this->usage_metrics[$metric] = $this->$getter();
 				}
+			} catch (op5LivestatusException $e) {
+				throw new ORMDriverException($e->getMessage(), false, false, $e);
+			} catch (ORMDriverException $e) {
+				throw $e;
 			} catch (Exception $e) {
 				/* Something went wrong... skip this metric */
 			}

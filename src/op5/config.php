@@ -40,8 +40,6 @@ class op5config {
 	}
 
 	/**
-	 * __contruct
-	 *
 	 * @param $options array
 	 * @return void
 	 **/
@@ -77,6 +75,15 @@ class op5config {
 	 **/
 	public function getConfig($parameter, $reserved = false)
 	{
+		// environment variables cannot include dots, so we use an
+		// underscore for separating the key's parts
+		$environment_variable_as_kohana_config_key = str_replace('.', '_', strtoupper("op5.$parameter"));
+		$e = getenv($environment_variable_as_kohana_config_key);
+		if($e !== false) {
+			// false: getenv()'s way of telling us the var is unset
+			// unset a var in php by leaving out '=', e.g. putenv('hello');
+			return $e;
+		}
 		$config = $this->getConfigVar(explode('.',$parameter), $this->basepath);
 		if (!$reserved && is_array($config)) {
 			$config = $this->cleanConfigArray($config);

@@ -30,6 +30,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 	 *
 	 * @param $username string
 	 * @param $password string
+	 * @throws op5AuthException
 	 * @return User_Model|null
 	 */
 	public function login($username, $password) {

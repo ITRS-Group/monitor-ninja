@@ -103,7 +103,7 @@ final class Event {
 	 * @param   array    event callback
 	 * @return  void
 	 */
-	private static function insert_event($name, $key, $callback)
+	public static function insert_event($name, $key, $callback)
 	{
 		if (in_array($callback, self::$events[$name], TRUE))
 			return FALSE;

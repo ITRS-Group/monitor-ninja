@@ -4,12 +4,7 @@
 
     $filters = new SavedReportPool_Model();
     $set = $filters->all()->reduce_by('type', $type, '=');
-    try {
-        return $set->it(false, array());
-    } catch (ORMDriverException $e) {
-		op5log::instance('ninja')->log('error', "Failed to get saved reports: " . $e->getMessage());
-        return new ArrayIterator(array());
-    }
+    return $set->it(false, array());
 
   }
 
@@ -41,7 +36,6 @@
   Event::add('ninja.menu.setup', function () {
 
     $menu = Event::$data;
-    $menu->set('Report', null, 2, 'icon-16 x16-reporting', array('style' => 'margin-top: 8px'));
 
     add_report_menu_type($menu, 0, 'avail', 'Availability', 'avail/index', 'avail/generate', 'icon-16 x16-availability');
     add_report_menu_type($menu, 1, 'sla', 'SLA', 'sla/index', 'sla/generate', 'icon-16 x16-sla');

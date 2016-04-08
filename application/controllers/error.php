@@ -16,8 +16,16 @@ class Error_Controller extends Ninja_Controller  {
 	{
 		try {
 			parent::__construct();
-			$this->template->menu = new Menu_Model();
-		} catch (Exception $ex) {}
+		} catch (ORMDriverException $e) {
+			// This will be handled from the Kohana class by showing a 503.
+			throw $e;
+		} catch (Exception $ex) {
+			op5log::instance()->log(
+				'ninja',
+				'warning',
+				'Exception in Error_Controller: ' . $e->getMessage()
+			);
+		}
 	}
 
 	public function show_403() {

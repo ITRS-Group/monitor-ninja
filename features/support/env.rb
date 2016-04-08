@@ -1,6 +1,9 @@
 require 'op5cucumber'
 require 'fileutils'
 
+# trigger excptions when reaching code paths flagged as 'deprecated'
+ENV['OP5_NINJA_DEPRECATION_SHOULD_EXIT'] = "1"
+
 if ENV['SERVER']
   SERVER=ENV['SERVER']
 else

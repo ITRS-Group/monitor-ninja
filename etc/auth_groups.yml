@@ -136,3 +136,4 @@ limited_view:
   - management_pack_view_all
   - servicegroup_view_all
   - wiki
+  - nagvis_view

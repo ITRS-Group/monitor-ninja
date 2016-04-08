@@ -270,7 +270,13 @@ class op5auth implements op5MayI_Actor {
 			return false;
 		}
 
-		$user = $driver->login($username, $password);
+		try {
+			$user = $driver->login($username, $password);
+		} catch (op5AuthException $e) {
+			$this->log->log('warning', $e);
+			$user = null;
+		}
+
 		if ($user === null) {
 			$this->log->log('debug', "Failed to authenticate '$username' using driver '" . get_class($driver) . "'");
 			return false;

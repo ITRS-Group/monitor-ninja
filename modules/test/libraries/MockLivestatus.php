@@ -439,7 +439,7 @@ class MockLivestatus {
 			$columns = array_keys( $table_data[0] );
 		}
 		if (! is_array( $columns )) {
-			throw new MockLivestatus_Exception( 'Unknown column definition: ' . var_dump( $columns, false ) );
+			throw new MockLivestatus_Exception('Unknown column definition: ' . var_export($columns, true));
 		}
 
 		if (count( $stats_accumelators ) == 0) {

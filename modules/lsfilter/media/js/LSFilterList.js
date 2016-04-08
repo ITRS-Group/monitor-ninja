@@ -396,8 +396,13 @@ function lsfilter_list(config)
 
 	this.handle_ajax_error_response = function(data)
 	{
+
 		var alert = $('<div class="alert error" />');
-		alert.html("<strong>Error:</strong> " + data.data);
+		if (typeof(data.data) === 'undefined') {
+			alert.html("Service Unavailable, you may attempt to refresh your browser");
+		} else {
+			alert.html("<strong>Error:</strong> " + data.data);
+		}
 
 		if (this.config.table) {
 			this.config.table.replaceContent(alert);

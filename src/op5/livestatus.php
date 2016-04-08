@@ -164,17 +164,38 @@ class op5Livestatus {
 
 		$query .= "\n";
 
-		$start   = microtime(true);
-		$rc      = $this->connection->writeSocket($query);;
-		$head    = $this->connection->readSocket(16);
-		$status  = substr($head, 0, 3);
-		$len     = intval(trim(substr($head, 4, 15)));
-		$body    = $this->connection->readSocket($len);
-		if(empty($body))
-			throw new op5LivestatusException("Invalid query, livestatus response was empty", $query);
-		if($status != 200)
-			throw new op5LivestatusException(trim($body), $query);
-		$this->connection->close();
+		// Connect to Livestatus. Re-trying up to three times. Sleep 0.3 seconds
+		// between each try.
+		$i = 0;
+		while (true) {
+			try {
+				$start   = microtime(true);
+				$rc      = $this->connection->writeSocket($query);;
+				$head    = $this->connection->readSocket(16);
+				$status  = substr($head, 0, 3);
+				$len     = intval(trim(substr($head, 4, 15)));
+				$body    = $this->connection->readSocket($len);
+				if(empty($body))
+					throw new op5LivestatusException(
+						"Invalid query, livestatus response was empty", $query
+					);
+				if($status != 200)
+					throw new op5LivestatusException(trim($body), $query);
+				$this->connection->close();
+				break;
+			} catch (op5LivestatusException $e) {
+				$ninja_log = op5Log::instance('ninja');
+				// After three failing attempts the exception is thrown upwards.
+				if ($i == 3) {
+					$ninja_log->debug('Livestatus down. Last attempt failed.');
+					throw $e;
+				}
+				usleep(300000);
+				$i++;
+				$msg = "Livestatus down. Attempt $i of 3 failed. Trying again.";
+				$ninja_log->debug($msg);
+			}
+		}
 
 		$result = json_decode(utf8_encode($body), true);
 
@@ -381,18 +402,24 @@ class op5livestatus_connection {
 		}
 		elseif($type == 'unix') {
 			if(!file_exists($address)) {
-				throw new op5LivestatusException("connection failed, make sure $address exists\n");
+				throw new op5LivestatusException('Cannot connect to Livestatus.');
 			}
 			$this->connection = @fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
 			if (!$this->connection)
-				throw new op5LivestatusException("connection failed, make sure $address exists\n");
+				throw new op5LivestatusException('Cannot connect to Livestatus.');
 		}
 		else {
-			throw new op5LivestatusException("unknown connection type: '$type', valid types are 'tcp' and 'unix'\n");
+			throw new op5LivestatusException(
+				'Cannot connect to Livestatus. Unknown connection type: ' .
+				"'$type', valid types are 'tcp' and 'unix'."
+			);
 		}
 
 		if(!$this->connection) {
-			throw new op5LivestatusException("connection ".$this->connectionString." failed: ".$errstr);
+			throw new op5LivestatusException(
+				'Cannot connect to Livestatus. ' .
+				'Connection ' . $this->connectionString . ' failed: ' . $errstr
+			);
 		}
 	}
 
@@ -420,7 +447,7 @@ class op5livestatus_connection {
 			$this->connect();
 		$out = @fwrite($this->connection, $str);
 		if ($out === false)
-			throw new op5LivestatusException("Couldn't write to livestatus socket");
+			throw new op5LivestatusException("Couldn't write to Livestatus socket");
 	}
 
 	/**

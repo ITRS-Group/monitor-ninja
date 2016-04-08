@@ -14,8 +14,8 @@ class Netw_outages_Widget extends widget_Base {
 			$current_status = Current_status_Model::instance();
 			$current_status->analyze_status_data();
 			$total_blocking_outages = $current_status->hst->outages;
-		}
-		catch (op5LivestatusException $ex) {
+		} catch (ORMDriverException $e) {
+		} catch (op5LivestatusException $ex) {
 		}
 
 		$label = _('Blocking Outages');

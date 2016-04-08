@@ -1336,3 +1336,21 @@ span.brand-label {
   margin-left: 8px;
 }
 
+.overlay {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  height: 100%;
+  width: 100%;
+}
+
+.dialog {
+  margin: 10% 25%;
+  width: 50%;
+  min-height: 128px;
+  padding: 32px;
+  border-radius: 4px;
+  background: #ffffff;
+}

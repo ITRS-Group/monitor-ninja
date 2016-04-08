@@ -1,6 +1,6 @@
 <?php
 
-Event::add('ninja.menu.setup', function () {
+Event::insert_event('ninja.menu.setup', 0, function () {
 
   $menu = Event::$data;
 
@@ -13,6 +13,8 @@ Event::add('ninja.menu.setup', function () {
     ->set('Tactical Overview', 'tac', 0, 'icon-16 x16-tac')
     ->set('Network Outages', 'outages', 1, 'icon-16 x16-outages')
     ->set('NagVis', 'nagvis', null, 'icon-16 x16-nagvis');
+
+  $menu->set('Report', null, 2, 'icon-16 x16-reporting', array('style' => 'margin-top: 8px'));
 
   Event::$data = $menu;
 

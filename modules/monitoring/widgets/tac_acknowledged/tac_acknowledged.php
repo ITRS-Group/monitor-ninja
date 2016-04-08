@@ -19,8 +19,10 @@ class Tac_acknowledged_Widget extends widget_Base {
 		try {
 			$current_status = Current_status_Model::instance();
 			$current_status->analyze_status_data();
-		}
-		catch (op5LivestatusException $ex) {
+		} catch (ORMDriverException $e) {
+			require($view_path);
+			return;
+		} catch (op5LivestatusException $ex) {
 			require($view_path);
 			return;
 		}

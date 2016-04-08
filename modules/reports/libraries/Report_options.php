@@ -218,6 +218,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		if (isset($this->properties['rpttimeperiod'])) {
 			try {
 				$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
+			} catch (ORMDriverException $e) {
+				$this->properties['rpttimeperiod']['options'] = array();
 			} catch (op5LivestatusException $ex) {
 				/* crashing because we didn't find any timperiods is
 				 * counter-productive, so let's try with "nothing" and hope it's
