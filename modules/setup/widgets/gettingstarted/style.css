@@ -1,0 +1,136 @@
+.gettingstarted_container {
+	position: relative;
+	margin: 0;
+	padding: 5px;
+}
+
+.gettingstarted_columncontainer {
+	margin: 0;
+	padding: 0;
+
+	column-count: 4;
+	-moz-column-count:4;
+	-webkit-column-count: 4;
+
+	column-gap: 1px;
+	-moz-column-gap: 1px;
+	-webkit-column-gap: 1px;
+}
+.gettingstarted_column {
+	display: inline-block;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+}
+
+@media only screen and ( max-width: 1200px ) and ( min-width: 780px ) {
+	.gettingstarted_columncontainer {
+		column-count: 2;
+		-moz-column-count: 2;
+		-webkit-column-count: 2;
+	}
+	.gettingstarted_divider1,
+	.gettingstarted_divider3 {
+		display: none;
+	}
+
+}
+@media only screen and ( max-width: 780px ){
+	.gettingstarted_columncontainer {
+		column-count: 1;
+		-moz-column-count: 1;
+		-webkit-column-count: 1;
+	}
+	.gettingstarted_divider1,
+	.gettingstarted_divider2,
+	.gettingstarted_divider3 {
+		display: none;
+	}
+}
+
+.gettingstarted_box {
+	margin: 5px;
+	padding: 5px;
+	overflow: hidden;
+}
+
+
+.gettingstarted_bullet {
+	width: 70px;
+	height: 70px;
+	line-height: 70px;
+	border-radius: 35px;
+
+	font-size: 50px;
+	text-align: center;
+	vertical-align: middle;
+
+	margin: 30px auto;
+	background-color: rgba(0, 0, 0, 0.2);
+	color: #fff;
+}
+
+
+.gettingstarted_box h1 {
+	text-align: center;
+	font-weight: bold;
+	font-size: 125%;
+	margin: 0 1.6em 1.6em 1.6em;
+	padding: 0;
+	display: block;
+}
+
+.gettingstarted_box h2 {
+	text-align: left;
+	font-weight: inherit;
+	font-size: 125%;
+	margin: 0 1.6em 0 1.6em;
+	padding: 0;
+	display: block;
+}
+
+.gettingstarted_box p {
+	margin: 0.5em 2em 2em 2em;
+	padding: 0;
+	width: auto;
+	display: block;
+}
+
+.gettingstarted_box ol {
+	list-style-type: decimal;
+	margin: 0.5em 2em 2em 4em;
+}
+
+.gettingstarted_box ul {
+	list-style-type: disc;
+	margin: 0.5em 2em 2em 4em;
+}
+
+.gettingstarted_box img {
+	margin: 0.5em auto 2em auto;
+	display: block;
+}
+
+.gettingstarted_divider1,
+.gettingstarted_divider2,
+.gettingstarted_divider3 {
+	position: absolute;
+	width: 1px;
+	top: 10%;
+	height: 80%;
+	border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.gettingstarted_divider1 {
+	left: 25%;
+}
+
+.gettingstarted_divider2 {
+	left: 50%;
+}
+
+.gettingstarted_divider3 {
+	left: 75%;
+}
+
