@@ -5,11 +5,16 @@
 class ORMDriverSQL implements ORMDriverInterface {
 
 	/**
-	 * Which visitor should sql_from_where() use?
+	 * Which visitor should sql_where() use?
 	 */
 	protected $sql_builder_visitor_class_name = 'LivestatusSQLBuilderVisitor';
 
-	private function sql_from_where($filter, $structure) {
+	/**
+	 * Generate "JOIN" statement based on filter and structure
+	 *
+	 * @return string
+	 */
+	private function sql_join($filter, $structure) {
 		$sql = "";
 		$table = $structure['table'];
 		$class = $structure['class'];
@@ -25,8 +30,18 @@ class ORMDriverSQL implements ORMDriverInterface {
 			}, $foreign_structure['key'], $foreign_key));
 			$sql .= $join_expr;
 		}
+		return $sql;
+	}
+
+	/**
+	 * Generate "WHERE" statement based on filter and structure
+	 *
+	 * @return string
+	 */
+	private function sql_where($filter, $structure) {
+		$pool_class = $structure['class'] . 'Pool_Model';
 		$visitor = new $this->sql_builder_visitor_class_name(array($pool_class, "map_name_to_backend"));
-		$sql .= " WHERE ".$filter->visit($visitor, false);
+		$sql = " WHERE ".$filter->visit($visitor, false);
 		return $sql;
 	}
 
@@ -42,7 +57,8 @@ class ORMDriverSQL implements ORMDriverInterface {
 		$db = $this->get_db_instance($structure);
 		$sql = "SELECT COUNT(*) AS count";
 		$sql .= " FROM " . $structure['table'];
-		$sql .= $this->sql_from_where($filter, $structure);
+		$sql .= $this->sql_join($filter, $structure);
+		$sql .= $this->sql_where($filter, $structure);
 		$q = $db->query($sql);
 		$q->result(false);
 		$row = $q->current();
@@ -84,7 +100,8 @@ class ORMDriverSQL implements ORMDriverInterface {
 			$sql .= implode(", ", $valid_columns);
 		}
 		$sql .= " FROM " . $structure['table'];
-		$sql .= $this->sql_from_where($filter, $structure);
+		$sql .= $this->sql_join($filter, $structure);
+		$sql .= $this->sql_where($filter, $structure);
 
 		$sort = array();
 		foreach ($order as $col_attr) {
@@ -150,22 +167,24 @@ class ORMDriverSQL implements ORMDriverInterface {
 	public function update($table, $structure, $filter, $values) {
 		$db = $this->get_db_instance($structure);
 		$sql = 'UPDATE '.$structure['table'];
+		$sql .= $this->sql_join($filter, $structure);
 		$delim = " SET ";
 		foreach($values as $k => $v) {
 			$sql .= $delim . $k . " = " . $db->escape($v);
 			$delim = ", ";
 		}
-		$sql .= $this->sql_from_where($filter, $structure);
 
+		$sql .= $this->sql_where($filter, $structure);
 		$db->query($sql);
 	}
 
 	public function delete($table, $structure, $filter) {
 		$db = $this->get_db_instance($structure);
-		$sql = "DELETE FROM " . $structure['table'];
-		$sql .= $this->sql_from_where($filter, $structure);
+		/* Need to specify "DELETE table FROM table ..." when using LEFT JOIN, doesn't hurt otherwise */
+		$sql = "DELETE " . $structure['table'] . " FROM " . $structure['table'];
+		$sql .= $this->sql_join($filter, $structure);
+		$sql .= $this->sql_where($filter, $structure);
 		$db->query($sql);
-
 	}
 
 	public function insert_single($table, $structure, $values) {
@@ -183,6 +202,5 @@ class ORMDriverSQL implements ORMDriverInterface {
 
 		$result = $db->query($sql);
 		return $result->insert_id();
-
 	}
 }

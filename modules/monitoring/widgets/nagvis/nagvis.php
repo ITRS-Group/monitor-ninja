@@ -53,9 +53,10 @@ class Nagvis_Widget extends widget_Base {
 		# set required extra resources
 		$this->js = array('/js/nagvis');
 
-		list($type, $name) = explode("/", $this->model->page);
-                $external_widget = ($type === "external_widget");
-		$arguments = $this->get_arguments();
+		$name = Router::$method;
+        $external_widget = Router::$controller === "external_widget";
+
+        $arguments = $this->get_arguments();
 
 		# fetch widget content
 		require($view_path);

@@ -7,10 +7,9 @@ class Dead_Widget extends widget_Base {
 	/**
 	 * Builds a new Dead_Widget
 	 **/
-	public function __construct($model, $exc) {
+	public function __construct($model, Exception $exc) {
 		$this->exc = $exc;
 		parent::__construct($model);
-		$model->friendly_name = $model->friendly_name . ' (failed to load)';
 	}
 
 	public function get_metadata() {

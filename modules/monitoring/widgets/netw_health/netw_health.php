@@ -31,9 +31,9 @@ EOC;
 	/**
 	 * Constructs a new network health widget
 	 *
-	 * @param $model Ninja_Widget_Model
+	 * @param $model Widget_Model
 	 */
-	public function __construct(Ninja_Widget_Model $model)
+	public function __construct(Widget_Model $model)
 	{
 		parent::__construct($model);
 

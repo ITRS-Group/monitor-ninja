@@ -70,7 +70,9 @@ abstract class Object_Model extends BaseObject_Model {
 
 		if ($auth_filtered) {
 			$mayi = op5MayI::instance();
-			$mayi_resource = static::mayi_resource();
+			$temp_obj = new static();
+			$mayi_resource = $temp_obj->mayi_resource();
+			unset($temp_obj);
 			$commands = array_filter( $commands, function ($command) use($mayi, $mayi_resource) {
 				return $mayi->run( $mayi_resource . ':' . $command['mayi_method'] );
 			} );

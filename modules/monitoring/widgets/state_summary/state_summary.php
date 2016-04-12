@@ -22,9 +22,9 @@ class State_summary_Widget extends widget_Base {
 	);
 
 	/**
-	 * @param $widget_model Ninja_Widget_Model
+	 * @param $widget_model Widget_Model
 	 */
-	public function __construct(Ninja_Widget_Model $widget_model) {
+	public function __construct(Widget_Model $widget_model) {
 		parent::__construct($widget_model);
 		$this->states_per_table = array(
 			'hosts' => array(

@@ -12,7 +12,6 @@ var tac_send_request = function (method, data, callbacks) {
 		type : 'POST',
 		data : $.extend({
 			csrf_token : _csrf_token,
-			page : _current_uri,
 		}, data),
 		complete: function(jqHXR, textStatus) {
 			if(callbacks.complete) {
@@ -93,8 +92,7 @@ $(function() {
 			},
 			onClose : function(link, widget) {
 				tac_send_request('on_widget_remove', {
-					name : widget.attr('data-name'),
-					instance_id : widget.attr('data-instance_id')
+					key : widget.attr('data-key')
 				}, {
 					error: function () {
 						Notify.message('Could not save removal of widget to settings');
@@ -103,8 +101,8 @@ $(function() {
 			},
 			onHide : function(widget) {
 			},
-			onAdd : function(w) {
-				new widget(w.data('name'), w.data('instance_id'));
+			onAdd : function(w, place) {
+				new widget(w.data('key'));
 			}
 		}
 	});
@@ -121,16 +119,15 @@ $(function() {
 			var widget_name = elem.attr('data-widget-name');
 			e.preventDefault();
 
+			var cell_name = 'widget-placeholder0';
 			tac_send_request('on_widget_add', {
-				widget : widget_name
+				widget : widget_name,
+				cell   : cell_name
 			}, {
 				success : function(data) {
-					var container = $('#widget-placeholder');
 					var new_widget = $(data.widget);
-					container.append(new_widget);
-
-					$.fn.AddEasyWidget(new_widget, new_widget.parent().id,
-							   easywidgets_obj);
+					$('#' + cell_name).prepend(new_widget);
+					$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
 				},
 				error: function () {
 					Notify.message('Could not save new widget to settings');
@@ -144,25 +141,19 @@ $(function() {
 /**
  * Ninja widget class
  */
-function widget(name, instance_id) {
+function widget(key) {
 	var self = this;
 
 	this.current_uri = _current_uri;
 	this.is_updating = false;
 
-	this.id = name + '-' + instance_id;
-	this.element = $('#widget-' + this.id);
-	this.header = this.element.find('.widget-header');
+	this.key = key;
 
-	this.name = name;
-	this.instance_id = instance_id;
-	this.widget_id = 'widget-' + this.id;
+	this.elem = $('#widget-' + this.key);
+	this.header = this.elem.find('.widget-header');
 
-	this.elem = $('#widget-' + this.id);
-
-	this.title_element = $('#' + this.id + '_title');
-	this.title = this.title_element.text();
-	this.form = $('#' + this.id + '_form');
+	this.title_element = this.elem.find('.widget-title');
+	this.form = this.elem.find('form');
 
 	/*
 	 * Save settings timer information
@@ -188,14 +179,9 @@ function widget(name, instance_id) {
 	 * Note: time is in seconds
 	 */
 	this.refresh_element = this.elem.find('.refresh_interval');
-	this.refresh_slider = this.elem.find('.refresh_slider');
 	this.update_widget_timer = false;
 	this.update_widget_time = this.refresh_element.val();
 	this.update_widget_delayed();
-
-	if (this.refresh_slider.length)
-		this.init_slider();
-
 }
 
 /*******************************************************************************
@@ -250,20 +236,24 @@ widget.prototype.save_settings = function() {
 	}, {});
 
 	tac_send_request('on_widget_save_settings', {
-		name : this.name,
-		instance_id : this.instance_id,
+		key : this.key,
 		setting : data
 	}, {
 		complete : function() {
 			self.set_loading(false);
-		},
-		success : function(data) {
 			var upd_time = self.elem.find('.refresh_interval').val();
 			self.update_widget_time = upd_time;
 			self.update_widget();
 		},
-		error: function (data) {
-			Notify.message('Could not save updated widget options to settings', {
+		error: function (jqXHR) {
+			var msg = 'Could not save updated widget options to settings';
+			try {
+				var data = JSON.parse(jqXHR.responseText);
+				if(data.result) {
+					msg += ': ' + data.result;
+				}
+			} catch(e) {}
+			Notify.message(msg, {
 				type: "error"
 			});
 		}
@@ -291,7 +281,7 @@ widget.prototype.update_widget_delayed = function() {
 widget.prototype.update_widget = function() {
 
 	var self = this;
-	if (this.element.is(':visible')) {
+	if (this.elem.is(':visible')) {
 
 		if (this.is_updating)
 			return;
@@ -300,11 +290,11 @@ widget.prototype.update_widget = function() {
 		this.is_updating = true;
 
 		tac_send_request('on_refresh', {
-			name : self.name,
-			instance_id : self.instance_id
+			key : self.key
 		}, {
 			complete : function() {
 				self.set_loading(false);
+				self.is_updating = false;
 			},
 			success : function(data) {
 				self.elem.find('.widget-content').html(data.widget);
@@ -314,10 +304,13 @@ widget.prototype.update_widget = function() {
 				} else {
 					self.title_element.text(data.title);
 				}
-				self.is_updating = false;
 			},
-			error: function () {
-				Notify.message('There was an error refreshing the widget ' + self.name, {
+			error: function (jqXHR) {
+				var reason = "";
+				try {
+					reason = ": "+JSON.parse(jqXHR.responseText).result;
+				} catch (err) {}
+				Notify.message('There was an error refreshing the widget ' + self.key + reason, {
 					type: "error"
 				});
 			}
@@ -330,23 +323,3 @@ widget.prototype.update_widget = function() {
 	 */
 	this.update_widget_delayed();
 };
-
-/**
- * Initializes the refresh rate slider for this widget
- */
-widget.prototype.init_slider = function() {
-	var self = this;
-	this.refresh_slider.slider({
-		value : this.update_widget_time,
-		min : 0,
-		max : 500,
-		step : 10,
-		slide : function(event, ui) {
-			self.refresh_element.val(ui.value);
-			self.update_widget_time = self.refresh_element.val();
-			self.update_widget_delayed();
-			self.save_settings_delayed();
-		}
-	});
-};
-

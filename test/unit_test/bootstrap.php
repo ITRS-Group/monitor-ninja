@@ -1,6 +1,11 @@
 <?php
 define('SKIP_KOHANA', true);
 
+$ninja_base = realpath(__DIR__.'/../..');
+set_include_path($ninja_base . '/src' . PATH_SEPARATOR . get_include_path());
+
+require_once ('op5/objstore.php');
+
 /**
  * Dummy Session module for tests
  *
@@ -24,7 +29,25 @@ class Session {
 // Make sure deprecated features are treated as such, see MON-9199
 assert(putenv('OP5_NINJA_DEPRECATION_SHOULD_EXIT=1'));
 
-set_include_path(realpath(__DIR__.'/../../src/') . PATH_SEPARATOR . get_include_path());
+/* Hardcode the path to the MockConfig, so we can boostrap isolated */
+require_once ($ninja_base . '/modules/test/libraries/MockConfig.php');
+op5objstore::instance()->mock_add('op5config', new MockConfig(array(
+		'auth' => array (
+			'common' => array (
+				'default_auth' => 'mydefault',
+				'session_key' => 'testkey'
+			),
+			'mydefault' => array (
+				'driver' => 'Default'
+			)
+		)
+	)));
+require_once ($ninja_base . '/index.php');
+op5objstore::instance()->mock_clear();
 
-require_once(__DIR__.'/../../index.php');
-
+/*
+ * If using this bootstrap from a module repository, uncomment those lines
+ * below, and update $ninja_base above to the install path of ninja.
+ */
+// Kohana::remove_include_paths ( ':.*modules/my_module.*:' );
+// Kohana::add_include_path ( realpath ( __DIR__ . '/../../my_module' ) . '/' );

@@ -389,7 +389,7 @@ class php_miner_statement_class extends php_miner_statement {
 	 * @param php_miner_statement $stmt
 	 * @return php_miner_statement_class|boolean
 	 */
-	public function factory(php_miner_statement $stmt) {
+	public static function factory(php_miner_statement $stmt) {
 		foreach ( $stmt->tokens as $token ) {
 			if ($token->is_token( T_CLASS )) {
 				return new self( $stmt );
@@ -427,7 +427,7 @@ class php_miner_statement_function extends php_miner_statement {
 	 * @param php_miner_statement $stmt
 	 * @return php_miner_statement_function|boolean
 	 */
-	public function factory(php_miner_statement $stmt) {
+	public static function factory(php_miner_statement $stmt) {
 		$tmptokens = $stmt->tokens;
 		$is_abstract = false;
 		$scope = "public";

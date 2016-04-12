@@ -34,7 +34,9 @@ module Op5Cucumber::Mock
         'ORMDriverLS default'
       when /^status$/
         'ORMDriverLS default'
-      when /^ninja_widgets$/
+      when /^dashboard_widgets$/
+        'ORMDriverMySQL default'
+      when /^dashboards$/
         'ORMDriverMySQL default'
       when /^users$/
         'ORMDriverYAML default'

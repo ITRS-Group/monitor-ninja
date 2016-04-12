@@ -35,7 +35,6 @@ class op5objstore {
 
 	public function __construct() {
 		$this->mock_clear();
-		$this->clear();
 	}
 
 

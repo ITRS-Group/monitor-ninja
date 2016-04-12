@@ -12,13 +12,26 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Ninja_Controller {
+	private function current_dashboard() {
+		/* Just pick the first dashboard... (we only have access to our own) */
+		$dashboard = DashboardPool_Model::all()->one();
+		if(!$dashboard) {
+			/* We don't have a dashboard, create one */
+			$dashboard = new Dashboard_Model();
+			$username = op5auth::instance()->get_user()->get_username();
+			$dashboard->set_username($username);
+			$dashboard->set_name('Dashboard for '.$username);
+			$dashboard->set_layout('3,2,1');
+			$dashboard->save();
+		}
+
+		return $dashboard;
+	}
+
 	/**
 	 * Display a TAC screen
-	 * @param $method tac screen name
-	 * @param $args not used
 	 */
-	public function __call($method, $args)
-	{
+	public function index()	{
 		$this->_verify_access('ninja.tac:read.tac');
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
@@ -26,98 +39,36 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
 
-		$page = 'tac/'.$method;
-
-		/* Fetch a set representing all widgets for the page */
-		$widget_set = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=');
-
-		/* Generate widgets, order per tag */
-		$widgets_per_tag = array();
-		foreach ($widget_set as $widget_model) {
-			$widget = $widget_model->build();
-			if ($widget === false) {
-				/* Skip widgets if we have uninstalled them. But don't remove, since it might be temporarly during an upgrade */
-				continue;
-			}
-			$tag = 'widget-' . $widget_model->get_name() . '-' .
-				 $widget_model->get_instance_id();
-			$widgets_per_tag[$tag] = $widget;
-			widget::set_resources($widget, $this);
-		}
-
+		$dashboard = $this->current_dashboard();
 
 		/* Build storage for placeholders */
-		$tac_column_count_str = config::get('tac.column_count', $page);
-		$tac_column_count = array_map('intval',explode(',',$tac_column_count_str));
-		$n_placeholders = array_sum( $tac_column_count );
+		$tac_column_count_str = $dashboard->get_layout();
+		$tac_column_count = array_map('intval',explode(',', $tac_column_count_str));
+		$n_dashboard_cells = array_sum($tac_column_count);
 
 		/* Generate the output widget table */
 		$widget_table = array();
-		for($i = 0; $i<$n_placeholders; $i++) {
+		for($i = 0; $i < $n_dashboard_cells; $i++) {
 			$widget_table[$i] = array();
 		}
 
-		/* Fill the output table, according to saved order in best effort */
-		$widget_order = array();
-		$widget_order_setting = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
-		if ($widget_order_setting !== false && !empty($widget_order_setting->setting)) {
-			$widget_order = self::parse_widget_order($widget_order_setting->setting);
-		}
-
-		/*
-		 * We didn't have any widgets, so we should fetch them according to the
-		 * default setup
-		 */
-		if(count($widgets_per_tag) == 0) {
-			/* Tac is empty, fill with default */
-			/* Do default as earlier, load everything */
-			foreach(Ninja_WidgetPool_Model::get_available_widgets() as $wname => $metadata) {
-				$widget_model = new Ninja_Widget_Model();
-				$widget_model->set_name($wname);
-				$widget_model->set_friendly_name($metadata['friendly_name']);
-				$widget_model->set_instance_id(mt_rand(0, 10000000)); // needs to be unique
-				$widget_model->set_page($page);
-				$widget_model->set_setting(array());
-				$widget_model->set_username(op5auth::instance()->get_user()->get_username());
-				$widget_model->save();
-
-				$widget = $widget_model->build();
-				if ($widget === false) {
-					/* Skip widgets if we have uninstalled them. But don't remove, since it might be temporarly during an upgrade */
-					continue;
-				}
-
-				$tag = 'widget-' . $widget_model->get_name() . '-' .
-					 $widget_model->get_instance_id();
-				$widgets_per_tag[$tag] = $widget;
-				widget::set_resources($widget, $this);
-			}
-		}
-
-		/* Place known widgets in the correct placeholders */
-		foreach ($widget_order as $p_name => $p_content ) {
-			if (preg_match ( '/^widget-placeholder([0-9]*)$/', $p_name, $matches )) {
-				$p_id = intval ( $matches [1] );
-			} else if (is_numeric ( $p_name )) {
-				$p_id = intval ( $p_name );
-			} else {
-				continue;
-			}
-			foreach ( $p_content as $w_name ) {
-				if ($w_name == "")
-					continue;
-				if (! isset ( $widgets_per_tag [$w_name] ))
-					continue;
-				$widget_table [$p_id] [] = $widgets_per_tag [$w_name];
-				unset ( $widgets_per_tag [$w_name] );
-			}
-		}
+		$widget_models = $dashboard->get_dashboard_widgets_set();
 
 		/* Place widgets that's left equally over the placeholders */
-		$p_id = 0;
-		foreach( $widgets_per_tag as $w_name => $widget ) {
-			$widget_table[$p_id][] = $widget;
-			$p_id = ($p_id+1)%$n_placeholders;
+		foreach ($widget_models as $model) {
+			$pos = json_decode($model->get_position(), true);
+			if (is_array($pos)) {
+				$widget_table[$pos['c']][$pos['p']] = $model->build();
+			}
+			else {
+				// If we can't parse position, place widget in last cell.
+				$widget_table[$n_dashboard_cells - 1][] = $model->build();
+			}
+		}
+
+		// We need to make sure all indexes comes in order (they may actually not).
+		foreach ($widget_table as &$cell) {
+			ksort($cell);
 		}
 
 		$this->template->content->widgets = $widget_table;
@@ -131,7 +82,7 @@ class Tac_Controller extends Ninja_Controller {
 
 
 		/* Fill with metadata, and build menu */
-		foreach(Ninja_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
+		foreach(Dashboard_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
 			$add_widget_menu->set($metadata['friendly_name'], "#", null, null,
 				array(
 					'data-widget-name' => $name,
@@ -146,194 +97,248 @@ class Tac_Controller extends Ninja_Controller {
 		$toolbar->menu($menu);
 	}
 
-	private static function parse_widget_order($setting)
-	{
-		$widget_order = array();
-		if (!empty($setting)) {
-			$widget_parts = explode('|', $setting);
-			if (!empty($widget_parts)) {
-				foreach ($widget_parts as $part) {
-					$parts = explode('=', $part);
-					if (is_array($parts) && !empty($parts)) {
-						$widget_sublist = explode(',', $parts[1]);
-						if (is_array($widget_sublist) && !empty($widget_sublist)) {
-							$widget_order[$parts[0]] = $widget_sublist;
-						}
-					}
+	/**
+	 * Save new positions for widgets.
+	 * $_POST['positions'] is used through $this->input->post(). It should
+	 * contain the widgets and their positions. A weird home-made format is
+	 * used at the moment (but is converted into JSON below).
+	 */
+	public function on_change_positions() {
+		// This is a basic functionality of the tac,
+		// so keep it to the same permission as tac
+		$this->_verify_access('ninja.tac:read.tac');
+
+		$positions = $this->input->post('positions', false);
+
+		// Parse position data from frontend
+		$placeholders = explode('|', $positions);
+		$pos_data = array_map(
+			function ($ph) {
+				$values = explode('=', $ph);
+				if ($values[1] == '') return array();
+				return explode(',', $values[1]);
+			},
+			$placeholders
+		);
+
+		// Loop through position data and save to widgets
+		$c_count = count($pos_data);
+		for ($i = 0; $i < $c_count; $i++) {
+			$p_count = count($pos_data[$i]);
+			for ($j = 0; $j < $p_count; $j++) {
+				$widget_model_id = substr($pos_data[$i][$j], 7);
+				$widget_model = $this->current_dashboard()
+					->get_dashboard_widgets_set()
+					->intersect(Dashboard_WidgetPool_Model::set_by_key($widget_model_id))
+					->one();
+
+				if ($widget_model === null) {
+					$this->template = new View('json');
+					$this->template->success = false;
+					$this->template->value = array('result' => 'Unknown widget');
+					return;
 				}
+
+				// c = dashboard cell, p = widget position (within cell)
+				$widget_model->set_position(
+					json_encode(array('c' => $i, 'p' => $j))
+				);
+				$widget_model->save();
 			}
 		}
-		return $widget_order;
+		$this->template = new View('json');
+		$this->template->success = true;
+		$this->template->value = array('result' => $pos_data);
 	}
 
 	/**
-	 *	Save location and order of widgets on a page, reading post data
-	 *	and saving them to page settings.
-	 *
-	 *  @return string JSON
-	 */
-	public function on_change_positions () {
-
-		$this->auto_render = false;
-		// This is a basic functionality of the tac, so keep it to the same permission as tac
-		$this->_verify_access('ninja.tac:read.tac');
-
-		$page = $this->input->post('page', false);
-		$positions = $this->input->post('positions', false);
-		$positions = trim($positions);
-		$page = trim($page);
-		if (empty($positions) || empty($page))
-			return false;
-
-		Ninja_setting_Model::save_page_setting('widget_order', $page, $positions);
-		return json::ok(array('result' => 'ok'));
-	}
-
-	/**
-	 * Create a new widget of a given type
+	 * Refresh the content of a widget.
+	 * $_POST['key'] is used through $this->input->post(). It should contain
+	 * the ID for the widget that should be refreshed.
 	 */
 	public function on_refresh() {
-		$this->auto_render = false;
-		// This is a basic functionality of the tac, so keep it to the same permission as tac
+		// This is a basic functionality of the tac,
+		// so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
-		$page = $this->input->post('page');
-		$widget_name = $this->input->post('name');
-		$widget_instance_id = $this->input->post('instance_id');
-		$username = op5auth::instance()->get_user()->get_username();
+		$dashboard = $this->current_dashboard();
+		$widget_model = $dashboard->get_dashboard_widgets_set()->intersect(
+			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
+		)->one();
 
-		$widget_model = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
-			->reduce_by('name', $widget_name, '=')
-			->reduce_by('instance_id', $widget_instance_id, '=')
-			->reduce_by('username', $username, '=')
-			->one();
-		if (! ($widget_model instanceof Ninja_Widget_Model)) {
-			echo json::fail(array(
-				'result' => 'Unknown widget'
-			));
+		if (!$widget_model instanceof Widget_Model) {
+			$this->template = new View('json');
+			$this->template->success = false;
+			$this->template->value = array('result' => 'Unknown widget');
+			return;
 		}
 
+		// If an error occurs when building widget this will result in a
+		// "dead widget" containing an error message.
 		$widget = $widget_model->build();
-		if ($widget === false) {
-			echo json::fail(
-				array(
-					'result' => 'Widget ' . $widget_model->get_name() .
-						 ' not installed'
-				));
-		}
 
-		$title = $widget->get_title();
 		$custom_title = '';
-		if (isset($widget_model->setting['title'])) {
-			$custom_title = $widget_model->setting['title'];
+		$setting = $widget_model->get_setting();
+		if (isset($setting['title'])) {
+			$custom_title = $setting['title'];
 		}
 
-		$result = array(
+		// We need to provide both the calculated title for rendering,
+		// and the value for the settings form.
+		$this->template = new View('json');
+		$this->template->success = true;
+		$this->template->value = array(
 			'widget' => $widget->render('index', false),
-			'title' => $title,
-			'custom_title' => $custom_title,
-			'instance_id' => $widget_model->get_instance_id(),
+			'title' => $widget->get_title(),
+			'custom_title' => $custom_title
 		);
-		echo json::ok($result);
 	}
 
 	/**
-	 * Create a new widget of a given type
+	 * Create a new widget of a given type.
+	 * $_POST['cell'] is used through $this->input->post(). It is expected to
+	 * end with a number. The number should correspond to the cell where the
+	 * widget is added.
+	 * $_POST['widget'] is also used and is expected to be a widget name that
+	 * corresponds to a predefined widget.
 	 */
 	public function on_widget_add() {
-		$this->auto_render = false;
-		// This is a basic functionality of the tac, so keep it to the same permission as tac
+		// This is a basic functionality of the tac,
+		// so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
-		$page = $this->input->post('page');
+		// $cell_num should be equal to the number in the end of $cell_name.
+		$cell_name = $this->input->post('cell');
+		$numbers = array();
+		$cell_num = 0;
+		if (preg_match_all('/\d+/', $cell_name, $numbers))
+			$cell_num = intval(end($numbers[0]));
+
+		// We need to update the position of all widgets in the cell to which
+		// the widget is added.
+		$dashboard = $this->current_dashboard();
+		$widget_models = $dashboard->get_dashboard_widgets_set();
+
+		foreach ($widget_models as $wm) {
+			$pos = json_decode($wm->get_position(), true);
+			if ($pos['c'] === $cell_num) {
+				// Move widget one step "down" if it's in the cell
+				// where we add the new widget.
+				$pos['p'] += 1;
+				$wm->set_position(json_encode($pos));
+				$wm->save();
+			}
+		}
+
 		$widget_name = $this->input->post('widget');
 
-		$widget_model = new Ninja_Widget_Model();
+		// Create new widget at position 0.
+		$widget_model = new Dashboard_Widget_Model();
+		$widget_model->set_dashboard_id($dashboard->get_id());
 		$widget_model->set_name($widget_name);
-		$widget_model->set_page($page);
-		$widget_model->set_instance_id(time()); // FIXME: increment id nicely
-
-		/* We need to build the widget to get the default friendly name */
-		$widget = $widget_model->build();
-		if ($widget === false) {
-			echo json::fail(
-				array(
-					'result' => 'Widget ' . $widget_model->get_name() .
-						 ' not installed'
-				));
-		}
-
-		$metadata = $widget->get_metadata();
-		if(!$metadata['instanceable']) {
-			echo json::fail(
-				array(
-					'result' => 'Widget ' . $widget_model->get_name() .
-						 ' can not be created'
-				));
-		}
-		$widget_model->set_friendly_name($metadata['friendly_name']);
+		$widget_model->set_position(json_encode(array(
+			'c' => $cell_num,
+			'p' => 0
+		)));
+		$widget_model->set_setting(array());
 		$widget_model->save();
 
-		$result = array(
+		// We need to build the widget to get the default friendly name.
+		// If an error occurs when building widget this will result in a
+		// "dead widget" containing an error message.
+		$widget = $widget_model->build();
+
+		$metadata = $widget->get_metadata();
+		if (!$metadata['instanceable']) {
+			$res = 'Widget ' . $widget_model->get_name() . ' can not be created';
+			$this->template->success = false;
+			$this->template->value = array('result' => $res);
+			return;
+		}
+
+		$this->template = new View('json');
+		$this->template->success = true;
+		$this->template->value = array(
 			'widget' => $widget->render('index', true),
-			'instance_id' => $widget_model->get_instance_id()
+			'key'    => $widget_model->get_key()
 		);
-		echo json::ok($result);
 	}
 
 	/**
-	 * Remove widget
+	 * Remove widget.
+	 * $_POST['key'] is used through $this->input->post() and should contain
+	 * the ID of the widget to delete.
 	 */
 	public function on_widget_remove() {
-		$this->auto_render = false;
-		// This is a basic functionality of the tac, so keep it to the same permission as tac
+		// This is a basic functionality of the tac,
+		// so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
-		$page = $this->input->post('page');
-		$widget_name = $this->input->post('name');
-		$widget_instance_id = $this->input->post('instance_id');
-		$username = op5auth::instance()->get_user()->get_username();
+		$widget_key = $this->input->post('key');
 
-		$widget = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
-			->reduce_by('name', $widget_name, '=')
-			->reduce_by('instance_id', $widget_instance_id, '=')
-			->reduce_by('username', $username, '=')
-			->one();
+		$dashboard_set = $this->current_dashboard()->get_dashboard_widgets_set();
+		$widget_model = $dashboard_set->intersect(
+			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
+		)->one();
 
-		if($widget instanceof Ninja_Widget_Model) {
-			$widget->delete();
-			echo json::ok(array('result' => 'ok'));
+		$this->template = new View('json');
+		if ($widget_model instanceof Dashboard_Widget_Model) {
+			$widget_model->delete();
+			$this->template->success = true;
+			$this->template->value = array('result' => 'ok');
+			return;
 		}
 
-		echo json::fail(array('result' => 'error'));
+		$this->template->success = false;
+		$this->template->value = array('result' => 'error');
 	}
 
 	/**
-	 * Create a new widget of a given type
+	 * Save settings for a widget.
+	 * $_POST['key'] is used through $this->input->post() and should contain
+	 * the ID of the widget to update.
+	 * $_POST['setting'] is also used should contain the settings to save.
 	 */
 	public function on_widget_save_settings() {
-
-		$this->auto_render = false;
 		$this->_verify_access('ninja.tac:read.tac');
 
-		$page = $this->input->post('page');
-		$widget_name = $this->input->post('name');
-		$widget_instance_id = $this->input->post('instance_id');
-		$setting = $this->input->post('setting');
-		$username = op5auth::instance()->get_user()->get_username();
-
-		$widget = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
-			->reduce_by('name', $widget_name, '=')
-			->reduce_by('instance_id', $widget_instance_id, '=')
-			->reduce_by('username', $username, '=')
-			->one();
-
-		if ($widget instanceof Ninja_Widget_Model) {
-			$widget->set_setting($setting);
-			$widget->save();
-			echo json::ok(array('result' => 'ok'));
+		$key = $this->input->post('key');
+		$this->template = new View('json');
+		if (!$key) {
+			$this->template->success = false;
+			$this->template->value = array(
+				'result' => 'No widget ID submitted, cannot update widget.'
+			);
+			return;
 		}
 
-		echo json::fail(array('result' => 'error'));
+		$setting = $this->input->post('setting');
+		if (!$setting) {
+			$this->template->success = true;
+			$this->template->value = array(
+				'result' => 'Did not update anything because there were ' .
+					'no new settings submitted.'
+			);
+			return;
+		}
+
+		$current_dashboard = $this->current_dashboard();
+		$widget_model = $current_dashboard->get_dashboard_widgets_set()
+			->intersect(Dashboard_WidgetPool_Model::set_by_key($key))->one();
+		if (!$widget_model instanceof Widget_Model) {
+			$this->template->success = false;
+			$this->template->value = array (
+					'result' => 'Could not find a widget with that ID'
+			);
+			return;
+		}
+
+		$widget_model->set_setting($setting);
+		$widget_model->save();
+
+		$this->template->success = true;
+		$this->template->value = array(
+			'result' => 'ok',
+		);
 	}
 }

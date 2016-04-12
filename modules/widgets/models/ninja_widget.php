@@ -8,16 +8,11 @@ require_once( dirname(__FILE__).'/base/baseninja_widget.php' );
  * @todo: documentation
  */
 class Ninja_Widget_Model extends BaseNinja_Widget_Model {
-	/**
-	 * Cache for widget path
-	 */
-	protected $widget_path_cache = NULL;
 
-	/**
-	 * Build a ninja widget model
-	 */
 	public function __construct($initial = false) {
+		parent::__construct();
 		$this->set_username($this->get_current_user());
+
 		if($initial !== false) {
 			if (array_key_exists ( 'page', $initial ))
 				$this->set_page ( $initial ['page'] );
@@ -60,57 +55,6 @@ class Ninja_Widget_Model extends BaseNinja_Widget_Model {
 			$this->get_name(),
 			$this->get_instance_id()
 		);
-	}
-
-	/**
-	 * Generate a widget given the current configuration
-	 * May return a Dead_Widget, in case the generated widget failed to instantiate
-	 */
-	public function build() {
-		/* We should make this autoload nicer, but still keep dropdir support for widgets (as that is expected) */
-		require_once(Kohana::find_file('widgets', 'widget_Base'));
-		try {
-			if(!is_file($this->widget_path() . $this->get_name() . '.php'))
-				throw new Exception("Widget type '" . $this->get_name() ."' does not seem to be installed.");
-			require_once($this->widget_path() . $this->get_name() . '.php');
-			$classname = $this->get_name().'_Widget';
-			return new $classname($this);
-		}
-		catch (Exception $e) {
-			require_once(Kohana::find_file('widgets/dead', 'dead'));
-			return new Dead_Widget($this, $e);
-		}
-	}
-
-	/**
-	 * Widget path
-	 */
-	public function widget_path() {
-		if($this->widget_path_cache !== NULL) {
-			return $this->widget_path_cache;
-		}
-
-		$dirs = array(Kohana::config('widget.custom_dirname'), Kohana::config('widget.dirname'));
-		foreach($dirs as $dir) {
-			$path = Kohana::find_file($dir . $this->get_name(), $this->get_name(), false);
-			if($path !== false)
-				break;
-		}
-		if($path === false || substr($path,0,strlen(DOCROOT)) != DOCROOT) {
-			throw new Exception("Widget type '" . $this->get_name() . "' does not seem to be installed.");
-		}
-		// Remove DOCROOT and widget source file name from the path, to identify the URL Prefix for files in widget
-		$this->widget_path_cache = dirname(substr($path, strlen(DOCROOT))) . "/";
-		return $this->widget_path_cache;
-	}
-
-	/**
-	 * Backward compatible fetch for parameters, so this class have a
-	 * compatible interface as the old pre-ORM Ninja_Widget_Model
-	 */
-	public function __get($var) {
-		$funcname = 'get_'.$var;
-		return $this->$funcname();
 	}
 
 	/**

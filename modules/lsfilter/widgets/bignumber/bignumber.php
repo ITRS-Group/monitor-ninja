@@ -43,7 +43,7 @@ class bignumber_Widget extends widget_Base {
 	 * Constructor. This should be overloaded, to upadte the settings-attribute
 	 * when making a custom widget of this type
 	 */
-	public function __construct(Ninja_Widget_Model $widget_model) {
+	public function __construct(Widget_Model $widget_model) {
 		parent::__construct($widget_model);
 
 		if(isset($this->model->setting['main_filter']))
@@ -101,16 +101,16 @@ class bignumber_Widget extends widget_Base {
 	 */
 	public function options() {
 		$options = parent::options();
-		$options[] = new option($this->model->name, 'main_filter', 'Filter', 'textarea', array(), $this->main_filter);
-		$options[] = new option($this->model->name, 'selection_filter', 'Selection Filter', 'textarea', array(), $this->selection_filter);
-		$options[] = new option($this->model->name, 'display_type', 'Display as', 'dropdown', array(
+		$options[] = new option($this->model->get_name(), 'main_filter', 'Filter', 'textarea', array(), $this->main_filter);
+		$options[] = new option($this->model->get_name(), 'selection_filter', 'Selection Filter', 'textarea', array(), $this->selection_filter);
+		$options[] = new option($this->model->get_name(), 'display_type', 'Display as', 'dropdown', array(
 			'options' => array(
 				'number_of_total' => 'Number vs. total',
 				'number_only' => 'Only number',
 				'percent' => 'Percentage'
 			)
 		), $this->display_type);
-		$options[] = new option($this->model->name, 'threshold_type', 'Threshold as', 'dropdown', array(
+		$options[] = new option($this->model->get_name(), 'threshold_type', 'Threshold as', 'dropdown', array(
 			'options' => array(
 				'no_thresholds' => 'No thresholds',
 				'lt_pct' => 'less than (percentage)',
@@ -121,8 +121,8 @@ class bignumber_Widget extends widget_Base {
 				'gt_left' => 'greater than (objects not matching)'
 			)
 		), $this->threshold_type);
-		$options[] = new option($this->model->name, 'threshold_warn', 'Warning threshold', 'input', array(), $this->threshold_warn);
-		$options[] = new option($this->model->name, 'threshold_crit', 'Critical threshold', 'input', array(), $this->threshold_crit);
+		$options[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold', 'input', array(), $this->threshold_warn);
+		$options[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold', 'input', array(), $this->threshold_crit);
 		return $options;
 	}
 
@@ -135,7 +135,7 @@ class bignumber_Widget extends widget_Base {
 			$selection_set = ObjectPool_Model::get_by_query($this->selection_filter);
 			$query = $main_set->intersect($selection_set)->get_query();
 
-			$pool = $main_set::class_pool();
+			$pool = $main_set->class_pool();
 			$all_set = $pool::all();
 
 			$counts = $main_set->stats(array(

@@ -13,19 +13,10 @@ class Listview_Widget extends widget_Base {
 	 * case of using it as a static embedded list view.
 	 */
 	protected $branding = array(
-			'listview_link' => true
-		);
+		'listview_link' => true
+	);
 
-	private $query=false;
-
-	/**
-	 * Constructs a new listview widget
-	 *
-	 * @param $model Ninja_Widget_Model
-	 */
-	public function __construct(Ninja_Widget_Model $model) {
-		parent::__construct($model);
-	}
+	private $query = false;
 
 	/**
 	 * Return the default friendly name for the widget type
@@ -60,7 +51,6 @@ class Listview_Widget extends widget_Base {
 	}
 
 	public function index() {
-
 		$this->args = $this->get_arguments();
 		require($this->view_path('view'));
 	}

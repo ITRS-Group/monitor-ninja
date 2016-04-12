@@ -69,11 +69,25 @@ class ORMDriverNative implements ORMDriverInterface {
 					if (is_array($type)) {
 						list($class_prefix, $field_prefix) = $type;
 						$pool_model = $class_prefix . 'Pool_Model';
-						$foreign_table = $pool_model::get_table();
 						$foreign_key = $pool_model::key_columns();
+						if(isset($structure["relations"])) {
+							/* SQL explicit references */
+							foreach($structure["relations"] as $rel) {
+								list($ref_key, $ref_table, $ref_field) = $rel;
+								if($ref_field == $field) {
+									$foreign_table = $ref_table;
+									$my_foreign_ref = $ref_key;
+									break;
+								}
+							}
+						} else {
+							/* Livestatus implicit referenses */
+							$foreign_table = $pool_model::get_table();
+							$my_foreign_ref = array($field);
+						}
 						foreach ($this->storage[$foreign_table] as $foreign_row) {
 							//FIXME: Handle multiple foreign keys in pool model
-							if ($foreign_row[$foreign_key[0]] == $row[$field]) {
+							if ($foreign_row[$foreign_key[0]] == $row[$my_foreign_ref[0]]) {
 								$row[$field] = $foreign_row;
 								break;
 							}

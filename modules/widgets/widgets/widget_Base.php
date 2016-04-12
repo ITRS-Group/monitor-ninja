@@ -98,7 +98,7 @@ class widget_Base {
 	 *
 	 * @param $model Ninja_Widget_Model ORM Model for a ninja widget
 	 */
-	public function __construct(Ninja_Widget_Model $model) {
+	public function __construct(Widget_Model $model) {
 
 		try {
 			$this->widget_full_path = $model->widget_path();
@@ -161,8 +161,9 @@ class widget_Base {
 	 * @return string
 	 */
 	final public function get_title () {
-		if (isset($this->model->setting['title']))
-			return $this->model->setting['title'];
+		$setting = $this->model->get_setting();
+		if (isset($setting['title']))
+			return $setting['title'];
 		return $this->get_suggested_title();
 	}
 
@@ -174,7 +175,7 @@ class widget_Base {
 	 */
 	public function get_metadata() {
 		return array(
-			'friendly_name' => "Widget " . $this->model->name,
+			'friendly_name' => "Widget " . $this->model->get_name(),
 			'instanceable' => true
 		);
 	}
@@ -188,10 +189,10 @@ class widget_Base {
 		$arguments = array();
 		foreach ($this->options() as $option) {
 			if (!is_string($option))
-				$arguments[$option->name] = $option->value($this->model->setting);
+				$arguments[$option->name] = $option->value($this->model->get_setting());
 		}
-		if (is_array($this->model->setting)) {
-			foreach ($this->model->setting as $opt => $val) {
+		if (is_array($this->model->get_setting())) {
+			foreach ($this->model->get_setting() as $opt => $val) {
 				if (!isset($arguments[$opt]))
 					$arguments[$opt] = $val;
 			}
@@ -210,13 +211,13 @@ class widget_Base {
 		if (empty($view))
 			return false;
 
-		$widget = $this->model->name;
+		$widget = $this->model->get_name();
 		# first try custom path
 
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->model->name, $view, false);
+		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->model->get_name(), $view, false);
 		if ($path === false) {
 			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->model->name, $view, false);
+			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->model->get_name(), $view, false);
 		}
 
 		return $path;
@@ -237,7 +238,7 @@ class widget_Base {
 		$options = array();
 
 		$title_option = new option(
-			$this->model->name,
+			$this->model->get_name(),
 			'title', 'Custom title',
 			'input', array(
 				'type' => 'text',
@@ -247,7 +248,7 @@ class widget_Base {
 		$options[] = $title_option;
 
 		$refresh = new option(
-			$this->model->name,
+			$this->model->get_name(),
 			'refresh_interval', 'Refresh (sec)',
 			'input', array(
 				'size'=>3,
@@ -282,7 +283,7 @@ class widget_Base {
 			}
 
 			$options[] = new option(
-				$this->model->name,
+				$this->model->get_name(),
 				$key, $label, $type, $attr, $default
 			);
 
@@ -334,9 +335,7 @@ class widget_Base {
 		$content = ob_get_clean();
 		if (!$with_chrome)
 			return $content;
-		ob_start();
 
-		$widget_id = $this->model->get_widget_id();
 		$widget_legal_classes = array(
 			'editable',
 			'movable',
@@ -365,26 +364,25 @@ class widget_Base {
 		}
 
 		$classes = implode(" ", $widget_classes);
-		$instance_id = $this->model->get_instance_id();
 
 		$editable = $this->editable;
-		$name = $this->model->name;
-
 		$setting = $this->model->get_setting();
 
-		$loaded = isset(self::$loaded_widgets[$this->model->name]);
-		$template = MODPATH . 'widgets/views/widget.php';
+		$loaded = isset(self::$loaded_widgets[$this->model->get_name()]);
+		$template = new View('widget', array(
+				'classes' => $classes,
+				'key' => $this->model->get_key(),
+				'data_attributes' => $data_attributes,
+				'title' => $title,
+				'options' => $options,
+				'editable' => $editable,
+				'content' => $content,
+				'setting' => $setting
+		));
 
-		if (!is_readable($template)) {
-			op5log::instance('ninja')->log('error', "Could not render widget
-				due to missing template, expected template at '$template'");
-			return _("Could not render widget due to missing template");
-		}
+		self::$loaded_widgets[$this->model->get_name()] = 1;
 
-		require($template);
-		self::$loaded_widgets[$this->model->name] = 1;
-
-		return ob_get_clean();
+		return $template->render(false);
 	}
 
 	/**

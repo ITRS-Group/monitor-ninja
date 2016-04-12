@@ -237,7 +237,8 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 			$this->write(   '}');
 		}
 		$this->write(  'if($this->_oldkey === false) {'); // New
-		$this->write(     '$insid = '.$this->pool_class.'::insert_single($values);');
+		$this->write(     '$pool = new '.$this->pool_class.'();');
+		$this->write(     '$insid = $pool->insert_single($values);');
 		// Handle auto increment value, but only if single column key of type int
 		if(count($this->key) == 1 && $this->structure['structure'][$this->key[0]] == 'int') {
 			$this->write(     'if($insid !== false && $insid > 0) {');
