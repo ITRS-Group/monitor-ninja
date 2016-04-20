@@ -78,6 +78,7 @@ form.renderable select {
 	min-width: 190px;
 }
 
+form.renderable select optgroup,
 form.renderable select option {
 	padding: 6px 4px;
 }
