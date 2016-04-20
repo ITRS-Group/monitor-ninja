@@ -14,6 +14,11 @@ var tac_send_request = function (method, data, callbacks) {
 			csrf_token : _csrf_token,
 			page : _current_uri,
 		}, data),
+		complete: function(jqHXR, textStatus) {
+			if(callbacks.complete) {
+				callbacks.complete(jqHXR, textStatus);
+			}
+		},
 		success : function(data) {
 			if (callbacks.success) {
 				callbacks.success(data);
@@ -204,9 +209,33 @@ widget.prototype.save_settings_delayed = function() {
 	var self = this;
 	if (this.save_settings_timer)
 		clearTimeout(this.save_settings_timer);
+	this.set_loading(true);
 	this.save_settings_timer = setTimeout(function() {
 		self.save_settings();
 	}, this.save_settings_time);
+};
+
+widget.prototype.set_loading = function(loading) {
+	var widget_header = this.elem.find('.widget-header');
+	var loadimg = widget_header.find('.widget_loadimg');
+	if(loading) {
+		if(loadimg.length) {
+			return;
+		}
+
+		widget_header.append(
+			$('<img class="widget_loadimg" />')
+				.attr('src', _site_domain + 'application/media/images/loading_small.gif')
+				.css({
+					'opacity': 0.4,
+					'padding-left': '15px',
+					'width': '12px',
+					'height': '12px'
+				})
+		);
+	} else {
+		loadimg.remove();
+	}
 };
 
 /**
@@ -226,6 +255,9 @@ widget.prototype.save_settings = function() {
 		instance_id : this.instance_id,
 		setting : data
 	}, {
+		complete : function() {
+			self.set_loading(false);
+		},
 		success : function(data) {
 			var upd_time = self.elem.find('.refresh_interval').val();
 			self.update_widget_time = upd_time;
@@ -251,6 +283,7 @@ widget.prototype.update_widget_delayed = function() {
 		return;
 	if (this.update_widget_timer)
 		clearTimeout(this.update_widget_timer);
+
 	this.update_widget_timer = setTimeout(function() {
 		self.update_widget();
 	}, this.update_widget_time * 1000);
@@ -264,29 +297,19 @@ widget.prototype.update_widget = function() {
 		if (this.is_updating)
 			return;
 
+		self.set_loading(true);
 		this.is_updating = true;
-		this.elem.find('.widget-header').append(
-			$('<img class="widget_loadimg" />').attr(
-				'src', _site_domain + 'application/media/images/loading_small.gif'
-			)
-		);
-
-		this.elem.find('.widget-header .widget_loadimg').css({
-			'opacity': 0.4,
-			'padding-left': '15px',
-			'width': '12px',
-			'height': '12px'
-		});
 
 		tac_send_request('on_refresh', {
 			name : self.name,
 			instance_id : self.instance_id
 		}, {
+			complete : function() {
+				self.set_loading(false);
+			},
 			success : function(data) {
 				self.elem.find('.widget-content').html(data.widget);
 				self.is_updating = false;
-				self.elem.find('.widget-header .widget_loadimg')
-					.remove();
 			},
 			error: function () {
 				Notify.message('There was an error refreshing the widget ' + self.name, {
