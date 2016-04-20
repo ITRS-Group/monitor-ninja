@@ -22,6 +22,14 @@ Feature: Widgets
 		When I am on the main page
 		Then I should see "Password"
 
+	Scenario: User configured name overrides default
+		Given I have these mocked ninja_widgets
+			|id|username     |page     |name         |friendly_name     |setting|instance_id|
+			|0 |administrator|tac/index|listview     |A friendly widget!|a:1:{s:5:"title";s:14:"My widget name";} |1234567    |
+		And I am logged in as administrator
+		When I am on the main page
+		Then I should see "My widget name"
+
 	Scenario: Listview widgets are rendered on TAC
 		Given I have these mocked ninja_widgets
 			|id|username     |page     |name         |friendly_name     |setting|instance_id|

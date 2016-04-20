@@ -134,11 +134,36 @@ class widget_Base {
 			return $this->options_definition[$key]["default"];
 		}
 
-		op5log::instance('ninja')->log('error', "Attempt to fetch invalid
-			setting $key for widget '" . $this->model->get_name() . "'");
-		throw new WidgetSettingException("Invalid setting $key for widget '" .
-			$this->model->get_display_name() . "'");
+		op5log::instance('ninja')->log(
+			'error', "Attempt to fetch invalid setting $key for widget '" .
+			$this->model->get_name() . "'"
+		);
 
+		throw new WidgetSettingException(
+			"Invalid setting $key for widget '" . $this->model->get_name() . "'"
+		);
+
+	}
+
+	/**
+	 * The backwards compatible way to get widget default title
+	 *
+	 * @return string
+	 */
+	protected function get_suggested_title () {
+		return $this->model->get_friendly_name();
+	}
+
+	/**
+	 * Returns the widgets title, takes into account user configured title,
+	 * the widgets override title and lastly the "default" title of the widget.
+	 *
+	 * @return string
+	 */
+	final public function get_title () {
+		if (isset($this->model->setting['title']))
+			return $this->model->setting['title'];
+		return $this->get_suggested_title();
 	}
 
 	/**
@@ -205,21 +230,36 @@ class widget_Base {
 	 *
 	 * Actual widgets typically want to extend this method.
 	 *
-	 * DEPRECATED USAGE: do not extend this within your widget, create an
-	 * "options.yml" file in your widget directory instead and then use
-	 * $this->get_setting($key) to fetch default and/or user settings, keeping
-	 * you from messing with settings in your widget "controller", see big_number widget
-	 *
 	 * @return array
 	 */
 	public function options () {
 
-		$refresh = new option($this->model->name, 'refresh_interval', 'Refresh (sec)', 'input', array('size'=>3, 'type'=>'text'), 60);
-		$refresh->should_render_js(false);
-		$options = array(
-			$refresh,
-			'<div class="refresh_slider"></div>'
+		$options = array();
+
+		$title_option = new option(
+			$this->model->name,
+			'title', 'Custom title',
+			'input', array(
+				'type' => 'text',
+				'placeholder' => 'No custom title'
+			), ''
 		);
+		$options[] = $title_option;
+
+		$refresh = new option(
+			$this->model->name,
+			'refresh_interval', 'Refresh (sec)',
+			'input', array(
+				'size'=>3,
+				'type'=>'text'
+			),
+			60
+		);
+
+		$refresh->should_render_js(false);
+
+		$options[] = $refresh;
+		$options[] = '<div class="refresh_slider"></div>';
 
 		if (!isset($this->options_definition))
 			return $options;
@@ -274,14 +314,19 @@ class widget_Base {
 	 */
 	public function render($method = 'index', $with_chrome = true) {
 
+		$title = $this->model->get_friendly_name();
 		ob_start();
 
-		// Invoke "error-prone" methods first, yield a dead widget on exception
+		/* Invoke "error-prone" methods first,
+		 * yield a dead widget on exception */
 		try {
-			$this->$method();
-			if ($with_chrome) {
+			if ($with_chrome)
 				$options = $this->options();
-			}
+			$this->$method();
+			$title = $this->get_title();
+		} catch (WidgetSettingException $e) {
+			echo "<div class=\"alert\"><h1>Widget Setting Error</h1>";
+			echo "<p>" . $e->getMessage() . "</p></div>";
 		} catch (Exception $e) {
 			require_once(Kohana::find_file('widgets/dead', 'dead'));
 			$dead_widget = new Dead_Widget($this->model, $e);
@@ -289,9 +334,8 @@ class widget_Base {
 		}
 
 		$content = ob_get_clean();
-		if (!$with_chrome) {
+		if (!$with_chrome)
 			return $content;
-		}
 		ob_start();
 
 		$widget_id = $this->model->get_widget_id();
@@ -327,7 +371,7 @@ class widget_Base {
 
 		$editable = $this->editable;
 		$name = $this->model->name;
-		$display_name = $this->model->get_friendly_name();
+
 		$setting = $this->model->get_setting();
 
 		$loaded = isset(self::$loaded_widgets[$this->model->name]);

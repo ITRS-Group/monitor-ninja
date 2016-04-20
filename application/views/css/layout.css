@@ -1246,7 +1246,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 .widget-header span {
   word-wrap: break-word;
   float: left;
-  max-width: 50%;
+  max-width: 80%;
 }
 
 .widget-header .widget-menu {

@@ -195,7 +195,6 @@ function widget(name, instance_id) {
 
 	if (this.refresh_slider.length)
 		this.init_slider();
-	this.init_title_edit();
 
 }
 
@@ -309,6 +308,12 @@ widget.prototype.update_widget = function() {
 			},
 			success : function(data) {
 				self.elem.find('.widget-content').html(data.widget);
+				if (data.custom_title) {
+					self.title_element.text(data.custom_title);
+					self.form.find('*[name="title"]').val(data.custom_title);
+				} else {
+					self.title_element.text(data.title);
+				}
 				self.is_updating = false;
 			},
 			error: function () {
@@ -342,51 +347,6 @@ widget.prototype.init_slider = function() {
 			self.update_widget_delayed();
 			self.save_settings_delayed();
 		}
-	});
-};
-
-/**
- * Initializes title editable element for this widget, if the update
- * fails the old title is restored to avoid confusion.
- */
-widget.prototype.init_title_edit = function() {
-	var self = this;
-	var old_title = this.title;
-	this.title_element.editable(function(value, settings) {
-
-		var data = {
-			page : self.current_uri,
-			widget : self.name,
-			instance_id : self.instance_id,
-			widget_title : value
-		};
-
-		value = $.trim(value);
-		if (value.length) {
-			tac_send_request('on_widget_rename', {
-				name : self.name,
-				instance_id : self.instance_id,
-				new_name : value
-			}, {
-				error: function () {
-					self.title_element.text(old_title);
-					Notify.message('Could not update widget title', {
-						type: "error"
-					});
-				}
-			});
-			self.title = value;
-		} else value = self.title;
-		return value;
-	}, {
-		type : 'text',
-		style : 'margin-top: -4px',
-		event : 'dblclick',
-		width : 'auto',
-		height : '14px',
-		submit : 'OK',
-		cancel : 'cancel',
-		placeholder : 'Double-click to edit'
 	});
 };
 

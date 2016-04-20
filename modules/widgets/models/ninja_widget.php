@@ -45,6 +45,8 @@ class Ninja_Widget_Model extends BaseNinja_Widget_Model {
 	}
 
 	public function set_setting($value) {
+		if (isset($value['title']) && strlen($value['title']) === 0)
+			unset($value['title']);
 		return parent::set_setting(serialize($value));
 	}
 

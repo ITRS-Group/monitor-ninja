@@ -214,9 +214,17 @@ class Tac_Controller extends Ninja_Controller {
 				));
 		}
 
+		$title = $widget->get_title();
+		$custom_title = '';
+		if (isset($widget_model->setting['title'])) {
+			$custom_title = $widget_model->setting['title'];
+		}
+
 		$result = array(
 			'widget' => $widget->render('index', false),
-			'instance_id' => $widget_model->get_instance_id()
+			'title' => $title,
+			'custom_title' => $custom_title,
+			'instance_id' => $widget_model->get_instance_id(),
 		);
 		echo json::ok($result);
 	}
@@ -286,35 +294,6 @@ class Tac_Controller extends Ninja_Controller {
 
 		if($widget instanceof Ninja_Widget_Model) {
 			$widget->delete();
-			echo json::ok(array('result' => 'ok'));
-		}
-
-		echo json::fail(array('result' => 'error'));
-	}
-
-	/**
-	 * Create a new widget of a given type
-	 */
-	public function on_widget_rename() {
-
-		$this->auto_render = false;
-		$this->_verify_access('ninja.tac:read.tac');
-
-		$page = $this->input->post('page');
-		$widget_name = $this->input->post('name');
-		$widget_instance_id = $this->input->post('instance_id');
-		$new_name = $this->input->post('new_name');
-		$username = op5auth::instance()->get_user()->get_username();
-
-		$widget = Ninja_WidgetPool_Model::all()->reduce_by('page', $page, '=')
-			->reduce_by('name', $widget_name, '=')
-			->reduce_by('instance_id', $widget_instance_id, '=')
-			->reduce_by('username', $username, '=')
-			->one();
-
-		if ($widget instanceof Ninja_Widget_Model) {
-			$widget->set_friendly_name($new_name);
-			$widget->save();
 			echo json::ok(array('result' => 'ok'));
 		}
 
