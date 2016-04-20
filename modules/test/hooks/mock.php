@@ -44,6 +44,7 @@ Event::add("system.ready", function() use ($mock_data_path, $log) {
 	}
 
 	foreach ($json_conf as $driver => $tables) {
+		// throws exception on invalid input data
 		op5objstore::instance()->mock_add($driver, new ORMDriverNative($tables, $mock_data_path, $driver));
 	}
 });

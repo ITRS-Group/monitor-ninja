@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Native driver specific exception
+ */
+class ORMDriverNativeException extends Exception {}
+
 /**
  * A ORM data source driver which only works against native PHP
  * data structures to support its interface. Useful for mocking!
@@ -26,9 +32,19 @@ class ORMDriverNative implements ORMDriverInterface {
 	 * @param $storage array An associative array over the table space that this driver serves
 	 * @param $mockfile string Path to the mock datafile
 	 * @param $mockdriver string Named of the mocked driver
+	 * @throws ORMDriverNativeException when $storage is not good set of tables
 	 * @return void
 	 */
 	public function __construct($storage = array(), $mockfile = null, $mockdriver = null) {
+		$existing_tables = Module_Manifest_Model::get('orm_structure');
+		$wrongly_defined_tables = array_keys(array_diff_key($storage, $existing_tables));
+		if($wrongly_defined_tables) {
+			$bad_tables = implode("', '", $wrongly_defined_tables);
+			throw new ORMDriverNativeException("Trying to mock ".
+				"front end table(s) '".$bad_tables."' which ".
+				"does not exist. Check the orm_structure.php ".
+				"files for your module.");
+		}
 		$this->storage = $storage;
 		$this->mockfile = $mockfile;
 		$this->mockdriver = $mockdriver;
@@ -78,7 +94,27 @@ class ORMDriverNative implements ORMDriverInterface {
 
 	public function stats($table, $structure, $filter, $intersections)
 	{
-		return array_combine(array_keys($intersections), array_fill(0, count($intersections), 0));
+
+		if(!array_key_exists($table, $this->storage)) {
+			return array_combine(array_keys($intersections), array_fill(0, count($intersections), 0));
+		}
+
+		$visitor = new NativeFilterBuilderVisitor();
+		$stats = array();
+
+		foreach ($intersections as $name => $intersection) {
+			if ($intersection->table == $table) {
+				$stats[$name] = 0;
+				foreach ($intersection as $object) {
+					if ($filter->visit($visitor, $object->export())) {
+						$stats[$name] += 1;
+					}
+				}
+			}
+		}
+
+		return $stats;
+
 	}
 
 	public function update($table, $structure, $filter, $values)

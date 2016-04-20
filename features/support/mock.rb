@@ -23,13 +23,15 @@ module Op5Cucumber::Mock
     end
 
     def driver_for_type(type)
+      # Note: `type` must be the *front-end* name of the table, that is, the
+      # "saved_filters" part of "[saved_filters] all" when you are trying to
+      # query it. It should therefore *not* be "ninja_saved_filters" which is
+      # the backend-name (what's really stored in the database).
       case type
       when /^host.*s$/
         'ORMDriverLS default'
       when /^service.*s$/
         'ORMDriverLS default'
-      when /^ninja_widgets$/
-        'ORMDriverMySQL default'
       when /^status$/
         'ORMDriverLS default'
       when /^ninja_widgets$/
@@ -75,6 +77,12 @@ module Op5Cucumber::Mock
             hash[field] = value.split ','
           end
         }
+        # Due to native driver intersects these fields are required
+        # but we don't want to mock them explicitly in every scenario
+        if type == 'hosts' or type == 'services'
+          hash['state'] = 0 if not hash.key?('state')
+          hash['has_been_checked'] = 1 if not hash.key?('has_been_checked')
+        end
       }
       driver = driver_for_type(type)
       if not @data.key?(driver)
