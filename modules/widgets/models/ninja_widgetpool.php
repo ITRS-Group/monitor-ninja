@@ -35,7 +35,8 @@ class Ninja_WidgetPool_Model extends BaseNinja_WidgetPool_Model {
 					$metadata = $widget->get_metadata();
 					if(!$metadata['instanceable'])
 						continue;
-					$widgets[$widget_name] = $metadata['friendly_name'];
+					$metadata['path'] = $widget_model->widget_path();
+					$widgets[$widget_name] = $metadata;
 				}
 			}
 		}

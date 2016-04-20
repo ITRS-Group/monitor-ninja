@@ -70,10 +70,10 @@ class Tac_Controller extends Ninja_Controller {
 		if(count($widgets_per_tag) == 0) {
 			/* Tac is empty, fill with default */
 			/* Do default as earlier, load everything */
-			foreach(Ninja_WidgetPool_Model::get_available_widgets() as $wname => $friendly_name) {
+			foreach(Ninja_WidgetPool_Model::get_available_widgets() as $wname => $metadata) {
 				$widget_model = new Ninja_Widget_Model();
 				$widget_model->set_name($wname);
-				$widget_model->set_friendly_name($friendly_name);
+				$widget_model->set_friendly_name($metadata['friendly_name']);
 				$widget_model->set_instance_id(mt_rand(0, 10000000)); // needs to be unique
 				$widget_model->set_page($page);
 				$widget_model->set_setting(array());
@@ -128,12 +128,19 @@ class Tac_Controller extends Ninja_Controller {
 		$menu->set("Add widget", null, null, 'icon-16 x16-sign-add');
 		$add_widget_menu = $menu->get("Add widget");
 
-		foreach(Ninja_WidgetPool_Model::get_available_widgets() as $name => $friendly_name) {
-			$add_widget_menu->set($friendly_name, "#", null, null,
+
+		/* Fill with metadata, and build menu */
+		foreach(Ninja_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
+			$add_widget_menu->set($metadata['friendly_name'], "#", null, null,
 				array(
 					'data-widget-name' => $name,
 					'class' => "menuitem_widget_add"
 				));
+			if(isset($metadata['css'])) {
+				foreach($metadata['css'] as $stylesheet) {
+					$this->template->css[] = $metadata['path'] . $stylesheet;
+				}
+			}
 		}
 		$toolbar->menu($menu);
 	}
