@@ -4,20 +4,38 @@
  * Handle manifest files from modules
  */
 class Module_Manifest_Model {
-	private static $manifests = array();
+	private $manifests = array();
 	
+	/**
+	 * Make this internally a singleton, so we can clear the cache in tests.
+	 */
+	public function instance() {
+		return op5objstore::instance()->obj_instance(__CLASS__);
+	}
+
 	/**
 	 * Load manifest files from modules manifest directories
 	 */
-	private static function load_manifest( $name ) {
+	private function load_manifest( $name ) {
+		if( isset( $this->manifests[$name] ) ) {
+			return $this->manifests[$name];
+		}
+
 		$manifest = array();
 		if(!preg_match('/^[a-z_]+$/',$name)) {
 			return array();
 		}
-		$files = glob(MODPATH . '*/manifest/'.$name.'.php' );
-		foreach( $files as $file ) {
-			require( $file );
+
+		$module_dirs = Kohana::include_paths();
+		$suffixname = "manifest/$name.php";
+
+		foreach( $module_dirs as $moddir ) {
+			if(is_readable($moddir . $suffixname)) {
+				require( $moddir . $suffixname );
+			}
 		}
+
+		$this->manifests[$name] = $manifest;
 		return $manifest;
 	}
 	
@@ -25,9 +43,6 @@ class Module_Manifest_Model {
 	 * Load manifest parameters from modules
 	 */
 	public static function get( $name ) {
-		if( !isset( self::$manifests[$name] ) ) {
-			self::$manifests[$name] = self::load_manifest( $name ); 
-		}
-		return self::$manifests[$name];
+		return self::instance()->load_manifest($name);
 	}
 }
