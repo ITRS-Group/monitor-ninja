@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
+<div class="dashboard">
 <div id="response"></div>
 
 <?php
@@ -17,3 +17,5 @@ foreach( $tac_column_count as $count ) {
 	}
 	echo '<div style="clear: both;"></div>';
 }
+?>
+</div>

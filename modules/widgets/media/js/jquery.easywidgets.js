@@ -1197,78 +1197,80 @@
     *
     */
     function AddWidgetEditLink(widget, widgetMenu, settings) {
-        var s = settings;
-        var link = '';
-        if (widget.hasClass(s.options.editable)) {
-            link = MenuLink(
-        s.i18n.editText,
-        s.i18n.editTitle,
-        s.selectors.editLink
-      );
-            widget.find(s.selectors.closeEdit).click(function(e) {
-                var link = $(this);
-                var widget = link.parents(s.selectors.widget);
-                var editbox = widget.find(s.selectors.editbox);
-                var editLink = widget.find(s.selectors.editLink);
-                link.blur();
-                ApplyEffect(
-          editbox,
-          s.effects.widgetCloseEdit,
-          s.effects.effectDuration,
-          false
-        );
-                editLink.html(s.i18n.editText);
-                editLink.attr('title', s.i18n.editTitle);
-                return false;
-            });
-            $(link).mousedown(function(e) {
-                e.stopPropagation();
-            }).click(function() {
-                var link = $(this);
-                var canShow = canHide = true;
-                var widget = link.parents(s.selectors.widget);
-                var editbox = widget.find(s.selectors.editbox);
-                var editboxVisible = editbox.css('display') != 'none';
-                link.blur();
-                if (editboxVisible) {
-                    if ($.isFunction(s.callbacks.onCancelEditQuery)) {
-                        canHide = s.callbacks.onCancelEditQuery(link, widget);
-                    }
-                    if (canHide) {
-                        ApplyEffect(
-              editbox,
-              s.effects.widgetCancelEdit,
-              s.effects.effectDuration,
-              false
-            );
-                        link.html(s.i18n.editText);
-                        link.attr('title', s.i18n.editTitle);
-                        if ($.isFunction(s.callbacks.onCancelEdit)) {
-                            s.callbacks.onCancelEdit(link, widget);
-                        }
-                    }
-                } else {
-                    if ($.isFunction(s.callbacks.onEditQuery)) {
-                        canShow = s.callbacks.onEditQuery(link, widget);
-                    }
-                    if (canShow) {
-                        link.html(s.i18n.cancelEditText);
-                        link.attr('title', s.i18n.cancelEditTitle);
-                        ApplyEffect(
-              editbox,
-              s.effects.widgetOpenEdit,
-              s.effects.effectDuration,
-              true
-            );
-                        if ($.isFunction(s.callbacks.onEdit)) {
-                            s.callbacks.onEdit(link, widget);
-                        }
-                    }
-                }
-                return false;
-            }).appendTo(widgetMenu);
-        }
-        return true;
+			var s = settings;
+			var link = '';
+			if (widget.hasClass(s.options.editable)) {
+				link = MenuLink(
+					s.i18n.editText,
+					s.i18n.editTitle,
+					s.selectors.editLink
+				);
+				widget.find(s.selectors.closeEdit).click(function(e) {
+					var link = $(this);
+					var widget = link.parents(s.selectors.widget);
+					var editbox = widget.find(s.selectors.editbox);
+					var editLink = widget.find(s.selectors.editLink);
+					link.blur();
+					ApplyEffect(
+						editbox,
+						s.effects.widgetCloseEdit,
+						s.effects.effectDuration,
+						false
+					);
+					editLink.html(s.i18n.editText);
+					editLink.attr('title', s.i18n.editTitle);
+					return false;
+				});
+				$(link).mousedown(function(e) {
+					e.stopPropagation();
+				}).click(function() {
+					var link = $(this);
+					var canShow = canHide = true;
+					var widget = link.parents(s.selectors.widget);
+					var editbox = widget.find(s.selectors.editbox);
+					var editboxVisible = editbox.css('display') != 'none';
+					link.blur();
+					if (editboxVisible) {
+						if ($.isFunction(s.callbacks.onCancelEditQuery)) {
+							canHide = s.callbacks.onCancelEditQuery(link, widget);
+						}
+						if (canHide) {
+							ApplyEffect(
+								editbox,
+								s.effects.widgetCancelEdit,
+								s.effects.effectDuration,
+								false
+							);
+							link.html(s.i18n.editText);
+							link.attr('title', s.i18n.editTitle);
+							if ($.isFunction(s.callbacks.onCancelEdit)) {
+								s.callbacks.onCancelEdit(link, widget);
+							}
+						}
+						widget.find(s.selectors.content).show();
+					} else {
+						if ($.isFunction(s.callbacks.onEditQuery)) {
+							canShow = s.callbacks.onEditQuery(link, widget);
+						}
+						if (canShow) {
+							link.html(s.i18n.cancelEditText);
+							link.attr('title', s.i18n.cancelEditTitle);
+							ApplyEffect(
+								editbox,
+								s.effects.widgetOpenEdit,
+								s.effects.effectDuration,
+								true
+							);
+							if ($.isFunction(s.callbacks.onEdit)) {
+								s.callbacks.onEdit(link, widget);
+							}
+						}
+						widget.find(s.selectors.content).hide();
+					}
+					return false;
+				}).appendTo(widgetMenu);
+			}
+			return true;
     }
 
     /**

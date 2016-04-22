@@ -110,28 +110,6 @@ input[type="submit"].plain {
   display: inline;
 }
 
-.global_search {
-  text-align: right;
-  background: transparent;
-}
-
-.global_search input[type="text"] {
-  color: #444444;
-  font-size: 10pt;
-  background: white;
-  background-position: left center;
-}
-
-.autocomplete {
-  background: #fdfdfd;
-  border: 1px solid #aaaaaa;
-  border-radius: 3px;
-}
-
-.autocomplete .selected {
-  background-color: #dddddd;
-}
-
 .page_settings {
   position: fixed;
   display: none;
@@ -285,8 +263,8 @@ input[type="submit"].plain {
 }
 
 .main-toolbar {
-  border-top: 1px solid #777777;
-  background: #f7f6f5;
+  background: #f9f9f9;
+  border-top: 1px solid #999999;
   clear: both;
 }
 
@@ -412,57 +390,21 @@ span.brand-label {
   min-width: 768px;
   width: 100%;
   z-index: 2;
-  background: #fcfcfc;
-  border-bottom: 1px solid #777777;
+  background: #f0f0f0;
+  border-bottom: 1px solid #999999;
 }
 
-.header .logo {
-  position: relative;
-  margin-left: 16px;
-  float: left;
-}
-
-.header .headercontent {
-  float: left;
-  margin-left: 20px;
-  margin-top: 12px;
-  padding: 0;
-  font-size: 0.9em;
-}
-
-.header .headercontent ul {
-  float: left;
-}
-
-.header .headercontent ul li {
-  float: left;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  margin: 0 2px 0 0;
-}
-
-.header .headercontent ul li:hover {
-  border-color: #999999;
-  background: white;
-}
-
-.header .headercontent a span {
-  cursor: pointer;
-  margin: 6px 4px 0 4px;
-  background-repeat: no-repeat;
-  overflow: auto;
+.quicklinks li:hover,
+.quicklinks li.selected {
+  background: #e0e0e0;
 }
 
 .menu ul li:hover {
   background: #f0f0f0;
-  cursor: default;
 }
 
 .menu ul li ul {
-  border: 1px solid #777777;
-  border-radius: 0 0 3px 3px;
-  box-shadow: 0 2px 3px #bbbbbb;
-  background: white;
+  border-color: 1px solid #777777;
 }
 
 .menu ul li ul li {
@@ -475,19 +417,6 @@ span.brand-label {
   font-size: 80%;
   content: "▼";
   color: #555555;
-}
-
-.menu ul li ul li > a, .menu ul li ul li > span {
-  border: none;
-}
-
-#dojo-quicklink-internal li {
-  position: relative;
-}
-
-#dojo-quicklink-internal li.selected {
-  background-color: #f2f2f2;
-  border: 1px solid #999999;
 }
 
 #dojo-add-quicklink {
@@ -507,6 +436,15 @@ span.brand-label {
 a.external {
   background: url(../../icons/external_link.gif) right center no-repeat;
   padding-right: 16px;
+}
+
+.widget {
+  border: 1px solid #999999;
+}
+
+.widget-header {
+  background: #f9f9f9;
+  border-bottom: 1px solid #999999;
 }
 
 .widget-selector:hover {

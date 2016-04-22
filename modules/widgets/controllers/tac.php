@@ -23,6 +23,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
 		$this->template->js[] = 'modules/widgets/views/js/tac.js';
+		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
 
 		$page = 'tac/'.$method;

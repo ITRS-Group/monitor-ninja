@@ -34,7 +34,7 @@
 			if(!isset($hide_header)) {
 				require __DIR__.'/template_header.php';
 			} ?>
-			<div class="content" tabindex="0" id="content">
+				<div class="content <?php echo $content_class; ?>" tabindex="0" id="content">
 
 					<?php
 

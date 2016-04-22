@@ -74,19 +74,6 @@
 
 	var global_quicklinks = [];
 
-	var fix_empty_quicklink_border = function() {
-		// there's a magical dot (about 1x1 pixel) hanging in the air,
-		// disturbing probably just me. It's caused by having a quicklinks
-		// container without any quicklinks
-		var quicklinks = $('#dojo-quicklink-external');
-		var tr = quicklinks.parent();
-		if(quicklinks.find('li').length) {
-			tr.css('borderWidth', 1);
-		} else {
-			tr.css('borderWidth', 0);
-		}
-	};
-
 	function quicklinks_save_all () {
 		$.ajax(_site_domain + _index_page + '/ajax/save_page_setting', {
 			data: {
@@ -100,7 +87,6 @@
 				$('#dojo-add-quicklink-href').attr('value','');
 				$('#dojo-add-quicklink-title').attr('value','');
 				$('#dojo-add-quicklink-icon').attr('value','');
-				fix_empty_quicklink_border();
 			}
 		});
 	}
@@ -175,7 +161,7 @@
 						.attr('target', target)
 						.attr('href', href)
 						.attr('title', title);
-				$('#dojo-quicklink-external').append(quicklink);
+				$('#dojo-add-quicklink').before(quicklink);
 				changed = true;
 			} else {
 				Notify.message(error, {type: "error"});
@@ -189,7 +175,7 @@
 				for (i; i--;) {
 					vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
 					if (this.value === vid) {
-						$('#dojo-quicklink-external li a[title="'+this.title+'"]').parent().remove();
+						$('#quicklinks li a[title="'+this.title+'"]').parent().remove();
 						global_quicklinks.splice(i, 1);
 						changed = true;
 					}
@@ -212,9 +198,6 @@
 				'csrf_token': _csrf_token
 			},
 			type: 'POST',
-			complete: function() {
-				fix_empty_quicklink_border();
-			},
 			success: function (obj) {
 
 				var links = [];
@@ -229,7 +212,7 @@
 								.attr('href', links[i].href)
 								.attr('title', links[i].title);
 
-						$('#dojo-quicklink-external').append(quicklink);
+						$('#dojo-add-quicklink').before(quicklink);
 					}
 				}
 				global_quicklinks = links;

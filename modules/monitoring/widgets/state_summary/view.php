@@ -21,8 +21,8 @@ foreach($state_definitions['states'] as $silly_counter => $state) {
 	);
 
 	printf("<a href=\"%s\"><div class='$prefix-state $prefix-%s'>
-		<span class='$prefix-figure'>%s</span><br>
-		<span class='$prefix-description'>%s</span>
+		<span class='" . strtolower($state['label']) . " $prefix-figure'>%s</span><br>
+		<span class='" . strtolower($state['label']) . " $prefix-description'>%s</span>
 		</div></a>",
 		listview::querylink($queries[$silly_counter]),
 		$css_class,

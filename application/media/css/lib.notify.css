@@ -31,6 +31,7 @@
   text-align: center;
   border-style: solid;
   border-width: 1px 0 0 0;
+  font-size: 10pt;
   padding: 6px;
 }
 
@@ -49,6 +50,7 @@
 
 .notify-notification-zone .notify-notification-message {
   vertical-align: middle;
+  color: #444444;
   margin: 0 4px;
 }
 
@@ -68,21 +70,16 @@
 }
 
 .notify-notification-zone .notify-notification {
-  border: 1px solid #999;
-  border-top: 8px solid #fff;
-  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.2);
+  border-width: 1px;
+  border-style: solid;
+  border-top-width: 8px;
+  border-bottom-color: #cccccc;
+  border-right-color: #cccccc;
+  border-left-color: #cccccc;
   background: #fff;
   text-align: center;
   padding: 8px 8px 4px 8px;
   margin: 4px 0;
-} .notify-notification-zone .notify-notification.notify-notification.info {
-  border-top-color: #59b;
-} .notify-notification-zone .notify-notification.notify-notification.warning {
-  border-top-color: #db3;
-} .notify-notification-zone .notify-notification.notify-notification.error {
-  border-top-color: #c44;
-} .notify-notification-zone .notify-notification.notify-notification.success {
-  border-top-color: #7b2;
 }
 
 button.command-button {

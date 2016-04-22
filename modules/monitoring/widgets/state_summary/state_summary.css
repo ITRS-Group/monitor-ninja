@@ -35,53 +35,14 @@
 }
 
 .state_summary-state .state_summary-description {
-	border-top: 3px solid transparent;
+	border-top-width: 3px;
+  border-top-style: solid;
 	display: inline-block;
 	min-width: 77px;
 	text-transform: uppercase;
 	padding: 8px 4px 4px;
 }
 
-.state_summary-green {
-	color: #8bd668;
-}
-
-.state_summary-gray {
-	color: #959595;
-}
-
-.state_summary-red {
-	color: #f36061;
-}
-
-.state_summary-yellow {
-	color: #fad546;
-}
-
-.state_summary-orange {
-	color: #f7a247;
-}
-
 .state_summary-no-display {
-	display: none;
-}
-
-.state_summary-green .state_summary-description {
-	border-top-color: #8bd668;
-}
-
-.state_summary-gray .state_summary-description {
-	border-top-color: #959595;
-}
-
-.state_summary-red .state_summary-description {
-	border-top-color: #f36061;
-}
-
-.state_summary-yellow .state_summary-description {
-	border-top-color: #fad546;
-}
-
-.state_summary-orange .state_summary-description {
-	border-top-color: #f7a247;
+  display: none;
 }

@@ -68,28 +68,6 @@ input[type="submit"].plain {
   border-radius: 0;
 }
 
-.global_search {
-  text-align: right;
-  background: transparent;
-}
-
-.global_search input[type="text"] {
-  color: #553333;
-  font-size: 10pt;
-  background: #ffffff;
-  background-position: left center;
-}
-
-.autocomplete {
-  background: #feeded;
-  border: 1px solid #aa8899;
-  border-radius: 3px;
-}
-
-.autocomplete .selected {
-  background-color: #eccdcd;
-}
-
 .page_settings {
   background: #feeded;
   border: 1px solid #aa8899;

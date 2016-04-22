@@ -5,6 +5,7 @@
 	</div>
 	<?php if (!empty($options) && $editable) { ?>
 		<div class="clear"></div>
+	<?php } ?>
 		<div class="widget-editbox">
 		<?php
 			echo form::open('widget/save_widget_setting', array(
@@ -28,7 +29,6 @@
 			echo form::close();
 		?>
 		</div>
-	<?php } ?>
 	<div class="widget-content" style="overflow: auto;">
 		<?php echo $content; ?>
 	</div>

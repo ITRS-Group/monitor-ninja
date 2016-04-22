@@ -1,54 +1,3 @@
-body {
-  font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
-  font-size: 0.75em;
-  background: #ffffff;
-}
-
-a, input[type="submit"].plain, button.plain {
-  border-bottom: 1px dotted #444444;
-  text-decoration: none;
-  color: #444444;
-}
-
-a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
-  border-bottom: 0 dotted #444444;
-}
-
-a:hover, input[type="submit"].plain:hover, button.plain:hover {
-  border-bottom: 1px dotted #222222;
-  color: #222222;
-}
-
-.alert, #response .alert {
-  background: #fcf8e3;
-  border: 1px solid #fbeed5;
-  color: #c09853;
-}
-
-.error, #response .error {
-  background: #f2dede;
-  border-color: #eec3c7;
-  color: #b94a48;
-}
-
-.info {
-  background-color: #d9edf7;
-  border-color: #b9cdd7;
-  color: #31708f;
-}
-
-.notice, #response .notice,
-.success {
-  background: #e3f8e3;
-  border-color: #c5dec5;
-  color: #539853;
-}
-
-.warning, #response .warning {
-  background: #fcf8d3;
-  border-color: #dbcea5;
-  color: #b06823;
-}
 
 #host_table tr:hover,
 #service_table tr:hover,
@@ -66,28 +15,6 @@ input[type="submit"].plain {
   background: transparent;
   border-width: 0 0 1px;
   border-radius: 0;
-}
-
-.global_search {
-  text-align: right;
-  background: transparent;
-}
-
-.global_search input[type="text"] {
-  color: #444444;
-  font-size: 10pt;
-  background: white;
-  background-position: left center;
-}
-
-.autocomplete {
-  background: #fdfdfd;
-  border: 1px solid #aaaaaa;
-  border-radius: 3px;
-}
-
-.autocomplete .selected {
-  background-color: #dddddd;
 }
 
 .page_settings {
@@ -184,20 +111,6 @@ input[type="submit"].plain {
   color: #777777;
 }
 
-.main-toolbar {
-  border-top: 1px solid #777777;
-  background: #f7f6f5;
-}
-
-.main-toolbar .main-toolbar-menu > ul > li {
-  border-left: 1px solid #aaaaaa;
-}
-
-.main-toolbar .main-toolbar-title {
-  border-right: 1px solid #aaaaaa;
-  font-size: 120%;
-}
-
 .main-toolbar .main-toolbar-subtitle {
   font-size: 120%;
 }
@@ -218,77 +131,6 @@ input[type="submit"].plain {
 span.brand-label {
   font-size: 13pt;
   font-weight: 400;
-}
-
-.header {
-  background: #fcfcfc;
-  border-bottom: 1px solid #777777;
-}
-
-.header .headercontent ul li {
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-}
-
-.header .headercontent ul li:hover {
-  border-color: #999999;
-  background: white;
-}
-
-.header .headercontent a span {
-  cursor: pointer;
-  background-repeat: no-repeat;
-}
-
-.menu ul li:hover {
-  background: #f0f0f0;
-  cursor: default;
-}
-
-.menu ul li ul {
-  border: 1px solid #777777;
-  border-radius: 0 0 3px 3px;
-  box-shadow: 0 2px 3px #bbbbbb;
-  background: white;
-}
-
-.menu ul li ul li {
-  border: none;
-  border-top: 1px solid #aaaaaa;
-}
-
-.menu ul li ul li span.menu-section:after,
-.menu ul li ul li a.menu-section:after {
-  font-size: 80%;
-  content: "▼";
-  color: #555555;
-}
-
-.menu ul li ul li > a, .menu ul li ul li > span {
-  border: none;
-}
-
-#dojo-quicklink-internal li {
-  position: relative;
-}
-
-#dojo-quicklink-internal li.selected {
-  background-color: #f2f2f2;
-  border: 1px solid #999999;
-}
-
-#dojo-add-quicklink {
-  float: left;
-  opacity: 0.5;
-  margin-top: 18px;
-  margin-left: 6px;
-  display: inline-block;
-  opacity: 0.7;
-}
-
-#dojo-add-quicklink:hover {
-  border: none;
-  opacity: 1;
 }
 
 a.external {
