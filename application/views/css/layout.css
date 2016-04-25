@@ -545,10 +545,9 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 .quicklinks {
   float: left;
-  margin: 9px 0 0 16px;
+  margin: 9px 0 0 32px;
   font-size: 0.9em;
   padding: 0;
-  margin-left: 24px;
 }
 
 .quicklinks a {
@@ -742,7 +741,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 .finder {
   float: right;
-  padding: 6px 4px;
+  padding: 6px 6px 8px 4px;
 }
 
 .finder input {
@@ -845,6 +844,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   margin: 0;
   top: 100%;
   border: 1px solid #cccccc;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
   background: white;
   z-index: 4;
 }

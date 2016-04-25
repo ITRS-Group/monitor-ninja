@@ -1,4 +1,4 @@
-<div class="profile menu">
+<div id="profile" class="profile menu">
 	<ul>
 	<li class="profile-info">
 		<div class="profile-image">
