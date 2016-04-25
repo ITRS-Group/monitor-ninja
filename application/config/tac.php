@@ -4,4 +4,4 @@
  *
  * A list of column counts in the tac
  */
-$config['column_count'] = '1,3,2';
+$config['column_count'] = '3,2,1';

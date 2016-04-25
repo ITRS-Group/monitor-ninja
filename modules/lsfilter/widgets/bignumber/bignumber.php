@@ -121,8 +121,8 @@ class bignumber_Widget extends widget_Base {
 				'gt_left' => 'greater than (objects not matching)'
 			)
 		), $this->threshold_type);
-		$options[] = new option($this->model->name, 'threshold_warn', 'Warning threshold value', 'input', array(), $this->threshold_warn);
-		$options[] = new option($this->model->name, 'threshold_crit', 'Critical threshold value', 'input', array(), $this->threshold_crit);
+		$options[] = new option($this->model->name, 'threshold_warn', 'Warning threshold', 'input', array(), $this->threshold_warn);
+		$options[] = new option($this->model->name, 'threshold_crit', 'Critical threshold', 'input', array(), $this->threshold_crit);
 		return $options;
 	}
 
@@ -133,6 +133,7 @@ class bignumber_Widget extends widget_Base {
 		try {
 			$main_set = ObjectPool_Model::get_by_query($this->main_filter);
 			$selection_set = ObjectPool_Model::get_by_query($this->selection_filter);
+			$query = $main_set->intersect($selection_set)->get_query();
 
 			$pool = $main_set::class_pool();
 			$all_set = $pool::all();

@@ -20,7 +20,7 @@ foreach($state_definitions['states'] as $silly_counter => $state) {
 		$stats[$silly_counter]
 	);
 
-	printf("<a href=\"%s\"><div class='$prefix-state $prefix-%s'>
+	printf("<a title=\"Go to listview\" href=\"%s\"><div class='$prefix-state $prefix-%s'>
 		<span class='" . strtolower($state['label']) . " $prefix-figure'>%s</span><br>
 		<span class='" . strtolower($state['label']) . " supplementary $prefix-description'>%s</span>
 		</div></a>",
