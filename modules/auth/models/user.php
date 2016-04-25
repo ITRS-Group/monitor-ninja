@@ -118,8 +118,14 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 	 */
 	public function get_avatar_url ($size = 28) {
 
+		$email = $this->get_email();
+		if (!$email) {
+			$contact = ContactPool_Model::all()->reduce_by('name', $this->get_username(), '=')->one();
+			if ($contact) $email = $contact->get_email();
+		}
+
 		$url = 'https://www.gravatar.com/avatar/';
-		$url .= md5(strtolower(trim($this->get_email())));
+		$url .= md5(strtolower(trim($email)));
 		$url .= "?s=$size&d=mm";
 		return $url;
 

@@ -43,7 +43,6 @@
 	<div class="gettingstarted_box">
 	<div class="gettingstarted_bullet">3</div>
 	<h1>Nam imperdiet orci non iaculis fermentum.</h1>
-	<img src="http://lorempixel.com/150/100">
 	<h2>Something something</h2>
 	<p>
 		This is really something something. So go <a href="http://www.op5.com/">here</a>
