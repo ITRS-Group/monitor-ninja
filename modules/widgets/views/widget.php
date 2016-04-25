@@ -7,7 +7,8 @@
 		<div class="clear"></div>
 	<?php } ?>
 		<div class="widget-editbox">
-		<?php
+<?php
+			if (count($options) > 0) {
 			echo form::open('widget/save_widget_setting', array(
 				'id' => $widget_id . '_form',
 				'class' => 'renderable',
@@ -27,6 +28,7 @@
 				echo "</fieldset>";
 			}
 			echo form::close();
+			}
 		?>
 		</div>
 	<div class="widget-content" style="overflow: auto;">

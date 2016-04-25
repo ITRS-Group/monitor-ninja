@@ -67,7 +67,7 @@
 							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span><span class="quicklink-badge"></span>', $attributes).'</li>';
 					}
 
-						echo '<li id="dojo-add-quicklink"><a href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
+						echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
 					echo '</ul>';
 
 			?>

@@ -13,7 +13,7 @@ class gettingstarted_Widget extends widget_Base {
 	 */
 	public function get_metadata() {
 		return array_merge(parent::get_metadata(), array(
-			'friendly_name' => 'Gettings started with op5 Monitor',
+			'friendly_name' => 'Getting started with op5 Monitor',
 			'css' => array(
 				'style.css'
 			)

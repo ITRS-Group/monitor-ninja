@@ -131,7 +131,6 @@
 			$('#dojo-add-quicklink-href').attr('value','');
 			$('#dojo-add-quicklink-title').attr('value','');
 			$('#dojo-add-quicklink-icon').attr('value','');
-			fix_empty_quicklink_border();
 		}
 	});
 
@@ -161,7 +160,7 @@
 						.attr('target', target)
 						.attr('href', href)
 						.attr('title', title);
-				$('#dojo-add-quicklink').before(quicklink);
+				$('#dojo-add-quicklink').parent().before(quicklink);
 				changed = true;
 			} else {
 				Notify.message(error, {type: "error"});
@@ -212,7 +211,7 @@
 								.attr('href', links[i].href)
 								.attr('title', links[i].title);
 
-						$('#dojo-add-quicklink').before(quicklink);
+						$('#dojo-add-quicklink').parent().before(quicklink);
 					}
 				}
 				global_quicklinks = links;

@@ -6,22 +6,19 @@
 
 .state_summary-container {
 	text-align: center;
+  padding: 24px 16px;
 }
 
 .state_summary-state .state_summary-figure {
 	display: inline-block;
 	font-size: 55px;
-	height: 50px;
-	margin: 0px 20px 20px 20px;
+  line-height: 55px;
+	margin: 0px 16px 8px 16px;
 	min-width: 75px;
 }
 
 .state_summary-state {
 	font-weight: bold;
-}
-
-.state_summary-container {
-  padding: 16px;
 }
 
 .state_summary-container a {

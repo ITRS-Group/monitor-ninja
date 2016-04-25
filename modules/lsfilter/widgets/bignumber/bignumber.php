@@ -10,11 +10,6 @@ class bignumber_Widget extends widget_Base {
 	protected $duplicatable = true;
 
 	/**
-	 * Text below the value
-	 */
-	private $legend = 'Hosts';
-
-	/**
 	 * Filter for current objects
 	 */
 	private $main_filter = '[hosts] all';
@@ -32,7 +27,7 @@ class bignumber_Widget extends widget_Base {
 	/**
 	 * type of threshold
 	 */
-	private $threshold_type = false;
+	private $threshold_type = 'no_thresholds';
 
 	/**
 	 * Threshold for warning (orange)
@@ -50,28 +45,25 @@ class bignumber_Widget extends widget_Base {
 	 */
 	public function __construct(Ninja_Widget_Model $widget_model) {
 		parent::__construct($widget_model);
-		
-		if(isset($this->model->setting['legend']))
-			$this->legend = $this->model->setting['legend'];
-		
+
 		if(isset($this->model->setting['main_filter']))
 			$this->main_filter = $this->model->setting['main_filter'];
-		
+
 		if(isset($this->model->setting['selection_filter']))
 			$this->selection_filter = $this->model->setting['selection_filter'];
-		
+
 		if(isset($this->model->setting['display_type']))
 			$this->display_type = $this->model->setting['display_type'];
-		
+
 		if(isset($this->model->setting['threshold_type']))
 			$this->threshold_type = $this->model->setting['threshold_type'];
 
 		if(isset($this->model->setting['reverse_threshold']))
 			$this->reverse_threshold = $this->model->setting['reverse_threshold'];
-		
+
 		if(isset($this->model->setting['threshold_warn']))
 			$this->threshold_warn = $this->model->setting['threshold_warn'];
-		
+
 		if(isset($this->model->setting['threshold_crit']))
 			$this->threshold_crit = $this->model->setting['threshold_crit'];
 	}
@@ -86,6 +78,11 @@ class bignumber_Widget extends widget_Base {
 			'friendly_name' => 'Big numbers',
 			'css' => array('style.css')
 		));
+	}
+
+	protected function get_suggested_title () {
+		$set = ObjectPool_Model::get_by_query($this->main_filter);
+		return ucfirst($set->get_table());
 	}
 
 	/**
@@ -104,7 +101,6 @@ class bignumber_Widget extends widget_Base {
 	 */
 	public function options() {
 		$options = parent::options();
-		$options[] = new option($this->model->name, 'legend', 'Legend', 'input', array(), $this->legend);
 		$options[] = new option($this->model->name, 'main_filter', 'Filter', 'textarea', array(), $this->main_filter);
 		$options[] = new option($this->model->name, 'selection_filter', 'Selection Filter', 'textarea', array(), $this->selection_filter);
 		$options[] = new option($this->model->name, 'display_type', 'Display as', 'dropdown', array(
@@ -116,6 +112,7 @@ class bignumber_Widget extends widget_Base {
 		), $this->display_type);
 		$options[] = new option($this->model->name, 'threshold_type', 'Threshold as', 'dropdown', array(
 			'options' => array(
+				'no_thresholds' => 'No thresholds',
 				'lt_pct' => 'less than (percentage)',
 				'gt_pct' => 'greater than (percentage)',
 				'lt_match' => 'less than (objects matching)',
@@ -154,12 +151,14 @@ class bignumber_Widget extends widget_Base {
 					break;
 				case 'number_of_total':
 				default:
-					$display_text = sprintf("%d / %d", $counts['selection'], $counts['all']);
+					$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
 					break;
 			}
 
 			$threshold_value = $counts['selection'];
 			switch($this->threshold_type) {
+				case 'no_thresholds':
+					break;
 				case 'lt_pct':
 					$th_func = function($val, $stat) {
 						return 100.0 * $stat['selection'] / $stat['all'] < $val;
@@ -196,12 +195,16 @@ class bignumber_Widget extends widget_Base {
 					};
 			}
 
-			if($th_func($this->threshold_crit, $counts)) {
-				$state = 'critical';
-			} else if($th_func($this->threshold_warn, $counts)) {
-				$state = 'warning';
+			if ($this->threshold_type !== 'no_thresholds') {
+				if($th_func($this->threshold_crit, $counts)) {
+					$state = 'critical';
+				} else if($th_func($this->threshold_warn, $counts)) {
+					$state = 'warning';
+				} else {
+					$state = 'ok';
+				}
 			} else {
-				$state = 'ok';
+				$state = 'info';
 			}
 
 			require('view.php');

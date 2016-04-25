@@ -410,7 +410,7 @@
         effects: {
 
             // Miliseconds for effects duration
-            effectDuration: 500,
+            effectDuration: 0,
 
             // Can be none, slide or fade
             widgetShow: 'none',
@@ -734,7 +734,9 @@
             // The order of this function call is important
             // because determine the order of links appear
             AddWidgetCollapseLink(widget, widgetMenu, s);
-            AddWidgetEditLink(widget, widgetMenu, s);
+						if (widget.find(s.selectors.editbox).children().length) {
+            	AddWidgetEditLink(widget, widgetMenu, s);
+						}
             AddWidgetRemoveLink(widget, widgetMenu, s);
             return true;
         } else {
