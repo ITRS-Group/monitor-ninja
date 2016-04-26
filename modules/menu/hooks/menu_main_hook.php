@@ -16,8 +16,6 @@ Event::insert_event('ninja.menu.setup', 0, function () {
 
   $menu->set('Report', null, 2, 'icon-16 x16-reporting', array('style' => 'margin-top: 8px'));
 
-  Event::$data = $menu;
-
 });
 
 Event::add('system.post_controller_constructor', function () {

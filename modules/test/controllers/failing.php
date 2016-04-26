@@ -3,6 +3,14 @@
  * Failing controller. Used to provoke an ORMDriverException.
  */
 class Failing_Controller extends Ninja_Controller {
+
+	/**
+	 * Placeholder for the pre-controller hook
+	 */
+	public function hook () {
+		/* noop, just a placeholder for the pre_controller hook */
+	}
+
 	/**
 	* Run report tests
 	*/

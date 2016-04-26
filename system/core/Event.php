@@ -206,10 +206,14 @@ final class Event {
 			self::$data =& $data;
 			self::$name =& $name;
 			$callbacks  =  self::get($name);
+			$thrown = null;
 
-			foreach ($callbacks as $callback)
-			{
-				call_user_func($callback);
+			try {
+				foreach ($callbacks as $callback){
+					call_user_func($callback);
+				}
+			} catch (Exception $e) {
+				$thrown = $e;
 			}
 
 			// Do this to prevent data from getting 'stuck'
@@ -218,6 +222,8 @@ final class Event {
 
 			// The event has been run!
 			self::$has_run[$name] = $name;
+			if ($thrown) throw $thrown;
+
 		}
 	}
 

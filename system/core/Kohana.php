@@ -147,6 +147,22 @@ final class Kohana {
 		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
+	private static function & service_unavailable ($exception) {
+
+		self::$instance->template->content = new View('503');
+		self::$instance->template->content->exception = $exception;
+		self::$instance->template->disable_refresh = true;
+
+		try {
+			Event::run('system.render');
+		} catch (Exception $e) {
+			self::exception_handler($e);
+		}
+
+		return self::$instance;
+
+	}
+
 	/**
 	 * Loads the controller and initializes it. Runs the pre_controller,
 	 * post_controller_constructor, and post_controller events. Triggers
@@ -179,11 +195,20 @@ final class Kohana {
 			}
 
 			try {
-
 				// Run system.pre_controller
 				Event::run('system.pre_controller');
+			} catch (Exception $e) {
+				new Ninja_Controller();
+				return Kohana::service_unavailable($e);
+			}
 
-				// Create a new controller instance
+			try {
+
+				/** Create a new controller instance
+				 * This also has the effect of setting the
+				 * Kohana::$instance variable to the instanced controller
+				 * BUT only if that is the first controller instanced for
+				 * this request */
 				$controller = new $classname();
 				$method = Router::$method;
 
@@ -216,16 +241,12 @@ final class Kohana {
 				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
 
 			} catch (ORMDriverException $e) {
-				self::$instance->template->content = new View('503');
-				self::$instance->template->content->exception = $e;
-				self::$instance->template->disable_refresh = true;
-
+				return Kohana::service_unavailable($e);
 			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
 
 			try {
-				// Render the output
 				Event::run('system.render');
 			} catch (Exception $e) {
 				self::exception_handler($e);

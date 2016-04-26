@@ -34,22 +34,22 @@
   }
 
   Event::add('ninja.menu.setup', function () {
+	  $menu = Event::$data;
+	  if (is_object($menu) && $menu instanceof Menu_Model) {
 
-    $menu = Event::$data;
+		  add_report_menu_type($menu, 0, 'avail', 'Availability', 'avail/index', 'avail/generate', 'icon-16 x16-availability');
+		  add_report_menu_type($menu, 1, 'sla', 'SLA', 'sla/index', 'sla/generate', 'icon-16 x16-sla');
+		  add_report_menu_type($menu, 2, 'histogram', 'Histogram', 'histogram/index', 'histogram/generate', 'icon-16 x16-histogram');
+		  add_report_menu_type($menu, 3, 'summary', 'Summary', 'summary/index', 'summary/generate', 'icon-16 x16-alertsummary');
 
-    add_report_menu_type($menu, 0, 'avail', 'Availability', 'avail/index', 'avail/generate', 'icon-16 x16-availability');
-    add_report_menu_type($menu, 1, 'sla', 'SLA', 'sla/index', 'sla/generate', 'icon-16 x16-sla');
-    add_report_menu_type($menu, 2, 'histogram', 'Histogram', 'histogram/index', 'histogram/generate', 'icon-16 x16-histogram');
-    add_report_menu_type($menu, 3, 'summary', 'Summary', 'summary/index', 'summary/generate', 'icon-16 x16-alertsummary');
+		  if (Kohana::config('config.pnp4nagios_path') !== false) {
+			  $menu->set('Report.Graphs', 'pnp?host=.pnp-internal&srv=runtime', 4, 'icon-16 x16-pnp');
+		  }
 
-    if (Kohana::config('config.pnp4nagios_path') !== false) {
-      $menu->set('Report.Graphs', 'pnp?host=.pnp-internal&srv=runtime', 4, 'icon-16 x16-pnp');
-    }
+		  $menu->set('Report.Saved reports', listview::querylink('[saved_reports] all'), 5, 'icon-16 x16-saved-reports');
 
-    $menu->set('Report.Saved reports', listview::querylink('[saved_reports] all'), 5, 'icon-16 x16-saved-reports');
-
-    $menu->set('Report.Alert history', 'alert_history/generate', 6, 'icon-16 x16-alerthistory');
-    $menu->set('Report.Schedule reports', 'schedule/show', 7, 'icon-16 x16-schedulereports');
-    $menu->set('Report.Event log', 'showlog/showlog', 8, 'icon-16 x16-eventlog');
-
+		  $menu->set('Report.Alert history', 'alert_history/generate', 6, 'icon-16 x16-alerthistory');
+		  $menu->set('Report.Schedule reports', 'schedule/show', 7, 'icon-16 x16-schedulereports');
+		  $menu->set('Report.Event log', 'showlog/showlog', 8, 'icon-16 x16-eventlog');
+	  }
   });

@@ -61,13 +61,20 @@ class Ninja_Controller extends Base_Controller {
 
 		$this->profiler = new Profiler;
 
-		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
+		# Load default current_skin, can be replaced by
+		# Authenticated_Controller if user is logged in.
 		$this->template->current_skin = $this->get_current_user_skin();
 
 		$this->template->menu = new Menu_Model();
 		$pre_event_data = Event::$data;
 		$pre_event_name = Event::$name;
-		Event::run('ninja.menu.setup', $this->template->menu);
+
+		try {
+			Event::run('ninja.menu.setup', $this->template->menu);
+		} catch (Exception $e) {
+			$this->log->log('error', $e);
+		}
+
 		Event::$data = $pre_event_data;
 		Event::$name = $pre_event_name;
 
