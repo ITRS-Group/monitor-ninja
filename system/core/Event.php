@@ -1,4 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
+require_once('op5/log.php');
+
 /**
  * Process queuing/execution class. Allows an unlimited number of callbacks
  * to be added to 'events'. Events can be run multiple times, and can also
@@ -202,6 +205,8 @@ final class Event {
 	{
 		if ( ! empty(self::$events[$name]))
 		{
+			$logger = op5log::instance('ninja');
+			$logger->log('debug', 'Running event ' . $name);
 			// So callbacks can access Event::$data
 			self::$data =& $data;
 			self::$name =& $name;
@@ -213,6 +218,7 @@ final class Event {
 					call_user_func($callback);
 				}
 			} catch (Exception $e) {
+				$logger->log('debug', 'Exception in event ' . $name);
 				$thrown = $e;
 			}
 
