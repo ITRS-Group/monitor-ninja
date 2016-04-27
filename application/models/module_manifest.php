@@ -9,7 +9,7 @@ class Module_Manifest_Model {
 	/**
 	 * Make this internally a singleton, so we can clear the cache in tests.
 	 */
-	public function instance() {
+	public static function instance() {
 		return op5objstore::instance()->obj_instance(__CLASS__);
 	}
 
