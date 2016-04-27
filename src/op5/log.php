@@ -43,7 +43,7 @@ class op5LogAccess {
 	public function debug($message) {
 		$this->log_instance->log($this->namespace, 'debug', $message);
 	}
-	
+
 	/**
 	 * Test if correct log level
 	 *
@@ -193,7 +193,7 @@ class op5Log {
 		}
 		$this->messages[$filename][] = $message;
 	}
-	
+
 	/**
 	 * Test if correct log level
 	 *
@@ -238,7 +238,13 @@ class op5Log {
 				$new_file = true;
 			}
 
-			$res = file_put_contents(
+			/**
+			 * This function is run as part of register_shutdown which means
+			 * that if it throws an exception it is thrown without a stack frame
+			 * which produces near-impossible exceptions to trace, therefor I muted
+			 * it since we check its return value later.
+			 */
+			$res = @file_put_contents(
 				$file,
 				implode("\n", $messages) . "\n",
 				FILE_APPEND);

@@ -197,9 +197,11 @@ final class Kohana {
 			try {
 				// Run system.pre_controller
 				Event::run('system.pre_controller');
-			} catch (Exception $e) {
+			} catch (ORMDriverException $e) {
 				new Ninja_Controller();
 				return Kohana::service_unavailable($e);
+			} catch (Exception $e) {
+				self::exception_handler($e);
 			}
 
 			try {

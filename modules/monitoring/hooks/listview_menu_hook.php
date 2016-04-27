@@ -7,8 +7,11 @@ Event::add ( 'ninja.menu.setup', function () {
 
 	$auth = Auth::instance ();
 	$menu = Event::$data;
-	assert($menu instanceof Menu_Model);
 	$mayi = op5MayI::instance ();
+
+	if (!is_object($menu) || !($menu instanceof Menu_Model)) {
+		return;
+	}
 
 	if (op5MayI::instance()->run('ninja.configuration:read')) {
 

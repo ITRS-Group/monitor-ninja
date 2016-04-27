@@ -37,12 +37,14 @@
 <div class="header" id="header">
 
 	<?php
+	if (isset($menu)) {
 		$menu_widget = new View('menu', array(
 			'menu' => $menu,
 			'orientation' => 'left',
 			'class' => 'main-menu'
 		));
 		echo $menu_widget->render();
+	}
 	?>
 
 	<div class="headercontent">
