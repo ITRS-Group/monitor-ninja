@@ -259,6 +259,7 @@ class op5Log {
 			}
 
 			if($res === false) {
+				error_log(implode("\n", $messages));
 				error_log('Could not write to log file: ' . $file);
 			}
 			if ($user === 'root' && posix_getpwuid(fileowner($file)) === 'root') {

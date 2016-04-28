@@ -67,7 +67,7 @@ $(function() {
 			+ 'application/views/icons/12x12/box-maximize.png" alt="Extend" />'
 		},
 		effects : {
-			effectDuration : 150,
+			effectDuration : 0,
 			widgetShow : 'slide',
 			widgetHide : 'slide',
 			widgetClose : 'slide',

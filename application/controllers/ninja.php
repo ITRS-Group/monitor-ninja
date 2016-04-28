@@ -55,6 +55,7 @@ class Ninja_Controller extends Base_Controller {
 		$this->template = $this->add_view('template');
 		$this->template->css = array();
 		$this->template->js = array();
+		$this->template->content_class = '';
 
 		$this->template->print_notifications = array();
 		$this->template->notices = $this->notices;
@@ -73,7 +74,11 @@ class Ninja_Controller extends Base_Controller {
 			try {
 				Event::run('ninja.menu.setup', $this->template->menu);
 			} catch (Exception $e) {
-				$this->log->log('error', $e);
+				// We want to log here in order to trace menu
+				// rendering exceptions, but we cannot do that
+				// since it causes build problems (php errors) during
+				// report tests, logs have switched owner.
+				//$this->log->log('error', $e);
 			}
 
 			Event::$data = $pre_event_data;

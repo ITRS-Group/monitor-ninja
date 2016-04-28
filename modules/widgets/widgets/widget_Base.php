@@ -257,9 +257,7 @@ class widget_Base {
 		);
 
 		$refresh->should_render_js(false);
-
 		$options[] = $refresh;
-		$options[] = '<div class="refresh_slider"></div>';
 
 		if (!isset($this->options_definition))
 			return $options;

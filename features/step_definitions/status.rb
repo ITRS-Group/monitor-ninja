@@ -21,6 +21,10 @@ When /^I hover the branding$/ do
   page.find('a[data-menu-id="branding"]').hover
 end
 
+When /^I hover the profile$/ do
+  page.find('div#profile').hover
+end
+
 Then /^I should see menu items:$/ do |table|
   rows = table.raw
   rows.each do |row|

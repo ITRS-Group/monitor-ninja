@@ -55,7 +55,7 @@ class State_summary_Widget extends widget_Base {
 						'label' => 'Unreachable',
 						'css_class' => function($count) {
 							if($count === 0) {
-								return 'no-display';
+								return 'gray';
 							}
 							return 'yellow';
 						},

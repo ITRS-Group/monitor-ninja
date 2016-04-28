@@ -1,0 +1,7 @@
+.big-number {
+  display: inline-block;
+  font-size: 65px;
+  line-height: 65px;
+  margin: 0 16px 8px 16px;
+  min-width: 75px;
+}

@@ -110,6 +110,28 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 	}
 
 	/**
+	 * Retrieves the users avatar, currently this attempts to retrieve
+	 * it from gravatar.
+	 *
+	 * @param $size The size of the avatar image in pixels
+	 * @return string The URL to access the avatar
+	 */
+	public function get_avatar_url ($size = 28) {
+
+		$email = $this->get_email();
+		if (!$email && class_exists('ContactPool_Model')) {
+			$contact = ContactPool_Model::all()->reduce_by('name', $this->get_username(), '=')->one();
+			if ($contact) $email = $contact->get_email();
+		}
+
+		$url = 'https://www.gravatar.com/avatar/';
+		$url .= md5(strtolower(trim($email)));
+		$url .= "?s=$size&d=mm";
+		return $url;
+
+	}
+
+	/**
 	 * Returns a display name of the user, i.e. selects realname if set,
 	 * otherwise the username
 	 *

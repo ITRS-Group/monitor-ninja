@@ -54,7 +54,7 @@
 
 					$buttons = $shortcuts['internal'];
 
-					echo '<ul id="dojo-quicklink-internal">';
+					echo '<ul id="quicklinks" class="quicklinks">';
 
 					for($i = 0; $i < count($buttons); $i++) {
 
@@ -64,20 +64,16 @@
 						$stripped = $stripped[0];
 
 						if ($quri == $stripped)
-							echo '<li class="selected">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span><span style="margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;"></span>', $attributes).'</li>';
+							echo '<li class="selected">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span><span class="quicklink-badge"></span>', $attributes).'</li>';
 						else
-							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span><span style="margin: 0; position: absolute; color: #000; text-shadow: 0 0 2px #fff; font-weight: bold; font-size: 10px; padding: 1px 1px 0 0; right: 0px; bottom: 0px;"></span>', $attributes).'</li>';
+							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span><span class="quicklink-badge"></span>', $attributes).'</li>';
 					}
 
+						echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
 					echo '</ul>';
 
 			?>
 	</div>
-	<div class="headercontent" style="margin-left: 8px;">
-		<ul id="dojo-quicklink-external">
-		</ul>
-	</div>
-	<a href="#dojo-add-quicklink-menu" title="Manage quickbar" class="icon-16 x16-link no_border" id="dojo-add-quicklink"></a>
 	<div style="display: none">
 		<div id="dojo-add-quicklink-menu">
 			<form action="">
@@ -139,38 +135,30 @@
 		</div>
 	</div>
 
-	<div class="header_right">
-		<div class="global_search">
-			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" method="get">
-				<?php
-					if ( Auth::instance()->logged_in() ) {
-						$user = Auth::instance()->get_user();
-						echo html::anchor('user', html::specialchars($user->get_display_name()), array('data-username' => html::specialchars($user->get_display_name())));
-						echo " at " . html::specialchars(gethostname());
-						if ( !op5auth::instance()->authorized_for('no_logout') ) {
-							echo " | " . html::anchor(Kohana::config('routes.log_out_action'), html::specialchars(_('Log out')));
-						}
-					}
-				?>
+	<?php
 
-				<br />
-				<?php
-				$query = arr::search($_REQUEST, 'query');
-				if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo html::specialchars($query) ?>" />
-				<?php } else { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
-				<?php	} ?>
-				<?php echo help::render('search_help', 'search'); ?>
-			</form>
-		</div>
-		<?php customlogo::Render(); ?>
-	</div>
+	if (PHP_SAPI !== 'cli') {
+		$query = arr::search($_REQUEST, 'query');
+		echo View::factory('finder', array(
+			'query' => arr::search($_REQUEST, 'query')
+		))->render();
 
+		if (Auth::instance()->logged_in()) {
+			echo View::factory('profile', array(
+				'avatar' => Auth::instance()->get_user()->get_avatar_url(),
+				'user' => Auth::instance()->get_user(),
+				'host' => gethostname()
+			))->render();
+		}
+	}
+
+	?>
+
+	<?php customlogo::Render(); ?>
 	<div class="clear"></div>
 
 	<?php
-		if ( isset( $toolbar ) && get_class( $toolbar ) == "Toolbar_Controller" ) {
+		if (isset($toolbar) && get_class($toolbar) == "Toolbar_Controller") {
 			$toolbar->render();
 		}
 	?>

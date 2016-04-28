@@ -410,7 +410,7 @@
         effects: {
 
             // Miliseconds for effects duration
-            effectDuration: 500,
+            effectDuration: 0,
 
             // Can be none, slide or fade
             widgetShow: 'none',
@@ -734,7 +734,9 @@
             // The order of this function call is important
             // because determine the order of links appear
             AddWidgetCollapseLink(widget, widgetMenu, s);
-            AddWidgetEditLink(widget, widgetMenu, s);
+						if (widget.find(s.selectors.editbox).children().length) {
+            	AddWidgetEditLink(widget, widgetMenu, s);
+						}
             AddWidgetRemoveLink(widget, widgetMenu, s);
             return true;
         } else {
@@ -1099,91 +1101,93 @@
         var widgetId = widget.attr('id');
         var haveId = $.trim(widgetId) != '';
         var content = widget.find(s.selectors.content);
-        if (widget.hasClass(s.options.collapsable)) {
-            if (widget.hasClass(s.options.collapse)) {
-                link = MenuLink(
-          s.i18n.extendText,
-          s.i18n.extendTitle,
-          s.selectors.collapseLink
-        );
-                content.hide();
-            } else {
-                link = MenuLink(
-          s.i18n.collapseText,
-          s.i18n.collapseTitle,
-          s.selectors.collapseLink
-        );
-            }
-            if (haveId && s.behaviour.useCookies &&
-       GetCookie(s.cookies.collapseName) != null) {
-                var cookieValue = GetCookie(s.cookies.collapseName);
-                if (cookieValue.indexOf(widgetId) != -1) {
-                    link = MenuLink(
-             s.i18n.extendText,
-             s.i18n.extendTitle,
-             s.selectors.collapseLink
-           );
-                    content.hide();
-                }
-            }
-            $(link).mousedown(function(e) {
-                e.stopPropagation();
-            }).click(function() {
-                var canExtend = true;
-                var canCollapse = true;
-                var link = $(this);
-                var widget = link.parents(s.selectors.widget);
-                var widgetId = widget.attr('id');
-                var haveId = $.trim(widgetId) != '';
-                var content = widget.find(s.selectors.content);
-                var contentVisible = content.css('display') != 'none';
-                link.blur();
-                if (contentVisible) {
-                    if ($.isFunction(s.callbacks.onCollapseQuery)) {
-                        canCollapse = s.callbacks.onCollapseQuery(link, widget);
-                    }
-                    if (canCollapse) {
-                        ApplyEffect(
-              content,
-              s.effects.widgetCollapse,
-              s.effects.effectDuration,
-              false
-            );
-                        link.html(s.i18n.extendText);
-                        link.attr('title', s.i18n.extendTitle);
-                        if (s.behaviour.useCookies && widgetId) {
-                            UpdateCookie(widgetId, s.cookies.collapseName, s);
-                        }
-                        if ($.isFunction(s.callbacks.onCollapse)) {
-                            s.callbacks.onCollapse(link, widget);
-                        }
-                    }
-                } else {
-                    if ($.isFunction(s.callbacks.onExtendQuery)) {
-                        canExtend = s.callbacks.onExtendQuery(link, widget);
-                    }
-                    if (canExtend) {
-                        link.html(s.i18n.collapseText);
-                        link.attr('title', s.i18n.collapseTitle);
-                        ApplyEffect(
-              content,
-              s.effects.widgetExtend,
-              s.effects.effectDuration,
-              true
-            );
-                        if (haveId && s.behaviour.useCookies) {
-                            CleanCookie(widgetId, s.cookies.collapseName, s);
-                        }
-                        if ($.isFunction(s.callbacks.onExtend)) {
-                            s.callbacks.onExtend(link, widget);
-                        }
-                    }
-                }
-                return false;
-            }).appendTo(widgetMenu);
-        }
-        return true;
-    }
+				if (widget.hasClass(s.options.collapsable)) {
+					if (widget.hasClass(s.options.collapse)) {
+						link = MenuLink(
+							s.i18n.extendText,
+							s.i18n.extendTitle,
+							s.selectors.collapseLink
+						);
+						content.hide();
+					} else {
+						link = MenuLink(
+							s.i18n.collapseText,
+							s.i18n.collapseTitle,
+							s.selectors.collapseLink
+						);
+					}
+					if (haveId && s.behaviour.useCookies &&
+							GetCookie(s.cookies.collapseName) != null) {
+						var cookieValue = GetCookie(s.cookies.collapseName);
+					if (cookieValue.indexOf(widgetId) != -1) {
+						link = MenuLink(
+							s.i18n.extendText,
+							s.i18n.extendTitle,
+							s.selectors.collapseLink
+						);
+						content.hide();
+					}
+					}
+					$(link).mousedown(function(e) {
+						e.stopPropagation();
+					}).click(function() {
+						var canExtend = true;
+						var canCollapse = true;
+						var link = $(this);
+						var widget = link.parents(s.selectors.widget);
+						var widgetId = widget.attr('id');
+						var haveId = $.trim(widgetId) != '';
+						var content = widget.find(s.selectors.content);
+						var editbox = widget.find(s.selectors.editbox);
+						var contentVisible = (content.css('display') != 'none') || (editbox.css('display') != 'none');
+						link.blur();
+						if (contentVisible) {
+							if ($.isFunction(s.callbacks.onCollapseQuery)) {
+								canCollapse = s.callbacks.onCollapseQuery(link, widget);
+							}
+							if (canCollapse) {
+								ApplyEffect(
+									content,
+									s.effects.widgetCollapse,
+									s.effects.effectDuration,
+									false
+								);
+								editbox.hide();
+								link.html(s.i18n.extendText);
+								link.attr('title', s.i18n.extendTitle);
+								if (s.behaviour.useCookies && widgetId) {
+									UpdateCookie(widgetId, s.cookies.collapseName, s);
+								}
+								if ($.isFunction(s.callbacks.onCollapse)) {
+									s.callbacks.onCollapse(link, widget);
+								}
+							}
+						} else {
+							if ($.isFunction(s.callbacks.onExtendQuery)) {
+								canExtend = s.callbacks.onExtendQuery(link, widget);
+							}
+							if (canExtend) {
+								link.html(s.i18n.collapseText);
+								link.attr('title', s.i18n.collapseTitle);
+								ApplyEffect(
+									content,
+									s.effects.widgetExtend,
+									s.effects.effectDuration,
+									true
+								);
+								if (haveId && s.behaviour.useCookies) {
+									CleanCookie(widgetId, s.cookies.collapseName, s);
+								}
+								if ($.isFunction(s.callbacks.onExtend)) {
+									s.callbacks.onExtend(link, widget);
+								}
+							}
+						}
+						return false;
+					}).appendTo(widgetMenu);
+				}
+				return true;
+		}
 
     /**
     * Prepare a widget edit menu link
@@ -1197,78 +1201,80 @@
     *
     */
     function AddWidgetEditLink(widget, widgetMenu, settings) {
-        var s = settings;
-        var link = '';
-        if (widget.hasClass(s.options.editable)) {
-            link = MenuLink(
-        s.i18n.editText,
-        s.i18n.editTitle,
-        s.selectors.editLink
-      );
-            widget.find(s.selectors.closeEdit).click(function(e) {
-                var link = $(this);
-                var widget = link.parents(s.selectors.widget);
-                var editbox = widget.find(s.selectors.editbox);
-                var editLink = widget.find(s.selectors.editLink);
-                link.blur();
-                ApplyEffect(
-          editbox,
-          s.effects.widgetCloseEdit,
-          s.effects.effectDuration,
-          false
-        );
-                editLink.html(s.i18n.editText);
-                editLink.attr('title', s.i18n.editTitle);
-                return false;
-            });
-            $(link).mousedown(function(e) {
-                e.stopPropagation();
-            }).click(function() {
-                var link = $(this);
-                var canShow = canHide = true;
-                var widget = link.parents(s.selectors.widget);
-                var editbox = widget.find(s.selectors.editbox);
-                var editboxVisible = editbox.css('display') != 'none';
-                link.blur();
-                if (editboxVisible) {
-                    if ($.isFunction(s.callbacks.onCancelEditQuery)) {
-                        canHide = s.callbacks.onCancelEditQuery(link, widget);
-                    }
-                    if (canHide) {
-                        ApplyEffect(
-              editbox,
-              s.effects.widgetCancelEdit,
-              s.effects.effectDuration,
-              false
-            );
-                        link.html(s.i18n.editText);
-                        link.attr('title', s.i18n.editTitle);
-                        if ($.isFunction(s.callbacks.onCancelEdit)) {
-                            s.callbacks.onCancelEdit(link, widget);
-                        }
-                    }
-                } else {
-                    if ($.isFunction(s.callbacks.onEditQuery)) {
-                        canShow = s.callbacks.onEditQuery(link, widget);
-                    }
-                    if (canShow) {
-                        link.html(s.i18n.cancelEditText);
-                        link.attr('title', s.i18n.cancelEditTitle);
-                        ApplyEffect(
-              editbox,
-              s.effects.widgetOpenEdit,
-              s.effects.effectDuration,
-              true
-            );
-                        if ($.isFunction(s.callbacks.onEdit)) {
-                            s.callbacks.onEdit(link, widget);
-                        }
-                    }
-                }
-                return false;
-            }).appendTo(widgetMenu);
-        }
-        return true;
+			var s = settings;
+			var link = '';
+			if (widget.hasClass(s.options.editable)) {
+				link = MenuLink(
+					s.i18n.editText,
+					s.i18n.editTitle,
+					s.selectors.editLink
+				);
+				widget.find(s.selectors.closeEdit).click(function(e) {
+					var link = $(this);
+					var widget = link.parents(s.selectors.widget);
+					var editbox = widget.find(s.selectors.editbox);
+					var editLink = widget.find(s.selectors.editLink);
+					link.blur();
+					ApplyEffect(
+						editbox,
+						s.effects.widgetCloseEdit,
+						s.effects.effectDuration,
+						false
+					);
+					editLink.html(s.i18n.editText);
+					editLink.attr('title', s.i18n.editTitle);
+					return false;
+				});
+				$(link).mousedown(function(e) {
+					e.stopPropagation();
+				}).click(function() {
+					var link = $(this);
+					var canShow = canHide = true;
+					var widget = link.parents(s.selectors.widget);
+					var editbox = widget.find(s.selectors.editbox);
+					var editboxVisible = editbox.css('display') != 'none';
+					link.blur();
+					if (editboxVisible) {
+						if ($.isFunction(s.callbacks.onCancelEditQuery)) {
+							canHide = s.callbacks.onCancelEditQuery(link, widget);
+						}
+						if (canHide) {
+							ApplyEffect(
+								editbox,
+								s.effects.widgetCancelEdit,
+								s.effects.effectDuration,
+								false
+							);
+							link.html(s.i18n.editText);
+							link.attr('title', s.i18n.editTitle);
+							if ($.isFunction(s.callbacks.onCancelEdit)) {
+								s.callbacks.onCancelEdit(link, widget);
+							}
+						}
+						widget.find(s.selectors.content).show();
+					} else {
+						if ($.isFunction(s.callbacks.onEditQuery)) {
+							canShow = s.callbacks.onEditQuery(link, widget);
+						}
+						if (canShow) {
+							link.html(s.i18n.cancelEditText);
+							link.attr('title', s.i18n.cancelEditTitle);
+							ApplyEffect(
+								editbox,
+								s.effects.widgetOpenEdit,
+								s.effects.effectDuration,
+								true
+							);
+							if ($.isFunction(s.callbacks.onEdit)) {
+								s.callbacks.onEdit(link, widget);
+							}
+						}
+						widget.find(s.selectors.content).hide();
+					}
+					return false;
+				}).appendTo(widgetMenu);
+			}
+			return true;
     }
 
     /**

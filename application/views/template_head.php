@@ -38,7 +38,7 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.fancybox.js');
 		echo html::script('application/media/js/jquery.field.js');
 		echo html::script('application/media/js/jquery.form.js');
-		echo html::script('modules/widgets/media/js/jquery.easywidgets.min.js');
+		echo html::script('modules/widgets/media/js/jquery.easywidgets.js');
 		echo html::script('application/media/js/jquery.autocomplete.min');
 		echo html::script('application/media/js/jquery.selectboxes.min.js');
 		echo html::script('application/media/js/jquery.jeditable.min');
