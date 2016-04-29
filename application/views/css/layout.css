@@ -472,6 +472,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   padding: 0;
   height: 100%;
   z-index: 0;
+  min-width: 800px;
   overflow-y: auto;
   overflow-x: hidden;
   background: #ffffff;
@@ -1430,6 +1431,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   width: 100%;
   font-size: 10pt;
   padding: 8px 0 4px 8px;
+  height: 30px;
   overflow: auto;
 }
 

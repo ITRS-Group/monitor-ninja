@@ -1,0 +1,121 @@
+.gettingstarted_container {
+  position: relative;
+  margin: 0;
+  padding: 4px;
+}
+
+.gettingstarted_columncontainer {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.gettingstarted_block {
+  display: inline-block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  max-width: 610px;
+  vertical-align: top;
+}
+
+.gettingstarted_column {
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  max-width: 300px;
+  min-width: 150px;
+  vertical-align: top;
+}
+
+.gettingstarted_box {
+  margin: 5px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.gettingstarted_bullet {
+  width: 70px;
+  height: 70px;
+  line-height: 70px;
+  border-radius: 40px;
+
+  font-size: 40px;
+  text-align: center;
+  vertical-align: middle;
+
+  margin: 8px auto 40px auto;
+  background: #50c0e4;
+  color: #fff;
+}
+
+.gettingstarted_box ul.linklist {
+  list-style: none;
+  margin: 1em 0;
+}
+
+.gettingstarted_box ul.linklist li {
+  padding: 0;
+}
+
+.gettingstarted_box a {
+  color: #50c0e4;
+  border: none;
+}
+
+.gettingstarted_box a:hover {
+  color: #3ba2c6;
+}
+
+.gettingstarted_box ul.linklist li a {
+  vertical-align: middle;
+  font-size: 10pt;
+}
+
+.gettingstarted_box ul.linklist li a:after {
+  content: "▶";
+  margin-left: 16px;
+  font-size: 80%;
+  vertical-align: 5%;
+}
+
+.gettingstarted_content {
+  border-top: 1px solid #50c0e4;
+  margin: 12px;
+  padding: 4px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.gettingstarted_box h1 {
+  text-align: center;
+  font-weight: normal;
+  font-size: 140%;
+  margin: -30px 1.0em 1.6em 1.0em;
+  padding: 16px 12px 0 12px;
+  display: block;
+}
+
+.gettingstarted_box h1 span {
+  background: #ffffff;
+  padding: 0 16px;
+}
+
+.gettingstarted_box h2 {
+  text-align: left;
+  font-weight: normal;
+  font-size: 125%;
+  margin: 1em 0;
+  padding: 0;
+  display: block;
+}
+
+.gettingstarted_box p {
+  margin: 1em 0;
+  padding: 0;
+  width: auto;
+  display: block;
+  font-size: 10pt;
+}
