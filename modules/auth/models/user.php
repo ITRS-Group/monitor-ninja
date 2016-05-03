@@ -124,7 +124,7 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 			if ($contact) $email = $contact->get_email();
 		}
 
-		$url = 'https://www.gravatar.com/avatar/';
+		$url = 'https://secure.gravatar.com/avatar/';
 		$url .= md5(strtolower(trim($email)));
 		$url .= "?s=$size&d=mm";
 		return $url;
