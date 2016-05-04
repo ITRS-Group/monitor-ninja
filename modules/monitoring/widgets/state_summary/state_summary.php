@@ -241,6 +241,7 @@ class State_summary_Widget extends widget_Base {
 
 		$stats = $object_set->stats($intersections);
 		return array(
+			'table' => $object_set->get_table(),
 			'queries' => $queries,
 			'state_definitions' => $state_definitions,
 			'stats' => $stats,
@@ -250,6 +251,7 @@ class State_summary_Widget extends widget_Base {
 	public function index() {
 		$args = $this->get_arguments();
 		$data = $this->get_filtered_data($args['filter_id']);
+		$object_type = $data['table'];
 		$stats = $data['stats'];
 		$state_definitions = $data['state_definitions'];
 		$queries = $data['queries'];

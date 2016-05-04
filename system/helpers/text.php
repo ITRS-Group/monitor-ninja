@@ -333,6 +333,27 @@ class text {
 	}
 
 	/**
+	 * Returns human readable clipped and possibly SI prefixed number.
+	 *
+	 * @param   integer Number
+	 * @return  string
+	 */
+	public static function clipped_number($number)
+	{
+
+		if ($number >= 1000000) {
+			return number_format($number / 1000000, 1) . 'M';
+		} elseif ($number >= 100000) {
+			return number_format($number / 1000, 0) . 'k';
+		} elseif ($number >= 1000) {
+			return number_format($number / 1000, 1) . 'k';
+		}
+
+		return $number . '';
+
+	}
+
+	/**
 	 * Prevents widow words by inserting a non-breaking space between the last two words.
 	 * @see  http://www.shauninman.com/archive/2006/08/22/widont_wordpress_plugin
 	 *

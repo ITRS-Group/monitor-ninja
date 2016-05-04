@@ -1,16 +1,3 @@
-<?php
-
-$prefix = 'state_summary';
-
-// This widget is supposed to add color for small systems. With that in mind,
-// colorfulness > precise data. Ceil the number of figures that appears.
-$format_number = function($count) {
-	if($count < 100) {
-		return $count;
-	}
-	return "99+";
-};
-?>
 <div class="state_summary-container">
 <?php
 foreach($state_definitions['states'] as $silly_counter => $state) {
@@ -20,13 +7,13 @@ foreach($state_definitions['states'] as $silly_counter => $state) {
 		$stats[$silly_counter]
 	);
 
-	printf("<a title=\"Go to listview\" href=\"%s\"><div class='$prefix-state $prefix-%s'>
-		<span class='" . strtolower($state['label']) . " $prefix-figure'>%s</span><br>
-		<span class='" . strtolower($state['label']) . " supplementary $prefix-description'>%s</span>
+	printf("<a title=\"Go to the listview for these " . $stats[$silly_counter] . " $object_type\" href=\"%s\"><div class='state_summary-state state_summary-%s'>
+		<span class='" . strtolower($state['label']) . " state_summary-figure'>%s</span><br>
+		<span class='" . strtolower($state['label']) . " supplementary state_summary-description'>%s</span>
 		</div></a>",
 		listview::querylink($queries[$silly_counter]),
 		$css_class,
-		$format_number($stats[$silly_counter]),
+		text::clipped_number($stats[$silly_counter]),
 		$state['label']
 	);
 
