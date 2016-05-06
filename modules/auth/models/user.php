@@ -182,6 +182,29 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 
 	}
 
+	/*
+	 * Get a quark for the current user
+	 *
+	 * @return integer
+	 */
+	public function get_permission_quark() {
+		return PermissionQuarkPool_Model::build('user', $this->get_username());
+	}
+
+	/**
+	 * Return a regexp for matching a quark string for the current users access
+	 *
+	 * @return string
+	 */
+	public function get_permission_regexp() {
+		$quarks = array();
+		$quarks[] = $this->get_permission_quark();
+		foreach($this->get_usergroups_set() as $group) {
+			$quarks[] = $group->get_permission_quark();
+		}
+		return ',(' . implode('|', $quarks) . '),';
+	}
+
 	protected function validate () {
 
 		$set = AuthModulePool_Model::all();
@@ -283,6 +306,19 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
                         $result[] = $row[0];
                 }
                 return $result;
+        }
+
+        /**
+         * Get a set of all user groups for this user
+         *
+         * @return UserGroupSet_Model
+         */
+        public function get_usergroups_set() {
+			$groups = UserGroupPool_Model::none();
+			foreach($this->get_groups() as $group) {
+				$groups = $groups->union(UserGroupPool_Model::set_by_key($group));
+			}
+			return $groups;
         }
 
 	/**

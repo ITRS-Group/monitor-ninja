@@ -7,4 +7,13 @@
  * @todo: documentation
  */
 class UserGroup_Model extends BaseUserGroup_Model {
+
+	/**
+	 * Get a quark for the current group
+	 *
+	 * @return integer
+	 */
+	public function get_permission_quark() {
+		return PermissionQuarkPool_Model::build('group', $this->get_groupname());
+	}
 }
