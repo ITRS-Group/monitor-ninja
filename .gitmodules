@@ -1,3 +1,0 @@
-[submodule "test/cucumber/helpers"]
-	path = test/cucumber/helpers
-	url = http://devel.dev.op5.com:8080/lib/cucumber
