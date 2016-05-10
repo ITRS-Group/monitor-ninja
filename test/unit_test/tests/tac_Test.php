@@ -671,4 +671,122 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array("title" => "my custom title"), $model->setting);
 		$this->assertEquals("my_widget", $model->name);
 	}
+
+	public function test_dashboard_export() {
+		$mock_widgets = array(
+			array(
+				'id' => 1,
+				'dashboard_id' => 1,
+				'name' => 'Cell0',
+				'setting' => '{}',
+				'position' => '{"c":0,"p":0}',
+				),
+			array(
+				'id' => 2,
+				'dashboard_id' => 1,
+				'name' => 'tac_hosts',
+				'setting' => '{}',
+				'position' => '{"c":1,"p":0}',
+			),
+			array(
+				'id' => 3,
+				'dashboard_id' => 2,
+				'name' => 'Board 2, Cell2',
+				'setting' => '{}',
+				'position' => '{"c":2,"p":0}',
+			),
+			array(
+				'id' => 4,
+				'dashboard_id' => 2,
+				'name' => 'Board 2, Cell3',
+				'setting' => '{}',
+				'position' => '{"c":3,"p":0}',
+			)
+		);
+
+		$db_name = 'A Dashing Board';
+		$db_layout = '3,2,1';
+		$mock_dashboards = array(
+			array(
+				'id' => 1,
+				'name' => $db_name,
+				'username' => '',
+				'layout' => $db_layout
+			),
+			array(
+				'id' => 2,
+				'name' => 'Board 2',
+				'username' => '',
+				'layout' => $db_layout
+			)
+		);
+		$mock = array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => $mock_dashboards,
+				'dashboard_widgets' => $mock_widgets,
+			)
+		);
+		$this->mock_data($mock, __FUNCTION__);
+
+		$compare = array('dashboard' => array('name' => $db_name, 'layout' => $db_layout));
+		$widgets = $mock_widgets;
+		$comp_widgets = array();
+		foreach ($widgets as $k => $w) {
+			if ($w['dashboard_id'] != 1) {
+				continue;
+			}
+			unset($w['id']);
+			unset($w['dashboard_id']);
+			$w['setting'] = json_decode($w['setting'], TRUE);
+			$w['position'] = json_decode($w['position'], TRUE);
+			$comp_widgets[$k] = $w;
+		}
+		$compare['widgets'] = $comp_widgets;
+		$board = DashboardPool_Model::fetch_by_key(1);
+		$exported = $board->export_array();
+		$this->assertSame($exported['dashboard']['layout'], $db_layout);
+		$this->assertSame($exported['dashboard']['name'], $db_name);
+		$this->assertSame($board->export_array(), $compare);
+	}
+
+	public function test_dashboard_import() {
+		/* set up mock data */
+		$mock_widgets = array(
+			array(
+				'id' => 1,
+				'dashboard_id' => 1,
+				'name' => 'Cell0',
+				'setting' => '{}',
+				'position' => '{"c":0,"p":0}',
+				),
+		);
+		$mock_dashboards = array(
+			array(
+				'id' => 1,
+				'name' => 'A Dashing Board',
+				'username' => '',
+				'layout' => '3,2,1'
+			),
+		);
+		$mock = array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array((array('id' => 1))),
+				'dashboard_widgets' => array((array('id' => 1, 'dashboard_id' => 1))),
+			)
+		);
+		$this->mock_data($mock, __FUNCTION__);
+
+		/*
+		 * Since we test export_array() against known data and
+		 * trust that, this becomes very simple; Export first,
+		 * change what we exported, import the changed version
+		 * and then export it again. If they match, we're good.
+		 */
+		$board = DashboardPool_Model::fetch_by_key(1);
+		$export1 = $board->export_array();
+		$export1['dashboard']['name'] = 'a random string appears...';
+		$board->import_array($export1);
+		$export2 = $board->export_array();
+		$this->assertSame($export1, $export2);
+	}
 }

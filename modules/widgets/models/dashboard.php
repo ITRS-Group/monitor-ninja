@@ -7,5 +7,85 @@ require_once( dirname(__FILE__).'/base/basedashboard.php' );
  *
  * @todo: documentation
  */
-class Dashboard_Model extends BaseDashboard_Model {
+class Dashboard_Model extends BaseDashboard_Model
+{
+	/**
+	 * Return the dashboard as an array, with widgets included
+	 *
+	 * @return array('dashboard' => ..., 'widgets' => ...);
+	 */
+	public function export_array()
+	{
+		$board = $this->export();
+		/* we delete local-only variables */
+		unset($board['id']);
+		unset($board['username']);
+
+		$ret = array('dashboard' => $board);
+
+		$widget_set = $this->get_dashboard_widgets_set();
+
+		$ret['widgets'] = array();
+		foreach ($widget_set as $widget) {
+			$w_ary = $widget->export();
+			/* delete local-only variables */
+			if (isset($w_ary['id'])) {
+				unset($w_ary['id']);
+			}
+			if (isset($w_ary['dashboard'])) {
+				unset($w_ary['dashboard']);
+			}
+			if (isset($w_ary['dashboard_id'])) {
+				unset($w_ary['dashboard_id']);
+			}
+			$ret['widgets'][] = $w_ary;
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Import an array to replace the current dashboard
+	 *
+	 * @return Nothing.
+	 */
+	public function import_array($ary)
+	{
+		$board_ary = $ary['dashboard'];
+		$widgets_ary = $ary['widgets'];
+
+		unset($board_ary['id']);
+		foreach ($board_ary as $k => $v) {
+			$mname = 'set_' . $k;
+			if (!method_exists($this, $mname)) {
+				continue;
+			}
+			$this->$mname($v);
+		}
+		$this->save();
+
+		/*
+		 * Delete widgets after save is successful.
+		 * This should really only trigger for the "factory reset"
+		 * case when someone replaces their existing dashboard,
+		 * so performance isn't very important.
+		 */
+		foreach ($this->get_dashboard_widgets_set() as $wdg) {
+			$wdg->delete();
+		}
+
+		foreach ($widgets_ary as $widget_ary) {
+			unset($widget_ary['id']);
+			$widget_ary['dashboard_id'] = $this->get_id();
+			$widget = new Dashboard_Widget_Model();
+			foreach ($widget_ary as $k => $v) {
+				$mname = 'set_' . $k;
+				if (!method_exists($widget, $mname)) {
+					continue;
+				}
+				$widget->$mname($v);
+			}
+			$widget->save();
+		}
+	}
 }
