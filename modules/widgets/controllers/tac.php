@@ -56,7 +56,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		/* Place widgets that's left equally over the placeholders */
 		foreach ($widget_models as $model) {
-			$pos = json_decode($model->get_position(), true);
+			$pos = $model->get_position();
 			if (is_array($pos)) {
 				$widget_table[$pos['c']][$pos['p']] = $model->build();
 			}
@@ -141,7 +141,7 @@ class Tac_Controller extends Ninja_Controller {
 
 				// c = dashboard cell, p = widget position (within cell)
 				$widget_model->set_position(
-					json_encode(array('c' => $i, 'p' => $j))
+					array('c' => $i, 'p' => $j)
 				);
 				$widget_model->save();
 			}
@@ -220,12 +220,12 @@ class Tac_Controller extends Ninja_Controller {
 		$widget_models = $dashboard->get_dashboard_widgets_set();
 
 		foreach ($widget_models as $wm) {
-			$pos = json_decode($wm->get_position(), true);
+			$pos = $wm->get_position();
 			if ($pos['c'] === $cell_num) {
 				// Move widget one step "down" if it's in the cell
 				// where we add the new widget.
 				$pos['p'] += 1;
-				$wm->set_position(json_encode($pos));
+				$wm->set_position($pos);
 				$wm->save();
 			}
 		}
@@ -236,10 +236,10 @@ class Tac_Controller extends Ninja_Controller {
 		$widget_model = new Dashboard_Widget_Model();
 		$widget_model->set_dashboard_id($dashboard->get_id());
 		$widget_model->set_name($widget_name);
-		$widget_model->set_position(json_encode(array(
+		$widget_model->set_position(array(
 			'c' => $cell_num,
 			'p' => 0
-		)));
+		));
 		$widget_model->set_setting(array());
 		$widget_model->save();
 

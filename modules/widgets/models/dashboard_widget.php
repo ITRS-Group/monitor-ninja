@@ -35,4 +35,22 @@ class Dashboard_Widget_Model extends BaseDashboard_Widget_Model {
 			unset($value['title']);
 		return parent::set_setting(json_encode($value, JSON_FORCE_OBJECT));
 	}
+
+	/**
+	 * positions is stored as a json block in database, decode and encode
+	 * @see BaseDashboard_Widget_Model::get_position()
+	 */
+	public function get_position() {
+		$var = json_decode(parent::get_position(), true);
+		if(!is_array($var)) {
+			return array();
+		}
+		return $var;
+	}
+
+	public function set_position($value) {
+		if (isset($value['title']) && strlen($value['title']) === 0)
+			unset($value['title']);
+		return parent::set_position(json_encode($value, JSON_FORCE_OBJECT));
+	}
 }

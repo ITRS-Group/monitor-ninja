@@ -426,7 +426,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'setting' => array (
 						'this_is' => 'original'
 				),
-				'position' => '{"c":1,"p":0}'
+				'position' => array('c' => 1,'p' => 0)
 		), $widget->export () );
 	}
 
