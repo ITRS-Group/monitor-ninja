@@ -42,12 +42,29 @@ class Listview_Widget extends widget_Base {
 	}
 
 	public function options() {
-		$options = array();
+
+		$options = parent::options();
+		// Listview refresh themselves
+		unset($options['refresh']);
+
 		$options[] = new option('listview','query',_('Query'),'textarea',array(),'[hosts] all');
 		$options[] = new option('listview','columns',_('Columns'),'textarea',array(),'all');
 		$options[] = new option('listview','limit',_('Limit'),'input',array(),20);
 		$options[] = new option('listview','order',_('Default order column'),'input',array(),'');
 		return $options;
+
+	}
+
+	public function get_suggested_title () {
+		try {
+			$args = $this->get_arguments();
+			$set = ObjectPool_Model::get_by_query($args['query']);
+			$table = $set->get_table();
+			$table = preg_replace("/\_/", " ", $table);
+			return "List of $table";
+		} catch (Exception $e) {
+			return "List View";
+		}
 	}
 
 	public function index() {

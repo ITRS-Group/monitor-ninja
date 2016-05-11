@@ -258,7 +258,7 @@ class widget_Base {
 		);
 
 		$refresh->should_render_js(false);
-		$options[] = $refresh;
+		$options['refresh'] = $refresh;
 
 		if (!isset($this->options_definition))
 			return $options;

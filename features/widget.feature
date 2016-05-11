@@ -26,16 +26,28 @@ Feature: Widgets
 		When I am on the main page
 		Then I should see "Password"
 
-	Scenario: Listview widgets are rendered on TAC
+	Scenario: User configured name overrides default
 		Given I have these mocked dashboards
 			| id | name       | username   | layout |
 			| 1  | Dashboard1 | mockeduser | 1,2,3  |
-		And I have these mocked dashboard_widgets
-			| id | dashboard_id | name     | position      | setting                       |
-			| 1  | 1            | listview | {"c":0,"p":0} | {"title":"A friendly widget"} |
+		Given I have these mocked dashboard_widgets
+			|id|dashboard_id | name         | position      | setting |
+			|1 |1            | listview     | {"c":0,"p":0} | {"title":"My widget name"}|
 		And I am logged in
 		When I am on the main page
-		Then I should see "A friendly widget"
+		Then I should see "My widget name"
+
+	Scenario: Listview widgets are rendered on TAC with default title
+		Given I have these mocked dashboards
+			| id | name       | username   | layout |
+			| 1  | Dashboard1 | mockeduser | 1,2,3  |
+		Given I have these mocked dashboard_widgets
+			|id|dashboard_id | name         | position      | setting |
+			|1 |1            | listview     | {"c":0,"p":0} | {} |
+		And I am logged in
+		When I am on the main page
+		# Default filter table for listview widget is hosts
+		Then I should see "List of hosts"
 
 	Scenario: Non-installed widgets are reported as such
 		Given I have these mocked dashboards

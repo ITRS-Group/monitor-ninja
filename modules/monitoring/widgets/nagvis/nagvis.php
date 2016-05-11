@@ -21,6 +21,12 @@ class Nagvis_Widget extends widget_Base {
 	}
 
 	public function options() {
+
+		$options = parent::options();
+
+		# don't add refresh, nagvis reloads itself
+		unset($options['refresh']);
+
 		try {
 			$maps = nagvisconfig::get_map_list();
 		} catch (ORMDriverException $e) {
@@ -39,11 +45,22 @@ class Nagvis_Widget extends widget_Base {
 			$tmp = array_values($maps);
 		}
 
-		# don't call parent, nagvis reloads itself
 		$map = new option('nagvis', 'map', 'Map', 'dropdown', array('options' => $maps), $default);
 		$height = new option('nagvis', 'height', 'Height (px)', 'input', array('size'=>3), 400);
 		$height->should_render_js(false);
-		return array($map, $height);
+
+		$options[] = $map;
+		$options[] = $height;
+		return $options;
+	}
+
+	public function get_suggested_title () {
+		$args = $this->get_arguments();
+		if (isset($args['map']) && strlen($args['map'])) {
+			return $args['map'];
+		} else {
+			return 'NagVis';;
+		}
 	}
 
 	public function index() {
