@@ -138,11 +138,17 @@ abstract class Base_reports_Controller extends Ninja_Controller
 				header("Content-Transfer-Encoding: binary");
 				echo $out;
 			} else {
+				$this->log->log('error', "Pdf command " . $command . "resulted in no output. stderr:");
 				$this->log->log('error', $err);
 			}
 			fclose($pipes[1]);
 			fclose($pipes[2]);
-			proc_close($process);
+			$return_value = proc_close($process);
+			if ($return_value != 0) {
+				$this->log->log('error', "Pdf command " . $command . " returned $return_value:");
+				$this->log->log('error', "stderr: $err");
+				$this->log->log('error', "stdout: $out");
+			}
 		} else {
 			$this->log->log('error', "Tried running the following command but was unsuccessful:");
 			$this->log->log('error', $command);
