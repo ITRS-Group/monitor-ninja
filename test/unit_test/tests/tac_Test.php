@@ -640,4 +640,28 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 			$last_name = $cur_name;
 		}
 	}
+
+	/**
+	 * Test old model interface
+	 *
+	 * The old interface is $model->attr, new interface is $model->get_attr.
+	 *
+	 * This old interface should work, to not break old widgets. But should be
+	 * flagged as deprecated
+	 */
+	public function test_old_model_interface() {
+		/* Print out log, so we can verify that it's correct */
+		op5objstore::instance()->mock_add('op5log', new MockLog(true));
+		$this->expectOutputString(
+				"Log: ninja notice DEPRECATION: 'Widget_Model::__get' is deprecated and should not be executed: <no message>\n".
+				"Log: ninja notice DEPRECATION: 'Widget_Model::__get' is deprecated and should not be executed: <no message>\n"
+				);
+
+		$model = new Dashboard_Widget_Model();
+		$model->set_setting(array("title" => "my custom title"));
+		$model->set_name("my_widget");
+
+		$this->assertEquals(array("title" => "my custom title"), $model->setting);
+		$this->assertEquals("my_widget", $model->name);
+	}
 }

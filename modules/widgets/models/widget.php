@@ -74,4 +74,15 @@ class Widget_Model extends Object_Model {
 		$this->widget_path_cache = dirname(substr($path, strlen(DOCROOT))) . "/";
 		return $this->widget_path_cache;
 	}
+
+	/**
+	 * Access parameters in old style
+	 *
+	 * This is deprecated
+	 */
+	public function __get($var) {
+		flag::deprecated(__METHOD__);
+		$func_name = 'get_'.$var;
+		return $this->$func_name();
+	}
 }
