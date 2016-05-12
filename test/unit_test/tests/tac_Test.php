@@ -626,19 +626,26 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		), $widget->export () );
 	}
 
+	/**
+	 * This test actually verifies the order of the Add Widget menu.
+	 *
+	 * It does it in a level that means we need to parse html, but should
+	 * actually be done by exporting
+	 */
 	public function test_widget_menu_order() {
-		$widgets = Dashboard_WidgetPool_Model::get_available_widgets();
-		$this->assertGreaterThan(0, count($widgets));
+		$menu = $this->tac->_get_add_widget_menu();
 
+		$count = 0;
 		$last_name = '';
-		foreach($widgets as $name => $model) {
-			/* @var $model Dashboard_Widget_Model */
-			$cur_name = $model['friendly_name'];
+		foreach($menu->get("Add widget")->get_branch() as $menu_item) {
+			$cur_name = strtolower($menu_item->get_label_as_html());
 
 			/* every name should be after the previous name, thus in order */
 			$this->assertGreaterThan($last_name, $cur_name);
 			$last_name = $cur_name;
+			$count++;
 		}
+		$this->assertGreaterThan(0, $count);
 	}
 
 	/**

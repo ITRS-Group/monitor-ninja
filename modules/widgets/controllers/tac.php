@@ -12,6 +12,36 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Ninja_Controller {
+	/**
+	 * Get the add widget menu
+	 *
+	 * exported as a seperate function due to testability
+	 */
+	public function _get_add_widget_menu() {
+		$menu = new Menu_Model();
+
+		$menu->set("Add widget", null, null, 'icon-16 x16-sign-add');
+		$add_widget_menu = $menu->get("Add widget");
+
+
+		/* Fill with metadata, and build menu */
+		$order = 0;
+		foreach(Dashboard_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
+			$add_widget_menu->set($metadata['friendly_name'], "#", $order, null,
+					array(
+							'data-widget-name' => $name,
+							'class' => "menuitem_widget_add"
+					));
+			if(isset($metadata['css'])) {
+				foreach($metadata['css'] as $stylesheet) {
+					$this->template->css[] = $metadata['path'] . $stylesheet;
+				}
+			}
+			$order++; /* We want the rows in the order they appear. They are already sorted */
+		}
+		return $menu;
+	}
+
 	private function current_dashboard() {
 		/* Just pick the first dashboard... (we only have access to our own) */
 		$dashboard = DashboardPool_Model::all()->one();
@@ -82,26 +112,8 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->content->tac_column_count = $tac_column_count;
 
 		$this->template->toolbar = $toolbar = new Toolbar_Controller("Tactical Overview");
-		$menu = new Menu_Model();
 
-		$menu->set("Add widget", null, null, 'icon-16 x16-sign-add');
-		$add_widget_menu = $menu->get("Add widget");
-
-
-		/* Fill with metadata, and build menu */
-		foreach(Dashboard_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
-			$add_widget_menu->set($metadata['friendly_name'], "#", null, null,
-				array(
-					'data-widget-name' => $name,
-					'class' => "menuitem_widget_add"
-				));
-			if(isset($metadata['css'])) {
-				foreach($metadata['css'] as $stylesheet) {
-					$this->template->css[] = $metadata['path'] . $stylesheet;
-				}
-			}
-		}
-		$toolbar->menu($menu);
+		$toolbar->menu($this->_get_add_widget_menu());
 	}
 
 	/**
