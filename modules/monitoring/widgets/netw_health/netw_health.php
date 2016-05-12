@@ -78,13 +78,13 @@ EOC;
 	public function options()
 	{
 		$options = parent::options();
-		$options[] = new option($this->model->name, 'health_warning_percentage', 'Warning Percentage Level', 'input', array(
+		$options[] = new option($this->model->get_name(), 'health_warning_percentage', 'Warning Percentage Level', 'input', array(
 			'style' => 'width:20px',
 			'title' => sprintf(_('Default value: %s%%'), 90)), $this->health_warning_percentage);
-		$options[] = new option($this->model->name, 'health_critical_percentage', 'Critical Percentage Level', 'input', array(
+		$options[] = new option($this->model->get_name(), 'health_critical_percentage', 'Critical Percentage Level', 'input', array(
 			'style' => 'width:20px',
 			'title' => sprintf(_('Default value: %s%%'), 75)), $this->health_warning_percentage);
-		$options[] = new option($this->model->name, 'visible_precision', 'Precision', 'input', array(
+		$options[] = new option($this->model->get_name(), 'visible_precision', 'Precision', 'input', array(
 			'style' => 'width:20px',
 			'title' => sprintf(_('Default value: %d'), 1)), $this->visible_precision);
 /*
