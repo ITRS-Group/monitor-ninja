@@ -7,7 +7,7 @@ class Dead_Widget extends widget_Base {
 	/**
 	 * Builds a new Dead_Widget
 	 **/
-	public function __construct($model, Exception $exc) {
+	public function __construct($model, Exception $exc = null) {
 		$this->exc = $exc;
 		parent::__construct($model);
 	}
@@ -21,7 +21,7 @@ class Dead_Widget extends widget_Base {
 	public function index() {
 		echo '<div class="alert error"><h3>This widget failed to load</h3>';
 		echo '<p>This may be a temporary problem. If the problem persists, please contact your administrator.</p>';
-		if($this->exc->getMessage()) {
+		if($this->exc !== null && $this->exc->getMessage()) {
 			echo '<p>Additional troubleshooting information: <strong>' . get_class($this->exc) . '</strong><em>(' . $this->exc->getMessage() . ')</em></p>';
 		}
 		echo '</div>';
