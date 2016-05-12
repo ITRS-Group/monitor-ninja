@@ -8,7 +8,13 @@
  */
 class Tac_Test extends PHPUnit_Framework_TestCase {
 
+	/**
+	 *
+	 * @var Tac_Controller
+	 */
 	private $tac;
+
+	private $mock_data_path = false;
 
 	protected function setUp() {
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
@@ -77,9 +83,13 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	protected function tearDown() {
 		op5objstore::instance()->mock_clear();
 		unlink($this->mock_data_path);
+		$this->mock_data_path = false;
 	}
 
 	private function mock_data($tables, $file) {
+		if($this->mock_data_path !== false) {
+			unlink($this->mock_data_path);
+		}
 		$this->mock_data_path = __DIR__ . '/' . $file . '.json';
 		file_put_contents($this->mock_data_path, json_encode($tables));
 		foreach($tables as $driver => $tables) {
@@ -108,6 +118,192 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 			}
 		}
 		return $widgets;
+	}
+
+	public function test_widget_positions() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => 1,
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(
+					array(
+						'id' => 1,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'position' => '{"c":4,"p":3}'
+					),
+					array(
+						'id' => 2,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'setting' => '{"title":"badboll"}',
+						'position' => '{"c":2,"p":4}'
+					)
+				)
+			)
+		), __FUNCTION__);
+
+		$this->tac->index();
+
+		$this->assertEquals(array(3,2,1), $this->tac->template->content->tac_column_count);
+		$this->assertEquals("Network health", $this->tac->template->content->widgets[4][3]->get_title());
+		$this->assertEquals("badboll", $this->tac->template->content->widgets[2][4]->get_title());
+	}
+
+	/*
+	 * In the case of importing, due to migration or backups, or other reasons,
+	 * the position field is missing in the database. We should handle that
+	 * gracefully
+	 *
+	 * What is important is that all widgets is visible, so the database will
+	 * be able to self heal when the uer tries to fix the position manually
+	 *
+	 * This should be a rare case, which might occur due to errors, or by
+	 * migration/upgrade is missing information.
+	 */
+	public function test_widget_missing_position() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => 1,
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(
+					array(
+						'id' => 1,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'position' => ''
+					),
+					array(
+						'id' => 2,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'setting' => '{"title":"badboll"}',
+						'position' => '{"c":2,"p":4}'
+					)
+				)
+			)
+		), __FUNCTION__);
+
+		$this->tac->index();
+
+		$count = 0;
+		foreach($this->tac->template->content->widgets as $c => $cells) {
+			foreach($cells as $p => $widget) {
+				$count++;
+			}
+		}
+		$this->assertEquals(2, $count);
+	}
+
+	/*
+	 * In the case of importing, due to migration or backups, or other reasons,
+	 * two widgets might have the same position defined. And one widget shouldn't
+	 * overwrite the other one.
+	 *
+	 * What is important is that all widgets is visible, so the database will
+	 * be able to self heal when the uer tries to fix the position manually
+	 *
+	 * This should be a rare case, which might occur due to errors.
+	 */
+	public function test_widget_conflicting_positions() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => 1,
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(
+					array(
+						'id' => 1,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'position' => '{"c":2,"p":4}'
+					),
+					array(
+						'id' => 2,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'setting' => '{"title":"badboll"}',
+						'position' => '{"c":2,"p":4}'
+					)
+				)
+			)
+		), __FUNCTION__);
+
+		$this->tac->index();
+
+		$count = 0;
+		foreach($this->tac->template->content->widgets as $c => $cells) {
+			foreach($cells as $p => $widget) {
+				$count++;
+			}
+		}
+		/* Verify that we have the correct number of widgets visible */
+		$this->assertEquals(2, $count);
+	}
+
+
+	/*
+	 * In the case of layout swithing, in combination of bugs, or possible
+	 * migrations, widgets might be put out of range of the current layout.
+	 * Those widgets should be placed somewhere on the page.
+	 *
+	 * What is important is that all widgets is visible, so the database will
+	 * be able to self heal when the uer tries to fix the position manually
+	 *
+	 * This should be a rare case, which might occur due to errors, but should
+	 * still be tested and supported.
+	 */
+	public function test_widget_out_of_range_cells() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => 1,
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(
+					array(
+						'id' => 1,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'position' => '{"c":2,"p":4}'
+					),
+					array(
+						'id' => 2,
+						'dashboard_id' => 1,
+						'name' => 'netw_health',
+						'setting' => '{"title":"badboll"}',
+						'position' => '{"c":77,"p":4}'
+					)
+				)
+			)
+		), __FUNCTION__);
+
+		$this->tac->index();
+
+		$count = 0;
+		for($c=0;$c<6;$c++) {
+			if(isset($this->tac->template->content->widgets[$c])) {
+				$cells = $this->tac->template->content->widgets[$c];
+				foreach($cells as $p => $widget) {
+					$count++;
+				}
+			}
+		}
+		/* Verify that we have the correct number of widgets visible, even though some is ouf of range */
+		$this->assertEquals(2, $count);
 	}
 
 	// Assert on_change_positions() succeeds when moving widget to the same

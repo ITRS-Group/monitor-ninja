@@ -57,8 +57,15 @@ class Tac_Controller extends Ninja_Controller {
 		/* Place widgets that's left equally over the placeholders */
 		foreach ($widget_models as $model) {
 			$pos = $model->get_position();
-			if (is_array($pos)) {
-				$widget_table[$pos['c']][$pos['p']] = $model->build();
+			/* No cell number is same as incorrect posistion */
+			if (is_array($pos) && isset($pos['c']) && $pos['c'] >= 0 && $pos['c'] < $n_dashboard_cells) {
+				if(isset($pos['p']) && !isset($widget_table[$pos['c']][$pos['p']])) {
+					/* If set, and not a conflict, add correctly... */
+					$widget_table[$pos['c']][$pos['p']] = $model->build();
+				} else {
+					/* ...otherwise place at end of cell */
+					$widget_table[$pos['c']][] = $model->build();
+				}
 			}
 			else {
 				// If we can't parse position, place widget in last cell.
