@@ -201,7 +201,11 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		fi
 		php index.php db_migrations/v13_to_v14
 		;;
-
+	18)
+		all_versions 18
+		# Upgrade widgets to Dashboard_Model / Dashboard_Widget_Model
+		php install_scripts/migrate_widgets.php
+		;;
 	*)
 		all_versions "$db_ver"
 		;;
