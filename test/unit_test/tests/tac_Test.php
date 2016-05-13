@@ -789,4 +789,24 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$export2 = $board->export_array();
 		$this->assertSame($export1, $export2);
 	}
+
+	/**
+	 * Test that initial dashboards is defined as config.
+	 *
+	 * Disabled due to bugs in native ORM driver, which doesn't set id correctly with
+	 * auto increment. (error message: undefined field "id")
+	 */
+	public function disabled_initial_dashboard() {
+		$mock = array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(),
+				'dashboard_widgets' => array(),
+			)
+		);
+		$this->mock_data($mock, __FUNCTION__);
+
+		$dashboard = $this->tac->_current_dashboard();
+
+		$this->assertEquals(Kohana::config('tac.default'), $dashboard->export_array());
+	}
 }

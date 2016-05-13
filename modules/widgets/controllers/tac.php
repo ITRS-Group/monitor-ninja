@@ -42,7 +42,12 @@ class Tac_Controller extends Ninja_Controller {
 		return $menu;
 	}
 
-	private function current_dashboard() {
+	/**
+	 * Get the current dashboard
+	 *
+	 * public, but not exposed (prefix with _) due to testability
+	 */
+	public function _current_dashboard() {
 		/* Just pick the first dashboard... (we only have access to our own) */
 		$dashboard = DashboardPool_Model::all()->one();
 		if(!$dashboard) {
@@ -50,8 +55,10 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard = new Dashboard_Model();
 			$username = op5auth::instance()->get_user()->get_username();
 			$dashboard->set_username($username);
+
+			$dashboard->import_array(Kohana::config('tac.default'));
+
 			$dashboard->set_name('Dashboard for '.$username);
-			$dashboard->set_layout('3,2,1');
 			$dashboard->save();
 		}
 
@@ -69,7 +76,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
 
-		$dashboard = $this->current_dashboard();
+		$dashboard = $this->_current_dashboard();
 
 		/* Build storage for placeholders */
 		$tac_column_count_str = $dashboard->get_layout();
@@ -146,7 +153,7 @@ class Tac_Controller extends Ninja_Controller {
 			$p_count = count($pos_data[$i]);
 			for ($j = 0; $j < $p_count; $j++) {
 				$widget_model_id = substr($pos_data[$i][$j], 7);
-				$widget_model = $this->current_dashboard()
+				$widget_model = $this->_current_dashboard()
 					->get_dashboard_widgets_set()
 					->intersect(Dashboard_WidgetPool_Model::set_by_key($widget_model_id))
 					->one();
@@ -180,7 +187,7 @@ class Tac_Controller extends Ninja_Controller {
 		// so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
-		$dashboard = $this->current_dashboard();
+		$dashboard = $this->_current_dashboard();
 		$widget_model = $dashboard->get_dashboard_widgets_set()->intersect(
 			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
 		)->one();
@@ -235,7 +242,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		// We need to update the position of all widgets in the cell to which
 		// the widget is added.
-		$dashboard = $this->current_dashboard();
+		$dashboard = $this->_current_dashboard();
 		$widget_models = $dashboard->get_dashboard_widgets_set();
 
 		foreach ($widget_models as $wm) {
@@ -295,7 +302,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$widget_key = $this->input->post('key');
 
-		$dashboard_set = $this->current_dashboard()->get_dashboard_widgets_set();
+		$dashboard_set = $this->_current_dashboard()->get_dashboard_widgets_set();
 		$widget_model = $dashboard_set->intersect(
 			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
 		)->one();
@@ -341,7 +348,7 @@ class Tac_Controller extends Ninja_Controller {
 			return;
 		}
 
-		$current_dashboard = $this->current_dashboard();
+		$current_dashboard = $this->_current_dashboard();
 		$widget_model = $current_dashboard->get_dashboard_widgets_set()
 			->intersect(Dashboard_WidgetPool_Model::set_by_key($key))->one();
 		if (!$widget_model instanceof Widget_Model) {
