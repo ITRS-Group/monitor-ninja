@@ -12,19 +12,40 @@ class showlog
 	 */
 	public static function show_log_entries($options)
 	{
-		# default limit
+		$pool = new HostPool_Model();
+		$host_set = $pool->all();
+		if(!op5mayi::instance()->run($host_set->mayi_resource().":read.showlog", array(), $messages)) {
+			echo "<p>Not enough rights for viewing showlog for hosts</p>\n";
+			if($messages) {
+				echo implode("<br />", $messages);
+			}
+			return;
+		}
+
+		$pool = new ServicePool_Model();
+		$service_set = $pool->all();
+		if(!op5mayi::instance()->run($service_set->mayi_resource().":read.showlog", array(), $messages)) {
+			echo "<p>Not enough rights for viewing showlog for services</p>\n";
+			if($messages) {
+				echo implode("<br />", $messages);
+			}
+			return;
+		}
+
 		$limit = 2500;
 		$cgi_cfg = false;
 		$etc_path = System_Model::get_nagios_etc_path();
-		$cgi_cfg = $etc_path . '/cgi.cfg';
+		$cgi_cfg = rtrim($etc_path, '/').'/cgi.cfg';
 
-		$showlog = self::get_path();
-		$cmd = $showlog . " --cgi-cfg=" . $cgi_cfg;
+		$args = array(
+			self::get_path(),
+			"--cgi-cfg=$cgi_cfg"
+		);
 
 		foreach ($options as $k => $v) {
 			# support all the various 'hide' options
 			if (substr($k, 0, 4) === 'hide') {
-				$cmd .= ' --' . str_replace('_', '-', $k);
+				$args[] = '--' . str_replace('_', '-', $k);
 				continue;
 			}
 			switch ($k) {
@@ -33,60 +54,64 @@ class showlog
 					break;
 				}
 				if (isset($v['hard'])) {
-					$cmd .= ' --state-type=hard';
+					$args[] = '--state-type=hard';
 				} elseif (isset($v['soft'])) {
-					$cmd .= ' --state-type=soft';
+					$args[] = '--state-type=soft';
 				}
 				break;
 			 case 'first': case 'last':
 				if (!empty($v)) {
-					$cmd .= " --$k=$v";
+					$args[] = "--$k=$v";
 					$limit = false;
 				}
 				break;
 			 case 'time_format':
-				$cmd .= ' --' . str_replace('_', '-', $k) . '=' . $v;
+				$args[] = '--' . str_replace('_', '-', $k) . '=' . $v;
 				break;
 			 case 'host':
-				$cmd .= " --host='" . join("' --host='", $v) . "'";
+				foreach($v as $h) {
+					$args[] = "--host=$h";
+				}
 				break;
 			 case 'service':
-				$cmd .= " --service='" . join("' --service='", $v) . "'";
+				foreach($v as $s) {
+					$args []= "--service=$s";
+				}
 				break;
 			 default:
 				break;
 			}
 		}
 		if (!empty($options['host_state_options'])) {
-			$cmd .= ' --host-states=' . join(array_keys($options['host_state_options']));
+			$args[] = '--host-states='.implode(array_keys($options['host_state_options']));
 		}
 		if (!empty($options['service_state_options'])) {
-			$cmd .= ' --service-states=' . join(array_keys($options['service_state_options']));
+			$args[] = '--service-states='.implode(array_keys($options['service_state_options']));
 		}
 
 		if (empty($options['parse_forward'])) {
-			$cmd .= ' --reverse';
+			$args[] = '--reverse';
 		}
 		# invoke a hard limit in case the user didn't set any.
 		# This will prevent php from exiting with an out-of-memory
 		# error, and will also stop users' browsers from hanging
 		# when trying to load a gargantually large page
 		if (empty($options['limit']) && $limit !== false) {
-			$cmd .= ' --limit=' . $limit;
+			$args[] = '--limit='.$limit;
 		}
 
-		# Add the proper image url.
-		$cmd .= " --image-url=" . url::base(false) .
+		$args[] = "--image-url=" . url::base(false) .
 			'application/views/icons/x16/';
 
 		$resource = ObjectPool_Model::pool('status')->all()->mayi_resource();
 		if (!op5mayi::instance()->run($resource.':read.showlog')) {
-			$cmd .= ' --hide-process --hide-commands ';
+			$args[] = '--hide-process';
+			$args[] = '--hide-commands';
 		}
 
-		$cmd .= ' --restrict-objects';
+		$args[] = '--restrict-objects';
 
-		$cmd .= " --html";
+		$args[] = "--html";
 
 		$descriptorspec = array(
 			0 => array('pipe', 'r'),
@@ -94,37 +119,21 @@ class showlog
 			2 => array('pipe', 'a'),
 		);
 
-		$process = proc_open($cmd, $descriptorspec, $pipes);
+		$escaped_cmd = implode(' ', array_map('escapeshellarg', $args));
+		$process = proc_open($escaped_cmd, $descriptorspec, $pipes);
 		if (!is_resource($process)) {
 			echo "Couldn't run showlog binary";
 			return;
 		}
-		$pool = new HostPool_Model();
-		$set = $pool->all();
-		if(!op5mayi::instance()->run($set->mayi_resource().":read.showlog", array(), $messages)) {
-			echo "<p>Not enough rights for viewing showlog for hosts</p>\n";
-			if($messages) {
-				echo implode("<br />", $messages);
-			}
-			return;
-		}
 		$hosts = array();
-		foreach ($set->it(array('name')) as $obj) {
+		foreach ($host_set->it(array('name')) as $obj) {
 			$hosts[$obj->get_name()] = $obj->get_name();
 		}
 		fwrite($pipes[0], implode(';', $hosts));
 		fwrite($pipes[0], "\n");
-		$pool = new ServicePool_Model();
-		$set = $pool->all();
-		if(!op5mayi::instance()->run($set->mayi_resource().":read.showlog", array(), $messages)) {
-			echo "<p>Not enough rights for viewing showlog for services</p>\n";
-			if($messages) {
-				echo implode("<br />", $messages);
-			}
-			return;
-		}
+
 		$svc = array();
-		foreach ($set->it(array('host_name', 'description')) as $obj) {
+		foreach ($service_set->it(array('host_name', 'description')) as $obj) {
 			$hname = $obj->get_host()->get_name();
 			if (!array_key_exists($hname, $hosts)) {
 				$svc[] = $hname;
@@ -134,16 +143,29 @@ class showlog
 		fwrite($pipes[0], implode(';', $svc));
 
 		fclose($pipes[0]);
+		$empty_result = true;
 		while (!feof($pipes[1])) {
-			echo fgets($pipes[1], 1024);
+			$line = fgets($pipes[1], 1024);
+			if($empty_result && strlen($line) > 0) {
+				// This might be a very large loop,
+				// check the simple boolean value
+				// instead of executing a function
+				// for each run
+				$empty_result = false;
+			}
+			echo $line;
+
 		}
 		fclose($pipes[1]);
 		proc_close($process);
+		if($empty_result) {
+			echo "We found no log messages for your selected options.";
+		}
 	}
 
 	/**
-	*	Get path to showlog executable
-	*/
+ 	 * Get path to showlog executable
+	 */
 	public static function get_path()
 	{
 		$showlog = Kohana::config('reports.showlog_path');
