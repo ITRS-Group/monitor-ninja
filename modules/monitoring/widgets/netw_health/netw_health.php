@@ -36,21 +36,22 @@ EOC;
 	public function __construct(Widget_Model $model)
 	{
 		parent::__construct($model);
+		$settings = $this->model->get_setting();
 
 		$this->health_warning_percentage =
-		isset($this->model->setting['health_warning_percentage'])
-		? $this->model->setting['health_warning_percentage']
-		: $this->health_warning_percentage;
+			isset($settings['health_warning_percentage'])
+				? $settings['health_warning_percentage']
+				: $this->health_warning_percentage;
 
 		$this->health_critical_percentage =
-		isset($this->model->setting['health_critical_percentage'])
-		? $this->model->setting['health_critical_percentage']
-		: $this->health_critical_percentage;
+			isset($settings['health_critical_percentage'])
+				? $settings['health_critical_percentage']
+				: $this->health_critical_percentage;
 
 		$this->visible_precision =
-		isset($this->model->setting['visible_precision'])
-		? $this->model->setting['visible_precision']
-		: $this->visible_precision;
+			isset($settings['visible_precision'])
+				? $settings['visible_precision']
+				: $this->visible_precision;
 /* Remove this configuration for now... due to the awfulness of the
  * configuration interface, this shouldn't be nessecary to support in the
  * future.

@@ -45,27 +45,28 @@ class bignumber_Widget extends widget_Base {
 	 */
 	public function __construct(Widget_Model $widget_model) {
 		parent::__construct($widget_model);
+		$settings = $this->model->get_setting();
 
-		if(isset($this->model->setting['main_filter']))
-			$this->main_filter = $this->model->setting['main_filter'];
+		if (isset($settings['main_filter']))
+			$this->main_filter = $settings['main_filter'];
 
-		if(isset($this->model->setting['selection_filter']))
-			$this->selection_filter = $this->model->setting['selection_filter'];
+		if (isset($settings['selection_filter']))
+			$this->selection_filter = $settings['selection_filter'];
 
-		if(isset($this->model->setting['display_type']))
-			$this->display_type = $this->model->setting['display_type'];
+		if (isset($settings['display_type']))
+			$this->display_type = $settings['display_type'];
 
-		if(isset($this->model->setting['threshold_type']))
-			$this->threshold_type = $this->model->setting['threshold_type'];
+		if (isset($settings['threshold_type']))
+			$this->threshold_type = $settings['threshold_type'];
 
-		if(isset($this->model->setting['reverse_threshold']))
-			$this->reverse_threshold = $this->model->setting['reverse_threshold'];
+		if (isset($settings['reverse_threshold']))
+			$this->reverse_threshold = $settings['reverse_threshold'];
 
-		if(isset($this->model->setting['threshold_warn']))
-			$this->threshold_warn = $this->model->setting['threshold_warn'];
+		if (isset($settings['threshold_warn']))
+			$this->threshold_warn = $settings['threshold_warn'];
 
-		if(isset($this->model->setting['threshold_crit']))
-			$this->threshold_crit = $this->model->setting['threshold_crit'];
+		if (isset($settings['threshold_crit']))
+			$this->threshold_crit = $settings['threshold_crit'];
 	}
 
 	/**
