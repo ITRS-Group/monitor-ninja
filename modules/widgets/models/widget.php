@@ -67,11 +67,16 @@ class Widget_Model extends Object_Model {
 			if($path !== false)
 				break;
 		}
-		if($path === false || substr($path,0,strlen(DOCROOT)) != DOCROOT) {
+		if($path === false) {
 			throw new Exception("Widget type '" . $this->get_name() . "' does not seem to be installed.");
 		}
 		// Remove DOCROOT and widget source file name from the path, to identify the URL Prefix for files in widget
-		$this->widget_path_cache = dirname(substr($path, strlen(DOCROOT))) . "/";
+		// But allow for absolute paths if outside of DOCROOT, to make widgets testable
+		if(substr($path,0,strlen(DOCROOT)) == DOCROOT) {
+			$path = substr($path, strlen(DOCROOT));
+		}
+
+		$this->widget_path_cache = dirname($path) . '/';
 		return $this->widget_path_cache;
 	}
 
