@@ -12,12 +12,34 @@ class bignumber_Widget extends widget_Base {
 	/**
 	 * Filter for current objects
 	 */
-	private $main_filter = '[hosts] all';
+	private $main_filter_id = -200;
 
 	/**
 	 * Filter for which objects are "selected"
 	 */
-	private $selection_filter = '[hosts] state = 0';
+	private $selection_filter_id = -150;
+
+	/**
+	 * Some filters to make up for empty installations
+	 */
+	private $hardcoded_filters = array(
+		-200 => array(
+			'name' => 'All hosts',
+			'filter' => '[hosts] all'
+		),
+		-150 => array(
+			'name' => 'OK hosts',
+			'filter' => '[hosts] state = 0 and has_been_checked = 1'
+		),
+		-100 => array(
+			'name' => 'All services',
+			'filter' => '[services] all'
+		),
+		-50 => array(
+			'name' => 'OK services',
+			'filter' => '[services] state = 0 and has_been_checked = 1'
+		)
+	);
 
 	/**
 	 * Display as percent
@@ -25,9 +47,14 @@ class bignumber_Widget extends widget_Base {
 	private $display_type = false;
 
 	/**
+	 * Perform state calculation
+	 */
+	private $threshold_onoff = true;
+
+	/**
 	 * type of threshold
 	 */
-	private $threshold_type = 'no_thresholds';
+	private $threshold_type = 'lower_than';
 
 	/**
 	 * Threshold for warning (orange)
@@ -47,11 +74,11 @@ class bignumber_Widget extends widget_Base {
 		parent::__construct($widget_model);
 		$settings = $this->model->get_setting();
 
-		if (isset($settings['main_filter']))
-			$this->main_filter = $settings['main_filter'];
+		if (isset($settings['main_filter_id']))
+			$this->main_filter_id = $settings['main_filter_id'];
 
-		if (isset($settings['selection_filter']))
-			$this->selection_filter = $settings['selection_filter'];
+		if (isset($settings['selection_filter_id']))
+			$this->selection_filter_id = $settings['selection_filter_id'];
 
 		if (isset($settings['display_type']))
 			$this->display_type = $settings['display_type'];
@@ -61,6 +88,9 @@ class bignumber_Widget extends widget_Base {
 
 		if (isset($settings['reverse_threshold']))
 			$this->reverse_threshold = $settings['reverse_threshold'];
+
+		if (isset($settings['threshold_onoff']))
+			$this->threshold_onoff = $settings['threshold_onoff'];
 
 		if (isset($settings['threshold_warn']))
 			$this->threshold_warn = $settings['threshold_warn'];
@@ -77,12 +107,15 @@ class bignumber_Widget extends widget_Base {
 	public function get_metadata() {
 		return array_merge(parent::get_metadata(), array(
 			'friendly_name' => 'Big numbers',
-			'css' => array('style.css')
+			'css' => array('style.css'),
+			'js' => array('bignumber.js'),
 		));
 	}
 
 	protected function get_suggested_title () {
-		$set = ObjectPool_Model::get_by_query($this->main_filter);
+		// TODO maybe change to the main filter's title? or the
+		// selection, or a mix.
+		$set = $this->get_set_by_filter_id($this->main_filter_id);
 		return ucfirst($set->get_table());
 	}
 
@@ -97,125 +130,167 @@ class bignumber_Widget extends widget_Base {
 		$this->duplicatable = false;
 	}
 
+	public function option_groups() {
+		return array(
+			'option_groups' => array(
+				'main_filter_id' => 'SHOW',
+				'selection_filter_id' => 'SHOW',
+				'display_type' => 'SHOW',
+				'threshold_onoff' => 'SHOW STATUS',
+				'threshold_type' => 'SHOW STATUS',
+				'threshold_warn' => 'SHOW STATUS',
+				'threshold_crit' => 'SHOW STATUS',
+			),
+			'classes' => array(
+				'SHOW STATUS' => array(
+					'can_be_toggled'
+				)
+			)
+		);
+	}
+
 	/**
 	 * Load the options for this widget.
 	 */
 	public function options() {
+		$all_filters = array();
+		foreach ($this->hardcoded_filters as $id => $filter) {
+			$all_filters[$id] = $filter['name'];
+		}
+
+		$saved_filters = array();
+		foreach(SavedFilterPool_Model::all()->it(false,
+			array('filter_table ASC')) as $filter) {
+			$all_filters[$filter->get_id()] = $filter->get_filter_name();
+		}
+
 		$options = parent::options();
-		$options[] = new option($this->model->get_name(), 'main_filter', 'Filter', 'textarea', array(), $this->main_filter);
-		$options[] = new option($this->model->get_name(), 'selection_filter', 'Selection Filter', 'textarea', array(), $this->selection_filter);
-		$options[] = new option($this->model->get_name(), 'display_type', 'Display as', 'dropdown', array(
+
+		$show_filter = new option($this->model->get_name(), 'main_filter_id', 'Show filter', 'dropdown', array('options' => $all_filters), $this->main_filter_id);
+		$show_filter->set_help('bignumber_show_filter', 'tac');
+		$options[] = $show_filter;
+
+		$with_selection = new option($this->model->get_name(), 'selection_filter_id', ' <span class="box-drawing">└</span> With selection', 'dropdown', array('options' => $all_filters), $this->selection_filter_id);
+		$with_selection->set_help('bignumber_with_selection', 'tac');
+		$options[] = $with_selection;
+
+		$options[] = new option($this->model->get_name(), 'display_type', 'Unit of measurement', 'dropdown', array(
 			'options' => array(
-				'number_of_total' => 'Number vs. total',
-				'number_only' => 'Only number',
+				'number_of_total' => 'Fraction',
+				'number_only' => 'Count',
 				'percent' => 'Percentage'
 			)
 		), $this->display_type);
-		$options[] = new option($this->model->get_name(), 'threshold_type', 'Threshold as', 'dropdown', array(
+
+		$threshold_as = new option($this->model->get_name(), 'threshold_type', 'Threshold as', 'dropdown', array(
 			'options' => array(
-				'no_thresholds' => 'No thresholds',
-				'lt_pct' => 'less than (percentage)',
-				'gt_pct' => 'greater than (percentage)',
-				'lt_match' => 'less than (objects matching)',
-				'gt_match' => 'greater than (objects matching)',
-				'lt_left' => 'less than (objects not matching)',
-				'gt_left' => 'greater than (objects not matching)'
+				'lower_than' => 'Lower than',
+				'higher_than' => 'Higher than',
 			)
 		), $this->threshold_type);
-		$options[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold', 'input', array(), $this->threshold_warn);
-		$options[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold', 'input', array(), $this->threshold_crit);
+		$threshold_as->set_help('bignumber_threshold_as', 'tac');
+		$options[] = $threshold_as;
+
+		$options[] = new option($this->model->get_name(), 'threshold_onoff', 'threshold_onoff', 'input', array('type' => 'hidden'), $this->threshold_onoff);
+
+		$options[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold', 'input', array('class' => 'percentage'), $this->threshold_warn);
+
+		$options[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold', 'input', array('class' => 'percentage'), $this->threshold_crit);
+
 		return $options;
+	}
+
+	/**
+	 * @throws Exception if filter id is neither a saved filter nor
+	 * hardcoded.
+	 * @return ObjectSet_Model
+	 */
+	private function get_set_by_filter_id($filter_id) {
+		if($filter_id < 0) {
+			if(!array_key_exists($filter_id, $this->hardcoded_filters)) {
+				throw new Exception("Bad filter given, please reconfigure this widget");
+			}
+			return ObjectPool_Model::get_by_query(
+				$this->hardcoded_filters[$filter_id]['filter']
+			);
+		}
+
+		$saved_filters = SavedFilterPool_Model::all();
+
+		$saved_filter = $saved_filters->reduce_by('id', $filter_id, '=')->one();
+		if(!$saved_filter instanceof SavedFilter_Model) {
+			throw new Exception("Bad filter given, please reconfigure this widget");
+		}
+		return ObjectPool_Model::get_by_query(
+			$saved_filter->get_filter()
+		);
 	}
 
 	/**
 	 * Fetch the data and show the widget
 	 */
 	public function index() {
-		try {
-			$main_set = ObjectPool_Model::get_by_query($this->main_filter);
-			$selection_set = ObjectPool_Model::get_by_query($this->selection_filter);
-			$query = $main_set->intersect($selection_set)->get_query();
-
-			$pool = $main_set->class_pool();
-			$all_set = $pool::all();
-
-			$counts = $main_set->stats(array(
-				'all' => $all_set,
-				'selection' => $selection_set
-			));
-
-			switch($this->display_type) {
-				case 'percent':
-					$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
-					break;
-				case 'number_only':
-					$display_text = sprintf("%d", $counts['selection']);
-					break;
-				case 'number_of_total':
-				default:
-					$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
-					break;
-			}
-
-			$threshold_value = $counts['selection'];
-			switch($this->threshold_type) {
-				case 'no_thresholds':
-					break;
-				case 'lt_pct':
-					$th_func = function($val, $stat) {
-						return 100.0 * $stat['selection'] / $stat['all'] < $val;
-					};
-					break;
-				case 'gt_pct':
-					$th_func = function($val, $stat) {
-						return 100.0 * $stat['selection'] / $stat['all'] > $val;
-					};
-					break;
-				case 'lt_match':
-					$th_func = function($val, $stat) {
-						return $stat['selection'] < $val;
-					};
-					break;
-				case 'gt_match':
-					$th_func = function($val, $stat) {
-						return $stat['selection'] > $val;
-					};
-					break;
-				case 'lt_left':
-					$th_func = function($val, $stat) {
-						return $stat['all'] - $stat['selection'] < $val;
-					};
-					break;
-				case 'gt_left':
-					$th_func = function($val, $stat) {
-						return $stat['all'] - $stat['selection'] > $val;
-					};
-					break;
-				default:
-					$th_func = function($val, $stat) {
-						return false; // Default to never a problem
-					};
-			}
-
-			if ($this->threshold_type !== 'no_thresholds') {
-				if($th_func($this->threshold_crit, $counts)) {
-					$state = 'critical';
-				} else if($th_func($this->threshold_warn, $counts)) {
-					$state = 'warning';
-				} else {
-					$state = 'ok';
-				}
-			} else {
-				$state = 'info';
-			}
-
-			require('view.php');
-		} catch( ORMException $e ) {
-			require('view_error.php');
-		} catch( op5LivestatusException $e ) {
-			require('view_error.php');
-		} catch( Exception $e ) {
-			require('view_error.php');
+		$error_msg = "";
+		$main_set = $this->get_set_by_filter_id($this->main_filter_id);
+		$selection_set = $this->get_set_by_filter_id($this->selection_filter_id);
+		if($selection_set->get_table() !== $main_set->get_table()) {
+			$error_msg = sprintf(
+				"You must 'select' from the same table ('%s') your filter is for",
+				$main_set->get_table()
+			);
+			require 'view.php';
+			return;
 		}
+
+		$query = $main_set->intersect($selection_set)->get_query();
+
+		$pool = $main_set->class_pool();
+		$all_set = $pool::all();
+
+		$counts = $main_set->stats(array(
+			'all' => $all_set,
+			'selection' => $selection_set
+		));
+
+		switch($this->display_type) {
+			case 'percent':
+				$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
+				break;
+			case 'number_only':
+				$display_text = sprintf("%d", $counts['selection']);
+				break;
+			case 'number_of_total':
+			default:
+				$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
+				break;
+		}
+
+		$threshold_value = $counts['selection'];
+		switch($this->threshold_type) {
+			case 'lower_than':
+				$th_func = function($val, $stat) {
+					return 100.0 * $stat['selection'] / $stat['all'] < $val;
+				};
+				break;
+			case 'higher_than':
+				$th_func = function($val, $stat) {
+					return 100.0 * $stat['selection'] / $stat['all'] > $val;
+				};
+				break;
+		}
+
+		if ($this->threshold_onoff) {
+			if($th_func($this->threshold_crit, $counts)) {
+				$state = 'critical';
+			} else if($th_func($this->threshold_warn, $counts)) {
+				$state = 'warning';
+			} else {
+				$state = 'ok';
+			}
+		} else {
+			$state = 'info';
+		}
+
+		require('view.php');
 	}
 }

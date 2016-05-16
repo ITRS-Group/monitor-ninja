@@ -23,6 +23,11 @@ form.renderable label {
 	padding: 4px 8px;
 }
 
+form.renderable legend {
+	display: inline-block;
+	font-weight: bold;
+}
+
 form.renderable input[type=submit],
 form.renderable input[type=reset],
 form.renderable button {
@@ -46,6 +51,11 @@ form.renderable button:hover {
 
 form.renderable fieldset {
 	margin: 4px 0;
+}
+
+form.renderable fieldset.disabled label,
+form.renderable fieldset.disabled input {
+	color: #cccccc;
 }
 
 form.renderable input[type="text"],

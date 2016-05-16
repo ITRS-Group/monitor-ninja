@@ -36,6 +36,11 @@ class Tac_Controller extends Ninja_Controller {
 					$this->template->css[] = $metadata['path'] . $stylesheet;
 				}
 			}
+			if(isset($metadata['js'])) {
+				foreach($metadata['js'] as $js) {
+					$this->template->js[] = $metadata['path'] . $js;
+				}
+			}
 			$order++; /* We want the rows in the order they appear. They are already sorted */
 		}
 		return $menu;
@@ -404,5 +409,23 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->value = array(
 			'result' => 'ok',
 		);
+	}
+
+	/**
+	 * Echo a helptext based on input id
+	 *
+	 * @param $id string
+	 */
+	public static function _helptexts($id) {
+		$helptexts = array(
+			'bignumber_show_filter' => _('The full set to operate on, i.e. the total.'),
+			'bignumber_with_selection' => _('The subset to operate on, i.e. part of the total.'),
+			'bignumber_threshold_as' => _('For Lower than:<br>Filter selection percentage is lower than threshold.<br><br>For Higher than:<br>Filter selection percentage is higher than threshold'),
+		);
+		if(array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+			return;
+		}
+		echo sprintf(_("This helptext ('%s') is not translated yet"), $id);
 	}
 }

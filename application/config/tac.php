@@ -25,8 +25,8 @@ $config ['default'] = array (
 						'setting' => array (
 								'title' => 'Services ok',
 								'refresh_interval' => '60',
-								'main_filter' => '[services] all',
-								'selection_filter' => '[services] state = 0 or has_been_checked = 0',
+								'main_filter_id' => -100,
+								'selection_filter_id' => -50,
 								'display_type' => 'number_of_total',
 								'threshold_type' => 'no_thresholds',
 								'threshold_warn' => '0',
@@ -42,8 +42,8 @@ $config ['default'] = array (
 						'setting' => array (
 								'title' => 'Hosts ok',
 								'refresh_interval' => '60',
-								'main_filter' => '[hosts] all',
-								'selection_filter' => '[hosts] state = 0 or has_been_checked = 0',
+								'main_filter_id' => -200,
+								'selection_filter_id' => -150,
 								'display_type' => 'number_of_total',
 								'threshold_type' => 'no_thresholds',
 								'threshold_warn' => '0',

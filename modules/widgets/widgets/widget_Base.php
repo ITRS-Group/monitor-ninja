@@ -99,7 +99,6 @@ class widget_Base {
 	 * @param $model Ninja_Widget_Model ORM Model for a ninja widget
 	 */
 	public function __construct(Widget_Model $model) {
-
 		try {
 			$this->widget_full_path = $model->widget_path();
 		} catch (Exception $e) {
@@ -107,21 +106,11 @@ class widget_Base {
 		}
 
 		$this->model = $model;
-		$option_manifest_path = $this->widget_full_path . '/options.php';
-		if (file_exists($option_manifest_path)) {
-			$this->options_definition = include(
-				$option_manifest_path
-			);
-		}
-
 	}
 
 	/**
 	 * Retrieves this widgets setting value for $key, if not yet configured it
 	 * will fetch the default from the widgets option definition
-	 *
-	 * NOTE: cannot be used if the widget does not yet use an options.php
-	 * definition file.
 	 *
 	 * @param $key string
 	 * @return mixed
@@ -140,7 +129,6 @@ class widget_Base {
 		throw new WidgetSettingException(
 			"Invalid setting $key for widget '" . $this->model->get_name() . "'"
 		);
-
 	}
 
 	/**
@@ -219,6 +207,30 @@ class widget_Base {
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Helps the view layer categorize options into fieldsets with separate
+	 * legends. Not all options needs to be grouped up.
+	 *
+	 * Group your options like this:
+	 * array(
+	 *   'Legend for the Person group' => array(
+	 *     'children' => array(
+	 *       'firstname',
+	 *       'surname',
+	 *     )
+	 *   'Other options' => array(
+	 *     'children' => array(
+	 *       'todays_dinner',
+	 *     )
+	 *   )
+	 * )
+	 *
+	 * @return array
+	 */
+	public function option_groups() {
+		return array();
 	}
 
 	/**
@@ -342,6 +354,7 @@ class widget_Base {
 				'data_attributes' => $data_attributes,
 				'title' => $title,
 				'options' => $options,
+				'option_groups' => $this->option_groups(),
 				'editable' => $editable,
 				'content' => $content,
 				'setting' => $setting
@@ -380,10 +393,9 @@ class widget_Base {
 		switch ($type) {
 		 case 'css':
 			return $files;
-			break;
-		 case 'js': default:
+		 case 'js':
+		 default:
 			return $files;
-			break;
 		}
 	}
 

@@ -110,7 +110,9 @@ class form {
 	 */
 	public static function legend($text = '', $data = NULL, $extra = '')
 	{
-		return '<legend'.form::attributes((array) $data).' '.$extra.'>'.$text.'</legend>'."\n";
+		return '<legend'.form::attributes((array) $data).' '.$extra.'>'
+			.html::specialchars($text)
+			.'</legend>'."\n";
 	}
 
 	/**

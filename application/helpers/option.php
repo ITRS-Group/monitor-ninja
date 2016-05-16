@@ -1,9 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * A helper for widgets to render their custom configuration options
- *
- * NOTE: This is not a helper, it's intended to be instanced, thus model...
+ * A model used by widgets to render their custom configuration options
  */
 class option
 {
@@ -14,6 +12,7 @@ class option
 	private $type; /**< The widget type, ie "input", "checkbox", "textarea", etc - must exist in kohana's form helper */
 	private $args; /**< Arguments to send to the form helper to render it properly */
 	private $default; /**< A default value to fall back on */
+	private $help = array(); /**< Information used for retrieving helptext (a key, controller pair) */
 
 	/**
 	 * Constructor
@@ -32,6 +31,23 @@ class option
 		$this->type = $type;
 		$this->args = $args;
 		$this->default = $default;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function is_hidden() {
+		return $this->type === 'input'
+			&& array_key_exists('type', $this->args)
+			&& $this->args['type'] === 'hidden';
+	}
+
+	/**
+	 * @param $key string
+	 * @param $controller string
+	 */
+	public function set_help($key, $controller) {
+		$this->help = array($key, $controller);
 	}
 
 	/**
@@ -112,5 +128,15 @@ function(widget) {
 	widget.save_custom_val(this.type == 'checkbox' ? this.checked + 0 : $(this).val(), '$this->name', widget.update_display);
 });}
 EOSCRIPT;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function render_help() {
+		if(!$this->help) {
+			return "";
+		}
+		return call_user_func_array(array('help', 'render'), $this->help);
 	}
 }

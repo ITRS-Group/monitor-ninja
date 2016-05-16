@@ -1510,6 +1510,13 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   filter: alpha(opacity=100);
 }
 
+.widget-editbox form.renderable h2 {
+	display: inline-block;
+}
+
+.widget-editbox form.renderable h2 input[type=checkbox] {
+	margin-left: 10px;
+}
 
 .tablestat-widget {
   width: 100%;
