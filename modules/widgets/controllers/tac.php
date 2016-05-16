@@ -43,6 +43,26 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 * Get the select layout menu
+	 *
+	 * exported as a seperate function due to testability
+	 */
+	public function _get_select_layout_menu() {
+		$menu = new Menu_Model();
+
+		$menu->set("Select layout", null, null, 'icon-16 x16-arrow-down');
+		$select_layout_menu = $menu->get("Select layout");
+
+		$img_url = url::base() . '/application/views/icons/layout-132.png';
+		$select_layout_menu->set("jag","#", null, $img_url, array());
+
+		$img_url = url::base() . '/application/views/icons/layout-321.png';
+		$select_layout_menu->set("du","#", null, $img_url, array());
+
+		return $menu;
+	}
+
+	/**
 	 * Get the current dashboard
 	 *
 	 * public, but not exposed (prefix with _) due to testability
@@ -121,6 +141,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->toolbar = $toolbar = new Toolbar_Controller("Tactical Overview");
 
 		$toolbar->menu($this->_get_add_widget_menu());
+		$toolbar->menu($this->_get_select_layout_menu());
 	}
 
 	/**

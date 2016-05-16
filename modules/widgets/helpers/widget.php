@@ -132,6 +132,16 @@ class widget
 		$master->inline_js .= $widget->inline_js;
 	}
 
+	/**
+	 * Converts the layout in $dashboard to a new layout.
+	 * @param Dashboard_Model $dashboard The dashboard to modify.
+	 * @param string          $layout    The new layout.
+	 */
+	public static function convert_layout(Dashboard_Model $dashboard, $layout) {
+		$dashboard->set_layout($layout);
+		$dashboard->save();
+	}
+
 	public function __construct() {
 		throw new Exception("This widget needs to be ported to the new widget API. See ".APPPATH."widgets/PORTING_GUIDE");
 	}

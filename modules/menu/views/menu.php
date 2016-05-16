@@ -28,12 +28,14 @@
 		$format = "";
 		$icon = "";
 
-		$icon = ($menu->get_icon()) ? sprintf('<span class="%s"></span>', htmlentities($menu->get_icon())) : "";
+		$icon = $menu->get_icon();
+		if (substr($icon, -4) == '.png')
+			$icon = sprintf('<img src="%s">', htmlentities($icon));
+		else if ($icon != '')
+			$icon = sprintf('<span class="%s"></span>', htmlentities($menu->get_icon()));
 
 		if (is_null($menu->get_href())) {
-
 			$format = '<a%s>%s<span>%s</span></a>';
-
 		} else {
 
 			$format = '<a%s>%s<span>%s</span></a>';
