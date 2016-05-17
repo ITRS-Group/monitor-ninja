@@ -23,6 +23,14 @@ class Dead_Widget extends widget_Base {
 		echo '<p>This may be a temporary problem. If the problem persists, please contact your administrator.</p>';
 		if($this->exc !== null && $this->exc->getMessage()) {
 			echo '<p>Additional troubleshooting information: <strong>' . get_class($this->exc) . '</strong><em>(' . $this->exc->getMessage() . ')</em></p>';
+			if(!IN_PRODUCTION) {
+				echo "<p>Also displaying full stack trace because <strong>IN_PRODUCTION</strong> is off:</p>";
+				echo "<pre>";
+				// getTraceAsString() displays much less
+				// information, do not use it
+				var_export($this->exc->getTrace());
+				echo "</pre>";
+			}
 		}
 		echo '</div>';
 	}
