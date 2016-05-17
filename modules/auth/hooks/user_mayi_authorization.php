@@ -160,11 +160,11 @@ host_view_{all,contact}         monitor.monitoring.downtimes:read               
 host_view_{all,contact}         monitor.monitoring.downtimes.recurring:read                   true
 host_view_{all,contact}         monitor.monitoring.notifications:read                         true
 
-host_edit_{all,contact}         monitor.monitoring.hosts:{create,update,delete}               true
-host_edit_{all,contact}         monitor.monitoring.comments:{create,update,delete}            true
-host_edit_{all,contact}         monitor.monitoring.downtimes:{create,update,delete}           true
-host_edit_{all,contact}         monitor.monitoring.downtimes.recurring:{create,update,delete} true
-host_edit_{all,contact}         monitor.monitoring.notifications:{create,update,delete}       true
+host_edit_{all,contact}         monitor.monitoring.hosts:{create,update}                      true
+host_edit_{all,contact}         monitor.monitoring.comments:{create,update}                   true
+host_edit_{all,contact}         monitor.monitoring.downtimes:{create,update}                  true
+host_edit_{all,contact}         monitor.monitoring.downtimes.recurring:{create,update}        true
+host_edit_{all,contact}         monitor.monitoring.notifications:{create,update}              true
 
 host_add_delete                 monitor.monitoring.hosts:{create,delete}                      true
 
@@ -182,20 +182,20 @@ service_view_{all,contact}      monitor.monitoring.downtimes:read               
 service_view_{all,contact}      monitor.monitoring.downtimes.recurring:read                   true
 service_view_{all,contact}      monitor.monitoring.notifications:read                         true
 
-service_edit_{all,contact}      monitor.monitoring.services:{create,update,delete}            true
-service_edit_{all,contact}      monitor.monitoring.comments:{create,update,delete}            true
-service_edit_{all,contact}      monitor.monitoring.downtimes:{create,update,delete}           true
-service_edit_{all,contact}      monitor.monitoring.downtimes.recurring:{create,update,delete} true
-service_edit_{all,contact}      monitor.monitoring.notifications:{create,update,delete}       true
+service_edit_{all,contact}      monitor.monitoring.services:{create,update}                   true
+service_edit_{all,contact}      monitor.monitoring.comments:{create,update}                   true
+service_edit_{all,contact}      monitor.monitoring.downtimes:{create,update}                  true
+service_edit_{all,contact}      monitor.monitoring.downtimes.recurring:{create,update}        true
+service_edit_{all,contact}      monitor.monitoring.notifications:{create,update}              true
 
 service_add_delete              monitor.monitoring.services:{create,delete}                   true
 
 hostgroup_view_{all,contact}    monitor.monitoring.hostgroups:read                            true
-hostgroup_edit_{all,contact}    monitor.monitoring.hostgroups:{create,update,delete}          true
+hostgroup_edit_{all,contact}    monitor.monitoring.hostgroups:{create,update}                 true
 hostgroup_add_delete            monitor.monitoring.hostgroups:{create,delete}                 true
 
 servicegroup_view_{all,contact} monitor.monitoring.servicegroups:read                         true
-servicegroup_edit_{all,contact} monitor.monitoring.servicegroups:{create,update,delete}       true
+servicegroup_edit_{all,contact} monitor.monitoring.servicegroups:{create,update}              true
 servicegroup_add_delete         monitor.monitoring.servicegroups:{create,delete}              true
 
 contact_view_{all,contact}      monitor.monitoring.contacts:read                              true
@@ -363,7 +363,6 @@ EOF;
 			if($negate)
 				$user_access = !$user_access;
 
-
 			if(op5MayI::is_subset_exploded($action_exploded, $action_pattern)) {
 				if(!$acl_allow || !$user_access) {
 					/*Display access right in the same manner as the "Grouprights" page */
@@ -373,6 +372,7 @@ EOF;
 					$is_allowed = is_null($is_allowed) ? $acl_allow : $is_allowed;
 			}
 		}
+
 		if (is_null($is_allowed)) {
 			/* We found no explicit authpoint, and no default access for this action */
 			/* Default to deny */
