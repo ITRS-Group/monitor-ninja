@@ -127,11 +127,9 @@ class widget_Base {
 	 * @return mixed
 	 */
 	protected function get_setting ($key) {
-
-		if (isset($this->model->setting[$key])) {
-			return $this->model->setting[$key];
-		} elseif (isset($this->options_definition[$key], $this->options_definition[$key]['default'])) {
-			return $this->options_definition[$key]["default"];
+		$setting = $this->model->get_setting();
+		if (isset($setting[$key])) {
+			return $setting[$key];
 		}
 
 		op5log::instance('ninja')->log(
@@ -260,38 +258,7 @@ class widget_Base {
 		$refresh->should_render_js(false);
 		$options['refresh'] = $refresh;
 
-		if (!isset($this->options_definition))
-			return $options;
-
-		foreach ($this->options_definition as $key => $def) {
-
-			$attr = array();
-			$label = $key;
-			$default = '';
-
-			if (is_string($def)) $type = $def;
-			elseif (is_array($def)) {
-
-
-				$type = $def['type'];
-				$label = isset($def['label']) ? $def['label'] : $key;
-				$default = isset($def['default']) ? $def['default'] : '';
-
-				if ($type === 'dropdown') {
-					$attr['options'] = isset($def['options']) ? $def['options'] : array();
-				}
-			}
-
-			$options[] = new option(
-				$this->model->get_name(),
-				$key, $label, $type, $attr, $default
-			);
-
-		}
-
 		return $options;
-
-
 	}
 
 	/**
