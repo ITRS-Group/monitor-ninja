@@ -20,18 +20,17 @@ class Tac_Controller extends Ninja_Controller {
 	public function _get_add_widget_menu() {
 		$menu = new Menu_Model();
 
-		$menu->set("Add widget", null, null, 'icon-16 x16-sign-add');
+		$menu->set("Add widget", null, null);
 		$add_widget_menu = $menu->get("Add widget");
-
 
 		/* Fill with metadata, and build menu */
 		$order = 0;
 		foreach(Dashboard_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
 			$add_widget_menu->set($metadata['friendly_name'], "#", $order, null,
-					array(
-							'data-widget-name' => $name,
-							'class' => "menuitem_widget_add"
-					));
+				array(
+					'data-widget-name' => $name,
+					'class' => "menuitem_widget_add"
+				));
 			if(isset($metadata['css'])) {
 				foreach($metadata['css'] as $stylesheet) {
 					$this->template->css[] = $metadata['path'] . $stylesheet;
@@ -44,20 +43,30 @@ class Tac_Controller extends Ninja_Controller {
 
 	/**
 	 * Get the select layout menu
-	 *
-	 * exported as a seperate function due to testability
 	 */
-	public function _get_select_layout_menu() {
+	private function get_select_layout_menu() {
 		$menu = new Menu_Model();
 
-		$menu->set("Select layout", null, null, 'icon-16 x16-arrow-down');
+		$menu->set("Select layout", null, null);
 		$select_layout_menu = $menu->get("Select layout");
 
+		$layout = $this->_current_dashboard()->get_layout();
+
 		$img_url = url::base() . '/application/views/icons/layout-132.png';
-		$select_layout_menu->set("jag","#", null, $img_url, array());
+		$name = "1,3,2";
+		$select_layout_menu->set($name, "#", null, $img_url, array(
+			'data-layout-name' => $name,
+			'class' => "menuitem_change_layout",
+			'selected' => $layout == $name ? 'yes' : 'no'
+		));
 
 		$img_url = url::base() . '/application/views/icons/layout-321.png';
-		$select_layout_menu->set("du","#", null, $img_url, array());
+		$name = "3,2,1";
+		$select_layout_menu->set($name, "#", null, $img_url, array(
+			'data-layout-name' => $name,
+			'class' => "menuitem_change_layout",
+			'selected' => $layout == $name ? 'yes' : 'no'
+		));
 
 		return $menu;
 	}
@@ -90,13 +99,19 @@ class Tac_Controller extends Ninja_Controller {
 	 */
 	public function index()	{
 		$this->_verify_access('ninja.tac:read.tac');
+
+		$dashboard = $this->_current_dashboard();
+
+		$layout = $this->input->post('layout');
+		if ($layout !== null) {
+			widget::convert_layout($dashboard, $layout);
+		}
+
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
 		$this->template->js[] = 'modules/widgets/views/js/tac.js';
 		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
-
-		$dashboard = $this->_current_dashboard();
 
 		/* Build storage for placeholders */
 		$tac_column_count_str = $dashboard->get_layout();
@@ -141,7 +156,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->toolbar = $toolbar = new Toolbar_Controller("Tactical Overview");
 
 		$toolbar->menu($this->_get_add_widget_menu());
-		$toolbar->menu($this->_get_select_layout_menu());
+		$toolbar->image_menu($this->get_select_layout_menu());
 	}
 
 	/**
@@ -179,18 +194,10 @@ class Tac_Controller extends Ninja_Controller {
 					->intersect(Dashboard_WidgetPool_Model::set_by_key($widget_model_id))
 					->one();
 
-				if ($widget_model === null) {
-					$this->template = new View('json');
-					$this->template->success = false;
-					$this->template->value = array('result' => 'Unknown widget');
-					return;
+				if ($widget_model) {
+					$widget_model->set_position(array('c' => $i, 'p' => $j));
+					$widget_model->save();
 				}
-
-				// c = dashboard cell, p = widget position (within cell)
-				$widget_model->set_position(
-					array('c' => $i, 'p' => $j)
-				);
-				$widget_model->save();
 			}
 		}
 		$this->template = new View('json');

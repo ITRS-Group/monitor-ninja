@@ -86,6 +86,16 @@ class Toolbar_Controller extends Ninja_Controller {
 
 	}
 
+	public function image_menu(Menu_Model $menu, array $settings = array()) {
+		$view = new View('image_menu', array_merge(array(
+			"menu"        => $menu,
+			"class"       => "menu main-toolbar-menu",
+			"orientation" => "right"
+		), $settings));
+
+		$this->menus[] = $view->render();
+	}
+
 	private function get_button_html () {
 
 		$h = "";

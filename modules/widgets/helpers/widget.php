@@ -138,8 +138,29 @@ class widget
 	 * @param string          $layout    The new layout.
 	 */
 	public static function convert_layout(Dashboard_Model $dashboard, $layout) {
+		if ($dashboard->get_layout() === $layout) return;
+
 		$dashboard->set_layout($layout);
 		$dashboard->save();
+
+		// Only changes back and forth between layout 1,3,2 and 3,2,1.
+		$widgets = $dashboard->get_dashboard_widgets_set();
+		foreach ($widgets as $w) {
+			$pos = $w->get_position();
+
+			if ($layout === '1,3,2') {// 3,2,1 => 1,3,2
+				$w->set_position(array(
+					'c' => ($pos['c'] + 1) % 6,
+					'p' => $pos['p']
+				));
+			} else { // 1,3,2 => 3,2,1
+				$w->set_position(array(
+					'c' => $pos['c'] == 0 ? 5 : $pos['c'] - 1,
+					'p' => $pos['p']
+				));
+			}
+			$w->save();
+		}
 	}
 
 	public function __construct() {

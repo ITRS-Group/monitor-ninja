@@ -102,7 +102,6 @@ $(function() {
 			onHide : function(widget) {
 			},
 			onAdd : function(w, place) {
-				new widget(w.data('key'));
 			}
 		}
 	});
@@ -134,6 +133,27 @@ $(function() {
 				}
 			});
 			return false;
+		}
+	);
+
+	$('body').on(
+		"click",
+		".menuitem_change_layout",
+		function(e) {
+			e.preventDefault();
+
+			// Post data about layout change.
+			$('<form>')
+				.hide()
+				.attr({method: 'post', action: ''})
+				.append($('<input>').attr(
+					{type: 'hidden', name: 'csrf_token', value: _csrf_token}
+				))
+				.append($('<input>').attr(
+					{type: 'hidden', name: 'layout', value: $(this).attr('data-layout-name')}
+				))
+				.appendTo('body')
+				.submit();
 		}
 	);
 });

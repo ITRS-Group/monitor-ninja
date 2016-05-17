@@ -115,17 +115,17 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 
 		// Positions will remain the same as the number of cells is equal.
 		$w1_pos = $widgets_by_id[1]->get_position();
-		$this->assertSame(array('c' => 0, 'p' => 0), $w1_pos);
+		$this->assertSame(array('c' => 1, 'p' => 0), $w1_pos);
 		$w2_pos = $widgets_by_id[2]->get_position();
-		$this->assertSame(array('c' => 1, 'p' => 0), $w2_pos);
+		$this->assertSame(array('c' => 2, 'p' => 0), $w2_pos);
 		$w3_pos = $widgets_by_id[3]->get_position();
-		$this->assertSame(array('c' => 2, 'p' => 0), $w3_pos);
+		$this->assertSame(array('c' => 3, 'p' => 0), $w3_pos);
 		$w4_pos = $widgets_by_id[4]->get_position();
-		$this->assertSame(array('c' => 3, 'p' => 0), $w4_pos);
+		$this->assertSame(array('c' => 4, 'p' => 0), $w4_pos);
 		$w5_pos = $widgets_by_id[5]->get_position();
-		$this->assertSame(array('c' => 4, 'p' => 0), $w5_pos);
+		$this->assertSame(array('c' => 5, 'p' => 0), $w5_pos);
 		$w6_pos = $widgets_by_id[6]->get_position();
-		$this->assertSame(array('c' => 5, 'p' => 0), $w6_pos);
+		$this->assertSame(array('c' => 0, 'p' => 0), $w6_pos);
 	}
 
 	public function test_convert_132_to_321() {
@@ -148,16 +148,16 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 
 		// Positions will remain the same as the number of cells is equal.
 		$w1_pos = $widgets_by_id[1]->get_position();
-		$this->assertSame(array('c' => 0, 'p' => 0), $w1_pos);
+		$this->assertSame(array('c' => 5, 'p' => 0), $w1_pos);
 		$w2_pos = $widgets_by_id[2]->get_position();
-		$this->assertSame(array('c' => 1, 'p' => 0), $w2_pos);
+		$this->assertSame(array('c' => 0, 'p' => 0), $w2_pos);
 		$w3_pos = $widgets_by_id[3]->get_position();
-		$this->assertSame(array('c' => 2, 'p' => 0), $w3_pos);
+		$this->assertSame(array('c' => 1, 'p' => 0), $w3_pos);
 		$w4_pos = $widgets_by_id[4]->get_position();
-		$this->assertSame(array('c' => 3, 'p' => 0), $w4_pos);
+		$this->assertSame(array('c' => 2, 'p' => 0), $w4_pos);
 		$w5_pos = $widgets_by_id[5]->get_position();
-		$this->assertSame(array('c' => 4, 'p' => 0), $w5_pos);
+		$this->assertSame(array('c' => 3, 'p' => 0), $w5_pos);
 		$w6_pos = $widgets_by_id[6]->get_position();
-		$this->assertSame(array('c' => 5, 'p' => 0), $w6_pos);
+		$this->assertSame(array('c' => 4, 'p' => 0), $w6_pos);
 	}
 }

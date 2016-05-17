@@ -849,6 +849,14 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   z-index: 4;
 }
 
+.image-menu ul li ul {
+  width: 150px !important;
+}
+
+.image-menu ul li ul li {
+  float: right !important;
+}
+
 .menu ul li ul li {
   display: block;
   position: relative;
@@ -885,6 +893,10 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   border: none;
   display: block;
   padding: 6px 0 6px 8px;
+}
+
+.image-menu ul li ul li > a, .menu ul li ul li > span {
+  padding: 6px !important;
 }
 
 .menu ul li ul li > a span, .menu ul li ul li > span span {
@@ -1279,6 +1291,14 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   border-left: 1px solid #dddddd;
   padding: 2px 2px;
   margin: 0 0;
+}
+
+.main-toolbar .main-toolbar-menu > ul > li:after {
+	float: right;
+	display: block;
+	font-size: 0.85em;
+	content: "▼";
+	margin-top: 0.4em;
 }
 
 .main-toolbar .main-toolbar-menu > ul > li > a {
