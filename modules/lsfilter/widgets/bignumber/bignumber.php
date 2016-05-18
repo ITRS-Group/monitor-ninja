@@ -130,27 +130,10 @@ class bignumber_Widget extends widget_Base {
 		$this->duplicatable = false;
 	}
 
-	public function option_groups() {
-		return array(
-			'option_groups' => array(
-				'main_filter_id' => 'SHOW',
-				'selection_filter_id' => 'SHOW',
-				'display_type' => 'SHOW',
-				'threshold_onoff' => 'SHOW STATUS',
-				'threshold_type' => 'SHOW STATUS',
-				'threshold_warn' => 'SHOW STATUS',
-				'threshold_crit' => 'SHOW STATUS',
-			),
-			'classes' => array(
-				'SHOW STATUS' => array(
-					'can_be_toggled'
-				)
-			)
-		);
-	}
-
 	/**
 	 * Load the options for this widget.
+	 *
+	 * @return array of option and Fieldset_Model
 	 */
 	public function options() {
 		$all_filters = array();
@@ -164,17 +147,16 @@ class bignumber_Widget extends widget_Base {
 			$all_filters[$filter->get_id()] = $filter->get_filter_name();
 		}
 
-		$options = parent::options();
-
+		$show = new Fieldset_Model('SHOW');
 		$show_filter = new option($this->model->get_name(), 'main_filter_id', 'Show filter', 'dropdown', array('options' => $all_filters), $this->main_filter_id);
 		$show_filter->set_help('bignumber_show_filter', 'tac');
-		$options[] = $show_filter;
+		$show[] = $show_filter;
 
 		$with_selection = new option($this->model->get_name(), 'selection_filter_id', ' <span class="box-drawing">└</span> With selection', 'dropdown', array('options' => $all_filters), $this->selection_filter_id);
 		$with_selection->set_help('bignumber_with_selection', 'tac');
-		$options[] = $with_selection;
+		$show[] = $with_selection;
 
-		$options[] = new option($this->model->get_name(), 'display_type', 'Unit of measurement', 'dropdown', array(
+		$show[] = new option($this->model->get_name(), 'display_type', 'Unit of measurement', 'dropdown', array(
 			'options' => array(
 				'number_of_total' => 'Fraction',
 				'number_only' => 'Count',
@@ -182,6 +164,10 @@ class bignumber_Widget extends widget_Base {
 			)
 		), $this->display_type);
 
+		$options = parent::options();
+		$options[] = $show;
+
+		$show_status = new Fieldset_Model('SHOW STATUS', array('class' => 'can_be_toggled'));
 		$threshold_as = new option($this->model->get_name(), 'threshold_type', 'Threshold as', 'dropdown', array(
 			'options' => array(
 				'lower_than' => 'Lower than',
@@ -189,13 +175,13 @@ class bignumber_Widget extends widget_Base {
 			)
 		), $this->threshold_type);
 		$threshold_as->set_help('bignumber_threshold_as', 'tac');
-		$options[] = $threshold_as;
+		$show_status[] = $threshold_as;
 
-		$options[] = new option($this->model->get_name(), 'threshold_onoff', 'threshold_onoff', 'input', array('type' => 'hidden'), $this->threshold_onoff);
+		$show_status[] = new option($this->model->get_name(), 'threshold_onoff', 'threshold_onoff', 'input', array('type' => 'hidden'), $this->threshold_onoff);
+		$show_status[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold', 'input', array('class' => 'percentage'), $this->threshold_warn);
+		$show_status[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold', 'input', array('class' => 'percentage'), $this->threshold_crit);
 
-		$options[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold', 'input', array('class' => 'percentage'), $this->threshold_warn);
-
-		$options[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold', 'input', array('class' => 'percentage'), $this->threshold_crit);
+		$options[] = $show_status;
 
 		return $options;
 	}

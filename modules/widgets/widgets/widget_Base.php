@@ -174,8 +174,13 @@ class widget_Base {
 	public function get_arguments() {
 		$arguments = array();
 		foreach ($this->options() as $option) {
-			if (!is_string($option))
+			if ($option instanceof option) {
 				$arguments[$option->name] = $option->value($this->model->get_setting());
+			} elseif($option instanceof Fieldset_Model) {
+				foreach($option as $opt) {
+					$arguments[$opt->name] = $opt->value($this->model->get_setting());
+				}
+			}
 		}
 		if (is_array($this->model->get_setting())) {
 			foreach ($this->model->get_setting() as $opt => $val) {
@@ -210,30 +215,6 @@ class widget_Base {
 	}
 
 	/**
-	 * Helps the view layer categorize options into fieldsets with separate
-	 * legends. Not all options needs to be grouped up.
-	 *
-	 * Group your options like this:
-	 * array(
-	 *   'Legend for the Person group' => array(
-	 *     'children' => array(
-	 *       'firstname',
-	 *       'surname',
-	 *     )
-	 *   'Other options' => array(
-	 *     'children' => array(
-	 *       'todays_dinner',
-	 *     )
-	 *   )
-	 * )
-	 *
-	 * @return array
-	 */
-	public function option_groups() {
-		return array();
-	}
-
-	/**
 	 *
 	 * Return the list of options to use in this widget. This should be an
 	 * array of option instances, or - if you want to do more manual work -
@@ -241,7 +222,7 @@ class widget_Base {
 	 *
 	 * Actual widgets typically want to extend this method.
 	 *
-	 * @return array
+	 * @return array of option and Fieldset_Model
 	 */
 	public function options () {
 
@@ -354,7 +335,6 @@ class widget_Base {
 				'data_attributes' => $data_attributes,
 				'title' => $title,
 				'options' => $options,
-				'option_groups' => $this->option_groups(),
 				'editable' => $editable,
 				'content' => $content,
 				'setting' => $setting

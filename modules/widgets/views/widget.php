@@ -13,75 +13,51 @@
 				'onsubmit' => 'return false;'
 			));
 
-			$continue_fieldset = false;
 			foreach ($options as $option) {
-				if(
-					$option_groups
-					&& isset($option_groups['option_groups'])
-					&& array_key_exists(
-						$option->name,
-						$option_groups['option_groups']
-					)
-				) {
-					if($continue_fieldset ==
-						$option_groups['option_groups'][$option->name]) {
-						// do nothing, we're already in
-						// the correct fieldset
-					} else {
-						// let's add a fancy legend
-						echo "</fieldset>";
-						$continue_fieldset =
-							$option_groups['option_groups'][$option->name];
-						$fieldset_classes = array();
+				if ($option instanceof Fieldset_Model) {
+					$fieldset = $option; // less confusing, I hope
+					if(count($fieldset)) {
+						$attributes = $fieldset->get_attributes();
+						echo form::open_fieldset($attributes);
 
-						if(
-							array_key_exists('classes', $option_groups)
-							&& array_key_exists($continue_fieldset, $option_groups['classes'])
-							&& is_array($option_groups['classes'][$continue_fieldset])
+						echo "<h2><label>".html::specialchars($fieldset->get_legend());
+						if(array_key_exists('class', $attributes)
+							&& preg_match('/\bcan_be_toggled\b/', $attributes['class'])
 						) {
-							$fieldset_classes = $option_groups['classes'][$continue_fieldset];
-						}
-						echo form::open_fieldset(
-							array('class' => implode(" ", $fieldset_classes)));
-						echo "<h2><label>".html::specialchars($continue_fieldset);
-						if(in_array('can_be_toggled', $fieldset_classes, true)) {
 							$toggle = new option('notused', 'toggle_me', 'notused', 'checkbox', array(), 1);
 							echo $toggle->render_widget($key, $setting);
 						}
 						echo "</label></h2>";
-					}
-				} elseif($continue_fieldset !== false) {
-					echo "</fieldset>";
-					echo "<fieldset>";
-				} else {
-					echo "<fieldset>";
-				}
 
-				// wanted output:
-				// label input
-				// label input
-				//
-				// unwanted output:
-				// label input label
-				// input
-				echo "<div>";
-				if ($option instanceof option) {
+						foreach($fieldset as $option) {
+							if($option->is_hidden()) {
+								echo $option->render_widget($key, $setting);
+							} else {
+								echo "<div>";
+								echo $option->render_label($key);
+								echo $option->render_widget($key, $setting);
+								echo $option->render_help();
+								echo "</div>";
+							}
+						}
+						echo "</fieldset>";
+					}
+				} elseif ($option instanceof option) {
 					if($option->is_hidden()) {
 						echo $option->render_widget($key, $setting);
 					} else {
+						echo "<div>";
+						echo "<fieldset>";
 						echo $option->render_label($key);
 						echo $option->render_widget($key, $setting);
 						echo $option->render_help();
+						echo "</fieldset>";
+						echo "</div>";
 					}
 				} elseif (is_string($option)) {
 					echo $option;
 				} else {
 					echo _("Could not render option");
-				}
-				echo "</div>";
-
-				if($continue_fieldset === false) {
-					echo "</fieldset>";
 				}
 			}
 			echo form::close();
