@@ -28,9 +28,9 @@ $config ['default'] = array (
 								'main_filter_id' => -100,
 								'selection_filter_id' => -50,
 								'display_type' => 'number_of_total',
-								'threshold_type' => 'no_thresholds',
-								'threshold_warn' => '0',
-								'threshold_crit' => '0'
+								'threshold_type' => 'lower_than',
+								'threshold_warn' => '95.0',
+								'threshold_crit' => '90.0'
 						),
 						'position' => array (
 								'c' => 1,
@@ -45,9 +45,9 @@ $config ['default'] = array (
 								'main_filter_id' => -200,
 								'selection_filter_id' => -150,
 								'display_type' => 'number_of_total',
-								'threshold_type' => 'no_thresholds',
-								'threshold_warn' => '0',
-								'threshold_crit' => '0'
+								'threshold_type' => 'lower_than',
+								'threshold_warn' => '95.0',
+								'threshold_crit' => '90.0'
 						),
 						'position' => array (
 								'c' => 0,

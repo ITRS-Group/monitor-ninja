@@ -54,8 +54,13 @@ form.renderable fieldset {
 }
 
 form.renderable fieldset.disabled label,
+form.renderable fieldset.disabled select,
 form.renderable fieldset.disabled input {
 	color: #cccccc;
+}
+
+form.renderable fieldset.disabled h2 label {
+	color: inherit;
 }
 
 form.renderable input[type="text"],

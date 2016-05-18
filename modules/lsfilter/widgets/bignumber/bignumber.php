@@ -59,12 +59,12 @@ class bignumber_Widget extends widget_Base {
 	/**
 	 * Threshold for warning (orange)
 	 */
-	private $threshold_warn = 0.0;
+	private $threshold_warn = 95.0;
 
 	/**
 	 * Threshold for critical (red)
 	 */
-	private $threshold_crit = 0.0;
+	private $threshold_crit = 90.0;
 
 	/**
 	 * Constructor. This should be overloaded, to upadte the settings-attribute
@@ -152,7 +152,7 @@ class bignumber_Widget extends widget_Base {
 		$show_filter->set_help('bignumber_show_filter', 'tac');
 		$show[] = $show_filter;
 
-		$with_selection = new option($this->model->get_name(), 'selection_filter_id', ' <span class="box-drawing">└</span> With selection', 'dropdown', array('options' => $all_filters), $this->selection_filter_id);
+		$with_selection = new option($this->model->get_name(), 'selection_filter_id', ' <span class="box-drawing">└─</span> With selection', 'dropdown', array('options' => $all_filters), $this->selection_filter_id);
 		$with_selection->set_help('bignumber_with_selection', 'tac');
 		$show[] = $with_selection;
 

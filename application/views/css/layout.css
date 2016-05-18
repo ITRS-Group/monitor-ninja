@@ -488,13 +488,13 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 }
 
 .center {
-	position: relative;
-	display: block;
-	margin: 0 auto;
-	top: 10%;
-	width: 50%;
-	min-width: 256px;
-	max-width: 512px;
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  top: 10%;
+  width: 50%;
+  min-width: 256px;
+  max-width: 512px;
 }
 
 .center p,
@@ -503,8 +503,8 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 .center h3,
 .center fieldset[type=buttons],
 .center h4 {
-	text-align: center;
-	width: 100%;
+  text-align: center;
+  width: 100%;
 }
 
 .header {
@@ -1511,11 +1511,19 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 }
 
 .widget-editbox form.renderable h2 {
-	display: inline-block;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: -10px;
+  margin-top: 20px;
 }
 
 .widget-editbox form.renderable h2 input[type=checkbox] {
-	margin-left: 10px;
+  margin-left: 10px;
+}
+
+.widget-editbox fieldset a.help-icon {
+  margin-left: 4px;
 }
 
 .tablestat-widget {
@@ -1546,6 +1554,10 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 #backups td img {
   margin: 0 4px;
+}
+
+a.help-icon {
+  border-bottom: none;
 }
 
 span.brand {

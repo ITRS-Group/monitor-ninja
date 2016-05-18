@@ -20,14 +20,14 @@
 						$attributes = $fieldset->get_attributes();
 						echo form::open_fieldset($attributes);
 
-						echo "<h2><label>".html::specialchars($fieldset->get_legend());
+						$rand_id = uniqid('a'); // attributes must start with a letter
+						echo "<h2><label for='notused-toggle_me-".$rand_id."'>".html::specialchars($fieldset->get_legend())."</label></h2>";
 						if(array_key_exists('class', $attributes)
 							&& preg_match('/\bcan_be_toggled\b/', $attributes['class'])
 						) {
 							$toggle = new option('notused', 'toggle_me', 'notused', 'checkbox', array(), 1);
-							echo $toggle->render_widget($key, $setting);
+							echo $toggle->render_widget($rand_id, $setting);
 						}
-						echo "</label></h2>";
 
 						foreach($fieldset as $option) {
 							if($option->is_hidden()) {

@@ -26,6 +26,6 @@ class help
 	{
 		$img_path = url::base(false).'application/views/icons/12x12/help.png';
 		$controller = $controller !== null ? $controller : Router::$controller;
-		return '<a data-popover="help:'.$controller.'.'.$key.'"><img src="'.$img_path.'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
+		return '<a class="help-icon" data-popover="help:'.$controller.'.'.$key.'"><img src="'.$img_path.'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
 	}
 }
