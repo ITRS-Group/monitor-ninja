@@ -54,7 +54,7 @@ class MockLivestatus_FilterCountStats implements MockLivestatus_StatsAggregator 
 	 * Get the result of the aggregator
 	 */
 	public function calculate() {
-		return $count;
+		return $this->count;
 	}
 }
 /**
