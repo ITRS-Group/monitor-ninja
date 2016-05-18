@@ -849,13 +849,28 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   z-index: 4;
 }
 
-.image-menu ul li ul {
-  width: 150px !important;
+.menu.image-menu ul li ul {
+  width: 150px;
 }
 
-.image-menu ul li ul li {
-  float: right !important;
-  border: none !important;
+.menu.image-menu ul li ul li {
+  float: right;
+  border: none;
+}
+
+.menu.image-menu ul li ul li a[selected="yes"] img,
+.menu.image-menu ul li ul li a[selected="yes"] span {
+  padding: 6px;
+  border: 2px solid #00d040;
+}
+
+.menu.image-menu ul li ul li a img,
+.menu.image-menu ul li ul li a span {
+  padding: 8px;
+}
+
+.menu.image-menu ul li ul li > a {
+  padding: 6px;
 }
 
 .menu ul li ul li {
@@ -894,10 +909,6 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   border: none;
   display: block;
   padding: 6px 0 6px 8px;
-}
-
-.image-menu ul li ul li > a, .menu ul li ul li > span {
-  padding: 6px !important;
 }
 
 .menu ul li ul li > a span, .menu ul li ul li > span span {

@@ -104,7 +104,8 @@ class Tac_Controller extends Ninja_Controller {
 
 		$layout = $this->input->post('layout');
 		if ($layout !== null) {
-			widget::convert_layout($dashboard, $layout);
+			$dashboard->set_layout($layout);
+			$dashboard->save();
 		}
 
 		$this->template->content = $this->add_view('tac/index');

@@ -88,4 +88,35 @@ class Dashboard_Model extends BaseDashboard_Model
 			$widget->save();
 		}
 	}
+
+	/**
+	 * Sets layout and converts to a new layout.
+	 * @param $layout string The new layout.
+	 */
+	public function set_layout($layout) {
+		if ($this->get_layout() === $layout) return;
+
+		parent::set_layout($layout);
+
+		// Only changes back and forth between layout 1,3,2 and 3,2,1.
+		$widgets = $this->get_dashboard_widgets_set();
+		foreach ($widgets as $w) {
+			// $pos['c'] is the dashboard cell.
+			// $pos['p'] is the position within the cell.
+			$pos = $w->get_position();
+
+			if ($layout === '1,3,2') { // 3,2,1 => 1,3,2
+				$w->set_position(array(
+					'c' => ($pos['c'] + 1) % 6,
+					'p' => $pos['p']
+				));
+			} else { // 1,3,2 => 3,2,1
+				$w->set_position(array(
+					'c' => ($pos['c'] + 5) % 6,
+					'p' => $pos['p']
+				));
+			}
+			$w->save();
+		}
+	}
 }

@@ -26,13 +26,15 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 		Auth::instance(array('session_key' => false))->force_user(
 			new User_AlwaysAuth_Model()
 		);
+	}
 
+	private function setupDashboard($layout) {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(
 					array(
 						'id' => 1,
-						'layout' => '3,2,1'
+						'layout' => $layout
 					)
 				),
 				'dashboard_widgets' => array(
@@ -98,10 +100,13 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_convert_321_to_132() {
+		$this->setupDashboard('3,2,1');
+
 		$board = DashboardPool_Model::fetch_by_key(1);
 
 		// Convert dashboard and all its widgets to the new layout.
-		widget::convert_layout($board, '1,3,2');
+		$board->set_layout('1,3,2');
+		$board->save();
 
 		// We want to load the dashboard layout from the database.
 		$board = DashboardPool_Model::fetch_by_key(1);
@@ -129,12 +134,12 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_convert_132_to_321() {
+		$this->setupDashboard('1,3,2');
 		$board = DashboardPool_Model::fetch_by_key(1);
-		$board->set_layout('1,3,2');
-		$board->save();
 
 		// Convert dashboard and all its widgets to the new layout.
-		widget::convert_layout($board, '3,2,1');
+		$board->set_layout('3,2,1');
+		$board->save();
 
 		// We want to load the dashboard layout from the database.
 		$board = DashboardPool_Model::fetch_by_key(1);

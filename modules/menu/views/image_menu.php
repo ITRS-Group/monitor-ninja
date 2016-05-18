@@ -23,16 +23,10 @@
 		$attr   = $menu->get_attributes();
 		$icon   = $menu->get_icon();
 
-		if (isset($attr['selected']) && $attr['selected'] === 'yes') {
-			$css = 'padding: 6px; border: 2px solid #00d040;';
-		} else {
-			$css = 'padding: 8px';
-		}
-
 		if (substr($icon, -4) == '.png')
-			$icon = sprintf('<img src="%s" style="%s">', htmlentities($icon), $css);
+			$icon = sprintf('<img src="%s">', htmlentities($icon));
 		else if ($icon != '')
-			$icon = sprintf('<span class="%s" style="%s"></span>', htmlentities($menu->get_icon()), $css);
+			$icon = sprintf('<span class="%s"></span>', htmlentities($menu->get_icon()));
 
 		if (!is_null($menu->get_href())) {
 			$href = $menu->get_href();
