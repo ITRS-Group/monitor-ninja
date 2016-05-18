@@ -855,6 +855,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 .image-menu ul li ul li {
   float: right !important;
+  border: none !important;
 }
 
 .menu ul li ul li {
@@ -1284,7 +1285,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   float: right;
   display: inline-block;
   vertical-align: middle;
-  margin-right: 8px;
+  margin-right: 0;
 }
 
 .main-toolbar .main-toolbar-menu > ul > li {
@@ -1296,9 +1297,11 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 .main-toolbar .main-toolbar-menu > ul > li:after {
 	float: right;
 	display: block;
-	font-size: 0.85em;
+	font-size: 0.75em;
 	content: "▼";
 	margin-top: 0.4em;
+	margin-right: 0.6em;
+	color: #555555;
 }
 
 .main-toolbar .main-toolbar-menu > ul > li > a {

@@ -397,7 +397,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('{"c":2,"p":3}', $wd[4]['position']);
 	}
 
-	// Assert on_change_positions() fails when given wrong widget ID.
+	// Assert on_change_positions() works, even though one ID doesn't exist.
 	public function test_on_change_positions_wrong_widget_id() {
 		$_POST['positions'] =
 			'widget-placeholder0=widget-1|' .
@@ -409,9 +409,16 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 		$this->tac->on_change_positions();
 
-		$expected_value = array('result' => 'Unknown widget');
+		$expected_value = array('result' => array(
+			array(0 => 'widget-1'),
+			array(0 => 'widget-2'),
+			array(0 => 'widget-3'),
+			array(),
+			array(),
+			array(0 => 'widget-invalid')
+		));
 		$this->assertSame($expected_value, $this->tac->template->value);
-		$this->assertFalse($this->tac->template->success);
+		$this->assertTrue($this->tac->template->success);
 	}
 
 	public function test_on_refresh() {

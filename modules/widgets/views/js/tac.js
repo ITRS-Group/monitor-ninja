@@ -102,6 +102,8 @@ $(function() {
 			onHide : function(widget) {
 			},
 			onAdd : function(w, place) {
+				// This callback is used when changing settings on a widget.
+				new widget(w.data('key'));
 			}
 		}
 	});
@@ -141,6 +143,12 @@ $(function() {
 		".menuitem_change_layout",
 		function(e) {
 			e.preventDefault();
+
+			// In Chrome we need to remove shadow and border.
+			$('.menu ul li ul').css({"box-shadow": 0, "border": 0});
+
+			// Hide menu after click.
+			$('.menuitem_change_layout').hide();
 
 			// Post data about layout change.
 			$('<form>')

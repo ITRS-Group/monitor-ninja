@@ -134,8 +134,8 @@ class widget
 
 	/**
 	 * Converts the layout in $dashboard to a new layout.
-	 * @param Dashboard_Model $dashboard The dashboard to modify.
-	 * @param string          $layout    The new layout.
+	 * @param $dashboard Dashboard_Model The dashboard to modify.
+	 * @param $layout    string          The new layout.
 	 */
 	public static function convert_layout(Dashboard_Model $dashboard, $layout) {
 		if ($dashboard->get_layout() === $layout) return;
