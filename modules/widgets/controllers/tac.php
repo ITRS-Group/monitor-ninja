@@ -95,11 +95,9 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
-	 * Display a TAC screen
+	 * When layout is changed it should be posted to this method.
 	 */
-	public function index()	{
-		$this->_verify_access('ninja.tac:read.tac');
-
+	public function change_layout() {
 		$dashboard = $this->_current_dashboard();
 
 		$layout = $this->input->post('layout');
@@ -108,6 +106,16 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard->save();
 		}
 
+		url::redirect(LinkProvider::factory()->get_url('tac', 'index'));
+	}
+
+
+	/**
+	 * Display a TAC screen
+	 */
+	public function index()	{
+		$this->_verify_access('ninja.tac:read.tac');
+
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = _('Monitoring » Tactical overview');
 		$this->template->js[] = 'modules/widgets/views/js/tac.js';
@@ -115,6 +123,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->disable_refresh = true;
 
 		/* Build storage for placeholders */
+		$dashboard = $this->_current_dashboard();
 		$tac_column_count_str = $dashboard->get_layout();
 		$tac_column_count = array_map('intval',explode(',', $tac_column_count_str));
 		$n_dashboard_cells = array_sum($tac_column_count);

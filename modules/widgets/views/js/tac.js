@@ -153,7 +153,7 @@ $(function() {
 			// Post data about layout change.
 			$('<form>')
 				.hide()
-				.attr({method: 'post', action: ''})
+				.attr({method: 'post', action: 'change_layout'})
 				.append($('<input>').attr(
 					{type: 'hidden', name: 'csrf_token', value: _csrf_token}
 				))
