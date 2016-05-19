@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Custom error for the Fieldset_Model
+ */
 class Fieldset_Exception extends Exception {}
 
 /**
