@@ -1,7 +1,13 @@
-.big-number {
-  display: inline-block;
-  font-size: 65px;
-  line-height: 65px;
-  margin: 0 16px 8px 16px;
-  min-width: 75px;
+.state_summary-state .big-number {
+	display: inline-block;
+	font-size: 65px;
+	line-height: 65px;
+	margin: 0 16px 8px 16px;
+	min-width: 75px;
+}
+
+.state_summary-state p.explanation {
+	display: inline-block;
+	margin-top: 0px;
+	text-transform: uppercase;
 }

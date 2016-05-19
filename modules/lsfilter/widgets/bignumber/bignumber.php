@@ -282,11 +282,13 @@ class bignumber_Widget extends widget_Base {
 				break;
 		}
 
+		$display_explanation = "";
 		if ($this->threshold_onoff) {
 			if($counts['all'] == 0) {
-				return $this->error("The main filter you have chosen is empty.");
-			}
-			if($th_func($this->threshold_crit, $counts)) {
+				// PHP is so bad, it cannot even divide by zero
+				$state = 'pending';
+				$display_explanation = 'No object matches this filter';
+			} else if($th_func($this->threshold_crit, $counts)) {
 				$state = 'critical';
 			} else if($th_func($this->threshold_warn, $counts)) {
 				$state = 'warning';
