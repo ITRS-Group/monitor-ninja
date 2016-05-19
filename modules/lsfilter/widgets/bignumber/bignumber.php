@@ -213,19 +213,25 @@ class bignumber_Widget extends widget_Base {
 	}
 
 	/**
+	 * @param $msg string
+	 */
+	private function error($msg) {
+		$error_msg = $msg;
+		require __DIR__.'/view_error.php';
+	}
+
+	/**
 	 * Fetch the data and show the widget
 	 */
 	public function index() {
-		$error_msg = "";
 		$main_set = $this->get_set_by_filter_id($this->main_filter_id);
 		$selection_set = $this->get_set_by_filter_id($this->selection_filter_id);
 		if($selection_set->get_table() !== $main_set->get_table()) {
-			$error_msg = sprintf(
-				"You must 'select' from the same table ('%s') your filter is for",
+			$msg = sprintf(
+				"Your main filter is placed on the table '%s', but your selection filter is not. You need to filter on the same table.",
 				$main_set->get_table()
 			);
-			require 'view.php';
-			return;
+			return $this->error($msg);
 		}
 
 		$query = $main_set->intersect($selection_set)->get_query();
@@ -240,6 +246,9 @@ class bignumber_Widget extends widget_Base {
 
 		switch($this->display_type) {
 			case 'percent':
+				if($counts['all'] == 0) {
+					return $this->error("The main filter you have chosen is empty.");
+				}
 				$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
 				break;
 			case 'number_only':
@@ -266,6 +275,9 @@ class bignumber_Widget extends widget_Base {
 		}
 
 		if ($this->threshold_onoff) {
+			if($counts['all'] == 0) {
+				return $this->error("The main filter you have chosen is empty.");
+			}
 			if($th_func($this->threshold_crit, $counts)) {
 				$state = 'critical';
 			} else if($th_func($this->threshold_warn, $counts)) {
