@@ -853,24 +853,32 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   width: 150px;
 }
 
-.menu.image-menu ul li ul li {
-  float: right;
+.menu.image-menu > ul > li li:hover {
+  background: #ffffff;
+}
+
+.menu.image-menu > ul > li li {
+  display: inline-block;
   border: none;
 }
 
-.menu.image-menu ul li ul li a[selected="yes"] img,
-.menu.image-menu ul li ul li a[selected="yes"] span {
-  padding: 6px;
-  border: 2px solid #00d040;
-}
-
-.menu.image-menu ul li ul li a img,
-.menu.image-menu ul li ul li a span {
+.menu.image-menu > ul > li li > a {
   padding: 8px;
+  margin: 8px;
+  margin-left: 0;
+  border-radius: 2px;
 }
 
-.menu.image-menu ul li ul li > a {
-  padding: 6px;
+.menu.image-menu > ul > li li:first-child > a {
+  margin-left: 8px;
+}
+
+.menu.image-menu a[data-selected="yes"] {
+  background: #dddddd;
+}
+
+.menu.image-menu > ul > li li a:hover {
+  background: #f0f0f0;
 }
 
 .menu ul li ul li {

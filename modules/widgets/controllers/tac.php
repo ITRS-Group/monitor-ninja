@@ -57,7 +57,7 @@ class Tac_Controller extends Ninja_Controller {
 		$select_layout_menu->set($name, "#", null, $img_url, array(
 			'data-layout-name' => $name,
 			'class' => "menuitem_change_layout",
-			'selected' => $layout == $name ? 'yes' : 'no'
+			'data-selected' => $layout == $name ? 'yes' : 'no'
 		));
 
 		$img_url = url::base() . '/application/views/icons/layout-321.png';
@@ -65,7 +65,7 @@ class Tac_Controller extends Ninja_Controller {
 		$select_layout_menu->set($name, "#", null, $img_url, array(
 			'data-layout-name' => $name,
 			'class' => "menuitem_change_layout",
-			'selected' => $layout == $name ? 'yes' : 'no'
+			'data-selected' => $layout == $name ? 'yes' : 'no'
 		));
 
 		return $menu;
