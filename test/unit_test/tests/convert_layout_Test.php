@@ -34,7 +34,8 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 				'dashboards' => array(
 					array(
 						'id' => 1,
-						'layout' => $layout
+						'layout' => $layout,
+						'username' => 'superuser'
 					)
 				),
 				'dashboard_widgets' => array(
@@ -42,37 +43,61 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 						'id' => 1,
 						'dashboard_id' => 1,
 						'name' => 'Cell0',
-						'position' => '{"c":0,"p":0}'
+						'position' => '{"c":0,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 2,
 						'dashboard_id' => 1,
 						'name' => 'Cell1',
-						'position' => '{"c":1,"p":0}'
+						'position' => '{"c":1,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 3,
 						'dashboard_id' => 1,
 						'name' => 'Cell2',
-						'position' => '{"c":2,"p":0}'
+						'position' => '{"c":2,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 4,
 						'dashboard_id' => 1,
 						'name' => 'Cell3',
-						'position' => '{"c":3,"p":0}'
+						'position' => '{"c":3,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 5,
 						'dashboard_id' => 1,
 						'name' => 'Cell4',
-						'position' => '{"c":4,"p":0}'
+						'position' => '{"c":4,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 6,
 						'dashboard_id' => 1,
 						'name' => 'Cell5',
-						'position' => '{"c":5,"p":0}'
+						'position' => '{"c":5,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					)
 				)
 			)

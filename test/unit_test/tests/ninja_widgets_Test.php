@@ -49,7 +49,7 @@ class Ninja_widgets_Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_create_update_delete() {
 		$dashboard = new Dashboard_Model();
-		$dashboard->set_username('mockeduser');
+		$dashboard->set_username('superuser');
 		$dashboard->save();
 
 		/* Step 1 - Create */

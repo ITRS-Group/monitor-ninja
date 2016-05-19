@@ -47,31 +47,49 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				)
 			),
 			'ORMDriverMySQL default' => array(
-				'dashboards' => array(array('id' => 1)),
+				'dashboards' => array(
+					array('id' => 1, 'username' => 'superuser')
+				),
 				'dashboard_widgets' => array(
 					array(
 						'id' => 1,
 						'dashboard_id' => 1,
 						'name' => 'Cell0',
-						'position' => '{"c":0,"p":0}'
+						'position' => '{"c":0,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 2,
 						'dashboard_id' => 1,
 						'name' => 'tac_hosts',
-						'position' => '{"c":1,"p":0}'
+						'position' => '{"c":1,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 3,
 						'dashboard_id' => 1,
 						'name' => 'Cell2',
-						'position' => '{"c":2,"p":0}'
+						'position' => '{"c":2,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 4,
 						'dashboard_id' => 1,
 						'name' => 'Cell3',
-						'position' => '{"c":3,"p":0}'
+						'position' => '{"c":3,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					)
 				)
 			)
@@ -126,7 +144,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'dashboards' => array(
 					array(
 						'id' => 1,
-						'layout' => '3,2,1'
+						'layout' => '3,2,1',
+						'username' => 'superuser'
 					)
 				),
 				'dashboard_widgets' => array(
@@ -171,7 +190,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'dashboards' => array(
 					array(
 						'id' => 1,
-						'layout' => '3,2,1'
+						'layout' => '3,2,1',
+						'username' => 'superuser'
 					)
 				),
 				'dashboard_widgets' => array(
@@ -219,7 +239,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'dashboards' => array(
 					array(
 						'id' => 1,
-						'layout' => '3,2,1'
+						'layout' => '3,2,1',
+						'username' => 'superuser'
 					)
 				),
 				'dashboard_widgets' => array(
@@ -270,7 +291,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'dashboards' => array(
 					array(
 						'id' => 1,
-						'layout' => '3,2,1'
+						'layout' => '3,2,1',
+						'username' => 'superuser'
 					)
 				),
 				'dashboard_widgets' => array(
@@ -536,8 +558,14 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(
-						array('id' => 1),
-						array('id' => 2),
+						array(
+							'id' => 1,
+							'username' => 'superuser'
+						),
+						array(
+							'id' => 2,
+							'username' => 'superuser'
+						),
 				),
 				'dashboard_widgets' => array(
 					array(
@@ -545,6 +573,10 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 						'dashboard_id' => 1,
 						'name' => 'Cell0',
 						'position' => '{"c":0,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array(
 						'id' => 2,
@@ -552,6 +584,10 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 						'name' => 'Cell1',
 						'setting' => '{"x": "y"}',
 						'position' => '{"c":1,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
 					),
 					array( /* We shouldn't be able to update this */
 						'id' => 3,
@@ -559,6 +595,10 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 						'setting' => '{"this_is": "original"}',
 						'name' => 'not_current_dashboard',
 						'position' => '{"c":1,"p":0}',
+						'dashboard' => array(
+							'id̈́' => 2,
+							'username' => 'superuser'
+						)
 					),
 				)
 			)
@@ -620,7 +660,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'dashboard' => array (
 						'id' => 2,
 						'name' => '',
-						'username' => '',
+						'username' => 'superuser',
 						'layout' => ''
 				),
 				'id' => 3,
@@ -717,13 +757,13 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 			array(
 				'id' => 1,
 				'name' => $db_name,
-				'username' => '',
+				'username' => 'superuser',
 				'layout' => $db_layout
 			),
 			array(
 				'id' => 2,
 				'name' => 'Board 2',
-				'username' => '',
+				'username' => 'superuser',
 				'layout' => $db_layout
 			)
 		);
@@ -758,27 +798,24 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 	public function test_dashboard_import() {
 		/* set up mock data */
-		$mock_widgets = array(
-			array(
-				'id' => 1,
-				'dashboard_id' => 1,
-				'name' => 'Cell0',
-				'setting' => '{}',
-				'position' => '{"c":0,"p":0}',
-				),
-		);
-		$mock_dashboards = array(
-			array(
-				'id' => 1,
-				'name' => 'A Dashing Board',
-				'username' => '',
-				'layout' => '3,2,1'
-			),
-		);
 		$mock = array(
 			'ORMDriverMySQL default' => array(
-				'dashboards' => array((array('id' => 1))),
-				'dashboard_widgets' => array((array('id' => 1, 'dashboard_id' => 1))),
+				'dashboards' => array(
+					array(
+						'id' => 1,
+						'username' => 'superuser'
+					)
+				),
+				'dashboard_widgets' => array(
+					array(
+						'id' => 1,
+						'dashboard_id' => 1,
+						'dashboard' => array(
+							'id̈́' => 1,
+							'username' => 'superuser'
+						)
+					)
+				),
 			)
 		);
 		$this->mock_data($mock, __FUNCTION__);
@@ -829,7 +866,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'dashboard_widgets' => array(),
 				'ninja_widgets' => array(
 					array(
-						'username' => 'boll',
+						'username' => 'superuser',
 						'page' => 'tac/index',
 						'name' => 'netw_health',
 						'friendly_name' => 'My little widget',
@@ -841,7 +878,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		);
 		$this->mock_data($mock, __FUNCTION__);
 
-		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'boll', '=')->one();
+		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'superuser', '=')->one();
 		/* Empty dashboard table, none exists prior to migration */
 		$this->assertNull($dashboard);
 
@@ -849,7 +886,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		require(__DIR__.'/../../../install_scripts/migrate_widgets.php');
 		ob_end_clean();
 
-		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'boll', '=')->one();
+		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'superuser', '=')->one();
 		/* This means that there exist a dashboard, where none existed earlier */
 		$this->assertInstanceOf('Dashboard_Model', $dashboard);
 
