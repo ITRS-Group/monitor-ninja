@@ -658,10 +658,6 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   border-radius: 4px;
 }
 
-.alert .license {
-  color: black;
-}
-
 .alert .license h3 {
   font-weight: bold;
 }
@@ -1180,6 +1176,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 .notify-notification-bar a,
 .license-bar a,
+.alert a,
 .print-notification-bar a {
   color: inherit;
   border-color: inherit;
