@@ -71,7 +71,7 @@ if($options['report_id']) { ?>
 		<td class="states-to-include">
 			<div data-show-for="hosts hostgroups">
 				<?php
-				echo help::render('host_states');
+				echo help::render('host_states').' ';
 				echo _('Host states to include').'<br/>';
 
 				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {

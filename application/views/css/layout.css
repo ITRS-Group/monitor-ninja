@@ -746,19 +746,6 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   width: 128px;
 }
 
-.finder-help {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  padding-top: 2px;
-  padding-right: 2px;
-  border-radius: 10px;
-  background: #bbb;
-  text-align: center;
-  font-weight: bold;
-  color: #ffffff;
-}
-
 .autocomplete {
   display: none;
   position: fixed;
@@ -1555,6 +1542,11 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 
 a.help-icon {
   border-bottom: none;
+  cursor: help;
+  display: inline-block;
+  height: 16px;
+  vertical-align: middle;
+  width: 16px;
 }
 
 span.brand {
