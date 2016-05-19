@@ -113,7 +113,6 @@ class bignumber_Widget extends widget_Base {
 	}
 
 	protected function get_suggested_title () {
-		$main_set = $this->get_set_by_filter_id($this->main_filter_id);
 		$hardcoded_filters = $this->hardcoded_filters;
 		$saved_filter_name = function($filter_id) use ($hardcoded_filters) {
 			if($filter_id < 0) {
@@ -122,8 +121,7 @@ class bignumber_Widget extends widget_Base {
 			$filter = SavedFilterPool_Model::all()->reduce_by('id', $filter_id, '=')->one();
 			return $filter->get_filter_name();
 		};
-		return sprintf("%s: %s / %s",
-			ucfirst($main_set->get_table()),
+		return sprintf("%s: %s",
 			$saved_filter_name($this->main_filter_id),
 			$saved_filter_name($this->selection_filter_id)
 		);
