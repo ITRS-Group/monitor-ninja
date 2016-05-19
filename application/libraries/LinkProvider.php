@@ -20,21 +20,21 @@ class LinkProvider {
 	public static function factory () {
 
 		$protocol = Kohana::config('core.site_protocol');
-
-		if ($protocol == false) {
-			$protocol = (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off')
-				? 'http' : 'https';
-		}
-
-
 		$domain = (string) Kohana::config('core.site_domain', TRUE);
 
-		if ($domain === '' || $domain[0] === '/') {
-			$domain = $_SERVER['HTTP_HOST'] . rtrim($domain, "/");
+		if ($domain[0] === '/') {
+			$domain = rtrim($domain, "/");
+		}
+
+		if (PHP_SAPI !== 'cli') {
+			$domain = $_SERVER['HTTP_HOST'] . $domain;
+			if ($protocol == false) {
+				$protocol = (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off')
+					? 'http' : 'https';
+			}
 		}
 
 		$indexpath = Kohana::config('core.index_page');
-
 		return (new LinkProvider($protocol, $domain, $indexpath));
 	}
 

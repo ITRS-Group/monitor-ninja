@@ -21,6 +21,11 @@ class LinkProvider_Test extends PHPUnit_Framework_TestCase {
 		$this->lp = new LinkProvider('https', '192.168.0.1', 'ninja/index.php');
 	}
 
+	public function test_linkprovider_no_fail_during_cli () {
+		$lp = LinkProvider::factory();
+		$this->assertInstanceOf('LinkProvider', $lp);
+	}
+
 	public function test_instanced_class () {
 		$lptc = new LinkProviderTestClass_Controller();
 		$url = $this->lp->get_url($lptc, "home");
