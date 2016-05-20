@@ -57,6 +57,16 @@ class bignumber_Widget extends widget_Base {
 	private $threshold_type = 'lower_than';
 
 	/**
+	 * available threshold types
+	 */
+	private $threshold_types = array();
+
+	/**
+	 * Threshold function to apply
+	 */
+	private $threshold_callback = null;
+
+	/**
 	 * Threshold for warning (orange)
 	 */
 	private $threshold_warn = 95.0;
@@ -71,8 +81,17 @@ class bignumber_Widget extends widget_Base {
 	 * when making a custom widget of this type
 	 */
 	public function __construct(Widget_Model $widget_model) {
+
 		parent::__construct($widget_model);
 		$settings = $this->model->get_setting();
+
+		$this->threshold_types['lower_than'] = function ($val, $stat) {
+			return 100.0 * $stat['selection'] / $stat['all'] < $val;
+		};
+
+		$this->threshold_types['higher_than'] = function ($val, $stat) {
+			return 100.0 * $stat['selection'] / $stat['all'] > $val;
+		};
 
 		if (isset($settings['main_filter_id']))
 			$this->main_filter_id = $settings['main_filter_id'];
@@ -83,11 +102,14 @@ class bignumber_Widget extends widget_Base {
 		if (isset($settings['display_type']))
 			$this->display_type = $settings['display_type'];
 
-		if (isset($settings['threshold_type']))
+		if (isset($settings['threshold_type'])) {
 			$this->threshold_type = $settings['threshold_type'];
+			if (!array_key_exists($this->threshold_type, $this->threshold_types)) {
+				$this->threshold_type = 'lower_than';
+			}
+		}
 
-		if (isset($settings['reverse_threshold']))
-			$this->reverse_threshold = $settings['reverse_threshold'];
+		$this->threshold_callback = $this->threshold_types[$this->threshold_type];
 
 		if (isset($settings['threshold_onoff']))
 			$this->threshold_onoff = $settings['threshold_onoff'];
@@ -252,11 +274,14 @@ class bignumber_Widget extends widget_Base {
 			'selection' => $selection_set
 		));
 
-		switch($this->display_type) {
+		if ($counts['all'] == 0) {
+			// PHP is so bad, it cannot even divide by zero
+			$state = 'pending';
+			$display_explanation = 'No object matches this filter';
+			$display_text = "-";
+		} else {
+			switch($this->display_type) {
 			case 'percent':
-				if($counts['all'] == 0) {
-					return $this->error("The main filter you have chosen is empty.");
-				}
 				$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
 				break;
 			case 'number_only':
@@ -266,37 +291,22 @@ class bignumber_Widget extends widget_Base {
 			default:
 				$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
 				break;
-		}
-
-		$threshold_value = $counts['selection'];
-		switch($this->threshold_type) {
-			case 'lower_than':
-				$th_func = function($val, $stat) {
-					return 100.0 * $stat['selection'] / $stat['all'] < $val;
-				};
-				break;
-			case 'higher_than':
-				$th_func = function($val, $stat) {
-					return 100.0 * $stat['selection'] / $stat['all'] > $val;
-				};
-				break;
-		}
-
-		$display_explanation = "";
-		if ($this->threshold_onoff) {
-			if($counts['all'] == 0) {
-				// PHP is so bad, it cannot even divide by zero
-				$state = 'pending';
-				$display_explanation = 'No object matches this filter';
-			} else if($th_func($this->threshold_crit, $counts)) {
-				$state = 'critical';
-			} else if($th_func($this->threshold_warn, $counts)) {
-				$state = 'warning';
-			} else {
-				$state = 'ok';
 			}
-		} else {
-			$state = 'info';
+
+			$threshold_value = $counts['selection'];
+			$display_explanation = "";
+
+			if ($this->threshold_onoff) {
+				if (call_user_func_array($this->threshold_callback, array($this->threshold_crit, $counts))) {
+					$state = 'critical';
+				} elseif (call_user_func_array($this->threshold_callback, array($this->threshold_warn, $counts))) {
+					$state = 'warning';
+				} else {
+					$state = 'ok';
+				}
+			} else {
+				$state = 'info';
+			}
 		}
 
 		require('view.php');
