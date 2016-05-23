@@ -17,6 +17,8 @@ var react_to_checkbox = function(ev) {
 };
 // run onload
 $('.can_be_toggled .toggle_me').each(function() {
+	/* Toggle updates, keep it simple, toggle twice on load */
+	react_to_checkbox.apply(this);
 	react_to_checkbox.apply(this);
 });
 // run onchange

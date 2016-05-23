@@ -31,6 +31,10 @@ class bignumber_Widget extends widget_Base {
 			'name' => 'OK hosts',
 			'filter' => '[hosts] state = 0 and has_been_checked = 1'
 		),
+		-151 => array(
+			'name' => 'Unhandled host problems',
+			'filter' => '[hosts] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0'
+		),
 		-100 => array(
 			'name' => 'All services',
 			'filter' => '[services] all'
@@ -38,7 +42,11 @@ class bignumber_Widget extends widget_Base {
 		-50 => array(
 			'name' => 'OK services',
 			'filter' => '[services] state = 0 and has_been_checked = 1'
-		)
+		),
+		-51 => array(
+			'name' => 'Unhandled service problems',
+			'filter' => '[services] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0 and host.scheduled_downtime_depth = 0'
+		),
 	);
 
 	/**
@@ -54,7 +62,7 @@ class bignumber_Widget extends widget_Base {
 	/**
 	 * type of threshold
 	 */
-	private $threshold_type = 'lower_than';
+	private $threshold_type = 'less_than';
 
 	/**
 	 * available threshold types
@@ -85,11 +93,11 @@ class bignumber_Widget extends widget_Base {
 		parent::__construct($widget_model);
 		$settings = $this->model->get_setting();
 
-		$this->threshold_types['lower_than'] = function ($val, $stat) {
+		$this->threshold_types['less_than'] = function ($val, $stat) {
 			return 100.0 * $stat['selection'] / $stat['all'] < $val;
 		};
 
-		$this->threshold_types['higher_than'] = function ($val, $stat) {
+		$this->threshold_types['greater_than'] = function ($val, $stat) {
 			return 100.0 * $stat['selection'] / $stat['all'] > $val;
 		};
 
@@ -105,7 +113,7 @@ class bignumber_Widget extends widget_Base {
 		if (isset($settings['threshold_type'])) {
 			$this->threshold_type = $settings['threshold_type'];
 			if (!array_key_exists($this->threshold_type, $this->threshold_types)) {
-				$this->threshold_type = 'lower_than';
+				$this->threshold_type = 'less_than';
 			}
 		}
 
@@ -200,16 +208,16 @@ class bignumber_Widget extends widget_Base {
 		$show_status = new Fieldset_Model('SHOW STATUS', array('class' => 'can_be_toggled'));
 		$threshold_as = new option($this->model->get_name(), 'threshold_type', 'Threshold as', 'dropdown', array(
 			'options' => array(
-				'lower_than' => 'Lower than',
-				'higher_than' => 'Higher than',
+				'less_than' => 'Less than',
+				'greater_than' => 'Greater than',
 			)
 		), $this->threshold_type);
 		$threshold_as->set_help('bignumber_threshold_as', 'tac');
 		$show_status[] = $threshold_as;
 
 		$show_status[] = new option($this->model->get_name(), 'threshold_onoff', 'threshold_onoff', 'input', array('type' => 'hidden'), $this->threshold_onoff);
-		$show_status[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold', 'input', array('class' => 'percentage'), $this->threshold_warn);
-		$show_status[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold', 'input', array('class' => 'percentage'), $this->threshold_crit);
+		$show_status[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold (%)', 'input', array('class' => 'percentage'), $this->threshold_warn);
+		$show_status[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold (%)', 'input', array('class' => 'percentage'), $this->threshold_crit);
 
 		$options[] = $show_status;
 
