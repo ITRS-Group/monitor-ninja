@@ -6,8 +6,15 @@
 	min-width: 75px;
 }
 
-.state_summary-state p.explanation {
+.state_summary-state {
 	display: inline-block;
 	margin-top: 0px;
+	text-transform: uppercase;
+}
+
+p.explanation {
+	display: inline-block;
+	line-height: 85px;
+	font-weight: bold;
 	text-transform: uppercase;
 }

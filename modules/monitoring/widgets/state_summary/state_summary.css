@@ -5,14 +5,16 @@
 }
 
 .state_summary-container {
+	height: auto;
+	min-height: 102px;
 	text-align: center;
-  padding: 24px 16px;
+	padding: 24px 16px;
 }
 
 .state_summary-state .state_summary-figure {
 	display: inline-block;
 	font-size: 55px;
-  line-height: 55px;
+	line-height: 55px;
 	margin: 0px 16px 8px 16px;
 	min-width: 75px;
 }
@@ -22,18 +24,18 @@
 }
 
 .state_summary-container a {
-  display: inline-block;
-  border: none;
-  border-radius: 2px;
+	display: inline-block;
+	border: none;
+	border-radius: 2px;
 }
 
 .state_summary-container a:hover {
-  background: #eee;
+	background: #eee;
 }
 
 .state_summary-state .state_summary-description {
 	border-top-width: 3px;
-  border-top-style: solid;
+	border-top-style: solid;
 	display: inline-block;
 	min-width: 77px;
 	text-transform: uppercase;
@@ -41,5 +43,5 @@
 }
 
 .state_summary-no-display {
-  display: none;
+	display: none;
 }

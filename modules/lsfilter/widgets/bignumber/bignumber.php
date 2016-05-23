@@ -77,7 +77,7 @@ class bignumber_Widget extends widget_Base {
 	private $threshold_crit = 90.0;
 
 	/**
-	 * Constructor. This should be overloaded, to upadte the settings-attribute
+	 * Constructor. This should be overloaded, to update the settings-attribute
 	 * when making a custom widget of this type
 	 */
 	public function __construct(Widget_Model $widget_model) {
@@ -278,7 +278,7 @@ class bignumber_Widget extends widget_Base {
 			// PHP is so bad, it cannot even divide by zero
 			$state = 'pending';
 			$display_explanation = 'No object matches this filter';
-			$display_text = "-";
+			$display_text = "";
 		} else {
 			switch($this->display_type) {
 			case 'percent':
