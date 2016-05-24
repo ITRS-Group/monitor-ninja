@@ -112,6 +112,13 @@ $(function() {
 		$.fn.AddEasyWidget($(this), $(this).parent().id, easywidgets_obj);
 	});
 
+	// Fade widget titles if they are too long to fit.
+	$('.widget-title').each(function() {
+		if (this.offsetWidth < this.scrollWidth) {
+			$(this).append($('<div class="fade-widget-title">'));
+		}
+	});
+
 	$('body').on(
 		"click",
 		".menuitem_widget_add",
@@ -236,15 +243,8 @@ widget.prototype.set_loading = function(loading) {
 			return;
 		}
 
-		widget_header.append(
-			$('<img class="widget_loadimg" />')
-				.attr('src', _site_domain + 'application/media/images/loading_small.gif')
-				.css({
-					'opacity': 0.4,
-					'padding-left': '15px',
-					'width': '12px',
-					'height': '12px'
-				})
+		widget_header.append($('<img class="widget_loadimg" />')
+			.attr('src', _site_domain + 'application/media/images/loading_small.gif')
 		);
 	} else {
 		loadimg.remove();
@@ -326,11 +326,17 @@ widget.prototype.update_widget = function() {
 			},
 			success : function(data) {
 				self.elem.find('.widget-content').html(data.widget);
+				var title = self.title_element;
 				if (data.custom_title) {
-					self.title_element.text(data.custom_title);
+					title.text(data.custom_title);
 					self.form.find('*[name="title"]').val(data.custom_title);
 				} else {
-					self.title_element.text(data.title);
+					title.text(data.title);
+				}
+
+				// Fade out title if it is too long to fit.
+				if (title.prop('offsetWidth') < title.prop('scrollWidth')) {
+					title.append($('<div class="fade-widget-title">'));
 				}
 			},
 			error: function (jqXHR) {
