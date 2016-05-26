@@ -142,7 +142,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		$lp = LinkProvider::factory();
 
 		$reports = new Menu_Model();
-		$reports->set('Report');
+		$reports->set('Options');
 
 		# create page links
 		switch ($type) {
@@ -167,21 +167,21 @@ class Extinfo_Controller extends Ninja_Controller {
 
 				$toolbar->subtitle .= html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
 
-				$reports->set('Report.Availability', $lp->get_url(
+				$reports->set('Options.Report.Availability', $lp->get_url(
 					'avail', 'generate', array(
 						"report_type" => "hosts",
 						"objects[]" => $object->get_key()
 					)
 				));
 
-				$reports->set('Report.Alert history', $lp->get_url(
+				$reports->set('Options.Report.Alert history', $lp->get_url(
 					'alert_history', 'generate', array(
 						'report_type' => 'hosts',
 						'objects' => array($object->get_key())
 					)
 				));
 
-				$reports->set('Report.Event log', $lp->get_url(
+				$reports->set('Options.Report.Event log', $lp->get_url(
 					'showlog', 'showlog', array(
 						"hide_initial" => "1",
 						"hide_process" => "1",
@@ -194,7 +194,7 @@ class Extinfo_Controller extends Ninja_Controller {
 					)
 				));
 
-				$reports->set('Report.Histogram', $lp->get_url(
+				$reports->set('Options.Report.Histogram', $lp->get_url(
 					'histogram', 'generate', array(
 						"report_type" => "hosts",
 						"objects[]" => $object->get_key()
@@ -208,21 +208,21 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->title = "Service";
 				$toolbar->subtitle = html::specialchars($object->get_description());
 
-				$reports->set('Report.Availability', $lp->get_url(
+				$reports->set('Options.Report.Availability', $lp->get_url(
 					'avail', 'generate', array(
 						"report_type" => "services",
 						"objects[]" => $object->get_key()
 					)
 				));
 
-				$reports->set('Report.Alert history', $lp->get_url(
+				$reports->set('Options.Report.Alert history', $lp->get_url(
 					'alert_history', 'generate', array(
 						'report_type' => 'services',
 						'objects' => array($object->get_key())
 					)
 				));
 
-				$reports->set('Report.Event log', $lp->get_url(
+				$reports->set('Options.Report.Event log', $lp->get_url(
 					'showlog', 'showlog', array(
 						"hide_initial" => "1",
 						"hide_process" => "1",
@@ -236,7 +236,7 @@ class Extinfo_Controller extends Ninja_Controller {
 					)
 				));
 
-				$reports->set('Report.Histogram', $lp->get_url(
+				$reports->set('Options.Report.Histogram', $lp->get_url(
 					'histogram', 'generate', array(
 						"report_type" => "services",
 						"objects[]" => $object->get_key()
@@ -245,6 +245,31 @@ class Extinfo_Controller extends Ninja_Controller {
 
 				break;
 
+		}
+
+		$commands = $object->list_commands();
+		$command_categories = array();
+
+		foreach($commands as $cmd => $cmdinfo) {
+			if ($cmdinfo['category'] === 'Operations') continue;
+			if($cmdinfo['enabled']) {
+				if(!isset($command_categories[$cmdinfo['category']]))
+					$command_categories[$cmdinfo['category']] = array();
+				$command_categories[$cmdinfo['category']][$cmd] = $cmdinfo;
+			}
+		}
+
+		foreach($command_categories as $category => $category_commands) {
+			foreach($category_commands as $cmd => $cmdinfo) {
+				$reports->set("Options.$category." . $cmdinfo['name'],
+					$lp->get_url('cmd', null,
+array(
+						'command' => $cmd,
+						'table' => $object->get_table(),
+						'object' => $object->get_key()
+					))
+				);
+			}
 		}
 
 		$toolbar->menu($reports);

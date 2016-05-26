@@ -32,7 +32,6 @@
 		</div>
 		<div class="information-cell-value">
 			<?php echo $object->get_source_node(); ?>
-			(<?php echo $object->get_source_type(); ?>)
-		</div>
+			<?php echo '(' . $object->get_source_type() . ')'; ?></div>
 	</div>
 </div>

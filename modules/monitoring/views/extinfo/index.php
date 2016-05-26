@@ -2,12 +2,13 @@
 
 	$linkprovider = LinkProvider::factory();
 	View::factory('extinfo/components/statebox', array(
-		'object' => $object
+		'object' => $object,
+		'linkprovider' => $linkprovider
 	))->render(true);
 
 ?>
 
-<div class="left width-60 information-content">
+<div class="left width-80 information-content">
 <?php
 
 	View::factory('extinfo/components/performance', array(
@@ -28,9 +29,11 @@
 		'object' => $object
 	))->render(true);
 
-	View::factory('extinfo/components/customvars', array(
-		'object' => $object
-	))->render(true);
+	if (count($object->get_custom_variables())) {
+		View::factory('extinfo/components/customvars', array(
+			'object' => $object
+		))->render(true);
+	}
 
 	View::factory('extinfo/components/timestamps', array(
 		'object' => $object
@@ -51,10 +54,3 @@ foreach ($widgets as $title => $widget) {
 ?>
 </div>
 
-<?php
-View::factory('extinfo/commands', array(
-	'object' => $object,
-	'linkprovider' => $linkprovider
-))->render(true);
-
-?>
