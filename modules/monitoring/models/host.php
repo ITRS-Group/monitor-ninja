@@ -391,7 +391,7 @@ class Host_Model extends BaseHost_Model {
 	 * @param perf_data
 	 *
 	 * @ninja orm_command name Submit passive check result
-	 * @ninja orm_command category Operations
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon checks-passive
 	 * @ninja orm_command mayi_method update.command.passive
 	 *
@@ -428,7 +428,7 @@ class Host_Model extends BaseHost_Model {
 	 * @param forced = false
 	 *
 	 * @ninja orm_command name Re-schedule next host check
-	 * @ninja orm_command category Operations
+	 * @ninja orm_command category Actions
 	 * @ninja orm_command icon re-schedule
 	 * @ninja orm_command mayi_method update.command.schedule
 	 *
@@ -740,6 +740,32 @@ class Host_Model extends BaseHost_Model {
 			return false;
 		}
 		return sprintf('nagvis/automap/host/%s', urlencode($this->get_name()));
+	}
+
+	/**
+	 * @ninja orm_command name Notifications
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon notification
+	 * @ninja orm_command mayi_method read
+	 * @ninja orm_command description
+	 *     Show host notifications.
+	 * @ninja orm_command redirect 1
+	 */
+	public function notifications() {
+		return LinkProvider::factory()->get_url('listview', null, array('q' => '[notifications] host_name = "' . $this->get_name() . '"'));
+	}
+
+	/**
+	 * @ninja orm_command name Graphs
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon pnp
+	 * @ninja orm_command mayi_method read
+	 * @ninja orm_command description
+	 *     Show host graphs.
+	 * @ninja orm_command redirect 1
+	 */
+	public function graphs() {
+		return LinkProvider::factory()->get_url('pnp', null, array('host' => $this->get_name(), 'srv' => '_HOST_'));
 	}
 
 	/**

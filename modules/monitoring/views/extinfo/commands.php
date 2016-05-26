@@ -1,10 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
 /* @var $object Object_Model */
 $commands = $object->list_commands();
-
 $command_categories = array();
 
 foreach($commands as $cmd => $cmdinfo) {
+	if ($cmdinfo['category'] === 'Operations') continue;
 	if($cmdinfo['enabled']) {
 		if(!isset($command_categories[$cmdinfo['category']]))
 			$command_categories[$cmdinfo['category']] = array();
@@ -13,31 +14,34 @@ foreach($commands as $cmd => $cmdinfo) {
 }
 
 ?>
-<div class="right width-33" id="extinfo_info">
-	<table class="ext">
+<div class="left width-20 extinfo-commands">
+	<ul class="extinfo-commands-list linklist">
 <?php
 foreach($command_categories as $category => $category_commands) {
 ?>
-		<tr>
-			<td colspan="2" class="bt"><h2><?php echo html::specialchars($category) ?></h2></td>
-		</tr>
+	<li>
+		<h2 class="<?php echo ($category === 'Links' || $category === 'Actions') ? 'active' : ''; ?>" onclick="$(this).toggleClass('active')"><?php echo html::specialchars($category) ?></h2>
+		<ul>
 <?php
 	foreach($category_commands as $cmd => $cmdinfo) {
-?>
-		<tr>
-			<td class="icon dark">
-				<span class="icon-16 x16-<?php echo $cmdinfo['icon']; ?>" title="<?php echo  html::specialchars($cmdinfo['name']) ?>"></span>
-			</td>
-			<td class="bt"><?php echo cmd::cmd_link($object, $cmd, $cmdinfo['name']) ?></td>
-		</tr>
-<?php
+		printf(
+			'<li><a href="%s">%s</a></li>',
+			$linkprovider->get_url('cmd', null, array(
+				'command' => $cmd,
+				'table' => $object->get_table(),
+				'object' => $object->get_key()
+			)),
+			html::specialchars($cmdinfo['name'])
+		);
 	}
-}
-
+?>
+		</ul>
+	</li>
+<?php }
 	if($object instanceof NaemonMonitoredObject_Model) {
 		$dynamic_button_view = new View('extinfo/dynamic_button', array('object' => $object));
 		$dynamic_button_view->render(true);
 	}
 ?>
-	</table>
+	</ul>
 </div>

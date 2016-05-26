@@ -1,4 +1,45 @@
 $(document).ready(function() {
+
+	$('div[data-setting-toggle-command]').on('click', function () {
+
+		var toggler = $(this);
+		var command = toggler.attr('data-setting-toggle-command');
+		var query = toggler.attr('data-setting-toggle-query');
+		var on = command.match(/^(disable_|stop_)/);
+
+		/* Do nothing if the current toggle is waiting for response */
+		if (toggler.hasClass('toggle-waiting'))
+			return;
+
+		toggler.addClass('toggle-waiting');
+
+		query = decodeURIComponent(query);
+		var url = _site_domain + _index_page;
+		$.post(url + '/cmd/ajax_command', {
+			'csrf_token': _csrf_token,
+			'command': command,
+			'query': query
+		}).done(function () {
+			if (on) {
+				command = command.replace(/disable_/, 'enable_');
+				command = command.replace(/stop_/, 'start_');
+				toggler.attr('data-setting-toggle-state', 'off');
+				toggler.attr('data-setting-toggle-command', command)
+			} else {
+				command = command.replace(/enable_/, 'disable_');
+				command = command.replace(/start_/, 'stop_');
+				toggler.attr('data-setting-toggle-state', 'on');
+				toggler.attr('data-setting-toggle-command', command)
+			}
+		}).fail(function () {
+			Notify.message("Failed to toggle setting.");
+		}).complete(function () {
+			toggler.removeClass('toggle-waiting');
+		});
+
+
+	});
+
 	var old_refresh = 0;
 
 	$('.filterboxfield').focus(function() {

@@ -102,6 +102,71 @@ class Cmd_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 * Send a command for a specific object via AJAX
+	 */
+	public function ajax_command () {
+
+		// TODO Don't use ORMException in this code...
+
+		$command = $this->input->post('command', false);
+		$query = $this->input->post('query', false);
+
+		if ($command == false) {
+			throw new ORMException('Missing command');
+		} elseif ($query == false) {
+			throw new ORMException('Missing query');
+		}
+
+		try {
+
+			// validate table name
+			$set = ObjectPool_Model::get_by_query($query);
+			/* @var $set ObjectPool_Model */
+
+			// validate command
+			$obj_class = $set->class_obj();
+			$commands = $obj_class::list_commands_static(true);
+
+			if(!array_key_exists($command, $commands))
+				return json::fail(array(
+					'message' => "Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied"
+				));
+
+			// Unpack params
+			$params = array();
+			foreach($commands[$command]['params'] as $pname => $pdef) {
+				$params[intval($pdef['id'])] = $this->input->post($pname, null);
+			}
+
+			// Depend on order of id instead of order of occurance
+			ksort($params);
+			$results = array();
+
+			foreach($set as $object) {
+				// Don't set $this->template->content directly, since command might throw exceptions
+				$result = call_user_func_array(array($object, $command), $params);
+				if(isset($result['status']) && !$result['status']) {
+					$output = "";
+					if(isset($result['output'])) {
+						$output = " Output: ".$result['output'];
+					}
+					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+				}
+				$results[] = array(
+					'object' => $object->get_key(),
+					'result' => $result
+				);
+			}
+
+			return json::ok($results);
+
+		} catch(ORMException $e) {
+			json::fail(array(
+				'message' => 'Failed to submit command'
+			));
+		}
+	}
+	/**
 	 * Send a command for a specific object
 	 */
 	public function obj() {

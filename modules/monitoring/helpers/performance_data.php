@@ -10,6 +10,13 @@ defined('SYSPATH') or die('No direct access allowed.');
  * exported to a helper, so it's available for both.
  */
 class performance_data {
+
+	private static $data_name_translation_table = array(
+		'pkt' => 'Packets',
+		'rta' => 'Roundtrip Average',
+		'pl' => 'Package Loss'
+	);
+
 	/**
 	 * Process performance data and return as an array
 	 *
@@ -66,4 +73,18 @@ class performance_data {
 		}
 		return $perf_data;
 	}
+
+	/**
+	 * Returns, if possible, a human readable version of a performance data
+	 * abbreviated name. Otherwise it returns the original name.
+	 *
+	 * @param $name string
+	 * @return string
+	 */
+	public static function get_readable_name ($name) {
+		if (array_key_exists($name, self::$data_name_translation_table))
+			return self::$data_name_translation_table[$name];
+		return $name;
+	}
+
 }

@@ -216,6 +216,33 @@ class Service_Model extends BaseService_Model {
 	}
 
 	/**
+	 * @ninja orm_command name Notifications
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon notification
+	 * @ninja orm_command mayi_method read
+	 * @ninja orm_command description
+	 *     Show host notifications.
+	 * @ninja orm_command redirect 1
+	 */
+	public function notifications() {
+		return LinkProvider::factory()->get_url('listview', null, array('q' => '[notifications] host_name = "' . $this->get_host()->get_name() . '" and service_description="' . $this->get_description() . '"'));
+	}
+
+	/**
+	 * @ninja orm_command name Graphs
+	 * @ninja orm_command category Links
+	 * @ninja orm_command icon pnp
+	 * @ninja orm_command mayi_method read
+	 * @ninja orm_command description
+	 *     Show host graphs.
+	 * @ninja orm_command redirect 1
+	 */
+	public function graphs() {
+		return LinkProvider::factory()->get_url('pnp', null, array('host' => $this->get_host()->get_name(), 'srv' => $this->get_description()));
+	}
+
+
+	/**
 	 * @param comment
 	 * @param persistent = true
 	 * @param notify = true

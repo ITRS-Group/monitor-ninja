@@ -34,19 +34,34 @@ class time
 
 		$timestring = "";
 		if ($neg) $timestring .= $negative;
-		if ($days) {
+		if ($days > 10) {
 			$timestring .= $days.$d;
 			if ($hrs || $mins || $secs) $timestring .= " ";
+		} else {
+			if ($days) {
+				$timestring .= $days.$d;
+				if ($hrs || $mins || $secs) $timestring .= " ";
+				if ($hrs) {
+					$timestring .= $hrs.$h;
+					if ($mins || $secs) $timestring .= " ";
+				}
+			} else {
+				if ($hrs) {
+					$timestring .= $hrs.$h;
+					if ($mins || $secs) $timestring .= " ";
+					if ($mins) {
+						$timestring .= $mins.$m;
+						if ($secs) $timestring .= " ";
+					}
+				} else {
+					if ($mins) {
+						$timestring .= $mins.$m;
+						if ($secs) $timestring .= " ";
+					}
+					if ($secs) $timestring .= $secs.$s;
+				}
+			}
 		}
-		if ($hrs) {
-			$timestring .= $hrs.$h;
-			if ($mins || $secs) $timestring .= " ";
-		}
-		if ($mins) {
-			$timestring .= $mins.$m;
-			if ($secs) $timestring .= " ";
-		}
-		if ($secs) $timestring .= $secs.$s;
 		return $timestring;
 	}
 
