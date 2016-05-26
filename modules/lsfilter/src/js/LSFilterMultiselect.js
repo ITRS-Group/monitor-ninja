@@ -33,6 +33,7 @@ var lsfilter_multiselect = {
 
 		this.elem_menu = elem;
 		this.elem_objtype = $('#listview_multi_action_obj_type');
+
 		$(document).on('click', '.multi-action-send-link', function(e) {
 			e.preventDefault();
 			self.do_send($(this));

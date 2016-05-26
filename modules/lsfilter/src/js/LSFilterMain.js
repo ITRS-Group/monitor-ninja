@@ -80,7 +80,7 @@ var lsfilter_main = {
 		var query = this.update_query;
 		var order = this.update_order;
 
-		var header_height = $( "body > .container >#header" ).outerHeight() + 4;
+		var header_height = $( "body > .container >#header" ).outerHeight() + 0;
 
 		this.update_timer = false;
 

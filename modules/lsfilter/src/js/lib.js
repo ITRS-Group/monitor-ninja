@@ -73,30 +73,47 @@ function extinfo_link(args)
 {
 	return link('extinfo/details', args);
 }
+
+function relative_time_since (timestamp) {
+	var timestamp_int = parseInt(timestamp, 10);
+	var dateobj = new Date(timestamp_int * 1000);
+	return Math.round((Date.now() - dateobj.getTime()) / 1000);
+
+}
+
 function format_timestamp(timestamp)
 {
-	// remember: server's offset is local - UTC, client's offset is UTC - local,
-	// so the sign should be the same.
-	var timestamp_int = parseInt(timestamp);
 
+	var timestamp_int = parseInt(timestamp, 10);
 	var dateobj = new Date((timestamp_int + _server_utc_offset) * 1000);
-	dateobj = new Date(dateobj.getTime() + (dateobj.getTimezoneOffset() * 60000));
-	var ret = dateobj.format(_date_format);
-	dateobj = null;
-	return ret;
+	dateobj = new Date(dateobj.getTime() - (dateobj.getTimezoneOffset() * 60000));
+
+	return dateobj
+		.toISOString()
+		.replace('T', ' ')
+		.replace(/\..+$/, '');
 }
+
 function format_interval(interval)
 {
+
 	if (interval < 0) return _('N/A');
-	var str = "";
-	if (interval % 60 !== 0) str = (interval % 60) + "s " + str;
+	var sec = 0, min = 0, hours = 0, days = 0;
+
+	if (interval % 60 !== 0) sec = (interval % 60);
 	interval = Math.floor(interval / 60);
-	if (interval % 60 !== 0) str = (interval % 60) + "m " + str;
+	if (interval % 60 !== 0) min = (interval % 60);
 	interval = Math.floor(interval / 60);
-	if (interval % 24 !== 0) str = (interval % 24) + "h " + str;
+	if (interval % 24 !== 0) hours = (interval % 24);
 	interval = Math.floor(interval / 24);
-	if (interval !== 0) str = (interval) + "d " + str;
-	return str;
+	if (interval !== 0) days = (interval);
+
+	if (days >= 10) return days + " days";
+	if (days) return days + "d " + hours + "h";
+	if (hours) return hours + "h " + min + "m";
+	if (min) return min + "m " + sec + "s";
+	else return sec + "s";
+
 }
 
 function comment_icon( host, service ) {

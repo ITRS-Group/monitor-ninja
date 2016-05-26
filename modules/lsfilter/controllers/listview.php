@@ -16,8 +16,10 @@ class ListView_Controller extends Ninja_Controller {
 		$this->template->listview_refresh = true;
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
+		$basepath = 'modules/lsfilter/';
 
-		$this->template->title = _('List view');
+		$set = ObjectPool_Model::get_by_query($q);
+		$this->template->title = ucfirst($set->get_table());
 		$this->template->toolbar = new Toolbar_Controller( $this->template->title );
 		$this->template->content = $lview = $this->add_view('listview/listview');
 		$this->template->disable_refresh = true;

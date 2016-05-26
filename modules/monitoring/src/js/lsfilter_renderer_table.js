@@ -8,11 +8,24 @@ listview_renderer_table.hosts = {
 		"depends" : [ 'state_text', 'name' ],
 		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
+
+			var icons = {
+				'ok' : '⊙',
+				'up' : '⊙',
+				'warning' : '⊘',
+				'down' : '⊗',
+				'critical' : '⊗',
+				'unreachable' : '⊚',
+				'unknown': '⊚',
+				'pending': '⊝'
+			};
+
 			return $('<td class="icon obj_properties" />')
 					.append(
-							icon16('shield-' + args.obj.state_text, args.obj.state_text)
+						$('<span class="badge state-background" style="font-size: 140%; padding: 0 4px;">')
+							.addClass(args.obj.state_text)
+							.append(icons[args.obj.state_text])
 					)
-					.addClass(args.obj.state_text)
 					.attr('data-table', 'hosts')
 					.attr('data-object', args.obj.key);
 		}
@@ -42,11 +55,141 @@ listview_renderer_table.hosts = {
 			return $('<td />').update_text(args.obj.alias);
 		}
 	},
-	"status" : {
-		"header" : _('Status'),
-		"depends" : [ 'name', 'acknowledged', 'notifications_enabled',
-				'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-				'pnpgraph_present', 'comments_count' ],
+	"last_check" : {
+		"header" : _('Checked'),
+		"depends" : [ 'last_check' ],
+		"sort" : [ 'last_check' ],
+		"cell" : function(args) {
+			return $('<td />').text(
+				format_interval(relative_time_since(args.obj.last_check)) + ' ago'
+			);
+		}
+	},
+	"duration" : {
+		"header" : _('Duration'),
+		"depends" : [ 'duration' ],
+		"sort" : [ 'last_state_change desc' ],
+		"cell" : function(args) {
+			return $('<td />').text(format_interval(args.obj.duration));
+		}
+	},
+	"status_information" : {
+		"header" : _('Status Information'),
+		"depends" : [ 'plugin_output', 'acknowledged', 'notifications_enabled', 'checks_disabled', 'is_flapping', 'scheduled_downtime_depth' ],
+		"sort" : [ 'plugin_output' ],
+		"cell" : function(args) {
+
+			var cell = $('<td class="restricted-output" />')
+			var output = args.obj.plugin_output;
+
+			if (output.length > 48) {
+				output = output.substr(0, 45) + '...';
+			}
+
+			if (args.obj.acknowledged)
+				cell.append(icon16('acknowledged', _('Acknowledged')));
+
+			if (!args.obj.notifications_enabled)
+				cell.append(icon16('notify-disabled', 'Notification disabled'));
+
+			if (args.obj.checks_disabled)
+				cell.append(icon16('active-checks-disabled',
+						_('Checks Disabled')));
+
+			if (args.obj.is_flapping) // FIXME: Needs icon in compass
+				cell.append(icon16('flapping', _('Flapping')));
+
+			if (args.obj.scheduled_downtime_depth > 0)
+				cell.append(icon16('scheduled-downtime',
+						_('Scheduled Downtime')));
+
+			return cell.append(output);
+		}
+	},
+	"services_states" : {
+		"header" : 'Service states',
+		"depends" : [ 'num_services', 'num_services_ok', 'num_services_warn', 'num_services_crit', 'num_services_unknown', 'num_services_pending', 'name' ],
+		"sort" : false,
+		"cell" : function(args) {
+			var cell = $('<td />');;
+			if (args.obj.num_services > 0) {
+				var node = link_query(
+						'[services] host.name = "' + args.obj.name + '"')
+						.append(args.obj.num_services);
+				node.addClass('info')
+					.attr('title', 'Go to list of the ' + args.obj.num_services + ' services on this host')
+					.addClass('state-background')
+					.addClass('image-link')
+					.addClass('badge');
+				cell.append(node);
+			}
+			if (args.obj.num_services_ok > 0) {
+				var node = link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=0 and has_been_checked!=0')
+						.append(args.obj.num_services_ok);
+				node.addClass('ok')
+					.attr('title', 'Go to list of the ' + args.obj.num_services_ok + ' services on this host in state ok')
+					.addClass('state-background')
+					.addClass('image-link')
+					.addClass('badge');
+				cell.append(node);
+			}
+			if (args.obj.num_services_warn > 0) {
+				var node = link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=1 and has_been_checked!=0')
+						.append(args.obj.num_services_warn);
+				node.addClass('warning')
+					.attr('title', 'Go to list of the ' + args.obj.num_services_warn + ' services on this host in state warning')
+					.addClass('state-background')
+					.addClass('image-link')
+					.addClass('badge');
+				cell.append(node);
+			}
+			if (args.obj.num_services_crit > 0) {
+				var node = link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=2 and has_been_checked!=0')
+						.append(args.obj.num_services_crit);
+				node.addClass('critical')
+					.attr('title', 'Go to list of the ' + args.obj.num_services_crit + ' services on this host in state critical')
+					.addClass('state-background')
+					.addClass('image-link')
+					.addClass('badge');
+				cell.append(node);
+			}
+			if (args.obj.num_services_unknown > 0) {
+				var node = link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and state=3 and has_been_checked!=0')
+						.append(args.obj.num_services_unknown);
+				node.addClass('unknown')
+					.attr('title', 'Go to list of the ' + args.obj.num_services_unknown + ' services on this host in state unknown')
+					.addClass('state-background')
+					.addClass('image-link')
+					.addClass('badge');
+				cell.append(node);
+			}
+			if (args.obj.num_services_pending > 0) {
+				var node = link_query(
+						'[services] host.name = "' + args.obj.name
+								+ '" and has_been_checked=0').append(
+						args.obj.num_services_pending);
+				node.addClass('pending')
+					.attr('title', 'Go to list of the ' + args.obj.num_services_pending + ' services on this host in state pending')
+					.addClass('state-background')
+					.addClass('image-link')
+					.addClass('badge');
+				cell.append(node);
+			}
+			return cell;
+		}
+	},
+	"actions" : {
+		"header" : _('Actions'),
+		"depends" : [ 'name','pnpgraph_present', 'action_url', 'config_url', 'notes_url',
+				'config_allowed', 'comments_count' ],
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
@@ -67,36 +210,8 @@ listview_renderer_table.hosts = {
 
 			}
 
-			if (args.obj.acknowledged)
-				cell.append(icon16('acknowledged', _('Acknowledged')));
-
-			if (!args.obj.notifications_enabled)
-				cell.append(icon16('notify-disabled', 'Notification disabled'));
-
-			if (args.obj.checks_disabled)
-				cell.append(icon16('active-checks-disabled',
-						_('Checks Disabled')));
-
-			if (args.obj.is_flapping) // FIXME: Needs icon in compass
-				cell.append(icon16('flapping', _('Flapping')));
-
-			if (args.obj.scheduled_downtime_depth > 0)
-				cell.append(icon16('scheduled-downtime',
-						_('Scheduled Downtime')));
-
 			if (args.obj.comments_count > 0)
 				cell.append(comment_icon(args.obj.name, null));
-
-			return cell;
-		}
-	},
-	"actions" : {
-		"header" : _('Actions'),
-		"depends" : [ 'name', 'action_url', 'config_url', 'notes_url',
-				'config_allowed' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />');
 
 			// FIXME: icon for service-details
 			cell.append(icon16('service-details',
@@ -124,132 +239,6 @@ listview_renderer_table.hosts = {
 
 			return cell;
 		}
-	},
-	"last_check" : {
-		"header" : _('Last Checked'),
-		"depends" : [ 'last_check' ],
-		"sort" : [ 'last_check' ],
-		"cell" : function(args) {
-			return $('<td />').text(format_timestamp(args.obj.last_check));
-		}
-	},
-	"duration" : {
-		"header" : _('Duration'),
-		"depends" : [ 'duration' ],
-		"sort" : [ 'last_state_change desc' ],
-		"cell" : function(args) {
-			return $('<td />').text(format_interval(args.obj.duration));
-		}
-	},
-	"status_information" : {
-		"header" : _('Status Information'),
-		"depends" : [ 'plugin_output' ],
-		"sort" : [ 'plugin_output' ],
-		"cell" : function(args) {
-			return $('<td class="restricted-output" />').update_text(
-					args.obj.plugin_output);
-		}
-	},
-	"services_num_all" : {
-		"header" : function () {return icon12('shield-info').addClass('header-icon')},
-		"depends" : [ 'num_services', 'name' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />').css('text-align', 'center');
-			if (args.obj.num_services > 0) {
-				cell.append(link_query(
-						'[services] host.name = "' + args.obj.name + '"')
-						.append(args.obj.num_services));
-				cell.addClass('cell_svccnt_all');
-				cell.addClass('cell_svccnt');
-			}
-			return cell;
-		}
-	},
-	"services_num_ok" : {
-		"header" : function () {return icon12('shield-ok').addClass('header-icon')},
-		"depends" : [ 'num_services_ok' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />').css('text-align', 'center');
-			if (args.obj.num_services_ok > 0) {
-				cell.append(link_query(
-						'[services] host.name = "' + args.obj.name
-								+ '" and state=0 and has_been_checked!=0')
-						.append(args.obj.num_services_ok));
-				cell.addClass('cell_svccnt_ok');
-				cell.addClass('cell_svccnt');
-			}
-			return cell;
-		}
-	},
-	"services_num_warning" : {
-		"header" : function () {return icon12('shield-warning').addClass('header-icon')},
-		"depends" : [ 'num_services_warn' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />').css('text-align', 'center');
-			if (args.obj.num_services_warn > 0) {
-				cell.append(link_query(
-						'[services] host.name = "' + args.obj.name
-								+ '" and state=1 and has_been_checked!=0')
-						.append(args.obj.num_services_warn));
-				cell.addClass('cell_svccnt_warning');
-				cell.addClass('cell_svccnt');
-			}
-			return cell;
-		}
-	},
-	"services_num_critical" : {
-		"header" : function () {return icon12('shield-critical').addClass('header-icon')},
-		"depends" : [ 'num_services_crit' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />').css('text-align', 'center');
-			if (args.obj.num_services_crit > 0) {
-				cell.append(link_query(
-						'[services] host.name = "' + args.obj.name
-								+ '" and state=2 and has_been_checked!=0')
-						.append(args.obj.num_services_crit));
-				cell.addClass('cell_svccnt_critical');
-				cell.addClass('cell_svccnt');
-			}
-			return cell;
-		}
-	},
-	"services_num_unknown" : {
-		"header" : function () {return icon12('shield-unknown').addClass('header-icon')},
-		"depends" : [ 'num_services_unknown' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />').css('text-align', 'center');
-			if (args.obj.num_services_unknown > 0) {
-				cell.append(link_query(
-						'[services] host.name = "' + args.obj.name
-								+ '" and state=3 and has_been_checked!=0')
-						.append(args.obj.num_services_unknown));
-				cell.addClass('cell_svccnt_unknown');
-				cell.addClass('cell_svccnt');
-			}
-			return cell;
-		}
-	},
-	"services_num_pending" : {
-		"header" : function () {return icon12('shield-pending').addClass('header-icon')},
-		"depends" : [ 'num_services_pending' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />').css('text-align', 'center');
-			if (args.obj.num_services_pending > 0) {
-				cell.append(link_query(
-						'[services] host.name = "' + args.obj.name
-								+ '" and has_been_checked=0').append(
-						args.obj.num_services_pending));
-				cell.addClass('cell_svccnt_pending');
-				cell.addClass('cell_svccnt');
-			}
-			return cell;
-		}
 	}
 };
 
@@ -259,13 +248,24 @@ listview_renderer_table.services = {
 		"depends" : [ 'host.state_text', 'host.name' ],
 		"sort" : [ 'host.state' ],
 		"cell" : function(args) {
+			var icons = {
+				'ok' : '⊙',
+				'up' : '⊙',
+				'warning' : '⊘',
+				'down' : '⊗',
+				'critical' : '⊗',
+				'unreachable' : '⊚',
+				'unknown': '⊚',
+				'pending': '⊝'
+			};
+
 			if (args.obj.host
 					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
 				return $('<td class="icon obj_properties" />')
 					.append(
-						icon16('shield-' + args.obj.host.state_text, args.obj.host.state_text)
+						$('<span style="font-size: 140%; padding: 0 4px;" class="badge state-background ' + args.obj.host.state_text + '">')
+							.text(icons[args.obj.host.state_text])
 					)
-					.addClass(args.obj.host.state_text)
 					.attr('data-table', 'hosts')
 					.attr('data-object', args.obj.host.name);
 
@@ -300,52 +300,25 @@ listview_renderer_table.services = {
 			return cell;
 		}
 	},
-	"host_actions" : {
-		"header" : _('Host Actions'),
-		"depends" : [ 'host.name', 'host.action_url', 'host.config_url',
-				'host.notes_url', 'host.config_allowed' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />');
-
-			if (args.obj.host
-					&& (!args.last_obj.host || args.obj.host.name != args.last_obj.host.name)) {
-				cell.append(icon16('service-details',
-						_('View service details for this host'),
-						link_query('[services] host.name = "'
-								+ args.obj.host.name + '"' // FIXME:
-								// escape
-						)));
-
-				if (args.obj.host.action_url)
-					cell.append(icon16('host-actions',
-							_('Perform extra host actions'), $('<a />').attr(
-									'href', args.obj.host.action_url)));
-
-				if (args.obj.host.config_url && args.obj.host.config_allowed)
-					cell.append(icon16('nacoma', _('Configure this host'), $(
-							'<a />').attr('href', args.obj.host.config_url)));
-
-				if (args.obj.host.notes_url)
-					cell.append(icon16('host-notes',
-							_('View extra host notes'), $('<a />').attr('href',
-									args.obj.host.notes_url)));
-			} else {
-				cell.addClass('listview-empty-cell');
-			}
-
-			return cell;
-		}
-	},
 	"state" : {
 		"header" : '',
 		"depends" : [ 'state_text', 'description', 'host.name' ],
 		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
+			var icons = {
+				'ok' : '⊙',
+				'up' : '⊙',
+				'warning' : '⊘',
+				'down' : '⊗',
+				'critical' : '⊗',
+				'unreachable' : '⊚',
+				'unknown': '⊚',
+				'pending': '⊝'
+			};
+
 			return $(
-					'<td class="icon svc_obj_properties"><span class="icon-16 x16-shield-'
-							+ args.obj.state_text + '"></span></td>').addClass(
-					args.obj.state_text)
+					'<td class="icon svc_obj_properties">' +
+					'<span style="font-size: 140%; padding: 0px 4px;" class="badge state-background ' + args.obj.state_text + '">' + icons[args.obj.state_text] + '</span></td>')
 					.attr('data-table', 'services')
 					.attr('data-object', args.obj.key);
 		}
@@ -374,90 +347,14 @@ listview_renderer_table.services = {
 
 		}
 	},
-	"status" : {
-		"header" : _('Status'),
-		"depends" : [ 'host.name', 'description', 'pnpgraph_present',
-				'acknowledged', 'comments_count', 'notifications_enabled',
-				'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
-				'host.scheduled_downtime_depth' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />');
-
-			if (args.obj.pnpgraph_present > 0) {
-
-				var pnp_link = icon16('pnp', _('Show performance graph'), link(
-						'pnp', {
-							"srv" : args.obj.description,
-							"host" : args.obj.host.name
-						}));
-
-				pnp_link.attr('data-popover',
-					'image:/monitor/op5/pnp/image?host=' + args.obj.host.name + '&srv=' + args.obj.description + '&view=0&source=0'
-				);
-
-				cell.append(pnp_link);
-
-			}
-
-			if (args.obj.acknowledged)
-				cell.append(icon16('acknowledged', _('Acknowledged')));
-
-			if (args.obj.comments_count > 0)
-				cell.append(comment_icon(args.obj.host.name,
-						args.obj.description));
-
-			if (!args.obj.notifications_enabled)
-				cell.append(icon16('notify-disabled',
-						_('Notification disabled')));
-
-			if (args.obj.checks_disabled)
-				cell.append(icon16('active-checks-disabled',
-						_('Checks Disabled')));
-
-			if (args.obj.is_flapping) // FIXME: Needs icon in compass
-				cell.append(icon16('flapping', _('Flapping')));
-
-			if ((args.obj.scheduled_downtime_depth > 0)
-					|| (args.obj.host.scheduled_downtime_depth > 0))
-				cell.append(icon16('scheduled-downtime',
-						_('Scheduled Downtime')));
-
-			return cell;
-		}
-	},
-	"actions" : {
-		"header" : _('Actions'),
-		"depends" : [ 'action_url', 'config_url', 'notes_url', 'config_allowed' ],
-		"sort" : false,
-		"cell" : function(args) {
-			var cell = $('<td />');
-
-			if (args.obj.action_url) {
-				cell.append(icon16('host-actions',
-						_('Perform extra service actions'), $('<a />').attr({
-							'href': args.obj.action_url,
-							'target': _action_url_target
-						})));
-			}
-
-			if (args.obj.config_url && args.obj.config_allowed)
-				cell.append(icon16('nacoma', _('Configure this service'), $(
-						'<a />').attr('href', args.obj.config_url)));
-
-			if (args.obj.notes_url)
-				cell.append(icon16('host-notes', _('View extra service notes'),
-						$('<a />').attr('href', args.obj.notes_url)));
-
-			return cell;
-		}
-	},
 	"last_check" : {
-		"header" : _('Last Checked'),
+		"header" : _('Checked'),
 		"depends" : [ 'last_check' ],
 		"sort" : [ 'last_check' ],
 		"cell" : function(args) {
-			return $('<td />').text(format_timestamp(args.obj.last_check));
+			return $('<td />').text(
+				format_interval(relative_time_since(args.obj.last_check)) + ' ago'
+			);
 		}
 	},
 	"duration" : {
@@ -480,11 +377,84 @@ listview_renderer_table.services = {
 	},
 	"status_information" : {
 		"header" : _('Status Information'),
-		"depends" : [ 'plugin_output' ],
+		"depends" : ['acknowledged', 'notifications_enabled',
+        'checks_disabled', 'is_flapping', 'scheduled_downtime_depth',
+        'host.scheduled_downtime_depth', 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
 		"cell" : function(args) {
-			return $('<td class="restricted-output" />').update_text(
-					args.obj.plugin_output);
+
+			var output = args.obj.plugin_output;
+			if (output.length > 48) {
+				output = output.substr(0, 45) + '...';
+			}
+
+			var cell = $('<td class="restricted-output" />');
+			if (args.obj.acknowledged)
+        cell.append(icon16('acknowledged', _('Acknowledged')));
+
+      if (!args.obj.notifications_enabled)
+        cell.append(icon16('notify-disabled',
+            _('Notification disabled')));
+
+      if (args.obj.checks_disabled)
+        cell.append(icon16('active-checks-disabled',
+            _('Checks Disabled')));
+
+      if (args.obj.is_flapping) // FIXME: Needs icon in compass
+        cell.append(icon16('flapping', _('Flapping')));
+
+      if ((args.obj.scheduled_downtime_depth > 0)
+          || (args.obj.host.scheduled_downtime_depth > 0))
+        cell.append(icon16('scheduled-downtime',
+            _('Scheduled Downtime')));
+
+			return cell.append($('<span style="margin-left: 8px;">').update_text(output));
+		}
+	},
+	"actions" : {
+		"header" : _('Actions'),
+		"depends" : [ 'host.name', 'description', 'pnpgraph_present', 'comments_count', 'action_url', 'config_url', 'notes_url', 'config_allowed' ],
+		"sort" : false,
+		"cell" : function(args) {
+			var cell = $('<td />');
+
+			if (args.obj.pnpgraph_present > 0) {
+
+				var pnp_link = icon16('pnp', _('Show performance graph'), link(
+						'pnp', {
+							"srv" : args.obj.description,
+							"host" : args.obj.host.name
+						}));
+
+				pnp_link.attr('data-popover',
+					'image:/monitor/op5/pnp/image?host=' + args.obj.host.name + '&srv=' + args.obj.description + '&view=0&source=0'
+				);
+
+				cell.append(pnp_link);
+
+			}
+
+			if (args.obj.comments_count > 0)
+				cell.append(comment_icon(args.obj.host.name,
+						args.obj.description));
+
+			if (args.obj.action_url) {
+				cell.append(icon16('host-actions',
+						_('Perform extra service actions'), $('<a />').attr({
+							'href': args.obj.action_url,
+							'target': _action_url_target
+						})));
+			}
+
+			if (args.obj.config_url && args.obj.config_allowed)
+				cell.append(icon16('nacoma', _('Configure this service'), $(
+						'<a />').attr('href', args.obj.config_url)));
+
+			if (args.obj.notes_url)
+				cell.append(icon16('host-notes', _('View extra service notes'),
+						$('<a />').attr('href', args.obj.notes_url)));
+
+			return cell;
 		}
 	}
 };
@@ -649,6 +619,7 @@ listview_renderer_table.comments = {
 		"depends" : [ 'entry_time' ],
 		"sort" : [ 'entry_time' ],
 		"cell" : function(args) {
+				format_interval(relative_time_since(args.obj.last_check)) + ' ago'
 			return $('<td />').text(format_timestamp(args.obj.entry_time));
 		}
 	},
@@ -773,9 +744,21 @@ listview_renderer_table.downtimes = {
 		"depends" : [ 'host.state_text' ],
 		"sort" : [ 'host.state' ],
 		"cell" : function(args) {
+			var icons = {
+				'ok' : '⊙',
+				'up' : '⊙',
+				'warning' : '⊘',
+				'down' : '⊗',
+				'critical' : '⊗',
+				'unreachable' : '⊚',
+				'unknown': '⊚',
+				'pending': '⊝'
+			};
+
 			return $('<td />').append(
-					icon16('shield-' + args.obj.host.state_text,
-							args.obj.host.state_text));
+				$('<span>').addClass('badge state-background ' + args.obj.host.state_text)
+					.append(icons[args.obj.host.state_text])
+				);
 
 		}
 	},
@@ -805,8 +788,21 @@ listview_renderer_table.downtimes = {
 			if (!args.obj.service.description)
 				return $('<td />');
 
-			return $('<td><span class="icon-16 x16-shield-'
-					+ args.obj.service.state_text + '"></span></td>');
+			var icons = {
+				'ok' : '⊙',
+				'up' : '⊙',
+				'warning' : '⊘',
+				'down' : '⊗',
+				'critical' : '⊗',
+				'unreachable' : '⊚',
+				'unknown': '⊚',
+				'pending': '⊝'
+			};
+
+			return $('<td />').append(
+				$('<span>').addClass('badge state-background ' + args.obj.service.state_text)
+					.append(icons[args.obj.service.state_text])
+				);
 		}
 	},
 	"service_description" : {
