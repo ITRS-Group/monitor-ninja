@@ -724,6 +724,10 @@ h1.emote b {
   width: 35%;
 }
 
+.restricted-output .icon-16 {
+  margin-right: 4px;
+}
+
 .profile {
   float: right;
   text-align: left;

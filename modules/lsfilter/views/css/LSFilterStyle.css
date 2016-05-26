@@ -41,6 +41,24 @@
   border: 0;
 }
 
+.listview-goto-link {
+  border-top: 1px solid #dddddd;
+  padding: 8px 4px 8px 4px;
+  text-align: center;
+}
+
+.listview-goto-link a {
+  border: none;
+  color: #50c0e4;
+}
+
+.listview-goto-link a:after {
+  content: "▶";
+  color: #50c0e4;
+  margin-left: 8px;
+  vertical-align: 5%;
+}
+
 #filter-query-multi-action ul li a:hover {
   background: #eeeeee;
 }

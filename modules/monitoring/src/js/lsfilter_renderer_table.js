@@ -408,7 +408,7 @@ listview_renderer_table.services = {
         cell.append(icon16('scheduled-downtime',
             _('Scheduled Downtime')));
 
-			return cell.append($('<span style="margin-left: 8px;">').update_text(output));
+			return cell.append($('<span>').update_text(output));
 		}
 	},
 	"actions" : {
@@ -461,13 +461,14 @@ listview_renderer_table.services = {
 
 listview_renderer_table.hostgroups = {
 	"name" : {
-		"header" : _('Host Group'),
+		"header" : _('Hostgroup'),
 		"depends" : [ 'alias', 'name' ],
 		"sort" : [ 'alias', 'name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(link_query('[hosts] groups >= "' + args.obj.name + '"')
-					.update_text(args.obj.alias + ' (' + args.obj.name + ')'));
+			cell.append(extinfo_link({
+				hostgroup: args.obj.name
+			}).update_text(args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
 	},
@@ -477,15 +478,13 @@ listview_renderer_table.hostgroups = {
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(icon16('extended-information', _('Actions'),
-					extinfo_link({
-						hostgroup : args.obj.name
-					})));
+			cell.append(icon16('eventlog', _('Go to list of all services in this group'),
+					link_query('[hosts] groups >= "' + args.obj.name + '"')));
 			return cell;
 		}
 	},
 	"host_status_summary" : {
-		"header" : _('Host Status Summary'),
+		"header" : _('Host states'),
 		"depends" : [ 'host_stats' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -495,7 +494,7 @@ listview_renderer_table.hostgroups = {
 		}
 	},
 	"service_status_summary" : {
-		"header" : _('Service Status Summary'),
+		"header" : _('Service states'),
 		"depends" : [ 'service_stats' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -508,13 +507,14 @@ listview_renderer_table.hostgroups = {
 
 listview_renderer_table.servicegroups = {
 	"name" : {
-		"header" : _('Service Group'),
+		"header" : _('Servicegroup'),
 		"depends" : [ 'alias', 'name' ],
 		"sort" : [ 'alias', 'name' ],
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(link_query('[services] groups >= "' + args.obj.name + '"')
-					.update_text(args.obj.alias + ' (' + args.obj.name + ')'));
+			cell.append(extinfo_link({
+				servicegroup : args.obj.name
+			}).update_text(args.obj.alias + ' (' + args.obj.name + ')'));
 			return cell;
 		}
 	},
@@ -524,15 +524,14 @@ listview_renderer_table.servicegroups = {
 		"sort" : false,
 		"cell" : function(args) {
 			var cell = $('<td />');
-			cell.append(icon16('extended-information', _('Actions'),
-					extinfo_link({
-						servicegroup : args.obj.name
-					})));
+			cell.append(icon16('eventlog', _('Go to list of all services in this group'),
+				link_query('[services] groups >= "' + args.obj.name + '"')
+			));
 			return cell;
 		}
 	},
 	"service_status_summary" : {
-		"header" : _('Service Status Summary'),
+		"header" : _('Service states'),
 		"depends" : [ 'service_stats' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -544,23 +543,7 @@ listview_renderer_table.servicegroups = {
 };
 
 listview_renderer_table.comments = {
-	"id" : {
-		"header" : _('ID'),
-		"depends" : [ 'id' ],
-		"sort" : [ 'id' ],
-		"cell" : function(args) {
-			return $('<td />').text(args.obj.id);
-		}
-	},
-	"object_type" : {
-		"header" : _('Type'),
-		"depends" : [ 'is_service' ],
-		"sort" : false,
-		"cell" : function(args) {
-			return $('<td />').text(args.obj.is_service ? 'Service' : 'Host');
-		}
-	},
-	"host_state" : {
+		"host_state" : {
 		"header" : '',
 		"depends" : [ 'host.state_text' ],
 		"sort" : [ 'host.state' ],
@@ -619,7 +602,6 @@ listview_renderer_table.comments = {
 		"depends" : [ 'entry_time' ],
 		"sort" : [ 'entry_time' ],
 		"cell" : function(args) {
-				format_interval(relative_time_since(args.obj.last_check)) + ' ago'
 			return $('<td />').text(format_timestamp(args.obj.entry_time));
 		}
 	},
@@ -629,35 +611,6 @@ listview_renderer_table.comments = {
 		"sort" : [ 'author' ],
 		"cell" : function(args) {
 			return $('<td />').text(args.obj.author);
-		}
-	},
-	"comment" : {
-		"header" : _('Comment'),
-		"depends" : [ 'comment' ],
-		"sort" : [ 'comment' ],
-		"cell" : function(args) {
-			return $('<td class="restricted-output"/>').update_text(args.obj.comment);
-		}
-	},
-	"id" : {
-		"header" : _('ID'),
-		"depends" : [ 'id' ],
-		"sort" : [ 'id' ],
-		"cell" : function(args) {
-			return $('<td />').text(args.obj.id);
-		}
-	},
-	"persistent" : {
-		"header" : _('Persistent'),
-		"depends" : [ 'persistent' ],
-		"sort" : [ 'persistent' ],
-		"cell" : function(args) {
-			var cell = $('<td />');
-			if (args.obj.persistent)
-				cell.text(_('Yes'));
-			else
-				cell.text(_('No'));
-			return cell;
 		}
 	},
 	"entry_type" : {
@@ -681,6 +634,14 @@ listview_renderer_table.comments = {
 				break;
 			}
 			return cell;
+		}
+	},
+	"comment" : {
+		"header" : _('Comment'),
+		"depends" : [ 'comment' ],
+		"sort" : [ 'comment' ],
+		"cell" : function(args) {
+			return $('<td class="restricted-output"/>').update_text(args.obj.comment);
 		}
 	},
 	"expires" : {

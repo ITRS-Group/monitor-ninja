@@ -158,24 +158,20 @@ jQuery.fn.replaceContent = function(new_data) {
 };
 
 
-
-
-
-
 function render_summary_state(ul, state, stats, substates)
 {
 	if (stats.stats[state] === 0) return;
 
 	var li = $('<li />').append(
-			link_query(stats.queries[state]).append(icon16('shield-' + state))
-					.append(
-							$('<span />')
-									.text(stats.stats[state] + " " + state)));
+		link_query(stats.queries[state])
+			.addClass('badge state-background ' + state)
+			.text(stats.stats[state] + " " + state)
+	);
 
 	var delim = ' ( ';
 	var suffix = '';
 
-	for ( var tag in substates) {
+	for (var tag in substates) {
 		var key = state + tag;
 		var type = substates[tag];
 
@@ -189,8 +185,8 @@ function render_summary_state(ul, state, stats, substates)
 	}
 
 	li.append(suffix);
-
 	ul.append(li);
+
 }
 
 function render_service_status_summary(stats)
