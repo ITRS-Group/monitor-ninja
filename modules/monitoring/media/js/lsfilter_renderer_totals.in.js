@@ -2,89 +2,164 @@
 /*******************************************************************************
  * Totals renderer
  ******************************************************************************/
+var _test_icons = {
+	'ok' : '⊙',
+	'up' : '⊙',
+	'warning' : '⊘',
+	'down' : '⊗',
+	'critical' : '⊗',
+	'unreachable' : '⊚',
+	'unknown': '⊚',
+	'pending': '⊝'
+};
 
 listview_renderer_totals['count'] = function(cnt) {
 	var container = $('<li class="extra_toolbar_category" />');
-	container.append(_("Count") + ": &nbsp; ");
-	container.append(icon16('shield-info', _("Matching")));
-	container.append(cnt);
-	return container;
-};
-listview_renderer_totals["host_all"] = function(cnt) {
-	var container = $('<li class="extra_toolbar_category" />');
-	container.append(_("Hosts") + ": &nbsp; ");
-	container.append(icon16('host', _("Hosts total")));
-	container.append(cnt);
-	return container;
-};
-listview_renderer_totals["host_state_up"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield') + '-up',
-			_("Hosts up")));
-	container.append(cnt);
-	return container;
-};
-listview_renderer_totals["host_state_down"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-down', _("Hosts down")));
-	container.append(cnt);
-	return container;
-};
-listview_renderer_totals["host_state_unreachable"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-unreachable', _("Hosts unreachable")));
-	container.append(cnt);
-	return container;
-};
-listview_renderer_totals["host_pending"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-pending', _("Hosts pending")));
-	container.append(cnt);
+	container.append(
+		$('<span class="main-toolbar-subtitle" />')
+			.append(_("Count") + ": &nbsp; ")
+	);
+	container.append(
+		$('<span>')
+			.addClass('badge')
+			.addClass('info supplementary')
+			.append(cnt)
+	);
 	return container;
 };
 
-listview_renderer_totals["service_all"] = function(cnt) {
+listview_renderer_totals["host_all"] = function(cnt) {
+	if (cnt > 0) {
+		var container = $('<li class="extra_toolbar_category" />');
+		container.append(
+			$('<span>').addClass('badge info supplementary')
+			.attr('title', 'Go to list of all hosts matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
+};
+
+listview_renderer_totals["host_state_up"] = function(cnt) {
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge up supplementary')
+			.attr('title', 'Go to list of hosts in state up matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
+};
+listview_renderer_totals["host_state_down"] = function(cnt) {
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge down supplementary')
+			.attr('title', 'Go to list of hosts in state down matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
+};
+listview_renderer_totals["host_state_unreachable"] = function(cnt) {
+	var container = $('<li />');
+	if (cnt > 0) {
+		container.append(
+			$('<span>').addClass('badge unreachable supplementary')
+			.attr('title', 'Go to list of hosts in state unreachable matching this filter')
+			.append(cnt)
+		);
+	}
+	return container;
+};
+listview_renderer_totals["host_pending"] = function(cnt) {
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge pending supplementary')
+			.attr('title', 'Go to list of hosts in state pending matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
+};
+
+listview_renderer_totals["service_all"] = function(cnt, table) {
 	var container = $('<li class="extra_toolbar_category" />');
-	container.append(_("Services") + ": &nbsp; ");
-	container.append(icon16('shield-info', _("Services total")));
-	container.append(cnt);
+	if (table !== 'services') {
+		container.append($('<span>').addClass('main-toolbar-subtitle').append(_("Services") + ": &nbsp; "));
+	}
+	if (cnt > 0) {
+		container.append(
+			$('<span>').addClass('badge info supplementary')
+			.attr('title', 'Go to list of all services matching this filter')
+			.append(cnt)
+		);
+	}
 	return container;
 };
 listview_renderer_totals["service_state_ok"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield') + '-ok',
-			_("Services ok")));
-	container.append(cnt);
-	return container;
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge ok supplementary')
+			.attr('title', 'Go to list of services in state ok matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
 };
 listview_renderer_totals["service_state_warning"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-warning', _("Services warning")));
-	container.append(cnt);
-	return container;
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge warning supplementary')
+			.attr('title', 'Go to list of services in state warning matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
 };
 listview_renderer_totals["service_state_critical"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-critical', _("Services critical")));
-	container.append(cnt);
-	return container;
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge critical supplementary')
+			.attr('title', 'Go to list of services in state critical matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
 };
 listview_renderer_totals["service_state_unknown"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-unknown', _("Services unknown")));
-	container.append(cnt);
-	return container;
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge unknown supplementary')
+			.attr('title', 'Go to list of services in state unknown matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
 };
 listview_renderer_totals["service_pending"] = function(cnt) {
-	var container = $('<li />');
-	container.append(icon16(((cnt == 0) ? 'shield-not' : 'shield')
-			+ '-pending', _("Services pending")));
-	container.append(cnt);
-	return container;
+	if (cnt > 0) {
+		var container = $('<li />');
+		container.append(
+			$('<span>').addClass('badge pending supplementary')
+			.attr('title', 'Go to list of services in state pending matching this filter')
+			.append(cnt)
+		);
+		return container;
+	}
+	return $('');
 };

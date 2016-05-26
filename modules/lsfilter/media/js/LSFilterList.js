@@ -261,7 +261,8 @@ function lsfilter_list(config)
 		var scroll = this.get_browser_scroll_size();
 		$('#align_th').remove();
 		if ($('.content').get(0).scrollHeight > $('.content').height()) {
-			/*
+
+											/*
 			 *	Append a th to the floating header
 			 *	Give it a width that matches the scrollbars width
 			 *	It's not a very nice solution but at least we
@@ -413,25 +414,26 @@ function lsfilter_list(config)
 	this.render_totals = function(table, totals)
 	{
 
-		var subtitle = null;
-		if ( this.config.toolbar ) {
-			subtitle = this.config.toolbar.find( '.main-toolbar-subtitle' );
-		}
-
+		var title_element = null;
 		var container = $('<ul />');
 
-		if ( subtitle ) {
-			subtitle.html("").append( link_query('['+table+'] all')
-				.text(table.charAt(0).toUpperCase() + table.slice(1))
-				.css( "border", "none" )
-			);
+		if (this.config.toolbar) {
+			title_element = this.config.toolbar.find('.main-toolbar-title');
+			if (title_element) {
+				title_element.html("")
+					.append(
+						link_query('['+table+'] all')
+							.text(table.charAt(0).toUpperCase() + table.slice(1))
+							.css( "border", "none" )
+					);
+			}
 		}
 
 		if (totals) {
 			for ( var field in listview_renderer_totals) {
 				if (field in totals) {
 
-					var item = listview_renderer_totals[field](totals[field][1])
+					var item = listview_renderer_totals[field](totals[field][1], table)
 						.wrapInner(
 							link_query(totals[field][0])
 						);
