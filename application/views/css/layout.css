@@ -677,6 +677,10 @@ th.headerNone {
   width: 30%;
 }
 
+.restricted-output .icon-16 {
+  margin-right: 4px;
+}
+
 .profile {
   float: right;
   text-align: left;
