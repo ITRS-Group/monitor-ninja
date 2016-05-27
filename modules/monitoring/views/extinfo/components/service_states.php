@@ -1,9 +1,5 @@
 <div class="information-component information-service-matrix">
 	<div class="information-component-title">Service states</div>
-	<div class="information-cell-header">
-		Total: <a href="<?php echo listview::querylink('[services] host.name="' . $object->get_name() . '"'); ?>"><em><?php echo $object->get_num_services(); ?></em> services</a>
-	</div>
-	<br />
 
 	<?php if ($object->get_num_services_ok() > 0) { ?>
 	<a title="Go to list of services on this host in state ok" href="<?php echo listview::querylink('[services] host.name="' . $object->get_name() . '" and state = 0'); ?>">
@@ -59,6 +55,9 @@
 	</div>
 	</a>
 	<?php } ?>
-
+	<br /><br />
+	<div class="information-cell-header">
+		Total: <a href="<?php echo listview::querylink('[services] host.name="' . $object->get_name() . '"'); ?>"><em><?php echo $object->get_num_services(); ?></em> services</a>
+	</div>
 </div>
 <?php

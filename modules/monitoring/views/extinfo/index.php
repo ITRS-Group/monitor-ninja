@@ -11,15 +11,15 @@
 <div class="left width-80 information-content">
 <?php
 
-	View::factory('extinfo/components/performance', array(
-		'object' => $object
-	))->render(true);
-
 	if ($object->get_table() === 'hosts') {
 		View::factory('extinfo/components/service_states', array(
 			'object' => $object
 		))->render(true);
 	}
+
+	View::factory('extinfo/components/performance', array(
+		'object' => $object
+	))->render(true);
 
 	View::factory('extinfo/components/output', array(
 		'object' => $object

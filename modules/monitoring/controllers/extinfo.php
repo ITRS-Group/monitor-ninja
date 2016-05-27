@@ -36,18 +36,23 @@ class Extinfo_Controller extends Ninja_Controller {
 		$hostgroup = trim($this->input->get('hostgroup', false));
 		$servicegroup = trim($this->input->get('servicegroup', false));
 
-
 		if(!empty($host) && empty($service)) {
 			$set = HostPool_Model::all()->reduce_by('name', $host, '=');
+			$this->template->content = $this->add_view('extinfo/index');
 		} else if(!empty($host) && !empty($service)) {
 			$set = ServicePool_Model::all()
 				->reduce_by('host.name', $host, '=')
 				->reduce_by('description', $service, '=');
+			$this->template->content = $this->add_view('extinfo/index');
 			$type = 'service';
 		} else if(!empty($hostgroup)) {
-			return $this->group_details('hostgroup', $hostgroup);
+			$set = HostGroupPool_Model::all()->reduce_by('name', $hostgroup, '=');
+			$this->template->content = $this->add_view('extinfo/groups');
+			$type = 'hostgroup';
 		} else if(!empty($servicegroup)) {
-			return $this->group_details('servicegroup', $servicegroup);
+			$set = ServiceGroupPool_Model::all()->reduce_by('name', $servicegroup, '=');
+			$this->template->content = $this->add_view('extinfo/groups');
+			$type = 'servicegroup';
 		} else return; /* @TODO handle this more gracefully */
 
 		$this->_verify_access($set->mayi_resource().':read.extinfo');
@@ -59,11 +64,11 @@ class Extinfo_Controller extends Ninja_Controller {
 		$this->template->js[] = 'modules/monitoring/views/extinfo/js/d3.js';
 		$this->template->js[] = 'modules/monitoring/views/extinfo/js/c3.js';
 
-		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_strings = $this->js_strings;
 		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
 
 		$this->template->content->widgets = array();
+		$this->template->content->type = $type;
 
 		# save us some typing
 		$content = $this->template->content;
@@ -79,49 +84,26 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$username = Auth::instance()->get_user()->get_username();
 
-		$contact_set = ContactPool_Model::none();
-		$contact_all = ContactPool_Model::all();
 
-		foreach ($object->get_contacts() as $contact) {
-			$contact_set = $contact_set->union(
-				$contact_all->reduce_by('name', $contact, '=')
-			);
-		}
+		if ($host || $service) {
+			$contact_set = ContactPool_Model::none();
+			$contact_all = ContactPool_Model::all();
 
-		/* Contacts widget */
-		$model = new Ninja_widget_Model(array(
-			'page' => Router::$controller,
-			'name' => 'listview',
-			'widget' => 'listview',
-			'username' => $username,
-			'friendly_name' => 'Contacts',
-			'setting' => array(
-				'query'=> $contact_set->get_query(),
-				'columns'=>'all'
-			)
-		));
-
-		$widget = widget::get($model, $this);
-		widget::set_resources($widget, $this);
-
-		$widget->set_fixed();
-		$widget->extra_data_attributes['text-if-empty'] = _("No contacts available");
-
-		$this->template->content->widgets[_('Contacts')] = $widget;
-		/* End of contacts widget */
-
-		/* Comment widget */
-		if($object->get_comments_count() > 0) {
-
+			foreach ($object->get_contacts() as $contact) {
+				$contact_set = $contact_set->union(
+					$contact_all->reduce_by('name', $contact, '=')
+				);
+			}
+			/* Contacts widget */
 			$model = new Ninja_widget_Model(array(
 				'page' => Router::$controller,
 				'name' => 'listview',
 				'widget' => 'listview',
 				'username' => $username,
-				'friendly_name' => 'Comments',
+				'friendly_name' => 'Contacts',
 				'setting' => array(
-					'query'=>$set->get_comments()->get_query(),
-					'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
+					'query'=> $contact_set->get_query(),
+					'columns'=>'all'
 				)
 			));
 
@@ -129,11 +111,38 @@ class Extinfo_Controller extends Ninja_Controller {
 			widget::set_resources($widget, $this);
 
 			$widget->set_fixed();
-			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+			$widget->extra_data_attributes['text-if-empty'] = _("No contacts available");
 
-			$this->template->content->widgets[_('Comments')] = $widget;
+			$this->template->content->widgets[_('Contacts')] = $widget;
+			/* End of contacts widget */
 		}
-		/* End of comment widget */
+
+		if ($host || $service) {
+			/* Comment widget */
+			if($object->get_comments_count() > 0) {
+
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Comments',
+					'setting' => array(
+						'query'=>$set->get_comments()->get_query(),
+						'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
+					)
+				));
+
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
+
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+
+				$this->template->content->widgets[_('Comments')] = $widget;
+			}
+			/* End of comment widget */
+		}
 
 		$this->template->inline_js = $this->inline_js;
 
@@ -242,6 +251,48 @@ class Extinfo_Controller extends Ninja_Controller {
 						"objects[]" => $object->get_key()
 					)
 				));
+
+				break;
+			case 'hostgroup':
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Hosts in this group',
+					'setting' => array(
+						'query'=> HostPool_Model::all()->reduce_by('groups', $object->get_name(), '>=')->get_query(),
+						'columns'=>'all'
+					)
+				));
+
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
+
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+				$this->template->content->widgets['Hosts in this group'] = $widget;
+
+				break;
+			case 'servicegroup':
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Service in this group',
+					'setting' => array(
+						'query'=> ServicePool_Model::all()->reduce_by('groups', $object->get_name(), '>=')->get_query(),
+						'columns'=>'all'
+					)
+				));
+
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
+
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+				$this->template->content->widgets['Services in this group'] = $widget;
 
 				break;
 

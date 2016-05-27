@@ -183,7 +183,7 @@ p {
 
 .information-state-box-more li {
   display: block;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   padding: 16px 0;
   margin: 8px 0;
 }
@@ -191,6 +191,12 @@ p {
 .information-state-box-more li h2 {
   text-transform: uppercase;
   font-size: 13pt;
+}
+
+.information-state-box-more li h3 {
+  text-transform: uppercase;
+  font-size: 11pt;
+  font-weight: bold;
 }
 
 div[data-setting-toggle-command] {
@@ -201,10 +207,10 @@ div[data-setting-toggle-command] {
   width: 48px;
   height: 24px;
   background: #dddddd;
-  border: 1px solid #bbbbbb;
+  border: 1px solid #dddddd;
   border-radius: 16px;
   margin: 0 8px;
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 div[data-setting-toggle-command]:after {
@@ -252,7 +258,7 @@ div[data-setting-toggle-command^="start_"]:after {
 
 .information-gauge {
   display: inline-block;
-  width: 200px;
+  width: 180px;
 }
 
 .information-cell-header a em {
@@ -273,7 +279,7 @@ div[data-setting-toggle-command^="start_"]:after {
   margin-right: 4px;
 }
 
-.information-service-matrix a {
+.information-service-matrix > a {
   border: none;
 }
 

@@ -83,18 +83,18 @@
 		echo '<li title="This object is switching between states at a high rate"><h2>is flapping</h2><p class="faded">'. $percent_state_change_str . '</p></li>';
 	}
 ?>
-	</ul>
-	<div>
 		<?php
 			$groups = $object->get_groups();
 			$group_table = ($object->get_table() === 'services') ? 'servicegroups' : 'hostgroups';
 			if (count($groups)) {
-				echo "<p><b>Member of:</b></p>";
+				echo '<li>';
+				echo "<h3>Member of:</h3>";
 				foreach ($groups as $group) {
-					echo "<p class='faded'><a href='" . listview::querylink('[' . $group_table . '] name="' . $group . '"') . "'>$group</a></p>";
+					echo "<p><a href='" . listview::querylink('[' . $group_table . '] name="' . $group . '"') . "'>$group</a></p>";
 				}
+				echo '</li>';
 			}
 		?>
-	</div>
+	</ul>
   </div>
 </div>

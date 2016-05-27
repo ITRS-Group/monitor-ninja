@@ -2,7 +2,7 @@
 	<div class="information-component-title">
 		Timestamps
 	</div>
-	<div class="information-cell">
+	<div class="information-cell" title="The last time this object was checked">
 		<div class="information-cell-header">
 			<?php echo _('Last check'); ?>
 		</div>
@@ -26,7 +26,7 @@
 			<?php echo $last_check_raw; ?>
 		</div>
 	</div>
-	<div class="information-cell">
+	<div class="information-cell" title="The next time this object is scheduled to be checked">
 		<div class="information-cell-header">
 			<?php echo _('Next check'); ?>
 		</div>
@@ -54,7 +54,7 @@
 			<?php echo $next_check_raw; ?>
 		</div>
 	</div>
-	<div class="information-cell">
+	<div class="information-cell" title="The last time the state of this object was changed">
 		<div class="information-cell-header">
 			<?php echo _('Last change'); ?>
 		</div>
@@ -76,8 +76,8 @@
 			<?php echo $last_change_raw; ?>
 		</div>
 	</div>
-	<div class="information-cell">
-		<div class="information-cell-header">
+	<div class="information-cell" title="The last time this object notified contact regarding a problem, not counting custom notifications">
+		<div class="information-cell-header" >
 			<?php echo _('Last notification'); ?>
 		</div>
 <?php
