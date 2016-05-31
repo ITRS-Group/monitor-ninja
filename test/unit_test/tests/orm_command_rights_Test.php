@@ -65,44 +65,44 @@ class Orm_Command_Rights_Test extends PHPUnit_Framework_TestCase {
 
 	function test_hostgroup_command_list_without_right_to_delete () {
 
-        $this->set_authorization(array(
-            'hostgroup_add_delete' => false
-        ));
+		$this->set_authorization(array(
+			'hostgroup_add_delete' => false
+		));
 
-        $commands = HostGroup_Model::list_commands_static();
-        $this->assertArrayNotHasKey('delete', $commands);
+		$commands = HostGroup_Model::list_commands_static();
+		$this->assertArrayNotHasKey('delete', $commands);
 
-    }
+	}
 
-    function test_hostgroup_command_list_without_rights () {
+	function test_hostgroup_command_list_without_rights () {
 
-        $this->user = new User_NoAuth_Model();
-        Op5Auth::instance()->force_user($this->user);
+		$this->user = new User_NoAuth_Model();
+		Op5Auth::instance()->force_user($this->user);
 
-        $commands = HostGroup_Model::list_commands_static();
-        $this->assertTrue((count($commands) === 0));
+		$commands = HostGroup_Model::list_commands_static();
+		$this->assertTrue((count($commands) === 0));
 
-    }
+	}
 
-    function test_servicegroup_command_list_without_right_to_delete () {
+	function test_servicegroup_command_list_without_right_to_delete () {
 
-        $this->set_authorization(array(
-            'servicegroup_add_delete' => false
-        ));
+		$this->set_authorization(array(
+			'servicegroup_add_delete' => false
+		));
 
-        $commands = ServiceGroup_Model::list_commands_static();
-        $this->assertArrayNotHasKey('delete', $commands);
+		$commands = ServiceGroup_Model::list_commands_static();
+		$this->assertArrayNotHasKey('delete', $commands);
 
-    }
+	}
 
-    function test_servicegroup_command_list_without_rights () {
+	function test_servicegroup_command_list_without_rights () {
 
-        $this->user = new User_NoAuth_Model();
-        Op5Auth::instance()->force_user($this->user);
+		$this->user = new User_NoAuth_Model();
+		Op5Auth::instance()->force_user($this->user);
 
-        $commands = ServiceGroup_Model::list_commands_static();
-        $this->assertTrue((count($commands) === 0));
+		$commands = ServiceGroup_Model::list_commands_static();
+		$this->assertTrue((count($commands) === 0));
 
-    }
+	}
 
 }
