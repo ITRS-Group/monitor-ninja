@@ -563,7 +563,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		});
 
 		$total = count($raw);
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page'));
 		$pagination = new CountlessPagination(array('items_per_page' => $items_per_page, 'total_items' => $total));
 
 		if ($total <= $pagination->items_per_page * $pagination->current_page) {

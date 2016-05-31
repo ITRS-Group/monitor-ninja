@@ -90,22 +90,22 @@ if (!empty($base_href)) {
 			var _no_action_error = '<?php echo _('Please select an action.') ?>';
 			var _date_format = <?php echo json_encode(date::date_format()); ?>;
 			var _server_utc_offset = <?php echo date::utc_offset(date_default_timezone_get()); ?>;
-			var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target', '*'); ?>";
-			var _action_url_target = "<?php echo config::get('nagdefault.action_url_target', '*'); ?>";
+			var _notes_url_target = "<?php echo config::get('nagdefault.notes_url_target'); ?>";
+			var _action_url_target = "<?php echo config::get('nagdefault.action_url_target'); ?>";
 			var _pnp_web_path = "<?php echo Kohana::config('config.pnp4nagios_path'); ?>";
 
 		<?php	if ($keycommands_active === 1) {	?>
 
-				var _keycommands_active='<?php echo config::get('keycommands.activated', '*', true); ?>';
-				var _keycommand_search='<?php echo config::get('keycommands.search', '*', true); ?>';
-				var _keycommand_pause='<?php echo config::get('keycommands.pause', '*', true); ?>';
-				var _keycommand_forward='<?php echo config::get('keycommands.forward', '*', true); ?>';
-				var _keycommand_back='<?php echo config::get('keycommands.back', '*', true); ?>';
+				var _keycommands_active='<?php echo config::get('keycommands.activated'); ?>';
+				var _keycommand_search='<?php echo config::get('keycommands.search'); ?>';
+				var _keycommand_pause='<?php echo config::get('keycommands.pause'); ?>';
+				var _keycommand_forward='<?php echo config::get('keycommands.forward'); ?>';
+				var _keycommand_back='<?php echo config::get('keycommands.back'); ?>';
 		<?php 	} else { ?>
 				var _keycommands_active='0';
 		<?php 	} ?>
 
-			var _popup_delay='<?php echo config::get('config.popup_delay', '*', true); ?>';
+			var _popup_delay='<?php echo config::get('config.popup_delay'); ?>';
 
 			var loading_img = '/application/media/images/loading.gif';
 			<?php

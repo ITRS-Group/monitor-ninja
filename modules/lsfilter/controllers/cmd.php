@@ -51,7 +51,7 @@ class Cmd_Controller extends Ninja_Controller {
 			'friendly_name' => 'Objects',
 			'setting' => array(
 				'query'=>$set->get_query(),
-				'limit' => intval(config::get('pagination.default.items_per_page','*'))
+				'limit' => intval(config::get('pagination.default.items_per_page'))
 			)
 		)));
 		$widget->set_fixed(array(
@@ -90,7 +90,7 @@ class Cmd_Controller extends Ninja_Controller {
 		$command_definition = $commands[$command];
 		if (isset($command_definition['params'])) {
 			foreach ($command_definition['params'] as $param => $data) {
-				$override = config::get('nagdefault.' . $param, null);
+				$override = config::get('nagdefault.' . $param);
 				if (!($override === null)) {
 					$command_definition['params'][$param]['default'] = $override;
 				}

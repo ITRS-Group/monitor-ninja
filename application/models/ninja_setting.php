@@ -67,6 +67,8 @@ class Ninja_setting_Model extends Model {
 	{
 
 		$type = trim($type);
+		if (!$page)
+			$page = '*';
 		$page = trim($page);
 
 		if (empty($type)) return false;

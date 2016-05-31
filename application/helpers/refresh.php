@@ -16,7 +16,7 @@ class refresh {
 		}
 		# fetch setting
 		$refresh_key = 'config.page_refresh_rate';
-		$refresh = (int)config::get($refresh_key, '*', true, true);
+		$refresh = (int)config::get($refresh_key);
 		?>
 		<script>
 		var _refresh_key = '<?php echo $refresh_key ?>';
@@ -40,7 +40,7 @@ class refresh {
 	{
 		# fetch setting
 		$lv_refresh_key = 'config.listview_refresh_rate';
-		$lv_refresh = (int)config::get($lv_refresh_key, '*', true, true);
+		$lv_refresh = (int)config::get($lv_refresh_key);
 		?>
 		<script type="text/javascript">
 		_lv_refresh_key = '<?php echo $lv_refresh_key ?>';

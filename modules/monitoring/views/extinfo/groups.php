@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$notes_url_target = config::get('nagdefault.notes_url_target', '*');
-$action_url_target = config::get('nagdefault.action_url_target', '*');
+$notes_url_target = config::get('nagdefault.notes_url_target');
+$action_url_target = config::get('nagdefault.action_url_target');
 ?>
 <div id="page_links">
 	<ul>

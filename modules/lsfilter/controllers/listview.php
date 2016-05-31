@@ -36,7 +36,7 @@ class ListView_Controller extends Ninja_Controller {
 		$this->template->toolbar->info('<div id="filter_result_totals"></div>');
 		$this->template->js_strings .= "var lsfilter_query = ".json_encode($query).";\n";
 		$this->template->js_strings .= "var lsfilter_query_order = ".json_encode($query_order).";\n";
-		$this->template->js_strings .= "var lsfilter_per_page = ".intval(config::get('pagination.default.items_per_page','*')).";\n";
+		$this->template->js_strings .= "var lsfilter_per_page = ".intval(config::get('pagination.default.items_per_page')).";\n";
 	}
 
 	/**
@@ -54,7 +54,7 @@ class ListView_Controller extends Ninja_Controller {
 			 */
 			$columns[$table] = array(
 					$default,
-					config::get('listview.columns.'.$table, '*')
+					config::get('listview.columns.'.$table)
 					);
 		}
 

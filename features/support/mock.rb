@@ -44,6 +44,8 @@ module Op5Cucumber::Mock
         'ORMDriverYAML default'
       when /^usergroups$/
         'ORMDriverYAML default'
+      when /^settings$/
+        'ORMDriverMySQL default'
       else
         raise "Unknown type #{type}"
       end

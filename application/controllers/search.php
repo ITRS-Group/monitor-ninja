@@ -135,7 +135,7 @@ class Search_Controller extends Ninja_Controller {
 		$username = Auth::instance()->get_user()->get_username();
 
 		if( $limit === false ) {
-			$limit = config::get('pagination.default.items_per_page', '*');
+			$limit = config::get('pagination.default.items_per_page');
 		}
 		foreach( $queries as $table => $query ) {
 			$set = ObjectPool_Model::get_by_query($query);
@@ -395,7 +395,7 @@ class Search_Controller extends Ninja_Controller {
 			Read the manual for more tips on searching.<br /><br />
 
 			The search result is currently limited to %s rows (for each object type).<br /><br />
-			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page', '*')
+			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page')
 		),
 		'saved_search_help' => _('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
 		'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')

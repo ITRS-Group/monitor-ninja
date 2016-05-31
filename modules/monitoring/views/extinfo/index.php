@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$notes_url_target = config::get('nagdefault.notes_url_target', '*');
-$action_url_target = config::get('nagdefault.action_url_target', '*');
+$notes_url_target = config::get('nagdefault.notes_url_target');
+$action_url_target = config::get('nagdefault.action_url_target');
 $date_format_str = date::date_format();
 
 $green_shield = '<span class="icon-16 x16-shield-up"></span>';

@@ -148,7 +148,7 @@ class Ninja_Controller extends Base_Controller {
 	 */
 	private function get_current_user_skin() {
 		# user might not be logged in due to CLI scripts, be quiet
-		$current_skin = config::get('config.current_skin', '*', true);
+		$current_skin = config::get('config.current_skin');
 		if (!$current_skin) {
 			$current_skin = 'default/';
 		}

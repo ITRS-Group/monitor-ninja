@@ -28,16 +28,16 @@ class flag {
 	 * out when in development mode. 'Development mode' is defined by @see
 	 * deprecation_kills.
 	 *
-	 * @param $source_method_or_class string
+	 * @param $thing string
 	 * @param $message string = ""
 	 *
 	 * @throws DeprecationException
 	 */
-	public static function deprecated($source_method_or_class, $message = "") {
+	public static function deprecated($thing, $message = "") {
 		$message = sprintf(
 			"DEPRECATION: '%s' is deprecated and should not be ".
 			"executed: %s",
-			$source_method_or_class,
+			$thing,
 			$message ? $message : '<no message>'
 		);
 

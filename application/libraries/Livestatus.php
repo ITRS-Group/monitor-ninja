@@ -117,7 +117,7 @@ class Livestatus {
 	public function handle_passive_as_active($row) {
 		static $passive_as_active = null;
 		if ($passive_as_active === null)
-			$passive_as_active = config::get('checks.show_passive_as_active', '*');
+			$passive_as_active = config::get('checks.show_passive_as_active');
 
 		if ($passive_as_active)
 			return $row['active_checks_enabled'] || $row['accept_passive_checks'];
@@ -128,7 +128,7 @@ class Livestatus {
 	public function handle_host_passive_as_active($row) {
 		static $passive_as_active = null;
 		if ($passive_as_active === null)
-			$passive_as_active = config::get('checks.show_passive_as_active', '*');
+			$passive_as_active = config::get('checks.show_passive_as_active');
 
 		if ($passive_as_active)
 			return $row['host_active_checks_enabled'] || $row['host_accept_passive_checks'];
@@ -384,7 +384,7 @@ class Livestatus {
 
 	/* getHostTotals */
 	public function getHostTotals($options = null) {
-		if (config::get('checks.show_passive_as_active', '*')) {
+		if (config::get('checks.show_passive_as_active')) {
 			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
 			$disabled_checks_condition = array('active_checks_enabled' => 0, 'accept_passive_checks' => 0);
 		} else {
@@ -437,7 +437,7 @@ class Livestatus {
 
 	/* getServiceTotals */
 	public function getServiceTotals($options = null) {
-		if (config::get('checks.show_passive_as_active', '*')) {
+		if (config::get('checks.show_passive_as_active')) {
 			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
 			$disabled_checks_condition = array('active_checks_enabled' => 0, 'accept_passive_checks' => 0);
 		} else {
@@ -655,12 +655,12 @@ class LivestatusBackend {
 	private function prepare_pagination(&$options) {
 		if(isset($options['paging'])) {
 			$page = $options['paging'];
-			$items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+			$items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page'));
 			$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
 		}
 		elseif(isset($options['paginggroup'])) {
 			$page = $options['paginggroup'];
-			$items_per_page = $page->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
+			$items_per_page = $page->input->get('items_per_page', config::get('pagination.group_items_per_page'));
 			$items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
 		} else {
 			return;

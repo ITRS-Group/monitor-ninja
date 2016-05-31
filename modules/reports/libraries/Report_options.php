@@ -228,7 +228,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			}
 		}
 		if (isset($this->properties['skin']))
-			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
+			$this->properties['skin']['default'] = config::get('config.current_skin');
 
 		if (isset($this->properties['state_types'])) {
 			$this->properties['state_types']['description'] = _('Restrict events based on which state the event is in (soft vs hard)');
