@@ -2,12 +2,12 @@
 <div class="report_block">
 <h2><?php echo _('Report Mode'); ?></h2>
 <hr />
-<input type="hidden" name="type" value="<?php echo $type ?>" />
+<input type="hidden" name="type" value="<?php echo html::specialchars($type) ?>" />
 <?php echo new View('reports/objselector'); ?>
 </div>
 <?php
 if($options['report_id']) { ?>
-<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
+<input type="hidden" name="report_id" value="<?php echo html::specialchars($options['report_id']) ?>" />
 <?php } ?>
 <div class="report-block">
 <h2><?php echo _('Report Settings'); ?></h2>
@@ -26,13 +26,13 @@ if($options['report_id']) { ?>
 	<tr id="custom_time" style="display: none; clear: both;">
 	<?php if ($type == 'avail') { ?>
 		<td><label for="cal_start"><?php echo help::render('start-date').' '._('Start date') ?></label> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-			<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" value="<?php echo $options->get_date('start_time') ?>" />
-			<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $options->get_time('start_time') ?>" />
+			<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" value="<?php echo html::specialchars($options->get_date('start_time')) ?>" />
+			<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo html::specialchars($options->get_time('start_time')) ?>" />
 		</td>
 		<td>&nbsp;</td>
 		<td><label for="cal_end"><?php echo help::render('end-date').' '._('End date') ?></label> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
-			<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" value="<?php echo $options->get_date('end_time') ?>" />
-			<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo $options->get_time('end_time') ?>" />
+			<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" value="<?php echo html::specialchars($options->get_date('end_time')) ?>" />
+			<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo html::specialchars($options->get_time('end_time')) ?>" />
 		</td>
 	<?php } else { ?>
 		<td>
@@ -75,6 +75,8 @@ if($options['report_id']) { ?>
 				echo _('Host states to include').'<br/>';
 
 				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {
+					$name = html::specialchars($name);
+					$id = html::specialchars($id);
 					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"host_filter_map_$name\" id=\"host_filter_status_$name\" ".(isset($options['host_filter_status'][$id])?'':'checked="checked"')."/>";
 					echo "<label for=\"host_filter_status_$name\">".ucfirst($name)."</label>\n";
 				}
@@ -82,6 +84,8 @@ if($options['report_id']) { ?>
 				echo help::render('map_states');
 				echo _("Mapping for excluded states")."<br/>";
 				foreach ($options->get_alternatives('host_filter_status') as $id => $name) {
+					$name = html::specialchars($name);
+					$id = html::specialchars($id);
 					echo "<div class=\"filter_map\" id=\"host_filter_map_$name\">";
 					echo "<label for=\"host_filter_status[$id]\">".sprintf(_('Map %s to'), $name).'</label> ';
 					$default = $type == 'sla' ? 0 : -2;
@@ -99,6 +103,8 @@ if($options['report_id']) { ?>
 				echo _('Service states to include').'<br/>';
 
 				foreach ($options->get_alternatives('service_filter_status') as $id => $name) {
+					$name = html::specialchars($name);
+					$id = html::specialchars($id);
 					echo "<input type=\"checkbox\" class=\"filter-status\" data-which=\"service_filter_map_$name\" id=\"service_filter_status_$name\" ".(isset($options['service_filter_status'][$id])?'':'checked="checked" ')." />";
 					echo "<label for=\"service_filter_status_$name\">".ucfirst($name)."</label>\n";
 				}
@@ -106,6 +112,8 @@ if($options['report_id']) { ?>
 				echo help::render('map_states');
 				echo _("Mapping for excluded states")."<br/>";
 				foreach ($options->get_alternatives('service_filter_status') as $id => $name) {
+					$name = html::specialchars($name);
+					$id = html::specialchars($id);
 					echo "<div class=\"filter_map\" id=\"service_filter_map_$name\">";
 					echo "<label for=\"service_filter_status[$id]\">".sprintf(_('Map %s to'), ucfirst($name)).'</label> ';
 					$default = $type == 'sla' ? 0 : -2;
@@ -242,7 +250,7 @@ if($options['report_id']) { ?>
 					<?php
 					foreach ($saved_reports as $id => $report_name) {
 						echo '<option '.(($options['report_id'] == $id) ? 'selected="selected"' : '').
-							' value="'.$id.'">'.html::specialchars($report_name).'</option>'."\n";
+							' value="'.html::specialchars($id).'">'.html::specialchars($report_name).'</option>'."\n";
 					}  ?>
 				</select>
 			</td>
@@ -260,8 +268,8 @@ if($options['report_id']) { ?>
 				<a href="#" title="Click to propagate this value to all months" class="autofill">
 					<img src="<?php echo ninja::add_path('icons/16x16/copy.png') ?>" alt="Click to propagate this value to all months" />
 				</a>
-				<label for="month_<?php echo $month_index ?>"><?php echo $month_name ?></label><br />
-				<input type="text" size="2" class="sla_month" id="month_<?php echo ($month_index) ?>" name="month_<?php echo ($month_index) ?>" value="<?php echo $val > 0 ? $val : ''; ?>" maxlength="6" /> %
+				<label for="month_<?php echo html::specialchars($month_index) ?>"><?php echo html::specialchars($month_name) ?></label><br />
+				<input type="text" size="2" class="sla_month" id="month_<?php echo html::specialchars($month_index) ?>" name="month_<?php echo html::specialchars($month_index) ?>" value="<?php echo $val > 0 ? html::specialchars($val) : ''; ?>" maxlength="6" /> %
 			</td>
 		<?php } ?>
 		</tr>

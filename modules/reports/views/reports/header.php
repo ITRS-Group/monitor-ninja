@@ -12,18 +12,18 @@
 		echo form::close();
 ?>
 	</div>
-	<h1><?php echo $title ?></h1>
+	<h1><?php echo html::specialchars($title) ?></h1>
 	<div class="report_options">
 		<?php
-		echo '<p>'._('Reporting period').': '.$report_time_formatted;
-		echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
+		echo '<p>'._('Reporting period').': '.html::specialchars($report_time_formatted);
+		echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.html::specialchars($str_start_date).' '._('to').' '.html::specialchars($str_end_date).')' : '';
 		echo '</p>';
 		if ($type == 'avail' || $type == 'sla') {
-			echo '<p>'.sprintf(_('Counting scheduled downtime as %s'), $options->get_value('scheduleddowntimeasuptime')).'</p>';
+			echo '<p>'.sprintf(_('Counting scheduled downtime as %s'), html::specialchars($options->get_value('scheduleddowntimeasuptime'))).'</p>';
 		}
 		if ($options['assumestatesduringnotrunning'])
 			echo '<p>'.sprintf(_('Assuming previous state during program downtime')).'</p>';
-		echo '<p>'.sprintf(_('Showing %s'), $options->get_value('state_types'));
+		echo '<p>'.sprintf(_('Showing %s'), html::specialchars($options->get_value('state_types')));
 		$states = array();
 		if ($options['host_filter_status']) {
 			foreach ($options->get_alternatives('host_filter_status') as $state => $name) {
@@ -43,11 +43,11 @@
 		}
 		if ($states) {
 			// "unique" because undetermined is the same for hosts and services
-			echo ' in ' . implode(', ', array_unique($states));
+			echo ' in ' . implode(', ', array_map(array('html', 'specialchars'), array_unique($states)));
 		}
 		echo '</p>';
 		if ($type == 'sla')
-			echo '<p>'.sprintf(_('Showing %s'), $options->get_value('sla_mode')).'</p>';
+			echo '<p>'.sprintf(_('Showing %s'), html::specialchars($options->get_value('sla_mode'))).'</p>';
 
 ?>
 		<div class="description">
