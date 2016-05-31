@@ -75,7 +75,7 @@ host_edit_{all,contact}         monitor.monitoring.hosts:update.command.configur
 host_command_schedule_downtime  monitor.monitoring.hosts:update.command.downtime              true
 host_command_check_execution    monitor.monitoring.hosts:update.command.enabled               true
 host_command_event_handler      monitor.monitoring.hosts:update.command.event_handler         true
-host_command_flap_detection           monitor.monitoring.hosts:update.command.flap_detection              true
+host_command_flap_detection     monitor.monitoring.hosts:update.command.flap_detection        true
 host_command_notifications      monitor.monitoring.hosts:update.command.notification          true
 host_command_obsess             monitor.monitoring.hosts:update.command.obsess                true
 host_command_passive_check      monitor.monitoring.hosts:update.command.passive               true
@@ -161,10 +161,10 @@ host_view_{all,contact}         monitor.monitoring.downtimes.recurring:read     
 host_view_{all,contact}         monitor.monitoring.notifications:read                         true
 
 host_edit_{all,contact}         monitor.monitoring.hosts:{create,update}                      true
-host_edit_{all,contact}         monitor.monitoring.comments:{create,update}                   true
-host_edit_{all,contact}         monitor.monitoring.downtimes:{create,update}                  true
-host_edit_{all,contact}         monitor.monitoring.downtimes.recurring:{create,update}        true
-host_edit_{all,contact}         monitor.monitoring.notifications:{create,update}              true
+host_edit_{all,contact}         monitor.monitoring.comments:{create,update,delete}            true
+host_edit_{all,contact}         monitor.monitoring.downtimes:{create,update,delete}           true
+host_edit_{all,contact}         monitor.monitoring.downtimes.recurring:{create,update,delete} true
+host_edit_{all,contact}         monitor.monitoring.notifications:{create,update,delete}       true
 
 host_add_delete                 monitor.monitoring.hosts:{create,delete}                      true
 
@@ -183,10 +183,10 @@ service_view_{all,contact}      monitor.monitoring.downtimes.recurring:read     
 service_view_{all,contact}      monitor.monitoring.notifications:read                         true
 
 service_edit_{all,contact}      monitor.monitoring.services:{create,update}                   true
-service_edit_{all,contact}      monitor.monitoring.comments:{create,update}                   true
-service_edit_{all,contact}      monitor.monitoring.downtimes:{create,update}                  true
-service_edit_{all,contact}      monitor.monitoring.downtimes.recurring:{create,update}        true
-service_edit_{all,contact}      monitor.monitoring.notifications:{create,update}              true
+service_edit_{all,contact}      monitor.monitoring.comments:{create,update,delete}            true
+service_edit_{all,contact}      monitor.monitoring.downtimes:{create,update,delete}           true
+service_edit_{all,contact}      monitor.monitoring.downtimes.recurring:{create,update,delete} true
+service_edit_{all,contact}      monitor.monitoring.notifications:{create,update,delete}       true
 
 service_add_delete              monitor.monitoring.services:{create,delete}                   true
 
