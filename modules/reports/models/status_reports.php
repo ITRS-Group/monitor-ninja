@@ -64,19 +64,19 @@ class Status_Reports_Model extends Reports_Model
 
 		$sql .= " FROM ".$this->db_table." ";
 
-		$time_first = 'timestamp >='.$this->options['start_time'];
-		$time_last = 'timestamp <='.$this->options['end_time'];
+		$time_first = 'timestamp >=' . $this->db->escape($this->options['start_time']);
+		$time_last = 'timestamp <=' . $this->db->escape($this->options['end_time']);
 		$process = false;
 		$purehost = false;
 		$objsel = false;
-		$downtime = 'event_type=' . Reports_Model::DOWNTIME_START . ' OR event_type=' . Reports_Model::DOWNTIME_STOP;
-		$softorhardcheck = 'event_type=' . $event_type;
+		$downtime = 'event_type=' . $this->db->escape(Reports_Model::DOWNTIME_START) . ' OR event_type=' . $this->db->escape(Reports_Model::DOWNTIME_STOP);
+		$softorhardcheck = 'event_type=' . $this->db->escape($event_type);
 
 		if (!$this->options['assumestatesduringnotrunning'])
 			$process = 'event_type < 200';
 
 		if ($this->options['state_types'] != 3) {
-			$softorhardcheck .= ' AND hard=' . ($this->options['state_types'] - 1);
+			$softorhardcheck .= ' AND hard=' . $this->db->escape(($this->options['state_types'] - 1));
 		}
 
 		if ($is_service) {
@@ -115,7 +115,7 @@ class Status_Reports_Model extends Reports_Model
 								$downtime,
 								$softorhardcheck)))));
 		} else {
-			$objsel = "host_name IN ('" . join("', '", $objects) . "') AND service_description = ''";
+			$objsel = "host_name IN (" . join(", ", array_map(array($this->db, 'escape'), $objects)) . ") AND service_description = ''";
 
 			$sql_where = sql::sqland(
 				$time_first,
