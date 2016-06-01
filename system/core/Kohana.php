@@ -137,7 +137,9 @@ final class Kohana {
 		// Find all the hook files and load them
 		$hooks = self::list_files('hooks', TRUE);
 		foreach ($hooks as $file) {
-			include $file;
+			if(pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+				include $file;
+			}
 		}
 
 		// Setup is complete, prevent it from being run again
