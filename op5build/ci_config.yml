@@ -5,6 +5,11 @@ post:
   mon restart
   /opt/op5sys/lib/mock_license.php monitorHosts 500
   cp /var/op5license-tests/signed_valid/license.lic /etc/op5license/op5license.lic
+
+  # put logs into /mnt/logs
+  mkdir /opt/monitor/op5/ninja/application/config/custom
+  cp src/test/configs/kohana-configs/exception.php /opt/monitor/op5/ninja/application/config/custom
+
   # make sure deprecated code paths throw errors in our CI environment, MON-9199:
   echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
   TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test

@@ -203,10 +203,6 @@ install -m 640 op5build/ninja.httpd-conf %buildroot/etc/%{httpconfdir}/monitor-n
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 
-mkdir -p %buildroot%prefix/application/config/custom
-install -m 755 test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
-rm %buildroot%prefix/test/configs/kohana-configs/exception.php
-
 %pre
 # This needs to be removed for us to be able to upgrade ninja 2.0.7
 # for some reason.
@@ -264,7 +260,6 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %exclude %prefix/modules/test
 %exclude %prefix/Makefile
 %exclude %prefix/features
-%exclude %prefix/application/config/custom/exception.php
 %if 0%{?rhel} >= 7
 %else
 %exclude %prefix/Documentation
@@ -286,7 +281,6 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %prefix/test
 %prefix/modules/test
 %prefix/Makefile
-%prefix/application/config/custom/exception.php
 
 %clean
 rm -rf %buildroot
