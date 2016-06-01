@@ -259,7 +259,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 * helps them do so with some amount of consistency.
 	 *
 	 * @param $date_format string Format string for date(), probably date::date_format()
-	 * @returns string Formatted date for this report
+	 * @returns string HTML including a formatted date for this report
 	 */
 	protected function format_report_time($date_format)
 	{
@@ -271,17 +271,17 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = sprintf(
 				_('%s (%s to %s)'),
-				$this->options->get_value('report_period'),
-				"<strong>".$start_time."</strong>",
-				"<strong>".date($date_format, $this->options['end_time'])."</strong>"
+				html::specialchars($this->options->get_value('report_period')),
+				"<strong>".html::specialchars($start_time)."</strong>",
+				"<strong>".html::specialchars(date($date_format, $this->options['end_time']))."</strong>"
 			);
 		else {
 			$report_time_formatted  = sprintf(_("%s to %s"),
-				$start_time,
-				date($date_format, $this->options['end_time']));
+				html::specialchars($start_time),
+				html::specialchars(date($date_format, $this->options['end_time'])));
 		}
 		if($this->options['rpttimeperiod'] != '')
-			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
+			$report_time_formatted .= " - ".html::specialchars($this->options['rpttimeperiod']);
 		return $report_time_formatted;
 	}
 }
