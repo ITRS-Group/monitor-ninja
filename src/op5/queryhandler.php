@@ -36,7 +36,7 @@ class op5queryhandler {
 
 	public function kvvec_call($channel, $command, $args, $node = false) {
 		$data = $this->call($channel, $command, $args, $node);
-		$expanded = $this->unpack_args(trim($data));
+		$expanded = self::kvvec2array(trim($data));
 		if($expanded === NULL) {
 			throw new op5queryhandler_Exception('Unknown response', $data);
 		}
@@ -48,9 +48,8 @@ class op5queryhandler {
 
 	public function call($channel, $command, $args, $node = false) {
 		if(is_array($args)) {
-			$args = $this->pack_args($args);
+			$args = $this->array2kvvec($args);
 		}
-
 		return $this->raw_call("@$channel $command $args\0", $node);
 	}
 
@@ -122,7 +121,7 @@ class op5queryhandler {
 	 *
 	 * If value is an array, it's treated as a set of lines with identical keys
 	 */
-	private function pack_args($args) {
+	private function array2kvvec($args) {
 		$escstr = ";=\n\0\\";
 		$result = array();
 		foreach($args as $k => $v) {
@@ -142,9 +141,8 @@ class op5queryhandler {
 	 *
 	 * If value is an array, it's treated as a set of lines with identical keys
 	 */
-	private function unpack_args($args) {
+	public static function kvvec2array($args) {
 		$pairs = array();
-
 		do {
 			$match = false;
 			$key_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*?)=/', $args, $matches);
