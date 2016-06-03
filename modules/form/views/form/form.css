@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.njform-label {
+	float: left;
+	width: 150px;
+}
+
+.njform-title {
+	margin-top: 0.5em;
+	margin-bottom: 0.25em;
+	font-weight: bold;
+}
