@@ -37,9 +37,6 @@ class op5queryhandler {
 	public function kvvec_call($channel, $command, $args, $node = false) {
 		$data = $this->call($channel, $command, $args, $node);
 		$expanded = self::kvvec2array(trim($data));
-		if($expanded === NULL) {
-			throw new op5queryhandler_Exception('Unknown response', $data);
-		}
 		if(empty($expanded)) {
 			throw new op5queryhandler_Exception('Empty result', $data);
 		}
@@ -137,28 +134,65 @@ class op5queryhandler {
 	}
 
 	/**
-	 * Converts an associative array of arguments to a string using kvvec syntax with delimiters = and ;
+	 * Converts a (possibly escaped) kvvec string into an associative array.
+	 * As a trivial example,
+	 * kvvec2array("key=value")
+	 * would return
+	 * array("key" => "value")
 	 *
-	 * If value is an array, it's treated as a set of lines with identical keys
+	 * @param $kvvec string
+	 * @return array()
+	 * @throws InvalidArgumentException in case of syntax error
+	 *
 	 */
-	public static function kvvec2array($args) {
+	public static function kvvec2array($kvvec) {
 		$pairs = array();
-		do {
-			$match = false;
-			$key_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*?)=/', $args, $matches);
-			if($key_raw) {
-				$key = stripcslashes($matches[1]);
-				$args = substr($args,strlen($matches[0]));
-				$value_raw = preg_match('/^((?:[^;=\\\\]|\\\\.)*?)(?:;|\z)/', $args, $matches);
-				if($value_raw) {
-					$value = stripcslashes($matches[1]);
-					$args = substr($args,strlen($matches[1])+1);
-					$pairs[$key] = $value;
-					$match = true;
-				}
-			}
-		} while($match);
 
+		$len = strlen($kvvec);
+		$escapes = array(
+			'n' => "\n",
+			'r' => "\r",
+			't' => "\t",
+			'\\' => '\\'
+		);
+		$pos = 0;
+		while ($pos < $len) {
+			$key = "";
+			for (; $pos < $len; $pos++) {
+				$c = $kvvec[$pos];
+				if ($c == '\\') {
+					$pos++;
+					if ($pos == $len) //end of string
+						break;
+					$c = isset($escapes[$kvvec[$pos]]) ? $escapes[$kvvec[$pos]] : $kvvec[$pos];
+				} else if ($c == ';') {
+					throw new op5queryhandler_Exception("Syntax error in kvvec key, unescaped reserved character ';' encountered at index '$pos'");
+				} else if ($c == '=') {
+					$pos++;
+					break;
+				}
+
+				$key .= $c;
+			}
+			$value = "";
+			for (; $pos < $len; $pos++) {
+				$c = $kvvec[$pos];
+				if ($c == '\\') {
+					$pos++;
+					if ($pos == $len) //end of string
+						break;
+					$c = isset($escapes[$kvvec[$pos]]) ? $escapes[$kvvec[$pos]] : $kvvec[$pos];
+				} else if ($c == ';') {
+					$pos++;
+					break;
+				}
+				else if ($c == '=') {
+					throw new op5queryhandler_Exception("Syntax error in kvvec value, unescaped reserved character '=' encountered at index '$pos'");
+				}
+				$value .= $c;
+			}
+			$pairs[$key] = $value;
+		}
 		return $pairs;
 	}
 }
