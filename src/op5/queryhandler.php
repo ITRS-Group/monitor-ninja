@@ -29,12 +29,12 @@ class op5queryhandler {
 		$this->path = op5config::instance()->getConfig("queryhandler.socket_path");
 	}
 
-	public function json_call($channel, $command, $args, $conv_hash=true, $node = false) {
+	public function json_call($channel, $command, $args, $node = false) {
 		/* Just a wrapper, because of the old json-syntax. */
-		return $this->kvvec_call($channel, $command, $args, $conv_hash, $node);
+		return $this->kvvec_call($channel, $command, $args, $node);
 	}
 
-	public function kvvec_call($channel, $command, $args, $conv_hash=true, $node = false) {
+	public function kvvec_call($channel, $command, $args, $node = false) {
 		$data = $this->call($channel, $command, $args, $node);
 		$expanded = $this->unpack_args(trim($data));
 		if($expanded === NULL) {
@@ -42,12 +42,6 @@ class op5queryhandler {
 		}
 		if(empty($expanded)) {
 			throw new op5queryhandler_Exception('Empty result', $data);
-		}
-		if($conv_hash) {
-			$expanded = array_combine(
-					array_map(function($k){return $k[0];},$expanded),
-					array_map(function($k){return $k[1];},$expanded)
-					);
 		}
 		return $expanded;
 	}
@@ -161,7 +155,7 @@ class op5queryhandler {
 				if($value_raw) {
 					$value = stripcslashes($matches[1]);
 					$args = substr($args,strlen($matches[1])+1);
-					$pairs[] = array($key, $value);
+					$pairs[$key] = $value;
 					$match = true;
 				}
 			}
