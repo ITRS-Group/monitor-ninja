@@ -360,11 +360,11 @@ class Search_Controller extends Ninja_Controller {
 				/* @var $set ObjectPool_Model */
 				if($this->mayi->run($pool->all()->mayi_resource() . ':read.search')) {
 					switch ($obj_type) {
-						case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] host.name="%s"'            ); break;
-						case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host=%s&service=%s' ); break;
-						case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[hosts] in "%s"'                      ); break;
-						case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] in "%s"'                   ); break;
-						case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host=%s'               ); break;
+						case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] host.name="{identifier}"'            ); break;
+						case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host={identifier}&service={subidentifier}' ); break;
+						case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[hosts] in "{identifier}"'                      ); break;
+						case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] in "{identifier}"'                   ); break;
+						case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host={identifier}'               ); break;
 						default: return false;
 					}
 

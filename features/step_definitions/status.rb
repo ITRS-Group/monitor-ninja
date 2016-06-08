@@ -46,6 +46,18 @@ When /^I enter the current date and time into "([^"]*)"$/ do |sel|
   }
 end
 
+When /^I search for "([^"]*)"$/ do |query|
+	fill_in('query', :with => query)
+  page.execute_script("$('#query').keyup();");
+end
+
+Then /^I should see the search result:$/ do |table|
+  rows = table.raw
+  rows.each do |row|
+    page.find('.autocomplete div', :text => row[0]).visible?
+  end
+end
+
 Given /^I go to the listview for (.*)$/ do |query|
     visit Op5Cucumber::NavigationHelpers.path_to("list view") + '?q=' + query
 end
