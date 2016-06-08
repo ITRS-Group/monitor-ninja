@@ -270,7 +270,7 @@ class op5MayI {
 				}
 				$envref =& $envref[$part];
 			}
-			$envref = $actor->getActorInfo();
+			$envref = array_merge_recursive($envref, $actor->getActorInfo());
 			unset($envref);
 		}
 		$environment = array_replace_recursive($environment, $override);
@@ -297,7 +297,6 @@ class op5MayI {
 	 */
 	public function run($action, array $override = array(), &$messages = false, &$metrics = false) {
 		$environment = $this->get_environment($override);
-
 		$constr_res = array();
 		$allow = true;
 

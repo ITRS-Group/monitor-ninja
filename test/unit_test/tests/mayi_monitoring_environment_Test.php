@@ -1,6 +1,17 @@
 <?php
 require_once ('op5/objstore.php');
 require_once ('op5/livestatus.php');
+
+class TestActor implements op5MayI_Actor {
+	public function __construct($actorinfo) {
+		$this->ai = $actorinfo;
+	}
+
+	public function getActorInfo() {
+		return $this->ai;
+	}
+}
+
 class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 
 	/**
@@ -116,10 +127,6 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
-		$this->ls = new MockLivestatus( $this->objects, array (
-			'allow_undefined_columns' => true
-		) );
-		op5objstore::instance()->mock_add( 'op5Livestatus', $this->ls );
 	}
 	/**
 	 * Remove mock environment
@@ -133,6 +140,10 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 	 * Test that a valid environment is returned
 	 */
 	public function test_verify_environment() {
+		$this->ls = new MockLivestatus( $this->objects, array (
+			'allow_undefined_columns' => true
+		) );
+		op5objstore::instance()->mock_add( 'op5Livestatus', $this->ls );
 		// Load information to the new MayI (from setUp)
 		new monitoring_hooks();
 
@@ -144,5 +155,60 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 				)
 			)
 		), op5MayI::instance()->get_environment() );
+	}
+
+	public function test_overlapping_environment_subtrees() {
+		op5MayI::instance()->be("foo.baz", new TestActor(array (
+			"quux" => 5
+		)));
+
+		op5MayI::instance()->be("foo", new TestActor( array (
+			"bar" => array(
+				"one" => 1,
+				"two" => 2
+			)
+		)));
+
+		$expected = array(
+			"foo" => array(
+				"baz" => array(
+					"quux" => 5
+				),
+				"bar" => array(
+					"one" => 1,
+					"two" => 2
+				)
+			)
+		);
+		$this->assertSame($expected, op5MayI::instance()->get_environment());
+	}
+
+	public function test_overlapping_environment_subtrees2() {
+		op5MayI::instance()->be("foo", new TestActor(array (
+			"bar" => array(
+				"quux" => array(
+					"boo" => 3
+				)
+			)
+		)));
+
+		op5MayI::instance()->be("foo.bar", new TestActor( array (
+			"quux" => array(
+				"baz" => 2
+			)
+		)));
+
+		$expected = array(
+			"foo" => array(
+				"bar" => array(
+					"quux" => array(
+						"boo" => 3,
+						"baz" => 2
+					)
+				)
+			)
+		);
+
+		$this->assertSame($expected, op5MayI::instance()->get_environment());
 	}
 }
