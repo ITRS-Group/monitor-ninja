@@ -54,7 +54,7 @@ end
 Then /^I should see the search result:$/ do |table|
   rows = table.raw
   rows.each do |row|
-    page.find('.autocomplete div', :text => row[0]).visible?
+    page.find('.autocomplete a', :text => row[0]).visible?
   end
 end
 

@@ -11,42 +11,42 @@
  *  PARTICULAR PURPOSE.
 */
 class Search_Controller extends Ninja_Controller {
-	/**
-	 * Contains a list of columns to search in, depending on table.
-	 *
-	 * @var array of arrays.
-	 */
-	protected $search_columns = array(
-		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'notes' ),
-		'services' => array( 'description', 'display_name', 'notes' ),
-		'hostgroups' => array( 'name', 'alias' ),
-		'servicegroups' => array( 'name', 'alias' ),
-		'comments' => array( 'author', 'comment' ),
-		'_si' => array('plugin_output', 'long_plugin_output')
-	);
-
-	protected $search_columns_matchall = array(
-		'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'long_plugin_output', 'notes' ),
-		'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'long_plugin_output', 'notes' ),
-		'hostgroups' => array( 'name', 'alias' ),
-		'servicegroups' => array( 'name', 'alias' ),
-		'comments' => array( 'author', 'comment' )
-	);
 
 	protected $object_types = array(
-			'h'  => 'hosts',
-			's'  => 'services',
-			'c'  => 'comments',
-			'hg' => 'hostgroups',
-			'sg' => 'servicegroups',
-			'si' => '_si'
-			);
+		'h'  => 'hosts',
+		's'  => 'services',
+		'c'  => 'comments',
+		'hg' => 'hostgroups',
+		'sg' => 'servicegroups',
+		'si' => '_si'
+	);
+
+/**
+     * Contains a list of columns to search in, depending on table.
+     *
+     * @var array of arrays.
+     */
+    protected $search_columns = array(
+        'hosts' => array( 'name', 'display_name', 'address', 'alias', 'notes' ),
+        'services' => array( 'description', 'display_name', 'notes' ),
+        'hostgroups' => array( 'name', 'alias' ),
+        'servicegroups' => array( 'name', 'alias' ),
+        'comments' => array( 'author', 'comment' ),
+        '_si' => array('plugin_output', 'long_plugin_output')
+    );
+
+    protected $search_columns_matchall = array(
+        'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'long_plugin_output', 'notes' ),
+        'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'long_plugin_output', 'notes' ),
+        'hostgroups' => array( 'name', 'alias' ),
+        'servicegroups' => array( 'name', 'alias' ),
+        'comments' => array( 'author', 'comment' )
+    );
 
 	public function __construct()
 	{
 		parent::__construct();
 		$global_search_tables = Module_Manifest_Model::get('global_search_tables');
-
 		if(isset($global_search_tables['search_columns'])) {
 			$this->search_columns = array_merge($this->search_columns, $global_search_tables['search_columns']);
 		}
@@ -59,7 +59,6 @@ class Search_Controller extends Ninja_Controller {
 			$this->object_types = array_merge($this->object_types, $global_search_tables['object_types']);
 		}
 
-		// Disable full-page refresh
 		$this->template->disable_refresh = true;
 	}
 
@@ -79,8 +78,8 @@ class Search_Controller extends Ninja_Controller {
 	 * @param $query search string
 	 */
 	public function index($query=false) {
-		$this->_verify_access('ninja.search:read.search');
 
+		$this->_verify_access('ninja.search:read.search');
 		$original_query = $query = trim($this->input->get('query', $query));
 
 		/* Is the query a complete search filter? */
@@ -94,16 +93,33 @@ class Search_Controller extends Ninja_Controller {
 			return url::redirect('listview?'.http_build_query(array('q'=>$filters)));
 		}
 
-		/* Is the query a oldschool search filter? h:kaka or boll */
-		$filters = $this->_queryToLSFilter( $query );
+		$parser = new ExpParser_SearchFilter($this->object_types);
 
-		/* Fallback on match everything */
-		if($filters === false) {
-			$filters = $this->_queryToLSFilter_MatchAll( $query );
+		try {
+			/* Is the query a oldschool search filter? h:kaka or boll */
+			$filters = $parser->parse($query);
+			$translator = new ExpParser_Translator($this->search_columns);
+			$ls_filters = $translator->translate($filters);
+
+		} catch(ExpParserException $e) {
+			/* Fallback on match everything */
+			$query = str_replace('%','.*',$query);
+			$translator = new ExpParser_Translator($this->search_columns_matchall);
+
+			$ls_filters = $translator->translate(array(
+				"global" => true,
+				"filters" => array_reduce(
+					array_keys($this->search_columns_matchall),
+					function ($filters, $table) use (&$query) {
+						$filters[$table] = array(array($query));
+						return $filters;
+					}, array()
+				)
+			));
 		}
 
-		if(count($filters)==1) {
-			return url::redirect('listview?'.http_build_query(array('q'=>reset($filters))));
+		if(count($ls_filters)==1) {
+			return url::redirect('listview?'.http_build_query(array('q'=>reset($ls_filters))));
 		}
 
 		$limit = false;
@@ -112,7 +128,7 @@ class Search_Controller extends Ninja_Controller {
 			unset($filters['limit']);
 		}
 
-		$this->render_queries( $filters, $original_query, $limit );
+		$this->render_queries($ls_filters, $original_query, $limit);
 	}
 
 	/**
@@ -167,178 +183,18 @@ class Search_Controller extends Ninja_Controller {
 	}
 
 	/**
-	 * This is an internal function to generate a livestatus query from a filter string.
-	 *
-	 * This method is public so it can be accessed from tests.
-	 *
-	 * @param $query Search query for string
-	 * @return Livstatus query as string
-	 */
-	public function _queryToLSFilter($query)
-	{
-		$parser = new ExpParser_SearchFilter($this->object_types);
-		try {
-			$filter = $parser->parse( $query );
-		} catch( ExpParserException $e ) {
-			return false;
-		}
-
-		$query = array();
-
-		/* Map default tables to queries */
-		foreach($filter['filters'] as $table => $q ) {
-			$query[$table] = array($this->andOrToQuery($q, $this->search_columns[$table]));
-		}
-
-		if( isset( $filter['filters']['_si'] ) ) {
-			/* Map status information table to hosts and services */
-			$query['hosts'] = array_merge(isset($query['hosts'])?$query['hosts']:array(), $query['_si']);
-			$query['services'] = array_merge(isset($query['services'])?$query['services']:array(), $query['_si']);
-			unset( $query['_si'] );
-		} else if( isset( $filter['filters']['comments'] ) ) {
-			/* Map subtables for comments (hosts and servies) */
-			if( isset( $filter['filters']['services'] ) ) {
-				$query['comments'][] = $this->andOrToQuery( $filter['filters']['services'],
-					array_map( function($col){
-						return 'service.'.$col;
-					}, $this->search_columns['services'] ) );
-			}
-			if( isset( $filter['filters']['hosts'] ) ) {
-				$query['comments'][] = $this->andOrToQuery( $filter['filters']['hosts'],
-					array_map( function($col){
-						return 'host.'.$col;
-					}, $this->search_columns['hosts'] ) );
-			}
-			/* Don't search in hosts or servies if searching in comments */
-			unset( $query['hosts'] );
-			unset( $query['services'] );
-		}
-		else if( isset( $filter['filters']['services'] ) )  {
-			if( isset( $filter['filters']['hosts'] ) )
-				$query['services'][] = $this->andOrToQuery( $filter['filters']['hosts'],
-					array_map( function($col){
-						return 'host.'.$col;
-					}, $this->search_columns['hosts'] ) );
-			/* Don't search in hosts if searching for services, just filter on hosts... */
-			unset( $query['hosts'] );
-		}
-
-		$result = array();
-		foreach( $query as $table => $filters ) {
-			$result[$table] = '['.$table.'] '.implode(' and ',$filters);
-		}
-
-		if( isset($filter['limit']) ) {
-			$result['limit'] = intval($filter['limit']);
-		}
-
-		return $result;
-	}
-
-	private function andOrToQuery( $matches, $columns ) {
-		$result = array();
-		foreach( $matches as $and ) {
-			$orresult = array();
-			foreach( $and as $or ) {
-				$or = trim($or);
-				$or = str_replace('%','.*',$or);
-				$or = addslashes($or);
-				foreach( $columns as $col ) {
-					$orresult[] = "$col ~~ \"$or\"";
-				}
-			}
-			$result[] = '(' . implode(' or ', $orresult) . ')';
-		}
-
-		return implode(' and ',$result);
-	}
-
-	/**
-	 * This is an internal function to generate a livestatus query from a filter string.
-	 *
-	 * This method is public so it can be accessed from tests.
-	 *
-	 * @param $query Search query for string
-	 * @return Livstatus query as string
-	 */
-	public function _queryToLSFilter_MatchAll($query)
-	{
-		$query = str_replace('%','.*',$query);
-
-		$filters = array();
-		foreach( $this->search_columns_matchall as $table => $cols ) {
-			$subfilters = array();
-			foreach( $cols as $col ) {
-				$subfilters[] = "$col ~~ \"".addslashes($query)."\"";
-			}
-			$filters[$table] = "[$table] ".implode(' or ', $subfilters);
-		}
-
-		return $filters;
-	}
-
-
-
-	/**
 	 *	Handle search queries from front page search field
 	 */
-	public function ajax_auto_complete($q=false)
+	public function ajax_auto_complete($q = false)
 	{
+		$this->auto_render = false;
 		$this->_verify_access('ninja.search:read.search');
 
 		$q = $this->input->get('query', $q);
 
-		$this->auto_render = false;
-
-		$result = $this->_global_search_build_filter($q);
-
-		if( $result !== false ) {
-			$obj_type = $result[0];
-			$obj_name = $result[1];
-			$settings = $result[2];
-			$livestatus_options = $result[3];
-
-			$ls = Livestatus::instance();
-			$lsb = $ls->getBackend();
-
-			$livestatus_options['limit'] = Kohana::config('config.autocomplete_limit');
-
-			$data = $lsb->getTable($obj_type, $livestatus_options);
-			$obj_info = array();
-			$obj_data = array();
-
-			if ($data!==false) {
-				foreach ($data as $row) {
-					$row = (object)$row;
-					$obj_info[] = $obj_type == 'services' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
-					$obj_data[] = array($settings['path'], $row->{$settings['data']});
-				}
-				if (!empty($obj_data) && !empty($found_str)) {
-					$obj_info[] = $divider_str;
-					$obj_data[] = array('', $divider_str);
-					$obj_info[] = $found_str;
-					$obj_data[] = array('', $found_str);
-				}
-			}
-			$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
-
-		} else {
-			$var = array('query' => $q, 'suggestions' => array(), 'data' => array());
-		}
-		$json_str = json_encode($var);
-		echo $json_str;
-	}
-
-	/**
-	 * This is actually a local method for global_search to build the search query for live search.
-	 *
-	 * This method is public to make it testable. It doesn't interact with anything external, or take time, so it's no security issue...
-	 *
-	 * @param $q Search query
-	 */
-	public function _global_search_build_filter($q)
-	{
 		$parser = new ExpParser_SearchFilter($this->object_types);
+		$limit = Kohana::config('config.autocomplete_limit');
+		$result = array();
 
 		try {
 			$parser->parse($q);
@@ -347,37 +203,87 @@ class Search_Controller extends Ninja_Controller {
 		} catch( ExpParserException $e ) {
 			$obj_type = 'hosts';
 			$obj_name = $q;
-		} catch( Exception $e ) {
-			return false;
+		} catch(Exception $e) {
+			/* Run through to obj_type false */
 		}
-
-		$obj_data = array();
-		$obj_info = array();
 
 		if ($obj_type !== false) {
 			try {
+
 				$pool = ObjectPool_Model::pool($obj_type);
-				/* @var $set ObjectPool_Model */
+				$linkprovider = LinkProvider::factory();
+				$path_generator = null;
+				$columns = array();
+
 				if($this->mayi->run($pool->all()->mayi_resource() . ':read.search')) {
 					switch ($obj_type) {
-						case 'hosts':         $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] host.name="{identifier}"'            ); break;
-						case 'services':      $settings = array( 'name_field' => 'description',  'data' => 'host_name',   'path' => '/extinfo/details/?type=service&host={identifier}&service={subidentifier}' ); break;
-						case 'hostgroups':    $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[hosts] in "{identifier}"'                      ); break;
-						case 'servicegroups': $settings = array( 'name_field' => 'name',         'data' => 'name',        'path' => '/listview/?q=[services] in "{identifier}"'                   ); break;
-						case 'comments':      $settings = array( 'name_field' => 'comment_data', 'data' => 'host_name',   'path' => '/extinfo/details/?type=host&host={identifier}'               ); break;
-						default: return false;
+					case 'hosts':
+						$columns = array('name');
+						$set = $pool->all()->reduce_by('name', $obj_name, '~~');
+						$path_generator = function ($object) use ($linkprovider) {
+							return $linkprovider->get_url('listview', null, array(
+								'q' => sprintf('[services] host.name="%s"', $object->get_name())
+							));
+						};
+						break;
+					case 'services':
+						$columns = array('host.name', 'description');
+						$set = $pool->all()->reduce_by('description', $obj_name, '~~');
+						$path_generator = function ($object) use ($linkprovider) {
+							return $linkprovider->get_url('extinfo', 'details', array(
+								'type' => 'service',
+								'host' => $object->get_host()->get_name(),
+								'service' => $object->get_description()
+							));
+						};
+						break;
+					case 'hostgroups':
+						$columns = array('name');
+						$set = $pool->all()->reduce_by('name', $obj_name, '~~');
+						$path_generator = function ($object) use ($linkprovider) {
+							return $linkprovider->get_url('listview', null, array(
+								'q' => sprintf('[hosts] in "%s"', $object->get_name())
+							));
+						};
+						break;
+					case 'servicegroups':
+						$columns = array('name');
+						$set = $pool->all()->reduce_by('name', $obj_name, '~~');
+						$path_generator = function ($object) use ($linkprovider) {
+							return $linkprovider->get_url('listview', null, array(
+								'q' => sprintf('[services] in "%s"', $object->get_name())
+							));
+						};
+						break;
+					case 'comments':
+						$columns = array('host.name', 'name');
+						$set = $pool->all()->reduce_by('name', $obj_name, '~~');
+						$path_generator = function ($object) use ($linkprovider) {
+							return $linkprovider->get_url('extinfo', 'details', array(
+								'type' => 'host',
+								'host' => $object->get_name()
+							));
+						};
+						break;
+					default:
+						$set = $pool->none();
 					}
 
-					return array( $obj_type, $obj_name, $settings, array(
-							'columns' => array_unique( array($settings['name_field'], $settings['data']) ),
-							'filter' => array($settings['name_field'] => array( '~~' => str_replace('%','.*',$obj_name) ))
-					) );
+					foreach ($set->it($columns, array(), $limit) as $object) {
+						$result[$object->get_key()] = $path_generator($object);
+					}
 				}
 			} catch(ORMException $e) {
 				/* We should ignore it, since it's just nothing to autocomplete upon */
 			}
 		}
-		return false;
+
+		json::ok(array(
+			'query' => $q,
+			'suggestions' => array_keys($result),
+			'data' => array_values($result)
+		));
+
 	}
 
 	/**

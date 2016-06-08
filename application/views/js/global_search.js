@@ -9,15 +9,15 @@ $(document).ready(function() {
 	query.autocomplete({
 		serviceUrl:_site_domain + _index_page + '/search/ajax_auto_complete/',
 		minChars:2,
-		//delimiter: /(,|;)\s*/, // regex or character
 		maxHeight:500,
 		width:'auto',
 		deferRequestBy: 300, //miliseconds
 		cacheLength: 0,
 		// callback function:
-		onSelect: function(value, data){ do_redirect(value, data); }
+		onSelect: function(id, path) {
+			window.location.href = path;
+		}
 	});
-
 
 	var search_old_refresh = 0;
 	query.focus(function() {
@@ -36,26 +36,3 @@ $(document).ready(function() {
 		}
 	});
 });
-
-function do_redirect(value, data)
-{
-	// if user clicked on information message about
-	// nr of rows returned, we shouldn't do anything
-	if (data[0] === '') {
-		$('#query').val('');
-		return false;
-	}
-
-	var match = value.split(';');
-	if (match.length) value = match[1];
-
-	var template = data[0];
-	var path = template.replace('{identifier}', encodeURIComponent(data[1]));
-
-	if (value) {
-		path = path.replace('{subidentifier}', encodeURIComponent(value));
-	}
-
-	self.location.href = _site_domain + _index_page + path;
-
-}

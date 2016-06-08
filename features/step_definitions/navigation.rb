@@ -27,6 +27,12 @@ Then /^I should be on url "([^"]*)"$/ do |url|
 	current_url.should ==  Op5Cucumber::NavigationHelpers::url_for(url)
 end
 
+#use to include querystrings in the match
+Then /^I should be on list view with filter '([^']*)'$/ do |filter|
+  query = URI.escape(filter, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+	current_url.should ==  Op5Cucumber::NavigationHelpers::path_to("list view") + '?q=' + query
+end
+
 Then /^I should be on the (.*)$/ do |page_name|
   Op5Cucumber::NavigationHelpers::url_for(current_path).should == Op5Cucumber::NavigationHelpers::path_to(page_name)
 end
