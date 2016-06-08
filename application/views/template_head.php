@@ -73,8 +73,8 @@ if (!empty($base_href)) {
 			var _widget_settings_msg = '<?php echo _('Settings for widget %s was updated'); ?>';
 			var _widget_settings_error = '<?php echo _('Unable to fetch setting for widget %s'); ?>';
 			var _widget_notfound_error = '<?php echo _('Unable to find widget %s'); ?>';
-			var _page_refresh_msg = '<?php echo _('Updated page refresh rate to %s seconds'); ?>';
-			var _listview_refresh_msg = '<?php echo _('Updated list view refresh rate to %s seconds'); ?>';
+			var _page_refresh_msg = '<?php echo _('Updated page refresh rate to {delay} seconds'); ?>';
+			var _listview_refresh_msg = '<?php echo _('Updated list view refresh rate to {delay} seconds'); ?>';
 			var _settings_msg = '<?php echo _('The settings were updated'); ?>';
 			var _success_header = '<?php echo _('Success'); ?>';
 			var _error_header = '<?php echo _('ERROR'); ?>';

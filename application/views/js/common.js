@@ -71,7 +71,7 @@ $(document).ready(function() {
 		create_slider('ninja_page_refresh');
 		$('#ninja_page_refresh_slider').on('slidechange', function() {
 			var delay = parseInt($('#ninja_page_refresh_value').val(), 10);
-			Notify.message(sprintf(_page_refresh_msg, delay), {type: "success"});
+			Notify.message(_page_refresh_msg.replace('{delay}', delay), {type: "success"});
 			ninja_refresh(delay);
 		});
 	}
@@ -108,7 +108,7 @@ $(document).ready(function() {
 		create_slider('listview_refresh');
 		$('#listview_refresh_slider').on('slidechange', function() {
 			var delay = parseInt($('#listview_refresh_value').val(), 10);
-			Notify.message(sprintf(_listview_refresh_msg, delay), {type: "success"});
+			Notify.message(_listview_refresh_msg.replace('{delay}', delay), {type: "success"});
 			clearTimeout(lsfilter_storage.list.autorefresh_timer);
 			if (delay > 0) {
 				lsfilter_storage.list.config.autorefresh_enabled = true;

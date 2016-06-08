@@ -103,7 +103,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->js_strings .= "var _reports_err_str_noobjects = '"._("Please select objects from the left selectbox")."';\n";
 		$this->js_strings .= "var _form_err_empty_fields = '"._("Please enter valid values in all required fields (marked by *) ")."';\n";
-		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please enter a valid %s value (hh:mm[:ss])")."';\n";
+		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please enter a valid {field} value (hh:mm[:ss])")."';\n";
 		$this->js_strings .= "var _schedule_error = '"._("An error occurred when trying to delete this schedule")."';\n";
 
 		$this->js_strings .= "var _schedule_delete_ok = '"._("OK")."';\n";

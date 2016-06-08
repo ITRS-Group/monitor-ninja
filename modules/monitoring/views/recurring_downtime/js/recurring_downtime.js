@@ -99,17 +99,17 @@ function check_setup()
 
 		// start_time field
 		if (!check_timestring(start_time)) {
-			errors.push(sprintf(_form_err_bad_timeformat, _form_field_start_time));
+			errors.push(_form_err_bad_timeformat.replace('{field}', _form_field_start_time));
 		}
 
 		// end_time field
 		if (!check_timestring(end_time)) {
-			errors.push(sprintf(_form_err_bad_timeformat, _form_field_end_time));
+			errors.push(_form_err_bad_timeformat.replace('{field}', _form_field_end_time));
 		}
 
 		// duration field
 		if (!fixed && !check_timestring(duration)) {
-			errors.push(sprintf(_form_err_bad_timeformat, _form_field_duration));
+			errors.push(_form_err_bad_timeformat.replace('{field}', _form_field_duration));
 		}
 	}
 	days = days.filter(function() {
