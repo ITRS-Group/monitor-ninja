@@ -94,7 +94,7 @@ class op5sysinfo {
 	}
 
 	/**
-	 * Get number of hosts used by Monitor
+	 * Get number of services used by Monitor
 	 *
 	 * @throws op5LivestatusException
 	 * @return int
