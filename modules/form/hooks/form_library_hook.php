@@ -21,6 +21,10 @@ class form_library_hook {
 
 		$controller->template->js [] = $basepath . 'views/form/form.js';
 		$controller->template->css [] = $basepath . 'views/form/form.css';
+
+		$controller->template->js [] = 'application/media/js/lib.set.js';
+		$controller->template->js [] = 'application/media/js/jquery.filterable.js';
+		$controller->template->css [] = 'application/media/css/jquery.filterable.css';
 	}
 }
 
