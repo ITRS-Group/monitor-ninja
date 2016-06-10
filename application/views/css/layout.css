@@ -1405,9 +1405,17 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
 /* Widgets */
 
 .dashboard {
+  position: relative;
   background: #f5f5f5;
   overflow-y: scroll;
+  overflow-x: hidden;
   padding: 0 8px !important;
+}
+
+.widget-row {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
 }
 
 .widget,
@@ -1424,18 +1432,18 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   text-align: center;
   font-size: 14pt;
   color: #888;
-  padding: 32px;
-  margin: 16px 0 0 0;
+  padding: 16px;
+  margin:  0 0 0 0;
   border-radius: 4px;
 }
 
 .widget-place {
   box-sizing: border-box;
-  float: left;
-  min-height: 4px;
-  margin: 0 0.5% 0 0.5%;
-  padding: 0 0 8px 0;
+  -webkit-flex: auto 1 0;
+  -ms-flex: auto 1 0;
+  flex: auto 1 0;
   opacity: 1.0 !important;
+  padding: 0 8px;
 }
 
 .widget-place-highlight {

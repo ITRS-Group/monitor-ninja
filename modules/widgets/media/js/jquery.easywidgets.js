@@ -982,7 +982,6 @@
         $(s.selectors.places).sortable('destroy');
         $(s.selectors.places).sortable({
             items: sortableItems,
-            containment: 'document',
             forcePlaceholderSize: true,
             handle: s.selectors.header,
             delay: s.behaviour.dragDelay,
