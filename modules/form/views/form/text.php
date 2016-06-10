@@ -4,7 +4,9 @@
 
 $default = $form->get_default($field->get_name(), "");
 
-echo '<div class="njform-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
-echo '<div class="njform-field">';
-echo '<input type="text" class="njform-option" name="'.$field->get_name().'" value="'.html::specialchars($default).'" />';
+echo '<div class="nj-form-field">';
+echo '<label>';
+echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
+echo '<input type="text" class="nj-form-option" name="'.$field->get_name().'" value="'.html::specialchars($default).'" />';
+echo '</label>';
 echo '</div>';

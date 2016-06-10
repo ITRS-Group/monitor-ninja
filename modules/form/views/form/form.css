@@ -1,12 +1,206 @@
-@CHARSET "UTF-8";
 
-.njform-label {
-	float: left;
-	width: 150px;
+form.nj-form {
+  font-size: 10pt;
+  margin: 8px;
 }
 
-.njform-title {
-	margin-top: 0.5em;
-	margin-bottom: 0.25em;
-	font-weight: bold;
+form.nj-form label {
+  display: block;
+}
+
+form.nj-form .nj-form-field {
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  max-width: 450px;
+  min-width: 312px;
+  width: 33.33%;
+  padding: 8px;
+}
+
+form.nj-form fieldset {
+  box-sizing: border-box;
+  display: block;
+  margin: 0;
+}
+
+form.nj-form fieldset .nj-form-title {
+  padding: 8px 0;
+  margin: 0 64px 0 8px;
+  border-bottom: 1px solid #dddddd;
+  text-transform: uppercase;
+  font-size: 11pt;
+  color: #666666;
+}
+
+form.nj-form .nj-form-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 4px 8px 4px 0;
+  color: #666666;
+  width: 120px;
+}
+
+form.nj-form .nj-form-object-selector {
+  width: 100%;
+  max-width: none;
+}
+
+form.nj-form input,
+form.nj-form textarea,
+form.nj-form select {
+  box-sizing: border-box;
+  vertical-align: middle;
+  max-width: none;
+  margin: 0;
+
+  font-size: 10pt;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-bottom: 1px solid #bbbbbb;
+  line-height: 1.1em;
+  border-radius: 2px;
+}
+
+form.nj-form textarea {
+  resize: none;
+}
+
+form.nj-form select {
+  padding: 6px 8px;
+  width: 256px;
+  height: auto;
+}
+
+form.nj-form textarea,
+form.nj-form input[type="text"] {
+  padding: 8px;
+  width: 256px;
+}
+
+form.nj-form input[type="number"] {
+  padding: 8px;
+  width: 124px;
+}
+
+/* Checkbox */
+
+form.nj-form .field-type-checkbox input {
+   display: none;
+}
+
+form.nj-form .field-type-checkbox .nj-field-label {
+  position: relative;
+  margin-left: 24px;
+  width: auto;
+}
+
+form.nj-form .field-type-checkbox input + .nj-field-label:before {
+  display: block;
+  position: absolute;
+  top: -4px;
+  left: -24px;
+  vertical-align: middle;
+  margin: 4px 8px 4px 0;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+}
+
+form.nj-form .field-type-checkbox input:checked + .nj-field-label:before {
+  border: 1px solid #bbbbbb;
+}
+
+form.nj-form .field-type-checkbox input + .nj-field-label:after {
+  display: block;
+  position: absolute;
+  top: 5px;
+  left: -14px;
+  transition: all 150ms;
+  vertical-align: middle;
+  background: #50c0e4;
+  margin: 4px 8px 4px 0;
+
+  border-radius: 8px;
+  content: "";
+  height: 0px;
+  width: 0px;
+  opacity: 0;
+}
+
+form.nj-form .field-type-checkbox input:checked + .nj-field-label:after {
+  top: -1px;
+  left: -21px;
+  border-radius: 2px;
+  height: 12px;
+  width: 12px;
+  opacity: 1;
+}
+
+/* End checkbox */
+
+/* Radiobutton */
+
+form.nj-form .field-type-radio input {
+   display: none;
+}
+
+form.nj-form .field-type-radio .nj-field-label {
+  position: relative;
+  margin-left: 24px;
+  width: auto;
+}
+
+form.nj-form .field-type-radio input + .nj-field-label:before {
+  display: block;
+  position: absolute;
+  top: -4px;
+  left: -24px;
+  vertical-align: middle;
+  margin: 4px 8px 4px 0;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+}
+
+form.nj-form .field-type-radio input:checked + .nj-field-label:before {
+  border: 1px solid #bbbbbb;
+}
+
+form.nj-form .field-type-radio input + .nj-field-label:after {
+  display: block;
+  position: absolute;
+  top: 5px;
+  left: -14px;
+  transition: all 150ms;
+  vertical-align: middle;
+  background: #50c0e4;
+  margin: 4px 8px 4px 0;
+
+  border-radius: 8px;
+  content: "";
+  height: 0px;
+  width: 0px;
+  opacity: 0;
+}
+
+form.nj-form .field-type-radio input:checked + .nj-field-label:after {
+  top: -1px;
+  left: -21px;
+  height: 12px;
+  width: 12px;
+  opacity: 1;
+}
+
+/* End radiobutton */
+
+/* Filterable */
+
+form.nj-form .jq-filterable-filter[type="text"] {
+  /*  @TODO remove this important */
+  width: 100px !important;
 }
