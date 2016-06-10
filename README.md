@@ -13,7 +13,7 @@ Ninja requires the following system software to be installed:
 
 It also requires the following software:
 
-- Naemon 4.0+ (needs to run on the same server) [https://github.com/naemon/naemon-core](https://github.com/naemon/naemon-core)
+- Naemon 1.0.4+ (needs to run on the same server) [https://github.com/naemon/naemon-core](https://github.com/naemon/naemon-core)
 - Merlin [https://github.com/op5/merlin](https://github.com/op5/merlin)
 - The Naemon project's fork of Livestatus [https://github.com/naemon/naemon-livestatus](https://github.com/naemon/naemon-livestatus)
 
@@ -22,9 +22,8 @@ It also requires the following software:
 Ninja is a web application mainly written in php so in short words the
 installation goes something like this:
 
-1.  Download a tarball from a "snapshot" link at
-    [http://git.op5.org/gitweb?p=monitor%2Fninja.git;a=summary](http://git.op5.org/gitweb?p=monitor%2Fninja.git;a=summary),
-    or by checking out the project via git, from the same URL.
+1.  Download a release tarball from [https://github.com/op5/ninja/releases](https://github.com/op5/ninja/releases),
+    or by checking out the project via git.
 
 2.  Put Ninja and all of its files so that they are accessible from a webserver.
     Make sure that all Ninja requirements are installed, and that both the
