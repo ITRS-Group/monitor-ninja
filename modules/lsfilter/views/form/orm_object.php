@@ -16,11 +16,13 @@ if($default !== null) {
 }
 
 
-echo '<div class="njform-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
-echo '<div class="njform-field">';
+echo '<div class="nj-form-field nj-form-object-selector">';
+echo '<label>';
+echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
 echo '<select data-filterable data-type="'.singularize($field->get_table()).'" name="'.$field->get_name().'">';
 if($default) {
 	echo '<option value="'.html::specialchars($default).'">'.html::specialchars($default).'</option>';
 }
 echo '</select>';
+echo '</label>';
 echo '</div>';
