@@ -90,6 +90,9 @@ $(function() {
 					}
 				});
 			},
+			onDragStop: function () {
+				$('.widget-place').removeClass('widget-place-highlight');
+			},
 			onClose : function(link, widget) {
 				tac_send_request('on_widget_remove', {
 					key : widget.attr('data-key')
@@ -106,6 +109,10 @@ $(function() {
 				new widget(w.data('key'));
 			}
 		}
+	});
+
+	$('.content.dashboard').on('mouseup', function () {
+		$('.widget-place').removeClass('widget-place-highlight');
 	});
 
 	$('.widget').each(function() {
@@ -204,9 +211,8 @@ function widget(key) {
 
 	this.header.on('mousedown', function () {
 		$('.widget-place').addClass('widget-place-highlight');
-	}).on('mouseup', function () {
-		$('.widget-place').removeClass('widget-place-highlight');
-	})
+	});
+
 
 	/*
 	 * Widget refresh timer information

@@ -1415,19 +1415,36 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   box-sizing: border-box;
   position: relative;
   height: auto;
-  margin: 16px 8px 0 8px;
+  margin: 16px 0 0 0;
 }
 
 .widget-placeholder {
-  background: #e0e0e0;
-  height: 24px;
+  background: #f0f0f0;
+  border: 2px dashed #d0d0d0;
+  text-align: center;
+  font-size: 14pt;
+  color: #888;
+  padding: 32px;
+  margin: 16px 0 0 0;
+  border-radius: 4px;
 }
 
 .widget-place {
-  min-height: 4px;
-  margin: 0;
-  padding: 0 0 8px 0;
+  box-sizing: border-box;
   float: left;
+  min-height: 4px;
+  margin: 0 0.5% 0 0.5%;
+  padding: 0 0 8px 0;
+}
+
+.widget-place-highlight {
+  min-height: 32px;
+  border-radius: 3px;
+}
+
+.widget-place-highlight .widget,
+.widget-place-highlight .widget-placeholder {
+  margin-top: 16px;
 }
 
 .widget-content {

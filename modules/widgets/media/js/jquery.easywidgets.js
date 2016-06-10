@@ -991,7 +991,8 @@
             connectWith: $(s.selectors.places),
             placeholder: s.selectors.placeHolder,
             start: function(e, ui) {
-                $(ui.helper).addClass('dragging');
+                $(ui.placeholder).text('Drag your widget here')
+								$(ui.helper).addClass('dragging');
                 return true;
             },
             stop: function(e, ui) {

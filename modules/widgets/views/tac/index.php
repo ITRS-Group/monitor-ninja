@@ -7,7 +7,8 @@ foreach( $tac_column_count as $count ) {
 	for( $j=0; $j<$count; $j++ ) {
 		$widget_list = isset($widgets[$i])?$widgets[$i]:array();
 		$placeholder_id = 'widget-placeholder' . $i;
-		echo '<div class="widget-place" id="'.$placeholder_id.'" style="width: '.number_format(100/$count, 2).'%;">';
+		$width = (100/$count) - 1;
+		echo '<div class="widget-place" id="'.$placeholder_id.'" style="width: '.number_format($width, 2).'%;">';
 		foreach ($widget_list as $idx => $widget) {
 			echo $widget->render('index', true);
 		}
