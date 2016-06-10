@@ -1435,6 +1435,7 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   min-height: 4px;
   margin: 0 0.5% 0 0.5%;
   padding: 0 0 8px 0;
+  opacity: 1.0 !important;
 }
 
 .widget-place-highlight {
