@@ -96,14 +96,14 @@ class Form_Model {
 	 *
 	 * It should be possible to recreate a form state as:
 	 *
-	 * $form_b->set_defaults( $form_a->process_data($rawdata) );
+	 * $form_b->set_values( $form_a->process_data($rawdata) );
 	 *
 	 * @param $fieldname string,
 	 *        	fieldname
 	 * @param $default Default
 	 *        	value if no default value is found in the array. Optional, then null
 	 */
-	public function get_default($fieldname, $default = null) {
+	public function get_value($fieldname, $default = null) {
 		if (isset($this->defaults[$fieldname]))
 			return $this->defaults[$fieldname];
 		return $default;
@@ -115,7 +115,7 @@ class Form_Model {
 	 * @param $defaults array
 	 *        	of default values
 	 */
-	public function set_defaults(array $defaults) {
+	public function set_values(array $defaults) {
 		$this->defaults = $defaults;
 	}
 }

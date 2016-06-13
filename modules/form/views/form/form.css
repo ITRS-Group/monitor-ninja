@@ -1,6 +1,6 @@
 
 form.nj-form {
-  font-size: 10pt;
+  font-size: 11pt;
   margin: 8px;
 }
 
@@ -39,7 +39,7 @@ form.nj-form .nj-form-label {
   vertical-align: middle;
   margin: 4px 8px 4px 0;
   color: #666666;
-  width: 120px;
+  width: 140px;
 }
 
 form.nj-form .nj-form-object-selector {
@@ -68,9 +68,21 @@ form.nj-form textarea {
 }
 
 form.nj-form select {
-  padding: 6px 8px;
+  padding: 7px 8px;
   width: 256px;
   height: auto;
+}
+
+form.nj-form button,
+form.nj-form input[type="submit"],
+form.nj-form input[type="reset"]{
+  padding: 6px 24px;
+  border: inherit;
+}
+
+form.nj-form button:hover,
+form.nj-form input[type="submit"]:hover,
+form.nj-form input[type="reset"]:hover {
 }
 
 form.nj-form textarea,
@@ -227,20 +239,22 @@ form.nj-form input[type=range]::-webkit-slider-thumb {
   box-sizing: content-box;
   background: #50c0e4;
   border: none;
-  /* your thumb styles */
+  width: 14px;
+  height: 14px;
 }
 
 form.nj-form input[type=range]::-moz-range-thumb {
-  /* again your thumb styles */
+  width: 14px;
+  height: 14px;
   background: #50c0e4;
   border: none;
 }
 
 form.nj-form input[type=range]::-ms-thumb { /* should come after -webkit- */
-  /* again your thumb styles */
-  /* may require different margins */
   background: #50c0e4;
   border: none;
+  width: 14px;
+  height: 14px;
 }
 
 form.nj-form input[type=range]::-webkit-slider-runnable-track {
@@ -283,3 +297,60 @@ form.nj-form .nj-form-field-range-hover {
 }
 
 /* End range */
+
+/* Autocomplete */
+
+form.nj-form .nj-form-field-autocomplete {
+  position: relative;
+  height: 32px;
+}
+
+form.nj-form .nj-form-field-autocomplete input {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 256px;
+}
+
+form.nj-form .nj-form-field-autocomplete-items {
+  position: absolute;
+  display: block;
+  display: none;
+  z-index: 3;
+  left: 0;
+  top: 32px;
+  width: 254px;
+  background: #ffffff;
+  border-radius: 3px;
+  border: 1px solid #d0d0d0;
+  padding-bottom: 4px;
+}
+
+form.nj-form .nj-form-field-autocomplete-items li {
+  line-height: 1.1em;
+  padding: 6px 4px 3px 16px;
+  color: #555555;
+}
+
+form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-items-title {
+  cursor: default;
+  padding: 6px 2px;
+  margin: 8px 8px 4px 8px;
+  color: #888888;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item-selected {
+  background: #50c0e4;
+  color: #ffffff;
+}
+
+form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item:hover {
+  background: #50c0e4;
+  color: #ffffff;
+}
+
+/* End Autocomplete */

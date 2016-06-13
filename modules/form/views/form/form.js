@@ -42,6 +42,7 @@ $(function() {
 		}
 	});
 
+	/* Range handling */
 	$(document).find('.nj-form-field-range-hover').hide();
 	$(document).on('mousemove', '.nj-form-field-range', function (e) {
 		$(this).find('.nj-form-field-range-hover')
@@ -57,8 +58,8 @@ $(function() {
 		$(this).siblings('.nj-form-field-range-hover').hide();
 	});
 
-	$(document).on('submit', '.nj-form', function() {
-
+	/* Submit handling */
+	$(document).on('submit', '.nj-form', function(e) {
 	});
 
 });
