@@ -21,11 +21,11 @@ class Form_Field_Conditional_Model extends Form_Field_Model {
 	public function get_field() {
 		return $this->field;
 	}
-	public function process_data(array $raw_data) {
-		if (! isset( $raw_data [$this->rel] ))
+	public function process_data(array $raw_data, Form_Result_Model $result) {
+		if (!$result->has_value($this->rel))
 			throw new FormException( "Unknown field {$this->rel} to relate to" );
-		if ($raw_data [$this->rel] != $this->value)
-			return array();
-		return $this->field->process_data( $raw_data );
+		if ($result->get_value($this->rel) != $this->value)
+			return;
+		$this->field->process_data($raw_data, $result);
 	}
 }

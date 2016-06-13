@@ -65,5 +65,5 @@ abstract class Form_Field_Model {
 	 * @throws FormException
 	 * @return array of el
 	 */
-	public abstract function process_data(array $raw_data);
+	public abstract function process_data(array $raw_data, Form_Result_Model $result);
 }

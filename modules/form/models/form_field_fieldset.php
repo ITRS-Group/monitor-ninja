@@ -16,12 +16,10 @@ class Form_Field_Fieldset_Model extends Form_Field_Model {
 	public function get_type() {
 		return 'fieldset';
 	}
-	public function process_data(array $raw_data) {
-		$result = array();
-		foreach ( $this->get_fields() as $field ) {
+	public function process_data(array $raw_data, Form_Result_Model $result) {
+		foreach ($this->get_fields() as $field) {
 			/* @var $field Form_Field_Model */
-			$result = array_merge( $result, $field->process_data( $raw_data ) );
+			$field->process_data($raw_data, $result);
 		}
-		return $result;
 	}
 }

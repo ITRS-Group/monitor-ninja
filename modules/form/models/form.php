@@ -80,16 +80,15 @@ class Form_Model {
 	 * an object selector which takes a unique key string as raw argument can
 	 * return an actual object instance.
 	 *
-	 * @param $raw_data array
-	 *        	of parasmeters fetched as $_POST
+	 * @param $raw_data array of parameters fetched as $_POST
 	 */
 	public function process_data(array $raw_data) {
-		$result = array();
-		foreach ( $this->fields as $field ) {
+		$result = new Form_Result_Model();
+		foreach ($this->fields as $field) {
 			/* @var $field Form_Field_Model */
-			$result += $field->process_data( $raw_data );
+			$field->process_data($raw_data, $result);
 		}
-		return $result;
+		return $result->to_array();
 	}
 
 	/**
@@ -105,8 +104,8 @@ class Form_Model {
 	 *        	value if no default value is found in the array. Optional, then null
 	 */
 	public function get_default($fieldname, $default = null) {
-		if (isset( $this->defaults [$fieldname] ))
-			return $this->defaults [$fieldname];
+		if (isset($this->defaults[$fieldname]))
+			return $this->defaults[$fieldname];
 		return $default;
 	}
 

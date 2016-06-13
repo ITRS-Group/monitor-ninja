@@ -11,7 +11,7 @@ class Form_Field_Select_Model extends Form_Field_Model {
 	public function get_options() {
 		return $this->options;
 	}
-	public function process_data(array $raw_data) {
+	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
 		if (! isset( $raw_data [$name] ))
 			throw new FormException( "Unknown field $name" );
@@ -19,6 +19,6 @@ class Form_Field_Select_Model extends Form_Field_Model {
 			throw new FormException( "$name does not have a option value" );
 		if (! isset( $this->options [$raw_data [$name]] ))
 			throw new FormException( "$name has not a valid option value" );
-		return array( $name => $raw_data [$name] );
+		$result->set_value($name, $raw_data[$name]);
 	}
 }
