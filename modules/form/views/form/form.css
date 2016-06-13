@@ -11,6 +11,7 @@ form.nj-form label {
 form.nj-form .nj-form-field {
   box-sizing: border-box;
   display: inline-block;
+  position: relative;
   vertical-align: top;
   max-width: 450px;
   min-width: 312px;
@@ -85,17 +86,17 @@ form.nj-form input[type="number"] {
 
 /* Checkbox */
 
-form.nj-form .field-type-checkbox input {
+form.nj-form .nj-form-field-checkbox input {
    display: none;
 }
 
-form.nj-form .field-type-checkbox .nj-field-label {
+form.nj-form .nj-form-field-checkbox .nj-form-label {
   position: relative;
   margin-left: 24px;
   width: auto;
 }
 
-form.nj-form .field-type-checkbox input + .nj-field-label:before {
+form.nj-form .nj-form-field-checkbox input + .nj-form-label:before {
   display: block;
   position: absolute;
   top: -4px;
@@ -109,11 +110,11 @@ form.nj-form .field-type-checkbox input + .nj-field-label:before {
   border-radius: 2px;
 }
 
-form.nj-form .field-type-checkbox input:checked + .nj-field-label:before {
+form.nj-form .nj-form-field-checkbox input:checked + .nj-form-label:before {
   border: 1px solid #bbbbbb;
 }
 
-form.nj-form .field-type-checkbox input + .nj-field-label:after {
+form.nj-form .nj-form-field-checkbox input + .nj-form-label:after {
   display: block;
   position: absolute;
   top: 5px;
@@ -130,7 +131,7 @@ form.nj-form .field-type-checkbox input + .nj-field-label:after {
   opacity: 0;
 }
 
-form.nj-form .field-type-checkbox input:checked + .nj-field-label:after {
+form.nj-form .nj-form-field-checkbox input:checked + .nj-form-label:after {
   top: -1px;
   left: -21px;
   border-radius: 2px;
@@ -143,17 +144,17 @@ form.nj-form .field-type-checkbox input:checked + .nj-field-label:after {
 
 /* Radiobutton */
 
-form.nj-form .field-type-radio input {
+form.nj-form .nj-form-field-radio input {
    display: none;
 }
 
-form.nj-form .field-type-radio .nj-field-label {
+form.nj-form .nj-form-field-radio .nj-form-label {
   position: relative;
   margin-left: 24px;
   width: auto;
 }
 
-form.nj-form .field-type-radio input + .nj-field-label:before {
+form.nj-form .nj-form-field-radio input + .nj-form-label:before {
   display: block;
   position: absolute;
   top: -4px;
@@ -167,11 +168,11 @@ form.nj-form .field-type-radio input + .nj-field-label:before {
   border-radius: 8px;
 }
 
-form.nj-form .field-type-radio input:checked + .nj-field-label:before {
+form.nj-form .nj-form-field-radio input:checked + .nj-form-label:before {
   border: 1px solid #bbbbbb;
 }
 
-form.nj-form .field-type-radio input + .nj-field-label:after {
+form.nj-form .nj-form-field-radio input + .nj-form-label:after {
   display: block;
   position: absolute;
   top: 5px;
@@ -188,7 +189,7 @@ form.nj-form .field-type-radio input + .nj-field-label:after {
   opacity: 0;
 }
 
-form.nj-form .field-type-radio input:checked + .nj-field-label:after {
+form.nj-form .nj-form-field-radio input:checked + .nj-form-label:after {
   top: -1px;
   left: -21px;
   height: 12px;
@@ -204,3 +205,81 @@ form.nj-form .jq-filterable-filter[type="text"] {
   /*  @TODO remove this important */
   width: 100px !important;
 }
+
+/* Range */
+
+form.nj-form .nj-form-field-range {
+  display: inline-block;
+  width: 256px;
+}
+
+form.nj-form input[type=range] {
+  -webkit-appearance: none;
+  height: 35px; /* pick your own value */
+  padding: 0;
+  border: none;
+  width: 180px;
+  /* your slider styles */
+}
+
+form.nj-form input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  box-sizing: content-box;
+  background: #50c0e4;
+  border: none;
+  /* your thumb styles */
+}
+
+form.nj-form input[type=range]::-moz-range-thumb {
+  /* again your thumb styles */
+  background: #50c0e4;
+  border: none;
+}
+
+form.nj-form input[type=range]::-ms-thumb { /* should come after -webkit- */
+  /* again your thumb styles */
+  /* may require different margins */
+  background: #50c0e4;
+  border: none;
+}
+
+form.nj-form input[type=range]::-webkit-slider-runnable-track {
+  /* your track styles */
+  height: 2px;
+  background: #d0d0d0;
+}
+
+form.nj-form input[type=range]::-moz-range-track {
+  /* again your track styles */
+  height: 2px;
+  background: #d0d0d0;
+}
+
+form.nj-form input[type=range]::-ms-track { /* should come after -webkit- */
+  border-color: transparent;
+  color: transparent;
+  height: 2px;
+  background: #d0d0d0;
+}
+
+
+form.nj-form .nj-form-field-range-min {
+  margin-right: 4px;
+}
+
+form.nj-form .nj-form-field-range-max {
+  margin-left: 4px;
+}
+
+form.nj-form .nj-form-field-range-hover {
+  position: fixed;
+  z-index: 100;
+  background: #ffffff;
+  padding: 4px;
+  margin-top: 8px;
+  margin-left: 8px;
+  border: 1px solid #c0c0c0;
+  border-radius: 0 2px 4px 2px;
+}
+
+/* End range */
