@@ -83,7 +83,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('Contact_Model', $result['da_contact']);
 		$this->assertEquals('Someone', $result['da_contact']->get_name());
 
-		$form_with_defaults->set_defaults($result);
+		$form_with_defaults->set_values($result);
 
 		/* When rendering, only the selected host should be available */
 		$content = $form_with_defaults->get_view()->render(false);

@@ -2,7 +2,7 @@
 /* @var $form Form_Model */
 /* @var $field Form_Field_Text_Model */
 
-$default = $form->get_default($field->get_name(), 0);
+$default = $form->get_value($field->get_name(), 0);
 
 echo '<div class="nj-form-field">';
 echo '<label>';

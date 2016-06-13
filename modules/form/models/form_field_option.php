@@ -1,16 +1,27 @@
 <?php
-class Form_Field_Radio_Model extends Form_Field_Model {
+class Form_Field_Option_Model extends Form_Field_Model {
+
 	private $options;
-	public function __construct($name, $pretty_name, array $options) {
+	private $force_render;
+
+	public function __construct($name, $pretty_name, array $options, $force_render = false) {
 		parent::__construct( $name, $pretty_name );
 		$this->options = $options;
+		$this->force_render = $force_render;
 	}
+
 	public function get_type() {
-		return 'radio';
+		return 'options';
 	}
+
+	public function get_force_render() {
+		return $this->force_render;
+	}
+
 	public function get_options() {
 		return $this->options;
 	}
+
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
 		if (! isset( $raw_data [$name] ))

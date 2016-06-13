@@ -47,4 +47,8 @@ class SavedFilter_Model extends BaseSavedFilter_Model {
 		parent::set_filter($value);
 		$this->set_filter_table($metadata['name']);
 	}
+
+	public function get_readable_name () {
+		return $this->get_filter_name();
+	}
 }

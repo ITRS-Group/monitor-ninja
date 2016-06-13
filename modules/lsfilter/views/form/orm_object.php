@@ -10,7 +10,7 @@ function singularize($plural) {
 	return $plural;
 }
 
-$default = $form->get_default($field->get_name(), null);
+$default = $form->get_value($field->get_name(), null);
 if($default !== null) {
 	$default = $default->get_key();
 }
