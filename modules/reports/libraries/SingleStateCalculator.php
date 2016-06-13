@@ -7,6 +7,7 @@ class SingleStateCalculator extends StateCalculator
 {
 	protected $st_last_dt_init = 1; /**< set to FALSE on nagios restart, and a timestamp on first DT start after restart, so we can exclude duplicate downtime_start */
 	protected $st_real_state = false; /**< The real state of the object */
+	protected $st_dt_objects = array(); /**< objects in downtime */
 	public $st_log = false; /**< The log array, only used for treds, should use summary reports for this */
 
 	public function initialize($initial_state, $initial_depth, $is_running)
@@ -94,6 +95,9 @@ class SingleStateCalculator extends StateCalculator
 				$add = 1;
 			}
 			if ($add) {
+				if (isset($this->st_dt_objects[$obj_name]))
+					break;
+				$this->st_dt_objects[$obj_name] = True;
 				$this->st_dt_depth+=1;
 			}
 			break;
@@ -106,6 +110,7 @@ class SingleStateCalculator extends StateCalculator
 			if ($this->st_dt_depth) {
 				$this->st_dt_depth-=1;
 			}
+			unset($this->st_dt_objects[$obj_name]);
 			break;
 		 case Reports_Model::SERVICECHECK:
 		 case Reports_Model::HOSTCHECK:

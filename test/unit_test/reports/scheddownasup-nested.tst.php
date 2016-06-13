@@ -18,8 +18,8 @@ $testcase = array (
     'scheduleddowntimeasuptime' => '0',
     'correct' => 
     array (
-      'TIME_DOWN_UNSCHEDULED' => '78600',
-      'TIME_DOWN_SCHEDULED' => '7800',
+      'TIME_DOWN_UNSCHEDULED' => '79200',
+      'TIME_DOWN_SCHEDULED' => '7200',
     ),
   ),
   'down_dtstart_dtstart_dtend_dtend: scheduled downtime as uptime' => 
@@ -32,8 +32,8 @@ $testcase = array (
     'scheduleddowntimeasuptime' => '1',
     'correct' => 
     array (
-      'TIME_UP_SCHEDULED' => '7800',
-      'TIME_DOWN_UNSCHEDULED' => '78600',
+      'TIME_UP_SCHEDULED' => '7200',
+      'TIME_DOWN_UNSCHEDULED' => '79200',
     ),
   ),
 );
