@@ -198,7 +198,7 @@ class bignumber_Widget extends widget_Base {
 			'percent' => 'Percentage'
 		));
 
-		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'SHOW STATUS');
+		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'Show status');
 		$threshold_as = new Form_Field_Option_Model('threshold_type', 'Threshold as', array(
 			'less_than' => 'Less than',
 			'greater_than' => 'Greater than',
