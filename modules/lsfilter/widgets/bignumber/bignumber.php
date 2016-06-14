@@ -205,8 +205,7 @@ class bignumber_Widget extends widget_Base {
 		$threshold_types['greater_than'] = function ($val, $stat) {
 			return 100.0 * $stat['selection'] / $stat['all'] > $val;
 		};
-		$threshold_type = $form_model->get_value('threshold_type', 'less_than');
-		$threshold_callback = $threshold_types[$threshold_type];
+		$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
 
 		// display
 		if ($counts['all'] == 0) {
@@ -231,7 +230,7 @@ class bignumber_Widget extends widget_Base {
 			$threshold_value = $counts['selection'];
 			$display_explanation = "";
 
-			if ($form_model->get_value('threshold_onoff', true)) {
+			if ($form_model->get_value('threshold_onoff')) {
 				if (call_user_func_array($threshold_callback, array($form_model->get_value('threshold_crit', 90.0), $counts))) {
 					$state = 'critical';
 				} elseif (call_user_func_array($threshold_callback, array($form_model->get_value('threshold_warn', 95.0), $counts))) {
