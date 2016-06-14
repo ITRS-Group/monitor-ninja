@@ -89,7 +89,6 @@ class bignumber_Widget extends widget_Base {
 	 * when making a custom widget of this type
 	 */
 	public function __construct(Widget_Model $widget_model) {
-
 		parent::__construct($widget_model);
 		$settings = $this->model->get_setting();
 
@@ -137,8 +136,7 @@ class bignumber_Widget extends widget_Base {
 	public function get_metadata() {
 		return array_merge(parent::get_metadata(), array(
 			'friendly_name' => 'Big numbers',
-			'css' => array('style.css'),
-			'js' => array('bignumber.js'),
+			'css' => array('style.css')
 		));
 	}
 
@@ -171,7 +169,7 @@ class bignumber_Widget extends widget_Base {
 	/**
 	 * Load the options for this widget.
 	 *
-	 * @return array of option and Fieldset_Model
+	 * @return Form_Model
 	 */
 	public function options() {
 		$all_filters = array();
@@ -185,43 +183,42 @@ class bignumber_Widget extends widget_Base {
 			$all_filters[$filter->get_id()] = $filter->get_filter_name();
 		}
 
-		$show = new Fieldset_Model('SHOW');
-		$show_filter = new option($this->model->get_name(), 'main_filter_id', 'Show filter', 'dropdown', array('options' => $all_filters), $this->main_filter_id);
-		$show_filter->set_help('bignumber_show_filter', 'tac');
-		$show[] = $show_filter;
+		$main_filter = new Form_Field_Option_Model('main_filter_id', 'Show filter', $all_filters);
+		$main_filter->set_help('bignumber_show_filter', 'tac');
+		$selection_filter = new Form_Field_Option_Model('selection_filter_id', 'With selection', $all_filters);
+		$selection_filter->set_help('bignumber_with_selection', 'tac');
+		$filters = new Form_Field_Group_Model('filters', array(
+			$main_filter,
+			$selection_filter
+		));
 
-		$with_selection = new option($this->model->get_name(), 'selection_filter_id', ' <span class="box-drawing">└─</span> With selection', 'dropdown', array('options' => $all_filters), $this->selection_filter_id);
-		$with_selection->set_help('bignumber_with_selection', 'tac');
-		$show[] = $with_selection;
+		$uom = new Form_Field_Option_Model('display_type', 'Unit of measurement', array(
+			'number_of_total' => 'Fraction',
+			'number_only' => 'Count',
+			'percent' => 'Percentage'
+		));
 
-		$show[] = new option($this->model->get_name(), 'display_type', 'Unit of measurement', 'dropdown', array(
-			'options' => array(
-				'number_of_total' => 'Fraction',
-				'number_only' => 'Count',
-				'percent' => 'Percentage'
-			)
-		), $this->display_type);
-
-		$options = parent::options();
-		$options[] = $show;
-
-		$show_status = new Fieldset_Model('SHOW STATUS', array('class' => 'can_be_toggled'));
-		$threshold_as = new option($this->model->get_name(), 'threshold_type', 'Threshold as', 'dropdown', array(
-			'options' => array(
-				'less_than' => 'Less than',
-				'greater_than' => 'Greater than',
-			)
-		), $this->threshold_type);
+		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'SHOW STATUS');
+		$threshold_as = new Form_Field_Option_Model('threshold_type', 'Threshold as', array(
+			'less_than' => 'Less than',
+			'greater_than' => 'Greater than',
+		));
 		$threshold_as->set_help('bignumber_threshold_as', 'tac');
-		$show_status[] = $threshold_as;
+		$thresholds = new Form_Field_Conditional_Model('threshold_onoff', true,
+			new Form_Field_Group_Model("thresholds", array(
+				$threshold_as,
+				//Form_Field_Text_Model::__construct($name, $pretty_name)
+				new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
+				new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
+			))
+		);
 
-		$show_status[] = new option($this->model->get_name(), 'threshold_onoff', 'threshold_onoff', 'input', array('type' => 'hidden'), $this->threshold_onoff);
-		$show_status[] = new option($this->model->get_name(), 'threshold_warn', 'Warning threshold (%)', 'input', array('class' => 'percentage'), $this->threshold_warn);
-		$show_status[] = new option($this->model->get_name(), 'threshold_crit', 'Critical threshold (%)', 'input', array('class' => 'percentage'), $this->threshold_crit);
-
-		$options[] = $show_status;
-
-		return $options;
+		return new Form_Model('widget/save_widget_setting', array(
+			$filters,
+			$uom,
+			$toggle_status,
+			$thresholds
+		));
 	}
 
 	/**

@@ -176,9 +176,9 @@ class widget_Base {
 		foreach ($this->options() as $option) {
 			if ($option instanceof option) {
 				$arguments[$option->name] = $option->value($this->model->get_setting());
-			} elseif($option instanceof Fieldset_Model) {
-				foreach($option as $opt) {
-					$arguments[$opt->name] = $opt->value($this->model->get_setting());
+			} elseif($option instanceof Form_Model) {
+				foreach($option->get_fields() as $field) {
+					$arguments[$field] = $option->get_value($field);
 				}
 			}
 		}
@@ -222,7 +222,7 @@ class widget_Base {
 	 *
 	 * Actual widgets typically want to extend this method.
 	 *
-	 * @return array of option and Fieldset_Model
+	 * @return array of option
 	 */
 	public function options () {
 
