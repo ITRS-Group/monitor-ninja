@@ -82,7 +82,7 @@
 		}.bind(this));
 
 		this.input.on('focus', function (e) {
-			this.update("");
+			this.update(this.input.val());
 			this.input.attr('placeholder', "");
 		}.bind(this));
 
