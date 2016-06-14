@@ -16,13 +16,13 @@ $types .= ' or ' . $first;
 
 if ($default) {
 
-	echo '<input type="hidden" class="nj-form-option" value="' . $default->get_table() . '" name="'.$field->get_name().'[table]">';
-	echo '<input placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" class="nj-form-option" name="'.$field->get_name().'[value]" value="'.html::specialchars($default->get_readable_name()).'" />';
+	echo '<input class="nj-form-option" type="hidden" value="' . $default->get_table() . '" name="'.$field->get_name().'[table]">';
+	echo '<input placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" class="nj-form-field-autocomplete-input nj-form-option" name="'.$field->get_name().'[value]" value="'.html::specialchars($default->get_readable_name()).'" />';
 } else {
-	echo '<input type="hidden" class="nj-form-option" value="' . $tables[0] . '" name="'.$field->get_name().'[table]">';
-	echo '<input placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" class="nj-form-option" name="'.$field->get_name().'[value]" value="'.html::specialchars($default).'" />';
+	echo '<input class="nj-form-option" type="hidden" class="nj-form-option" value="' . $tables[0] . '" name="'.$field->get_name().'[table]">';
+	echo '<input class="nj-form-field-autocomplete-input nj-form-option"  placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" name="'.$field->get_name().'[value]" value="'.html::specialchars($default).'" />';
 }
-//echo '<select class="nj-form-option" data-autocomplete="' . implode(',', $tables) . '"></select>';
+echo '<input class="nj-form-field-autocomplete-shadow" autocomplete="off" type="text" class="nj-form-option" value="'.html::specialchars($default).'" />';
 echo '<ul class="nj-form-field-autocomplete-items"></ul>';
 echo '</div>';
 echo '</label>';
