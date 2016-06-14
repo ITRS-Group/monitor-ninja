@@ -45,6 +45,31 @@ class Form_Model {
 	}
 
 	/**
+	 * Factory method, creates a Form_Model with usable defaults for
+	 * (TAC) widgets. Compare to the @classmethod in Python. Yes, this
+	 * bundles business logic into the library, if that's unwanted,
+	 * move this into a Form_Model_Factory.
+	 *
+	 * @return Form_Model
+	 */
+	public static function for_tac_widget() {
+		$regular_widget_form_fields = array(
+			new Form_Field_Text_Model('title', 'Custom title'),
+			new Form_Field_Text_Model('refresh_interval', 'Refresh (sec)'),
+		);
+		$model = new Form_Model('widget/save_widget_setting',
+			$regular_widget_form_fields);
+
+		// Set default values, which will be overwritten when the form
+		// is used & saved later on.
+		$model->set_values(array(
+			'refresh_interval' => 60
+		));
+
+		return $model;
+	}
+
+	/**
 	 * Get the list of fields in the form
 	 *
 	 * @return array of Form_Field_Model
