@@ -4,20 +4,7 @@
  * bignumber widget
  */
 class bignumber_Widget extends widget_Base {
-	/**
-	 * Set if this widget is duplicatable
-	 */
 	protected $duplicatable = true;
-
-	/**
-	 * Filter for current objects
-	 */
-	private $main_filter_id = -200;
-
-	/**
-	 * Filter for which objects are "selected"
-	 */
-	private $selection_filter_id = -150;
 
 	/**
 	 * Some filters to make up for empty installations
@@ -50,88 +37,11 @@ class bignumber_Widget extends widget_Base {
 	);
 
 	/**
-	 * Display as percent
-	 */
-	private $display_type = false;
-
-	/**
-	 * Perform state calculation
-	 */
-	private $threshold_onoff = true;
-
-	/**
-	 * type of threshold
-	 */
-	private $threshold_type = 'less_than';
-
-	/**
-	 * available threshold types
-	 */
-	private $threshold_types = array();
-
-	/**
-	 * Threshold function to apply
-	 */
-	private $threshold_callback = null;
-
-	/**
-	 * Threshold for warning (orange)
-	 */
-	private $threshold_warn = 95.0;
-
-	/**
-	 * Threshold for critical (red)
-	 */
-	private $threshold_crit = 90.0;
-
-	/**
-	 * Constructor. This should be overloaded, to update the settings-attribute
-	 * when making a custom widget of this type
-	 */
-	public function __construct(Widget_Model $widget_model) {
-		parent::__construct($widget_model);
-		$settings = $this->model->get_setting();
-
-		$this->threshold_types['less_than'] = function ($val, $stat) {
-			return 100.0 * $stat['selection'] / $stat['all'] < $val;
-		};
-
-		$this->threshold_types['greater_than'] = function ($val, $stat) {
-			return 100.0 * $stat['selection'] / $stat['all'] > $val;
-		};
-
-		if (isset($settings['main_filter_id']))
-			$this->main_filter_id = $settings['main_filter_id'];
-
-		if (isset($settings['selection_filter_id']))
-			$this->selection_filter_id = $settings['selection_filter_id'];
-
-		if (isset($settings['display_type']))
-			$this->display_type = $settings['display_type'];
-
-		if (isset($settings['threshold_type'])) {
-			$this->threshold_type = $settings['threshold_type'];
-			if (!array_key_exists($this->threshold_type, $this->threshold_types)) {
-				$this->threshold_type = 'less_than';
-			}
-		}
-
-		$this->threshold_callback = $this->threshold_types[$this->threshold_type];
-
-		if (isset($settings['threshold_onoff']))
-			$this->threshold_onoff = $settings['threshold_onoff'];
-
-		if (isset($settings['threshold_warn']))
-			$this->threshold_warn = $settings['threshold_warn'];
-
-		if (isset($settings['threshold_crit']))
-			$this->threshold_crit = $settings['threshold_crit'];
-	}
-
-	/**
 	 * Return the default friendly name for the widget type
 	 *
 	 * default to the model name, but should be overridden by widgets.
+	 *
+	 * @return array
 	 */
 	public function get_metadata() {
 		return array_merge(parent::get_metadata(), array(
@@ -141,6 +51,7 @@ class bignumber_Widget extends widget_Base {
 	}
 
 	protected function get_suggested_title () {
+		$form_model = $this->options();
 		$hardcoded_filters = $this->hardcoded_filters;
 		$saved_filter_name = function($filter_id) use ($hardcoded_filters) {
 			if($filter_id < 0) {
@@ -150,13 +61,14 @@ class bignumber_Widget extends widget_Base {
 			return $filter->get_filter_name();
 		};
 		return sprintf("%s: %s",
-			$saved_filter_name($this->main_filter_id),
-			$saved_filter_name($this->selection_filter_id)
+			$saved_filter_name($form_model->get_value('main_filter_id', -200)),
+			$saved_filter_name($form_model->get_value('selection_filter_id', -150))
 		);
 	}
 
 	/**
-	 * Disable everything configurable. This is useful when including the widget with generated parameters from a controller.
+	 * Disable everything configurable. This is useful when including the
+	 * widget with generated parameters from a controller.
 	 */
 	public function set_fixed() {
 		$this->movable      = false;
@@ -263,8 +175,11 @@ class bignumber_Widget extends widget_Base {
 	 * Fetch the data and show the widget
 	 */
 	public function index() {
-		$main_set = $this->get_set_by_filter_id($this->main_filter_id);
-		$selection_set = $this->get_set_by_filter_id($this->selection_filter_id);
+		$form_model = $this->options();
+
+		// filters
+		$main_set = $this->get_set_by_filter_id($form_model->get_value('main_filter_id', -200));
+		$selection_set = $this->get_set_by_filter_id($form_model->get_value('selection_filter_id', -150));
 		if($selection_set->get_table() !== $main_set->get_table()) {
 			$msg = sprintf(
 				"Your main filter is placed on the table '%s', but your selection filter is not. You need to filter on the same table.",
@@ -272,24 +187,33 @@ class bignumber_Widget extends widget_Base {
 			);
 			return $this->error($msg);
 		}
-
 		$query = $main_set->intersect($selection_set)->get_query();
-
 		$pool = $main_set->class_pool();
 		$all_set = $pool::all();
-
 		$counts = $main_set->stats(array(
 			'all' => $all_set,
 			'selection' => $selection_set
 		));
 
+		// thresholds
+		$threshold_types = array();
+		$threshold_types['less_than'] = function ($val, $stat) {
+			return 100.0 * $stat['selection'] / $stat['all'] < $val;
+		};
+		$threshold_types['greater_than'] = function ($val, $stat) {
+			return 100.0 * $stat['selection'] / $stat['all'] > $val;
+		};
+		$threshold_type = $form_model->get_value('threshold_type', 'less_than');
+		$threshold_callback = $threshold_types[$threshold_type];
+
+		// display
 		if ($counts['all'] == 0) {
 			// PHP is so bad, it cannot even divide by zero
 			$state = 'pending';
 			$display_explanation = 'No object matches this filter';
 			$display_text = "";
 		} else {
-			switch($this->display_type) {
+			switch($form_model->get_value('display_type', 'number_of_total')) {
 			case 'percent':
 				$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
 				break;
@@ -305,10 +229,10 @@ class bignumber_Widget extends widget_Base {
 			$threshold_value = $counts['selection'];
 			$display_explanation = "";
 
-			if ($this->threshold_onoff) {
-				if (call_user_func_array($this->threshold_callback, array($this->threshold_crit, $counts))) {
+			if ($form_model->get_value('threshold_onoff', true)) {
+				if (call_user_func_array($threshold_callback, array($form_model->get_value('threshold_crit', 90.0), $counts))) {
 					$state = 'critical';
-				} elseif (call_user_func_array($this->threshold_callback, array($this->threshold_warn, $counts))) {
+				} elseif (call_user_func_array($threshold_callback, array($form_model->get_value('threshold_warn', 95.0), $counts))) {
 					$state = 'warning';
 				} else {
 					$state = 'ok';
