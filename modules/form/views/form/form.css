@@ -39,7 +39,7 @@ form.nj-form .nj-form-label {
   vertical-align: middle;
   margin: 4px 8px 4px 0;
   color: #666666;
-  width: 140px;
+  max-width: 240px;
 }
 
 form.nj-form .nj-form-object-selector {
