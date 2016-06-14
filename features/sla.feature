@@ -359,8 +359,8 @@ Feature: SLA reports
 		And I select "Mar" from "End month"
 		Then "Jan" should be enabled
 		And "Mar" should be enabled
-		And "May" should be disabled
-		And "Dec" should be disabled
+		And "May" should be enabled
+		And "Dec" should be enabled
 		And I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		Then "Jan" should contain "9"

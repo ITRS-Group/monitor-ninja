@@ -81,7 +81,7 @@ $(document).ready(function() {
 			success: function(data) {
 				for (var i = 0; i < data.length; i++) {
 					var input = $('#month_' + i);
-					if (input.is(':disabled') || !data[i]) {
+					if (!data[i]) {
 						input.val('');
 					} else {
 						input.val(data[i]);
@@ -100,10 +100,6 @@ function set_report_form_values(the_val)
 	for (i=1;i<=12;i++) {
 		var field_name = 'month_' + i;
 		var input = $("#"+field_name);
-		if (input.attr('disabled')) {
-			input.attr('value', '');
-		} else {
-			input.attr('value', the_val);
-		}
+		input.attr('value', the_val);
 	}
 }

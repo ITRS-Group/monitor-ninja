@@ -328,10 +328,6 @@ function check_form_values(form)
 				if (value != '') {
 					nr_of_slas++;
 				}
-				if (input.attr('disabled'))
-					input.css('background', sla_month_disabled_color);
-				else
-					input.css('background', sla_month_enabled_color);
 			}
 		}
 		if (red_error) {
@@ -376,85 +372,29 @@ function disable_sla_fields(report_period)
 	var this_month = now.getMonth()+1;
 	switch (report_period) {
 		case 'thisyear':
-			// weird as it seems, the following call actually ENABLES
-			// all months. If not, we could end up with all months being
-			// disabled for 'thisyear'
-			disable_months(0, 12);
-			for (i=this_month + 1;i<=12;i++)
-			{
-				$('.report_form #month_' + i).val('').attr('disabled', true).css('background-color', sla_month_disabled_color);
-			}
 			break;
 		case 'custom':
 			check_custom_months();
 			break;
 		case 'lastmonth':
-			enable_last_months(1);
 			break;
 		case 'last3months':
-			enable_last_months(3);
 			break;
 		case 'last6months':
-			enable_last_months(6);
 			break;
 		case 'lastyear':
 		case 'last12months':
-			disable_months(0, 12);
 			break;
 		case 'lastquarter':
-			if(this_month <= 3){
-				from = 10;
-				to = 12;
-			} else if (this_month <= 6) {
-				from = 1;
-				to = 3;
-			} else if (this_month <= 9){
-				from = 4;
-				to = 6;
-			} else {
-				from = 7;
-				to = 9;
-			}
-			disable_months(from, to);
 			break;
 		default:
-			for (i=1;i<=12;i++)
-			{
-				$('#month_' + i).attr('disabled', false).css('bgcolor', sla_month_enabled_color);
-			}
+			break;
 	}
 }
-
-
-function disable_months(start, end)
-{
-	var disabled_state 		= false;
-	var not_disabled_state 	= false;
-	var col 				= false;
-	start 	= Number(start);
-	end 	= Number(end);
-	for (i=1;i<=12;i++) {
-		var cell = $('.report_form #month_' + i);
-		if (start>end) {
-			if ( i >= start || i <= end) {
-				cell.attr('disabled', false).css('background-color', sla_month_enabled_color);
-			} else {
-				cell.val('').attr('disabled', true).css('background-color', sla_month_disabled_color);
-			}
-		} else {
-			if ( i>= start && i <= end) {
-				cell.attr('disabled', false).css('background-color', sla_month_enabled_color);
-			} else {
-				cell.val('').attr('disabled', true).css('background-color', sla_month_disabled_color);
-			}
-		}
-	}
-}
-
 
 function check_custom_months()
 {
-	var f		 	= $('.report_form').get(0);
+	var f = $('.report_form').get(0);
 	// not SLA?
 	if (!f['start_month'])
 		return;
@@ -480,36 +420,7 @@ function check_custom_months()
 			}
 		});
 	}
-
-	var start_year 	= f.start_year.value;
-	var start_month = f.start_month.value;
-	var end_year 	= f.end_year.value;
-	var end_month 	= f.end_month.value;
-	if (start_year == '' || end_year == '' || start_month == '' || end_month == '') {
-		disable_months(0, 0);
-	} else if (start_year == end_year - 1 || start_year == end_year) {
-		disable_months(start_month, end_month);
-	} else {
-		disable_months(0, 0);
-	}
 	$('#progress').hide();
-}
-
-/**
- * Generic function to enable month_ fields
- * depending on if selection is last 1, 3 or 6 months.
- */
-function enable_last_months(mnr)
-{
-	var now = new Date();
-	var this_month = now.getMonth()+1;
-	var from = this_month - mnr;
-	var to = this_month - 1;
-	if (from <= 0)
-		from += 12;
-	if (to <= 0)
-		to += 12;
-	disable_months(from, to);
 }
 
 function confirm_delete_report()
