@@ -213,12 +213,16 @@ class bignumber_Widget extends widget_Base {
 			))
 		);
 
-		return new Form_Model('widget/save_widget_setting', array(
+		$form_model = new Form_Model('widget/save_widget_setting', array(
 			$filters,
 			$uom,
 			$toggle_status,
 			$thresholds
 		));
+
+		$form_model->set_values($this->model->get_setting());
+
+		return $form_model;
 	}
 
 	/**
