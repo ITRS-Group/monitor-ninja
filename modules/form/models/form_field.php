@@ -1,5 +1,6 @@
 <?php
 abstract class Form_Field_Model {
+	private $help;
 	private $name;
 	private $pretty_name;
 
@@ -47,8 +48,7 @@ abstract class Form_Field_Model {
 	public abstract function get_type();
 
 	/**
-	 * Process the input data from a raw request array.
-	 * This should validate
+	 * Process the input data from a raw request array. This should validate
 	 * the input and return an associative array of the form data for this field.
 	 *
 	 * For most fields, this is an array of only one value, but can be more if
@@ -66,4 +66,15 @@ abstract class Form_Field_Model {
 	 * @return array of el
 	 */
 	public abstract function process_data(array $raw_data, Form_Result_Model $result);
+
+	/**
+	 * Add a more descriptive help string for this specific form element.
+	 * This proxies the help::render() interface.
+	 *
+	 * @param $key string
+	 * @param $controller string
+	 */
+	public function set_help($key, $controller) {
+		$this->help = array($key, $controller);
+	}
 }

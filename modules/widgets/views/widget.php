@@ -7,60 +7,34 @@
 	<?php } ?>
 		<div class="widget-editbox">
 <?php
-			if (count($options) > 0) {
-			echo form::open('widget/save_widget_setting', array(
-				'class' => 'renderable widget-setting-form',
-				'onsubmit' => 'return false;'
-			));
+			if($options instanceof Form_Model) {
+				echo $options->get_view();
+			} elseif (count($options) > 0) {
+				echo form::open('widget/save_widget_setting', array(
+					'class' => 'renderable widget-setting-form',
+					'onsubmit' => 'return false;'
+				));
 
-			foreach ($options as $option) {
-				if ($option instanceof Fieldset_Model) {
-					$fieldset = $option; // less confusing, I hope
-					if(count($fieldset)) {
-						$attributes = $fieldset->get_attributes();
-						echo form::open_fieldset($attributes);
-
-						$rand_id = uniqid('a'); // attributes must start with a letter
-						echo "<h2><label for='notused-toggle_me-".$rand_id."'>".html::specialchars($fieldset->get_legend())."</label></h2>";
-						if(array_key_exists('class', $attributes)
-							&& preg_match('/\bcan_be_toggled\b/', $attributes['class'])
-						) {
-							$toggle = new option('notused', 'toggle_me', 'notused', 'checkbox', array(), 1);
-							echo $toggle->render_widget($rand_id, $setting);
+				foreach ($options as $option) {
+					if ($option instanceof option) {
+						if($option->is_hidden()) {
+							echo $option->render_widget($key, $setting);
+						} else {
+							echo "<div>";
+							echo "<fieldset>";
+							echo $option->render_label($key);
+							echo $option->render_widget($key, $setting);
+							echo $option->render_help();
+							echo "</fieldset>";
+							echo "</div>";
 						}
-
-						foreach($fieldset as $option) {
-							if($option->is_hidden()) {
-								echo $option->render_widget($key, $setting);
-							} else {
-								echo "<div>";
-								echo $option->render_label($key);
-								echo $option->render_widget($key, $setting);
-								echo $option->render_help();
-								echo "</div>";
-							}
-						}
-						echo "</fieldset>";
-					}
-				} elseif ($option instanceof option) {
-					if($option->is_hidden()) {
-						echo $option->render_widget($key, $setting);
+					} elseif (is_string($option)) {
+						echo $option;
 					} else {
-						echo "<div>";
-						echo "<fieldset>";
-						echo $option->render_label($key);
-						echo $option->render_widget($key, $setting);
-						echo $option->render_help();
-						echo "</fieldset>";
-						echo "</div>";
+						echo _("Could not render option");
 					}
-				} elseif (is_string($option)) {
-					echo $option;
-				} else {
-					echo _("Could not render option");
 				}
-			}
-			echo form::close();
+				echo form::close();
 			}
 		?>
 		</div>
