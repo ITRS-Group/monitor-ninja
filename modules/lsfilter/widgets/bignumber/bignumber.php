@@ -119,18 +119,20 @@ class bignumber_Widget extends widget_Base {
 		$thresholds = new Form_Field_Conditional_Model('threshold_onoff', true,
 			new Form_Field_Group_Model("thresholds", array(
 				$threshold_as,
-				//Form_Field_Text_Model::__construct($name, $pretty_name)
 				new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
 				new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
 			))
 		);
 
-		$form_model = new Form_Model('widget/save_widget_setting', array(
+		$form_model = Form_Model::for_tac_widget();
+		foreach(array(
 			$filters,
 			$uom,
 			$toggle_status,
 			$thresholds
-		));
+		) as $field) {
+			$form_model->add_field($field);
+		}
 
 		$form_model->set_values($this->model->get_setting());
 
