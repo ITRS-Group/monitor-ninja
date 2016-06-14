@@ -16,7 +16,7 @@ class Form_Model {
 	 *
 	 * @var array of default values, indexed on field names
 	 */
-	private $defaults = array();
+	private $values = array();
 
 	/**
 	 * Action, for where to submit the form
@@ -104,18 +104,18 @@ class Form_Model {
 	 *        	value if no default value is found in the array. Optional, then null
 	 */
 	public function get_value($fieldname, $default = null) {
-		if (isset($this->defaults[$fieldname]))
-			return $this->defaults[$fieldname];
+		if (isset($this->values[$fieldname]))
+			return $this->values[$fieldname];
 		return $default;
 	}
 
 	/**
 	 * Set the default values for the form
 	 *
-	 * @param $defaults array
+	 * @param $values array
 	 *        	of default values
 	 */
-	public function set_values(array $defaults) {
-		$this->defaults = $defaults;
+	public function set_values(array $values) {
+		$this->values = $values;
 	}
 }
