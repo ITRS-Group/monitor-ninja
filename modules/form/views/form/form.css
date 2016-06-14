@@ -63,6 +63,12 @@ form.nj-form select {
   border-radius: 2px;
 }
 
+form.nj-form *:focus,
+form.nj-form *:-moz-focus-inner {
+  outline: 0 none;
+  border: 0;
+}
+
 form.nj-form textarea {
   resize: none;
 }
@@ -305,12 +311,33 @@ form.nj-form .nj-form-field-autocomplete {
   height: 32px;
 }
 
+form.nj-form .nj-form-field-autocomplete:after {
+  content: "▼";
+  position: absolute;
+  left: 224px;
+  text-shadow: 0px 0px 3px #fff;
+  width: 16px;
+  height: 1.1em;
+  padding: 7px 7px 7px 8px;
+  background: rgba(255, 255, 255, 0.5);
+  top: 1px;
+  z-index: 3;
+}
+
 form.nj-form .nj-form-field-autocomplete input {
   position: absolute;
   z-index: 2;
   left: 0;
   top: 0;
+  padding-right: 28px;
   width: 256px;
+  background: transparent;
+}
+
+form.nj-form input.nj-form-field-autocomplete-shadow {
+  z-index: 1;
+  background: #ffffff;
+  color: #999999;
 }
 
 form.nj-form .nj-form-field-autocomplete-items {

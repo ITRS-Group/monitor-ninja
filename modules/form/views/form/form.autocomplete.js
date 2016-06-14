@@ -2,152 +2,209 @@
 
 	"use strict";
 
-	var _autocomplete_timeout = null;
-	var _autocomplete_key_index = 0;
+	var _document = $(document);
+	var Autocomplete = function (form_field) {
 
-	function autocomplete (tables, term, callback) {
-		$.ajax(_site_domain + _index_page + '/autocomplete/autocomplete', {
-			data: {
-				tables: tables,
-				term: term
-			},
-			success: callback,
-			method: "GET",
-		});
-	}
+		this.key_index = 1;
+		this.timeout = null;
 
-	function autocomplete_update (field) {
+		this.input = form_field.find('.nj-form-field-autocomplete-input');
+		this.shadow = form_field.find('.nj-form-field-autocomplete-shadow');
+		this.items = form_field.find('.nj-form-field-autocomplete-items');
+		this.table_element = form_field.find('.nj-form-field-autocomplete-table');
+		this.placeholder = this.input.attr('placeholder');
 
-		var input = field.find('input[type="text"]');
-		var list = input.siblings('.nj-form-field-autocomplete-items');
-		var table_hidden = input.siblings('input[type="hidden"]');
-		var tables = input.parent('.nj-form-field-autocomplete').attr('data-autocomplete').split(',');
-		var term = input.val();
+		this.tables = form_field.attr('data-autocomplete').split(',');
 
-		clearTimeout(_autocomplete_timeout);
-		_autocomplete_timeout = setTimeout(function () {
-			autocomplete(tables, term, function (data) {
+		this.input.on('keyup', function (e) {
+			e.preventDefault();
+			if (e.key !== 'ArrowDown' && e.keycode !== 40 && e.key !== 'ArrowUp' && e.keycode !== 38) {
+				this.update(this.input.val());
+			}
+			return false;
+		}.bind(this));
 
-				if (data.length === 1 && data[0].name === term) {
-					table_hidden.val(data[0].table);
-					list.hide();
-					return;
-				}
+		this.input.on('keypress', function (e) {
 
-				var fragment = document.createDocumentFragment();
-				var current_table;
-				data.forEach(function (item, index) {
+			this.set_shadow("");
+			if (e.key === 'Enter' || e.keycode === 13) {
 
-					if (current_table != item.table) {
-						var title = document.createElement('li');
-						title.className = 'nj-form-field-autocomplete-items-title';
-						title.setAttribute('disabled', 'disabled');
-						title.textContent = item.table;
-						current_table = item.table;
-						fragment.appendChild(title);
+				this.set_value(
+					this.get_current().attr('data-autocomplete-value'),
+					this.get_current().attr('data-autocomplete-table')
+				);
+				this.hide();
+
+				e.preventDefault();
+				return false;
+
+			} else if (e.key === 'ArrowDown' || e.keycode === 40) {
+
+				var items = this.items.children('li.nj-form-field-autocomplete-item');
+				this.key_index = (this.key_index < items.length) ? this.key_index + 1 : items.length;
+				this.reselect();
+
+			} else if (e.key === 'ArrowUp' || e.keycode === 38) {
+
+				var items = this.items.children('li.nj-form-field-autocomplete-item');
+				this.key_index = (this.key_index > 1) ? this.key_index - 1 : 1;
+				this.reselect();
+
+			} else if (e.key === 'Tab' || e.keycode === 9) {
+
+				this.set_value(
+					this.get_current().attr('data-autocomplete-value'),
+					this.get_current().attr('data-autocomplete-table')
+				);
+
+				this.hide();
+
+				e.preventDefault();
+				return false;
+
+			}
+
+		}.bind(this));
+
+		this.items.on('mousedown', 'li.nj-form-field-autocomplete-item', function (e) {
+
+			var item = $(e.target);
+			this.set_value(
+				item.attr('data-autocomplete-value'),
+				item.attr('data-autocomplete-table')
+			);
+
+			this.hide();
+
+			e.preventDefault();
+			return false;
+
+		}.bind(this));
+
+		this.input.on('focus', function (e) {
+			this.update("");
+			this.input.attr('placeholder', "");
+		}.bind(this));
+
+		this.input.on('blur', function (e) {
+			this.hide();
+			this.input.attr('placeholder', this.placeholder);
+			e.preventDefault();
+			return false;
+		}.bind(this));
+
+	};
+
+	Autocomplete.prototype = {
+
+		get_current: function () {
+			return this.items
+				.children('li.nj-form-field-autocomplete-item')
+				.eq(this.key_index - 1);
+		},
+
+		set_value: function (value, table) {
+			this.input.val(value);
+			this.table_element.val(table);
+			this.set_shadow(value);
+		},
+
+		set_shadow: function (value) {
+			this.shadow.val(value);
+		},
+
+		reselect: function () {
+
+			var items = this.items.children('.nj-form-field-autocomplete-item');
+			var item = items.eq(this.key_index - 1);
+
+			items.removeClass('nj-form-field-autocomplete-item-selected');
+			item.addClass('nj-form-field-autocomplete-item-selected');
+			this.shadow.val(item.attr('data-autocomplete-value'));
+
+		},
+
+		fetch: function (term, callback) {
+
+			$.ajax(_site_domain + _index_page + '/autocomplete/autocomplete', {
+				data: {
+					tables: this.tables,
+					term: term
+				},
+				success: callback,
+				method: "GET",
+			});
+
+		},
+
+		update: function (term) {
+
+			clearTimeout(this.timeout);
+			this.timeout = setTimeout(function () {
+				this.fetch(term, function (data) {
+
+					if (data.length === 1 && data[0].name === term) {
+						this.table_element.val(data[0].table);
+						this.hide();
+						return;
 					}
 
-					var item_element = document.createElement('li');
-					item_element.className = 'nj-form-field-autocomplete-item';
-					item_element.setAttribute('data-autocomplete-value', item.name);
-					item_element.setAttribute('data-autocomplete-table', item.table);
-					item_element.textContent = item.name;
-					fragment.appendChild(item_element);
 
-				});
+					this.key_index = 1;
+					if (term.length > 0)
+						this.shadow.val(data[0].name);
 
-				list.empty();
-				list.append(fragment);
-				list.show();
+					this.items.empty();
+					this.populate(data);
+					this.items.show();
+
+				}.bind(this));
+			}.bind(this), 150);
+
+		},
+
+		populate: function (key_values) {
+
+			var fragment = document.createDocumentFragment();
+			var current_table;
+
+			key_values.forEach(function (item, index) {
+
+				if (current_table != item.table) {
+					var title = $('<li class="nj-form-field-autocomplete-items-title">').text(item.table);
+					fragment.appendChild(title.get(0));
+					current_table = item.table;
+				}
+
+				var item_element = $('<li class="nj-form-field-autocomplete-item">').attr({
+					'data-autocomplete-value': item.name,
+					'data-autocomplete-table': item.table
+				}).text(item.name);
+
+				fragment.appendChild(item_element.get(0));
 
 			});
-		}, 150);
 
-	}
+			this.items.append(fragment);
 
-	$(document).on('keyup', '.nj-form-field-autocomplete input[type="text"]', function (e) {
-		if (e.key === 'ArrowDown' || e.keycode === 40 || e.key === 'ArrowUp' || e.keycode === 38) {
-			e.preventDefault();
-			return false;
+		},
+
+		hide: function () {
+			this.items.hide();
+			this.items.empty();
+		},
+
+		show: function () {
+			this.items.show();
 		}
-		autocomplete_update($(this).parent('.nj-form-field-autocomplete'));
-		e.preventDefault();
-		return false;
-	});
 
-	$(document).on('keypress', '.nj-form-field-autocomplete input[type="text"]', function (e) {
+	};
 
-		var input = $(this);
-		var autocomplete = input.parent('.nj-form-field-autocomplete');
-		var list = autocomplete.find('.nj-form-field-autocomplete-items');
-		var table_hidden = autocomplete.find('input[type="hidden"]');
-		var items = list.children('.nj-form-field-autocomplete-item');
 
-		if (e.key === 'Enter' || e.keycode === 13) {
-
-			var item = items.eq(_autocomplete_key_index - 1);
-			table_hidden.val(item.attr('data-autocomplete-table'));
-			input.val(item.attr('data-autocomplete-value'));
-
-			list.hide();
-
-			e.preventDefault();
-			return false;
-
-		} else if (e.key === 'ArrowDown' || e.keycode === 40) {
-
-			_autocomplete_key_index = (_autocomplete_key_index < items.length) ? _autocomplete_key_index + 1 : items.length;
-
-			items.removeClass('nj-form-field-autocomplete-item-selected');
-			items.eq(_autocomplete_key_index - 1).addClass('nj-form-field-autocomplete-item-selected');
-
-		} else if (e.key === 'ArrowUp' || e.keycode === 38) {
-
-			_autocomplete_key_index = (_autocomplete_key_index > 1) ? _autocomplete_key_index - 1 : 1;
-			items.removeClass('nj-form-field-autocomplete-item-selected');
-			items.eq(_autocomplete_key_index - 1).addClass('nj-form-field-autocomplete-item-selected');
-
-		} else if (e.key === 'Tab' || e.keycode === 9) {
-
-			var item = items.eq(_autocomplete_key_index - 1);
-			input.val(item.attr('data-autocomplete-value'));
-			table_hidden.val(item.attr('data-autocomplete-table'));
-
-			list.hide();
-
-			e.preventDefault();
-			return false;
-
-		}
-	});
-
-	$(document).on('mousedown', '.nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item', function (e) {
-
-		var item = $(this);
-		var list = item.parent('.nj-form-field-autocomplete-items');
-		var input = list.siblings('input[type="text"]');
-		var table_hidden = input.siblings('input[type="hidden"]');
-
-		input.val(item.attr('data-autocomplete-value'));
-		table_hidden.val(item.attr('data-autocomplete-table'));
-		list.hide();
-
-		e.preventDefault();
-		return false;
-
-	});
-
-	$(document).on('focus', '.nj-form-field-autocomplete input[type="text"]', function (e) {
-		autocomplete_update($(this).parent('.nj-form-field-autocomplete'));
-	});
-
-	$(document).on('blur', '.nj-form-field-autocomplete input[type="text"]', function (e) {
-		var input = $(this);
-		var autocomplete = input.parent('.nj-form-field-autocomplete');
-		var list = autocomplete.find('.nj-form-field-autocomplete-items');
-		list.hide();
-		e.preventDefault();
-		return false;
+	_document.ready(function () {
+		_document.find('.nj-form-field-autocomplete').each(function () {
+			new Autocomplete($(this));
+		});
 	});
 
 }());
