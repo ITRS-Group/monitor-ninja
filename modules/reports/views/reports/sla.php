@@ -65,7 +65,7 @@ foreach($report_data as $i =>  $report) {
 				$j = 0;
 				foreach ($data as $month => $value) {
 					$j++; ?>
-				<td class="data"><?php echo reports::format_report_value($value[1]) ?> %</td>
+				<td><?php echo reports::format_report_value($value[1]) ?> %</td>
 				<?php
 				} ?>
 			</tr>
@@ -74,7 +74,7 @@ foreach($report_data as $i =>  $report) {
 				$y = 0;
 				foreach ($data as $month => $value) {
 					$y++;?>
-				<td class="data">
+				<td>
 					<?php echo reports::format_report_value($value[0]) ?> % <?php echo html::image(ninja::add_path('icons/12x12/shield-'.(($value[0] < $value[1]) ? 'down' : 'up').'.png'),
 							array(
 							'alt' => '',
