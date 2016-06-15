@@ -1,4 +1,5 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); $i = 0;
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+$i = 0;
 if ($options['report_type'] === 'hosts' || $options['report_type'] === 'hostgroups') {
 	$var_types = array('UP' => 'UP', 'DOWN' => 'DOWN', 'UNREACHABLE' => 'UNREACHABLE');
 	$filter_name = 'host_filter_status';
@@ -14,8 +15,9 @@ foreach (array_keys($options[$filter_name]) as $filtered) {
 	unset($var_types[strtoupper($php_sucks[$filtered])]);
 }
 foreach ($report_data as $avail_data) {
-	if (!is_array($avail_data) || !isset($avail_data['states']))
+	if (!is_array($avail_data) || !isset($avail_data['states'])) {
 		continue;
+	}
 ?>
 <div id="state_breakdown" class="report-block">
 	<table summary="<?php echo _('Result table') ?>">
@@ -27,13 +29,18 @@ foreach ($report_data as $avail_data) {
 			<?php }
 			if ($options['time_format'] & 1) { ?>
 			<th class="headerNone"><?php echo _('Percent') ?></th>
-			<?php } ?>
-			<?php if ($options['include_pie_charts']) { ?>
+			<?php }
+			if ($options['include_pie_charts'] && count($var_types)) {
+				// the user might have excluded *all* statuses,
+				// in which case we do not even want to show a
+				// pie chart
+			?>
 				<th><?php echo _('Status overview') ?></th>
 			<?php } ?>
 		</tr>
 		<?php
-		foreach ($var_types as $var_type) { $i++; ?>
+		foreach ($var_types as $var_type) {
+			$i++; ?>
 		<tr class="even" >
 			<th style="border-top: 0px; vertical-align: bottom; width: 110px" rowspan="3">
 					<?php echo ucfirst(strtolower($var_type)); ?>
@@ -47,8 +54,12 @@ foreach ($report_data as $avail_data) {
 			<?php echo html::image(ninja::add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['states']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) > 0 ? '' : 'not-').strtolower($var_type).'.png'),
 				array('alt' => strtolower($var_type),'title' => strtolower($var_type),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
-			<?php } ?>
-			<?php if ($i == 1 && isset($pies)) { ?>
+			<?php }
+			if ($i == 1 && isset($pies) && count($var_types)) {
+				// the user might have excluded *all* statuses,
+				// in which case we do not even want to show a
+				// pie chart
+			?>
 			<td rowspan="<?php echo count($var_types)*3+4; ?>" style="width: 200px; vertical-align: top">
 				<?php foreach ($pies as $pie) echo $pie ?>
 			</td>
