@@ -65,10 +65,6 @@
 		</div>
 		<?php
 
-			if(!isset($no_dojo)) {
-				echo html::script('application/media/js/dojo.js');
-			}
-
 			if (isset($context_menu)) {
 				if($context_menu instanceof View) {
 					$context_menu->render(true);
