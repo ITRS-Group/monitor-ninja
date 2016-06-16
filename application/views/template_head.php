@@ -134,14 +134,9 @@ if (!empty($base_href)) {
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();
 		}
-	?>
 
-	<!--[If IE]>
-	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
-	<![endif]-->
+		echo html::script('application/views/js/common.js');
 
-	<?php echo html::script('application/views/js/common.js'); ?>
-	<?php
 		$v = new View('js_header', array('js' => isset($js)?$js:array()));
 		$v->render(true);
 	?>
