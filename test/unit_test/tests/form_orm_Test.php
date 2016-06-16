@@ -1,6 +1,6 @@
 <?php
 
-class Form_Test extends PHPUnit_Framework_TestCase {
+class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 
 	private $mock_data_path = false;
 
@@ -57,7 +57,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	 * Verify that incorrect object keys throws an exception
 	 *
 	 * @expectedException FormException
-	 * @expectedExceptionMessage da_contact doesn't point to a valid object
+	 * @expectedExceptionMessage da_contact does not point at a valid object
 	 */
 	public function test_process_fail() {
 		$form = $this->get_form();
@@ -78,7 +78,10 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 		$result = $form_for_processing->process_data(array(
 			'name' => "Something",
-			'da_contact' => 'Someone'
+			'da_contact' => array(
+				'value' => 'Someone',
+				'table' => 'contacts'
+			)
 		));
 
 		$this->assertInstanceOf('Contact_Model', $result['da_contact']);

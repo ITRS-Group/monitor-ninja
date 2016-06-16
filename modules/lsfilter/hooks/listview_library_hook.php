@@ -9,6 +9,10 @@ class listview_library_hook {
 	 */
 	public function __construct()
 	{
+		autocomplete::add_table('hosts', 'name', "[hosts] name~~\"%s\"");
+		autocomplete::add_table('saved_filters', 'filter_name', "[saved_filters] filter_name~~\"%s\"");
+		autocomplete::add_table('services', 'description', "[services] description~~\"%s\"");
+		autocomplete::add_table('contacts', 'name', "[contacts] name~~\"%s\"");
 		Event::add('system.post_controller_constructor', array($this, 'add_files'));
 	}
 
