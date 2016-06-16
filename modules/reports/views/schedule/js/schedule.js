@@ -63,9 +63,9 @@ $(document).ready(function() {
 
 		var rep_type_str = $('#type option:selected').val();
 
-		var recipients = $.trim($('#recipients').fieldValue()[0]);
+		var recipients = $.trim($('#recipients').val());
 		if (recipients.indexOf('@') === -1) {
-			$.notify(_reports_invalid_email, {'sticky': true});
+			$.notify(_reports_invalid_email, {'sticky': true, type: 'error'});
 			return false;
 		}
 
@@ -78,13 +78,13 @@ $(document).ready(function() {
 			type: 'POST',
 			data: {
 				report_id: 0,
-				type: $('#type').fieldValue()[0],
-				saved_report_id: $('#saved_report_id').fieldValue()[0],
-				period: $('#period').fieldValue()[0],
+				type: $('#type').val(),
+				saved_report_id: $('#saved_report_id').val(),
+				period: $('#period').val(),
 				recipients: recipients,
-				filename: $('#filename').fieldValue()[0],
-				description: $('#description').fieldValue()[0],
-				attach_description: $('#attach_description').fieldValue()[0],
+				filename: $('#filename').val(),
+				description: $('#description').val(),
+				attach_description: $('#attach_description').val(),
 				local_persistent_filepath: $.trim($('#local_persistent_filepath').val()),
 				csrf_token: _csrf_token
 
@@ -110,7 +110,7 @@ $(document).ready(function() {
 				var attach_description = $('#attach_description').attr('value');
 				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description, attach_description)
 				setup_editable();
-				$('#new_schedule_report_form').clearForm();
+				$('#new_schedule_report_form').get(0).reset();
 
 				Notify.message(_reports_schedule_create_ok, {type: "success"});
 			},

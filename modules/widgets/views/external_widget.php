@@ -33,7 +33,6 @@
 		<?php
 			echo html::script('application/media/js/jquery.fancybox.js');
 			echo html::script('application/media/js/jquery-ui.js');
-			echo html::script('application/media/js/jquery.form.js');
 			echo html::script('modules/widgets/media/js/jquery.easywidgets.min.js');
 			echo html::script('application/media/js/jquery.autocomplete.js');
 			echo html::script('application/media/js/jquery.selectboxes.min.js');
