@@ -469,12 +469,12 @@
 		} else if (select.length) {
 
 			var options = $.map( select.children(), function( option ) {
-					return option.text;
-				});
+				return option.text;
+			});
 
 			select.children().each( function() {
 				if (!$(this).attr('selected')) {
-					select.removeOption(this.text);
+					select.find('option[value="' + this.text + '"]').remove();
 				}
 			} );
 

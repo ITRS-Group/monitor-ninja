@@ -31,7 +31,6 @@
 			echo html::script('application/media/js/jquery-ui.js');
 			echo html::script('modules/widgets/media/js/jquery.easywidgets.min.js');
 			echo html::script('application/media/js/jquery.autocomplete.js');
-			echo html::script('application/media/js/jquery.selectboxes.min.js');
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jquery.field.js');
