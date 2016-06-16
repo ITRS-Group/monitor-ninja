@@ -7,8 +7,6 @@ foreach($form->get_fields() as $field) {
 	$form->get_view($field)->render(true);
 }
 echo '<fieldset>';
-echo '<div class="nj-form-field">';
 echo '<input class="info state-background" type="submit" value="Submit">';
-echo '</div>';
 echo '</fieldset>';
 echo '</form>';
