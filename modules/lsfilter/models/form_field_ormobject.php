@@ -18,8 +18,9 @@ class Form_Field_ORMObject_Model extends Form_Field_Model {
 		$name = $this->get_name();
 		if (!isset($raw_data[$name]))
 			throw new FormException("Unknown field $name");
-		if (!is_array($raw_data[$name]))
-			throw new FormException("$name is not a text field");
+		if (!is_array($raw_data[$name])) {
+			throw new FormException("$name does not point at a valid object (".var_export($raw_data[$name], true).")");
+		}
 
 		$table = $raw_data[$name]['table'];
 		$value = $raw_data[$name]['value'];
