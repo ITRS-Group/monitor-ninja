@@ -33,9 +33,14 @@ class Dead_Widget extends widget_Base {
 			if(!IN_PRODUCTION) {
 				echo "<p>Also displaying full stack trace because <strong>IN_PRODUCTION</strong> is off:</p>";
 				echo "<pre>";
-				// getTraceAsString() displays much less
-				// information, do not use it
-				var_export($this->exc->getTrace());
+				/*
+				 *  getTraceAsString() displays much less
+				 * information, do not use it
+				 * Also, don't use var_export, since $this->exc contains a
+				 * reference to $this, due to being part of the trace, thus
+				 * it will lead to an infinite recursion
+				 */
+				var_dump($this->exc->getTrace());
 				echo "</pre>";
 			}
 		}

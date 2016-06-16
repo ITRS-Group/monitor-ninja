@@ -167,9 +167,18 @@ class ORMDriverNative implements ORMDriverInterface {
 	public function insert_single($table, $structure, $values)
 	{
 		if (!isset($this->storage[$table])) $this->storage[$table] = array();
-		$result = array_push($this->storage[$table], $values) - 1;
+
+		/*
+		 * This is mainly used for mocking in tests. All tables either have
+		 * autoincrement id, or no id. Thus, update id is a safe bet
+		 */
+		$new_id = count($this->storage[$table]);
+		$values['id'] = $new_id + 1; /* tables is ordered from id=1, arrays from 0 */
+
+		$this->storage[$table][] = $values;
+
 		$this->persist($table);
-		return $result;
+		return $new_id;
 	}
 
 	/**
@@ -179,6 +188,10 @@ class ORMDriverNative implements ORMDriverInterface {
 	 * @param $table string
 	 */
 	protected function persist ($table) {
+		/* If there is no mockfile, we shouldn't persist. Probably unit tests then */
+		if($this->mockfile === null)
+			return;
+
 		$json_str = file_get_contents($this->mockfile);
 		if (!$json_str) {
 			$log->log("error", "Could not read mock data from '$this->mockfile'");

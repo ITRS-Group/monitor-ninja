@@ -118,4 +118,15 @@ class Dashboard_Model extends BaseDashboard_Model
 			$w->save();
 		}
 	}
+
+	/**
+	 * Get if the user can write to the dashboard
+	 *
+	 * Since we only have access to private dashboards at the moment, we can always write to them.
+	 *
+	 * This is available since we plan to add sharable dashboards in the future.
+	 */
+	public function get_can_write() {
+		return true;
+	}
 }

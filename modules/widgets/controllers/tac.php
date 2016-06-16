@@ -49,13 +49,13 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Get the select layout menu
 	 */
-	private function get_select_layout_menu() {
+	private function get_select_layout_menu(Dashboard_Model $dashboard) {
 		$menu = new Menu_Model();
 
 		$menu->set("Select layout", null, null);
 		$select_layout_menu = $menu->get("Select layout");
 
-		$layout = $this->_current_dashboard()->get_layout();
+		$layout = $dashboard->get_layout();
 
 		$img_url = url::base() . '/application/views/icons/layout-132.png';
 		$name = "1,3,2";
@@ -82,19 +82,11 @@ class Tac_Controller extends Ninja_Controller {
 	 * public, but not exposed (prefix with _) due to testability
 	 */
 	public function _current_dashboard() {
-		/* Just pick the first dashboard... (we only have access to our own) */
-		$dashboard = DashboardPool_Model::all()->one();
-		if(!$dashboard) {
-			/* We don't have a dashboard, create one */
-			$dashboard = new Dashboard_Model();
-			$username = op5auth::instance()->get_user()->get_username();
-			$dashboard->set_username($username);
+		$dashboard_id = $this->input->post('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 
-			$dashboard->import_array(Kohana::config('tac.default'));
-
-			$dashboard->set_name('Dashboard for '.$username);
-			$dashboard->save();
-		}
+		if($dashboard === false)
+			throw new Kohana_User_Exception( 'Dashboard not found', 'Dashboard not found', $this->template );
 
 		return $dashboard;
 	}
@@ -118,19 +110,37 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Display a TAC screen
 	 */
-	public function index()	{
+	public function index($dashboard_id = 0)	{
 		$this->_verify_access('ninja.tac:read.tac');
 
+		/*
+		 * Don't use "_current_dashboard" in index, since we want to be able
+		 * to handle that specially. _current_dashboard uses POST field to
+		 * select dashboard, and is useful for ajax requesets, witout side
+		 * effects
+		 */
+		$dashboard = DashboardPool_Model::fetch_by_key( $dashboard_id );
+		if ($dashboard === false) {
+			throw new Kohana_User_Exception( 'Dashboard not found', 'Dashboard not found', $this->template );
+		}
+
 		$this->template->content = $this->add_view('tac/index');
-		$this->template->title = _('Monitoring » Tactical overview');
+		$this->template->title = 'Monitoring » ' . $dashboard->get_name();
+		$this->template->js[] = 'modules/widgets/views/js/tac.js';
 		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
+		$this->template->content->dashboard = $dashboard;
+		$this->template->toolbar = $toolbar = new Toolbar_Controller($dashboard->get_name());
+
+		$this->template->js_strings = "var _dashboard_id = ".intval($dashboard->get_id()).";\n";
+		$this->template->js_strings .= "var _dashboard_can_write = ".json_encode($dashboard->get_can_write()).";\n";
 
 		/* Build storage for placeholders */
-		$dashboard = $this->_current_dashboard();
 		$tac_column_count_str = $dashboard->get_layout();
 		$tac_column_count = array_map('intval',explode(',', $tac_column_count_str));
 		$n_dashboard_cells = array_sum($tac_column_count);
+
+		$this->template->content->tac_column_count = $tac_column_count;
 
 		/* Generate the output widget table */
 		$widget_table = array();
@@ -165,12 +175,64 @@ class Tac_Controller extends Ninja_Controller {
 		}
 
 		$this->template->content->widgets = $widget_table;
-		$this->template->content->tac_column_count = $tac_column_count;
 
-		$this->template->toolbar = $toolbar = new Toolbar_Controller("Tactical Overview");
 
 		$toolbar->menu($this->_get_add_widget_menu());
-		$toolbar->image_menu($this->get_select_layout_menu());
+		$toolbar->image_menu($this->get_select_layout_menu($dashboard));
+	}
+
+	/**
+	 * Create a new dashboard
+	 */
+	public function on_new_dashboard() {
+		/* If still no dashboard found, Create a default dashboard */
+		$user = op5auth::instance()->get_user();
+		/* @var $user User_Model */
+		$dashboard = new Dashboard_Model();
+		$dashboard->set_username( $user->get_username() );
+
+		$dashboard_id = $this->input->post( 'dashboard_id' );
+		$dashboard->import_array( Kohana::config( 'tac.default' ) );
+		/* Fetch a free name */
+		$i = 1;
+		$base_name = 'Dashboard for ' . $user->get_realname();
+		do {
+			$name = $base_name;
+			if ($i > 1)
+				$name .= ' ' . $i;
+			$test_db = DashboardPool_Model::all()->reduce_by( 'name', $name, '=' )->one();
+			$i ++;
+		} while ( $test_db );
+		$dashboard->set_name( $name );
+		$dashboard->save();
+		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+			'url' => 'tac/index/' . $dashboard->get_id() ) );
+	}
+
+	/**
+	 * Rename the current dashboard
+	 */
+	public function on_rename_dashboard() {
+		$dashboard = $this->_current_dashboard();
+		if ($dashboard->get_can_write()) {
+			$dashboard->set_name( $this->input->post( 'name' ) );
+			$dashboard->save();
+		}
+		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+			'url' => 'tac/index/' . $dashboard->get_id() ) );
+	}
+
+	/**
+	 * Delete the current dashboard
+	 */
+	public function on_delete_dashboard() {
+		$dashboard = $this->_current_dashboard();
+		/* @var $dashboard Dashboard_Model */
+		if ($dashboard->get_can_write()) {
+			$dashboard->get_dashboard_widgets_set()->delete();
+			$dashboard->delete();
+		}
+		$this->template = new View( 'simple/redirect', array( 'target' => 'controller', 'url' => 'tac/index' ) );
 	}
 
 	/**
@@ -182,9 +244,16 @@ class Tac_Controller extends Ninja_Controller {
 	public function on_change_positions() {
 		// This is a basic functionality of the tac,
 		// so keep it to the same permission as tac
-		$this->_verify_access('ninja.tac:read.tac');
+		$this->_verify_access( 'ninja.tac:read.tac' );
 
-		$positions = $this->input->post('positions', false);
+		$dashboard = $this->_current_dashboard();
+		if (! $dashboard->get_can_write()) {
+			$this->template = new View( 'json' );
+			$this->template->success = false;
+			return;
+		}
+
+		$positions = $this->input->post( 'positions', false );
 
 		// Parse position data from frontend
 		$placeholders = explode('|', $positions);
@@ -203,7 +272,7 @@ class Tac_Controller extends Ninja_Controller {
 			$p_count = count($pos_data[$i]);
 			for ($j = 0; $j < $p_count; $j++) {
 				$widget_model_id = substr($pos_data[$i][$j], 7);
-				$widget_model = $this->_current_dashboard()
+				$widget_model = $dashboard
 					->get_dashboard_widgets_set()
 					->intersect(Dashboard_WidgetPool_Model::set_by_key($widget_model_id))
 					->one();
@@ -230,6 +299,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->_verify_access('ninja.tac:read.tac');
 
 		$dashboard = $this->_current_dashboard();
+
 		$widget_model = $dashboard->get_dashboard_widgets_set()->intersect(
 			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
 		)->one();
@@ -275,6 +345,13 @@ class Tac_Controller extends Ninja_Controller {
 		// so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
+		$dashboard = $this->_current_dashboard();
+		if (! $dashboard->get_can_write()) {
+			$this->template = new View( 'json' );
+			$this->template->success = false;
+			return;
+		}
+
 		// $cell_num should be equal to the number in the end of $cell_name.
 		$cell_name = $this->input->post('cell');
 		$numbers = array();
@@ -284,7 +361,6 @@ class Tac_Controller extends Ninja_Controller {
 
 		// We need to update the position of all widgets in the cell to which
 		// the widget is added.
-		$dashboard = $this->_current_dashboard();
 		$widget_models = $dashboard->get_dashboard_widgets_set();
 
 		$tac_column_count_str = $dashboard->get_layout();
@@ -361,9 +437,16 @@ class Tac_Controller extends Ninja_Controller {
 		// so keep it to the same permission as tac
 		$this->_verify_access('ninja.tac:read.tac');
 
+		$dashboard = $this->_current_dashboard();
+		if (! $dashboard->get_can_write()) {
+			$this->template = new View( 'json' );
+			$this->template->success = false;
+			return;
+		}
+
 		$widget_key = $this->input->post('key');
 
-		$dashboard_set = $this->_current_dashboard()->get_dashboard_widgets_set();
+		$dashboard_set = $dashboard->get_dashboard_widgets_set();
 		$widget_model = $dashboard_set->intersect(
 			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
 		)->one();
@@ -389,6 +472,13 @@ class Tac_Controller extends Ninja_Controller {
 	public function on_widget_save_settings() {
 		$this->_verify_access('ninja.tac:read.tac');
 
+		$dashboard = $this->_current_dashboard();
+		if (! $dashboard->get_can_write()) {
+			$this->template = new View( 'json' );
+			$this->template->success = false;
+			return;
+		}
+
 		$key = $this->input->post('key');
 		$this->template = new View('json');
 		if (!$key) {
@@ -409,8 +499,7 @@ class Tac_Controller extends Ninja_Controller {
 			return;
 		}
 
-		$current_dashboard = $this->_current_dashboard();
-		$widget_model = $current_dashboard->get_dashboard_widgets_set()
+		$widget_model = $dashboard->get_dashboard_widgets_set()
 			->intersect(Dashboard_WidgetPool_Model::set_by_key($key))->one();
 		if (!$widget_model instanceof Widget_Model) {
 			$this->template->success = false;

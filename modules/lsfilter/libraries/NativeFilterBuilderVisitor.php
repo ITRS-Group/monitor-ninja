@@ -35,6 +35,11 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 		$field = $filt->get_field();
 		$lhs = $data;
 		foreach (explode(".", $field) as $k) {
+			if(!isset($lhs[$k])) {
+				/* Field doesn't exist, thus undefined (=null) */
+				$lhs = null;
+				break;
+			}
 			$lhs = $lhs[$k];
 		}
 		$value = $filt->get_value();

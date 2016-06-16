@@ -12,6 +12,7 @@ var tac_send_request = function (method, data, callbacks) {
 		type : 'POST',
 		data : $.extend({
 			csrf_token : _csrf_token,
+			dashboard_id : _dashboard_id
 		}, data),
 		complete: function(jqHXR, textStatus) {
 			if(callbacks.complete) {
@@ -44,6 +45,9 @@ var tac_send_request = function (method, data, callbacks) {
 };
 
 $(function() {
+	/* If we can't change the dashboard, don't load handling of widgets */
+	if (!_dashboard_can_write)
+		return;
 	var easywidgets_obj = $.fn.EasyWidgets({
 		behaviour : {
 			useCookies : false
