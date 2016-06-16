@@ -427,18 +427,3 @@ form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-ite
 .nj-form-field-listview-query .CodeMirror.success {
   border-color: #82cd60;
 }
-
-
-@media(min-width: 1550px) {
-  form.nj-form .nj-form-label {
-    text-align: right;
-    margin-right: 16px;
-    margin-left: 0;
-  }
-  form.nj-form .nj-form-field {
-    width: 500px;
-  }
-  form.nj-form .nj-form-field-number {
-    width: 300px;
-  }
-}
