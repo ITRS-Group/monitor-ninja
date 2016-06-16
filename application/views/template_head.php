@@ -42,7 +42,6 @@ if (!empty($base_href)) {
 		echo html::script('application/media/js/jquery.autocomplete.js');
 		echo html::script('application/media/js/jquery.selectboxes.min.js');
 		echo html::script('application/media/js/jquery.jeditable.min');
-		echo html::script('application/media/js/jquery.query.js');
 		echo html::script('application/media/js/jquery.hotkeys.min.js');
 		echo html::script('application/media/js/jquery.contextMenu.js');
 		echo html::script('application/media/js/date.js');
