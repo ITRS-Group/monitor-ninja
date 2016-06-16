@@ -107,7 +107,7 @@ class bignumber_Widget extends widget_Base {
 			new Form_Field_Group_Model(
 				'host',
 				array(
-					new Form_Field_ORM_Object_Model('host_name', 'Host name', 'hosts'),
+					new Form_Field_ORMObject_Model('host_name', 'Host name', array('hosts')),
 					new Form_Field_Text_Model('performance_data_source', 'Performance data')
 				)
 			)
@@ -119,7 +119,7 @@ class bignumber_Widget extends widget_Base {
 			new Form_Field_Group_Model(
 				'service',
 				array(
-					new Form_Field_ORM_Object_Model('service_description', 'Service description', 'services'),
+					new Form_Field_ORMObject_Model('service_description', 'Service description', array('services')),
 					new Form_Field_Text_Model('performance_data_source', 'Performance data')
 				)
 			)

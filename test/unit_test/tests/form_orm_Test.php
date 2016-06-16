@@ -43,12 +43,13 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	protected function tearDown() {
 		unlink($this->mock_data_path);
 		$this->mock_data_path = false;
+		op5objstore::instance()->mock_clear();
 	}
 
 	public function get_form() {
 		return new Form_Model('my_action_url', array(
 			new Form_Field_Text_Model('name', "your name?"),
-			new Form_Field_ORM_Object_Model('da_contact', 'What is the object?', 'contacts')
+			new Form_Field_ORMObject_Model('da_contact', 'What is the object?', array('contacts'))
 		));
 	}
 
