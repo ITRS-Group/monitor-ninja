@@ -218,3 +218,35 @@ function render_host_status_summary(stats)
 
 	return ul;
 }
+
+$(window).on('load', function () {
+
+	var start;
+
+	$(document).on('click', '.listview_multiselect_checkbox', function (e) {
+
+		if (start && e.shiftKey) {
+
+			var boxes = $(this).parents('form')
+				.find('.listview_multiselect_checkbox');
+
+			var checked = start.is(':checked');
+
+			var s_i = boxes.index(start);
+			var e_i = boxes.index($(this));
+
+			var high = Math.max(s_i, e_i);
+			var low = Math.min(s_i, e_i);
+
+			for (var i = low; i <= high; i++) {
+				boxes.eq(i)
+					.attr('checked', checked)
+					.trigger('change');
+			}
+		}
+
+		start = $(this);
+
+	});
+
+});

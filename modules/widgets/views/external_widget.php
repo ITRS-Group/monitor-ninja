@@ -33,7 +33,6 @@
 			echo html::script('application/media/js/jquery.autocomplete.js');
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
-			echo html::script('application/media/js/jquery.field.js');
 			echo html::script('application/media/js/date.js');
 			echo html::script('application/views/js/global_search.js');
 			if (!isset($disable_refresh) || $disable_refresh === false) {

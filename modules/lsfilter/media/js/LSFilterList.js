@@ -520,7 +520,6 @@ function lsfilter_list(config)
 				loadrow.remove();
 				self.insert_rows(data, tbody);
 				self.add_fill_bar(data, tbody);
-				self.refresh_multi_select(tbody);
 			},
 			increment_items_in_view: true
 		});
@@ -584,7 +583,6 @@ function lsfilter_list(config)
 		this.previous_obj = {};
 		this.insert_rows(data, tbody);
 		this.add_fill_bar(data, tbody);
-		this.refresh_multi_select(tbody);
 
 		return table;
 	};
@@ -609,11 +607,6 @@ function lsfilter_list(config)
 		element.attr('data-column', vis_column );
 
 		element.append($('<span class="lsfilter-sort-span" />').css('background-image', 'url('+img+')'));
-	};
-
-	this.refresh_multi_select = function(baseelem)
-	{
-		baseelem.find('.listview_multiselect_checkbox').createCheckboxRange();
 	};
 
 	this.attach_header = function()
