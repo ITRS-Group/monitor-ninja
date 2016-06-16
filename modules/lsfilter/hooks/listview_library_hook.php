@@ -43,12 +43,12 @@ class listview_library_hook {
 
 		$controller->template->js [] = $basepath . 'views/form/codemirror/codemirror.js';
 		$controller->template->js [] = $basepath . 'views/form/codemirror/mode/lsfilter/lsfilter.js';
-		$controller->template->js [] = $basepath . 'views/form/codemirror/show-hint.js';
-		$controller->template->js [] = $basepath . 'views/form/codemirror/lsfilter-hint.js';
+		$controller->template->js [] = $basepath . 'views/form/codemirror/addon/hint/show-hint.js';
+		$controller->template->js [] = $basepath . 'views/form/codemirror/addon/hint/lsfilter-hint.js';
 		$controller->template->js [] = $basepath . 'views/form/form.codemirror.js';
 
 		$controller->template->css [] = $basepath . 'views/form/codemirror/codemirror.css';
-		$controller->template->css [] = $basepath . 'views/form/codemirror/show-hint.css';
+		$controller->template->css [] = $basepath . 'views/form/codemirror/addon/hint/show-hint.css';
 
 	}
 }
