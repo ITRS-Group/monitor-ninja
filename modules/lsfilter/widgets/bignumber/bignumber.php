@@ -248,7 +248,6 @@ class bignumber_Widget extends widget_Base {
 		}
 
 		$form_model->set_values($settings);
-
 		return $form_model;
 	}
 
@@ -292,7 +291,6 @@ class bignumber_Widget extends widget_Base {
 	public function index() {
 		$form_model = $this->options();
 
-		// display
 		$perf_data = array();
 		$display_explanation = "";
 		$display_text = "";

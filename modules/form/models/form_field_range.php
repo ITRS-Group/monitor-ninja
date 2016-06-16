@@ -6,9 +6,9 @@
 class Form_Field_Range_Model extends Form_Field_Model {
 
 	/**
-	 * A default step
+	 * @var string
 	 */
-	const RANGE_STEP_DEFAULT = null;
+	const RANGE_STEP_DEFAULT = "RANGE_STEP_DEFAULT";
 
 	private $min = 0;
 	private $max = 100;
