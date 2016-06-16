@@ -22,6 +22,7 @@ if ($render === "select" || ($render === false && count($options) > 3)) {
 } else {
 	echo '<div class="nj-form-field">';
 	echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
+	echo '<div class="nj-form-field-radio-buttons">';
 	foreach ( $field->get_options() as $value => $label ) {
 		$element_id = 'element_id_'.uniqid();
 		echo '<div class="nj-form-field-radio">';
@@ -33,5 +34,6 @@ if ($render === "select" || ($render === false && count($options) > 3)) {
 		echo '</label>';
 		echo '</div>';
 	}
+	echo '</div>';
 	echo '</div>';
 }

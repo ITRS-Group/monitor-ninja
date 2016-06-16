@@ -14,7 +14,7 @@ class Autocomplete_Controller extends Ninja_Controller {
 			try {
 				$settings = autocomplete::get_settings($table);
 				$set = ObjectPool_Model::get_by_query(sprintf($settings['query'], html::specialchars($term)));
-				foreach ($set->it(array('key', $settings['display']), array(), 5, 0) as $object) {
+				foreach ($set->it(array('key', $settings['display']), array(), 15, 0) as $object) {
 					$results[] = array(
 						"name" => $object->get_readable_name(),
 						"table" => $table,
