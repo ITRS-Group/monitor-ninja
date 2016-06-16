@@ -95,20 +95,68 @@ class bignumber_Widget extends widget_Base {
 			$all_filters[$filter->get_id()] = $filter->get_filter_name();
 		}
 
+		$content_from = new Form_Field_Option_Model('content_from', 'Content from', array(
+			'filter' => 'Filter',
+			'host' => 'Host',
+			'service' => 'Service',
+		), $force_render = 'select'); // because *that's* a sane API :D
+
+		$host = new Form_Field_Conditional_Model(
+			'content_from',
+			'host',
+			new Form_Field_Group_Model(
+				'host',
+				array(
+					new Form_Field_ORM_Object_Model('host_name', 'Host name', 'hosts'),
+					new Form_Field_Text_Model('performance_data_source', 'Performance data')
+				)
+			)
+		);
+
+		$service = new Form_Field_Conditional_Model(
+			'content_from',
+			'service',
+			new Form_Field_Group_Model(
+				'service',
+				array(
+					new Form_Field_ORM_Object_Model('service_description', 'Service description', 'services'),
+					new Form_Field_Text_Model('performance_data_source', 'Performance data')
+				)
+			)
+		);
+
 		$main_filter = new Form_Field_Option_Model('main_filter_id', 'Show filter', $all_filters);
 		$main_filter->set_help('bignumber_show_filter', 'tac');
 		$selection_filter = new Form_Field_Option_Model('selection_filter_id', 'With selection', $all_filters);
 		$selection_filter->set_help('bignumber_with_selection', 'tac');
-		$filters = new Form_Field_Group_Model('filters', array(
-			$main_filter,
-			$selection_filter
-		));
+		$filters = new Form_Field_Conditional_Model(
+			'content_from',
+			'filter',
+			new Form_Field_Group_Model('filters', array(
+				$main_filter,
+				$selection_filter
+			))
+		);
 
-		$uom = new Form_Field_Option_Model('display_type', 'Unit of measurement', array(
-			'number_of_total' => 'Fraction',
-			'number_only' => 'Count',
-			'percent' => 'Percentage'
-		));
+		$uom_host = new Form_Field_Conditional_Model(
+			'content_from',
+			'host',
+			new Form_Field_Option_Model('display_type', 'Unit of measurement', array(
+				'number_of_total' => 'Fraction',
+				'number_only' => 'Count',
+				'percent' => 'Percentage'
+			))
+		);
+
+		$uom_service = new Form_Field_Conditional_Model(
+			'content_from',
+			'service',
+			new Form_Field_Option_Model('display_type', 'Unit of measurement', array(
+				'number_of_total' => 'Fraction',
+				'number_only' => 'Count',
+				'percent' => 'Percentage'
+			))
+		);
 
 		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'Show status');
 		$threshold_as = new Form_Field_Option_Model('threshold_type', 'Threshold as', array(
@@ -126,8 +174,12 @@ class bignumber_Widget extends widget_Base {
 
 		$form_model = Form_Model::for_tac_widget();
 		foreach(array(
+			$content_from,
+			$host,
+			$service,
 			$filters,
-			$uom,
+			$uom_host,
+			$uom_service,
 			$toggle_status,
 			$thresholds
 		) as $field) {
