@@ -25,59 +25,6 @@ $(document).ready(function() {
 		}
 	});
 
-
-	/**
-		========================
-		comment filters
-		========================
-	*/
-	// host comments
-	if ($.tablesorter)
-		$('#hostcomments_table').tablesorter({headers:{0:{sorter:false}}});
-
-	$('#clearhostsearch').click(function() {
-		$('#hostfilterbox').val('').trigger('keyup').trigger('blur');
-		return false;
-	});
-
-	$('.filterboxfield')
-		.parents('form')
-			.submit(function(ev) {
-				ev.preventDefault();
-			});
-
-	// service comments
-	if ($.tablesorter)
-		$('#servicecomments_table').tablesorter({headers:{0:{sorter:false}}});
-
-	$('#clearservicesearch').click(function() {
-		$('#servicefilterbox').val('').trigger('keyup').trigger('blur');
-		return false;
-	});
-
-	/**
-		========================
-		scheduled downtime filters
-		========================
-	*/
-	// host scheduled downtime
-	if ($.tablesorter)
-		$('#scheduled_host_downtime').tablesorter({headers:{0:{sorter:false}}});
-
-	$('#clearhostsearch_sched').click(function() {
-		$('#hostfilterbox_sched').val('').trigger('keyup').trigger('blur');
-		return false;
-	});
-
-	// service scheduled downtime
-	if ($.tablesorter)
-		$('#scheduled_service_downtime').tablesorter({headers:{0:{sorter:false}}});
-
-	$('#clearservicesearch_sched').click(function() {
-		$('#servicefilterbox_sched').val('').trigger('keyup').trigger('blur');
-		return false;
-	});
-
 	$('.extinfo_contactgroup').each(function() {
 		$(this).bind('click', function() {
 			var the_id = $(this).attr('id');
