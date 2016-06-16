@@ -13,11 +13,10 @@ form.nj-form .nj-form-field {
   display: inline-block;
   position: relative;
   vertical-align: top;
-  max-width: 450px;
-  min-width: 312px;
-  width: 33.33%;
+  width: 280px;
   padding: 8px;
 }
+
 
 form.nj-form fieldset {
   box-sizing: border-box;
@@ -83,7 +82,12 @@ form.nj-form button,
 form.nj-form input[type="submit"],
 form.nj-form input[type="reset"]{
   padding: 6px 24px;
-  border: inherit;
+  margin: 2px 4px;
+  border-radius: 2px;
+  border: none;
+  font-size: 10pt;
+  line-height: 1.1em;
+  vertical-align: middle;
 }
 
 form.nj-form button:hover,
@@ -100,6 +104,11 @@ form.nj-form input[type="text"] {
 form.nj-form input[type="number"] {
   padding: 8px;
   width: 124px;
+}
+
+form.nj-form .nj-form-field-number {
+   width: 140px;
+   min-width: 140px;
 }
 
 /* Checkbox */
@@ -161,6 +170,11 @@ form.nj-form .nj-form-field-checkbox input:checked + .nj-form-label:after {
 /* End checkbox */
 
 /* Radiobutton */
+
+form.nj-form .nj-form-field-radio-buttons {
+  vertical-align: top;
+  display: inline-block;
+}
 
 form.nj-form .nj-form-field-radio input {
    display: none;
@@ -308,20 +322,23 @@ form.nj-form .nj-form-field-range-hover {
 
 form.nj-form .nj-form-field-autocomplete {
   position: relative;
+  display: inline-block;
   height: 32px;
+  width: 256px;
+  vertical-align: middle;
 }
 
-form.nj-form .nj-form-field-autocomplete:after {
-  content: "▼";
+form.nj-form .nj-form-field-autocomplete-dropper {
   position: absolute;
-  left: 224px;
-  text-shadow: 0px 0px 3px #fff;
+  display: block;
+  top: 1px;
+  z-index: 4;
+  left: 223px;
   width: 16px;
   height: 1.1em;
   padding: 7px 7px 7px 8px;
-  background: rgba(255, 255, 255, 0.5);
-  top: 1px;
-  z-index: 3;
+  background: #ffffff;
+  border-left: 1px solid #d0d0d0;
 }
 
 form.nj-form .nj-form-field-autocomplete input {
@@ -352,6 +369,7 @@ form.nj-form .nj-form-field-autocomplete-items {
   border-radius: 3px;
   border: 1px solid #d0d0d0;
   padding-bottom: 4px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
 }
 
 form.nj-form .nj-form-field-autocomplete-items li {
@@ -381,3 +399,46 @@ form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-ite
 }
 
 /* End Autocomplete */
+
+.nj-form-field-listview-query .CodeMirror {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 2px;
+  height: auto;
+  padding: 2px;
+  border: 1px solid #dddddd;
+  border-bottom: 1px solid #bbbbbb;
+  width: 252px;
+}
+
+.nj-form-field-listview-query .CodeMirror .cm-operator {
+  font-weight: bold;
+  color: #ea0;
+}
+
+.nj-form-field-listview-query .CodeMirror .cm-comment {
+  color: #999;
+}
+
+.nj-form-field-listview-query .CodeMirror.error {
+  border-color: #f05051;
+}
+
+.nj-form-field-listview-query .CodeMirror.success {
+  border-color: #82cd60;
+}
+
+
+@media(min-width: 1550px) {
+  form.nj-form .nj-form-label {
+    text-align: right;
+    margin-right: 16px;
+    margin-left: 0;
+  }
+  form.nj-form .nj-form-field {
+    width: 500px;
+  }
+  form.nj-form .nj-form-field-number {
+    width: 300px;
+  }
+}

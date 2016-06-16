@@ -11,6 +11,7 @@
 		this.input = form_field.find('.nj-form-field-autocomplete-input');
 		this.shadow = form_field.find('.nj-form-field-autocomplete-shadow');
 		this.items = form_field.find('.nj-form-field-autocomplete-items');
+		this.dropper = form_field.find('.nj-form-field-autocomplete-dropper');
 		this.table_element = form_field.find('.nj-form-field-autocomplete-table');
 		this.placeholder = this.input.attr('placeholder');
 
@@ -79,6 +80,12 @@
 			e.preventDefault();
 			return false;
 
+		}.bind(this));
+
+		this.dropper.on('click', function (e) {
+			this.update('');
+			e.preventDefault();
+			return false;
 		}.bind(this));
 
 		this.input.on('focus', function (e) {
@@ -171,7 +178,7 @@
 			key_values.forEach(function (item, index) {
 
 				if (current_table != item.table) {
-					var title = $('<li class="nj-form-field-autocomplete-items-title">').text(item.table);
+					var title = $('<li class="nj-form-field-autocomplete-items-title">').text("Suggestions");
 					fragment.appendChild(title.get(0));
 					current_table = item.table;
 				}

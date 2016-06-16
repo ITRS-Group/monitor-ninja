@@ -10,7 +10,7 @@ echo '<label>';
 echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
 echo '<div class="nj-form-field-autocomplete" data-autocomplete="' . implode(',', $tables) . '">';
 
-$first = array_pop($tables);
+$first = $tables[count($tables) - 1];
 $types = implode(', ', $tables);
 $types .= ' or ' . $first;
 
@@ -23,6 +23,7 @@ if ($default) {
 	echo '<input class="nj-form-field-autocomplete-input nj-form-option"  placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" name="'.$field->get_name().'[value]" value="'.html::specialchars($default).'" />';
 }
 echo '<input class="nj-form-field-autocomplete-shadow" autocomplete="off" type="text" class="nj-form-option" value="'.html::specialchars($default).'" />';
+echo '<span class="nj-form-field-autocomplete-dropper">▼</span>';
 echo '<ul class="nj-form-field-autocomplete-items"></ul>';
 echo '</div>';
 echo '</label>';
