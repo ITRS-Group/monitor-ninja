@@ -15,10 +15,6 @@
 		echo html::link('application/views/icons/favicon.ico','icon','image/x-icon');
 		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 		?>
-		<!--[If IE]>
-		<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/default/ie7.css') ?>" />
-		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
-		<![endif]-->
 		<?php
 			echo new View('css_header', array('css' => $css));
 			echo html::script('application/media/js/jquery.js');
