@@ -5,7 +5,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 		// phpunit wants to be able to iterate through the dataset
 		return array(array(new Form_Model('my_action_url', array(
 			new Form_Field_Text_Model('name', "your name?"),
-			new Form_Field_Select_Model('trouble', "what do you have problem with?", array(
+			new Form_Field_Option_Model('trouble', "what do you have problem with?", array(
 				'headache' => 'Some wierd phantom pain',
 				'foot_sweat' => 'People won\'t sit close to me'
 			)),
