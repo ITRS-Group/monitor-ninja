@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * THIS IS JUST A TEST CONTROLLER REMOVE BEFORE RELEASE!
+ * Provides a backend that autocomplete.js can query.
  */
 class Autocomplete_Controller extends Ninja_Controller {
 
@@ -22,7 +22,7 @@ class Autocomplete_Controller extends Ninja_Controller {
 					);
 				}
 			} catch (ORMException $e) {
-				/* dont handle during autocomplete */
+				op5log::instance('ninja')->log('warning', __METHOD__.': '.$e->getMessage());
 			}
 		}
 
