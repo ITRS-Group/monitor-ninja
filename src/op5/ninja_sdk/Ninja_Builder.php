@@ -6,21 +6,39 @@ class Ninja_Builder {
 	protected $builders = array();
 
 	public function __construct() {
-		$this->all_targets = array();
-		foreach( scandir( $this->builders_basedir ) as $target ) {
+		$this->builders = array();
+		foreach ( scandir( $this->builders_basedir ) as $target ) {
 			if( $target[0] === '.' )
 				continue;
 			if( !is_dir($this->builders_basedir . DIRECTORY_SEPARATOR . $target) )
 				continue;
-			$this->all_targets[] = $target;
-		}
 
-		$this->builders = array();
-		foreach ( $this->all_targets as $target ) {
 			$builderclass = $target . "_Builder";
 			require_once ($this->builders_basedir . DIRECTORY_SEPARATOR . $target . DIRECTORY_SEPARATOR . "builder.php");
 			$this->builders[$target] = new $builderclass();
 		}
+
+		$this->all_targets = array();
+		foreach( $this->builders as $target => $builder ) {
+			$this->add_target($target);
+		}
+	}
+
+	/**
+	 * Add a target to the all_targets list, with all dependencies met prior in the list
+	 */
+	protected function add_target($target) {
+		/* Do we already have the target? Don't add */
+		if(in_array($target, $this->all_targets))
+			return;
+
+		/* All dependencies needs to be added first */
+		foreach( $this->builders[$target]->get_dependencies() as $dependency ) {
+			$this->add_target($dependency);
+		}
+
+		/* At last, add the target, since everything is met */
+		$this->all_targets[] = $target;
 	}
 
 	/**
@@ -61,6 +79,7 @@ class Ninja_Builder {
 	 */
 	public function generate() {
 		foreach ( $this->all_targets as $target ) {
+			print("\n\n##### Building target: $target\n\n");
 			$builder = $this->builders[$target];
 			$modules = isset($this->build_targets[$target]) ? $this->build_targets[$target] : array();
 			foreach ( $modules as $moduledir => $confdir ) {

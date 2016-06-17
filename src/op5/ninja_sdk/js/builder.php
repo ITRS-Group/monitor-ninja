@@ -1,6 +1,6 @@
 <?php
 
-class js_Builder {
+class js_Builder implements builder_interface {
 	public function generate ($mod_path, $src_path) {
 
 		$target_path =  $mod_path . '/media/js/bundle.js';
@@ -38,5 +38,9 @@ EOF
 
 		fclose($target);
 
+	}
+
+	public function get_dependencies() {
+		return array('parsegen');
 	}
 }

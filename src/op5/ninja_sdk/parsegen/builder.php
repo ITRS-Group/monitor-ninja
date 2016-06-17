@@ -3,7 +3,7 @@ require_once(__DIR__."/../generator_lib.php");
 require_once(__DIR__."/LalrGrammarParser.php");
 require_once(__DIR__."/LalrGenerator.php");
 
-class parsegen_Builder {
+class parsegen_Builder implements builder_interface {
 	public function generate($moduledir, $confdir) {
 		print "Generating parser from $confdir to $moduledir\n";
 		foreach(scandir($confdir) as $conffile) {
@@ -18,5 +18,9 @@ class parsegen_Builder {
 			$generator = new LalrGenerator($grammar);
 			$generator->generate($moduledir);
 		}
+	}
+
+	public function get_dependencies() {
+		return array();
 	}
 }

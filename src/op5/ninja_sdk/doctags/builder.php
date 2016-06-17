@@ -2,6 +2,8 @@
 require_once (__DIR__ . "/../generator_lib.php");
 require_once (__DIR__ . "/../class_generator.php");
 require_once (__DIR__ . "/../php_miner.php");
+require_once (__DIR__ . "/../builder_interface.php");
+
 class doctags_manifest_Builder extends class_generator {
 	protected $content = array ();
 	public function __construct($filename, $content) {
@@ -17,7 +19,7 @@ class doctags_manifest_Builder extends class_generator {
 		}
 	}
 }
-class doctags_Builder {
+class doctags_Builder implements builder_interface {
 	const INCLUDES_FILENAME = "includes.txt";
 	const DOCTAG_PREFIX = "ninja";
 	const MANIFEST_SUFFIX = "_doctags";
@@ -128,5 +130,9 @@ class doctags_Builder {
 		$generator = new doctags_manifest_Builder( $manifest . self::MANIFEST_SUFFIX, $content );
 		$generator->set_moduledir( $moduledir );
 		$generator->generate();
+	}
+
+	public function get_dependencies() {
+		return array();
 	}
 }

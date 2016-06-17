@@ -12,7 +12,7 @@ require_once( __DIR__.'/meta/ORMWrapperGenerator.php' );
 require_once( __DIR__.'/meta/ORMTableManifestGenerator.php' );
 require_once( __DIR__.'/meta/ORMStructureManifestGenerator.php' );
 
-class orm_Builder {
+class orm_Builder implements builder_interface {
 	/**
 	 * Return a list of class names defining the generators for loaded classes
 	 *
@@ -111,5 +111,9 @@ class orm_Builder {
 			$this->generate_table($table, $tables, $moduledir);
 		}
 		$this->generate_manifest($tables, $moduledir);
+	}
+
+	public function get_dependencies() {
+		return array();
 	}
 }
