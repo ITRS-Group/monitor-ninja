@@ -3,7 +3,9 @@
 class js_Builder implements builder_interface {
 	public function generate ($mod_path, $src_path) {
 
-		$target_path =  $mod_path . '/media/js/bundle.js';
+		$target_path =  $mod_path . '/media/js/bundle_'.time().'.js';
+		$hook_path =  $mod_path . '/hooks/load_js_bundles.php';
+
 		$directory = new RecursiveDirectoryIterator($src_path);
 		$iterator = new RecursiveIteratorIterator($directory);
 		$files = new RegexIterator($iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
@@ -34,6 +36,14 @@ EOF
 		echo "   -> " . $target_path . "\n";
 
 		fclose($target);
+		file_put_contents($hook_path, <<<EOF
+<?php
+Event::add('system.post_controller_constructor', function () {
+    \$controller = Event::\$data;
+	\$controller->template->js[] = "$target_path";
+});
+EOF
+);
 
 	}
 

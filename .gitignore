@@ -18,7 +18,9 @@ application/logs
 application/config/custom/*
 
 # Generated code
-modules/*/js
+application/media/js/bundle*.js
+modules/*/media/js/bundle*.js
+modules/*/src/js/generated
 modules/*/html
 modules/*/models/base
 modules/*/manifest/orm_*.php

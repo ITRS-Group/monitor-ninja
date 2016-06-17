@@ -735,7 +735,7 @@
             // because determine the order of links appear
             AddWidgetCollapseLink(widget, widgetMenu, s);
 						if (widget.find(s.selectors.editbox).children().length) {
-            	AddWidgetEditLink(widget, widgetMenu, s);
+		AddWidgetEditLink(widget, widgetMenu, s);
 						}
             AddWidgetRemoveLink(widget, widgetMenu, s);
             return true;

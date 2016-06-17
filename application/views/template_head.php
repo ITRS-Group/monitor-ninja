@@ -32,10 +32,7 @@ if (!empty($base_href)) {
 </script>
 
 	<?php
-
 		echo html::script('application/media/js/bundle.js');
-		echo html::script('modules/widgets/media/js/jquery.easywidgets.js');
-		echo html::script('application/views/js/global_search.js');
 	?>
 	<script type="text/javascript">
 		//<!--
@@ -123,8 +120,6 @@ if (!empty($base_href)) {
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();
 		}
-
-		echo html::script('application/views/js/common.js');
 
 		$v = new View('js_header', array('js' => isset($js)?$js:array()));
 		$v->render(true);
