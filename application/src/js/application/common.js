@@ -1,11 +1,21 @@
-var sURL = window.location.pathname + location.search;
-var _interval = 0;
-var _save_page_interval = 0;
-var current_interval = 0;
-var edit_visible = 0;
-var _save_scroll = true;
+
+function _(text)
+{
+	// console.log('To translate: '+ text);
+	return text;
+}
 
 $(document).ready(function() {
+
+	"use strict";
+
+	var _interval = 0;
+	var _save_page_interval = 0;
+	var _save_scroll = true;
+
+	var sURL = window.location.pathname + location.search;
+	var current_interval = 0;
+	var edit_visible = 0;
 
 	var content_div = $( "body > .container > #content" ),
 		header_div = $( "body > .container >#header" ),
@@ -121,10 +131,6 @@ $(document).ready(function() {
 	}
 	// -- end listview refresh helper code
 
-	$('#multi_action_select').bind('change', function() {
-		multi_action_select($(this).find('option:selected').val());
-	});
-
 	$('.select_all_items_service').live('click', function() {
 		if ($(this).attr('checked')) {
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
@@ -196,6 +202,44 @@ $(document).ready(function() {
 		}
 	}
 
+
+	var loadimg_sml = new Image(16,16);
+	loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
+
+	/**
+	 *	cache the progress indicator image to show faster...
+	 */
+	var Image1 = new Image(16,16);
+	Image1.src = _site_domain + 'application/media/images/loading.gif';
+
+	/**
+	 *	Show a progress indicator to inform user that something
+	 *	is happening...
+	 */
+	function show_progress(the_id, info_str, size_str) {
+		switch (size_str) {
+			case "small": case "tiny":
+				size_str = loadimg_sml.src;
+			break;
+			case "large": case "big":
+				size_str = Image1.src;
+			break;
+			default:
+				size_str = loadimg_sml.src;
+			break;
+		}
+		$("#" + the_id).html('<img id="progress_image_id" src="' + size_str + '"> <em>' + info_str +'</em>').show();
+	}
+
+	function show_message(the_id, info_str) {
+		$("#" + the_id).html('<em>' + info_str +'</em>').show();
+	}
+
+	function switch_image(html_id, src)
+	{
+		$('#' + html_id).attr('src', src);
+	}
+
 	/**
 	*	Toggle page refresh and show a notify message to user about state
 	*/
@@ -229,292 +273,143 @@ $(document).ready(function() {
 		}
 	}
 
-	$('#multi_object_submit_service').click(function() {
-		// check that we have any selected items
-		if (!$('.item_select_service input[name=object_select\\[\\]]').is(':checked')) {
-			show_message("multi_object_submit_progress_service", _nothing_selected_error);
-			return false;
-		}
-
-		// Check if we actually set an action
-		if ($('#multi_action_select_service').val() === "") {
-			show_message("multi_object_submit_progress_service", _no_action_error);
-			return false;
-		}
-
-		show_progress("multi_object_submit_progress_service", _wait_str);
-	});
-
-	$('#multi_object_submit').click(function() {
-		// check that we have any selected items
-		if (!$('.item_select input[name=object_select\\[\\]]').is(':checked')) {
-			show_message("multi_object_submit_progress", _nothing_selected_error);
-			return false;
-		}
-
-		// Check if we actually set an action
-		if ($('#multi_action_select').val() === "") {
-			show_message("multi_object_submit_progress", _no_action_error);
-			return false;
-		}
-
-		show_progress("multi_object_submit_progress", _wait_str);
-	});
-
-});
-
-function _(text)
-{
-	// console.log('To translate: '+ text);
-	return text;
-}
-
-var loadimg_sml = new Image(16,16);
-loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
-
-/**
-*	cache the progress indicator image to show faster...
-*/
-var Image1 = new Image(16,16);
-Image1.src = _site_domain + 'application/media/images/loading.gif';
-
-/**
-*	Show a progress indicator to inform user that something
-*	is happening...
-*/
-function show_progress(the_id, info_str, size_str) {
-	switch (size_str) {
-		case "small": case "tiny":
-			size_str = loadimg_sml.src;
-			break;
-		case "large": case "big":
-			size_str = Image1.src;
-			break;
-		default:
-			size_str = loadimg_sml.src;
-			break;
-	}
-	$("#" + the_id).html('<img id="progress_image_id" src="' + size_str + '"> <em>' + info_str +'</em>').show();
-}
-
-function show_message(the_id, info_str) {
-	$("#" + the_id).html('<em>' + info_str +'</em>').show();
-}
-
-function switch_image(html_id, src)
-{
-	$('#' + html_id).attr('src', src);
-}
-
-/**
-*	Handle multi select of different actions
-*/
-function multi_action_select(action, type)
-{
-	// start by enabling all checkboxes in case
-	// they have been previously disabled
-	var field = 'item_select';
-	var prop_field = 'obj_prop';
-	if (type == 'service') {
-		$(".item_select_service input[type='checkbox']").attr('disabled', false);
-		field = 'item_select_service';
-		prop_field = 'obj_prop_service';
-	} else {
-		$(".item_select input[type='checkbox']").attr('disabled', false);
-	}
-
-	if (action === '')
-		return false;
-
-	var ACKNOWLEDGED = 1;
-	var NOTIFICATIONS_ENABLED = 2;
-	var CHECKS_ENABLED = 4;
-	var SCHEDULED_DT = 8;
-
-	$('.' + prop_field).each(function() {
-		var that = $(this);
-		var test = false;
-		switch (action) {
-			case 'ACKNOWLEDGE_HOST_PROBLEM':
-			case 'ACKNOWLEDGE_SVC_PROBLEM':
-				test = that.text() & ACKNOWLEDGED || !(that.text() & 16);
-				break;
-			case 'REMOVE_HOST_ACKNOWLEDGEMENT':
-			case 'REMOVE_SVC_ACKNOWLEDGEMENT':
-				test = !(that.text() & ACKNOWLEDGED);
-				break;
-			case 'DISABLE_HOST_NOTIFICATIONS':
-			case 'DISABLE_SVC_NOTIFICATIONS':
-				test = that.text() & NOTIFICATIONS_ENABLED;
-				break;
-			case 'ENABLE_HOST_NOTIFICATIONS':
-			case 'ENABLE_SVC_NOTIFICATIONS':
-				test = !(that.text() & NOTIFICATIONS_ENABLED);
-				break;
-			case 'ENABLE_HOST_CHECK':
-			case 'ENABLE_SVC_CHECK':
-				test = !(that.text() & CHECKS_ENABLED);
-				break;
-			case 'DISABLE_HOST_CHECK':
-			case 'DISABLE_SVC_CHECK':
-				test = that.text() & CHECKS_ENABLED;
-				break;
-			case 'DEL_HOST_DOWNTIME':
-			case 'DEL_SVC_DOWNTIME':
-				test = !(that.text() & SCHEDULED_DT);
-				break;
-		}
-		if (test) {
-			that.closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true).attr('checked', false);
-		}
-	});
-}
-
-function create_slider(the_id)
-{
-	var last_update_request = false;
-	var id = $('#' + the_id + '_value');
-	var key = id.data('key');
-	var interval = id.val();
-	$("#" + the_id + "_slider").slider({
-		value: interval,
-		min: 0,
-		max: 500,
-		step: 10,
-		slide: function(event, ui) {
-			$("#" + the_id + "_value").val(ui.value);
-		},
-		stop: function(event, ui) {
-			interval = ui.value;
-			if(last_update_request !== false) {
-				last_update_request.abort();
-			}
-			last_update_request = $.ajax(
-				_site_domain + _index_page + "/ajax/save_page_setting/",
-				{
-					data: {
-						page: '*',
-						setting: interval,
-						type: key,
-						csrf_token: _csrf_token
-					},
-					complete: function() {
-						last_update_request = false;
-						id.val(interval);
-					},
-					type: 'POST'
+	function create_slider(the_id) {
+		var last_update_request = false;
+		var id = $('#' + the_id + '_value');
+		var key = id.data('key');
+		var interval = id.val();
+		$("#" + the_id + "_slider").slider({
+			value: interval,
+			min: 0,
+			max: 500,
+			step: 10,
+			slide: function(event, ui) {
+				$("#" + the_id + "_value").val(ui.value);
+			},
+			stop: function(event, ui) {
+				interval = ui.value;
+				if(last_update_request !== false) {
+					last_update_request.abort();
 				}
-			);
+				last_update_request = $.ajax(
+					_site_domain + _index_page + "/ajax/save_page_setting/",
+					{
+						data: {
+							page: '*',
+							setting: interval,
+							type: key,
+							csrf_token: _csrf_token
+						},
+						complete: function() {
+							last_update_request = false;
+							id.val(interval);
+						},
+						type: 'POST'
+					}
+				);
+			}
+		});
+		id.val($("#" + the_id + "_slider").slider("value"));
+	}
+
+	function ninja_refresh(val) {
+		if (_interval) {
+			clearInterval(_interval);
 		}
-	});
-	id.val($("#" + the_id + "_slider").slider("value"));
-}
-
-function ninja_refresh(val)
-{
-	if (_interval) {
-		clearInterval(_interval);
-	}
-	var refresh_val = (val === null) ? _refresh : val;
-	current_interval = refresh_val;
-	if (val>0) {
-		_interval = setInterval( "refresh()", refresh_val*1000 );
-	}
-}
-
-// ===========================================================
-// code for remembering scroll position between page reloads
-// adapted from http://www.huntingground.freeserve.co.uk/main/mainfram.htm?../scripts/cookies/scrollpos.htm
-// ===========================================================
-
-cookieName = "page_scroll";
-expdays = 5;
-
-function setCookie(name, value, expires, path, domain, secure) {
-	if (!expires) {
-		expires = new Date();
-	}
-	document.cookie = name + "=" + escape(value) +
-	((expires === null) ? "" : "; expires=" + expires.toGMTString()) +
-	((path === null) ? "" : "; path=" + path) +
-	((domain === null) ? "" : "; domain=" + domain) +
-	((secure === null) ? "" : "; secure");
-}
-
-function getCookie(name) {
-	var arg = name + "=";
-	var alen = arg.length;
-	var clen = document.cookie.length;
-	var i = 0;
-	while (i < clen) {
-		var j = i + alen;
-		if (document.cookie.substring(i, j) == arg){
-			return getCookieVal(j);
-		}
-		i = document.cookie.indexOf(" ", i) + 1;
-		if (i === 0) {
-			break;
+		var refresh_val = (val === null) ? _refresh : val;
+		current_interval = refresh_val;
+		if (val>0) {
+			_interval = setInterval( "refresh()", refresh_val*1000 );
 		}
 	}
-	return null;
-}
+	// ===========================================================
+	// code for remembering scroll position between page reloads
+	// adapted from http://www.huntingground.freeserve.co.uk/main/mainfram.htm?../scripts/cookies/scrollpos.htm
+	// ===========================================================
 
-function getCookieVal(offset) {
-	var endstr = document.cookie.indexOf (";", offset);
-	if (endstr == -1) {
-		endstr = document.cookie.length;
-	}
-	return unescape(document.cookie.substring(offset, endstr));
-}
+	var cookieName = "page_scroll";
+	var expdays = 5;
 
-function deleteCookie(name,path,domain) {
-	document.cookie = name + "=" + ((path === null) ? "" : "; path=" + path) + ((domain === null) ? "" : "; domain=" + domain) + "; expires=Thu, 01-Jan-00 00:00:01 GMT";
-}
-
-function saveScroll() {
-	var expdate = new Date();
-	expdate.setTime (expdate.getTime() + (expdays*24*60*60*1000)); // expiry date
-
-	if (!_save_scroll) {
-		// reset scroll memory to top
-		setCookie(cookieName,'0_0',expdate);
-		return;
+	function setCookie(name, value, expires, path, domain, secure) {
+		if (!expires) {
+			expires = new Date();
+		}
+		document.cookie = name + "=" + escape(value) +
+			((expires === null) ? "" : "; expires=" + expires.toGMTString()) +
+			((path === null) ? "" : "; path=" + path) +
+			((domain === null) ? "" : "; domain=" + domain) +
+			((secure === null) ? "" : "; secure");
 	}
 
-	var x = $(window).scrollLeft();
-	var y = $(window).scrollTop();
-	Data = x + "_" + y;
-
-	setCookie(cookieName,Data,expdate);
-}
-
-$(window).bind('beforeunload', saveScroll);
-
-function loadScroll() { // added function
-	inf = getCookie(cookieName);
-	if(!inf) {
-		return;
+	function getCookie(name) {
+		var arg = name + "=";
+		var alen = arg.length;
+		var clen = document.cookie.length;
+		var i = 0;
+		while (i < clen) {
+			var j = i + alen;
+			if (document.cookie.substring(i, j) == arg){
+				return getCookieVal(j);
+			}
+			i = document.cookie.indexOf(" ", i) + 1;
+			if (i === 0) {
+				break;
+			}
+		}
+		return null;
 	}
-	var ar = inf.split("_");
-	if (ar.length == 2) {
-		$(window).scrollLeft(parseInt(ar[0], 10));
-		$(window).scrollTop(parseInt(ar[1], 10));
+
+	function getCookieVal(offset) {
+		var endstr = document.cookie.indexOf (";", offset);
+		if (endstr == -1) {
+			endstr = document.cookie.length;
+		}
+		return unescape(document.cookie.substring(offset, endstr));
 	}
-}
 
-$(window).bind('load', loadScroll);
+	function deleteCookie(name,path,domain) {
+		document.cookie = name + "=" + ((path === null) ? "" : "; path=" + path) + ((domain === null) ? "" : "; domain=" + domain) + "; expires=Thu, 01-Jan-00 00:00:01 GMT";
+	}
 
-function trigger_cb_on_nth_call(cb, n) {
-	return function() {
-		if (--n <= 0)
-			cb();
-	};
-}
+	function saveScroll() {
+		var expdate = new Date();
+		expdate.setTime (expdate.getTime() + (expdays*24*60*60*1000)); // expiry date
 
+		if (!_save_scroll) {
+			// reset scroll memory to top
+			setCookie(cookieName,'0_0',expdate);
+			return;
+		}
 
-(function (_site_domain, _index_page) {
+		var x = $(window).scrollLeft();
+		var y = $(window).scrollTop();
+		Data = x + "_" + y;
 
-	"use strict";
+		setCookie(cookieName,Data,expdate);
+	}
+
+	$(window).bind('beforeunload', saveScroll);
+
+	function loadScroll() { // added function
+		var inf = getCookie(cookieName);
+		if(!inf) {
+			return;
+		}
+		var ar = inf.split("_");
+		if (ar.length == 2) {
+			$(window).scrollLeft(parseInt(ar[0], 10));
+			$(window).scrollTop(parseInt(ar[1], 10));
+		}
+	}
+
+	$(window).bind('load', loadScroll);
+
+	function trigger_cb_on_nth_call(cb, n) {
+		return function() {
+			if (--n <= 0)
+				cb();
+		};
+	}
 
 	/* QUICKLINK EXTENSION */
 	var uh_prob_title = "Unhandled Problems";
@@ -735,5 +630,4 @@ function trigger_cb_on_nth_call(cb, n) {
 			}
 		});
 
-}(window._site_domain, window._index_page));
-
+});

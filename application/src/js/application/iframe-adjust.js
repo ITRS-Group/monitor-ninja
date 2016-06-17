@@ -1,5 +1,32 @@
 
+
 $(document).ready(function() {
+
+	function adjust_height_frame( selector ) {
+
+		var content_div = $( "body > .container > #content" ),
+			header_div = $( "body > .container >#header" ),
+			body = $( "body" );
+
+		var height = body.height() - header_div.outerHeight();
+		var iframe = $( selector );
+
+		if( iframe ) {
+			iframe.css( 'height', ( height - 4 ) + 'px' );
+			content_div.css( "height", (height) + "px" );
+		}
+
+	}
+
+	function adjust_height() {
+
+		adjust_height_frame('#iframe');
+		adjust_height_frame('#nagvis');
+		adjust_height_frame('#content');
+
+		$('body').css('overflow-y', 'hidden');
+
+	}
 
 	adjust_height();
 
@@ -32,32 +59,6 @@ $(document).ready(function() {
 
 	}
 
+	$(window).bind("resize", adjust_height);
+
 });
-
-function adjust_height_frame( selector ) {
-
-	var content_div = $( "body > .container > #content" ),
-			header_div = $( "body > .container >#header" ),
-			body = $( "body" );
-
-	var height = body.height() - header_div.outerHeight();
-	var iframe = $( selector );
-
-	if( iframe ) {
-		iframe.css( 'height', ( height - 4 ) + 'px' );
-		content_div.css( "height", (height) + "px" );
-	}
-
-}
-
-function adjust_height() {
-
-	adjust_height_frame('#iframe');
-	adjust_height_frame('#nagvis');
-	adjust_height_frame('#content');
-
-	$('body').css('overflow-y', 'hidden');
-
-}
-
-$(window).bind( "resize", adjust_height );

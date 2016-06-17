@@ -4,19 +4,16 @@ class js_Builder implements builder_interface {
 	public function generate ($mod_path, $src_path) {
 
 		$target_path =  $mod_path . '/media/js/bundle.js';
-		$files = scandir($src_path);
+		$directory = new RecursiveDirectoryIterator($src_path);
+		$iterator = new RecursiveIteratorIterator($directory);
+		$files = new RegexIterator($iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
 
-		sort($files);
+		$js_files = array();
+		foreach ($files as $file) {
+			$js_files[] = $file[0];
+		}
 
-		$js_files = array_filter($files, function ($file) {
-			return preg_match("/\.js$/", $file) ? true : false;
-		});
-
-		$js_files = array_map(function ($file) use ($src_path) {
-			return $src_path . '/' . $file;
-		}, $js_files);
-
-
+		sort($js_files);
 		echo "Bundling: " . $mod_path . "\n";
 		$target = fopen($target_path, 'w');
 

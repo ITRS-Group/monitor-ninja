@@ -33,18 +33,9 @@ if (!empty($base_href)) {
 
 	<?php
 
-		echo html::script('application/media/js/jquery.js');
-		echo html::script('application/media/js/jquery-ui.js');
-		echo html::script('application/media/js/jquery.fancybox.js');
+		echo html::script('application/media/js/bundle.js');
 		echo html::script('modules/widgets/media/js/jquery.easywidgets.js');
-		echo html::script('application/media/js/jquery.autocomplete.js');
-		echo html::script('application/media/js/jquery.jeditable.min');
-		echo html::script('application/media/js/jquery.hotkeys.min.js');
-		echo html::script('application/media/js/jquery.contextMenu.js');
-		echo html::script('application/media/js/date.js');
 		echo html::script('application/views/js/global_search.js');
-		echo html::script('application/media/js/lib.popover.js');
-		echo html::script('application/media/js/lib.notify.js');
 	?>
 	<script type="text/javascript">
 		//<!--
