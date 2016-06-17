@@ -5,6 +5,7 @@ function _(text)
 	return text;
 }
 
+var current_interval = 0;
 $(document).ready(function() {
 
 	"use strict";
@@ -14,7 +15,6 @@ $(document).ready(function() {
 	var _save_scroll = true;
 
 	var sURL = window.location.pathname + location.search;
-	var current_interval = 0;
 	var edit_visible = 0;
 
 	var content_div = $( "body > .container > #content" ),

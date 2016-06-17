@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(window).on('load',function() {
 	var query = $('#query');
 	if(!query.length) {
 		// fix to avoid autocomplete if element is not present.
