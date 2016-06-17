@@ -21,16 +21,16 @@ $(window).on('load',function() {
 
 	var search_old_refresh = 0;
 	query.focus(function() {
-		search_old_refresh = current_interval;
-		ninja_refresh(0);
+		//search_old_refresh = current_interval;
+		//ninja_refresh(0);
 		$("#ninja_refresh_control").attr('checked', true);
 		$('#ninja_refresh_lable').css('font-weight', 'bold');
 	});
 
 	query.blur(function() {
 		if (current_interval === 0 && search_old_refresh !== 0) {
-			current_interval = search_old_refresh;
-			ninja_refresh(current_interval);
+			//current_interval = search_old_refresh;
+			//ninja_refresh(current_interval);
 			$("#ninja_refresh_control").attr('checked', false);
 			$('#ninja_refresh_lable').css('font-weight', '');
 		}
