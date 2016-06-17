@@ -20,11 +20,3 @@ Event::insert_event('ninja.menu.setup', 0, function () {
 
 });
 
-Event::add('system.post_controller_constructor', function () {
-
-  $controller = Event::$data;
-
-  $controller->template->js[] = 'modules/menu/media/js/about.js';
-  $controller->template->css[] = 'modules/menu/media/css/about.css';
-
-});

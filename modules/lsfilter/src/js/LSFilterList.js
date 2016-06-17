@@ -373,8 +373,10 @@ function lsfilter_list(config)
 			this.config.toolbar.find('.toolbar-buttons').replaceContent(
 				$('<ul/>').append(
 					$.map([$('<li id="filter_loading_status"/>')].concat(
-							listview_renderer_buttons[data.table] || []).concat(
-								listview_renderer_buttons.all || []),
+							listview_renderer_buttons[data.table] || []
+					).concat(
+								listview_renderer_buttons.all || []
+					),
 						function(x) {
 							if (typeof x == 'function') {
 								x = x();
@@ -575,7 +577,11 @@ function lsfilter_list(config)
 				this.add_sort(th, col_name, sort_dir);
 			}
 
-			th.append(col_render.header);
+			if (typeof(col_render.header) === 'function') {
+				th.append(col_render.header());
+			} else {
+				th.append(col_render.header);
+			}
 			header.append(th);
 		}
 		thead.append(header);

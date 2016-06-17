@@ -151,7 +151,7 @@ listview_renderer_table.hosts = {
 		}
 	},
 	"services_num_all" : {
-		"header" : icon12('shield-info').addClass('header-icon'),
+		"header" : function () {return icon12('shield-info').addClass('header-icon')},
 		"depends" : [ 'num_services', 'name' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -167,7 +167,7 @@ listview_renderer_table.hosts = {
 		}
 	},
 	"services_num_ok" : {
-		"header" : icon12('shield-ok').addClass('header-icon'),
+		"header" : function () {return icon12('shield-ok').addClass('header-icon')},
 		"depends" : [ 'num_services_ok' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -184,7 +184,7 @@ listview_renderer_table.hosts = {
 		}
 	},
 	"services_num_warning" : {
-		"header" : icon12('shield-warning').addClass('header-icon'),
+		"header" : function () {return icon12('shield-warning').addClass('header-icon')},
 		"depends" : [ 'num_services_warn' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -201,7 +201,7 @@ listview_renderer_table.hosts = {
 		}
 	},
 	"services_num_critical" : {
-		"header" : icon12('shield-critical').addClass('header-icon'),
+		"header" : function () {return icon12('shield-critical').addClass('header-icon')},
 		"depends" : [ 'num_services_crit' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -218,7 +218,7 @@ listview_renderer_table.hosts = {
 		}
 	},
 	"services_num_unknown" : {
-		"header" : icon12('shield-unknown').addClass('header-icon'),
+		"header" : function () {return icon12('shield-unknown').addClass('header-icon')},
 		"depends" : [ 'num_services_unknown' ],
 		"sort" : false,
 		"cell" : function(args) {
@@ -235,7 +235,7 @@ listview_renderer_table.hosts = {
 		}
 	},
 	"services_num_pending" : {
-		"header" : icon12('shield-pending').addClass('header-icon'),
+		"header" : function () {return icon12('shield-pending').addClass('header-icon')},
 		"depends" : [ 'num_services_pending' ],
 		"sort" : false,
 		"cell" : function(args) {
