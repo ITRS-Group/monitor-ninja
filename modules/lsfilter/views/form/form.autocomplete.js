@@ -83,8 +83,12 @@
 		}.bind(this));
 
 		this.dropper.on('click', function (e) {
-			this.update('');
 			e.preventDefault();
+			if(this.items.is(':visible')) {
+				this.items.hide();
+			} else {
+				this.update('');
+			}
 			return false;
 		}.bind(this));
 
