@@ -73,6 +73,14 @@ EOF
 		echo "   -> " . $target_path . "\n";
 
 		fclose($target);
+		file_put_contents($hook_path, <<<EOF
+<?php
+Event::add('system.post_controller_constructor', function () {
+    \$controller = Event::\$data;
+	\$controller->template->js[] = "$target_path";
+});
+EOF
+);
 
 		$hookgen = new js_loader_hook_generator($bundle_path);
 		$hookgen->set_moduledir($mod_path);
