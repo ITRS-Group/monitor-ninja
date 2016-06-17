@@ -3,6 +3,7 @@
 class js_Builder implements builder_interface {
 	public function generate ($mod_path, $src_path) {
 
+		$target_dir =  $mod_path . '/media/js';
 		$target_path =  $mod_path . '/media/js/bundle_'.time().'.js';
 		$hook_path =  $mod_path . '/hooks/load_js_bundles.php';
 
@@ -34,6 +35,9 @@ EOF
 		}
 
 		echo "   -> " . $target_path . "\n";
+
+		if(!is_dir($target_dir) && !mkdir($target_dir, 0755, true))
+			throw new GeneratorException( "Could not create dir $target_dir" );
 
 		fclose($target);
 		file_put_contents($hook_path, <<<EOF
