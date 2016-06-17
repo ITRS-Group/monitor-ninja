@@ -28,3 +28,4 @@ modules/*/manifest/orm_*.php
 src/generators/*
 config/cucumber.yml
 classes.php
+views.php

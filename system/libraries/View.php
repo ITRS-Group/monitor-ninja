@@ -44,12 +44,12 @@ class View {
 	 * @param   string  type of file: html, css, js, etc.
 	 * @return  void
 	 */
-	public function __construct($name = NULL, $data = NULL, $type = NULL)
+	public function __construct($name = NULL, $data = NULL)
 	{
 		if (is_string($name) AND $name !== '')
 		{
 			// Set the filename
-			$this->set_filename($name, $type);
+			$this->set_filename($name);
 		}
 
 		if (is_array($data) AND ! empty($data))
@@ -75,34 +75,12 @@ class View {
 	 *
 	 * @chainable
 	 * @param   string  view filename
-	 * @param   string  view file type
 	 * @return  object
 	 */
-	public function set_filename($name, $type = NULL)
+	public function set_filename($name)
 	{
-		if ($type == NULL)
-		{
-			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
-			$this->kohana_filetype = EXT;
-		}
-		else
-		{
-			// Check if the filetype is allowed by the configuration
-			if ( ! in_array($type, Kohana::config('view.allowed_filetypes')))
-				throw new Kohana_Exception('core.invalid_filetype', $type);
-
-			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
-			$this->kohana_filetype = Kohana::config('mimes.'.$type);
-
-			if ($this->kohana_filetype == NULL)
-			{
-				// Use the specified type
-				$this->kohana_filetype = $type;
-			}
-		}
-
+		$this->kohana_filename = Kohana::get_view($name);
+		$this->kohana_filetype = 'php';
 		return $this;
 	}
 

@@ -44,6 +44,9 @@ final class Kohana {
 	// Internal cache of all classpaths in the system
 	private static $class_paths = array();
 
+	// Internal cache of all view paths in the system
+	private static $view_paths = array();
+
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
 	 * buffering, and adds an auto-loading method for loading classes.
@@ -89,8 +92,8 @@ final class Kohana {
 		// Add SYSPATH as the last path
 		self::$include_paths[] = SYSPATH;
 
-		// Load all classes
-		self::load_class_paths();
+		// Load all paths
+		self::load_paths();
 
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
@@ -291,7 +294,7 @@ final class Kohana {
 			function ($path) use($pattern) {
 				return !preg_match($pattern, $path);
 			});
-		self::load_class_paths();
+		self::load_paths();
 	}
 
 	/**
@@ -299,7 +302,7 @@ final class Kohana {
 	 */
 	public static function add_include_path($path) {
 		self::$include_paths[] = $path;
-		self::load_class_paths();
+		self::load_paths();
 	}
 
 	/**
@@ -670,15 +673,24 @@ final class Kohana {
 	 * Update the list of classpaths out of the classes.php files in each of
 	 * the include paths
 	 */
-	private static function load_class_paths() {
+	private static function load_paths() {
 		self::$class_paths = array();
+		self::$view_paths = array();
+		/* Order is important, "application" should overwrite "system" */
 		foreach(self::include_paths() as $path) {
+
 			if(is_readable($path.'/classes.php')) {
 				$classes = require($path.'/classes.php');
-
 				self::$class_paths += array_map(function($file) use ($path) {
 					return $path . $file;
 				}, $classes);
+			}
+
+			if(is_readable($path.'/views.php')) {
+				$views = require($path.'/views.php');
+				self::$view_paths += array_map(function($file) use ($path) {
+					return $path . $file;
+				}, $views);
 			}
 		}
 	}
@@ -701,6 +713,17 @@ final class Kohana {
 
 		require_once(self::$class_paths[$class]);
 		return TRUE;
+	}
+
+	/**
+	 * Get the path to a view file, given the view name
+	 *
+	 * This loads using the file cache array, which is generated on build and loaded once
+	 */
+	public static function get_view($viewname) {
+		if(!isset(self::$view_paths[$viewname]))
+			return null;
+		return self::$view_paths[$viewname];
 	}
 
 	/**
