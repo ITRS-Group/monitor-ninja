@@ -31,6 +31,19 @@ if (!empty($base_href)) {
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
 </script>
 
+	<?php
+		$v = new View('js_header', array('js' => isset($js)?$js:array()));
+		$v->render(true);
+		refresh::lv_control();
+		/*$basepath = 'modules/lsfilter/';
+		echo html::script($basepath.'media/js/lib.js');
+		echo html::script($basepath.'media/js/LSFilterSaved.js');*/
+
+		if (!isset($disable_refresh) || $disable_refresh === false) {
+			refresh::control();
+		}
+
+	?>
 	<script type="text/javascript">
 		//<!--
 		<?php
@@ -108,18 +121,5 @@ if (!empty($base_href)) {
 		//-->
 	</script>
 
-	<?php
-		refresh::lv_control();
-		/*$basepath = 'modules/lsfilter/';
-		echo html::script($basepath.'media/js/lib.js');
-		echo html::script($basepath.'media/js/LSFilterSaved.js');*/
-
-		if (!isset($disable_refresh) || $disable_refresh === false) {
-			refresh::control();
-		}
-
-		$v = new View('js_header', array('js' => isset($js)?$js:array()));
-		$v->render(true);
-	?>
 
 </head>
