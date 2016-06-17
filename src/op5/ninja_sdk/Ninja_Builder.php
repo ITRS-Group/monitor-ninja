@@ -111,7 +111,7 @@ class Ninja_Builder {
 			$builder = $this->builders[$target];
 			$modules = isset($this->build_targets[$target]) ? $this->build_targets[$target] : array();
 			foreach ( $modules as $moduledir => $confdir ) {
-				if( !is_dir($moduledir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $target) )
+				if( !$builder->get_run_always() && !is_dir($moduledir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $target) )
 					continue;
 				$builder->generate( $moduledir, $confdir );
 			}

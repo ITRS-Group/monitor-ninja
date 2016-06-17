@@ -2,6 +2,8 @@
 
 class js_Builder implements builder_interface {
 	public function generate ($mod_path, $src_path) {
+		if(!is_dir($src_path))
+			return;
 
 		$target_dir =  $mod_path . '/media/js';
 		$target_path =  $mod_path . '/media/js/bundle_'.time().'.js';
@@ -53,7 +55,7 @@ EOF
 	}
 
 	public function get_dependencies() {
-		return array('parsegen');
+		return array('parsegen', 'js_manifest');
 	}
 	public function get_run_always() {
 		return true;
