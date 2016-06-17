@@ -28,7 +28,11 @@ if (!empty($base_href)) {
 	?>
 <script type="text/javascript">
 /* Hack for lack of console.log() in ie7 */
-    if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
+		if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
+		var listview_renderer_table = {};
+		var listview_renderer_buttons = {};
+		var listview_renderer_extra_objects = {};
+		var listview_renderer_totals = {};
 </script>
 
 	<?php

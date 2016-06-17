@@ -217,8 +217,6 @@ EOF;
 
 		header('Content-Type: text/javascript');
 
-		print "var listview_renderer_".$name." = {};\n\n";
-
 		$files = array();
 		if( isset( $renderers_files[$name] ) ) {
 			$files = $renderers_files[$name];

@@ -18,6 +18,8 @@ application/logs
 application/config/custom/*
 
 # Generated code
+application/hooks/load_js_bundles.php
+modules/*/hooks/load_js_bundles.php
 application/media/js/bundle*.js
 modules/*/media/js/bundle*.js
 modules/*/src/js/generated

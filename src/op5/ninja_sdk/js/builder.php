@@ -18,6 +18,10 @@ class js_Builder implements builder_interface {
 
 		sort($js_files);
 		echo "Bundling: " . $mod_path . "\n";
+
+		if(!is_dir($target_dir) && !mkdir($target_dir, 0755, true))
+			throw new GeneratorException( "Could not create dir $target_dir" );
+
 		$target = fopen($target_path, 'w');
 
 		foreach ($js_files as $file) {
@@ -35,9 +39,6 @@ EOF
 		}
 
 		echo "   -> " . $target_path . "\n";
-
-		if(!is_dir($target_dir) && !mkdir($target_dir, 0755, true))
-			throw new GeneratorException( "Could not create dir $target_dir" );
 
 		fclose($target);
 		file_put_contents($hook_path, <<<EOF
