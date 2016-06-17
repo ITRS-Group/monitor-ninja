@@ -5,12 +5,24 @@ function _(text)
 	return text;
 }
 
+var ninja_refresh = (function () {
+	var _interval = 0;
+	return function ninja_refresh(val) {
+		if (_interval) {
+			clearInterval(_interval);
+		}
+		var refresh_val = (val === null) ? _refresh : val;
+		current_interval = refresh_val;
+		if (val>0) {
+			_interval = setInterval( "refresh()", refresh_val*1000 );
+		}
+	}
+}());
+
 var current_interval = 0;
 $(document).ready(function() {
 
 	"use strict";
-
-	var _interval = 0;
 	var _save_page_interval = 0;
 	var _save_scroll = true;
 
@@ -312,16 +324,6 @@ $(document).ready(function() {
 		id.val($("#" + the_id + "_slider").slider("value"));
 	}
 
-	function ninja_refresh(val) {
-		if (_interval) {
-			clearInterval(_interval);
-		}
-		var refresh_val = (val === null) ? _refresh : val;
-		current_interval = refresh_val;
-		if (val>0) {
-			_interval = setInterval( "refresh()", refresh_val*1000 );
-		}
-	}
 	// ===========================================================
 	// code for remembering scroll position between page reloads
 	// adapted from http://www.huntingground.freeserve.co.uk/main/mainfram.htm?../scripts/cookies/scrollpos.htm
