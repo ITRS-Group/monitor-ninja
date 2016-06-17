@@ -29,8 +29,12 @@ class js_manifest_Builder implements builder_interface {
 	}
 
 	public function generate ($mod_path, $src_path) {
+		$manifestdir = $mod_path . '/manifest';
+		if(!is_dir($manifestdir))
+			return;
+
 		$manifests = array();
-		foreach(scandir($mod_path . '/manifest') as $manifest_file) {
+		foreach(scandir($manifestdir) as $manifest_file) {
 			if($manifest_file[0] == '.')
 				continue;
 

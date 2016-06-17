@@ -41,6 +41,9 @@ final class Kohana {
 	// Internal caches and write status
 	private static $internal_cache = array();
 
+	// Internal cache of all classpaths in the system
+	private static $class_paths = array();
+
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
 	 * buffering, and adds an auto-loading method for loading classes.
@@ -85,6 +88,9 @@ final class Kohana {
 		self::$include_paths[] = APPPATH;
 		// Add SYSPATH as the last path
 		self::$include_paths[] = SYSPATH;
+
+		// Load all classes
+		self::load_class_paths();
 
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
@@ -285,6 +291,7 @@ final class Kohana {
 			function ($path) use($pattern) {
 				return !preg_match($pattern, $path);
 			});
+		self::load_class_paths();
 	}
 
 	/**
@@ -292,6 +299,7 @@ final class Kohana {
 	 */
 	public static function add_include_path($path) {
 		self::$include_paths[] = $path;
+		self::load_class_paths();
 	}
 
 	/**
@@ -659,6 +667,23 @@ final class Kohana {
 	}
 
 	/**
+	 * Update the list of classpaths out of the classes.php files in each of
+	 * the include paths
+	 */
+	private static function load_class_paths() {
+		self::$class_paths = array();
+		foreach(self::include_paths() as $path) {
+			if(is_readable($path.'/classes.php')) {
+				$classes = require($path.'/classes.php');
+
+				self::$class_paths += array_map(function($file) use ($path) {
+					return $path . $file;
+				}, $classes);
+			}
+		}
+	}
+
+	/**
 	 * Provides class auto-loading.
 	 *
 	 * @throws  Kohana_Exception
@@ -667,87 +692,14 @@ final class Kohana {
 	 */
 	public static function auto_load($class)
 	{
+		$class = strtolower($class);
 		if (class_exists($class, FALSE))
 			return TRUE;
 
-		if (($suffix = strrpos($class, '_')) > 0)
-		{
-			// Find the class suffix
-			$suffix = substr($class, $suffix + 1);
-		}
-		else
-		{
-			// No suffix
-			$suffix = FALSE;
-		}
-
-		if ($suffix === 'Core')
-		{
-			$type = 'libraries';
-			$file = substr($class, 0, -5);
-		}
-		elseif ($suffix === 'Controller')
-		{
-			$type = 'controllers';
-			// Lowercase filename
-			$file = strtolower(substr($class, 0, -11));
-		}
-		elseif ($suffix === 'Model')
-		{
-			$type = 'models';
-			// Lowercase filename
-			$file = strtolower(substr($class, 0, -6));
-		}
-		elseif ($suffix === 'Driver')
-		{
-			$type = 'libraries/drivers';
-			$file = str_replace('_', '/', substr($class, 0, -7));
-		}
-		elseif ($suffix === 'Widget')
-		{
-			$type = 'widgets';
-			$classname = substr($class, 0, -7);
-			$file = $classname . '/' . $classname;
-		}
-		else
-		{
-			// This could be either a library or a helper, but libraries must
-			// always be capitalized, so we check if the first character is
-			// uppercase. If it is, we are loading a library, not a helper.
-			$type = ($class[0] < 'a') ? 'libraries' : 'helpers';
-			$file = $class;
-		}
-
-		if ($filename = self::find_file($type, $file))
-		{
-			// Load the class
-			require $filename;
-		}
-		else
-		{
-			// The class could not be found
+		if (!isset(self::$class_paths[$class]))
 			return FALSE;
-		}
 
-		if ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
-		{
-			// Class extension to be evaluated
-			$extension = 'class '.$class.' extends '.$class.'_Core { }';
-
-			// Start class analysis
-			$core = new ReflectionClass($class.'_Core');
-
-			if ($core->isAbstract())
-			{
-				// Make the extension abstract
-				$extension = 'abstract '.$extension;
-			}
-
-			// Transparent class extensions are handled using eval. This is
-			// a disgusting hack, but it gets the job done.
-			eval($extension);
-		}
-
+		require_once(self::$class_paths[$class]);
 		return TRUE;
 	}
 

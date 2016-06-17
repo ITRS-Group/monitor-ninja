@@ -18,13 +18,13 @@ application/logs
 application/config/custom/*
 
 # Generated code
-application/hooks/load_js_bundles.php
-modules/*/hooks/load_js_bundles.php
-application/media/js/bundle*.js
-modules/*/media/js/bundle*.js
-modules/*/src/js/generated
+**/hooks/load_js_bundles.php
+**/hooks/load_js_bundles.php
+**/media/js/bundle*.js
+**/src/js/generated
 modules/*/html
 modules/*/models/base
 modules/*/manifest/orm_*.php
 src/generators/*
 config/cucumber.yml
+classes.php

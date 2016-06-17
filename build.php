@@ -28,6 +28,7 @@ foreach( scandir( "modules" ) as $module ) {
 	$all_modules[$module] = 'modules/'.$module;
 };
 $all_modules['application'] = 'application';
+$all_modules['system'] = 'system';
 
 
 foreach ( $rules as $rule ) {

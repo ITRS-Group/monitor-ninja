@@ -267,4 +267,32 @@ EOF;
 			"singe line"
 		), $classes[0]->get_docstring_tags() );
 	}
+	public function test_no_end_newline() {
+		$content = "<?php class boll {}";
+		$miner = php_miner_file::parse_content( $content );
+		$this->assertInstanceOf( 'php_miner_file', $miner );
+
+		$classes = $miner->extract( 'php_miner_statement_class', false );
+		/* @var $classes php_miner_statement_class[] */
+		$this->assertCount( 1, $classes );
+		$this->assertEquals( 'boll', $classes[0]->name );
+	}
+	public function test_interface() {
+		$content = "<?php interface boll {}";
+		$miner = php_miner_file::parse_content( $content );
+		$this->assertInstanceOf( 'php_miner_file', $miner );
+
+		$ifs = $miner->extract( 'php_miner_statement_interface', false );
+		/* @var $ifs php_miner_statement_interface[] */
+		$this->assertCount( 1, $ifs );
+		$this->assertEquals( 'boll', $ifs[0]->name );
+	}
+	/**
+	 * This has happend to result in an infinite loop building memory
+	 */
+	public function test_tailing_semicolon() {
+		$content = "<?php ;";
+		$miner = php_miner_file::parse_content( $content );
+		$this->assertInstanceOf( 'php_miner_file', $miner );
+	}
 }

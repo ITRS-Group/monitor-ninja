@@ -18,6 +18,12 @@ class js_Builder implements builder_interface {
 			$js_files[] = $file[0];
 		}
 
+		/*
+		 * If there is no js files, we don't need to bundle
+		 */
+		if(count($js_files) == 0)
+			return;
+
 		sort($js_files);
 		echo "Bundling: " . $mod_path . "\n";
 
@@ -43,6 +49,11 @@ EOF
 		echo "   -> " . $target_path . "\n";
 
 		fclose($target);
+
+
+		if(!is_dir(dirname($hook_path)) && !mkdir(dirname($hook_path), 0755, true))
+			throw new GeneratorException( "Could not create dir $target_dir" );
+
 		file_put_contents($hook_path, <<<EOF
 <?php
 Event::add('system.post_controller_constructor', function () {

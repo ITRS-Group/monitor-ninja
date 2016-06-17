@@ -54,8 +54,6 @@ class Ninja_Builder {
 	 */
 	public function add_module($moduledir = null, $target = null) {
 		$srcdir = $moduledir . DIRECTORY_SEPARATOR . "src";
-		if (! is_dir( $srcdir ))
-			return;
 
 		/* If a target is specified, use that, otherwise list */
 		if(empty($target)) {
