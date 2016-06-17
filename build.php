@@ -21,12 +21,13 @@ if(empty($rules)) {
 }
 
 /* If no modules found on command line, scan modules dir */
-$all_modules = array_filter(
-	scandir( "modules" ),
-	function($line) {
-		return $line[0] != '.';
-	}
-);
+$all_modules = array();
+foreach( scandir( "modules" ) as $module ) {
+	if( $module[0] == '.' )
+		continue;
+	$all_modules[$module] = 'modules/'.$module;
+};
+$all_modules['application'] = 'application';
 
 
 foreach ( $rules as $rule ) {
@@ -34,9 +35,13 @@ foreach ( $rules as $rule ) {
 
 	/* If module is specified, only use that, otherwise all */
 	if(!empty($parts[0])) {
-		$modules = array($parts[0]);
+		if( !isset($all_modules[$parts[0]]) ) {
+			print "Ignoring unknown module {$parts[0]}\n";
+			continue;
+		}
+		$moduledirs = array( $all_modules[$parts[0]] );
 	} else {
-		$modules = $all_modules;
+		$moduledirs = array_values( $all_modules );
 	}
 
 	/* If target is specified, only use that */
@@ -45,8 +50,8 @@ foreach ( $rules as $rule ) {
 		$target = $parts[1];
 
 	/* Add rule to builder */
-	foreach($modules as $module) {
-		$builder->add_module( "modules/".$module, $target );
+	foreach($moduledirs as $moduledir) {
+		$builder->add_module( $moduledir, $target );
 	}
 }
 $builder->generate();
