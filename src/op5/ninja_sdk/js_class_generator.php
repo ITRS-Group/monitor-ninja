@@ -7,7 +7,7 @@ abstract class js_class_generator {
 	protected $indent_lvl = array();
 	protected $class_suffix = '';
 	protected $moduledir = false;
-	protected $class_dir = 'js';
+	protected $class_dir = 'js/generated';
 	protected $class_basedir = 'src';
 	protected $classname;
 
