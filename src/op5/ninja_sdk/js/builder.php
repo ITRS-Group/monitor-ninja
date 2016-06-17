@@ -43,4 +43,7 @@ EOF
 	public function get_dependencies() {
 		return array('parsegen');
 	}
+	public function get_run_always() {
+		return true;
+	}
 }

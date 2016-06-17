@@ -78,6 +78,34 @@ class Ninja_Builder {
 	 * called.
 	 */
 	public function generate() {
+		/* Get a list of all affected modules */
+		$affected_modules = array();
+		foreach ( $this->all_targets as $target ) {
+			if(isset($this->build_targets[$target])) {
+				$affected_modules += array_keys($this->build_targets[$target]);
+			}
+		}
+
+		/* Add build-always-targets to all affected modules */
+		foreach( $this->builders as $target => $builder) {
+			/* @var $builder builder_interface */
+			if($builder->get_run_always()) {
+				foreach($affected_modules as $moddir) {
+					/*
+					 * This changes the state of the class, but doesn't affect
+					 * functionality.
+					 *
+					 * The changes however are not anything that affects
+					 * functionality, since the changes is only used below in
+					 * this method.
+					 *
+					 * Should probably be cleaned up sometime
+					 */
+					$this->add_module($moddir, $target);
+				}
+			}
+		}
+
 		foreach ( $this->all_targets as $target ) {
 			print("\n\n##### Building target: $target\n\n");
 			$builder = $this->builders[$target];

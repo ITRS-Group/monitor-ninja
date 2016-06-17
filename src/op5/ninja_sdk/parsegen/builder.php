@@ -23,4 +23,7 @@ class parsegen_Builder implements builder_interface {
 	public function get_dependencies() {
 		return array();
 	}
+	public function get_run_always() {
+		return false;
+	}
 }
