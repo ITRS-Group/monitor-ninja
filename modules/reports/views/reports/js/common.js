@@ -208,10 +208,13 @@ function show_calendar(val, update) {
 			$('input[name=start_time]').attr('value', '');
 			$('input[name=end_time]').attr('value', '');
 		}
+
+		if ($('#month_1').length) {
+			check_custom_months();
+		}
 	} else {
 		$("#custom_time").hide();
 	}
-	disable_sla_fields(val);
 }
 
 function set_selection() {
@@ -324,10 +327,9 @@ function check_form_values(form)
 				input.css('background', sla_month_error_color);
 				errors++;
 				red_error = true;
-			} else {
-				if (value != '') {
-					nr_of_slas++;
-				}
+			}
+			if (value != '') {
+				nr_of_slas++;
 			}
 		}
 		if (red_error) {
@@ -362,34 +364,6 @@ function check_form_values(form)
 function init_timepicker()
 {
 	$("#time_start, #time_end").timePicker();
-}
-
-function disable_sla_fields(report_period)
-{
-	if (!$('#month_1').length)
-		return;
-	var now = new Date();
-	var this_month = now.getMonth()+1;
-	switch (report_period) {
-		case 'thisyear':
-			break;
-		case 'custom':
-			check_custom_months();
-			break;
-		case 'lastmonth':
-			break;
-		case 'last3months':
-			break;
-		case 'last6months':
-			break;
-		case 'lastyear':
-		case 'last12months':
-			break;
-		case 'lastquarter':
-			break;
-		default:
-			break;
-	}
 }
 
 function check_custom_months()

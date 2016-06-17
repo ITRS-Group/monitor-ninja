@@ -345,7 +345,7 @@ Feature: SLA reports
 		And I should see "PING"
 
 	@configuration @reports
-	Scenario: Generate report on custom report date
+	Scenario: Generate report from custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
@@ -357,10 +357,6 @@ Feature: SLA reports
 		And I select "Jan" from "Start month"
 		And I select "2013" from "End year"
 		And I select "Mar" from "End month"
-		Then "Jan" should be enabled
-		And "Mar" should be enabled
-		And "May" should be enabled
-		And "Dec" should be enabled
 		And I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		Then "Jan" should contain "9"

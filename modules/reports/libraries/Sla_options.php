@@ -61,7 +61,17 @@ class Sla_options extends Report_options {
 		}
 	}
 
-	private static function validate_months($start_time, $end_time, $months)
+	/**
+	 * Validated/assure that we have an array with 12 elements indexed from 1
+	 * to 12, one for each month. Move the values from the param into a new
+	 * array that has 0.0 as the default value if none is provided with the
+	 * param.
+	 *
+	 * @param array $months
+	 *
+	 * @return array
+	 */
+	private static function validate_months($months)
 	{
 		$res = array();
 		if (!is_array($months))
@@ -79,7 +89,7 @@ class Sla_options extends Report_options {
 	public function set($name, $value)
 	{
 		if ($name == 'months') {
-			$value = self::validate_months($this['start_time'], $this['end_time'], $value);
+			$value = static::validate_months($value);
 		}
 		$resp = parent::set($name, $value);
 		if ($resp === false && preg_match('/^month/', trim($name))) {
@@ -108,7 +118,7 @@ class Sla_options extends Report_options {
 	{
 		$res = parent::calculate_time($report_period);
 		if ($res && isset($this->options['start_time']) && isset($this->options['end_time'])) {
-			$this->options['months'] = self::validate_months($this['start_time'], $this['end_time'], $this['months']);
+			$this->options['months'] = static::validate_months($this['months']);
 		}
 		return $res;
 	}
@@ -125,13 +135,12 @@ class Sla_options extends Report_options {
 		}
 
 		$this->calculate_time($this['report_period']);
-		/** The old reports only contained data for months that had SLA values
-		 * in them. The new SLA reports should have 0.0 SLA if no value is set.
+		/**
 		 * The months array is indexed from 1 instead of 0 so make a new array
-		 * with index from 1 to 12 with value 0.0 and then fill it with the
-		 * values we have from the db and add the sorted list to $opts.
+		 * with index from 1 to 12 with the SLA values from the db and fill the
+		 * rest of the array with 0.0.
 		 */
-		$array_result = $opts['months'] + array_fill(1, 12, '0.0');
+		$array_result = $opts['months'] + array_fill(1, 12, 0.0);
 		ksort($array_result);
 		$opts['months'] = $array_result;
 		return $opts;
