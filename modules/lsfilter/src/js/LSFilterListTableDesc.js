@@ -241,9 +241,9 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 		var fetchlen = 0;
 
 		var curtbl = metadata.table;
-		while (fetchvar[fetchlen] && orm_structure[curtbl][fetchvar[fetchlen]]
-				&& orm_structure[curtbl][fetchvar[fetchlen]][0] == 'object') {
-			curtbl = orm_structure[curtbl][fetchvar[fetchlen]][1];
+		while (fetchvar[fetchlen] && ninja_manifest.orm_structure[curtbl][fetchvar[fetchlen]]
+				&& ninja_manifest.orm_structure[curtbl][fetchvar[fetchlen]][0] == 'object') {
+			curtbl = ninja_manifest.orm_structure[curtbl][fetchvar[fetchlen]][1];
 			fetchlen++;
 		}
 		fetchlen++;
@@ -266,8 +266,8 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 			is_sortable = false;
 
 		/* Might be a non-existing column, or non-backened-column */
-		if( orm_structure[curtbl][fetchvar[fetchlen - 1]] ) {
-			var type = orm_structure[curtbl][fetchvar[fetchlen - 1]][0];
+		if( ninja_manifest.orm_structure[curtbl][fetchvar[fetchlen - 1]] ) {
+			var type = ninja_manifest.orm_structure[curtbl][fetchvar[fetchlen - 1]][0];
 			if (type != 'int' && type != 'string' && type != 'time' && type != 'float')
 				is_sortable = false;
 		} else {
@@ -601,7 +601,7 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 	for ( var col in all_col_renderers) {
 		all_columns.push(col);
 	}
-	var all_db_columns = orm_structure[metadata.table];
+	var all_db_columns = ninja_manifest.orm_structure[metadata.table];
 	var custom_columns = {};
 
 	var all_command_info = {};

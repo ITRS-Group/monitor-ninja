@@ -692,7 +692,7 @@ var lsfilter_visual = {
 
 	fields_for_table : function(table) {
 		/* Clone to not modify original structure */
-		var fields = $.extend({}, orm_structure[table]);
+		var fields = $.extend({}, ninja_manifest.orm_structure[table]);
 
 		var subtables = [];
 		var key;
@@ -709,9 +709,9 @@ var lsfilter_visual = {
 		for (key in subtables) {
 			var j;
 			var ref = subtables[key];
-			for (j in orm_structure[ref.table]) {
-				if (orm_structure[ref.table][j][0] != 'object') {
-					fields[ref.field + '.' + j] = orm_structure[ref.table][j];
+			for (j in ninja_manifest.orm_structure[ref.table]) {
+				if (ninja_manifest.orm_structure[ref.table][j][0] != 'object') {
+					fields[ref.field + '.' + j] = ninja_manifest.orm_structure[ref.table][j];
 				}
 			}
 		}
