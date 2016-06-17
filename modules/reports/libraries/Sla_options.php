@@ -123,14 +123,17 @@ class Sla_options extends Report_options {
 			if (isset($opts[$k]))
 				$this->set($k, $opts[$k]);
 		}
-		$this->calculate_time($this['report_period']);
 
-		reset($opts['months']);
-		foreach ($this->options['months'] as $key => $_) {
-			$this->options['months'][$key] = (float)current($opts['months']);
-			next($opts['months']);
-		}
-		unset($opts['months']);
+		$this->calculate_time($this['report_period']);
+		/** The old reports only contained data for months that had SLA values
+		 * in them. The new SLA reports should have 0.0 SLA if no value is set.
+		 * The months array is indexed from 1 instead of 0 so make a new array
+		 * with index from 1 to 12 with value 0.0 and then fill it with the
+		 * values we have from the db and add the sorted list to $opts.
+		 */
+		$array_result = $opts['months'] + array_fill(1, 12, '0.0');
+		ksort($array_result);
+		$opts['months'] = $array_result;
 		return $opts;
 	}
 }
