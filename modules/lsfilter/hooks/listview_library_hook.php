@@ -25,9 +25,11 @@ class listview_library_hook {
 
 		$basepath = 'modules/lsfilter/';
 
-		$controller->template->js[] = 'index.php/listview/list_commands/commands.js';
-
-		$controller->template->js[] = 'index.php/listview/columns_config/vars';
+		/* Don't load js if we don't have access to those */
+		if(op5MayI::instance()->run('ninja.listview:read')) {
+			$controller->template->js[] = 'index.php/listview/list_commands/commands.js';
+			$controller->template->js[] = 'index.php/listview/columns_config/vars';
+		}
 
 		$custom_extra_js = Module_Manifest_Model::get('lsfilter_extra_js');
 		$controller->template->js = array_merge($controller->template->js, $custom_extra_js);

@@ -19,7 +19,6 @@ class Auth_Controller extends Chromeless_Controller {
 	public function login () {
 
 		$auth = op5auth::instance();
-		$this->template->js = array();
 
 		$this->template->content = new View('login');
 
