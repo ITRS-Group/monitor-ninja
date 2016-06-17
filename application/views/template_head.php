@@ -31,9 +31,6 @@ if (!empty($base_href)) {
     if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
 </script>
 
-	<?php
-		echo html::script('application/media/js/bundle.js');
-	?>
 	<script type="text/javascript">
 		//<!--
 		<?php

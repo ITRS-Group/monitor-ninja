@@ -26,7 +26,6 @@ class listview_library_hook {
 		$basepath = 'modules/lsfilter/';
 
 		$controller->template->js[] = 'index.php/manifest/js/orm_structure.js';
-		$controller->template->js[] = $basepath.'media/js/bundle.js';
 
 		$controller->template->js[] = 'index.php/listview/renderer/table.js';
 		$controller->template->js[] = 'index.php/listview/renderer/buttons.js';
