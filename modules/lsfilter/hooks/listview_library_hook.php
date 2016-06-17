@@ -25,33 +25,14 @@ class listview_library_hook {
 
 		$basepath = 'modules/lsfilter/';
 
-
 		$controller->template->js[] = 'index.php/manifest/js/orm_structure.js';
+		$controller->template->js[] = $basepath.'media/js/bundle.js';
 
-		$controller->template->js[] = $basepath.'js/LSFilter.js';
-		$controller->template->js[] = $basepath.'js/LSFilterLexer.js';
-		$controller->template->js[] = $basepath.'js/LSFilterParser.js';
-		$controller->template->js[] = $basepath.'js/LSFilterPreprocessor.js';
-		$controller->template->js[] = $basepath.'js/LSFilterVisitor.js';
-
-		$controller->template->js[] = $basepath.'js/LSColumns.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsLexer.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsParser.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsPreprocessor.js';
-		$controller->template->js[] = $basepath.'js/LSColumnsVisitor.js';
-
-		/*		$controller->template->js[] = $basepath.'media/js/lib.js'; saved searched loaded globally */
-		$controller->template->js[] = $basepath.'media/js/LSFilterVisitors.js';
 		$controller->template->js[] = 'index.php/listview/renderer/table.js';
 		$controller->template->js[] = 'index.php/listview/renderer/buttons.js';
 		$controller->template->js[] = 'index.php/listview/renderer/extra_objects.js';
 		$controller->template->js[] = 'index.php/listview/renderer/totals.js';
 		$controller->template->js[] = 'index.php/listview/list_commands/commands.js';
-
-		$controller->template->js[] = $basepath.'media/js/LSFilterList.js';
-		$controller->template->js[] = $basepath.'media/js/LSFilterListEvents.js';
-		$controller->template->js[] = $basepath.'media/js/LSFilterListTableDesc.js';
-
 
 		$controller->template->js[] = 'index.php/listview/columns_config/vars';
 
@@ -59,6 +40,7 @@ class listview_library_hook {
 		$controller->template->js = array_merge($controller->template->js, $custom_extra_js);
 
 		$controller->template->css[] = $basepath.'views/css/LSFilterStyle.css';
+
 	}
 }
 

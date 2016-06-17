@@ -166,6 +166,34 @@ var lsfilter_main = {
 		this.add_listener(lsfilter_visual);
 
 		this.update(lsfilter_query, "Sweet Sweetback's Baadasssss Song", lsfilter_query_order);
+		/**
+		 * Closes the filter builder IF
+		 * 1. User clicks the "Close filter builder" button
+		 * 2. User clicks outside of the filter builder
+		 * 3. User presses ESC
+		 */
+		var filterBuilder = $('#filter-query-builder');
+		$('#close-filter-builder').on({
+			click: function() {
+				// Button clicked
+				filterBuilder.hide();
+			}
+		});
+		$(document).on({
+			click: function(e) {
+				if ($(e.target).closest(filterBuilder).length === 0) {
+					// Clicked outside of the filter builder
+					$(filterBuilder).hide();
+				}
+			},
+			keyup: function(e) {
+				if (e.keyCode === 27) {
+					// Pressed ESC
+					$(filterBuilder).hide();
+				}
+			}
+		});
+
 	},
 
 	/***************************************************************************
@@ -225,36 +253,3 @@ var lsfilter_main = {
 		return params;
 	}
 };
-
-$().ready(function() {
-	lsfilter_main.init();
-	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order);
-
-	/**
-	 * Closes the filter builder IF
-	 * 1. User clicks the "Close filter builder" button
-	 * 2. User clicks outside of the filter builder
-	 * 3. User presses ESC
-	 */
-	var filterBuilder = $('#filter-query-builder');
-	$('#close-filter-builder').on({
-		click: function() {
-			// Button clicked
-			filterBuilder.hide();
-		}
-	});
-	$(document).on({
-		click: function(e) {
-			if ($(e.target).closest(filterBuilder).length === 0) {
-				// Clicked outside of the filter builder
-				$(filterBuilder).hide();
-			}
-		},
-		keyup: function(e) {
-			if (e.keyCode === 27) {
-				// Pressed ESC
-				$(filterBuilder).hide();
-			}
-		}
-	});
-});

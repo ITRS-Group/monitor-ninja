@@ -125,9 +125,9 @@ if (!empty($base_href)) {
 
 	<?php
 		refresh::lv_control();
-		$basepath = 'modules/lsfilter/';
+		/*$basepath = 'modules/lsfilter/';
 		echo html::script($basepath.'media/js/lib.js');
-		echo html::script($basepath.'media/js/LSFilterSaved.js');
+		echo html::script($basepath.'media/js/LSFilterSaved.js');*/
 
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();

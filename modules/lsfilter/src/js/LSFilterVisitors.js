@@ -76,7 +76,7 @@ var LSFilterASTVisitor = function LSFilterASTVisit() {
 	this.visit_arg_list         = function(arg_num0, comma, arg_list2) { return arg_num0 + comma + arg_list2; };
 	this.visit_arg_list_end     = function(arg_num0)                  { return arg_num0 ; };
 	this.accept                 = function(result)                    { return result; };
-	
+
 	this.addto = function( obj, fields ) {
 		var list = [];
 		for( var i in fields ) {

@@ -17,16 +17,6 @@ class ListView_Controller extends Ninja_Controller {
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
 
-
-		$basepath = 'modules/lsfilter/';
-
-		$this->template->js[] = $basepath.'media/js/LSFilterMain.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterHistory.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterTextarea.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterVisual.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterMultiselect.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterInputWindow.js';
-
 		$this->template->title = _('List view');
 		$this->template->toolbar = new Toolbar_Controller( $this->template->title );
 		$this->template->content = $lview = $this->add_view('listview/listview');
@@ -34,9 +24,20 @@ class ListView_Controller extends Ninja_Controller {
 
 		$this->template->toolbar->should_render_buttons(true);
 		$this->template->toolbar->info('<div id="filter_result_totals"></div>');
-		$this->template->js_strings .= "var lsfilter_query = ".json_encode($query).";\n";
-		$this->template->js_strings .= "var lsfilter_query_order = ".json_encode($query_order).";\n";
-		$this->template->js_strings .= "var lsfilter_per_page = ".intval(config::get('pagination.default.items_per_page')).";\n";
+
+		$json_query = json_encode($query);
+		$json_query_order = json_encode($query_order);
+		$per_page = intval(config::get('pagination.default.items_per_page'));
+
+		$this->template->js_strings .= <<<EOF
+var lsfilter_query = $json_query;
+var lsfilter_query_order = $json_query_order;
+var lsfilter_per_page = $per_page;
+$().ready(function() {
+	lsfilter_main.init();
+	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order);
+});
+EOF;
 	}
 
 	/**
@@ -53,9 +54,9 @@ class ListView_Controller extends Ninja_Controller {
 			 * The result of the previous line will be handled as the "default" keyword in the next one
 			 */
 			$columns[$table] = array(
-					$default,
-					config::get('listview.columns.'.$table)
-					);
+				$default,
+				config::get('listview.columns.'.$table)
+			);
 		}
 
 		/* This shouldn't have a standard template */
