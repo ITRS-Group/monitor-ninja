@@ -187,8 +187,11 @@ class Tac_Controller extends Ninja_Controller {
 
 		$menu->attach("Options", $this->_get_add_widget_menu()->set_order(10));
 		$menu->attach("Options", $this->get_select_layout_menu($dashboard)->set_order(20));
-		$menu->set("Options.Delete", "#dashboard-delete-form", 30, null, array(
-			'class' => "menuitem_dashboard_delete"
+		$menu->set("Options.Rename", "#dashboard-rename-form", 30, null, array(
+			'class' => "menuitem_dashboard_option"
+		));
+		$menu->set("Options.Delete", "#dashboard-delete-form", 31, null, array(
+			'class' => "menuitem_dashboard_option"
 		));
 	}
 

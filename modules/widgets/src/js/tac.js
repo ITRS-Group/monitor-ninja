@@ -152,11 +152,11 @@ $(function() {
 		});
 		return false;
 	});
-	
-	$(".menuitem_dashboard_delete").fancybox({
+
+	$(".menuitem_dashboard_option").fancybox({
 		showCloseButton: false
 	});
-	$("#dashboard-delete-form-cancel").on('click', function(e) {
+	$(".dashboard-form-cancel").on('click', function(e) {
 		e.preventDefault();
 		$.fancybox.close();
 		return false;

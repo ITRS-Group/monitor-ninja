@@ -11,7 +11,20 @@ echo '<hr>';
 echo '<p>Are you sure you want to delete this dashboard?</p>';
 echo '<p>Deleting a dashboard can\'t be undone.</p>';
 echo form::submit(array(), 'Yes');
-echo form::input(array('type' => 'button', 'id' => 'dashboard-delete-form-cancel'), 'Cancel');
+echo form::input(array('type' => 'button', 'class' => 'dashboard-form-cancel'), 'Cancel');
+echo form::close();
+?>
+</div>
+
+<div style="display: none;">
+<?php
+echo form::open(url::site() . 'tac/on_rename_dashboard', array('id' => 'dashboard-rename-form'), array('dashboard_id' => $dashboard->get_id()));
+echo '<h2>Rename dashboard</h2>';
+echo '<hr>';
+echo form::input('name', $dashboard->get_name());
+echo '<hr>';
+echo form::submit(array(), 'Yes');
+echo form::input(array('type' => 'button', 'class' => 'dashboard-form-cancel'), 'Cancel');
 echo form::close();
 ?>
 </div>
