@@ -40,7 +40,7 @@
 			$format = '<a%s>%s<span>%s</span></a>';
 			$href = $menu->get_href();
 
-			if (!preg_match('/^http/', $href) && !preg_match('/^\//', $href)) {
+			if (!preg_match('/^http/', $href) && !preg_match('/^\//', $href) && !preg_match('/^#/', $href)) {
 				$href = url::base(true) . $href;
 			}
 			$attr['href'] = $href;

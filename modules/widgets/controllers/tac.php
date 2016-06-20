@@ -116,7 +116,17 @@ class Tac_Controller extends Ninja_Controller {
 		 */
 		$dashboard = DashboardPool_Model::fetch_by_key( $dashboard_id );
 		if ($dashboard === false) {
-			throw new Kohana_User_Exception( 'Dashboard not found', 'Dashboard not found', $this->template );
+			/* If the dashboard isn't found, redirect to one existing dashboard */
+			$dashboard = DashboardPool_Model::all()->one();
+			if($dashboard !== false) {
+				$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+					'url' => 'tac/index/' . $dashboard->get_id() ) );
+				return;
+			}
+
+			/* If there are no dashboards, show a not-any-dashboard-available page */
+			$this->template->content = new View( 'tac/nodashboards' );
+			return;
 		}
 
 		$this->template->content = $this->add_view('tac/index');
@@ -177,6 +187,9 @@ class Tac_Controller extends Ninja_Controller {
 
 		$menu->attach("Options", $this->_get_add_widget_menu()->set_order(10));
 		$menu->attach("Options", $this->get_select_layout_menu($dashboard)->set_order(20));
+		$menu->set("Options.Delete", "#dashboard-delete-form", 30, null, array(
+			'class' => "menuitem_dashboard_delete"
+		));
 	}
 
 	/**

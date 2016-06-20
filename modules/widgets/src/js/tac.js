@@ -131,32 +131,37 @@ $(function() {
 		}
 	});
 
-	$('body').on(
-		"click",
-		".menuitem_widget_add",
-		function(e) {
-			var elem = $(this);
-			var widget_name = elem.attr('data-widget-name');
-			e.preventDefault();
+	$('body').on( "click", ".menuitem_widget_add", function(e) {
+		var elem = $(this);
+		var widget_name = elem.attr('data-widget-name');
+		e.preventDefault();
 
-			var cell_name = 'widget-placeholder0';
-			tac_send_request('on_widget_add', {
-				widget : widget_name,
-				cell   : cell_name
-			}, {
-				success : function(data) {
-					var new_widget = $(data.widget);
-					$('#' + cell_name).prepend(new_widget);
-					$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
-					FormModule.add_form(new_widget);
-				},
-				error: function () {
-					Notify.message('Could not save new widget to settings');
-				}
-			});
-			return false;
-		}
-	);
+		var cell_name = 'widget-placeholder0';
+		tac_send_request('on_widget_add', {
+			widget : widget_name,
+			cell   : cell_name
+		}, {
+			success : function(data) {
+				var new_widget = $(data.widget);
+				$('#' + cell_name).prepend(new_widget);
+				$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
+			},
+			error: function () {
+				Notify.message('Could not save new widget to settings');
+			}
+		});
+		return false;
+	});
+	
+	$(".menuitem_dashboard_delete").fancybox({
+		showCloseButton: false
+	});
+	$("#dashboard-delete-form-cancel").on('click', function(e) {
+		e.preventDefault();
+		$.fancybox.close();
+		return false;
+	});
+
 
 	$('body').on(
 		"click",

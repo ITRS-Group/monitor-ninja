@@ -1,5 +1,20 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+$baseurl = url::base(true);
+?>
 <div id="response"></div>
+
+<div style="display: none;">
+<?php
+echo form::open(url::site() . 'tac/on_delete_dashboard', array('id' => 'dashboard-delete-form'), array('dashboard_id' => $dashboard->get_id()));
+echo '<h2>Delete dashboard</h2>';
+echo '<hr>';
+echo '<p>Are you sure you want to delete this dashboard?</p>';
+echo '<p>Deleting a dashboard can\'t be undone.</p>';
+echo form::submit(array(), 'Yes');
+echo form::input(array('type' => 'button', 'id' => 'dashboard-delete-form-cancel'), 'Cancel');
+echo form::close();
+?>
+</div>
 
 <?php
 $i = 0;
