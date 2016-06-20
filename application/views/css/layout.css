@@ -834,35 +834,39 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   z-index: 4;
 }
 
-.menu.image-menu ul li ul {
+.menu ul ul.image-menu {
   width: 150px;
 }
 
-.menu.image-menu > ul > li li:hover {
+.menu.menu-right > ul > li > ul ul.image-menu {
+  left: -150px;
+}
+
+.menu ul ul.image-menu > li:hover {
   background: #ffffff;
 }
 
-.menu.image-menu > ul > li li {
+.menu ul ul.image-menu > li {
   display: inline-block;
   border: none;
 }
 
-.menu.image-menu > ul > li li > a {
+.menu ul ul.image-menu > li > a {
   padding: 8px;
   margin: 8px;
   margin-left: 0;
   border-radius: 2px;
 }
 
-.menu.image-menu > ul > li li:first-child > a {
+.menu ul ul.image-menu > li:first-child > a {
   margin-left: 8px;
 }
 
-.menu.image-menu a[data-selected="yes"] {
+.menu ul ul.image-menu a[data-selected="yes"] {
   background: #dddddd;
 }
 
-.menu.image-menu > ul > li li a:hover {
+.menu ul ul.image-menu > li a:hover {
   background: #f0f0f0;
 }
 

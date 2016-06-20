@@ -33,6 +33,7 @@ class Menu_Model {
   private $href;
   private $icon = "";
   private $id;
+  private $style = null;
   private $label_contains_valid_html = false;
 
   /**
@@ -110,6 +111,27 @@ class Menu_Model {
    */
   public function get_icon () {
     return $this->icon;
+  }
+
+  /**
+   * Sets this nodes $style value
+   *
+   * Valid styles is "normal" and "image"
+   *
+   * @param $style   The style value to set, null for inherit from parent
+   * @return Menu_Model    Returns $this for chainability
+   */
+  public function set_style ($style) {
+    $this->style = $style;
+    return $this;
+  }
+
+  /**
+   * Returns this nodes $style value
+   * @return string  This nodes $style value
+   */
+  public function get_style () {
+    return $this->style;
   }
 
   /**
@@ -259,6 +281,9 @@ class Menu_Model {
    */
   private function build ($namespace) {
 
+    if($namespace === null)
+      return $this;
+
     $namespace = explode('.', $namespace);
     $target = $this;
 
@@ -305,4 +330,18 @@ class Menu_Model {
 
   }
 
+  /**
+   * Attach a submenu to a menu
+   *
+   * The submenu needs to have its orders, icons and other parametes set correctly
+   *
+   * @param $namespace   Full namespace to the node you wish to create or manipulate
+   * @param $node        The subtree, either as Menu_Model or a View
+   * @return Menu_Model  Returns $this for chainability
+   */
+  public function attach($namespace, $node) {
+    $target = $this->build($namespace);
+    $target->branch[] = $node;
+    return $this;
+  }
 }

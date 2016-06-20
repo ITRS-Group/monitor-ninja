@@ -18,15 +18,12 @@ class Tac_Controller extends Ninja_Controller {
 	 * exported as a seperate function due to testability
 	 */
 	public function _get_add_widget_menu() {
-		$menu = new Menu_Model();
-
-		$menu->set("Add widget", null, null);
-		$add_widget_menu = $menu->get("Add widget");
+		$menu = new Menu_Model("Add widget");
 
 		/* Fill with metadata, and build menu */
 		$order = 0;
 		foreach(Dashboard_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
-			$add_widget_menu->set($metadata['friendly_name'], "#", $order, null,
+			$menu->set($metadata['friendly_name'], "#", $order, null,
 				array(
 					'data-widget-name' => $name,
 					'class' => "menuitem_widget_add"
@@ -50,16 +47,14 @@ class Tac_Controller extends Ninja_Controller {
 	 * Get the select layout menu
 	 */
 	private function get_select_layout_menu(Dashboard_Model $dashboard) {
-		$menu = new Menu_Model();
-
-		$menu->set("Select layout", null, null);
-		$select_layout_menu = $menu->get("Select layout");
+		$menu = new Menu_Model("Select layout");
+		$menu->set_style('image');
 
 		$layout = $dashboard->get_layout();
 
 		$img_url = url::base() . '/application/views/icons/layout-132.png';
 		$name = "1,3,2";
-		$select_layout_menu->set($name, "#", null, $img_url, array(
+		$menu->set($name, "#", null, $img_url, array(
 			'data-layout-name' => $name,
 			'class' => "menuitem_change_layout",
 			'data-selected' => $layout == $name ? 'yes' : 'no'
@@ -67,7 +62,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$img_url = url::base() . '/application/views/icons/layout-321.png';
 		$name = "3,2,1";
-		$select_layout_menu->set($name, "#", null, $img_url, array(
+		$menu->set($name, "#", null, $img_url, array(
 			'data-layout-name' => $name,
 			'class' => "menuitem_change_layout",
 			'data-selected' => $layout == $name ? 'yes' : 'no'
@@ -103,7 +98,7 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard->save();
 		}
 
-		url::redirect(LinkProvider::factory()->get_url('tac', 'index'));
+		$this->template = new View( 'simple/redirect', array( 'target' => 'controller', 'url' => 'tac/index/'.$dashboard->get_id() ) );
 	}
 
 
@@ -130,7 +125,6 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
 		$this->template->content->dashboard = $dashboard;
-		$this->template->toolbar = $toolbar = new Toolbar_Controller($dashboard->get_name());
 
 		$this->template->js_strings = "var _dashboard_id = ".intval($dashboard->get_id()).";\n";
 		$this->template->js_strings .= "var _dashboard_can_write = ".json_encode($dashboard->get_can_write()).";\n";
@@ -176,9 +170,13 @@ class Tac_Controller extends Ninja_Controller {
 
 		$this->template->content->widgets = $widget_table;
 
+		$this->template->toolbar = $toolbar = new Toolbar_Controller($dashboard->get_name());
 
-		$toolbar->menu($this->_get_add_widget_menu());
-		$toolbar->image_menu($this->get_select_layout_menu($dashboard));
+		$menu = new Menu_Model();
+		$toolbar->menu($menu);
+
+		$menu->attach("Options", $this->_get_add_widget_menu()->set_order(10));
+		$menu->attach("Options", $this->get_select_layout_menu($dashboard)->set_order(20));
 	}
 
 	/**

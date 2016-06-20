@@ -172,16 +172,19 @@ $(function() {
 
 			// Post data about layout change.
 			$('<form>')
-			.hide()
-			.attr({method: 'post', action: _site_domain + _index_page + '/tac/change_layout'})
-			.append($('<input>').attr(
-				{type: 'hidden', name: 'csrf_token', value: _csrf_token}
-			))
-			.append($('<input>').attr(
-				{type: 'hidden', name: 'layout', value: $(this).attr('data-layout-name')}
-			))
-			.appendTo('body')
-			.submit();
+				.hide()
+				.attr({method: 'post', action: _site_domain + _index_page + '/tac/change_layout'})
+				.append($('<input>').attr(
+					{type: 'hidden', name: 'csrf_token', value: _csrf_token}
+				))
+				.append($('<input>').attr(
+						{type: 'hidden', name: 'layout', value: $(this).attr('data-layout-name')}
+					))
+				.append($('<input>').attr(
+						{type: 'hidden', name: 'dashboard_id', value: _dashboard_id}
+					))
+				.appendTo('body')
+				.submit();
 		}
 	);
 

@@ -82,7 +82,7 @@ class Toolbar_Controller extends Ninja_Controller {
 			"orientation" => "right"
 		), $settings));
 
-		$this->menus[] = $view->render();
+		$this->menus[] = $view;
 
 	}
 
@@ -93,7 +93,7 @@ class Toolbar_Controller extends Ninja_Controller {
 			"orientation" => "right"
 		), $settings));
 
-		$this->menus[] = $view->render();
+		$this->menus[] = $view;
 	}
 
 	private function get_button_html () {
@@ -128,12 +128,14 @@ class Toolbar_Controller extends Ninja_Controller {
 
 		if ( count( $this->info ) > 0 ) {
 			print '<div class="main-toolbar-info">';
-			foreach ( $this->info as $html ) print $html;
+			foreach ( $this->info as $html )
+				$menu->render(true);
 			print '</div>';
 		}
 
 		if (count($this->menus) > 0) {
-			foreach ($this->menus as $html) print $html;
+			foreach ($this->menus as $menu)
+				$menu->render(true);
 		}
 
 		if ($this->should_render_buttons) {
