@@ -624,6 +624,29 @@ class Host_Model extends BaseHost_Model {
 	}
 
 	/**
+	 * @ninja orm_command name Cancel all downtimes
+	 * @ninja orm_command category Actions
+	 * @ninja orm_command icon delete-downtime
+	 * @ninja orm_command mayi_method delete.command.delete
+	 * @ninja orm_command description
+	 *     Cancel all scheduled downtime entries for the host.
+	 * @ninja orm_command view monitoring/naemon_command
+	 * @return array ['status' => boolean, 'output' => string]
+	 */
+	public function cancel_all_downtimes() {
+		$downtime_set = ObjectPool_Model::get_by_query('[downtimes] host.name = "'.$this->get_name().'"');
+		foreach($downtime_set->it(array(),array(), false, 0) as $downtime) {
+			$output = $downtime->delete();
+			if (!$output['status'])
+				return $output;
+		}
+		return array(
+			'status' => True,
+			'output' => sprintf(_('Your command was successfully submitted to %s.'), Kohana::config('config.product_name'))
+		);
+	}
+
+	/**
 	 * @param comment
 	 *
 	 * @ninja orm_command name Send custom notification

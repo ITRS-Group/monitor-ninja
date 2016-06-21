@@ -154,6 +154,39 @@ Feature: Monitoring
 		Then I should see "This host has been scheduled for fixed downtime"
 
 	@configuration @case-646
+	Scenario: Host details host commands - Cancel all downtimes
+		Verify that the "Cancel all downtimes" host command
+		works correctly.
+		Given I am on the Host details page
+		When I click "linux-server1"
+		And I click "Cancel all downtimes"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I reload the page
+		Then I shouldn't see "This host has been scheduled for fixed downtime"
+		And "In scheduled downtime?" should be shown as "No"
+		And I should see "Schedule downtime"
+		And I should see "linux-server1"
+		And I click "Schedule downtime"
+		And I enter "2023-03-14 14:40:00" into "field_start_time"
+		And I enter "2023-03-14 14:50:00" into "field_end_time"
+		And I enter "Some comment" into "field_comment"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I reload the page
+		Then I should see "This host has been scheduled for fixed downtime"
+		And I reload the page
+		And I click "Cancel all downtimes"
+		And I click "Submit"
+		Then I should see "Your command was successfully submitted"
+		When I click "Done"
+		And I reload the page
+		Then I shouldn't see "This host has been scheduled for fixed downtime"
+		And "In scheduled downtime?" should be shown as "No"
+
+	@configuration @case-646
 	Scenario: Host details host commands - Disable notifications for services
 		Verify that the "Disable notifications for all services"
 		host command works correctly.

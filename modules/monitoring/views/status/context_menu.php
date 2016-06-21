@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<ul id="property_menu" class="contextMenu">
 		<li><a href="#" data-cmd="schedule_downtime"><?php echo _('Schedule downtime') ?></a></li>
+		<li><a href="#" data-cmd="cancel_all_downtimes"><?php echo _('Cancel all downtimes') ?></a></li>
 		<!-- @TODO id of downtime<li><a href="#" data-cmd="del_host_downtime"><?php echo _('Cancel Scheduled Downtime') ?></a></li>-->
 		<li><a href="#" data-cmd="acknowledge_problem"><?php echo _('Acknowledge') ?></a></li>
 		<li><a href="#" data-cmd="remove_acknowledgement"><?php echo _('Remove problem acknowledgement') ?></a></li>
@@ -15,6 +16,7 @@
 	</ul>
 	<ul id="svc_property_menu" class="contextMenu">
 		<li><a href="#" data-cmd="schedule_downtime"><?php echo _('Schedule downtime') ?></a></li>
+		<li><a href="#" data-cmd="cancel_all_downtimes"><?php echo _('Cancel all downtimes') ?></a></li>
 		<!-- @TODO id of downtime<li><a href="#" data-cmd="del_svc_downtime"><?php echo _('Cancel Scheduled Downtime') ?></a></li>-->
 		<li><a href="#" data-cmd="acknowledge_problem"><?php echo _('Acknowledge') ?></a></li>
 		<li><a href="#" data-cmd="remove_acknowledgement"><?php echo _('Remove problem acknowledgement') ?></a></li>
