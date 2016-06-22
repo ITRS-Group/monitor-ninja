@@ -14,15 +14,14 @@ $first = $tables[count($tables) - 1];
 $types = implode(', ', $tables);
 $types .= ' or ' . $first;
 
-if ($default) {
-
-	echo '<input class="nj-form-option" type="hidden" value="' . $default->get_table() . '" name="'.$field->get_name().'[table]">';
-	echo '<input placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" class="nj-form-field-autocomplete-input nj-form-option" name="'.$field->get_name().'[value]" value="'.html::specialchars($default->get_readable_name()).'" />';
+if ($default instanceof Object_Model) {
+	echo '<input class="nj-form-option" type="hidden" value="'.html::specialchars($default->get_table()). '" name="'.html::specialchars($field->get_name()).'[table]">';
+	echo '<input placeholder="Enter name of '.$types.'..." data-njform-table="'.html::specialchars($default->get_table()).'" autocomplete="off" type="text" class="nj-form-field-autocomplete-input nj-form-option" name="'.$field->get_name().'[value]" value="'.html::specialchars($default->get_key()).'" />';
 } else {
-	echo '<input class="nj-form-option" type="hidden" class="nj-form-option" value="' . $tables[0] . '" name="'.$field->get_name().'[table]">';
-	echo '<input class="nj-form-field-autocomplete-input nj-form-option"  placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" name="'.$field->get_name().'[value]" value="'.html::specialchars($default).'" />';
+	echo '<input class="nj-form-option" type="hidden" class="nj-form-option" value="'.html::specialchars($tables[0]).'" name="'.$field->get_name().'[table]">';
+	echo '<input class="nj-form-field-autocomplete-input nj-form-option" data-njform-table="'.html::specialchars($tables[0]).'" placeholder="Enter name of '.$types.'..." autocomplete="off" type="text" name="'.$field->get_name().'[value]" value="'.html::specialchars($default).'" />';
 }
-echo '<input class="nj-form-field-autocomplete-shadow" autocomplete="off" type="text" class="nj-form-option" value="'.html::specialchars($default).'" />';
+echo '<input class="nj-form-field-autocomplete-shadow" autocomplete="off" type="text" class="nj-form-option" />';
 echo '<span class="nj-form-field-autocomplete-dropper">▼</span>';
 echo '<ul class="nj-form-field-autocomplete-items"></ul>';
 echo '</div>';
