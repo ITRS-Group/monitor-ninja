@@ -52,10 +52,12 @@ class Form_Field_ORMObject_Model extends Form_Field_Model {
 		$table = $raw_data[$name]['table'];
 		$value = $raw_data[$name]['value'];
 
-		$settings = autocomplete::get_settings($table);
-		$query = sprintf($settings['query'], html::specialchars($value));
-
-		$object = ObjectPool_Model::get_by_query($query)->one();
+		try {
+			$pool = ObjectPool_Model::pool($table);
+		} catch(ORMException $e) {
+			throw new FormException("$name does not point at a valid table");
+		}
+		$object = $pool->fetch_by_key($value);
 		if (!$object) {
 			throw new FormException("Could not find any object in table '$table' named '$value'");
 		}
