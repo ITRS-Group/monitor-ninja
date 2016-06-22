@@ -50,20 +50,45 @@ class bignumber_Widget extends widget_Base {
 		));
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function get_suggested_title () {
 		$form_model = $this->options();
-		$hardcoded_filters = $this->hardcoded_filters;
-		$saved_filter_name = function($filter_id) use ($hardcoded_filters) {
-			if($filter_id < 0) {
-				return $hardcoded_filters[$filter_id]['name'];
+		$content_from = $form_model->get_value('content_from', 'filter');
+		if($content_from == 'filter') {
+			$hardcoded_filters = $this->hardcoded_filters;
+			$saved_filter_name = function($filter_id) use ($hardcoded_filters) {
+				if($filter_id < 0) {
+					return $hardcoded_filters[$filter_id]['name'];
+				}
+				$filter = SavedFilterPool_Model::all()->reduce_by('id', $filter_id, '=')->one();
+				return $filter->get_filter_name();
+			};
+			return sprintf("%s: %s",
+				$saved_filter_name($form_model->get_value('main_filter_id', -200)),
+				$saved_filter_name($form_model->get_value('selection_filter_id', -150))
+			);
+		} elseif($content_from == 'host') {
+			$host = $form_model->get_value('host');
+			if($host) {
+				return sprintf(
+					'Host %s: %s',
+					$host->get_name(),
+					$form_model->get_value('host_performance_data_source')
+				);
 			}
-			$filter = SavedFilterPool_Model::all()->reduce_by('id', $filter_id, '=')->one();
-			return $filter->get_filter_name();
-		};
-		return sprintf("%s: %s",
-			$saved_filter_name($form_model->get_value('main_filter_id', -200)),
-			$saved_filter_name($form_model->get_value('selection_filter_id', -150))
-		);
+		} elseif($content_from == 'service') {
+			$service = $form_model->get_value('service');
+			if($service) {
+				return sprintf(
+					'Service %s: %s',
+					$service->get_readable_name(),
+					$form_model->get_value('service_performance_data_source')
+				);
+			}
+		}
+		return parent::get_suggested_title();
 	}
 
 	/**
@@ -99,28 +124,44 @@ class bignumber_Widget extends widget_Base {
 			'filter' => 'Filter',
 			'host' => 'Host',
 			'service' => 'Service',
-		), $force_render = 'select'); // because *that's* a sane API :D
+		), $force_render = 'select');
 
+
+		$stored_settings = $this->model->get_setting();
+		$host_perfdata_sources = array();
+		if(isset($stored_settings['host']) && $stored_settings['host']) {
+			$host_model = HostPool_Model::fetch_by_key($stored_settings['host']['value']);
+			if($host_model) {
+				$host_perfdata_sources = array_keys($host_model->get_perf_data());
+			}
+		}
 		$host = new Form_Field_Conditional_Model(
 			'content_from',
 			'host',
 			new Form_Field_Group_Model(
 				'host',
 				array(
-					new Form_Field_ORMObject_Model('host_name', 'Host name', array('hosts')),
-					new Form_Field_Text_Model('performance_data_source', 'Performance data')
+					new Form_Field_ORMObject_Model('host', 'Host name', array('hosts')),
+					new Form_Field_Perfdata_Model('host_performance_data_source', 'Performance data', 'host', $host_perfdata_sources)
 				)
 			)
 		);
 
+		$service_perfdata_sources = array();
+		if(isset($stored_settings['service']) && $stored_settings['service']) {
+			$service_model = ServicePool_Model::fetch_by_key($stored_settings['service']['value']);
+			if($service_model) {
+				$service_perfdata_sources = array_keys($service_model->get_perf_data());
+			}
+		}
 		$service = new Form_Field_Conditional_Model(
 			'content_from',
 			'service',
 			new Form_Field_Group_Model(
 				'service',
 				array(
-					new Form_Field_ORMObject_Model('service_description', 'Service description', array('services')),
-					new Form_Field_Text_Model('performance_data_source', 'Performance data')
+					new Form_Field_ORMObject_Model('service', 'Service description', array('services')),
+					new Form_Field_Perfdata_Model('service_performance_data_source', 'Performance data', 'service', $service_perfdata_sources)
 				)
 			)
 		);
@@ -138,19 +179,9 @@ class bignumber_Widget extends widget_Base {
 			))
 		);
 
-		$uom_host = new Form_Field_Conditional_Model(
+		$uom = new Form_Field_Conditional_Model(
 			'content_from',
-			'host',
-			new Form_Field_Option_Model('display_type', 'Unit of measurement', array(
-				'number_of_total' => 'Fraction',
-				'number_only' => 'Count',
-				'percent' => 'Percentage'
-			))
-		);
-
-		$uom_service = new Form_Field_Conditional_Model(
-			'content_from',
-			'service',
+			'filter',
 			new Form_Field_Option_Model('display_type', 'Unit of measurement', array(
 				'number_of_total' => 'Fraction',
 				'number_only' => 'Count',
@@ -165,11 +196,13 @@ class bignumber_Widget extends widget_Base {
 		));
 		$threshold_as->set_help('bignumber_threshold_as', 'tac');
 		$thresholds = new Form_Field_Conditional_Model('threshold_onoff', true,
-			new Form_Field_Group_Model("thresholds", array(
-				$threshold_as,
-				new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
-				new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
-			))
+			new Form_Field_Conditional_Model('content_from', 'filter',
+				new Form_Field_Group_Model("thresholds", array(
+					$threshold_as,
+					new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
+					new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
+				))
+			)
 		);
 
 		$form_model = Form_Model::for_tac_widget();
@@ -178,15 +211,42 @@ class bignumber_Widget extends widget_Base {
 			$host,
 			$service,
 			$filters,
-			$uom_host,
-			$uom_service,
+			$uom,
 			$toggle_status,
 			$thresholds
 		) as $field) {
 			$form_model->add_field($field);
 		}
 
-		$form_model->set_values($this->model->get_setting());
+		$defaults = array(
+			'threshold_type' => 'less_than',
+			'content_from' => 'filter',
+			'main_filter_id' => -200,
+			'selection_filter_id' => -150,
+			'selection_filter_id' => -150,
+			'threshold_crit' => 90.0,
+			'threshold_warn' => 95.0,
+			'display_type' => 'number_of_total',
+		);
+		$settings = array_merge($defaults, $stored_settings);
+		if(isset($settings['host']) && is_array($settings['host'])) {
+			$host = HostPool_Model::fetch_by_key($settings['host']['value']);
+			if($host) {
+				$settings['host'] = $host;
+			} else {
+				unset($settings['host']);
+			}
+		}
+		if(isset($settings['service']) && is_array($settings['service'])) {
+			$service = ServicePool_Model::fetch_by_key($settings['service']['value']);
+			if($service) {
+				$settings['service'] = $service;
+			} else {
+				unset($settings['service']);
+			}
+		}
+
+		$form_model->set_values($settings);
 
 		return $form_model;
 	}
@@ -231,70 +291,111 @@ class bignumber_Widget extends widget_Base {
 	public function index() {
 		$form_model = $this->options();
 
-		// filters
-		$main_set = $this->get_set_by_filter_id($form_model->get_value('main_filter_id', -200));
-		$selection_set = $this->get_set_by_filter_id($form_model->get_value('selection_filter_id', -150));
-		if($selection_set->get_table() !== $main_set->get_table()) {
-			$msg = sprintf(
-				"Your main filter is placed on the table '%s', but your selection filter is not. You need to filter on the same table.",
-				$main_set->get_table()
-			);
-			return $this->error($msg);
-		}
-		$query = $main_set->intersect($selection_set)->get_query();
-		$pool = $main_set->class_pool();
-		$all_set = $pool::all();
-		$counts = $main_set->stats(array(
-			'all' => $all_set,
-			'selection' => $selection_set
-		));
-
-		// thresholds
-		$threshold_types = array();
-		$threshold_types['less_than'] = function ($val, $stat) {
-			return 100.0 * $stat['selection'] / $stat['all'] < $val;
-		};
-		$threshold_types['greater_than'] = function ($val, $stat) {
-			return 100.0 * $stat['selection'] / $stat['all'] > $val;
-		};
-		$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
-
 		// display
-		if ($counts['all'] == 0) {
-			// PHP is so bad, it cannot even divide by zero
-			$state = 'pending';
-			$display_explanation = 'No object matches this filter';
-			$display_text = "";
-		} else {
-			switch($form_model->get_value('display_type', 'number_of_total')) {
-			case 'percent':
-				$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
-				break;
-			case 'number_only':
-				$display_text = sprintf("%d", $counts['selection']);
-				break;
-			case 'number_of_total':
-			default:
-				$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
-				break;
+		$display_explanation = "";
+		$display_text = "";
+		$content_from = $form_model->get_value('content_from', 'filter');
+		$link = '';
+		$linkprovider = LinkProvider::factory();
+		$state = 'info';
+		if($content_from == 'filter') {
+			// filters
+			$main_set = $this->get_set_by_filter_id($form_model->get_value('main_filter_id', -200));
+			$selection_set = $this->get_set_by_filter_id($form_model->get_value('selection_filter_id', -150));
+			if($selection_set->get_table() !== $main_set->get_table()) {
+				$msg = sprintf(
+					"Your main filter is placed on the table '%s', but your selection filter is not. You need to filter on the same table.",
+					$main_set->get_table()
+				);
+				return $this->error($msg);
 			}
+			$query = $main_set->intersect($selection_set)->get_query();
+			$link = listview::querylink($query);
+			$pool = $main_set->class_pool();
+			$all_set = $pool::all();
+			$counts = $main_set->stats(array(
+				'all' => $all_set,
+				'selection' => $selection_set
+			));
 
-			$threshold_value = $counts['selection'];
-			$display_explanation = "";
+			if ($counts['all'] == 0) {
+				// PHP is so bad, it cannot even divide by zero
+				$state = 'pending';
+				$display_explanation = 'No object matches this filter';
+			} else {
+				switch($form_model->get_value('display_type', 'number_of_total')) {
+				case 'percent':
+					$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
+					break;
+				case 'number_only':
+					$display_text = sprintf("%d", $counts['selection']);
+					break;
+				case 'number_of_total':
+				default:
+					$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
+					break;
+				}
 
-			if ($form_model->get_value('threshold_onoff')) {
-				if (call_user_func_array($threshold_callback, array($form_model->get_value('threshold_crit', 90.0), $counts))) {
+				$threshold_value = $counts['selection'];
+
+				if ($form_model->get_value('threshold_onoff')) {
+					$threshold_types = array();
+					$threshold_types['less_than'] = function ($val, $stat) {
+						return 100.0 * $stat['selection'] / $stat['all'] < $val;
+					};
+					$threshold_types['greater_than'] = function ($val, $stat) {
+						return 100.0 * $stat['selection'] / $stat['all'] > $val;
+					};
+					$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
+					if (call_user_func_array($threshold_callback, array(
+							$form_model->get_value('threshold_crit', 90.0),
+							$counts))) {
+						$state = 'critical';
+					} elseif (call_user_func_array($threshold_callback, array(
+							$form_model->get_value('threshold_warn', 95.0),
+							$counts))) {
+						$state = 'warning';
+					} else {
+						$state = 'ok';
+					}
+				}
+			}
+			require 'view.php';
+		} elseif(in_array($content_from, array('host', 'service'), true)) {
+			$perf_data_src = $form_model->get_value($content_from.'_performance_data_source');
+			$object = $form_model->get_value($content_from);
+			if(!$object) {
+				$display_explanation = 'No perfdata for these settings';
+				require 'view.php';
+				return;
+			}
+			if($content_from === 'host') {
+				$link = $linkprovider->get_url('extinfo', 'details', array(
+					'host' => $object->get_name()
+				));
+			} elseif($content_from === 'service') {
+				$link = $linkprovider->get_url('extinfo', 'details', array(
+					'host' => $object->get_host()->get_name(),
+					'service' => $object->get_description()
+				));
+			}
+			$perf_data = $object->get_perf_data();
+			if(!isset($perf_data[$perf_data_src]) || !isset($perf_data[$perf_data_src]['value'])) {
+				$display_explanation = 'No perfdata for these settings';
+				require 'view.php';
+				return;
+			}
+			$perf_data = $perf_data[$perf_data_src];
+			if($form_model->get_value('threshold_onoff') && isset($perf_data['warn'], $perf_data['crit'])) {
+				if($perf_data['value'] >= $perf_data['crit']) {
 					$state = 'critical';
-				} elseif (call_user_func_array($threshold_callback, array($form_model->get_value('threshold_warn', 95.0), $counts))) {
+				} elseif($perf_data['value'] >= $perf_data['warn']) {
 					$state = 'warning';
 				} else {
 					$state = 'ok';
 				}
-			} else {
-				$state = 'info';
 			}
+			require 'view.php';
 		}
-
-		require('view.php');
 	}
 }

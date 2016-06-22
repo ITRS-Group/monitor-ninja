@@ -18,6 +18,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group MON-9412
 	 * @dataProvider get_form
 	 */
 	public function test_render($form) {
@@ -47,6 +48,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group MON-9412
 	 * @dataProvider get_form
 	 */
 	public function test_process($form) {
@@ -73,6 +75,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group MON-9412
 	 * @dataProvider get_form
 	 * @expectedException FormException
 	 * @expectedExceptionMessage trouble has not a valid option value
