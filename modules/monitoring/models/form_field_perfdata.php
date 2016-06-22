@@ -9,15 +9,19 @@
  * ));
  */
 class Form_Field_Perfdata_Model extends Form_Field_Model {
+	private $target_model;
+	private $options;
 
 	/**
- 	 * @param string $name
- 	 * @param string $pretty_name
- 	 * @param string $target_model
+	 * @param string $name
+	 * @param string $pretty_name
+	 * @param string $target_model
+	 * @param array $options
 	 */
-	public function __construct($name, $pretty_name, $target_model) {
+	public function __construct($name, $pretty_name, $target_model, array $options = array()) {
 		parent::__construct($name, $pretty_name);
 		$this->target_model = $target_model;
+		$this->options = $options;
 	}
 
 	/**
@@ -28,8 +32,28 @@ class Form_Field_Perfdata_Model extends Form_Field_Model {
 	}
 
 	/**
- 	 * @param $raw_data array
- 	 * @param $result Form_Result_Model
+	 * @return string
+	 */
+	public function get_target_model() {
+		return $this->target_model;
+	}
+
+	/**
+	 * Since we depend on the value (ORM object) of $target_model, we only
+	 * know which the specific options are after @see
+	 * Form_Model::set_values() has been called, or when the form has been
+	 * dynamically rendered by JS. It's perfectly OK that this is empty,
+	 * and handled by JS.
+	 *
+	 * @return array
+	 */
+	public function get_options() {
+		return $this->options;
+	}
+
+	/**
+	 * @param $raw_data array
+	 * @param $result Form_Result_Model
 	 * @throws FormException
 	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {

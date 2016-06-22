@@ -117,7 +117,7 @@ class Form_Model {
 	}
 
 	/**
-	 * Get the default value for a field, formatted as result of process_data()
+	 * Get the value of a field, formatted as result of process_data()
 	 *
 	 * It should be possible to recreate a form state as:
 	 *

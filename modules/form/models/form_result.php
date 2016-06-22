@@ -1,13 +1,13 @@
 <?php
 /**
- * Model a form result
+ * Stores the result of a form validation.
  */
 class Form_Result_Model {
 
 	/**
 	 * The internal container for the form results
 	 */
-	protected $results = array();
+	private $results = array();
 
 	/**
 	 * Sets the value of a key in the form results
