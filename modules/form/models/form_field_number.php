@@ -1,11 +1,21 @@
 <?php
+
+/**
+ * Let the user input a number
+ */
 class Form_Field_Number_Model extends Form_Field_Model {
-	public function __construct($name, $pretty_name) {
-		parent::__construct( $name, $pretty_name );
-	}
+
+	/**
+	 * @return string
+	 */
 	public function get_type() {
 		return 'number';
 	}
+
+	/**
+	 * @param $raw_data array
+	 * @param $result Form_Result_Model
+	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
 		if (!isset($raw_data[$name]))

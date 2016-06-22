@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Let the user pick a number between two values
+ */
 class Form_Field_Range_Model extends Form_Field_Model {
 
 	const RANGE_STEP_DEFAULT = "RANGE_STEP_DEFAULT";
@@ -6,6 +10,14 @@ class Form_Field_Range_Model extends Form_Field_Model {
 	protected $min = 0;
 	protected $max = 100;
 
+
+	/**
+	 * @param $name string
+	 * @param $pretty_name string
+	 * @param $min float
+	 * @param $max float
+	 * $param $step int
+	 */
 	public function __construct($name, $pretty_name, $min = 0, $max = 100, $step = Form_Field_Range_Model::RANGE_STEP_DEFAULT) {
 		parent::__construct($name, $pretty_name);
 		$this->min = $min;
@@ -17,22 +29,38 @@ class Form_Field_Range_Model extends Form_Field_Model {
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_type() {
 		return 'range';
 	}
 
+	/**
+	 * @return float
+	 */
 	public function get_min () {
 		return $this->min;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function get_max () {
 		return $this->max;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function get_step () {
 		return $this->step;
 	}
 
+	/**
+	 * @param $raw_data array
+	 * @param $result Form_Result_Model
+	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
 		if (!isset($raw_data[$name]))
