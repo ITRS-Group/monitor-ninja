@@ -5,16 +5,11 @@
 class Form_Model {
 	/**
 	 * An array of the fields in this form
-	 *
-	 * @var array of Form_Field_Model
 	 */
 	private $fields = array();
 
 	/**
 	 * Storage for default values, as seen processed
-	 * s*
-	 *
-	 * @var array of default values, indexed on field names
 	 */
 	private $values = array();
 
@@ -26,8 +21,8 @@ class Form_Model {
 	/**
 	 * Create a form with a given set of fields
 	 *
-	 * @param $fields array
-	 *        	of fields. All must be derivates of From_Field_Model
+	 * @param $action string
+	 * @param $fields array of From_Field_Model
 	 */
 	public function __construct($action, array $fields = array()) {
 		$this->action = $action;
@@ -84,8 +79,8 @@ class Form_Model {
 	 * Get a view representing a given field in the form.
 	 * If no field is specified, a view for the entire form is returned
 	 *
-	 * @param $field Form_Field_Model
-	 *        	Field object or null
+	 * @param $field Form_Field_Model = null
+	 * @return View
 	 */
 	public function get_view(Form_Field_Model $field = null) {
 		if ($field === null) {
@@ -108,6 +103,7 @@ class Form_Model {
 	 * return an actual object instance.
 	 *
 	 * @param $raw_data array of parameters fetched as $_POST
+	 * @return array
 	 */
 	public function process_data(array $raw_data) {
 		$result = new Form_Result_Model();
@@ -125,10 +121,9 @@ class Form_Model {
 	 *
 	 * $form_b->set_values( $form_a->process_data($rawdata) );
 	 *
-	 * @param $fieldname string,
-	 *        	fieldname
-	 * @param $default Default
-	 *        	value if no default value is found in the array. Optional, then null
+	 * @param $fieldname string
+	 * @param $default mixed = null
+	 * @return mixed
 	 */
 	public function get_value($fieldname, $default = null) {
 		if (isset($this->values[$fieldname]))
@@ -140,7 +135,6 @@ class Form_Model {
 	 * Set the default values for the form
 	 *
 	 * @param $values array
-	 *        	of default values
 	 */
 	public function set_values(array $values) {
 		$this->values = $values;

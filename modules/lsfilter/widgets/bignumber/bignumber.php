@@ -189,7 +189,7 @@ class bignumber_Widget extends widget_Base {
 			))
 		);
 
-		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'Color widget based on performance data thresholds');
+		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'Color widget based on thresholds');
 		$threshold_as = new Form_Field_Option_Model('threshold_type', 'Threshold as', array(
 			'less_than' => 'Less than',
 			'greater_than' => 'Greater than',
@@ -224,6 +224,7 @@ class bignumber_Widget extends widget_Base {
 			'main_filter_id' => -200,
 			'selection_filter_id' => -150,
 			'selection_filter_id' => -150,
+			'threshold_onoff' => true,
 			'threshold_crit' => 90.0,
 			'threshold_warn' => 95.0,
 			'display_type' => 'number_of_total',
@@ -292,6 +293,7 @@ class bignumber_Widget extends widget_Base {
 		$form_model = $this->options();
 
 		// display
+		$perf_data = array();
 		$display_explanation = "";
 		$display_text = "";
 		$content_from = $form_model->get_value('content_from', 'filter');

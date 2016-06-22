@@ -14,7 +14,6 @@ class Form_Result_Model {
 	 *
 	 * @param $key string
 	 * @param $value mixed
-	 * @return void
 	 */
 	public function set_value ($key, $value) {
 		$this->results[$key] = $value;
@@ -43,9 +42,7 @@ class Form_Result_Model {
 	/**
 	 * Returns the current state of the form results as an associative array
 	 *
-	 * @param $key string
-	 * @param $value mixed
-	 * @return void
+	 * @return array
 	 */
 	public function to_array () {
 		return $this->results;

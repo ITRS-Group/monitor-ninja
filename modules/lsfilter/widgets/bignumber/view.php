@@ -5,7 +5,7 @@
 		<p class="explanation"><?php echo html::specialchars($display_explanation); ?></p>
 		<?php } elseif($perf_data) { ?>
 		<div class="state_summary-state">
-			<span class="big-number"><?php echo html::specialchars($perf_data['value']); ?><?php echo isset($perf_data['unit']) ? html::specialchars($perf_data['unit']) : ''; ?></span>
+			<span class="big-number"><?php echo html::specialchars($perf_data['value']); ?><?php echo isset($perf_data['unit']) ? ' '.html::specialchars($perf_data['unit']) : ''; ?></span>
 		</div>
 		<?php } else { ?>
 		<div class="state_summary-state">

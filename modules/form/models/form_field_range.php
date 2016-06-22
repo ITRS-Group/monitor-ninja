@@ -5,10 +5,13 @@
  */
 class Form_Field_Range_Model extends Form_Field_Model {
 
-	const RANGE_STEP_DEFAULT = "RANGE_STEP_DEFAULT";
+	/**
+	 * A default step
+	 */
+	const RANGE_STEP_DEFAULT = null;
 
-	protected $min = 0;
-	protected $max = 100;
+	private $min = 0;
+	private $max = 100;
 
 
 	/**
@@ -16,9 +19,9 @@ class Form_Field_Range_Model extends Form_Field_Model {
 	 * @param $pretty_name string
 	 * @param $min float
 	 * @param $max float
-	 * $param $step int
+	 * @param $step mixed = null
 	 */
-	public function __construct($name, $pretty_name, $min = 0, $max = 100, $step = Form_Field_Range_Model::RANGE_STEP_DEFAULT) {
+	public function __construct($name, $pretty_name, $min = 0, $max = 100, $step = null) {
 		parent::__construct($name, $pretty_name);
 		$this->min = $min;
 		$this->max = $max;

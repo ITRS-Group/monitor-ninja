@@ -17,10 +17,8 @@ abstract class Form_Field_Model {
 	 * methods is (most likely) an error. And those can do it anyway. Thus
 	 * protected.
 	 *
-	 * @param $name Name
-	 *        	of the field
-	 * @param $pretty_name Visible
-	 *        	name of the field
+	 * @param $name string
+	 * @param $pretty_name string
 	 */
 	protected function __construct($name, $pretty_name) {
 		$this->name = $name;
@@ -71,8 +69,8 @@ abstract class Form_Field_Model {
 	 *
 	 * If not matching, this methods throws an FormException or derivative.
 	 *
-	 * @param $raw_data an
-	 *        	array of data formatted as $_POST
+	 * @param $raw_data array
+	 * @param $result Form_Result_Model
 	 * @throws FormException
 	 */
 	public abstract function process_data(array $raw_data, Form_Result_Model $result);

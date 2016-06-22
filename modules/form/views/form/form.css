@@ -24,15 +24,6 @@ form.nj-form fieldset {
   margin: 0;
 }
 
-form.nj-form fieldset .nj-form-title {
-  padding: 8px 0;
-  margin: 0 64px 0 8px;
-  border-bottom: 1px solid #dddddd;
-  text-transform: uppercase;
-  font-size: 11pt;
-  color: #666666;
-}
-
 form.nj-form .nj-form-label {
   display: inline-block;
   vertical-align: middle;

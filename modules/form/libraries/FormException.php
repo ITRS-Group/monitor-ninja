@@ -5,7 +5,7 @@
  * thrown.
  */
 class FormException extends Exception {
-	protected $field;
+	private $field;
 
 	/**
 	 * @param $message string
