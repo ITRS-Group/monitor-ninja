@@ -12,6 +12,13 @@ class Dead_Widget extends widget_Base {
 		parent::__construct($model);
 	}
 
+	/**
+	 * @return string
+	 */
+	public function get_exception_message() {
+		return $this->exc->getMessage();
+	}
+
 	public function get_metadata() {
 		return array(
 			'instanceable' => false

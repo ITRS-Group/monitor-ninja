@@ -329,16 +329,19 @@ class widget_Base {
 		$setting = $this->model->get_setting();
 
 		$loaded = isset(self::$loaded_widgets[$this->model->get_name()]);
-		$template = new View('widget', array(
+		$props = array(
 				'classes' => $classes,
 				'key' => $this->model->get_key(),
 				'data_attributes' => $data_attributes,
 				'title' => $title,
-				'options' => $options,
 				'editable' => $editable,
 				'content' => $content,
 				'setting' => $setting
-		));
+		);
+		if(isset($options)) {
+			$props['options'] = $options;
+		}
+		$template = new View('widget', $props);
 
 		self::$loaded_widgets[$this->model->get_name()] = 1;
 

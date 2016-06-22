@@ -115,7 +115,13 @@
 		},
 
 		set_value: function (value, table) {
+			if(value === this.input.val()) {
+				return;
+			}
 			this.input.val(value);
+			// make sure that those listening on events don't get
+			// left in the cold
+			this.input.trigger('autocompleted');
 			this.table_element.val(table);
 			this.set_shadow(value);
 		},
@@ -137,7 +143,7 @@
 
 		fetch: function (term, callback) {
 
-			$.ajax(_site_domain + _index_page + '/autocomplete/autocomplete', {
+			$.ajax(_site_domain + _index_page + '/form/autocomplete', {
 				data: {
 					tables: this.tables,
 					term: term
@@ -188,7 +194,7 @@
 				}
 
 				var item_element = $('<li class="nj-form-field-autocomplete-item">').attr({
-					'data-autocomplete-value': item.name,
+					'data-autocomplete-value': item.key,
 					'data-autocomplete-table': item.table
 				}).text(item.name);
 

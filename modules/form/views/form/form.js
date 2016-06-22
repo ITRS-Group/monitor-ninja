@@ -1,6 +1,8 @@
 $(function() {
 
-	$(document).on('change', '.nj-form-option', function() {
+	var doc = $(document);
+
+	doc.on('change', '.nj-form-option', function() {
 
 		var field = $(this);
 		var name = field.attr('name');
@@ -24,7 +26,9 @@ $(function() {
 
 	});
 
-	$(document).find('.nj-form-conditional').each(function() {
+	// TODO this does not work for dynamically created widgets
+	// (empty dashboard, reload TAC, add big number widget, edit settings => all settings are shown)
+	doc.find('.nj-form-conditional').each(function() {
 
 		var elem = $(this);
 		var form = elem.closest('form');
@@ -42,9 +46,56 @@ $(function() {
 		}
 	});
 
+	doc.on('autocompleted', '.nj-form-field input', function(e) {
+		var field = $(this);
+		var form = field.closest('form');
+		var field_name = field.attr('name');
+		// trim away possible array values, because if we're listening
+		// for "host", we don't want to rely on specific rendering
+		// details such as host[value], in the case of ORMObject form
+		// fields
+		field_name = field_name.replace(/\[.*/, "");
+		// only handling <select/> elements for now
+		form.find(".nj-form-field select[data-njform-target='"+field_name+"']")
+			.each(function() {
+				var select = $(this);
+				select.empty();
+				$.ajax(_site_domain + _index_page + '/form/perf_data_sources', {
+					data: {
+						table: form.find('input[name="'+field_name+'[table]"]').val(),
+						key: field.val()
+					},
+					success: function(data) {
+						if(!data.result.length) {
+							// TODO the css of Notify.message() is borked on TAC
+							Notify.message('No performance data available for this object');
+							return;
+						}
+						$.each(data.result, function(key, value) {
+							select.append($("<option/>").text(value).val(value));
+						});
+					},
+					error: function(jqXHR) {
+						var msg = '';
+						try {
+							msg = JSON.parse(jqXHR.responseText).message;
+						} catch (e) {
+							msg = 'Something went wrong, perhaps you could try again';
+						}
+						Notify.message(msg, {'type': 'error'});
+					},
+					method: "GET"
+				});
+
+			});
+
+	});
+
 	/* Range handling */
-	$(document).find('.nj-form-field-range-hover').hide();
-	$(document).on('mousemove', '.nj-form-field-range', function (e) {
+	// TODO this does not work for dynamically created widgets
+	doc.find('.nj-form-field-range-hover').hide();
+
+	doc.on('mousemove', '.nj-form-field-range', function (e) {
 		$(this).find('.nj-form-field-range-hover')
 			.css({
 				top: e.clientY + 'px',
@@ -52,14 +103,10 @@ $(function() {
 			}).text($(this).find('input').val());
 	});
 
-	$(document).find('input[type="range"]').hover(function () {
+	// TODO this does not work for dynamically created widgets
+	doc.find('input[type="range"]').hover(function () {
 		$(this).siblings('.nj-form-field-range-hover').show();
 	}, function () {
 		$(this).siblings('.nj-form-field-range-hover').hide();
 	});
-
-	/* Submit handling */
-	$(document).on('submit', '.nj-form', function(e) {
-	});
-
 });
