@@ -624,7 +624,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		);
 		$this->template = null;
 		$this->tac->on_widget_save_settings();
-		$this->assertTrue($this->tac->template->success);
+		$this->assertTrue($this->tac->template->success, var_export($this->tac->template->value, true));
 		$this->assertEquals(array('result' => 'ok'), $this->tac->template->value);
 
 		/* Verify that correct widget is updated */

@@ -4,8 +4,11 @@
  */
 class Form_Controller extends Ninja_Controller {
 
+	/**
+	 * @param $tables array = array()
+	 * @param $term string = ""
+	 */
 	public function autocomplete (array $tables = array(), $term = "") {
-
 		$tables = $this->input->get('tables', $tables);
 		$term = $this->input->get('term', $term);
 		$results = array();
@@ -25,9 +28,7 @@ class Form_Controller extends Ninja_Controller {
 				op5log::instance('ninja')->log('warning', __METHOD__.': '.$e->getMessage());
 			}
 		}
-
 		json::ok($results);
-
 	}
 
 	/**

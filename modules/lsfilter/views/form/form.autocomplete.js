@@ -47,7 +47,6 @@
 
 			} else if (e.key === 'ArrowUp' || e.keycode === 38) {
 
-				var items = this.items.children('li.nj-form-field-autocomplete-item');
 				this.key_index = (this.key_index > 1) ? this.key_index - 1 : 1;
 				this.reselect();
 
@@ -100,6 +99,9 @@
 		this.input.on('blur', function (e) {
 			this.hide();
 			this.input.attr('placeholder', this.placeholder);
+			if(this.input.val() === '') {
+				this.set_shadow('');
+			}
 			e.preventDefault();
 			return false;
 		}.bind(this));
@@ -168,7 +170,7 @@
 
 
 					this.key_index = 1;
-					if (term.length > 0)
+					if (term.length > 0 && data.length)
 						this.shadow.val(data[0].name);
 
 					this.items.empty();

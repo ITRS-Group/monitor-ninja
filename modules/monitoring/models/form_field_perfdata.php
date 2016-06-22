@@ -13,10 +13,10 @@ class Form_Field_Perfdata_Model extends Form_Field_Model {
 	private $options;
 
 	/**
-	 * @param string $name
-	 * @param string $pretty_name
-	 * @param string $target_model
-	 * @param array $options
+	 * @param $name string
+	 * @param $pretty_name string
+	 * @param $target_model string
+	 * @param $options array = array()
 	 */
 	public function __construct($name, $pretty_name, $target_model, array $options = array()) {
 		parent::__construct($name, $pretty_name);
