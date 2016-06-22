@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Represents a form field, or a set of form fields
+ * (@see Form_Field_Group_Model).
+ */
 abstract class Form_Field_Model {
 	private $help;
 	private $name;
@@ -25,6 +30,8 @@ abstract class Form_Field_Model {
 	/**
 	 * Get the field name.
 	 * This maps to the field name both in processed and unprocessed data
+	 *
+	 * @return string
 	 */
 	public function get_name() {
 		return $this->name;
@@ -33,6 +40,8 @@ abstract class Form_Field_Model {
 	/**
 	 * Get the name as it should be visisble in the UI.
 	 * Can be null for some fields.
+	 *
+	 * @return string
 	 */
 	public function get_pretty_name() {
 		return $this->pretty_name;
@@ -44,6 +53,8 @@ abstract class Form_Field_Model {
 	 *
 	 * It should be possible to do "skins" for forms by adding a subdirectory
 	 * in the form/ folder, which should re-implement the views.
+	 *
+	 * @return string
 	 */
 	public abstract function get_type();
 
@@ -63,7 +74,6 @@ abstract class Form_Field_Model {
 	 * @param $raw_data an
 	 *        	array of data formatted as $_POST
 	 * @throws FormException
-	 * @return array of el
 	 */
 	public abstract function process_data(array $raw_data, Form_Result_Model $result);
 

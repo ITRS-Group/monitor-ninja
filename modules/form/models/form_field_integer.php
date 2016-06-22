@@ -1,11 +1,22 @@
 <?php
+
+/**
+ * Ask the user for an integer.
+ */
 class Form_Field_Integer_Model extends Form_Field_Model {
-	public function __construct ($name, $pretty_name) {
-		parent::__construct ($name, $pretty_name);
-	}
+
+	/**
+	 * @return string
+	 */
 	public function get_type() {
 		return 'integer';
 	}
+
+	/**
+	 * @param $raw_data array
+	 * @param $result Form_Result_Model
+	 * @throws FormException
+	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
 		if (!isset($raw_data[$name]))
