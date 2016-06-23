@@ -46,7 +46,7 @@ var tac_send_request = function (method, data, callbacks) {
 
 $(function() {
 	/* If we can't change the dashboard, don't load handling of widgets */
-	if (!_dashboard_can_write)
+	if (typeof _dashboard_can_write !== 'undefined' && !_dashboard_can_write)
 		return;
 	var easywidgets_obj = $.fn.EasyWidgets({
 		behaviour : {
@@ -153,16 +153,6 @@ $(function() {
 		return false;
 	});
 
-	$(".menuitem_dashboard_option").fancybox({
-		showCloseButton: false
-	});
-	$(".dashboard-form-cancel").on('click', function(e) {
-		e.preventDefault();
-		$.fancybox.close();
-		return false;
-	});
-
-
 	$('body').on(
 		"click",
 		".menuitem_change_layout",
@@ -193,6 +183,17 @@ $(function() {
 		}
 	);
 
+});
+
+$(function() {
+	$(".menuitem_dashboard_option").fancybox({
+		showCloseButton: false
+	});
+	$(document).on('click', ".dashboard-form-cancel", function(e) {
+		e.preventDefault();
+		$.fancybox.close();
+		return false;
+	});
 });
 
 /**

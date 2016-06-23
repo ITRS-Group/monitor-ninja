@@ -131,7 +131,6 @@ class Tac_Controller extends Ninja_Controller {
 
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = 'Monitoring » ' . $dashboard->get_name();
-		$this->template->js[] = 'modules/widgets/views/js/tac.js';
 		$this->template->content_class = 'dashboard';
 		$this->template->disable_refresh = true;
 		$this->template->content->dashboard = $dashboard;
@@ -196,6 +195,15 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 * Render the new dashboard dialog, as an entire page
+	 *
+	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
+	 */
+	public function new_dashboard_dialog() {
+		$this->template = new View('tac/new_dashboard_dialog');
+	}
+
+	/**
 	 * Create a new dashboard
 	 */
 	public function on_new_dashboard() {
@@ -204,20 +212,9 @@ class Tac_Controller extends Ninja_Controller {
 		/* @var $user User_Model */
 		$dashboard = new Dashboard_Model();
 		$dashboard->set_username( $user->get_username() );
-
-		$dashboard_id = $this->input->post( 'dashboard_id' );
 		$dashboard->import_array( Kohana::config( 'tac.default' ) );
-		/* Fetch a free name */
-		$i = 1;
-		$base_name = 'Dashboard for ' . $user->get_realname();
-		do {
-			$name = $base_name;
-			if ($i > 1)
-				$name .= ' ' . $i;
-			$test_db = DashboardPool_Model::all()->reduce_by( 'name', $name, '=' )->one();
-			$i ++;
-		} while ( $test_db );
-		$dashboard->set_name( $name );
+		$dashboard->set_name( $this->input->post( 'name' ) );
+		$dashboard->set_layout( $this->input->post( 'layout', '3,2,1' ) );
 		$dashboard->save();
 		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
 			'url' => 'tac/index/' . $dashboard->get_id() ) );

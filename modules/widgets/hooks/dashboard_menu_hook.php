@@ -11,5 +11,11 @@ Event::add ( 'ninja.menu.setup', function () {
 	foreach($dashboards->it(array('name'), array('name')) as $dashboard) {
 			$db_menu->set ( $dashboard->get_name(), 'tac/index/'.$dashboard->get_key(), $idx++ );
 	}
-	$db_menu->set ( "New dashboard", 'tac/on_new_dashboard', $idx++, 'icon-16 x16-sign-add' );
+	$db_menu->set ( "New dashboard", 'tac/new_dashboard_dialog', $idx++, 'icon-16 x16-sign-add', array(
+			'class' => "menuitem_dashboard_option" /* Popup as fancybox */
+	));
+});
+
+Event::add ( 'system.post_controller', function() {
+	Kohana::$instance->template->js[] = 'modules/widgets/views/js/tac.js';
 });
