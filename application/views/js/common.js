@@ -606,103 +606,105 @@ function trigger_cb_on_nth_call(cb, n) {
 		});
 	}
 
-	$('#dojo-icon-container').on('click', 'span', function() {
-		var span = $(this);
-		$('#dojo-add-quicklink-icon').val(span.data('icon'));
+	$(window).on('load', function () {
+		$('#dojo-icon-container').on('click', 'span', function() {
+			var span = $(this);
+			$('#dojo-add-quicklink-icon').val(span.data('icon'));
 
-		// we have to change the background of the td, since the span already
-		// has the icon image as its background
-		var all_tds = $('#dojo-icon-container td');
-		all_tds.removeClass('highlight');
-		span.parents('td').addClass('highlight');
-	});
+			// we have to change the background of the td, since the span already
+			// has the icon image as its background
+			var all_tds = $('#dojo-icon-container td');
+			all_tds.removeClass('highlight');
+			span.parents('td').addClass('highlight');
+		});
 
-	$('#dojo-add-quicklink').fancybox({
-		titleShow: false,
-		overlayOpacity: 0,
-		onComplete: function() {
-			$('#dojo-quicklink-remove').html('');
-			for (var i = 0; i < global_quicklinks.length; i += 1) {
-				var l = global_quicklinks[i];
-				var vid = l.title + ':'+ l.href;
-				var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
-				quicklink
+		$('#dojo-add-quicklink').fancybox({
+			titleShow: false,
+			overlayOpacity: 0,
+			onComplete: function() {
+				$('#dojo-quicklink-remove').html('');
+				for (var i = 0; i < global_quicklinks.length; i += 1) {
+					var l = global_quicklinks[i];
+					var vid = l.title + ':'+ l.href;
+					var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
+					quicklink
 					.find('label')
-						.text(l.title)
-						.prepend($('<span class="icon-16"></span>').addClass('x16-'+l.icon))
-						.prepend($('<input type="checkbox" />')
-							.attr('value', vid)
-							.attr('id', vid)
-							.attr('title', l.title)
-						);
-				quicklink
-					.find('a')
-						.attr('href', l.href)
-						.text(l.href);
-				$('#dojo-quicklink-remove').append(quicklink);
+					.text(l.title)
+					.prepend($('<span class="icon-16"></span>').addClass('x16-'+l.icon))
+					.prepend($('<input type="checkbox" />')
+									 .attr('value', vid)
+									 .attr('id', vid)
+									 .attr('title', l.title)
+									);
+									quicklink
+									.find('a')
+									.attr('href', l.href)
+									.text(l.href);
+									$('#dojo-quicklink-remove').append(quicklink);
+				}
+			},
+			onClose: function() {
+				$('#dojo-add-quicklink-href').attr('value','');
+				$('#dojo-add-quicklink-title').attr('value','');
+				$('#dojo-add-quicklink-icon').attr('value','');
 			}
-		},
-		onClose: function() {
-			$('#dojo-add-quicklink-href').attr('value','');
-			$('#dojo-add-quicklink-title').attr('value','');
-			$('#dojo-add-quicklink-icon').attr('value','');
-		}
-	});
+		});
 
-	$('#dojo-add-quicklink-menu form').submit(function (ev) {
-		ev.preventDefault();
-		var href = $('#dojo-add-quicklink-href').attr('value'),
+		$('#dojo-add-quicklink-menu form').submit(function (ev) {
+			ev.preventDefault();
+			var href = $('#dojo-add-quicklink-href').attr('value'),
 				title = $('#dojo-add-quicklink-title').attr('value'),
 				icon = $('#dojo-add-quicklink-icon').attr('value'),
 				target = $('#dojo-add-quicklink-target').attr('value'),
 				changed = false;
-		var error = '';
-		if (href && title && icon) {
-			var i = global_quicklinks.length;
-			for (i; i--;) {
-				if (global_quicklinks[i].href === href) {
-					error += 'This href is already used in a quicklink. <br />';
-				}
-				if (global_quicklinks[i].title === title) {
-					error += 'This title is already in use, titles must be unique. <br />';
-				}
-			}
-			if (error.length === 0) {
-				global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
-				var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
-				quicklink
-					.find('a')
-						.attr('target', target)
-						.attr('href', href)
-						.attr('title', title);
-				$('#dojo-add-quicklink').parent().before(quicklink);
-				changed = true;
-			} else {
-				Notify.message(error, {type: "error"});
-				return;
-			}
-		}
-		$('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
-			var i = global_quicklinks.length;
-			var vid = '';
-			if (this.checked) {
+			var error = '';
+			if (href && title && icon) {
+				var i = global_quicklinks.length;
 				for (i; i--;) {
-					vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
-					if (this.value === vid) {
-						$('#quicklinks li a[title="'+this.title+'"]').parent().remove();
-						global_quicklinks.splice(i, 1);
-						changed = true;
+					if (global_quicklinks[i].href === href) {
+						error += 'This href is already used in a quicklink. <br />';
+					}
+					if (global_quicklinks[i].title === title) {
+						error += 'This title is already in use, titles must be unique. <br />';
 					}
 				}
+				if (error.length === 0) {
+					global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
+					var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
+					quicklink
+					.find('a')
+					.attr('target', target)
+					.attr('href', href)
+					.attr('title', title);
+					$('#dojo-add-quicklink').parent().before(quicklink);
+					changed = true;
+				} else {
+					Notify.message(error, {type: "error"});
+					return;
+				}
 			}
+			$('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
+				var i = global_quicklinks.length;
+				var vid = '';
+				if (this.checked) {
+					for (i; i--;) {
+						vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
+						if (this.value === vid) {
+							$('#quicklinks li a[title="'+this.title+'"]').parent().remove();
+							global_quicklinks.splice(i, 1);
+							changed = true;
+						}
+					}
+				}
 
+			});
+			if (changed)  {
+				quicklinks_save_all();
+			}
+			if(!error) {
+				$.fancybox.close();
+			}
 		});
-		if (changed)  {
-			quicklinks_save_all();
-		}
-		if(!error) {
-			$.fancybox.close();
-		}
 	});
 
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
