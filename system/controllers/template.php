@@ -33,9 +33,6 @@ abstract class Template_Controller extends Controller {
 		// Load the template
 		$this->template = new View($this->template);
 
-		// Render the template immediately after the controller method, if the event
-		// handler want to
-		Event::add('system.render', array($this, '_render'));
 	}
 
 	/**

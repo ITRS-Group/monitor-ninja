@@ -195,72 +195,115 @@ final class Kohana {
 				Event::run('system.404');
 			}
 
-			// Include the Controller file
-			require Router::$controller_path;
-
+			/*
 			$classname = ucfirst(Router::$controller).'_Controller';
 
 			if (!class_exists($classname)) {
 				op5log::instance('ninja')->log('debug', 'Triggering 404 for missing class '.Router::$complete_uri);
 				Event::run('system.404');
-			}
+			}*/
+
+			$pre_controller_executed = false;
+
+			do {
+
+				$next_route = false;
+
+				try {
+					if (!$pre_controller_executed) {
+						$pre_controller_executed = true;
+						Event::run('system.pre_controller');
+					}
+					if (!Router::$controller) {
+						Event::run('system.404');
+					}
+				} catch (Kohana_Reroute_Exception $e) {
+
+					$next_route = true;
+
+					Router::$controller = $e->get_controller();
+					Router::$method = $e->get_method();
+					Router::$arguments = $e->get_arguments();
+
+				} catch (ORMDriverException $e) {
+					new Ninja_Controller();
+					return Kohana::service_unavailable($e);
+				} catch (Exception $e) {
+					self::exception_handler($e);
+				}
+
+			} while ($next_route !== false);
+
+			/*
+			 * The pre_controller is allowed to change controller, but only to
+			 * an existing one
+			 */
+			do {
+
+				$next_route = false;
+				$classname = ucfirst(Router::$controller).'_Controller';
+
+				try {
+
+					/**
+					 * This also has the effect of setting the
+					 * Kohana::$instance variable to the instanced controller
+					 * BUT only if that is the first controller instanced for
+					 * this request
+					 */
+					$controller = new $classname();
+					$method = Router::$method;
+
+					// Stop the controller setup benchmark
+					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
+
+					// Start the controller execution benchmark
+					Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
+
+					// Execute the controller method
+					// $method does always exist in a controller, since Controller
+					// implements the function __call()
+					// Controller constructor has been executed
+					Event::run('system.post_controller_constructor', $controller);
+					call_user_func_array(
+						array($controller, $method),
+						Router::$arguments
+					);
+
+					// Controller method has been executed
+					Event::run('system.post_controller', $controller);
+
+					// Stop the controller execution benchmark
+					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+
+					// Start the rendering benchmark
+					Benchmark::start(SYSTEM_BENCHMARK.'_render');
+
+					// Stop the rendering benchmark
+					Benchmark::stop(SYSTEM_BENCHMARK.'_render');
+
+				} catch (Kohana_Reroute_Exception $e) {
+
+					$next_route = true;
+
+					Router::$controller = $e->get_controller();
+					Router::$arguments = $e->get_arguments();
+					Router::$method = $e->get_method();
+
+				}  catch (ORMDriverException $e) {
+					return Kohana::service_unavailable($e);
+				} catch (Exception $e) {
+					self::exception_handler($e);
+				}
+			} while ($next_route !== false);
 
 			try {
-				// Run system.pre_controller
-				Event::run('system.pre_controller');
-			} catch (ORMDriverException $e) {
-				new Ninja_Controller();
-				return Kohana::service_unavailable($e);
-			} catch (Exception $e) {
-				self::exception_handler($e);
-			}
-
-			try {
-
-				/** Create a new controller instance
-				 * This also has the effect of setting the
-				 * Kohana::$instance variable to the instanced controller
-				 * BUT only if that is the first controller instanced for
-				 * this request */
-				$controller = new $classname();
-				$method = Router::$method;
-
-				// Stop the controller setup benchmark
-				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
-
-				// Start the controller execution benchmark
-				Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
-
-				// Execute the controller method
-				// $method does always exist in a controller, since Controller
-				// implements the function __call()
-				// Controller constructor has been executed
-				Event::run('system.post_controller_constructor', $controller);
-				call_user_func_array(
-					array($controller, $method),
-					Router::$arguments
-				);
-
-				// Controller method has been executed
-				Event::run('system.post_controller', $controller);
-
-				// Stop the controller execution benchmark
-				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
-
-				// Start the rendering benchmark
-				Benchmark::start(SYSTEM_BENCHMARK.'_render');
-
-				// Stop the rendering benchmark
-				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
-
-			} catch (ORMDriverException $e) {
-				return Kohana::service_unavailable($e);
-			} catch (Exception $e) {
-				self::exception_handler($e);
-			}
-
-			try {
-				Event::run('system.render');
+				if (
+					is_a($controller, 'Template_Controller') &&
+					$controller->auto_render
+				) {
+					$controller->template->render(TRUE);
+				}
 			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
@@ -1274,6 +1317,45 @@ class Kohana_User_Exception extends Kohana_Exception {
 		{
 			$this->template = $template;
 		}
+	}
+
+} // End Kohana PHP Exception
+
+/**
+ * Creates a custom exception.
+ */
+class Kohana_Reroute_Exception extends Exception {
+
+	private $controller;
+	private $method;
+	private $arguments = array();
+
+	/**
+	 * Used by the Kohana routing to continously reroute as long as this
+	 * exception occurs
+	 *
+	 * @param   string  controller to reroute to
+	 * @param   string  method to reroute to, default: index
+	 * @param   array   arguments to pass, default: array()
+	 */
+	public function __construct($controller, $method = 'index', array $arguments = array())
+	{
+		parent::__construct("Reroute to $controller/$method");
+		$this->controller = $controller;
+		$this->method = $method;
+		$this->arguments = $arguments;
+	}
+
+	public function get_controller () {
+		return $this->controller;
+	}
+
+	public function get_method () {
+		return $this->method;
+	}
+
+	public function get_arguments () {
+		return $this->arguments;
 	}
 
 } // End Kohana PHP Exception
