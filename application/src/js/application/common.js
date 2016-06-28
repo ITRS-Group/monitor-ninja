@@ -22,6 +22,40 @@ var ninja_refresh = (function () {
 	}
 }());
 
+/**
+ *	cache the progress indicator image to show faster...
+ */
+var Image1 = new Image(16,16);
+Image1.src = _site_domain + 'application/media/images/loading.gif';
+
+/**
+ *	Show a progress indicator to inform user that something
+ *	is happening...
+ */
+function show_progress(the_id, info_str, size_str) {
+	switch (size_str) {
+		case "small": case "tiny":
+			size_str = loadimg_sml.src;
+			break;
+		case "large": case "big":
+			size_str = Image1.src;
+			break;
+		default:
+			size_str = loadimg_sml.src;
+			break;
+	}
+	$("#" + the_id).html('<img id="progress_image_id" src="' + size_str + '"> <em>' + info_str +'</em>').show();
+}
+
+function show_message(the_id, info_str) {
+	$("#" + the_id).html('<em>' + info_str +'</em>').show();
+}
+
+function switch_image(html_id, src)
+{
+	$('#' + html_id).attr('src', src);
+}
+
 var current_interval = 0;
 $(document).ready(function() {
 
@@ -217,39 +251,6 @@ $(document).ready(function() {
 		}
 	}
 
-	/**
-	 *	cache the progress indicator image to show faster...
-	 */
-	var Image1 = new Image(16,16);
-	Image1.src = _site_domain + 'application/media/images/loading.gif';
-
-	/**
-	 *	Show a progress indicator to inform user that something
-	 *	is happening...
-	 */
-	function show_progress(the_id, info_str, size_str) {
-		switch (size_str) {
-			case "small": case "tiny":
-				size_str = loadimg_sml.src;
-			break;
-			case "large": case "big":
-				size_str = Image1.src;
-			break;
-			default:
-				size_str = loadimg_sml.src;
-			break;
-		}
-		$("#" + the_id).html('<img id="progress_image_id" src="' + size_str + '"> <em>' + info_str +'</em>').show();
-	}
-
-	function show_message(the_id, info_str) {
-		$("#" + the_id).html('<em>' + info_str +'</em>').show();
-	}
-
-	function switch_image(html_id, src)
-	{
-		$('#' + html_id).attr('src', src);
-	}
 
 	/**
 	*	Toggle page refresh and show a notify message to user about state
