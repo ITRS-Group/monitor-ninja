@@ -31,6 +31,13 @@ class Error_Controller extends Ninja_Controller  {
 		$this->template->title = _('Page Not Found');
 	}
 
+	public function show_503() {
+		if (PHP_SAPI !== 'cli')
+			header('HTTP/1.1 503 Not Found');
+		$this->template->content = $this->add_view('503');
+		$this->template->title = _('Service Unavailable');
+	}
+
 	public function show_livestatus($exception) {
 		if (PHP_SAPI === 'cli') {
 			print("Livestatus error\n");

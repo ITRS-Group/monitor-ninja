@@ -158,22 +158,6 @@ final class Kohana {
 		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
-	private static function & service_unavailable ($exception) {
-
-		self::$instance->template->content = new View('503');
-		self::$instance->template->content->exception = $exception;
-		self::$instance->template->disable_refresh = true;
-
-		try {
-			Event::run('system.render');
-		} catch (Exception $e) {
-			self::exception_handler($e);
-		}
-
-		return self::$instance;
-
-	}
-
 	/**
 	 * Loads the controller and initializes it. Runs the pre_controller,
 	 * post_controller_constructor, and post_controller events. Triggers
@@ -226,8 +210,11 @@ final class Kohana {
 					Router::$arguments = $e->get_arguments();
 
 				} catch (ORMDriverException $e) {
-					new Ninja_Controller();
-					return Kohana::service_unavailable($e);
+
+					Router::$controller = "Error";
+					Router::$method = "show_503";
+					Router::$arguments = array($e);
+
 				} catch (Exception $e) {
 					self::exception_handler($e);
 				}
@@ -290,8 +277,16 @@ final class Kohana {
 					Router::$arguments = $e->get_arguments();
 					Router::$method = $e->get_method();
 
-				}  catch (ORMDriverException $e) {
-					return Kohana::service_unavailable($e);
+				} catch (ORMDriverException $e) {
+
+					/**
+					 * Would like to do a next route buut the post controller
+					 * may spawn a new ORMDriverException and stick is in an
+					 * endless loop.
+					 */
+					$controller = new Error_Controller();
+					$controller->show_503($e);
+
 				} catch (Exception $e) {
 					self::exception_handler($e);
 				}
