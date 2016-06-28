@@ -199,7 +199,7 @@ final class Kohana {
 
 			} catch (ORMDriverException $e) {
 
-				Router::$controller = "Error";
+				Router::$controller = "error";
 				Router::$method = "show_503";
 				Router::$arguments = array($e);
 
@@ -266,7 +266,7 @@ final class Kohana {
 
 				} catch (Kohana_Reroute_Exception $e) {
 
-					if (strtolower($classname) != 'error_controller') {
+					if (Router::$controller != 'error') {
 						$next_route = true;
 					}
 
@@ -276,11 +276,11 @@ final class Kohana {
 
 				} catch (ORMDriverException $e) {
 
-					if (strtolower($classname) != 'error_controller') {
+					if (Router::$controller != 'error') {
 						$next_route = true;
 					}
 
-					Router::$controller = 'Error';
+					Router::$controller = 'error';
 					Router::$arguments = array($e);
 					Router::$method = 'show_503';
 

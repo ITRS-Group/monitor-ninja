@@ -12,13 +12,13 @@ class errors {
 	{
 		switch (Event::$name) {
 		case 'system.403':
-			throw new Kohana_Reroute_Exception('Error', 'show_403');
+			throw new Kohana_Reroute_Exception('error', 'show_403');
 			break;
 		 case 'system.404':
-			throw new Kohana_Reroute_Exception('Error', 'show_404');
+			throw new Kohana_Reroute_Exception('error', 'show_404');
 			break;
 		 case 'application.livestatus':
-			throw new Kohana_Reroute_Exception('Error', 'show_livestatus', array(Event::$data));
+			throw new Kohana_Reroute_Exception('error', 'show_livestatus', array(Event::$data));
 			break;
 		 default:
 			return;
