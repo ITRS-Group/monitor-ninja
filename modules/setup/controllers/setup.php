@@ -15,8 +15,6 @@ class Setup_Controller extends Chromeless_Controller {
 	 */
 	public function index ($message = false) {
 
-		$this->template->js = array();
-
 		$this->template->content = new View('setup');
 		$this->template->content->message = $message;
 		$this->template->content->linkprovider = $this->linkprovider;
