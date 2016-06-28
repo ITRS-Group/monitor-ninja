@@ -201,41 +201,6 @@ EOF;
 		}
 	}
 
-
-	/**
-	 * Return a manifest variable as a javascript file, for loading through a script tag
-	 */
-	public function renderer( $name = false ) {
-		$this->_verify_access('ninja.listview:read');
-
-		if( substr( $name, -3 ) == '.js' ) {
-			$name = substr( $name, 0, -3 );
-		}
-
-		$this->auto_render = false;
-		$renderers_files = Module_Manifest_Model::get( 'lsfilter_renderers' );
-
-		header('Content-Type: text/javascript');
-
-		$files = array();
-		if( isset( $renderers_files[$name] ) ) {
-			$files = $renderers_files[$name];
-		}
-		sort($files);
-
-		foreach( $files as $renderer ) {
-			print "\n/".str_repeat('*',79)."\n";
-			print " * Output file: ".$renderer."\n";
-			print " ".str_repeat('*',78)."/\n";
-			if( is_readable(DOCROOT.$renderer) ) {
-				readfile(DOCROOT.$renderer);
-			} else {
-				print "// ERROR: Can't open file...\n\n";
-			}
-		}
-	}
-
-
 	/**
 	 * Return a manifest variable as a javascript file, for loading through a script tag
 	 */

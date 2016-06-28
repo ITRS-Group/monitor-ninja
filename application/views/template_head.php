@@ -36,13 +36,11 @@ if (!empty($base_href)) {
 </script>
 
 	<?php
+
 		$v = new View('js_header', array('js' => isset($js)?$js:array()));
 		$v->render(true);
-		refresh::lv_control();
-		/*$basepath = 'modules/lsfilter/';
-		echo html::script($basepath.'media/js/lib.js');
-		echo html::script($basepath.'media/js/LSFilterSaved.js');*/
 
+		refresh::lv_control();
 		if (!isset($disable_refresh) || $disable_refresh === false) {
 			refresh::control();
 		}
