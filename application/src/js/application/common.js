@@ -1,4 +1,7 @@
 
+var loadimg_sml = new Image(16, 16);
+loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
+
 function _(text)
 {
 	// console.log('To translate: '+ text);
@@ -213,10 +216,6 @@ $(document).ready(function() {
 			});
 		}
 	}
-
-
-	var loadimg_sml = new Image(16,16);
-	loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
 
 	/**
 	 *	cache the progress indicator image to show faster...
