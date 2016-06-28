@@ -213,13 +213,13 @@ final class Event {
 			$callbacks  =  self::get($name);
 			$thrown = null;
 
-			try {
-				foreach ($callbacks as $callback){
+			foreach ($callbacks as $callback){
+				try {
 					call_user_func($callback);
+				} catch (Exception $e) {
+					$logger->log('debug', 'Exception in event ' . $name);
+					$thrown = $e;
 				}
-			} catch (Exception $e) {
-				$logger->log('debug', 'Exception in event ' . $name);
-				$thrown = $e;
 			}
 
 			// Do this to prevent data from getting 'stuck'

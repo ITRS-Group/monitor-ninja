@@ -239,13 +239,21 @@ final class Kohana {
 					// implements the function __call()
 					// Controller constructor has been executed
 					Event::run('system.post_controller_constructor', $controller);
-					call_user_func_array(
-						array($controller, $method),
-						Router::$arguments
-					);
+					$execution_exception = null;
+					try {
+						call_user_func_array(
+							array($controller, $method),
+							Router::$arguments
+						);
+					} catch (Exception $e) {
+						$execution_exception = $e;
+					}
 
 					// Controller method has been executed
 					Event::run('system.post_controller', $controller);
+					if ($execution_exception) {
+						throw $execution_exception;
+					}
 
 					// Stop the controller execution benchmark
 					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
@@ -258,7 +266,9 @@ final class Kohana {
 
 				} catch (Kohana_Reroute_Exception $e) {
 
-					$next_route = true;
+					if (strtolower($classname) != 'error_controller') {
+						$next_route = true;
+					}
 
 					Router::$controller = $e->get_controller();
 					Router::$arguments = $e->get_arguments();
@@ -266,13 +276,13 @@ final class Kohana {
 
 				} catch (ORMDriverException $e) {
 
-					/**
-					 * Would like to do a next route buut the post controller
-					 * may spawn a new ORMDriverException and stick is in an
-					 * endless loop.
-					 */
-					$controller = new Error_Controller();
-					$controller->show_503($e);
+					if (strtolower($classname) != 'error_controller') {
+						$next_route = true;
+					}
+
+					Router::$controller = 'Error';
+					Router::$arguments = array($e);
+					Router::$method = 'show_503';
 
 				} catch (Exception $e) {
 					self::exception_handler($e);
