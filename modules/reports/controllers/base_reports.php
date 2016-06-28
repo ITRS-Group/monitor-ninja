@@ -33,10 +33,8 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		}
 
 		$this->template->disable_refresh = true;
-
-		$this->template->js[] = 'application/media/js/lib.set.js';
-		$this->template->js[] = 'application/media/js/jquery.filterable.js';
 		$this->template->css[] = 'application/media/css/jquery.filterable.css';
+
 	}
 
 	/** Controller method that should render a form for creating a report */

@@ -63,8 +63,6 @@ class Summary_Controller extends Base_reports_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
 		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 
@@ -139,8 +137,6 @@ class Summary_Controller extends Base_reports_Controller
 		}
 
 		$this->template->disable_refresh = true;
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
 		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');

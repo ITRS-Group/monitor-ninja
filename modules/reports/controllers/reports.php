@@ -47,8 +47,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		# we should set the required js-files
 		$this->template->js[] = 'modules/reports/views/reports/js/tgraph.js';
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/reports.js';
 
@@ -141,8 +139,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$reports_model = new Status_Reports_Model($this->options);
 
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/tgraph.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
 		$this->template->js[] = 'modules/reports/views/reports/js/reports.js';
