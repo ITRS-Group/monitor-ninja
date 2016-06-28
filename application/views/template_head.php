@@ -35,17 +35,6 @@ if (!empty($base_href)) {
 		var listview_renderer_totals = {};
 </script>
 
-	<?php
-
-		$v = new View('js_header', array('js' => isset($js)?$js:array()));
-		$v->render(true);
-
-		refresh::lv_control();
-		if (!isset($disable_refresh) || $disable_refresh === false) {
-			refresh::control();
-		}
-
-	?>
 	<script type="text/javascript">
 		//<!--
 		<?php
@@ -104,6 +93,26 @@ if (!empty($base_href)) {
 			var _popup_delay='<?php echo config::get('config.popup_delay'); ?>';
 
 			var loading_img = '/application/media/images/loading.gif';
+			<?php $auth_user = op5auth::instance()->get_user(); ?>
+			var _user = <?php echo json_encode(array(
+				'username' => $auth_user->get_username(),
+				'realname' => $auth_user->get_realname(),
+				'auth_data' => $auth_user->get_auth_data())); ?>
+		//-->
+	</script>
+	<?php
+
+		$v = new View('js_header', array('js' => isset($js)?$js:array()));
+		$v->render(true);
+
+		refresh::lv_control();
+		if (!isset($disable_refresh) || $disable_refresh === false) {
+			refresh::control();
+		}
+
+	?>
+	<script type="text/javascript">
+		//<!--
 			<?php
 			if (!empty($js_strings)) {
 				echo $js_strings;
@@ -113,13 +122,6 @@ if (!empty($base_href)) {
 				echo $inline_js;
 				echo "});";
 			}?>
-
-
-			<?php $auth_user = op5auth::instance()->get_user(); ?>
-			var _user = <?php echo json_encode(array(
-				'username' => $auth_user->get_username(),
-				'realname' => $auth_user->get_realname(),
-				'auth_data' => $auth_user->get_auth_data())); ?>
 		//-->
 	</script>
 
