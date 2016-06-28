@@ -120,8 +120,12 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 
 		$email = $this->get_email();
 		if (!$email && class_exists('ContactPool_Model')) {
-			$contact = ContactPool_Model::all()->reduce_by('name', $this->get_username(), '=')->one();
-			if ($contact) $email = $contact->get_email();
+			try {
+				$contact = ContactPool_Model::all()->reduce_by('name', $this->get_username(), '=')->one();
+				if ($contact) $email = $contact->get_email();
+			} catch (Exception $e) {
+				/* noop */
+			}
 		}
 
 		$url = 'https://secure.gravatar.com/avatar/';
