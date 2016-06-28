@@ -68,6 +68,21 @@ class Auth_Controller extends Chromeless_Controller {
 	}
 
 	/**
+	 * No access method
+	 *
+	 * @param $messages array
+	 * @param $action string
+	 */
+	function _no_access ($messages, $action) {
+
+		$this->template->content = new View('401');
+
+		$this->template->content->messages = $messages;
+		$this->template->content->action = $action;
+
+	}
+
+	/**
 	 * Logout user, and redirect to the login form.
 	 */
 	public function logout()
