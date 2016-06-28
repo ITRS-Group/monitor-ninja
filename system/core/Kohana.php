@@ -158,10 +158,21 @@ final class Kohana {
 		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
+	private static function valid_route () {
+		if (Router::$method[0] === '_') {
+			op5log::instance('ninja')->log('debug', 'Triggering 404 for disallowed hidden method '.Router::$complete_uri);
+			return false;
+		} elseif (!Router::$controller) {
+			op5log::instance('ninja')->log('debug', 'Triggering 404 for no controller '.Router::$complete_uri);
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Loads the controller and initializes it. Runs the pre_controller,
-	 * post_controller_constructor, and post_controller events. Triggers
-	 * a system.404 event when the route cannot be mapped to a controller.
+	 * post_controller_constructor, and post_controller events. Triggers a
+	 * system.404 event when the route cannot be mapped to a controller.
 	 *
 	 * This method is benchmarked as controller_setup and controller_execution.
 	 *
@@ -169,57 +180,33 @@ final class Kohana {
 	 */
 	public static function & instance()
 	{
-		if (self::$instance === NULL)
-		{
+
+		if (self::$instance === NULL) {
+
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
-			if (Router::$method[0] === '_')
-			{
-				op5log::instance('ninja')->log('debug', 'Triggering 404 for disallowed hidden method '.Router::$complete_uri);
-				Event::run('system.404');
+			try {
+
+				Event::run('system.pre_controller');
+				if (!Kohana::valid_route())
+					Event::run('system.404');
+
+			} catch (Kohana_Reroute_Exception $e) {
+
+				Router::$controller = $e->get_controller();
+				Router::$method = $e->get_method();
+				Router::$arguments = $e->get_arguments();
+
+			} catch (ORMDriverException $e) {
+
+				Router::$controller = "Error";
+				Router::$method = "show_503";
+				Router::$arguments = array($e);
+
+			} catch (Exception $e) {
+				self::exception_handler($e);
 			}
 
-			/*
-			$classname = ucfirst(Router::$controller).'_Controller';
-
-			if (!class_exists($classname)) {
-				op5log::instance('ninja')->log('debug', 'Triggering 404 for missing class '.Router::$complete_uri);
-				Event::run('system.404');
-			}*/
-
-			$pre_controller_executed = false;
-
-			do {
-
-				$next_route = false;
-
-				try {
-					if (!$pre_controller_executed) {
-						$pre_controller_executed = true;
-						Event::run('system.pre_controller');
-					}
-					if (!Router::$controller) {
-						Event::run('system.404');
-					}
-				} catch (Kohana_Reroute_Exception $e) {
-
-					$next_route = true;
-
-					Router::$controller = $e->get_controller();
-					Router::$method = $e->get_method();
-					Router::$arguments = $e->get_arguments();
-
-				} catch (ORMDriverException $e) {
-
-					Router::$controller = "Error";
-					Router::$method = "show_503";
-					Router::$arguments = array($e);
-
-				} catch (Exception $e) {
-					self::exception_handler($e);
-				}
-
-			} while ($next_route !== false);
 
 			/*
 			 * The pre_controller is allowed to change controller, but only to
