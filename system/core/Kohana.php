@@ -29,6 +29,11 @@ final class Kohana {
 	// The current locale
 	public static $locale;
 
+	// The path relative to DOCROOT to the current module with leading /
+	// Used only during "require", for now, only hooks)
+	// For example: "/modules/something"
+	public static $module_path;
+
 	// Configuration
 	private static $configuration;
 
@@ -147,6 +152,11 @@ final class Kohana {
 		$hooks = self::list_files('hooks', TRUE);
 		foreach ($hooks as $file) {
 			if(pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+				/* If module within docroot, set module_path to relative path */
+				Kohana::$module_path = null;
+				$moduledir = dirname(dirname($file));
+				if(substr($moduledir, 0, strlen(DOCROOT)) == DOCROOT)
+					Kohana::$module_path = substr($moduledir, strlen(DOCROOT));
 				include $file;
 			}
 		}

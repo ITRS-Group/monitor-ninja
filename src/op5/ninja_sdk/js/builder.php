@@ -1,12 +1,36 @@
 <?php
 
+require_once(__DIR__.'/../class_generator.php');
+
+class js_loader_hook_generator extends class_generator {
+	protected $bundle_path;
+
+	public function __construct($bundle_path) {
+		$this->bundle_path = $bundle_path;
+		$this->classname = 'load_js_bundles';
+		$this->set_basedir('hooks');
+	}
+
+	public function generate( $skip_generated_note = false ) {
+		parent::generate($skip_generated_note);
+
+		$this->write('$module_path = Kohana::$module_path;');
+		$this->write('Event::add("system.post_controller_constructor", function () use ($module_path) {');
+		$this->write(    '$controller = Event::$data;');
+		$this->write(    '$controller->template->js[] = $module_path.%s;', $this->bundle_path);
+		$this->write('});');
+	}
+}
+
 class js_Builder implements builder_interface {
 	public function generate ($mod_path, $src_path) {
 		if(!is_dir($src_path))
 			return;
 
+		$bundle_path = '/media/js/bundle_'.time().'.js';
+
 		$target_dir =  $mod_path . '/media/js';
-		$target_path =  $mod_path . '/media/js/bundle_'.time().'.js';
+		$target_path =  $mod_path . $bundle_path;
 		$hook_path =  $mod_path . '/hooks/load_js_bundles.php';
 
 		$directory = new RecursiveDirectoryIterator($src_path);
@@ -50,18 +74,9 @@ EOF
 
 		fclose($target);
 
-
-		if(!is_dir(dirname($hook_path)) && !mkdir(dirname($hook_path), 0755, true))
-			throw new GeneratorException( "Could not create dir $target_dir" );
-
-		file_put_contents($hook_path, <<<EOF
-<?php
-Event::add('system.post_controller_constructor', function () {
-    \$controller = Event::\$data;
-	\$controller->template->js[] = "$target_path";
-});
-EOF
-);
+		$hookgen = new js_loader_hook_generator($bundle_path);
+		$hookgen->set_moduledir($mod_path);
+		$hookgen->generate();
 
 	}
 
