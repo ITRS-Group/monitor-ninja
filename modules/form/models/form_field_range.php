@@ -6,7 +6,7 @@
 class Form_Field_Range_Model extends Form_Field_Model {
 
 	/**
-	 * @var string
+	 * The range step default
 	 */
 	const RANGE_STEP_DEFAULT = "RANGE_STEP_DEFAULT";
 

@@ -10,8 +10,6 @@ class Form_Model {
 
 	/**
 	 * Storage for default values, as seen processed
-	 *
-	 * @var array of default values, indexed on field names
 	 */
 	private $values = array();
 
