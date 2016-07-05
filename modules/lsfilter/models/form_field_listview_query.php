@@ -1,6 +1,14 @@
 <?php
+
+/**
+ * Lets the user write a syntax highlighted query in free form
+ */
 class Form_Field_Listview_Query_Model extends Form_Field_Model {
 
+	/**
+	 * @param $name string
+	 * @param $pretty_name $string
+	 */
 	public function __construct($name, $pretty_name) {
 		parent::__construct( $name, $pretty_name );
 	}

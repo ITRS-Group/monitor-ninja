@@ -37,18 +37,10 @@ class listview_library_hook {
 
 		$custom_extra_js = Module_Manifest_Model::get('lsfilter_extra_js');
 		$controller->template->js = array_merge($controller->template->js, $custom_extra_js);
+
 		$controller->template->css[] = $basepath.'views/css/LSFilterStyle.css';
-
-		$controller->template->js [] = $basepath . 'views/form/form.autocomplete.js';
-
-		$controller->template->js [] = $basepath . 'views/form/codemirror/codemirror.js';
-		$controller->template->js [] = $basepath . 'views/form/codemirror/mode/lsfilter/lsfilter.js';
-		$controller->template->js [] = $basepath . 'views/form/codemirror/show-hint.js';
-		$controller->template->js [] = $basepath . 'views/form/codemirror/lsfilter-hint.js';
-		$controller->template->js [] = $basepath . 'views/form/form.codemirror.js';
-
-		$controller->template->css [] = $basepath . 'views/form/codemirror/codemirror.css';
-		$controller->template->css [] = $basepath . 'views/form/codemirror/show-hint.css';
+		$controller->template->css[] = $basepath . 'views/form/codemirror.css';
+		$controller->template->css[] = $basepath . 'views/form/show-hint.css';
 
 	}
 }
