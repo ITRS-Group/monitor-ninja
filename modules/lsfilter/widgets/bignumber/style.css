@@ -6,6 +6,10 @@
 	min-width: 75px;
 }
 
+.state_summary-state .big-number .big-number-perfdata-uom {
+  font-size: 50%;
+}
+
 .state_summary-state {
 	display: inline-block;
 	margin-top: 0px;
