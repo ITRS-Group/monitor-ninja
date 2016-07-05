@@ -1,14 +1,14 @@
-(function () {
+var widgetFormAutoCompleteModule = (function () {
 
 	"use strict";
 
-	var _document = $(document);
 	var Autocomplete = function (form_field) {
 
 		this.key_index = 1;
 		this.timeout = null;
 
-		this.input = form_field.find('.nj-form-field-autocomplete-input');
+
+        this.input = form_field.find('.nj-form-field-autocomplete-input');
 		this.shadow = form_field.find('.nj-form-field-autocomplete-shadow');
 		this.items = form_field.find('.nj-form-field-autocomplete-items');
 		this.dropper = form_field.find('.nj-form-field-autocomplete-dropper');
@@ -16,6 +16,7 @@
 		this.placeholder = this.input.attr('placeholder');
 
 		this.tables = form_field.attr('data-autocomplete').split(',');
+
 
 		this.input.on('keyup', function (e) {
 			e.preventDefault();
@@ -219,11 +220,9 @@
 
 	};
 
-
-	_document.ready(function () {
-		_document.find('.nj-form-field-autocomplete').each(function () {
-			new Autocomplete($(this));
-		});
-	});
+    // Created public pointers to functions
+    return {
+        Autocomplete: Autocomplete
+    }
 
 }());

@@ -11,7 +11,7 @@ if ($render === "select" || ($render === false && count($options) > 3)) {
 	echo '<div class="nj-form-field">';
 	echo '<label>';
 	echo '<div class="nj-form-label"><label for="'.$element_id.'">' . html::specialchars($field->get_pretty_name()) . '</label></div>';
-	echo '<select class="nj-form-option" id="'.$element_id.'" name="' . $field->get_name() . '" />';
+	echo '<select class="nj-form-option" id="'.$element_id.'" name="' . $field->get_name() . '">';
 	foreach ( $field->get_options() as $value => $label ) {
 		$selectstr = ($default == $value) ? ' selected="selected"' : '';
 		echo '<option value="' . html::specialchars( $value ) . '"'.$selectstr.'>' . html::specialchars( $label ) . '</option>';
