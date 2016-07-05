@@ -117,22 +117,6 @@ var widgetFormModule = (function () {
             }
         });
 
-        //Big Number UOM/Value Display
-        setTimeout(function() {
-            form_element.add_widget_form_element.find('.big-number').each(function () {
-                var big_number = $(this).text().replace(/[./% ]/g,'');
-                var font_size = '65px';
-                if(big_number.length > 6){
-                    font_size = '50px';
-                }else if(big_number.length > 5){
-                    font_size = '55px';
-                }else if(big_number.length > 4){
-                    font_size = '60px';
-                }
-                $(this).css('font-size',font_size);
-            });
-        }, 0);
-
         //AutoComplete
         form_element.add_widget_form_element.find('.nj-form-field-autocomplete').each(function () {
             new widgetFormAutoCompleteModule.Autocomplete($(this));
