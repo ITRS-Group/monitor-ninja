@@ -37,10 +37,6 @@ a link that will point to your intranet.
 Copy any file in the folder application/addons/menu to your_menu_item.php. Modify
 the contents (especially the URI) to suit your needs.
 
-@subsection widget Creating your own widgets
-
-See the documentation section on @ref Widgets.
-
 @subsection greasy Finetuning Ninja, editing existing code
 
 There is a "Hello World" bundle located in ninja/xdoc/demo_module_hello_world. Read

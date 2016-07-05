@@ -184,9 +184,6 @@ for f in cli-helpers/apr_md5_validate \
 	chmod 755 %buildroot%prefix/$f
 done
 
-# The custom_widgets dir need to be writable by the apache user
-chmod 775 %buildroot%prefix/application/custom_widgets
-
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 %if 0%{?sles_version}
