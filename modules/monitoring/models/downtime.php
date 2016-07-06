@@ -1,6 +1,5 @@
 <?php
 
-require_once( dirname(__FILE__).'/base/basedowntime.php' );
 
 /**
  * Describes a single object from livestatus

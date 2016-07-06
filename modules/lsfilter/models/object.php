@@ -1,5 +1,4 @@
 <?php
-require_once (dirname( __FILE__ ) . '/base/baseobject.php');
 
 /**
  * Describes a single object from livestatus

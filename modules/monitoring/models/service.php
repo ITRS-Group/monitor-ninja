@@ -1,6 +1,5 @@
 <?php
 
-require_once( dirname(__FILE__).'/base/baseservice.php' );
 
 /**
  * Describes a single object from livestatus
