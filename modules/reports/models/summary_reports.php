@@ -422,16 +422,16 @@ class Summary_Reports_Model extends Reports_Model
 		switch ($report_type) {
 			case 'hosts': case 'hostgroups':
 				$events = array(0 => 0, 1 => 0, 2 => 0);
-				$events = array_diff_key($events, array_keys($this->options['host_filter_status']));
+				$events = array_diff_key($events, $this->options['host_filter_status']);
 				break;
 			case 'services': case 'servicegroups':
 				$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-				$events = array_diff_key($events, array_keys($this->options['service_filter_status']));
+				$events = array_diff_key($events, $this->options['service_filter_status']);
 				break;
 		}
 
 		# add event (state) counters to slots
-		$data = false;
+		$data = array();
 		foreach ($slots as $s => $l) {
 			$data[$l] = $events;
 		}
