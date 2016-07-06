@@ -8,3 +8,4 @@ sn: SingleGO
 userPassword: singlegrouppassword
 mail: singlegroup@op5test.op5.com
 uid: singlegroup
+givenName: singlegroupName

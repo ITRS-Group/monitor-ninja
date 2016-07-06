@@ -8,3 +8,4 @@ sn: MultiGO
 userPassword: multigrouppassword
 mail: multigroup@op5test.op5.com
 uid: multigroup
+givenName: multigroupName

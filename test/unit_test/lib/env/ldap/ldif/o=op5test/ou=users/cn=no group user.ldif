@@ -8,3 +8,4 @@ sn: NoGO
 userPassword: nogrouppassword
 mail: nogroup@op5test.op5.com
 uid: nogroup
+givenName: nogroupName

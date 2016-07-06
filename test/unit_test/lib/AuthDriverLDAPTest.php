@@ -146,6 +146,24 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 				'Incorrect groups returned for user multigroup');
 	}
 
+	function test_group_membership_givenname() {
+		$this->connect(array('userkey' => 'GiveNnaME'));
+		$user = $this->drv->login('nogroupName', 'nogrouppassword');
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as nogroup");
+		$this->assertEquals( $user->get_groups(), array(),
+			'Incorrect groups returned for user nogroup');
+
+		$user = $this->drv->login('singlegroupName', 'singlegrouppassword');
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as singlegroup");
+		$this->assertEquals( $user->get_groups(), array('Depth 1 of 1'),
+			'Incorrect groups returned for user singlegroup');
+
+		$user = $this->drv->login('multigroupName', 'multigrouppassword');
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as multigroup");
+		$this->assertEquals( $user->get_groups(), array('Depth 1 of 1', 'Depth 1 of 1 Nr 2'),
+			'Incorrect groups returned for user multigroup');
+	}
+
 	function test_group_recursion() {
 		$this->connect(array('group_recursive' => false));
 		$user = $this->drv->login('nestedgroup', 'nestedgrouppassword');
@@ -305,6 +323,48 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 						'nonexisting' => false,
 				),
 				'Available groups doesn\'t match'
+		);
+	}
+
+	function test_group_user_available() {
+		$this->connect();
+		$available = $this->drv->groups_available(
+			array(
+				'user_nogroup',
+				'user_singlegroup',
+				'user_multigroup',
+				'nonexisting'
+			)
+		);
+		$this->assertEquals($available,
+			array (
+				'user_nogroup' => true,
+				'user_singlegroup' => true,
+				'user_multigroup' => true,
+				'nonexisting' => false,
+			),
+			'Available groups doesn\'t match'
+		);
+	}
+
+	function test_group_user_available_givenname() {
+		$this->connect(array("userkey"=>"GiVeNnAMe"));
+		$available = $this->drv->groups_available(
+			array(
+				'user_nogroupName',
+				'user_singlegroupName',
+				'user_multigroupName',
+				'nonexistingName'
+			)
+		);
+		$this->assertEquals($available,
+			array (
+				'user_nogroupName' => true,
+				'user_singlegroupName' => true,
+				'user_multigroupName' => true,
+				'nonexistingName' => false,
+			),
+			'Available groups doesn\'t match'
 		);
 	}
 

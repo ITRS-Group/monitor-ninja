@@ -8,3 +8,4 @@ sn: NestedGO
 userPassword: nestedgrouppassword
 mail: nestedgroup@op5test.op5.com
 uid: nestedgroup
+givenName: nestedgroupName

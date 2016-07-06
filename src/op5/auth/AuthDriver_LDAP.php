@@ -167,6 +167,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$entry = ldap_first_entry($this->conn, $res);
 				while ($entry !== false) {
 					$attrs = ldap_get_attributes($this->conn, $entry);
+					$attrs = array_change_key_case($attrs, CASE_LOWER);
 					$result[$attrs[strtolower($config['groupkey'])][0]] = true;
 					$entry = ldap_next_entry($this->conn, $entry);
 				}
@@ -200,6 +201,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$entry = ldap_first_entry($this->conn, $res);
 				while ($entry !== false) {
 					$attrs = ldap_get_attributes($this->conn, $entry);
+					$attrs = array_change_key_case($attrs, CASE_LOWER);
 					$user = $attrs[strtolower($config['userkey'])][0];
 					if ($config['userkey_is_upn']) {
 						$parts = explode('@', $user, 2);
