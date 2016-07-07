@@ -1,4 +1,4 @@
-var widgetFormAutoCompleteModule = (function () {
+(function () {
 
 	"use strict";
 
@@ -15,7 +15,6 @@ var widgetFormAutoCompleteModule = (function () {
 		this.placeholder = this.input.attr('placeholder');
 
 		this.tables = form_field.attr('data-autocomplete').split(',');
-
 
 		this.input.on('keyup', function (e) {
 			e.preventDefault();
@@ -209,9 +208,10 @@ var widgetFormAutoCompleteModule = (function () {
 
 	};
 
-    // Created public pointers to functions
-    return {
-        Autocomplete: Autocomplete
-    }
+	FormModule.register(function (form) {
+		form.find('.nj-form-field-autocomplete').each(function (index, field) {
+			new Autocomplete($(field));
+		});
+	});
 
 }());

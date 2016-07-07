@@ -117,7 +117,7 @@ $(function() {
 
 	$('.widget').each(function() {
 		$.fn.AddEasyWidget($(this), $(this).parent().id, easywidgets_obj);
-        widgetFormModule.add_widget_form({add_widget_form_element : $(this)});
+        FormModule.add_form($(this));
 	});
 
 	// Fade widget titles if they are too long to fit.
@@ -144,8 +144,7 @@ $(function() {
 					var new_widget = $(data.widget);
 					$('#' + cell_name).prepend(new_widget);
 					$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
-                    //Add Widget with Auto complete form values
-                    widgetFormModule.add_widget_form({add_widget_form_element : new_widget});
+        	FormModule.add_form(new_widget);
 				},
 				error: function () {
 					Notify.message('Could not save new widget to settings');

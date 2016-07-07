@@ -1,4 +1,4 @@
-var widgetFormModule = (function () {
+var FormModule = (function () {
 
     var doc = $(document);
 
@@ -24,7 +24,6 @@ var widgetFormModule = (function () {
         });
 
     });
-
 
     doc.on('autocompleted', '.nj-form-field input', function(e) {
         var field = $(this);
@@ -98,33 +97,39 @@ var widgetFormModule = (function () {
         }, 0);
     });
 
-    //Add widget function
-    var add_widget_form = function(form_element) {
-        form_element.add_widget_form_element.find('.nj-form-conditional').each(function() {
+		var form_plugins = [];
+		var Form = {
+
+			register: function (plugin)	{
+				form_plugins.push(plugin);
+			},
+
+			add_form: function (form_element) {
+
+				form_element.find('.nj-form-conditional').each(function() {
+
             var elem = $(this);
             var form = elem.closest('form');
             var field = form.find("[name='" + elem.attr('data-njform-rel') + "']");
             var value = field.val();
 
             if (field.attr('type') === 'checkbox') {
-                value = field.is(':checked');
-            }
+							value = field.is(':checked');
+						}
 
-            if (elem.attr('data-njform-value') == value) {
-                elem.show();
-            } else {
-                elem.hide();
-            }
+						if (elem.attr('data-njform-value') == value) elem.show();
+						else elem.hide();
+
         });
 
-        //AutoComplete
-        form_element.add_widget_form_element.find('.nj-form-field-autocomplete').each(function () {
-            new widgetFormAutoCompleteModule.Autocomplete($(this));
-        });
-    };
+				form_plugins.forEach(function (plugin) {
+					plugin(form_element);
+				});
 
-    // Created public pointers to functions
-    return {
-        add_widget_form: add_widget_form
-    }
+			}
+
+		}
+
+		return Form;
+
 })();
