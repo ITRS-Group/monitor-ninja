@@ -7,8 +7,7 @@ var widgetFormAutoCompleteModule = (function () {
 		this.key_index = 1;
 		this.timeout = null;
 
-
-        this.input = form_field.find('.nj-form-field-autocomplete-input');
+		this.input = form_field.find('.nj-form-field-autocomplete-input');
 		this.shadow = form_field.find('.nj-form-field-autocomplete-shadow');
 		this.items = form_field.find('.nj-form-field-autocomplete-items');
 		this.dropper = form_field.find('.nj-form-field-autocomplete-dropper');
@@ -80,16 +79,6 @@ var widgetFormAutoCompleteModule = (function () {
 			e.preventDefault();
 			return false;
 
-		}.bind(this));
-
-		this.dropper.on('click', function (e) {
-			e.preventDefault();
-			if(this.items.is(':visible')) {
-				this.items.hide();
-			} else {
-				this.update('');
-			}
-			return false;
 		}.bind(this));
 
 		this.input.on('focus', function (e) {
