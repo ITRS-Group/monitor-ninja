@@ -48,14 +48,14 @@
 							echo 'Page does not have any content';
 						}
 
-						require __DIR__ . '/template_notifications.php';
 
 					?>
 
-			</div>
+				</div>
 
 			<?php
 
+				require __DIR__ . '/template_notifications.php';
 				if (isset($saved_searches) && !empty($saved_searches)) {
 					echo $saved_searches;
 				}

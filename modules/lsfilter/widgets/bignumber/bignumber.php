@@ -197,15 +197,28 @@ class bignumber_Widget extends widget_Base {
 		$threshold_as->set_help('bignumber_threshold_as', 'tac');
 		$thresholds = new Form_Field_Conditional_Model('threshold_onoff', true,
 			new Form_Field_Conditional_Model('content_from', 'filter',
-				new Form_Field_Group_Model("thresholds", array(
-					$threshold_as,
-					new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
-					new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
-				))
-			)
+			new Form_Field_Group_Model("thresholds", array(
+				$threshold_as,
+				new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
+				new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
+			))
+		)
+	);
+
+		$regular_widget_form_fields = array(
+			new Form_Field_Group_Model('meta', array(
+				new Form_Field_Text_Model('title', 'Custom title'),
+				new Form_Field_Text_Model('refresh_interval', 'Refresh (sec)'),
+			))
 		);
 
-		$form_model = Form_Model::for_tac_widget();
+		$form_model = new Form_Model('widget/save_widget_setting',
+			$regular_widget_form_fields);
+
+		$form_model->set_values(array(
+			'refresh_interval' => 60
+		));
+
 		foreach(array(
 			$content_from,
 			$host,
@@ -215,7 +228,7 @@ class bignumber_Widget extends widget_Base {
 			$toggle_status,
 			$thresholds
 		) as $field) {
-			$form_model->add_field($field);
+		$form_model->add_field($field);
 		}
 
 		$defaults = array(
@@ -348,12 +361,12 @@ class bignumber_Widget extends widget_Base {
 					};
 					$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
 					if (call_user_func_array($threshold_callback, array(
-							$form_model->get_value('threshold_crit', 90.0),
-							$counts))) {
+						$form_model->get_value('threshold_crit', 90.0),
+						$counts))) {
 						$state = 'critical';
 					} elseif (call_user_func_array($threshold_callback, array(
-							$form_model->get_value('threshold_warn', 95.0),
-							$counts))) {
+						$form_model->get_value('threshold_warn', 95.0),
+						$counts))) {
 						$state = 'warning';
 					} else {
 						$state = 'ok';

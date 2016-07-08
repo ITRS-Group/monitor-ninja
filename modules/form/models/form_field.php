@@ -12,7 +12,7 @@ abstract class Form_Field_Model {
 	/**
 	 * Initialize the name and pretty name for the field.
 	 *
-	 * There is (alsmost) no fields that shouldn't take options. Thus (almost)
+	 * There is (almost) no fields that shouldn't take options. Thus (almost)
 	 * all field types needs to override this method. Thus not overriding this
 	 * methods is (most likely) an error. And those can do it anyway. Thus
 	 * protected.

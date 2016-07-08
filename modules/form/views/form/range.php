@@ -11,7 +11,7 @@ echo '<div class="nj-form-label"><label for="'.$element_id.'">' . html::specialc
 echo '<span class="nj-form-field-range">';
 echo '<span class="nj-form-field-range-min">' . $field->get_min() . '</span>';
 echo '<span class="nj-form-field-range-hover">' . html::specialchars($default) . '</span>';
-echo '<input type="range" id="'.$element_id.'" step="' . $field->get_step() . '" min="' . $field->get_min() . '" max="' . $field->get_max() . '" class="nj-form-option" name="'.$field->get_name().'" value="'.html::specialchars($default).'" />';
+echo '<input type="range" id="'.$element_id.'" step="' . $field->get_step() . '" min="' . $field->get_min() . '" max="' . $field->get_max() . '" class="nj-form-option" name="'.html::specialchars($field->get_name()).'" value="'.html::specialchars($default).'" />';
 echo '<span class="nj-form-field-range-max">' . $field->get_max() . '</span>';
 echo '</span>';
 echo '</label>';

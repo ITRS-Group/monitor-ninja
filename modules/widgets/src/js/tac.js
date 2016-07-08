@@ -117,7 +117,7 @@ $(function() {
 
 	$('.widget').each(function() {
 		$.fn.AddEasyWidget($(this), $(this).parent().id, easywidgets_obj);
-        FormModule.add_form($(this));
+		FormModule.add_form($(this));
 	});
 
 	// Fade widget titles if they are too long to fit.
@@ -144,7 +144,7 @@ $(function() {
 					var new_widget = $(data.widget);
 					$('#' + cell_name).prepend(new_widget);
 					$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
-        	FormModule.add_form(new_widget);
+					FormModule.add_form(new_widget);
 				},
 				error: function () {
 					Notify.message('Could not save new widget to settings');
@@ -168,16 +168,16 @@ $(function() {
 
 			// Post data about layout change.
 			$('<form>')
-				.hide()
-				.attr({method: 'post', action: _site_domain + _index_page + '/tac/change_layout'})
-				.append($('<input>').attr(
-					{type: 'hidden', name: 'csrf_token', value: _csrf_token}
-				))
-				.append($('<input>').attr(
-					{type: 'hidden', name: 'layout', value: $(this).attr('data-layout-name')}
-				))
-				.appendTo('body')
-				.submit();
+			.hide()
+			.attr({method: 'post', action: _site_domain + _index_page + '/tac/change_layout'})
+			.append($('<input>').attr(
+				{type: 'hidden', name: 'csrf_token', value: _csrf_token}
+			))
+			.append($('<input>').attr(
+				{type: 'hidden', name: 'layout', value: $(this).attr('data-layout-name')}
+			))
+			.appendTo('body')
+			.submit();
 		}
 	);
 
@@ -232,9 +232,9 @@ function widget(key) {
 /*******************************************************************************
  * Save widget settings
  ******************************************************************************/
-/**
- * Save settings, but after a small delay. This is the main function to use
- */
+	/**
+	 * Save settings, but after a small delay. This is the main function to use
+	 */
 widget.prototype.save_settings_delayed = function() {
 	var self = this;
 	if (this.save_settings_timer)
@@ -264,8 +264,8 @@ widget.prototype.set_loading = function(loading) {
 		}
 
 		widget_header.append($('<img class="widget_loadimg" />')
-			.attr('src', _site_domain + 'application/media/images/loading_small.gif')
-		);
+												 .attr('src', _site_domain + 'application/media/images/loading_small.gif')
+												);
 	} else {
 		loadimg.remove();
 		submit_button.prop('disabled', false);
@@ -332,9 +332,9 @@ widget.prototype.save_settings = function() {
 /*******************************************************************************
  * Widget refresh
  ******************************************************************************/
-/**
- * Save settings, but after a small delay. This is the main function to use
- */
+			/**
+			 * Save settings, but after a small delay. This is the main function to use
+			 */
 widget.prototype.update_widget_delayed = function() {
 	var self = this;
 	if (!this.update_widget_time)
