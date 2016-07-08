@@ -6,6 +6,14 @@
 class Form_Field_Number_Model extends Form_Field_Model {
 
 	/**
+	 * @param $name string
+	 * @param $pretty_name string
+	 */
+	public function __construct($name, $pretty_name) {
+		parent::__construct($name, $pretty_name);
+	}
+
+	/**
 	 * @return string
 	 */
 	public function get_type() {
@@ -21,7 +29,7 @@ class Form_Field_Number_Model extends Form_Field_Model {
 		if (!isset($raw_data[$name]))
 			throw new FormException( "Unknown field $name");
 		if (!is_numeric($raw_data[$name]))
-			throw new FormException( "$name is not a number field");
+			throw new FormException( "The value of '$name' should be a number");
 		$result->set_value($name, (float)$raw_data[$name]);
 	}
 }
