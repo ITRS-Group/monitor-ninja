@@ -408,7 +408,7 @@ class Tac_Controller extends Ninja_Controller {
 			$widget_options = $widget->options();
 			if($widget_options instanceof Form_Model) {
 				try {
-					$result = $widget->options()->process_data($setting);
+					$setting = $widget->options()->process_data($setting);
 				} catch(FormException $e) {
 					$this->template->success = false;
 					$this->template->value = array (
@@ -416,6 +416,15 @@ class Tac_Controller extends Ninja_Controller {
 					);
 					return;
 				}
+			}
+		}
+
+		foreach ($setting as $key => $value) {
+			if ($value instanceof Object_Model) {
+				$setting[$key] = array(
+					"table" => $value->get_table(),
+					"value" => $value->get_key()
+				);
 			}
 		}
 

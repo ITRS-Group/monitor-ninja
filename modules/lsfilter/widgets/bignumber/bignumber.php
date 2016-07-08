@@ -208,7 +208,7 @@ class bignumber_Widget extends widget_Base {
 		$regular_widget_form_fields = array(
 			new Form_Field_Group_Model('meta', array(
 				new Form_Field_Text_Model('title', 'Custom title'),
-				new Form_Field_Text_Model('refresh_interval', 'Refresh (sec)'),
+				new Form_Field_Number_Model('refresh_interval', 'Refresh (sec)'),
 			))
 		);
 
