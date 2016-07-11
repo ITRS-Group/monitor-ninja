@@ -1,6 +1,7 @@
 <?php
 require_once (__DIR__ . '/config.php');
 require_once (__DIR__ . '/objstore.php');
+require_once (__DIR__ . '/log.php');
 
 /**
  * Model for defining a metric used by MayI
