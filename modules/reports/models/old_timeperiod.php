@@ -739,23 +739,4 @@ class Old_Timeperiod_Model extends Model
 		}
 		return $resulting_timerange_set;
 	}
-
-	private static $timeperiods_all = false;
-
-	/**
-	 * Fetch all timperiods
-	 * @return db result
-	 */
-	public static function get_all()
-	{
-		if( self::$timeperiods_all !== false )
-			return self::$timeperiods_all;
-		$result = array();
-		$res = Livestatus::instance()->getTimeperiods(array('columns'=>array('name')));
-		foreach ($res as $row) {
-			$result[$row['name']] = $row['name'];
-		}
-		self::$timeperiods_all = $result;
-		return $result;
-	}
 }

@@ -216,15 +216,17 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				1 => _('Average'),
 				2 => _('Cluster mode (Best state)'));
 		if (isset($this->properties['rpttimeperiod'])) {
+			$this->properties['rpttimeperiod']['options'] = array();
 			try {
-				$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
+				foreach(TimePeriodPool_Model::all() as $tp) {
+					$name = $tp->get_name();
+					$this->properties['rpttimeperiod']['options'][$name] = $name;
+				}
 			} catch (ORMDriverException $e) {
-				$this->properties['rpttimeperiod']['options'] = array();
 			} catch (op5LivestatusException $ex) {
 				/* crashing because we didn't find any timperiods is
 				 * counter-productive, so let's try with "nothing" and hope it's
 				 * not required */
-				$this->properties['rpttimeperiod']['options'] = array();
 			}
 		}
 		if (isset($this->properties['skin']))
@@ -263,7 +265,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Public constructor, which optionally takes an iterable with properties to set
 	 */
-	public function __construct($options=false) {
+	public function __construct($options = false) {
 		$this->setup_properties();
 		if ($options)
 			$this->set_options($options);

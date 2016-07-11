@@ -4,12 +4,26 @@ require_once('op5/auth/Auth.php');
 require_once('op5/objstore.php');
 
 class report_Test extends PHPUnit_Framework_TestCase {
+
 	/**
 	 * Make sure the enviornment is clean, and livestatus is mocked
 	 */
 	public function setUp() {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
+
+		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
+			'auth' => array(
+				'common' => array(
+					'default_auth' => 'mydefault',
+					'session_key'  => false
+				),
+				'mydefault'  => array(
+					'driver' => 'Default'
+				)
+			)
+		)));
+
 		$auth = op5auth::instance(array('session_key' => false));
 		$auth->force_user(new User_AlwaysAuth_Model());
 	}
@@ -19,6 +33,106 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
+	}
+
+	/**
+	 * Check that the result Summary_Reports::histogram() looks correct.
+	 *
+	 * We only look at the array keys to check that we the correct states (OK,
+	 * Warning, Critical etc.) for all slots (time slots, and max, min etc.).
+	 *
+	 * I.e the event data is not checked.
+	 */
+	public function test_summary_report_histogram() {
+		// Hourly time slots.
+		$time_slots = array(
+			0  => "00",
+			1  => "01",
+			2  => "02",
+			3  => "03",
+			4  => "04",
+			5  => "05",
+			6  => "06",
+			7  => "07",
+			8  => "08",
+			9  => "09",
+			10 => "10",
+			11 => "11",
+			12 => "12",
+			13 => "13",
+			14 => "14",
+			15 => "15",
+			16 => "16",
+			17 => "17",
+			18 => "18",
+			19 => "19",
+			20 => "20",
+			21 => "21",
+			22 => "22",
+			23 => "23",
+			24 => "24"
+		);
+
+		// Assert Service Filter works, i.e. we should get a report for
+		// all states except 0 and 2 (which is 1 and 3 in this case).
+		// Existing states are: OK, Warning, Critical, Unknown and Undetermined.
+		$opts = new Summary_options(array(
+			'breakdown'             => 'hourly',
+			'report_type'           => 'services',
+			'newstatesonly'         => false,
+			'service_filter_status' => array(0 => '-2', 2 => '-2'),
+		));
+		$sum_reports = new Summary_Reports_Model($opts);
+		$summary = $sum_reports->histogram($time_slots);
+
+		$visible_states = array(0 => 1, 1 => 3);
+		$this->assert_report_result_states($summary, $visible_states, $time_slots);
+
+		// Assert Host Filter works, i.e. we should get a report for
+		// all states except 1 (which is 0 and 2 in this case).
+		// Existing states are: Up, Down, Unreachable and Undetermined.
+		$opts = new Summary_options(array(
+			'breakdown'          => 'hourly',
+			'report_type'        => 'hosts',
+			'newstatesonly'      => false,
+			'host_filter_status' => array(1 => '-2')
+		));
+
+		$sum_reports = new Summary_Reports_Model($opts);
+		$summary = $sum_reports->histogram($time_slots);
+
+		$visible_states = array(0 => 0, 1 => 2);
+		$this->assert_report_result_states($summary, $visible_states, $time_slots);
+	}
+
+	/**
+	 * Assert $result_array looks OK.
+	 */
+	private function assert_report_result_states(
+		array $result_array, array $visible_states, array $time_slots
+	) {
+		$this->assert_visible_states($result_array, 'min', $visible_states);
+		$this->assert_visible_states($result_array, 'max', $visible_states);
+		$this->assert_visible_states($result_array, 'avg', $visible_states);
+		$this->assert_visible_states($result_array, 'sum', $visible_states);
+
+		$this->assertArrayHasKey('data', $result_array);
+
+		// Thanks to PHP's auto type conversion the result from array_keys()
+		// contains integers for the values 10-24 instead of strings.
+		// Therefore assertEquals() is used instead of assertSame().
+		$this->assertEquals($time_slots, array_keys($result_array['data']));
+		foreach ($result_array['data'] as $hour => $state) {
+			$this->assertSame($visible_states, array_keys($state));
+		}
+	}
+
+	/**
+	 * Assert $result_array[$key] exists and contains the keys in $visible_states.
+	 */
+	private function assert_visible_states(array $result_array, $key, array $visible_states) {
+		$this->assertArrayHasKey($key, $result_array);
+		$this->assertSame($visible_states, array_keys($result_array[$key]));
 	}
 
 	public function test_restricted_access() {
