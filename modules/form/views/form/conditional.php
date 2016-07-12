@@ -5,5 +5,5 @@
 $subfield = $field->get_field();
 
 echo '<div class="nj-form-conditional" data-njform-rel="'.$field->get_rel().'" data-njform-value="'.$field->get_value().'">';
-$form->get_view($subfield)->render(true);
+$form->get_field_view($subfield)->render(true);
 echo '</div>';

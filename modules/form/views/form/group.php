@@ -4,6 +4,6 @@
 
 echo '<fieldset>';
 foreach($field->get_fields() as $subfield) {
-	$form->get_view($subfield)->render(true);
+	$form->get_field_view($subfield)->render(true);
 }
 echo '</fieldset>';

@@ -34,6 +34,20 @@ class Form_Model {
 	}
 
 	/**
+	 * Get a view representing a given field in the form.
+	 * If no field is specified, a view for the entire form is returned
+	 *
+	 * @param $field Form_Field_Model
+	 * @return View
+	 */
+	public function get_field_view(Form_Field_Model $field) {
+		return new View('form/' . $field->get_type(), array(
+			'form' => $this,
+			'field' => $field
+		));
+	}
+
+	/**
 	 * Get the list of fields in the form
 	 *
 	 * @return array of Form_Field_Model
@@ -46,14 +60,14 @@ class Form_Model {
 	 * Get a view representing a given field in the form.
 	 * If no field is specified, a view for the entire form is returned
 	 *
-	 * @param $field Form_Field_Model = null
 	 * @return View
 	 */
-	public function get_view(Form_Field_Model $field = null) {
-		if ($field === null) {
-			return new View( 'form/render', array( 'form' => $this, 'action' => $this->action,'method' => 'GET' ) );
-		}
-		return new View( 'form/' . $field->get_type(), array( 'form' => $this, 'field' => $field ) );
+	public function get_view() {
+		return new View('form/render', array(
+			'form' => $this,
+			'action' => $this->action,
+			'method' => 'GET'
+		));
 	}
 
 	/**

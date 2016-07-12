@@ -4,7 +4,7 @@
 echo '<form class="nj-form" action="'.html::specialchars($action).'" method="POST">';
 echo '<input type="hidden" name="csrf_token" value="'.Session::instance()->get(Kohana::config('csrf.csrf_token')).'"/>';
 foreach($form->get_fields() as $field) {
-	$form->get_view($field)->render(true);
+	$form->get_field_view($field)->render(true);
 }
 echo '<fieldset>';
 echo '<input class="info state-background" type="submit" value="Save">';
