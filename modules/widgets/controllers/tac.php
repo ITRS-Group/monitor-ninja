@@ -404,20 +404,18 @@ class Tac_Controller extends Ninja_Controller {
 		// see if the widget is backed by a Form_Model, in that case,
 		// perform the Form_Model's validation and react accordingly
 		$widget = $widget_model->build();
-		//if(!($widget instanceof Dead_Widget)) {
-			$widget_options = $widget->options();
-			if($widget_options instanceof Form_Model) {
-				try {
-					$setting = $widget_options->process_data($setting);
-				} catch(FormException $e) {
-					$this->template->success = false;
-					$this->template->value = array (
-						'result' => $e->getMessage()
-					);
-					return;
-				}
+		$widget_options = $widget->options();
+		if($widget_options instanceof Form_Model) {
+			try {
+				$setting = $widget_options->process_data($setting);
+			} catch(FormException $e) {
+				$this->template->success = false;
+				$this->template->value = array (
+					'result' => $e->getMessage()
+				);
+				return;
 			}
-		//}
+		}
 
 		foreach ($setting as $key => $value) {
 			if ($value instanceof Object_Model) {
