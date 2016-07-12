@@ -34,8 +34,15 @@
 						echo _("Could not render option");
 					}
 				}
+				?>
+				<fieldset>
+				<input class="info state-background" type="submit" value="Save">
+				<input class="info state-background cancel" type="reset" value="Cancel">
+				</fieldset>
+				<?php
 				echo form::close();
 			}
+
 		?>
 		</div>
 	<div class="widget-content" style="overflow: auto;">

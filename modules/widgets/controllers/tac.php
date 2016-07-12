@@ -404,7 +404,7 @@ class Tac_Controller extends Ninja_Controller {
 		// see if the widget is backed by a Form_Model, in that case,
 		// perform the Form_Model's validation and react accordingly
 		$widget = $widget_model->build();
-		if(!($widget instanceof Dead_Widget)) {
+		//if(!($widget instanceof Dead_Widget)) {
 			$widget_options = $widget->options();
 			if($widget_options instanceof Form_Model) {
 				try {
@@ -417,7 +417,7 @@ class Tac_Controller extends Ninja_Controller {
 					return;
 				}
 			}
-		}
+		//}
 
 		foreach ($setting as $key => $value) {
 			if ($value instanceof Object_Model) {
