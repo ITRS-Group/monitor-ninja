@@ -82,7 +82,7 @@ class op5Livestatus {
 	/**
 	 * Constructor
 	 *
-	 * @return void
+	 * @throws op5LivestatusException
 	 **/
 	public function __construct($config = null) {
 		if(!$config) {
@@ -96,7 +96,14 @@ class op5Livestatus {
 			$connection_class = $this->config['connection_class'];
 		}
 
-		$this->connection = new $connection_class($this->config);
+		if(!isset($this->config['path'])) {
+			throw new op5LivestatusException(
+				"No path to livestatus  configured. Please ".
+				"check /etc/op5/livestatus.yml and see that the ".
+				"value for 'path' points at the livestatus ".
+				"socket");
+		}
+		$this->connection = new $connection_class($this->config['path']);
 	}
 
 
@@ -363,11 +370,10 @@ class op5livestatus_connection {
 	/**
 	 * Constructor
 	 *
-	 * @param $options array
-	 * @return void
+	 * @param $path_to_ls_socket
 	 **/
-	public function __construct($options) {
-		$this->connectionString = $options['path'];
+	public function __construct($path_to_ls_socket) {
+		$this->connectionString = $path_to_ls_socket;
 		return $this;
 	}
 
@@ -402,11 +408,9 @@ class op5livestatus_connection {
 		}
 		elseif($type == 'unix') {
 			if(!file_exists($address)) {
-				throw new op5LivestatusException('Cannot connect to Livestatus.');
+				throw new op5LivestatusException("Cannot connect to Livestatus, '$address' is not a valid address to the Livestatus socket.");
 			}
 			$this->connection = @fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
-			if (!$this->connection)
-				throw new op5LivestatusException('Cannot connect to Livestatus.');
 		}
 		else {
 			throw new op5LivestatusException(
