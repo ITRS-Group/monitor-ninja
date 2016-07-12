@@ -23,6 +23,7 @@ class js_loader_hook_generator extends class_generator {
 }
 
 class js_Builder implements builder_interface {
+
 	public function generate ($mod_path, $src_path) {
 		if(!is_dir($src_path))
 			return;
@@ -31,7 +32,6 @@ class js_Builder implements builder_interface {
 
 		$target_dir =  $mod_path . '/media/js';
 		$target_path =  $mod_path . $bundle_path;
-		$hook_path =  $mod_path . '/hooks/load_js_bundles.php';
 
 		$directory = new RecursiveDirectoryIterator($src_path);
 		$iterator = new RecursiveIteratorIterator($directory);
@@ -73,6 +73,21 @@ EOF
 		echo "   -> " . $target_path . "\n";
 
 		fclose($target);
+
+		// Only perform cleanup when the new file is successfully written
+		array_map(
+			function($filename) {
+				echo " - Removing previous bundled file: $filename\n";
+				unlink($filename);
+			},
+			array_filter(
+				glob($mod_path.'/media/js/bundle_*.js'),
+				function($path) use ($target_path) {
+					// do not remove the new file
+					return $path !== $target_path;
+				}
+			)
+		);
 
 		$hookgen = new js_loader_hook_generator($bundle_path);
 		$hookgen->set_moduledir($mod_path);
