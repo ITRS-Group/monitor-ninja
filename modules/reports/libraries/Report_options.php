@@ -217,16 +217,9 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				2 => _('Cluster mode (Best state)'));
 		if (isset($this->properties['rpttimeperiod'])) {
 			$this->properties['rpttimeperiod']['options'] = array();
-			try {
-				foreach(TimePeriodPool_Model::all() as $tp) {
-					$name = $tp->get_name();
-					$this->properties['rpttimeperiod']['options'][$name] = $name;
-				}
-			} catch (ORMDriverException $e) {
-			} catch (op5LivestatusException $ex) {
-				/* crashing because we didn't find any timperiods is
-				 * counter-productive, so let's try with "nothing" and hope it's
-				 * not required */
+			foreach(TimePeriodPool_Model::all() as $tp) {
+				$name = $tp->get_name();
+				$this->properties['rpttimeperiod']['options'][$name] = $name;
 			}
 		}
 		if (isset($this->properties['skin']))
