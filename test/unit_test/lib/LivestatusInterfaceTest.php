@@ -3,14 +3,14 @@
 require_once "op5/objstore.php";
 require_once "op5/livestatus.php";
 
-class mock_livestatus_connection {
+class mock_livestatus_connection extends op5livestatus_connection {
 	private $test;
 	private $compare_buf;
 	private $outbuf = '';
 	private $custom_error = false;
 
-	public function __construct($options) {
-		$this->test = $options['test'];
+	public function __construct($unit_test_class) {
+		$this->test = $unit_test_class;
 		$this->test->lsconn = $this; /* circular referenses FTW :) */
 		$this->buffer = array();
 	}
@@ -74,11 +74,7 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 	 * Setup mock LDAP enviornment
 	 */
 	public function setUp() {
-		$this->ls = new op5livestatus(array(
-				'connection_class' => 'mock_livestatus_connection',
-				'test' => $this
-		));
-
+		$this->ls = new op5livestatus(new mock_livestatus_connection($this));
 	}
 
 	/**

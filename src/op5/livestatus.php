@@ -24,8 +24,6 @@ class op5LivestatusException extends Exception {
 	private $query;
 
 	/**
-	 * Construct
-	 *
 	 * @param $plain_message string
 	 * @param $query string
 	 * @return void
@@ -42,8 +40,6 @@ class op5LivestatusException extends Exception {
 	}
 
 	/**
-	 * Gets plain message
-	 *
 	 * @return string
 	 **/
 	public function getPlainMessage() {
@@ -51,8 +47,6 @@ class op5LivestatusException extends Exception {
 	}
 
 	/**
-	 * Gets query
-	 *
 	 * @return string
 	 **/
 	public function getQuery() {
@@ -62,48 +56,36 @@ class op5LivestatusException extends Exception {
 
 /**
  * Connects to and queries livestatus
- *
- **/
+ */
 class op5Livestatus {
+
+	private $connection = null;
+
 	/**
-	 * Creates an instance of livestatus
-	 *
-	 * @param $config array
-	 * @return object
-	 **/
-	static public function instance($config = null)
-	{
-		return op5objstore::instance()->obj_instance(__CLASS__, $config);
+	 * @param $connection op5livestatus_connection
+	 * @return op5Livestatus
+	 */
+	static public function instance(op5livestatus_connection $connection = null) {
+		if(!$connection)  {
+			$config = op5config::instance()->getConfig('livestatus');
+			if(!isset($config['path'])) {
+				throw new op5LivestatusException(
+					"No path to livestatus  configured. Please ".
+					"check /etc/op5/livestatus.yml and see that the ".
+					"value for 'path' points at the livestatus ".
+					"socket");
+			}
+			$connection = new op5livestatus_connection($config['path']);
+		}
+		return op5objstore::instance()->obj_instance(__CLASS__, $connection);
 	}
 
-	private $connection      = null;
-	private $config          = false;
-
 	/**
-	 * Constructor
-	 *
+	 * @param $connection op5livestatus_connection
 	 * @throws op5LivestatusException
-	 **/
-	public function __construct($config = null) {
-		if(!$config) {
-			$this->config = op5config::instance()->getConfig('livestatus');
-		} else {
-			$this->config = $config;
-		}
-		$connection_class = "op5livestatus_connection";
-
-		if( isset($this->config['connection_class']) ) {
-			$connection_class = $this->config['connection_class'];
-		}
-
-		if(!isset($this->config['path'])) {
-			throw new op5LivestatusException(
-				"No path to livestatus  configured. Please ".
-				"check /etc/op5/livestatus.yml and see that the ".
-				"value for 'path' points at the livestatus ".
-				"socket");
-		}
-		$this->connection = new $connection_class($this->config['path']);
+	 */
+	public function __construct(op5livestatus_connection $connection) {
+		$this->connection = $connection;
 	}
 
 
@@ -214,12 +196,6 @@ class op5Livestatus {
 		}
 
 		$stop = microtime(true);
-
-		/* TODO: benchmarks log non-kohana dependent...
-		if (isset($this->config['benchmark']) && $this->config['benchmark']) {
-			Database::$benchmarks[] = array('query' => $this->formatQueryForDebug($query), 'time' => $stop - $start, 'rows' => $count);//count($objects));
-		}
-		*/
 
 		if ($objects === null) {
 			throw new op5LivestatusException("Invalid output");
@@ -368,8 +344,6 @@ class op5livestatus_connection {
 	private $timeout     = 10;
 
 	/**
-	 * Constructor
-	 *
 	 * @param $path_to_ls_socket
 	 **/
 	public function __construct($path_to_ls_socket) {
@@ -378,8 +352,6 @@ class op5livestatus_connection {
 	}
 
 	/**
-	 * Destructor
-	 *
 	 * @return void
 	 **/
 	public function __destruct() {
