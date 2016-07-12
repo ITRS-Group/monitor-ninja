@@ -114,7 +114,7 @@ class Summary_Reports_Model extends Reports_Model
 			$pstate[$name] = $state;
 
 			# if we're not interested in this state, just move along
-			if (in_array($row['state'], $uninteresting_states) && $uninteresting_states[$row['state']] == Reports_Model::HOST_EXCLUDED) {
+			if (array_key_exists($row['state'], $uninteresting_states) && $uninteresting_states[$row['state']] == Reports_Model::HOST_EXCLUDED) {
 				continue;
 			}
 
