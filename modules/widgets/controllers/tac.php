@@ -408,7 +408,7 @@ class Tac_Controller extends Ninja_Controller {
 			$widget_options = $widget->options();
 			if($widget_options instanceof Form_Model) {
 				try {
-					$setting = $widget->options()->process_data($setting);
+					$setting = $widget_options->process_data($setting);
 				} catch(FormException $e) {
 					$this->template->success = false;
 					$this->template->value = array (

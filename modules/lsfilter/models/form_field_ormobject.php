@@ -36,17 +36,18 @@ class Form_Field_ORMObject_Model extends Form_Field_Model {
 	/**
 	 * @param $raw_data array
 	 * @param $result Form_Result_Model
-	 * @throws Form_Exception
+	 * @throws FormException
 	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
-		if (!isset($raw_data[$name]))
-			throw new FormException("Unknown field $name");
+		if (!isset($raw_data[$name])) {
+			throw new MissingValueException("Missing a value for the field '$name'", $this);
+		}
 		if (!is_array($raw_data[$name]) ||
 			!array_key_exists('table', $raw_data[$name]) ||
 			!array_key_exists('value', $raw_data[$name])
 		) {
-			throw new FormException("$name does not point at a valid object (".var_export($raw_data[$name], true).")");
+			throw new FormException("$name does not point at a valid object (".var_export($raw_data[$name], true).")", $this);
 		}
 
 		$table = $raw_data[$name]['table'];
@@ -55,11 +56,11 @@ class Form_Field_ORMObject_Model extends Form_Field_Model {
 		try {
 			$pool = ObjectPool_Model::pool($table);
 		} catch(ORMException $e) {
-			throw new FormException("$name does not point at a valid table");
+			throw new FormException("$name does not point at a valid table", $this);
 		}
 		$object = $pool->fetch_by_key($value);
 		if (!$object) {
-			throw new FormException("Could not find any object in table '$table' named '$value'");
+			throw new FormException("Could not find any object in table '$table' named '$value'", $this);
 		}
 		$result->set_value($name, $object);
 	}

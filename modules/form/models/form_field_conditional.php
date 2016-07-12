@@ -67,8 +67,9 @@ class Form_Field_Conditional_Model extends Form_Field_Model {
 	 * @throws FormException
 	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
-		if (!$result->has_value($this->rel))
-			throw new FormException( "Unknown field {$this->rel} to relate to" );
+		if (!$result->has_value($this->rel)) {
+			throw new FormException("The form should contain '$this->rel' so that this conditional model can refer to it", $this);
+		}
 		if ($result->get_value($this->rel) !== $this->value)
 			return;
 		$this->field->process_data($raw_data, $result);

@@ -63,15 +63,20 @@ class Form_Field_Range_Model extends Form_Field_Model {
 	/**
 	 * @param $raw_data array
 	 * @param $result Form_Result_Model
+	 * @throws FormException
+	 * @throws MissingValueException
 	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
-		if (!isset($raw_data[$name]))
-			throw new FormException( "Unknown field $name");
-		if (!is_numeric($raw_data[$name]))
-			throw new FormException( "$name is not a number field");
-		if ((float) $raw_data[$name] < $this->min || (float)$raw_data[$name] > $this->max)
-			throw new FormException( "Invalid value " . $raw_data[$name] . " for range " . $this->min. " - " . $this->max . " named $name");
+		if (!isset($raw_data[$name])) {
+			throw new MissingValueException("Missing a value for the field '$name'", $this);
+		}
+		if (!is_numeric($raw_data[$name])) {
+			throw new FormException( "$name is not a number field", $this);
+		}
+		if ((float) $raw_data[$name] < $this->min || (float)$raw_data[$name] > $this->max) {
+			throw new FormException( "Invalid value " . $raw_data[$name] . " for range " . $this->min. " - " . $this->max . " named $name", $this);
+		}
 		$result->set_value($name, (float)$raw_data[$name]);
 	}
 }

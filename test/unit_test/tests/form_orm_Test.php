@@ -48,7 +48,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Verify that incorrect object keys throws an exception
 	 *
-	 * @group MON-9412
+	 * @group MON-9409
 	 * @expectedException FormException
 	 * @expectedExceptionMessage da_contact does not point at a valid object
 	 */
@@ -74,7 +74,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 	 * Verifies that receiving data given a key unpacks the object correctly,
 	 * and that it is put back as default value for the next form
 	 *
-	 * @group MON-9412
+	 * @group MON-9409
 	 */
 	public function test_process() {
 		$tables = array(
@@ -109,7 +109,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group MON-9412
+	 * @group MON-9409
 	 */
 	public function test_perfdata_option_successful_validation_depending_on_orm_object() {
 		$tables = array(
@@ -144,7 +144,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group MON-9412
+	 * @group MON-9409
 	 * @expectedException FormException
 	 * @expectedExceptionMessage The performance data source 'Munny Saelee' is not found on the given object
 	 */

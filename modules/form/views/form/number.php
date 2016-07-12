@@ -2,7 +2,7 @@
 /* @var $form Form_Model */
 /* @var $field Form_Field_Text_Model */
 
-$default = $form->get_value($field->get_name(), 0);
+$default = $form->get_value($field->get_name(), "");
 $element_id = 'element_id_'.uniqid();
 
 ?>

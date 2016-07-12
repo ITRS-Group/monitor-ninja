@@ -196,14 +196,14 @@ class bignumber_Widget extends widget_Base {
 		));
 		$threshold_as->set_help('bignumber_threshold_as', 'tac');
 		$thresholds = new Form_Field_Conditional_Model('threshold_onoff', true,
-			new Form_Field_Conditional_Model('content_from', 'filter',
-			new Form_Field_Group_Model("thresholds", array(
-				$threshold_as,
-				new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
-				new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
-			))
-		)
-	);
+				new Form_Field_Conditional_Model('content_from', 'filter',
+				new Form_Field_Group_Model("thresholds", array(
+					$threshold_as,
+					new Form_Field_Text_Model('threshold_warn', 'Warning threshold (%)'),
+					new Form_Field_Text_Model('threshold_crit', 'Critical threshold (%)'),
+				))
+			)
+		);
 
 		$regular_widget_form_fields = array(
 			new Form_Field_Group_Model('meta', array(
@@ -215,10 +215,6 @@ class bignumber_Widget extends widget_Base {
 		$form_model = new Form_Model('widget/save_widget_setting',
 			$regular_widget_form_fields);
 
-		$form_model->set_values(array(
-			'refresh_interval' => 60
-		));
-
 		foreach(array(
 			$content_from,
 			$host,
@@ -228,7 +224,7 @@ class bignumber_Widget extends widget_Base {
 			$toggle_status,
 			$thresholds
 		) as $field) {
-		$form_model->add_field($field);
+			$form_model->add_field($field);
 		}
 
 		$defaults = array(
@@ -261,6 +257,7 @@ class bignumber_Widget extends widget_Base {
 		}
 
 		$form_model->set_values($settings);
+		$form_model->set_missing_fields_cb(array('title' => '', 'refresh_interval' => ''));
 		return $form_model;
 	}
 

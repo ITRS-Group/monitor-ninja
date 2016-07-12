@@ -55,28 +55,29 @@ class Form_Field_Perfdata_Model extends Form_Field_Model {
 	 * @param $raw_data array
 	 * @param $result Form_Result_Model
 	 * @throws FormException
+	 * @throws MissingValueException
 	 */
 	public function process_data(array $raw_data, Form_Result_Model $result) {
 		$name = $this->get_name();
 		if(!isset($raw_data[$name])) {
-			throw new FormException("Missing value for '$name'");
+			throw new MissingValueException("Missing value for '$name'", $this);
 		}
 		if(!is_string($raw_data[$name])){
-			throw new FormException("'$name' has a bad value, needs a string");
+			throw new FormException("'$name' has a bad value, needs a string", $this);
 		}
 		if(!$result->has_value($this->target_model)) {
-			throw new FormException("Target model '$this->target_model' missing");
+			throw new FormException("Target model '$this->target_model' missing", $this);
 		}
 		$orm_model = $result->get_value($this->target_model);
 		if(!($orm_model instanceof Host_Model) && !($orm_model instanceof Service_Model)) {
-			throw new FormException("'$this->target_model' should hold a host or a service");
+			throw new FormException("'$this->target_model' should hold a host or a service", $this);
 		}
 		$valid_performance_data = $orm_model->get_perf_data();
 		if(!$valid_performance_data) {
 			throw new FormException("'$this->target_model' contains an object that doesn't have performance data");
 		}
 		if(!array_key_exists($raw_data[$name], $valid_performance_data)) {
-			throw new FormException("The performance data source '".$raw_data[$name]."' is not found on the given object");
+			throw new FormException("The performance data source '".$raw_data[$name]."' is not found on the given object", $this);
 		}
 		$result->set_value($name, $raw_data[$name]);
 	}
