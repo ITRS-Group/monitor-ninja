@@ -403,11 +403,13 @@ class Summary_Reports_Model extends Reports_Model
 		$db->query('INSERT INTO ninja_report_comments(timestamp, event_type, host_name, service_description, comment_timestamp, username, user_comment) VALUES ('.$db->escape($timestamp).', '.$db->escape($event_type).', '.$db->escape($host_name).', '.$db->escape($service).', UNIX_TIMESTAMP(), '.$db->escape($username).', '.$db->escape($comment).')');
 		return true;
 	}
+
 	/**
-	*	Fetch alert history for histogram report
-	* 	@param $slots array with slots to fill with data
-	* 	@return array with keys: min, max, avg, data
-	*/
+	 * Fetch alert history for histogram report
+	 *
+	 * @param $slots array with slots to fill with data
+	 * @return array with keys: min, max, avg, data
+	 */
 	public function histogram($slots=false)
 	{
 		if (empty($slots) || !is_array($slots))

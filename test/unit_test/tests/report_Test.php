@@ -27,6 +27,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$auth = op5auth::instance(array('session_key' => false));
 		$auth->force_user(new User_AlwaysAuth_Model());
 	}
+
 	/**
 	 * Remove mock environment
 	 */
