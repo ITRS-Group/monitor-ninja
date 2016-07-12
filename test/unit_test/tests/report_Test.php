@@ -12,18 +12,6 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 
-		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
-			'auth' => array(
-				'common' => array(
-					'default_auth' => 'mydefault',
-					'session_key'  => false
-				),
-				'mydefault'  => array(
-					'driver' => 'Default'
-				)
-			)
-		)));
-
 		$auth = op5auth::instance(array('session_key' => false));
 		$auth->force_user(new User_AlwaysAuth_Model());
 	}
@@ -43,6 +31,8 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	 * Warning, Critical etc.) for all slots (time slots, and max, min etc.).
 	 *
 	 * I.e the event data is not checked.
+	 *
+	 * @group MON-6031
 	 */
 	public function test_summary_report_histogram() {
 		// Hourly time slots.
