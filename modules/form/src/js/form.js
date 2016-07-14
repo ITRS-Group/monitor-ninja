@@ -52,7 +52,7 @@ var FormModule = (function () {
 	var form_plugins = [];
 	var Form = {
 
-		register: function (plugin)	{
+		register: function (plugin) {
 			if (form_plugins.indexOf(plugin) < 0) {
 				if (typeof(plugin) === 'function') {
 					form_plugins.push(plugin);

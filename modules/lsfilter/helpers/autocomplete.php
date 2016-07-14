@@ -8,7 +8,7 @@ class autocomplete {
 	private static $setup = array();
 
 	/**
- 	 * @param $table strring
+	 * @param $table string
 	 * @param $display string
 	 * @param $query string
 	 */

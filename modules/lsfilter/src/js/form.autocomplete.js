@@ -28,7 +28,6 @@
 				},
 				success: function(data) {
 					if(!data.result.length) {
-						// TODO the css of Notify.message() is borked on TAC
 						Notify.message('No performance data available for this object', {
 							type: "info"
 						});

@@ -12,6 +12,6 @@ $element_id = 'element_id_'.uniqid();
 		<div class="nj-form-label">
 			<?php echo html::specialchars($field->get_pretty_name()); ?>
 		</div>
-		<input type="number" id="<?php echo $element_id; ?>" pattern="^\d+$" class="nj-form-option" name="<?php echo $field->get_name(); ?>" value="<?php echo html::specialchars($default); ?>" />
+		<input type="number" id="<?php echo $element_id; ?>" pattern="^\d+$" class="nj-form-option" name="<?php echo html::specialchars($field->get_name()); ?>" value="<?php echo html::specialchars($default); ?>" />
 	</label>
 </div>
