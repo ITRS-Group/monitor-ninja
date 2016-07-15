@@ -5,7 +5,7 @@
  * object names should be supported by frontend code. By submitting multiple
  * tables to the constructor, you can let the user get autocomplete options for
  * several object types (as long as they are registered with
- * @see autocomplete::add_table()).
+ * @see Autocompleter).
  */
 class Form_Field_ORMObject_Model extends Form_Field_Model {
 
