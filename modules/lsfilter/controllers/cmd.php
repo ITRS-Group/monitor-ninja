@@ -73,9 +73,26 @@ class Cmd_Controller extends Ninja_Controller {
 		}
 		if(!array_key_exists($command, $commands)) {
 			request::send_header(400);
-			$error_message = "Tried to submit command '$command' on table '$table' but that command does not exist for that kind of objects. Aborting without any commands applied";
+
+			// Technically, the command might not exist, but the only way
+			// to reach this code is to
+			//  - submit a command by manually typing the address/
+			//    modifying the data from within a POST form
+			//  - we supply incorrect links in the GUI
+			//  - have too little command rights and click a link
+			//    which is not based on the currently logged in user's
+			//    authorization levels (e.g. through a link pasted
+			//    by a colleague, or whatever)
+			//
+			// We want to optimize for the path that is the most common
+			// and useful for users, which is the last one.
+			$error_message = "You have insufficient rights to ".
+				"submit the command '$command' on table ".
+				"'$table'. Please verify your user's rights ".
+				"for '$table' commands. Aborting without any ".
+				"commands applied.";
 			op5log::instance('ninja')->log('warning', $error_message);
-			$this->template->content->error = "Could not find object '$error_message'";
+			$this->template->content->error = $error_message;
 			return;
 		}
 		if(isset($commands[$command]['redirect']) && $commands[$command]['redirect']) {
