@@ -22,12 +22,11 @@ test: test-reports test-unittest
 
 test-reports:
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/unit_test/reports/*.tst.php; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/reports/*.tst.php; res=$$?; make test-ci-cleanup; exit $$res
 
 test-unittest: generate-php
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/unit_test/bootstrap.php test/unit_test/tests/; res=$$?; make test-ci-cleanup; exit $$res
-	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/unit_test/bootstrap.php test/unit_test/lib/; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/bootstrap.php test/; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
 	rm -f application/config/custom/config.php

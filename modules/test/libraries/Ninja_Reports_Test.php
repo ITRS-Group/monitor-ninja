@@ -229,12 +229,12 @@ class Ninja_Reports_Test extends Status_Reports_Model
 
 		$this->details = array();
 		if ($this->sqlfile) {
-			exec('mysql -u'.$this->db_user.' -p'.$this->db_pass.' '.$this->db_name.' < '.'test/unit_test/reports/'.$this->sqlfile);
+			exec('mysql -u'.$this->db_user.' -p'.$this->db_pass.' '.$this->db_name.' < '.'test/reports/'.$this->sqlfile);
 			$this->table_name = substr($this->sqlfile, 0, strpos($this->sqlfile, '.'));
 		}
 		else {
 			if ($this->logfile)
-				$this->logfiles[] = "test/unit_test/reports/".$this->logfile;
+				$this->logfiles[] = "test/reports/".$this->logfile;
 
 			$result = $this->import_logs();
 			if ($result < 0)

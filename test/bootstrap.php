@@ -1,7 +1,7 @@
 <?php
 define('SKIP_KOHANA', true);
 
-$ninja_base = realpath(__DIR__.'/../..');
+$ninja_base = realpath(__DIR__.'/..');
 set_include_path($ninja_base . '/src' . PATH_SEPARATOR . get_include_path());
 
 require_once ('op5/objstore.php');

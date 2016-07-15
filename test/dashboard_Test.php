@@ -274,7 +274,7 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 		$this->assertNull($dashboard);
 
 		ob_start(); /* Don't output hashbang line */
-		require(__DIR__.'/../../../install_scripts/migrate_widgets.php');
+		require(__DIR__.'/../install_scripts/migrate_widgets.php');
 		ob_end_clean();
 
 		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'superuser', '=')->one();
