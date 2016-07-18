@@ -38,11 +38,14 @@ class Dashboard_Widget_Model extends BaseDashboard_Widget_Model {
 	/**
 	 * positions is stored as a json block in database, decode and encode
 	 * @see BaseDashboard_Widget_Model::get_position()
+	 *
+	 * @return array ['c' => int, 'p' => int] where c is a cell and p is
+	 * the order within the cell
 	 */
 	public function get_position() {
 		$var = json_decode(parent::get_position(), true);
 		if(!is_array($var)) {
-			return array();
+			return array('c' => 0, 'p' => 0);
 		}
 		return $var;
 	}

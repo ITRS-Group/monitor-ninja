@@ -85,6 +85,10 @@ foreach($widgets_per_user as $username => $ninja_widgets) {
 
 		$tag = 'widget-' . $ninja_widget->get_widget_id();
 		if(isset($widget_place[$tag])) {
+			// oops, here was a bug:
+			// by not setting a position, code inside of ninja
+			// that relied on position being set, died with a
+			// stack trace
 			$widget->set_position($widget_place[$tag]);
 		}
 

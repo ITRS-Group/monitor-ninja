@@ -287,8 +287,27 @@ class Tac_Controller extends Ninja_Controller {
 		$dashboard = $this->_current_dashboard();
 		$widget_models = $dashboard->get_dashboard_widgets_set();
 
+		$tac_column_count_str = $dashboard->get_layout();
+		$tac_column_count = array_map('intval',explode(',', $tac_column_count_str));
+		$n_dashboard_cells = array_sum($tac_column_count);
+
 		foreach ($widget_models as $wm) {
 			$pos = $wm->get_position();
+			if(!$pos) {
+				// A saved widget had incorrect (none at all)
+				// values for its positioning. Let's "auto
+				// heal" the database, even if the looks might
+				// get wonky. We reuse the logic of index() to
+				// place older, misconfigured (missing value
+				// for merlin.dashboard_widgets.position)
+				// widgets in the last cell.
+				$wm->set_position(array(
+					'c' => $n_dashboard_cells - 1,
+					'p' => 0
+				));
+				$wm->save();
+				$pos = $wm->get_position();
+			}
 			if ($pos['c'] === $cell_num) {
 				// Move widget one step "down" if it's in the cell
 				// where we add the new widget.

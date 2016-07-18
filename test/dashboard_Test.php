@@ -283,4 +283,55 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 
 		/* Due to problems in Native ORM driver regarding related objects, we can't validate that widgets exists */
 	}
+
+	/**
+	 * After an upgrade of Ninja, some users got a missing value for
+	 * "position". Let's mimick that faulty state and see if we can self
+	 * heal.
+	 *
+	 * @group MON-9491
+	 */
+	public function test_widgets_with_missing_position_gets_placed_last_in_dashboard() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => 1,
+						'name' => 'My dashboard',
+						'username' => 'superuser',
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(
+					array(
+						'id' => 1,
+						'dashboard_id' => 1,
+						'name' => 'Some name',
+						'position' => '', // this was the bug
+						'setting' => '{}'
+					)
+				)
+			)
+		), __FUNCTION__);
+
+		Auth::instance(array('session_key' => false))->force_user(
+			new User_AlwaysAuth_Model()
+		);
+
+		$our_widget = Dashboard_WidgetPool_Model::all()->one();
+		$this->assertInstanceOf('Dashboard_Widget_Model', $our_widget,
+			"We could select the mocked widget");
+
+		$position = $our_widget->get_position();
+		$this->assertInternalType('array', $position,
+			"A widget's position is always an array, ".
+			"even if we do not have any data for it");
+		$this->assertSame(array('c' => 0, 'p' => 0), $position,
+			"The widget's position defaults to a simple ".
+			"first position in the first cell, because ".
+			"the widget itself keeps track of its position, ".
+			"and does not care about where the parent ".
+			"dashboard thinks that the widget should be ".
+			"positioned");
+	}
 }
