@@ -42,7 +42,6 @@ class Tac_Controller extends Ninja_Controller {
 		}
 		return $menu;
 	}
-
 	/**
 	 * Get the select layout menu
 	 */
@@ -77,11 +76,19 @@ class Tac_Controller extends Ninja_Controller {
 	 * public, but not exposed (prefix with _) due to testability
 	 */
 	public function _current_dashboard() {
-		$dashboard_id = $this->input->post('dashboard_id');
-		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+		/* Just pick the first dashboard... (we only have access to our own) */
+		$dashboard = DashboardPool_Model::all()->one();
+		if(!$dashboard) {
+			/* We don't have a dashboard, create one */
+			$dashboard = new Dashboard_Model();
+			$username = op5auth::instance()->get_user()->get_username();
+			$dashboard->set_username($username);
 
-		if($dashboard === false)
-			throw new Kohana_User_Exception( 'Dashboard not found', 'Dashboard not found', $this->template );
+			$dashboard->import_array(Kohana::config('tac.default'));
+
+			$dashboard->set_name('Dashboard for '.$username);
+			$dashboard->save();
+		}
 
 		return $dashboard;
 	}
@@ -98,14 +105,14 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard->save();
 		}
 
-		$this->template = new View( 'simple/redirect', array( 'target' => 'controller', 'url' => 'tac/index/'.$dashboard->get_id() ) );
+		url::redirect(LinkProvider::factory()->get_url('tac', 'index'));
 	}
 
 
 	/**
 	 * Display a TAC screen
 	 */
-	public function index($dashboard_id = 0)	{
+	public function index($dashboard_id = 0) {
 		$this->_verify_access('ninja.tac:read.tac');
 
 		/*
@@ -255,7 +262,7 @@ class Tac_Controller extends Ninja_Controller {
 	public function on_change_positions() {
 		// This is a basic functionality of the tac,
 		// so keep it to the same permission as tac
-		$this->_verify_access( 'ninja.tac:read.tac' );
+		$this->_verify_access('ninja.tac:read.tac');
 
 		$dashboard = $this->_current_dashboard();
 		if (! $dashboard->get_can_write()) {
@@ -264,7 +271,7 @@ class Tac_Controller extends Ninja_Controller {
 			return;
 		}
 
-		$positions = $this->input->post( 'positions', false );
+		$positions = $this->input->post('positions', false);
 
 		// Parse position data from frontend
 		$placeholders = explode('|', $positions);
@@ -274,8 +281,8 @@ class Tac_Controller extends Ninja_Controller {
 				if ($values[1] == '') return array();
 				return explode(',', $values[1]);
 			},
-			$placeholders
-		);
+				$placeholders
+			);
 
 		// Loop through position data and save to widgets
 		$c_count = count($pos_data);
@@ -283,7 +290,7 @@ class Tac_Controller extends Ninja_Controller {
 			$p_count = count($pos_data[$i]);
 			for ($j = 0; $j < $p_count; $j++) {
 				$widget_model_id = substr($pos_data[$i][$j], 7);
-				$widget_model = $dashboard
+				$widget_model = $this->_current_dashboard()
 					->get_dashboard_widgets_set()
 					->intersect(Dashboard_WidgetPool_Model::set_by_key($widget_model_id))
 					->one();
@@ -310,7 +317,6 @@ class Tac_Controller extends Ninja_Controller {
 		$this->_verify_access('ninja.tac:read.tac');
 
 		$dashboard = $this->_current_dashboard();
-
 		$widget_model = $dashboard->get_dashboard_widgets_set()->intersect(
 			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
 		)->one();
@@ -457,7 +463,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$widget_key = $this->input->post('key');
 
-		$dashboard_set = $dashboard->get_dashboard_widgets_set();
+		$dashboard_set = $this->_current_dashboard()->get_dashboard_widgets_set();
 		$widget_model = $dashboard_set->intersect(
 			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
 		)->one();
@@ -505,12 +511,13 @@ class Tac_Controller extends Ninja_Controller {
 			$this->template->success = true;
 			$this->template->value = array(
 				'result' => 'Did not update anything because there were ' .
-					'no new settings submitted.'
+				'no new settings submitted.'
 			);
 			return;
 		}
 
-		$widget_model = $dashboard->get_dashboard_widgets_set()
+		$current_dashboard = $this->_current_dashboard();
+		$widget_model = $current_dashboard->get_dashboard_widgets_set()
 			->intersect(Dashboard_WidgetPool_Model::set_by_key($key))->one();
 		if (!$widget_model instanceof Widget_Model) {
 			$this->template->success = false;
@@ -526,7 +533,7 @@ class Tac_Controller extends Ninja_Controller {
 		$widget_options = $widget->options();
 		if($widget_options instanceof Form_Model) {
 			try {
-				$setting = $widget_options->process_data($setting);
+				$setting = $widget->options()->process_data($setting);
 			} catch(FormException $e) {
 				$this->template->success = false;
 				$this->template->value = array (

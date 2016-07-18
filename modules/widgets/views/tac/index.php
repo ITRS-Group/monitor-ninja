@@ -21,7 +21,7 @@ echo form::close();
 echo form::open(url::site() . 'tac/on_rename_dashboard', array('id' => 'dashboard-rename-form'), array('dashboard_id' => $dashboard->get_id()));
 echo '<h2>Rename dashboard</h2>';
 echo '<hr>';
-echo form::input('name', $dashboard->get_name());
+echo form::input('name', $dashboard->get_name(), 'required');
 echo '<hr>';
 echo form::submit(array(), 'Yes');
 echo form::input(array('type' => 'button', 'class' => 'dashboard-form-cancel'), 'Cancel');
