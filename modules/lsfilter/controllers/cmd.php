@@ -93,6 +93,7 @@ class Cmd_Controller extends Ninja_Controller {
 				"commands applied.";
 			op5log::instance('ninja')->log('warning', $error_message);
 			$this->template->content->error = $error_message;
+			$this->template->content->error_level = 'notice';
 			return;
 		}
 		if(isset($commands[$command]['redirect']) && $commands[$command]['redirect']) {

@@ -6,7 +6,14 @@
 /* @var $objs_widget widget_Base */
 
 if (!empty( $error )) {
-	echo "<div class='alert notice'>Error: ".$error."</div>";
+	if(!isset($error_level)) {
+		$error_level = 'error';
+	}
+	$prefix = "";
+	if($error_level == 'error') {
+		$prefix = 'Error: ';
+	}
+	echo "<div class='alert $error_level'>$prefix$error</div>";
 	return;
 }
 
