@@ -46,7 +46,7 @@ var tac_send_request = function (method, data, callbacks) {
 
 $(function() {
 	/* If we can't change the dashboard, don't load handling of widgets */
-	if (typeof _dashboard_can_write !== 'undefined' && !_dashboard_can_write)
+	if (typeof _dashboard_can_write === 'undefined' || !_dashboard_can_write)
 		return;
 	var easywidgets_obj = $.fn.EasyWidgets({
 		behaviour : {

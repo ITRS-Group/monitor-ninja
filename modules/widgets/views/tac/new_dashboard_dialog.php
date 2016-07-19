@@ -3,7 +3,7 @@
  * This page is loaded via ajax from fancybox when selecting "new dashboard"
  */
 
-echo form::open(url::site() . 'tac/on_new_dashboard', array('id' => 'dashboard-create-form'));
+echo form::open(LinkProvider::factory()->get_url('tac', 'new_dashboard'), array('id' => 'dashboard-create-form'));
 echo '<h2>New dashboard</h2>';
 echo '<hr>';
 echo form::input('name', '', 'required');

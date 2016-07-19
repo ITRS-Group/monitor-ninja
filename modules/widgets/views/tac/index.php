@@ -1,11 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-$baseurl = url::base(true);
-?>
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="response"></div>
 
 <div style="display: none;">
 <?php
-echo form::open(url::site() . 'tac/on_delete_dashboard', array('id' => 'dashboard-delete-form'), array('dashboard_id' => $dashboard->get_id()));
+echo form::open(LinkProvider::factory()->get_url('tac', 'delete_dashboard'), array('id' => 'dashboard-delete-form'), array('dashboard_id' => $dashboard->get_id()));
 echo '<h2>Delete dashboard</h2>';
 echo '<hr>';
 echo '<p>Are you sure you want to delete this dashboard?</p>';
@@ -18,7 +16,7 @@ echo form::close();
 
 <div style="display: none;">
 <?php
-echo form::open(url::site() . 'tac/on_rename_dashboard', array('id' => 'dashboard-rename-form'), array('dashboard_id' => $dashboard->get_id()));
+echo form::open(LinkProvider::factory()->get_url('tac', 'rename_dashboard'), array('id' => 'dashboard-rename-form'), array('dashboard_id' => $dashboard->get_id()));
 echo '<h2>Rename dashboard</h2>';
 echo '<hr>';
 echo form::input('name', $dashboard->get_name(), 'required');

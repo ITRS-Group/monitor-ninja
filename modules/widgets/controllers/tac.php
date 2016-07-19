@@ -213,7 +213,7 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Create a new dashboard
 	 */
-	public function on_new_dashboard() {
+	public function new_dashboard() {
 		/* If still no dashboard found, Create a default dashboard */
 		$user = op5auth::instance()->get_user();
 		/* @var $user User_Model */
@@ -230,7 +230,7 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Rename the current dashboard
 	 */
-	public function on_rename_dashboard() {
+	public function rename_dashboard() {
 		$dashboard = $this->_current_dashboard();
 		if ($dashboard->get_can_write()) {
 			$dashboard->set_name( $this->input->post( 'name' ) );
@@ -243,7 +243,7 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Delete the current dashboard
 	 */
-	public function on_delete_dashboard() {
+	public function delete_dashboard() {
 		$dashboard = $this->_current_dashboard();
 		/* @var $dashboard Dashboard_Model */
 		if ($dashboard->get_can_write()) {

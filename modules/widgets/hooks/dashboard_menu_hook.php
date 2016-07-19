@@ -15,7 +15,3 @@ Event::add ( 'ninja.menu.setup', function () {
 			'class' => "menuitem_dashboard_option" /* Popup as fancybox */
 	));
 });
-
-Event::add ( 'system.post_controller', function() {
-	Kohana::$instance->template->js[] = 'modules/widgets/views/js/tac.js';
-});

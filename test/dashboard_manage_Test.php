@@ -50,7 +50,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		 * Requirement: Count increases when creating
 		 */
 		$this->assertEquals(0, DashboardPool_Model::all()->count());
-		$sut->on_new_dashboard();
+		$sut->new_dashboard();
 		$this->assertEquals(1, DashboardPool_Model::all()->count());
 
 		/*
@@ -70,7 +70,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 			'dashboard_id' => $dashboard_id,
 			'name' => 'Everything and anything'
 		);
-		$sut->on_rename_dashboard();
+		$sut->rename_dashboard();
 		$this->assertEquals("Everything and anything", $db_set->one()->get_name());
 
 		/*
@@ -84,7 +84,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$_POST = array(
 			'dashboard_id' => $dashboard_id
 		);
-		$sut->on_delete_dashboard();
+		$sut->delete_dashboard();
 		$this->assertEquals(0, DashboardPool_Model::all()->count());
 		$this->assertNull($db_set->one());
 	}
