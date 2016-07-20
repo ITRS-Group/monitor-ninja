@@ -19,6 +19,11 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 				)
 			)
 		)));
+
+		$superuser = new User_AlwaysAuth_Model();
+
+		Auth::instance(array('session_key' => false))
+			->force_user($superuser);
 	}
 
 	protected function tearDown() {
@@ -37,84 +42,88 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 	public function test_adding_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
-				'dashboards' => array(),
+				'dashboards' => array(
+					array(
+						'id' => '4',
+						'name' => 'My dashboard',
+						'username' => 'superuser',
+						'layout' => '3,2,1'
+					)
+				),
 				'dashboard_widgets' => array()
 			)
 		));
 
-		$sut = new Tac_Controller();
+		$this->assertEquals(1, count(DashboardPool_Model::all()));
 
-		/*
-		 * Create a dashboard
-		 *
-		 * Requirement: Count increases when creating
-		 */
-		$this->assertEquals(0, DashboardPool_Model::all()->count());
+		$sut = new Tac_Controller();
 		$sut->new_dashboard();
-		$this->assertEquals(1, DashboardPool_Model::all()->count());
+
+		$this->assertEquals(2, count(DashboardPool_Model::all()));
 	}
 
 	public function test_renaming_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
-				'dashboards' => array(),
+				'dashboards' => array(
+					array(
+						'id' => '4',
+						'name' => 'My dashboard',
+						'username' => 'superuser',
+						'layout' => '3,2,1'
+					)
+				),
 				'dashboard_widgets' => array()
 			)
 		));
 
 		$sut = new Tac_Controller();
 
-		/*
-		 * Store reference to the created dashboard
-		 * Store it as a set to. The $set->one() actually fetches from the database
-		 */
-		$dashboard_id = DashboardPool_Model::all()->one()->get_id();
-		$db_set = DashboardPool_Model::set_by_key($dashboard_id);
+		$dashboard = DashboardPool_Model::all()->one();
+		$this->assertInstanceOf('Dashboard_Model', $dashboard,
+			'We can find the mocked dashboard');
+		$this->assertSame('My dashboard', $dashboard->get_name(),
+			'The dashboard is named by our spec');
 
-		/*
-		 * Rename a dashboard
-		 *
-		 * Requirement: The new name isn't valid before, but after
-		 */
-		$this->assertNotEquals("Everything and anything", $db_set->one()->get_name());
 		$_POST = array(
-			'dashboard_id' => $dashboard_id,
+			'dashboard_id' => 4,
 			'name' => 'Everything and anything'
 		);
 		$sut->rename_dashboard();
-		$this->assertEquals("Everything and anything", $db_set->one()->get_name());
+
+		$all = DashboardPool_Model::all();
+		$this->assertSame(1, count($all),
+			"We did not create a new dashboard, but ".
+			"update one that already existed");
+		$this->assertSame("Everything and anything", $all->one()->get_name(),
+			"We successfully changed the name of a dashboard");
 	}
 
 	public function test_deleting_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
-				'dashboards' => array(),
+				'dashboards' => array(
+					array(
+						'id' => '34',
+						'name' => 'My dashboard',
+						'username' => 'superuser',
+						'layout' => '3,2,1'
+					)
+				),
 				'dashboard_widgets' => array()
 			)
 		));
 
-		$sut = new Tac_Controller();
+		$this->assertSame(1, count(DashboardPool_Model::all()));
+		$this->assertInstanceOf('Dashboard_Model', DashboardPool_Model::fetch_by_key(34));
 
-		/*
-		 * Store reference to the created dashboard
-		 * Store it as a set to. The $set->one() actually fetches from the database
-		 */
-		$dashboard_id = DashboardPool_Model::all()->one()->get_id();
-		$db_set = DashboardPool_Model::set_by_key($dashboard_id);
-
-		/*
-		 * Deleting a dashboard
-		 *
-		 * Requirement: The count goes back to 0
-		 * Requirement: The reffered dashboard isn't found anymore
-		 */
-		$this->assertEquals(1, DashboardPool_Model::all()->count());
-		$this->assertInstanceOf('Dashboard_Model', $db_set->one());
 		$_POST = array(
-			'dashboard_id' => $dashboard_id
+			'dashboard_id' => 34
 		);
+		$sut = new Tac_Controller();
 		$sut->delete_dashboard();
-		$this->assertEquals(0, DashboardPool_Model::all()->count());
-		$this->assertNull($db_set->one());
+
+		$this->assertSame(0, count(DashboardPool_Model::all()));
+		$this->assertSame(false, DashboardPool_Model::fetch_by_key(34));
 	}
 }
