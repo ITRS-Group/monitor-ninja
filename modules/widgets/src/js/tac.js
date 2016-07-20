@@ -145,6 +145,7 @@ $(function() {
 				var new_widget = $(data.widget);
 				$('#' + cell_name).prepend(new_widget);
 				$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
+				FormModule.add_form(new_widget);
 			},
 			error: function () {
 				Notify.message('Could not save new widget to settings');

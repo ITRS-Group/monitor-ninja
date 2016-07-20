@@ -128,14 +128,14 @@ class Toolbar_Controller extends Ninja_Controller {
 
 		if ( count( $this->info ) > 0 ) {
 			print '<div class="main-toolbar-info">';
-			foreach ( $this->info as $html )
-				$menu->render(true);
+			foreach ($this->info as $html)
+				print $html;
 			print '</div>';
 		}
 
 		if (count($this->menus) > 0) {
-			foreach ($this->menus as $menu)
-				$menu->render(true);
+			foreach ($this->menus as $html)
+				print $html;
 		}
 
 		if ($this->should_render_buttons) {

@@ -34,7 +34,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 
-	public function test_add_rename_delete() {
+	public function test_adding_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(),
@@ -52,6 +52,17 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(0, DashboardPool_Model::all()->count());
 		$sut->new_dashboard();
 		$this->assertEquals(1, DashboardPool_Model::all()->count());
+	}
+
+	public function test_renaming_dashboard() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(),
+				'dashboard_widgets' => array()
+			)
+		));
+
+		$sut = new Tac_Controller();
 
 		/*
 		 * Store reference to the created dashboard
@@ -72,6 +83,24 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		);
 		$sut->rename_dashboard();
 		$this->assertEquals("Everything and anything", $db_set->one()->get_name());
+	}
+
+	public function test_deleting_dashboard() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(),
+				'dashboard_widgets' => array()
+			)
+		));
+
+		$sut = new Tac_Controller();
+
+		/*
+		 * Store reference to the created dashboard
+		 * Store it as a set to. The $set->one() actually fetches from the database
+		 */
+		$dashboard_id = DashboardPool_Model::all()->one()->get_id();
+		$db_set = DashboardPool_Model::set_by_key($dashboard_id);
 
 		/*
 		 * Deleting a dashboard
