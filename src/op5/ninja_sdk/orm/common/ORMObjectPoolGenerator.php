@@ -226,7 +226,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('try {');
 		$this->write(	'return self::get_driver()->update("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter, $values);');
 		$this->write('} catch (Exception $e) {');
-		$this->write(	'throw new ORMDriverException($e->getMessage(), %s);', $this->name);
+		$this->write(	'throw new ORMDriverException($e->getMessage(), %s, false, $e);', $this->name);
 		$this->write('}');
 		$this->finish_function();
 	}
@@ -237,7 +237,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('try {');
 		$this->write(	'return self::get_driver()->delete("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter);');
 		$this->write('} catch (Exception $e) {');
-		$this->write(	'throw new ORMDriverException($e->getMessage(), %s);', $this->name);
+		$this->write(	'throw new ORMDriverException($e->getMessage(), %s, false, $e);', $this->name);
 		$this->write('}');
 		$this->finish_function();
 	}
@@ -247,7 +247,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('try {');
 		$this->write(	'return self::get_driver()->insert_single("' . $this->name . '", ' . var_export($this->structure, true) . ', $values);');
 		$this->write('} catch (Exception $e) {');
-		$this->write(	'throw new ORMDriverException($e->getMessage(), %s);', $this->name);
+		$this->write(	'throw new ORMDriverException($e->getMessage(), %s, false, $e);', $this->name);
 		$this->write('}');
 		$this->finish_function();
 	}
@@ -263,7 +263,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('try {');
 		$this->write(	'return self::get_driver()->stats("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter, $intersections);');
 		$this->write('} catch (Exception $e) {');
-		$this->write(	'throw new ORMDriverException($e->getMessage(), %s);', $this->name);
+		$this->write(	'throw new ORMDriverException($e->getMessage(), %s, false, $e);', $this->name);
 		$this->write('}');
 		$this->finish_function();
 	}
@@ -278,7 +278,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('try {');
 		$this->write(	'return self::get_driver()->count("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter);');
 		$this->write('} catch (Exception $e) {');
-		$this->write(	'throw new ORMDriverException($e->getMessage(), %s);', $this->name);
+		$this->write(	'throw new ORMDriverException($e->getMessage(), %s, false, $e);', $this->name);
 		$this->write('}');
 		$this->finish_function();
 	}
@@ -293,7 +293,7 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 		$this->write('try {');
 		$this->write(	'return self::get_driver()->it("' . $this->name . '", ' . var_export($this->structure, true) . ', $filter, $columns, $order, $limit, $offset);');
 		$this->write('} catch (Exception $e) {');
-		$this->write(	'throw new ORMDriverException($e->getMessage(), %s);', $this->name);
+		$this->write(	'throw new ORMDriverException($e->getMessage(), %s, false, $e);', $this->name);
 		$this->write('}');
 		$this->finish_function();
 
