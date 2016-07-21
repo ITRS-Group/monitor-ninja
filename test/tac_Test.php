@@ -714,7 +714,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 		$count = 0;
 		$last_name = '';
-		foreach($menu->get("Add widget")->get_branch() as $menu_item) {
+		foreach($menu->get_branch() as $menu_item) {
 			$cur_name = strtolower($menu_item->get_label_as_html());
 
 			/* every name should be after the previous name, thus in order */
