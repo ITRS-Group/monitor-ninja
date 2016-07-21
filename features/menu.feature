@@ -15,7 +15,6 @@ Feature: Menu
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
 		Then I should see menu items:
-			| Tactical Overview |
 			| Network Outages |
 			| Hosts |
 			| Services |
