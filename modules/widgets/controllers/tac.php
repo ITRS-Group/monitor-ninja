@@ -88,6 +88,9 @@ class Tac_Controller extends Ninja_Controller {
 
 			$dashboard->set_name('Dashboard for '.$username);
 			$dashboard->save();
+		}else{
+			$dashboard_id = $this->input->post('dashboard_id');
+			$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 		}
 
 		return $dashboard;
