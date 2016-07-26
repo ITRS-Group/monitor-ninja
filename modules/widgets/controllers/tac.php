@@ -108,7 +108,8 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard->save();
 		}
 
-		url::redirect(LinkProvider::factory()->get_url('tac', 'index'));
+		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+			'url' => 'tac/index/' . $dashboard->get_id() ) );
 	}
 
 
