@@ -25,7 +25,6 @@
 
 	$shortcuts['internal'][] = array('/listview?q=[hosts] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0', 'icon-16 x16-shield-pending', array('id' => 'uh_host_problems', 'title' => 'Unhandled Host Problems'));
 	$shortcuts['internal'][] = array('/listview?q=[services] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0 and host.scheduled_downtime_depth = 0', 'icon-16 x16-shield-pending', array('id' => 'uh_service_problems', 'title' => 'Unhandled Service Problems'));
-	$shortcuts['internal'][] = array('/tac', 'icon-16 x16-tac', array('title' => 'Tactical Overview'));
 
 	if (isset($int_shortcuts)) {
 		for ($i = 0; $i < count($int_shortcuts); $i++) {
