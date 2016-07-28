@@ -31,6 +31,51 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 			new User_AlwaysAuth_Model()
 		);
 
+		// Mock some data. If we don't mock anything REAL DBs will be used :/
+		$this->mock_data(array(
+			'ORMDriverLS default' => array(
+				'hosts' => array(
+					array(
+						'name' => 'Randall Daragh',
+					),
+				)
+			),
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array()
+			)
+		));
+
+		$this->tac = new Tac_Controller();
+	}
+
+	protected function tearDown() {
+		op5objstore::instance()->mock_clear();
+	}
+
+	private function mock_data($tables) {
+		foreach($tables as $driver => $tables) {
+			op5objstore::instance()->mock_add(
+				$driver,
+				new ORMDriverNative($tables, null, $driver)
+			);
+		}
+	}
+
+	private function get_widgets_data() {
+		$data = (array) op5objstore::instance()->obj_instance(
+			'ORMDriverMySQL default'
+		);
+		$wd = $data["\0*\0storage"]['dashboard_widgets'];
+
+		// Sort widget data by ID.
+		$widgets = array();
+		foreach ($wd as $w) {
+			$widgets[$w['id']] = $w;
+		}
+		return $widgets;
+	}
+
+	private function setup_some_widgets() {
 		$this->mock_data(array(
 			'ORMDriverLS default' => array(
 				'hosts' => array(
@@ -92,35 +137,35 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				)
 			)
 		));
-
-		$this->tac = new Tac_Controller();
 	}
 
-	protected function tearDown() {
-		op5objstore::instance()->mock_clear();
+	public function test_no_dashboard() {
+		$this->tac->index(1);
+
+		$content = $this->tac->template->content;
+		$this->assertInstanceOf('View', $content);
+
+		$no_dash_file = 'ninja/modules/widgets/views/tac/nodashboards.php';
+		$this->assertStringEndsWith($no_dash_file, $content->kohana_filename);
 	}
 
-	private function mock_data($tables) {
-		foreach($tables as $driver => $tables) {
-			op5objstore::instance()->mock_add(
-				$driver,
-				new ORMDriverNative($tables, null, $driver)
-			);
-		}
-	}
+	public function test_no_widgets() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array('id' => 1, 'username' => 'superuser')
+				)
+			)
+		));
 
-	private function get_widgets_data() {
-		$data = (array) op5objstore::instance()->obj_instance(
-			'ORMDriverMySQL default'
-		);
-		$wd = $data["\0*\0storage"]['dashboard_widgets'];
+		$this->tac->index(1);
 
-		// Sort widget data by ID.
-		$widgets = array();
-		foreach ($wd as $w) {
-			$widgets[$w['id']] = $w;
-		}
-		return $widgets;
+		$content = $this->tac->template->content;
+		$this->assertInstanceOf('View', $content);
+
+		$no_widget_file = 'ninja/modules/widgets/views/tac/nowidgets.php';
+		$this->assertStringEndsWith($no_widget_file, $content->kohana_filename);
+		$this->assertEmpty($this->tac->template->content->widgets);
 	}
 
 	public function test_widget_positions() {
@@ -317,6 +362,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	// Assert on_change_positions() succeeds when moving widget to the same
 	// cell and position as it already was in.
 	public function test_on_change_positions_same_cell() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'positions' =>
 				'widget-placeholder0=widget-1|' .
@@ -345,6 +392,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 	// Assert on_change_positions() succeeds when moving widget to another cell.
 	public function test_on_change_positions_another_cell() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'positions' =>
 				'widget-placeholder0=widget-1|' .
@@ -381,6 +430,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	// Assert on_change_positions() succeeds when moving all widgets to
 	// one cell.
 	public function test_on_change_positions_one_cell() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'positions' =>
 				'widget-placeholder0=|' .
@@ -416,6 +467,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 	// Assert on_change_positions() works, even though one ID doesn't exist.
 	public function test_on_change_positions_wrong_widget_id() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'positions' =>
 				'widget-placeholder0=widget-1|' .
@@ -442,52 +495,54 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_on_refresh() {
-		$tac = new Tac_Controller();
+		$this->setup_some_widgets();
 
 		// Assert it fails when given wrong widget ID.
 		$_POST = array(
 			'key' => 'invalid',
 			'dashboard_id' => '1'
 		);
-		$tac->on_refresh();
+		$this->tac->on_refresh();
 
 		$expected_value = array('result' => 'Unknown widget');
-		$this->assertSame($expected_value, $tac->template->value);
-		$this->assertFalse($tac->template->success);
+		$this->assertSame($expected_value, $this->tac->template->value);
+		$this->assertFalse($this->tac->template->success);
 
 		// Assert that we get a dead widget when widget name is invalid.
 		$_POST = array(
 			'key' => '1',
 			'dashboard_id' => '1'
 		);
-		$tac->on_refresh();
+		$this->tac->on_refresh();
 
 		$this->assertContains(
 			"Widget type 'Cell0' does not seem to be installed",
-			$tac->template->value['widget']
+			$this->tac->template->value['widget']
 		);
-		$this->assertSame('Unknown', $tac->template->value['title']);
-		$this->assertSame('', $tac->template->value['custom_title']);
-		$this->assertTrue($tac->template->success);
+		$this->assertSame('Unknown', $this->tac->template->value['title']);
+		$this->assertSame('', $this->tac->template->value['custom_title']);
+		$this->assertTrue($this->tac->template->success);
 
 		// Assert that we get correct widget data when widget name is valid.
 		$_POST = array(
 			'key' => '2',
 			'dashboard_id' => '1'
 		);
-		$tac->on_refresh();
+		$this->tac->on_refresh();
 
 		$this->assertContains(
-			'<table class="tablestat-widget"', $tac->template->value['widget']
+			'<table class="tablestat-widget"', $this->tac->template->value['widget']
 		);
-		$this->assertSame('Hosts', $tac->template->value['title']);
-		$this->assertSame('', $tac->template->value['custom_title']);
-		$this->assertTrue($tac->template->success);
+		$this->assertSame('Hosts', $this->tac->template->value['title']);
+		$this->assertSame('', $this->tac->template->value['custom_title']);
+		$this->assertTrue($this->tac->template->success);
 	}
 
 	// Assert a correct widget is created in response when correct data is
 	// given.
 	public function test_on_widget_add_with_correct_data() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'cell' => 'addcell2',
 			'widget' => 'tac_hosts',
@@ -519,6 +574,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 	// Assert a widget is added in cell 0 when $_POST['cell'] is incorrect.
 	public function test_on_widget_add_with_incorrect_cellname() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'cell' => 'non-number-ending-string',
 			'widget' => 'tac_hosts',
@@ -546,6 +603,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 
 	// Assert that a "dead "widget is created when widget name is incorrect.
 	public function test_on_widget_add_with_incorrect_widget_name() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'cell' => 'addcell2',
 			'widget' => 'kanelmuffins',
@@ -560,6 +619,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_on_widget_remove() {
+		$this->setup_some_widgets();
+
 		$_POST = array(
 			'dashboard_id' => '1'
 		);

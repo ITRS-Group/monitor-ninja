@@ -129,13 +129,13 @@ class Tac_Controller extends Ninja_Controller {
 		if ($dashboard === false) {
 			/* If the dashboard isn't found, redirect to one existing dashboard */
 			$dashboard = DashboardPool_Model::all()->one();
-			if($dashboard !== false) {
+			if ($dashboard) {
 				$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
 					'url' => 'tac/index/' . $dashboard->get_id() ) );
 				return;
 			}
 
-			/* If there are no dashboards, show a not-any-dashboard-available page */
+			/* If there are no dashboards, show a no-dashboards-available page */
 			$this->template->content = new View( 'tac/nodashboards' );
 			return;
 		}
