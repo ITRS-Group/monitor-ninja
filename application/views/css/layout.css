@@ -507,6 +507,24 @@ tr.dark td.data, tr.odd td.data, tr.even td.data {
   width: 100%;
 }
 
+.center p {
+  font-size: 10pt;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+h1.emote {
+  font-size: 24pt;
+  color: #777;
+}
+
+h1.emote b {
+  font-size: 34pt;
+  margin-bottom: 8px;
+  color: #999;
+  display: block;
+}
+
 .header {
   position: relative;
   box-sizing: border-box;
