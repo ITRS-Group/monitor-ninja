@@ -1,7 +1,6 @@
 
 form.nj-form {
   font-size: 11pt;
-  margin: 8px;
 }
 
 form.nj-form label {
@@ -164,8 +163,8 @@ form.nj-form .nj-form-field-checkbox input:checked + .nj-form-label:after {
 
 form.nj-form .nj-form-field-radio-buttons {
   vertical-align: top;
-  display: inline-block;
-  width: 300px;
+  display: block;
+  min-width: 128px;
 }
 
 form.nj-form .nj-form-field-radio input {
@@ -220,6 +219,7 @@ form.nj-form .nj-form-field-radio input:checked + .nj-form-label:after {
   width: 12px;
   opacity: 1;
 }
+
 
 /* End radiobutton */
 
@@ -417,4 +417,41 @@ form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-ite
 
 .nj-form-field-listview-query .CodeMirror.success {
   border-color: #82cd60;
+}
+
+/* New dashboard specific */
+
+form.nj-form fieldset[data-name="dashboard"] .nj-form-field {
+  display: block;
+}
+
+form.nj-form fieldset[data-name="dashboard"] .nj-form-field-radio,
+form.nj-form fieldset[data-name="dashboard"] .nj-form-field-radio label {
+  display: inline-block;
+}
+
+form.nj-form .nj-form-field-radio-buttons input[name="layout"] + .nj-form-label {
+  background-repeat: no-repeat;
+  color: transparent;
+  height: 48px;
+  width: 48px;
+  margin: 4px;
+}
+
+form.nj-form .nj-form-field-radio input[name="layout"] + .nj-form-label:before {
+  top: 32px;
+  left: 32px;
+}
+
+form.nj-form .nj-form-field-radio input[name="layout"] + .nj-form-label:after {
+  top: 35px;
+  left: 35px;
+}
+
+form.nj-form .nj-form-field-radio-buttons input[value="3,2,1"] + .nj-form-label {
+  background-image: url("/ninja/application/views/icons/layout-321.png");
+}
+
+form.nj-form .nj-form-field-radio-buttons input[value="1,3,2"] + .nj-form-label {
+  background-image: url("/ninja/application/views/icons/layout-132.png");
 }

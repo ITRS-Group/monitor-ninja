@@ -211,7 +211,12 @@ class Tac_Controller extends Ninja_Controller {
 	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
 	 */
 	public function new_dashboard_dialog() {
-		$this->template = new View('tac/new_dashboard_dialog');
+		$username = op5auth::instance()->get_user()->get_username();
+		$count = count(DashboardPool_Model::all()->reduce_by('username', $username, '='));
+		$this->template = new View('tac/new_dashboard_dialog', array(
+			'username' => $username,
+			'count' => $count
+		));
 	}
 
 	/**

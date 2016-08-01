@@ -3,16 +3,25 @@
  * This page is loaded via ajax from fancybox when selecting "new dashboard"
  */
 
-echo form::open(LinkProvider::factory()->get_url('tac', 'new_dashboard'), array('id' => 'dashboard-create-form'));
-echo '<h2>New dashboard</h2>';
-echo '<hr>';
-echo form::input('name', '', 'required');
-echo '<br />';
-echo form::dropdown('layout', array(
-	'3,2,1' => '3,2,1',
-	'1,3,2' => '1,3,2',
+$lp = LinkProvider::factory();
+$form = new Form_Model(
+	$lp->get_url('tac', 'new_dashboard'),
+	array(
+		new Form_Field_Group_Model('dashboard', array(
+			new Form_Field_Text_Model('name', 'Name'),
+			new Form_Field_Option_Model('layout', 'Layout', array(
+				'3,2,1' => '321',
+				'1,3,2' => '132'
+			))
+		))
+	)
+);
+
+$form->set_values(array(
+	'name' => $username . ' dashboard ',
+	'layout' => '3,2,1'
 ));
-echo '<hr>';
-echo form::submit(array(), 'Yes');
-echo form::input(array('type' => 'button', 'class' => 'dashboard-form-cancel'), 'Cancel');
-echo form::close();
+
+echo '<h1>New dashboard</h1>';
+echo $form->get_view();
+
