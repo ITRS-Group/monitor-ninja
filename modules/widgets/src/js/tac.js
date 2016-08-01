@@ -101,6 +101,12 @@ $(function() {
 				tac_send_request('on_widget_remove', {
 					key : widget.attr('data-key')
 				}, {
+					success: function(data) {
+						widget.remove();
+						if ($('.widget').length == 0) {
+							window.location.reload();
+						}
+					},
 					error: function () {
 						Notify.message('Could not save removal of widget to settings');
 					}
@@ -142,10 +148,15 @@ $(function() {
 			cell   : cell_name
 		}, {
 			success : function(data) {
+
 				var new_widget = $(data.widget);
-				$('#' + cell_name).prepend(new_widget);
-				$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
-				FormModule.add_form(new_widget);
+				if ($('.widget').length == 0) {
+					window.location.reload();
+				} else {
+					$('#' + cell_name).prepend(new_widget);
+					$.fn.AddEasyWidget(new_widget, new_widget.parent().id, easywidgets_obj);
+					FormModule.add_form(new_widget);
+				}
 			},
 			error: function () {
 				Notify.message('Could not save new widget to settings');
@@ -190,7 +201,7 @@ $(function() {
 	$(".menuitem_dashboard_option").fancybox({
 		showCloseButton: false
 	});
-	$(document).on('click', ".dashboard-form-cancel", function(e) {
+	$(document).on('click', '#fancybox-content input[value="Cancel"]', function(e) {
 		e.preventDefault();
 		$.fancybox.close();
 		return false;

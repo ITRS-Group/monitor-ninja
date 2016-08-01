@@ -88,7 +88,7 @@ class Tac_Controller extends Ninja_Controller {
 
 			$dashboard->set_name('Dashboard for '.$username);
 			$dashboard->save();
-		}else{
+		} else {
 			$dashboard_id = $this->input->post('dashboard_id');
 			$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 		}
@@ -164,22 +164,26 @@ class Tac_Controller extends Ninja_Controller {
 
 		$widget_models = $dashboard->get_dashboard_widgets_set();
 
-		/* Place widgets that's left equally over the placeholders */
-		foreach ($widget_models as $model) {
-			$pos = $model->get_position();
-			/* No cell number is same as incorrect posistion */
-			if (is_array($pos) && isset($pos['c']) && $pos['c'] >= 0 && $pos['c'] < $n_dashboard_cells) {
-				if(isset($pos['p']) && !isset($widget_table[$pos['c']][$pos['p']])) {
-					/* If set, and not a conflict, add correctly... */
-					$widget_table[$pos['c']][$pos['p']] = $model->build();
-				} else {
-					/* ...otherwise place at end of cell */
-					$widget_table[$pos['c']][] = $model->build();
+		if (count($widget_models) == 0) {
+			$this->template->content = new View('tac/nowidgets');
+		} else {
+			/* Place widgets that's left equally over the placeholders */
+			foreach ($widget_models as $model) {
+				$pos = $model->get_position();
+				/* No cell number is same as incorrect posistion */
+				if (is_array($pos) && isset($pos['c']) && $pos['c'] >= 0 && $pos['c'] < $n_dashboard_cells) {
+					if(isset($pos['p']) && !isset($widget_table[$pos['c']][$pos['p']])) {
+						/* If set, and not a conflict, add correctly... */
+						$widget_table[$pos['c']][$pos['p']] = $model->build();
+					} else {
+						/* ...otherwise place at end of cell */
+						$widget_table[$pos['c']][] = $model->build();
+					}
 				}
-			}
-			else {
-				// If we can't parse position, place widget in last cell.
-				$widget_table[$n_dashboard_cells - 1][] = $model->build();
+				else {
+					// If we can't parse position, place widget in last cell.
+					$widget_table[$n_dashboard_cells - 1][] = $model->build();
+				}
 			}
 		}
 
@@ -189,7 +193,6 @@ class Tac_Controller extends Ninja_Controller {
 		}
 
 		$this->template->content->widgets = $widget_table;
-
 		$this->template->toolbar = $toolbar = new Toolbar_Controller($dashboard->get_name());
 
 		$menu = new Menu_Model();
@@ -197,10 +200,12 @@ class Tac_Controller extends Ninja_Controller {
 
 		$menu->attach("Options", $this->_get_add_widget_menu()->set_order(10));
 		$menu->attach("Options", $this->get_select_layout_menu($dashboard)->set_order(20));
-		$menu->set("Options.Rename", "#dashboard-rename-form", 30, null, array(
+		$menu->set("Options.Rename",
+			LinkProvider::factory()->get_url('tac', 'rename_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+			30, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
-		$menu->set("Options.Delete", "#dashboard-delete-form", 31, null, array(
+		$menu->set("Options.Delete", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
 	}
@@ -237,6 +242,21 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 * Render the new dashboard dialog, as an entire page
+	 *
+	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
+	 */
+	public function rename_dashboard_dialog() {
+		$username = op5auth::instance()->get_user()->get_username();
+		$dashboard_id = $this->input->get('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+		$this->template = new View('tac/rename_dashboard_dialog', array(
+			'username' => $username,
+			'dashboard' => $dashboard
+		));
+	}
+
+	/**
 	 * Rename the current dashboard
 	 */
 	public function rename_dashboard() {
@@ -247,6 +267,21 @@ class Tac_Controller extends Ninja_Controller {
 		}
 		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
 			'url' => 'tac/index/' . $dashboard->get_id() ) );
+	}
+
+	/**
+	 * Render the new dashboard dialog, as an entire page
+	 *
+	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
+	 */
+	public function delete_dashboard_dialog() {
+		$username = op5auth::instance()->get_user()->get_username();
+		$dashboard_id = $this->input->get('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+		$this->template = new View('tac/delete_dashboard_dialog', array(
+			'username' => $username,
+			'dashboard' => $dashboard
+		));
 	}
 
 	/**
