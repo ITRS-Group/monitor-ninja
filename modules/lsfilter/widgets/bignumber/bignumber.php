@@ -215,6 +215,9 @@ class bignumber_Widget extends widget_Base {
 		$form_model = new Form_Model('widget/save_widget_setting',
 			$regular_widget_form_fields);
 
+		$form_model->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form_model->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+
 		foreach(array(
 			$content_from,
 			$host,

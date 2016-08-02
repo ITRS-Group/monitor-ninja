@@ -11,6 +11,7 @@ class Form_Model {
 	private $fields = array();
 	private $missing_fields_cb = array();
 	private $values = array();
+	private $buttons = array();
 
 	/**
 	 * Create a form with a given set of fields
@@ -54,6 +55,38 @@ class Form_Model {
 	 */
 	public function get_fields() {
 		return $this->fields;
+	}
+
+	/**
+	 * Add a new button to the end of the form
+	 *
+	 * @param $button Form_Button_Model
+	 */
+	public function add_button(Form_Button_Model $button) {
+		$this->buttons[] = $button;
+	}
+
+	/**
+	 * Get a view representing a given button in the form.
+	 * If no button is specified, a view for the entire form is returned
+	 *
+	 * @param $button Form_Button_Model
+	 * @return View
+	 */
+	public function get_button_view(Form_Button_Model $button) {
+		return new View('form/' . $button->get_type(), array(
+			'form' => $this,
+			'button' => $button
+		));
+	}
+
+	/**
+	 * Get the list of buttons in the form
+	 *
+	 * @return array of Form_Button_Model
+	 */
+	public function get_buttons() {
+		return $this->buttons;
 	}
 
 	/**

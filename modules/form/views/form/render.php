@@ -7,7 +7,8 @@ foreach($form->get_fields() as $field) {
 	$form->get_field_view($field)->render(true);
 }
 echo '<fieldset>';
-echo '<input class="info state-background" type="submit" value="Save">';
-echo '<input class="info state-background cancel" type="reset" value="Cancel">';
+foreach($form->get_buttons() as $field) {
+	$form->get_button_view($field)->render(true);
+}
 echo '</fieldset>';
 echo '</form>';

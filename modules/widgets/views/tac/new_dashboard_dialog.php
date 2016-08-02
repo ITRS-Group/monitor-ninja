@@ -22,6 +22,14 @@ $form->set_values(array(
 	'layout' => '3,2,1'
 ));
 
+$form->add_button(
+	new Form_Button_Confirm_Model('save', 'Save')
+);
+
+$form->add_button(
+	new Form_Button_Cancel_Model('cancel', 'Cancel')
+);
+
 echo '<h1>New dashboard</h1>';
 echo $form->get_view();
 
