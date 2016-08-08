@@ -358,6 +358,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1338, "monitor", "services", \'a:8:{s:11:"report_type";s:8:"services";s:19:"service_description";a:1:{i:0;s:20:"monitor;Disk usage /";}s:7:"comment";s:36:"This is a comment of a service rsdt.";s:4:"time";s:5:"16:00";s:8:"duration";s:4:"4:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:1:{i:0;s:1:"4";}}\')');
 		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1339, "monitor", "services", \'a:8:{s:11:"report_type";s:8:"services";s:19:"service_description";a:1:{i:0;s:20:"monitor;Disk usage /";}s:7:"comment";s:46:"This scheduled downtime is as long as longcat.";s:4:"time";s:4:"0:00";s:8:"duration";s:5:"24:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:1:{i:0;s:1:"4";}}\')');
 		exec('/usr/bin/php index.php cli/upgrade_recurring_downtime 2>&1', $output, $status);
+		$this->assertEquals(0, $status, "Wanted the exit code 0, got '$status'. Output: ".var_export($output, true));
+		$this->assertEquals(array(), $output);
 		$res = $db->query('SELECT * FROM recurring_downtime WHERE id = 1337');
 		$res = $res->result_array(false);
 		$this->assertCount(1, $res);

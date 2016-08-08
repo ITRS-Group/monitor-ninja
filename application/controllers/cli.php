@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 require_once('op5/auth/Auth.php');
 /**
- * 	CLI controller for command line access to Ninja
+ * CLI controller for command line access to Ninja
  *
  *  op5, and the op5 logo are trademarks, servicemarks, registered servicemarks
  *  or registered trademarks of op5 AB.
