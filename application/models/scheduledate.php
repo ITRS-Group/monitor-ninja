@@ -1,9 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- *	Schedule downtime
+ * Older way of handling scheduled downtimes. Now, recurring downtimes are
+ * modelled in our ORM, and regular downtimes are represented by methods on
+ * host- and service models.
  */
-
 class ScheduleDate_Model extends Model
 {
 	/**
@@ -73,9 +74,9 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
-	 *	Schedule a recurring downtime if tomorrow matches any saved schedules
-	 *	@param $timestamp int
-	 *	@return boolean
+	 * Schedule a recurring downtime if tomorrow matches any saved schedules
+	 * @param $timestamp int
+	 * @return boolean
 	 */
 	static public function schedule_downtime($timestamp=false) {
 		$schedules = RecurringDowntimePool_Model::all();
@@ -169,10 +170,10 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
-	*	Returns appropriate nagios command
-	*	@param $report_type string
-	*	@return string
-	*/
+	 * Returns appropriate nagios command
+	 * @param $report_type string
+	 * @return string
+	 */
 	static protected function determine_downtimetype($report_type=false)
 	{
 		if (empty($report_type)) {
@@ -188,10 +189,10 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
-	 *	Save/update a recurring schedule
-	 * 	@param $data array
-	 *	@param $id int
-	 *	@return bool
+	 * Save/update a recurring schedule
+	 * @param $data array
+	 * @param $id int
+	 * @return bool
 	 */
 	public function edit_schedule($data, &$id=false)
 	{
