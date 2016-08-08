@@ -17,9 +17,6 @@ final class Kohana {
 	// The singleton instance of the controller
 	public static $instance;
 
-	// Will be set to TRUE when an exception is caught
-	public static $has_error = FALSE;
-
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
@@ -611,15 +608,11 @@ final class Kohana {
 	 * Exception handler. Uses the kohana_error_page view to display the message,
 	 * if exception isn't a Kohana_Exception, in that case, obey the exception.
 	 *
-	 * @param   object  exception object
-	 * @return  void
+	 * @param $exception Exception
 	 */
-	public static function exception_handler($exception)
+	public static function exception_handler(Exception $exception)
 	{
 		try {
-			// This is useful for hooks to determine if a page has an error
-			self::$has_error = TRUE;
-
 			$code     = $exception->getCode();
 			$type     = get_class($exception);
 			$message  = $exception->getMessage();
@@ -704,14 +697,14 @@ final class Kohana {
 			error_reporting(0);
 		} catch( Exception $e ) {
 			/* Exceptions in an exceptionhandler results in "Exception thrown without a stack trace in "Unkonwn"
-			 * Better to just print the exception ugly, so we get some kind of useful information instaead
+			 * Better to just print the exception ugly, so we get some kind of useful information instead
 			 */
 			while( @ob_end_clean() ) {}
 			print "Exception during error handler: ".$e->getMessage()."\n";
 			print $e->getTraceAsString();
 
 		}
-		exit;
+		exit(1);
 	}
 
 	/**
