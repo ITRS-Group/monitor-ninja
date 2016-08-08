@@ -34,17 +34,4 @@ abstract class Template_Controller extends Controller {
 		$this->template = new View($this->template);
 
 	}
-
-	/**
-	 * Render the loaded template.
-	 */
-	public function _render()
-	{
-		if ($this->auto_render == TRUE)
-		{
-			// Render the template when the class is destroyed
-			$this->template->render(TRUE);
-		}
-	}
-
-} // End Template_Controller
+}
