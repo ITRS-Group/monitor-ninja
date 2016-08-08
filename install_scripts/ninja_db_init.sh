@@ -126,6 +126,12 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	12)
 		all_versions 12
 		php index.php cli/upgrade_recurring_downtime
+		if [ $? -ne 0 ]; then
+			echo "Could not upgrade Ninja database to v12, aborting."
+			echo "This is either an environment error or a bug."
+			echo "You should contact op5 Support in order to install op5 Monitor properly."
+			exit 1
+		fi
 		;;
 	13)
 		all_versions 13
@@ -195,11 +201,23 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 			done
 		fi
 		php index.php db_migrations/v13_to_v14
+		if [ $? -ne 0 ]; then
+			echo "Could not upgrade Ninja database to v13, aborting."
+			echo "This is either an environment error or a bug."
+			echo "You should contact op5 Support in order to install op5 Monitor properly."
+			exit 1
+		fi
 		;;
 	18)
 		all_versions 18
 		# Upgrade widgets to Dashboard_Model / Dashboard_Widget_Model
 		php install_scripts/migrate_widgets.php
+		if [ $? -ne 0 ]; then
+			echo "Could not upgrade Ninja database to v18, aborting."
+			echo "This is either an environment error or a bug."
+			echo "You should contact op5 Support in order to install op5 Monitor properly."
+			exit 1
+		fi
 		;;
 	*)
 		all_versions "$db_ver"
