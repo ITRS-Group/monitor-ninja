@@ -37,9 +37,6 @@ final class Kohana {
 	// Include paths
 	private static $include_paths;
 
-	// Logged messages
-	private static $log;
-
 	// Internal caches and write status
 	private static $internal_cache = array();
 
