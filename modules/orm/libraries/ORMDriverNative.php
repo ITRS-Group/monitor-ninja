@@ -81,7 +81,7 @@ class ORMDriverNative implements ORMDriverInterface {
 								}
 							}
 						} else {
-							/* Livestatus implicit referenses */
+							/* Livestatus implicit references */
 							$foreign_table = $pool_model::get_table();
 							$my_foreign_ref = array($field);
 						}
@@ -171,14 +171,19 @@ class ORMDriverNative implements ORMDriverInterface {
 		/*
 		 * This is mainly used for mocking in tests. All tables either have
 		 * autoincrement id, or no id. Thus, update id is a safe bet
+		 *
+		 * The id should not be 0 during mocking as the default value of ints
+		 * in the ORM is 0 this will be seen as unchanged and therefor not
+		 * updated/saved to persist in the object baseclasses, leaving us with
+		 * empty indexes in for example object relations.
 		 */
-		$new_id = count($this->storage[$table]);
-		$values['id'] = $new_id + 1; /* tables is ordered from id=1, arrays from 0 */
+		$id = count($this->storage[$table]) + 1;
+		$values['id'] = $id; /* tables is ordered from id=1, arrays from 0 */
 
-		$this->storage[$table][] = $values;
+		$this->storage[$table][$id] = $values;
 
 		$this->persist($table);
-		return $new_id;
+		return $id;
 	}
 
 	/**
