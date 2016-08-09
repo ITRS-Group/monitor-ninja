@@ -485,18 +485,6 @@ final class Kohana {
 	}
 
 	/**
-	 * Clears a config group from the cached configuration.
-	 *
-	 * @param   string  config group
-	 * @return  void
-	 */
-	public static function config_clear($group)
-	{
-		// Remove the group from config
-		unset(self::$configuration[$group], self::$internal_cache['configuration'][$group]);
-	}
-
-	/**
 	 * Add a new message to the log.
 	 *
 	 * @param   string  type of message
