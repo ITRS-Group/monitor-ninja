@@ -153,6 +153,35 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 		parent::set_password_algo('crypt');
 	}
 
+	/**
+	 * Returns a boolean whether this user has logged in to the product
+	 * before
+	 *
+	 * @return bool
+	 */
+	public function has_logged_in () {
+		return ($this->get_last_login_time() !== null);
+	}
+
+	/**
+	 * Returns the timestamp of this users last login or null if no time was
+	 * found
+	 *
+	 * @return mixed
+	 */
+	public function get_last_login_time () {
+
+		$login_time = SettingPool_Model::all()
+			->reduce_by('username', $this->get_username(), '=')
+			->reduce_by('type', 'login_time', '=')
+			->one();
+
+		if ($login_time) {
+			return (int) $login_time->get_setting();
+		} else return null;
+
+	}
+
 	protected function validate () {
 
 		$set = AuthModulePool_Model::all();

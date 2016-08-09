@@ -177,12 +177,12 @@ class ORMDriverNative implements ORMDriverInterface {
 		 * updated/saved to persist in the object baseclasses, leaving us with
 		 * empty indexes in for example object relations.
 		 */
-		$id = count($this->storage[$table]) + 1;
+		$id = empty($this->storage[$table]) ? 1 : (max(array_keys($this->storage[$table]))+1);
 		$values['id'] = $id; /* tables is ordered from id=1, arrays from 0 */
 
 		$this->storage[$table][$id] = $values;
-
 		$this->persist($table);
+
 		return $id;
 	}
 

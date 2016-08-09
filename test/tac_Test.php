@@ -566,10 +566,10 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$wd = $this->get_widgets_data();
 
 		// The new widget have "stolen" widget #3 previous position.
-		$this->assertEquals('{"c":2,"p":0}', $wd[5]['position']);
+		$this->assertEquals('{"c":2,"p":0}', $wd[4]['position']);
 		// Widget #3 have moved one step "down".
 		$this->assertEquals('{"c":2,"p":1}', $wd[3]['position']);
-		$this->assertEquals('tac_hosts', $wd[5]['name']);
+		$this->assertEquals('tac_hosts', $wd[4]['name']);
 	}
 
 	// Assert a widget is added in cell 0 when $_POST['cell'] is incorrect.
@@ -596,7 +596,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		// Check saved data.
 		$wd = $this->get_widgets_data();
 		// The new widget have "stolen" widget #1 previous position.
-		$this->assertEquals('{"c":0,"p":0}', $wd[5]['position']);
+		$this->assertEquals('{"c":0,"p":0}', $wd[4]['position']);
 		// Widget #1 have moved one step "down".
 		$this->assertEquals('{"c":0,"p":1}', $wd[1]['position']);
 	}
