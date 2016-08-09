@@ -233,7 +233,6 @@ class Tac_Controller extends Ninja_Controller {
 		/* @var $user User_Model */
 		$dashboard = new Dashboard_Model();
 		$dashboard->set_username( $user->get_username() );
-		$dashboard->import_array( Kohana::config( 'tac.default' ) );
 		$dashboard->set_name( $this->input->post( 'name' ) );
 		$dashboard->set_layout( $this->input->post( 'layout', '3,2,1' ) );
 		$dashboard->save();
