@@ -30,6 +30,7 @@ Feature: Tactical Overview, TAC
 		And I enter "Ny däshbörd" into "name"
 		And I click "Save"
 		Then I should see "Ny däshbörd"
+		And I should see "No widgets"
 		And I delete all dashboards
 
 	Scenario: Switch dashboard
