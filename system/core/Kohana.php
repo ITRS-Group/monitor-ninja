@@ -512,68 +512,6 @@ final class Kohana {
 	}
 
 	/**
-	 * Load data from a simple cache file. This should only be used internally,
-	 * and is NOT a replacement for the Cache library.
-	 *
-	 * @param   string   unique name of cache
-	 * @param   integer  expiration in seconds
-	 * @return  mixed
-	 */
-	public static function cache($name, $lifetime)
-	{
-		if ($lifetime > 0)
-		{
-			$path = APPPATH.'cache/kohana_'.$name;
-
-			if (is_file($path))
-			{
-				// Check the file modification time
-				if ((time() - filemtime($path)) < $lifetime)
-				{
-					// Cache is valid
-					return unserialize(file_get_contents($path));
-				}
-				else
-				{
-					// Cache is invalid, delete it
-					unlink($path);
-				}
-			}
-		}
-
-		// No cache found
-		return NULL;
-	}
-
-	/**
-	 * Save data to a simple cache file. This should only be used internally, and
-	 * is NOT a replacement for the Cache library.
-	 *
-	 * @param   string   cache name
-	 * @param   mixed    data to cache
-	 * @param   integer  expiration in seconds
-	 * @return  boolean
-	 */
-	public static function cache_save($name, $data, $lifetime)
-	{
-		if ($lifetime < 1)
-			return FALSE;
-
-		$path = APPPATH.'cache/kohana_'.$name;
-
-		if ($data === NULL)
-		{
-			// Delete cache
-			return (is_file($path) and unlink($path));
-		}
-		else
-		{
-			// Write data to cache file
-			return (bool) file_put_contents($path, serialize($data));
-		}
-	}
-
-	/**
 	 * Displays a 404 page.
 	 *
 	 * @throws  Kohana_404_Exception
