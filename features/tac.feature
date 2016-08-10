@@ -55,8 +55,8 @@ Feature: Tactical Overview, TAC
 		And I click "New dashboard"
 		And I enter "Ny däshbörd1" into "name"
 		And I click "Save"
-		And I hover over the "Options" menu
-		And I click "Delete"
+		And I hover over the "Dashboard options" menu
+		And I click "Delete this dashboard"
 		And I click "Yes"
 		Then I shouldn't see "Ny däshbörd1"
 		And I should see "No dashboard"
@@ -66,8 +66,8 @@ Feature: Tactical Overview, TAC
 		And I click "New dashboard"
 		And I enter "Ny däshbörd1" into "name"
 		And I click "Save"
-		And I hover over the "Options" menu
-		And I click "Rename"
+		And I hover over the "Dashboard options" menu
+		And I click "Rename this dashboard"
 		Then I should see "Rename dashboard"
 		And I enter "Kallekula" into "name"
 		And I click "Save"

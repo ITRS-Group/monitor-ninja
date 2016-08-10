@@ -22,8 +22,8 @@ When /^I delete all dashboards$/ do
 
   for i in 1..50 do
     steps %Q{
-      And I hover over the "Options" menu
-      And I click "Delete"
+      And I hover over the "Dashboard options" menu
+      And I click "Delete this dashboard"
       And I click "Yes"
     }
     break if not page.all("h1", :text => "No dashboard").empty?

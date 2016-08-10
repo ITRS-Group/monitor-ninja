@@ -198,14 +198,14 @@ class Tac_Controller extends Ninja_Controller {
 		$menu = new Menu_Model();
 		$toolbar->menu($menu);
 
-		$menu->attach("Options", $this->_get_add_widget_menu()->set_order(10));
-		$menu->attach("Options", $this->get_select_layout_menu($dashboard)->set_order(20));
-		$menu->set("Options.Rename",
+		$menu->attach("Dashboard options", $this->_get_add_widget_menu()->set_order(10));
+		$menu->attach("Dashboard options", $this->get_select_layout_menu($dashboard)->set_order(20));
+		$menu->set("Dashboard options.Rename this dashboard",
 			LinkProvider::factory()->get_url('tac', 'rename_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
 			30, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
-		$menu->set("Options.Delete", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
+		$menu->set("Dashboard options.Delete this dashboard", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
 	}
