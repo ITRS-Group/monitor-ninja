@@ -248,6 +248,45 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Integration test, depends on data found in Ninja (search for
+	 * autocomplete.php manifest files)
+	 *
+	 * @group MON-9409
+	 * @group MON-9519
+	 * @group integration
+	 */
+	public function test_can_use_installed_manifests_for_matching_service_by_hostname() {
+		$this->mock_data(array(
+			'ORMDriverLS default' => array(
+				'hosts' => array(
+					array(
+						'name' => 'Juan Rico',
+					),
+				),
+				'services' => array(
+					array(
+						'host' => array(
+							'name' => 'Juan Rico',
+						),
+						'description' => 'Carmencita Ibanez'
+					),
+				),
+			),
+		), __FUNCTION__);
+
+		$ac = Autocompleter::from_manifests();
+		$calculated_result = $ac->query('juan', array('services'));
+		$expected_result = array(
+			array(
+				'name' => 'Juan Rico / Carmencita Ibanez',
+				'table' => 'services',
+				'key' => 'Juan Rico;Carmencita Ibanez'
+			)
+		);
+		$this->assertSame($expected_result, $calculated_result);
+	}
+
+	/**
 	 * @group MON-9409
 	 */
 	public function test_logs_when_searching_for_unspecified_table() {

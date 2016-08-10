@@ -17,6 +17,10 @@ $manifest = array_merge_recursive($manifest, array(
 		array(
 			'display_column' => 'description',
 			'query' => '[services] description ~~ "%s"'
+		),
+		array(
+			'display_column' => 'description',
+			'query' => '[services] host.name ~~ "%s"'
 		)
 	),
 ));
