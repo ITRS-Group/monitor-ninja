@@ -130,6 +130,16 @@ class Tac_Controller extends Ninja_Controller {
 			/* If the dashboard isn't found, redirect to one existing dashboard */
 			$dashboard = DashboardPool_Model::all()->one();
 			if ($dashboard) {
+
+				$user = op5auth::instance()->get_user();
+				$login_dashboard = SettingPool_Model::all()
+					->reduce_by('username', $user->get_username(), '=')
+					->reduce_by('type', 'login_dashboard', '=')
+					->one();
+				if($login_dashboard && $login_dashboard->get_setting()){
+					$dashboard = DashboardPool_Model::fetch_by_key($login_dashboard->get_setting());
+				}
+
 				$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
 					'url' => 'tac/index/' . $dashboard->get_id() ) );
 				return;
@@ -200,9 +210,15 @@ class Tac_Controller extends Ninja_Controller {
 
 		$menu->attach("Dashboard options", $this->_get_add_widget_menu()->set_order(10));
 		$menu->attach("Dashboard options", $this->get_select_layout_menu($dashboard)->set_order(20));
+
 		$menu->set("Dashboard options.Rename this dashboard",
 			LinkProvider::factory()->get_url('tac', 'rename_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
 			30, null, array(
+			'class' => "menuitem_dashboard_option"
+		));
+		$menu->set("Dashboard options.Set as login dashboard",
+			LinkProvider::factory()->get_url('tac', 'login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+			25, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
 		$menu->set("Dashboard options.Delete this dashboard", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
@@ -268,6 +284,41 @@ class Tac_Controller extends Ninja_Controller {
 			'url' => 'tac/index/' . $dashboard->get_id() ) );
 	}
 
+	/* Render the login dashboard dialog */
+	public function login_dashboard_dialog() {
+		$dashboard_id = $this->input->get('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+		$this->template = new View('tac/login_dashboard_dialog', array(
+			'dashboard' => $dashboard
+		));
+	}
+
+	/* Set Current dashboard as Login Dashboard */
+	public function login_dashboard() {
+		$user = op5auth::instance()->get_user();
+		$dashboard = $this->_current_dashboard();
+
+		/* Login dashboard setting already available update it else create setting */
+		$login_dashboard = SettingPool_Model::all()
+			->reduce_by('username', $user->get_username(), '=')
+			->reduce_by('type', 'login_dashboard', '=')
+			->one();
+
+		if($login_dashboard) {
+			$login_dashboard->set_setting($dashboard->get_id());
+			$login_dashboard->save();
+		}else {
+			$login_dashboard = new Setting_Model();
+			$login_dashboard->set_username($user->get_username());
+			$login_dashboard->set_type('login_dashboard');
+			$login_dashboard->set_setting($dashboard->get_id());
+			$login_dashboard->save();
+		}
+
+		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+			'url' => 'tac/index/' . $dashboard->get_id() ) );
+	}
+
 	/**
 	 * Render the new dashboard dialog, as an entire page
 	 *
@@ -290,6 +341,18 @@ class Tac_Controller extends Ninja_Controller {
 		$dashboard = $this->_current_dashboard();
 		/* @var $dashboard Dashboard_Model */
 		if ($dashboard->get_can_write()) {
+
+			/* If user delete "login dashboard" dashboard update "login dashboard" setting */
+			$user = op5auth::instance()->get_user();
+			$login_dashboard = SettingPool_Model::all()
+				->reduce_by('username', $user->get_username(), '=')
+				->reduce_by('type', 'login_dashboard', '=')
+				->one();
+			if($login_dashboard && $login_dashboard->get_setting() === $dashboard->get_id()){
+				$login_dashboard->set_setting('');
+				$login_dashboard->save();
+			}
+
 			$dashboard->get_dashboard_widgets_set()->delete();
 			$dashboard->delete();
 		}
