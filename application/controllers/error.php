@@ -39,15 +39,4 @@ class Error_Controller extends Ninja_Controller  {
 		$this->template->title = _('Service unavailable');
 	}
 
-	public function show_livestatus($exception) {
-		if (PHP_SAPI === 'cli') {
-			print("Livestatus error\n");
-			var_dump($exception);
-			return;
-		}
-		$this->template->content = $this->add_view('livestatus');
-		$this->template->title = _('Livestatus error');
-		if (!IN_PRODUCTION)
-			$this->template->content->exception = $exception;
-	}
 }

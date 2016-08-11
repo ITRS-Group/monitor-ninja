@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Kohana process control file, loaded by the front controller.
- * 
+ *
  * $Id: Bootstrap.php 3918 2009-01-21 03:15:53Z zombor $
  *
  * @package    Core
@@ -56,12 +56,7 @@ if(!defined('SKIP_KOHANA')) {
 	Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 
 	// Make the magic happen!
-	try {
-		Event::run('system.execute');
-	} catch (Op5LivestatusException $ex) {
-		op5log::instance('ninja')->log('error', $ex);
-		Event::run('application.livestatus', $ex);
-	}
+	Event::run('system.execute');
 
 	// Clean up and exit
 	Event::run('system.shutdown');

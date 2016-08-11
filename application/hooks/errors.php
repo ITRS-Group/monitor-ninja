@@ -5,7 +5,6 @@ class errors {
 	{
 		Event::add('system.403', array($this, 'eventhandler'));
 		Event::replace('system.404', array('Kohana', 'show_404'), array($this, 'eventhandler'));
-		Event::add('application.livestatus', array($this, 'eventhandler'));
 	}
 
 	public function eventhandler()
@@ -16,9 +15,6 @@ class errors {
 			break;
 		 case 'system.404':
 			throw new Kohana_Reroute_Exception('error', 'show_404');
-			break;
-		 case 'application.livestatus':
-			throw new Kohana_Reroute_Exception('error', 'show_livestatus', array(Event::$data));
 			break;
 		 default:
 			return;
