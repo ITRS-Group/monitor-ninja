@@ -131,6 +131,7 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard = DashboardPool_Model::all()->one();
 			if ($dashboard) {
 
+				/* Check login dashboard settings set or not */
 				$user = op5auth::instance()->get_user();
 				$login_dashboard = SettingPool_Model::all()
 					->reduce_by('username', $user->get_username(), '=')
@@ -284,7 +285,9 @@ class Tac_Controller extends Ninja_Controller {
 			'url' => 'tac/index/' . $dashboard->get_id() ) );
 	}
 
-	/* Render the login dashboard dialog */
+	/**
+     * Render the login dashboard dialog
+     */
 	public function login_dashboard_dialog() {
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
@@ -293,7 +296,9 @@ class Tac_Controller extends Ninja_Controller {
 		));
 	}
 
-	/* Set Current dashboard as Login Dashboard */
+	/**
+     * Set Current dashboard as Login Dashboard
+     */
 	public function login_dashboard() {
 		$user = op5auth::instance()->get_user();
 		$dashboard = $this->_current_dashboard();
