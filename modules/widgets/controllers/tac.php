@@ -126,21 +126,24 @@ class Tac_Controller extends Ninja_Controller {
 		 * effects
 		 */
 		$dashboard = DashboardPool_Model::fetch_by_key( $dashboard_id );
-		if ($dashboard === false) {
-			/* If the dashboard isn't found, redirect to one existing dashboard */
-			$dashboard = DashboardPool_Model::all()->one();
-			if ($dashboard) {
+		if (!$dashboard) {
+			/* Get login dashboard */
+			$user = op5auth::instance()->get_user();
+			$login_dashboard = SettingPool_Model::all()
+				->reduce_by('username', $user->get_username(), '=')
+				->reduce_by('type', 'login_dashboard', '=')
+				->one();
+			if($login_dashboard){
+				$dashboard = DashboardPool_Model::fetch_by_key($login_dashboard->get_setting());
+			}
 
-				/* Check login dashboard settings set or not */
-				$user = op5auth::instance()->get_user();
-				$login_dashboard = SettingPool_Model::all()
-					->reduce_by('username', $user->get_username(), '=')
-					->reduce_by('type', 'login_dashboard', '=')
-					->one();
-				if($login_dashboard && DashboardPool_Model::fetch_by_key($login_dashboard->get_setting()) !== false){
-					$dashboard = DashboardPool_Model::fetch_by_key($login_dashboard->get_setting());
-				}
+			/* If login dashboard isn't found, redirect to one existing dashboard */
+			if (!$dashboard) {
+				$dashboard = DashboardPool_Model::all()->one();
+			}
 
+			/* If dashboard found, show dashboard */
+			if($dashboard) {
 				$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
 					'url' => 'tac/index/' . $dashboard->get_id() ) );
 				return;
@@ -287,8 +290,8 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
-     * Render the login dashboard dialog
-     */
+	 * Render the login dashboard dialog
+	 */
 	public function set_login_dashboard_dialog() {
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
@@ -298,8 +301,8 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
-     * Set Current dashboard as Login Dashboard
-     */
+	 * Set Current dashboard as Login Dashboard
+	 */
 	public function set_login_dashboard() {
 		$user = op5auth::instance()->get_user();
 		$dashboard = $this->_current_dashboard();
