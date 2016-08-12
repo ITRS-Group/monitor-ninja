@@ -23,4 +23,4 @@ $form->add_button(
 
 echo '<h1>Rename dashboard</h1>';
 echo '<p>Rename the current dashboard</p>';
-echo $form->get_view();
+$form->get_view()->render(TRUE);

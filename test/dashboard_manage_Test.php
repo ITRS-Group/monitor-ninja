@@ -126,4 +126,39 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$this->assertSame(0, count(DashboardPool_Model::all()));
 		$this->assertSame(false, DashboardPool_Model::fetch_by_key(34));
 	}
+
+	public function test_set_login_dashboard_settings() {
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => '34',
+						'name' => 'My dashboard',
+						'username' => 'testuser',
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array()
+			)
+		));
+		$user = new User_Model();
+		$user->set_username('testuser');
+		op5auth::instance()->force_user($user);
+
+		/* set login dashboard setting */
+		$login_dashboard = new Setting_Model();
+		$login_dashboard->set_username('testuser');
+		$login_dashboard->set_type('login_dashboard');
+		$login_dashboard->set_setting(34);
+		$login_dashboard->save();
+
+		/* Get login dashboard */
+		$login_dashboard = SettingPool_Model::all()
+			->reduce_by('username', 'testuser', '=')
+			->reduce_by('type', 'login_dashboard', '=')
+			->one();
+
+		$this->assertInstanceOf('Dashboard_Model', DashboardPool_Model::fetch_by_key($login_dashboard->get_setting()));
+		$this->assertSame(false, DashboardPool_Model::fetch_by_key(35));
+	}
 }

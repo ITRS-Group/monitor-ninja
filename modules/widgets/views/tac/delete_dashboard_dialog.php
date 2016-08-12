@@ -23,4 +23,4 @@ $form->add_button(
 echo '<h1>Delete dashboard</h1>';
 echo '<p>Are you sure you want to delete the "<b>' . html::specialchars($dashboard->get_name()) . '</b>" dashboard?<br>';
 echo 'Deleting a dashboard cannot be undone.</p><br>';
-echo $form->get_view();
+$form->get_view()->render(TRUE);

@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 $form = new Form_Model(
-    LinkProvider::factory()->get_url('tac', 'login_dashboard'),
+    LinkProvider::factory()->get_url('tac', 'set_login_dashboard'),
     array(
         new Form_Field_Hidden_Model('dashboard_id')
     )
@@ -21,4 +21,4 @@ $form->add_button(
 
 echo '<h1>Set Login dashboard</h1>';
 echo '<p>"<b>' . html::specialchars($dashboard->get_name()) . '</b>" set as Login dashboard<br>';
-echo $form->get_view();
+$form->get_view()->render(TRUE);

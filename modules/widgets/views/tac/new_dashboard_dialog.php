@@ -31,5 +31,5 @@ $form->add_button(
 );
 
 echo '<h1>New dashboard</h1>';
-echo $form->get_view();
+$form->get_view()->render(TRUE);
 

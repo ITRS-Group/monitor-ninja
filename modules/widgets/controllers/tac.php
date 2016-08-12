@@ -137,7 +137,7 @@ class Tac_Controller extends Ninja_Controller {
 					->reduce_by('username', $user->get_username(), '=')
 					->reduce_by('type', 'login_dashboard', '=')
 					->one();
-				if($login_dashboard && $login_dashboard->get_setting()){
+				if($login_dashboard && DashboardPool_Model::fetch_by_key($login_dashboard->get_setting()) !== false){
 					$dashboard = DashboardPool_Model::fetch_by_key($login_dashboard->get_setting());
 				}
 
@@ -218,10 +218,11 @@ class Tac_Controller extends Ninja_Controller {
 			'class' => "menuitem_dashboard_option"
 		));
 		$menu->set("Dashboard options.Set as login dashboard",
-			LinkProvider::factory()->get_url('tac', 'login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+			LinkProvider::factory()->get_url('tac', 'set_login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
 			25, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
+
 		$menu->set("Dashboard options.Delete this dashboard", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
@@ -288,7 +289,7 @@ class Tac_Controller extends Ninja_Controller {
 	/**
      * Render the login dashboard dialog
      */
-	public function login_dashboard_dialog() {
+	public function set_login_dashboard_dialog() {
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 		$this->template = new View('tac/login_dashboard_dialog', array(
@@ -299,7 +300,7 @@ class Tac_Controller extends Ninja_Controller {
 	/**
      * Set Current dashboard as Login Dashboard
      */
-	public function login_dashboard() {
+	public function set_login_dashboard() {
 		$user = op5auth::instance()->get_user();
 		$dashboard = $this->_current_dashboard();
 
@@ -346,18 +347,6 @@ class Tac_Controller extends Ninja_Controller {
 		$dashboard = $this->_current_dashboard();
 		/* @var $dashboard Dashboard_Model */
 		if ($dashboard->get_can_write()) {
-
-			/* If user delete "login dashboard" dashboard update "login dashboard" setting */
-			$user = op5auth::instance()->get_user();
-			$login_dashboard = SettingPool_Model::all()
-				->reduce_by('username', $user->get_username(), '=')
-				->reduce_by('type', 'login_dashboard', '=')
-				->one();
-			if($login_dashboard && $login_dashboard->get_setting() === $dashboard->get_id()){
-				$login_dashboard->set_setting('');
-				$login_dashboard->save();
-			}
-
 			$dashboard->get_dashboard_widgets_set()->delete();
 			$dashboard->delete();
 		}
