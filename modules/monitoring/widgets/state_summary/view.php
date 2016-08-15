@@ -13,7 +13,7 @@ foreach($state_definitions['states'] as $silly_counter => $state) {
 		</div></a>",
 		listview::querylink($queries[$silly_counter]),
 		$css_class,
-		text::clipped_number($stats[$silly_counter]),
+		text::clipped_number($stats[$silly_counter], 2),
 		$state['label']
 	);
 

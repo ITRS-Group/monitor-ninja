@@ -18,22 +18,42 @@ class Clipped_Number_Test extends PHPUnit_Framework_TestCase {
 
 	public function test_thousands_prefixing () {
 		$string = text::clipped_number(5341);
-		$this->assertEquals('5.3k', $string);
-	}
-
-	public function test_thousands_round_prefixing () {
-		$string = text::clipped_number(5361);
-		$this->assertEquals('5.4k', $string);
-	}
-
-	public function test_hundred_thousands_prefixing () {
-		$string = text::clipped_number(536103);
-		$this->assertEquals('536k', $string);
+		$this->assertEquals('5k', $string);
 	}
 
 	public function test_million_prefixing () {
 		$string = text::clipped_number(5361030);
-		$this->assertEquals('5.4M', $string);
+		$this->assertEquals('5M', $string);
+	}
+
+	public function test_million_truncate_prefixing () {
+		$string = text::clipped_number(5521030);
+		$this->assertEquals('5M', $string);
+	}
+
+	public function test_decimals () {
+		$string = text::clipped_number(5361030, 3);
+		$this->assertEquals('5.361M', $string);
+	}
+
+	public function test_negative_number () {
+		$string = text::clipped_number(-1321, 3);
+		$this->assertEquals('-1.321m', $string);
+	}
+
+	public function test_low_negative_number () {
+		$string = text::clipped_number(-123256322345, 3);
+		$this->assertEquals('-123.256n', $string);
+	}
+
+	public function test_php_int_max () {
+		$string = text::clipped_number(PHP_INT_MAX, 3);
+		$this->assertEquals('9.223E', $string);
+	}
+
+	public function test_invalid_divisor () {
+		$this->setExpectedException('InvalidArgumentException');
+		$string = text::clipped_number(PHP_INT_MAX, 3, 0);
 	}
 
 }

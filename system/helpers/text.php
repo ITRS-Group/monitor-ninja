@@ -334,22 +334,37 @@ class text {
 
 	/**
 	 * Returns human readable clipped and possibly SI prefixed number.
+	 * clipped_number will not round the whole number only the decimals.
+	 * Divisor must be an integer > 1.
 	 *
 	 * @param   integer Number
+	 * @param   integer Decimals
+	 * @param   integer Divisor
 	 * @return  string
 	 */
-	public static function clipped_number($number)
-	{
+	public static function clipped_number($number, $decimals = 0, $divisor = 1000) {
 
-		if ($number >= 1000000) {
-			return number_format($number / 1000000, 1) . 'M';
-		} elseif ($number >= 100000) {
-			return number_format($number / 1000, 0) . 'k';
-		} elseif ($number >= 1000) {
-			return number_format($number / 1000, 1) . 'k';
+		$prefixes = ($number >= 0) ?
+			array("", "k", "M", "G", "T", "P", "E", "Z", "Y") :
+			array("", "m", "u", "n", "p", "f", "a", "z", "y");
+
+		if ($divisor <= 1) {
+			throw new InvalidArgumentException("Divisor must be an integer > 1");
 		}
 
-		return $number . '';
+		foreach ($prefixes as $prefix) {
+			if (
+				$number >= 0 && ($number / $divisor >= 1) ||
+				$number < 0 && ($number / $divisor <= -1)
+			) {
+				$number = $number / $divisor;
+			} else break;
+		}
+
+
+		if ($decimals === 0)
+			return ((string)(int) $number) . $prefix;
+		return sprintf('%0.' . $decimals . 'f', $number) . $prefix;
 
 	}
 
