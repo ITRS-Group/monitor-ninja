@@ -93,6 +93,10 @@ class Tac_Controller extends Ninja_Controller {
 			$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 		}
 
+		if (!$dashboard) {
+			throw new Exception("No dashboard could be found!");
+		}
+
 		return $dashboard;
 	}
 
@@ -122,25 +126,13 @@ class Tac_Controller extends Ninja_Controller {
 		/*
 		 * Don't use "_current_dashboard" in index, since we want to be able
 		 * to handle that specially. _current_dashboard uses POST field to
-		 * select dashboard, and is useful for ajax requesets, witout side
+		 * select dashboard, and is useful for ajax requesets, without side
 		 * effects
 		 */
-		$dashboard = DashboardPool_Model::fetch_by_key( $dashboard_id );
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 		if (!$dashboard) {
-			/* Get login dashboard */
-			$user = op5auth::instance()->get_user();
-			$login_dashboard = SettingPool_Model::all()
-				->reduce_by('username', $user->get_username(), '=')
-				->reduce_by('type', 'login_dashboard', '=')
-				->one();
-			if($login_dashboard){
-				$dashboard = DashboardPool_Model::fetch_by_key($login_dashboard->get_setting());
-			}
 
-			/* If login dashboard isn't found, redirect to one existing dashboard */
-			if (!$dashboard) {
-				$dashboard = DashboardPool_Model::all()->one();
-			}
+			$dashboard = dashboard::get_default_dashboard();
 
 			/* If dashboard found, show dashboard */
 			if($dashboard) {
@@ -220,11 +212,15 @@ class Tac_Controller extends Ninja_Controller {
 			30, null, array(
 			'class' => "menuitem_dashboard_option"
 		));
-		$menu->set("Dashboard options.Set as login dashboard",
-			LinkProvider::factory()->get_url('tac', 'set_login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
-			25, null, array(
-			'class' => "menuitem_dashboard_option"
-		));
+
+		$login_dashboard = dashboard::get_login_dashboard();
+		if ($login_dashboard && $login_dashboard->get_id() != $dashboard->get_id()) {
+			$menu->set("Dashboard options.Set as login dashboard",
+				LinkProvider::factory()->get_url('tac', 'login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+				25, null, array(
+					'class' => "menuitem_dashboard_option"
+				));
+		}
 
 		$menu->set("Dashboard options.Delete this dashboard", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
 			'class' => "menuitem_dashboard_option"
@@ -292,7 +288,7 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Render the login dashboard dialog
 	 */
-	public function set_login_dashboard_dialog() {
+	public function login_dashboard_dialog() {
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
 		$this->template = new View('tac/login_dashboard_dialog', array(

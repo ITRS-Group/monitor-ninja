@@ -21,4 +21,4 @@ $form->add_button(
 
 echo '<h1>Set Login dashboard</h1>';
 echo '<p>"<b>' . html::specialchars($dashboard->get_name()) . '</b>" set as Login dashboard<br>';
-$form->get_view()->render(TRUE);
+$form->get_view()->render(true);

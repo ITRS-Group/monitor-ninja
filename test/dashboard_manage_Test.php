@@ -128,6 +128,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_set_login_dashboard_settings() {
+
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(
@@ -136,11 +137,19 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 						'name' => 'My dashboard',
 						'username' => 'testuser',
 						'layout' => '3,2,1'
+					),
+					array(
+						'id' => '35',
+						'name' => 'This dashboard should not be returned',
+						'username' => 'testuser',
+						'layout' => '3,2,1'
 					)
 				),
-				'dashboard_widgets' => array()
+				'dashboard_widgets' => array(),
+				'settings' => array()
 			)
 		));
+
 		$user = new User_Model();
 		$user->set_username('testuser');
 		op5auth::instance()->force_user($user);
@@ -152,13 +161,14 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$login_dashboard->set_setting(34);
 		$login_dashboard->save();
 
-		/* Get login dashboard */
-		$login_dashboard = SettingPool_Model::all()
-			->reduce_by('username', 'testuser', '=')
-			->reduce_by('type', 'login_dashboard', '=')
-			->one();
+		$dashboard = dashboard::get_default_dashboard();
+		$this->assertEquals(34, $dashboard->get_id());
 
-		$this->assertInstanceOf('Dashboard_Model', DashboardPool_Model::fetch_by_key($login_dashboard->get_setting()));
-		$this->assertSame(false, DashboardPool_Model::fetch_by_key(35));
+		$login_dashboard->set_setting(35);
+		$login_dashboard->save();
+
+		$dashboard = dashboard::get_default_dashboard();
+		$this->assertEquals(35, $dashboard->get_id());
+
 	}
 }
