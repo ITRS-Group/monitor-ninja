@@ -111,6 +111,7 @@ class orm_Builder implements builder_interface {
 			$this->generate_table($table, $tables, $moduledir);
 		}
 		$this->generate_manifest($tables, $moduledir);
+		return $tables;
 	}
 
 	public function get_dependencies() {

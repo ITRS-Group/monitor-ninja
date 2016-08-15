@@ -42,6 +42,7 @@ class php_class_inventory_Builder implements builder_interface {
 		$generator = new php_class_inventory_generator($classfiles);
 		$generator->set_moduledir($moduledir);
 		$generator->generate();
+		return $classfiles;
 	}
 
 	/**

@@ -21,7 +21,7 @@ class ninja_view_inventory_Builder implements builder_interface {
 	public function generate($moduledir, $confdir) {
 		$viewdir = $moduledir . '/views';
 		if(!is_dir($viewdir))
-			return;
+			return array();
 
 		print "Building view index for $moduledir\n";
 
@@ -41,6 +41,7 @@ class ninja_view_inventory_Builder implements builder_interface {
 		$generator = new ninja_view_inventory_generator($viewfiles);
 		$generator->set_moduledir($moduledir);
 		$generator->generate();
+		return $viewfiles;
 	}
 
 	public function get_dependencies() {

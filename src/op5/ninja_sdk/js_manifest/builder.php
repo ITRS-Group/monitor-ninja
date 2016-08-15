@@ -30,8 +30,9 @@ class js_manifest_Builder implements builder_interface {
 
 	public function generate ($mod_path, $src_path) {
 		$manifestdir = $mod_path . '/manifest';
-		if(!is_dir($manifestdir))
-			return;
+		if(!is_dir($manifestdir)) {
+			return array();
+		}
 
 		$manifests = array();
 		foreach(scandir($manifestdir) as $manifest_file) {
@@ -47,6 +48,7 @@ class js_manifest_Builder implements builder_interface {
 		$writer->set_moduledir($mod_path);
 		echo "Generating JS manifest ".$writer->get_filename()."\n";
 		$writer->generate();
+		return $manifests;
 	}
 
 	public function get_dependencies() {

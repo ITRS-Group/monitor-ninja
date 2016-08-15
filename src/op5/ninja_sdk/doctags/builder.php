@@ -37,6 +37,7 @@ class doctags_Builder implements builder_interface {
 		foreach ( $manifests as $manifest => $content ) {
 			$this->generate_manifest( $manifest, $content, $moduledir );
 		}
+		return $files;
 	}
 	private function get_file_list($includes_file, $moduledir) {
 		$patterns = explode( "\n", file_get_contents( $includes_file ) );

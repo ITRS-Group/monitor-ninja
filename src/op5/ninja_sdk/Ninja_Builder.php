@@ -80,10 +80,14 @@ class Ninja_Builder {
 			print("\n\n##### Building target: $target\n\n");
 			$builder = $this->builders[$target];
 			$modules = isset($this->build_targets[$target]) ? $this->build_targets[$target] : array();
+			$generated_files = 0;
 			foreach ( $modules as $moduledir => $confdir ) {
 				if( !$builder->get_run_always() && !is_dir($moduledir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $target) )
 					continue;
-				$builder->generate( $moduledir, $confdir );
+				$generated_files += count($builder->generate( $moduledir, $confdir ));
+			}
+			if(!$generated_files) {
+				echo " - Nothing to do\n";
 			}
 		}
 	}
