@@ -213,8 +213,7 @@ class Tac_Controller extends Ninja_Controller {
 			'class' => "menuitem_dashboard_option"
 		));
 
-		$login_dashboard = dashboard::get_login_dashboard();
-		if ($login_dashboard && $login_dashboard->get_id() != $dashboard->get_id()) {
+		if (!dashboard::is_login_dashboard($dashboard)) {
 			$menu->set("Dashboard options.Set as login dashboard",
 				LinkProvider::factory()->get_url('tac', 'login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
 				25, null, array(

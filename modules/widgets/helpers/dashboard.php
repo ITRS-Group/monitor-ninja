@@ -42,4 +42,23 @@ class dashboard {
 
 	}
 
+	/**
+	 * Whether to show "Set as login dashboard" for the given Dashboard
+	 *
+	 * @param $dashboard Dashboard_Model
+	 * @return bool
+	 */
+	public function is_login_dashboard (Dashboard_Model $dashboard) {
+
+		$login_dashboard = SettingPool_Model::all()
+			->reduce_by('username', op5auth::instance()->get_user()->get_username(), '=')
+			->reduce_by('type', 'login_dashboard', '=')
+			->one();
+
+	    return (
+			$login_dashboard && ($login_dashboard->get_setting() == $dashboard->get_id())
+		);
+
+	}
+
 }

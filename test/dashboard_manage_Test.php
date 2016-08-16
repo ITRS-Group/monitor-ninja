@@ -127,6 +127,66 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$this->assertSame(false, DashboardPool_Model::fetch_by_key(34));
 	}
 
+	/**
+	 * Set as login dashboard should only be displayed when the dashboard is
+	 * currently NOT the login dashboard, test that it is so
+	 */
+	public function test_show_set_login_dashboard_when_dashboard_is_not_login_dashboard () {
+
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => '34',
+						'name' => 'My dashboard',
+						'username' => 'testuser',
+						'layout' => '3,2,1'
+					),
+					array(
+						'id' => '35',
+						'name' => 'This dashboard should not be returned',
+						'username' => 'testuser',
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(),
+				'settings' => array()
+			)
+		));
+
+		$user = new User_Model();
+		$user->set_username('testuser');
+		op5auth::instance()->force_user($user);
+
+		/** No dashboard set to login dashboard, show set as login dashboard */
+		$dashboard = dashboard::get_default_dashboard();
+		$this->assertFalse(
+			dashboard::is_login_dashboard($dashboard)
+		);
+
+		$login_dashboard = new Setting_Model();
+		$login_dashboard->set_username('testuser');
+		$login_dashboard->set_type('login_dashboard');
+		$login_dashboard->set_setting(34);
+		$login_dashboard->save();
+
+		/** Dashboard set to login dashboard, do not show set as login dashboard */
+		$dashboard = dashboard::get_default_dashboard();
+		$this->assertTrue(
+			dashboard::is_login_dashboard($dashboard)
+		);
+
+		$login_dashboard->set_setting(35);
+		$login_dashboard->save();
+
+		/** Login dashboard is not this dashboard, show set as login dashboard */
+		$dashboard = DashboardPool_Model::fetch_by_key(34);
+		$this->assertFalse(
+			dashboard::is_login_dashboard($dashboard)
+		);
+
+
+	}
 	public function test_set_login_dashboard_settings() {
 
 		$this->mock_data(array(
