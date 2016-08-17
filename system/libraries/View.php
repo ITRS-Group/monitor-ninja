@@ -44,13 +44,9 @@ class View {
 	 * @param   string  type of file: html, css, js, etc.
 	 * @return  void
 	 */
-	public function __construct($name = NULL, $data = NULL)
+	public function __construct($name, $data = NULL)
 	{
-		if (is_string($name) AND $name !== '')
-		{
-			// Set the filename
-			$this->set_filename($name);
-		}
+		$this->set_filename($name);
 
 		if (is_array($data) AND ! empty($data))
 		{
@@ -71,17 +67,13 @@ class View {
 	}
 
 	/**
-	 * Sets the view filename.
-	 *
-	 * @chainable
-	 * @param   string  view filename
-	 * @return  object
+	 * @param $filename string
+	 * @throws Exception if the filename doesn't
 	 */
-	public function set_filename($name)
+	public function set_filename($filename)
 	{
-		$this->kohana_filename = Kohana::get_view($name);
+		$this->kohana_filename = Kohana::get_view($filename);
 		$this->kohana_filetype = 'php';
-		return $this;
 	}
 
 	/**
@@ -233,7 +225,10 @@ class View {
 		$line = $stack[0]['line'];
 		$msg = "Don't typecast view ".$this->kohana_filename." to string\n"
 			."    at ".$file."(".$line.")";
-
+		// We actually would like to use flag::deprecated() here,
+		// but we cannot, since it throws an exception (and PHP
+		// doesn't allow __toString() to throw exceptions:
+		// https://bugs.php.net/bug.php?id=53648 )
 		op5log::instance('ninja')->log('debug', $msg);
 
 		ob_start();
@@ -256,14 +251,10 @@ class View {
 			$msg = "Don't render a view to a variable!\n"
 				."    View: ".$this->kohana_filename."\n"
 				."    at ".$file."(".$line.")";
-
-			op5log::instance('ninja')->log('debug', $msg);
+			flag::deprecated(__METHOD__.' with $print == false', $msg);
 
 			ob_start();
 		}
-
-		if (empty($this->kohana_filename))
-			throw new Kohana_Exception('core.view_set_filename');
 
 		if (is_string($this->kohana_filetype))
 		{

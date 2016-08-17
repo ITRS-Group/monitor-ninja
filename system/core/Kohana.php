@@ -178,6 +178,9 @@ final class Kohana {
 	 * post_controller_constructor, and post_controller events. Triggers a
 	 * system.404 event when the route cannot be mapped to a controller.
 	 *
+	 * This will also render the view that the controller assigned to
+	 * $this->template.
+	 *
 	 * This method is benchmarked as controller_setup and controller_execution.
 	 *
 	 * @return  object  instance of controller
@@ -293,15 +296,18 @@ final class Kohana {
 				}
 			} while ($next_route !== false);
 
-			try {
-				if (
-					is_a($controller, 'Template_Controller') &&
-					$controller->auto_render
-				) {
-					$controller->template->render(TRUE);
+			if (is_a($controller, 'Template_Controller') &&
+				$controller->auto_render) {
+				if(!isset($controller->template->content)) {
+					$controller->template->content =
+					"<div class='alert notice'>This may".
+					" be a bug, found no content for ".
+					"controller '".get_class($controller).
+					"' (method '".Router::$method."') ".
+					"even though auto_render was ".
+					"true.</div>";
 				}
-			} catch (Exception $e) {
-				self::exception_handler($e);
+				$controller->template->render(TRUE);
 			}
 
 		}
@@ -325,8 +331,7 @@ final class Kohana {
 
 	/**
 	 * Remove include paths given a certain pattern.
-	 * Useful for replacing modules
-	 * for testing
+	 * Useful for replacing modules when testing.
 	 */
 	public static function remove_include_paths($pattern) {
 		self::$include_paths = array_filter(self::$include_paths,
@@ -679,11 +684,13 @@ final class Kohana {
 	/**
 	 * Get the path to a view file, given the view name
 	 *
-	 * This loads using the file cache array, which is generated on build and loaded once
+	 * @return string
+	 * @throws Kohana_Exception if the view is not found
 	 */
 	public static function get_view($viewname) {
-		if(!isset(self::$view_paths[$viewname]))
-			return null;
+		if(!isset(self::$view_paths[$viewname])) {
+			throw new Kohana_User_Exception("Could not load the view called '$viewname'");
+		}
 		return self::$view_paths[$viewname];
 	}
 

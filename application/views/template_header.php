@@ -42,7 +42,7 @@
 			'orientation' => 'left',
 			'class' => 'main-menu'
 		));
-		echo $menu_widget->render();
+		$menu_widget->render(true);
 	}
 	?>
 
