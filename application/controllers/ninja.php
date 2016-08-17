@@ -18,7 +18,6 @@ require_once('op5/log.php');
 class Ninja_Controller extends Base_Controller {
 
 	public $session = false;
-	public $template;
 	public $profiler = false;
 	public $inline_js = false;
 	public $js_strings = false;
