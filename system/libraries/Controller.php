@@ -19,12 +19,6 @@ abstract class Controller {
 	 */
 	public function __construct()
 	{
-		if (Kohana::$instance == NULL)
-		{
-			// Set the instance to the first controller loaded
-			Kohana::$instance = $this;
-		}
-
 		// URI should always be available
 		$this->uri = URI::instance();
 

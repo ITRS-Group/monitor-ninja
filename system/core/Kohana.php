@@ -183,133 +183,121 @@ final class Kohana {
 	 *
 	 * This method is benchmarked as controller_setup and controller_execution.
 	 *
-	 * @return  object  instance of controller
+	 * @return Controller
 	 */
-	public static function & instance()
+	public static function &instance()
 	{
+		if (self::$instance !== null) {
+			return self::$instance;
+		}
 
-		if (self::$instance === NULL) {
+		Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
-			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
-
+		/**
+		 * This is a very crude wrapper for try-catching. The reasons for
+		 * having this is to be able to read the source of instance() without
+		 * getting a seizure. You're welcome.
+		 *
+		 * @param $callback Statements to execute
+		 * @param $callback_if_exception Statements to execute if an exception
+		 * was thrown in $callback
+		 * @return int 1 if exception was thrown, 0 if everything was OK
+		 */
+		$wrap_with_try_catch = function($callback, $callback_if_exception) {
 			try {
+				$callback();
+				return 0;
+			} catch (Exception $e) {
+				$callback_if_exception($e);
+				return 1;
+			}
+		};
 
-				Event::run('system.pre_controller');
-				if (!Kohana::valid_route())
-					Event::run('system.404');
-
-			} catch (Kohana_Reroute_Exception $e) {
-
+		$handle_exceptions = function(Exception $e) {
+			switch(get_class($e)) {
+			case 'Kohana_Reroute_Exception':
 				Router::$controller = $e->get_controller();
 				Router::$method = $e->get_method();
 				Router::$arguments = $e->get_arguments();
-
-			} catch (ORMDriverException $e) {
-
+				break;
+			case 'ORMDriverException':
 				Router::$controller = "error";
 				Router::$method = "show_503";
 				Router::$arguments = array($e);
-
-			} catch (Exception $e) {
-				self::exception_handler($e);
+				break;
+			default:
+				Kohana::exception_handler($e);
 			}
+		};
 
+		$wrap_with_try_catch(function() {
+			Event::run('system.pre_controller');
+		}, $handle_exceptions);
 
-			/*
-			 * The pre_controller is allowed to change controller, but only to
-			 * an existing one
-			 */
-			do {
+		if (!Kohana::valid_route()) {
+			Event::run('system.404');
+		}
 
-				$next_route = false;
+		do {
+			$caught_exception = 0;
+			$controller = null;
+
+			$caught_exception |= $wrap_with_try_catch(function() use (&$controller) {
+				/**
+				 * This also has the effect of setting the
+				 * Kohana::$instance variable to the instanced controller
+				 * BUT only if that is the first controller instanced for
+				 * this request
+				 */
 				$classname = ucfirst(Router::$controller).'_Controller';
+				$controller = new $classname();
+			}, $handle_exceptions);
 
-				try {
+			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
+			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 
-					/**
-					 * This also has the effect of setting the
-					 * Kohana::$instance variable to the instanced controller
-					 * BUT only if that is the first controller instanced for
-					 * this request
-					 */
-					$controller = new $classname();
-					$method = Router::$method;
+			$caught_exception |= $wrap_with_try_catch(function() use ($controller) {
+				Event::run('system.post_controller_constructor', $controller);
+			}, $handle_exceptions);
 
-					// Stop the controller setup benchmark
-					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
+			$caught_exception |= $wrap_with_try_catch(function() use ($controller) {
+				// $method always exist in a controller, since Controller
+				// implements the function __call()
+				call_user_func_array(
+					array($controller, Router::$method),
+					Router::$arguments
+				);
+			}, $handle_exceptions);
 
-					// Start the controller execution benchmark
-					Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 
-					// Execute the controller method
-					// $method does always exist in a controller, since Controller
-					// implements the function __call()
-					// Controller constructor has been executed
-					Event::run('system.post_controller_constructor', $controller);
-					$execution_exception = null;
-					try {
-						call_user_func_array(
-							array($controller, $method),
-							Router::$arguments
-						);
-					} catch (Exception $e) {
-						$execution_exception = $e;
-					}
+			$caught_exception |= $wrap_with_try_catch(function() use ($controller) {
+				Event::run('system.post_controller', $controller);
+			}, $handle_exceptions);
 
-					// Controller method has been executed
-					Event::run('system.post_controller', $controller);
-					if ($execution_exception) {
-						throw $execution_exception;
-					}
+			// if the while clause is true, something threw an
+			// exception but didn not tell the error controller to
+			// take over. This makes us believe a redirect has
+			// occurred, so do the whole controller dance again.
+		} while ($caught_exception && Router::$controller != 'error');
 
-					// Stop the controller execution benchmark
-					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+		self::$instance = $controller;
 
-					// Start the rendering benchmark
-					Benchmark::start(SYSTEM_BENCHMARK.'_render');
+		Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+		Benchmark::start(SYSTEM_BENCHMARK.'_render');
+		Benchmark::stop(SYSTEM_BENCHMARK.'_render');
 
-					// Stop the rendering benchmark
-					Benchmark::stop(SYSTEM_BENCHMARK.'_render');
-
-				} catch (Kohana_Reroute_Exception $e) {
-
-					if (Router::$controller != 'error') {
-						$next_route = true;
-					}
-
-					Router::$controller = $e->get_controller();
-					Router::$arguments = $e->get_arguments();
-					Router::$method = $e->get_method();
-
-				} catch (ORMDriverException $e) {
-
-					if (Router::$controller != 'error') {
-						$next_route = true;
-					}
-
-					Router::$controller = 'error';
-					Router::$arguments = array($e);
-					Router::$method = 'show_503';
-
-				} catch (Exception $e) {
-					self::exception_handler($e);
-				}
-			} while ($next_route !== false);
-
-			if (is_a($controller, 'Template_Controller') &&
-				$controller->auto_render) {
-				if(!isset($controller->template->content)) {
-					$controller->template->content =
-					"<div class='alert notice'>This may".
-					" be a bug, found no content for ".
-					"controller '".get_class($controller).
-					"' (method '".Router::$method."') ".
-					"even though auto_render was ".
-					"true.</div>";
-				}
-				$controller->template->render(TRUE);
+		if (is_a($controller, 'Template_Controller') &&
+			$controller->auto_render) {
+			if(!isset($controller->template->content)) {
+				$controller->template->content =
+				"<div class='alert notice'>This may".
+				" be a bug, found no content for ".
+				"controller '".get_class($controller).
+				"' (method '".Router::$method."') ".
+				"even though auto_render was ".
+				"true.</div>";
 			}
-
+			$controller->template->render(true);
 		}
 
 		return self::$instance;
@@ -689,7 +677,7 @@ final class Kohana {
 	 */
 	public static function get_view($viewname) {
 		if(!isset(self::$view_paths[$viewname])) {
-			throw new Kohana_User_Exception("Could not load the view called '$viewname'");
+			throw new Kohana_User_Exception("Invalid view name", "Could not load the view called '$viewname'");
 		}
 		return self::$view_paths[$viewname];
 	}

@@ -37,18 +37,11 @@
 				<div class="content <?php echo $content_class; ?>" tabindex="0" id="content">
 
 					<?php
-
-						if (isset($content)) {
-							if($content instanceof View) {
-								$content->render(true);
-							} else {
-								echo $content;
-							}
+						if($content instanceof View) {
+							$content->render(true);
 						} else {
-							echo 'Page does not have any content';
+							echo $content;
 						}
-
-
 					?>
 
 				</div>
