@@ -1513,25 +1513,27 @@ h1.emote b {
 }
 
 .widget-header .widget-menu {
-  display: none;
-  padding: 2px 5px 3px 3px;
   position: absolute;
-  right: 2px;
-  background-color: white;
-  z-index: 1;
+  right: 0;
+  top: 0;
+  background: #ffffff;
+  height: 24px;
+  width: 64px;
+  padding: 8px 4px;
+  text-align: right;
   font-size: 10px; /* Needed to avoid extra height in Firefox */
 }
 
-.widget:hover .widget-menu {
-  display: inline-block;
-}
-
-.widget-header .widget-menu .widget-copylink,
-.widget-header .widget-menu .widget-collapselink,
-.widget-header .widget-menu .widget-editlink,
-.widget-header .widget-menu .widget-closelink {
+.widget-header .widget-menu a {
+  width: 12px;
+  height: 12px;
   border: none !important;
   margin: 0 2px;
+  display: none;
+}
+
+.widget:hover .widget-menu a {
+  display: inline-block;
 }
 
 .widget-header .widget-menu img {

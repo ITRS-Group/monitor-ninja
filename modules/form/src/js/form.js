@@ -44,8 +44,12 @@ var FormModule = (function () {
 
 	doc.on('click', '.cancel', function (){
 		var form = $(this).closest('form');
+		var editbox = form.closest('.widget-editbox');
 		setTimeout(function() {
 			form.find('.nj-form-option').trigger('change');
+			//cancel button click event to show widget content
+			editbox.hide();
+			editbox.next('.widget-content').show();
 		}, 0);
 	});
 

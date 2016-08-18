@@ -25,6 +25,10 @@ When /^I hover the profile$/ do
   page.find('div#profile').hover
 end
 
+When /^I hover css "([^\"]+)"$/ do |css|
+  page.find(css).hover
+end
+
 Then /^I should see menu items:$/ do |table|
   rows = table.raw
   rows.each do |row|

@@ -338,6 +338,9 @@ widget.prototype.save_settings = function() {
 			var upd_time = self.elem.find('.refresh_interval').val();
 			self.update_widget_time = upd_time;
 			self.update_widget();
+			//After save show widget content
+			self.elem.find('.widget-editbox').hide();
+			self.elem.find('.widget-content').show();
 		},
 		error: function (jqXHR) {
 			var msg = 'Could not save updated widget options to settings';
