@@ -1,15 +1,8 @@
 %define daemon_user monitor
-%if 0%{?suse_version}
-%define htmlroot /srv/www/htdocs
-%define httpconfdir apache2/conf.d
-%define phpdir /usr/share/php5
-%define daemon_group www
-%else
 %define htmlroot /var/www/html
 %define httpconfdir httpd/conf.d
 %define phpdir /usr/share/php
 %define daemon_group apache
-%endif
 
 Name: monitor-ninja
 Version: %{op5version}
@@ -40,24 +33,6 @@ Requires: op5-bootstrap
 BuildRequires: python
 BuildRequires: doxygen
 BuildRequires: graphviz
-%if 0%{?suse_version}
-Requires: php53
-Requires: php53-gettext
-Requires: php53-json
-Requires: php53-posix
-Requires: php53-ctype
-Requires: php53-iconv
-Requires: php53-mbstring
-Requires: php53-ldap
-BuildRequires: php53-json
-BuildRequires: php53-posix
-BuildRequires: php53-ctype
-BuildRequires: util-linux
-BuildRequires: pwdutils
-BuildRequires: graphviz-gnome
-BuildRequires: ghostscript-fonts-std
-BuildRequires: php53-tokenizer
-%else
 Requires: php >= 5.3
 Requires: php-ldap
 Requires: php-pecl-apc
@@ -72,7 +47,6 @@ BuildRequires: php-process
 # For stack trace info
 Requires: psmisc
 Requires: pciutils
-%endif
 %endif
 
 Source: %name-%version.tar.gz
@@ -95,11 +69,7 @@ Requires: portal
 Requires: op5license-generator
 Requires: op5license-tests
 Requires: op5-phpunit
-%if 0%{?suse_version}
-Requires: openldap2
-%else
 Requires: openldap-servers
-%endif
 # For performance graph links on extinfo
 Requires: monitor-pnp
 
@@ -112,19 +82,12 @@ Group: op5/monitor
 Requires: monitor-ninja = %version
 Requires: doxygen
 Requires: graphviz
-%if 0%{?suse_version}
-Requires: php53-tokenizer
-%endif
 
 %description devel
 Development files files for ninja
 
 %prep
 %setup -q
-%if 0%{?suse_version}
-find -type f -exec %{__sed} '{}' -i -e 's#var/www/html#srv/www/htdocs#g'  \;
-find -type f -exec %{__sed} '{}' -i -e 's#var/www#srv/www#g'  \;
-%endif
 
 %build
 pushd cli-helpers
@@ -186,10 +149,6 @@ done
 
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
-%if 0%{?sles_version}
-%{py_compile %buildroot/opt/monitor/op5/nacoma/hooks/save}
-%{py_compile -O %buildroot/opt/monitor/op5/nacoma/hooks/save}
-%endif
 
 mkdir -p %buildroot%_sysconfdir/%{httpconfdir}
 %if 0%{?rhel} >= 7
