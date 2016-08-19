@@ -16,7 +16,7 @@
 class Chromeless_Controller extends Base_Controller {
 
 	public $session = false;
-	public $template;
+	public $template = 'chromeless';
 	public $inline_js = false;
 	public $js_strings = false;
 	public $log = false;

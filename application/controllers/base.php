@@ -65,7 +65,7 @@ class Base_Controller extends Template_Controller {
 
 	/**
          * Verify access to a given action.
-         * If no access, throw a Kohana_User_Exception
+         * If no access, throw a Kohana_Reroute_Exception
          *
          * This method returns if access is allowed, setting $this->access_messages
          * and $this->access_perfdata.
