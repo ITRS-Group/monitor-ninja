@@ -18,13 +18,7 @@ help:
 generate-php:
 	php build.php
 
-test: test-reports test-unittest
-
-test-reports:
-	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/reports/*.tst.php; res=$$?; make test-ci-cleanup; exit $$res
-
-test-unittest: generate-php
+test: generate-php
 	make test-ci-prepare
 	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/bootstrap.php test/; res=$$?; make test-ci-cleanup; exit $$res
 
@@ -94,4 +88,4 @@ install-config:
 	cp -R etc/* $(SYSCONFDIR)/op5
 	chown -R $(ETC_USER):$(ETC_GROUP) $(SYSCONFDIR)/op5
 
-.PHONY: test help test-reports clean install install-lib install-config
+.PHONY: test help clean install install-lib install-config
