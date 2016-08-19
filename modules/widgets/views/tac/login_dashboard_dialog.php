@@ -19,6 +19,6 @@ $form->add_button(
     new Form_Button_Cancel_Model('cancel', 'Cancel')
 );
 
-echo '<h1>Set Login dashboard</h1>';
-echo '<p>"<b>' . html::specialchars($dashboard->get_name()) . '</b>" set as Login dashboard<br>';
+echo '<h1>Set login dashboard</h1>';
+echo '<p>Set dashboard "<b>' . html::specialchars($dashboard->get_name()) . '</b>" as login dashboard</p><br>';
 $form->get_view()->render(true);
