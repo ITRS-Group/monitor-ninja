@@ -260,12 +260,13 @@ function lsfilter_list(config)
 		// Get scrollbar height and width
 		var scroll = this.get_browser_scroll_size();
 		$('#align_th').remove();
-		if ($('.content').get(0).scrollHeight > $('.content').height()) {
+		var content = $('.content');
+		if (content.length && content.get(0).scrollHeight > content.height()) {
 			/*
-			 *	Append a th to the floating header
-			 *	Give it a width that matches the scrollbars width
-			 *	It's not a very nice solution but at least we
-			 *	don't have to rewrite the floating header at this time
+			 * Append a th to the floating header
+			 * Give it a width that matches the scrollbars width
+			 * It's not a very nice solution but at least we
+			 * don't have to rewrite the floating header at this time
 			*/
 			clone.find("tr")
 				.append(
