@@ -432,8 +432,8 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			       $time_end = $now;
 			       break;
 			case 'lastweek':
-			       $time_start = strtotime('midnight last monday -7 days', $now);
-			       $time_end = strtotime('midnight last monday', $now);
+			       $time_start = strtotime('monday last week', strtotime('midnight -1 sec', $now));
+			       $time_end = strtotime('monday', strtotime('midnight -1 sec', $now));
 			       break;
 			case 'thismonth':
 			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
