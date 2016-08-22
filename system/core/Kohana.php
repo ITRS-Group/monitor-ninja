@@ -208,8 +208,7 @@ final class Kohana {
 				$callback();
 				return 0;
 			} catch (Exception $e) {
-				$callback_if_exception($e);
-				return 1;
+				return $callback_if_exception($e);
 			}
 		};
 
@@ -219,13 +218,15 @@ final class Kohana {
 				Router::$controller = $e->get_controller();
 				Router::$method = $e->get_method();
 				Router::$arguments = $e->get_arguments();
-				break;
+				return 1;
 			case 'ORMDriverException':
 				Router::$controller = "error";
 				Router::$method = "show_503";
 				Router::$arguments = array($e);
-				break;
+				return 2;
 			default:
+				// no return value here, exception_handler()
+				// exit()s for us
 				Kohana::exception_handler($e);
 			}
 		};
@@ -234,6 +235,11 @@ final class Kohana {
 			Event::run('system.pre_controller');
 		}, $handle_exceptions);
 
+		// We are only checking if the route given by user input is a
+		// valid_route(). Later on, we can redirect the user, without
+		// validating the new route. This let's us place 'secret'
+		// methods in classes where they make sense contextually,
+		// without exposing them to users directly.
 		if (!Kohana::valid_route()) {
 			Event::run('system.404');
 		}
@@ -243,15 +249,15 @@ final class Kohana {
 			$controller = null;
 
 			$caught_exception |= $wrap_with_try_catch(function() use (&$controller) {
-				/**
-				 * This also has the effect of setting the
-				 * Kohana::$instance variable to the instanced controller
-				 * BUT only if that is the first controller instanced for
-				 * this request
-				 */
 				$classname = ucfirst(Router::$controller).'_Controller';
 				$controller = new $classname();
 			}, $handle_exceptions);
+
+			if(!$controller instanceof Controller && $caught_exception & 1) {
+				// the constructor threw a redirect exception,
+				// which is fine
+				continue;
+			}
 
 			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
@@ -269,13 +275,12 @@ final class Kohana {
 				);
 			}, $handle_exceptions);
 
-
 			$caught_exception |= $wrap_with_try_catch(function() use ($controller) {
 				Event::run('system.post_controller', $controller);
 			}, $handle_exceptions);
 
 			// if the while clause is true, something threw an
-			// exception but didn not tell the error controller to
+			// exception but did not tell the error controller to
 			// take over. This makes us believe a redirect has
 			// occurred, so do the whole controller dance again.
 		} while ($caught_exception && Router::$controller != 'error');
@@ -292,7 +297,7 @@ final class Kohana {
 				$controller->template->content =
 				"<div class='alert notice'>This may".
 				" be a bug, found no content for ".
-				"controller '".get_class($controller).
+				"controller '".Router::$controller.
 				"' (method '".Router::$method."') ".
 				"even though auto_render was ".
 				"true.</div>";
