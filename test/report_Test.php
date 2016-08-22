@@ -22,6 +22,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
+		Report_options::$now = null;
 	}
 
 	/**
@@ -1058,5 +1059,101 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		usort($actual['exceptions']['unresolved'], $compare_fnc);
 
 		$this->assertEquals ( $expcted, $actual );
+	}
+
+	/**
+	 * It looks a bit silly to create a dataProvider for such a small set of
+	 * options, but we really, really, do not want phpunit to stop testing
+	 * after the first failure.
+	 */
+	public function time_input_for_report_options() {
+		return array(
+			array(
+				'lastweek',
+				'start_time',
+				'17:00 2016-08-22', // a Monday
+				'2016-08-15 00:00:00',
+			),
+			array(
+				'lastweek',
+				'end_time',
+				'17:00 2016-08-22', // a Monday
+				'2016-08-22 00:00:00'
+			),
+			array(
+				'lastweek',
+				'start_time',
+				'00:00:00 2016-08-22', // early on a Monday
+				'2016-08-15 00:00:00',
+			),
+			array(
+				'lastweek',
+				'end_time',
+				'00:00:00 2016-08-22', // early on a Monday
+				'2016-08-22 00:00:00'
+			),
+			array(
+				'lastweek',
+				'start_time',
+				'17:00 2016-08-23', // a Tuesday
+				'2016-08-15 00:00:00',
+			),
+			array(
+				'lastweek',
+				'end_time',
+				'17:00 2016-08-23', // a Tuesday
+				'2016-08-22 00:00:00'
+			),
+			array(
+				'lastmonth',
+				'start_time',
+				'17:00 2016-08-01',
+				'2016-07-01 00:00:00',
+			),
+			array(
+				'lastmonth',
+				'end_time',
+				'17:00 2016-08-01',
+				'2016-08-01 00:00:00',
+			),
+			array(
+				'lastmonth',
+				'start_time',
+				'00:00:00 2016-08-01',
+				'2016-07-01 00:00:00',
+			),
+			array(
+				'lastmonth',
+				'end_time',
+				'00:00:00 2016-08-01',
+				'2016-08-01 00:00:00',
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider time_input_for_report_options
+	 * @group MON-7264
+	 */
+	public function test_relative_timeperiods_for_report_options($report_period, $property, $now, $expected) {
+		Report_options::$now = strtotime($now);
+		$options = Report_options::setup_options_obj(
+			'avail',
+			array(
+				'report_period' => $report_period
+			)
+		);
+
+		$friendly = function($expected, $actual) {
+			return sprintf("Wanted\n'%s'\n, got\n'%s'",
+				date('Y-m-d H:i:s', $expected),
+				date('Y-m-d H:i:s', $actual)
+			);
+		};
+
+		$expected = strtotime($expected);
+		$actual = $options[$property];
+		$this->assertSame($expected, $actual,
+			$friendly($expected, $actual));
 	}
 }
