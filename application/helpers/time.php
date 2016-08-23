@@ -22,15 +22,15 @@ class time
 
 		if (!$t) return "0$d 0$h 0$m 0$s";
 		if ($t < 0) {
-			$neg 	= 1;
-			$t 		= 0 - $t;
+			$neg = 1;
+			$t = 0 - $t;
 		}
 
-		$days 	= $t / 86400;
-		$days 	= floor($days);
-		$hrs 	= ($t / 3600) % 24;
-		$mins 	= ($t / 60) % 60;
-		$secs 	= $t % 60;
+		$days = $t / 86400;
+		$days = floor($days);
+		$hrs = ($t / 3600) % 24;
+		$mins = ($t / 60) % 60;
+		$secs = $t % 60;
 
 		$timestring = "";
 		if ($neg) $timestring .= $negative;
