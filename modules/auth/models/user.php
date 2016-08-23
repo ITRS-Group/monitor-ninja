@@ -182,7 +182,7 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 
 	}
 
-	/*
+	/**
 	 * Get a quark for the current user
 	 *
 	 * @return integer

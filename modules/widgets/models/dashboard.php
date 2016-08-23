@@ -119,14 +119,25 @@ class Dashboard_Model extends BaseDashboard_Model
 		}
 	}
 
+	public function get_read_perm() {
+		return array_map('intval',array_filter(explode(',', parent::get_read_perm())));
+	}
+
+	public function set_read_perm($perm_ary) {
+		parent::set_read_perm(','.implode(',', $perm_ary).',');
+	}
+
 	/**
-	 * Get if the user can write to the dashboard
+	 * Return if the current authenticated user can write to this dashboard
 	 *
-	 * Since we only have access to private dashboards at the moment, we can always write to them.
+	 * For now, we are only allowed to edit our own dashboards
 	 *
-	 * This is available since we plan to add sharable dashboards in the future.
+	 * @ninja orm depend[] username
+	 *
+	 * @return boolean
 	 */
 	public function get_can_write() {
-		return true;
+		$user = Auth::instance()->get_user();
+		return $this->get_username() == $user->get_username();
 	}
 }

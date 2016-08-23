@@ -154,7 +154,13 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 			new User_AlwaysAuth_Model()
 		);
 
-		$compare = array('dashboard' => array('name' => $db_name, 'layout' => $db_layout));
+		$compare = array(
+			'dashboard' => array(
+				'name' => $db_name,
+				'layout' => $db_layout,
+				'read_perm' => array()
+			)
+		);
 		$widgets = $mock_widgets;
 		$comp_widgets = array();
 		foreach ($widgets as $k => $w) {

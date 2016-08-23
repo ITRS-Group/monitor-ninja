@@ -752,7 +752,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 				'id' => 2,
 				'name' => '',
 				'username' => 'superuser',
-				'layout' => ''
+				'layout' => '',
+				'read_perm' => array()
 			),
 			'id' => 3,
 			'dashboard_id' => 2,
