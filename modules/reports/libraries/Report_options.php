@@ -402,70 +402,70 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		} else {
 			$now = time();
 		}
-		$year_now 	= date('Y', $now);
-		$month_now 	= date('m', $now);
-		$day_now	= date('d', $now);
-		$week_now 	= date('W', $now);
+		$year_now = date('Y', $now);
+		$month_now = date('m', $now);
+		$day_now = date('d', $now);
+		$week_now = date('W', $now);
 		$weekday_now = date('w', $now)-1;
-		$time_start	= false;
-		$time_end	= false;
+		$time_start = false;
+		$time_end = false;
 
 		switch ($report_period) {
 			case 'today':
 			       $time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			       $time_end 	= $now;
+			       $time_end = $now;
 			       break;
 			case 'last24hours':
 			       $time_start = mktime(date('H', $now), date('i', $now), date('s', $now), $month_now, $day_now -1, $year_now);
-			       $time_end 	= $now;
+			       $time_end = $now;
 			       break;
 			case 'yesterday':
 			       $time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
-			       $time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
+			       $time_end = mktime(0, 0, 0, $month_now, $day_now, $year_now);
 			       break;
 			case 'thisweek':
 			       $time_start = strtotime('today - '.$weekday_now.' days');
-			       $time_end 	= $now;
+			       $time_end = $now;
 			       break;
 			case 'last7days':
-			       $time_start	= strtotime('now - 7 days');
-			       $time_end	= $now;
+			       $time_start = strtotime('now - 7 days');
+			       $time_end = $now;
 			       break;
 			case 'lastweek':
-			       $time_start = strtotime('midnight last monday -7 days');
-			       $time_end	= strtotime('midnight last monday');
+			       $time_start = strtotime('monday last week', strtotime('midnight -1 sec', $now));
+			       $time_end = strtotime('monday', strtotime('midnight -1 sec', $now));
 			       break;
 			case 'thismonth':
 			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			       $time_end	= $now;
+			       $time_end = $now;
 			       break;
 			case 'last31days':
 			       $time_start = strtotime('now - 31 days');
-			       $time_end	= $now;
+			       $time_end = $now;
 			       break;
 			case 'lastmonth':
 			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       $time_end = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
 			       break;
 			case 'thisyear':
 			       $time_start = strtotime('midnight '.$year_now.'-01-01');
-			       $time_end	= $now;
+			       $time_end = $now;
 			       break;
 			case 'lastyear':
 			       $time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
-			       $time_end	= strtotime('midnight '.$year_now.'-01-01');
+			       $time_end = strtotime('midnight '.$year_now.'-01-01');
 			       break;
 			case 'last12months':
-			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
+			       $time_end = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
 			       break;
 			case 'last3months':
-			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
+			       $time_end = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
 			       break;
 			case 'last6months':
-			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
+			       $time_end = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
 			       break;
 			case 'lastquarter':
 				$t = getdate($now);
