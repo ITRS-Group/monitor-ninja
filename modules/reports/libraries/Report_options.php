@@ -405,10 +405,6 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		$year_now = date('Y', $now);
 		$month_now = date('m', $now);
 		$day_now = date('d', $now);
-		$week_now = date('W', $now);
-		$weekday_now = date('w', $now)-1;
-		$time_start = false;
-		$time_end = false;
 
 		switch ($report_period) {
 			case 'today':
@@ -424,11 +420,11 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			       $time_end = mktime(0, 0, 0, $month_now, $day_now, $year_now);
 			       break;
 			case 'thisweek':
-			       $time_start = strtotime('today - '.$weekday_now.' days');
+			       $time_start = strtotime('last monday', strtotime('tomorrow', $now));
 			       $time_end = $now;
 			       break;
 			case 'last7days':
-			       $time_start = strtotime('now - 7 days');
+			       $time_start = strtotime('now - 7 days', $now);
 			       $time_end = $now;
 			       break;
 			case 'lastweek':
@@ -440,7 +436,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			       $time_end = $now;
 			       break;
 			case 'last31days':
-			       $time_start = strtotime('now - 31 days');
+			       $time_start = strtotime('now - 31 days', $now);
 			       $time_end = $now;
 			       break;
 			case 'lastmonth':
@@ -492,6 +488,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			default:
 				# unknown option, ie bogosity
 				return false;
+		}
+
+		if($time_start === false) {
+			throw new Exception("Report start could not be set to a proper value for report_period == '$report_period' ('now' is $now). This is a bug, please report it to op5");
+		}
+
+		if($time_end === false) {
+			throw new Exception("Report end could not be set to a proper value for report_period == '$report_period' ('now' is $now)'. This is a bug. This is a bug, please report it to op5");
 		}
 
 		if($time_start > $now)

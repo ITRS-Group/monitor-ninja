@@ -1071,134 +1071,212 @@ class report_Test extends PHPUnit_Framework_TestCase {
 			array(
 				'lastweek',
 				'start_time',
-				'2016-08-22 17:00:00', // a Monday
-				'2016-08-15 00:00:00',
+				'2015-08-03 17:00:00', // a Monday
+				'2015-07-27 00:00:00',
 			),
 			array(
 				'lastweek',
 				'end_time',
-				'2016-08-22 17:00:00', // a Monday
-				'2016-08-22 00:00:00'
+				'2015-08-03 17:00:00', // a Monday
+				'2015-08-03 00:00:00'
 			),
 			array(
 				'lastweek',
 				'start_time',
-				'2016-08-22 00:00:00', // early on a Monday
-				'2016-08-15 00:00:00',
+				'2015-08-03 17:00:00', // early on a Monday
+				'2015-07-27 00:00:00',
 			),
 			array(
 				'lastweek',
 				'end_time',
-				'2016-08-22 00:00:00', // early on a Monday
-				'2016-08-22 00:00:00'
+				'2015-08-03 17:00:00', // early on a Monday
+				'2015-08-03 00:00:00'
 			),
 			array(
-				'lastweek',
+				'last7days',
 				'start_time',
-				'2016-08-23 17:00:00', // a Tuesday
-				'2016-08-15 00:00:00',
+				'2015-08-04 17:00:00', // a Tuesday
+				'2015-07-28 17:00:00',
 			),
 			array(
-				'lastweek',
+				'last7days',
 				'end_time',
-				'2016-08-23 17:00:00', // a Tuesday
-				'2016-08-22 00:00:00'
+				'2015-08-04 17:00:00', // a Tuesday
+				'2015-08-04 17:00:00',
 			),
 			array(
-				'lastmonth',
+				'last31days',
 				'start_time',
-				'2016-08-01 17:00:00',
-				'2016-07-01 00:00:00',
+				'2015-08-02 17:00:00',
+				'2015-07-02 17:00:00',
 			),
 			array(
-				'lastmonth',
+				'last31days',
 				'end_time',
-				'2016-08-01 17:00:00',
-				'2016-08-01 00:00:00',
+				'2015-08-02 17:00:00',
+				'2015-08-02 17:00:00',
 			),
 			array(
-				'lastmonth',
+				'thisyear',
 				'start_time',
-				'2016-08-01 00:00:00',
-				'2016-07-01 00:00:00',
-			),
-			array(
-				'lastmonth',
-				'end_time',
-				'2016-08-01 00:00:00',
-				'2016-08-01 00:00:00',
-			),
-			array(
-				'lastyear',
-				'start_time',
-				'2016-01-01 17:00:00',
+				'2015-08-23 17:00:00',
 				'2015-01-01 00:00:00',
 			),
 			array(
-				'lastyear',
+				'thisyear',
 				'end_time',
-				'2016-01-01 17:00:00',
-				'2016-01-01 00:00:00',
+				'2015-08-23 17:00:00',
+				'2015-08-23 17:00:00',
 			),
 			array(
-				'last12months',
+				'thismonth',
 				'start_time',
-				'2016-08-01 00:00:00',
+				'2015-08-23 17:00:00',
 				'2015-08-01 00:00:00',
 			),
 			array(
+				'thismonth',
+				'end_time',
+				'2015-08-23 17:00:00',
+				'2015-08-23 17:00:00',
+			),
+			array(
+				'thismonth',
+				'end_time',
+				'2015-08-23 17:00:00',
+				'2015-08-23 17:00:00',
+			),
+			array(
+				'lastmonth',
+				'start_time',
+				'2015-08-01 17:00:00',
+				'2015-07-01 00:00:00',
+			),
+			array(
+				'lastmonth',
+				'end_time',
+				'2015-08-01 17:00:00',
+				'2015-08-01 00:00:00',
+			),
+			array(
+				'lastmonth',
+				'start_time',
+				'2015-08-01 00:00:00',
+				'2015-07-01 00:00:00',
+			),
+			array(
+				'lastmonth',
+				'end_time',
+				'2015-08-01 00:00:00',
+				'2015-08-01 00:00:00',
+			),
+			array(
+				'lastyear',
+				'start_time',
+				'2015-01-01 17:00:00',
+				'2014-01-01 00:00:00',
+			),
+			array(
+				'lastyear',
+				'end_time',
+				'2015-01-01 17:00:00',
+				'2015-01-01 00:00:00',
+			),
+			array(
+				'last12months',
+				'start_time',
+				'2015-08-01 00:00:00',
+				'2014-08-01 00:00:00',
+			),
+			array(
 				'last12months',
 				'end_time',
-				'2016-08-01 00:00:00',
-				'2016-08-01 00:00:00',
+				'2015-08-01 00:00:00',
+				'2015-08-01 00:00:00',
 			),
 			array(
 				'last3months',
 				'start_time',
-				'2016-08-01 00:00:00',
-				'2016-05-01 00:00:00',
+				'2015-08-01 00:00:00',
+				'2015-05-01 00:00:00',
 			),
 			array(
 				'last3months',
 				'end_time',
-				'2016-08-01 00:00:00',
-				'2016-08-01 00:00:00',
+				'2015-08-01 00:00:00',
+				'2015-08-01 00:00:00',
 			),
 			array(
 				'last6months',
 				'start_time',
-				'2016-03-01 00:00:00',
-				'2015-09-01 00:00:00',
+				'2015-03-01 00:00:00',
+				'2014-09-01 00:00:00',
 			),
 			array(
 				'last6months',
 				'end_time',
-				'2016-03-01 00:00:00',
-				'2016-03-01 00:00:00',
+				'2015-03-01 00:00:00',
+				'2015-03-01 00:00:00',
 			),
 			array(
 				'lastquarter',
 				'start_time',
-				'2016-02-01 00:00:00',
-				'2015-10-01 00:00:00',
+				'2015-02-01 00:00:00',
+				'2014-10-01 00:00:00',
 			),
 			array(
 				'lastquarter',
 				'end_time',
-				'2016-02-01 00:00:00',
-				'2016-01-01 00:00:00',
+				'2015-02-01 00:00:00',
+				'2015-01-01 00:00:00',
 			),
 			array(
 				'lastquarter',
 				'start_time',
-				'2016-03-31 00:00:00',
-				'2015-10-01 00:00:00',
+				'2015-03-31 00:00:00',
+				'2014-10-01 00:00:00',
 			),
 			array(
 				'lastquarter',
 				'end_time',
-				'2016-03-31 00:00:00',
-				'2016-01-01 00:00:00',
+				'2015-03-31 00:00:00',
+				'2015-01-01 00:00:00',
+			),
+			array(
+				'thisweek',
+				'start_time',
+				'2016-07-04 00:00:01', // Monday
+				'2016-07-04 00:00:00', // Monday
+			),
+			array(
+				'thisweek',
+				'end_time',
+				'2016-07-04 00:00:01', // Monday
+				'2016-07-04 00:00:01', // Monday
+			),
+			array(
+				'thisweek',
+				'start_time',
+				'2015-08-11 00:00:00', // Tuesday
+				'2015-08-10 00:00:00',
+			),
+			array(
+				'thisweek',
+				'end_time',
+				'2015-08-11 00:12:23', // Tuesday
+				'2015-08-11 00:12:23',
+			),
+			array(
+				'thisweek',
+				'start_time',
+				'2015-08-23 23:59:59', // Sunday
+				'2015-08-17 00:00:00', // Monday
+			),
+			array(
+				'thisweek',
+				'end_time',
+				'2015-08-23 23:59:59', // Sunday
+				'2015-08-23 23:59:59',
 			),
 		);
 	}
@@ -1209,6 +1287,10 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_relative_timeperiods_for_report_options($report_period, $property, $now, $expected) {
 		Report_options::$now = strtotime($now);
+		$this->assertNotSame(false, Report_options::$now,
+			'Sanity check: do not pass invalid date as $now'
+		);
+
 		$options = Report_options::setup_options_obj(
 			'avail',
 			array(
@@ -1224,6 +1306,9 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		};
 
 		$expected = strtotime($expected);
+		$this->assertNotSame(false, $expected,
+			'Sanity check: do not pass invalid date as $expected'
+		);
 		$actual = $options[$property];
 		$this->assertSame($expected, $actual,
 			$friendly($expected, $actual));
