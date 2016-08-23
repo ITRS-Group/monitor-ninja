@@ -1071,62 +1071,134 @@ class report_Test extends PHPUnit_Framework_TestCase {
 			array(
 				'lastweek',
 				'start_time',
-				'17:00 2016-08-22', // a Monday
+				'2016-08-22 17:00:00', // a Monday
 				'2016-08-15 00:00:00',
 			),
 			array(
 				'lastweek',
 				'end_time',
-				'17:00 2016-08-22', // a Monday
+				'2016-08-22 17:00:00', // a Monday
 				'2016-08-22 00:00:00'
 			),
 			array(
 				'lastweek',
 				'start_time',
-				'00:00:00 2016-08-22', // early on a Monday
+				'2016-08-22 00:00:00', // early on a Monday
 				'2016-08-15 00:00:00',
 			),
 			array(
 				'lastweek',
 				'end_time',
-				'00:00:00 2016-08-22', // early on a Monday
+				'2016-08-22 00:00:00', // early on a Monday
 				'2016-08-22 00:00:00'
 			),
 			array(
 				'lastweek',
 				'start_time',
-				'17:00 2016-08-23', // a Tuesday
+				'2016-08-23 17:00:00', // a Tuesday
 				'2016-08-15 00:00:00',
 			),
 			array(
 				'lastweek',
 				'end_time',
-				'17:00 2016-08-23', // a Tuesday
+				'2016-08-23 17:00:00', // a Tuesday
 				'2016-08-22 00:00:00'
 			),
 			array(
 				'lastmonth',
 				'start_time',
-				'17:00 2016-08-01',
+				'2016-08-01 17:00:00',
 				'2016-07-01 00:00:00',
 			),
 			array(
 				'lastmonth',
 				'end_time',
-				'17:00 2016-08-01',
+				'2016-08-01 17:00:00',
 				'2016-08-01 00:00:00',
 			),
 			array(
 				'lastmonth',
 				'start_time',
-				'00:00:00 2016-08-01',
+				'2016-08-01 00:00:00',
 				'2016-07-01 00:00:00',
 			),
 			array(
 				'lastmonth',
 				'end_time',
-				'00:00:00 2016-08-01',
 				'2016-08-01 00:00:00',
+				'2016-08-01 00:00:00',
+			),
+			array(
+				'lastyear',
+				'start_time',
+				'2016-01-01 17:00:00',
+				'2015-01-01 00:00:00',
+			),
+			array(
+				'lastyear',
+				'end_time',
+				'2016-01-01 17:00:00',
+				'2016-01-01 00:00:00',
+			),
+			array(
+				'last12months',
+				'start_time',
+				'2016-08-01 00:00:00',
+				'2015-08-01 00:00:00',
+			),
+			array(
+				'last12months',
+				'end_time',
+				'2016-08-01 00:00:00',
+				'2016-08-01 00:00:00',
+			),
+			array(
+				'last3months',
+				'start_time',
+				'2016-08-01 00:00:00',
+				'2016-05-01 00:00:00',
+			),
+			array(
+				'last3months',
+				'end_time',
+				'2016-08-01 00:00:00',
+				'2016-08-01 00:00:00',
+			),
+			array(
+				'last6months',
+				'start_time',
+				'2016-03-01 00:00:00',
+				'2015-09-01 00:00:00',
+			),
+			array(
+				'last6months',
+				'end_time',
+				'2016-03-01 00:00:00',
+				'2016-03-01 00:00:00',
+			),
+			array(
+				'lastquarter',
+				'start_time',
+				'2016-02-01 00:00:00',
+				'2015-10-01 00:00:00',
+			),
+			array(
+				'lastquarter',
+				'end_time',
+				'2016-02-01 00:00:00',
+				'2016-01-01 00:00:00',
+			),
+			array(
+				'lastquarter',
+				'start_time',
+				'2016-03-31 00:00:00',
+				'2015-10-01 00:00:00',
+			),
+			array(
+				'lastquarter',
+				'end_time',
+				'2016-03-31 00:00:00',
+				'2016-01-01 00:00:00',
 			),
 		);
 	}
