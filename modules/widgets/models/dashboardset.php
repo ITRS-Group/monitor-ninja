@@ -7,14 +7,18 @@
  * @todo: documentation
  */
 class DashboardSet_Model extends BaseDashboardSet_Model {
+	public function get_auth_filter() {
+		$user = Auth::instance()->get_user();
+		$filter = new LivestatusFilterAnd();
+		$filter->add($this->filter);
 
-	protected function get_auth_filter() {
-		$auth = Auth::instance();
-		$username = $auth->get_user()->get_username();
+		$auth_filter = new LivestatusFilterOr();
+		$auth_filter->add(new LivestatusFilterMatch('read_perm', $user->get_permission_regexp(), '~~'));
 
-		$result_filter = new LivestatusFilterAnd();
-		$result_filter->add($this->filter);
-		$result_filter->add(new LivestatusFilterMatch('username', $username));
-		return $result_filter;
+		/* For now, auth can be either by read_perm, or the user has created the dashboard */
+		$auth_filter->add(new LivestatusFilterMatch('username', $user->get_username(), '='));
+
+		$filter->add($auth_filter);
+		return $filter;
 	}
 }

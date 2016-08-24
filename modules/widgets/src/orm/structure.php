@@ -31,7 +31,8 @@ $tables = array(
 			'id' => 'int',
 			'name' => 'string',
 			'username' => 'string', // This should change in the future
-			'layout' => 'string'
+			'layout' => 'string',
+			'read_perm' => 'string'
 		)
 	),
 	'dashboard_widgets' => array(
