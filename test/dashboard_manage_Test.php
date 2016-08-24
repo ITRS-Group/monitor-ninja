@@ -231,4 +231,48 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(35, $dashboard->get_id());
 
 	}
+
+	/**
+	 * Show 'Share & Delete' options only for user own dashboard's
+	 *
+	 */
+	public function test_show_share_delete_options_on_dashboard () {
+
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'dashboards' => array(
+					array(
+						'id' => '40',
+						'name' => 'My dashboard',
+						'username' => 'superuser',
+						'layout' => '3,2,1'
+					),
+					array(
+						'id' => '41',
+						'name' => 'My dashboard 1',
+						'username' => 'superuser',
+						'layout' => '3,2,1'
+					)
+				),
+				'dashboard_widgets' => array(),
+				'settings' => array()
+			)
+		));
+
+		// Dashboard show 'Share & Delete' options
+		$user = new User_Model();
+		$user->set_username('superuser');
+		op5auth::instance()->force_user($user);
+
+		$dashboard = DashboardPool_Model::fetch_by_key(40);
+
+		$this->assertTrue($dashboard->get_can_write());
+
+		// Dashboard do not show 'Share & Delete' options
+		$user = new User_Model();
+		$user->set_username('testuser');
+		op5auth::instance()->force_user($user);
+
+		$this->assertFalse($dashboard->get_can_write());
+	}
 }
