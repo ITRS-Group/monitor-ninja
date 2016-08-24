@@ -408,7 +408,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		}
 
 		try {
-			$timestamps = time::start_and_end_of_report_period($report_period, $now);
+			$timestamps = time::get_limits($report_period, $now);
 		} catch (InvalidReportPeriod_Exception $e) {
 			op5log::instance('ninja')->log('error', "An invalid report period of '$report_period' was given");
 			return false;

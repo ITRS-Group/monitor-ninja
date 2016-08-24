@@ -1176,7 +1176,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @dataProvider time_input_for_report_options
 	 * @group MON-7264
-	 * @group time::start_and_end_of_report_period
+	 * @group time::get_limits
 	 */
 	public function test_relative_timeperiods_for_report_options($report_period, $now, $expected_start, $expected_end) {
 		$now = strtotime($now);
@@ -1190,7 +1190,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 			);
 		};
 
-		$actual = time::start_and_end_of_report_period($report_period, $now);
+		$actual = time::get_limits($report_period, $now);
 		$start = strtotime($expected_start);
 		$this->assertNotSame(false, $start,
 			'Sanity check: do not pass invalid date as $expected_start'
@@ -1205,11 +1205,11 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException InvalidReportPeriod_Exception
-	 * @expectedExceptionMessage 'non-existing' is not a valid value for $report_period
-	 * @group time::start_and_end_of_report_period
+	 * @expectedException InvalidTimePeriod_Exception
+	 * @expectedExceptionMessage 'non-existing' is not a valid value for $time_period
+	 * @group time::get_limits
 	 */
 	public function test_relative_timeperiod_throws_exception_on_invalid_report_type() {
-		time::start_and_end_of_report_period('non-existing', time());
+		time::get_limits('non-existing', time());
 	}
 }

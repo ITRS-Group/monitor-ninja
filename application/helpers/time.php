@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Thrown by time::start_and_end_of_report_period()
+ * Thrown by time::get_limits()
  */
-class InvalidReportPeriod_Exception extends Exception {}
+class InvalidTimePeriod_Exception extends Exception {}
 
 /**
  * Help class for converting seconds to readable string of days, hours etc
@@ -57,17 +57,17 @@ class time
 	}
 
 	/**
-	 * @param $report_period string
-	 * @param $now int, UNIX TIMESTAMP (you probably want to pass the result of time())
+	 * @param $time_period string
+	 * @param $now int, Unix timestamp (you probably want to pass the result of time())
 	 * @return array(start_time, end_time)
-	 * @throws Exception if the $report_period is invalid
+	 * @throws InvalidTimePeriod_Exception if the $time_period is invalid
 	 */
-	public static function start_and_end_of_report_period($report_period, $now) {
+	public static function get_limits($time_period, $now) {
 		$year_now = date('Y', $now);
 		$month_now = date('m', $now);
 		$day_now = date('d', $now);
 
-		switch ($report_period) {
+		switch ($time_period) {
 			case 'today':
 			       $time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
 			       $time_end = $now;
@@ -143,15 +143,15 @@ class time
 				$time_end = strtotime($lqend);
 				break;
 			default:
-				throw new InvalidReportPeriod_Exception("'$report_period' is not a valid value for \$report_period");
+				throw new InvalidTimePeriod_Exception("'$time_period' is not a valid value for \$time_period");
 		}
 
 		if($time_start === false) {
-			throw new InvalidReportPeriod_Exception("Report start could not be set to a proper value for report_period == '$report_period' ('now' is $now). This is a bug, please report it to op5");
+			throw new InvalidTimePeriod_Exception("The time_period '$time_period' could not be resolved ('now' is $now)'. This is a bug, please report it to op5");
 		}
 
 		if($time_end === false) {
-			throw new InvalidReportPeriod_Exception("Report end could not be set to a proper value for report_period == '$report_period' ('now' is $now)'. This is a bug. This is a bug, please report it to op5");
+			throw new InvalidTimePeriod_Exception("The time_period '$time_period' could not be resolved ('now' is $now)'. This is a bug, please report it to op5");
 		}
 
 		if($time_start > $now)
