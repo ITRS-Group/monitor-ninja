@@ -193,6 +193,7 @@ class Saved_reports_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider fill_sla
 	 * @group MON-6154
+	 * @group time::start_and_end_of_report_period
 	 */
 	function test_sla_create_special($input, $expected, $time)
 	{
