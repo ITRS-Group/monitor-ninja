@@ -583,11 +583,11 @@
 .icon-heart:before { content: '\ea05'; } /* '' */
 
 /* State icons */
-.icon-state-ok:before { content: '\e81b'; } /* '' */
-.icon-state-up:before { content: '\e81b'; } /* '' */
-.icon-state-down:before { content: '\e81f'; } /* '' */
-.icon-state-critical:before { content: '\e81f'; } /* '' */
-.icon-state-unreachable:before { content: '\e82a'; } /* '' */
-.icon-state-unknown:before { content: '\e82a'; } /* '' */
-.icon-state-warning:before { content: '\e862'; } /* '' */
+.icon-state-ok:before { content: '\e81c'; } /* '' */
+.icon-state-up:before { content: '\e81c'; } /* '' */
+.icon-state-down:before { content: '\e820'; } /* '' */
+.icon-state-critical:before { content: '\e820'; } /* '' */
+.icon-state-unreachable:before { content: '\e82b'; } /* '' */
+.icon-state-unknown:before { content: '\e82b'; } /* '' */
+.icon-state-warning:before { content: '\e864'; } /* '' */
 .icon-state-pending:before { content: '\e910'; } /* '' */

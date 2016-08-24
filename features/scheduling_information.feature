@@ -11,7 +11,7 @@ Feature: Scheduling information
       |remotehost|10        |Merlin peer Gustaf|true                 |
     And I am on the Host details page
     And I click "remotehost"
-    Then I should see "Remotely checked by Gustaf"
+    Then I should see "Gustaf (peer)"
 
   Scenario: Local scheduling information is visible in extinfo
     Verify that scheduling information for a check that is run on a local node

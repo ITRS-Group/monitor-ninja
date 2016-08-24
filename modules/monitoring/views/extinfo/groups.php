@@ -1,23 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$notes_url_target = config::get('nagdefault.notes_url_target');
-$action_url_target = config::get('nagdefault.action_url_target');
-?>
-<div id="page_links">
-	<ul>
-	<?php
-	if (isset($page_links)) {
-		foreach ($page_links as $label => $link) {
-			?>
-			<li><?php echo html::anchor($link, $label) ?></li>
-			<?php
-		}
-	}
-	?>
-	</ul>
-</div>
-<div class="clear"> </div>
+$notes_url_target = config::get('nagdefault.notes_url_target', '*');
+$action_url_target = config::get('nagdefault.action_url_target', '*');
 
-<?php if (!empty($action_url)) { ?>
+if (!empty($action_url)) { ?>
 <a href="<?php echo $action_url ?>" style="border: 0px" target="<?php echo $action_url_target ?>">
 	<span class="icon-16 x16-host-actions" title="Perform extra host actions"></span>
 <br />
@@ -39,7 +24,27 @@ if (!empty($notes)) {?>
 ?>
 
 <div>
-<h1><?php echo ucfirst($label_grouptype); ?> <strong><?php echo $object->get_alias(); ?> (<?php echo $object->get_key() ?>)</h1>
+<div class="information-component">
+<h1><?php
+	echo ucfirst($type) . ': ' . $object->get_alias() . '(' . $object->get_key() . ')'; ?></h1>
+</div>
 <?php
 
-echo $commands;
+if ($object->get_table() === 'hostgroups') {
+	View::factory('extinfo/components/host_states', array(
+		'object' => $object
+	))->render(true);
+}
+
+View::factory('extinfo/components/service_states', array(
+	'object' => $object
+))->render(true);
+
+/* @var $widgets widget_Base[] */
+foreach ($widgets as $title => $widget) {
+	echo '<div class="information-component information-component-fullwidth">';
+	echo '<div class="information-component-title">' . $title . '</div>';
+	echo $widget->render('index', false);
+	echo '</div>';
+}
+

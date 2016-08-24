@@ -10,6 +10,7 @@ defined('SYSPATH') or die('No direct access allowed.');
  * exported to a helper, so it's available for both.
  */
 class performance_data {
+
 	/**
 	 * Process performance data and return as an array
 	 *
@@ -66,4 +67,5 @@ class performance_data {
 		}
 		return $perf_data;
 	}
+
 }

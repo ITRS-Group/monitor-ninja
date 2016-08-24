@@ -24,7 +24,7 @@ Feature: Mocked
 
 	Scenario: Host details extinfo page check links
 		Verify that all links on the extinfo page for a given host
-		point to the right place. Status detail link.
+		point to the right place. Service total link.
 
 		Given I have these mocked hosts
 			| name    |
@@ -36,7 +36,7 @@ Feature: Mocked
 
 		And I am on the Host details page
 		When I click "Hanh Cao"
-		And I click "Status detail"
+		And I click "Go to list of all services on this host"
 		Then I should see this status:
 			| Host Name | Service      |
 			| Hanh Cao  | Nhean Saechao|
@@ -52,14 +52,14 @@ Feature: Mocked
 		And I am logged in
 		And I am on the Host details page
 		When I click "<name>"
-		And I click "<link>"
+		And I select "<link>" from the "Options" menu
 		Then I should be on url "<url>"
 
 		Examples:
 			|name           |link               |url                                                                          |
-			|Bao Jen        |Alert history      |/index.php/alert_history/generate?report_type=hosts&objects%5B%5D=Bao+Jen    |
-			|Henderson Gomez|Alert histogram    |/index.php/histogram/generate?report_type=hosts&objects%5B%5D=Henderson+Gomez|
-			|Raizy Olsen    |Availability report|/index.php/avail/generate?report_type=hosts&objects%5B%5D=Raizy+Olsen        |
+			|Bao Jen        |Report > Alert history      |/index.php/alert_history/generate?report_type=hosts&objects%5B%5D=Bao+Jen    |
+			|Henderson Gomez|Report > Histogram    |/index.php/histogram/generate?report_type=hosts&objects%5B%5D=Henderson+Gomez|
+			|Raizy Olsen    |Report > Availability|/index.php/avail/generate?report_type=hosts&objects%5B%5D=Raizy+Olsen        |
 
 	Scenario: Host details extinfo page check links
 		Verify that all links on the extinfo page for a given host
@@ -70,7 +70,7 @@ Feature: Mocked
 			|Fermin Miller|
 		And I am on the Host details page
 		When I click "Fermin Miller"
-		And I click "Notifications"
+		And I select "Links > Notifications" from the "Options" menu
 		Then I should see "Notifications"
 		And I should see "Count:"
 
@@ -107,10 +107,10 @@ Feature: Mocked
 
 		Given I am on the Service details page
 		When I click "Gabriela Obregon"
-		And I click "Status detail"
-		Then I should see this status:
-			| Host Name   | Service         |
-			| Kwanita Page| Gabriela Obregon|
+		And I click "Go to the host of this service"
+		# Object details upper-case transforms names
+		Then I should see "KWANITA PAGE"
+		And I should see "Service states"
 
 	Scenario Outline:
 		Service details extinfo page check links
@@ -126,13 +126,13 @@ Feature: Mocked
 			|<name>     |Sincere Carroll|
 		And I am on the Service details page
 		When I click "<name>"
-		And I click "<link>"
+		And I select "<link>" from the "Options" menu
 		Then I should be on url "<url>"
 
 		Examples:
-			|name|link|url|
-			|Sherwin Ventura|Alert history|/index.php/alert_history/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BSherwin+Ventura|
-			|Munny Ma|Alert histogram|/index.php/histogram/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BMunny+Ma|
+			| name | link | url |
+			| Sherwin Ventura | Report > Alert history| /index.php/alert_history/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BSherwin+Ventura|
+			| Munny Ma | Report > Histogram | /index.php/histogram/generate?report_type=services&objects%5B%5D=Sincere+Carroll%3BMunny+Ma|
 
 	Scenario: Service details extinfo page check links
 		Verify that all links on the extinfo page for a given service
@@ -148,10 +148,9 @@ Feature: Mocked
 
 		Given I am on the Service details page
 		When I click "Bhin Phan"
-		And I click "Notifications"
+		And I select "Links > Notifications" from the "Options" menu
 		Then I should see "Notifications"
 		And I should see "Count:"
-
 
 	Scenario: Service details extinfo page check links
 		Verify that all links on the extinfo page for a given service
@@ -165,7 +164,7 @@ Feature: Mocked
 			|Manami Kaneshiro |Champey Hong|
 		And I am on the Service details page
 		When I click "Manami Kaneshiro"
-		And I click "Availability report"
+		And I select "Report > Availability" from the "Options" menu
 		Then I should be on url "/index.php/avail/generate?report_type=services&objects%5B%5D=Champey+Hong%3BManami+Kaneshiro"
 		And I should see "Service details for Manami Kaneshiro on host Champey Hong"
 		And I should see "Reporting period: Last 7 days"

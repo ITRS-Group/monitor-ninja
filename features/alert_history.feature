@@ -37,9 +37,7 @@ Feature: Alert history reports
 
 	@configuration
 	Scenario: Single host alert history
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Alert history"
+		Given I visit the alert history page for host "linux-server1"
 		Then I should see "OK - Sven Melander"
 		And I should see "Reporting period: Forever"
 		And I shouldn't see "win-server"
@@ -52,9 +50,7 @@ Feature: Alert history reports
 
 	@configuration @bug-7083
 	Scenario: Service with host alert history
-		Given I am on the Service details page
-		When I click "Swap Usage"
-		And I click "Alert history"
+		Given I visit the alert history page for service "win-server1;Swap Usage"
 		Then I should see "ERROR - out of teletubbies"
 		And I should see "OK - laa-laa"
 		And I should see "win-server"
@@ -72,9 +68,7 @@ Feature: Alert history reports
 
 	@configuration
 	Scenario: Host with service alert history
-		Given I am on the Host details page
-		When I click "win-server1"
-		And I click "Alert history"
+		Given I visit the alert history page for host "win-server1"
 		Then I should see "OK - laa-laa"
 		And I should see "ERROR - tinky-winky"
 		And I should see "ERROR - out of teletubbies"
@@ -90,9 +84,7 @@ Feature: Alert history reports
 
 	@configuration @bug-7083
 	Scenario: Switch object
-		Given I am on the Host details page
-		When I click "linux-server1"
-		And I click "Alert history"
+		Given I visit the alert history page for host "linux-server1"
 		Then I should see "OK - Sven Melander"
 		When I click "Edit settings"
 		Then "objects_tmp" should have option "win-server1"
@@ -137,9 +129,7 @@ Feature: Alert history reports
 
 	@configuration @bug-6341 @bug-6646
 	Scenario: Pagination
-		Given I am on the Host details page
-		When I click "win-server1"
-		And I click "Alert history"
+		Given I visit the alert history page for host "win-server1"
 		Then I should see "OK - laa-laa"
 		And I should see "OK - po"
 		And I should see "ERROR - tinky-winky"

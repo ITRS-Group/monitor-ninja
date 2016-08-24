@@ -1,7 +1,7 @@
 $(document).ready(function () {
-	var nacoma_base = $.map(function(p) {
+	var nacoma_base = $.map([_site_domain, _index_page, _current_uri], function(p) {
 		return p.replace(/^\/|\/$/, '');
-	}, [_site_domain, _index_page, _current_uri]).join('/');
+	}).join('/');
 
 	var nacoma_install_location = '/monitor/op5/nacoma/';
 

@@ -61,7 +61,7 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 		 * don't have any custom commands
 		 */
 		if($contact === false)
-			return false;
+			return array();
 
 		/*
 		 * Unpack contactgroups for this user as a lookup from contactgroup name
@@ -163,4 +163,5 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 			'output' => implode("\n", $output),
 		);
 	}
+
 }
