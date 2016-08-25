@@ -63,8 +63,19 @@ class ORMDriverNative implements ORMDriverInterface {
 		$model_type = $structure['class'] . '_Model';
 		$data = array();
 
+		if (intval($offset) !== 0 /*If it's zero, it doesn't matter */) {
+			throw new ORMDriverNativeException("Non-zero 'offset' specified (" . $offset . "), but not implemented");
+		}
+
+		if ($order !== array()) {
+			throw new ORMDriverNativeException("Order specified, but not implemented");
+		}
+
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
 			foreach ($this->storage[$table] as $row) {
+				if ($limit !== false && count($data) === intval($limit))
+					break;
+
 				foreach ($structure["structure"] as $field => $type) {
 					if (is_array($type)) {
 						list($class_prefix, $field_prefix) = $type;
