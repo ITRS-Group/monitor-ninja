@@ -6,9 +6,11 @@ function lsfilter_list_attach_events( listview, base_element ) {
 	.on('click', '.query_link', function(e) {
 		var query = $(this).attr('data-query');
 		if( lsfilter_main ) {
-			e.preventDefault();
-			lsfilter_main.update( query, false, '' );
-			return false;
+			if (_controller_name === 'listview') {
+				e.preventDefault();
+				lsfilter_main.update( query, false, '' );
+				return false;
+			}
 		}
 	})
 
