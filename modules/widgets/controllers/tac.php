@@ -229,15 +229,36 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Render the new dashboard dialog, as an entire page
 	 *
-	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
+	 * So we don't need to render it on every page, fancybox can load the
+	 * dialog from an URL
 	 */
 	public function new_dashboard_dialog() {
+
+		$lp = LinkProvider::factory();
+
+		$form = new Form_Model(
+			$lp->get_url('tac', 'new_dashboard'),
+			array(
+				new Form_Field_Group_Model('dashboard', array(
+					new Form_Field_Text_Model('name', 'Name'),
+					new Form_Field_Option_Model('layout', 'Layout', array(
+						'3,2,1' => '321',
+						'1,3,2' => '132'
+					))
+				))
+			)
+		);
+
 		$username = op5auth::instance()->get_user()->get_username();
-		$count = count(DashboardPool_Model::all()->reduce_by('username', $username, '='));
-		$this->template = new View('tac/new_dashboard_dialog', array(
-			'username' => $username,
-			'count' => $count
+		$form->set_values(array(
+			'name' => $username . ' dashboard ',
+			'layout' => '3,2,1'
 		));
+
+		$form->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+		$this->template = $form->get_view();
+
 	}
 
 	/**
@@ -262,13 +283,26 @@ class Tac_Controller extends Ninja_Controller {
 	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
 	 */
 	public function rename_dashboard_dialog() {
-		$username = op5auth::instance()->get_user()->get_username();
+
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
-		$this->template = new View('tac/rename_dashboard_dialog', array(
-			'username' => $username,
-			'dashboard' => $dashboard
+
+		$form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'rename_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_Text_Model('name', 'Name')
+			)
+		);
+
+		$form->set_values(array(
+			'dashboard_id' => $dashboard->get_id(),
+			'name' => $dashboard->get_name()
 		));
+
+		$form->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+		$this->template = $form->get_view();
 	}
 
 	/**
@@ -288,11 +322,26 @@ class Tac_Controller extends Ninja_Controller {
 	 * Render the login dashboard dialog
 	 */
 	public function login_dashboard_dialog() {
+
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
-		$this->template = new View('tac/login_dashboard_dialog', array(
-			'dashboard' => $dashboard
+
+		$form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'set_login_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_Info_Model('Set dashboard "' . $dashboard->get_name() .  '" as login dashboard?')
+			)
+		);
+
+		$form->set_values(array(
+			'dashboard_id' => $dashboard->get_id()
 		));
+
+		$form->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+
+		$this->template = $form->get_view();
 	}
 
 	/**
@@ -329,13 +378,26 @@ class Tac_Controller extends Ninja_Controller {
 	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
 	 */
 	public function delete_dashboard_dialog() {
-		$username = op5auth::instance()->get_user()->get_username();
+
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
-		$this->template = new View('tac/delete_dashboard_dialog', array(
-			'username' => $username,
-			'dashboard' => $dashboard
+
+		$form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'delete_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_Info_Model('Are you sure you want to delete this dashboard?'),
+				new Form_Field_Info_Model('Deleting a dashboard cannot be undone!')
+			)
+		);
+
+		$form->set_values(array(
+			'dashboard_id' => $dashboard->get_id()
 		));
+
+		$form->add_button(new Form_Button_Confirm_Model('yes', 'Yes'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+		$this->template = $form->get_view();
 	}
 
 	/**

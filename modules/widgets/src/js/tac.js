@@ -198,14 +198,21 @@ $(function() {
 });
 
 $(function() {
-	$(".menuitem_dashboard_option").fancybox({
-		showCloseButton: false
-	});
-	$(document).on('click', '#fancybox-content input[value="Cancel"]', function(e) {
+
+	$('.menuitem_dashboard_option').click(function (e) {
+
+		var href = $(this).attr('href');
+		var lightbox = Lightbox.ajax_form_from_href($(this).text(), href);
+
+		$(lightbox.node).one('click', 'input[type="reset"]', function () {
+			lightbox.remove();
+		});
+
 		e.preventDefault();
-		$.fancybox.close();
 		return false;
+
 	});
+
 });
 
 /**
