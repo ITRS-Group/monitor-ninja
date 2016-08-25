@@ -5,6 +5,10 @@
  */
 class Time_Test extends PHPUnit_Framework_TestCase {
 
+	public function test_to_string_zero () {
+		$this->assertEquals('now', time::to_string(0));
+	}
+
 	public function test_to_string_seconds () {
 		$this->assertEquals('45s', time::to_string(45));
 	}
