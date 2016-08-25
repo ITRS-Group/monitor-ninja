@@ -26,7 +26,7 @@ class time
 		$s = _('s'); // second
 		$negative = _("negative") . " ";
 
-		if (!$t) return "0$d 0$h 0$m 0$s";
+		if (!$t) return "now";
 		if ($t < 0) {
 			$neg = 1;
 			$t = 0 - $t;
