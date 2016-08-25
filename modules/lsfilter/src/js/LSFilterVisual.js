@@ -133,7 +133,6 @@ var lsfilter_visual_ast_preproc = {
 			'obj' : 'or',
 			'sub' : list
 		};
-		return this.visit_andor(obj, 'or');
 	},
 	visit_match : function(obj) {
 		return obj;
