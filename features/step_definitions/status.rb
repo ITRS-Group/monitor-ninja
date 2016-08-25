@@ -55,6 +55,10 @@ When /^I search for "([^"]*)"$/ do |query|
   page.execute_script("$('#query').keyup();");
 end
 
+When /^I submit the search$/ do
+  page.execute_script("$('#query').parent('form').submit();");
+end
+
 Then /^I should see the search result:$/ do |table|
   rows = table.raw
   rows.each do |row|

@@ -123,9 +123,9 @@ class Search_Controller extends Ninja_Controller {
 		}
 
 		$limit = false;
-		if(isset($filters['limit'])) {
-			$limit = $filters['limit'];
-			unset($filters['limit']);
+		if(isset($ls_filters['limit'])) {
+			$limit = $ls_filters['limit'];
+			unset($ls_filters['limit']);
 		}
 
 		$this->render_queries($ls_filters, $original_query, $limit);
