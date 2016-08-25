@@ -13,7 +13,7 @@ Feature: Settings
 			|Barbarella|
 		When I go to the listview for [hosts] all
 		And I click "Barbarella"
-		And I click "Add a new comment"
+		And I select "Actions > Add a new comment" from the "Options" menu
 		Then "comment" should contain "This is for fun"
 
 	# using two scenarios so that we can trust the mocked fixture, even if
@@ -27,7 +27,7 @@ Feature: Settings
 			|Batmanina|1    |
 		When I go to the listview for [hosts] all
 		And I click "Batmanina"
-		And I click "Acknowledge Problem"
+		And I click "acknowledge"
 		Then "persistent" should be checked
 
 	# using two scenarios so that we can trust the mocked fixture, even if
@@ -41,5 +41,5 @@ Feature: Settings
 			|Whackaboom|1    |
 		When I go to the listview for [hosts] all
 		And I click "Whackaboom"
-		And I click "Acknowledge Problem"
+		And I click "acknowledge"
 		Then "persistent" should be unchecked

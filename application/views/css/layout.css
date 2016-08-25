@@ -29,17 +29,6 @@ ol, ul {
   list-style: none;
 }
 
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-caption, th, td {
-  text-align: left;
-  font-weight: normal;
-  vertical-align: middle;
-}
-
 q, blockquote {
   quotes: none;
 }
@@ -307,82 +296,32 @@ td.period_select select {
 /* Table layout */
 
 table {
-  font-size: 0.95em;
+  font-size: 10pt;
   margin: 0 0;
-  border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
+  border-collapse: collapse;
 }
 
 table caption {
   padding: 8px;
 }
 
-table .dark {
-  border: 1px solid #cccccc;
-  padding: 5px 3px 2px 3px;
-}
-
-table th {
-  background: #ffffff;
-  border-bottom: 1px solid #bbbbbb;
-  padding: 5px 3px 4px 3px;
-  font-size: 1.1em;
-}
-
-table th:last-child {
-  border-right: none;
-}
-
-table td:first-child,
-table td:first-child {
-  border-top: none;
-  border-left: none;
-}
-
-table .header {
-  background: none;
-  border: none;
-  height: auto;
-  min-width: 0;
-  position: relative;
-  width: auto;
-  z-index: 0;
-}
-
-table .icon {
-  width: 32px;
-  min-width: 32px;
-  text-align: center;
-}
-
-table .comments {
-  width: 40px;
-  text-align: center;
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
 }
 
 table tr {
   background: none;
 }
 
-table tr.odd td {
-  background: #ffffff;
-}
-
-table tr.even td {
-  background: #fafafa;
-}
-
-table tr.odd:hover td, table tr.even:hover td {
-  background: lightblue;
-  color: black;
-}
-
 table td {
   border-bottom: 1px solid #dddbd9;
-  padding: 3px 2px 5px 2px;
-  text-align: left;
+  padding: 3px 4px 4px 4px;
   vertical-align: middle;
+  text-align: left;
 }
 
 table td:first-child {
@@ -396,6 +335,53 @@ table tr td:last-child {
 table tr:last-child td {
   border-bottom: none;
 }
+
+table th {
+  background: #ffffff;
+  border-bottom: 1px solid #dddddd;
+  padding: 8px 4px;
+  word-wrap: nowrap;
+}
+
+table tr:hover td {
+  background: #f5f5f5;
+}
+
+table tr:first-child td {
+  border-top: none;
+}
+
+table th:last-child {
+  border-right: none;
+}
+
+table td:first-child,
+table td:first-child {
+  border-top: none;
+  border-left: none;
+}
+
+table .header {
+  position: relative;
+  z-index: 0;
+  background: none;
+  border: none;
+  height: auto;
+  min-width: 0;
+  width: auto;
+}
+
+table .icon {
+  width: 32px;
+  min-width: 32px;
+  text-align: center;
+}
+
+table .comments {
+  width: 40px;
+  text-align: center;
+}
+
 
 table.no_border td {
   border: none;
@@ -430,35 +416,6 @@ th.headerNone {
   white-space: nowrap;
   text-align: right;
 }
-
-tr.dark td, tr.odd td.dark {
-  border: 1px solid #dcdccd;
-  border-left: 0px;
-  background: #efefef;
-  border-top: 0px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-}
-
-tr.even td.dark {
-  border: 1px solid #dcdccd;
-  border-left: 0px;
-  background: #efefef;
-  border-top: 0px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding: 2px 5px;
-  border-left: 1px solid gainsboro;
-  vertical-align: bottom;
-  width: auto;
-  text-align: left;
-}
-
-tr.dark td.data, tr.odd td.data, tr.even td.data {
-  text-align: right;
-  white-space: nowrap;
-}
-
 
 /* Application specific layout */
 
@@ -533,7 +490,7 @@ h1.emote b {
   width: 100%;
   z-index: 2;
   background: #ffffff;
-  border-bottom: 1px solid #cccccc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .header .logo {
@@ -588,36 +545,50 @@ h1.emote b {
 }
 
 .width-33 {
-  width: 33% !important;
-  margin: 0 0.2% !important;
+  width: 33.33% !important;
+  margin: 0 !important;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 
 .width-66 {
-  width: 66% !important;
-  margin: 0 0.2% !important;
+  width: 66.66% !important;
+  margin: 0 !important;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 
 .width-50 {
-  width: 49.4% !important;
-  margin: 0 0.2% !important;
+  width: 50% !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.width-60 {
+  width: 60% !important;
+  margin: 0 !important;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 
 .width-80 {
-  width: 79.5% !important;
-  margin: 0 0.2% !important;
+  width: 80% !important;
+  margin: 0 !important;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 
 .width-20 {
-  width: 19.5% !important;
-  margin: 0 0.2% !important;
+  width: 20% !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.width-25 {
+  width: 25% !important;
+  margin: 0 !important;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
@@ -719,9 +690,9 @@ h1.emote b {
 
 .restricted-output {
   word-wrap: break-word;
-  min-width: 300px;
+  min-width: 256px;
   max-width: 640px;
-  width: 35%;
+  width: 30%;
 }
 
 .profile {
@@ -1303,7 +1274,7 @@ h1.emote b {
 /* Toolbar specifics */
 
 .main-toolbar {
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid #dddddd;
   background: #fff;
   clear: both;
 }
@@ -1352,7 +1323,7 @@ h1.emote b {
   display: inline-block;
   vertical-align: middle;
   margin: 2px 6px 2px 0;
-  padding: 3px 16px 2px 6px;
+  padding: 3px 4px 2px 12px;
   font-size: 120%;
 }
 
@@ -1375,6 +1346,7 @@ h1.emote b {
 .main-toolbar .main-toolbar-info span {
   display: inline-block;
   min-height: 14px;
+  vertical-align: middle;
 }
 
 .main-toolbar .main-toolbar-info form {
@@ -1390,16 +1362,20 @@ h1.emote b {
   float: right;
 }
 
-.main-toolbar .main-toolbar-buttons a, .main-toolbar .main-toolbar-buttons input[type=submit] {
-  background: transparent;
-  border: none;
-  border-left: 1px solid #aaaaaa;
-  border-radius: 0;
-  color: #444;
+.main-toolbar .main-toolbar-buttons a,
+.main-toolbar .main-toolbar-buttons input[type=submit] {
   display: inline-block;
-  margin: 0;
-  padding: 5px 6px 4px 6px !important;
+  box-sizing: border-box;
+
+  border: none;
   width: auto;
+
+  padding: 5px 6px 4px 6px !important;
+  background: transparent;
+  border-radius: 0;
+  border-left: 1px solid #dddddd;
+  height: 28px;
+  margin: 0;
 }
 
 .main-toolbar .main-toolbar-buttons form {
@@ -1445,7 +1421,8 @@ h1.emote b {
   box-sizing: border-box;
   position: relative;
   height: auto;
-  margin: 16px 0 0 0;
+  margin: 16px 8px 0 8px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .widget-placeholder {
@@ -1668,4 +1645,40 @@ span.brand-label {
   padding: 32px;
   border-radius: 4px;
   background: #ffffff;
+}
+
+ul.linklist {
+  list-style: none;
+  margin: 1em 0;
+}
+
+ul.linklist li {
+  padding: 0;
+}
+
+ul.linklist a {
+  color: #50c0e4;
+  border: none;
+}
+
+ul.linklist a:hover {
+  color: #3ba2c6;
+}
+
+ul.linklist li a {
+  vertical-align: middle;
+  font-size: 10pt;
+  color: #50c0e4;
+  border: none;
+}
+
+ul.linklist li a:hover {
+  color: #3ba2c6;
+}
+
+ul.linklist li a:after {
+  content: "▶";
+  margin-left: 16px;
+  font-size: 80%;
+  vertical-align: 5%;
 }

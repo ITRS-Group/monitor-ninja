@@ -46,6 +46,8 @@ module Op5Cucumber::Mock
         'ORMDriverYAML default'
       when /^settings$/
         'ORMDriverMySQL default'
+      when /^contact.*s$/
+        'ORMDriverLS default'
       else
         raise "Unknown type #{type}"
       end
@@ -78,7 +80,16 @@ module Op5Cucumber::Mock
       hashes.each {|hash|
         hash.map {|field, value|
           if field.end_with? 's' and value.is_a? String
-            hash[field] = value.split ','
+            values = value.split ','
+            if values[0].is_a? String and values[0].include? "="
+              hash[field] = {}
+              values.each {|v|
+                key, value = v.split '='
+                hash[field][key] = value
+              }
+            else
+              hash[field] = values
+            end
           end
         }
         # Due to native driver intersects these fields are required

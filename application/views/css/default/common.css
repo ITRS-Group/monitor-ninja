@@ -115,19 +115,6 @@ input[type="submit"].plain {
   font-size: 120%;
 }
 
-.main-toolbar .main-toolbar-buttons a {
-  border: none;
-  border-left: 1px solid #aaaaaa;
-}
-
-.main-toolbar .main-toolbar-buttons a:first-child {
-  border-left: none;
-}
-
-.main-toolbar .main-toolbar-buttons button {
-  border-width: 0 1px;
-}
-
 span.brand-label {
   font-size: 13pt;
   font-weight: 400;

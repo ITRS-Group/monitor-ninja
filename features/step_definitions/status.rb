@@ -29,6 +29,32 @@ When /^I hover css "([^\"]+)"$/ do |css|
   page.find(css).hover
 end
 
+Given /^I select "([^\"]+)" from the "([^\"]+)" menu$/ do |submenu, menu|
+
+  entries = (menu.split ">").concat(submenu.split ">")
+  node = page.find('body');
+
+  entries.each do |entry|
+    node = node.find(:xpath, '..').find("a[data-menu-id]", :text => entry.strip)
+    node.hover
+  end
+
+  node.click
+
+end
+
+Given /^I hover "([^\"]+)" from the "([^\"]+)" menu$/ do |submenu, menu|
+
+  entries = (menu.split ">").concat(submenu.split ">")
+  node = page.find('body');
+
+  entries.each do |entry|
+    node = node.find(:xpath, '..').find("a[data-menu-id]", :text => entry.strip)
+    node.hover
+  end
+
+end
+
 Then /^I should see menu items:$/ do |table|
   rows = table.raw
   rows.each do |row|
@@ -37,11 +63,11 @@ Then /^I should see menu items:$/ do |table|
 end
 
 When /^I have the csrf token "([^\"]*)"$/ do |val|
-  evaluate_script("$('input[name=\"csrf_token\"]').val(\"#{val}\")");
+  evaluate_script("_csrf_token = '#{val}'");
 end
 
 When /^I have no csrf token$/ do
-  evaluate_script("$('input[name=\"csrf_token\"]').remove()");
+  evaluate_script("_csrf_token = ''");
 end
 
 When /^I enter the current date and time into "([^"]*)"$/ do |sel|
@@ -68,4 +94,13 @@ end
 
 Then /^I should be logged in as "([^\"]+)"$/ do |user|
   page.should have_css("a[data-username=\"#{user}\"]", :visible => true)
+end
+
+Then /^I should see these strings$/ do |strings|
+  rows = strings.raw
+  rows.each do |string|
+    steps %Q{
+      Then I should see "#{string[0]}"
+    }
+  end
 end

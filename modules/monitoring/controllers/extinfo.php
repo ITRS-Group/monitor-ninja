@@ -31,52 +31,50 @@ class Extinfo_Controller extends Ninja_Controller {
 	 */
 	public function details($type='host', $host=false, $service=false)
 	{
-		$host = $this->input->get('host', $host);
-		$service = $this->input->get('service', $service);
-		$hostgroup = $this->input->get('hostgroup', false);
-		$servicegroup = $this->input->get('servicegroup', false);
+		$this->template->disable_refresh = true;
 
-		$this->template->title = 'Monitoring » Extinfo';
-
-		$host = trim($host);
-		$service = trim($service);
-		$hostgroup = trim($hostgroup);
-		$servicegroup = trim($servicegroup);
+		$host = trim($this->input->get('host', $host));
+		$service = trim($this->input->get('service', $service));
+		$hostgroup = trim($this->input->get('hostgroup', false));
+		$servicegroup = trim($this->input->get('servicegroup', false));
 
 		if(!empty($host) && empty($service)) {
 			$set = HostPool_Model::all()->reduce_by('name', $host, '=');
-		}
-		else if(!empty($host) && !empty($service)) {
+			$this->template->content = $this->add_view('extinfo/index');
+		} else if(!empty($host) && !empty($service)) {
 			$set = ServicePool_Model::all()
 				->reduce_by('host.name', $host, '=')
 				->reduce_by('description', $service, '=');
+			$this->template->content = $this->add_view('extinfo/index');
 			$type = 'service';
-		}
-		else if(!empty($hostgroup)) {
-			return $this->group_details('hostgroup', $hostgroup);
-		}
-		else if(!empty($servicegroup)) {
-			return $this->group_details('servicegroup', $servicegroup);
-		}
-		else {
-			return false;
-		}
+		} else if(!empty($hostgroup)) {
+			$set = HostGroupPool_Model::all()->reduce_by('name', $hostgroup, '=');
+			$this->template->content = $this->add_view('extinfo/groups');
+			$type = 'hostgroup';
+		} else if(!empty($servicegroup)) {
+			$set = ServiceGroupPool_Model::all()->reduce_by('name', $servicegroup, '=');
+			$this->template->content = $this->add_view('extinfo/groups');
+			$type = 'servicegroup';
+		} else return; /* @TODO handle this more gracefully */
 
 		$this->_verify_access($set->mayi_resource().':read.extinfo');
+		$this->template->title = 'Monitoring » Extinfo';
 
-		$this->template->content = $this->add_view('extinfo/index');
+		$this->template->css[] = $this->add_path('extinfo/css/extinfo.css');
+
 		$this->template->js_strings = $this->js_strings;
-		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
 
-		// Widgets
 		$this->template->content->widgets = array();
+		$this->template->content->type = $type;
 
 		# save us some typing
 		$content = $this->template->content;
 
 		if (count($set) != 1) {
-			return url::redirect('extinfo/unauthorized/'.$type);
+			Event::run('system.403');
+			return;
 		}
+
 		$it = $set->it(false, array(), 1, 0);
 		$object = $it->current();
 
@@ -84,88 +82,113 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$username = Auth::instance()->get_user()->get_username();
 
-		/* Comment widget */
-		if($object->get_comments_count() > 0) {
-			$setting = array(
-				'query'=>$set->get_comments()->get_query(),
-				'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
-			);
-			$model = new Ninja_widget_Model(array(
-				'page' => Router::$controller,
-				'name' => 'listview',
-				'widget' => 'listview',
-				'username' => $username,
-				'friendly_name' => 'Comments',
-				'setting' => $setting
-			));
 
-			$widget = widget::get($model, $this);
-			widget::set_resources($widget, $this);
+		if ($host || $service) {
 
-			$widget->set_fixed();
-			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+			/* Contacts widget */
 
-			$this->template->content->widgets[_('Comments')] = $widget;
-		}
-		/* End of comment widget */
+			$contact_set = ContactPool_Model::none();
+			$contact_all = ContactPool_Model::all();
 
-		/* Downtimes widget */
-		if ($object->get_scheduled_downtime_depth()) {
-			$setting = array(
-				'query'=>$set->get_downtimes()->get_query(),
-				'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
+			foreach ($object->get_contacts() as $contact) {
+				$contact_set = $contact_set->union(
+					$contact_all->reduce_by('name', $contact, '=')
 				);
-			$model = new Ninja_widget_Model(array(
-				'page' => Router::$controller,
-				'name' => 'listview',
-				'widget' => 'listview',
-				'username' => $username,
-				'friendly_name' => 'Downtimes',
-				'setting' => $setting
-			));
+			}
 
-			$widget = widget::get($model, $this);
-			widget::set_resources($widget, $this);
+			if (count($contact_set) > 0) {
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Contacts',
+					'setting' => array(
+						'query'=> $contact_set->get_query(),
+						'columns'=>'all'
+					)
+				));
 
-			$widget->set_fixed();
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
 
-			$this->template->content->widgets[_('Scheduled downtimes')] = $widget;
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No contacts available");
+
+				$this->template->content->widgets[_('Contacts')] = $widget;
+			}
+
+			/* End of contacts widget */
 		}
-		/* End of downtimes widget */
 
-		/* Services widget */
-		if($set->get_table() == 'hosts') {
-			$setting = array(
-				'query'=>$set->get_services()->get_query(),
-				'columns'=>'all, -host_state, -host_name, -host_actions',
-				'limit' => 100
+		if ($host || $service) {
+			$contactgroup_set = ContactgroupPool_Model::none();
+			$contactgroup_all = ContactgroupPool_Model::all();
+
+			foreach ($object->get_contact_groups() as $contactgroup) {
+				$contactgroup_set = $contactgroup_set->union(
+					$contactgroup_all->reduce_by('name', $contactgroup, '=')
 				);
-			$model = new Ninja_widget_Model(array(
-				'page' => Router::$controller,
-				'name' => 'listview',
-				'widget' => 'listview',
-				'username' => $username,
-				'friendly_name' => 'Services',
-				'setting' => $setting
-			));
+			}
 
-			$widget = widget::get($model, $this);
-			widget::set_resources($widget, $this);
+			if (count($contactgroup_set) > 0) {
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Contactgroups',
+					'setting' => array(
+						'query'=> $contactgroup_set->get_query(),
+						'columns'=>'all'
+					)
+				));
 
-			$widget->set_fixed();
-			$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
 
-			$this->template->content->widgets[_('Services')] = $widget;
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No contactgroups available");
+
+				$this->template->content->widgets[_('Contactgroups')] = $widget;
+			}
 		}
-		/* End of services widget */
+
+		if ($host || $service) {
+			/* Comment widget */
+			if($object->get_comments_count() > 0) {
+
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Comments',
+					'setting' => array(
+						'query'=>$set->get_comments()->get_query(),
+						'columns'=>'all, -host_state, -host_name, -service_state, -service_description'
+					)
+				));
+
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
+
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+
+				$this->template->content->widgets[_('Comments')] = $widget;
+			}
+			/* End of comment widget */
+		}
 
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->content->commands = $this->add_view('extinfo/commands');
-		$this->template->content->commands->object = $object;
-
 		$this->template->toolbar = new Toolbar_Controller();
 		$toolbar = &$this->template->toolbar;
+		$lp = LinkProvider::factory();
+
+		$reports = new Menu_Model();
+		$reports->set('Options');
 
 		# create page links
 		switch ($type) {
@@ -190,79 +213,165 @@ class Extinfo_Controller extends Ninja_Controller {
 
 				$toolbar->subtitle .= html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
 
-				$toolbar->info(html::anchor(listview::link('services',array('host.name'=>$host)) , _('Status detail')));
-				$toolbar->info(html::href(url::method("alert_history", "generate", array(
-					"report_type" => "hosts",
-					"objects[]" => $host
-				)), "Alert history"));
+				$reports->set('Options.Report.Availability', $lp->get_url(
+					'avail', 'generate', array(
+						"report_type" => "hosts",
+						"objects[]" => $object->get_key()
+					)
+				));
 
-				$toolbar->info(html::href(url::method("showlog", "showlog", array(
-					"hide_initial" => "1",
-					"hide_process" => "1",
-					"hide_logrotation" => "1",
-					"hide_commands" => "1",
-					"host_state_options[d]" => "1",
-					"host_state_options[u]" => "1",
-					"host_state_options[r]" => "1",
-					"host[]" => $host
-				)), "Event log"));
+				$reports->set('Options.Report.Alert history', $lp->get_url(
+					'alert_history', 'generate', array(
+						'report_type' => 'hosts',
+						'objects[]' => $object->get_key()
+					)
+				));
 
-				$toolbar->info(html::href(url::method("histogram", "generate", array(
-					"report_type" => "hosts",
-					"objects[]" => $host
-				)), "Alert histogram"));
+				$reports->set('Options.Report.Event log', $lp->get_url(
+					'showlog', 'showlog', array(
+						"hide_initial" => "1",
+						"hide_process" => "1",
+						"hide_logrotation" => "1",
+						"hide_commands" => "1",
+						"host_state_options[d]" => "1",
+						"host_state_options[u]" => "1",
+						"host_state_options[r]" => "1",
+						"host[]" => $object->get_key()
+					)
+				));
 
-				$toolbar->info(html::href(url::method("avail", "generate", array(
-					"report_type" => "hosts",
-					"objects[]" => $host
-				)), "Availability report"));
-
-				$toolbar->info(html::anchor(listview::link('notifications',array('host_name'=>$host)) , _('Notifications')));
+				$reports->set('Options.Report.Histogram', $lp->get_url(
+					'histogram', 'generate', array(
+						"report_type" => "hosts",
+						"objects[]" => $object->get_key()
+					)
+				));
 
 				break;
+
 			case 'service':
 
 				$toolbar->title = "Service";
 				$toolbar->subtitle = html::specialchars($object->get_description());
 
-				$toolbar->info(html::href(url::method("extinfo", "details", array(
-					"host" => $host
-				)), "Information about host"));
+				$reports->set('Options.Report.Availability', $lp->get_url(
+					'avail', 'generate', array(
+						"report_type" => "services",
+						"objects[]" => $object->get_key()
+					)
+				));
 
-				$toolbar->info(html::anchor(listview::link('services',array('host.name'=>$host)) , _('Status detail for host')));
+				$reports->set('Options.Report.Alert history', $lp->get_url(
+					'alert_history', 'generate', array(
+						'report_type' => 'services',
+						'objects[]' => $object->get_key()
+					)
+				));
 
-				$toolbar->info(html::href(url::method("alert_history", "generate", array(
-					"report_type" => "services",
-					"objects[]" => $host . ';' . $service,
-				)), "Alert history"));
+				$reports->set('Options.Report.Event log', $lp->get_url(
+					'showlog', 'showlog', array(
+						"hide_initial" => "1",
+						"hide_process" => "1",
+						"hide_logrotation" => "1",
+						"hide_commands" => "1",
+						"service_state_options[w]" => "1",
+						"service_state_options[u]" => "1",
+						"service_state_options[c]" => "1",
+						"service_state_options[r]" => "1",
+						"service[]" => $object->get_key()
+					)
+				));
 
-				$toolbar->info(html::href(url::method("showlog", "showlog", array(
-					"hide_initial" => "1",
-					"hide_process" => "1",
-					"hide_logrotation" => "1",
-					"hide_commands" => "1",
-					"service_state_options[w]" => "1",
-					"service_state_options[u]" => "1",
-					"service_state_options[c]" => "1",
-					"service_state_options[r]" => "1",
-					"service[]" => $host . ';' . $service,
-				)), "Event log"));
-
-				$toolbar->info(html::href(url::method("histogram", "generate", array(
-					"report_type" => "services",
-					"objects[]" => $host . ';' . $service,
-				)), "Alert histogram"));
-
-				$toolbar->info(html::href(url::method("avail", "generate", array(
-					"report_type" => "services",
-					"objects[]" => $host . ';' . $service,
-				)), "Availability report"));
-
-				$toolbar->info(html::href(listview::link('notifications',array('host_name'=>$host, 'service_description'=>$service)) , _('Notifications')));
+				$reports->set('Options.Report.Histogram', $lp->get_url(
+					'histogram', 'generate', array(
+						"report_type" => "services",
+						"objects[]" => $object->get_key()
+					)
+				));
 
 				break;
+			case 'hostgroup':
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Hosts in this group',
+					'setting' => array(
+						'query'=> HostPool_Model::all()->reduce_by('groups', $object->get_name(), '>=')->get_query(),
+						'columns'=>'all'
+					)
+				));
+
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
+
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+				$this->template->content->widgets['Hosts in this group'] = $widget;
+
+				break;
+			case 'servicegroup':
+				$model = new Ninja_widget_Model(array(
+					'page' => Router::$controller,
+					'name' => 'listview',
+					'widget' => 'listview',
+					'username' => $username,
+					'friendly_name' => 'Service in this group',
+					'setting' => array(
+						'query'=> ServicePool_Model::all()->reduce_by('groups', $object->get_name(), '>=')->get_query(),
+						'columns'=>'all'
+					)
+				));
+
+				$widget = widget::get($model, $this);
+				widget::set_resources($widget, $this);
+
+				$widget->set_fixed();
+				$widget->extra_data_attributes['text-if-empty'] = _("No comments yet");
+				$this->template->content->widgets['Services in this group'] = $widget;
+
+				break;
+
 		}
 
+		$commands = $object->list_commands();
+		$command_categories = array();
+
+		foreach($commands as $cmd => $cmdinfo) {
+			if ($cmdinfo['category'] === 'Operations') continue;
+			if($cmdinfo['enabled']) {
+				if(!isset($command_categories[$cmdinfo['category']]))
+					$command_categories[$cmdinfo['category']] = array();
+				$command_categories[$cmdinfo['category']][$cmd] = $cmdinfo;
+			}
+		}
+
+		foreach($command_categories as $category => $category_commands) {
+			foreach($category_commands as $cmd => $cmdinfo) {
+				$reports->set("Options.$category." . $cmdinfo['name'],
+					$lp->get_url('cmd', null,
+array(
+						'command' => $cmd,
+						'table' => $object->get_table(),
+						'object' => $object->get_key()
+					))
+				);
+			}
+		}
+
+		$custom_commands = $object->list_custom_commands();
+		foreach ($custom_commands as $commandname => $command) {
+			$reports->set("Options.Custom commands." . $commandname,
+				$lp->get_url('command', 'exec_custom_command', array(
+					'command' => $commandname,
+					'table' => $object->get_table(),
+					'key' => $object->get_key()
+				))
+			);
+		}
+
+		$toolbar->menu($reports);
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
 			$this->template->content->label_view_for = _("for this $type");
@@ -371,136 +480,6 @@ class Extinfo_Controller extends Ninja_Controller {
 	}
 
 	/**
-	 * Display message to user when they lack proper
-	 * credentials to view info on an object
-	 */
-	public function unauthorized($type='host')
-	{
-		$type = trim(strtolower($type));
-		$this->template->content = $this->add_view('unauthorized');
-		$this->template->disable_refresh = true;
-
-		$this->template->content->error_description = _('If you believe this is an error, check the authorization requirements for accessing this page and your given authorization points.');
-		switch ($type) {
-			case 'host':
-				$this->template->content->error_message = _('It appears as though you do not have permission to view information for this host or it doesn\'t exist...');
-				break;
-			case 'hostgroup':
-				$this->template->content->error_message = _('It appears as though you do not have permission to view information for this hostgroup or it doesn\'t exist...');
-				break;
-			case 'servicegroup':
-				$this->template->content->error_message = _('It appears as though you do not have permission to view information for this servicegroup or it doesn\'t exist...');
-				break;
-			case 'service':
-				$this->template->content->error_message = _('It appears as though you do not have permission to view information for this service or it doesn\'t exist...');
-				break;
-			default:
-				$this->template->content->error_message = _('It appears as though you do not have permission to view process information...');
-		}
-	}
-
-	/**
-	 * Show a single object that is a group, such as a servicegroup
-	 */
-	public function group_details($grouptype='servicegroup', $group=false)
-	{
-		$grouptype = $this->input->get('grouptype', $grouptype);
-		$group = $this->input->get('group', $group);
-
-		if(!in_array($grouptype, array('hostgroup', 'servicegroup'), true)) {
-			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = _("Error: Incorrect group type specified");
-			return;
-		}
-		if (empty($group)) {
-			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = _("Error: No group name specified");
-			return;
-		}
-
-		$set = ObjectPool_Model::pool($grouptype.'s')
-			->all()
-			->reduce_by('name', $group, '=');
-
-		/* @var $set ServiceGroupSet_Model */
-		$this->_verify_access($set->mayi_resource().':read.extinfo');
-
-		if (count($set) != 1) {
-			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
-			return;
-		}
-
-		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
-		$this->template->js_strings = $this->js_strings;
-		$this->template->js[] = 'modules/monitoring/views/extinfo/js/extinfo.js';
-
-		$this->template->title = _('Monitoring » Group detail');
-
-		$ls = Livestatus::instance();
-
-		$group_info_res = $grouptype == 'servicegroup' ?
-			$ls->getServicegroups(array('filter' => array('name' => $group))) :
-			$ls->getHostgroups(array('filter' => array('name' => $group)));
-
-		if ($group_info_res === false || count($group_info_res)==0) {
-			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = sprintf(_("The requested %s ('%s') wasn't found"), $grouptype, $group);
-			return;
-		}
-		$group_info_res = (object)$group_info_res[0];
-		$this->template->content = $this->add_view('extinfo/groups');
-		$content = $this->template->content;
-		$object = $set->it(false)->current();
-		$content->object = $object;
-
-		$content->label_grouptype = $grouptype=='servicegroup' ? _('servicegroup') : _('hostgroup');
-		$content->group_alias = $group_info_res->alias;
-		$content->groupname = $group;
-		$content->commands = $this->add_view('extinfo/commands');
-		$content->commands->object = $object;
-
-		$content->notes_url = $group_info_res->notes_url !='' ? nagstat::process_macros($group_info_res->notes_url, $group_info_res, $grouptype) : false;
-		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res, $grouptype) : false;
-		$content->notes = $group_info_res->notes !='' ? nagstat::process_macros($group_info_res->notes, $group_info_res, $grouptype) : false;
-
-		$this->template->toolbar = new Toolbar_Controller( );
-		$toolbar = &$this->template->toolbar;
-
-		switch ($grouptype) {
-			case 'servicegroup':
-
-				$toolbar->title = "Servicegroup";
-				$toolbar->subtitle = security::xss_clean( $content->group_alias );
-
-				$label_view_for = _('for this servicegroup');
-				$toolbar->info( html::anchor( 'status/service/'.$group.'?group_type='.$grouptype , _('Status detail') ) );
-				$toolbar->info( html::anchor( 'status/'.$grouptype.'/'.$group , _('Status overview') ) );
-				$toolbar->info( html::anchor( 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group , _('Availability') ) );
-				$toolbar->info( html::anchor( 'alert_history/generate?'.$grouptype.'[]='.$group , _('Alert history') ) );
-
-				break;
-			case 'hostgroup':
-
-				$toolbar->title = "Hostgroup";
-				$toolbar->subtitle = security::xss_clean( $content->group_alias );
-
-				$label_view_for = _('for this hostgroup');
-				$toolbar->info( html::anchor( 'status/service/'.$group.'?group_type='.$grouptype , _('Status detail') ) );
-				$toolbar->info( html::anchor( 'status/'.$grouptype.'/'.$group , _('Status overview') ) );
-				$toolbar->info( html::anchor( 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group , _('Availability') ) );
-				$toolbar->info( html::anchor( 'alert_history/generate?'.$grouptype.'[]='.$group , _('Alert history') ) );
-
-				break;
-		}
-		if (isset($page_links)) {
-			$content->page_links = $page_links;
-			$content->label_view_for = $label_view_for;
-		}
-
-	}
-
-	/**
 	*   Show Program-Wide Performance Information
 	*   (Performance Info)
 	*/
@@ -518,13 +497,17 @@ class Extinfo_Controller extends Ninja_Controller {
 	}
 
 	/**
-	*   Show scheduling queue
-	*/
+	 * Show scheduling queue
+	 *
+	 * @param $host_filter string
+	 * @param $service_filter string
+	 */
 	public function scheduling_queue($host_filter = '', $service_filter = '')
 	{
 
 		$host_filter = $this->input->get('host', $host_filter);
 		$service_filter = $this->input->get('service', $service_filter);
+		$linkprovider = LinkProvider::factory();
 
 		$service_set = ServicePool_Model::all()
 			->reduce_by('description', $service_filter, '~~')
@@ -572,7 +555,6 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$raw = array_slice($raw, ($pagination->current_page - 1) * $pagination->items_per_page, $pagination->items_per_page);
 
-		$this->template->css[] = $this->add_path('extinfo/css/scheduling_queue.css');
 		$this->template->title = _('Monitoring').' » '._('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
 		$this->template->content->data = $raw;
@@ -590,7 +572,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		$this->template->toolbar = new Toolbar_Controller( "Scheduling Queue" );
 
 		$form = '<form action="scheduling_queue" method="get">';
-		$form .= _('Search for');
+		$form .= _('Search for ');
 		$form .= '<label> ' . _('Host') . ': <input type="text" name="host" value="' . $host_filter . '" /></label>';
 		$form .= '<label> ' . _('Service') . ': <input type="text" name="service" value="' . $service_filter . '" /></label>';
 		$form .= '<input type="submit" value="' . _('Search') . '" /></form>';
@@ -599,10 +581,11 @@ class Extinfo_Controller extends Ninja_Controller {
 		$this->template->toolbar->info($pagination->render());
 
 		if ($host_filter || $service_filter) {
-			$this->template->toolbar->info(' <span>' .
-				' ' . _("Do you want to") .
-				' <a href="'. Kohana::config('config.site_domain') . 'index.php/' . Router::$controller . '/' . Router::$method . '">' .
-				_("reset the search filter?") . '</a></span>');
+			$this->template->toolbar->info(
+				' <span> Do you want to <a href="' .
+				$linkprovider->get_url(Router::$controller, Router::$method) .
+				'">reset the search filter?</a></span> '
+			);
 		}
 
 	}
