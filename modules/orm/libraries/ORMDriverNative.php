@@ -67,10 +67,6 @@ class ORMDriverNative implements ORMDriverInterface {
 			throw new ORMDriverNativeException("Non-zero 'offset' specified (" . $offset . "), but not implemented");
 		}
 
-		if ($order !== array()) {
-			throw new ORMDriverNativeException("Order specified, but not implemented");
-		}
-
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
 			foreach ($this->storage[$table] as $row) {
 				if ($limit !== false && count($data) === intval($limit))
@@ -114,7 +110,19 @@ class ORMDriverNative implements ORMDriverInterface {
 				}
 			}
 		}
-		return new ArrayIterator($data);
+		$ai = new ArrayIterator($data);
+		foreach ($order as $ord) {
+			$ai->uasort(function ($a, $b) use($ord) {
+				if ($a->{'get_' . $ord}() < $b->{'get_' . $ord}()) {
+					return -1;
+				}
+				if ($a->{'get_' . $ord}() > $b->{'get_' . $ord}()) {
+					return 1;
+				}
+				return 0;
+			});
+		}
+		return $ai;
 	}
 
 	public function stats($table, $structure, $filter, $intersections)
