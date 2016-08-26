@@ -863,7 +863,6 @@ h1.emote b {
   display: block;
   position: relative;
   border: none;
-  border-top: 1px solid #dddddd;
   padding: 0;
 }
 
@@ -873,6 +872,19 @@ h1.emote b {
 
 .menu ul li ul li.meta {
   padding: 4px 0 4px 8px;
+}
+
+.menu .menu-separator {
+  color: #aaaaaa;
+  text-transform: uppercase;
+  padding: 6px 4px 2px 0px;
+  border-top: 1px solid #bbbbbb;
+  margin: 6px 8px 0 8px;
+  font-size: 9pt;
+}
+
+.menu .menu-separator:hover {
+  background: transparent;
 }
 
 .menu ul li ul li span.menu-section:after,
