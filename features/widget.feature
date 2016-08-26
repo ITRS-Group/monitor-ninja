@@ -88,3 +88,33 @@ Feature: Widgets
 		Then I should see "This is a dead widget"
 		And I should see "Broken Widget"
 		But I shouldn't see "Stack Trace"
+
+	@MON-8504
+	Scenario: Listview widgets with custom columns render correctly
+		Given I have these mocked dashboards
+			| id | name       | username   | layout |
+			| 1  | Dashboard1 | mockeduser | 1,2,3  |
+		And I have these mocked dashboard_widgets
+			|id|dashboard_id | name         | position      | setting |
+			|1 |1            | listview     | {"c":0,"p":0} | {"query":"[hosts] name = \"Jadyn Elvan\"","columns":"state, name, last_check, status_information","limit":"20","order":""} |
+			|2 |1            | listview     | {"c":1,"p":0} | {"query":"[services] description = \"Reyes Kennedy\"","columns":"state, description, last_check, status_information","limit":"20","order":""} |
+		And I have these mocked hosts
+			| name        |state|last_check| plugin_output    |
+			| Jadyn Elvan | 0   | 99999    | Gabba-gabba-hey! |
+		And I have these mocked services
+			| host        | description   | state | last_check | plugin_output   |
+			| Jadyn Elvan | Reyes Kennedy | 1     | 12341234   | I AM THE BATMAN |
+
+		And I am logged in
+		When I am on the main page
+		# Default filter table for listview widget is hosts
+		Then I should see these strings
+			| List of hosts    |
+			| Jadyn Elvan      |
+			| Gabba-gabba-hey! |
+			| List of services |
+			| Reyes Kennedy    |
+			| I AM THE BATMAN  |
+
+		And I should see css ".widget-content span[class='icon-16 x16-shield-up']"
+		And I should see css ".widget-content span[class='icon-16 x16-shield-warning']"
