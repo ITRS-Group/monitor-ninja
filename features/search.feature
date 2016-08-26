@@ -71,3 +71,16 @@ Feature: Global search
 		When I search for "sg:Über"
 		Then I should see the search result:
 			| Übergruppe |
+
+	@MON-9559
+	Scenario: Search with limit
+		Given I have these mocked hosts
+			| name    |
+			| Orville |
+			| Oscar   |
+		When I search for "h:O limit=1"
+		# Need to submit explicitly, since autocomplete doesn't work with the limit= syntax...
+		And I submit the search
+		Then I should see "Orville"
+		And I should see "Load 1 more rows"
+		But I shouldn't see "Oscar"
