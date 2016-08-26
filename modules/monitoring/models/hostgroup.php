@@ -345,12 +345,13 @@ class HostGroup_Model extends BaseHostGroup_Model {
 				'status' => 0,
 				'output' => 'No hosts in hostgroup.'
 				);
+
 		foreach($hosts as $host) {
 			/* @var $host Host_Model */
 			$cur_result = $host->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment);
 
 			/* Keep those with errors... */
-			if($cur_result['status'] > $result['status'])
+			if($cur_result['status'] >= $result['status'])
 				$result = $cur_result;
 		}
 		return $result;
@@ -425,14 +426,13 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		$services = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=')->get_services();
 		$result = array(
 				'status' => 0,
-				'output' => 'No hosts in hostgroup.'
+				'output' => 'No services in hostgroup.'
 				);
 		foreach($services as $service) {
 			/* @var $host Service_Model */
 			$cur_result = $service->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment);
-
 			/* Keep those with errors... */
-			if($cur_result['status'] > $result['status'])
+			if($cur_result['status'] >= $result['status'])
 				$result = $cur_result;
 		}
 		return $result;
