@@ -351,7 +351,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			foreach($category_commands as $cmd => $cmdinfo) {
 				$reports->set("Options.$category." . $cmdinfo['name'],
 					$lp->get_url('cmd', null,
-array(
+					array(
 						'command' => $cmd,
 						'table' => $object->get_table(),
 						'object' => $object->get_key()
@@ -414,6 +414,40 @@ array(
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = _("Error: No monitoring features status information available");
 			return;
+		}
+
+		$menu = new Menu_Model();
+		$menu->set('Options');
+		$commands = $status->list_commands();
+		$command_categories = array();
+
+		foreach($commands as $cmd => $cmdinfo) {
+			if ($cmdinfo['category'] === 'Operations') continue;
+			if($cmdinfo['enabled']) {
+				if(!isset($command_categories[$cmdinfo['category']]))
+					$command_categories[$cmdinfo['category']] = array();
+				$command_categories[$cmdinfo['category']][$cmd] = $cmdinfo;
+			}
+		}
+
+		$lp = LinkProvider::factory();
+		foreach($command_categories as $category => $category_commands) {
+			foreach($category_commands as $cmd => $cmdinfo) {
+				$menu->set("Options.$category." . $cmdinfo['name'],
+					$lp->get_url('cmd', null,
+					array(
+						'command' => $cmd,
+						'table' => $status->get_table(),
+						'object' => $status->get_key()
+					))
+				);
+			}
+		}
+
+		$this->template->toolbar->menu($menu);
+		if (isset($page_links)) {
+			$this->template->content->page_links = $page_links;
+			$this->template->content->label_view_for = _("for this $type");
 		}
 
 		$content->object = $status;
