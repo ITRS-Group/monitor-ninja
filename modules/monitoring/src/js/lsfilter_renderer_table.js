@@ -5,7 +5,7 @@
 listview_renderer_table.hosts = {
 	"state" : {
 		"header" : '',
-		"depends" : [ 'state_text', 'name' ],
+		"depends" : [ 'state_text', 'name', 'key'],
 		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
 			return $('<td class="icon obj_properties" />')
@@ -339,7 +339,7 @@ listview_renderer_table.services = {
 	},
 	"state" : {
 		"header" : '',
-		"depends" : [ 'state_text', 'description', 'host.name' ],
+		"depends" : [ 'state_text', 'description', 'host.name', 'key'],
 		"sort" : [ 'has_been_checked desc', 'state desc' ],
 		"cell" : function(args) {
 			return $(
