@@ -168,6 +168,15 @@
      */
     display: function(node, target, namespace){
 
+      if (typeof(node) == 'string') {
+        var tmp = document.createElement("p");
+        tmp.innerHTML = node;
+        tmp.style.width = '256px';
+        node = tmp;
+      }
+
+      node = $(node);
+
       if (abort) {
         abort = false;
         return;
@@ -175,7 +184,6 @@
 
       abort = false;
       clearTimeout(timer);
-      Popover.adjust(target, node);
 
       timer = setTimeout(function () {
 
@@ -187,6 +195,7 @@
         tooltip.append(node);
         tooltip.css('display', 'block');
         target.after(tooltip);
+        Popover.adjust(target, node);
 
       }, settings.delay);
 
@@ -198,14 +207,15 @@
      *
      * @todo   Current only supports bottom position sufficiently
      *
-     * @param  jQuery   node  The targeted element
-     * @param  mixed    data  What is being rendered into the popover
+     * @param  jQuery   target  The targeted element
+     * @param  jQuery   node  What is being rendered into the popover
      */
-    adjust: function(node, data){
+    adjust: function(target, node){
 
-      var offset = node.offset(),
+      var offset = target.offset(),
           left = 0, top = 0,
-          width = 272,
+          width = node.width(),
+          height = node.height(),
           screen_w = $(document).width() / 2,
           screen_h = $(document).height() / 2;
 
@@ -215,15 +225,18 @@
         left = (offset.left - width) - 8;
         align = "right";
       } else{
-        left = (offset.left + node.outerWidth()) + 8;
+        left = (offset.left + target.outerWidth()) + 8;
         align = "left";
+      }
+
+      if(offset.top > screen_h){
+        top = (offset.top - height) - 8;
       }
 
       tooltip.css({
         left: left + 'px',
         top: top + 'px',
-        'text-align': align,
-        width: ""
+        'text-align': align
       });
 
     },

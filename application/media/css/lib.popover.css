@@ -4,7 +4,7 @@
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 2px;
-  width: 256px;
+  width: auto;
   padding: 8px;
   z-index: 9999;
   word-break: normal;
