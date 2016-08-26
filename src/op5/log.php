@@ -249,18 +249,16 @@ class op5Log {
 				implode("\n", $messages) . "\n",
 				FILE_APPEND);
 
-			if ($new_file) {
+			if($res === false) {
+				error_log(implode("\n", $messages));
+				error_log('Could not write to log file: ' . $file);
+			} elseif($new_file) {
 				/* Set read-writable by owner and group.
 				 * both the web server and the monitor user is a member of the web server (apache) group.
 				 * This allows the monitor user to directly use the op5Log class without triggering
 				 * access errors.
 				 * */
-				chmod ($file, 0664);
-			}
-
-			if($res === false) {
-				error_log(implode("\n", $messages));
-				error_log('Could not write to log file: ' . $file);
+				chmod($file, 0664);
 			}
 			if ($user === 'root' && posix_getpwuid(fileowner($file)) === 'root') {
 				exec("id monitor -gn", $p_group, $status);
