@@ -314,7 +314,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 
 		$result = array(
 			'status' => 0,
-			'output' => 'No hosts in hostgroup.'
+			'output' => 'No hosts in servicegroup.'
 		);
 
 		foreach($hosts as $host) {
@@ -322,7 +322,7 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 			$cur_result = $host->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment);
 
 			/* Keep those with errors... */
-			if($cur_result['status'] > $result['status'])
+			if($cur_result['status'] >= $result['status'])
 				$result = $cur_result;
 		}
 		return $result;
@@ -397,14 +397,13 @@ class ServiceGroup_Model extends BaseServiceGroup_Model {
 		$services = ServicePool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
 		$result = array(
 				'status' => 0,
-				'output' => 'No hosts in hostgroup.'
+				'output' => 'No services in servicegroup.'
 				);
 		foreach($services as $service) {
 			/* @var $host Service_Model */
 			$cur_result = $service->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment);
-
 			/* Keep those with errors... */
-			if($cur_result['status'] > $result['status'])
+			if($cur_result['status'] >= $result['status'])
 				$result = $cur_result;
 		}
 		return $result;
