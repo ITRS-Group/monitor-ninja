@@ -242,6 +242,8 @@ final class Kohana {
 					 * this request
 					 */
 					$controller = new $classname();
+					Event::run('system.post_controller_constructor', $controller);
+
 					$method = Router::$method;
 
 					// Stop the controller setup benchmark
@@ -253,8 +255,6 @@ final class Kohana {
 					// Execute the controller method
 					// $method does always exist in a controller, since Controller
 					// implements the function __call()
-					// Controller constructor has been executed
-					Event::run('system.post_controller_constructor', $controller);
 					$execution_exception = null;
 					try {
 						call_user_func_array(
