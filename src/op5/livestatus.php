@@ -28,7 +28,7 @@ class op5LivestatusException extends Exception {
 	 * @param $query string
 	 * @return void
 	 **/
-	public function __construct($plain_message, $query = false) {
+	public function __construct($plain_message, $query = false, Exception $previous = null) {
 		$this->query = $query;
 		$this->plain_message = $plain_message;
 
@@ -36,7 +36,11 @@ class op5LivestatusException extends Exception {
 		if($query) {
 			$message .= ' <pre>'.$query.'</pre>';
 		}
-		parent::__construct($message);
+		if($previous) {
+			parent::__construct($message, 0, $previous);
+		} else {
+			parent::__construct($message);
+		}
 	}
 
 	/**
@@ -156,6 +160,7 @@ class op5Livestatus {
 		// Connect to Livestatus. Re-trying up to three times. Sleep 0.3 seconds
 		// between each try.
 		$i = 0;
+		$ninja_log = op5Log::instance('ninja');
 		while (true) {
 			try {
 				$start   = microtime(true);
@@ -171,35 +176,58 @@ class op5Livestatus {
 				if($status != 200)
 					throw new op5LivestatusException(trim($body), $query);
 				$this->connection->close();
+				$result = json_decode(utf8_encode($body), true);
+				if($result === null) {
+					throw new op5LivestatusException(
+						"Could not decode valid ".
+						"JSON from livestatus, ".
+						"got this LS response: ".
+						$body, $query);
+				}
+
+				if(!array_key_exists('data', $result)) {
+					throw new op5LivestatusException(
+						"No 'data' property in ".
+						"JSON from livestatus, ".
+						"got this LS response: ".
+						$body, $query);
+				}
+				if(!array_key_exists('total_count', $result)) {
+					throw new op5LivestatusException(
+						"No 'total_count' property ".
+						"in JSON from livestatus, ".
+						"got this LS response: $body",
+						$query);
+				}
+
+				$objects = $result['data'];
+				$count = $result['total_count'];
+
+				if(!is_array($columns)) {
+					$columns = $result['columns'][0];
+				}
+
+				if ($objects === null) {
+					throw new op5LivestatusException("Invalid output", $query);
+				}
+
+				// everything went well
 				break;
 			} catch (op5LivestatusException $e) {
-				$ninja_log = op5Log::instance('ninja');
+				// make sure to force a new connection when retrying
+				$this->connection->close();
+				$ninja_log->debug("Attempt $i failed for query: $query");
+				$ninja_log->debug($e);
 				// After three failing attempts the exception is thrown upwards.
 				if ($i == 3) {
-					$ninja_log->debug('Livestatus down. Last attempt failed.');
-					throw $e;
+					$ninja_log->debug("Livestatus down. Last attempt failed.");
+					throw new op5LivestatusException($e->getMessage(), $query, $e);
 				}
 				usleep(300000);
 				$i++;
-				$msg = "Livestatus down. Attempt $i of 3 failed. Trying again.";
-				$ninja_log->debug($msg);
 			}
 		}
 
-		$result = json_decode(utf8_encode($body), true);
-
-		$objects = $result['data'];
-		$count = $result['total_count'];
-
-		if(!is_array($columns)) {
-			$columns = $result['columns'][0]; /* FIXME */
-		}
-
-		$stop = microtime(true);
-
-		if ($objects === null) {
-			throw new op5LivestatusException("Invalid output");
-		}
 		return array($columns,$objects,$count);
 	}
 
@@ -412,10 +440,10 @@ class op5livestatus_connection {
 	}
 
 	/**
-	 * Writes to livestatus socket
+	 * Writes to livestatus socket. Will try to connect() if that wasn't
+	 * done before.
 	 *
 	 * @param $str string
-	 * @return void
 	 * @throws op5LivestatusException
 	 **/
 	public function writeSocket($str) {
