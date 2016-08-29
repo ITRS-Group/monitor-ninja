@@ -208,11 +208,17 @@ final class Kohana {
 				Router::$arguments = $e->get_arguments();
 
 			} catch (ORMDriverException $e) {
-
-				Router::$controller = "error";
-				Router::$method = "show_503";
-				Router::$arguments = array($e);
-
+				// This could mean that we got a livestatus error,
+				// let's just give up early.
+				try {
+					$controller = new Error_Controller();
+					Event::run('system.post_controller_constructor', $controller);
+					$controller->show_503($e);
+					echo $controller->template;
+					exit(1);
+				} catch(Exception $e) {
+					self::exception_handler($e);
+				}
 			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
