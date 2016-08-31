@@ -29,7 +29,7 @@ class Menu_Model {
 	private static $insertion_order = 100;
 	private $attributes = array("target" => "_self");
 	private $branch = array();
-	private $separator = false;
+	private $is_separator = false;
 	private $order = 100;
 	private $label;
 	private $href;
@@ -87,7 +87,7 @@ class Menu_Model {
 	 */
 	public function set_separator ($title = null) {
 		$this->label = $title;
-		$this->separator = true;
+		$this->is_separator = true;
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Menu_Model {
 	 * @return bool
 	 */
 	public function is_separator () {
-		return $this->separator;
+		return $this->is_separator;
 	}
 
 	/**

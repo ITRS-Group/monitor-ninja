@@ -360,6 +360,15 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 *TODO: Dashboards Overview
+	 *
+	 *
+	 */
+	public function dashboards_overview() {
+		$this->template->content = new View('tac/dashboards_overview');
+	}
+
+	/**
 	 * Save new positions for widgets.
 	 * $_POST['positions'] is used through $this->input->post(). It should
 	 * contain the widgets and their positions. A weird home-made format is

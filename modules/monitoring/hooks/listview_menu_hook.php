@@ -74,7 +74,7 @@ Event::add ( 'ninja.menu.setup', function () {
 
 		if ($mayi->run($resource . ':read.list')) {
 
-			$menu->set($key, null, null, sprintf($def['icon']));
+			$menu->set($key, null, null, $def['icon']);
 
 			$menu->set($key . '.All ' . listview_menu_label ( $table ), listview::querylink(sprintf('[%s] all', $table)), null, $def['icon']);
 
@@ -85,7 +85,7 @@ Event::add ( 'ninja.menu.setup', function () {
 					$count ++;
 
 					if ($count > $max_filters) {
-						$menu->set ( $key . '.All filters for ' . preg_replace ( '/\./', '&period;', $table ), listview::querylink ( sprintf ( '[saved_filters] filter_table = "%s"', $table ) ), null, sprintf ( 'icon-16 x16-%s', 'filter' ) );
+						$menu->set ( $key . '.All filters for ' . preg_replace ( '/\./', '&period;', $table ), listview::querylink ( sprintf ( '[saved_filters] filter_table = "%s"', $table ) ), null, 'icon-16 x16-filter' );
 						break;
 					}
 
@@ -114,11 +114,11 @@ Event::add ( 'ninja.menu.setup', function () {
 			$count ++;
 
 			if ($count > $max_filters) {
-				$menu->set ( 'Report.Notifications.All filters for ' . preg_replace ( '/\./', '&period;', $table ), listview::querylink ( sprintf ( '[saved_filters] filter_table = "%s"', $table ) ), null, sprintf ( 'icon-16 x16-%s', 'filter' ) );
+				$menu->set ( 'Report.Notifications.All filters for ' . preg_replace ( '/\./', '&period;', $table ), listview::querylink ( sprintf ( '[saved_filters] filter_table = "%s"', $table ) ), null, 'icon-16 x16-filter' );
 				break;
 			}
 
-			$menu->set ( 'Report.Notifications.' . $object->get_filter_name (), listview::querylink ( $object->get_filter () ), null, sprintf ( 'icon-16 x16-%s', $icon ) );
+			$menu->set ( 'Report.Notifications.' . $object->get_filter_name (), listview::querylink ( $object->get_filter () ), null, $icon );
 		}
 	}
 

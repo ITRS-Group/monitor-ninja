@@ -236,7 +236,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 	 * Show 'Share & Delete' options only for user own dashboard's
 	 *
 	 */
-	public function test_show_share_delete_options_on_dashboard () {
+	public function test_get_can_write_on_dashboards () {
 
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
