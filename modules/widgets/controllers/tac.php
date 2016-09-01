@@ -221,9 +221,17 @@ class Tac_Controller extends Ninja_Controller {
 				));
 		}
 
-		$menu->set("Dashboard options.Delete this dashboard", LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())), 31, null, array(
-			'class' => "menuitem_dashboard_option"
-		));
+		//Show 'Share & Delete' options only for user dashboard's
+		if($dashboard->get_can_write()) {
+			//TODO: Dashboard 'Share' interface
+			$menu->set("Dashboard options.Share", null, 22);
+
+			$menu->set("Dashboard options.Delete this dashboard",
+				LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())),
+				31, null, array(
+					'class' => "menuitem_dashboard_option"
+				));
+		}
 	}
 
 	/**

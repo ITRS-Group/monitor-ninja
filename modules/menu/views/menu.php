@@ -29,6 +29,11 @@
 		$render = "";
 		$format = "";
 
+		if ($menu->is_separator()) {
+			$render .= '<li class="menu-separator">' . $menu->get_label_as_html() . '</li>';
+			return $render;
+		}
+
 		if (substr($icon, -4) == '.png')
 			$icon = sprintf('<img src="%s">', htmlentities($icon));
 		else if ($icon != '')

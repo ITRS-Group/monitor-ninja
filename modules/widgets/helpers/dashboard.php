@@ -11,7 +11,7 @@ class dashboard {
 	 *
 	 * @return Dashboard_Model Returns null/false if no dashboard is found
 	 */
-	public function get_default_dashboard () {
+	public static function get_default_dashboard () {
 
 		$dashboard = dashboard::get_login_dashboard();
 
@@ -27,7 +27,7 @@ class dashboard {
 	 *
 	 * @return Dashboard_Model or null/false if no dashboard is set or exists
 	 */
-	public function get_login_dashboard () {
+	public static function get_login_dashboard () {
 
 		/* Get login dashboard */
 		$user = op5auth::instance()->get_user();
@@ -48,7 +48,7 @@ class dashboard {
 	 * @param $dashboard Dashboard_Model
 	 * @return bool
 	 */
-	public function is_login_dashboard (Dashboard_Model $dashboard) {
+	public static function is_login_dashboard (Dashboard_Model $dashboard) {
 
 		$login_dashboard = SettingPool_Model::all()
 			->reduce_by('username', op5auth::instance()->get_user()->get_username(), '=')
