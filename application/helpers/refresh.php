@@ -45,9 +45,6 @@ class refresh {
 		<script type="text/javascript">
 		_lv_refresh_key = '<?php echo $lv_refresh_key ?>';
 		_lv_refresh_delay = '<?php echo $lv_refresh ?>';
-		$(document).ready(function() {
-			$('#listview_refresh_value').val(_lv_refresh_delay);
-		});
 		</script>
 		<?php
 	}

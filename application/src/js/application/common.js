@@ -289,7 +289,8 @@ $(document).ready(function() {
 		var last_update_request = false;
 		var id = $('#' + the_id + '_value');
 		var key = id.data('key');
-		var interval = id.val();
+		var interval = _lv_refresh_delay;
+		id.val(interval);
 		$("#" + the_id + "_slider").slider({
 			value: interval,
 			min: 0,
@@ -298,7 +299,7 @@ $(document).ready(function() {
 			slide: function(event, ui) {
 				$("#" + the_id + "_value").val(ui.value);
 			},
-			stop: function(event, ui) {
+			change: function(event, ui) {
 				interval = ui.value;
 				if(last_update_request !== false) {
 					last_update_request.abort();
@@ -321,7 +322,6 @@ $(document).ready(function() {
 				);
 			}
 		});
-		id.val($("#" + the_id + "_slider").slider("value"));
 	}
 
 	// ===========================================================
