@@ -12,7 +12,7 @@ Event::add ( 'ninja.menu.setup', function () {
 		//'Show more' and break the loop if more than 5 my-own dashboard's
 		if($index >= 5){
 			//TODO: Dashboard's overview Link
-			$db_menu->set("Show more", 'tac/dashboards_overview')->get('Show more')->set_label('Show more...');
+			$db_menu->set("Show more", listview::querylink($my_dashboards->get_query()))->get('Show more')->set_label('Show more...');
 			break;
 		}
 		$item = $db_menu->set($dashboard->get_id(), 'tac/index/'.$dashboard->get_key())->get($dashboard->get_id());
@@ -28,7 +28,7 @@ Event::add ( 'ninja.menu.setup', function () {
 		foreach($shared_dashboards->it(array('name'), array('name')) as $index => $dashboard) {
 			if($index >= 5){
 				//TODO: Dashboard's overview Link
-				$db_menu->set("Show more shared", 'tac/dashboards_overview')->get('Show more shared')->set_label('Show more...');
+				$db_menu->set("Show more shared", listview::querylink($shared_dashboards->get_query()))->get('Show more shared')->set_label('Show more...');
 				break;
 			}
 			$item = $db_menu->set($dashboard->get_id(), 'tac/index/'.$dashboard->get_key())->get($dashboard->get_id());
