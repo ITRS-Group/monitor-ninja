@@ -1,6 +1,6 @@
 @notification
 Feature: Notification
-	@contacts-MON7591
+	@contacts @MON-7591
 	Scenario: Check Contacts notification periods
 		Given I have these mocked contactgroups
 			| name            | members       |
@@ -11,10 +11,12 @@ Feature: Notification
 		Given I have these mocked hosts
 			| name |
 			| monitor |
-		And I am logged in as monitor
-		When I hover over "Manage" menu
+		And I am logged in as administrator
+		When I hover over the "Manage" menu
 		And I click "View active config"
-		When I select "Object type" as "contacts"
-		Then I should see "Contact Name" "administrator"
-		And I should see "Service Notification Period" "workhours"
-		And I should see "Host Notification Period" "nonworkhours"
+		When I select "contacts" from "type"
+		Then I should see "administrator"
+		And I should see "Service Notification Period"
+		And I should see "nonworkhours"
+		And I should see "Host Notification Period"
+		And I should see "workhours"
