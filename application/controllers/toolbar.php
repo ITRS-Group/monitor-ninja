@@ -112,6 +112,13 @@ class Toolbar_Controller extends Ninja_Controller {
 
 	}
 
+	/**
+	 * @return array of Menu_Model
+	 */
+	public function get_menu() {
+		return $this->menus;
+	}
+
 	public function render () {
 
 		print '<div class="main-toolbar">';
