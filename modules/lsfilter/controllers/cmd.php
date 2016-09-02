@@ -39,6 +39,13 @@ class Cmd_Controller extends Ninja_Controller {
 			$set = $set->union($pool->set_by_key($key));
 		}
 
+		if (count($set) === 0) {
+			$this->template->content->error_level = 'info';
+			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . $command . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
+
+			return;
+		}
+
 		$this->template->content->set = $set;
 		$this->template->content->table = $table;
 		$this->template->content->command = $command;
