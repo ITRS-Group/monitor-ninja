@@ -14,8 +14,8 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	private $tests;
 	private $results = array();
 	private $config_files = false;
-	public $passed = 0; /**< Number of passed tests */
-	public $failed = 0; /**< Number of failed tests */
+	private $passed; /**< Number of passed tests */
+	private $failed; /**< Number of failed tests */
 	private $logfiles = false;
 	private $logfile = false;
 	private $sqlfile = false;
@@ -43,9 +43,6 @@ class Ninja_Reports_Test extends Status_Reports_Model
 			$this->color_green =  "\033[32m";
 			$this->color_reset =  "\033[0m";
 		}
-
-		if (!$test_file)
-			return false;
 
 		$this->tests = $this->parse_test($test_file);
 		$this->test_file = $test_file;
@@ -175,11 +172,8 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		return $this->compare_test_result($return_arr, $correct, $rpt);
 	}
 
-	private function parse_test($test_file = false)
+	private function parse_test($test_file)
 	{
-		if (!$test_file)
-			return false;
-
 		$testcase = false;
 		require($test_file);
 		if(!is_array($testcase)) {
@@ -226,6 +220,8 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	public function run_test_series()
 	{
 		echo "Preparing for test-series '" . $this->description . "'\n";
+		$this->passed = 0;
+		$this->failed = 0;
 
 		$this->details = array();
 		if ($this->sqlfile) {
