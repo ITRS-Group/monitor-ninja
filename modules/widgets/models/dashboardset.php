@@ -7,6 +7,11 @@
  * @todo: documentation
  */
 class DashboardSet_Model extends BaseDashboardSet_Model {
+
+	public function mayi_resource () {
+		return "monitor.monitoring.hosts";
+	}
+
 	public function get_auth_filter() {
 		$user = Auth::instance()->get_user();
 		$filter = new LivestatusFilterAnd();

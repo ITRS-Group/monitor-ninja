@@ -106,3 +106,11 @@ Feature: Tactical Overview, TAC
 			| Rename this dashboard |
 			| Share this dashboard |
 			| Delete this dashboard |
+	Scenario: Dashboard overview
+		Given I have these mocked dashboards
+			| id | name         | username   | layout |
+			| 1  | Mai Kawasaki | mockeduser | 1,2,3  |
+			| 2  | Tami Foster  | mockeduser | 1,2,3  |
+		When I go to the listview for [dashboards] all
+		Then I should see "Mai Kawasaki"
+		And I should see "Tami Foster"
