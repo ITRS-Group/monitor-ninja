@@ -11,7 +11,6 @@ Event::add ( 'ninja.menu.setup', function () {
 	foreach($my_dashboards->it(array('name'), array('name')) as $index => $dashboard) {
 		//'Show more' and break the loop if more than 5 my-own dashboard's
 		if($index >= 5){
-			//TODO: Dashboard's overview Link
 			$db_menu->set("Show more", listview::querylink($my_dashboards->get_query()))->get('Show more')->set_label('Show more...');
 			break;
 		}
@@ -27,7 +26,6 @@ Event::add ( 'ninja.menu.setup', function () {
 		$separator->set_separator('Shared with you:');
 		foreach($shared_dashboards->it(array('name'), array('name')) as $index => $dashboard) {
 			if($index >= 5){
-				//TODO: Dashboard's overview Link
 				$db_menu->set("Show more shared", listview::querylink($shared_dashboards->get_query()))->get('Show more shared')->set_label('Show more...');
 				break;
 			}
@@ -40,7 +38,6 @@ Event::add ( 'ninja.menu.setup', function () {
 	$separator = $db_menu->get('actions');
 	$separator->set_separator();
 
-	//TODO: Dashboard's overview Link
 	$db_menu->set("Dashboard's overview", listview::querylink('[dashboards] all'));
 	$db_menu->set("New dashboard", 'tac/new_dashboard_dialog', null, false, array(
 		'class' => "menuitem_dashboard_option" /* Popup as fancybox */

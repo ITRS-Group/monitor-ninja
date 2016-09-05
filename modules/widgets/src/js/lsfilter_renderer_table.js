@@ -15,7 +15,7 @@ listview_renderer_table.dashboards = {
 	},
 	"creator": {
 		"header": "Created by",
-		"depends": ["username desc"],
+		"depends": ["username"],
 		"sort": false,
 		"cell": function (args) {
 			return $("<td />").update_text(args.obj.username)

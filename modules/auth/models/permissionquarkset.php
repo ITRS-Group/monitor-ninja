@@ -8,4 +8,7 @@ require_once( dirname(__FILE__).'/base/basepermissionquarkset.php' );
  * @todo: documentation
  */
 class PermissionQuarkSet_Model extends BasePermissionQuarkSet_Model {
+	public function mayi_resource () {
+		return "monitor.system.permission_quarks";
+	}
 }
