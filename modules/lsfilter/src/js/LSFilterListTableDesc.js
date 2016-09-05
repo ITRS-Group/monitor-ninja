@@ -1,3 +1,8 @@
+// Add isInteger browser compability.
+Number.isInteger = Number.isInteger || function(value) {
+	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+};
+
 var LSColumnsPP = function() {
 	/* add preprocessor as parent */
 	this.parent = LSColumnsPreprocessor;
@@ -593,14 +598,31 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 		return;
 
 	var all_col_renderers = $.extend(
-			{},
-			listview_renderer_table_all,
-			listview_renderer_table[metadata.table]
-			);
-	var all_columns = [];
-	for ( var col in all_col_renderers) {
-		all_columns.push(col);
-	}
+		{},
+		listview_renderer_table_all,
+		listview_renderer_table[metadata.table]
+	);
+
+	// Create an array to be used for sorting column names.
+	var unordered_index = 0;
+	var col_render_order = $.map(all_col_renderers, function(val, col) {
+		if (!Number.isInteger(val.order)) {
+			// For columns without "order" (or "order" set to valid number) we
+			// give it an order index that will make it end up after any columns
+			// with "order" set, yet keeping it's current relative order.
+			return {"column" : col, "order" : 1000 + unordered_index++};
+		}
+		return {"column" : col, "order" : val.order};
+	});
+
+	// Sort columns by "order" property.
+	col_render_order.sort(function(a, b) { return a.order - b.order; });
+
+	// Create an array with column names in the right order.
+	var all_columns = $.map(col_render_order, function(val) {
+		return val.column;
+	});
+
 	var all_db_columns = ninja_manifest.orm_structure[metadata.table];
 	var custom_columns = {};
 
@@ -608,8 +630,6 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 	if(listview_commands[metadata.table]) {
 		all_command_info = listview_commands[metadata.table];
 	}
-
-
 
 	if (!columndesc) {
 		// If not having a column desc, does a user-config exist?

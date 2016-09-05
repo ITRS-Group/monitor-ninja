@@ -4,6 +4,7 @@
 
 var listview_renderer_table_all = {
 	"select" : {
+		"order" : 35,
 		"header" : $('<input type="checkbox" id="select_all" class="listview_multiselect_checkbox_all" />'),
 		"depends" : [ 'key' ],
 		"sort" : false,

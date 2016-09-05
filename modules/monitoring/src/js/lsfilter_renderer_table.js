@@ -255,6 +255,7 @@ listview_renderer_table.hosts = {
 
 listview_renderer_table.services = {
 	"host_state" : {
+		"order" : 10,
 		"header" : '',
 		"depends" : [ 'host.state_text', 'host.name' ],
 		"sort" : [ 'host.state' ],
@@ -275,6 +276,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"host_name" : {
+		"order" : 20,
 		"header" : _('Host Name'),
 		"depends" : [ 'host.name', 'host.icon_image', 'host.address' ],
 		"sort" : [ 'host.name', 'description' ],
@@ -301,6 +303,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"host_actions" : {
+		"order" : 30,
 		"header" : _('Host Actions'),
 		"depends" : [ 'host.name', 'host.action_url', 'host.config_url',
 				'host.notes_url', 'host.config_allowed' ],
@@ -338,6 +341,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"state" : {
+		"order" : 40,
 		"header" : '',
 		"depends" : [ 'state_text', 'description', 'host.name', 'key'],
 		"sort" : [ 'has_been_checked desc', 'state desc' ],
@@ -351,6 +355,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"description" : {
+		"order" : 50,
 		"header" : _('Service'),
 		"depends" : [ 'host.name', 'description', 'icon_image' ],
 		"sort" : [ 'description' ],
@@ -375,6 +380,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"status" : {
+		"order" : 60,
 		"header" : _('Status'),
 		"depends" : [ 'host.name', 'description', 'pnpgraph_present',
 				'acknowledged', 'comments_count', 'notifications_enabled',
@@ -427,6 +433,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"actions" : {
+		"order" : 70,
 		"header" : _('Actions'),
 		"depends" : [ 'action_url', 'config_url', 'notes_url', 'config_allowed' ],
 		"sort" : false,
@@ -453,6 +460,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"last_check" : {
+		"order" : 80,
 		"header" : _('Last Checked'),
 		"depends" : [ 'last_check' ],
 		"sort" : [ 'last_check' ],
@@ -461,6 +469,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"duration" : {
+		"order" : 90,
 		"header" : _('Duration'),
 		"depends" : [ 'duration' ],
 		"sort" : [ 'last_state_change desc' ],
@@ -469,6 +478,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"attempt" : {
+		"order" : 100,
 		"header" : _('Attempt'),
 		"depends" : [ 'current_attempt', 'max_check_attempts' ],
 		"sort" : [ 'current_attempt' ],
@@ -479,6 +489,7 @@ listview_renderer_table.services = {
 		}
 	},
 	"status_information" : {
+		"order" : 110,
 		"header" : _('Status Information'),
 		"depends" : [ 'plugin_output' ],
 		"sort" : [ 'plugin_output' ],
