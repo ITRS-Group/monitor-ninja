@@ -204,31 +204,34 @@ class Tac_Controller extends Ninja_Controller {
 		$menu = new Menu_Model();
 		$toolbar->menu($menu);
 
-		$menu->attach("Dashboard options", $this->_get_add_widget_menu()->set_order(10));
-		$menu->attach("Dashboard options", $this->get_select_layout_menu($dashboard)->set_order(20));
-
-		$menu->set("Dashboard options.Rename this dashboard",
-			LinkProvider::factory()->get_url('tac', 'rename_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
-			30, null, array(
-			'class' => "menuitem_dashboard_option"
-		));
 
 		if (!dashboard::is_login_dashboard($dashboard)) {
 			$menu->set("Dashboard options.Set as login dashboard",
 				LinkProvider::factory()->get_url('tac', 'login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
-				25, null, array(
+				30, null, array(
 					'class' => "menuitem_dashboard_option"
 				));
 		}
 
 		//Show 'Share & Delete' options only for user dashboard's
 		if($dashboard->get_can_write()) {
+
+			$menu->attach("Dashboard options", $this->_get_add_widget_menu()->set_order(10));
+			$menu->attach("Dashboard options", $this->get_select_layout_menu($dashboard)->set_order(20));
+
 			//TODO: Dashboard 'Share' interface
-			$menu->set("Dashboard options.Share", null, 22);
+			$menu->set("Dashboard options.Rename this dashboard",
+				LinkProvider::factory()->get_url('tac', 'rename_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+				40, null, array(
+					'class' => "menuitem_dashboard_option"
+				));
+
+
+			$menu->set("Dashboard options.Share this dashboard", null, 50);
 
 			$menu->set("Dashboard options.Delete this dashboard",
 				LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())),
-				31, null, array(
+				60, null, array(
 					'class' => "menuitem_dashboard_option"
 				));
 		}

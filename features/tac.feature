@@ -74,3 +74,35 @@ Feature: Tactical Overview, TAC
 		Then I should see "Kallekula"
 		And I shouldn't see "Ny däshbörd1"
 		And I delete all dashboards
+
+	Scenario: Dashboard options are available for my dashboard
+		Given I have these mocked dashboards
+			| id | name       | username   | layout |
+			| 1  | Dashboard1 | mockeduser | 1,2,3  |
+		And I am on the main page
+		When I hover over the "Dashboard options" menu
+		Then I should see menu items:
+			| Add widget |
+			| Select layout |
+			| Set as login dashboard |
+			| Rename this dashboard |
+			| Share this dashboard |
+			| Delete this dashboard |
+
+	Scenario: Dashboard options are not available for shared dashboard
+		Given I have these mocked dashboards
+			| id | name       | username    | layout | read_perm |
+			| 1  | Dashboard1 | anotheruser | 1,2,3  | ,1,       |
+		And I have these mocked permission_quarks
+			| id | type       | name        |
+			| 1  | user       | mockeduser  |
+		And I am on the main page
+		When I hover over the "Dashboard options" menu
+		Then I should see menu items:
+			| Set as login dashboard |
+		Then I should not see menu items:
+			| Add widget |
+			| Select layout |
+			| Rename this dashboard |
+			| Share this dashboard |
+			| Delete this dashboard |
