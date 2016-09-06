@@ -586,6 +586,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 };
 
 function lsfilter_list_table_desc(metadata, columndesc) {
+
 	var self = this;
 
 	this.metadata = metadata;
@@ -624,6 +625,7 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 	});
 
 	var all_db_columns = ninja_manifest.orm_structure[metadata.table];
+
 	var custom_columns = {};
 
 	var all_command_info = {};
@@ -701,6 +703,7 @@ function lsfilter_list_table_desc(metadata, columndesc) {
 			column_obj = all_col_renderers[this.vis_columns[i]];
 			this.col_renderers[this.vis_columns[i]] = column_obj;
 		}
+
 		/* Fetch database column dependencies */
 		for (var j = 0; j < column_obj.depends.length; j++) {
 			this.db_columns.push(column_obj.depends[j]);
