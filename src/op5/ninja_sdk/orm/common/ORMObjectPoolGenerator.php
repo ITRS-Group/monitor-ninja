@@ -188,11 +188,11 @@ abstract class ORMObjectPoolGenerator extends ORMGenerator {
 			// if count(key) == 0, explode is always 1
 			$this->write('$parts = explode(";",$key);');
 			$this->write('if(count($parts) != %s) {', count($this->structure['key']));
-			$this->write(    'return false;');
+			$this->write(    'return self::none();');
 			$this->write('}');
 		} else {
 			$this->write('if($key != "") {');
-			$this->write(    'return false;');
+			$this->write(    'return self::none();');
 			$this->write('}');
 		}
 

@@ -340,4 +340,25 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 		/* And when everything is removed, the array should be empty */
 		$this->assertEmpty($obj);
 	}
+
+	public function object_manifest_provider () {
+
+		$manifest = ObjectPool_Model::load_table_classes();
+
+		/* Object_Model is the only one built from the ORM Root generator
+		 * and does not have the required functionality for this test  */
+		unset($manifest['object']);
+		$this->assertGreaterThan(0, count($manifest));
+		return $manifest;
+
+	}
+
+	/**
+	 * @dataProvider object_manifest_provider
+	 */
+	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
+		$set = $pool_model::set_by_key('');
+		$this->assertInstanceOf($set_model, $set);
+	}
+
 }

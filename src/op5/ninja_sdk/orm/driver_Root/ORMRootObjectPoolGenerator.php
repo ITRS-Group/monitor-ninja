@@ -62,7 +62,7 @@ class ORMRootObjectPoolGenerator extends ORMRootGenerator {
 	 **/
 	private function generate_set_by_key() {
 		$this->init_function( 'set_by_key', array('key'), 'static' );
-		$this->write( 'return false;' );
+		$this->write( 'return self::none();' );
 		$this->finish_function();
 	}
 }
