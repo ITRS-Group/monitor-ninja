@@ -48,6 +48,8 @@ module Op5Cucumber::Mock
         'ORMDriverMySQL default'
       when /^contact.*s$/
         'ORMDriverLS default'
+      when /^permission_quark.*s$/
+        'ORMDriverMySQL default'
       else
         raise "Unknown type #{type}"
       end

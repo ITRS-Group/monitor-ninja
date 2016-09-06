@@ -62,6 +62,13 @@ Then /^I should see menu items:$/ do |table|
   end
 end
 
+Then /^I should not see menu items:$/ do |table|
+  rows = table.raw
+  rows.each do |row|
+    page.assert_no_selector('a span', :text => row[0])
+  end
+end
+
 When /^I have the csrf token "([^\"]*)"$/ do |val|
   evaluate_script("_csrf_token = '#{val}'");
 end
