@@ -30,6 +30,11 @@ authenticated                   ninja:                                          
 
 authenticated                   monitor.system.saved_filters:                                 true
 authenticated                   monitor.reports.saved_reports:                                true
+authenticated                   monitor.system.dashboards:                                    true
+authenticated                   monitor.monitoring.columns:                                   true
+authenticated                   monitor.system.settings:                                      true
+authenticated                   monitor.system.widgets:                                       true
+authenticated                   monitor.system.permission_quarks:                             true
 configuration_information       monitor.system.backup:                                        true
 
 !api_command                    :read.api.command                                             false

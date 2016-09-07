@@ -7,4 +7,7 @@
  * @todo: documentation
  */
 class SettingSet_Model extends BaseSettingSet_Model {
+	public function mayi_resource () {
+		return "monitor.system.settings";
+	}
 }
