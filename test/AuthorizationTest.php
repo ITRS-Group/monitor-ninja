@@ -4,40 +4,42 @@ require_once "op5/objstore.php";
 require_once "op5/config.php";
 require_once "op5/auth/Authorization.php";
 
-class AuthorizationTest extends PHPUnit_Framework_TestCase
-{
-	private static $az;
+class AuthorizationTest extends PHPUnit_Framework_TestCase {
+	private $az;
+	private $tmp_auth_groups_file;
+	private $tmp_auth_file;
 
-	private static $config = array(
-		'auth_groups' => array(
-			'limited_read' => array(
-				'perm_limited_read',
-				'perm_limited_read_2',
-			),
-			'meta_all_users' => array(
-				'perm_meta_all_users'
-			),
-			'meta_driver_kaka' => array(
-				'perm_meta_driver_kaka'
-			),
-			'meta_driver_boll' => array(
-				'perm_meta_driver_boll'
-			),
-			'user_myuser' => array(
-				'perm_myuser'
-			),
-			'meta_all_users' => array(
-				'perm_meta_all_users'
-			),
-		),
-		'log' => array()
-	);
-
-	static public function setUpBeforeClass()
-	{
+	public function setUp() {
 		op5objstore::instance()->mock_clear();
-		op5objstore::instance()->mock_add('op5config', new MockConfig(self::$config));
-		self::$az = op5Authorization::factory();
+		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
+			'auth_groups' => array(
+				'limited_read' => array(
+					'perm_limited_read',
+					'perm_limited_read_2',
+				),
+				'meta_all_users' => array(
+					'perm_meta_all_users'
+				),
+				'meta_driver_kaka' => array(
+					'perm_meta_driver_kaka'
+				),
+				'meta_driver_boll' => array(
+					'perm_meta_driver_boll'
+				),
+				'user_myuser' => array(
+					'perm_myuser'
+				),
+				'meta_all_users' => array(
+					'perm_meta_all_users'
+				),
+			),
+			'log' => array()
+		)));
+		$this->az = op5Authorization::factory();
+	}
+
+	public function tearDown() {
+		op5objstore::instance()->mock_clear();
 	}
 
 	public function test_meta_all_resolution() {
@@ -46,7 +48,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 				'auth_method' => 'somedriver',
 				'groups' => array()
 		));
-		self::$az->authorize( $user );
+		$this->az->authorize( $user );
 		$this->assertEquals(
 				$user->get_auth_data(),
 				array(
@@ -64,7 +66,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 						'limited_read'
 				)
 		));
-		self::$az->authorize( $user );
+		$this->az->authorize( $user );
 		$this->assertEquals(
 				$user->get_auth_data(),
 				array(
@@ -83,7 +85,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 				'groups' => array(
 				)
 		));
-		self::$az->authorize( $user );
+		$this->az->authorize( $user );
 		$this->assertEquals(
 				$user->get_auth_data(),
 				array(
@@ -101,7 +103,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 				'groups' => array(
 				)
 		));
-		self::$az->authorize( $user );
+		$this->az->authorize( $user );
 		$this->assertEquals(
 				$user->get_auth_data(),
 				array(
@@ -111,6 +113,4 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase
 				'Driver group resolution'
 		);
 	}
-
-	/* TODO: test return value of op5Authorization::authorize */
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * User model
- *
- * @todo: documentation
+ * When we want to force a user to have all rights, we use an instance of this
+ * "super user" model. It is practical for tests, but also CLI scripts which
+ * usually have no concept of a user executing it.
  */
 class User_AlwaysAuth_Model extends User_Model {
 
@@ -23,7 +23,8 @@ class User_AlwaysAuth_Model extends User_Model {
 	}
 
 	/**
-	 * Updates an authorization point
+	 * If you want to start out with an "auth me for everything" but
+	 * gradually deny some rights, this is the method you are looking for.
 	 *
 	 * @throws Exception
 	 * @param $type string
@@ -39,13 +40,12 @@ class User_AlwaysAuth_Model extends User_Model {
 	}
 
 	/**
-         * Returns true if logged in
-         *
-         * @return boolean always true (normal users are logged in, notauth
-         *         overrides)
-         */
-        public function logged_in() {
-                return true;
-        }
+	 * Returns true if logged in
+	 *
+	 * @return boolean always true (normal users are logged in, notauth overrides)
+	 */
+	public function logged_in() {
+		return true;
+	}
 
 }

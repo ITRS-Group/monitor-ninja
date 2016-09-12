@@ -1,9 +1,10 @@
-#!/usr/bin/env php
 <?php
 
 if(PHP_SAPI !== 'cli') {
 	die("This script should never be run from a browser, execute it from commmand-line instead.");
 }
+
+$considered_superadmin = 'system_commands';
 
 /**
  * [version => [existing => new]]
@@ -18,11 +19,11 @@ $new_rights = array(
 		'api_config' => 'api_command'
 	),
 	2 => array(
-		'system_commands' => 'manage_trapper'
+		$considered_superadmin => 'manage_trapper'
 	),
 	3 => array(
 		'host_view_all' => 'logger_access',
-		'system_commands' => array(
+		$considered_superadmin => array(
 			'logger_configuration',
 			'logger_schedule_archive_search'
 		)
@@ -73,17 +74,27 @@ $new_rights = array(
 			'business_services_access',
 		)
 	),
+	6 => array(
+		$considered_superadmin => array(
+			'dashboard_share',
+		)
+	),
 );
 
 
 
 require_once('op5/config.php');
-$c = new op5config();
+$c = op5config::instance();
 $config = $c->getConfig('auth');
 $groups = $c->getConfig('auth_groups');
 
+$current_version = 0;
+if(isset($config['common']['version'])) {
+       $current_version = $config['common']['version'];
+}
+
 foreach ($groups as &$group) {
-	for ($i = isset($config['common']['version'])?$config['common']['version']:0; $i < count($new_rights); $i++) {
+	for ($i = $current_version; $i < count($new_rights); $i++) {
 		foreach ($new_rights[$i] as $from => $to) {
 			if (in_array($from, $group)) {
 				if (is_array($to)) {
