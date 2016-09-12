@@ -1,0 +1,16 @@
+[
+	{
+		"title":"Example test",
+		"js_deps":[],
+		"file_to_test":"",
+		"test":"test.js"
+	},
+	{
+		"title":"Listview columns",
+		"js_deps":[
+			"../../application/src/js/00_jquery.js"
+		],
+		"file_to_test":"../../modules/lsfilter/src/js/LSFilterListTableDesc.js",
+		"test":"listview_column.js"
+	}
+]
