@@ -24,10 +24,12 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 
 		Auth::instance(array('session_key' => false))
 			->force_user($superuser);
+		$_POST = array();
 	}
 
 	protected function tearDown() {
 		op5objstore::instance()->mock_clear();
+		$_POST = array();
 	}
 
 	private function mock_data($tables) {
@@ -39,6 +41,9 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 
+	/**
+	 * @group Tac_Controller::new_dashboard
+	 */
 	public function test_adding_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -56,6 +61,10 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(1, count(DashboardPool_Model::all()));
 
+		$_POST = array(
+			'name' => 'Another dashboard',
+			'layout', '3,2,1'
+		);
 		$sut = new Tac_Controller();
 		$sut->new_dashboard();
 
@@ -99,6 +108,9 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 			"We successfully changed the name of a dashboard");
 	}
 
+	/**
+	 * @group Tac_Controller::delete_dashboard
+	 */
 	public function test_deleting_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -234,10 +246,8 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Show 'Share & Delete' options only for user own dashboard's
-	 *
 	 */
 	public function test_get_can_write_on_dashboards () {
-
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(
@@ -274,5 +284,76 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		op5auth::instance()->force_user($user);
 
 		$this->assertFalse($dashboard->get_can_write());
+	}
+
+	/**
+	 * @group Tac_Controller::index
+	 */
+	public function test_can_switch_between_saved_dashboards() {
+		$this->mock_data(array(
+			"ORMDriverMySQL default" => array(
+				"dashboards" => array(
+					array(
+						"id" => "40",
+						"name" => "My dashboard",
+						"username" => "superuser",
+						"layout" => "3,2,1"
+					),
+					array(
+						"id" => "41",
+						"name" => "Mommy's dashboard",
+						"username" => "superuser",
+						"layout" => "3,2,1"
+					)
+				),
+				"dashboard_widgets" => array(),
+				"settings" => array()
+			)
+		));
+
+		$tac = new Tac_Controller();
+		$tac->index(40);
+		$this->assertContains("My dashboard", $tac->template->title,
+			"If the dashboard was located, the page's title ".
+			"should have been changed"
+		);
+		$tac->index(41);
+		$this->assertContains("Mommy's dashboard", $tac->template->title,
+			"If the dashboard was located, the page's title ".
+			"should have been changed"
+		);
+	}
+
+	/**
+	 * @group Tac_Controller::index
+	 */
+	public function test_visiting_a_non_existing_dashboard_redirects_to_placeholder_view() {
+		$this->mock_data(array(
+			"ORMDriverMySQL default" => array(
+				"dashboards" => array(
+					array(
+						"id" => "40",
+						"name" => "My dashboard",
+						"username" => "superuser",
+						"layout" => "3,2,1"
+					),
+				),
+				"dashboard_widgets" => array(),
+				"settings" => array()
+			)
+		));
+
+		$tac = new Tac_Controller();
+		$non_existing_dashboard_id = 31;
+		$tac->index($non_existing_dashboard_id);
+
+		$this->assertEquals("controller", $tac->template->target,
+			"A redirect view should have said that it wanted ".
+			"to redirect to a controller"
+		);
+		$this->assertEquals("tac/index/40", $tac->template->url,
+			"The tac controller should have redirected us to ".
+			"the only existing dashboard"
+		);
 	}
 }

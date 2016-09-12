@@ -5,9 +5,10 @@ class Dashboard_Permission_Test extends PHPUnit_Framework_TestCase {
 			op5objstore::instance ()->mock_add ( $driver, new ORMDriverNative ( $tables, null, $driver ) );
 		}
 	}
+
 	public function setUp() {
 		op5objstore::instance ()->mock_clear ();
-		$this->mock_data ( array(
+		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(
 					array( 'id' => 1, 'name' => 'For me', 'username' => 'me', 'read_perm' => ',1,' ),
@@ -37,8 +38,9 @@ class Dashboard_Permission_Test extends PHPUnit_Framework_TestCase {
 					array( 'name' => 'Default', 'properties' => array() )
 				)
 			)
-		) );
+		));
 	}
+
 	public function tearDown() {
 		op5objstore::instance ()->mock_clear ();
 	}
@@ -51,6 +53,7 @@ class Dashboard_Permission_Test extends PHPUnit_Framework_TestCase {
 	 * @param Dashboard_Model $db
 	 */
 	private function assertAccessToWidgets( $db ) {
+		$old_count = count($db->get_dashboard_widgets_set());
 		$widget = new Dashboard_Widget_Model();
 		$widget->set_dashboard_id($db->get_id());
 		$widget->set_name('netw_health');
@@ -59,7 +62,11 @@ class Dashboard_Permission_Test extends PHPUnit_Framework_TestCase {
 		$widget->save();
 
 		/* Assert that we have access to any widgets. Just created one */
-		$this->assertGreaterThan(0, count($db->get_dashboard_widgets_set()), 'Failing dashboard for widget test: ' . $db->get_name());
+		$this->assertGreaterThan(
+			$old_count,
+			count($db->get_dashboard_widgets_set()),
+			'Failing dashboard for widget test: '.$db->get_name()
+		);
 	}
 
 	public function provider_read_users() {
@@ -95,7 +102,7 @@ class Dashboard_Permission_Test extends PHPUnit_Framework_TestCase {
 
 
 	/**
-	 * Users, for which dashboards the user owns. The groups is not relevant.
+	 * Users, for which dashboards the user owns. The groups are irrelevant.
 	 */
 	public function provider_write_users() {
 		return array(

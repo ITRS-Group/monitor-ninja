@@ -287,6 +287,66 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Integration test, depends on data found in Ninja (search for
+	 * autocomplete.php manifest files)
+	 *
+	 * @group MON-9539
+	 * @group integration
+	 */
+	public function test_can_use_installed_manifests_for_matching_user_by_name() {
+		$this->mock_data(array(
+			'ORMDriverYAML default' => array(
+				'users' => array(
+					array(
+						'username' => 'Frank Frink',
+					),
+				),
+			),
+		), __FUNCTION__);
+
+		$ac = Autocompleter::from_manifests();
+		$calculated_result = $ac->query('frank', array('users'));
+		$expected_result = array(
+			array(
+				'name' => 'Frank Frink',
+				'table' => 'users',
+				'key' => 'Frank Frink'
+			)
+		);
+		$this->assertSame($expected_result, $calculated_result);
+	}
+
+	/**
+	 * Integration test, depends on data found in Ninja (search for
+	 * autocomplete.php manifest files)
+	 *
+	 * @group MON-9539
+	 * @group integration
+	 */
+	public function test_can_use_installed_manifests_for_matching_usergroup_by_name() {
+		$this->mock_data(array(
+			'ORMDriverYAML default' => array(
+				'usergroups' => array(
+					array(
+						'groupname' => 'Nobusuke Tagomi',
+					),
+				),
+			),
+		), __FUNCTION__);
+
+		$ac = Autocompleter::from_manifests();
+		$calculated_result = $ac->query('tagomi', array('usergroups'));
+		$expected_result = array(
+			array(
+				'name' => 'Nobusuke Tagomi',
+				'table' => 'usergroups',
+				'key' => 'Nobusuke Tagomi'
+			)
+		);
+		$this->assertSame($expected_result, $calculated_result);
+	}
+
+	/**
 	 * @group MON-9409
 	 */
 	public function test_logs_when_searching_for_unspecified_table() {

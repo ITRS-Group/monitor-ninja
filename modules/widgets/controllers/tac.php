@@ -12,22 +12,25 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Ninja_Controller {
-	/**
-	 * Get the add widget menu
-	 *
-	 * exported as a seperate function due to testability
-	 */
-	public function _get_add_widget_menu() {
-		$menu = new Menu_Model("Add widget");
 
+	/**
+	 * Iterate through all widgets one time, to add the widgets' assets.
+	 * If you call this method with the menu parameter, all of the widgets
+	 * will also be attached to that menu.
+	 *
+	 * @param $menu Menu_Model = null
+	 */
+	public function _attach_assets_for_all_widgets(Menu_Model $menu = null) {
 		/* Fill with metadata, and build menu */
 		$order = 0;
 		foreach(Dashboard_WidgetPool_Model::get_available_widgets() as $name => $metadata) {
-			$menu->set($metadata['friendly_name'], "#", $order, null,
-				array(
-					'data-widget-name' => $name,
-					'class' => "menuitem_widget_add"
-				));
+			if($menu) {
+				$menu->set($metadata['friendly_name'], "#", $order, null,
+					array(
+						'data-widget-name' => $name,
+						'class' => "menuitem_widget_add"
+					));
+			}
 			if(isset($metadata['css'])) {
 				foreach($metadata['css'] as $stylesheet) {
 					$this->template->css[] = $metadata['path'] . $stylesheet;
@@ -40,7 +43,6 @@ class Tac_Controller extends Ninja_Controller {
 			}
 			$order++; /* We want the rows in the order they appear. They are already sorted */
 		}
-		return $menu;
 	}
 	/**
 	 * Get the select layout menu
@@ -207,64 +209,262 @@ class Tac_Controller extends Ninja_Controller {
 
 		if (!dashboard::is_login_dashboard($dashboard)) {
 			$menu->set("Dashboard options.Set as login dashboard",
-				LinkProvider::factory()->get_url('tac', 'login_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+				LinkProvider::factory()->get_url('tac', 'login_dashboard', array('dashboard_id'=> $dashboard->get_id())),
 				30, null, array(
 					'class' => "menuitem_dashboard_option"
-				));
+				)
+			);
 		}
 
-		//Show 'Share & Delete' options only for user dashboard's
+		$add_widget_menu = null;
+		// Show certain options only for the logged in user's dashboards
 		if($dashboard->get_can_write()) {
-
-			$menu->attach("Dashboard options", $this->_get_add_widget_menu()->set_order(10));
+			$add_widget_menu = new Menu_Model("Add widget");
+			$add_widget_menu->set_order(10);
+			$menu->attach("Dashboard options", $add_widget_menu);
 			$menu->attach("Dashboard options", $this->get_select_layout_menu($dashboard)->set_order(20));
 
+			if(op5mayi::instance()->run("monitor.system.dashboards.shared:create")) {
+				$menu->set("Dashboard options.Share this dashboard",
+					LinkProvider::factory()->get_url(
+						'tac',
+						'share_dashboard',
+						array(
+							'dashboard_id'=> $dashboard->get_id()
+						)
+					),
+					35,
+					null,
+					array(
+						'class' => "menuitem_dashboard_option"
+					)
+				);
+			}
+
 			$menu->set("Dashboard options.Rename this dashboard",
-				LinkProvider::factory()->get_url('tac', 'rename_dashboard_dialog', array('dashboard_id'=> $dashboard->get_id())),
+				LinkProvider::factory()->get_url('tac', 'rename_dashboard', array('dashboard_id'=> $dashboard->get_id())),
 				40, null, array(
 					'class' => "menuitem_dashboard_option"
 				));
 
-
-			//TODO: Dashboard 'Share' interface
-			$menu->set("Dashboard options.Share this dashboard", null, 50);
-
 			$menu->set("Dashboard options.Delete this dashboard",
-				LinkProvider::factory()->get_url('tac', 'delete_dashboard_dialog', array('dashboard_id' => $dashboard->get_id())),
+				LinkProvider::factory()->get_url('tac', 'delete_dashboard', array('dashboard_id' => $dashboard->get_id())),
 				60, null, array(
 					'class' => "menuitem_dashboard_option"
 				));
 		}
+		$this->_attach_assets_for_all_widgets($add_widget_menu);
 	}
 
 	/**
 	 * Render the new dashboard dialog, as an entire page
 	 *
-	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
-	 */
-	public function new_dashboard_dialog() {
-		$username = op5auth::instance()->get_user()->get_username();
-		$count = count(DashboardPool_Model::all()->reduce_by('username', $username, '='));
-		$this->template = new View('tac/new_dashboard_dialog', array(
-			'username' => $username,
-			'count' => $count
-		));
-	}
-
-	/**
-	 * Create a new dashboard
+	 * So we don't need to render it on every page, fancybox can load the
+	 * dialog from an URL.
+	 *
+	 * Also receives the data from the form in the popup
 	 */
 	public function new_dashboard() {
-		/* If still no dashboard found, Create a default dashboard */
-		$user = op5auth::instance()->get_user();
-		/* @var $user User_Model */
-		$dashboard = new Dashboard_Model();
-		$dashboard->set_username( $user->get_username() );
-		$dashboard->set_name( $this->input->post( 'name' ) );
-		$dashboard->set_layout( $this->input->post( 'layout', '3,2,1' ) );
+		if($_POST) {
+			/* If still no dashboard found, Create a default dashboard */
+			$user = op5auth::instance()->get_user();
+			/* @var $user User_Model */
+			$dashboard = new Dashboard_Model();
+			$dashboard->set_username( $user->get_username() );
+			$dashboard->set_name( $this->input->post( 'name' ) );
+			$dashboard->set_layout( $this->input->post( 'layout', '3,2,1' ) );
+			$dashboard->save();
+			$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+				'url' => 'tac/index/' . $dashboard->get_id() ) );
+			return;
+		}
+
+		$lp = LinkProvider::factory();
+
+		$form = new Form_Model(
+			$lp->get_url('tac', 'new_dashboard'),
+			array(
+				new Form_Field_Group_Model('dashboard', array(
+					new Form_Field_Text_Model('name', 'Name'),
+					new Form_Field_Option_Model('layout', 'Layout', array(
+						'3,2,1' => '321',
+						'1,3,2' => '132'
+					))
+				))
+			)
+		);
+
+		$username = op5auth::instance()->get_user()->get_username();
+		$form->set_values(array(
+			'name' => $username . ' dashboard',
+			'layout' => '3,2,1'
+		));
+
+		$form->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+		$this->template = $form->get_view();
+	}
+
+	/**
+	 * Render the share dashboard dialog, as an entire page
+	 *
+	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
+	 */
+	public function share_dashboard() {
+		$this->_verify_access("monitor.system.dashboards.shared:create");
+		if($_POST) {
+			$dashboard_id = $this->input->post('dashboard_id');
+			$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+			if(!$dashboard) {
+				$this->template = json::fail_view("No ".
+					"dashboard found with the id ".
+					"'$dashboard_id'.");
+				return;
+			}
+
+			if(!$dashboard->get_can_write()) {
+				$this->template = json::fail_view("The ".
+					"dashboard with the id ".
+					"'$dashboard_id' doesn't seem to be ".
+					"yours. You cannot share it, only ".
+					"the dashboard owner can do that.");
+				return;
+			}
+
+			$entity_type = $this->input->post('group_or_user');
+			if(!in_array($entity_type, array('group', 'user'), true)) {
+				$this->template = json::fail_view("Bad value for 'group_or_user'.");
+				return;
+			}
+
+			$entity_name = $this->input->post($entity_type);
+			if(!$entity_name || !$entity_name['value']) {
+				$this->template = json::fail_view("Missing ".
+					"value for who to share to, check ".
+					"your input");
+				return;
+			}
+
+			if($entity_type == "user" && $entity_name["value"] == op5auth::instance()->get_user()->get_username()) {
+				$this->template = json::fail_view("You cannot ".
+					"share a dashboard with yourself.");
+				return;
+			}
+
+			$dashboard->share_with($entity_type, $entity_name['value']);
+			$dashboard->save();
+			$this->template = json::ok_view($dashboard->get_shared_with());
+			return;
+		}
+
+		$dashboard_id = $this->input->get('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+
+		if(!$dashboard) {
+			$this->template = json::fail_view("No dashboard found with the id '$dashboard_id'");
+			return;
+		}
+
+		$share_form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'share_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_HtmlDecorator_Model('<h2>Share "'.html::specialchars($dashboard->get_name()).'" with (read only):</h2>'),
+				new Form_Field_Option_Model(
+					'group_or_user',
+					'Group or user',
+					array(
+						'group' => 'Group',
+						'user' => 'User'
+					),
+					'select'
+				),
+				new Form_Field_Conditional_Model(
+					'group_or_user',
+					'group',
+					new Form_Field_ORMObject_Model(
+						'group',
+						'Group',
+						array(
+							'usergroups'
+						)
+					)
+				),
+				new Form_Field_Conditional_Model(
+					'group_or_user',
+					'user',
+					new Form_Field_ORMObject_Model(
+						'user',
+						'User',
+						array(
+							'users'
+						)
+					)
+				),
+			)
+		);
+
+		$share_form->set_values(array(
+			'dashboard_id' => $dashboard->get_id(),
+		));
+
+		$share_form->add_button(new Form_Button_Confirm_Model('share', 'Share'));
+
+		$listing = new View('share_dashboard_listing');
+		$listing->shared_to = $dashboard->get_shared_with();
+		$listing->dashboard_id = $dashboard->get_id();
+
+		$outer_form = new Form_Model('#', array(
+			new Form_Button_Cancel_Model('close', 'Close')
+		));
+		$this->template = new View('concat');
+		$this->template->views = array(
+			$share_form->get_view(),
+			$listing,
+			$outer_form->get_view(),
+		);
+	}
+
+	/**
+	 * Remove read rights for a user that was given read rights by the
+	 * logged in user.
+	 */
+	public function unshare_dashboard() {
+		$this->_verify_access("monitor.system.dashboards.shared:delete");
+		if(!$_POST) {
+			$this->template = json::fail_view("You should not visit this URL in your browser.");
+			return;
+		}
+
+		$dashboard_id = $this->input->post('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+		if(!$dashboard) {
+			$this->template = json::fail_view("No dashboard found with the id '$dashboard_id'.");
+			return;
+		}
+
+		$entity_type = $this->input->post('group_or_user');
+		if(!in_array($entity_type, array('group', 'user'), true)) {
+			$this->template = json::fail_view("Bad value for 'group_or_user': $entity_type.");
+			return;
+		}
+
+		$entity_name = $this->input->post('name');
+		if(!$entity_name) {
+			$this->template = json::fail_view("Missing ".
+				"value for who to share to, check ".
+				"your input");
+			return;
+		}
+
+		$dashboard->unshare_with($entity_type, $entity_name);
 		$dashboard->save();
-		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
-			'url' => 'tac/index/' . $dashboard->get_id() ) );
+		$this->template = json::ok_view(sprintf("Unshared the dashboard '%s' from the %s %s.",
+			$dashboard->get_name(),
+			$entity_type,
+			$entity_name['value']
+		));
+		return;
 	}
 
 	/**
@@ -272,94 +472,127 @@ class Tac_Controller extends Ninja_Controller {
 	 *
 	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
 	 */
-	public function rename_dashboard_dialog() {
-		$username = op5auth::instance()->get_user()->get_username();
-		$dashboard_id = $this->input->get('dashboard_id');
-		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
-		$this->template = new View('tac/rename_dashboard_dialog', array(
-			'username' => $username,
-			'dashboard' => $dashboard
-		));
-	}
-
-	/**
-	 * Rename the current dashboard
-	 */
 	public function rename_dashboard() {
-		$dashboard = $this->_current_dashboard();
-		if ($dashboard->get_can_write()) {
-			$dashboard->set_name( $this->input->post( 'name' ) );
-			$dashboard->save();
+		if($_POST) {
+			$dashboard = $this->_current_dashboard();
+			if ($dashboard->get_can_write()) {
+				$dashboard->set_name( $this->input->post( 'name' ) );
+				$dashboard->save();
+			}
+			$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+				'url' => 'tac/index/' . $dashboard->get_id() ) );
+			return;
 		}
-		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
-			'url' => 'tac/index/' . $dashboard->get_id() ) );
-	}
-
-	/**
-	 * Render the login dashboard dialog
-	 */
-	public function login_dashboard_dialog() {
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
-		$this->template = new View('tac/login_dashboard_dialog', array(
-			'dashboard' => $dashboard
+
+		if(!$dashboard) {
+			$this->template = json::fail_view("No dashboard found with the id '$dashboard_id'.");
+			return;
+		}
+
+		$form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'rename_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_Text_Model('name', 'Name')
+			)
+		);
+
+		$form->set_values(array(
+			'dashboard_id' => $dashboard->get_id(),
+			'name' => $dashboard->get_name()
 		));
+
+		$form->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+		$this->template = $form->get_view();
 	}
 
 	/**
 	 * Set Current dashboard as Login Dashboard
 	 */
-	public function set_login_dashboard() {
-		$user = op5auth::instance()->get_user();
-		$dashboard = $this->_current_dashboard();
+	public function login_dashboard() {
+		if($_POST) {
+			$user = op5auth::instance()->get_user();
+			$dashboard = $this->_current_dashboard();
 
-		/* Login dashboard setting already available update it else create setting */
-		$login_dashboard = SettingPool_Model::all()
-			->reduce_by('username', $user->get_username(), '=')
-			->reduce_by('type', 'login_dashboard', '=')
-			->one();
+			/* Login dashboard setting already available update it else create setting */
+			$login_dashboard = SettingPool_Model::all()
+				->reduce_by('username', $user->get_username(), '=')
+				->reduce_by('type', 'login_dashboard', '=')
+				->one();
 
-		if($login_dashboard) {
-			$login_dashboard->set_setting($dashboard->get_id());
-			$login_dashboard->save();
-		}else {
-			$login_dashboard = new Setting_Model();
-			$login_dashboard->set_username($user->get_username());
-			$login_dashboard->set_type('login_dashboard');
-			$login_dashboard->set_setting($dashboard->get_id());
-			$login_dashboard->save();
+			if($login_dashboard) {
+				$login_dashboard->set_setting($dashboard->get_id());
+				$login_dashboard->save();
+			}else {
+				$login_dashboard = new Setting_Model();
+				$login_dashboard->set_username($user->get_username());
+				$login_dashboard->set_type('login_dashboard');
+				$login_dashboard->set_setting($dashboard->get_id());
+				$login_dashboard->save();
+			}
+
+			$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
+				'url' => 'tac/index/' . $dashboard->get_id() ) );
+			return;
 		}
 
-		$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
-			'url' => 'tac/index/' . $dashboard->get_id() ) );
-	}
-
-	/**
-	 * Render the new dashboard dialog, as an entire page
-	 *
-	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
-	 */
-	public function delete_dashboard_dialog() {
-		$username = op5auth::instance()->get_user()->get_username();
 		$dashboard_id = $this->input->get('dashboard_id');
 		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
-		$this->template = new View('tac/delete_dashboard_dialog', array(
-			'username' => $username,
-			'dashboard' => $dashboard
+
+		$form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'login_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_HtmlDecorator_Model('Set dashboard "' . $dashboard->get_name() .  '" as login dashboard?')
+			)
+		);
+
+		$form->set_values(array(
+			'dashboard_id' => $dashboard->get_id()
 		));
+
+		$form->add_button(new Form_Button_Confirm_Model('save', 'Save'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+
+		$this->template = $form->get_view();
 	}
 
 	/**
 	 * Delete the current dashboard
 	 */
 	public function delete_dashboard() {
-		$dashboard = $this->_current_dashboard();
-		/* @var $dashboard Dashboard_Model */
-		if ($dashboard->get_can_write()) {
-			$dashboard->get_dashboard_widgets_set()->delete();
-			$dashboard->delete();
+		if($_POST) {
+			$dashboard = $this->_current_dashboard();
+			/* @var $dashboard Dashboard_Model */
+			if ($dashboard->get_can_write()) {
+				$dashboard->get_dashboard_widgets_set()->delete();
+				$dashboard->delete();
+			}
+			$this->template = new View( 'simple/redirect', array( 'target' => 'controller', 'url' => 'tac/index' ) );
+			return;
 		}
-		$this->template = new View( 'simple/redirect', array( 'target' => 'controller', 'url' => 'tac/index' ) );
+		$dashboard_id = $this->input->get('dashboard_id');
+		$dashboard = DashboardPool_Model::fetch_by_key($dashboard_id);
+
+		$form = new Form_Model(
+			LinkProvider::factory()->get_url('tac', 'delete_dashboard'),
+			array(
+				new Form_Field_Hidden_Model('dashboard_id'),
+				new Form_Field_HtmlDecorator_Model('Are you sure you want to delete this dashboard?'),
+				new Form_Field_HtmlDecorator_Model('Deleting a dashboard cannot be undone!')
+			)
+		);
+
+		$form->set_values(array(
+			'dashboard_id' => $dashboard->get_id()
+		));
+
+		$form->add_button(new Form_Button_Confirm_Model('yes', 'Yes'));
+		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
+		$this->template = $form->get_view();
 	}
 
 	/**

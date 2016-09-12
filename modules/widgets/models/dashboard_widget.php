@@ -7,8 +7,11 @@
  * @todo: documentation
  */
 class Dashboard_Widget_Model extends BaseDashboard_Widget_Model {
+
 	/**
 	 * For backward compatibility, get friendly name from widget
+	 *
+	 * @return string
 	 */
 	public function get_friendly_name() {
 		$metadata = $this->build()->get_metadata();
@@ -20,6 +23,8 @@ class Dashboard_Widget_Model extends BaseDashboard_Widget_Model {
 	/**
 	 * Settings is stored as a json block in database, decode and encode
 	 * @see BaseDashboard_Widget_Model::get_setting()
+	 *
+	 * @return array
 	 */
 	public function get_setting() {
 		$var = json_decode(parent::get_setting(), true);

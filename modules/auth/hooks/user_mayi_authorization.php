@@ -30,7 +30,8 @@ authenticated                   ninja:                                          
 
 authenticated                   monitor.system.saved_filters:                                 true
 authenticated                   monitor.reports.saved_reports:                                true
-authenticated                   monitor.system.dashboards:                                    true
+authenticated                   monitor.system.dashboards.personal:                           true
+authenticated                   monitor.system.dashboards.shared:{create,read}                true
 authenticated                   monitor.monitoring.columns:                                   true
 authenticated                   monitor.system.settings:                                      true
 authenticated                   monitor.system.widgets:                                       true
@@ -73,6 +74,7 @@ configuration_information       monitor.system.backup:                          
 system_information              monitor.monitoring.status:read                                true
 system_information              monitor.monitoring.performance:read                           true
 system_commands                 monitor.monitoring.status:update                              true
+dashboard_share                 monitor.system.dashboards.shared:                             true
 
 host_command_acknowledge        monitor.monitoring.hosts:update.command.acknowledge           true
 host_command_add_comment        monitor.monitoring.hosts:update.command.comment               true
@@ -311,6 +313,16 @@ EOF;
 			'populate_mayi'
 		) );
 	}
+
+	/**
+	 * Let's expose the parsed acl so that it can be tested.
+	 *
+	 * @return array
+	 */
+	public function get_acl() {
+		return $this->acl;
+	}
+
 	/**
 	 * On system.ready, add this class as a MayI constraint
 	 */

@@ -47,46 +47,46 @@ class User_Permission_Test extends PHPUnit_Framework_TestCase {
 	public function test_user_quark_regexp() {
 		/* By defining quarks in mock data, and keep them in order, we can assume exact regexp string */
 		$this->mock_data ( array (
-				'ORMDriverMySQL default' => array (
-						'permission_quarks' => array (
-								array(
-										'id' => 77,
-										'type' => 'user',
-										'name' => 'myuser'
-								),
-								array(
-										'id' => 131,
-										'type' => 'user',
-										'name' => 'anotheruser'
-								),
-								array(
-										'id' => 37,
-										'type' => 'group',
-										'name' => 'grp_a'
-								),
-								array(
-										'id' => 19,
-										'type' => 'group',
-										'name' => 'grp_dont_use'
-								),
-								array(
-										'id' => 53,
-										'type' => 'group',
-										'name' => 'grp_b'
-								)
-						)
-				),
-				'ORMDriverYAML default' => array (
-						'users' => array (),
-						'usergroups' => array (
-								array (
-										'groupname' => 'grp_a'
-								),
-								array (
-										'groupname' => 'grp_b'
-								)
-						)
+			'ORMDriverMySQL default' => array (
+				'permission_quarks' => array (
+					array(
+						'id' => 77,
+						'type' => 'user',
+						'name' => 'myuser'
+					),
+					array(
+						'id' => 131,
+						'type' => 'user',
+						'name' => 'anotheruser'
+					),
+					array(
+						'id' => 37,
+						'type' => 'group',
+						'name' => 'grp_a'
+					),
+					array(
+						'id' => 19,
+						'type' => 'group',
+						'name' => 'grp_dont_use'
+					),
+					array(
+						'id' => 53,
+						'type' => 'group',
+						'name' => 'grp_b'
+					)
 				)
+			),
+			'ORMDriverYAML default' => array (
+				'users' => array (),
+				'usergroups' => array (
+					array (
+						'groupname' => 'grp_a'
+					),
+					array (
+						'groupname' => 'grp_b'
+					)
+				)
+			)
 		), __FUNCTION__ );
 		$user = new User_Model();
 		$user->set_username('myuser');

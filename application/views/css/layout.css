@@ -1698,3 +1698,16 @@ ul.linklist li a:after {
   font-size: 80%;
   vertical-align: 5%;
 }
+
+ul.shared_with_these_entities, p.shared_with_placeholder {
+	margin: 5px 10px;
+}
+
+ul.shared_with_these_entities li {
+	clear: both;
+}
+
+ul.shared_with_these_entities li a {
+	display: inline-block;
+	float: right;
+}
