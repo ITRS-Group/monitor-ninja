@@ -168,6 +168,12 @@ var Notify = (function () {
      * @return {notification}    The created notification
      */
     message: function (message, options) {
+      if(typeof message !== "string") {
+        throw new Error("A Notify message must be a string, got "+(typeof message));
+      }
+      if(!message.length) {
+        throw new Error("A Notify message cannot be empty");
+      }
 
       if (zones === null) initialize();
       var notification = Notification(message, options);
