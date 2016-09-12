@@ -52,8 +52,10 @@ class Menu_Model {
 	public function __construct ($label = NULL, $href = NULL, $order = null, $icon = false, array $attributes = array()) {
 
 		if (is_null($order)) {
-			$order = self::$insertion_order++;
+			self::$insertion_order++;
+			$order = self::$insertion_order;
 		}
+
 		$this->label = $label;
 		$this->order = $order;
 		$this->href = $href;
@@ -248,7 +250,7 @@ class Menu_Model {
 	public function get_branch () {
 
 		usort($this->branch, function ($a, $b) {
-			return ($a->get_order() === $b->get_order()) ? 0 : ($a->get_order() < $b->get_order()) ? -1 : 1;
+			return $a->get_order() - $b->get_order();
 		});
 
 		return $this->branch;
