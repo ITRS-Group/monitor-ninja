@@ -22,12 +22,12 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width">
 		<title>QUnit Test Suite</title>
-		<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.0.1.css">
+		<link rel="stylesheet" href="../../node_modules/lib/node_modules/qunitjs/qunit/qunit.css">
 	</head>
 	<body>
 		<div id="qunit"></div>
 		<div id="qunit-fixture"></div>
-		<script src="https://code.jquery.com/qunit/qunit-2.0.1.js"></script>
+		<script src="../../node_modules/lib/node_modules/qunitjs/qunit/qunit.js"></script>
 		<?php
 		$settings = json_decode(file_get_contents(__DIR__ . '/test_suite.json'), true);
 		foreach($settings as $s) {

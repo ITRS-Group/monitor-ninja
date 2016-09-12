@@ -25,7 +25,7 @@ test: generate-php
 
 test/qunit/test_suite.html: test/qunit/test_suite.json test/qunit/test_suite.php
 	php test/qunit/test_suite.php > $@
-	node-qunit-phantomjs $@
+	node_modules/bin/node-qunit-phantomjs $@
 
 test-ci-cleanup:
 	rm -f application/config/custom/config.php
