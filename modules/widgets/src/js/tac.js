@@ -218,7 +218,7 @@ $(document).on("submit", ".nj-form[action$='/tac/share_dashboard']", function(ev
 		.attr("disabled", "disabled")
 		.data("oldValue", share_button.val())
 		.val("Processing ...");
-	$.post(_site_domain+_index_page+"/tac/share_dashboard", form.serialize())
+	$.post(form.attr("action"), form.serialize())
 		.done(function(data) {
 			$.each(["group", "user"], function(index, entity_type) {
 				if(data.result[entity_type].length) {
@@ -231,14 +231,15 @@ $(document).on("submit", ".nj-form[action$='/tac/share_dashboard']", function(ev
 							.addClass(entity_type)
 							.append($("<span>").text(name + " ("+entity_type+")"))
 							.append($("<a>")
-								.addClass("unshare_dashboard")
-								.addClass("no_uline")
-								.attr("href", _site_domain+_index_page+"/tac/unshare_dashboard")
-								.attr("title", "Remove access for "+name)
-								.attr("data-dashboard_id", form.find("input[name='dashboard_id']").val())
-								.attr("data-group_or_user", entity_type)
-								.attr("data-name", name)
-								.append(icon16("delete"))
+								.addClass("unshare_dashboard no_uline")
+								.attr({
+									"href": _site_domain+_index_page+"/tac/unshare_dashboard",
+									"title": "Remove access for "+name,
+									"data-dashboard_id": form.find("input[name='dashboard_id']").val(),
+									"data-group_or_user": entity_type,
+									"data-name": name
+								})
+								.append($("<span class='icon-cancel error'/>"))
 							)
 					       );
 				});

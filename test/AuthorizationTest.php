@@ -6,8 +6,6 @@ require_once "op5/auth/Authorization.php";
 
 class AuthorizationTest extends PHPUnit_Framework_TestCase {
 	private $az;
-	private $tmp_auth_groups_file;
-	private $tmp_auth_file;
 
 	public function setUp() {
 		op5objstore::instance()->mock_clear();

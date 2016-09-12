@@ -48,7 +48,7 @@ var LightboxManager = (function() {
 	var Lightbox = (function () {
 
 		/**
-		 * Default options for the lightbox, can be overriden by the options
+		 * Default options for the lightbox, can be overridden by the options
 		 * object passed to the constructor
 		 */
 		var DEFAULT_OPTIONS = {

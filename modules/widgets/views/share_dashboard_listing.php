@@ -23,7 +23,7 @@ foreach($shared_to as $type => $entities) {
 				data-dashboard-id='".html::specialchars($dashboard_id)."'
 				data-group_or_user='$type'
 				data-name='".html::specialchars($entity)."'
-			><span class='icon-16 x16-delete'></span></a>
+			><span class='icon-cancel error'></span></a>
 		</li>\n";
 	}
 }
