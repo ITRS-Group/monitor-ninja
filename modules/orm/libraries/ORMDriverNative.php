@@ -67,6 +67,7 @@ class ORMDriverNative implements ORMDriverInterface {
 			throw new ORMDriverNativeException("Non-zero 'offset' specified (" . $offset . "), but not implemented");
 		}
 
+		$pools = array();
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
 			foreach ($this->storage[$table] as $row) {
 				if ($limit !== false && count($data) === intval($limit))
@@ -76,7 +77,10 @@ class ORMDriverNative implements ORMDriverInterface {
 					if (is_array($type)) {
 						list($class_prefix, $field_prefix) = $type;
 						$pool_model = $class_prefix . 'Pool_Model';
-						$foreign_key = $pool_model::key_columns();
+						if(!isset($pools[$pool_model])) {
+							$pools[$pool_model] = new $pool_model();
+						}
+						$foreign_key = call_user_func(array($pools[$pool_model], "key_columns"));
 						if(isset($structure["relations"])) {
 							/* SQL explicit references */
 							foreach($structure["relations"] as $rel) {
