@@ -10,10 +10,15 @@ echo '<label>';
 echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
 echo '<div class="nj-form-field-autocomplete" data-autocomplete="' . implode(',', $tables) . '">';
 
-$first = $tables[count($tables) - 1];
+$first = rtrim($tables[count($tables) - 1], 's');
 $types = $first;
 if(count($tables) > 1) {
-	$types = implode(', ', $tables);
+	$types = implode(', ',
+		array_map(function($t) {
+			return rtrim($t, 's');
+		},
+		$tables)
+	);
 	$types .= ' or ' . $first;
 }
 
@@ -24,7 +29,6 @@ if ($default instanceof Object_Model) {
 	echo '<input class="nj-form-option" type="hidden" class="nj-form-option" value="'.html::specialchars($tables[0]).'" name="'.html::specialchars($field->get_name()).'[table]">';
 	echo '<input class="nj-form-field-autocomplete-input nj-form-option" data-njform-table="'.html::specialchars($tables[0]).'" placeholder="Enter name of '.$types.'" autocomplete="off" type="text" name="'.html::specialchars($field->get_name()).'[value]" value="'.html::specialchars($default).'" />';
 }
-echo '<input class="nj-form-field-autocomplete-shadow" autocomplete="off" type="text" class="nj-form-option" />';
 echo '<span class="nj-form-field-autocomplete-dropper">▼</span>';
 echo '<ul class="nj-form-field-autocomplete-items"></ul>';
 echo '</div>';
