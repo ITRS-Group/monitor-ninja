@@ -29,3 +29,4 @@ src/generators/*
 config/cucumber.yml
 classes.php
 views.php
+test/qunit/test_suite.html
