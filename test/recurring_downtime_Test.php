@@ -38,6 +38,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function resubmit_and_cleanup($tests, $type) {
 		$ls = Livestatus::instance();
 		$comment = $this->basecomment . $type;
@@ -75,6 +78,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->assertCount(0, $ls->getDowntimes(array('filter' => array('comment' => $comment))), "Downtimes are gone after deleting them");
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function cron($tests, $type, $expected_number) {
 		$comment = $this->basecomment . $type;
 		foreach ($tests as $time => $description) {
@@ -97,7 +103,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 *	Test if everyday schedule for hosts work
+	 * Test if everyday schedule for hosts work
+	 *
+	 * @group nonlocal
 	 */
 	public function test_schedule_hosts() {
 		$comment = $this->basecomment.'hosts';
@@ -128,7 +136,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 *	Test if everyday schedule for hosts work
+	 * Test if everyday schedule for hosts work
+	 *
+	 * @group nonlocal
 	 */
 	public function test_schedule_hostgroups() {
 		$comment = $this->basecomment . 'hostgroups';
@@ -169,7 +179,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 *↦ Test if everyday schedule for services work
+	 * Test if everyday schedule for services work
+	 *
+	 * @group nonlocal
 	 */
 	public function test_schedule_services() {
 		$comment = $this->basecomment . 'services';
@@ -201,7 +213,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 *↦ Test if everyday schedule for services work
+	 * Test if everyday schedule for services work
+	 *
+	 * @group nonlocal
 	 */
 	public function test_schedule_servicegroups() {
 		$comment = $this->basecomment . 'servicegroups';
@@ -241,6 +255,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_host_noschedule() {
 		$comment = $this->basecomment . "hosts";
 		$data = array(
@@ -276,6 +293,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->assertCount(1, $result, "One schedule should be deleted.");
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_host_acrossmidnight() {
 		$comment = $this->basecomment . "hosts";
 		$data = array(
@@ -314,6 +334,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->assertCount(0, $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduleendtime} +1 day", $time), 'end_time' => strtotime("{$this->scheduletimeofday} +2 days", $time)))), "Downtimes are gone after deleting them");
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_realistic_time() {
 		$comment = $this->basecomment . "tomorrow";
 		$data = array(
@@ -351,6 +374,9 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->assertCount(0, $ls->getDowntimes(array('filter' => array('start_time' => strtotime("{$this->scheduleendtime} +1 day"), 'end_time' => strtotime("{$this->scheduletimeofday} +2 days")))), "Downtimes are gone after deleting them");
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_migration()
 	{
 		$db = Database::instance();

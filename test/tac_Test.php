@@ -496,6 +496,9 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($this->tac->template->success);
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_on_refresh() {
 		$this->setup_some_widgets();
 

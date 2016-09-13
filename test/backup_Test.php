@@ -29,6 +29,9 @@ class Backup_Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_backup() {
 		$controller = new Backup_Controller();
 		$controller->backup();
@@ -37,6 +40,9 @@ class Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->ok($controller->template->file != '', "asserting backup file has been set");
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_backup_restore() {
 		$controller = new Backup_Controller();
 		$controller->backup();
@@ -50,6 +56,9 @@ class Backup_Test extends PHPUnit_Framework_TestCase {
 		sleep(5); // *sigh* Wait for nagios to start again...
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_backup_delete() {
 		$controller = new Backup_Controller();
 		$controller->backup();

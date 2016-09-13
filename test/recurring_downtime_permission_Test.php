@@ -175,6 +175,9 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$this->assertCount(0, $stats);
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function testLimitedHost()
 	{
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_Model(array('username' => 'limited')));
