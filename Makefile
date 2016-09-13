@@ -19,7 +19,6 @@ generate-php:
 	php build.php
 
 test: generate-php
-	make test/qunit/test_suite.html
 	make test-ci-prepare
 	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/bootstrap.php test/; res=$$?; make test-ci-cleanup; exit $$res
 

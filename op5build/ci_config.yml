@@ -10,4 +10,5 @@ post:
   echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
   npm install qunitjs -g --prefix /opt/monitor/op5/ninja/node_modules
   npm install node-qunit-phantomjs -g --prefix /opt/monitor/op5/ninja/node_modules
+  TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test/qunit/test_suite.html
   TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
