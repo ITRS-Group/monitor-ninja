@@ -19,6 +19,10 @@ class user_mayi_authorization implements op5MayI_Constraints {
 	 *
 	 * Second part is a action subset match. If the action matches the part, the
 	 * function returns the third part as status.
+	 *
+	 * Only the first rule that matches the current action subset decides
+	 * the outcome, that's why we must always start with the most severe
+	 * rules (both permissive and restrictive).
 	 */
 	private $raw_acl = <<<EOF
 always                          ninja.session:                                                true
@@ -30,13 +34,16 @@ authenticated                   ninja:                                          
 
 authenticated                   monitor.system.saved_filters:                                 true
 authenticated                   monitor.reports.saved_reports:                                true
-authenticated                   monitor.system.dashboards.personal:                           true
-authenticated                   monitor.system.dashboards.shared:{create,read}                true
 authenticated                   monitor.monitoring.columns:                                   true
 authenticated                   monitor.system.settings:                                      true
 authenticated                   monitor.system.widgets:                                       true
 authenticated                   monitor.system.permission_quarks:                             true
 configuration_information       monitor.system.backup:                                        true
+
+!dashboard_share                monitor.system.dashboards.shared:                             false
+authenticated                   monitor.system.dashboards.shared:{create,read}                true
+authenticated                   monitor.system.dashboards.personal:                           true
+authenticated                   monitor.system.dashboards:                                    true
 
 !api_command                    :read.api.command                                             false
 !api_command                    :update.api.command                                           false
@@ -74,7 +81,6 @@ configuration_information       monitor.system.backup:                          
 system_information              monitor.monitoring.status:read                                true
 system_information              monitor.monitoring.performance:read                           true
 system_commands                 monitor.monitoring.status:update                              true
-dashboard_share                 monitor.system.dashboards.shared:                             true
 
 host_command_acknowledge        monitor.monitoring.hosts:update.command.acknowledge           true
 host_command_add_comment        monitor.monitoring.hosts:update.command.comment               true
@@ -372,7 +378,9 @@ EOF;
 		$authpoints['authenticated'] = $authenticated;
 
 		$denied_rules = array();
-		$is_allowed = null; /* set _once_ only */
+		// set _once_ only, otherwise rules such as "always" could
+		// be overridden later on.. the order in the ACL matters
+		$is_allowed = null;
 
 		foreach($this->acl as $acl_line) {
 			list($access_rule, $negate, $action_pattern, $acl_allow) = $acl_line;
