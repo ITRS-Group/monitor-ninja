@@ -149,7 +149,7 @@ class Dashboard_Model extends BaseDashboard_Model
 	/**
 	 * Overrides previous read permissions
 	 *
-	 * @param array $permissions => ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
+	 * @param $permissions array => ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
 	 */
 	public function set_read_perm(array $permissions = array()) {
 		$quarks = array();
