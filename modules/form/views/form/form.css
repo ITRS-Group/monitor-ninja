@@ -342,12 +342,6 @@ form.nj-form .nj-form-field-autocomplete input {
   background: transparent;
 }
 
-form.nj-form input.nj-form-field-autocomplete-shadow {
-  z-index: 1;
-  background: #ffffff;
-  color: #999999;
-}
-
 form.nj-form .nj-form-field-autocomplete-items {
   position: absolute;
   display: block;

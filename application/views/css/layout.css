@@ -38,6 +38,10 @@ q:before, q:after, blockquote:before, blockquote:after {
   content: none;
 }
 
+a[href] {
+  cursor: pointer;
+}
+
 a img {
   border: none;
 }
@@ -127,7 +131,7 @@ button.plain {
   border-bottom: 1px dotted #444444;
 }
 
-a.no_uline, input[type="submit"].plain.no_uline, button.plain.no_uline {
+a.no_uline, a.no_uline:hover, input[type="submit"].plain.no_uline, button.plain.no_uline {
     border-bottom: 0 dotted #444444;
 }
 
@@ -1693,4 +1697,17 @@ ul.linklist li a:after {
   margin-left: 16px;
   font-size: 80%;
   vertical-align: 5%;
+}
+
+ul.shared_with_these_entities, p.shared_with_placeholder {
+	margin: 5px 10px;
+}
+
+ul.shared_with_these_entities li {
+	clear: both;
+}
+
+ul.shared_with_these_entities li a {
+	display: inline-block;
+	float: right;
 }

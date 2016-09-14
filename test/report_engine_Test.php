@@ -6,6 +6,9 @@
  */
 class Report_Engine_Test extends PHPUnit_Framework_TestCase {
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_make_sure_we_execute_tests_from_within_CET() {
 		$current_offset = 3600 * (1 + date("I"));
 		$this->assertEquals($current_offset, date::utc_offset(),
@@ -57,6 +60,7 @@ class Report_Engine_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @depends test_make_sure_we_execute_tests_from_within_CET
 	 * @dataProvider report_test_files_provider
+	 * @group nonlocal
 	 */
 	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
 		ob_start();

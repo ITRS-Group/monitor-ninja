@@ -183,15 +183,6 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 	}
 
 	/**
-	 * Get a quark for the current user
-	 *
-	 * @return integer
-	 */
-	public function get_permission_quark() {
-		return PermissionQuarkPool_Model::build('user', $this->get_username());
-	}
-
-	/**
 	 * Return a regexp for matching a quark string for the current users access
 	 *
 	 * @return string

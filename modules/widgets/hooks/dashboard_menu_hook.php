@@ -39,7 +39,7 @@ Event::add ( 'ninja.menu.setup', function () {
 	$separator->set_separator();
 
 	$db_menu->set("Dashboard's overview", listview::querylink('[dashboards] all'));
-	$db_menu->set("New dashboard", 'tac/new_dashboard_dialog', null, false, array(
+	$db_menu->set("New dashboard", 'tac/new_dashboard', null, false, array(
 		'class' => "menuitem_dashboard_option" /* Popup as fancybox */
 	));
 

@@ -127,6 +127,9 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$this->assertSame($visible_states, array_keys($result_array[$key]));
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_restricted_access() {
 		/* Store old user, so we can reset afterward */
 		$authmod = op5auth::instance();
@@ -190,6 +193,9 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$authmod->force_user($stasheduser, false);
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_overlapping_timeperiods() {
 		$db = Database::instance();
 		$opts = array(
@@ -279,13 +285,10 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * To begin with, test bug #6821
-	 */
-
-	/**
 	 * Test bug #8602
 	 *
 	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
+	 * @group nonlocal
 	 */
 	function test_saved_filter_hostgroup_collission() {
 
@@ -323,6 +326,8 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	 * Test bug #8602
 	 *
 	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
+	 *
+	 * @group nonlocal
 	 */
 	function test_saved_filter_servicegroup_collission() {
 
@@ -377,6 +382,8 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	 *
 	 * We don't care about output, but almost anything that can go wrong will
 	 * print errors on lines, which we implicitly catch here, so we should be OK
+	 *
+	 * @group nonlocal
 	 */
 	function test_csv()
 	{
@@ -560,6 +567,9 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(0 => -2, 1 => -2, 2 => -2, 3 => -2), $obj->options['service_filter_status']);
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	function test_timeperiod_import()
 	{
 			/*

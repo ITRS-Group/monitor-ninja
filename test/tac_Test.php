@@ -46,10 +46,12 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		));
 
 		$this->tac = new Tac_Controller();
+		$_POST = array();
 	}
 
 	protected function tearDown() {
 		op5objstore::instance()->mock_clear();
+		$_POST = array();
 	}
 
 	private function mock_data($tables) {
@@ -494,6 +496,9 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($this->tac->template->success);
 	}
 
+	/**
+	 * @group nonlocal
+	 */
 	public function test_on_refresh() {
 		$this->setup_some_widgets();
 
@@ -772,7 +777,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	 * actually be done by exporting
 	 */
 	public function test_widget_menu_order() {
-		$menu = $this->tac->_get_add_widget_menu();
+		$menu = new Menu_Model("My Menu");
+		$this->tac->_attach_assets_for_all_widgets($menu);
 
 		$count = 0;
 		$last_name = '';
@@ -784,6 +790,233 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 			$last_name = $cur_name;
 			$count++;
 		}
-		$this->assertGreaterThan(0, $count);
+		$this->assertGreaterThan(0, $count,
+			"The menu on the Tac should contain some items"
+		);
+	}
+
+	/**
+	 * @group MON-9539
+	 */
+	public function test_can_share_dashboard_with_group() {
+		$this->mock_data(array(
+			"ORMDriverMySQL default" => array(
+				"dashboards" => array(
+					array(
+						"id" => 4,
+						"name" => "My dashboard",
+						"username" => "superuser",
+						"layout" => "",
+						"read_perm" => ""
+					)
+				),
+				"permission_quarks" => array()
+			)
+		));
+
+		$dashboard = DashboardPool_Model::fetch_by_key(4);
+		$this->assertInstanceOf("Dashboard_Model", $dashboard,
+			"We should have found our mocked Dashboard"
+		);
+		$this->assertSame(
+			array(),
+			$dashboard->get_read_perm(),
+			"There should be nothing shared yet"
+		);
+
+		$tac = new Tac_Controller();
+		$_POST = array(
+			"dashboard_id" => 4,
+			"table" => "usergroups",
+			"usergroups" => array(
+				"value" => "my_group"
+			)
+		);
+		$tac->share_dashboard();
+		$this->assertEquals(true, $tac->template->success,
+			var_export($tac->template->value, true)
+		);
+
+		$dashboard = DashboardPool_Model::fetch_by_key(4);
+		$this->assertInstanceOf("Dashboard_Model", $dashboard,
+			"We should still be able to find our mocked Dashboard"
+		);
+		$this->assertSame(
+			array(
+				"usergroups" => array(
+					"my_group"
+				),
+			),
+			$dashboard->get_read_perm(),
+			"Now the dashboard should be shared"
+		);
+	}
+
+	/**
+	 * @group MON-9539
+	 */
+	public function test_cannot_share_dashboard_with_myself() {
+		// let's login as "superuser" here to not rely on setUp() as
+		// much.
+		Auth::instance(array('session_key' => false))->force_user(
+			new User_AlwaysAuth_Model()
+		);
+		$this->mock_data(array(
+			"ORMDriverMySQL default" => array(
+				"dashboards" => array(
+					array(
+						"id" => 4,
+						"name" => "My dashboard",
+						"username" => "superuser",
+						"layout" => "",
+						"read_perm" => ""
+					)
+				),
+				"permission_quarks" => array()
+			)
+		));
+
+		$dashboard = DashboardPool_Model::fetch_by_key(4);
+		$this->assertInstanceOf("Dashboard_Model", $dashboard,
+			"We should have found our mocked Dashboard"
+		);
+		$this->assertSame(
+			array(),
+			$dashboard->get_read_perm(),
+			"There should be nothing shared yet"
+		);
+
+		$tac = new Tac_Controller();
+		$_POST = array(
+			"dashboard_id" => 4,
+			"table" => "users",
+			"users" => array(
+				"value" => "superuser"
+			)
+		);
+		$tac->share_dashboard();
+		$this->assertEquals(false, $tac->template->success,
+			var_export($tac->template->value, true)
+		);
+
+		$dashboard = DashboardPool_Model::fetch_by_key(4);
+		$this->assertInstanceOf("Dashboard_Model", $dashboard,
+			"We should still be able to find our mocked Dashboard"
+		);
+		$this->assertSame(
+			array(),
+			$dashboard->get_read_perm(),
+			"The dashboard should not have been shared with the ".
+			"user themselves"
+		);
+	}
+
+	/**
+	 * The check for mayi is placed inside of the controller, because
+	 * that's our convention.
+	 *
+	 * @group MON-9539
+	 * @expectedException Kohana_Reroute_Exception
+	 * @expectedExceptionMessage Reroute to Auth/_no_access
+	 */
+	public function test_sharing_dashboard_can_be_denied_by_insufficient_mayi_rights() {
+		$interesting_mayi_action = "monitor.system.dashboards.shared:create";
+		$mayi_denied_fixture = array(
+			$interesting_mayi_action => array(
+				"message" => "You done for, fool"
+			)
+		);
+		$mock_mayi = new MockMayI(array(
+			"denied_actions" => $mayi_denied_fixture
+		));
+		op5objstore::instance()->mock_add("op5MayI", $mock_mayi);
+
+		// let's login as "superuser" here to not rely on setUp() as
+		// much.
+		Auth::instance(array("session_key" => false))->force_user(
+			new User_AlwaysAuth_Model()
+		);
+
+		$tac = new Tac_Controller();
+		$_POST = array(
+			"dashboard_id" => 4,
+			"table" => "users",
+			"users" => array(
+				"value" => "superuser"
+			)
+		);
+		$tac->share_dashboard();
+	}
+
+	/**
+	 * The check for mayi is placed inside of the controller, because
+	 * that's our convention.
+	 *
+	 * @group MON-9539
+	 * @expectedException Kohana_Reroute_Exception
+	 * @expectedExceptionMessage Reroute to Auth/_no_access
+	 */
+	public function test_can_share_dashboard_and_deny_unsharing_it_through_mayi() {
+		// setup orm
+		$this->mock_data(array(
+			"ORMDriverMySQL default" => array(
+				"dashboards" => array(
+					array(
+						"id" => 4,
+						"name" => "My dashboard",
+						"username" => "superuser",
+						"layout" => "",
+						"read_perm" => ""
+					)
+				),
+				"permission_quarks" => array()
+			)
+		));
+
+		// setup mayi
+		$interesting_mayi_action = "monitor.system.dashboards.shared:delete";
+		$mayi_denied_fixture = array(
+			$interesting_mayi_action => array(
+				"message" => "You done for, fool"
+			)
+		);
+		$mock_mayi = new MockMayI(array(
+			"denied_actions" => $mayi_denied_fixture
+		));
+		op5objstore::instance()->mock_add("op5MayI", $mock_mayi);
+
+		// setup auth
+		// let's login as "superuser" here to not rely on setUp() as
+		// much.
+		Auth::instance(array("session_key" => false))->force_user(
+			new User_AlwaysAuth_Model()
+		);
+
+		$tac = new Tac_Controller();
+		$_POST = array(
+			"dashboard_id" => 4,
+			"table" => "usergroups",
+			"usergroups" => array(
+				"value" => "some_group"
+			)
+		);
+		$tac->share_dashboard();
+		$this->assertEquals(true, $tac->template->success,
+			"We should have been able to share our own dashboard,".
+			" but we were not: ".
+			var_export($tac->template->value, true)
+		);
+
+		// let's pretend we stayed on the tac, and now want to unshare
+		// the dashboard.. plot twist: we shouldn't be able to,
+		// because of mayi!
+		$_POST = array(
+			"dashboard_id" => 4,
+			"table" => "usergroups",
+			"usergroups" => array(
+				"value" => "some_group"
+			)
+		);
+		$tac->unshare_dashboard();
 	}
 }

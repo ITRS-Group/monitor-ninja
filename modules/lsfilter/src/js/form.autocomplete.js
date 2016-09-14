@@ -60,7 +60,6 @@
 		this.timeout = null;
 
 		this.input = form_field.find('.nj-form-field-autocomplete-input');
-		this.shadow = form_field.find('.nj-form-field-autocomplete-shadow');
 		this.items = form_field.find('.nj-form-field-autocomplete-items');
 		this.dropper = form_field.find('.nj-form-field-autocomplete-dropper');
 		this.table_element = form_field.find('.nj-form-field-autocomplete-table');
@@ -71,16 +70,15 @@
 
 		this.input.on('keyup', function (e) {
 			e.preventDefault();
-			if (e.key !== 'ArrowDown' && e.keycode !== 40 && e.key !== 'ArrowUp' && e.keycode !== 38) {
+			if (e.key !== 'ArrowDown' && e.keyCode !== 40 && e.key !== 'ArrowUp' && e.keyCode !== 38) {
 				self.update(self.input.val());
 			}
 			return false;
 		});
 
-		this.input.on('keypress', function (e) {
+		this.input.on('keydown', function (e) {
 
-			self.set_shadow("");
-			if (e.key === 'Enter' || e.keycode === 13) {
+			if (e.key === 'Enter' || e.keyCode === 13) {
 
 				self.set_value(
 					self.get_current().attr('data-autocomplete-value'),
@@ -91,18 +89,18 @@
 				e.preventDefault();
 				return false;
 
-			} else if (e.key === 'ArrowDown' || e.keycode === 40) {
+			} else if (e.key === 'ArrowDown' || e.keyCode === 40) {
 
 				var items = self.items.children('li.nj-form-field-autocomplete-item');
 				self.key_index = (self.key_index < items.length) ? self.key_index + 1 : items.length;
 				self.reselect();
 
-			} else if (e.key === 'ArrowUp' || e.keycode === 38) {
+			} else if (e.key === 'ArrowUp' || e.keyCode === 38) {
 
 				self.key_index = (self.key_index > 1) ? self.key_index - 1 : 1;
 				self.reselect();
 
-			} else if (e.key === 'Tab' || e.keycode === 9) {
+			} else if (e.key === 'Tab' || e.keyCode === 9) {
 
 				self.set_value(
 					self.get_current().attr('data-autocomplete-value'),
@@ -141,9 +139,6 @@
 		this.input.on('blur', function (e) {
 			self.hide();
 			self.input.attr('placeholder', self.placeholder);
-			if(self.input.val() === '') {
-				self.set_shadow('');
-			}
 			e.preventDefault();
 			return false;
 		});
@@ -167,11 +162,6 @@
 			// left in the cold
 			this.input.trigger('autocompleted');
 			this.table_element.val(table);
-			this.set_shadow(value);
-		},
-
-		set_shadow: function (value) {
-			this.shadow.val(value);
 		},
 
 		reselect: function () {
@@ -181,7 +171,6 @@
 
 			items.removeClass('nj-form-field-autocomplete-item-selected');
 			item.addClass('nj-form-field-autocomplete-item-selected');
-			this.shadow.val(item.attr('data-autocomplete-value'));
 
 		},
 
@@ -212,8 +201,6 @@
 
 
 					this.key_index = 1;
-					if (term.length > 0 && data.length)
-						this.shadow.val(data[0].name);
 
 					this.items.empty();
 					this.populate(data);

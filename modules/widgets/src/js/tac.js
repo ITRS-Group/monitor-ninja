@@ -197,15 +197,107 @@ $(function() {
 
 });
 
-$(function() {
-	$(".menuitem_dashboard_option").fancybox({
-		showCloseButton: false
+$(document).on('click', '.menuitem_dashboard_option', function (e) {
+
+	var href = $(this).attr('href');
+	var lightbox = LightboxManager.ajax_form_from_href($(this).text(), href);
+
+	$(lightbox.node).one('click', 'input[type="reset"]', function () {
+		lightbox.remove();
 	});
-	$(document).on('click', '#fancybox-content input[value="Cancel"]', function(e) {
-		e.preventDefault();
-		$.fancybox.close();
-		return false;
-	});
+
+	e.preventDefault();
+	return false;
+
+});
+
+$(document).on("submit", ".nj-form[action$='/tac/share_dashboard']", function(ev) {
+	var form = $(this);
+	var share_button = form.find("input#share");
+	share_button
+		.attr("disabled", "disabled")
+		.data("oldValue", share_button.val())
+		.val("Processing ...");
+	$.post(form.attr("action"), form.serialize())
+		.done(function(data) {
+			$.each(["usergroups", "users"], function(index, table) {
+				if(!data.result[table]) {
+					return;
+				}
+				if(data.result[table].length) {
+					$(".shared_with_these_entities li."+table)
+						.remove();
+				}
+				$.each(data.result[table], function(index, key) {
+					var friendly_table = table == "users" ? "user" : "group";
+					$(".shared_with_these_entities")
+						.append($("<li>")
+							.addClass(table)
+							.append($("<span>").text(key + " ("+friendly_table+")"))
+							.append($("<a>")
+								.addClass("unshare_dashboard no_uline")
+								.attr({
+									"href": _site_domain+_index_page+"/tac/unshare_dashboard",
+									"title": "Remove access for "+key,
+									"data-dashboard_id": form.find("input[name='dashboard_id']").val(),
+									"data-table": table,
+									"data-key": key
+								})
+								.append($("<span class='icon-cancel error'/>"))
+							)
+					       );
+				});
+			});
+			form.siblings(".shared_with_placeholder").hide();
+		})
+		.fail(function(data) {
+			var msg = JSON.parse(data.responseText).result;
+			LightboxManager.alert(msg);
+		})
+		.always(function() {
+			share_button
+				.val(share_button.data("oldValue"))
+				.removeData("oldValue")
+				.removeAttr("disabled");
+			// calling blur() will reset the placeholder
+			form.find("input[name$='[value]']").val("").blur();
+		});
+	ev.preventDefault();
+	return false;
+});
+
+$(document).on("click", ".unshare_dashboard", function(ev) {
+	ev.preventDefault();
+
+	var a = $(this);
+	var dashboard_name = $('.main-toolbar-title').text();
+	LightboxManager.confirm(
+		"Are you sure you want to stop sharing '"+dashboard_name+"' with '"+a.data('key')+"'?",
+		{
+			"yes": {
+				"text": "Stop sharing",
+				"cb": function() {
+					tac_send_request("unshare_dashboard", a.data(), {
+						"success": function(data) {
+							var ul = a.parents("ul");
+							if(ul.find("li").length === 1) {
+								// we're removing the last of the list items
+								ul.parent().find('.shared_with_placeholder').show();
+							}
+							a.parents("li").remove();
+						},
+						"error": function(data) {
+							var msg = data.result;
+							LightboxManager.alert(msg);
+						}
+					});
+				}
+			},
+			"no": "Keep sharing",
+			"focus": "yes"
+		}
+	);
+	return false;
 });
 
 /**

@@ -9,6 +9,7 @@ class Form_Model {
 	 */
 	private $action = '';
 	private $fields = array();
+	private $id = "";
 	private $missing_fields_cb = array();
 	private $values = array();
 	private $buttons = array();
@@ -17,12 +18,19 @@ class Form_Model {
 	 * Create a form with a given set of fields
 	 *
 	 * @param $action string
-	 * @param $fields array of From_Field_Model
+	 * @param $renderable_children array of From_Field_Model|Form_Button_Model
 	 */
-	public function __construct($action, array $fields = array()) {
+	public function __construct($action, array $renderable_children = array()) {
+		static $index = 0;
+		$index++;
 		$this->action = $action;
-		foreach ( $fields as $field ) {
-			$this->add_field( $field );
+		$this->id = 'nj-form-' . uniqid() . '-' . $index;
+		foreach ($renderable_children as $child_node) {
+			if($child_node instanceof Form_Button_Model) {
+				$this->add_button($child_node);
+			} else {
+				$this->add_field($child_node);
+			}
 		}
 	}
 	/**
@@ -55,6 +63,15 @@ class Form_Model {
 	 */
 	public function get_fields() {
 		return $this->fields;
+	}
+
+	/**
+	 * get the id of this form
+	 *
+	 * @return string id of this Form_Model
+	 */
+	public function get_id () {
+		return $this->id;
 	}
 
 	/**

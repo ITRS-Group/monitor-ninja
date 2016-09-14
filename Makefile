@@ -18,6 +18,15 @@ help:
 generate-php:
 	php build.php
 
+# All php "unit" tests that affects/needs a currently installed monitor should
+# be tagged with @nonlocal, so that we can avoid them when running them
+# locally. This also marks them as "badly written" in the sense that they need
+# to be mocked out further. In the future, all unit tests should avoid
+# affecting the current environment and thus the group @nonlocal should not be
+# needed.
+test-local: generate-php
+	phpunit --bootstrap test/bootstrap.php --exclude-group nonlocal test
+
 test: generate-php
 	make test-ci-prepare
 	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/bootstrap.php test/; res=$$?; make test-ci-cleanup; exit $$res

@@ -90,7 +90,9 @@ class op5Authorization {
 				'host_command_schedule_downtime' => '', 'host_command_check_execution' => '',
 				'host_command_event_handler' => '', 'host_command_flap_detection' => '',
 				'host_command_notifications' => '', 'host_command_passive_check' => '',
-				'host_command_schedule_check' => '', 'host_command_send_notification' => ''),
+				'host_command_schedule_check' => '', 'host_command_send_notification' => '',
+				'host_command_obsess' => ''
+			),
 			'host_template' => array ('host_template_add_delete' => '',
 				'host_template_view_all' => '','host_template_edit_all' => ''),
 			'service' => array ('service_add_delete' => '',
@@ -101,7 +103,9 @@ class op5Authorization {
 				'service_command_schedule_downtime' => '', 'service_command_check_execution' => '',
 				'service_command_event_handler' => '', 'service_command_flap_detection' => '',
 				'service_command_notifications' => '', 'service_command_passive_check' => '',
-				'service_command_schedule_check' => '', 'service_command_send_notification' => ''),
+				'service_command_schedule_check' => '', 'service_command_send_notification' => '',
+				'service_command_obsess' => ''
+			),
 			'service_template' => array ('service_template_add_delete' => '',
 				'service_template_view_all' => '',
 				'service_template_edit_all' => ''),
@@ -134,6 +138,9 @@ class op5Authorization {
 			'contactgroup' => array ('contactgroup_add_delete' => '',
 				'contactgroup_view_contact' => '','contactgroup_view_all' => '',
 				'contactgroup_edit_contact' => '','contactgroup_edit_all' => ''),
+			'dashboard' => array(
+				'dashboard_share' => '',
+			),
 			'timeperiod' => array ('timeperiod_add_delete' => '',
 				'timeperiod_view_all' => '','timeperiod_edit_all' => ''),
 			'command' => array ('command_add_delete' => '',
