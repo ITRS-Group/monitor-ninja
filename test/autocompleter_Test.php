@@ -1,7 +1,6 @@
 <?php
 
 class Autocompleter_Test extends PHPUnit_Framework_TestCase {
-	private $mock_data_path;
 	private $mock_log;
 
 	protected function setUp() {
@@ -22,23 +21,17 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 		Auth::instance(array('session_key' => false))->force_user(
 			new User_AlwaysAuth_Model()
 		);
-		$this->mock_data_path = false;
 	}
 
 	protected function tearDown() {
 		op5objstore::instance()->mock_clear();
-		if($this->mock_data_path !== false) {
-			unlink($this->mock_data_path);
-		}
 	}
 
-	private function mock_data($tables, $file) {
-		$this->mock_data_path = __DIR__ . '/' . $file . '.json';
-		file_put_contents($this->mock_data_path, json_encode($tables));
+	private function mock_data($tables) {
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
 				$driver,
-				new ORMDriverNative($tables, $this->mock_data_path, $driver)
+				new ORMDriverNative($tables, null, $driver)
 			);
 		}
 	}
@@ -205,7 +198,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 					)
 				),
 			)
-		), __FUNCTION__);
+		));
 
 		$ac = new Autocompleter($autocompleter_backend);
 
@@ -233,7 +226,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-		), __FUNCTION__);
+		));
 
 		$ac = Autocompleter::from_manifests();
 		$calculated_result = $ac->query('tom', array('hosts'));
@@ -272,7 +265,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 					),
 				),
 			),
-		), __FUNCTION__);
+		));
 
 		$ac = Autocompleter::from_manifests();
 		$calculated_result = $ac->query('juan', array('services'));
@@ -302,7 +295,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 					),
 				),
 			),
-		), __FUNCTION__);
+		));
 
 		$ac = Autocompleter::from_manifests();
 		$calculated_result = $ac->query('frank', array('users'));
@@ -332,7 +325,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 					),
 				),
 			),
-		), __FUNCTION__);
+		));
 
 		$ac = Autocompleter::from_manifests();
 		$calculated_result = $ac->query('tagomi', array('usergroups'));
