@@ -9,26 +9,26 @@ require_once( dirname(__FILE__).'/base/basepermissionquarkpool.php' );
  */
 class PermissionQuarkPool_Model extends BasePermissionQuarkPool_Model {
 	/**
-	 * Build a permission quark (int) from a type and a name.
+	 * Build a permission quark (int) from a table and a key.
 	 *
-	 * For each unique pair (type, name), a unique id is returned, such as
-	 * Quark(type1,name1) == Quark(type2,name2) iff type1 == type2 and
-	 * name1 == name2
+	 * For each unique pair (table, key), a unique id is returned, such as
+	 * Quark(table1,key1) == Quark(table2,key2) iff table1 == table2 and
+	 * key1 == key2
 	 *
-	 * @param $type string
-	 * @param $name string
+	 * @param $table string
+	 * @param $key string
 	 * @return integer
 	 */
-	public static function build($type, $name) {
+	public static function build($table, $key) {
 		$quark = static::all()
-			->reduce_by('type', $type, '=')
-			->reduce_by('name', $name, '=')
+			->reduce_by('foreign_table', $table, '=')
+			->reduce_by('foreign_key', $key, '=')
 			->one();
 
 		if(!$quark) {
 			$quark = new PermissionQuark_Model();
-			$quark->set_type($type);
-			$quark->set_name($name);
+			$quark->set_foreign_table($table);
+			$quark->set_foreign_key($key);
 			$quark->save();
 		}
 

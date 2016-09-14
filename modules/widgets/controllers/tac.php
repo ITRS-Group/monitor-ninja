@@ -331,29 +331,29 @@ class Tac_Controller extends Ninja_Controller {
 				return;
 			}
 
-			$entity_type = $this->input->post('group_or_user');
-			if(!in_array($entity_type, array('group', 'user'), true)) {
-				$this->template = json::fail_view("Bad value for 'group_or_user'.");
+			$table = $this->input->post('table');
+			if(!in_array($table, array('usergroups', 'users'), true)) {
+				$this->template = json::fail_view("Bad value for 'table'.");
 				return;
 			}
 
-			$entity_name = $this->input->post($entity_type);
-			if(!$entity_name || !$entity_name['value']) {
+			$object_key = $this->input->post($table);
+			if(!$object_key || !$object_key['value']) {
 				$this->template = json::fail_view("Missing ".
 					"value for who to share to, check ".
 					"your input");
 				return;
 			}
 
-			if($entity_type == "user" && $entity_name["value"] == op5auth::instance()->get_user()->get_username()) {
+			if($table == "users" && $object_key["value"] == op5auth::instance()->get_user()->get_key()) {
 				$this->template = json::fail_view("You cannot ".
 					"share a dashboard with yourself.");
 				return;
 			}
 
-			$dashboard->share_with($entity_type, $entity_name['value']);
+			$dashboard->add_read_perm($table, $object_key['value']);
 			$dashboard->save();
-			$this->template = json::ok_view($dashboard->get_shared_with());
+			$this->template = json::ok_view($dashboard->get_read_perm());
 			return;
 		}
 
@@ -371,19 +371,19 @@ class Tac_Controller extends Ninja_Controller {
 				new Form_Field_Hidden_Model('dashboard_id'),
 				new Form_Field_HtmlDecorator_Model('<h2>Share "'.html::specialchars($dashboard->get_name()).'" with (read only):</h2>'),
 				new Form_Field_Option_Model(
-					'group_or_user',
+					'table',
 					'Group or user',
 					array(
-						'group' => 'Group',
-						'user' => 'User'
+						'usergroups' => 'Group',
+						'users' => 'User'
 					),
 					'select'
 				),
 				new Form_Field_Conditional_Model(
-					'group_or_user',
-					'group',
+					'table',
+					'usergroups',
 					new Form_Field_ORMObject_Model(
-						'group',
+						'usergroups',
 						'Group',
 						array(
 							'usergroups'
@@ -391,10 +391,10 @@ class Tac_Controller extends Ninja_Controller {
 					)
 				),
 				new Form_Field_Conditional_Model(
-					'group_or_user',
-					'user',
+					'table',
+					'users',
 					new Form_Field_ORMObject_Model(
-						'user',
+						'users',
 						'User',
 						array(
 							'users'
@@ -411,7 +411,7 @@ class Tac_Controller extends Ninja_Controller {
 		$share_form->add_button(new Form_Button_Confirm_Model('share', 'Share'));
 
 		$listing = new View('share_dashboard_listing');
-		$listing->shared_to = $dashboard->get_shared_with();
+		$listing->shared_with = $dashboard->get_read_perm();
 		$listing->dashboard_id = $dashboard->get_id();
 
 		$outer_form = new Form_Model('#', array(
@@ -443,26 +443,26 @@ class Tac_Controller extends Ninja_Controller {
 			return;
 		}
 
-		$entity_type = $this->input->post('group_or_user');
-		if(!in_array($entity_type, array('group', 'user'), true)) {
-			$this->template = json::fail_view("Bad value for 'group_or_user': $entity_type.");
+		$table = $this->input->post('table');
+		if(!in_array($table, array('users', 'usergroups'), true)) {
+			$this->template = json::fail_view("Bad value for 'table': $table.");
 			return;
 		}
 
-		$entity_name = $this->input->post('name');
-		if(!$entity_name) {
+		$object_key = $this->input->post('key');
+		if(!$object_key) {
 			$this->template = json::fail_view("Missing ".
 				"value for who to share to, check ".
 				"your input");
 			return;
 		}
 
-		$dashboard->unshare_with($entity_type, $entity_name);
+		$dashboard->remove_read_perm($table, $object_key);
 		$dashboard->save();
 		$this->template = json::ok_view(sprintf("Unshared the dashboard '%s' from the %s %s.",
 			$dashboard->get_name(),
-			$entity_type,
-			$entity_name['value']
+			$table,
+			$object_key['value']
 		));
 		return;
 	}

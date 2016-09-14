@@ -23,7 +23,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		op5objstore::instance()->mock_clear();
-        $unlink_result = unlink($this->tmp_auth_groups_file);
+		$unlink_result = unlink($this->tmp_auth_groups_file);
 		assert('$unlink_result == true');
 		$unlink_result = unlink($this->tmp_auth_file);
 		assert('$unlink_result == true');
@@ -146,7 +146,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		// "correct" op5config instance, so that migrate_auth.php can
 		// reuse it
 		$tmp_dir = dirname($this->tmp_auth_groups_file);
-		$this->assertNotEquals($tmp_dir, __DIR__."/../etc",
+		$this->assertNotEquals(__DIR__."/../etc", $tmp_dir,
 			"A precondition failed: we must use a temporary ".
 			"directory because op5config needs a complete dir ".
 			"at its disposal. We do not want to upgrade the ".

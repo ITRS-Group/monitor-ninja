@@ -117,39 +117,49 @@ class Dashboard_Model extends BaseDashboard_Model
 		}
 	}
 
-	public function get_read_perm() {
-		// turns ",3,4,5" into array(0 => 3, 1 => 4, 2 => 5)
-		return array_values(array_map('intval',array_filter(explode(',', parent::get_read_perm()))));
+	/**
+	 * @param $table string, such as 'users' or 'usergroups'
+	 * @param $key string, such as 'a user name'
+	 */
+	public function add_read_perm($table, $key) {
+		$quark = PermissionQuarkPool_Model::build($table, $key);
+		$quark_ids = array_filter(explode(',', parent::get_read_perm()));
+		$quark_ids[] = $quark;
+		$quark_ids = array_values(array_unique($quark_ids));
+		parent::set_read_perm(','.implode(',', $quark_ids).',');
 	}
 
 	/**
-	 * @return array ['user' => [], 'group' => []]
+	 * @return array ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
 	 */
-	public function get_shared_with() {
-		$shared_with = array('user' => array(), 'group' => array());
-		foreach($this->get_read_perm() as $pq_id) {
-			$pq = PermissionQuarkPool_Model::fetch_by_key($pq_id);
-			$shared_with[$pq->get_type()][] = $pq->get_name();
+	public function get_read_perm() {
+		// turns ",3,4,5" into array(0 => 3, 1 => 4, 2 => 5)
+		$read_perms_exploded = array_filter(explode(',', parent::get_read_perm()));
+		$shared_with = array();
+		foreach($read_perms_exploded as $permission_quark_id) {
+			$pq = PermissionQuarkPool_Model::fetch_by_key($permission_quark_id);
+			if(!isset($shared_with[$pq->get_foreign_table()])) {
+				$shared_with[$pq->get_foreign_table()] = array();
+			}
+			$shared_with[$pq->get_foreign_table()][] = $pq->get_foreign_key();
 		}
 		return $shared_with;
 	}
 
-	public function set_read_perm($perm_ary) {
-		parent::set_read_perm(','.implode(',', $perm_ary).',');
-	}
-
 	/**
-	 * @param $quark_type string, such as 'user' or 'group'
-	 * @param $quark_name string, such as 'a user name'
+	 * Overrides previous read permissions
+	 *
+	 * @param array $permissions => ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
 	 */
-	public function share_with($quark_type, $quark_name) {
-		$quark_id = PermissionQuarkPool_Model::build($quark_type, $quark_name);
-		$old_perms = $this->get_read_perm();
-		if(in_array($quark_id, $old_perms, true)) {
-			return;
+	public function set_read_perm(array $permissions = array()) {
+		$quarks = array();
+		foreach($permissions as $table => $keys) {
+			foreach($keys as $key) {
+				$quarks[] = PermissionQuarkPool_Model::build($table, $key);
+			}
 		}
-		$old_perms[] = $quark_id;
-		$this->set_read_perm($old_perms);
+		$quarks = array_values(array_unique($quarks));
+		parent::set_read_perm(','.implode(',', $quarks).',');
 	}
 
 	/**
@@ -167,15 +177,15 @@ class Dashboard_Model extends BaseDashboard_Model
 	}
 
 	/**
-	 * Discontinue sharing your dashboard with an entity
+	 * Discontinue sharing your dashboard with an object
 	 *
-	 * @param $quark_type string, such as 'user' or 'group'
-	 * @param $quark_name string, such as 'a user name'
+	 * @param $table string, such as 'users' or 'usergroups'
+	 * @param $key string, such as 'a user name'
 	 */
-	public function unshare_with($quark_type, $quark_name) {
+	public function remove_read_perm($table, $key) {
 		$quark = PermissionQuarkPool_Model::all()
-			->reduce_by('type', $quark_type, '=')
-			->reduce_by('name', $quark_name, '=')
+			->reduce_by('foreign_table', $table, '=')
+			->reduce_by('foreign_key', $key, '=')
 			->one();
 		if(!$quark) {
 			return;

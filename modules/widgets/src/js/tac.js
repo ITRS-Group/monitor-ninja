@@ -220,24 +220,28 @@ $(document).on("submit", ".nj-form[action$='/tac/share_dashboard']", function(ev
 		.val("Processing ...");
 	$.post(form.attr("action"), form.serialize())
 		.done(function(data) {
-			$.each(["group", "user"], function(index, entity_type) {
-				if(data.result[entity_type].length) {
-					$(".shared_with_these_entities li."+entity_type)
+			$.each(["usergroups", "users"], function(index, table) {
+				if(!data.result[table]) {
+					return;
+				}
+				if(data.result[table].length) {
+					$(".shared_with_these_entities li."+table)
 						.remove();
 				}
-				$.each(data.result[entity_type], function(index, name) {
+				$.each(data.result[table], function(index, key) {
+					var friendly_table = table == "users" ? "user" : "group";
 					$(".shared_with_these_entities")
 						.append($("<li>")
-							.addClass(entity_type)
-							.append($("<span>").text(name + " ("+entity_type+")"))
+							.addClass(table)
+							.append($("<span>").text(key + " ("+friendly_table+")"))
 							.append($("<a>")
 								.addClass("unshare_dashboard no_uline")
 								.attr({
 									"href": _site_domain+_index_page+"/tac/unshare_dashboard",
-									"title": "Remove access for "+name,
+									"title": "Remove access for "+key,
 									"data-dashboard_id": form.find("input[name='dashboard_id']").val(),
-									"data-group_or_user": entity_type,
-									"data-name": name
+									"data-table": table,
+									"data-key": key
 								})
 								.append($("<span class='icon-cancel error'/>"))
 							)
@@ -268,7 +272,7 @@ $(document).on("click", ".unshare_dashboard", function(ev) {
 	var a = $(this);
 	var dashboard_name = $('.main-toolbar-title').text();
 	LightboxManager.confirm(
-		"Are you sure you want to stop sharing '"+dashboard_name+"' with '"+a.data('name')+"'?",
+		"Are you sure you want to stop sharing '"+dashboard_name+"' with '"+a.data('key')+"'?",
 		{
 			"yes": {
 				"text": "Stop sharing",

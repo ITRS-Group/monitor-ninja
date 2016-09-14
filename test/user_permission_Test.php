@@ -1,7 +1,7 @@
 <?php
 
 class User_Permission_Test extends PHPUnit_Framework_TestCase {
-	private function mock_data ($tables, $file) {
+	private function mock_data($tables) {
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add($driver, new ORMDriverNative($tables, null, $driver));
 		}
@@ -9,6 +9,11 @@ class User_Permission_Test extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		op5objstore::instance()->mock_clear();
+		$this->mock_data(array(
+			'ORMDriverMySQL default' => array(
+				'permission_quarks' => array()
+			)
+		));
 	}
 
 	public function tearDown() {
@@ -29,50 +34,50 @@ class User_Permission_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_permission_quark_resolve() {
-		$quark_a = PermissionQuarkPool_Model::build('user', 'boll');
-		$quark_b = PermissionQuarkPool_Model::build('user', 'kaka');
+		$quark_a = PermissionQuarkPool_Model::build('users', 'boll');
+		$quark_b = PermissionQuarkPool_Model::build('users', 'kaka');
 
 		$obj_a = PermissionQuarkPool_Model::fetch_by_key($quark_a);
 		$obj_b = PermissionQuarkPool_Model::fetch_by_key($quark_b);
 
 		$this->assertInstanceOf('PermissionQuark_Model', $obj_a);
-		$this->assertEquals($obj_a->get_type(), 'user');
-		$this->assertEquals($obj_a->get_name(), 'boll');
+		$this->assertEquals('users', $obj_a->get_foreign_table());
+		$this->assertEquals('boll', $obj_a->get_foreign_key());
 
 		$this->assertInstanceOf('PermissionQuark_Model', $obj_b);
-		$this->assertEquals($obj_b->get_type(), 'user');
-		$this->assertEquals($obj_b->get_name(), 'kaka');
+		$this->assertEquals('users', $obj_b->get_foreign_table());
+		$this->assertEquals('kaka', $obj_b->get_foreign_key());
 	}
 
 	public function test_user_quark_regexp() {
 		/* By defining quarks in mock data, and keep them in order, we can assume exact regexp string */
-		$this->mock_data ( array (
+		$this->mock_data(array(
 			'ORMDriverMySQL default' => array (
 				'permission_quarks' => array (
 					array(
 						'id' => 77,
-						'type' => 'user',
-						'name' => 'myuser'
+						'foreign_table' => 'users',
+						'foreign_key' => 'myuser'
 					),
 					array(
 						'id' => 131,
-						'type' => 'user',
-						'name' => 'anotheruser'
+						'foreign_table' => 'users',
+						'foreign_key' => 'anotheruser'
 					),
 					array(
 						'id' => 37,
-						'type' => 'group',
-						'name' => 'grp_a'
+						'foreign_table' => 'usergroups',
+						'foreign_key' => 'grp_a'
 					),
 					array(
 						'id' => 19,
-						'type' => 'group',
-						'name' => 'grp_dont_use'
+						'foreign_table' => 'usergroups',
+						'foreign_key' => 'grp_dont_use'
 					),
 					array(
 						'id' => 53,
-						'type' => 'group',
-						'name' => 'grp_b'
+						'foreign_table' => 'usergroups',
+						'foreign_key' => 'grp_b'
 					)
 				)
 			),
@@ -87,7 +92,7 @@ class User_Permission_Test extends PHPUnit_Framework_TestCase {
 					)
 				)
 			)
-		), __FUNCTION__ );
+		));
 		$user = new User_Model();
 		$user->set_username('myuser');
 		$user->set_groups(array('grp_a', 'grp_b'));
@@ -97,8 +102,8 @@ class User_Permission_Test extends PHPUnit_Framework_TestCase {
 
 		$quark_obj = PermissionQuarkPool_Model::fetch_by_key($quark_user);
 		$this->assertInstanceOf('PermissionQuark_Model', $quark_obj);
-		$this->assertEquals($quark_obj->get_type(), 'user');
-		$this->assertEquals($quark_obj->get_name(), 'myuser');
+		$this->assertEquals('users', $quark_obj->get_foreign_table());
+		$this->assertEquals('myuser', $quark_obj->get_foreign_key());
 
 		$this->assertEquals(',(77|37|53),', $user->get_permission_regexp());
 	}

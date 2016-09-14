@@ -21,11 +21,11 @@ class Dashboard_Permission_Test extends PHPUnit_Framework_TestCase {
 				),
 				'dashboard_widgets' => array(),
 				'permission_quarks' => array(
-					array( 'id' => 1, 'type' => 'user', 'name' => 'me' ),
-					array( 'id' => 2, 'type' => 'user', 'name' => 'you' ),
-					array( 'id' => 3, 'type' => 'user', 'name' => 'someone' ),
-					array( 'id' => 4, 'type' => 'group', 'name' => 'admins' ),
-					array( 'id' => 5, 'type' => 'group', 'name' => 'noone' )
+					array( 'id' => 1, 'foreign_table' => 'users', 'foreign_key' => 'me' ),
+					array( 'id' => 2, 'foreign_table' => 'users', 'foreign_key' => 'you' ),
+					array( 'id' => 3, 'foreign_table' => 'users', 'foreign_key' => 'someone' ),
+					array( 'id' => 4, 'foreign_table' => 'usergroups', 'foreign_key' => 'admins' ),
+					array( 'id' => 5, 'foreign_table' => 'usergroups', 'foreign_key' => 'noone' )
 				)
 			),
 			'ORMDriverYAML default' => array(

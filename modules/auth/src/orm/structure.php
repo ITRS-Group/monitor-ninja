@@ -74,11 +74,11 @@ $tables = array(
 		'table' => 'permission_quarks',
 		'writable' => true,
 		'key' => array('id'),
-		'default_sort' => array('type asc', 'name asc'),
+		'default_sort' => array('foreign_table asc', 'foreign_key asc'),
 		'structure' => array(
 			'id' => 'int',
-			'type' => 'string',
-			'name' => 'string',
+			'foreign_table' => 'string',
+			'foreign_key' => 'string',
 		)
 	),
 );

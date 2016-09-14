@@ -796,7 +796,6 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group Tac_Controller::share_dashboard
 	 * @group MON-9539
 	 */
 	public function test_can_share_dashboard_with_group() {
@@ -819,20 +818,17 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf("Dashboard_Model", $dashboard,
 			"We should have found our mocked Dashboard"
 		);
-		$this->assertEquals(
-			array(
-				"user" => array(),
-				"group" => array()
-			),
-			$dashboard->get_shared_with(),
+		$this->assertSame(
+			array(),
+			$dashboard->get_read_perm(),
 			"There should be nothing shared yet"
 		);
 
 		$tac = new Tac_Controller();
 		$_POST = array(
 			"dashboard_id" => 4,
-			"group_or_user" => "group",
-			"group" => array(
+			"table" => "usergroups",
+			"usergroups" => array(
 				"value" => "my_group"
 			)
 		);
@@ -847,18 +843,16 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		);
 		$this->assertSame(
 			array(
-				"user" => array(),
-				"group" => array(
+				"usergroups" => array(
 					"my_group"
 				),
 			),
-			$dashboard->get_shared_with(),
+			$dashboard->get_read_perm(),
 			"Now the dashboard should be shared"
 		);
 	}
 
 	/**
-	 * @group Tac_Controller::share_dashboard
 	 * @group MON-9539
 	 */
 	public function test_cannot_share_dashboard_with_myself() {
@@ -886,20 +880,17 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf("Dashboard_Model", $dashboard,
 			"We should have found our mocked Dashboard"
 		);
-		$this->assertEquals(
-			array(
-				"user" => array(),
-				"group" => array()
-			),
-			$dashboard->get_shared_with(),
+		$this->assertSame(
+			array(),
+			$dashboard->get_read_perm(),
 			"There should be nothing shared yet"
 		);
 
 		$tac = new Tac_Controller();
 		$_POST = array(
 			"dashboard_id" => 4,
-			"group_or_user" => "user",
-			"user" => array(
+			"table" => "users",
+			"users" => array(
 				"value" => "superuser"
 			)
 		);
@@ -913,11 +904,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 			"We should still be able to find our mocked Dashboard"
 		);
 		$this->assertSame(
-			array(
-				"user" => array(),
-				"group" => array(),
-			),
-			$dashboard->get_shared_with(),
+			array(),
+			$dashboard->get_read_perm(),
 			"The dashboard should not have been shared with the ".
 			"user themselves"
 		);
@@ -928,7 +916,6 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	 * that's our convention.
 	 *
 	 * @group MON-9539
-	 * @group Tac_Controller::share_dashboard
 	 * @expectedException Kohana_Reroute_Exception
 	 * @expectedExceptionMessage Reroute to Auth/_no_access
 	 */
@@ -953,8 +940,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$tac = new Tac_Controller();
 		$_POST = array(
 			"dashboard_id" => 4,
-			"group_or_user" => "user",
-			"user" => array(
+			"table" => "users",
+			"users" => array(
 				"value" => "superuser"
 			)
 		);
@@ -966,7 +953,6 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	 * that's our convention.
 	 *
 	 * @group MON-9539
-	 * @group Tac_Controller::share_dashboard
 	 * @expectedException Kohana_Reroute_Exception
 	 * @expectedExceptionMessage Reroute to Auth/_no_access
 	 */
@@ -1009,8 +995,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$tac = new Tac_Controller();
 		$_POST = array(
 			"dashboard_id" => 4,
-			"group_or_user" => "group",
-			"group" => array(
+			"table" => "usergroups",
+			"usergroups" => array(
 				"value" => "some_group"
 			)
 		);
@@ -1026,8 +1012,8 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		// because of mayi!
 		$_POST = array(
 			"dashboard_id" => 4,
-			"group_or_user" => "group",
-			"group" => array(
+			"table" => "usergroups",
+			"usergroups" => array(
 				"value" => "some_group"
 			)
 		);
