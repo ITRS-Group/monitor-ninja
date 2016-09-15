@@ -143,10 +143,12 @@ var LightboxManager = (function() {
 			box.header = function (source) {
 				var close_button = element("a", {
 					"class": "icon-cancel link-icon",
-					"title": "Close this window"
+					"title": "Close this window",
+					"href": "#"
 				});
 				close_button.addEventListener("click", function(ev) {
 					LightboxManager.remove_topmost();
+					ev.preventDefault();
 					return false;
 				});
 
