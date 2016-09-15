@@ -70,6 +70,9 @@ class Autocompleter {
 			foreach($this->tables[$table] as $query_info) {
 				$query = sprintf($query_info['query'], html::specialchars($search_term));
 				$set = ObjectPool_Model::get_by_query($query);
+				if(!op5mayi::instance()->run($set->mayi_resource().":read.autocomplete")) {
+					continue;
+				}
 
 				// We leave out specifying the exact columns,
 				// because I can't get the native driver to properly

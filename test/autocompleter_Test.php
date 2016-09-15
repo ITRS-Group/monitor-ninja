@@ -366,6 +366,51 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group MON-9539
+	 */
+	public function test_autocompleter_requires_mayi_read_autocomplete_rights() {
+		$this->mock_data(array(
+			"ORMDriverYAML default" => array(
+				"users" => array(
+					array(
+						"username" => "Daisy",
+					),
+				),
+			),
+		));
+		$ac = Autocompleter::from_manifests();
+
+		// let's prove the positive case first
+		$calculated_result = $ac->query("daisy", array("users"));
+		$expected_result = array(
+			array(
+				"name" => "Daisy",
+				"table" => "users",
+				"key" => "Daisy"
+			)
+		);
+		$this->assertSame($expected_result, $calculated_result,
+			"We should have found Daisy as part of the fixture"
+		);
+
+
+		$interesting_mayi_action = "monitor.system.users:read.autocomplete";
+		$mayi_denied_fixture = array(
+			$interesting_mayi_action => array(
+				"message" => "Fogedaboudid"
+			)
+		);
+		$mock_mayi = new MockMayI(array(
+			"denied_actions" => $mayi_denied_fixture
+		));
+		op5objstore::instance()->mock_add("op5MayI", $mock_mayi);
+		$this->assertSame(array(), $ac->query("daisy", array("users")),
+			"The denying mayi right was not enough to hide Daisy ".
+			"from the autocompleter backend. It should have been."
+		);
+	}
+
+	/**
 	 * @expectedException AutocompleterException
 	 * @expectedExceptionMessage Wrong format of $table_information, each $table_spec must have a display_column
 	 * @group MON-9409
