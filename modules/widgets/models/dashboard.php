@@ -133,7 +133,7 @@ class Dashboard_Model extends BaseDashboard_Model
 	 * @return array ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
 	 */
 	public function get_read_perm() {
-		// turns ",3,4,5" into array(0 => 3, 1 => 4, 2 => 5)
+		// turns ",3,4,5," into array(0 => 3, 1 => 4, 2 => 5)
 		$read_perms_exploded = array_filter(explode(',', parent::get_read_perm()));
 		$shared_with = array();
 		foreach($read_perms_exploded as $permission_quark_id) {
