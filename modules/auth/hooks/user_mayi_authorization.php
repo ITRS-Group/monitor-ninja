@@ -40,10 +40,9 @@ authenticated                   monitor.system.widgets:                         
 authenticated                   monitor.system.permission_quarks:                             true
 configuration_information       monitor.system.backup:                                        true
 
-!dashboard_share                monitor.system.dashboards.shared:                             false
-authenticated                   monitor.system.dashboards.shared:{create,read}                true
-authenticated                   monitor.system.dashboards.personal:                           true
-authenticated                   monitor.system.dashboards:                                    true
+authenticated                   monitor.system.dashboards:read                                true
+dashboard_share                 monitor.system.dashboards:{create,update,delete}              true
+authenticated                   monitor.system.dashboards.personal:{create.update.delete}     true
 
 !api_command                    :read.api.command                                             false
 !api_command                    :update.api.command                                           false
@@ -424,8 +423,8 @@ EOF;
 		}
 
 		$this->cache[$action] = array(
-				'msg' => $msg,
-				'result' => $is_allowed
+			'msg' => $msg,
+			'result' => $is_allowed
 		);
 
 		return $is_allowed;

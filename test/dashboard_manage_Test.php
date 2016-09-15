@@ -356,4 +356,62 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 			"the only existing dashboard"
 		);
 	}
+
+	/**
+	 * @group MON-9539
+	 */
+	public function test_user_without_dashboard_share_auth_right_can_still_access_dashboards_shared_with_them() {
+		$this->mock_data(array(
+			"ORMDriverMySQL default" => array(
+				"dashboards" => array(
+					array(
+						"id" => "1",
+						"name" => "unicorn dashboard",
+						"username" => "some random user",
+						"read_perm" => ",15,"
+					)
+				),
+				"permission_quarks" => array(
+					array(
+						"id" => "15",
+						"foreign_table" => "users",
+						"foreign_key" => "superuser",
+					)
+				)
+			)
+		));
+
+		$menu = new Menu_Model();
+		dashboard::set_dashboard_menu_based_on_logged_in_user($menu);
+
+		$this->assertEquals(null, $menu->get("Dashboards.shared222"),
+			"FYI the Menu_Model returns null for an unknown submenu"
+		);
+		$this->assertInstanceOf(
+			"Menu_Model",
+			$menu->get("Dashboards.shared"),
+			"The Menu_Model returns another Menu_Model for a ".
+			"known submenu, which we get because we're a ".
+			"superuser at the moment"
+		);
+
+		// OK, everything worked as expected, now let's perform a real
+		// test
+		$interesting_mayi_action = "monitor.system.dashboards.shared:read";
+		$mayi_denied_fixture = array(
+			$interesting_mayi_action => array(
+				"message" => "Nah uh"
+			)
+		);
+		$mock_mayi = new MockMayI(array(
+			"denied_actions" => $mayi_denied_fixture
+		));
+		op5objstore::instance()->mock_add("op5MayI", $mock_mayi);
+
+		$menu = new Menu_Model();
+		dashboard::set_dashboard_menu_based_on_logged_in_user($menu);
+		$this->assertEquals(null, $menu->get("Dashboards.shared"),
+			"FYI the Menu_Model returns null for an unknown submenu"
+		);
+	}
 }

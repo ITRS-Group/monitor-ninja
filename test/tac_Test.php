@@ -1,6 +1,7 @@
 <?php
 /**
- * Tests all public methods except index() in Tac_Controller.
+ * Tests that the Tac controller behaves as expected. Implicitly, this means a
+ * whole lot of dashboard related testing as well.
  *
  * @package NINJA
  * @author  op5

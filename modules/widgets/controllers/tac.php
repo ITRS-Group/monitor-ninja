@@ -464,7 +464,6 @@ class Tac_Controller extends Ninja_Controller {
 			$table,
 			$object_key['value']
 		));
-		return;
 	}
 
 	/**
