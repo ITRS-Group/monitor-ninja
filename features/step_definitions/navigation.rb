@@ -21,6 +21,10 @@ Given /^I am on address "(.*)"$/ do |path|
   visit Op5Cucumber::NavigationHelpers::url_for(path)
 end
 
+Given /^I visit the process information page$/ do
+  visit Op5Cucumber::NavigationHelpers::url_for("/index.php/extinfo/show_process_info")
+end
+
 Given /^I visit the object details page for (host|hostgroup|servicegroup) "(.*)"$/ do |type, object|
   object = URI.escape(object, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
   visit Op5Cucumber::NavigationHelpers::url_for("/index.php/extinfo/details?#{type}=#{object}")
