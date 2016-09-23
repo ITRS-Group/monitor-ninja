@@ -422,7 +422,6 @@ class Extinfo_Controller extends Ninja_Controller {
 		$command_categories = array();
 
 		foreach($commands as $cmd => $cmdinfo) {
-			if ($cmdinfo['category'] === 'Operations') continue;
 			if($cmdinfo['enabled']) {
 				if(!isset($command_categories[$cmdinfo['category']]))
 					$command_categories[$cmdinfo['category']] = array();
