@@ -1,4 +1,3 @@
- GENERATE_PHP_MODS=
 OP5LIBCFG=test/configs/all-host_service-states/op5lib
 PHPDIR=/usr/local/share/php
 
