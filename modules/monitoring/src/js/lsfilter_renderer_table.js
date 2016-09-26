@@ -953,6 +953,22 @@ listview_renderer_table.contacts = {
 		"cell" : function(args) {
 			return $('<td />').update_text(args.obj.alias);
 		}
+	},
+	"email" : {
+		"header" : _('Email'),
+		"depends" : [ 'email' ],
+		"sort" : [ 'email' ],
+		"cell" : function(args) {
+			return $('<td />').link_email(args.obj.email);
+		}
+	},
+	"pager" : {
+		"header" : _('Pager'),
+		"depends" : [ 'pager' ],
+		"sort" : [ 'pager' ],
+		"cell" : function(args) {
+			return $('<td />').update_text(args.obj.pager);
+		}
 	}
 };
 

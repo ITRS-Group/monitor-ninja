@@ -129,7 +129,7 @@ jQuery.fn.update_text = function(text) {
 jQuery.fn.link_email = function(email) {
 	var link = $('<a />');
 	link.attr({
-		'href': 'mailto:' + email,
+		'href': 'mailto:' + encodeURIComponent(email),
 		'target': '_blank'
 	});
 	link.text(email);
