@@ -7,13 +7,6 @@ ETC_GROUP := apache
 
 all: generate-php
 
-help:
-	@echo
-	@echo Available make targets:
-	@echo -----------------------
-	@$(MAKE) --print-data-base --question | sed -n -e '/^Makefile/d' -e 's/^\([A-Za-z0-9_-]*\):.*/\1/p'
-	@echo
-
 generate-php:
 	php build.php
 
@@ -100,4 +93,4 @@ install-config:
 	cp -R etc/* $(SYSCONFDIR)/op5
 	chown -R $(ETC_USER):$(ETC_GROUP) $(SYSCONFDIR)/op5
 
-.PHONY: test help clean install install-lib install-config
+.PHONY: test clean install install-lib install-config
