@@ -17,9 +17,6 @@ final class Kohana {
 	// The singleton instance of the controller
 	public static $instance;
 
-	// Will be set to TRUE when an exception is caught
-	public static $has_error = FALSE;
-
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
@@ -617,9 +614,6 @@ final class Kohana {
 	public static function exception_handler($exception)
 	{
 		try {
-			// This is useful for hooks to determine if a page has an error
-			self::$has_error = TRUE;
-
 			$code     = $exception->getCode();
 			$type     = get_class($exception);
 			$message  = $exception->getMessage();
