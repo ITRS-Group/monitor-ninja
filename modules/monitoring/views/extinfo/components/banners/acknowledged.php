@@ -21,7 +21,7 @@ if ($object->get_state() > 0) {
 <li title="This problem is not yet acknowledged, click to acknowledge!">
 	<h2 class="faded">
 		<?php echo icon::get_linked('check-empty', $href); ?>
-		<a href="<?php echo $href; ?>">acknowledge</a>
+		<a class="command-ajax-link" href="<?php echo $href; ?>">acknowledge</a>
 	</h2>
 </li>
 <?php

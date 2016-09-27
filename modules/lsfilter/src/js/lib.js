@@ -54,6 +54,9 @@ function link(rel_url, args)
 
 	var el = $('<a />');
 	el.attr('href', _site_domain + _index_page + "/" + rel_url + get_data);
+	if (rel_url === 'cmd') {
+		el.attr('class', 'command-ajax-link');
+	}
 	return el;
 }
 function link_fnc(fnc)

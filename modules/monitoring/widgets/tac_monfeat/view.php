@@ -12,9 +12,9 @@
 		<ul>
 <?php
 			if ($status->get_enable_flap_detection()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_flap_link, _("Flap detection enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_flap_link, _("Flap detection enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_flap_link, _("Flap detection disabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_flap_link, _("Flap detection disabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($host_status->flapping_disabled)
@@ -35,9 +35,9 @@
 		<ul>
 <?php
 			if ($status->get_enable_notifications()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_notification_link, _("Notifications enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_notification_link, _("Notifications enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_notification_link, _("Notifications disabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_notification_link, _("Notifications disabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($host_status->notifications_disabled)
@@ -51,9 +51,9 @@
 		<ul>
 <?php
 			if ($status->get_enable_event_handlers()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_event_link, _("Event handlers enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_event_link, _("Event handlers enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_event_link, _("Event handlers disabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_event_link, _("Event handlers disabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($host_status->eventhandler_disabled)
@@ -67,9 +67,9 @@
 		<ul>
 <?php
 			if ($status->get_execute_host_checks()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_check_host_link, _("Active Host checks enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_check_host_link, _("Active Host checks enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_check_host_link, _("Active Host checks disabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_check_host_link, _("Active Host checks disabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($host_status->active_checks_disabled_active) {
@@ -79,9 +79,9 @@
 			}
 
 			if ($status->get_execute_service_checks()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_check_service_link, _("Active Service checks enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_check_service_link, _("Active Service checks enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_check_service_link, _("Active Service checks disabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_check_service_link, _("Active Service checks disabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($service_status->active_checks_disabled_active) {
@@ -96,9 +96,9 @@
 		<ul>
 <?php
 			if ($status->get_accept_passive_host_checks()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_host_link, _("Passive Host checks enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_host_link, _("Passive Host checks enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_passive_host_link, _("Passive Host checks enabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-disabled') . html::href($cmd_passive_host_link, _("Passive Host checks enabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($host_status->passive_checks_disabled) {
@@ -108,9 +108,9 @@
 			}
 
 			if ($status->get_accept_passive_service_checks()) {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_service_link, _("Passive Service checks enabled"), array('title' => "Click to disable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_service_link, _("Passive Service checks enabled"), array('title' => "Click to disable", 'class' => 'command-ajax-link')) . "</li>";
 			} else {
-				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_service_link, _("Passive Service checks enabled"), array('title' => "Click to enable")) . "</li>";
+				echo "<li>" . html::icon('shield-enabled') . html::href($cmd_passive_service_link, _("Passive Service checks enabled"), array('title' => "Click to enable", 'class' => 'command-ajax-link')) . "</li>";
 			}
 
 			if ($service_status->passive_checks_disabled) {

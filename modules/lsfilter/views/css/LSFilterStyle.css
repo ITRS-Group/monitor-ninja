@@ -48,7 +48,7 @@
         /* line 42, sass/LSFilterStyle.sass */
         #filter-query-multi-action ul li a:hover {
           background: #f0f0f0;
-          cursor: default; }
+         }
 
 /* line 49, sass/LSFilterStyle.sass */
 #filter-query-builder {

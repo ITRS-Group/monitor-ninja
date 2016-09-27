@@ -2,9 +2,9 @@
   font-size: 10pt;
 }
 
-p {
+.content p {
   width: 100% !important;
-  margin: 0 !important;
+  margin: 0;
 }
 
 .extinfo-commands {

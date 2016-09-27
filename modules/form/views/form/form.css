@@ -342,13 +342,14 @@ form.nj-form .nj-form-field-autocomplete input {
   background: transparent;
 }
 
-form.nj-form .nj-form-field-autocomplete-items {
-  position: absolute;
-  display: block;
+.nj-form-field-autocomplete-items {
+  position: fixed;
   display: none;
-  z-index: 3;
+  z-index: 100;
   left: 0;
-  top: 32px;
+  top: 0;
+  margin-top: 32px;
+  font-size: 11pt;
   width: 254px;
   background: #ffffff;
   border-radius: 3px;
@@ -357,13 +358,18 @@ form.nj-form .nj-form-field-autocomplete-items {
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
 }
 
-form.nj-form .nj-form-field-autocomplete-items li {
+.nj-form-field-autocomplete-items li {
   line-height: 1.1em;
   padding: 6px 4px 3px 16px;
   color: #555555;
 }
 
-form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-items-title {
+form.nj-form p {
+  margin: 8px 0;
+  padding: 0 8px;
+}
+
+.nj-form-field-autocomplete-items li.nj-form-field-autocomplete-items-title {
   cursor: default;
   padding: 6px 2px;
   margin: 8px 8px 4px 8px;
@@ -373,12 +379,12 @@ form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-ite
   border-bottom: 1px solid #d0d0d0;
 }
 
-form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item-selected {
+.nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item-selected {
   background: #50c0e4;
   color: #ffffff;
 }
 
-form.nj-form .nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item:hover {
+.nj-form-field-autocomplete-items li.nj-form-field-autocomplete-item:hover {
   background: #50c0e4;
   color: #ffffff;
 }

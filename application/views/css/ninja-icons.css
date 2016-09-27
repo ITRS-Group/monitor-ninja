@@ -591,3 +591,36 @@
 .icon-state-unknown:before { content: '\e82b'; } /* '' */
 .icon-state-warning:before { content: '\e864'; } /* '' */
 .icon-state-pending:before { content: '\e910'; } /* '' */
+
+
+@-webkit-keyframes spinnerRotate {
+    from{-webkit-transform:rotate(0deg);}
+    to{-webkit-transform:rotate(360deg);}
+}
+
+@-moz-keyframes spinnerRotate {
+    from{-moz-transform:rotate(0deg);}
+    to{-moz-transform:rotate(360deg);}
+}
+
+@-ms-keyframes spinnerRotate {
+    from{-ms-transform:rotate(0deg);}
+    to{-ms-transform:rotate(360deg);}
+}
+
+.icon-preloader:before {
+  content: '\e95a';
+  display: inline-block;
+  -webkit-animation-name: spinnerRotate;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: spinnerRotate;
+  -moz-animation-duration: 2s;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  -ms-animation-name: spinnerRotate;
+  -ms-animation-duration: 2s;
+  -ms-animation-iteration-count: infinite;
+  -ms-animation-timing-function: linear;
+} /* '' */

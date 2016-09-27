@@ -18,9 +18,10 @@
   display: none;
   flex: auto 0.7 0.7;
   position: relative;
-  max-width: 128px;
+  max-width: 100px;
   max-height: 128px;
-  font-size: 20pt;
+  text-align: center;
+  font-size: 32pt;
 }
 
 .lightbox-overlay {
@@ -69,8 +70,8 @@
   flex-direction: column;
   flex-flow: column wrap;
   position: relative;
-  overflow: visible;
-  font-size: 10pt;
+  overflow: auto;
+  font-size: 11pt;
   padding: 16px;
   min-height: 32px;
 }

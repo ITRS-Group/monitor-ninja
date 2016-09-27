@@ -16,6 +16,7 @@ if (!empty($base_href)) {
 		echo html::link('application/media/css/lib.notify.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/c3.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lightbox.css', 'stylesheet', 'text/css', false, 'screen');
+		echo html::link('modules/form/media/css/flatpicker.css', 'stylesheet', 'text/css', false, 'screen');
 	?>
 
 	<link href="<?php echo ninja::add_path('css/layout.css'); ?>" type="text/css" rel="stylesheet" media="all" />

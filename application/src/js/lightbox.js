@@ -81,7 +81,7 @@ var LightboxManager = (function() {
 			var header = element('div', {'class': 'lightbox-header'});
 			var footer = element('div', {'class': 'lightbox-footer'});
 
-			loading.textContent = "LOADING LOADING LOADING";
+			loading.innerHTML = "<span class='icon-preloader'></span>";
 			node.appendChild(header);
 			node.appendChild(content);
 			node.appendChild(footer);
@@ -158,7 +158,7 @@ var LightboxManager = (function() {
 				} else if (source instanceof NodeList) {
 					Array.prototype.slice.call(source, 0).forEach(box.header);
 					source.appendChild(close_button);
-				} else throw new LightboxError("Source passed to footer must be an instanceof Node or NodeList");
+				} else throw new LightboxError("Source passed to header must be an instanceof Node or NodeList");
 				return box;
 			};
 
@@ -225,6 +225,7 @@ var LightboxManager = (function() {
 			 */
 			box.remove = function () {
 				overlay.parentNode.removeChild(overlay);
+				window.location.hash = '';
 				return box;
 			};
 

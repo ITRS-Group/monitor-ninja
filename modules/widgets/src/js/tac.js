@@ -44,6 +44,19 @@ var tac_send_request = function (method, data, callbacks) {
 	});
 };
 
+$(document).on('click', '.widget-editbox .cancel', function (){
+
+	var form = $(this).closest('form');
+	var editbox = form.closest('.widget-editbox');
+
+	setTimeout(function() {
+		FormModule.update(form);
+		editbox.hide();
+		editbox.next('.widget-content').show();
+	}, 0);
+
+});
+
 $(function() {
 	/* If we can't change the dashboard, don't load handling of widgets */
 	if (typeof _dashboard_can_write === 'undefined' || !_dashboard_can_write)

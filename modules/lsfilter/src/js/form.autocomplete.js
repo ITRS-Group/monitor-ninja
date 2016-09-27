@@ -65,6 +65,8 @@
 		this.table_element = form_field.find('.nj-form-field-autocomplete-table');
 		this.placeholder = this.input.attr('placeholder');
 
+		$(document.body).append(this.items);
+
 		this.tables = form_field.attr('data-autocomplete').split(',');
 		var self = this;
 
@@ -205,6 +207,13 @@
 					this.items.empty();
 					this.populate(data);
 					this.items.show();
+
+					console.log(this.input.offset());
+					this.items.css({
+						top: this.input.offset().top + 'px',
+						left: this.input.offset().left + 'px'
+					});
+
 
 				}.bind(this));
 			}.bind(this), 150);

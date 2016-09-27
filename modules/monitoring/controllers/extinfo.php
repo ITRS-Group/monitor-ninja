@@ -355,7 +355,9 @@ class Extinfo_Controller extends Ninja_Controller {
 						'command' => $cmd,
 						'table' => $object->get_table(),
 						'object' => $object->get_key()
-					))
+					)), null, false, array(
+						'class' => 'command-ajax-link'
+					)
 				);
 			}
 		}
@@ -438,7 +440,9 @@ class Extinfo_Controller extends Ninja_Controller {
 						'command' => $cmd,
 						'table' => $status->get_table(),
 						'object' => $status->get_key()
-					))
+					)), null, false, array(
+						'class' => 'command-ajax-link'
+					)
 				);
 			}
 		}

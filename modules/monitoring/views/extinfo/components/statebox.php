@@ -47,7 +47,7 @@
 			<?php echo $object->get_state_text(); ?>
 		</div>
 		<p>
-		<a href="<?php echo $linkprovider->get_url('cmd', 'index', array('command' => 'check_now', 'object' => $object->get_key(), 'table' => $object->get_table())); ?>" title="Click to schedule a new check as soon as possible">Check now</a>
+			<a class="command-ajax-link" href="<?php echo $linkprovider->get_url('cmd', 'index', array('command' => 'check_now', 'object' => $object->get_key(), 'table' => $object->get_table())); ?>" title="Click to schedule a new check as soon as possible">Check now</a>
 		</p>
 	</div>
 <?php

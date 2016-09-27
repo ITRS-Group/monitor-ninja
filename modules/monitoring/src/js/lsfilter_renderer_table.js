@@ -918,7 +918,7 @@ listview_renderer_table.downtimes = {
 							'table': 'downtimes',
 							'object': args.obj.id+";"+Number(args.obj.is_service)
 						}
-					)
+					).attr('title', _("Delete scheduled downtime"))
 				)
 			);
 

@@ -1,28 +1,34 @@
+<h1>Command executed</h1>
 <?php
-if(isset($error)) {
-	echo '<div class="alert error">'.sprintf(_('There was an error submitting your command to %s.'), Kohana::config('config.product_name'));
-	if (!empty($error)) {
-		echo '<br /><br />'._('ERROR').': '.$error;
+if ($count === $success) {
+	if ($count === 1) {
+?>
+	<p>Successfully ran <?php echo $command; ?></p>
+<?php
+	} else {
+?>
+	<p>Successfully ran <?php echo $command; ?> for <?php echo $count . ' ' . $table; ?></p>
+<?php
 	}
-	echo "</div>\n";
-}
+} else {
+?>
+<?php
+	if ($success > 0) {
+		?>
+			<p>Successfully ran <?php echo $command; ?> for <?php echo ($success) . ' ' . $table; ?></p><br />
+		<?php
+	}
+?>
+<p>Failed to run <?php echo $command; ?> for <?php echo ($count - $success) . ' ' . $table; ?></p>
+<ul>
+<?php
 
-if(isset($results)) {
-	$footer = '';
-	$first = true;
-	foreach($results as $view) {
-		/* @var $view View */
-		$view->header = '';
-
-		$view->footer = $footer;
-		$content = $view->render(false);
-		$footer = $view->footer;
-
-		if($first) {
-			echo $view->header;
-			$first = false;
+	foreach ($results as $item) {
+		if (isset($item['result']['status']) && !$item['result']['status']) {
+			echo "<li>Failed for <b>" . $item['object'] . "</b> with output: <i>'" . $item['result']['output'] . "'</i></li>";
 		}
-		echo $content;
 	}
-	echo $footer;
+?>
+</ul>
+<?php
 }

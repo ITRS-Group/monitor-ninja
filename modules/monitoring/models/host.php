@@ -46,7 +46,7 @@ class Host_Model extends BaseHost_Model {
 	/**
 	 * Get the long plugin output, which is second line and forward
 	 *
-	 * By some reason, nagios escapes this field.
+	 * By some reason, Naemon escapes this field.
 	 */
 	public function get_long_plugin_output() {
 		$long_plugin_output = parent::get_long_plugin_output();
@@ -373,8 +373,8 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
-	 *     This command is used to temporarily prevent Nagios from actively
-	 *     checking the status of a host.  If Nagios needs to check the status
+	 *     This command is used to temporarily prevent Naemon from actively
+	 *     checking the status of a host.  If Naemon needs to check the status
 	 *     of this host, it will assume that it is in the same state that it was
 	 *     in before checks were disabled.
 	 * @ninja orm_command enabled_if checks_enabled
@@ -486,39 +486,35 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
 	 * @ninja orm_command params.start_time.default now
-	 * @ninja orm_command params.start_time.description
-	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
 	 * @ninja orm_command params.end_time.default now + 2hours
-	 * @ninja orm_command params.end_time.description
-	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.flexible.id 2
 	 * @ninja orm_command params.flexible.type bool
 	 * @ninja orm_command params.flexible.name Flexible
 	 * @ninja orm_command params.flexible.description
 	 *     Flexible downtime starts when the host goes down or becomes
-	 *     unreachable (sometime between the start and end times you specified)
-	 *     and lasts as long as the duration of time you enter.
+	 *     unreachable between the start and end times, and lasts as long as
+	 *     the duration of time you enter.
 	 *
 	 * @ninja orm_command params.duration.id 3
+	 * @ninja orm_command params.duration.condition flexible=true
 	 * @ninja orm_command params.duration.type duration
 	 * @ninja orm_command params.duration.name Duration
 	 * @ninja orm_command params.duration.default 2.0
 	 * @ninja orm_command params.duration.description
-	 *     Only for flexible downtimes. Number of hours from first problem the
-	 *     scheduled downtime should progress
+	 *     The number of hours the downtime should remain when triggered
 	 *
 	 * @ninja orm_command params.trigger_id.id 4
+	 * @ninja orm_command params.trigger_id.condition flexible=true
 	 * @ninja orm_command params.trigger_id.type object
 	 * @ninja orm_command params.trigger_id.query [downtimes] all
 	 * @ninja orm_command params.trigger_id.name Triggering downtime
 	 * @ninja orm_command params.trigger_id.description
-	 *     Only for flexible downtimes. Which downtime that should trigger this
-	 *     downtime
+	 *     Which downtime that should trigger this downtime
 	 *
 	 * @ninja orm_command params.propagation.id 5
 	 * @ninja orm_command params.propagation.type select
@@ -527,22 +523,16 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.propagation.option[] Propagate to child hosts
 	 * @ninja orm_command params.propagation.option[] Propagate as triggered downtime to child hosts
 	 * @ninja orm_command params.propagation.description
-	 *     Also add this downtime to children hosts. If selecting propagation,
-	 *     this downtime, with its parameters, will be added to all children
-	 *     hosts automatically. If selected that propagation is triggered, the
-	 *     downtime on children hosts is registered as flexible, triggered by
-	 *     the selected host.
+	 * 	   Don't add downtime to children, add to children, or add
+	 * 	   as triggered downtimes for children.
 	 *
 	 * @ninja orm_command params.comment.id 6
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
 	 *
 	 * @ninja orm_command description
-	 *     This command is used to schedule downtime for a host. During the
-	 *     specified downtime, Naemon will not send notifications out about the
-	 *     host. When the scheduled downtime expires, Naemon will send out
-	 *     notifications for this host as it normally would. Scheduled downtimes
-	 *     are preserved across program shutdowns and restarts.
+	 * 	   During a downtime Naemon will not send notifications, notifications
+	 * 	   resume as normal once the downtime expires.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment) {
@@ -659,16 +649,8 @@ class Host_Model extends BaseHost_Model {
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to send a custom notification about the
-	 *     specified host. Useful in emergencies when you need to notify admins
-	 *     of an issue regarding a monitored system or service. Custom
-	 *     notifications normally follow the regular notification logic in
-	 *     Naemon. Selecting the <i>Forced</i> option will force the
-	 *     notification to be sent out, regardless of the time restrictions,
-	 *     whether or not notifications are enabled, etc.  Selecting the
-	 *     <i>Broadcast</i> option causes the notification to be sent out to all
-	 *     normal (non-escalated) and escalated contacts. These options allow
-	 *     you to override the normal notification logic if you need to get an
-	 *     important message out.
+	 *     specified host. Custom notifications normally follow the regular
+	 *     notification logic in Naemon.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function send_notification($comment) {
@@ -683,10 +665,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command mayi_method update.command.notification
 	 * @ninja orm_command description
 	 *     This command is used to enable notifications for all services on the
-	 *     specified host.  Notifications will only be sent out for the service
-	 *     state types you defined in your service definition.  This <i>does
-	 *     not</i> enable notifications for the host unless you check the
-	 *     'Enable for host too' option.
+	 *     specified host.  This does not enable notifications for the host.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function enable_service_notifications() {
@@ -702,9 +681,7 @@ class Host_Model extends BaseHost_Model {
 	 *     This command is used to prevent notifications from being sent out for
 	 *     all services on the specified host.  You will have to re-enable
 	 *     notifications for all services associated with this host before any
-	 *     alerts can be sent out in the future.  This <i>does not</i> prevent
-	 *     notifications from being sent out about the host unless you check the
-	 *     'Disable for host too' option.
+	 *     alerts can be sent out in the future.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function disable_service_notifications() {
@@ -718,8 +695,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
 	 *     This command is used to enable active checks of all services
-	 *     associated with the specified host.  This <i>does not</i> enable
-	 *     checks of the host unless you check the 'Enable for host too' option.
+	 *     associated with the specified host.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function enable_service_checks() {
@@ -736,12 +712,8 @@ class Host_Model extends BaseHost_Model {
 	 *     associated with the specified host.  When a service is disabled
 	 *     Naemon will not monitor the service.  Doing this will prevent any
 	 *     notifications being sent out for the specified service while it is
-	 *     disabled.  In order to have Nagios check the service in the future
-	 *     you will have to re-enable the service. Note that disabling service
-	 *     checks may not necessarily prevent notifications from being sent out
-	 *     about the host which those services are associated with.  This
-	 *     <i>does not</i> disable checks of the host unless you check the
-	 *     'Disable for host too' option.
+	 *     disabled.  In order to have Naemon check the service in the future
+	 *     you will have to re-enable the service.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function disable_service_checks() {
@@ -804,21 +776,20 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.check_time.name Check time
 	 * @ninja orm_command params.check_time.default now
 	 * @ninja orm_command params.check_time.description
-	 * 		Enter a check time in the format: YYYY-MM-DD hh:mm::ss
+	 * 		The time at which to run the checks
 	 *
 	 * @ninja orm_command params.forced.id 1
 	 * @ninja orm_command params.forced.type bool
 	 * @ninja orm_command params.forced.name Forced
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If you want Naemon to force a check of the services regardless of both what time the scheduled check occurs and whether or not checks are enabled for the services, check this checkbox.
+	 * 		If you want Naemon to force a check of the services regardless of
+	 * 		both what time the scheduled check occurs and whether or not checks
+	 * 		are enabled for the services, check this checkbox.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
-	 *     the specified host. If you select the <i>force check</i> option,
-	 *     Naemon will force a check of all services on the host regardless of
-	 *     both what time the scheduled checks occur and whether or not checks
-	 *     are enabled for those services.
+	 *     the specified host.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_service_checks($check_time, $forced = false) {

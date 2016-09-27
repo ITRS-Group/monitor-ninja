@@ -1,48 +1,21 @@
 var FormModule = (function () {
 
-	var doc = $(document);
-
-	doc.on('change', 'form.nj-form', function() {
-		var form = $(this);
-		Form.update(form);
-	});
-
-	/* Range handling */
-	doc.find('.nj-form-field-range-hover').hide();
-
-	doc.on('mousemove', '.nj-form-field-range', function (e) {
-		$(this).find('.nj-form-field-range-hover')
-		.css({
-			top: e.clientY + 'px',
-			left: e.clientX + 'px'
-		}).text($(this).find('input').val());
-	});
-
-	doc.find('input[type="range"]').hover(function () {
-		$(this).siblings('.nj-form-field-range-hover').show();
-	}, function () {
-		$(this).siblings('.nj-form-field-range-hover').hide();
-	});
-
-	doc.on('click', '.cancel', function (){
-		var form = $(this).closest('form');
-		var editbox = form.closest('.widget-editbox');
-		setTimeout(function() {
-			form.find('.nj-form-option').trigger('change');
-			//cancel button click event to show widget content
-			editbox.hide();
-			editbox.next('.widget-content').show();
-		}, 0);
-	});
 
 	var form_plugins = [];
 	var Form = {
 
+		/**
+		 * This function runs through form conditionals to see whether the should
+		 * be displayed or not based on the current state of the form.
+		 *
+		 * @param jQuery<Form> form - The form element to update
+		 */
 		update: function (form) {
 
 			form.find('.nj-form-conditional').each(function() {
 
 				var elem = $(this);
+				var form = elem.closest('form');
 				var field = form.find("[name='" + elem.attr('data-njform-rel') + "']");
 				var value = field.val();
 
@@ -66,11 +39,16 @@ var FormModule = (function () {
 							.attr('data-hidden-required', 'required');
 						elem.hide();
 					}
-
 			});
 
 		},
 
+		/**
+		 * This function registers a new plugin to the form
+		 *
+		 * @param function plugin - Function to execute on new forms add, this
+		 * 													recieves the form element as a parameter
+		 */
 		register: function (plugin) {
 			if (form_plugins.indexOf(plugin) < 0) {
 				if (typeof(plugin) === 'function') {
@@ -85,6 +63,11 @@ var FormModule = (function () {
 			return false;
 		},
 
+		/**
+		 * Adds a new form to the FormModule, all new nj-forms should be added
+		 *
+		 * @param jQuery<Form> form
+		 */
 		add_form: function (form_element) {
 
 			form_plugins.forEach(function (plugin) {
@@ -96,6 +79,14 @@ var FormModule = (function () {
 		}
 
 	}
+
+	/**
+	 * Respond to all changes in a nj-form by running the
+	 * update function.
+	 */
+	$(document).on('change', '.nj-form', function () {
+		Form.update($(this));
+	});
 
 	return Form;
 

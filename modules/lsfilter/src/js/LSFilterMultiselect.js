@@ -89,16 +89,32 @@ var lsfilter_multiselect = {
 	},
 
 	do_send : function(link) {
+
+		var form = $('#listview_multi_action_form');
 		var action = link.attr('data-multi-action-command');
-		var selcount = $('.listview_multiselect_checkbox:checked').length;
-		if (selcount == 0) {
+		var keys = [];
+
+		$('input.listview_multiselect_checkbox:checked').each(function (i, item) {
+			keys.push('object[]=' + encodeURI(item.value));
+		});
+
+		if (keys.length == 0) {
 			Notify.message('No items selected');
 		} else if (!action) {
 			Notify.message('No action selected');
 		} else {
-			$('#listview_multi_action_obj_action').attr('value', action);
-			$('#listview_multi_action_form').submit();
+
+			var href = form.attr('action');
+			href += '?' + keys.join('&') + '&table=' + this.selection_table + '&command=' + action;
+
+			var shadow_link = $('<a class="command-ajax-link" href="' + href + '" />').text(link.text());
+			$(document.body).append(shadow_link);
+
+			shadow_link.click();
+			shadow_link.remove();
+
 		}
+
 	},
 	box_register : function(key, value) {
 		this.selection[key] = value;

@@ -60,7 +60,7 @@ class Service_Model extends BaseService_Model {
 	/**
 	 * Get the long plugin output, which is second line and forward
 	 *
-	 * By some reason, nagios escapes this field.
+	 * By some reason, naemon escapes this field.
 	 */
 	public function get_long_plugin_output() {
 		$long_plugin_output = parent::get_long_plugin_output();
@@ -278,21 +278,11 @@ class Service_Model extends BaseService_Model {
 	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
-	 *     This command is used to acknowledge a host problem.
-	 *     When a host problem is acknowledged, future notifications about
-	 *     problems are temporarily disabled until the host changes from its
-	 *     current state.
-	 *     If you want acknowledgement to disable notifications until the host
-	 *     recovers, check the 'Sticky Acknowledgement' checkbox. Contacts for
-	 *     this host will receive a notification about the acknowledgement, so
-	 *     they are aware that someone is working on the problem.  Additionally,
-	 *     a comment will also be added to the host.
-	 *     Make sure to enter your name and fill in a brief description of what
-	 *     you are doing in the comment field.
-	 *     If you would like the host comment to remain once the acknowledgement
-	 *     is removed, check the 'Persistent Comment' checkbox.  If you do not
-	 *     want an acknowledgement notification sent out to the appropriate
-	 *     contacts, uncheck the 'Notify' checkbox.
+	 *     This command is used to acknowledge a service problem.  When a
+	 *     service problem is acknowledged, future notifications about problems
+	 *     are temporarily disabled until the host changes from its current
+	 *     state.  Make sure to enter your name and fill in a brief description
+	 *     of what you are doing in the comment field.
 	 * @ninja orm_command enabled_if unacknowledged_problem
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
@@ -400,8 +390,8 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command icon disable-active-checks
 	 * @ninja orm_command mayi_method update.command.enabled
 	 * @ninja orm_command description
-	 *     This command is used to temporarily prevent Nagios from actively
-	 *     checking the status of a service.  If Nagios needs to check the
+	 *     This command is used to temporarily prevent Naemon from actively
+	 *     checking the status of a service.  If Naemon needs to check the
 	 *     status of this service, it will assume that it is in the same state
 	 *     that it was  in before checks were disabled.
 	 * @ninja orm_command enabled_if checks_enabled
@@ -514,15 +504,11 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command params.start_time.type time
 	 * @ninja orm_command params.start_time.name Start time
 	 * @ninja orm_command params.start_time.default now
-	 * @ninja orm_command params.start_time.description
-	 *     Start time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.end_time.id 1
 	 * @ninja orm_command params.end_time.type time
 	 * @ninja orm_command params.end_time.name End time
 	 * @ninja orm_command params.end_time.default now + 2hours
-	 * @ninja orm_command params.end_time.description
-	 *     End time in the format: YYYY-MM-DD hh:mm:ss
 	 *
 	 * @ninja orm_command params.flexible.id 2
 	 * @ninja orm_command params.flexible.type bool
@@ -536,16 +522,18 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command params.duration.type duration
 	 * @ninja orm_command params.duration.name Duration
 	 * @ninja orm_command params.duration.default 2.0
+	 * @ninja orm_command params.duration.condition flexible=true
 	 * @ninja orm_command params.duration.description
-	 *     Only for flexible downtimes. Number of hours from first problem the
+	 *     Number of hours from first problem the
 	 *     scheduled downtime should progress
 	 *
 	 * @ninja orm_command params.trigger_id.id 4
 	 * @ninja orm_command params.trigger_id.type object
 	 * @ninja orm_command params.trigger_id.query [downtimes] all
 	 * @ninja orm_command params.trigger_id.name Triggering downtime
+	 * @ninja orm_command params.trigger_id.condition flexible=true
 	 * @ninja orm_command params.trigger_id.description
-	 *     Only for flexible downtimes. Which downtime that should trigger this
+	 *     Which downtime that should trigger this
 	 *     downtime
 	 *
 	 * @ninja orm_command params.comment.id 5
