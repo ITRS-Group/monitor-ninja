@@ -13,6 +13,7 @@ module Op5Cucumber::NavigationHelpers
 			'nacoma page' => '/op5/nacoma/',
 			'Host details page' => '/index.php/status/host/all',
 			'Hostgroup details page' => '/index.php/listview?q=%5Bhostgroups%5D%20all',
+			'contacts list' => '/index.php/listview?q=%5Bcontacts%5D%20all',
 			'Service details page' => '/index.php/status/service/all',
 			'Configure page' => '//index.php/configuration/configure', # FIXME: This is bad; this is nacoma
 			'list view' => '/index.php/listview',

@@ -1,6 +1,6 @@
 Feature: Mocked
-  Background:
-    Given I am logged in
+	Background:
+		Given I am logged in
 
 	Scenario: Host details page links
 		Ensure that all links on the host details
@@ -168,3 +168,22 @@ Feature: Mocked
 		Then I should be on url "/index.php/avail/generate?report_type=services&objects%5B%5D=Champey+Hong%3BManami+Kaneshiro"
 		And I should see "Service details for Manami Kaneshiro on host Champey Hong"
 		And I should see "Reporting period: Last 7 days"
+
+	@MON-9647
+	Scenario: Contact tables should have pager and email columns, at least
+		Given I have these mocked contacts
+			| name          | alias  | email                     | pager |
+			| Handsome Jack | Jackie | buttstallion@hyperion.com | 911   |
+
+		When I am on the contacts list
+		Then I should see "Name"
+		And I should see "Handsome Jack"
+
+		And I should see "Email"
+		And I should see "buttstallion@hyperion.com"
+
+		And I should see "Alias"
+		And I should see "Jackie"
+
+		And I should see "Pager"
+		And I should see "911"

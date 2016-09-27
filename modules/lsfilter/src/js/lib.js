@@ -126,6 +126,16 @@ jQuery.fn.update_text = function(text) {
 	}
 };
 
+jQuery.fn.link_email = function(email) {
+	var link = $('<a />');
+	link.attr({
+		'href': 'mailto:' + encodeURIComponent(email),
+		'target': '_blank'
+	});
+	link.text(email);
+	return this.append(link);
+}
+
 jQuery.fn.querylink = function(text) {
 	if( _escape_html_tags ) {
 		return this.text(text);

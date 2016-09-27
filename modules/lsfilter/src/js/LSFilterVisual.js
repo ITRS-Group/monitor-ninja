@@ -217,7 +217,10 @@ var lsfilter_graphics_visitor = {
 
 		var tablesel = $('<select />');
 		tablesel.addClass('lsfilter_visual_table_select');
-		for (table in listview_renderer_table) {
+		var tables = Object.keys(listview_renderer_table).sort();
+		var table;
+		for (var i = 0; i < tables.length; i++) {
+			table = tables[i];
 			var opt = $('<option />');
 			opt.attr('value', table);
 			opt.text(table);
