@@ -106,7 +106,7 @@ class dashboard {
 		$separator = $db_menu->get('actions');
 		$separator->set_separator();
 
-		$db_menu->set("Dashboard's overview", listview::querylink('[dashboards] all'));
+		$db_menu->set("All Dashboards", listview::querylink('[dashboards] all'));
 		$db_menu->set("New dashboard", 'tac/new_dashboard', null, false, array(
 			'class' => "menuitem_dashboard_option" /* Popup as fancybox */
 		));

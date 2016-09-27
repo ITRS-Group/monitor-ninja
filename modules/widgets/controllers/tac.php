@@ -580,8 +580,8 @@ class Tac_Controller extends Ninja_Controller {
 			LinkProvider::factory()->get_url('tac', 'delete_dashboard'),
 			array(
 				new Form_Field_Hidden_Model('dashboard_id'),
-				new Form_Field_HtmlDecorator_Model('Are you sure you want to delete this dashboard?'),
-				new Form_Field_HtmlDecorator_Model('Deleting a dashboard cannot be undone!')
+				new Form_Field_HtmlDecorator_Model('<p>Are you sure you want to delete this dashboard?</p>'),
+				new Form_Field_HtmlDecorator_Model('<p>Deleting a dashboard cannot be undone!</p>')
 			)
 		);
 
@@ -589,7 +589,7 @@ class Tac_Controller extends Ninja_Controller {
 			'dashboard_id' => $dashboard->get_id()
 		));
 
-		$form->add_button(new Form_Button_Confirm_Model('yes', 'Yes'));
+		$form->add_button(new Form_Button_Confirm_Model('yes', 'Delete'));
 		$form->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
 		$this->template = $form->get_view();
 	}
