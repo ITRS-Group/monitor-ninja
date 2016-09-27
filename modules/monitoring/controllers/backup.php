@@ -12,43 +12,27 @@
  */
 class Backup_Controller extends Ninja_Controller {
 
-	/**
-	 * Undocumented variable
-	 */
-	public $debug = false;
-	/**
-	 * Undocumented variable
-	 */
-	public $model = false;
-
 	private $nagios_cfg_path = "";
+
+	/**
+	 * Path for where to store the backups
+	 */
+	public $backup_directory = '/var/www/html/backup';
 
 	/**
 	 * Extension for backup files
 	 */
 	const BACKUP_EXTENSION = '.tar.gz';
-	/**
-	 * Path for where to store the backups
-	 */
-	const STORAGE = '/var/www/html/backup/';
 
-	public function __construct ()
-	{
-
+	public function __construct () {
 		parent::__construct();
-
 		$this->nagios_cfg_path = System_Model::get_nagios_etc_path();
-
 	}
 
 	/**
-	 * Index page, display backup list with actions
-	 *
-	 * @return
+	 * List the backup files
 	 */
-	public function index ()
-	{
-
+	public function index () {
 		$this->_verify_access('monitor.system.backup:read.backup');
 
 
@@ -57,8 +41,8 @@ class Backup_Controller extends Ninja_Controller {
 		$this->template->disable_refresh = true;
 		$this->template->js[] = 'modules/monitoring/views/backup/js/backup.js';
 
-		$files = false;
-		foreach (glob(self::STORAGE . '*' . self::BACKUP_EXTENSION) as $filename) {
+		$files = array();
+		foreach (glob($this->backup_directory .'/*' . self::BACKUP_EXTENSION) as $filename) {
 			$files[] = basename($filename);
 		}
 
@@ -71,22 +55,15 @@ class Backup_Controller extends Ninja_Controller {
 		$this->template->toolbar = new Toolbar_Controller(_( "Backup/Restore" ));
 		$this->template->toolbar->info($link);
 
-		if ($files === false) {
-			$files = array();
-			$this->template->content->error = 'Cannot get directory contents: ' . self::STORAGE;
-		}
-
 		$this->template->content->files = $files;
-
 	}
 
 	/**
-	 * Undocumented method
+	 * View the contents of a backup file
+	 *
 	 * @param $file
 	 */
-	public function view ($file)
-	{
-
+	public function view ($file) {
 		$this->_verify_access('monitor.system.backup:read.backup');
 
 		$this->template->content = $this->add_view('backup/view');
@@ -101,7 +78,7 @@ class Backup_Controller extends Ninja_Controller {
 			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
 		);
 
-		proc::open(array('tar', 'tfz', self::STORAGE . $file), $output, $stderr, $status);
+		proc::open(array('tar', 'tfz', $this->backup_directory .'/'. $file), $output, $stderr, $status);
 
 		if ($status === 0 && is_string($output)) {
 			$files = explode("\n", $output);
@@ -115,16 +92,17 @@ class Backup_Controller extends Ninja_Controller {
 
 	/* below are AJAX/JSON actions */
 	/**
-	 * Undocumented method
-	 * @param $file
+	 * Download a backup file to the client.
+	 *
+	 * @param $file string
 	 */
 	public function download ($file) {
-
 		$this->_verify_access('monitor.system.backup:read.backup');
 
-		$file_path = self::STORAGE . $file;
+		$file_path = $this->backup_directory .'/'. $file;
 		if ($file_path != realpath($file_path)) {
-			json::fail('File could not be located within the designated storage area');
+			$this->template = json::fail_view('File could not be located within the designated storage area');
+			return;
 		}
 
 		$fp = fopen($file_path, "r");
@@ -141,40 +119,40 @@ class Backup_Controller extends Ninja_Controller {
 
 		fpassthru($fp);
 		fclose($fp);
-
 	}
 
 	/**
 	 * Simple facade for proc::open() with preset values
+	 *
+	 * @param $stdout
+	 * @param $stderr
+	 * @param $status
 	 */
 	private function _verify_naemon_config(&$stdout, &$stderr, &$status) {
 		proc::open(array('/usr/bin/asmonitor','-q', '/usr/bin/naemon', '-v', $this->nagios_cfg_path . 'nagios.cfg'), $stdout, $stderr, $status);
 	}
 
 	/**
-	 * Undocumented method
+	 * Proxy for checking if the currently running Naemon configuration is
+	 * valid. Not sure why we do this, nor why we do it here.
 	 */
-	public function verify ()
-	{
-
+	public function verify () {
 		$this->_verify_access('monitor.system.backup:read.backup');
 		$this->_verify_naemon_config($stdout, $stderr, $status);
 		if ($status) {
-			json::fail(array(
+			$this->template = json::fail_view(array(
 				"message" => "The current configuration is invalid",
 				"debug" => $stdout
 			));
+			return;
 		}
-		json::ok("The current configuration is valid");
-
+		$this->template = json::ok_view("The current configuration is valid");
 	}
 
 	/**
-	 * Undocumented method
+	 * Create a new backup file
 	 */
-	public function backup ()
-	{
-
+	public function backup () {
 		$this->_verify_access('monitor.system.backup:create.backup');
 
 		$general_files = array(
@@ -213,95 +191,94 @@ class Backup_Controller extends Ninja_Controller {
 
 		$file = strftime('backup-%Y-%m-%d_%H.%M.%S') . self::BACKUP_EXTENSION;
 
-		$command_line = array_merge(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/backup', self::STORAGE . $file), $backup);
+		$command_line = array_merge(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/backup', $this->backup_directory .'/'. $file), $backup);
 		proc::open($command_line, $stdout, $stderr, $status);
 
 		if ($status) {
-			json::fail(array(
+			$this->template = json::fail_view(array(
 				"message" => "Could not backup the current configuration",
 				"debug" => $stderr
 			));
+			return;
 		}
-		json::ok($file);
+		$this->template = json::ok_view($file);
 	}
 
 	/**
-	 * Undocumented method
+	 * Restores the backup referred to as $file
+	 *
+	 * @param $file string
 	 */
-	public function restore ($file)
-	{
-
+	public function restore ($file) {
 		$this->_verify_access('monitor.system.backup:read.backup');
 		$this->_verify_access('monitor.monitoring.hosts:update.backup');
 		$this->_verify_access('monitor.monitoring.services:update.backup');
 		$this->_verify_access('monitor.monitoring.contacts:update.backup');
 		$this->_verify_access('monitor.monitoring.notifications:update.backup');
 
-		proc::open(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/restore', self::STORAGE . $file), $stdout, $stderr, $status);
+		proc::open(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/restore', $this->backup_directory .'/'. $file), $stdout, $stderr, $status);
 
 		if ($status) {
-			json::fail(array(
+			$this->template = json::fail_view(array(
 				"message" => "Could not restore the configuration '{$file}'",
 				"debug" => $stderr
 			));
+			return;
 		}
 
 		$this->_verify_naemon_config($stdout, $stderr, $status);
 		if ($status) {
-			json::fail(array(
+			$this->template = json::fail_view(array(
 				"message" => "The configuration '{$file}' has been restored but seems to be invalid",
 				"debug" => $stdout // Naemon writes errors to stdout..
 			));
+			return;
 		}
 
-		json::ok("The configuration '{$file}' has been restored successfully");
-
+		$this->template = json::ok_view("The configuration '{$file}' has been restored successfully");
 	}
 
 	/**
-	 * Undocumented method
+	 * Remove an unwanted backup file
+	 *
+	 * @param $file string
 	 */
-	public function delete ($file)
-	{
-
+	public function delete ($file) {
 		$this->_verify_access('monitor.system.backup:delete.backup');
 
-		$status = @unlink(self::STORAGE . $file);
+		$status = @unlink($this->backup_directory .'/'. $file);
 
 		if ($status) {
-			json::ok("The backup '{$file}' has been deleted");
-		} else {
-			json::fail(array(
-				"message" => "Could not delete the backup '{$file}'",
-				"debug" => array("Could not unlink file.")
-			));
+			$this->template = json::ok_view("The backup '{$file}' has been deleted");
+			return;
 		}
-
+		$this->template = json::fail_view(array(
+			"message" => "Could not delete the backup '{$file}'",
+			"debug" => array("Could not unlink file.")
+		));
 	}
 
 	/**
-	 * Undocumented method
+	 * In order to reload the Monitor daemon with configuration from a
+	 * backup, we need to restart it from within the GUI and report back
+	 * how it went.
 	 */
 	public function restart () {
-
 		$user = Auth::instance()->get_user();
-		if ($user->authorized_for('system_commands')) {
-			$success = nagioscmd::submit_to_nagios('RESTART_PROCESS', "", $output);
-			if ($success) {
-				json::ok("Restarting monitoring process");
-			} else {
-				json::fail(array(
-					"message" => "Could not restart monitoring process",
-					"debug" => $output
-				));
-			}
-		} else {
-			json::fail(array(
+		if (!$user->authorized_for('system_commands')) {
+			$this->template = json::fail_view(array(
 				"message" => "Not authorized to perform a process restart",
 				"debug" => array()
 			));
 		}
-
+		$success = nagioscmd::submit_to_nagios('RESTART_PROCESS', "", $output);
+		if ($success) {
+			$this->template = json::ok_view("Restarting monitoring process");
+			return;
+		}
+		$this->template = json::fail_view(array(
+			"message" => "Could not restart monitoring process",
+			"debug" => $output
+		));
 	}
-
 }
