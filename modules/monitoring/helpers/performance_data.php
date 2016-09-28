@@ -68,4 +68,58 @@ class performance_data {
 		return $perf_data;
 	}
 
+	/**
+	 * @param $threshold string <a href="https://www.monitoring-plugins.org/doc/guidelines.html#THRESHOLDFORMAT">Threshold and ranges</a>
+	 * @param $value float
+	 * @return bool
+	 */
+	public function match_threshold($threshold, $value) {
+		//Check threshold string empty
+		if(empty($threshold)) {
+			return false;
+		}
+		//Range definition - 10
+		if(is_numeric($threshold)) {
+			return ($value < 0 || $value > $threshold);
+		}
+
+		if(preg_match('/^(@|~)?([0-9]+)?:?([0-9]+)?$/', $threshold, $matches)) {
+			$prefix = isset($matches[1])?$matches[1]:'';
+			$lowbound = isset($matches[2])?$matches[2]:'';
+			$highbound = isset($matches[3])?$matches[3]:'';
+
+			//Range definition - ~:10
+			if($prefix === '~'){
+				return $value > $highbound;
+			}
+
+			//Range definition - @10:20
+			if($prefix === '@'){
+				if($lowbound && $highbound) {
+					return $value < $lowbound || $value > $highbound;
+				}
+				if($lowbound){
+					return $value < $lowbound;
+				}
+				if($highbound){
+					return $value > $highbound;
+				}
+			}
+
+			//Range definition - 10:20 and Range definition - 10:
+			if(empty($prefix)){
+				if($lowbound && $highbound) {
+					return $value <= $lowbound || $highbound >= $value;
+				}
+				if($lowbound){
+					return $value < $lowbound;
+				}
+				if($highbound){
+					return $highbound > $value;
+				}
+			}
+		}
+
+		return false;
+	}
 }

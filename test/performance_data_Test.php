@@ -101,4 +101,70 @@ class performance_data_Test extends PHPUnit_Framework_TestCase {
 				)
 			), $pd);
 	}
+
+	/**
+	 * thresholds provider
+	 * @return array
+	 */
+	public function thresholds_provider() {
+		return array(
+			//Test invalid threshold string
+			array("abc", 5, false),
+
+			//Test empty threshold string
+			array("", 5, false),
+
+			//Test Range definition - 10
+			array("10", -5, true),
+			array("10", 20, true),
+			array("10", 15, true),
+			array("10", 0, false),
+			array("10", 5, false),
+			array("10", 10, false),
+
+			//Test Range definition - 10:
+			array("10:", -5, true),
+			array("10:", 0, true),
+			array("10:", 5, true),
+			array("10:", 25, false),
+			array("10:", 10, false),
+
+			//Test Range definition - ~:10
+			array("~:10", -5, false),
+			array("~:10", 0, false),
+			array("~:10", 5, false),
+			array("~:10", 10, false),
+			array("~:10", 11, true),
+			array("~:10", 15, true),
+
+			//Test Range definition - 10:20
+			array("10:20", -5, true),
+			array("10:20", 0, true),
+			array("10:20", 5, true),
+			array("10:20", 10, true),
+			array("10:20", 20, true),
+			array("10:20", 11, true),
+			array("10:20", 15, true),
+			array("10:20", 25, false),
+			array("10:20", 21, false),
+
+			//Test Range definition - @10:20
+			array("@10:20", -5, true),
+			array("@10:20", 0, true),
+			array("@10:20", 5, true),
+			array("@10:20", 25, true),
+			array("@10:20", 10, false),
+			array("@10:20", 20, false),
+			array("@10:20", 15, false),
+			array("@10", 15, false),
+			array("@0:10", 20, true),
+		);
+	}
+
+	/**
+	 * @dataProvider thresholds_provider
+	 */
+	public function test_match_threshold($threshold, $value, $expected_result) {
+		$this->assertSame($expected_result, performance_data::match_threshold($threshold, $value));
+	}
 }

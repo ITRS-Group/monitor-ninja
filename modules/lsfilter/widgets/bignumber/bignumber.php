@@ -400,9 +400,9 @@ class bignumber_Widget extends widget_Base {
 			}
 			$perf_data = $perf_data[$perf_data_src];
 			if($form_model->get_value('threshold_onoff') && isset($perf_data['warn'], $perf_data['crit'])) {
-				if($perf_data['value'] >= $perf_data['crit']) {
+				if(performance_data::match_threshold($perf_data['crit'], $perf_data['value'])) {
 					$state = 'critical';
-				} elseif($perf_data['value'] >= $perf_data['warn']) {
+				} else if(performance_data::match_threshold($perf_data['warn'], $perf_data['value'])) {
 					$state = 'warning';
 				} else {
 					$state = 'ok';
