@@ -9,7 +9,7 @@
   function restart () {
     $.get(baseurl + 'backup/restart')
       .done(function (message) {
-        Notify.message(message);
+        Notify.message(message.result);
       })
       .fail(function (data) {
         data = JSON.parse(data);
@@ -35,14 +35,15 @@
     });
 
     $.get(baseurl + 'backup/backup')
-      .done(function (file) {
+      .done(function (response) {
+        var file = response.result;
 
         var first = $('#backups tbody tr:first');
 
         notification.remove(1);
         Notify.message("Backup  '" + file + "' was created!");
 
-        first.before(
+        $('#backups tbody').prepend(
           $('<tr>').append(
             $('<td>').append(
               $('<a class="view" style="border: 0px; margin-right: 4px">')
@@ -60,7 +61,7 @@
                 .attr('href', baseurl + 'backup/download/' + file)
                 .text(file)
             )
-          ).addClass(first.hasClass('odd') ? 'even' : 'odd')
+          ).addClass(first.length && first.hasClass('odd') ? 'even' : 'odd')
         );
 
       })
@@ -88,7 +89,7 @@
     $.get($(link).attr('href'))
       .done(function (data) {
         var notification = Notify.message(
-        data + '. Do you really want to backup your current configuration?',
+        data.result + '. Do you really want to backup your current configuration?',
         {
           sticky: true,
           buttons: {
@@ -128,7 +129,7 @@
           notification.remove(1);
           $.get(link.attr('href'))
             .done(function (data) {
-              notification = Notify.message(data + '. Your new configuration will not be used until the monitoring process is restarted', {
+              notification = Notify.message(data.result + '. Your new configuration will not be used until the monitoring process is restarted', {
                 sticky: true,
                 buttons: {
                   "Restart now": function () {
@@ -161,15 +162,15 @@
 
     var link = $(this);
     var notification = Notify.message(
-      'Do you really want to delete ' + $(link).closest('tr').find('.download').text() + ' ?',
+      'Do you really want to delete ' + link.closest('tr').find('.download').text() + ' ?',
       {
         sticky: true,
         buttons: {
           "Yes": function () {
-            $.get($(link).attr('href'))
+            $.get(link.attr('href'))
               .done(function (data) {
                 notification.remove(1);
-                Notify.message(data);
+                Notify.message(data.result);
                 link.parents('tr').remove();
               })
               .fail(function (data) {
