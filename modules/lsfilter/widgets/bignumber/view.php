@@ -13,13 +13,17 @@
 					if ($fontsize > 100) $fontsize = 100;
 					elseif ($fontsize < 60) $fontsize = 60;
 				?>
-					<span class="big-number-perfdata-value" style="font-size: <?php echo $fontsize; ?>%; line-height: <?php echo $fontsize; ?>%">
-
-						<?php echo html::specialchars($perf_data['value']); ?>
-				</span>
-					<span class="big-number-perfdata-uom" style="line-height: <?php echo $fontsize; ?>% ">
-					<?php echo isset($perf_data['unit']) ? html::specialchars($perf_data['unit']) : ''; ?>
-				</span>
+				<span class="big-number-perfdata-value" style="<?php
+					// We don't want any space in between span tags or values,
+					// that is why the somewhat funny intendention.
+					echo "font-size: $fontsize%; line-height: $fontsize%;";
+				?>"><?php
+					echo html::specialchars($perf_data['value']);
+				?></span><span class="big-number-perfdata-uom" style="<?php
+					echo "font-size: $fontsize%; line-height: $fontsize%;";
+				?>"><?php
+					echo isset($perf_data['unit']) ? html::specialchars($perf_data['unit']) : '';
+				?></span>
 			</span>
 		</div>
 		<?php } else { ?>
