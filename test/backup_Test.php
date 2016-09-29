@@ -33,8 +33,7 @@ class Backup_Test extends PHPUnit_Framework_TestCase {
 		}
 
 		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
-		$this->controller = new Backup_Controller();
-		$this->controller->backup_directory = $this->backup_location;
+		$this->controller = new Backup_Controller($this->backup_location);
 	}
 
 	public function tearDown() {

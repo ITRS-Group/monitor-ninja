@@ -17,14 +17,18 @@ class Backup_Controller extends Ninja_Controller {
 	/**
 	 * Path for where to store the backups
 	 */
-	public $backup_directory = '/var/www/html/backup';
+	private $backup_directory;
 
 	/**
 	 * Extension for backup files
 	 */
 	const BACKUP_EXTENSION = '.tar.gz';
 
-	public function __construct () {
+	/**
+	 * @param $backup_directory string, defaults to the value Monitor uses in production
+	 */
+	public function __construct($backup_directory = '/var/www/html/backup') {
+		$this->backup_directory = $backup_directory;
 		parent::__construct();
 		$this->nagios_cfg_path = System_Model::get_nagios_etc_path();
 	}
