@@ -10,8 +10,8 @@ class Form_Model {
 	private $action = '';
 	private $fields = array();
 	private $id = "";
-	private $missing_fields_cb = array();
 	private $values = array();
+	private $optional = array();
 	private $buttons = array();
 
 	/**
@@ -133,32 +133,30 @@ class Form_Model {
 	 * an object selector which takes a unique key string as raw argument can
 	 * return an actual object instance.
 	 *
-	 * @see set_missing_fields
-	 *
 	 * @param $raw_data array of parameters fetched as $_POST
 	 * @return array
 	 */
 	public function process_data(array $raw_data) {
+
 		$result = new Form_Result_Model();
+
 		foreach ($this->fields as $field) {
 			/* @var $field Form_Field_Model */
+
+			$field_name = $field->get_name();
+
 			try {
 				$field->process_data($raw_data, $result);
-			} catch(MissingValueException $e) {
+			} catch (MissingValueException $e) {
 				$field_name = $e->get_field()->get_name();
-				if(array_key_exists($field_name, $this->missing_fields_cb)) {
-					if(is_callable($this->missing_fields_cb[$field_name])) {
-						call_user_func($this->missing_fields_cb[$field_name], $raw_data, $result);
-					}
-					// the value can also be "", for
-					// example, which just makes the
-					// form field entirely optional
-				} else {
+				if (!in_array($field_name, $this->optional)) {
 					throw $e;
 				}
 			}
 		}
+
 		return $result->to_array();
+
 	}
 
 	/**
@@ -179,37 +177,35 @@ class Form_Model {
 	}
 
 	/**
-	 * When executing @see process_data(), we can detect a missing field
-	 * and act on it. This method let's you specify what should happen when
-	 * a field is missing.
-	 *
-	 * Making a field optional:
-	 *     $form->set_missing_fields_cb(array('my_field_name' => ''));
-	 *
-	 * Set a custom result if field is missing:
-	 *     $form->set_missing_fields_cb(array(
-	 *       'my_field_name' => function($raw_data, Form_Result_Model $res) {
-	 *         $res['my_field_name'] = 2;
-	 *       }
-	 *     ))
-	 *
-	 * The method tries to be versatile by making the default case ("ignore
-	 * value") easy to write, and also generic by allowing a callback so
-	 * that the API won't have to expose different methods for each
-	 * solution to the "missing input value" situation.
-	 *
-	 * @param $fields array
-	 */
-	public function set_missing_fields_cb(array $fields) {
-		$this->missing_fields_cb = $fields;
-	}
-
-	/**
 	 * Set the default values for the form
 	 *
 	 * @param $values array
 	 */
 	public function set_values(array $values) {
 		$this->values = $values;
+	}
+
+	/**
+	 * Set which fields are optional.
+	 *
+	 * Optional fields are handle in such a way that if the process_data
+	 * function of that field throws a MissingValueException, that exception is ignored.
+	 *
+	 * Optional fields that throw MissingValueException are NOT part of the
+	 * array result of the form->process_data call.
+	 *
+	 * @param $fieldnames array
+	 */
+	public function set_optional(array $fieldnames) {
+		$this->optional = $fieldnames;
+	}
+
+	/**
+	 * Returns an array of the fields that are optional.
+	 *
+	 * @return array
+	 */
+	public function get_optional() {
+		return $this->optional;
 	}
 }
