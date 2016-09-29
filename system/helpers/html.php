@@ -489,7 +489,7 @@ class html {
      * @param $array Array of strings
      * @return string
      */
-    public static function get_delimited_string ($array, $quoted = true, $delimiter = ',') {
+    public static function get_delimited_string ($array, $quoted = true, $delimiter = ',', $conjunction = 'and') {
 
 		$count = count($array);
 		$quote = $quoted ? "'" : "";
@@ -501,7 +501,7 @@ class html {
         return array_reduce($array, function ($result, $value) use ($quote, $delimiter) {
             if ($result === "") return html::specialchars($quote . $value . $quote);
             return $result . html::specialchars("$delimiter $quote" . $value . $quote);
-        }, "") . html::specialchars(" and $quote" . $last . $quote);
+        }, "") . html::specialchars(" $conjunction $quote" . $last . $quote);
 
     }
 

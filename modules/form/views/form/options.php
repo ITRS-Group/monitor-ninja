@@ -13,11 +13,13 @@ $options = $field->get_options();
  */
 if ($render === "select" || ($render === false && count($options) > 3)) {
 	View::factory('form/select', array(
+		"form" => $form,
 		"value" => $value,
 		"field" => $field
 	))->render(true);
 } else {
 	View::factory('form/radiobuttons', array(
+		"form" => $form,
 		"value" => $value,
 		"field" => $field
 	))->render(true);

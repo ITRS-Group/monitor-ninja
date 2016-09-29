@@ -3,34 +3,45 @@
 /* @var $field Form_Field_Text_Model */
 
 $default = $form->get_value($field->get_name(), "");
+$required = $form->is_field_required($field);
 $tables = $field->get_tables();
-
-echo '<div class="nj-form-field">';
-echo '<label>';
-echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
-echo '<div class="nj-form-field-autocomplete" data-autocomplete="' . implode(',', $tables) . '">';
-
-$first = rtrim($tables[count($tables) - 1], 's');
-$types = $first;
-if(count($tables) > 1) {
-	$types = implode(', ',
-		array_map(function($t) {
-			return rtrim($t, 's');
-		},
-		$tables)
-	);
-	$types .= ' or ' . $first;
-}
+$types = html::get_delimited_string($tables, false, 'or');
 
 if ($default instanceof Object_Model) {
-	echo '<input class="nj-form-option" type="hidden" value="'.html::specialchars($default->get_table()). '" name="'.html::specialchars($field->get_name()).'[table]">';
-	echo '<input placeholder="Enter name of '.$types.'" data-njform-table="'.html::specialchars($default->get_table()).'" autocomplete="off" type="text" class="nj-form-field-autocomplete-input nj-form-option" name="'.html::specialchars($field->get_name()).'[value]" value="'.html::specialchars($default->get_key()).'" />';
+	$table = $default->get_table();
+	$default = $default->get_key();
 } else {
-	echo '<input class="nj-form-option" type="hidden" class="nj-form-option" value="'.html::specialchars($tables[0]).'" name="'.html::specialchars($field->get_name()).'[table]">';
-	echo '<input class="nj-form-field-autocomplete-input nj-form-option" data-njform-table="'.html::specialchars($tables[0]).'" placeholder="Enter name of '.$types.'" autocomplete="off" type="text" name="'.html::specialchars($field->get_name()).'[value]" value="'.html::specialchars($default).'" />';
+	$table = $tables[0];
 }
-echo '<span class="nj-form-field-autocomplete-dropper">▼</span>';
-echo '<ul class="nj-form-field-autocomplete-items"></ul>';
-echo '</div>';
-echo '</label>';
-echo '</div>';
+
+?>
+
+<div class="nj-form-field">
+<label>
+	<div class="nj-form-label"><?php
+		echo html::specialchars($field->get_pretty_name());
+	?></div>
+	<div class="nj-form-field-autocomplete" data-autocomplete="<?php
+		echo implode(',', $tables);
+	?>">
+		<input class="nj-form-option" type="hidden" value="<?php
+			echo html::specialchars($table);
+		?>" name="<?php
+			echo html::specialchars($field->get_name());
+		?>[table]">
+		<input <?php
+			echo ($required) ? 'required' : '';
+		?> class="nj-form-field-autocomplete-input nj-form-option" data-njform-table="<?php
+			echo html::specialchars($table);
+		?>" placeholder="Select an object from <?php
+			echo $types;
+		?>" autocomplete="off" type="text" name="<?php
+			echo html::specialchars($field->get_name());
+		?>[value]" value="<?php
+			echo html::specialchars($default);
+		?>" />
+		<span class="nj-form-field-autocomplete-dropper">▼</span>
+		<ul class="nj-form-field-autocomplete-items"></ul>
+	</div>
+</label>
+</div>

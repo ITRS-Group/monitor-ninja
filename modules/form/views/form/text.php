@@ -3,6 +3,7 @@
 /* @var $field Form_Field_Text_Model */
 
 $default = $form->get_value($field->get_name(), "");
+$required = $form->is_field_required($field);
 $element_id = 'element_id_'.uniqid();
 
 ?>
@@ -13,6 +14,7 @@ $element_id = 'element_id_'.uniqid();
 			<?php echo html::specialchars($field->get_pretty_name()); ?>
 		</div>
 		<input type="text" class="nj-form-option"
+			<?php echo ($required) ? 'required' : ''; ?>
 			id="<?php echo $element_id; ?>"
 			name="<?php echo html::specialchars($field->get_name()); ?>"
 			value="<?php echo html::specialchars($default); ?>"

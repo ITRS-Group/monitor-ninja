@@ -148,8 +148,8 @@ class Form_Model {
 			try {
 				$field->process_data($raw_data, $result);
 			} catch (MissingValueException $e) {
-				$field_name = $e->get_field()->get_name();
-				if (!in_array($field_name, $this->optional)) {
+				$field = $e->get_field();
+				if ($this->is_field_required($field)) {
 					throw $e;
 				}
 			}
@@ -207,5 +207,15 @@ class Form_Model {
 	 */
 	public function get_optional() {
 		return $this->optional;
+	}
+
+	/**
+	 * Returns whether a Form_Field_Model is required within this form
+	 *
+	 * @param $field Form_Field_Model
+	 * @return bool
+	 */
+	public function is_field_required (Form_Field_Model $field) {
+		return !in_array($field->get_name(), $this->optional, true);
 	}
 }
