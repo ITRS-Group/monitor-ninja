@@ -15,9 +15,20 @@ var FormModule = (function () {
 		form.find('.nj-form-conditional').each(function() {
 			var elem = $(this);
 			if (elem.attr('data-njform-rel') == name) {
+				/**
+				 * Set data-hidden-required on fields that are conditionally hidden so
+				 * that they do not affect the require logic of html5, but so that we
+				 * can still set them back to required once the fields are displayed.
+				 */
 				if (elem.attr('data-njform-value') == value) {
+					elem.find('[data-hidden-required]')
+						.attr('data-hidden-required', null)
+						.attr('required', 'required');
 					elem.show();
 				} else {
+					elem.find('[required]')
+						.attr('required', null)
+						.attr('data-hidden-required', 'required');
 					elem.hide();
 				}
 			}

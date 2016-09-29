@@ -7,7 +7,7 @@ $render = $field->get_force_render();
 $options = $field->get_options();
 
 /**
- * Render the options as a select autopmatically if the amount of options
+ * Render the options as a select automatically if the amount of options
  * exceeds 3, otherwise render as radio, you can force a select rendering by
  * setting $force = "select"
  */
