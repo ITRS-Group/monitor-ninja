@@ -357,6 +357,7 @@ $(document).ready(function() {
 				"limit" : 100,
 				"columns": ['description']
 			},
+			timeout: 9000,
 			success : function(data) {
 
 				if (!data) {
