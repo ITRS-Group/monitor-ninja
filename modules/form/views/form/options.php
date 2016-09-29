@@ -7,17 +7,19 @@ $render = $field->get_force_render();
 $options = $field->get_options();
 
 /**
- * Render the options as a select autopmatically if the amount of options
+ * Render the options as a select automatically if the amount of options
  * exceeds 3, otherwise render as radio, you can force a select rendering by
  * setting $force = "select"
  */
 if ($render === "select" || ($render === false && count($options) > 3)) {
 	View::factory('form/select', array(
+		"form" => $form,
 		"value" => $value,
 		"field" => $field
 	))->render(true);
 } else {
 	View::factory('form/radiobuttons', array(
+		"form" => $form,
 		"value" => $value,
 		"field" => $field
 	))->render(true);

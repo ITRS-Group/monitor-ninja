@@ -3,11 +3,21 @@
 /* @var $field Form_Field_Text_Model */
 
 $default = $form->get_value($field->get_name(), "");
+$required = $form->is_field_required($field);
+?>
 
-echo '<div class="nj-form-field nj-form-field-listview-query">';
-echo '<label>';
-echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
-echo '<textarea data-table="hosts" class="nj-form-option" name="'.html::specialchars($field->get_name()).'">' .html::specialchars($default).'</textarea>' ;
-echo '</label>';
-echo '</div>';
+<div class="nj-form-field nj-form-field-listview-query">
+<label>
+	<div class="nj-form-label"><?php
+		echo html::specialchars($field->get_pretty_name());
+	?></div>
+	<textarea <?php
+		echo ($required) ? 'required' : '';
+	?> data-table="hosts" class="nj-form-option" name="<?php
+		echo html::specialchars($field->get_name());
+	?>"><?php
+		echo html::specialchars($default);
+	?></textarea>
+</label>
+</div>
 

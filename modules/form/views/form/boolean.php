@@ -3,11 +3,19 @@
 /* @var $field Form_Field_Text_Model */
 
 $default = $form->get_value($field->get_name(), "");
+/* NOTE: Order of input a nj-form-label matters */
 
-echo '<div class="nj-form-field nj-form-field-checkbox">';
-echo '<label>';
-/* Order of input a nj-form-label matters */
-echo '<input type="checkbox" class="nj-form-option" name="'.html::specialchars($field->get_name()).'" ' . ($default ? 'checked' : '') . ' />';
-echo '<div class="nj-form-label">' . html::specialchars($field->get_pretty_name()) . '</div>';
-echo '</label>';
-echo '</div>';
+?>
+
+<div class="nj-form-field nj-form-field-checkbox">
+<label>
+	<input type="checkbox" class="nj-form-option" name="<?php
+		echo html::specialchars($field->get_name());
+	?>" <?php
+		echo ($default ? 'checked' : '');
+	?> />
+	<div class="nj-form-label"><?php
+		echo html::specialchars($field->get_pretty_name());
+	?></div>
+</label>
+</div>
