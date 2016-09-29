@@ -260,7 +260,7 @@ class bignumber_Widget extends widget_Base {
 		}
 
 		$form_model->set_values($settings);
-		$form_model->set_missing_fields_cb(array('title' => '', 'refresh_interval' => ''));
+		$form_model->set_optional(array('title', 'refresh_interval'));
 		return $form_model;
 	}
 

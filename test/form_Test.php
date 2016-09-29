@@ -1,7 +1,7 @@
 <?php
 
 class Form_Test extends PHPUnit_Framework_TestCase {
-	public function get_form() {
+	public function get_form_provider() {
 		// phpunit wants to be able to iterate through the dataset
 		return array(array(new Form_Model('my_action_url', array(
 			new Form_Field_Text_Model('name', "your name?"),
@@ -19,7 +19,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9409
-	 * @dataProvider get_form
+	 * @dataProvider get_form_provider
 	 */
 	public function test_render($form) {
 		/* Set some defaults */
@@ -49,7 +49,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9409
-	 * @dataProvider get_form
+	 * @dataProvider get_form_provider
 	 */
 	public function test_process($form) {
 		$this->assertSame(array(
@@ -76,7 +76,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9409
-	 * @dataProvider get_form
+	 * @dataProvider get_form_provider
 	 * @expectedException FormException
 	 * @expectedExceptionMessage trouble has not a valid option value
 	 */
@@ -87,41 +87,6 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 			'name' => 'Someone',
 			'why' => ''
 		));
-	}
-
-	/**
-	 * @group MON-9409
-	 */
-	public function test_default_values_can_be_scrubbed_from_result_if_left_out() {
-		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
-		$optional_field = new Form_Field_Number_Model('refresh_rate', 'Refresh rate');
-
-		$form = new Form_Model('unused_action');
-		$form->add_field($mandatory_field);
-		$form->add_field($optional_field);
-
-		$input = array('title' => 'My title');
-		$form->set_missing_fields_cb(array('refresh_rate' => ''));
-		$result = $form->process_data($input);
-		$this->assertSame($input, $result);
-	}
-
-	/**
-	 * @group MON-9409
-	 */
-	public function test_default_values_can_be_overwritten_if_submitted() {
-		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
-		$optional_field = new Form_Field_Number_Model('refresh_rate', 'Refresh rate');
-
-		$form = new Form_Model('unused_action');
-		$form->add_field($mandatory_field);
-		$form->add_field($optional_field);
-
-		$input = array('title' => 'My title', 'refresh_rate' => 50);
-		$form->set_missing_fields_cb(array('refresh_rate' => ''));
-		$result = $form->process_data($input);
-		// make up for the fact that the number field casts the result to a float
-		$this->assertSame(array('title' => 'My title', 'refresh_rate' => 50.0), $result);
 	}
 
 	/**
@@ -142,6 +107,34 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @expectedException MissingValueException
+	 * @expectedExceptionMessage Missing a value for the field 'title'
+	 */
+	public function test_field_required_if_not_set_to_optional () {
+
+		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
+
+		$form = new Form_Model('unused_action');
+		$form->add_field($mandatory_field);
+
+		$result = $form->process_data(array());
+
+	}
+
+	public function test_field_optional () {
+
+		$optional_field = new Form_Field_Text_Model('title', 'Title');
+
+		$form = new Form_Model('unused_action');
+		$form->add_field($optional_field);
+		$form->set_optional(array('title'));
+
+		$result = $form->process_data(array());
+		$this->assertSame(array(), $result);
+
+	}
+
+	/**
 	 * @group MON-9409
 	 */
 	public function test_form_field_that_is_member_of_a_group_can_be_optional() {
@@ -153,32 +146,11 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 		$form = new Form_Model('unused_action');
 		$form->add_field($group_field);
 
-		$form->set_missing_fields_cb(array('something_personal' => ''));
+		$form->set_optional(array('something_personal'));
 
 		$input = array('hair_color' => 'brown');
 		$result = $form->process_data(array());
 		$this->assertSame(array(), $result);
 	}
 
-
-	/**
-	 * @group MON-9409
-	 */
-	public function test_optional_form_field_can_be_a_callback() {
-		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
-		$optional_field = new Form_Field_Number_Model('refresh_rate', 'Refresh rate');
-
-		$form = new Form_Model('unused_action');
-		$form->add_field($mandatory_field);
-		$form->add_field($optional_field);
-
-		$input = array('title' => 'My title');
-		$form->set_missing_fields_cb(array(
-			'refresh_rate' => function($raw_data, Form_Result_Model $result) {
-				$result->set_value('refresh_date', 127.0);
-			}
-		));
-		$result = $form->process_data($input);
-		$this->assertSame(array('title' => 'My title', 'refresh_date' => 127.0), $result);
-	}
 }
