@@ -34,6 +34,6 @@ class Form_Field_Number_Model extends Form_Field_Model {
 		if (!is_numeric($raw_data[$name])) {
 			throw new FormException("The value of '$name' should be a number", $this);
 		}
-		$result->set_value($name, (float)$raw_data[$name]);
+		$result->set_value($name, $raw_data[$name]);
 	}
 }
