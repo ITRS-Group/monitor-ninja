@@ -207,7 +207,7 @@ class bignumber_Widget extends widget_Base {
 
 		$regular_widget_form_fields = array(
 			new Form_Field_Group_Model('meta', array(
-				new Form_Field_Text_Model('title', 'Custom title'),
+				new Form_Field_Text_Model('title', 'Custom title', 'No custom title'),
 				new Form_Field_Number_Model('refresh_interval', 'Refresh (sec)'),
 			))
 		);
@@ -240,6 +240,7 @@ class bignumber_Widget extends widget_Base {
 			'threshold_crit' => 90.0,
 			'threshold_warn' => 95.0,
 			'display_type' => 'number_of_total',
+			'refresh_interval' => 60
 		);
 		$settings = array_merge($defaults, $stored_settings);
 		if(isset($settings['host']) && is_array($settings['host'])) {

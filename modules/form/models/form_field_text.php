@@ -5,12 +5,16 @@
  */
 class Form_Field_Text_Model extends Form_Field_Model {
 
+	private $placeholder;
+
 	/**
 	 * @param $name string
 	 * @param $pretty_name string
+	 * @param $placeholder string
 	 */
-	public function __construct($name, $pretty_name) {
+	public function __construct($name, $pretty_name, $placeholder = '') {
 		parent::__construct( $name, $pretty_name );
+		$this->placeholder = $placeholder;
 	}
 
 	/**
@@ -18,6 +22,13 @@ class Form_Field_Text_Model extends Form_Field_Model {
 	 */
 	public function get_type() {
 		return 'text';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_placeholder() {
+		return $this->placeholder;
 	}
 
 	/**
