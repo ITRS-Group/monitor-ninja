@@ -128,6 +128,8 @@ class performance_data_Test extends PHPUnit_Framework_TestCase {
 			array("10:", 5, true),
 			array("10:", 25, false),
 			array("10:", 10, false),
+			array("2.3:", 3.125, false),
+			array("2.1:", 3.125, false),
 
 			//Test Range definition - ~:10
 			array("~:10", -5, false),
@@ -141,23 +143,25 @@ class performance_data_Test extends PHPUnit_Framework_TestCase {
 			array("10:20", -5, true),
 			array("10:20", 0, true),
 			array("10:20", 5, true),
-			array("10:20", 10, true),
-			array("10:20", 20, true),
-			array("10:20", 11, true),
-			array("10:20", 15, true),
-			array("10:20", 25, false),
-			array("10:20", 21, false),
+			array("10:20", 10, false),
+			array("10:20", 11, false),
+			array("10:20", 15, false),
+			array("10:20", 20, false),
+			array("10:20", 21, true),
+			array("10:20", 25, true),
+			array("55:80", 61, false),
+			array("50:85", 61, false),
 
 			//Test Range definition - @10:20
-			array("@10:20", -5, true),
-			array("@10:20", 0, true),
-			array("@10:20", 5, true),
-			array("@10:20", 25, true),
-			array("@10:20", 10, false),
-			array("@10:20", 20, false),
-			array("@10:20", 15, false),
+			array("@10:20", -5, false),
+			array("@10:20", 0, false),
+			array("@10:20", 5, false),
+			array("@10:20", 25, false),
+			array("@10:20", 10, true),
+			array("@10:20", 20, true),
+			array("@10:20", 15, true),
 			array("@10", 15, false),
-			array("@0:10", 20, true),
+			array("@0:10", 20, false),
 		);
 	}
 
