@@ -293,7 +293,7 @@ function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id,
 		.text(report_period);
 	$('.recipients', template_row)
 		.attr('id', 'recipients-'+schedule_id)
-		.text(recipients);
+		.text(recipients.split(/\s*\,\s*/g).join(', '));
 	$('.filename', template_row)
 		.attr('id', 'filename-'+schedule_id)
 		.text(filename);
