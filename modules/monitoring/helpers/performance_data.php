@@ -96,6 +96,19 @@ class performance_data {
 			//Range definition - @10:20
 			if($prefix === '@'){
 				if($lowbound && $highbound) {
+					return $value >= $lowbound && $value <= $highbound;
+				}
+				if($lowbound){
+					return $value >= 0 && $value <= $lowbound;
+				}
+				if($highbound){
+					return $value <= $highbound;
+				}
+			}
+
+			//Range definition - 10:20 and Range definition - 10:
+			if(empty($prefix)){
+				if($lowbound && $highbound) {
 					return $value < $lowbound || $value > $highbound;
 				}
 				if($lowbound){
@@ -103,19 +116,6 @@ class performance_data {
 				}
 				if($highbound){
 					return $value > $highbound;
-				}
-			}
-
-			//Range definition - 10:20 and Range definition - 10:
-			if(empty($prefix)){
-				if($lowbound && $highbound) {
-					return $value <= $lowbound || $highbound >= $value;
-				}
-				if($lowbound){
-					return $value < $lowbound;
-				}
-				if($highbound){
-					return $highbound > $value;
 				}
 			}
 		}
