@@ -219,22 +219,33 @@ class url {
 	}
 
 	/**
-	 * Sends a page redirect header and runs the system.redirect Event.
+	 * Sends a page redirect header and runs the system.redirect
+	 * Event. Proxy for _redirect(). This function is not testable,
+	 * because it calls exit()
 	 *
-	 * @param  mixed   string site URI or URL to redirect to, or array of strings if method is 300
-	 * @param  string  HTTP method of redirect
-	 * @return void
+	 * @param $uri mixed site URI or URL to redirect to, or array of strings if method is 300
+	 * @param $method int HTTP method of redirect
 	 */
-	public static function redirect($uri = '', $method = '302')
-	{
-		if (Event::has_run('system.send_headers'))
-		{
-			return FALSE;
+	public static function redirect($uri = '', $method = '302') {
+		if (Event::has_run('system.send_headers')) {
+			return;
 		}
+		$redirect = self::_redirect($uri, $method);
+		Event::run('system.redirect', $uri);
+		foreach($redirect['headers'] as $header) {
+			header($header);
+		}
+		echo $redirect['html'];
+		exit(0);
+	}
 
-		$codes = array
-		(
-			'refresh' => 'Refresh',
+	/**
+	 * @param $uri mixed site URI or URL to redirect to, or array of strings if method is 300
+	 * @param $method int HTTP method of redirect
+	 * @return array [array headers, string html, string url]
+	 */
+	public static function _redirect($uri, $method = '302') {
+		$codes = array(
 			'300' => 'Multiple Choices',
 			'301' => 'Moved Permanently',
 			'302' => 'Found',
@@ -266,26 +277,26 @@ class url {
 			$output = '<p>'.html::anchor($uri).'</p>';
 		}
 
-		// Run the redirect event
-		Event::run('system.redirect', $uri);
-
-		if (strpos($uri, '://') === FALSE)
-		{
-			// HTTP headers expect absolute URLs
+		if(preg_match('~^/~', $uri)) {
+			// Do not prepend the url::base(), since a path with a
+			// leading slash should go directly to the root
+		} elseif (strpos($uri, '://') === FALSE) {
+			// If the $uri looks like "avail/index", we should
+			// prefix it with the regular url::base()
 			$uri = url::site($uri, request::protocol());
 		}
 
-		if ($method === 'refresh')
-		{
-			header('Refresh: 0; url='.$uri);
-		}
-		else
-		{
-			header('HTTP/1.1 '.$method.' '.$codes[$method]);
-			header('Location: '.$uri);
-		}
+		$headers = array(
+			'HTTP/1.1 '.$method.' '.$codes[$method],
+			'Location: '.$uri
+		);
 
-		exit('<h1>'.$method.' - '.$codes[$method].'</h1>'.$output);
+		$html = '<h1>'.$method.' - '.$codes[$method].'</h1>'.$output;
+		return array(
+			'headers' => $headers,
+			'html' => $html,
+			'url' => $uri
+		);
 	}
 
-} // End url
+}
