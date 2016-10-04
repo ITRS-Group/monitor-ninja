@@ -114,6 +114,10 @@ class performance_data_Test extends PHPUnit_Framework_TestCase {
 			//Test empty threshold string
 			array("", 5, false),
 
+			// Test range "0"
+			array("0", 0, false),
+			array ("0", 1, true),
+
 			//Test Range definition - 10
 			array("10", -5, true),
 			array("10", 20, true),
