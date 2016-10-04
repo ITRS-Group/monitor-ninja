@@ -75,8 +75,8 @@ class performance_data {
 	 */
 	public function match_threshold($threshold, $value) {
 		// Range definition for integer values, such as 0 or 10.
-		// Note that negativ values will never match.
 		if (is_numeric($threshold)) {
+			// Note that negative values will always make this return false.
 			return ($value < 0 || $value > $threshold);
 		}
 
