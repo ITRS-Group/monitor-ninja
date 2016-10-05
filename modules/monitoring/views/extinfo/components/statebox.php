@@ -14,7 +14,7 @@
 			'table' => $object->get_table()
 		)), "Configure this host");
 		echo "</div>";
-		echo '<p class="faded">' . $object->get_address() . '</p>';
+		echo '<div class="information-state-box-address"><p class="faded">' . $object->get_address() . '</p></div>';
     } else {
         echo '<div class="information-state-box-name">' . $object->get_description();
 		echo icon::get_linked('cog', $linkprovider->get_url('cmd', null, array(

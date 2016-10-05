@@ -171,7 +171,11 @@ p {
   margin: 0 0 16px 0;
 }
 
-.information-state-box-block p {
+.information-state-box-address {
+    padding: 0 8px;
+}
+
+.information-state-box-address p {
     word-break: break-all;
 }
 
