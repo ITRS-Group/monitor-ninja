@@ -43,7 +43,6 @@ class Backup_Controller extends Ninja_Controller {
 		$this->template->title = _('Configuration » Backup/Restore');
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->disable_refresh = true;
-		$this->template->js[] = 'modules/monitoring/views/backup/js/backup.js';
 
 		$files = array();
 		foreach (glob($this->backup_directory .'/*' . self::BACKUP_EXTENSION) as $filename) {

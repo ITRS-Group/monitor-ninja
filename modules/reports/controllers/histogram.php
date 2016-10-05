@@ -17,8 +17,8 @@ class Histogram_Controller extends Base_reports_Controller
 	public $type = 'histogram';
 
 	/**
-	*	Setup options for histogram report
-	*/
+	 * Setup options for histogram report
+	 */
 	public function index($input = false)
 	{
 		$this->setup_options_obj($input);
@@ -39,8 +39,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$template->scheduled_info = $scheduled_info;
 		$template->report_options = $this->add_view('histogram/options');
 
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$this->js_strings .= reports::js_strings();
@@ -59,7 +57,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->setup_options_obj($input);
 		$this->template->disable_refresh = true;
 		$this->template->js[] = 'application/media/js/jquery.flot.min.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
 		$this->template->js[] = 'modules/reports/views/histogram/js/histogram.js';
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 		$rpt = new Summary_Reports_Model($this->options);
@@ -173,9 +170,8 @@ class Histogram_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	Replace all integer indicies with proper
-	* 	translated strings
-	*/
+	 * Replace all integer indicies with proper translated strings
+	 */
 	private function _get_xaxis_ticks($data)
 	{
 		$return = false;
@@ -205,8 +201,8 @@ class Histogram_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	Prepare data structore for use in histogram
-	*/
+	 * Prepare data structore for use in histogram
+	 */
 	private function _prepare_graph_data($data)
 	{
 		$return = array();

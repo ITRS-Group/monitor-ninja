@@ -63,7 +63,6 @@ $(document).ready(function() {
 	var _save_page_interval = 0;
 	var _save_scroll = true;
 
-	var sURL = window.location.pathname + location.search;
 	var edit_visible = 0;
 
 	var content_div = $( "body > .container > #content" ),

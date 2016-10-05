@@ -6,9 +6,9 @@
 class refresh {
 
 	/**
-	*	Print javascript to control page reload
-	*	Modified from http://grizzlyweb.com/webmaster/javascripts/refresh.asp
-	*/
+	 * Print javascript to control page reload
+	 * Modified from http://grizzlyweb.com/webmaster/javascripts/refresh.asp
+	 */
 	public static function control()
 	{
 		if (!Auth::instance()->logged_in()) {
@@ -26,16 +26,17 @@ class refresh {
 			ninja_refresh(<?php echo $refresh ?>);
 		});
 
-		function refresh() {window.location.replace(sURL);}
+		function refresh() {
+			var current_url = window.location.pathname + window.location.search;
+			window.location.replace(current_url);
+		}
 		</script>
 		<?php
 	}
 
 	/**
-	 *	Print javascript to control listview reload
-	 *
-	 * @return void
-	 **/
+	 * Print javascript to control listview reload
+	 */
 	public static function lv_control()
 	{
 		# fetch setting

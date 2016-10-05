@@ -82,7 +82,16 @@ if (!empty($base_href)) {
 			var _action_url_target = "<?php echo config::get('nagdefault.action_url_target'); ?>";
 			var _pnp_web_path = "<?php echo Kohana::config('config.pnp4nagios_path'); ?>";
 
-		<?php	if ($keycommands_active === 1) {	?>
+			// needed by the datePicker:
+			Date.monthNames = '<?php echo json_encode(date::month_names()); ?>';
+			Date.abbrMonthNames = '<?php echo json_encode(date::abbr_month_names()); ?>';
+			Date.dayNames = '<?php echo json_encode(date::day_names()); ?>';
+			Date.abbrDayNames = '<?php echo json_encode(date::abbr_day_names()); ?>';
+			Date.firstDayOfWeek = 1; // Monday
+			Date.format = '<?php echo cal::get_calendar_format(false); ?>';
+			var _start_date = '<?php echo date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996)); ?>';
+
+		<?php if ($keycommands_active === 1) { ?>
 
 				var _keycommands_active='<?php echo config::get('keycommands.activated'); ?>';
 				var _keycommand_search='<?php echo config::get('keycommands.search'); ?>';

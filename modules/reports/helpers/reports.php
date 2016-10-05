@@ -137,13 +137,6 @@ class reports
 		$js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
 			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 
-		$js_strings .= "Date.monthNames = ".json_encode(date::month_names()).";\n";
-		$js_strings .= 'Date.abbrMonthNames = '.json_encode(date::abbr_month_names()).";\n";
-		$js_strings .= 'Date.dayNames = '.json_encode(date::day_names()).";\n";
-		$js_strings .= 'Date.abbrDayNames = '.json_encode(date::abbr_day_names()).";\n";
-		$js_strings .= "Date.firstDayOfWeek = 1;\n";
-		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
-		$js_strings .= "var _start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
 		$js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report do not exist anymore and have been removed")."\";\n";

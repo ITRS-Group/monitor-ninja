@@ -58,13 +58,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('recurring_downtime/setup');
 		$template = $this->template->content;
 
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-
-		$this->template->js[] = 'application/media/js/lib.set.js';
-		$this->template->js[] = 'application/media/js/jquery.filterable.js';
-
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 		$this->template->css[] = 'application/media/css/jquery.filterable.css';
 
