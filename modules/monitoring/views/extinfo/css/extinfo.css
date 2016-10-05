@@ -172,7 +172,7 @@ p {
 }
 
 .information-state-box-block p {
-    word-break: break-word;
+    word-break: break-all;
 }
 
 .information-state-box-blob {
