@@ -61,9 +61,8 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Default method
-	*	Enable user to edit some GUI settings
-	*/
+	 * Enable user to edit some GUI settings
+	 */
 	public function index()
 	{
 		$updated = $this->input->get('updated', false);
@@ -191,8 +190,8 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Save data from form after some validation
-	*/
+	 * Save data from form after some validation
+	 */
 	public function save()
 	{
 		unset($_POST['save_config']);
@@ -280,9 +279,9 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Save a config key => value pair to db
-	*	and session for current user.
-	*/
+	 * Save a config key => value pair to db
+	 * and session for current user.
+	 */
 	public function _save_value($key=false, $val=false, $page='*')
 	{
 		# save to db
@@ -298,8 +297,8 @@ class User_Controller extends Authenticated_Controller {
 
 
 	/**
-	* Translated helptexts for this controller
-	*/
+	 * Translated helptexts for this controller
+	 */
 	public static function _helptexts($id)
 	{
 		$keyboard_help = '<br />'._("Possible Modifier keys are Alt, Shift, Ctrl + any key.
@@ -343,9 +342,8 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Edit menu items
-	* 	Show form for editing menu items
-	*/
+	 * Show form for editing menu items
+	 */
 	public function menu_edit()
 	{
 
@@ -365,7 +363,6 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->disable_refresh = true;
 
 		$this->template->content = $this->add_view('user/edit_menu');
-		$this->template->js[] = 'application/views/user/js/user.js';
 
 		$content = $this->template->content;
 
@@ -433,9 +430,9 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Update menu - save removed items to db
-	* 	and redirect to menu setup
-	*/
+	 * Update menu - save removed items to db
+	 * and redirect to menu setup
+	 */
 	public function menu_update()
 	{
 		if(!Auth::instance()->authorized_for('access_rights')) {
