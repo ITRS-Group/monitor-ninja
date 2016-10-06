@@ -118,3 +118,20 @@ Feature: Widgets
 
 		And I should see css ".widget-content span[class='icon-16 x16-shield-up']"
 		And I should see css ".widget-content span[class='icon-16 x16-shield-warning']"
+
+	Scenario: Widget settings when widget uses new conditional forms
+
+		Given I have these mocked dashboards
+			| id | name       | username   | layout |
+			| 1  | Dashboard1 | mockeduser | 1,2,3  |
+		Given I have these mocked dashboard_widgets
+			|id|dashboard_id | name         | position      | setting |
+			|1 |1            | bignumber    | {"c":0,"p":0} | {"title":"My widget name"}|
+
+		And I am logged in
+		When I am on the main page
+		Then I should see "My widget name"
+		When I edit widget "My widget name"
+		Then I select "Host" from "content_from"
+		Then the hidden required field "main_filter_id" should not be required
+

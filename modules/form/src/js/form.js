@@ -2,38 +2,9 @@ var FormModule = (function () {
 
 	var doc = $(document);
 
-	doc.on('change', '.nj-form-option', function() {
-		var field = $(this);
-		var name = field.attr('name');
-		var value = field.val();
-		var form = field.closest('form');
-
-		if (field.attr('type') === 'checkbox') {
-			value = field.is(':checked');
-		}
-
-		form.find('.nj-form-conditional').each(function() {
-			var elem = $(this);
-			if (elem.attr('data-njform-rel') == name) {
-				/**
-				 * Set data-hidden-required on fields that are conditionally hidden so
-				 * that they do not affect the require logic of html5, but so that we
-				 * can still set them back to required once the fields are displayed.
-				 */
-				if (elem.attr('data-njform-value') == value) {
-					elem.find('[data-hidden-required]')
-						.attr('data-hidden-required', null)
-						.attr('required', 'required');
-					elem.show();
-				} else {
-					elem.find('[required]')
-						.attr('required', null)
-						.attr('data-hidden-required', 'required');
-					elem.hide();
-				}
-			}
-		});
-
+	doc.on('change', 'form.nj-form', function() {
+		var form = $(this);
+		Form.update(form);
 	});
 
 	/* Range handling */
@@ -67,6 +38,39 @@ var FormModule = (function () {
 	var form_plugins = [];
 	var Form = {
 
+		update: function (form) {
+
+			form.find('.nj-form-conditional').each(function() {
+
+				var elem = $(this);
+				var field = form.find("[name='" + elem.attr('data-njform-rel') + "']");
+				var value = field.val();
+
+				if (field.attr('type') === 'checkbox') {
+					value = field.is(':checked');
+				}
+
+				/**
+				 * Set data-hidden-required on fields that are conditionally hidden so
+				 * that they do not affect the require logic of html5, but so that we
+				 * can still set them back to required once the fields are displayed.
+				 */
+					if (elem.attr('data-njform-value') == value) {
+					elem.find('[data-hidden-required]')
+					.attr('data-hidden-required', null)
+					.attr('required', 'required');
+					elem.show();
+					} else {
+						elem.find('[required]')
+							.attr('required', null)
+							.attr('data-hidden-required', 'required');
+						elem.hide();
+					}
+
+			});
+
+		},
+
 		register: function (plugin) {
 			if (form_plugins.indexOf(plugin) < 0) {
 				if (typeof(plugin) === 'function') {
@@ -83,25 +87,11 @@ var FormModule = (function () {
 
 		add_form: function (form_element) {
 
-			form_element.find('.nj-form-conditional').each(function() {
-
-				var elem = $(this);
-				var form = elem.closest('form');
-				var field = form.find("[name='" + elem.attr('data-njform-rel') + "']");
-				var value = field.val();
-
-				if (field.attr('type') === 'checkbox') {
-					value = field.is(':checked');
-				}
-
-				if (elem.attr('data-njform-value') == value) elem.show();
-				else elem.hide();
-
-			});
-
 			form_plugins.forEach(function (plugin) {
 				plugin(form_element);
 			});
+
+			Form.update(form_element);
 
 		}
 
