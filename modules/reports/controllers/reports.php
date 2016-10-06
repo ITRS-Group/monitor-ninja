@@ -13,8 +13,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Reports_Controller extends Base_reports_Controller
-{
+class Reports_Controller extends Base_reports_Controller {
 	private $status_link = "status/service/";
 	private $history_link = "alert_history/generate";
 
@@ -27,10 +26,9 @@ class Reports_Controller extends Base_reports_Controller
 	);
 
 	/**
-	*	Display report selection/setup page
-	*/
-	public function index($input=false)
-	{
+	 * Display report selection/setup page
+	 */
+	public function index($input=false) {
 		$this->setup_options_obj($input);
 		$reports_model = new Status_Reports_Model($this->options);
 
@@ -45,11 +43,6 @@ class Reports_Controller extends Base_reports_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		# we should set the required js-files
-		$this->template->js[] = 'modules/reports/views/reports/js/tgraph.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/reports.js';
-
 		# this makes anything in application/media be imported before
 		# application/views before modules/whatever, so op5reports can
 		# put random crap here as well.
@@ -58,7 +51,6 @@ class Reports_Controller extends Base_reports_Controller
 		sort($this->template->js);
 		$this->template->js = array_unique($this->template->js);
 
-		$this->template->css[] = $this->add_path('reports/css/tgraph.css');
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		# what scheduled reports are there?
@@ -117,8 +109,7 @@ class Reports_Controller extends Base_reports_Controller
 	/**
 	 * Create the same data as generate, but dump it as json
 	 */
-	public function debug($input=false)
-	{
+	public function debug($input=false) {
 		$this->setup_options_obj($input);
 		$reports_model = new Status_Reports_Model($this->options);
 		$data_arr = $reports_model->get_uptime();
@@ -133,15 +124,10 @@ class Reports_Controller extends Base_reports_Controller
 	 *
 	 * @param $input array = false
 	 */
-	public function generate($input=false)
-	{
+	public function generate($input=false) {
 		$this->setup_options_obj($input);
 
 		$reports_model = new Status_Reports_Model($this->options);
-
-		$this->template->js[] = 'modules/reports/views/reports/js/tgraph.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/reports.js';
 
 		if ($this->options['skin']) {
 			if (substr($this->options['skin'], -1, 1) != '/') {
@@ -377,7 +363,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 
-		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 		if ($this->options['include_alerts']) {
 			$alrt_opts = new Alert_history_options($this->options);
 			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
@@ -418,8 +403,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->generate_toolbar();
 	}
 
-	private function _print_states_for_services($host_name=false)
-	{
+	private function _print_states_for_services($host_name=false) {
 		$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('host_name' => $host_name)));
 		if (!empty($res)) {
 			$service_arr = array();
@@ -452,8 +436,7 @@ class Reports_Controller extends Base_reports_Controller
 	 *
 	 * @return array
 	 */
-	private function get_sla_data()
-	{
+	private function get_sla_data() {
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
 		$time_arr = $this->_split_month_data($this->options['start_time'], $this->options['end_time']);
@@ -534,8 +517,7 @@ class Reports_Controller extends Base_reports_Controller
 	 * @param string $members
 	 * @return string A link to an Availability report for all members
 	 */
-	private function _generate_avail_member_link()
-	{
+	private function _generate_avail_member_link() {
 		$objects = '';
 		$return = url::site().'avail/generate?';
 		$return .= $this->options->as_keyval_string(false);
@@ -543,13 +525,13 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	@desc  Splits a span of unixtime(start_time, end_time) into slices for every month number in $months.
-	*	@param $start_time int start timestamp of the first month
-	*	@param $end_time int end timestamp of the last month
-	*	@return array of start/end timestamps for every timestamp gives the start and end of the month
-	*/
-	private function _split_month_data($start_time, $end_time)
-	{
+	 * Splits a span of unixtime(start_time, end_time) into slices for every month number in $months.
+	 *
+	 * @param $start_time int start timestamp of the first month
+	 * @param $end_time int end timestamp of the last month
+	 * @return array of start/end timestamps for every timestamp gives the start and end of the month
+	 */
+	private function _split_month_data($start_time, $end_time) {
 		$months = array();
 		$date = $start_time;
 		while ($date < $end_time) {
@@ -561,10 +543,9 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 	/**
-	* Translated helptexts for this controller
-	*/
-	public static function _helptexts($id)
-	{
+	 * Translated helptexts for this controller
+	 */
+	public static function _helptexts($id) {
 		$helptexts = array(
 			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
