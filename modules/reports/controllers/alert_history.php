@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Alert History controller
  * This is just a special case of the recent alert view in the summary controller
@@ -27,7 +28,6 @@ class Alert_history_Controller extends Summary_Controller
 		$this->options['page'] = $pagination->current_page;
 
 		$this->options['summary_type'] = Summary_options::RECENT_ALERTS;
-		$this->template->js[] = 'modules/reports/views/alert_history/js/alert_history.js';
 		$real_output_format = $this->options['output_format'];
 		if ($this->options['output_format'] === 'pdf')
 			$this->options['output_format'] = 'html';
