@@ -187,13 +187,22 @@ Feature: Monitoring Host
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "ACKNOWLEDGE"
 
-	Scenario: Host object details displays acknowledged banner
+	Scenario: Raw performance data table displays icon if threshold is in warning range
 
 		Given I have these mocked hosts
-			| name       | state | acknowledged |
-			| Babaruajan | 1     | 1            |
+			| name       | perf_data_raw |
+			| Babaruajan | pkt=1;@1:2;@3:5;0;5  |
 
 		And I visit the object details page for host "Babaruajan"
-		Then I should see "ACKNOWLEDGED"
+		And I display raw performance data
+		Then I should see a warning icon in the raw performance data table
 
+	Scenario: Raw performance data table displays icon if threshold is in critical range
 
+		Given I have these mocked hosts
+			| name       | perf_data_raw |
+			| Babaruajan | pkt=3;@1:2;@3:5;0;5  |
+
+		And I visit the object details page for host "Babaruajan"
+		And I display raw performance data
+		Then I should see a critical icon in the raw performance data table

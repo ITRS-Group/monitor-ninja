@@ -115,3 +115,15 @@ Then /^I should see these strings$/ do |strings|
     }
   end
 end
+
+And /^I display raw performance data$/ do
+  find(".information-performance-raw-show").click
+end
+
+Then /^I should see a warning icon in the raw performance data table$/ do
+  find(".information-performance-raw td .icon-state-warning", :visible => true)
+end
+
+Then /^I should see a critical icon in the raw performance data table$/ do
+  find(".information-performance-raw td .icon-state-critical", :visible => true)
+end
