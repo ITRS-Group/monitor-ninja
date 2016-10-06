@@ -35,8 +35,8 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	Setup options for alert summary report
-	*/
+	 * Setup options for alert summary report
+	 */
 	public function index($input=false)
 	{
 		$this->setup_options_obj($input);
@@ -62,9 +62,6 @@ class Summary_Controller extends Base_reports_Controller
 			$template->error_msg = $_SESSION['report_err_msg'];
 			unset($_SESSION['report_err_msg']);
 		}
-
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
@@ -137,8 +134,6 @@ class Summary_Controller extends Base_reports_Controller
 		}
 
 		$this->template->disable_refresh = true;
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$views = array(
