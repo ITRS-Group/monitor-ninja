@@ -171,6 +171,14 @@ p {
   margin: 0 0 16px 0;
 }
 
+.information-state-box-address {
+    padding: 0 8px;
+}
+
+.information-state-box-address p {
+    word-break: break-all;
+}
+
 .information-state-box-blob {
   font-size: 64pt;
   color: rgba(255, 255, 255, 0.75);
