@@ -14,7 +14,6 @@ $(document).ready(function() {
 
 				showTooltip(item.pageX, item.pageY,
 				item.series.label + ": " + y + " (" + get_label(x) + ")");
-				//item.series.label + " of " + get_label(x) + " = " + y);
 			}
 		} else {
 			$("#tooltip").remove();
