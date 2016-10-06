@@ -91,7 +91,7 @@ p {
   width: 99%;
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1080px) {
   .information-component {
     max-width: 48%;
     padding: 16px 0.5%;
