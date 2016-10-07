@@ -221,5 +221,3 @@ Feature: Monitoring Service
 
 		And I visit the object details page for service "Babaruajan" on host "Rosalind"
 		Then I should see "ACKNOWLEDGED"
-
-

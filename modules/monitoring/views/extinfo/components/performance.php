@@ -96,6 +96,7 @@ if(count($perf_data)) {
 	</span>
 	<table>
 		<tr>
+			<th><!-- State --></th>
 			<th>Label</th>
 			<th>Value</th>
 			<th>Warning</th>
@@ -107,6 +108,15 @@ if(count($perf_data)) {
 	foreach($perf_data as $ds_name => $ds) {
 ?>
 		<tr>
+			<td>
+<?php
+			if (isset($ds['crit']) && performance_data::match_threshold($ds['crit'], $ds['value'])) {
+				echo '<span class="icon-state-critical critical"></span>';
+			} else if (isset($ds['warn']) && performance_data::match_threshold($ds['warn'], $ds['value'])) {
+				echo '<span class="icon-state-warning warning"></span>';
+			}
+?>
+			</td>
 			<td>
 <?php
 		echo html::specialchars($ds_name);

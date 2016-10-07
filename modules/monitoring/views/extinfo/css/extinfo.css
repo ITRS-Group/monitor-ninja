@@ -317,3 +317,7 @@ div[data-setting-toggle-command^="start_"]:after {
 .information-performance-raw table {
   display: none;
 }
+
+.information-performance-raw span[class^="icon-"] {
+  font-size: 120%;
+}
