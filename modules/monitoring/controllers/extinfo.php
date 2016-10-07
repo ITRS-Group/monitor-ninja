@@ -58,7 +58,7 @@ class Extinfo_Controller extends Ninja_Controller {
 		} else return; /* @TODO handle this more gracefully */
 
 		$this->_verify_access($set->mayi_resource().':read.extinfo');
-		$this->template->title = 'Monitoring » Extinfo';
+		$this->template->title = 'Monitoring » Status information';
 
 		$this->template->css[] = $this->add_path('extinfo/css/extinfo.css');
 
