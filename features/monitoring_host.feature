@@ -75,13 +75,15 @@ Feature: Monitoring Host
 
 		Given I have these mocked hosts
 			| name       | latency   | execution_time | check_type | check_source    |
-			| Shishish   | 0.0334    | 0.12345        | 0          | Merlin remote 123 |
+			| Shishish   | 0.0334    | 0.12345        | 0          | Merlin peer 123 |
 
 		And I visit the object details page for host "Shishish"
 		Then the object details field "LATENCY" should show "0.03sec"
 		And the object details field "DURATION" should show "0.12sec"
 		And the object details field "TYPE" should show "active"
-		And the object details field "SOURCE" should show "123 (remote)"
+		And the object details field "NEXT CHECK" should show "Remotely checked"
+		And the object details field "NEXT CHECK" raw should show "By: 123 (peer)"
+		And the object details field "SOURCE" should show "123 (peer)"
 
 	Scenario: Host object details information regarding last check with defaults
 
