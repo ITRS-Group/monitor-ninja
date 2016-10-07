@@ -9,7 +9,14 @@
 .state_summary-state {
 	display: inline-block;
 	margin-top: 0px;
+}
+
+.state_summary-state .big-number {
 	text-transform: uppercase;
+}
+
+.state_summary-state .big-number-perfdata-uom {
+	text-transform: none;
 }
 
 p.explanation {
