@@ -54,6 +54,14 @@ Then /^the object details field "([^\"]+)" should show "([^\"]+)"$/ do |text, va
     .text.should eq(value)
 end
 
+Then /^the object details field "([^\"]+)" raw should show "([^\"]+)"$/ do |text, value|
+  toggle = page
+    .find('div.information-cell-header', text: text)
+    .find(:xpath, "..")
+    .find('div.information-cell-raw')
+    .text.should eq(value)
+end
+
 Then /^the object details field "([^\"]+)" should match "([^\"]+)"$/ do |text, value|
   toggle = page
     .find('div.information-cell-header', text: text)

@@ -34,18 +34,14 @@
 <?php
 	$next_check = 'N/A';
 	$next_check_raw = '';
-	if ($object->get_next_check() && $object->get_active_checks_enabled()) {
-		$source = $object->get_source_type();
-		if ($source != 'poller' && $source != 'peer') {
-			$next_check_raw = date(date::date_format(), $object->get_next_check() );
-			$next_check = time::to_string($object->get_next_check() - time());
-		} else {
-			$next_check = "Remotely checked";
-			$next_check_raw = 'By' . $object->get_source_node();
-		}
-	} else {
-		$next_check = 'N/A';
-		$next_check_raw = 'N/A';
+	$source_type = $object->get_source_type();
+
+	if ($source_type == 'peer' || $source_type == 'poller') {
+		$next_check = "Remotely checked";
+		$next_check_raw = 'By: ' . $object->get_source_node() . " ($source_type)";
+	} else if ($object->get_next_check() && $object->get_active_checks_enabled()) {
+		$next_check_raw = date(date::date_format(), $object->get_next_check() );
+		$next_check = time::to_string($object->get_next_check() - time());
 	}
 ?>
 		<div class="information-cell-value">
