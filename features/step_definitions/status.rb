@@ -127,3 +127,10 @@ end
 Then /^I should see a critical icon in the raw performance data table$/ do
   find(".information-performance-raw td .icon-state-critical", :visible => true)
 end
+
+When /^I edit widget "([^\"]+)"$/ do |widget_name|
+  header = find('.widget-header', :text => widget_name)
+  header.hover;
+  header.find('.widget-editlink').click
+end
+
