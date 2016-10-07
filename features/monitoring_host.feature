@@ -105,6 +105,15 @@ Feature: Monitoring Host
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "This is my awesome plugin output for my awesome check of awesomeness"
 
+	Scenario: Host object details information regarding missing plugin output
+
+		Given I have these mocked hosts
+			| name       |
+			| Babaruajan |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "No output from plugin..."
+
 	Scenario: Host object details information regarding services
 
 		Given I have these mocked hosts

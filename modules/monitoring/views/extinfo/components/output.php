@@ -7,7 +7,13 @@
 		if ($long_plugin_output) {
 			$output .= '<br />' . nl2br($long_plugin_output);
 		}
-		echo security::xss_clean($output);
+		if (strlen($output)) {
+			echo security::xss_clean($output);
+		} else {
+			?>
+				<span class="faded">No output from plugin...</span>
+			<?php
+		}
 	?>
 	</p>
 </div>
