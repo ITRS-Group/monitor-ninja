@@ -109,7 +109,7 @@ Feature: Mocked
 		When I click "Gabriela Obregon"
 		And I click "Go to the host of this service"
 		# Object details upper-case transforms names
-		Then I should see "KWANITA PAGE"
+		Then I should see "Kwanita Page"
 		And I should see "Service states"
 
 	Scenario Outline:
