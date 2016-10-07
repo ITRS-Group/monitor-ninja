@@ -1050,6 +1050,22 @@ h1.emote b {
   color: #f05051;
 }
 
+.c3.no-threshold .c3-arc {
+  fill: #50c0e4;
+}
+
+.c3.ok .c3-arc {
+  fill: #82cd60;
+}
+
+.c3.warning .c3-arc {
+  fill: #fad546;
+}
+
+.c3.critical .c3-arc {
+  fill: #f05051;
+}
+
 .error.supplementary, .down.supplementary, .critical.supplementary {
   border-color: #da4a4a;
   color: #da4a4a;

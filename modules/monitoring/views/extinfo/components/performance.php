@@ -5,40 +5,47 @@
 <?php
 
 $linkprovider = LinkProvider::factory();
+$pnp_href = $object->graphs();
 $perf_data = $object->get_perf_data();
 if(count($perf_data)) {
 	$index = 0;
 	foreach($perf_data as $ds_name => $ds) {
 
 		$id = "graph-$index";
-
 		if (!isset($ds['min'])) $ds['min'] = 0;
 		if (!isset($ds['max'])) $ds['max'] = 0;
-		if (!isset($ds['warn'])) $ds['warn'] = 0;
-		if (!isset($ds['crit'])) $ds['crit'] = 0;
 
 		if (!$ds['max']) {
-			$ds['max'] =  max(
+			$ds['max'] = max(
 				(float)$ds['value'],
 				(float)$ds['warn'],
 				(float)$ds['crit']
 			);
 		}
 
-		$pnp_href = $object->graphs();
-
-		$ds['warn'] = (float)$ds['warn'];
-		$ds['crit'] = (float)$ds['crit'];
-
-		if (!$ds['crit'])
-			$ds['crit'] = $ds['max'];
+		// Decide which css class to use to display the right color.
+		if (!isset($ds['crit']) && !isset($ds['warn'])) {
+			$class = 'no-threshold'; // No thresholds are set, show blue color.
+		}
+		else if (isset($ds['crit']) &&
+			     performance_data::match_threshold($ds['crit'], $ds['value'])) {
+			$class = 'critical';
+		}
+		else if (isset($ds['warn']) &&
+			     performance_data::match_threshold($ds['warn'], $ds['value'])) {
+			$class = 'warning';
+		}
+		else {
+			$class = 'ok';
+		}
 
 		$unit = (isset($ds['unit'])) ? $ds['unit'] : 'value';
 		$index++;
 
 ?>
-	<a title="Go to PNP graphs for this object" href="<?php echo $pnp_href; ?>" class="information-gauge">
-		<span id="<?php echo $id; ?>"></span>
+	<a title="Go to PNP graphs for this object" href="<?php echo $pnp_href; ?>"
+	   class="information-gauge">
+		<span id="<?php echo $id; ?>" class="<?php echo $class; ?>"></span>
 		<span><?php echo $ds_name; ?></span>
 	</a>
 		<script>
@@ -64,11 +71,7 @@ if(count($perf_data)) {
 						max: <?php echo $ds['max']; ?>
 					},
 					color: {
-						pattern: ['#82cd60','#fad546','#f05051'],
-						threshold: {
-							unit: unit,
-							values: [<?php echo $ds['crit']; ?>, <?php echo $ds['warn']; ?>]
-						}
+						pattern: ['auto']
 					},
 					size: {
 						height: 90
