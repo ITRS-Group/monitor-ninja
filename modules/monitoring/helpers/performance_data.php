@@ -74,16 +74,15 @@ class performance_data {
 	 * @return bool
 	 */
 	public function match_threshold($threshold, $value) {
-		// Range definition for integer values, such as 0 or 10.
+		// Check if threshold string is empty or 0. 0 is considered "not set".
+		if (empty($threshold)) {
+			return false;
+		}
+
+		// Range definition for integer values, such as 10.
 		if (is_numeric($threshold)) {
 			// Note that negative values will always make this return false.
 			return ($value < 0 || $value > $threshold);
-		}
-
-		// Check if threshold string is empty (other than a "numeric" empty,
-		// like "0", 0 or 0.0, covered above).
-		if (empty($threshold)) {
-			return false;
 		}
 
 		if(preg_match('/^(@|~)?([0-9]+)?:?([0-9]+)?$/', $threshold, $matches)) {

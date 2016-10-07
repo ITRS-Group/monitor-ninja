@@ -114,9 +114,10 @@ class performance_data_Test extends PHPUnit_Framework_TestCase {
 			//Test empty threshold string
 			array("", 5, false),
 
-			// Test range "0"
+			// Test range "0". 0 is considered unset,
+			// so we should never alert for that.
 			array("0", 0, false),
-			array ("0", 1, true),
+			array("0", 1, false),
 
 			//Test Range definition - 10
 			array("10", -5, true),
