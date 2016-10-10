@@ -24,18 +24,16 @@ if(count($perf_data)) {
 		}
 
 		// Decide which css class to use to display the right color.
-		if (!isset($ds['crit']) && !isset($ds['warn'])) {
+		if (empty($ds['crit']) && empty($ds['warn'])) {
+			// Note that 0 is handled as if the value is not set.
 			$class = 'no-threshold'; // No thresholds are set, show blue color.
-		}
-		else if (isset($ds['crit']) &&
-			     performance_data::match_threshold($ds['crit'], $ds['value'])) {
+		} else if (isset($ds['crit']) &&
+			       performance_data::match_threshold($ds['crit'], $ds['value'])) {
 			$class = 'critical';
-		}
-		else if (isset($ds['warn']) &&
-			     performance_data::match_threshold($ds['warn'], $ds['value'])) {
+		} else if (isset($ds['warn']) &&
+			       performance_data::match_threshold($ds['warn'], $ds['value'])) {
 			$class = 'warning';
-		}
-		else {
+		} else {
 			$class = 'ok';
 		}
 
