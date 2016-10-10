@@ -17,9 +17,6 @@ class Schedule_Controller extends Authenticated_Controller
 
 		$this->template->toolbar = new Toolbar_Controller(_('New Schedule'));
 
-		$this->template->js[] = 'modules/reports/views/schedule/js/schedule.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-
 		$this->template->content = $this->add_view('schedule/schedules');
 		$available_schedules = $this->template->content;
 

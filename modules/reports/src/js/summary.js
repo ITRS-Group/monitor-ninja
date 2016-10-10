@@ -1,4 +1,16 @@
 $(document).ready(function() {
+	var set_report_mode = function(type) {
+		switch (type) {
+			case 'standard':
+				$('.standard').show();
+				$('.custom').hide();
+				break;
+			case 'custom':
+				$('.standard').hide();
+				$('.custom').show();
+				break;
+		}
+	};
 	$('#report_mode_form input').on('change', function() {
 		set_report_mode(this.value);
 	});
@@ -50,17 +62,3 @@ $(document).ready(function() {
 		}
 	});
 });
-
-function set_report_mode(type)
-{
-	switch (type) {
-		case 'standard':
-			$('.standard').show();
-			$('.custom').hide();
-			break;
-		case 'custom':
-			$('.standard').hide();
-			$('.custom').show();
-			break;
-	}
-}

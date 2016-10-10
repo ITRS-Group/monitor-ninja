@@ -48,6 +48,12 @@ function fill_saved_reports() {
 }
 
 $(document).ready(function() {
+	if($('#scheduled_avail_reports').length === 0) {
+		// This javascript is included in all pages as part of a
+		// bundle. We must however only execute the following code on
+		// the "Shedule report" page, which is why this check exists.
+		return;
+	}
 	$("#saved_report_id, #period").change(create_filename);
 	fill_scheduled();
 	setup_editable();
@@ -328,8 +334,8 @@ function fill_scheduled() {
 }
 
 /**
-*	Make sure all values are properly entered
-*/
+ * Make sure all values are properly entered
+ */
 function validate_form(formData, jqForm, options) {
 	var interval = $('#period').val();
 	var recipients = $('input[name=recipients]').attr('value');
