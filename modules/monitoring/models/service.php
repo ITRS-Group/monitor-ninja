@@ -959,7 +959,7 @@ class Service_Model extends BaseService_Model {
         $public = array();
 
         foreach ($all_variables as $key => $value) {
-            if (substr($key, 0, 6) !== 'OP5H_') {
+            if (substr($key, 0, 5) !== 'OP5H_') {
                 $public[$key] = $value;
             }
         }
