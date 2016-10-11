@@ -1,5 +1,5 @@
 <div class="information-component">
-<div class="information-component-title">Performance</div>
+<h2 class="information-component-title">Performance</h2>
 
 <div class="information-performance-gauges">
 <?php

@@ -1,7 +1,7 @@
 <div class="information-component">
-	<div class="information-component-title">
+	<h2 class="information-component-title">
 		Timestamps
-	</div>
+	</h2>
 	<div class="information-cell" title="The last time this object was checked">
 		<div class="information-cell-header">
 			<?php echo _('Last check'); ?>

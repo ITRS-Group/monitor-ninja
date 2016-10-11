@@ -1,5 +1,5 @@
 <div class="information-component">
-	<div class="information-component-title">Output</div>
+	<h2 class="information-component-title">Output</h2>
 	<p class="output">
 	<?php
 		$output = $object->get_plugin_output();

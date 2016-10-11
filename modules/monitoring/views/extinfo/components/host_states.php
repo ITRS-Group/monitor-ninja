@@ -1,5 +1,5 @@
 <div class="information-component information-service-matrix">
-	<div class="information-component-title">Host states</div>
+	<h2 class="information-component-title">Host states</h2>
 <?php
 $base_set = HostPool_Model::all();
 if ($object->get_table() === 'hostgroups') {

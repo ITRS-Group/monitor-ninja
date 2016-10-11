@@ -32,10 +32,6 @@ input[type="submit"].plain {
   background-color: #fafbf9;
 }
 
-.enabled_monfeat, .disabled_monfeat {
-  font-size: 95%;
-}
-
 .enabled_monfeat cite, .disabled_monfeat cite {
   font-weight: bold;
 }
@@ -109,15 +105,6 @@ input[type="submit"].plain {
 .configuration-page-description {
   font-style: italic;
   color: #777777;
-}
-
-.main-toolbar .main-toolbar-subtitle {
-  font-size: 120%;
-}
-
-span.brand-label {
-  font-size: 13pt;
-  font-weight: 400;
 }
 
 a.external {

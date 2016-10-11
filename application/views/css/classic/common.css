@@ -1,6 +1,5 @@
 body {
   font-family: 'Helvetica', 'Arial', 'Tahoma', sans-serif;
-  font-size: 0.75em;
   background: #ffffff;
 }
 
@@ -144,10 +143,6 @@ input[type="submit"].plain {
   background-color: #fafbf9;
 }
 
-.enabled_monfeat, .disabled_monfeat {
-  font-size: 95%;
-}
-
 .enabled_monfeat cite, .disabled_monfeat cite {
   font-weight: bold;
 }
@@ -274,27 +269,6 @@ input[type="submit"].plain {
   vertical-align: middle;
   float: right;
   margin-right: 8px;
-}
-
-.main-toolbar .main-toolbar-menu > ul > li {
-  border-left: 1px solid #aaaaaa;
-}
-
-.main-toolbar .main-toolbar-title {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 8px;
-  padding: 5px 24px 4px 12px;
-  border-right: 1px solid #aaaaaa;
-  font-size: 120%;
-}
-
-.main-toolbar .main-toolbar-subtitle {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  padding: 5px 16px 4px 6px;
-  font-size: 120%;
 }
 
 .main-toolbar .main-toolbar-info {

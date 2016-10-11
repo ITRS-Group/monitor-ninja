@@ -42,9 +42,6 @@ input[type=checkbox] {
 	margin-bottom: 5px;
 }
 
-h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 0px}
-h2 { font-weight: normal; font-size: 13px; margin: 7px 0px 15px 3px}
-
 .time_error {
 	border:1px solid red;
 	color:red;

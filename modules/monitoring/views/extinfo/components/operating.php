@@ -1,5 +1,5 @@
 <div class="information-component">
-	<div class="information-component-title">Operating status</div>
+	<h2 class="information-component-title">Operating status</h2>
 <?php
 
 $toggle = View::factory('extinfo/components/toggle', array(

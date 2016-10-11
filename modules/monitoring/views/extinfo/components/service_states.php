@@ -1,5 +1,5 @@
 <div class="information-component information-service-matrix">
-	<div class="information-component-title">Service states</div>
+	<h2 class="information-component-title">Service states</h2>
 
 <?php
 		$base_set = ServicePool_Model::all();

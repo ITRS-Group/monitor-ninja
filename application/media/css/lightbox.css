@@ -58,7 +58,6 @@
 }
 
 .lightbox-header h1 {
-  font-size: 14pt;
   margin: 0;
   padding: 0;
 }
@@ -70,7 +69,6 @@
   flex-flow: column wrap;
   position: relative;
   overflow: visible;
-  font-size: 10pt;
   padding: 16px;
   min-height: 32px;
 }
@@ -88,7 +86,6 @@
 .lightbox-footer input[type="reset"] {
   border: medium none;
   border-radius: 2px;
-  font-size: 11pt;
   line-height: 1.1em;
   margin: 2px 4px;
   padding: 6px 16px;

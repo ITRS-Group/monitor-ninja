@@ -1,7 +1,7 @@
 <div class="information-component">
-	<div class="information-component-title">
+	<h2 class="information-component-title">
 		Information regarding last check
-	</div>
+	</h2>
 	<div class="information-cell" title="Time between scheduled time and the actual execution of the check">
 		<div class="information-cell-header">
 			<?php echo _('Latency'); ?>

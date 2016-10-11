@@ -1,5 +1,5 @@
 <div class="information-component information-component-fullwidth">
-	<div class="information-component-title">Custom Variables</div>
+	<h2 class="information-component-title">Custom Variables</h2>
 <?php
 $variables = $object->get_public_custom_variables();
 if ($variables) {

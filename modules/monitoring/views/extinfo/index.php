@@ -46,7 +46,7 @@
 /* @var $widgets widget_Base[] */
 foreach ($widgets as $title => $widget) {
 	echo '<div class="information-component information-component-fullwidth">';
-    echo '<div class="information-component-title">' . $title . '</div>';
+    echo '<h2 class="information-component-title">' . $title . '</h2>';
 	echo $widget->render('index', false);
 	echo '</div>';
 }

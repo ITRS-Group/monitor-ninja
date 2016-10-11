@@ -1,57 +1,8 @@
-.content {
-  font-size: 10pt;
-}
-
 p {
   width: 100% !important;
   margin: 0 !important;
 }
 
-.extinfo-commands {
-  padding-right: 3%;
-  border-left: 1px solid #dddddd;
-  padding-left: 32px;
-  min-height: 512px;
-}
-
-.extinfo-commands table tr td {
-  border: none;
-  padding: 5px;
-}
-
-.extinfo-commands h2 {
-  margin-top: 16px;
-  margin-bottom: 4px;
-}
-
-.extinfo-commands-list h2:hover {
-  cursor: pointer;
-}
-
-.extinfo-commands-list h2:before {
-  content: "+";
-  display: inline-block;
-  text-align: center;
-  width: 16px;
-  margin-right: 8px;
-  font-size: 140%;
-  font-weight: bold;
-  vertical-align: -5%;
-  color: #50c0e4;
-}
-
-.extinfo-commands-list h2.active:before {
-  color: #3ba2c6;
-  content: "-";
-}
-
-.extinfo-commands-list h2 + ul {
-  display: none;
-}
-
-.extinfo-commands-list h2.active + ul {
-  display: block;
-}
 .information-content {
   padding: 16px 32px 0px 32px;
   height: 100%;
@@ -105,7 +56,6 @@ p {
 
 .information-component-title {
   border-bottom: 1px solid #dddddd;
-  font-size: 13pt;
   padding: 8px 0;
   margin: 8px 0 16px 0;
 }
@@ -127,7 +77,6 @@ p {
 }
 
 .information-cell-header {
-  font-size: 9pt;
   text-transform: uppercase;
 }
 
@@ -198,13 +147,11 @@ p {
 
 .information-state-box-more li h2 {
   text-transform: uppercase;
-  font-size: 13pt;
   padding: 0 8px;
 }
 
 .information-state-box-more li h3 {
   text-transform: uppercase;
-  font-size: 11pt;
   font-weight: bold;
 }
 
