@@ -29,7 +29,7 @@
 		'object' => $object
 	))->render(true);
 
-	if (count($object->get_custom_variables())) {
+	if ($object->get_public_custom_variables()) {
 		View::factory('extinfo/components/customvars', array(
 			'object' => $object
 		))->render(true);
