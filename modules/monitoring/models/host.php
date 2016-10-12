@@ -234,7 +234,6 @@ class Host_Model extends BaseHost_Model {
 	 * @param persistent = true
 	 * @param notify = true
 	 * @param sticky = true
-	 * @param service_too = true
 	 *
 	 * @ninja orm_command name Acknowledge Problem
 	 * @ninja orm_command category Actions
@@ -265,13 +264,6 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.persistent.description
 	 * 		If you would like the host comment to remain once the acknowledgement is removed, check this checkbox.
 	 *
-	 * @ninja orm_command params.service_too.id 4
-	 * @ninja orm_command params.service_too.type bool
-	 * @ninja orm_command params.service_too.name Acknowledge any problems on services too
-	 * @ninja orm_command params.service_too.default 1
-	 * @ninja orm_command params.service_too.description
-	 * 		If you want to acknowledge any problems on services too.
-	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
 	 *     This command is used to acknowledge a host problem.
@@ -292,8 +284,8 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command enabled_if unacknowledged_problem
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function acknowledge_problem($comment, $sticky=true, $notify=true, $persistent=true, $service_too=true) {
-		return $this->submit_naemon_command("ACKNOWLEDGE_HOST_PROBLEM", $sticky?2:0, $notify?1:0, $persistent?1:0, $service_too?1:0, $this->get_current_user(), $comment);
+	public function acknowledge_problem($comment, $sticky=true, $notify=true, $persistent=true) {
+		return $this->submit_naemon_command("ACKNOWLEDGE_HOST_PROBLEM", $sticky?2:0, $notify?1:0, $persistent?1:0, $this->get_current_user(), $comment);
 	}
 
 	/**
