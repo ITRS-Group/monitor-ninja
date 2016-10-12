@@ -147,7 +147,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		$sticky = true;
 
 		$host = Host_Model::factory_from_setiterator(array('name' => $host_name), '', array('name'));
-		$host->acknowledge_problem($comment, $persistent, $notify, $sticky, $service_too);
+		$host->acknowledge_problem($comment, $persistent, $notify, $sticky);
 		$this->assertRegExp(
 			sprintf(
 				'/\[\d+\] ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s/',
