@@ -46,18 +46,18 @@
         $('#backups tbody').prepend(
           $('<tr>').append(
             $('<td>').append(
-              $('<a class="view" style="border: 0px; margin-right: 4px">')
+              $('<a class="view_backup" style="border: 0px; margin-right: 4px">')
                 .attr('href', baseurl + 'backup/view/' + file)
                 .html('<span class="icon-16 x16-backup-view"></span>'),
-              $('<a class="restore" style="border: 0px; margin-right: 4px">')
+              $('<a class="restore_backup" style="border: 0px; margin-right: 4px">')
                 .attr('href', baseurl + 'backup/restore/' + file)
                 .html('<span class="icon-16 x16-backup-restore"></span>'),
-              $('<a class="delete" style="border: 0px; margin-right: 4px">')
+              $('<a class="delete_backup" style="border: 0px; margin-right: 4px">')
                 .attr('href', baseurl + 'backup/delete/' + file)
                 .html('<span class="icon-16 x16-backup-delete"></span>')
             ),
             $('<td>').append(
-              $('<a class="download">')
+              $('<a class="download_backup">')
                 .attr('href', baseurl + 'backup/download/' + file)
                 .text(file)
             )
@@ -82,7 +82,7 @@
 
   }
 
-  $('#verify').live('click', function(){
+  $('#verify_backup').live('click', function(){
 
     var link = $(this);
 
@@ -119,7 +119,7 @@
 
   });
 
-  $('a.restore').live('click', function(ev){
+  $('a.restore_backup').live('click', function(ev){
 
     var link = $(this);
     var notification = Notify.message('Do you really want to restore this backup?', {
@@ -158,11 +158,11 @@
 
   });
 
-  $('a.delete').live('click', function(){
+  $('a.delete_backup').live('click', function(){
 
     var link = $(this);
     var notification = Notify.message(
-      'Do you really want to delete ' + link.closest('tr').find('.download').text() + ' ?',
+      'Do you really want to delete ' + link.closest('tr').find('.download_backup').text() + ' ?',
       {
         sticky: true,
         buttons: {

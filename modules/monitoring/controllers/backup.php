@@ -49,11 +49,11 @@ class Backup_Controller extends Ninja_Controller {
 			$files[] = basename($filename);
 		}
 
-		$link = '<a id="verify" href="%sindex.php/backup/verify/">%s %s</a>';
+		$link = '<a id="verify_backup" href="%sindex.php/backup/verify/">%s %s</a>';
 		$icon = '<span style="vertical-align: middle" class="icon-16 x16-backup"></span>';
-		$lable = '<span style="vertical-align: middle">' . _('Save your current op5 Monitor configuration') . '</span>';
+		$label = '<span style="vertical-align: middle">' . _('Save your current op5 Monitor configuration') . '</span>';
 
-		$link = sprintf($link, url::base(), $icon, $lable);
+		$link = sprintf($link, url::base(), $icon, $label);
 
 		$this->template->toolbar = new Toolbar_Controller(_( "Backup/Restore" ));
 		$this->template->toolbar->info($link);
