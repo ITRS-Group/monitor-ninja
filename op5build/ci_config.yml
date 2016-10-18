@@ -1,8 +1,8 @@
 post:
  install: ['npm']
  steps: |
-  service httpd restart || service apache2 restart
-  service mysqld restart || service mysql restart
+  service httpd restart || service apache2 restart || systemctl restart httpd
+  service mysqld restart || service mysql restart || systemctl restart mariadb
   mon restart
   /opt/op5sys/lib/mock_license.php monitorHosts 500
   cp /var/op5license-tests/signed_valid/license.lic /etc/op5license/op5license.lic
