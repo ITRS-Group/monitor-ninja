@@ -45,6 +45,7 @@
 								echo $content;
 							}
 						} else {
+                            debug_print_backtrace();
 							echo 'Page does not have any content';
 						}
 
