@@ -1,6 +1,15 @@
 # Ninja - Ninja is Now Just Awesome
 
-Ninja is a modern web GUI for Naemon.
+Ninja is a modern web GUI for Naemon. Here is what it can look like:
+
+- Dashboard for new users:
+![Dashboard for new users](screenshots/ninja_dashboard.png?raw=true)
+- An Availability report:
+![An Availability report](screenshots/ninja_report.png?raw=true)
+- Object listing, a.k.a. list view:
+![Object listing, a.k.a. list view](screenshots/ninja_listview.png?raw=true)
+- A single object's properties:
+![A single object's properties](screenshots/ninja_object.png?raw=true)
 
 ## Requirements
 
@@ -10,6 +19,7 @@ Ninja requires the following system software to be installed:
 - php-mysql
 - php-cli 5.3+
 - MySQL 5+
+- wkhtmltopdf (optional, used for PDF reports)
 
 It also requires the following software:
 
