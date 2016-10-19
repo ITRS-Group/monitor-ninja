@@ -92,4 +92,3 @@ op5-users@lists.op5.com. A subscription is needed in order to post, see
 [http://lists.op5.com/mailman/listinfo/op5-users](http://lists.op5.com/mailman/listinfo/op5-users).
 
 Check out [https://www.op5.org](https://www.op5.org) for more info about Ninja.
-
