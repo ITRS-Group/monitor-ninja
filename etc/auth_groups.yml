@@ -126,6 +126,7 @@ admins:
   - "servicegroup_command_send_notifications"
   - "business_services_access"
   - "dashboard_share"
+  - "traps_view_all"
 guest:
   - "system_information"
   - "configuration_information"
