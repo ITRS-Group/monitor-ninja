@@ -249,12 +249,12 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
 %attr(755,root,root) /usr/bin/op5-manage-users
 
-%dir %attr(775,monitor,%daemon_group) %_sysconfdir/op5
-%config(noreplace) %attr(660,monitor,%daemon_group) %_sysconfdir/op5/*.yml
+%dir %attr(775,%daemon_user,%daemon_group) %_sysconfdir/op5
+%config(noreplace) %attr(660,%daemon_user,%daemon_group) %_sysconfdir/op5/*.yml
 
-%dir %attr(775,monitor,%daemon_group) /var/log/op5
+%dir %attr(775,%daemon_user,%daemon_group) /var/log/op5
 
-%attr(640,monitor,%daemon_group) /opt/monitor/op5/ninja/application/config/database.php
+%attr(640,%daemon_user,%daemon_group) %prefix/application/config/database.php
 
 %phpdir/op5
 %exclude %phpdir/op5/ninja_sdk
