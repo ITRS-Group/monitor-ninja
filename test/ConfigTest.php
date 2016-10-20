@@ -81,31 +81,44 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	/**
-     * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
-     * Originally implemented due to: MON-9723
-     */
-	public function test_config_file_permissions() {
-
-	    //Specifications of files which should be checked, and the permissions expected
-	    $configPermissionPairs = array(
-	        array(
-	            'filename' => APPPATH . '/config/database.php',
+	public function config_file_permission_data_provider() {
+        /*
+        * Specifications of files which should be checked, and the permissions expected. And yes, I created this
+        * key-value array which then is converted into a standard phpunit test array due to the phpunit standard being
+        * rather unclear when it comes to readability
+        */
+        $configPermissionPairs = array(
+            array(
+                'filename' => APPPATH . '/config/database.php',
                 'expectedPermission' => 640
             )
         );
 
+        $returnArray = array();
         foreach ($configPermissionPairs as $permissionPair) {
-            /* Kind of ugly, but makes the permission-specifications more intuitive; for example, 100644 only needs to
-            be specified as 644 */
-            $actualPermission = (int)substr(decoct(fileperms($permissionPair['filename'])), 3);
-            $this->assertSame(
+            $returnArray[] = array(
                 $permissionPair['expectedPermission'],
-                $actualPermission,
-                sprintf("Permission check for file %s failed, got %d, expected %d",
-                    $permissionPair['filename'], $actualPermission, $permissionPair['expectedPermission'])
+                (int)substr(decoct(fileperms($permissionPair['filename'])), 3),
+                $permissionPair['filename']
             );
         }
 
+        return $returnArray;
+    }
+
+	/**
+     * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
+     * Originally implemented due to: MON-9723
+     * @dataProvider config_file_permission_data_provider
+     * @param $expected Int Expected permission mask
+     * @param $actual Int Actual permission mask returned from fileparms()
+     * @param $filename String The name and path of the file tested
+     */
+	public function test_config_file_permissions($expected, $actual, $filename) {
+        $this->assertSame(
+            $expected,
+            $actual,
+            sprintf("Permission check for file %s failed, got %d, expected %d", $filename, $actual, $expected)
+        );
     }
 }
