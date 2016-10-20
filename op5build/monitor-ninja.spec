@@ -254,6 +254,8 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 
 %dir %attr(775,monitor,%daemon_group) /var/log/op5
 
+%attr(640,monitor,%daemon_group) /opt/monitor/op5/ninja/application/config/database.php
+
 %phpdir/op5
 %exclude %phpdir/op5/ninja_sdk
 %exclude %prefix/src

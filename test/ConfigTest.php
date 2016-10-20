@@ -80,4 +80,32 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 			'A reset of the empty environvent variable should make the stored config reappear'
 		);
 	}
+
+	/**
+     * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
+     * Originally implemented due to: MON-9723
+     */
+	public function test_config_file_permissions() {
+
+	    //Specifications of files which should be checked, and the permissions expected
+	    $configPermissionPairs = array(
+	        array(
+	            'filename' => APPPATH . '/config/database.php',
+                'expectedPermission' => 640
+            )
+        );
+
+        foreach ($configPermissionPairs as $permissionPair) {
+            /* Kind of ugly, but makes the permission-specifications more intuitive; for example, 100644 only needs to
+            be specified as 644 */
+            $actualPermission = (int)substr(decoct(fileperms($permissionPair['filename'])), 3);
+            $this->assertSame(
+                $permissionPair['expectedPermission'],
+                $actualPermission,
+                sprintf("Permission check for file %s failed, got %d, expected %d",
+                    $permissionPair['filename'], $actualPermission, $permissionPair['expectedPermission'])
+            );
+        }
+
+    }
 }
