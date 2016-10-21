@@ -119,6 +119,37 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		);
 	}
 
+	private function check_traps_view_all_rights($user_groups) {
+		$authmod = Auth::instance();
+
+		$authmod->force_user(new User_Model( array (
+			'username' => 'monitor',
+			'groups' => array (
+				$user_groups
+			)
+		) ), false );
+
+		if($user_groups == 'admins') {
+			$this->assertTrue($authmod->authorized_for('traps_view_all'));
+		}else {
+			$this->assertFalse($authmod->authorized_for('traps_view_all'));
+			$authmod->force_user($user = new User_AlwaysAuth_Model(), false);
+			$user->set_authorized_for('traps_view_all', true);
+			$this->assertTrue(op5auth::instance()->authorized_for('traps_view_all'));
+		}
+	}
+
+	public function test_auth_rights_based_user_roles() {
+		//'admins'
+		$this->check_traps_view_all_rights('admins');
+		//guest
+		$this->check_traps_view_all_rights('guest');
+		//limited_edit
+		$this->check_traps_view_all_rights('limited_edit');
+		//limited_view
+		$this->check_traps_view_all_rights('limited_view');
+	}
+
 	public function migrate_auth_yml_files_provider() {
 		return array(
 			array("auth.yml"),
