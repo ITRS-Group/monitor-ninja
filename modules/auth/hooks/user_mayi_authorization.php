@@ -238,6 +238,8 @@ manage_trapper                  monitor.trapper.matchers:                       
 manage_trapper                  monitor.trapper.modules:                                      true
 manage_trapper                  monitor.trapper.traps:                                        true
 
+traps_view_all                  monitor.trapper.traps:read                                    true
+
 business_services_access        monitor.bsm:{create,read,update,delete}                       true
 EOF;
 
