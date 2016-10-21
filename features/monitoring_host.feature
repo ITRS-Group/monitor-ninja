@@ -217,3 +217,12 @@ Feature: Monitoring Host
 		And I visit the object details page for host "Babaruajan"
 		And I display raw performance data
 		Then I should see a critical icon in the raw performance data table
+
+	Scenario: Performance data without max and warn should be properly rendered
+		Given I have these mocked hosts
+			| name     | perf_data_raw                            |
+			| Babadook | time=0.004611s;;;0.000000 size=1732B;;;0 |
+		When I visit the object details page for host "Babadook"
+		And I display raw performance data
+		Then I should see "0.004611s"
+		And I should see "1732B"
