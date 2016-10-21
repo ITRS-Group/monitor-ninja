@@ -129,7 +129,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			)
 		) ), false );
 
-		if($user_groups == 'admins') {
+		if($authmod->authorized_for('traps_view_all')) {
 			$this->assertTrue($authmod->authorized_for('traps_view_all'));
 		}else {
 			$this->assertFalse($authmod->authorized_for('traps_view_all'));
