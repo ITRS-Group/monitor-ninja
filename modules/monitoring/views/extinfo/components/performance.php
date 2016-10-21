@@ -16,10 +16,10 @@ if(count($perf_data)) {
 		if (!isset($ds['max'])) $ds['max'] = 0;
 
 		if (!$ds['max']) {
-			$ds['max'] = max(
-				(float)$ds['value'],
-				(float)$ds['warn'],
-				(float)$ds['crit']
+			$ds['max'] = (float) max(
+				isset($ds['value']) ? $ds['value'] : 0,
+				isset($ds['warn']) ? $ds['warn'] : 0,
+				isset($ds['crit']) ? $ds['crit'] : 0
 			);
 		}
 
