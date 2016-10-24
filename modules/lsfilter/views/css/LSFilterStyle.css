@@ -109,7 +109,6 @@
   color: #222222; }
   /* line 96, sass/LSFilterStyle.sass */
   #filter_result tbody tr:hover > td {
-    border-color: #999999;
     color: #222222; }
     /* line 99, sass/LSFilterStyle.sass */
     #filter_result tbody tr:hover > td a {
@@ -240,11 +239,11 @@ th .listview_multiselect_checkbox_all {
 
 /* line 205, sass/LSFilterStyle.sass */
 .selected_odd td {
-  background-color: #eee4e4 !important; }
+  background-color: lightblue !important; }
 
 /* line 208, sass/LSFilterStyle.sass */
 .selected_even td {
-  background-color: #ffeeee !important; }
+  background-color: #c6e4ee !important; }
 
 /* Service count in host detail listing */
 /* line 214, sass/LSFilterStyle.sass */
@@ -259,34 +258,34 @@ tr {
     box-sizing: border-box; }
   /* line 221, sass/LSFilterStyle.sass */
   tr.even td.cell_svccnt_ok {
-    background-color: #ccffcc !important; }
+    background-color: #ccffcc; }
   /* line 223, sass/LSFilterStyle.sass */
   tr.odd td.cell_svccnt_ok {
-    background-color: #bbeebb !important; }
+    background-color: #bbeebb; }
   /* line 225, sass/LSFilterStyle.sass */
   tr.even td.cell_svccnt_warning {
-    background-color: #ffffcc !important; }
+    background-color: #ffffcc; }
   /* line 227, sass/LSFilterStyle.sass */
   tr.odd td.cell_svccnt_warning {
-    background-color: #eeeebb !important; }
+    background-color: #eeeebb; }
   /* line 229, sass/LSFilterStyle.sass */
   tr.even td.cell_svccnt_critical {
-    background-color: #ffddcc !important; }
+    background-color: #ffddcc; }
   /* line 231, sass/LSFilterStyle.sass */
   tr.odd td.cell_svccnt_critical {
-    background-color: #ffccc3 !important; }
+    background-color: #ffccc3; }
   /* line 233, sass/LSFilterStyle.sass */
   tr.even td.cell_svccnt_unknown {
-    background-color: #ffeedd !important; }
+    background-color: #ffeedd; }
   /* line 235, sass/LSFilterStyle.sass */
   tr.odd td.cell_svccnt_unknown {
-    background-color: #ffe7d4 !important; }
+    background-color: #ffe7d4; }
   /* line 237, sass/LSFilterStyle.sass */
   tr.even td.cell_svccnt_pending {
-    background-color: #dddddd !important; }
+    background-color: #dddddd; }
   /* line 239, sass/LSFilterStyle.sass */
   tr.odd td.cell_svccnt_pending {
-    background-color: #cccccc !important; }
+    background-color: #cccccc; }
 
 /* Visual filter editor */
 /* line 245, sass/LSFilterStyle.sass */

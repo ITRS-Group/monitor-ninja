@@ -148,7 +148,6 @@ label, button, input[type=submit] {
   cursor: pointer;
 }
 
-
 /* Form layout */
 
 form {
@@ -322,7 +321,7 @@ table tr {
 }
 
 table td {
-  border-bottom: 1px solid #dddbd9;
+  border-bottom: 1px solid #dddddd;
   padding: 3px 4px 4px 4px;
   vertical-align: middle;
   text-align: left;
@@ -505,6 +504,7 @@ h1.emote b {
 
 .quicklinks li {
   display: inline-block;
+  float: left;
   margin: 0 2px;
   padding: 0 2px 2px 2px;
   border-radius: 16px;
@@ -989,6 +989,7 @@ h1.emote b {
   z-index: 10;
   background: #fdfdfd;
   border: 1px solid #aaaaaa;
+  box-shadow: 0 2px 3px #bbbbbb;
 }
 
 .page_settings .ninja_page_refresh_value {
@@ -1525,7 +1526,6 @@ h1.emote b {
   position: absolute;
   right: 0;
   top: 0;
-  background: #ffffff;
   height: 14px;
   width: 64px;
   padding: 8px 4px;
