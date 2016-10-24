@@ -79,6 +79,11 @@ $new_rights = array(
 			'dashboard_share',
 		)
 	),
+	7 => array(
+		'service_view_all' => array(
+			'traps_view_all',
+		)
+	),
 );
 
 
