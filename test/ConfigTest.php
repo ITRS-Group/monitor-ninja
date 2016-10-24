@@ -80,4 +80,91 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 			'A reset of the empty environvent variable should make the stored config reappear'
 		);
 	}
+
+	public function config_file_permission_data_provider() {
+        /*
+        * Specifications of files which should be checked, and the permissions expected. And yes, I created this
+        * key-value array which then is converted into a standard phpunit test array due to the phpunit standard being
+        * rather unclear when it comes to readability
+        */
+        $configPermissionPairs = array(
+            array(
+                'filename' => APPPATH . '/config/database.php',
+                'expectedPermission' => 640,
+                'expectedOwner' => 'monitor',
+                'expectedGroup' => 'apache'
+            )
+        );
+
+        $returnArray = array();
+        foreach ($configPermissionPairs as $permissionPair) {
+            $returnArray[] = array(
+                $permissionPair['filename'],
+                $permissionPair['expectedPermission'],
+                $permissionPair['expectedOwner'],
+                $permissionPair['expectedGroup']
+            );
+        }
+
+        return $returnArray;
+    }
+
+    /**
+     * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
+     * Originally implemented due to: MON-9723
+     * @dataProvider config_file_permission_data_provider
+     * @param $filename String The name and path of the file tested
+     * @param $expectedPermission Int Expected permission mask
+     * @param $expectedUser String The expected username of the owner of the file
+     * @param $expectedGroup String The expected group name of the owner of the file
+     * @internal param Int $actual Actual permission mask returned from fileparms()
+     */
+	public function test_config_file_permissions($filename, $expectedPermission, $expectedUser, $expectedGroup) {
+	    $actualPermission = (int)substr(decoct(fileperms($filename)), 3);
+        $this->assertSame(
+            $expectedPermission,
+            $actualPermission,
+            sprintf("Permission check for file %s failed, got: %d, expected: %d", $filename, $actualPermission, $expectedPermission)
+        );
+    }
+
+    /**
+     * Verify the owner of various config files; making sure they are accessible, but not too accessible.
+     * Originally implemented due to: MON-9723
+     * @dataProvider config_file_permission_data_provider
+     * @param $filename String The name and path of the file tested
+     * @param $expectedPermission Int Expected permission mask
+     * @param $expectedUser String The expected username of the owner of the file
+     * @param $expectedGroup String The expected group name of the owner of the file
+     * @internal param Int $actual Actual permission mask returned from fileparms()
+     */
+    public function test_config_file_user($filename, $expectedPermission, $expectedUser, $expectedGroup) {
+        $output = posix_getpwuid(fileowner($filename));
+        $actualUser = $output['name'];
+        $this->assertSame(
+            $expectedUser,
+            $actualUser,
+            sprintf("File owner check for file %s failed, got: %s, expected: %s", $filename, $actualUser, $expectedUser)
+        );
+    }
+
+    /**
+     * Verify the group of various config files; making sure they are accessible, but not too accessible.
+     * Originally implemented due to: MON-9723
+     * @dataProvider config_file_permission_data_provider
+     * @param $filename String The name and path of the file tested
+     * @param $expectedPermission Int Expected permission mask
+     * @param $expectedUser String The expected username of the owner of the file
+     * @param $expectedGroup String The expected group name of the owner of the file
+     * @internal param Int $actual Actual permission mask returned from fileparms()
+     */
+    public function test_config_file_group($filename, $expectedPermission, $expectedUser, $expectedGroup) {
+        $output = posix_getgrgid(filegroup($filename));
+        $actualGroup = $output['name'];
+        $this->assertSame(
+            $expectedGroup,
+            $actualGroup,
+            sprintf("File group check failed for file %s failed, got: %s, expected: %s", $filename, $actualGroup, $expectedGroup)
+        );
+    }
 }
