@@ -11,6 +11,7 @@ require_once "op5/auth/Authorization.php";
 class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	private $tmp_auth_groups_file;
 	private $tmp_auth_file;
+	private $preexisting_rights = array();
 
 	public function setUp() {
 		$this->tmp_auth_groups_file = __DIR__.'/auth_groups.yml';
@@ -19,6 +20,90 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		$this->tmp_auth_file = __DIR__.'/auth.yml';
 		$copy_result = copy(__DIR__.'/../etc/auth.yml', $this->tmp_auth_file);
 		assert('$copy_result == true');
+
+		// these are the rights that existed from before migrate_auth.php
+		// ever existed
+		$this->preexisting_rights = array(
+			'system_information',
+			'configuration_information',
+			'system_commands',
+			'api_config',
+			'api_report',
+			'api_status',
+			'api_perfdata',
+			'host_add_delete',
+			'host_view_all',
+			'host_view_contact',
+			'host_edit_all',
+			'host_edit_contact',
+			'test_this_host',
+			'host_template_add_delete',
+			'host_template_view_all',
+			'host_template_edit_all',
+			'service_add_delete',
+			'service_view_all',
+			'service_view_contact',
+			'service_edit_all',
+			'service_edit_contact',
+			'test_this_service',
+			'service_template_add_delete',
+			'service_template_view_all',
+			'service_template_edit_all',
+			'hostgroup_add_delete',
+			'hostgroup_view_all',
+			'hostgroup_view_contact',
+			'hostgroup_edit_all',
+			'hostgroup_edit_contact',
+			'servicegroup_add_delete',
+			'servicegroup_view_all',
+			'servicegroup_view_contact',
+			'servicegroup_edit_all',
+			'servicegroup_edit_contact',
+			'hostdependency_add_delete',
+			'hostdependency_view_all',
+			'hostdependency_edit_all',
+			'servicedependency_add_delete',
+			'servicedependency_view_all',
+			'servicedependency_edit_all',
+			'hostescalation_add_delete',
+			'hostescalation_view_all',
+			'hostescalation_edit_all',
+			'serviceescalation_add_delete',
+			'serviceescalation_view_all',
+			'serviceescalation_edit_all',
+			'contact_add_delete',
+			'contact_view_contact',
+			'contact_view_all',
+			'contact_edit_contact',
+			'contact_edit_all',
+			'contact_template_add_delete',
+			'contact_template_view_all',
+			'contact_template_edit_all',
+			'contactgroup_add_delete',
+			'contactgroup_view_contact',
+			'contactgroup_view_all',
+			'contactgroup_edit_contact',
+			'contactgroup_edit_all',
+			'timeperiod_add_delete',
+			'timeperiod_view_all',
+			'timeperiod_edit_all',
+			'command_add_delete',
+			'command_view_all',
+			'command_edit_all',
+			'test_this_command',
+			'export',
+			'configuration_all',
+			'wiki',
+			'wiki_admin',
+			'nagvis_add_delete',
+			'nagvis_view',
+			'nagvis_edit',
+			'nagvis_admin',
+			'FILE',
+			'access_rights',
+			'pnp',
+			'saved_filters_global',
+		);
 	}
 
 	public function tearDown() {
@@ -199,6 +284,54 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			$migrated_auth,
 			$checked_in_auth,
 			"You need to update etc/$auth_file with more rights"
+		);
+	}
+
+	public function test_migrate_auth_script_has_no_internal_duplicates() {
+		// the migrate auth script will execute directly.. sigh :)
+		require __DIR__."/../install_scripts/migrate_auth.php";
+		$this->assertInternalType("array", $new_rights,
+			"Failed a safety check"
+		);
+		$this->assertEquals(
+			array(),
+			array_intersect(
+				$this->preexisting_rights,
+				$new_rights
+			),
+			'Look over $preexisting_rights and $new_rights in '.
+			'migrate_auth.php, they should contain exclusive elements'
+		);
+	}
+
+	public function test_migrate_auth_script_does_not_forget_any_rights() {
+		// the migrate auth script will execute directly.. sigh :)
+		require __DIR__."/../install_scripts/migrate_auth.php";
+		$this->assertInternalType("array", $new_rights,
+			"Failed a safety check"
+		);
+
+		$all_rights = $this->preexisting_rights;
+		foreach($new_rights as $complete_new_right) {
+			foreach($complete_new_right as $old_right => $provided_right) {
+				if(is_array($provided_right)) {
+					$all_rights = array_merge(
+						$all_rights,
+						$provided_right
+					);
+				} else {
+					$all_rights[] = $provided_right;
+				}
+			}
+		}
+
+		$this->assertEquals(
+			array(),
+			array_diff(
+				$this->get_all_auth_rights(),
+				$all_rights
+			),
+			"Some auth right(s) should be added to migrate_auth.php."
 		);
 	}
 }
