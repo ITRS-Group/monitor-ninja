@@ -57,7 +57,8 @@ module Op5Cucumber::Mock
 
     def save()
       if not active?
-        @file = Dir::Tmpname.make_tmpname('/tmp/mock', nil)
+        @file = Dir::Tmpname.make_tmpname(Dir.pwd + '/ci_tmp/mock', nil)
+        FileUtils::mkdir_p File.dirname(@file)
       end
       @mocked_classes.each {|real_class, blk|
         @data["MockedClasses"] << {"real_class" => real_class}.merge(blk)
