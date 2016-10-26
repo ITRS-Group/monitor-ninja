@@ -17,21 +17,6 @@ input[type="submit"].plain {
   border-radius: 0;
 }
 
-.page_settings {
-  background: #fdfdfd;
-  border: 1px solid #aaaaaa;
-  box-shadow: 0 2px 3px #bbbbbb;
-}
-
-.page_settings .selected {
-  background: url("images/checkbox-selected.png") no-repeat;
-}
-
-.page_settings li {
-  border-bottom: #777777;
-  background-color: #fafbf9;
-}
-
 .enabled_monfeat, .disabled_monfeat {
   font-size: 95%;
 }
@@ -46,16 +31,6 @@ input[type="submit"].plain {
 
 .enabled_monfeat em:hover, .disabled_monfeat em:hover {
   color: black;
-}
-
-.notification-bar,
-.license-bar,
-.print-notification-bar {
-  border: 1px solid #c49400;
-  background: #efd556;
-  text-align: center;
-  font-weight: 600;
-  color: #544420;
 }
 
 .notification-bar a,
@@ -183,6 +158,36 @@ a.external {
   background-image: url(icons/x16/shield-help.png);
 }
 
+tr.even td.cell_svccnt_ok {
+  background-color: #e0efc0 !important; }
+/* line 223, sass/LSFilterStyle.sass */
+tr.odd td.cell_svccnt_ok {
+  background-color: #bbeebb !important; }
+/* line 225, sass/LSFilterStyle.sass */
+tr.even td.cell_svccnt_warning {
+  background-color: #fcf8e3 !important; }
+/* line 227, sass/LSFilterStyle.sass */
+tr.odd td.cell_svccnt_warning {
+  background-color: #fcf8e3 !important; }
+/* line 229, sass/LSFilterStyle.sass */
+tr.even td.cell_svccnt_critical {
+  background-color: #ffd0d0 !important; }
+/* line 231, sass/LSFilterStyle.sass */
+tr.odd td.cell_svccnt_critical {
+  background-color: #ffd0d0 !important; }
+/* line 233, sass/LSFilterStyle.sass */
+tr.even td.cell_svccnt_unknown {
+  background-color: #ffe5d0 !important; }
+/* line 235, sass/LSFilterStyle.sass */
+tr.odd td.cell_svccnt_unknown {
+  background-color: #ffe5d0 !important; }
+/* line 237, sass/LSFilterStyle.sass */
+tr.even td.cell_svccnt_pending {
+  background-color: #dddddd !important; }
+/* line 239, sass/LSFilterStyle.sass */
+tr.odd td.cell_svccnt_pending {
+  background-color: #cccccc !important; }
+
 #display_service_status {
   display: none;
 }
@@ -218,10 +223,6 @@ a#optiontoggle {
   border: 0 !important;
 }
 
-.chart-border {
-  border: 1px solid gainsboro;
-}
-
 .log_messages {
   clear: both;
   float: left;
@@ -231,9 +232,6 @@ a#optiontoggle {
   text-align: left;
 }
 
-.setup-table {
-  border: 0px;
-}
 
 .setup-table table tr td {
   border: 0px;
