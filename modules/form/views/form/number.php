@@ -15,6 +15,6 @@ $element_id = 'element_id_'.uniqid();
 		</div>
 		<input <?php
 			echo ($required) ? 'required' : '';
-		?> type="number" id="<?php echo $element_id; ?>" class="nj-form-option" name="<?php echo html::specialchars($field->get_name()); ?>" value="<?php echo html::specialchars($default); ?>">
+		?> type="number" id="<?php echo $element_id; ?>" class="nj-form-option <?php echo html::specialchars($field->get_name()); ?>" name="<?php echo html::specialchars($field->get_name()); ?>" value="<?php echo html::specialchars($default); ?>">
 	</label>
 </div>
