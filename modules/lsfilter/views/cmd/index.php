@@ -13,7 +13,7 @@ if (!empty( $error )) {
 	if($error_level == 'error') {
 		$prefix = 'Error: ';
 	}
-	echo "<div class='alert $error_level'>$prefix$error</div>";
+	echo "<div class='alert $error_level'>$prefix".html::specialchars($error)."</div>";
 	return;
 }
 
