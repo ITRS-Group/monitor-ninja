@@ -22,11 +22,10 @@
 			Please select what objects to base the report on<br />
 			<select data-filterable data-type="<?php echo $datatype; ?>" name="objects[]" id="objects" multiple="multiple">
 				<?php
-				//size="8" style="width: 100%;" class="multiple"
 				$objs = $options['objects'];
 				if (is_array($objs)) {
 					foreach ( $objs as $object ) {
-						echo '<option value="' . $object . '">' . $object . '</option>';
+						echo '<option value="' . html::specialchars($object) . '">' . html::specialchars($object) . '</option>';
 					}
 				}
 				?>
