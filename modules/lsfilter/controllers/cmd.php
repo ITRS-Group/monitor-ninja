@@ -9,7 +9,6 @@ class Cmd_Controller extends Ninja_Controller {
 	 * Show a form for submitting a command on a single object
 	 */
 	public function index() {
-		// todo mayi
 		$this->template->content = $this->add_view('cmd/index');
 		$this->template->disable_refresh = true;
 		$this->template->content->error = false;
