@@ -51,7 +51,7 @@ $(document).ready(function() {
 		input.val(filename);
 	});
 
-	$('#include_trends').live('click', function(ev) {
+	$(document).on('click', '#include_trends', function(ev) {
 		if (ev.target.checked)
 			$('.trend_options').show();
 		else
