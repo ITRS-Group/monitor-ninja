@@ -1,4 +1,3 @@
-
 if (typeof Object.assign != 'function') {
 	Object.assign = function(target) {
 		'use strict';
@@ -35,6 +34,8 @@ LightboxError.prototype = new Error;
  *
  * In order to keep track of every currently opened Lightbox, the Lightbox
  * class is private and stored within LightboxManager.
+ *
+ * Lightbox depends on jQuery.ajax()
  */
 var LightboxManager = (function() {
 
@@ -425,6 +426,29 @@ var LightboxManager = (function() {
 				var lb = new Lightbox();
 				boxes.push(lb);
 				return lb;
+			},
+			"html_from_ajax": function(title, href) {
+				$.ajax({
+					"url": href,
+					"type": "GET",
+					"success": function(data) {
+						var fragment = document.createElement('div');
+						fragment.innerHTML = data;
+						var lbm = LightboxManager;
+						var lb = lbm.create();
+
+						var heading = document.createElement("h1");
+						heading.textContent = title;
+						lb.header(heading);
+
+						lb.content(fragment);
+
+						lb.show();
+					},
+					"error": function(data) {
+						Notify.message(data.responseText, {type: 'error', sticky: true});
+					}
+				});
 			},
 			"remove_all": function() {
 				for(var i = 0; i < boxes.length; i++) {
