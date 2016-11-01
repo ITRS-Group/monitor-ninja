@@ -179,7 +179,7 @@ $(document).ready(function() {
 	}
 	// -- end listview refresh helper code
 
-	$('.select_all_items_service').live('click', function() {
+	$(document).on('click', '.select_all_items_service', function() {
 		if ($(this).attr('checked')) {
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
 				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
