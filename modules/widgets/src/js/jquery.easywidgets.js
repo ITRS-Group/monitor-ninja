@@ -979,26 +979,33 @@
     */
     function PrepareSortablePlaces(sortableItems, settings) {
         var s = settings;
-        $(s.selectors.places).sortable('destroy');
-        $(s.selectors.places).sortable({
+        var target_element = $(s.selectors.places);
+        if(target_element.sortable('instance')) {
+            // according to https://api.jqueryui.com/sortable/#method-instance :
+            //
+            // > Unlike other widget methods, instance() is safe to call
+            // > on any element after the sortable plugin has loaded.
+            target_element.sortable('destroy');
+        }
+        target_element.sortable({
             items: sortableItems,
             forcePlaceholderSize: true,
             handle: s.selectors.header,
             delay: s.behaviour.dragDelay,
             revert: s.behaviour.dragRevert,
             opacity: s.behaviour.dragOpacity,
-            connectWith: $(s.selectors.places),
+            connectWith: target_element,
             placeholder: s.selectors.placeHolder,
             start: function(e, ui) {
                 $(ui.placeholder).text('Drag your widget here')
-								$(ui.helper).addClass('dragging');
+                                $(ui.helper).addClass('dragging');
                 return true;
             },
             stop: function(e, ui) {
                 WidgetsPositionsChange(s);
                 $(ui.item).css({ width: '' });
                 $(ui.item).removeClass('dragging');
-                $(s.selectors.places).sortable('enable');
+                target_element.sortable('enable');
                 if ($.isFunction(s.callbacks.onDragStop)) {
                     s.callbacks.onDragStop(e, ui);
                 }
