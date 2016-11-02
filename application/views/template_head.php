@@ -11,7 +11,6 @@ if (!empty($base_href)) {
 
 	<?php
 		echo html::link('application/views/icons/favicon.ico','icon','image/x-icon');
-		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.popover.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.notify.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/c3.css', 'stylesheet', 'text/css', false, 'screen');
