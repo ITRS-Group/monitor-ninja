@@ -68,70 +68,11 @@
 							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span><span class="quicklink-badge"></span>', $attributes).'</li>';
 					}
 
-						echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
+					$link = LinkProvider::factory()->get_url("quicklink", "index");
+					echo '<li><a id="dojo-add-quicklink" href="'.$link.'" title="Quicklinks" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
 					echo '</ul>';
 
 			?>
-	</div>
-	<div style="display: none">
-		<div id="dojo-add-quicklink-menu">
-			<form action="">
-				<h1>Add new quicklink</h1>
-				<hr />
-				<table class="no_border">
-					<tr>
-						<td><label for="dojo-add-quicklink-href"><?php echo _('URI') ?>:</label></td>
-						<td><input type="text" id="dojo-add-quicklink-href"></td>
-					</tr>
-					<tr>
-						<td><label for="dojo-add-quicklink-title"><?php echo _('Title') ?>:</label></td>
-						<td><input type="text" id="dojo-add-quicklink-title"></td>
-					</tr>
-					<tr>
-						<td><label for="dojo-add-quicklink-target"><?php echo _('Open in') ?>:</label></td>
-						<td>
-							<select id="dojo-add-quicklink-target">
-								<option value=""><?php echo _('This window') ?></option>
-								<option value="_BLANK"><?php echo _('New window') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td><label for="dojo-add-quicklink-icon"><?php echo _('Icon') ?>:</label></td>
-						<td>
-							<input type='hidden' id='dojo-add-quicklink-icon' name='dojo-add-quicklink-icon' />
-							<table style="width: auto" id="dojo-icon-container">
-								<tr>
-							<?php
-								$icons = glob((__DIR__) . '/icons/x16/*.png');
-								$counter = 0;
-								foreach ($icons as $icon) {
-									$name = pathinfo($icon, PATHINFO_FILENAME);
-									echo "<td><span data-icon='$name' class='icon-16 x16-$name'></span></td>";
-									if(++$counter % 16 === 0) {
-										$counter = 0;
-										echo "</tr><tr>";
-									}
-								}
-							?>
-								</tr>
-							</table>
-						</td>
-					</tr>
-					<tr>
-						<td><?php echo _('Remove selected quicklinks') ?>:</td>
-						<td>
-							<ul id="dojo-quicklink-remove"></ul>
-					</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<input type="submit" value="<?php echo _('Save') ?>" />
-						</td>
-					</tr>
-				</table>
-			</form>
-		</div>
 	</div>
 
 	<?php

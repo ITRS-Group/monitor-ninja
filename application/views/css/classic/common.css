@@ -448,20 +448,6 @@ a.external {
   background-color: #eeecea;
 }
 
-#dojo-icon-container td.highlight {
-  background: lightblue;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-}
-
-#dojo-icon-container td span {
-  cursor: pointer;
-}
-
 .input-wide {
   width: 312px;
 }

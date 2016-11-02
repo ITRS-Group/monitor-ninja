@@ -12,15 +12,13 @@ abstract class Form_Field_Model {
 	/**
 	 * Initialize the name and pretty name for the field.
 	 *
-	 * There is (almost) no fields that shouldn't take options. Thus (almost)
-	 * all field types needs to override this method. Thus not overriding this
-	 * methods is (most likely) an error. And those can do it anyway. Thus
-	 * protected.
+	 * Feel free to override this method with all properties that are
+	 * needed for your model.
 	 *
 	 * @param $name string
 	 * @param $pretty_name string
 	 */
-	protected function __construct($name, $pretty_name) {
+	public function __construct($name, $pretty_name) {
 		$this->name = $name;
 		$this->pretty_name = $pretty_name;
 	}
