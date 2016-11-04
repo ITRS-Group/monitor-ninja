@@ -171,11 +171,32 @@ p {
 }
 
 .information-state-box-address {
-    padding: 0 8px;
+  padding: 0 8px;
 }
 
 .information-state-box-address p {
-    word-break: break-all;
+  word-break: break-all;
+}
+
+.information-state-box-notes {
+  padding: 10px 12px;
+  margin-top: 16px;  
+  background-color: rgba(0,0,0,0.1);
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.information-state-box-notes:empty {
+  display: none;
+}
+
+#notes-expand {
+  display: none;
+}
+
+#notes-expand:checked + label {
+  white-space: normal;
 }
 
 .information-state-box-blob {
