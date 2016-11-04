@@ -202,7 +202,6 @@ function show_calendar(val, update) {
 		$("#custom_time").show();
 
 		init_datepicker();
-		init_timepicker();
 
 		if (update == '') {
 			$('input[name=start_time]').attr('value', '');
@@ -358,12 +357,6 @@ function check_form_values(form)
 	resp.html("<ul class='alert error'>" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
-}
-
-// init timepicker once it it is shown
-function init_timepicker()
-{
-	$("#time_start, #time_end").timePicker();
 }
 
 function check_custom_months()
