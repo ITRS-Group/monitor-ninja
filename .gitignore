@@ -31,3 +31,5 @@ classes.php
 views.php
 test/qunit/test_suite.html
 node_modules
+modules/nacoma
+modules/legacy_nacoma
