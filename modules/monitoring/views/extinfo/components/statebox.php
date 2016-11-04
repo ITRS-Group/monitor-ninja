@@ -15,7 +15,6 @@
 		)), "Configure this host");
 		echo "</div>";
 		echo '<div class="information-state-box-address"><p class="faded">' . $object->get_address() . '</p></div>';
-		echo '<div class="information-state-box-notes"><input type="checkbox" id="notes-expand"/><label for="notes-expand">' . $object->get_notes() . '</label></div>';
     } else {
         echo '<div class="information-state-box-name">' . $object->get_description();
 		echo icon::get_linked('cog', $linkprovider->get_url('cmd', null, array(
@@ -25,8 +24,8 @@
 		)), "Configure this service");
 		echo "</div>";
         echo '<p>on <a title="Go to the host of this service" href="' . $linkprovider->get_url('extinfo', 'details', array('host' => $object->get_host()->get_name())) . '">' . $object->get_host()->get_name() . '</a></p>';
-        echo '<div class="information-state-box-notes"><input type="checkbox" id="notes-expand"/><label for="notes-expand">' . $object->get_notes() . '</label></div>';
 	}
+	echo '<div class="information-state-box-notes"><input type="checkbox" id="notes-expand"/><label for="notes-expand">' . $object->get_notes() . '</label></div>';
 	echo '</div>';
 
 	if ($object->get_state_type_text() === 'soft') {
