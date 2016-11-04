@@ -427,6 +427,22 @@ var LightboxManager = (function() {
 				boxes.push(lb);
 				return lb;
 			},
+			// Fancybox required the content of the fancybox itself
+			// to be included in the HTML of the page itself.
+			//
+			// This is what you can use, without structural changes
+			// to the HTML:
+			// LightboxManager.fancybox_replacement("Report options", "#options");
+			"fancybox_replacement": function(title, selector) {
+				var lightbox = LightboxManager.create();
+				var header = document.createElement("h1");
+				header.textContent = title;
+				lightbox.header(header);
+
+				lightbox.content(document.querySelector(selector));
+				lightbox.show();
+				return lightbox;
+			},
 			"html_from_ajax": function(title, href) {
 				$.ajax({
 					"url": href,
