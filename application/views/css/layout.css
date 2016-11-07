@@ -194,7 +194,7 @@ input[type=text], input[type=password], select, textarea {
 }
 
 select {
-  width: 382px;
+  max-width: 382px;
   padding: 2px 1px;
 }
 
