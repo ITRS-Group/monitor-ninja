@@ -86,7 +86,7 @@ module Op5Cucumber::Mock
           # (at least) filter out the "alias" column. Otherwise, if we try to
           # mock the alias column in a cucumber step, we get an array as a
           # value, with a single string as a member.
-          if field != 'alias' and field.end_with? 's' and value.is_a? String
+          if not ['alias', 'notes'].include? field and field.end_with? 's' and value.is_a? String
             values = value.split ','
             if values[0].is_a? String and values[0].include? "="
               hash[field] = {}

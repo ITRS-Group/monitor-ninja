@@ -6,6 +6,7 @@ Feature: Mocked
 		Ensure that all links on the host details
 		page work, and verify the tables' content
 		reflects the current configuration.
+
 		Given I have these mocked hosts
 			| name          |
 			| Pavani Chand  |
@@ -40,6 +41,19 @@ Feature: Mocked
 		Then I should see this status:
 			| Host Name | Service      |
 			| Hanh Cao  | Nhean Saechao|
+
+
+	Scenario: Host details extinfo page displays notes
+		Verify that notes on the extinfo page for a given host
+		are displayed.
+
+		Given I have these mocked hosts
+			| name    |	notes |
+			| Royal cheese| Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. |
+
+		And I visit the object details page for host "Royal cheese"
+		Then I should see "Your bones"
+
 
 	Scenario Outline: Host details extinfo page check links
 		Verify that all links on the extinfo page for a given host
@@ -111,6 +125,23 @@ Feature: Mocked
 		# Object details upper-case transforms names
 		Then I should see "Kwanita Page"
 		And I should see "Service states"
+
+
+	Scenario: Service details extinfo page displays notes
+		Verify that notes on the extinfo page for a given service
+		are displayed.
+
+		Given I have these mocked hosts
+			| name    |
+			| Quarter pounder |
+
+		And I have these mocked services
+			|description     |host        |notes |
+			|Gabriela Obregon|Quarter pounder| Now that we know who you are, I know who I am. I'm not a mistake! It all makes sense! In a comic, you know how you can tell who the arch-villain's going to be? He's the exact opposite of the hero. And most times they're friends, like you and me! I should've known way back when. |
+
+		And I visit the object details page for service "Gabriela Obregon" on host "Quarter pounder"
+ 		Then I should see "Now that we know"
+
 
 	Scenario Outline:
 		Service details extinfo page check links
@@ -187,3 +218,5 @@ Feature: Mocked
 
 		And I should see "Pager"
 		And I should see "911"
+
+
