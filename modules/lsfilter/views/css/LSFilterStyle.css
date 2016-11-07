@@ -373,3 +373,20 @@ li.filter-query-button a span {
 /* line 310, sass/LSFilterStyle.sass */
 li.filter-query-button a .filter-button-label {
   margin-left: 4px; }
+
+.contextMenu {
+	background: #fff;
+	border: 1px solid gray;
+}
+
+.contextMenu li.hover a {
+	color: #fff;
+	background: #50c0e4;
+}
+
+.contextMenu a {
+	border-bottom-style: solid;
+	display: block;
+	line-height: 20px;
+	padding: 1px 5px;
+}
