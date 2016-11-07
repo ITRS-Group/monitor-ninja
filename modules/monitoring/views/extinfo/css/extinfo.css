@@ -178,16 +178,17 @@ p {
 	word-break: break-all;
 }
 
-.information-state-box-notes {
+.information-state-box-notes label {
 	padding: 10px 12px;
 	margin-top: 16px;
+	display: block;
 	background-color: rgba(0,0,0,0.1);
 	overflow:hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.information-state-box-notes:empty {
+.information-state-box-notes label:empty {
 	display: none;
 }
 
