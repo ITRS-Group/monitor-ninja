@@ -328,16 +328,24 @@ class widget_Base {
 		$editable = $this->editable;
 		$setting = $this->model->get_setting();
 
+		$has_refresh = false;
+		if (is_array($options) && isset($options['refresh'])) {
+			$has_refresh = true;
+		} elseif ($options instanceof Form_Model && !is_null($options->get_value('refresh_interval'))) {
+			$has_refresh = true;
+		}
+
 		$loaded = isset(self::$loaded_widgets[$this->model->get_name()]);
 		$props = array(
 				'classes' => $classes,
 				'key' => $this->model->get_key(),
+				'has_refresh' => $has_refresh,
 				'data_attributes' => $data_attributes,
 				'title' => $title,
 				'editable' => $editable,
 				'content' => $content,
 				'setting' => $setting
-		);
+			);
 		if(isset($options)) {
 			$props['options'] = $options;
 		}

@@ -1,4 +1,11 @@
-<div class="widget <?php echo $classes; ?>" id="widget-<?php echo $key; ?>" data-key="<?php echo $key; ?>" <?php echo $data_attributes; ?>>
+<?php
+$refresh = 60;
+if (isset($setting['refresh_interval']) && is_numeric($setting['refresh_interval'])) {
+	$refresh = $setting['refresh_interval'];
+}
+?>
+<div <?php if ($has_refresh) { echo ' data-refresh-interval="' . $refresh . '" '; }
+	?> class="widget <?php echo $classes; ?>" id="widget-<?php echo $key; ?>" data-key="<?php echo $key; ?>" <?php echo $data_attributes; ?>>
 	<div class="widget-header">
 		<span class="widget-title"><?php echo $title; ?></span>
 	</div>
