@@ -340,9 +340,8 @@ function widget(key) {
 	 *
 	 * Note: time is in seconds
 	 */
-	this.refresh_element = this.elem.find('.refresh_interval');
 	this.update_widget_timer = false;
-	this.update_widget_time = this.refresh_element.val();
+	this.update_widget_time = this.elem.attr('data-refresh-interval');
 	this.update_widget_delayed();
 }
 
@@ -493,6 +492,12 @@ widget.prototype.update_widget = function() {
 					self.form.find('*[name="title"]').val(data.custom_title);
 				} else {
 					title.text(data.title);
+				}
+
+				if (data.refresh_interval) {
+					self.elem.attr('data-refresh-interval', data.refresh_interval);
+					self.update_widget_time = parseInt(data.refresh_interval, 10);
+					self.update_widget_delayed();
 				}
 
 				// Fade out title if it is too long to fit.

@@ -672,22 +672,26 @@ class Tac_Controller extends Ninja_Controller {
 		// If an error occurs when building widget this will result in a
 		// "dead widget" containing an error message.
 		$widget = $widget_model->build();
+		$data = array(
+			'widget' => $widget->render('index', false),
+			'title' => $widget->get_title(),
+			'custom_title' => ''
+		);
 
-		$custom_title = '';
 		$setting = $widget_model->get_setting();
 		if (isset($setting['title'])) {
-			$custom_title = $setting['title'];
+			$data['custom_title'] = $setting['title'];
+		}
+
+		if (isset($setting['refresh_interval'])) {
+			$data['refresh_interval'] = $setting['refresh_interval'];
 		}
 
 		// We need to provide both the calculated title for rendering,
 		// and the value for the settings form.
 		$this->template = new View('json');
 		$this->template->success = true;
-		$this->template->value = array(
-			'widget' => $widget->render('index', false),
-			'title' => $widget->get_title(),
-			'custom_title' => $custom_title
-		);
+		$this->template->value = $data;
 	}
 
 	/**
