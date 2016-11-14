@@ -64,9 +64,6 @@
 
 .lightbox-content {
   flex: auto 0.1 1;
-  display: flex;
-  flex-direction: column;
-  flex-flow: column wrap;
   position: relative;
   overflow-y: scroll;
   font-size: 10pt;
