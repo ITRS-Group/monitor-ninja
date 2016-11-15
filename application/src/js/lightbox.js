@@ -1,4 +1,3 @@
-
 if (typeof Object.assign != 'function') {
 	Object.assign = function(target) {
 		'use strict';
@@ -35,6 +34,8 @@ LightboxError.prototype = new Error;
  *
  * In order to keep track of every currently opened Lightbox, the Lightbox
  * class is private and stored within LightboxManager.
+ *
+ * Lightbox depends on jQuery.ajax()
  */
 var LightboxManager = (function() {
 
@@ -425,6 +426,45 @@ var LightboxManager = (function() {
 				var lb = new Lightbox();
 				boxes.push(lb);
 				return lb;
+			},
+			// Fancybox required the content of the fancybox itself
+			// to be included in the HTML of the page itself.
+			//
+			// This is what you can use, without structural changes
+			// to the HTML:
+			// LightboxManager.fancybox_replacement("Report options", "#options");
+			"fancybox_replacement": function(title, selector) {
+				var lightbox = LightboxManager.create();
+				var header = document.createElement("h1");
+				header.textContent = title;
+				lightbox.header(header);
+
+				lightbox.content(document.querySelector(selector));
+				lightbox.show();
+				return lightbox;
+			},
+			"html_from_ajax": function(title, href) {
+				$.ajax({
+					"url": href,
+					"type": "GET",
+					"success": function(data) {
+						var fragment = document.createElement('div');
+						fragment.innerHTML = data;
+						var lbm = LightboxManager;
+						var lb = lbm.create();
+
+						var heading = document.createElement("h1");
+						heading.textContent = title;
+						lb.header(heading);
+
+						lb.content(fragment);
+
+						lb.show();
+					},
+					"error": function(data) {
+						Notify.message(data.responseText, {type: 'error', sticky: true});
+					}
+				});
 			},
 			"remove_all": function() {
 				for(var i = 0; i < boxes.length; i++) {

@@ -290,15 +290,6 @@ a.external {
   border-color: #aa8899;
 }
 
-#dojo-icon-container td.highlight {
-  background: lightblue;
-  border-radius: 4px;
-}
-
-#dojo-icon-container td span {
-  cursor: pointer;
-}
-
 #response {
   margin-left: 0px;
   padding-top: 0px;

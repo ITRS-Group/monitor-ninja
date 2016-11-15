@@ -27,13 +27,32 @@ var FormModule = (function () {
 	doc.on('click', '.cancel', function (){
 		var form = $(this).closest('form');
 		var editbox = form.closest('.widget-editbox');
-		setTimeout(function() {
-			form.find('.nj-form-option').trigger('change');
-			//cancel button click event to show widget content
-			editbox.hide();
-			editbox.next('.widget-content').show();
-		}, 0);
+		// not only widgets have a .cancel button
+		if(editbox.length) {
+			setTimeout(function() {
+				form.find('.nj-form-option').trigger('change');
+				//cancel button click event to show widget content
+				editbox.hide();
+				editbox.next('.widget-content').show();
+			}, 0);
+		} else {
+			LightboxManager.remove_topmost();
+		}
 	});
+
+	doc.on("click", ".nj-form-icon", function() {
+		var icon = $(this);
+		var form = icon.closest("form");
+
+		form.find("input[type=hidden][name=icon]")
+			.val(icon.data('icon'));
+
+		form.find(".nj-form-icon.active")
+			.removeClass("active");
+
+		icon.addClass("active");
+	});
+
 
 	var form_plugins = [];
 	var Form = {

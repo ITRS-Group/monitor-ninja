@@ -1,16 +1,12 @@
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
-$(document).ready(function() {
-	$(".fancybox").fancybox({
-		'overlayOpacity'        :       0.7,
-		'overlayColor'          :       '#ffffff',
-		'hideOnContentClick' : false,
-		'autoScale':true,
-		'autoDimensions': true,
-		'onComplete': function(obj) { $($(obj).attr('href')).find('.filter-status').each(filter_mapping_mapping); }
-	});
 
+$(document).on("click", "#edit_settings", function(ev) {
+	ev.preventDefault();
+	LightboxManager.fancybox_replacement("Report options", "#options");
+});
+$(document).ready(function() {
 	$('.filter-status').on('change', filter_mapping_mapping).each(filter_mapping_mapping);
 
 	var direct_link_visible = false;
@@ -202,7 +198,6 @@ function show_calendar(val, update) {
 		$("#custom_time").show();
 
 		init_datepicker();
-		init_timepicker();
 
 		if (update == '') {
 			$('input[name=start_time]').attr('value', '');
@@ -358,12 +353,6 @@ function check_form_values(form)
 	resp.html("<ul class='alert error'>" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
-}
-
-// init timepicker once it it is shown
-function init_timepicker()
-{
-	$("#time_start, #time_end").timePicker();
 }
 
 function check_custom_months()

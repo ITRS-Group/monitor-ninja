@@ -23,7 +23,9 @@
 	<link href="<?php echo ninja::add_path('css/icons.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
-	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/jquery-ui-1.12.1/jquery-ui.css') ?>" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/jquery-ui-1.12.1/jquery-ui.structure.css') ?>" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/jquery-ui-1.12.1/jquery-ui.theme.css') ?>" media="screen" />
 	<?php
 		$v = new View('css_header', array('css' => isset($css)?$css:array()));
 		$v->render(true);
