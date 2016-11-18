@@ -100,7 +100,3 @@
   background: none;
   color: #30a0b4;
 }
-
-.nj-form-field input:invalid {
-    border:1px solid #FF0000 !important;
-}

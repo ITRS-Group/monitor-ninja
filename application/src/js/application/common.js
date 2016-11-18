@@ -87,55 +87,7 @@ $(document).on("submit", ".nj-form[action$='/quicklink/index']", function(ev) {
 				href.val(),
 				title.val()
 			);
-
-			// render the newly created quicklink in the lightbox's
-			// form
-			var ul = form.siblings("ul").first();
-
-			// add rendering
-			var li = $("<li>")
-				.append($("<span>")
-					.append($("<span>")
-						.addClass("icon-16 x16-"+icon.val())
-					)
-					.append($("<a>")
-						.attr({
-							"target": "_blank",
-							"href": href.val()
-						})
-						.text(title.val())
-					)
-					.append(" ("+href.val()+")")
-				);
-
-			// add remove button
-			li.append($("<a>")
-				.addClass("remove_quicklink no_uline")
-				.attr({
-					"href": _site_domain + _index_page + "/quicklink/delete_quicklink",
-					"title": "Remove this quicklink"
-				})
-				.data({
-					"title": title.val(),
-					"href": href.val()
-				})
-				.append($("<span>")
-					.addClass("icon-cancel error")
-			       )
-			);
-
-			ul.append(li);
-
-			// reset the form to prepare for another quicklink
-			// insertion
-			icon.val("");
-			href.val("");
-			title.val("");
-			form.find(".nj-form-icon.active")
-				.removeClass("active");
-
-			LightboxManager.alert("Quicklink successfully saved");
-			form.siblings(".quicklinks_placeholder").hide();
+			LightboxManager.remove_topmost();
 		})
 		.fail(function(data) {
 			var msg = JSON.parse(data.responseText).result;
