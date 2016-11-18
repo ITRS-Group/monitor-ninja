@@ -59,20 +59,11 @@
 					"cb": function() {
 						$.post(url, data)
 							.done(function(data) {
-								// Remove the quicklink
-								// from the "Manage
-								// quicklinks" Lightbox
-								var ul = a.closest("ul");
-								if(ul.find("li").length === 1) {
-									// we're removing the last of the list items
-									ul.parent().find(".quicklinks_placeholder").show();
-								}
-								a.closest("li").remove();
+								a.closest("tr").remove();
 
 								// Remove the rendered
 								// quicklink from the
 								// main menu bar
-
 								$("#quicklinks a")
 									.filter(function() {
 										// In order to compare hrefs, we cannot do hrefA == hrefB,
@@ -86,10 +77,6 @@
 									})
 									.closest("li")
 									.remove();
-
-								if(ul.find("li").length === 0) {
-									ul.siblings(".quicklinks_placeholder").show();
-								}
 							})
 							.fail(function(data) {
 								var msg = data.result;
@@ -104,7 +91,6 @@
 		return false;
 	});
 
-	/* QUICKLINK EXTENSION */
 	var uh_prob_title = "Unhandled Problems";
 	function query_uh_objects(link) {
 
