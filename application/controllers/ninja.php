@@ -73,12 +73,22 @@ class Ninja_Controller extends Base_Controller {
 
 			try {
 				Event::run('ninja.menu.setup', $this->template->menu);
-			} catch (Exception $e) {
+			} /*catch (Exception $e) {
 				// We want to log here in order to trace menu
 				// rendering exceptions, but we cannot do that
 				// since it causes build problems (php errors) during
 				// report tests, logs have switched owner.
 				//$this->log->log('error', $e);
+			}*/
+			catch( ORMException $e ) {
+				$this->template->error_message = $e->getMsg();
+				$this->template->previous_exception = $e->getPreviousException();
+			}
+			catch (ORMDriverException $ed) {
+				$this->template->error_message = $ed;
+			}
+			catch( op5LivestatusException $ex ) {
+				$this->template->error_message = $ex;
 			}
 
 			Event::$data = $pre_event_data;
