@@ -192,7 +192,11 @@ var LightboxManager = (function() {
 				}
 			};
 
-			box.button = function (label, callback) {
+			box.cancel_button = function(label, callback) {
+				return box.button(label, callback, "cancel");
+			};
+
+			box.button = function (label, callback, extra_classes) {
 				var button = document.createElement('button');
 				var proxy = function () {
 					if (callback(box)) {
@@ -200,7 +204,13 @@ var LightboxManager = (function() {
 					}
 				};
 
-				button.className = 'info state-background';
+				var classes = 'info state-background ';
+
+				if(extra_classes) {
+					classes += extra_classes;
+				}
+
+				button.className = classes;
 				button.textContent = label;
 				button.setAttribute('title', label);
 
@@ -355,9 +365,13 @@ var LightboxManager = (function() {
 				heading.textContent = "Confirm";
 				lb.header(heading);
 
-				var lbm = LightboxManager;
-				var yes_cb = lbm.remove_topmost;
-				var no_cb = lbm.remove_topmost;
+				// the cancel button automatically closes the
+				// topmost lightbox (from form.js), but the
+				// "positive"/"yes" button doesn't
+				var yes_cb = function() {
+					LightboxManager.remove_topmost();
+				};
+				var no_cb = function() {};
 				var yes_text = "OK";
 				var no_text = "Cancel";
 
@@ -370,11 +384,7 @@ var LightboxManager = (function() {
 					if(options.yes.cb && typeof options.yes.cb === "function") {
 						yes_cb = function() {
 							options.yes.cb();
-							lbm.remove_topmost();
-						};
-					} else {
-						yes_cb = function() {
-							lbm.remove_topmost();
+							LightboxManager.remove_topmost();
 						};
 					}
 					yes_text = options.yes.text;
@@ -388,11 +398,6 @@ var LightboxManager = (function() {
 					if(options.no.cb && typeof options.no.cb === "function") {
 						no_cb = function() {
 							options.no.cb();
-							lbm.remove_topmost();
-						};
-					} else {
-						no_cb = function() {
-							lbm.remove_topmost();
 						};
 					}
 					no_text = options.no.text;
@@ -408,15 +413,15 @@ var LightboxManager = (function() {
 				// lb.button() is really cheap.
 				lb.show();
 
-				if(button_to_focus === "no") {
-					lb.button(no_text, no_cb).focus();
-				} else {
-					lb.button(no_text, no_cb);
-				}
 				if(button_to_focus === "yes") {
 					lb.button(yes_text, yes_cb).focus();
 				} else {
 					lb.button(yes_text, yes_cb);
+				}
+				if(button_to_focus === "no") {
+					lb.cancel_button(no_text, no_cb).focus();
+				} else {
+					lb.cancel_button(no_text, no_cb);
 				}
 			},
 			"create": function() {
@@ -466,25 +471,14 @@ var LightboxManager = (function() {
 					}
 				});
 			},
-			"remove_all": function() {
-				for(var i = 0; i < boxes.length; i++) {
-					boxes[i].remove();
-				}
-				boxes.length = 0;
-			},
 			"remove_topmost": function() {
-				var topmost = LightboxManager.topmost();
-				if(topmost) {
-					topmost.remove();
-					delete boxes[boxes.length-1];
-					boxes.splice(boxes.length-1, 1);
+				if(!boxes.length) {
+					return;
 				}
-			},
-			"topmost": function() {
-				if(boxes.length) {
-					return boxes[boxes.length-1];
-				}
-				return undefined;
+				var last_index = boxes.length - 1;
+				var box = boxes[last_index].remove();
+				delete box;
+				boxes.splice(last_index, 1);
 			}
 		};
 	}();

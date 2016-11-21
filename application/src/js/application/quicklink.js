@@ -84,7 +84,6 @@
 							});
 					}
 				},
-				"no": "Keep quicklink",
 				"focus": "yes"
 			}
 		);

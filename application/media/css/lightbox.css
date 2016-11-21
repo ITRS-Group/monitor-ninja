@@ -91,12 +91,14 @@
   vertical-align: middle;
 }
 
-.lightbox-footer input[type="reset"] {
+.lightbox-footer input[type="reset"],
+.lightbox-footer button.cancel {
   background: none;
   color: #50c0e4;
 }
 
-.lightbox-footer input[type="reset"]:hover {
+.lightbox-footer input[type="reset"]:hover,
+.lightbox-footer button.cancel:hover {
   background: none;
   color: #30a0b4;
 }
