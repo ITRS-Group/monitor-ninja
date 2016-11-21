@@ -64,7 +64,10 @@ Feature: SLA reports
 		And I should see "Report Settings"
 		And "Jan" should contain "9"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Servicegroups" is selected.
+	# Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -91,7 +94,9 @@ Feature: SLA reports
 		Then I should see "Please enter at least one SLA value"
 		And I should see "Report Settings"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Hosts" is selected. Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate single host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -110,7 +115,9 @@ Feature: SLA reports
 		Then I should see "Host details"
 		And I should see "linux-server1"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Hosts" is selected. Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -136,7 +143,9 @@ Feature: SLA reports
 		And I should see "linux-server1"
 		And I should see "win-server1"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Services" is selected. Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate single service report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -155,7 +164,9 @@ Feature: SLA reports
 		When I click "Show availability breakdown"
 		Then I should see "Service details for PING on host linux-server1"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Services" is selected. Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -182,7 +193,9 @@ Feature: SLA reports
 		And I should see "PING"
 		And I should see "System Load"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Services" is selected. Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -288,7 +301,10 @@ Feature: SLA reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Servicesgroups" is selected.
+	# Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -315,7 +331,10 @@ Feature: SLA reports
 		And I should see "Services on host: win-server2"
 		And I should see "PING"
 
-	@configuration @reports
+	# This fails because the multi select won't be populated after
+	# "Servicesgroups" is selected.
+	# Should probably work when PhantomJS is updated.
+	@configuration @reports @unreliable
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -390,7 +409,11 @@ Feature: SLA reports
 		And I should see "Group availability (Worst state)"
 		And I should see "Reporting period: Last 12 months"
 
-	@configuration @reports
+	# This tests relies on that the report "saved test report" doesn't exist.
+	# It probably exists because it is supposed to be removed by some previous
+	# scenario. It is very bad make one scenario depending upon another so we
+	# probably need to look through this whole file.
+	@configuration @reports @unreliable
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Report" menu

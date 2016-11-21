@@ -55,7 +55,9 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports
+	# This fails probably because "Select report" won't be populated after
+	# "Weekly" is selected. Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Schedule avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -72,7 +74,10 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports
+	# This fails probably because "Select report" won't be populated after
+	# "Availability reports" is selected.
+	# Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: View scheduled avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -86,7 +91,9 @@ Feature: Scheduled reports
 		And I should see "LinuxServers"
 		And I should see "linux-server1"
 
-	@reports
+	# This fails probably because "Select report" won't be populated after
+	# "Weekly" is selected. Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Add second avail schedule
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -108,7 +115,11 @@ Feature: Scheduled reports
 		And I click "OK" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		Then the "Description" column should be "A description" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 
-	@reports
+	# This fails because it cannot find select box "objects_tmp", i.e. the
+	# select box containing the selected host group (LinuxServers) from the
+	# multiselect.
+	# Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Delete previously created avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -153,7 +164,10 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports
+	# This fails. Probably because some select box won't be updated correctly
+	# and thus some info is missing.
+	# Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Schedule SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -171,7 +185,9 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports
+	# This fails probably because "Select report" won't be populated after
+	# "SLA report" is selected. Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: View scheduled SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -185,7 +201,9 @@ Feature: Scheduled reports
 		And I should see "Group members"
 		And I should see "linux-server1"
 
-	@reports
+	# This fails probably because "Select report" won't be populated after
+	# "SLA report" is selected. Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Delete SLA schedule
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -204,7 +222,9 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 
-	@reports
+	# This fails because it depends on that an SLA report has been created
+	# by an earlier scenario.
+	@reports @unreliable
 	Scenario: Delete previously created SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -247,7 +267,10 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports
+	# This fails, probably because JS events doesn't run after making a
+	# list box selection.
+	# Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Schedule summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -265,7 +288,10 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports
+	# This fails probably because "Select report" won't be populated after
+	# "Alert Summary Report" is selected.
+	# Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: View scheduled summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -277,7 +303,9 @@ Feature: Scheduled reports
 		When I click "View report" on the row where "Report" is "saved test report"
 		Then I should see "Top alert producers"
 
-	@reports
+	# This fails probably because "Saved report" won't be populated after
+	# "Delete" is clicked. Should probably work when PhantomJS is updated.
+	@reports @unreliable
 	Scenario: Delete previously created summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu

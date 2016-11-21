@@ -611,16 +611,18 @@ class op5auth implements op5MayI_Actor {
 	 */
 	public function get_metadata($field = false) {
 		$metadata = array();
-		foreach ($this->auth_modules as $module) {
-			$driver = $this->get_auth_driver($module->get_modulename());
-			$driver_metadata = $driver->get_metadata($field);
-			if ($field !== false)
-				$driver_metadata = array ($field => $driver_metadata);
-			foreach ($driver_metadata as $var => $value) {
-				if ($value) {
-					if (!isset($metadata[$var]))
-						$metadata[$var] = array ();
-					$metadata[$var][] = $module->get_modulename();
+		if ($this->auth_modules && count($this->auth_modules) > 0) {
+			foreach ($this->auth_modules as $module) {
+				$driver = $this->get_auth_driver($module->get_modulename());
+				$driver_metadata = $driver->get_metadata($field);
+				if ($field !== false)
+					$driver_metadata = array ($field => $driver_metadata);
+				foreach ($driver_metadata as $var => $value) {
+					if ($value) {
+						if (!isset($metadata[$var]))
+							$metadata[$var] = array ();
+						$metadata[$var][] = $module->get_modulename();
+					}
 				}
 			}
 		}
