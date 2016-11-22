@@ -150,7 +150,7 @@ mkdir -p %buildroot/var/log/op5
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
 for d in op5build monitor-ninja.spec ninja.doxy \
-	php2doxy.sh example.htaccess cli-helpers/apr_md5_validate.c \
+	example.htaccess cli-helpers/apr_md5_validate.c \
 	README.md
 do
 	rm -rf %buildroot%prefix/$d
