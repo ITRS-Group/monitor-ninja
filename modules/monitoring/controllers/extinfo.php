@@ -606,8 +606,8 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$form = '<form action="scheduling_queue" method="get">';
 		$form .= _('Search for ');
-		$form .= '<label> ' . _('Host') . ': <input type="text" name="host" value="' . $host_filter . '" /></label>';
-		$form .= '<label> ' . _('Service') . ': <input type="text" name="service" value="' . $service_filter . '" /></label>';
+		$form .= '<label> ' . _('Host') . ': <input type="text" name="host" value="' . html::specialchars($host_filter) . '" /></label>';
+		$form .= '<label> ' . _('Service') . ': <input type="text" name="service" value="' . html::specialchars($service_filter) . '" /></label>';
 		$form .= '<input type="submit" value="' . _('Search') . '" /></form>';
 
 		$this->template->toolbar->info($form);
