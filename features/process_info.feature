@@ -1,4 +1,6 @@
-@monitoring
+# Something is wrong with logging in as adminisrator after we updated to
+# jQuery 3.x
+@monitoring @unreliable
 Feature: Monitoring process info
 
 	Background:

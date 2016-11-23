@@ -35,7 +35,8 @@ Feature: Alert history reports
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
 		And I am logged in
 
-	@configuration
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @unreliable
 	Scenario: Single host alert history
 		Given I visit the alert history page for host "linux-server1"
 		Then I should see "OK - Sven Melander"
@@ -48,7 +49,8 @@ Feature: Alert history reports
 		And I click "Update"
 		Then I shouldn't see "Sven Melander"
 
-	@configuration @bug-7083
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @bug-7083 @unreliable
 	Scenario: Service with host alert history
 		Given I visit the alert history page for service "win-server1;Swap Usage"
 		Then I should see "ERROR - out of teletubbies"
@@ -66,7 +68,8 @@ Feature: Alert history reports
 		Then I should see "ERROR - out of teletubbies"
 		And I shouldn't see "OK - laa-laa"
 
-	@configuration
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @unreliable
 	Scenario: Host with service alert history
 		Given I visit the alert history page for host "win-server1"
 		Then I should see "OK - laa-laa"
@@ -82,7 +85,8 @@ Feature: Alert history reports
 		And I shouldn't see "ERROR - tinky-winky"
 		And I should see "OK - laa-laa"
 
-	@configuration @bug-7083
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @bug-7083 @unreliable
 	Scenario: Switch object
 		Given I visit the alert history page for host "linux-server1"
 		Then I should see "OK - Sven Melander"
@@ -99,7 +103,8 @@ Feature: Alert history reports
 		And I should see "OK - laa-laa"
 
 	# Henrik claims I broke this once, so let's prove him wrong forever
-	@configuration
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @unreliable
 	Scenario: Change option from all objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -113,7 +118,8 @@ Feature: Alert history reports
 		And I shouldn't see "OK - Sven Melander"
 
 	# MON-8189
-	@configuration
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @unreliable
 	Scenario: Changes to start and end times are properly updated
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -127,7 +133,8 @@ Feature: Alert history reports
 		And I click "Update"
 		Then I should see "2000-01-01 10:00:00 to 2016-01-01 10:00:00"
 
-	@configuration @bug-6341 @bug-6646
+	# This uses Lightbox and needs PhantomJS 2.x to work
+	@configuration @bug-6341 @bug-6646 @unreliable
 	Scenario: Pagination
 		Given I visit the alert history page for host "win-server1"
 		Then I should see "OK - laa-laa"

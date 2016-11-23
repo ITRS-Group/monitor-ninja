@@ -316,13 +316,13 @@ function check_form_values(form)
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
 			var input = $('input[id="' + field_name + '"]', form);
-			var value = input.attr('value');
-			value = value.replace(',', '.');
+			var value = input.val().replace(',', '.');
 			if (value > max_val || isNaN(value)) {
 				input.css('background', sla_month_error_color);
 				errors++;
 				red_error = true;
 			}
+
 			if (value != '') {
 				nr_of_slas++;
 			}
