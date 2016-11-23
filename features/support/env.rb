@@ -23,20 +23,14 @@ else
 end
 
 After do |scenario|
-  case scenario
-  when Cucumber::Ast::Scenario
-    name = scenario.name
-  when Cucumber::Ast::OutlineTable::ExampleRow
-    name = scenario.scenario_outline.name
-  end
   if scenario.failed?
-    puts "Scenario '#{name}' failed"
+    puts "Scenario '#{scenario.name}' failed"
   end
 
   if File.exist?('/mnt/logs/php_errors.log')
-    cleanname = name.split("\n")[0].strip().gsub(/[ -]+/, "_")
+    cleanname = scenario.name.split("\n")[0].strip().gsub(/[ -]+/, "_")
     new_path = "/mnt/logs/php_errors_#{cleanname}.log"
-    puts "Moving php_errors.log to #{new_path} after scenario #{name}"
+    puts "Moving php_errors.log to #{new_path} after scenario #{scenario.name}"
     FileUtils.mv('/mnt/logs/php_errors.log', new_path)
   end
 end
