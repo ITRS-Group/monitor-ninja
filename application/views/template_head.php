@@ -11,7 +11,6 @@ if (!empty($base_href)) {
 
 	<?php
 		echo html::link('application/views/icons/favicon.ico','icon','image/x-icon');
-		echo html::link('application/media/css/jquery.fancybox.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.popover.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/lib.notify.css', 'stylesheet', 'text/css', false, 'screen');
 		echo html::link('application/media/css/c3.css', 'stylesheet', 'text/css', false, 'screen');
@@ -24,7 +23,9 @@ if (!empty($base_href)) {
 	<link href="<?php echo ninja::add_path('css/ninja-icons.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'common.css'); ?>" type="text/css" rel="stylesheet" media="all" />
 	<link href="<?php echo ninja::add_path('css/'.$current_skin.'print.css'); ?>" type="text/css" rel="stylesheet" media="print" />
-	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/'.$current_skin.'jquery-ui-custom.css') ?>" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/jquery-ui-1.12.1/jquery-ui.css') ?>" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/jquery-ui-1.12.1/jquery-ui.structure.css') ?>" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ninja::add_path('css/jquery-ui-1.12.1/jquery-ui.theme.css') ?>" media="screen" />
 	<?php
 		$v = new View('css_header', array('css' => isset($css)?$css:array()));
 		$v->render(true);

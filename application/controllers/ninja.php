@@ -80,7 +80,6 @@ class Ninja_Controller extends Base_Controller {
 				// report tests, logs have switched owner.
 				//$this->log->log('error', $e);
 			}
-
 			Event::$data = $pre_event_data;
 			Event::$name = $pre_event_name;
 		}

@@ -74,7 +74,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			$this->template->toolbar->button(_('View schedule'), array('href' => $lp->get_url('schedule', 'show'), 'id' => 'show_schedule'));
 		}
 
-		$this->template->toolbar->button(_('Edit settings'), array('href' => '#options', 'class' => 'fancybox'));
+		$this->template->toolbar->button(_('Edit settings'), array('href' => '#options', 'id' => 'edit_settings'));
 		$this->template->toolbar->button(_('Permalink'), array('href' => $lp->get_url($this->type, 'generate', $this->options->as_keyval())));
 	}
 

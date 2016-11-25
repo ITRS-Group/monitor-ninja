@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
+<script type="text/javascript">
+	setTimeout(function(){
+		window.location.reload();
+	}, 5000);
+</script>
 <div class="overlay">
 	<div class="dialog center">
 		<p>

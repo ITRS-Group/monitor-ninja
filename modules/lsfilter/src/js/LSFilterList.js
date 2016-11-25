@@ -8,7 +8,6 @@ function lsfilter_list(config)
 		request_url: _site_domain + _index_page + "/" + _controller_name + "/fetch_ajax",
 		columns: false,
 		toolbar: false,
-		attach_head: false,
 		notify: false,
 		loading_start: function()
 		{
@@ -27,13 +26,6 @@ function lsfilter_list(config)
 		this.config.autorefresh_enabled = false;
 	}
 
-	if($.browser.msie) {
-		var parts = $.browser.version.split('.');
-		if( parseInt(parts[0], 10) < 8 ) {
-			this.config.attach_head = false; /* Don't support attached head in ie7 */
-		}
-	}
-
 	if(this.config.table)
 		lsfilter_list_attach_events( this, this.config.table );
 	if(this.config.totals)
@@ -42,11 +34,9 @@ function lsfilter_list(config)
 	/* Bind this once and for all globally... Needed in lot of callbacks */
 	var self = this;
 
-	if( this.config.attach_head ) {
-		$(window).on('resize scroll load', function(e) {
-			self.update_float_header();
-		});
-	}
+	$(window).on('resize scroll load', function(e) {
+		self.update_float_header();
+	});
 	/***************************************************************************
 	 * External methods
 	 **************************************************************************/
@@ -617,8 +607,6 @@ function lsfilter_list(config)
 
 	this.attach_header = function()
 	{
-		if (!this.config.attach_head) return;
-
 		var thead =  $(this.config.table).find('thead');
 		var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
 		var clone = header.clone(true);

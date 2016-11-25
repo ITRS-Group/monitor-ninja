@@ -108,7 +108,7 @@ class dashboard {
 
 		$db_menu->set("All Dashboards", listview::querylink('[dashboards] all'));
 		$db_menu->set("New dashboard", 'tac/new_dashboard', null, false, array(
-			'class' => "menuitem_dashboard_option" /* Popup as fancybox */
+			'class' => "menuitem_dashboard_option"
 		));
 	}
 }

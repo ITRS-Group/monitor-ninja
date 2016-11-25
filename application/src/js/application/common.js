@@ -1,4 +1,3 @@
-
 var loadimg_sml = new Image(16, 16);
 loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
 
@@ -23,14 +22,13 @@ var ninja_refresh = (function () {
 }());
 
 /**
- *	cache the progress indicator image to show faster...
+ * Cache the progress indicator image to show faster
  */
 var Image1 = new Image(16,16);
 Image1.src = _site_domain + 'application/media/images/loading.gif';
 
 /**
- *	Show a progress indicator to inform user that something
- *	is happening...
+ * Show a progress indicator to inform user that something is happening
  */
 function show_progress(the_id, info_str, size_str) {
 	switch (size_str) {
@@ -55,6 +53,158 @@ function switch_image(html_id, src)
 {
 	$('#' + html_id).attr('src', src);
 }
+
+function append_quicklink_to_dom(icon, target, href, title) {
+	var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-'+icon+'"></span></a></li>');
+	quicklink.find('a')
+		.attr('target', target)
+		.attr('href', href)
+		.attr('title', title);
+
+	$('#dojo-add-quicklink').parent().before(quicklink);
+};
+
+$(document).on("click", "#dojo-add-quicklink", function(ev) {
+	ev.preventDefault();
+	var link = $(this);
+	LightboxManager.ajax_form_from_href(link.attr("title"), link.attr("href"));
+});
+
+$(document).on("submit", ".nj-form[action$='/quicklink/index']", function(ev) {
+	var form = $(this);
+	ev.preventDefault();
+	$.post(form.attr("action"), form.serialize())
+		.done(function(data) {
+			// render the newly created quicklink in the menu bar
+			// to avoid having to reload the page
+			var icon = form.find("input[name=icon]");
+			var target = form.find("input[name=target]");
+			var href = form.find("input[name=href]");
+			var title = form.find("input[name=title]");
+			append_quicklink_to_dom(
+				icon.val(),
+				target.val(),
+				href.val(),
+				title.val()
+			);
+
+			// render the newly created quicklink in the lightbox's
+			// form
+			var ul = form.siblings("ul").first();
+
+			// add rendering
+			var li = $("<li>")
+				.append($("<span>")
+					.append($("<span>")
+						.addClass("icon-16 x16-"+icon.val())
+					)
+					.append($("<a>")
+						.attr({
+							"target": "_blank",
+							"href": href.val()
+						})
+						.text(title.val())
+					)
+					.append(" ("+href.val()+")")
+				);
+
+			// add remove button
+			li.append($("<a>")
+				.addClass("remove_quicklink no_uline")
+				.attr({
+					"href": _site_domain + _index_page + "/quicklink/delete_quicklink",
+					"title": "Remove this quicklink"
+				})
+				.data({
+					"title": title.val(),
+					"href": href.val()
+				})
+				.append($("<span>")
+					.addClass("icon-cancel error")
+			       )
+			);
+
+			ul.append(li);
+
+			// reset the form to prepare for another quicklink
+			// insertion
+			icon.val("");
+			href.val("");
+			title.val("");
+			form.find(".nj-form-icon.active")
+				.removeClass("active");
+
+			LightboxManager.alert("Quicklink successfully saved");
+			form.siblings(".quicklinks_placeholder").hide();
+		})
+		.fail(function(data) {
+			var msg = JSON.parse(data.responseText).result;
+			LightboxManager.alert(msg);
+		});
+});
+
+$(document).on("click", ".remove_quicklink", function(ev) {
+	ev.preventDefault();
+
+	var a = $(this);
+	var quicklink_title = a.data("title");
+	var url = a.attr("href");
+	var data = a.data();
+	// since we are using POST, we must not forget to attach the currently
+	// valid CSRF token
+	data.csrf_token = _csrf_token;
+	LightboxManager.confirm(
+		"Are you sure you want to remove the quicklink '"+quicklink_title+"'?",
+		{
+			"yes": {
+				"text": "Remove quicklink",
+				"cb": function() {
+					$.post(url, data)
+						.done(function(data) {
+							// Remove the quicklink
+							// from the "Manage
+							// quicklinks" Lightbox
+							var ul = a.closest("ul");
+							if(ul.find("li").length === 1) {
+								// we're removing the last of the list items
+								ul.parent().find(".quicklinks_placeholder").show();
+							}
+							a.closest("li").remove();
+
+							// Remove the rendered
+							// quicklink from the
+							// main menu bar
+
+							$("#quicklinks a")
+								.filter(function() {
+									// In order to compare hrefs, we cannot do hrefA == hrefB,
+									// since the stored href is relative, but the one accessed
+									// through the DOM is absolute. We work around this
+									// issue by making the stored href absolute.
+									var anchor = document.createElement("a");
+									anchor.href = data.result.href;
+									return this.href === anchor.href
+										&& this.title === data.result.title;
+								})
+								.closest("li")
+								.remove();
+
+							if(ul.find("li").length === 0) {
+								ul.siblings(".quicklinks_placeholder").show();
+							}
+						})
+						.fail(function(data) {
+							var msg = data.result;
+							LightboxManager.alert(msg);
+						});
+				}
+			},
+			"no": "Keep quicklink",
+			"focus": "yes"
+		}
+	);
+	return false;
+});
 
 var current_interval = 0;
 $(document).ready(function() {
@@ -179,7 +329,7 @@ $(document).ready(function() {
 	}
 	// -- end listview refresh helper code
 
-	$('.select_all_items_service').live('click', function() {
+	$(document).on('click', '.select_all_items_service', function() {
 		if ($(this).attr('checked')) {
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
 				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
@@ -252,8 +402,8 @@ $(document).ready(function() {
 
 
 	/**
-	*	Toggle page refresh and show a notify message to user about state
-	*/
+	 * Toggle page refresh and show a notify message to user about state
+	 */
 	function toggle_refresh()
 	{
 		if ($("#ninja_refresh_control").attr('checked')) {
@@ -406,152 +556,26 @@ $(document).ready(function() {
 		query_for_states();
 	});
 
-	var global_quicklinks = [];
-
-	function quicklinks_save_all () {
-		$.ajax(_site_domain + _index_page + '/ajax/save_page_setting', {
-			data: {
-				'type': 'dojo-quicklinks',
-				'page': 'tac',
-				'setting': JSON.stringify(global_quicklinks),
-				'csrf_token': _csrf_token
-			},
-			type: 'POST',
-			complete: function() {
-				$('#dojo-add-quicklink-href').attr('value','');
-				$('#dojo-add-quicklink-title').attr('value','');
-				$('#dojo-add-quicklink-icon').attr('value','');
-			}
-		});
-	}
-
-	$(window).on('load', function () {
-		$('#dojo-icon-container').on('click', 'span', function() {
-			var span = $(this);
-			$('#dojo-add-quicklink-icon').val(span.data('icon'));
-
-			// we have to change the background of the td, since the span already
-			// has the icon image as its background
-			var all_tds = $('#dojo-icon-container td');
-			all_tds.removeClass('highlight');
-			span.parents('td').addClass('highlight');
-		});
-
-		$('#dojo-add-quicklink').fancybox({
-			titleShow: false,
-			overlayOpacity: 0,
-			onComplete: function() {
-				$('#dojo-quicklink-remove').html('');
-				for (var i = 0; i < global_quicklinks.length; i += 1) {
-					var l = global_quicklinks[i];
-					var vid = l.title + ':'+ l.href;
-					var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
-					quicklink
-					.find('label')
-					.text(l.title)
-					.prepend($('<span class="icon-16"></span>').addClass('x16-'+l.icon))
-					.prepend($('<input type="checkbox" />')
-									 .attr('value', vid)
-									 .attr('id', vid)
-									 .attr('title', l.title)
-									);
-									quicklink
-									.find('a')
-									.attr('href', l.href)
-									.text(l.href);
-									$('#dojo-quicklink-remove').append(quicklink);
-				}
-			},
-			onClose: function() {
-				$('#dojo-add-quicklink-href').attr('value','');
-				$('#dojo-add-quicklink-title').attr('value','');
-				$('#dojo-add-quicklink-icon').attr('value','');
-			}
-		});
-
-		$('#dojo-add-quicklink-menu form').submit(function (ev) {
-			ev.preventDefault();
-			var href = $('#dojo-add-quicklink-href').attr('value'),
-				title = $('#dojo-add-quicklink-title').attr('value'),
-				icon = $('#dojo-add-quicklink-icon').attr('value'),
-				target = $('#dojo-add-quicklink-target').attr('value'),
-				changed = false;
-			var error = '';
-			if (href && title && icon) {
-				var i = global_quicklinks.length;
-				for (i; i--;) {
-					if (global_quicklinks[i].href === href) {
-						error += 'This href is already used in a quicklink. <br />';
-					}
-					if (global_quicklinks[i].title === title) {
-						error += 'This title is already in use, titles must be unique. <br />';
-					}
-				}
-				if (error.length === 0) {
-					global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
-					var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
-					quicklink
-					.find('a')
-					.attr('target', target)
-					.attr('href', href)
-					.attr('title', title);
-					$('#dojo-add-quicklink').parent().before(quicklink);
-					changed = true;
-				} else {
-					Notify.message(error, {type: "error"});
-					return;
-				}
-			}
-			$('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
-				var i = global_quicklinks.length;
-				var vid = '';
-				if (this.checked) {
-					for (i; i--;) {
-						vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
-						if (this.value === vid) {
-							$('#quicklinks li a[title="'+this.title+'"]').parent().remove();
-							global_quicklinks.splice(i, 1);
-							changed = true;
-						}
-					}
-				}
-
-			});
-			if (changed)  {
-				quicklinks_save_all();
-			}
-			if(!error) {
-				$.fancybox.close();
-			}
-		});
-	});
-
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
-			data: {
-				'type': 'dojo-quicklinks',
-				'page': 'tac',
-				'csrf_token': _csrf_token
-			},
-			type: 'POST',
-			success: function (obj) {
-
-				var links = [];
-
-				if (obj['dojo-quicklinks']) {
-					links = obj['dojo-quicklinks'];
-					for (var i = 0; i < links.length; i += 1) {
-						var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-'+links[i].icon+'"></span></a></li>');
-						quicklink
-							.find('a')
-								.attr('target', links[i].target)
-								.attr('href', links[i].href)
-								.attr('title', links[i].title);
-
-						$('#dojo-add-quicklink').parent().before(quicklink);
-					}
-				}
-				global_quicklinks = links;
+		data: {
+			'type': 'dojo-quicklinks',
+			'page': 'tac',
+			'csrf_token': _csrf_token
+		},
+		type: 'POST',
+		success: function (obj) {
+			if (!obj['dojo-quicklinks']) {
+				return;
 			}
-		});
+			var links = obj['dojo-quicklinks'];
+			for (var i = 0; i < links.length; i += 1) {
+				(function() {
+					// make sure that the closure to not
+					// get the final link every time
+					append_quicklink_to_dom(links[i].icon, links[i].target, links[i].href, links[i].title);
+				})();
+			}
+		}
+	});
 
 });

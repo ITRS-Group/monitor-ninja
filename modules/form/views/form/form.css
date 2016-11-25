@@ -449,3 +449,21 @@ form.nj-form .nj-form-field-radio-buttons input[value="3,2,1"] + .nj-form-label 
 form.nj-form .nj-form-field-radio-buttons input[value="1,3,2"] + .nj-form-label {
   background-image: url("/ninja/application/views/icons/layout-132.png");
 }
+
+form.nj-form div.nj-form-icon span:hover {
+  cursor: pointer;
+}
+
+form.nj-form div.nj-form-icon {
+  border-radius: 4px;
+  display: inline-block;
+  padding: 2px;
+}
+
+form.nj-form div.nj-form-icon:hover {
+  background: #999;
+}
+
+form.nj-form div.nj-form-icon.active {
+  background: lightblue;
+}

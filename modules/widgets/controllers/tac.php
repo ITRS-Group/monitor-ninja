@@ -259,9 +259,6 @@ class Tac_Controller extends Ninja_Controller {
 	/**
 	 * Render the new dashboard dialog, as an entire page
 	 *
-	 * So we don't need to render it on every page, fancybox can load the
-	 * dialog from an URL.
-	 *
 	 * Also receives the data from the form in the popup
 	 */
 	public function new_dashboard() {
@@ -307,8 +304,6 @@ class Tac_Controller extends Ninja_Controller {
 
 	/**
 	 * Render the share dashboard dialog, as an entire page
-	 *
-	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
 	 */
 	public function share_dashboard() {
 		$this->_verify_access("monitor.system.dashboards.shared:create");
@@ -467,9 +462,7 @@ class Tac_Controller extends Ninja_Controller {
 	}
 
 	/**
-	 * Render the new dashboard dialog, as an entire page
-	 *
-	 * So we don't need to render it on every page, fancybox can load the dialog from an URL
+	 * Render the new dashboard dialog, as an entire page.
 	 */
 	public function rename_dashboard() {
 		if($_POST) {

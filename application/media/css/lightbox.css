@@ -1,4 +1,3 @@
-
 .lightbox {
   flex: content 0.7 0.3;
   flex-direction: column;
@@ -65,11 +64,8 @@
 
 .lightbox-content {
   flex: auto 0.1 1;
-  display: flex;
-  flex-direction: column;
-  flex-flow: column wrap;
   position: relative;
-  overflow: visible;
+  overflow-y: auto;
   font-size: 10pt;
   padding: 16px;
   min-height: 32px;
@@ -103,4 +99,8 @@
 .lightbox-footer input[type="reset"]:hover {
   background: none;
   color: #30a0b4;
+}
+
+.nj-form-field input:invalid {
+    border:1px solid #FF0000 !important;
 }

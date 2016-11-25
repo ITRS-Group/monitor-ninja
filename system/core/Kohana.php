@@ -297,7 +297,10 @@ final class Kohana {
 			} while ($next_route !== false);
 
 			try {
-				if (
+				if (is_a($controller, 'Error_Controller')) {
+					$error_controller = new Error_Controller;
+					$error_controller->show_503($e);
+				}else if (
 					is_a($controller, 'Template_Controller') &&
 					$controller->auto_render
 				) {

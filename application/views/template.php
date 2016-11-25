@@ -45,7 +45,9 @@
 								echo $content;
 							}
 						} else {
-							echo 'Page does not have any content';
+							echo '<p> Page does not have any content</p>';
+							echo '<p> Message :' . $error_message . '</p>';
+							echo '<p> Previous Exception :' . $previous_exception . '</p>';
 						}
 
 
