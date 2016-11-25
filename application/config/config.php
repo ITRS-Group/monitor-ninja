@@ -25,7 +25,7 @@ $config['index_page'] = 'index.php';
 * This string is shown throughout the GUI in various places
 * and this is the only place you will have to change it.
 */
-$config['product_name'] = 'Nagios';
+$config['product_name'] = 'Ninja';
 
 /**
  * Custom version info file. Format:
