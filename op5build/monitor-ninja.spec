@@ -77,7 +77,7 @@ Requires: pciutils
 
 Source: %name-%version.tar.gz
 %description
-Webgui for Nagios.
+Webgui for Naemon.
 
 %package test
 Summary: Test files for ninja
@@ -160,7 +160,7 @@ sed -i "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
 	%buildroot%prefix/index.php
 sed -i \
 	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
-	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
+	-e 's/^\(.config..product_name.. = .\)Ninja/\1op5 Monitor/' \
 	-e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
 	%buildroot%prefix/application/config/config.php
 
