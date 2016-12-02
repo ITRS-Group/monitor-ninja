@@ -6,6 +6,7 @@ if (PHP_SAPI !== "cli") {
 define('SKIP_KOHANA', true);
 require_once __DIR__.'/../index.php';
 
+Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 $db = Database::instance();
 $res = $db->query('SELECT * FROM recurring_downtime');
 $report = array(

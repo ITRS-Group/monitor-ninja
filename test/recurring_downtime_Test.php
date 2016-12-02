@@ -10,7 +10,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	var $basecomment = 'Recurring Downtime Test Schedule For ';
 
 	/**
-	 *	Set up prerequisities for this test
+	 * Set up prerequisities for this test
 	 */
 	public function setUp() {
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
@@ -35,7 +35,6 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$db = Database::instance();
 		$db->query("TRUNCATE TABLE recurring_downtime");
 		$db->query("TRUNCATE TABLE recurring_downtime_objects");
-
 	}
 
 	/**
