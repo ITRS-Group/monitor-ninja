@@ -194,7 +194,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 				avail_ver=$new_ver
 			done
 		fi
-		php index.php db_migrations/v13_to_v14
+		php install_scripts/db_migrate_v13_to_v14.php
 		;;
 	18)
 		all_versions 18
