@@ -9,7 +9,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$this->assertContains($data['downtime_type'], ScheduleDate_Model::$valid_types);
 		$sd = new ScheduleDate_Model();
 		$id = false;
-		$this->assertTrue($sd->edit_schedule($data, $id));
+		$sd->edit_schedule($data, $id);
 		$this->created[] = $id;
 	}
 
@@ -108,7 +108,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$sd = new ScheduleDate_Model();
 		$id = $one['id'];
 		unset($this->created[array_search($id, $this->created)]);
-		$this->assertTrue($sd->edit_schedule($one, $id));
+		$sd->edit_schedule($one, $id);
 
 		$this->assertTrue($sd->delete_schedule($id));
 		$stats = RecurringDowntimePool_Model::all();
