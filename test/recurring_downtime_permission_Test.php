@@ -115,7 +115,11 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$this->assertCount(3, $stats);
 	}
 
-	public function testReadOnly()
+	/**
+	 * @expectedException Exception
+	 * @expectedExceptionMessage Should not be able to edit a schedule as a read only user
+	 */
+	public function testReadOnlyEdit()
 	{
 		$this->auth->set_authorized_for('host_view_all', true);
 		$this->auth->set_authorized_for('service_view_all', true);
@@ -136,7 +140,30 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$one['author'] = 'you';
 		$sd = new ScheduleDate_Model();
 		$id = $one['id'];
-		$this->assertFalse($sd->edit_schedule($one, $id));
+		$sd->edit_schedule($one, $id);
+	}
+
+	public function testReadOnlyDelete()
+	{
+		$this->auth->set_authorized_for('host_view_all', true);
+		$this->auth->set_authorized_for('service_view_all', true);
+		$this->auth->set_authorized_for('hostgroup_view_all', true);
+		$this->auth->set_authorized_for('servicegroup_view_all', true);
+		$this->auth->set_authorized_for('host_edit_all', false);
+		$this->auth->set_authorized_for('service_edit_all', false);
+		$this->auth->set_authorized_for('hostgroup_edit_all', false);
+		$this->auth->set_authorized_for('servicegroup_edit_all', false);
+		$this->auth->set_authorized_for('host_edit_contact', false);
+		$this->auth->set_authorized_for('service_edit_contact', false);
+		$this->auth->set_authorized_for('hostgroup_edit_contact', false);
+		$this->auth->set_authorized_for('servicegroup_edit_contact', false);
+		$stats = RecurringDowntimePool_Model::all();
+		$this->assertCount(4, $stats);
+
+		$one = $stats->it(false)->current()->export();
+		$one['author'] = 'you';
+		$sd = new ScheduleDate_Model();
+		$id = $one['id'];
 
 		$this->assertFalse($sd->delete_schedule($id));
 		$stats = RecurringDowntimePool_Model::all();
