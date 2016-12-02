@@ -120,7 +120,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
 		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -162,8 +162,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			$number += count($ls->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $group)))));
 		}
 
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -195,8 +194,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -229,8 +227,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -270,8 +267,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 
 		$tests_expected = array(
 			strtotime("2036-01-17 23:50") => "Schedule on thursday when sunday is excluded",
@@ -308,8 +304,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$time = mktime(23, 50, 0, 11, 11, 2036);
 
 		$output = '';
@@ -349,8 +344,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 
 		$output = '';
 		exec('/usr/bin/php index.php default/cron/downtime 2>&1', $output, $status);
