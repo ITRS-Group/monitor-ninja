@@ -125,7 +125,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		;;
 	12)
 		all_versions 12
-		php index.php cli/upgrade_recurring_downtime
+		php install_scripts/upgrade_recurring_downtime.php
 		;;
 	13)
 		all_versions 13
