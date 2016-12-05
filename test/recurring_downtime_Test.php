@@ -10,7 +10,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 	var $basecomment = 'Recurring Downtime Test Schedule For ';
 
 	/**
-	 *	Set up prerequisities for this test
+	 * Set up prerequisities for this test
 	 */
 	public function setUp() {
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
@@ -35,7 +35,6 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$db = Database::instance();
 		$db->query("TRUNCATE TABLE recurring_downtime");
 		$db->query("TRUNCATE TABLE recurring_downtime_objects");
-
 	}
 
 	/**
@@ -121,7 +120,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
 		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -163,8 +162,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			$number += count($ls->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $group)))));
 		}
 
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -196,8 +194,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -230,8 +227,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
 		$result = $db->query($sql);
@@ -271,8 +267,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 
 		$tests_expected = array(
 			strtotime("2036-01-17 23:50") => "Schedule on thursday when sunday is excluded",
@@ -309,8 +304,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 		$time = mktime(23, 50, 0, 11, 11, 2036);
 
 		$output = '';
@@ -350,8 +344,7 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
 			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
-		$id;
-		$this->assertTrue($this->sd->edit_schedule($data, $id));
+		$this->sd->edit_schedule($data, $id);
 
 		$output = '';
 		exec('/usr/bin/php index.php default/cron/downtime 2>&1', $output, $status);
@@ -383,7 +376,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1337, "monitor", "hosts", \'a:9:{s:11:"report_type";s:5:"hosts";s:9:"host_name";a:1:{i:0;s:7:"monitor";}s:7:"comment";s:15:"I am a comment.";s:4:"time";s:5:"12:00";s:8:"duration";s:4:"2:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:7:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"0";}s:15:"recurring_month";a:12:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"7";i:7;s:1:"8";i:8;s:1:"9";i:9;s:2:"10";i:10;s:2:"11";i:11;s:2:"12";}}\')');
 		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1338, "monitor", "services", \'a:8:{s:11:"report_type";s:8:"services";s:19:"service_description";a:1:{i:0;s:20:"monitor;Disk usage /";}s:7:"comment";s:36:"This is a comment of a service rsdt.";s:4:"time";s:5:"16:00";s:8:"duration";s:4:"4:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:1:{i:0;s:1:"4";}}\')');
 		$db->query('INSERT INTO recurring_downtime(id, author, downtime_type, data) VALUES (1339, "monitor", "services", \'a:8:{s:11:"report_type";s:8:"services";s:19:"service_description";a:1:{i:0;s:20:"monitor;Disk usage /";}s:7:"comment";s:46:"This scheduled downtime is as long as longcat.";s:4:"time";s:4:"0:00";s:8:"duration";s:5:"24:00";s:5:"fixed";s:1:"1";s:12:"triggered_by";s:1:"0";s:13:"recurring_day";a:1:{i:0;s:1:"4";}}\')');
-		exec('/usr/bin/php index.php cli/upgrade_recurring_downtime 2>&1', $output, $status);
+		exec('/usr/bin/php '.realpath(__DIR__.'/../install_scripts/upgrade_recurring_downtime.php').' 2>&1', $output, $status);
+		$this->assertEquals(0, $status, "Failed to upgrade recurring downtimes, this was the stdout content:\n$output");
 		$res = $db->query('SELECT * FROM recurring_downtime WHERE id = 1337');
 		$res = $res->result_array(false);
 		$this->assertCount(1, $res);

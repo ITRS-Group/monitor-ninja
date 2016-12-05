@@ -14,12 +14,12 @@
 class recurring_downtime_Controller extends Authenticated_Controller {
 
 	/**
-	*	Setup/Edit schedules
-	*/
-	public function index($id=false)
-	{
+	 * Setup/Edit schedules
+	 */
+	public function index($id=false) {
+		$recurring_downtime_error = "";
 		if (!empty($_POST)) {
-			$data = false;
+			$data = array();
 			$missing = array();
 			foreach (ScheduleDate_Model::$valid_fields as $field) {
 				if (!isset($_REQUEST[$field])) {
@@ -44,10 +44,12 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 				$id = arr::search($_REQUEST, 'schedule_id');
 
 				$sd = new ScheduleDate_Model();
-				if ($sd->edit_schedule($data, $id)) {
+				try {
+					$sd->edit_schedule($data, $id);
 					return url::redirect(LinkProvider::factory()->get_url('listview', null, array('q' => '[recurring_downtimes] all')));
+				} catch(Exception $e) {
+					$recurring_downtime_error = $e->getMessage();
 				}
-				$recurring_downtime_error = 'Failed to save changed schedule';
 			}
 		}
 
@@ -65,9 +67,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$schedule_id = arr::search($_REQUEST, 'schedule_id', $id);
 
-		if (isset($recurring_downtime_error)) {
-			$this->template->content->error = $recurring_downtime_error;
-		}
+		$this->template->content->error = $recurring_downtime_error;
 
 		$this->template->toolbar = new Toolbar_Controller('Recurring scheduled downtimes');
 

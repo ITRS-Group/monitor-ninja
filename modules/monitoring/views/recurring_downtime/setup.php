@@ -1,13 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div id="response"></div>
-<div id="recurring_downtime_error">
-	<?php
-		if (isset($error)) {
-			echo _('<strong>ERROR: </strong>' . $error);
-		}
-	?>
-</div>
+<?php if ($error) { ?>
+	<div class='alert error'>
+	<?php echo html::specialchars($error); ?>
+	</div>
+<?php } ?>
 <?php echo form::open(null, array(
 	'method' => 'post',
 	'class' => 'report-page-setup',
@@ -16,7 +14,7 @@
 	<div class="report-block">
 		<h2><?php echo _('Report Mode'); ?></h2>
 		<hr/>
-<?php	if (isset($schedule_id) && !empty($schedule_id)) {
+<?php if (isset($schedule_id) && !empty($schedule_id)) {
 			# show link to create new recurring schedule
 			echo '&nbsp'.html::anchor('recurring_downtime/', _('Add New Downtime Schedule')).'<br /><br />';
 			echo form::hidden('schedule_id', $schedule_id);
