@@ -173,11 +173,6 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 					new_ver=8
 					upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
 					;;
-				9)
-					php $prefix/index.php cli/upgrade_excluded
-					new_ver=10
-					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
-					;;
 				*)
 					new_ver=`expr $avail_ver + 1 `
 					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
