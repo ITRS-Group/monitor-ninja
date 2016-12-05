@@ -117,7 +117,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @expectedException Exception
-	 * @expectedExceptionMessage Should not be able to edit a schedule as a read only user
+	 * @expectedExceptionMessage Not authorized for editing servicegroup objects
 	 */
 	public function testReadOnlyEdit()
 	{
