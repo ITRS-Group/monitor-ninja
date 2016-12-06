@@ -273,7 +273,8 @@ class op5auth implements op5MayI_Actor {
 		try {
 			$user = $driver->login($username, $password);
 		} catch (op5AuthException $e) {
-			$this->log->log('warning', $e);
+			$this->log->log('error', $e->getMessage());
+			$this->log->log('debug', $e);
 			$user = null;
 		}
 

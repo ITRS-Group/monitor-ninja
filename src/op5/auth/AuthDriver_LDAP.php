@@ -604,8 +604,6 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$msg .= " " . $extended_error;
 			}
 		}
-		$this->log->log('error',
-			'op5AuthDriver_LDAP / ' . $this->module->get_modulename() . ': ' . $msg);
 		throw new op5AuthException(
 			'op5AuthDriver_LDAP / ' . $this->module->get_modulename() . ': ' . $msg);
 	}
