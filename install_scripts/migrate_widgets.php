@@ -96,5 +96,3 @@ foreach($widgets_per_user as $username => $ninja_widgets) {
 		$widget->save();
 	}
 }
-
-echo "\n";
