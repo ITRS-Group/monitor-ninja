@@ -156,10 +156,10 @@ class op5Log {
 		/*
 		 * If message is an exception, format it.
 		 */
-		if($message instanceof Exception) {
+		if ($message instanceof Exception) {
 			$ex = $message;
-			$message = trim("exception: " . $ex->getMessage())."\n";
-			$message .= $ex->getTraceAsString();
+			$message = trim("exception: " . $ex->getMessage()) . "\n";
+			$message .= debug::get_backtrace_as_string($ex->getTrace());
 		}
 
 		/*
