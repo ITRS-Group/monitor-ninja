@@ -287,13 +287,31 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		);
 	}
 
+	private function flatten_new_rights($new_rights) {
+		$rights = array();
+		foreach($new_rights as $complete_new_right) {
+			foreach($complete_new_right as $old_right => $provided_right) {
+				if(is_array($provided_right)) {
+					$rights = array_merge(
+						$rights,
+						$provided_right
+					);
+				} else {
+					$rights[] = $provided_right;
+				}
+			}
+		}
+		return $rights;
+	}
+
+
 	public function test_migrate_auth_script_has_no_internal_duplicates() {
 		// the migrate auth script will execute directly.. sigh :)
 		require __DIR__."/../install_scripts/migrate_auth.php";
 		$this->assertInternalType("array", $new_rights,
 			"Failed a safety check"
 		);
-		var_dump("calle1", $this->preexisting_rights, $new_rights);
+		$new_rights = $this->flatten_new_rights($new_rights);
 		$this->assertEquals(
 			array(),
 			array_intersect(
@@ -312,19 +330,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			"Failed a safety check"
 		);
 
-		$all_rights = $this->preexisting_rights;
-		foreach($new_rights as $complete_new_right) {
-			foreach($complete_new_right as $old_right => $provided_right) {
-				if(is_array($provided_right)) {
-					$all_rights = array_merge(
-						$all_rights,
-						$provided_right
-					);
-				} else {
-					$all_rights[] = $provided_right;
-				}
-			}
-		}
+		$all_rights = array_merge($this->preexisting_rights, $this->flatten_new_rights($new_rights));
 
 		$this->assertEquals(
 			array(),
