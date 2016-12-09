@@ -293,10 +293,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		$this->assertInternalType("array", $new_rights,
 			"Failed a safety check"
 		);
-		var_dump("calle1", $this->preexisting_rights, $new_rights, array_intersect(
-				$this->preexisting_rights,
-				$new_rights
-			));
+		var_dump("calle1", $this->preexisting_rights, $new_rights);
 		$this->assertEquals(
 			array(),
 			array_intersect(
