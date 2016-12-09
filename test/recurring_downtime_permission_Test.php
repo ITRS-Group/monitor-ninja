@@ -117,7 +117,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @expectedException Exception
-	 * @expectedExceptionMessage Not authorized for editing servicegroup objects
+	 * @expectedExceptionMessageRegExp /Not authorized for editing (\bservicegroup\b)|(\bhost\b) objects/
 	 */
 	public function testReadOnlyEdit()
 	{
