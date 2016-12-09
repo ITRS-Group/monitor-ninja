@@ -289,18 +289,9 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 
 	private function flatten_new_rights($new_rights) {
 		$rights = array();
-		foreach($new_rights as $complete_new_right) {
-			foreach($complete_new_right as $old_right => $provided_right) {
-				if(is_array($provided_right)) {
-					$rights = array_merge(
-						$rights,
-						$provided_right
-					);
-				} else {
-					$rights[] = $provided_right;
-				}
-			}
-		}
+		array_walk_recursive($new_rights, function($provided_right) use (&$rights) {
+			$rights[] = $provided_right;
+		});
 		return $rights;
 	}
 
