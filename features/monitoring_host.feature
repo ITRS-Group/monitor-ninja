@@ -235,3 +235,11 @@ Feature: Monitoring Host
 			| Babadook | op5eye.png |
 		When I visit the object details page for host "Babadook"
 		Then I should see css "img[src$='op5eye.png']"
+
+	Scenario: Object name should be escaped in the menu
+
+		Given I have these mocked hosts
+			| name | alias |
+			| ezio | a&>   |
+		When I visit the object details page for host "ezio"
+		Then I should see "a&>"
