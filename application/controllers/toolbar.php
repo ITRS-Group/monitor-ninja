@@ -149,12 +149,6 @@ class Toolbar_Controller extends Ninja_Controller {
 		print $this->get_title_html();
 		print $this->get_subtitle_html();
 
-		if ( gettype( $this->subtitle ) == "string" ) {
-			print '<div class="main-toolbar-subtitle">' . html::specialchars($this->subtitle) . '</div>';
-		} else {
-			print '<div class="main-toolbar-subtitle"></div>';
-		}
-
 		if ( count( $this->info ) > 0 ) {
 			print '<div class="main-toolbar-info">';
 			foreach ($this->info as $html)
