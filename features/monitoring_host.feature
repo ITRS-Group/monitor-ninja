@@ -226,3 +226,12 @@ Feature: Monitoring Host
 		And I display raw performance data
 		Then I should see "0.004611s"
 		And I should see "1732B"
+
+	Scenario: The icon of a host on extinfo should be rendered as an image,
+		not HTML escaped
+
+		Given I have these mocked hosts
+			| name     | icon_image |
+			| Babadook | op5eye.png |
+		When I visit the object details page for host "Babadook"
+		Then I should see css "img[src$='op5eye.png']"

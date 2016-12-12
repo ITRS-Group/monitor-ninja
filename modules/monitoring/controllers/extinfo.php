@@ -207,7 +207,7 @@ class Extinfo_Controller extends Ninja_Controller {
 
 					$logos_path = Kohana::config('config.logos_path');
 					$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
-					$toolbar->subtitle = html::image($logos_path.$object->get_icon_image(), $attributes);
+					$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
 
 				}
 
