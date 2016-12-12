@@ -207,11 +207,11 @@ class Extinfo_Controller extends Ninja_Controller {
 
 					$logos_path = Kohana::config('config.logos_path');
 					$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
-					$toolbar->subtitle = html::image($logos_path.$object->get_icon_image(), $attributes);
+					$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
 
 				}
 
-				$toolbar->subtitle .= html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
+				$toolbar->subtitle .= $object->get_name() . " (" . $object->get_alias() . ")";
 
 				$reports->set('Options.Report.Availability', $lp->get_url(
 					'avail', 'generate', array(
@@ -252,7 +252,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			case 'service':
 
 				$toolbar->title = "Service";
-				$toolbar->subtitle = html::specialchars($object->get_description());
+				$toolbar->subtitle = $object->get_description();
 
 				$reports->set('Options.Report.Availability', $lp->get_url(
 					'avail', 'generate', array(
