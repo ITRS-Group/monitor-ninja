@@ -48,7 +48,7 @@ $js = array();
 $css = array();
 
 if (IN_PRODUCTION) {
-	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces';
+	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/var/log/op5/ninja';
 	$tmp_dir = rtrim($tmp_dir, "/");
 	$tmp_dir_perm = Kohana::Config('exception.tmp_dir_perm') ? Kohana::Config('exception.tmp_dir_perm') : 0700;
 	@mkdir($tmp_dir, $tmp_dir_perm, true);

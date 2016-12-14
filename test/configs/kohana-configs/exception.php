@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * path to put ninja-stacktraces in default: /tmp/ninja-stacktraces/
+ * path to put ninja-stacktraces in default: /var/log/op5/ninja/
  */
 $config['tmp_dir'] = '/mnt/logs/ninja-stacktraces/';
 
