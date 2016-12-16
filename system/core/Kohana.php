@@ -264,13 +264,6 @@ final class Kohana {
 
 					// Stop the controller execution benchmark
 					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
-
-					// Start the rendering benchmark
-					Benchmark::start(SYSTEM_BENCHMARK.'_render');
-
-					// Stop the rendering benchmark
-					Benchmark::stop(SYSTEM_BENCHMARK.'_render');
-
 				} catch (Kohana_Reroute_Exception $e) {
 
 					if (Router::$controller != 'error') {
