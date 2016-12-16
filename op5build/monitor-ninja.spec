@@ -109,7 +109,6 @@ Additional test files for ninja
 %package devel
 Summary: Development files for ninja
 Group: op5/monitor
-Requires: monitor-ninja = %version
 Requires: doxygen
 Requires: graphviz
 %if 0%{?suse_version}
