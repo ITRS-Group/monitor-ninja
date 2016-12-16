@@ -146,6 +146,7 @@ mkdir -p -m 775 %buildroot%prefix/application/logs
 make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn) BINDIR=%buildroot/usr/bin
 
 mkdir -p %buildroot/var/log/op5
+mkdir -p %buildroot/var/log/op5/ninja
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix

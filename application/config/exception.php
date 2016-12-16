@@ -25,3 +25,8 @@ $config['shell_commands'] = array(
 $config['extra_info'] = array(
 	'Monitor user' => Auth::instance()->get_user()->get_username()
 );
+
+/**
+ * path to put ninja-stack traces
+ */
+$config['tmp_dir'] = '/var/log/op5/ninja';

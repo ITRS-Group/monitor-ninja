@@ -48,10 +48,8 @@ $js = array();
 $css = array();
 
 if (IN_PRODUCTION) {
-	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/var/log/op5/ninja';
+	$tmp_dir = Kohana::Config('exception.tmp_dir');
 	$tmp_dir = rtrim($tmp_dir, "/");
-	$tmp_dir_perm = Kohana::Config('exception.tmp_dir_perm') ? Kohana::Config('exception.tmp_dir_perm') : 0700;
-	@mkdir($tmp_dir, $tmp_dir_perm, true);
 
 	// we can't use tmpnam() because we need a suffix, and we don't have
 	// mkstemp() in php; but sha1 is certainly unique enough with a small
@@ -60,7 +58,8 @@ if (IN_PRODUCTION) {
 	$write_successful = file_put_contents($filename, $content);
 
 	// reset content to display less information, adhere to IN_PRODUCTION
-	$content = '<div><h3>There was an error rendering the page</h3>';
+	//$content = '<div><h3>There was an error rendering the page</h3>';
+    $content .= '<div><h3>There was an error rendering the page</h3>';
 	if($write_successful) {
 		$content .= '<p>Please contact your administrator.<br />The debug information in '.$filename.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';
 	} else {
