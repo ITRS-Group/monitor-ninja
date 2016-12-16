@@ -58,8 +58,8 @@ if (IN_PRODUCTION) {
 	$write_successful = file_put_contents($filename, $content);
 
 	// reset content to display less information, adhere to IN_PRODUCTION
-	//$content = '<div><h3>There was an error rendering the page</h3>';
-    $content .= '<div><h3>There was an error rendering the page</h3>';
+	$content = '<div><h3>There was an error rendering the page</h3>';
+
 	if($write_successful) {
 		$content .= '<p>Please contact your administrator.<br />The debug information in '.$filename.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';
 	} else {
