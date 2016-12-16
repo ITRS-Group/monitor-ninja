@@ -50,6 +50,8 @@ $css = array();
 if (IN_PRODUCTION) {
 	$tmp_dir = Kohana::Config('exception.tmp_dir');
 	$tmp_dir = rtrim($tmp_dir, "/");
+	$tmp_dir_perm = str_pad(Kohana::Config('exception.tmp_dir_perm'), 4, '0', STR_PAD_LEFT);
+	@mkdir($tmp_dir, $tmp_dir_perm, true);
 
 	// we can't use tmpnam() because we need a suffix, and we don't have
 	// mkstemp() in php; but sha1 is certainly unique enough with a small

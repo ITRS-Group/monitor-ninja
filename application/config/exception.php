@@ -30,3 +30,8 @@ $config['extra_info'] = array(
  * path to put ninja-stack traces
  */
 $config['tmp_dir'] = '/var/log/op5/ninja';
+
+/**
+ * permissions for tmp_dir
+ */
+$config['tmp_dir_perm'] = '0700';

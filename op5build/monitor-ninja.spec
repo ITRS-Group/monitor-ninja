@@ -142,8 +142,7 @@ rm -rf %buildroot
 mkdir -p -m 755 %buildroot%prefix
 mkdir -p -m 775 %buildroot%prefix/upload
 mkdir -p -m 775 %buildroot%prefix/application/logs
-mkdir -p -m 775 %buildroot%{_var}/log/op5
-mkdir -p -m 775 %buildroot%{_var}/log/op5/ninja
+mkdir --parents --mode 775 %buildroot/var/log/op5/ninja
 
 make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn) BINDIR=%buildroot/usr/bin
 
@@ -253,6 +252,7 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %config(noreplace) %attr(660,%daemon_user,%daemon_group) %_sysconfdir/op5/*.yml
 
 %dir %attr(775,%daemon_user,%daemon_group) /var/log/op5
+%dir /var/log/op5/ninja
 
 %attr(640,%daemon_user,%daemon_group) %prefix/application/config/database.php
 
