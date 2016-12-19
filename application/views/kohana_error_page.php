@@ -48,9 +48,9 @@ $js = array();
 $css = array();
 
 if (IN_PRODUCTION) {
-	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces';
+	$tmp_dir = Kohana::Config('exception.tmp_dir');
 	$tmp_dir = rtrim($tmp_dir, "/");
-	$tmp_dir_perm = Kohana::Config('exception.tmp_dir_perm') ? Kohana::Config('exception.tmp_dir_perm') : 0700;
+	$tmp_dir_perm = str_pad(Kohana::Config('exception.tmp_dir_perm'), 4, '0', STR_PAD_LEFT);
 	@mkdir($tmp_dir, $tmp_dir_perm, true);
 
 	// we can't use tmpnam() because we need a suffix, and we don't have
@@ -61,6 +61,7 @@ if (IN_PRODUCTION) {
 
 	// reset content to display less information, adhere to IN_PRODUCTION
 	$content = '<div><h3>There was an error rendering the page</h3>';
+
 	if($write_successful) {
 		$content .= '<p>Please contact your administrator.<br />The debug information in '.$filename.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';
 	} else {
