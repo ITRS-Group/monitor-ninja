@@ -197,20 +197,6 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->title = "Host";
 				$toolbar->subtitle = "";
 
-				if ($object->get_icon_image()) {
-
-					$attributes = array(
-						'alt' => $object->get_icon_image_alt(),
-						'title' => $object->get_icon_image_alt(),
-						'style' => 'width: 16px; vertical-align: middle; display: inline-block; margin-right: 4px'
-					);
-
-					$logos_path = Kohana::config('config.logos_path');
-					$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
-					$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
-
-				}
-
 				$toolbar->subtitle .= $object->get_name() . " (" . $object->get_alias() . ")";
 
 				$reports->set('Options.Report.Availability', $lp->get_url(
@@ -332,6 +318,20 @@ class Extinfo_Controller extends Ninja_Controller {
 				$this->template->content->widgets['Services in this group'] = $widget;
 
 				break;
+
+		}
+
+		if ($object->get_icon_image()) {
+
+			$attributes = array(
+				'alt' => $object->get_icon_image_alt(),
+				'title' => $object->get_icon_image_alt(),
+				'style' => 'width: 16px; vertical-align: middle; display: inline-block; margin-right: 4px'
+			);
+
+			$logos_path = Kohana::config('config.logos_path');
+			$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
+			$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
 
 		}
 
