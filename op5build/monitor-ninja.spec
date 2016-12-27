@@ -126,8 +126,6 @@ sed -i \
 	-e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
 	%buildroot%prefix/application/config/config.php
 
-cp op5build/login.png \
-	%buildroot%prefix/application/views/css/default/images
 cp op5build/favicon.ico \
 	%buildroot%prefix/application/views/icons/
 cp op5build/icon.png \
