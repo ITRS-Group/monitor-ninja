@@ -11,8 +11,6 @@
 	<p>
 		<span class="brand"><?php echo brand::get(); ?></span>
 	</p>
-	<h2>Login to op5 Monitor</h2>
-
 	<?php
 		if ($message) {
 			printf('<p class="alert %s">%s</p>', $message->get_typename(), $message->get_message());
