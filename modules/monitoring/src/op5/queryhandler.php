@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/objstore.php');
+require_once('op5/objstore.php');
 
 class op5queryhandler_Exception extends Exception {
 	public function __construct($msg, $data=false) {

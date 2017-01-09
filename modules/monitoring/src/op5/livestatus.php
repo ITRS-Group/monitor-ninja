@@ -1,8 +1,8 @@
 <?php
 
-require_once(__DIR__.'/auth/Auth.php');
-require_once(__DIR__.'/config.php');
-require_once(__DIR__.'/objstore.php');
+require_once('op5/auth/Auth.php');
+require_once('op5/config.php');
+require_once('op5/objstore.php');
 
 /**
  * Custom exceptions for livestatus
