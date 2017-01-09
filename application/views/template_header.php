@@ -17,20 +17,11 @@
 
 	$show_settings = ((isset($widgets) && is_array($widgets)) || (!isset($disable_refresh) || $disable_refresh === false) || (isset($listview_refresh) && $listview_refresh === true));
 
-	$shortcuts = array('internal' => array(), 'external' => array());
-
 	if ($show_settings) {
-		$shortcuts['internal'][] = array('#', 'icon-16 x16-settings', array('title' => 'Settings', 'id' => 'page_settings_icon'));
+		array_unshift($quicklinks['internal'],
+			new Quicklink_Model('settings', '#', array('title' => 'Settings', 'id' => 'page_settings_icon')));
 	}
 
-	$shortcuts['internal'][] = array('/listview?q=[hosts] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0', 'icon-16 x16-shield-pending', array('id' => 'uh_host_problems', 'title' => 'Unhandled Host Problems'));
-	$shortcuts['internal'][] = array('/listview?q=[services] state != 0 and acknowledged = 0 and scheduled_downtime_depth = 0 and host.scheduled_downtime_depth = 0', 'icon-16 x16-shield-pending', array('id' => 'uh_service_problems', 'title' => 'Unhandled Service Problems'));
-
-	if (isset($int_shortcuts)) {
-		for ($i = 0; $i < count($int_shortcuts); $i++) {
-			$shortcuts['internal'][] = $int_shortcuts[$i];
-		}
-	}
 ?>
 
 <div class="header" id="header">
@@ -49,27 +40,12 @@
 	<div class="headercontent">
 
 			<?php
-				$quri = '/'.url::current();
-
-					$buttons = $shortcuts['internal'];
-
-					echo '<ul id="quicklinks" class="quicklinks">';
-
-					for($i = 0; $i < count($buttons); $i++) {
-
-						$attributes = $buttons[$i][2];
-						$attributes['class'] = 'image-link';
-						$stripped = explode('?', $buttons[$i][0]);
-						$stripped = $stripped[0];
-
-						if ($quri == $stripped)
-							echo '<li class="selected">'.html::anchor($buttons[$i][0], '<span class="icon-16 x16-'.$buttons[$i][1].'"></span><span class="quicklink-badge"></span>', $attributes).'</li>';
-						else
-							echo '<li>'.html::anchor($buttons[$i][0], '<span class="'.$buttons[$i][1].'"></span><span class="quicklink-badge"></span>', $attributes).'</li>';
-					}
-
-						echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
-					echo '</ul>';
+				echo '<ul id="quicklinks" class="quicklinks">';
+				foreach ($quicklinks['internal'] as $quicklink) {
+					echo $quicklink->get_html();
+				}
+				echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
+				echo '</ul>';
 
 			?>
 	</div>
