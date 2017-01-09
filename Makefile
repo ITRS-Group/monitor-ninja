@@ -89,8 +89,6 @@ install-bin:
 install-lib:
 	mkdir -m 0755 -p $(PHPDIR)
 	cp -a src/op5 $(PHPDIR)/op5
-	# This is temporarily in the ninja repository and will be moved to ninja-monitoring
-	cp -a modules/monitoring/src/op5 $(PHPDIR)/op5
 
 install-config:
 	mkdir -m 770 -p $(SYSCONFDIR)/op5

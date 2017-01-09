@@ -1,10 +1,14 @@
 <?php
 require_once 'op5/objstore.php';
-require_once 'op5/livestatus.php';
-require_once 'op5/queryhandler.php';
 
+/**
+ * Sysinfo exception
+ */
 class op5sysinfo_Exception extends Exception {}
 
+/**
+ * Sysinfo class
+ */
 class op5sysinfo {
 
 	private $usage_metrics = array();
@@ -12,17 +16,13 @@ class op5sysinfo {
 	/**
 	 * List of names of all available metrics.
 	 * A get_xxx_usage-method is needed per metric
-	 *
-	 * @var unknown
 	 */
 	private static $metric_names = array ('monitor','monitor.service','logserver','pollers',
 		'peers','aps','trapper');
 
 	/**
 	 * Cache the result from "merlin node info", so we don't need to ask more
-	 * than once every isntance
-	 *
-	 * @var array
+	 * than once every instance
 	 */
 	private $merlin_nodeinfo = false;
 

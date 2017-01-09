@@ -1,7 +1,5 @@
 <?php
 
-require_once('op5/queryhandler.php');
-
 /**
  * Nagios FIFO command helper
  */

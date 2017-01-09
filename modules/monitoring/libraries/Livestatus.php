@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Livestatus Class
  *
  * usage:
@@ -14,10 +14,10 @@
  *  $hosts = getHosts($options)
  *
  *  options = array(
- *      'auth'       => <bool>,             # authentication is enabled by default.
+ *      'auth'       => bool,               # authentication is enabled by default.
  *                                          # use this switch to disable it
  *
- *      'limit'      => <nr of records>,    # limit result set
+ *      'limit'      => nr of records,      # limit result set
  *
  *      'paging'     => $this,              # use paging. $this is a reference to
  *                                          # a kohana object to access the input
@@ -50,12 +50,13 @@
  *  );
  *
  */
-require_once("op5/livestatus.php");
-
 class Livestatus {
+
 	private static $instance = false;
 
-	/* singleton */
+	/**
+	 * Singleton instantiator
+	 */
 	public static function instance($config = null) {
 		if (self::$instance !== false) {
 			return self::$instance;
@@ -66,14 +67,25 @@ class Livestatus {
 	private $program_start = false;
 	private $backend = false;
 
+	/**
+	 * Creates a new isntance of the livestatus interface
+	 *
+	 * @param $config array Of configuration for connection
+	 */
 	public function __construct($config = null) {
 		$this->backend = new LiveStatusBackend($config);
 	}
 
+	/**
+	 * Returns the backend used
+	 */
 	public function getBackend() {
 		return $this->backend;
 	}
 
+	/**
+	 * Returns the duration
+	 */
 	public function calc_duration($row) {
 		$now = time();
 		return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start);
@@ -114,6 +126,9 @@ class Livestatus {
 		);
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function handle_passive_as_active($row) {
 		static $passive_as_active = null;
 		if ($passive_as_active === null)
@@ -125,6 +140,9 @@ class Livestatus {
 			return $row['active_checks_enabled'];
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function handle_host_passive_as_active($row) {
 		static $passive_as_active = null;
 		if ($passive_as_active === null)
@@ -136,7 +154,9 @@ class Livestatus {
 			return $row['host_active_checks_enabled'];
 	}
 
-	/* getHosts */
+	/**
+	 * Dummy documentation
+	 */
 	public function getHosts($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -163,7 +183,7 @@ class Livestatus {
 
 			$options['order_mappings'] = array(
 				'duration'              => array( '!last_state_change' ),
-				
+
 				/* This is not actually correct... But isn't possible to do better in LS*/
 				'checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
 			);
@@ -171,7 +191,9 @@ class Livestatus {
 		return $this->backend->getTable('hosts', $options);
 	}
 
-	/* getHostgroups */
+	/**
+	 * Dummy documentation
+	 */
 	public function getHostgroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -198,13 +220,15 @@ class Livestatus {
 					'num_services_hard_crit',
 					'num_services_hard_unknown'
 					*/
-						
+
 			);
 		}
 		return $this->backend->getTable('hostgroups', $options);
 	}
 
-	/* getHostsByGroup */
+	/**
+	 * Dummy documentation
+	 */
 	public function getHostsByGroup($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -215,7 +239,9 @@ class Livestatus {
 		return $this->backend->getTable('hostsbygroup', $options);
 	}
 
-	/* getServices */
+	/**
+	 * Dummy documentation
+	 */
 	public function getServices($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -248,7 +274,7 @@ class Livestatus {
 
 			$options['order_mappings'] = array(
 				'duration'              => array( '!last_state_change' ),
-				
+
 				/* This is not actually correct... But isn't possible to do better in LS*/
 				'checks_enabled' => array( 'active_checks_enabled', 'accept_passive_checks' )
 			);
@@ -256,7 +282,9 @@ class Livestatus {
 		return $this->backend->getTable('services', $options);
 	}
 
-	/* getServicegroups */
+	/**
+	 * Dummy documentation
+	 */
 	public function getServicegroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -280,7 +308,9 @@ class Livestatus {
 		return $this->backend->getTable('servicegroups', $options);
 	}
 
-	/* getContacts */
+	/**
+	 * Dummy documentation
+	 */
 	public function getContacts($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -296,7 +326,9 @@ class Livestatus {
 		return $this->backend->getTable('contacts', $options);
 	}
 
-	/* getContactgroups */
+	/**
+	 * Dummy documentation
+	 */
 	public function getContactgroups($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -306,7 +338,9 @@ class Livestatus {
 		return $this->backend->getTable('contactgroups', $options);
 	}
 
-	/* getCommands */
+	/**
+	 * Dummy documentation
+	 */
 	public function getCommands($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -316,7 +350,9 @@ class Livestatus {
 		return $this->backend->getTable('commands', $options);
 	}
 
-	/* getTimeperiods */
+	/**
+	 * Dummy documentation
+	 */
 	public function getTimeperiods($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -326,7 +362,9 @@ class Livestatus {
 		return $this->backend->getTable('timeperiods', $options);
 	}
 
-	/* getLogs */
+	/**
+	 * Dummy documentation
+	 */
 	public function getLogs($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -338,7 +376,9 @@ class Livestatus {
 		return $this->backend->getTable('log', $options);
 	}
 
-	/* getComments */
+	/**
+	 * Dummy documentation
+	 */
 	public function getComments($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -350,7 +390,9 @@ class Livestatus {
 		return $this->backend->getTable('comments', $options);
 	}
 
-	/* getDowntimes */
+	/**
+	 * Dummy documentation
+	 */
 	public function getDowntimes($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -361,7 +403,9 @@ class Livestatus {
 		return $this->backend->getTable('downtimes', $options);
 	}
 
-	/* getProcessInfo */
+	/**
+	 * Dummy documentation
+	 */
 	public function getProcessInfo($options = null) {
 		if(!isset($options['columns'])) {
 			$options['columns'] = array(
@@ -382,7 +426,9 @@ class Livestatus {
 	}
 
 
-	/* getHostTotals */
+	/**
+	 * Dummy documentation
+	 */
 	public function getHostTotals($options = null) {
 		if (config::get('checks.show_passive_as_active')) {
 			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
@@ -435,7 +481,9 @@ class Livestatus {
 	}
 
 
-	/* getServiceTotals */
+	/**
+	 * Dummy documentation
+	 */
 	public function getServiceTotals($options = null) {
 		if (config::get('checks.show_passive_as_active')) {
 			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
@@ -495,23 +543,32 @@ class Livestatus {
 		return (object) $data[0];
 	}
 
-	/* getHostPerformance */
+	/**
+	 * Dummy documentation
+	 */
 	public function getHostPerformance($last_program_start, $options = null) {
 		return $this->getPerformanceStats('hosts', $last_program_start, $options);
 	}
 
-	/* getServicePerformance */
+	/**
+	 * Dummy documentation
+	 */
 	public function getServicePerformance($last_program_start, $options = null) {
 		$stats = $this->getPerformanceStats('services', $last_program_start, $options);
 		return $stats;
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function getSchedulingQueue($last_program_start, $options = null) {
 		$stats = $this->getPerformanceStats('services', $last_program_start, $options);
 		return $stats;
 	}
 
-	/* getPerformanceStats */
+	/**
+	 * Dummy documentation
+	 */
 	public function getPerformanceStats($type, $last_program_start, $options = null) {
 		$result = array();
 		$now    = time();
@@ -558,7 +615,7 @@ class Livestatus {
 
 		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 0)));
 		$result = array_merge($result, $data[0]);
-	
+
 		/* add stats for passive checks */
 		$stats = array(
 				'passive_state_change_sum' => array( '-sum' => 'percent_state_change' ),
@@ -568,7 +625,7 @@ class Livestatus {
 		);
 		$data   = $this->backend->getStats($type, $stats, array('filter' => array('has_been_checked' => 1, 'check_type' => 1)));
 		$result = array_merge($result, $data[0]);
-	
+
 		return (object) $result;
 	}
 }
@@ -579,11 +636,15 @@ class Livestatus {
 class LivestatusBackend {
 	private $connection      = null;
 
-	/* constructor */
+	/**
+	 * Dummy documentation
+	 */
 	public function __construct() {
 	}
 
-	/* combineFilter */
+	/**
+	 * Dummy documentation
+	 */
 	public static function combineFilter($operator, $filter) {
 
 		if(!isset($operator) and $operator != '-or' and $operator != '-and') {
@@ -613,10 +674,17 @@ class LivestatusBackend {
 	/********************************************************
 	 * INTERNAL FUNCTIONS
 	 *******************************************************/
+
+	/**
+	 * Dummy documentation
+	 */
 	public function getTable($table, $options = null) {
 		return $this->getStats($table, false, $options);
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function getStats($table, $stats, $options = null) {
 		$query = "";
 		if(isset($options['filter'])) {
@@ -630,7 +698,7 @@ class LivestatusBackend {
 				$options['columns'] = array();
 			$options['columns'] = array_unique( array_merge( $options['columns'], $options['extra_columns'] ) );
 		}
-		
+
 		$columns = isset($options['columns'])?$options['columns']:array();
 
 		$output_columns = $columns;
@@ -648,10 +716,13 @@ class LivestatusBackend {
 		$this->prepare_pagination($options);
 		list($objects,$count) = $this->query($table, $query, $columns, $options);
 		$this->postprocess_pagination($options, $count);
-		
+
 		return $this->objects2Assoc($objects, $output_columns, isset($options['callbacks']) ? $options['callbacks'] : null);
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	private function prepare_pagination(&$options) {
 		if(isset($options['paging'])) {
 			$page = $options['paging'];
@@ -678,7 +749,10 @@ class LivestatusBackend {
 		$options['page_current_page']   = $current_page;
 		$options['page_obj']            = $page;
 	}
-	
+
+	/**
+	 * Dummy documentation
+	 */
 	private function postprocess_pagination($options, $count) {
 		if( !isset($options['page_enabled']) || !$options['page_enabled'] )
 			return;
@@ -686,7 +760,7 @@ class LivestatusBackend {
 		$page           = $options['page_obj'];
 		$items_per_page = $options['page_items_per_page'];
 		$current_page   = $options['page_current_page'];
-		
+
 		$pagination = new Pagination(array(
 				'total_items'     => $count,
 				'items_per_page'  => $items_per_page,
@@ -697,6 +771,9 @@ class LivestatusBackend {
 		$page->template->content->page           = $current_page;
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	private function query($table, $filter, $columns, $options) {
 		$ls = op5livestatus::instance();
 
@@ -723,12 +800,14 @@ class LivestatusBackend {
 		if( isset( $options['limit'] ) && $options['limit'] !== false ) {
 			$filter .= "Limit: ".$options['limit']."\n";
 		}
-		
+
 		list($columns, $objects, $count) = $ls->query($table, $filter, $columns, $options);
 		return array($objects,$count);
 	}
-	
-	/* Public, just to make it testable */
+
+	/**
+	 * Dummy documentation
+	 */
 	public function getQueryFilter($filter, $stats = false ) {
 		if( empty( $filter ) ) {
 			return "";
@@ -736,6 +815,9 @@ class LivestatusBackend {
 		return $this->parseQueryFilterArray($stats, $filter, null, null, $stats?'And':null);
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	private function parseQueryFilterArray($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
 		if($filter === null) {
 			return "";
@@ -819,10 +901,16 @@ class LivestatusBackend {
 		throw new op5LivestatusException("broken filter");
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	private function is_assoc($array) {
 		return (is_array($array) && (count($array)==0 || 0 !== count(array_diff_key($array, array_keys(array_keys($array))) )));
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	private function objects2Assoc($objects, $columns, $callbacks = null) {
 		$result = array();
 		foreach($objects as $o) {

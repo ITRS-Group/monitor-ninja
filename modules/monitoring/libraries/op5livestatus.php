@@ -6,21 +6,16 @@ require_once('op5/objstore.php');
 
 /**
  * Custom exceptions for livestatus
- *
  **/
 class op5LivestatusException extends Exception {
 	/**
 	 * Plain message for exceptions
-	 *
-	 * @var $plain_message string
-	 **/
+	 */
 	private $plain_message;
 
 	/**
 	 * Executed query
-	 *
-	 * @var $query string
-	 **/
+	 */
 	private $query;
 
 	/**
@@ -336,9 +331,9 @@ class op5Livestatus {
 	}
 }
 
-/*
+/**
  * Livestatus Connection Class
-*/
+ */
 class op5livestatus_connection {
 	private $connection  = null;
 	private $timeout     = 10;
