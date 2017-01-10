@@ -1,7 +1,6 @@
 <?php
 
 require_once "op5/objstore.php";
-require_once "op5/livestatus.php";
 
 class mock_livestatus_connection extends op5livestatus_connection {
 	private $test;
