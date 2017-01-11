@@ -1,5 +1,5 @@
 post:
- install: ['npm']
+ install: ['npm', 'merlin-apps']
  steps: |
   if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
   if [ -f /etc/init.d/mysqld ]; then service mysqld restart; fi
