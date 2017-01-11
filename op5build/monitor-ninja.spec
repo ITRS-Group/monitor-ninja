@@ -21,15 +21,15 @@ Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
 Provides: op5-nagios-gui-core = %version
 Provides: php-op5lib = %version
-Requires: merlin-apps >= 0.8.0
-Requires: merlin
-Requires: monitor-merlin
 Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
 Requires: monitor-backup
 Requires: op5-bootstrap
+# Merlin creates our database
+Requires: merlin
+Requires: monitor-ninja-monitoring
 BuildRequires: python
 BuildRequires: doxygen
 BuildRequires: graphviz
@@ -57,9 +57,11 @@ Webgui for Naemon.
 Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
-Requires: merlin monitor-merlin op5-nagios
+Requires: monitor-merlin
+Requires: op5-naemon
 Requires: merlin-apps
-Requires: monitor-livestatus monitor-nagvis
+Requires: monitor-livestatus
+Requires: monitor-nagvis
 Requires: monitor-nacoma
 %if 0%{?rhel} >= 7
 %else
@@ -75,6 +77,16 @@ Requires: monitor-pnp
 
 %description test
 Additional test files for ninja
+
+%package monitoring
+Summary: Naemon and Livestatus module for ninja
+Group: op5/monitor
+Requires: op5-naemon
+Requires: monitor-merlin
+Requires: monitor-livestatus
+
+%description monitoring
+Provides ORM, bindings and interfaces for Livestatus, Naemon and queryhandler.
 
 %package devel
 Summary: Development files for ninja
@@ -218,6 +230,7 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %exclude %prefix/src
 %exclude %prefix/test
 %exclude %prefix/modules/test
+%exclude %prefix/modules/monitoring
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
@@ -234,6 +247,9 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %prefix/Documentation
 %endif
 
+%files monitoring
+%defattr(-,monitor,%daemon_group)
+%prefix/modules/monitoring
 
 %files test
 %defattr(-,monitor,%daemon_group)
