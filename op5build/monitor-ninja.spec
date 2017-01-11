@@ -174,6 +174,7 @@ $(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
 if [ -n "$MYSQL_AVAILABLE" ]; then
   pushd %prefix
     sh install_scripts/ninja_db_init.sh
+    php install_scripts/migrate_tac_hostperf_to_listview.php
   popd
 else
   echo "WARNING: mysql-server is not installed or not running."

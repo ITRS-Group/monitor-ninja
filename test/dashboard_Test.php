@@ -45,7 +45,8 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * As a user I shouldn't have access to other users dashboards.
+	 * As a user I shouldn't have access to other users dashboards even if he
+	 * has all authorization points.
 	 */
 	public function test_dashboard_permissions() {
 
@@ -71,15 +72,24 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 			)
 		), __FUNCTION__);
 
-		$superuser = new User_AlwaysAuth_Model();
-		$inferior_user = new User_AlwaysAuth_Model();
-		$inferior_user->set_username('inferior');
-		$inferior_user->set_realname('Inferior User');
+		$creator = new User_AlwaysAuth_Model();
+		$accessor = new User_Model(array(
+			'username' => 'accessor',
+			'realname' => 'accessor user'
+		));
+
+		$categories = op5Authorization::get_all_auth_levels();
+		$rights = array();
+		foreach ($categories as $levels) {
+			foreach($levels as $auth_point => $value)
+				$rights[$auth_point] = true;
+		}
+		$accessor->set_auth_data($rights);
 
 		// We should NOT be able to get the dashboard that belongs to
 		// superuser as inferior user.
 		Auth::instance(array('session_key' => false))->force_user(
-			$inferior_user
+			$accessor
 		);
 
 		$dashboard = DashboardPool_Model::fetch_by_key(1);
@@ -87,7 +97,7 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 
 		// But as superuser we should.
 		Auth::instance(array('session_key' => false))->force_user(
-			$superuser
+			$creator
 		);
 		$dashboard = DashboardPool_Model::fetch_by_key(1);
 		$this->assertInstanceOf('Dashboard_Model', $dashboard);
