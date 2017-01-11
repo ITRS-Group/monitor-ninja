@@ -40,6 +40,15 @@ class User_AlwaysAuth_Model extends User_Model {
 	}
 
 	/**
+	 * Overwrite permission quarks for User_AlwaysAuth to get an always matching regexp
+	 *
+	 * @return string
+	 */
+	public function get_permission_regexp () {
+		return "";
+	}
+
+	/**
 	 * Returns true if logged in
 	 *
 	 * @return boolean always true (normal users are logged in, notauth overrides)
