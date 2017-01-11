@@ -1,26 +1,21 @@
 <?php
 
-require_once(__DIR__.'/auth/Auth.php');
-require_once(__DIR__.'/config.php');
-require_once(__DIR__.'/objstore.php');
+require_once('op5/auth/Auth.php');
+require_once('op5/config.php');
+require_once('op5/objstore.php');
 
 /**
  * Custom exceptions for livestatus
- *
  **/
 class op5LivestatusException extends Exception {
 	/**
 	 * Plain message for exceptions
-	 *
-	 * @var $plain_message string
-	 **/
+	 */
 	private $plain_message;
 
 	/**
 	 * Executed query
-	 *
-	 * @var $query string
-	 **/
+	 */
 	private $query;
 
 	/**
@@ -336,9 +331,9 @@ class op5Livestatus {
 	}
 }
 
-/*
+/**
  * Livestatus Connection Class
-*/
+ */
 class op5livestatus_connection {
 	private $connection  = null;
 	private $timeout     = 10;

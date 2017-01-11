@@ -1,6 +1,5 @@
 <?php
 require_once ("op5/objstore.php");
-require_once ("op5/sysinfo.php");
 
 class SysinfoTest extends PHPUnit_Framework_TestCase {
 	private $si;

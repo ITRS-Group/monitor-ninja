@@ -3,7 +3,6 @@ require_once (__DIR__ . '/../config.php');
 require_once (__DIR__ . '/../mayi.php');
 require_once (__DIR__ . '/Authorization.php');
 require_once (__DIR__ . '/../log.php');
-require_once (__DIR__ . '/../livestatus.php');
 require_once (__DIR__ . '/../objstore.php');
 
 /**
