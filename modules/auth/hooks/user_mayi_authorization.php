@@ -241,6 +241,7 @@ manage_trapper                  monitor.trapper.modules:                        
 manage_trapper                  monitor.trapper.traps:                                        true
 
 traps_view_all                  monitor.trapper.traps:read                                    true
+system_information              monitor.license:{read,create,update,delete}                   true
 
 business_services_access        monitor.bsm:{create,read,update,delete}                       true
 EOF;

@@ -5,9 +5,13 @@ Feature: Menu About
 		Given I am logged in
 		And I am on the main page
 
-	Scenario: See that the about menu option is rendered
+	Scenario: See that the menu option displays properly on hover branding
 		When I hover the branding
-		And I click "About"
+		Then I should see menu items:
+			| About |
+
+	Scenario: See that About page content rendered correct
+		When I am on address "/index.php/menu/about"
 		Then I should see "Version"
-		And I should see "License"
 		And I should see "Release"
+		And I should see "License"

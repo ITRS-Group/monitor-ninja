@@ -224,6 +224,26 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 
+	public function test_monitor_license_read_using_alwaysauth() {
+		$user = new User_AlwaysAuth_Model();
+
+		Op5Auth::instance()->force_user($user);
+		op5MayI::instance()->be('user', Op5Auth::instance());
+
+		$this->assertTrue(op5MayI::instance()->run('monitor.license:read'));
+	}
+
+	public function test_monitor_license_read_using_noauth() {
+		$user = new User_NoAuth_Model();
+
+		Op5Auth::instance()->force_user($user);
+		op5MayI::instance()->be('user', Op5Auth::instance());
+		$acl_auth = new user_mayi_authorization();
+		op5MayI::instance()->act_upon($acl_auth, 10);
+
+		$this->assertFalse(op5MayI::instance()->run('monitor.license:read'));
+	}
+
 	public function test_auth_rights_based_user_roles() {
 		//'admins'
 		$this->check_traps_view_all_rights('admins');
