@@ -351,11 +351,8 @@ $(document).ready(function() {
 		$.ajax({
 			url : basepath + "/listview/fetch_ajax",
 			dataType : 'json',
-			data : {
-				"query" : query,
-				"limit" : 100,
-				"columns": ['description']
-			},
+			processData: false,
+			data: "query=" + query + "&limit=100&columns[]=description",
 			success : function(data) {
 
 				if (!data) {

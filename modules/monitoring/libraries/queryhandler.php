@@ -1,8 +1,15 @@
 <?php
 
-require_once(__DIR__.'/objstore.php');
+require_once('op5/objstore.php');
 
+/**
+ * op5Queryhandler exception
+ */
 class op5queryhandler_Exception extends Exception {
+
+	/**
+	 * Exception constructor
+	 */
 	public function __construct($msg, $data=false) {
 		if($data !== false) {
 			$msg .= " (data: ".$data.")";
@@ -11,9 +18,15 @@ class op5queryhandler_Exception extends Exception {
 	}
 }
 
+/**
+ * op5Queryhandler class
+ */
 class op5queryhandler {
-	static public function instance()
-	{
+
+	/**
+	 * Return singleton instance
+	 */
+	static public function instance() {
 		return op5objstore::instance()->obj_instance(__CLASS__);
 	}
 
@@ -24,16 +37,22 @@ class op5queryhandler {
 	 * Constructor
 	 *
 	 * @return void
-	 **/
+	 */
 	public function __construct() {
 		$this->path = op5config::instance()->getConfig("queryhandler.socket_path");
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function json_call($channel, $command, $args, $node = false) {
 		/* Just a wrapper, because of the old json-syntax. */
 		return $this->kvvec_call($channel, $command, $args, $node);
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function kvvec_call($channel, $command, $args, $node = false) {
 		$data = $this->call($channel, $command, $args, $node);
 		$expanded = self::kvvec2array(trim($data));
@@ -43,6 +62,9 @@ class op5queryhandler {
 		return $expanded;
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function call($channel, $command, $args, $node = false) {
 		if(is_array($args)) {
 			$args = $this->array2kvvec($args);
@@ -50,6 +72,9 @@ class op5queryhandler {
 		return $this->raw_call("@$channel $command $args\0", $node);
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	public function raw_call($command, $node = false) {
 		if($node !== false) {
 			return $this->raw_remote_call($command, $node);
@@ -76,6 +101,9 @@ class op5queryhandler {
 		return $content;
 	}
 
+	/**
+	 * Dummy documentation
+	 */
 	private function raw_remote_call($command, $node) {
 		/* Ehum... this has potential to be made better... It works for now... (TODO) */
 		$descriptorspec = array(

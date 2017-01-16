@@ -77,6 +77,8 @@ authenticated                   monitor.system.dashboards.personal:{create.updat
 !api_report                     :view.local.report                                            false
 !api_status                     :view.local.status                                            false
 
+system_information              monitor.support:read                                          true
+
 system_information              monitor.monitoring.status:read                                true
 system_information              monitor.monitoring.performance:read                           true
 system_commands                 monitor.monitoring.status:update                              true

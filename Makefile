@@ -5,6 +5,8 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
+PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
+
 all: generate-php
 
 generate-php:
@@ -17,11 +19,11 @@ generate-php:
 # affecting the current environment and thus the group @nonlocal should not be
 # needed.
 test-local: generate-php
-	phpunit --bootstrap test/bootstrap.php --exclude-group nonlocal test
+	$(PHPUNIT) --exclude-group nonlocal test
 
 test: generate-php
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/bootstrap.php test/; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; $(PHPUNIT) test/; res=$$?; make test-ci-cleanup; exit $$res
 
 test/qunit/test_suite.html: test/qunit/test_suite.json test/qunit/test_suite.php
 	php test/qunit/test_suite.php > $@

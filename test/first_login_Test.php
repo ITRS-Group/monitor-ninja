@@ -47,21 +47,6 @@ class First_Login_Test extends PHPUnit_Framework_TestCase {
 
 	}
 
-	/**
-	 * Check that a subset of an array is found within another array
-	 *
-	 * @param array $expect
-	 * @param array $actual
-	 * @return bool
-	 **/
-	private function assertArraySubset ($expect, $actual) {
-		foreach ($expect as $k => $v) {
-			$this->assertArrayHasKey($k, $actual, "Missing key $k in array " . var_export($actual, true));
-			$this->assertEquals($expect[$k], $actual[$k], "Mismatching values for key '$k' between " . var_export($expect, true) . ' and ' . var_export($actual, true));
-		}
-		return true;
-	}
-
 	public function test_first_login_creates_default_dashboard () {
 
 		$user = new User_Model();

@@ -170,7 +170,11 @@ class ORMDriverSQL implements ORMDriverInterface {
 		$sql .= $this->sql_join($filter, $structure);
 		$delim = " SET ";
 		foreach($values as $k => $v) {
-			$sql .= $delim . $k . " = " . $db->escape($v);
+			/**
+			 * To remove the possibility of ambiguity when the table is joined, add
+			 * the updated table's name before the key
+			 */
+			$sql .= sprintf("%s%s.%s=%s", $delim, $structure['table'], $k, $db->escape($v));
 			$delim = ", ";
 		}
 

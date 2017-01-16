@@ -162,7 +162,7 @@ tr.even td.cell_svccnt_ok {
   background-color: #e0efc0 !important; }
 /* line 223, sass/LSFilterStyle.sass */
 tr.odd td.cell_svccnt_ok {
-  background-color: #bbeebb !important; }
+  background-color: #e0efc0 !important; }
 /* line 225, sass/LSFilterStyle.sass */
 tr.even td.cell_svccnt_warning {
   background-color: #fcf8e3 !important; }

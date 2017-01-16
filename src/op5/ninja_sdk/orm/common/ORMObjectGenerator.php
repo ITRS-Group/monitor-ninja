@@ -95,16 +95,22 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 	}
 
 	/**
-	 *
-	 **/
+	 * When we mock the ORM structure, we do it by defining data as
+	 * PHP arrays. If we want to add hierarchical relationships, such
+	 * as hosts definitions inside of service definitions, you may
+	 * well do so, this method untangles the different types.
+	 */
 	private function generate_factory_from_array() {
 		/* Make it possible to generate empty objects if writable */
 		$this->init_function( "factory_from_array", array( 'values', 'export' ),  array('static'), array());
 
 		$this->write( '$obj = new static();');
 		$this->write( '$structure = array(' );
-		foreach ($this->structure['structure'] as $name => $type) {
-			$this->write("'$name' => '$type',");
+		foreach ($this->structure['structure'] as $field => $type) {
+			if(!is_array($type)) {
+				// ignore the sub objects, they are handled below
+				$this->write("'$field' => '$type',");
+			}
 		}
 		$this->write( ');' );
 
@@ -159,8 +165,11 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 
 		$this->write( '$obj = new static();');
 		$this->write( '$structure = array(' );
-		foreach ($this->structure['structure'] as $name => $type) {
-			$this->write("'$name' => '$type',");
+		foreach ($this->structure['structure'] as $field => $type) {
+			if(!is_array($type)) {
+				// ignore the sub objects, they are handled below
+				$this->write("'$field' => '$type',");
+			}
 		}
 		$this->write( ');' );
 

@@ -197,21 +197,7 @@ class Extinfo_Controller extends Ninja_Controller {
 				$toolbar->title = "Host";
 				$toolbar->subtitle = "";
 
-				if ($object->get_icon_image()) {
-
-					$attributes = array(
-						'alt' => $object->get_icon_image_alt(),
-						'title' => $object->get_icon_image_alt(),
-						'style' => 'width: 16px; vertical-align: middle; display: inline-block; margin-right: 4px'
-					);
-
-					$logos_path = Kohana::config('config.logos_path');
-					$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
-					$toolbar->subtitle = html::image($logos_path.$object->get_icon_image(), $attributes);
-
-				}
-
-				$toolbar->subtitle .= html::specialchars($object->get_name()) . " (" . html::specialchars($object->get_alias()) . ")";
+				$toolbar->subtitle .= $object->get_name() . " (" . $object->get_alias() . ")";
 
 				$reports->set('Options.Report.Availability', $lp->get_url(
 					'avail', 'generate', array(
@@ -252,7 +238,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			case 'service':
 
 				$toolbar->title = "Service";
-				$toolbar->subtitle = html::specialchars($object->get_description());
+				$toolbar->subtitle = $object->get_description();
 
 				$reports->set('Options.Report.Availability', $lp->get_url(
 					'avail', 'generate', array(
@@ -332,6 +318,20 @@ class Extinfo_Controller extends Ninja_Controller {
 				$this->template->content->widgets['Services in this group'] = $widget;
 
 				break;
+
+		}
+
+		if ($object->get_icon_image()) {
+
+			$attributes = array(
+				'alt' => $object->get_icon_image_alt(),
+				'title' => $object->get_icon_image_alt(),
+				'style' => 'width: 16px; vertical-align: middle; display: inline-block; margin-right: 4px'
+			);
+
+			$logos_path = Kohana::config('config.logos_path');
+			$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
+			$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
 
 		}
 
@@ -606,8 +606,8 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$form = '<form action="scheduling_queue" method="get">';
 		$form .= _('Search for ');
-		$form .= '<label> ' . _('Host') . ': <input type="text" name="host" value="' . $host_filter . '" /></label>';
-		$form .= '<label> ' . _('Service') . ': <input type="text" name="service" value="' . $service_filter . '" /></label>';
+		$form .= '<label> ' . _('Host') . ': <input type="text" name="host" value="' . html::specialchars($host_filter) . '" /></label>';
+		$form .= '<label> ' . _('Service') . ': <input type="text" name="service" value="' . html::specialchars($service_filter) . '" /></label>';
 		$form .= '<input type="submit" value="' . _('Search') . '" /></form>';
 
 		$this->template->toolbar->info($form);

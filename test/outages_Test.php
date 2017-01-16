@@ -1,6 +1,6 @@
 <?php
 require_once ('op5/objstore.php');
-require_once ('op5/livestatus.php');
+
 class outages_Test extends PHPUnit_Framework_TestCase {
 
 	/**

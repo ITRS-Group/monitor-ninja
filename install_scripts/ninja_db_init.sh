@@ -2,7 +2,7 @@
 
 # setup the db tables required for Ninja
 
-target_db_version=22
+target_db_version=23
 target_sched_version=10
 
 db_user=merlin
@@ -125,7 +125,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		;;
 	12)
 		all_versions 12
-		php index.php cli/upgrade_recurring_downtime
+		php install_scripts/upgrade_recurring_downtime.php
 		;;
 	13)
 		all_versions 13
@@ -173,11 +173,6 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 					new_ver=8
 					upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
 					;;
-				9)
-					php $prefix/index.php cli/upgrade_excluded
-					new_ver=10
-					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
-					;;
 				*)
 					new_ver=`expr $avail_ver + 1 `
 					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
@@ -199,7 +194,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 				avail_ver=$new_ver
 			done
 		fi
-		php index.php db_migrations/v13_to_v14
+		php install_scripts/db_migrate_v13_to_v14.php
 		;;
 	18)
 		all_versions 18

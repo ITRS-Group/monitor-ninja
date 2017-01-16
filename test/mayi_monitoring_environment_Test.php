@@ -1,6 +1,5 @@
 <?php
 require_once ('op5/objstore.php');
-require_once ('op5/livestatus.php');
 
 class TestActor implements op5MayI_Actor {
 	public function __construct($actorinfo) {

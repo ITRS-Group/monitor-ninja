@@ -169,10 +169,11 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
-	*	Returns appropriate nagios command
-	*	@param $report_type string
-	*	@return string
-	*/
+	 * Returns appropriate nagios command
+	 *
+	 * @param $report_type string
+	 * @return string
+	 */
 	static protected function determine_downtimetype($report_type=false)
 	{
 		if (empty($report_type)) {
@@ -188,35 +189,32 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
-	 *	Save/update a recurring schedule
-	 * 	@param $data array
-	 *	@param $id int
-	 *	@return bool
+	 * Save/update a recurring schedule
+	 *
+	 * @param $data array
+	 * @param $id int
+	 * @throws Exception
 	 */
-	public function edit_schedule($data, &$id=false)
-	{
-		if (!is_array($data)) {
-			return false;
+	public function edit_schedule($data, &$id=false) {
+		if (!$data) {
+			throw new Exception("Missing data for editing a scheduled downtime");
 		}
 
 		foreach (static::$valid_fields as $field) {
 			if (!isset($data[$field])) {
-				print "Missing field $field\n";
-				return false;
+				throw new Exception("Missing field $field");
 			}
 		}
 
 		$db = Database::instance();
 
 		$downtime_type = $data['downtime_type'];
-		if (!in_array($downtime_type, static::$valid_types)) {
-			print "Downtime type $downtime_type is invalid\n";
-			return false;
+		if (!in_array($downtime_type, static::$valid_types, true)) {
+			throw new Exception("Downtime type $downtime_type is invalid");
 		}
 		$type = substr($data['downtime_type'], 0, -1);
 		if (!op5auth::instance()->authorized_for($type.'_edit_contact') && !op5auth::instance()->authorized_for($type.'_edit_all')) {
-			print "Not authorized for editing $type objects\n";
-			return false;
+			throw new Exception("Not authorized for editing $type objects");
 		}
 
 		$start_time = static::time_to_seconds($data['start_time']);
@@ -226,8 +224,7 @@ class ScheduleDate_Model extends Model
 		if ((int)$id) {
 			$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = '.(int)$id);
 			if (!count($set)) {
-				print "Schedule was supposed to be for an existing recurring downtime, but none could be found for $id\n";
-				return false;
+				throw new Exception("Schedule was supposed to be for an existing recurring downtime, but none could be found for $id");
 			}
 			$db->query("DELETE FROM recurring_downtime_objects WHERE recurring_downtime_id = ".(int)$id);
 			# update schedule
@@ -257,7 +254,6 @@ class ScheduleDate_Model extends Model
 				" (recurring_downtime_id, object_name) VALUES (" .
 				(int)$id.", ".$db->escape($object).")");
 		}
-		return true;
 	}
 
 	/**
