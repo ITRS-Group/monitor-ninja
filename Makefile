@@ -45,7 +45,7 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	db_setup
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
-	/usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
+	/bin/su --login monitor --command "/usr/bin/naemon -d /tmp/ninja-test/nagios.cfg"
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
