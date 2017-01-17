@@ -338,6 +338,9 @@ class op5auth implements op5MayI_Actor {
 	 * @return boolean true if access
 	 */
 	public function authorized_for($authorization_point) {
+		flag::deprecated(__METHOD__, "You should use MayI instead, ".
+			"so that we can get rid of the authorization points ".
+			"in favor of MayI access strings");
 		return $this->get_user()->authorized_for($authorization_point);
 	}
 
