@@ -112,10 +112,19 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 			return false;
 		});
 
-		/* Unpack commands, to skip access, when returning */
-		return array_map(function($cmd) {
-			return $cmd['action'];
-		}, $custom_commands);
+		/*
+		 * Unpack commands, to skip access, when returning
+		 * Also return a formatted label so that it can be presented in the
+		 * same way at all possible locations
+		 */
+		$formatted = array();
+		foreach ($custom_commands as $id => $cmd) {
+			$formatted[$id] = array(
+				"label" => ucfirst(str_replace("_", " ", $id)),
+				"action" => $cmd['action']
+			);
+		};
+		return $formatted;
 	}
 
 	/**
@@ -123,44 +132,43 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 	 * @return array
 	 */
 	public function submit_custom_command($command_name) {
+
 		$commands = $this->list_custom_commands();
 		if(!array_key_exists($command_name, $commands)) {
 			return array('status' => false, 'output' => "$command_name is not a valid command, or you aren't authorized to execute it");
 		}
+
 		$type = rtrim($this->get_table(), 's');
-		$properties = array();
-		foreach($this->export() as $prop => $value) {
-			if(is_array($value)) {
-				// ASSUMING that export() only supports 2 levels
-				foreach($value as $prop_key => $prop_value) {
-					if(is_array($prop_value)) {
-						// "we won't find a macro here anyways" / Max
-						continue;
-					}
-					// adapt to old nagstat::process_macros() logic,
-					// TODO fixup
-					$properties[$prop."_".$prop_key] = $prop_value;
-				}
-			} else {
-				$properties[$prop] = $value;
-			}
-		}
-		$command = nagstat::process_macros($commands[$command_name], (object) $properties, $type);
+		$properties = nagstat::preprocess_orm_object($this);
+
+		$command_dict = $commands[$command_name];
+		$command = nagstat::process_macros($command_dict['action'], $properties, $type);
 		$comment_result = $this->add_comment("Executing custom command: ".ucwords(strtolower(str_replace('_', ' ', $command_name))));
 		if(!$comment_result['status']) {
-			op5log::instance('ninja')->log('warning', sprintf('Failed to comment custom command: %s\nOutput:\n%s', $command_name, implode("\n", $comment_result['output'])));
+
+			$output = $comment_result['output'];
+			if (is_array($output)) {
+				$output = implode("\n", $comment_result);
+			}
+
+			op5log::instance('ninja')->log('warning', sprintf('Failed to comment custom command: %s\nOutput:\n%s', $command_name, $output));
 			return array(
 				'status' => false,
 				'output' => $comment_result['output']
 			);
 		}
-		exec($command, $output, $status);
-		if($status != 0) {
-			op5log::instance('ninja')->log('warning', sprintf('Failed to execute custom command: %s\nOutput:\n%s', $command, implode("\n", $output)));
+
+		proc::open(array($command), $stdout, $stderr, $status);
+		$output = $stdout;
+
+		if ($status != 0) {
+			$output .= "\n" . $stderr;
+			op5log::instance('ninja')->log('warning', sprintf('Failed to execute custom command: %s\nOutput:\n%s', $command, $output));
 		}
+
 		return array(
 			'status' => $status == 0,
-			'output' => implode("\n", $output),
+			'output' => $output
 		);
 	}
 

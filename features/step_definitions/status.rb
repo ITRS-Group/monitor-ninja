@@ -134,3 +134,7 @@ When /^I edit widget "([^\"]+)"$/ do |widget_name|
   header.find('.widget-editlink').click
 end
 
+# Wont work until we have support for flexbox in testing
+Then /^I should see a dialog with title "([^\"]+)"$/ do |title|
+  find(".lightbox .lightbox-header", :text => title)
+end

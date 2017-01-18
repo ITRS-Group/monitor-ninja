@@ -58,7 +58,7 @@ p {
 	overflow: auto;
 }
 
-.information-content .output {
+.output {
 	font-family: monospace;
 	overflow: auto;
 	text-align: left;

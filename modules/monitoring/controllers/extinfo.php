@@ -362,13 +362,15 @@ class Extinfo_Controller extends Ninja_Controller {
 
 		$custom_commands = $object->list_custom_commands();
 		foreach ($custom_commands as $commandname => $command) {
-			$reports->set("Options.Custom commands." . $commandname,
+			$reports->set("Options.Custom commands." . $command['label'],
 				$lp->get_url('command', 'exec_custom_command', array(
 					'command' => $commandname,
 					'table' => $object->get_table(),
 					'key' => $object->get_key()
 				))
-			);
+				, null, false, array(
+					'data-custom-command' => $commandname
+				));
 		}
 
 		$toolbar->menu($reports);
