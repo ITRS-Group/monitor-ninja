@@ -23,7 +23,8 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 
 		// & before ech means that the job is backgrounded
 		// $! in bash means "the pid of the last backgrounded job"
-		exec(sprintf("%s > %s 2>&1 & echo $!", $command, $outputfile), $output);
+		exec(sprintf("%s > %s 2>&1 & echo $!", $command, $outputfile), $output, $exitCode);
+		$this->assertSame(0, $exitCode, "Could not start the daemon at $socketPath");
 		$this->pid = $output[0];
 
 		//Wait until the daemon process has started; max waiting time = 5 seconds
@@ -38,36 +39,36 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 		$this->startUp("--no-answer");
 
 		$handle = stream_socket_client("unix://" . $this->socketPath);
-		$this->assertNotEquals(false, $handle, "Could not create a socket at $this->socketPath");
+		$this->assertNotSame(false, $handle, "Could not create a socket at $this->socketPath");
 
 		$timeout = stream_set_timeout($handle, 1);
 		$this->assertTrue($timeout, "Could not set timeout for socket at $this->socketPath");
 
 		$metaData = stream_get_meta_data($handle);
-		$this->assertNotEquals(1, $metaData['timed_out']);
+		$this->assertSame(false, $metaData['timed_out']);
 
 		$written = fwrite($handle, "GET 123");
-		$this->assertNotEquals(false, $written, "Could not write to socket at $this->socketPath");
+		$this->assertNotSame(false, $written, "Could not write to socket at $this->socketPath");
 
 		fread($handle, 512);
 		$metaData = stream_get_meta_data($handle);
-		$this->assertEquals(1, $metaData['timed_out']);
+		$this->assertSame(true, $metaData['timed_out']);
 	}
 
 	public function test_daemon_can_return_custom_response() {
 		$this->startUp("--custom-answer=Banana");
 		$handle = stream_socket_client("unix://" . $this->socketPath);
-		$this->assertNotEquals(false, $handle, "Could not create a socket at $this->socketPath");
+		$this->assertNotSame(false, $handle, "Could not create a socket at $this->socketPath");
 
 		$timeout = stream_set_timeout($handle, 1);
 		$this->assertTrue($timeout, "Could not set timeout for socket at $this->socketPath");
 
 		$written = fwrite($handle, "GET 123");
-		$this->assertNotEquals(false, $written, "Could not write to socket at $this->socketPath");
+		$this->assertNotSame(false, $written, "Could not write to socket at $this->socketPath");
 
 		$response = fread($handle, 512);
 
-		$this->assertEquals("Banana", $response);
+		$this->assertSame("Banana", $response);
 	}
 
 	public function tearDown() {
@@ -76,8 +77,7 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 			/* If the log file was created, remove it; could
 				* possibly use this as a hook for submitting
 				* these logs to the build system, if needed */
-			if (file_exists(__DIR__ . "/socket_mock.log"))
-				unlink(__DIR__ . "/socket_mock.log");
+			echo file_get_contents(__DIR__ . "/socket_mock.log");
 			unlink($this->socketPath);
 		}
 	}
