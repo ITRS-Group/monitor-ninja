@@ -19,11 +19,10 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 		}
 
 		$command = sprintf("/usr/bin/python " . __DIR__ . "/socket_mock.py %s %s", $options, $socketPath);
-		$outputfile = __DIR__ . "/socket_mock.log";
 
 		// & before ech means that the job is backgrounded
 		// $! in bash means "the pid of the last backgrounded job"
-		exec(sprintf("%s > %s 2>&1 & echo $!", $command, $outputfile), $output, $exitCode);
+		exec("$command &> /dev/null & echo $!", $output, $exitCode);
 		$this->assertSame(0, $exitCode, "Could not start the daemon at $socketPath");
 		$this->pid = $output[0];
 
@@ -74,10 +73,6 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		if ($this->socketPath) {
 			exec(sprintf("kill -9 %d", $this->pid));
-			/* If the log file was created, remove it; could
-				* possibly use this as a hook for submitting
-				* these logs to the build system, if needed */
-			echo file_get_contents(__DIR__ . "/socket_mock.log");
 			unlink($this->socketPath);
 		}
 	}
