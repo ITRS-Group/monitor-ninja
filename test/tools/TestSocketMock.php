@@ -12,18 +12,25 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
      */
     private function startUp($options="") {
 
-        $this->socketPath = tempnam(__DIR__, "mock_socket_");
-        unlink($this->socketPath); //Ugly, but will otherwise not work due to socket already taken
+        $socketPath = tempnam(__DIR__, "mock_socket_");
+	if(file_exists($socketPath)) {
+		//Ugly, but will otherwise not work due to socket already taken
+		unlink($socketPath);
+	}
 
-        $command = sprintf("/usr/bin/python " . __DIR__ . "/socket_mock.py %s %s", $options, $this->socketPath);
+        $command = sprintf("/usr/bin/python " . __DIR__ . "/socket_mock.py %s %s", $options, $socketPath);
         $outputfile = __DIR__ . "/socket_mock.log";
-        exec(sprintf("%s > %s 2>&1 & echo $!", $command, $outputfile), $pidArr);
-        $this->pid = $pidArr[0];
+	//
+	// & before ech means that the job is backgrounded
+	// $! in bash means "the pid of the last backgrounded job"
+        exec(sprintf("%s > %s 2>&1 & echo $!", $command, $outputfile), $output);
+        $this->pid = $output[0];
 
         //Wait until the daemon process has started; max waiting time = 5 seconds
         $daemonStart = time();
-        while (!file_exists($this->socketPath) && ($daemonStart - time()) < 5)
+        while (!file_exists($socketPath) && ($daemonStart - time()) < 5)
             continue;
+	$this->socketPath = $socketPath;
     }
 
     /**
@@ -31,12 +38,19 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
      */
     public function test_no_answer_after_message() {
         $this->startUp("--no-answer");
+
         $handle = stream_socket_client("unix://" . $this->socketPath);
-        stream_set_timeout($handle, 1);
+	$this->assertNotEquals(false, $handle, "Could not create a socket at $this->socketPath");
+
+        $timeout = stream_set_timeout($handle, 1);
+	$this->assertTrue($timeout, "Could not set timeout for socket at $this->socketPath");
+
         $metaData = stream_get_meta_data($handle);
         $this->assertNotEquals(1, $metaData['timed_out']);
 
-        fwrite($handle, "GET 123");
+        $written = fwrite($handle, "GET 123");
+	$this->assertNotEquals(false, $written, "Could not write to socket at $this->socketPath");
+
         fread($handle, 512);
         $metaData = stream_get_meta_data($handle);
         $this->assertEquals(1, $metaData['timed_out']);
@@ -48,8 +62,14 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
     public function test_custom_response() {
         $this->startUp("--custom-answer=Banana");
         $handle = stream_socket_client("unix://" . $this->socketPath);
-        stream_set_timeout($handle, 1);
-        fwrite($handle, "GET 123");
+	$this->assertNotEquals(false, $handle, "Could not create a socket at $this->socketPath");
+
+        $timeout = stream_set_timeout($handle, 1);
+	$this->assertTrue($timeout, "Could not set timeout for socket at $this->socketPath");
+
+        $written = fwrite($handle, "GET 123");
+	$this->assertNotEquals(false, $written, "Could not write to socket at $this->socketPath");
+
         $response = fread($handle, 512);
 
         $this->assertEquals("Banana", $response);
