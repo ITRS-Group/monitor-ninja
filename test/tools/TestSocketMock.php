@@ -28,8 +28,10 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 
 		//Wait until the daemon process has started; max waiting time = 5 seconds
 		$daemonStart = time();
-		while (!file_exists($socketPath) && ($daemonStart - time()) < 5)
-			continue;
+		while (!file_exists($socketPath) && ($daemonStart - time()) < 5) {
+            usleep(50);
+            continue;
+        }
 		$this->assertFileExists($socketPath, "Could not create socket at $socketPath, after trying multiple times");
 		$this->socketPath = $socketPath;
 	}
