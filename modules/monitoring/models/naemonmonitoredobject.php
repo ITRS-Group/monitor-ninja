@@ -158,8 +158,8 @@ class NaemonMonitoredObject_Model extends NaemonObject_Model {
 			);
 		}
 
-		proc::open(array($command), $stdout, $stderr, $status);
-		$output = $stdout;
+		$output = array();
+		proc::raw($command, $output, $stderr, $status);
 
 		if ($status != 0) {
 			$output .= "\n" . $stderr;
