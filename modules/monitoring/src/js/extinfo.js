@@ -1,3 +1,56 @@
+/**
+ * When executing custom commands we do it over ajax and present the result in
+ * a dialog (lightbox)
+ */
+$(document).on('click','a[data-custom-command]', function (e) {
+
+	e.preventDefault();
+
+	var command = $(this).text();
+	var href = $(this).attr('href');
+
+	var present = function (content)  {
+
+		var lightbox = LightboxManager.create();
+		var header = document.createElement('h1');
+		header.textContent = 'Command result - ' + command;
+
+		lightbox.show();
+		lightbox.header(header);
+		lightbox.content(content);
+		lightbox.button("OK", function() {
+			LightboxManager.remove_topmost();
+		});
+
+	};
+
+	$.get(href)
+		.done(function (data) {
+
+			present($('<div />').append(
+				$('<p class="output" />').html(data.output)
+			).get(0));
+
+		})
+		.fail(function (data) {
+
+			try {
+				data = JSON.parse(data.responseText);
+			} catch (e) {
+				/* Possibly in the case of an unhandled exception */
+				data = {output: "An unexpected error occured when attempting to execute the custom command"}
+			}
+
+			present($('<div />').append(
+				$('<p class="alert error" />').append(
+					$('<h2>').text('Command failed')
+				),
+				$('<p class="output" />').html(data.output)
+			).get(0));
+
+		});
+});
+
 $(document).on('click','div[data-setting-toggle-command]', function () {
 
 	var toggler = $(this);

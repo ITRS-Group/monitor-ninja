@@ -92,7 +92,10 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), '', array () );
 
 		$this->assertEquals( array (
-			'somecommand' => 'do stuff'
+			'somecommand' => array(
+				'label' => 'Somecommand',
+				'action' => 'do stuff'
+			)
 		), $host->list_custom_commands() );
 	}
 
@@ -106,7 +109,10 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), '', array () );
 
 		$this->assertEquals( array (
-			'somecommand' => 'do stuff'
+			'somecommand' => array(
+				'label' => 'Somecommand',
+				'action' => 'do stuff'
+			)
 		), $host->list_custom_commands() );
 	}
 
@@ -120,7 +126,10 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), '', array () );
 
 		$this->assertEquals( array (
-			'somecommand' => 'do stuff'
+			'somecommand' => array(
+				'label' => 'Somecommand',
+				'action' => 'do stuff'
+			)
 		), $host->list_custom_commands() );
 	}
 
@@ -163,9 +172,18 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), '', array () );
 
 		$this->assertEquals( array (
-			'cmd2' => 'do stuff 2',
-			'cmd3' => 'do stuff 3',
-			'cmd4' => 'do stuff 4'
+			'cmd2' => array(
+				'label' => 'Cmd2',
+				'action' => 'do stuff 2'
+			),
+			'cmd3' => array(
+				'label' => 'Cmd3',
+				'action' => 'do stuff 3'
+			),
+			'cmd4' => array(
+				'label' => 'Cmd4',
+				'action' => 'do stuff 4'
+			),
 		), $host->list_custom_commands() );
 	}
 
@@ -179,7 +197,10 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), '', array () );
 
 		$this->assertEquals( array (
-			'somecommand' => 'do stuff'
+			'somecommand' => array(
+				'label' => 'Somecommand',
+				'action' => 'do stuff'
+			),
 		), $host->list_custom_commands() );
 	}
 
@@ -193,7 +214,10 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		), '', array () );
 
 		$this->assertEquals( array (
-			'somecommand' => 'do stuff'
+			'somecommand' => array(
+				'label' => 'Somecommand',
+				'action' => 'do stuff'
+			),
 		), $host->list_custom_commands() );
 	}
 
@@ -294,6 +318,23 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 			"are public. This exposes potentially harmful data and ".
 			"should be considered a security issue."
 		);
+	}
+
+	public function test_proper_labels_are_assigned () {
+		$host = Host_Model::factory_from_setiterator( array (
+			'name' => 'stuff',
+			'custom_variables' => array (
+				'OP5H__ACTION__SOME_2_COMMAND_FOO' => 'do stuff',
+				'OP5H__ACCESS__SOME_2_COMMAND_FOO' => 'greger_and_his_friends'
+			)
+		), '', array () );
+
+		$this->assertEquals( array (
+			'some_2_command_foo' => array(
+				'label' => 'Some 2 command foo',
+				'action' => 'do stuff'
+			),
+		), $host->list_custom_commands() );
 	}
 
 }
