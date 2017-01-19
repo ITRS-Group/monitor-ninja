@@ -2,7 +2,8 @@
 
 class TestSocketMock extends PHPUnit_Framework_TestCase {
 
-	private $pid;
+	private $procH;
+	private $pipes;
 	private $socketPath;
 
 	/**
@@ -13,25 +14,22 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 	 */
 	private function startUp($options) {
 		$socketPath = tempnam(__DIR__, "mock_socket_");
-		if(file_exists($socketPath)) {
-			//Ugly, but will otherwise not work due to socket already taken
-			unlink($socketPath);
-		}
-
 		$command = sprintf("/usr/bin/python " . __DIR__ . "/socket_mock.py %s %s", $options, $socketPath);
 
-		// & before ech means that the job is backgrounded
-		// $! in bash means "the pid of the last backgrounded job"
-		exec("$command &> /dev/null & echo $!", $output, $exitCode);
-		$this->assertSame(0, $exitCode, "Could not start the daemon at $socketPath");
-		$this->pid = $output[0];
+		$descriptorSpec = array(
+			array('pipe', 'r'),
+			array('pipe', 'w'),
+			array('file', '/dev/null', 'a')
+		);
+		$this->procH = proc_open($command, $descriptorSpec, $pipes);
+		$this->pipes = $pipes;
 
 		//Wait until the daemon process has started; max waiting time = 5 seconds
 		$daemonStart = time();
 		while (!file_exists($socketPath) && ($daemonStart - time()) < 5) {
-            usleep(50);
-            continue;
-        }
+			usleep(50);
+			continue;
+		}
 		$this->assertFileExists($socketPath, "Could not create socket at $socketPath, after trying multiple times");
 		$this->socketPath = $socketPath;
 	}
@@ -46,12 +44,13 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($timeout, "Could not set timeout for socket at $this->socketPath");
 
 		$metaData = stream_get_meta_data($handle);
-		$this->assertSame(false, $metaData['timed_out']);
+		$this->assertFalse($metaData['timed_out']);
 
 		$written = fwrite($handle, "GET 123");
 		$this->assertNotSame(false, $written, "Could not write to socket at $this->socketPath");
 
-		fread($handle, 512);
+		$this->assertSame('', fread($handle, 512));
+
 		$metaData = stream_get_meta_data($handle);
 		$this->assertSame(true, $metaData['timed_out']);
 	}
@@ -73,10 +72,13 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 	}
 
 	public function tearDown() {
-		if ($this->socketPath) {
-			exec(sprintf("kill -9 %d", $this->pid));
-			unlink($this->socketPath);
+		foreach($this->pipes as $pipe) {
+			fclose($pipe);
 		}
+		$details = proc_get_status($this->procH);
+		posix_kill($details['pid'], "9");
+		proc_close($this->procH);
+		unlink($this->socketPath);
 	}
 
 }
