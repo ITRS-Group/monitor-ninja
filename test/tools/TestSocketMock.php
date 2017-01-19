@@ -8,9 +8,10 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 	/**
 	 * Start the daemon. Couldn't be included in a setUp method due to the daemon requiring different parameters
 	 * for different tests
+	 *
 	 * @param string $options String Option parameters for the daemon, determines what the daemon will emulate
 	 */
-	private function startUp($options="") {
+	private function startUp($options) {
 		$socketPath = tempnam(__DIR__, "mock_socket_");
 		if(file_exists($socketPath)) {
 			//Ugly, but will otherwise not work due to socket already taken
@@ -19,7 +20,7 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 
 		$command = sprintf("/usr/bin/python " . __DIR__ . "/socket_mock.py %s %s", $options, $socketPath);
 		$outputfile = __DIR__ . "/socket_mock.log";
-		//
+
 		// & before ech means that the job is backgrounded
 		// $! in bash means "the pid of the last backgrounded job"
 		exec(sprintf("%s > %s 2>&1 & echo $!", $command, $outputfile), $output);
@@ -29,13 +30,11 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 		$daemonStart = time();
 		while (!file_exists($socketPath) && ($daemonStart - time()) < 5)
 			continue;
+		$this->assertFileExists($socketPath, "Could not create socket at $socketPath, after trying multiple times");
 		$this->socketPath = $socketPath;
 	}
 
-	/**
-	 * Tests the ability of the daemon to emulate a response that times out
-	 */
-	public function test_no_answer_after_message() {
+	public function test_daemon_can_emulate_timeout_after_getting_written_to() {
 		$this->startUp("--no-answer");
 
 		$handle = stream_socket_client("unix://" . $this->socketPath);
@@ -55,10 +54,7 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, $metaData['timed_out']);
 	}
 
-	/**
-	 * Make sure that the daemon returns the response supplied
-	 */
-	public function test_custom_response() {
+	public function test_daemon_can_return_custom_response() {
 		$this->startUp("--custom-answer=Banana");
 		$handle = stream_socket_client("unix://" . $this->socketPath);
 		$this->assertNotEquals(false, $handle, "Could not create a socket at $this->socketPath");
