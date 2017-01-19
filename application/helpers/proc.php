@@ -14,6 +14,24 @@ class proc {
 	 * (according to PHP), not caring about subprocess' exit status
 	 */
 	static function open(array $command, &$stdout = NULL, &$stderr = NULL, &$exit_code = NULL) {
+		$cmd_string = implode(' ', array_map('escapeshellarg', $command));
+		return proc::raw($cmd_string, $stdout, $stderr, $exit_code);
+	}
+
+	/**
+	 * Our product supports input of full commandlines by users, these can not
+	 * be escaped as proc::open does, hence we require a proc::raw instead of
+	 * using exec/system where we are unable to get the stderr output stream.
+	 *
+	 * @param $command string
+	 * @param &$stdout
+	 * @param &$stderr
+	 * @param &$exit_code
+	 * @return boolean whether the command was *called* successfully or not
+	 * (according to PHP), not caring about subprocess' exit status
+	 */
+	static function raw ($command, &$stdout = NULL, &$stderr = NULL, &$exit_code = NULL) {
+
 		$stdout = NULL;
 		$stderr = NULL;
 		$exit_code = NULL;
@@ -24,8 +42,7 @@ class proc {
 			2 => array("pipe", "w")
 		);
 
-		$cmd_string = implode(' ', array_map('escapeshellarg', $command));
-		$resource = proc_open($cmd_string, $descriptorspec, $pipes);
+		$resource = proc_open($command, $descriptorspec, $pipes);
 		if(!is_resource($resource)) {
 			return false;
 		}
@@ -40,6 +57,8 @@ class proc {
 
 		$exit_code = proc_close($resource);
 		return true;
+
 	}
+
 }
 

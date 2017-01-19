@@ -28,7 +28,7 @@ $(document).on('click','a[data-custom-command]', function (e) {
 		.done(function (data) {
 
 			present($('<div />').append(
-				$('<p class="output" />').html(data)
+				$('<p class="output" />').html(data.output)
 			).get(0));
 
 		})

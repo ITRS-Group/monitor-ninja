@@ -41,7 +41,7 @@ class Command_Controller extends Authenticated_Controller
 		$result['output'] = nl2br(html::specialchars($result['output']));
 
 		$view = new View('json', array(
-			'success' => ($result['status'] === 0),
+			'success' => $result['status'],
 			'value' => $result
 		));
 
