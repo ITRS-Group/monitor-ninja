@@ -156,23 +156,35 @@ class op5Log {
 			@$reference = ' ' . $stack[1]['class'] . ' @' . $stack[1]['line'];
 		}
 
-		/*
-		 * Generate filename and message. Put filename through strftime, so log
-		 * files can be rotated automatically
-		 */
-		$filename = strftime($config['file']);
-		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
-		$line_prefix = strftime('%Y-%m-%d %H:%M:%S ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
-		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
+		if($config['file'] == 'syslog') {
+			openlog("op5-$namespace", LOG_PID, LOG_USER);
+			// these must match self::$levels
+			$syslog_levels = array(
+				'error'   => LOG_ERR,
+				'warning' => LOG_WARNING,
+				'notice'  => LOG_NOTICE,
+				'debug'   => LOG_DEBUG
+			);
+			syslog($syslog_levels[$level], $message);
+		} else {
+			/*
+			 * Generate filename and message. Put filename through strftime, so log
+			 * files can be rotated automatically
+			 */
+			$filename = strftime($config['file']);
+			$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
+			$line_prefix = strftime('%Y-%m-%d %H:%M:%S ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
+			$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 
-		/*
-		 * Store message to self::$message as temporary storage, to reduce disc
-		 * access to one access per file and script, instead of one per line.
-		 */
-		if(!isset($this->messages[$filename])) {
-			$this->messages[$filename] = array();
+			/*
+			 * Store message to self::$message as temporary storage, to reduce disc
+			 * access to one access per file and script, instead of one per line.
+			 */
+			if(!isset($this->messages[$filename])) {
+				$this->messages[$filename] = array();
+			}
+			$this->messages[$filename][] = $message;
 		}
-		$this->messages[$filename][] = $message;
 	}
 
 	/**
