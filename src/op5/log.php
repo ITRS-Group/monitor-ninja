@@ -13,7 +13,6 @@ class op5LogAccess {
 	public function __construct($log_instance, $namespace) {
 		$this->log_instance = $log_instance;
 		$this->namespace = $namespace;
-
 	}
 
 	/**
@@ -68,11 +67,11 @@ class op5Log {
 	 *
 	 **/
 	private static $levels = array(
-			'error'   => 1,
-			'warning' => 2,
-			'notice'  => 3,
-			'debug'   => 4
-			);
+		'error'   => 1,
+		'warning' => 2,
+		'notice'  => 3,
+		'debug'   => 4
+	);
 
 	/**
 	 * Return a static instance of Auth.
@@ -110,24 +109,6 @@ class op5Log {
 	public function __construct()
 	{
 		$this->config = op5Config::instance()->getConfig('log');
-/*
-		if(!isset($this->config['file'])) {
-			throw new Exception("Logging for namespace '$namespace' is missing file parameter");
-		}
-
-		$level = 'debug';
-		if(isset($this->config['level'])) {
-			$level = $this->config['level'];
-		}
-		if(!isset(self::$levels[$this->config['level']])) {
-			throw new Exception("Unknown logging level '".self::$levels[$this->config['level']]."'for '$namespace',".
-					". Logging levels available: ".implode(', ', self::$levels));
-		}
-		$this->config['level'] = self::$levels[$this->config['level']];
-
-		if(!isset($this->config['prefix'])) {
-			$this->config['prefix'] = $namespace;
-		}*/
 
 		/* This will be registered once per instance of op5Log. This is no
 		 * problem because writeback clears the buffer after each run, and no
