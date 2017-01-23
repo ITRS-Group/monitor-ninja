@@ -20,9 +20,6 @@ final class Kohana {
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
-	// The current user agent
-	public static $user_agent;
-
 	// The current locale
 	public static $locale;
 
@@ -99,9 +96,6 @@ final class Kohana {
 
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
-
-		// Set the user agent
-		self::$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : "Unknown";
 
 		if (function_exists('date_default_timezone_set'))
 		{
@@ -1073,121 +1067,6 @@ final class Kohana {
 			// Swap the array back in
 			$array->exchangeArray($array_copy);
 		}
-	}
-
-	/**
-	 * Retrieves current user agent information:
-	 * keys:  browser, version, platform, mobile, robot, referrer, languages, charsets
-	 * tests: is_browser, is_mobile, is_robot, accept_lang, accept_charset
-	 *
-	 * @param   string   key or test name
-	 * @param   string   used with "accept" tests: user_agent(accept_lang, en)
-	 * @return  array    languages and charsets
-	 * @return  string   all other keys
-	 * @return  boolean  all tests
-	 */
-	public static function user_agent($key = 'agent', $compare = NULL)
-	{
-		static $info;
-
-		// Return the raw string
-		if ($key === 'agent')
-			return self::$user_agent;
-
-		if ($info === NULL)
-		{
-			// Parse the user agent and extract basic information
-			$agents = self::config('user_agents');
-
-			foreach ($agents as $type => $data)
-			{
-				foreach ($data as $agent => $name)
-				{
-					if (stripos(self::$user_agent, $agent) !== FALSE)
-					{
-						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*+([0-9.][0-9.a-z]*)|i', self::$user_agent, $match))
-						{
-							// Set the browser version
-							$info['version'] = $match[1];
-						}
-
-						// Set the agent name
-						$info[$type] = $name;
-						break;
-					}
-				}
-			}
-		}
-
-		if (empty($info[$key]))
-		{
-			switch ($key)
-			{
-				case 'is_robot':
-				case 'is_browser':
-				case 'is_mobile':
-					// A boolean result
-					$return = ! empty($info[substr($key, 3)]);
-				break;
-				case 'languages':
-					$return = array();
-					if ( ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-					{
-						if (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches))
-						{
-							// Found a result
-							$return = $matches[0];
-						}
-					}
-				break;
-				case 'charsets':
-					$return = array();
-					if ( ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
-					{
-						if (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches))
-						{
-							// Found a result
-							$return = $matches[0];
-						}
-					}
-				break;
-				case 'referrer':
-					if ( ! empty($_SERVER['HTTP_REFERER']))
-					{
-						// Found a result
-						$return = trim($_SERVER['HTTP_REFERER']);
-					}
-				break;
-			}
-
-			// Cache the return value
-			isset($return) and $info[$key] = $return;
-		}
-
-		if ( ! empty($compare))
-		{
-			// The comparison must always be lowercase
-			$compare = strtolower($compare);
-
-			switch ($key)
-			{
-				case 'accept_lang':
-					// Check if the lange is accepted
-					return in_array($compare, self::user_agent('languages'));
-				break;
-				case 'accept_charset':
-					// Check if the charset is accepted
-					return in_array($compare, self::user_agent('charsets'));
-				break;
-				default:
-					// Invalid comparison
-					return FALSE;
-				break;
-			}
-		}
-
-		// Return the key, if set
-		return isset($info[$key]) ? $info[$key] : NULL;
 	}
 
 	/**
