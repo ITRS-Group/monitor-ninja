@@ -132,7 +132,7 @@ class Backup_Controller extends Ninja_Controller {
 	 * @param $status
 	 */
 	private function _verify_naemon_config(&$stdout, &$stderr, &$status) {
-		proc::open(array('/usr/bin/asmonitor','-q', '/usr/bin/naemon', '-v', $this->nagios_cfg_path . 'nagios.cfg'), $stdout, $stderr, $status);
+		proc::open(array('/usr/bin/naemon', '--allow-root', '-v', $this->nagios_cfg_path . 'nagios.cfg'), $stdout, $stderr, $status);
 	}
 
 	/**
