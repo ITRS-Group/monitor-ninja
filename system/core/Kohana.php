@@ -1069,28 +1069,6 @@ final class Kohana {
 		}
 	}
 
-	/**
-	 * Quick debugging of any variable. Any number of parameters can be set.
-	 *
-	 * @return  string
-	 */
-	public static function debug()
-	{
-		if (func_num_args() === 0)
-			return;
-
-		// Get params
-		$params = func_get_args();
-		$output = array();
-
-		foreach ($params as $var)
-		{
-			$output[] = '<pre>('.gettype($var).') '.html::specialchars(print_r($var, TRUE)).'</pre>';
-		}
-
-		return implode("\n", $output);
-	}
-
 } // End Kohana
 
 /**
