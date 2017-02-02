@@ -342,3 +342,15 @@ div[data-setting-toggle-command^="start_"]:after {
 .information-performance-raw span[class^="icon-"] {
 	font-size: 120%;
 }
+
+/* Place info-icon to left */
+
+.main-toolbar .main-toolbar-title {
+	float: left;
+}
+
+.main-toolbar .main-toolbar-info {
+	float: left;
+	margin-top: 2px;
+	margin-right: 8px
+}
