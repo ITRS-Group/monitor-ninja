@@ -326,7 +326,7 @@ class Extinfo_Controller extends Ninja_Controller {
 			$attributes = array(
 				'alt' => $object->get_icon_image_alt(),
 				'title' => $object->get_icon_image_alt(),
-				'style' => 'width: 16px; vertical-align: middle; display: inline-block; margin-right: 4px'
+				'style' => 'width: 16px;'
 			);
 
 			$logos_path = Kohana::config('config.logos_path');

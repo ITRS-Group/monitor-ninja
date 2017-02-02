@@ -147,6 +147,7 @@ class Toolbar_Controller extends Ninja_Controller {
 		print '<div class="main-toolbar">';
 
 		print $this->get_title_html();
+		print $this->get_subtitle_html();		
 
 		if ( count( $this->info ) > 0 ) {
 			print '<div class="main-toolbar-info">';
@@ -154,8 +155,6 @@ class Toolbar_Controller extends Ninja_Controller {
 				print $html;
 			print '</div>';
 		}
-
-		print $this->get_subtitle_html();
 
 		if (count($this->menus) > 0) {
 			foreach ($this->menus as $html)
