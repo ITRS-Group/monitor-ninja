@@ -1,7 +1,7 @@
 require 'json'
 require 'cucumber'
 require 'tempfile'
-module Op5Cucumber::Mock
+module Mock
 
   class Mock
     attr_reader :file

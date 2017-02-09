@@ -1,4 +1,3 @@
-require 'op5cucumber'
 require 'fileutils'
 
 # trigger excptions when reaching code paths flagged as 'deprecated'
@@ -40,4 +39,3 @@ After do |scenario|
     FileUtils.mv('/mnt/logs/php_errors.log', new_path)
   end
 end
-World Op5Cucumber

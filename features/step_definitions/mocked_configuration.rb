@@ -266,7 +266,7 @@ Given /^I have an (.*) user group with all rights$/ do |group|
 end
 
 Before do |scenario|
-  @mock = Op5Cucumber::Mock::Mock.new
+  @mock = Mock::Mock.new
 end
 
 After do |scenario|

@@ -99,10 +99,6 @@ Then /^I should see the search result:$/ do |table|
   end
 end
 
-Given /^I go to the listview for (.*)$/ do |query|
-    visit Op5Cucumber::NavigationHelpers.path_to("list view") + '?q=' + query
-end
-
 Then /^I should be logged in as "([^\"]+)"$/ do |user|
   page.should have_css("a[data-username=\"#{user}\"]", :visible => true)
 end
@@ -138,3 +134,88 @@ end
 Then /^I should see a dialog with title "([^\"]+)"$/ do |title|
   find(".lightbox .lightbox-header", :text => title)
 end
+
+When /I select "(.*)" from the multiselect "(.*)"$/ do |option, selector|
+  tmp_sel = find_field(find_field(selector)[:id].sub('[', '_tmp['))
+  tmp_sel.select(option)
+  page.execute_script("$('##{tmp_sel[:id].gsub('[', '\\\\\[').gsub(']', '\\\\\]')}').trigger('change');")
+end
+
+When /I deselect "(.*)" from the multiselect "(.*)"$/ do |option, selector|
+  tmp_sel = find_field(selector)
+  tmp_sel.select(option)
+  page.execute_script("$('##{tmp_sel[:id].gsub('[', '\\\\\[').gsub(']', '\\\\\]')}').trigger('change');")
+end
+
+Then /^I should see a notification$/ do
+  Synchronization::wait_until do
+    page.all('div.notify-notification').count > 0
+  end
+end
+
+Then /^waiting until I see (?:([\d]+) )?"([^"]*)"$/ do |n, string|
+  Synchronization::wait_until do
+    page.should have_content(string, :count => n)
+  end
+end
+
+
+Then /^I should see (a|an) (error|info|success|warning) notification$/ do |ignore, type|
+  Synchronization::wait_until do
+    page.all("div.notify-notification.#{type}").count > 0
+  end
+end
+
+And /^the notification should contain "([^\"]*)"$/ do |notification_text|
+  page.find('div.notify-notification').should have_content(notification_text)
+end
+
+Then /^I should see a notification containing the text "([^\"]*)"$/ do |notification_text|
+  steps %Q{
+        Then I should see a notification
+            And the notification should contain "#{notification_text}"
+  }
+end
+
+Then /^I should see (?:a|an) (error|info|success|warning) notification containing the text "([^\"]*)"$/ do |type, notification_text|
+  page.should(have_selector("div.notify-notification.#{type}", text: /#{notification_text}/))
+end
+
+When /^I sort the filter result table by "(.*?)"$/ do |arg1|
+  Synchronization::wait_until do
+    page.evaluate_script('$.active') == 0
+  end
+  page.find("div#filter_result table thead:first-child th[data-column=#{arg1}]").trigger(:click)
+end
+
+Then /^I should see this status:$/ do |table|
+  Synchronization::wait_until do
+    page.evaluate_script('$.active') == 0
+  end
+  cols = table.transpose.raw
+  cols.each do |row|
+    title = row.shift
+    all(:xpath, "//div[@id='filter_result']/table/tbody/tr/td[count(preceding-sibling::td) = count(../../../thead[position()=last()]/tr/th[contains(.,'" + title + "')]/preceding-sibling::th)]").each do |col|
+      expected = row.shift
+      col.should have_content expected
+    end
+    row.length.should be == 0
+  end
+end
+
+Then /^the filter result table should have (\d+) rows$/ do |numrows|
+  Synchronization::wait_until do
+    page.evaluate_script('$.active') == 0
+  end
+  page.all('div#filter_result table tbody tr').count == numrows.to_i
+end
+
+Then /^The (.*?) row of the filter result table should contain "(.*?)"$/ do |pos, str|
+  Synchronization::wait_until do
+    page.evaluate_script('$.active') == 0
+  end
+  within(:css, "div#filter_result table tbody tr:#{pos}-child") do
+    page.should have_content(str)
+  end
+end
+
