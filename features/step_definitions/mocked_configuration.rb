@@ -79,11 +79,11 @@ When /^I am logged in as administrator$/ do
     And I click "Login"
   }
 
-  # Mocked permissions must be set after user is logged in.
   @mock.mock_class("op5MayI", {
-    "mock_class" => "MockMayI",
-    "args" => {}
+      "mock_class" => "MockMayI",
+      "args" => {}
   })
+
 end
 
 # Set up an adminitrator account but do not log in.
