@@ -65,7 +65,6 @@ Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: php-phpunit-PHPUnit
 
-Requires: portal
 Requires: openldap-servers
 # For performance graph links on extinfo
 Requires: monitor-pnp
