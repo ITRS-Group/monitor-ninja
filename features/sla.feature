@@ -35,7 +35,7 @@ Feature: SLA reports
 			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky |
 
 		And I have activated the configuration
-		And I am logged in as administrator
+		And I am logged in
 
 	@configuration @reports
 	Scenario: Generate report without objects
