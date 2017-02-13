@@ -8,9 +8,7 @@ Feature: Menu
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
 		Then I should see menu items:
-			| op5 Portal |
-			| op5 Manual |
-			| op5 Support |
+			| About |
 
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
@@ -66,6 +64,7 @@ Feature: Menu
 		Then I shouldn't see "Add new quicklink" waiting patiently
 		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"
 
+	@unreliable
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover the branding
 		Then I should see css "a[href='https://kb.op5.com/display/DOC']"

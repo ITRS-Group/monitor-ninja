@@ -21,6 +21,7 @@ Feature: Report namespace are respected
 			|:read.report.histogram.html|Hey, Einstein! I'm on your side!|Histogram   |
 			|:read.report.summary.html  |Do a barrel roll!               |Summary     |
 
+	@unreliable
 	Scenario: PDF Availability reports are restricted
 		Given these actions are denied
 			|action                | message                       |
@@ -35,9 +36,10 @@ Feature: Report namespace are respected
 		And I select "Hosts" from "Report type"
 		And I select "Falco Lombardi" from the multiselect "objects_tmp"
 		And I click "Show report"
-		# When I click "As PDF"
+		When I click "As PDF"
 		Then I should see "Hold still and lemme shoot you."
 
+	@unreliable
 	Scenario: PDF SLA reports are restricted
 		Given these actions are denied
 			|action                  |message                               |
@@ -52,9 +54,10 @@ Feature: Report namespace are respected
 		And I select "Fox McCloud" from the multiselect "objects_tmp"
 		And I enter "99" into "Jan"
 		And I click "Show report"
-		# When I click "As PDF"
+		When I click "As PDF"
 		Then I should see "We'll just see about that, Star Wolf."
 
+	@unreliable
 	Scenario: PDF summary reports are restricted
 		Given these actions are denied
 			|action                  | message                     |
@@ -63,7 +66,7 @@ Feature: Report namespace are respected
 		And I hover over the "Summary" menu
 		And I click "Create Summary Report"
 		And I click "Show report"
-		# When I click "As PDF"
+		When I click "As PDF"
 		Then I should see "Escaping? I don't think so!"
 
 	Scenario: PDF histogram reports are not implemented
