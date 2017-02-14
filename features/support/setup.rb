@@ -56,8 +56,10 @@ After do |scenario|
 	#end
   end
   Capybara.reset_sessions!
+  @scenario_name = ""
 end
 
+@scenario_name = ""
 Before do |scenario|
   @params = {}
   case scenario

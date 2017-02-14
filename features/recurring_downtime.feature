@@ -1,3 +1,4 @@
+@unreliable
 Feature: Recurring downtime
 
 	Background:
@@ -12,7 +13,7 @@ Feature: Recurring downtime
 		And I am logged in as administrator
 		And I am on the main page
 
-	@configuration
+	@configuration @unreliable
 	Scenario: Add a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -28,7 +29,7 @@ Feature: Recurring downtime
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "Kroppkakor is a thing"
 
-	@configuration
+	@configuration @unreliable
 	Scenario: Edit a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -44,7 +45,7 @@ Feature: Recurring downtime
 		And I shouldn't see "Kroppkakor is a thing"
 		And I should see "Whipped cream"
 
-	@configuration
+	@configuration @unreliable
 	Scenario: Delete a recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu

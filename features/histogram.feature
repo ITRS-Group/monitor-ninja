@@ -1,3 +1,4 @@
+@unreliable
 Feature: Histogram reports
 	Background:
 		Given I have these hostgroups configured:
@@ -36,7 +37,7 @@ Feature: Histogram reports
 		And I have activated the configuration
 		And I am logged in
 
-	@configuration
+	@configuration @unreliable
 	Scenario: Generate empty report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -46,7 +47,7 @@ Feature: Histogram reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -58,7 +59,7 @@ Feature: Histogram reports
 		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -71,7 +72,7 @@ Feature: Histogram reports
 		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate single host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -89,7 +90,7 @@ Feature: Histogram reports
 		And I should see "linux-server1"
 		And I shouldn't see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -107,7 +108,7 @@ Feature: Histogram reports
 		And I should see "linux-server1"
 		And I should see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate single service report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -122,7 +123,7 @@ Feature: Histogram reports
 		And I should see "linux-server1;PING"
 		And I shouldn't see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -143,7 +144,7 @@ Feature: Histogram reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -160,7 +161,7 @@ Feature: Histogram reports
 		And I should see "linux-server1;PING"
 		And I should see "linux-server2;System Load"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -174,7 +175,7 @@ Feature: Histogram reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -191,7 +192,7 @@ Feature: Histogram reports
 		And I should see "linux-server2"
 		And I should see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -208,7 +209,7 @@ Feature: Histogram reports
 		And I should see "linux-server2"
 		And I shouldn't see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -222,7 +223,7 @@ Feature: Histogram reports
 		And I should see "Included services"
 		And I should see "linux-server1;PING"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -238,7 +239,7 @@ Feature: Histogram reports
 		And I should see "Included services"
 		And I should see "linux-server1;PING"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -255,7 +256,7 @@ Feature: Histogram reports
 		Then I should see "Alert histogram"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate report on custom report date without time specified
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -272,7 +273,7 @@ Feature: Histogram reports
 		Then I should see "Alert histogram"
 		And I should see "Reporting period: 2013-01-02 00:00:00 to 2013-04-03 23:59:00"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Save report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -319,7 +320,7 @@ Feature: Histogram reports
 		And I should see "Alert histogram"
 		And I should see "This is a saved test report"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Report" menu

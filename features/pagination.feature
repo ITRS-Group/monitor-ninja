@@ -1,7 +1,7 @@
 @pagination
 Feature: Pagination
 
-	@configuration @case-651
+	@configuration @case-651 @unreliable
 	Scenario: Service details pagination
 		Verify that pagination shows 100 rows at
 		a time and loads 100 new rows when requested
