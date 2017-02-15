@@ -165,6 +165,9 @@ module Configuration
       FileUtils.chmod 0664, Dir.glob(File.join(@etc_path, "*"))
       FileUtils.chmod 0777, @etc_path
       FileUtils.chmod 0777, @OP5LIBCFG
+
+      # Debug to see if this is a timing problem
+      sleep 10
     end
 
     ##
