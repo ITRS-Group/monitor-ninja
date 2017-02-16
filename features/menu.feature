@@ -64,7 +64,7 @@ Feature: Menu
 		Then I shouldn't see "Add new quicklink" waiting patiently
 		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"
 
-	@unreliable
+	@unreliable_el7
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover the branding
 		Then I should see css "a[href='https://kb.op5.com/display/DOC']"

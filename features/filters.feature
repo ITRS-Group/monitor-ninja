@@ -65,7 +65,7 @@ Feature: Filters & list views
 		And I should see "Zuzela Adkins"
 		But I shouldn't see "Zuzela Griffin"
 
-	@configuration @unreliable
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by description.
@@ -88,7 +88,7 @@ Feature: Filters & list views
 		Then The first row of the filter result table should contain "D-service"
 		And The last row of the filter result table should contain "A-service"
 
-	@configuration @unreliable
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by last checked.
@@ -110,7 +110,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "last_check"
 		Then The first row of the filter result table should contain "C-service"
 
-	@configuration @unreliable
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by duration.
@@ -132,7 +132,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "duration"
 		Then The last row of the filter result table should contain "B-service"
 
-	@configuration @unreliable
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by status information.
@@ -159,7 +159,7 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "B-service"
 		And The first row of the filter result table should contain "C-service"
 
-	@configuration @unreliable
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by state.

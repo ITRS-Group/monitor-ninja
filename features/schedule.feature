@@ -1,3 +1,4 @@
+@unreliable_el7
 Feature: Scheduled reports
 	Test that reports can be scheduled, that scheduled can be deleted, that
 	deleting schedules deletes reports...
@@ -38,7 +39,7 @@ Feature: Scheduled reports
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
 		And I am logged in
 
-	@reports @unreliable
+	@reports
 	Scenario: Save avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -55,7 +56,7 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports @unreliable
+	@reports
 	Scenario: Schedule avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -72,7 +73,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports @unreliable
+	@reports
 	Scenario: View scheduled avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -86,7 +87,7 @@ Feature: Scheduled reports
 		And I should see "LinuxServers"
 		And I should see "linux-server1"
 
-	@reports @unreliable
+	@reports
 	Scenario: Add second avail schedule
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -108,7 +109,7 @@ Feature: Scheduled reports
 		And I click "OK" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		Then the "Description" column should be "A description" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 
-	@reports @unreliable
+	@reports
 	Scenario: Delete previously created avail report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -124,7 +125,7 @@ Feature: Scheduled reports
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 
-	@reports @unreliable
+	@reports
 	Scenario: Ensure previously added avail schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -134,7 +135,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@reports @unreliable
+	@reports
 	Scenario: Save SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -153,7 +154,7 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports @unreliable
+	@reports
 	Scenario: Schedule SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -171,7 +172,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports @unreliable
+	@reports
 	Scenario: View scheduled SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -185,7 +186,7 @@ Feature: Scheduled reports
 		And I should see "Group members"
 		And I should see "linux-server1"
 
-	@reports @unreliable
+	@reports
 	Scenario: Delete SLA schedule
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -204,7 +205,7 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 
-	@reports @unreliable
+	@reports
 	Scenario: Delete previously created SLA report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -220,7 +221,7 @@ Feature: Scheduled reports
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 
-	@reports @unreliable
+	@reports
 	Scenario: Ensure previously added sla schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -231,7 +232,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@reports @unreliable
+	@reports
 	Scenario: Save summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -247,7 +248,7 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports @unreliable
+	@reports
 	Scenario: Schedule summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -265,7 +266,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports @unreliable
+	@reports
 	Scenario: View scheduled summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -277,7 +278,7 @@ Feature: Scheduled reports
 		When I click "View report" on the row where "Report" is "saved test report"
 		Then I should see "Top alert producers"
 
-	@reports @unreliable
+	@reports
 	Scenario: Delete previously created summary report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -292,7 +293,7 @@ Feature: Scheduled reports
 		Then "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 
-	@reports @unreliable
+	@reports
 	Scenario: Ensure previously added summary schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu

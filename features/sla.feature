@@ -1,4 +1,4 @@
-@sla @unreliable
+@sla @unreliable_el7
 Feature: SLA reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
@@ -37,7 +37,7 @@ Feature: SLA reports
 		And I have activated the configuration
 		And I am logged in
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -49,7 +49,7 @@ Feature: SLA reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -64,7 +64,7 @@ Feature: SLA reports
 		And I should see "Report Settings"
 		And "Jan" should contain "9"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -79,7 +79,7 @@ Feature: SLA reports
 		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate report without SLA values
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -91,7 +91,7 @@ Feature: SLA reports
 		Then I should see "Please enter at least one SLA value"
 		And I should see "Report Settings"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate single host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -110,7 +110,7 @@ Feature: SLA reports
 		Then I should see "Host details"
 		And I should see "linux-server1"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -136,7 +136,7 @@ Feature: SLA reports
 		And I should see "linux-server1"
 		And I should see "win-server1"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate single service report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -155,7 +155,7 @@ Feature: SLA reports
 		When I click "Show availability breakdown"
 		Then I should see "Service details for PING on host linux-server1"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -182,7 +182,7 @@ Feature: SLA reports
 		And I should see "PING"
 		And I should see "System Load"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -211,7 +211,7 @@ Feature: SLA reports
 		And I should see "PING"
 		And I should see "System Load"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -234,7 +234,7 @@ Feature: SLA reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -261,7 +261,7 @@ Feature: SLA reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -288,7 +288,7 @@ Feature: SLA reports
 		And I should see "linux-server1"
 		And I should see "linux-server2"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -315,7 +315,7 @@ Feature: SLA reports
 		And I should see "Services on host: win-server2"
 		And I should see "PING"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -344,7 +344,7 @@ Feature: SLA reports
 		And I should see "Services on host: win-server2"
 		And I should see "PING"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Generate report from custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -366,7 +366,7 @@ Feature: SLA reports
 		Then I should see "SLA breakdown"
 		And I should see "Reporting period: 2013-01-01 to 2013-03-31 - 24x7"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Ensure correct timeperiod is carried over to avail
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -390,7 +390,7 @@ Feature: SLA reports
 		And I should see "Group availability (Worst state)"
 		And I should see "Reporting period: Last 12 months"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -430,7 +430,7 @@ Feature: SLA reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Report" menu
