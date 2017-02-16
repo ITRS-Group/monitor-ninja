@@ -3,7 +3,7 @@ Feature: Reports
 	This is intended to contain general report tests, rather than report-type
 	specific report tests which can be found in their respective own features
 
-	@unreliable
+	@unreliable @unreliable_el7
 	Scenario: All helptexts are defined
 		Given I am logged in
 		And I am on the Host details page
