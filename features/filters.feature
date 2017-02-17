@@ -132,7 +132,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "duration"
 		Then The last row of the filter result table should contain "B-service"
 
-	@configuration @unreliable_el7
+	@configuration @unreliable @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by status information.
