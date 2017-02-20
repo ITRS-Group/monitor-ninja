@@ -30,7 +30,7 @@ post:
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
     if [ -f /usr/bin/systemctl ]; then
-      cucumber -t ~@skip -t ~@unreliable_el7 --strict --format html --out /mnt/logs/cucumber.html --format pretty
+      cucumber -t ~@skip -t ~@unreliable -t ~@unreliable_el7 --strict --format html --out /mnt/logs/cucumber.html --format pretty
     else
       cucumber -t ~@skip -t ~@unreliable --strict --format html --out /mnt/logs/cucumber.html --format pretty
     fi
