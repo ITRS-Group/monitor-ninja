@@ -11,6 +11,9 @@ Given /^I have (\d+) services configured on host "(.*?)"$/ do |num_services, hos
 end
 
 Given /^I have these ([^ ]+)(?: configured)?:$/ do |type, table|
+  if not @configuration
+    raise "Must tag scenario/background with @configuration if using real Naemon objects"
+  end
   type.chomp!('s')
   @configuration[type] = table.hashes
 end

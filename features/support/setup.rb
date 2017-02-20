@@ -35,40 +35,38 @@ if ENV['DEBUG'] or ENV['VERBOSE']
   Capybara.javascript_driver = :poltergeist_debug
 end
 
+def scenario_name(scenario)
+  case scenario
+  when Cucumber::Ast::Scenario
+    scenario.name
+  when Cucumber::Ast::OutlineTable::ExampleRow
+    scenario.scenario_outline.name
+  else
+    "missing scenario name for class #{scenario.class}"
+  end
+end
+
 # Screenshot any failed scenario
 After do |scenario|
   if scenario.failed?
-	if ENV['CUKE_SCREEN_DIR']
-	  screen_dir = ENV['CUKE_SCREEN_DIR']
-	else
-	  screen_dir = './screenshots'
-	end
-	Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
-	screenshot = File.join(screen_dir, "FAILED_#{@scenario_name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
-	screenshot_embed_filename = "./screenshots/FAILED_#{@scenario_name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
-	page.driver.render(screenshot, :full => true)
-	embed screenshot_embed_filename, 'image/png'
-	#if ENV['DEBUG'] or ENV['VERBOSE']
-	#	page.driver.network_traffic.each { | request |
-	#	  puts "#{request.method} #{request.url} => \n" + request.response_parts.map { | response | "\t#{response.status} #{response.status_text}" }.join("\n")
-	#	}
-	#	puts page.html
-	#end
+    if ENV['CUKE_SCREEN_DIR']
+      screen_dir = ENV['CUKE_SCREEN_DIR']
+    else
+      screen_dir = './screenshots'
+    end
+    Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
+    sname = scenario_name(scenario)
+    screenshot = File.join(screen_dir, "FAILED_#{sname.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
+    screenshot_embed_filename = "./screenshots/FAILED_#{sname.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
+    page.driver.render(screenshot, :full => true)
+    embed screenshot_embed_filename, 'image/png'
   end
   Capybara.reset_sessions!
-  @scenario_name = ""
 end
 
-@scenario_name = ""
 Before do |scenario|
   @params = {}
-  case scenario
-  when Cucumber::Ast::Scenario
-    @scenario_name = scenario.name
-  when Cucumber::Ast::OutlineTable::ExampleRow
-    @scenario_name = scenario.scenario_outline.name
-  end
-  Syslog.log(Syslog::LOG_INFO, "Running '#{@scenario_name}'")
+  Syslog.log(Syslog::LOG_INFO, "Running '#{scenario_name(scenario)}'")
 end
 
 Before ('@configuration') do
@@ -80,7 +78,6 @@ Before ('@asmonitor') do
 end
 
 # Head straight to nacoma - doing so might involve visiting configure
-# FIXME: does it ever?
 Before ('@nacoma') do
   step %Q|I enter nacoma|
 end

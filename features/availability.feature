@@ -2,6 +2,7 @@
 Feature: Availability reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
+	@configuration
 	Background:
 		Given I have these hostgroups configured:
 			| hostgroup_name | alias      |
