@@ -1,3 +1,4 @@
+@unreliable_el7
 Feature: Scheduled reports
 	Test that reports can be scheduled, that scheduled can be deleted, that
 	deleting schedules deletes reports...

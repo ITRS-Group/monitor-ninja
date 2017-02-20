@@ -1,16 +1,36 @@
 post:
- install: ['npm', 'merlin-apps']
- steps: |
-  if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
-  if [ -f /etc/init.d/mysqld ]; then service mysqld restart; fi
-  if [ -f /usr/lib/systemd/system/httpd.service ]; then systemctl restart httpd; fi
-  if [ -f /usr/lib/systemd/system/mariadb.service ]; then systemctl restart mariadb; fi
-  mon restart
-  /opt/op5sys/lib/mock_license.php monitorHosts 500
-  cp /var/op5license-tests/signed_valid/license.lic /etc/op5license/op5license.lic
-  # make sure deprecated code paths throw errors in our CI environment, MON-9199:
-  echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
-  npm install qunitjs -g --prefix /opt/monitor/op5/ninja/node_modules
-  npm install node-qunit-phantomjs -g --prefix /opt/monitor/op5/ninja/node_modules
-  TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test/qunit/test_suite.html
-  TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
+  install: ['npm', 'merlin-apps']
+  steps: |
+
+    if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
+    if [ -f /etc/init.d/mysqld ]; then service mysqld restart; fi
+
+    if [ -f /usr/lib/systemd/system/httpd.service ]; then systemctl restart httpd; fi
+    if [ -f /usr/lib/systemd/system/mariadb.service ]; then systemctl restart mariadb; fi
+
+    mon restart
+
+    # make sure deprecated code paths throw errors in our CI environment, MON-9199:
+    echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
+    npm install qunitjs -g --prefix /opt/monitor/op5/ninja/node_modules
+    npm install node-qunit-phantomjs -g --prefix /opt/monitor/op5/ninja/node_modules
+    TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test/qunit/test_suite.html
+    TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
+
+    # Install cucumber and run tests
+
+    if [ -f /usr/bin/systemctl ]; then
+      gem install cucumber:1.3.6 nokogiri:1.6.0 rack:1.6.5 capybara:2.1.0 poltergeist:1.11.0 rspec:2.14.1 parallel_tests syntax:1.0.0 --no-document
+    else
+      gem2.0 install cucumber:1.3.6 nokogiri:1.6.0 rack:1.6.5 capybara:2.1.0 poltergeist:1.11.0 rspec:2.14.1 parallel_tests syntax:1.0.0 --no-rdoc --no-ri
+    fi
+
+    ulimit -c unlimited
+    mkdir -p /mnt/logs
+    echo "core ulimit: \$(ulimit -c)"
+    export CUKE_SCREEN_DIR=/mnt/logs/screenshots
+    if [ -f /usr/bin/systemctl ]; then
+      cucumber -t ~@skip -t ~@unreliable -t ~@unreliable_el7 --strict --format html --out /mnt/logs/cucumber.html --format pretty
+    else
+      cucumber -t ~@skip -t ~@unreliable --strict --format html --out /mnt/logs/cucumber.html --format pretty
+    fi

@@ -1,4 +1,4 @@
-module Op5Cucumber::NavigationHelpers
+module NavigationHelpers
   ##
 	# Convenience method of translating 'login page' to its expanded URL
 	#

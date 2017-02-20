@@ -1,4 +1,4 @@
-@summary
+@summary @unreliable_el7
 Feature: Summary reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 

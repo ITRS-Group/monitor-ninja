@@ -63,17 +63,21 @@ Requires: merlin-apps
 Requires: monitor-livestatus
 Requires: monitor-nagvis
 Requires: monitor-nacoma
-%if 0%{?rhel} >= 7
-%else
-Requires: rubygem20-op5cucumber
-%endif
-Requires: portal
-Requires: op5license-generator
-Requires: op5license-tests
-Requires: op5-phpunit
+Requires: php-phpunit-PHPUnit
+
 Requires: openldap-servers
 # For performance graph links on extinfo
 Requires: monitor-pnp
+
+Requires: gcc
+Requires: phantomjs
+%if 0%{?rhel} <= 6
+Requires: ruby20
+Requires: ruby20-devel
+%else
+Requires: ruby
+Requires: ruby-devel
+%endif
 
 %description test
 Additional test files for ninja

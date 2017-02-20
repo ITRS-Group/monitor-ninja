@@ -3,9 +3,9 @@ if (!isset($_SERVER['HTTP_X_OP5_MOCK'])) return;
 
 $mock_data_path = $_SERVER['HTTP_X_OP5_MOCK'];
 
-$log = op5log::instance('test');
+$log = op5log::instance('ninja');
 if (!is_readable($mock_data_path)) {
-	$log->log("warning", "Can not read mock data from '$mock_data_path'");
+	$log->log("error", "Can not read mock data from '$mock_data_path'");
 	return;
 }
 

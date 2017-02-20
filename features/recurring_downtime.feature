@@ -1,3 +1,4 @@
+@unreliable_el7
 Feature: Recurring downtime
 
 	Background:

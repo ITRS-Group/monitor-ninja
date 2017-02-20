@@ -1,7 +1,7 @@
 @widgets
 Feature: Widgets
 
-	@unreliable
+	@unreliable @unreliable_el7
 	Scenario: External widget listview
 		Given I have these mocked dashboards
 			| id | name       | username   | layout |
@@ -10,8 +10,8 @@ Feature: Widgets
 			| id | dashboard_id | name      | position      | setting                       |
 			| 1  | 1            | tac_hosts | {"c":0,"p":0} | {"title":"A friendly widget"} |
 		And I have these mocked hosts
-			| name			|
-			| Kira Powers   |
+			| name        |
+			| Kira Powers |
 		Given I am logged in
 		And I expose the widget "listview"
 		And I am on address "/index.php/external_widget/listview"
