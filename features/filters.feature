@@ -186,7 +186,7 @@ Feature: Filters & list views
 
 	@configuration @unreliable @integration
 	Scenario: Save filter
-		Given I am logged in as administratior
+		Given I am logged in as administrator
 		And I am on the Host details page
 		And I click "Show/Edit Text Filter"
 		And I enter "Ernie" into "lsfilter_save_filter_name"
