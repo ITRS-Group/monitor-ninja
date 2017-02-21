@@ -100,3 +100,9 @@ var FormModule = (function () {
 	return Form;
 
 })();
+
+$(document).ready(function () {
+	$('.nj-form').each(function (_, form) {
+		FormModule.add_form($(form));
+	});
+})

@@ -8,7 +8,7 @@ $element_id = 'element_id_'.uniqid();
 
 ?>
 
-<div class="nj-form-field">
+<div class="nj-form-field nj-form-field-number">
 	<label>
 		<div class="nj-form-label">
 			<?php
