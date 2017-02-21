@@ -57,9 +57,7 @@ Webgui for Naemon.
 Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
-Requires: monitor-merlin
 Requires: op5-naemon
-Requires: merlin-apps
 Requires: monitor-livestatus
 Requires: monitor-nagvis
 Requires: monitor-nacoma

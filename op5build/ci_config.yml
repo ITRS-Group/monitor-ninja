@@ -1,5 +1,5 @@
 post:
-  install: ['npm', 'merlin-apps']
+  install: ['npm']
   steps: |
 
     if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
