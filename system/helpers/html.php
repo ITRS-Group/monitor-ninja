@@ -503,6 +503,19 @@ class html {
             return $result . html::specialchars("$delimiter $quote" . $value . $quote);
         }, "") . html::specialchars(" $conjunction $quote" . $last . $quote);
 
-    }
+	}
+
+	public static function get_definition_list ($data) {
+		$html = "<dl>";
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$html .= "<dt>$key</dt>";
+				$html .= "<dd>" . self::get_definition_list($value) . "</dd>";
+			} else {
+				$html .= "<dt>$key</dt><dd>$value</dd>";
+			}
+		}
+		return $html . "</dl>";
+	}
 
 } // End html
