@@ -403,6 +403,46 @@ td.comments {
   max-width: 200px;
 }
 
+dl {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0 10%;
+}
+
+dt {
+  display: inline-block;
+  flex: 0.25 1 auto;
+  min-width: 40%;
+  font-weight: bold;
+}
+
+dd {
+  flex: 1 1 auto;
+  padding-left: 16px;
+  min-width: 40%;
+}
+
+.popup-about > dl > dd,
+.popup-about > dl > dt {
+  margin: 4px 0;
+}
+
+.popup-about table tr td {
+  text-align: center;
+  width: 33%;
+  max-width: 33%;
+}
+
+.popup-about table tr:hover td {
+  background: inherit;
+}
+
+.popup-about table {
+  margin: 8px 0 16px 0;
+}
+
 .comments .content {
   margin-top: 0;
   padding: 4px;
@@ -1726,4 +1766,12 @@ ul.shared_with_these_entities li {
 ul.shared_with_these_entities li a {
 	display: inline-block;
 	float: right;
+}
+
+.popup-about {
+  text-align: center;
+}
+
+.popup-about > a {
+  border: none;
 }
