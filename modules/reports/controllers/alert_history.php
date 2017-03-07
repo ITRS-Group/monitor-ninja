@@ -11,7 +11,7 @@ class Alert_history_Controller extends Summary_Controller
 	public function index($input = false)
 	{
 		if (isset($_SESSION['report_err_msg'])) {
-			$this->template->content = _("<h1>You're not authorized to see any hosts, so I can't show you a history of their alerts.</h1>\n<p>But then, you <i>were</i> allowed to log in, so I bet something is broken. Please contact <a href=\"mailto:support@op5.com\">support@op5.com</a> with any information you have.</p>");
+			$this->template->content = _("<h1>You're not authorized to see any hosts, so I can't show you a history of their alerts.</h1>\n<p>But then, you <i>were</i> allowed to log in, so I bet something is broken. Please contact <a href=\"https://www.op5.com/support\">OP5 Support</a> with any information you have.</p>");
 			unset($_SESSION['report_err_msg']);
 		}
 		else {
