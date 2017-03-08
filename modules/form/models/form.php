@@ -7,13 +7,14 @@ class Form_Model {
 	/**
 	 * Action, for where to submit the form
 	 */
+	private $id = '';
 	private $action = '';
+	private $method = '';
+
 	private $fields = array();
-	private $id = "";
 	private $values = array();
-	private $optional = array();
 	private $buttons = array();
-	private $method = 'POST';
+	private $optional = array();
 
 	/**
 	 * Create a form with a given set of fields

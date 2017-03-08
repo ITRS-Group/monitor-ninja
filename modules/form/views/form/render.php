@@ -2,7 +2,7 @@
 /* @var $form Form_Model */
 
 echo '<form id="' . $form->get_id() . '" class="nj-form" action="'.html::specialchars($action).'" method="' . $form->get_method() . '">';
-if ($form->get_method() === 'POST' || $form->get_method() === 'PUT' || $form->get_method() === 'PATCH') {
+if ($form->needs_csrf()) {
 	echo '<input type="hidden" name="csrf_token" value="'.html::specialchars(Session::instance()->get(Kohana::config('csrf.csrf_token'))).'"/>';
 }
 foreach($form->get_fields() as $field) {
