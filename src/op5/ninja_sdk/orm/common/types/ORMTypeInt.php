@@ -29,7 +29,7 @@ class ORMTypeInt implements ORMTypeI {
 
 		$context->raise(
 			'InvalidArgumentException',
-			"\"'\" . gettype(\$value) . \"' is not valid for integer '{$this->name}'\""
+			"\"'\" . gettype(\$value) . \"' is not valid for int '{$this->name}'\""
 		);
 
 		$context->write("} else {");
@@ -60,7 +60,7 @@ class ORMTypeInt implements ORMTypeI {
 		);
 		$context->raise(
 			'InvalidArgumentException',
-			"\"'\" . gettype(\$value) . \"' is not valid for integer '{$this->name}'\""
+			"\"'\" . gettype(\$value) . \"' is not valid for int '{$this->name}'\""
 		);
 		$context->write("} else {");
 		$context->write("\$obj->{$this->name} = intval(\$value);");
@@ -78,7 +78,7 @@ class ORMTypeInt implements ORMTypeI {
 		);
 		$context->raise(
 			'InvalidArgumentException',
-			"\"'\" . gettype(\$value) . \"' is not valid for integer '{$this->name}'\""
+			"\"'\" . gettype(\$value) . \"' is not valid for int '{$this->name}'\""
 		);
 		$context->write("} else {");
 		$context->write("\$obj->{$this->name} = intval(\$value);");

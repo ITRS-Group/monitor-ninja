@@ -18,10 +18,22 @@ class ORMTypeFloat implements ORMTypeI {
 
 	public function generate_set ($context) {
 		$context->init_function( "set_{$this->name}", array('value') );
-		$context->write( "\$value = floatval(\$value);" );
 		$context->write( "if( \$this->{$this->name} !== \$value ) {" );
+		$context->conditional(
+			'is_array($value)',
+			'is_object($value)',
+			'(is_string($value) && !preg_match("/^(\-)?\d+\.\d+$/", $value))'
+		);
+
+		$context->raise(
+			'InvalidArgumentException',
+			"\"'\" . gettype(\$value) . \"' is not valid for float '{$this->name}'\""
+		);
+		$context->write("} else {");
+		$context->write( "\$value = floatval(\$value);" );
 		$context->write( "\$this->{$this->name} = \$value;" );
 		$context->write( "\$this->_changed[%s] = true;", $this->name );
+		$context->write( "}" );
 		$context->write( "}" );
 		$context->finish_function();
 	}
@@ -38,13 +50,39 @@ class ORMTypeFloat implements ORMTypeI {
 
 	public function generate_iterator_set ($context) {
 		$context->write("if(array_key_exists(\$prefix.'{$this->backend_name}', \$values)) {");
+		$context->write("\$value = \$values[\$prefix.'{$this->backend_name}'];");
+		$context->conditional(
+			'is_array($value)',
+			'is_object($value)',
+			'(is_string($value) && !preg_match("/^(\-)?\d+\.\d+$/", $value))'
+		);
+
+		$context->raise(
+			'InvalidArgumentException',
+			"\"'\" . gettype(\$value) . \"' is not valid for float '{$this->name}'\""
+		);
+		$context->write("} else {");
 		$context->write("\$obj->{$this->name} = floatval(\$values[\$prefix.'{$this->backend_name}'] );");
+		$context->write("}");
 		$context->write("}");
 	}
 
 	public function generate_array_set ($context) {
 		$context->write("if(array_key_exists('{$this->name}', \$values)) {" );
+		$context->write("\$value = \$values['{$this->name}'];");
+		$context->conditional(
+			'is_array($value)',
+			'is_object($value)',
+			'(is_string($value) && !preg_match("/^(\-)?\d+\.\d+$/", $value))'
+		);
+
+		$context->raise(
+			'InvalidArgumentException',
+			"\"'\" . gettype(\$value) . \"' is not valid for float '{$this->name}'\""
+		);
+		$context->write("} else {");
 		$context->write("\$obj->{$this->name} = floatval(\$values['{$this->name}']);");
+		$context->write("}");
 		$context->write("}");
 	}
 

@@ -21,6 +21,7 @@ class ORMTypeBool implements ORMTypeI {
 		$context->conditional(
 			'is_array($value)',
 			'is_object($value)',
+			'is_float($value)',
 			'is_string($value)'
 		);
 		$context->raise(
@@ -53,6 +54,7 @@ class ORMTypeBool implements ORMTypeI {
 		$context->conditional(
 			'is_array($value)',
 			'is_object($value)',
+			'is_float($value)',
 			'is_string($value)'
 		);
 		$context->raise(
@@ -71,6 +73,7 @@ class ORMTypeBool implements ORMTypeI {
 		$context->conditional(
 			'is_array($value)',
 			'is_object($value)',
+			'is_float($value)',
 			'is_string($value)'
 		);
 		$context->raise(

@@ -28,8 +28,13 @@ class ORMTypeList implements ORMTypeI {
 	public function generate_set ($context) {
 		$context->init_function( "set_{$this->name}", array('value') );
 
-		$context->write("if(!is_array(\$value)) {");
-		$context->write("throw new InvalidArgumentException('Expected array for set_{$this->name}');");
+		$context->write("if(is_array(@unserialize(\$value))) {");
+		$context->write("\$value = unserialize(\$value);");
+		$context->write("} else if(!is_array(\$value)) {");
+		$context->raise(
+			'InvalidArgumentException',
+			"\"'\" . gettype(\$value) . \"' is not valid for list '{$this->name}'\""
+		);
 		$context->write("}");
 
 		$context->write("if( \$this->{$this->name} !== \$value ) {");
@@ -52,13 +57,31 @@ class ORMTypeList implements ORMTypeI {
 
 	public function generate_iterator_set ($context) {
 		$context->write("if(array_key_exists(\$prefix.'{$this->backend_name}', \$values)) {");
-		$context->write("\$obj->{$this->name} = \$values[\$prefix.'{$this->backend_name}'];");
+		$context->write("\$value = \$values[\$prefix.'{$this->backend_name}'];");
+		$context->write("if(is_array(@unserialize(\$value))) {");
+		$context->write("\$value = unserialize(\$value);");
+		$context->write("} else if(!is_array(\$value)) {");
+		$context->raise(
+			'InvalidArgumentException',
+			"\"'\" . gettype(\$value) . \"' is not valid for list '{$this->name}'\""
+		);
+		$context->write("}");
+		$context->write("\$obj->{$this->name} = \$value;");
 		$context->write("}");
 	}
 
 	public function generate_array_set ($context) {
 		$context->write("if(array_key_exists('{$this->name}', \$values)) {" );
-		$context->write("\$obj->{$this->name} = \$values['{$this->name}'];");
+		$context->write("\$value = \$values['{$this->name}'];");
+		$context->write("if(is_array(@unserialize(\$value))) {");
+		$context->write("\$value = unserialize(\$value);");
+		$context->write("} else if(!is_array(\$value)) {");
+		$context->raise(
+			'InvalidArgumentException',
+			"\"'\" . gettype(\$value) . \"' is not valid for list '{$this->name}'\""
+		);
+		$context->write("}");
+		$context->write("\$obj->{$this->name} = \$value;");
 		$context->write("}");
 	}
 

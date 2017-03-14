@@ -12,13 +12,15 @@ $tables = array (
 		'structure' => array(
 			'string' => 'string',
 			'float' => 'float',
-			'integer' => 'int',
-			'boolean' => 'bool',
+			'int' => 'int',
+			'bool' => 'bool',
 			'list' => 'list',
 			'dict' => 'dict',
+			'time' => 'time',
+			'password' => 'password',
 			'relation' => array('relation', 'TestClassB'),
 			'set' => array('set', 'TestClassB'),
-			'flags' => array('flags', array("a", "b", "c"))
+			'flags' => array('flags', array("a", "b", "c")),
 		)
 	),
 	'test_class_b' =>
