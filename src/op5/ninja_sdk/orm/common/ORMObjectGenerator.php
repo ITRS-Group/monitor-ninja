@@ -1,6 +1,7 @@
 <?php
 
 require_once('ORMGenerator.php');
+require_once('types/ORMType.php');
 
 abstract class ORMObjectGenerator extends ORMGenerator {
 	protected $associations;
@@ -16,10 +17,33 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 
 		$this->associations = array();
 
+		/**
+		 * Legacy implicit associations of LS Relations
+		 *
+		 * Used to generate get_<LSRelation Type>_set where a foreign table mentions the
+		 * currently generated class as a relation.
+		 *
+		 * e.g.
+		 * 	downtimes has the field:
+		 * 		'service' => array('Service', 'service_')
+		 * 	so when generating the Service class it will generate a:
+		 * 		get_downtimes_set()
+		 * 	which will retrieve all downtimes related to that service.
+		 *
+		 * @TODO Replace with explicit ORMTypeSet
+		 * 	e.g.
+		 * 		In the service structure for the same effect:
+		 * 			'downtimes' => array('set', array('filters' => array(
+		 *				array('service.host.name', 'host.name', '='),
+		 *				array('service.description', 'description', '=')
+		 * 			)))
+		 *
+		 */
 		foreach( $this->full_structure as $table => $tbl_struct ) {
-			foreach( $tbl_struct['structure'] as $name => $type ) {
-				if( is_array( $type ) ) {
-					if( $type[0] == $this->structure['class'] ) {
+			foreach( $tbl_struct['structure'] as $field => $type ) {
+				$ormtype = ORMTypeFactory::factory($field, $type, $tbl_struct['structure']);
+				if (is_a($ormtype, 'ORMTypeLSRelation')) {
+					if ($type[0] == $this->structure['class']) {
 						$this->associations[] = array(
 							$table,
 							$tbl_struct['class'],
@@ -45,7 +69,9 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		parent::generate($skip_generated_note);
 		$this->init_class( $this->parent_class, array('abstract') );
 		if($this->writable) {
-			$this->variable( '_changed', array(), 'private' );
+			$rename = isset($this->structure['rename']) ? $this->structure['rename'] : array();
+			$this->variable( '_changed', array(), 'protected' );
+			$this->variable( '_renamed', $rename, 'protected' );
 			$this->variable( '_oldkey', false, 'private' );
 		}
 		$this->write();
@@ -54,7 +80,8 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 
 		/* Storage */
 		foreach( $this->structure['structure'] as $field => $type ) {
-			$this->storage_object( $field, $type );
+			$type = ORMTypeFactory::factory($field, $type, $this->structure);
+			$this->write( "private \$$field = " . $type->get_default_value()  . ";" );
 		}
 
 		$this->generate_factory_from_array();
@@ -69,17 +96,11 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->generate_get_key();
 
 		/* Getters and setters */
-		foreach( $this->structure['structure'] as $field => $type ) {
-			if( is_array($type) ) {
-				$this->{"get_object"}( $field, $type );
-			} else {
-				$this->{"get_$type"}( $field );
-			}
-			if( $this->writable ) {
-				if( !is_array($type) ) {
-					/* Only support setting of variables for now */
-					$this->{"set_$type"}( $field );
-				}
+		foreach ($this->structure['structure'] as $field => $type) {
+			$type = ORMTypeFactory::factory($field, $type, $this->structure);
+			$type->generate_get($this);
+			if ($this->writable) {
+				$type->generate_set($this);
 			}
 		}
 
@@ -107,9 +128,10 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write( '$obj = new static();');
 		$this->write( '$structure = array(' );
 		foreach ($this->structure['structure'] as $field => $type) {
-			if(!is_array($type)) {
+			$ormtype = ORMTypeFactory::factory($field, $type, $this->structure);
+			if(!is_a($ormtype, 'ORMTypeLSRelation')) {
 				// ignore the sub objects, they are handled below
-				$this->write("'$field' => '$type',");
+				$this->write("'$field' => " . var_export($type, true) . ",");
 			}
 		}
 		$this->write( ');' );
@@ -134,14 +156,8 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->comment('If object fields exists, make sure the object only exists in the export array once');
 		$this->write( '$obj->export = array_unique($obj->export);');
 		foreach( $this->structure['structure'] as $field => $type ) {
-			$this->write("if (array_key_exists(%s, \$values)) {", $field);
-			if( is_array($type) ) {
-				$subclass = $type[0] . self::$model_suffix;
-				$this->write("\$obj->$field = $subclass::factory_from_array(\$values[%s], \$subobj_export[%s]);", $field, $field);
-			} else {
-				$this->write("\$obj->$field = \$values[%s];", $field);
-			}
-			$this->write('}');
+			$type = ORMTypeFactory::factory($field, $type, $this->structure);
+			$type->generate_array_set($this);
 		}
 		if($this->writable) {
 			$this->write( '$obj->_oldkey = array();');
@@ -166,9 +182,10 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write( '$obj = new static();');
 		$this->write( '$structure = array(' );
 		foreach ($this->structure['structure'] as $field => $type) {
-			if(!is_array($type)) {
+			$ormtype = ORMTypeFactory::factory($field, $type, $this->structure);
+			if(!is_a($ormtype, 'ORMTypeLSRelation')) {
 				// ignore the sub objects, they are handled below
-				$this->write("'$field' => '$type',");
+				$this->write("'$field' => " . var_export($type, true) . ",");
 			}
 		}
 		$this->write( ');' );
@@ -193,15 +210,8 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->comment('If object fields exists, make sure the object only exists in the export array once');
 		$this->write( '$obj->export = array_unique($obj->export);');
 		foreach( $this->structure['structure'] as $field => $type ) {
-			$backend_name = $field;
-			if(isset($this->structure['rename']) && isset($this->structure['rename'][$field])) {
-				$backend_name = $this->structure['rename'][$field];
-			}
-			if( is_array($type) ) {
-				$this->{"fetch_object"}( $field, $backend_name, $type );
-			} else {
-				$this->{"fetch_$type"}( $field, $backend_name );
-			}
+			$type = ORMTypeFactory::factory($field, $type, $this->structure);
+			$type->generate_iterator_set($this);
 		}
 		if($this->writable) {
 			$this->write( '$obj->_oldkey = array();');
@@ -240,10 +250,11 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write('}');
 
 		$this->write('$values = array();');
-		foreach( $this->structure['structure'] as $name => $type ) {
-			$this->write(   'if(isset($this->_changed[%s]) && $this->_changed[%s]) {', $name, $name);
-			$this->write(     '$values[%s] = $this->'.$name.';', $name);
-			$this->write(   '}');
+		foreach( $this->structure['structure'] as $field => $type ) {
+			$type = ORMTypeFactory::factory($field, $type, $this->structure);
+			$this->write('if(isset($this->_changed[%s]) && $this->_changed[%s]) {', $field, $field);
+			$type->generate_save($this);
+			$this->write('}');
 		}
 		$this->write(  'if($this->_oldkey === false) {'); // New
 		$this->write(     '$pool = new '.$this->pool_class.'();');
@@ -299,7 +310,9 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->init_function('get_'.$table.'_set');
 		$this->write('$set = '.$class.'Pool'.self::$model_suffix.'::all();');
 		foreach( $this->key as $key_field ) {
-			$this->write('$set = $set->reduce_by(%s,$this->get_'.$key_field.'(),"=");', $field.'.'.$key_field);
+			$keys = explode(".", $key_field);
+			$getter = implode("->", array_map(function ($field) {return "get_{$field}()";}, $keys));
+			$this->write('$set = $set->reduce_by(%s,$this->'.$getter.',"=");', $field.'.'.$key_field);
 		}
 		$this->write('return $set;');
 		$this->finish_function();
@@ -331,330 +344,6 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		} else {
 			$this->write('return false;');
 		}
-		$this->finish_function();
-	}
-
-
-	/**
-	 * Given a field type, returns the default value
-	 * of that type as a string.
-	 *
-	 * @param string $type
-	 * @return string
-	 */
-	private function default_value_of_type($type) {
-		/*
-		 * in case the type is a "foreign relation" (described by a tuple
-		 * ('foreign type', 'local prefix')), it's likely an object so we set
-		 * null as the default value
-		 */
-		if (is_array($type)) {
-			return 'null';
-		}
-
-		switch ($type) {
-		case 'int': 		return '0';
-		case 'time':		return '0';
-		case 'float':		return '0.0';
-		case 'password':	return '""';
-		case 'string':		return '""';
-		case 'dict':		return 'array()';
-		case 'list':		return 'array()';
-		}
-		throw new ORMGeneratorException("Unhandled type '$type'; can not determine default value");
-	}
-
-	/**
-	 * Writes a private variable to class
-	 *
-	 * @param string $name
-	 * @param string $type
-	 * @return void
-	 **/
-	private function storage_object( $name, $type ) {
-		$this->write( "private \$$name = " . $this->default_value_of_type($type)  . ";" );
-	}
-
-	/**
-	 * Writes an object fetcher
-	 *
-	 * @param $name string
-	 * @param $type string
-	 * @return void
-	 **/
-	private function fetch_object( $name, $backend_name, $type ) {
-		list( $class, $prefix ) = $type;
-		// Livestatus handles only one level of prefixes... might change in future? (for example comments: service.host.name should be host.name
-		$this->write( "\$obj->$name = $class".self::$model_suffix."::factory_from_setiterator( \$values, %s, isset(\$subobj_export[%s]) ? \$subobj_export[%s] : array() );", $prefix, $backend_name, $name );
-	}
-
-	/**
-	 * Writes function getting object named $name
-	 *
-	 * @param $name string
-	 * @param $type string		Unused?
-	 * @return void
-	 **/
-	private function get_object( $name, $type ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_string( $name, $backend_name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
-		$this->write( "\$obj->$name = (string)\$values[\$prefix.'$backend_name'];" );
-		$this->write( "}" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_password( $name, $backend_name ) {
-		$this->fetch_string($name, $backend_name);
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_string( $name ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_password( $name ) {
-		$this->get_string($name);
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_string( $name ) {
-		$this->init_function( "set_$name", array('value') );
-		$this->write( "\$value = (string)\$value;" );
-		$this->write( "if( \$this->$name !== \$value ) {" );
-		$this->write( "\$this->$name = \$value;" );
-		$this->write( "\$this->_changed[%s] = true;", $name );
-		$this->write( "}" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_password( $name ) {
-		$this->set_string($name);
-	}
-
-	/* Time (treated as int) */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_time( $name, $backend_name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) { ");
-		$this->write( "\$obj->$name = intval( \$values[\$prefix.'$backend_name'] );" );
-		$this->write( "}" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_time( $name ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_time( $name ) {
-		$this->init_function( "set_$name", array('value') );
-		$this->write( "\$value = intval(\$value);" );
-		$this->write( "if( \$this->$name !== \$value ) {" );
-		$this->write( "\$this->$name = \$value;" );
-		$this->write( "\$this->_changed[%s] = true;", $name );
-		$this->write( "}" );
-		$this->finish_function();
-	}
-
-	/* Int */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_int( $name, $backend_name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$obj->$name = intval( \$values[\$prefix.'$backend_name'] );" );
-		$this->write( "}" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_int( $name ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_int( $name ) {
-		$this->init_function( "set_$name", array('value') );
-		$this->write( "\$value = intval(\$value);" );
-		$this->write( "if( \$this->$name !== \$value ) {" );
-		$this->write( "\$this->$name = \$value;" );
-		$this->write( "\$this->_changed[%s] = true;", $name );
-		$this->write( "}" );
-		$this->finish_function();
-	}
-
-	/* Float */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_float( $name, $backend_name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$obj->$name = floatval( \$values[\$prefix.'$backend_name'] );" );
-		$this->write( "}" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_float( $name ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_float( $name ) {
-		$this->init_function( "set_$name", array('value') );
-		$this->write( "\$value = floatval(\$value);" );
-		$this->write( "if( \$this->$name !== \$value ) {" );
-		$this->write( "\$this->$name = \$value;" );
-		$this->write( "\$this->_changed[%s] = true;", $name );
-		$this->write( "}" );
-		$this->finish_function();
-	}
-
-	/* List */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_list( $name, $backend_name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$obj->$name = \$values[\$prefix.'$backend_name'];" );
-		$this->write( "}" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_list( $name ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_list( $name ) {
-		$this->init_function( "set_$name", array('value') );
-		$this->write( "if( \$this->$name !== \$value ) {" );
-		$this->write( "\$this->$name = \$value;" );
-		$this->write( "\$this->_changed[%s] = true;", $name );
-		$this->write( "}" );
-		$this->finish_function();
-	}
-
-	/* Dict */
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function fetch_dict( $name, $backend_name ) {
-		$this->write( "if(array_key_exists(\$prefix.'$backend_name', \$values)) {" );
-		$this->write( "\$obj->$name = \$values[\$prefix.'$backend_name'];" );
-		$this->write( "}" );
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function get_dict( $name ) {
-		$this->init_function( "get_$name" );
-		$this->write( "return \$this->$name;" );
-		$this->finish_function();
-	}
-
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 **/
-	private function set_dict( $name ) {
-		$this->init_function( "set_$name", array('value') );
-		$this->write( "if( \$this->$name !== \$value ) {" );
-		$this->write( "\$this->$name = \$value;" );
-		$this->write( "\$this->_changed[%s] = true;", $name );
-		$this->write( "}" );
 		$this->finish_function();
 	}
 

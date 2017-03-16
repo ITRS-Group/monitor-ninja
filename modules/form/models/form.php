@@ -7,12 +7,14 @@ class Form_Model {
 	/**
 	 * Action, for where to submit the form
 	 */
+	private $id = '';
 	private $action = '';
+	private $method = '';
+
 	private $fields = array();
-	private $id = "";
 	private $values = array();
-	private $optional = array();
 	private $buttons = array();
+	private $optional = array();
 
 	/**
 	 * Create a form with a given set of fields
@@ -33,6 +35,39 @@ class Form_Model {
 			}
 		}
 	}
+
+	/**
+	 * Returns whether this form's submission requires a CSRF token
+	 *
+	 * @return bool
+	 */
+	public function needs_csrf () {
+		return in_array($this->method, array("PUT", "POST", "PATCH"), true);
+	}
+
+	/**
+	 * Sets the method of the form, otherwise the value is by default "" which
+	 * defaults to not-set in HTML, in turn defaulting to GET.
+	 *
+	 * @param $method string - The method to to use (POST, PUT, PATCH, GET) when submitting the form
+	 */
+	public function set_method ($method) {
+		$method_upper = strtoupper($method);
+		if (!in_array($method_upper, array("PUT", "POST", "PATCH", "GET"), true)) {
+			throw new FormException("Invalid method '$method' for form");
+		}
+		$this->method = $method_upper;
+	}
+
+	/**
+	 * Gets the method of the form
+	 *
+	 * @return string
+	 */
+	public function get_method () {
+		return $this->method;
+	}
+
 	/**
 	 * Add a new field to the end of the form
 	 *

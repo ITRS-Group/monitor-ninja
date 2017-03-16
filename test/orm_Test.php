@@ -95,7 +95,87 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 				'should_be_scheduled' => 0,'state' => 2,'state_type' => 1,
 				'statusmap_image' => 'op5eye.png','total_services' => 35,
 				'worst_service_hard_state' => 2,'worst_service_state' => 2,
-				'x_3d' => 0,'y_3d' => 0,'z_3d' => 0)));
+				'x_3d' => 0,'y_3d' => 0,'z_3d' => 0)
+			),
+		"services" => array (
+			array (
+				'accept_passive_checks' => 1,
+				'acknowledged' => 0,
+				'acknowledgement_type' => 0,
+				'active_checks_enabled' => 0,'address' => 'localhost',
+				'alias' => 'OP5 Monitor Server',
+				'check_command' => 'check-host-alive',
+				'check_flapping_recovery_notification' => 0,
+				'check_freshness' => 0,'check_interval' => 5,
+				'check_options' => 0,'check_period' => '24x7',
+				'check_source' => '','check_type' => 1,'checks_enabled' => 0,
+				'childs' => array (),'comments' => array (5),
+				'comments_with_info' => array (
+					array (5,'a_user','A little comment')),
+				'contact_groups' => array ('support-group'),
+				'contacts' => array ('monitor'),'current_attempt' => 3,
+				'current_notification_number' => 0,
+				'custom_variable_names' => array ('TYPE'),
+				'custom_variable_values' => array ('core'),
+				'custom_variables' => array ('TYPE' => 'core'),
+				'display_name' => 'monitor','downtimes' => array (),
+				'downtimes_with_info' => array (),'event_handler' => '',
+				'event_handler_enabled' => 1,'execution_time' => 0,
+				'filename' => '','first_notification_delay' => 0,
+				'flap_detection_enabled' => 1,
+				'groups' => array ('unix-servers','op5_monitor_servers',
+					'network'),'hard_state' => 2,'has_been_checked' => 1,
+				'high_flap_threshold' => 0,'hourly_value' => 36,
+				'icon_image' => 'op5eye.png',
+				'icon_image_alt' => 'OP5 Monitor Server',
+				'icon_image_expanded' => 'op5eye.png','id' => 3,
+				'in_check_period' => 1,'in_notification_period' => 1,
+				'initial_state' => 0,'is_executing' => 0,'is_flapping' => 0,
+				'last_check' => 1391082608,'last_hard_state' => 0,
+				'last_hard_state_change' => 1391082608,'last_notification' => 0,
+				'last_state' => 0,'last_state_change' => 1391082608,
+				'last_time_down' => 1381753813,'last_time_unreachable' => 0,
+				'last_time_up' => 1390393394,'latency' => 0.939,
+				'long_plugin_output' => 'Line one\\nLine two',
+				'low_flap_threshold' => 0,'max_check_attempts' => 3,
+				'modified_attributes' => 2,
+				'modified_attributes_list' => array ('active_checks_enabled'),
+				'description' => 'test-service',
+				'host_name' => 'monitor',
+				'host_state' => 0,
+				'host_has_been_checked' => 1,
+				'host_action_url' => '/monitor/index.php/configuration/configure',
+				'host_action_url_expanded' => '/monitor/index.php/configuration/configure',
+				'next_check' => 0,
+				'next_notification' => 0,
+				'no_more_notifications' => 0,'notes' => '',
+				'notes_expanded' => '','notes_url' => '/',
+				'notes_url_expanded' => '/','notification_interval' => 0,
+				'notification_period' => '24x7','notifications_enabled' => 1,
+				'num_services' => 35,'num_services_crit' => 5,
+				'num_services_hard_crit' => 5,'num_services_hard_ok' => 26,
+				'num_services_hard_unknown' => 4,'num_services_hard_warn' => 0,
+				'num_services_ok' => 26,'num_services_pending' => 0,
+				'num_services_unknown' => 4,'num_services_warn' => 0,
+				'obsess' => 1,'obsess_over_host' => 1,'parents' => array (),
+				'pending_flex_downtime' => 0,'percent_state_change' => 0,
+				'perf_data' => '','plugin_output' => 'Never gonna make you cry,',
+				'pnpgraph_present' => 1,'process_performance_data' => 1,
+				'retry_interval' => 1,'scheduled_downtime_depth' => 0,
+				'services' => array ('op5backup state','Zombie processes',
+					'Users'),
+				'services_with_info' => array (
+					array ('op5backup state',2,1,'check_op5backup2 CRITICAL'),
+					array ('Zombie processes',0,1,'PROCS OK: 0 processes'),
+					array ('Users',0,1,'USERS OK - 1 users currently logged in')),
+				'services_with_state' => array (array ('op5backup state',2,1),
+					array ('Zombie processes',0,1),array ('Users',0,1)),
+				'should_be_scheduled' => 0,'state' => 2,'state_type' => 1,
+				'statusmap_image' => 'op5eye.png','total_services' => 35,
+				'worst_service_hard_state' => 2,'worst_service_state' => 2,
+				'x_3d' => 0,'y_3d' => 0,'z_3d' => 0)
+			)
+			);
 	/**
 	 * Contains a reference to the mocked livestatus, so we can see some debug
 	 * variables
@@ -182,6 +262,22 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests that implicitly generated LS association functions support flat relations
+	 */
+	public function test_ls_legacy_associations_with_flat_relations () {
+		$host = HostPool_Model::all()->reduce_by('name', 'monitor', '=')->one();
+		$this->assertInstanceOf('ServiceSet_Model', $host->get_services_set());
+	}
+
+	/**
+	 * Tests that implicitly generated LS associations supports nested relations
+	 */
+	public function test_ls_legacy_associations_with_nested_relations () {
+		$service = ServicePool_Model::all()->reduce_by('description', 'test-service', '=')->one();
+		$this->assertInstanceOf('DowntimeSet_Model', $service->get_downtimes_set());
+	}
+
+	/**
 	 * Test column renaming, which is having different name in backend and frontend
 	 */
 	public function test_renaming() {
@@ -250,6 +346,12 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 		$this->assertNotEmpty($host_name);
 	}
 
+	public function test_saved_filter_setting_filter_sets_table () {
+		$obj = new SavedFilter_Model();
+		$obj->set_filter('[saved_filters] all');
+		$this->assertEquals('saved_filters', $obj->get_filter_table());
+	}
+
 	/**
 	 * Test create/update/delete
 	 *
@@ -267,9 +369,6 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 		$obj->set_filter('[saved_filters] all');
 		$obj->set_filter_description('This is a filter used in tests');
 		$obj->set_filter_name($current_name);
-
-		// ->set_filter() should set filter table, verify that...
-		$this->assertEquals('saved_filters', $obj->get_filter_table());
 
 		$obj->save();
 		unset($obj); // We wan't a clean environment to next step

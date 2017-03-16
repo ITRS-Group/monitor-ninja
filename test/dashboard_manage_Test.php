@@ -136,7 +136,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$sut->delete_dashboard();
 
 		$this->assertSame(0, count(DashboardPool_Model::all()));
-		$this->assertSame(false, DashboardPool_Model::fetch_by_key(34));
+		$this->assertNull(DashboardPool_Model::fetch_by_key(34));
 	}
 
 	/**
