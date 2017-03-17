@@ -74,7 +74,7 @@ class ORMDriverNative implements ORMDriverInterface {
 					break;
 
 				foreach ($structure["structure"] as $field => $type) {
-					if (is_array($type) && class_exists($type[0] . '_Model')) {
+					if (is_array($type)) {
 						list($class_prefix, $field_prefix) = $type;
 						$pool_model = $class_prefix . 'Pool_Model';
 						if(!isset($pools[$pool_model])) {

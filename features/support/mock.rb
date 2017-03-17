@@ -87,21 +87,7 @@ module Mock
           # (at least) filter out the "alias" column. Otherwise, if we try to
           # mock the alias column in a cucumber step, we get an array as a
           # value, with a single string as a member.
-
-          if not [
-            'alias',
-            'notes',
-            'obsess',
-            'accept_passive_checks',
-            'enable_notifications',
-            'enable_event_handlers',
-            'execute_service_checks',
-            'execute_host_checks',
-            'accept_passive_service_checks',
-            'accept_passive_host_checks',
-            'obsess_over_hosts',
-            'obsess_over_services'
-          ].include? field and field.end_with? 's' and value.is_a? String
+          if not ['alias', 'notes'].include? field and field.end_with? 's' and value.is_a? String
             values = value.split ','
             if values[0].is_a? String and values[0].include? "="
               hash[field] = {}

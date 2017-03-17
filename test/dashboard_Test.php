@@ -93,7 +93,7 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 		);
 
 		$dashboard = DashboardPool_Model::fetch_by_key(1);
-		$this->assertNull($dashboard);
+		$this->assertFalse($dashboard);
 
 		// But as superuser we should.
 		Auth::instance(array('session_key' => false))->force_user(

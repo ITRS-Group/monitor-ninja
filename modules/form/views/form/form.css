@@ -36,20 +36,6 @@ form.nj-form .nj-form-object-selector {
   max-width: none;
 }
 
-form.nj-form .nj-form-field-flags .nj-form-field-checkbox label {
-  display: inline-block;
-  min-width: 128px;
-}
-
-form.nj-form .nj-form-field-flags .nj-form-field-checkbox input {
-  margin-right: 4px;
-}
-
-form.nj-form .nj-form-field-flags .nj-form-field-checkbox {
-  padding: 0;
-  width: auto;
-}
-
 form.nj-form input,
 form.nj-form textarea,
 form.nj-form select {
@@ -82,13 +68,9 @@ form.nj-form select {
   height: auto;
 }
 
-.nj-form a {
-  border: none;
-}
-
-.nj-form button,
-.nj-form input[type="submit"],
-.nj-form input[type="reset"]{
+form.nj-form button,
+form.nj-form input[type="submit"],
+form.nj-form input[type="reset"]{
   padding: 6px 24px;
   margin: 2px 4px;
   border-radius: 2px;
@@ -112,6 +94,11 @@ form.nj-form input[type="text"] {
 form.nj-form input[type="number"] {
   padding: 8px;
   width: 124px;
+}
+
+form.nj-form .nj-form-field-number {
+   width: 140px;
+   min-width: 140px;
 }
 
 /* Checkbox */

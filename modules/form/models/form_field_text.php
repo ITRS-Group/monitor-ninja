@@ -45,9 +45,6 @@ class Form_Field_Text_Model extends Form_Field_Model {
 		if (!is_string($raw_data[$name])) {
 			throw new FormException("$name is not a text field", $this);
 		}
-		if (!trim($raw_data[$name])) {
-			throw new FormException("$name cannot be empty", $this);
-		}
 		$result->set_value($name, $raw_data[$name]);
 	}
 }

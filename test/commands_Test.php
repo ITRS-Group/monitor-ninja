@@ -72,13 +72,13 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 				'hostgroups' => array(
 					array(
 						'name' => 'Intini',
-						'members' => array('Jabbaraj')
+						'members' => 'Jabbaraj'
 					)
 				),
 				'hosts' => array(
 					array(
 						'name' => 'Jabbaraj',
-						'groups' => array('Intini')
+						'groups' => 'Intini'
 					)
 				)
             )
@@ -99,13 +99,13 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 				'hostgroups' => array(
 					array(
 						'name' => 'Intini',
-						'members' => array('Jabbaraj')
+						'members' => 'Jabbaraj'
 					)
 				),
 				'hosts' => array(
 					array(
 						'name' => 'Jabbaraj',
-						'groups' => array('Intini')
+						'groups' => 'Intini'
 					)
 				),
 				'services' => array(
@@ -132,14 +132,14 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 				'servicegroups' => array(
 					array(
 						'name' => 'Intini',
-						'members' => array('Jabbaraj')
+						'members' => 'Jabbaraj'
 					)
 				),
 				'services' => array(
 					array(
 						'description' => 'Jabbaraj',
 						'host' => 'Pippin',
-						'groups' => array('Intini')
+						'groups' => 'Intini'
 					)
 				),
 				'hosts' => array(
@@ -165,7 +165,7 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 				'servicegroups' => array(
 					array(
 						'name' => 'Intini',
-						'members' => array('Merry')
+						'members' => 'Merry'
 					)
 				),
 				'hosts' => array(
@@ -177,7 +177,7 @@ class Command_Test extends PHPUnit_Framework_TestCase {
 					array(
 						'description' => 'Merry',
 						'host' => 'Jabbaraj',
-						'groups' => array('Intini')
+						'groups' => 'Intini'
 					)
 				)
             )

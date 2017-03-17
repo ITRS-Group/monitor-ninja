@@ -1,7 +1,6 @@
 <?php
 
 require_once('ORMGenerator.php');
-require_once('types/ORMType.php');
 
 abstract class ORMObjectSetGenerator extends ORMGenerator {
 	public $associations; /** an association is a way to get a one-to-many */
@@ -14,8 +13,7 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 
 		foreach( $full_structure as $table => $tbl_struct ) {
 			foreach( $tbl_struct['structure'] as $name => $type ) {
-				$ormtype = ORMTypeFactory::factory($name, $type, $tbl_struct['structure']);
-				if(is_a($ormtype, 'ORMTypeLSRelation')) {
+				if( is_array( $type ) ) {
 					if( $type[0] == $this->structure['class'] ) {
 						$this->associations[] = array(
 							$table,
@@ -71,12 +69,10 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 		$this->write(   '}' );
 		$this->write( '}' );
 		foreach( $this->structure['structure'] as $name => $type ) {
-			$ormtype = ORMTypeFactory::factory($name, $type, $this->structure);
 			if(isset($this->structure['rename']) && isset($this->structure['rename'][$name])) {
 				$name = $this->structure['rename'][$name];
 			}
-			/* Legacy relation */
-			if (is_a($ormtype, 'ORMTypeLSRelation')) {
+			if(is_array($type)) {
 				$this->write('$columns = '.$type[0].'Set'.self::$model_suffix.'::apply_columns_rewrite($columns,%s);',$name.".");
 			}
 		}

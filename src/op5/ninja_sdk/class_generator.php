@@ -218,17 +218,6 @@ abstract class class_generator {
 			fwrite( $this->fp, str_repeat( "\t", $curlvl ) . "// " . trim($line) . "\n" );
 		}
 	}
-
-	public function conditional () {
-		$conditions = func_get_args();
-		$expression = implode(" || ", array_map(function ($cond) {return "($cond)";}, $conditions));
-		$this->write("if ($expression) {");
-	}
-
-	public function raise ($exception, $message = "") {
-		$this->write("throw new $exception($message);");
-	}
-
 	public function write( $block = '' ) {
 		$args = func_get_args();
 		$block = array_shift( $args );

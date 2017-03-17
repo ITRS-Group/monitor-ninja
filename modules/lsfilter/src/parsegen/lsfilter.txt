@@ -6,7 +6,7 @@ _comment    /^(\/\*(?:[^\*]|\*[^\/])*\*\/)/
 string      /^("(?:[^"\\]|\\.)*")/
 
 all         /^(all)(?:[^a-z0-9_][\s\S]*|)$/i
-none        /^(none)(?:[^a-z0-9_][\s\S]*|)$/i
+
 
 and         /^(and)(?:[^a-z0-9_][\s\S]*|)$/i
 not         /^(not)(?:[^a-z0-9_][\s\S]*|)$/i
@@ -64,7 +64,6 @@ filter_ok:          filter4        = match
 _filter_parentesis: filter4        = _par_l filter _par_r
 
 match_all:          match          = _all
-match_none:         match          = _none
 
 match_in:           match          = _in set_descr
 match_field_in:     match          = field _in set_descr

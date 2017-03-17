@@ -74,7 +74,7 @@ class Form_Field_Perfdata_Model extends Form_Field_Model {
 		}
 		$valid_performance_data = $orm_model->get_perf_data();
 		if(!$valid_performance_data) {
-			throw new FormException("'$this->target_model' contains an object that doesn't have performance data", $this);
+			throw new FormException("'$this->target_model' contains an object that doesn't have performance data");
 		}
 		if(!array_key_exists($raw_data[$name], $valid_performance_data)) {
 			throw new FormException("The performance data source '".$raw_data[$name]."' is not found on the given object", $this);

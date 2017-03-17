@@ -114,14 +114,6 @@ class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 		return $this->pool->all();
 	}
 
-	// match_all: match := * none
-	/**
-	 * Visit the given grammar rule
-	 */
-	public function visit_match_none() {
-		return $this->pool->none();
-	}
-
 	// match_in: match := * in string
 	/**
 	 * Visit the given grammar rule

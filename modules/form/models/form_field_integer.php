@@ -5,26 +5,6 @@
  */
 class Form_Field_Integer_Model extends Form_Field_Model {
 
-	private $placeholder;
-
-	/**
-	 * @param $name string
-	 * @param $pretty_name string
-	 * @param $placeholder string
-	 */
-	public function __construct($name, $pretty_name, $placeholder = '') {
-		parent::__construct( $name, $pretty_name );
-		$this->placeholder = $placeholder;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_placeholder() {
-		return $this->placeholder;
-	}
-
-
 	/**
 	 * @return string
 	 */

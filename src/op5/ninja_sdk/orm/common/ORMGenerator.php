@@ -103,14 +103,6 @@ abstract class ORMGenerator extends class_generator {
 		$this->write("return %s;", $this->obj_class);
 		$this->finish_function();
 
-		$this->init_function('get_object_description');
-		if (isset($this->structure['description'])) {
-			$this->write(sprintf("return '%s';", $this->structure['description']));
-		} else {
-			$this->write(sprintf("return 'Object %s has no description';", $this->name));
-		}
-		$this->finish_function();
-
 		$this->init_function('class_set');
 		$this->write("return %s;", $this->set_class);
 		$this->finish_function();

@@ -176,5 +176,6 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 			),
 			'host_perfdata' => 'Munny Saelee'
 		));
+		$this->assertTrue(false, "process_data() should have thrown an exception");
 	}
 }
