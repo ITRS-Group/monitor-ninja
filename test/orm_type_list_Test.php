@@ -107,4 +107,27 @@ class ORM_Type_List_Test extends PHPUnit_Framework_TestCase {
 		$from_array->set_list($value);
 	}
 
+	public function test_list_values_are_the_same_when_read_as_saved () {
+
+		op5objstore::instance()->mock_clear();
+		op5objstore::instance()->mock_add(
+			"ORMDriverMySQL default",
+			new ORMDriverNative(
+				array("test_class_a" => array()),
+				null,
+				"ORMDriverMySQL default"
+			)
+		);
+
+		$instance = new TestClassA_Model();
+		$instance->set_string("test-object");
+		$instance->set_list(array("a", "b", "c"));
+		$instance->save();
+
+		$this->assertEquals(1, TestClassAPool_Model::all()->count());
+		$sought = TestClassAPool_Model::all()->reduce_by("string", "test-object", "=")->one();
+		$this->assertEquals(array("a", "b", "c"), $sought->get_list());
+
+	}
+
 }
