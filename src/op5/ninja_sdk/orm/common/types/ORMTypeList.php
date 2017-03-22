@@ -52,7 +52,7 @@ class ORMTypeList implements ORMTypeI {
 	}
 
 	public function generate_save ($context) {
-		$context->write("\$values['{$this->name}'] = implode(\",\", \$this->{$this->name});");
+		$context->write("\$values['{$this->name}'] = \$this->{$this->name};");
 	}
 
 	public function generate_iterator_set ($context) {
