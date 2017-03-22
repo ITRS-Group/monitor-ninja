@@ -125,7 +125,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that host should by default include service alerts edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hosts&objects%5B0%5D=win-server1&report_period=forever"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -139,7 +142,10 @@ Feature: Summary reports
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that host should by default include service alerts edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hosts&objects%5B0%5D=win-server1&report_period=forever"
 		And I select "Alert totals" from "Summary type"
 		And I click "Show report"
 		Then I should see "Alert totals"
@@ -176,7 +182,10 @@ Feature: Summary reports
 		And I should see "2"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi host report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hosts&objects%5B0%5D=win-server1&objects%5B1%5D=linux-server1"
 		And I select "Most recent alerts" from "Summary type"
 		And I check "Include full output"
 		And I click "Show report"
@@ -188,7 +197,10 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi host report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hosts&objects%5B0%5D=win-server1&objects%5B1%5D=linux-server1"
 		And I select "Alert totals" from "Summary type"
 		And I click "Show report"
 		Then I should see "Alert totals"
@@ -225,7 +237,10 @@ Feature: Summary reports
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single service report should by default include host alerts edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=services&objects%5B0%5D=win-server1%3BPING"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -236,7 +251,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single service report should by default include host alerts edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=services&objects%5B0%5D=win-server1%3BPING"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -278,7 +296,10 @@ Feature: Summary reports
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on same host report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=services&objects%5B0%5D=win-server1%3BPING&objects%5B1%5D=win-server1%3BSwap+Usage"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -290,7 +311,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on same host report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=services&objects%5B0%5D=win-server1%3BPING&objects%5B1%5D=win-server1%3BSwap+Usage"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -334,7 +358,10 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "Swap Usage"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on different host report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=services&objects%5B0%5D=linux-server1%3BSystem+Load&objects%5B1%5D=win-server1%3BPING"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -346,7 +373,10 @@ Feature: Summary reports
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on different host report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=services&objects%5B0%5D=linux-server1%3BSystem+Load&objects%5B1%5D=win-server1%3BPING"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -385,7 +415,10 @@ Feature: Summary reports
 		And I shouldn't see "Swap Usage"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single hostgroup report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -394,7 +427,10 @@ Feature: Summary reports
 		And I shouldn't see "win-server"
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single hostgroup report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -434,7 +470,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi hostgroup report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers&objects%5B1%5D=WindowsServers"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -445,7 +484,10 @@ Feature: Summary reports
 		And I should see "PING"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi hostgroup report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers&objects%5B1%5D=WindowsServers"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -485,7 +527,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers&objects%5B1%5D=MixedGroup"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -495,7 +540,10 @@ Feature: Summary reports
 		And I shouldn't see "win-server1"
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers&objects%5B1%5D=MixedGroup"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -532,7 +580,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=servicegroups&objects%5B0%5D=pings"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -542,7 +593,10 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=servicegroups&objects%5B0%5D=pings"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -582,7 +636,10 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi servicegroup report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=servicegroups&objects%5B0%5D=pings&objects%5B1%5D=empty"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -592,7 +649,10 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi servicegroup report edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=servicegroups&objects%5B0%5D=pings&objects%5B1%5D=empty"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -624,12 +684,18 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Alert totals"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that report on custom report date edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers&report_period=custom&rpttimeperiod=workhours&start_time=1357165860&end_time=1365021120"
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that report on custom report date edit settings form content rendered correct
+		When I am on address "/index.php/summary/edit_settings?report_type=hostgroups&objects%5B0%5D=LinuxServers&report_period=custom&rpttimeperiod=workhours&start_time=1357165860&end_time=1365021120"
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"

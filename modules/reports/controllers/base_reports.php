@@ -41,6 +41,8 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	abstract public function index($input = false);
 	/** Controller method that should render a report */
 	abstract public function generate($input = false);
+	/** Controller method that should render a form for editing a report in LightBox */
+	abstract public function edit_settings($input = false);
 
 	/**
 	 * Fill the toolbar with appropriate things for the current report
@@ -70,11 +72,13 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		}
 
 		$lp = LinkProvider::factory();
+		$edit_settings_args = $this->options->as_keyval();
 		if($this->options['report_id']) {
 			$this->template->toolbar->button(_('View schedule'), array('href' => $lp->get_url('schedule', 'show'), 'id' => 'show_schedule'));
+			$edit_settings_args = array('report_id' => $this->options['report_id']);
 		}
 
-		$this->template->toolbar->button(_('Edit settings'), array('href' => '#options', 'class' => 'fancybox'));
+		$this->template->toolbar->button(_('Edit settings'), array('href' => $lp->get_url($this->type, 'edit_settings', $edit_settings_args), 'class' => 'edit_settings'));
 		$this->template->toolbar->button(_('Permalink'), array('href' => $lp->get_url($this->type, 'generate', $this->options->as_keyval())));
 	}
 

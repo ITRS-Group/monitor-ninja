@@ -1,4 +1,3 @@
-
 ( function ( jQuery, global ) {
 
 	var settings = {
@@ -34,6 +33,42 @@
 		}
 
 	};
+
+	function selectload ( index, element ) {
+
+		var select = $( element );
+
+		if ( select.attr( 'data-type' ) ) {
+
+			settings.ajax.success = function ( data ) {
+				settings.collector( select, data );
+			};
+
+			settings.ajax.url = settings.datasource( select );
+			$.ajax( settings.ajax );
+
+		} else if (select.length) {
+
+			var options = $.map( select.children(), function( option ) {
+				return option.text;
+			});
+
+			select.children().each( function() {
+				if (!$(this).attr('selected')) {
+					select.find('option[value="' + this.text + '"]').remove();
+				}
+			} );
+
+			select.filterable( options );
+
+		}
+
+	}
+
+	function filterable_init() {
+		var selects = $(settings.selector );
+		selects.each(selectload);
+	}
 
 	var getBoxing = function ( filtered, multi ) {
 
@@ -453,40 +488,8 @@
 
 	};
 
-	function selectload ( index, element ) {
-
-		var select = $( element );
-
-		if ( select.attr( 'data-type' ) ) {
-
-			settings.ajax.success = function ( data ) {
-				settings.collector( select, data );
-			};
-
-			settings.ajax.url = settings.datasource( select );
-			$.ajax( settings.ajax );
-
-		} else if (select.length) {
-
-			var options = $.map( select.children(), function( option ) {
-				return option.text;
-			});
-
-			select.children().each( function() {
-				if (!$(this).attr('selected')) {
-					select.find('option[value="' + this.text + '"]').remove();
-				}
-			} );
-
-			select.filterable( options );
-
-		}
-
-	}
-
 	$( document ).ready( function () {
-		var selects = $( settings.selector );
-		selects.each( selectload );
+		filterable_init();
 	} );
 
 } ) ( jQuery, window );
