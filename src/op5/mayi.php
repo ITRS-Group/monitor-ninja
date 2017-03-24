@@ -64,8 +64,8 @@ interface op5MayI_Actor {
 	/**
 	 * Get information from the actor, as an array.
 	 *
-	 * The informaiton will be available to the contstaints, as a key in the
-	 * envioronment array passed to the run method.
+	 * The information will be available to the constraints, as a key in the
+	 * environment array passed to the run method.
 	 */
 	public function getActorInfo();
 }
