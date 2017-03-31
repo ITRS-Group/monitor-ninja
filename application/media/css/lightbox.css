@@ -82,17 +82,6 @@
   width: 128px;
 }
 
-.lightbox-content select,
-.lightbox-content textarea,
-.lightbox-content input[type=text],
-.lightbox-content #enter_sla table {
-  width: 100% !important;
-}
-
-.lightbox-content input.sla_month {
-  width: 50% !important;
-}
-
 .lightbox-footer button,
 .lightbox-footer input[type="submit"],
 .lightbox-footer input[type="reset"] {

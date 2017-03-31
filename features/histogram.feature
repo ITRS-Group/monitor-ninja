@@ -209,7 +209,7 @@ Feature: Histogram reports
 		And I should see "linux-server2"
 		And I shouldn't see "win-server1"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -300,12 +300,11 @@ Feature: Histogram reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @reports
+	@configuration @reports @unreliable
 	Scenario: View saved report
 		Given I am on the Host details page
-		When I hover over the "Report" menu
-		And I hover over the "Histogram" menu
-		When I click "Create Histogram Report"
+		When I hover over the "Report" button
+		And I click "Histogram"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"

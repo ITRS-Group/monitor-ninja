@@ -403,15 +403,6 @@ class Reports_Controller extends Base_reports_Controller {
 		$this->generate_toolbar();
 	}
 
-	public function edit_settings($input = false){
-		$this->setup_options_obj($input);
-		$this->template->content = $this->add_view('reports/edit_settings');
-		$template = $this->template->content;
-		$template->report_options = $this->add_view('reports/options');
-		$template->report_options->saved_reports = $this->options->get_all_saved();
-		$template->report_options->months = date::abbr_month_names();
-	}
-
 	private function _print_states_for_services($host_name=false) {
 		$res = Livestatus::instance()->getServices(array('columns' => array('host_name', 'description'), 'filter' => array('host_name' => $host_name)));
 		if (!empty($res)) {

@@ -1,7 +1,5 @@
 $(document).ready(function() {
 	var set_report_mode = function(type) {
-	//This fix for Cucumber 'Edit Settings' test case
-	var type = (type)?type:(getUrlParam('report_type'))?'custom':'standard';
 		switch (type) {
 			case 'standard':
 				$('.standard').show();
@@ -13,17 +11,6 @@ $(document).ready(function() {
 				break;
 		}
 	};
-
-	function getUrlParam(name) {
-	var name = name.replace('[', '\\[').replace(']', '\\]');
-		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-		var results = regex.exec(window.location);
-		if(results === null)
-			return '';
-		else
-			return results[1];
-	}
-
 	$('#report_mode_form input').on('change', function() {
 		set_report_mode(this.value);
 	});

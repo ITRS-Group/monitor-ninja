@@ -65,35 +65,3 @@ end
 Then /^I should be on address "([^"]*)"$/ do |page_name|
   NavigationHelpers::url_for(current_path).should == NavigationHelpers::url_for(page_name)
 end
-
-Then /^I view a "([^\"]+)" report with these settings:$/ do |report, table|
-	data = table.hashes
-	params = '';
-	data.each do |row|
-		row.each do |key, value|
-			if key.eql? "objects"
-				value_objects = value.split(",");
-					if value_objects.length > 1
-						value_objects.each {|v|
-							params << "#{key}[]=#{v}&";
-						}
-					else
-						params << "#{key}[]=#{value}&";
-					end
-			elsif key.eql? "months"
-				value_objects = value.split(",");
-					if value_objects.length > 1
-						value_objects.each_with_index {|v,i|
-							params << "#{key}[#{i+1}]=#{v}&";
-						}
-					else
-						params << "#{key}[1]=#{value}&";
-					end
-			else
-				params << "#{key}=#{value}&";
-			end
-		end
-	end
-	params = params.chomp('&');
-	visit NavigationHelpers::url_for("/index.php/#{report}/edit_settings?#{params}")
-end
