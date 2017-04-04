@@ -201,6 +201,21 @@ class ORMDriverNative implements ORMDriverInterface {
 		 * empty indexes in for example object relations.
 		 */
 		$id = empty($this->storage[$table]) ? 1 : (max(array_keys($this->storage[$table]))+1);
+
+		/**
+		 * If the orm structure has only one key and that key is an integer in
+		 * the structure, find the max of that key and increment by one.
+		 */
+		if (count($structure['key']) === 1) {
+			$key = $structure['key'][0];
+			if ($structure['structure'][$key] === 'int') {
+				$ids = array_map(function ($data) use (&$key) {
+					return (isset($data[$key])) ? intval($data[$key]) : 0;
+				}, $this->storage[$table]);
+				$id = (count($ids)>0) ? max($ids) + 1 : 1;
+			}
+		}
+
 		$values['id'] = $id; /* tables is ordered from id=1, arrays from 0 */
 
 		$this->storage[$table][$id] = $values;

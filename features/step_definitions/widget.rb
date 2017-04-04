@@ -1,3 +1,11 @@
+Given /^I create a new dashboard with name "([^"]+)"$/ do |name|
+  steps %Q{
+    When I am on address "/index.php/tac/new_dashboard"
+    Given I enter "#{name}" into "name"
+    And I click "Save"
+  }
+end
+
 # KISS, expand with settings-structure if needed
 When /^I expose the widget "([^"]+)"$/ do |widget|
   @widget = Widget::ExternalWidget.new(widget)

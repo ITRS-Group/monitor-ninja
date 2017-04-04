@@ -283,6 +283,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$form = new Form_Model(
 			$lp->get_url('tac', 'new_dashboard'),
+			'POST',
 			array(
 				new Form_Field_Group_Model('dashboard', array(
 					new Form_Field_Text_Model('name', 'Name'),
@@ -367,6 +368,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$share_form = new Form_Model(
 			LinkProvider::factory()->get_url('tac', 'share_dashboard'),
+			'POST',
 			array(
 				new Form_Field_Hidden_Model('dashboard_id'),
 				new Form_Field_HtmlDecorator_Model('<h2>Share "'.html::specialchars($dashboard->get_name()).'" with (read only):</h2>'),
@@ -414,7 +416,7 @@ class Tac_Controller extends Ninja_Controller {
 		$listing->shared_with = $dashboard->get_read_perm();
 		$listing->dashboard_id = $dashboard->get_id();
 
-		$outer_form = new Form_Model('#', array(
+		$outer_form = new Form_Model('#', 'POST', array(
 			new Form_Button_Cancel_Model('close', 'Close')
 		));
 		$this->template = new View('concat');
@@ -492,6 +494,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$form = new Form_Model(
 			LinkProvider::factory()->get_url('tac', 'rename_dashboard'),
+			'POST',
 			array(
 				new Form_Field_Hidden_Model('dashboard_id'),
 				new Form_Field_Text_Model('name', 'Name')
@@ -543,6 +546,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$form = new Form_Model(
 			LinkProvider::factory()->get_url('tac', 'login_dashboard'),
+			'POST',
 			array(
 				new Form_Field_Hidden_Model('dashboard_id'),
 				new Form_Field_HtmlDecorator_Model('Set dashboard "' . $dashboard->get_name() .  '" as login dashboard?')
@@ -578,6 +582,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$form = new Form_Model(
 			LinkProvider::factory()->get_url('tac', 'delete_dashboard'),
+			'POST',
 			array(
 				new Form_Field_Hidden_Model('dashboard_id'),
 				new Form_Field_HtmlDecorator_Model('<p>Are you sure you want to delete this dashboard?</p>'),
