@@ -20,13 +20,17 @@ class Form_Model {
 	 * Create a form with a given set of fields
 	 *
 	 * @param $action string
+	 * @param $method string POST, PUT, PATCH, GET The HTTP method to use when
+	 *                       submitting the form
 	 * @param $renderable_children array of From_Field_Model|Form_Button_Model
 	 */
-	public function __construct($action, array $renderable_children = array()) {
+	public function __construct($action, $method, array $renderable_children = array()) {
+
 		static $index = 0;
 		$index++;
 		$this->action = $action;
 		$this->id = 'nj-form-' . uniqid() . '-' . $index;
+
 		foreach ($renderable_children as $child_node) {
 			if($child_node instanceof Form_Button_Model) {
 				$this->add_button($child_node);
@@ -34,6 +38,13 @@ class Form_Model {
 				$this->add_field($child_node);
 			}
 		}
+
+		$method_upper = strtoupper($method);
+		if (!in_array($method_upper, array("PUT", "POST", "PATCH", "GET"), true)) {
+			throw new FormException("Invalid method '$method' for form");
+		}
+		$this->method = $method_upper;
+
 	}
 
 	/**
@@ -43,20 +54,6 @@ class Form_Model {
 	 */
 	public function needs_csrf () {
 		return in_array($this->method, array("PUT", "POST", "PATCH"), true);
-	}
-
-	/**
-	 * Sets the method of the form, otherwise the value is by default "" which
-	 * defaults to not-set in HTML, in turn defaulting to GET.
-	 *
-	 * @param $method string - The method to to use (POST, PUT, PATCH, GET) when submitting the form
-	 */
-	public function set_method ($method) {
-		$method_upper = strtoupper($method);
-		if (!in_array($method_upper, array("PUT", "POST", "PATCH", "GET"), true)) {
-			throw new FormException("Invalid method '$method' for form");
-		}
-		$this->method = $method_upper;
 	}
 
 	/**

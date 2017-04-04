@@ -3,7 +3,7 @@
 class Form_Test extends PHPUnit_Framework_TestCase {
 	public function get_form_provider() {
 		// phpunit wants to be able to iterate through the dataset
-		return array(array(new Form_Model('my_action_url', array(
+		return array(array(new Form_Model('my_action_url', 'POST', array(
 			new Form_Field_Text_Model('name', "your name?"),
 			new Form_Field_Option_Model('trouble', "what do you have problem with?", array(
 				'headache' => 'Some wierd phantom pain',
@@ -98,7 +98,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
 		$also_a_mandatory_field = new Form_Field_Number_Model('refresh_rate', 'Refresh rate');
 
-		$form = new Form_Model('unused_action');
+		$form = new Form_Model('unused_action', 'POST');
 		$form->add_field($mandatory_field);
 		$form->add_field($also_a_mandatory_field);
 
@@ -114,7 +114,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
 
-		$form = new Form_Model('unused_action');
+		$form = new Form_Model('unused_action', 'POST');
 		$form->add_field($mandatory_field);
 
 		$result = $form->process_data(array());
@@ -125,7 +125,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 		$optional_field = new Form_Field_Text_Model('title', 'Title');
 
-		$form = new Form_Model('unused_action');
+		$form = new Form_Model('unused_action', 'POST');
 		$form->add_field($optional_field);
 		$form->set_optional(array('title'));
 
@@ -143,7 +143,7 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 			new Form_Field_Text_Model('hair_color', 'What is hair color?')
 		));
 
-		$form = new Form_Model('unused_action');
+		$form = new Form_Model('unused_action', 'POST');
 		$form->add_field($group_field);
 
 		$form->set_optional(array('something_personal'));

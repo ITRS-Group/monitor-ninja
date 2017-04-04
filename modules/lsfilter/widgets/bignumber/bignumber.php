@@ -212,7 +212,7 @@ class bignumber_Widget extends widget_Base {
 			))
 		);
 
-		$form_model = new Form_Model('widget/save_widget_setting',
+		$form_model = new Form_Model('widget/save_widget_setting', 'POST',
 			$regular_widget_form_fields);
 
 		$form_model->add_button(new Form_Button_Confirm_Model('save', 'Save'));

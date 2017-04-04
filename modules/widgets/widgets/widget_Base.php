@@ -274,6 +274,7 @@ class widget_Base {
 	public function render($method = 'index', $with_chrome = true) {
 
 		$title = $this->model->get_friendly_name();
+		$options = array();
 		ob_start();
 
 		/* Invoke "error-prone" methods first,

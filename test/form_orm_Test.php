@@ -39,7 +39,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function get_form() {
-		return new Form_Model('my_action_url', array(
+		return new Form_Model('my_action_url', 'POST', array(
 			new Form_Field_Text_Model('name', "your name?"),
 			new Form_Field_ORMObject_Model('da_contact', 'What is the object?', array('contacts'))
 		));
@@ -126,6 +126,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 
 		$form = new Form_Model(
 			'pump action',
+			'POST',
 			array(
 				new Form_Field_ORMObject_Model('host', 'Which host do you want to see perfdata for?', array('hosts')),
 				new Form_Field_Perfdata_Model('host_perfdata', 'Host perfdata source', 'host')
@@ -163,6 +164,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 
 		$form = new Form_Model(
 			'pump action',
+			'POST',
 			array(
 				new Form_Field_ORMObject_Model('host', 'Which host do you want to see perfdata for?', array('hosts')),
 				new Form_Field_Perfdata_Model('host_perfdata', 'Host perfdata source', 'host')
