@@ -20,7 +20,8 @@ class Form_Model {
 	 * Create a form with a given set of fields
 	 *
 	 * @param $action string
-	 * @param $method string The HTTP method to use when submitting the form
+	 * @param $method string POST, PUT, PATCH, GET The HTTP method to use when
+	 *                       submitting the form
 	 * @param $renderable_children array of From_Field_Model|Form_Button_Model
 	 */
 	public function __construct($action, $method, array $renderable_children = array()) {
