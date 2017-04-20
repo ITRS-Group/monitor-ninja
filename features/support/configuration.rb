@@ -339,7 +339,7 @@ module Configuration
       else
         raise "Unknown desired state '%s' for file %s" % [args[:state].to_s, file.to_s]
       end
-      max_sleep = 40
+      max_sleep = 80
       sleep_time = 0.1
       slept = 0
       until cond.call(file) do
