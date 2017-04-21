@@ -53,7 +53,7 @@ Feature: Alert history reports
 		And I click "Update"
 		Then I shouldn't see "Sven Melander"
 
-	@configuration @bug-7083
+	@configuration
 	Scenario: Service with host alert history
 		Given I visit the alert history page for service "win-server1;Swap Usage"
 		Then I should see "ERROR - out of teletubbies"
@@ -97,7 +97,7 @@ Feature: Alert history reports
 		And I shouldn't see "ERROR - tinky-winky"
 		And I should see "OK - laa-laa"
 
-	@configuration @bug-7083
+	@configuration
 	Scenario: Switch object
 		Given I visit the alert history page for host "linux-server1"
 		Then I should see "OK - Sven Melander"
@@ -135,14 +135,14 @@ Feature: Alert history reports
 		Then I should see "ERROR - out of teletubbies"
 		And I shouldn't see "OK - Sven Melander"
 
-	@configuration @MON-8189
+	@configuration
 	Scenario: Changes to start and end times are properly updated
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		Then I click "Alert history"
 		Then I should see "Alert history"
 
-	@configuration @MON-8189 @MON-9579
+	@configuration
 	Scenario: See that changes to start and end times are properly updated on edit settings form
 		When I am on address "/index.php/alert_history/edit_settings?with_chrome=1"
 		And I select "Custom" from "Reporting period"
@@ -153,7 +153,7 @@ Feature: Alert history reports
 		And I click "Update"
 		Then I should see "2000-01-01 10:00:00 to 2016-01-01 10:00:00"
 
-	@configuration @bug-6341 @bug-6646
+	@configuration
 	Scenario: Pagination
 		Given I visit the alert history page for host "win-server1"
 		Then I should see "OK - laa-laa"
