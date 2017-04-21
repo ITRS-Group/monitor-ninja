@@ -98,8 +98,9 @@ $(document).ready(function() {
 		});
 	});
 
-	$('select#report_type').on('change', function( e ) {
+	$(document).on('change', '#report_type', function( e ) {
 
+		set_selection();
 		var filterable = jQuery.fn.filterable.find( $('select[name="objects[]"]') ),
 			type = e.target.value.replace( /s$/, "" );
 
@@ -155,7 +156,7 @@ $(document).ready(function() {
 	$('#start_year, #end_year, #start_month, #end_month').on('change', check_custom_months);
 	$("#delete_report").click(confirm_delete_report);
 
-	$(".report_form").on('submit', function() {
+	$(document).on('submit', '.report_form', function() {
 		$('.filter-status:visible:checked', this).each(function() {
 			$('#' + $(this).data('which')).find('input, select').attr('name', '');
 		});

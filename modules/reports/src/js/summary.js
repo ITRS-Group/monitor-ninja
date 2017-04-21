@@ -1,6 +1,14 @@
 $(document).ready(function() {
 	var set_report_mode = function(type) {
-		switch (type) {
+		var summary_report_type;
+		if (type) {
+			summary_report_type = type;
+		}
+		else {
+			//This fix for Cucumber 'Edit Settings' test case
+			summary_report_type = getUrlParam('standardreport')?'standard':'custom';
+		}
+		switch (summary_report_type) {
 			case 'standard':
 				$('.standard').show();
 				$('.custom').hide();
@@ -11,6 +19,7 @@ $(document).ready(function() {
 				break;
 		}
 	};
+
 	$('#report_mode_form input').on('change', function() {
 		set_report_mode(this.value);
 	});

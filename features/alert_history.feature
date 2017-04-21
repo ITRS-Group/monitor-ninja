@@ -41,7 +41,12 @@ Feature: Alert history reports
 		Then I should see "OK - Sven Melander"
 		And I should see "Reporting period: Forever"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration
+	Scenario: See that host edit settings form content rendered correct
+		When I view a "alert_history" report with these settings:
+		| report_type    | objects       |
+		| hosts          | linux-server1 |
 		Then "Show all" should be unchecked
 		And "objects" should have option "linux-server1"
 		When I uncheck "Up"
@@ -57,7 +62,12 @@ Feature: Alert history reports
 		And I shouldn't see "linux"
 		And I shouldn't see "PING"
 		And I should see "Reporting period: Forever"
-		When I click "Edit settings"
+
+	@configuration
+	Scenario: See that service edit settings form content rendered correct
+		When I view a "alert_history" report with these settings:
+		| report_type    | objects                |
+		| services       | win-server1;Swap Usage |
 		Then "Show all" should be unchecked
 		And "objects" should have option "win-server1;Swap Usage"
 		When I uncheck "Ok"
@@ -72,7 +82,12 @@ Feature: Alert history reports
 		Then I should see "OK - laa-laa"
 		And I should see "ERROR - tinky-winky"
 		And I should see "ERROR - out of teletubbies"
-		When I click "Edit settings"
+
+	@configuration
+	Scenario: See that host with service edit settings form content rendered correct
+		When I view a "alert_history" report with these settings:
+		| report_type    | objects     |
+		| hosts          | win-server1 |
 		And I uncheck "Ok"
 		And I uncheck "Warning"
 		And I uncheck "Critical"
@@ -86,7 +101,12 @@ Feature: Alert history reports
 	Scenario: Switch object
 		Given I visit the alert history page for host "linux-server1"
 		Then I should see "OK - Sven Melander"
-		When I click "Edit settings"
+
+	@configuration
+	Scenario: See that switch object edit settings form content rendered correct
+		When I view a "alert_history" report with these settings:
+		| report_type    | objects       |
+		| hosts          | linux-server1 |
 		Then "objects_tmp" should have option "win-server1"
 		And "objects" should have option "linux-server1"
 		When I deselect "linux-server1" from the multiselect "objects"
@@ -106,7 +126,10 @@ Feature: Alert history reports
 		When I click "Alert history"
 		Then I should see "ERROR - out of teletubbies"
 		And I should see "OK - Sven Melander"
-		When I click "Edit settings"
+
+	@configuration
+	Scenario: See that option from all object edit settings form content rendered correct
+		When I am on address "/index.php/alert_history/edit_settings?with_chrome=1"
 		And I uncheck "Up"
 		And I click "Update"
 		Then I should see "ERROR - out of teletubbies"
@@ -118,7 +141,11 @@ Feature: Alert history reports
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		Then I click "Alert history"
-		Then I click "Edit settings"
+		Then I should see "Alert history"
+
+	@configuration
+	Scenario: See that changes to start and end times are properly updated on edit settings form
+		When I am on address "/index.php/alert_history/edit_settings?with_chrome=1"
 		And I select "Custom" from "Reporting period"
 		And I enter "2000-01-01" into "cal_start"
 		And I enter "2016-01-01" into "cal_end"
@@ -134,7 +161,12 @@ Feature: Alert history reports
 		And I should see "OK - po"
 		And I should see "ERROR - tinky-winky"
 		And I should see "ERROR - out of teletubbies"
-		When I click "Edit settings"
+
+	@configuration
+	Scenario: See that pagination edit settings form content rendered correct
+		When I view a "alert_history" report with these settings:
+		| report_type    | objects       |
+		| hosts          | win-server1   |
 		And I enter "1" into "Items to show"
 		And I check "Older entries first"
 		And I click "Update"

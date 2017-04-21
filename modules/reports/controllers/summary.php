@@ -183,4 +183,17 @@ class Summary_Controller extends Base_reports_Controller
 		$this->generate_toolbar();
 	}
 
+	public function edit_settings($input = false){
+		$this->setup_options_obj($input);
+		/* with_chrome attribute would be checked in test environment */
+		if($this->input->get('with_chrome')) {
+			$this->template->content = $this->add_view('reports/edit_settings');
+			$template = $this->template->content;
+		}else {
+			$this->template = $this->add_view('reports/edit_settings');
+			$template = $this->template;
+		}
+		$template->report_options = $this->add_view('summary/options');
+	}
+
 }

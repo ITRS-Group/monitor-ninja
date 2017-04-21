@@ -12,5 +12,11 @@
 		],
 		"file_to_test":"../../modules/lsfilter/src/js/LSFilterListTableDesc.js",
 		"test":"listview_column.js"
+	},
+	{
+		"title":"Url params",
+		"js_deps":[],
+		"file_to_test":"../../modules/reports/src/js/utils.js",
+		"test":"url_params.js"
 	}
 ]
