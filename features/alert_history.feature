@@ -135,15 +135,14 @@ Feature: Alert history reports
 		Then I should see "ERROR - out of teletubbies"
 		And I shouldn't see "OK - Sven Melander"
 
-	# MON-8189
-	@configuration
+	@configuration @MON-8189
 	Scenario: Changes to start and end times are properly updated
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		Then I click "Alert history"
 		Then I should see "Alert history"
 
-	@configuration
+	@configuration @MON-8189 @MON-9579
 	Scenario: See that changes to start and end times are properly updated on edit settings form
 		When I am on address "/index.php/alert_history/edit_settings?with_chrome=1"
 		And I select "Custom" from "Reporting period"
