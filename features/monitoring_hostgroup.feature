@@ -10,6 +10,6 @@ Feature: Monitoring Hostgroup
 			| name             | alias            |
 			| Babaruajan-group | Babaruajan-group |
 
-		And I'm on the list view for query "[hostgroups] all"
+		And I am on a hostgroups list view
 		And I click "Status information for Babaruajan-group"
 		Then I should see "Hostgroup: Babaruajan-group(Babaruajan-group)"

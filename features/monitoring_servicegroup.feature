@@ -10,6 +10,6 @@ Feature: Monitoring Servicegroup
 			| name             | alias            |
 			| Babaruajan-group | Babaruajan-group |
 
-		And I'm on the list view for query "[servicegroups] all"
+		And I am on a servicegroups list view
 		And I click "Status information for Babaruajan-group"
 		Then I should see "Servicegroup: Babaruajan-group(Babaruajan-group)"
