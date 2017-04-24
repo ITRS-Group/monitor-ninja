@@ -521,7 +521,7 @@ listview_renderer_table.hostgroups = {
 			cell.append(icon16('extended-information', _('Actions'),
 					extinfo_link({
 						hostgroup : args.obj.name
-					})));
+					}).attr('title', 'Status information for ' + args.obj.name)));
 			return cell;
 		}
 	},
@@ -568,7 +568,7 @@ listview_renderer_table.servicegroups = {
 			cell.append(icon16('extended-information', _('Actions'),
 					extinfo_link({
 						servicegroup : args.obj.name
-					})));
+					}).attr('title', 'Status information for ' + args.obj.name)));
 			return cell;
 		}
 	},

@@ -11,6 +11,14 @@ Given /^I'm on the list view for query "(.*)"$/ do |query|
 	visit NavigationHelpers::path_to("list view") + '?q=' + query
 end
 
+Given /^I am on a (.*) list view with query "(.*)"$/ do |type, query|
+  visit NavigationHelpers::path_to("list view") + '?q=['+type+']' + query
+end
+
+Given /^I am on a (.*) list view$/ do |type|
+  visit NavigationHelpers::path_to("list view") + '?q=['+type+'] all'
+end
+
 # duplicate from op5license, alias of "I'm on the list view for query"
 Given /^I go to the listview for (.*)$/ do |query|
 	visit NavigationHelpers::path_to("list view") + '?q=' + query

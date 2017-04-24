@@ -276,7 +276,12 @@ class Extinfo_Controller extends Ninja_Controller {
 				));
 
 				break;
+
 			case 'hostgroup':
+
+				$toolbar->title = "Hostgroup";
+				$toolbar->subtitle .= $object->get_name() . " (" . $object->get_alias() . ")";
+
 				$model = new Ninja_widget_Model(array(
 					'page' => Router::$controller,
 					'name' => 'listview',
@@ -297,7 +302,11 @@ class Extinfo_Controller extends Ninja_Controller {
 				$this->template->content->widgets['Hosts in this group'] = $widget;
 
 				break;
+
 			case 'servicegroup':
+				$toolbar->title = "Servicegroup";
+				$toolbar->subtitle .= $object->get_name() . " (" . $object->get_alias() . ")";
+
 				$model = new Ninja_widget_Model(array(
 					'page' => Router::$controller,
 					'name' => 'listview',
@@ -318,21 +327,20 @@ class Extinfo_Controller extends Ninja_Controller {
 				$this->template->content->widgets['Services in this group'] = $widget;
 
 				break;
-
 		}
 
-		if ($object->get_icon_image()) {
+		if ($host || $service) {
+			if ($object->get_icon_image()) {
+				$attributes = array(
+					'alt' => $object->get_icon_image_alt(),
+					'title' => $object->get_icon_image_alt(),
+					'style' => 'width: 16px;'
+				);
 
-			$attributes = array(
-				'alt' => $object->get_icon_image_alt(),
-				'title' => $object->get_icon_image_alt(),
-				'style' => 'width: 16px;'
-			);
-
-			$logos_path = Kohana::config('config.logos_path');
-			$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
-			$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
-
+				$logos_path = Kohana::config('config.logos_path');
+				$logos_path.= substr($logos_path, -1) == '/' ? '' : '/';
+				$toolbar->info(html::image($logos_path.$object->get_icon_image(), $attributes));
+			}
 		}
 
 		$commands = $object->list_commands();
