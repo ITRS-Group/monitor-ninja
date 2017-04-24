@@ -125,7 +125,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that host should by default include service alerts edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects       | report_period |
+		| hosts          | win-server1   | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -139,7 +144,12 @@ Feature: Summary reports
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that host should by default include service alerts edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects       | report_period |
+		| hosts          | win-server1   | forever       |
 		And I select "Alert totals" from "Summary type"
 		And I click "Show report"
 		Then I should see "Alert totals"
@@ -176,7 +186,12 @@ Feature: Summary reports
 		And I should see "2"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi host report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                     | report_period |
+		| hosts          | win-server1,linux-server1   | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I check "Include full output"
 		And I click "Show report"
@@ -188,7 +203,12 @@ Feature: Summary reports
 		And I shouldn't see "win-server2"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi host report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                     | report_period |
+		| hosts          | win-server1,linux-server1   | forever       |
 		And I select "Alert totals" from "Summary type"
 		And I click "Show report"
 		Then I should see "Alert totals"
@@ -225,7 +245,12 @@ Feature: Summary reports
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single service report should by default include host alerts edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects            | report_period |
+		| services       | win-server1;PING   | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -236,7 +261,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single service report should by default include host alerts edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects            | report_period |
+		| services       | win-server1;PING   | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -278,7 +308,12 @@ Feature: Summary reports
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "System Load"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on same host report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                                   | report_period |
+		| services       | win-server1;PING,win-server1;Swap Usage   | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -290,7 +325,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on same host report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                                   | report_period |
+		| services       | win-server1;PING,win-server1;Swap Usage   | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -334,7 +374,12 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server2"
 		And I shouldn't see "Swap Usage"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on different host report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                                      | report_period |
+		| services       | linux-server1;System Load,win-server1;PING   | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -346,7 +391,12 @@ Feature: Summary reports
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi service on different host report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                                      | report_period |
+		| services       | linux-server1;System Load,win-server1;PING   | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -385,7 +435,12 @@ Feature: Summary reports
 		And I shouldn't see "Swap Usage"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single hostgroup report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects        | report_period |
+		| hostgroups     | LinuxServers   | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -394,7 +449,12 @@ Feature: Summary reports
 		And I shouldn't see "win-server"
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that single hostgroup report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects        | report_period |
+		| hostgroups     | LinuxServers   | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -434,7 +494,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi hostgroup report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                       | report_period |
+		| hostgroups     | LinuxServers,WindowsServers   | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -445,7 +510,12 @@ Feature: Summary reports
 		And I should see "PING"
 		And I should see "Host alert"
 		And I should see "Service alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi hostgroup report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                       | report_period |
+		| hostgroups     | LinuxServers,WindowsServers   | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -485,7 +555,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                       | report_period |
+		| hostgroups     | LinuxServers,MixedGroup       | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -495,7 +570,12 @@ Feature: Summary reports
 		And I shouldn't see "win-server1"
 		And I shouldn't see "Swap Usage"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects                       | report_period |
+		| hostgroups     | LinuxServers,MixedGroup       | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -532,7 +612,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects     | report_period |
+		| servicegroups  | pings       | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -542,7 +627,12 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that hostgroup report with overlapping members edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects     | report_period |
+		| servicegroups  | pings       | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -582,7 +672,12 @@ Feature: Summary reports
 		And I shouldn't see "System Load"
 		And I shouldn't see "linux-server"
 		And I shouldn't see "win-server"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi servicegroup report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects      | report_period |
+		| servicegroups  | pings,empty  | forever       |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
@@ -592,7 +687,12 @@ Feature: Summary reports
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "System Load"
 		And I should see "Host alert"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that multi servicegroup report edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects      | report_period |
+		| servicegroups  | pings,empty  | forever       |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -624,12 +724,22 @@ Feature: Summary reports
 		And I click "Show report"
 		Then I should see "Alert totals"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that report on custom report date edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects      | report_period | rpttimeperiod | start_time | end_time   |
+		| hostgroups     | LinuxServers | custom        | workhours     | 1357165860 | 1365021120 |
 		And I select "Most recent alerts" from "Summary type"
 		And I click "Show report"
 		Then I should see "Most recent alerts"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
-		When I click "Edit settings"
+
+	@configuration @reports
+	Scenario: See that report on custom report date edit settings form content rendered correct
+		When I view a "summary" report with these settings:
+		| report_type    | objects      | report_period | rpttimeperiod | start_time | end_time   |
+		| hostgroups     | LinuxServers | custom        | workhours     | 1357165860 | 1365021120 |
 		And I select "Top alert producers" from "Summary type"
 		And I click "Show report"
 		Then I should see "Top alert producers"
@@ -678,7 +788,7 @@ Feature: Summary reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Report" menu
@@ -697,7 +807,6 @@ Feature: Summary reports
 		And "End date" should contain "2013-04-03"
 		And "time_end" should contain "22:32"
 		And "workhours" should be selected from "Report time period"
-		And "Host alerts" should be selected from "Alert types"
 		And "Hard states" should be selected from "State types"
 		And "Up" should be checked
 		And "Warning" should be checked
@@ -709,7 +818,6 @@ Feature: Summary reports
 		Then I should see "2013-01-01 01:31:00 to 2013-04-03 22:32:00"
 		And I should see "workhours"
 		And I should see "Hard states"
-		And I should see "Host up states"
 		And I should see "Sven Melander"
 		And I should see "This is a saved test report"
 
