@@ -182,7 +182,6 @@ class nagstat {
 	 */
 	public static function process_macros($string=false, $obj=false, $objtype=false) {
 
-		flag::deprecated(__METHOD__, "Should be replaced with a function that utilizes ORM objects and testthis for macro expansion");
 		if (empty($string) || empty($obj)) {
 			return $string;
 		}

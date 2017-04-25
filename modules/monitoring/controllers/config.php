@@ -447,8 +447,6 @@ class Config_Controller extends Authenticated_Controller {
 	public function unauthorized()
 	{
 		$this->template->content = $this->add_view('extinfo/unauthorized');
-		$this->template->disable_refresh = true;
-
 		$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
 }

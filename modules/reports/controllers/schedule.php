@@ -7,7 +7,6 @@ class Schedule_Controller extends Authenticated_Controller
 {
 	public function __construct() {
 		parent::__construct();
-		$this->template->disable_refresh = true;
 	}
 	/**
 	 * List all scheduled reports

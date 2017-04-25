@@ -10,7 +10,6 @@ class Cmd_Controller extends Ninja_Controller {
 	 */
 	public function index() {
 		$this->template->content = $this->add_view('cmd/index');
-		$this->template->disable_refresh = true;
 		$this->template->content->error = false;
 
 		/* Accept both get and post, get has precedance */
@@ -199,7 +198,6 @@ class Cmd_Controller extends Ninja_Controller {
 		// TODO Don't use ORMException in this code...
 
 		$template = $this->template->content = $this->add_view('cmd/exec');
-		$this->template->disable_refresh = true;
 
 		$command = $this->input->post('command', false);
 		$query = $this->input->post('query', false);

@@ -20,7 +20,6 @@ class ListView_Controller extends Ninja_Controller {
 		$this->template->title = _('List view');
 		$this->template->toolbar = new Toolbar_Controller( $this->template->title );
 		$this->template->content = $lview = $this->add_view('listview/listview');
-		$this->template->disable_refresh = true;
 
 		$this->template->toolbar->should_render_buttons(true);
 		$this->template->toolbar->info('<div id="filter_result_totals"></div>');

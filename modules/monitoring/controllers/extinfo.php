@@ -31,7 +31,6 @@ class Extinfo_Controller extends Ninja_Controller {
 	 */
 	public function details($type='host', $host=false, $service=false)
 	{
-		$this->template->disable_refresh = true;
 
 		$host = trim($this->input->get('host', $host));
 		$service = trim($this->input->get('service', $service));

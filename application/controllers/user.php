@@ -69,7 +69,6 @@ class User_Controller extends Authenticated_Controller {
 		$title = _('User Settings');
 		$this->template->title = $title;
 
-		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('user/settings');
 
 		$template = $this->template->content;
@@ -265,7 +264,6 @@ class User_Controller extends Authenticated_Controller {
 			$title = _('User Settings');
 			$this->template->title = $title;
 
-			$this->template->disable_refresh = true;
 			$this->template->content = $this->add_view('user/error');
 
 			$template = $this->template->content;
@@ -359,8 +357,6 @@ class User_Controller extends Authenticated_Controller {
 		if($selected_group && !isset($groups[$selected_group])) {
 			return url::redirect(Router::$controller.'/menu_edit');
 		}
-
-		$this->template->disable_refresh = true;
 
 		$this->template->content = $this->add_view('user/edit_menu');
 

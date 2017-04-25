@@ -151,7 +151,6 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = 'Monitoring » ' . $dashboard->get_name();
 		$this->template->content_class = 'dashboard';
-		$this->template->disable_refresh = true;
 		$this->template->content->dashboard = $dashboard;
 
 		$this->template->js_strings = "var _dashboard_id = ".intval($dashboard->get_id()).";\n";

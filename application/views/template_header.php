@@ -15,7 +15,7 @@
 	*
 	*/
 
-	$show_settings = ((isset($widgets) && is_array($widgets)) || (!isset($disable_refresh) || $disable_refresh === false) || (isset($listview_refresh) && $listview_refresh === true));
+	$show_settings = ((isset($widgets) && is_array($widgets)) || (isset($listview_refresh) && $listview_refresh === true));
 
 	if ($show_settings) {
 		array_unshift($quicklinks['internal'],
@@ -145,33 +145,19 @@
 ?>
 <div id="page_settings" class="page_settings">
 	<ul>
-		<li id="menu_global_settings" <?php	if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($listview_refresh)) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
-	<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
-		<li id="ninja_page_refresh">
-			<input type="checkbox" id="ninja_refresh_control" />
-			<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo _('Pause page refresh') ?></label>
-		</li>
-		<li id="ninja_refresh_edit">
-			<?php echo _('Edit global refresh rate') ?><br />
-			<div id="ninja_page_refresh_slider" style="width: 160px; margin-top: 8px;">
-				<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" data-key="config.page_refresh_rate" style="position: absolute; font-size: 11px; margin-left: 130px; padding: 1px; margin-top:-25px;z-index: 500" />
-				<div style="position: absolute; margin-left: 192px; margin-top: -23px"></div>
-			</div>
-		</li>
-
+		<li id="menu_global_settings" <?php	if (!isset($listview_refresh)) { ?> style="display:none"<?php } ?>><?php echo _('Global Settings') ?></li>
 		<?php
-			} # end if disable_refresh
-	if (isset($listview_refresh) && $listview_refresh === true) { ?>
-		<li id="listview_refresh">
-			<input type="checkbox" id="listview_refresh_control" />
-			<label id="listview_refresh_lable" for="listview_refresh_control"> <?php echo _('Pause list view refresh') ?></label>
-		</li>
-		<li id="listview_refresh_edit">
-			<label for="listview_refresh_value"><?php echo _('Edit listview refresh rate') ?></label> <input type="text" maxlength="3" size="3" id="listview_refresh_value" name="listview_refresh_value" data-key="config.listview_refresh_rate" /><br />
-			<div id="listview_refresh_slider">
+		if (isset($listview_refresh) && $listview_refresh === true) { ?>
+			<li id="listview_refresh">
+				<input type="checkbox" id="listview_refresh_control" />
+				<label id="listview_refresh_lable" for="listview_refresh_control"> <?php echo _('Pause list view refresh') ?></label>
+			</li>
+			<li id="listview_refresh_edit">
+				<label for="listview_refresh_value"><?php echo _('Edit listview refresh rate') ?></label> <input type="text" maxlength="3" size="3" id="listview_refresh_value" name="listview_refresh_value" data-key="config.listview_refresh_rate" /><br />
+				<div id="listview_refresh_slider">
 				<div></div>
-			</div>
-		</li>
+				</div>
+			</li>
 		<?php
 			} # end if listview_refresh
 		?>

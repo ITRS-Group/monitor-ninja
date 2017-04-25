@@ -1,7 +1,6 @@
 <?php
 defined('SYSPATH') OR die('No direct access allowed.');
 $keycommands_active = false;
-$disable_refresh = true;
 ?><!DOCTYPE html>
 <html>
 	<?php
