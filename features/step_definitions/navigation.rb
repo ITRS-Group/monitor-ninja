@@ -34,6 +34,10 @@ Given /^I am on address "(.*)"$/ do |path|
 	visit NavigationHelpers::url_for(path)
 end
 
+Given /^I am on a non existing page$/ do
+	visit NavigationHelpers::url_for("/index.php/this_page_does_not_exists")
+end
+
 Given /^I visit the process information page$/ do
 	visit NavigationHelpers::url_for("/index.php/extinfo/show_process_info")
 end

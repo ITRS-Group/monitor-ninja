@@ -63,3 +63,16 @@ Feature: Auth
 		Then I should see "Notifications enabled?"
 		When I am on address "/index.php/extinfo/show_process_info?username=invalid&password=invalid"
 		Then I should see "Notifications enabled?"
+
+	Scenario: I can only reach the login form on 404 if not logged in
+		When I am on a non existing page
+		Then I should see "Username"
+		And I should see "Password"
+
+	Scenario: I can see the full menu on 404 while logged in
+		Given I am logged in as administrator
+		When I am on a non existing page
+		Then I hover "All Dashboards" from the "Dashboards" menu
+		And I hover "Hosts" from the "Monitor" menu
+		And I hover "Availability" from the "Report" menu
+		And I hover "Configure" from the "Manage" menu
