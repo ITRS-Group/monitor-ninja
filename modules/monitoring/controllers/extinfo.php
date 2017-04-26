@@ -529,7 +529,7 @@ class Extinfo_Controller extends Ninja_Controller {
 	public function performance()
 	{
 
-		$this->_verify_access('ninja.performance:read.extinfo');
+		$this->_verify_access('monitor.monitoring.performance:read.extinfo');
 		$performance = new Performance_Model();
 
 		$this->template->content = $this->add_view('extinfo/performance');
