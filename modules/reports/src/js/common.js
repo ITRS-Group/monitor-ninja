@@ -131,7 +131,7 @@ $(document).ready(function() {
 
 	});
 
-	$('#start_year, #end_year').on('change', function () {
+	$(document).on('change', '#start_year, #end_year',function () {
 		var start = 0;
 		var end = 11;
 		if (check_custom_months.start_date == undefined || check_custom_months.end_date == undefined) {
