@@ -6,35 +6,6 @@
 class refresh {
 
 	/**
-	 * Print javascript to control page reload
-	 * Modified from http://grizzlyweb.com/webmaster/javascripts/refresh.asp
-	 */
-	public static function control()
-	{
-		if (!Auth::instance()->logged_in()) {
-			return;
-		}
-		# fetch setting
-		$refresh_key = 'config.page_refresh_rate';
-		$refresh = (int)config::get($refresh_key);
-		?>
-		<script>
-		var _refresh_key = '<?php echo $refresh_key ?>';
-		var _refresh = '<?php echo $refresh ?>';
-		$(document).ready(function() {
-			$('#ninja_page_refresh_value').val(_refresh);
-			ninja_refresh(<?php echo $refresh ?>);
-		});
-
-		function refresh() {
-			var current_url = window.location.pathname + window.location.search;
-			window.location.replace(current_url);
-		}
-		</script>
-		<?php
-	}
-
-	/**
 	 * Print javascript to control listview reload
 	 */
 	public static function lv_control()

@@ -59,7 +59,6 @@ class Search_Controller extends Ninja_Controller {
 			$this->object_types = array_merge($this->object_types, $global_search_tables['object_types']);
 		}
 
-		$this->template->disable_refresh = true;
 	}
 
 	/**

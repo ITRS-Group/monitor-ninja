@@ -23,7 +23,6 @@ class Histogram_Controller extends Base_reports_Controller
 	{
 		$this->setup_options_obj($input);
 
-		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('reports/setup');
 		$template = $this->template->content;
 		if(isset($_SESSION['report_err_msg'])) {
@@ -55,7 +54,6 @@ class Histogram_Controller extends Base_reports_Controller
 	public function generate($input = false)
 	{
 		$this->setup_options_obj($input);
-		$this->template->disable_refresh = true;
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 		$rpt = new Summary_Reports_Model($this->options);
 

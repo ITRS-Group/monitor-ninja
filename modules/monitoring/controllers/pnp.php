@@ -29,7 +29,6 @@ class Pnp_Controller extends Authenticated_Controller {
 		$target_link = pnp::url($host, $srv);
 		$this->template->content = '<iframe src="'.$target_link.'" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = _('Reporting » Graphs');
-		$this->template->disable_refresh = true;
 	}
 
 	/**

@@ -20,7 +20,6 @@ class Nagvis_Controller extends Ninja_Controller {
 	{
 		$this->_verify_access('ninja.nagvis:read');
 
-		$this->template->disable_refresh = true;
 		$this->template->title = _('Monitoring') . ' » NagVis';
 		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .

@@ -8,20 +8,6 @@ function _(text)
 	return text;
 }
 
-var ninja_refresh = (function () {
-	var _interval = 0;
-	return function ninja_refresh(val) {
-		if (_interval) {
-			clearInterval(_interval);
-		}
-		var refresh_val = (val === null) ? _refresh : val;
-		current_interval = refresh_val;
-		if (val>0) {
-			_interval = setInterval( "refresh()", refresh_val*1000 );
-		}
-	}
-}());
-
 /**
  *	cache the progress indicator image to show faster...
  */
@@ -56,7 +42,6 @@ function switch_image(html_id, src)
 	$('#' + html_id).attr('src', src);
 }
 
-var current_interval = 0;
 $(document).ready(function() {
 
 	"use strict";
@@ -106,43 +91,6 @@ $(document).ready(function() {
 			".svc_obj_properties"
 		);
 	}
-
-	// refresh helper code
-	var old_refresh = 0;
-	var refresh_is_paused = false;
-	$("#ninja_refresh_control").bind('change', function() {
-		if ($("#ninja_refresh_control").attr('checked')) {
-			// save previous refresh rate
-			// to be able to restore it later
-			old_refresh = current_interval;
-			$('#ninja_refresh_lable').css('font-weight', 'bold');
-			ninja_refresh(0);
-			refresh_is_paused = true;
-		} else {
-			// restore previous refresh rate
-			ninja_refresh(old_refresh);
-			refresh_is_paused = false;
-			$('#ninja_refresh_lable').css('font-weight', '');
-		}
-	});
-	if ($('#ninja_refresh_edit').text()!=='') {
-		create_slider('ninja_page_refresh');
-		$('#ninja_page_refresh_slider').on('slidechange', function() {
-			var delay = parseInt($('#ninja_page_refresh_value').val(), 10);
-			Notify.message(_page_refresh_msg.replace('{delay}', delay), {type: "success"});
-			ninja_refresh(delay);
-		});
-	}
-	$('#ninja_refresh_edit').bind('click', function() {
-		if (!edit_visible) {
-			$('#ninja_page_refresh_slider').show();
-			edit_visible = 1;
-		} else {
-			$('#ninja_page_refresh_slider').hide();
-			edit_visible = 0;
-		}
-	});
-	// -- end refresh helper code
 
 	// listview refresh helper code
 	$("#listview_refresh_control").bind('change', function() {
@@ -242,46 +190,6 @@ $(document).ready(function() {
 			jQuery(document).bind('keydown', _keycommand_search, function (evt){$('#query').focus(); return false; });
 		}
 
-		if (typeof _keycommand_pause !== 'undefined' && _keycommand_pause !== '') {
-			jQuery(document).bind('keydown', _keycommand_pause, function (evt){
-				toggle_refresh();
-				return false;
-			});
-		}
-	}
-
-
-	/**
-	*	Toggle page refresh and show a notify message to user about state
-	*/
-	function toggle_refresh()
-	{
-		if ($("#ninja_refresh_control").attr('checked')) {
-			// restore previous refresh rate
-			ninja_refresh(old_refresh);
-			refresh_is_paused = false;
-			$('#ninja_refresh_lable').css('font-weight', '');
-			$("#ninja_refresh_control").attr('checked', false);
-
-			// inform user
-			Notify.message(_refresh_unpaused_msg, {type: "success"});
-		} else {
-			// Prevent message from showing up when no pause is available
-			if ($("#ninja_page_refresh").html() === null) {
-				return false;
-			}
-
-			$("#ninja_refresh_control").attr('checked', true);
-			// save previous refresh rate
-			// to be able to restore it later
-			old_refresh = current_interval;
-			$('#ninja_refresh_lable').css('font-weight', 'bold');
-			ninja_refresh(0);
-			refresh_is_paused = true;
-
-			// inform user
-			Notify.message(_refresh_paused_msg, {type: "success" });
-		}
 	}
 
 	function create_slider(the_id) {

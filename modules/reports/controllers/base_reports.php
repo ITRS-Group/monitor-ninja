@@ -32,7 +32,6 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			$op5_auth->force_user(new User_AlwaysAuth_Model());
 		}
 
-		$this->template->disable_refresh = true;
 		$this->template->css[] = 'application/media/css/jquery.filterable.css';
 
 	}
