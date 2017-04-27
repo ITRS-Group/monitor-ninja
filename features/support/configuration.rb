@@ -61,7 +61,7 @@ module Configuration
       @to_unlink = []
       @to_restore = []
       @nagios_bin = "/opt/monitor/bin/monitor"
-      @root_path = Dir::Tmpname.make_tmpname(Dir.pwd + '/ci_tmp/config_', nil)
+      @root_path = Dir::Tmpname.make_tmpname(Dir.pwd + '/ci_tmp_config/config_', nil)
       FileUtils::mkdir_p @root_path
       @objects = {}
     end
