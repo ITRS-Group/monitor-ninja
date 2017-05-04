@@ -142,11 +142,6 @@ if (!is_file($config['pnp4nagios_config_path'])) {
 }
 
 /**
- * Default refresh rate for all pages
- */
-$config['page_refresh_rate'] = 90;
-
-/**
  * Control command line access to Ninja
  * Possible values:
  * 	false 		: 	No commandline access

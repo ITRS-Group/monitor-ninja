@@ -25,7 +25,6 @@ class User_Controller extends Authenticated_Controller {
 		'config.current_skin' => 'select',
 		'config.use_popups' => 'bool',
 		'config.popup_delay' => 'int',
-		'config.page_refresh_rate' => 'int',
 		'config.listview_refresh_rate' => 'int',
 		'nagdefault.sticky' => 'bool',
 		'nagdefault.persistent' => 'bool',
@@ -133,7 +132,6 @@ class User_Controller extends Authenticated_Controller {
 		$settings['config'] = false;
 		$available_skins = ninja::get_skins();
 		$settings['config'] = array(
-			_('Global page refresh rate') => array('config.page_refresh_rate', self::$var_types['config.page_refresh_rate']),
 			_('List view refresh rate') => array('config.listview_refresh_rate', self::$var_types['config.listview_refresh_rate']),
 			_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
 		);
@@ -313,7 +311,6 @@ class User_Controller extends Authenticated_Controller {
 			'pagination.default.items_per_page' => _('Set number of items shown on each page. Defaults to 100.'),
 			'pagination.paging_step' => _('This value is used to generate drop-down for nr of items per page to show. Defaults to 100.'),
 			'checks.show_passive_as_active' => _('This setting affects if to show passive checks as active in the GUI'),
-			'config.page_refresh_rate' => _('Seconds between each automatic page reload (0 disables)'),
 			'config.listview_refresh_rate' => _("Tables including status data ('list views') automatically updates their content. This value indicates seconds between each list view reload (0 disables)"),
 			'config.current_skin' => _('Select the skin to use in the GUI. Affects colors and images.'),
 			'keycommands.activated' => _('Switch keyboard commands ON or OFF. Default is OFF'),
