@@ -189,6 +189,7 @@ class bignumber_Widget extends widget_Base {
 			))
 		);
 
+		$toggle_description = new Form_Field_Boolean_Model('description_onoff', 'Show description only');
 		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'Color widget based on thresholds');
 		$threshold_as = new Form_Field_Option_Model('threshold_type', 'Threshold as', array(
 			'less_than' => 'Less than',
@@ -208,6 +209,7 @@ class bignumber_Widget extends widget_Base {
 		$regular_widget_form_fields = array(
 			new Form_Field_Group_Model('meta', array(
 				new Form_Field_Text_Model('title', 'Custom title', 'No custom title'),
+				new Form_Field_Text_Model('description', 'Custom Description', 'No custom description'),
 				new Form_Field_Number_Model('refresh_interval', 'Refresh (sec)'),
 			))
 		);
@@ -219,6 +221,7 @@ class bignumber_Widget extends widget_Base {
 		$form_model->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
 
 		foreach(array(
+			$toggle_description,
 			$content_from,
 			$host,
 			$service,
@@ -240,7 +243,8 @@ class bignumber_Widget extends widget_Base {
 			'threshold_crit' => 90.0,
 			'threshold_warn' => 95.0,
 			'display_type' => 'number_of_total',
-			'refresh_interval' => 60
+			'refresh_interval' => 60,
+			'description_onoff' => false
 		);
 		$settings = array_merge($defaults, $stored_settings);
 		if(isset($settings['host']) && is_array($settings['host'])) {
@@ -336,42 +340,43 @@ class bignumber_Widget extends widget_Base {
 				// PHP is so bad, it cannot even divide by zero
 				$state = 'pending';
 				$display_explanation = 'No object matches this filter';
+			} else if ($form_model->get_value('description_onoff') == true) {
+				$display_text = sprintf($form_model->get_value('description'));		
 			} else {
 				switch($form_model->get_value('display_type', 'number_of_total')) {
-				case 'percent':
-					$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
-					break;
-				case 'number_only':
-					$display_text = sprintf("%d", $counts['selection']);
-					break;
-				case 'number_of_total':
-				default:
-					$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
-					break;
+					case 'percent':
+					 	$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
+						break;
+					case 'number_only':
+						$display_text = sprintf("%d", $counts['selection']);
+						break;
+					case 'number_of_total':
+					default:
+						$display_text = sprintf('%d / %d', $counts['selection'], $counts['all']);
+						break;
 				}
+			}
+			$threshold_value = $counts['selection'];
 
-				$threshold_value = $counts['selection'];
-
-				if ($form_model->get_value('threshold_onoff')) {
-					$threshold_types = array();
-					$threshold_types['less_than'] = function ($val, $stat) {
-						return 100.0 * $stat['selection'] / $stat['all'] < $val;
-					};
-					$threshold_types['greater_than'] = function ($val, $stat) {
-						return 100.0 * $stat['selection'] / $stat['all'] > $val;
-					};
-					$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
-					if (call_user_func_array($threshold_callback, array(
-						$form_model->get_value('threshold_crit', 90.0),
-						$counts))) {
-						$state = 'critical';
-					} elseif (call_user_func_array($threshold_callback, array(
-						$form_model->get_value('threshold_warn', 95.0),
-						$counts))) {
-						$state = 'warning';
-					} else {
-						$state = 'ok';
-					}
+			if ($form_model->get_value('threshold_onoff')) {
+				$threshold_types = array();
+				$threshold_types['less_than'] = function ($val, $stat) {
+					return 100.0 * $stat['selection'] / $stat['all'] < $val;
+				};
+				$threshold_types['greater_than'] = function ($val, $stat) {
+					return 100.0 * $stat['selection'] / $stat['all'] > $val;
+				};
+				$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
+				if (call_user_func_array($threshold_callback, array(
+					$form_model->get_value('threshold_crit', 90.0),
+					$counts))) {
+					$state = 'critical';
+				} elseif (call_user_func_array($threshold_callback, array(
+					$form_model->get_value('threshold_warn', 95.0),
+					$counts))) {
+					$state = 'warning';
+				} else {
+					$state = 'ok';
 				}
 			}
 			require 'view.php';
