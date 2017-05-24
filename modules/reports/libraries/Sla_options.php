@@ -98,7 +98,7 @@ class Sla_options extends Report_options {
 			if (trim($value) == '')
 				return;
 
-			// Because fuck locales, amiright?
+			// adjust locales to our format
 			$value = str_replace(',', '.', $value);
 
 			// values are percentages
