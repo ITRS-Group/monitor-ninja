@@ -13,13 +13,8 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	public function get_host_stats() {
 		$set = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
 
-		if (config::get('checks.show_passive_as_active')) {
-			$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1 or accept_passive_checks = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 0 and accept_passive_checks = 0');
-		} else {
-			$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 0');
-		}
+		$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1');
+		$disabled_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 0');
 
 		$all              = ObjectPool_Model::get_by_query('[hosts] state!=999');
 		$pending          = ObjectPool_Model::get_by_query('[hosts] has_been_checked=0');
@@ -70,13 +65,8 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	public function get_service_stats() {
 		$set = ServicePool_Model::all()->reduce_by('host.groups', $this->get_name(), '>=');
 
-		if (config::get('checks.show_passive_as_active')) {
-			$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1 or accept_passive_checks = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 0 and accept_passive_checks = 0');
-		} else {
-			$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 0');
-		}
+		$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1');
+		$disabled_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 0');
 
 		$all              = ObjectPool_Model::get_by_query('[services] state!=999');
 		$pending          = ObjectPool_Model::get_by_query('[services] has_been_checked=0');

@@ -42,6 +42,37 @@ listview_renderer_table.hosts = {
 			return $('<td />').update_text(args.obj.alias);
 		}
 	},
+	"checktype" : {
+		"header" : _('Checks'),
+		"depends" : [ 'checks_enabled', 'accept_passive_checks' ],
+		"sort" : [ 'checks_enabled desc', 'accept_passive_checks desc' ],
+		"cell" : function(args) {
+			var cell = $('<td />');
+			if (args.obj.checks_enabled) {
+				cell.append(
+					span_icon('icon-angle-down', "Active checks enabled")
+				);
+			} else {
+				cell.append(
+					span_icon('icon-angle-down', "Active checks disabled")
+					.addClass('disabled')
+				);
+			}
+			if (args.obj.accept_passive_checks) {
+				cell.append(
+					span_icon('icon-angle-up', "Passive checks enabled")
+					.css('margin-left', '-8px')
+				);
+			} else {
+				cell.append(
+					span_icon('icon-angle-up', "Passive checks disabled")
+					.addClass('disabled')
+					.css('margin-left', '-8px')
+				);
+			}
+			return cell;
+		}
+	},
 	"status" : {
 		"header" : _('Status'),
 		"depends" : [ 'name', 'acknowledged', 'notifications_enabled',
@@ -72,10 +103,6 @@ listview_renderer_table.hosts = {
 
 			if (!args.obj.notifications_enabled)
 				cell.append(icon16('notify-disabled', 'Notification disabled'));
-
-			if (args.obj.checks_disabled)
-				cell.append(icon16('active-checks-disabled',
-						_('Checks Disabled')));
 
 			if (args.obj.is_flapping) // FIXME: Needs icon in compass
 				cell.append(icon16('flapping', _('Flapping')));
@@ -379,6 +406,38 @@ listview_renderer_table.services = {
 
 		}
 	},
+	"checktype" : {
+		"order": 55,
+		"header" : _('Checks'),
+		"depends" : [ 'checks_enabled', 'accept_passive_checks' ],
+		"sort" : [ 'checks_enabled desc', 'accept_passive_checks desc' ],
+		"cell" : function(args) {
+			var cell = $('<td />');
+			if (args.obj.checks_enabled) {
+				cell.append(
+					span_icon('icon-angle-down', 'Active checks enabled')
+				);
+			} else {
+				cell.append(
+					span_icon('icon-angle-down', 'Active checks disabled')
+					.addClass('disabled')
+				);
+			}
+			if (args.obj.accept_passive_checks) {
+				cell.append(
+					span_icon('icon-angle-up', 'Passive checks enabled')
+					.css('margin-left', '-4px')
+				);
+			} else {
+				cell.append(
+					span_icon('icon-angle-up', 'Passive checks disabled')
+					.addClass('disabled')
+					.css('margin-left', '-4px')
+				);
+			}
+			return cell;
+		}
+	},
 	"status" : {
 		"order" : 60,
 		"header" : _('Status'),
@@ -409,17 +468,9 @@ listview_renderer_table.services = {
 			if (args.obj.acknowledged)
 				cell.append(icon16('acknowledged', _('Acknowledged')));
 
-			if (args.obj.comments_count > 0)
-				cell.append(comment_icon(args.obj.host.name,
-						args.obj.description));
-
 			if (!args.obj.notifications_enabled)
 				cell.append(icon16('notify-disabled',
 						_('Notification disabled')));
-
-			if (args.obj.checks_disabled)
-				cell.append(icon16('active-checks-disabled',
-						_('Checks Disabled')));
 
 			if (args.obj.is_flapping) // FIXME: Needs icon in compass
 				cell.append(icon16('flapping', _('Flapping')));
@@ -428,6 +479,10 @@ listview_renderer_table.services = {
 					|| (args.obj.host.scheduled_downtime_depth > 0))
 				cell.append(icon16('scheduled-downtime',
 						_('Scheduled Downtime')));
+
+			if (args.obj.comments_count > 0)
+				cell.append(comment_icon(args.obj.host.name,
+						args.obj.description));
 
 			return cell;
 		}

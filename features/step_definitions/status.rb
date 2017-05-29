@@ -135,6 +135,10 @@ Then /^I should see a dialog with title "([^\"]+)"$/ do |title|
   find(".lightbox .lightbox-header", :text => title)
 end
 
+Then /^I should see an icon with title "([^\"]+)"$/ do |title|
+  find("span[class^=\"icon\"][title=\"#{title}\"]", :visible => true)
+end
+
 When /I select "(.*)" from the multiselect "(.*)"$/ do |option, selector|
   tmp_sel = find_field(find_field(selector)[:id].sub('[', '_tmp['))
   tmp_sel.select(option)

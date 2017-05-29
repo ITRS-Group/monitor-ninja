@@ -5,31 +5,31 @@ function helpicon(controller, key)
 	link.attr('data-popover', 'help:' + controller + '.' + key);
 	return link;
 }
-
+function span_icon(className, title)
+{
+	var icon = $('<span />');
+	icon.addClass((!className) ? "icon-help" : className);
+	if (title) icon.attr('title', title);
+	return icon;
+}
 function icon12(name, title, link)
 {
-	var img = $('<span />');
-	img.addClass('icon-12');
-	img.addClass('x12-' + name);
-	if (title) img.attr('title', title);
+	var icon = span_icon('icon-12 x12-' + name, title)
 	if (link) {
-		img = link.clone().append(img);
-		img.css('border', '0');
+		icon = link.clone().append(icon);
+		icon.css('border', '0');
 	}
-	return img;
+	return icon;
 }
 function icon16(name, title, link, base)
 {
 	if( !base ) base = 'x16';
-	var img = $('<span />');
-	img.addClass('icon-16');
-	img.addClass(base + '-' + name);
-	if (title) img.attr('title', title);
+	var icon = span_icon('icon-16 ' + base + '-' + name, title)
 	if (link) {
-		img = link.append(img);
-		img.css('border', '0');
+		icon = link.append(icon);
+		icon.css('border', '0');
 	}
-	return img;
+	return icon;
 }
 function icon(url, link)
 {

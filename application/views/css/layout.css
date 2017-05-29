@@ -1775,3 +1775,7 @@ ul.shared_with_these_entities li a {
 .popup-about > a {
   border: none;
 }
+
+.disabled {
+  opacity: 0.3;
+}
