@@ -189,7 +189,6 @@ class bignumber_Widget extends widget_Base {
 			))
 		);
 
-		$toggle_description = new Form_Field_Boolean_Model('description_onoff', 'Show description only');
 		$toggle_status = new Form_Field_Boolean_Model('threshold_onoff', 'Color widget based on thresholds');
 		$threshold_as = new Form_Field_Option_Model('threshold_type', 'Threshold as', array(
 			'less_than' => 'Less than',
@@ -209,7 +208,10 @@ class bignumber_Widget extends widget_Base {
 		$regular_widget_form_fields = array(
 			new Form_Field_Group_Model('meta', array(
 				new Form_Field_Text_Model('title', 'Custom title', 'No custom title'),
-				new Form_Field_Text_Model('description', 'Custom Description', 'No custom description'),
+		 		new Form_Field_Boolean_Model('description_onoff', 'Show description only'),
+				new Form_Field_Conditional_Model('description_onoff', true,
+					new Form_Field_Text_Model('description', 'Custom Description', 'No custom description')
+				),
 				new Form_Field_Number_Model('refresh_interval', 'Refresh (sec)'),
 			))
 		);
@@ -221,7 +223,6 @@ class bignumber_Widget extends widget_Base {
 		$form_model->add_button(new Form_Button_Cancel_Model('cancel', 'Cancel'));
 
 		foreach(array(
-			$toggle_description,
 			$content_from,
 			$host,
 			$service,
@@ -341,7 +342,7 @@ class bignumber_Widget extends widget_Base {
 				$state = 'pending';
 				$display_explanation = 'No object matches this filter';
 			} else if ($form_model->get_value('description_onoff') == true) {
-				$display_text = sprintf($form_model->get_value('description'));		
+				$display_text = sprintf($form_model->get_value('description'));
 			} else {
 				switch($form_model->get_value('display_type', 'number_of_total')) {
 					case 'percent':
