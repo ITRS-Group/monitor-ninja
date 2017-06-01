@@ -21,7 +21,6 @@ class User_Controller extends Authenticated_Controller {
 		'keycommands.pause' => 'string',
 		'keycommands.forward' => 'string',
 		'keycommands.back' => 'string',
-		'checks.show_passive_as_active' => 'bool',
 		'config.current_skin' => 'select',
 		'config.use_popups' => 'bool',
 		'config.popup_delay' => 'int',
@@ -80,7 +79,6 @@ class User_Controller extends Authenticated_Controller {
 
 		$available_setting_sections = array(
 			_('Pagination') => 'pagination',
-			_('Checks') => 'checks',
 			_('Config') => 'config',
 			_('Columns in list view') => 'listview',
 			_('Keyboard Commands') => 'keycommands',
@@ -103,9 +101,6 @@ class User_Controller extends Authenticated_Controller {
 			_('Pause') => array('keycommands.pause', self::$var_types['keycommands.pause']),
 			_('Paging Forward') => array('keycommands.forward', self::$var_types['keycommands.forward']),
 			_('Paging Back') => array('keycommands.back', self::$var_types['keycommands.back'])
-		);
-		$settings['checks'] = array(
-			_('Show Passive as Active') => array('checks.show_passive_as_active', self::$var_types['checks.show_passive_as_active'])
 		);
 
 		$settings['url_target'] = array(
@@ -310,7 +305,6 @@ class User_Controller extends Authenticated_Controller {
 		$helptexts = array(
 			'pagination.default.items_per_page' => _('Set number of items shown on each page. Defaults to 100.'),
 			'pagination.paging_step' => _('This value is used to generate drop-down for nr of items per page to show. Defaults to 100.'),
-			'checks.show_passive_as_active' => _('This setting affects if to show passive checks as active in the GUI'),
 			'config.listview_refresh_rate' => _("Tables including status data ('list views') automatically updates their content. This value indicates seconds between each list view reload (0 disables)"),
 			'config.current_skin' => _('Select the skin to use in the GUI. Affects colors and images.'),
 			'keycommands.activated' => _('Switch keyboard commands ON or OFF. Default is OFF'),

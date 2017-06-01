@@ -127,35 +127,10 @@ class Livestatus {
 	}
 
 	/**
-	 * Dummy documentation
-	 */
-	public function handle_passive_as_active($row) {
-		static $passive_as_active = null;
-		if ($passive_as_active === null)
-			$passive_as_active = config::get('checks.show_passive_as_active');
-
-		if ($passive_as_active)
-			return $row['active_checks_enabled'] || $row['accept_passive_checks'];
-		else
-			return $row['active_checks_enabled'];
-	}
-
-	/**
-	 * Dummy documentation
-	 */
-	public function handle_host_passive_as_active($row) {
-		static $passive_as_active = null;
-		if ($passive_as_active === null)
-			$passive_as_active = config::get('checks.show_passive_as_active');
-
-		if ($passive_as_active)
-			return $row['host_active_checks_enabled'] || $row['host_accept_passive_checks'];
-		else
-			return $row['host_active_checks_enabled'];
-	}
-
-	/**
-	 * Dummy documentation
+	 * Retrieve hosts from Livestatus
+	 *
+	 * @param $options
+	 * @return array
 	 */
 	public function getHosts($options = null) {
 		if(!isset($options['columns'])) {
@@ -178,7 +153,6 @@ class Livestatus {
 			);
 			$options['callbacks'] = array(
 				'duration' => array($this, 'calc_duration'),
-				'checks_enabled' => array($this, 'handle_passive_as_active')
 			);
 
 			$options['order_mappings'] = array(
@@ -268,8 +242,6 @@ class Livestatus {
 			);
 			$options['callbacks'] = array(
 				'duration' => array($this, 'calc_duration'),
-				'checks_enabled' => array($this, 'handle_passive_as_active'),
-				'host_checks_enabled' => array($this, 'handle_host_passive_as_active')
 			);
 
 			$options['order_mappings'] = array(
@@ -430,13 +402,8 @@ class Livestatus {
 	 * Dummy documentation
 	 */
 	public function getHostTotals($options = null) {
-		if (config::get('checks.show_passive_as_active')) {
-			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
-			$disabled_checks_condition = array('active_checks_enabled' => 0, 'accept_passive_checks' => 0);
-		} else {
-			$active_checks_condition = array('active_checks_enabled' => 1);
-			$disabled_checks_condition = array('active_checks_enabled' => 0);
-		}
+		$active_checks_condition = array('active_checks_enabled' => 1);
+		$disabled_checks_condition = array('active_checks_enabled' => 0);
 		$stats = array(
 				'total'                             => array( 'state' => array( '!=' => 999 )),
 				'total_active'                      => array( 'check_type' => 0 ),
@@ -485,13 +452,8 @@ class Livestatus {
 	 * Dummy documentation
 	 */
 	public function getServiceTotals($options = null) {
-		if (config::get('checks.show_passive_as_active')) {
-			$active_checks_condition = array('-or' => array('active_checks_enabled' => 1, 'accept_passive_checks' => 1));
-			$disabled_checks_condition = array('active_checks_enabled' => 0, 'accept_passive_checks' => 0);
-		} else {
-			$active_checks_condition = array('active_checks_enabled' => 1);
-			$disabled_checks_condition = array('active_checks_enabled' => 0);
-		}
+		$active_checks_condition = array('active_checks_enabled' => 1);
+		$disabled_checks_condition = array('active_checks_enabled' => 0);
 		$stats = array(
 				'total'                             => array( 'description' => array( '!=' => '' ) ),
 				'total_active'                      => array( 'check_type' => 0 ),
