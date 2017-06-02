@@ -25,7 +25,6 @@
   font-style: normal;
   font-weight: normal;
   speak: none;
-  color: #333333;
 
   display: inline-block;
   text-decoration: inherit;
@@ -54,6 +53,10 @@
 
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+#filter_result [class⁼"icon-"]:before {
+  color: #333333;
 }
 
 .link-icon {
