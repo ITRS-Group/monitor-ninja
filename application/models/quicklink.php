@@ -49,7 +49,7 @@ class Quicklink_Model {
 			$attributes[] = html::specialchars($key) . '="' . html::specialchars($value) . '"';
 		}
 
-		return '<li class="selected"><a href="' . $this->href . '" ' .implode(' ', $attributes) . '>' .
+		return '<li><a href="' . $this->href . '" ' .implode(' ', $attributes) . '>' .
 			'<span class="icon-16 x16-'.$this->icon.'"></span><span class="quicklink-badge"></span>' .
 		'</li>';
 
