@@ -483,6 +483,7 @@ widget.prototype.update_widget = function() {
 			complete : function() {
 				self.set_loading(false);
 				self.is_updating = false;
+				self.update_widget_delayed();
 			},
 			success : function(data) {
 				self.elem.find('.widget-content').html(data.widget);
@@ -497,7 +498,6 @@ widget.prototype.update_widget = function() {
 				if (data.refresh_interval) {
 					self.elem.attr('data-refresh-interval', data.refresh_interval);
 					self.update_widget_time = parseInt(data.refresh_interval, 10);
-					self.update_widget_delayed();
 				}
 
 				// Fade out title if it is too long to fit.
