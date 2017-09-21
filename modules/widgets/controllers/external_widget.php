@@ -39,6 +39,8 @@ class External_widget_Controller extends Ninja_Controller {
 
 		$this->template->title = _('External widget');
 		$this->template->widget = false;
+		$this->template->css[] = 'modules/lsfilter/widgets/bignumber/style.css';
+		$this->template->css[] = 'modules/monitoring/widgets/state_summary/state_summary.css';
 
 		$model = new Ninja_Widget_Model();
 		$model->set_username(op5auth::instance()->get_user()->get_username());
