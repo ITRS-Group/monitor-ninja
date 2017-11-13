@@ -25,10 +25,6 @@ test: generate-php
 	make test-ci-prepare
 	export OP5LIBCFG="$(OP5LIBCFG)"; $(PHPUNIT) test/; res=$$?; make test-ci-cleanup; exit $$res
 
-test/qunit/test_suite.html: test/qunit/test_suite.json test/qunit/test_suite.php
-	php test/qunit/test_suite.php > $@
-	node_modules/bin/node-qunit-phantomjs $@
-
 test-ci-cleanup:
 	rm -f application/config/custom/config.php
 	rm -f application/config/custom/database.php
