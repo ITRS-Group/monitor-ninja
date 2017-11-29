@@ -143,6 +143,47 @@ Given /^I have the default authentication module configured$/ do
 	page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
+When /^I am logged in as "(.*)"$/ do |user|
+
+	steps %Q{
+		Given I have an admins user group with all rights
+	}
+
+	username = user
+	password = '123123'
+
+	@mock.mock('authmodules', [{
+		"modulename" => "Default",
+		"properties" => {
+			"driver" => "Default"
+		}
+	}])
+
+	@mock.mock('users', [{
+		'username' => username,
+		'realname' => username,
+		'password' => '$1$lrF9ydB5$G1EfpAnNTlzsrHF5My6Eg.',
+		'password_algo' => 'crypt',
+		'groups' => ['admins'],
+		'modules' => ['Default']
+	}])
+
+	page.driver.headers = {'X-op5-mock' => @mock.file}
+
+	steps %Q{
+		When I am on the main page
+		And I enter "#{username}" into "username"
+		And I enter "#{password}" into "password"
+		And I click "Login"
+	}
+
+	@mock.mock_class("op5MayI", {
+		"mock_class" => "MockMayI",
+		"args" => {}
+	})
+
+end
+
 Given /^I have an (.*) user group with all rights$/ do |group|
 	@mock.mock('usergroups', [
 		{
