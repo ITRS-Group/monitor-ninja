@@ -403,7 +403,10 @@
             dragOpacity: 0.8,
 
             // Cookies (require Cookie plugin) to store positions and states
-            useCookies: false
+            useCookies: false,
+
+            //Check dashboard write permission
+            dashboardCanWrite: false
         },
 
         // Some effects that can be apply sometimes
@@ -733,12 +736,14 @@
             widgetMenu = widget.find(s.selectors.widgetMenu);
             // The order of this function call is important
             // because determine the order of links appear
-            AddWidgetCollapseLink(widget, widgetMenu, s);
-						if (widget.find(s.selectors.editbox).children().length) {
-		AddWidgetEditLink(widget, widgetMenu, s);
-						}
-            AddWidgetRemoveLink(widget, widgetMenu, s);
-            return true;
+            if(!s.behaviour.dashboardCanWrite) {
+                AddWidgetCollapseLink(widget, widgetMenu, s);
+                if (widget.find(s.selectors.editbox).children().length) {
+                    AddWidgetEditLink(widget, widgetMenu, s);
+                }
+                AddWidgetRemoveLink(widget, widgetMenu, s);
+            }
+                return true;
         } else {
             return false;
         }

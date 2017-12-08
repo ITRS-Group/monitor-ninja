@@ -45,12 +45,17 @@ var tac_send_request = function (method, data, callbacks) {
 };
 
 $(function() {
+	var dashboardCanWrite = false;
+
 	/* If we can't change the dashboard, don't load handling of widgets */
-	if (typeof _dashboard_can_write === 'undefined' || !_dashboard_can_write)
-		return;
+	if (typeof _dashboard_can_write === 'undefined' || !_dashboard_can_write) {
+		dashboardCanWrite = true;
+	}
+
 	var easywidgets_obj = $.fn.EasyWidgets({
 		behaviour : {
-			useCookies : false
+			useCookies : false,
+			dashboardCanWrite : dashboardCanWrite
 		},
 		i18n : {
 			editText : '<img src="'
