@@ -199,3 +199,17 @@ Feature: Filters & list views
 		And I hover over the "Hosts" menu
 		Then I should see these menu items:
 			| Ernie |
+
+	Scenario: List view case-insensitive check
+		Given I have these mocked notifications
+			| host_name | contact_name | command_name | output              |
+			| google    | test user    | host-notify  | OK - www.google.com |
+			| google    | TEST USER    | host-notify  | OK - www.google.com |
+			| google    | new user1    | host-notify  | OK - www.google.com |
+			| google    | TeSt UsEr    | host-notify  | OK - www.google.com |
+			| google    | NEW USER2    | host-notify  | OK - www.google.com |
+		And I am logged in
+		When I am on address "/index.php/listview/?q=%5Bnotifications%5D%20(contact_name%20~~%20%22test%22%20)"
+		Then I should see "test user"
+		And I should see "TEST USER"
+		And I should see "TeSt UsEr"

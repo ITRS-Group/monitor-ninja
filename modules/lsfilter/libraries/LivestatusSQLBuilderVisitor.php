@@ -66,7 +66,7 @@ class LivestatusSQLBuilderVisitor implements LivestatusFilterVisitor {
 			case '!~':
 				return "NOT ($field REGEXP BINARY $value_esc)";
 			case '~~':
-				$op = 'REGEXP';
+				$op = 'collate latin1_swedish_ci REGEXP';
 				break;
 			case '~':
 				$op = 'REGEXP BINARY';
