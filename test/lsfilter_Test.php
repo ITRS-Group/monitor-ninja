@@ -256,7 +256,7 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	}
 	//	re_ci       /^(~~)/
 	public function test_sql_op_re_ci_str() {
-		$this->do_test_sql_op_str('~~',"((output REGEXP 'a'))");
+		$this->do_test_sql_op_str('~~',"((output collate latin1_swedish_ci REGEXP 'a'))");
 	}
 
 	//	re_cs       /^(~)/

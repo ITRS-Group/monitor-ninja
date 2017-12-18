@@ -38,6 +38,8 @@ module Mock
         'ORMDriverMySQL default'
       when /^dashboards$/
         'ORMDriverMySQL default'
+      when /^notification.*s$/
+        'ORMDriverMySQL default'
       when /^users$/
         'ORMDriverYAML default'
       when /^authmodules$/
