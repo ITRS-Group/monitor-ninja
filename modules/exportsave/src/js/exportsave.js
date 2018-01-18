@@ -12,7 +12,7 @@ $(document).ready(function() {
         lightbox.content(fragment);
         lightbox.show();
 
-        getExportSaveData(fragment);
+        get_export_save_data(fragment);
 
         $(document).on('click', '.lightbox-header h1 .icon-cancel', function(e){
             fragment.value = false;
@@ -24,25 +24,25 @@ $(document).ready(function() {
 
    if($('div#export-page-banner').length > 0) {
        var div = $('div#export-page-banner');
-       getExportBreifData(div);
+       get_export_breif_data(div);
    }
 });
 
-function getExportBreifData(div) {
+function get_export_breif_data(div) {
     if($('div#export-page-banner').length == 0) {
         return false;
     }
     $.ajax({
-        url : 'bannercontent',
+        url : 'banner_content',
         type : 'GET',
         success : function(data) {
             div.html(data);
-            setTimeout(function() { getExportBreifData(div) } , 5000);
+            setTimeout(function() { get_export_breif_data(div) } , 5000);
         }
     });
 }
 
-function getExportSaveData(fragment) {
+function get_export_save_data(fragment) {
     if(fragment.value == false) {
         return false;
     }
@@ -52,7 +52,7 @@ function getExportSaveData(fragment) {
         type : 'GET',
         success : function(data) {
             fragment.innerHTML = data;
-            setTimeout(function() { getExportSaveData(fragment) } , 5000);
+            setTimeout(function() { get_export_save_data(fragment) } , 5000);
         }
     });
     return;

@@ -10,7 +10,7 @@ class Exportsave_Controller extends Ninja_Controller {
     * and css
     */
     public function banner () {
-        $data = $this->getdetails();
+        $data = $this->get_details();
         $this->template->content = new View('banner', array( 'data' => $data ));
         $this->template->css[] = $this->add_path('../media/css/exportsave.css');
     }
@@ -18,8 +18,8 @@ class Exportsave_Controller extends Ninja_Controller {
     /**
      * Renders banner content.
      */
-    public function bannercontent() {
-        $data = $this->getdetails();
+    public function banner_content() {
+        $data = $this->get_details();
         $this->template = new View('banner', array( 'data' => $data ));
     }
 
@@ -27,7 +27,7 @@ class Exportsave_Controller extends Ninja_Controller {
      * Renders the view for more details, with steps and more information.
      */
     public function details() {
-        $data = $this->getdetails();
+        $data = $this->get_details();
         $this->template = new View('details', array('data' => $data));
     }
 
@@ -36,7 +36,7 @@ class Exportsave_Controller extends Ninja_Controller {
      * Will be replaced with function that fetches data from database
      * @return $data array = array()
      */
-    public function getdetails() {
+    public function get_details() {
         $data = array('name' => 'Saving...',
             'description' => '',
             'creation_time' => 1982549018,
