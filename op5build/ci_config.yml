@@ -1,4 +1,6 @@
 post:
+  install:
+     - libyaml
   steps: |
 
     if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
