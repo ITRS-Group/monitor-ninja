@@ -36,7 +36,7 @@ function get_export_breif_data(div) {
         url : 'banner_content',
         type : 'GET',
         success : function(data) {
-            div.html(data);
+            div.innerHTML = data;
             setTimeout(function() { get_export_breif_data(div) } , 5000);
         }
     });
