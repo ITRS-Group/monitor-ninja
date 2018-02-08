@@ -79,7 +79,7 @@ echo form::checkbox(array('name' => 'fixed', 'id' => 'fixed'), "1", $schedule_in
 ?> <?php echo _('Fixed'); ?>
 				</td>
 				<td id="triggered_row" style="display:none">
-					<?php echo _('Duration') . " *" ?> (hh:mm or hh:mm:ss)<br />
+					<?php echo _('Duration') . " *" ?> (00d 00h 00m 00s)<br />
 <?php
 echo form::input(array('class' => 'time-entry', 'type' => 'text', 'id' => 'duration', 'name' => 'duration'), $schedule_info->get_duration_string());
 ?>

@@ -27,7 +27,26 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 		return $months;
 	}
 
-	/**
+    /**
+     * Get the start time ,end time or duration, but format it the way times are usually
+     *
+     */
+    public function get_time_string($time, $duration){
+         if($duration){
+             $data['day']=(int)floor($time/(3600*24));
+             $data['hours']=(int)floor($time%(3600*24) / 3600);
+             $data['minutes']=(int)floor(($time%3600)/60);
+             $data['seconds']=(int)($time%60);
+         }else{
+             $data['hours']=(int)floor($time / 3600);
+             $data['minutes']=(int)floor(($time%3600)/60);
+             $data['seconds']=(int)($time%60);
+         }
+            return $data;
+    }
+
+
+    /**
 	 * Get the start time, but format it the way times are usually
 	 * formatted: hh:mm:ss
 	 *
@@ -36,8 +55,10 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 	public function get_start_time_string()
 	{
 		$start_time = $this->get_start_time();
-		return sprintf("%02d:%02d:%02d", (int)($start_time / 3600 % 24), (int)($start_time / 60 % 60), (int)($start_time % 60));
-	}
+        $data=$this->get_time_string($start_time,false);
+        return sprintf("%02d:%02d:%02d",$data['hours'],$data['minutes'],$data['seconds']);
+
+    }
 
 	/**
 	 * Get the end time, but format it the way times are usually
@@ -48,7 +69,9 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 	public function get_end_time_string()
 	{
 		$end_time = $this->get_end_time();
-		return sprintf("%02d:%02d:%02d", (int)($end_time / 3600 % 24), (int)($end_time / 60 % 60), (int)($end_time % 60));
+        $data=$this->get_time_string($end_time,false);
+        return sprintf("%02d:%02d:%02d",$data['hours'],$data['minutes'],$data['seconds']);
+
 	}
 
 	/**
@@ -64,7 +87,8 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 			return "";
 		}
 		$duration = $this->get_duration();
-		return sprintf("%02d:%02d:%02d", (int)($duration / 3600 % 24), (int)($duration / 60 % 60), (int)($duration % 60));
+        $data=$this->get_time_string($duration,true);
+        return sprintf("%dd %dh %dm %ds",$data['day'],$data['hours'],$data['minutes'],$data['seconds']);
 	}
 
 	/**
