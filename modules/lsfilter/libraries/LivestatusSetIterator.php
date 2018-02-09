@@ -36,10 +36,25 @@ class LivestatusSetIterator implements Iterator {
 		if( empty($cur_arr) ) {
 			return false;
 		}
-		$varmap = array_combine(
-				$this->columns,
-				$cur_arr
-				);
+		//lmd changes beg
+		foreach ($this->columns as $lkey => $lvalue) {
+			if ($lvalue === 'pnpgraph_present' || $lvalue === 'obsess') {
+				unset($this->columns[$lkey]);
+			}
+		}
+		if (isset($cur_arr[0]) && ($cur_arr[0] === 'program_start' || $cur_arr[0] === 'accept_passive_checks')) {
+			$varmap = array_combine(
+					$cur_arr,
+					$this->columns
+			);
+		}
+		else {
+			$varmap = array_combine(
+					$this->columns,
+					$cur_arr
+			);
+		}
+		//lmd changes end
 		$classname = $this->class;
 		return $classname::factory_from_setiterator( $varmap, '', $this->export_columns );
 	}

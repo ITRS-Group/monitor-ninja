@@ -146,7 +146,18 @@ class op5Livestatus {
 			$query .= $filter."\n";
 		}
 
+		//lmd changes beg
+		$query = str_replace("\nLimit: 0", "", $query);
+		$query = str_replace("\nAnd: 0", "", $query);
+		$query = str_replace("\nStatsAnd: 0", "\nStats: state != 4", $query);
+		$query = str_replace("\nOr: 0", "", $query);
+		$query = str_replace(" pnpgraph_present", "", $query);
+		$query = str_replace(" obsess ", " ", $query);
+		$query = str_replace("Columns:\n", "", $query);
+		//lmd changes end
+
 		$query .= "\n";
+
 
 		// Connect to Livestatus. Re-trying up to three times. Sleep 0.3 seconds
 		// between each try.
@@ -184,10 +195,10 @@ class op5Livestatus {
 		$result = json_decode(utf8_encode($body), true);
 
 		$objects = $result['data'];
-		$count = $result['total_count'];
+		$count = $result['total']; //lmd changes
 
 		if(!is_array($columns)) {
-			$columns = $result['columns'][0]; /* FIXME */
+			$columns = $result['data'][1]; //lmd changes
 		}
 
 		$stop = microtime(true);
