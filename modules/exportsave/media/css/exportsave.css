@@ -5,11 +5,14 @@
     background: #F0F9EC;
     border: 1px solid #82C448;
 }
-.wait, .write, .read {
+.wait {
     background: #E5F1F8;
     border: 1px solid #0277BD;
+    background-image: url('/monitor/application/media/images/loading_small.gif');
+    background-repeat: no-repeat;
+    background-position: top 8px left 12px;
 }
-.error {
+.fail {
     background: #FBEBEB;
     border: 1px solid #D93939;
 }
@@ -20,7 +23,7 @@
 .export-detail-banner {
     width: 25%;
     margin: 20px auto;
-    padding: 10px 15px 10px 15px;
+    padding: 10px 15px 10px 40px;
     border-radius: 3px;
     letter-spacing: 0.5px;
     color: #000;
@@ -43,7 +46,7 @@
 .success .status-message-icon {
     color: #82C448;
 }
-.error .status-message-icon {
+.fail .status-message-icon {
     color: #D93939;
 }
 
@@ -78,7 +81,7 @@
 .export-success-details, .state-ok-details {
     background: #82C448;
 }
-.export-error-details, .cancel-circled-details {
+.export-fail-details, .cancel-circled-details {
     background: #D93939;
     color: #fff;
 }

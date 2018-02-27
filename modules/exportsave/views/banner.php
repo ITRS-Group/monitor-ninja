@@ -3,8 +3,8 @@
 ?>
 <div id="export-page-banner">
     <div class="export-detail-banner <?php echo($data['class']);?>">
-        <span><?php echo($data['name'])?></span>
+        <span><?php echo($data['title'])?></span>
         <a href='details' class='view-export-details'
-           name="<?php echo($data['name'])?>">View details</a>
+           name="<?php echo($data['title'])?>">View details</a>
     </div>
 </div>
