@@ -78,6 +78,36 @@ function check_timestring(timestring) {
 	return true;
 }
 
+
+function check_timestring_duration(timestring) {
+
+         // We have 00d 00h 00m 00s 
+         var timeparts = timestring.split(' ');
+         if (timeparts.length !== 4 
+         || timeparts[0].substr(timeparts[0].length - 1) !== 'd' 
+         || timeparts[1].substr(timeparts[1].length - 1) !== 'h'
+         || timeparts[2].substr(timeparts[2].length - 1) !== 'm' 
+         || timeparts[1].slice(0, -1) > 23 
+         || timeparts[2].slice(0, -1) > 59
+         || timeparts[3].slice(0, -1) > 59       
+         ) {
+                 return false;
+           }
+         return true;
+ }
+
+function duration_conversion(timestring) {
+          var timeparts = timestring.split(' ');
+          duration = (parseInt(timeparts[0].slice(0, -1)*24)+parseInt(timeparts[1].slice(0, -1)))+":"+timeparts[2].slice(0, -1)+":"+timeparts[3].slice(0, -1);
+
+          return duration;
+
+}
+
+
+
+
+
 function check_setup()
 {
 	var errors = [];
@@ -86,7 +116,7 @@ function check_setup()
 	var start_time = $.trim($('input[name=start_time]').val());
 	var end_time = $.trim($('input[name=end_time]').val());
 	var duration = $.trim($('input[name=duration]').val());
-	var fixed = $('#fixed').attr('checked');
+    var fixed = $('#fixed').attr('checked');
 	var days = $('.recurring_day');
 	var months = $('.recurring_month');
 
@@ -108,9 +138,14 @@ function check_setup()
 		}
 
 		// duration field
-		if (!fixed && !check_timestring(duration)) {
+		if (!fixed && !check_timestring_duration(duration)) {
 			errors.push(_form_err_bad_timeformat.replace('{field}', _form_field_duration));
-		}
+                       
+		} else {
+      duration_new= duration_conversion(duration);
+    }
+
+
 	}
 	days = days.filter(function() {
 		return $(this).prop('checked');
@@ -168,7 +203,7 @@ function check_setup()
 					start_time: start_time,
 					end_time: end_time,
 					fixed: fixed,
-					duration: duration,
+					duration: duration_new,
 					comment: comment,
 					csrf_token: _csrf_token
 				},

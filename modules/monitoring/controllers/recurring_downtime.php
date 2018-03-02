@@ -41,8 +41,10 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			if ($missing) {
 				$recurring_downtime_error = 'Missing required fields: ' . implode(', ', $missing);
 			} else {
-				$id = arr::search($_REQUEST, 'schedule_id');
+                $parts = explode(' ', $data['duration']);
+                $data['duration'] = ((rtrim($parts[0],'d')*24)+rtrim($parts[1],'h')).':'.rtrim($parts[2],'m').':'.rtrim($parts[3],'s');
 
+                $id = arr::search($_REQUEST, 'schedule_id');
 				$sd = new ScheduleDate_Model();
 				try {
 					$sd->edit_schedule($data, $id);
