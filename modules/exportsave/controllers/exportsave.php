@@ -24,6 +24,14 @@ class Exportsave_Controller extends Ninja_Controller {
     }
 
     /**
+     * Renders title bar for lightbox details.
+     */
+    public function current_status() {
+        $data = $this->get_current_title();
+        $this->template = new View ('info', array( 'data' => $data));
+    }
+
+    /**
      * Renders the view for more details, with steps and more information.
      */
     public function details() {
@@ -50,56 +58,142 @@ class Exportsave_Controller extends Ninja_Controller {
                 ),
                 array(
                     'state' => 'config_generation',
+                    'progress' => 0.42,
+                    'details' => 'Writing host configuration files'
+                ),
+                array(
+                    'state' => 'verification',
                     'progress' => 0,
-                    'details' => 'writing file.cfg'
+                    'details' => ''
+                ),
+                array(
+                    'state' => 'commit',
+                    'progress' => 0,
+                    'details' => ''
                 )
             ),
             'export_type' => 'user_export');
 
-        $data['description'] = '';
-        if($data['status'] == 'pending' || $data['status'] == 'running') {
-            $data['title'] = 'Saving...';
-            $data['class'] = 'wait';
-        } else {
-            $data['title'] = ucfirst($data['status']);
-            $data['class'] = $data['status'];
-        }
+        $data['all_steps'] = $this->get_all_step_info($data['status_details'], $data['status']);
+        $data['current_step'] = $this->get_current_step_number($data['all_steps']);
+        $number_of_steps = count($data['all_steps']);
 
-        $data['all_steps'] = $this->getAllStepInfo($data['status_details']);
+        switch($data['status']) {
+            case 'pending':
+            case 'running':
+                $data['title'] = 'Saving changes (step ' . $data['current_step'] .
+                    ' of ' . $number_of_steps . ')';
+                $data['description'] = $data['title'];
+                $data['class'] = 'info';
+                break;
+            case 'success':
+                $data['title'] = 'Changes successfully saved';
+                $data['description'] = 'Save completed';
+                $data['class'] = 'success';
+                break;
+            case 'fail':
+                $data['title'] = 'Changes could not be saved. Restoring...';
+                $data['description'] = 'Restoring to previous state.';
+                $data['class'] = 'error';
+                break;
+            case 'rollback':
+                $data['title'] = 'Changes could not be saved. Restoring completed.';
+                $data['description'] = 'Restored to previous state.';
+                $data['class'] = 'rollback';
+                break;
+            default:
+                $data['title'] = ucfirst($data['status']);
+                $data['description'] = '';
+                $data['class'] = 'info';
+                break;
+        }
 
         return $data;
     }
 
-    public function getAllStepInfo($existing_details) {
-        $step_list = array('backup', 'config_generation', 'verification', 'commit', 'rollback');
+    /**
+     * Fetches the current status title
+     * @return $data['title'] string = ""
+     */
+    public function get_current_title() {
+        $data = $this->get_details();
+        return $data['title'];
+    }
+
+    /**
+     * Creates an object with all the steps, even the ones that we haven't gone
+     * through with yet.
+     * This is where you can add or delete steps.
+     * @param $existing_details array = array()
+     * @param $status string = ""
+     * @return $all_steps array = array()
+     */
+    public function get_all_step_info($existing_details, $status = "") {
+        $step_list = array('backup', 'config_generation', 'verification', 'commit');
 
         $all_steps = array();
+        $step_number = 1;
         foreach($step_list as $step) {
             foreach($existing_details as $details) {
                 if($step == $details['state']) {
                     $all_steps[$step] = $details;
                     $all_steps[$step]['class'] = ($details['progress'] == 1 ? 'success' : '');
-                    $all_steps[$step]['icon'] = ($details['progress'] == 1 ? icon::get('state-ok') : '<img src="/monitor/application/media/images/loading_small.gif" title="Loading..." />');
+                    // Kolla om step är success eller fail, och hämta ikon utifrån det.
+                    if($status == 'fail' && ($details['progress'] > 0 && $details['progress'] < 1)) {
+                        $all_steps[$step]['icon'] = 'e';
+                    } else {
+                        $all_steps[$step]['icon'] = ($details['progress'] == 1 ? icon::get('state-ok') : $step_number);
+                    }
                 }
             }
-            $all_steps[$step]['step_name'] = $this->getStepName($step);
+            $all_steps[$step]['step_name'] = $this->get_step_name($step);
             $all_steps[$step]['progress'] = (empty($all_steps[$step]['progress']) ? '0' : $all_steps[$step]['progress']);
-            $all_steps[$step]['class'] = (empty($all_steps[$step]['class']) ? '' : $all_steps[$step]['class']);
-            $all_steps[$step]['icon'] = (empty($all_steps[$step]['icon']) ? '&nbsp;' : $all_steps[$step]['icon']);
+            $all_steps[$step]['class'] = (empty($all_steps[$step]['class']) ? 'pending' : $all_steps[$step]['class']);
+            $all_steps[$step]['icon'] = (empty($all_steps[$step]['icon']) ? $step_number : $all_steps[$step]['icon']);
+            $step_number++;
         }
         return $all_steps;
     }
 
-
-    public function getStepName($step) {
+    /**
+     * This is where we set step names from state. Used in lightbox details
+     * @param $step string = ""
+     * @return $step_name string = ""
+     */
+    public function get_step_name($step) {
         switch($step) {
+            case 'backup':
+                $step_name = "Backing up";
+                break;
             case 'config_generation':
-                $step_name = "Adding configuration";
+                $step_name = "Writing configuration";
+                break;
+            case 'verification':
+                $step_name = "Verifying";
+                break;
+            case "commit":
+                $step_name = "Committing";
                 break;
             default:
                 $step_name = str_replace("_", " ", ucfirst($step));
                 break;
         }
         return $step_name;
+    }
+
+    /**
+     * Fetches the step number where we currently are working.
+     * @param $all_steps array = array()
+     * @return $step_number int = 0
+     */
+    public function get_current_step_number($all_steps) {
+        $step_number = 0;
+        foreach($all_steps as $step => $details) {
+            $step_number++;
+            if($details['progress'] < 1) {
+                break;
+            }
+        }
+        return $step_number;
     }
 }

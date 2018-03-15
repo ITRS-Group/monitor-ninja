@@ -3,19 +3,28 @@ $(document).ready(function() {
         var lightbox = LightboxManager.create();
         var title = document.createElement('h1');
         title.textContent = '';
-
         lightbox.header(title);
+
+        var cancel = document.createElement('input');
+        cancel.setAttribute('type', 'button');
+        cancel.setAttribute('name', 'close');
+        cancel.setAttribute('value', 'Close');
+        cancel.setAttribute('class', 'export-close-button');
+        lightbox.footer(cancel);
+
         var fragment = document.createElement('div');
         fragment.innerHTML = '<img ' +
-                'src="/monitor/application/media/images/loading_small.gif" ' +
-                'title="Loading..." />';
+                'src="/ninja/application/media/images/rolling-1s-200px.gif" ' +
+                'title="Loading..." width="40" height="40" />';
         lightbox.content(fragment);
         lightbox.show();
 
-        get_export_save_data(fragment);
+        update_data(title, 'current_status');
+        update_data(fragment, 'details');
 
-        $(document).on('click', '.lightbox-header h1 .icon-cancel', function(e){
+        $(document).on('click', '.lightbox-footer input.export-close-button', function(e){
             fragment.value = false;
+            lightbox.hide();
         });
 
         e.preventDefault();
@@ -24,35 +33,25 @@ $(document).ready(function() {
 
    if($('div#export-page-banner').length > 0) {
        var div = $('div#export-page-banner');
-       get_export_breif_data(div);
+       update_data(div, 'banner_content', true);
    }
 });
 
-function get_export_breif_data(div) {
-    if($('div#export-page-banner').length == 0) {
-        return false;
-    }
-    $.ajax({
-        url : 'banner_content',
-        type : 'GET',
-        success : function(data) {
-            div.innerHTML = data;
-            setTimeout(function() { get_export_breif_data(div) } , 5000);
-        }
-    });
-}
-
-function get_export_save_data(fragment) {
-    if(fragment.value == false) {
+function update_data(container, url, is_div) {
+    if((is_div === true && container.length == 0) || container.value == false) {
         return false;
     }
 
     $.ajax({
-        url : 'details',
+        url : url,
         type : 'GET',
         success : function(data) {
-            fragment.innerHTML = data;
-            setTimeout(function() { get_export_save_data(fragment) } , 5000);
+            if(is_div === true) {
+                container.html(data);
+            } else {
+                container.innerHTML = data;
+            }
+            setTimeout(function() { update_data(container, url, is_div) } , 5000);
         }
     });
     return;

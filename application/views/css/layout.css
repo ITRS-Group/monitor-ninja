@@ -1068,7 +1068,7 @@ h1.emote b {
 
 .warning {
   border-color: #fad546;
-  color: #fad546;
+  color: #212121;
 }
 
 .warning.supplementary {
@@ -1115,6 +1115,7 @@ h1.emote b {
 .success, .ok, .up {
   border-color: #82cd60;
   color: #82cd60;
+  text-shadow: -1px 0 #73ba4e, 0 1px #73ba4e, 1px 0 #73ba4e, 0 -1px #73ba4e;
 }
 
 .success.supplementary, .ok.supplementary, .up.supplementary {
