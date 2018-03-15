@@ -73,6 +73,16 @@
     color: silver;
 }
 
+.export-state-rollback > div.export-detail-icon {
+    color: silver;
+}
+.current-export-state-rollback > div.export-detail-icon {
+    font-size: 30px;
+    float: left;
+    line-height: 35px;
+    color: #ee5155;
+    text-align: left;
+}
 input.export-close-button {
     padding: 5px 15px 5px 15px;
 }

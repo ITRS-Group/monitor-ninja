@@ -2,7 +2,7 @@
 /* @var $data array */
 
 echo("<div class='export-detail-description'>" . $data['description'] . "</div>");
-//var_dump($data['all_steps']);
+
 $step_counter = 1;
 foreach($data['all_steps'] as $step => $value) {
     if($data['status'] == 'success') {
@@ -10,8 +10,13 @@ foreach($data['all_steps'] as $step => $value) {
         $extra_classes = 'export-state-all-success';
     } else if($data['status'] == 'fail') {
         $current_step = ($step_counter == $data['current_step'] ? true : false);
-        $extra_classes = 'export-state-pending';
-        //$extra_classes = 'export-state-all-success';
+        $extra_classes = 'export-state-rollback';
+        if($current_step) {
+            $extra_classes .= ' current-export-state-rollback';
+        }
+        if(is_int($value['icon']) && !$current_step) {
+            $extra_classes .= ' export-state-pending';
+        }
     } else {
         $current_step = ($step_counter == $data['current_step'] ? true : false);
         $extra_classes = ($current_step ? 'current-export-state' : '');
@@ -24,7 +29,7 @@ foreach($data['all_steps'] as $step => $value) {
         <div class="export-detail-icon"><?php echo($value['icon'])?></div>
         <p class="export-detail-text"><?php echo($value['step_name'])?>
 <?php
-        if($current_step) {
+        if($current_step && $data['status'] !== 'fail') {
             if(!empty($value['details'])) {
                 echo(" <span class='export-state-detail'>(" . $value['details'] . ")</span>");
             }

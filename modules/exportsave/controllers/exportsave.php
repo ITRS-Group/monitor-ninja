@@ -138,9 +138,8 @@ class Exportsave_Controller extends Ninja_Controller {
                 if($step == $details['state']) {
                     $all_steps[$step] = $details;
                     $all_steps[$step]['class'] = ($details['progress'] == 1 ? 'success' : '');
-                    // Kolla om step är success eller fail, och hämta ikon utifrån det.
                     if($status == 'fail' && ($details['progress'] > 0 && $details['progress'] < 1)) {
-                        $all_steps[$step]['icon'] = 'e';
+                        $all_steps[$step]['icon'] = icon::get('cancel-circled');
                     } else {
                         $all_steps[$step]['icon'] = ($details['progress'] == 1 ? icon::get('state-ok') : $step_number);
                     }
