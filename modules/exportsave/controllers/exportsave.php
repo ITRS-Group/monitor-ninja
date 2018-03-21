@@ -28,7 +28,7 @@ class Exportsave_Controller extends Ninja_Controller {
      */
     public function current_status() {
         $data = $this->get_current_title();
-        $this->template = new View ('info', array( 'data' => $data));
+        $this->template = new View('info', array( 'data' => $data));
     }
 
     /**
@@ -61,7 +61,7 @@ class Exportsave_Controller extends Ninja_Controller {
                     'progress' => 0.42,
                     'details' => 'Writing host configuration files'
                 ),
-                array(
+               array(
                     'state' => 'verification',
                     'progress' => 0,
                     'details' => ''
@@ -75,39 +75,45 @@ class Exportsave_Controller extends Ninja_Controller {
             'export_type' => 'user_export');
 
         $data['all_steps'] = $this->get_all_step_info($data['status_details'], $data['status']);
-        $data['current_step'] = $this->get_current_step_number($data['all_steps']);
+        $data['current_step_number'] = $this->get_current_step_number($data['all_steps']);
+        $data['active_icon_number'] = $this->get_last_active_icon_number($data['all_steps']);
+        $data['rollback'] = (is_int($data['all_steps']['rollback']['icon']) ? false : true);
         $number_of_steps = count($data['all_steps']);
 
         switch($data['status']) {
             case 'pending':
             case 'running':
-                $data['title'] = 'Saving changes (step ' . $data['current_step'] .
-                    ' of ' . $number_of_steps . ')';
-                $data['description'] = $data['title'];
-                $data['class'] = 'info';
+                if($data['rollback']) {
+                    $data['banner'] = 'Changes could not be saved. Restoring...';
+                    $data['title'] = $data['banner'];
+                    $data['description'] = 'Restoring to previous state.';
+                    $data['class'] = 'error';
+                } else {
+                    $data['banner'] = 'Saving changes (step ' . $data['active_icon_number'] . ' of ' . $number_of_steps . ')';
+                    $data['title'] = 'Saving changes...';
+                    $data['description'] = 'Save progress (step ' . $data['active_icon_number'] . ' of ' . $number_of_steps . ')';
+                    $data['class'] = 'info';
+                }
                 break;
             case 'success':
-                $data['title'] = 'Changes successfully saved';
+                $data['banner'] = 'Changes successfully saved';
+                $data['title'] = ucfirst($data['status']);
                 $data['description'] = 'Save completed';
                 $data['class'] = 'success';
                 break;
             case 'fail':
-                $data['title'] = 'Changes could not be saved. Restoring...';
-                $data['description'] = 'Restoring to previous state.';
+                $data['banner'] = ($data['rollback'] ? 'Changes could not be saved. Restoring completed.' : 'Changes could not be saved.');
+                $data['title'] = $data['banner'];
+                $data['description'] = ($data['rollback'] ? 'Restored to previous state.' : '');
                 $data['class'] = 'error';
                 break;
-            case 'rollback':
-                $data['title'] = 'Changes could not be saved. Restoring completed.';
-                $data['description'] = 'Restored to previous state.';
-                $data['class'] = 'rollback';
-                break;
             default:
+                $data['banner'] = ucfirst($data['status']);
                 $data['title'] = ucfirst($data['status']);
                 $data['description'] = '';
                 $data['class'] = 'info';
                 break;
         }
-
         return $data;
     }
 
@@ -129,7 +135,7 @@ class Exportsave_Controller extends Ninja_Controller {
      * @return $all_steps array = array()
      */
     public function get_all_step_info($existing_details, $status = "") {
-        $step_list = array('backup', 'config_generation', 'verification', 'commit');
+        $step_list = array('backup', 'config_generation', 'verification', 'commit', 'rollback');
 
         $all_steps = array();
         $step_number = 1;
@@ -140,6 +146,8 @@ class Exportsave_Controller extends Ninja_Controller {
                     $all_steps[$step]['class'] = ($details['progress'] == 1 ? 'success' : '');
                     if($status == 'fail' && ($details['progress'] > 0 && $details['progress'] < 1)) {
                         $all_steps[$step]['icon'] = icon::get('cancel-circled');
+                    } else if($status == 'running' && $details['state'] == 'rollback') {
+                        $all_steps[$step]['icon'] = icon::get('cancel-circled');
                     } else {
                         $all_steps[$step]['icon'] = ($details['progress'] == 1 ? icon::get('state-ok') : $step_number);
                     }
@@ -149,6 +157,7 @@ class Exportsave_Controller extends Ninja_Controller {
             $all_steps[$step]['progress'] = (empty($all_steps[$step]['progress']) ? '0' : $all_steps[$step]['progress']);
             $all_steps[$step]['class'] = (empty($all_steps[$step]['class']) ? 'pending' : $all_steps[$step]['class']);
             $all_steps[$step]['icon'] = (empty($all_steps[$step]['icon']) ? $step_number : $all_steps[$step]['icon']);
+            $all_steps[$step]['state'] = $step;
             $step_number++;
         }
         return $all_steps;
@@ -183,16 +192,35 @@ class Exportsave_Controller extends Ninja_Controller {
     /**
      * Fetches the step number where we currently are working.
      * @param $all_steps array = array()
-     * @return $step_number int = 0
+     * @return $current_step int = 0
      */
     public function get_current_step_number($all_steps) {
         $step_number = 0;
         foreach($all_steps as $step => $details) {
             $step_number++;
             if($details['progress'] < 1) {
-                break;
+                $current_step = $step_number;
+                
             }
         }
-        return $step_number;
+        return $current_step;
+    }
+
+    /**
+     * Fetches the step number where we were working last time.
+     * This function doesn't care if we are rollbacking. It fetches the last
+     * active step, so that we can see were we were before rollback.
+     * @param $all_steps array = array()
+     * @return $step_number int = 0
+     */
+    public function get_last_active_icon_number($all_steps) {
+        $icon_number = 0;
+        foreach($all_steps as $step => $details) {
+            $icon_number++;
+            if($details['progress'] < 1) {
+                return $icon_number;;
+            }
+        }
+        return $icon_number;
     }
 }

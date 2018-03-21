@@ -7,35 +7,51 @@
     margin: 3px;
     padding: 10px 10px 10px 10px;
     line-height: 2;
+    clear: both;
 }
 .export-detail-description {
     padding: 0 0 15px 15px;
+    width: 50%;
+    height: auto;
+    float: left;
 }
 .export-detail-text {
-    width: 80%;
+    width: 85%;
     float: right;
     color: silver;
+    padding-top: 3px;
 }
 .current-export-state > p.export-detail-text {
     color: #000;
     font-size: 16px;
     line-height: 1.6;
+    padding-top: 0;
 }
 .export-detail-text-in-progress {
-    width: 80%;
+    width: 85%;
     float: right;
     color: silver;
     font-size: 10px;
     font-style: italic;
     line-height: 1.2;
 }
+.export-detail-text-in-progress-top {
+    float: right;
+    width: 45%;
+    height: auto;
+    position: absolute;
+    top: 18px;
+    right: 10px;
+}
 .export-state-detail {
     color: silver;
-    font-size: 12px;
+    font-size: 10px;
+    font-style: italic;
+    padding-top: 10px;
     padding-left: 20px;
 }
 .export-detail-icon {
-    font-size: 30px;
+    font-size: 32px;
     float: left;
     line-height: 35px;
     color: #0077ba;
@@ -45,11 +61,12 @@
     font-size: 16px;
     text-align: center;
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     background: #E5F1F8;
     border: 1px solid #0077ba;
-    margin-left: 3px;
+    margin-left: 8px;
+    line-height: 27px;
 }
 .current-export-state {
     color: #000;
@@ -77,7 +94,7 @@
     color: silver;
 }
 .current-export-state-rollback > div.export-detail-icon {
-    font-size: 30px;
+    font-size: 32px;
     float: left;
     line-height: 35px;
     color: #ee5155;
@@ -92,5 +109,5 @@ div.vertical-timeline {
     height: 28px;
     width: 1px;
     margin-top: 25px;
-    margin-left: 20px;
+    margin-left: 21px;
 }

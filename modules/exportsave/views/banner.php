@@ -9,8 +9,8 @@
                 src="/ninja/application/media/images/rolling-1s-200px.gif" />');
         }
 ?>
-        <span><?php echo($data['title'])?></span>
+        <span><?php echo($data['banner'])?></span>
         <a href='details' class='view-export-details'
-           name="<?php echo($data['title'])?>">View details</a>
+           name="<?php echo($data['banner'])?>">View details</a>
     </div>
 </div>
