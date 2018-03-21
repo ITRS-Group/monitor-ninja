@@ -78,7 +78,7 @@ class Exportsave_Controller extends Ninja_Controller {
         $data['current_step_number'] = $this->get_current_step_number($data['all_steps']);
         $data['active_icon_number'] = $this->get_last_active_icon_number($data['all_steps']);
         $data['rollback'] = (is_int($data['all_steps']['rollback']['icon']) ? false : true);
-        $number_of_steps = count($data['all_steps']);
+        $number_of_steps = count($data['all_steps']) - 1;
 
         switch($data['status']) {
             case 'pending':
