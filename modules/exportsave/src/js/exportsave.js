@@ -29,12 +29,23 @@ $(document).ready(function() {
 
         e.preventDefault();
         return false;
-   });
+    });
 
-   if($('div#export-page-banner').length > 0) {
-       var div = $('div#export-page-banner');
-       update_data(div, 'banner_content', true);
-   }
+    if($('div#export-page-banner').length > 0) {
+        var div = $('div#export-page-banner');
+        update_data(div, 'banner_content', true);
+    }
+
+    $("iframe").load(function(){
+        var save_btn = $(this).contents().find("#nachos_save_btn");
+        if (save_btn) {
+            if (!check_export_in_progress(save_btn)) {
+                save_btn.on("click", function(){
+                    start_full_export(save_btn);
+                });
+            }
+        }
+    });
 });
 
 function update_data(container, url, is_div) {
@@ -54,5 +65,33 @@ function update_data(container, url, is_div) {
             setTimeout(function() { update_data(container, url, is_div) } , 5000);
         }
     });
-    return;
+    return true;
+}
+
+function check_export_in_progress(save_btn) {
+    var in_progress = true;
+    if (in_progress) {
+        save_btn.attr('disabled', 'disabled');
+        save_btn.attr('value', 'Export in progress');
+    }
+    return in_progress;
+}
+
+function start_full_export(save_btn) {
+    $.ajax({
+        url : 'http://localhost:8008/v1/exports/',
+        type : 'POST',
+        contentType: 'application/json',
+        data : '{"user":"monitor","export_type":"user_export"}',
+        timeout: 3000,
+        success : function(data) {
+            save_btn.attr('disabled', 'disabled');
+            save_btn.attr('value', 'Export in progress');
+        },
+        error : function(request, textStatus, errorThrown) {
+		    save_btn.attr('disabled', 'disabled');
+            save_btn.attr('value', 'Export failed');
+        }
+    });
+    return true;
 }
