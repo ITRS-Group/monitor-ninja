@@ -200,7 +200,6 @@ class Exportsave_Controller extends Ninja_Controller {
             $step_number++;
             if($details['progress'] < 1) {
                 $current_step = $step_number;
-                
             }
         }
         return $current_step;
