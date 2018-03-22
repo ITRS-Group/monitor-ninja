@@ -1,4 +1,11 @@
 /* *
+ * Banner on page
+ * */
+a.view-export-details {
+    border-bottom: 1px #fff dotted;
+}
+
+/* *
  * Dialog with more details and detail bars
  * */
 .export-detail-bar {
