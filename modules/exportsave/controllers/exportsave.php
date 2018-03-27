@@ -45,47 +45,48 @@ class Exportsave_Controller extends Ninja_Controller {
      * @return $data array = array()
      */
     public function get_details() {
-        $data = array(
-            'id' => '123e4567-e89b-12d3-a456-426655440045',
-            'creation_time' => 1982549018,
-            'status' => 'running',
-            'user' => 'monitor',
-            'status_details' => array(
-                array(
-                    'state' => 'backup',
-                    'progress' => 1,
-                    'details' => ''
+            $data = array(
+                'id' => '123e4567-e89b-12d3-a456-426655440045',
+                'creation_time' => 1982549018,
+                'status' => 'running',
+                'user' => 'monitor',
+                'status_details' => array(
+                    array(
+                        'state' => 'backup',
+                        'progress' => 1,
+                        'details' => ''
+                    ),
+                    array(
+                        'state' => 'config_generation',
+                        'progress' => 0.42,
+                        'details' => 'Writing host configuration files'
+                    ),
+                   array(
+                        'state' => 'verification',
+                        'progress' => 0,
+                        'details' => ''
+                    ),
+                    array(
+                        'state' => 'commit',
+                        'progress' => 0,
+                        'details' => ''
+                    )
                 ),
-                array(
-                    'state' => 'config_generation',
-                    'progress' => 0.42,
-                    'details' => 'Writing host configuration files'
-                ),
-               array(
-                    'state' => 'verification',
-                    'progress' => 0,
-                    'details' => ''
-                ),
-                array(
-                    'state' => 'commit',
-                    'progress' => 0,
-                    'details' => ''
-                )
-            ),
-            'export_type' => 'user_export');
+                'export_type' => 'user_export');
 
         $data['all_steps'] = $this->get_all_step_info($data['status_details'], $data['status']);
         $data['current_step_number'] = $this->get_current_step_number($data['all_steps']);
         $data['active_icon_number'] = $this->get_last_active_icon_number($data['all_steps']);
         $data['rollback'] = (is_int($data['all_steps']['rollback']['icon']) ? false : true);
+        $data['rollback_progress'] = ($data['rollback'] ? ($data['all_steps']['rollback']['progress'] * 100) : '');
         $number_of_steps = count($data['all_steps']) - 1;
 
         switch($data['status']) {
             case 'pending':
             case 'running':
                 if($data['rollback']) {
-                    $data['banner'] = 'Changes could not be saved. Restoring...';
-                    $data['title'] = $data['banner'];
+                    $data['banner'] = 'Changes could not be saved. Restoring to previous state (' . $data['rollback_progress'] . '%)';
+                    $data['title'] = 'Changes could not be saved. Restoring...';
                     $data['description'] = 'Restoring to previous state.';
                     $data['class'] = 'error';
                 } else {
@@ -102,8 +103,8 @@ class Exportsave_Controller extends Ninja_Controller {
                 $data['class'] = 'success';
                 break;
             case 'fail':
-                $data['banner'] = ($data['rollback'] ? 'Changes could not be saved. Restoring completed.' : 'Changes could not be saved.');
-                $data['title'] = $data['banner'];
+                $data['banner'] = ($data['rollback'] ? 'Changes could not be saved. Restored to previous state.' : 'Changes could not be saved.');
+                $data['title'] = ($data['rollback'] ? 'Changes could not be saved. Restoring completed.' : 'Changes could not be saved.');
                 $data['description'] = ($data['rollback'] ? 'Restored to previous state.' : '');
                 $data['class'] = 'error';
                 break;
