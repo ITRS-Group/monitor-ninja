@@ -45,34 +45,34 @@ class Exportsave_Controller extends Ninja_Controller {
      * @return $data array = array()
      */
     public function get_details() {
-        $data = array(
-            'id' => '123e4567-e89b-12d3-a456-426655440045',
-            'creation_time' => 1982549018,
-            'status' => 'running',
-            'user' => 'monitor',
-            'status_details' => array(
-                array(
-                    'state' => 'backup',
-                    'progress' => 1,
-                    'details' => ''
+            $data = array(
+                'id' => '123e4567-e89b-12d3-a456-426655440045',
+                'creation_time' => 1982549018,
+                'status' => 'running',
+                'user' => 'monitor',
+                'status_details' => array(
+                    array(
+                        'state' => 'backup',
+                        'progress' => 1,
+                        'details' => ''
+                    ),
+                    array(
+                        'state' => 'config_generation',
+                        'progress' => 0.42,
+                        'details' => 'Writing host configuration files'
+                    ),
+                   array(
+                        'state' => 'verification',
+                        'progress' => 0,
+                        'details' => ''
+                    ),
+                    array(
+                        'state' => 'commit',
+                        'progress' => 0,
+                        'details' => ''
+                    )
                 ),
-                array(
-                    'state' => 'config_generation',
-                    'progress' => 0.42,
-                    'details' => 'Writing host configuration files'
-                ),
-               array(
-                    'state' => 'verification',
-                    'progress' => 0,
-                    'details' => ''
-                ),
-                array(
-                    'state' => 'commit',
-                    'progress' => 0,
-                    'details' => ''
-                )
-            ),
-            'export_type' => 'user_export');
+                'export_type' => 'user_export');
 
         $data['all_steps'] = $this->get_all_step_info($data['status_details'], $data['status']);
         $data['current_step_number'] = $this->get_current_step_number($data['all_steps']);
