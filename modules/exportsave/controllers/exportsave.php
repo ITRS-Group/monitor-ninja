@@ -21,6 +21,7 @@ class Exportsave_Controller extends Ninja_Controller {
     public function banner_content() {
         $data = $this->get_details();
         $this->template = new View('banner', array( 'data' => $data ));
+        $this->template->css[] = $this->add_path('../media/css/exportsave.css');
     }
 
     /**
