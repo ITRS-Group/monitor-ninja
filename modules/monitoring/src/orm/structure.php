@@ -528,7 +528,12 @@ $tables = array (
 			'duration' => 'int',
 			'fixed' => 'int',
 			'weekdays' => 'list',
-			'months' => 'list'
+			'months' => 'list',
+			'start_date' => 'string',
+			'end_date' => 'string',
+			'recurrence' => 'string',
+			'recurrence_on' => 'string',
+			'recurrence_ends' => 'string',
 		),
 	),
 );

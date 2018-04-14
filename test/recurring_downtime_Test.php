@@ -118,7 +118,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 		$id;
 		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
@@ -151,7 +157,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 
 		# The number is wrong.
 		# Any overlapping hosts will be added twice.
@@ -193,7 +205,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
@@ -226,7 +244,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
@@ -266,7 +290,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 		$this->sd->edit_schedule($data, $id);
 
 		$tests_expected = array(
@@ -303,7 +333,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2037-01-01",
+			"end_date" => "2037-01-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 		$this->sd->edit_schedule($data, $id);
 		$time = mktime(23, 50, 0, 11, 11, 2036);
 
@@ -343,7 +379,13 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"duration" => "2:00",
 			"fixed" => "1",
 			"weekdays" => array("1","2","3","4","5","6","0"),
-			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"));
+			"months" => array("1","2","3","4","5","6","7","8","9","10","11","12"),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => 0,
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0
+		);
 		$this->sd->edit_schedule($data, $id);
 
 		$output = '';
@@ -394,7 +436,12 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 				'duration' => '7200',
 				'fixed' => '1',
 				'weekdays' => 'a:7:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"0";}',
-				'months' => 'a:12:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"7";i:7;s:1:"8";i:8;s:1:"9";i:9;s:2:"10";i:10;s:2:"11";i:11;s:2:"12";}'
+				'months' => 'a:12:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"7";i:7;s:1:"8";i:8;s:1:"9";i:9;s:2:"10";i:10;s:2:"11";i:11;s:2:"12";}',
+				'start_date' => 0,
+				'end_date' => 0,
+				'recurrence' => 0,
+				'recurrence_on' => 0,
+				'recurrence_ends' => 0
 			),
 			$res[0]
 		);
@@ -414,7 +461,12 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 				'duration' => '14400',
 				'fixed' => '1',
 				'weekdays' => 'a:1:{i:0;s:1:"4";}',
-				'months' => 'a:0:{}'
+				'months' => 'a:0:{}',
+				'start_date' => 0,
+				'end_date' => 0,
+				'recurrence' => 0,
+				'recurrence_on' => 0,
+				'recurrence_ends' => 0
 			),
 			$res[0]
 		);
@@ -434,7 +486,12 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 				'duration' => '86400',
 				'fixed' => '1',
 				'weekdays' => 'a:1:{i:0;s:1:"4";}',
-				'months' => 'a:0:{}'
+				'months' => 'a:0:{}',
+				'start_date' => 0,
+				'end_date' => 0,
+				'recurrence' => 0,
+				'recurrence_on' => 0,
+				'recurrence_ends' => 0
 			),
 			$res[0]
 		);

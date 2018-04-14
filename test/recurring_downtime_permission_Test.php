@@ -53,7 +53,13 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'duration' => false,
 			'fixed' => true,
 			'weekdays' => array(1,2,3,4,5,6,0),
-			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12)
+			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12),
+			'start_date' => 0,
+			'end_date' => 0,
+			'recurrence' => 0,
+			'recurrence_on' => 0,
+			'recurrence_ends' => 0
+
 		));
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -65,7 +71,12 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'duration' => false,
 			'fixed' => true,
 			'weekdays' => array(1,2,3,4,5,6,0),
-			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12)
+			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12),
+			'start_date' => 0,
+			'end_date' => 0,
+			'recurrence' => 0,
+			'recurrence_on' => 0,
+			'recurrence_ends' => 0
 		));
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -77,7 +88,12 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'duration' => '5:00',
 			'fixed' => false,
 			'weekdays' => array(1,2,3,4,5,6,0),
-			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12)
+			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12),
+			'start_date' => 0,
+			'end_date' => 0,
+			'recurrence' => 0,
+			'recurrence_on' => 0,
+			'recurrence_ends' => 0
 		));
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -89,7 +105,12 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'duration' => '05:00',
 			'fixed' => false,
 			'weekdays' => array(1,2,3,4,5,6,0),
-			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12)
+			'months' => array(1,2,3,4,5,6,7,8,9,10,11,12),
+			'start_date' => 0,
+			'end_date' => 0,
+			'recurrence' => 0,
+			'recurrence_on' => 0,
+			'recurrence_ends' => 0
 		));
 	}
 
