@@ -110,7 +110,3 @@ Then /^I view a "([^\"]+)" report with these settings:$/ do |report, table|
 	params = params.chomp('&')
 	visit NavigationHelpers::url_for("/index.php/#{report}/edit_settings?#{params}")
 end
-
-Then /^the banner should have text "(.*?)"$/ do |status|
-	page.find('div.export-detail-banner').should have_content(status)
-end
