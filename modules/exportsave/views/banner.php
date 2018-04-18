@@ -1,16 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /* @var $data array */
 ?>
-<div id="export-page-banner" class="notify-notification-bar">
-    <div class="alert <?php echo($data['class']);?>">
-<?php
-        if($data['status'] == 'pending' || $data['status'] == 'running') {
-            echo('<img height="10" width="10" alt=""
-                src="/ninja/application/media/images/rolling-1s-200px.gif" />');
-        }
-?>
-        <span><?php echo($data['banner'])?></span>
+<div id="export-page-banner">
+    <div class="export-detail-banner <?php echo($data['class']);?>">
+        <span><?php echo($data['name'])?></span>
         <a href='details' class='view-export-details'
-           name="<?php echo($data['banner'])?>">View details</a>
+           name="<?php echo($data['name'])?>">View details</a>
     </div>
 </div>

@@ -1,120 +1,84 @@
 /* *
- * Banner on page
+ * Borders and background colour
  * */
-a.view-export-details {
-    border-bottom: 1px #fff dotted;
+.success {
+    background: #F0F9EC;
+    border: 1px solid #82C448;
+}
+.wait, .write, .read {
+    background: #E5F1F8;
+    border: 1px solid #0277BD;
+}
+.error {
+    background: #FBEBEB;
+    border: 1px solid #D93939;
+}
+
+/* *
+ * Banner, on the middle of the page
+ * */
+.export-detail-banner {
+    width: 25%;
+    margin: 20px auto;
+    padding: 10px 15px 10px 15px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    color: #000;
+}
+.export-detail-banner a {
+    color: steelblue;
+    margin-left: 15px;
+}
+
+/* *
+ * Icon on notification
+ * */
+.status-message-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 20px;
+    float: left;
+    margin-top: 10px;
+}
+.success .status-message-icon {
+    color: #82C448;
+}
+.error .status-message-icon {
+    color: #D93939;
 }
 
 /* *
  * Dialog with more details and detail bars
  * */
 .export-detail-bar {
-    width: 95%;
+    width: 95%0%;
     height: 25px;
     margin: 3px;
-    padding: 10px 10px 10px 10px;
-    line-height: 2;
-    clear: both;
-}
-.export-detail-description {
-    padding: 0 0 15px 15px;
-    width: 50%;
-    height: auto;
-    float: left;
+    padding: 10px 5px 3px 20px;
+    line-height: 1.7;
+    background: #EEEEEE;
 }
 .export-detail-text {
-    width: 85%;
-    float: right;
-    color: #999;
-    padding-top: 3px;
-}
-.current-export-state > p.export-detail-text {
-    color: #212121;
-    font-size: 16px;
-    line-height: 1.6;
-    padding-top: 0;
-}
-.export-detail-text-in-progress {
-    width: 85%;
-    float: right;
-    color: silver;
-    font-size: 10px;
-    font-style: italic;
-    line-height: 1.2;
-}
-.export-detail-text-in-progress-top {
-    float: right;
-    width: 45%;
-    height: auto;
-    position: absolute;
-    top: 18px;
-    right: 10px;
-}
-.export-state-detail {
-    color: #999;
-    font-size: 10px;
-    font-style: italic;
-    padding-top: 10px;
-    padding-left: 20px;
+    width: 50%;
+    float: left;
 }
 .export-detail-icon {
-    font-size: 32px;
-    float: left;
-    line-height: 35px;
-    color: #0277BD;
+    font-size: 20px;
+    width: 40px;
+    height: 20px;
+    float: right;
+    line-height: 1;
+    color: #000;
+    margin: auto;
     text-align: left;
 }
-.current-export-state > div.export-detail-icon {
-    font-size: 16px;
-    text-align: center;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    background: #E5F1F8;
-    border: 1px solid #0277BD;
-    margin-left: 8px;
-    line-height: 27px;
+.export-detail-icon > img {
+    margin-left: 5px;
 }
-.current-export-state {
-    color: #212121;
+.export-success-details, .state-ok-details {
+    background: #82C448;
 }
-.export-state-pending > div.export-detail-icon {
-    color: #999;
-    font-size: 12px;
-    text-align: center;
-    width: 25px;
-    height: 25px;
-    line-height: 27px;
-    border-radius: 50%;
-    background: #eee;
-    border: 1px solid #ddd;
-    margin-left: 8px;
-}
-.export-state-all-success > div.export-detail-icon {
-    color: #82C448;
-}
-.export-state-pending > div.export-detail-icon {
-    color: #999;
-}
-
-.export-state-rollback > div.export-detail-icon {
-    color: #999;
-}
-.current-export-state-rollback > div.export-detail-icon {
-    font-size: 32px;
-    float: left;
-    line-height: 35px;
-    color: #D93939;
-    text-align: left;
-}
-input.export-close-button {
-    padding: 5px 15px 5px 15px;
-}
-
-div.vertical-timeline {
-    background: #999;
-    height: 28px;
-    width: 1px;
-    margin-top: 25px;
-    margin-left: 21px;
+.export-error-details, .cancel-circled-details {
+    background: #D93939;
+    color: #fff;
 }

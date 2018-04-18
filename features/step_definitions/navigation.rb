@@ -112,5 +112,5 @@ Then /^I view a "([^\"]+)" report with these settings:$/ do |report, table|
 end
 
 Then /^the banner should have text "(.*?)"$/ do |status|
-	page.find('div#export-page-banner').should have_content(status)
+	page.find('div.export-detail-banner').should have_content(status)
 end

@@ -3,28 +3,19 @@ $(document).ready(function() {
         var lightbox = LightboxManager.create();
         var title = document.createElement('h1');
         title.textContent = '';
+
         lightbox.header(title);
-
-        var cancel = document.createElement('input');
-        cancel.setAttribute('type', 'button');
-        cancel.setAttribute('name', 'close');
-        cancel.setAttribute('value', 'Close');
-        cancel.setAttribute('class', 'export-close-button');
-        lightbox.footer(cancel);
-
         var fragment = document.createElement('div');
         fragment.innerHTML = '<img ' +
-                'src="/ninja/application/media/images/rolling-1s-200px.gif" ' +
-                'title="Loading..." width="40" height="40" />';
+                'src="/monitor/application/media/images/loading_small.gif" ' +
+                'title="Loading..." />';
         lightbox.content(fragment);
         lightbox.show();
 
-        update_data(title, 'current_status');
-        update_data(fragment, 'details');
+        get_export_save_data(fragment);
 
-        $(document).on('click', '.lightbox-footer input.export-close-button', function(e){
+        $(document).on('click', '.lightbox-header h1 .icon-cancel', function(e){
             fragment.value = false;
-            lightbox.hide();
         });
 
         e.preventDefault();
@@ -33,25 +24,35 @@ $(document).ready(function() {
 
    if($('div#export-page-banner').length > 0) {
        var div = $('div#export-page-banner');
-       update_data(div, 'banner_content', true);
+       get_export_breif_data(div);
    }
 });
 
-function update_data(container, url, is_div) {
-    if((is_div === true && container.length == 0) || container.value == false) {
+function get_export_breif_data(div) {
+    if($('div#export-page-banner').length == 0) {
+        return false;
+    }
+    $.ajax({
+        url : 'banner_content',
+        type : 'GET',
+        success : function(data) {
+            div.innerHTML = data;
+            setTimeout(function() { get_export_breif_data(div) } , 5000);
+        }
+    });
+}
+
+function get_export_save_data(fragment) {
+    if(fragment.value == false) {
         return false;
     }
 
     $.ajax({
-        url : url,
+        url : 'details',
         type : 'GET',
         success : function(data) {
-            if(is_div === true) {
-                container.html(data);
-            } else {
-                container.innerHTML = data;
-            }
-            setTimeout(function() { update_data(container, url, is_div) } , 5000);
+            fragment.innerHTML = data;
+            setTimeout(function() { get_export_save_data(fragment) } , 5000);
         }
     });
     return;
