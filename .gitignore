@@ -32,7 +32,4 @@ views.php
 test/qunit/test_suite.html
 node_modules
 modules/nacoma
-modules/legacy_nacom
-
-ci_tmp_mock*
-screenshots/*
+modules/legacy_nacoma
