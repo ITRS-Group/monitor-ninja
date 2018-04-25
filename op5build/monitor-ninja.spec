@@ -28,7 +28,7 @@ Requires: monitor-livestatus
 Requires: monitor-backup
 Requires: op5-bootstrap
 # Merlin creates our database
-Requires: merlin
+
 Requires: monitor-ninja-monitoring
 BuildRequires: python
 BuildRequires: doxygen
@@ -84,7 +84,6 @@ Additional test files for ninja
 Summary: Naemon and Livestatus module for ninja
 Group: op5/monitor
 Requires: op5-naemon
-Requires: monitor-merlin
 Requires: monitor-livestatus
 
 %description monitoring
