@@ -7,7 +7,6 @@ $(document).ready(function() {
   if(pathArray[3] == "recurring_downtime" && pathArray[4] == "index"){
     if(!parseInt(_fixed)){
       var duration_arr = JSON.parse(_duration);
-      console.log(duration_arr)
       $('#fixed').prop('checked', true);
       $('#duration-days').val(duration_arr.day);
       $('#duration-hours').val(duration_arr.hours);
@@ -150,8 +149,9 @@ $(document).ready(function() {
   });
   
   $('#fixed-duration-start-time').click(function(e){
-    $('.starttime-quickselect').html(quickselect_data($(this).val()));
+    $('.starttime-quickselect').html(quickselect_data($(this).val(),"s"));
     $('.starttime-quickselect').show();
+    document.getElementById('starttime-options').scrollTop = document.getElementById('s'+$(this).val()).offsetTop;
     e.stopPropagation();
   });
   
@@ -163,8 +163,9 @@ $(document).ready(function() {
   });
 
   $('#fixed-duration-end-time').click(function(e){
-    $('.endtime-quickselect').html(quickselect_data($(this).val()));
+    $('.endtime-quickselect').html(quickselect_data($(this).val(),"e"));
     $('.endtime-quickselect').show();
+    document.getElementById('endtime-options').scrollTop = document.getElementById('e'+$(this).val()).offsetTop;
     e.stopPropagation();
   });
 
@@ -179,108 +180,128 @@ $(document).ready(function() {
     $('.quickselect').hide();
   });
 
-  $('.fixed-duration-part').bind('change', function() {
-   var start_time=$('#fixed-duration-start-time').val();
-   var start_date=$('#fixed-duration-start-date').val();
-   var end_time=$('#fixed-duration-end-time').val();
-   var end_date=$('#fixed-duration-end-date').val();
-   if(start_time == ''){
-    pre_start_time = JSON.parse(localStorage.getItem('start_time'));
-    $('#fixed-duration-start-time').val(pre_start_time);
-  }
-
-  if(end_time == ''){
-    pre_end_time = JSON.parse(localStorage.getItem('end_time'));
-    $('#fixed-duration-end-time').val(pre_end_time);
-  }  
-
-  if(start_date == ''){
-    pre_start_date = JSON.parse(localStorage.getItem('start_date'));
-    $('#fixed-duration-start-date').val(pre_start_date);
-  }  
-
-  if(end_date == ''){
-    pre_end_date = JSON.parse(localStorage.getItem('end_date'));
-    $('#fixed-duration-end-date').val(pre_end_date);
-  }  
-  var startDate = new Date(start_date+"T"+start_time+"Z");
-  var endDate = new Date(end_date+"T"+end_time+"Z");
-  var timeDiff = (endDate-startDate)/1000;
-  var d = Math.floor(timeDiff/(3600*24));
-  var h = Math.floor((timeDiff%(3600*24))/3600);
-  var m = Math.floor((timeDiff%3600)/60);
-  var duration_string = ((d != 0) ? d +' days ': '' );
-  duration_string += ((h != 0) ? h +' hours ': '' );
-  duration_string += ((m != 0) ? m +' minutes ': '' );
-  if (!$('#fixed').is(':checked')){
-    if(start_time !='' && start_date !='' && end_time !='' && end_date !=''){
-      $('#fixed-duration-text').html('Downtime duration '+ duration_string);
+  function set_endTime(){
+    var start_time = $('#fixed-duration-start-time').val();
+    var start_date = $('#fixed-duration-start-date').val();
+    var end_time = $('#fixed-duration-end-time').val();
+    var end_date = $('#fixed-duration-end-date').val();
+    var startDate = new Date(start_date+"T"+start_time+"Z");
+    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var timeDiff = endDate-startDate;
+    if(timeDiff < 0){
+      $('#fixed-duration-end-time').val(start_time);
+      $('#fixed-duration-end-date').val(start_date);
+    }else{
+      return true;
     }
-  }
-  else{
-    var duration_days = $('#duration-days').val();
-    var duration_hours = $('#duration-hours').val();
-    var duration_minutes = $('#duration-minutes').val();
-    var f_duration_string = ((duration_days!=0) ? duration_days +' days ': ' 0 days ' );
-    f_duration_string += ((duration_hours!=0) ? duration_hours +' hours ': ' 0 hours ' );
-    f_duration_string += ((duration_minutes!=0) ? duration_minutes+' minutes ': ' 0 minutes ' );
-  }
-  var day = startDate.getDay();
-  var date = startDate.getDate();
-  var month = startDate.getMonth();
-  var days_name = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  var month_name = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  var day_name = days_name[startDate.getDay()];
-  day_no = Math.ceil(date/7);
-  day_conv = ['','first','second','third','fourth','fifth'];
-  lastDay = new Date(startDate);
-  lastDay.setDate(startDate.getDate() + 1);
-  if(lastDay.getMonth() != month){
-    var last_day_option_quick = '<option value=\''+ JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":"last","day":"last"}}) +'\'>Monthly on the last day</option>';
-    var last_day_option_custom = '<div><input editattr="lastmonthday" type="radio" name="month_on" value=\''+ JSON.stringify({"day_no":"last","day":"last"}) +' \'> Monthly on the last day</div>';
-  }else{
+  };
+
+  $('.fixed-duration-part').bind('change', function() {
+    set_endTime();
+    var start_time = $('#fixed-duration-start-time').val();
+    var start_date = $('#fixed-duration-start-date').val();
+    var end_time = $('#fixed-duration-end-time').val();
+    var end_date = $('#fixed-duration-end-date').val();
+    
+    if(start_time == ''){
+      pre_start_time = JSON.parse(localStorage.getItem('start_time'));
+      $('#fixed-duration-start-time').val(pre_start_time);
+    }
+
+    if(end_time == ''){
+      pre_end_time = JSON.parse(localStorage.getItem('end_time'));
+      $('#fixed-duration-end-time').val(pre_end_time);
+    }  
+
+    if(start_date == ''){
+      pre_start_date = JSON.parse(localStorage.getItem('start_date'));
+      $('#fixed-duration-start-date').val(pre_start_date);
+    }
+
+    if(end_date == ''){
+      pre_end_date = JSON.parse(localStorage.getItem('end_date'));
+      $('#fixed-duration-end-date').val(pre_end_date);
+    }
+
+    var startDate = new Date(start_date+"T"+start_time+"Z");
+    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var timeDiff = (endDate-startDate)/1000;
+    var d = Math.floor(timeDiff/(3600*24));
+    var h = Math.floor((timeDiff%(3600*24))/3600);
+    var m = Math.floor((timeDiff%3600)/60);
+    var duration_string = ((d != 0) ? d +' days ': '' );
+    duration_string += ((h != 0) ? h +' hours ': '' );
+    duration_string += ((m != 0) ? m +' minutes ': '' );
+    if (!$('#fixed').is(':checked')){
+      if(start_time !='' && start_date !='' && end_time !='' && end_date !=''){
+        $('#fixed-duration-text').html('Downtime duration '+ duration_string);
+      }
+    }
+    else{
+      var duration_days = $('#duration-days').val();
+      var duration_hours = $('#duration-hours').val();
+      var duration_minutes = $('#duration-minutes').val();
+      var f_duration_string = ((duration_days!=0) ? duration_days +' days ': ' 0 days ' );
+      f_duration_string += ((duration_hours!=0) ? duration_hours +' hours ': ' 0 hours ' );
+      f_duration_string += ((duration_minutes!=0) ? duration_minutes+' minutes ': ' 0 minutes ' );
+    }
+    var day = startDate.getDay();
+    var date = startDate.getDate();
+    var month = startDate.getMonth();
+    var days_name = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    var month_name = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    var day_name = days_name[startDate.getDay()];
+    day_no = Math.ceil(date/7);
+    day_conv = ['','first','second','third','fourth','fifth'];
+    lastDay = new Date(startDate);
+    lastDay.setDate(startDate.getDate() + 1);
+    if(lastDay.getMonth() != month){
+      var last_day_option_quick = '<option value=\''+ JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":"last","day":"last"}}) +'\'>Monthly on the last day</option>';
+      var last_day_option_custom = '<div><input editattr="lastmonthday" type="radio" name="month_on" value=\''+ JSON.stringify({"day_no":"last","day":"last"}) +' \'> Monthly on the last day</div>';
+    }else{
     var last_day_option_quick = '';
     var last_day_option_custom = '';
-  }
-  $('#recurrence').html('\
-    <option value="no">No recurrence</option> \
-    <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"day"},"on":{"day":day}}) + '\'>Daily</option>\
-    <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":{"day":day}}) + '\'>Weekly on the ' + day_name + '</option> \
-    <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + format_date(day_no) + ' ' + day_name + '</option>' + last_day_option_quick + ' \
-    <option value="custom">Custom recurrence</option> \
-    ');
-
-  $('#recurrence-on-year').html('\
-    <div><input editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day,"month":month}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + ' of ' + month_name[month] + '</div>\
-    <div><input editattr="lastweekday" class="repeat_on" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":"last","day":day,"month":month}) + ' \'> the last ' + day_name + ' of ' + month_name[month] + '</div>\
-    ');
-
-  $('#recurrence-on-month').html('\
-    <div><input editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + '</div>\
-    <div><input editattr="lastweekday" class="repeat_on" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":"last","day":day}) + ' \'> the last ' + day_name + '</div>' + last_day_option_custom + '\
-    ');
-
-  $('#recurrence-on-week').html('\
-    <div><input checked="checked" type="radio" name="week_on" value=\'' + JSON.stringify({"day":day}) + ' \'> the ' + day_name + '</div>\
-    ');
-
-  $('.recurrence').hide();
-  $('.recurrence-on').hide();
-
-  if(timeDiff <= 0){
-    $('.note').css('background-color','#F7E650');
-    $('.note').css('color','#212121');
-    if (!$('#fixed').is(':checked')){
-      $('.note-warning').html('NOTE: Invalid Downtime Duration');
-    }else{
-      $('.note-warning').html('NOTE: Invalid Start between Duration');
     }
-  }else{
-    $('.note').css('background-color','#0277BD');
-    $('.note').css('color','white');
-    $('.note-warning').html('');
-  }
+    $('#recurrence').html('\
+      <option value="no">No recurrence</option> \
+      <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"day"},"on":{"day":day}}) + '\'>Daily</option>\
+      <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":{"day":day}}) + '\'>Weekly on the ' + day_name + '</option> \
+      <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + format_date(day_no) + ' ' + day_name + '</option>' + last_day_option_quick + ' \
+      <option value="custom">Custom recurrence</option> \
+      ');
+
+    $('#recurrence-on-year').html('\
+      <div><input editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day,"month":month}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + ' of ' + month_name[month] + '</div>\
+      <div><input editattr="lastweekday" class="repeat_on" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":"last","day":day,"month":month}) + ' \'> the last ' + day_name + ' of ' + month_name[month] + '</div>\
+      ');
+
+    $('#recurrence-on-month').html('\
+      <div><input editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + '</div>\
+      <div><input editattr="lastweekday" class="repeat_on" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":"last","day":day}) + ' \'> the last ' + day_name + '</div>' + last_day_option_custom + '\
+      ');
+
+    $('#recurrence-on-week').html('\
+      <div><input checked="checked" type="radio" name="week_on" value=\'' + JSON.stringify({"day":day}) + ' \'> the ' + day_name + '</div>\
+      ');
+
+    $('.recurrence').hide();
+    $('.recurrence-on').hide();
+
+    if(timeDiff <= 0){
+      $('.note').css('background-color','#F7E650');
+      $('.note').css('color','#212121');
+      if (!$('#fixed').is(':checked')){
+        $('.note-warning').html('NOTE: Invalid Downtime Duration');
+      }else{
+        $('.note-warning').html('NOTE: Invalid Start between Duration');
+      }
+    }else{
+      $('.note').css('background-color','#0277BD');
+      $('.note').css('color','white');
+      $('.note-warning').html('');
+    }
   });
+
   $('.recurring-downtime-form input').bind('change', function() {
     summary_show();
   });
@@ -412,7 +433,7 @@ function summary_show(){
     var ends_on =$ ('input[name="ends"]:checked').val();
     if(ends_on == 'finite_ends'){
       var ends_on_date =$ ('#endson-date').val();
-      var ends_on_str = 'untill ' + ends_on_date;
+      var ends_on_str = ' until ' + ends_on_date;
     }else{
       var ends_on_str = '';
     }
@@ -420,7 +441,7 @@ function summary_show(){
     var repeat_every_text =$ ('select[name="recurrence_text"]').val();
     if(repeat_every_text == 'day'){
       if(repeat_every_no == 1){
-        var repeat_every_str = "Daily";
+        var repeat_every_str = "daily";
       }else{
         var repeat_every_str = "every " + repeat_every_no + " days";
       }
@@ -435,7 +456,7 @@ function summary_show(){
     }
     if(repeat_every_text == "week"){
       if(repeat_every_no == 1){
-        var repeat_every_str = "Weekly on " + day_name;
+        var repeat_every_str = "weekly on " + day_name;
       }else{
         var repeat_every_str = "every " + repeat_every_no + " week on " + day_name;
       }
@@ -455,7 +476,7 @@ function summary_show(){
       val_day_no = (val_day_no=="last")? val_day_no : format_date(val_day_no);
       if(val_day_no == "last" && val_day == "last"){
         if(repeat_every_no == 1){
-          var repeat_every_str = "Monthly on the last day";
+          var repeat_every_str = "monthly on the last day";
         }else{
           var repeat_every_str = "every " + repeat_every_no + " months on the last day";
         }
@@ -469,7 +490,7 @@ function summary_show(){
         var clean_next_end_date = next_end_date.getFullYear() + "-" + format_time(next_end_date.getMonth()+1) + "-" + format_time(next_end_date.getDate());
       }else{
         if(repeat_every_no == 1){
-          var repeat_every_str = "Monthly on the " + val_day_no + ' '+ day_name;
+          var repeat_every_str = "monthly on the " + val_day_no + ' '+ day_name;
         }else{
           var repeat_every_str = "every " + repeat_every_no + " months on the " + val_day_no + ' '+ day_name;
         }
@@ -528,11 +549,11 @@ function summary_show(){
       var val_day = year_on['day'];
       var val_month = year_on['month'];
       val_day_no = (val_day_no == "last")? val_day_no : format_date(val_day_no);
-      var repeat_every_str = "Yearly on the " + val_day_no + ' ' + day_name + ' of ' + month_name[val_month];
+      var repeat_every_str = "yearly on the " + val_day_no + ' ' + day_name + ' of ' + month_name[val_month];
       if(repeat_every_no == 1){
-        var repeat_every_str = "Yearly on the " + val_day_no + ' ' + day_name + ' of ' + month_name[val_month];
+        var repeat_every_str = "yearly on the " + val_day_no + ' ' + day_name + ' of ' + month_name[val_month];
       }else{
-        var repeat_every_str = "every " + repeat_every_no + " Years on the " + val_day_no + ' ' + day_name + ' of ' + month_name[val_month];
+        var repeat_every_str = "every " + repeat_every_no + " years on the " + val_day_no + ' ' + day_name + ' of ' + month_name[val_month];
       }
       if(val_day_no == "last"){
         var next_start_time = start_time;
@@ -592,7 +613,7 @@ function summary_show(){
       if(repeat_every_text == 'day'){
         var repeat_every_no = 1;
         if(repeat_every_no == 1){
-          var repeat_every_str = "Daily";
+          var repeat_every_str = "daily";
         }else{  
           var repeat_every_str = "every " + repeat_every_no + " days";
         }
@@ -608,7 +629,7 @@ function summary_show(){
       if(repeat_every_text == "week"){
         var repeat_every_no = 1;
         if(repeat_every_no == 1){
-          var repeat_every_str = "Weekly on " + day_name;
+          var repeat_every_str = "weekly on " + day_name;
         }else{
           var repeat_every_str = "every " + repeat_every_no + " week on " + day_name;
         }
@@ -629,7 +650,7 @@ function summary_show(){
         var repeat_every_no = 1;
         if(val_day_no == "last" && val_day == "last"){
           if(repeat_every_no == 1){
-            var repeat_every_str = "Monthly on the last day";
+            var repeat_every_str = "monthly on the last day";
           }else{
             var repeat_every_str = "every " + repeat_every_no + " months on the last day";
           }
@@ -642,7 +663,7 @@ function summary_show(){
           var clean_next_start_date = next_start_date.getFullYear() + "-" + format_time(next_start_date.getMonth()+1) + "-" + format_time(next_start_date.getDate());
           var clean_next_end_date = next_end_date.getFullYear() + "-" + format_time(next_end_date.getMonth()+1) + "-" + format_time(next_end_date.getDate());
         }else{
-          var repeat_every_str = "Monthly on the " + val_day_no + ' ' + day_name;
+          var repeat_every_str = "monthly on the " + val_day_no + ' ' + day_name;
           val_day_no = parseInt(val_day_no);
           var next_start_time = start_time;
           var next_end_time = end_time;
@@ -707,30 +728,30 @@ function summary_show(){
     }
   }
 }
-function quickselect_data(time){
-  if(time == ''){
-    time = '00:00'
-  }
+
+function quickselect_data(time,pre){
+  time = '00:00';
   time = time.split(":");
   var data = '';
   var hour = parseInt(time[0]);
   var min = (parseInt(time[1])<30)? 00 : 30;
-  var start = hour+1;
+  var start = hour+1; 
   var start_i = false;
   for(i = start; i<24; i++){
     if(!min && !start_i){
-      data += '<div class="time">'+format_hour(hour)+':30</div>';
-      start_i = true;
+      data += '<div id="'+pre+''+format_hour(hour)+':30" class="time">'+format_hour(hour)+':30</div>';
+      start_i = true; 
     }
-    data += '<div class="time">'+format_hour(i)+':00</div>';
-    data += '<div class="time">'+format_hour(i)+':30</div>';
+    data += '<div id="'+pre+''+format_hour(i)+':00" class="time">'+format_hour(i)+':00</div>';
+    data += '<div id="'+pre+''+format_hour(i)+':30" class="time">'+format_hour(i)+':30</div>';
   }
   for(i = 0; i < start; i++){
-    data += '<div class="time">'+format_hour(i)+':00</div>';
-    data += '<div class="time">'+format_hour(i)+':30</div>';
+    data += '<div id="'+pre+''+format_hour(i)+':00" class="time">'+format_hour(i)+':00</div>';
+    data += '<div id="'+pre+''+format_hour(i)+':30" class="time">'+format_hour(i)+':30</div>';
   }
   return data;
 }
+
 
 function format_hour(hour){
   if(hour < 10){
