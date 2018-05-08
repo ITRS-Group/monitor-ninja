@@ -74,7 +74,7 @@
 	<?php } ?>
 
 	<?php if ($object->get_num_services_pending() > 0) {
-		$query = $base_set->reduce_by('state', 4, '=')->get_query();
+		$query = $base_set->reduce_by('has_been_checked', 0, '=')->get_query();
 	?>
 	<a title="Go to list of services on this host in state pending" href="<?php echo listview::querylink($query); ?>">
 	<div class="information-cell big pending state-background">
