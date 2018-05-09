@@ -95,10 +95,9 @@
 
 							<span class="duration-text" id="fixed-duration-text"> </span>
 
-							<div class="starttime-quickselect quickselect hide"></div>
+							<div id="starttime-options" class="starttime-quickselect quickselect hide"></div>
 
-							<div class="endtime-quickselect quickselect hide"> </div>
-
+							<div id="endtime-options" class="endtime-quickselect quickselect hide"></div>
 
 						</div>
 					</td>
