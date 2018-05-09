@@ -32,6 +32,11 @@ foreach ($res->result(false) as $row) {
 	if ($data['downtime_type'])
 		$data['objects'] = arr::search($data, $report[$data['report_type']], array());
 	$data['author'] = $row['author'];
+	$data['start_date'] = arr::search($data, 'start_date', 0);
+	$data['end_date'] = arr::search($data, 'end_date', 0);
+	$data['recurrence'] = arr::search($data, 'recurrence', 0);
+	$data['recurrence_on'] = arr::search($data, 'recurrence_on', 0);
+	$data['recurrence_ends'] = arr::search($data, 'recurrence_ends', 0);
 	$sd = new ScheduleDate_Model();
 	$sd->edit_schedule($data, $row['id']);
 }

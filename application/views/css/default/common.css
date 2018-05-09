@@ -523,3 +523,125 @@ input[type=checkbox], input[type=radio] {
 .logo-image {
   background: url("../../icons/icon.png") no-repeat;
 }
+
+.rec-table .label {
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    padding-bottom: 0px;
+    width: 250px;
+}
+
+.rec-table .sub-heading {
+    font-weight: bold;
+    height: 30px;
+    color: #222222;
+    font-size: 15px;
+}
+
+.rec-table .sub-sub-heading {
+   padding-bottom: 15px;
+}
+
+.rec-table .obj-type {
+  width: 300px;
+
+}
+.rec-table .occur {
+    width: 200px;
+}
+
+.rec-table .occur option {
+    background-color: white;
+}
+
+table.rec-table input {
+
+}
+
+.rec-table hr {
+    height: 0px;
+    border: none;
+    border-bottom: 1px solid #dddddd;
+    margin: 15px 0px;
+}
+
+.rec-table .time {
+   width: 50px;
+}
+
+.rec-table .date {
+   width: 90px;
+}
+
+.rec-table .num {
+  width: 35px;
+}
+
+.rec-table .hide {
+  display: none;
+}
+
+.rec-table .help-text {
+  width: 45%;
+  text-align: justify;
+  padding-bottom: 20px;
+  font-family: Helvetica;
+  color: #555555;
+  font-size: 12px;
+  word-break: normal;
+}
+ 
+.rec-table .duration-text {
+  font-style: italic;
+  margin-left: 15px;
+}
+ 
+
+.note { 
+  background: #0277BD;
+  padding: 15px;
+  width: 50%;
+  text-align: justify;
+  font-family: Helvetica;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  word-break: normal;
+  border-radius: 5px;
+}
+
+.rec-table .repeat-text {
+  width: 100px;
+}
+
+.rec-table .starttime-quickselect {
+  margin: -10px 0px;
+  width: 70px;
+  height: 80px;
+  position: absolute;
+  border: thin solid #aaaaaa;
+  color: black;
+  padding: 5px;
+  background: white;
+  overflow: auto;
+}
+
+.rec-table .endtime-quickselect {
+  margin: -10px 170px;
+  width: 70px;
+  height: 80px;
+  position: absolute;
+  border: thin solid #aaaaaa;
+  color: black;
+  padding: 5px;
+  background: white;
+  overflow: auto;
+}
+
+.rec-table .quickselect div {
+  padding-bottom: 10px;
+  cursor: pointer;
+}

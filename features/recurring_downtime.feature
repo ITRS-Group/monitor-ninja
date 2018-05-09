@@ -23,13 +23,9 @@ Feature: Recurring downtime
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
 		And I enter "Kroppkakor is a thing" into "comment"
-		And I enter "2d 3h 40m 0s" into "duration"
-		And I click css "#select-all-days"
-		And I click css "#select-all-months"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "Kroppkakor is a thing"
-		And I should see "2d 3h 40m 0s"
 
 	@configuration
 	Scenario: Edit a recurring downtime
