@@ -317,13 +317,9 @@ $(document).ready(function() {
       }
     }
 
-
     $('#recurrence-on-week').html('\
       <div><input checked="checked" type="radio" name="week_on" value=\'' + JSON.stringify({"day":day}) + ' \'> the ' + day_name + '</div>\
       ');
-
-    $('.recurrence').hide();
-    $('.recurrence-on').hide();
 
     if(timeDiff <= 0){
       $('.note').css('background-color','#F7E650');
@@ -353,7 +349,6 @@ $(document).ready(function() {
   });
 
   $( ".fixed-duration-part" ).trigger( "change" );
-
 });
 
 $(document).ready(function() {
