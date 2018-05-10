@@ -256,36 +256,70 @@ $(document).ready(function() {
     lastDay = new Date(startDate);
     lastDay.setDate(startDate.getDate() + 1);
     if(lastDay.getMonth() != month){
-      var last_day_option_quick = '<option value=\''+ JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":"last","day":"last"}}) +'\'>Monthly on the last day</option>';
-      var last_day_option_custom = '<div><input editattr="lastmonthday" type="radio" name="month_on" value=\''+ JSON.stringify({"day_no":"last","day":"last"}) +' \'> Monthly on the last day</div>';
+      var last_day_option_quick = '<option no="6" value=\''+ JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":"last","day":"last"}}) +'\'>Monthly on the last day</option>';
+      var last_day_option_custom = '<div><input no="3" editattr="lastmonthday" type="radio" name="month_on" value=\''+ JSON.stringify({"day_no":"last","day":"last"}) +' \'> Monthly on the last day</div>';
     }else{
     var last_day_option_quick = '';
     var last_day_option_custom = '';
     }
+
+    var quick_option_no = $('#recurrence').find('option:selected').attr('no');
+
     $('#recurrence').html('\
-      <option value="no">No recurrence</option> \
-      <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"day"},"on":{"day":day}}) + '\'>Daily</option>\
-      <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":{"day":day}}) + '\'>Weekly on the ' + day_name + '</option> \
-      <option value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + format_date(day_no) + ' ' + day_name + '</option>' + last_day_option_quick + ' \
-      <option value="custom">Custom recurrence</option> \
+      <option no="1" value="no">No recurrence</option> \
+      <option no="2" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"day"},"on":{"day":day}}) + '\'>Daily</option>\
+      <option no="3" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":{"day":day}}) + '\'>Weekly on the ' + day_name + '</option> \
+      <option no="4" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + format_date(day_no) + ' ' + day_name + '</option>' + last_day_option_quick + ' \
+      <option no="5" value="custom">Custom recurrence</option> \
       ');
+
+    if(quick_option_no == 2){
+      $('select[name="recurrence_select"]').find('option[no=2]').attr("selected",true);
+    }else if(quick_option_no == 3){
+      $('select[name="recurrence_select"]').find('option[no=3]').attr("selected",true);
+    }else if(quick_option_no == 4){
+      $('select[name="recurrence_select"]').find('option[no=4]').attr("selected",true);
+    }else if(quick_option_no == 5){
+      $('select[name="recurrence_select"]').find('option[no=5]').attr("selected",true);
+    }else if(quick_option_no == 6){
+      if($('select[name="recurrence_select"]').find('option[no=6]').text() == ''){
+        $('select[name="recurrence_select"]').find('option[no=4]').attr("selected",true);
+      }else{
+        $('select[name="recurrence_select"]').find('option[no=6]').attr("selected",true);
+      }
+    }
+
+    var custom_year_option_no = $('input[name=year_on]:checked').attr('no');
 
     $('#recurrence-on-year').html('\
-      <div><input editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day,"month":month}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + ' of ' + month_name[month] + '</div>\
-      <div><input editattr="lastweekday" class="repeat_on" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":"last","day":day,"month":month}) + ' \'> the last ' + day_name + ' of ' + month_name[month] + '</div>\
+      <div><input no="1" editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day,"month":month}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + ' of ' + month_name[month] + '</div>\
+      <div><input no="2" editattr="lastweekday" class="repeat_on" type="radio" name="year_on" value=\'' + JSON.stringify({"day_no":"last","day":day,"month":month}) + ' \'> the last ' + day_name + ' of ' + month_name[month] + '</div>\
       ');
 
+    if(custom_year_option_no == 2){
+      $('input[name="year_on"][no=2]').prop("checked",true);
+    }
+
+    var custom_month_option_no = $('input[name=month_on]:checked').attr('no');
+
     $('#recurrence-on-month').html('\
-      <div><input editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + '</div>\
-      <div><input editattr="lastweekday" class="repeat_on" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":"last","day":day}) + ' \'> the last ' + day_name + '</div>' + last_day_option_custom + '\
+      <div><input no="1" editattr="dayweekday" class="repeat_on" checked="checked" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":day_no,"day":day}) + ' \'> the ' + format_date(day_no) + ' ' + day_name + '</div>\
+      <div><input no="2" editattr="lastweekday" class="repeat_on" type="radio" name="month_on" value=\'' + JSON.stringify({"day_no":"last","day":day}) + ' \'> the last ' + day_name + '</div>' + last_day_option_custom + '\
       ');
+
+    if(custom_month_option_no==2){
+      $('input[name="month_on"][no=2]').prop("checked",true);
+    }else if(custom_month_option_no=3){
+      if($('input[name="month_on"][no=3]').val()==null){
+        $('input[name="month_on"][no=2]').prop("checked",true);
+      }else{
+        $('input[name="month_on"][no=3]').prop("checked",true);
+      }
+    }
 
     $('#recurrence-on-week').html('\
       <div><input checked="checked" type="radio" name="week_on" value=\'' + JSON.stringify({"day":day}) + ' \'> the ' + day_name + '</div>\
       ');
-
-    $('.recurrence').hide();
-    $('.recurrence-on').hide();
 
     if(timeDiff <= 0){
       $('.note').css('background-color','#F7E650');
@@ -315,7 +349,6 @@ $(document).ready(function() {
   });
 
   $( ".fixed-duration-part" ).trigger( "change" );
-
 });
 
 $(document).ready(function() {
