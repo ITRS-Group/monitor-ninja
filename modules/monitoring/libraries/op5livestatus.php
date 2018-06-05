@@ -125,7 +125,7 @@ class op5Livestatus {
 			$query .= $this->auth($table);
 		}
 
-		if(is_array($columns)) {
+		if(is_array($columns) && !empty($columns)) {
 			$column_txt = "";
 			$fetch_columns = array();
 			foreach($columns as $column) {
