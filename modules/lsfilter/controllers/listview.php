@@ -118,6 +118,16 @@ EOF;
 					$data[] = $obj;
 				}
 
+				//fix utf-8 output from notifications
+				if ( isset($data) && is_array($data) && !empty($data)
+					&& array_key_exists('_table', $data[0]) && $data[0]['_table'] == 'notifications' ) {
+						array_walk_recursive($data, function(&$item, $key) {
+							if ($key == 'output') {
+								$item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+							}
+						});
+				};
+
 				return json::ok( array(
 					'totals' => $result_set->get_totals(),
 					'data' => $data,
