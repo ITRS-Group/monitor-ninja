@@ -397,9 +397,15 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	protected function calculate_time($report_period)
 	{
 		if($report_period == 'custom') {
-		       # we'll have "start_time" and "end_time" in
-		       # the options when this happens
-		       return true;
+			# we'll have "start_time" and "end_time" in
+			# the options when this happens
+			# Getting Edit changes report info
+			$report_info = $this->discover_options();
+			if(isset($report_info['start_time']) && isset($report_info['end_time'])) {
+				$this->options['start_time'] = $report_info['start_time'];
+				$this->options['end_time'] = $report_info['end_time'];
+			}
+			return true;
 		}
 
 		$now = time();

@@ -523,3 +523,57 @@ Feature: Availability reports
 		Then "objects_tmp" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
+
+	Scenario: Save report with Last 31 days Reporting Period
+		Given I am on the Host details page
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		Then I shouldn't see "Saved reports"
+		When I select "LinuxServers" from the multiselect "objects_tmp"
+		Then "objects" should have option "LinuxServers"
+		When I select "Last 31 days" from "Reporting period"
+		And I select "24x7" from "Report time period"
+		And I select "Average" from "SLA calculation method"
+		And I select "Uptime, with difference" from "Count scheduled downtime as"
+		And I select "Undetermined" from "Count program downtime as"
+		And I select "Hard and soft states" from "State types"
+		And I check "Use alias"
+		And I check "Include trends graph"
+		And I check "Include pie charts"
+		And I enter "This is a saved test report" into "Description"
+		And I click "Show report"
+		Then I should see "Last 31 days"
+		And I should see "24x7"
+		And I should see "This is a saved test report"
+		When I click "Save report"
+		And I enter "Report_Last_31_days" into "report_name"
+		And I click "Save report" inside "#save_report_form"
+		Then I should see "Report was successfully saved"
+
+	Scenario: Edit Saved report - Edit Settings with Custom Reporting Period
+		Given I am on the Host details page
+		When I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "Report_Last_31_days"
+		When I select "Report_Last_31_days" from "Saved reports"
+		Then "objects" should have option "LinuxServers"
+		And "Include trends graph" should be checked
+		And I click "Show report"
+		Then I shouldn't see button "Show report"
+		When I click "Edit settings"
+		Then "Include trends graph" should be checked
+		When I select "Custom" from "Reporting period"
+		And I enter "2013-03-01" into "Start date"
+		And I enter "" into "time_start"
+		And I enter "2013-04-01" into "End date"
+		And I enter "" into "time_end"
+		And I wait for 1 second
+		And I click "Show report"
+		Then I shouldn't see button "Show report"
+		And I should see "Reporting period: 2013-03-01 00:00:00 to 2013-04-01 23:59:00 - 24x7"
+		And I click "Edit settings"
+		And I should see "2013-03-01"
+		And I should see "2013-04-01"
