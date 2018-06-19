@@ -3,6 +3,8 @@ Feature: Monitoring Host
 
 	Background:
 		Given I am logged in as administrator
+		And I am on the main page
+		And I check for cookie bar
 
 	Scenario Outline: Host object details displays state properly
 

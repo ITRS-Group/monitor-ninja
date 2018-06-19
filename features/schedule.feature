@@ -38,6 +38,8 @@ Feature: Scheduled reports
 			| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
 		And I am logged in
+		And I am on the main page
+		And I check for cookie bar
 
 	@reports
 	Scenario: Save avail report
