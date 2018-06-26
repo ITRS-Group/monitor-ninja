@@ -187,7 +187,7 @@ class op5Livestatus {
 		$count = $result['total_count'];
 
 		if(!is_array($columns)) {
-			$columns = $result['columns'][0]; /* FIXME */
+			$columns = $result['columns'];
 		}
 
 		$stop = microtime(true);
