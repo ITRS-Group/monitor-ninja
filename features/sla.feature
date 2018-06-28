@@ -36,6 +36,8 @@ Feature: SLA reports
 
 		And I have activated the configuration
 		And I am logged in as administrator
+		And I am on the main page
+		And I check for cookie bar
 
 	@configuration @reports
 	Scenario: Generate report without objects
