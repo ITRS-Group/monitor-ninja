@@ -266,7 +266,7 @@ $(document).ready(function() {
     var quick_option_no = $('#recurrence').find('option:selected').attr('no');
 
     $('#recurrence').html('\
-      <option no="1" value="no">No recurrence</option> \
+      <option no="1" value="no">Choose recurrence</option> \
       <option no="2" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"day"},"on":{"day":day}}) + '\'>Daily</option>\
       <option no="3" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":{"day":day}}) + '\'>Weekly on the ' + day_name + '</option> \
       <option no="4" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + format_date(day_no) + ' ' + day_name + '</option>' + last_day_option_quick + ' \
