@@ -213,3 +213,20 @@ Feature: Filters & list views
 		Then I should see "test user"
 		And I should see "TEST USER"
 		And I should see "TeSt UsEr"
+
+	Scenario: List view filter is processed for custom variables empty list
+		Given I am logged in
+		When I go to the listview for [hosts] custom_variables ~~ "asdf ."
+		Then I should see "No entries found using filter"
+
+	@configuration
+	Scenario: List view filter is processed for custom variables
+		Given I have these hosts:
+			| host_name |
+			| linux-server1 |
+		And I have activated the configuration
+		Given I am logged in as administrator
+		When I go to the listview for [hosts] all
+		Then I should see "linux-server1"
+		When I go to the listview for [hosts] custom_variables ~~ "NOMONITORING"
+		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"

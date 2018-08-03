@@ -95,6 +95,17 @@ var lsfilter_main = {
 				new LSFilterMetadataVisitor());
 		try {
 			var metadata = parser.parse(this.state.query);
+			//Validate custom variables filter query format
+			if(metadata['columns'].indexOf('custom_variables') > -1) {
+				var custom_variables_values = this.state.query.split('custom_variables')[1].split('"')[1];
+				var valid = new RegExp("[\\w]+\\s[\\w.]+$");
+				if(!valid.test(custom_variables_values)) {
+					this.set_parse_status("Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'");
+					$('#filter-query-builder').show();
+					this.emit('update_failed');
+					return;
+				}
+			}
 		} catch (ex) {
 			console.log(ex);
 			this.set_parse_status(ex);
