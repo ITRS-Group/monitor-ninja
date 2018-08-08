@@ -144,9 +144,9 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			fclose($pipes[2]);
 			$return_value = proc_close($process);
 			if ($return_value != 0) {
-				$this->log->log('error', "Pdf command " . $command . " returned $return_value:");
-				$this->log->log('error', "stderr: $err");
-				$this->log->log('error', "stdout: $out");
+				$this->log->log('debug', "Pdf command " . $command . " returned $return_value:");
+				$this->log->log('debug', "stderr: $err");
+				$this->log->log('debug', "stdout: $out");
 			}
 		} else {
 			$this->log->log('error', "Tried running the following command but was unsuccessful:");
