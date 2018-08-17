@@ -37,6 +37,7 @@ foreach ($res->result(false) as $row) {
 	$data['recurrence'] = arr::search($data, 'recurrence', 0);
 	$data['recurrence_on'] = arr::search($data, 'recurrence_on', 0);
 	$data['recurrence_ends'] = arr::search($data, 'recurrence_ends', 0);
+	$data['exclude_days'] = arr::search($data, 'exclude_days', 0);
 	$sd = new ScheduleDate_Model();
 	$sd->edit_schedule($data, $row['id']);
 }

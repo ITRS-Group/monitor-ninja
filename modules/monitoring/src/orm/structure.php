@@ -534,6 +534,7 @@ $tables = array (
 			'recurrence' => 'string',
 			'recurrence_on' => 'string',
 			'recurrence_ends' => 'string',
+			'exclude_days' => 'string',
 		),
 	),
 );
