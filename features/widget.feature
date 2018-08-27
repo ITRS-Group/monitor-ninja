@@ -135,3 +135,20 @@ Feature: Widgets
 		Then I select "Host" from "content_from"
 		Then the hidden required field "main_filter_id" should not be required
 
+	Scenario: Big number widgets with zero result
+		Given I have these mocked dashboards
+			| id | name       | username   | layout |
+			| 1  | Dashboard1 | mockeduser | 1,2,3  |
+		And I have these mocked dashboard_widgets
+			|id|dashboard_id | name         | position      | setting |
+			|1 |1            | bignumber    | {"c":0,"p":0} | {"title":"bignumber widget with zero result1","refresh_interval":"60","content_from":"filter","main_filter_id":"-51","selection_filter_id":"-50","display_type":"number_of_total","threshold_onoff":true,"threshold_type":"less_than","threshold_warn":"95","threshold_crit":"90"} |
+			|2 |1            | bignumber    | {"c":1,"p":0} | {"title":"bignumber widget with zero result2","refresh_interval":"60","content_from":"filter","main_filter_id":"-51","selection_filter_id":"-50","display_type":"number_of_total","threshold_onoff":true,"threshold_type":"less_than","threshold_warn":"0","threshold_crit":"0"} |
+		And I have these mocked hosts
+			| name        |state|last_check| plugin_output    |
+			| Jadyn Elvan | 0   | 99999    | Gabba-gabba-hey! |
+
+		And I am logged in
+		When I am on the main page
+		Then I should see "0 / 0"
+		And I should see css ".critical"
+		And I should see css ".ok"

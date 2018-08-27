@@ -332,11 +332,6 @@ class bignumber_Widget extends widget_Base {
 				'selection' => $selection_set
 			));
 
-			if ($counts['all'] == 0) {
-				// PHP is so bad, it cannot even divide by zero
-				$state = 'pending';
-				$display_explanation = 'No object matches this filter';
-			} else {
 				switch($form_model->get_value('display_type', 'number_of_total')) {
 				case 'percent':
 					$display_text = sprintf("%0.1f%%", 100.0 * $counts['selection'] / $counts['all']);
@@ -355,10 +350,10 @@ class bignumber_Widget extends widget_Base {
 				if ($form_model->get_value('threshold_onoff')) {
 					$threshold_types = array();
 					$threshold_types['less_than'] = function ($val, $stat) {
-						return 100.0 * $stat['selection'] / $stat['all'] < $val;
+						return $stat['all'] == 0?100.0 * $stat['selection'] < $val:100.0 * $stat['selection'] / $stat['all'] < $val;
 					};
 					$threshold_types['greater_than'] = function ($val, $stat) {
-						return 100.0 * $stat['selection'] / $stat['all'] > $val;
+						return $stat['all'] == 0?100.0 * $stat['selection'] > $val:100.0 * $stat['selection'] / $stat['all'] > $val;
 					};
 					$threshold_callback = $threshold_types[$form_model->get_value('threshold_type', 'less_than')];
 					if (call_user_func_array($threshold_callback, array(
@@ -373,7 +368,6 @@ class bignumber_Widget extends widget_Base {
 						$state = 'ok';
 					}
 				}
-			}
 			require 'view.php';
 		} elseif(in_array($content_from, array('host', 'service'), true)) {
 			$perf_data_src = $form_model->get_value($content_from.'_performance_data_source');
