@@ -535,7 +535,7 @@ input[type=checkbox], input[type=radio] {
 }
 
 .rec-table .sub-heading {
-    font-family: Helvetica;     
+    font-family: Helvetica;
     font-weight: bold;
     height: 30px;
     color: #000000;
@@ -646,4 +646,73 @@ table.rec-table input {
 .rec-table .quickselect div {
   padding-bottom: 10px;
   cursor: pointer;
+}
+
+.rec-on-day-no {
+  background-color:white;
+  width:60px;
+  position:absolute;
+  border: thin solid #CCCCCC;
+  padding-left:5px;
+  margin:-14px 40px 0px;
+  line-height:20px;
+  display:none;
+}
+   
+.rec-on-day-no div {
+  cursor:pointer;
+}
+  
+.rec-on-day {
+  background-color:white;
+  width:80px;
+  position:absolute;
+  border: thin solid #CCCCCC;
+  padding-left:5px;
+  margin:-14px 110px 0px;
+  line-height:20px;
+  display:none;
+}
+  
+.rec-on-day div {
+  cursor:pointer;
+}
+   
+.rec-on-no-box {
+  width:70px;
+  padding-left:5px;
+}
+   
+.rec-on-day-box {
+  width:95px;
+  padding-left:5px;
+}
+
+#rec-on-week-days {
+  margin: 5px 0px 20px;
+}
+
+#rec-on-week-days span {
+  border:1px solid #CCCCCC;
+  font-family: Helvetica;
+  padding: 2px 5px;
+  margin-right:3px;
+  border-radius: 3px;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  width: 28px;
+  text-align: center;
+}
+
+#rec-on-week-days input {
+  display: none;              
+}
+
+#exclude-note {
+ margin: 10px 0px 0px
+}
+
+.relative {
+  position: relative;
 }

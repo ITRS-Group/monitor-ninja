@@ -58,7 +58,8 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'end_date' => 0,
 			'recurrence' => 0,
 			'recurrence_on' => 0,
-			'recurrence_ends' => 0
+			'recurrence_ends' => 0,
+			'exclude_days' => 0
 
 		));
 		$this->createDowntime(array(
@@ -76,7 +77,8 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'end_date' => 0,
 			'recurrence' => 0,
 			'recurrence_on' => 0,
-			'recurrence_ends' => 0
+			'recurrence_ends' => 0,
+			'exclude_days' => 0
 		));
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -93,7 +95,8 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'end_date' => 0,
 			'recurrence' => 0,
 			'recurrence_on' => 0,
-			'recurrence_ends' => 0
+			'recurrence_ends' => 0,
+			'exclude_days' => 0
 		));
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -110,7 +113,8 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 			'end_date' => 0,
 			'recurrence' => 0,
 			'recurrence_on' => 0,
-			'recurrence_ends' => 0
+			'recurrence_ends' => 0,
+			'exclude_days' => 0
 		));
 	}
 

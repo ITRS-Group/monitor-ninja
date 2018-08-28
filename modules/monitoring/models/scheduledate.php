@@ -25,7 +25,8 @@ static public $valid_fields = array(
 	'end_date',
 	'recurrence',
 	'recurrence_on',
-	'recurrence_ends'
+	'recurrence_ends',
+	'exclude_days'
 );
 
 /**
@@ -98,7 +99,7 @@ static public function schedule_downtime($timestamp=false) {
 	$tomorrow['weekday'] = date('w', $timestamp);
 	$months=array('january','februry','march','april','may','june','july','august','september','october','november','december');
 
-	foreach ($schedules->it(array('weekdays', 'author', 'months', 'downtime_type', 'start_time', 'end_time', 'duration', 'objects', 'fixed', 'comment', 'start_date', 'end_date', 'recurrence', 'recurrence_on', 'recurrence_ends')) as $data) {
+	foreach ($schedules->it(array('weekdays', 'author', 'months', 'downtime_type', 'start_time', 'end_time', 'duration', 'objects', 'fixed', 'comment', 'start_date', 'end_date', 'recurrence', 'recurrence_on', 'recurrence_ends', 'exclude_days')) as $data) {
 		$weekday = $data->get_weekdays();
 		if($weekday[0] != ''){
 			if (!in_array($tomorrow['weekday'], $data->get_weekdays()) || !in_array($tomorrow['month'], $data->get_months())){
@@ -138,6 +139,34 @@ static public function schedule_downtime($timestamp=false) {
 			$start_init = new DateTime("@$start_time_init");
 			$end_init = new DateTime("@$end_time_init");
 			$diff_init = $start_init->diff($end_init);
+			$exclude_days = $data->get_exclude_days();
+            $exclude_days = explode(',',$exclude_days);
+	        foreach($exclude_days as $day_range){
+	            $day_range = explode('to',$day_range);
+	            if($day_range[0] != ''){
+	                $exc_day_s = $day_range[0];
+	                if(array_key_exists(1,$day_range)){
+	                    $exc_day_e = $day_range[1];
+	                }else{
+	                    $exc_day_e = $day_range[0];
+	                }
+	            }
+                $strt_d = explode('-',$exc_day_s);
+                $sy = (int)$strt_d[0];
+                $sm = (int)$strt_d[1];
+                $smn = $months[$sm-1];
+                $sd = (int)$strt_d[2];
+                $exc_start_day = strtotime("$sd $smn $sy");
+                $ends_on = explode('-',$exc_day_e);
+                $ey = (int)$ends_on[0];
+                $em = (int)$ends_on[1];
+                $emn = $months[$em-1];
+                $ed = (int)$ends_on[2];
+                $exc_end_day = strtotime("$ed $emn $ey");
+                if($timestamp >= $exc_start_day && $timestamp <= $exc_end_day){
+                    continue;
+                }
+	        }
 			if($ends_on && $ends_on != ''){
 				$ends_on = explode('-',$ends_on);
 				$ey = (int)$ends_on[0];
@@ -149,7 +178,6 @@ static public function schedule_downtime($timestamp=false) {
 					continue;
 				};
 			}
-
 			if($start_date && $start_date != ''){
 				$strt_d = explode('-',$start_date);
 				$sy = (int)$strt_d[0];
@@ -201,7 +229,6 @@ static public function schedule_downtime($timestamp=false) {
 							}
 						}
 					}
-
 				} elseif($rec_text == "month"){
 					$rec_day = $recurrence_on->day;
 					$rec_day_no = $recurrence_on->day_no;
@@ -240,11 +267,14 @@ static public function schedule_downtime($timestamp=false) {
 						}
 					}
 				} elseif($rec_text == "week"){
-					$rec_day = $recurrence_on->day;
+					$rec_day = $recurrence_on;
 					$week = floor($diff_time/(60*60*24*7));
 					$check_week = $week % $rec_num;
-					if($check_week != 0 || $tomorrow['weekday'] != $rec_day){
-						continue;
+					foreach($rec_day as $week_day){
+						$week_day = $week_day->day;
+						if($check_week != 0 || $tomorrow['weekday'] != $rec_day){
+							continue;
+						}
 					}
 				} elseif($rec_text == "day"){
 					$day = floor($diff_time/(60*60*24));
@@ -393,13 +423,13 @@ public function edit_schedule($data, &$id = false) {
 		" downtime_type = %s, last_update = %s, comment = %s," .
 		" start_time = %s, end_time = %s, duration = %s, fixed = %s," .
 		" weekdays = %s, months = %s, start_date = %s, end_date = %s," .
-		" recurrence = %s, recurrence_on = %s, recurrence_ends = %s  WHERE id = ".(int)$id;
+		" recurrence = %s, recurrence_on = %s, recurrence_ends = %s, exclude_days = %s  WHERE id = ".(int)$id;
 	} else {
 	# new schedule
 		$sql = "INSERT INTO recurring_downtime (author, downtime_type," .
 		" last_update, comment, start_time, end_time, duration," .
-		" fixed, weekdays, months, start_date, end_date, recurrence, recurrence_on, recurrence_ends) VALUES (%s, %s, %s, %s, %s, %s," .
-		" %s, %s, %s, %s, %s, %s, %s, %s, %s)";
+		" fixed, weekdays, months, start_date, end_date, recurrence, recurrence_on, recurrence_ends, exclude_days) VALUES (%s, %s, %s, %s, %s, %s," .
+		" %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)";
 	}
 	$res = $db->query(sprintf($sql, $db->escape($data['author']),
 		$db->escape($data['downtime_type']), $db->escape(time()),
@@ -412,7 +442,8 @@ public function edit_schedule($data, &$id = false) {
 		$db->escape($data['end_date']),
 		$db->escape($data['recurrence']),
 		$db->escape($data['recurrence_on']),
-		$db->escape($data['recurrence_ends'])
+		$db->escape($data['recurrence_ends']),
+        $db->escape($data['exclude_days'])
 	));
 	if (!$id)
 		$id = $res->insert_id();

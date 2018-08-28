@@ -107,6 +107,9 @@
 			 	</tr>
 
 				<tr>
+			 		<td class="label sub-heading"><?php echo _('Recurrence pattern'); ?></td>
+			 	</tr>
+				<tr>
 					<td class="label"><?php echo _('Recurrence'); ?></td>
 					<td><?php
 					echo form::dropdown(array('name' => 'recurrence_select', 'id' => 'recurrence', 'class' => 'occur'),
@@ -140,10 +143,24 @@
 					</td>
 				</tr>
 				<tr class="recurrence hide">
-					<td class="label"><?php echo _('Ends *'); ?> </td>
+					<td class="label"><?php echo _('Ends'); ?> </td>
 					<td>
-						<div><input type="radio" name="ends" value="never"> Never</div>
-						<div><input type="radio" name="ends" checked="checked" value="finite_ends"> On  <input name="finite_ends_value" class="date-picker date" id="endson-date"></div>
+						<div><input type="radio" name="ends" checked="checked" value="never"> Never</div>
+						<div><input type="radio" name="ends" value="finite_ends"> On  <input name="finite_ends_value" class="date-picker date" id="endson-date"></div>
+					</td>
+				</tr>
+				<tr class="recurrence hide">
+					<td class="label"><?php echo _('Dates to exclude'); ?></td>
+					<td id="exclude_date_block">
+						<input id="exclude_days_all" name="exclude_days" class="hide" >
+						<?php for($i=0; $i<10; $i++){ ?>
+							<div excludeId="<?php echo $i; ?>" class="hide">
+								<input excludeId="exclude-date-start-<?php echo $i; ?>" class="date-picker date" name="" placeholder="yyyy-mm-dd">
+								&#8212;
+								<input excludeId="exclude-date-end-<?php echo $i; ?>" class="date-picker date" name="" placeholder="yyyy-mm-dd">
+								<span excludeId="exclude-close-<?php echo $i;  ?>"></span>
+							</div>
+						<?php } ?>
 					</td>
 				</tr>
 				<tr>
@@ -152,6 +169,7 @@
 							<div class="note-warning"></div>
 							<div id="duration-note"></div>
 							<div id="recur-note"></div>
+                            <div id="exclude-note" class="hide"></div>
 						</div>
 					</td>
 				</tr>

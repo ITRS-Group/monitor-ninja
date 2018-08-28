@@ -41,7 +41,11 @@ class recurring_downtime_Controller extends Authenticated_Controller {
                             $data[$field]['no'] = $no;
                             $data[$field]['text'] = $text;
 							if($text == 'week'){
-								$data['recurrence_on'] = json_decode($_REQUEST['week_on']);
+								foreach($_REQUEST['week_on_day'] as $week_day){
+									$week_day = json_decode($week_day);
+									$week_on[] = $week_day;
+								}
+								$data['recurrence_on'] = $week_on;
 							}else if($text == 'month'){
 								$data['recurrence_on'] = json_decode($_REQUEST['month_on']);
 							}else if($text == 'year'){
@@ -54,6 +58,9 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 							$recurrence_quick = json_decode($recurrence); 
 							$data[$field] = $recurrence_quick->recur;
 							$data['recurrence_on'] = $recurrence_quick->on;
+							if($_REQUEST['ends'] == 'finite_ends'){
+								$data['recurrence_ends'] = $_REQUEST['finite_ends_value'];	
+							}
 						}
 						$data[$field] = json_encode($data[$field]);
 					} 
@@ -116,7 +123,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		}
 		else if ($schedule_id) {
 			$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = ' . $schedule_id);
-			$schedule_info = $set->it(array('id', 'downtime_type', 'objects', 'start_time', 'end_time', 'duration', 'fixed', 'weekdays', 'months', 'comment', 'start_date', 'end_date', 'recurrence', 'recurrence_on', 'recurrence_ends'))->current();
+			$schedule_info = $set->it(array('id', 'downtime_type', 'objects', 'start_time', 'end_time', 'duration', 'fixed', 'weekdays', 'months', 'comment', 'start_date', 'end_date', 'recurrence', 'recurrence_on', 'recurrence_ends', 'exclude_days'))->current();
 		} else {
 			$schedule_info = new RecurringDowntime_Model($schedule_info, '', false);
 		}
@@ -140,6 +147,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _recurrence = '".$schedule_info->get_recurrence()."';\n";
 		$this->js_strings .= "var _recurrence_on = '".$schedule_info->get_recurrence_on()."';\n";
 		$this->js_strings .= "var _recurrence_ends = '".$schedule_info->get_recurrence_ends()."';\n";
+        $this->js_strings .= "var _exclude_days = '".$schedule_info->get_exclude_days()."';\n";
 		$template->day_names = date::day_names();
 		$template->day_index = array(1, 2, 3, 4, 5, 6, 0);
 		$template->month_names = date::month_names();

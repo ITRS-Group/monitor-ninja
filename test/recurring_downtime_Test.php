@@ -123,7 +123,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2018-04-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 		$id;
 		$this->sd->edit_schedule($data, $id);
@@ -162,7 +163,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2018-04-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 
 		# The number is wrong.
@@ -210,7 +212,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2018-04-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
@@ -249,7 +252,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2018-04-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
@@ -295,7 +299,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2018-04-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 		$this->sd->edit_schedule($data, $id);
 
@@ -338,7 +343,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2037-01-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 		$this->sd->edit_schedule($data, $id);
 		$time = mktime(23, 50, 0, 11, 11, 2036);
@@ -384,7 +390,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"end_date" => "2018-04-01",
 			"recurrence" => 0,
 			"recurrence_on" => 0,
-			"recurrence_ends" => 0
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
 		);
 		$this->sd->edit_schedule($data, $id);
 
@@ -441,7 +448,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 				'end_date' => 0,
 				'recurrence' => 0,
 				'recurrence_on' => 0,
-				'recurrence_ends' => 0
+				'recurrence_ends' => 0,
+				'exclude_days' => 0
 			),
 			$res[0]
 		);
@@ -466,7 +474,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 				'end_date' => 0,
 				'recurrence' => 0,
 				'recurrence_on' => 0,
-				'recurrence_ends' => 0
+				'recurrence_ends' => 0,
+				'exclude_days' => 0
 			),
 			$res[0]
 		);
@@ -491,7 +500,8 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 				'end_date' => 0,
 				'recurrence' => 0,
 				'recurrence_on' => 0,
-				'recurrence_ends' => 0
+				'recurrence_ends' => 0,
+				'exclude_days' => 0
 			),
 			$res[0]
 		);
