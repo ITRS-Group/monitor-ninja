@@ -105,10 +105,6 @@
 			 	<tr>
 			 		<td class="label sub-heading"><?php echo _('Recurrence pattern'); ?></td>
 			 	</tr>
-
-				<tr>
-			 		<td class="label sub-heading"><?php echo _('Recurrence pattern'); ?></td>
-			 	</tr>
 				<tr>
 					<td class="label"><?php echo _('Recurrence'); ?></td>
 					<td><?php
