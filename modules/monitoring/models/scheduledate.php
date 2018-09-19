@@ -140,33 +140,35 @@ static public function schedule_downtime($timestamp=false) {
 			$end_init = new DateTime("@$end_time_init");
 			$diff_init = $start_init->diff($end_init);
 			$exclude_days = $data->get_exclude_days();
-            $exclude_days = explode(',',$exclude_days);
-	        foreach($exclude_days as $day_range){
-	            $day_range = explode('to',$day_range);
-	            if($day_range[0] != ''){
-	                $exc_day_s = $day_range[0];
-	                if(array_key_exists(1,$day_range)){
-	                    $exc_day_e = $day_range[1];
-	                }else{
-	                    $exc_day_e = $day_range[0];
+			if($exclude_days && $exclude_days != '' && $exclude_days != 0){
+	            $exclude_days = explode(',',$exclude_days);
+		        foreach($exclude_days as $day_range){
+		            $day_range = explode('to',$day_range);
+		            if($day_range[0] != ''){
+		                $exc_day_s = $day_range[0];
+		                if(array_key_exists(1,$day_range)){
+		                    $exc_day_e = $day_range[1];
+		                }else{
+		                    $exc_day_e = $day_range[0];
+		                }
+		            }
+	                $strt_d = explode('-',$exc_day_s);
+	                $sy = (int)$strt_d[0];
+	                $sm = (int)$strt_d[1];
+	                $smn = $months[$sm-1];
+	                $sd = (int)$strt_d[2];
+	                $exc_start_day = strtotime("$sd $smn $sy");
+	                $end_d = explode('-',$exc_day_e);
+	                $ey = (int)$end_d[0];
+	                $em = (int)$end_d[1];
+	                $emn = $months[$em-1];
+	                $ed = (int)$end_d[2];
+	                $exc_end_day = strtotime("$ed $emn $ey");
+	                if($timestamp >= $exc_start_day && $timestamp <= $exc_end_day){
+	                    continue;
 	                }
-	            }
-                $strt_d = explode('-',$exc_day_s);
-                $sy = (int)$strt_d[0];
-                $sm = (int)$strt_d[1];
-                $smn = $months[$sm-1];
-                $sd = (int)$strt_d[2];
-                $exc_start_day = strtotime("$sd $smn $sy");
-                $ends_on = explode('-',$exc_day_e);
-                $ey = (int)$ends_on[0];
-                $em = (int)$ends_on[1];
-                $emn = $months[$em-1];
-                $ed = (int)$ends_on[2];
-                $exc_end_day = strtotime("$ed $emn $ey");
-                if($timestamp >= $exc_start_day && $timestamp <= $exc_end_day){
-                    continue;
-                }
-	        }
+		        }
+		    }
 			if($ends_on && $ends_on != ''){
 				$ends_on = explode('-',$ends_on);
 				$ey = (int)$ends_on[0];
