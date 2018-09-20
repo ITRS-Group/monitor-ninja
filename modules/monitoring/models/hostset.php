@@ -41,6 +41,6 @@ class HostSet_Model extends BaseHostSet_Model {
 	 */
 	public function get_comments() {
 		$set = parent::get_comments();
-		return $set->reduce_by('is_service', false, '=');
+		return $set->reduce_by('is_service', 0, '=');
 	}
 }

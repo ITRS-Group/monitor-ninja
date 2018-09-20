@@ -219,4 +219,21 @@ Feature: Mocked
 		And I should see "Pager"
 		And I should see "911"
 
+	@MON-11243
+	Scenario: Host with contacts renders contacts widget in extinfo page
+		Given I have these mocked contactgroups
+			| name            | members         |
+			| support-group   | support-contact |
+		And I have these mocked contacts
+			| name            |
+			| support-contact |
+		And I have these mocked hosts
+			| name       | contactgroups | contacts        |
+			| test-host  | support-group | support-contact |
+
+		And I am on the Host details page
+		When I click "test-host"
+		Then I should see "Contacts"
+		And I should see "support-contact"
+		And I shouldn't see "Loading..."
 
