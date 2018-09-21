@@ -544,4 +544,142 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 		$result = $db->query($sql);
 		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
+
+	/**
+	 * Test if everyday schedule for hosts work
+	 *
+	 * @group nonlocal
+	 */
+	public function new_test_schedule_hostgroups() {
+		$comment = $this->basecomment . 'hostgroups';
+		$data = array(
+			'author' => 'me',
+			"downtime_type" => "hostgroups",
+			"objects" => array("hostgroup_up", "hostgroup_all"),
+			"comment" => $comment,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
+			"duration" => "2:00",
+			"fixed" => "1",
+			"weekdays" => array(""),
+			"months" => array(""),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => '{"label":"custom","no":"1","text":"day"}',
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
+		);
+
+		# The number is wrong.
+		# Any overlapping hosts will be added twice.
+		# However, it's slightly better with two downtimes than none.
+		$number = 0;
+		$ls = Livestatus::instance();
+		foreach ($data['objects'] as $group) {
+			$number += count($ls->getHosts(array('columns' => array('name'), 'filter' => array('groups' => array('>=' => $group)))));
+		}
+
+		$this->sd->edit_schedule($data, $id);
+		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "After creating a new schedule, there's only one with that name");
+
+		$this->cron($this->basictests, 'hostgroups', $number);
+		$this->resubmit_and_cleanup($this->basictests, 'hostgroups');
+
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "One schedule was deleted.");
+	}
+
+	/**
+	 * Test if everyday schedule for services work
+	 *
+	 * @group nonlocal
+	 */
+	public function new_test_schedule_services() {
+		$comment = $this->basecomment . 'services';
+		$data = array(
+			'author' => 'me',
+			"downtime_type" => "services",
+			"objects" => array("host_down;service ok", "host_down;service critical"),
+			"comment" => $comment,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
+			"duration" => "2:00",
+			"fixed" => "1",
+			"weekdays" => array(""),
+			"months" => array(""),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => '{"label":"custom","no":"1","text":"day"}',
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
+		);
+		$this->sd->edit_schedule($data, $id);
+		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "After creating a new schedule, there's only one with that name");
+
+		$this->cron($this->basictests, 'services', 2);
+		$this->resubmit_and_cleanup($this->basictests, 'services');
+
+		$db = Database::instance();
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "One schedule was deleted.");
+	}
+
+	/**
+	 * Test if everyday schedule for services work
+	 *
+	 * @group nonlocal
+	 */
+	public function new_test_schedule_servicegroups() {
+		$comment = $this->basecomment . 'servicegroups';
+		$data = array(
+			'author' => 'me',
+			"downtime_type" => "servicegroups",
+			"objects" => array("servicegroup_ok", "servicegroup_critical"),
+			"comment" => $comment,
+			"start_time" => $this->scheduletimeofday,
+			'end_time' => $this->scheduleendtime,
+			"duration" => "2:00",
+			"fixed" => "1",
+			"weekdays" => array(""),
+			"months" => array(""),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => '{"label":"custom","no":"1","text":"day"}',
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
+		);
+		$this->sd->edit_schedule($data, $id);
+		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
+		$result = $db->query($sql);
+		$this->assertCount(1 ,$result, "After creating a new schedule, there's only one with that name");
+
+		# The number is wrong.
+		# Any overlapping hosts will be added twice.
+		# However, it's slightly better with two downtimes than none.
+		$number = 0;
+		$ls = Livestatus::instance();
+		foreach ($data['objects'] as $group) {
+			$number += count($ls->getServices(array('filter' => array('groups' => array('>=' => $group)))));
+		}
+
+		$this->cron($this->basictests, 'servicegroups', $number);
+		$this->resubmit_and_cleanup($this->basictests, 'servicegroups');
+
+		$db = Database::instance();
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "One schedule was deleted.");
+	}
 }
