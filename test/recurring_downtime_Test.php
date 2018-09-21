@@ -126,7 +126,6 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			"recurrence_ends" => 0,
 			"exclude_days" => 0
 		);
-		$id;
 		$this->sd->edit_schedule($data, $id);
 		$db = Database::instance();
 		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
@@ -505,5 +504,44 @@ class Recurring_downtime_Test extends PHPUnit_Framework_TestCase {
 			),
 			$res[0]
 		);
+	}
+
+	/**
+	 * Test if everyday schedule for hosts work
+	 *
+	 * @group nonlocal
+	 */
+	public function new_test_schedule_hosts() {
+		$comment = $this->basecomment.'hosts';
+		$data = array(
+			'author' => 'me',
+			"downtime_type" => "hosts",
+			"objects" => array("monitor"),
+			"comment" => $comment,
+			"start_time" => $this->scheduletimeofday,
+			"end_time" => $this->scheduleendtime,
+			"duration" => "2:00",
+			"fixed" => "1",
+			"weekdays" => array(""),
+			"months" => array(""),
+			"start_date" => "2018-04-01",
+			"end_date" => "2018-04-01",
+			"recurrence" => '{"label":"custom","no":"1","text":"day"}',
+			"recurrence_on" => 0,
+			"recurrence_ends" => 0,
+			"exclude_days" => 0
+		);
+		$this->sd->edit_schedule($data, $id);
+		$db = Database::instance();
+		$sql = "SELECT id FROM recurring_downtime WHERE comment = {$db->escape($comment)} ORDER BY id DESC";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "After creating a new schedule, there's only one with that name");
+
+		$this->cron($this->basictests, 'hosts', 1);
+		$this->resubmit_and_cleanup($this->basictests, 'hosts');
+
+		$sql = "DELETE FROM recurring_downtime WHERE comment = {$db->escape($comment)}";
+		$result = $db->query($sql);
+		$this->assertCount(1, $result, "One schedule was deleted.");
 	}
 }
