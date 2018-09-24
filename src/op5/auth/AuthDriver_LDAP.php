@@ -519,8 +519,12 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		} else {
 			$this->log->log('debug',
 				$this->module->get_modulename() . ': Bindning as ' . $dn .
-					 (($password === false) ? ', password=false' : ' with password set'));
-			$result = @ldap_bind($this->conn, $dn, $password);
+					(($password === false || $password === "") ? ', password=false' : ' with password set'));
+				if ($password === false || $password === "") {
+					$result = false;
+                } else {
+                	$result = @ldap_bind($this->conn, $dn, $password);
+                }
 		}
 		if ($result === false) {
 			/* Error, is it a real error or just invalid credentials? */
