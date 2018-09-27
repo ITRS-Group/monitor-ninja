@@ -95,7 +95,7 @@ class Extinfo_Controller extends Ninja_Controller {
 				);
 			}
 
-			if (count($contact_set) > 0) {
+			if (count($contact_set) > 0 && isset($contact)) {
 				$model = new Ninja_widget_Model(array(
 					'page' => Router::$controller,
 					'name' => 'listview',
@@ -130,7 +130,7 @@ class Extinfo_Controller extends Ninja_Controller {
 				);
 			}
 
-			if (count($contactgroup_set) > 0) {
+			if (count($contactgroup_set) > 0 && isset($contactgroup)) {
 				$model = new Ninja_widget_Model(array(
 					'page' => Router::$controller,
 					'name' => 'listview',
