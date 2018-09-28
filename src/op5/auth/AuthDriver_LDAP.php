@@ -519,8 +519,8 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		} else {
 			$this->log->log('debug',
 				$this->module->get_modulename() . ': Bindning as ' . $dn .
-					(($password === false || $password === "") ? ', password=false' : ' with password set'));
-				if ($password === false || $password === "") {
+					(empty($password) ? ', password=false' : ' with password set'));
+				if (empty($password)) {
 					$result = false;
                 } else {
                 	$result = @ldap_bind($this->conn, $dn, $password);
@@ -528,7 +528,10 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 		if ($result === false) {
 			/* Error, is it a real error or just invalid credentials? */
-			if (ldap_errno($this->conn) != 0x31 /*LDAP_INVALID_CREDENTIALS*/) {
+			if (empty($password)) {
+				$this->throw_error('No or empty password supplied');
+			}
+			else if (ldap_errno($this->conn) != 0x31 /*LDAP_INVALID_CREDENTIALS*/) {
 				$this->throw_error('Bind error');
 			}
 		}
