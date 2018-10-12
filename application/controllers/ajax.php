@@ -25,6 +25,25 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	 *	Validate uri(href) string
+	 */
+	private static function validate_uri_string ($setting)
+	{
+		$setting_info = json_decode($setting, true);
+		foreach ($setting_info as $setting_data) {
+		$href = htmlspecialchars($setting_data['href'], ENT_QUOTES, 'UTF-8');
+		$validate_href = "(^/)";
+			if(preg_match($validate_href, $href)) {
+				$setting_href[] = array('href' => $href);
+			}else {
+				$setting_href[] = array('href' => "/" . $href);
+			}
+		}
+		$setting = array_replace_recursive($setting_info, $setting_href);
+		return json_encode($setting);
+	}
+
+	/**
 	*	fetch specific setting
 	*/
 	public function get_setting()
@@ -37,7 +56,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$page = trim($page);
 		$data = Ninja_setting_Model::fetch_page_setting($type, $page);
 		$setting = $data!==false ? $data->setting : false;
-		return json::ok(array($type => json_decode($setting)));
+		return json::ok(array($type => json_decode(self::validate_uri_string($setting))));
 	}
 
 	/**
@@ -51,7 +70,7 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		if (empty($type) || empty($page) || (empty($setting) && $setting !== "0"))
 			return false;
-		Ninja_setting_Model::save_page_setting($type, $page, $setting);
+		Ninja_setting_Model::save_page_setting($type, $page, self::validate_uri_string($setting));
 	}
 
 	/**
