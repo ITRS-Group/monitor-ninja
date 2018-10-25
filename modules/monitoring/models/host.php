@@ -72,7 +72,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm depend[] comments
 	 */
 	public function get_comments_count() {
-		return count($this->get_comments());
+		return count($this->get_comments_set());
 	}
 
 	/**
