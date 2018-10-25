@@ -107,17 +107,20 @@ class Schedule_Controller extends Authenticated_Controller
 	public function schedule()
 	{
 		$this->auto_render=false;
-		// collect input values
-		$report_id = arr::search($_REQUEST, 'report_id'); // scheduled ID
-		$rep_type = arr::search($_REQUEST, 'type');
-		$saved_report_id = arr::search($_REQUEST, 'saved_report_id'); // ID for report module
-		$period = arr::search($_REQUEST, 'period');
-		$recipients = arr::search($_REQUEST, 'recipients');
-		$filename = arr::search($_REQUEST, 'filename');
-		$description = arr::search($_REQUEST, 'description');
-		$local_persistent_filepath = arr::search($_REQUEST, 'local_persistent_filepath');
-		$attach_description = arr::search($_REQUEST, 'attach_description');
-		$module_save = arr::search($_REQUEST, 'module_save');
+        // collect input values
+        $report_id = arr::search($_REQUEST, 'report_id'); // scheduled ID
+        $rep_type = arr::search($_REQUEST, 'type');
+        $saved_report_id = arr::search($_REQUEST, 'saved_report_id'); // ID for report module
+        $period = arr::search($_REQUEST, 'period');
+        $recipients = arr::search($_REQUEST, 'recipients');
+        $filename = arr::search($_REQUEST, 'filename');
+        $description = arr::search($_REQUEST, 'description');
+        $local_persistent_filepath = arr::search($_REQUEST, 'local_persistent_filepath');
+        $attach_description = arr::search($_REQUEST, 'attach_description');
+        $module_save = arr::search($_REQUEST, 'module_save');
+        $report_time = arr::search($_REQUEST, 'report_time');
+        $report_on = arr::search($_REQUEST, 'report_on');
+        $report_period = arr::search($_REQUEST, 'report_period');
 
 		if (!$module_save) {
 			# if this parameter is set to false, we have to lookup
@@ -142,7 +145,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$filename = $this->_convert_special_chars($filename);
 		$filename = $this->_check_filename($filename);
 
-		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath, $attach_description);
+		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath, $attach_description, $report_time, $report_on, $report_period);
 
 		if (!is_int($ok)) {
 			return json::fail(sprintf(_("An error occurred when saving scheduled report (%s)"), $ok));
@@ -259,8 +262,8 @@ class Schedule_Controller extends Authenticated_Controller
 			echo "No scheduled reports found, not sending any emails.\n";
 			return;
 		}
-		foreach ($schedules as $row) {
-			$this->send_now($row->id);
+		foreach ($schedules as $id) {
+			$this->send_now($id);
 		}
 	}
 
