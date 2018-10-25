@@ -188,6 +188,20 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $user->get_email(), 'nogroup@op5test.op5.com', 'Invalid mail for user');
 	}
 
+	function test_empty_password() {
+		try {
+			$this->connect();
+			$user = $this->drv->login('nogroup', '');
+		} catch (op5AuthException $e) {
+			$caught = true;
+			$this->assertEquals(
+					'op5AuthDriver_LDAP / Test driver: No or empty password supplied (0: Success)',
+					$e->getMessage(),
+					'Incorrect exception message');
+		}
+		$this->assertTrue($caught);
+	}
+
 	function test_invalid_password() {
 		$this->connect();
 		$user = $this->drv->login('nogroup', 'incorrect password');
