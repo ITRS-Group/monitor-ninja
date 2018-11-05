@@ -939,11 +939,11 @@ listview_renderer_table.downtimes = {
 	},
 	"duration" : {
 		"header" : _("Duration"),
-		"depends" : [ 'start_time', 'end_time' ],
+		"depends" : [ 'start_time', 'end_time', 'duration' ],
 		"sort" : false,
 		"cell" : function(args) {
 			return $('<td />').text(
-					format_interval(args.obj.end_time - args.obj.start_time));
+					args.obj.fixed ? format_interval(args.obj.end_time - args.obj.start_time) : (args.obj.duration/3600)+"h");
 		}
 	},
 	"triggered_by" : {
