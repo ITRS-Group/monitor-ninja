@@ -97,6 +97,13 @@ class Ninja_Controller extends Base_Controller {
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
 
+		if (PHP_SAPI != 'cli') {
+			$locale = 'fi_FI.utf8';
+			if (setlocale(LC_MESSAGES, $locale) === false) {
+				op5log::instance('ninja')->log('error', sprintf('Locale "%s" is not installed on the system.', $locale));
+			}
+		}
+
 		$this->_addons();
 	}
 
