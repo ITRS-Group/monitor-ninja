@@ -148,6 +148,20 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 				'Incorrect groups returned for user multigroup');
 	}
 
+	function test_group_membership_memberof() {
+		$this->connect(array('group_memberof' => '1'));
+
+		$user = $this->drv->login('singlegroup', 'singlegrouppassword');
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as singlegroup");
+		$this->assertEquals( $user->get_groups(), array(),
+				'Incorrect groups returned for user singlegroup');
+
+		$user = $this->drv->login('memberof', 'memberofgrouppassword');
+		$this->assertInstanceOf('User_Model', $user, "No user object returned, couldn't login as multigroup");
+		$this->assertEquals( $user->get_groups(), array('Depth 1 of 1'),
+				'Incorrect groups returned for user memberof');
+	}
+
 	function test_group_membership_givenname() {
 		$this->connect(array('userkey' => 'GiveNnaME'));
 		$user = $this->drv->login('nogroupName', 'nogrouppassword');

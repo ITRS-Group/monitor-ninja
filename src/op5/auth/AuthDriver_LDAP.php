@@ -59,7 +59,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			$this->bind_anon();
 		}
 
-		$groups = $this->resolve_group_names($user_info['dn']);
+		$groups = $this->groups_for_user($username);
 
 		if (!isset($user_info[strtolower($config['userkey'])])) {
 			$this->log->log('error',
@@ -218,12 +218,16 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 
 	/**
 	 * Given a username, return a list of it's groups.
+	 * If the config entry memberof is enabled we search for the groups using the
+	 * memberOf user attribute, rather than looking up by groups.
 	 * Useful when giving permissions to a user.
 	 *
 	 * @param $username string	User to search for
 	 * @return array A list of groups, or false if not possible
 	 */
 	public function groups_for_user($username) {
+		$config = $this->module->get_properties();
+
 		$this->connect();
 		$this->bind_anon();
 
@@ -233,7 +237,66 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			return false;
 		}
 
-		return $this->resolve_group_names($user_info['dn']);
+		// Check if we should search for groups using memberof.
+		// Some setups might not have the group_memberof attribute in their config
+		// so we first check if it exists at all.
+		if (array_key_exists('group_memberof', $config) &&
+			 $config['group_memberof']){
+			$this->log->log("debug", "Getting groups for user using memberOf");
+			return $this->resolve_groups_memberof($username);
+		} else {
+			return $this->resolve_group_names($user_info['dn']);
+		}
+
+	}
+
+	/**
+	 * Given a username, return a list of it's groups using the LDAP memberOf
+	 * attribute. Used internally by groups_for_user
+	 *
+	 * @param $username string	User to search for
+	 * @return array A list of groups (emtpy array if none found)
+	 */
+	private function resolve_groups_memberof($username){
+		$config = $this->module->get_properties();
+		if ($config['userkey_is_upn']) {
+			$username .= '@' . $config['upn_suffix'];
+		}
+		$filter = array ($config['userkey'] => $username);
+
+		$res = $this->ldap_query(
+			$filter,
+			$config['user_base_dn'],
+			$config['user_filter'],
+			array('dn','memberOf')
+		);
+
+		// make the query ofr the user
+		$entries = ldap_get_entries($this->conn, $res);
+		ldap_free_result($res);
+
+		if ( count($entries) <= 0) {
+			$this->log->log("error", "resolve_groups_memberof failed to find user.");
+			return false;
+		}
+
+		// Return an empty array if there are no memberof entries
+		if (! array_key_exists('memberof',$entries[0])) {
+			return array();
+		}
+
+		// gets the memberOf entries from the user query
+		$memberof = $entries[0]['memberof'];
+		// The first element in the array is always a count. We don't need it here
+		// so we strip it away.
+		array_shift($memberof);
+
+		// strip DN from the results
+		foreach ($memberof as &$value) {
+			$value = $this->strip_dn($value);
+		}
+
+		return $memberof;
 	}
 
 	/**
@@ -401,8 +464,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$res = $this->ldap_query(
 			$filter,
 			$config['user_base_dn'],
-			$config['user_filter'],
-			array('dn')
+			$config['user_filter']
 		);
 
 		$entries = ldap_get_entries($this->conn, $res);
@@ -634,7 +696,12 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 		$this->log->log('debug', "LDAP: Searching for $filter at $base_dn");
 
-		$result = @ldap_search($this->conn, $base_dn, $filter);
+		if ($attributes == null) {
+			$result = @ldap_search($this->conn, $base_dn, $filter);
+		} else {
+			$result = @ldap_search($this->conn, $base_dn, $filter, $attributes);
+		}
+
 		if ($result === false) {
 			$this->throw_error(
 				'Error during LDAP search using query "' . $filter . '" at "' .
