@@ -4,6 +4,7 @@ Feature: Menu
 	Background:
 		Given I am logged in
 		And I am on the main page
+		And I check for cookie bar
 
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
@@ -51,7 +52,7 @@ Feature: Menu
 		And I enter "Make my day" into "Title"
 		And I click css "#dojo-icon-container .x16-enable"
 		And I click "Save"
-		Then I should see css "a[href='google.com'][title='Make my day']" within "#header"
+		Then I should see css "a[href='/google.com'][title='Make my day']" within "#header"
 		And I shouldn't see "Add new quicklink"
 
 	Scenario: Remove quicklink
@@ -62,9 +63,22 @@ Feature: Menu
 		When I check "Make my day"
 		And I click "Save"
 		Then I shouldn't see "Add new quicklink" waiting patiently
-		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"
+		And I shouldn't see css "a[href='/google.com'][title='Make my day']" within "#header"
 
 	@unreliable_el7 @unreliable
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover the branding
 		Then I should see css "a[href='https://kb.op5.com/display/DOC']"
+
+	Scenario: Validate quicklink
+		When I click "Manage quickbar"
+		And wait for "1" seconds
+		Then I should see css "#dojo-icon-container .x16-enable"
+		When I enter "javascript:alert(1);" into "URI"
+		And I enter "XSS test" into "Title"
+		And I click css "#dojo-icon-container .x16-enable"
+		And I click "Save"
+		Then I should see css "a[href='/'][title='XSS test']" within "#header"
+		And I shouldn't see "Add new quicklink"
+		When I click css ".x16-enable" within "#header"
+		Then I should see "Not Found"
