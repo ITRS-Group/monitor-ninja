@@ -327,6 +327,14 @@ $(document).ready(function() {
 					}
 				}
 				if (error.length === 0) {
+					var remove_script_tags = new RegExp("(javascript:)|<[^>]*script", "gmi");
+					if(remove_script_tags.test(href)) {
+						href = "/";
+					}
+					var validate_href = new RegExp("^\/[a-z0-9+;:@&%=+_.-?]*");
+					if(!validate_href.test(href)) {
+						href = "/" + href;
+					}
 					global_quicklinks.push({'href': href,'title': title,'icon': icon,'target': target});
 					var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
 					quicklink
