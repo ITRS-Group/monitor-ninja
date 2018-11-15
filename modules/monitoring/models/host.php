@@ -647,6 +647,8 @@ class Host_Model extends BaseHost_Model {
 
 	/**
 	 * @param comment
+	 * @param broadcast
+	 * @param force_notification
 	 *
 	 * @ninja orm_command name Send custom notification
 	 * @ninja orm_command category Actions
@@ -656,6 +658,16 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.comment.id 0
 	 * @ninja orm_command params.comment.type string
 	 * @ninja orm_command params.comment.name Comment
+	 *
+	 * @ninja orm_command params.broadcast.id 1
+	 * @ninja orm_command params.broadcast.type bool
+	 * @ninja orm_command params.broadcast.name Broadcast
+	 * @ninja orm_command params.broadcast.default 0
+	 *
+	 * @ninja orm_command params.force_notification.id 2
+	 * @ninja orm_command params.force_notification.type bool
+	 * @ninja orm_command params.force_notification.name Force notification
+	 * @ninja orm_command params.force_notification.default 0
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to send a custom notification about the
@@ -671,8 +683,13 @@ class Host_Model extends BaseHost_Model {
 	 *     important message out.
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
-	public function send_notification($comment) {
-		$options = 4; // forced
+	public function send_notification($comment, $broadcast, $force_notification) {
+		$options = 4; //Default for custom notifications
+		if($broadcast) {
+			$options = 1; //Broadcast
+		}else if($force_notification) {
+			$options = 2; //Force notification
+		}
 		return $this->submit_naemon_command("SEND_CUSTOM_HOST_NOTIFICATION", $options, $this->get_current_user(), $comment);
 	}
 

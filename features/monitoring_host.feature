@@ -245,3 +245,14 @@ Feature: Monitoring Host
 			| ezio | a&>   |
 		When I visit the object details page for host "ezio"
 		Then I should see "a&>"
+
+	Scenario: Send custom notification
+		Given I have these mocked hosts
+			|name      |
+			|Barbarella|
+		When I go to the listview for [hosts] all
+		And I click "Barbarella"
+		And I select "Actions > Send custom notification" from the "Options" menu
+		Then I should see "Comment"
+		And I should see "Broadcast"
+		And I should see "Force notification"
