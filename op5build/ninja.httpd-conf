@@ -1,10 +1,6 @@
-Alias /monitor/stylesheets /opt/monitor/share/stylesheets
-Alias /monitor/js /opt/monitor/share/js
 Alias /monitor/images /opt/monitor/share/images
-Alias /monitor/css /opt/monitor/share/css
 Alias /monitor/op5/nacoma /opt/monitor/op5/nacoma
 Alias /monitor/op5/pnp /opt/monitor/op5/pnp
-Alias /monitor/op5/portstatus /opt/monitor/op5/portstatus
 Alias /monitor /opt/monitor/op5/ninja
 Alias /ninja /opt/monitor/op5/ninja
 
@@ -43,4 +39,3 @@ KeepAlive On
 	# We probably want a seperate file, like /etc/php.d/op5.ini
 	php_value session.gc_maxlifetime 86400
 </Location>
-
