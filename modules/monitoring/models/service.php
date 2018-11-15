@@ -73,7 +73,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm depend[] comments
 	 */
 	public function get_comments_count() {
-		return count($this->get_comments());
+		return count($this->get_comments_set());
 	}
 
 	/**

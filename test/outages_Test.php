@@ -98,6 +98,15 @@ class outages_Test extends PHPUnit_Framework_TestCase {
 							'num_services' => 0,
 							'state' => 0
 					)
+			),
+			"comments" => array (
+					array (
+							'id' => 1,
+							'is_service' => 0,
+							'author' => 'root',
+							'comment' => 'test comment 1',
+							'host_name' => 'h_a'
+					)
 			)
 	);
 	/**
