@@ -174,6 +174,16 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 				'statusmap_image' => 'op5eye.png','total_services' => 35,
 				'worst_service_hard_state' => 2,'worst_service_state' => 2,
 				'x_3d' => 0,'y_3d' => 0,'z_3d' => 0)
+			),
+		"comments" => array (
+			array (
+				'id' => 1,
+				'is_service' => 0,
+				'author' => 'root',
+				'comment' => 'test comment 1',
+				'host_name' => 'monitor',
+				'host_state' => 0,
+				'service_description' => 'op5backup state')
 			)
 			);
 	/**
