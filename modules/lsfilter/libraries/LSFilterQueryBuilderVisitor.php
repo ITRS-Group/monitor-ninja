@@ -57,7 +57,7 @@ class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
 		
 		if( !is_numeric($value) ) {
 			$value = '"'.addslashes($value).'"';
-			
+
 			if( $op == '>=' ) {
 				/* Special case for groups */
 				$field_parts = explode('.', $field);
@@ -67,8 +67,10 @@ class LSFilterQueryBuilderVisitor implements LivestatusFilterVisitor {
 					$field = implode('.', $field_parts);
 				}
 			}
-		}
-		
+		} else if( $field == 'host.name' ) {
+			$value = '"'.$value.'"';
+			
+		}		
 		return $field.$op.$value;
 	}
 
