@@ -210,6 +210,8 @@ php %prefix/install_scripts/migrate_auth.php
 # The line above can leave artifacts created by root, making ninja-backup fail
 chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 
+sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
+
 %files
 %defattr(-,%daemon_user,%daemon_group)
 %prefix
