@@ -27,8 +27,8 @@ class Search_Controller extends Ninja_Controller {
      * @var array of arrays.
      */
     protected $search_columns = array(
-        'hosts' => array( 'name', 'display_name', 'address', 'alias', 'notes' ),
-        'services' => array( 'description', 'display_name', 'notes' ),
+        'hosts' => array( 'name', 'display_name', 'address', 'alias', 'notes', 'custom_variable_names', 'custom_variable_values' ),
+        'services' => array( 'description', 'display_name', 'notes', 'custom_variable_names', 'custom_variable_values' ),
         'hostgroups' => array( 'name', 'alias' ),
         'servicegroups' => array( 'name', 'alias' ),
         'comments' => array( 'author', 'comment' ),
@@ -36,8 +36,8 @@ class Search_Controller extends Ninja_Controller {
     );
 
     protected $search_columns_matchall = array(
-        'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'long_plugin_output', 'notes' ),
-        'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'long_plugin_output', 'notes' ),
+        'hosts' => array( 'name', 'display_name', 'address', 'alias', 'plugin_output', 'long_plugin_output', 'notes', 'custom_variable_names', 'custom_variable_values' ),
+        'services' => array( 'description', 'display_name', 'host.name', 'host.address', 'host.alias', 'plugin_output', 'long_plugin_output', 'notes', 'custom_variable_names', 'custom_variable_values' ),
         'hostgroups' => array( 'name', 'alias' ),
         'servicegroups' => array( 'name', 'alias' ),
         'comments' => array( 'author', 'comment' )
