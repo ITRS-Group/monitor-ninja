@@ -32,7 +32,9 @@ Feature: Reports
 	@calendar
 	Scenario: Toggle JS-calendars on custom report date
 		Given I am logged in
-		And I am on the Host details page
+		And I am on the main page
+		And I check for cookie bar
+		Then I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
