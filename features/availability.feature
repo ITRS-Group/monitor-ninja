@@ -1,4 +1,4 @@
-@availability @unreliable @configuration
+@availability @configuration
 Feature: Availability reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
@@ -33,10 +33,13 @@ Feature: Availability reports
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander  |
 			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - po             |
 			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky |
+			| 2013-03-09 00:01:00 |        701 |  NULL |   NULL | linux-server1 | PING                |     1 |    0 |     1 |              0 | OK - linux-server1  |
+			| 2013-03-09 00:03:00 |        701 |  NULL |   NULL | linux-server1 | PING                |     0 |    1 |     1 |              0 | OK - linux-server1  |
 		And I have activated the configuration
 		And I am logged in as administrator
+		And I check for cookie bar
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate report without objects
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -46,7 +49,7 @@ Feature: Availability reports
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate report on empty hostgroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -58,7 +61,7 @@ Feature: Availability reports
 		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -71,7 +74,7 @@ Feature: Availability reports
 		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate single host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -96,7 +99,7 @@ Feature: Availability reports
 		Then I should see "Alert histogram"
 		And I should see "linux-server1"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate multi host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -124,7 +127,7 @@ Feature: Availability reports
 		When I click "linux-server1"
 		Then I should see "Host details for linux-server1"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate single service report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -145,7 +148,7 @@ Feature: Availability reports
 		And I shouldn't see "Group availability (Worst state)"
 		And I shouldn't see "Summary"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate multi service on same host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -170,7 +173,7 @@ Feature: Availability reports
 		When I click "PING"
 		Then I should see "Service details for PING on host linux-server1"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate multi service on different host report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -196,7 +199,7 @@ Feature: Availability reports
 		When I click "linux-server1"
 		Then I should see "Host details for linux-server1"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate single hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -216,7 +219,7 @@ Feature: Availability reports
 		And I shouldn't see "Total summary"
 		And I should see "Group availability (Worst state)"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate multi hostgroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -239,7 +242,7 @@ Feature: Availability reports
 		And I should see "win-server2"
 		And I should see "Group availability (Worst state)"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate hostgroup report with overlapping members
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -262,7 +265,7 @@ Feature: Availability reports
 		And I should see "win-server2"
 		And I should see "Group availability (Worst state)"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate single servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -286,7 +289,7 @@ Feature: Availability reports
 		And I shouldn't see "Summary of all"
 		And I shouldn't see "Including soft states"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate multi servicegroup report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -312,7 +315,7 @@ Feature: Availability reports
 		And I shouldn't see "System Load"
 		And I should see "Group availability (Worst state)"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate report on custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -330,7 +333,7 @@ Feature: Availability reports
 		Then I should see "Hostgroup breakdown"
 		And I should see "Reporting period: 2013-01-02 23:31:00 to 2013-04-03 22:32:00 - workhours"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate report on custom report date without time specified
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -348,7 +351,7 @@ Feature: Availability reports
 		Then I should see "Hostgroup breakdown"
 		And I should see "Reporting period: 2013-01-02 00:00:00 to 2013-04-03 23:59:00 - workhours"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Generate host report with state mapping
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -368,12 +371,12 @@ Feature: Availability reports
 		And I shouldn't see "Up"
 		And the "Down" column should be "100 %" on the row where "LinuxServers" is "linux-server1"
 		And the "Undetermined" column should be "100 %" on the row where "LinuxServers" is "linux-server2"
-		When I click "Edit settings"
+		When I am on address "/index.php/avail/edit_settings?with_chrome=1&report_type=hostgroups&objects%5B0%5D=Linux+servers&host_filter_status%5B0%5D=1"
 		Then I should see "Up"
 		And I shouldn't see "Ok"
 		And "Down" should be selected from "Map up to"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Test service report with state mapping
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -387,11 +390,11 @@ Feature: Availability reports
 		And I shouldn't see "Up"
 		When I click "Show report"
 		Then I should see "Servicegroup breakdown"
-		When I click "Edit settings"
+		When I am on address "/index.php/avail/edit_settings?with_chrome=1&report_type=servicegroups&objects%5B0%5D=pings"
 		Then I should see "Ok"
 		And I shouldn't see "Up"
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Save report with misc options
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -433,11 +436,12 @@ Feature: Availability reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@reports @unreliable @unreliable_el7
+	@reports
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Report" menu
-		And I click "Availability"
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
@@ -448,7 +452,6 @@ Feature: Availability reports
 		And "Average" should be selected from "SLA calculation method"
 		And "Uptime, with difference" should be selected from "Count scheduled downtime as"
 		And "Undetermined" should be selected from "Count program downtime as"
-		And "Include soft states" should be checked
 		And "Use alias" should be checked
 		And "Include trends graph" should be checked
 		And "Include pie charts" should be checked
@@ -457,41 +460,37 @@ Feature: Availability reports
 		When I click "Show report"
 		Then I should see "Last month"
 		And I should see "workhours"
-		And I should see "Showing Hard and soft states in up, unreachable, pending"
+		And I should see "Showing Hard and soft states in up, unreachable, undetermined"
 		And I should see "Average"
 		And I shouldn't see "SLA"
 		And I shouldn't see "Best"
 		And I should see "Uptime, with difference"
 		And I shouldn't see "Counting program downtime"
-		And I should see "Including soft states"
 		And I should see "HALIAS-ls1"
 		And I should see "HALIAS-ls2"
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 
-	@reports @unreliable @unreliable_el7 @bug-7646
+	@reports @bug-7646
 	Scenario: Uncheck saved checkbox
 		Given I am on the Host details page
 		When I hover over the "Report" menu
-		And I click "Availability"
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
 		Then "objects" should have option "LinuxServers"
-		And "Include soft states" should be checked
 		And "Use alias" should be checked
-		When I uncheck "Include soft states"
 		And I click "Show report"
 		Then I shouldn't see button "Show report"
-		When I click "Edit settings"
-		Then "Include soft states" should be unchecked
+		When I am on address "/index.php/avail/edit_settings?with_chrome=1&objects%5B0%5D=LinuxServers&use_alias=1&report_name=saved+test+report&report_id=1"
 		And "Use alias" should be checked
 		When I uncheck "Use alias"
 		And I wait for 1 second
 		And I click "Show report"
 		Then I shouldn't see button "Show report"
-		And I click "Edit settings"
-		Then "Include soft states" should be unchecked
+		And I am on address "/index.php/avail/edit_settings?with_chrome=1&objects%5B0%5D=LinuxServers&report_name=saved+test+report&report_id=1"
 		And "Use alias" should be unchecked
 		And I wait for 1 second
 		When I click "Show report"
@@ -500,15 +499,15 @@ Feature: Availability reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
-		And I click "Availability"
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"
 		Then "objects" should have option "LinuxServers"
-		And "Include soft states" should be unchecked
 		And "Use alias" should be unchecked
 
-	@reports @unreliable_el7
+	@reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -563,7 +562,7 @@ Feature: Availability reports
 		And "Include trends graph" should be checked
 		And I click "Show report"
 		Then I shouldn't see button "Show report"
-		When I click "Edit settings"
+		When I am on address "/index.php/avail/edit_settings?with_chrome=1&report_type=hostgroups&objects%5B0%5D=LinuxServers&include_trends=1"
 		Then "Include trends graph" should be checked
 		When I select "Custom" from "Reporting period"
 		And I enter "2013-03-01" into "Start date"
@@ -574,6 +573,34 @@ Feature: Availability reports
 		And I click "Show report"
 		Then I shouldn't see button "Show report"
 		And I should see "Reporting period: 2013-03-01 00:00:00 to 2013-04-01 23:59:00 - 24x7"
-		And I click "Edit settings"
-		And I should see "2013-03-01"
-		And I should see "2013-04-01"
+		And I am on address "/index.php/avail/edit_settings?with_chrome=1&start_time=1362135660&end_time=1364810460&report_period=custom"
+		And "Start date" should contain "2013-03-01"
+		Then "End date" should contain "2013-04-01"
+
+	Scenario: Create availability report trend graph with report time period as workhours
+		Given I am on the Host details page
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		And I select "Services" from "Report type"
+		And I select "linux-server1;PING" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1;PING"
+		When I select "Custom" from "Reporting period"
+		And I enter "2013-03-04" into "Start date"
+		And I enter "" into "time_start"
+		And I enter "2013-03-10" into "End date"
+		And I enter "" into "time_end"
+		And I select "workhours" from "Report time period"
+		And I select "Average" from "SLA calculation method"
+		And I select "Actual state" from "Count scheduled downtime as"
+		And I select "Assume previous state" from "Count program downtime as"
+		And I select "Hard and soft states" from "State types"
+		And I check "Use alias"
+		And I check "Include trends graph"
+		And I click "Show report"
+		Then I should see "workhours"
+		And I should see "2013-03-04"
+		And I should see "2013-03-10"
+		Then I should see trend graph have background color "rgb(161, 158, 149)"
+		And I should see trend graph have background color "transparent"
+		Then I should see trend graph have background color "rgb(170, 222, 83)"
