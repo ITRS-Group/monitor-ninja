@@ -205,7 +205,7 @@ class SingleStateCalculator extends StateCalculator
 					'output' => '(event outside of timeperiod)',
 					'the_time' => $this->prev_row['the_time'],
 					'duration' => $this->prev_row['duration'],
-					'state' => -2,
+					'state' => $this->prev_row['state'],
 					'hard' => 1
 				);
 			// This prevents the close event from being added multiple times
