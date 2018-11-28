@@ -239,5 +239,34 @@ Feature: Recurring downtime
 		When I click "Delete schedule"
 		Then I shouldn't see "no recurrence recurring downtime"
 
-	
+	@configuration
+	Scenario: Add a weekly recurring downtime for each monday starts at 2018-12-03
+		When I hover over the "Monitor" menu
+		And I hover over the "Downtimes" menu
+		And I click "Recurring Downtimes"
+		Then I shouldn't see "weekly recurring downtime"
+		When I click "New"
+		And I select "Hosts" from "downtime_type"
+		And I select "switch32" from the multiselect "objects_tmp"
+		And I enter "10:00" into "start_time"
+		And I enter "2018-12-03" into "start_date"
+		And I enter "12:00" into "end_time"
+		And I enter "2018-12-03" into "end_date"
+		And I select "Weekly on Monday" from "recurrence_select"
+		And I enter "weekly recurring downtime on monday starts at 2018-12-03" into "comment"
+		And I click "Add Schedule"
+		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
+		And I should see "weekly recurring downtime on monday starts at 2018-12-03"
+		And I click "Edit schedule"
+		And "start_date" should contain "2018-12-03"
+		And "end_date" should contain "2018-12-03"
 
+	@configuration
+	Scenario: Delete a weekly recurring downtime for each monday starts at 2018-12-03
+		When I hover over the "Monitor" menu
+		And I hover over the "Downtimes" menu
+		And I click "Recurring Downtimes"
+		Then I should see "weekly recurring downtime on monday starts at 2018-12-03"
+		When I click "Delete schedule"
+		Then I shouldn't see "weekly recurring downtime on monday starts at 2018-12-03"
+	
