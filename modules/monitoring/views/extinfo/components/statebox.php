@@ -15,6 +15,9 @@
 		)), "Configure this host");
 		echo "</div>";
 		echo '<div class="information-state-box-address"><p class="faded">' . $object->get_address() . '</p></div>';
+		if ($object->get_alias() !== $object->get_name()) {
+			echo '<div class="information-state-box-alias"><p class="faded">' . $object->get_alias() . '</p></div>';
+		}
     } else {
         echo '<div class="information-state-box-name">' . $object->get_description();
 		echo icon::get_linked('cog', $linkprovider->get_url('cmd', null, array(

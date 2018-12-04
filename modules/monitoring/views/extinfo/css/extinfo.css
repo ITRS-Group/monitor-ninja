@@ -178,6 +178,14 @@ p {
 	word-break: break-all;
 }
 
+.information-state-box-alias {
+	padding: 0 8px;
+}
+
+.information-state-box-alias p {
+	word-break: break-all;
+}
+
 .information-state-box-notes label {
 	padding: 10px 12px;
 	margin-top: 16px;
