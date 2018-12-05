@@ -194,7 +194,7 @@ function lsfilter_list(config)
 					{
 						self.active_ajax_request = false;
 						self.config.loading_stop(loading_id);
-                                                self.banner_in_listview();
+						self.banner_in_listview();
 					}
 				});
 	};
@@ -276,7 +276,7 @@ function lsfilter_list(config)
 						.css('padding-right', 0)
 				);
 		}
-                this.banner_in_listview();
+		this.banner_in_listview();
 	};
 
 	this.update_nagbar = function(messages)
@@ -631,14 +631,14 @@ function lsfilter_list(config)
 		this.update_float_header();
 	};
 
-        this.banner_in_listview = function()
-        {
-                if($('div#nachos-page-banners').length > 0) {
-                        var thead =  $(this.config.table).find('thead');
-                        var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
-                        var banner = $('div#nachos-page-banners');
-                        banner.css('margin', '25px 0 3px 0');
-                        header.remove();
-                }
-        }
+	this.banner_in_listview = function()
+	{
+		if($('div#nachos-page-banners').length > 0) {
+			var thead =  $(this.config.table).find('thead');
+			var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
+			var banner = $('div#nachos-page-banners');
+			banner.css('margin', '25px 0 3px 0');
+			header.remove();
+		}
+	}
 }
