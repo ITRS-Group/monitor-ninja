@@ -39,4 +39,18 @@ KeepAlive On
 	# We probably want a seperate file, like /etc/php.d/op5.ini
 	php_value session.gc_maxlifetime 86400
 </Location>
+<Directory /opt/monitor/op5/nacoma>
+    AllowOverride None
+    Order allow,deny
+    Allow from All
 
+    RewriteEngine On
+    RewriteBase /monitor/op5/nacoma
+
+    # Protect application and system files from being viewed
+    RewriteRule .(sh|sql|py)$ - [F,NC]
+</Directory>
+<Location /ninja/install_scripts>
+	Order allow,deny
+	Deny from all
+</Location>
