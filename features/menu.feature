@@ -52,7 +52,7 @@ Feature: Menu
 		And I enter "Make my day" into "Title"
 		And I click css "#dojo-icon-container .x16-enable"
 		And I click "Save"
-		Then I should see css "a[href='/google.com'][title='Make my day']" within "#header"
+		Then I should see css "a[href='google.com'][title='Make my day']" within "#header"
 		And I shouldn't see "Add new quicklink"
 
 	Scenario: Remove quicklink
@@ -63,22 +63,42 @@ Feature: Menu
 		When I check "Make my day"
 		And I click "Save"
 		Then I shouldn't see "Add new quicklink" waiting patiently
-		And I shouldn't see css "a[href='/google.com'][title='Make my day']" within "#header"
+		And I shouldn't see css "a[href='google.com'][title='Make my day']" within "#header"
 
 	@unreliable_el7 @unreliable
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover the branding
 		Then I should see css "a[href='https://kb.op5.com/display/DOC']"
 
+	Scenario: Validate quicklink absolute URL
+		When I click "Manage quickbar"
+		And wait for "1" seconds
+		Then I should see css "#dojo-icon-container .x16-notification"
+		When I enter "https://monitor01/index.php/configuration/configure" into "URI"
+		And I enter "absolute URL" into "Title"
+		And I click css "#dojo-icon-container .x16-notification"
+		And I click "Save"
+		Then I should see css "a[href='https://monitor01/index.php/configuration/configure'][title='absolute URL']" within "#header"
+
+	Scenario: Validate quicklink internal URL
+		When I click "Manage quickbar"
+		And wait for "1" seconds
+		Then I should see css "#dojo-icon-container .x16-monitoring"
+		When I enter "/monitor/index.php/configuration/configure" into "URI"
+		And I enter "internal URL" into "Title"
+		And I click css "#dojo-icon-container .x16-monitoring"
+		And I click "Save"
+		Then I should see css "a[href='/monitor/index.php/configuration/configure'][title='internal URL']" within "#header"
+
 	Scenario: Validate quicklink
 		When I click "Manage quickbar"
 		And wait for "1" seconds
-		Then I should see css "#dojo-icon-container .x16-enable"
+		Then I should see css "#dojo-icon-container .x16-cli"
 		When I enter "javascript:alert(1);" into "URI"
 		And I enter "XSS test" into "Title"
-		And I click css "#dojo-icon-container .x16-enable"
+		And I click css "#dojo-icon-container .x16-cli"
 		And I click "Save"
-		Then I should see css "a[href='/'][title='XSS test']" within "#header"
+		Then I should see css "a[title='XSS test']" within "#header"
 		And I shouldn't see "Add new quicklink"
-		When I click css ".x16-enable" within "#header"
-		Then I should see "Not Found"
+		When I click css ".x16-cli" within "#header"
+		Then I shouldn't see "Not Found"
