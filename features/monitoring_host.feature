@@ -256,3 +256,23 @@ Feature: Monitoring Host
 		Then I should see "Comment"
 		And I should see "Broadcast"
 		And I should see "Force notification"
+
+	Scenario: A list of parents show be shown on a childs extinfo page
+
+		Given I have these mocked hosts
+			| name     | parents |
+			| Parent   |         |
+			| Child	   | Parent  |
+		When I visit the object details page for host "Child"
+		Then I should see "PARENTS:"
+		And I should see "Parent"
+
+	Scenario: A list of Children show be shown on a parents extinfo page
+
+		Given I have these mocked hosts
+			| name     | parents |
+			| Parent   |         |
+			| Child	   | Parent  |
+		When I visit the object details page for host "Parent"
+		Then I should see "CHILDREN:"
+		And I should see "Child"
