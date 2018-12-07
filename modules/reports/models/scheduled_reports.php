@@ -162,10 +162,14 @@ class Scheduled_reports_Model extends Model
 	 * @param $description = ''
 	 * @param $local_persistent_filepath = ''
 	 * @param $attach_description = ''
+	 * @param $report_time = false
+	 * @param $report_on = false
+	 * @param $report_period = false
 	 * @return string|int either error string or the report's id
 	 */
-	static public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '', $attach_description = 0)
+	static public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '', $attach_description = 0, $report_time=false, $report_on=false, $report_period=false)
 	{
+
 		$local_persistent_filepath = trim($local_persistent_filepath);
 		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
 			return _("File path '$local_persistent_filepath' is not writable");
@@ -175,6 +179,9 @@ class Scheduled_reports_Model extends Model
 		$rep_type = (int)$rep_type;
 		$saved_report_id = (int)$saved_report_id;
 		$period	= (int)$period;
+		$report_time = trim($report_time);
+		$report_on = trim($report_on);
+		$report_period = trim($report_period);
 		$recipients = trim($recipients);
 		$filename = trim($filename);
 		$description = trim($description);
@@ -200,8 +207,8 @@ class Scheduled_reports_Model extends Model
 			// UPDATE
 			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description).", local_persistent_filepath = ".$db->escape($local_persistent_filepath).", attach_description = ".$db->escape($attach_description)." WHERE id=".$id;
 		} else {
-			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath, attach_description)
-				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).", ".$db->escape($attach_description).")";
+			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath, attach_description, report_time, report_on, report_period)VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).", ".$db->escape($attach_description).", '".$report_time."', '".$report_on."', '".$report_period."' )";
+
 		}
 
 		try {
@@ -249,8 +256,7 @@ class Scheduled_reports_Model extends Model
 	 */
 	static function get_typeof_report($id=false)
 	{
-		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE ".
-			"sr.id=".(int)$id." AND t.id=sr.report_type_id";
+		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE "."sr.id=".(int)$id." AND t.id=sr.report_type_id";
 		$db = Database::instance();
 		try {
 			$res = $db->query($sql);
@@ -312,9 +318,7 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT sr.recipients, sr.filename, sr.local_persistent_filepath, sr.report_id FROM ".
-			"scheduled_reports sr ".
-			"WHERE sr.id=".$schedule_id;
+		$sql = "SELECT sr.recipients, sr.filename, sr.local_persistent_filepath, sr.report_id FROM "."scheduled_reports sr "."WHERE sr.id=".$schedule_id;
 		$db = Database::instance();
 		$res = $db->query($sql)->result_array(false);
 		if (!$res)
@@ -331,14 +335,135 @@ class Scheduled_reports_Model extends Model
 	 */
 	static function get_period_schedules($period_str)
 	{
-		$period_str = trim(ucfirst($period_str));
-		$db = Database::instance();
+		$id = array();
+		$send_date = array();
 
-		$sql = "SELECT r.id FROM scheduled_report_types rt
-			INNER JOIN scheduled_reports r ON rt.id=r.report_type_id
-			INNER JOIN scheduled_report_periods p ON r.period_id=p.id
-			WHERE p.periodname=".$db->escape($period_str);
+		$db = Database::instance();
+		$sql = "SELECT * FROM scheduled_reports";
 		$res = $db->query($sql);
-		return $res;
+
+		foreach($res as $row){
+			$report_period = json_decode($row->report_period);
+			$report_time = $row->report_time;
+
+			$repeat_no = $report_period->no;
+			$last_sent = $row->last_sent;
+
+			$ctime = date('H:i');
+			if($ctime != $report_time){
+				continue;
+			}
+
+            //schedule daily
+			if($row->period_id == 3){
+				if($row->last_sent == ''){
+					$id[] = $row->id;
+					$send_date[] = date('Y-m-d');
+				}else{
+					$current_date = date("Y-m-d");
+					$next_send = date ("Y-m-d", strtotime ($last_sent ."+".$repeat_no." days"));
+					if($current_date == $next_send){
+						$id[] = $row->id;
+						$send_date[] = date('Y-m-d');
+					}
+				}
+			}
+
+            //schedule weekly
+			if($row->period_id == 1){
+				if($row->last_sent == ''){
+					$current_time = time();
+					$current_time = strtotime('+0 day', $current_time);
+					$current_day = date('w', $current_time);
+					$report_days = json_decode($row->report_on);
+					foreach($report_days as $day){
+						if($current_day == $day->day){
+							$id[] = $row->id;
+							$send_date[] = date('Y-m-d');
+						}
+					}
+				}else{
+					$last_sent_week = strtotime ($last_sent ."+0 days");
+					$next_start_week = strtotime ($last_sent ."+7 days");
+					$current_time = strtotime('+0 day', time());
+					$current_day = date('w', $current_time);
+					$report_days = json_decode($row->report_on);
+					if($current_time > $last_sent_week && $current_time < $next_start_week){
+						foreach($report_days as $day){
+							if($current_day == $day->day){
+								$id[] = $row->id;
+								$send_date[] = $last_sent;
+							}
+						}
+					}else{
+						$current_date = date("Y-m-d");
+						$repeat_days_week = $repeat_no * 7;
+						$next_start_day = strtotime ($last_sent ."+".$repeat_days_week." days");
+						if($current_date = $next_start_day){
+							$id[] = $row->id;
+							$send_date[] = date('Y-m-d');
+						}
+					}
+				}
+			}
+
+            //schedule monthly
+			if($row->period_id == 2){
+				$current_time = time();
+				$current_time = strtotime('+0 day', $current_time);
+				$current_day = date('w', $current_time);
+				$current_month = date('n', $current_time);
+				if($row->last_sent != ''){
+					$last_sent = $row->last_sent;
+					$last_sent_day = strtotime ($last_sent ."+0 days");
+					$sent_day = date('w', $last_sent_day);
+					$sent_month = date('n', $last_sent_day);
+					$next_send_month = $sent_month + $repeat_no;
+					if($next_send_month > 12){
+						$next_send_month = $next_send_month-12;
+					}
+					if($current_month != $next_send_month){
+						continue;
+					}
+				}
+
+				$report_days = json_decode($row->report_on);
+				$month_day_no = $report_days->day_no;
+				$month_day = $report_days->day;
+				if($current_day == $month_day){
+					if($month_day_no != "last"){
+						$day_no_this = 7 * ($month_day_no-1);
+						$day_no_pre = 7 * ($month_day_no);
+						$check_day_no_this = strtotime("-$day_no_this day", $current_time);
+						$check_day_no_pre = strtotime("-$day_no_pre day", $current_time);
+						if(date('n', $check_day_no_this) == $current_month && date('n', $check_day_no_pre) != ($current_month)){
+							$id[] = $row->id;
+							$send_date[] = date('Y-m-d');
+						}
+					}else{
+						$check_last_weekday = strtotime("+7 day", $current_time);
+						if(date('n', $check_last_weekday) != ($current_month)){
+							$id[] = $row->id;
+							$send_date[] = date('Y-m-d');
+						}
+					}
+				}elseif($month_day == "last"){
+					$check_last_weekday = strtotime("+1 day", $current_time);
+					if(date('n', $check_last_weekday) != ($current_month)){
+						$id[] = $row->id;
+						$send_date[] = date('Y-m-d');
+					}
+
+				}
+			}
+		}
+
+		foreach($id as $key=>$value ){
+			$udate = $send_date[$key];
+			$uid = $value;
+			self::update_report_field($uid, "last_sent", $udate);
+		}
+
+		return $id;
 	}
 }
