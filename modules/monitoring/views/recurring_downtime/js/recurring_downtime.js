@@ -47,6 +47,14 @@ $(document).ready(function() {
     $('#fixed-duration-end-time').val(_end_time);
     $('#fixed-duration-start-date').val(_start_date);
     $('#fixed-duration-end-date').val(_end_date);
+    var get_recurrence_on = JSON.parse(_recurrence_on);
+        if(get_recurrence_on.day != "last"){
+                localStorage.setItem('edit_no_box', 1);
+                localStorage.setItem('edit_day_box', 1);
+        }else{
+                localStorage.setItem('edit_no_box', 0);
+                localStorage.setItem('edit_day_box', 0);
+        }
   }else{
     if(!$('#fixed-duration-start-date').val()){
       var date = new Date();
@@ -277,7 +285,17 @@ $(document).ready(function() {
     if($('#rec-on-any-day-month').is(':checked')){
       var selected_day = $('#rec-on-day-box').val();
       var selected_day_no = $(this).val();
-      set_startdate(selected_day, selected_day_no, 0);
+      if($('.repeat-text').val() == "month"){
+        if(pathArray[3] == "recurring_downtime" && pathArray[4] == "index"){
+                        var edit_no_box = localStorage.getItem('edit_no_box');
+                        if(edit_no_box != 1){
+                                set_startdate(selected_day, selected_day_no, 0);
+                        }
+                        localStorage.setItem('edit_no_box', 0);
+                }else{
+                        set_startdate(selected_day, selected_day_no, 0);
+                }
+      }
     }
   })
 
@@ -285,7 +303,17 @@ $(document).ready(function() {
     if($('#rec-on-any-day-month').is(':checked')){
       var selected_day_no = $('#rec-on-no-box').val();
       var selected_day = $(this).val();
-      set_startdate(selected_day, selected_day_no, 0);
+      if($('.repeat-text').val() == "month"){
+        if(pathArray[3] == "recurring_downtime" && pathArray[4] == "index"){
+                        var edit_day_box = localStorage.getItem('edit_day_box');
+                        if(edit_day_box != 1){
+                                set_startdate(selected_day, selected_day_no, 0);
+                        }      
+                        localStorage.setItem('edit_day_box', 0);
+                }else{ 
+                        set_startdate(selected_day, selected_day_no, 0);
+                }   
+      }
     }
   });
 
@@ -293,13 +321,17 @@ $(document).ready(function() {
     if($(this).is(':checked')){
       var selected_day_no = $('#rec-on-no-box').val();
       var selected_day = $('#rec-on-day-box').val();
-      set_startdate(selected_day, selected_day_no, 0); 
+      if($('.repeat-text').val() == "month"){
+        set_startdate(selected_day, selected_day_no, 0);
+      }
     } 
   });
 
   $('body').on('change', '#rec-on-last-day-month', function(){
     if($(this).is(':checked')){
-      set_startdate("last", "last", 0);
+      if($('.repeat-text').val() == "month"){
+        set_startdate("last", "last", 0);
+      }
     }
   });
 
@@ -340,7 +372,7 @@ $(document).ready(function() {
       }
       if(selected_day_no == "last"){
         startDate.setDate(startDate.getDate() + 28);
-        if(startDate.getMonth() > month){
+        if(startDate.getMonth() != month){
           startDate.setDate(startDate.getDate() - 7);
         }
       }
@@ -660,6 +692,7 @@ $(document).ready(function() {
         $('input[name="month_on"][editattr="lastmonthday"]').prop("checked",true);
       }else{
         $('input[name="month_on"][editattr="dayweekday"]').prop("checked",true);
+
       }
     }
 
