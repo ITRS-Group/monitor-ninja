@@ -8,7 +8,7 @@ class ORMDriverLS implements ORMDriverInterface {
 
 		$fb_visit = new LivestatusFilterBuilderVisitor(array($structure['class'] . 'Pool_Model', "map_name_to_backend"));
 		$ls_filter = $filter->visit($fb_visit, false);
-		$ls_filter .= "Limit: 0\n";
+		$ls_filter .= "Limit: 100\n";
 
 		$result = $ls->query($table, $ls_filter, false);
 

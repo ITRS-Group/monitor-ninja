@@ -88,7 +88,7 @@ class op5sysinfo {
 	public function get_monitor_usage() {
 		$ls = op5livestatus::instance();
 		/* Query livestatus for number of hosts loaded in system */
-		list ($columns, $objects, $count) = $ls->query('hosts', 'Limit: 0',
+		list ($columns, $objects, $count) = $ls->query('hosts', 'Limit: 100',
 			array ('name'), array ('auth' => false));
 		return $count;
 	}
@@ -102,7 +102,7 @@ class op5sysinfo {
 	public function get_monitor_service_usage() {
 		$ls = op5livestatus::instance();
 		/* Query livestatus for number of hosts loaded in system */
-		list ($columns, $objects, $count) = $ls->query('services', 'Limit: 0',
+		list ($columns, $objects, $count) = $ls->query('services', 'Limit: 100',
 			array ('description'), array ('auth' => false));
 		return $count;
 	}
