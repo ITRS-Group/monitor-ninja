@@ -496,6 +496,7 @@ Feature: Availability reports
 		When I click "Show report"
 		Then I shouldn't see button "Show report"
 		And I click "Save report"
+		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
