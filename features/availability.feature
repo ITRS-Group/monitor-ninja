@@ -471,43 +471,6 @@ Feature: Availability reports
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 
-	@reports @bug-7646
-	Scenario: Uncheck saved checkbox
-		Given I am on the Host details page
-		When I hover over the "Report" menu
-		And I hover over the "Availability" menu
-		When I click "Create Availability Report"
-		Then I should see "Saved reports"
-		And "Saved reports" should have option "saved test report"
-		When I select "saved test report" from "Saved reports"
-		Then "objects" should have option "LinuxServers"
-		And "Use alias" should be checked
-		And I click "Show report"
-		Then I shouldn't see button "Show report"
-		When I am on address "/index.php/avail/edit_settings?with_chrome=1&objects%5B0%5D=LinuxServers&use_alias=1&report_name=saved+test+report&report_id=1"
-		And "Use alias" should be checked
-		When I uncheck "Use alias"
-		And I wait for 1 second
-		And I click "Show report"
-		Then I shouldn't see button "Show report"
-		And I am on address "/index.php/avail/edit_settings?with_chrome=1&objects%5B0%5D=LinuxServers&report_name=saved+test+report&report_id=1"
-		And "Use alias" should be unchecked
-		And I wait for 1 second
-		When I click "Show report"
-		Then I shouldn't see button "Show report"
-		And I click "Save report"
-		And I enter "saved test report" into "report_name"
-		And I click "Save report" inside "#save_report_form"
-		Then I should see "Report was successfully saved"
-		When I hover over the "Report" menu
-		And I hover over the "Availability" menu
-		When I click "Create Availability Report"
-		Then I should see "Saved reports"
-		And "Saved reports" should have option "saved test report"
-		When I select "saved test report" from "Saved reports"
-		Then "objects" should have option "LinuxServers"
-		And "Use alias" should be unchecked
-
 	@reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
@@ -523,6 +486,43 @@ Feature: Availability reports
 		Then "objects_tmp" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
+
+	@reports @bug-7646 @set_saved_reports
+	Scenario: Uncheck saved checkbox
+		Given I am on the Host details page
+		When I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "test report1"
+		When I select "test report1" from "Saved reports"
+		Then "objects" should have option "LinuxServers"
+		And "Use alias" should be checked
+		And I click "Show report"
+		Then I shouldn't see button "Show report"
+		When I am on address "/index.php/avail/edit_settings?with_chrome=1&objects%5B0%5D=LinuxServers&use_alias=1&report_id=100"
+		And "Use alias" should be checked
+		When I uncheck "Use alias"
+		And I wait for 1 second
+		And I click "Show report"
+		Then I shouldn't see button "Show report"
+		And I am on address "/index.php/avail/edit_settings?with_chrome=1&objects%5B0%5D=LinuxServers&use_alias=0&report_id=100"
+		And "Use alias" should be unchecked
+		And I wait for 1 second
+		When I click "Show report"
+		Then I shouldn't see button "Show report"
+		And I click "Save report"
+		And I enter "test report1" into "report_name"
+		And I click "Save report" inside "#save_report_form"
+		Then I should see "Report was successfully saved"
+		When I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		Then I should see "Saved reports"
+		And "Saved reports" should have option "test report1"
+		When I select "test report1" from "Saved reports"
+		Then "objects" should have option "LinuxServers"
+		And "Use alias" should be unchecked
 
 	Scenario: Save report with Last 31 days Reporting Period
 		Given I am on the Host details page
