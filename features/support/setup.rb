@@ -103,3 +103,15 @@ end
 After ('@enable_get_login') do |scenario|
   File.delete('/opt/monitor/op5/ninja/application/config/custom/auth.php')
 end
+
+Before ('@set_saved_reports') do |scenario|
+  `mysql -uroot merlin -e "INSERT INTO saved_reports (id, type, report_name, created_by, created_at, updated_by, updated_at) VALUES (100, 'avail', 'test report1', 'administrator', 1537853553, 'administrator', 1548165004)"`
+  `mysql -uroot merlin -e "INSERT INTO saved_reports_objects (report_id, object_name) VALUES (100, 'LinuxServers')"`
+  `mysql -uroot merlin -e "INSERT INTO saved_reports_options (report_id, name, value) VALUES (100, 'use_alias', 1)"`
+end
+
+After ('@set_saved_reports') do |scenario|
+  `mysql -uroot merlin -e "DELETE FROM saved_reports_objects WHERE report_id = 100"`
+  `mysql -uroot merlin -e "DELETE FROM saved_reports_options WHERE report_id = 100"`
+  `mysql -uroot merlin -e "DELETE FROM saved_reports WHERE id = 100"`
+end
