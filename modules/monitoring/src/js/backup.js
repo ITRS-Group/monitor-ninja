@@ -102,13 +102,13 @@
       })
       .fail(function (data) {
         data = JSON.parse(data.responseText);
-        var notification = Notify.message(data.message, {
+        var notification = Notify.message(data.result.message, {
           type: "error",
           sticky: true,
           buttons: {
             "Show output": function () {
               notification.remove(1);
-              Notify.message(nl2br(data.debug), {sticky: true});
+              Notify.message(nl2br(data.result.debug), {sticky: true});
             },
             "Backup anyway": backup
           }
