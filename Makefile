@@ -34,6 +34,7 @@ test-ci-cleanup:
 test-ci-prepare: test-ci-cleanup prepare-config
 	chmod -R 0777 /tmp/ninja-test/var
 	mkdir -m 0777 -p /tmp/ninja-test/var/spool/checkresults
+	chown -R monitor:apache /tmp/ninja-test/
 	source $$(rpm --eval %{_libdir})/merlin/install-merlin.sh; \
 	db_name=merlin_test; \
 	mysql -uroot -e "CREATE DATABASE IF NOT EXISTS $$db_name";\
@@ -41,7 +42,7 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	db_setup
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
-	/usr/bin/naemon --allow-root -d /tmp/ninja-test/nagios.cfg
+	/usr/bin/asmonitor /usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
