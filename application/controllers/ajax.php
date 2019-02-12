@@ -29,6 +29,9 @@ class Ajax_Controller extends Authenticated_Controller {
 	 */
 	private static function validate_uri_string ($setting)
 	{
+		if ($setting === false) {
+			return $setting;
+		}
 		$setting_info = json_decode($setting, true);
 		foreach ($setting_info as $setting_data) {
 			$href = htmlspecialchars($setting_data['href'], ENT_QUOTES, 'UTF-8');
