@@ -12,13 +12,13 @@
         Notify.message(message.result);
       })
       .fail(function (data) {
-        data = JSON.parse(data);
-        var notification = Notify.message(data.message, {
+        data = JSON.parse(data.responseText);
+        var notification = Notify.message(data.result.message, {
           sticky: true,
           buttons: {
             "Show output": function () {
               notification.remove(1);
-              Notify.message(nl2br(data.debug), {
+              Notify.message(nl2br(data.result.debug), {
                 sticky: true
               });
             }
@@ -68,13 +68,13 @@
       .fail(function (data) {
         notification.remove(1);
         data = JSON.parse(data.responseText);
-        notification = Notify.message(data.message, {
+        notification = Notify.message(data.result.message, {
           type: "error",
           sticky: true,
           buttons: {
             "Show output": function () {
               notification.remove(1);
-              Notify.message(nl2br(data.debug), {sticky: true});
+              Notify.message(nl2br(data.result.debug), {sticky: true});
             }
           }
         });
@@ -141,12 +141,12 @@
             })
             .fail(function (data) {
               data = JSON.parse(data.responseText);
-              Notify.message(data.message, {
+              Notify.message(data.result.message, {
                 type: "error",
                 sticky: true,
                 "Show output": function () {
                   notification.remove(1);
-                  Notify.message(nl2br(data.debug), {sticky: true});
+                  Notify.message(nl2br(data.result.debug), {sticky: true});
                 }
               });
             });
@@ -176,7 +176,7 @@
               .fail(function (data) {
                 notification.remove(1);
                 data = JSON.parse(data.responseText);
-                Notify.message(data.message, {
+                Notify.message(data.result.message, {
                   type: "error"
                 });
               })
