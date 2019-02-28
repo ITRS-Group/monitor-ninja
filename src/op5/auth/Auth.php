@@ -642,6 +642,7 @@ class op5auth implements op5MayI_Actor {
 		$cfg = op5Config::instance();
 		$cfg->cascadeEditConfig('auth_groups.*', 'key', $old, $new);
 		$cfg->cascadeEditConfig('auth_users.*.groups.*', 'value', $old, $new);
+		$cfg->cascadeEditConfig('ninja_menu.*', 'key', $old, $new);
 	}
 
 	/**
