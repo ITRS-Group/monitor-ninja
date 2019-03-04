@@ -224,37 +224,9 @@ class op5config {
 		$path = explode('.', $path);
 		$namespace = array_shift($path);
 		$config = $this->getConfig($namespace);
-		if(!empty($config)){
-			$modifiedConfig = $this->recursiveReplace($config, $path, $type, $old_value, $new_value);
-			$this->setConfig($namespace, $modifiedConfig);
-		}
+		$modifiedConfig = $this->recursiveReplace($config, $path, $type, $old_value, $new_value);
+		$this->setConfig($namespace, $modifiedConfig);
 	}
-
-	/**
-	 * Update group menu
-	 *
-	 * @param $parameter string
-	 * @param $array array
-	 * @return boolean
-	 **/
-	public function menuUpdate($parameter, $array)
-    {
-        $path = $this->getPathForNamespace($parameter);
-        $presentYaml = $this->getConfigFile($path);
-        if (is_array($presentYaml)) {
-            foreach (array_keys($presentYaml) as $key) {
-                if($key != key($array)){
-                    $array[$key] = $presentYaml[$key];
-                }
-            }
-        }
-
-        $spyc = new Spyc();
-        $spyc->setting_dump_force_quotes = true;
-        $yaml = $spyc->dump($array);
-
-        return (bool) file_put_contents( $path, $yaml );
-    }
 
 	/**
 	 * Recursively replace config parameters in configuration files
