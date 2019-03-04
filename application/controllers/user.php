@@ -440,7 +440,7 @@ class User_Controller extends Authenticated_Controller {
 		$menu_config = array();
 		$menu_config[$group]['hidden'] = $removed;
 
-		Op5Config::instance()->menuUpdate('ninja_menu', $menu_config);
+		Op5Config::instance()->setConfig('ninja_menu', $menu_config);
 		return url::redirect(Router::$controller."/menu_edit?usergroup=$group");
 
 	}
