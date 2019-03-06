@@ -128,15 +128,19 @@ class Report_query_builder_Model extends Model
 				# indexable
 				foreach ($services as $srv => $discard) {
 					$ary = explode(';', $srv);
-					$h = $ary[0];
-					$s = $ary[1];
-					$object_selection .= $orstr . "(host_name = " . $this->db->escape($h) . "\n    AND (" ;
-					if ($s) { /* this if-statement can probably just go away */
-						$object_selection .= "service_description = " . $this->db->escape($s) . " OR ";
-					}
-					$object_selection .= "event_type = 801))";
-					$orstr = "\n OR ";
-				}
+                    $h = $ary[0];
+                    $s = $ary[1];
+                    if ($s) {
+                        $object_selection .= $orstr . "(host_name = " . $this->db->escape($h) . "\n    AND (" ;
+                        if ($s) { /* this if-statement can probably just go away */
+                            $object_selection .= "service_description = " . $this->db->escape($s) . " OR ";
+                        }
+                        $object_selection .= "event_type = 801))";
+                    } else {
+                        $object_selection .= $orstr . "service_description = " . $this->db->escape($h) ;
+                    }   
+                        $orstr = "\n OR ";
+                }
 			}
 			if (!empty($object_selection))
 				$object_selection .= ')';
