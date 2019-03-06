@@ -132,7 +132,7 @@ $(document).ready(function() {
 				var saved_report_id = $('#saved_report_id').attr('value');
 				var report_name = $('#saved_report_id option:selected').text();
 				var period_str = $('#period option:selected').text();
-				var recipients = $('#recipients').attr('value');
+				var recipients = ($('#recipients').attr('value')).replace(/,/g, ', ');
 				var filename = $('#filename').attr('value');
 				var local_persistent_filepath = $('#local_persistent_filepath').attr('value');
 				var description = $('#description').attr('value');
