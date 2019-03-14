@@ -209,6 +209,9 @@ done
 php %prefix/install_scripts/migrate_auth.php
 # The line above can leave artifacts created by root, making ninja-backup fail
 chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
+if [ -f %_sysconfdir/op5/ninja_menu.yml ]; then
+   chown %daemon_group:%daemon_group %_sysconfdir/op5/ninja_menu.yml
+fi
 
 sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 
