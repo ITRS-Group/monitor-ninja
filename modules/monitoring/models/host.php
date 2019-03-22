@@ -611,14 +611,14 @@ class Host_Model extends BaseHost_Model {
 		if($end_tstamp < time()) {
 			return array(
 				'status' => $retrospective['status'],
-				'output' => implode("<br>", array_filter($output))
+				'output' => implode(". ", array_filter($output))
 			);
 		}
 		$downtime = $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 		$output[] = $downtime['output'];
 		return array(
 			'status' => $downtime['status'] && $retrospective['status'],
-			'output' => implode("<br>", array_filter($output))
+			'output' => implode(". ", array_filter($output))
 		);
 	}
 
