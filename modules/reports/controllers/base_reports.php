@@ -244,6 +244,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			"include_long_output" => _("In views that displays individual alerts, include the full check output, instead of only the first line"),
 			'filter' => _("Free text search, matching the objects in the left list below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
+			'time_zone' => _("This lets you choose the timezone for generated report"),
 		);
 
 		if (array_key_exists($id, $helptexts)) {

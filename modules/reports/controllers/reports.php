@@ -82,7 +82,7 @@ class Reports_Controller extends Base_reports_Controller {
 
 		$this->js_strings .= "var _reports_no_sla_str = '"._('Please enter at least one SLA value')."';\n";
 		$this->js_strings .= "var _reports_sla_err_str = '"._('Please check SLA values in fields marked red below and try again')."';\n";
-
+		$this->js_strings .= "var _default_timezone = '".date_default_timezone_get()."';\n";
 		$this->template->js_strings = $this->js_strings;
 
 		$this->template->toolbar = new Toolbar_Controller($this->type == 'avail' ? _('Availability report') : _('SLA report'));
