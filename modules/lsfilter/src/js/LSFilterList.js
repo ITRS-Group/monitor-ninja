@@ -637,8 +637,12 @@ function lsfilter_list(config)
 			var thead =  $(this.config.table).find('thead');
 			var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
 			var banner = $('div#nachos-page-banners');
-			banner.css('margin', '25px 0 3px 0');
-			header.remove();
+			if(self.request_query.indexOf('recurring_downtimes') == -1){
+				banner.css('margin', '25px 0 3px 0');
+				header.remove();
+			}else{
+				banner.css('margin', '0px 0 3px 0');
+			}
 		}
 	}
 }

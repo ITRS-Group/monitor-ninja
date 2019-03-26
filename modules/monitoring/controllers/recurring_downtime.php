@@ -32,14 +32,14 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					else if ($field === 'recurrence'){
 						$recurrence = $_REQUEST['recurrence_select'];
 						if($recurrence == 'no'){
-							$data[$field] = 0;
+							$data[$field]['label'] = "no";
 						}
-						else if ($recurrence == 'custom'){
+						else if($recurrence == 'custom'){
 							$no = $_REQUEST['recurrence_no'];
 							$text = $_REQUEST['recurrence_text'];
 							$data[$field]['label'] = "custom";
-                            $data[$field]['no'] = $no;
-                            $data[$field]['text'] = $text;
+							$data[$field]['no'] = $no;
+							$data[$field]['text'] = $text;
 							if($text == 'week'){
 								foreach($_REQUEST['week_on_day'] as $week_day){
 									$week_day = json_decode($week_day);
