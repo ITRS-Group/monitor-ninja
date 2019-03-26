@@ -158,14 +158,14 @@ if($options['report_id']) { ?>
 			<?php echo form::dropdown('time_format', $options->get_alternatives('time_format'), $options['time_format']) ?>
 		</td>
 	</tr>
-	<tr>    
-        <td></td>
-        <td>&nbsp;</td>
-        <td>
-            <label for="time_format"><?php echo help::render('time_zone').' '._('Time zone') ?></label><br />
-            <?php echo form::dropdown(array('name' => 'report_timezone'), $options->get_alternatives('report_timezone'), $options['report_timezone']); ?>
-        </td>   
-    </tr>
+	<tr>
+		<td></td>
+		<td>&nbsp;</td>
+		<td>
+			<label for="time_format"><?php echo help::render('time_zone').' '._('Time zone') ?></label><br />
+			<?php echo form::dropdown(array('name' => 'report_timezone'), $options->get_alternatives('report_timezone'), $options['report_timezone']); ?>
+		</td>
+	</tr>
 	<tr>
 		<td>
 			<?php echo help::render('include_alerts') ?>

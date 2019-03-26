@@ -130,10 +130,10 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 			'default' => false
 		),
 		'report_timezone' => array(
-            'type' => 'enum',
-            'default' => 'Europe/Stockholm',
-            'description' => 'Report timezone'
-        )
+			'type' => 'enum',
+			'default' => 'Europe/Stockholm',
+			'description' => 'Report timezone'
+		)
 	);
 
 	/**
@@ -248,7 +248,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		if (isset($this->properties['report_timezone'])) {
 			$this->properties['report_timezone']['options'] = reports::timezone_list();
 			$this->properties['report_timezone']['default'] = reports::default_timezone();
-        }
+		}
 		$this->rename_options = array(
 			't1' => 'start_time',
 			't2' => 'end_time',
