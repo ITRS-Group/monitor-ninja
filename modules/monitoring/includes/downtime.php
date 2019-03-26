@@ -21,30 +21,22 @@ class NoRecurrenceException extends Exception {
  */
 class Downtime {
 	/**
-	 * RecurringDowntimePool_Model
-	 *
-	 * @var object
+	 * object RecurringDowntimePool_Model
 	 */
 	public $model;
 
 	/**
-	 * Schedule start
-	 *
-	 * @var NinjaDateTime
+	 * NinjaDateTime schedule start
 	 */
 	public $start;
 
 	/**
-	 * Schedule end
-	 *
-	 * @var NinjaDateTime
+	 * NinjaDateTime schedule end
 	 */
 	public $end;
 
 	/**
-	 * Mappings to determine which command to send to Nagios.
-	 *
-	 * @var array
+	 * array
 	 */
 	public $cmd_mappings = array(
 		'hosts' => 'SCHEDULE_HOST_DOWNTIME',
@@ -144,7 +136,7 @@ class Downtime {
 	}
 
 	/**
-	 * Creates a DateTime object using the given date and time
+	 * Creates a NinjaDateTime object from the given date-time string
 	 *
 	 * @param $date_str string as Y-m-d
 	 * @param $time_str string as H:i:s
@@ -157,7 +149,7 @@ class Downtime {
 	}
 
 	/**
-	 * Returns MonDateTime given start date and time strings
+	 * Returns NinjaDateTime given start date and time strings
 	 *
 	 * @return NinjaDateTime
 	 * @throws Exception UnexpectedValueException
@@ -169,7 +161,7 @@ class Downtime {
 	}
 
 	/**
-	 * Returns MonDateTime given end date and time strings
+	 * Returns NinjaDateTime given end date and time strings
 	 *
 	 * @return NinjaDateTime
 	 * @throws Exception UnexpectedValueException
@@ -188,30 +180,22 @@ class Downtime {
  */
 class RecurringDowntime extends Downtime {
 	/**
-	 * Downtime recurrence object
-	 *
-	 * @var object
+	 * object recurrence object
 	 */
 	public $recurrence;
 
 	/**
-	 * Nested recurrence map
-	 *
-	 * @var array
+	 * array nested recurrence map
 	 */
 	public $recurrence_on;
 
 	/**
-	 * Recurrence ends
-	 *
-	 * @var NinjaDateTime
+	 * NinjaDateTime
 	 */
 	public $recurrence_ends;
 
 	/**
-	 * (string)ranges or (string)single dates to exclude (parsed in `is_excluded`).
-	 *
-	 * @var array
+	 * array
 	 */
 	public $exclude_days;
 
