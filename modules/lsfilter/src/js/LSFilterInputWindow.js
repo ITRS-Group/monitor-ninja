@@ -19,4 +19,7 @@ $().ready(function() {
 			return false;
 		}
 	});
+	$(document).on("hover", "#filter_result table td a span", function() {
+		$(this).removeAttr("title");
+	});
 });
