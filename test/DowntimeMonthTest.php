@@ -10,25 +10,6 @@ function get_month_mock($stepping, $occurrence = FIRST, $dow = MONDAY) {
 
 /**
  * Class Downtime_Month_Test
- *
- * Note.
- *
- * The Ninja UI calculates month diffs incorrectly.
- *
- * Reproducible example
- * ^^^^^^^^^^^^^^^^^^^^
- *
- * Setting the following in the UI:
- * - start/end to: 2019-03-01 13:00 - 2019-03-01 14:00
- * - stepping: 3 months
- * - on: The first tuesday
- *
- * Results in:
- * => Next occurs 13:00 to 14:00 on 2019-05-31.
- *
- * The backend code uses full months in comparison operations, which makes things inconsistent
- * - but at least correct in the backend when it comes to applying downtime.
- *
  */
 class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 	/**
