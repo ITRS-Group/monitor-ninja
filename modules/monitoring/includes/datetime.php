@@ -18,18 +18,6 @@ class NinjaDateTime extends DateTime {
 	}
 
 	/**
-	 * Returns a clone of self, with day of month set to 1 - to simplify full-month comparison operations.
-	 *
-	 * @return NinjaDateTime
-	 * @throws Exception
-	 */
-	public function get_dom_first() {
-		$clone = new NinjaDateTime($this->get_date());
-		$clone->setDate($this->get_year(), $this->get_month(), 1);
-		return $clone;
-	}
-
-	/**
 	 * Returns a clone of self, with time set to midnight - to simplify full-day comparison operations.
 	 *
 	 * @return NinjaDateTime

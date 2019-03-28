@@ -368,63 +368,86 @@ class RecurringDowntime extends Downtime {
 	}
 
 	/**
+	 * Calculates the difference in years between the given target date and the object's start date.
+	 *
+	 * @param $target_date NinjaDateTime
+	 * @return int
+	 * @throws Exception UnexpectedValueException
+	 */
+	private function get_years_delta($target_date) {
+		return $target_date->get_year() - $this->start->get_year();
+	}
+
+	/**
+	 * Calculates the difference in days between the given date and the object's start date.
+	 *
+	 * Performs a full-day diff using the PHP built-in DateTime.diff method.
+	 *
+	 * @param $target_date NinjaDateTime
+	 * @return int days delta
+	 * @throws Exception
+	 */
+	private function get_days_delta($target_date) {
+		$from = $this->start->get_day_start();
+		$to = $target_date->get_day_start();
+		return($to->diff($from)->days);
+	}
+
+	/**
 	 * Checks if the provided $date's year matches the schedule's stepping.
 	 *
-	 * @param $date NinjaDateTime
+	 * @param $target_date NinjaDateTime
 	 * @return bool
 	 * @throws Exception UnexpectedValueException
 	 */
-	public function match_year_interval($date) {
-		$delta = (int)($date->get_year() - $this->start->get_year());
+	public function match_year_interval($target_date) {
+		$delta = $this->get_years_delta($target_date);
 		return $this->match_interval($delta);
 	}
 
 	/**
 	 * Checks if the provided $date's month matches the schedule's stepping.
 	 *
-	 * @param $date NinjaDateTime
+	 * @param $target_date NinjaDateTime
 	 * @return bool
 	 * @throws Exception UnexpectedValueException
 	 */
-	public function match_month_interval($date) {
-		$from = $this->start->get_dom_first();
-		$to = $date->get_dom_first();
+	public function match_month_interval($target_date) {
+		$month_start = $this->start->get_month();
+		$month_end = $target_date->get_month();
 
-		$diff = $to->diff($from);
+		// Get diff in years
+		$year_delta = $this->get_years_delta($target_date);
 
-		// Get number of months, potentially over multiple years.
-		$months = ($diff->m + ($diff->y * 12));
+		// Get diff in months, with support for months over years
+		$full_month_delta = $year_delta * 12 + ($month_end - $month_start);
 
-		return $this->match_interval($months);
+		return $this->match_interval($full_month_delta);
 	}
 
 	/**
 	 * Checks if the provided $date's week matches the schedule's stepping.
 	 *
-	 * @param $date NinjaDateTime
+	 *
+	 * @param $target_date NinjaDateTime
 	 * @return bool
 	 * @throws Exception UnexpectedValueException
 	 */
-	public function match_week_interval($date) {
-		$from = $this->start->get_day_start();
-		$to = $date->get_day_start();
-		$diff = $to->diff($from)->days;
-
+	public function match_week_interval($target_date) {
+		$diff = $this->get_days_delta($target_date);
 		return $this->match_interval($diff / 7);
 	}
 
 	/**
 	 * Checks if the provided $date's day matches the schedule's stepping.
 	 *
-	 * @param $date NinjaDateTime
+	 * @param $target_date NinjaDateTime
 	 * @return bool
 	 * @throws Exception UnexpectedValueException
 	 */
-	public function match_day_interval($date) {
-		$from = $this->start->get_day_start();
-		$to = $date->get_day_start();
-
-		return $this->match_interval($to->diff($from)->days);
+	public function match_day_interval($target_date) {
+		$diff = $this->get_days_delta($target_date);
+		return $this->match_interval($diff);
 	}
 
 	/**
