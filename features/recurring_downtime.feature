@@ -32,6 +32,7 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "weekly recurring downtime"
+		And I should see "Repeat weekly on Thursday"
 
 	@configuration
 	Scenario: Delete a weekly recurring downtime
@@ -63,6 +64,7 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "monthly recurring downtime"
+		And I should see "Repeat monthly on the 2nd Thursday"
 
 	@configuration
 	Scenario: Delete a monthly recurring downtime
@@ -95,6 +97,7 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "monthly last day recurring downtime"
+		And I should see "Repeat monthly on the last day"
 
 	@configuration
 	Scenario: Delete a monthly last day recurring downtime
@@ -129,6 +132,7 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom daily recurring downtime"
+		And I should see "Repeat daily"
 
 	@configuration
 	Scenario: Delete a custom daily recurring downtime
@@ -162,6 +166,7 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom yearly recurring downtime"
+		And I should see "Repeat yearly on the 5th Thursday of May"
 
 	@configuration
 	Scenario: Delete a custom yearly recurring downtime
@@ -196,6 +201,7 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom monthly recurring downtime"
+		And I should see "Repeat every 5 months on the 5th Thursday"
 
 	@configuration
 	Scenario: Delete a custom yearly recurring downtime
@@ -222,22 +228,22 @@ Feature: Recurring downtime
 		And I enter "2018-05-31" into "start_date"
 		And I enter "12:00" into "end_time"
 		And I enter "2018-05-31" into "end_date"
-		And I enter "no recurrence recurring downtime" into "comment"
+		And I enter "no repeat recurrence recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
-		And I should see "no recurrence recurring downtime"
+		And I should see "no repeat recurrence recurring downtime"
+		And I should see "No recurrence"
 
 	@configuration
-	Scenario: Delete a custom yearly recurring downtime
+	Scenario: Delete a no recurrence recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
 		And I click "Recurring Downtimes"
-		Then I should see "no recurrence recurring downtime"
-
+		Then I should see "no repeat recurrence recurring downtime"
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
 		When I click "Delete schedule"
-		Then I shouldn't see "no recurrence recurring downtime"
+		Then I shouldn't see "no repeat recurrence recurring downtime"
 
 	@configuration
 	Scenario: Add a weekly recurring downtime for each monday starts at 2018-12-03
