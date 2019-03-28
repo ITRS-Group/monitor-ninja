@@ -48,39 +48,6 @@ function mock_date($date_str) {
 	return new NinjaDateTime($date_str);
 }
 
-/**
- * Given a $unit and $quantity, creates a DateInterval parsable string
- * and returns $start_date with the added delta, to make comparison operations more convenient.
- *
- * @param $start_date NinjaDateTime
- * @param $quantity int Quantity of time (e.g. 30)
- * @param $unit String Unit of time (e.g. day, month)
- * @return NinjaDateTime New DateTime object
- * @throws Exception
- */
-function time_add($start_date, $quantity, $unit) {
-	switch($unit) {
-		case 'day':
-		case 'week':
-			$quantity = $unit === 'day' ? $quantity : $quantity * 7;
-			$spec = $quantity . "D";
-			break;
-		case 'month':
-			$spec = $quantity . "M";
-			break;
-		case 'year':
-			$spec = $quantity . "Y";
-			break;
-		default:
-			throw new Exception('Invalid unit provided');
-	}
-
-	$delta = new DateInterval('P' . $spec);
-	$new_date = clone $start_date;
-	return $new_date->add($delta);
-}
-
-
 class DowntimeModel {
 	protected $recurrence = 0, $recurrence_on = 0;
 	public $recurrence_ends = "0";
