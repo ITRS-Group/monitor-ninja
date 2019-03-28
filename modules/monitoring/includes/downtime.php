@@ -67,7 +67,7 @@ class Downtime {
 	 */
 	public function get_ordinal($number) {
 		$number -= 1; // number 1 becomes idx 0 of $ordinals.
-		$ordinals = array('first', 'second', 'third', 'fourth');
+		$ordinals = array('first', 'second', 'third', 'fourth', 'fifth');
 		if(!array_key_exists($number, $ordinals)) {
 			throw new UnexpectedValueException(
 				sprintf('Missing number ordinal map for idx %s', $number)
