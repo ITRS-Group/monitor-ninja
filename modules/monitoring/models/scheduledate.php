@@ -61,18 +61,17 @@ class ScheduleDate_Model extends Model {
 	/** Returns a list of objects eligible for downtime
 	 *
 	 * @param $sched object schedule-object
-	 * @param $ts_start integer Scheduled start (Unix timestamp)
-	 * @param $ts_end integer Scheduled end (Unix timestamp)
+	 * @param $downtime_window array
 	 * @return array list of downtime candidates
 	 */
-	protected function get_downtime_objects($sched, $ts_start, $ts_end) {
+	protected function get_downtime_objects($sched, $downtime_window) {
 		$objects = array();
 		foreach($sched->get_objects() as $obj_name) {
 			$is_scheduled = static::check_if_scheduled(
 				$sched->get_downtime_type(),
 				$obj_name,
-				$ts_start,
-				$ts_end,
+				$downtime_window['start']->getTimeStamp(),
+				$downtime_window['end']->getTimeStamp(),
 				$sched->get_fixed()
 			);
 
@@ -190,15 +189,16 @@ class ScheduleDate_Model extends Model {
 
 			try {
 				$downtime = new RecurringDowntime($sched);
+				$downtime_window = $downtime->get_window($target_date);
 
-				if($downtime->recurrence_ends <= $target_date) {
+				if($downtime->recurrence_ends <= $downtime_window['start']) {
 					$this->logger->log('debug',
 						"Skipping expired recurrence: " . $downtime->recurrence_ends->get_date()
 					);
 					continue;
 				} elseif($downtime->is_excluded($target_date)) {
 					$date_str = $target_date->get_date();
-					$this->logger->log('debug', "[$comment] Skipping: excluded date ($date_str)");
+					$this->logger->log('debug', "[$comment] Skipping: excluded target date ($date_str)");
 					continue;
 				}
 
@@ -207,12 +207,13 @@ class ScheduleDate_Model extends Model {
 				// While this shouldn't happen, let's be nice and check if the provided
 				// non-recurring schedule matches target date.
 				$downtime = new Downtime($sched);
+				$downtime_window = $downtime->get_window($target_date);
 				$set_downtime = $target_date->diff($downtime->start)->days === 0;
 			}
 
 			if(!$set_downtime) {
 				$date_str = $target_date->get_date();
-				$this->logger->log('debug', "[$comment] Skipping: No downtime scheduled ($date_str)");
+				$this->logger->log('debug', "[$comment] Skipping: No downtime scheduled for target ($date_str)");
 				continue;
 			}
 
@@ -221,28 +222,33 @@ class ScheduleDate_Model extends Model {
 			// Down-time!
 			// ==========
 
-			$ts_start = $downtime->start->getTimestamp();
-			$ts_end = $downtime->end->getTimestamp();
+			// Create DateTime strings used in logging
+			$str_start = $downtime_window['start']->get_datetime();
+			$str_end = $downtime_window['end']->get_datetime();
 
 			// Iterate over objects with this schedule and set downtime, unless already scheduled.
-			foreach($this->get_downtime_objects($sched, $ts_start, $ts_end) as $object) {
+			foreach($this->get_downtime_objects($sched, $downtime_window) as $object) {
 				$name = $object['name'];
 				if(!$object['eligible']) {
-					$this->logger->log('debug', "[$comment] Skipping: Downtime already set for $name");
+					$this->logger->log(
+						"debug",
+						"[$comment] Skipping: Downtime already set for $name ($str_start - $str_end)"
+					);
 					continue;
 				}
 
 				// Get downtime command string
-				$command = $downtime->get_command($name);
+				$command = $downtime->get_command($name, $downtime_window);
 
 				// Submit the command.
 				// Note: submit_to_nagios has its own internal /error/ handling.
 				$result = nagioscmd::submit_to_nagios($command);
 
 				if($result) { // success
-					$start_dt = $downtime->start->get_datetime();
-					$end_dt = $downtime->end->get_datetime();
-					$this->logger->log('debug', "[$comment] Downtime scheduled for object: $name ($start_dt - $end_dt)");
+					$this->logger->log(
+						"debug",
+						"[$comment] Downtime scheduled for object: $name ($str_start - $str_end)"
+					);
 				}
 
 				array_push($results, $result);

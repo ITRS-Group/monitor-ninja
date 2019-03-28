@@ -77,15 +77,44 @@ class Downtime {
 	}
 
 	/**
+	 * Create downtime window using the given $target_date, with the scheduled start and end time.
+	 *
+	 * @param $target_date NinjaDateTime
+	 * @return array
+	 */
+	public function get_window($target_date) {
+		// Get schedule start-end delta
+		$downtime_seconds = $this->end->getTimestamp() - $this->start->getTimestamp();
+
+		// Target date is used as base and will have its time modified
+		$start = clone $target_date;
+
+		// Set time from scheduled start
+		$start->setTime(
+			$this->start->format('H'),
+			$this->start->format('i'),
+			$this->start->format('s')
+		);
+
+		// Clone the start DateTime object and add delta seconds.
+		$end = clone $start;
+		$end->modify(sprintf('+%d seconds', $downtime_seconds));
+
+		return array(
+			'start' => $start,
+			'end' => $end
+		);
+	}
+
+	/**
 	 * Returns a formatted downtime command.
 	 *
-	 * This method mainly exists to simplify testing.
-	 *
 	 * @param $obj_name string
+	 * @param $downtime_window array
 	 * @param $comment_prefix string comment prefix
 	 * @return array command map
 	 */
-	public function get_command_mappings($obj_name, $comment_prefix = '') {
+	public function get_command_mappings($obj_name, $downtime_window, $comment_prefix = '') {
 		$downtime_type = $this->model->get_downtime_type();
 		if(!array_key_exists($downtime_type, $this->cmd_mappings)) {
 			throw new UnexpectedValueException("Missing mapping for downtime type: $downtime_type");
@@ -94,8 +123,8 @@ class Downtime {
 		return array(
 			'cmd' => $this->cmd_mappings[$downtime_type],
 			'obj_name' => $obj_name,
-			'start' => $this->start->getTimestamp(),
-			'end' => $this->end->getTimestamp(),
+			'start' => $downtime_window['start']->getTimestamp(),
+			'end' => $downtime_window['end']->getTimestamp(),
 			'is_fixed' => $this->model->get_fixed(),
 			'duration' => $this->model->get_duration(),
 			'author' => $this->model->get_author(),
@@ -107,11 +136,12 @@ class Downtime {
 	 * Converts command mappings to a Nagios-interpretable string format.
 	 *
 	 * @param $obj_name string
+	 * @param $downtime_window array
 	 * @param $comment_prefix string comment prefix
 	 * @return string Nagios external command
 	 */
-	public function get_command($obj_name, $comment_prefix = 'AUTO: ') {
-		$command = $this->get_command_mappings($obj_name, $comment_prefix);
+	public function get_command($obj_name, $downtime_window, $comment_prefix = 'AUTO: ') {
+		$command = $this->get_command_mappings($obj_name, $downtime_window, $comment_prefix);
 		$cmd_fmt = 'cmd;obj_name;start;end;is_fixed;0;duration;author;comment';
 		return str_replace(array_keys($command), array_values($command), $cmd_fmt);
 	}

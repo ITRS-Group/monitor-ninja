@@ -20,7 +20,8 @@ class Downtime_Test extends PHPUnit_Framework_TestCase {
 			$mock = new DowntimeDayModel();
 			$mock->set_downtime_type($type);
 			$sched = new Downtime($mock);
-			$mappings = $sched->get_command_mappings('test');
+			$target_date = new NinjaDateTime('today');
+			$mappings = $sched->get_command_mappings('test', $sched->get_window($target_date));
 			return $mappings['cmd'];
 		}
 
@@ -42,18 +43,25 @@ class Downtime_Test extends PHPUnit_Framework_TestCase {
 	 * @group recurring_downtime
 	 */
 	public function test_downtime_command_start_end() {
-		$start = mock_date('1984-01-13 10:11:12');
-		$end = mock_date('1984-01-13 11:11:12');
+		$start = mock_date('1984-01-13 10:12:13');
+		$end = mock_date('1984-01-13 12:13:14');
+		$target_date = new NinjaDateTime('today');
+
 		$mock = new DowntimeDayModel();
 		$mock->set_downtime_type('hosts');
 		$mock->set_start($start->get_datetime());
 		$mock->set_end($end->get_datetime());
 
 		$sched = new Downtime($mock);
-		$mappings = $sched->get_command_mappings('test');
+		$mappings = $sched->get_command_mappings('test', $sched->get_window($target_date));
 
-		$this->assertEquals($mappings['start'], $start->getTimestamp());
-		$this->assertEquals($mappings['end'], $end->getTimestamp());
+		$expected_start = clone $target_date;
+		$expected_end = clone $target_date;
+		$expected_start->setTime(10, 12, 13);
+		$expected_end->setTime(12, 13, 14);
+
+		$this->assertEquals($mappings['start'], $expected_start->getTimestamp());
+		$this->assertEquals($mappings['end'], $expected_end->getTimestamp());
 	}
 
 	/**
