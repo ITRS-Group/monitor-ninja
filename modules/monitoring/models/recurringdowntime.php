@@ -206,11 +206,16 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 								$repeat_text = "every ".$rec_no." months on the last day";
 							}
 						}else{
+							if($rec_on->day_no == "last"){
+								$day_no_month = "last";
+							}else{
+								$day_no_month = $this->format_date($rec_on->day_no);
+							}
 							$day_name = ucfirst($valid_weekdays[$rec_on->day]);
 							if($rec->no == 1){
-								$repeat_text = "monthly on the ".$this->format_date($rec_on->day_no)." ".$day_name;
+								$repeat_text = "monthly on the ".$day_no_month." ".$day_name;
 							}else{
-								$repeat_text = "every ".$rec->no." months on the ".$this->format_date($rec_on->day_no).' '.$day_name;
+								$repeat_text = "every ".$rec->no." months on the ".$day_no_month.' '.$day_name;
 							}
 						}
 						$ret = 'Repeat '.$repeat_text.''.$end_text;

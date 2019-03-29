@@ -544,14 +544,16 @@ $(document).ready(function() {
 
     if(day_no == 5){
       var quick_day_no = "last";
+      var day_no_month = "last";
     }else{
       var quick_day_no = format_date(day_no);
+      var day_no_month = day_no;
     }
 
     $('#recurrence').html('\
       <option no="1" value="no">Choose recurrence</option> \
       <option no="3" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":[{"day":day}]}) + '\'>Weekly on ' + day_name + '</option> \
-      <option no="4" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + quick_day_no + ' ' + day_name + '</option>' + last_day_option_quick + ' \
+      <option no="4" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no_month,"day":day}}) + '\'>Monthly on the ' + quick_day_no + ' ' + day_name + '</option>' + last_day_option_quick + ' \
       <option no="5" value="custom">Custom recurrence</option> \
       ');
 
