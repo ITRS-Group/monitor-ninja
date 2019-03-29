@@ -193,7 +193,7 @@ class ScheduleDate_Model extends Model {
 
 				if($downtime->recurrence_ends <= $downtime_window['start']) {
 					$this->logger->log('debug',
-						"Skipping expired recurrence: " . $downtime->recurrence_ends->get_date()
+						"[$comment] Skipping expired recurrence: " . $downtime->recurrence_ends->get_date()
 					);
 					continue;
 				} elseif($downtime->is_excluded($target_date)) {
