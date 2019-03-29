@@ -640,11 +640,11 @@ function lsfilter_list(config)
             var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
             var banner = $('div#nachos-page-banners');
             banner.css('margin', '25px 0 3px 0');
-            header.remove();
-        }
-
-        if(currentLocation.indexOf('hosts') === -1) {
-            $('div#nachos-page-banners').css('margin', '0px 0px');
+			header.remove();
+			
+			if(currentLocation.indexOf('hosts') === -1) {
+				banner.css('margin', '0px 0px');
+			}
         }
     }
 }
