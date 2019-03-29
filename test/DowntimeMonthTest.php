@@ -55,7 +55,7 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Recurrence for first friday of every 4th month should work
+	 * Matching first Friday should work
 	 * @group recurring_downtime
 	 */
 	public function test_nested_first_dow() {
@@ -69,7 +69,7 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Recurrence for second tuesday of every 2nd month should work
+	 * Matching second Tuesday should work
 	 * @group recurring_downtime
 	 */
 	public function test_nested_second_dow() {
@@ -83,7 +83,7 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Recurrence for third monday of every 3rd month should work
+	 * Matching third Wednesday should work
 	 * @group recurring_downtime
 	 */
 	public function test_nested_third_dow() {
@@ -97,7 +97,7 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Recurrence for fourth monday of every 5th month should work
+	 * Matching fourth Sunday should work
 	 * @group recurring_downtime
 	 */
 	public function test_nested_fourth_dow() {
@@ -111,7 +111,20 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Nested recurrence for last saturday of every month should work
+	 * Matching fifth Friday should work
+	 * @group recurring_downtime
+	 */
+	public function test_nested_fifth_dow() {
+		$mock = get_month_mock(1, FIFTH, FRIDAY);
+		$mock->set_start('2016-02-12');
+		$schedule = new RecurringDowntime($mock);
+
+		$this->assertTrue($schedule->match_day_of_month(mock_date('fifth friday of march 2019')));
+		$this->assertTrue($schedule->match_day_of_month(mock_date('fifth friday of may 2019')));
+	}
+
+	/**
+	 * Matching last saturday should work
 	 * @group recurring_downtime
 	 */
 	public function test_nested_recurrences_last_dow() {

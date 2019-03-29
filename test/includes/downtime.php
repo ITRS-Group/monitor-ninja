@@ -31,11 +31,12 @@ define('OCTOBER', 10);
 define('NOVEMBER', 11);
 define('DECEMBER', 12);
 
-// Ordinals
+// Ordinals/occurrences
 define('FIRST', 1);
 define('SECOND', 2);
 define('THIRD', 3);
 define('FOURTH', 4);
+define('FIFTH', 5);
 define('LAST', 'last');
 
 // Units

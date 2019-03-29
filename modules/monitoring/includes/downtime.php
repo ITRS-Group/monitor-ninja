@@ -59,21 +59,27 @@ class Downtime {
 	}
 
 	/**
-	 * Returns number's ordinal
+	 * Returns the ordinal (or occurrence) for the given number.
 	 *
 	 * @param $number int|mixed
-	 * @return string number's ordinal
+	 * @return string monthly occurrence (e.g. third)
 	 * @throws Exception UnexpectedValueException
 	 */
-	public function get_ordinal($number) {
-		$number -= 1; // number 1 becomes idx 0 of $ordinals.
-		$ordinals = array('first', 'second', 'third', 'fourth', 'fifth');
-		if(!array_key_exists($number, $ordinals)) {
+	public function get_month_occurrence($number) {
+		$occurrences = array(
+			1 => 'first',
+			2 => 'second',
+			3 => 'third',
+			4 => 'fourth',
+			5 => 'last',
+		);
+
+		if(!array_key_exists($number, $occurrences)) {
 			throw new UnexpectedValueException(
-				sprintf('Missing number ordinal map for idx %s', $number)
+				sprintf('Missing occurrence mapping for number %s', $number)
 			);
 		}
-		return $ordinals[$number];
+		return $occurrences[$number];
 	}
 
 	/**
@@ -349,7 +355,7 @@ class RecurringDowntime extends Downtime {
 			);
 		} else {
 			// Get ordinal from number (e.g. 1 => first)
-			$occurrence = $this->get_ordinal($this->recurrence_on['day_no']);
+			$occurrence = $this->get_month_occurrence($this->recurrence_on['day_no']);
 		}
 
 		// Get day-of-week (e.g. 1 => monday) name from number
