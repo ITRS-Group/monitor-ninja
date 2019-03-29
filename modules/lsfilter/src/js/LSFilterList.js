@@ -643,7 +643,7 @@ function lsfilter_list(config)
             header.remove();
         }
 
-        if(!currentLocation.includes('hosts')) {
+        if(currentLocation.indexOf('hosts') === -1) {
             $('div#nachos-page-banners').css('margin', '0px 0px');
         }
     }
