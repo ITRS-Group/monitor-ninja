@@ -339,12 +339,14 @@ class Scheduled_reports_Model extends Model
 		$send_date = array();
 
 		$db = Database::instance();
-		$sql = "SELECT * FROM scheduled_reports";
+		$sql = "SELECT t1.*,t2.value AS timezone FROM scheduled_reports AS t1 INNER JOIN saved_reports_options AS t2 ON t1.report_id = t2.report_id WHERE t2.name = 'report_timezone'";
 		$res = $db->query($sql);
 
 		foreach($res as $row){
 			$report_period = json_decode($row->report_period);
 			$report_time = $row->report_time;
+			$report_timezone = $row->timezone;
+			date_default_timezone_set( $report_timezone );
 
 			$repeat_no = $report_period->no;
 			$last_sent = $row->last_sent;
@@ -354,7 +356,7 @@ class Scheduled_reports_Model extends Model
 				continue;
 			}
 
-            //schedule daily
+			//schedule daily
 			if($row->period_id == 3){
 				if($row->last_sent == ''){
 					$id[] = $row->id;
@@ -369,7 +371,7 @@ class Scheduled_reports_Model extends Model
 				}
 			}
 
-            //schedule weekly
+			//schedule weekly
 			if($row->period_id == 1){
 				if($row->last_sent == ''){
 					$current_time = time();
@@ -407,7 +409,7 @@ class Scheduled_reports_Model extends Model
 				}
 			}
 
-            //schedule monthly
+			//schedule monthly
 			if($row->period_id == 2){
 				$current_time = time();
 				$current_time = strtotime('+0 day', $current_time);
