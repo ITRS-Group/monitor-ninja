@@ -394,11 +394,21 @@ class RecurringDowntime extends Downtime {
 	 */
 	public function pluck_recurrence($key) {
 		$plucked = array();
-		foreach($this->recurrence_on as $item) {
-			if(!array_key_exists($key, $item)) {
-				continue;
+		$on = $this->recurrence_on;
+
+		// Check if `recurrence_on` is an associative array (legacy format).
+		if(array_keys($on) !== range(0, count($on) - 1)) {
+			// Legacy format: check if the given key exists
+			if(array_key_exists($key, $on)) {
+				array_push($plucked, $this->recurrence_on[$key]);
 			}
-			array_push($plucked, $item[$key]);
+		} else {
+			// With the new format, objects are always contained in an array - iterate.
+			foreach ($this->recurrence_on as $recurrence) {
+				if (array_key_exists($key, $recurrence)) {
+					array_push($plucked, $recurrence[$key]);
+				}
+			}
 		}
 		return $plucked;
 	}
