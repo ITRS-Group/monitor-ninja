@@ -17,6 +17,7 @@
 		<?php
 		// $report_time_formatted is already escaped
 		echo '<p>'._('Reporting period').': '.$report_time_formatted;
+		echo '<p>'._('Time zone').': '.$options['report_timezone'].' '.reports::timezone_utc_no($options['report_timezone']);
 		echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.html::specialchars($str_start_date).' '._('to').' '.html::specialchars($str_end_date).')' : '';
 		echo '</p>';
 		if ($type == 'avail' || $type == 'sla') {
