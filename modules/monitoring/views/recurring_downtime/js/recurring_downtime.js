@@ -12,8 +12,8 @@ $(document).ready(function() {
     var exclude_end = $('input[excludeId="exclude-date-end-'+arr[3]+'"]').val();
     var start_time = $('#fixed-duration-start-time').val();
     var date_now = new Date();
-    var excludeStart = new Date(exclude_start+"T"+start_time+"Z");
-    var excludeEnd = new Date(exclude_end+"T"+start_time+"Z");
+    var excludeStart = new Date(exclude_start+"T"+start_time);
+    var excludeEnd = new Date(exclude_end+"T"+start_time);
     if(excludeEnd < excludeStart){
       $('input[excludeId="exclude-date-end-'+arr[3]+'"]').val(exclude_start);
     }
@@ -339,7 +339,7 @@ $(document).ready(function() {
     var start_time = $('#fixed-duration-start-time').val();
     var start_date = $('#fixed-duration-start-date').val();
     var date_now = new Date();
-    var startDate = new Date(start_date+"T"+start_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
     var day = startDate.getDay();
     var date = startDate.getDate();
     var month = startDate.getMonth();
@@ -431,7 +431,7 @@ $(document).ready(function() {
     var start_time = $('#fixed-duration-start-time').val();
     var start_date = $('#fixed-duration-start-date').val();
     var date_now = new Date();
-    var startDate = new Date(start_date+"T"+start_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
     var day = startDate.getDay();
     day_diff= day-post_day;
     startDate.setDate(startDate.getDate()-day_diff);
@@ -465,8 +465,8 @@ $(document).ready(function() {
     var start_date = $('#fixed-duration-start-date').val();
     var end_time = $('#fixed-duration-end-time').val();
     var end_date = $('#fixed-duration-end-date').val();
-    var startDate = new Date(start_date+"T"+start_time+"Z");
-    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
+    var endDate = new Date(end_date+"T"+end_time);
     var timeDiff = endDate-startDate;
     if(timeDiff < 0){
       $('#fixed-duration-end-time').val(start_time);
@@ -502,8 +502,8 @@ $(document).ready(function() {
       $('#fixed-duration-end-date').val(pre_end_date);
     }
 
-    var startDate = new Date(start_date+"T"+start_time+"Z");
-    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
+    var endDate = new Date(end_date+"T"+end_time);
     var timeDiff = (endDate-startDate)/1000;
     var d = Math.floor(timeDiff/(3600*24));
     var h = Math.floor((timeDiff%(3600*24))/3600);
@@ -708,7 +708,7 @@ $(document).ready(function() {
     }
 
     if(_recurrence_ends == 0){
-      var startDate = new Date(_start_date + "T" + _start_time + "Z");
+      var startDate = new Date(_start_date + "T" + _start_time);
       $('input[name="ends"][value="never"]').prop("checked",true);
       endson_date = (startDate.getFullYear()+1) + "-" + format_time(startDate.getMonth()+1) + "-" + format_time(startDate.getDate());
       $('#endson-date').val(endson_date);
@@ -748,8 +748,8 @@ function summary_show(){
   f_duration_string += ((duration_hours != 0) ? duration_hours +' hours ': '' );
   f_duration_string += ((duration_minutes != 0) ? duration_minutes+' minutes ': '' );
   f_duration_string = ((f_duration_string != '') ? f_duration_string : '0 hours');
-  var startDate = new Date(start_date+"T"+start_time+"Z");
-  var endDate = new Date(end_date+"T"+end_time+"Z");
+  var startDate = new Date(start_date+"T"+start_time);
+  var endDate = new Date(end_date+"T"+end_time);
   var day = startDate.getDay();
   var date = startDate.getDate();
   var month = startDate.getMonth();
@@ -1286,8 +1286,8 @@ function check_setup() {
     if (!check_timestring(end_time)) {
       errors.push(_form_err_bad_timeformat.replace('{field}', _form_field_end_time));
     }
-    var startDate = new Date(start_date+"T"+start_time+"Z");
-    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
+    var endDate = new Date(end_date+"T"+end_time);
     if(startDate.getTime() >= endDate.getTime()){
       errors.push(_form_err_empty_fields);
     }
@@ -1307,7 +1307,7 @@ function check_setup() {
     fixed = 1;
   }
   var d = new Date();
-  var startDate = new Date(start_date+"T"+start_time+"Z"); 
+  var startDate = new Date(start_date+"T"+start_time); 
   if (startDate.getYear() == d.getYear() && startDate.getMonth() == d.getMonth() && startDate.getDate() == d.getDate()) {
     if (confirm("The schedule you are creating matches today, would you like to schedule a downtime for today?\nClick 'Cancel' to save your recurring schedule without scheduling a downtime for today or 'Ok' to save recurring schedule and schedule downtimes today.")) {
       // Downtime type string
