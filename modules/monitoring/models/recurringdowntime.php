@@ -122,4 +122,114 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 		}
 		return $ret;
 	}
+
+	/**
+	* Adding the suffix to date/day
+	*
+	*/
+	public function format_date($date){
+		$suffix = '';
+		switch($date) {
+			case 1: case 21: case 31: $suffix = 'st'; break;
+			case 2: case 22: $suffix = 'nd'; break;
+			case 3: case 23: $suffix = 'rd'; break;
+			default: $suffix = 'th';
+		}
+		return $date.''.$suffix;
+	}
+	
+	/**
+	* Get recurrence and recurrence on in text format
+	*
+	* @ninja orm depend[] id
+	*/
+	public function get_recurrence_text()
+	{
+	$ret = '';
+		$id = $this->get_id();
+		if ($id) {
+			$db = Database::instance();
+			$res = $db->query('SELECT recurrence, recurrence_on, recurrence_ends from recurring_downtime WHERE id = '.$id);
+			$valid_weekdays = array('sunday','monday','tuesday','wednesday','thursday','friday','saturday');
+			$valid_months = array('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
+			foreach ($res->result(false) as $row) {
+				$rec = json_decode($row['recurrence']);
+				$rec_on = json_decode($row['recurrence_on']);
+				$rec_ends = $row['recurrence_ends'];
+				$end_text = '';
+				if($rec_ends != 0){
+					$end_text = ' until '.$rec_ends;
+				}
+				if($rec != ''){
+					if($rec->label == 'no'){
+						return "No recurrence";
+					}
+					if($rec->text == 'day'){
+						if($rec->no == 1){
+							$repeat_text = "daily";
+						}else{
+							$repeat_text = "every ".$rec->no." days";
+						}
+						$ret = 'Repeat '.$repeat_text.''.$end_text;
+					}elseif($rec->text == 'week'){
+						$all_days = '';
+						$i = 0; 
+						foreach($rec_on as $key => $value){
+							$day_name = ucfirst($valid_weekdays[$value->day]);
+							if($i == 0){
+								$all_days .= $day_name;
+							}else{
+								$next_i = $i+1;
+								if(array_key_exists($next_i,$rec_on)){
+									$all_days .= ', ';
+									$all_days .= $day_name;
+								}else{
+									$all_days .= ' and ';
+									$all_days .= $day_name;
+								}
+							}
+							$i = $i+1;
+						}
+						if($rec->no == 1){
+							$repeat_text = "weekly on ".$all_days;
+						}else{
+							$repeat_text =  "every ".$rec->no." week on ".$all_days;
+						}
+						$ret = 'Repeat '.$repeat_text.''.$end_text;
+					}elseif($rec->text == 'month'){
+						if($rec_on->day_no == "last" && $rec_on->day == "last"){
+							if($rec->no == 1){
+								$repeat_text = "monthly on the last day";
+							}else{
+								$repeat_text = "every ".$rec_no." months on the last day";
+							}
+						}else{
+							$day_name = ucfirst($valid_weekdays[$rec_on->day]);
+							if($rec->no == 1){
+								$repeat_text = "monthly on the ".$this->format_date($rec_on->day_no)." ".$day_name;
+							}else{
+								$repeat_text = "every ".$rec->no." months on the ".$this->format_date($rec_on->day_no).' '.$day_name;
+							}
+						}
+						$ret = 'Repeat '.$repeat_text.''.$end_text;
+					}elseif($rec->text == 'year'){
+						$day_name = ucfirst($valid_weekdays[$rec_on->day]);
+						$month_name = ucfirst($valid_months[($rec_on->month)]);
+						if($rec_on->day_no == "last"){
+							$day_no="last";
+						}else{
+							$day_no=$this->format_date($rec_on->day_no);
+						}
+						if($rec->no == 1){
+							$repeat_text = "yearly on the ".$day_no. ' '.$day_name.' of '.$month_name;
+						}else{
+							$repeat_text = "every ".$rec->no." years on the ".$day_no.' '.$day_name.' of '.$month_name;
+						}
+						$ret = 'Repeat '.$repeat_text.''.$end_text;
+					}
+				}
+			}
+		}
+		return $ret;
+	}
 }
