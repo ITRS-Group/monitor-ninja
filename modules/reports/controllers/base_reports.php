@@ -244,6 +244,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			"include_long_output" => _("In views that displays individual alerts, include the full check output, instead of only the first line"),
 			'filter' => _("Free text search, matching the objects in the left list below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
+			'time_zone' => _("This lets you choose the timezone for generated report"),
 		);
 
 		if (array_key_exists($id, $helptexts)) {
@@ -264,20 +265,35 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	{
 		if ($this->options['start_time'] == 0) {
 			$start_time = _('Dawn of Time');
+			$end_time = date($date_format, $this->options['end_time']);
 		} else {
 			$start_time = date($date_format, $this->options['start_time']);
+			$end_time = date($date_format, $this->options['end_time']);
+			if($this->options['report_timezone']){
+				$tz = new DateTimeZone($this->options['report_timezone']);
+				if(date('H:i', $this->options['start_time']) != '00:00'){
+					$start_time = new DateTime($start_time);
+					$start_time->setTimezone($tz);
+					$start_time = $start_time->format($date_format);
+				}
+				if(date('H:i', $this->options['end_time']) != '00:00') {
+					$end_time = new DateTime($end_time);
+					$end_time->setTimezone($tz);
+					$end_time = $end_time->format($date_format);
+				}
+			}
 		}
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = sprintf(
 				_('%s (%s to %s)'),
 				html::specialchars($this->options->get_value('report_period')),
 				"<strong>".html::specialchars($start_time)."</strong>",
-				"<strong>".html::specialchars(date($date_format, $this->options['end_time']))."</strong>"
+				"<strong>".html::specialchars($end_time)."</strong>"
 			);
 		else {
 			$report_time_formatted  = sprintf(_("%s to %s"),
 				html::specialchars($start_time),
-				html::specialchars(date($date_format, $this->options['end_time'])));
+				html::specialchars($end_time));
 		}
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - ".html::specialchars($this->options['rpttimeperiod']);

@@ -254,4 +254,50 @@ class reports
 			return false;
 		return $res[0]['alias'];
 	}
+
+	/**
+	*Return utc/gmt no for timezone
+	*
+	*/
+	static function timezone_utc_no($time_zone){
+		$date = new DateTime("now", new DateTimeZone($time_zone) );
+		$utc_no = 'UTC/GMT ' . date_format($date, 'P');
+		return $utc_no;
+	}
+
+ 	/**
+	*Return default set timezone string
+	*
+	*/
+	 static function default_timezone()
+	{   
+	    $default_timezone = date_default_timezone_get();
+	    return $default_timezone;
+	}
+	
+ 	/**
+	*Return the timezone list for report
+	*
+	*/
+	public function timezone_list(){
+		if (!apc_exists('timezone_list')){
+			ini_set('memory_limit', '256M');
+			$zones_array = array();
+			$sort_utc = array();
+			$final = array();
+			$timestamp = time();
+			$timezone_list = timezone_identifiers_list();
+			foreach($timezone_list as $key => &$zone) {
+			    $date = new DateTime("now", new DateTimeZone($zone) );
+			    $sort_utc[$zone] = (int)date_format($date, 'P');
+			    $zones_array[$zone] = '[ UTC/GMT ' . date_format($date, 'P') . ' ] - '. $zone;
+			}
+			asort($sort_utc);
+			foreach($sort_utc as $key => $value) {
+			    $final[$key] = $zones_array[$key];
+			}
+			apc_store('timezone_list', $final);
+		}
+	    return apc_fetch('timezone_list');
+	}
 }
