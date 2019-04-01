@@ -1165,20 +1165,18 @@ listview_renderer_table.recurring_downtimes = {
 			return $('<td />').update_text(args.obj.fixed ? _("Fixed") : _("Flexible"));
 		}
 	},
-	"weekdays": {
-		"header": _('Weekdays'),
-		"depends": ['weekdays'],
-		"cell": function(args) {
-			return $('<td />').update_text($.map(args.obj.weekdays, function (x) {return Date.dayNames[x];}).join(', '));
-		}
-	},
-	"months": {
-		"header": _('Months'),
-		"depends": ['months'],
-		"cell": function(args) {
-			return $('<td />').update_text($.map(args.obj.months, function (x) {return Date.monthNames[x-1];}).join(', '));
-		}
-	},
+	"Recurrence": {
+        "header": _('Recurrence'),
+        "depends": ['recurrence_text', 'weekdays', 'months'],
+        "cell": function(args) {
+            if(args.obj.recurrence_text != ''){
+             	return $('<td />').update_text(args.obj.recurrence_text);
+            }else{
+                _escape_html_tags = false;
+                return $('<td />').update_text('Weekdays: '+$.map(args.obj.weekdays, function (x) {return JSON.parse(Date.abbrDayNames)[x];}).join(', ')+'<br>Months: '+ $.map(args.obj.months, function (x) {return JSON.parse(Date.abbrMonthNames)[x-1];}).join(', '));
+            }
+        }
+    },
 	"actions": {
 		"header": _('Actions'),
 		"depends": ['id'],
