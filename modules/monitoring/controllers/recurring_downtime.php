@@ -32,7 +32,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					else if ($field === 'recurrence'){
 						$recurrence = $_REQUEST['recurrence_select'];
 						if($recurrence == 'no'){
-							$data[$field] = 0;
+							$data[$field]['label'] = "no";
 						}
 						else if ($recurrence == 'custom'){
 							$no = $_REQUEST['recurrence_no'];
