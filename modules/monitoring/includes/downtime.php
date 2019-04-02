@@ -153,22 +153,21 @@ class Downtime {
 	}
 
 	/**
-	 * Converts day of week number to string, starting with monday.
+	 * Converts day of week number to string, starting with sunday.
 	 *
-	 * @param $number int
+	 * @param $day_number int
 	 * @return string day of week name
 	 * @throws Exception UnexpectedValueException
 	 */
-	public function dow_to_string($number) {
-		$number -= 1; // day 1 becomes idx 0 of $days.
-		$days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+	public function dow_to_string($day_number) {
+		$week = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
 
-		if(!array_key_exists($number, $days)) {
+		if(!array_key_exists($day_number, $week)) {
 			throw new UnexpectedValueException(
-				sprintf('Missing day of week map for idx %s', $number)
+				sprintf('Missing day of week idx %s', $day_number)
 			);
 		}
-		return $days[$number];
+		return $week[$day_number];
 	}
 
 	/**
@@ -362,7 +361,7 @@ class RecurringDowntime extends Downtime {
 		$dow = $this->dow_to_string($this->recurrence_on['day']);
 
 		// Is this recurrence for a specific month?
-		if(in_array('month', $this->recurrence_on) && $target_date->get_month() !== $this->recurrence_on['month']) {
+		if(array_key_exists('month', $this->recurrence_on) && $target_date->get_month() !== $this->recurrence_on['month']) {
 			return false;
 		}
 
@@ -394,11 +393,21 @@ class RecurringDowntime extends Downtime {
 	 */
 	public function pluck_recurrence($key) {
 		$plucked = array();
-		foreach($this->recurrence_on as $item) {
-			if(!array_key_exists($key, $item)) {
-				continue;
+		$on = $this->recurrence_on;
+
+		// Check if `recurrence_on` is an associative array (legacy format).
+		if(array_keys($on) !== range(0, count($on) - 1)) {
+			// Legacy format: check if the given key exists
+			if(array_key_exists($key, $on)) {
+				array_push($plucked, $this->recurrence_on[$key]);
 			}
-			array_push($plucked, $item[$key]);
+		} else {
+			// With the new format, objects are always contained in an array - iterate.
+			foreach ($on as $recurrence) {
+				if (array_key_exists($key, $recurrence)) {
+					array_push($plucked, $recurrence[$key]);
+				}
+			}
 		}
 		return $plucked;
 	}
