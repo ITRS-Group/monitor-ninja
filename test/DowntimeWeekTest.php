@@ -43,6 +43,31 @@ class Downtime_Week_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * recurrence_on should work with single items not contained in an array
+	 * @group recurring_downtime
+	 */
+	public function test_legacy_recurrence_on() {
+		$mock = new DowntimeModel();
+		$mock->set_start('2019-04-10');
+		$mock->recurrence = array(
+			'label' => 'custom',
+			'no' => '1',
+			'text' => 'week'
+		);
+		$mock->recurrence_on = array('day' => WEDNESDAY);
+		$schedule = new RecurringDowntime($mock);
+
+		$dow_output = $schedule->pluck_recurrence(DAY);
+		$this->assertFalse(in_array(MONDAY, $dow_output));
+		$this->assertFalse(in_array(TUESDAY, $dow_output));
+		$this->assertTrue(in_array($schedule->start->get_day_of_week(), $dow_output)); // WEDNESDAY
+		$this->assertFalse(in_array(THURSDAY, $dow_output));
+		$this->assertFalse(in_array(FRIDAY, $dow_output));
+		$this->assertFalse(in_array(SATURDAY, $dow_output));
+		$this->assertFalse(in_array(SUNDAY, $dow_output));
+	}
+
+	/**
 	 * match_week_interval() should evaluate to false if the stepping does /not/ match
 	 * @group recurring_downtime
 	 */
