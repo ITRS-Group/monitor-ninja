@@ -33,6 +33,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			return $setting;
 		}
 		$setting_info = json_decode($setting, true);
+		$setting_href = array();
 		foreach ($setting_info as $setting_data) {
 			$href = htmlspecialchars($setting_data['href'], ENT_QUOTES, 'UTF-8');
 			$setting_href[] = array('href' => $href);
