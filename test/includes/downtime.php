@@ -50,7 +50,8 @@ function mock_date($date_str) {
 }
 
 class DowntimeModel {
-	protected $recurrence = 0, $recurrence_on = 0;
+	public $recurrence = 0;
+	public $recurrence_on = 0;
 	public $recurrence_ends = "0";
 	public $duration;
 	public $start_date, $start_time;
