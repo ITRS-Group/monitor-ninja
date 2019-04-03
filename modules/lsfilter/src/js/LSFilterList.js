@@ -632,19 +632,15 @@ function lsfilter_list(config)
 	};
 
 	this.banner_in_listview = function()
-    {
-        var currentLocation = window.location.href.toString();
-
-        if($('div#nachos-page-banners').length > 0) {
-            var thead =  $(this.config.table).find('thead');
-            var header = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
-            var banner = $('div#nachos-page-banners');
-            banner.css('margin', '25px 0 3px 0');
-			header.remove();
-			
-			if(currentLocation.indexOf('hosts') === -1) {
-				banner.css('margin', '0px 0px');
+	{
+		var banner = $('div#nachos-page-banners');
+		if (banner.length > 0) {
+			var thead = $(this.config.table).find('thead');
+			var fixed_thead = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
+			if (thead.length > fixed_thead.length) {
+				banner.css('margin', '25px 0 3px 0');
+				fixed_thead.remove();
 			}
-        }
-    }
+		}
+	}
 }
