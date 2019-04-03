@@ -175,7 +175,30 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 						$all_days = '';
 						$i = 0; 
 						foreach($rec_on as $key => $value){
-							$day_name = ucfirst($valid_weekdays[$value->day]);
+							/**
+							 * recurrence_on format
+							 * ^^^^^^^^^^^^^^^^^^^^
+							 *
+							 * The `recurrence_on` field can be either an object or an array of objects.
+							 * The block below ensures compatibility with both formats.
+							 */
+
+							if(is_object($value)) {
+								if(!property_exists($value, 'day')) {
+									// Silently skip non-day recurrences for week
+									continue;
+								}
+								$day_number = $value->day;
+							} elseif(array_key_exists($value, $valid_weekdays)) {
+								$day_number = $value;
+							} else {
+								throw new UnexpectedValueException(sprintf(
+									"Unable to map value %s to a name", $value
+								));
+							}
+
+							$day_name = ucfirst($valid_weekdays[$day_number]);
+
 							if($i == 0){
 								$all_days .= $day_name;
 							}else{
