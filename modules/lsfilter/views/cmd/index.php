@@ -17,7 +17,20 @@ if (!empty( $error )) {
 	return;
 }
 
-echo "<h2>" . $command_info['name'] . ":</h2>";
+if($command_info['name'] == 'Check now'){
+	?>
+	<script>
+		$(document).ready(function(){
+			$("#command_form").submit();
+		});
+	</script>
+	<?php
+}
+
+if(!($command_info['name'] == 'Check now')) {
+	echo "<h2>" . $command_info['name'] . ":</h2>";
+}
+
 echo form::open( 'cmd/obj', array (
 	'id' => 'command_form',
 	'method' => 'post'
@@ -114,9 +127,13 @@ foreach ( $command_info['params'] as $pname => $pdef ) {
 	echo "</tr>";
 }
 echo "</table>";
-echo form::submit( false, 'Submit', 'class="submit"' );
+
+if(!($command_info['name'] == 'Check now')) {
+	echo form::submit( false, 'Submit', 'class="submit"' );	
+}
 echo form::close();
 
-
-echo "<h2>Affecting:</h2>";
-echo $objs_widget->render('index', false);
+if(!($command_info['name'] == 'Check now')) {
+	echo "<h2>Affecting:</h2>";
+	echo $objs_widget->render('index', false);
+}
