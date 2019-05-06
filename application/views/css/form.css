@@ -7,13 +7,45 @@ form.renderable {
 
 .center form.renderable {
 	width: 100%;
+
 }
+
+form.renderable-login {
+	font-size: 10pt;
+	width: 320px;
+	background-color: white;
+	margin: 0 auto;
+	padding-top: 35px;
+	margin-top: 80px;
+}
+
+p.error {
+	width: 294px;
+	margin: 0 auto;
+	padding-left: 0px;
+	padding-right: 0px;
+	margin-top: 20px;
+}
+
+p.error span.license {
+	padding: 10px;
+	width: 290px;
+	margin: 0 auto;
+	margin-top: 20px;
+}
+
+
 
 .center form.renderable fieldset {
 	text-align: center;
+	
 }
 
 .center form.renderable fieldset label {
+	text-align: left;
+}
+
+.center form.renderable-login fieldset label {
 	text-align: left;
 }
 
@@ -23,9 +55,36 @@ form.renderable label {
 	padding: 4px 8px;
 }
 
+.renderable-login {
+	height: auto;
+}
+
+form.renderable-login .rights {
+	padding-bottom: 10px;
+	margin-top: 20px;
+}
+
+form.renderable-login p {
+	font-size: 8pt;
+	color: silver;
+	font-weight: bold;
+}
+
+form.renderable-login h1 {
+	font-size: 1.5em;
+	margin-bottom: 20px;
+	margin-top: 25px;
+}
+
+
+
 form.renderable legend {
 	display: inline-block;
 	font-weight: bold;
+}
+
+form.renderable-login input[type=submit]{
+	margin-top: 10px;
 }
 
 form.renderable input[type=submit],
@@ -69,6 +128,31 @@ form.renderable input[type="password"] {
 	padding: 6px 4px;
 }
 
+form.renderable-login input[type="text"],
+form.renderable-login input[type="number"],
+form.renderable-login input[type="password"] {
+	height: 13px;
+	width: 235px;
+	padding: 6px 4px;
+}
+
+form.renderable-login fieldset label[for="username"],
+form.renderable-login fieldset label[for="password"],
+form.renderable-login fieldset label[for="auth_method"]{
+	display: inherit;
+	margin-left: 35px;
+}
+
+
+form.renderable-login fieldset label {
+	margin-left: -185px;
+}
+
+form.renderable-login fieldset {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
 form.renderable fieldset[type=text],
 form.renderable fieldset[type=number],
 form.renderable fieldset[type=checkbox] {
@@ -85,6 +169,11 @@ form.renderable fieldset[type$="-repeat"] {
 
 form.renderable fieldset[type$="-repeat"] label {
 	padding-left: 12px;
+}
+
+form.renderable-login select {
+	width: 245px;
+	padding: 0;
 }
 
 form.renderable select {
