@@ -1679,6 +1679,13 @@ a.help-icon {
   width: 16px;
 }
 
+div#header div.main-menu img.brand-icon {
+  width: 136px;
+  height: 49px;
+  margin-top: -9px;
+  margin-left: -12px;
+}
+
 span.brand {
   display: inline-block;
 }
@@ -1768,8 +1775,8 @@ ul.shared_with_these_entities li a {
 	float: right;
 }
 
-.popup-about {
-  text-align: center;
+img.popup-about-img {
+  margin-left: 70px;
 }
 
 .popup-about > a {

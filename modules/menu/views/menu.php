@@ -36,8 +36,15 @@
 
 		if (substr($icon, -4) == '.png')
 			$icon = sprintf('<img src="%s">', htmlentities($icon));
-		else if ($icon != '')
-			$icon = sprintf('<span class="%s"></span>', htmlentities($menu->get_icon()));
+		else if ($icon != '') {
+                        $icon_class = htmlentities($menu->get_icon());
+                        $span_class_type = substr($icon_class, strpos($icon_class, " x16-") + 5);
+                        if($span_class_type == 'op5' || $span_class_type == 'manual' || $span_class_type == 'support') {
+                            $icon = '';
+                        } else {
+                            $icon = sprintf('<span class="%s"></span>', $icon_class);
+                        }
+                }
 
 		if (is_null($menu->get_href())) {
 			$format = '<a%s>%s<span>%s</span></a>';
