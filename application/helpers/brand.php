@@ -10,6 +10,10 @@ class brand {
    * without an icon
    */
   const DEFAULT_IMAGE = 'default.png';
+  /**
+   * The image to use when in menu
+   */
+  const MENU_IMAGE = 'om_menu.png';
 
   /**
    * Generates brading based based on license, if any, and
@@ -18,16 +22,16 @@ class brand {
    *
    * @return string A HTML blob to use in branding
    */
-  public static function get($host = "", $use_label = true) {
-
-    // Default branding, ninja in community, op5 banana otherwise
-
+  public static function get($host = "", $use_label = true, $is_menu = false) {
+    $product_image = ($is_menu ? brand::MENU_IMAGE : brand::DEFAULT_IMAGE);
     $data = array('branding' => array(
-      'image' => ninja::add_path('brands/' . brand::DEFAULT_IMAGE, false, true),
+      'image' => ninja::add_path('brands/' . $product_image, false, true),
       'label' => ''
     ));
 
-    Event::run('ninja.get_branding', $data);
+    if($is_menu == false) {
+      Event::run('ninja.get_branding', $data);
+    }
 
     return sprintf(
       '<img class="brand-icon" src="%s" />' .
