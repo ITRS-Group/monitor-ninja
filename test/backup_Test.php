@@ -2,7 +2,7 @@
 /**
  * Test the backup functions that are reached through the GUI. There are other
  * types of backups being run too, you can read more about backups here:
- * https://support.itrsgroup.com/hc/search?query=backup
+ * https://kb.op5.com/dosearchsite.action?queryString=backup
  */
 class Backup_Test extends PHPUnit_Framework_TestCase {
 
