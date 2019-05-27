@@ -271,7 +271,7 @@ class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 			case 'date':
 				$ret = strtotime($arg_list2[0]);
 				if (false === $ret) {
-					throw new ORMException("Don't know how to translate \"" . htmlspecialchars($arg_list2[0]) . "\" into a date, please <a href=\"https://kb.op5.com/x/jIWX\" target=\"blank\">click here</a> for information on supported date formats.");
+					throw new ORMException("Don't know how to translate \"" . htmlspecialchars($arg_list2[0]) . "\" into a date, please <a href=\"https://support.itrsgroup.com/hc/en-us/articles/360020061894-Listview-filter-date-function\" target=\"blank\">click here</a> for information on supported date formats.");
 				}
 				return $ret;
 				break;
