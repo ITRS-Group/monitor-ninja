@@ -87,7 +87,7 @@ class User_Controller extends Authenticated_Controller {
 		);
 
 		$sub_headings = array(
-			'listview' => array("https://kb.op5.com/x/AwE6", _('Read specification online'))
+			'listview' => array("https://support.itrsgroup.com/hc/en-us/articles/360020258033-Customizing-listview-columns", _('Read specification online'))
 		);
 
 		$settings['pagination'] = array(
