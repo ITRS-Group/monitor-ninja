@@ -129,7 +129,8 @@ form.renderable input[type="password"] {
 
 form.renderable-login input[type="text"],
 form.renderable-login input[type="number"],
-form.renderable-login input[type="password"] {
+form.renderable-login input[type="password"],
+form.renderable-login fieldset label[for="password-repeat"] {
 	height: 13px;
 	width: 235px;
 	padding: 6px 4px;
@@ -137,9 +138,28 @@ form.renderable-login input[type="password"] {
 
 form.renderable-login fieldset label[for="username"],
 form.renderable-login fieldset label[for="password"],
-form.renderable-login fieldset label[for="auth_method"]{
+form.renderable-login fieldset label[for="auth_method"],
+form.renderable-login fieldset label[for="password-repeat"]{
 	display: inherit;
 	margin-left: 35px;
+}
+
+form.renderable-login .password-helper {
+	background-color: rgb(254, 244, 229);
+	height: 35px;
+	width: 275px;
+	border-bottom: 2px solid orange;
+	margin: 0 auto;
+	margin-bottom: 20px;
+}
+
+form.renderable-login .password-helper p {
+	color: black;
+	padding-top: 6px;
+	padding-left: 3px;
+	padding-right: 3px;
+	text-align: left;
+
 }
 
 
