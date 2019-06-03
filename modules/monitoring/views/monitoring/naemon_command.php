@@ -17,7 +17,7 @@ if ($result['status']) {
 	echo "</div>\n";
 	$this->footer = '<input style="margin-left: 12px" type="button" value="Done" onclick="history.go(-2)" />'."\n";
 } else {
-	echo '<div class="alert error">'.sprintf(_('There was an error submitting your command to %s.'), Kohana::config('config.product_name'));
+	echo '<div class="alert error" style="display: none;">'.sprintf(_('There was an error submitting your commands to %s.'), Kohana::config('config.product_name'));
 	if (!empty($result['output'])) {
 		echo '<br /><br />'._('ERROR').': '.html::specialchars($result['output']);
 	}
