@@ -128,4 +128,21 @@ class Downtime_Week_Test extends PHPUnit_Framework_TestCase {
 		$result = $schedule->pluck_recurrence('UNKNOWN_UNIT');
 		$this->assertEquals(array(), $result);
 	}
+
+	/**
+	 * Test case for recurring downtimes scheduled on a Sunday
+	 * @group recurring_downtime
+	 */
+	public function test_recurring_sunday() {
+		$mock = get_week_mock(1, array(SUNDAY));
+		$mock->set_start('2019-01-01 11:55');
+		$mock->set_end('2019-01-01 13:00');
+		$schedule = new RecurringDowntime($mock);
+		$input = mock_date('2019-05-26');
+		// Match week
+		$this->assertTrue($schedule->match_week_interval($input));
+		// Match day
+		$days = $schedule->pluck_recurrence('day');
+		$this->assertTrue(in_array($input->get_day_of_week(), $days));
+	}
 }

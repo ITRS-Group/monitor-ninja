@@ -48,12 +48,13 @@ class NinjaDateTime extends DateTime {
 	}
 
 	/**
-	 * Get current day of week (1-7)
+	 * Get current day of week (0-6)
 	 *
 	 * @return int
 	 */
 	public function get_day_of_week() {
-		return (int)$this->format('N');
+		$day_number = (int)$this->format('N');
+		return $day_number === 7 ? 0 : $day_number;
 	}
 
 	/**
