@@ -151,6 +151,8 @@ find %buildroot -type d -print0 | xargs -0 chmod a+x
 mkdir -p %buildroot/etc/cron.d/
 install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/scheduled-reports
 install -m 644 install_scripts/recurring_downtime.crontab %buildroot/etc/cron.d/recurring-downtime
+install -d %buildroot%_sysconfdir/logrotate.d
+install -pm 0644 op5build/monitor-ninja.logrotate %{buildroot}%_sysconfdir/logrotate.d/monitor-ninja
 
 # executables
 for f in cli-helpers/apr_md5_validate \
@@ -232,6 +234,7 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %dir /var/log/op5/ninja
 
 %attr(640,%daemon_user,%daemon_group) %prefix/application/config/database.php
+%config %attr(644,root, root) %_sysconfdir/logrotate.d/monitor-ninja
 
 %phpdir/op5
 %exclude %phpdir/op5/ninja_sdk
