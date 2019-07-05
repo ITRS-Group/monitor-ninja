@@ -1,0 +1,11 @@
+/var/log/op5/ninja.log {
+    su apache apache
+    weekly
+    rotate 10
+    compress
+    dateext
+    dateformat -%Y%m%d
+    missingok
+    notifempty
+    create 0664 apache apache
+}
