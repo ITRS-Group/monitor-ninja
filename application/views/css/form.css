@@ -146,7 +146,6 @@ form.renderable-login fieldset label[for="password-repeat"]{
 
 form.renderable-login .password-helper {
 	background-color: rgb(254, 244, 229);
-	height: 35px;
 	width: 275px;
 	border-bottom: 2px solid orange;
 	margin: 0 auto;
