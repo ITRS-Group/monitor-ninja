@@ -1,11 +1,12 @@
 <div class="information-component">
-	<div class="information-component-title">Operating status</div>
+	<div class="information-component-title">
+		Runtime options
+		<a class="help-icon runtime-options-icon" style="background: url('/monitor/application/views/icons/16x16/question-mark.png')" data-popover="help:search.runtime_options"></a>
+	</div>
 <?php
-
 $toggle = View::factory('extinfo/components/toggle', array(
 	'object' => $object
 ));
-
 ?>
 <div class="information-cell-inline">
 <?php
