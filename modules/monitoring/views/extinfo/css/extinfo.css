@@ -110,6 +110,16 @@ p {
 	margin: 8px 0 16px 0;
 }
 
+.runtime-options-icon {
+	margin-left: 10px;
+	margin-bottom: 3px;
+}
+
+.runtime-options-tooltip-text {
+	text-align: left;
+	font-size: 10pt;
+}
+
 .information-cell,
 .information-cell-inline {
 	display: inline-block;
