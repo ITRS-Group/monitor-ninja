@@ -879,7 +879,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command params.forced.type bool
 	 * @ninja orm_command params.forced.name Remove hostgroup services
 	 * @ninja orm_command params.forced.description
-	 *     Allow removal of services even if they originates from a hostgroup.
+	 *     Allow removal of services even if they originated from a hostgroup.
 	 *     Removing those services will also remove them from all other hosts in
 	 *     the hostgroup. Verify the output in the nacoma submit changes page
 	 *     before submitting.
