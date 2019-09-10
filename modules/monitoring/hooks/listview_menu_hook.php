@@ -29,7 +29,7 @@ Event::add ('ninja.menu.setup', function (){
 		$menu->set('Manage.Process information', 'extinfo/show_process_info', 6, 'icon-16 x16-info');
 	}
 
-	$max_filters = 6;
+	$max_filters = 14;
 
 	$menu->set('Manage.Manage filters', listview::querylink( '[saved_filters] all'), 3, 'icon-16 x16-eventlog');
 	$menu->set('Monitor.Network Outages', 'outages', null, 'icon-16 x16-outages');
