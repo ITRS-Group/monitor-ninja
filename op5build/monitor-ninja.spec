@@ -82,13 +82,6 @@ Requires: ruby-devel
 %description test
 Additional test files for ninja
 
-%post test
-%if 0%{?rhel} >= 7
-	systemctl start lmd
-%else
-	service lmd start
-%endif
-
 %package monitoring
 Summary: Naemon and Livestatus module for ninja
 Group: op5/monitor
@@ -195,11 +188,6 @@ fi
 
 
 %post
-%if 0%{?rhel} >= 7
-	systemctl start lmd
-%else
-	service lmd start
-%endif
 # Verify that mysql-server is installed and running before executing sql scripts
 $(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
 if [ -n "$MYSQL_AVAILABLE" ]; then
