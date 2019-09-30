@@ -16,9 +16,21 @@ class NaemonObject_Model extends Object_Model {
 		$cmd = array_shift($args);
 
 		if($this instanceof Downtime_Model || $this instanceof Comment_Model) {
-			// the downtime|comment models have "id;is_service" as
-			// keys, which does not correspond to the Neamon cmd
-			$key = $this->get_id();
+			if ($cmd === "DEL_DOWNTIME_BY_HOST_NAME") {
+				$service_desc = "";
+				if ($this->get_is_service()) {
+					$service_desc = $this->get_service()->get_description();
+				}
+				$key = sprintf("%s;%s;%s;%s",
+					$this->get_host()->get_name(),
+					$service_desc,
+					$this->get_start_time(),
+					$this->get_comment());
+			} else {
+				// the downtime|comment models have "id;is_service" as
+				// keys, which does not correspond to the Neamon cmd
+				$key = $this->get_id();
+			}
 		} else {
 			$key = $this->get_key();
 		}
