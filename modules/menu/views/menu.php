@@ -82,9 +82,14 @@
 		}
 
 		if ($menu->has_children()) {
+			$filterHeaderArray = array("all_hosts", "all_services", "all_hostgroups", "all_servicegroups");
 			$class = $style . '-menu';
 			$render .= "<ul class=\"$class\">";
 			foreach ($branch as $child) {
+				if(in_array($child->get_id(), $filterHeaderArray)) {
+					$render .= '<li tabindex="1" class="menu-separator">Filters</li>';
+				}
+
 				if (in_array($child->get_id(), $config)) { continue; }
 				$cAttributes = $child->get_attributes();
 				$render .= '<li tabindex="1">' . $render_menu($child, $style, false) . '</li>';
