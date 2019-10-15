@@ -54,15 +54,17 @@
 			};
 
 			s = $.extend({}, $.fn.datePicker.defaults, s);
+			
+			var weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 			if (s.showHeader != $.dpConst.SHOW_HEADER_NONE) {
-				var headRow = $(dc('tr'));
-				for (var i=Date.firstDayOfWeek; i<Date.firstDayOfWeek+7; i++) {
+                var headRow = $(dc('tr'));
+				for (var i = 0; i < 7; i++) {
 					var weekday = i%7;
-					var day = Date.dayNames[weekday];
+                    var day = weekdays[i];
 					headRow.append(
-						jQuery(dc('th')).attr({'scope':'col', 'abbr':day, 'title':day, 'class':(weekday == 0 || weekday == 6 ? 'weekend' : 'weekday')}).html(s.showHeader == $.dpConst.SHOW_HEADER_SHORT ? day.substr(0, 1) : day)
-					);
+						jQuery(dc('th')).attr({'scope':'col', 'abbr':day, 'title':day, 'class':(weekday == 5 || weekday == 6 ? 'weekend' : 'weekday')}).html(s.showHeader == $.dpConst.SHOW_HEADER_SHORT ? day.substr(0, 1) : day)
+                    );
 				}
 			};
 
@@ -1168,7 +1170,7 @@
 		TEXT_NEXT_MONTH		:	'Next month',
 		TEXT_CLOSE			:	'Close',
 		TEXT_CHOOSE_DATE	:	'Choose date',
-		HEADER_FORMAT		:	'mmmm yyyy'
+		HEADER_FORMAT		:	'yyyy'
 	};
 	// version
 	$.dpVersion = '$Id$';
