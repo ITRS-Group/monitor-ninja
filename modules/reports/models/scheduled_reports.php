@@ -330,16 +330,23 @@ class Scheduled_reports_Model extends Model
 	 * Fetch info on reports to be sent for specific
 	 * period (daily/weekly/monthly)
 	 *
-	 * @param $period_str string: { daily, weekly, monthly }
+	 * @param $period_str string: { schedule }
 	 * @return array
 	 */
 	static function get_period_schedules($period_str)
 	{
-		$id = array();
+		$schedules = array();
 		$send_date = array();
 
 		$db = Database::instance();
-		$sql = "SELECT t1.*,(SELECT value FROM saved_reports_options WHERE report_id = t1.report_id AND name = 'report_timezone') AS timezone FROM scheduled_reports AS t1";
+
+		$sql = <<<'SQL'
+		SELECT sr.*, rp.periodname, opt.value AS timezone
+		FROM scheduled_reports sr
+		INNER JOIN scheduled_report_periods rp ON sr.period_id = rp.id
+		INNER JOIN saved_reports_options opt ON opt.report_id = sr.report_id
+			AND opt.name = 'report_timezone'
+SQL;
 		$res = $db->query($sql);
 
 		foreach($res as $row){
@@ -347,127 +354,133 @@ class Scheduled_reports_Model extends Model
 			$report_time = $row->report_time;
 			$report_timezone = $row->timezone;
 			if($report_timezone != ''){
+				// All times for this schedule use the timezone of the associated report.
 				date_default_timezone_set( $report_timezone );
 			}
 
 			$repeat_no = $report_period->no;
 			$last_sent = $row->last_sent;
+			$now = new DateTime();
 
-			$ctime = date('H:i');
-			if($ctime != $report_time){
+			/* Avoid sending reports before report_time each day, even if they
+			 * are late for some reason. This means that a report that is due
+			 * to be sent at tuesday 08:00 but for some reason couldn't be sent
+			 * on tuesday, it will be sent the next day, but not before 08:00.
+			 */
+			$report_time_of_day = new DateTime($now->format('Y-m-d') . " $report_time");
+			if ($now < $report_time_of_day) {
 				continue;
 			}
 
-			//schedule daily
-			if($row->period_id == 3){
-				if($row->last_sent == ''){
-					$id[] = $row->id;
-					$send_date[] = date('Y-m-d');
-				}else{
-					$current_date = date("Y-m-d");
-					$next_send = date ("Y-m-d", strtotime ($last_sent ."+".$repeat_no." days"));
-					if($current_date == $next_send){
-						$id[] = $row->id;
-						$send_date[] = date('Y-m-d');
-					}
+			if ($row->periodname == 'Daily') {
+				$last_sent_date = $last_sent ? $last_sent : "today - $repeat_no days";
+				$prev_period_start = new DateTime("$last_sent_date $report_time");
+
+				// Period where report should be generated next time.
+				$period_start = new DateTime(
+					$prev_period_start->format('c') . " + $repeat_no days");
+
+				if ($now >= $period_start) {
+					// We're beyond period_start, create the report.
+					$schedules[] = $row->id;
+					$send_date[] = $now->format('Y-m-d');
 				}
 			}
+			elseif ($row->periodname == 'Weekly') {
+				$last_sent_date = $last_sent ? $last_sent : "today - $repeat_no weeks";
+				$prev_period_start = new DateTime("$last_sent_date $report_time");
 
-			//schedule weekly
-			if($row->period_id == 1){
-				if($row->last_sent == ''){
-					$current_time = time();
-					$current_time = strtotime('+0 day', $current_time);
-					$current_day = date('w', $current_time);
-					$report_days = json_decode($row->report_on);
-					foreach($report_days as $day){
-						if($current_day == $day->day){
-							$id[] = $row->id;
-							$send_date[] = date('Y-m-d');
-						}
-					}
-				}else{
-					$last_sent_week = strtotime ($last_sent ."+0 days");
-					$next_start_week = strtotime ($last_sent ."+7 days");
-					$current_time = strtotime('+0 day', time());
-					$current_day = date('w', $current_time);
-					$report_days = json_decode($row->report_on);
-					if($current_time > $last_sent_week && $current_time < $next_start_week){
-						foreach($report_days as $day){
-							if($current_day == $day->day){
-								$id[] = $row->id;
-								$send_date[] = $last_sent;
-							}
-						}
-					}else{
-						$current_date = date("Y-m-d");
-						$repeat_days_week = $repeat_no * 7;
-						$next_start_day = strtotime ($last_sent ."+".$repeat_days_week." days");
-						if($current_date = $next_start_day){
-							$id[] = $row->id;
-							$send_date[] = date('Y-m-d');
-						}
-					}
-				}
-			}
-
-			//schedule monthly
-			if($row->period_id == 2){
-				$current_time = time();
-				$current_time = strtotime('+0 day', $current_time);
-				$current_day = date('w', $current_time);
-				$current_month = date('n', $current_time);
-				if($row->last_sent != ''){
-					$last_sent = $row->last_sent;
-					$last_sent_day = strtotime ($last_sent ."+0 days");
-					$sent_day = date('w', $last_sent_day);
-					$sent_month = date('n', $last_sent_day);
-					$next_send_month = $sent_month + $repeat_no;
-					if($next_send_month > 12){
-						$next_send_month = $next_send_month-12;
-					}
-					if($current_month != $next_send_month){
-						continue;
-					}
-				}
+				// Period where report should be generated next time.
+				$period_start = new DateTime(
+					$prev_period_start->format('c') . " + $repeat_no weeks");
 
 				$report_days = json_decode($row->report_on);
-				$month_day_no = $report_days->day_no;
-				$month_day = $report_days->day;
-				if($current_day == $month_day){
-					if($month_day_no != "last"){
-						$day_no_this = 7 * ($month_day_no-1);
-						$day_no_pre = 7 * ($month_day_no);
-						$check_day_no_this = strtotime("-$day_no_this day", $current_time);
-						$check_day_no_pre = strtotime("-$day_no_pre day", $current_time);
-						if(date('n', $check_day_no_this) == $current_month && date('n', $check_day_no_pre) != ($current_month)){
-							$id[] = $row->id;
-							$send_date[] = date('Y-m-d');
-						}
-					}else{
-						$check_last_weekday = strtotime("+7 day", $current_time);
-						if(date('n', $check_last_weekday) != ($current_month)){
-							$id[] = $row->id;
-							$send_date[] = date('Y-m-d');
-						}
-					}
-				}elseif($month_day == "last"){
-					$check_last_weekday = strtotime("+1 day", $current_time);
-					if(date('n', $check_last_weekday) != ($current_month)){
-						$id[] = $row->id;
-						$send_date[] = date('Y-m-d');
-					}
 
+				if ($now >= $period_start) {
+					// We're beyond period_start, in a new period, proceed with
+					// creating the report if correct day of week.
+					foreach ($report_days as $day) {
+						if ($day->day == $now->format('w')) {
+							$schedules[] = $row->id;
+							$send_date[] = $now->format('Y-m-d');
+						}
+					}
+				}
+				elseif ($now > $prev_period_start) {
+					// Skip if day of week is the same as that of last_sent.
+					if ($now->format('w') == $prev_period_start->format('w')) {
+						continue;
+					}
+					// Still in previous period, check if report should be
+					// created this weekday also.
+					foreach ($report_days as $day) {
+						if ($day->day == $now->format('w')) {
+							$schedules[] = $row->id;
+							$send_date[] = $last_sent;
+						}
+					}
+				}
+			}
+			elseif ($row->periodname == 'Monthly') {
+				$last_sent_month = new DateTime(
+					$last_sent ? $last_sent : "today - $repeat_no months");
+				// Reset to first day of month, since day of month is not relevant.
+				$last_sent_month->modify('first day of this month');
+
+				// Month in which report should be generated next time.
+				$next_send_month = new DateTime(
+					$last_sent_month->format('Y-m-d') . "+ $repeat_no months");
+
+				$report_on = json_decode($row->report_on);
+				$day_of_week = $report_on->day;  # 1-7 (or 'last' for last day of month)
+
+				// Skip if we're not yet in next_send_month.
+				if ($now < $next_send_month) {
+					continue;
+				}
+
+				$is_report_day = false;
+				if ($day_of_week == 'last') {
+					// Send if this is the last day of the month.
+					$tomorrow = strtotime('+ 1 day', $now->getTimestamp());
+					if (date('n', $tomorrow) != $now->format('n')) {
+						$is_report_day = true;
+					}
+				}
+				elseif ($day_of_week == $now->format('w')) {
+					$day_ordinal = $report_on->day_no;  # 1-4, last
+					if ($day_ordinal == 'last') {
+						// Check if this is the last $day_of_week of the month
+						$next_week = strtotime('+ 1 week', $now->getTimestamp());
+						if (date('n', $next_week) != $now->format('n')) {
+							$is_report_day = true;
+						}
+					}
+					else {
+						// Check if today is $day_ordinal $day_of_week (e.g. 3rd Friday)
+						$check_weeks_before = $day_ordinal - 1;
+						$this_month = new DateTime("- $check_weeks_before week");
+						$prev_month = new DateTime("- $day_ordinal week");
+						if ($this_month->format('n') == $now->format('n')
+								&& $prev_month->format('n') != $now->format('n')) {
+							$is_report_day = true;
+						}
+					}
+				}
+
+				// Send report if today is the report day and if time of day
+				// has passed the scheduled report time.
+				if ($is_report_day) {
+					$schedules[] = $row->id;
+					$send_date[] = $now->format('Y-m-d');
 				}
 			}
 		}
 
-		foreach($id as $key=>$value ){
-			$udate = $send_date[$key];
-			$uid = $value;
-			self::update_report_field($uid, "last_sent", $udate);
+		foreach($schedules as $i => $schedule_id ){
+			self::update_report_field($schedule_id, "last_sent", $send_date[$i]);
 		}
 
-		return $id;
+		return $schedules;
 	}
 }
