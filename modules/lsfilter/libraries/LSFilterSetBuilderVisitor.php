@@ -242,7 +242,7 @@ class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 		return $this->all_set->reduce_by( $field0, $arg_num_string2, '=' );
 	}
 
-	// set_descr_name: �set_descr := * string
+	// set_descr_name: set_descr := * string
 	/**
 	 * Visit the given grammar rule
 	 */
