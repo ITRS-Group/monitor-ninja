@@ -343,7 +343,7 @@ class Scheduled_reports_Model extends Model
 		$sql = <<<'SQL'
 		SELECT sr.*, rp.periodname, opt.value AS timezone
 		FROM scheduled_reports sr
-		INNER JOIN scheduled_report_periods rp ON sr.period_id = rp.id
+		INNER JOIN scheduled_report_periods rp ON rp.id = sr.period_id
 		INNER JOIN saved_reports_options opt ON opt.report_id = sr.report_id
 			AND opt.name = 'report_timezone'
 SQL;
@@ -416,7 +416,7 @@ SQL;
 					foreach ($report_days as $day) {
 						if ($day->day == $now->format('w')) {
 							$schedules[] = $row->id;
-							$send_date[] = $last_sent;
+							$send_date[] = $now->format('Y-m-d');
 						}
 					}
 				}
@@ -431,13 +431,13 @@ SQL;
 				$next_send_month = new DateTime(
 					$last_sent_month->format('Y-m-d') . "+ $repeat_no months");
 
-				$report_on = json_decode($row->report_on);
-				$day_of_week = $report_on->day;  # 1-7 (or 'last' for last day of month)
-
 				// Skip if we're not yet in next_send_month.
 				if ($now < $next_send_month) {
 					continue;
 				}
+
+				$report_on = json_decode($row->report_on);
+				$day_of_week = $report_on->day;  # 1-7 (or 'last' for last day of month)
 
 				$is_report_day = false;
 				if ($day_of_week == 'last') {
