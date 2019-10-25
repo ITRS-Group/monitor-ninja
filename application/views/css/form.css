@@ -84,6 +84,8 @@ form.renderable legend {
 
 form.renderable-login input[type=submit]{
 	margin-top: 10px;
+	width: 83px;
+	height: 30px;
 }
 
 form.renderable input[type=submit],

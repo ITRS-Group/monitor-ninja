@@ -76,7 +76,7 @@ When /^I am logged in as administrator$/ do
     When I am on the main page
     And I enter "#{username}" into "username"
     And I enter "#{password}" into "password"
-    And I click "Login"
+    And I click "Log in"
   }
 
   @mock.mock_class("op5MayI", {
@@ -174,7 +174,7 @@ When /^I am logged in as "(.*)"$/ do |user|
 		When I am on the main page
 		And I enter "#{username}" into "username"
 		And I enter "#{password}" into "password"
-		And I click "Login"
+		And I click "Log in"
 	}
 
 	@mock.mock_class("op5MayI", {
