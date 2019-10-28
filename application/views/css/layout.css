@@ -1185,6 +1185,41 @@ h1.emote b {
   color: #fff;
 }
 
+<<<<<<< HEAD
+=======
+.info-notice {
+  width: 40%;
+  line-height: 2;
+  margin-bottom: 20px;
+  padding: 3px 8px 3px 30px;
+  border-radius: 0px !important;
+  color: black;
+}
+
+.info-notice-warning {
+  background: #fef4e5 url("../images/icons/shield-warning.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #f99400;
+}
+.info-notice-information {
+  background: #e6f1f8 url("../images/icons/shield-info.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #0176bd;
+  margin-top: 10px;
+}
+.info-notice-success {
+  background: #ecf8ec url("../icons/x16/shield-ok.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #3fb93d;
+}
+.info-notice-error {
+  background: #fdebee url("../icons/x16/shield-critical.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #ef3b4f;
+}
+
+.info-notice-service-error {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+>>>>>>> 033bb02cb... Add message info when LMD or Livestatus are down
 .notify-notification-bar .notify-notification.pending,
 .alert.pending,
 .state-background.pending {
