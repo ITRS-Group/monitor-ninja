@@ -5,7 +5,7 @@
   <table class="popup-about-table">
     <tr class="popup-about-row popup-about-row-links">
       <td>
-        <a href="https://docs.itrsgroup.com">Knowledge Base</a>
+        <a href="https://docs.itrsgroup.com/docs/op5-monitor/">Knowledge Base</a>
       </td>
       <td>
         <a href="http://www.op5.com">www.op5.com</a>
