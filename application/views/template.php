@@ -45,12 +45,21 @@
 								echo $content;
 							}
 						} else {
-							echo 'Page does not have any content';
+							$services_down = 'services LMD and Naemon are not running';
+
+							// Check LMD.
+							exec('service lmd status', $output, $return_var_lmd);
+							// Check Livestatus.
+							exec('service naemon status', $output, $return_var_le);
+
+							if($return_var_lmd !== 0 && $return_var_le === 0){
+								$services_down = 'service LMD is not running';
+							}
+							echo '<div class=" info-notice info-notice-error info-notice-service-error">';
+								echo 'The OP5 Monitor '.$services_down.', please contact your administrator.';
+							echo '</div>';
 						}
-
-
 					?>
-
 				</div>
 
 			<?php

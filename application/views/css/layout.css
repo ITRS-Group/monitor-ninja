@@ -1212,6 +1212,11 @@ h1.emote b {
   border-bottom: 2px solid #ef3b4f;
 }
 
+.info-notice-service-error {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
 .notify-notification-bar .notify-notification.pending,
 .alert.pending,
 .state-background.pending {

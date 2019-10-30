@@ -88,6 +88,10 @@ form.renderable-login input[type=submit]{
 	height: 30px;
 }
 
+.create-acc {
+	width: 135px !important;
+}
+
 form.renderable input[type=submit],
 form.renderable input[type=reset],
 form.renderable button {
