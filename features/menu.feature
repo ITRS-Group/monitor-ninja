@@ -68,7 +68,7 @@ Feature: Menu
 	@unreliable_el7 @unreliable
 	Scenario: Verify that the Manual link goes to the KB
 		When I hover the branding
-		Then I should see css "a[href='https://docs.itrsgroup.com/']"
+		Then I should see css "a[href='https://docs.itrsgroup.com/docs/op5-monitor/']"
 
 	Scenario: Validate quicklink absolute URL
 		When I click "Manage quickbar"
