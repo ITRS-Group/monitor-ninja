@@ -13,6 +13,8 @@ Event::insert_event('ninja.menu.setup', 0, function () {
 
     $menu->set('Report', null, 3, '', array('style' => 'margin-top: 8px'));
 
+    $menu->set('Manage', null, 4, '', array('style' => 'margin-top: 8px'));
+
     Event::$data = $menu;
 
 });
