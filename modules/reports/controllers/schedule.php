@@ -164,6 +164,10 @@ class Schedule_Controller extends Authenticated_Controller
 		$type = Scheduled_reports_Model::get_typeof_report($schedule_id);
 		$opt_obj = Scheduled_reports_Model::get_scheduled_data($schedule_id);
 		$report = Report_options::setup_options_obj($type, $opt_obj);
+
+		$this->log->log('notice', "Sending report id={$opt_obj['report_id']}, " .
+			"filename={$opt_obj['filename']}, schedule_id=$schedule_id");
+
 		if (!$report) {
 			$msg = sprintf(_("Failed to load %s report from schedule %s"), $type, $schedule_id);
 			if (request::is_ajax()) {
