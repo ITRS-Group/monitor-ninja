@@ -344,7 +344,7 @@ class Scheduled_reports_Model extends Model
 		SELECT sr.*, rp.periodname, opt.value AS timezone
 		FROM scheduled_reports sr
 		INNER JOIN scheduled_report_periods rp ON rp.id = sr.period_id
-		INNER JOIN saved_reports_options opt ON opt.report_id = sr.report_id
+		LEFT JOIN saved_reports_options opt ON opt.report_id = sr.report_id
 			AND opt.name = 'report_timezone'
 SQL;
 		$res = $db->query($sql);
