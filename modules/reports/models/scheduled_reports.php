@@ -337,6 +337,7 @@ class Scheduled_reports_Model extends Model
 	{
 		$schedules = array();
 		$send_date = array();
+		$default_timezone = date_default_timezone_get();
 
 		$db = Database::instance();
 
@@ -352,10 +353,9 @@ SQL;
 		foreach($res as $row){
 			$report_period = json_decode($row->report_period);
 			$report_time = $row->report_time;
-			$report_timezone = $row->timezone;
-			if($report_timezone != ''){
+			if($row->timezone){
 				// All times for this schedule use the timezone of the associated report.
-				date_default_timezone_set( $report_timezone );
+				date_default_timezone_set($row->timezone);
 			}
 
 			$repeat_no = $report_period->no;
@@ -475,6 +475,7 @@ SQL;
 					$send_date[] = $now->format('Y-m-d');
 				}
 			}
+			date_default_timezone_set($default_timezone);
 		}
 
 		foreach($schedules as $i => $schedule_id ){
