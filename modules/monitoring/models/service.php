@@ -260,21 +260,21 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command params.sticky.name Sticky
 	 * @ninja orm_command params.sticky.default 1
 	 * @ninja orm_command params.sticky.description
-	 * 		If you want acknowledgement to disable notifications until the service recovers, check this checkbox.
+	 * 		Acknowledgement should disable notifications until the service recovers.
 	 *
 	 * @ninja orm_command params.notify.id 2
 	 * @ninja orm_command params.notify.type bool
 	 * @ninja orm_command params.notify.name Notify
 	 * @ninja orm_command params.notify.default 1
 	 * @ninja orm_command params.notify.description
-	 * 		If you want an acknowledgement notification sent out to the appropriate contacts, check this checkbox.
+	 * 		Send acknowledgement notification to the appropriate contacts. Downtime will not block this notification.
 	 *
 	 * @ninja orm_command params.persistent.id 3
 	 * @ninja orm_command params.persistent.type bool
 	 * @ninja orm_command params.persistent.name Persistent
 	 * @ninja orm_command params.persistent.default 1
 	 * @ninja orm_command params.persistent.description
-	 * 		If you would like the service comment to remain once the acknowledgement is removed, check this checkbox.
+	 * 		Service comment should remain after the acknowledgement is removed.
 	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
@@ -473,7 +473,7 @@ class Service_Model extends BaseService_Model {
 	 * @ninja orm_command params.forced.name Force check
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If you want Naemon to force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service, check this checkbox.
+	 * 		Naemon should force a check of the service, regardless of scheduled check time, and whether checks are disabled for this service.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a service. Naemon

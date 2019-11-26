@@ -248,21 +248,21 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.sticky.name Sticky
 	 * @ninja orm_command params.sticky.default 1
 	 * @ninja orm_command params.sticky.description
-	 * 		If you want acknowledgement to disable notifications until the host recovers, check this checkbox.
+	 * 		Acknowledgement should disable notifications until the host recovers.
 	 *
 	 * @ninja orm_command params.notify.id 2
 	 * @ninja orm_command params.notify.type bool
 	 * @ninja orm_command params.notify.name Notify
 	 * @ninja orm_command params.notify.default 1
 	 * @ninja orm_command params.notify.description
-	 * 		If you want an acknowledgement notification sent out to the appropriate contacts, check this checkbox.
+	 * 		Send acknowledgement notification to the appropriate contacts. Downtime will not block this notification.
 	 *
 	 * @ninja orm_command params.persistent.id 3
 	 * @ninja orm_command params.persistent.type bool
 	 * @ninja orm_command params.persistent.name Persistent
 	 * @ninja orm_command params.persistent.default 1
 	 * @ninja orm_command params.persistent.description
-	 * 		If you would like the host comment to remain once the acknowledgement is removed, check this checkbox.
+	 * 		Host comment should remain after acknowledgement is removed.
 	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
@@ -443,7 +443,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Force check
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If you want Naemon to force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host, check this checkbox.
+	 * 		Naemon should force a check of the host, regardless of scheduled check time and whether checks are disabled for this host.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a host. Naemon
@@ -828,7 +828,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Forced
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If you want Naemon to force a check of the services regardless of both what time the scheduled check occurs and whether or not checks are enabled for the services, check this checkbox.
+	 * 		Naemon should force a check of the services, regardless of scheduled check time and whether checks are disabled.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
