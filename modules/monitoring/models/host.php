@@ -828,7 +828,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Forced
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		Naemon should force a check of the services, regardless of scheduled check time and whether checks disabled.
+	 * 		Naemon should force a check of the services, regardless of scheduled check time and whether checks are disabled.
      *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
