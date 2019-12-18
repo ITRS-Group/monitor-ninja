@@ -31,15 +31,16 @@ class NaemonObject_Model extends Object_Model {
 				// keys, which does not correspond to the Neamon cmd
 				$key = $this->get_id();
 			}
+		} else if ($cmd == 'DEL_DOWNTIME_BY_HOST_NAME') {
+			// Don't use $key for DEL_DOWNTIME_BY_HOST_NAME since the required keys
+			// are passed as function parameters on non downtime/comment objects.
+			$key=false;
 		} else {
 			$key = $this->get_key();
 		}
 		$key = ($key===false) ? "" : ";".$key;
 
-		// Don't use $key for DEL_DOWNTIME_BY_HOST_NAME since the required keys
-		// are passed as function parameters.
-		$raw_command = sprintf("[%d] %s%s", time(), $cmd,
-			($cmd == 'DEL_DOWNTIME_BY_HOST_NAME') ? '' : $key);
+		$raw_command = sprintf("[%d] %s%s", time(), $cmd, $key);
 		foreach($args as $arg) {
 			$raw_command .= ";".$arg;
 		}
