@@ -36,11 +36,15 @@ class NaemonObject_Model extends Object_Model {
 		}
 		$key = ($key===false) ? "" : ";".$key;
 
-		$raw_command = sprintf("[%d] %s%s", time(), $cmd, $key);
+		// Don't use $key for DEL_DOWNTIME_BY_HOST_NAME since the required keys
+		// are passed as function parameters.
+		$raw_command = sprintf("[%d] %s%s", time(), $cmd,
+			($cmd == 'DEL_DOWNTIME_BY_HOST_NAME') ? '' : $key);
 		foreach($args as $arg) {
 			$raw_command .= ";".$arg;
 		}
 
+		op5log::instance("ninja")->log("debug", "submit_naemon_command raw_command: $raw_command");
 		$output = false;
 		try {
 			$qh = op5queryhandler::instance();

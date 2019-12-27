@@ -1086,4 +1086,45 @@ class Host_Model extends BaseHost_Model {
 
 	}
 
+	/**
+	 * @param host_name
+	 * @param service_description = ""
+	 * @param downtime_start_time = ""
+	 * @param comment = true
+	 *
+	 * @ninja orm_command name Delete downtime
+	 * @ninja orm_command category Actions
+	 * @ninja orm_command icon scheduled-downtime
+	 *
+	 * @ninja orm_command params.host_name.id 0
+	 * @ninja orm_command params.host_name.type string
+	 * @ninja orm_command params.host_name.name Host_name
+	 *
+	 * @ninja orm_command params.service_description.id 1
+	 * @ninja orm_command params.service_description.type string
+	 * @ninja orm_command params.service_description.name Service description
+	 * @ninja orm_command params.service_description.default ""
+	 *
+	 * @ninja orm_command params.downtime_start_time.id 2
+	 * @ninja orm_command params.downtime_start_time.type time
+	 * @ninja orm_command params.downtime_start_time.name Downtime start time
+	 * @ninja orm_command params.downtime_start_time.default ""
+	 *
+	 * @ninja orm_command params.comment.id 3
+	 * @ninja orm_command params.comment.type bool
+	 * @ninja orm_command params.comment.name Comment
+	 * @ninja orm_command params.comment.default ""
+	 *
+	 * @ninja orm_command mayi_method update.command.downtime
+	 * @ninja orm_command description
+	 *     This command is used to delete a host or service downtime.
+	 *     The command will delete all downtimes which matches the criteria.
+	 *     Only the host_name is required, in which case all downtimes for
+	 *     for that host is deleted.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function del_downtime_by_host_name($host_name, $service_description="", $downtime_start_time="", $comment="") {
+		return $this->submit_naemon_command("DEL_DOWNTIME_BY_HOST_NAME", $host_name, $service_description, $downtime_start_time, $comment);
+	}
+
 }
