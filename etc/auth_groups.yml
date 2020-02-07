@@ -2,6 +2,7 @@
 admins:
   - "FILE"
   - "access_rights"
+  - "allow_dangerous_characters"
   - "api_command"
   - "api_config"
   - "api_perfdata"

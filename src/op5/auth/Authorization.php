@@ -158,7 +158,8 @@ class op5Authorization {
 			'trapper' => array('traps_view_all' => ''),
 			'misc' => array ('FILE' => '','access_rights' => '','pnp' => '',
 				'manage_trapper' => '',
-				'saved_filters_global' => ''));
+				'saved_filters_global' => '',
+				'allow_dangerous_characters' => ''));
 	}
 
 	/**
