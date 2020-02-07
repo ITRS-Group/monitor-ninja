@@ -84,6 +84,9 @@ $new_rights = array(
 			'traps_view_all',
 		)
 	),
+	8 => array(
+		$considered_superadmin => 'allow_dangerous_characters',
+	),
 );
 
 
