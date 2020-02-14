@@ -83,6 +83,11 @@ if($options['report_id']) { ?>
 		<?php echo form::checkbox('newstatesonly', 1, $options['newstatesonly']); ?>
 		<label for="newstatesonly"><?php echo _('Ignore repeated states') ?></label>
 		</td>
+		<td>&nbsp;</td>
+		<td>
+			<label for="time_format"><?php echo help::render('time_zone').' '._('Time zone') ?></label><br />
+			<?php echo form::dropdown(array('name' => 'report_timezone'), $options->get_alternatives('report_timezone'), $options['report_timezone']); ?>
+		</td>
 	</tr>
 	<tr>
 		<td>

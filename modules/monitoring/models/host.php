@@ -72,7 +72,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm depend[] comments
 	 */
 	public function get_comments_count() {
-		return count($this->get_comments());
+		return count($this->get_comments_set());
 	}
 
 	/**
@@ -248,21 +248,21 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.sticky.name Sticky
 	 * @ninja orm_command params.sticky.default 1
 	 * @ninja orm_command params.sticky.description
-	 * 		If you want acknowledgement to disable notifications until the host recovers, check this checkbox.
+	 * 		Acknowledgement should disable notifications until the host recovers.
 	 *
 	 * @ninja orm_command params.notify.id 2
 	 * @ninja orm_command params.notify.type bool
 	 * @ninja orm_command params.notify.name Notify
 	 * @ninja orm_command params.notify.default 1
 	 * @ninja orm_command params.notify.description
-	 * 		If you want an acknowledgement notification sent out to the appropriate contacts, check this checkbox.
+	 * 		Send acknowledgement notification to the appropriate contacts. Downtime will not block this notification.
 	 *
 	 * @ninja orm_command params.persistent.id 3
 	 * @ninja orm_command params.persistent.type bool
 	 * @ninja orm_command params.persistent.name Persistent
 	 * @ninja orm_command params.persistent.default 1
 	 * @ninja orm_command params.persistent.description
-	 * 		If you would like the host comment to remain once the acknowledgement is removed, check this checkbox.
+	 * 		Host comment should remain after acknowledgement is removed.
 	 *
 	 * @ninja orm_command mayi_method update.command.acknowledge
 	 * @ninja orm_command description
@@ -443,7 +443,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Force check
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If you want Naemon to force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host, check this checkbox.
+	 * 		Naemon should force a check of the host, regardless of scheduled check time and whether checks are disabled for this host.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to schedule the next check of a host. Naemon
@@ -611,14 +611,14 @@ class Host_Model extends BaseHost_Model {
 		if($end_tstamp < time()) {
 			return array(
 				'status' => $retrospective['status'],
-				'output' => implode("<br>", array_filter($output))
+				'output' => implode(". ", array_filter($output))
 			);
 		}
 		$downtime = $this->submit_naemon_command($command, $start_tstamp, $end_tstamp, $flexible ? 0 : 1, $trigger_id, $duration_sec, $this->get_current_user(), $comment);
 		$output[] = $downtime['output'];
 		return array(
 			'status' => $downtime['status'] && $retrospective['status'],
-			'output' => implode("<br>", array_filter($output))
+			'output' => implode(". ", array_filter($output))
 		);
 	}
 
@@ -828,7 +828,7 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command params.forced.name Forced
 	 * @ninja orm_command params.forced.default 1
 	 * @ninja orm_command params.forced.description
-	 * 		If you want Naemon to force a check of the services regardless of both what time the scheduled check occurs and whether or not checks are enabled for the services, check this checkbox.
+	 * 		Naemon should force a check of the services, regardless of scheduled check time and whether checks are disabled.
 	 *
 	 * @ninja orm_command description
 	 *     This command is used to scheduled the next check of all services on
@@ -1084,6 +1084,47 @@ class Host_Model extends BaseHost_Model {
 
 		return $public;
 
+	}
+
+	/**
+	 * @param host_name
+	 * @param service_description = ""
+	 * @param downtime_start_time = ""
+	 * @param comment = true
+	 *
+	 * @ninja orm_command name Delete downtime
+	 * @ninja orm_command category Actions
+	 * @ninja orm_command icon scheduled-downtime
+	 *
+	 * @ninja orm_command params.host_name.id 0
+	 * @ninja orm_command params.host_name.type string
+	 * @ninja orm_command params.host_name.name Host_name
+	 *
+	 * @ninja orm_command params.service_description.id 1
+	 * @ninja orm_command params.service_description.type string
+	 * @ninja orm_command params.service_description.name Service description
+	 * @ninja orm_command params.service_description.default ""
+	 *
+	 * @ninja orm_command params.downtime_start_time.id 2
+	 * @ninja orm_command params.downtime_start_time.type time
+	 * @ninja orm_command params.downtime_start_time.name Downtime start time
+	 * @ninja orm_command params.downtime_start_time.default ""
+	 *
+	 * @ninja orm_command params.comment.id 3
+	 * @ninja orm_command params.comment.type bool
+	 * @ninja orm_command params.comment.name Comment
+	 * @ninja orm_command params.comment.default ""
+	 *
+	 * @ninja orm_command mayi_method update.command.downtime
+	 * @ninja orm_command description
+	 *     This command is used to delete a host or service downtime.
+	 *     The command will delete all downtimes which matches the criteria.
+	 *     Only the host_name is required, in which case all downtimes for
+	 *     for that host is deleted.
+	 * @ninja orm_command view monitoring/naemon_command
+	 */
+	public function del_downtime_by_host_name($host_name, $service_description="", $downtime_start_time="", $comment="") {
+		return $this->submit_naemon_command("DEL_DOWNTIME_BY_HOST_NAME", $host_name, $service_description, $downtime_start_time, $comment);
 	}
 
 }

@@ -29,15 +29,14 @@ class Ajax_Controller extends Authenticated_Controller {
 	 */
 	private static function validate_uri_string ($setting)
 	{
+		if ($setting === false) {
+			return $setting;
+		}
 		$setting_info = json_decode($setting, true);
+		$setting_href = array();
 		foreach ($setting_info as $setting_data) {
 			$href = htmlspecialchars($setting_data['href'], ENT_QUOTES, 'UTF-8');
-			$validate_href = "(^/)";
-			if(preg_match($validate_href, $href)) {
-				$setting_href[] = array('href' => $href);
-			}else {
-				$setting_href[] = array('href' => "/" . $href);
-			}
+			$setting_href[] = array('href' => $href);
 		}
 		$setting = array_replace_recursive($setting_info, $setting_href);
 		return json_encode($setting);

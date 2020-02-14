@@ -303,7 +303,9 @@ class Search_Controller extends Ninja_Controller {
 			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page')
 		),
 		'saved_search_help' => _('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
-		'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
+		'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).'),
+		'runtime_options' => _('<div class="runtime-options-tooltip-text"><p>The settings can be overwritten by configuration changes.</p><p>To make persistent changes, go to the configuration page.</p></div>')
+
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

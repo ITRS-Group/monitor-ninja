@@ -181,7 +181,9 @@ class op5Livestatus {
 			}
 		}
 
-		$result = json_decode(utf8_encode($body), true);
+		$encoding = mb_detect_encoding($body);
+		$body = iconv($encoding, "UTF-8", $body);
+		$result = json_decode($body, true);
 
 		$objects = $result['data'];
 		$count = $result['total_count'];

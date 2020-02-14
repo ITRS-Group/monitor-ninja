@@ -194,6 +194,7 @@ function lsfilter_list(config)
 					{
 						self.active_ajax_request = false;
 						self.config.loading_stop(loading_id);
+						self.banner_in_listview();
 					}
 				});
 	};
@@ -275,7 +276,7 @@ function lsfilter_list(config)
 						.css('padding-right', 0)
 				);
 		}
-
+		this.banner_in_listview();
 	};
 
 	this.update_nagbar = function(messages)
@@ -629,4 +630,17 @@ function lsfilter_list(config)
 
 		this.update_float_header();
 	};
+
+	this.banner_in_listview = function()
+	{
+		var banner = $('div#nachos-page-banners');
+		if (banner.length > 0) {
+			var thead = $(this.config.table).find('thead');
+			var fixed_thead = $(thead).filter(function(){return !$(this).hasClass('floating-header');});
+			if (thead.length > fixed_thead.length) {
+				banner.css('margin', '25px 0 3px 0');
+				fixed_thead.remove();
+			}
+		}
+	}
 }

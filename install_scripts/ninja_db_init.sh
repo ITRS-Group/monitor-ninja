@@ -3,7 +3,7 @@
 # setup the db tables required for Ninja
 
 target_db_version=26
-target_sched_version=10
+target_sched_version=12
 
 db_user=merlin
 db_pass=merlin

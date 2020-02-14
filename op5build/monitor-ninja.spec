@@ -15,7 +15,7 @@ Group: op5/monitor
 Prefix: /opt/monitor/op5/ninja
 Obsoletes: monitor-gui <= 3.5.13
 Obsoletes: monitor-reports-gui <= 1.4.9
-Obsoletes: op5-nagios-gui-core <= 4.0.3
+Obsoletes: op5-nagios-gui-core <= 4.0.4
 Obsoletes: php-op5lib < %version
 Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
@@ -25,6 +25,7 @@ Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
+Requires: op5-lmd
 Requires: monitor-backup
 Requires: op5-bootstrap
 # Merlin creates our database
@@ -59,6 +60,7 @@ Group: op5/Monitor
 Requires: monitor-ninja = %version
 Requires: op5-naemon
 Requires: monitor-livestatus
+Requires: op5-lmd
 Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: php-phpunit-PHPUnit
@@ -86,6 +88,7 @@ Group: op5/monitor
 Requires: op5-naemon
 Requires: monitor-merlin
 Requires: monitor-livestatus
+Requires: op5-lmd
 
 %description monitoring
 Provides ORM, bindings and interfaces for Livestatus, Naemon and queryhandler.
@@ -136,7 +139,7 @@ sed -i "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
 	%buildroot%prefix/index.php
 sed -i \
 	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
-	-e 's/^\(.config..product_name.. = .\)Ninja/\1op5 Monitor/' \
+	-e 's/^\(.config..product_name.. = .\)Ninja/\1ITRS OP5 Monitor/' \
 	-e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
 	%buildroot%prefix/application/config/config.php
 
@@ -151,6 +154,8 @@ find %buildroot -type d -print0 | xargs -0 chmod a+x
 mkdir -p %buildroot/etc/cron.d/
 install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/scheduled-reports
 install -m 644 install_scripts/recurring_downtime.crontab %buildroot/etc/cron.d/recurring-downtime
+install -d %buildroot%_sysconfdir/logrotate.d
+install -pm 0644 op5build/monitor-ninja.logrotate %{buildroot}%_sysconfdir/logrotate.d/monitor-ninja
 
 # executables
 for f in cli-helpers/apr_md5_validate \
@@ -209,6 +214,11 @@ done
 php %prefix/install_scripts/migrate_auth.php
 # The line above can leave artifacts created by root, making ninja-backup fail
 chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
+if [ -f %_sysconfdir/op5/ninja_menu.yml ]; then
+   chown %daemon_group:%daemon_group %_sysconfdir/op5/ninja_menu.yml
+fi
+
+sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 
 %files
 %defattr(-,%daemon_user,%daemon_group)
@@ -227,6 +237,7 @@ chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 %dir /var/log/op5/ninja
 
 %attr(640,%daemon_user,%daemon_group) %prefix/application/config/database.php
+%config %attr(644,root, root) %_sysconfdir/logrotate.d/monitor-ninja
 
 %phpdir/op5
 %exclude %phpdir/op5/ninja_sdk

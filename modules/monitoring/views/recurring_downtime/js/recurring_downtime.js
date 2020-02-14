@@ -12,8 +12,8 @@ $(document).ready(function() {
     var exclude_end = $('input[excludeId="exclude-date-end-'+arr[3]+'"]').val();
     var start_time = $('#fixed-duration-start-time').val();
     var date_now = new Date();
-    var excludeStart = new Date(exclude_start+"T"+start_time+"Z");
-    var excludeEnd = new Date(exclude_end+"T"+start_time+"Z");
+    var excludeStart = new Date(exclude_start+"T"+start_time);
+    var excludeEnd = new Date(exclude_end+"T"+start_time);
     if(excludeEnd < excludeStart){
       $('input[excludeId="exclude-date-end-'+arr[3]+'"]').val(exclude_start);
     }
@@ -47,6 +47,14 @@ $(document).ready(function() {
     $('#fixed-duration-end-time').val(_end_time);
     $('#fixed-duration-start-date').val(_start_date);
     $('#fixed-duration-end-date').val(_end_date);
+    var get_recurrence_on = JSON.parse(_recurrence_on);
+        if(get_recurrence_on.day != "last"){
+                localStorage.setItem('edit_no_box', 1);
+                localStorage.setItem('edit_day_box', 1);
+        }else{
+                localStorage.setItem('edit_no_box', 0);
+                localStorage.setItem('edit_day_box', 0);
+        }
   }else{
     if(!$('#fixed-duration-start-date').val()){
       var date = new Date();
@@ -277,7 +285,17 @@ $(document).ready(function() {
     if($('#rec-on-any-day-month').is(':checked')){
       var selected_day = $('#rec-on-day-box').val();
       var selected_day_no = $(this).val();
-      set_startdate(selected_day, selected_day_no, 0);
+      if($('.repeat-text').val() == "month"){
+        if(pathArray[3] == "recurring_downtime" && pathArray[4] == "index"){
+                        var edit_no_box = localStorage.getItem('edit_no_box');
+                        if(edit_no_box != 1){
+                                set_startdate(selected_day, selected_day_no, 0);
+                        }
+                        localStorage.setItem('edit_no_box', 0);
+                }else{
+                        set_startdate(selected_day, selected_day_no, 0);
+                }
+      }
     }
   })
 
@@ -285,7 +303,17 @@ $(document).ready(function() {
     if($('#rec-on-any-day-month').is(':checked')){
       var selected_day_no = $('#rec-on-no-box').val();
       var selected_day = $(this).val();
-      set_startdate(selected_day, selected_day_no, 0);
+      if($('.repeat-text').val() == "month"){
+        if(pathArray[3] == "recurring_downtime" && pathArray[4] == "index"){
+                        var edit_day_box = localStorage.getItem('edit_day_box');
+                        if(edit_day_box != 1){
+                                set_startdate(selected_day, selected_day_no, 0);
+                        }      
+                        localStorage.setItem('edit_day_box', 0);
+                }else{ 
+                        set_startdate(selected_day, selected_day_no, 0);
+                }   
+      }
     }
   });
 
@@ -293,13 +321,17 @@ $(document).ready(function() {
     if($(this).is(':checked')){
       var selected_day_no = $('#rec-on-no-box').val();
       var selected_day = $('#rec-on-day-box').val();
-      set_startdate(selected_day, selected_day_no, 0); 
+      if($('.repeat-text').val() == "month"){
+        set_startdate(selected_day, selected_day_no, 0);
+      }
     } 
   });
 
   $('body').on('change', '#rec-on-last-day-month', function(){
     if($(this).is(':checked')){
-      set_startdate("last", "last", 0);
+      if($('.repeat-text').val() == "month"){
+        set_startdate("last", "last", 0);
+      }
     }
   });
 
@@ -307,7 +339,7 @@ $(document).ready(function() {
     var start_time = $('#fixed-duration-start-time').val();
     var start_date = $('#fixed-duration-start-date').val();
     var date_now = new Date();
-    var startDate = new Date(start_date+"T"+start_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
     var day = startDate.getDay();
     var date = startDate.getDate();
     var month = startDate.getMonth();
@@ -340,7 +372,7 @@ $(document).ready(function() {
       }
       if(selected_day_no == "last"){
         startDate.setDate(startDate.getDate() + 28);
-        if(startDate.getMonth() > month){
+        if(startDate.getMonth() != month){
           startDate.setDate(startDate.getDate() - 7);
         }
       }
@@ -399,7 +431,7 @@ $(document).ready(function() {
     var start_time = $('#fixed-duration-start-time').val();
     var start_date = $('#fixed-duration-start-date').val();
     var date_now = new Date();
-    var startDate = new Date(start_date+"T"+start_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
     var day = startDate.getDay();
     day_diff= day-post_day;
     startDate.setDate(startDate.getDate()-day_diff);
@@ -433,8 +465,8 @@ $(document).ready(function() {
     var start_date = $('#fixed-duration-start-date').val();
     var end_time = $('#fixed-duration-end-time').val();
     var end_date = $('#fixed-duration-end-date').val();
-    var startDate = new Date(start_date+"T"+start_time+"Z");
-    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
+    var endDate = new Date(end_date+"T"+end_time);
     var timeDiff = endDate-startDate;
     if(timeDiff < 0){
       $('#fixed-duration-end-time').val(start_time);
@@ -470,8 +502,8 @@ $(document).ready(function() {
       $('#fixed-duration-end-date').val(pre_end_date);
     }
 
-    var startDate = new Date(start_date+"T"+start_time+"Z");
-    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
+    var endDate = new Date(end_date+"T"+end_time);
     var timeDiff = (endDate-startDate)/1000;
     var d = Math.floor(timeDiff/(3600*24));
     var h = Math.floor((timeDiff%(3600*24))/3600);
@@ -518,7 +550,7 @@ $(document).ready(function() {
 
     $('#recurrence').html('\
       <option no="1" value="no">Choose recurrence</option> \
-      <option no="3" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":{"day":day}}) + '\'>Weekly on ' + day_name + '</option> \
+      <option no="3" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"week"},"on":[{"day":day}]}) + '\'>Weekly on ' + day_name + '</option> \
       <option no="4" value=\'' + JSON.stringify({"recur":{"label":"quick","no":1,"text":"month"},"on":{"day_no":day_no,"day":day}}) + '\'>Monthly on the ' + quick_day_no + ' ' + day_name + '</option>' + last_day_option_quick + ' \
       <option no="5" value="custom">Custom recurrence</option> \
       ');
@@ -660,6 +692,7 @@ $(document).ready(function() {
         $('input[name="month_on"][editattr="lastmonthday"]').prop("checked",true);
       }else{
         $('input[name="month_on"][editattr="dayweekday"]').prop("checked",true);
+
       }
     }
 
@@ -675,7 +708,7 @@ $(document).ready(function() {
     }
 
     if(_recurrence_ends == 0){
-      var startDate = new Date(_start_date + "T" + _start_time + "Z");
+      var startDate = new Date(_start_date + "T" + _start_time);
       $('input[name="ends"][value="never"]').prop("checked",true);
       endson_date = (startDate.getFullYear()+1) + "-" + format_time(startDate.getMonth()+1) + "-" + format_time(startDate.getDate());
       $('#endson-date').val(endson_date);
@@ -703,6 +736,8 @@ $(document).ready(function() {
 });
 
 function summary_show(){
+  return; // Don't render the summary.
+
   var flexible = $('#fixed').attr('checked');
   var start_time = $('#fixed-duration-start-time').val();
   var end_time = $('#fixed-duration-end-time').val();
@@ -715,8 +750,8 @@ function summary_show(){
   f_duration_string += ((duration_hours != 0) ? duration_hours +' hours ': '' );
   f_duration_string += ((duration_minutes != 0) ? duration_minutes+' minutes ': '' );
   f_duration_string = ((f_duration_string != '') ? f_duration_string : '0 hours');
-  var startDate = new Date(start_date+"T"+start_time+"Z");
-  var endDate = new Date(end_date+"T"+end_time+"Z");
+  var startDate = new Date(start_date+"T"+start_time);
+  var endDate = new Date(end_date+"T"+end_time);
   var day = startDate.getDay();
   var date = startDate.getDate();
   var month = startDate.getMonth();
@@ -784,16 +819,16 @@ function summary_show(){
           var wno = $(this).attr("wno");
           var day = $('span[wno='+wno+']').attr("tag");
           if(i == 0){
-           all_selected_day += day;
-         }else{
-           var next_i = i+1;
-           if($('input[name="week_on_day[]"]:checked')[next_i]){
-            all_selected_day += ', ';
-            all_selected_day += day; 
-          }else{
-            all_selected_day += ' and ';
             all_selected_day += day;
-          }
+          }else{
+            var next_i = i+1;
+            if($('input[name="week_on_day[]"]:checked')[next_i]){
+              all_selected_day += ', ';
+              all_selected_day += day; 
+            }else{
+              all_selected_day += ' and ';
+              all_selected_day += day;
+            }
         }
         i += 1;
       }
@@ -1253,8 +1288,8 @@ function check_setup() {
     if (!check_timestring(end_time)) {
       errors.push(_form_err_bad_timeformat.replace('{field}', _form_field_end_time));
     }
-    var startDate = new Date(start_date+"T"+start_time+"Z");
-    var endDate = new Date(end_date+"T"+end_time+"Z");
+    var startDate = new Date(start_date+"T"+start_time);
+    var endDate = new Date(end_date+"T"+end_time);
     if(startDate.getTime() >= endDate.getTime()){
       errors.push(_form_err_empty_fields);
     }
@@ -1274,7 +1309,7 @@ function check_setup() {
     fixed = 1;
   }
   var d = new Date();
-  var startDate = new Date(start_date+"T"+start_time+"Z"); 
+  var startDate = new Date(start_date+"T"+start_time); 
   if (startDate.getYear() == d.getYear() && startDate.getMonth() == d.getMonth() && startDate.getDate() == d.getDate()) {
     if (confirm("The schedule you are creating matches today, would you like to schedule a downtime for today?\nClick 'Cancel' to save your recurring schedule without scheduling a downtime for today or 'Ok' to save recurring schedule and schedule downtimes today.")) {
       // Downtime type string

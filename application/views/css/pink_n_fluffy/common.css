@@ -141,6 +141,14 @@ input[type="submit"].plain {
 
 .page-flow-layout h2 {
   margin-top: 16px;
+  padding: 3px;
+  background: #EEEEEE;
+}
+
+#host_form {
+    margin: 0px 12px;
+    padding-top: 10px;
+    padding-bottom: 15px;
 }
 
 .configuration-page-link a {

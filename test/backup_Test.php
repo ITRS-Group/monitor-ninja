@@ -2,7 +2,8 @@
 /**
  * Test the backup functions that are reached through the GUI. There are other
  * types of backups being run too, you can read more about backups here:
- * https://kb.op5.com/dosearchsite.action?queryString=backup
+ * https://docs.itrsgroup.com/docs/op5-monitor/
+ * Search for "backup" under OP5 monitor
  */
 class Backup_Test extends PHPUnit_Framework_TestCase {
 

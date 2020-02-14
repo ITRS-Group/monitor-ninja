@@ -318,7 +318,7 @@ module Configuration
       #We need to wait for the livestatus socket to disappear
       #since Nagios has not necessarily finished unloading all
       #brokers by the time it removes the pid file (above)
-      file_wait(File.join(@rw_path, "live"), :state=>:removed)
+      file_wait(File.join(@rw_path, "live_tmp"), :state=>:removed)
       `mysql -uroot nacoma -e 'TRUNCATE action_log'`# update timestamp so nacoma imports
       if cleanup_dirs
         FileUtils.rm_rf @root_path if File.exists? @root_path

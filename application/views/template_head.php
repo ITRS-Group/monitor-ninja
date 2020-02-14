@@ -49,7 +49,7 @@ if (!empty($base_href)) {
 						"message": "OP5 Monitor uses cookies to ensure you get the best browsing experience. If you continue to use our website you agree to our use of cookies.",
 						"dismiss": "Got it",
 						"link": "Learn More",
-						"href": "https://kb.op5.com/x/txNrAQ"
+						"href": "https://docs.itrsgroup.com/docs/op5-monitor/current/topics/other-documents/other-documents/cookie-policy.html"
 					},
 					onPopupOpen: function() { 
 						$('#content').append('<div id="extra_div_for_cookie" style="height:200px"></div>'); 

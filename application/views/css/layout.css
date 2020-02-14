@@ -1185,6 +1185,38 @@ h1.emote b {
   color: #fff;
 }
 
+.info-notice {
+  width: 40%;
+  line-height: 2;
+  margin-bottom: 20px;
+  padding: 3px 8px 3px 30px;
+  border-radius: 0px !important;
+  color: black;
+}
+
+.info-notice-warning {
+  background: #fef4e5 url("../images/icons/shield-warning.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #f99400;
+}
+.info-notice-information {
+  background: #e6f1f8 url("../images/icons/shield-info.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #0176bd;
+  margin-top: 10px;
+}
+.info-notice-success {
+  background: #ecf8ec url("../icons/x16/shield-ok.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #3fb93d;
+}
+.info-notice-error {
+  background: #fdebee url("../icons/x16/shield-critical.png") no-repeat 8px 6px;
+  border-bottom: 2px solid #ef3b4f;
+}
+
+.info-notice-service-error {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
 .notify-notification-bar .notify-notification.pending,
 .alert.pending,
 .state-background.pending {
@@ -1337,6 +1369,11 @@ h1.emote b {
   margin: 4px;
 }
 
+.configuration-page-link span.warning {
+    border-color: #51c0E4;
+    color: #51c0E4;
+}
+
 .configuration-page-description {
   display: inline-block;
   padding-left: 4px;
@@ -1465,6 +1502,12 @@ h1.emote b {
 .main-toolbar .main-toolbar-buttons a span.toolbar-icon-label {
   vertical-align: middle;
   margin: 0 4px;
+}
+
+.main-toolbar-buttons a span.toolbar-icon-label span.changes_count {
+  color: #51c0E4;
+  padding-left: 5px;
+  font-size: 12px;
 }
 
 .main-toolbar .main-toolbar-buttons button {
@@ -1679,6 +1722,14 @@ a.help-icon {
   width: 16px;
 }
 
+div#header div.main-menu img.brand-icon {
+  width: 136px;
+  height: 49px;
+  margin-top: -9px;
+  margin-left: -12px;
+  margin-right: -21px;
+}
+
 span.brand {
   display: inline-block;
 }
@@ -1768,8 +1819,8 @@ ul.shared_with_these_entities li a {
 	float: right;
 }
 
-.popup-about {
-  text-align: center;
+img.popup-about-img {
+  margin-left: 70px;
 }
 
 .popup-about > a {
