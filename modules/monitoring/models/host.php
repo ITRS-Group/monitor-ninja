@@ -633,16 +633,7 @@ class Host_Model extends BaseHost_Model {
 	 * @return array ['status' => boolean, 'output' => string]
 	 */
 	public function cancel_all_downtimes() {
-		$downtime_set = ObjectPool_Model::get_by_query('[downtimes] host.name = "'.$this->get_name().'"');
-		foreach($downtime_set->it(array(),array(), false, 0) as $downtime) {
-			$output = $downtime->delete();
-			if (!$output['status'])
-				return $output;
-		}
-		return array(
-			'status' => True,
-			'output' => sprintf(_('Your command was successfully submitted to %s.'), Kohana::config('config.product_name'))
-		);
+		return $this->del_downtime_by_host_name($this->get_name());
 	}
 
 	/**
