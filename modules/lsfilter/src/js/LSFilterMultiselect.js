@@ -73,15 +73,18 @@ var lsfilter_multiselect = {
 				cat_list.append($('<li />').text(category).addClass('multi-action-title'));
 
 				for ( var cmdname in category_commands) {
-					var cmd = category_commands[cmdname];
-					var opt = $('<a href="#"/>')
+					// del_downtime_by_host_name is for the API only
+					if (cmdname !== "del_downtime_by_host_name") {
+						var cmd = category_commands[cmdname];
+						var opt = $('<a href="#"/>')
 
-					opt.attr('data-multi-action-command', cmdname);
-					opt.text(cmd.name);
-					opt.prepend($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
-					opt.addClass('multi-action-send-link');
+						opt.attr('data-multi-action-command', cmdname);
+						opt.text(cmd.name);
+						opt.prepend($('<span />').addClass('icon-16').addClass('x16-' + cmd.icon));
+						opt.addClass('multi-action-send-link');
 
-					cat_list.append($('<li />').append(opt));
+						cat_list.append($('<li />').append(opt));
+					}
 				}
 				this.elem_menu.append(cat_list);
 			}
