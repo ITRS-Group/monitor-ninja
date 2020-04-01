@@ -87,7 +87,10 @@
 			foreach ($branch as $child) {
 				if (in_array($child->get_id(), $config)) { continue; }
 				$cAttributes = $child->get_attributes();
-				$render .= '<li tabindex="1">' . $render_menu($child, $style, false) . '</li>';
+				// delete_downtime_by_hostname is for API only
+				if ($cAttributes["data-menu-id"] !== "delete_downtime_by_hostname") {
+					$render .= '<li tabindex="1">' . $render_menu($child, $style, false) . '</li>';
+				}
 			}
 			$render .= '</ul>';
 		}
