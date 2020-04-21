@@ -117,17 +117,6 @@ foreach ($groups as &$group) {
 				}
 			}
 		}
-		foreach ($deprecated_rights[$i] as $from => $to) {
-			if (in_array($from, $group)) {
-				if (is_array($to)) {
-					foreach ($to as $perm) {
-						$group[] = $perm;
-					}
-				} else {
-					$group[] = $to;
-				}
-			}
-		}
 	}
 }
 $config['common']['version'] = $i;
