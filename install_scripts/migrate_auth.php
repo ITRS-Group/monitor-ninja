@@ -84,7 +84,10 @@ $new_rights = array(
 			'traps_view_all',
 		)
 	),
-	8 => array(
+);
+
+$deprecated_rights = array(
+	10 => array(
 		$considered_superadmin => 'allow_dangerous_characters',
 	),
 );
@@ -104,6 +107,17 @@ if(isset($config['common']['version'])) {
 foreach ($groups as &$group) {
 	for ($i = $current_version; $i < count($new_rights); $i++) {
 		foreach ($new_rights[$i] as $from => $to) {
+			if (in_array($from, $group)) {
+				if (is_array($to)) {
+					foreach ($to as $perm) {
+						$group[] = $perm;
+					}
+				} else {
+					$group[] = $to;
+				}
+			}
+		}
+		foreach ($deprecated_rights[$i] as $from => $to) {
 			if (in_array($from, $group)) {
 				if (is_array($to)) {
 					foreach ($to as $perm) {

@@ -104,6 +104,9 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			'pnp',
 			'saved_filters_global',
 		);
+		$this->non_positive_rights = array(
+			'disallow_dangerous_characters',
+		);
 	}
 
 	public function tearDown() {
@@ -190,11 +193,16 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_admins_group_should_have_access_to_all_auth_rights_that_exist() {
 		$config = new op5config(array('basepath' => __DIR__."/../etc"));
-
+		$auth_rights = $this->get_all_auth_rights();	
+		foreach ($this->non_positive_rights as $rule){
+			if (($key = array_search($rule, $auth_rights)) !== false) {
+				 unset($auth_rights[$key]);
+			}			
+		}
 		$this->assertEquals(
 			array(),
 			array_diff(
-				$this->get_all_auth_rights(),
+				$auth_rights,
 				$config->getConfig("auth_groups.admins")
 			),
 			"Some auth rights are missing from the admins group ".
@@ -341,7 +349,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			"Failed a safety check"
 		);
 
-		$all_rights = array_merge($this->preexisting_rights, $this->flatten_new_rights($new_rights));
+		$all_rights = array_merge($this->preexisting_rights, $this->flatten_new_rights($new_rights), $this->non_positive_rights);
 
 		$this->assertEquals(
 			array(),
