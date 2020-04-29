@@ -159,7 +159,7 @@ class op5Authorization {
 			'misc' => array ('FILE' => '','access_rights' => '','pnp' => '',
 				'manage_trapper' => '',
 				'saved_filters_global' => '',
-				'allow_dangerous_characters' => ''));
+				'disallow_dangerous_characters' => ''));
 	}
 
 	/**

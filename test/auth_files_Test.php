@@ -12,6 +12,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	private $tmp_auth_groups_file;
 	private $tmp_auth_file;
 	private $preexisting_rights = array();
+	private $non_permissive_rights = array();
 
 	public function setUp() {
 		$this->tmp_auth_groups_file = __DIR__.'/auth_groups.yml';
@@ -104,6 +105,9 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			'pnp',
 			'saved_filters_global',
 		);
+		$this->non_permissive_rights = array(
+			'disallow_dangerous_characters',
+		);
 	}
 
 	public function tearDown() {
@@ -188,13 +192,26 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	 * to pay for having this testable without any logic regarding which
 	 * auth right is a subset of another.
 	 */
-	public function test_admins_group_should_have_access_to_all_auth_rights_that_exist() {
+	public function test_admins_group_should_have_access_to_all_permissive_auth_rights_that_exist() {
 		$config = new op5config(array('basepath' => __DIR__."/../etc"));
+		$auth_rights = $this->get_all_auth_rights();
+
+		/**
+		 * We introduced a new group right that is non_permissive,
+		 * I.E it restricts the user rather than allows. This requires
+		 * removal of these rights in order to check if all positive rights are applied
+		 * since the admin user does not get this by default
+		 */
+		foreach ($this->non_permissive_rights as $right){
+			if (($key = array_search($right, $auth_rights)) !== false) {
+				 unset($auth_rights[$key]);
+			}
+		}
 
 		$this->assertEquals(
 			array(),
 			array_diff(
-				$this->get_all_auth_rights(),
+				$auth_rights,
 				$config->getConfig("auth_groups.admins")
 			),
 			"Some auth rights are missing from the admins group ".
@@ -341,7 +358,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 			"Failed a safety check"
 		);
 
-		$all_rights = array_merge($this->preexisting_rights, $this->flatten_new_rights($new_rights));
+		$all_rights = array_merge($this->preexisting_rights, $this->flatten_new_rights($new_rights), $this->non_permissive_rights);
 
 		$this->assertEquals(
 			array(),
