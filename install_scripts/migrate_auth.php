@@ -84,7 +84,10 @@ $new_rights = array(
 			'traps_view_all',
 		)
 	),
-	8 => array(
+);
+
+$deprecated_rights = array(
+	10 => array(
 		$considered_superadmin => 'allow_dangerous_characters',
 	),
 );
