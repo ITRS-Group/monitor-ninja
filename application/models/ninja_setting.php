@@ -84,7 +84,19 @@ class Ninja_setting_Model extends Model {
 			->reduce_by('page', $page, '=');
 
 		if (count($set)) {
-			return (object) $set->one()->export();
+			$obj = $set->one()->export();
+			/**
+			 * In some rare cases, for unknown reasons, duplicate
+			 * quicklinks exist at this point. This is a failsafe
+			 * to ensure that doesnt happen.
+			 */
+			if ($page === 'tac' && $type === 'dojo-quicklinks') {
+				$json_obj = $obj['setting'];
+				$decoded_array = json_decode($obj['setting']);
+				$unique = json_encode(array_unique($decoded_array, SORT_REGULAR));
+				$obj['setting'] = $unique;
+			}
+			return (object) $obj;
 		}
 
 		return self::fetch_default_setting($type, $page);
