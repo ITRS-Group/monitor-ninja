@@ -93,8 +93,16 @@ class Ninja_setting_Model extends Model {
 			if ($page === 'tac' && $type === 'dojo-quicklinks') {
 				$json_obj = $obj['setting'];
 				$decoded_array = json_decode($obj['setting']);
-				$unique = json_encode(array_unique($decoded_array, SORT_REGULAR));
-				$obj['setting'] = $unique;
+				$unique = array_unique($decoded_array, SORT_REGULAR);
+				/* We need to iterate over the array here, as
+				 * array_unique might return arrays with { [0] => ... [2] => ...
+				 * As the above would result in json_encode to encode the json
+				 * objects with indexes, which breaks things later on */
+				$unique_ordered_keys = array();
+				foreach ($unique as &$quicklink) {
+					array_push($unique_ordered_keys, $quicklink);
+				}
+				$obj['setting'] = json_encode($unique_ordered_keys);
 			}
 			return (object) $obj;
 		}
