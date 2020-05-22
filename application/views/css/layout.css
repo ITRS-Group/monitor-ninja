@@ -473,7 +473,7 @@ th.headerNone {
   height: 100%;
   z-index: 0;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: scroll;
   background: #ffffff;
 }
 
