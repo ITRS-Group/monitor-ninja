@@ -21,3 +21,13 @@ Feature: Listview Host
 			| 0             | 1              | Active checks disabled | Passive checks enabled  |
 			| 1             | 1              | Active checks enabled  | Passive checks enabled  |
 			| 1             | 0              | Active checks enabled  | Passive checks disabled |
+
+	Scenario Outline: Correct configure host link
+
+		Given I have these mocked hosts
+			| name       | state   |
+			| 123        | 0       |
+
+		Given I am on a hosts list view
+		And I click "Configure this host"
+		Then I should see "Edit host 123"
