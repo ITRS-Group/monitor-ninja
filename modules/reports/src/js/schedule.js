@@ -292,13 +292,19 @@ function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id,
 	}else if(report_period.period_id == 2){
         var report_on =  JSON.parse(report_on);
         if(report_period.no == 1){
-            if(report_on.day != "last"){
+            if(report_on.day == "first") {
+                report_period_text = "Monthly on the first day of month at " + report_time;
+            }
+            else if(report_on.day != "last"){
                 report_period_text = "Monthly on the "+format_num_word(report_on.day_no)+" "+days_name[report_on.day]+" at "+report_time;
             }else{
                 report_period_text = "Monthly on the "+format_num_word(report_on.day_no)+" day of month at "+report_time;
             }
         }else{
-            if(report_on.day != "last"){
+            if(report_on.day == "first") {
+                report_period_text = "Every " + report_period.no + " months on the first day of month at " + report_time;
+            }
+            else if(report_on.day != "last"){
                 report_period_text = "Every "+report_period.no+" months on the "+format_num_word(report_on.day_no)+" "+days_name[report_on.day]+" at "+report_time;
             }else{
                 report_period_text = "Every "+report_period.no+" months on the "+format_num_word(report_on.day_no)+" day of month at "+report_time;

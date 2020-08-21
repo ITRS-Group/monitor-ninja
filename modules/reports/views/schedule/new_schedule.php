@@ -96,7 +96,7 @@
 	                        <span wno="0" tag="Sunday">Sun</span>
 	                    </div>
                         <div id="sch-month-opt" class="hide">
-                            <div class="relative"><input id="sch-any-day-month" checked="checked" type="radio" name="sch-month-on" value='{"day_no":"1","day":"1"}'> the
+                            <div class="relative"><label><input id="sch-any-day-month" checked="checked" type="radio" name="sch-month-on" value='{"day_no":"1","day":"1"}'> the</label>
                                 <select name="sch-on-no-box" id="sch-on-no-box" class="rec-on-no-box" value="">
                                     <option value="1">first</option>
                                     <option value="2">second</option>
@@ -114,7 +114,8 @@
                                     <option value="0">Sunday</option>
                                 </select>
                             </div>
-                            <div class="relative"><input id="sch-last-day-month" type="radio" name="sch-month-on" value='{"day_no":"last","day":"last"}'> the last day of the month </div>
+                            <div class="relative"><label><input id="sch-first-day-month" type="radio" name="sch-month-on" value='{"day_no":"first","day":"first"}'> the first day of the month</label></div>
+                            <div class="relative"><label><input id="sch-last-day-month" type="radio" name="sch-month-on" value='{"day_no":"last","day":"last"}'> the last day of the month</label></div>
                         </div>
                     </td>
                 </tr>

@@ -157,7 +157,7 @@ Feature: Scheduled reports
 		Then I should see "Report was successfully saved"
 
 	@reports
-	Scenario: Schedule SLA report
+	Scenario: Schedule SLA report on first day of every second month
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		When I click "Schedule reports"
@@ -165,14 +165,17 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
 		When I select "saved test report" from "Select report"
-		And I select "Week" from "every_text"
+		And I select "Month" from "every_text"
+		And I choose "sch-first-day-month"
+		And I enter "2" into "every_no"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
 		And I click "Save"
 		Then I shouldn't see "There are no scheduled SLA reports"
-		And I should see "saved_test_report_Weekly.pdf"
+		And I should see "saved_test_report_Monthly.pdf"
 		And I should see "dev@op5.com"
+		And I should see "Every 2 months on the first day of month at 12:00"
 
 	@reports
 	Scenario: View scheduled SLA report
