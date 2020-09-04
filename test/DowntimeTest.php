@@ -111,4 +111,27 @@ class Downtime_Test extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($sched->is_excluded('2019-09-28'));
 	}
 
+	/**
+	 * External command string generated should not have have certain words replaced
+	 * See: MON-12387
+	 * @group recurring_downtime
+	 */
+	public function test_no_reserved_words() {
+		$start = mock_date('1984-01-13 10:12:13');
+		$end = mock_date('1984-01-13 12:13:14');
+		$target_date = new NinjaDateTime('today');
+
+		$mock = new DowntimeDayModel();
+		$mock->set_downtime_type('hostgroups');
+		$mock->set_start($start->get_datetime());
+		$mock->set_end($end->get_datetime());
+
+		$sched = new Downtime($mock);
+		$cmd = $sched->get_command('cmd-obj_name-start-end-is_fixed-trigger_id-duration-author-comment', $sched->get_window($target_date));
+
+		$expected_cmd = 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME;cmd-obj_name-start-end-is_fixed-trigger_id-duration-author-comment;1599207133;1599214394;1;0;0;__AUTHOR__TEST__;AUTO: __COMMENT__TEST__';
+		$this->assertEquals($cmd, $expected_cmd);
+	}
+
+
 }
