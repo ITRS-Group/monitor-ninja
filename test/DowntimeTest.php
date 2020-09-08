@@ -129,8 +129,9 @@ class Downtime_Test extends PHPUnit_Framework_TestCase {
 		$sched = new Downtime($mock);
 		$cmd = $sched->get_command('cmd-obj_name-start-end-is_fixed-trigger_id-duration-author-comment', $sched->get_window($target_date));
 
-		$expected_cmd = 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME;cmd-obj_name-start-end-is_fixed-trigger_id-duration-author-comment;1599207133;1599214394;1;0;0;__AUTHOR__TEST__;AUTO: __COMMENT__TEST__';
-		$this->assertEquals($cmd, $expected_cmd);
+		$name = 'cmd-obj_name-start-end-is_fixed-trigger_id-duration-author-comment';
+		# Assert name in cmd
+		$this->assertTrue(strpos($cmd, $name) !== false);
 	}
 
 
