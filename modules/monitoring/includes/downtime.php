@@ -132,6 +132,7 @@ class Downtime {
 			'start' => $downtime_window['start']->getTimestamp(),
 			'end' => $downtime_window['end']->getTimestamp(),
 			'is_fixed' => $this->model->get_fixed(),
+			'trigger_id' => 0,
 			'duration' => $this->model->get_duration(),
 			'author' => $this->model->get_author(),
 			'comment' => $comment_prefix . $this->model->get_comment()
@@ -148,8 +149,7 @@ class Downtime {
 	 */
 	public function get_command($obj_name, $downtime_window, $comment_prefix = 'AUTO: ') {
 		$command = $this->get_command_mappings($obj_name, $downtime_window, $comment_prefix);
-		$cmd_fmt = 'cmd;obj_name;start;end;is_fixed;0;duration;author;comment';
-		return str_replace(array_keys($command), array_values($command), $cmd_fmt);
+		return implode(';', array_values($command));
 	}
 
 	/**
