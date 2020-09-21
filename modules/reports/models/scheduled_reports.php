@@ -437,13 +437,19 @@ SQL;
 				}
 
 				$report_on = json_decode($row->report_on);
-				$day_of_week = $report_on->day;  # 1-7 (or 'last' for last day of month)
+				$day_of_week = $report_on->day;  # 1-7, last, first
 
 				$is_report_day = false;
 				if ($day_of_week == 'last') {
 					// Send if this is the last day of the month.
 					$tomorrow = strtotime('+ 1 day', $now->getTimestamp());
 					if (date('n', $tomorrow) != $now->format('n')) {
+						$is_report_day = true;
+					}
+				}
+				elseif ($day_of_week == 'first') {
+					// Send if this is the first day of the month.
+					if ($now->format('j') == '1') {
 						$is_report_day = true;
 					}
 				}
