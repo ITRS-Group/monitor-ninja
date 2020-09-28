@@ -7379,7 +7379,7 @@ msgstr ""
 
 #: modules/reports/controllers/reports.php:785
 #: modules/reports/controllers/reports.php:785
-msgid "Select which report you want to you want to schedule"
+msgid "Select which report you want to schedule"
 msgstr ""
 
 #: modules/reports/controllers/reports.php:786

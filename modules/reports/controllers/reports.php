@@ -591,7 +591,7 @@ class Reports_Controller extends Base_reports_Controller {
 
 			// new scheduled report
 			'report-type-save' => _("Select what type of report you would like to schedule the creation of"),
-			'select-report' => _("Select which report you want to you want to schedule"), // text ok?
+			'select-report' => _("Select which report you want to schedule"),
 			'report' => _("Select the saved report to schedule"),
 			'interval' => _("Select how often the report is to be produced and delivered"),
 			'recipents' => _("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
