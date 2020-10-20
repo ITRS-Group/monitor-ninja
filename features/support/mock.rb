@@ -59,7 +59,8 @@ module Mock
 
     def save()
       if not active?
-        @file = Dir::Tmpname.make_tmpname(Dir.pwd + '/ci_tmp_mock', nil)
+        tmpname = Dir::Tmpname.make_tmpname("", nil)
+        @file = File.join(Dir.pwd, "ci_tmp_mock" + tmpname)
         FileUtils::mkdir_p File.dirname(@file)
       end
       @mocked_classes.each {|real_class, blk|
