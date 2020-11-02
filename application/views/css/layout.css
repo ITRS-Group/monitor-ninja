@@ -212,7 +212,7 @@ select.auto {
 }
 
 button, input[type=reset], input[type=submit], input[type=button] {
-  background: #cdcdcd url(images/bg.png) repeat-x;
+  background: #cdcdcd url(default/images/bg.png) repeat-x;
   border: 1px solid #cccccc;
   cursor: pointer;
   -moz-border-radius: 4px;
@@ -248,7 +248,7 @@ input.wide {
 
 .form-dropdown {
   padding: 10px;
-  background: #cdcdcd url(images/bg.png) repeat-x;
+  background: #cdcdcd url(default/images/bg.png) repeat-x;
   border: 1px solid gainsboro;
   display: none;
 }
